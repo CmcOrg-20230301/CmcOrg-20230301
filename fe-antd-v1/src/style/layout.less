@@ -1,0 +1,223 @@
+.w100 {
+  width: 100% !important;
+}
+
+.h100 {
+  height: 100% !important;
+}
+
+.wh100 {
+  width: 100% !important;
+  height: 100% !important;
+}
+
+.vw100 {
+  width: 100vw !important;
+}
+
+.vh100 {
+  height: 100vh !important;
+}
+
+.vwh100 {
+  width: 100vw !important;
+  height: 100vh !important;
+}
+
+.flex-s {
+  flex-shrink: 0 !important;
+}
+
+.flex1 {
+  flex: 1 !important;
+}
+
+.flex {
+  display: flex !important;
+}
+
+.flex-c {
+  display: flex !important;
+  flex-direction: column !important;
+}
+
+.flex-center {
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+}
+
+.jc-c {
+  justify-content: center !important;
+}
+
+.jc-e {
+  justify-content: flex-end !important;
+}
+
+.jc-sb {
+  justify-content: space-between !important;
+}
+
+.ai-c {
+  align-items: center !important;
+}
+
+.ai-e {
+  align-items: flex-end !important;
+}
+
+.ai-b {
+  align-items: baseline !important;
+}
+
+.rel {
+  position: relative !important;
+}
+
+.abs {
+  position: absolute !important;
+}
+
+.hand {
+  cursor: pointer !important;
+}
+
+.cursor-def {
+  cursor: default !important;
+}
+
+@thumb-bc: rgba(85, 85, 85, 0.7);
+@thumb-bc-h: rgba(85, 85, 85, 0.8);
+
+// 滚动条的样式
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-thumb {
+  border-radius: 6px;
+  background: @thumb-bc;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: @thumb-bc-h;
+}
+
+.pm(@i, @max, @step) when (@i <= @max) {
+  .p-@{i} {
+    padding: @i + 0px !important;
+  }
+
+  .p-l-@{i} {
+    padding-left: @i + 0px !important;
+  }
+
+  .p-r-@{i} {
+    padding-right: @i + 0px !important;
+  }
+
+  .p-l-r-@{i} {
+    padding-left: @i + 0px !important;
+    padding-right: @i + 0px !important;
+  }
+
+  .p-t-@{i} {
+    padding-top: @i + 0px !important;
+  }
+
+  .p-b-@{i} {
+    padding-bottom: @i + 0px !important;
+  }
+
+  .p-t-b-@{i} {
+    padding-top: @i + 0px !important;
+    padding-bottom: @i + 0px !important;
+  }
+
+  .m-@{i} {
+    margin: @i + 0px !important;
+  }
+
+  .m-l-@{i} {
+    margin-left: @i + 0px !important;
+  }
+
+  .m-r-@{i} {
+    margin-right: @i + 0px !important;
+  }
+
+  .m-l-r-@{i} {
+    margin-left: @i + 0px !important;
+    margin-right: @i + 0px !important;
+  }
+
+  .m-t-@{i} {
+    margin-top: @i + 0px !important;
+  }
+
+  .m-b-@{i} {
+    margin-bottom: @i + 0px !important;
+  }
+
+  .m-t-b-@{i} {
+    margin-top: @i + 0px !important;
+    margin-bottom: @i + 0px !important;
+  }
+
+  .pm(@i: (@i + @step), @max:@max, @step:@step);
+}
+
+.pm(0, 30, 1);
+.pm(30, 300, 5);
+
+.font(@i, @max, @step) when (@i <= @max) {
+  .f-@{i} {
+    font-size: @i + 0px !important;
+  }
+
+  .font(@i: (@i + @step), @max:@max, @step:@step);
+}
+
+.font(11, 25, 1);
+
+.wh(@i, @max, @step) when (@i <= @max) {
+  .w-@{i} {
+    width: @i + 0px !important;
+  }
+
+  .h-@{i} {
+    height: @i + 0px !important;
+  }
+
+  .wh(@i: (@i + @step), @max:@max, @step:@step);
+}
+
+.wh(30, 100, 5);
+.wh(100, 800, 50);
+
+.fw(@i) when (@i <=1000) {
+  .fw-@{i} {
+    font-weight: @i !important;
+  }
+
+  .fw((@i + 50));
+}
+
+.fw(550);
+
+.space(@i, @max, @step) when (@i <= @max) {
+
+  .space-l-@{i} + .space-l-@{i} {
+    margin-left: @i + 0px !important;
+  }
+
+  .space-t-@{i} + .space-t-@{i} {
+    margin-top: @i + 0px !important;
+  }
+
+  .space(@i: (@i + @step), @max:@max, @step:@step);
+}
+
+.space(0, 100, 1);
