@@ -30,6 +30,9 @@ export default ({mode}) =>
                     rewrite: (path) => path.replace(/^\/api/, ''),
                 },
             },
+            port: 5001,
+            host: '0.0.0.0',
+            open: true, // 启动之后是否打开浏览器
         },
         css: {
             preprocessorOptions: {
