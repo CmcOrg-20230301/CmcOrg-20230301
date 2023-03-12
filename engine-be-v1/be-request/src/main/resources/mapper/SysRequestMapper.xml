@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.cmcorg20230301.engine.be.request.mapper.SysRequestMapper">
+
+    <!-- 所有请求的平均耗时-增强：增加筛选项 -->
+    <select id="allAvgPro" resultType="com.cmcorg20230301.engine.be.request.model.vo.SysRequestAllAvgVO">
+
+        SELECT
+
+        COUNT(1) AS count,
+        (SUM(a.cost_ms) DIV COUNT(1)) AS avgMs
+
+        FROM sys_request a
+
+        WHERE a.del_flag = FALSE
+
+        <if test="dto.uri != null and dto.uri != ''">
+            AND a.uri LIKE concat('%', #{dto.uri}, '%')
+        </if>
+        <if test="dto.name != null and dto.name != ''">
+            AND a.name LIKE concat('%', #{dto.name}, '%')
+        </if>
+        <if test="dto.ip != null and dto.ip != ''">
+            AND a.ip LIKE concat('%', #{dto.ip}, '%')
+        </if>
+        <if test="dto.region != null and dto.region != ''">
+            AND a.region LIKE concat('%', #{dto.region}, '%')
+        </if>
+        <if test="dto.type != null and dto.type != ''">
+            AND a.type LIKE concat('%', #{dto.type}, '%')
+        </if>
+        <if test="dto.beginCostMs != null">
+            AND a.cost_ms <![CDATA[>=]]> #{dto.beginCostMs}
+        </if>
+        <if test="dto.endCostMs != null">
+            AND a.cost_ms <![CDATA[<=]]> #{dto.endCostMs}
+        </if>
+        <if test="dto.ctBeginTime != null">
+            AND a.create_time <![CDATA[>=]]> #{ctBeginTime}
+        </if>
+        <if test="dto.ctEndTime != null">
+            AND a.create_time <![CDATA[<=]]> #{ctEndTime}
+        </if>
+        <if test="dto.createId != null">
+            AND a.create_id = #{dto.createId}
+        </if>
+        <if test="dto.category != null">
+            AND a.category = #{dto.category}
+        </if>
+        <if test="dto.successFlag != null">
+            AND a.success_flag = #{dto.successFlag}
+        </if>
+
+    </select>
+
+    <!-- 所有请求的平均耗时 -->
+    <select id="allAvg" resultType="com.cmcorg20230301.engine.be.request.model.vo.SysRequestAllAvgVO">
+
+        SELECT COUNT(1)                      AS count,
+               (SUM(a.cost_ms) DIV COUNT(1)) AS avgMs
+
+        FROM sys_request a
+
+    </select>
+
+</mapper>

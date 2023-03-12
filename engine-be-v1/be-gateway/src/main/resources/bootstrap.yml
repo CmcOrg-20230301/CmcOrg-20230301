@@ -1,0 +1,15 @@
+server:
+  port: 9501
+
+spring:
+  application:
+    name: gateway
+  cloud:
+    nacos:
+      server-addr: 43.154.37.130:8848
+      discovery:
+        namespace: engine-be-v1
+    gateway:
+      discovery:
+        locator:
+          enabled: true # 利用微服务名进行路由

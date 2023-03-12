@@ -1,0 +1,24 @@
+server:
+  port: 10001
+
+spring:
+  application:
+    name: be
+  cloud:
+    nacos:
+      server-addr: 43.154.37.130:8848
+      discovery:
+        namespace: ${spring.cloud.nacos.config.namespace}
+      config:
+        namespace: engine-be-v1
+        file-extension: yml
+        extension-configs:
+          - data-id: common.yml
+          - data-id: redis.yml
+          - data-id: mysql.yml
+          - data-id: kafka.yml
+          - data-id: cache.yml
+          - data-id: xxl-job.yml
+          - data-id: minio.yml
+          - data-id: refresh.yml
+            refresh: true

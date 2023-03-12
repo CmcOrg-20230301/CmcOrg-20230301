@@ -1,0 +1,468 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>2.7.9</version>
+        <relativePath/>
+    </parent>
+
+    <groupId>com.cmcorg20230301</groupId>
+    <artifactId>engine-be-v1</artifactId>
+    <version>2023.3.1</version>
+
+    <packaging>pom</packaging>
+
+    <description>项目顶级 pom.xml，目的：1 方便打包modules 2 依赖版本控制（所以不要在其他 pom.xml里面，添加带有 version标签的依赖）</description>
+
+    <properties>
+        <java.version>8</java.version>
+        <!-- 打包时跳过测试 -->
+        <skipTests>true</skipTests>
+    </properties>
+
+    <modules>
+        <module>be-security</module>
+        <module>be-redisson</module>
+        <module>be-util</module>
+        <module>be-mysql</module>
+        <module>be-knife4j</module>
+        <module>be-start</module>
+        <module>be-nacos</module>
+        <module>be-cache</module>
+        <module>be-email</module>
+        <module>be-ip2region</module>
+        <module>be-kafka</module>
+        <module>be-log</module>
+        <module>be-model</module>
+        <module>be-tencent</module>
+        <module>be-wx</module>
+        <module>be-xxl-job</module>
+        <module>be-gateway</module>
+        <module>be-user</module>
+        <module>be-role</module>
+        <module>be-param</module>
+        <module>be-sign-helper</module>
+        <module>be-sign-signiname</module>
+        <module>be-sign-email</module>
+        <module>be-sign-phone</module>
+        <module>be-sign-wx</module>
+        <module>be-dict</module>
+        <module>be-menu</module>
+        <module>be-server</module>
+        <module>be-request</module>
+    </modules>
+
+    <dependencyManagement>
+        <dependencies>
+
+            <!-- be-request -->
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>be-request</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <!-- be-server -->
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>be-server</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <!-- be-menu -->
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>be-menu</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <!-- be-dict -->
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>be-dict</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <!-- be-sign-wx -->
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>be-sign-wx</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <!-- be-sign-phone -->
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>be-sign-phone</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <!-- be-sign-email -->
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>be-sign-email</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <!-- be-sign-signiname -->
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>be-sign-signiname</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <!-- be-sign-helper -->
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>be-sign-helper</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <!-- be-param -->
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>be-param</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <!-- be-role -->
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>be-role</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <!-- be-user -->
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>be-user</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <!-- be-gateway -->
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>be-gateway</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <!-- be-xxl-job -->
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>be-xxl-job</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <!-- be-wx -->
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>be-wx</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <!-- be-tencent -->
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>be-tencent</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <!-- be-model -->
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>be-model</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <!-- be-log -->
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>be-log</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <!-- be-kafka -->
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>be-kafka</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <!-- be-ip2region -->
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>be-ip2region</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <!-- be-email -->
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>be-email</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <!-- be-cache -->
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>be-cache</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <!-- be-nacos -->
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>be-nacos</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <!-- be-knife4j -->
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>be-knife4j</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <!-- be-mysql -->
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>be-mysql</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <!-- be-util -->
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>be-util</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <!-- be-redisson -->
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>be-redisson</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <!-- be-security -->
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>be-security</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <!-- spring-cloud-dependencies -->
+            <dependency>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-dependencies</artifactId>
+                <version>2021.0.6</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+
+            <!-- nacos-discovery -->
+            <dependency>
+                <groupId>com.alibaba.cloud</groupId>
+                <artifactId>spring-cloud-starter-alibaba-nacos-discovery</artifactId>
+                <version>2021.0.4.0</version>
+            </dependency>
+
+            <!-- nacos-config -->
+            <dependency>
+                <groupId>com.alibaba.cloud</groupId>
+                <artifactId>spring-cloud-starter-alibaba-nacos-config</artifactId>
+                <version>2021.0.4.0</version>
+            </dependency>
+
+            <!-- minio文件系统 -->
+            <dependency>
+                <groupId>io.minio</groupId>
+                <artifactId>minio</artifactId>
+                <version>8.5.2</version>
+            </dependency>
+
+            <!-- 二维码工具类 -->
+            <dependency>
+                <groupId>com.google.zxing</groupId>
+                <artifactId>core</artifactId>
+                <version>3.5.1</version>
+            </dependency>
+
+            <!-- 解决：sharding-jdbc 启动报错，备注：这个只指定版本号即可，不用引入 -->
+            <dependency>
+                <groupId>org.yaml</groupId>
+                <artifactId>snakeyaml</artifactId>
+                <version>1.33</version>
+            </dependency>
+
+            <!-- sharding-jdbc -->
+            <dependency>
+                <groupId>org.apache.shardingsphere</groupId>
+                <artifactId>shardingsphere-jdbc-core-spring-boot-starter</artifactId>
+                <version>5.2.1</version>
+            </dependency>
+
+            <!-- protobuf：下载地址，例如：https://github.com/protocolbuffers/protobuf/releases/tag/v22.0 -->
+            <dependency>
+                <groupId>com.google.protobuf</groupId>
+                <artifactId>protobuf-java</artifactId>
+                <version>3.22.0</version>
+            </dependency>
+
+            <!-- ssh，sftp -->
+            <dependency>
+                <groupId>com.jcraft</groupId>
+                <artifactId>jsch</artifactId>
+                <version>0.1.55</version>
+            </dependency>
+
+            <!-- excel操作 -->
+            <dependency>
+                <groupId>com.alibaba</groupId>
+                <artifactId>easyexcel</artifactId>
+                <version>3.2.1</version>
+            </dependency>
+
+            <!-- 基于JNA的操作系统和硬件信息库 -->
+            <dependency>
+                <groupId>com.github.oshi</groupId>
+                <artifactId>oshi-core</artifactId>
+                <version>6.4.0</version>
+            </dependency>
+
+            <!-- xxl-job -->
+            <dependency>
+                <groupId>com.xuxueli</groupId>
+                <artifactId>xxl-job-core</artifactId>
+                <version>2.3.1</version>
+            </dependency>
+
+            <!-- 腾讯云，获取最新版本号：https://github.com/tencentcloud/tencentcloud-sdk-java -->
+            <dependency>
+                <groupId>com.tencentcloudapi</groupId>
+                <artifactId>tencentcloud-sdk-java</artifactId>
+                <version>3.1.704</version>
+            </dependency>
+
+            <!-- 支付宝，获取最新版本号：https://github.com/alipay/alipay-sdk-java-all -->
+            <dependency>
+                <groupId>com.alipay.sdk</groupId>
+                <artifactId>alipay-sdk-java-v3</artifactId>
+                <version>1.0.2.ALL</version>
+            </dependency>
+
+            <!-- 邮件 -->
+            <dependency>
+                <groupId>com.sun.mail</groupId>
+                <artifactId>javax.mail</artifactId>
+                <version>1.6.2</version>
+            </dependency>
+
+            <!-- redisson-spring-boot-starter -->
+            <dependency>
+                <groupId>org.redisson</groupId>
+                <artifactId>redisson-spring-boot-starter</artifactId>
+                <version>3.19.3</version>
+            </dependency>
+
+            <!-- 离线IP地址定位库 -->
+            <dependency>
+                <groupId>org.lionsoul</groupId>
+                <artifactId>ip2region</artifactId>
+                <version>2.7.0</version>
+            </dependency>
+
+            <!-- knife4j -->
+            <dependency>
+                <groupId>com.github.xiaoymin</groupId>
+                <artifactId>knife4j-springdoc-ui</artifactId>
+                <version>3.0.3</version>
+            </dependency>
+
+            <!-- springdoc -->
+            <dependency>
+                <groupId>org.springdoc</groupId>
+                <artifactId>springdoc-openapi-ui</artifactId>
+                <version>1.6.14</version>
+            </dependency>
+
+            <!-- hutool -->
+            <dependency>
+                <groupId>cn.hutool</groupId>
+                <artifactId>hutool-all</artifactId>
+                <version>5.8.14</version>
+            </dependency>
+
+            <!-- mybatis-plus -->
+            <dependency>
+                <groupId>com.baomidou</groupId>
+                <artifactId>mybatis-plus-boot-starter</artifactId>
+                <version>3.5.3.1</version>
+            </dependency>
+
+            <!-- jetbrains-annotations -->
+            <dependency>
+                <groupId>org.jetbrains</groupId>
+                <artifactId>annotations</artifactId>
+                <version>24.0.0</version>
+            </dependency>
+
+        </dependencies>
+    </dependencyManagement>
+
+    <dependencies>
+
+        <!-- jetbrains-annotations -->
+        <dependency>
+            <groupId>org.jetbrains</groupId>
+            <artifactId>annotations</artifactId>
+            <optional>true</optional>
+        </dependency>
+
+        <!-- configuration-processor -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-configuration-processor</artifactId>
+            <optional>true</optional>
+        </dependency>
+
+        <!-- lombok -->
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <optional>true</optional>
+        </dependency>
+
+        <!-- spring-boot-starter-test -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+    </dependencies>
+
+    <build>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.springframework.boot</groupId>
+                    <artifactId>spring-boot-maven-plugin</artifactId>
+                    <configuration>
+                        <excludes>
+                            <exclude>
+                                <groupId>org.projectlombok</groupId>
+                                <artifactId>lombok</artifactId>
+                            </exclude>
+                        </excludes>
+                    </configuration>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+    </build>
+
+</project>

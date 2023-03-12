@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>com.cmcorg20230301</groupId>
+        <artifactId>engine-be-v1</artifactId>
+        <version>2023.3.1</version>
+    </parent>
+
+    <artifactId>be-sign-wx</artifactId>
+    <description>微信小程序登录注册</description>
+
+    <dependencies>
+
+        <!-- be-wx -->
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>be-wx</artifactId>
+        </dependency>
+
+        <!-- be-sign-helper -->
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>be-sign-helper</artifactId>
+        </dependency>
+
+    </dependencies>
+
+</project>

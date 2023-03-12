@@ -1,0 +1,43 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>com.cmcorg20230301</groupId>
+        <artifactId>engine-be-v1</artifactId>
+        <version>2023.3.1</version>
+    </parent>
+
+    <artifactId>be-tencent</artifactId>
+    <description>腾讯相关</description>
+
+    <dependencies>
+
+        <!-- nacos-config -->
+        <dependency>
+            <groupId>com.alibaba.cloud</groupId>
+            <artifactId>spring-cloud-starter-alibaba-nacos-config</artifactId>
+        </dependency>
+
+        <!-- be-util -->
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>be-util</artifactId>
+        </dependency>
+
+        <!-- be-model -->
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>be-model</artifactId>
+        </dependency>
+
+        <!-- 腾讯云，获取最新版本号：https://github.com/tencentcloud/tencentcloud-sdk-java -->
+        <dependency>
+            <groupId>com.tencentcloudapi</groupId>
+            <artifactId>tencentcloud-sdk-java</artifactId>
+        </dependency>
+
+    </dependencies>
+
+</project>

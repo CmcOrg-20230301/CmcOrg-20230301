@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>com.cmcorg20230301</groupId>
+        <artifactId>engine-be-v1</artifactId>
+        <version>2023.3.1</version>
+    </parent>
+
+    <artifactId>be-security</artifactId>
+    <description>鉴权相关</description>
+
+    <dependencies>
+
+        <!-- 二维码工具类 -->
+        <dependency>
+            <groupId>com.google.zxing</groupId>
+            <artifactId>core</artifactId>
+        </dependency>
+
+        <!-- be-kafka -->
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>be-kafka</artifactId>
+        </dependency>
+
+        <!-- be-log -->
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>be-log</artifactId>
+        </dependency>
+
+        <!-- be-util -->
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>be-util</artifactId>
+        </dependency>
+
+        <!-- be-knife4j -->
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>be-knife4j</artifactId>
+        </dependency>
+
+        <!-- be-model -->
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>be-model</artifactId>
+        </dependency>
+
+        <!-- be-cache -->
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>be-cache</artifactId>
+        </dependency>
+
+        <!-- be-redisson -->
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>be-redisson</artifactId>
+        </dependency>
+
+        <!-- be-mysql -->
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>be-mysql</artifactId>
+        </dependency>
+
+        <!-- spring-boot-web -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+
+        <!-- spring-security -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-security</artifactId>
+        </dependency>
+
+    </dependencies>
+
+</project>

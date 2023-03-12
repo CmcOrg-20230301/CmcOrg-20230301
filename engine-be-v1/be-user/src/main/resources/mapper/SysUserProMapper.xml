@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.cmcorg20230301.engine.be.user.mapper.SysUserProMapper">
+
+    <!-- 分页排序查询 -->
+    <select id="myPage" resultType="com.cmcorg20230301.engine.be.user.model.vo.UserSelfInfoVO">
+
+        SELECT
+        a.id AS id,
+        a.email AS email,
+        a.sign_in_name as signInName,
+        a.phone as phone,
+        a.wx_open_id as wxOpenId,
+        a.create_time AS createTime,
+        a.update_time AS updateTime,
+        a.enable_flag AS enableFlag,
+        IF ( a.`password` = '', 0, 1 ) AS passwordFlag,
+        b.nickname AS nickname,
+        b.avatar_uri AS avatarUri
+        FROM
+        sys_user a
+        LEFT JOIN sys_user_info b ON b.id = a.id
+        WHERE
+        a.del_flag = FALSE
+        <if test="dto.id != null">
+            AND a.id = #{dto.id}
+        </if>
+        <if test="dto.nickname != null and dto.nickname != ''">
+            AND b.nickname LIKE CONCAT('%', #{dto.nickname}, '%')
+        </if>
+        <if test="dto.avatarUri != null and dto.avatarUri != ''">
+            AND b.avatar_uri LIKE CONCAT('%', #{dto.avatarUri}, '%')
+        </if>
+        <if test="dto.signInName != null and dto.signInName != ''">
+            AND a.sign_in_name LIKE concat('%', #{dto.signInName}, '%')
+        </if>
+        <if test="dto.email != null and dto.email != ''">
+            AND a.email LIKE concat('%', #{dto.email}, '%')
+        </if>
+        <if test="dto.phone != null and dto.phone != ''">
+            AND a.phone LIKE concat('%', #{dto.phone}, '%')
+        </if>
+        <if test="dto.wxOpenId != null and dto.wxOpenId != ''">
+            AND a.wx_open_id LIKE concat('%', #{dto.wxOpenId}, '%')
+        </if>
+        <if test="dto.enableFlag != null">
+            AND a.enable_flag = #{dto.enableFlag}
+        </if>
+        <if test="dto.passwordFlag != null">
+            AND IF ( a.`password` = '', 0, 1 ) = #{dto.passwordFlag}
+        </if>
+
+    </select>
+
+</mapper>
