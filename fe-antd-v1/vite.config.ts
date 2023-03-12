@@ -32,7 +32,6 @@ export default ({mode}) =>
             },
             port: 5001,
             host: '0.0.0.0',
-            open: true, // 启动之后是否打开浏览器
         },
         css: {
             preprocessorOptions: {
