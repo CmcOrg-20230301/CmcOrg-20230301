@@ -1,7 +1,6 @@
 package com.cmcorg20230301.engine.be.request.aop;
 
 import cn.hutool.core.collection.CollUtil;
-import cn.hutool.core.convert.Convert;
 import cn.hutool.core.date.BetweenFormatter;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.text.StrBuilder;
@@ -191,7 +190,9 @@ public class SysRequestAop {
 
         JWT jwt = JWT.of(MyJwtUtil.getJwtStrByHeadAuthorization(apiResultVO.getData()));
 
-        Long userId = Convert.toLong(jwt.getPayload(MyJwtUtil.PAYLOAD_MAP_USER_ID_KEY));
+        // 获取：userId的值
+        Long userId = MyJwtUtil.getPayloadMapUserIdValue(jwt.getPayload().getClaimsJson());
+
         sysRequestDO.setCreateId(userId);
         sysRequestDO.setUpdateId(userId);
 

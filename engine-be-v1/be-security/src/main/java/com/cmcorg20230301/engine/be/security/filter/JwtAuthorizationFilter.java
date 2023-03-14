@@ -80,8 +80,8 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
             return null;
         }
 
-        Long userId = jwt.getPayload().getClaimsJson()
-            .get(MyJwtUtil.PAYLOAD_MAP_USER_ID_KEY, MyJwtUtil.PAYLOAD_MAP_USER_ID_CLASS);
+        // 获取：userId的值
+        Long userId = MyJwtUtil.getPayloadMapUserIdValue(jwt.getPayload().getClaimsJson());
 
         if (userId == null) {
             return null;

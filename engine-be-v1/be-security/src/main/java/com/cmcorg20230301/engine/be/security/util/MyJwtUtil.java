@@ -1,6 +1,7 @@
 package com.cmcorg20230301.engine.be.security.util;
 
 import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.convert.NumberWithFormat;
 import cn.hutool.core.text.StrBuilder;
 import cn.hutool.core.util.BooleanUtil;
 import cn.hutool.core.util.StrUtil;
@@ -39,7 +40,6 @@ public class MyJwtUtil {
         "4282dde8cb54c0c68082ada1b1d9ce048195cd309jqk0e07d1ed3e1871b462a8b75fee46467b96f33dea65a11862f1ea4867aed76243dfe7e1efb89638d3da6570d1";
 
     public static final String PAYLOAD_MAP_USER_ID_KEY = "userId";
-    public static final Class<Long> PAYLOAD_MAP_USER_ID_CLASS = Long.class;
 
     private static SecurityProperties securityProperties;
     private static SysUserMapper sysUserMapper;
@@ -48,6 +48,26 @@ public class MyJwtUtil {
 
         MyJwtUtil.securityProperties = securityProperties;
         MyJwtUtil.sysUserMapper = sysUserMapper;
+
+    }
+
+    /**
+     * 获取：jwt中的 userId值
+     */
+    @Nullable
+    public static Long getPayloadMapUserIdValue(@Nullable JSONObject claimsJson) {
+
+        if (claimsJson == null) {
+            return null;
+        }
+
+        NumberWithFormat numberWithFormat = (NumberWithFormat)claimsJson.get(MyJwtUtil.PAYLOAD_MAP_USER_ID_KEY);
+
+        if (numberWithFormat == null) {
+            return null;
+        }
+
+        return numberWithFormat.longValue();
 
     }
 

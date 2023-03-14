@@ -1,7 +1,6 @@
 package com.cmcorg20230301.engine.be.security.util;
 
 import cn.hutool.core.collection.CollUtil;
-import cn.hutool.core.convert.Convert;
 import cn.hutool.core.map.MapUtil;
 import cn.hutool.core.util.BooleanUtil;
 import cn.hutool.core.util.StrUtil;
@@ -140,8 +139,29 @@ public class UserUtil {
     @Nullable
     private static Long getCurrentUserIdWillNull() {
 
-        return Convert.toLong(getSecurityContextHolderContextAuthenticationPrincipalJsonObjectValueByKey(
-            MyJwtUtil.PAYLOAD_MAP_USER_ID_KEY));
+        return MyJwtUtil.getPayloadMapUserIdValue(getSecurityContextHolderContextAuthenticationPrincipalJsonObject());
+
+    }
+
+    /**
+     * 获取：当前 security上下文里面存储的用户信息
+     */
+    @Nullable
+    public static JSONObject getSecurityContextHolderContextAuthenticationPrincipalJsonObject() {
+
+        JSONObject result = null;
+
+        if (SecurityContextHolder.getContext().getAuthentication() != null) {
+
+            Object principalObject = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+            if (principalObject instanceof JSONObject) {
+                result = (JSONObject)principalObject;
+            }
+
+        }
+
+        return result;
 
     }
 
@@ -151,18 +171,13 @@ public class UserUtil {
     @Nullable
     public static <T> T getSecurityContextHolderContextAuthenticationPrincipalJsonObjectValueByKey(String key) {
 
-        T result = null;
+        JSONObject principalJSONObject = getSecurityContextHolderContextAuthenticationPrincipalJsonObject();
 
-        if (SecurityContextHolder.getContext().getAuthentication() != null) {
-
-            Object principalObject = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-            if (principalObject instanceof JSONObject) {
-                result = (T)((JSONObject)principalObject).get(key);
-            }
-
+        if (principalJSONObject == null) {
+            return null;
         }
 
-        return result;
+        return (T)principalJSONObject.get(key);
 
     }
 
