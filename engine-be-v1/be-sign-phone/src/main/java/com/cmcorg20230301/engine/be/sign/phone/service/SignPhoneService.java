@@ -1,7 +1,7 @@
 package com.cmcorg20230301.engine.be.sign.phone.service;
 
 import com.cmcorg20230301.engine.be.model.model.dto.NotBlankCodeDTO;
-import com.cmcorg20230301.engine.be.sign.phone.dto.*;
+import com.cmcorg20230301.engine.be.sign.phone.model.dto.*;
 
 public interface SignPhoneService {
 

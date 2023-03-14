@@ -55,10 +55,26 @@
         <module>be-server</module>
         <module>be-request</module>
         <module>be-netty-boot</module>
+        <module>be-generate</module>
+        <module>be-netty-websocket</module>
     </modules>
 
     <dependencyManagement>
         <dependencies>
+
+            <!-- be-netty-websocket -->
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>be-netty-websocket</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <!-- be-generate -->
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>be-generate</artifactId>
+                <version>${project.version}</version>
+            </dependency>
 
             <!-- be-netty-boot -->
             <dependency>

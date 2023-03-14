@@ -22,7 +22,7 @@ import java.util.stream.Collectors;
 
 @Component
 @KafkaListener(topics = {
-    "#{T(com.cmcorg20230301.engine.be.kafka.enums.KafkaTopicEnum).LOCAL_CACHE_TOPIC.name()}"}, containerFactory = "dynamicGroupIdContainerFactory", batch = "true")
+    "#{T(com.cmcorg20230301.engine.be.kafka.model.enums.KafkaTopicEnum).LOCAL_CACHE_TOPIC.name()}"}, containerFactory = "dynamicGroupIdContainerFactory", batch = "true")
 @Slf4j(topic = LogTopicConstant.CACHE)
 public class LocalCacheKafkaListener {
 

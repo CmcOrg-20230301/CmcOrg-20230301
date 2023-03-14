@@ -8,7 +8,7 @@ import com.cmcorg20230301.engine.be.cache.model.dto.CanalKafkaDTO;
 import com.cmcorg20230301.engine.be.cache.model.interfaces.ICanalKafkaHandler;
 import com.cmcorg20230301.engine.be.cache.model.interfaces.ICanalKafkaHandlerKey;
 import com.cmcorg20230301.engine.be.cache.properties.CacheProperties;
-import com.cmcorg20230301.engine.be.kafka.enums.KafkaTopicEnum;
+import com.cmcorg20230301.engine.be.kafka.model.enums.KafkaTopicEnum;
 import com.cmcorg20230301.engine.be.kafka.util.KafkaUtil;
 import com.cmcorg20230301.engine.be.model.model.constant.LogTopicConstant;
 import lombok.extern.slf4j.Slf4j;
@@ -24,7 +24,7 @@ import java.util.*;
 
 @Component
 @KafkaListener(topics = {
-    "#{T(com.cmcorg20230301.engine.be.kafka.enums.KafkaTopicEnum).CANAL_TOPIC.name()}"}, groupId = "#{T(com.cmcorg20230301.engine.be.kafka.enums.KafkaTopicEnum).CANAL_TOPIC.name()}", batch = "true")
+    "#{T(com.cmcorg20230301.engine.be.kafka.model.enums.KafkaTopicEnum).CANAL_TOPIC_ENGINE_BE.name()}"}, groupId = "#{T(com.cmcorg20230301.engine.be.kafka.model.enums.KafkaTopicEnum).CANAL_TOPIC_ENGINE_BE.name()}", batch = "true")
 @Slf4j(topic = LogTopicConstant.CACHE)
 public class CanalKafkaListener {
 

@@ -6,13 +6,13 @@ import com.cmcorg20230301.engine.be.security.mapper.SysUserMapper;
 import com.cmcorg20230301.engine.be.security.model.entity.SysUserDO;
 import com.cmcorg20230301.engine.be.security.model.entity.SysUserInfoDO;
 import com.cmcorg20230301.engine.be.sign.helper.util.SignUtil;
-import com.cmcorg20230301.engine.be.sign.wx.dto.SignInCodeDTO;
-import com.cmcorg20230301.engine.be.sign.wx.dto.SignInPhoneCodeDTO;
+import com.cmcorg20230301.engine.be.sign.wx.model.dto.SignInCodeDTO;
+import com.cmcorg20230301.engine.be.sign.wx.model.dto.SignInPhoneCodeDTO;
 import com.cmcorg20230301.engine.be.sign.wx.service.SignWxService;
 import com.cmcorg20230301.engine.be.util.util.NicknameUtil;
+import com.cmcorg20230301.engine.be.wx.model.vo.WxOpenIdVO;
+import com.cmcorg20230301.engine.be.wx.model.vo.WxPhoneByCodeVO;
 import com.cmcorg20230301.engine.be.wx.util.WxUtil;
-import com.cmcorg20230301.engine.be.wx.vo.WxOpenIdVO;
-import com.cmcorg20230301.engine.be.wx.vo.WxPhoneByCodeVO;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Service;
 

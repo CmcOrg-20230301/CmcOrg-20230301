@@ -1,7 +1,7 @@
 package com.cmcorg20230301.engine.be.xxl.job.service;
 
 import com.cmcorg20230301.engine.be.model.model.dto.NotNullId;
-import com.cmcorg20230301.engine.be.xxl.job.dto.XxlJobInsertDTO;
+import com.cmcorg20230301.engine.be.xxl.job.model.dto.XxlJobInsertDTO;
 
 public interface XxlJobService {
 

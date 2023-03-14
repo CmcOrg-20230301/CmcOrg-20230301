@@ -4,7 +4,7 @@ import com.cmcorg20230301.engine.be.model.model.constant.OperationDescriptionCon
 import com.cmcorg20230301.engine.be.model.model.dto.NotBlankCodeDTO;
 import com.cmcorg20230301.engine.be.security.exception.BaseBizCodeEnum;
 import com.cmcorg20230301.engine.be.security.model.vo.ApiResultVO;
-import com.cmcorg20230301.engine.be.sign.email.dto.*;
+import com.cmcorg20230301.engine.be.sign.email.model.dto.*;
 import com.cmcorg20230301.engine.be.sign.email.service.SignEmailService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;

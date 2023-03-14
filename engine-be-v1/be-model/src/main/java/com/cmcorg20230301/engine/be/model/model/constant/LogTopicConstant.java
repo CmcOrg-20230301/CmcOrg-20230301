@@ -15,4 +15,6 @@ public interface LogTopicConstant {
 
     String REQUEST = PRE_BE + "request"; // 请求相关
 
+    String JAVA_TO_WEB = PRE_BE + "javaToWeb"; // 请求相关
+
 }

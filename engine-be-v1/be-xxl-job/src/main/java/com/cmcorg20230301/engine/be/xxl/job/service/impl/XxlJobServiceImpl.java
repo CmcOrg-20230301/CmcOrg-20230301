@@ -12,7 +12,7 @@ import com.cmcorg20230301.engine.be.model.model.dto.NotNullId;
 import com.cmcorg20230301.engine.be.redisson.model.enums.RedisKeyEnum;
 import com.cmcorg20230301.engine.be.security.model.vo.ApiResultVO;
 import com.cmcorg20230301.engine.be.util.util.MyDateUtil;
-import com.cmcorg20230301.engine.be.xxl.job.dto.XxlJobInsertDTO;
+import com.cmcorg20230301.engine.be.xxl.job.model.dto.XxlJobInsertDTO;
 import com.cmcorg20230301.engine.be.xxl.job.service.XxlJobService;
 import org.redisson.api.RBucket;
 import org.redisson.api.RedissonClient;

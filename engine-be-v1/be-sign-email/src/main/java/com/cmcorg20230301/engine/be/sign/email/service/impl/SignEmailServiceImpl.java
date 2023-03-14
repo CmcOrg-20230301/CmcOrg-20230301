@@ -13,7 +13,7 @@ import com.cmcorg20230301.engine.be.security.model.vo.ApiResultVO;
 import com.cmcorg20230301.engine.be.security.properties.SecurityProperties;
 import com.cmcorg20230301.engine.be.security.util.UserUtil;
 import com.cmcorg20230301.engine.be.sign.email.configuration.SignEmailSecurityPermitAllConfiguration;
-import com.cmcorg20230301.engine.be.sign.email.dto.*;
+import com.cmcorg20230301.engine.be.sign.email.model.dto.*;
 import com.cmcorg20230301.engine.be.sign.email.service.SignEmailService;
 import com.cmcorg20230301.engine.be.sign.helper.exception.BizCodeEnum;
 import com.cmcorg20230301.engine.be.sign.helper.util.SignUtil;

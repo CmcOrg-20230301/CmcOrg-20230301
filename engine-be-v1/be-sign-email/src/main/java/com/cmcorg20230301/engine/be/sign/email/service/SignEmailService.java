@@ -1,7 +1,7 @@
 package com.cmcorg20230301.engine.be.sign.email.service;
 
 import com.cmcorg20230301.engine.be.model.model.dto.NotBlankCodeDTO;
-import com.cmcorg20230301.engine.be.sign.email.dto.*;
+import com.cmcorg20230301.engine.be.sign.email.model.dto.*;
 
 public interface SignEmailService {
 

@@ -13,7 +13,7 @@ import com.cmcorg20230301.engine.be.security.util.UserUtil;
 import com.cmcorg20230301.engine.be.sign.helper.exception.BizCodeEnum;
 import com.cmcorg20230301.engine.be.sign.helper.util.SignUtil;
 import com.cmcorg20230301.engine.be.sign.phone.configuration.SignPhoneSecurityPermitAllConfiguration;
-import com.cmcorg20230301.engine.be.sign.phone.dto.*;
+import com.cmcorg20230301.engine.be.sign.phone.model.dto.*;
 import com.cmcorg20230301.engine.be.sign.phone.service.SignPhoneService;
 import com.cmcorg20230301.engine.be.tencent.util.SmsTencentUtil;
 import org.springframework.stereotype.Service;

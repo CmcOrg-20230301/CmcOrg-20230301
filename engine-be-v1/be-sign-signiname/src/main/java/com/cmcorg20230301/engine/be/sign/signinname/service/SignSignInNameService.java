@@ -1,6 +1,6 @@
 package com.cmcorg20230301.engine.be.sign.signinname.service;
 
-import com.cmcorg20230301.engine.be.sign.signinname.dto.*;
+import com.cmcorg20230301.engine.be.sign.signinname.model.dto.*;
 
 public interface SignSignInNameService {
 

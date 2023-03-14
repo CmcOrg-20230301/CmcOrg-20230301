@@ -4,7 +4,7 @@ import com.cmcorg20230301.engine.be.model.model.constant.OperationDescriptionCon
 import com.cmcorg20230301.engine.be.model.model.dto.NotBlankCodeDTO;
 import com.cmcorg20230301.engine.be.security.exception.BaseBizCodeEnum;
 import com.cmcorg20230301.engine.be.security.model.vo.ApiResultVO;
-import com.cmcorg20230301.engine.be.sign.phone.dto.*;
+import com.cmcorg20230301.engine.be.sign.phone.model.dto.*;
 import com.cmcorg20230301.engine.be.sign.phone.service.SignPhoneService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;

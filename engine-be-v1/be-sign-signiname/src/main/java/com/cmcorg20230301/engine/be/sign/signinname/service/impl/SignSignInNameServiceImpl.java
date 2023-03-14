@@ -12,7 +12,7 @@ import com.cmcorg20230301.engine.be.security.model.vo.ApiResultVO;
 import com.cmcorg20230301.engine.be.security.properties.SecurityProperties;
 import com.cmcorg20230301.engine.be.security.util.UserUtil;
 import com.cmcorg20230301.engine.be.sign.helper.util.SignUtil;
-import com.cmcorg20230301.engine.be.sign.signinname.dto.*;
+import com.cmcorg20230301.engine.be.sign.signinname.model.dto.*;
 import com.cmcorg20230301.engine.be.sign.signinname.service.SignSignInNameService;
 import org.springframework.stereotype.Service;
 
