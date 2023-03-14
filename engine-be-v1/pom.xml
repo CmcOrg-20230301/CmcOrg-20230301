@@ -54,10 +54,18 @@
         <module>be-menu</module>
         <module>be-server</module>
         <module>be-request</module>
+        <module>be-netty-boot</module>
     </modules>
 
     <dependencyManagement>
         <dependencies>
+
+            <!-- be-netty-boot -->
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>be-netty-boot</artifactId>
+                <version>${project.version}</version>
+            </dependency>
 
             <!-- be-request -->
             <dependency>
