@@ -54,7 +54,7 @@ public class SysRequestAop {
     @Scheduled(fixedDelay = 5000)
     public void scheduledSava() {
 
-        List<SysRequestDO> tempSysRequestDoList;
+        List<SysRequestDO> tempSysRequestDOList;
 
         synchronized (SYS_REQUEST_DO_LIST) {
 
@@ -62,15 +62,15 @@ public class SysRequestAop {
                 return;
             }
 
-            tempSysRequestDoList = SYS_REQUEST_DO_LIST;
+            tempSysRequestDOList = SYS_REQUEST_DO_LIST;
             SYS_REQUEST_DO_LIST = new CopyOnWriteArrayList<>();
 
         }
 
-        log.info("保存请求数据，长度：{}", tempSysRequestDoList.size());
+        log.info("保存请求数据，长度：{}", tempSysRequestDOList.size());
 
         // 批量保存数据
-        sysRequestService.saveBatch(tempSysRequestDoList);
+        sysRequestService.saveBatch(tempSysRequestDOList);
 
     }
 
