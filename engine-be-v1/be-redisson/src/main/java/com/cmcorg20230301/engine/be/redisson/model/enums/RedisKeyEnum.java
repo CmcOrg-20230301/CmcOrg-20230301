@@ -29,7 +29,7 @@ public enum RedisKeyEnum implements IRedisKey {
 
     WX_ACCESS_TOKEN_CACHE, // 微信小程序全局唯一后台接口调用凭据
 
-    USER_ID_JWT_SECRET_SUF_CACHE, // 用户 id和 jwt私钥后缀
+    USER_ID_AND_JWT_SECRET_SUF_CACHE, // 用户 id和 jwt私钥后缀
 
     USER_ID_REF_ROLE_ID_SET_CACHE, // 用户 id关联的 roleIdSet
     DEFAULT_ROLE_ID_CACHE, // 默认角色 id

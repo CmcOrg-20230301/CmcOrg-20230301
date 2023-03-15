@@ -19,8 +19,7 @@ public enum LocalCacheAndCanalKafkaHelperEnum implements ILocalCacheAndCanalKafk
         .newHashSet(RedisKeyEnum.ALL_MENU_ID_AND_AUTHS_LIST_CACHE, RedisKeyEnum.ROLE_ID_REF_MENU_ID_SET_CACHE,
             RedisKeyEnum.ROLE_ID_REF_MENU_SET_ONE_CACHE, RedisKeyEnum.ROLE_ID_REF_MENU_SET_TWO_CACHE)), // 菜单表
 
-    SYS_USER("sys_user", CollUtil
-        .newHashSet(RedisKeyEnum.USER_ID_JWT_SECRET_SUF_CACHE, RedisKeyEnum.USER_ID_REF_ROLE_ID_SET_CACHE)), // 用户表
+    SYS_USER("sys_user", CollUtil.newHashSet(RedisKeyEnum.USER_ID_REF_ROLE_ID_SET_CACHE)), // 用户表
 
     SYS_ROLE("sys_role", CollUtil
         .newHashSet(RedisKeyEnum.DEFAULT_ROLE_ID_CACHE, RedisKeyEnum.USER_ID_REF_ROLE_ID_SET_CACHE,

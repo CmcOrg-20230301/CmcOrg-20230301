@@ -95,31 +95,14 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
             return loginExpired(response); // 提示登录过期，请重新登录
         }
 
-        String jwtSecretSuf = null;
-        if (BaseConstant.ADMIN_ID.equals(userId)) {
-
-            if (BooleanUtil.isFalse(securityProperties.getAdminEnable())) {
-                return null;
-            }
-
-        } else {
-
-            // 如果不是 admin
-            jwtSecretSuf = MyJwtUtil.getUserJwtSecretSufByUserId(userId);  // 通过 userId获取到 私钥后缀
-
-            if (StrUtil.isBlank(jwtSecretSuf)) { // 除了 admin账号，每个账号都肯定有 jwtSecretSuf
-                return null;
-            }
-
+        // 设置：jwt的密钥
+        if (setJwtKey(jwt, userId)) {
+            return null;
         }
-
-        jwt.setKey(MyJwtUtil.getJwtSecret(jwtSecretSuf).getBytes());
 
         // 验证算法
         if (!jwt.verify()) {
-
             return loginExpired(response); // 提示登录过期，请重新登录，目的：为了可以随时修改配置的 jwt前缀，或者用户 jwt后缀修改
-
         }
 
         try {
@@ -151,6 +134,36 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
         // 通过 userId 获取用户具有的权限
         return new UsernamePasswordAuthenticationToken(jwt.getPayload().getClaimsJson(), null,
             MyJwtUtil.getSimpleGrantedAuthorityListByUserId(userId));
+
+    }
+
+    /**
+     * 设置：jwt的密钥
+     */
+    private boolean setJwtKey(JWT jwt, Long userId) {
+
+        String jwtSecretSuf = null;
+
+        if (BaseConstant.ADMIN_ID.equals(userId)) {
+
+            if (BooleanUtil.isFalse(securityProperties.getAdminEnable())) {
+                return true;
+            }
+
+        } else {
+
+            // 如果不是 admin
+            jwtSecretSuf = MyJwtUtil.getUserJwtSecretSufByUserId(userId);  // 通过 userId获取到 私钥后缀
+
+            if (StrUtil.isBlank(jwtSecretSuf)) { // 除了 admin账号，每个账号都肯定有 jwtSecretSuf
+                return true;
+            }
+
+        }
+
+        jwt.setKey(MyJwtUtil.getJwtSecret(jwtSecretSuf).getBytes());
+
+        return false;
 
     }
 
