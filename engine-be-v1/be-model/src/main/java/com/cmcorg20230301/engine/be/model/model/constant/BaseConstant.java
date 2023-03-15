@@ -19,6 +19,7 @@ public interface BaseConstant {
     int SECOND_1_EXPIRE_TIME = 1000; // 1秒钟过期
     int SECOND_2_EXPIRE_TIME = 2000; // 2秒钟过期
     int SECOND_3_EXPIRE_TIME = 3 * 1000; // 3秒钟过期
+    int SECOND_5_EXPIRE_TIME = 5 * 1000; // 3秒钟过期
     int SECOND_6_EXPIRE_TIME = 6 * 1000; // 6秒钟过期
     int SECOND_10_EXPIRE_TIME = 10 * 1000; // 10秒钟过期
     int SECOND_20_EXPIRE_TIME = 20 * 1000; // 20秒钟过期，这个一般用于短暂验证码的过期时间

@@ -1,5 +1,7 @@
 package com.cmcorg20230301.engine.be.security.filter;
 
+import cn.hutool.cache.CacheUtil;
+import cn.hutool.cache.impl.TimedCache;
 import cn.hutool.core.convert.Convert;
 import cn.hutool.core.date.BetweenFormatter;
 import cn.hutool.core.date.DateUtil;
@@ -13,9 +15,10 @@ import com.cmcorg20230301.engine.be.security.properties.SecurityProperties;
 import com.cmcorg20230301.engine.be.security.util.ResponseUtil;
 import com.cmcorg20230301.engine.be.security.util.SysParamUtil;
 import com.cmcorg20230301.engine.be.util.util.SeparatorUtil;
+import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.SneakyThrows;
 import org.jetbrains.annotations.Nullable;
-import org.redisson.api.RAtomicLong;
 import org.redisson.api.RBucket;
 import org.redisson.api.RedissonClient;
 import org.springframework.core.annotation.Order;
@@ -29,9 +32,9 @@ import javax.servlet.ServletResponse;
 import javax.servlet.annotation.WebFilter;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.time.Duration;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * ip 拦截器
@@ -43,8 +46,21 @@ public class IpFilter implements Filter {
 
     @Resource
     SecurityProperties securityProperties;
+
     @Resource
     RedissonClient redissonClient;
+
+    private static final long TIMEOUT = BaseConstant.SECOND_20_EXPIRE_TIME;
+
+    // ip请求速率 map，key：ip
+    private static final TimedCache<String, AtomicInteger> IP_SPEED_MAP = CacheUtil.newTimedCache(TIMEOUT);
+
+    static {
+
+        // 定时清理 map，过期的条目
+        IP_SPEED_MAP.schedulePrune(TIMEOUT + BaseConstant.SECOND_3_EXPIRE_TIME);
+
+    }
 
     @SneakyThrows
     @Override
@@ -84,15 +100,65 @@ public class IpFilter implements Filter {
             return DateUtil.formatBetween(remainTimeToLive, BetweenFormatter.Level.SECOND); // 剩余时间（字符串）
         }
 
-        // 给 redis中 ip设置 请求次数
-        return setRedisTotal(ip, blackIpRedisBucket);
+        // 给 ip设置：请求次数
+        return addIpTotal(ip, blackIpRedisBucket);
 
     }
 
     /**
-     * 给 redis中 ip设置 请求次数
+     * 给 ip设置：请求次数
      */
-    private String setRedisTotal(String ip, RBucket<String> blackIpRedisBucket) {
+    private String addIpTotal(String ip, RBucket<String> blackIpRedisBucket) {
+
+        // 获取：ip请求速率相关对象，不限制请求速率，则返回 null
+        IpSpeedBO ipSpeedBO = getIpSpeedBO();
+
+        if (ipSpeedBO == null) {
+            return null;
+        }
+
+        AtomicInteger atomicInteger = IP_SPEED_MAP.get(ip, false);
+
+        // 如果不存在
+        if (atomicInteger == null) {
+
+            atomicInteger = new AtomicInteger(0);
+
+            IP_SPEED_MAP.put(ip, atomicInteger, ipSpeedBO.getTimeS()); // 备注：0 表示永久存活
+
+        }
+
+        int incrementAndGet = atomicInteger.incrementAndGet(); // 次数 + 1
+
+        if (incrementAndGet > ipSpeedBO.getTotal()) {
+
+            IP_SPEED_MAP.remove(ip); // 移除：ip计数
+
+            blackIpRedisBucket.set("黑名单 ip", BaseConstant.DAY_1_EXPIRE_TIME, TimeUnit.MILLISECONDS);
+
+            return "24小时";
+
+        }
+
+        return null;
+
+    }
+
+    @Data
+    @AllArgsConstructor
+    private static class IpSpeedBO {
+
+        Integer timeS; // 多少秒钟
+
+        Integer total; // 可以请求多少次
+
+    }
+
+    /**
+     * 获取：ip请求速率相关对象，不限制请求速率，则返回 null
+     */
+    @Nullable
+    private IpSpeedBO getIpSpeedBO() {
 
         // ip 请求速率：多少秒钟，一个 ip可以请求多少次，用冒号隔开的
         String ipTotalCheckValue = SysParamUtil.getValueById(ParamConstant.IP_REQUESTS_PER_SECOND_ID);
@@ -102,6 +168,7 @@ public class IpFilter implements Filter {
         }
 
         List<String> splitTrimList = StrUtil.splitTrim(ipTotalCheckValue, SeparatorUtil.COLON_SEPARATOR);
+
         if (splitTrimList.size() != 2) {
             return null;
         }
@@ -110,27 +177,13 @@ public class IpFilter implements Filter {
         if (timeInt == null || timeInt <= 0) {
             return null;
         }
+
         Integer total = Convert.toInt(splitTrimList.get(1)); // 可以请求多少次
         if (total == null || total <= 0) {
             return null;
         }
 
-        RAtomicLong atomicLong = redissonClient.getAtomicLong(RedisKeyEnum.PRE_IP_TOTAL_CHECK + ip);
-
-        long incrementAndGet = atomicLong.incrementAndGet(); // 次数 + 1
-
-        if (incrementAndGet == 1) {
-            atomicLong.expire(Duration.ofSeconds(timeInt)); // 等于 1表示，是第一次访问，则设置过期时间
-            return null;
-        }
-
-        if (incrementAndGet > total) {
-            atomicLong.delete(); // 移除：ip的计数
-            blackIpRedisBucket.set("黑名单 ip", BaseConstant.DAY_1_EXPIRE_TIME, TimeUnit.MILLISECONDS);
-            return "24小时";
-        }
-
-        return null;
+        return new IpSpeedBO(timeInt, total);
 
     }
 
