@@ -41,7 +41,8 @@ RouterMap['AdminLayout'] = {
 
 // 自动获取路由
 const fileObj: Record<string, { [key: string]: any }> = import.meta.glob(
-    '/src/page/**/*.tsx', {eager: true}
+    '/src/page/**/*.tsx',
+    {eager: true}
 )
 
 Object.keys(fileObj).forEach((item: string) => {

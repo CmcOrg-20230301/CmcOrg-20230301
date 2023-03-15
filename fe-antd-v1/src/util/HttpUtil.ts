@@ -40,6 +40,7 @@ $http.interceptors.request.use(
         return config
 
     },
+
     (err) => {
 
         ToastError(BASE_ERROR_MSG + err.message)
@@ -58,6 +59,7 @@ $http.interceptors.response.use(
         if (config.url?.startsWith('http')) {
             return response // 如果是 http请求
         }
+
         if (config.responseType === 'blob') {
             return response // 如果请求的是文件
         }

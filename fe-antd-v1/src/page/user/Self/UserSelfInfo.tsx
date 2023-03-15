@@ -31,6 +31,7 @@ export default function () {
     return (
 
         <ProDescriptions<UserSelfInfoVO>
+
             title={USER_CENTER_KEY_ONE}
             actionRef={actionRef}
             request={() => {
@@ -52,7 +53,9 @@ export default function () {
                 })
 
             }}
+
             editable={{
+
                 onSave: async (key, record) => {
 
                     if (record.nickname === '') {
@@ -64,9 +67,12 @@ export default function () {
                     return true;
 
                 },
+
             }}
+
             column={1}
             columns={[
+
                 {
                     title: '昵称',
                     dataIndex: 'nickname',
@@ -83,6 +89,7 @@ export default function () {
                         ],
                     },
                 },
+
                 {
                     title: '个人简介',
                     dataIndex: 'bio',
@@ -93,7 +100,9 @@ export default function () {
                         allowClear: true,
                     },
                 },
+
             ]}
+
         />
     )
 }

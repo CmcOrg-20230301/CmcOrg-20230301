@@ -1,12 +1,5 @@
 import {LockOutlined, UserOutlined,} from '@ant-design/icons';
-import {
-    LoginForm,
-    ModalForm,
-    ProFormCaptcha,
-    ProFormCheckbox,
-    ProFormInstance,
-    ProFormText,
-} from '@ant-design/pro-components';
+import {LoginForm, ModalForm, ProFormCaptcha, ProFormInstance, ProFormText,} from '@ant-design/pro-components';
 import {Tabs} from 'antd';
 import {useRef, useState} from 'react';
 import IconSvg from '../../../../public/icon.svg'
@@ -114,11 +107,10 @@ export default function () {
                 <div
                     className={"m-b-24 flex jc-sb"}
                 >
-                    {/* TODO：记住我 */}
-                    <ProFormCheckbox noStyle>
-                        记住我
-                    </ProFormCheckbox>
+
+                    {/* 忘记密码了 */}
                     <UserForgetPasswordModalForm/>
+
                 </div>
 
             </LoginForm>

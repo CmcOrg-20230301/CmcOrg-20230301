@@ -11,7 +11,7 @@ import 'antd/dist/reset.css';
 // 引入：自定义样式
 import './style/color.less'
 import './style/layout.less'
-import './style/size.less'
+import './style/style.less'
 import './style/antd.less'
 import './style/theme.less'
 

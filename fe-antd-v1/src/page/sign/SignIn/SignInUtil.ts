@@ -7,6 +7,7 @@ import LocalStorageKey from "@/model/constant/LocalStorageKey";
 import {ApiResultVO} from "@/util/HttpUtil";
 import {getAppNav} from "@/App";
 import PathConstant from "@/model/constant/PathConstant";
+import {validate} from "@/util/ValidatorUtil";
 
 /**
  * 处理表单
@@ -15,14 +16,18 @@ export async function SignInFormHandler(form: ISignInForm) {
 
     const password = PasswordRSAEncrypt(form.password) // 密码加密
 
-    if (/^\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$/.test(form.account)) { // 如果是：邮箱
+    if (validate.email.regex.test(form.account)) { // 如果是：邮箱
+
         await SignEmailSignInPassword({email: form.account, password}).then(res => {
             SignInSuccess(res)
         })
+
     } else { // 否则是：登录名
+
         await SignSignInNameSignInPassword({signInName: form.account, password}).then(res => {
             SignInSuccess(res)
         });
+
     }
 
 }

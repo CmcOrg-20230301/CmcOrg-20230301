@@ -83,9 +83,11 @@ export default function () {
         SysMenuUserSelfMenuList().then(res => {
 
             if (!res.data || !res.data.length) {
+
                 ToastError('暂未配置菜单，请联系管理员')
                 SignOut()
                 return
+
             }
 
             appDispatch(setUserSelfMenuList(res.data))
@@ -133,6 +135,7 @@ function AdminLayoutElement(props: IAdminLayoutElement) {
             }}
 
             menu={{
+
                 request: async () => {
 
                     const userSelfMenuListTemp: MenuDataItem[] = JSON.parse(JSON.stringify(props.userSelfMenuList));
@@ -147,6 +150,7 @@ function AdminLayoutElement(props: IAdminLayoutElement) {
                     return ListToTree(userSelfMenuListTemp);
 
                 },
+
             }}
 
             layout={"mix"}

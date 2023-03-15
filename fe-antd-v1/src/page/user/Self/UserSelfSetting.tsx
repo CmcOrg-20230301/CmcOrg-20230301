@@ -2,8 +2,7 @@ import {useAppSelector} from "@/store";
 import {List, Typography} from "antd";
 import React, {ReactNode, useRef} from "react";
 import {USER_CENTER_KEY_TWO} from "@/page/user/Self/Self";
-import {ExecConfirm, ToastSuccess} from "@/util/ToastUtil";
-import {UserSelfRefreshJwtSecretSuf} from "@/api/none/UserSelfController";
+import {ToastSuccess} from "@/util/ToastUtil";
 import {ModalForm, ProFormCaptcha, ProFormInstance, ProFormText} from "@ant-design/pro-components";
 import CommonConstant from "@/model/constant/CommonConstant";
 import {ValidatorUtil} from "@/util/ValidatorUtil";
@@ -58,9 +57,12 @@ export default function () {
     return (
 
         <List<IUserSelfSetting>
+
             header={<Typography.Title level={5}>{USER_CENTER_KEY_TWO}</Typography.Title>}
             rowKey={"title"}
+
             dataSource={[
+
                 {
                     title: '密码',
                     actions: [
@@ -68,6 +70,7 @@ export default function () {
                             <UserSelfUpdatePasswordByPasswordModalForm/>
                     ]
                 },
+
                 {
                     title: '登录名',
                     description: userSelfInfo.signInName || '暂无',
@@ -75,6 +78,7 @@ export default function () {
                         <UpdateSignNameAccountModalForm/>
                     ]
                 },
+
                 {
                     title: '邮箱',
                     description: userSelfInfo.email || '暂无',
@@ -82,27 +86,7 @@ export default function () {
                         userSelfInfo.email ? <UpdateEmailAccountModalForm/> : <SetEmailAccountModalForm/>
                     ]
                 },
-                {
-                    title: '刷新令牌',
-                    description: '刷新之后，执行任意操作，都会要求重新登录，用于：不修改密码，退出所有登录',
-                    actions: [
-                        <a onClick={() => {
 
-                            ExecConfirm(() => {
-
-                                return UserSelfRefreshJwtSecretSuf().then(res => {
-
-                                    ToastSuccess(res.msg)
-
-                                })
-
-                            }, undefined, '确定执行【刷新令牌】操作吗？')
-
-                        }}>
-                            执行刷新
-                        </a>
-                    ]
-                },
                 {
                     title: UserSelfDeleteModalTitle,
                     description: userSelfInfo.createTime ? ('注册时间：' + userSelfInfo.createTime) : undefined,
@@ -110,7 +94,9 @@ export default function () {
                         userSelfInfo.email ? <UserSelfDeleteByCodeModalForm/> : <UserSelfDeleteByPasswordModalForm/>
                     ]
                 },
+
             ]}
+
             renderItem={item => (
 
                 <List.Item actions={item.actions}>
@@ -123,8 +109,11 @@ export default function () {
                 </List.Item>
 
             )}
+
         />
+
     )
+
 }
 
 // 设置邮箱：通过：邮箱验证码
@@ -133,10 +122,12 @@ export function SetEmailAccountModalForm() {
     const formRef = useRef<ProFormInstance<SignEmailBindAccountDTO>>();
 
     return <ModalForm<SignEmailBindAccountDTO>
+
         formRef={formRef}
         modalProps={{
             maskClosable: false
         }}
+
         isKeyPressSubmit
         width={CommonConstant.MODAL_FORM_WIDTH}
         title={SetEmailAccountModalTitle}
@@ -190,6 +181,7 @@ export function SetEmailAccountModalForm() {
         />
 
     </ModalForm>
+
 }
 
 // 修改邮箱：通过：邮箱验证码
@@ -198,10 +190,12 @@ export function UpdateEmailAccountModalForm() {
     const formRef = useRef<ProFormInstance<SignEmailUpdateAccountDTO>>();
 
     return <ModalForm<SignEmailUpdateAccountDTO>
+
         formRef={formRef}
         modalProps={{
             maskClosable: false
         }}
+
         isKeyPressSubmit
         width={CommonConstant.MODAL_FORM_WIDTH}
         title={UpdateEmailAccountModalTitle}

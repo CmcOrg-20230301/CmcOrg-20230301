@@ -3,7 +3,7 @@ import React from "react";
 import NoLoginRouterList from "@/router/NoLoginRouterList";
 import RouterMap, {RouterMapKeyList} from "@/router/RouterMap";
 import PathConstant from "@/model/constant/PathConstant";
-import {useAppSelector} from "@/store";
+import {AppDispatch, useAppDispatch, useAppSelector} from "@/store";
 
 // App
 export default function () {
@@ -62,20 +62,34 @@ export default function () {
 
 }
 
+interface ILoadElement {
+
+    elementStr?: string
+
+}
+
 let AppNav: NavigateFunction
 
 export function getAppNav() {
+
     return AppNav
+
 }
 
-interface ILoadElement {
-    elementStr?: string
+let appDispatch: AppDispatch
+
+export function getAppDispatch() {
+
+    return appDispatch
+
 }
 
 // 加载 element
 function LoadElement(props: ILoadElement) {
 
     AppNav = useNavigate()
+
+    appDispatch = useAppDispatch();
 
     if (props.elementStr && RouterMapKeyList.includes(props.elementStr)) {
 

@@ -20,6 +20,7 @@ export function FlatTree<T extends IFlatTree>(
     data.forEach((item) => {
 
         let flag = true
+
         if (checkFun) {
             flag = checkFun(item) // 过滤不要的节点
         }
@@ -48,6 +49,7 @@ export function FlatTree<T extends IFlatTree>(
             }
 
         }
+
     })
 
     return resList
