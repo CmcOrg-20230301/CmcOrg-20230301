@@ -1,7 +1,5 @@
 package com.cmcorg20230301.engine.be.cache.util;
 
-import cn.hutool.cache.Cache;
-import cn.hutool.cache.CacheUtil;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.lang.func.Func0;
 import cn.hutool.core.map.MapUtil;
@@ -11,6 +9,7 @@ import com.cmcorg20230301.engine.be.redisson.model.interfaces.IRedisKey;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
+import org.redisson.api.LocalCachedMapOptions;
 import org.redisson.api.RBatch;
 import org.redisson.api.RedissonClient;
 import org.springframework.stereotype.Component;
@@ -24,23 +23,15 @@ import java.util.*;
 @Slf4j(topic = LogTopicConstant.CACHE)
 public class MyCacheUtil {
 
-    // 本地缓存
-    private static final Cache<Enum<? extends IRedisKey>, Object> LOCAL_CACHE = CacheUtil.newLRUCache(2000000);
-
     private static RedissonClient redissonClient;
+
+    //    private static
 
     public MyCacheUtil(RedissonClient redissonClient) {
 
+        //        RLocalCachedMap<Object, Object> localCachedMap = redissonClient.getLocalCachedMap("", defaults());
+
         MyCacheUtil.redissonClient = redissonClient;
-
-    }
-
-    /**
-     * 通过：key，移除：本地缓存
-     */
-    public static void removeLocalCacheByKey(@NotNull Enum<? extends IRedisKey> key) {
-
-        LOCAL_CACHE.remove(key);
 
     }
 
@@ -148,6 +139,23 @@ public class MyCacheUtil {
         }
 
         return result;
+
+    }
+
+    public static <K, V> LocalCachedMapOptions<K, V> defaults() {
+
+        LocalCachedMapOptions<K, V> localCachedMapOptions = LocalCachedMapOptions.defaults();
+
+        localCachedMapOptions //
+            .cacheSize(2000000).timeToLive(0).maxIdle(localCachedMapOptions.getTimeToLiveInMillis()) //
+            .reconnectionStrategy(LocalCachedMapOptions.ReconnectionStrategy.CLEAR) // redis断开连接之后，清除本地缓存
+            .cacheProvider(LocalCachedMapOptions.CacheProvider.REDISSON) //
+            .syncStrategy(LocalCachedMapOptions.SyncStrategy.INVALIDATE) // 将更新的 hashKey发布出去，通知订阅者更新
+            .evictionPolicy(LocalCachedMapOptions.EvictionPolicy.SOFT) //
+            .storeMode(LocalCachedMapOptions.StoreMode.LOCALCACHE_REDIS) //
+        ;
+
+        return localCachedMapOptions;
 
     }
 

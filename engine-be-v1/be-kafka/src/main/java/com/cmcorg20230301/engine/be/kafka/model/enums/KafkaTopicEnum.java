@@ -11,7 +11,6 @@ import lombok.Getter;
 public enum KafkaTopicEnum {
 
     CANAL_TOPIC_ENGINE_BE, // canal的 topic
-    LOCAL_CACHE_TOPIC, // 本地缓存的 topic
 
     ;
 
