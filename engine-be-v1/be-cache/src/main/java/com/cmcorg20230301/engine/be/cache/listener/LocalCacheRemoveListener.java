@@ -6,8 +6,6 @@ import cn.hutool.json.JSONUtil;
 import com.cmcorg20230301.engine.be.cache.util.CacheLocalUtil;
 import com.cmcorg20230301.engine.be.kafka.model.enums.KafkaTopicEnum;
 import com.cmcorg20230301.engine.be.model.model.constant.LogTopicConstant;
-import com.cmcorg20230301.engine.be.model.model.interfaces.IRedisKey;
-import com.cmcorg20230301.engine.be.redisson.model.enums.RedisKeyEnum;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.annotation.KafkaHandler;
 import org.springframework.kafka.annotation.KafkaListener;
@@ -32,18 +30,17 @@ public class LocalCacheRemoveListener {
     @KafkaHandler
     public void receive(List<String> recordList, Acknowledgment acknowledgment) {
 
-        Set<Enum<? extends IRedisKey>> redisKeyEnumSet = recordList.stream() //
+        Set<String> keySet = recordList.stream() //
             .map(it -> JSONUtil.toBean(it, new TypeReference<Set<String>>() {
             }, false)) //
             .flatMap(Collection::stream) //
             .distinct()  // 去重
-            .map(RedisKeyEnum::valueOf) //
             .collect(Collectors.toSet());
 
-        if (redisKeyEnumSet.size() != 0) {
+        if (keySet.size() != 0) {
 
-            log.info("canal：清除 本地缓存：{}", redisKeyEnumSet);
-            CacheLocalUtil.removeAll(redisKeyEnumSet); // 清除本地缓存
+            log.info("canal：清除 本地缓存：{}", keySet);
+            CacheLocalUtil.removeAll(keySet); // 清除本地缓存
 
         }
 

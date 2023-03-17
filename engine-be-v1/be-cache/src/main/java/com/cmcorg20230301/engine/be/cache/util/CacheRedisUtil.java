@@ -2,6 +2,7 @@ package com.cmcorg20230301.engine.be.cache.util;
 
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.lang.func.Func0;
+import cn.hutool.core.util.StrUtil;
 import com.cmcorg20230301.engine.be.model.model.constant.LogTopicConstant;
 import com.cmcorg20230301.engine.be.model.model.interfaces.IRedisKey;
 import com.cmcorg20230301.engine.be.redisson.util.RedissonUtil;
@@ -31,6 +32,22 @@ public class CacheRedisUtil {
     }
 
     /**
+     * 获取：key
+     */
+    @NotNull
+    public static String getKey(@NotNull Enum<? extends IRedisKey> redisKeyEnum, @Nullable String sufKey) {
+
+        String key = redisKeyEnum.name();
+
+        if (StrUtil.isNotBlank(sufKey)) {
+            key = key + sufKey;
+        }
+
+        return key;
+
+    }
+
+    /**
      * 获取：一般类型的缓存
      */
     @SneakyThrows
@@ -38,7 +55,19 @@ public class CacheRedisUtil {
     public static <T> T getCache(@NotNull Enum<? extends IRedisKey> redisKeyEnum, @NotNull T defaultResult,
         @Nullable Func0<T> func0) {
 
-        String key = redisKeyEnum.name();
+        return getCache(redisKeyEnum, null, defaultResult, func0);
+
+    }
+
+    /**
+     * 获取：一般类型的缓存
+     */
+    @SneakyThrows
+    @NotNull
+    public static <T> T getCache(@NotNull Enum<? extends IRedisKey> redisKeyEnum, @Nullable String sufKey,
+        @NotNull T defaultResult, @Nullable Func0<T> func0) {
+
+        String key = CacheRedisUtil.getKey(redisKeyEnum, sufKey);
 
         T result = CacheLocalUtil.get(redisKeyEnum);
 
@@ -70,7 +99,7 @@ public class CacheRedisUtil {
 
         }
 
-        result = CacheLocalUtil.checkAndReturnResult(result, defaultResult); // 检查并设置值
+        result = CacheHelper.checkAndReturnResult(result, defaultResult); // 检查并设置值
 
         log.info("{}：加入 redis缓存", key);
         redissonClient.getBucket(key).set(result); // 先加入到 redis里
@@ -90,7 +119,19 @@ public class CacheRedisUtil {
     public static <T extends Map<?, ?>> T getMapCache(@NotNull Enum<? extends IRedisKey> redisKeyEnum,
         @NotNull T defaultResultMap, @Nullable Func0<T> func0) {
 
-        String key = redisKeyEnum.name();
+        return getMapCache(redisKeyEnum, null, defaultResultMap, func0);
+
+    }
+
+    /**
+     * 获取：map类型的缓存
+     */
+    @SneakyThrows
+    @NotNull
+    public static <T extends Map<?, ?>> T getMapCache(@NotNull Enum<? extends IRedisKey> redisKeyEnum,
+        @Nullable String sufKey, @NotNull T defaultResultMap, @Nullable Func0<T> func0) {
+
+        String key = CacheRedisUtil.getKey(redisKeyEnum, sufKey);
 
         T result = CacheLocalUtil.get(redisKeyEnum);
 
@@ -122,7 +163,7 @@ public class CacheRedisUtil {
 
         }
 
-        result = CacheLocalUtil.checkAndReturnResult(result, defaultResultMap); // 检查并设置值
+        result = CacheHelper.checkAndReturnResult(result, defaultResultMap); // 检查并设置值
 
         log.info("{}：加入 redis缓存", key);
         T finalResult = result;
@@ -148,7 +189,19 @@ public class CacheRedisUtil {
     public static <T extends Collection<?>> T getCollectionCache(@NotNull Enum<? extends IRedisKey> redisKeyEnum,
         @NotNull T defaultResultCollection, @Nullable Func0<T> func0) {
 
-        String key = redisKeyEnum.name();
+        return getCollectionCache(redisKeyEnum, null, defaultResultCollection, func0);
+
+    }
+
+    /**
+     * 获取：Collection类型的缓存
+     */
+    @SneakyThrows
+    @NotNull
+    public static <T extends Collection<?>> T getCollectionCache(@NotNull Enum<? extends IRedisKey> redisKeyEnum,
+        @Nullable String sufKey, @NotNull T defaultResultCollection, @Nullable Func0<T> func0) {
+
+        String key = CacheRedisUtil.getKey(redisKeyEnum, sufKey);
 
         T result = CacheLocalUtil.get(redisKeyEnum);
 
@@ -174,7 +227,7 @@ public class CacheRedisUtil {
 
         }
 
-        result = CacheLocalUtil.checkAndReturnResult(result, defaultResultCollection); // 检查并设置值
+        result = CacheHelper.checkAndReturnResult(result, defaultResultCollection); // 检查并设置值
 
         log.info("{}：加入 redis缓存", key);
         T finalResult = result;

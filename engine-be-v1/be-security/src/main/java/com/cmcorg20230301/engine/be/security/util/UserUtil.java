@@ -6,7 +6,7 @@ import cn.hutool.core.util.BooleanUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONObject;
 import com.baomidou.mybatisplus.extension.toolkit.ChainWrappers;
-import com.cmcorg20230301.engine.be.cache.util.CacheLocalUtil;
+import com.cmcorg20230301.engine.be.cache.util.CacheHelper;
 import com.cmcorg20230301.engine.be.cache.util.CacheRedisUtil;
 import com.cmcorg20230301.engine.be.model.model.constant.BaseConstant;
 import com.cmcorg20230301.engine.be.redisson.model.enums.RedisKeyEnum;
@@ -241,11 +241,11 @@ public class UserUtil {
     @NotNull
     private static Map<Long, Set<SysMenuDO>> getRoleRefMenuSetMap(int type, RedisKeyEnum redisKeyEnum, Long item) {
 
-        return CacheRedisUtil.getCache(redisKeyEnum, CacheLocalUtil.getDefaultLongSetMap(), () -> {
+        return CacheRedisUtil.getCache(redisKeyEnum, CacheHelper.getDefaultLongSetMap(), () -> {
 
             // 获取所有：roleIdSet
             Set<Long> allRoleIdSet = CacheRedisUtil
-                .getCollectionCache(RedisKeyEnum.ROLE_ID_SET_CACHE, CacheLocalUtil.getDefaultResultSet(), () -> {
+                .getCollectionCache(RedisKeyEnum.ROLE_ID_SET_CACHE, CacheHelper.getDefaultResultSet(), () -> {
 
                     return ChainWrappers.lambdaQueryChain(sysRoleMapper).select(BaseEntity::getId)
                         .eq(BaseEntityNoId::getEnableFlag, true).list().stream().map(BaseEntity::getId)
@@ -253,7 +253,7 @@ public class UserUtil {
 
                 });
 
-            if (CacheLocalUtil.defaultCollectionResultFlag(allRoleIdSet)) {
+            if (CacheHelper.defaultCollectionResultFlag(allRoleIdSet)) {
                 return null; // 如果：没有角色
             }
 
@@ -366,7 +366,7 @@ public class UserUtil {
     private static List<SysMenuDO> getAllMenuIdAndAuthsList() {
 
         List<SysMenuDO> sysMenuDOList = CacheRedisUtil
-            .getCollectionCache(RedisKeyEnum.ALL_MENU_ID_AND_AUTHS_LIST_CACHE, CacheLocalUtil.getDefaultResultList(),
+            .getCollectionCache(RedisKeyEnum.ALL_MENU_ID_AND_AUTHS_LIST_CACHE, CacheHelper.getDefaultResultList(),
                 () -> {
 
                     return ChainWrappers.lambdaQueryChain(sysMenuMapper)
@@ -375,7 +375,7 @@ public class UserUtil {
 
                 });
 
-        if (CacheLocalUtil.defaultCollectionResultFlag(sysMenuDOList)) {
+        if (CacheHelper.defaultCollectionResultFlag(sysMenuDOList)) {
 
             return null;
 
@@ -394,7 +394,7 @@ public class UserUtil {
     private static Set<Long> getRoleRefMenuIdSet(Long roleId) {
 
         Map<Long, Set<Long>> roleRefMenuIdSetMap = CacheRedisUtil
-            .getMapCache(RedisKeyEnum.ROLE_ID_REF_MENU_ID_SET_CACHE, CacheLocalUtil.getDefaultLongSetMap(), () -> {
+            .getMapCache(RedisKeyEnum.ROLE_ID_REF_MENU_ID_SET_CACHE, CacheHelper.getDefaultLongSetMap(), () -> {
 
                 List<SysRoleRefMenuDO> sysRoleRefMenuDOList = ChainWrappers.lambdaQueryChain(sysRoleRefMenuMapper)
                     .select(SysRoleRefMenuDO::getRoleId, SysRoleRefMenuDO::getMenuId).list();
@@ -414,7 +414,7 @@ public class UserUtil {
     private static void getUserRefRoleIdSet(Long userId, Set<Long> roleIdSet) {
 
         Map<Long, Set<Long>> userRefRoleIdSetMap = CacheRedisUtil
-            .getMapCache(RedisKeyEnum.USER_ID_REF_ROLE_ID_SET_CACHE, CacheLocalUtil.getDefaultLongSetMap(), () -> {
+            .getMapCache(RedisKeyEnum.USER_ID_REF_ROLE_ID_SET_CACHE, CacheHelper.getDefaultLongSetMap(), () -> {
 
                 List<SysRoleRefUserDO> sysRoleRefUserDOList = ChainWrappers.lambdaQueryChain(sysRoleRefUserMapper)
                     .select(SysRoleRefUserDO::getRoleId, SysRoleRefUserDO::getUserId).list();
