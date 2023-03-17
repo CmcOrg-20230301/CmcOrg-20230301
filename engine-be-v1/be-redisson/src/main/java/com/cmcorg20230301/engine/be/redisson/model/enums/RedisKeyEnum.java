@@ -1,6 +1,6 @@
 package com.cmcorg20230301.engine.be.redisson.model.enums;
 
-import com.cmcorg20230301.engine.be.redisson.model.interfaces.IRedisKey;
+import com.cmcorg20230301.engine.be.model.model.interfaces.IRedisKey;
 
 /**
  * redis中 key的枚举类

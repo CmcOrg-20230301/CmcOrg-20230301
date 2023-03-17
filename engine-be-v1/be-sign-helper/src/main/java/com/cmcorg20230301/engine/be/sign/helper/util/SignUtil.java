@@ -13,9 +13,9 @@ import com.cmcorg20230301.engine.be.model.model.constant.BaseConstant;
 import com.cmcorg20230301.engine.be.model.model.constant.BaseRegexConstant;
 import com.cmcorg20230301.engine.be.model.model.constant.LogTopicConstant;
 import com.cmcorg20230301.engine.be.model.model.constant.ParamConstant;
+import com.cmcorg20230301.engine.be.model.model.interfaces.IRedisKey;
 import com.cmcorg20230301.engine.be.mysql.util.TransactionUtil;
 import com.cmcorg20230301.engine.be.redisson.model.enums.RedisKeyEnum;
-import com.cmcorg20230301.engine.be.redisson.model.interfaces.IRedisKey;
 import com.cmcorg20230301.engine.be.redisson.util.RedissonUtil;
 import com.cmcorg20230301.engine.be.security.exception.BaseBizCodeEnum;
 import com.cmcorg20230301.engine.be.security.mapper.SysRoleRefUserMapper;
@@ -36,7 +36,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.redisson.api.RAtomicLong;
-import org.redisson.api.RBatch;
 import org.redisson.api.RBucket;
 import org.redisson.api.RedissonClient;
 import org.springframework.stereotype.Component;
@@ -884,16 +883,16 @@ public class SignUtil {
                 sysUserDO.setPassword(PasswordConvertUtil.convert(newPassword, true));
                 sysUserMapper.updateById(sysUserDO); // 保存：用户
 
-                RBatch batch = redissonClient.createBatch();
+                RedissonUtil.batch((batch) -> {
 
-                // 移除密码错误次数相关
-                batch.getBucket(RedisKeyEnum.PRE_PASSWORD_ERROR_COUNT.name() + sysUserDO.getId()).deleteAsync();
-                batch.getBucket(RedisKeyEnum.PRE_TOO_MANY_PASSWORD_ERROR.name() + sysUserDO.getId()).deleteAsync();
+                    // 移除密码错误次数相关
+                    batch.getBucket(RedisKeyEnum.PRE_PASSWORD_ERROR_COUNT.name() + sysUserDO.getId()).deleteAsync();
+                    batch.getBucket(RedisKeyEnum.PRE_TOO_MANY_PASSWORD_ERROR.name() + sysUserDO.getId()).deleteAsync();
 
-                // 删除：验证码
-                batch.getBucket(key).deleteAsync();
+                    // 删除：验证码
+                    batch.getBucket(key).deleteAsync();
 
-                batch.execute(); // 执行批量操作
+                });
 
                 return BaseBizCodeEnum.OK;
 

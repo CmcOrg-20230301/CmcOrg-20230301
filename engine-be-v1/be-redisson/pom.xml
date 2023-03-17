@@ -14,6 +14,12 @@
 
     <dependencies>
 
+        <!-- be-model -->
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>be-model</artifactId>
+        </dependency>
+
         <!-- be-util -->
         <dependency>
             <groupId>${project.groupId}</groupId>

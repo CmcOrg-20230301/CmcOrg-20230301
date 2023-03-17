@@ -10,7 +10,8 @@ import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
 import cn.hutool.jwt.JWT;
 import com.baomidou.mybatisplus.extension.toolkit.ChainWrappers;
-import com.cmcorg20230301.engine.be.cache.util.MyCacheUtil;
+import com.cmcorg20230301.engine.be.cache.util.CacheLocalUtil;
+import com.cmcorg20230301.engine.be.cache.util.CacheRedisUtil;
 import com.cmcorg20230301.engine.be.model.model.constant.BaseConstant;
 import com.cmcorg20230301.engine.be.redisson.model.enums.RedisKeyEnum;
 import com.cmcorg20230301.engine.be.security.exception.BaseBizCodeEnum;
@@ -187,18 +188,16 @@ public class MyJwtUtil {
             return null;
         }
 
-        Map<Long, String> map =
-            MyCacheUtil
-                .getMapCache(RedisKeyEnum.USER_ID_AND_JWT_SECRET_SUF_CACHE, MyCacheUtil.getDefaultLongTMap(), () -> {
+        Map<Long, String> map = CacheRedisUtil
+            .getMapCache(RedisKeyEnum.USER_ID_AND_JWT_SECRET_SUF_CACHE, CacheLocalUtil.getDefaultLongTMap(), () -> {
 
-                    List<SysUserDO> sysUserDOList =
-                        ChainWrappers.lambdaQueryChain(sysUserMapper).eq(SysUserDO::getEnableFlag, true)
-                            .select(BaseEntity::getId, SysUserDO::getJwtSecretSuf).list();
+                List<SysUserDO> sysUserDOList =
+                    ChainWrappers.lambdaQueryChain(sysUserMapper).eq(SysUserDO::getEnableFlag, true)
+                        .select(BaseEntity::getId, SysUserDO::getJwtSecretSuf).list();
 
-                    return sysUserDOList.stream()
-                        .collect(Collectors.toMap(BaseEntity::getId, SysUserDO::getJwtSecretSuf));
+                return sysUserDOList.stream().collect(Collectors.toMap(BaseEntity::getId, SysUserDO::getJwtSecretSuf));
 
-                });
+            });
 
         return map.get(userId);
 

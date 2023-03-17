@@ -1,7 +1,8 @@
 package com.cmcorg20230301.engine.be.security.util;
 
 import com.baomidou.mybatisplus.extension.toolkit.ChainWrappers;
-import com.cmcorg20230301.engine.be.cache.util.MyCacheUtil;
+import com.cmcorg20230301.engine.be.cache.util.CacheLocalUtil;
+import com.cmcorg20230301.engine.be.cache.util.CacheRedisUtil;
 import com.cmcorg20230301.engine.be.redisson.model.enums.RedisKeyEnum;
 import com.cmcorg20230301.engine.be.security.mapper.SysParamMapper;
 import com.cmcorg20230301.engine.be.security.model.entity.BaseEntity;
@@ -32,7 +33,7 @@ public class SysParamUtil {
     public static String getValueById(Long id) {
 
         Map<Long, String> map =
-            MyCacheUtil.getMapCache(RedisKeyEnum.SYS_PARAM_CACHE, MyCacheUtil.getDefaultLongTMap(), () -> {
+            CacheRedisUtil.getMapCache(RedisKeyEnum.SYS_PARAM_CACHE, CacheLocalUtil.getDefaultLongTMap(), () -> {
 
                 List<SysParamDO> sysParamDOList =
                     ChainWrappers.lambdaQueryChain(sysParamMapper).select(BaseEntity::getId, SysParamDO::getValue)

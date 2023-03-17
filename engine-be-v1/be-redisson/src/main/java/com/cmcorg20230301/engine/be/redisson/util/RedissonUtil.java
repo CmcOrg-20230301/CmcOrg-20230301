@@ -1,9 +1,11 @@
 package com.cmcorg20230301.engine.be.redisson.util;
 
 import cn.hutool.core.lang.func.VoidFunc0;
+import cn.hutool.core.lang.func.VoidFunc1;
 import lombok.SneakyThrows;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.redisson.api.RBatch;
 import org.redisson.api.RLock;
 import org.redisson.api.RedissonClient;
 import org.springframework.stereotype.Component;
@@ -20,6 +22,20 @@ public class RedissonUtil {
 
     public RedissonUtil(RedissonClient redissonClient) {
         RedissonUtil.redissonClient = redissonClient;
+    }
+
+    /**
+     * 执行批量操作
+     */
+    @SneakyThrows
+    public static void batch(@NotNull VoidFunc1<RBatch> voidFunc1) {
+
+        RBatch batch = redissonClient.createBatch();
+
+        voidFunc1.call(batch);
+
+        batch.execute(); // 执行批量操作
+
     }
 
     /**

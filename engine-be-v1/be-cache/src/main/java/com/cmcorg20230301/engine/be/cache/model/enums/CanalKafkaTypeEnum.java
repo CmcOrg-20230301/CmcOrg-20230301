@@ -1,11 +1,12 @@
 package com.cmcorg20230301.engine.be.cache.model.enums;
 
 import cn.hutool.core.collection.CollUtil;
-import io.swagger.v3.oas.annotations.media.Schema;
 
 import java.util.Set;
 
-@Schema(description = "canal的消息类型枚举")
+/**
+ * canal的消息类型枚举
+ */
 public enum CanalKafkaTypeEnum {
 
     INSERT, // 新增数据

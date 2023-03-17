@@ -1,4 +1,4 @@
-package com.cmcorg20230301.engine.be.redisson.model.interfaces;
+package com.cmcorg20230301.engine.be.model.model.interfaces;
 
 /**
  * redis中 key的枚举类
