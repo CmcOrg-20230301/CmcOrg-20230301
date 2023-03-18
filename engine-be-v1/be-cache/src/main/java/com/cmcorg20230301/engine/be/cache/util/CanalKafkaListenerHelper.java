@@ -22,23 +22,7 @@ public class CanalKafkaListenerHelper {
     // key：database.tableName，value：iCanalKafkaHandlerList
     private static final Map<String, List<ICanalKafkaHandler>> CANAL_KAFKA_HANDLER_MAP = new HashMap<>();
 
-    public CanalKafkaListenerHelper(@Autowired(required = false) List<ICanalKafkaHandler> iCanalKafkaHandlerList) {
-
-        if (CollUtil.isEmpty(iCanalKafkaHandlerList)) {
-            return;
-        }
-
-        for (ICanalKafkaHandler item : iCanalKafkaHandlerList) {
-
-            put(item); // 添加到：map里面
-
-        }
-
-        log.info("CANAL_KAFKA_HANDLER_MAP，长度：{}", CANAL_KAFKA_HANDLER_MAP.size());
-
-    }
-
-    public static interface ICanalKafkaHandler {
+    public interface ICanalKafkaHandler {
 
         /**
          * 要处理的，表的全路径名，例如：database.tableName
@@ -59,6 +43,22 @@ public class CanalKafkaListenerHelper {
          * 需要本地缓存移除的 keySet
          */
         private Set<String> removeLocalCacheKeySet = new HashSet<>();
+
+    }
+
+    public CanalKafkaListenerHelper(@Autowired(required = false) List<ICanalKafkaHandler> iCanalKafkaHandlerList) {
+
+        if (CollUtil.isEmpty(iCanalKafkaHandlerList)) {
+            return;
+        }
+
+        for (ICanalKafkaHandler item : iCanalKafkaHandlerList) {
+
+            put(item); // 添加到：map里面
+
+        }
+
+        log.info("CANAL_KAFKA_HANDLER_MAP，长度：{}", CANAL_KAFKA_HANDLER_MAP.size());
 
     }
 

@@ -3,6 +3,7 @@ package com.cmcorg20230301.engine.be.cache.listener;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.json.JSONUtil;
 import com.cmcorg20230301.engine.be.cache.model.dto.CanalKafkaDTO;
+import com.cmcorg20230301.engine.be.cache.util.CacheLocalUtil;
 import com.cmcorg20230301.engine.be.cache.util.CanalKafkaListenerHelper;
 import com.cmcorg20230301.engine.be.kafka.model.enums.KafkaTopicEnum;
 import com.cmcorg20230301.engine.be.kafka.util.KafkaUtil;
@@ -15,6 +16,7 @@ import org.springframework.kafka.support.Acknowledgment;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.Set;
 
 /**
  * canal的 kafka监听器
@@ -62,12 +64,15 @@ public class CanalKafkaListener {
 
         });
 
-        if (CollUtil.isNotEmpty(result.getRemoveLocalCacheKeySet())) {
+        Set<String> removeLocalCacheKeySet = result.getRemoveLocalCacheKeySet();
 
-            log.info("canal：发送：本地缓存移除消息：removeLocalCacheKeySet：{}", result.getRemoveLocalCacheKeySet());
+        if (CollUtil.isNotEmpty(removeLocalCacheKeySet)) {
+
+            log.info("canal：发送：本地缓存移除消息：removeLocalCacheKeySet：{}", removeLocalCacheKeySet);
 
             // 发送：本地缓存移除的 topic
-            KafkaUtil.sendLocalCacheRemoveTopic(result.getRemoveLocalCacheKeySet());
+            KafkaUtil.sendLocalCacheRemoveTopic(removeLocalCacheKeySet);
+            CacheLocalUtil.removeAll(removeLocalCacheKeySet); // 清除本地缓存
 
         }
 
