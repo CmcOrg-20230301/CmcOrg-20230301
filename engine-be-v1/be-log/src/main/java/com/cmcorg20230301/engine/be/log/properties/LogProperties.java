@@ -17,6 +17,11 @@ public class LogProperties {
     /**
      * 为空时，则是正常的日志状态，不为空时，则只打印集合里面日志
      */
-    Set<String> logTopicSet;
+    private Set<String> logTopicSet;
+
+    /**
+     * 是否开启：日志变成流程图，备注：只针对有 topic的日志
+     */
+    private Boolean logToFlowChartFlag = true;
 
 }

@@ -9,7 +9,7 @@ import cn.hutool.json.JSONObject;
 import com.baomidou.mybatisplus.extension.toolkit.ChainWrappers;
 import com.cmcorg20230301.engine.be.cache.util.CacheHelper;
 import com.cmcorg20230301.engine.be.cache.util.CacheRedisKafkaLocalUtil;
-import com.cmcorg20230301.engine.be.cache.util.CacheUtil;
+import com.cmcorg20230301.engine.be.cache.util.MyCacheUtil;
 import com.cmcorg20230301.engine.be.model.model.constant.BaseConstant;
 import com.cmcorg20230301.engine.be.redisson.model.enums.RedisKeyEnum;
 import com.cmcorg20230301.engine.be.security.exception.BaseBizCodeEnum;
@@ -243,16 +243,17 @@ public class UserUtil {
     @NotNull
     private static Map<Long, Set<SysMenuDO>> getRoleRefMenuSetMap(int type, RedisKeyEnum redisKeyEnum, Long item) {
 
-        return CacheUtil.get(redisKeyEnum, CacheHelper.getDefaultLongSetMap(), () -> {
+        return MyCacheUtil.get(redisKeyEnum, CacheHelper.getDefaultLongSetMap(), () -> {
 
             // 获取所有：roleIdSet
-            Set<Long> allRoleIdSet = CacheUtil.get(RedisKeyEnum.ROLE_ID_SET_CACHE, CacheHelper.getDefaultSet(), () -> {
+            Set<Long> allRoleIdSet =
+                MyCacheUtil.get(RedisKeyEnum.ROLE_ID_SET_CACHE, CacheHelper.getDefaultSet(), () -> {
 
-                return ChainWrappers.lambdaQueryChain(sysRoleMapper).select(BaseEntity::getId)
-                    .eq(BaseEntityNoId::getEnableFlag, true).list().stream().map(BaseEntity::getId)
-                    .collect(Collectors.toSet());
+                    return ChainWrappers.lambdaQueryChain(sysRoleMapper).select(BaseEntity::getId)
+                        .eq(BaseEntityNoId::getEnableFlag, true).list().stream().map(BaseEntity::getId)
+                        .collect(Collectors.toSet());
 
-            });
+                });
 
             if (CacheHelper.defaultCollectionFlag(allRoleIdSet)) {
                 return null; // 如果：没有角色
@@ -367,7 +368,7 @@ public class UserUtil {
     private static List<SysMenuDO> getAllMenuIdAndAuthsList() {
 
         List<SysMenuDO> sysMenuDOList =
-            CacheUtil.get(RedisKeyEnum.ALL_MENU_ID_AND_AUTHS_LIST_CACHE, CacheHelper.getDefaultList(), () -> {
+            MyCacheUtil.get(RedisKeyEnum.ALL_MENU_ID_AND_AUTHS_LIST_CACHE, CacheHelper.getDefaultList(), () -> {
 
                 return ChainWrappers.lambdaQueryChain(sysMenuMapper)
                     .select(BaseEntity::getId, BaseEntityTree::getParentId, SysMenuDO::getAuths)
@@ -394,7 +395,7 @@ public class UserUtil {
     private static Set<Long> getRoleRefMenuIdSet(Long roleId) {
 
         Map<Long, Set<Long>> roleRefMenuIdSetMap =
-            CacheUtil.get(RedisKeyEnum.ROLE_ID_REF_MENU_ID_SET_CACHE, CacheHelper.getDefaultLongSetMap(), () -> {
+            MyCacheUtil.get(RedisKeyEnum.ROLE_ID_REF_MENU_ID_SET_CACHE, CacheHelper.getDefaultLongSetMap(), () -> {
 
                 List<SysRoleRefMenuDO> sysRoleRefMenuDOList = ChainWrappers.lambdaQueryChain(sysRoleRefMenuMapper)
                     .select(SysRoleRefMenuDO::getRoleId, SysRoleRefMenuDO::getMenuId).list();
@@ -414,7 +415,7 @@ public class UserUtil {
     private static void getUserRefRoleIdSet(Long userId, Set<Long> roleIdSet) {
 
         Map<Long, Set<Long>> userRefRoleIdSetMap =
-            CacheUtil.get(RedisKeyEnum.USER_ID_REF_ROLE_ID_SET_CACHE, CacheHelper.getDefaultLongSetMap(), () -> {
+            MyCacheUtil.get(RedisKeyEnum.USER_ID_REF_ROLE_ID_SET_CACHE, CacheHelper.getDefaultLongSetMap(), () -> {
 
                 List<SysRoleRefUserDO> sysRoleRefUserDOList = ChainWrappers.lambdaQueryChain(sysRoleRefUserMapper)
                     .select(SysRoleRefUserDO::getRoleId, SysRoleRefUserDO::getUserId).list();
@@ -437,7 +438,7 @@ public class UserUtil {
      */
     private static void getDefaultRoleId(Set<Long> roleIdSet) {
 
-        Long defaultRoleId = CacheUtil.get(RedisKeyEnum.DEFAULT_ROLE_ID_CACHE, BaseConstant.SYS_ID, () -> {
+        Long defaultRoleId = MyCacheUtil.get(RedisKeyEnum.DEFAULT_ROLE_ID_CACHE, BaseConstant.SYS_ID, () -> {
 
             SysRoleDO sysRoleDO = ChainWrappers.lambdaQueryChain(sysRoleMapper).eq(SysRoleDO::getDefaultFlag, true)
                 .eq(BaseEntity::getEnableFlag, true).select(BaseEntity::getId).one();
@@ -473,7 +474,7 @@ public class UserUtil {
     @NotNull
     public static String getJwtSecretSuf(long userId) {
 
-        String jwtSecretSuf = CacheUtil
+        String jwtSecretSuf = MyCacheUtil
             .get(RedisKeyEnum.USER_ID_AND_JWT_SECRET_SUF_CACHE, null, String.valueOf(userId), IdUtil.simpleUUID(),
                 null);
 

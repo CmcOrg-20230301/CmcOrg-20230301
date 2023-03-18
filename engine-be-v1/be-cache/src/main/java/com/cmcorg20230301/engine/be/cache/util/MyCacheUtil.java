@@ -23,13 +23,13 @@ import java.util.Map;
  */
 @Component
 @Slf4j(topic = LogTopicConstant.CACHE)
-public class CacheUtil {
+public class MyCacheUtil {
 
     private static RedissonClient redissonClient;
 
-    public CacheUtil(RedissonClient redissonClient) {
+    public MyCacheUtil(RedissonClient redissonClient) {
 
-        CacheUtil.redissonClient = redissonClient;
+        MyCacheUtil.redissonClient = redissonClient;
 
     }
 

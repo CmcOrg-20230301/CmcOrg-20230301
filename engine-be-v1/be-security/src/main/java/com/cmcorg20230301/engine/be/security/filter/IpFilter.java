@@ -90,10 +90,10 @@ public class IpFilter implements Filter {
     @Nullable
     private String ipCheckHandler(String ip) {
 
-        RBucket<String> blackIpRedisBucket = redissonClient.getBucket(RedisKeyEnum.PRE_IP_BLACK + ip);
+        RBucket<String> blackIpBucket = redissonClient.getBucket(RedisKeyEnum.PRE_IP_BLACK + ip);
 
         // 判断是否在 黑名单里
-        long remainTimeToLive = blackIpRedisBucket.remainTimeToLive();
+        long remainTimeToLive = blackIpBucket.remainTimeToLive();
 
         if (remainTimeToLive > -1) {
             // 如果在 黑名单里，则返回剩余时间
@@ -101,7 +101,7 @@ public class IpFilter implements Filter {
         }
 
         // 给 ip设置：请求次数
-        return addIpTotal(ip, blackIpRedisBucket);
+        return addIpTotal(ip, blackIpBucket);
 
     }
 

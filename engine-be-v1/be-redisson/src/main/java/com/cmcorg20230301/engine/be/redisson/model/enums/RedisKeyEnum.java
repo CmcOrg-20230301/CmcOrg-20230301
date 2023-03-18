@@ -12,7 +12,6 @@ public enum RedisKeyEnum implements IRedisKey {
 
     // 【PRE_】开头 ↓
     PRE_IP_BLACK, // ip黑名单前端，后面跟 ip
-    PRE_IP_TOTAL_CHECK, // ip 请求总数，key前缀，后面跟 ip
 
     PRE_JWT_HASH, // jwtHash 前缀
 
