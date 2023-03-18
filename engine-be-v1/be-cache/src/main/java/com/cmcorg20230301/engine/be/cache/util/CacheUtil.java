@@ -2,7 +2,6 @@ package com.cmcorg20230301.engine.be.cache.util;
 
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.lang.func.Func0;
-import cn.hutool.core.util.StrUtil;
 import com.cmcorg20230301.engine.be.model.model.constant.LogTopicConstant;
 import com.cmcorg20230301.engine.be.model.model.interfaces.IRedisKey;
 import com.cmcorg20230301.engine.be.redisson.util.RedissonUtil;
@@ -17,33 +16,18 @@ import java.util.Collection;
 import java.util.Map;
 
 /**
- * redis缓存工具类
+ * 缓存工具类
+ * 获取缓存逻辑：先从 本地获取缓存，再从 redis获取缓存，最后从 数据提供者获取数据
  */
 @Component
-@Slf4j(topic = LogTopicConstant.CACHE_REDIS)
-public class CacheRedisUtil {
+@Slf4j(topic = LogTopicConstant.CACHE)
+public class CacheUtil {
 
     private static RedissonClient redissonClient;
 
-    public CacheRedisUtil(RedissonClient redissonClient) {
+    public CacheUtil(RedissonClient redissonClient) {
 
-        CacheRedisUtil.redissonClient = redissonClient;
-
-    }
-
-    /**
-     * 获取：key
-     */
-    @NotNull
-    public static String getKey(@NotNull Enum<? extends IRedisKey> redisKeyEnum, @Nullable String sufKey) {
-
-        String key = redisKeyEnum.name();
-
-        if (StrUtil.isNotBlank(sufKey)) {
-            key = key + sufKey;
-        }
-
-        return key;
+        CacheUtil.redissonClient = redissonClient;
 
     }
 
@@ -52,10 +36,10 @@ public class CacheRedisUtil {
      */
     @SneakyThrows
     @NotNull
-    public static <T> T getCache(@NotNull Enum<? extends IRedisKey> redisKeyEnum, @NotNull T defaultResult,
+    public static <T> T get(@NotNull Enum<? extends IRedisKey> redisKeyEnum, @NotNull T defaultResult,
         @Nullable Func0<T> func0) {
 
-        return getCache(redisKeyEnum, null, defaultResult, func0);
+        return get(redisKeyEnum, null, defaultResult, func0);
 
     }
 
@@ -64,12 +48,12 @@ public class CacheRedisUtil {
      */
     @SneakyThrows
     @NotNull
-    public static <T> T getCache(@NotNull Enum<? extends IRedisKey> redisKeyEnum, @Nullable String sufKey,
+    public static <T> T get(@NotNull Enum<? extends IRedisKey> redisKeyEnum, @Nullable String sufKey,
         @NotNull T defaultResult, @Nullable Func0<T> func0) {
 
-        String key = CacheRedisUtil.getKey(redisKeyEnum, sufKey);
+        String key = CacheHelper.getKey(redisKeyEnum, sufKey);
 
-        T result = CacheLocalUtil.get(redisKeyEnum);
+        T result = CacheLocalUtil.get(key);
 
         if (result != null) {
 
@@ -92,9 +76,7 @@ public class CacheRedisUtil {
         } else {
 
             log.info("{}：加入 本地缓存，并返回 redis缓存", key);
-
-            CacheLocalUtil.put(redisKeyEnum, result);
-
+            CacheLocalUtil.put(key, result);
             return result;
 
         }
@@ -105,7 +87,7 @@ public class CacheRedisUtil {
         redissonClient.getBucket(key).set(result); // 先加入到 redis里
 
         log.info("{}：加入 本地缓存", key);
-        CacheLocalUtil.put(redisKeyEnum, result);
+        CacheLocalUtil.put(key, result);
 
         return result;
 
@@ -116,10 +98,10 @@ public class CacheRedisUtil {
      */
     @SneakyThrows
     @NotNull
-    public static <T extends Map<?, ?>> T getMapCache(@NotNull Enum<? extends IRedisKey> redisKeyEnum,
+    public static <T extends Map<?, ?>> T get(@NotNull Enum<? extends IRedisKey> redisKeyEnum,
         @NotNull T defaultResultMap, @Nullable Func0<T> func0) {
 
-        return getMapCache(redisKeyEnum, null, defaultResultMap, func0);
+        return get(redisKeyEnum, null, defaultResultMap, func0);
 
     }
 
@@ -128,12 +110,12 @@ public class CacheRedisUtil {
      */
     @SneakyThrows
     @NotNull
-    public static <T extends Map<?, ?>> T getMapCache(@NotNull Enum<? extends IRedisKey> redisKeyEnum,
-        @Nullable String sufKey, @NotNull T defaultResultMap, @Nullable Func0<T> func0) {
+    public static <T extends Map<?, ?>> T get(@NotNull Enum<? extends IRedisKey> redisKeyEnum, @Nullable String sufKey,
+        @NotNull T defaultResultMap, @Nullable Func0<T> func0) {
 
-        String key = CacheRedisUtil.getKey(redisKeyEnum, sufKey);
+        String key = CacheHelper.getKey(redisKeyEnum, sufKey);
 
-        T result = CacheLocalUtil.get(redisKeyEnum);
+        T result = CacheLocalUtil.get(key);
 
         if (CollUtil.isNotEmpty(result)) {
 
@@ -142,17 +124,13 @@ public class CacheRedisUtil {
 
         }
 
-        if (redissonClient.getMap(key).isExists()) {
+        result = (T)redissonClient.getMap(key).readAllMap();
 
-            result = (T)redissonClient.getMap(key).readAllMap();
+        if (CollUtil.isNotEmpty(result)) {
 
-            if (CollUtil.isNotEmpty(result)) {
-
-                log.info("{}：加入 本地缓存，并返回 redis缓存", key);
-                CacheLocalUtil.put(redisKeyEnum, result);
-                return result;
-
-            }
+            log.info("{}：加入 本地缓存，并返回 redis缓存", key);
+            CacheLocalUtil.put(key, result);
+            return result;
 
         }
 
@@ -175,7 +153,7 @@ public class CacheRedisUtil {
         });
 
         log.info("{}：加入 本地缓存", key);
-        CacheLocalUtil.put(redisKeyEnum, result);
+        CacheLocalUtil.put(key, result);
 
         return result;
 
@@ -186,28 +164,30 @@ public class CacheRedisUtil {
      */
     @SneakyThrows
     @NotNull
-    public static <T extends Collection<?>> T getCollectionCache(@NotNull Enum<? extends IRedisKey> redisKeyEnum,
+    public static <T extends Collection<?>> T get(@NotNull Enum<? extends IRedisKey> redisKeyEnum,
         @NotNull T defaultResultCollection, @Nullable Func0<T> func0) {
 
-        return getCollectionCache(redisKeyEnum, null, defaultResultCollection, func0);
+        return get(redisKeyEnum, null, defaultResultCollection, func0);
 
     }
 
     /**
-     * 获取：Collection类型的缓存
+     * 获取：collection类型的缓存
      */
     @SneakyThrows
     @NotNull
-    public static <T extends Collection<?>> T getCollectionCache(@NotNull Enum<? extends IRedisKey> redisKeyEnum,
+    public static <T extends Collection<?>> T get(@NotNull Enum<? extends IRedisKey> redisKeyEnum,
         @Nullable String sufKey, @NotNull T defaultResultCollection, @Nullable Func0<T> func0) {
 
-        String key = CacheRedisUtil.getKey(redisKeyEnum, sufKey);
+        String key = CacheHelper.getKey(redisKeyEnum, sufKey);
 
-        T result = CacheLocalUtil.get(redisKeyEnum);
+        T result = CacheLocalUtil.get(key);
 
         if (CollUtil.isNotEmpty(result)) {
+
             log.info("{}：返回 本地缓存", key);
             return result;
+
         }
 
         result = (T)redissonClient.getList(key).readAll();
@@ -215,7 +195,7 @@ public class CacheRedisUtil {
         if (CollUtil.isNotEmpty(result)) {
 
             log.info("{}：加入 本地缓存，并返回 redis缓存", key);
-            CacheLocalUtil.put(redisKeyEnum, result);
+            CacheLocalUtil.put(key, result);
             return result;
 
         }
@@ -239,7 +219,7 @@ public class CacheRedisUtil {
         });
 
         log.info("{}：加入 本地缓存", key);
-        CacheLocalUtil.put(redisKeyEnum, result);
+        CacheLocalUtil.put(key, result);
 
         return result;
 

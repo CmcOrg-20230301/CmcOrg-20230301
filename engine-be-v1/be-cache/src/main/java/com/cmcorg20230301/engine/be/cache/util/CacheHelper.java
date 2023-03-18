@@ -2,64 +2,91 @@ package com.cmcorg20230301.engine.be.cache.util;
 
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.map.MapUtil;
+import cn.hutool.core.util.StrUtil;
 import com.cmcorg20230301.engine.be.model.model.constant.BaseConstant;
+import com.cmcorg20230301.engine.be.model.model.interfaces.IRedisKey;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 
+/**
+ * 缓存帮助类
+ */
 @Slf4j
 public class CacheHelper {
 
+    /**
+     * 获取：key
+     */
     @NotNull
-    public static <T> Map<Long, T> getDefaultLongTMap() {
+    public static String getKey(@NotNull Enum<? extends IRedisKey> redisKeyEnum, @Nullable String sufKey) {
 
-        Map<Long, T> defaultResultMap = MapUtil.newHashMap();
-        defaultResultMap.put(BaseConstant.SYS_ID, null);
-        return defaultResultMap;
+        String key = redisKeyEnum.name();
+
+        if (StrUtil.isNotBlank(sufKey)) {
+            key = key + sufKey;
+        }
+
+        return key;
+
+    }
+
+    @NotNull
+    public static <T> Map<Long, T> getDefaultLongMap() {
+
+        Map<Long, T> result = MapUtil.newHashMap();
+        result.put(BaseConstant.SYS_ID, null);
+
+        return result;
 
     }
 
     @NotNull
     public static <T> Map<Long, Set<T>> getDefaultLongSetMap() {
 
-        Map<Long, Set<T>> defaultResultMap = MapUtil.newHashMap();
-        defaultResultMap.put(BaseConstant.SYS_ID, new HashSet<>());
-        return defaultResultMap;
+        Map<Long, Set<T>> result = MapUtil.newHashMap();
+        result.put(BaseConstant.SYS_ID, new HashSet<>());
+
+        return result;
 
     }
 
     @NotNull
     public static <T> Map<Long, List<T>> getDefaultLongListMap() {
 
-        Map<Long, List<T>> defaultResultMap = MapUtil.newHashMap();
-        defaultResultMap.put(BaseConstant.SYS_ID, new ArrayList<>());
-        return defaultResultMap;
+        Map<Long, List<T>> result = MapUtil.newHashMap();
+        result.put(BaseConstant.SYS_ID, new ArrayList<>());
+
+        return result;
 
     }
 
     @NotNull
-    public static <T> List<T> getDefaultResultList() {
+    public static <T> List<T> getDefaultList() {
 
-        List<T> defaultResultList = new ArrayList<>();
-        defaultResultList.add(null); // 注意：这里要小心使用
-        return defaultResultList;
+        List<T> result = new ArrayList<>();
+        result.add(null); // 注意：这里要小心使用
+
+        return result;
 
     }
 
     @NotNull
-    public static <T> Set<T> getDefaultResultSet() {
+    public static <T> Set<T> getDefaultSet() {
 
-        Set<T> defaultResultSet = new HashSet<>();
-        defaultResultSet.add(null); // 注意：这里要小心使用
-        return defaultResultSet;
+        Set<T> result = new HashSet<>();
+        result.add(null); // 注意：这里要小心使用
+
+        return result;
 
     }
 
     /**
      * 是否是：默认的集合返回值
      */
-    public static <T> boolean defaultCollectionResultFlag(Collection<T> collection) {
+    public static <T> boolean defaultCollectionFlag(Collection<T> collection) {
 
         if (collection == null) {
             return true;
@@ -80,6 +107,7 @@ public class CacheHelper {
 
     /**
      * 检查：result，如果 result为空，则使用 defaultResult
+     * 目的：防止设置不到值到缓存里面
      */
     @NotNull
     public static <T> T checkAndReturnResult(T result, T defaultResult) {

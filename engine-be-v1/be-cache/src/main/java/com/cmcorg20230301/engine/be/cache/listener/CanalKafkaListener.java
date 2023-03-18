@@ -21,7 +21,7 @@ import java.util.List;
  */
 @Component
 @KafkaListener(topics = "#{__listener.TOPIC_LIST}", groupId = "#{__listener.GROUP_ID}", batch = "true")
-@Slf4j(topic = LogTopicConstant.CACHE_CANAL)
+@Slf4j(topic = LogTopicConstant.CANAL)
 public class CanalKafkaListener {
 
     public static final List<String> TOPIC_LIST = CollUtil.newArrayList(KafkaTopicEnum.CANAL_TOPIC_ENGINE_BE.name());
@@ -64,7 +64,7 @@ public class CanalKafkaListener {
 
         if (CollUtil.isNotEmpty(result.getRemoveLocalCacheKeySet())) {
 
-            log.info("canal：发送：本地缓存移除：removeLocalCacheKeySet：{}", result.getRemoveLocalCacheKeySet());
+            log.info("canal：发送：本地缓存移除消息：removeLocalCacheKeySet：{}", result.getRemoveLocalCacheKeySet());
 
             // 发送：本地缓存移除的 topic
             KafkaUtil.sendLocalCacheRemoveTopic(result.getRemoveLocalCacheKeySet());

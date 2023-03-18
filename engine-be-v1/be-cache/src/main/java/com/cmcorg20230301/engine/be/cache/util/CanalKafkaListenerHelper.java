@@ -4,7 +4,6 @@ import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.NumberUtil;
 import cn.hutool.core.util.StrUtil;
 import com.cmcorg20230301.engine.be.cache.model.dto.CanalKafkaDTO;
-import com.cmcorg20230301.engine.be.model.model.interfaces.IRedisKey;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.redisson.api.RBatch;
@@ -59,7 +58,7 @@ public class CanalKafkaListenerHelper {
         /**
          * 需要本地缓存移除的 keySet
          */
-        private Set<Enum<? extends IRedisKey>> removeLocalCacheKeySet = new HashSet<>();
+        private Set<String> removeLocalCacheKeySet = new HashSet<>();
 
     }
 

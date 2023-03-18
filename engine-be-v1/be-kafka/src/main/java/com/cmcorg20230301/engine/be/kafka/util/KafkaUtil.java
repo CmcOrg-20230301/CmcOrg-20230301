@@ -2,7 +2,6 @@ package com.cmcorg20230301.engine.be.kafka.util;
 
 import cn.hutool.json.JSONUtil;
 import com.cmcorg20230301.engine.be.kafka.model.enums.KafkaTopicEnum;
-import com.cmcorg20230301.engine.be.model.model.interfaces.IRedisKey;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Component;
 
@@ -32,7 +31,7 @@ public class KafkaUtil {
     /**
      * 发送消息：移除本地缓存
      */
-    public static void sendLocalCacheRemoveTopic(Set<Enum<? extends IRedisKey>> removeLocalCacheKeySet) {
+    public static void sendLocalCacheRemoveTopic(Set<String> removeLocalCacheKeySet) {
 
         send(KafkaTopicEnum.LOCAL_CACHE_REMOVE_TOPIC, removeLocalCacheKeySet);
 

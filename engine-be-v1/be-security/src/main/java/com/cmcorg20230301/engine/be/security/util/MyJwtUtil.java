@@ -11,7 +11,7 @@ import cn.hutool.json.JSONUtil;
 import cn.hutool.jwt.JWT;
 import com.baomidou.mybatisplus.extension.toolkit.ChainWrappers;
 import com.cmcorg20230301.engine.be.cache.util.CacheHelper;
-import com.cmcorg20230301.engine.be.cache.util.CacheRedisUtil;
+import com.cmcorg20230301.engine.be.cache.util.CacheUtil;
 import com.cmcorg20230301.engine.be.model.model.constant.BaseConstant;
 import com.cmcorg20230301.engine.be.redisson.model.enums.RedisKeyEnum;
 import com.cmcorg20230301.engine.be.security.exception.BaseBizCodeEnum;
@@ -188,8 +188,8 @@ public class MyJwtUtil {
             return null;
         }
 
-        Map<Long, String> map = CacheRedisUtil
-            .getMapCache(RedisKeyEnum.USER_ID_AND_JWT_SECRET_SUF_CACHE, CacheHelper.getDefaultLongTMap(), () -> {
+        Map<Long, String> map =
+            CacheUtil.get(RedisKeyEnum.USER_ID_AND_JWT_SECRET_SUF_CACHE, CacheHelper.getDefaultLongMap(), () -> {
 
                 List<SysUserDO> sysUserDOList =
                     ChainWrappers.lambdaQueryChain(sysUserMapper).eq(SysUserDO::getEnableFlag, true)

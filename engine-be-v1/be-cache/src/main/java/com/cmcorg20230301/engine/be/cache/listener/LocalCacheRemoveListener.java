@@ -33,13 +33,12 @@ public class LocalCacheRemoveListener {
         Set<String> keySet = recordList.stream() //
             .map(it -> JSONUtil.toBean(it, new TypeReference<Set<String>>() {
             }, false)) //
-            .flatMap(Collection::stream) //
-            .distinct()  // 去重
+            .flatMap(Collection::stream)  //
             .collect(Collectors.toSet());
 
         if (keySet.size() != 0) {
 
-            log.info("canal：清除 本地缓存：{}", keySet);
+            log.info("kafka：清除 本地缓存：{}", keySet);
             CacheLocalUtil.removeAll(keySet); // 清除本地缓存
 
         }

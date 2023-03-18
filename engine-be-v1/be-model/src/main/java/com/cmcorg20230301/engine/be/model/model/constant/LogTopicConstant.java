@@ -9,9 +9,11 @@ public interface LogTopicConstant {
 
     String NORMAL = PRE_BE + "normal"; // 没有指定 loggerName的日志
 
-    String CACHE_CANAL = PRE_BE + "cache-canal"; // canal缓存相关
+    String CANAL = PRE_BE + "canal"; // canal相关
 
-    String CACHE_REDIS = PRE_BE + "cache-redis"; // redis缓存相关
+    String CACHE = PRE_BE + "cache"; // 缓存相关
+
+    String CACHE_REDIS_KAFKA_LOCAL = PRE_BE + "cache-redis-kafka-local"; // redis-kafka-local缓存相关
 
     String CACHE_LOCAL = PRE_BE + "cache-local"; // 本地缓存相关
 
