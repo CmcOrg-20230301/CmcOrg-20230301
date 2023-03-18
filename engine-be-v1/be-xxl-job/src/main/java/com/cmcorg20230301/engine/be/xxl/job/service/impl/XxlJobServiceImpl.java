@@ -1,12 +1,15 @@
 package com.cmcorg20230301.engine.be.xxl.job.service.impl;
 
 import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.util.BooleanUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.http.HttpRequest;
 import cn.hutool.http.HttpResponse;
 import cn.hutool.json.JSONArray;
 import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
+import com.cmcorg20230301.engine.be.cache.util.CacheRedisKafkaLocalUtil;
+import com.cmcorg20230301.engine.be.cache.util.MyCacheUtil;
 import com.cmcorg20230301.engine.be.model.model.constant.BaseConstant;
 import com.cmcorg20230301.engine.be.model.model.dto.NotNullId;
 import com.cmcorg20230301.engine.be.redisson.model.enums.RedisKeyEnum;
@@ -14,7 +17,6 @@ import com.cmcorg20230301.engine.be.security.model.vo.ApiResultVO;
 import com.cmcorg20230301.engine.be.util.util.MyDateUtil;
 import com.cmcorg20230301.engine.be.xxl.job.model.dto.XxlJobInsertDTO;
 import com.cmcorg20230301.engine.be.xxl.job.service.XxlJobService;
-import org.redisson.api.RBucket;
 import org.redisson.api.RedissonClient;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -113,7 +115,8 @@ public class XxlJobServiceImpl implements XxlJobService {
         } catch (Exception e) {
 
             // 移除 redis中的 cookie，然后再执行一次本方法
-            redissonClient.getBucket(RedisKeyEnum.XXL_JOB_COOKIE_CACHE.name()).delete();
+            CacheRedisKafkaLocalUtil.remove(RedisKeyEnum.XXL_JOB_COOKIE_CACHE, null);
+
             return doAddJob(formJson, null);
 
         }
@@ -171,7 +174,7 @@ public class XxlJobServiceImpl implements XxlJobService {
         } catch (Exception e) {
 
             // 移除 redis中的 cookie，然后再执行一次本方法
-            redissonClient.getBucket(RedisKeyEnum.XXL_JOB_COOKIE_CACHE.name()).delete();
+            CacheRedisKafkaLocalUtil.remove(RedisKeyEnum.XXL_JOB_COOKIE_CACHE, null);
             setJobGroup(dto, null);
 
         }
@@ -183,13 +186,7 @@ public class XxlJobServiceImpl implements XxlJobService {
      */
     private HttpCookie getCookie() {
 
-        RBucket<JSONObject> bucket = redissonClient.getBucket(RedisKeyEnum.XXL_JOB_COOKIE_CACHE.name());
-
-        JSONObject jsonObject = bucket.get();
-
-        HttpCookie httpCookie;
-
-        if (jsonObject == null) {
+        JSONObject jsonObject = MyCacheUtil.get(RedisKeyEnum.XXL_JOB_COOKIE_CACHE, null, () -> {
 
             JSONObject formJson =
                 JSONUtil.createObj().set("userName", userName).set("password", password).set("ifRemember", "on");
@@ -197,26 +194,24 @@ public class XxlJobServiceImpl implements XxlJobService {
             HttpResponse response =
                 HttpRequest.post(adminAddresses + "/login").form(formJson).timeout(BaseConstant.MINUTE_1_EXPIRE_TIME)
                     .execute();
-            if (!response.isOk()) {
+
+            if (BooleanUtil.isFalse(response.isOk())) {
                 ApiResultVO.error("操作失败：登录 xxl-job失败：" + JSONUtil.parseObj(response.body()));
             }
 
             List<HttpCookie> cookieList = response.getCookies();
+
             if (CollUtil.isEmpty(cookieList)) {
                 ApiResultVO.error("操作失败：登录 xxl-job失败：cookieList 为空");
             }
 
-            // 存储到 redis中
-            httpCookie = cookieList.get(0);
-            bucket.set(JSONUtil.createObj().set("name", httpCookie.getName()).set("value", httpCookie.getValue()));
+            HttpCookie httpCookie = cookieList.get(0);
 
-        } else {
+            return JSONUtil.createObj().set("name", httpCookie.getName()).set("value", httpCookie.getValue());
 
-            httpCookie = new HttpCookie(jsonObject.getStr("name"), jsonObject.getStr("value"));
+        });
 
-        }
-
-        return httpCookie;
+        return new HttpCookie(jsonObject.getStr("name"), jsonObject.getStr("value"));
 
     }
 
@@ -248,7 +243,7 @@ public class XxlJobServiceImpl implements XxlJobService {
         } catch (Exception e) {
 
             // 移除 redis中的 cookie，然后再执行一次本方法
-            redissonClient.getBucket(RedisKeyEnum.XXL_JOB_COOKIE_CACHE.name()).delete();
+            CacheRedisKafkaLocalUtil.remove(RedisKeyEnum.XXL_JOB_COOKIE_CACHE, null);
             deleteById(notNullId);
 
         }
