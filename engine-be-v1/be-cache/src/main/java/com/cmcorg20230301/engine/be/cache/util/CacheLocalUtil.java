@@ -26,7 +26,7 @@ public class CacheLocalUtil {
     /**
      * 添加：本地缓存
      */
-    public static void put(@NotNull Enum<? extends IRedisKey> redisKeyEnum, Object value) {
+    public static void put(@NotNull Enum<? extends IRedisKey> redisKeyEnum, @NotNull Object value) {
 
         put(redisKeyEnum, null, value);
 
@@ -35,7 +35,8 @@ public class CacheLocalUtil {
     /**
      * 添加：本地缓存
      */
-    public static void put(@NotNull Enum<? extends IRedisKey> redisKeyEnum, @Nullable String sufKey, Object value) {
+    public static void put(@NotNull Enum<? extends IRedisKey> redisKeyEnum, @Nullable String sufKey,
+        @NotNull Object value) {
 
         String key = CacheHelper.getKey(redisKeyEnum, sufKey);
 
@@ -46,16 +47,16 @@ public class CacheLocalUtil {
     /**
      * 添加：本地缓存
      */
-    public static void put(String key, Object value) {
+    public static void put(@NotNull String key, @NotNull Object value) {
 
         LOCAL_CACHE.put(key, value);
 
     }
 
     /**
-     * 添加：本地缓存
+     * 添加：本地缓存到 map里
      */
-    public static <T> void put(String key, String secondKey, T value) {
+    public static <T> void put(@NotNull String key, @NotNull String secondKey, @NotNull T value) {
 
         Map<String, T> map = getSecondMap(key);
 
@@ -89,17 +90,17 @@ public class CacheLocalUtil {
      * 通过：key，获取：本地缓存
      */
     @Nullable
-    public static <T> T get(String key) {
+    public static <T> T get(@NotNull String key) {
 
         return (T)LOCAL_CACHE.get(key);
 
     }
 
     /**
-     * 通过：key，获取：本地缓存
+     * 通过：key，获取：本地缓存从 map里
      */
     @Nullable
-    public static <T> T get(String key, String secondKey) {
+    public static <T> T get(@NotNull String key, @NotNull String secondKey) {
 
         Map<String, T> map = getSecondMap(key);
 
@@ -110,7 +111,7 @@ public class CacheLocalUtil {
     /**
      * 获取：map
      */
-    private static <T> Map<String, T> getSecondMap(String key) {
+    private static <T> Map<String, T> getSecondMap(@NotNull String key) {
 
         return (Map<String, T>)LOCAL_CACHE.get(key, ConcurrentHashMap::new);
 
@@ -139,7 +140,7 @@ public class CacheLocalUtil {
     /**
      * 通过：key，移除：本地缓存
      */
-    public static void remove(String key) {
+    public static void remove(@NotNull String key) {
 
         LOCAL_CACHE.remove(key); // 移除
 

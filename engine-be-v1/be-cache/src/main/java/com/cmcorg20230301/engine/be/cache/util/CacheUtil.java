@@ -2,6 +2,7 @@ package com.cmcorg20230301.engine.be.cache.util;
 
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.lang.func.Func0;
+import cn.hutool.core.util.StrUtil;
 import com.cmcorg20230301.engine.be.model.model.constant.LogTopicConstant;
 import com.cmcorg20230301.engine.be.model.model.interfaces.IRedisKey;
 import com.cmcorg20230301.engine.be.redisson.util.RedissonUtil;
@@ -9,6 +10,7 @@ import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.redisson.api.RMap;
 import org.redisson.api.RedissonClient;
 import org.springframework.stereotype.Component;
 
@@ -88,6 +90,62 @@ public class CacheUtil {
 
         log.info("{}：加入 本地缓存", key);
         CacheLocalUtil.put(key, result);
+
+        return result;
+
+    }
+
+    /**
+     * 获取：一般类型的缓存从 map里
+     */
+    @SneakyThrows
+    @NotNull
+    public static <T> T get(@NotNull Enum<? extends IRedisKey> redisKeyEnum, @Nullable String sufKey,
+        @NotNull String secondKey, @NotNull T defaultResult, @Nullable Func0<T> func0) {
+
+        if (StrUtil.isBlank(secondKey)) {
+            throw new RuntimeException("操作失败：获取时，secondKey不能为空，请联系管理员");
+        }
+
+        String key = CacheHelper.getKey(redisKeyEnum, sufKey);
+
+        T result = CacheLocalUtil.get(key, secondKey);
+
+        if (result != null) {
+
+            log.info("{}：返回 本地缓存", key);
+            return result;
+
+        }
+
+        RMap<String, T> rMap = redissonClient.getMap(key);
+
+        result = rMap.get(secondKey);
+
+        if (result == null) {
+
+            if (func0 != null) {
+
+                log.info("{}：读取提供者的数据", key);
+                result = func0.call();
+
+            }
+
+        } else {
+
+            log.info("{}：加入 本地缓存，并返回 redis缓存", key);
+            CacheLocalUtil.put(key, secondKey, result);
+            return result;
+
+        }
+
+        result = CacheHelper.checkAndReturnResult(result, defaultResult); // 检查并设置值
+
+        log.info("{}：加入 redis缓存", key);
+        rMap.put(secondKey, result); // 先加入到 redis里
+
+        log.info("{}：加入 本地缓存", key);
+        CacheLocalUtil.put(key, secondKey, result);
 
         return result;
 

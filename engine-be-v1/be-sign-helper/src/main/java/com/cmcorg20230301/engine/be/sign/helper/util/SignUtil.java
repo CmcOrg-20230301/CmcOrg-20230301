@@ -278,10 +278,11 @@ public class SignUtil {
 
             }
 
-            sysUserDO.setJwtSecretSuf(IdUtil.simpleUUID());
             sysUserDO.setPassword(PasswordConvertUtil.convert(password, checkPasswordBlank));
 
             sysUserMapper.insert(sysUserDO); // 保存：用户
+
+            UserUtil.setJwtSecretSuf(sysUserDO.getId()); // 设置：jwt秘钥后缀
 
             SysUserInfoDO sysUserInfoDO = new SysUserInfoDO();
             sysUserInfoDO.setId(sysUserDO.getId());
@@ -463,9 +464,8 @@ public class SignUtil {
     private static SysUserDO signInGetSysUserDO(LambdaQueryChainWrapper<SysUserDO> lambdaQueryChainWrapper,
         boolean errorFlag) {
 
-        SysUserDO sysUserDO = lambdaQueryChainWrapper
-            .select(SysUserDO::getPassword, BaseEntity::getEnableFlag, SysUserDO::getJwtSecretSuf, BaseEntity::getId)
-            .one();
+        SysUserDO sysUserDO =
+            lambdaQueryChainWrapper.select(SysUserDO::getPassword, BaseEntity::getEnableFlag, BaseEntity::getId).one();
 
         // 账户是否存在
         if (sysUserDO == null) {
@@ -573,7 +573,6 @@ public class SignUtil {
 
                 SysUserDO sysUserDO = new SysUserDO();
                 sysUserDO.setId(currentUserIdNotAdmin);
-                sysUserDO.setJwtSecretSuf(IdUtil.simpleUUID());
 
                 sysUserDO.setPassword(PasswordConvertUtil.convert(newPassword, true));
 
@@ -582,6 +581,8 @@ public class SignUtil {
                 if (checkCodeFlag) {
                     bucket.delete(); // 删除：验证码
                 }
+
+                UserUtil.setJwtSecretSuf(currentUserIdNotAdmin); // 设置：jwt秘钥后缀
 
                 return BaseBizCodeEnum.OK;
 
@@ -762,8 +763,6 @@ public class SignUtil {
                 // 通过：RedisKeyEnum，设置：账号
                 setSysUserDOAccountByRedisKeyEnum(redisKeyEnum, newAccount, sysUserDO);
 
-                sysUserDO.setJwtSecretSuf(IdUtil.simpleUUID());
-
                 sysUserMapper.updateById(sysUserDO); // 更新：用户
 
                 if (deleteRedisFlag) {
@@ -773,6 +772,8 @@ public class SignUtil {
                     newBucket.delete();
 
                 }
+
+                UserUtil.setJwtSecretSuf(currentUserIdNotAdmin); // 设置：jwt秘钥后缀
 
                 return BaseBizCodeEnum.OK;
 
@@ -879,7 +880,6 @@ public class SignUtil {
 
                 }
 
-                sysUserDO.setJwtSecretSuf(IdUtil.simpleUUID());
                 sysUserDO.setPassword(PasswordConvertUtil.convert(newPassword, true));
                 sysUserMapper.updateById(sysUserDO); // 保存：用户
 
@@ -893,6 +893,8 @@ public class SignUtil {
                     batch.getBucket(key).deleteAsync();
 
                 });
+
+                UserUtil.setJwtSecretSuf(sysUserDO.getId()); // 设置：jwt秘钥后缀
 
                 return BaseBizCodeEnum.OK;
 
@@ -1012,11 +1014,12 @@ public class SignUtil {
                 setSysUserDOAccountByRedisKeyEnum(redisKeyEnum, account, sysUserDO);
 
                 sysUserDO.setId(currentUserIdNotAdmin);
-                sysUserDO.setJwtSecretSuf(IdUtil.simpleUUID());
 
                 sysUserMapper.updateById(sysUserDO); // 保存：用户
 
                 bucket.delete(); // 删除：验证码
+
+                UserUtil.setJwtSecretSuf(currentUserIdNotAdmin); // 设置：jwt秘钥后缀
 
                 return BaseBizCodeEnum.OK;
 

@@ -459,13 +459,24 @@ public class UserUtil {
     /**
      * 统一的：设置：用户 jwt私钥后缀
      */
-    public static void setJwtSecretSuf(SysUserDO sysUserDO) {
-
-        sysUserDO.setJwtSecretSuf(IdUtil.simpleUUID());
+    public static void setJwtSecretSuf(long userId) {
 
         CacheRedisKafkaLocalUtil
-            .put(RedisKeyEnum.USER_ID_AND_JWT_SECRET_SUF_CACHE, null, String.valueOf(sysUserDO.getId()),
-                sysUserDO.getJwtSecretSuf(), null);
+            .put(RedisKeyEnum.USER_ID_AND_JWT_SECRET_SUF_CACHE, null, String.valueOf(userId), IdUtil.simpleUUID(),
+                null);
+
+    }
+
+    /**
+     * 统一的：获取：用户 jwt私钥后缀
+     */
+    public static void getJwtSecretSuf(long userId) {
+
+        CacheUtil.get(RedisKeyEnum.USER_ID_AND_JWT_SECRET_SUF_CACHE, null, String.valueOf(userId));
+
+        CacheRedisKafkaLocalUtil
+            .put(RedisKeyEnum.USER_ID_AND_JWT_SECRET_SUF_CACHE, null, String.valueOf(userId), IdUtil.simpleUUID(),
+                null);
 
     }
 

@@ -9,17 +9,12 @@ import cn.hutool.crypto.digest.DigestUtil;
 import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
 import cn.hutool.jwt.JWT;
-import com.baomidou.mybatisplus.extension.toolkit.ChainWrappers;
-import com.cmcorg20230301.engine.be.cache.util.CacheHelper;
-import com.cmcorg20230301.engine.be.cache.util.CacheUtil;
 import com.cmcorg20230301.engine.be.model.model.constant.BaseConstant;
 import com.cmcorg20230301.engine.be.redisson.model.enums.RedisKeyEnum;
 import com.cmcorg20230301.engine.be.security.exception.BaseBizCodeEnum;
 import com.cmcorg20230301.engine.be.security.mapper.SysUserMapper;
 import com.cmcorg20230301.engine.be.security.model.constant.SecurityConstant;
-import com.cmcorg20230301.engine.be.security.model.entity.BaseEntity;
 import com.cmcorg20230301.engine.be.security.model.entity.SysMenuDO;
-import com.cmcorg20230301.engine.be.security.model.entity.SysUserDO;
 import com.cmcorg20230301.engine.be.security.model.enums.RequestCategoryEnum;
 import com.cmcorg20230301.engine.be.security.model.vo.ApiResultVO;
 import com.cmcorg20230301.engine.be.security.properties.SecurityProperties;
@@ -29,7 +24,10 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Component;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.*;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
@@ -188,16 +186,7 @@ public class MyJwtUtil {
             return null;
         }
 
-        Map<Long, String> map =
-            CacheUtil.get(RedisKeyEnum.USER_ID_AND_JWT_SECRET_SUF_CACHE, CacheHelper.getDefaultLongMap(), () -> {
 
-                List<SysUserDO> sysUserDOList =
-                    ChainWrappers.lambdaQueryChain(sysUserMapper).eq(SysUserDO::getEnableFlag, true)
-                        .select(BaseEntity::getId, SysUserDO::getJwtSecretSuf).list();
-
-                return sysUserDOList.stream().collect(Collectors.toMap(BaseEntity::getId, SysUserDO::getJwtSecretSuf));
-
-            });
 
         return map.get(userId);
 

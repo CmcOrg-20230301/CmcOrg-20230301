@@ -17,9 +17,6 @@ public class SysUserDO extends BaseEntity {
     @Schema(description = "是否注销，未使用，而是采取直接删除的方式，目的：防止数据量越来越大")
     private Boolean delFlag;
 
-    @Schema(description = "用户 jwt私钥后缀（uuid）")
-    private String jwtSecretSuf;
-
     @Schema(description = "密码，可为空，如果为空，则登录时需要提示【进行忘记密码操作】")
     private String password;
 

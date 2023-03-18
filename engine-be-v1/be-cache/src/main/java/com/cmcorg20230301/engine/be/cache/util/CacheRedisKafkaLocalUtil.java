@@ -3,6 +3,7 @@ package com.cmcorg20230301.engine.be.cache.util;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.lang.func.Func0;
 import cn.hutool.core.lang.func.VoidFunc0;
+import cn.hutool.core.util.StrUtil;
 import com.cmcorg20230301.engine.be.kafka.util.KafkaUtil;
 import com.cmcorg20230301.engine.be.model.model.constant.LogTopicConstant;
 import com.cmcorg20230301.engine.be.model.model.dto.NotEmptyKeyValueSet;
@@ -51,6 +52,10 @@ public class CacheRedisKafkaLocalUtil {
      */
     @SneakyThrows
     private static void update(@NotNull String key, @NotNull String secondKey, @NotNull Func0<?> func0) {
+
+        if (StrUtil.isBlank(secondKey)) {
+            throw new RuntimeException("操作失败：更新时，secondKey不能为空，请联系管理员");
+        }
 
         Object callObject = func0.call(); // 执行方法，获取返回值
 
@@ -111,6 +116,17 @@ public class CacheRedisKafkaLocalUtil {
         @NotNull String secondKey, @NotNull T defaultResult, @Nullable Func0<T> func0) {
 
         String key = CacheHelper.getKey(redisKeyEnum, sufKey);
+
+        put(key, secondKey, defaultResult, func0);
+
+    }
+
+    /**
+     * 添加：一般类型的缓存到 map里
+     */
+    @SneakyThrows
+    public static <T> void put(@NotNull String key, @NotNull String secondKey, @NotNull T defaultResult,
+        @Nullable Func0<T> func0) {
 
         update(key, secondKey, () -> {
 

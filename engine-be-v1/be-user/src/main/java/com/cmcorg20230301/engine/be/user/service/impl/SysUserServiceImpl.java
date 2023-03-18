@@ -3,7 +3,10 @@ package com.cmcorg20230301.engine.be.user.service.impl;
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.map.MapUtil;
-import cn.hutool.core.util.*;
+import cn.hutool.core.util.BooleanUtil;
+import cn.hutool.core.util.DesensitizedUtil;
+import cn.hutool.core.util.ReUtil;
+import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.baomidou.mybatisplus.extension.toolkit.ChainWrappers;
@@ -25,10 +28,7 @@ import com.cmcorg20230301.engine.be.security.mapper.SysUserMapper;
 import com.cmcorg20230301.engine.be.security.model.entity.*;
 import com.cmcorg20230301.engine.be.security.model.vo.ApiResultVO;
 import com.cmcorg20230301.engine.be.security.properties.SecurityProperties;
-import com.cmcorg20230301.engine.be.security.util.MyEntityUtil;
-import com.cmcorg20230301.engine.be.security.util.MyRsaUtil;
-import com.cmcorg20230301.engine.be.security.util.PasswordConvertUtil;
-import com.cmcorg20230301.engine.be.security.util.SysParamUtil;
+import com.cmcorg20230301.engine.be.security.util.*;
 import com.cmcorg20230301.engine.be.sign.helper.util.SignUtil;
 import com.cmcorg20230301.engine.be.user.exception.BizCodeEnum;
 import com.cmcorg20230301.engine.be.user.mapper.SysUserProMapper;
@@ -303,24 +303,11 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserProMapper, SysUserDO>
     @Override
     public String refreshJwtSecretSuf(NotEmptyIdSet notEmptyIdSet, String password) {
 
-        List<SysUserDO> updateList = new ArrayList<>();
-
         for (Long item : notEmptyIdSet.getIdSet()) {
 
-            SysUserDO sysUserDO = new SysUserDO();
-
-            sysUserDO.setId(item);
-            sysUserDO.setJwtSecretSuf(IdUtil.simpleUUID());
-
-            if (password != null) {
-                sysUserDO.setPassword(password);
-            }
-
-            updateList.add(sysUserDO);
+            UserUtil.setJwtSecretSuf(item); // 设置：jwt秘钥后缀
 
         }
-
-        updateBatchById(updateList);
 
         return BaseBizCodeEnum.OK;
 
