@@ -98,10 +98,10 @@ public class CacheUtil {
      */
     @SneakyThrows
     @NotNull
-    public static <T extends Map<?, ?>> T get(@NotNull Enum<? extends IRedisKey> redisKeyEnum,
-        @NotNull T defaultResultMap, @Nullable Func0<T> func0) {
+    public static <T extends Map<?, ?>> T get(@NotNull Enum<? extends IRedisKey> redisKeyEnum, @NotNull T defaultResult,
+        @Nullable Func0<T> func0) {
 
-        return get(redisKeyEnum, null, defaultResultMap, func0);
+        return get(redisKeyEnum, null, defaultResult, func0);
 
     }
 
@@ -111,7 +111,7 @@ public class CacheUtil {
     @SneakyThrows
     @NotNull
     public static <T extends Map<?, ?>> T get(@NotNull Enum<? extends IRedisKey> redisKeyEnum, @Nullable String sufKey,
-        @NotNull T defaultResultMap, @Nullable Func0<T> func0) {
+        @NotNull T defaultResult, @Nullable Func0<T> func0) {
 
         String key = CacheHelper.getKey(redisKeyEnum, sufKey);
 
@@ -141,7 +141,7 @@ public class CacheUtil {
 
         }
 
-        result = CacheHelper.checkAndReturnResult(result, defaultResultMap); // 检查并设置值
+        result = CacheHelper.checkAndReturnResult(result, defaultResult); // 检查并设置值
 
         log.info("{}：加入 redis缓存", key);
         T finalResult = result;
@@ -160,14 +160,14 @@ public class CacheUtil {
     }
 
     /**
-     * 获取：Collection类型的缓存
+     * 获取：collection类型的缓存
      */
     @SneakyThrows
     @NotNull
     public static <T extends Collection<?>> T get(@NotNull Enum<? extends IRedisKey> redisKeyEnum,
-        @NotNull T defaultResultCollection, @Nullable Func0<T> func0) {
+        @NotNull T defaultResult, @Nullable Func0<T> func0) {
 
-        return get(redisKeyEnum, null, defaultResultCollection, func0);
+        return get(redisKeyEnum, null, defaultResult, func0);
 
     }
 
@@ -177,7 +177,7 @@ public class CacheUtil {
     @SneakyThrows
     @NotNull
     public static <T extends Collection<?>> T get(@NotNull Enum<? extends IRedisKey> redisKeyEnum,
-        @Nullable String sufKey, @NotNull T defaultResultCollection, @Nullable Func0<T> func0) {
+        @Nullable String sufKey, @NotNull T defaultResult, @Nullable Func0<T> func0) {
 
         String key = CacheHelper.getKey(redisKeyEnum, sufKey);
 
@@ -207,7 +207,7 @@ public class CacheUtil {
 
         }
 
-        result = CacheHelper.checkAndReturnResult(result, defaultResultCollection); // 检查并设置值
+        result = CacheHelper.checkAndReturnResult(result, defaultResult); // 检查并设置值
 
         log.info("{}：加入 redis缓存", key);
         T finalResult = result;
