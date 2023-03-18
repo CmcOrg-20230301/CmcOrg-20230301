@@ -1,6 +1,7 @@
 package com.cmcorg20230301.engine.be.security.filter;
 
 import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.convert.Convert;
 import cn.hutool.core.exceptions.ValidateException;
 import cn.hutool.core.util.BooleanUtil;
 import cn.hutool.core.util.StrUtil;
@@ -8,6 +9,7 @@ import cn.hutool.jwt.JWT;
 import cn.hutool.jwt.JWTValidator;
 import com.cmcorg20230301.engine.be.cache.util.MyCacheUtil;
 import com.cmcorg20230301.engine.be.model.model.constant.BaseConstant;
+import com.cmcorg20230301.engine.be.security.configuration.BaseConfiguration;
 import com.cmcorg20230301.engine.be.security.configuration.security.IJwtValidatorConfiguration;
 import com.cmcorg20230301.engine.be.security.exception.BaseBizCodeEnum;
 import com.cmcorg20230301.engine.be.security.properties.SecurityProperties;
@@ -73,6 +75,8 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
             return null;
         }
 
+        jwtStr = handleJwtStr(jwtStr); // 处理：jwtStr
+
         JWT jwt;
         try {
             jwt = JWT.of(jwtStr);
@@ -136,6 +140,26 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
         // 通过 userId 获取用户具有的权限
         return new UsernamePasswordAuthenticationToken(jwt.getPayload().getClaimsJson(), null,
             MyJwtUtil.getSimpleGrantedAuthorityListByUserId(userId));
+
+    }
+
+    /**
+     * 处理：jwtStr
+     */
+    @Nullable
+    private String handleJwtStr(String jwtStr) {
+
+        // 如果不是正式环境
+        if (BooleanUtil.isFalse(BaseConfiguration.prodFlag())) {
+
+            // Authorization Bearer 0
+            String jwtStrTmp = MyJwtUtil.generateJwt(Convert.toLong(jwtStr), null, null);
+
+            jwtStr = MyJwtUtil.getJwtStrByHeadAuthorization(jwtStrTmp);
+
+        }
+
+        return jwtStr;
 
     }
 

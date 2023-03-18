@@ -474,11 +474,9 @@ public class UserUtil {
     @NotNull
     public static String getJwtSecretSuf(long userId) {
 
-        String jwtSecretSuf = MyCacheUtil
+        return MyCacheUtil
             .get(RedisKeyEnum.USER_ID_AND_JWT_SECRET_SUF_CACHE, null, String.valueOf(userId), IdUtil.simpleUUID(),
                 null);
-
-        return jwtSecretSuf;
 
     }
 

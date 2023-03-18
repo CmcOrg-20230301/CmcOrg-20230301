@@ -45,7 +45,7 @@ public class ServerServiceImpl implements ServerService {
 
         // 磁盘信息
         long diskTotal = 0L;
-        long diskUsable = 0L;
+        long diskAvailable = 0L;
 
         OperatingSystem os = OshiUtil.getOs();
 
@@ -53,12 +53,12 @@ public class ServerServiceImpl implements ServerService {
 
         for (OSFileStore item : fileStoreList) {
             diskTotal += item.getTotalSpace();
-            diskUsable += item.getUsableSpace();
+            diskAvailable += item.getUsableSpace();
         }
 
         serverWorkInfoVO.setDiskTotal(diskTotal);
-        serverWorkInfoVO.setDiskUsable(diskUsable);
-        serverWorkInfoVO.setDiskUsed(diskTotal - diskUsable);
+        serverWorkInfoVO.setDiskAvailable(diskAvailable);
+        serverWorkInfoVO.setDiskUsed(diskTotal - diskAvailable);
 
         return serverWorkInfoVO;
 

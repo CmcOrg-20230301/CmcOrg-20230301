@@ -160,6 +160,7 @@ public class MyJwtUtil {
         }
 
         String jwtStr = getJwtStrByHeadAuthorization(authorization);
+
         if (StrUtil.isBlank(jwtStr)) {
             return null;
         }
@@ -171,7 +172,7 @@ public class MyJwtUtil {
     /**
      * 获取：jwtStr
      */
-    public static String getJwtStrByHeadAuthorization(String authorization) {
+    public static String getJwtStrByHeadAuthorization(@NotNull String authorization) {
 
         return authorization.replace(SecurityConstant.JWT_PREFIX, "");
 

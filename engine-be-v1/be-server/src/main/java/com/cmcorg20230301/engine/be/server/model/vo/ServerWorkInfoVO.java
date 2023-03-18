@@ -34,7 +34,7 @@ public class ServerWorkInfoVO {
     private Long diskTotal;
 
     @Schema(description = "磁盘可以使用总量（字节）")
-    private Long diskUsable;
+    private Long diskAvailable;
 
     @Schema(description = "磁盘已经使用总量（字节）")
     private Long diskUsed;

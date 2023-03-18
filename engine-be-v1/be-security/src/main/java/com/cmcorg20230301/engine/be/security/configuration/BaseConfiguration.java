@@ -24,11 +24,23 @@ public class BaseConfiguration {
 
     public static String applicationName; // 服务名
     public static Integer port; // 启动的端口
+    public static String profile; // 启动的端口
 
-    public BaseConfiguration(@Value("${spring.application.name:applicationName}") String applicationName, @Value("${server.port:8080}") int port) {
+    public BaseConfiguration(@Value("${spring.application.name:applicationName}") String applicationName,
+        @Value("${server.port:8080}") int port, @Value("${spring.profiles.active:prod}") String profile) {
 
         BaseConfiguration.applicationName = applicationName;
         BaseConfiguration.port = port;
+        BaseConfiguration.profile = profile;
+
+    }
+
+    /**
+     * 获取：是否是正式环境
+     */
+    public static boolean prodFlag() {
+
+        return "prod".equals(BaseConfiguration.profile);
 
     }
 
