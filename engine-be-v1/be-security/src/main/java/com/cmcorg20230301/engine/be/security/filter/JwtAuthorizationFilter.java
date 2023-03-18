@@ -6,6 +6,7 @@ import cn.hutool.core.util.BooleanUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.jwt.JWT;
 import cn.hutool.jwt.JWTValidator;
+import com.cmcorg20230301.engine.be.cache.util.MyCacheUtil;
 import com.cmcorg20230301.engine.be.model.model.constant.BaseConstant;
 import com.cmcorg20230301.engine.be.security.configuration.security.IJwtValidatorConfiguration;
 import com.cmcorg20230301.engine.be.security.exception.BaseBizCodeEnum;
@@ -89,9 +90,10 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
 
         String jwtHash = MyJwtUtil.generateRedisJwtHash(jwtStr, userId, RequestUtil.getRequestCategoryEnum(request));
 
+        String jwtHashRedis = MyCacheUtil.onlyGet(jwtHash, null);
+
         // 判断 jwtHash是否存在于 redis中，如果存在，则表示不能使用
-        boolean hasKey = redissonClient.getBucket(jwtHash).isExists();
-        if (hasKey) {
+        if (StrUtil.isNotBlank(jwtHashRedis)) {
             return loginExpired(response); // 提示登录过期，请重新登录
         }
 

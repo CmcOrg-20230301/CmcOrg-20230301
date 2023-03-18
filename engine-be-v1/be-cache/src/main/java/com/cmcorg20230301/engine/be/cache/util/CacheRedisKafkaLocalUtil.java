@@ -75,7 +75,7 @@ public class CacheRedisKafkaLocalUtil {
     /**
      * 添加：一般类型的缓存
      */
-    public static <T> void put(@NotNull Enum<? extends IRedisKey> redisKeyEnum, @NotNull T defaultResult,
+    public static <T> void put(@NotNull Enum<? extends IRedisKey> redisKeyEnum, @Nullable T defaultResult,
         @Nullable Func0<T> func0) {
 
         put(redisKeyEnum, null, defaultResult, func0, -1);
@@ -85,9 +85,8 @@ public class CacheRedisKafkaLocalUtil {
     /**
      * 添加：一般类型的缓存
      */
-    @SneakyThrows
     public static <T> void put(@NotNull Enum<? extends IRedisKey> redisKeyEnum, @Nullable String sufKey,
-        @NotNull T defaultResult, @Nullable Func0<T> func0) {
+        @Nullable T defaultResult, @Nullable Func0<T> func0) {
 
         put(redisKeyEnum, null, defaultResult, func0, -1);
 
@@ -98,11 +97,36 @@ public class CacheRedisKafkaLocalUtil {
      *
      * @param timeToLive 存活时间，单位毫秒：-1 永久
      */
-    @SneakyThrows
     public static <T> void put(@NotNull Enum<? extends IRedisKey> redisKeyEnum, @Nullable String sufKey,
-        @NotNull T defaultResult, @Nullable Func0<T> func0, long timeToLive) {
+        @Nullable T defaultResult, @Nullable Func0<T> func0, long timeToLive) {
 
         String key = CacheHelper.getKey(redisKeyEnum, sufKey);
+
+        put(key, defaultResult, func0, timeToLive);
+
+    }
+
+    /**
+     * 添加：一般类型的缓存
+     *
+     * @param timeToLive 存活时间，单位毫秒：-1 永久
+     */
+    public static <T> void put(String key, @Nullable Func0<T> func0, long timeToLive) {
+
+        put(key, null, func0, timeToLive);
+
+    }
+
+    /**
+     * 添加：一般类型的缓存
+     *
+     * @param timeToLive 存活时间，单位毫秒：-1 永久
+     */
+    public static <T> void put(String key, @Nullable T defaultResult, @Nullable Func0<T> func0, long timeToLive) {
+
+        if (StrUtil.isBlank(key)) {
+            return;
+        }
 
         update(key, () -> {
 
@@ -127,7 +151,7 @@ public class CacheRedisKafkaLocalUtil {
      */
     @SneakyThrows
     public static <T> void put(@NotNull Enum<? extends IRedisKey> redisKeyEnum, @Nullable String sufKey,
-        @NotNull String secondKey, @NotNull T defaultResult, @Nullable Func0<T> func0) {
+        @NotNull String secondKey, @Nullable T defaultResult, @Nullable Func0<T> func0) {
 
         String key = CacheHelper.getKey(redisKeyEnum, sufKey);
 
@@ -139,7 +163,7 @@ public class CacheRedisKafkaLocalUtil {
      * 添加：一般类型的缓存到 map里
      */
     @SneakyThrows
-    public static <T> void put(@NotNull String key, @NotNull String secondKey, @NotNull T defaultResult,
+    public static <T> void put(@NotNull String key, @NotNull String secondKey, @Nullable T defaultResult,
         @Nullable Func0<T> func0) {
 
         update(key, secondKey, () -> {
@@ -167,7 +191,7 @@ public class CacheRedisKafkaLocalUtil {
      */
     @SneakyThrows
     public static <T extends Map<?, ?>> void put(@NotNull Enum<? extends IRedisKey> redisKeyEnum,
-        @NotNull T defaultResult, @Nullable Func0<T> func0) {
+        @Nullable T defaultResult, @Nullable Func0<T> func0) {
 
         put(redisKeyEnum, null, defaultResult, func0);
 
@@ -178,7 +202,7 @@ public class CacheRedisKafkaLocalUtil {
      */
     @SneakyThrows
     public static <T extends Map<?, ?>> void put(@NotNull Enum<? extends IRedisKey> redisKeyEnum,
-        @Nullable String sufKey, @NotNull T defaultResult, @Nullable Func0<T> func0) {
+        @Nullable String sufKey, @Nullable T defaultResult, @Nullable Func0<T> func0) {
 
         String key = CacheHelper.getKey(redisKeyEnum, sufKey);
 
@@ -211,7 +235,7 @@ public class CacheRedisKafkaLocalUtil {
      */
     @SneakyThrows
     public static <T extends Collection<?>> void put(@NotNull Enum<? extends IRedisKey> redisKeyEnum,
-        @NotNull T defaultResult, @Nullable Func0<T> func0) {
+        @Nullable T defaultResult, @Nullable Func0<T> func0) {
 
         put(redisKeyEnum, null, defaultResult, func0);
 
@@ -222,7 +246,7 @@ public class CacheRedisKafkaLocalUtil {
      */
     @SneakyThrows
     public static <T extends Collection<?>> void put(@NotNull Enum<? extends IRedisKey> redisKeyEnum,
-        @Nullable String sufKey, @NotNull T defaultResult, @Nullable Func0<T> func0) {
+        @Nullable String sufKey, @Nullable T defaultResult, @Nullable Func0<T> func0) {
 
         String key = CacheHelper.getKey(redisKeyEnum, sufKey);
 

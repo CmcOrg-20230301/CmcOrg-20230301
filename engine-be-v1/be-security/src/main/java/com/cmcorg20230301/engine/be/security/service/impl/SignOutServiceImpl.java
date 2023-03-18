@@ -3,6 +3,7 @@ package com.cmcorg20230301.engine.be.security.service.impl;
 import cn.hutool.json.JSONObject;
 import cn.hutool.jwt.JWT;
 import cn.hutool.jwt.RegisteredPayload;
+import com.cmcorg20230301.engine.be.cache.util.CacheRedisKafkaLocalUtil;
 import com.cmcorg20230301.engine.be.security.exception.BaseBizCodeEnum;
 import com.cmcorg20230301.engine.be.security.service.SignOutService;
 import com.cmcorg20230301.engine.be.security.util.MyJwtUtil;
@@ -14,7 +15,6 @@ import org.springframework.stereotype.Service;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
-import java.util.concurrent.TimeUnit;
 
 @Service
 public class SignOutServiceImpl implements SignOutService {
@@ -55,7 +55,7 @@ public class SignOutServiceImpl implements SignOutService {
         // jwt剩余时间
         long remainMs = expiresDate.getTime() - System.currentTimeMillis();
 
-        redissonClient.getBucket(jwtHash).set("不可用的 jwt：退出登录", remainMs, TimeUnit.MILLISECONDS);
+        CacheRedisKafkaLocalUtil.put(jwtHash, () -> "不可用的 jwt：退出登录", remainMs);
 
         return BaseBizCodeEnum.OK;
 
