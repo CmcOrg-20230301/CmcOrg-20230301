@@ -90,7 +90,7 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
 
         String jwtHash = MyJwtUtil.generateRedisJwtHash(jwtStr, userId, RequestUtil.getRequestCategoryEnum(request));
 
-        String jwtHashRedis = MyCacheUtil.onlyGet(jwtHash, null);
+        String jwtHashRedis = MyCacheUtil.onlyGet(jwtHash, null, true);
 
         // 判断 jwtHash是否存在于 redis中，如果存在，则表示不能使用
         if (StrUtil.isNotBlank(jwtHashRedis)) {

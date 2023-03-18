@@ -4,6 +4,8 @@ import cn.hutool.core.util.StrUtil;
 import cn.hutool.http.HttpUtil;
 import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
+import com.cmcorg20230301.engine.be.cache.util.CacheRedisKafkaLocalUtil;
+import com.cmcorg20230301.engine.be.cache.util.MyCacheUtil;
 import com.cmcorg20230301.engine.be.redisson.model.enums.RedisKeyEnum;
 import com.cmcorg20230301.engine.be.wx.model.vo.WxAccessTokenVO;
 import com.cmcorg20230301.engine.be.wx.model.vo.WxBaseVO;
@@ -11,11 +13,8 @@ import com.cmcorg20230301.engine.be.wx.model.vo.WxOpenIdVO;
 import com.cmcorg20230301.engine.be.wx.model.vo.WxPhoneByCodeVO;
 import com.cmcorg20230301.engine.be.wx.properties.WxProperties;
 import org.jetbrains.annotations.NotNull;
-import org.redisson.api.RBucket;
 import org.redisson.api.RedissonClient;
 import org.springframework.stereotype.Component;
-
-import java.util.concurrent.TimeUnit;
 
 @Component
 public class WxUtil {
@@ -76,28 +75,25 @@ public class WxUtil {
     @NotNull
     private static String getAccessToken() {
 
-        RBucket<String> bucket = redissonClient.getBucket(RedisKeyEnum.WX_ACCESS_TOKEN_CACHE.name());
+        String accessToken = MyCacheUtil.onlyGet(RedisKeyEnum.WX_ACCESS_TOKEN_CACHE, null, true);
 
-        String accessToken = bucket.get();
-
-        if (StrUtil.isBlank(accessToken)) {
-
-            String jsonStr = HttpUtil.get(
-                "https://api.weixin.qq.com/cgi-bin/token?appid=" + wxProperties.getAppId() + "&secret=" + wxProperties
-                    .getSecret() + "&grant_type=client_credential");
-
-            WxAccessTokenVO wxAccessTokenVO = JSONUtil.toBean(jsonStr, WxAccessTokenVO.class);
-
-            checkWxVO(wxAccessTokenVO, "accessToken"); // 检查：微信回调 vo对象
-
-            // 存入 redis中
-            bucket.set(wxAccessTokenVO.getAccess_token(), wxAccessTokenVO.getExpires_in(), TimeUnit.SECONDS);
-
-            accessToken = wxAccessTokenVO.getAccess_token();
-
+        if (StrUtil.isNotBlank(accessToken)) {
+            return accessToken;
         }
 
-        return accessToken;
+        String jsonStr = HttpUtil.get(
+            "https://api.weixin.qq.com/cgi-bin/token?appid=" + wxProperties.getAppId() + "&secret=" + wxProperties
+                .getSecret() + "&grant_type=client_credential");
+
+        WxAccessTokenVO wxAccessTokenVO = JSONUtil.toBean(jsonStr, WxAccessTokenVO.class);
+
+        // 检查：微信回调 vo对象
+        checkWxVO(wxAccessTokenVO, "accessToken");
+
+        CacheRedisKafkaLocalUtil.put(RedisKeyEnum.WX_ACCESS_TOKEN_CACHE.name(), wxAccessTokenVO.getExpires_in(),
+            wxAccessTokenVO::getAccess_token);
+
+        return wxAccessTokenVO.getAccess_token();
 
     }
 
@@ -107,8 +103,10 @@ public class WxUtil {
     private static void checkWxVO(WxBaseVO wxBaseVO, String msg) {
 
         if (wxBaseVO.getErrcode() != null && wxBaseVO.getErrcode() != 0) {
+
             throw new RuntimeException(StrUtil
                 .format("微信：获取【{}】失败，errcode：【{}】，errmsg：【{}】", msg, wxBaseVO.getErrcode(), wxBaseVO.getErrmsg()));
+
         }
 
     }

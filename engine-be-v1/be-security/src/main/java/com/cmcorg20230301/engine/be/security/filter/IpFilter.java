@@ -93,7 +93,7 @@ public class IpFilter implements Filter {
         String key = RedisKeyEnum.PRE_IP_BLACK + ":" + ip;
 
         // 判断是否在 黑名单里
-        String ipBlackStr = MyCacheUtil.onlyGet(key, null);
+        String ipBlackStr = MyCacheUtil.onlyGet(key, null, true);
 
         if (StrUtil.isNotBlank(ipBlackStr)) {
 
@@ -142,7 +142,7 @@ public class IpFilter implements Filter {
             IP_SPEED_MAP.remove(ip); // 移除：ip计数
 
             CacheRedisKafkaLocalUtil
-                .put(RedisKeyEnum.PRE_IP_BLACK, ":" + ip, "黑名单 ip", null, BaseConstant.DAY_1_EXPIRE_TIME);
+                .put(RedisKeyEnum.PRE_IP_BLACK, ":" + ip, "黑名单 ip", BaseConstant.DAY_1_EXPIRE_TIME, null);
 
             return "24小时";
 

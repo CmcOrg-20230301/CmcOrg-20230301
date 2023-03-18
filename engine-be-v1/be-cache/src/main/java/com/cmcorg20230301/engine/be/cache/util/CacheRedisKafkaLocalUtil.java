@@ -78,17 +78,7 @@ public class CacheRedisKafkaLocalUtil {
     public static <T> void put(@NotNull Enum<? extends IRedisKey> redisKeyEnum, @Nullable T defaultResult,
         @Nullable Func0<T> func0) {
 
-        put(redisKeyEnum, null, defaultResult, func0, -1);
-
-    }
-
-    /**
-     * 添加：一般类型的缓存
-     */
-    public static <T> void put(@NotNull Enum<? extends IRedisKey> redisKeyEnum, @Nullable String sufKey,
-        @Nullable T defaultResult, @Nullable Func0<T> func0) {
-
-        put(redisKeyEnum, null, defaultResult, func0, -1);
+        put(redisKeyEnum, null, defaultResult, -1, func0);
 
     }
 
@@ -98,11 +88,11 @@ public class CacheRedisKafkaLocalUtil {
      * @param timeToLive 存活时间，单位毫秒：-1 永久
      */
     public static <T> void put(@NotNull Enum<? extends IRedisKey> redisKeyEnum, @Nullable String sufKey,
-        @Nullable T defaultResult, @Nullable Func0<T> func0, long timeToLive) {
+        @Nullable T defaultResult, long timeToLive, @Nullable Func0<T> func0) {
 
         String key = CacheHelper.getKey(redisKeyEnum, sufKey);
 
-        put(key, defaultResult, func0, timeToLive);
+        put(key, defaultResult, timeToLive, func0);
 
     }
 
@@ -111,9 +101,9 @@ public class CacheRedisKafkaLocalUtil {
      *
      * @param timeToLive 存活时间，单位毫秒：-1 永久
      */
-    public static <T> void put(String key, @Nullable Func0<T> func0, long timeToLive) {
+    public static <T> void put(@NotNull String key, long timeToLive, @Nullable Func0<T> func0) {
 
-        put(key, null, func0, timeToLive);
+        put(key, null, timeToLive, func0);
 
     }
 
@@ -122,7 +112,8 @@ public class CacheRedisKafkaLocalUtil {
      *
      * @param timeToLive 存活时间，单位毫秒：-1 永久
      */
-    public static <T> void put(String key, @Nullable T defaultResult, @Nullable Func0<T> func0, long timeToLive) {
+    public static <T> void put(@NotNull String key, @Nullable T defaultResult, long timeToLive,
+        @Nullable Func0<T> func0) {
 
         if (StrUtil.isBlank(key)) {
             return;

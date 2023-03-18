@@ -10,12 +10,14 @@ import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.redisson.api.RBucket;
 import org.redisson.api.RMap;
 import org.redisson.api.RedissonClient;
 import org.springframework.stereotype.Component;
 
 import java.util.Collection;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 /**
  * 缓存工具类
@@ -53,17 +55,29 @@ public class MyCacheUtil {
     public static <T> T get(@NotNull Enum<? extends IRedisKey> redisKeyEnum, @Nullable String sufKey,
         @Nullable T defaultResult, @Nullable Func0<T> func0) {
 
+        return get(redisKeyEnum, sufKey, defaultResult, -1, func0);
+
+    }
+
+    /**
+     * 获取：一般类型的缓存
+     */
+    @SneakyThrows
+    @NotNull
+    public static <T> T get(@NotNull Enum<? extends IRedisKey> redisKeyEnum, @Nullable String sufKey,
+        @Nullable T defaultResult, long timeToLive, @Nullable Func0<T> func0) {
+
         String key = CacheHelper.getKey(redisKeyEnum, sufKey);
 
-        T result = onlyGet(key, func0);
+        T result = onlyGet(key, func0, false);
 
         result = CacheHelper.checkAndReturnResult(result, defaultResult); // 检查并设置值
 
         log.info("{}：加入 redis缓存", key);
-        redissonClient.<T>getBucket(key).set(result); // 先加入到 redis里
+        redissonClient.<T>getBucket(key).set(result, timeToLive, TimeUnit.MILLISECONDS); // 先加入到 redis里
 
         log.info("{}：加入 本地缓存", key);
-        CacheLocalUtil.put(key, result, -1);
+        CacheLocalUtil.put(key, result, timeToLive);
 
         return result;
 
@@ -74,20 +88,23 @@ public class MyCacheUtil {
      */
     @SneakyThrows
     @Nullable
-    public static <T> T onlyGet(@NotNull Enum<? extends IRedisKey> redisKeyEnum, @Nullable String sufKey) {
+    public static <T> T onlyGet(@NotNull Enum<? extends IRedisKey> redisKeyEnum, @Nullable String sufKey,
+        boolean getRemainTimeFlag) {
 
         String key = CacheHelper.getKey(redisKeyEnum, sufKey);
 
-        return onlyGet(key, null);
+        return onlyGet(key, null, getRemainTimeFlag);
 
     }
 
     /**
      * 只获取值
+     *
+     * @param getRemainTimeFlag 是否获取 redis的过期时间
      */
     @SneakyThrows
     @Nullable
-    public static <T> T onlyGet(@NotNull String key, @Nullable Func0<T> func0) {
+    public static <T> T onlyGet(@NotNull String key, @Nullable Func0<T> func0, boolean getRemainTimeFlag) {
 
         T result = CacheLocalUtil.get(key);
 
@@ -98,7 +115,9 @@ public class MyCacheUtil {
 
         }
 
-        result = redissonClient.<T>getBucket(key).get();
+        RBucket<T> bucket = redissonClient.getBucket(key);
+
+        result = bucket.get();
 
         if (result == null) {
 
@@ -112,7 +131,17 @@ public class MyCacheUtil {
         } else {
 
             log.info("{}：加入 本地缓存，并返回 redis缓存", key);
-            CacheLocalUtil.put(key, result, -1);
+
+            long remainTimeToLive;
+
+            if (getRemainTimeFlag) {
+                remainTimeToLive = bucket.remainTimeToLive();
+            } else {
+                remainTimeToLive = -1;
+            }
+
+            CacheLocalUtil.put(key, result, remainTimeToLive);
+
             return result;
 
         }

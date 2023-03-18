@@ -55,7 +55,7 @@ public class SignOutServiceImpl implements SignOutService {
         // jwt剩余时间
         long remainMs = expiresDate.getTime() - System.currentTimeMillis();
 
-        CacheRedisKafkaLocalUtil.put(jwtHash, () -> "不可用的 jwt：退出登录", remainMs);
+        CacheRedisKafkaLocalUtil.put(jwtHash, remainMs, () -> "不可用的 jwt：退出登录");
 
         return BaseBizCodeEnum.OK;
 
