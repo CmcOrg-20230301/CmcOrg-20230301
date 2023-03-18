@@ -8,6 +8,8 @@ import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.BooleanUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.extra.servlet.ServletUtil;
+import com.cmcorg20230301.engine.be.cache.util.CacheRedisKafkaLocalUtil;
+import com.cmcorg20230301.engine.be.cache.util.MyCacheUtil;
 import com.cmcorg20230301.engine.be.model.model.constant.BaseConstant;
 import com.cmcorg20230301.engine.be.model.model.constant.ParamConstant;
 import com.cmcorg20230301.engine.be.redisson.model.enums.RedisKeyEnum;
@@ -19,7 +21,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.SneakyThrows;
 import org.jetbrains.annotations.Nullable;
-import org.redisson.api.RBucket;
 import org.redisson.api.RedissonClient;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
@@ -33,7 +34,6 @@ import javax.servlet.annotation.WebFilter;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
@@ -90,25 +90,32 @@ public class IpFilter implements Filter {
     @Nullable
     private String ipCheckHandler(String ip) {
 
-        RBucket<String> blackIpBucket = redissonClient.getBucket(RedisKeyEnum.PRE_IP_BLACK + ip);
+        String key = RedisKeyEnum.PRE_IP_BLACK + ip;
 
         // 判断是否在 黑名单里
-        long remainTimeToLive = blackIpBucket.remainTimeToLive();
+        String ipBlackStr = MyCacheUtil.onlyGet(key, null);
 
-        if (remainTimeToLive > -1) {
-            // 如果在 黑名单里，则返回剩余时间
-            return DateUtil.formatBetween(remainTimeToLive, BetweenFormatter.Level.SECOND); // 剩余时间（字符串）
+        if (StrUtil.isNotBlank(ipBlackStr)) {
+
+            // 获取：剩余时间
+            long remainTimeToLive = redissonClient.getBucket(key).remainTimeToLive();
+
+            if (remainTimeToLive > -1) {
+                // 如果在 黑名单里，则返回剩余时间
+                return DateUtil.formatBetween(remainTimeToLive, BetweenFormatter.Level.SECOND); // 剩余时间（字符串）
+            }
+
         }
 
         // 给 ip设置：请求次数
-        return addIpTotal(ip, blackIpBucket);
+        return addIpTotal(ip);
 
     }
 
     /**
      * 给 ip设置：请求次数
      */
-    private String addIpTotal(String ip, RBucket<String> blackIpRedisBucket) {
+    private String addIpTotal(String ip) {
 
         // 获取：ip请求速率相关对象，不限制请求速率，则返回 null
         IpSpeedBO ipSpeedBO = getIpSpeedBO();
@@ -134,7 +141,7 @@ public class IpFilter implements Filter {
 
             IP_SPEED_MAP.remove(ip); // 移除：ip计数
 
-            blackIpRedisBucket.set("黑名单 ip", BaseConstant.DAY_1_EXPIRE_TIME, TimeUnit.MILLISECONDS);
+            CacheRedisKafkaLocalUtil.put(RedisKeyEnum.PRE_IP_BLACK, ip, "黑名单 ip", null, BaseConstant.DAY_1_EXPIRE_TIME);
 
             return "24小时";
 

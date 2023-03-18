@@ -1,8 +1,9 @@
 package com.cmcorg20230301.engine.be.cache.util;
 
-import cn.hutool.cache.Cache;
 import cn.hutool.cache.CacheUtil;
+import cn.hutool.cache.impl.TimedCache;
 import cn.hutool.core.collection.CollUtil;
+import com.cmcorg20230301.engine.be.model.model.constant.BaseConstant;
 import com.cmcorg20230301.engine.be.model.model.constant.LogTopicConstant;
 import com.cmcorg20230301.engine.be.model.model.interfaces.IRedisKey;
 import lombok.extern.slf4j.Slf4j;
@@ -20,8 +21,17 @@ import java.util.concurrent.ConcurrentHashMap;
 @Slf4j(topic = LogTopicConstant.CACHE_LOCAL)
 public class CacheLocalUtil {
 
-    // 本地缓存：最近最久未使用缓存
-    private static final Cache<String, Object> LOCAL_CACHE = CacheUtil.newLRUCache(2000000);
+    private static final long TIMEOUT = BaseConstant.SECOND_20_EXPIRE_TIME;
+
+    // 本地缓存：超时缓存，默认永不过期
+    private static final TimedCache<String, Object> LOCAL_CACHE = CacheUtil.newTimedCache(BaseConstant.ZERO);
+
+    static {
+
+        // 定时清理 map，过期的条目
+        LOCAL_CACHE.schedulePrune(TIMEOUT + BaseConstant.SECOND_3_EXPIRE_TIME);
+
+    }
 
     /**
      * 添加：本地缓存
@@ -40,16 +50,17 @@ public class CacheLocalUtil {
 
         String key = CacheHelper.getKey(redisKeyEnum, sufKey);
 
-        put(key, value);
+        put(key, value, -1);
 
     }
 
     /**
      * 添加：本地缓存
      */
-    public static void put(@NotNull String key, @NotNull Object value) {
+    public static void put(@NotNull String key, @NotNull Object value, long timeToLive) {
 
-        LOCAL_CACHE.put(key, value);
+        // 备注：这里是 < 0，都表示是永久
+        LOCAL_CACHE.put(key, value, timeToLive);
 
     }
 
@@ -92,7 +103,7 @@ public class CacheLocalUtil {
     @Nullable
     public static <T> T get(@NotNull String key) {
 
-        return (T)LOCAL_CACHE.get(key);
+        return (T)LOCAL_CACHE.get(key, false);
 
     }
 
@@ -113,7 +124,7 @@ public class CacheLocalUtil {
      */
     private static <T> Map<String, T> getSecondMap(@NotNull String key) {
 
-        return (Map<String, T>)LOCAL_CACHE.get(key, ConcurrentHashMap::new);
+        return (Map<String, T>)LOCAL_CACHE.get(key, false, ConcurrentHashMap::new);
 
     }
 

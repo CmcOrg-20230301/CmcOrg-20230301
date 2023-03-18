@@ -127,9 +127,10 @@ public class MyJwtUtil {
     @NotNull
     public static String generateRedisJwtHash(String jwtStr, Long userId, RequestCategoryEnum requestCategoryEnum) {
 
-        StrBuilder strBuilder = StrBuilder.create(RedisKeyEnum.PRE_JWT_HASH.name());
-        strBuilder.append(":").append(userId).append(":").append(requestCategoryEnum.getCode()).append(":")
-            .append(DigestUtil.sha512Hex(jwtStr));
+        StrBuilder strBuilder = StrBuilder.create();
+
+        strBuilder.append(RedisKeyEnum.PRE_JWT_HASH.name()).append(":").append(userId).append(":")
+            .append(requestCategoryEnum.getCode()).append(":").append(DigestUtil.sha512Hex(jwtStr));
 
         return strBuilder.toString();
 

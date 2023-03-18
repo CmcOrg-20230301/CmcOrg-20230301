@@ -18,6 +18,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.Collection;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 /**
  * redis缓存本地化，通过 kafka实现
@@ -77,7 +78,7 @@ public class CacheRedisKafkaLocalUtil {
     public static <T> void put(@NotNull Enum<? extends IRedisKey> redisKeyEnum, @NotNull T defaultResult,
         @Nullable Func0<T> func0) {
 
-        put(redisKeyEnum, null, defaultResult, func0);
+        put(redisKeyEnum, null, defaultResult, func0, -1);
 
     }
 
@@ -87,6 +88,19 @@ public class CacheRedisKafkaLocalUtil {
     @SneakyThrows
     public static <T> void put(@NotNull Enum<? extends IRedisKey> redisKeyEnum, @Nullable String sufKey,
         @NotNull T defaultResult, @Nullable Func0<T> func0) {
+
+        put(redisKeyEnum, null, defaultResult, func0, -1);
+
+    }
+
+    /**
+     * 添加：一般类型的缓存
+     *
+     * @param timeToLive 存活时间，单位毫秒：-1 永久
+     */
+    @SneakyThrows
+    public static <T> void put(@NotNull Enum<? extends IRedisKey> redisKeyEnum, @Nullable String sufKey,
+        @NotNull T defaultResult, @Nullable Func0<T> func0, long timeToLive) {
 
         String key = CacheHelper.getKey(redisKeyEnum, sufKey);
 
@@ -100,9 +114,9 @@ public class CacheRedisKafkaLocalUtil {
 
             value = CacheHelper.checkAndReturnResult(value, defaultResult); // 检查并设置值
 
-            redissonClient.getBucket(key).set(value); // 添加 redis缓存
+            redissonClient.getBucket(key).set(value, timeToLive, TimeUnit.MILLISECONDS); // 添加 redis缓存
 
-            CacheLocalUtil.put(key, value); // 添加本地缓存
+            CacheLocalUtil.put(key, value, timeToLive); // 添加本地缓存
 
         });
 
@@ -140,7 +154,7 @@ public class CacheRedisKafkaLocalUtil {
 
             redissonClient.getMap(key).putAsync(secondKey, value);
 
-            CacheLocalUtil.put(key, value); // 添加本地缓存
+            CacheLocalUtil.put(key, value, -1); // 添加本地缓存
 
             return value;
 
@@ -149,7 +163,7 @@ public class CacheRedisKafkaLocalUtil {
     }
 
     /**
-     * 添加：map的缓存
+     * 添加：map类型的缓存
      */
     @SneakyThrows
     public static <T extends Map<?, ?>> void put(@NotNull Enum<? extends IRedisKey> redisKeyEnum,
@@ -160,7 +174,7 @@ public class CacheRedisKafkaLocalUtil {
     }
 
     /**
-     * 添加：map的缓存
+     * 添加：map类型的缓存
      */
     @SneakyThrows
     public static <T extends Map<?, ?>> void put(@NotNull Enum<? extends IRedisKey> redisKeyEnum,
@@ -186,14 +200,14 @@ public class CacheRedisKafkaLocalUtil {
 
             });
 
-            CacheLocalUtil.put(key, value); // 添加本地缓存
+            CacheLocalUtil.put(key, value, -1); // 添加本地缓存
 
         });
 
     }
 
     /**
-     * 添加：collection的缓存
+     * 添加：collection类型的缓存
      */
     @SneakyThrows
     public static <T extends Collection<?>> void put(@NotNull Enum<? extends IRedisKey> redisKeyEnum,
@@ -204,7 +218,7 @@ public class CacheRedisKafkaLocalUtil {
     }
 
     /**
-     * 添加：collection的缓存
+     * 添加：collection类型的缓存
      */
     @SneakyThrows
     public static <T extends Collection<?>> void put(@NotNull Enum<? extends IRedisKey> redisKeyEnum,
@@ -230,7 +244,7 @@ public class CacheRedisKafkaLocalUtil {
 
             });
 
-            CacheLocalUtil.put(key, value); // 添加本地缓存
+            CacheLocalUtil.put(key, value, -1); // 添加本地缓存
 
         });
 

@@ -8,6 +8,9 @@ public interface BaseConstant {
     String NEGATIVE_ONE_STR = "-1";
 
     // 过期时间相关 ↓
+    long ZERO = 0; // 0
+    long NEGATIVE_ONE = -1L; // -1
+
     long DAY_1_EXPIRE_TIME = 60 * 60 * 1000 * 24; // 1天过期
     long DAY_7_EXPIRE_TIME = 60 * 60 * 1000 * 24 * 7L; // 7天过期
     long DAY_15_EXPIRE_TIME = 60 * 60 * 1000 * 24 * 15L; // 15天过期
@@ -31,9 +34,9 @@ public interface BaseConstant {
     // 过期时间相关 ↑
 
     // id 相关 ↓
-    Long ADMIN_ID = 0L; // 管理员 id
+    Long ADMIN_ID = ZERO; // 管理员 id
     String ADMIN_ACCOUNT = "admin"; // 管理员 登录名，如果修改，请注意【登录名】注册，是否会有影响
-    Long SYS_ID = -1L; // 系统/缺省 id，或者表示不存在
+    Long SYS_ID = NEGATIVE_ONE; // 系统/缺省 id，或者表示不存在
     // id 相关 ↑
 
 }

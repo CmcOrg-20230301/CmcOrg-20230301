@@ -55,6 +55,40 @@ public class MyCacheUtil {
 
         String key = CacheHelper.getKey(redisKeyEnum, sufKey);
 
+        T result = onlyGet(key, func0);
+
+        result = CacheHelper.checkAndReturnResult(result, defaultResult); // 检查并设置值
+
+        log.info("{}：加入 redis缓存", key);
+        redissonClient.<T>getBucket(key).set(result); // 先加入到 redis里
+
+        log.info("{}：加入 本地缓存", key);
+        CacheLocalUtil.put(key, result, -1);
+
+        return result;
+
+    }
+
+    /**
+     * 只获取值
+     */
+    @SneakyThrows
+    @Nullable
+    public static <T> T onlyGet(@NotNull Enum<? extends IRedisKey> redisKeyEnum, @Nullable String sufKey) {
+
+        String key = CacheHelper.getKey(redisKeyEnum, sufKey);
+
+        return onlyGet(key, null);
+
+    }
+
+    /**
+     * 只获取值
+     */
+    @SneakyThrows
+    @Nullable
+    public static <T> T onlyGet(@NotNull String key, @Nullable Func0<T> func0) {
+
         T result = CacheLocalUtil.get(key);
 
         if (result != null) {
@@ -78,18 +112,10 @@ public class MyCacheUtil {
         } else {
 
             log.info("{}：加入 本地缓存，并返回 redis缓存", key);
-            CacheLocalUtil.put(key, result);
+            CacheLocalUtil.put(key, result, -1);
             return result;
 
         }
-
-        result = CacheHelper.checkAndReturnResult(result, defaultResult); // 检查并设置值
-
-        log.info("{}：加入 redis缓存", key);
-        redissonClient.getBucket(key).set(result); // 先加入到 redis里
-
-        log.info("{}：加入 本地缓存", key);
-        CacheLocalUtil.put(key, result);
 
         return result;
 
@@ -187,7 +213,7 @@ public class MyCacheUtil {
         if (CollUtil.isNotEmpty(result)) {
 
             log.info("{}：加入 本地缓存，并返回 redis缓存", key);
-            CacheLocalUtil.put(key, result);
+            CacheLocalUtil.put(key, result, -1);
             return result;
 
         }
@@ -211,7 +237,7 @@ public class MyCacheUtil {
         });
 
         log.info("{}：加入 本地缓存", key);
-        CacheLocalUtil.put(key, result);
+        CacheLocalUtil.put(key, result, -1);
 
         return result;
 
@@ -253,7 +279,7 @@ public class MyCacheUtil {
         if (CollUtil.isNotEmpty(result)) {
 
             log.info("{}：加入 本地缓存，并返回 redis缓存", key);
-            CacheLocalUtil.put(key, result);
+            CacheLocalUtil.put(key, result, -1);
             return result;
 
         }
@@ -277,7 +303,7 @@ public class MyCacheUtil {
         });
 
         log.info("{}：加入 本地缓存", key);
-        CacheLocalUtil.put(key, result);
+        CacheLocalUtil.put(key, result, -1);
 
         return result;
 
