@@ -14,6 +14,8 @@ public enum KafkaTopicEnum {
 
     LOCAL_CACHE_REMOVE_TOPIC, // 本地缓存移除的 topic
 
+    LOCAL_CACHE_UPDATE_MAP_TOPIC, // 本地缓存更新的 topic，针对往 map里面设置值
+
     ;
 
 }

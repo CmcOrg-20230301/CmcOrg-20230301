@@ -3,10 +3,12 @@ package com.cmcorg20230301.engine.be.security.util;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.map.MapUtil;
 import cn.hutool.core.util.BooleanUtil;
+import cn.hutool.core.util.IdUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONObject;
 import com.baomidou.mybatisplus.extension.toolkit.ChainWrappers;
 import com.cmcorg20230301.engine.be.cache.util.CacheHelper;
+import com.cmcorg20230301.engine.be.cache.util.CacheRedisKafkaLocalUtil;
 import com.cmcorg20230301.engine.be.cache.util.CacheUtil;
 import com.cmcorg20230301.engine.be.model.model.constant.BaseConstant;
 import com.cmcorg20230301.engine.be.redisson.model.enums.RedisKeyEnum;
@@ -451,6 +453,19 @@ public class UserUtil {
         if (BooleanUtil.isFalse(BaseConstant.SYS_ID.equals(defaultRoleId))) {
             roleIdSet.add(defaultRoleId);
         }
+
+    }
+
+    /**
+     * 统一的：设置：用户 jwt私钥后缀
+     */
+    public static void setJwtSecretSuf(SysUserDO sysUserDO) {
+
+        sysUserDO.setJwtSecretSuf(IdUtil.simpleUUID());
+
+        CacheRedisKafkaLocalUtil
+            .put(RedisKeyEnum.USER_ID_AND_JWT_SECRET_SUF_CACHE, null, String.valueOf(sysUserDO.getId()),
+                sysUserDO.getJwtSecretSuf(), null);
 
     }
 

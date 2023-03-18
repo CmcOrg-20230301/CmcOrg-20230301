@@ -9,7 +9,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * 本地缓存工具类
@@ -51,6 +53,17 @@ public class CacheLocalUtil {
     }
 
     /**
+     * 添加：本地缓存
+     */
+    public static <T> void put(String key, String secondKey, T value) {
+
+        Map<String, T> map = getSecondMap(key);
+
+        map.put(secondKey, value);
+
+    }
+
+    /**
      * 通过：redisKeyEnum，获取：本地缓存
      */
     @Nullable
@@ -79,6 +92,27 @@ public class CacheLocalUtil {
     public static <T> T get(String key) {
 
         return (T)LOCAL_CACHE.get(key);
+
+    }
+
+    /**
+     * 通过：key，获取：本地缓存
+     */
+    @Nullable
+    public static <T> T get(String key, String secondKey) {
+
+        Map<String, T> map = getSecondMap(key);
+
+        return map.get(secondKey);
+
+    }
+
+    /**
+     * 获取：map
+     */
+    private static <T> Map<String, T> getSecondMap(String key) {
+
+        return (Map<String, T>)LOCAL_CACHE.get(key, ConcurrentHashMap::new);
 
     }
 
