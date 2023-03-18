@@ -452,8 +452,10 @@ public class SignUtil {
 
         }
 
+        String jwtSecretSuf = UserUtil.getJwtSecretSuf(sysUserDO.getId());
+
         // 颁发，并返回 jwt
-        return MyJwtUtil.generateJwt(sysUserDO.getId(), sysUserDO.getJwtSecretSuf(), null);
+        return MyJwtUtil.generateJwt(sysUserDO.getId(), jwtSecretSuf, null);
 
     }
 

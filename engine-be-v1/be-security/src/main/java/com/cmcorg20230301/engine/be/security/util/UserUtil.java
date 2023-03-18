@@ -470,13 +470,14 @@ public class UserUtil {
     /**
      * 统一的：获取：用户 jwt私钥后缀
      */
-    public static void getJwtSecretSuf(long userId) {
+    @NotNull
+    public static String getJwtSecretSuf(long userId) {
 
-        CacheUtil.get(RedisKeyEnum.USER_ID_AND_JWT_SECRET_SUF_CACHE, null, String.valueOf(userId));
-
-        CacheRedisKafkaLocalUtil
-            .put(RedisKeyEnum.USER_ID_AND_JWT_SECRET_SUF_CACHE, null, String.valueOf(userId), IdUtil.simpleUUID(),
+        String jwtSecretSuf = CacheUtil
+            .get(RedisKeyEnum.USER_ID_AND_JWT_SECRET_SUF_CACHE, null, String.valueOf(userId), IdUtil.simpleUUID(),
                 null);
+
+        return jwtSecretSuf;
 
     }
 

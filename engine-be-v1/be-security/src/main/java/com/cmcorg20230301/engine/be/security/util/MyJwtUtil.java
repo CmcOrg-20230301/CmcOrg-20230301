@@ -186,9 +186,7 @@ public class MyJwtUtil {
             return null;
         }
 
-
-
-        return map.get(userId);
+        return UserUtil.getJwtSecretSuf(userId);
 
     }
 

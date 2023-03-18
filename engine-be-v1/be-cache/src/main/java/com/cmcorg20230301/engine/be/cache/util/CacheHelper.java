@@ -112,20 +112,6 @@ public class CacheHelper {
     @NotNull
     public static <T> T checkAndReturnResult(T result, T defaultResult) {
 
-        if (defaultResult == null) {
-
-            throw new RuntimeException("操作失败：defaultResult == null"); // 不能为 null，目的：防止缓存不写入数据
-
-        } else if (defaultResult instanceof Map && CollUtil.isEmpty((Map<?, ?>)defaultResult)) {
-
-            throw new RuntimeException("操作失败：defaultResult为 Map类型，但是长度为 0"); // 不能为 null，目的：防止缓存不写入数据
-
-        } else if (defaultResult instanceof Iterator && CollUtil.isEmpty((Iterator<?>)defaultResult)) {
-
-            throw new RuntimeException("操作失败：defaultResult为 Iterator类型，但是长度为 0"); // 不能为 null，目的：防止缓存不写入数据
-
-        }
-
         if (result == null) {
 
             log.info("CacheHelper：设置默认值：{}", defaultResult);
@@ -140,6 +126,29 @@ public class CacheHelper {
 
             log.info("CacheHelper：Iterator设置默认值：{}", defaultResult);
             result = defaultResult;
+
+        }
+
+        return checkResult(result);
+
+    }
+
+    /**
+     * 检查：返回值
+     */
+    private static <T> T checkResult(T result) {
+
+        if (result == null) {
+
+            throw new RuntimeException("操作失败：result == null"); // 不能为 null，目的：防止缓存不写入数据
+
+        } else if (result instanceof Map && CollUtil.isEmpty((Map<?, ?>)result)) {
+
+            throw new RuntimeException("操作失败：defaultResult为 Map类型，但是长度为 0"); // 不能为 null，目的：防止缓存不写入数据
+
+        } else if (result instanceof Iterator && CollUtil.isEmpty((Iterator<?>)result)) {
+
+            throw new RuntimeException("操作失败：defaultResult为 Iterator类型，但是长度为 0"); // 不能为 null，目的：防止缓存不写入数据
 
         }
 
