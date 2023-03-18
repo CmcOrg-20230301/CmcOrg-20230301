@@ -134,7 +134,7 @@ public class SysRequestAop {
 
         try {
 
-            object = proceedingJoinPoint.proceed(); // 执行方法，备注：如果执行方法时抛出了异常，那么代码不会往下执行，catch也捕获不到
+            object = proceedingJoinPoint.proceed(); // 执行方法，备注：如果执行方法时抛出了异常，catch可以捕获到
 
         } catch (Throwable e) {
 
