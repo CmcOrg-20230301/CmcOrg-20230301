@@ -2,7 +2,7 @@ package com.cmcorg20230301.engine.be.security.model.vo;
 
 import cn.hutool.core.util.StrUtil;
 import com.cmcorg20230301.engine.be.model.exception.IBizCode;
-import com.cmcorg20230301.engine.be.security.configuration.BaseConfiguration;
+import com.cmcorg20230301.engine.be.security.configuration.base.BaseConfiguration;
 import com.cmcorg20230301.engine.be.security.exception.BaseBizCodeEnum;
 import com.cmcorg20230301.engine.be.security.exception.BaseException;
 import io.swagger.v3.oas.annotations.media.Schema;

@@ -1,4 +1,4 @@
-package com.cmcorg20230301.engine.be.security.configuration;
+package com.cmcorg20230301.engine.be.security.configuration.base;
 
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.beans.factory.annotation.Value;

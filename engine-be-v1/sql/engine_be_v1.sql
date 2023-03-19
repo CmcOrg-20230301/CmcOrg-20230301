@@ -27,8 +27,8 @@ CREATE TABLE `sys_dict`
     PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB
   CHARACTER SET = utf8mb4
-  COLLATE = utf8mb4_general_ci COMMENT = '主表：字典'
-  ROW_FORMAT = Dynamic;
+  COLLATE = utf8mb4_general_ci COMMENT = 'v20230301：主表：字典'
+  ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of sys_dict
@@ -70,8 +70,8 @@ CREATE TABLE `sys_file`
     PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB
   CHARACTER SET = utf8mb4
-  COLLATE = utf8mb4_unicode_ci COMMENT = '主表：文件'
-  ROW_FORMAT = Dynamic;
+  COLLATE = utf8mb4_unicode_ci COMMENT = 'v20230301：主表：文件'
+  ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of sys_file
@@ -99,8 +99,8 @@ CREATE TABLE `sys_file_auth`
     PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB
   CHARACTER SET = utf8mb4
-  COLLATE = utf8mb4_unicode_ci COMMENT = '子表：文件操作权限，主表：文件'
-  ROW_FORMAT = Dynamic;
+  COLLATE = utf8mb4_unicode_ci COMMENT = 'v20230301：子表：文件操作权限，主表：文件'
+  ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of sys_file_auth
@@ -121,8 +121,8 @@ CREATE TABLE `sys_file_uri`
     UNIQUE INDEX `unique_uri` (`uri`) USING BTREE
 ) ENGINE = InnoDB
   CHARACTER SET = utf8mb4
-  COLLATE = utf8mb4_unicode_ci COMMENT = '子表：文件访问uri，主表：文件'
-  ROW_FORMAT = Dynamic;
+  COLLATE = utf8mb4_unicode_ci COMMENT = 'v20230301：子表：文件访问uri，主表：文件'
+  ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of sys_file_uri
@@ -158,8 +158,8 @@ CREATE TABLE `sys_menu`
     PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB
   CHARACTER SET = utf8mb4
-  COLLATE = utf8mb4_general_ci COMMENT = '主表：菜单'
-  ROW_FORMAT = Dynamic;
+  COLLATE = utf8mb4_general_ci COMMENT = 'v20230301：主表：菜单'
+  ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of sys_menu
@@ -299,8 +299,8 @@ CREATE TABLE `sys_param`
     PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB
   CHARACTER SET = utf8mb4
-  COLLATE = utf8mb4_general_ci COMMENT = '主表：系统参数'
-  ROW_FORMAT = Dynamic;
+  COLLATE = utf8mb4_general_ci COMMENT = 'v20230301：主表：系统参数'
+  ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of sys_param
@@ -331,19 +331,19 @@ CREATE TABLE `sys_request`
     `uri`           varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '请求的uri',
     `name`          varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '接口名（备用）',
     `cost_ms_str`   varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '耗时（字符串）',
-    `cost_ms_str`   bigint                                                        NOT NULL COMMENT '耗时（毫秒）',
+    `cost_ms`       bigint                                                        NOT NULL COMMENT '耗时（毫秒）',
     `category`      tinyint                                                       NOT NULL COMMENT '请求类别',
     `region`        varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'Ip2RegionUtil.getRegion() 获取到的 ip所处区域',
     `ip`            varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'ip',
     `success_flag`  tinyint(1)                                                    NOT NULL COMMENT '请求是否成功',
     `error_msg`     varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '失败信息',
     `request_param` varchar(550) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '请求的参数',
-    `type`          varchar(50) COLLATE utf8mb4_general_ci                        NOT NULL COMMENT '请求类型',
+    `type`          varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci  NOT NULL COMMENT '请求类型',
     PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB
-  AUTO_INCREMENT = 1
+  AUTO_INCREMENT = 230319172320001339
   CHARACTER SET = utf8mb4
-  COLLATE = utf8mb4_general_ci COMMENT = '主表：请求'
+  COLLATE = utf8mb4_general_ci COMMENT = 'v20230301：主表：请求'
   ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
@@ -370,8 +370,8 @@ CREATE TABLE `sys_role`
     PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB
   CHARACTER SET = utf8mb4
-  COLLATE = utf8mb4_general_ci COMMENT = '主表：角色'
-  ROW_FORMAT = Dynamic;
+  COLLATE = utf8mb4_general_ci COMMENT = 'v20230301：主表：角色'
+  ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of sys_role
@@ -391,8 +391,8 @@ CREATE TABLE `sys_role_ref_menu`
     PRIMARY KEY (`role_id`, `menu_id`) USING BTREE
 ) ENGINE = InnoDB
   CHARACTER SET = utf8mb4
-  COLLATE = utf8mb4_general_ci COMMENT = '关联表：角色，菜单'
-  ROW_FORMAT = Dynamic;
+  COLLATE = utf8mb4_general_ci COMMENT = 'v20230301：关联表：角色，菜单'
+  ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of sys_role_ref_menu
@@ -441,8 +441,8 @@ CREATE TABLE `sys_role_ref_user`
     PRIMARY KEY (`role_id`, `user_id`) USING BTREE
 ) ENGINE = InnoDB
   CHARACTER SET = utf8mb4
-  COLLATE = utf8mb4_general_ci COMMENT = '关联表：角色，用户'
-  ROW_FORMAT = Dynamic;
+  COLLATE = utf8mb4_general_ci COMMENT = 'v20230301：关联表：角色，用户'
+  ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of sys_role_ref_user
@@ -454,29 +454,33 @@ CREATE TABLE `sys_role_ref_user`
 DROP TABLE IF EXISTS `sys_user`;
 CREATE TABLE `sys_user`
 (
-    `id`             bigint                                                        NOT NULL,
-    `create_id`      bigint                                                        NOT NULL,
-    `create_time`    datetime                                                      NOT NULL,
-    `update_id`      bigint                                                        NOT NULL,
-    `update_time`    datetime                                                      NOT NULL,
-    `enable_flag`    tinyint(1)                                                    NOT NULL COMMENT '正常/冻结',
-    `version`        int                                                           NOT NULL COMMENT '乐观锁',
-    `del_flag`       tinyint(1)                                                    NOT NULL COMMENT '是否注销',
-    `remark`         varchar(300) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '描述/备注（暂时未使用）',
-    `password`       varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '密码，可为空，如果为空，则登录时需要提示【进行忘记密码操作】',
-    `email`          varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '邮箱，可以为空',
-    `sign_in_name`   varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci  NOT NULL COMMENT '登录名，可以为空',
-    `phone`          varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '手机号，可以为空',
-    `wx_open_id`     varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '微信 openId，可以为空',
+    `id`           bigint                                                        NOT NULL,
+    `create_id`    bigint                                                        NOT NULL,
+    `create_time`  datetime                                                      NOT NULL,
+    `update_id`    bigint                                                        NOT NULL,
+    `update_time`  datetime                                                      NOT NULL,
+    `enable_flag`  tinyint(1)                                                    NOT NULL COMMENT '正常/冻结',
+    `version`      int                                                           NOT NULL COMMENT '乐观锁',
+    `del_flag`     tinyint(1)                                                    NOT NULL COMMENT '是否注销',
+    `remark`       varchar(300) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '描述/备注（暂时未使用）',
+    `password`     varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '密码，可为空，如果为空，则登录时需要提示【进行忘记密码操作】',
+    `email`        varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '邮箱，可以为空',
+    `sign_in_name` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci  NOT NULL COMMENT '登录名，可以为空',
+    `phone`        varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '手机号，可以为空',
+    `wx_open_id`   varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '微信 openId，可以为空',
     PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB
   CHARACTER SET = utf8mb4
-  COLLATE = utf8mb4_unicode_ci COMMENT = '主表：用户'
-  ROW_FORMAT = Dynamic;
+  COLLATE = utf8mb4_unicode_ci COMMENT = 'v20230301：主表：用户'
+  ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of sys_user
 -- ----------------------------
+INSERT INTO `sys_user`
+VALUES (230315010021000052, -1, '2023-03-14 17:00:22', -1, '2023-03-14 17:01:36', 1, 0, 0, '',
+        '633840e81c6647d29b806e65ef7ebbb9/58162f6102d1332e1f8e6dda7ed494c86862713fbff6c2af9930cfb48b2a99630ed0eb9630063b198dc7f46730f0e3d5ff70bad2f332b6157311925c310d2e7f',
+        '', 'cmcorg', '', '');
 
 -- ----------------------------
 -- Table structure for sys_user_0
@@ -484,25 +488,25 @@ CREATE TABLE `sys_user`
 DROP TABLE IF EXISTS `sys_user_0`;
 CREATE TABLE `sys_user_0`
 (
-    `id`             bigint                                                        NOT NULL,
-    `create_id`      bigint                                                        NOT NULL,
-    `create_time`    datetime                                                      NOT NULL,
-    `update_id`      bigint                                                        NOT NULL,
-    `update_time`    datetime                                                      NOT NULL,
-    `enable_flag`    tinyint(1)                                                    NOT NULL COMMENT '正常/冻结',
-    `version`        int                                                           NOT NULL COMMENT '乐观锁',
-    `del_flag`       tinyint(1)                                                    NOT NULL COMMENT '是否注销',
-    `remark`         varchar(300) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '描述/备注（暂时未使用）',
-    `password`       varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '密码，可为空，如果为空，则登录时需要提示【进行忘记密码操作】',
-    `email`          varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '邮箱，可以为空',
-    `sign_in_name`   varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci  NOT NULL COMMENT '登录名，可以为空',
-    `phone`          varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '手机号，可以为空',
-    `wx_open_id`     varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '微信 openId，可以为空',
+    `id`           bigint                                                        NOT NULL,
+    `create_id`    bigint                                                        NOT NULL,
+    `create_time`  datetime                                                      NOT NULL,
+    `update_id`    bigint                                                        NOT NULL,
+    `update_time`  datetime                                                      NOT NULL,
+    `enable_flag`  tinyint(1)                                                    NOT NULL COMMENT '正常/冻结',
+    `version`      int                                                           NOT NULL COMMENT '乐观锁',
+    `del_flag`     tinyint(1)                                                    NOT NULL COMMENT '是否注销',
+    `remark`       varchar(300) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '描述/备注（暂时未使用）',
+    `password`     varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '密码，可为空，如果为空，则登录时需要提示【进行忘记密码操作】',
+    `email`        varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '邮箱，可以为空',
+    `sign_in_name` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci  NOT NULL COMMENT '登录名，可以为空',
+    `phone`        varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '手机号，可以为空',
+    `wx_open_id`   varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '微信 openId，可以为空',
     PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB
   CHARACTER SET = utf8mb4
-  COLLATE = utf8mb4_unicode_ci COMMENT = '主表：用户'
-  ROW_FORMAT = Dynamic;
+  COLLATE = utf8mb4_unicode_ci COMMENT = 'v20230301：主表：用户'
+  ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of sys_user_0
@@ -514,25 +518,25 @@ CREATE TABLE `sys_user_0`
 DROP TABLE IF EXISTS `sys_user_1`;
 CREATE TABLE `sys_user_1`
 (
-    `id`             bigint                                                        NOT NULL,
-    `create_id`      bigint                                                        NOT NULL,
-    `create_time`    datetime                                                      NOT NULL,
-    `update_id`      bigint                                                        NOT NULL,
-    `update_time`    datetime                                                      NOT NULL,
-    `enable_flag`    tinyint(1)                                                    NOT NULL COMMENT '正常/冻结',
-    `version`        int                                                           NOT NULL COMMENT '乐观锁',
-    `del_flag`       tinyint(1)                                                    NOT NULL COMMENT '是否注销',
-    `remark`         varchar(300) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '描述/备注（暂时未使用）',
-    `password`       varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '密码，可为空，如果为空，则登录时需要提示【进行忘记密码操作】',
-    `email`          varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '邮箱，可以为空',
-    `sign_in_name`   varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci  NOT NULL COMMENT '登录名，可以为空',
-    `phone`          varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '手机号，可以为空',
-    `wx_open_id`     varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '微信 openId，可以为空',
+    `id`           bigint                                                        NOT NULL,
+    `create_id`    bigint                                                        NOT NULL,
+    `create_time`  datetime                                                      NOT NULL,
+    `update_id`    bigint                                                        NOT NULL,
+    `update_time`  datetime                                                      NOT NULL,
+    `enable_flag`  tinyint(1)                                                    NOT NULL COMMENT '正常/冻结',
+    `version`      int                                                           NOT NULL COMMENT '乐观锁',
+    `del_flag`     tinyint(1)                                                    NOT NULL COMMENT '是否注销',
+    `remark`       varchar(300) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '描述/备注（暂时未使用）',
+    `password`     varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '密码，可为空，如果为空，则登录时需要提示【进行忘记密码操作】',
+    `email`        varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '邮箱，可以为空',
+    `sign_in_name` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci  NOT NULL COMMENT '登录名，可以为空',
+    `phone`        varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '手机号，可以为空',
+    `wx_open_id`   varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '微信 openId，可以为空',
     PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB
   CHARACTER SET = utf8mb4
-  COLLATE = utf8mb4_unicode_ci COMMENT = '主表：用户'
-  ROW_FORMAT = Dynamic;
+  COLLATE = utf8mb4_unicode_ci COMMENT = 'v20230301：主表：用户'
+  ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of sys_user_1
@@ -554,12 +558,14 @@ CREATE TABLE `sys_user_info`
     PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB
   CHARACTER SET = utf8mb4
-  COLLATE = utf8mb4_unicode_ci COMMENT = '子表：用户基本信息，主表：用户'
-  ROW_FORMAT = Dynamic;
+  COLLATE = utf8mb4_unicode_ci COMMENT = 'v20230301：子表：用户基本信息，主表：用户'
+  ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of sys_user_info
 -- ----------------------------
+INSERT INTO `sys_user_info`
+VALUES (230315010021000052, '85412791df204f3ab2ad22f517b7c966', 'cmc', '666', '', -1, NULL);
 
 -- ----------------------------
 -- Table structure for sys_user_info_0
@@ -577,8 +583,8 @@ CREATE TABLE `sys_user_info_0`
     PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB
   CHARACTER SET = utf8mb4
-  COLLATE = utf8mb4_unicode_ci COMMENT = '子表：用户基本信息，主表：用户'
-  ROW_FORMAT = Dynamic;
+  COLLATE = utf8mb4_unicode_ci COMMENT = 'v20230301：子表：用户基本信息，主表：用户'
+  ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of sys_user_info_0
@@ -600,8 +606,8 @@ CREATE TABLE `sys_user_info_1`
     PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB
   CHARACTER SET = utf8mb4
-  COLLATE = utf8mb4_unicode_ci COMMENT = '子表：用户基本信息，主表：用户'
-  ROW_FORMAT = Dynamic;
+  COLLATE = utf8mb4_unicode_ci COMMENT = 'v20230301：子表：用户基本信息，主表：用户'
+  ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of sys_user_info_1

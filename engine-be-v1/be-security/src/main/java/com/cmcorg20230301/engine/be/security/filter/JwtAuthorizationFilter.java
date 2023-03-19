@@ -10,7 +10,7 @@ import cn.hutool.jwt.JWT;
 import cn.hutool.jwt.JWTValidator;
 import com.cmcorg20230301.engine.be.cache.util.MyCacheUtil;
 import com.cmcorg20230301.engine.be.model.model.constant.BaseConstant;
-import com.cmcorg20230301.engine.be.security.configuration.BaseConfiguration;
+import com.cmcorg20230301.engine.be.security.configuration.base.BaseConfiguration;
 import com.cmcorg20230301.engine.be.security.configuration.security.IJwtValidatorConfiguration;
 import com.cmcorg20230301.engine.be.security.exception.BaseBizCodeEnum;
 import com.cmcorg20230301.engine.be.security.properties.SecurityProperties;

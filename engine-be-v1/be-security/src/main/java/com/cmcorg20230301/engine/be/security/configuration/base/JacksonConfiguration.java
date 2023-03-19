@@ -1,4 +1,4 @@
-package com.cmcorg20230301.engine.be.security.configuration;
+package com.cmcorg20230301.engine.be.security.configuration.base;
 
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import org.springframework.boot.autoconfigure.jackson.Jackson2ObjectMapperBuilderCustomizer;
