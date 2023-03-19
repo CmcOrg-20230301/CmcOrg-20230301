@@ -5,14 +5,21 @@ package com.cmcorg20230301.engine.be.model.model.enums;
  */
 public enum TableNameEnum {
 
-    SYS_DICT, //
-    SYS_MENU, //
-    SYS_PARAM, //
-    SYS_ROLE, //
-    SYS_ROLE_REF_MENU, //
-    SYS_ROLE_REF_USER, //
-    SYS_USER, //
-    SYS_USER_INFO, //
+    SYS_DICT, // 字典
+
+    SYS_MENU, // 菜单
+
+    SYS_PARAM, // 系统参数
+
+    SYS_ROLE, // 角色
+
+    SYS_ROLE_REF_MENU, // 角色关联菜单
+
+    SYS_ROLE_REF_USER, // 角色关联用户
+
+    SYS_USER, // 用户
+
+    SYS_USER_INFO, // 用户信息
 
     ;
 
