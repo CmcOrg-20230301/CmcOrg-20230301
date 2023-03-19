@@ -33,12 +33,14 @@ public class LocalCacheUpdateMapListener {
 
             NotEmptyKeyValueSet notEmptyKeyValueSet = JSONUtil.toBean(item, NotEmptyKeyValueSet.class);
 
+            String key = notEmptyKeyValueSet.getKey();
+
             Set<NotEmptyKeyValueSet.KeyValue> keyValueSet = notEmptyKeyValueSet.getKeyValueSet();
 
             for (NotEmptyKeyValueSet.KeyValue subItem : keyValueSet) {
 
-                log.info("kafka：更新本地 map缓存：大 key：{}，小 key：{}", item, subItem.getKey());
-                CacheLocalUtil.put(item, subItem.getKey(), subItem.getValue()); // 更新：本地缓存
+                log.info("kafka：更新本地 map缓存：大 key：{}，小 key：{}", key, subItem.getKey());
+                CacheLocalUtil.put(key, subItem.getKey(), subItem.getValue()); // 更新：本地缓存
 
             }
 

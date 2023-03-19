@@ -17,6 +17,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.Collection;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -70,6 +71,10 @@ public class MyCacheUtil {
         String key = CacheHelper.getKey(redisKeyEnum, sufKey);
 
         T result = onlyGet(key, func0, false);
+
+        if (result != null) {
+            return result;
+        }
 
         result = CacheHelper.checkAndReturnResult(result, defaultResult); // 检查并设置值
 
@@ -303,7 +308,17 @@ public class MyCacheUtil {
 
         }
 
-        result = (T)redissonClient.getList(key).readAll();
+        boolean setFlag = defaultResult instanceof Set;
+
+        if (setFlag) {
+
+            result = (T)redissonClient.getSet(key).readAll();
+
+        } else {
+
+            result = (T)redissonClient.getList(key).readAll();
+
+        }
 
         if (CollUtil.isNotEmpty(result)) {
 
@@ -323,11 +338,21 @@ public class MyCacheUtil {
         result = CacheHelper.checkAndReturnResult(result, defaultResult); // 检查并设置值
 
         log.info("{}：加入 redis缓存", key);
+
         T finalResult = result;
         RedissonUtil.batch((batch) -> {
 
-            batch.getList(key).deleteAsync();
-            batch.getList(key).addAllAsync(finalResult);
+            if (setFlag) {
+
+                batch.getSet(key).deleteAsync();
+                batch.getSet(key).addAllAsync(finalResult);
+
+            } else {
+
+                batch.getList(key).deleteAsync();
+                batch.getList(key).addAllAsync(finalResult);
+
+            }
 
         });
 

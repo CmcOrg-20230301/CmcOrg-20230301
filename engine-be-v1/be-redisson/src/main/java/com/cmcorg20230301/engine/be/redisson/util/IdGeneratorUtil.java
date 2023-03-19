@@ -3,7 +3,6 @@ package com.cmcorg20230301.engine.be.redisson.util;
 import cn.hutool.core.convert.Convert;
 import cn.hutool.core.date.DatePattern;
 import cn.hutool.core.date.DateUtil;
-import cn.hutool.core.util.RandomUtil;
 import cn.hutool.core.util.StrUtil;
 import com.cmcorg20230301.engine.be.redisson.model.enums.RedisKeyEnum;
 import org.jetbrains.annotations.NotNull;
@@ -105,7 +104,7 @@ public class IdGeneratorUtil {
 
             fill(); // 填充
 
-            id = ID_POOL.remove(RandomUtil.randomInt(ID_POOL.size()));
+            id = ID_POOL.remove(0);
 
         }
 
