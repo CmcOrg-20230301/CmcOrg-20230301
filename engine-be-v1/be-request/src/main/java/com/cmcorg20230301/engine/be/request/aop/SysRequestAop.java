@@ -153,6 +153,8 @@ public class SysRequestAop {
         // 处理：登录相关请求
         handleSignIn(sysRequestDO, object);
 
+        log.info("uri：{}，耗时：{}", sysRequestDO.getUri(), sysRequestDO.getCostMsStr());
+
         SYS_REQUEST_DO_LIST.add(sysRequestDO);
 
         return object;

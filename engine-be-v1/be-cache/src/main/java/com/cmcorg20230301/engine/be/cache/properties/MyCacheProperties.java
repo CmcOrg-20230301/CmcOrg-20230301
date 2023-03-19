@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 @Component
 @Data
 @ConfigurationProperties(prefix = PropertiesPrefixConstant.CACHE)
-public class CacheProperties {
+public class MyCacheProperties {
 
     @Schema(description = "需要缓存的数据库名")
     private String databaseName = "engine_be_v1";
