@@ -477,10 +477,6 @@ CREATE TABLE `sys_user`
 -- ----------------------------
 -- Records of sys_user
 -- ----------------------------
-INSERT INTO `sys_user`
-VALUES (230315010021000052, -1, '2023-03-14 17:00:22', -1, '2023-03-14 17:01:36', 1, 0, 0, '',
-        '633840e81c6647d29b806e65ef7ebbb9/58162f6102d1332e1f8e6dda7ed494c86862713fbff6c2af9930cfb48b2a99630ed0eb9630063b198dc7f46730f0e3d5ff70bad2f332b6157311925c310d2e7f',
-        '', 'cmcorg', '', '');
 
 -- ----------------------------
 -- Table structure for sys_user_0
@@ -564,8 +560,6 @@ CREATE TABLE `sys_user_info`
 -- ----------------------------
 -- Records of sys_user_info
 -- ----------------------------
-INSERT INTO `sys_user_info`
-VALUES (230315010021000052, '85412791df204f3ab2ad22f517b7c966', 'cmc', '666', '', -1, NULL);
 
 -- ----------------------------
 -- Table structure for sys_user_info_0
