@@ -131,7 +131,7 @@ public class IpFilter implements Filter {
 
             atomicInteger = new AtomicInteger(0);
 
-            IP_SPEED_MAP.put(ip, atomicInteger, ipSpeedBO.getTimeS()); // 备注：0 表示永久存活
+            IP_SPEED_MAP.put(ip, atomicInteger, ipSpeedBO.getTimeS() * 1000); // 备注：0 表示永久存活
 
         }
 
