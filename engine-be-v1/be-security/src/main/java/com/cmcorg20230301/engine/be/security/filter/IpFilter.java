@@ -8,6 +8,7 @@ import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.BooleanUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.extra.servlet.ServletUtil;
+import com.cmcorg20230301.engine.be.cache.util.CacheLocalUtil;
 import com.cmcorg20230301.engine.be.cache.util.CacheRedisKafkaLocalUtil;
 import com.cmcorg20230301.engine.be.cache.util.MyCacheUtil;
 import com.cmcorg20230301.engine.be.model.model.constant.BaseConstant;
@@ -98,11 +99,11 @@ public class IpFilter implements Filter {
         if (StrUtil.isNotBlank(ipBlackStr)) {
 
             // 获取：剩余时间
-            long remainTimeToLive = redissonClient.getBucket(key).remainTimeToLive();
+            long remainTime = CacheLocalUtil.getRemainTime(key);
 
-            if (remainTimeToLive > -1) {
+            if (remainTime > 0) {
                 // 如果在 黑名单里，则返回剩余时间
-                return DateUtil.formatBetween(remainTimeToLive, BetweenFormatter.Level.SECOND); // 剩余时间（字符串）
+                return DateUtil.formatBetween(remainTime, BetweenFormatter.Level.SECOND); // 剩余时间（字符串）
             }
 
         }

@@ -4,6 +4,7 @@ import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.convert.Convert;
 import cn.hutool.core.exceptions.ValidateException;
 import cn.hutool.core.util.BooleanUtil;
+import cn.hutool.core.util.NumberUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.jwt.JWT;
 import cn.hutool.jwt.JWTValidator;
@@ -17,6 +18,7 @@ import com.cmcorg20230301.engine.be.security.util.MyJwtUtil;
 import com.cmcorg20230301.engine.be.security.util.RequestUtil;
 import com.cmcorg20230301.engine.be.security.util.ResponseUtil;
 import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.redisson.api.RedissonClient;
@@ -33,6 +35,7 @@ import java.util.List;
 /**
  * 自定义 jwt过滤器，备注：后续接口方法，无需判断账号是否封禁或者不存在
  */
+@Slf4j
 public class JwtAuthorizationFilter extends OncePerRequestFilter {
 
     private static RedissonClient redissonClient;
@@ -149,13 +152,18 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
     @Nullable
     private String handleJwtStr(String jwtStr) {
 
-        // 如果不是正式环境
+        // 如果不是正式环境：Authorization Bearer 0
         if (BooleanUtil.isFalse(BaseConfiguration.prodFlag())) {
 
-            // Authorization Bearer 0
-            String jwtStrTmp = MyJwtUtil.generateJwt(Convert.toLong(jwtStr), null, null);
+            if (NumberUtil.isNumber(jwtStr)) {
 
-            jwtStr = MyJwtUtil.getJwtStrByHeadAuthorization(jwtStrTmp);
+                String jwtStrTmp = MyJwtUtil.generateJwt(Convert.toLong(jwtStr), null, null);
+
+                log.info("jwtStrTmp：{}", jwtStrTmp);
+
+                jwtStr = MyJwtUtil.getJwtStrByHeadAuthorization(jwtStrTmp);
+
+            }
 
         }
 

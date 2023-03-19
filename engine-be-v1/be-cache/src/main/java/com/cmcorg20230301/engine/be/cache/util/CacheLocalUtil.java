@@ -1,7 +1,5 @@
 package com.cmcorg20230301.engine.be.cache.util;
 
-import cn.hutool.cache.CacheUtil;
-import cn.hutool.cache.impl.TimedCache;
 import cn.hutool.core.collection.CollUtil;
 import com.cmcorg20230301.engine.be.model.model.constant.BaseConstant;
 import com.cmcorg20230301.engine.be.model.model.constant.LogTopicConstant;
@@ -24,7 +22,7 @@ public class CacheLocalUtil {
     private static final long TIMEOUT = BaseConstant.SECOND_20_EXPIRE_TIME;
 
     // 本地缓存：超时缓存，默认永不过期
-    private static final TimedCache<String, Object> LOCAL_CACHE = CacheUtil.newTimedCache(BaseConstant.ZERO);
+    private static final MyTimedCache<String, Object> LOCAL_CACHE = new MyTimedCache<>(-1);
 
     static {
 
@@ -125,6 +123,15 @@ public class CacheLocalUtil {
     private static <T> Map<String, T> getSecondMap(@NotNull String key) {
 
         return (Map<String, T>)LOCAL_CACHE.get(key, false, ConcurrentHashMap::new);
+
+    }
+
+    /**
+     * 通过：key，获取：过期时间
+     */
+    public static long getRemainTime(@NotNull String key) {
+
+        return LOCAL_CACHE.getRemainTime(key);
 
     }
 
