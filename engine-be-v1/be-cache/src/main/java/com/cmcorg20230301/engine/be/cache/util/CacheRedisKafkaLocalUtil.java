@@ -39,12 +39,35 @@ public class CacheRedisKafkaLocalUtil {
      * 统一的执行 update方法
      */
     @SneakyThrows
-    private static void update(@NotNull String key, @NotNull VoidFunc0 voidFunc0) {
+    private static void remove(@NotNull String key, @NotNull VoidFunc0 voidFunc0) {
 
         voidFunc0.call(); // 执行方法
 
         // 发送：本地缓存移除的 topic
         KafkaUtil.sendLocalCacheRemoveTopic(CollUtil.newHashSet(key));
+
+    }
+
+    /**
+     * 统一的执行 update方法：针对往 map里面移除值
+     */
+    @SneakyThrows
+    private static void remove(@NotNull String key, @NotNull String secondKey, @NotNull VoidFunc0 voidFunc0) {
+
+        if (StrUtil.isBlank(secondKey)) {
+            throw new RuntimeException("操作失败：更新时，secondKey不能为空，请联系管理员");
+        }
+
+        voidFunc0.call(); // 执行方法
+
+        NotEmptyKeyValueSet notEmptyKeyValueSet = new NotEmptyKeyValueSet();
+
+        notEmptyKeyValueSet.setKey(key);
+
+        notEmptyKeyValueSet.setKeyValueSet(CollUtil.newHashSet(new NotEmptyKeyValueSet.KeyValue(secondKey, null)));
+
+        // 发送：本地缓存更新的 topic，针对往 map里面移除值
+        KafkaUtil.sendLocalCacheRemoveMapTopic(notEmptyKeyValueSet);
 
     }
 
@@ -119,7 +142,7 @@ public class CacheRedisKafkaLocalUtil {
             return;
         }
 
-        update(key, () -> {
+        remove(key, () -> {
 
             T value = null;
 
@@ -197,7 +220,7 @@ public class CacheRedisKafkaLocalUtil {
 
         String key = CacheHelper.getKey(redisKeyEnum, sufKey);
 
-        update(key, () -> {
+        remove(key, () -> {
 
             T value = null;
 
@@ -241,7 +264,7 @@ public class CacheRedisKafkaLocalUtil {
 
         String key = CacheHelper.getKey(redisKeyEnum, sufKey);
 
-        update(key, () -> {
+        remove(key, () -> {
 
             T value = null;
 
@@ -272,11 +295,29 @@ public class CacheRedisKafkaLocalUtil {
 
         String key = CacheHelper.getKey(redisKeyEnum, sufKey);
 
-        update(key, () -> {
+        remove(key, () -> {
 
             redissonClient.getBucket(key).delete(); // 移除：redis缓存
 
             CacheLocalUtil.remove(key); // 移除：本地缓存
+
+        });
+
+    }
+
+    /**
+     * 移除缓存，从 map里
+     */
+    public static void remove(@NotNull Enum<? extends IRedisKey> redisKeyEnum, @Nullable String sufKey,
+        @NotNull String secondKey) {
+
+        String key = CacheHelper.getKey(redisKeyEnum, sufKey);
+
+        remove(key, secondKey, () -> {
+
+            redissonClient.getMap(key).remove(secondKey); // 移除：redis缓存
+
+            CacheLocalUtil.remove(key, secondKey); // 移除：本地缓存
 
         });
 

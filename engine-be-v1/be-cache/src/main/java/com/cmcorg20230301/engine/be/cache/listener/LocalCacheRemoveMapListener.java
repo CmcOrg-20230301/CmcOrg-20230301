@@ -16,15 +16,15 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * 本地缓存更新的 kafka监听器，针对往 map里面设置值
+ * 本地缓存更新的 kafka监听器，针对往 map里面移除值
  */
 @Component
 @KafkaListener(topics = "#{__listener.TOPIC_LIST}", groupId = "#{kafkaDynamicGroupIdConfiguration.getGroupId()}", batch = "true")
 @Slf4j(topic = LogTopicConstant.CACHE_LOCAL)
-public class LocalCacheUpdateMapListener {
+public class LocalCacheRemoveMapListener {
 
     public static final List<String> TOPIC_LIST =
-        CollUtil.newArrayList(KafkaTopicEnum.LOCAL_CACHE_UPDATE_MAP_TOPIC.name());
+        CollUtil.newArrayList(KafkaTopicEnum.LOCAL_CACHE_REMOVE_MAP_TOPIC.name());
 
     @KafkaHandler
     public void receive(List<String> recordList, Acknowledgment acknowledgment) {
@@ -38,7 +38,7 @@ public class LocalCacheUpdateMapListener {
             for (NotEmptyKeyValueSet.KeyValue subItem : keyValueSet) {
 
                 log.info("kafka：更新本地 map缓存：大 key：{}，小 key：{}", item, subItem.getKey());
-                CacheLocalUtil.put(item, subItem.getKey(), subItem.getValue()); // 更新：本地缓存
+                CacheLocalUtil.remove(item, subItem.getKey()); // 移除：本地缓存 map中的 key
 
             }
 

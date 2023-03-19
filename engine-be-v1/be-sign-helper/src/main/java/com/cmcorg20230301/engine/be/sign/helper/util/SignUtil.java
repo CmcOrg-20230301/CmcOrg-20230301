@@ -960,6 +960,13 @@ public class SignUtil {
 
             doSignDeleteSub(idSet, true); // 删除子表数据
 
+            for (Long item : idSet) {
+
+                // 删除 jwt后缀
+                UserUtil.removeJwtSecretSuf(item);
+
+            }
+
         });
 
     }

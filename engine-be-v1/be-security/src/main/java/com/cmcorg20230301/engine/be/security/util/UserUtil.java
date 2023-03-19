@@ -480,4 +480,13 @@ public class UserUtil {
 
     }
 
+    /**
+     * 统一的：删除：用户 jwt私钥后缀
+     */
+    public static void removeJwtSecretSuf(long userId) {
+
+        CacheRedisKafkaLocalUtil.remove(RedisKeyEnum.USER_ID_AND_JWT_SECRET_SUF_CACHE, null, String.valueOf(userId));
+
+    }
+
 }

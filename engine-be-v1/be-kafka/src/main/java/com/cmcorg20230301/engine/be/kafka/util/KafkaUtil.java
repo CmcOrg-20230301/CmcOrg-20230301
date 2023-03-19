@@ -47,4 +47,13 @@ public class KafkaUtil {
 
     }
 
+    /**
+     * 发送消息：本地缓存更新的 topic，针对往 map里面移除值
+     */
+    public static void sendLocalCacheRemoveMapTopic(NotEmptyKeyValueSet notEmptyKeyValueSet) {
+
+        send(KafkaTopicEnum.LOCAL_CACHE_REMOVE_MAP_TOPIC, notEmptyKeyValueSet);
+
+    }
+
 }

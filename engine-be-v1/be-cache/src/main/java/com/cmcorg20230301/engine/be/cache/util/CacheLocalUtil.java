@@ -181,4 +181,15 @@ public class CacheLocalUtil {
 
     }
 
+    /**
+     * 通过：key，移除：本地缓存从 map里
+     */
+    public static void remove(@NotNull String key, @NotNull String secondKey) {
+
+        Map<String, Object> secondMap = getSecondMap(key);
+
+        secondMap.remove(secondKey);
+
+    }
+
 }
