@@ -13,6 +13,7 @@ import com.cmcorg20230301.engine.be.redisson.model.enums.RedisKeyEnum;
 import com.cmcorg20230301.engine.be.security.mapper.SysParamMapper;
 import com.cmcorg20230301.engine.be.security.model.entity.BaseEntity;
 import com.cmcorg20230301.engine.be.security.model.entity.SysParamDO;
+import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.redisson.api.RBatch;
@@ -29,6 +30,7 @@ import java.util.stream.Collectors;
  * 系统参数 工具类
  */
 @Component
+@Slf4j
 public class SysParamUtil {
 
     private static SysParamMapper sysParamMapper;
@@ -43,6 +45,7 @@ public class SysParamUtil {
     @PostConstruct
     public void postConstruct() {
 
+        // 添加一个：canal-kafka的处理器
         String databaseName = myCacheProperties.getDatabaseName();
 
         CanalKafkaListenerHelper.ICanalKafkaHandler iCanalKafkaHandler =
@@ -50,7 +53,7 @@ public class SysParamUtil {
 
                 @Override
                 public Set<String> getFullTableNameSet() {
-                    return CollUtil.newHashSet(databaseName + ":" + TableNameEnum.SYS_PARAM.name().toLowerCase());
+                    return CollUtil.newHashSet(databaseName + "." + TableNameEnum.SYS_PARAM.name().toLowerCase());
                 }
 
                 @Override

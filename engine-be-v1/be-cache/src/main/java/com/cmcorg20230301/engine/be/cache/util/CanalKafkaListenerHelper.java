@@ -48,13 +48,13 @@ public class CanalKafkaListenerHelper {
 
     public CanalKafkaListenerHelper(@Autowired(required = false) List<ICanalKafkaHandler> iCanalKafkaHandlerList) {
 
-        if (CollUtil.isEmpty(iCanalKafkaHandlerList)) {
-            return;
-        }
+        if (CollUtil.isNotEmpty(iCanalKafkaHandlerList)) {
 
-        for (ICanalKafkaHandler item : iCanalKafkaHandlerList) {
+            for (ICanalKafkaHandler item : iCanalKafkaHandlerList) {
 
-            put(item); // 添加到：map里面
+                put(item); // 添加到：map里面
+
+            }
 
         }
 
@@ -79,6 +79,8 @@ public class CanalKafkaListenerHelper {
             iCanalKafkaHandlerList.add(iCanalKafkaHandler); // 添加到：集合里
 
         }
+
+        log.info("CANAL_KAFKA_HANDLER_MAP，长度：{}", CANAL_KAFKA_HANDLER_MAP.size());
 
     }
 
