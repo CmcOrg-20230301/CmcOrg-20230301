@@ -12,8 +12,7 @@ import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 import java.util.Date;
-import java.util.List;
-import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.LinkedList;
 
 /**
  * id，生成工具类
@@ -36,8 +35,8 @@ public class IdGeneratorUtil {
     // id池最小大小
     private static final int ID_SET_MIN_SIZE = 10;
 
-    // id池
-    private static final List<Long> ID_POOL = new CopyOnWriteArrayList<>();
+    // id池，备注：需要上锁进行操作
+    private static final LinkedList<Long> ID_POOL = new LinkedList<>();
 
     @PostConstruct
     public void postConstruct() {
@@ -104,7 +103,7 @@ public class IdGeneratorUtil {
 
             fill(); // 填充
 
-            id = ID_POOL.remove(0);
+            id = ID_POOL.removeFirst();
 
         }
 
