@@ -1,7 +1,9 @@
 package com.cmcorg20230301.engine.be.generate.model.bo;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -38,7 +40,7 @@ public class BeApi {
     /**
      * post，json请求时，需要传递的对象
      */
-    private BeApiRequestBody requestBody;
+    private BeApiSchema requestBody;
 
     /**
      * 一般的 get或者 post 请求时，传递的参数，key是参数名
@@ -46,10 +48,15 @@ public class BeApi {
     private Map<String, BeApiParameter> parameter;
 
     /**
-     * 请求的是对象时
+     * 响应的对象
+     */
+    private BeApiSchema response;
+
+    /**
+     * 提取一些共同的属性类
      */
     @Data
-    public static class BeApiRequestBody {
+    public static class BeApiField {
 
         /**
          * 对象的类型
@@ -57,22 +64,47 @@ public class BeApi {
         private String type;
 
         /**
-         * 对象的字段情况 map，key是参数名
-         */
-        private Map<String, BeApiParameter> propertiesMap;
-
-        /**
          * 是否必须传递
          */
         private Boolean required;
+
+        /**
+         * 字段描述
+         */
+        private String description;
+
+    }
+
+    /**
+     * 请求的是对象时
+     */
+    @EqualsAndHashCode(callSuper = true)
+    @Data
+    public static class BeApiSchema extends BeApiField {
+
+        /**
+         * 对象传递时的名称，备注：只有此对象是一个对象的字段时，才有值
+         */
+        private String name;
+
+        /**
+         * 对象的字段情况 map，key是参数名
+         */
+        private Map<String, BeApiField> fieldMap;
+
+        /**
+         * 必传的字段名集合
+         */
+        private List<String> requiredFieldName;
 
     }
 
     /**
      * 请求的是一般类型时
      */
+    @EqualsAndHashCode(callSuper = true)
     @Data
-    public static class BeApiParameter {
+    public static class BeApiParameter extends BeApiField {
 
         /**
          * 字段名称
@@ -80,29 +112,14 @@ public class BeApi {
         private String name;
 
         /**
-         * 字段类型
-         */
-        private String type;
-
-        /**
          * 字段格式化
          */
         private String format;
 
         /**
-         * 是否必须传递
-         */
-        private Boolean required;
-
-        /**
          * 正则表达式
          */
         private String pattern;
-
-        /**
-         * 字段描述
-         */
-        private String description;
 
     }
 

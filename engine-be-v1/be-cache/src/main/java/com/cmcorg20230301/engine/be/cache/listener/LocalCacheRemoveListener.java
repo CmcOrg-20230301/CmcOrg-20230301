@@ -1,7 +1,6 @@
 package com.cmcorg20230301.engine.be.cache.listener;
 
 import cn.hutool.core.collection.CollUtil;
-import cn.hutool.core.lang.TypeReference;
 import cn.hutool.json.JSONUtil;
 import com.cmcorg20230301.engine.be.cache.util.CacheLocalUtil;
 import com.cmcorg20230301.engine.be.kafka.model.enums.KafkaTopicEnum;
@@ -31,8 +30,7 @@ public class LocalCacheRemoveListener {
     public void receive(List<String> recordList, Acknowledgment acknowledgment) {
 
         Set<String> keySet = recordList.stream() //
-            .map(it -> JSONUtil.toBean(it, new TypeReference<Set<String>>() {
-            }, false)) //
+            .map(it -> JSONUtil.toList(it, String.class)) //
             .flatMap(Collection::stream)  //
             .collect(Collectors.toSet());
 

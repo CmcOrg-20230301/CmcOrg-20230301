@@ -11,6 +11,30 @@
     }
   ],
   "paths": {
+    "/sys/param/pageTest11": {
+      "put": {
+        "tags": [
+          "系统参数-管理"
+        ],
+        "summary": "分页排序查询",
+        "operationId": "pageTest11",
+        "parameters": [
+          {
+            "name": "dto",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/MyPageTest3DTO"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
     "/user/self/updateInfo": {
       "post": {
         "tags": [
@@ -2331,10 +2355,231 @@
           }
         }
       }
+    },
+    "/sys/param/pageTest10": {
+      "get": {
+        "tags": [
+          "系统参数-管理"
+        ],
+        "summary": "分页排序查询",
+        "operationId": "pageTest10",
+        "parameters": [
+          {
+            "name": "dto",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/MyPageTest3DTO"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/sys/param/pageTest12": {
+      "delete": {
+        "tags": [
+          "系统参数-管理"
+        ],
+        "summary": "分页排序查询",
+        "operationId": "pageTest12",
+        "parameters": [
+          {
+            "name": "dto",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/MyPageTest3DTO"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/sys/param/pageTest13": {
+      "get": {
+        "tags": [
+          "系统参数-管理"
+        ],
+        "summary": "分页排序查询",
+        "operationId": "pageTest13",
+        "parameters": [
+          {
+            "name": "dto",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/MyPageTest3DTO"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "系统参数-管理"
+        ],
+        "summary": "分页排序查询",
+        "operationId": "pageTest13_3",
+        "parameters": [
+          {
+            "name": "dto",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/MyPageTest3DTO"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "系统参数-管理"
+        ],
+        "summary": "分页排序查询",
+        "operationId": "pageTest13_2",
+        "parameters": [
+          {
+            "name": "dto",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/MyPageTest3DTO"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "系统参数-管理"
+        ],
+        "summary": "分页排序查询",
+        "operationId": "pageTest13_5",
+        "parameters": [
+          {
+            "name": "dto",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/MyPageTest3DTO"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      },
+      "options": {
+        "tags": [
+          "系统参数-管理"
+        ],
+        "summary": "分页排序查询",
+        "operationId": "pageTest13_6",
+        "parameters": [
+          {
+            "name": "dto",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/MyPageTest3DTO"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      },
+      "head": {
+        "tags": [
+          "系统参数-管理"
+        ],
+        "summary": "分页排序查询",
+        "operationId": "pageTest13_1",
+        "parameters": [
+          {
+            "name": "dto",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/MyPageTest3DTO"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "系统参数-管理"
+        ],
+        "summary": "分页排序查询",
+        "operationId": "pageTest13_4",
+        "parameters": [
+          {
+            "name": "dto",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/MyPageTest3DTO"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
     }
   },
   "components": {
     "schemas": {
+      "MyPageTest3DTO": {
+        "type": "object",
+        "properties": {
+          "file": {
+            "type": "string",
+            "format": "binary"
+          },
+          "fileBegin": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "fileEnd": {
+            "type": "integer",
+            "format": "int64"
+          }
+        }
+      },
       "UserSelfUpdateInfoDTO": {
         "type": "object",
         "properties": {
@@ -3985,23 +4230,6 @@
         },
         "additionalProperties": {
           "type": "object"
-        }
-      },
-      "MyPageTest3DTO": {
-        "type": "object",
-        "properties": {
-          "file": {
-            "type": "string",
-            "format": "binary"
-          },
-          "fileBegin": {
-            "type": "integer",
-            "format": "int64"
-          },
-          "fileEnd": {
-            "type": "integer",
-            "format": "int64"
-          }
         }
       },
       "SysParamInsertOrUpdateDTO": {
