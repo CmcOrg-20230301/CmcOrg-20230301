@@ -11,7 +11,7 @@ public class Knife4jSecurityPermitAllConfiguration implements ISecurityPermitAll
 
     @Override
     public Set<String> devPermitAllSet() {
-        return CollUtil.newHashSet("/v3/api-docs/**", "/webjars/**", "/doc.html/**");
+        return CollUtil.newHashSet("/v3/api-docs/**", "/webjars/**", "/doc.html/**", "/favicon.ico");
     }
 
     @Override

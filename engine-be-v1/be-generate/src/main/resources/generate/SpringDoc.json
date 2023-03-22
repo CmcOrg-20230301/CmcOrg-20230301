@@ -1,0 +1,5557 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "OpenAPI definition",
+    "version": "v0"
+  },
+  "servers": [
+    {
+      "url": "http://127.0.0.1:10001",
+      "description": "Generated server url"
+    }
+  ],
+  "paths": {
+    "/user/self/updateInfo": {
+      "post": {
+        "tags": [
+          "用户-自我-管理"
+        ],
+        "summary": "当前用户：基本信息：修改",
+        "operationId": "userSelfUpdateInfo",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UserSelfUpdateInfoDTO"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResultVOString"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/user/self/info": {
+      "post": {
+        "tags": [
+          "用户-自我-管理"
+        ],
+        "summary": "获取：当前用户，基本信息",
+        "operationId": "userSelfInfo",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResultVOUserSelfInfoVO"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/sys/user/updatePassword": {
+      "post": {
+        "tags": [
+          "用户-管理"
+        ],
+        "summary": "批量：修改密码",
+        "operationId": "updatePassword",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SysUserUpdatePasswordDTO"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResultVOString"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/sys/user/resetAvatar": {
+      "post": {
+        "tags": [
+          "用户-管理"
+        ],
+        "summary": "批量：重置头像",
+        "operationId": "resetAvatar",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/NotEmptyIdSet"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResultVOString"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/sys/user/page": {
+      "post": {
+        "tags": [
+          "用户-管理"
+        ],
+        "summary": "分页排序查询",
+        "operationId": "myPage",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SysUserPageDTO"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResultVOPageSysUserPageVO"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/sys/user/insertOrUpdate": {
+      "post": {
+        "tags": [
+          "用户-管理"
+        ],
+        "summary": "新增/修改",
+        "operationId": "insertOrUpdate",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SysUserInsertOrUpdateDTO"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResultVOString"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/sys/user/infoById": {
+      "post": {
+        "tags": [
+          "用户-管理"
+        ],
+        "summary": "通过主键id，查看详情",
+        "operationId": "infoById",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/NotNullId"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResultVOSysUserInfoByIdVO"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/sys/user/dictList": {
+      "post": {
+        "tags": [
+          "用户-管理"
+        ],
+        "summary": "下拉列表",
+        "operationId": "dictList",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SysUserDictListDTO"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResultVOPageDictVO"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/sys/user/deleteByIdSet": {
+      "post": {
+        "tags": [
+          "用户-管理"
+        ],
+        "summary": "批量：注销用户",
+        "operationId": "deleteByIdSet",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/NotEmptyIdSet"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResultVOString"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/sys/role/page": {
+      "post": {
+        "tags": [
+          "角色-管理"
+        ],
+        "summary": "分页排序查询",
+        "operationId": "myPage_1",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SysRolePageDTO"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResultVOPageSysRoleDO"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/sys/role/insertOrUpdate": {
+      "post": {
+        "tags": [
+          "角色-管理"
+        ],
+        "summary": "新增/修改",
+        "operationId": "insertOrUpdate_1",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SysRoleInsertOrUpdateDTO"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResultVOString"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/sys/role/infoById": {
+      "post": {
+        "tags": [
+          "角色-管理"
+        ],
+        "summary": "通过主键id，查看详情",
+        "operationId": "infoById_1",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/NotNullId"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResultVOSysRoleInfoByIdVO"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/sys/role/deleteByIdSet": {
+      "post": {
+        "tags": [
+          "角色-管理"
+        ],
+        "summary": "批量删除",
+        "operationId": "deleteByIdSet_1",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/NotEmptyIdSet"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResultVOString"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/sys/request/self/loginRecord": {
+      "post": {
+        "tags": [
+          "请求-管理"
+        ],
+        "summary": "当前用户：登录记录",
+        "operationId": "selfLoginRecord",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SysRequestSelfLoginRecordPageDTO"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResultVOPageSysRequestDO"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/sys/request/page": {
+      "post": {
+        "tags": [
+          "请求-管理"
+        ],
+        "summary": "分页排序查询",
+        "operationId": "myPage_2",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SysRequestPageDTO"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResultVOPageSysRequestDO"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/sys/request/allAvg": {
+      "post": {
+        "tags": [
+          "请求-管理"
+        ],
+        "summary": "所有请求的平均耗时",
+        "operationId": "allAvg",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResultVOSysRequestAllAvgVO"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/sys/request/allAvgPro": {
+      "post": {
+        "tags": [
+          "请求-管理"
+        ],
+        "summary": "所有请求的平均耗时-增强：增加筛选项",
+        "operationId": "allAvgPro",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SysRequestPageDTO"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResultVOSysRequestAllAvgVO"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/sys/param/page": {
+      "post": {
+        "tags": [
+          "系统参数-管理"
+        ],
+        "summary": "分页排序查询",
+        "operationId": "myPage_3",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SysParamPageDTO"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResultVOPageSysParamDO"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/sys/param/pageTest": {
+      "post": {
+        "tags": [
+          "系统参数-管理"
+        ],
+        "summary": "分页排序查询",
+        "operationId": "myPageTest",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/sys/param/pageTest9": {
+      "post": {
+        "tags": [
+          "系统参数-管理"
+        ],
+        "summary": "分页排序查询",
+        "operationId": "myPageTest9",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "additionalProperties": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/sys/param/pageTest8": {
+      "post": {
+        "tags": [
+          "系统参数-管理"
+        ],
+        "summary": "分页排序查询",
+        "operationId": "myPageTest8",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/sys/param/pageTest7": {
+      "post": {
+        "tags": [
+          "系统参数-管理"
+        ],
+        "summary": "分页排序查询",
+        "operationId": "myPageTest7",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/JSONObject"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/sys/param/pageTest6": {
+      "post": {
+        "tags": [
+          "系统参数-管理"
+        ],
+        "summary": "分页排序查询",
+        "operationId": "myPageTest6",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/sys/param/pageTest5": {
+      "post": {
+        "tags": [
+          "系统参数-管理"
+        ],
+        "summary": "分页排序查询",
+        "operationId": "myPageTest5",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "string"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/sys/param/pageTest4": {
+      "post": {
+        "tags": [
+          "系统参数-管理"
+        ],
+        "summary": "分页排序查询",
+        "operationId": "myPageTest4",
+        "parameters": [
+          {
+            "name": "fileName",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "uploadType",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "required": [
+                  "file"
+                ],
+                "type": "object",
+                "properties": {
+                  "file": {
+                    "type": "string",
+                    "format": "binary"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/sys/param/pageTest3": {
+      "post": {
+        "tags": [
+          "系统参数-管理"
+        ],
+        "summary": "分页排序查询",
+        "operationId": "myPageTest3",
+        "parameters": [
+          {
+            "name": "dto",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/MyPageTest3DTO"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/sys/param/pageTest2": {
+      "post": {
+        "tags": [
+          "系统参数-管理"
+        ],
+        "summary": "分页排序查询",
+        "operationId": "myPageTest2",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "required": [
+                  "file"
+                ],
+                "type": "object",
+                "properties": {
+                  "file": {
+                    "type": "string",
+                    "format": "binary"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/sys/param/insertOrUpdate": {
+      "post": {
+        "tags": [
+          "系统参数-管理"
+        ],
+        "summary": "新增/修改",
+        "operationId": "insertOrUpdate_2",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SysParamInsertOrUpdateDTO"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResultVOString"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/sys/param/infoById": {
+      "post": {
+        "tags": [
+          "系统参数-管理"
+        ],
+        "summary": "通过主键id，查看详情",
+        "operationId": "infoById_2",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/NotNullId"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResultVOSysParamDO"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/sys/param/deleteByIdSet": {
+      "post": {
+        "tags": [
+          "系统参数-管理"
+        ],
+        "summary": "批量删除",
+        "operationId": "deleteByIdSet_2",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/NotEmptyIdSet"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResultVOString"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/sys/menu/userSelfMenuList": {
+      "post": {
+        "tags": [
+          "菜单-管理"
+        ],
+        "summary": "获取：当前用户绑定的菜单",
+        "operationId": "userSelfMenuList",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResultVOListSysMenuDO"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/sys/menu/tree": {
+      "post": {
+        "tags": [
+          "菜单-管理"
+        ],
+        "summary": "查询：树结构",
+        "operationId": "tree",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SysMenuPageDTO"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResultVOListSysMenuDO"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/sys/menu/page": {
+      "post": {
+        "tags": [
+          "菜单-管理"
+        ],
+        "summary": "分页排序查询",
+        "operationId": "myPage_4",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SysMenuPageDTO"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResultVOPageSysMenuDO"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/sys/menu/insertOrUpdate": {
+      "post": {
+        "tags": [
+          "菜单-管理"
+        ],
+        "summary": "新增/修改",
+        "operationId": "insertOrUpdate_3",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SysMenuInsertOrUpdateDTO"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResultVOString"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/sys/menu/infoById": {
+      "post": {
+        "tags": [
+          "菜单-管理"
+        ],
+        "summary": "通过主键id，查看详情",
+        "operationId": "infoById_3",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/NotNullId"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResultVOSysMenuInfoByIdVO"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/sys/menu/deleteByIdSet": {
+      "post": {
+        "tags": [
+          "菜单-管理"
+        ],
+        "summary": "批量删除",
+        "operationId": "deleteByIdSet_3",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/NotEmptyIdSet"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResultVOString"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/sys/menu/addOrderNo": {
+      "post": {
+        "tags": [
+          "菜单-管理"
+        ],
+        "summary": "通过主键 idSet，加减排序号",
+        "operationId": "addOrderNo",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ChangeNumberDTO"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResultVOString"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/sys/dict/tree": {
+      "post": {
+        "tags": [
+          "字典-管理"
+        ],
+        "summary": "查询：树结构",
+        "operationId": "tree_1",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SysDictPageDTO"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResultVOListSysDictTreeVO"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/sys/dict/page": {
+      "post": {
+        "tags": [
+          "字典-管理"
+        ],
+        "summary": "分页排序查询",
+        "operationId": "myPage_5",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SysDictPageDTO"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResultVOPageSysDictDO"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/sys/dict/insertOrUpdate": {
+      "post": {
+        "tags": [
+          "字典-管理"
+        ],
+        "summary": "新增/修改",
+        "operationId": "insertOrUpdate_4",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SysDictInsertOrUpdateDTO"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResultVOString"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/sys/dict/infoById": {
+      "post": {
+        "tags": [
+          "字典-管理"
+        ],
+        "summary": "通过主键id，查看详情",
+        "operationId": "infoById_4",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/NotNullId"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResultVOSysDictDO"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/sys/dict/deleteByIdSet": {
+      "post": {
+        "tags": [
+          "字典-管理"
+        ],
+        "summary": "批量删除",
+        "operationId": "deleteByIdSet_4",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/NotEmptyIdSet"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResultVOString"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/sys/dict/addOrderNo": {
+      "post": {
+        "tags": [
+          "字典-管理"
+        ],
+        "summary": "通过主键 idSet，加减排序号",
+        "operationId": "addOrderNo_1",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ChangeNumberDTO"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResultVOString"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/sign/wx/sign/in/phoneCode": {
+      "post": {
+        "tags": [
+          "登录注册-微信"
+        ],
+        "summary": "手机号 code登录",
+        "description": "SIGN_IN",
+        "operationId": "signInPhoneCode",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SignInPhoneCodeDTO"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResultVOString"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/sign/wx/sign/in/code": {
+      "post": {
+        "tags": [
+          "登录注册-微信"
+        ],
+        "summary": "微信 code登录",
+        "description": "SIGN_IN",
+        "operationId": "signInCode",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SignInCodeDTO"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResultVOString"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/sign/signInName/updatePassword": {
+      "post": {
+        "tags": [
+          "登录注册-登录名"
+        ],
+        "summary": "修改密码",
+        "operationId": "updatePassword_1",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SignSignInNameUpdatePasswordDTO"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResultVOString"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/sign/signInName/updateAccount": {
+      "post": {
+        "tags": [
+          "登录注册-登录名"
+        ],
+        "summary": "修改账号",
+        "operationId": "updateAccount",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SignSignInNameUpdateAccountDTO"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResultVOString"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/sign/signInName/signDelete": {
+      "post": {
+        "tags": [
+          "登录注册-登录名"
+        ],
+        "summary": "账号注销",
+        "operationId": "signDelete",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SignSignInNameSignDeleteDTO"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResultVOString"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/sign/signInName/sign/up": {
+      "post": {
+        "tags": [
+          "登录注册-登录名"
+        ],
+        "summary": "注册",
+        "operationId": "signUp",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SignSignInNameSignUpDTO"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResultVOString"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/sign/signInName/sign/in/password": {
+      "post": {
+        "tags": [
+          "登录注册-登录名"
+        ],
+        "summary": "账号密码登录",
+        "description": "SIGN_IN",
+        "operationId": "signInPassword",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SignSignInNameSignInPasswordDTO"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResultVOString"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/sign/phone/updatePassword": {
+      "post": {
+        "tags": [
+          "登录注册-手机"
+        ],
+        "summary": "修改密码",
+        "operationId": "updatePassword_2",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SignPhoneUpdatePasswordDTO"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResultVOString"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/sign/phone/updatePassword/sendCode": {
+      "post": {
+        "tags": [
+          "登录注册-手机"
+        ],
+        "summary": "修改密码-发送验证码",
+        "operationId": "updatePasswordSendCode",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResultVOString"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/sign/phone/updateAccount": {
+      "post": {
+        "tags": [
+          "登录注册-手机"
+        ],
+        "summary": "修改手机",
+        "operationId": "updateAccount_1",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SignPhoneUpdateAccountDTO"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResultVOString"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/sign/phone/updateAccount/sendCode": {
+      "post": {
+        "tags": [
+          "登录注册-手机"
+        ],
+        "summary": "修改手机-发送验证码",
+        "operationId": "updateAccountSendCode",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResultVOString"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/sign/phone/signDelete": {
+      "post": {
+        "tags": [
+          "登录注册-手机"
+        ],
+        "summary": "账号注销",
+        "operationId": "signDelete_1",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/NotBlankCodeDTO"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResultVOString"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/sign/phone/signDelete/sendCode": {
+      "post": {
+        "tags": [
+          "登录注册-手机"
+        ],
+        "summary": "账号注销-发送验证码",
+        "operationId": "signDeleteSendCode",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResultVOString"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/sign/phone/sign/up": {
+      "post": {
+        "tags": [
+          "登录注册-手机"
+        ],
+        "summary": "注册",
+        "operationId": "signUp_1",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SignPhoneSignUpDTO"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResultVOString"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/sign/phone/sign/up/sendCode": {
+      "post": {
+        "tags": [
+          "登录注册-手机"
+        ],
+        "summary": "注册-发送验证码",
+        "operationId": "signUpSendCode",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PhoneNotBlankDTO"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResultVOString"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/sign/phone/sign/in/sendCode": {
+      "post": {
+        "tags": [
+          "登录注册-手机"
+        ],
+        "summary": "手机验证码登录-发送验证码",
+        "operationId": "signInSendCode",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PhoneNotBlankDTO"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResultVOString"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/sign/phone/sign/in/password": {
+      "post": {
+        "tags": [
+          "登录注册-手机"
+        ],
+        "summary": "手机账号密码登录",
+        "description": "SIGN_IN",
+        "operationId": "signInPassword_1",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SignPhoneSignInPasswordDTO"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResultVOString"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/sign/phone/sign/in/code": {
+      "post": {
+        "tags": [
+          "登录注册-手机"
+        ],
+        "summary": "手机验证码登录",
+        "description": "SIGN_IN",
+        "operationId": "signInCode_1",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SignPhoneSignInCodeDTO"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResultVOString"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/sign/phone/forgetPassword": {
+      "post": {
+        "tags": [
+          "登录注册-手机"
+        ],
+        "summary": "忘记密码",
+        "operationId": "forgetPassword",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SignPhoneForgetPasswordDTO"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResultVOString"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/sign/phone/forgetPassword/sendCode": {
+      "post": {
+        "tags": [
+          "登录注册-手机"
+        ],
+        "summary": "忘记密码-发送验证码",
+        "operationId": "forgetPasswordSendCode",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PhoneNotBlankDTO"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResultVOString"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/sign/phone/bindAccount": {
+      "post": {
+        "tags": [
+          "登录注册-手机"
+        ],
+        "summary": "绑定手机",
+        "operationId": "bindAccount",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SignPhoneBindAccountDTO"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResultVOString"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/sign/phone/bindAccount/sendCode": {
+      "post": {
+        "tags": [
+          "登录注册-手机"
+        ],
+        "summary": "绑定手机-发送验证码",
+        "operationId": "bindAccountSendCode",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PhoneNotBlankDTO"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResultVOString"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/sign/out/self": {
+      "post": {
+        "tags": [
+          "退出登录"
+        ],
+        "summary": "当前用户-退出登录",
+        "operationId": "signOut",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResultVOString"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/sign/email/updatePassword": {
+      "post": {
+        "tags": [
+          "登录注册-邮箱"
+        ],
+        "summary": "修改密码",
+        "operationId": "updatePassword_3",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SignEmailUpdatePasswordDTO"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResultVOString"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/sign/email/updatePassword/sendCode": {
+      "post": {
+        "tags": [
+          "登录注册-邮箱"
+        ],
+        "summary": "修改密码-发送验证码",
+        "operationId": "updatePasswordSendCode_1",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResultVOString"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/sign/email/updateAccount": {
+      "post": {
+        "tags": [
+          "登录注册-邮箱"
+        ],
+        "summary": "修改邮箱",
+        "operationId": "updateAccount_2",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SignEmailUpdateAccountDTO"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResultVOString"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/sign/email/updateAccount/sendCode": {
+      "post": {
+        "tags": [
+          "登录注册-邮箱"
+        ],
+        "summary": "修改邮箱-发送验证码",
+        "operationId": "updateAccountSendCode_1",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResultVOString"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/sign/email/signDelete": {
+      "post": {
+        "tags": [
+          "登录注册-邮箱"
+        ],
+        "summary": "账号注销",
+        "operationId": "signDelete_2",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/NotBlankCodeDTO"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResultVOString"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/sign/email/signDelete/sendCode": {
+      "post": {
+        "tags": [
+          "登录注册-邮箱"
+        ],
+        "summary": "账号注销-发送验证码",
+        "operationId": "signDeleteSendCode_1",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResultVOString"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/sign/email/sign/up": {
+      "post": {
+        "tags": [
+          "登录注册-邮箱"
+        ],
+        "summary": "注册",
+        "operationId": "signUp_2",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SignEmailSignUpDTO"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResultVOString"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/sign/email/sign/up/sendCode": {
+      "post": {
+        "tags": [
+          "登录注册-邮箱"
+        ],
+        "summary": "注册-发送验证码",
+        "operationId": "signUpSendCode_1",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EmailNotBlankDTO"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResultVOString"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/sign/email/sign/in/password": {
+      "post": {
+        "tags": [
+          "登录注册-邮箱"
+        ],
+        "summary": "邮箱账号密码登录",
+        "description": "SIGN_IN",
+        "operationId": "signInPassword_2",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SignEmailSignInPasswordDTO"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResultVOString"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/sign/email/forgetPassword": {
+      "post": {
+        "tags": [
+          "登录注册-邮箱"
+        ],
+        "summary": "忘记密码",
+        "operationId": "forgetPassword_1",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SignEmailForgetPasswordDTO"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResultVOString"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/sign/email/forgetPassword/sendCode": {
+      "post": {
+        "tags": [
+          "登录注册-邮箱"
+        ],
+        "summary": "忘记密码-发送验证码",
+        "operationId": "forgetPasswordSendCode_1",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EmailNotBlankDTO"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResultVOString"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/sign/email/bindAccount": {
+      "post": {
+        "tags": [
+          "登录注册-邮箱"
+        ],
+        "summary": "绑定邮箱",
+        "operationId": "bindAccount_1",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SignEmailBindAccountDTO"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResultVOString"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/sign/email/bindAccount/sendCode": {
+      "post": {
+        "tags": [
+          "登录注册-邮箱"
+        ],
+        "summary": "绑定邮箱-发送验证码",
+        "operationId": "bindAccountSendCode_1",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EmailNotBlankDTO"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResultVOString"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/server/workInfo": {
+      "post": {
+        "tags": [
+          "服务器-管理"
+        ],
+        "summary": "服务器运行情况",
+        "operationId": "workInfo",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResultVOServerWorkInfoVO"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "UserSelfUpdateInfoDTO": {
+        "type": "object",
+        "properties": {
+          "nickname": {
+            "pattern": "^[\\u4E00-\\u9FA5A-Za-z0-9_-]{2,20}$",
+            "type": "string",
+            "description": "昵称"
+          },
+          "bio": {
+            "type": "string",
+            "description": "个人简介"
+          }
+        }
+      },
+      "ApiResultVOString": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "integer",
+            "description": "响应代码，成功返回：200",
+            "format": "int32"
+          },
+          "msg": {
+            "type": "string",
+            "description": "响应描述"
+          },
+          "successFlag": {
+            "type": "boolean",
+            "description": "服务器是否收到请求，只会返回 true"
+          },
+          "data": {
+            "type": "string",
+            "description": "数据"
+          },
+          "service": {
+            "type": "string",
+            "description": "服务名"
+          }
+        },
+        "description": "统一响应实体类"
+      },
+      "ApiResultVOUserSelfInfoVO": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "integer",
+            "description": "响应代码，成功返回：200",
+            "format": "int32"
+          },
+          "msg": {
+            "type": "string",
+            "description": "响应描述"
+          },
+          "successFlag": {
+            "type": "boolean",
+            "description": "服务器是否收到请求，只会返回 true"
+          },
+          "data": {
+            "$ref": "#/components/schemas/UserSelfInfoVO"
+          },
+          "service": {
+            "type": "string",
+            "description": "服务名"
+          }
+        },
+        "description": "统一响应实体类"
+      },
+      "UserSelfInfoVO": {
+        "type": "object",
+        "properties": {
+          "nickname": {
+            "pattern": "^[\\u4E00-\\u9FA5A-Za-z0-9_-]{2,20}$",
+            "type": "string",
+            "description": "昵称"
+          },
+          "bio": {
+            "type": "string",
+            "description": "个人简介"
+          },
+          "avatarUri": {
+            "type": "string",
+            "description": "头像uri"
+          },
+          "email": {
+            "type": "string",
+            "description": "邮箱，会脱敏"
+          },
+          "passwordFlag": {
+            "type": "boolean",
+            "description": "是否有密码，用于前端显示，修改密码/设置密码"
+          },
+          "signInName": {
+            "type": "string",
+            "description": "登录名，会脱敏"
+          },
+          "phone": {
+            "type": "string",
+            "description": "手机号码，会脱敏"
+          },
+          "wxOpenId": {
+            "type": "string",
+            "description": "微信 openId，会脱敏"
+          },
+          "createTime": {
+            "type": "string",
+            "description": "账号注册时间",
+            "format": "date-time"
+          }
+        },
+        "description": "数据"
+      },
+      "SysUserUpdatePasswordDTO": {
+        "required": [
+          "idSet"
+        ],
+        "type": "object",
+        "properties": {
+          "idSet": {
+            "uniqueItems": true,
+            "type": "array",
+            "description": "主键 idSet",
+            "items": {
+              "type": "integer",
+              "description": "主键 idSet",
+              "format": "int64"
+            }
+          },
+          "newPassword": {
+            "type": "string",
+            "description": "前端加密之后的，新密码"
+          },
+          "newOriginPassword": {
+            "type": "string",
+            "description": "前端加密之后的原始密码，新密码"
+          }
+        }
+      },
+      "NotEmptyIdSet": {
+        "required": [
+          "idSet"
+        ],
+        "type": "object",
+        "properties": {
+          "idSet": {
+            "uniqueItems": true,
+            "type": "array",
+            "description": "主键 idSet",
+            "items": {
+              "type": "integer",
+              "description": "主键 idSet",
+              "format": "int64"
+            }
+          }
+        }
+      },
+      "MyOrderDTO": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "排序的字段名"
+          },
+          "value": {
+            "type": "string",
+            "description": "ascend（升序，默认） descend（降序）"
+          }
+        },
+        "description": "排序字段"
+      },
+      "OrderItem": {
+        "type": "object",
+        "properties": {
+          "column": {
+            "type": "string"
+          },
+          "asc": {
+            "type": "boolean"
+          }
+        }
+      },
+      "PageObject": {
+        "type": "object",
+        "properties": {
+          "records": {
+            "type": "array",
+            "items": {
+              "type": "object"
+            }
+          },
+          "total": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "size": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "current": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "orders": {
+            "type": "array",
+            "deprecated": true,
+            "items": {
+              "$ref": "#/components/schemas/OrderItem"
+            }
+          },
+          "optimizeCountSql": {
+            "type": "boolean",
+            "deprecated": true
+          },
+          "searchCount": {
+            "type": "boolean",
+            "deprecated": true
+          },
+          "optimizeJoinOfCountSql": {
+            "type": "boolean",
+            "writeOnly": true
+          },
+          "maxLimit": {
+            "type": "integer",
+            "format": "int64",
+            "deprecated": true
+          },
+          "countId": {
+            "type": "string",
+            "deprecated": true
+          },
+          "pages": {
+            "type": "integer",
+            "format": "int64"
+          }
+        }
+      },
+      "SysUserPageDTO": {
+        "type": "object",
+        "properties": {
+          "current": {
+            "type": "integer",
+            "description": "第几页",
+            "format": "int64"
+          },
+          "pageSize": {
+            "type": "integer",
+            "description": "每页显示条数",
+            "format": "int64"
+          },
+          "order": {
+            "$ref": "#/components/schemas/MyOrderDTO"
+          },
+          "id": {
+            "type": "integer",
+            "description": "主键 id",
+            "format": "int64"
+          },
+          "nickname": {
+            "type": "string",
+            "description": "昵称"
+          },
+          "avatarUri": {
+            "type": "string",
+            "description": "头像uri"
+          },
+          "signInName": {
+            "type": "string",
+            "description": "登录名"
+          },
+          "email": {
+            "type": "string",
+            "description": "邮箱"
+          },
+          "phone": {
+            "type": "string",
+            "description": "手机号码"
+          },
+          "wxOpenId": {
+            "type": "string",
+            "description": "微信 openId"
+          },
+          "enableFlag": {
+            "type": "boolean",
+            "description": "是否正常"
+          },
+          "passwordFlag": {
+            "type": "boolean",
+            "description": "是否有密码"
+          },
+          "createTimeDescDefaultOrderPage": {
+            "$ref": "#/components/schemas/PageObject"
+          }
+        }
+      },
+      "ApiResultVOPageSysUserPageVO": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "integer",
+            "description": "响应代码，成功返回：200",
+            "format": "int32"
+          },
+          "msg": {
+            "type": "string",
+            "description": "响应描述"
+          },
+          "successFlag": {
+            "type": "boolean",
+            "description": "服务器是否收到请求，只会返回 true"
+          },
+          "data": {
+            "$ref": "#/components/schemas/PageSysUserPageVO"
+          },
+          "service": {
+            "type": "string",
+            "description": "服务名"
+          }
+        },
+        "description": "统一响应实体类"
+      },
+      "PageSysUserPageVO": {
+        "type": "object",
+        "properties": {
+          "records": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SysUserPageVO"
+            }
+          },
+          "total": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "size": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "current": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "orders": {
+            "type": "array",
+            "deprecated": true,
+            "items": {
+              "$ref": "#/components/schemas/OrderItem"
+            }
+          },
+          "optimizeCountSql": {
+            "type": "boolean",
+            "deprecated": true
+          },
+          "searchCount": {
+            "type": "boolean",
+            "deprecated": true
+          },
+          "optimizeJoinOfCountSql": {
+            "type": "boolean",
+            "writeOnly": true
+          },
+          "maxLimit": {
+            "type": "integer",
+            "format": "int64",
+            "deprecated": true
+          },
+          "countId": {
+            "type": "string",
+            "deprecated": true
+          },
+          "pages": {
+            "type": "integer",
+            "format": "int64"
+          }
+        },
+        "description": "数据"
+      },
+      "SysUserPageVO": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "description": "主键id",
+            "format": "int64"
+          },
+          "nickname": {
+            "type": "string",
+            "description": "昵称"
+          },
+          "avatarUri": {
+            "type": "string",
+            "description": "头像uri"
+          },
+          "email": {
+            "type": "string",
+            "description": "邮箱，备注：会脱敏"
+          },
+          "signInName": {
+            "type": "string",
+            "description": "登录名，会脱敏"
+          },
+          "phone": {
+            "type": "string",
+            "description": "手机号码，会脱敏"
+          },
+          "wxOpenId": {
+            "type": "string",
+            "description": "微信 openId，会脱敏"
+          },
+          "enableFlag": {
+            "type": "boolean",
+            "description": "正常/冻结"
+          },
+          "passwordFlag": {
+            "type": "boolean",
+            "description": "是否有密码"
+          },
+          "createTime": {
+            "type": "string",
+            "description": "创建时间",
+            "format": "date-time"
+          },
+          "updateTime": {
+            "type": "string",
+            "description": "修改时间",
+            "format": "date-time"
+          },
+          "roleIdSet": {
+            "uniqueItems": true,
+            "type": "array",
+            "description": "角色 idSet",
+            "items": {
+              "type": "integer",
+              "description": "角色 idSet",
+              "format": "int64"
+            }
+          }
+        }
+      },
+      "SysUserInsertOrUpdateDTO": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "minimum": 1,
+            "type": "integer",
+            "description": "主键 id",
+            "format": "int64"
+          },
+          "signInName": {
+            "maxLength": 20,
+            "minLength": 0,
+            "pattern": "^[\\u4E00-\\u9FA5A-Za-z0-9_-]{2,20}$",
+            "type": "string",
+            "description": "登录名"
+          },
+          "email": {
+            "maxLength": 200,
+            "minLength": 0,
+            "pattern": "^\\w+([-+.]\\w+)*@\\w+([-.]\\w+)*\\.\\w+([-.]\\w+)*$",
+            "type": "string",
+            "description": "邮箱"
+          },
+          "phone": {
+            "maxLength": 100,
+            "minLength": 0,
+            "pattern": "^(13[0-9]|14[01456879]|15[0-35-9]|16[2567]|17[0-8]|18[0-9]|19[0-35-9])\\d{8}$",
+            "type": "string",
+            "description": "手机号码"
+          },
+          "password": {
+            "type": "string",
+            "description": "前端加密之后的密码"
+          },
+          "originPassword": {
+            "type": "string",
+            "description": "前端加密之后的原始密码"
+          },
+          "nickname": {
+            "pattern": "^[\\u4E00-\\u9FA5A-Za-z0-9_-]{2,20}$",
+            "type": "string",
+            "description": "昵称"
+          },
+          "bio": {
+            "type": "string",
+            "description": "个人简介"
+          },
+          "enableFlag": {
+            "type": "boolean",
+            "description": "正常/冻结"
+          },
+          "roleIdSet": {
+            "uniqueItems": true,
+            "type": "array",
+            "description": "角色 idSet",
+            "items": {
+              "type": "integer",
+              "description": "角色 idSet",
+              "format": "int64"
+            }
+          }
+        }
+      },
+      "NotNullId": {
+        "required": [
+          "id"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "minimum": 1,
+            "type": "integer",
+            "description": "主键id",
+            "format": "int64"
+          }
+        }
+      },
+      "ApiResultVOSysUserInfoByIdVO": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "integer",
+            "description": "响应代码，成功返回：200",
+            "format": "int32"
+          },
+          "msg": {
+            "type": "string",
+            "description": "响应描述"
+          },
+          "successFlag": {
+            "type": "boolean",
+            "description": "服务器是否收到请求，只会返回 true"
+          },
+          "data": {
+            "$ref": "#/components/schemas/SysUserInfoByIdVO"
+          },
+          "service": {
+            "type": "string",
+            "description": "服务名"
+          }
+        },
+        "description": "统一响应实体类"
+      },
+      "SysUserInfoByIdVO": {
+        "type": "object",
+        "properties": {
+          "createId": {
+            "type": "integer",
+            "description": "创建人id",
+            "format": "int64"
+          },
+          "createTime": {
+            "type": "string",
+            "description": "创建时间",
+            "format": "date-time"
+          },
+          "updateId": {
+            "type": "integer",
+            "description": "修改人id",
+            "format": "int64"
+          },
+          "updateTime": {
+            "type": "string",
+            "description": "修改时间",
+            "format": "date-time"
+          },
+          "version": {
+            "type": "integer",
+            "description": "乐观锁",
+            "format": "int32"
+          },
+          "enableFlag": {
+            "type": "boolean",
+            "description": "正常/冻结"
+          },
+          "delFlag": {
+            "type": "boolean",
+            "description": "是否注销，未使用，而是采取直接删除的方式，目的：防止数据量越来越大"
+          },
+          "remark": {
+            "type": "string",
+            "description": "备注"
+          },
+          "id": {
+            "type": "integer",
+            "description": "主键id",
+            "format": "int64"
+          },
+          "password": {
+            "type": "string",
+            "description": "密码，可为空，如果为空，则登录时需要提示【进行忘记密码操作】"
+          },
+          "email": {
+            "type": "string",
+            "description": "邮箱，可以为空"
+          },
+          "signInName": {
+            "type": "string",
+            "description": "登录名，可以为空"
+          },
+          "phone": {
+            "type": "string",
+            "description": "手机号，可以为空"
+          },
+          "wxOpenId": {
+            "type": "string",
+            "description": "微信 openId，可以为空"
+          },
+          "roleIdSet": {
+            "uniqueItems": true,
+            "type": "array",
+            "description": "角色 idSet",
+            "items": {
+              "type": "integer",
+              "description": "角色 idSet",
+              "format": "int64"
+            }
+          },
+          "nickname": {
+            "type": "string",
+            "description": "昵称"
+          },
+          "bio": {
+            "type": "string",
+            "description": "个人简介"
+          },
+          "avatarUri": {
+            "type": "string",
+            "description": "头像uri"
+          }
+        },
+        "description": "数据"
+      },
+      "SysUserDictListDTO": {
+        "type": "object",
+        "properties": {
+          "addAdminFlag": {
+            "type": "boolean",
+            "description": "是否追加 admin账号"
+          }
+        }
+      },
+      "ApiResultVOPageDictVO": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "integer",
+            "description": "响应代码，成功返回：200",
+            "format": "int32"
+          },
+          "msg": {
+            "type": "string",
+            "description": "响应描述"
+          },
+          "successFlag": {
+            "type": "boolean",
+            "description": "服务器是否收到请求，只会返回 true"
+          },
+          "data": {
+            "$ref": "#/components/schemas/PageDictVO"
+          },
+          "service": {
+            "type": "string",
+            "description": "服务名"
+          }
+        },
+        "description": "统一响应实体类"
+      },
+      "DictVO": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "description": "传值用",
+            "format": "int64"
+          },
+          "name": {
+            "type": "string",
+            "description": "显示用"
+          }
+        }
+      },
+      "PageDictVO": {
+        "type": "object",
+        "properties": {
+          "records": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DictVO"
+            }
+          },
+          "total": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "size": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "current": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "orders": {
+            "type": "array",
+            "deprecated": true,
+            "items": {
+              "$ref": "#/components/schemas/OrderItem"
+            }
+          },
+          "optimizeCountSql": {
+            "type": "boolean",
+            "deprecated": true
+          },
+          "searchCount": {
+            "type": "boolean",
+            "deprecated": true
+          },
+          "optimizeJoinOfCountSql": {
+            "type": "boolean",
+            "writeOnly": true
+          },
+          "maxLimit": {
+            "type": "integer",
+            "format": "int64",
+            "deprecated": true
+          },
+          "countId": {
+            "type": "string",
+            "deprecated": true
+          },
+          "pages": {
+            "type": "integer",
+            "format": "int64"
+          }
+        },
+        "description": "数据"
+      },
+      "SysRolePageDTO": {
+        "type": "object",
+        "properties": {
+          "current": {
+            "type": "integer",
+            "description": "第几页",
+            "format": "int64"
+          },
+          "pageSize": {
+            "type": "integer",
+            "description": "每页显示条数",
+            "format": "int64"
+          },
+          "order": {
+            "$ref": "#/components/schemas/MyOrderDTO"
+          },
+          "name": {
+            "type": "string",
+            "description": "角色名（不能重复）"
+          },
+          "defaultFlag": {
+            "type": "boolean",
+            "description": "是否是默认角色，备注：只会有一个默认角色"
+          },
+          "enableFlag": {
+            "type": "boolean",
+            "description": "是否启用"
+          },
+          "remark": {
+            "type": "string",
+            "description": "备注"
+          },
+          "createTimeDescDefaultOrderPage": {
+            "$ref": "#/components/schemas/PageObject"
+          }
+        }
+      },
+      "ApiResultVOPageSysRoleDO": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "integer",
+            "description": "响应代码，成功返回：200",
+            "format": "int32"
+          },
+          "msg": {
+            "type": "string",
+            "description": "响应描述"
+          },
+          "successFlag": {
+            "type": "boolean",
+            "description": "服务器是否收到请求，只会返回 true"
+          },
+          "data": {
+            "$ref": "#/components/schemas/PageSysRoleDO"
+          },
+          "service": {
+            "type": "string",
+            "description": "服务名"
+          }
+        },
+        "description": "统一响应实体类"
+      },
+      "PageSysRoleDO": {
+        "type": "object",
+        "properties": {
+          "records": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SysRoleDO"
+            }
+          },
+          "total": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "size": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "current": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "orders": {
+            "type": "array",
+            "deprecated": true,
+            "items": {
+              "$ref": "#/components/schemas/OrderItem"
+            }
+          },
+          "optimizeCountSql": {
+            "type": "boolean",
+            "deprecated": true
+          },
+          "searchCount": {
+            "type": "boolean",
+            "deprecated": true
+          },
+          "optimizeJoinOfCountSql": {
+            "type": "boolean",
+            "writeOnly": true
+          },
+          "maxLimit": {
+            "type": "integer",
+            "format": "int64",
+            "deprecated": true
+          },
+          "countId": {
+            "type": "string",
+            "deprecated": true
+          },
+          "pages": {
+            "type": "integer",
+            "format": "int64"
+          }
+        },
+        "description": "数据"
+      },
+      "SysRoleDO": {
+        "type": "object",
+        "properties": {
+          "createId": {
+            "type": "integer",
+            "description": "创建人id",
+            "format": "int64"
+          },
+          "createTime": {
+            "type": "string",
+            "description": "创建时间",
+            "format": "date-time"
+          },
+          "updateId": {
+            "type": "integer",
+            "description": "修改人id",
+            "format": "int64"
+          },
+          "updateTime": {
+            "type": "string",
+            "description": "修改时间",
+            "format": "date-time"
+          },
+          "version": {
+            "type": "integer",
+            "description": "乐观锁",
+            "format": "int32"
+          },
+          "enableFlag": {
+            "type": "boolean",
+            "description": "是否启用"
+          },
+          "delFlag": {
+            "type": "boolean",
+            "description": "是否逻辑删除"
+          },
+          "remark": {
+            "type": "string",
+            "description": "备注"
+          },
+          "id": {
+            "type": "integer",
+            "description": "主键id",
+            "format": "int64"
+          },
+          "name": {
+            "type": "string",
+            "description": "角色名（不能重复）"
+          },
+          "defaultFlag": {
+            "type": "boolean",
+            "description": "是否是默认角色，备注：只会有一个默认角色"
+          }
+        },
+        "description": "主表：角色"
+      },
+      "SysRoleInsertOrUpdateDTO": {
+        "required": [
+          "name"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "minimum": 1,
+            "type": "integer",
+            "description": "主键 id",
+            "format": "int64"
+          },
+          "name": {
+            "type": "string",
+            "description": "角色名，不能重复"
+          },
+          "menuIdSet": {
+            "uniqueItems": true,
+            "type": "array",
+            "description": "菜单 idSet",
+            "items": {
+              "type": "integer",
+              "description": "菜单 idSet",
+              "format": "int64"
+            }
+          },
+          "userIdSet": {
+            "uniqueItems": true,
+            "type": "array",
+            "description": "用户 idSet",
+            "items": {
+              "type": "integer",
+              "description": "用户 idSet",
+              "format": "int64"
+            }
+          },
+          "defaultFlag": {
+            "type": "boolean",
+            "description": "是否是默认角色，备注：只会有一个默认角色"
+          },
+          "enableFlag": {
+            "type": "boolean",
+            "description": "是否启用"
+          },
+          "remark": {
+            "type": "string",
+            "description": "备注"
+          }
+        }
+      },
+      "ApiResultVOSysRoleInfoByIdVO": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "integer",
+            "description": "响应代码，成功返回：200",
+            "format": "int32"
+          },
+          "msg": {
+            "type": "string",
+            "description": "响应描述"
+          },
+          "successFlag": {
+            "type": "boolean",
+            "description": "服务器是否收到请求，只会返回 true"
+          },
+          "data": {
+            "$ref": "#/components/schemas/SysRoleInfoByIdVO"
+          },
+          "service": {
+            "type": "string",
+            "description": "服务名"
+          }
+        },
+        "description": "统一响应实体类"
+      },
+      "SysRoleInfoByIdVO": {
+        "type": "object",
+        "properties": {
+          "createId": {
+            "type": "integer",
+            "description": "创建人id",
+            "format": "int64"
+          },
+          "createTime": {
+            "type": "string",
+            "description": "创建时间",
+            "format": "date-time"
+          },
+          "updateId": {
+            "type": "integer",
+            "description": "修改人id",
+            "format": "int64"
+          },
+          "updateTime": {
+            "type": "string",
+            "description": "修改时间",
+            "format": "date-time"
+          },
+          "version": {
+            "type": "integer",
+            "description": "乐观锁",
+            "format": "int32"
+          },
+          "enableFlag": {
+            "type": "boolean",
+            "description": "是否启用"
+          },
+          "delFlag": {
+            "type": "boolean",
+            "description": "是否逻辑删除"
+          },
+          "remark": {
+            "type": "string",
+            "description": "备注"
+          },
+          "id": {
+            "type": "integer",
+            "description": "主键id",
+            "format": "int64"
+          },
+          "name": {
+            "type": "string",
+            "description": "角色名（不能重复）"
+          },
+          "defaultFlag": {
+            "type": "boolean",
+            "description": "是否是默认角色，备注：只会有一个默认角色"
+          },
+          "userIdSet": {
+            "uniqueItems": true,
+            "type": "array",
+            "description": "用户 idSet",
+            "items": {
+              "type": "integer",
+              "description": "用户 idSet",
+              "format": "int64"
+            }
+          },
+          "menuIdSet": {
+            "uniqueItems": true,
+            "type": "array",
+            "description": "菜单 idSet",
+            "items": {
+              "type": "integer",
+              "description": "菜单 idSet",
+              "format": "int64"
+            }
+          }
+        },
+        "description": "数据"
+      },
+      "SysRequestSelfLoginRecordPageDTO": {
+        "type": "object",
+        "properties": {
+          "current": {
+            "type": "integer",
+            "description": "第几页",
+            "format": "int64"
+          },
+          "pageSize": {
+            "type": "integer",
+            "description": "每页显示条数",
+            "format": "int64"
+          },
+          "order": {
+            "$ref": "#/components/schemas/MyOrderDTO"
+          },
+          "category": {
+            "type": "string",
+            "description": "请求类别",
+            "enum": [
+              "101",
+              "102",
+              "103",
+              "201",
+              "202",
+              "203",
+              "301",
+              "302",
+              "401",
+              "402",
+              "501",
+              "502"
+            ]
+          },
+          "region": {
+            "type": "string",
+            "description": "Ip2RegionUtil.getRegion() 获取到的 ip所处区域"
+          },
+          "ip": {
+            "type": "string",
+            "description": "ip"
+          },
+          "createTimeDescDefaultOrderPage": {
+            "$ref": "#/components/schemas/PageObject"
+          }
+        }
+      },
+      "ApiResultVOPageSysRequestDO": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "integer",
+            "description": "响应代码，成功返回：200",
+            "format": "int32"
+          },
+          "msg": {
+            "type": "string",
+            "description": "响应描述"
+          },
+          "successFlag": {
+            "type": "boolean",
+            "description": "服务器是否收到请求，只会返回 true"
+          },
+          "data": {
+            "$ref": "#/components/schemas/PageSysRequestDO"
+          },
+          "service": {
+            "type": "string",
+            "description": "服务名"
+          }
+        },
+        "description": "统一响应实体类"
+      },
+      "PageSysRequestDO": {
+        "type": "object",
+        "properties": {
+          "records": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SysRequestDO"
+            }
+          },
+          "total": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "size": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "current": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "orders": {
+            "type": "array",
+            "deprecated": true,
+            "items": {
+              "$ref": "#/components/schemas/OrderItem"
+            }
+          },
+          "optimizeCountSql": {
+            "type": "boolean",
+            "deprecated": true
+          },
+          "searchCount": {
+            "type": "boolean",
+            "deprecated": true
+          },
+          "optimizeJoinOfCountSql": {
+            "type": "boolean",
+            "writeOnly": true
+          },
+          "maxLimit": {
+            "type": "integer",
+            "format": "int64",
+            "deprecated": true
+          },
+          "countId": {
+            "type": "string",
+            "deprecated": true
+          },
+          "pages": {
+            "type": "integer",
+            "format": "int64"
+          }
+        },
+        "description": "数据"
+      },
+      "SysRequestDO": {
+        "type": "object",
+        "properties": {
+          "createId": {
+            "type": "integer",
+            "description": "创建人id",
+            "format": "int64"
+          },
+          "createTime": {
+            "type": "string",
+            "description": "创建时间",
+            "format": "date-time"
+          },
+          "updateId": {
+            "type": "integer",
+            "description": "修改人id",
+            "format": "int64"
+          },
+          "updateTime": {
+            "type": "string",
+            "description": "修改时间",
+            "format": "date-time"
+          },
+          "version": {
+            "type": "integer",
+            "description": "乐观锁",
+            "format": "int32"
+          },
+          "enableFlag": {
+            "type": "boolean",
+            "description": "是否启用"
+          },
+          "delFlag": {
+            "type": "boolean",
+            "description": "是否逻辑删除"
+          },
+          "remark": {
+            "type": "string",
+            "description": "备注"
+          },
+          "id": {
+            "type": "integer",
+            "description": "主键id",
+            "format": "int64"
+          },
+          "uri": {
+            "type": "string",
+            "description": "请求的 uri"
+          },
+          "costMsStr": {
+            "type": "string",
+            "description": "耗时（字符串）"
+          },
+          "costMs": {
+            "type": "integer",
+            "description": "耗时（毫秒）",
+            "format": "int64"
+          },
+          "name": {
+            "type": "string",
+            "description": "接口名（备用）"
+          },
+          "category": {
+            "type": "string",
+            "description": "请求类别",
+            "enum": [
+              "101",
+              "102",
+              "103",
+              "201",
+              "202",
+              "203",
+              "301",
+              "302",
+              "401",
+              "402",
+              "501",
+              "502"
+            ]
+          },
+          "ip": {
+            "type": "string",
+            "description": "ip"
+          },
+          "region": {
+            "type": "string",
+            "description": "Ip2RegionUtil.getRegion() 获取到的 ip所处区域"
+          },
+          "successFlag": {
+            "type": "boolean",
+            "description": "请求是否成功"
+          },
+          "errorMsg": {
+            "type": "string",
+            "description": "失败信息"
+          },
+          "requestParam": {
+            "type": "string",
+            "description": "请求的参数"
+          },
+          "type": {
+            "type": "string",
+            "description": "请求类型"
+          }
+        },
+        "description": "主表：请求"
+      },
+      "SysRequestPageDTO": {
+        "type": "object",
+        "properties": {
+          "current": {
+            "type": "integer",
+            "description": "第几页",
+            "format": "int64"
+          },
+          "pageSize": {
+            "type": "integer",
+            "description": "每页显示条数",
+            "format": "int64"
+          },
+          "order": {
+            "$ref": "#/components/schemas/MyOrderDTO"
+          },
+          "uri": {
+            "type": "string",
+            "description": "请求的uri"
+          },
+          "beginCostMs": {
+            "type": "integer",
+            "description": "耗时开始（毫秒）",
+            "format": "int64"
+          },
+          "endCostMs": {
+            "type": "integer",
+            "description": "耗时结束（毫秒）",
+            "format": "int64"
+          },
+          "name": {
+            "type": "string",
+            "description": "接口名（备用）"
+          },
+          "ctBeginTime": {
+            "type": "string",
+            "description": "起始时间：创建时间",
+            "format": "date-time"
+          },
+          "ctEndTime": {
+            "type": "string",
+            "description": "结束时间：创建时间",
+            "format": "date-time"
+          },
+          "createId": {
+            "type": "integer",
+            "description": "创建人id",
+            "format": "int64"
+          },
+          "category": {
+            "type": "string",
+            "description": "请求类别",
+            "enum": [
+              "101",
+              "102",
+              "103",
+              "201",
+              "202",
+              "203",
+              "301",
+              "302",
+              "401",
+              "402",
+              "501",
+              "502"
+            ]
+          },
+          "region": {
+            "type": "string",
+            "description": "Ip2RegionUtil.getRegion() 获取到的 ip所处区域"
+          },
+          "ip": {
+            "type": "string",
+            "description": "ip"
+          },
+          "successFlag": {
+            "type": "boolean",
+            "description": "请求是否成功"
+          },
+          "type": {
+            "type": "string",
+            "description": "请求类型"
+          },
+          "createTimeDescDefaultOrderPage": {
+            "$ref": "#/components/schemas/PageObject"
+          }
+        }
+      },
+      "ApiResultVOSysRequestAllAvgVO": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "integer",
+            "description": "响应代码，成功返回：200",
+            "format": "int32"
+          },
+          "msg": {
+            "type": "string",
+            "description": "响应描述"
+          },
+          "successFlag": {
+            "type": "boolean",
+            "description": "服务器是否收到请求，只会返回 true"
+          },
+          "data": {
+            "$ref": "#/components/schemas/SysRequestAllAvgVO"
+          },
+          "service": {
+            "type": "string",
+            "description": "服务名"
+          }
+        },
+        "description": "统一响应实体类"
+      },
+      "SysRequestAllAvgVO": {
+        "type": "object",
+        "properties": {
+          "count": {
+            "type": "integer",
+            "description": "请求的总数",
+            "format": "int64"
+          },
+          "avgMs": {
+            "type": "integer",
+            "description": "请求的平均耗时（毫秒）",
+            "format": "int32"
+          }
+        },
+        "description": "数据"
+      },
+      "SysParamPageDTO": {
+        "type": "object",
+        "properties": {
+          "current": {
+            "type": "integer",
+            "description": "第几页",
+            "format": "int64"
+          },
+          "pageSize": {
+            "type": "integer",
+            "description": "每页显示条数",
+            "format": "int64"
+          },
+          "order": {
+            "$ref": "#/components/schemas/MyOrderDTO"
+          },
+          "name": {
+            "type": "string",
+            "description": "配置名，以 id为不变值进行使用，不要用此属性"
+          },
+          "enableFlag": {
+            "type": "boolean",
+            "description": "是否启用"
+          },
+          "remark": {
+            "type": "string",
+            "description": "备注"
+          },
+          "createTimeDescDefaultOrderPage": {
+            "$ref": "#/components/schemas/PageObject"
+          }
+        }
+      },
+      "ApiResultVOPageSysParamDO": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "integer",
+            "description": "响应代码，成功返回：200",
+            "format": "int32"
+          },
+          "msg": {
+            "type": "string",
+            "description": "响应描述"
+          },
+          "successFlag": {
+            "type": "boolean",
+            "description": "服务器是否收到请求，只会返回 true"
+          },
+          "data": {
+            "$ref": "#/components/schemas/PageSysParamDO"
+          },
+          "service": {
+            "type": "string",
+            "description": "服务名"
+          }
+        },
+        "description": "统一响应实体类"
+      },
+      "PageSysParamDO": {
+        "type": "object",
+        "properties": {
+          "records": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SysParamDO"
+            }
+          },
+          "total": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "size": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "current": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "orders": {
+            "type": "array",
+            "deprecated": true,
+            "items": {
+              "$ref": "#/components/schemas/OrderItem"
+            }
+          },
+          "optimizeCountSql": {
+            "type": "boolean",
+            "deprecated": true
+          },
+          "searchCount": {
+            "type": "boolean",
+            "deprecated": true
+          },
+          "optimizeJoinOfCountSql": {
+            "type": "boolean",
+            "writeOnly": true
+          },
+          "maxLimit": {
+            "type": "integer",
+            "format": "int64",
+            "deprecated": true
+          },
+          "countId": {
+            "type": "string",
+            "deprecated": true
+          },
+          "pages": {
+            "type": "integer",
+            "format": "int64"
+          }
+        },
+        "description": "数据"
+      },
+      "SysParamDO": {
+        "type": "object",
+        "properties": {
+          "createId": {
+            "type": "integer",
+            "description": "创建人id",
+            "format": "int64"
+          },
+          "createTime": {
+            "type": "string",
+            "description": "创建时间",
+            "format": "date-time"
+          },
+          "updateId": {
+            "type": "integer",
+            "description": "修改人id",
+            "format": "int64"
+          },
+          "updateTime": {
+            "type": "string",
+            "description": "修改时间",
+            "format": "date-time"
+          },
+          "version": {
+            "type": "integer",
+            "description": "乐观锁",
+            "format": "int32"
+          },
+          "enableFlag": {
+            "type": "boolean",
+            "description": "是否启用"
+          },
+          "delFlag": {
+            "type": "boolean",
+            "description": "是否逻辑删除"
+          },
+          "remark": {
+            "type": "string",
+            "description": "备注"
+          },
+          "id": {
+            "type": "integer",
+            "description": "主键id",
+            "format": "int64"
+          },
+          "name": {
+            "type": "string",
+            "description": "配置名，以 id为不变值进行使用，不要用此属性"
+          },
+          "value": {
+            "type": "string",
+            "description": "值"
+          }
+        },
+        "description": "主表：系统参数"
+      },
+      "JSONConfig": {
+        "type": "object",
+        "properties": {
+          "keyComparator": {
+            "type": "object"
+          },
+          "ignoreError": {
+            "type": "boolean"
+          },
+          "ignoreCase": {
+            "type": "boolean"
+          },
+          "dateFormat": {
+            "type": "string"
+          },
+          "ignoreNullValue": {
+            "type": "boolean"
+          },
+          "transientSupport": {
+            "type": "boolean"
+          },
+          "stripTrailingZeros": {
+            "type": "boolean"
+          },
+          "checkDuplicate": {
+            "type": "boolean"
+          },
+          "order": {
+            "type": "boolean",
+            "deprecated": true
+          }
+        }
+      },
+      "JSONObject": {
+        "type": "object",
+        "properties": {
+          "raw": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "object"
+            }
+          },
+          "config": {
+            "$ref": "#/components/schemas/JSONConfig"
+          },
+          "empty": {
+            "type": "boolean"
+          }
+        },
+        "additionalProperties": {
+          "type": "object"
+        }
+      },
+      "MyPageTest3DTO": {
+        "type": "object",
+        "properties": {
+          "file": {
+            "type": "string",
+            "format": "binary"
+          },
+          "fileBegin": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "fileEnd": {
+            "type": "integer",
+            "format": "int64"
+          }
+        }
+      },
+      "SysParamInsertOrUpdateDTO": {
+        "required": [
+          "name",
+          "value"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "minimum": 1,
+            "type": "integer",
+            "description": "主键 id",
+            "format": "int64"
+          },
+          "name": {
+            "type": "string",
+            "description": "配置名，以 id为不变值进行使用，不要用此属性"
+          },
+          "value": {
+            "type": "string",
+            "description": "值"
+          },
+          "remark": {
+            "type": "string",
+            "description": "备注"
+          },
+          "enableFlag": {
+            "type": "boolean",
+            "description": "是否启用"
+          }
+        }
+      },
+      "ApiResultVOSysParamDO": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "integer",
+            "description": "响应代码，成功返回：200",
+            "format": "int32"
+          },
+          "msg": {
+            "type": "string",
+            "description": "响应描述"
+          },
+          "successFlag": {
+            "type": "boolean",
+            "description": "服务器是否收到请求，只会返回 true"
+          },
+          "data": {
+            "$ref": "#/components/schemas/SysParamDO"
+          },
+          "service": {
+            "type": "string",
+            "description": "服务名"
+          }
+        },
+        "description": "统一响应实体类"
+      },
+      "ApiResultVOListSysMenuDO": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "integer",
+            "description": "响应代码，成功返回：200",
+            "format": "int32"
+          },
+          "msg": {
+            "type": "string",
+            "description": "响应描述"
+          },
+          "successFlag": {
+            "type": "boolean",
+            "description": "服务器是否收到请求，只会返回 true"
+          },
+          "data": {
+            "type": "array",
+            "description": "数据",
+            "items": {
+              "$ref": "#/components/schemas/SysMenuDO"
+            }
+          },
+          "service": {
+            "type": "string",
+            "description": "服务名"
+          }
+        },
+        "description": "统一响应实体类"
+      },
+      "SysMenuDO": {
+        "type": "object",
+        "properties": {
+          "createId": {
+            "type": "integer",
+            "description": "创建人id",
+            "format": "int64"
+          },
+          "createTime": {
+            "type": "string",
+            "description": "创建时间",
+            "format": "date-time"
+          },
+          "updateId": {
+            "type": "integer",
+            "description": "修改人id",
+            "format": "int64"
+          },
+          "updateTime": {
+            "type": "string",
+            "description": "修改时间",
+            "format": "date-time"
+          },
+          "version": {
+            "type": "integer",
+            "description": "乐观锁",
+            "format": "int32"
+          },
+          "enableFlag": {
+            "type": "boolean",
+            "description": "是否启用"
+          },
+          "delFlag": {
+            "type": "boolean",
+            "description": "是否逻辑删除"
+          },
+          "remark": {
+            "type": "string",
+            "description": "备注"
+          },
+          "id": {
+            "type": "integer",
+            "description": "主键id",
+            "format": "int64"
+          },
+          "orderNo": {
+            "type": "integer",
+            "description": "排序号（值越大越前面，默认为 0）",
+            "format": "int32"
+          },
+          "parentId": {
+            "type": "integer",
+            "description": "父节点id（顶级则为0）",
+            "format": "int64"
+          },
+          "children": {
+            "type": "array",
+            "description": "子节点",
+            "items": {
+              "$ref": "#/components/schemas/SysMenuDO"
+            }
+          },
+          "name": {
+            "type": "string",
+            "description": "菜单名"
+          },
+          "path": {
+            "type": "string",
+            "description": "页面的 path，备注：相同父菜单下，子菜单 path不能重复"
+          },
+          "router": {
+            "type": "string",
+            "description": "路由"
+          },
+          "auths": {
+            "type": "string",
+            "description": "权限，多个可用逗号拼接，例如：menu:insertOrUpdate,menu:page,menu:deleteByIdSet,menu:infoById"
+          },
+          "authFlag": {
+            "type": "boolean",
+            "description": "是否是权限菜单，权限菜单：不显示，只代表菜单权限"
+          },
+          "showFlag": {
+            "type": "boolean",
+            "description": "是否显示在 左侧的菜单栏里面，如果为 false，也可以通过 $router.push()访问到"
+          },
+          "linkFlag": {
+            "type": "boolean",
+            "description": "是否外链，即，打开页面会在一个新的窗口打开"
+          },
+          "redirect": {
+            "type": "string",
+            "description": "重定向，优先级最高"
+          },
+          "firstFlag": {
+            "type": "boolean",
+            "description": "是否是起始页面，备注：只能存在一个 firstFlag === true 的菜单"
+          },
+          "icon": {
+            "type": "string",
+            "description": "图标"
+          }
+        },
+        "description": "主表：菜单"
+      },
+      "SysMenuPageDTO": {
+        "type": "object",
+        "properties": {
+          "current": {
+            "type": "integer",
+            "description": "第几页",
+            "format": "int64"
+          },
+          "pageSize": {
+            "type": "integer",
+            "description": "每页显示条数",
+            "format": "int64"
+          },
+          "order": {
+            "$ref": "#/components/schemas/MyOrderDTO"
+          },
+          "name": {
+            "type": "string",
+            "description": "菜单名"
+          },
+          "path": {
+            "type": "string",
+            "description": "页面的 path，备注：相同父菜单下，子菜单 path不能重复"
+          },
+          "parentId": {
+            "type": "integer",
+            "description": "父节点id（顶级则为0）",
+            "format": "int64"
+          },
+          "auths": {
+            "type": "string",
+            "description": "权限，多个可用逗号拼接，例如：menu:insertOrUpdate,menu:page,menu:deleteByIdSet,menu:infoById"
+          },
+          "showFlag": {
+            "type": "boolean",
+            "description": "是否显示在 左侧的菜单栏里面，如果为 false，也可以通过 $router.push()访问到"
+          },
+          "enableFlag": {
+            "type": "boolean",
+            "description": "是否启用"
+          },
+          "linkFlag": {
+            "type": "boolean",
+            "description": "是否外链，即，打开页面会在一个新的窗口打开"
+          },
+          "router": {
+            "type": "string",
+            "description": "路由"
+          },
+          "redirect": {
+            "type": "string",
+            "description": "重定向，优先级最高"
+          },
+          "firstFlag": {
+            "type": "boolean",
+            "description": "是否是起始页面，备注：只能存在一个 firstFlag === true 的菜单"
+          },
+          "authFlag": {
+            "type": "boolean",
+            "description": "是否是权限菜单，权限菜单：不显示，只代表菜单权限"
+          },
+          "createTimeDescDefaultOrderPage": {
+            "$ref": "#/components/schemas/PageObject"
+          }
+        }
+      },
+      "ApiResultVOPageSysMenuDO": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "integer",
+            "description": "响应代码，成功返回：200",
+            "format": "int32"
+          },
+          "msg": {
+            "type": "string",
+            "description": "响应描述"
+          },
+          "successFlag": {
+            "type": "boolean",
+            "description": "服务器是否收到请求，只会返回 true"
+          },
+          "data": {
+            "$ref": "#/components/schemas/PageSysMenuDO"
+          },
+          "service": {
+            "type": "string",
+            "description": "服务名"
+          }
+        },
+        "description": "统一响应实体类"
+      },
+      "PageSysMenuDO": {
+        "type": "object",
+        "properties": {
+          "records": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SysMenuDO"
+            }
+          },
+          "total": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "size": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "current": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "orders": {
+            "type": "array",
+            "deprecated": true,
+            "items": {
+              "$ref": "#/components/schemas/OrderItem"
+            }
+          },
+          "optimizeCountSql": {
+            "type": "boolean",
+            "deprecated": true
+          },
+          "searchCount": {
+            "type": "boolean",
+            "deprecated": true
+          },
+          "optimizeJoinOfCountSql": {
+            "type": "boolean",
+            "writeOnly": true
+          },
+          "maxLimit": {
+            "type": "integer",
+            "format": "int64",
+            "deprecated": true
+          },
+          "countId": {
+            "type": "string",
+            "deprecated": true
+          },
+          "pages": {
+            "type": "integer",
+            "format": "int64"
+          }
+        },
+        "description": "数据"
+      },
+      "SysMenuInsertOrUpdateDTO": {
+        "required": [
+          "name"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "minimum": 1,
+            "type": "integer",
+            "description": "主键 id",
+            "format": "int64"
+          },
+          "parentId": {
+            "type": "integer",
+            "description": "父节点id（顶级则为0）",
+            "format": "int64"
+          },
+          "name": {
+            "type": "string",
+            "description": "菜单名"
+          },
+          "path": {
+            "type": "string",
+            "description": "页面的 path，备注：相同父菜单下，子菜单 path不能重复"
+          },
+          "router": {
+            "type": "string",
+            "description": "路由"
+          },
+          "icon": {
+            "type": "string",
+            "description": "图标"
+          },
+          "auths": {
+            "type": "string",
+            "description": "权限，多个可用逗号拼接，例如：menu:insertOrUpdate,menu:page,menu:deleteByIdSet,menu:infoById"
+          },
+          "authFlag": {
+            "type": "boolean",
+            "description": "是否是权限菜单，权限菜单：不显示，只代表菜单权限"
+          },
+          "roleIdSet": {
+            "uniqueItems": true,
+            "type": "array",
+            "description": "角色 idSet",
+            "items": {
+              "type": "integer",
+              "description": "角色 idSet",
+              "format": "int64"
+            }
+          },
+          "enableFlag": {
+            "type": "boolean",
+            "description": "是否启用"
+          },
+          "firstFlag": {
+            "type": "boolean",
+            "description": "是否是起始页面，备注：只能存在一个 firstFlag === true 的菜单"
+          },
+          "orderNo": {
+            "type": "integer",
+            "description": "排序号（值越大越前面，默认为 0）",
+            "format": "int32"
+          },
+          "showFlag": {
+            "type": "boolean",
+            "description": "是否显示在 左侧的菜单栏里面，如果为 false，也可以通过 $router.push()访问到"
+          },
+          "redirect": {
+            "type": "string",
+            "description": "重定向，优先级最高"
+          },
+          "remark": {
+            "type": "string",
+            "description": "备注"
+          }
+        }
+      },
+      "ApiResultVOSysMenuInfoByIdVO": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "integer",
+            "description": "响应代码，成功返回：200",
+            "format": "int32"
+          },
+          "msg": {
+            "type": "string",
+            "description": "响应描述"
+          },
+          "successFlag": {
+            "type": "boolean",
+            "description": "服务器是否收到请求，只会返回 true"
+          },
+          "data": {
+            "$ref": "#/components/schemas/SysMenuInfoByIdVO"
+          },
+          "service": {
+            "type": "string",
+            "description": "服务名"
+          }
+        },
+        "description": "统一响应实体类"
+      },
+      "SysMenuInfoByIdVO": {
+        "type": "object",
+        "properties": {
+          "createId": {
+            "type": "integer",
+            "description": "创建人id",
+            "format": "int64"
+          },
+          "createTime": {
+            "type": "string",
+            "description": "创建时间",
+            "format": "date-time"
+          },
+          "updateId": {
+            "type": "integer",
+            "description": "修改人id",
+            "format": "int64"
+          },
+          "updateTime": {
+            "type": "string",
+            "description": "修改时间",
+            "format": "date-time"
+          },
+          "version": {
+            "type": "integer",
+            "description": "乐观锁",
+            "format": "int32"
+          },
+          "enableFlag": {
+            "type": "boolean",
+            "description": "是否启用"
+          },
+          "delFlag": {
+            "type": "boolean",
+            "description": "是否逻辑删除"
+          },
+          "remark": {
+            "type": "string",
+            "description": "备注"
+          },
+          "id": {
+            "type": "integer",
+            "description": "主键id",
+            "format": "int64"
+          },
+          "orderNo": {
+            "type": "integer",
+            "description": "排序号（值越大越前面，默认为 0）",
+            "format": "int32"
+          },
+          "parentId": {
+            "type": "integer",
+            "description": "父节点id（顶级则为0）",
+            "format": "int64"
+          },
+          "children": {
+            "type": "array",
+            "description": "子节点",
+            "items": {
+              "$ref": "#/components/schemas/SysMenuDO"
+            }
+          },
+          "name": {
+            "type": "string",
+            "description": "菜单名"
+          },
+          "path": {
+            "type": "string",
+            "description": "页面的 path，备注：相同父菜单下，子菜单 path不能重复"
+          },
+          "router": {
+            "type": "string",
+            "description": "路由"
+          },
+          "auths": {
+            "type": "string",
+            "description": "权限，多个可用逗号拼接，例如：menu:insertOrUpdate,menu:page,menu:deleteByIdSet,menu:infoById"
+          },
+          "authFlag": {
+            "type": "boolean",
+            "description": "是否是权限菜单，权限菜单：不显示，只代表菜单权限"
+          },
+          "showFlag": {
+            "type": "boolean",
+            "description": "是否显示在 左侧的菜单栏里面，如果为 false，也可以通过 $router.push()访问到"
+          },
+          "linkFlag": {
+            "type": "boolean",
+            "description": "是否外链，即，打开页面会在一个新的窗口打开"
+          },
+          "redirect": {
+            "type": "string",
+            "description": "重定向，优先级最高"
+          },
+          "firstFlag": {
+            "type": "boolean",
+            "description": "是否是起始页面，备注：只能存在一个 firstFlag === true 的菜单"
+          },
+          "icon": {
+            "type": "string",
+            "description": "图标"
+          },
+          "roleIdSet": {
+            "uniqueItems": true,
+            "type": "array",
+            "description": "角色 idSet",
+            "items": {
+              "type": "integer",
+              "description": "角色 idSet",
+              "format": "int64"
+            }
+          }
+        },
+        "description": "数据"
+      },
+      "ChangeNumberDTO": {
+        "required": [
+          "idSet",
+          "number"
+        ],
+        "type": "object",
+        "properties": {
+          "idSet": {
+            "uniqueItems": true,
+            "type": "array",
+            "description": "主键 idSet",
+            "items": {
+              "type": "integer",
+              "description": "主键 idSet",
+              "format": "int64"
+            }
+          },
+          "number": {
+            "type": "integer",
+            "description": "需要改变的数值",
+            "format": "int64"
+          }
+        }
+      },
+      "SysDictPageDTO": {
+        "type": "object",
+        "properties": {
+          "current": {
+            "type": "integer",
+            "description": "第几页",
+            "format": "int64"
+          },
+          "pageSize": {
+            "type": "integer",
+            "description": "每页显示条数",
+            "format": "int64"
+          },
+          "order": {
+            "$ref": "#/components/schemas/MyOrderDTO"
+          },
+          "dictKey": {
+            "type": "string",
+            "description": "字典 key（不能重复），字典项要冗余这个 key，目的：方便操作"
+          },
+          "name": {
+            "type": "string",
+            "description": "字典/字典项 名"
+          },
+          "type": {
+            "type": "string",
+            "description": "类型：1 字典 2 字典项",
+            "format": "byte"
+          },
+          "remark": {
+            "type": "string",
+            "description": "描述/备注"
+          },
+          "enableFlag": {
+            "type": "boolean",
+            "description": "启用/禁用"
+          },
+          "createTimeDescDefaultOrderPage": {
+            "$ref": "#/components/schemas/PageObject"
+          }
+        }
+      },
+      "ApiResultVOListSysDictTreeVO": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "integer",
+            "description": "响应代码，成功返回：200",
+            "format": "int32"
+          },
+          "msg": {
+            "type": "string",
+            "description": "响应描述"
+          },
+          "successFlag": {
+            "type": "boolean",
+            "description": "服务器是否收到请求，只会返回 true"
+          },
+          "data": {
+            "type": "array",
+            "description": "数据",
+            "items": {
+              "$ref": "#/components/schemas/SysDictTreeVO"
+            }
+          },
+          "service": {
+            "type": "string",
+            "description": "服务名"
+          }
+        },
+        "description": "统一响应实体类"
+      },
+      "SysDictTreeVO": {
+        "type": "object",
+        "properties": {
+          "createId": {
+            "type": "integer",
+            "description": "创建人id",
+            "format": "int64"
+          },
+          "createTime": {
+            "type": "string",
+            "description": "创建时间",
+            "format": "date-time"
+          },
+          "updateId": {
+            "type": "integer",
+            "description": "修改人id",
+            "format": "int64"
+          },
+          "updateTime": {
+            "type": "string",
+            "description": "修改时间",
+            "format": "date-time"
+          },
+          "version": {
+            "type": "integer",
+            "description": "乐观锁",
+            "format": "int32"
+          },
+          "enableFlag": {
+            "type": "boolean",
+            "description": "是否启用"
+          },
+          "delFlag": {
+            "type": "boolean",
+            "description": "是否逻辑删除"
+          },
+          "remark": {
+            "type": "string",
+            "description": "备注"
+          },
+          "id": {
+            "type": "integer",
+            "description": "主键id",
+            "format": "int64"
+          },
+          "dictKey": {
+            "type": "string",
+            "description": "字典 key（不能重复），字典项要冗余这个 key，目的：方便操作"
+          },
+          "name": {
+            "type": "string",
+            "description": "字典/字典项 名"
+          },
+          "type": {
+            "type": "string",
+            "description": "字典类型：1 字典 2 字典项",
+            "enum": [
+              "1",
+              "2"
+            ]
+          },
+          "value": {
+            "type": "string",
+            "description": "字典项 value（数字 123...）备注：字典为 -1",
+            "format": "byte"
+          },
+          "orderNo": {
+            "type": "integer",
+            "description": "排序号（值越大越前面，默认为 0）",
+            "format": "int32"
+          },
+          "children": {
+            "type": "array",
+            "description": "字典的子节点",
+            "items": {
+              "$ref": "#/components/schemas/SysDictTreeVO"
+            }
+          }
+        },
+        "description": "数据"
+      },
+      "ApiResultVOPageSysDictDO": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "integer",
+            "description": "响应代码，成功返回：200",
+            "format": "int32"
+          },
+          "msg": {
+            "type": "string",
+            "description": "响应描述"
+          },
+          "successFlag": {
+            "type": "boolean",
+            "description": "服务器是否收到请求，只会返回 true"
+          },
+          "data": {
+            "$ref": "#/components/schemas/PageSysDictDO"
+          },
+          "service": {
+            "type": "string",
+            "description": "服务名"
+          }
+        },
+        "description": "统一响应实体类"
+      },
+      "PageSysDictDO": {
+        "type": "object",
+        "properties": {
+          "records": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SysDictDO"
+            }
+          },
+          "total": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "size": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "current": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "orders": {
+            "type": "array",
+            "deprecated": true,
+            "items": {
+              "$ref": "#/components/schemas/OrderItem"
+            }
+          },
+          "optimizeCountSql": {
+            "type": "boolean",
+            "deprecated": true
+          },
+          "searchCount": {
+            "type": "boolean",
+            "deprecated": true
+          },
+          "optimizeJoinOfCountSql": {
+            "type": "boolean",
+            "writeOnly": true
+          },
+          "maxLimit": {
+            "type": "integer",
+            "format": "int64",
+            "deprecated": true
+          },
+          "countId": {
+            "type": "string",
+            "deprecated": true
+          },
+          "pages": {
+            "type": "integer",
+            "format": "int64"
+          }
+        },
+        "description": "数据"
+      },
+      "SysDictDO": {
+        "type": "object",
+        "properties": {
+          "createId": {
+            "type": "integer",
+            "description": "创建人id",
+            "format": "int64"
+          },
+          "createTime": {
+            "type": "string",
+            "description": "创建时间",
+            "format": "date-time"
+          },
+          "updateId": {
+            "type": "integer",
+            "description": "修改人id",
+            "format": "int64"
+          },
+          "updateTime": {
+            "type": "string",
+            "description": "修改时间",
+            "format": "date-time"
+          },
+          "version": {
+            "type": "integer",
+            "description": "乐观锁",
+            "format": "int32"
+          },
+          "enableFlag": {
+            "type": "boolean",
+            "description": "是否启用"
+          },
+          "delFlag": {
+            "type": "boolean",
+            "description": "是否逻辑删除"
+          },
+          "remark": {
+            "type": "string",
+            "description": "备注"
+          },
+          "id": {
+            "type": "integer",
+            "description": "主键id",
+            "format": "int64"
+          },
+          "dictKey": {
+            "type": "string",
+            "description": "字典 key（不能重复），字典项要冗余这个 key，目的：方便操作"
+          },
+          "name": {
+            "type": "string",
+            "description": "字典/字典项 名"
+          },
+          "type": {
+            "type": "string",
+            "description": "字典类型：1 字典 2 字典项",
+            "enum": [
+              "1",
+              "2"
+            ]
+          },
+          "value": {
+            "type": "string",
+            "description": "字典项 value（数字 123...）备注：字典为 -1",
+            "format": "byte"
+          },
+          "orderNo": {
+            "type": "integer",
+            "description": "排序号（值越大越前面，默认为 0）",
+            "format": "int32"
+          }
+        },
+        "description": "主表：字典"
+      },
+      "SysDictInsertOrUpdateDTO": {
+        "required": [
+          "dictKey",
+          "name",
+          "type"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "minimum": 1,
+            "type": "integer",
+            "description": "主键 id",
+            "format": "int64"
+          },
+          "dictKey": {
+            "type": "string",
+            "description": "字典 key（不能重复），字典项要冗余这个 key，目的：方便操作"
+          },
+          "name": {
+            "type": "string",
+            "description": "字典/字典项 名"
+          },
+          "type": {
+            "type": "string",
+            "description": "字典类型：1 字典 2 字典项",
+            "enum": [
+              "1",
+              "2"
+            ]
+          },
+          "value": {
+            "type": "string",
+            "description": "字典项 value（数字 123...）备注：字典为 -1",
+            "format": "byte"
+          },
+          "orderNo": {
+            "type": "integer",
+            "description": "排序号（值越大越前面，默认为 0）",
+            "format": "int32"
+          },
+          "enableFlag": {
+            "type": "boolean",
+            "description": "是否启用"
+          },
+          "remark": {
+            "type": "string",
+            "description": "备注"
+          }
+        }
+      },
+      "ApiResultVOSysDictDO": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "integer",
+            "description": "响应代码，成功返回：200",
+            "format": "int32"
+          },
+          "msg": {
+            "type": "string",
+            "description": "响应描述"
+          },
+          "successFlag": {
+            "type": "boolean",
+            "description": "服务器是否收到请求，只会返回 true"
+          },
+          "data": {
+            "$ref": "#/components/schemas/SysDictDO"
+          },
+          "service": {
+            "type": "string",
+            "description": "服务名"
+          }
+        },
+        "description": "统一响应实体类"
+      },
+      "SignInPhoneCodeDTO": {
+        "required": [
+          "phoneCode"
+        ],
+        "type": "object",
+        "properties": {
+          "phoneCode": {
+            "type": "string",
+            "description": "手机号码 code"
+          }
+        }
+      },
+      "SignInCodeDTO": {
+        "required": [
+          "code"
+        ],
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "string",
+            "description": "微信 code"
+          }
+        }
+      },
+      "SignSignInNameUpdatePasswordDTO": {
+        "required": [
+          "newPassword",
+          "oldPassword",
+          "originNewPassword"
+        ],
+        "type": "object",
+        "properties": {
+          "oldPassword": {
+            "type": "string",
+            "description": "前端加密之后的旧密码"
+          },
+          "newPassword": {
+            "type": "string",
+            "description": "前端加密之后的新密码"
+          },
+          "originNewPassword": {
+            "type": "string",
+            "description": "前端加密之后的原始新密码"
+          }
+        }
+      },
+      "SignSignInNameUpdateAccountDTO": {
+        "required": [
+          "currentPassword",
+          "newSignInName"
+        ],
+        "type": "object",
+        "properties": {
+          "newSignInName": {
+            "maxLength": 20,
+            "minLength": 0,
+            "pattern": "^[\\u4E00-\\u9FA5A-Za-z0-9_-]{2,20}$",
+            "type": "string",
+            "description": "新登录名"
+          },
+          "currentPassword": {
+            "type": "string",
+            "description": "前端加密之后的密码"
+          }
+        }
+      },
+      "SignSignInNameSignDeleteDTO": {
+        "required": [
+          "currentPassword"
+        ],
+        "type": "object",
+        "properties": {
+          "currentPassword": {
+            "type": "string",
+            "description": "前端加密之后的密码"
+          }
+        }
+      },
+      "SignSignInNameSignUpDTO": {
+        "required": [
+          "originPassword",
+          "password",
+          "signInName"
+        ],
+        "type": "object",
+        "properties": {
+          "signInName": {
+            "maxLength": 20,
+            "minLength": 0,
+            "pattern": "^[\\u4E00-\\u9FA5A-Za-z0-9_-]{2,20}$",
+            "type": "string",
+            "description": "登录名"
+          },
+          "password": {
+            "type": "string",
+            "description": "前端加密之后的密码"
+          },
+          "originPassword": {
+            "type": "string",
+            "description": "前端加密之后的原始密码"
+          }
+        }
+      },
+      "SignSignInNameSignInPasswordDTO": {
+        "required": [
+          "password",
+          "signInName"
+        ],
+        "type": "object",
+        "properties": {
+          "signInName": {
+            "maxLength": 20,
+            "minLength": 0,
+            "pattern": "^[\\u4E00-\\u9FA5A-Za-z0-9_-]{2,20}$",
+            "type": "string",
+            "description": "登录名"
+          },
+          "password": {
+            "type": "string",
+            "description": "前端加密之后的密码"
+          }
+        }
+      },
+      "SignPhoneUpdatePasswordDTO": {
+        "required": [
+          "code",
+          "newPassword",
+          "originNewPassword"
+        ],
+        "type": "object",
+        "properties": {
+          "code": {
+            "pattern": "^[0-9]{6}$",
+            "type": "string",
+            "description": "手机验证码"
+          },
+          "newPassword": {
+            "type": "string",
+            "description": "前端加密之后的新密码"
+          },
+          "originNewPassword": {
+            "type": "string",
+            "description": "前端加密之后的原始新密码"
+          }
+        }
+      },
+      "SignPhoneUpdateAccountDTO": {
+        "required": [
+          "newPhone",
+          "newPhoneCode",
+          "oldPhoneCode"
+        ],
+        "type": "object",
+        "properties": {
+          "newPhone": {
+            "maxLength": 100,
+            "minLength": 0,
+            "pattern": "^(13[0-9]|14[01456879]|15[0-35-9]|16[2567]|17[0-8]|18[0-9]|19[0-35-9])\\d{8}$",
+            "type": "string",
+            "description": "新手机号码"
+          },
+          "oldPhoneCode": {
+            "pattern": "^[0-9]{6}$",
+            "type": "string",
+            "description": "旧手机验证码"
+          },
+          "newPhoneCode": {
+            "pattern": "^[0-9]{6}$",
+            "type": "string",
+            "description": "新手机验证码"
+          }
+        }
+      },
+      "NotBlankCodeDTO": {
+        "required": [
+          "code"
+        ],
+        "type": "object",
+        "properties": {
+          "code": {
+            "pattern": "^[0-9]{6}$",
+            "type": "string",
+            "description": "验证码"
+          }
+        }
+      },
+      "SignPhoneSignUpDTO": {
+        "required": [
+          "code",
+          "originPassword",
+          "password",
+          "phone"
+        ],
+        "type": "object",
+        "properties": {
+          "phone": {
+            "maxLength": 100,
+            "minLength": 0,
+            "pattern": "^(13[0-9]|14[01456879]|15[0-35-9]|16[2567]|17[0-8]|18[0-9]|19[0-35-9])\\d{8}$",
+            "type": "string",
+            "description": "手机号码"
+          },
+          "code": {
+            "pattern": "^[0-9]{6}$",
+            "type": "string",
+            "description": "手机验证码"
+          },
+          "password": {
+            "type": "string",
+            "description": "前端加密之后的密码"
+          },
+          "originPassword": {
+            "type": "string",
+            "description": "前端加密之后的原始密码"
+          }
+        }
+      },
+      "PhoneNotBlankDTO": {
+        "required": [
+          "phone"
+        ],
+        "type": "object",
+        "properties": {
+          "phone": {
+            "maxLength": 100,
+            "minLength": 0,
+            "pattern": "^(13[0-9]|14[01456879]|15[0-35-9]|16[2567]|17[0-8]|18[0-9]|19[0-35-9])\\d{8}$",
+            "type": "string",
+            "description": "手机号码"
+          }
+        }
+      },
+      "SignPhoneSignInPasswordDTO": {
+        "required": [
+          "password",
+          "phone"
+        ],
+        "type": "object",
+        "properties": {
+          "phone": {
+            "maxLength": 100,
+            "minLength": 0,
+            "pattern": "^(13[0-9]|14[01456879]|15[0-35-9]|16[2567]|17[0-8]|18[0-9]|19[0-35-9])\\d{8}$",
+            "type": "string",
+            "description": "手机号码"
+          },
+          "password": {
+            "type": "string",
+            "description": "密码"
+          }
+        }
+      },
+      "SignPhoneSignInCodeDTO": {
+        "required": [
+          "code",
+          "phone"
+        ],
+        "type": "object",
+        "properties": {
+          "phone": {
+            "maxLength": 100,
+            "minLength": 0,
+            "pattern": "^(13[0-9]|14[01456879]|15[0-35-9]|16[2567]|17[0-8]|18[0-9]|19[0-35-9])\\d{8}$",
+            "type": "string",
+            "description": "手机号码"
+          },
+          "code": {
+            "pattern": "^[0-9]{6}$",
+            "type": "string",
+            "description": "手机验证码"
+          }
+        }
+      },
+      "SignPhoneForgetPasswordDTO": {
+        "required": [
+          "code",
+          "newPassword",
+          "originNewPassword",
+          "phone"
+        ],
+        "type": "object",
+        "properties": {
+          "phone": {
+            "maxLength": 100,
+            "minLength": 0,
+            "pattern": "^(13[0-9]|14[01456879]|15[0-35-9]|16[2567]|17[0-8]|18[0-9]|19[0-35-9])\\d{8}$",
+            "type": "string",
+            "description": "手机号码"
+          },
+          "code": {
+            "pattern": "^[0-9]{6}$",
+            "type": "string",
+            "description": "手机验证码"
+          },
+          "newPassword": {
+            "type": "string",
+            "description": "前端加密之后的新密码"
+          },
+          "originNewPassword": {
+            "type": "string",
+            "description": "前端加密之后的原始新密码"
+          }
+        }
+      },
+      "SignPhoneBindAccountDTO": {
+        "required": [
+          "code",
+          "phone"
+        ],
+        "type": "object",
+        "properties": {
+          "phone": {
+            "maxLength": 100,
+            "minLength": 0,
+            "pattern": "^(13[0-9]|14[01456879]|15[0-35-9]|16[2567]|17[0-8]|18[0-9]|19[0-35-9])\\d{8}$",
+            "type": "string",
+            "description": "手机号码"
+          },
+          "code": {
+            "pattern": "^[0-9]{6}$",
+            "type": "string",
+            "description": "手机验证码"
+          }
+        }
+      },
+      "SignEmailUpdatePasswordDTO": {
+        "required": [
+          "code",
+          "newPassword",
+          "originNewPassword"
+        ],
+        "type": "object",
+        "properties": {
+          "code": {
+            "pattern": "^[0-9]{6}$",
+            "type": "string",
+            "description": "邮箱验证码"
+          },
+          "newPassword": {
+            "type": "string",
+            "description": "前端加密之后的新密码"
+          },
+          "originNewPassword": {
+            "type": "string",
+            "description": "前端加密之后的原始新密码"
+          }
+        }
+      },
+      "SignEmailUpdateAccountDTO": {
+        "required": [
+          "newEmail",
+          "newEmailCode",
+          "oldEmailCode"
+        ],
+        "type": "object",
+        "properties": {
+          "newEmail": {
+            "maxLength": 200,
+            "minLength": 0,
+            "pattern": "^\\w+([-+.]\\w+)*@\\w+([-.]\\w+)*\\.\\w+([-.]\\w+)*$",
+            "type": "string",
+            "description": "新邮箱"
+          },
+          "oldEmailCode": {
+            "pattern": "^[0-9]{6}$",
+            "type": "string",
+            "description": "旧邮箱验证码"
+          },
+          "newEmailCode": {
+            "pattern": "^[0-9]{6}$",
+            "type": "string",
+            "description": "新邮箱验证码"
+          }
+        }
+      },
+      "SignEmailSignUpDTO": {
+        "required": [
+          "code",
+          "email",
+          "originPassword",
+          "password"
+        ],
+        "type": "object",
+        "properties": {
+          "email": {
+            "maxLength": 200,
+            "minLength": 0,
+            "pattern": "^\\w+([-+.]\\w+)*@\\w+([-.]\\w+)*\\.\\w+([-.]\\w+)*$",
+            "type": "string",
+            "description": "邮箱"
+          },
+          "code": {
+            "pattern": "^[0-9]{6}$",
+            "type": "string",
+            "description": "邮箱验证码"
+          },
+          "password": {
+            "type": "string",
+            "description": "前端加密之后的密码"
+          },
+          "originPassword": {
+            "type": "string",
+            "description": "前端加密之后的原始密码"
+          }
+        }
+      },
+      "EmailNotBlankDTO": {
+        "required": [
+          "email"
+        ],
+        "type": "object",
+        "properties": {
+          "email": {
+            "maxLength": 200,
+            "minLength": 0,
+            "pattern": "^\\w+([-+.]\\w+)*@\\w+([-.]\\w+)*\\.\\w+([-.]\\w+)*$",
+            "type": "string",
+            "description": "邮箱"
+          }
+        }
+      },
+      "SignEmailSignInPasswordDTO": {
+        "required": [
+          "email",
+          "password"
+        ],
+        "type": "object",
+        "properties": {
+          "email": {
+            "maxLength": 200,
+            "minLength": 0,
+            "pattern": "^\\w+([-+.]\\w+)*@\\w+([-.]\\w+)*\\.\\w+([-.]\\w+)*$",
+            "type": "string",
+            "description": "邮箱"
+          },
+          "password": {
+            "type": "string",
+            "description": "密码"
+          }
+        }
+      },
+      "SignEmailForgetPasswordDTO": {
+        "required": [
+          "code",
+          "email",
+          "newPassword",
+          "originNewPassword"
+        ],
+        "type": "object",
+        "properties": {
+          "email": {
+            "maxLength": 200,
+            "minLength": 0,
+            "pattern": "^\\w+([-+.]\\w+)*@\\w+([-.]\\w+)*\\.\\w+([-.]\\w+)*$",
+            "type": "string",
+            "description": "邮箱"
+          },
+          "code": {
+            "pattern": "^[0-9]{6}$",
+            "type": "string",
+            "description": "邮箱验证码"
+          },
+          "newPassword": {
+            "type": "string",
+            "description": "前端加密之后的新密码"
+          },
+          "originNewPassword": {
+            "type": "string",
+            "description": "前端加密之后的原始新密码"
+          }
+        }
+      },
+      "SignEmailBindAccountDTO": {
+        "required": [
+          "code",
+          "email"
+        ],
+        "type": "object",
+        "properties": {
+          "email": {
+            "maxLength": 200,
+            "minLength": 0,
+            "pattern": "^\\w+([-+.]\\w+)*@\\w+([-.]\\w+)*\\.\\w+([-.]\\w+)*$",
+            "type": "string",
+            "description": "邮箱"
+          },
+          "code": {
+            "pattern": "^[0-9]{6}$",
+            "type": "string",
+            "description": "邮箱验证码"
+          }
+        }
+      },
+      "ApiResultVOServerWorkInfoVO": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "integer",
+            "description": "响应代码，成功返回：200",
+            "format": "int32"
+          },
+          "msg": {
+            "type": "string",
+            "description": "响应描述"
+          },
+          "successFlag": {
+            "type": "boolean",
+            "description": "服务器是否收到请求，只会返回 true"
+          },
+          "data": {
+            "$ref": "#/components/schemas/ServerWorkInfoVO"
+          },
+          "service": {
+            "type": "string",
+            "description": "服务名"
+          }
+        },
+        "description": "统一响应实体类"
+      },
+      "ServerWorkInfoVO": {
+        "type": "object",
+        "properties": {
+          "jvmTotalMemory": {
+            "type": "integer",
+            "description": "JVM中内存总大小（字节）",
+            "format": "int64"
+          },
+          "jvmFreeMemory": {
+            "type": "integer",
+            "description": "JVM中内存剩余大小（字节）",
+            "format": "int64"
+          },
+          "jvmUsedMemory": {
+            "type": "integer",
+            "description": "JVM中内存已经使用大小（字节）",
+            "format": "int64"
+          },
+          "memoryTotal": {
+            "type": "integer",
+            "description": "系统总内存（字节）",
+            "format": "int64"
+          },
+          "memoryAvailable": {
+            "type": "integer",
+            "description": "系统可用内存（字节）",
+            "format": "int64"
+          },
+          "memoryUsed": {
+            "type": "integer",
+            "description": "系统已经使用内存（字节）",
+            "format": "int64"
+          },
+          "cpuFree": {
+            "type": "integer",
+            "description": "CPU空闲率（0-100）",
+            "format": "int64"
+          },
+          "cpuUsed": {
+            "type": "integer",
+            "description": "CPU使用率（0-100）",
+            "format": "int64"
+          },
+          "diskTotal": {
+            "type": "integer",
+            "description": "磁盘总量（字节）",
+            "format": "int64"
+          },
+          "diskAvailable": {
+            "type": "integer",
+            "description": "磁盘可以使用总量（字节）",
+            "format": "int64"
+          },
+          "diskUsed": {
+            "type": "integer",
+            "description": "磁盘已经使用总量（字节）",
+            "format": "int64"
+          }
+        },
+        "description": "数据"
+      }
+    }
+  }
+}
