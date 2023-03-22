@@ -19,8 +19,8 @@ import java.util.Map;
 public class SpringDocUtil {
 
     // 读取：接口的地址
-    //    private static final String SPRING_DOC_ENDPOINT = "http://43.154.37.130:10001/v3/api-docs/be";
-    private static final String SPRING_DOC_ENDPOINT = "http://127.0.0.1:10001/v3/api-docs/be";
+    private static final String SPRING_DOC_ENDPOINT = "http://43.154.37.130:10001/v3/api-docs/be";
+    //    private static final String SPRING_DOC_ENDPOINT = "http://127.0.0.1:10001/v3/api-docs/be";
 
     private static final String BE_API_SCHEMA_MAP_KEY = "beApiSchemaMapKey";
 
@@ -120,11 +120,73 @@ public class SpringDocUtil {
 
             }
 
-            //            beApi.setResponse();
+            JSONObject responses = method.getJSONObject("responses");
+
+            if (responses != null) {
+
+                // 处理：responses
+                handleResultResponses(beApiSchemaMap, item, beApi, responses);
+
+            }
 
             result.put(item.getKey(), beApi); // 添加到返回值里
 
         }
+
+    }
+
+    /**
+     * 处理：responses
+     */
+    private static void handleResultResponses(HashMap<String, BeApi.BeApiSchema> beApiSchemaMap,
+        Map.Entry<String, Object> item, BeApi beApi, JSONObject responses) {
+
+        JSONObject jsonObject200 = responses.getJSONObject("200");
+
+        if (jsonObject200 == null) {
+
+            log.info("处理返回值失败：key：{}，", item.getKey());
+            return;
+
+        }
+
+        JSONObject content = jsonObject200.getJSONObject("content");
+
+        if (content == null) {
+
+            return; // 没有返回值
+
+        }
+
+        JSONObject jsonObject = content.getJSONObject("*/*");
+
+        JSONObject schema = jsonObject.getJSONObject("schema");
+
+        String refStr = schema.getStr("$ref");
+
+        BeApi.BeApiSchema beApiSchema = new BeApi.BeApiSchema();
+
+        Map<String, String> match = BE_API_SCHEMA_MAP_KEY_STR_MATCHER.match(refStr);
+
+        String beApiSchemaMapKey = match.get(BE_API_SCHEMA_MAP_KEY);
+
+        beApiSchema.setClassName(beApiSchemaMapKey);
+
+        BeApi.BeApiSchema propertiesBeApiSchema = beApiSchemaMap.get(beApiSchemaMapKey); // 从 map中获取对象
+
+        if (propertiesBeApiSchema == null) { // 如果不存在
+
+            log.info("处理返回值失败：未找到引用类：key：{}，beApiSchemaMapKey；{}", item.getKey(), beApiSchemaMapKey);
+            return;
+
+        }
+
+        HashMap<String, BeApi.BeApiField> propertiesFieldMap = MapUtil.newHashMap();
+        beApiSchema.setFieldMap(propertiesFieldMap);
+
+        propertiesFieldMap.put(beApiSchemaMapKey, propertiesBeApiSchema); // 添加到对象类型的，字段 map里
+
+        beApi.setResponse(beApiSchema); // 设置：返回值
 
     }
 

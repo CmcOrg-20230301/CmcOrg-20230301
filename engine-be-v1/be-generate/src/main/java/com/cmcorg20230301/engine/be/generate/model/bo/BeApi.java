@@ -49,7 +49,7 @@ public class BeApi {
     /**
      * 响应的对象
      */
-    private BeApiSchema response;
+    private BeApiField response;
 
     /**
      * 字段对象的接口类
