@@ -1,7 +1,6 @@
 package com.cmcorg20230301.engine.be.generate.model.bo;
 
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 
 import java.util.List;
 import java.util.Map;
@@ -53,10 +52,27 @@ public class BeApi {
     private BeApiSchema response;
 
     /**
-     * 提取一些共同的属性类
+     * 字段对象的接口类
+     */
+    public interface BeApiField {
+
+    }
+
+    /**
+     * 请求的是对象时
      */
     @Data
-    public static class BeApiField {
+    public static class BeApiSchema implements BeApiField {
+
+        /**
+         * 对象的 class名
+         */
+        private String className;
+
+        /**
+         * 对象传递时的名称，备注：只有此对象是一个对象的字段时，才有值
+         */
+        private String name;
 
         /**
          * 对象的类型
@@ -73,20 +89,6 @@ public class BeApi {
          */
         private String description;
 
-    }
-
-    /**
-     * 请求的是对象时
-     */
-    @EqualsAndHashCode(callSuper = true)
-    @Data
-    public static class BeApiSchema extends BeApiField {
-
-        /**
-         * 对象传递时的名称，备注：只有此对象是一个对象的字段时，才有值
-         */
-        private String name;
-
         /**
          * 对象的字段情况 map，key是参数名
          */
@@ -102,14 +104,28 @@ public class BeApi {
     /**
      * 请求的是一般类型时
      */
-    @EqualsAndHashCode(callSuper = true)
     @Data
-    public static class BeApiParameter extends BeApiField {
+    public static class BeApiParameter implements BeApiField {
 
         /**
          * 字段名称
          */
         private String name;
+
+        /**
+         * 对象的类型
+         */
+        private String type;
+
+        /**
+         * 是否必须传递
+         */
+        private Boolean required;
+
+        /**
+         * 字段描述
+         */
+        private String description;
 
         /**
          * 字段格式化
@@ -120,6 +136,16 @@ public class BeApi {
          * 正则表达式
          */
         private String pattern;
+
+        /**
+         * 最大长度
+         */
+        private Integer maxLength;
+
+        /**
+         * 最小长度
+         */
+        private Integer minLength;
 
     }
 
