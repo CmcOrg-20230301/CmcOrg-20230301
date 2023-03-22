@@ -369,7 +369,7 @@
             <dependency>
                 <groupId>com.tencentcloudapi</groupId>
                 <artifactId>tencentcloud-sdk-java</artifactId>
-                <version>3.1.704</version>
+                <version>3.1.720</version>
             </dependency>
 
             <!-- 支付宝，获取最新版本号：https://github.com/alipay/alipay-sdk-java-all -->
@@ -418,7 +418,7 @@
             <dependency>
                 <groupId>cn.hutool</groupId>
                 <artifactId>hutool-all</artifactId>
-                <version>5.8.14</version>
+                <version>5.8.15</version>
             </dependency>
 
             <!-- mybatis-plus -->

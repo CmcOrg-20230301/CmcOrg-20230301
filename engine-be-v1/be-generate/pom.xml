@@ -14,16 +14,52 @@
 
     <dependencies>
 
+        <!-- be-security -->
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>be-security</artifactId>
+        </dependency>
+
+        <!-- be-request -->
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>be-request</artifactId>
+        </dependency>
+
         <!-- be-model -->
         <dependency>
-            <groupId>com.cmcorg20230301</groupId>
+            <groupId>${project.groupId}</groupId>
             <artifactId>be-model</artifactId>
         </dependency>
 
-        <!-- ssh，sftp -->
+        <!-- be-log -->
         <dependency>
-            <groupId>com.jcraft</groupId>
-            <artifactId>jsch</artifactId>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>be-log</artifactId>
+        </dependency>
+
+        <!-- be-cache -->
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>be-cache</artifactId>
+        </dependency>
+
+        <!-- be-nacos -->
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>be-nacos</artifactId>
+        </dependency>
+
+        <!-- be-knife4j -->
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>be-knife4j</artifactId>
+        </dependency>
+
+        <!-- be-mysql -->
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>be-mysql</artifactId>
         </dependency>
 
         <!-- be-util -->
@@ -32,6 +68,21 @@
             <artifactId>be-util</artifactId>
         </dependency>
 
+        <!-- be-redisson -->
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>be-redisson</artifactId>
+        </dependency>
+
     </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
+        </plugins>
+    </build>
 
 </project>
