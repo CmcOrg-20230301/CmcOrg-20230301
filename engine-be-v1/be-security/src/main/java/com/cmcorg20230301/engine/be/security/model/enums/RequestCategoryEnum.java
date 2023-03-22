@@ -13,13 +13,13 @@ import org.jetbrains.annotations.Nullable;
 @Schema(description = "请求类别")
 public enum RequestCategoryEnum {
 
-    PC_BROWSER_WINDOWS(101, "电脑-windows-浏览器"), //
-    PC_BROWSER_MAC(102, "电脑-mac-浏览器"), //
-    PC_BROWSER_LINUX(103, "电脑-linux-浏览器"), //
+    PC_BROWSER_WINDOWS(101, "windows-浏览器"), //
+    PC_BROWSER_MAC(102, "mac-浏览器"), //
+    PC_BROWSER_LINUX(103, "linux-浏览器"), //
 
-    PC_CLIENT_WINDOWS(201, "电脑-windows-客户端"), //
-    PC_CLIENT_MAC(202, "电脑-mac-客户端"), //
-    PC_CLIENT_LINUX(203, "电脑-linux-客户端"), //
+    PC_CLIENT_WINDOWS(201, "windows-客户端"), //
+    PC_CLIENT_MAC(202, "mac-客户端"), //
+    PC_CLIENT_LINUX(203, "linux-客户端"), //
 
     ANDROID(301, "安卓端"), //
     ANDROID_BROWSER(302, "安卓-浏览器"), //
