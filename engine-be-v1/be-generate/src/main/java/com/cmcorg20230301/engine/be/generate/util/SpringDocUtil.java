@@ -415,6 +415,18 @@ public class SpringDocUtil {
 
             String refStr = propertiesValue.getStr("$ref");
 
+            if (StrUtil.isBlank(refStr)) {
+
+                JSONObject items = propertiesValue.getJSONObject("items"); // 如果是：数组
+
+                if (items != null) {
+
+                    refStr = items.getStr("$ref");
+
+                }
+
+            }
+
             if (StrUtil.isBlank(refStr)) { // 为空则表示是：一般类型
 
                 BeApi.BeApiParameter beApiParameter = new BeApi.BeApiParameter();
@@ -435,6 +447,13 @@ public class SpringDocUtil {
                 String beApiSchemaMapKey = match.get(BE_API_SCHEMA_MAP_KEY);
 
                 beApiSchema.setClassName(beApiSchemaMapKey);
+
+                if (apiSchema.getClassName().equals(beApiSchemaMapKey)) { // 这里防止递归，然后内存溢出
+
+                    fieldMap.put(item.getKey(), beApiSchema);
+                    return;
+
+                }
 
                 BeApi.BeApiSchema propertiesBeApiSchema = beApiSchemaMap.get(beApiSchemaMapKey); // 看这个对象是否存在于 map中
 
