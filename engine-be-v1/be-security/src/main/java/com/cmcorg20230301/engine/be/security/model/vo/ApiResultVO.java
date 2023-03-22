@@ -42,7 +42,7 @@ public class ApiResultVO<T> {
         // 不允许修改 service的值
     }
 
-    private ApiResultVO<T> end() {
+    public ApiResultVO<T> end() {
         throw new BaseException(this);
     }
 

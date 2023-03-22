@@ -12,7 +12,6 @@ export function PasswordRSAEncrypt(
     // 备注：512太长了，所以就 256/512混合
     return RSAEncrypt(
         SHA256(SHA512(password).toString()).toString(),
-
         rsaPublicKey
     )
 

@@ -58,4 +58,39 @@ public class MyRsaUtil {
 
     }
 
+    /**
+     * 非对称：加密
+     */
+    public static String rsaEncrypt(String str, String publicKey) {
+
+        if (StrUtil.isBlank(str)) {
+
+            ApiResultVO.error(BaseBizCodeEnum.PARAMETER_CHECK_ERROR);
+
+        }
+
+        if (StrUtil.isBlank(publicKey)) {
+
+            ApiResultVO.sysError();
+
+        }
+
+        RSA rsa = new RSA(null, publicKey);
+
+        String encryptStr = null;
+
+        try {
+
+            encryptStr = rsa.encryptBase64(str, KeyType.PublicKey);
+
+        } catch (CryptoException e) {
+
+            ApiResultVO.error(BaseBizCodeEnum.ILLEGAL_REQUEST);
+
+        }
+
+        return encryptStr; // 返回加密之后的 字符串
+
+    }
+
 }
