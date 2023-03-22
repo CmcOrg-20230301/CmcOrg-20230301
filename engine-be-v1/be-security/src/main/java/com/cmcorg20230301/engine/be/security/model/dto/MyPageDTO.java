@@ -33,7 +33,7 @@ public class MyPageDTO {
      * 分页属性拷贝
      * toUnderlineCaseFlag：一般为 true
      */
-    public <T> Page<T> getPage(boolean toUnderlineCaseFlag) {
+    public <T> Page<T> page(boolean toUnderlineCaseFlag) {
 
         Page<T> page = new Page<>();
 
@@ -71,9 +71,10 @@ public class MyPageDTO {
     /**
      * 分页属性拷贝-增加：默认创建时间 倒序排序
      */
-    public <T> Page<T> getCreateTimeDescDefaultOrderPage() {
+    @Schema()
+    public <T> Page<T> createTimeDescDefaultOrderPage() {
 
-        Page<T> page = getPage(false);
+        Page<T> page = page(false);
 
         if (orderEmpty()) {
             page.orders().add(new OrderItem("createTime", false));

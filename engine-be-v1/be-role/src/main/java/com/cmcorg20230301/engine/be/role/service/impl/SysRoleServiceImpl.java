@@ -152,7 +152,7 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRoleDO> im
             .like(StrUtil.isNotBlank(dto.getRemark()), BaseEntity::getRemark, dto.getRemark())
             .eq(dto.getEnableFlag() != null, BaseEntity::getEnableFlag, dto.getEnableFlag())
             .eq(dto.getDefaultFlag() != null, SysRoleDO::getDefaultFlag, dto.getDefaultFlag())
-            .orderByDesc(BaseEntity::getUpdateTime).page(dto.getPage(true));
+            .orderByDesc(BaseEntity::getUpdateTime).page(dto.page(true));
 
     }
 

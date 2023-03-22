@@ -35,7 +35,7 @@ public class SysRequestServiceImpl extends ServiceImpl<SysRequestMapper, SysRequ
             .eq(dto.getCategory() != null, SysRequestDO::getCategory, dto.getCategory())
             .eq(dto.getCreateId() != null, BaseEntity::getCreateId, dto.getCreateId())
             .eq(dto.getSuccessFlag() != null, SysRequestDO::getSuccessFlag, dto.getSuccessFlag())
-            .orderByDesc(BaseEntity::getCreateTime).page(dto.getPage(true));
+            .orderByDesc(BaseEntity::getCreateTime).page(dto.page(true));
 
     }
 
