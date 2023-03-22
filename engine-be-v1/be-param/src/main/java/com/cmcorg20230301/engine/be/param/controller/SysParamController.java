@@ -1,6 +1,5 @@
 package com.cmcorg20230301.engine.be.param.controller;
 
-import cn.hutool.json.JSONObject;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.cmcorg20230301.engine.be.model.model.dto.NotEmptyIdSet;
 import com.cmcorg20230301.engine.be.model.model.dto.NotNullId;
@@ -11,14 +10,14 @@ import com.cmcorg20230301.engine.be.security.model.entity.SysParamDO;
 import com.cmcorg20230301.engine.be.security.model.vo.ApiResultVO;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import lombok.Data;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
 import javax.validation.Valid;
-import java.util.Map;
 
 @RequestMapping("/sys/param")
 @RestController
@@ -33,99 +32,6 @@ public class SysParamController {
     @PreAuthorize("hasAuthority('sysParam:insertOrUpdate')")
     public ApiResultVO<String> insertOrUpdate(@RequestBody @Valid SysParamInsertOrUpdateDTO dto) {
         return ApiResultVO.ok(baseService.insertOrUpdate(dto));
-    }
-
-    @Operation(summary = "分页排序查询")
-    @PostMapping("/pageTest")
-    @PreAuthorize("hasAuthority('sysParam:page')")
-    public void myPageTest() {
-    }
-
-    @Operation(summary = "分页排序查询")
-    @PostMapping("/pageTest2")
-    @PreAuthorize("hasAuthority('sysParam:page')")
-    public void myPageTest2(@RequestParam(value = "file") MultipartFile file) {
-    }
-
-    @Data
-    public static class MyPageTest3DTO {
-
-        private MultipartFile file;
-
-        private Long fileBegin;
-
-        private Long fileEnd;
-
-    }
-
-    @Operation(summary = "分页排序查询")
-    @PostMapping("/pageTest3")
-    @PreAuthorize("hasAuthority('sysParam:page')")
-    public void myPageTest3(MyPageTest3DTO dto) {
-    }
-
-    @Operation(summary = "分页排序查询")
-    @PostMapping("/pageTest4")
-    @PreAuthorize("hasAuthority('sysParam:page')")
-    public void myPageTest4(@RequestParam(value = "file") MultipartFile file,
-        @RequestParam(value = "fileName") String fileName, @RequestParam(value = "uploadType") Integer uploadType) {
-    }
-
-    @Operation(summary = "分页排序查询")
-    @PostMapping("/pageTest5")
-    @PreAuthorize("hasAuthority('sysParam:page')")
-    public void myPageTest5(@RequestBody String test) {
-
-        System.out.println(test);
-
-    }
-
-    @Operation(summary = "分页排序查询")
-    @PostMapping("/pageTest6")
-    @PreAuthorize("hasAuthority('sysParam:page')")
-    public void myPageTest6(JSONObject jsonObject) {
-    }
-
-    @Operation(summary = "分页排序查询")
-    @PostMapping("/pageTest7")
-    @PreAuthorize("hasAuthority('sysParam:page')")
-    public void myPageTest7(@RequestBody JSONObject jsonObject) {
-    }
-
-    @Operation(summary = "分页排序查询")
-    @PostMapping("/pageTest8")
-    @PreAuthorize("hasAuthority('sysParam:page')")
-    public void myPageTest8(Map<String, Object> map) {
-    }
-
-    @Operation(summary = "分页排序查询")
-    @PostMapping("/pageTest9")
-    @PreAuthorize("hasAuthority('sysParam:page')")
-    public void myPageTest9(@RequestBody Map<String, Object> map) {
-    }
-
-    @Operation(summary = "分页排序查询")
-    @GetMapping("/pageTest10")
-    @PreAuthorize("hasAuthority('sysParam:page')")
-    public void pageTest10(MyPageTest3DTO dto) {
-    }
-
-    @Operation(summary = "分页排序查询")
-    @PutMapping("/pageTest11")
-    @PreAuthorize("hasAuthority('sysParam:page')")
-    public void pageTest11(MyPageTest3DTO dto) {
-    }
-
-    @Operation(summary = "分页排序查询")
-    @DeleteMapping("/pageTest12")
-    @PreAuthorize("hasAuthority('sysParam:page')")
-    public void pageTest12(MyPageTest3DTO dto) {
-    }
-
-    @Operation(summary = "分页排序查询")
-    @RequestMapping("/pageTest13")
-    @PreAuthorize("hasAuthority('sysParam:page')")
-    public void pageTest13(MyPageTest3DTO dto) {
     }
 
     @Operation(summary = "分页排序查询")
