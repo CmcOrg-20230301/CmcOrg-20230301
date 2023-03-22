@@ -44,7 +44,7 @@ public class BeApi {
     /**
      * 一般的 get或者 post 请求时，传递的参数，key是参数名
      */
-    private Map<String, BeApiParameter> parameter;
+    private Map<String, BeApiField> parameter;
 
     /**
      * 响应的对象

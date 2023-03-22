@@ -4,6 +4,7 @@ import cn.hutool.core.map.MapUtil;
 import cn.hutool.core.text.StrMatcher;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.http.HttpRequest;
+import cn.hutool.json.JSONArray;
 import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
 import com.cmcorg20230301.engine.be.generate.model.bo.BeApi;
@@ -18,10 +19,11 @@ import java.util.Map;
 public class SpringDocUtil {
 
     // 读取：接口的地址
-    private static final String SPRING_DOC_ENDPOINT = "http://43.154.37.130:10001/v3/api-docs/be";
-    //    private static final String SPRING_DOC_ENDPOINT = "http://127.0.0.1:10001/v3/api-docs/be";
+    //    private static final String SPRING_DOC_ENDPOINT = "http://43.154.37.130:10001/v3/api-docs/be";
+    private static final String SPRING_DOC_ENDPOINT = "http://127.0.0.1:10001/v3/api-docs/be";
 
     private static final String BE_API_SCHEMA_MAP_KEY = "beApiSchemaMapKey";
+
     private static final StrMatcher BE_API_SCHEMA_MAP_KEY_STR_MATCHER =
         new StrMatcher("#/components/schemas/${" + BE_API_SCHEMA_MAP_KEY + "}");
 
@@ -104,47 +106,168 @@ public class SpringDocUtil {
 
             if (requestBody != null) {
 
-                JSONObject content = requestBody.getJSONObject("content");
+                // 处理：requestBody
+                handleResultRequestBody(beApiSchemaMap, item, beApi, requestBody);
 
-                String[] contentKeyArr = content.keySet().toArray(new String[0]);
+            }
 
-                String contentTypeStr = contentKeyArr[0];
+            JSONArray parameters = method.getJSONArray("parameters");
 
-                beApi.setContentType(contentTypeStr);
+            if (parameters != null) {
 
-                JSONObject contentType = content.getJSONObject(contentTypeStr);
+                // 处理：parameters
+                handleResultParameters(beApiSchemaMap, item, beApi, parameters);
 
-                JSONObject schema = contentType.getJSONObject("schema");
+            }
+
+            //            beApi.setResponse();
+
+            result.put(item.getKey(), beApi); // 添加到返回值里
+
+        }
+
+    }
+
+    /**
+     * 处理：parameters
+     */
+    private static void handleResultParameters(HashMap<String, BeApi.BeApiSchema> beApiSchemaMap,
+        Map.Entry<String, Object> item, BeApi beApi, JSONArray parameters) {
+
+        Map<String, BeApi.BeApiField> parameterMap = MapUtil.newHashMap();
+        beApi.setParameter(parameterMap);
+
+        for (Object subItem : parameters) {
+
+            JSONObject parameter = (JSONObject)subItem;
+
+            JSONObject schema = parameter.getJSONObject("schema");
+
+            String name = parameter.getStr("name");
+
+            if (schema == null) { // 如果是：一般类型
+
+                // 设置：一般类型到 map里
+                handleResultParametersParameter(parameterMap, parameter, name);
+
+            } else { // 如果是：对象类型
 
                 String refStr = schema.getStr("$ref");
 
                 if (StrUtil.isBlank(refStr)) {
-                    continue;
-                }
 
-                Map<String, String> match = BE_API_SCHEMA_MAP_KEY_STR_MATCHER.match(refStr);
+                    // 组装键值对到：parameter里
+                    parameter.putAll(schema);
 
-                String beApiSchemaMapKey = match.get(BE_API_SCHEMA_MAP_KEY);
+                    // 设置：一般类型到 map里
+                    handleResultParametersParameter(parameterMap, parameter, name);
 
-                BeApi.BeApiSchema beApiSchema = beApiSchemaMap.get(beApiSchemaMapKey); // 从 map中获取对象
+                } else { // 如果是：对象类型
 
-                if (beApiSchema == null) { // 如果不存在
+                    BeApi.BeApiSchema beApiSchema = new BeApi.BeApiSchema();
+                    beApiSchema.setName(name);
 
-                    log.info("获取失败：key：{}，beApiSchemaMapKey：{}", item.getKey(), beApiSchemaMapKey);
-                    continue;
+                    Map<String, String> match = BE_API_SCHEMA_MAP_KEY_STR_MATCHER.match(refStr);
 
-                } else {
+                    String beApiSchemaMapKey = match.get(BE_API_SCHEMA_MAP_KEY);
 
-                    beApi.setRequestBody(beApiSchema);
+                    beApiSchema.setClassName(beApiSchemaMapKey);
+
+                    BeApi.BeApiSchema propertiesBeApiSchema = beApiSchemaMap.get(beApiSchemaMapKey); // 从 map中获取对象
+
+                    if (propertiesBeApiSchema == null) { // 如果不存在
+
+                        log.info("未找到引用类：key：{}，beApiSchemaMapKey；{}", item.getKey(), beApiSchemaMapKey);
+                        continue;
+
+                    }
+
+                    HashMap<String, BeApi.BeApiField> propertiesFieldMap = MapUtil.newHashMap();
+                    beApiSchema.setFieldMap(propertiesFieldMap);
+
+                    propertiesFieldMap.put(beApiSchemaMapKey, propertiesBeApiSchema); // 添加到对象类型的，字段 map里
+
+                    parameterMap.put(beApiSchema.getName(), beApiSchema);
 
                 }
 
             }
 
-            //            beApi.setParameter();
-            //            beApi.setResponse();
+        }
 
-            result.put(item.getKey(), beApi); // 添加到返回值里
+    }
+
+    /**
+     * 设置：一般类型到 map里
+     */
+    private static void handleResultParametersParameter(Map<String, BeApi.BeApiField> parameterMap,
+        JSONObject parameter, String name) {
+
+        BeApi.BeApiParameter beApiParameter = new BeApi.BeApiParameter();
+        beApiParameter.setName(name);
+
+        // 处理：beApiParameter的属性
+        handleBeApiParameter(parameter, beApiParameter);
+
+        parameterMap.put(beApiParameter.getName(), beApiParameter); // 设置：一般类型到 map里
+
+    }
+
+    /**
+     * 处理：beApiParameter的属性
+     */
+    private static void handleBeApiParameter(JSONObject jsonObject, BeApi.BeApiParameter beApiParameter) {
+
+        beApiParameter.setType(jsonObject.getStr("type"));
+        beApiParameter.setRequired(jsonObject.getBool("required"));
+        beApiParameter.setDescription(jsonObject.getStr("description"));
+        beApiParameter.setFormat(jsonObject.getStr("format"));
+        beApiParameter.setPattern(jsonObject.getStr("pattern"));
+        beApiParameter.setMaxLength(jsonObject.getInt("maxLength"));
+        beApiParameter.setMinLength(jsonObject.getInt("minLength"));
+
+    }
+
+    /**
+     * 处理：requestBody
+     */
+    private static void handleResultRequestBody(HashMap<String, BeApi.BeApiSchema> beApiSchemaMap,
+        Map.Entry<String, Object> item, BeApi beApi, JSONObject requestBody) {
+
+        JSONObject content = requestBody.getJSONObject("content");
+
+        String[] contentKeyArr = content.keySet().toArray(new String[0]);
+
+        String contentTypeStr = contentKeyArr[0];
+
+        beApi.setContentType(contentTypeStr);
+
+        JSONObject contentType = content.getJSONObject(contentTypeStr);
+
+        JSONObject schema = contentType.getJSONObject("schema");
+
+        String refStr = schema.getStr("$ref");
+
+        if (StrUtil.isBlank(refStr)) {
+
+            log.info("暂时不支持：key：{}，", item.getKey());
+            return;
+
+        }
+
+        Map<String, String> match = BE_API_SCHEMA_MAP_KEY_STR_MATCHER.match(refStr);
+
+        String beApiSchemaMapKey = match.get(BE_API_SCHEMA_MAP_KEY);
+
+        BeApi.BeApiSchema beApiSchema = beApiSchemaMap.get(beApiSchemaMapKey); // 从 map中获取对象
+
+        if (beApiSchema == null) { // 如果不存在
+
+            log.info("获取失败：key：{}，beApiSchemaMapKey：{}", item.getKey(), beApiSchemaMapKey);
+
+        } else {
+
+            beApi.setRequestBody(beApiSchema);
 
         }
 
@@ -234,13 +357,9 @@ public class SpringDocUtil {
 
                 BeApi.BeApiParameter beApiParameter = new BeApi.BeApiParameter();
                 beApiParameter.setName(item.getKey());
-                beApiParameter.setType(propertiesValue.getStr("type"));
-                beApiParameter.setFormat(propertiesValue.getStr("format"));
-                beApiParameter.setRequired(propertiesValue.getBool("required"));
-                beApiParameter.setMaxLength(propertiesValue.getInt("maxLength"));
-                beApiParameter.setMinLength(propertiesValue.getInt("minLength"));
-                beApiParameter.setPattern(propertiesValue.getStr("pattern"));
-                beApiParameter.setDescription(propertiesValue.getStr("description"));
+
+                // 处理：beApiParameter的属性
+                handleBeApiParameter(propertiesValue, beApiParameter);
 
                 fieldMap.put(item.getKey(), beApiParameter);
 
