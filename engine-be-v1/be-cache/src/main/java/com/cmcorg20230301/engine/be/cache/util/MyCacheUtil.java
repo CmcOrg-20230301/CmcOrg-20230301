@@ -86,7 +86,11 @@ public class MyCacheUtil {
         result = CacheHelper.checkAndReturnResult(result, defaultResult); // 检查并设置值
 
         log.info("{}：加入 redis缓存", key);
-        redissonClient.<T>getBucket(key).set(result, timeToLive, TimeUnit.MILLISECONDS); // 先加入到 redis里
+        if (timeToLive < 1) {
+            redissonClient.<T>getBucket(key).set(result); // 先加入到 redis里
+        } else {
+            redissonClient.<T>getBucket(key).set(result, timeToLive, TimeUnit.MILLISECONDS); // 先加入到 redis里
+        }
 
         log.info("{}：加入 本地缓存", key);
         CacheLocalUtil.put(key, result, timeToLive);
