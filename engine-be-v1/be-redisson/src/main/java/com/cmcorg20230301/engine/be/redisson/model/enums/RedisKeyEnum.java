@@ -33,11 +33,11 @@ public enum RedisKeyEnum implements IRedisKey {
     USER_ID_REF_ROLE_ID_SET_CACHE, // 用户 id关联的 roleIdSet
     DEFAULT_ROLE_ID_CACHE, // 默认角色 id
     ROLE_ID_REF_MENU_ID_SET_CACHE, // 角色 id关联的 menuIdSet
+    ROLE_ID_SET_CACHE, // 角色 idSet
 
     ALL_MENU_ID_AND_AUTHS_LIST_CACHE, // 菜单集合，包含所有菜单：id和 auths
     ROLE_ID_REF_MENU_SET_ONE_CACHE, // 角色 id关联的 menuSet，1 完整的菜单信息
     ROLE_ID_REF_MENU_SET_TWO_CACHE, // 角色 id关联的 menuSet，2 给 security获取权限时使用
-    ROLE_ID_SET_CACHE, // 角色 idSet
 
     SYS_PARAM_CACHE, // 系统参数缓存
 
