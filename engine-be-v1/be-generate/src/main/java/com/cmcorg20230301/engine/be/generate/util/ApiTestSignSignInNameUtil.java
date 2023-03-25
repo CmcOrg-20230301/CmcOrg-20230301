@@ -8,10 +8,10 @@ import com.cmcorg20230301.engine.be.sign.signinname.model.dto.*;
 import lombok.extern.slf4j.Slf4j;
 
 /**
- * 登录注册相关接口测试工具
+ * 登录名，登录注册相关接口测试工具
  */
 @Slf4j
-public class ApiTestSignUtil {
+public class ApiTestSignSignInNameUtil {
 
     // 执行，接口的地址，备注：最后面不要加斜杠 /
     //    private static final String API_ENDPOINT = "http://43.154.37.130:10001";
