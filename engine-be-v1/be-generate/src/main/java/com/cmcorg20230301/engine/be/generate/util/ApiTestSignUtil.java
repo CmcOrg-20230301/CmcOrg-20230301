@@ -4,10 +4,7 @@ import cn.hutool.crypto.digest.DigestUtil;
 import cn.hutool.http.HttpRequest;
 import cn.hutool.json.JSONUtil;
 import com.cmcorg20230301.engine.be.security.util.MyRsaUtil;
-import com.cmcorg20230301.engine.be.sign.signinname.model.dto.SignSignInNameSignInPasswordDTO;
-import com.cmcorg20230301.engine.be.sign.signinname.model.dto.SignSignInNameSignUpDTO;
-import com.cmcorg20230301.engine.be.sign.signinname.model.dto.SignSignInNameUpdateAccountDTO;
-import com.cmcorg20230301.engine.be.sign.signinname.model.dto.SignSignInNameUpdatePasswordDTO;
+import com.cmcorg20230301.engine.be.sign.signinname.model.dto.*;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -28,30 +25,57 @@ public class ApiTestSignUtil {
     private static final String SIGN_IN_NAME = "cxk";
 
     // 新登录名
-    private static final String NEW_SIGN_IN_NAME = "cxk";
+    private static final String NEW_SIGN_IN_NAME = "cxk2";
 
     // 密码
     private static final String PASSWORD_TEMP = "Ik123456";
 
     // 新密码
-    private static final String NEW_PASSWORD_TEMP = "Ik123456";
+    private static final String NEW_PASSWORD_TEMP = "Ik1234567";
 
     public static void main(String[] args) {
 
-        //        // 登录名-注册
+        // 登录名-注册
         signInNameSignUp(API_ENDPOINT, SIGN_IN_NAME, PASSWORD_TEMP);
 
         // 登录名-用户名账号密码登录
         String jwt = signInNameSignIn(API_ENDPOINT, SIGN_IN_NAME, PASSWORD_TEMP);
 
         // 登录名-修改密码
-        signInNameUpdatePassword(API_ENDPOINT, jwt, NEW_PASSWORD_TEMP, PASSWORD_TEMP);
+        signInNameUpdatePassword(API_ENDPOINT, jwt, PASSWORD_TEMP, NEW_PASSWORD_TEMP);
+
+        // 登录名-用户名账号密码登录
+        jwt = signInNameSignIn(API_ENDPOINT, SIGN_IN_NAME, NEW_PASSWORD_TEMP);
 
         // 登录名-修改账号
         signInNameUpdateAccount(API_ENDPOINT, jwt, NEW_SIGN_IN_NAME, NEW_PASSWORD_TEMP);
 
+        // 登录名-用户名账号密码登录
+        jwt = signInNameSignIn(API_ENDPOINT, NEW_SIGN_IN_NAME, NEW_PASSWORD_TEMP);
+
         // 登录名-账号注销
-        //        signInNameSignDelete(API_ENDPOINT, SIGN_IN_NAME, jwt);
+        signInNameSignDelete(API_ENDPOINT, NEW_PASSWORD_TEMP, jwt);
+
+    }
+
+    /**
+     * 登录名-账号注销
+     */
+    private static void signInNameSignDelete(String apiEndpoint, String currentPasswordTemp, String jwt) {
+
+        long currentTs = System.currentTimeMillis();
+
+        String currentPassword = DigestUtil.sha256Hex((DigestUtil.sha512Hex(currentPasswordTemp)));
+
+        currentPassword = MyRsaUtil.rsaEncrypt(currentPassword, RSA_PUBLIC_KEY);
+
+        SignSignInNameSignDeleteDTO dto = new SignSignInNameSignDeleteDTO();
+        dto.setCurrentPassword(currentPassword);
+
+        String bodyStr = HttpRequest.post(apiEndpoint + "/sign/signInName/signDelete").body(JSONUtil.toJsonStr(dto))
+            .header("Authorization", jwt).execute().body();
+
+        log.info("登录名-账号注销：耗时：{}，bodyStr：{}", calcCostMs(currentTs), bodyStr);
 
     }
 
@@ -81,8 +105,8 @@ public class ApiTestSignUtil {
     /**
      * 登录名-修改密码
      */
-    private static void signInNameUpdatePassword(String apiEndpoint, String jwt, String newPasswordTemp,
-        String passwordTemp) {
+    private static void signInNameUpdatePassword(String apiEndpoint, String jwt, String passwordTemp,
+        String newPasswordTemp) {
 
         long currentTs = System.currentTimeMillis();
 

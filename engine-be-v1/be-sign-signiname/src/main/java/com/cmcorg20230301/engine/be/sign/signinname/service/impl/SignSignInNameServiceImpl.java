@@ -61,7 +61,7 @@ public class SignSignInNameServiceImpl implements SignSignInNameService {
     @Override
     public String updatePassword(SignSignInNameUpdatePasswordDTO dto) {
 
-        // 检查：登录名，是否不可以执行操作
+        // 检查：登录名，是否可以执行操作
         checkSignNameCanBeExecutedAndError();
 
         return SignUtil.updatePassword(dto.getNewPassword(), dto.getOriginNewPassword(), PRE_REDIS_KEY_ENUM, null,
@@ -85,7 +85,7 @@ public class SignSignInNameServiceImpl implements SignSignInNameService {
     @Override
     public String signDelete(SignSignInNameSignDeleteDTO dto) {
 
-        // 检查：登录名，是否不可以执行操作
+        // 检查：登录名，是否可以执行操作
         checkSignNameCanBeExecutedAndError();
 
         return SignUtil.signDelete(null, PRE_REDIS_KEY_ENUM, dto.getCurrentPassword());
@@ -93,7 +93,7 @@ public class SignSignInNameServiceImpl implements SignSignInNameService {
     }
 
     /**
-     * 检查：登录名，是否不可以执行操作，如果不可以，则抛出异常
+     * 检查：登录名，是否可以执行操作，如果不可以，则抛出异常
      */
     private void checkSignNameCanBeExecutedAndError() {
 

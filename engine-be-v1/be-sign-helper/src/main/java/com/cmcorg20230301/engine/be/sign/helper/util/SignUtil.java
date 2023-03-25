@@ -790,7 +790,7 @@ public class SignUtil {
                 if (deleteRedisFlag) {
                     newBucket.delete();
                 }
-                ApiResultVO.error("操作失败：已被其他人绑定，请重试");
+                ApiResultVO.error("操作失败：已被人绑定，请重试");
             }
 
             SysUserDO sysUserDO = new SysUserDO();
@@ -956,6 +956,7 @@ public class SignUtil {
             checkCurrentPassword(currentPassword, currentUserIdNotAdmin, null);
         }
 
+        // 通过：redisKeyEnum，获取账号
         String account = getAccountByIdAndRedisKeyEnum(redisKeyEnum, currentUserIdNotAdmin);
 
         String key = redisKeyEnum + account;
