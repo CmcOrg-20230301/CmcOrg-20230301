@@ -1,5 +1,6 @@
 package com.cmcorg20230301.engine.be.cache.util;
 
+import cn.hutool.cache.CacheUtil;
 import cn.hutool.core.collection.CollUtil;
 import com.cmcorg20230301.engine.be.model.model.constant.BaseConstant;
 import com.cmcorg20230301.engine.be.model.model.constant.LogTopicConstant;
@@ -10,7 +11,6 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * 本地缓存工具类
@@ -122,7 +122,9 @@ public class CacheLocalUtil {
      */
     private static <T> Map<String, T> getSecondMap(@NotNull String key) {
 
-        return (Map<String, T>)LOCAL_CACHE.get(key, false, ConcurrentHashMap::new);
+        return (Map<String, T>)LOCAL_CACHE.get(key, false, () -> {
+            return CacheUtil.newLFUCache(200 * 1000);
+        });
 
     }
 

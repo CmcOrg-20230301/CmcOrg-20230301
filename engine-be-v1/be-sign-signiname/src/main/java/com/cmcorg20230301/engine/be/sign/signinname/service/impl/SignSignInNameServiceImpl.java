@@ -33,7 +33,6 @@ public class SignSignInNameServiceImpl implements SignSignInNameService {
      * 注册
      */
     @Override
-    @MyTransactional
     public String signUp(SignSignInNameSignUpDTO dto) {
 
         if (BooleanUtil.isFalse(securityProperties.getSignInNameSignUpEnable())) {

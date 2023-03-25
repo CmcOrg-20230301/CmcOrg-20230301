@@ -229,17 +229,17 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserProMapper, SysUserDO>
 
         if (RedisKeyEnum.PRE_EMAIL.equals(item)) {
 
-            exist = SignUtil.accountIsExist(item, dto.getEmail(), dto.getId());
+            exist = SignUtil.accountIsExists(item, dto.getEmail(), dto.getId());
             map.put(item, dto.getEmail());
 
         } else if (RedisKeyEnum.PRE_SIGN_IN_NAME.equals(item)) {
 
-            exist = SignUtil.accountIsExist(item, dto.getSignInName(), dto.getId());
+            exist = SignUtil.accountIsExists(item, dto.getSignInName(), dto.getId());
             map.put(item, dto.getSignInName());
 
         } else if (RedisKeyEnum.PRE_PHONE.equals(item)) {
 
-            exist = SignUtil.accountIsExist(item, dto.getPhone(), dto.getId());
+            exist = SignUtil.accountIsExists(item, dto.getPhone(), dto.getId());
             map.put(item, dto.getPhone());
 
         }

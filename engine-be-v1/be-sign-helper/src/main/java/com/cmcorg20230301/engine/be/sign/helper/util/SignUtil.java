@@ -187,46 +187,43 @@ public class SignUtil {
 
         String finalPassword = password;
 
-        return TransactionUtil.exec(() -> {
+        RBucket<String> bucket = redissonClient.getBucket(key);
 
-            return RedissonUtil.doLock(key, () -> {
+        boolean checkCodeFlag =
+            RedisKeyEnum.PRE_EMAIL.equals(redisKeyEnum) || RedisKeyEnum.PRE_PHONE.equals(redisKeyEnum);
 
-                RBucket<String> bucket = redissonClient.getBucket(key);
+        return RedissonUtil.doLock(key, () -> {
 
-                boolean checkCodeFlag =
-                    RedisKeyEnum.PRE_EMAIL.equals(redisKeyEnum) || RedisKeyEnum.PRE_PHONE.equals(redisKeyEnum);
+            if (checkCodeFlag) {
+                CodeUtil.checkCode(code, bucket.get()); // 检查 code是否正确
+            }
 
-                if (checkCodeFlag) {
-                    CodeUtil.checkCode(code, bucket.get()); // 检查 code是否正确
-                }
+            // 检查：注册的登录账号是否存在
+            boolean exist = accountIsExists(redisKeyEnum, account, null);
 
-                // 检查：注册的登录账号是否存在
-                boolean exist = accountIsExist(redisKeyEnum, account, null);
-
-                if (exist) {
-
-                    if (checkCodeFlag) {
-
-                        bucket.delete(); // 删除：验证码
-
-                    }
-
-                    ApiResultVO.error(BizCodeEnum.THE_ACCOUNT_HAS_ALREADY_BEEN_REGISTERED);
-
-                }
-
-                Map<Enum<? extends IRedisKey>, String> accountMap = MapUtil.newHashMap();
-                accountMap.put(redisKeyEnum, account);
-
-                SignUtil.insertUser(finalPassword, accountMap, true, null, null); // 新增：用户
+            if (exist) {
 
                 if (checkCodeFlag) {
+
                     bucket.delete(); // 删除：验证码
+
                 }
 
-                return "注册成功";
+                ApiResultVO.error(BizCodeEnum.THE_ACCOUNT_HAS_ALREADY_BEEN_REGISTERED);
 
-            });
+            }
+
+            Map<Enum<? extends IRedisKey>, String> accountMap = MapUtil.newHashMap();
+            accountMap.put(redisKeyEnum, account);
+
+            // 新增：用户
+            SignUtil.insertUser(finalPassword, accountMap, true, null, null);
+
+            if (checkCodeFlag) {
+                bucket.delete(); // 删除：验证码
+            }
+
+            return "注册成功";
 
         });
 
@@ -282,8 +279,6 @@ public class SignUtil {
 
             sysUserMapper.insert(sysUserDO); // 保存：用户
 
-            UserUtil.setJwtSecretSuf(sysUserDO.getId()); // 设置：jwt秘钥后缀
-
             SysUserInfoDO sysUserInfoDO = new SysUserInfoDO();
             sysUserInfoDO.setId(sysUserDO.getId());
             sysUserInfoDO.setUuid(IdUtil.simpleUUID());
@@ -311,6 +306,8 @@ public class SignUtil {
             }
 
             sysUserInfoMapper.insert(sysUserInfoDO); // 保存：用户基本信息
+
+            UserUtil.setJwtSecretSuf(sysUserDO.getId()); // 设置：jwt秘钥后缀
 
             return sysUserDO;
 
@@ -746,7 +743,7 @@ public class SignUtil {
                 }
 
                 // 检查：新的登录账号是否存在
-                boolean exist = accountIsExist(redisKeyEnum, newAccount, null);
+                boolean exist = accountIsExists(redisKeyEnum, newAccount, null);
 
                 // 是否删除：redis中的验证码
                 boolean deleteRedisFlag =
@@ -814,7 +811,8 @@ public class SignUtil {
     /**
      * 检查登录账号是否存在
      */
-    public static boolean accountIsExist(Enum<? extends IRedisKey> redisKeyEnum, String newAccount, @Nullable Long id) {
+    public static boolean accountIsExists(Enum<? extends IRedisKey> redisKeyEnum, String newAccount,
+        @Nullable Long id) {
 
         LambdaQueryChainWrapper<SysUserDO> lambdaQueryChainWrapper =
             ChainWrappers.lambdaQueryChain(sysUserMapper).ne(id != null, BaseEntity::getId, id);
@@ -1006,7 +1004,7 @@ public class SignUtil {
                 RBucket<String> bucket = redissonClient.getBucket(key);
 
                 // 检查：绑定的登录账号是否存在
-                boolean exist = accountIsExist(redisKeyEnum, account, null);
+                boolean exist = accountIsExists(redisKeyEnum, account, null);
 
                 if (exist) {
 

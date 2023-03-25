@@ -1,5 +1,6 @@
 package com.cmcorg20230301.engine.be.security.util;
 
+import cn.hutool.core.util.BooleanUtil;
 import cn.hutool.core.util.RandomUtil;
 import cn.hutool.core.util.StrUtil;
 import com.cmcorg20230301.engine.be.security.model.vo.ApiResultVO;
@@ -39,7 +40,7 @@ public class CodeUtil {
         }
 
         // 如果验证码不匹配
-        if (!targetCode.equalsIgnoreCase(sourceCode)) {
+        if (BooleanUtil.isFalse(targetCode.equalsIgnoreCase(sourceCode))) {
             ApiResultVO.error(notEqualsError);
         }
 

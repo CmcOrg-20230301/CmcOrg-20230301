@@ -39,4 +39,9 @@ public interface BaseConstant {
     Long SYS_ID = NEGATIVE_ONE; // 系统/缺省 id，或者表示不存在
     // id 相关 ↑
 
+    // 字符串长度限制 ↓
+    int STR_MAX_LENGTH_500 = 500;
+    int STR_MAX_LENGTH_1000 = 1000;
+    // 字符串长度限制 ↑
+
 }

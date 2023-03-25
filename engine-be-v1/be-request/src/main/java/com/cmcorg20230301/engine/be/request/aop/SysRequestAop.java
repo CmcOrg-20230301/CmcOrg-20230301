@@ -3,6 +3,7 @@ package com.cmcorg20230301.engine.be.request.aop;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.date.BetweenFormatter;
 import cn.hutool.core.date.DateUtil;
+import cn.hutool.core.exceptions.ExceptionUtil;
 import cn.hutool.core.text.StrBuilder;
 import cn.hutool.core.util.BooleanUtil;
 import cn.hutool.core.util.StrUtil;
@@ -10,6 +11,7 @@ import cn.hutool.extra.servlet.ServletUtil;
 import cn.hutool.json.JSONUtil;
 import cn.hutool.jwt.JWT;
 import com.cmcorg20230301.engine.be.ip2region.util.Ip2RegionUtil;
+import com.cmcorg20230301.engine.be.model.model.constant.BaseConstant;
 import com.cmcorg20230301.engine.be.model.model.constant.LogTopicConstant;
 import com.cmcorg20230301.engine.be.model.model.constant.OperationDescriptionConstant;
 import com.cmcorg20230301.engine.be.request.model.entity.SysRequestDO;
@@ -45,7 +47,7 @@ public class SysRequestAop {
 
     private static List<SysRequestDO> SYS_REQUEST_DO_LIST = new CopyOnWriteArrayList<>();
 
-    private static final int STR_MAX_LENGTH = 500;
+    private static final int STR_MAX_LENGTH = BaseConstant.STR_MAX_LENGTH_1000;
 
     /**
      * 定时任务，保存数据
@@ -138,20 +140,17 @@ public class SysRequestAop {
 
         } catch (Throwable e) {
 
-            handleThrowable(sysRequestDO, e); // 处理：异常
+            handleThrowable(sysRequestDO, e, costMs); // 处理：异常
 
             throw e;
 
         }
 
-        costMs = System.currentTimeMillis() - costMs; // 耗时（毫秒）
-        String costMsStr = DateUtil.formatBetween(costMs, BetweenFormatter.Level.MILLISECOND); // 耗时（字符串）
-
-        sysRequestDO.setCostMsStr(costMsStr);
-        sysRequestDO.setCostMs(costMs);
-
         // 处理：登录相关请求
         handleSignIn(sysRequestDO, object);
+
+        // 处理：耗时相关
+        handleCostMs(costMs, sysRequestDO);
 
         log.info("uri：{}，耗时：{}", sysRequestDO.getUri(), sysRequestDO.getCostMsStr());
 
@@ -162,17 +161,31 @@ public class SysRequestAop {
     }
 
     /**
+     * 处理：耗时相关
+     */
+    private void handleCostMs(long costMs, SysRequestDO sysRequestDO) {
+
+        costMs = System.currentTimeMillis() - costMs; // 耗时（毫秒）
+        String costMsStr = DateUtil.formatBetween(costMs, BetweenFormatter.Level.MILLISECOND); // 耗时（字符串）
+
+        sysRequestDO.setCostMsStr(costMsStr);
+        sysRequestDO.setCostMs(costMs);
+
+    }
+
+    /**
      * 处理：异常
      */
-    private void handleThrowable(SysRequestDO sysRequestDO, Throwable e) {
+    private void handleThrowable(SysRequestDO sysRequestDO, Throwable e, long costMs) {
 
         sysRequestDO.setSuccessFlag(false); // 设置：请求失败
 
-        if (StrUtil.isBlank(e.getMessage())) {
-            sysRequestDO.setErrorMsg(StrUtil.maxLength(e.getClass().getName(), STR_MAX_LENGTH));
-        } else {
-            sysRequestDO.setErrorMsg(StrUtil.maxLength(e.getMessage(), STR_MAX_LENGTH));
-        }
+        String errorMsg = ExceptionUtil.stacktraceToString(e, STR_MAX_LENGTH);
+
+        sysRequestDO.setErrorMsg(errorMsg);
+
+        // 处理：耗时相关
+        handleCostMs(costMs, sysRequestDO);
 
         SYS_REQUEST_DO_LIST.add(sysRequestDO);
 
