@@ -7,7 +7,7 @@ import com.cmcorg20230301.engine.be.email.enums.EmailMessageEnum;
 import com.cmcorg20230301.engine.be.email.exception.BizCodeEnum;
 import com.cmcorg20230301.engine.be.security.model.vo.ApiResultVO;
 import com.cmcorg20230301.engine.be.security.properties.CommonProperties;
-import org.jetbrains.annotations.Nullable;
+import org.springframework.core.task.TaskExecutor;
 import org.springframework.stereotype.Component;
 
 /**
@@ -17,18 +17,19 @@ import org.springframework.stereotype.Component;
 public class MyEmailUtil {
 
     private static String platformName;
+    private static TaskExecutor taskExecutor;
 
-    public MyEmailUtil(CommonProperties commonProperties) {
+    public MyEmailUtil(CommonProperties commonProperties, TaskExecutor taskExecutor) {
 
         MyEmailUtil.platformName = "【" + commonProperties.getPlatformName() + "】";
+        MyEmailUtil.taskExecutor = taskExecutor;
 
     }
 
     /**
      * 发送邮件
      */
-    @Nullable
-    public static String send(String to, EmailMessageEnum emailMessageEnum, String content, boolean isHtml) {
+    public static void send(String to, EmailMessageEnum emailMessageEnum, String content, boolean isHtml) {
 
         if (StrUtil.isBlank(to)) {
             ApiResultVO.sysError(); // 因为这里 to字段都是由程序来赋值的，所以基本不会为空
@@ -39,7 +40,12 @@ public class MyEmailUtil {
             // 消息内容，加上统一的前缀
             content = platformName + StrUtil.format(emailMessageEnum.getContentTemp(), content);
 
-            return MailUtil.send(to, emailMessageEnum.getSubject(), content, isHtml);
+            String finalContent = content;
+            taskExecutor.execute(() -> {
+
+                MailUtil.send(to, emailMessageEnum.getSubject(), finalContent, isHtml);
+
+            });
 
         } catch (MailException e) {
 
@@ -48,8 +54,6 @@ public class MyEmailUtil {
             } else {
                 e.printStackTrace();
             }
-
-            return null;
 
         }
 

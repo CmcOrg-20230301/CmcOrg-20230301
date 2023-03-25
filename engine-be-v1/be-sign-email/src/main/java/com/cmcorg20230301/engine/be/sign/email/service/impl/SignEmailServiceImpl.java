@@ -5,7 +5,6 @@ import com.baomidou.mybatisplus.extension.toolkit.ChainWrappers;
 import com.cmcorg20230301.engine.be.email.enums.EmailMessageEnum;
 import com.cmcorg20230301.engine.be.email.util.MyEmailUtil;
 import com.cmcorg20230301.engine.be.model.model.dto.NotBlankCodeDTO;
-import com.cmcorg20230301.engine.be.mysql.model.annotation.MyTransactional;
 import com.cmcorg20230301.engine.be.redisson.model.enums.RedisKeyEnum;
 import com.cmcorg20230301.engine.be.security.mapper.SysUserMapper;
 import com.cmcorg20230301.engine.be.security.model.entity.SysUserDO;
@@ -64,7 +63,6 @@ public class SignEmailServiceImpl implements SignEmailService {
      * 注册
      */
     @Override
-    @MyTransactional
     public String signUp(SignEmailSignUpDTO dto) {
 
         checkSignUpEnable(); // 检查：是否允许注册
@@ -101,7 +99,6 @@ public class SignEmailServiceImpl implements SignEmailService {
      * 修改密码
      */
     @Override
-    @MyTransactional
     public String updatePassword(SignEmailUpdatePasswordDTO dto) {
 
         return SignUtil
@@ -129,7 +126,6 @@ public class SignEmailServiceImpl implements SignEmailService {
      * 修改邮箱
      */
     @Override
-    @MyTransactional
     public String updateAccount(SignEmailUpdateAccountDTO dto) {
 
         return SignUtil
@@ -156,7 +152,6 @@ public class SignEmailServiceImpl implements SignEmailService {
      * 忘记密码
      */
     @Override
-    @MyTransactional
     public String forgetPassword(SignEmailForgetPasswordDTO dto) {
 
         return SignUtil
@@ -183,7 +178,6 @@ public class SignEmailServiceImpl implements SignEmailService {
      * 账号注销
      */
     @Override
-    @MyTransactional
     public String signDelete(NotBlankCodeDTO dto) {
 
         // 如果有更高级的账号注销，则禁用低级的账号注销
@@ -212,7 +206,6 @@ public class SignEmailServiceImpl implements SignEmailService {
      * 绑定邮箱
      */
     @Override
-    @MyTransactional
     public String bindAccount(SignEmailBindAccountDTO dto) {
 
         return SignUtil.bindAccount(dto.getCode(), PRE_REDIS_KEY_ENUM, dto.getEmail());
