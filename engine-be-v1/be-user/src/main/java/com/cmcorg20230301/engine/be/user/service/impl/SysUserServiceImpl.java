@@ -137,16 +137,8 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserProMapper, SysUserDO>
 
         if (dto.getId() == null && passwordFlag) { // 只有新增时，才可以设置密码
 
-            String paramValue = SysParamUtil.getValueById(ParamConstant.RSA_PRIVATE_KEY_ID); // 获取非对称 私钥
-            dto.setOriginPassword(MyRsaUtil.rsaDecrypt(dto.getOriginPassword(), paramValue));
-            dto.setPassword(MyRsaUtil.rsaDecrypt(dto.getPassword(), paramValue));
-
-            if (!ReUtil.isMatch(BaseRegexConstant.PASSWORD_REGEXP, dto.getOriginPassword())) {
-
-                ApiResultVO.error(
-                    com.cmcorg20230301.engine.be.sign.helper.exception.BizCodeEnum.PASSWORD_RESTRICTIONS); // 不合法直接抛出异常
-
-            }
+            // 处理密码
+            insertOrUpdateHandlePassword(dto);
 
         }
 
@@ -216,6 +208,24 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserProMapper, SysUserDO>
             return BaseBizCodeEnum.OK;
 
         });
+
+    }
+
+    /**
+     * 处理密码
+     */
+    private void insertOrUpdateHandlePassword(SysUserInsertOrUpdateDTO dto) {
+
+        String paramValue = SysParamUtil.getValueById(ParamConstant.RSA_PRIVATE_KEY_ID); // 获取非对称 私钥
+        dto.setOriginPassword(MyRsaUtil.rsaDecrypt(dto.getOriginPassword(), paramValue));
+        dto.setPassword(MyRsaUtil.rsaDecrypt(dto.getPassword(), paramValue));
+
+        if (BooleanUtil.isFalse(ReUtil.isMatch(BaseRegexConstant.PASSWORD_REGEXP, dto.getOriginPassword()))) {
+
+            ApiResultVO.error(
+                com.cmcorg20230301.engine.be.sign.helper.exception.BizCodeEnum.PASSWORD_RESTRICTIONS); // 不合法直接抛出异常
+
+        }
 
     }
 

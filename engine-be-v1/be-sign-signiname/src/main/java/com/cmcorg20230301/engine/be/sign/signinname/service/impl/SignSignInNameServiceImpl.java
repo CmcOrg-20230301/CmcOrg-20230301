@@ -2,7 +2,6 @@ package com.cmcorg20230301.engine.be.sign.signinname.service.impl;
 
 import cn.hutool.core.util.BooleanUtil;
 import com.baomidou.mybatisplus.extension.toolkit.ChainWrappers;
-import com.cmcorg20230301.engine.be.mysql.model.annotation.MyTransactional;
 import com.cmcorg20230301.engine.be.redisson.model.enums.RedisKeyEnum;
 import com.cmcorg20230301.engine.be.security.exception.BaseBizCodeEnum;
 import com.cmcorg20230301.engine.be.security.mapper.SysUserMapper;
@@ -74,7 +73,6 @@ public class SignSignInNameServiceImpl implements SignSignInNameService {
      * 修改账号
      */
     @Override
-    @MyTransactional
     public String updateAccount(SignSignInNameUpdateAccountDTO dto) {
 
         return SignUtil.updateAccount(null, null, PRE_REDIS_KEY_ENUM, dto.getNewSignInName(), dto.getCurrentPassword());
@@ -85,7 +83,6 @@ public class SignSignInNameServiceImpl implements SignSignInNameService {
      * 账号注销
      */
     @Override
-    @MyTransactional
     public String signDelete(SignSignInNameSignDeleteDTO dto) {
 
         // 检查：登录名，是否不可以执行操作

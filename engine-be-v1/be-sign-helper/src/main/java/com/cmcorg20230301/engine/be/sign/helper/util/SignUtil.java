@@ -235,47 +235,10 @@ public class SignUtil {
     public static SysUserDO insertUser(String password, Map<Enum<? extends IRedisKey>, String> accountMap,
         boolean checkPasswordBlank, SysUserInfoDO tempSysUserInfoDO, Boolean enableFlag) {
 
+        // 获取：SysUserDO对象
+        SysUserDO sysUserDO = insertUserGetSysUserDO(password, accountMap, checkPasswordBlank, enableFlag);
+
         return TransactionUtil.exec(() -> {
-
-            SysUserDO sysUserDO = new SysUserDO();
-
-            if (enableFlag == null) {
-                sysUserDO.setEnableFlag(true);
-            } else {
-                sysUserDO.setEnableFlag(enableFlag);
-            }
-
-            sysUserDO.setDelFlag(false);
-            sysUserDO.setRemark("");
-
-            sysUserDO.setEmail("");
-            sysUserDO.setSignInName("");
-            sysUserDO.setPhone("");
-            sysUserDO.setWxOpenId("");
-
-            for (Map.Entry<Enum<? extends IRedisKey>, String> item : accountMap.entrySet()) {
-
-                if (RedisKeyEnum.PRE_EMAIL.equals(item.getKey())) {
-
-                    sysUserDO.setEmail(item.getValue());
-
-                } else if (RedisKeyEnum.PRE_SIGN_IN_NAME.equals(item.getKey())) {
-
-                    sysUserDO.setSignInName(item.getValue());
-
-                } else if (RedisKeyEnum.PRE_PHONE.equals(item.getKey())) {
-
-                    sysUserDO.setPhone(item.getValue());
-
-                } else if (RedisKeyEnum.PRE_WX_OPEN_ID.equals(item.getKey())) {
-
-                    sysUserDO.setWxOpenId(item.getValue());
-
-                }
-
-            }
-
-            sysUserDO.setPassword(PasswordConvertUtil.convert(password, checkPasswordBlank));
 
             sysUserMapper.insert(sysUserDO); // 保存：用户
 
@@ -312,6 +275,57 @@ public class SignUtil {
             return sysUserDO;
 
         });
+
+    }
+
+    /**
+     * 获取：SysUserDO对象
+     */
+    @NotNull
+    private static SysUserDO insertUserGetSysUserDO(String password, Map<Enum<? extends IRedisKey>, String> accountMap,
+        boolean checkPasswordBlank, Boolean enableFlag) {
+
+        SysUserDO sysUserDO = new SysUserDO();
+
+        if (enableFlag == null) {
+            sysUserDO.setEnableFlag(true);
+        } else {
+            sysUserDO.setEnableFlag(enableFlag);
+        }
+
+        sysUserDO.setDelFlag(false);
+        sysUserDO.setRemark("");
+
+        sysUserDO.setEmail("");
+        sysUserDO.setSignInName("");
+        sysUserDO.setPhone("");
+        sysUserDO.setWxOpenId("");
+
+        for (Map.Entry<Enum<? extends IRedisKey>, String> item : accountMap.entrySet()) {
+
+            if (RedisKeyEnum.PRE_EMAIL.equals(item.getKey())) {
+
+                sysUserDO.setEmail(item.getValue());
+
+            } else if (RedisKeyEnum.PRE_SIGN_IN_NAME.equals(item.getKey())) {
+
+                sysUserDO.setSignInName(item.getValue());
+
+            } else if (RedisKeyEnum.PRE_PHONE.equals(item.getKey())) {
+
+                sysUserDO.setPhone(item.getValue());
+
+            } else if (RedisKeyEnum.PRE_WX_OPEN_ID.equals(item.getKey())) {
+
+                sysUserDO.setWxOpenId(item.getValue());
+
+            }
+
+        }
+
+        sysUserDO.setPassword(PasswordConvertUtil.convert(password, checkPasswordBlank));
+
+        return sysUserDO;
 
     }
 
@@ -723,69 +737,69 @@ public class SignUtil {
     public static String updateAccount(String oldCode, String newCode, Enum<? extends IRedisKey> redisKeyEnum,
         String newAccount, String currentPassword) {
 
-        return TransactionUtil.exec(() -> {
+        Long currentUserIdNotAdmin = UserUtil.getCurrentUserIdNotAdmin();
 
-            Long currentUserIdNotAdmin = UserUtil.getCurrentUserIdNotAdmin();
+        if (RedisKeyEnum.PRE_SIGN_IN_NAME.equals(redisKeyEnum)) {
+            checkCurrentPassword(currentPassword, currentUserIdNotAdmin, null);
+        }
 
-            if (RedisKeyEnum.PRE_SIGN_IN_NAME.equals(redisKeyEnum)) {
-                checkCurrentPassword(currentPassword, currentUserIdNotAdmin, null);
+        // 获取：旧的账号
+        String oldAccount = getAccountByIdAndRedisKeyEnum(redisKeyEnum, currentUserIdNotAdmin);
+
+        String oldKey = redisKeyEnum + oldAccount;
+        String newKey = redisKeyEnum + newAccount;
+
+        return RedissonUtil.doMultiLock(null, CollUtil.newHashSet(oldKey, newKey), () -> {
+
+            RBucket<String> oldBucket = redissonClient.getBucket(oldKey);
+
+            if (RedisKeyEnum.PRE_EMAIL.equals(redisKeyEnum)) {
+
+                // 检查 code是否正确
+                CodeUtil.checkCode(oldCode, oldBucket.get(), "操作失败：请先获取旧邮箱的验证码", "旧邮箱验证码有误，请重新输入");
+
+            } else if (RedisKeyEnum.PRE_PHONE.equals(redisKeyEnum)) {
+
+                // 检查 code是否正确
+                CodeUtil.checkCode(oldCode, oldBucket.get(), "操作失败：请先获取旧手机号码的验证码", "旧手机号码验证码有误，请重新输入");
+
             }
 
-            // 获取：旧的账号
-            String oldAccount = getAccountByIdAndRedisKeyEnum(redisKeyEnum, currentUserIdNotAdmin);
+            RBucket<String> newBucket = redissonClient.getBucket(newKey);
 
-            String oldKey = redisKeyEnum + oldAccount;
-            String newKey = redisKeyEnum + newAccount;
+            if (RedisKeyEnum.PRE_EMAIL.equals(redisKeyEnum)) {
 
-            return RedissonUtil.doMultiLock(null, CollUtil.newHashSet(oldKey, newKey), () -> {
+                // 检查 code是否正确
+                CodeUtil.checkCode(newCode, newBucket.get(), "操作失败：请先获取新邮箱的验证码", "新邮箱验证码有误，请重新输入");
 
-                RBucket<String> oldBucket = redissonClient.getBucket(oldKey);
+            } else if (RedisKeyEnum.PRE_PHONE.equals(redisKeyEnum)) {
 
-                if (RedisKeyEnum.PRE_EMAIL.equals(redisKeyEnum)) {
+                // 检查 code是否正确
+                CodeUtil.checkCode(oldCode, oldBucket.get(), "操作失败：请先获取新手机号码的验证码", "新手机号码验证码有误，请重新输入");
 
-                    // 检查 code是否正确
-                    CodeUtil.checkCode(oldCode, oldBucket.get(), "操作失败：请先获取旧邮箱的验证码", "旧邮箱验证码有误，请重新输入");
+            }
 
-                } else if (RedisKeyEnum.PRE_PHONE.equals(redisKeyEnum)) {
+            // 检查：新的登录账号是否存在
+            boolean exist = accountIsExists(redisKeyEnum, newAccount, null);
 
-                    // 检查 code是否正确
-                    CodeUtil.checkCode(oldCode, oldBucket.get(), "操作失败：请先获取旧手机号码的验证码", "旧手机号码验证码有误，请重新输入");
+            // 是否删除：redis中的验证码
+            boolean deleteRedisFlag =
+                RedisKeyEnum.PRE_EMAIL.equals(redisKeyEnum) || RedisKeyEnum.PRE_PHONE.equals(redisKeyEnum);
 
+            if (exist) {
+                if (deleteRedisFlag) {
+                    newBucket.delete();
                 }
+                ApiResultVO.error("操作失败：已被其他人绑定，请重试");
+            }
 
-                RBucket<String> newBucket = redissonClient.getBucket(newKey);
+            SysUserDO sysUserDO = new SysUserDO();
+            sysUserDO.setId(currentUserIdNotAdmin);
 
-                if (RedisKeyEnum.PRE_EMAIL.equals(redisKeyEnum)) {
+            // 通过：RedisKeyEnum，设置：账号
+            setSysUserDOAccountByRedisKeyEnum(redisKeyEnum, newAccount, sysUserDO);
 
-                    // 检查 code是否正确
-                    CodeUtil.checkCode(newCode, newBucket.get(), "操作失败：请先获取新邮箱的验证码", "新邮箱验证码有误，请重新输入");
-
-                } else if (RedisKeyEnum.PRE_PHONE.equals(redisKeyEnum)) {
-
-                    // 检查 code是否正确
-                    CodeUtil.checkCode(oldCode, oldBucket.get(), "操作失败：请先获取新手机号码的验证码", "新手机号码验证码有误，请重新输入");
-
-                }
-
-                // 检查：新的登录账号是否存在
-                boolean exist = accountIsExists(redisKeyEnum, newAccount, null);
-
-                // 是否删除：redis中的验证码
-                boolean deleteRedisFlag =
-                    RedisKeyEnum.PRE_EMAIL.equals(redisKeyEnum) || RedisKeyEnum.PRE_PHONE.equals(redisKeyEnum);
-
-                if (exist) {
-                    if (deleteRedisFlag) {
-                        newBucket.delete();
-                    }
-                    ApiResultVO.error("操作失败：已被其他人绑定，请重试");
-                }
-
-                SysUserDO sysUserDO = new SysUserDO();
-                sysUserDO.setId(currentUserIdNotAdmin);
-
-                // 通过：RedisKeyEnum，设置：账号
-                setSysUserDOAccountByRedisKeyEnum(redisKeyEnum, newAccount, sysUserDO);
+            return TransactionUtil.exec(() -> {
 
                 sysUserMapper.updateById(sysUserDO); // 更新：用户
 
@@ -877,35 +891,36 @@ public class SignUtil {
         Enum<? extends IRedisKey> redisKeyEnum, String account,
         LambdaQueryChainWrapper<SysUserDO> lambdaQueryChainWrapper) {
 
-        return TransactionUtil.exec(() -> {
+        String paramValue = SysParamUtil.getValueById(ParamConstant.RSA_PRIVATE_KEY_ID); // 获取非对称 私钥
+        String newPassword = MyRsaUtil.rsaDecrypt(newPasswordTemp, paramValue);
+        String originNewPassword = MyRsaUtil.rsaDecrypt(originNewPasswordTemp, paramValue);
 
-            String paramValue = SysParamUtil.getValueById(ParamConstant.RSA_PRIVATE_KEY_ID); // 获取非对称 私钥
-            String newPassword = MyRsaUtil.rsaDecrypt(newPasswordTemp, paramValue);
-            String originNewPassword = MyRsaUtil.rsaDecrypt(originNewPasswordTemp, paramValue);
+        if (BooleanUtil.isFalse(ReUtil.isMatch(BaseRegexConstant.PASSWORD_REGEXP, originNewPassword))) {
+            ApiResultVO.error(BizCodeEnum.PASSWORD_RESTRICTIONS); // 不合法直接抛出异常
+        }
 
-            if (BooleanUtil.isFalse(ReUtil.isMatch(BaseRegexConstant.PASSWORD_REGEXP, originNewPassword))) {
-                ApiResultVO.error(BizCodeEnum.PASSWORD_RESTRICTIONS); // 不合法直接抛出异常
+        String key = redisKeyEnum.name() + account;
+
+        return RedissonUtil.doLock(key, () -> {
+
+            RBucket<String> bucket = redissonClient.getBucket(key);
+
+            CodeUtil.checkCode(code, bucket.get()); // 检查 code是否正确
+
+            // 获取：用户 id
+            SysUserDO sysUserDO = lambdaQueryChainWrapper.select(BaseEntity::getId).one();
+
+            if (sysUserDO == null) {
+
+                bucket.delete(); // 删除：验证码
+                ApiResultVO.error(BizCodeEnum.USER_DOES_NOT_EXIST);
+
             }
 
-            String key = redisKeyEnum.name() + account;
+            sysUserDO.setPassword(PasswordConvertUtil.convert(newPassword, true));
 
-            return RedissonUtil.doLock(key, () -> {
+            return TransactionUtil.exec(() -> {
 
-                RBucket<String> bucket = redissonClient.getBucket(key);
-
-                CodeUtil.checkCode(code, bucket.get()); // 检查 code是否正确
-
-                // 获取：用户 id
-                SysUserDO sysUserDO = lambdaQueryChainWrapper.select(BaseEntity::getId).one();
-
-                if (sysUserDO == null) {
-
-                    bucket.delete(); // 删除：验证码
-                    ApiResultVO.error(BizCodeEnum.USER_DOES_NOT_EXIST);
-
-                }
-
-                sysUserDO.setPassword(PasswordConvertUtil.convert(newPassword, true));
                 sysUserMapper.updateById(sysUserDO); // 保存：用户
 
                 RedissonUtil.batch((batch) -> {
@@ -935,28 +950,28 @@ public class SignUtil {
      */
     public static String signDelete(String code, Enum<? extends IRedisKey> redisKeyEnum, String currentPassword) {
 
-        return TransactionUtil.exec(() -> {
+        Long currentUserIdNotAdmin = UserUtil.getCurrentUserIdNotAdmin();
 
-            Long currentUserIdNotAdmin = UserUtil.getCurrentUserIdNotAdmin();
+        if (StrUtil.isNotBlank(currentPassword)) {
+            checkCurrentPassword(currentPassword, currentUserIdNotAdmin, null);
+        }
 
-            if (StrUtil.isNotBlank(currentPassword)) {
-                checkCurrentPassword(currentPassword, currentUserIdNotAdmin, null);
+        String account = getAccountByIdAndRedisKeyEnum(redisKeyEnum, currentUserIdNotAdmin);
+
+        String key = redisKeyEnum + account;
+
+        return RedissonUtil.doLock(key, () -> {
+
+            RBucket<String> bucket = redissonClient.getBucket(key);
+
+            // 是否：检查验证码
+            boolean checkCodeFlag = BooleanUtil.isFalse(RedisKeyEnum.PRE_SIGN_IN_NAME.equals(redisKeyEnum));
+
+            if (checkCodeFlag) {
+                CodeUtil.checkCode(code, bucket.get()); // 检查 code是否正确
             }
 
-            String account = getAccountByIdAndRedisKeyEnum(redisKeyEnum, currentUserIdNotAdmin);
-
-            String key = redisKeyEnum + account;
-
-            return RedissonUtil.doLock(key, () -> {
-
-                RBucket<String> bucket = redissonClient.getBucket(key);
-
-                // 是否：检查验证码
-                boolean checkCodeFlag = BooleanUtil.isFalse(RedisKeyEnum.PRE_SIGN_IN_NAME.equals(redisKeyEnum));
-
-                if (checkCodeFlag) {
-                    CodeUtil.checkCode(code, bucket.get()); // 检查 code是否正确
-                }
+            return TransactionUtil.exec(() -> {
 
                 // 执行：账号注销
                 doSignDelete(CollUtil.newHashSet(currentUserIdNotAdmin));
@@ -1019,34 +1034,34 @@ public class SignUtil {
      */
     public static String bindAccount(String code, Enum<? extends IRedisKey> redisKeyEnum, String account) {
 
-        return TransactionUtil.exec(() -> {
+        Long currentUserIdNotAdmin = UserUtil.getCurrentUserIdNotAdmin();
 
-            Long currentUserIdNotAdmin = UserUtil.getCurrentUserIdNotAdmin();
+        String key = redisKeyEnum + account;
 
-            String key = redisKeyEnum + account;
+        return RedissonUtil.doLock(key, () -> {
 
-            return RedissonUtil.doLock(key, () -> {
+            RBucket<String> bucket = redissonClient.getBucket(key);
 
-                RBucket<String> bucket = redissonClient.getBucket(key);
+            // 检查：绑定的登录账号是否存在
+            boolean exist = accountIsExists(redisKeyEnum, account, null);
 
-                // 检查：绑定的登录账号是否存在
-                boolean exist = accountIsExists(redisKeyEnum, account, null);
+            if (exist) {
 
-                if (exist) {
+                bucket.delete();
+                ApiResultVO.error("操作失败：账号已被绑定，请重试");
 
-                    bucket.delete();
-                    ApiResultVO.error("操作失败：账号已被绑定，请重试");
+            }
 
-                }
+            CodeUtil.checkCode(code, bucket.get()); // 检查 code是否正确
 
-                CodeUtil.checkCode(code, bucket.get()); // 检查 code是否正确
+            SysUserDO sysUserDO = new SysUserDO();
 
-                SysUserDO sysUserDO = new SysUserDO();
+            // 通过：RedisKeyEnum，设置：账号
+            setSysUserDOAccountByRedisKeyEnum(redisKeyEnum, account, sysUserDO);
 
-                // 通过：RedisKeyEnum，设置：账号
-                setSysUserDOAccountByRedisKeyEnum(redisKeyEnum, account, sysUserDO);
+            sysUserDO.setId(currentUserIdNotAdmin);
 
-                sysUserDO.setId(currentUserIdNotAdmin);
+            return TransactionUtil.exec(() -> {
 
                 sysUserMapper.updateById(sysUserDO); // 保存：用户
 

@@ -6,6 +6,7 @@ import cn.hutool.json.JSONUtil;
 import com.cmcorg20230301.engine.be.security.util.MyRsaUtil;
 import com.cmcorg20230301.engine.be.sign.signinname.model.dto.SignSignInNameSignInPasswordDTO;
 import com.cmcorg20230301.engine.be.sign.signinname.model.dto.SignSignInNameSignUpDTO;
+import com.cmcorg20230301.engine.be.sign.signinname.model.dto.SignSignInNameUpdateAccountDTO;
 import com.cmcorg20230301.engine.be.sign.signinname.model.dto.SignSignInNameUpdatePasswordDTO;
 import lombok.extern.slf4j.Slf4j;
 
@@ -26,6 +27,9 @@ public class ApiTestSignUtil {
     // 登录名
     private static final String SIGN_IN_NAME = "cxk";
 
+    // 新登录名
+    private static final String NEW_SIGN_IN_NAME = "cxk";
+
     // 密码
     private static final String PASSWORD_TEMP = "Ik123456";
 
@@ -35,36 +39,60 @@ public class ApiTestSignUtil {
     public static void main(String[] args) {
 
         //        // 登录名-注册
-        //                signInNameSignUp(API_ENDPOINT, SIGN_IN_NAME);
+        signInNameSignUp(API_ENDPOINT, SIGN_IN_NAME, PASSWORD_TEMP);
 
         // 登录名-用户名账号密码登录
-        String jwt = signInNameSignIn(API_ENDPOINT, SIGN_IN_NAME);
+        String jwt = signInNameSignIn(API_ENDPOINT, SIGN_IN_NAME, PASSWORD_TEMP);
 
-        //        // 登录名-修改密码
-        signInNameUpdatePassword(API_ENDPOINT, SIGN_IN_NAME, jwt);
+        // 登录名-修改密码
+        signInNameUpdatePassword(API_ENDPOINT, jwt, NEW_PASSWORD_TEMP, PASSWORD_TEMP);
 
-        //        // 登录名-修改账号
-        //        signInNameUpdateAccount(API_ENDPOINT, SIGN_IN_NAME, jwt);
-        //
-        //        // 登录名-账号注销
+        // 登录名-修改账号
+        signInNameUpdateAccount(API_ENDPOINT, jwt, NEW_SIGN_IN_NAME, NEW_PASSWORD_TEMP);
+
+        // 登录名-账号注销
         //        signInNameSignDelete(API_ENDPOINT, SIGN_IN_NAME, jwt);
+
+    }
+
+    /**
+     * 登录名-修改账号
+     */
+    private static void signInNameUpdateAccount(String apiEndpoint, String jwt, String newSignInName,
+        String currentPasswordTemp) {
+
+        long currentTs = System.currentTimeMillis();
+
+        String currentPassword = DigestUtil.sha256Hex((DigestUtil.sha512Hex(currentPasswordTemp)));
+
+        currentPassword = MyRsaUtil.rsaEncrypt(currentPassword, RSA_PUBLIC_KEY);
+
+        SignSignInNameUpdateAccountDTO dto = new SignSignInNameUpdateAccountDTO();
+        dto.setNewSignInName(newSignInName);
+        dto.setCurrentPassword(currentPassword);
+
+        String bodyStr = HttpRequest.post(apiEndpoint + "/sign/signInName/updateAccount").body(JSONUtil.toJsonStr(dto))
+            .header("Authorization", jwt).execute().body();
+
+        log.info("登录名-修改账号：耗时：{}，bodyStr：{}", calcCostMs(currentTs), bodyStr);
 
     }
 
     /**
      * 登录名-修改密码
      */
-    private static void signInNameUpdatePassword(String apiEndpoint, String signInName, String jwt) {
+    private static void signInNameUpdatePassword(String apiEndpoint, String jwt, String newPasswordTemp,
+        String passwordTemp) {
 
         long currentTs = System.currentTimeMillis();
 
-        String oldPassword = DigestUtil.sha256Hex((DigestUtil.sha512Hex(PASSWORD_TEMP)));
+        String oldPassword = DigestUtil.sha256Hex((DigestUtil.sha512Hex(passwordTemp)));
 
         oldPassword = MyRsaUtil.rsaEncrypt(oldPassword, RSA_PUBLIC_KEY);
 
-        String originNewPassword = MyRsaUtil.rsaEncrypt(NEW_PASSWORD_TEMP, RSA_PUBLIC_KEY);
+        String originNewPassword = MyRsaUtil.rsaEncrypt(newPasswordTemp, RSA_PUBLIC_KEY);
 
-        String newPassword = DigestUtil.sha256Hex((DigestUtil.sha512Hex(NEW_PASSWORD_TEMP)));
+        String newPassword = DigestUtil.sha256Hex((DigestUtil.sha512Hex(newPasswordTemp)));
 
         newPassword = MyRsaUtil.rsaEncrypt(newPassword, RSA_PUBLIC_KEY);
 
@@ -83,11 +111,11 @@ public class ApiTestSignUtil {
     /**
      * 登录名-用户名账号密码登录
      */
-    private static String signInNameSignIn(String apiEndpoint, String signInName) {
+    private static String signInNameSignIn(String apiEndpoint, String signInName, String passwordTemp) {
 
         long currentTs = System.currentTimeMillis();
 
-        String password = DigestUtil.sha256Hex((DigestUtil.sha512Hex(PASSWORD_TEMP)));
+        String password = DigestUtil.sha256Hex((DigestUtil.sha512Hex(passwordTemp)));
 
         password = MyRsaUtil.rsaEncrypt(password, RSA_PUBLIC_KEY);
 
@@ -108,13 +136,14 @@ public class ApiTestSignUtil {
     /**
      * 登录名-注册
      */
-    private static SignSignInNameSignUpDTO signInNameSignUp(String apiEndpoint, String signInName) {
+    private static SignSignInNameSignUpDTO signInNameSignUp(String apiEndpoint, String signInName,
+        String passwordTemp) {
 
         long currentTs = System.currentTimeMillis();
 
-        String originPassword = MyRsaUtil.rsaEncrypt(PASSWORD_TEMP, RSA_PUBLIC_KEY);
+        String originPassword = MyRsaUtil.rsaEncrypt(passwordTemp, RSA_PUBLIC_KEY);
 
-        String password = DigestUtil.sha256Hex((DigestUtil.sha512Hex(PASSWORD_TEMP)));
+        String password = DigestUtil.sha256Hex((DigestUtil.sha512Hex(passwordTemp)));
 
         password = MyRsaUtil.rsaEncrypt(password, RSA_PUBLIC_KEY);
 
