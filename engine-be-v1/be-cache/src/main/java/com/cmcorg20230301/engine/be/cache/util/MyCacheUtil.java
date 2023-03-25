@@ -70,10 +70,17 @@ public class MyCacheUtil {
 
         String key = CacheHelper.getKey(redisKeyEnum, sufKey);
 
-        T result = onlyGet(key, func0, false);
+        T result = onlyGet(key, false);
 
         if (result != null) {
             return result;
+        }
+
+        if (func0 != null) {
+
+            log.info("{}：读取提供者的数据", key);
+            result = func0.call();
+
         }
 
         result = CacheHelper.checkAndReturnResult(result, defaultResult); // 检查并设置值
@@ -98,7 +105,7 @@ public class MyCacheUtil {
 
         String key = CacheHelper.getKey(redisKeyEnum, sufKey);
 
-        return onlyGet(key, null, getRemainTimeFlag);
+        return onlyGet(key, getRemainTimeFlag);
 
     }
 
@@ -109,7 +116,7 @@ public class MyCacheUtil {
      */
     @SneakyThrows
     @Nullable
-    public static <T> T onlyGet(@NotNull String key, @Nullable Func0<T> func0, boolean getRemainTimeFlag) {
+    public static <T> T onlyGet(@NotNull String key, boolean getRemainTimeFlag) {
 
         T result = CacheLocalUtil.get(key);
 
@@ -126,30 +133,21 @@ public class MyCacheUtil {
 
         if (result == null) {
 
-            if (func0 != null) {
-
-                log.info("{}：读取提供者的数据", key);
-                result = func0.call();
-
-            }
-
-        } else {
-
-            log.info("{}：加入 本地缓存，并返回 redis缓存", key);
-
-            long remainTimeToLive;
-
-            if (getRemainTimeFlag) {
-                remainTimeToLive = bucket.remainTimeToLive();
-            } else {
-                remainTimeToLive = -1;
-            }
-
-            CacheLocalUtil.put(key, result, remainTimeToLive);
-
-            return result;
+            return null;
 
         }
+
+        log.info("{}：加入 本地缓存，并返回 redis缓存", key);
+
+        long remainTimeToLive;
+
+        if (getRemainTimeFlag) {
+            remainTimeToLive = bucket.remainTimeToLive();
+        } else {
+            remainTimeToLive = -1;
+        }
+
+        CacheLocalUtil.put(key, result, remainTimeToLive);
 
         return result;
 
