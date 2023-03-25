@@ -391,28 +391,14 @@ public class SignUtil {
     public static String signInPassword(LambdaQueryChainWrapper<SysUserDO> lambdaQueryChainWrapper, String password,
         String account) {
 
+        // 密码解密
         password = MyRsaUtil.rsaDecrypt(password);
 
-        if (BaseConstant.ADMIN_ACCOUNT.equals(account)) { // 如果是 admin账户
+        // 如果是 admin账户
+        if (BaseConstant.ADMIN_ACCOUNT.equals(account)) {
 
-            if (BooleanUtil.isTrue(securityProperties.getAdminEnable())) { // 并且配置文件中允许 admin登录
-
-                // 判断：密码错误次数过多，是否被冻结
-                checkTooManyPasswordError(BaseConstant.ADMIN_ID);
-
-                if (BooleanUtil.isFalse(securityProperties.getAdminPassword().equals(password))) {
-
-                    passwordErrorHandler(BaseConstant.ADMIN_ID);
-                    ApiResultVO.error(BizCodeEnum.ACCOUNT_OR_PASSWORD_NOT_VALID);
-
-                }
-
+            if (signInPasswordForAdmin(password)) {
                 return MyJwtUtil.generateJwt(BaseConstant.ADMIN_ID, null, null);
-
-            } else {
-
-                ApiResultVO.error(BizCodeEnum.ACCOUNT_OR_PASSWORD_NOT_VALID);
-
             }
 
         }
@@ -426,13 +412,50 @@ public class SignUtil {
 
         if (BooleanUtil.isFalse(PasswordConvertUtil.match(sysUserDO.getPassword(), password))) {
 
+            // 密码输入错误处理
             passwordErrorHandler(sysUserDO.getId());
+
             ApiResultVO.error(BizCodeEnum.ACCOUNT_OR_PASSWORD_NOT_VALID);
 
         }
 
         // 登录时，获取：jwt
         return signInGetJwt(sysUserDO);
+
+    }
+
+    /**
+     * admin登录，登录成功返回 true
+     */
+    private static boolean signInPasswordForAdmin(String password) {
+
+        if (BooleanUtil.isTrue(securityProperties.getAdminEnable())) { // 并且配置文件中允许 admin登录
+
+            // 判断：密码错误次数过多，是否被冻结
+            checkTooManyPasswordError(BaseConstant.ADMIN_ID);
+
+            if (BooleanUtil.isFalse(securityProperties.getAdminPassword().equals(password))) {
+
+                // 密码输入错误处理
+                passwordErrorHandler(BaseConstant.ADMIN_ID);
+
+                ApiResultVO.error(BizCodeEnum.ACCOUNT_OR_PASSWORD_NOT_VALID);
+
+                return false;
+
+            } else {
+
+                return true;
+
+            }
+
+        } else {
+
+            ApiResultVO.error(BizCodeEnum.ACCOUNT_OR_PASSWORD_NOT_VALID);
+
+            return false;
+
+        }
 
     }
 
@@ -511,7 +534,8 @@ public class SignUtil {
             ApiResultVO.sysError();
         }
 
-        RAtomicLong atomicLong = redissonClient.getAtomicLong(RedisKeyEnum.PRE_PASSWORD_ERROR_COUNT.name() + userId);
+        RAtomicLong atomicLong =
+            redissonClient.getAtomicLong(RedisKeyEnum.PRE_PASSWORD_ERROR_COUNT.name() + ":" + userId);
 
         long count = atomicLong.incrementAndGet(); // 次数 + 1
 
@@ -537,43 +561,43 @@ public class SignUtil {
     public static String updatePassword(String newPasswordTemp, String originNewPasswordTemp,
         Enum<? extends IRedisKey> redisKeyEnum, String code, String oldPassword) {
 
-        return TransactionUtil.exec(() -> {
+        Long currentUserIdNotAdmin = UserUtil.getCurrentUserIdNotAdmin();
 
-            Long currentUserIdNotAdmin = UserUtil.getCurrentUserIdNotAdmin();
+        String paramValue = SysParamUtil.getValueById(ParamConstant.RSA_PRIVATE_KEY_ID); // 获取非对称 私钥
 
-            String paramValue = SysParamUtil.getValueById(ParamConstant.RSA_PRIVATE_KEY_ID); // 获取非对称 私钥
+        if (RedisKeyEnum.PRE_SIGN_IN_NAME.equals(redisKeyEnum)) {
+            checkCurrentPassword(oldPassword, currentUserIdNotAdmin, paramValue); // 检查：当前密码是否正确
+        }
 
-            if (RedisKeyEnum.PRE_SIGN_IN_NAME.equals(redisKeyEnum)) {
-                checkCurrentPassword(oldPassword, currentUserIdNotAdmin, paramValue); // 检查：当前密码是否正确
+        String newPassword = MyRsaUtil.rsaDecrypt(newPasswordTemp, paramValue);
+        String originNewPassword = MyRsaUtil.rsaDecrypt(originNewPasswordTemp, paramValue);
+
+        if (BooleanUtil.isFalse(ReUtil.isMatch(BaseRegexConstant.PASSWORD_REGEXP, originNewPassword))) {
+            ApiResultVO.error(BizCodeEnum.PASSWORD_RESTRICTIONS); // 不合法直接抛出异常
+        }
+
+        // 获取：账号
+        String account = getAccountByIdAndRedisKeyEnum(redisKeyEnum, currentUserIdNotAdmin);
+
+        String key = redisKeyEnum + account;
+
+        return RedissonUtil.doLock(key, () -> {
+
+            RBucket<String> bucket = redissonClient.getBucket(key);
+
+            // 是否检查：验证码
+            boolean checkCodeFlag = BooleanUtil.isFalse(RedisKeyEnum.PRE_SIGN_IN_NAME.equals(redisKeyEnum));
+
+            if (checkCodeFlag) {
+                CodeUtil.checkCode(code, bucket.get()); // 检查 code是否正确
             }
 
-            String newPassword = MyRsaUtil.rsaDecrypt(newPasswordTemp, paramValue);
-            String originNewPassword = MyRsaUtil.rsaDecrypt(originNewPasswordTemp, paramValue);
+            SysUserDO sysUserDO = new SysUserDO();
+            sysUserDO.setId(currentUserIdNotAdmin);
 
-            if (BooleanUtil.isFalse(ReUtil.isMatch(BaseRegexConstant.PASSWORD_REGEXP, originNewPassword))) {
-                ApiResultVO.error(BizCodeEnum.PASSWORD_RESTRICTIONS); // 不合法直接抛出异常
-            }
+            sysUserDO.setPassword(PasswordConvertUtil.convert(newPassword, true));
 
-            // 获取：账号
-            String account = getAccountByIdAndRedisKeyEnum(redisKeyEnum, currentUserIdNotAdmin);
-
-            String key = redisKeyEnum + account;
-
-            return RedissonUtil.doLock(key, () -> {
-
-                RBucket<String> bucket = redissonClient.getBucket(key);
-
-                // 是否检查：验证码
-                boolean checkCodeFlag = BooleanUtil.isFalse(RedisKeyEnum.PRE_SIGN_IN_NAME.equals(redisKeyEnum));
-
-                if (checkCodeFlag) {
-                    CodeUtil.checkCode(code, bucket.get()); // 检查 code是否正确
-                }
-
-                SysUserDO sysUserDO = new SysUserDO();
-                sysUserDO.setId(currentUserIdNotAdmin);
-
-                sysUserDO.setPassword(PasswordConvertUtil.convert(newPassword, true));
+            return TransactionUtil.exec(() -> {
 
                 sysUserMapper.updateById(sysUserDO); // 保存：用户
 
@@ -614,6 +638,7 @@ public class SignUtil {
 
         if (BooleanUtil.isFalse(PasswordConvertUtil.match(sysUserDO.getPassword(), currentPassword))) {
 
+            // 密码输入错误处理
             passwordErrorHandler(currentUserIdNotAdmin);
 
             ApiResultVO.error(BizCodeEnum.PASSWORD_NOT_VALID);
@@ -886,8 +911,9 @@ public class SignUtil {
                 RedissonUtil.batch((batch) -> {
 
                     // 移除密码错误次数相关
-                    batch.getBucket(RedisKeyEnum.PRE_PASSWORD_ERROR_COUNT.name() + sysUserDO.getId()).deleteAsync();
-                    batch.getBucket(RedisKeyEnum.PRE_TOO_MANY_PASSWORD_ERROR.name() + sysUserDO.getId()).deleteAsync();
+                    batch.getBucket(RedisKeyEnum.PRE_PASSWORD_ERROR_COUNT.name() + ":" + sysUserDO.getId())
+                        .deleteAsync();
+                    batch.getMap(RedisKeyEnum.PRE_TOO_MANY_PASSWORD_ERROR.name()).removeAsync(sysUserDO.getId());
 
                     // 删除：验证码
                     batch.getBucket(key).deleteAsync();

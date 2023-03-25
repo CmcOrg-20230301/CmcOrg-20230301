@@ -1,5 +1,6 @@
 package com.cmcorg20230301.engine.be.cache.util;
 
+import cn.hutool.cache.Cache;
 import cn.hutool.cache.CacheUtil;
 import cn.hutool.core.collection.CollUtil;
 import com.cmcorg20230301.engine.be.model.model.constant.BaseConstant;
@@ -9,7 +10,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Map;
 import java.util.Set;
 
 /**
@@ -67,9 +67,9 @@ public class CacheLocalUtil {
      */
     public static <T> void put(@NotNull String key, @NotNull String secondKey, @NotNull T value) {
 
-        Map<String, T> map = getSecondMap(key);
+        Cache<String, T> secondMap = getSecondMap(key);
 
-        map.put(secondKey, value);
+        secondMap.put(secondKey, value);
 
     }
 
@@ -111,18 +111,18 @@ public class CacheLocalUtil {
     @Nullable
     public static <T> T get(@NotNull String key, @NotNull String secondKey) {
 
-        Map<String, T> map = getSecondMap(key);
+        Cache<String, T> secondMap = getSecondMap(key);
 
-        return map.get(secondKey);
+        return secondMap.get(secondKey);
 
     }
 
     /**
      * 获取：map
      */
-    private static <T> Map<String, T> getSecondMap(@NotNull String key) {
+    private static <T> Cache<String, T> getSecondMap(@NotNull String key) {
 
-        return (Map<String, T>)LOCAL_CACHE.get(key, false, () -> {
+        return (Cache<String, T>)LOCAL_CACHE.get(key, false, () -> {
             return CacheUtil.newLFUCache(200 * 1000);
         });
 
@@ -186,9 +186,9 @@ public class CacheLocalUtil {
     /**
      * 通过：key，移除：本地缓存从 map里
      */
-    public static void remove(@NotNull String key, @NotNull String secondKey) {
+    public static <T> void remove(@NotNull String key, @NotNull String secondKey) {
 
-        Map<String, Object> secondMap = getSecondMap(key);
+        Cache<String, T> secondMap = getSecondMap(key);
 
         secondMap.remove(secondKey);
 

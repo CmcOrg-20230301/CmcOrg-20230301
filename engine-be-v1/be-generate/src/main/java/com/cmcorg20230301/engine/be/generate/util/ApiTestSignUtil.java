@@ -34,13 +34,13 @@ public class ApiTestSignUtil {
 
     public static void main(String[] args) {
 
-        // 登录名-注册
-        signInNameSignUp(API_ENDPOINT, SIGN_IN_NAME);
+        //        // 登录名-注册
+        //                signInNameSignUp(API_ENDPOINT, SIGN_IN_NAME);
 
         // 登录名-用户名账号密码登录
         String jwt = signInNameSignIn(API_ENDPOINT, SIGN_IN_NAME);
 
-        // 登录名-修改密码
+        //        // 登录名-修改密码
         signInNameUpdatePassword(API_ENDPOINT, SIGN_IN_NAME, jwt);
 
         //        // 登录名-修改账号

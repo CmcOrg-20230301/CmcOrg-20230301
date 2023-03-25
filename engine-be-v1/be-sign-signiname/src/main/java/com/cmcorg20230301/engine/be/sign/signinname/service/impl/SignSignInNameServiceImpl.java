@@ -60,7 +60,6 @@ public class SignSignInNameServiceImpl implements SignSignInNameService {
      * 修改密码
      */
     @Override
-    @MyTransactional
     public String updatePassword(SignSignInNameUpdatePasswordDTO dto) {
 
         // 检查：登录名，是否不可以执行操作

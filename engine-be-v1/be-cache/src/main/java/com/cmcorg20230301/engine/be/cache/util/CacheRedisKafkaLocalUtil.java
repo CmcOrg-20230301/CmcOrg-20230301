@@ -192,7 +192,7 @@ public class CacheRedisKafkaLocalUtil {
 
             redissonClient.getMap(key).putAsync(secondKey, value);
 
-            CacheLocalUtil.put(key, value, -1); // 添加本地缓存
+            CacheLocalUtil.put(key, secondKey, value); // 添加本地缓存
 
             return value;
 

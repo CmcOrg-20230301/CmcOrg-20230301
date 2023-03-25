@@ -11,6 +11,7 @@ import cn.hutool.json.JSONUtil;
 import cn.hutool.jwt.JWT;
 import com.cmcorg20230301.engine.be.model.model.constant.BaseConstant;
 import com.cmcorg20230301.engine.be.redisson.model.enums.RedisKeyEnum;
+import com.cmcorg20230301.engine.be.redisson.util.RedissonUtil;
 import com.cmcorg20230301.engine.be.security.exception.BaseBizCodeEnum;
 import com.cmcorg20230301.engine.be.security.mapper.SysUserMapper;
 import com.cmcorg20230301.engine.be.security.model.constant.SecurityConstant;
@@ -93,6 +94,14 @@ public class MyJwtUtil {
         if (BooleanUtil.isFalse(BaseConstant.ADMIN_ID.equals(userId)) && StrUtil.isBlank(jwtSecretSuf)) {
             return null;
         }
+
+        RedissonUtil.batch((batch) -> {
+
+            // 移除密码错误次数相关
+            batch.getBucket(RedisKeyEnum.PRE_PASSWORD_ERROR_COUNT.name() + ":" + userId).deleteAsync();
+            batch.getMap(RedisKeyEnum.PRE_TOO_MANY_PASSWORD_ERROR.name()).removeAsync(userId);
+
+        });
 
         // 生成 jwt
         return MyJwtUtil.sign(userId, jwtSecretSuf, consumer);
