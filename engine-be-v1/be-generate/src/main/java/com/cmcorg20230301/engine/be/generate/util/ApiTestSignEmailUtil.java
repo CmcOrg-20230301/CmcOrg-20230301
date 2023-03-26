@@ -3,6 +3,7 @@ package com.cmcorg20230301.engine.be.generate.util;
 import cn.hutool.crypto.digest.DigestUtil;
 import cn.hutool.http.HttpRequest;
 import cn.hutool.json.JSONUtil;
+import com.cmcorg20230301.engine.be.model.model.dto.NotBlankCodeDTO;
 import com.cmcorg20230301.engine.be.security.util.MyRsaUtil;
 import com.cmcorg20230301.engine.be.sign.email.model.dto.*;
 import lombok.extern.slf4j.Slf4j;
@@ -29,10 +30,14 @@ public class ApiTestSignEmailUtil {
     // 新密码
     private static final String NEW_PASSWORD_TEMP = "Ik1234567";
 
+    // 新密码-2
+    private static final String NEW_PASSWORD_2_TEMP = "Ik12345678";
+
     public static void main(String[] args) {
 
         // 执行
-        exec(API_ENDPOINT, EMAIL, PASSWORD_TEMP, NEW_EMAIL, NEW_PASSWORD_TEMP, ApiTestHelper.RSA_PUBLIC_KEY);
+        exec(API_ENDPOINT, EMAIL, PASSWORD_TEMP, NEW_EMAIL, NEW_PASSWORD_TEMP, ApiTestHelper.RSA_PUBLIC_KEY,
+            NEW_PASSWORD_2_TEMP);
 
     }
 
@@ -40,7 +45,7 @@ public class ApiTestSignEmailUtil {
      * 执行
      */
     private static void exec(String apiEndpoint, String email, String passwordTemp, String newEmail,
-        String newPasswordTemp, String rsaPublicKey) {
+        String newPasswordTemp, String rsaPublicKey, String newPassword2Temp) {
 
         // 邮箱-注册-发送验证码
         emailSignUpSendCode(apiEndpoint, email);
@@ -77,8 +82,101 @@ public class ApiTestSignEmailUtil {
         // 邮箱-修改邮箱
         emailUpdateAccount(apiEndpoint, jwt, newEmail, code, newCode);
 
+        // 邮箱-忘记密码-发送验证码
+        emailForgetPasswordSendCode(apiEndpoint, newEmail);
+
+        code = ApiTestHelper.getStringFromScanner("请输入验证码");
+
+        // 邮箱-忘记密码
+        emailForgetPassword(apiEndpoint, newEmail, code, newPassword2Temp, rsaPublicKey);
+
         // 邮箱-账号密码登录
-        jwt = emailSignIn(apiEndpoint, newEmail, newPasswordTemp, rsaPublicKey);
+        jwt = emailSignIn(apiEndpoint, newEmail, newPassword2Temp, rsaPublicKey);
+
+        // 邮箱-账号注销-发送验证码
+        emailSignDeleteSendCode(apiEndpoint, jwt);
+
+        code = ApiTestHelper.getStringFromScanner("请输入验证码");
+
+        // 邮箱-账号注销
+        emailSignDelete(apiEndpoint, jwt, code);
+
+    }
+
+    /**
+     * 邮箱-账号注销
+     */
+    private static void emailSignDelete(String apiEndpoint, String jwt, String code) {
+
+        long currentTs = System.currentTimeMillis();
+
+        NotBlankCodeDTO dto = new NotBlankCodeDTO();
+        dto.setCode(code);
+
+        String bodyStr = HttpRequest.post(apiEndpoint + "/sign/email/signDelete").header("Authorization", jwt)
+            .body(JSONUtil.toJsonStr(dto)).execute().body();
+
+        log.info("邮箱-账号注销：耗时：{}，bodyStr：{}", ApiTestHelper.calcCostMs(currentTs), bodyStr);
+
+    }
+
+    /**
+     * 邮箱-账号注销-发送验证码
+     */
+    private static void emailSignDeleteSendCode(String apiEndpoint, String jwt) {
+
+        long currentTs = System.currentTimeMillis();
+
+        String bodyStr =
+            HttpRequest.post(apiEndpoint + "/sign/email/signDelete/sendCode").header("Authorization", jwt).execute()
+                .body();
+
+        log.info("邮箱-账号注销-发送验证码：耗时：{}，bodyStr：{}", ApiTestHelper.calcCostMs(currentTs), bodyStr);
+
+    }
+
+    /**
+     * 邮箱-忘记密码
+     */
+    private static void emailForgetPassword(String apiEndpoint, String newEmail, String code, String newPassword2Temp,
+        String rsaPublicKey) {
+
+        long currentTs = System.currentTimeMillis();
+
+        String originPassword = MyRsaUtil.rsaEncrypt(newPassword2Temp, rsaPublicKey);
+
+        String password = DigestUtil.sha256Hex((DigestUtil.sha512Hex(newPassword2Temp)));
+
+        password = MyRsaUtil.rsaEncrypt(password, rsaPublicKey);
+
+        SignEmailForgetPasswordDTO dto = new SignEmailForgetPasswordDTO();
+        dto.setCode(code);
+        dto.setNewPassword(password);
+        dto.setOriginNewPassword(originPassword);
+        dto.setEmail(newEmail);
+
+        String bodyStr =
+            HttpRequest.post(apiEndpoint + "/sign/email/forgetPassword").body(JSONUtil.toJsonStr(dto)).execute().body();
+
+        log.info("邮箱-忘记密码：耗时：{}，bodyStr：{}", ApiTestHelper.calcCostMs(currentTs), bodyStr);
+
+    }
+
+    /**
+     * 邮箱-忘记密码-发送验证码
+     */
+    private static void emailForgetPasswordSendCode(String apiEndpoint, String newEmail) {
+
+        long currentTs = System.currentTimeMillis();
+
+        EmailNotBlankDTO dto = new EmailNotBlankDTO();
+        dto.setEmail(newEmail);
+
+        String bodyStr =
+            HttpRequest.post(apiEndpoint + "/sign/email/forgetPassword/sendCode").body(JSONUtil.toJsonStr(dto))
+                .execute().body();
+
+        log.info("邮箱-忘记密码-发送验证码：耗时：{}，bodyStr：{}", ApiTestHelper.calcCostMs(currentTs), bodyStr);
 
     }
 

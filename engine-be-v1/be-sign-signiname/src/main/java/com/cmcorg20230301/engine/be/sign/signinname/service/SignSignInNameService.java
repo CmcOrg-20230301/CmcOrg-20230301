@@ -13,4 +13,5 @@ public interface SignSignInNameService {
     String updateAccount(SignSignInNameUpdateAccountDTO dto);
 
     String signDelete(SignSignInNameSignDeleteDTO dto);
+
 }

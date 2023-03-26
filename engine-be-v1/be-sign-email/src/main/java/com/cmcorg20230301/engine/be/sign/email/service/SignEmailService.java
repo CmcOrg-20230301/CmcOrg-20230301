@@ -30,4 +30,5 @@ public interface SignEmailService {
     String bindAccountSendCode(EmailNotBlankDTO dto);
 
     String bindAccount(SignEmailBindAccountDTO dto);
+
 }

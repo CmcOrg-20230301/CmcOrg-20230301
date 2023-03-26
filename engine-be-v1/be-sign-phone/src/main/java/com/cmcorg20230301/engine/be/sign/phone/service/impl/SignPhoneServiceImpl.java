@@ -3,7 +3,6 @@ package com.cmcorg20230301.engine.be.sign.phone.service.impl;
 import cn.hutool.core.util.BooleanUtil;
 import com.baomidou.mybatisplus.extension.toolkit.ChainWrappers;
 import com.cmcorg20230301.engine.be.model.model.dto.NotBlankCodeDTO;
-import com.cmcorg20230301.engine.be.mysql.model.annotation.MyTransactional;
 import com.cmcorg20230301.engine.be.redisson.model.enums.RedisKeyEnum;
 import com.cmcorg20230301.engine.be.security.mapper.SysUserMapper;
 import com.cmcorg20230301.engine.be.security.model.entity.SysUserDO;
@@ -23,7 +22,7 @@ import javax.annotation.Resource;
 @Service
 public class SignPhoneServiceImpl implements SignPhoneService {
 
-    private static RedisKeyEnum PRE_REDIS_KEY_ENUM = RedisKeyEnum.PRE_PHONE;
+    private static final RedisKeyEnum PRE_REDIS_KEY_ENUM = RedisKeyEnum.PRE_PHONE;
 
     @Resource
     SysUserMapper sysUserMapper;
@@ -62,7 +61,6 @@ public class SignPhoneServiceImpl implements SignPhoneService {
      * 注册
      */
     @Override
-    @MyTransactional
     public String signUp(SignPhoneSignUpDTO dto) {
 
         checkSignUpEnable(); // 检查：是否允许注册
@@ -99,7 +97,6 @@ public class SignPhoneServiceImpl implements SignPhoneService {
      * 修改密码
      */
     @Override
-    @MyTransactional
     public String updatePassword(SignPhoneUpdatePasswordDTO dto) {
 
         return SignUtil
@@ -127,7 +124,6 @@ public class SignPhoneServiceImpl implements SignPhoneService {
      * 修改手机
      */
     @Override
-    @MyTransactional
     public String updateAccount(SignPhoneUpdateAccountDTO dto) {
 
         return SignUtil
@@ -154,7 +150,6 @@ public class SignPhoneServiceImpl implements SignPhoneService {
      * 忘记密码
      */
     @Override
-    @MyTransactional
     public String forgetPassword(SignPhoneForgetPasswordDTO dto) {
 
         return SignUtil
@@ -181,7 +176,6 @@ public class SignPhoneServiceImpl implements SignPhoneService {
      * 账号注销
      */
     @Override
-    @MyTransactional
     public String signDelete(NotBlankCodeDTO dto) {
 
         // 如果有更高级的账号注销，则禁用低级的账号注销
@@ -209,7 +203,6 @@ public class SignPhoneServiceImpl implements SignPhoneService {
      * 绑定手机
      */
     @Override
-    @MyTransactional
     public String bindAccount(SignPhoneBindAccountDTO dto) {
 
         return SignUtil.bindAccount(dto.getCode(), PRE_REDIS_KEY_ENUM, dto.getPhone());
