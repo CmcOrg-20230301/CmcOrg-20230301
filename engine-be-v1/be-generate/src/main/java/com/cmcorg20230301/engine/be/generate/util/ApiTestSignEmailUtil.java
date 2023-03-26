@@ -4,10 +4,7 @@ import cn.hutool.crypto.digest.DigestUtil;
 import cn.hutool.http.HttpRequest;
 import cn.hutool.json.JSONUtil;
 import com.cmcorg20230301.engine.be.security.util.MyRsaUtil;
-import com.cmcorg20230301.engine.be.sign.email.model.dto.EmailNotBlankDTO;
-import com.cmcorg20230301.engine.be.sign.email.model.dto.SignEmailSignInPasswordDTO;
-import com.cmcorg20230301.engine.be.sign.email.model.dto.SignEmailSignUpDTO;
-import com.cmcorg20230301.engine.be.sign.email.model.dto.SignEmailUpdatePasswordDTO;
+import com.cmcorg20230301.engine.be.sign.email.model.dto.*;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -64,6 +61,60 @@ public class ApiTestSignEmailUtil {
         // 邮箱-修改密码
         emailUpdatePassword(apiEndpoint, jwt, newPasswordTemp, rsaPublicKey, code);
 
+        // 邮箱-账号密码登录
+        jwt = emailSignIn(apiEndpoint, email, newPasswordTemp, rsaPublicKey);
+
+        // 邮箱-修改邮箱-发送验证码
+        emailUpdateAccountSendCode(apiEndpoint, jwt);
+
+        code = ApiTestHelper.getStringFromScanner("请输入旧邮箱验证码");
+
+        // 邮箱-注册-发送验证码
+        emailSignUpSendCode(apiEndpoint, newEmail);
+
+        String newCode = ApiTestHelper.getStringFromScanner("请输入新邮箱验证码");
+
+        // 邮箱-修改邮箱
+        emailUpdateAccount(apiEndpoint, jwt, newEmail, code, newCode);
+
+        // 邮箱-账号密码登录
+        jwt = emailSignIn(apiEndpoint, newEmail, newPasswordTemp, rsaPublicKey);
+
+    }
+
+    /**
+     * 邮箱-修改邮箱
+     */
+    private static void emailUpdateAccount(String apiEndpoint, String jwt, String newEmail, String code,
+        String newCode) {
+
+        long currentTs = System.currentTimeMillis();
+
+        SignEmailUpdateAccountDTO dto = new SignEmailUpdateAccountDTO();
+        dto.setNewEmail(newEmail);
+        dto.setOldEmailCode(code);
+        dto.setNewEmailCode(newCode);
+
+        String bodyStr = HttpRequest.post(apiEndpoint + "/sign/email/updateAccount").body(JSONUtil.toJsonStr(dto))
+            .header("Authorization", jwt).execute().body();
+
+        log.info("邮箱-修改邮箱：耗时：{}，bodyStr：{}", ApiTestHelper.calcCostMs(currentTs), bodyStr);
+
+    }
+
+    /**
+     * 邮箱-修改邮箱-发送验证码
+     */
+    private static void emailUpdateAccountSendCode(String apiEndpoint, String jwt) {
+
+        long currentTs = System.currentTimeMillis();
+
+        String bodyStr =
+            HttpRequest.post(apiEndpoint + "/sign/email/updateAccount/sendCode").header("Authorization", jwt).execute()
+                .body();
+
+        log.info("邮箱-修改邮箱-发送验证码：耗时：{}，bodyStr：{}", ApiTestHelper.calcCostMs(currentTs), bodyStr);
+
     }
 
     /**
@@ -100,7 +151,7 @@ public class ApiTestSignEmailUtil {
         long currentTs = System.currentTimeMillis();
 
         String bodyStr =
-            HttpRequest.post(apiEndpoint + "/sign/email/sign/up/sendCode").header("Authorization", jwt).execute()
+            HttpRequest.post(apiEndpoint + "/sign/email/updatePassword/sendCode").header("Authorization", jwt).execute()
                 .body();
 
         log.info("邮箱-修改密码-发送验证码：耗时：{}，bodyStr：{}", ApiTestHelper.calcCostMs(currentTs), bodyStr);

@@ -28,11 +28,7 @@ public class ApiTestHelper {
 
         Scanner scanner = new Scanner(System.in);
 
-        String code = scanner.nextLine();
-
-        scanner.close();
-
-        return code;
+        return scanner.nextLine();
 
     }
 
