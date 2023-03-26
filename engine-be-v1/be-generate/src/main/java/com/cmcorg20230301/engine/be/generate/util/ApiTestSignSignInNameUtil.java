@@ -4,6 +4,8 @@ import cn.hutool.crypto.digest.DigestUtil;
 import cn.hutool.http.HttpRequest;
 import cn.hutool.json.JSONUtil;
 import com.cmcorg20230301.engine.be.security.util.MyRsaUtil;
+import com.cmcorg20230301.engine.be.sign.email.model.dto.EmailNotBlankDTO;
+import com.cmcorg20230301.engine.be.sign.email.model.dto.SignEmailBindAccountDTO;
 import com.cmcorg20230301.engine.be.sign.signinname.model.dto.*;
 import lombok.extern.slf4j.Slf4j;
 
@@ -29,11 +31,14 @@ public class ApiTestSignSignInNameUtil {
     // 新密码
     private static final String NEW_PASSWORD_TEMP = "Ik1234567";
 
+    // 邮箱
+    private static final String EMAIL = "dimensional_logic@qq.com";
+
     public static void main(String[] args) {
 
         // 执行
         exec(API_ENDPOINT, SIGN_IN_NAME, PASSWORD_TEMP, NEW_SIGN_IN_NAME, NEW_PASSWORD_TEMP,
-            ApiTestHelper.RSA_PUBLIC_KEY);
+            ApiTestHelper.RSA_PUBLIC_KEY, EMAIL);
 
     }
 
@@ -41,7 +46,7 @@ public class ApiTestSignSignInNameUtil {
      * 执行
      */
     private static void exec(String apiEndpoint, String signInName, String passwordTemp, String newSignInName,
-        String newPasswordTemp, String rsaPublicKey) {
+        String newPasswordTemp, String rsaPublicKey, String email) {
 
         // 登录名-注册
         signInNameSignUp(apiEndpoint, signInName, passwordTemp, rsaPublicKey);
@@ -61,8 +66,54 @@ public class ApiTestSignSignInNameUtil {
         // 登录名-用户名账号密码登录
         jwt = signInNameSignIn(apiEndpoint, newSignInName, newPasswordTemp, rsaPublicKey);
 
+        // 绑定邮箱-发送验证码
+        emailBindAccountSendCode(apiEndpoint, jwt, email);
+
+        String code = ApiTestHelper.getStringFromScanner("请输入验证码");
+
+        // 绑定邮箱
+        emailBindAccount(apiEndpoint, jwt, email, code);
+
+        // 登录名-用户名账号密码登录
+        jwt = signInNameSignIn(apiEndpoint, newSignInName, newPasswordTemp, rsaPublicKey);
+
         // 登录名-账号注销
         signInNameSignDelete(apiEndpoint, newPasswordTemp, jwt, rsaPublicKey);
+
+    }
+
+    /**
+     * 绑定邮箱
+     */
+    private static void emailBindAccount(String apiEndpoint, String jwt, String email, String code) {
+
+        long currentTs = System.currentTimeMillis();
+
+        SignEmailBindAccountDTO dto = new SignEmailBindAccountDTO();
+        dto.setCode(code);
+        dto.setEmail(email);
+
+        String bodyStr = HttpRequest.post(apiEndpoint + "/sign/email/bindAccount").header("Authorization", jwt)
+            .body(JSONUtil.toJsonStr(dto)).execute().body();
+
+        log.info("绑定邮箱：耗时：{}，bodyStr：{}", ApiTestHelper.calcCostMs(currentTs), bodyStr);
+
+    }
+
+    /**
+     * 绑定邮箱-发送验证码
+     */
+    private static void emailBindAccountSendCode(String apiEndpoint, String jwt, String email) {
+
+        long currentTs = System.currentTimeMillis();
+
+        EmailNotBlankDTO dto = new EmailNotBlankDTO();
+        dto.setEmail(email);
+
+        String bodyStr = HttpRequest.post(apiEndpoint + "/sign/email/bindAccount/sendCode").header("Authorization", jwt)
+            .body(JSONUtil.toJsonStr(dto)).execute().body();
+
+        log.info("绑定邮箱-发送验证码：耗时：{}，bodyStr：{}", ApiTestHelper.calcCostMs(currentTs), bodyStr);
 
     }
 

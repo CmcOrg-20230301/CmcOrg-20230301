@@ -790,7 +790,7 @@ public class SignUtil {
                 if (deleteRedisFlag) {
                     newBucket.delete();
                 }
-                ApiResultVO.error("操作失败：已被人绑定，请重试");
+                ApiResultVO.error("操作失败：已被人占用");
             }
 
             SysUserDO sysUserDO = new SysUserDO();

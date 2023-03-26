@@ -72,10 +72,10 @@ public class ApiTestSignEmailUtil {
         // 邮箱-修改邮箱-发送验证码
         emailUpdateAccountSendCode(apiEndpoint, jwt);
 
-        code = ApiTestHelper.getStringFromScanner("请输入旧邮箱验证码");
-
         // 邮箱-注册-发送验证码
         emailSignUpSendCode(apiEndpoint, newEmail);
+
+        code = ApiTestHelper.getStringFromScanner("请输入旧邮箱验证码");
 
         String newCode = ApiTestHelper.getStringFromScanner("请输入新邮箱验证码");
 
