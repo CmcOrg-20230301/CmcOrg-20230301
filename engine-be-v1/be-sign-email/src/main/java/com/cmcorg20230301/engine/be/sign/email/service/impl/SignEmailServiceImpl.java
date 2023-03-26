@@ -11,6 +11,7 @@ import com.cmcorg20230301.engine.be.security.model.entity.SysUserDO;
 import com.cmcorg20230301.engine.be.security.model.vo.ApiResultVO;
 import com.cmcorg20230301.engine.be.security.properties.SecurityProperties;
 import com.cmcorg20230301.engine.be.security.util.UserUtil;
+import com.cmcorg20230301.engine.be.sign.email.configuration.SignEmailSecurityPermitAllConfiguration;
 import com.cmcorg20230301.engine.be.sign.email.model.dto.*;
 import com.cmcorg20230301.engine.be.sign.email.service.SignEmailService;
 import com.cmcorg20230301.engine.be.sign.helper.exception.BizCodeEnum;
@@ -166,7 +167,7 @@ public class SignEmailServiceImpl implements SignEmailService {
     public String signDeleteSendCode() {
 
         // 如果有更高级的账号注销-发送验证码，则禁用低级的账号注销-发送验证码
-        //        SignUtil.checkSignLevel(SignEmailSecurityPermitAllConfiguration.SIGN_LEVEL);
+        SignUtil.checkSignLevel(SignEmailSecurityPermitAllConfiguration.SIGN_LEVEL);
 
         return SignUtil.getAccountAndSendCode(PRE_REDIS_KEY_ENUM,
             (code, account) -> MyEmailUtil.send(account, EmailMessageEnum.SIGN_DELETE, code, false));
@@ -180,7 +181,7 @@ public class SignEmailServiceImpl implements SignEmailService {
     public String signDelete(NotBlankCodeDTO dto) {
 
         // 如果有更高级的账号注销，则禁用低级的账号注销
-        //        SignUtil.checkSignLevel(SignEmailSecurityPermitAllConfiguration.SIGN_LEVEL);
+        SignUtil.checkSignLevel(SignEmailSecurityPermitAllConfiguration.SIGN_LEVEL);
 
         return SignUtil.signDelete(dto.getCode(), PRE_REDIS_KEY_ENUM, null);
 
