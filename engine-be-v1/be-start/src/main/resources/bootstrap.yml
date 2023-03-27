@@ -20,5 +20,6 @@ spring:
           - data-id: cache.yml
           - data-id: xxl-job.yml
           - data-id: minio.yml
+          - data-id: tencent.yml
           - data-id: refresh.yml
             refresh: true

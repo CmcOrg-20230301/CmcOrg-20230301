@@ -21,7 +21,9 @@ public class SmsTencentUtil {
     public static TencentProperties tencentProperties;
 
     public SmsTencentUtil(TencentProperties tencentProperties) {
+
         SmsTencentUtil.tencentProperties = tencentProperties;
+
     }
 
     /**
@@ -136,7 +138,7 @@ public class SmsTencentUtil {
 
         /* 下发手机号码，采用 E.164 标准，+[国家或地区码][手机号]
          * 示例如：+8613711112222， 其中前面有一个+号 ，86为国家码，13711112222为手机号，最多不要超过200个手机号 */
-        if (!phoneNumber.startsWith("+")) {
+        if (BooleanUtil.isFalse(phoneNumber.startsWith("+"))) {
             phoneNumber = "+86" + phoneNumber; // 默认增加： +86
         }
 
@@ -151,8 +153,8 @@ public class SmsTencentUtil {
         sendSmsRequest.setExtendCode(extendCode);
 
         /* 国际/港澳台短信 SenderId（无需要可忽略）: 国内短信填空，默认未开通，如需开通请联系 [腾讯云短信小助手] */
-        String senderid = "";
-        sendSmsRequest.setSenderId(senderid);
+        String senderId = "";
+        sendSmsRequest.setSenderId(senderId);
 
         /* 通过 smsClient 对象调用 SendSms 方法发起请求。注意请求方法名与请求对象是对应的
          * 返回的 sendSmsResponse 是一个 SendSmsResponse 类的实例，与请求对象对应 */
