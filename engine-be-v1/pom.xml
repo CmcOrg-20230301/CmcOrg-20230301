@@ -19,7 +19,7 @@
     <description>项目顶级 pom.xml，目的：1 方便打包modules 2 依赖版本控制（所以不要在其他 pom.xml里面，添加带有 version标签的依赖）</description>
 
     <properties>
-        <java.version>8</java.version>
+        <java.version>1.8</java.version>
         <!-- 打包时跳过测试 -->
         <skipTests>true</skipTests>
     </properties>
@@ -418,7 +418,7 @@
             <dependency>
                 <groupId>cn.hutool</groupId>
                 <artifactId>hutool-all</artifactId>
-                <version>5.8.15</version>
+                <version>5.8.16</version>
             </dependency>
 
             <!-- mybatis-plus -->

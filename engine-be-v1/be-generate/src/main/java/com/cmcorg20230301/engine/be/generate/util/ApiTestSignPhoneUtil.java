@@ -1,9 +1,12 @@
 package com.cmcorg20230301.engine.be.generate.util;
 
+import cn.hutool.crypto.digest.DigestUtil;
 import cn.hutool.http.HttpRequest;
 import cn.hutool.json.JSONUtil;
 import cn.hutool.setting.Setting;
+import com.cmcorg20230301.engine.be.security.util.MyRsaUtil;
 import com.cmcorg20230301.engine.be.sign.phone.model.dto.PhoneNotBlankDTO;
+import com.cmcorg20230301.engine.be.sign.phone.model.dto.SignPhoneSignUpDTO;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -50,6 +53,38 @@ public class ApiTestSignPhoneUtil {
 
         // 手机号-注册-发送验证码
         phoneSignUpSendCode(apiEndpoint, phone);
+
+        String code = ApiTestHelper.getStringFromScanner("请输入验证码");
+
+        // 手机号-注册
+        phoneSignUp(apiEndpoint, phone, passwordTemp, rsaPublicKey, code);
+
+    }
+
+    /**
+     * 手机号-注册
+     */
+    private static void phoneSignUp(String apiEndpoint, String phone, String passwordTemp, String rsaPublicKey,
+        String code) {
+
+        long currentTs = System.currentTimeMillis();
+
+        String originPassword = MyRsaUtil.rsaEncrypt(passwordTemp, rsaPublicKey);
+
+        String password = DigestUtil.sha256Hex((DigestUtil.sha512Hex(passwordTemp)));
+
+        password = MyRsaUtil.rsaEncrypt(password, rsaPublicKey);
+
+        SignPhoneSignUpDTO dto = new SignPhoneSignUpDTO();
+        dto.setCode(code);
+        dto.setPassword(password);
+        dto.setOriginPassword(originPassword);
+        dto.setPhone(phone);
+
+        String bodyStr =
+            HttpRequest.post(apiEndpoint + "/sign/phone/sign/up").body(JSONUtil.toJsonStr(dto)).execute().body();
+
+        log.info("手机号-注册：耗时：{}，bodyStr：{}", ApiTestHelper.calcCostMs(currentTs), bodyStr);
 
     }
 
