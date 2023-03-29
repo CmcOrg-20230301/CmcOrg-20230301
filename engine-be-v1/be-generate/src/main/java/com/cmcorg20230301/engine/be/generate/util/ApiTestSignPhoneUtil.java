@@ -97,6 +97,14 @@ public class ApiTestSignPhoneUtil {
         //        // 手机号-账号密码登录
         //        jwt = phoneSignInPassword(apiEndpoint, newPhone, newPassword2Temp, rsaPublicKey);
 
+        // 手机号-手机验证码登录-发送验证码
+        phoneSignInSendCode(apiEndpoint, newPhone);
+
+        code = ApiTestHelper.getStringFromScanner("请输入验证码");
+
+        // 手机号-手机验证码登录
+        jwt = phoneSignInCode(apiEndpoint, newPhone, code);
+
         // 手机号-账号注销-发送验证码
         phoneSignDeleteSendCode(apiEndpoint, jwt);
 
@@ -104,6 +112,44 @@ public class ApiTestSignPhoneUtil {
 
         // 手机号-账号注销
         phoneSignDelete(apiEndpoint, jwt, code);
+
+    }
+
+    /**
+     * 手机号-手机验证码登录
+     */
+    private static String phoneSignInCode(String apiEndpoint, String newPhone, String code) {
+
+        long currentTs = System.currentTimeMillis();
+
+        SignPhoneSignInCodeDTO dto = new SignPhoneSignInCodeDTO();
+        dto.setCode(code);
+        dto.setPhone(newPhone);
+
+        String bodyStr =
+            HttpRequest.post(apiEndpoint + "/sign/phone/sign/in/code").body(JSONUtil.toJsonStr(dto)).execute().body();
+
+        log.info("手机号-手机验证码登录：耗时：{}，bodyStr：{}", ApiTestHelper.calcCostMs(currentTs), bodyStr);
+
+        return JSONUtil.parseObj(bodyStr).getStr("data");
+
+    }
+
+    /**
+     * 手机号-手机验证码登录-发送验证码
+     */
+    private static void phoneSignInSendCode(String apiEndpoint, String newPhone) {
+
+        long currentTs = System.currentTimeMillis();
+
+        PhoneNotBlankDTO dto = new PhoneNotBlankDTO();
+        dto.setPhone(newPhone);
+
+        String bodyStr =
+            HttpRequest.post(apiEndpoint + "/sign/phone/sign/in/sendCode").body(JSONUtil.toJsonStr(dto)).execute()
+                .body();
+
+        log.info("手机号-手机验证码登录-发送验证码：耗时：{}，bodyStr：{}", ApiTestHelper.calcCostMs(currentTs), bodyStr);
 
     }
 
