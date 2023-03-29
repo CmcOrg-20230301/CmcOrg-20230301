@@ -3,6 +3,7 @@ package com.cmcorg20230301.engine.be.generate.util;
 import cn.hutool.crypto.digest.DigestUtil;
 import cn.hutool.http.HttpRequest;
 import cn.hutool.json.JSONUtil;
+import cn.hutool.setting.Setting;
 import com.cmcorg20230301.engine.be.model.model.dto.NotBlankCodeDTO;
 import com.cmcorg20230301.engine.be.security.util.MyRsaUtil;
 import com.cmcorg20230301.engine.be.sign.email.model.dto.*;
@@ -18,11 +19,14 @@ public class ApiTestSignEmailUtil {
     //    private static final String API_ENDPOINT = "http://43.154.37.130:10001";
     private static final String API_ENDPOINT = "http://127.0.0.1:10001";
 
+    // 配置文件
+    private static final Setting SETTING = new Setting("sign.setting");
+
     // 邮箱
-    private static final String EMAIL = "dimensional_logic@qq.com";
+    private static final String EMAIL = SETTING.getStr("email");
 
     // 新邮箱
-    private static final String NEW_EMAIL = "dimlt@vip.qq.com";
+    private static final String NEW_EMAIL = SETTING.getStr("newEmail");
 
     // 密码
     private static final String PASSWORD_TEMP = "Ik123456";

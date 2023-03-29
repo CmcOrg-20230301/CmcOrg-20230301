@@ -23,7 +23,7 @@ public class ApiTestSignPhoneUtil {
     private static final Setting SETTING = new Setting("sign.setting");
 
     // 手机号
-    private static final String PHONE = SETTING.getStr("phone");
+    public static final String PHONE = SETTING.getStr("phone");
 
     // 新手机号
     private static final String NEW_PHONE = SETTING.getStr("newPhone");
@@ -94,8 +94,8 @@ public class ApiTestSignPhoneUtil {
         // 手机号-忘记密码
         phoneForgetPassword(apiEndpoint, newPhone, code, newPassword2Temp, rsaPublicKey);
 
-        // 手机号-账号密码登录
-        jwt = phoneSignInPassword(apiEndpoint, newPhone, newPassword2Temp, rsaPublicKey);
+        //        // 手机号-账号密码登录
+        //        jwt = phoneSignInPassword(apiEndpoint, newPhone, newPassword2Temp, rsaPublicKey);
 
         // 手机号-账号注销-发送验证码
         phoneSignDeleteSendCode(apiEndpoint, jwt);
@@ -200,7 +200,7 @@ public class ApiTestSignPhoneUtil {
         String bodyStr = HttpRequest.post(apiEndpoint + "/sign/phone/updateAccount").body(JSONUtil.toJsonStr(dto))
             .header("Authorization", jwt).execute().body();
 
-        log.info("邮箱-修改手机：耗时：{}，bodyStr：{}", ApiTestHelper.calcCostMs(currentTs), bodyStr);
+        log.info("手机号-修改手机：耗时：{}，bodyStr：{}", ApiTestHelper.calcCostMs(currentTs), bodyStr);
 
     }
 
@@ -241,7 +241,7 @@ public class ApiTestSignPhoneUtil {
         String bodyStr = HttpRequest.post(apiEndpoint + "/sign/phone/updatePassword").body(JSONUtil.toJsonStr(dto))
             .header("Authorization", jwt).execute().body();
 
-        log.info("邮箱-修改密码：耗时：{}，bodyStr：{}", ApiTestHelper.calcCostMs(currentTs), bodyStr);
+        log.info("手机号-修改密码：耗时：{}，bodyStr：{}", ApiTestHelper.calcCostMs(currentTs), bodyStr);
 
     }
 

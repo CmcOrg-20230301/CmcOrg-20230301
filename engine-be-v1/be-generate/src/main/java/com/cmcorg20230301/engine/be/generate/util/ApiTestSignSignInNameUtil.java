@@ -6,6 +6,8 @@ import cn.hutool.json.JSONUtil;
 import com.cmcorg20230301.engine.be.security.util.MyRsaUtil;
 import com.cmcorg20230301.engine.be.sign.email.model.dto.EmailNotBlankDTO;
 import com.cmcorg20230301.engine.be.sign.email.model.dto.SignEmailBindAccountDTO;
+import com.cmcorg20230301.engine.be.sign.phone.model.dto.PhoneNotBlankDTO;
+import com.cmcorg20230301.engine.be.sign.phone.model.dto.SignPhoneBindAccountDTO;
 import com.cmcorg20230301.engine.be.sign.signinname.model.dto.*;
 import lombok.extern.slf4j.Slf4j;
 
@@ -38,7 +40,7 @@ public class ApiTestSignSignInNameUtil {
 
         // 执行
         exec(API_ENDPOINT, SIGN_IN_NAME, PASSWORD_TEMP, NEW_SIGN_IN_NAME, NEW_PASSWORD_TEMP,
-            ApiTestHelper.RSA_PUBLIC_KEY, EMAIL);
+            ApiTestHelper.RSA_PUBLIC_KEY, EMAIL, ApiTestSignPhoneUtil.PHONE);
 
     }
 
@@ -46,7 +48,7 @@ public class ApiTestSignSignInNameUtil {
      * 执行
      */
     private static void exec(String apiEndpoint, String signInName, String passwordTemp, String newSignInName,
-        String newPasswordTemp, String rsaPublicKey, String email) {
+        String newPasswordTemp, String rsaPublicKey, String email, String phone) {
 
         // 登录名-注册
         signInNameSignUp(apiEndpoint, signInName, passwordTemp, rsaPublicKey);
@@ -66,19 +68,65 @@ public class ApiTestSignSignInNameUtil {
         // 登录名-用户名账号密码登录
         jwt = signInNameSignIn(apiEndpoint, newSignInName, newPasswordTemp, rsaPublicKey);
 
-        // 绑定邮箱-发送验证码
-        emailBindAccountSendCode(apiEndpoint, jwt, email);
+        //        // 绑定邮箱-发送验证码
+        //        emailBindAccountSendCode(apiEndpoint, jwt, email);
+        //
+        //        String code = ApiTestHelper.getStringFromScanner("请输入验证码");
+        //
+        //        // 绑定邮箱
+        //        emailBindAccount(apiEndpoint, jwt, email, code);
+
+        // 登录名-用户名账号密码登录
+        jwt = signInNameSignIn(apiEndpoint, newSignInName, newPasswordTemp, rsaPublicKey);
+
+        // 绑定手机号-发送验证码
+        phoneBindAccountSendCode(apiEndpoint, jwt, phone);
 
         String code = ApiTestHelper.getStringFromScanner("请输入验证码");
 
-        // 绑定邮箱
-        emailBindAccount(apiEndpoint, jwt, email, code);
+        // 绑定手机号
+        phoneBindAccount(apiEndpoint, jwt, phone, code);
 
         // 登录名-用户名账号密码登录
         jwt = signInNameSignIn(apiEndpoint, newSignInName, newPasswordTemp, rsaPublicKey);
 
         // 登录名-账号注销
         signInNameSignDelete(apiEndpoint, newPasswordTemp, jwt, rsaPublicKey);
+
+    }
+
+    /**
+     * 绑定手机号
+     */
+    private static void phoneBindAccount(String apiEndpoint, String jwt, String phone, String code) {
+
+        long currentTs = System.currentTimeMillis();
+
+        SignPhoneBindAccountDTO dto = new SignPhoneBindAccountDTO();
+        dto.setCode(code);
+        dto.setPhone(phone);
+
+        String bodyStr = HttpRequest.post(apiEndpoint + "/sign/phone/bindAccount").header("Authorization", jwt)
+            .body(JSONUtil.toJsonStr(dto)).execute().body();
+
+        log.info("绑定手机号：耗时：{}，bodyStr：{}", ApiTestHelper.calcCostMs(currentTs), bodyStr);
+
+    }
+
+    /**
+     * 绑定手机号-发送验证码
+     */
+    private static void phoneBindAccountSendCode(String apiEndpoint, String jwt, String phone) {
+
+        long currentTs = System.currentTimeMillis();
+
+        PhoneNotBlankDTO dto = new PhoneNotBlankDTO();
+        dto.setPhone(phone);
+
+        String bodyStr = HttpRequest.post(apiEndpoint + "/sign/phone/bindAccount/sendCode").header("Authorization", jwt)
+            .body(JSONUtil.toJsonStr(dto)).execute().body();
+
+        log.info("绑定手机号-发送验证码：耗时：{}，bodyStr：{}", ApiTestHelper.calcCostMs(currentTs), bodyStr);
 
     }
 
