@@ -76,6 +76,9 @@ public class ApiTestSignPhoneUtil {
         // 手机号-修改手机-发送验证码
         phoneUpdateAccountSendCode(apiEndpoint, jwt);
 
+        // 手机号-注册-发送验证码
+        phoneSignUpSendCode(apiEndpoint, newPhone);
+
         code = ApiTestHelper.getStringFromScanner("请输入旧手机验证码");
 
         String newCode = ApiTestHelper.getStringFromScanner("请输入新手机验证码");

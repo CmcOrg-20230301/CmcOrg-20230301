@@ -98,7 +98,7 @@ public class UserUtil {
             ApiResultVO.error(BaseBizCodeEnum.UNABLE_TO_SEND_VERIFICATION_CODE_BECAUSE_THE_EMAIL_ADDRESS_IS_NOT_BOUND);
         }
 
-        return sysUserDO.getEmail();
+        return sysUserDO.getPhone();
 
     }
 
