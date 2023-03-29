@@ -3,6 +3,7 @@ package com.cmcorg20230301.engine.be.generate.util;
 import cn.hutool.crypto.digest.DigestUtil;
 import cn.hutool.http.HttpRequest;
 import cn.hutool.json.JSONUtil;
+import cn.hutool.setting.Setting;
 import com.cmcorg20230301.engine.be.security.util.MyRsaUtil;
 import com.cmcorg20230301.engine.be.sign.email.model.dto.EmailNotBlankDTO;
 import com.cmcorg20230301.engine.be.sign.email.model.dto.SignEmailBindAccountDTO;
@@ -21,6 +22,9 @@ public class ApiTestSignSignInNameUtil {
     //    private static final String API_ENDPOINT = "http://43.154.37.130:10001";
     private static final String API_ENDPOINT = "http://127.0.0.1:10001";
 
+    // 配置文件
+    private static final Setting SETTING = new Setting("sign.setting");
+
     // 登录名
     private static final String SIGN_IN_NAME = "cxk";
 
@@ -34,13 +38,16 @@ public class ApiTestSignSignInNameUtil {
     private static final String NEW_PASSWORD_TEMP = "Ik1234567";
 
     // 邮箱
-    private static final String EMAIL = "dimensional_logic@qq.com";
+    private static final String EMAIL = SETTING.getStr("email");
+
+    // 手机号
+    public static final String PHONE = SETTING.getStr("phone");
 
     public static void main(String[] args) {
 
         // 执行
         exec(API_ENDPOINT, SIGN_IN_NAME, PASSWORD_TEMP, NEW_SIGN_IN_NAME, NEW_PASSWORD_TEMP,
-            ApiTestHelper.RSA_PUBLIC_KEY, EMAIL, ApiTestSignPhoneUtil.PHONE);
+            ApiTestHelper.RSA_PUBLIC_KEY, EMAIL, PHONE);
 
     }
 
