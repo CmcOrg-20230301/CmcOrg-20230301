@@ -250,7 +250,7 @@ public class ApiTestSignSignInNameUtil {
     /**
      * 登录名-用户名账号密码登录
      */
-    private static String signInNameSignIn(String apiEndpoint, String signInName, String passwordTemp,
+    public static String signInNameSignIn(String apiEndpoint, String signInName, String passwordTemp,
         String rsaPublicKey) {
 
         long currentTs = System.currentTimeMillis();
