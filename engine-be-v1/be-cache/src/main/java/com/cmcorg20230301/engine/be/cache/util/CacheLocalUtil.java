@@ -65,7 +65,7 @@ public class CacheLocalUtil {
     /**
      * 添加：本地缓存到 map里
      */
-    public static <T> void put(@NotNull String key, @NotNull String secondKey, @NotNull T value) {
+    public static <T> void putSecondMap(@NotNull String key, @NotNull String secondKey, @NotNull T value) {
 
         Cache<String, T> secondMap = getSecondMap(key);
 
@@ -109,7 +109,7 @@ public class CacheLocalUtil {
      * 通过：key，获取：本地缓存从 map里
      */
     @Nullable
-    public static <T> T get(@NotNull String key, @NotNull String secondKey) {
+    public static <T> T getSecondMap(@NotNull String key, @NotNull String secondKey) {
 
         Cache<String, T> secondMap = getSecondMap(key);
 
@@ -118,8 +118,9 @@ public class CacheLocalUtil {
     }
 
     /**
-     * 获取：map
+     * 获取：二级map
      */
+    @NotNull
     private static <T> Cache<String, T> getSecondMap(@NotNull String key) {
 
         return (Cache<String, T>)LOCAL_CACHE.get(key, false, () -> {
@@ -186,7 +187,7 @@ public class CacheLocalUtil {
     /**
      * 通过：key，移除：本地缓存从 map里
      */
-    public static <T> void remove(@NotNull String key, @NotNull String secondKey) {
+    public static <T> void removeSecondMap(@NotNull String key, @NotNull String secondKey) {
 
         Cache<String, T> secondMap = getSecondMap(key);
 

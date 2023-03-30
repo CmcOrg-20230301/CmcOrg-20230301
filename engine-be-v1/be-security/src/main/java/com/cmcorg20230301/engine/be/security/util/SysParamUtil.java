@@ -34,17 +34,18 @@ public class SysParamUtil {
     @Nullable
     public static String getValueById(Long id) {
 
-        Map<Long, String> map = MyCacheUtil.get(RedisKeyEnum.SYS_PARAM_CACHE, CacheHelper.getDefaultLongMap(), () -> {
+        Map<Long, String> map =
+            MyCacheUtil.getMap(RedisKeyEnum.SYS_PARAM_CACHE, CacheHelper.getDefaultLongMap(), () -> {
 
-            List<SysParamDO> sysParamDOList =
-                ChainWrappers.lambdaQueryChain(sysParamMapper).select(BaseEntity::getId, SysParamDO::getValue)
-                    .eq(BaseEntity::getEnableFlag, true).list();
+                List<SysParamDO> sysParamDOList =
+                    ChainWrappers.lambdaQueryChain(sysParamMapper).select(BaseEntity::getId, SysParamDO::getValue)
+                        .eq(BaseEntity::getEnableFlag, true).list();
 
-            // 注意：Collectors.toMap()方法，key不能重复，不然会报错
-            // 可以用第三个参数，解决这个报错：(v1, v2) -> v2 不覆盖（留前值）(v1, v2) -> v1 覆盖（取后值）
-            return sysParamDOList.stream().collect(Collectors.toMap(BaseEntity::getId, SysParamDO::getValue));
+                // 注意：Collectors.toMap()方法，key不能重复，不然会报错
+                // 可以用第三个参数，解决这个报错：(v1, v2) -> v2 不覆盖（留前值）(v1, v2) -> v1 覆盖（取后值）
+                return sysParamDOList.stream().collect(Collectors.toMap(BaseEntity::getId, SysParamDO::getValue));
 
-        });
+            });
 
         return map.get(id);
 

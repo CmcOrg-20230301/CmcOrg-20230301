@@ -186,7 +186,7 @@ public class XxlJobServiceImpl implements XxlJobService {
      */
     private HttpCookie getCookie() {
 
-        JSONObject jsonObject = MyCacheUtil.get(RedisKeyEnum.XXL_JOB_COOKIE_CACHE, null, () -> {
+        JSONObject jsonObject = MyCacheUtil.getMap(RedisKeyEnum.XXL_JOB_COOKIE_CACHE, null, () -> {
 
             JSONObject formJson =
                 JSONUtil.createObj().set("userName", userName).set("password", password).set("ifRemember", "on");

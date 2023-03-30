@@ -243,11 +243,11 @@ public class UserUtil {
     @NotNull
     private static Map<Long, Set<SysMenuDO>> getRoleRefMenuSetMap(int type, RedisKeyEnum redisKeyEnum, Long item) {
 
-        return MyCacheUtil.get(redisKeyEnum, CacheHelper.getDefaultLongSetMap(), () -> {
+        return MyCacheUtil.getMap(redisKeyEnum, CacheHelper.getDefaultLongSetMap(), () -> {
 
             // 获取所有：roleIdSet
             Set<Long> allRoleIdSet =
-                MyCacheUtil.get(RedisKeyEnum.ROLE_ID_SET_CACHE, CacheHelper.getDefaultSet(), () -> {
+                MyCacheUtil.getCollection(RedisKeyEnum.ROLE_ID_SET_CACHE, CacheHelper.getDefaultSet(), () -> {
 
                     return ChainWrappers.lambdaQueryChain(sysRoleMapper).select(BaseEntity::getId)
                         .eq(BaseEntityNoId::getEnableFlag, true).list().stream().map(BaseEntity::getId)
@@ -367,8 +367,8 @@ public class UserUtil {
     @Nullable
     private static List<SysMenuDO> getAllMenuIdAndAuthsList() {
 
-        List<SysMenuDO> sysMenuDOList =
-            MyCacheUtil.get(RedisKeyEnum.ALL_MENU_ID_AND_AUTHS_LIST_CACHE, CacheHelper.getDefaultList(), () -> {
+        List<SysMenuDO> sysMenuDOList = MyCacheUtil
+            .getCollection(RedisKeyEnum.ALL_MENU_ID_AND_AUTHS_LIST_CACHE, CacheHelper.getDefaultList(), () -> {
 
                 return ChainWrappers.lambdaQueryChain(sysMenuMapper)
                     .select(BaseEntity::getId, BaseEntityTree::getParentId, SysMenuDO::getAuths)
@@ -395,7 +395,7 @@ public class UserUtil {
     private static Set<Long> getRoleRefMenuIdSet(Long roleId) {
 
         Map<Long, Set<Long>> roleRefMenuIdSetMap =
-            MyCacheUtil.get(RedisKeyEnum.ROLE_ID_REF_MENU_ID_SET_CACHE, CacheHelper.getDefaultLongSetMap(), () -> {
+            MyCacheUtil.getMap(RedisKeyEnum.ROLE_ID_REF_MENU_ID_SET_CACHE, CacheHelper.getDefaultLongSetMap(), () -> {
 
                 List<SysRoleRefMenuDO> sysRoleRefMenuDOList = ChainWrappers.lambdaQueryChain(sysRoleRefMenuMapper)
                     .select(SysRoleRefMenuDO::getRoleId, SysRoleRefMenuDO::getMenuId).list();
@@ -415,7 +415,7 @@ public class UserUtil {
     private static void getUserRefRoleIdSet(Long userId, Set<Long> roleIdSet) {
 
         Map<Long, Set<Long>> userRefRoleIdSetMap =
-            MyCacheUtil.get(RedisKeyEnum.USER_ID_REF_ROLE_ID_SET_CACHE, CacheHelper.getDefaultLongSetMap(), () -> {
+            MyCacheUtil.getMap(RedisKeyEnum.USER_ID_REF_ROLE_ID_SET_CACHE, CacheHelper.getDefaultLongSetMap(), () -> {
 
                 List<SysRoleRefUserDO> sysRoleRefUserDOList = ChainWrappers.lambdaQueryChain(sysRoleRefUserMapper)
                     .select(SysRoleRefUserDO::getRoleId, SysRoleRefUserDO::getUserId).list();
@@ -463,8 +463,8 @@ public class UserUtil {
     public static void setJwtSecretSuf(long userId) {
 
         CacheRedisKafkaLocalUtil
-            .put(RedisKeyEnum.USER_ID_AND_JWT_SECRET_SUF_CACHE, null, String.valueOf(userId), IdUtil.simpleUUID(),
-                null);
+            .putSecondMap(RedisKeyEnum.USER_ID_AND_JWT_SECRET_SUF_CACHE, null, String.valueOf(userId),
+                IdUtil.simpleUUID(), null);
 
     }
 
@@ -474,9 +474,8 @@ public class UserUtil {
     @NotNull
     public static String getJwtSecretSuf(long userId) {
 
-        return MyCacheUtil
-            .get(RedisKeyEnum.USER_ID_AND_JWT_SECRET_SUF_CACHE, null, String.valueOf(userId), IdUtil.simpleUUID(),
-                null);
+        return MyCacheUtil.getSecondMap(RedisKeyEnum.USER_ID_AND_JWT_SECRET_SUF_CACHE, null, String.valueOf(userId),
+            IdUtil.simpleUUID(), null);
 
     }
 
@@ -485,7 +484,8 @@ public class UserUtil {
      */
     public static void removeJwtSecretSuf(long userId) {
 
-        CacheRedisKafkaLocalUtil.remove(RedisKeyEnum.USER_ID_AND_JWT_SECRET_SUF_CACHE, null, String.valueOf(userId));
+        CacheRedisKafkaLocalUtil
+            .removeSecondMap(RedisKeyEnum.USER_ID_AND_JWT_SECRET_SUF_CACHE, null, String.valueOf(userId));
 
     }
 

@@ -52,7 +52,7 @@ public class CacheRedisKafkaLocalUtil {
      * 统一的执行 update方法：针对往 map里面移除值
      */
     @SneakyThrows
-    private static void remove(@NotNull String key, @NotNull String secondKey, @NotNull VoidFunc0 voidFunc0) {
+    private static void removeSecondMap(@NotNull String key, @NotNull String secondKey, @NotNull VoidFunc0 voidFunc0) {
 
         if (StrUtil.isBlank(secondKey)) {
             throw new RuntimeException("操作失败：更新时，secondKey不能为空，请联系管理员");
@@ -75,7 +75,7 @@ public class CacheRedisKafkaLocalUtil {
      * 统一的执行 update方法：针对往 map里面设置值
      */
     @SneakyThrows
-    private static void update(@NotNull String key, @NotNull String secondKey, @NotNull Func0<?> func0) {
+    private static void updateSecondMap(@NotNull String key, @NotNull String secondKey, @NotNull Func0<?> func0) {
 
         if (StrUtil.isBlank(secondKey)) {
             throw new RuntimeException("操作失败：更新时，secondKey不能为空，请联系管理员");
@@ -164,12 +164,12 @@ public class CacheRedisKafkaLocalUtil {
      * 添加：一般类型的缓存到 map里
      */
     @SneakyThrows
-    public static <T> void put(@NotNull Enum<? extends IRedisKey> redisKeyEnum, @Nullable String sufKey,
+    public static <T> void putSecondMap(@NotNull Enum<? extends IRedisKey> redisKeyEnum, @Nullable String sufKey,
         @NotNull String secondKey, @Nullable T defaultResult, @Nullable Func0<T> func0) {
 
         String key = CacheHelper.getKey(redisKeyEnum, sufKey);
 
-        put(key, secondKey, defaultResult, func0);
+        putSecondMap(key, secondKey, defaultResult, func0);
 
     }
 
@@ -177,10 +177,10 @@ public class CacheRedisKafkaLocalUtil {
      * 添加：一般类型的缓存到 map里
      */
     @SneakyThrows
-    public static <T> void put(@NotNull String key, @NotNull String secondKey, @Nullable T defaultResult,
+    public static <T> void putSecondMap(@NotNull String key, @NotNull String secondKey, @Nullable T defaultResult,
         @Nullable Func0<T> func0) {
 
-        update(key, secondKey, () -> {
+        updateSecondMap(key, secondKey, () -> {
 
             T value = null;
 
@@ -192,7 +192,7 @@ public class CacheRedisKafkaLocalUtil {
 
             redissonClient.getMap(key).putAsync(secondKey, value);
 
-            CacheLocalUtil.put(key, secondKey, value); // 添加本地缓存
+            CacheLocalUtil.putSecondMap(key, secondKey, value); // 添加本地缓存
 
             return value;
 
@@ -204,10 +204,10 @@ public class CacheRedisKafkaLocalUtil {
      * 添加：map类型的缓存
      */
     @SneakyThrows
-    public static <T extends Map<?, ?>> void put(@NotNull Enum<? extends IRedisKey> redisKeyEnum,
+    public static <T extends Map<?, ?>> void putMap(@NotNull Enum<? extends IRedisKey> redisKeyEnum,
         @Nullable T defaultResult, @Nullable Func0<T> func0) {
 
-        put(redisKeyEnum, null, defaultResult, func0);
+        putMap(redisKeyEnum, null, defaultResult, func0);
 
     }
 
@@ -215,7 +215,7 @@ public class CacheRedisKafkaLocalUtil {
      * 添加：map类型的缓存
      */
     @SneakyThrows
-    public static <T extends Map<?, ?>> void put(@NotNull Enum<? extends IRedisKey> redisKeyEnum,
+    public static <T extends Map<?, ?>> void putMap(@NotNull Enum<? extends IRedisKey> redisKeyEnum,
         @Nullable String sufKey, @Nullable T defaultResult, @Nullable Func0<T> func0) {
 
         String key = CacheHelper.getKey(redisKeyEnum, sufKey);
@@ -248,10 +248,10 @@ public class CacheRedisKafkaLocalUtil {
      * 添加：collection类型的缓存
      */
     @SneakyThrows
-    public static <T extends Collection<?>> void put(@NotNull Enum<? extends IRedisKey> redisKeyEnum,
+    public static <T extends Collection<?>> void putCollection(@NotNull Enum<? extends IRedisKey> redisKeyEnum,
         @Nullable T defaultResult, @Nullable Func0<T> func0) {
 
-        put(redisKeyEnum, null, defaultResult, func0);
+        putCollection(redisKeyEnum, null, defaultResult, func0);
 
     }
 
@@ -259,7 +259,7 @@ public class CacheRedisKafkaLocalUtil {
      * 添加：collection类型的缓存
      */
     @SneakyThrows
-    public static <T extends Collection<?>> void put(@NotNull Enum<? extends IRedisKey> redisKeyEnum,
+    public static <T extends Collection<?>> void putCollection(@NotNull Enum<? extends IRedisKey> redisKeyEnum,
         @Nullable String sufKey, @Nullable T defaultResult, @Nullable Func0<T> func0) {
 
         String key = CacheHelper.getKey(redisKeyEnum, sufKey);
@@ -308,16 +308,16 @@ public class CacheRedisKafkaLocalUtil {
     /**
      * 移除缓存，从 map里
      */
-    public static void remove(@NotNull Enum<? extends IRedisKey> redisKeyEnum, @Nullable String sufKey,
+    public static void removeSecondMap(@NotNull Enum<? extends IRedisKey> redisKeyEnum, @Nullable String sufKey,
         @NotNull String secondKey) {
 
         String key = CacheHelper.getKey(redisKeyEnum, sufKey);
 
-        remove(key, secondKey, () -> {
+        removeSecondMap(key, secondKey, () -> {
 
             redissonClient.getMap(key).remove(secondKey); // 移除：redis缓存
 
-            CacheLocalUtil.remove(key, secondKey); // 移除：本地缓存
+            CacheLocalUtil.removeSecondMap(key, secondKey); // 移除：本地缓存
 
         });
 

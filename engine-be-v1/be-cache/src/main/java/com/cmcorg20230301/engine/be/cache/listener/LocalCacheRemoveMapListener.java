@@ -40,7 +40,7 @@ public class LocalCacheRemoveMapListener {
             for (NotEmptyKeyValueSet.KeyValue subItem : keyValueSet) {
 
                 log.info("kafka：移除本地 map缓存：大 key：{}，小 key：{}", key, subItem.getKey());
-                CacheLocalUtil.remove(key, subItem.getKey()); // 移除：本地缓存 map中的 key
+                CacheLocalUtil.removeSecondMap(key, subItem.getKey()); // 移除：本地缓存 map中的 key
 
             }
 
