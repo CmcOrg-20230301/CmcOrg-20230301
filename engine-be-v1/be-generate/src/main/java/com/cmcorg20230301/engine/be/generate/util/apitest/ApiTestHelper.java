@@ -1,4 +1,4 @@
-package com.cmcorg20230301.engine.be.generate.util;
+package com.cmcorg20230301.engine.be.generate.util.apitest;
 
 import java.util.Scanner;
 
