@@ -22,7 +22,7 @@ CREATE TABLE `sys_dict`
     `dict_key`    varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci  NOT NULL COMMENT '字典 key（不能重复），字典项要冗余这个 key，目的：方便操作',
     `name`        varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci  NOT NULL COMMENT '字典/字典项 名',
     `type`        tinyint                                                       NOT NULL COMMENT '字典类型：1 字典 2 字典项',
-    `value`       tinyint                                                       NOT NULL COMMENT '字典项 value（数字 123...）备注：字典为 -1',
+    `value`       int                                                           NOT NULL COMMENT '字典项 value（数字 123...）备注：字典为 -1',
     `order_no`    int                                                           NOT NULL COMMENT '排序号（值越大越前面，默认为 0）',
     PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB

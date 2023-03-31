@@ -26,7 +26,7 @@ public class SysDictInsertOrUpdateDTO extends BaseInsertOrUpdateDTO {
     private SysDictTypeEnum type;
 
     @Schema(description = "字典项 value（数字 123...）备注：字典为 -1")
-    private Byte value;
+    private Integer value;
 
     @Schema(description = "排序号（值越大越前面，默认为 0）")
     private Integer orderNo;

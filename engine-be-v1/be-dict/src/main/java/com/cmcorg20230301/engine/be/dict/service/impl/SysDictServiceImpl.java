@@ -50,7 +50,7 @@ public class SysDictServiceImpl extends ServiceImpl<SysDictMapper, SysDictDO> im
                 ApiResultVO.error(BizCodeEnum.SAME_KEY_OR_NAME_EXIST);
             }
 
-            dto.setValue((byte)-1); // 字典的value为 -1
+            dto.setValue(-1); // 字典的value为 -1
 
         } else {
 

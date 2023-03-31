@@ -25,7 +25,7 @@ public class SysDictDO extends BaseEntity {
     private SysDictTypeEnum type;
 
     @Schema(description = "字典项 value（数字 123...）备注：字典为 -1")
-    private Byte value;
+    private Integer value;
 
     @TableField(fill = FieldFill.INSERT)
     @Schema(description = "排序号（值越大越前面，默认为 0）")
