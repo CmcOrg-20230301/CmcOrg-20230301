@@ -33,16 +33,6 @@ CREATE TABLE `sys_dict`
 -- ----------------------------
 -- Records of sys_dict
 -- ----------------------------
-INSERT INTO `sys_dict`
-VALUES (1, 1, '2022-03-07 16:13:14', 0, '2022-10-06 04:08:09', 1, 3, 0, '', 'request_category', '请求类别', 1, -1, 10000);
-INSERT INTO `sys_dict`
-VALUES (2, 1, '2022-03-07 16:16:34', 1, '2022-05-06 15:04:59', 1, 3, 0, '', 'request_category', 'H5（网页端）', 2, 1, 10000);
-INSERT INTO `sys_dict`
-VALUES (3, 1, '2022-03-07 16:16:50', 1, '2022-05-06 15:05:07', 1, 3, 0, '', 'request_category', 'APP（移动端）', 2, 2, 9990);
-INSERT INTO `sys_dict`
-VALUES (4, 1, '2022-03-07 16:17:01', 1, '2022-05-06 15:05:15', 1, 3, 0, '', 'request_category', 'PC（桌面程序）', 2, 3, 9980);
-INSERT INTO `sys_dict`
-VALUES (5, 1, '2022-04-13 21:47:07', 1, '2022-05-06 15:05:22', 1, 1, 0, '', 'request_category', '微信小程序', 2, 4, 9970);
 
 -- ----------------------------
 -- Table structure for sys_file

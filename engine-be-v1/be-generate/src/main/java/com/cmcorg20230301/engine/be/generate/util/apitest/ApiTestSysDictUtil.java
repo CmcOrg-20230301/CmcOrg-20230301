@@ -1,5 +1,6 @@
 package com.cmcorg20230301.engine.be.generate.util.apitest;
 
+import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.lang.TypeReference;
 import cn.hutool.core.util.IdUtil;
@@ -15,6 +16,7 @@ import com.cmcorg20230301.engine.be.model.model.dto.NotNullId;
 import com.cmcorg20230301.engine.be.security.model.vo.ApiResultVO;
 import lombok.extern.slf4j.Slf4j;
 
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -166,7 +168,7 @@ public class ApiTestSysDictUtil {
         SysDictInsertOrUpdateDTO dto = new SysDictInsertOrUpdateDTO();
         dto.setDictKey(sysDictKey);
         dto.setName(sysDictName);
-        dto.setType(type);
+        //        dto.setType(type);
 
         if (SysDictTypeEnum.DICT.equals(type)) {
             dto.setValue(-1);
@@ -176,7 +178,11 @@ public class ApiTestSysDictUtil {
 
         dto.setEnableFlag(true);
 
-        String bodyStr = HttpRequest.post(apiEndpoint + "/sys/dict/insertOrUpdate").body(JSONUtil.toJsonStr(dto))
+        Map<String, Object> map = BeanUtil.beanToMap(dto);
+
+        map.put("type", type.getCode());
+
+        String bodyStr = HttpRequest.post(apiEndpoint + "/sys/dict/insertOrUpdate").body(JSONUtil.toJsonStr(map))
             .header("Authorization", jwt).execute().body();
 
         log.info("字典-新增/修改：耗时：{}，bodyStr：{}", ApiTestHelper.calcCostMs(currentTs), bodyStr);
