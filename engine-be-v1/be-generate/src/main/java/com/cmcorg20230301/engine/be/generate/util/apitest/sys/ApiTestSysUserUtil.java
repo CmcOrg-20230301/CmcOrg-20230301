@@ -17,8 +17,10 @@ import com.cmcorg20230301.engine.be.security.model.entity.BaseEntity;
 import com.cmcorg20230301.engine.be.security.model.entity.SysRoleDO;
 import com.cmcorg20230301.engine.be.security.model.vo.ApiResultVO;
 import com.cmcorg20230301.engine.be.security.util.MyRsaUtil;
+import com.cmcorg20230301.engine.be.user.model.dto.SysUserDictListDTO;
 import com.cmcorg20230301.engine.be.user.model.dto.SysUserInsertOrUpdateDTO;
 import com.cmcorg20230301.engine.be.user.model.dto.SysUserPageDTO;
+import com.cmcorg20230301.engine.be.user.model.dto.SysUserUpdatePasswordDTO;
 import com.cmcorg20230301.engine.be.user.model.vo.SysUserInfoByIdVO;
 import com.cmcorg20230301.engine.be.user.model.vo.SysUserPageVO;
 import com.cmcorg20230301.engine.be.util.util.NicknameUtil;
@@ -34,14 +36,23 @@ import java.util.stream.Collectors;
 public class ApiTestSysUserUtil {
 
     // 执行，接口的地址，备注：最后面不要加斜杠 /
-    private static final String API_ENDPOINT = "http://43.154.37.130:10001";
-    //    private static final String API_ENDPOINT = "http://127.0.0.1:10001";
+    //    private static final String API_ENDPOINT = "http://43.154.37.130:10001";
+    private static final String API_ENDPOINT = "http://127.0.0.1:10001";
+
+    /**
+     * 随机密码
+     */
+    public static String randomPassword() {
+
+        return RandomUtil.randomString(2) + RandomUtil.randomStringUpper(18);
+
+    }
 
     public static void main(String[] args) {
 
         // 执行
         exec(API_ENDPOINT, ApiTestHelper.ADMIN_SIGN_IN_NAME, ApiTestHelper.ADMIN_PASSWORD, ApiTestHelper.RSA_PUBLIC_KEY,
-            NicknameUtil.getRandomNickname(), RandomUtil.randomString(2) + RandomUtil.randomStringUpper(18));
+            NicknameUtil.getRandomNickname(), randomPassword(), randomPassword());
 
     }
 
@@ -49,7 +60,7 @@ public class ApiTestSysUserUtil {
      * 执行
      */
     private static void exec(String apiEndpoint, String adminSignInName, String adminPassword, String rsaPublicKey,
-        String sysUserName, String password) {
+        String sysUserName, String password, String newPassword) {
 
         // 登录名-用户名账号密码登录
         String jwt =
@@ -83,8 +94,80 @@ public class ApiTestSysUserUtil {
             return;
         }
 
+        // 用户-下拉列表
+        sysUserDictList(apiEndpoint, jwt);
+
+        // 用户-批量：重置头像
+        sysUserResetAvatar(apiEndpoint, jwt, CollUtil.newHashSet(id));
+
+        // 用户-批量：修改密码
+        sysUserUpdatePassword(apiEndpoint, jwt, CollUtil.newHashSet(id), newPassword, rsaPublicKey);
+
+        // 登录名-用户名账号密码登录
+        ApiTestSignSignInNameUtil.signInNameSignIn(apiEndpoint, sysUserName, newPassword, rsaPublicKey);
+
         // 用户-批量删除
         sysUserDeleteByIdSet(apiEndpoint, jwt, CollUtil.newHashSet(id));
+
+    }
+
+    /**
+     * 用户-批量：修改密码
+     */
+    private static void sysUserUpdatePassword(String apiEndpoint, String jwt, Set<Long> idSet, String passwordTemp,
+        String rsaPublicKey) {
+
+        String originPassword = MyRsaUtil.rsaEncrypt(passwordTemp, rsaPublicKey);
+
+        String password = DigestUtil.sha256Hex((DigestUtil.sha512Hex(passwordTemp)));
+
+        password = MyRsaUtil.rsaEncrypt(password, rsaPublicKey);
+
+        long currentTs = System.currentTimeMillis();
+
+        SysUserUpdatePasswordDTO dto = new SysUserUpdatePasswordDTO();
+        dto.setNewPassword(password);
+        dto.setNewOriginPassword(originPassword);
+        dto.setIdSet(idSet);
+
+        String bodyStr = HttpRequest.post(apiEndpoint + "/sys/user/updatePassword").body(JSONUtil.toJsonStr(dto))
+            .header("Authorization", jwt).execute().body();
+
+        log.info("用户-批量：修改密码：耗时：{}，bodyStr：{}", ApiTestHelper.calcCostMs(currentTs), bodyStr);
+
+    }
+
+    /**
+     * 用户-批量：重置头像
+     */
+    private static void sysUserResetAvatar(String apiEndpoint, String jwt, Set<Long> idSet) {
+
+        long currentTs = System.currentTimeMillis();
+
+        NotEmptyIdSet notEmptyIdSet = new NotEmptyIdSet();
+        notEmptyIdSet.setIdSet(idSet);
+
+        String bodyStr = HttpRequest.post(apiEndpoint + "/sys/user/resetAvatar").body(JSONUtil.toJsonStr(notEmptyIdSet))
+            .header("Authorization", jwt).execute().body();
+
+        log.info("用户-批量：重置头像：耗时：{}，bodyStr：{}", ApiTestHelper.calcCostMs(currentTs), bodyStr);
+
+    }
+
+    /**
+     * 用户-下拉列表
+     */
+    private static void sysUserDictList(String apiEndpoint, String jwt) {
+
+        long currentTs = System.currentTimeMillis();
+
+        SysUserDictListDTO dto = new SysUserDictListDTO();
+        dto.setAddAdminFlag(true);
+
+        String bodyStr = HttpRequest.post(apiEndpoint + "/sys/user/dictList").body(JSONUtil.toJsonStr(dto))
+            .header("Authorization", jwt).execute().body();
+
+        log.info("用户-下拉列表：耗时：{}，bodyStr：{}", ApiTestHelper.calcCostMs(currentTs), bodyStr);
 
     }
 

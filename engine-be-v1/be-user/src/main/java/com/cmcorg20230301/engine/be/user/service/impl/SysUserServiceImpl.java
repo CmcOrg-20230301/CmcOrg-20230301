@@ -393,14 +393,18 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserProMapper, SysUserDO>
             dto.setNewOriginPassword(MyRsaUtil.rsaDecrypt(dto.getNewOriginPassword(), paramValue));
             dto.setNewPassword(MyRsaUtil.rsaDecrypt(dto.getNewPassword(), paramValue));
 
-            if (!ReUtil.isMatch(BaseRegexConstant.PASSWORD_REGEXP, dto.getNewOriginPassword())) {
+            if (BooleanUtil.isFalse(ReUtil.isMatch(BaseRegexConstant.PASSWORD_REGEXP, dto.getNewOriginPassword()))) {
+
                 ApiResultVO.error(
                     com.cmcorg20230301.engine.be.sign.helper.exception.BizCodeEnum.PASSWORD_RESTRICTIONS); // 不合法直接抛出异常
+
             }
 
             password = PasswordConvertUtil.convert(dto.getNewPassword(), true);
 
         }
+
+        lambdaUpdate().in(BaseEntity::getId, dto.getIdSet()).set(SysUserDO::getPassword, password).update();
 
         refreshJwtSecretSuf(new NotEmptyIdSet(dto.getIdSet()), password); // 刷新：jwt私钥后缀，并重新设置密码
 
