@@ -243,7 +243,7 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenuDO> im
      */
     private void deleteByIdSetSub(Set<Long> idSet) {
 
-        // 删除 角色菜单关联表
+        // 删除：角色菜单关联表
         sysRoleRefMenuService.lambdaUpdate().in(SysRoleRefMenuDO::getMenuId, idSet).remove();
 
     }

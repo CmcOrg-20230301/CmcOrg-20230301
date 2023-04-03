@@ -26,7 +26,7 @@ public class CacheHelper {
         String key = redisKeyEnum.name();
 
         if (StrUtil.isNotBlank(sufKey)) {
-            key = key + sufKey;
+            key = key + ":" + sufKey;
         }
 
         return key;

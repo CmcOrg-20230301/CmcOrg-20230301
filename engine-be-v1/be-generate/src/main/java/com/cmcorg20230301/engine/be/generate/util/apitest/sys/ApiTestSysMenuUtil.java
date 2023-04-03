@@ -2,7 +2,9 @@ package com.cmcorg20230301.engine.be.generate.util.apitest.sys;
 
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.lang.TypeReference;
+import cn.hutool.core.thread.ThreadUtil;
 import cn.hutool.core.util.IdUtil;
+import cn.hutool.core.util.RandomUtil;
 import cn.hutool.http.HttpRequest;
 import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -16,6 +18,7 @@ import com.cmcorg20230301.engine.be.model.model.dto.NotNullId;
 import com.cmcorg20230301.engine.be.security.model.entity.SysMenuDO;
 import com.cmcorg20230301.engine.be.security.model.vo.ApiResultVO;
 import lombok.extern.slf4j.Slf4j;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Set;
 
@@ -30,13 +33,21 @@ public class ApiTestSysMenuUtil {
     private static final String API_ENDPOINT = "http://127.0.0.1:10001";
 
     // 菜单名
-    private static final String SYS_DICT_NAME = IdUtil.simpleUUID();
+    private static final String SYS_MENU_NAME = IdUtil.simpleUUID();
 
     public static void main(String[] args) {
 
-        // 执行
-        exec(API_ENDPOINT, ApiTestHelper.ADMIN_SIGN_IN_NAME, ApiTestHelper.ADMIN_PASSWORD, ApiTestHelper.RSA_PUBLIC_KEY,
-            SYS_DICT_NAME);
+        for (int i = 0; i < 100; i++) {
+
+            ThreadUtil.execute(() -> {
+
+                // 执行
+                exec(API_ENDPOINT, ApiTestHelper.ADMIN_SIGN_IN_NAME, ApiTestHelper.ADMIN_PASSWORD,
+                    ApiTestHelper.RSA_PUBLIC_KEY, SYS_MENU_NAME);
+
+            });
+
+        }
 
     }
 
@@ -51,50 +62,107 @@ public class ApiTestSysMenuUtil {
             ApiTestSignSignInNameUtil.signInNameSignIn(apiEndpoint, adminSignInName, adminPassword, rsaPublicKey);
 
         // 菜单-新增/修改
-        SysMenuInsertOrUpdateDTO dto = sysMenuInsertOrUpdate(apiEndpoint, jwt, sysMenuName);
+        SysMenuInsertOrUpdateDTO parentDTO =
+            sysMenuInsertOrUpdate(apiEndpoint, jwt, getSysMenuInsertOrUpdateDTO(sysMenuName, 0L));
 
         // 菜单-分页排序查询
-        Page<SysMenuDO> sysMenuDOPage = sysMenuPage(apiEndpoint, jwt, dto);
+        Page<SysMenuDO> sysMenuDOPage = sysMenuPage(apiEndpoint, jwt, parentDTO);
 
-        SysMenuDO sysMenuDOByPage = null;
+        SysMenuDO sysMenuDOParentByPage = null;
 
         for (SysMenuDO item : sysMenuDOPage.getRecords()) {
 
-            if (item.getName().equals(dto.getName())) {
+            if (item.getName().equals(parentDTO.getName())) {
 
-                sysMenuDOByPage = item;
+                sysMenuDOParentByPage = item;
                 break;
 
             }
 
         }
 
-        if (sysMenuDOByPage == null) {
-            log.info("sysMenuDOByPage 等于null，结束");
+        if (sysMenuDOParentByPage == null) {
+            log.info("sysMenuDOParentByPage 等于null，结束");
+            return;
+        }
+
+        // 菜单-新增/修改
+        SysMenuInsertOrUpdateDTO childrenDTO = sysMenuInsertOrUpdate(apiEndpoint, jwt,
+            getSysMenuInsertOrUpdateDTO(IdUtil.simpleUUID(), sysMenuDOParentByPage.getId()));
+
+        // 菜单-分页排序查询
+        sysMenuDOPage = sysMenuPage(apiEndpoint, jwt, childrenDTO);
+
+        SysMenuDO sysMenuDOChildrenByPage = null;
+
+        for (SysMenuDO item : sysMenuDOPage.getRecords()) {
+
+            if (item.getName().equals(childrenDTO.getName())) {
+
+                sysMenuDOChildrenByPage = item;
+                break;
+
+            }
+
+        }
+
+        if (sysMenuDOChildrenByPage == null) {
+            log.info("sysMenuDOChildrenByPage 等于null，结束");
             return;
         }
 
         // 查询：树结构
-        sysMenuTree(apiEndpoint, jwt, dto);
+        sysMenuTree(apiEndpoint, jwt, childrenDTO);
 
-        Long id = sysMenuDOByPage.getId();
+        Long parentId = sysMenuDOParentByPage.getId();
 
         // 菜单-通过主键id，查看详情
-        SysMenuDO sysMenuDOById = sysMenuInfoById(apiEndpoint, jwt, id);
+        SysMenuDO sysMenuDOParentById = sysMenuInfoById(apiEndpoint, jwt, parentId);
 
-        if (sysMenuDOById == null) {
-            log.info("sysMenuDOById 等于null，结束");
+        if (sysMenuDOParentById == null) {
+            log.info("sysMenuDOParentById 等于null，结束");
+            return;
+        }
+
+        Long childrenId = sysMenuDOChildrenByPage.getId();
+
+        // 字典-通过主键id，查看详情
+        SysMenuDO sysMenuChildrenDOById = sysMenuInfoById(apiEndpoint, jwt, childrenId);
+
+        if (sysMenuChildrenDOById == null) {
+            log.info("sysMenuChildrenDOById 等于null，结束");
             return;
         }
 
         // 通过主键 idSet，加减排序号
-        sysMenuAddOrderNo(apiEndpoint, jwt, CollUtil.newHashSet(id));
+        sysMenuAddOrderNo(apiEndpoint, jwt, CollUtil.newHashSet(parentId, childrenId));
 
         // 菜单-通过主键id，查看详情
-        sysMenuInfoById(apiEndpoint, jwt, id);
+        sysMenuInfoById(apiEndpoint, jwt, parentId);
+
+        // 菜单-通过主键id，查看详情
+        sysMenuInfoById(apiEndpoint, jwt, childrenId);
+
+        // 菜单-获取：当前用户绑定的菜单
+        sysMenuUserSelfMenuList(apiEndpoint, jwt);
 
         // 菜单-批量删除
-        sysMenuDeleteByIdSet(apiEndpoint, jwt, CollUtil.newHashSet(id));
+        sysMenuDeleteByIdSet(apiEndpoint, jwt, CollUtil.newHashSet(childrenId));
+        sysMenuDeleteByIdSet(apiEndpoint, jwt, CollUtil.newHashSet(parentId));
+
+    }
+
+    /**
+     * 菜单-获取：当前用户绑定的菜单
+     */
+    private static void sysMenuUserSelfMenuList(String apiEndpoint, String jwt) {
+
+        long currentTs = System.currentTimeMillis();
+
+        String bodyStr =
+            HttpRequest.post(apiEndpoint + "/sys/menu/userSelfMenuList").header("Authorization", jwt).execute().body();
+
+        log.info("菜单-获取：当前用户绑定的菜单：耗时：{}，bodyStr：{}", ApiTestHelper.calcCostMs(currentTs), bodyStr);
 
     }
 
@@ -202,30 +270,43 @@ public class ApiTestSysMenuUtil {
     /**
      * 菜单-新增/修改
      */
-    private static SysMenuInsertOrUpdateDTO sysMenuInsertOrUpdate(String apiEndpoint, String jwt, String sysMenuName) {
+    private static SysMenuInsertOrUpdateDTO sysMenuInsertOrUpdate(String apiEndpoint, String jwt,
+        SysMenuInsertOrUpdateDTO dto) {
 
         long currentTs = System.currentTimeMillis();
-
-        SysMenuInsertOrUpdateDTO dto = new SysMenuInsertOrUpdateDTO();
-        dto.setParentId(0L);
-        dto.setName(sysMenuName);
-        dto.setPath("");
-        dto.setRouter("");
-        dto.setIcon("");
-        dto.setAuths("");
-        dto.setAuthFlag(false);
-        dto.setRoleIdSet(null);
-        dto.setEnableFlag(true);
-        dto.setFirstFlag(false);
-        dto.setOrderNo(100);
-        dto.setShowFlag(true);
-        dto.setRedirect("");
-        dto.setRemark("");
 
         String bodyStr = HttpRequest.post(apiEndpoint + "/sys/menu/insertOrUpdate").body(JSONUtil.toJsonStr(dto))
             .header("Authorization", jwt).execute().body();
 
         log.info("菜单-新增/修改：耗时：{}，bodyStr：{}", ApiTestHelper.calcCostMs(currentTs), bodyStr);
+
+        return dto;
+
+    }
+
+    /**
+     * 获取：对象
+     */
+    @NotNull
+    private static SysMenuInsertOrUpdateDTO getSysMenuInsertOrUpdateDTO(String sysMenuName, long parentId) {
+
+        SysMenuInsertOrUpdateDTO dto = new SysMenuInsertOrUpdateDTO();
+
+        dto.setParentId(parentId);
+        dto.setName(sysMenuName);
+        dto.setPath("/" + IdUtil.simpleUUID());
+        dto.setRouter(IdUtil.simpleUUID());
+        dto.setIcon("");
+        dto.setAuths("");
+        dto.setAuthFlag(false);
+        // TODO 菜单-新增/修改
+        //        dto.setRoleIdSet(null);
+        dto.setEnableFlag(true);
+        dto.setFirstFlag(false);
+        dto.setOrderNo(RandomUtil.randomInt(1000, 90000000));
+        dto.setShowFlag(true);
+        dto.setRedirect("");
+        dto.setRemark("");
 
         return dto;
 
