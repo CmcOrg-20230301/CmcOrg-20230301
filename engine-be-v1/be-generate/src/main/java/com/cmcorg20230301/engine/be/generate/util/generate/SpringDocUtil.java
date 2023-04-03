@@ -1,4 +1,4 @@
-package com.cmcorg20230301.engine.be.generate.util;
+package com.cmcorg20230301.engine.be.generate.util.generate;
 
 import cn.hutool.core.map.MapUtil;
 import cn.hutool.core.text.StrMatcher;

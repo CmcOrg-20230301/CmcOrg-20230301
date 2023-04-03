@@ -40,10 +40,12 @@ public class ApiTestSysParamUtil {
     /**
      * 执行
      */
-    private static void exec(String apiEndpoint, String rootSignInName, String rootPassword, String rsaPublicKey, String sysParamName) {
+    private static void exec(String apiEndpoint, String adminSignInName, String adminPassword, String rsaPublicKey,
+        String sysParamName) {
 
         // 登录名-用户名账号密码登录
-        String jwt = ApiTestSignSignInNameUtil.signInNameSignIn(apiEndpoint, rootSignInName, rootPassword, rsaPublicKey);
+        String jwt =
+            ApiTestSignSignInNameUtil.signInNameSignIn(apiEndpoint, adminSignInName, adminPassword, rsaPublicKey);
 
         // 系统参数-新增/修改
         SysParamInsertOrUpdateDTO dto = sysParamInsertOrUpdate(apiEndpoint, jwt, sysParamName);
