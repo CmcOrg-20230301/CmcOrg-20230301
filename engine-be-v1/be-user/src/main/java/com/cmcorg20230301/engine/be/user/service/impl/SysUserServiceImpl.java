@@ -72,9 +72,11 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserProMapper, SysUserDO>
         Set<Long> userIdSet = new HashSet<>(MyMapUtil.getInitialCapacity(page.getRecords().size()));
 
         for (SysUserPageVO item : page.getRecords()) {
+
             item.setEmail(DesensitizedUtil.email(item.getEmail())); // 脱敏
             item.setSignInName(DesensitizedUtil.chineseName(item.getSignInName())); // 脱敏
             userIdSet.add(item.getId());
+
         }
 
         if (userIdSet.size() != 0) {
@@ -111,7 +113,9 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserProMapper, SysUserDO>
 
         // 增加 admin账号
         if (BooleanUtil.isTrue(dto.getAddAdminFlag())) {
+
             dictListVOList.add(new DictVO(BaseConstant.ADMIN_ID, securityProperties.getAdminNickname()));
+
         }
 
         return new Page<DictVO>().setTotal(sysUserInfoDOList.size()).setRecords(dictListVOList);
@@ -395,6 +399,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserProMapper, SysUserDO>
             }
 
             password = PasswordConvertUtil.convert(dto.getNewPassword(), true);
+
         }
 
         refreshJwtSecretSuf(new NotEmptyIdSet(dto.getIdSet()), password); // 刷新：jwt私钥后缀，并重新设置密码

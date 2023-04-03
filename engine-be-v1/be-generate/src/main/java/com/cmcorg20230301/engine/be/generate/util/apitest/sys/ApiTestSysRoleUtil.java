@@ -8,15 +8,19 @@ import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.cmcorg20230301.engine.be.generate.util.apitest.ApiTestHelper;
 import com.cmcorg20230301.engine.be.generate.util.apitest.sign.ApiTestSignSignInNameUtil;
+import com.cmcorg20230301.engine.be.menu.model.dto.SysMenuInsertOrUpdateDTO;
 import com.cmcorg20230301.engine.be.model.model.dto.NotEmptyIdSet;
 import com.cmcorg20230301.engine.be.model.model.dto.NotNullId;
 import com.cmcorg20230301.engine.be.role.model.dto.SysRoleInsertOrUpdateDTO;
 import com.cmcorg20230301.engine.be.role.model.dto.SysRolePageDTO;
+import com.cmcorg20230301.engine.be.security.model.entity.BaseEntity;
+import com.cmcorg20230301.engine.be.security.model.entity.SysMenuDO;
 import com.cmcorg20230301.engine.be.security.model.entity.SysRoleDO;
 import com.cmcorg20230301.engine.be.security.model.vo.ApiResultVO;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * 角色相关接口测试工具
@@ -154,12 +158,17 @@ public class ApiTestSysRoleUtil {
      */
     private static SysRoleInsertOrUpdateDTO sysRoleInsertOrUpdate(String apiEndpoint, String jwt, String sysRoleName) {
 
+        Page<SysMenuDO> sysMenuDOPage =
+            ApiTestSysMenuUtil.sysMenuPage(apiEndpoint, jwt, new SysMenuInsertOrUpdateDTO());
+
+        Set<Long> menuIdSet = sysMenuDOPage.getRecords().stream().map(BaseEntity::getId).collect(Collectors.toSet());
+
         long currentTs = System.currentTimeMillis();
 
         SysRoleInsertOrUpdateDTO dto = new SysRoleInsertOrUpdateDTO();
         dto.setName(sysRoleName);
+        dto.setMenuIdSet(menuIdSet);
         // TODO：角色-新增/修改
-        //        dto.setMenuIdSet();
         //        dto.setUserIdSet();
         dto.setDefaultFlag(false);
         dto.setEnableFlag(true);

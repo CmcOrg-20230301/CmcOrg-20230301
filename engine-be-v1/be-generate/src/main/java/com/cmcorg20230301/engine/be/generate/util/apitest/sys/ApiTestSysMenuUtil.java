@@ -238,7 +238,7 @@ public class ApiTestSysMenuUtil {
     /**
      * 菜单-分页排序查询
      */
-    private static Page<SysMenuDO> sysMenuPage(String apiEndpoint, String jwt, SysMenuInsertOrUpdateDTO dto) {
+    public static Page<SysMenuDO> sysMenuPage(String apiEndpoint, String jwt, SysMenuInsertOrUpdateDTO dto) {
 
         long currentTs = System.currentTimeMillis();
 
