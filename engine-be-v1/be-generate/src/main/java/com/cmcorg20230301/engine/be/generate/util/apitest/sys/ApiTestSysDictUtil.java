@@ -34,12 +34,12 @@ import java.util.Set;
 public class ApiTestSysDictUtil {
 
     // 执行，接口的地址，备注：最后面不要加斜杠 /
-    //    private static final String API_ENDPOINT = "http://43.154.37.130:10001";
-    private static final String API_ENDPOINT = "http://127.0.0.1:10001";
+    private static final String API_ENDPOINT = "http://43.154.37.130:10001";
+    //    private static final String API_ENDPOINT = "http://127.0.0.1:10001";
 
     public static void main(String[] args) {
 
-        for (int i = 0; i < 2000; i++) {
+        for (int i = 0; i < 30; i++) {
 
             ThreadUtil.execute(() -> {
 
