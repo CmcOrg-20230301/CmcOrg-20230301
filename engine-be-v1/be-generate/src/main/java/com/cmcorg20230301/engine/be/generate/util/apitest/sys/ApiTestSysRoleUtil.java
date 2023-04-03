@@ -1,4 +1,4 @@
-package com.cmcorg20230301.engine.be.generate.util.apitest;
+package com.cmcorg20230301.engine.be.generate.util.apitest.sys;
 
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.lang.TypeReference;
@@ -6,6 +6,8 @@ import cn.hutool.core.util.IdUtil;
 import cn.hutool.http.HttpRequest;
 import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.cmcorg20230301.engine.be.generate.util.apitest.ApiTestHelper;
+import com.cmcorg20230301.engine.be.generate.util.apitest.sign.ApiTestSignSignInNameUtil;
 import com.cmcorg20230301.engine.be.model.model.dto.NotEmptyIdSet;
 import com.cmcorg20230301.engine.be.model.model.dto.NotNullId;
 import com.cmcorg20230301.engine.be.role.model.dto.SysRoleInsertOrUpdateDTO;
@@ -20,7 +22,7 @@ import java.util.Set;
  * 角色相关接口测试工具
  */
 @Slf4j
-public class ApiTestRoleMenuUtil {
+public class ApiTestSysRoleUtil {
 
     // 执行，接口的地址，备注：最后面不要加斜杠 /
     //    private static final String API_ENDPOINT = "http://43.154.37.130:10001";
