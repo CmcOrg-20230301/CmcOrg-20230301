@@ -128,7 +128,7 @@ public class ApiTestSysRoleUtil {
     /**
      * 角色-分页排序查询
      */
-    private static Page<SysRoleDO> sysRolePage(String apiEndpoint, String jwt, SysRoleInsertOrUpdateDTO dto) {
+    public static Page<SysRoleDO> sysRolePage(String apiEndpoint, String jwt, SysRoleInsertOrUpdateDTO dto) {
 
         long currentTs = System.currentTimeMillis();
 

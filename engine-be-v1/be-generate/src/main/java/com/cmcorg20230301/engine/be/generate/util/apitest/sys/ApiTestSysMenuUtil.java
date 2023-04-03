@@ -14,12 +14,16 @@ import com.cmcorg20230301.engine.be.menu.model.dto.SysMenuPageDTO;
 import com.cmcorg20230301.engine.be.model.model.dto.ChangeNumberDTO;
 import com.cmcorg20230301.engine.be.model.model.dto.NotEmptyIdSet;
 import com.cmcorg20230301.engine.be.model.model.dto.NotNullId;
+import com.cmcorg20230301.engine.be.role.model.dto.SysRoleInsertOrUpdateDTO;
+import com.cmcorg20230301.engine.be.security.model.entity.BaseEntity;
 import com.cmcorg20230301.engine.be.security.model.entity.SysMenuDO;
+import com.cmcorg20230301.engine.be.security.model.entity.SysRoleDO;
 import com.cmcorg20230301.engine.be.security.model.vo.ApiResultVO;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * 菜单相关接口测试工具
@@ -28,8 +32,8 @@ import java.util.Set;
 public class ApiTestSysMenuUtil {
 
     // 执行，接口的地址，备注：最后面不要加斜杠 /
-    //    private static final String API_ENDPOINT = "http://43.154.37.130:10001";
-    private static final String API_ENDPOINT = "http://127.0.0.1:10001";
+    private static final String API_ENDPOINT = "http://43.154.37.130:10001";
+    //    private static final String API_ENDPOINT = "http://127.0.0.1:10001";
 
     public static void main(String[] args) {
 
@@ -51,7 +55,7 @@ public class ApiTestSysMenuUtil {
 
         // 菜单-新增/修改
         SysMenuInsertOrUpdateDTO parentDTO =
-            sysMenuInsertOrUpdate(apiEndpoint, jwt, getSysMenuInsertOrUpdateDTO(sysMenuName, 0L));
+            sysMenuInsertOrUpdate(apiEndpoint, jwt, getSysMenuInsertOrUpdateDTO(apiEndpoint, jwt, sysMenuName, 0L));
 
         // 菜单-分页排序查询
         Page<SysMenuDO> sysMenuDOPage = sysMenuPage(apiEndpoint, jwt, parentDTO);
@@ -76,7 +80,7 @@ public class ApiTestSysMenuUtil {
 
         // 菜单-新增/修改
         SysMenuInsertOrUpdateDTO childrenDTO = sysMenuInsertOrUpdate(apiEndpoint, jwt,
-            getSysMenuInsertOrUpdateDTO(IdUtil.simpleUUID(), sysMenuDOParentByPage.getId()));
+            getSysMenuInsertOrUpdateDTO(apiEndpoint, jwt, IdUtil.simpleUUID(), sysMenuDOParentByPage.getId()));
 
         // 菜单-分页排序查询
         sysMenuDOPage = sysMenuPage(apiEndpoint, jwt, childrenDTO);
@@ -276,7 +280,13 @@ public class ApiTestSysMenuUtil {
      * 获取：对象
      */
     @NotNull
-    private static SysMenuInsertOrUpdateDTO getSysMenuInsertOrUpdateDTO(String sysMenuName, long parentId) {
+    private static SysMenuInsertOrUpdateDTO getSysMenuInsertOrUpdateDTO(String apiEndpoint, String jwt,
+        String sysMenuName, long parentId) {
+
+        Page<SysRoleDO> sysRoleDOPage =
+            ApiTestSysRoleUtil.sysRolePage(apiEndpoint, jwt, new SysRoleInsertOrUpdateDTO());
+
+        Set<Long> roleIdSet = sysRoleDOPage.getRecords().stream().map(BaseEntity::getId).collect(Collectors.toSet());
 
         SysMenuInsertOrUpdateDTO dto = new SysMenuInsertOrUpdateDTO();
 
@@ -287,8 +297,7 @@ public class ApiTestSysMenuUtil {
         dto.setIcon("");
         dto.setAuths("");
         dto.setAuthFlag(false);
-        // TODO 菜单-新增/修改
-        //        dto.setRoleIdSet(null);
+        dto.setRoleIdSet(roleIdSet);
         dto.setEnableFlag(true);
         dto.setFirstFlag(false);
         dto.setOrderNo(RandomUtil.randomInt(1000, 90000000));
