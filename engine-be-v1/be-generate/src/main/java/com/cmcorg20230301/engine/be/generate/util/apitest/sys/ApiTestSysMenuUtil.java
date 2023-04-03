@@ -2,7 +2,6 @@ package com.cmcorg20230301.engine.be.generate.util.apitest.sys;
 
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.lang.TypeReference;
-import cn.hutool.core.thread.ThreadUtil;
 import cn.hutool.core.util.IdUtil;
 import cn.hutool.core.util.RandomUtil;
 import cn.hutool.http.HttpRequest;
@@ -32,22 +31,11 @@ public class ApiTestSysMenuUtil {
     //    private static final String API_ENDPOINT = "http://43.154.37.130:10001";
     private static final String API_ENDPOINT = "http://127.0.0.1:10001";
 
-    // 菜单名
-    private static final String SYS_MENU_NAME = IdUtil.simpleUUID();
-
     public static void main(String[] args) {
 
-        for (int i = 0; i < 100; i++) {
-
-            ThreadUtil.execute(() -> {
-
-                // 执行
-                exec(API_ENDPOINT, ApiTestHelper.ADMIN_SIGN_IN_NAME, ApiTestHelper.ADMIN_PASSWORD,
-                    ApiTestHelper.RSA_PUBLIC_KEY, SYS_MENU_NAME);
-
-            });
-
-        }
+        // 执行
+        exec(API_ENDPOINT, ApiTestHelper.ADMIN_SIGN_IN_NAME, ApiTestHelper.ADMIN_PASSWORD, ApiTestHelper.RSA_PUBLIC_KEY,
+            IdUtil.simpleUUID());
 
     }
 

@@ -3,6 +3,7 @@ package com.cmcorg20230301.engine.be.generate.util.apitest.sys;
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.lang.TypeReference;
+import cn.hutool.core.thread.ThreadUtil;
 import cn.hutool.core.util.IdUtil;
 import cn.hutool.core.util.RandomUtil;
 import cn.hutool.http.HttpRequest;
@@ -36,17 +37,19 @@ public class ApiTestSysDictUtil {
     //    private static final String API_ENDPOINT = "http://43.154.37.130:10001";
     private static final String API_ENDPOINT = "http://127.0.0.1:10001";
 
-    // 字典名
-    private static final String SYS_DICT_NAME = IdUtil.simpleUUID();
-
-    // 字典 key
-    private static final String SYS_DICT_KEY = IdUtil.simpleUUID();
-
     public static void main(String[] args) {
 
-        // 执行
-        exec(API_ENDPOINT, ApiTestHelper.ADMIN_SIGN_IN_NAME, ApiTestHelper.ADMIN_PASSWORD, ApiTestHelper.RSA_PUBLIC_KEY,
-            SYS_DICT_NAME, SYS_DICT_KEY);
+        for (int i = 0; i < 2000; i++) {
+
+            ThreadUtil.execute(() -> {
+
+                // 执行
+                exec(API_ENDPOINT, ApiTestHelper.ADMIN_SIGN_IN_NAME, ApiTestHelper.ADMIN_PASSWORD,
+                    ApiTestHelper.RSA_PUBLIC_KEY, IdUtil.simpleUUID(), IdUtil.simpleUUID());
+
+            });
+
+        }
 
     }
 

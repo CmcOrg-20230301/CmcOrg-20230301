@@ -28,14 +28,11 @@ public class ApiTestSysRoleUtil {
     //    private static final String API_ENDPOINT = "http://43.154.37.130:10001";
     private static final String API_ENDPOINT = "http://127.0.0.1:10001";
 
-    // 角色名
-    private static final String SYS_ROLE_NAME = IdUtil.simpleUUID();
-
     public static void main(String[] args) {
 
         // 执行
         exec(API_ENDPOINT, ApiTestHelper.ADMIN_SIGN_IN_NAME, ApiTestHelper.ADMIN_PASSWORD, ApiTestHelper.RSA_PUBLIC_KEY,
-            SYS_ROLE_NAME);
+            IdUtil.simpleUUID());
 
     }
 
