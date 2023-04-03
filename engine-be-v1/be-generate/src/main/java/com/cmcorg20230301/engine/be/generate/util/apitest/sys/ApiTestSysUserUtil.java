@@ -215,7 +215,7 @@ public class ApiTestSysUserUtil {
     /**
      * 用户-分页排序查询
      */
-    private static Page<SysUserPageVO> sysUserPage(String apiEndpoint, String jwt, SysUserInsertOrUpdateDTO dto) {
+    public static Page<SysUserPageVO> sysUserPage(String apiEndpoint, String jwt, SysUserInsertOrUpdateDTO dto) {
 
         long currentTs = System.currentTimeMillis();
 

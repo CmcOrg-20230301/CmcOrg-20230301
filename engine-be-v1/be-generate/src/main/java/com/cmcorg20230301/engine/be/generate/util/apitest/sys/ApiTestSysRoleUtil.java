@@ -17,6 +17,8 @@ import com.cmcorg20230301.engine.be.security.model.entity.BaseEntity;
 import com.cmcorg20230301.engine.be.security.model.entity.SysMenuDO;
 import com.cmcorg20230301.engine.be.security.model.entity.SysRoleDO;
 import com.cmcorg20230301.engine.be.security.model.vo.ApiResultVO;
+import com.cmcorg20230301.engine.be.user.model.dto.SysUserInsertOrUpdateDTO;
+import com.cmcorg20230301.engine.be.user.model.vo.SysUserPageVO;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.Set;
@@ -163,13 +165,18 @@ public class ApiTestSysRoleUtil {
 
         Set<Long> menuIdSet = sysMenuDOPage.getRecords().stream().map(BaseEntity::getId).collect(Collectors.toSet());
 
+        Page<SysUserPageVO> sysUserPageVOPage =
+            ApiTestSysUserUtil.sysUserPage(apiEndpoint, jwt, new SysUserInsertOrUpdateDTO());
+
+        Set<Long> userIdSet =
+            sysUserPageVOPage.getRecords().stream().map(SysUserPageVO::getId).collect(Collectors.toSet());
+
         long currentTs = System.currentTimeMillis();
 
         SysRoleInsertOrUpdateDTO dto = new SysRoleInsertOrUpdateDTO();
         dto.setName(sysRoleName);
         dto.setMenuIdSet(menuIdSet);
-        // TODO：角色-新增/修改
-        //        dto.setUserIdSet();
+        dto.setUserIdSet(userIdSet);
         dto.setDefaultFlag(false);
         dto.setEnableFlag(true);
         dto.setRemark("");
