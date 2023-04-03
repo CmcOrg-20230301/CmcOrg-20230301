@@ -28,7 +28,6 @@ console.error = (message?: any, ...optionalParams: any[]) => {
 // 自定义 console.error ↑
 
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
-    // TODO：暂时会报错，等 antd pro官方修复
     <React.StrictMode>
 
         <Provider store={store}>
