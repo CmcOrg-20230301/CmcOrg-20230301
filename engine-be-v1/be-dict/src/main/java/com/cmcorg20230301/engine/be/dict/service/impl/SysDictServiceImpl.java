@@ -247,13 +247,13 @@ public class SysDictServiceImpl extends ServiceImpl<SysDictMapper, SysDictDO> im
             return BaseBizCodeEnum.API_RESULT_OK.getMsg();
         }
 
-        List<SysDictDO> listByIds = listByIds(dto.getIdSet());
+        List<SysDictDO> sysDictDOList = listByIds(dto.getIdSet());
 
-        for (SysDictDO item : listByIds) {
+        for (SysDictDO item : sysDictDOList) {
             item.setOrderNo((int)(item.getOrderNo() + dto.getNumber()));
         }
 
-        updateBatchById(listByIds);
+        updateBatchById(sysDictDOList);
 
         return BaseBizCodeEnum.OK;
 

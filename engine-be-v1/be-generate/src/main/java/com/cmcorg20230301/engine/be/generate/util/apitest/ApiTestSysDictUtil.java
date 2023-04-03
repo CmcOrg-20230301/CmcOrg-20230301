@@ -11,6 +11,7 @@ import com.cmcorg20230301.engine.be.dict.model.dto.SysDictInsertOrUpdateDTO;
 import com.cmcorg20230301.engine.be.dict.model.dto.SysDictPageDTO;
 import com.cmcorg20230301.engine.be.dict.model.entity.SysDictDO;
 import com.cmcorg20230301.engine.be.dict.model.enums.SysDictTypeEnum;
+import com.cmcorg20230301.engine.be.model.model.dto.ChangeNumberDTO;
 import com.cmcorg20230301.engine.be.model.model.dto.NotEmptyIdSet;
 import com.cmcorg20230301.engine.be.model.model.dto.NotNullId;
 import com.cmcorg20230301.engine.be.security.model.vo.ApiResultVO;
@@ -78,6 +79,9 @@ public class ApiTestSysDictUtil {
             return;
         }
 
+        // 查询：树结构
+        sysDictTree(apiEndpoint, jwt, dto);
+
         Long id = sysDictDOByPage.getId();
 
         // 字典-通过主键id，查看详情
@@ -88,8 +92,51 @@ public class ApiTestSysDictUtil {
             return;
         }
 
+        // 通过主键 idSet，加减排序号
+        sysDictAddOrderNo(apiEndpoint, jwt, CollUtil.newHashSet(id));
+
+        // 字典-通过主键id，查看详情
+        sysDictInfoById(apiEndpoint, jwt, id);
+
         // 字典-批量删除
         sysDictDeleteByIdSet(apiEndpoint, jwt, CollUtil.newHashSet(id));
+
+    }
+
+    /**
+     * 通过主键 idSet，加减排序号
+     */
+    private static void sysDictAddOrderNo(String apiEndpoint, String jwt, Set<Long> idSet) {
+
+        long currentTs = System.currentTimeMillis();
+
+        ChangeNumberDTO changeNumberDTO = new ChangeNumberDTO();
+        changeNumberDTO.setNumber(100L);
+        changeNumberDTO.setIdSet(idSet);
+
+        String bodyStr =
+            HttpRequest.post(apiEndpoint + "/sys/dict/addOrderNo").body(JSONUtil.toJsonStr(changeNumberDTO))
+                .header("Authorization", jwt).execute().body();
+
+        log.info("字典-通过主键 idSet，加减排序号：耗时：{}，bodyStr：{}", ApiTestHelper.calcCostMs(currentTs), bodyStr);
+
+    }
+
+    /**
+     * 查询：树结构
+     */
+    private static void sysDictTree(String apiEndpoint, String jwt, SysDictInsertOrUpdateDTO dto) {
+
+        long currentTs = System.currentTimeMillis();
+
+        SysDictPageDTO pageDTO = new SysDictPageDTO();
+        pageDTO.setName(dto.getName());
+
+        String bodyStr =
+            HttpRequest.post(apiEndpoint + "/sys/dict/tree").body(JSONUtil.toJsonStr(dto)).header("Authorization", jwt)
+                .execute().body();
+
+        log.info("字典-查询：树结构：耗时：{}，bodyStr：{}", ApiTestHelper.calcCostMs(currentTs), bodyStr);
 
     }
 
