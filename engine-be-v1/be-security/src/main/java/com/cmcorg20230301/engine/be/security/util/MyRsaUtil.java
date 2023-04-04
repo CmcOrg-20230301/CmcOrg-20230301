@@ -1,9 +1,11 @@
 package com.cmcorg20230301.engine.be.security.util;
 
+import cn.hutool.core.convert.Convert;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.crypto.CryptoException;
 import cn.hutool.crypto.asymmetric.KeyType;
 import cn.hutool.crypto.asymmetric.RSA;
+import com.cmcorg20230301.engine.be.model.model.constant.BaseConstant;
 import com.cmcorg20230301.engine.be.model.model.constant.ParamConstant;
 import com.cmcorg20230301.engine.be.security.exception.BaseBizCodeEnum;
 import com.cmcorg20230301.engine.be.security.model.vo.ApiResultVO;
@@ -54,7 +56,34 @@ public class MyRsaUtil {
 
         }
 
-        return decryptStr; // 返回解密之后的 字符串
+        if (StrUtil.isBlank(decryptStr)) {
+            ApiResultVO.error(BaseBizCodeEnum.ILLEGAL_REQUEST);
+        }
+
+        String[] split = decryptStr.split(";");
+        if (split.length != 2) {
+            ApiResultVO.error(BaseBizCodeEnum.ILLEGAL_REQUEST);
+        }
+
+        // 获取：客户端传过来的时间戳
+        Long userTs = Convert.toLong(split[1]);
+
+        if (userTs == null) {
+            ApiResultVO.error(BaseBizCodeEnum.ILLEGAL_REQUEST);
+        }
+
+        long currentTimeMillis = System.currentTimeMillis();
+
+        long checkTs = userTs - currentTimeMillis;
+
+        // 不能和服务器时间相差过大
+        int expireTime = BaseConstant.MINUTE_30_EXPIRE_TIME;
+
+        if (checkTs > expireTime || checkTs < -expireTime) {
+            ApiResultVO.error("操作失败：您的时间：{}，与当前时间：{}，相差过大，请调整时间后再试", userTs, currentTimeMillis);
+        }
+
+        return split[0]; // 返回解密之后的 字符串
 
     }
 
