@@ -30,12 +30,12 @@ import java.util.Set;
 @Slf4j
 public class SecurityConfiguration {
 
-    public SecurityConfiguration(@Autowired(required = false) MethodInterceptor methodSecurityInterceptor) {
+    public SecurityConfiguration(@Autowired(required = false) MethodInterceptor methodInterceptor) {
 
-        if (methodSecurityInterceptor instanceof MethodSecurityInterceptor) {
+        if (methodInterceptor instanceof MethodSecurityInterceptor) {
 
             AffirmativeBased accessDecisionManager =
-                (AffirmativeBased)((MethodSecurityInterceptor)methodSecurityInterceptor).getAccessDecisionManager();
+                (AffirmativeBased)((MethodSecurityInterceptor)methodInterceptor).getAccessDecisionManager();
 
             accessDecisionManager.getDecisionVoters().add(0, new MyAccessDecisionVoter()); // 添加：自定义投票者
 
