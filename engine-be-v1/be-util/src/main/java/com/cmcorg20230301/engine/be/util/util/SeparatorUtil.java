@@ -13,6 +13,9 @@ public class SeparatorUtil {
     // 冒号分隔符
     public final static String COLON_SEPARATOR = ":";
 
+    // 分号分隔符
+    public final static String SEMICOLON_SEPARATOR = ";";
+
     /**
      * 返回：被【竖线分隔符】，包裹的字符串
      */

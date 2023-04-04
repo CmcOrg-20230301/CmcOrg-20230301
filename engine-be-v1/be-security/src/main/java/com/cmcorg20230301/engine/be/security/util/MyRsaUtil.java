@@ -9,12 +9,15 @@ import com.cmcorg20230301.engine.be.model.model.constant.BaseConstant;
 import com.cmcorg20230301.engine.be.model.model.constant.ParamConstant;
 import com.cmcorg20230301.engine.be.security.exception.BaseBizCodeEnum;
 import com.cmcorg20230301.engine.be.security.model.vo.ApiResultVO;
+import com.cmcorg20230301.engine.be.util.util.SeparatorUtil;
 import org.springframework.stereotype.Component;
 
 @Component
 public class MyRsaUtil {
 
     public static final int EXPIRE_TIME = BaseConstant.MINUTE_30_EXPIRE_TIME;
+
+    public static final String SEPARATOR = SeparatorUtil.SEMICOLON_SEPARATOR;
 
     /**
      * 非对称：解密
@@ -62,7 +65,7 @@ public class MyRsaUtil {
             ApiResultVO.error(BaseBizCodeEnum.ILLEGAL_REQUEST);
         }
 
-        String[] split = decryptStr.split(";");
+        String[] split = decryptStr.split(SEPARATOR);
         if (split.length != 2) {
             ApiResultVO.error(BaseBizCodeEnum.ILLEGAL_REQUEST);
         }
@@ -108,7 +111,7 @@ public class MyRsaUtil {
 
         String encryptStr = null;
 
-        str = str + ";" + System.currentTimeMillis(); // 需要加上当前时间戳
+        str = str + SEPARATOR + System.currentTimeMillis(); // 需要加上当前时间戳
 
         try {
 
