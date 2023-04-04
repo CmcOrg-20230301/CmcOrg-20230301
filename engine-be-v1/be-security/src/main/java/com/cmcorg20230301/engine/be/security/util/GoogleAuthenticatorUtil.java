@@ -1,7 +1,6 @@
 package com.cmcorg20230301.engine.be.security.util;
 
 import cn.hutool.core.codec.Base32;
-import cn.hutool.core.codec.Base64;
 import cn.hutool.core.img.ImgUtil;
 import cn.hutool.core.util.IdUtil;
 import cn.hutool.core.util.StrUtil;
@@ -14,8 +13,6 @@ import org.springframework.stereotype.Component;
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 import javax.validation.constraints.NotNull;
-import java.security.NoSuchAlgorithmException;
-import java.security.SecureRandom;
 
 /**
  * 谷歌验证器工具类
@@ -33,11 +30,6 @@ public class GoogleAuthenticatorUtil {
 
     }
 
-    // taken from Google pam docs - we probably don't need to mess with these
-    private static final int SECRET_SIZE = 10;
-
-    private static final String RANDOM_NUMBER_ALGORITHM = "SHA1PRNG";
-
     // default 3 - max 17 (from google docs)：最多可偏移的时间
     private static final int WINDOW_SIZE = 6; // 6 * 30秒
 
@@ -46,7 +38,7 @@ public class GoogleAuthenticatorUtil {
      */
     public static String getQRBarcodeBase64(String nickname, String secret) {
 
-        String format = " otpauth://totp/{}@{}?secret={}";
+        String format = "otpauth://totp/{}@{}?secret={}";
 
         String content = StrUtil.format(format, nickname, platformName, secret);
 
@@ -67,32 +59,18 @@ public class GoogleAuthenticatorUtil {
     /**
      * 生成秘钥
      */
-    public static String genSecret(String nickname) {
+    public static String genSecret() {
 
-        return GoogleAuthenticatorUtil.generateSecretKey(nickname);
+        return GoogleAuthenticatorUtil.generateSecretKey();
 
     }
 
     /**
      * 生成秘钥
      */
-    private static String generateSecretKey(String nickname) {
+    private static String generateSecretKey() {
 
-        SecureRandom sr;
-
-        try {
-
-            sr = SecureRandom.getInstance(RANDOM_NUMBER_ALGORITHM);
-            sr.setSeed(Base64.decode(IdUtil.randomUUID() + nickname));
-            byte[] buffer = sr.generateSeed(SECRET_SIZE);
-
-            return Base32.encode(buffer);
-
-        } catch (NoSuchAlgorithmException ignored) {
-
-        }
-
-        return null;
+        return Base32.encode(IdUtil.randomUUID());
 
     }
 
