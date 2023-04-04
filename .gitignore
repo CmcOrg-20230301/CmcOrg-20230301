@@ -33,3 +33,5 @@ miniprogram_npm
 
 ### VS Code ###
 .vscode/
+
+**/vite.config.ts.timestamp*
