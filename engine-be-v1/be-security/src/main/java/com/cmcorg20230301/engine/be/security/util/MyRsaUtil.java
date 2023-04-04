@@ -14,6 +14,8 @@ import org.springframework.stereotype.Component;
 @Component
 public class MyRsaUtil {
 
+    public static final int EXPIRE_TIME = BaseConstant.MINUTE_30_EXPIRE_TIME;
+
     /**
      * 非对称：解密
      */
@@ -77,9 +79,7 @@ public class MyRsaUtil {
         long checkTs = Math.abs(userTs - currentTimeMillis);
 
         // 不能和服务器时间相差过大
-        int expireTime = BaseConstant.MINUTE_30_EXPIRE_TIME;
-
-        if (checkTs > expireTime) {
+        if (checkTs > EXPIRE_TIME) {
             ApiResultVO.error("操作失败：您的时间：{}，与当前时间：{}，相差过大，请调整时间后再试", userTs, currentTimeMillis);
         }
 
