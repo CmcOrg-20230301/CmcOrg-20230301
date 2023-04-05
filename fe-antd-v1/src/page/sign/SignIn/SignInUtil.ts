@@ -1,7 +1,7 @@
-import {SignEmailSignInPassword} from "@/api/sign/SignEmailController";
+// import {SignEmailSignInPassword} from "@/api/sign/SignEmailController";
 import {ISignInForm} from "@/page/sign/SignIn/SignIn";
 import {PasswordRSAEncrypt} from "@/util/RsaUtil";
-import {SignSignInNameSignInPassword} from "@/api/sign/SignSignInNameController";
+// import {SignSignInNameSignInPassword} from "@/api/sign/SignSignInNameController";
 import {ToastSuccess} from "@/util/ToastUtil";
 import LocalStorageKey from "@/model/constant/LocalStorageKey";
 import {ApiResultVO} from "@/util/HttpUtil";
@@ -18,15 +18,15 @@ export async function SignInFormHandler(form: ISignInForm) {
 
     if (validate.email.regex.test(form.account)) { // 如果是：邮箱
 
-        await SignEmailSignInPassword({email: form.account, password}).then(res => {
-            SignInSuccess(res)
-        })
+        // await SignEmailSignInPassword({email: form.account, password}).then(res => {
+        //     SignInSuccess(res)
+        // })
 
     } else { // 否则是：登录名
 
-        await SignSignInNameSignInPassword({signInName: form.account, password}).then(res => {
-            SignInSuccess(res)
-        });
+        // await SignSignInNameSignInPassword({signInName: form.account, password}).then(res => {
+        //     SignInSuccess(res)
+        // });
 
     }
 

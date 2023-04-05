@@ -2,7 +2,7 @@ import {ToastError} from './ToastUtil'
 import MyPageDTO from "@/model/dto/MyPageDTO";
 import LocalStorageKey from "@/model/constant/LocalStorageKey";
 import {SignOut} from "./UserUtil";
-import axios, {AxiosInstance, AxiosRequestConfig, AxiosResponse} from "axios";
+import axios, {AxiosInstance, AxiosRequestConfig, AxiosResponse, CreateAxiosDefaults} from "axios";
 import {RequestData} from '@ant-design/pro-components';
 
 export const TIMEOUT_MSG = '请求超时，请重试'
@@ -11,7 +11,7 @@ export const REQUEST_ERROR_MSG = "请求失败：服务器未启动"
 
 let hiddenErrorMsgFlag = false
 
-const config: AxiosRequestConfig = {
+const config: CreateAxiosDefaults = {
 
     baseURL: '/api',
     timeout: 30 * 60 * 1000, // 默认 30分钟

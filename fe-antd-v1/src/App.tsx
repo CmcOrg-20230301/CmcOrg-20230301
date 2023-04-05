@@ -2,15 +2,14 @@ import {BrowserRouter, NavigateFunction, Route, Routes, useNavigate} from "react
 import React from "react";
 import NoLoginRouterList from "@/router/NoLoginRouterList";
 import RouterMap, {RouterMapKeyList} from "@/router/RouterMap";
-import PathConstant from "@/model/constant/PathConstant";
-import {AppDispatch, useAppDispatch, useAppSelector} from "@/store";
+import {AppDispatch, useAppDispatch} from "@/store";
 
 // App
 export default function () {
 
-    const userSelfMenuList = useAppSelector(
-        (state) => state.user.userSelfMenuList
-    ).filter((item) => item.router)
+    // const userSelfMenuList = useAppSelector(
+    //     (state) => state.user.userSelfMenuList
+    // ).filter((item) => item.router)
 
     return (
 
@@ -30,24 +29,24 @@ export default function () {
 
                 ))}
 
-                <Route
-                    path={PathConstant.ADMIN_PATH}
-                    element={<LoadElement elementStr="AdminLayout"/>}
-                >
+                {/*<Route*/}
+                {/*    path={PathConstant.ADMIN_PATH}*/}
+                {/*    element={<LoadElement elementStr="AdminLayout"/>}*/}
+                {/*>*/}
 
-                    {userSelfMenuList.map((item, index) => (
+                {/*    {userSelfMenuList.map((item, index) => (*/}
 
-                        <Route
-                            key={index}
-                            path={item.path}
-                            element={
-                                <LoadElement elementStr={item.router}/>
-                            }
-                        />
+                {/*        <Route*/}
+                {/*            key={index}*/}
+                {/*            path={item.path}*/}
+                {/*            element={*/}
+                {/*                <LoadElement elementStr={item.router}/>*/}
+                {/*            }*/}
+                {/*        />*/}
 
-                    ))}
+                {/*    ))}*/}
 
-                </Route>
+                {/*</Route>*/}
 
                 <Route
                     path="*"
