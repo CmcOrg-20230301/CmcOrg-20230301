@@ -1,5 +1,6 @@
 package com.cmcorg20230301.engine.be.generate.util.generate;
 
+import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.map.MapUtil;
 import cn.hutool.core.text.StrMatcher;
 import cn.hutool.core.util.StrUtil;
@@ -15,6 +16,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * 获取所有请求
+ */
 @Slf4j
 public class SpringDocUtil {
 
@@ -24,22 +28,21 @@ public class SpringDocUtil {
 
     private static final String BE_API_SCHEMA_MAP_KEY = "beApiSchemaMapKey";
 
-    private static final StrMatcher BE_API_SCHEMA_MAP_KEY_STR_MATCHER =
-        new StrMatcher("#/components/schemas/${" + BE_API_SCHEMA_MAP_KEY + "}");
+    private static final StrMatcher BE_API_SCHEMA_MAP_KEY_STR_MATCHER = new StrMatcher("#/components/schemas/${" + BE_API_SCHEMA_MAP_KEY + "}");
 
     public static void main(String[] args) {
 
         // 执行获取
-        HashMap<String, BeApi> result = get(SPRING_DOC_ENDPOINT);
+        HashMap<String, HashMap<String, BeApi>> result = get(SPRING_DOC_ENDPOINT);
 
         System.out.println(JSONUtil.toJsonStr(result));
 
     }
 
     /**
-     * 执行获取，key是 path
+     * 执行获取，大key是分组，小key是 path
      */
-    public static HashMap<String, BeApi> get(String springDocEndpoint) {
+    public static HashMap<String, HashMap<String, BeApi>> get(String springDocEndpoint) {
 
         log.info("开始执行处理");
 
@@ -49,7 +52,7 @@ public class SpringDocUtil {
 
         JSONObject paths = jsonObject.getJSONObject("paths");
 
-        HashMap<String, BeApi> result = MapUtil.newHashMap(paths.size()); // 本方法的返回值
+        HashMap<String, HashMap<String, BeApi>> result = MapUtil.newHashMap(paths.size()); // 本方法的返回值
 
         JSONObject components = jsonObject.getJSONObject("components");
 
@@ -68,7 +71,7 @@ public class SpringDocUtil {
         // 处理：返回值
         handleResult(paths, result, beApiSchemaMap);
 
-        log.info("总共：{}个，处理成功：{}个，处理失败：{}个", paths.size(), result.size(), paths.size() - result.size());
+        log.info("处理完成，总共：{}个", paths.size());
 
         return result;
 
@@ -77,7 +80,7 @@ public class SpringDocUtil {
     /**
      * 处理：返回值
      */
-    private static void handleResult(JSONObject paths, HashMap<String, BeApi> result,
+    private static void handleResult(JSONObject paths, HashMap<String, HashMap<String, BeApi>> result,
         HashMap<String, BeApi.BeApiSchema> beApiSchemaMap) {
 
         for (Map.Entry<String, Object> item : paths.entrySet()) {
@@ -99,7 +102,17 @@ public class SpringDocUtil {
             BeApi beApi = new BeApi();
             beApi.setPath(item.getKey());
             beApi.setMethod(methodStr);
-            beApi.setTag(method.getStr("tag"));
+
+            List<String> tagList = method.getBeanList("tags", String.class);
+
+            String tag = "未分组";
+
+            if (CollUtil.isNotEmpty(tagList)) {
+                tag = tagList.get(0);
+            }
+
+            beApi.setTag(tag); // 设置：分组
+
             beApi.setSummary(method.getStr("summary"));
 
             JSONObject requestBody = method.getJSONObject("requestBody");
@@ -129,7 +142,9 @@ public class SpringDocUtil {
 
             }
 
-            result.put(item.getKey(), beApi); // 添加到返回值里
+            HashMap<String, BeApi> secondMap = result.computeIfAbsent(beApi.getTag(), k -> new HashMap<>());
+
+            secondMap.put(item.getKey(), beApi); // 添加到返回值里
 
         }
 
@@ -138,8 +153,7 @@ public class SpringDocUtil {
     /**
      * 处理：responses
      */
-    private static void handleResultResponses(HashMap<String, BeApi.BeApiSchema> beApiSchemaMap,
-        Map.Entry<String, Object> item, BeApi beApi, JSONObject responses) {
+    private static void handleResultResponses(HashMap<String, BeApi.BeApiSchema> beApiSchemaMap, Map.Entry<String, Object> item, BeApi beApi, JSONObject responses) {
 
         JSONObject jsonObject200 = responses.getJSONObject("200");
 
@@ -193,8 +207,7 @@ public class SpringDocUtil {
     /**
      * 处理：parameters
      */
-    private static void handleResultParameters(HashMap<String, BeApi.BeApiSchema> beApiSchemaMap,
-        Map.Entry<String, Object> item, BeApi beApi, JSONArray parameters) {
+    private static void handleResultParameters(HashMap<String, BeApi.BeApiSchema> beApiSchemaMap, Map.Entry<String, Object> item, BeApi beApi, JSONArray parameters) {
 
         Map<String, BeApi.BeApiField> parameterMap = MapUtil.newHashMap();
         beApi.setParameter(parameterMap);
@@ -262,8 +275,7 @@ public class SpringDocUtil {
     /**
      * 设置：一般类型到 map里
      */
-    private static void handleResultParametersParameter(Map<String, BeApi.BeApiField> parameterMap,
-        JSONObject parameter, String name) {
+    private static void handleResultParametersParameter(Map<String, BeApi.BeApiField> parameterMap, JSONObject parameter, String name) {
 
         BeApi.BeApiParameter beApiParameter = new BeApi.BeApiParameter();
         beApiParameter.setName(name);
@@ -293,8 +305,7 @@ public class SpringDocUtil {
     /**
      * 处理：requestBody
      */
-    private static void handleResultRequestBody(HashMap<String, BeApi.BeApiSchema> beApiSchemaMap,
-        Map.Entry<String, Object> item, BeApi beApi, JSONObject requestBody) {
+    private static void handleResultRequestBody(HashMap<String, BeApi.BeApiSchema> beApiSchemaMap, Map.Entry<String, Object> item, BeApi beApi, JSONObject requestBody) {
 
         JSONObject content = requestBody.getJSONObject("content");
 
@@ -338,8 +349,7 @@ public class SpringDocUtil {
     /**
      * 处理：待处理的：对象类型集合
      */
-    private static void handleTodoHandleBeApiSchemaList(HashMap<String, BeApi.BeApiSchema> beApiSchemaMap,
-        List<BeApi.BeApiSchema> todoHandleBeApiSchemaList) {
+    private static void handleTodoHandleBeApiSchemaList(HashMap<String, BeApi.BeApiSchema> beApiSchemaMap, List<BeApi.BeApiSchema> todoHandleBeApiSchemaList) {
 
         for (BeApi.BeApiSchema item : todoHandleBeApiSchemaList) {
 
@@ -370,8 +380,7 @@ public class SpringDocUtil {
     /**
      * 处理：所有的对象
      */
-    private static void handleBeApiSchemaMap(JSONObject schemas, HashMap<String, BeApi.BeApiSchema> beApiSchemaMap,
-        List<BeApi.BeApiSchema> todoHandleBeApiSchemaList) {
+    private static void handleBeApiSchemaMap(JSONObject schemas, HashMap<String, BeApi.BeApiSchema> beApiSchemaMap, List<BeApi.BeApiSchema> todoHandleBeApiSchemaList) {
 
         for (Map.Entry<String, Object> item : schemas.entrySet()) {
 
@@ -403,8 +412,7 @@ public class SpringDocUtil {
     /**
      * 处理：所有的对象，处理：字段
      */
-    private static void handleBeApiSchemaMapProperties(HashMap<String, BeApi.BeApiSchema> beApiSchemaMap,
-        List<BeApi.BeApiSchema> todoHandleBeApiSchemaList, BeApi.BeApiSchema apiSchema, JSONObject properties) {
+    private static void handleBeApiSchemaMapProperties(HashMap<String, BeApi.BeApiSchema> beApiSchemaMap, List<BeApi.BeApiSchema> todoHandleBeApiSchemaList, BeApi.BeApiSchema apiSchema, JSONObject properties) {
 
         HashMap<String, BeApi.BeApiField> fieldMap = MapUtil.newHashMap();
         apiSchema.setFieldMap(fieldMap);
