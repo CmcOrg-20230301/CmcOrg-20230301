@@ -20,8 +20,8 @@ import lombok.extern.slf4j.Slf4j;
 public class ApiTestSignSignInNameUtil {
 
     // 执行，接口的地址，备注：最后面不要加斜杠 /
-    //    private static final String API_ENDPOINT = "http://43.154.37.130:10001";
-    private static final String API_ENDPOINT = "http://127.0.0.1:10001";
+    private static final String API_ENDPOINT = "http://43.154.37.130:10001";
+    //    private static final String API_ENDPOINT = "http://127.0.0.1:10001";
 
     // 配置文件
     private static final Setting SETTING = new Setting("sign.setting");
@@ -84,19 +84,19 @@ public class ApiTestSignSignInNameUtil {
         //        // 绑定邮箱
         //        emailBindAccount(apiEndpoint, jwt, email, code);
 
-        // 登录名-用户名账号密码登录
-        jwt = signInNameSignIn(apiEndpoint, newSignInName, newPasswordTemp, rsaPublicKey);
+        //        // 登录名-用户名账号密码登录
+        //        jwt = signInNameSignIn(apiEndpoint, newSignInName, newPasswordTemp, rsaPublicKey);
 
-        // 绑定手机号-发送验证码
-        phoneBindAccountSendCode(apiEndpoint, jwt, phone);
+        //        // 绑定手机号-发送验证码
+        //        phoneBindAccountSendCode(apiEndpoint, jwt, phone);
+        //
+        //        String code = ApiTestHelper.getStringFromScanner("请输入验证码");
+        //
+        //        // 绑定手机号
+        //        phoneBindAccount(apiEndpoint, jwt, phone, code);
 
-        String code = ApiTestHelper.getStringFromScanner("请输入验证码");
-
-        // 绑定手机号
-        phoneBindAccount(apiEndpoint, jwt, phone, code);
-
-        // 登录名-用户名账号密码登录
-        jwt = signInNameSignIn(apiEndpoint, newSignInName, newPasswordTemp, rsaPublicKey);
+        //        // 登录名-用户名账号密码登录
+        //        jwt = signInNameSignIn(apiEndpoint, newSignInName, newPasswordTemp, rsaPublicKey);
 
         // 登录名-账号注销
         signInNameSignDelete(apiEndpoint, newPasswordTemp, jwt, rsaPublicKey);
