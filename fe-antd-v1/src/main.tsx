@@ -17,16 +17,6 @@ import './style/theme.less'
 
 dayjs.locale('zh-cn');
 
-// 自定义 console.error ↓
-const consoleOldError = console.error
-
-console.error = (message?: any, ...optionalParams: any[]) => {
-
-    consoleOldError(message, ...optionalParams)
-
-}
-// 自定义 console.error ↑
-
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
     <React.StrictMode>
 
