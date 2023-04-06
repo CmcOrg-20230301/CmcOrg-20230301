@@ -1,10 +1,9 @@
 package com.cmcorg20230301.engine.be.generate.util.generate;
 
-import cn.hutool.core.io.FileUtil;
-import cn.hutool.json.JSONArray;
-import cn.hutool.json.JSONUtil;
 import com.cmcorg20230301.engine.be.generate.model.bo.BeApi;
 import lombok.extern.slf4j.Slf4j;
+
+import java.util.HashMap;
 
 /**
  * 生成 api的工具类
@@ -16,35 +15,23 @@ public class GenerateApiUtil {
     //    private static final String SPRING_DOC_ENDPOINT = "http://43.154.37.130:10001/v3/api-docs/be";
     private static final String SPRING_DOC_ENDPOINT = "http://127.0.0.1:10001/v3/api-docs/be";
 
+    private static final String SYSTEM_USER_DIR = System.getProperty("user.dir"); // 例如：D:\GitHub\CmcOrg-20230301
+
+    private static final String API_PATH = SYSTEM_USER_DIR + "/fe-antd-v1/src/api";
+
     public static void main(String[] args) {
 
         // 执行
-        exec(SPRING_DOC_ENDPOINT);
+        exec(SPRING_DOC_ENDPOINT, API_PATH);
 
     }
 
     /**
      * 执行
      */
-    private static void exec(String springDocEndpoint) {
+    private static void exec(String springDocEndpoint, String apiPath) {
 
-        //        HashMap<String, BeApi> apiList = SpringDocUtil.get(springDocEndpoint);
-
-        JSONArray apiJsonArr = JSONUtil.parseArray(FileUtil.readUtf8String("apiList.json"));
-
-        //        List<BeApi> apiList = new ArrayList<>();
-
-        //        BeanUtil.copyProperties(apiJsonArr, apiList);
-
-        //        System.out.println(JSONUtil.toJsonStr(apiList));
-
-        System.out.println(System.getProperty("user.dir")); // 例如：D:\GitHub\CmcOrg-20230301
-
-        //        for (Map.Entry<String, BeApi> item : apiList.entrySet()) {
-        //
-        //            handler(item.getValue());
-        //
-        //        }
+        HashMap<String, HashMap<String, BeApi>> apiMap = SpringDocUtil.get(springDocEndpoint);
 
     }
 

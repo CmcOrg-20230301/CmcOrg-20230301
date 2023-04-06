@@ -10,8 +10,12 @@ import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
 import com.cmcorg20230301.engine.be.generate.model.bo.BeApi;
 import lombok.extern.slf4j.Slf4j;
+import org.jetbrains.annotations.Nullable;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * 获取所有请求
@@ -31,16 +35,16 @@ public class SpringDocUtil {
     public static void main(String[] args) {
 
         // 执行获取
-        List<BeApi> result = get(SPRING_DOC_ENDPOINT);
+        HashMap<String, HashMap<String, BeApi>> result = get(SPRING_DOC_ENDPOINT);
 
         System.out.println(JSONUtil.toJsonStr(result));
 
     }
 
     /**
-     * 执行获取
+     * 执行获取，大key是分组，小key是 path
      */
-    public static List<BeApi> get(String springDocEndpoint) {
+    public static HashMap<String, HashMap<String, BeApi>> get(String springDocEndpoint) {
 
         log.info("开始执行处理");
 
@@ -50,7 +54,7 @@ public class SpringDocUtil {
 
         JSONObject paths = jsonObject.getJSONObject("paths");
 
-        List<BeApi> result = new LinkedList<>(); // 本方法的返回值
+        HashMap<String, HashMap<String, BeApi>> result = MapUtil.newHashMap(); // 本方法的返回值
 
         JSONObject components = jsonObject.getJSONObject("components");
 
@@ -78,7 +82,7 @@ public class SpringDocUtil {
     /**
      * 处理：返回值
      */
-    private static void handleResult(JSONObject paths, List<BeApi> result,
+    private static void handleResult(JSONObject paths, HashMap<String, HashMap<String, BeApi>> result,
         HashMap<String, BeApi.BeApiSchema> beApiSchemaMap) {
 
         for (Map.Entry<String, Object> item : paths.entrySet()) {
@@ -140,25 +144,39 @@ public class SpringDocUtil {
 
             }
 
-            List<String> splitList = StrUtil.splitTrim(beApi.getPath(), "/");
-
-            String group;
-
-            if (splitList.size() <= 2) {
-
-                group = StrUtil.upperFirst(splitList.get(0));
-
-            } else {
-
-                group = StrUtil.upperFirst(splitList.get(0)) + StrUtil.upperFirst(splitList.get(1));
-
-            }
+            String group = getGroup(beApi); // 获取：group
 
             beApi.setGroup(group);
 
-            result.add(beApi); // 添加到返回值里
+            HashMap<String, BeApi> secondMap = result.computeIfAbsent(group, k -> new HashMap<>());
+
+            secondMap.put(item.getKey(), beApi); // 添加到返回值里
 
         }
+
+    }
+
+    /**
+     * 获取：group
+     */
+    @Nullable
+    private static String getGroup(BeApi beApi) {
+
+        List<String> splitList = StrUtil.splitTrim(beApi.getPath(), "/");
+
+        String group;
+
+        if (splitList.size() <= 2) {
+
+            group = StrUtil.upperFirst(splitList.get(0));
+
+        } else {
+
+            group = StrUtil.upperFirst(splitList.get(0)) + StrUtil.upperFirst(splitList.get(1));
+
+        }
+
+        return group;
 
     }
 
