@@ -129,6 +129,9 @@ $http.interceptors.response.use(
     }
 )
 
+/**
+ * 针对本系统
+ */
 export interface ApiResultVO<T = string> {
 
     code: number
@@ -155,6 +158,9 @@ interface MyAxiosInstance extends AxiosInstance {
 
 }
 
+/**
+ * 针对本系统
+ */
 export interface Page<T> {
 
     total: number // 总数
@@ -164,7 +170,9 @@ export interface Page<T> {
 
 }
 
-
+/**
+ * 针对本系统
+ */
 $http.myPost = <T = string, D = any>(url: string, data?: D, config?: AxiosRequestConfig<D>): Promise<ApiResultVO<T>> => {
 
     return new Promise((resolve, reject) => {
@@ -183,6 +191,9 @@ $http.myPost = <T = string, D = any>(url: string, data?: D, config?: AxiosReques
 
 }
 
+/**
+ * 针对：proComponents
+ */
 $http.myProPost = <T = string, D = any>(url: string, data?: D, config?: AxiosRequestConfig<D>): Promise<T> => {
 
     return new Promise((resolve, reject) => {
@@ -201,6 +212,9 @@ $http.myProPost = <T = string, D = any>(url: string, data?: D, config?: AxiosReq
 
 }
 
+/**
+ * 针对本系统
+ */
 $http.myTreePost = <T, D extends MyPageDTO>(url: string, data?: D, config?: AxiosRequestConfig<D>): Promise<T[]> => {
 
     return new Promise((resolve, reject) => {
@@ -221,6 +235,9 @@ $http.myTreePost = <T, D extends MyPageDTO>(url: string, data?: D, config?: Axio
 
 }
 
+/**
+ * 针对：proComponents
+ */
 $http.myProTreePost = <T, D extends MyPageDTO>(url: string, data?: D, config?: AxiosRequestConfig<D>): Promise<RequestData<T>> => {
 
     return new Promise((resolve, reject) => {
@@ -246,6 +263,9 @@ $http.myProTreePost = <T, D extends MyPageDTO>(url: string, data?: D, config?: A
 
 }
 
+/**
+ * 针对本系统
+ */
 $http.myPagePost = <T, D extends MyPageDTO>(url: string, data?: D, config?: AxiosRequestConfig<D>): Promise<Page<T>> => {
 
     return new Promise((resolve, reject) => {
@@ -266,6 +286,9 @@ $http.myPagePost = <T, D extends MyPageDTO>(url: string, data?: D, config?: Axio
 
 }
 
+/**
+ * 针对：proComponents
+ */
 $http.myProPagePost = <T, D extends MyPageDTO>(url: string, data?: D, config?: AxiosRequestConfig<D>): Promise<RequestData<T>> => {
 
     return new Promise((resolve, reject) => {

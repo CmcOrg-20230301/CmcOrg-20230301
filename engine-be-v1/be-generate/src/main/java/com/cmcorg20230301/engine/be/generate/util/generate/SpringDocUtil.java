@@ -46,7 +46,7 @@ public class SpringDocUtil {
      */
     public static HashMap<String, HashMap<String, BeApi>> get(String springDocEndpoint) {
 
-        log.info("开始执行处理");
+        log.info("开始：获取所有请求");
 
         String bodyStr = HttpRequest.get(springDocEndpoint).execute().body();
 
@@ -73,7 +73,7 @@ public class SpringDocUtil {
         // 处理：返回值
         handleResult(paths, result, beApiSchemaMap);
 
-        log.info("处理完成，总共：{}个", paths.size());
+        log.info("完成：获取所有请求，总共：{}个", paths.size());
 
         return result;
 
