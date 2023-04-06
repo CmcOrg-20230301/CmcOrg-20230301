@@ -1,14 +1,10 @@
 package com.cmcorg20230301.engine.be.generate.util.generate;
 
-import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.io.FileUtil;
-import cn.hutool.json.JSONObject;
+import cn.hutool.json.JSONArray;
 import cn.hutool.json.JSONUtil;
 import com.cmcorg20230301.engine.be.generate.model.bo.BeApi;
 import lombok.extern.slf4j.Slf4j;
-
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * 生成 api的工具类
@@ -32,19 +28,30 @@ public class GenerateApiUtil {
      */
     private static void exec(String springDocEndpoint) {
 
-        //        HashMap<String, HashMap<String, BeApi>> apiMap = SpringDocUtil.get(springDocEndpoint);
+        //        HashMap<String, BeApi> apiList = SpringDocUtil.get(springDocEndpoint);
 
-        JSONObject apiJson = JSONUtil.parseObj(FileUtil.readUtf8String("apiMap.json"));
+        JSONArray apiJsonArr = JSONUtil.parseArray(FileUtil.readUtf8String("apiList.json"));
 
-        HashMap<String, HashMap<String, BeApi>> apiMap = new HashMap<>(apiJson.size());
+        //        List<BeApi> apiList = new ArrayList<>();
 
-        BeanUtil.copyProperties(apiJson, apiMap);
+        //        BeanUtil.copyProperties(apiJsonArr, apiList);
 
-        System.out.println(JSONUtil.toJsonStr(apiMap));
+        //        System.out.println(JSONUtil.toJsonStr(apiList));
 
-        for (Map.Entry<String, HashMap<String, BeApi>> item : apiMap.entrySet()) {
+        System.out.println(System.getProperty("user.dir")); // 例如：D:\GitHub\CmcOrg-20230301
 
-        }
+        //        for (Map.Entry<String, BeApi> item : apiList.entrySet()) {
+        //
+        //            handler(item.getValue());
+        //
+        //        }
+
+    }
+
+    /**
+     * 处理
+     */
+    private static void handler(BeApi beApi) {
 
     }
 

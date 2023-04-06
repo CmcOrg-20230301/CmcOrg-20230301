@@ -27,6 +27,11 @@ public class BeApi {
     private String tag;
 
     /**
+     * 请求的所属的分组
+     */
+    private String group;
+
+    /**
      * 请求的描述
      */
     private String summary;
