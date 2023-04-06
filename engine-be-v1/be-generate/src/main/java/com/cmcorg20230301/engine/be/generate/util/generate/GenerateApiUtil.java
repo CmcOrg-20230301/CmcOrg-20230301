@@ -2,8 +2,8 @@ package com.cmcorg20230301.engine.be.generate.util.generate;
 
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.text.StrBuilder;
+import cn.hutool.core.util.BooleanUtil;
 import cn.hutool.core.util.StrUtil;
-import cn.hutool.json.JSONUtil;
 import com.cmcorg20230301.engine.be.generate.model.bo.BeApi;
 import lombok.extern.slf4j.Slf4j;
 
@@ -72,7 +72,7 @@ public class GenerateApiUtil {
 
         HashMap<String, HashMap<String, BeApi>> apiMap = SpringDocUtil.get(springDocEndpoint);
 
-        System.out.println(JSONUtil.toJsonStr(apiMap));
+        //        System.out.println(JSONUtil.toJsonStr(apiMap));
 
         log.info("清除：api文件夹：{}", API_PATH);
         FileUtil.del(API_PATH);
@@ -80,12 +80,12 @@ public class GenerateApiUtil {
         log.info("生成：api文件夹：执行开始 =====================>");
         long startTs = System.currentTimeMillis();
 
+        StrBuilder strBuilder = StrBuilder.create();
+
         for (Map.Entry<String, HashMap<String, BeApi>> item : apiMap.entrySet()) {
 
             // 生成：api文件
             File apiFile = FileUtil.touch(apiPath + item.getKey() + ts);
-
-            StrBuilder strBuilder = StrBuilder.create();
 
             // 要导入的基础内容
             strBuilder.append(API_IMPORT_BASE);
@@ -128,11 +128,124 @@ public class GenerateApiUtil {
 
         BeApi.BeApiSchema requestBody = beApi.getRequestBody();
 
+        if (requestBody == null) {
+
+            log.info("处理失败，requestBody是 null：{}", beApi.getPath());
+            return;
+
+        }
+
         String className = requestBody.getClassName();
 
+        if (classNameSet.contains(className)) {
+            return;
+        }
+
+        classNameSet.add(className);
+
+        String objectStr = "object";
+
+        if (BooleanUtil.isFalse(objectStr.equals(requestBody.getType()))) {
+
+            log.info("处理失败，requestBody不是 object类型：{}", beApi.getPath());
+            return;
+
+        }
+
+        // 所有字段的 StrBuilder
         StrBuilder dtoBuilder = StrBuilder.create();
 
-        strBuilder.append(StrUtil.format(API_INTERFACE_TEMP, className));
+        int index = 0;
+
+        for (Map.Entry<String, BeApi.BeApiField> item : requestBody.getFieldMap().entrySet()) {
+
+            // 一个字段
+            BeApi.BeApiField beApiField = item.getValue();
+
+            if (beApiField instanceof BeApi.BeApiParameter) {
+
+                generateDTOParameter(dtoBuilder, item, (BeApi.BeApiParameter)beApiField);
+
+            } else if (beApiField instanceof BeApi.BeApiSchema) {
+
+                BeApi.BeApiSchema beApiSchema = (BeApi.BeApiSchema)beApiField;
+
+                log.info("处理失败，beApiField BeApiSchema类型：{}", beApi.getPath());
+                return;
+
+            }
+
+            if (index != requestBody.getFieldMap().size() - 1) {
+
+                dtoBuilder.append("\n");
+
+            }
+
+            index++;
+
+        }
+
+        strBuilder.append(StrUtil.format(API_INTERFACE_TEMP, className, dtoBuilder.toString()));
+
+    }
+
+    /**
+     * 生成 dto，BeApiParameter类型
+     */
+    private static void generateDTOParameter(StrBuilder dtoBuilder, Map.Entry<String, BeApi.BeApiField> item,
+        BeApi.BeApiParameter beApiParameter) {
+
+        String type = beApiParameter.getType();
+
+        String integerStr = "integer";
+        String formatInt64 = "int64";
+
+        if (integerStr.equals(type)) {
+
+            if (formatInt64.equals(beApiParameter.getFormat())) {
+
+                type = "string";
+
+            } else {
+
+                type = "number";
+
+            }
+
+        }
+
+        dtoBuilder.append(
+            StrUtil.format(API_INTERFACE_FIELD_TEMP, item.getKey(), "?", "", type, beApiParameter.getDescription()));
+
+        if (StrUtil.isNotBlank(beApiParameter.getPattern())) {
+
+            dtoBuilder.append("，正则表达式：").append(beApiParameter.getPattern());
+
+        }
+
+        if (beApiParameter.getMaxLength() != null) {
+
+            dtoBuilder.append("，maxLength：").append(beApiParameter.getMaxLength());
+
+        }
+
+        if (beApiParameter.getMinLength() != null) {
+
+            dtoBuilder.append("，minLength：").append(beApiParameter.getMinLength());
+
+        }
+
+        if (BooleanUtil.isTrue(beApiParameter.getRequired())) {
+
+            dtoBuilder.append("，required：").append(beApiParameter.getRequired());
+
+        }
+
+        if (StrUtil.isNotBlank(beApiParameter.getFormat())) {
+
+            dtoBuilder.append("，format：").append(beApiParameter.getFormat());
+
+        }
 
     }
 
