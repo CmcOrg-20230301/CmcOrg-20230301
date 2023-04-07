@@ -152,6 +152,11 @@ public class BeApi {
          */
         private Integer minLength;
 
+        /**
+         * 是否是集合
+         */
+        private Boolean arrFlag;
+
     }
 
 }

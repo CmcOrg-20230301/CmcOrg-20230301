@@ -204,7 +204,7 @@ public class GenerateApiUtil {
 
             if (formatInt64.equals(beApiParameter.getFormat())) {
 
-                type = "string";
+                type = "string"; // long 转换为 string
 
             } else {
 
@@ -214,8 +214,8 @@ public class GenerateApiUtil {
 
         }
 
-        dtoBuilder.append(
-            StrUtil.format(API_INTERFACE_FIELD_TEMP, item.getKey(), "?", "", type, beApiParameter.getDescription()));
+        dtoBuilder.append(StrUtil.format(API_INTERFACE_FIELD_TEMP, item.getKey(), "?", type,
+            BooleanUtil.isTrue(beApiParameter.getArrFlag()) ? "[]" : "", beApiParameter.getDescription()));
 
         if (StrUtil.isNotBlank(beApiParameter.getPattern())) {
 

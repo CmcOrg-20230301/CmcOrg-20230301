@@ -1,15 +1,15 @@
 export interface NotNullId {
-    id?: string // 主键id，format：int64
+    id?: string // 主键id，required：true，format：int64
 }
 
 export interface SysUserUpdatePasswordDTO {
-    idSet?: array // 主键 idSet
+    idSet?: string[] // 主键 idSet，required：true，format：int64
     newPassword?: string // 前端加密之后的，新密码
     newOriginPassword?: string // 前端加密之后的原始密码，新密码
 }
 
 export interface NotEmptyIdSet {
-    idSet?: array // 主键 idSet
+    idSet?: string[] // 主键 idSet，required：true，format：int64
 }
 
 export interface SysUserDictListDTO {
@@ -21,7 +21,7 @@ export interface SysUserInsertOrUpdateDTO {
     phone?: string // 手机号码，正则表达式：^(13[0-9]|14[01456879]|15[0-35-9]|16[2567]|17[0-8]|18[0-9]|19[0-35-9])\d{8}$，maxLength：100，minLength：0
     signInName?: string // 登录名，正则表达式：^[\u4E00-\u9FA5A-Za-z0-9_-]{2,20}$，maxLength：20，minLength：0
     nickname?: string // 昵称，正则表达式：^[\u4E00-\u9FA5A-Za-z0-9_-]{2,20}$
-    roleIdSet?: array // 角色 idSet
+    roleIdSet?: string[] // 角色 idSet，format：int64
     bio?: string // 个人简介
     id?: string // 主键 id，format：int64
     enableFlag?: boolean // 正常/冻结

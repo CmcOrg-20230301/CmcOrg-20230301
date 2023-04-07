@@ -1,14 +1,14 @@
 export interface NotNullId {
-    id?: string // 主键id，format：int64
+    id?: string // 主键id，required：true，format：int64
 }
 
 export interface ChangeNumberDTO {
-    idSet?: array // 主键 idSet
-    number?: string // 需要改变的数值，format：int64
+    idSet?: string[] // 主键 idSet，required：true，format：int64
+    number?: string // 需要改变的数值，required：true，format：int64
 }
 
 export interface NotEmptyIdSet {
-    idSet?: array // 主键 idSet
+    idSet?: string[] // 主键 idSet，required：true，format：int64
 }
 
 export interface SysMenuInsertOrUpdateDTO {
@@ -22,8 +22,8 @@ export interface SysMenuInsertOrUpdateDTO {
     showFlag?: boolean // 是否显示在 左侧的菜单栏里面，如果为 false，也可以通过 $router.push()访问到
     path?: string // 页面的 path，备注：相同父菜单下，子菜单 path不能重复
     router?: string // 路由
-    name?: string // 菜单名
-    roleIdSet?: array // 角色 idSet
+    name?: string // 菜单名，required：true
+    roleIdSet?: string[] // 角色 idSet，format：int64
     id?: string // 主键 id，format：int64
     firstFlag?: boolean // 是否是起始页面，备注：只能存在一个 firstFlag === true 的菜单
     enableFlag?: boolean // 是否启用

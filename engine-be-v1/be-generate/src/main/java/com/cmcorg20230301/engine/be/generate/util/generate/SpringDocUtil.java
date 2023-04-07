@@ -426,6 +426,8 @@ public class SpringDocUtil {
             apiSchema.setClassName(item.getKey());
             apiSchema.setType(value.getStr("type"));
 
+            apiSchema.setRequiredFieldName(value.getBeanList("required", String.class));
+
             JSONObject properties = value.getJSONObject("properties");
 
             if (properties != null) {
@@ -437,7 +439,6 @@ public class SpringDocUtil {
 
             apiSchema.setRequired(value.getBool("required"));
             apiSchema.setDescription(value.getStr("description"));
-            apiSchema.setRequiredFieldName(value.getBeanList("required", String.class));
 
             beApiSchemaMap.put(item.getKey(), apiSchema); // 添加到所有的对象里
 
@@ -460,11 +461,15 @@ public class SpringDocUtil {
 
             String refStr = propertiesValue.getStr("$ref");
 
+            Boolean arrFlag = null;
+
             if (StrUtil.isBlank(refStr)) {
 
                 JSONObject items = propertiesValue.getJSONObject("items"); // 如果是：数组
 
                 if (items != null) {
+
+                    arrFlag = true;
 
                     refStr = items.getStr("$ref");
 
@@ -484,7 +489,16 @@ public class SpringDocUtil {
                 // 处理：beApiParameter的属性
                 handleBeApiParameter(propertiesValue, beApiParameter);
 
+                beApiParameter.setArrFlag(arrFlag);
+
                 fieldMap.put(item.getKey(), beApiParameter);
+
+                if (CollUtil.isNotEmpty(apiSchema.getRequiredFieldName()) && apiSchema.getRequiredFieldName()
+                    .contains(item.getKey())) {
+
+                    beApiParameter.setRequired(true);
+
+                }
 
             } else { // 否则是：对象类型
 
@@ -518,6 +532,13 @@ public class SpringDocUtil {
                 propertiesFieldMap.put(beApiSchemaMapKey, propertiesBeApiSchema); // 添加到对象类型的，字段 map里
 
                 fieldMap.put(item.getKey(), beApiSchema);
+
+                if (CollUtil.isNotEmpty(apiSchema.getRequiredFieldName()) && apiSchema.getRequiredFieldName()
+                    .contains(item.getKey())) {
+
+                    beApiSchema.setRequired(true);
+
+                }
 
             }
 
