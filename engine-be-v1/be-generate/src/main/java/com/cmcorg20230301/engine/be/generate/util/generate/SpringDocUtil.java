@@ -437,7 +437,7 @@ public class SpringDocUtil {
 
             apiSchema.setRequired(value.getBool("required"));
             apiSchema.setDescription(value.getStr("description"));
-            apiSchema.setRequiredFieldName(value.getBeanList("requiredFieldName", String.class));
+            apiSchema.setRequiredFieldName(value.getBeanList("required", String.class));
 
             beApiSchemaMap.put(item.getKey(), apiSchema); // 添加到所有的对象里
 

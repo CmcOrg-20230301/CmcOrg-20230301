@@ -350,7 +350,10 @@
             "type": "string",
             "description": "微信 code"
           }
-        }
+        },
+        "requiredFieldName": [
+          "code"
+        ]
       },
       "response": {
         "className": "ApiResultVOString",
@@ -408,7 +411,10 @@
             "type": "string",
             "description": "手机号码 code"
           }
-        }
+        },
+        "requiredFieldName": [
+          "phoneCode"
+        ]
       },
       "response": {
         "className": "ApiResultVOString",
@@ -979,7 +985,10 @@
             "description": "主键id",
             "format": "int64"
           }
-        }
+        },
+        "requiredFieldName": [
+          "id"
+        ]
       },
       "response": {
         "className": "ApiResultVOSysMenuInfoByIdVO",
@@ -1251,7 +1260,11 @@
             "description": "需要改变的数值",
             "format": "int64"
           }
-        }
+        },
+        "requiredFieldName": [
+          "idSet",
+          "number"
+        ]
       },
       "response": {
         "className": "ApiResultVOString",
@@ -1310,7 +1323,10 @@
             "description": "主键 idSet",
             "format": "int64"
           }
-        }
+        },
+        "requiredFieldName": [
+          "idSet"
+        ]
       },
       "response": {
         "className": "ApiResultVOString",
@@ -1562,7 +1578,10 @@
             "type": "boolean",
             "description": "是否启用"
           }
-        }
+        },
+        "requiredFieldName": [
+          "name"
+        ]
       },
       "response": {
         "className": "ApiResultVOString",
@@ -2494,7 +2513,10 @@
             "description": "主键id",
             "format": "int64"
           }
-        }
+        },
+        "requiredFieldName": [
+          "id"
+        ]
       },
       "response": {
         "className": "ApiResultVOSysUserInfoByIdVO",
@@ -2668,7 +2690,10 @@
             "type": "string",
             "description": "前端加密之后的原始密码，新密码"
           }
-        }
+        },
+        "requiredFieldName": [
+          "idSet"
+        ]
       },
       "response": {
         "className": "ApiResultVOString",
@@ -2727,7 +2752,10 @@
             "description": "主键 idSet",
             "format": "int64"
           }
-        }
+        },
+        "requiredFieldName": [
+          "idSet"
+        ]
       },
       "response": {
         "className": "ApiResultVOString",
@@ -3213,7 +3241,10 @@
             "description": "主键 idSet",
             "format": "int64"
           }
-        }
+        },
+        "requiredFieldName": [
+          "idSet"
+        ]
       },
       "response": {
         "className": "ApiResultVOString",
@@ -3388,7 +3419,10 @@
             "description": "主键id",
             "format": "int64"
           }
-        }
+        },
+        "requiredFieldName": [
+          "id"
+        ]
       },
       "response": {
         "className": "ApiResultVOSysParamDO",
@@ -3536,7 +3570,11 @@
             "type": "boolean",
             "description": "是否启用"
           }
-        }
+        },
+        "requiredFieldName": [
+          "name",
+          "value"
+        ]
       },
       "response": {
         "className": "ApiResultVOString",
@@ -3595,7 +3633,10 @@
             "description": "主键 idSet",
             "format": "int64"
           }
-        }
+        },
+        "requiredFieldName": [
+          "idSet"
+        ]
       },
       "response": {
         "className": "ApiResultVOString",
@@ -3901,7 +3942,10 @@
             "description": "主键id",
             "format": "int64"
           }
-        }
+        },
+        "requiredFieldName": [
+          "id"
+        ]
       },
       "response": {
         "className": "ApiResultVOSysDictDO",
@@ -4559,7 +4603,12 @@
             "type": "boolean",
             "description": "是否启用"
           }
-        }
+        },
+        "requiredFieldName": [
+          "dictKey",
+          "name",
+          "type"
+        ]
       },
       "response": {
         "className": "ApiResultVOString",
@@ -4618,7 +4667,10 @@
             "description": "主键 idSet",
             "format": "int64"
           }
-        }
+        },
+        "requiredFieldName": [
+          "idSet"
+        ]
       },
       "response": {
         "className": "ApiResultVOString",
@@ -4683,7 +4735,11 @@
             "description": "需要改变的数值",
             "format": "int64"
           }
-        }
+        },
+        "requiredFieldName": [
+          "idSet",
+          "number"
+        ]
       },
       "response": {
         "className": "ApiResultVOString",
@@ -4776,7 +4832,10 @@
             "type": "boolean",
             "description": "是否启用"
           }
-        }
+        },
+        "requiredFieldName": [
+          "name"
+        ]
       },
       "response": {
         "className": "ApiResultVOString",
@@ -4835,7 +4894,10 @@
             "description": "主键id",
             "format": "int64"
           }
-        }
+        },
+        "requiredFieldName": [
+          "id"
+        ]
       },
       "response": {
         "className": "ApiResultVOSysRoleInfoByIdVO",
@@ -5225,7 +5287,10 @@
             "description": "主键 idSet",
             "format": "int64"
           }
-        }
+        },
+        "requiredFieldName": [
+          "idSet"
+        ]
       },
       "response": {
         "className": "ApiResultVOString",
@@ -5295,7 +5360,12 @@
             "type": "string",
             "description": "前端加密之后的新密码"
           }
-        }
+        },
+        "requiredFieldName": [
+          "newPassword",
+          "oldPassword",
+          "originNewPassword"
+        ]
       },
       "response": {
         "className": "ApiResultVOString",
@@ -5353,7 +5423,10 @@
             "type": "string",
             "description": "前端加密之后的密码"
           }
-        }
+        },
+        "requiredFieldName": [
+          "currentPassword"
+        ]
       },
       "response": {
         "className": "ApiResultVOString",
@@ -5424,7 +5497,12 @@
             "type": "string",
             "description": "前端加密之后的原始密码"
           }
-        }
+        },
+        "requiredFieldName": [
+          "originPassword",
+          "password",
+          "signInName"
+        ]
       },
       "response": {
         "className": "ApiResultVOString",
@@ -5490,7 +5568,11 @@
             "type": "string",
             "description": "前端加密之后的密码"
           }
-        }
+        },
+        "requiredFieldName": [
+          "currentPassword",
+          "newSignInName"
+        ]
       },
       "response": {
         "className": "ApiResultVOString",
@@ -5556,7 +5638,11 @@
             "maxLength": 20,
             "minLength": 0
           }
-        }
+        },
+        "requiredFieldName": [
+          "password",
+          "signInName"
+        ]
       },
       "response": {
         "className": "ApiResultVOString",
@@ -5619,7 +5705,10 @@
             "maxLength": 100,
             "minLength": 0
           }
-        }
+        },
+        "requiredFieldName": [
+          "phone"
+        ]
       },
       "response": {
         "className": "ApiResultVOString",
@@ -5686,7 +5775,11 @@
             "maxLength": 100,
             "minLength": 0
           }
-        }
+        },
+        "requiredFieldName": [
+          "code",
+          "phone"
+        ]
       },
       "response": {
         "className": "ApiResultVOString",
@@ -5747,7 +5840,10 @@
             "maxLength": 100,
             "minLength": 0
           }
-        }
+        },
+        "requiredFieldName": [
+          "phone"
+        ]
       },
       "response": {
         "className": "ApiResultVOString",
@@ -5853,7 +5949,10 @@
             "maxLength": 100,
             "minLength": 0
           }
-        }
+        },
+        "requiredFieldName": [
+          "phone"
+        ]
       },
       "response": {
         "className": "ApiResultVOString",
@@ -5965,7 +6064,11 @@
             "maxLength": 100,
             "minLength": 0
           }
-        }
+        },
+        "requiredFieldName": [
+          "code",
+          "phone"
+        ]
       },
       "response": {
         "className": "ApiResultVOString",
@@ -6087,7 +6190,13 @@
             "type": "string",
             "description": "前端加密之后的新密码"
           }
-        }
+        },
+        "requiredFieldName": [
+          "code",
+          "newPassword",
+          "originNewPassword",
+          "phone"
+        ]
       },
       "response": {
         "className": "ApiResultVOString",
@@ -6156,7 +6265,12 @@
             "type": "string",
             "description": "前端加密之后的新密码"
           }
-        }
+        },
+        "requiredFieldName": [
+          "code",
+          "newPassword",
+          "originNewPassword"
+        ]
       },
       "response": {
         "className": "ApiResultVOString",
@@ -6233,7 +6347,13 @@
             "type": "string",
             "description": "前端加密之后的原始密码"
           }
-        }
+        },
+        "requiredFieldName": [
+          "code",
+          "originPassword",
+          "password",
+          "phone"
+        ]
       },
       "response": {
         "className": "ApiResultVOString",
@@ -6294,7 +6414,10 @@
             "maxLength": 100,
             "minLength": 0
           }
-        }
+        },
+        "requiredFieldName": [
+          "phone"
+        ]
       },
       "response": {
         "className": "ApiResultVOString",
@@ -6367,7 +6490,12 @@
             "description": "新手机验证码",
             "pattern": "^[0-9]{6}$"
           }
-        }
+        },
+        "requiredFieldName": [
+          "newPhone",
+          "newPhoneCode",
+          "oldPhoneCode"
+        ]
       },
       "response": {
         "className": "ApiResultVOString",
@@ -6426,7 +6554,10 @@
             "description": "验证码",
             "pattern": "^[0-9]{6}$"
           }
-        }
+        },
+        "requiredFieldName": [
+          "code"
+        ]
       },
       "response": {
         "className": "ApiResultVOString",
@@ -6492,7 +6623,11 @@
             "maxLength": 100,
             "minLength": 0
           }
-        }
+        },
+        "requiredFieldName": [
+          "password",
+          "phone"
+        ]
       },
       "response": {
         "className": "ApiResultVOString",
@@ -6561,7 +6696,11 @@
             "maxLength": 200,
             "minLength": 0
           }
-        }
+        },
+        "requiredFieldName": [
+          "code",
+          "email"
+        ]
       },
       "response": {
         "className": "ApiResultVOString",
@@ -6638,7 +6777,13 @@
             "type": "string",
             "description": "前端加密之后的原始密码"
           }
-        }
+        },
+        "requiredFieldName": [
+          "code",
+          "email",
+          "originPassword",
+          "password"
+        ]
       },
       "response": {
         "className": "ApiResultVOString",
@@ -6699,7 +6844,10 @@
             "maxLength": 200,
             "minLength": 0
           }
-        }
+        },
+        "requiredFieldName": [
+          "email"
+        ]
       },
       "response": {
         "className": "ApiResultVOString",
@@ -6760,7 +6908,10 @@
             "maxLength": 200,
             "minLength": 0
           }
-        }
+        },
+        "requiredFieldName": [
+          "email"
+        ]
       },
       "response": {
         "className": "ApiResultVOString",
@@ -6837,7 +6988,13 @@
             "maxLength": 200,
             "minLength": 0
           }
-        }
+        },
+        "requiredFieldName": [
+          "code",
+          "email",
+          "newPassword",
+          "originNewPassword"
+        ]
       },
       "response": {
         "className": "ApiResultVOString",
@@ -6898,7 +7055,10 @@
             "maxLength": 200,
             "minLength": 0
           }
-        }
+        },
+        "requiredFieldName": [
+          "email"
+        ]
       },
       "response": {
         "className": "ApiResultVOString",
@@ -7106,7 +7266,12 @@
             "description": "旧邮箱验证码",
             "pattern": "^[0-9]{6}$"
           }
-        }
+        },
+        "requiredFieldName": [
+          "newEmail",
+          "newEmailCode",
+          "oldEmailCode"
+        ]
       },
       "response": {
         "className": "ApiResultVOString",
@@ -7175,7 +7340,12 @@
             "type": "string",
             "description": "前端加密之后的新密码"
           }
-        }
+        },
+        "requiredFieldName": [
+          "code",
+          "newPassword",
+          "originNewPassword"
+        ]
       },
       "response": {
         "className": "ApiResultVOString",
@@ -7234,7 +7404,10 @@
             "description": "验证码",
             "pattern": "^[0-9]{6}$"
           }
-        }
+        },
+        "requiredFieldName": [
+          "code"
+        ]
       },
       "response": {
         "className": "ApiResultVOString",
@@ -7300,7 +7473,11 @@
             "maxLength": 200,
             "minLength": 0
           }
-        }
+        },
+        "requiredFieldName": [
+          "email",
+          "password"
+        ]
       },
       "response": {
         "className": "ApiResultVOString",
