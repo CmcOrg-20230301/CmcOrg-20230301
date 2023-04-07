@@ -468,6 +468,10 @@ public class SpringDocUtil {
 
                     refStr = items.getStr("$ref");
 
+                    if (StrUtil.isBlank(refStr)) {
+                        propertiesValue = items; // 替换为：数组里面元素的类型
+                    }
+
                 }
 
             }
