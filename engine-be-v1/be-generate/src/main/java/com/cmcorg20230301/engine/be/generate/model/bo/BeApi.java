@@ -104,6 +104,11 @@ public class BeApi {
          */
         private List<String> requiredFieldName;
 
+        /**
+         * 是否是集合
+         */
+        private Boolean arrFlag;
+
     }
 
     /**

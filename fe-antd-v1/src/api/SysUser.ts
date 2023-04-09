@@ -48,38 +48,32 @@ export interface SysUserPageDTO {
     id?: string // 主键 id，format：int64
     enableFlag?: boolean // 是否正常
     email?: string // 邮箱
-    order?: MyOrderDTO // 排序字段
+    order?: MyOrderDTO // null
     sort?: Record<string, SortOrder> // 排序字段（只在前端使用，实际传值：order）
 }
 
-export interface PageSysUserPageVO {
-    total?: string // null，format：int64
-    current?: string // null，format：int64
-    pages?: string // null，format：int64
-    size?: string // null，format：int64
-    optimizeCountSql?: boolean // null
-    maxLimit?: string // null，format：int64
-    searchCount?: boolean // null
-    optimizeJoinOfCountSql?: boolean // null
-    countId?: string // null
-
+export interface SysUserPageVO {
+    avatarUri?: string // 头像uri
+    passwordFlag?: boolean // 是否有密码
+    phone?: string // 手机号码，会脱敏
+    createTime?: string // 创建时间，format：date-time
+    wxOpenId?: string // 微信 openId，会脱敏
+    signInName?: string // 登录名，会脱敏
+    nickname?: string // 昵称
+    roleIdSet?: string[] // 角色 idSet，format：int64
+    updateTime?: string // 修改时间，format：date-time
+    id?: string // 主键id，format：int64
+    enableFlag?: boolean // 正常/冻结
+    email?: string // 邮箱，备注：会脱敏
 }
 
 export interface SysUserDictListDTO {
     addAdminFlag?: boolean // 是否追加 admin账号
 }
 
-export interface PageDictVO {
-    total?: string // null，format：int64
-    current?: string // null，format：int64
-    pages?: string // null，format：int64
-    size?: string // null，format：int64
-    optimizeCountSql?: boolean // null
-    maxLimit?: string // null，format：int64
-    searchCount?: boolean // null
-    optimizeJoinOfCountSql?: boolean // null
-    countId?: string // null
-
+export interface DictVO {
+    name?: string // 显示用
+    id?: string // 传值用，format：int64
 }
 
 export interface SysUserInsertOrUpdateDTO {

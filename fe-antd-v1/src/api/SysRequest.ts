@@ -7,21 +7,31 @@ export interface SysRequestSelfLoginRecordPageDTO {
     pageSize?: string // 每页显示条数，format：int64
     category?: string // 请求类别
     region?: string // Ip2RegionUtil.getRegion() 获取到的 ip所处区域
-    order?: MyOrderDTO // 排序字段
+    order?: MyOrderDTO // null
     sort?: Record<string, SortOrder> // 排序字段（只在前端使用，实际传值：order）
 }
 
-export interface PageSysRequestDO {
-    total?: string // null，format：int64
-    current?: string // null，format：int64
-    pages?: string // null，format：int64
-    size?: string // null，format：int64
-    optimizeCountSql?: boolean // null
-    maxLimit?: string // null，format：int64
-    searchCount?: boolean // null
-    optimizeJoinOfCountSql?: boolean // null
-    countId?: string // null
-
+export interface SysRequestDO {
+    ip?: string // ip
+    updateTime?: string // 修改时间，format：date-time
+    remark?: string // 备注
+    delFlag?: boolean // 是否逻辑删除
+    requestParam?: string // 请求的参数
+    type?: string // 请求类型
+    version?: number // 乐观锁，format：int32
+    uri?: string // 请求的 uri
+    successFlag?: boolean // 请求是否成功
+    errorMsg?: string // 失败信息
+    updateId?: string // 修改人id，format：int64
+    costMs?: string // 耗时（毫秒），format：int64
+    costMsStr?: string // 耗时（字符串）
+    createTime?: string // 创建时间，format：date-time
+    createId?: string // 创建人id，format：int64
+    name?: string // 接口名（备用）
+    id?: string // 主键id，format：int64
+    category?: string // 请求类别
+    region?: string // Ip2RegionUtil.getRegion() 获取到的 ip所处区域
+    enableFlag?: boolean // 是否启用
 }
 
 export interface SysRequestPageDTO {

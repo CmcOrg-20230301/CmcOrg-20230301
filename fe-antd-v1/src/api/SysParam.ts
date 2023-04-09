@@ -37,19 +37,6 @@ export interface SysParamPageDTO {
     pageSize?: string // 每页显示条数，format：int64
     remark?: string // 备注
     enableFlag?: boolean // 是否启用
-    order?: MyOrderDTO // 排序字段
+    order?: MyOrderDTO // null
     sort?: Record<string, SortOrder> // 排序字段（只在前端使用，实际传值：order）
-}
-
-export interface PageSysParamDO {
-    total?: string // null，format：int64
-    current?: string // null，format：int64
-    pages?: string // null，format：int64
-    size?: string // null，format：int64
-    optimizeCountSql?: boolean // null
-    maxLimit?: string // null，format：int64
-    searchCount?: boolean // null
-    optimizeJoinOfCountSql?: boolean // null
-    countId?: string // null
-
 }

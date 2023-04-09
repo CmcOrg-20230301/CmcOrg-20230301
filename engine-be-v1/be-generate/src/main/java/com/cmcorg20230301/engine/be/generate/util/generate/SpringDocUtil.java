@@ -511,6 +511,8 @@ public class SpringDocUtil {
                 String beApiSchemaMapKey = match.get(BE_API_SCHEMA_MAP_KEY);
 
                 beApiSchema.setClassName(beApiSchemaMapKey);
+                beApiSchema.setArrFlag(arrFlag);
+                beApiSchema.setDescription(propertiesValue.getStr("description"));
 
                 if (apiSchema.getClassName().equals(beApiSchemaMapKey)) { // 这里防止递归，然后内存溢出
 

@@ -154,7 +154,7 @@ public class GenerateApiUtil {
                         (BeApi.BeApiSchema)records.getFieldMap().get(records.getClassName());
 
                     // 生成：interface
-                    generateInterface(beApi, strBuilder, classNameSet, recordsBeApiSchema, "vo：");
+                    generateInterface(beApi, strBuilder, classNameSet, recordsBeApiSchema, "vo-page：");
 
                 } else {
 
@@ -165,7 +165,7 @@ public class GenerateApiUtil {
 
             } else if (data instanceof BeApi.BeApiParameter) {
 
-                log.info("vo：ApiResultVO，data是一般类型：{}，name：{}", beApi.getPath(), response.getName());
+                //                log.info("vo：ApiResultVO，data是一般类型：{}，name：{}", beApi.getPath(), response.getName());
 
             }
 
@@ -231,16 +231,14 @@ public class GenerateApiUtil {
 
             if (beApiField instanceof BeApi.BeApiParameter) {
 
-                // 生成 dto，BeApiParameter类型
-                generateDTOParameter(interfaceBuilder, item.getKey(), (BeApi.BeApiParameter)beApiField);
+                // 生成 interface，BeApiParameter类型
+                generateInterfaceParameter(interfaceBuilder, item.getKey(), (BeApi.BeApiParameter)beApiField);
 
             } else if (beApiField instanceof BeApi.BeApiSchema) {
 
-                // 生成 dto，BeApiSchema类型
-                if (generateDTOSchema(beApi, strBuilder, classNameSet, interfaceBuilder, (BeApi.BeApiSchema)beApiField,
-                    preMsg)) {
-                    continue;
-                }
+                // 生成 interface，BeApiSchema类型
+                generateInterfaceSchema(beApi, strBuilder, classNameSet, interfaceBuilder,
+                    (BeApi.BeApiSchema)beApiField, preMsg);
 
             }
 
@@ -259,10 +257,10 @@ public class GenerateApiUtil {
     }
 
     /**
-     * 生成 dto，BeApiSchema类型
+     * 生成 interface，BeApiSchema类型
      */
-    private static boolean generateDTOSchema(BeApi beApi, StrBuilder strBuilder, Set<String> classNameSet,
-        StrBuilder dtoBuilder, BeApi.BeApiSchema beApiSchema, String preMsg) {
+    private static void generateInterfaceSchema(BeApi beApi, StrBuilder strBuilder, Set<String> classNameSet,
+        StrBuilder interfaceBuilder, BeApi.BeApiSchema beApiSchema, String preMsg) {
 
         // 如果是：排序字段
         if (beApiSchema.getClassName().equals(MyOrderDTO.class.getSimpleName())) {
@@ -273,7 +271,7 @@ public class GenerateApiUtil {
 
                 strBuilder.insert(0, API_IMPORT_BASE_MY_ORDER_DTO); // 在顶部添加导入
 
-                dtoBuilder.append(StrUtil
+                interfaceBuilder.append(StrUtil
                     .format(API_INTERFACE_FIELD_TEMP, beApiSchema.getName(), "?", beApiSchema.getClassName(), "",
                         "排序字段"));
 
@@ -281,25 +279,24 @@ public class GenerateApiUtil {
 
                 strBuilder.insert(0, SORT_IMPORT); // 在顶部添加导入
 
-                dtoBuilder.append(SORT);
+                interfaceBuilder.append(SORT);
 
             }
 
         } else {
 
-            log.info(preMsg + "处理失败，beApiField BeApiSchema类型：{}，name：{}", beApi.getPath(), beApiSchema.getName());
-            return true;
+            interfaceBuilder.append(StrUtil
+                .format(API_INTERFACE_FIELD_TEMP, beApiSchema.getName(), "?", beApiSchema.getClassName(),
+                    BooleanUtil.isTrue(beApiSchema.getArrFlag()) ? "[]" : "", beApiSchema.getDescription()));
 
         }
-
-        return false;
 
     }
 
     /**
-     * 生成 dto，BeApiParameter类型
+     * 生成 interface，BeApiParameter类型
      */
-    private static void generateDTOParameter(StrBuilder dtoBuilder, String fieldName,
+    private static void generateInterfaceParameter(StrBuilder interfaceBuilder, String fieldName,
         BeApi.BeApiParameter beApiParameter) {
 
         String type = beApiParameter.getType();
@@ -321,36 +318,36 @@ public class GenerateApiUtil {
 
         }
 
-        dtoBuilder.append(StrUtil.format(API_INTERFACE_FIELD_TEMP, fieldName, "?", type,
+        interfaceBuilder.append(StrUtil.format(API_INTERFACE_FIELD_TEMP, fieldName, "?", type,
             BooleanUtil.isTrue(beApiParameter.getArrFlag()) ? "[]" : "", beApiParameter.getDescription()));
 
         if (StrUtil.isNotBlank(beApiParameter.getPattern())) {
 
-            dtoBuilder.append("，正则表达式：").append(beApiParameter.getPattern());
+            interfaceBuilder.append("，正则表达式：").append(beApiParameter.getPattern());
 
         }
 
         if (beApiParameter.getMaxLength() != null) {
 
-            dtoBuilder.append("，maxLength：").append(beApiParameter.getMaxLength());
+            interfaceBuilder.append("，maxLength：").append(beApiParameter.getMaxLength());
 
         }
 
         if (beApiParameter.getMinLength() != null) {
 
-            dtoBuilder.append("，minLength：").append(beApiParameter.getMinLength());
+            interfaceBuilder.append("，minLength：").append(beApiParameter.getMinLength());
 
         }
 
         if (BooleanUtil.isTrue(beApiParameter.getRequired())) {
 
-            dtoBuilder.append("，required：").append(beApiParameter.getRequired());
+            interfaceBuilder.append("，required：").append(beApiParameter.getRequired());
 
         }
 
         if (StrUtil.isNotBlank(beApiParameter.getFormat())) {
 
-            dtoBuilder.append("，format：").append(beApiParameter.getFormat());
+            interfaceBuilder.append("，format：").append(beApiParameter.getFormat());
 
         }
 
