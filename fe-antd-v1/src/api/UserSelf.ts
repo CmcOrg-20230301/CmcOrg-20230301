@@ -1,6 +1,14 @@
+import $http from "@/util/HttpUtil";
+import {AxiosRequestConfig} from "axios";
+
 export interface UserSelfUpdateInfoDTO {
     nickname?: string // 昵称，正则表达式：^[\u4E00-\u9FA5A-Za-z0-9_-]{2,20}$
     bio?: string // 个人简介
+}
+
+// 当前用户：基本信息：修改
+export function UserSelfUpdateinfo(form: UserSelfUpdateInfoDTO, config?: AxiosRequestConfig) {
+    return $http.myPost<void>('/user/self/updateInfo', form, config)
 }
 
 export interface UserSelfInfoVO {
@@ -13,4 +21,9 @@ export interface UserSelfInfoVO {
     nickname?: string // 昵称，正则表达式：^[\u4E00-\u9FA5A-Za-z0-9_-]{2,20}$
     bio?: string // 个人简介
     email?: string // 邮箱，会脱敏
+}
+
+// 获取：当前用户，基本信息
+export function UserSelfInfo(config?: AxiosRequestConfig) {
+    return $http.myPost<void>('/user/self/info', undefined, config)
 }

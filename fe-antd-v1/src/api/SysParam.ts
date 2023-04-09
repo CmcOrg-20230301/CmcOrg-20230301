@@ -1,5 +1,7 @@
 import {SortOrder} from "antd/es/table/interface";
 import MyOrderDTO from "@/model/dto/MyOrderDTO";
+import $http from "@/util/HttpUtil";
+import {AxiosRequestConfig} from "axios";
 
 export interface NotNullId {
     id?: string // 主键id，required：true，format：int64
@@ -19,6 +21,11 @@ export interface SysParamDO {
     value?: string // 值
 }
 
+// 通过主键id，查看详情
+export function SysParamInfobyid(form: NotNullId, config?: AxiosRequestConfig) {
+    return $http.myProPost<void>('/sys/param/infoById', form, config)
+}
+
 export interface SysParamInsertOrUpdateDTO {
     name?: string // 配置名，以 id为不变值进行使用，不要用此属性，required：true
     remark?: string // 备注
@@ -27,8 +34,18 @@ export interface SysParamInsertOrUpdateDTO {
     enableFlag?: boolean // 是否启用
 }
 
+// 新增/修改
+export function SysParamInsertorupdate(form: SysParamInsertOrUpdateDTO, config?: AxiosRequestConfig) {
+    return $http.myPost<void>('/sys/param/insertOrUpdate', form, config)
+}
+
 export interface NotEmptyIdSet {
     idSet?: string[] // 主键 idSet，required：true，format：int64
+}
+
+// 批量删除
+export function SysParamDeletebyidset(form: NotEmptyIdSet, config?: AxiosRequestConfig) {
+    return $http.myPost<void>('/sys/param/deleteByIdSet', form, config)
 }
 
 export interface SysParamPageDTO {
@@ -39,4 +56,9 @@ export interface SysParamPageDTO {
     enableFlag?: boolean // 是否启用
     order?: MyOrderDTO // 排序字段
     sort?: Record<string, SortOrder> // 排序字段（只在前端使用，实际传值：order）
+}
+
+// 分页排序查询
+export function SysParamPage(form: SysParamPageDTO, config?: AxiosRequestConfig) {
+    return $http.myProPagePost<void>('/sys/param/page', form, config)
 }

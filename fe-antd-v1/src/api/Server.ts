@@ -1,3 +1,6 @@
+import $http from "@/util/HttpUtil";
+import {AxiosRequestConfig} from "axios";
+
 export interface ServerWorkInfoVO {
     diskAvailable?: string // 磁盘可以使用总量（字节），format：int64
     cpuUsed?: string // CPU使用率（0-100），format：int64
@@ -10,4 +13,9 @@ export interface ServerWorkInfoVO {
     memoryUsed?: string // 系统已经使用内存（字节），format：int64
     cpuFree?: string // CPU空闲率（0-100），format：int64
     jvmUsedMemory?: string // JVM中内存已经使用大小（字节），format：int64
+}
+
+// 服务器运行情况
+export function ServerWorkinfo(config?: AxiosRequestConfig) {
+    return $http.myPost<void>('/server/workInfo', undefined, config)
 }

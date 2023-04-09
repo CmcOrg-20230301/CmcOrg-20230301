@@ -1,5 +1,7 @@
 import {SortOrder} from "antd/es/table/interface";
 import MyOrderDTO from "@/model/dto/MyOrderDTO";
+import $http from "@/util/HttpUtil";
+import {AxiosRequestConfig} from "axios";
 
 export interface NotNullId {
     id?: string // 主键id，required：true，format：int64
@@ -26,14 +28,29 @@ export interface SysUserInfoByIdVO {
     email?: string // 邮箱，可以为空
 }
 
+// 通过主键id，查看详情
+export function SysUserInfobyid(form: NotNullId, config?: AxiosRequestConfig) {
+    return $http.myProPost<void>('/sys/user/infoById', form, config)
+}
+
 export interface SysUserUpdatePasswordDTO {
     idSet?: string[] // 主键 idSet，required：true，format：int64
     newPassword?: string // 前端加密之后的，新密码
     newOriginPassword?: string // 前端加密之后的原始密码，新密码
 }
 
+// 批量：修改密码
+export function SysUserUpdatepassword(form: SysUserUpdatePasswordDTO, config?: AxiosRequestConfig) {
+    return $http.myPost<void>('/sys/user/updatePassword', form, config)
+}
+
 export interface NotEmptyIdSet {
     idSet?: string[] // 主键 idSet，required：true，format：int64
+}
+
+// 批量：注销用户
+export function SysUserDeletebyidset(form: NotEmptyIdSet, config?: AxiosRequestConfig) {
+    return $http.myPost<void>('/sys/user/deleteByIdSet', form, config)
 }
 
 export interface SysUserPageDTO {
@@ -67,6 +84,11 @@ export interface SysUserPageVO {
     email?: string // 邮箱，备注：会脱敏
 }
 
+// 分页排序查询
+export function SysUserPage(form: SysUserPageDTO, config?: AxiosRequestConfig) {
+    return $http.myProPagePost<void>('/sys/user/page', form, config)
+}
+
 export interface SysUserDictListDTO {
     addAdminFlag?: boolean // 是否追加 admin账号
 }
@@ -74,6 +96,16 @@ export interface SysUserDictListDTO {
 export interface DictVO {
     name?: string // 显示用
     id?: string // 传值用，format：int64
+}
+
+// 下拉列表
+export function SysUserDictlist(form: SysUserDictListDTO, config?: AxiosRequestConfig) {
+    return $http.myPost<void>('/sys/user/dictList', form, config)
+}
+
+// 批量：重置头像
+export function SysUserResetavatar(form: NotEmptyIdSet, config?: AxiosRequestConfig) {
+    return $http.myPost<void>('/sys/user/resetAvatar', form, config)
 }
 
 export interface SysUserInsertOrUpdateDTO {
@@ -87,4 +119,9 @@ export interface SysUserInsertOrUpdateDTO {
     enableFlag?: boolean // 正常/冻结
     email?: string // 邮箱，正则表达式：^\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$，maxLength：200，minLength：0
     originPassword?: string // 前端加密之后的原始密码
+}
+
+// 新增/修改
+export function SysUserInsertorupdate(form: SysUserInsertOrUpdateDTO, config?: AxiosRequestConfig) {
+    return $http.myPost<void>('/sys/user/insertOrUpdate', form, config)
 }

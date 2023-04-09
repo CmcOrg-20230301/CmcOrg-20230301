@@ -1,5 +1,7 @@
 import {SortOrder} from "antd/es/table/interface";
 import MyOrderDTO from "@/model/dto/MyOrderDTO";
+import $http from "@/util/HttpUtil";
+import {AxiosRequestConfig} from "axios";
 
 export interface SysMenuPageDTO {
     redirect?: string // 重定向，优先级最高
@@ -34,6 +36,16 @@ export interface SysMenuDO {
     parentId?: string // 父节点id（顶级则为0），format：int64
 }
 
+// 分页排序查询
+export function SysMenuPage(form: SysMenuPageDTO, config?: AxiosRequestConfig) {
+    return $http.myProPagePost<void>('/sys/menu/page', form, config)
+}
+
+// 查询：树结构
+export function SysMenuTree(form: SysMenuPageDTO, config?: AxiosRequestConfig) {
+    return $http.myProTreePost<void>('/sys/menu/tree', form, config)
+}
+
 export interface NotNullId {
     id?: string // 主键id，required：true，format：int64
 }
@@ -64,13 +76,33 @@ export interface SysMenuInfoByIdVO {
     enableFlag?: boolean // 是否启用
 }
 
+// 通过主键id，查看详情
+export function SysMenuInfobyid(form: NotNullId, config?: AxiosRequestConfig) {
+    return $http.myProPost<void>('/sys/menu/infoById', form, config)
+}
+
 export interface ChangeNumberDTO {
     idSet?: string[] // 主键 idSet，required：true，format：int64
     number?: string // 需要改变的数值，required：true，format：int64
 }
 
+// 通过主键 idSet，加减排序号
+export function SysMenuAddorderno(form: ChangeNumberDTO, config?: AxiosRequestConfig) {
+    return $http.myPost<void>('/sys/menu/addOrderNo', form, config)
+}
+
 export interface NotEmptyIdSet {
     idSet?: string[] // 主键 idSet，required：true，format：int64
+}
+
+// 批量删除
+export function SysMenuDeletebyidset(form: NotEmptyIdSet, config?: AxiosRequestConfig) {
+    return $http.myPost<void>('/sys/menu/deleteByIdSet', form, config)
+}
+
+// 获取：当前用户绑定的菜单
+export function SysMenuUserselfmenulist(config?: AxiosRequestConfig) {
+    return $http.myPost<void>('/sys/menu/userSelfMenuList', undefined, config)
 }
 
 export interface SysMenuInsertOrUpdateDTO {
@@ -89,4 +121,9 @@ export interface SysMenuInsertOrUpdateDTO {
     id?: string // 主键 id，format：int64
     firstFlag?: boolean // 是否是起始页面，备注：只能存在一个 firstFlag === true 的菜单
     enableFlag?: boolean // 是否启用
+}
+
+// 新增/修改
+export function SysMenuInsertorupdate(form: SysMenuInsertOrUpdateDTO, config?: AxiosRequestConfig) {
+    return $http.myPost<void>('/sys/menu/insertOrUpdate', form, config)
 }

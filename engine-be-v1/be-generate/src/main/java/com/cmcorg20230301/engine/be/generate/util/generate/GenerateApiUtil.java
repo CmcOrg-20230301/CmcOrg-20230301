@@ -1,9 +1,11 @@
 package com.cmcorg20230301.engine.be.generate.util.generate;
 
 import cn.hutool.core.io.FileUtil;
+import cn.hutool.core.text.CharPool;
 import cn.hutool.core.text.StrBuilder;
 import cn.hutool.core.util.BooleanUtil;
 import cn.hutool.core.util.StrUtil;
+import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.cmcorg20230301.engine.be.generate.model.bo.BeApi;
 import com.cmcorg20230301.engine.be.model.model.dto.MyOrderDTO;
@@ -11,10 +13,7 @@ import com.cmcorg20230301.engine.be.security.model.vo.ApiResultVO;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.File;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * 生成 api的工具类
@@ -73,7 +72,7 @@ public class GenerateApiUtil {
 
         HashMap<String, HashMap<String, BeApi>> apiMap = SpringDocUtil.get(springDocEndpoint);
 
-        //        System.out.println(JSONUtil.toJsonStr(apiMap));
+        System.out.println(JSONUtil.toJsonStr(apiMap));
 
         log.info("清除：api文件夹：{}", API_PATH);
         FileUtil.del(API_PATH);
@@ -120,6 +119,60 @@ public class GenerateApiUtil {
 
         // 生成 vo
         generateVO(beApi, strBuilder, classNameSet);
+
+        // 生成 api
+        generateApi(beApi, strBuilder, classNameSet);
+
+    }
+
+    /**
+     * 生成 api
+     */
+    private static void generateApi(BeApi beApi, StrBuilder strBuilder, Set<String> classNameSet) {
+
+        List<String> splitTrimList = StrUtil.splitTrim(beApi.getPath(), CharPool.SLASH);
+
+        // api的方法名
+        String apiName = StrUtil.upperFirst(StrUtil.toCamelCase(beApi.getPath(), CharPool.SLASH));
+
+        String formStr = ""; // 拼接 form参数
+        String formValueStr = UNDEFINED; // 拼接 form值
+
+        if (beApi.getRequestBody() != null && StrUtil.isNotBlank(beApi.getRequestBody().getClassName())) {
+
+            formStr = StrUtil.format(API_REQUEST_FORM_TEMP, beApi.getRequestBody().getClassName());
+            formValueStr = API_REQUEST_FORM_NAME;
+
+        }
+
+        String httpStr = null; // 请求的类型
+        String returnTypeStr = null; // 返回的类型
+
+        if (splitTrimList.contains("infoById")) {
+
+            httpStr = "myProPost";
+            returnTypeStr = "void";
+
+        } else if (splitTrimList.contains("page")) {
+
+            httpStr = "myProPagePost";
+            returnTypeStr = "void";
+
+        } else if (splitTrimList.contains("tree")) {
+
+            httpStr = "myProTreePost";
+            returnTypeStr = "void";
+
+        } else {
+
+            httpStr = "myPost";
+            returnTypeStr = "void";
+
+        }
+
+        strBuilder.append(StrUtil
+            .format(API_REQUEST_TEMP, beApi.getSummary(), apiName, formStr, httpStr, returnTypeStr, beApi.getPath(),
+                formValueStr));
 
     }
 

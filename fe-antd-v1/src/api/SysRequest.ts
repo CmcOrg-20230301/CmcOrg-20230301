@@ -1,5 +1,7 @@
 import {SortOrder} from "antd/es/table/interface";
 import MyOrderDTO from "@/model/dto/MyOrderDTO";
+import $http from "@/util/HttpUtil";
+import {AxiosRequestConfig} from "axios";
 
 export interface SysRequestSelfLoginRecordPageDTO {
     current?: string // 第几页，format：int64
@@ -34,6 +36,11 @@ export interface SysRequestDO {
     enableFlag?: boolean // 是否启用
 }
 
+// 当前用户：登录记录
+export function SysRequestSelfLoginrecord(form: SysRequestSelfLoginRecordPageDTO, config?: AxiosRequestConfig) {
+    return $http.myPost<void>('/sys/request/self/loginRecord', form, config)
+}
+
 export interface SysRequestPageDTO {
     beginCostMs?: string // 耗时开始（毫秒），format：int64
     ip?: string // ip
@@ -52,7 +59,22 @@ export interface SysRequestPageDTO {
 
 }
 
+// 分页排序查询
+export function SysRequestPage(form: SysRequestPageDTO, config?: AxiosRequestConfig) {
+    return $http.myProPagePost<void>('/sys/request/page', form, config)
+}
+
 export interface SysRequestAllAvgVO {
     avgMs?: number // 请求的平均耗时（毫秒），format：int32
     count?: string // 请求的总数，format：int64
+}
+
+// 所有请求的平均耗时-增强：增加筛选项
+export function SysRequestAllavgpro(form: SysRequestPageDTO, config?: AxiosRequestConfig) {
+    return $http.myPost<void>('/sys/request/allAvgPro', form, config)
+}
+
+// 所有请求的平均耗时
+export function SysRequestAllavg(config?: AxiosRequestConfig) {
+    return $http.myPost<void>('/sys/request/allAvg', undefined, config)
 }
