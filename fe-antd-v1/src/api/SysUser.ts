@@ -1,3 +1,6 @@
+import {SortOrder} from "antd/es/table/interface";
+import MyOrderDTO from "@/model/dto/MyOrderDTO";
+
 export interface NotNullId {
     id?: string // 主键id，required：true，format：int64
 }
@@ -10,6 +13,22 @@ export interface SysUserUpdatePasswordDTO {
 
 export interface NotEmptyIdSet {
     idSet?: string[] // 主键 idSet，required：true，format：int64
+}
+
+export interface SysUserPageDTO {
+    avatarUri?: string // 头像uri
+    passwordFlag?: boolean // 是否有密码
+    current?: string // 第几页，format：int64
+    phone?: string // 手机号码
+    wxOpenId?: string // 微信 openId
+    signInName?: string // 登录名
+    nickname?: string // 昵称
+    pageSize?: string // 每页显示条数，format：int64
+    id?: string // 主键 id，format：int64
+    enableFlag?: boolean // 是否正常
+    email?: string // 邮箱
+    order?: MyOrderDTO // 排序字段
+    sort?: Record<string, SortOrder> // 排序字段（只在前端使用，实际传值：order）
 }
 
 export interface SysUserDictListDTO {

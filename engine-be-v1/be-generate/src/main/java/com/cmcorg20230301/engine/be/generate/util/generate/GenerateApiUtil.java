@@ -5,6 +5,7 @@ import cn.hutool.core.text.StrBuilder;
 import cn.hutool.core.util.BooleanUtil;
 import cn.hutool.core.util.StrUtil;
 import com.cmcorg20230301.engine.be.generate.model.bo.BeApi;
+import com.cmcorg20230301.engine.be.model.model.dto.MyOrderDTO;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.File;
@@ -45,8 +46,6 @@ public class GenerateApiUtil {
         "import $http from \"@/util/HttpUtil\";\nimport {AxiosRequestConfig} from \"axios\";\n";
 
     private static final String API_IMPORT_BASE_MY_ORDER_DTO = "import MyOrderDTO from \"@/model/dto/MyOrderDTO\";\n";
-
-    private static final String MY_ORDER_DTO = "MyOrderDTO";
 
     private static final String SORT = "\n    sort?: Record<string, SortOrder> // 排序字段（只在前端使用，实际传值：order）";
 
@@ -118,6 +117,14 @@ public class GenerateApiUtil {
         generateDTO(beApi, strBuilder, classNameSet);
 
         // 生成 vo
+        generateVO(beApi, strBuilder, classNameSet);
+
+    }
+
+    /**
+     * 生成 vo
+     */
+    private static void generateVO(BeApi beApi, StrBuilder strBuilder, Set<String> classNameSet) {
 
     }
 
@@ -164,14 +171,15 @@ public class GenerateApiUtil {
 
             if (beApiField instanceof BeApi.BeApiParameter) {
 
+                // 生成 dto，BeApiParameter类型
                 generateDTOParameter(dtoBuilder, item, (BeApi.BeApiParameter)beApiField);
 
             } else if (beApiField instanceof BeApi.BeApiSchema) {
 
-                BeApi.BeApiSchema beApiSchema = (BeApi.BeApiSchema)beApiField;
-
-                log.info("处理失败，beApiField BeApiSchema类型：{}", beApi.getPath());
-                return;
+                // 生成 dto，BeApiSchema类型
+                if (generateDTOSchema(beApi, strBuilder, classNameSet, dtoBuilder, (BeApi.BeApiSchema)beApiField)) {
+                    continue;
+                }
 
             }
 
@@ -190,9 +198,47 @@ public class GenerateApiUtil {
     }
 
     /**
+     * 生成 dto，BeApiSchema类型
+     */
+    private static boolean generateDTOSchema(BeApi beApi, StrBuilder strBuilder, Set<String> classNameSet,
+        StrBuilder dtoBuilder, BeApi.BeApiSchema beApiSchema) {
+
+        // 如果是：排序字段
+        if (beApiSchema.getClassName().equals(MyOrderDTO.class.getSimpleName())) {
+
+            if (BooleanUtil.isFalse(classNameSet.contains(beApiSchema.getClassName()))) {
+
+                classNameSet.add(beApiSchema.getClassName());
+
+                strBuilder.insert(0, API_IMPORT_BASE_MY_ORDER_DTO); // 在顶部添加导入
+
+                dtoBuilder.append(StrUtil
+                    .format(API_INTERFACE_FIELD_TEMP, beApiSchema.getName(), "?", beApiSchema.getClassName(), "",
+                        "排序字段"));
+
+                classNameSet.add(SORT_ORDER);
+
+                strBuilder.insert(0, SORT_IMPORT); // 在顶部添加导入
+
+                dtoBuilder.append(SORT);
+
+            }
+
+        } else {
+
+            log.info("处理失败，beApiField BeApiSchema类型：{}，name：{}", beApi.getPath(), beApiSchema.getName());
+            return true;
+
+        }
+
+        return false;
+
+    }
+
+    /**
      * 生成 dto，BeApiParameter类型
      */
-    private static void generateDTOParameter(StrBuilder dtoBuilder, Map.Entry<String, BeApi.BeApiField> item,
+    private static void generateDTOParameter(StrBuilder dtoBuilder, Map.Entry<String, BeApi.BeApiField> beApiFieldEntry,
         BeApi.BeApiParameter beApiParameter) {
 
         String type = beApiParameter.getType();
@@ -214,7 +260,7 @@ public class GenerateApiUtil {
 
         }
 
-        dtoBuilder.append(StrUtil.format(API_INTERFACE_FIELD_TEMP, item.getKey(), "?", type,
+        dtoBuilder.append(StrUtil.format(API_INTERFACE_FIELD_TEMP, beApiFieldEntry.getKey(), "?", type,
             BooleanUtil.isTrue(beApiParameter.getArrFlag()) ? "[]" : "", beApiParameter.getDescription()));
 
         if (StrUtil.isNotBlank(beApiParameter.getPattern())) {
