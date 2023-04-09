@@ -16,6 +16,6 @@ export interface ServerWorkInfoVO {
 }
 
 // 服务器运行情况
-export function ServerWorkinfo(config?: AxiosRequestConfig) {
-    return $http.myPost<void>('/server/workInfo', undefined, config)
+export function ServerWorkInfo(config?: AxiosRequestConfig) {
+    return $http.myPost<ServerWorkInfoVO>('/server/workInfo', undefined, config)
 }

@@ -3,5 +3,5 @@ import {AxiosRequestConfig} from "axios";
 
 // 当前用户-退出登录
 export function SignOutSelf(config?: AxiosRequestConfig) {
-    return $http.myPost<void>('/sign/out/self', undefined, config)
+    return $http.myPost<string>('/sign/out/self', undefined, config)
 }

@@ -7,7 +7,7 @@ export interface SignInCodeDTO {
 
 // 微信 code登录
 export function SignWxSignInCode(form: SignInCodeDTO, config?: AxiosRequestConfig) {
-    return $http.myPost<void>('/sign/wx/sign/in/code', form, config)
+    return $http.myPost<string>('/sign/wx/sign/in/code', form, config)
 }
 
 export interface SignInPhoneCodeDTO {
@@ -15,6 +15,6 @@ export interface SignInPhoneCodeDTO {
 }
 
 // 手机号 code登录
-export function SignWxSignInPhonecode(form: SignInPhoneCodeDTO, config?: AxiosRequestConfig) {
-    return $http.myPost<void>('/sign/wx/sign/in/phoneCode', form, config)
+export function SignWxSignInPhoneCode(form: SignInPhoneCodeDTO, config?: AxiosRequestConfig) {
+    return $http.myPost<string>('/sign/wx/sign/in/phoneCode', form, config)
 }

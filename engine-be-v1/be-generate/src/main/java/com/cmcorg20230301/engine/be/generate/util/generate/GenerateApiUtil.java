@@ -5,7 +5,6 @@ import cn.hutool.core.text.CharPool;
 import cn.hutool.core.text.StrBuilder;
 import cn.hutool.core.util.BooleanUtil;
 import cn.hutool.core.util.StrUtil;
-import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.cmcorg20230301.engine.be.generate.model.bo.BeApi;
 import com.cmcorg20230301.engine.be.model.model.dto.MyOrderDTO;
@@ -56,8 +55,6 @@ public class GenerateApiUtil {
 
     private static final String UNDEFINED = "undefined";
 
-    private static final String COLLECT = "[]";
-
     public static void main(String[] args) {
 
         // 执行
@@ -72,7 +69,7 @@ public class GenerateApiUtil {
 
         HashMap<String, HashMap<String, BeApi>> apiMap = SpringDocUtil.get(springDocEndpoint);
 
-        System.out.println(JSONUtil.toJsonStr(apiMap));
+        //        System.out.println(JSONUtil.toJsonStr(apiMap));
 
         log.info("清除：api文件夹：{}", API_PATH);
         FileUtil.del(API_PATH);
@@ -133,7 +130,8 @@ public class GenerateApiUtil {
         List<String> splitTrimList = StrUtil.splitTrim(beApi.getPath(), CharPool.SLASH);
 
         // api的方法名
-        String apiName = StrUtil.upperFirst(StrUtil.toCamelCase(beApi.getPath(), CharPool.SLASH));
+        String apiName =
+            splitTrimList.stream().reduce((x, y) -> StrUtil.upperFirst(x) + StrUtil.upperFirst(y)).orElse(null);
 
         String formStr = ""; // 拼接 form参数
         String formValueStr = UNDEFINED; // 拼接 form值
@@ -145,28 +143,24 @@ public class GenerateApiUtil {
 
         }
 
-        String httpStr = null; // 请求的类型
-        String returnTypeStr = null; // 返回的类型
+        String httpStr; // 请求的类型
+        String returnTypeStr = beApi.getReturnTypeStr(); // 返回的类型
 
         if (splitTrimList.contains("infoById")) {
 
             httpStr = "myProPost";
-            returnTypeStr = "void";
 
         } else if (splitTrimList.contains("page")) {
 
             httpStr = "myProPagePost";
-            returnTypeStr = "void";
 
         } else if (splitTrimList.contains("tree")) {
 
             httpStr = "myProTreePost";
-            returnTypeStr = "void";
 
         } else {
 
             httpStr = "myPost";
-            returnTypeStr = "void";
 
         }
 
@@ -206,10 +200,14 @@ public class GenerateApiUtil {
                     BeApi.BeApiSchema recordsBeApiSchema =
                         (BeApi.BeApiSchema)records.getFieldMap().get(records.getClassName());
 
+                    beApi.setReturnTypeStr(recordsBeApiSchema.getClassName());
+
                     // 生成：interface
                     generateInterface(beApi, strBuilder, classNameSet, recordsBeApiSchema, "vo-page：");
 
                 } else {
+
+                    beApi.setReturnTypeStr(dataRealBeApiSchema.getClassName());
 
                     // 生成：interface
                     generateInterface(beApi, strBuilder, classNameSet, dataRealBeApiSchema, "vo：");
@@ -218,7 +216,9 @@ public class GenerateApiUtil {
 
             } else if (data instanceof BeApi.BeApiParameter) {
 
-                //                log.info("vo：ApiResultVO，data是一般类型：{}，name：{}", beApi.getPath(), response.getName());
+                BeApi.BeApiParameter dataBeApiParameter = (BeApi.BeApiParameter)data;
+
+                beApi.setReturnTypeStr(dataBeApiParameter.getType());
 
             }
 

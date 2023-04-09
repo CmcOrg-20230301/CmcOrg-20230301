@@ -25,8 +25,8 @@ export interface SysDictDO {
 }
 
 // 通过主键id，查看详情
-export function SysDictInfobyid(form: NotNullId, config?: AxiosRequestConfig) {
-    return $http.myProPost<void>('/sys/dict/infoById', form, config)
+export function SysDictInfoById(form: NotNullId, config?: AxiosRequestConfig) {
+    return $http.myProPost<SysDictDO>('/sys/dict/infoById', form, config)
 }
 
 export interface SysDictPageDTO {
@@ -61,12 +61,12 @@ export interface SysDictTreeVO {
 
 // 查询：树结构
 export function SysDictTree(form: SysDictPageDTO, config?: AxiosRequestConfig) {
-    return $http.myProTreePost<void>('/sys/dict/tree', form, config)
+    return $http.myProTreePost<SysDictTreeVO>('/sys/dict/tree', form, config)
 }
 
 // 分页排序查询
 export function SysDictPage(form: SysDictPageDTO, config?: AxiosRequestConfig) {
-    return $http.myProPagePost<void>('/sys/dict/page', form, config)
+    return $http.myProPagePost<SysDictDO>('/sys/dict/page', form, config)
 }
 
 export interface SysDictInsertOrUpdateDTO {
@@ -81,8 +81,8 @@ export interface SysDictInsertOrUpdateDTO {
 }
 
 // 新增/修改
-export function SysDictInsertorupdate(form: SysDictInsertOrUpdateDTO, config?: AxiosRequestConfig) {
-    return $http.myPost<void>('/sys/dict/insertOrUpdate', form, config)
+export function SysDictInsertOrUpdate(form: SysDictInsertOrUpdateDTO, config?: AxiosRequestConfig) {
+    return $http.myPost<string>('/sys/dict/insertOrUpdate', form, config)
 }
 
 export interface NotEmptyIdSet {
@@ -90,8 +90,8 @@ export interface NotEmptyIdSet {
 }
 
 // 批量删除
-export function SysDictDeletebyidset(form: NotEmptyIdSet, config?: AxiosRequestConfig) {
-    return $http.myPost<void>('/sys/dict/deleteByIdSet', form, config)
+export function SysDictDeleteByIdSet(form: NotEmptyIdSet, config?: AxiosRequestConfig) {
+    return $http.myPost<string>('/sys/dict/deleteByIdSet', form, config)
 }
 
 export interface ChangeNumberDTO {
@@ -100,6 +100,6 @@ export interface ChangeNumberDTO {
 }
 
 // 通过主键 idSet，加减排序号
-export function SysDictAddorderno(form: ChangeNumberDTO, config?: AxiosRequestConfig) {
-    return $http.myPost<void>('/sys/dict/addOrderNo', form, config)
+export function SysDictAddOrderNo(form: ChangeNumberDTO, config?: AxiosRequestConfig) {
+    return $http.myPost<string>('/sys/dict/addOrderNo', form, config)
 }

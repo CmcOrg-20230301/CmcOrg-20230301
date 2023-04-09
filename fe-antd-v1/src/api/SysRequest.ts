@@ -37,8 +37,8 @@ export interface SysRequestDO {
 }
 
 // 当前用户：登录记录
-export function SysRequestSelfLoginrecord(form: SysRequestSelfLoginRecordPageDTO, config?: AxiosRequestConfig) {
-    return $http.myPost<void>('/sys/request/self/loginRecord', form, config)
+export function SysRequestSelfLoginRecord(form: SysRequestSelfLoginRecordPageDTO, config?: AxiosRequestConfig) {
+    return $http.myPost<SysRequestDO>('/sys/request/self/loginRecord', form, config)
 }
 
 export interface SysRequestPageDTO {
@@ -61,7 +61,7 @@ export interface SysRequestPageDTO {
 
 // 分页排序查询
 export function SysRequestPage(form: SysRequestPageDTO, config?: AxiosRequestConfig) {
-    return $http.myProPagePost<void>('/sys/request/page', form, config)
+    return $http.myProPagePost<SysRequestDO>('/sys/request/page', form, config)
 }
 
 export interface SysRequestAllAvgVO {
@@ -70,11 +70,11 @@ export interface SysRequestAllAvgVO {
 }
 
 // 所有请求的平均耗时-增强：增加筛选项
-export function SysRequestAllavgpro(form: SysRequestPageDTO, config?: AxiosRequestConfig) {
-    return $http.myPost<void>('/sys/request/allAvgPro', form, config)
+export function SysRequestAllAvgPro(form: SysRequestPageDTO, config?: AxiosRequestConfig) {
+    return $http.myPost<SysRequestAllAvgVO>('/sys/request/allAvgPro', form, config)
 }
 
 // 所有请求的平均耗时
-export function SysRequestAllavg(config?: AxiosRequestConfig) {
-    return $http.myPost<void>('/sys/request/allAvg', undefined, config)
+export function SysRequestAllAvg(config?: AxiosRequestConfig) {
+    return $http.myPost<SysRequestAllAvgVO>('/sys/request/allAvg', undefined, config)
 }

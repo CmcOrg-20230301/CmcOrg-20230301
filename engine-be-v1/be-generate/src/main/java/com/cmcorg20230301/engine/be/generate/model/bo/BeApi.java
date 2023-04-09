@@ -57,6 +57,11 @@ public class BeApi {
     private BeApiField response;
 
     /**
+     * 生成前端 api时用，api接口需要返回的类型
+     */
+    private String returnTypeStr = "void";
+
+    /**
      * 字段对象的接口类
      */
     public interface BeApiField {

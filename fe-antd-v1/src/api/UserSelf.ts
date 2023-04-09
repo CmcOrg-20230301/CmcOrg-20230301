@@ -7,8 +7,8 @@ export interface UserSelfUpdateInfoDTO {
 }
 
 // 当前用户：基本信息：修改
-export function UserSelfUpdateinfo(form: UserSelfUpdateInfoDTO, config?: AxiosRequestConfig) {
-    return $http.myPost<void>('/user/self/updateInfo', form, config)
+export function UserSelfUpdateInfo(form: UserSelfUpdateInfoDTO, config?: AxiosRequestConfig) {
+    return $http.myPost<string>('/user/self/updateInfo', form, config)
 }
 
 export interface UserSelfInfoVO {
@@ -25,5 +25,5 @@ export interface UserSelfInfoVO {
 
 // 获取：当前用户，基本信息
 export function UserSelfInfo(config?: AxiosRequestConfig) {
-    return $http.myPost<void>('/user/self/info', undefined, config)
+    return $http.myPost<UserSelfInfoVO>('/user/self/info', undefined, config)
 }

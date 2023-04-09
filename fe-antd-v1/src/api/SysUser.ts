@@ -29,8 +29,8 @@ export interface SysUserInfoByIdVO {
 }
 
 // 通过主键id，查看详情
-export function SysUserInfobyid(form: NotNullId, config?: AxiosRequestConfig) {
-    return $http.myProPost<void>('/sys/user/infoById', form, config)
+export function SysUserInfoById(form: NotNullId, config?: AxiosRequestConfig) {
+    return $http.myProPost<SysUserInfoByIdVO>('/sys/user/infoById', form, config)
 }
 
 export interface SysUserUpdatePasswordDTO {
@@ -40,8 +40,8 @@ export interface SysUserUpdatePasswordDTO {
 }
 
 // 批量：修改密码
-export function SysUserUpdatepassword(form: SysUserUpdatePasswordDTO, config?: AxiosRequestConfig) {
-    return $http.myPost<void>('/sys/user/updatePassword', form, config)
+export function SysUserUpdatePassword(form: SysUserUpdatePasswordDTO, config?: AxiosRequestConfig) {
+    return $http.myPost<string>('/sys/user/updatePassword', form, config)
 }
 
 export interface NotEmptyIdSet {
@@ -49,8 +49,8 @@ export interface NotEmptyIdSet {
 }
 
 // 批量：注销用户
-export function SysUserDeletebyidset(form: NotEmptyIdSet, config?: AxiosRequestConfig) {
-    return $http.myPost<void>('/sys/user/deleteByIdSet', form, config)
+export function SysUserDeleteByIdSet(form: NotEmptyIdSet, config?: AxiosRequestConfig) {
+    return $http.myPost<string>('/sys/user/deleteByIdSet', form, config)
 }
 
 export interface SysUserPageDTO {
@@ -86,7 +86,7 @@ export interface SysUserPageVO {
 
 // 分页排序查询
 export function SysUserPage(form: SysUserPageDTO, config?: AxiosRequestConfig) {
-    return $http.myProPagePost<void>('/sys/user/page', form, config)
+    return $http.myProPagePost<SysUserPageVO>('/sys/user/page', form, config)
 }
 
 export interface SysUserDictListDTO {
@@ -99,13 +99,13 @@ export interface DictVO {
 }
 
 // 下拉列表
-export function SysUserDictlist(form: SysUserDictListDTO, config?: AxiosRequestConfig) {
-    return $http.myPost<void>('/sys/user/dictList', form, config)
+export function SysUserDictList(form: SysUserDictListDTO, config?: AxiosRequestConfig) {
+    return $http.myPost<DictVO>('/sys/user/dictList', form, config)
 }
 
 // 批量：重置头像
-export function SysUserResetavatar(form: NotEmptyIdSet, config?: AxiosRequestConfig) {
-    return $http.myPost<void>('/sys/user/resetAvatar', form, config)
+export function SysUserResetAvatar(form: NotEmptyIdSet, config?: AxiosRequestConfig) {
+    return $http.myPost<string>('/sys/user/resetAvatar', form, config)
 }
 
 export interface SysUserInsertOrUpdateDTO {
@@ -122,6 +122,6 @@ export interface SysUserInsertOrUpdateDTO {
 }
 
 // 新增/修改
-export function SysUserInsertorupdate(form: SysUserInsertOrUpdateDTO, config?: AxiosRequestConfig) {
-    return $http.myPost<void>('/sys/user/insertOrUpdate', form, config)
+export function SysUserInsertOrUpdate(form: SysUserInsertOrUpdateDTO, config?: AxiosRequestConfig) {
+    return $http.myPost<string>('/sys/user/insertOrUpdate', form, config)
 }

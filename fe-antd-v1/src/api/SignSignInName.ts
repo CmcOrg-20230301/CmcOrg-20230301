@@ -8,8 +8,8 @@ export interface SignSignInNameUpdatePasswordDTO {
 }
 
 // 修改密码
-export function SignSigninnameUpdatepassword(form: SignSignInNameUpdatePasswordDTO, config?: AxiosRequestConfig) {
-    return $http.myPost<void>('/sign/signInName/updatePassword', form, config)
+export function SignSignInNameUpdatePassword(form: SignSignInNameUpdatePasswordDTO, config?: AxiosRequestConfig) {
+    return $http.myPost<string>('/sign/signInName/updatePassword', form, config)
 }
 
 export interface SignSignInNameSignDeleteDTO {
@@ -17,8 +17,8 @@ export interface SignSignInNameSignDeleteDTO {
 }
 
 // 账号注销
-export function SignSigninnameSigndelete(form: SignSignInNameSignDeleteDTO, config?: AxiosRequestConfig) {
-    return $http.myPost<void>('/sign/signInName/signDelete', form, config)
+export function SignSignInNameSignDelete(form: SignSignInNameSignDeleteDTO, config?: AxiosRequestConfig) {
+    return $http.myPost<string>('/sign/signInName/signDelete', form, config)
 }
 
 export interface SignSignInNameSignUpDTO {
@@ -28,8 +28,8 @@ export interface SignSignInNameSignUpDTO {
 }
 
 // 注册
-export function SignSigninnameSignUp(form: SignSignInNameSignUpDTO, config?: AxiosRequestConfig) {
-    return $http.myPost<void>('/sign/signInName/sign/up', form, config)
+export function SignSignInNameSignUp(form: SignSignInNameSignUpDTO, config?: AxiosRequestConfig) {
+    return $http.myPost<string>('/sign/signInName/sign/up', form, config)
 }
 
 export interface SignSignInNameUpdateAccountDTO {
@@ -38,8 +38,8 @@ export interface SignSignInNameUpdateAccountDTO {
 }
 
 // 修改账号
-export function SignSigninnameUpdateaccount(form: SignSignInNameUpdateAccountDTO, config?: AxiosRequestConfig) {
-    return $http.myPost<void>('/sign/signInName/updateAccount', form, config)
+export function SignSignInNameUpdateAccount(form: SignSignInNameUpdateAccountDTO, config?: AxiosRequestConfig) {
+    return $http.myPost<string>('/sign/signInName/updateAccount', form, config)
 }
 
 export interface SignSignInNameSignInPasswordDTO {
@@ -48,6 +48,6 @@ export interface SignSignInNameSignInPasswordDTO {
 }
 
 // 账号密码登录
-export function SignSigninnameSignInPassword(form: SignSignInNameSignInPasswordDTO, config?: AxiosRequestConfig) {
-    return $http.myPost<void>('/sign/signInName/sign/in/password', form, config)
+export function SignSignInNameSignInPassword(form: SignSignInNameSignInPasswordDTO, config?: AxiosRequestConfig) {
+    return $http.myPost<string>('/sign/signInName/sign/in/password', form, config)
 }

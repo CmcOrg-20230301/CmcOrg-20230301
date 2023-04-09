@@ -6,8 +6,8 @@ export interface PhoneNotBlankDTO {
 }
 
 // 绑定手机-发送验证码
-export function SignPhoneBindaccountSendcode(form: PhoneNotBlankDTO, config?: AxiosRequestConfig) {
-    return $http.myPost<void>('/sign/phone/bindAccount/sendCode', form, config)
+export function SignPhoneBindAccountSendCode(form: PhoneNotBlankDTO, config?: AxiosRequestConfig) {
+    return $http.myPost<string>('/sign/phone/bindAccount/sendCode', form, config)
 }
 
 export interface SignPhoneBindAccountDTO {
@@ -16,28 +16,28 @@ export interface SignPhoneBindAccountDTO {
 }
 
 // 绑定手机
-export function SignPhoneBindaccount(form: SignPhoneBindAccountDTO, config?: AxiosRequestConfig) {
-    return $http.myPost<void>('/sign/phone/bindAccount', form, config)
+export function SignPhoneBindAccount(form: SignPhoneBindAccountDTO, config?: AxiosRequestConfig) {
+    return $http.myPost<string>('/sign/phone/bindAccount', form, config)
 }
 
 // 手机验证码登录-发送验证码
-export function SignPhoneSignInSendcode(form: PhoneNotBlankDTO, config?: AxiosRequestConfig) {
-    return $http.myPost<void>('/sign/phone/sign/in/sendCode', form, config)
+export function SignPhoneSignInSendCode(form: PhoneNotBlankDTO, config?: AxiosRequestConfig) {
+    return $http.myPost<string>('/sign/phone/sign/in/sendCode', form, config)
 }
 
 // 账号注销-发送验证码
-export function SignPhoneSigndeleteSendcode(config?: AxiosRequestConfig) {
-    return $http.myPost<void>('/sign/phone/signDelete/sendCode', undefined, config)
+export function SignPhoneSignDeleteSendCode(config?: AxiosRequestConfig) {
+    return $http.myPost<string>('/sign/phone/signDelete/sendCode', undefined, config)
 }
 
 // 注册-发送验证码
-export function SignPhoneSignUpSendcode(form: PhoneNotBlankDTO, config?: AxiosRequestConfig) {
-    return $http.myPost<void>('/sign/phone/sign/up/sendCode', form, config)
+export function SignPhoneSignUpSendCode(form: PhoneNotBlankDTO, config?: AxiosRequestConfig) {
+    return $http.myPost<string>('/sign/phone/sign/up/sendCode', form, config)
 }
 
 // 修改手机-发送验证码
-export function SignPhoneUpdateaccountSendcode(config?: AxiosRequestConfig) {
-    return $http.myPost<void>('/sign/phone/updateAccount/sendCode', undefined, config)
+export function SignPhoneUpdateAccountSendCode(config?: AxiosRequestConfig) {
+    return $http.myPost<string>('/sign/phone/updateAccount/sendCode', undefined, config)
 }
 
 export interface SignPhoneSignInCodeDTO {
@@ -47,12 +47,12 @@ export interface SignPhoneSignInCodeDTO {
 
 // 手机验证码登录
 export function SignPhoneSignInCode(form: SignPhoneSignInCodeDTO, config?: AxiosRequestConfig) {
-    return $http.myPost<void>('/sign/phone/sign/in/code', form, config)
+    return $http.myPost<string>('/sign/phone/sign/in/code', form, config)
 }
 
 // 修改密码-发送验证码
-export function SignPhoneUpdatepasswordSendcode(config?: AxiosRequestConfig) {
-    return $http.myPost<void>('/sign/phone/updatePassword/sendCode', undefined, config)
+export function SignPhoneUpdatePasswordSendCode(config?: AxiosRequestConfig) {
+    return $http.myPost<string>('/sign/phone/updatePassword/sendCode', undefined, config)
 }
 
 export interface SignPhoneForgetPasswordDTO {
@@ -63,8 +63,8 @@ export interface SignPhoneForgetPasswordDTO {
 }
 
 // 忘记密码
-export function SignPhoneForgetpassword(form: SignPhoneForgetPasswordDTO, config?: AxiosRequestConfig) {
-    return $http.myPost<void>('/sign/phone/forgetPassword', form, config)
+export function SignPhoneForgetPassword(form: SignPhoneForgetPasswordDTO, config?: AxiosRequestConfig) {
+    return $http.myPost<string>('/sign/phone/forgetPassword', form, config)
 }
 
 export interface SignPhoneUpdatePasswordDTO {
@@ -74,8 +74,8 @@ export interface SignPhoneUpdatePasswordDTO {
 }
 
 // 修改密码
-export function SignPhoneUpdatepassword(form: SignPhoneUpdatePasswordDTO, config?: AxiosRequestConfig) {
-    return $http.myPost<void>('/sign/phone/updatePassword', form, config)
+export function SignPhoneUpdatePassword(form: SignPhoneUpdatePasswordDTO, config?: AxiosRequestConfig) {
+    return $http.myPost<string>('/sign/phone/updatePassword', form, config)
 }
 
 export interface SignPhoneSignUpDTO {
@@ -87,12 +87,12 @@ export interface SignPhoneSignUpDTO {
 
 // 注册
 export function SignPhoneSignUp(form: SignPhoneSignUpDTO, config?: AxiosRequestConfig) {
-    return $http.myPost<void>('/sign/phone/sign/up', form, config)
+    return $http.myPost<string>('/sign/phone/sign/up', form, config)
 }
 
 // 忘记密码-发送验证码
-export function SignPhoneForgetpasswordSendcode(form: PhoneNotBlankDTO, config?: AxiosRequestConfig) {
-    return $http.myPost<void>('/sign/phone/forgetPassword/sendCode', form, config)
+export function SignPhoneForgetPasswordSendCode(form: PhoneNotBlankDTO, config?: AxiosRequestConfig) {
+    return $http.myPost<string>('/sign/phone/forgetPassword/sendCode', form, config)
 }
 
 export interface SignPhoneUpdateAccountDTO {
@@ -102,8 +102,8 @@ export interface SignPhoneUpdateAccountDTO {
 }
 
 // 修改手机
-export function SignPhoneUpdateaccount(form: SignPhoneUpdateAccountDTO, config?: AxiosRequestConfig) {
-    return $http.myPost<void>('/sign/phone/updateAccount', form, config)
+export function SignPhoneUpdateAccount(form: SignPhoneUpdateAccountDTO, config?: AxiosRequestConfig) {
+    return $http.myPost<string>('/sign/phone/updateAccount', form, config)
 }
 
 export interface NotBlankCodeDTO {
@@ -111,8 +111,8 @@ export interface NotBlankCodeDTO {
 }
 
 // 账号注销
-export function SignPhoneSigndelete(form: NotBlankCodeDTO, config?: AxiosRequestConfig) {
-    return $http.myPost<void>('/sign/phone/signDelete', form, config)
+export function SignPhoneSignDelete(form: NotBlankCodeDTO, config?: AxiosRequestConfig) {
+    return $http.myPost<string>('/sign/phone/signDelete', form, config)
 }
 
 export interface SignPhoneSignInPasswordDTO {
@@ -122,5 +122,5 @@ export interface SignPhoneSignInPasswordDTO {
 
 // 手机账号密码登录
 export function SignPhoneSignInPassword(form: SignPhoneSignInPasswordDTO, config?: AxiosRequestConfig) {
-    return $http.myPost<void>('/sign/phone/sign/in/password', form, config)
+    return $http.myPost<string>('/sign/phone/sign/in/password', form, config)
 }
