@@ -55,7 +55,7 @@ public class ApiTestSignEmailUtil {
         // 邮箱-注册-发送验证码
         emailSignUpSendCode(apiEndpoint, email);
 
-        String code = ApiTestHelper.getStringFromScanner("请输入验证码");
+        String code = ApiTestHelper.getStrFromScanner("请输入验证码");
 
         // 邮箱-注册
         emailSignUp(apiEndpoint, email, passwordTemp, rsaPublicKey, code);
@@ -66,7 +66,7 @@ public class ApiTestSignEmailUtil {
         // 邮箱-修改密码-发送验证码
         emailUpdatePasswordSendCode(apiEndpoint, jwt);
 
-        code = ApiTestHelper.getStringFromScanner("请输入验证码");
+        code = ApiTestHelper.getStrFromScanner("请输入验证码");
 
         // 邮箱-修改密码
         emailUpdatePassword(apiEndpoint, jwt, newPasswordTemp, rsaPublicKey, code);
@@ -80,9 +80,9 @@ public class ApiTestSignEmailUtil {
         // 邮箱-注册-发送验证码
         emailSignUpSendCode(apiEndpoint, newEmail);
 
-        code = ApiTestHelper.getStringFromScanner("请输入旧邮箱验证码");
+        code = ApiTestHelper.getStrFromScanner("请输入旧邮箱验证码");
 
-        String newCode = ApiTestHelper.getStringFromScanner("请输入新邮箱验证码");
+        String newCode = ApiTestHelper.getStrFromScanner("请输入新邮箱验证码");
 
         // 邮箱-修改邮箱
         emailUpdateAccount(apiEndpoint, jwt, newEmail, code, newCode);
@@ -90,7 +90,7 @@ public class ApiTestSignEmailUtil {
         // 邮箱-忘记密码-发送验证码
         emailForgetPasswordSendCode(apiEndpoint, newEmail);
 
-        code = ApiTestHelper.getStringFromScanner("请输入验证码");
+        code = ApiTestHelper.getStrFromScanner("请输入验证码");
 
         // 邮箱-忘记密码
         emailForgetPassword(apiEndpoint, newEmail, code, newPassword2Temp, rsaPublicKey);
@@ -101,7 +101,7 @@ public class ApiTestSignEmailUtil {
         // 邮箱-账号注销-发送验证码
         emailSignDeleteSendCode(apiEndpoint, jwt);
 
-        code = ApiTestHelper.getStringFromScanner("请输入验证码");
+        code = ApiTestHelper.getStrFromScanner("请输入验证码");
 
         // 邮箱-账号注销
         emailSignDelete(apiEndpoint, jwt, code);

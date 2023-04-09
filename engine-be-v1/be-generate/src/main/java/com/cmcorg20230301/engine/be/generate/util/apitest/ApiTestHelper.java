@@ -28,7 +28,7 @@ public class ApiTestHelper {
     /**
      * 从控制台的输入里面获取字符串
      */
-    public static String getStringFromScanner(String tip) {
+    public static String getStrFromScanner(String tip) {
 
         System.out.println(tip);
 

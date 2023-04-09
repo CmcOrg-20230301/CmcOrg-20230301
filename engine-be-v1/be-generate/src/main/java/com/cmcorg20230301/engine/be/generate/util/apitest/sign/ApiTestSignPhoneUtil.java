@@ -55,7 +55,7 @@ public class ApiTestSignPhoneUtil {
         // 手机号-注册-发送验证码
         phoneSignUpSendCode(apiEndpoint, phone);
 
-        String code = ApiTestHelper.getStringFromScanner("请输入验证码");
+        String code = ApiTestHelper.getStrFromScanner("请输入验证码");
 
         // 手机号-注册
         phoneSignUp(apiEndpoint, phone, passwordTemp, rsaPublicKey, code);
@@ -66,7 +66,7 @@ public class ApiTestSignPhoneUtil {
         // 手机号-修改密码-发送验证码
         phoneUpdatePasswordSendCode(apiEndpoint, jwt);
 
-        code = ApiTestHelper.getStringFromScanner("请输入验证码");
+        code = ApiTestHelper.getStrFromScanner("请输入验证码");
 
         // 手机号-修改密码
         phoneUpdatePassword(apiEndpoint, jwt, code, newPasswordTemp, rsaPublicKey);
@@ -80,9 +80,9 @@ public class ApiTestSignPhoneUtil {
         // 手机号-注册-发送验证码
         phoneSignUpSendCode(apiEndpoint, newPhone);
 
-        code = ApiTestHelper.getStringFromScanner("请输入旧手机验证码");
+        code = ApiTestHelper.getStrFromScanner("请输入旧手机验证码");
 
-        String newCode = ApiTestHelper.getStringFromScanner("请输入新手机验证码");
+        String newCode = ApiTestHelper.getStrFromScanner("请输入新手机验证码");
 
         // 手机号-修改手机
         phoneUpdateAccount(apiEndpoint, jwt, newPhone, code, newCode);
@@ -90,7 +90,7 @@ public class ApiTestSignPhoneUtil {
         // 手机号-忘记密码-发送验证码
         phoneForgetPasswordSendCode(apiEndpoint, newPhone);
 
-        code = ApiTestHelper.getStringFromScanner("请输入验证码");
+        code = ApiTestHelper.getStrFromScanner("请输入验证码");
 
         // 手机号-忘记密码
         phoneForgetPassword(apiEndpoint, newPhone, code, newPassword2Temp, rsaPublicKey);
@@ -101,7 +101,7 @@ public class ApiTestSignPhoneUtil {
         // 手机号-手机验证码登录-发送验证码
         phoneSignInSendCode(apiEndpoint, newPhone);
 
-        code = ApiTestHelper.getStringFromScanner("请输入验证码");
+        code = ApiTestHelper.getStrFromScanner("请输入验证码");
 
         // 手机号-手机验证码登录
         jwt = phoneSignInCode(apiEndpoint, newPhone, code);
@@ -109,7 +109,7 @@ public class ApiTestSignPhoneUtil {
         // 手机号-账号注销-发送验证码
         phoneSignDeleteSendCode(apiEndpoint, jwt);
 
-        code = ApiTestHelper.getStringFromScanner("请输入验证码");
+        code = ApiTestHelper.getStrFromScanner("请输入验证码");
 
         // 手机号-账号注销
         phoneSignDelete(apiEndpoint, jwt, code);
