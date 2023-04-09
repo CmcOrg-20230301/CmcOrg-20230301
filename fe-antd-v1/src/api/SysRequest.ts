@@ -11,6 +11,19 @@ export interface SysRequestSelfLoginRecordPageDTO {
     sort?: Record<string, SortOrder> // 排序字段（只在前端使用，实际传值：order）
 }
 
+export interface PageSysRequestDO {
+    total?: string // null，format：int64
+    current?: string // null，format：int64
+    pages?: string // null，format：int64
+    size?: string // null，format：int64
+    optimizeCountSql?: boolean // null
+    maxLimit?: string // null，format：int64
+    searchCount?: boolean // null
+    optimizeJoinOfCountSql?: boolean // null
+    countId?: string // null
+
+}
+
 export interface SysRequestPageDTO {
     beginCostMs?: string // 耗时开始（毫秒），format：int64
     ip?: string // ip
@@ -27,4 +40,9 @@ export interface SysRequestPageDTO {
     region?: string // Ip2RegionUtil.getRegion() 获取到的 ip所处区域
     ctBeginTime?: string // 起始时间：创建时间，format：date-time
 
+}
+
+export interface SysRequestAllAvgVO {
+    avgMs?: number // 请求的平均耗时（毫秒），format：int32
+    count?: string // 请求的总数，format：int64
 }

@@ -5,6 +5,23 @@ export interface NotNullId {
     id?: string // 主键id，required：true，format：int64
 }
 
+export interface SysDictDO {
+    orderNo?: number // 排序号（值越大越前面，默认为 0），format：int32
+    updateTime?: string // 修改时间，format：date-time
+    remark?: string // 备注
+    delFlag?: boolean // 是否逻辑删除
+    type?: string // 字典类型：1 字典 2 字典项
+    version?: number // 乐观锁，format：int32
+    dictKey?: string // 字典 key（不能重复），字典项要冗余这个 key，目的：方便操作
+    updateId?: string // 修改人id，format：int64
+    createTime?: string // 创建时间，format：date-time
+    createId?: string // 创建人id，format：int64
+    name?: string // 字典/字典项 名
+    id?: string // 主键id，format：int64
+    enableFlag?: boolean // 是否启用
+    value?: number // 字典项 value（数字 123...）备注：字典为 -1，format：int32
+}
+
 export interface SysDictPageDTO {
     current?: string // 第几页，format：int64
     name?: string // 字典/字典项 名
@@ -15,6 +32,37 @@ export interface SysDictPageDTO {
     enableFlag?: boolean // 启用/禁用
     order?: MyOrderDTO // 排序字段
     sort?: Record<string, SortOrder> // 排序字段（只在前端使用，实际传值：order）
+}
+
+export interface SysDictTreeVO {
+    orderNo?: number // 排序号（值越大越前面，默认为 0），format：int32
+    updateTime?: string // 修改时间，format：date-time
+    remark?: string // 备注
+    delFlag?: boolean // 是否逻辑删除
+    type?: string // 字典类型：1 字典 2 字典项
+    version?: number // 乐观锁，format：int32
+    dictKey?: string // 字典 key（不能重复），字典项要冗余这个 key，目的：方便操作
+    updateId?: string // 修改人id，format：int64
+    createTime?: string // 创建时间，format：date-time
+    createId?: string // 创建人id，format：int64
+    name?: string // 字典/字典项 名
+    id?: string // 主键id，format：int64
+    enableFlag?: boolean // 是否启用
+    value?: number // 字典项 value（数字 123...）备注：字典为 -1，format：int32
+
+}
+
+export interface PageSysDictDO {
+    total?: string // null，format：int64
+    current?: string // null，format：int64
+    pages?: string // null，format：int64
+    size?: string // null，format：int64
+    optimizeCountSql?: boolean // null
+    maxLimit?: string // null，format：int64
+    searchCount?: boolean // null
+    optimizeJoinOfCountSql?: boolean // null
+    countId?: string // null
+
 }
 
 export interface SysDictInsertOrUpdateDTO {
