@@ -7,7 +7,7 @@ export interface SysRequestSelfLoginRecordPageDTO {
     pageSize?: string // 每页显示条数，format：int64
     category?: string // 请求类别
     region?: string // Ip2RegionUtil.getRegion() 获取到的 ip所处区域
-    order?: MyOrderDTO // null
+    order?: MyOrderDTO // 排序字段
     sort?: Record<string, SortOrder> // 排序字段（只在前端使用，实际传值：order）
 }
 

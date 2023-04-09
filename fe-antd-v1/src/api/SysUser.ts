@@ -48,7 +48,7 @@ export interface SysUserPageDTO {
     id?: string // 主键 id，format：int64
     enableFlag?: boolean // 是否正常
     email?: string // 邮箱
-    order?: MyOrderDTO // null
+    order?: MyOrderDTO // 排序字段
     sort?: Record<string, SortOrder> // 排序字段（只在前端使用，实际传值：order）
 }
 

@@ -15,7 +15,7 @@ export interface SysMenuPageDTO {
     name?: string // 菜单名
     firstFlag?: boolean // 是否是起始页面，备注：只能存在一个 firstFlag === true 的菜单
     enableFlag?: boolean // 是否启用
-    order?: MyOrderDTO // null
+    order?: MyOrderDTO // 排序字段
     sort?: Record<string, SortOrder> // 排序字段（只在前端使用，实际传值：order）
 }
 

@@ -30,7 +30,7 @@ export interface SysDictPageDTO {
     type?: string // 类型：1 字典 2 字典项，format：byte
     dictKey?: string // 字典 key（不能重复），字典项要冗余这个 key，目的：方便操作
     enableFlag?: boolean // 启用/禁用
-    order?: MyOrderDTO // null
+    order?: MyOrderDTO // 排序字段
     sort?: Record<string, SortOrder> // 排序字段（只在前端使用，实际传值：order）
 }
 
