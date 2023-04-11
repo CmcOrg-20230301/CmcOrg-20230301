@@ -215,6 +215,34 @@ public class GeneratePageUtil {
 
         }
 
+        // 生成 page页面
+        generatePage(pathBeApiMap);
+
+        // 生成 table页面
+        generateTableColumnList(pathBeApiMap);
+
+        // 生成 表单页面
+        generateSchemaFormColumnList(pathBeApiMap);
+
+    }
+
+    /**
+     * 生成 表单页面
+     */
+    private static void generateSchemaFormColumnList(HashMap<String, BeApi> pathBeApiMap) {
+    }
+
+    /**
+     * 生成 table页面
+     */
+    private static void generateTableColumnList(HashMap<String, BeApi> pathBeApiMap) {
+    }
+
+    /**
+     * 生成 page页面
+     */
+    private static void generatePage(HashMap<String, BeApi> pathBeApiMap) {
+
     }
 
 }
