@@ -1,0 +1,44 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>com.cmcorg20230301</groupId>
+        <artifactId>engine-be-v1</artifactId>
+        <version>2023.3.1</version>
+    </parent>
+
+    <artifactId>be-aliyun</artifactId>
+    <description>阿里云相关</description>
+
+    <dependencies>
+
+        <!-- nacos-config -->
+        <dependency>
+            <groupId>com.alibaba.cloud</groupId>
+            <artifactId>spring-cloud-starter-alibaba-nacos-config</artifactId>
+        </dependency>
+
+        <!-- be-util -->
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>be-util</artifactId>
+        </dependency>
+
+        <!-- be-model -->
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>be-model</artifactId>
+        </dependency>
+
+        <!-- 阿里云 -->
+        <dependency>
+            <groupId>com.aliyun</groupId>
+            <artifactId>alibabacloud-dysmsapi20170525</artifactId>
+            <version>2.0.23</version>
+        </dependency>
+
+    </dependencies>
+
+</project>

@@ -368,8 +368,8 @@
             <!-- 阿里云 -->
             <dependency>
                 <groupId>com.aliyun</groupId>
-                <artifactId>aliyun-java-sdk-core</artifactId>
-                <version>4.6.3</version>
+                <artifactId>alibabacloud-dysmsapi20170525</artifactId>
+                <version>2.0.23</version>
             </dependency>
 
             <!-- 腾讯云，获取最新版本号：https://github.com/tencentcloud/tencentcloud-sdk-java -->

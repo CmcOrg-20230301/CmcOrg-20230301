@@ -19,6 +19,8 @@ public interface PropertiesPrefixConstant {
 
     String TENCENT = PRE_BE + "tencent"; // 腾讯相关
 
+    String ALI_YUN = PRE_BE + "aliyun"; // 阿里云相关
+
     String MINIO = "minio"; // minio文件系统相关
 
 }
