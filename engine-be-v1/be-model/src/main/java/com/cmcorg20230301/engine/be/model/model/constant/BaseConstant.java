@@ -29,19 +29,27 @@ public interface BaseConstant {
     int SECOND_30_EXPIRE_TIME = 30 * 1000; // 30秒钟过期
 
     long JWT_EXPIRE_TIME = DAY_1_EXPIRE_TIME; // jwt 过期时间
+
     long LONG_CODE_EXPIRE_TIME = MINUTE_10_EXPIRE_TIME; // 长一点的验证码的过期时间
+    long LONG_CODE_EXPIRE_MINUTE = LONG_CODE_EXPIRE_TIME / 60 / 1000; // 长一点的验证码的过期时间，单位：分钟
+
     long SHORT_CODE_EXPIRE_TIME = SECOND_20_EXPIRE_TIME; // 短暂验证码的过期时间
+
     // 过期时间相关 ↑
 
     // id 相关 ↓
+
     Long ADMIN_ID = ZERO; // 管理员 id
     String ADMIN_ACCOUNT = "admin"; // 管理员 登录名，如果修改，请注意【登录名】注册，是否会有影响
     Long SYS_ID = NEGATIVE_ONE; // 系统/缺省 id，或者表示不存在
+
     // id 相关 ↑
 
     // 字符串长度限制 ↓
+
     int STR_MAX_LENGTH_500 = 500;
     int STR_MAX_LENGTH_1000 = 1000;
+
     // 字符串长度限制 ↑
 
 }

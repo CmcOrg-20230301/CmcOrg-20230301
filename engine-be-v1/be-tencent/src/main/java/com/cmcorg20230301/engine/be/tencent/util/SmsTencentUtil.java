@@ -95,7 +95,7 @@ public class SmsTencentUtil {
     private static void sendForCode(String phoneNumber, String code, String templateId) {
 
         String[] templateParamSet =
-            {code, String.valueOf(BaseConstant.LONG_CODE_EXPIRE_TIME)}; // 备注：第二个元素，表示是：验证码多久过期（分钟）
+            {code, String.valueOf(BaseConstant.LONG_CODE_EXPIRE_MINUTE)}; // 备注：第二个元素，表示是：验证码多久过期（分钟）
 
         // 执行：发送短信
         doSend(templateId, templateParamSet, phoneNumber);

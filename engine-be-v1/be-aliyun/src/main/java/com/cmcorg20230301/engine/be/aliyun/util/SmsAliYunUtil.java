@@ -2,6 +2,7 @@ package com.cmcorg20230301.engine.be.aliyun.util;
 
 import cn.hutool.core.util.BooleanUtil;
 import cn.hutool.core.util.StrUtil;
+import cn.hutool.json.JSONUtil;
 import com.aliyun.auth.credentials.Credential;
 import com.aliyun.auth.credentials.provider.StaticCredentialProvider;
 import com.aliyun.sdk.service.dysmsapi20170525.AsyncClient;
@@ -9,6 +10,7 @@ import com.aliyun.sdk.service.dysmsapi20170525.models.SendSmsRequest;
 import com.aliyun.sdk.service.dysmsapi20170525.models.SendSmsResponse;
 import com.aliyun.sdk.service.dysmsapi20170525.models.SendSmsResponseBody;
 import com.cmcorg20230301.engine.be.aliyun.properties.AliYunProperties;
+import com.cmcorg20230301.engine.be.model.model.constant.BaseConstant;
 import darabonba.core.client.ClientOverrideConfiguration;
 import lombok.SneakyThrows;
 import org.springframework.stereotype.Component;
@@ -97,13 +99,16 @@ public class SmsAliYunUtil {
      */
     private static void sendForCode(String phoneNumber, String code, String templateCode) {
 
-        //        String[] templateParamSet =
-        //            {code, String.valueOf(BaseConstant.LONG_CODE_EXPIRE_TIME)}; // 备注：第二个元素，表示是：验证码多久过期（分钟）
+        // 备注：第二个元素，表示是：验证码多久过期（分钟）
+        String templateParam =
+            JSONUtil.createObj().set("code", code).set("expire", BaseConstant.LONG_CODE_EXPIRE_MINUTE).toString();
 
-        String templateParam = "";
+        SendSmsRequest sendSmsRequest =
+            SendSmsRequest.builder().phoneNumbers(phoneNumber).signName(aliYunProperties.getSignName())
+                .templateCode(templateCode).templateParam(templateParam).build();
 
         // 执行：发送短信
-        doSend(templateCode, templateParam, phoneNumber);
+        doSend(sendSmsRequest);
 
     }
 
@@ -112,7 +117,7 @@ public class SmsAliYunUtil {
      * 注意：不建议直接调用本方法，而是把本方法，再封装一层再调用
      */
     @SneakyThrows
-    public static void doSend(String templateCode, String templateParam, String phoneNumber) {
+    public static void doSend(SendSmsRequest sendSmsRequest) {
 
         // Configure Credentials authentication information, including ak, secret, token
         StaticCredentialProvider provider = StaticCredentialProvider.create(
@@ -120,15 +125,10 @@ public class SmsAliYunUtil {
                 .accessKeySecret(aliYunProperties.getAccessKeySecret()).build());
 
         // Configure the Client
-        AsyncClient client = AsyncClient.builder().region("cn-qingdao") // Region ID
+        AsyncClient client = AsyncClient.builder().region("cn-hangzhou") // Region ID
             .credentialsProvider(provider)
             .overrideConfiguration(ClientOverrideConfiguration.create().setEndpointOverride("dysmsapi.aliyuncs.com"))
             .build();
-
-        // Parameter settings for API request
-        SendSmsRequest sendSmsRequest =
-            SendSmsRequest.builder().phoneNumbers(phoneNumber).signName(aliYunProperties.getSignName())
-                .templateCode(templateCode).templateParam(templateParam).build();
 
         // Asynchronously get the return value of the API request
         CompletableFuture<SendSmsResponse> response = client.sendSms(sendSmsRequest);
