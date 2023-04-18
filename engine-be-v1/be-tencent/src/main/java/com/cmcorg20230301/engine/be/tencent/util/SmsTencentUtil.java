@@ -5,6 +5,8 @@ import cn.hutool.core.util.StrUtil;
 import com.cmcorg20230301.engine.be.model.model.constant.BaseConstant;
 import com.cmcorg20230301.engine.be.tencent.properties.TencentProperties;
 import com.tencentcloudapi.common.Credential;
+import com.tencentcloudapi.common.profile.ClientProfile;
+import com.tencentcloudapi.common.profile.HttpProfile;
 import com.tencentcloudapi.sms.v20210111.SmsClient;
 import com.tencentcloudapi.sms.v20210111.models.SendSmsRequest;
 import com.tencentcloudapi.sms.v20210111.models.SendSmsResponse;
@@ -109,62 +111,50 @@ public class SmsTencentUtil {
     @SneakyThrows
     public static void doSend(String templateId, String[] templateParamSet, String phoneNumber) {
 
-        /* 必要步骤：
-         * 实例化一个认证对象，入参需要传入腾讯云账户密钥对secretId，secretKey。
-         * 这里采用的是从环境变量读取的方式，需要在环境变量中先设置这两个值。
-         * 你也可以直接在代码中写死密钥对，但是小心不要将代码复制、上传或者分享给他人，
-         * 以免泄露密钥对危及你的财产安全。
-         * SecretId、SecretKey 查询: https://console.cloud.tencent.com/cam/capi */
-        Credential credential = new Credential(tencentProperties.getSecretId(), tencentProperties.getSecretKey());
+        // 实例化一个认证对象，入参需要传入腾讯云账户 SecretId 和 SecretKey，此处还需注意密钥对的保密
+        // 代码泄露可能会导致 SecretId 和 SecretKey 泄露，并威胁账号下所有资源的安全性。以下代码示例仅供参考，建议采用更安全的方式来使用密钥，请参见：https://cloud.tencent.com/document/product/1278/85305
+        // 密钥可前往官网控制台 https://console.cloud.tencent.com/cam/capi 进行获取
+        Credential cred = new Credential(tencentProperties.getSecretId(), tencentProperties.getSecretKey());
 
-        SmsClient smsClient = new SmsClient(credential, "ap-guangzhou");
+        // 实例化一个http选项，可选的，没有特殊需求可以跳过
+        HttpProfile httpProfile = new HttpProfile();
+        httpProfile.setEndpoint("sms.tencentcloudapi.com");
 
-        SendSmsRequest sendSmsRequest = new SendSmsRequest();
+        // 实例化一个client选项，可选的，没有特殊需求可以跳过
+        ClientProfile clientProfile = new ClientProfile();
+        clientProfile.setHttpProfile(httpProfile);
 
-        /* 短信应用ID: 短信SdkAppId在 [短信控制台] 添加应用后生成的实际SdkAppId，示例如1400006666 */
-        // 应用 ID 可前往 [短信控制台](https://console.cloud.tencent.com/smsv2/app-manage) 查看
-        sendSmsRequest.setSmsSdkAppId(tencentProperties.getSdkAppId());
+        // 实例化要请求产品的client对象,clientProfile是可选的
+        SmsClient client = new SmsClient(cred, "ap-guangzhou", clientProfile);
+
+        // 实例化一个请求对象,每个接口都会对应一个request对象
+        SendSmsRequest req = new SendSmsRequest();
+
+        req.setSmsSdkAppId(tencentProperties.getSdkAppId());
 
         /* 短信签名内容: 使用 UTF-8 编码，必须填写已审核通过的签名 */
         // 签名信息可前往 [国内短信](https://console.cloud.tencent.com/smsv2/csms-sign) 或 [国际/港澳台短信](https://console.cloud.tencent.com/smsv2/isms-sign) 的签名管理查看
-        sendSmsRequest.setSignName(tencentProperties.getSignName());
+        req.setSignName(tencentProperties.getSignName());
 
         /* 模板 ID: 必须填写已审核通过的模板 ID */
         // 模板 ID 可前往 [国内短信](https://console.cloud.tencent.com/smsv2/csms-template) 或 [国际/港澳台短信](https://console.cloud.tencent.com/smsv2/isms-template) 的正文模板管理查看
-        sendSmsRequest.setTemplateId(templateId);
+        req.setTemplateId(templateId);
 
         /* 模板参数: 模板参数的个数需要与 TemplateId 对应模板的变量个数保持一致，若无模板参数，则设置为空 */
-        sendSmsRequest.setTemplateParamSet(templateParamSet);
+        req.setTemplateParamSet(templateParamSet);
 
         /* 下发手机号码，采用 E.164 标准，+[国家或地区码][手机号]
          * 示例如：+8613711112222， 其中前面有一个+号 ，86为国家码，13711112222为手机号，最多不要超过200个手机号 */
-        if (BooleanUtil.isFalse(phoneNumber.startsWith("+"))) {
-            phoneNumber = "+86" + phoneNumber; // 默认增加： +86
-        }
+        req.setPhoneNumberSet(new String[] {phoneNumber});
 
-        sendSmsRequest.setPhoneNumberSet(new String[] {phoneNumber});
+        // 返回的resp是一个SendSmsResponse的实例，与请求对象对应
+        SendSmsResponse resp = client.SendSms(req);
 
-        /* 用户的 session 内容（无需要可忽略）: 可以携带用户侧 ID 等上下文信息，server 会原样返回 */
-        String sessionContext = "";
-        sendSmsRequest.setSessionContext(sessionContext);
-
-        /* 短信码号扩展号（无需要可忽略）: 默认未开通，如需开通请联系 [腾讯云短信小助手] */
-        String extendCode = "";
-        sendSmsRequest.setExtendCode(extendCode);
-
-        /* 国际/港澳台短信 SenderId（无需要可忽略）: 国内短信填空，默认未开通，如需开通请联系 [腾讯云短信小助手] */
-        String senderId = "";
-        sendSmsRequest.setSenderId(senderId);
-
-        /* 通过 smsClient 对象调用 SendSms 方法发起请求。注意请求方法名与请求对象是对应的
-         * 返回的 sendSmsResponse 是一个 SendSmsResponse 类的实例，与请求对象对应 */
-        SendSmsResponse sendSmsResponse = smsClient.SendSms(sendSmsRequest);
-
-        if (sendSmsResponse.getSendStatusSet().length == 0) {
+        if (resp.getSendStatusSet().length == 0) {
             throw new RuntimeException(StrUtil.format("短信发送失败，请联系管理员"));
         }
 
-        SendStatus sendStatus = sendSmsResponse.getSendStatusSet()[0];
+        SendStatus sendStatus = resp.getSendStatusSet()[0];
 
         String code = sendStatus.getCode();
 

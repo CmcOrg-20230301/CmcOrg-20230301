@@ -32,10 +32,10 @@
             <artifactId>be-model</artifactId>
         </dependency>
 
-        <!-- 腾讯云，获取最新版本号：https://github.com/tencentcloud/tencentcloud-sdk-java -->
+        <!-- 腾讯云 -->
         <dependency>
             <groupId>com.tencentcloudapi</groupId>
-            <artifactId>tencentcloud-sdk-java</artifactId>
+            <artifactId>tencentcloud-sdk-java-sms</artifactId>
         </dependency>
 
     </dependencies>

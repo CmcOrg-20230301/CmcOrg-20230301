@@ -373,18 +373,18 @@
                 <version>2.3.1</version>
             </dependency>
 
-            <!-- 阿里云 -->
+            <!-- 阿里云，获取最新版本号：https://next.api.aliyun.com/api/Dysmsapi/2017-05-25/SendSms?lang=JAVAASYNC -->
             <dependency>
                 <groupId>com.aliyun</groupId>
                 <artifactId>alibabacloud-dysmsapi20170525</artifactId>
                 <version>2.0.23</version>
             </dependency>
 
-            <!-- 腾讯云，获取最新版本号：https://github.com/tencentcloud/tencentcloud-sdk-java -->
+            <!-- 腾讯云，获取最新版本号：https://console.cloud.tencent.com/api/explorer?Product=sms&Version=2021-01-11&Action=SendSms -->
             <dependency>
                 <groupId>com.tencentcloudapi</groupId>
-                <artifactId>tencentcloud-sdk-java</artifactId>
-                <version>3.1.720</version>
+                <artifactId>tencentcloud-sdk-java-sms</artifactId>
+                <version>3.1.739</version>
             </dependency>
 
             <!-- 支付宝，获取最新版本号：https://github.com/alipay/alipay-sdk-java-all -->
