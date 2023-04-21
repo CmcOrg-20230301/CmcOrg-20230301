@@ -40,23 +40,23 @@ public class MyEmailUtil {
 
         String finalContent = content;
 
-        taskExecutor.execute(() -> {
+        try {
 
-            try {
+            MailUtil.send(to, emailMessageEnum.getSubject(), finalContent, isHtml);
 
-                MailUtil.send(to, emailMessageEnum.getSubject(), finalContent, isHtml);
+        } catch (MailException e) {
 
-            } catch (MailException e) {
+            if (e.getMessage() != null && e.getMessage().contains("Invalid Addresses")) {
 
-                if (e.getMessage() != null && e.getMessage().contains("Invalid Addresses")) {
-                    ApiResultVO.error(BizCodeEnum.EMAIL_DOES_NOT_EXIST_PLEASE_RE_ENTER);
-                } else {
-                    e.printStackTrace();
-                }
+                ApiResultVO.error(BizCodeEnum.EMAIL_DOES_NOT_EXIST_PLEASE_RE_ENTER);
+
+            } else {
+
+                throw e;
 
             }
 
-        });
+        }
 
     }
 

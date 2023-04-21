@@ -2,11 +2,21 @@ package com.cmcorg20230301.engine.be.generate.util.generate;
 
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.io.FileUtil;
+import cn.hutool.core.text.StrBuilder;
+import cn.hutool.core.util.BooleanUtil;
+import cn.hutool.core.util.StrUtil;
+import cn.hutool.json.JSONUtil;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.cmcorg20230301.engine.be.generate.model.bo.BeApi;
 import com.cmcorg20230301.engine.be.generate.util.apitest.ApiTestHelper;
+import com.cmcorg20230301.engine.be.security.model.vo.ApiResultVO;
 import lombok.extern.slf4j.Slf4j;
 
+import java.io.File;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * 生成页面的工具类
@@ -52,6 +62,7 @@ public class GeneratePageUtil {
     // 要替换的字符
     private static final String ADMIN_DELETE_BY_ID_SET = "AdminDeleteByIdSet";
     private static final String ADMIN_DO = "AdminDO";
+    private static final String ADMIN_PAGE_VO = "AdminPageVO";
     private static final String ADMIN_INFO_BY_ID = "AdminInfoById";
     private static final String ADMIN_INSERT_OR_UPDATE = "AdminInsertOrUpdate";
     private static final String ADMIN_PAGE = "AdminPage";
@@ -190,21 +201,22 @@ public class GeneratePageUtil {
 
     public static void main(String[] args) {
 
-        String group = ApiTestHelper.getStrFromScanner("请输入要生成页面的 group");
-
         // 执行
-        exec(SPRING_DOC_ENDPOINT, PAGE_PATH, TSX, group);
+        exec(SPRING_DOC_ENDPOINT, PAGE_PATH, TSX);
 
     }
 
     /**
      * 执行
      */
-    private static void exec(String springDocEndpoint, String pagePath, String ts, String group) {
+    private static void exec(String springDocEndpoint, String pagePath, String ts) {
 
         HashMap<String, HashMap<String, BeApi>> apiMap = SpringDocUtil.get(springDocEndpoint);
 
-        //        System.out.println(JSONUtil.toJsonStr(apiMap));
+        System.out.println("所有的group ↓");
+        System.out.println(JSONUtil.toJsonStr(apiMap.keySet()));
+
+        String group = ApiTestHelper.getStrFromScanner("请输入要生成页面的 group");
 
         HashMap<String, BeApi> pathBeApiMap = apiMap.get(group);
 
@@ -215,33 +227,194 @@ public class GeneratePageUtil {
 
         }
 
-        // 生成 page页面
-        generatePage(pathBeApiMap);
+        String fileNamePre = group.contains("Sys") ? group.replace("Sys", "") : group;
+
+        fileNamePre = fileNamePre + "/" + fileNamePre;
 
         // 生成 table页面
-        generateTableColumnList(pathBeApiMap);
+        generateTableColumnList(pathBeApiMap, pagePath, group, fileNamePre);
+
+        // 生成 page页面
+        generatePage(pathBeApiMap, pagePath, group, fileNamePre);
 
         // 生成 表单页面
-        generateSchemaFormColumnList(pathBeApiMap);
+        generateSchemaFormColumnList(pathBeApiMap, pagePath, group, fileNamePre);
 
     }
 
     /**
      * 生成 表单页面
      */
-    private static void generateSchemaFormColumnList(HashMap<String, BeApi> pathBeApiMap) {
-    }
+    private static void generateSchemaFormColumnList(HashMap<String, BeApi> pathBeApiMap, String pagePath, String group,
+        String fileNamePre) {
 
-    /**
-     * 生成 table页面
-     */
-    private static void generateTableColumnList(HashMap<String, BeApi> pathBeApiMap) {
     }
 
     /**
      * 生成 page页面
      */
-    private static void generatePage(HashMap<String, BeApi> pathBeApiMap) {
+    private static void generatePage(HashMap<String, BeApi> pathBeApiMap, String pagePath, String group,
+        String fileNamePre) {
+
+    }
+
+    /**
+     * 生成 table页面
+     */
+    private static void generateTableColumnList(HashMap<String, BeApi> pathBeApiMap, String pagePath, String group,
+        String fileNamePre) {
+
+        String tableFilePath = pagePath + "/" + fileNamePre + ADMIN_TABLE_FILE_NAME;
+
+        log.info("开始生成 table页面文件：{}", tableFilePath);
+        FileUtil.del(tableFilePath); // 先移除文件
+        File touchFile = FileUtil.touch(tableFilePath); // 再创建文件
+
+        // 需要写入的内容
+        StrBuilder tempStrBuilder = StrBuilder.create(ADMIN_TABLE_TEMP);
+
+        StrBuilder tableJsonStrBuilder = StrBuilder.create();
+
+        // 需要替换的字符串
+        String adminPageVO = ADMIN_PAGE_VO;
+        String adminDeleteByIdSet = ADMIN_DELETE_BY_ID_SET;
+        String adminInsertOrUpdate = ADMIN_INSERT_OR_UPDATE;
+        String adminController = ADMIN_CONTROLLER;
+
+        adminController = group; // 设置：api的文件名
+
+        Set<String> importClassNameSet = new HashSet<>(); // 防止重复写入
+
+        String pageCheckStr = ApiResultVO.class.getSimpleName() + Page.class.getSimpleName();
+
+        for (Map.Entry<String, BeApi> item : pathBeApiMap.entrySet()) {
+
+            BeApi beApi = item.getValue();
+
+            String summary = beApi.getSummary();
+
+            if ("分页排序查询".equals(summary)) {
+
+                BeApi.BeApiSchema response = (BeApi.BeApiSchema)beApi.getResponse();
+
+                boolean pageFlag = response.getClassName().startsWith(pageCheckStr);
+
+                if (pageFlag) {
+
+                    adminPageVO = StrUtil.subAfter(response.getClassName(), pageCheckStr, false);
+
+                    // 拿到：返回值的对象 ↓
+                    BeApi.BeApiSchema beApiSchema =
+                        (BeApi.BeApiSchema)response.getFieldMap().get(response.getClassName());
+
+                    BeApi.BeApiField data = beApiSchema.getFieldMap().get("data");
+
+                    BeApi.BeApiSchema dataBeApiSchema = (BeApi.BeApiSchema)data;
+
+                    BeApi.BeApiSchema dataRealBeApiSchema =
+                        (BeApi.BeApiSchema)dataBeApiSchema.getFieldMap().get(dataBeApiSchema.getClassName());
+
+                    BeApi.BeApiSchema records = (BeApi.BeApiSchema)dataRealBeApiSchema.getFieldMap().get("records");
+
+                    BeApi.BeApiSchema recordsBeApiSchema =
+                        (BeApi.BeApiSchema)records.getFieldMap().get(records.getClassName());
+                    // 拿到：返回值的对象 ↑
+
+                    for (Map.Entry<String, BeApi.BeApiField> subItem : recordsBeApiSchema.getFieldMap().entrySet()) {
+
+                        // 一个字段
+                        BeApi.BeApiField beApiField = subItem.getValue();
+
+                        if (beApiField instanceof BeApi.BeApiParameter) {
+
+                            BeApi.BeApiParameter beApiParameter = (BeApi.BeApiParameter)beApiField;
+
+                            if ("boolean".equals(beApiParameter.getType())) {
+
+                                importClassForTs(tempStrBuilder, importClassNameSet, YES_NO_DICT, IMPORT_YES_NO_DICT);
+
+                                tableJsonStrBuilder.append(StrUtil.format(ADMIN_TABLE_JSON_ITEM_YES_NO_DICT_SELECT, "",
+                                    beApiParameter.getDescription(), beApiParameter.getName()));
+
+                            } else if ("date-time".equals(beApiParameter.getFormat())) {
+
+                                tableJsonStrBuilder.append(StrUtil
+                                    .format(ADMIN_TABLE_JSON_ITEM_FROM_NOW_AND_HIDE_IN_SEARCH, "",
+                                        beApiParameter.getDescription(), beApiParameter.getName()));
+
+                            } else if (CollUtil.newArrayList("string", "integer").contains(beApiParameter.getType())) {
+
+                                tableJsonStrBuilder.append(StrUtil
+                                    .format(ADMIN_TABLE_JSON_ITEM_NORMAL, beApiParameter.getDescription(),
+                                        beApiParameter.getName(), ""));
+
+                            }
+
+                        }
+
+                    }
+
+                } else {
+
+                    log.info("分页排序查询：类型错误，path：{}", beApi.getPath());
+
+                }
+
+            } else if ("新增/修改".equals(summary)) {
+
+                adminInsertOrUpdate = GenerateApiUtil.getApiName(beApi.getPath());
+
+            } else if ("批量删除".equals(summary)) {
+
+                adminDeleteByIdSet = GenerateApiUtil.getApiName(beApi.getPath());
+
+            }
+
+        }
+
+        // 执行替换
+        tempStrBuilder =
+            StrBuilder.create(equalsAndReplace(tempStrBuilder.toString(), adminInsertOrUpdate, ADMIN_INSERT_OR_UPDATE));
+        tempStrBuilder = StrBuilder.create(equalsAndReplace(tempStrBuilder.toString(), adminPageVO, ADMIN_PAGE_VO));
+        tempStrBuilder =
+            StrBuilder.create(equalsAndReplace(tempStrBuilder.toString(), adminDeleteByIdSet, ADMIN_DELETE_BY_ID_SET));
+        tempStrBuilder =
+            StrBuilder.create(equalsAndReplace(tempStrBuilder.toString(), adminController, ADMIN_CONTROLLER));
+        tempStrBuilder = StrBuilder
+            .create(equalsAndReplace(tempStrBuilder.toString(), tableJsonStrBuilder.toString(), ADMIN_TABLE_JSON));
+
+        // 写入内容到文件里
+        FileUtil.writeUtf8String(tempStrBuilder.toString(), touchFile);
+
+    }
+
+    /**
+     * 比较并替换
+     */
+    private static String equalsAndReplace(String tempStr, String newValue, String oldValue) {
+
+        if (BooleanUtil.isFalse(newValue.equals(oldValue))) {
+
+            return StrUtil.replace(tempStr, oldValue, newValue);
+
+        }
+
+        return tempStr;
+
+    }
+
+    /**
+     * ts：导入包
+     */
+    private static void importClassForTs(StrBuilder tempStrBuilder, Set<String> importClassNameSet, String className,
+        String importClassStr) {
+
+        if (BooleanUtil.isFalse(importClassNameSet.contains(className))) {
+
+            importClassNameSet.add(className);
+            tempStrBuilder.insert(0, importClassStr); // 添加导入
+
+        }
 
     }
 

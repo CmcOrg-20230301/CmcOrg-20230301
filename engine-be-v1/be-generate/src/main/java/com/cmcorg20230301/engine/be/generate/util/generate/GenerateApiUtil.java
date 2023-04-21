@@ -10,6 +10,7 @@ import com.cmcorg20230301.engine.be.generate.model.bo.BeApi;
 import com.cmcorg20230301.engine.be.model.model.dto.MyOrderDTO;
 import com.cmcorg20230301.engine.be.security.model.vo.ApiResultVO;
 import lombok.extern.slf4j.Slf4j;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 import java.util.*;
@@ -127,11 +128,8 @@ public class GenerateApiUtil {
      */
     private static void generateApi(BeApi beApi, StrBuilder strBuilder, Set<String> classNameSet) {
 
-        List<String> splitTrimList = StrUtil.splitTrim(beApi.getPath(), CharPool.SLASH);
-
         // api的方法名
-        String apiName =
-            splitTrimList.stream().reduce((x, y) -> StrUtil.upperFirst(x) + StrUtil.upperFirst(y)).orElse(null);
+        String apiName = getApiName(beApi.getPath());
 
         String formStr = ""; // 拼接 form参数
         String formValueStr = UNDEFINED; // 拼接 form值
@@ -146,15 +144,15 @@ public class GenerateApiUtil {
         String httpStr; // 请求的类型
         String returnTypeStr = beApi.getReturnTypeStr(); // 返回的类型
 
-        if (splitTrimList.contains("infoById")) {
+        if (beApi.getPath().contains("infoById")) {
 
             httpStr = "myProPost";
 
-        } else if (splitTrimList.contains("page")) {
+        } else if (beApi.getPath().contains("page")) {
 
             httpStr = "myProPagePost";
 
-        } else if (splitTrimList.contains("tree")) {
+        } else if (beApi.getPath().contains("tree")) {
 
             httpStr = "myProTreePost";
 
@@ -167,6 +165,18 @@ public class GenerateApiUtil {
         strBuilder.append(StrUtil
             .format(API_REQUEST_TEMP, beApi.getSummary(), apiName, formStr, httpStr, returnTypeStr, beApi.getPath(),
                 formValueStr));
+
+    }
+
+    /**
+     * 通过：path，获取：api的方法名
+     */
+    @Nullable
+    public static String getApiName(String path) {
+
+        List<String> splitTrimList = StrUtil.splitTrim(path, CharPool.SLASH);
+
+        return splitTrimList.stream().reduce((x, y) -> StrUtil.upperFirst(x) + StrUtil.upperFirst(y)).orElse(null);
 
     }
 

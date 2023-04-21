@@ -12,8 +12,6 @@
     <artifactId>be-nacos</artifactId>
     <description>nacos相关</description>
 
-    <packaging>pom</packaging>
-
     <dependencies>
 
         <!-- SpringBoot2.4.x之后默认不加载bootstrap.yml文件，需要在 pom里加上依赖 -->
