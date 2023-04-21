@@ -103,12 +103,8 @@ public class SmsAliYunUtil {
         String templateParam =
             JSONUtil.createObj().set("code", code).set("expire", BaseConstant.LONG_CODE_EXPIRE_MINUTE).toString();
 
-        SendSmsRequest sendSmsRequest =
-            SendSmsRequest.builder().phoneNumbers(phoneNumber).signName(aliYunProperties.getSignName())
-                .templateCode(templateCode).templateParam(templateParam).build();
-
         // 执行：发送短信
-        doSend(sendSmsRequest);
+        doSend(templateCode, templateParam, phoneNumber);
 
     }
 
@@ -117,7 +113,11 @@ public class SmsAliYunUtil {
      * 注意：不建议直接调用本方法，而是把本方法，再封装一层再调用
      */
     @SneakyThrows
-    public static void doSend(SendSmsRequest sendSmsRequest) {
+    public static void doSend(String templateCode, String templateParam, String phoneNumber) {
+
+        SendSmsRequest sendSmsRequest =
+            SendSmsRequest.builder().phoneNumbers(phoneNumber).signName(aliYunProperties.getSignName())
+                .templateCode(templateCode).templateParam(templateParam).build();
 
         // Configure Credentials authentication information, including ak, secret, token
         StaticCredentialProvider provider = StaticCredentialProvider.create(

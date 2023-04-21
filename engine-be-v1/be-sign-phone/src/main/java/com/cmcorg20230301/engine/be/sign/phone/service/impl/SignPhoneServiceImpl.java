@@ -14,7 +14,7 @@ import com.cmcorg20230301.engine.be.sign.helper.util.SignUtil;
 import com.cmcorg20230301.engine.be.sign.phone.configuration.SignPhoneSecurityPermitAllConfiguration;
 import com.cmcorg20230301.engine.be.sign.phone.model.dto.*;
 import com.cmcorg20230301.engine.be.sign.phone.service.SignPhoneService;
-import com.cmcorg20230301.engine.be.tencent.util.SmsTencentUtil;
+import com.cmcorg20230301.engine.be.sms.util.SmsUtil;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -42,7 +42,7 @@ public class SignPhoneServiceImpl implements SignPhoneService {
 
         return SignUtil
             .sendCode(key, ChainWrappers.lambdaQueryChain(sysUserMapper).eq(SysUserDO::getPhone, dto.getPhone()), false,
-                BizCodeEnum.PHONE_HAS_BEEN_REGISTERED, (code) -> SmsTencentUtil.sendSignUp(dto.getPhone(), code));
+                BizCodeEnum.PHONE_HAS_BEEN_REGISTERED, (code) -> SmsUtil.sendSignUp(dto.getPhone(), code));
 
     }
 
@@ -88,8 +88,8 @@ public class SignPhoneServiceImpl implements SignPhoneService {
     @Override
     public String updatePasswordSendCode() {
 
-        return SignUtil.getAccountAndSendCode(PRE_REDIS_KEY_ENUM,
-            (code, account) -> SmsTencentUtil.sendUpdatePassword(account, code));
+        return SignUtil
+            .getAccountAndSendCode(PRE_REDIS_KEY_ENUM, (code, account) -> SmsUtil.sendUpdatePassword(account, code));
 
     }
 
@@ -116,7 +116,7 @@ public class SignPhoneServiceImpl implements SignPhoneService {
 
         return SignUtil.sendCode(key, null, true,
             com.cmcorg20230301.engine.be.tencent.exception.BizCodeEnum.PHONE_DOES_NOT_EXIST_PLEASE_RE_ENTER,
-            (code) -> SmsTencentUtil.sendUpdate(currentUserPhoneNotAdmin, code));
+            (code) -> SmsUtil.sendUpdate(currentUserPhoneNotAdmin, code));
 
     }
 
@@ -142,7 +142,7 @@ public class SignPhoneServiceImpl implements SignPhoneService {
         return SignUtil
             .sendCode(key, ChainWrappers.lambdaQueryChain(sysUserMapper).eq(SysUserDO::getPhone, dto.getPhone()), true,
                 com.cmcorg20230301.engine.be.tencent.exception.BizCodeEnum.PHONE_NOT_REGISTERED,
-                (code) -> SmsTencentUtil.sendForgetPassword(dto.getPhone(), code));
+                (code) -> SmsUtil.sendForgetPassword(dto.getPhone(), code));
 
     }
 
@@ -167,8 +167,7 @@ public class SignPhoneServiceImpl implements SignPhoneService {
         // 如果有更高级的账号注销-发送验证码，则禁用低级的账号注销-发送验证码
         SignUtil.checkSignLevel(SignPhoneSecurityPermitAllConfiguration.SIGN_LEVEL);
 
-        return SignUtil
-            .getAccountAndSendCode(PRE_REDIS_KEY_ENUM, (code, account) -> SmsTencentUtil.sendDelete(account, code));
+        return SignUtil.getAccountAndSendCode(PRE_REDIS_KEY_ENUM, (code, account) -> SmsUtil.sendDelete(account, code));
 
     }
 
@@ -195,7 +194,7 @@ public class SignPhoneServiceImpl implements SignPhoneService {
 
         return SignUtil
             .sendCode(key, ChainWrappers.lambdaQueryChain(sysUserMapper).eq(SysUserDO::getPhone, dto.getPhone()), false,
-                BizCodeEnum.PHONE_HAS_BEEN_REGISTERED, (code) -> SmsTencentUtil.sendBind(dto.getPhone(), code));
+                BizCodeEnum.PHONE_HAS_BEEN_REGISTERED, (code) -> SmsUtil.sendBind(dto.getPhone(), code));
 
     }
 
@@ -220,7 +219,7 @@ public class SignPhoneServiceImpl implements SignPhoneService {
         return SignUtil
             .sendCode(key, ChainWrappers.lambdaQueryChain(sysUserMapper).eq(SysUserDO::getPhone, dto.getPhone()), true,
                 com.cmcorg20230301.engine.be.tencent.exception.BizCodeEnum.PHONE_NOT_REGISTERED,
-                (code) -> SmsTencentUtil.sendSignIn(dto.getPhone(), code));
+                (code) -> SmsUtil.sendSignIn(dto.getPhone(), code));
 
     }
 

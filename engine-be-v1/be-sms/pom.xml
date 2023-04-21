@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+﻿<?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
@@ -9,27 +9,21 @@
         <version>2023.3.1</version>
     </parent>
 
-    <artifactId>be-sign-phone</artifactId>
-    <description>手机号登录注册相关</description>
+    <artifactId>be-sms</artifactId>
+    <description>短信服务相关</description>
 
     <dependencies>
 
-        <!-- be-sms -->
+        <!-- be-tencent -->
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>be-sms</artifactId>
+            <artifactId>be-tencent</artifactId>
         </dependency>
 
-        <!-- be-email -->
+        <!-- be-aliyun -->
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>be-email</artifactId>
-        </dependency>
-
-        <!-- be-sign-helper -->
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>be-sign-helper</artifactId>
+            <artifactId>be-aliyun</artifactId>
         </dependency>
 
     </dependencies>

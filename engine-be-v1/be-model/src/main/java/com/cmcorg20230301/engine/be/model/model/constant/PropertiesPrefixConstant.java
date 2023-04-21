@@ -23,4 +23,6 @@ public interface PropertiesPrefixConstant {
 
     String MINIO = "minio"; // minio文件系统相关
 
+    String SMS = "sms"; // 短信服务相关
+
 }

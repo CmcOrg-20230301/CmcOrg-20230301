@@ -58,10 +58,18 @@
         <module>be-generate</module>
         <module>be-netty-websocket</module>
         <module>be-aliyun</module>
+        <module>be-sms</module>
     </modules>
 
     <dependencyManagement>
         <dependencies>
+
+            <!-- be-sms -->
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>be-sms</artifactId>
+                <version>${project.version}</version>
+            </dependency>
 
             <!-- be-aliyun -->
             <dependency>
