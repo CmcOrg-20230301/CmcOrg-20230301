@@ -35,27 +35,28 @@ public class MyEmailUtil {
             ApiResultVO.sysError(); // 因为这里 to字段都是由程序来赋值的，所以基本不会为空
         }
 
-        try {
+        // 消息内容，加上统一的前缀
+        content = platformName + StrUtil.format(emailMessageEnum.getContentTemp(), content);
 
-            // 消息内容，加上统一的前缀
-            content = platformName + StrUtil.format(emailMessageEnum.getContentTemp(), content);
+        String finalContent = content;
 
-            String finalContent = content;
-            taskExecutor.execute(() -> {
+        taskExecutor.execute(() -> {
+
+            try {
 
                 MailUtil.send(to, emailMessageEnum.getSubject(), finalContent, isHtml);
 
-            });
+            } catch (MailException e) {
 
-        } catch (MailException e) {
+                if (e.getMessage() != null && e.getMessage().contains("Invalid Addresses")) {
+                    ApiResultVO.error(BizCodeEnum.EMAIL_DOES_NOT_EXIST_PLEASE_RE_ENTER);
+                } else {
+                    e.printStackTrace();
+                }
 
-            if (e.getMessage() != null && e.getMessage().contains("Invalid Addresses")) {
-                ApiResultVO.error(BizCodeEnum.EMAIL_DOES_NOT_EXIST_PLEASE_RE_ENTER);
-            } else {
-                e.printStackTrace();
             }
 
-        }
+        });
 
     }
 
