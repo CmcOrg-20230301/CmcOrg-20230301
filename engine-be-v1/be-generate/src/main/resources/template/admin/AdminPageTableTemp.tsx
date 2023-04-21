@@ -4,12 +4,12 @@ import {Button, Form, Space} from "antd";
 import {PlusOutlined} from "@ant-design/icons/lib";
 import {
     AdminDeleteByIdSet,
-    AdminDO,
     AdminInfoById,
     AdminInsertOrUpdate,
     AdminInsertOrUpdateDTO,
     AdminPage,
-    AdminPageDTO
+    AdminPageDTO,
+    AdminPageVO
 } from "@/api/admin/AdminController";
 import TableColumnList from "./TableColumnList";
 import {ExecConfirm, ToastSuccess} from "@/util/ToastUtil";
@@ -23,7 +23,7 @@ export default function () {
 
     const [expandedRowKeys, setExpandedRowKeys] = useState<string[]>([]);
 
-    const actionRef = useRef<ActionType>(null)
+    const actionRef = useRef<ActionType>()
 
     const [useForm] = Form.useForm<AdminInsertOrUpdateDTO>();
 
@@ -35,7 +35,7 @@ export default function () {
 
         <>
 
-            <ProTable<AdminDO, AdminPageDTO>
+            <ProTable<AdminPageVO, AdminPageDTO>
 
                 scroll={{x: 'max-content'}}
                 sticky={{offsetHeader: CommonConstant.NAV_TOP_HEIGHT}}
@@ -158,7 +158,9 @@ export default function () {
                             ...dom,
 
                             <Button
+
                                 key="1"
+
                                 onClick={() => {
 
                                     ExecConfirm(async () => {
@@ -176,8 +178,8 @@ export default function () {
 
                                 key="2"
                                 type="primary"
-
                                 danger
+
                                 onClick={() => {
 
                                     ExecConfirm(async () => {

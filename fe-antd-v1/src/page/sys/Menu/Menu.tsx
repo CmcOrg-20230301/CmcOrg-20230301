@@ -3,22 +3,21 @@ import {ActionType, BetaSchemaForm, ColumnsState, ModalForm, ProFormDigit, ProTa
 import {Button, Dropdown, Form, Space} from "antd";
 import {ColumnHeightOutlined, EllipsisOutlined, PlusOutlined, VerticalAlignMiddleOutlined} from "@ant-design/icons/lib";
 import {
-    AdminAddOrderNo,
-    AdminDeleteByIdSet,
     AdminDO,
-    AdminInfoById,
-    AdminInsertOrUpdate,
-    AdminInsertOrUpdateDTO,
     AdminPageDTO,
-    AdminTree
-} from "@/api/admin/AdminController";
+    SysMenuAddOrderNo,
+    SysMenuInfoById,
+    SysMenuInsertOrUpdate,
+    SysMenuInsertOrUpdateDTO,
+    SysMenuTree
+} from "@/api/admin/SysMenu";
 import TableColumnList from "./TableColumnList";
 import {ExecConfirm, ToastSuccess} from "@/util/ToastUtil";
 import SchemaFormColumnList, {InitForm} from "./SchemaFormColumnList";
 import {GetIdListForHasChildrenNode} from "@/util/TreeUtil";
 import CommonConstant from "@/model/constant/CommonConstant";
 
-// AdminTsxTitle
+// 菜单-管理
 export default function () {
 
     const [columnsStateMap, setColumnsStateMap] = useState<Record<string, ColumnsState>>();
@@ -29,11 +28,11 @@ export default function () {
 
     const actionRef = useRef<ActionType>()
 
-    const [useForm] = Form.useForm<AdminInsertOrUpdateDTO>();
+    const [useForm] = Form.useForm<SysMenuInsertOrUpdateDTO>();
 
     const [formVisible, setFormVisible] = useState<boolean>(false);
 
-    const currentForm = useRef<AdminInsertOrUpdateDTO>({} as AdminInsertOrUpdateDTO)
+    const currentForm = useRef<SysMenuInsertOrUpdateDTO>({} as SysMenuInsertOrUpdateDTO)
 
     return (
 
@@ -77,7 +76,7 @@ export default function () {
 
                 request={(params, sort, filter) => {
 
-                    return AdminTree({...params, sort})
+                    return SysMenuTree({...params, sort})
 
                 }}
 
@@ -139,7 +138,7 @@ export default function () {
 
                         <Button key={"1"} icon={<PlusOutlined/>} type="primary" onClick={() => {
 
-                            currentForm.current = {} as AdminInsertOrUpdateDTO
+                            currentForm.current = {} as SysMenuInsertOrUpdateDTO
                             setFormVisible(true)
 
                         }}>新建</Button>
@@ -152,7 +151,7 @@ export default function () {
 
                     <Space size={16}>
 
-                        <ModalForm<AdminInsertOrUpdateDTO>
+                        <ModalForm<SysMenuInsertOrUpdateDTO>
 
                             modalProps={{
                                 maskClosable: false
@@ -166,7 +165,7 @@ export default function () {
 
                             onFinish={async (form) => {
 
-                                await AdminAddOrderNo({
+                                await SysMenuAddOrderNo({
 
                                     idSet: selectedRowKeys as string[],
                                     number: form.orderNo!
@@ -193,7 +192,7 @@ export default function () {
 
                             ExecConfirm(() => {
 
-                                return AdminDeleteByIdSet({idSet: selectedRowKeys as number[]}).then(res => {
+                                return SysMenuInsertOrUpdate({idSet: selectedRowKeys as number[]}).then(res => {
 
                                     ToastSuccess(res.msg)
                                     actionRef.current?.reload()
@@ -215,9 +214,9 @@ export default function () {
 
             </ProTable>
 
-            <BetaSchemaForm<AdminInsertOrUpdateDTO>
+            <BetaSchemaForm<SysMenuInsertOrUpdateDTO>
 
-                title={currentForm.current.id ? "编辑AdminModalFormTitle" : "新建AdminModalFormTitle"}
+                title={currentForm.current.id ? "编辑菜单" : "新建菜单"}
                 layoutType={"ModalForm"}
 
                 grid
@@ -247,9 +246,7 @@ export default function () {
                             ...dom,
 
                             <Button
-
                                 key="1"
-
                                 onClick={() => {
 
                                     ExecConfirm(async () => {
@@ -273,7 +270,7 @@ export default function () {
 
                                     ExecConfirm(async () => {
 
-                                        return AdminDeleteByIdSet({idSet: [currentForm.current.id!]}).then(res => {
+                                        return SysMenuInsertOrUpdate({idSet: [currentForm.current.id!]}).then(res => {
 
                                             setFormVisible(false)
                                             ToastSuccess(res.msg)
@@ -281,7 +278,7 @@ export default function () {
 
                                         })
 
-                                    }, undefined, `确定删除【${currentForm.current.AdminDeleteName}】吗？`)
+                                    }, undefined, `确定删除【${currentForm.current.name}】吗？`)
 
                                 }}>
 
@@ -301,9 +298,9 @@ export default function () {
 
                     if (currentForm.current.id) {
 
-                        await AdminInfoById({id: currentForm.current.id}).then(res => {
+                        await SysMenuInfoById({id: currentForm.current.id}).then(res => {
 
-                            currentForm.current = res as AdminInsertOrUpdateDTO
+                            currentForm.current = res as SysMenuInsertOrUpdateDTO
 
                         })
 
@@ -321,7 +318,7 @@ export default function () {
 
                 onFinish={async (form) => {
 
-                    await AdminInsertOrUpdate({...currentForm.current, ...form}).then(res => {
+                    await SysMenuInsertOrUpdate({...currentForm.current, ...form}).then(res => {
 
                         ToastSuccess(res.msg)
                         actionRef.current?.reload()

@@ -10,7 +10,7 @@ import com.cmcorg20230301.engine.be.generate.model.bo.BeApi;
 import com.cmcorg20230301.engine.be.model.model.dto.MyOrderDTO;
 import com.cmcorg20230301.engine.be.security.model.vo.ApiResultVO;
 import lombok.extern.slf4j.Slf4j;
-import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.util.*;
@@ -171,12 +171,12 @@ public class GenerateApiUtil {
     /**
      * 通过：path，获取：api的方法名
      */
-    @Nullable
-    public static String getApiName(String path) {
+    @NotNull
+    static String getApiName(String path) {
 
         List<String> splitTrimList = StrUtil.splitTrim(path, CharPool.SLASH);
 
-        return splitTrimList.stream().reduce((x, y) -> StrUtil.upperFirst(x) + StrUtil.upperFirst(y)).orElse(null);
+        return splitTrimList.stream().reduce((x, y) -> StrUtil.upperFirst(x) + StrUtil.upperFirst(y)).orElse("");
 
     }
 

@@ -2,7 +2,7 @@ import {ActionType, ProColumns} from "@ant-design/pro-components";
 import {AdminDeleteByIdSet, AdminInsertOrUpdateDTO, AdminPageVO} from "@/api/AdminController";
 import {ExecConfirm, ToastSuccess} from "@/util/ToastUtil";
 
-const TableColumnList = (currentForm: React.MutableRefObject<AdminInsertOrUpdateDTO | null>, setFormVisible: React.Dispatch<React.SetStateAction<boolean>>, actionRef: React.RefObject<ActionType>): ProColumns<AdminPageVO>[] => [
+const TableColumnList = (currentForm: React.MutableRefObject<AdminInsertOrUpdateDTO | undefined>, setFormVisible: React.Dispatch<React.SetStateAction<boolean>>, actionRef: React.RefObject<ActionType>): ProColumns<AdminPageVO>[] => [
 
     {
         title: '序号',

@@ -59,7 +59,7 @@ export function FlatTree<T extends IFlatTree>(
 // 获取树结构，所有 有子节点的 id集合
 export function GetIdListForHasChildrenNode(data: any[]) {
 
-    let resList: number[] = []
+    let resList: string[] = []
 
     data.forEach((item) => {
 
