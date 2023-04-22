@@ -10,7 +10,7 @@ import {
     AdminPage,
     AdminPageDTO,
     AdminPageVO
-} from "@/api/admin/AdminController";
+} from "@/api/AdminController";
 import TableColumnList from "./TableColumnList";
 import {ExecConfirm, ToastSuccess} from "@/util/ToastUtil";
 import SchemaFormColumnList, {InitForm} from "./SchemaFormColumnList";

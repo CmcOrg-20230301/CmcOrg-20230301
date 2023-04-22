@@ -3,14 +3,15 @@ import {ActionType, BetaSchemaForm, ColumnsState, ModalForm, ProFormDigit, ProTa
 import {Button, Dropdown, Form, Space} from "antd";
 import {ColumnHeightOutlined, EllipsisOutlined, PlusOutlined, VerticalAlignMiddleOutlined} from "@ant-design/icons/lib";
 import {
-    AdminDO,
-    AdminPageDTO,
     SysMenuAddOrderNo,
+    SysMenuDeleteByIdSet,
+    SysMenuDO,
     SysMenuInfoById,
     SysMenuInsertOrUpdate,
     SysMenuInsertOrUpdateDTO,
+    SysMenuPageDTO,
     SysMenuTree
-} from "@/api/admin/SysMenu";
+} from "@/api/SysMenu";
 import TableColumnList from "./TableColumnList";
 import {ExecConfirm, ToastSuccess} from "@/util/ToastUtil";
 import SchemaFormColumnList, {InitForm} from "./SchemaFormColumnList";
@@ -38,7 +39,7 @@ export default function () {
 
         <>
 
-            <ProTable<AdminDO, AdminPageDTO>
+            <ProTable<SysMenuDO, SysMenuPageDTO>
 
                 scroll={{x: 'max-content'}}
                 sticky={{offsetHeader: CommonConstant.NAV_TOP_HEIGHT}}
@@ -168,7 +169,7 @@ export default function () {
                                 await SysMenuAddOrderNo({
 
                                     idSet: selectedRowKeys as string[],
-                                    number: form.orderNo!
+                                    number: form.orderNo as string
 
                                 }).then(res => {
 
@@ -192,7 +193,7 @@ export default function () {
 
                             ExecConfirm(() => {
 
-                                return SysMenuInsertOrUpdate({idSet: selectedRowKeys as number[]}).then(res => {
+                                return SysMenuDeleteByIdSet({idSet: selectedRowKeys as string[]}).then(res => {
 
                                     ToastSuccess(res.msg)
                                     actionRef.current?.reload()
@@ -246,7 +247,9 @@ export default function () {
                             ...dom,
 
                             <Button
+
                                 key="1"
+
                                 onClick={() => {
 
                                     ExecConfirm(async () => {
@@ -270,7 +273,7 @@ export default function () {
 
                                     ExecConfirm(async () => {
 
-                                        return SysMenuInsertOrUpdate({idSet: [currentForm.current.id!]}).then(res => {
+                                        return SysMenuDeleteByIdSet({idSet: [currentForm.current.id!]}).then(res => {
 
                                             setFormVisible(false)
                                             ToastSuccess(res.msg)

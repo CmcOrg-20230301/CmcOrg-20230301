@@ -248,7 +248,8 @@ public class GeneratePageUtil {
             adminInsertOrUpdateCallBack, adminControllerCallBack, adminDeleteNameCallBack);
 
         // 生成 表单页面
-        generateSchemaFormColumnList(pathBeApiMap, pagePath, group, fileNamePre);
+        generateSchemaFormColumnList(pathBeApiMap, pagePath, group, fileNamePre, adminPageVOCallBack,
+            adminDeleteByIdSetCallBack, adminInsertOrUpdateCallBack, adminControllerCallBack, adminDeleteNameCallBack);
 
     }
 
@@ -256,7 +257,192 @@ public class GeneratePageUtil {
      * 生成 表单页面
      */
     private static void generateSchemaFormColumnList(HashMap<String, BeApi> pathBeApiMap, String pagePath, String group,
-        String fileNamePre) {
+        String fileNamePre, CallBack<String> adminPageVOCallBack, CallBack<String> adminDeleteByIdSetCallBack,
+        CallBack<String> adminInsertOrUpdateCallBack, CallBack<String> adminControllerCallBack,
+        CallBack<String> adminDeleteNameCallBack) {
+
+        String pageFilePath = pagePath + ADMIN_FORM_FILE_NAME;
+
+        log.info("开始生成 Admin Form页面文件：{}", pageFilePath);
+        FileUtil.del(pageFilePath); // 先移除文件
+        File touchFile = FileUtil.touch(pageFilePath); // 再创建文件
+
+        StrBuilder tempStrBuilder = StrBuilder.create(ADMIN_FORM_TEMP);
+
+        StrBuilder formJsonStrBuilder = StrBuilder.create();
+        String adminInsertOrUpdate = ADMIN_INSERT_OR_UPDATE;
+        String adminController = ADMIN_CONTROLLER;
+
+        adminInsertOrUpdate = adminInsertOrUpdateCallBack.getValue();
+        adminController = adminControllerCallBack.getValue();
+
+        // 执行替换
+        tempStrBuilder =
+            StrBuilder.create(equalsAndReplace(tempStrBuilder.toString(), adminController, ADMIN_CONTROLLER));
+
+        Set<String> importClassNameSet = new HashSet<>(); // 防止重复写入
+        StrBuilder otherStrBuilder = StrBuilder.create(); // 对象复用
+        StrBuilder formItemPropsStrBuilder = StrBuilder.create(); // 对象复用
+
+        for (Map.Entry<String, BeApi> item : pathBeApiMap.entrySet()) {
+
+            BeApi beApi = item.getValue();
+
+            String summary = beApi.getSummary();
+
+            if ("新增/修改".equals(summary)) {
+
+                BeApi.BeApiSchema requestBody = beApi.getRequestBody();
+
+                if (requestBody == null) {
+
+                    log.info("处理失败，requestBody是 null，path：{}", beApi.getPath());
+                    return;
+
+                }
+
+                for (Map.Entry<String, BeApi.BeApiField> subItem : requestBody.getFieldMap().entrySet()) {
+
+                    // 一个字段
+                    BeApi.BeApiField beApiField = subItem.getValue();
+
+                    if (beApiField instanceof BeApi.BeApiParameter) {
+
+                        BeApi.BeApiParameter beApiParameter = (BeApi.BeApiParameter)beApiField;
+
+                        String description = beApiParameter.getDescription();
+                        description = StrUtil.subBefore(description, "（", false);
+                        description = StrUtil.subBefore(description, "，", false);
+
+                        if ("boolean".equals(beApiParameter.getType())) {
+
+                            importClassForTs(tempStrBuilder, importClassNameSet, YES_NO_DICT, IMPORT_YES_NO_DICT);
+
+                            // 获取：formTooltip
+                            String formTooltip = getFormTooltip(beApiParameter, description);
+
+                            formJsonStrBuilder.append(StrUtil
+                                .format(ADMIN_FORM_JSON_ITEM_YES_NO_DICT_SWITCH, TAB_INDENT, description,
+                                    beApiParameter.getName(), formTooltip));
+
+                        } else if (REMARK.equals(beApiParameter.getName())) {
+
+                            formJsonStrBuilder
+                                .append(StrUtil.format(ADMIN_FORM_JSON_ITEM_TEXTAREA_300_REMARK, description));
+
+                        } else if (CollUtil.newArrayList("string", "integer").contains(beApiParameter.getType())) {
+
+                            // 添加：formItemProps
+                            appendFormItemProps(otherStrBuilder, formItemPropsStrBuilder, beApiParameter);
+
+                            // 添加：formTooltip
+                            otherStrBuilder.append(getFormTooltip(beApiParameter, description));
+
+                            formJsonStrBuilder.append(StrUtil
+                                .format(ADMIN_FORM_JSON_ITEM_NORMAL, description, beApiParameter.getName(),
+                                    otherStrBuilder.toStringAndReset()));
+
+                        } else {
+
+                            log.info("暂不支持此类型，path：{}，name：{}，type：{}", beApi.getPath(), beApiParameter.getName(),
+                                beApiParameter.getType());
+
+                        }
+
+                    }
+
+                }
+
+                break;
+
+            }
+
+        }
+
+        // 执行替换
+        tempStrBuilder =
+            StrBuilder.create(equalsAndReplace(tempStrBuilder.toString(), adminInsertOrUpdate, ADMIN_INSERT_OR_UPDATE));
+        tempStrBuilder = StrBuilder
+            .create(equalsAndReplace(tempStrBuilder.toString(), formJsonStrBuilder.toString(), ADMIN_FORM_JSON));
+
+        // 写入内容到文件里
+        FileUtil.writeUtf8String(tempStrBuilder.toString(), touchFile);
+
+    }
+
+    /**
+     * 添加：formItemProps
+     */
+    private static void appendFormItemProps(StrBuilder otherStrBuilder, StrBuilder formItemPropsStrBuilder,
+        BeApi.BeApiParameter beApiParameter) {
+
+        if (BooleanUtil.isTrue(beApiParameter.getRequired())) {
+
+            formItemPropsStrBuilder.append(ADMIN_FORM_JSON_ITEM_FORM_ITEM_PROPS_REQUIRED);
+
+            if ("string".equals(beApiParameter.getType())) {
+
+                formItemPropsStrBuilder.append(ADMIN_FORM_JSON_ITEM_FORM_ITEM_PROPS_WHITESPACE);
+
+            }
+
+        }
+
+        if ("integer".equals(beApiParameter.getType())) { // 如果是：number
+
+            formItemPropsStrBuilder.append(ADMIN_FORM_JSON_ITEM_FORM_ITEM_PROPS_TYPE_NUMBER);
+
+        }
+
+        if (StrUtil.isNotBlank(beApiParameter.getPattern())) {
+
+            formItemPropsStrBuilder
+                .append(StrUtil.format(ADMIN_FORM_JSON_ITEM_FORM_ITEM_PROPS_PATTERN, beApiParameter.getPattern()));
+
+        }
+
+        if (beApiParameter.getMaxLength() != null) {
+
+            formItemPropsStrBuilder
+                .append(StrUtil.format(ADMIN_FORM_JSON_ITEM_FORM_ITEM_PROPS_MAX, beApiParameter.getMaxLength()));
+
+        }
+
+        if (beApiParameter.getMinLength() != null) {
+
+            formItemPropsStrBuilder
+                .append(StrUtil.format(ADMIN_FORM_JSON_ITEM_FORM_ITEM_PROPS_MIN, beApiParameter.getMinLength()));
+
+        }
+
+        String formItemPropsStr = formItemPropsStrBuilder.toStringAndReset();
+
+        if (StrUtil.isNotBlank(formItemPropsStr)) { // 不为空，才添加：formItemProps
+
+            otherStrBuilder.append(StrUtil.format(ADMIN_JSON_ITEM_FORM_ITEM_PROPS, formItemPropsStr));
+
+        }
+
+    }
+
+    /**
+     * 获取：formTooltip
+     */
+    private static String getFormTooltip(BeApi.BeApiParameter beApiParameter, String description) {
+
+        String formTooltip;
+
+        if (description.equals(beApiParameter.getDescription())) {
+
+            formTooltip = "";
+
+        } else {
+
+            formTooltip = StrUtil.format(ADMIN_JSON_ITEM_TOOLTIP, beApiParameter.getDescription());
+
+        }
+
+        return formTooltip;
 
     }
 
@@ -286,8 +472,6 @@ public class GeneratePageUtil {
         String adminPageVO = ADMIN_PAGE_VO;
         String adminDeleteName = ADMIN_DELETE_NAME;
 
-        StrBuilder strBuilder = StrBuilder.create();
-
         adminDeleteByIdSet = adminDeleteByIdSetCallBack.getValue();
         adminInsertOrUpdate = adminInsertOrUpdateCallBack.getValue();
         adminController = adminControllerCallBack.getValue();
@@ -305,7 +489,11 @@ public class GeneratePageUtil {
 
             String summary = beApi.getSummary();
 
-            if ("通过主键id，查看详情".equals(summary)) {
+            if ("分页排序查询".equals(summary)) {
+
+                adminPage = GenerateApiUtil.getApiName(beApi.getPath());
+
+            } else if ("通过主键id，查看详情".equals(summary)) {
 
                 adminInfoById = GenerateApiUtil.getApiName(beApi.getPath());
 
@@ -326,19 +514,17 @@ public class GeneratePageUtil {
         tempStr = equalsAndReplace(tempStr, adminDeleteName, ADMIN_DELETE_NAME);
         tempStr = equalsAndReplace(tempStr, adminInsertOrUpdate, ADMIN_INSERT_OR_UPDATE);
         tempStr = equalsAndReplace(tempStr, adminInfoById, ADMIN_INFO_BY_ID);
+        tempStr = equalsAndReplace(tempStr, adminPageVO, ADMIN_PAGE_VO);
         tempStr = equalsAndReplace(tempStr, adminPage, ADMIN_PAGE);
         tempStr = equalsAndReplace(tempStr, adminDeleteByIdSet, ADMIN_DELETE_BY_ID_SET);
         tempStr = equalsAndReplace(tempStr, adminController, ADMIN_CONTROLLER);
-        tempStr = equalsAndReplace(tempStr, adminPageVO, ADMIN_PAGE_VO);
         tempStr = equalsAndReplace(tempStr, adminTsxTitle, ADMIN_TSX_TITLE);
         tempStr = equalsAndReplace(tempStr, adminModalFormTitle, ADMIN_MODAL_FORM_TITLE);
         tempStr = equalsAndReplace(tempStr, adminAddOrderNo, ADMIN_ADD_ORDER_NO);
         tempStr = equalsAndReplace(tempStr, adminTree, ADMIN_TREE);
 
-        strBuilder.append(tempStr);
-
         // 写入内容到文件里
-        FileUtil.writeUtf8String(strBuilder.toString(), touchFile);
+        FileUtil.writeUtf8String(tempStr, touchFile);
 
     }
 
@@ -352,7 +538,7 @@ public class GeneratePageUtil {
 
         String tableFilePath = pagePath + ADMIN_TABLE_FILE_NAME;
 
-        log.info("开始生成 Table页面文件：{}", tableFilePath);
+        log.info("开始生成 Admin Table页面文件：{}", tableFilePath);
         FileUtil.del(tableFilePath); // 先移除文件
         File touchFile = FileUtil.touch(tableFilePath); // 再创建文件
 
@@ -417,24 +603,33 @@ public class GeneratePageUtil {
 
                             BeApi.BeApiParameter beApiParameter = (BeApi.BeApiParameter)beApiField;
 
+                            String description = beApiParameter.getDescription();
+                            description = StrUtil.subBefore(description, "（", false);
+                            description = StrUtil.subBefore(description, "，", false);
+
                             if ("boolean".equals(beApiParameter.getType())) {
 
                                 importClassForTs(tempStrBuilder, importClassNameSet, YES_NO_DICT, IMPORT_YES_NO_DICT);
 
-                                tableJsonStrBuilder.append(StrUtil.format(ADMIN_TABLE_JSON_ITEM_YES_NO_DICT_SELECT, "",
-                                    beApiParameter.getDescription(), beApiParameter.getName()));
+                                tableJsonStrBuilder.append(StrUtil
+                                    .format(ADMIN_TABLE_JSON_ITEM_YES_NO_DICT_SELECT, "", description,
+                                        beApiParameter.getName()));
 
                             } else if ("date-time".equals(beApiParameter.getFormat())) {
 
                                 tableJsonStrBuilder.append(StrUtil
-                                    .format(ADMIN_TABLE_JSON_ITEM_FROM_NOW_AND_HIDE_IN_SEARCH, "",
-                                        beApiParameter.getDescription(), beApiParameter.getName()));
+                                    .format(ADMIN_TABLE_JSON_ITEM_FROM_NOW_AND_HIDE_IN_SEARCH, "", description,
+                                        beApiParameter.getName()));
 
                             } else if (CollUtil.newArrayList("string", "integer").contains(beApiParameter.getType())) {
 
                                 tableJsonStrBuilder.append(StrUtil
-                                    .format(ADMIN_TABLE_JSON_ITEM_NORMAL, beApiParameter.getDescription(),
-                                        beApiParameter.getName(), ""));
+                                    .format(ADMIN_TABLE_JSON_ITEM_NORMAL, description, beApiParameter.getName(), ""));
+
+                            } else {
+
+                                log.info("暂不支持此类型，path：{}，name：{}，type：{}", beApi.getPath(), beApiParameter.getName(),
+                                    beApiParameter.getType());
 
                             }
 
@@ -476,7 +671,7 @@ public class GeneratePageUtil {
 
         // 设置：回调值
         adminPageVOCallBack.setValue(adminPageVO);
-        adminDeleteByIdSetCallBack.setValue(adminInsertOrUpdate);
+        adminDeleteByIdSetCallBack.setValue(adminDeleteByIdSet);
         adminInsertOrUpdateCallBack.setValue(adminInsertOrUpdate);
         adminControllerCallBack.setValue(adminController);
         adminDeleteNameCallBack.setValue(adminDeleteName);

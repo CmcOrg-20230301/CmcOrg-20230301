@@ -5,13 +5,13 @@ import {ColumnHeightOutlined, EllipsisOutlined, PlusOutlined, VerticalAlignMiddl
 import {
     AdminAddOrderNo,
     AdminDeleteByIdSet,
-    AdminDO,
     AdminInfoById,
     AdminInsertOrUpdate,
     AdminInsertOrUpdateDTO,
     AdminPageDTO,
+    AdminPageVO,
     AdminTree
-} from "@/api/admin/AdminController";
+} from "@/api/AdminController";
 import TableColumnList from "./TableColumnList";
 import {ExecConfirm, ToastSuccess} from "@/util/ToastUtil";
 import SchemaFormColumnList, {InitForm} from "./SchemaFormColumnList";
@@ -39,7 +39,7 @@ export default function () {
 
         <>
 
-            <ProTable<AdminDO, AdminPageDTO>
+            <ProTable<AdminPageVO, AdminPageDTO>
 
                 scroll={{x: 'max-content'}}
                 sticky={{offsetHeader: CommonConstant.NAV_TOP_HEIGHT}}
@@ -169,7 +169,7 @@ export default function () {
                                 await AdminAddOrderNo({
 
                                     idSet: selectedRowKeys as string[],
-                                    number: form.orderNo!
+                                    number: form.orderNo as string
 
                                 }).then(res => {
 
@@ -193,7 +193,7 @@ export default function () {
 
                             ExecConfirm(() => {
 
-                                return AdminDeleteByIdSet({idSet: selectedRowKeys as number[]}).then(res => {
+                                return AdminDeleteByIdSet({idSet: selectedRowKeys as string[]}).then(res => {
 
                                     ToastSuccess(res.msg)
                                     actionRef.current?.reload()

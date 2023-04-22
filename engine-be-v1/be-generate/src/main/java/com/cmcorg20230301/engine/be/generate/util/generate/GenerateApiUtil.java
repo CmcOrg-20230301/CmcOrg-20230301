@@ -249,7 +249,7 @@ public class GenerateApiUtil {
 
         if (requestBody == null) {
 
-            log.info("处理失败，requestBody是 null：{}", beApi.getPath());
+            log.info("处理失败，requestBody是 null，path：{}", beApi.getPath());
             return;
 
         }
@@ -258,7 +258,7 @@ public class GenerateApiUtil {
 
         if (BooleanUtil.isFalse(objectStr.equals(requestBody.getType()))) {
 
-            log.info("处理失败，requestBody不是 object类型：{}", beApi.getPath());
+            log.info("处理失败，requestBody不是 object类型，path：{}", beApi.getPath());
             return;
 
         }

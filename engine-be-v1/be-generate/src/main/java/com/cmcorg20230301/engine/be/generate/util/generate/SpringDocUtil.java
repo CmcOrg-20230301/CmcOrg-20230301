@@ -517,7 +517,7 @@ public class SpringDocUtil {
                 if (apiSchema.getClassName().equals(beApiSchemaMapKey)) { // 这里防止递归，然后内存溢出
 
                     fieldMap.put(item.getKey(), beApiSchema);
-                    return;
+                    continue;
 
                 }
 

@@ -1,5 +1,5 @@
 import {ProFormColumnsType} from "@ant-design/pro-components";
-import {AdminInsertOrUpdateDTO} from "@/api/admin/AdminController";
+import {AdminInsertOrUpdateDTO} from "@/api/AdminController";
 
 export const InitForm: AdminInsertOrUpdateDTO = {} as AdminInsertOrUpdateDTO
 
