@@ -121,6 +121,13 @@ const SchemaFormColumnList = (): ProFormColumnsType<SysMenuInsertOrUpdateDTO>[] 
                     },
                 ],
             },
+            valueType: 'select',
+            fieldProps: {
+                showSearch: true,
+                mode: 'multiple',
+                maxTagCount: 'responsive',
+            },
+
         },
 
         {

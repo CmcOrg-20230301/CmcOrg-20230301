@@ -2,8 +2,10 @@ package com.cmcorg20230301.engine.be.generate.util.generate;
 
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.io.FileUtil;
+import cn.hutool.core.lang.func.VoidFunc0;
 import cn.hutool.core.text.StrBuilder;
 import cn.hutool.core.util.BooleanUtil;
+import cn.hutool.core.util.ReUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -14,10 +16,7 @@ import com.cmcorg20230301.engine.be.util.util.CallBack;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.File;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * 生成页面的工具类
@@ -181,7 +180,7 @@ public class GeneratePageUtil {
     // fieldProps：树形下拉选，单选
     private static final String ADMIN_JSON_FIELD_PROPS_TREE_SELECT =
         "            valueType: \"treeSelect\",\n" + "            fieldProps: {\n"
-            + "                placeholder: '为空则表示顶级区域',\n" + "                allowClear: true,\n"
+            + "                placeholder: '为空则表示顶级节点',\n" + "                allowClear: true,\n"
             + "                showSearch: true,\n" + "                treeNodeFilterProp: 'title',\n"
             + "            },\n{}\n";
 
@@ -335,6 +334,10 @@ public class GeneratePageUtil {
                             // 添加：formItemProps
                             appendFormItemProps(otherStrBuilder, formItemPropsStrBuilder, beApiParameter);
 
+                            // 添加：select
+                            appendSelect(otherStrBuilder, formItemPropsStrBuilder, beApiParameter, tempStrBuilder,
+                                importClassNameSet);
+
                             // 添加：formTooltip
                             otherStrBuilder.append(getFormTooltip(beApiParameter, description));
 
@@ -367,6 +370,58 @@ public class GeneratePageUtil {
 
         // 写入内容到文件里
         FileUtil.writeUtf8String(tempStrBuilder.toString(), touchFile);
+
+    }
+
+    /**
+     * 添加：select
+     */
+    private static void appendSelect(StrBuilder otherStrBuilder, StrBuilder formItemPropsStrBuilder,
+        BeApi.BeApiParameter beApiParameter, StrBuilder tempStrBuilder, Set<String> importClassNameSet) {
+
+        if (BooleanUtil.isTrue(beApiParameter.getArrFlag())) {
+
+            otherStrBuilder.append(StrUtil.format(ADMIN_JSON_FIELD_PROPS_SELECT_MULTIPLE, ""));
+
+        }
+
+    }
+
+    /**
+     * 通过：关键字导入包
+     */
+    private static void importByKeyWord(StrBuilder strBuilder, String keyword, String objectStr, boolean insertFlag,
+        VoidFunc0 voidFunc0) {
+
+        String regexp = "^.*import \\{(.*?)\\} from .*/" + keyword + "\";.*$";
+
+        String group1 = ReUtil.getGroup1(regexp, strBuilder.toString()); // 例如：GetDictList, YesNoDict
+
+        if (StrUtil.isBlank(group1)) {
+            voidFunc0.callWithRuntimeException(); // 执行：其他操作
+            return;
+        }
+
+        List<String> splitTrimList = StrUtil.splitTrim(group1, ",");
+
+        if (splitTrimList.contains(objectStr)) {
+            return;
+        }
+
+        if (insertFlag) {
+            splitTrimList.add(0, objectStr);
+        } else {
+            splitTrimList.add(objectStr);
+        }
+
+        String replaceTemp = "import {{}} from";
+
+        String formatStr = StrUtil.format(replaceTemp, CollUtil.join(splitTrimList, ", "));
+
+        String replaceResult =
+            StrUtil.replace(strBuilder.toStringAndReset(), StrUtil.format(replaceTemp, group1), formatStr);
+
+        strBuilder.append(replaceResult);
 
     }
 
