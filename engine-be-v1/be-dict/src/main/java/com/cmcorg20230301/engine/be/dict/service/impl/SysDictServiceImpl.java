@@ -137,16 +137,21 @@ public class SysDictServiceImpl extends ServiceImpl<SysDictMapper, SysDictDO> im
             return resList;
         }
 
-        // 过滤出为 字典项的数据，目的：查询其所属字典，封装成树结构
+        // 过滤出：为字典项的数据，目的：查询其所属字典，封装成树结构
         List<SysDictDO> dictItemList =
             records.stream().filter(it -> SysDictTypeEnum.DICT_ITEM.equals(it.getType())).collect(Collectors.toList());
 
         if (dictItemList.size() == 0) {
+
             // 如果没有字典项类型数据，则直接返回
             for (SysDictDO item : records) {
+
                 resList.add(BeanUtil.copyProperties(item, SysDictTreeVO.class));
+
             }
+
             return resList;
+
         }
 
         // 查询出 字典项所属 字典的信息
