@@ -41,6 +41,8 @@ public enum RedisKeyEnum implements IRedisKey {
 
     SYS_PARAM_CACHE, // 系统参数缓存
 
+    SYS_DICT_CACHE, // 字典缓存
+
     // 其他 ↓
     ATOMIC_LONG_ID_GENERATOR, // 获取主键 id，自增值
 
