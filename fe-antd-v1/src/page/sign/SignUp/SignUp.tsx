@@ -9,7 +9,7 @@ import {getAppNav} from "@/App";
 import PathConstant from "@/model/constant/PathConstant";
 import {SendCode, SignUpFormHandler} from "@/page/sign/SignUp/SignUpUtil";
 import {ValidatorUtil} from "@/util/ValidatorUtil";
-import Link from "antd/es/typography/Link";
+import Link from "antd/lib/typography/Link";
 
 type TSignUpType = '0' | '1'; // 注册方式
 
@@ -29,11 +29,11 @@ const signUpTypeArr = ['登录名', '邮箱']
 export default function () {
 
     const [activeKey, setActiveKey] = useState<TSignUpType>('0');
-    const formRef = useRef<ProFormInstance<ISignUpForm>>(null);
+    const formRef = useRef<ProFormInstance<ISignUpForm>>();
 
     return (
 
-        <SignLayout>
+        <SignLayout token={{colorPrimary: '#13C2C2FF'}}>
 
             <LoginForm<ISignUpForm>
 

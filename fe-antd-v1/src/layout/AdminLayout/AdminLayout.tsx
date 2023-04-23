@@ -1,85 +1,100 @@
-import {DefaultFooter, PageContainer, ProLayout, RouteContext, RouteContextType} from "@ant-design/pro-components";
+import {
+    DefaultFooter,
+    MenuDataItem,
+    PageContainer,
+    ProLayout,
+    RouteContext,
+    RouteContextType
+} from "@ant-design/pro-components";
 import CommonConstant from "@/model/constant/CommonConstant";
 import {Outlet} from "react-router-dom";
-import {getAppNav} from "@/App";
-import {useEffect, useState} from "react";
-// import {SysMenuDO, SysMenuUserSelfMenuList} from "@/api/admin/SysMenuController";
+import {getAppDispatch, getAppNav} from "@/App";
+import React, {useEffect, useState} from "react";
+import {SysMenuDO, SysMenuUserSelfMenuList} from "@/api/SysMenu";
 import PathConstant from "@/model/constant/PathConstant";
-// import {setUserSelfInfo, setUserSelfMenuList} from "@/store/userSlice";
+import {setUserSelfInfo, setUserSelfMenuList} from "@/store/userSlice";
 import {LogoutOutlined, UserOutlined} from "@ant-design/icons/lib";
 import {GetCopyright} from "@/layout/SignLayout/SignLayout";
-// import {SignOutSelf} from "@/api/none/SignOutController";
 import {Avatar, Button, Dropdown, Space, Typography} from "antd";
-// import {UserSelfInfo} from "@/api/none/UserSelfController";
+import SessionStorageKey from "@/model/constant/SessionStorageKey";
+import {ExecConfirm, ToastError, ToastSuccess} from "@/util/ToastUtil";
+import {SignOut} from "@/util/UserUtil";
+import {useAppSelector} from "@/store";
+import {UserSelfInfo} from "@/api/UserSelf";
+import MyIcon from "@/componse/MyIcon/MyIcon";
+import {ListToTree} from "@/util/TreeUtil";
+import {InDev} from "@/util/CommonUtil";
+import {SignOutSelf} from "@/api/SignOut";
+import {RouterMapKeyList} from "@/router/RouterMap";
 
-// // 前往：第一个页面
-// function goFirstPage(menuList: SysMenuDO[]) {
-//
-//     if (window.location.pathname !== PathConstant.ADMIN_PATH) {
-//         return
-//     }
-//
-//     const adminRedirectPath = sessionStorage.getItem(SessionStorageKey.ADMIN_REDIRECT_PATH);
-//
-//     if (adminRedirectPath) {
-//
-//         sessionStorage.removeItem(SessionStorageKey.ADMIN_REDIRECT_PATH)
-//
-//         if (menuList.some(item => item.path === adminRedirectPath)) {
-//
-//             return getAppNav()(adminRedirectPath)
-//
-//         }
-//
-//     }
-//
-//     menuList.some((item) => {
-//
-//         if (item.firstFlag && item.path) {
-//
-//             getAppNav()(item.path)
-//
-//         }
-//
-//         return item.firstFlag
-//
-//     })
-//
-// }
+// 前往：第一个页面
+function goFirstPage(menuList: SysMenuDO[]) {
+
+    if (window.location.pathname !== PathConstant.ADMIN_PATH) {
+        return
+    }
+
+    const adminRedirectPath = sessionStorage.getItem(SessionStorageKey.ADMIN_REDIRECT_PATH);
+
+    if (adminRedirectPath) {
+
+        sessionStorage.removeItem(SessionStorageKey.ADMIN_REDIRECT_PATH)
+
+        if (menuList.some(item => item.path === adminRedirectPath)) {
+
+            return getAppNav()(adminRedirectPath)
+
+        }
+
+    }
+
+    menuList.some((item) => {
+
+        if (item.firstFlag && item.path) {
+
+            getAppNav()(item.path)
+
+        }
+
+        return item.firstFlag
+
+    })
+
+}
 
 // Admin 页面布局
 export default function () {
 
-    // const appDispatch = useAppDispatch()
+    const appDispatch = getAppDispatch()
     const [element, setElement] = useState<React.ReactNode>(null);
 
-    // // 设置 element
-    // function doSetElement(userSelfMenuList: SysMenuDO[]) {
-    //
-    //     if (element == null) {
-    //         setElement(<AdminLayoutElement userSelfMenuList={userSelfMenuList}/>)
-    //     }
-    //
-    // }
+    // 设置 element
+    function doSetElement(userSelfMenuList: SysMenuDO[]) {
+
+        if (element == null) {
+            setElement(<AdminLayoutElement userSelfMenuList={userSelfMenuList}/>)
+        }
+
+    }
 
     useEffect(() => {
 
-        // // 加载菜单
-        // SysMenuUserSelfMenuList().then(res => {
-        //
-        //     if (!res.data || !res.data.length) {
-        //
-        //         ToastError('暂未配置菜单，请联系管理员')
-        //         SignOut()
-        //         return
-        //
-        //     }
-        //
-        //     appDispatch(setUserSelfMenuList(res.data))
-        //     doSetElement(res.data)
-        //     goFirstPage(res.data)
-        //
-        // })
+        // 加载菜单
+        SysMenuUserSelfMenuList().then(res => {
+
+            if (!res.data || !res.data.length) {
+
+                ToastError('暂未配置菜单，请联系管理员')
+                SignOut()
+                return
+
+            }
+
+            appDispatch(setUserSelfMenuList(res.data))
+            doSetElement(res.data)
+            goFirstPage(res.data)
+
+        })
 
     }, [])
 
@@ -89,7 +104,7 @@ export default function () {
 
 interface IAdminLayoutElement {
 
-    // userSelfMenuList: SysMenuDO[]
+    userSelfMenuList: SysMenuDO[]
 
 }
 
@@ -97,16 +112,16 @@ interface IAdminLayoutElement {
 function AdminLayoutElement(props: IAdminLayoutElement) {
 
     const [pathname, setPathname] = useState<string>('')
-    // const appDispatch = useAppDispatch();
-    // const userSelfInfo = useAppSelector((state) => state.user.userSelfInfo)
+    const appDispatch = getAppDispatch();
+    const userSelfInfo = useAppSelector((state) => state.user.userSelfInfo)
 
     useEffect(() => {
 
         setPathname(window.location.pathname)
 
-        // UserSelfInfo().then(res => {
-        //     appDispatch(setUserSelfInfo(res.data))
-        // })
+        UserSelfInfo().then(res => {
+            appDispatch(setUserSelfInfo(res.data))
+        })
 
     }, [])
 
@@ -123,16 +138,16 @@ function AdminLayoutElement(props: IAdminLayoutElement) {
 
                 request: async () => {
 
-                    // const userSelfMenuListTemp: MenuDataItem[] = JSON.parse(JSON.stringify(props.userSelfMenuList));
-                    //
-                    // userSelfMenuListTemp.forEach(item => {
-                    //
-                    //     item.icon = <MyIcon icon={item.icon as string}/>
-                    //     item.hideInMenu = !item.showFlag
-                    //
-                    // })
-                    //
-                    // return ListToTree(userSelfMenuListTemp);
+                    const userSelfMenuListTemp: MenuDataItem[] = JSON.parse(JSON.stringify(props.userSelfMenuList));
+
+                    userSelfMenuListTemp.forEach(item => {
+
+                        item.icon = <MyIcon icon={item.icon as string}/>
+                        item.hideInMenu = !item.showFlag
+
+                    })
+
+                    return ListToTree(userSelfMenuListTemp);
 
                 },
 
@@ -143,58 +158,58 @@ function AdminLayoutElement(props: IAdminLayoutElement) {
             fixSiderbar={true}
             fixedHeader={true}
 
-            // menuItemRender={(item: MenuDataItem, defaultDom: React.ReactNode) => (
-            //
-            //     <a
-            //         onClick={() => {
-            //
-            //             let path = item.path // 路径
-            //             let linkFlag = item.linkFlag // 是否另外一个页面打开
-            //
-            //             if (item.redirect) {
-            //                 path = item.redirect
-            //             }
-            //
-            //             if (path && linkFlag) {
-            //
-            //                 window.open(path, '_blank')
-            //                 return
-            //
-            //             }
-            //
-            //             if (path && path === item.redirect) {
-            //
-            //                 setPathname(path)
-            //                 getAppNav()(path)
-            //                 return;
-            //
-            //             }
-            //
-            //             if (path && item.router) {
-            //
-            //                 if (RouterMapKeyList.includes(item.router)) {
-            //
-            //                     setPathname(path)
-            //                     getAppNav()(path)
-            //                     return;
-            //
-            //                 }
-            //
-            //             }
-            //
-            //             InDev() // 否则：提示开发中
-            //
-            //         }}
-            //
-            //     >
-            //
-            //         <>
-            //             {defaultDom}
-            //         </>
-            //
-            //     </a>
-            //
-            // )}
+            menuItemRender={(item: MenuDataItem, defaultDom: React.ReactNode) => (
+
+                <a
+                    onClick={() => {
+
+                        let path = item.path // 路径
+                        let linkFlag = item.linkFlag // 是否另外一个页面打开
+
+                        if (item.redirect) {
+                            path = item.redirect
+                        }
+
+                        if (path && linkFlag) {
+
+                            window.open(path, '_blank')
+                            return
+
+                        }
+
+                        if (path && path === item.redirect) {
+
+                            setPathname(path)
+                            getAppNav()(path)
+                            return;
+
+                        }
+
+                        if (path && item.router) {
+
+                            if (RouterMapKeyList.includes(item.router)) {
+
+                                setPathname(path)
+                                getAppNav()(path)
+                                return;
+
+                            }
+
+                        }
+
+                        InDev() // 否则：提示开发中
+
+                    }}
+
+                >
+
+                    <>
+                        {defaultDom}
+                    </>
+
+                </a>
+
+            )}
 
             rightContentRender={() => (
 
@@ -227,14 +242,16 @@ function AdminLayoutElement(props: IAdminLayoutElement) {
                                         label: <a
                                             onClick={() => {
 
-                                                // ExecConfirm(() => {
-                                                //
-                                                //     return SignOutSelf().then((res) => {
-                                                //         ToastSuccess(res.msg)
-                                                //         SignOut()
-                                                //     })
-                                                //
-                                                // }, undefined, "确定退出登录吗？")
+                                                ExecConfirm(() => {
+
+                                                    return SignOutSelf().then((res) => {
+
+                                                        ToastSuccess(res.msg)
+                                                        SignOut()
+
+                                                    })
+
+                                                }, undefined, "确定退出登录吗？")
 
                                             }}
                                         >
@@ -296,4 +313,5 @@ function AdminLayoutElement(props: IAdminLayoutElement) {
         </ProLayout>
 
     )
+
 }

@@ -2,10 +2,12 @@ import {PropsWithChildren} from "react";
 import LocalStorageKey from "@/model/constant/LocalStorageKey";
 import {Navigate} from "react-router-dom";
 import {CopyrightOutlined} from "@ant-design/icons/lib";
+import {ConfigProvider} from "antd";
+import {AliasToken} from "antd/es/theme/interface/alias";
 
 interface ISignLayout extends PropsWithChildren {
 
-    className?: string
+    token?: AliasToken
 
 }
 
@@ -24,25 +26,33 @@ export default function (props: ISignLayout) {
 
     return (
 
-        <div className={props.className + " p-t-50 p-b-10 flex-c vwh100"}>
+        <ConfigProvider
+            theme={{
+                token: props.token,
+            }}
+        >
 
-            <>
+            <div className={"p-t-150 p-b-10 flex-c vwh100"}>
 
-                {props.children}
+                <>
 
-                <div className={"w100 flex-c ai-c m-t-50"}>
+                    {props.children}
 
-                    <div className={"m-r-10"}>
+                    <div className={"w100 flex-c ai-c m-t-50"}>
 
-                        <CopyrightOutlined/> {GetCopyright()}
+                        <div className={"m-r-10"}>
+
+                            <CopyrightOutlined/> {GetCopyright()}
+
+                        </div>
 
                     </div>
 
-                </div>
+                </>
 
-            </>
+            </div>
 
-        </div>
+        </ConfigProvider>
 
     )
 

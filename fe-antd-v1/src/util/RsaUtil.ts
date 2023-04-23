@@ -6,19 +6,21 @@ const RSA_PUBLIC_KEY = "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDadmaCaffN63JC5QsM
 // 统一的 password加密
 export function PasswordRSAEncrypt(
     password: string,
+    date: Date = new Date(),
     rsaPublicKey: string = RSA_PUBLIC_KEY
 ) {
 
     // 备注：512太长了，所以就 256/512混合
-    return RSAEncrypt(
+    return RSAEncryptPro(
         SHA256(SHA512(password).toString()).toString(),
+        date,
         rsaPublicKey
     )
 
 }
 
 // 非对称加密
-export function RSAEncrypt(
+function RSAEncrypt(
     word: string,
     rsaPublicKey: string = RSA_PUBLIC_KEY
 ) {
@@ -30,5 +32,17 @@ export function RSAEncrypt(
     const rsaEncrypt = jse.encrypt(word); // 进行非对称加密
 
     return rsaEncrypt || ''
+
+}
+
+// 非对称加密：增强版，加入时间戳
+export function RSAEncryptPro(
+    word: string,
+    date: Date = new Date(),
+    rsaPublicKey: string = RSA_PUBLIC_KEY,
+) {
+
+    const timestamp = ';' + date.getTime() // 加入：时间戳
+    return RSAEncrypt(word + timestamp, rsaPublicKey) // 加入时间戳，进行非对称加密
 
 }

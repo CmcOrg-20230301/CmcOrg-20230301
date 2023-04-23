@@ -80,7 +80,8 @@ public class CanalKafkaListenerHelper {
 
         }
 
-        log.info("CANAL_KAFKA_HANDLER_MAP，长度：{}", CANAL_KAFKA_HANDLER_MAP.size());
+        log.info("CANAL_KAFKA_HANDLER_MAP，长度：{}，className：{}", CANAL_KAFKA_HANDLER_MAP.size(),
+            iCanalKafkaHandler.getClass().getName());
 
     }
 

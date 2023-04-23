@@ -26,7 +26,7 @@ export default function () {
 
     return (
 
-        <SignLayout className={"Theme-Geek-Blue"}>
+        <SignLayout>
 
             <LoginForm<ISignInForm>
 
