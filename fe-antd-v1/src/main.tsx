@@ -18,20 +18,20 @@ import './style/theme.less'
 dayjs.locale('zh-cn');
 
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
-    <React.StrictMode>
+    // <React.StrictMode>
 
-        <Provider store={store}>
-            <ConfigProvider locale={zhCN}>
+    <Provider store={store}>
+        <ConfigProvider locale={zhCN}>
 
-                <App/>
+            <App/>
 
-                <div title={"返回顶部"}>
-                    <FloatButton.BackTop/>
-                </div>
+            <div title={"返回顶部"}>
+                <FloatButton.BackTop/>
+            </div>
 
-            </ConfigProvider>
+        </ConfigProvider>
 
-        </Provider>
+    </Provider>
 
-    </React.StrictMode>
+    // </React.StrictMode>
 )

@@ -114,7 +114,7 @@ public class GeneratePageUtil {
 
     // formItemProps type: number
     private static final String ADMIN_FORM_JSON_ITEM_FORM_ITEM_PROPS_TYPE_NUMBER =
-        "\n                        type: number,";
+        "\n                        type: 'number',";
 
     // YesNoDict 下拉选
     private static final String DICT_UTIL = "DictUtil";
@@ -443,7 +443,8 @@ public class GeneratePageUtil {
 
         }
 
-        if ("integer".equals(beApiParameter.getType())) { // 如果是：number
+        if ("integer".equals(beApiParameter.getType()) && beApiParameter.getArrFlag() != null && BooleanUtil
+            .isFalse(beApiParameter.getArrFlag())) { // 如果是：number，并且不是数组
 
             formItemPropsStrBuilder.append(ADMIN_FORM_JSON_ITEM_FORM_ITEM_PROPS_TYPE_NUMBER);
 

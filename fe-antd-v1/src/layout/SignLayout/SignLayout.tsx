@@ -32,7 +32,7 @@ export default function (props: ISignLayout) {
             }}
         >
 
-            <div className={"p-t-150 p-b-10 flex-c vwh100"}>
+            <div className={"p-t-130 p-b-10 flex-c vwh100"}>
 
                 <>
 

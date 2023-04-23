@@ -18,13 +18,6 @@ const SchemaFormColumnList = (): ProFormColumnsType<SysMenuInsertOrUpdateDTO>[] 
         {
             title: '排序号',
             dataIndex: 'orderNo',
-            formItemProps: {
-                rules: [
-                    {
-                        type: number,
-                    },
-                ],
-            },
             tooltip: '排序号（值越大越前面，默认为 0）',
         },
 
@@ -69,13 +62,6 @@ const SchemaFormColumnList = (): ProFormColumnsType<SysMenuInsertOrUpdateDTO>[] 
         {
             title: '父节点id',
             dataIndex: 'parentId',
-            formItemProps: {
-                rules: [
-                    {
-                        type: number,
-                    },
-                ],
-            },
             tooltip: '父节点id（顶级则为0）',
         },
 
@@ -114,13 +100,6 @@ const SchemaFormColumnList = (): ProFormColumnsType<SysMenuInsertOrUpdateDTO>[] 
         {
             title: '角色 idSet',
             dataIndex: 'roleIdSet',
-            formItemProps: {
-                rules: [
-                    {
-                        type: number,
-                    },
-                ],
-            },
             valueType: 'select',
             fieldProps: {
                 showSearch: true,
@@ -133,13 +112,6 @@ const SchemaFormColumnList = (): ProFormColumnsType<SysMenuInsertOrUpdateDTO>[] 
         {
             title: '主键 id',
             dataIndex: 'id',
-            formItemProps: {
-                rules: [
-                    {
-                        type: number,
-                    },
-                ],
-            },
         },
 
         {
