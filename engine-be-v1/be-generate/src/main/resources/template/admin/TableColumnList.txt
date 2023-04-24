@@ -1,5 +1,5 @@
 import {ActionType, ProColumns} from "@ant-design/pro-components";
-import {AdminDeleteByIdSet, AdminInsertOrUpdateDTO, AdminPageVO} from "@/api/AdminController";
+import {AdminDeleteByIdSetApi, AdminInsertOrUpdateDTO, AdminPageVO} from "@/api/AdminController";
 import {ExecConfirm, ToastSuccess} from "@/util/ToastUtil";
 
 const TableColumnList = (currentForm: React.MutableRefObject<AdminInsertOrUpdateDTO | null>, setFormVisible: React.Dispatch<React.SetStateAction<boolean>>, actionRef: React.RefObject<ActionType | undefined>): ProColumns<AdminPageVO>[] => [
@@ -32,7 +32,7 @@ const TableColumnList = (currentForm: React.MutableRefObject<AdminInsertOrUpdate
 
                 ExecConfirm(() => {
 
-                    return AdminDeleteByIdSet({idSet: [entity.id!]}).then(res => {
+                    return AdminDeleteByIdSetApi({idSet: [entity.id!]}).then(res => {
 
                         ToastSuccess(res.msg)
                         actionRef.current?.reload()

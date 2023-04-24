@@ -1,52 +1,52 @@
 import {useRef, useState} from "react";
-import {ActionType, BetaSchemaForm, ColumnsState, ModalForm, ProFormDigit, ProTable} from "@ant-design/pro-components";
-import {Button, Dropdown, Form, Space} from "antd";
-import {ColumnHeightOutlined, EllipsisOutlined, PlusOutlined, VerticalAlignMiddleOutlined} from "@ant-design/icons/lib";
+import {ActionType, BetaSchemaForm, ColumnsState, ProTable} from "@ant-design/pro-components";
+import {Button, Form, Space} from "antd";
+import {PlusOutlined} from "@ant-design/icons/lib";
 import {
-    SysMenuAddOrderNo,
-    SysMenuDeleteByIdSet,
-    SysMenuDO,
-    SysMenuInfoById,
-    SysMenuInsertOrUpdate,
-    SysMenuInsertOrUpdateDTO,
-    SysMenuPageDTO,
-    SysMenuTree
-} from "@/api/SysMenu";
+    SysParamDeleteByIdSet,
+    SysParamDO,
+    SysParamInfoById,
+    SysParamInsertOrUpdate,
+    SysParamInsertOrUpdateDTO,
+    SysParamPage,
+    SysParamPageDTO
+} from "@/api/SysParam";
 import TableColumnList from "./TableColumnList";
 import {ExecConfirm, ToastSuccess} from "@/util/ToastUtil";
 import SchemaFormColumnList, {InitForm} from "./SchemaFormColumnList";
-import {GetIdListForHasChildrenNode} from "@/util/TreeUtil";
 import CommonConstant from "@/model/constant/CommonConstant";
 
-// 菜单-管理
+// 系统参数-管理
 export default function () {
 
     const [columnsStateMap, setColumnsStateMap] = useState<Record<string, ColumnsState>>();
 
     const [expandedRowKeys, setExpandedRowKeys] = useState<string[]>([]);
 
-    const hasChildrenIdList = useRef<string[]>([]); // 有子节点的 idList
-
     const actionRef = useRef<ActionType>()
 
-    const [useForm] = Form.useForm<SysMenuInsertOrUpdateDTO>();
+    const [useForm] = Form.useForm<SysParamInsertOrUpdateDTO>();
 
     const [formVisible, setFormVisible] = useState<boolean>(false);
 
-    const currentForm = useRef<SysMenuInsertOrUpdateDTO>({} as SysMenuInsertOrUpdateDTO)
+    const currentForm = useRef<SysParamInsertOrUpdateDTO>({} as SysParamInsertOrUpdateDTO)
 
     return (
 
         <>
 
-            <ProTable<SysMenuDO, SysMenuPageDTO>
+            <ProTable<SysParamDO, SysParamPageDTO>
 
                 scroll={{x: 'max-content'}}
                 sticky={{offsetHeader: CommonConstant.NAV_TOP_HEIGHT}}
-
                 actionRef={actionRef}
                 rowKey={"id"}
-                pagination={false}
+
+                pagination={{
+                    showQuickJumper: true,
+                    showSizeChanger: true,
+                }}
+
                 columnEmptyText={false}
 
                 columnsState={{
@@ -55,6 +55,7 @@ export default function () {
                 }}
 
                 rowSelection={{}}
+
                 expandable={{
 
                     expandedRowKeys,
@@ -77,69 +78,17 @@ export default function () {
 
                 request={(params, sort, filter) => {
 
-                    return SysMenuTree({...params, sort})
-
-                }}
-
-                postData={(data) => {
-
-                    hasChildrenIdList.current = GetIdListForHasChildrenNode(data)
-                    return data
+                    return SysParamPage({...params, sort})
 
                 }}
 
                 toolbar={{
 
-                    title:
-
-                        <Dropdown menu={{
-
-                            items: [
-                                {
-
-                                    key: '1',
-
-                                    label: <a onClick={() => {
-
-                                        setExpandedRowKeys(hasChildrenIdList.current)
-
-                                    }}>
-                                        展开全部
-                                    </a>,
-
-                                    icon: <ColumnHeightOutlined/>
-
-                                },
-
-                                {
-
-                                    key: '2',
-
-                                    label: <a onClick={() => {
-
-                                        setExpandedRowKeys([])
-
-                                    }}>
-                                        收起全部
-                                    </a>,
-
-                                    icon: <VerticalAlignMiddleOutlined/>
-
-                                },
-
-                            ]
-
-                        }}>
-
-                            <Button size={"small"} icon={<EllipsisOutlined/>}/>
-
-                        </Dropdown>,
-
                     actions: [
 
                         <Button key={"1"} icon={<PlusOutlined/>} type="primary" onClick={() => {
 
-                            currentForm.current = {} as SysMenuInsertOrUpdateDTO
+                            currentForm.current = {} as SysParamInsertOrUpdateDTO
                             setFormVisible(true)
 
                         }}>新建</Button>
@@ -152,48 +101,11 @@ export default function () {
 
                     <Space size={16}>
 
-                        <ModalForm<SysMenuInsertOrUpdateDTO>
-
-                            modalProps={{
-                                maskClosable: false
-                            }}
-
-                            isKeyPressSubmit
-
-                            width={CommonConstant.MODAL_FORM_WIDTH}
-                            title={CommonConstant.ADD_ORDER_NO}
-                            trigger={<a>{CommonConstant.ADD_ORDER_NO}</a>}
-
-                            onFinish={async (form) => {
-
-                                await SysMenuAddOrderNo({
-
-                                    idSet: selectedRowKeys as string[],
-                                    number: form.orderNo as string
-
-                                }).then(res => {
-
-                                    ToastSuccess(res.msg)
-                                    actionRef.current?.reload()
-
-                                })
-
-                                return true
-
-                            }}
-
-                        >
-
-                            <ProFormDigit label="排序号" name="orderNo" min={Number.MIN_SAFE_INTEGER} className={"w100"}
-                                          rules={[{required: true}]}/>
-
-                        </ModalForm>
-
                         <a className={"red3"} onClick={() => {
 
                             ExecConfirm(() => {
 
-                                return SysMenuDeleteByIdSet({idSet: selectedRowKeys as string[]}).then(res => {
+                                return SysParamDeleteByIdSet({idSet: selectedRowKeys as number[]}).then(res => {
 
                                     ToastSuccess(res.msg)
                                     actionRef.current?.reload()
@@ -215,11 +127,10 @@ export default function () {
 
             </ProTable>
 
-            <BetaSchemaForm<SysMenuInsertOrUpdateDTO>
+            <BetaSchemaForm<SysParamInsertOrUpdateDTO>
 
-                title={currentForm.current.id ? "编辑菜单" : "新建菜单"}
+                title={currentForm.current.id ? "编辑系统参数" : "新建系统参数"}
                 layoutType={"ModalForm"}
-
                 grid
 
                 rowProps={{
@@ -274,7 +185,7 @@ export default function () {
 
                                     ExecConfirm(async () => {
 
-                                        return SysMenuDeleteByIdSet({idSet: [currentForm.current.id!]}).then(res => {
+                                        return SysParamDeleteByIdSet({idSet: [currentForm.current.id!]}).then(res => {
 
                                             setFormVisible(false)
                                             ToastSuccess(res.msg)
@@ -304,9 +215,9 @@ export default function () {
 
                     if (currentForm.current.id) {
 
-                        await SysMenuInfoById({id: currentForm.current.id}).then(res => {
+                        await SysParamInfoById({id: currentForm.current.id}).then(res => {
 
-                            currentForm.current = res as SysMenuInsertOrUpdateDTO
+                            currentForm.current = res as SysParamInsertOrUpdateDTO
 
                         })
 
@@ -324,7 +235,7 @@ export default function () {
 
                 onFinish={async (form) => {
 
-                    await SysMenuInsertOrUpdate({...currentForm.current, ...form}).then(res => {
+                    await SysParamInsertOrUpdate({...currentForm.current, ...form}).then(res => {
 
                         ToastSuccess(res.msg)
                         actionRef.current?.reload()

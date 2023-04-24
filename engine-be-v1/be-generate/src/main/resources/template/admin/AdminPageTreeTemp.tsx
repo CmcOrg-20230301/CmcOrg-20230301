@@ -3,14 +3,14 @@ import {ActionType, BetaSchemaForm, ColumnsState, ModalForm, ProFormDigit, ProTa
 import {Button, Dropdown, Form, Space} from "antd";
 import {ColumnHeightOutlined, EllipsisOutlined, PlusOutlined, VerticalAlignMiddleOutlined} from "@ant-design/icons/lib";
 import {
-    AdminAddOrderNo,
-    AdminDeleteByIdSet,
-    AdminInfoById,
-    AdminInsertOrUpdate,
+    AdminAddOrderNoApi,
+    AdminDeleteByIdSetApi,
+    AdminInfoByIdApi,
+    AdminInsertOrUpdateApi,
     AdminInsertOrUpdateDTO,
     AdminPageDTO,
     AdminPageVO,
-    AdminTree
+    AdminTreeApi
 } from "@/api/AdminController";
 import TableColumnList from "./TableColumnList";
 import {ExecConfirm, ToastSuccess} from "@/util/ToastUtil";
@@ -77,7 +77,7 @@ export default function () {
 
                 request={(params, sort, filter) => {
 
-                    return AdminTree({...params, sort})
+                    return AdminTreeApi({...params, sort})
 
                 }}
 
@@ -166,7 +166,7 @@ export default function () {
 
                             onFinish={async (form) => {
 
-                                await AdminAddOrderNo({
+                                await AdminAddOrderNoApi({
 
                                     idSet: selectedRowKeys as string[],
                                     number: form.orderNo as string
@@ -193,7 +193,7 @@ export default function () {
 
                             ExecConfirm(() => {
 
-                                return AdminDeleteByIdSet({idSet: selectedRowKeys as string[]}).then(res => {
+                                return AdminDeleteByIdSetApi({idSet: selectedRowKeys as string[]}).then(res => {
 
                                     ToastSuccess(res.msg)
                                     actionRef.current?.reload()
@@ -261,6 +261,7 @@ export default function () {
                                 }}
                             >
                                 重置
+
                             </Button>,
 
                             currentForm.current.id ? <Button
@@ -273,7 +274,7 @@ export default function () {
 
                                     ExecConfirm(async () => {
 
-                                        return AdminDeleteByIdSet({idSet: [currentForm.current.id!]}).then(res => {
+                                        return AdminDeleteByIdSetApi({idSet: [currentForm.current.id!]}).then(res => {
 
                                             setFormVisible(false)
                                             ToastSuccess(res.msg)
@@ -286,7 +287,9 @@ export default function () {
                                 }}>
 
                                 删除
+
                             </Button> : null
+
                         ]
 
                     },
@@ -301,7 +304,7 @@ export default function () {
 
                     if (currentForm.current.id) {
 
-                        await AdminInfoById({id: currentForm.current.id}).then(res => {
+                        await AdminInfoByIdApi({id: currentForm.current.id}).then(res => {
 
                             currentForm.current = res as AdminInsertOrUpdateDTO
 
@@ -321,7 +324,7 @@ export default function () {
 
                 onFinish={async (form) => {
 
-                    await AdminInsertOrUpdate({...currentForm.current, ...form}).then(res => {
+                    await AdminInsertOrUpdateApi({...currentForm.current, ...form}).then(res => {
 
                         ToastSuccess(res.msg)
                         actionRef.current?.reload()

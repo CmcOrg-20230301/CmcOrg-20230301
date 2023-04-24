@@ -3,22 +3,22 @@ import {ActionType, BetaSchemaForm, ColumnsState, ModalForm, ProFormDigit, ProTa
 import {Button, Dropdown, Form, Space} from "antd";
 import {ColumnHeightOutlined, EllipsisOutlined, PlusOutlined, VerticalAlignMiddleOutlined} from "@ant-design/icons/lib";
 import {
-    SysMenuAddOrderNo,
-    SysMenuDeleteByIdSet,
-    SysMenuDO,
-    SysMenuInfoById,
-    SysMenuInsertOrUpdate,
-    SysMenuInsertOrUpdateDTO,
-    SysMenuPageDTO,
-    SysMenuTree
-} from "@/api/SysMenu";
+    SysDictAddOrderNo,
+    SysDictDeleteByIdSet,
+    SysDictDO,
+    SysDictInfoById,
+    SysDictInsertOrUpdate,
+    SysDictInsertOrUpdateDTO,
+    SysDictPageDTO,
+    SysDictTree
+} from "@/api/SysDict";
 import TableColumnList from "./TableColumnList";
 import {ExecConfirm, ToastSuccess} from "@/util/ToastUtil";
 import SchemaFormColumnList, {InitForm} from "./SchemaFormColumnList";
 import {GetIdListForHasChildrenNode} from "@/util/TreeUtil";
 import CommonConstant from "@/model/constant/CommonConstant";
 
-// 菜单-管理
+// 字典-管理
 export default function () {
 
     const [columnsStateMap, setColumnsStateMap] = useState<Record<string, ColumnsState>>();
@@ -29,17 +29,17 @@ export default function () {
 
     const actionRef = useRef<ActionType>()
 
-    const [useForm] = Form.useForm<SysMenuInsertOrUpdateDTO>();
+    const [useForm] = Form.useForm<SysDictInsertOrUpdateDTO>();
 
     const [formVisible, setFormVisible] = useState<boolean>(false);
 
-    const currentForm = useRef<SysMenuInsertOrUpdateDTO>({} as SysMenuInsertOrUpdateDTO)
+    const currentForm = useRef<SysDictInsertOrUpdateDTO>({} as SysDictInsertOrUpdateDTO)
 
     return (
 
         <>
 
-            <ProTable<SysMenuDO, SysMenuPageDTO>
+            <ProTable<SysDictDO, SysDictPageDTO>
 
                 scroll={{x: 'max-content'}}
                 sticky={{offsetHeader: CommonConstant.NAV_TOP_HEIGHT}}
@@ -77,7 +77,7 @@ export default function () {
 
                 request={(params, sort, filter) => {
 
-                    return SysMenuTree({...params, sort})
+                    return SysDictTree({...params, sort})
 
                 }}
 
@@ -139,7 +139,7 @@ export default function () {
 
                         <Button key={"1"} icon={<PlusOutlined/>} type="primary" onClick={() => {
 
-                            currentForm.current = {} as SysMenuInsertOrUpdateDTO
+                            currentForm.current = {} as SysDictInsertOrUpdateDTO
                             setFormVisible(true)
 
                         }}>新建</Button>
@@ -152,7 +152,7 @@ export default function () {
 
                     <Space size={16}>
 
-                        <ModalForm<SysMenuInsertOrUpdateDTO>
+                        <ModalForm<SysDictInsertOrUpdateDTO>
 
                             modalProps={{
                                 maskClosable: false
@@ -166,7 +166,7 @@ export default function () {
 
                             onFinish={async (form) => {
 
-                                await SysMenuAddOrderNo({
+                                await SysDictAddOrderNo({
 
                                     idSet: selectedRowKeys as string[],
                                     number: form.orderNo as string
@@ -193,7 +193,7 @@ export default function () {
 
                             ExecConfirm(() => {
 
-                                return SysMenuDeleteByIdSet({idSet: selectedRowKeys as string[]}).then(res => {
+                                return SysDictDeleteByIdSet({idSet: selectedRowKeys as string[]}).then(res => {
 
                                     ToastSuccess(res.msg)
                                     actionRef.current?.reload()
@@ -215,9 +215,9 @@ export default function () {
 
             </ProTable>
 
-            <BetaSchemaForm<SysMenuInsertOrUpdateDTO>
+            <BetaSchemaForm<SysDictInsertOrUpdateDTO>
 
-                title={currentForm.current.id ? "编辑菜单" : "新建菜单"}
+                title={currentForm.current.id ? "编辑字典" : "新建字典"}
                 layoutType={"ModalForm"}
 
                 grid
@@ -274,7 +274,7 @@ export default function () {
 
                                     ExecConfirm(async () => {
 
-                                        return SysMenuDeleteByIdSet({idSet: [currentForm.current.id!]}).then(res => {
+                                        return SysDictDeleteByIdSet({idSet: [currentForm.current.id!]}).then(res => {
 
                                             setFormVisible(false)
                                             ToastSuccess(res.msg)
@@ -304,9 +304,9 @@ export default function () {
 
                     if (currentForm.current.id) {
 
-                        await SysMenuInfoById({id: currentForm.current.id}).then(res => {
+                        await SysDictInfoById({id: currentForm.current.id}).then(res => {
 
-                            currentForm.current = res as SysMenuInsertOrUpdateDTO
+                            currentForm.current = res as SysDictInsertOrUpdateDTO
 
                         })
 
@@ -324,7 +324,7 @@ export default function () {
 
                 onFinish={async (form) => {
 
-                    await SysMenuInsertOrUpdate({...currentForm.current, ...form}).then(res => {
+                    await SysDictInsertOrUpdate({...currentForm.current, ...form}).then(res => {
 
                         ToastSuccess(res.msg)
                         actionRef.current?.reload()

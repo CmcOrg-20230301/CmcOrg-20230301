@@ -48,7 +48,7 @@ public class GeneratePageUtil {
 
     // Admin Table 页面模板
     private static final String ADMIN_TABLE_FILE_NAME = "TableColumnList" + TSX;
-    private static final String ADMIN_TABLE_TEMP = FileUtil.readUtf8String("template/admin/TableColumnList.tsx");
+    private static final String ADMIN_TABLE_TEMP = FileUtil.readUtf8String("template/admin/TableColumnList.txt");
 
     // 要识别：路径
     private static final String ADD_ORDER_NO = "/addOrderNo";
@@ -59,17 +59,24 @@ public class GeneratePageUtil {
     private static final String TREE = "/tree";
 
     // 要替换的字符
-    private static final String ADMIN_DELETE_BY_ID_SET = "AdminDeleteByIdSet";
-    //    private static final String ADMIN_DO = "AdminDO";
+    private static final String ADMIN_DELETE_BY_ID_SET_API = "AdminDeleteByIdSetApi";
     private static final String ADMIN_PAGE_VO = "AdminPageVO";
-    private static final String ADMIN_INFO_BY_ID = "AdminInfoById";
-    private static final String ADMIN_INSERT_OR_UPDATE = "AdminInsertOrUpdate";
-    private static final String ADMIN_PAGE = "AdminPage";
+    private static final String ADMIN_INFO_BY_ID_API = "AdminInfoByIdApi";
+
+    private static final String ADMIN_INSERT_OR_UPDATE_API = "AdminInsertOrUpdateApi";
+    private static final String ADMIN_INSERT_OR_UPDATE_DTO = "AdminInsertOrUpdateDTO";
+
+    private static final String ADMIN_PAGE_API = "AdminPageApi";
+    private static final String ADMIN_PAGE_DTO = "AdminPageDTO";
+
     private static final String ADMIN_CONTROLLER = "AdminController";
     private static final String ADMIN_TSX_TITLE = "AdminTsxTitle";
+
     private static final String ADMIN_MODAL_FORM_TITLE = "AdminModalFormTitle";
-    private static final String ADMIN_ADD_ORDER_NO = "AdminAddOrderNo";
-    private static final String ADMIN_TREE = "AdminTree";
+    private static final String ADMIN_ADD_ORDER_NO_API = "AdminAddOrderNoApi";
+
+    private static final String ADMIN_TREE_API = "AdminTreeApi";
+
     private static final String ADMIN_DELETE_NAME = "AdminDeleteName";
 
     private static final String ADMIN_DEFAULT_DELETE_NAME = "name";
@@ -201,27 +208,53 @@ public class GeneratePageUtil {
     public static void main(String[] args) {
 
         // 执行
-        exec(SPRING_DOC_ENDPOINT, PAGE_PATH, TSX);
+        exec(SPRING_DOC_ENDPOINT, PAGE_PATH);
 
     }
 
     /**
      * 执行
      */
-    private static void exec(String springDocEndpoint, String pagePath, String ts) {
+    private static void exec(String springDocEndpoint, String pagePath) {
 
         HashMap<String, HashMap<String, BeApi>> apiMap = SpringDocUtil.get(springDocEndpoint);
 
         System.out.println("所有的group ↓");
         System.out.println(JSONUtil.toJsonStr(apiMap.keySet()));
 
-        String group = ApiTestHelper.getStrFromScanner("请输入要生成页面的 group");
+        String group = ApiTestHelper.getStrFromScanner(
+            "请输入要生成页面的 group，多个用空格隔开，例如：SysMenu SysRequest SysUser SysParam SysDict SysRole，为【all】则生成全部");
+
+        Collection<String> groupSet;
+
+        if ("all".equals(group)) {
+
+            groupSet = apiMap.keySet();
+
+        } else {
+
+            groupSet = StrUtil.splitTrim(group, " ");
+
+        }
+
+        for (String item : groupSet) {
+
+            doExec(pagePath, apiMap, item);
+
+        }
+
+    }
+
+    /**
+     * 开始执行
+     */
+    private static void doExec(String pagePath, HashMap<String, HashMap<String, BeApi>> apiMap, String group) {
 
         HashMap<String, BeApi> pathBeApiMap = apiMap.get(group);
 
         if (CollUtil.isEmpty(pathBeApiMap)) {
 
-            log.info("操作失败：group不存在");
+            log.info("操作失败：group不存在：{}", group);
             return;
 
         }
@@ -233,22 +266,26 @@ public class GeneratePageUtil {
         pagePath = pagePath + "/" + fileNamePre + "/";
 
         CallBack<String> adminPageVOCallBack = new CallBack<>();
-        CallBack<String> adminDeleteByIdSetCallBack = new CallBack<>();
-        CallBack<String> adminInsertOrUpdateCallBack = new CallBack<>();
+        CallBack<String> adminDeleteByIdSetApiCallBack = new CallBack<>();
+        CallBack<String> adminInsertOrUpdateApiCallBack = new CallBack<>();
+        CallBack<String> adminInsertOrUpdateDTOCallBack = new CallBack<>();
         CallBack<String> adminControllerCallBack = new CallBack<>();
         CallBack<String> adminDeleteNameCallBack = new CallBack<>();
 
         // 生成 table页面
-        generateTableColumnList(pathBeApiMap, pagePath, group, adminPageVOCallBack, adminDeleteByIdSetCallBack,
-            adminInsertOrUpdateCallBack, adminControllerCallBack, adminDeleteNameCallBack);
+        generateTableColumnList(pathBeApiMap, pagePath, group, adminPageVOCallBack, adminDeleteByIdSetApiCallBack,
+            adminInsertOrUpdateApiCallBack, adminControllerCallBack, adminDeleteNameCallBack,
+            adminInsertOrUpdateDTOCallBack);
 
         // 生成 page页面
-        generatePage(pathBeApiMap, pagePath, group, fileNamePre, adminPageVOCallBack, adminDeleteByIdSetCallBack,
-            adminInsertOrUpdateCallBack, adminControllerCallBack, adminDeleteNameCallBack);
+        generatePage(pathBeApiMap, pagePath, group, fileNamePre, adminPageVOCallBack, adminDeleteByIdSetApiCallBack,
+            adminInsertOrUpdateApiCallBack, adminControllerCallBack, adminDeleteNameCallBack,
+            adminInsertOrUpdateDTOCallBack);
 
         // 生成 表单页面
         generateSchemaFormColumnList(pathBeApiMap, pagePath, group, fileNamePre, adminPageVOCallBack,
-            adminDeleteByIdSetCallBack, adminInsertOrUpdateCallBack, adminControllerCallBack, adminDeleteNameCallBack);
+            adminDeleteByIdSetApiCallBack, adminInsertOrUpdateApiCallBack, adminControllerCallBack,
+            adminDeleteNameCallBack, adminInsertOrUpdateDTOCallBack);
 
     }
 
@@ -256,9 +293,9 @@ public class GeneratePageUtil {
      * 生成 表单页面
      */
     private static void generateSchemaFormColumnList(HashMap<String, BeApi> pathBeApiMap, String pagePath, String group,
-        String fileNamePre, CallBack<String> adminPageVOCallBack, CallBack<String> adminDeleteByIdSetCallBack,
-        CallBack<String> adminInsertOrUpdateCallBack, CallBack<String> adminControllerCallBack,
-        CallBack<String> adminDeleteNameCallBack) {
+        String fileNamePre, CallBack<String> adminPageVOCallBack, CallBack<String> adminDeleteByIdSetApiCallBack,
+        CallBack<String> adminInsertOrUpdateApiCallBack, CallBack<String> adminControllerCallBack,
+        CallBack<String> adminDeleteNameCallBack, CallBack<String> adminInsertOrUpdateDTOCallBack) {
 
         String pageFilePath = pagePath + ADMIN_FORM_FILE_NAME;
 
@@ -269,10 +306,12 @@ public class GeneratePageUtil {
         StrBuilder tempStrBuilder = StrBuilder.create(ADMIN_FORM_TEMP);
 
         StrBuilder formJsonStrBuilder = StrBuilder.create();
-        String adminInsertOrUpdate = ADMIN_INSERT_OR_UPDATE;
+        String adminInsertOrUpdateApi = ADMIN_INSERT_OR_UPDATE_API;
+        String adminInsertOrUpdateDTO = ADMIN_INSERT_OR_UPDATE_DTO;
         String adminController = ADMIN_CONTROLLER;
 
-        adminInsertOrUpdate = adminInsertOrUpdateCallBack.getValue();
+        adminInsertOrUpdateApi = adminInsertOrUpdateApiCallBack.getValue();
+        adminInsertOrUpdateDTO = adminInsertOrUpdateDTOCallBack.getValue();
         adminController = adminControllerCallBack.getValue();
 
         // 执行替换
@@ -363,8 +402,12 @@ public class GeneratePageUtil {
         }
 
         // 执行替换
-        tempStrBuilder =
-            StrBuilder.create(equalsAndReplace(tempStrBuilder.toString(), adminInsertOrUpdate, ADMIN_INSERT_OR_UPDATE));
+        tempStrBuilder = StrBuilder
+            .create(equalsAndReplace(tempStrBuilder.toString(), adminInsertOrUpdateApi, ADMIN_INSERT_OR_UPDATE_API));
+
+        tempStrBuilder = StrBuilder
+            .create(equalsAndReplace(tempStrBuilder.toString(), adminInsertOrUpdateDTO, ADMIN_INSERT_OR_UPDATE_DTO));
+
         tempStrBuilder = StrBuilder
             .create(equalsAndReplace(tempStrBuilder.toString(), formJsonStrBuilder.toString(), ADMIN_FORM_JSON));
 
@@ -506,9 +549,9 @@ public class GeneratePageUtil {
      * 生成 page页面
      */
     private static void generatePage(HashMap<String, BeApi> pathBeApiMap, String pagePath, String group,
-        String fileNamePre, CallBack<String> adminPageVOCallBack, CallBack<String> adminDeleteByIdSetCallBack,
-        CallBack<String> adminInsertOrUpdateCallBack, CallBack<String> adminControllerCallBack,
-        CallBack<String> adminDeleteNameCallBack) {
+        String fileNamePre, CallBack<String> adminPageVOCallBack, CallBack<String> adminDeleteByIdSetApiCallBack,
+        CallBack<String> adminInsertOrUpdateApiCallBack, CallBack<String> adminControllerCallBack,
+        CallBack<String> adminDeleteNameCallBack, CallBack<String> adminInsertOrUpdateDTOCallBack) {
 
         String pageFilePath = pagePath + fileNamePre + TSX;
 
@@ -516,20 +559,23 @@ public class GeneratePageUtil {
         FileUtil.del(pageFilePath); // 先移除文件
         File touchFile = FileUtil.touch(pageFilePath); // 再创建文件
 
-        String adminDeleteByIdSet = ADMIN_DELETE_BY_ID_SET;
-        String adminInfoById = ADMIN_INFO_BY_ID;
-        String adminInsertOrUpdate = ADMIN_INSERT_OR_UPDATE;
-        String adminPage = ADMIN_PAGE;
+        String adminDeleteByIdSetApi = ADMIN_DELETE_BY_ID_SET_API;
+        String adminInfoByIdApi = ADMIN_INFO_BY_ID_API;
+        String adminInsertOrUpdateApi = ADMIN_INSERT_OR_UPDATE_API;
+        String adminInsertOrUpdateDTO = ADMIN_INSERT_OR_UPDATE_DTO;
+        String adminPageApi = ADMIN_PAGE_API;
+        String adminPageDTO = ADMIN_PAGE_DTO;
         String adminController = ADMIN_CONTROLLER;
         String adminTsxTitle = ADMIN_TSX_TITLE;
         String adminModalFormTitle = ADMIN_MODAL_FORM_TITLE;
-        String adminAddOrderNo = ADMIN_ADD_ORDER_NO;
-        String adminTree = ADMIN_TREE;
+        String adminAddOrderNoApi = ADMIN_ADD_ORDER_NO_API;
+        String adminTreeApi = ADMIN_TREE_API;
         String adminPageVO = ADMIN_PAGE_VO;
         String adminDeleteName = ADMIN_DELETE_NAME;
 
-        adminDeleteByIdSet = adminDeleteByIdSetCallBack.getValue();
-        adminInsertOrUpdate = adminInsertOrUpdateCallBack.getValue();
+        adminDeleteByIdSetApi = adminDeleteByIdSetApiCallBack.getValue();
+        adminInsertOrUpdateApi = adminInsertOrUpdateApiCallBack.getValue();
+        adminInsertOrUpdateDTO = adminInsertOrUpdateDTOCallBack.getValue();
         adminController = adminControllerCallBack.getValue();
         adminPageVO = adminPageVOCallBack.getValue();
         adminDeleteName = adminDeleteNameCallBack.getValue();
@@ -547,19 +593,20 @@ public class GeneratePageUtil {
 
             if ("分页排序查询".equals(summary)) {
 
-                adminPage = GenerateApiUtil.getApiName(beApi.getPath());
+                adminPageApi = GenerateApiUtil.getApiName(beApi.getPath());
+                adminPageDTO = beApi.getRequestBody().getClassName();
 
             } else if ("通过主键id，查看详情".equals(summary)) {
 
-                adminInfoById = GenerateApiUtil.getApiName(beApi.getPath());
+                adminInfoByIdApi = GenerateApiUtil.getApiName(beApi.getPath());
 
             } else if ("通过主键 idSet，加减排序号".equals(summary)) {
 
-                adminAddOrderNo = GenerateApiUtil.getApiName(beApi.getPath());
+                adminAddOrderNoApi = GenerateApiUtil.getApiName(beApi.getPath());
 
             } else if ("查询：树结构".equals(summary)) {
 
-                adminTree = GenerateApiUtil.getApiName(beApi.getPath());
+                adminTreeApi = GenerateApiUtil.getApiName(beApi.getPath());
                 tempStr = ADMIN_TREE_TEMP; // 使用：tree模板
 
             }
@@ -568,16 +615,30 @@ public class GeneratePageUtil {
 
         // 执行替换
         tempStr = equalsAndReplace(tempStr, adminDeleteName, ADMIN_DELETE_NAME);
-        tempStr = equalsAndReplace(tempStr, adminInsertOrUpdate, ADMIN_INSERT_OR_UPDATE);
-        tempStr = equalsAndReplace(tempStr, adminInfoById, ADMIN_INFO_BY_ID);
+
+        tempStr = equalsAndReplace(tempStr, adminInsertOrUpdateApi, ADMIN_INSERT_OR_UPDATE_API);
+
+        tempStr = equalsAndReplace(tempStr, adminInsertOrUpdateDTO, ADMIN_INSERT_OR_UPDATE_DTO);
+
+        tempStr = equalsAndReplace(tempStr, adminInfoByIdApi, ADMIN_INFO_BY_ID_API);
+
         tempStr = equalsAndReplace(tempStr, adminPageVO, ADMIN_PAGE_VO);
-        tempStr = equalsAndReplace(tempStr, adminPage, ADMIN_PAGE);
-        tempStr = equalsAndReplace(tempStr, adminDeleteByIdSet, ADMIN_DELETE_BY_ID_SET);
+
+        tempStr = equalsAndReplace(tempStr, adminPageApi, ADMIN_PAGE_API);
+
+        tempStr = equalsAndReplace(tempStr, adminPageDTO, ADMIN_PAGE_DTO);
+
+        tempStr = equalsAndReplace(tempStr, adminDeleteByIdSetApi, ADMIN_DELETE_BY_ID_SET_API);
+
         tempStr = equalsAndReplace(tempStr, adminController, ADMIN_CONTROLLER);
+
         tempStr = equalsAndReplace(tempStr, adminTsxTitle, ADMIN_TSX_TITLE);
+
         tempStr = equalsAndReplace(tempStr, adminModalFormTitle, ADMIN_MODAL_FORM_TITLE);
-        tempStr = equalsAndReplace(tempStr, adminAddOrderNo, ADMIN_ADD_ORDER_NO);
-        tempStr = equalsAndReplace(tempStr, adminTree, ADMIN_TREE);
+
+        tempStr = equalsAndReplace(tempStr, adminAddOrderNoApi, ADMIN_ADD_ORDER_NO_API);
+
+        tempStr = equalsAndReplace(tempStr, adminTreeApi, ADMIN_TREE_API);
 
         // 写入内容到文件里
         FileUtil.writeUtf8String(tempStr, touchFile);
@@ -588,9 +649,9 @@ public class GeneratePageUtil {
      * 生成 table页面
      */
     private static void generateTableColumnList(HashMap<String, BeApi> pathBeApiMap, String pagePath, String group,
-        CallBack<String> adminPageVOCallBack, CallBack<String> adminDeleteByIdSetCallBack,
-        CallBack<String> adminInsertOrUpdateCallBack, CallBack<String> adminControllerCallBack,
-        CallBack<String> adminDeleteNameCallBack) {
+        CallBack<String> adminPageVOCallBack, CallBack<String> adminDeleteByIdSetApiCallBack,
+        CallBack<String> adminInsertOrUpdateApiCallBack, CallBack<String> adminControllerCallBack,
+        CallBack<String> adminDeleteNameCallBack, CallBack<String> adminInsertOrUpdateDTOCallBack) {
 
         String tableFilePath = pagePath + ADMIN_TABLE_FILE_NAME;
 
@@ -605,13 +666,14 @@ public class GeneratePageUtil {
 
         // 需要替换的字符串
         String adminPageVO = ADMIN_PAGE_VO;
-        String adminDeleteByIdSet = ADMIN_DELETE_BY_ID_SET;
-        String adminInsertOrUpdate = ADMIN_INSERT_OR_UPDATE;
+        String adminDeleteByIdSetApi = ADMIN_DELETE_BY_ID_SET_API;
+        String adminInsertOrUpdateApi = ADMIN_INSERT_OR_UPDATE_API;
+        String adminInsertOrUpdateDTO = ADMIN_INSERT_OR_UPDATE_DTO;
         String adminController = ADMIN_CONTROLLER;
         String adminDeleteName = ADMIN_DELETE_NAME;
 
         adminController = group; // 设置：api的文件名
-        adminDeleteName = "name";
+        adminDeleteName = ADMIN_DEFAULT_DELETE_NAME; // 设置：删除名
 
         Set<String> importClassNameSet = new HashSet<>(); // 防止重复写入
 
@@ -701,24 +763,32 @@ public class GeneratePageUtil {
 
             } else if ("新增/修改".equals(summary)) {
 
-                adminInsertOrUpdate = GenerateApiUtil.getApiName(beApi.getPath());
+                adminInsertOrUpdateApi = GenerateApiUtil.getApiName(beApi.getPath());
+                adminInsertOrUpdateDTO = beApi.getRequestBody().getClassName();
 
             } else if ("批量删除".equals(summary)) {
 
-                adminDeleteByIdSet = GenerateApiUtil.getApiName(beApi.getPath());
+                adminDeleteByIdSetApi = GenerateApiUtil.getApiName(beApi.getPath());
 
             }
 
         }
 
         // 执行替换
-        tempStrBuilder =
-            StrBuilder.create(equalsAndReplace(tempStrBuilder.toString(), adminInsertOrUpdate, ADMIN_INSERT_OR_UPDATE));
+        tempStrBuilder = StrBuilder
+            .create(equalsAndReplace(tempStrBuilder.toString(), adminInsertOrUpdateApi, ADMIN_INSERT_OR_UPDATE_API));
+
+        tempStrBuilder = StrBuilder
+            .create(equalsAndReplace(tempStrBuilder.toString(), adminInsertOrUpdateDTO, ADMIN_INSERT_OR_UPDATE_DTO));
+
         tempStrBuilder = StrBuilder.create(equalsAndReplace(tempStrBuilder.toString(), adminPageVO, ADMIN_PAGE_VO));
-        tempStrBuilder =
-            StrBuilder.create(equalsAndReplace(tempStrBuilder.toString(), adminDeleteByIdSet, ADMIN_DELETE_BY_ID_SET));
+
+        tempStrBuilder = StrBuilder
+            .create(equalsAndReplace(tempStrBuilder.toString(), adminDeleteByIdSetApi, ADMIN_DELETE_BY_ID_SET_API));
+
         tempStrBuilder =
             StrBuilder.create(equalsAndReplace(tempStrBuilder.toString(), adminController, ADMIN_CONTROLLER));
+
         tempStrBuilder =
             StrBuilder.create(equalsAndReplace(tempStrBuilder.toString(), adminDeleteName, ADMIN_DELETE_NAME));
 
@@ -727,8 +797,9 @@ public class GeneratePageUtil {
 
         // 设置：回调值
         adminPageVOCallBack.setValue(adminPageVO);
-        adminDeleteByIdSetCallBack.setValue(adminDeleteByIdSet);
-        adminInsertOrUpdateCallBack.setValue(adminInsertOrUpdate);
+        adminDeleteByIdSetApiCallBack.setValue(adminDeleteByIdSetApi);
+        adminInsertOrUpdateApiCallBack.setValue(adminInsertOrUpdateApi);
+        adminInsertOrUpdateDTOCallBack.setValue(adminInsertOrUpdateDTO);
         adminControllerCallBack.setValue(adminController);
         adminDeleteNameCallBack.setValue(adminDeleteName);
 

@@ -3,11 +3,11 @@ import {ActionType, BetaSchemaForm, ColumnsState, ProTable} from "@ant-design/pr
 import {Button, Form, Space} from "antd";
 import {PlusOutlined} from "@ant-design/icons/lib";
 import {
-    AdminDeleteByIdSet,
-    AdminInfoById,
-    AdminInsertOrUpdate,
+    AdminDeleteByIdSetApi,
+    AdminInfoByIdApi,
+    AdminInsertOrUpdateApi,
     AdminInsertOrUpdateDTO,
-    AdminPage,
+    AdminPageApi,
     AdminPageDTO,
     AdminPageVO
 } from "@/api/AdminController";
@@ -78,7 +78,7 @@ export default function () {
 
                 request={(params, sort, filter) => {
 
-                    return AdminPage({...params, sort})
+                    return AdminPageApi({...params, sort})
 
                 }}
 
@@ -105,7 +105,7 @@ export default function () {
 
                             ExecConfirm(() => {
 
-                                return AdminDeleteByIdSet({idSet: selectedRowKeys as number[]}).then(res => {
+                                return AdminDeleteByIdSetApi({idSet: selectedRowKeys as number[]}).then(res => {
 
                                     ToastSuccess(res.msg)
                                     actionRef.current?.reload()
@@ -172,6 +172,7 @@ export default function () {
                                 }}
                             >
                                 重置
+
                             </Button>,
 
                             currentForm.current.id ? <Button
@@ -184,7 +185,7 @@ export default function () {
 
                                     ExecConfirm(async () => {
 
-                                        return AdminDeleteByIdSet({idSet: [currentForm.current.id!]}).then(res => {
+                                        return AdminDeleteByIdSetApi({idSet: [currentForm.current.id!]}).then(res => {
 
                                             setFormVisible(false)
                                             ToastSuccess(res.msg)
@@ -197,6 +198,7 @@ export default function () {
                                 }}>
 
                                 删除
+
                             </Button> : null
 
                         ]
@@ -213,7 +215,7 @@ export default function () {
 
                     if (currentForm.current.id) {
 
-                        await AdminInfoById({id: currentForm.current.id}).then(res => {
+                        await AdminInfoByIdApi({id: currentForm.current.id}).then(res => {
 
                             currentForm.current = res as AdminInsertOrUpdateDTO
 
@@ -233,7 +235,7 @@ export default function () {
 
                 onFinish={async (form) => {
 
-                    await AdminInsertOrUpdate({...currentForm.current, ...form}).then(res => {
+                    await AdminInsertOrUpdateApi({...currentForm.current, ...form}).then(res => {
 
                         ToastSuccess(res.msg)
                         actionRef.current?.reload()
