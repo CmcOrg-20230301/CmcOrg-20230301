@@ -17,7 +17,7 @@ public class MyFileTypeUtil {
 
         String typeName = FileTypeUtil.getType(inputStream);
 
-        IoUtil.close(inputStream); // 这里直接关闭流，因为这个 流已经不完整了
+        IoUtil.close(inputStream); // 这里直接关闭流，因为这个流已经不完整了
 
         if ("xls".equals(typeName)) {
 

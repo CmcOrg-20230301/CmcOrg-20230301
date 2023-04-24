@@ -22,7 +22,7 @@ import java.util.Set;
 @Getter
 public enum SysFileUploadTypeEnum {
 
-    AVATAR(101, "public", "avatar", CollUtil.newHashSet("jpeg", "png", "jpg"), 1024 * 1024 * 2) // 头像
+    AVATAR(101, "be", "avatar", CollUtil.newHashSet("jpeg", "png", "jpg"), 1024 * 1024 * 2) // 头像
 
     ;
 
