@@ -40,7 +40,7 @@ export default function (props: ISignLayout) {
 
                     <div className={"w100 flex-c ai-c m-t-50"}>
 
-                        <div className={"m-r-10"}>
+                        <div className={"m-r-10 f-14 black1"}>
 
                             <CopyrightOutlined/> {GetCopyright()}
 

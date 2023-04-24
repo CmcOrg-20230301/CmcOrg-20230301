@@ -263,7 +263,7 @@ function AdminLayoutElement(props: IAdminLayoutElement) {
                                 ]
                             }}>
 
-                                <Button type="text" onClick={() => {
+                                <Button className={"m-r-10"} type="text" onClick={() => {
 
                                     if (!routeContextType.isMobile) {
 
@@ -279,7 +279,7 @@ function AdminLayoutElement(props: IAdminLayoutElement) {
                                         <Avatar size="small"
                                                 src={userSelfInfo.avatarUri || CommonConstant.FIXED_AVATAR_URL}/>
 
-                                        <Typography.Text ellipsis style={{width: 35}}
+                                        <Typography.Text ellipsis style={{width: 75}}
                                                          type="secondary">{userSelfInfo.nickname}</Typography.Text>
 
                                     </Space>
