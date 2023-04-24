@@ -22,7 +22,7 @@ public class SysDictInsertOrUpdateDTO extends BaseInsertOrUpdateDTO {
     private String name;
 
     @NotNull
-    @Schema(description = "字典类型：1 字典 2 字典项")
+    @Schema(description = "字典类型")
     private SysDictTypeEnum type;
 
     @Schema(description = "字典项 value（数字 123...）备注：字典为 -1")

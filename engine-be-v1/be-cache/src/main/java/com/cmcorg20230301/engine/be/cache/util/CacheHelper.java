@@ -44,10 +44,30 @@ public class CacheHelper {
     }
 
     @NotNull
+    public static <T> Map<String, T> getDefaultStringMap() {
+
+        Map<String, T> result = MapUtil.newHashMap();
+        result.put("", null);
+
+        return result;
+
+    }
+
+    @NotNull
     public static <T> Map<Long, Set<T>> getDefaultLongSetMap() {
 
         Map<Long, Set<T>> result = MapUtil.newHashMap();
         result.put(BaseConstant.SYS_ID, new HashSet<>());
+
+        return result;
+
+    }
+
+    @NotNull
+    public static <T> Map<String, Set<T>> getDefaultStringSetMap() {
+
+        Map<String, Set<T>> result = MapUtil.newHashMap();
+        result.put("", new HashSet<>());
 
         return result;
 

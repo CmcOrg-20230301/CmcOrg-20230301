@@ -6,9 +6,13 @@ import cn.hutool.core.util.BooleanUtil;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.cmcorg20230301.engine.be.cache.util.CacheHelper;
+import com.cmcorg20230301.engine.be.cache.util.MyCacheUtil;
 import com.cmcorg20230301.engine.be.dict.exception.BizCodeEnum;
+import com.cmcorg20230301.engine.be.dict.handler.DictCanalKafkaHandler;
 import com.cmcorg20230301.engine.be.dict.mapper.SysDictMapper;
 import com.cmcorg20230301.engine.be.dict.model.dto.SysDictInsertOrUpdateDTO;
+import com.cmcorg20230301.engine.be.dict.model.dto.SysDictListByDictKeyDTO;
 import com.cmcorg20230301.engine.be.dict.model.dto.SysDictPageDTO;
 import com.cmcorg20230301.engine.be.dict.model.entity.SysDictDO;
 import com.cmcorg20230301.engine.be.dict.model.enums.SysDictTypeEnum;
@@ -17,15 +21,18 @@ import com.cmcorg20230301.engine.be.dict.service.SysDictService;
 import com.cmcorg20230301.engine.be.model.model.dto.ChangeNumberDTO;
 import com.cmcorg20230301.engine.be.model.model.dto.NotEmptyIdSet;
 import com.cmcorg20230301.engine.be.model.model.dto.NotNullId;
+import com.cmcorg20230301.engine.be.model.model.vo.DictVO;
 import com.cmcorg20230301.engine.be.mysql.model.annotation.MyTransactional;
 import com.cmcorg20230301.engine.be.security.exception.BaseBizCodeEnum;
 import com.cmcorg20230301.engine.be.security.model.entity.BaseEntity;
+import com.cmcorg20230301.engine.be.security.model.entity.BaseEntityNoId;
 import com.cmcorg20230301.engine.be.security.model.vo.ApiResultVO;
 import com.cmcorg20230301.engine.be.security.util.MyEntityUtil;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -119,6 +126,28 @@ public class SysDictServiceImpl extends ServiceImpl<SysDictMapper, SysDictDO> im
             .eq(dto.getType() != null, SysDictDO::getType, dto.getType())
             .eq(dto.getEnableFlag() != null, BaseEntity::getEnableFlag, dto.getEnableFlag())
             .orderByDesc(SysDictDO::getOrderNo).page(dto.page(true));
+
+    }
+
+    /**
+     * 通过：dictKey获取字典项集合，备注：会进行缓存
+     */
+    @Override
+    public Set<DictVO> listByDictKey(SysDictListByDictKeyDTO dto) {
+
+        Map<String, Set<DictVO>> dictMap =
+            MyCacheUtil.getMap(DictCanalKafkaHandler.SYS_DICT_CACHE, CacheHelper.getDefaultStringSetMap(), () -> {
+
+                return lambdaQuery().eq(SysDictDO::getType, SysDictTypeEnum.DICT_ITEM)
+                    .eq(BaseEntityNoId::getEnableFlag, true) //
+                    .select(SysDictDO::getValue, SysDictDO::getName) //
+                    .orderByDesc(SysDictDO::getOrderNo).list() //
+                    .stream().collect(Collectors.groupingBy(SysDictDO::getDictKey, Collectors
+                        .mapping(it -> new DictVO(it.getValue().longValue(), it.getName()), Collectors.toSet())));
+
+            });
+
+        return dictMap.get(dto.getDictKey());
 
     }
 

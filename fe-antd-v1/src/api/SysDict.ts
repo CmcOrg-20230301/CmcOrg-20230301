@@ -12,7 +12,7 @@ export interface SysDictDO {
     updateTime?: string // 修改时间，format：date-time
     remark?: string // 备注
     delFlag?: boolean // 是否逻辑删除
-    type?: string // 字典类型：1 字典 2 字典项
+    type?: string // 字典类型
     version?: number // 乐观锁，format：int32
     dictKey?: string // 字典 key（不能重复），字典项要冗余这个 key，目的：方便操作
     updateId?: string // 修改人id，format：int64
@@ -34,7 +34,7 @@ export interface SysDictPageDTO {
     name?: string // 字典/字典项 名
     pageSize?: string // 每页显示条数，format：int64
     remark?: string // 描述/备注
-    type?: string // 类型：1 字典 2 字典项，format：byte
+    type?: string // 字典类型
     dictKey?: string // 字典 key（不能重复），字典项要冗余这个 key，目的：方便操作
     enableFlag?: boolean // 启用/禁用
     order?: MyOrderDTO // 排序字段
@@ -46,7 +46,7 @@ export interface SysDictTreeVO {
     updateTime?: string // 修改时间，format：date-time
     remark?: string // 备注
     delFlag?: boolean // 是否逻辑删除
-    type?: string // 字典类型：1 字典 2 字典项
+    type?: string // 字典类型
     version?: number // 乐观锁，format：int32
     dictKey?: string // 字典 key（不能重复），字典项要冗余这个 key，目的：方便操作
     updateId?: string // 修改人id，format：int64
@@ -74,7 +74,7 @@ export interface SysDictInsertOrUpdateDTO {
     name?: string // 字典/字典项 名，required：true
     remark?: string // 备注
     id?: string // 主键 id，format：int64
-    type?: string // 字典类型：1 字典 2 字典项，required：true
+    type?: string // 字典类型，required：true
     dictKey?: string // 字典 key（不能重复），字典项要冗余这个 key，目的：方便操作，required：true
     value?: number // 字典项 value（数字 123...）备注：字典为 -1，format：int32
     enableFlag?: boolean // 是否启用
@@ -92,6 +92,20 @@ export interface NotEmptyIdSet {
 // 批量删除
 export function SysDictDeleteByIdSet(form: NotEmptyIdSet, config?: AxiosRequestConfig) {
     return $http.myPost<string>('/sys/dict/deleteByIdSet', form, config)
+}
+
+export interface SysDictListByDictKeyDTO {
+    dictKey?: string // 字典 key，required：true
+}
+
+export interface DictVO {
+    name?: string // 显示用
+    id?: string // 传值用，format：int64
+}
+
+// 通过：dictKey获取字典项集合，备注：会进行缓存
+export function SysDictListByDictKey(form: SysDictListByDictKeyDTO, config?: AxiosRequestConfig) {
+    return $http.myPost<DictVO>('/sys/dict/listByDictKey', form, config)
 }
 
 export interface ChangeNumberDTO {
