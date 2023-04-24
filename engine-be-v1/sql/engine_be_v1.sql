@@ -516,13 +516,11 @@ CREATE TABLE `sys_user_1`
 DROP TABLE IF EXISTS `sys_user_info`;
 CREATE TABLE `sys_user_info`
 (
-    `id`                     bigint                                                        NOT NULL COMMENT '用户主键 id',
-    `uuid`                   varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci  NOT NULL COMMENT '该用户的 uuid，本系统使用 id，不使用此字段（uuid）',
-    `nickname`               varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci  NOT NULL COMMENT '昵称',
-    `bio`                    varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '个人简介',
-    `avatar_uri`             varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '头像 uri，例如：阿里云oss文件访问 uri，文件访问 uri',
-    `avatar_file_id`         bigint                                                        NOT NULL COMMENT '头像 fileId（文件主键 id）',
-    `avatar_uri_expire_time` datetime                                                      NULL DEFAULT NULL COMMENT '过期时间（年月日时分秒），备注：获取时发现过期了，会重新获取，-1表示永久',
+    `id`             bigint                                                        NOT NULL COMMENT '用户主键 id',
+    `uuid`           varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci  NOT NULL COMMENT '该用户的 uuid，本系统使用 id，不使用此字段（uuid）',
+    `nickname`       varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci  NOT NULL COMMENT '昵称',
+    `bio`            varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '个人简介',
+    `avatar_file_id` bigint                                                        NOT NULL COMMENT '头像 fileId（文件主键 id）',
     PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB
   CHARACTER SET = utf8mb4
@@ -539,13 +537,11 @@ CREATE TABLE `sys_user_info`
 DROP TABLE IF EXISTS `sys_user_info_0`;
 CREATE TABLE `sys_user_info_0`
 (
-    `id`                     bigint                                                        NOT NULL COMMENT '用户主键 id',
-    `uuid`                   varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci  NOT NULL COMMENT '该用户的 uuid，本系统使用 id，不使用此字段（uuid）',
-    `nickname`               varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci  NOT NULL COMMENT '昵称',
-    `bio`                    varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '个人简介',
-    `avatar_uri`             varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '头像 uri，例如：阿里云oss文件访问 uri，文件访问 uri',
-    `avatar_file_id`         bigint                                                        NOT NULL COMMENT '头像 fileId（文件主键 id）',
-    `avatar_uri_expire_time` datetime                                                      NULL DEFAULT NULL COMMENT '过期时间（年月日时分秒），备注：获取时发现过期了，会重新获取，-1表示永久',
+    `id`             bigint                                                        NOT NULL COMMENT '用户主键 id',
+    `uuid`           varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci  NOT NULL COMMENT '该用户的 uuid，本系统使用 id，不使用此字段（uuid）',
+    `nickname`       varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci  NOT NULL COMMENT '昵称',
+    `bio`            varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '个人简介',
+    `avatar_file_id` bigint                                                        NOT NULL COMMENT '头像 fileId（文件主键 id）',
     PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB
   CHARACTER SET = utf8mb4
@@ -562,13 +558,11 @@ CREATE TABLE `sys_user_info_0`
 DROP TABLE IF EXISTS `sys_user_info_1`;
 CREATE TABLE `sys_user_info_1`
 (
-    `id`                     bigint                                                        NOT NULL COMMENT '用户主键 id',
-    `uuid`                   varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci  NOT NULL COMMENT '该用户的 uuid，本系统使用 id，不使用此字段（uuid）',
-    `nickname`               varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci  NOT NULL COMMENT '昵称',
-    `bio`                    varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '个人简介',
-    `avatar_uri`             varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '头像 uri，例如：阿里云oss文件访问 uri，文件访问 uri',
-    `avatar_file_id`         bigint                                                        NOT NULL COMMENT '头像 fileId（文件主键 id）',
-    `avatar_uri_expire_time` datetime                                                      NULL DEFAULT NULL COMMENT '过期时间（年月日时分秒），备注：获取时发现过期了，会重新获取，-1表示永久',
+    `id`             bigint                                                        NOT NULL COMMENT '用户主键 id',
+    `uuid`           varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci  NOT NULL COMMENT '该用户的 uuid，本系统使用 id，不使用此字段（uuid）',
+    `nickname`       varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci  NOT NULL COMMENT '昵称',
+    `bio`            varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '个人简介',
+    `avatar_file_id` bigint                                                        NOT NULL COMMENT '头像 fileId（文件主键 id）',
     PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB
   CHARACTER SET = utf8mb4
