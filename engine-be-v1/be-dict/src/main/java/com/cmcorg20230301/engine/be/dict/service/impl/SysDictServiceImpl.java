@@ -9,7 +9,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.cmcorg20230301.engine.be.cache.util.CacheHelper;
 import com.cmcorg20230301.engine.be.cache.util.MyCacheUtil;
 import com.cmcorg20230301.engine.be.dict.exception.BizCodeEnum;
-import com.cmcorg20230301.engine.be.dict.handler.DictCanalKafkaHandler;
+import com.cmcorg20230301.engine.be.dict.handler.SysDictCanalKafkaHandler;
 import com.cmcorg20230301.engine.be.dict.mapper.SysDictMapper;
 import com.cmcorg20230301.engine.be.dict.model.dto.SysDictInsertOrUpdateDTO;
 import com.cmcorg20230301.engine.be.dict.model.dto.SysDictListByDictKeyDTO;
@@ -136,11 +136,11 @@ public class SysDictServiceImpl extends ServiceImpl<SysDictMapper, SysDictDO> im
     public Set<DictVO> listByDictKey(SysDictListByDictKeyDTO dto) {
 
         Map<String, Set<DictVO>> dictMap =
-            MyCacheUtil.getMap(DictCanalKafkaHandler.SYS_DICT_CACHE, CacheHelper.getDefaultStringSetMap(), () -> {
+            MyCacheUtil.getMap(SysDictCanalKafkaHandler.SYS_DICT_CACHE, CacheHelper.getDefaultStringSetMap(), () -> {
 
                 return lambdaQuery().eq(SysDictDO::getType, SysDictTypeEnum.DICT_ITEM)
                     .eq(BaseEntityNoId::getEnableFlag, true) //
-                    .select(SysDictDO::getValue, SysDictDO::getName) //
+                    .select(SysDictDO::getValue, SysDictDO::getName, SysDictDO::getDictKey) //
                     .orderByDesc(SysDictDO::getOrderNo).list() //
                     .stream().collect(Collectors.groupingBy(SysDictDO::getDictKey, Collectors
                         .mapping(it -> new DictVO(it.getValue().longValue(), it.getName()), Collectors.toSet())));

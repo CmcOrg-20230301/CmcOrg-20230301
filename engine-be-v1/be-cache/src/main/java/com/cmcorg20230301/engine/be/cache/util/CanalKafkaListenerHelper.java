@@ -4,6 +4,7 @@ import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.NumberUtil;
 import cn.hutool.core.util.StrUtil;
 import com.cmcorg20230301.engine.be.cache.model.dto.CanalKafkaDTO;
+import com.cmcorg20230301.engine.be.model.model.constant.LogTopicConstant;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.redisson.api.RBatch;
@@ -16,11 +17,11 @@ import java.util.*;
  * canal-kafka监听器的帮助类
  */
 @Component
-@Slf4j
+@Slf4j(topic = LogTopicConstant.CACHE)
 public class CanalKafkaListenerHelper {
 
     // key：database.tableName，value：iCanalKafkaHandlerList
-    private static final Map<String, List<ICanalKafkaHandler>> CANAL_KAFKA_HANDLER_MAP = new HashMap<>();
+    public static final Map<String, List<ICanalKafkaHandler>> CANAL_KAFKA_HANDLER_MAP = new HashMap<>();
 
     public interface ICanalKafkaHandler {
 
@@ -54,6 +55,9 @@ public class CanalKafkaListenerHelper {
 
                 put(item); // 添加到：map里面
 
+                log.info("CANAL_KAFKA_HANDLER_MAP，长度：{}，className：{}", CANAL_KAFKA_HANDLER_MAP.size(),
+                    item.getClass().getSimpleName());
+
             }
 
         }
@@ -77,8 +81,6 @@ public class CanalKafkaListenerHelper {
             iCanalKafkaHandlerList.add(iCanalKafkaHandler); // 添加到：集合里
 
         }
-
-        log.info("CANAL_KAFKA_HANDLER_MAP，长度：{} ", CANAL_KAFKA_HANDLER_MAP.size());
 
     }
 

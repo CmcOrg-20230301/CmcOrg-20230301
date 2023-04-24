@@ -16,7 +16,7 @@ import java.util.Set;
  * 字典：canal-kafka监听器的帮助类
  */
 @Component
-public class DictCanalKafkaHandler implements CanalKafkaListenerHelper.ICanalKafkaHandler {
+public class SysDictCanalKafkaHandler implements CanalKafkaListenerHelper.ICanalKafkaHandler {
 
     public static final RedisKeyEnum SYS_DICT_CACHE = RedisKeyEnum.SYS_DICT_CACHE;
 

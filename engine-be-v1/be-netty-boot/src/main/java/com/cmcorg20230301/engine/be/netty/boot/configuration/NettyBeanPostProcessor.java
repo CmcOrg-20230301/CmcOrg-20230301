@@ -42,7 +42,7 @@ public class NettyBeanPostProcessor implements BeanPostProcessor {
     }
 
     @Override
-    public Object postProcessAfterInitialization(@NotNull Object bean, String beanName) throws BeansException {
+    public Object postProcessAfterInitialization(@NotNull Object bean, @NotNull String beanName) throws BeansException {
 
         Class<?> beanClass = bean.getClass();
 

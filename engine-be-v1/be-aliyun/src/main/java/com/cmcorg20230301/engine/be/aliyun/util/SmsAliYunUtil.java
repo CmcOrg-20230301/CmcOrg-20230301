@@ -143,7 +143,7 @@ public class SmsAliYunUtil {
 
         String code = body.getCode();
 
-        if (BooleanUtil.isFalse("Ok".equals(code))) {
+        if (BooleanUtil.isFalse("OK".equalsIgnoreCase(code))) {
             throw new RuntimeException(StrUtil.format("短信发送失败，code：【{}】，message：【{}】", code, body.getMessage()));
         }
 

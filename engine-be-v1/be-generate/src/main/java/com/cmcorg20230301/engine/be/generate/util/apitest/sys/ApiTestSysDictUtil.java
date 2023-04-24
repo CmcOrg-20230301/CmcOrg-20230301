@@ -10,6 +10,7 @@ import cn.hutool.http.HttpRequest;
 import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.cmcorg20230301.engine.be.dict.model.dto.SysDictInsertOrUpdateDTO;
+import com.cmcorg20230301.engine.be.dict.model.dto.SysDictListByDictKeyDTO;
 import com.cmcorg20230301.engine.be.dict.model.dto.SysDictPageDTO;
 import com.cmcorg20230301.engine.be.dict.model.entity.SysDictDO;
 import com.cmcorg20230301.engine.be.dict.model.enums.SysDictTypeEnum;
@@ -34,12 +35,12 @@ import java.util.Set;
 public class ApiTestSysDictUtil {
 
     // 执行，接口的地址，备注：最后面不要加斜杠 /
-    private static final String API_ENDPOINT = "http://43.154.37.130:10001";
-    //    private static final String API_ENDPOINT = "http://127.0.0.1:10001";
+    //    private static final String API_ENDPOINT = "http://43.154.37.130:10001";
+    private static final String API_ENDPOINT = "http://127.0.0.1:10001";
 
     public static void main(String[] args) {
 
-        for (int i = 0; i < 30; i++) {
+        for (int i = 0; i < 1; i++) {
 
             ThreadUtil.execute(() -> {
 
@@ -146,8 +147,30 @@ public class ApiTestSysDictUtil {
         // 字典-通过主键id，查看详情
         sysDictInfoById(apiEndpoint, jwt, itemId);
 
+        // 通过：dictKey获取字典项集合，备注：会进行缓存
+        for (int i = 0; i < 3; i++) {
+            sysDictListByDictKey(apiEndpoint, jwt, sysDictKey);
+        }
+
         // 字典-批量删除
         sysDictDeleteByIdSet(apiEndpoint, jwt, CollUtil.newHashSet(id, itemId));
+
+    }
+
+    /**
+     * 通过：dictKey获取字典项集合，备注：会进行缓存
+     */
+    private static void sysDictListByDictKey(String apiEndpoint, String jwt, String sysDictKey) {
+
+        long currentTs = System.currentTimeMillis();
+
+        SysDictListByDictKeyDTO dto = new SysDictListByDictKeyDTO();
+        dto.setDictKey(sysDictKey);
+
+        String bodyStr = HttpRequest.post(apiEndpoint + "/sys/dict/listByDictKey").body(JSONUtil.toJsonStr(dto))
+            .header("Authorization", jwt).execute().body();
+
+        log.info("通过：dictKey获取字典项集合，备注：会进行缓存：耗时：{}，bodyStr：{}", ApiTestHelper.calcCostMs(currentTs), bodyStr);
 
     }
 

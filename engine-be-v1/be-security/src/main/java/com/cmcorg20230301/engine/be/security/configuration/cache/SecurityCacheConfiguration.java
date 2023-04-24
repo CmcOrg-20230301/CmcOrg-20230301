@@ -4,12 +4,14 @@ import cn.hutool.core.collection.CollUtil;
 import com.cmcorg20230301.engine.be.cache.model.dto.CanalKafkaDTO;
 import com.cmcorg20230301.engine.be.cache.properties.MyCacheProperties;
 import com.cmcorg20230301.engine.be.cache.util.CanalKafkaListenerHelper;
+import com.cmcorg20230301.engine.be.model.model.constant.LogTopicConstant;
 import com.cmcorg20230301.engine.be.model.model.enums.TableNameEnum;
 import com.cmcorg20230301.engine.be.model.model.interfaces.IRedisKey;
 import com.cmcorg20230301.engine.be.redisson.model.enums.RedisKeyEnum;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import org.redisson.api.RBatch;
 import org.springframework.stereotype.Component;
@@ -22,6 +24,7 @@ import java.util.Set;
  * security的缓存配置类
  */
 @Component
+@Slf4j(topic = LogTopicConstant.CACHE)
 public class SecurityCacheConfiguration {
 
     @Resource
@@ -104,6 +107,9 @@ public class SecurityCacheConfiguration {
                 };
 
             CanalKafkaListenerHelper.put(iCanalKafkaHandler);
+
+            log.info("CANAL_KAFKA_HANDLER_MAP，长度：{}，name：{}", CanalKafkaListenerHelper.CANAL_KAFKA_HANDLER_MAP.size(),
+                item.getTableNameEnum().name());
 
         }
 
