@@ -248,26 +248,8 @@ INSERT INTO `sys_menu`
 VALUES (221004205817000054, 0, '2022-10-04 12:58:17', 0, '2022-10-04 13:12:47', 1, 2, 0, '', '系统平台', '',
         'SettingOutlined', 0, '', 1, 0, '', '/admin/sys/welcome', 10000, 0, 0);
 INSERT INTO `sys_menu`
-VALUES (221004211526000055, 0, '2022-10-04 13:15:27', 0, '2022-10-05 13:10:02', 1, 4, 0, '', '订单平台', '', 'TagOutlined',
-        0, '', 1, 0, '', '/admin/order/welcome', 9700, 0, 0);
-INSERT INTO `sys_menu`
-VALUES (221004211614000056, 0, '2022-10-04 13:16:15', 0, '2022-10-04 13:33:26', 1, 2, 0, '', '欢迎',
-        '/admin/order/welcome', 'SmileOutlined', 221004211526000055, '', 1, 0, 'orderWelcomeWelcome', '', 0, 0, 0);
-INSERT INTO `sys_menu`
 VALUES (221005155605000086, 0, '2022-10-05 07:56:05', 0, '2022-10-05 07:56:16', 1, 2, 0, '', '欢迎', '/admin/welcome',
         'SmileOutlined', 0, '', 1, 0, 'WelcomeWelcome', '', 11000, 0, 0);
-INSERT INTO `sys_menu`
-VALUES (221005205314000014, 0, '2022-10-05 12:53:15', 0, '2022-10-05 13:10:40', 1, 1, 0, '', '游戏平台', '',
-        'BuildOutlined', 0, '', 1, 0, '', '/admin/game/welcome', 9900, 0, 0);
-INSERT INTO `sys_menu`
-VALUES (221005205331000015, 0, '2022-10-05 12:53:32', 0, '2022-10-05 13:11:26', 1, 1, 0, '', '商品平台', '', 'ShopOutlined',
-        0, '', 1, 0, '', '/admin/goods/welcome', 9800, 0, 0);
-INSERT INTO `sys_menu`
-VALUES (221005205841000016, 0, '2022-10-05 12:58:42', 0, '2022-10-05 12:59:06', 1, 0, 0, '', '欢迎',
-        '/admin/game/welcome', 'SmileOutlined', 221005205314000014, '', 1, 0, 'gameWelcomeWelcome', '', 10000, 0, 0);
-INSERT INTO `sys_menu`
-VALUES (221005205950000017, 0, '2022-10-05 12:59:51', 0, '2022-10-05 12:59:51', 1, 0, 0, '', '欢迎',
-        '/admin/goods/welcome', 'SmileOutlined', 221005205331000015, '', 1, 0, 'goodsWelcomeWelcome', '', 10000, 0, 0);
 
 -- ----------------------------
 -- Table structure for sys_param
