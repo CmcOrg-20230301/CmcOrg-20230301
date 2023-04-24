@@ -1,9 +1,8 @@
 import {YesNoDict} from "@/util/DictUtil";
-import {ActionType, ProColumns} from "@ant-design/pro-components";
-import {AdminDeleteByIdSetApi, AdminInsertOrUpdateDTO, SysRequestDO} from "@/api/SysRequest";
-import {ExecConfirm, ToastSuccess} from "@/util/ToastUtil";
+import {ProColumns} from "@ant-design/pro-components";
+import {SysRequestDO} from "@/api/SysRequest";
 
-const TableColumnList = (currentForm: React.MutableRefObject<AdminInsertOrUpdateDTO | null>, setFormVisible: React.Dispatch<React.SetStateAction<boolean>>, actionRef: React.RefObject<ActionType | undefined>): ProColumns<SysRequestDO>[] => [
+const TableColumnList = (): ProColumns<SysRequestDO>[] => [
 
     {
         title: '序号',
@@ -73,41 +72,6 @@ const TableColumnList = (currentForm: React.MutableRefObject<AdminInsertOrUpdate
         title: '是否启用',
         dataIndex: 'enableFlag',
         valueEnum: YesNoDict
-    },
-
-
-    {
-
-        title: '操作',
-        dataIndex: 'option',
-        valueType: 'option',
-
-        render: (dom, entity) => [
-
-            <a key="1" onClick={() => {
-
-                currentForm.current = {id: entity.id} as AdminInsertOrUpdateDTO
-                setFormVisible(true)
-
-            }}>编辑</a>,
-
-            <a key="2" className={"red3"} onClick={() => {
-
-                ExecConfirm(() => {
-
-                    return AdminDeleteByIdSetApi({idSet: [entity.id!]}).then(res => {
-
-                        ToastSuccess(res.msg)
-                        actionRef.current?.reload()
-
-                    })
-
-                }, undefined, `确定删除【${entity.name}】吗？`)
-
-            }}>删除</a>,
-
-        ],
-
     },
 
 ];

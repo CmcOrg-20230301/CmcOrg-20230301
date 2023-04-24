@@ -42,7 +42,7 @@ public class UserSelfServiceImpl extends ServiceImpl<SysUserMapper, SysUserDO> i
 
         if (BaseConstant.ADMIN_ID.equals(currentUserId)) {
 
-            sysUserSelfInfoVO.setAvatarUri("");
+            sysUserSelfInfoVO.setAvatarFileId(BaseConstant.SYS_ID);
             sysUserSelfInfoVO.setNickname(securityProperties.getAdminNickname());
             sysUserSelfInfoVO.setBio("");
             sysUserSelfInfoVO.setEmail("");
@@ -54,7 +54,7 @@ public class UserSelfServiceImpl extends ServiceImpl<SysUserMapper, SysUserDO> i
 
         SysUserInfoDO sysUserInfoDO =
             ChainWrappers.lambdaQueryChain(sysUserInfoMapper).eq(SysUserInfoDO::getId, currentUserId)
-                .select(SysUserInfoDO::getAvatarUri, SysUserInfoDO::getNickname, SysUserInfoDO::getBio).one();
+                .select(SysUserInfoDO::getAvatarFileId, SysUserInfoDO::getNickname, SysUserInfoDO::getBio).one();
 
         SysUserDO sysUserDO = lambdaQuery().eq(BaseEntity::getId, currentUserId)
             .select(SysUserDO::getEmail, SysUserDO::getPassword, SysUserDO::getSignInName, SysUserDO::getPhone,
@@ -62,7 +62,7 @@ public class UserSelfServiceImpl extends ServiceImpl<SysUserMapper, SysUserDO> i
 
         if (sysUserInfoDO != null && sysUserDO != null) {
 
-            sysUserSelfInfoVO.setAvatarUri(sysUserInfoDO.getAvatarUri());
+            sysUserSelfInfoVO.setAvatarFileId(sysUserInfoDO.getAvatarFileId());
             sysUserSelfInfoVO.setNickname(sysUserInfoDO.getNickname());
             sysUserSelfInfoVO.setBio(sysUserInfoDO.getBio());
 

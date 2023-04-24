@@ -1,6 +1,6 @@
 import {YesNoDict} from "@/util/DictUtil";
 import {ActionType, ProColumns} from "@ant-design/pro-components";
-import {AdminDeleteByIdSetApi, SysUserInsertOrUpdateDTO, SysUserPageVO} from "@/api/SysUser";
+import {SysUserDeleteByIdSet, SysUserInsertOrUpdateDTO, SysUserPageVO} from "@/api/SysUser";
 import {ExecConfirm, ToastSuccess} from "@/util/ToastUtil";
 
 const TableColumnList = (currentForm: React.MutableRefObject<SysUserInsertOrUpdateDTO | null>, setFormVisible: React.Dispatch<React.SetStateAction<boolean>>, actionRef: React.RefObject<ActionType | undefined>): ProColumns<SysUserPageVO>[] => [
@@ -75,7 +75,7 @@ const TableColumnList = (currentForm: React.MutableRefObject<SysUserInsertOrUpda
 
                 ExecConfirm(() => {
 
-                    return AdminDeleteByIdSetApi({idSet: [entity.id!]}).then(res => {
+                    return SysUserDeleteByIdSet({idSet: [entity.id!]}).then(res => {
 
                         ToastSuccess(res.msg)
                         actionRef.current?.reload()

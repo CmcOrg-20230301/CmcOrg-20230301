@@ -251,9 +251,7 @@ public class SignUtil {
                 sysUserInfoDO.setNickname(NicknameUtil.getRandomNickname());
                 sysUserInfoDO.setBio("");
 
-                sysUserInfoDO.setAvatarUri("");
                 sysUserInfoDO.setAvatarFileId(-1L);
-                sysUserInfoDO.setAvatarUriExpireTime(null);
 
             } else {
 
@@ -262,9 +260,7 @@ public class SignUtil {
 
                 sysUserInfoDO.setBio(MyEntityUtil.getNotNullStr(tempSysUserInfoDO.getBio()));
 
-                sysUserInfoDO.setAvatarUri(MyEntityUtil.getNotNullStr(tempSysUserInfoDO.getAvatarUri()));
                 sysUserInfoDO.setAvatarFileId(MyEntityUtil.getNotNullLong(tempSysUserInfoDO.getAvatarFileId()));
-                sysUserInfoDO.setAvatarUriExpireTime(tempSysUserInfoDO.getAvatarUriExpireTime());
 
             }
 

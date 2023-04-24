@@ -1,7 +1,5 @@
 import {useRef, useState} from "react";
 import {ActionType, ColumnsState, ProTable} from "@ant-design/pro-components";
-import {Button} from "antd";
-import {PlusOutlined} from "@ant-design/icons/lib";
 import {SysRequestDO, SysRequestPage, SysRequestPageDTO} from "@/api/SysRequest";
 import TableColumnList from "./TableColumnList";
 import CommonConstant from "@/model/constant/CommonConstant";
@@ -14,8 +12,6 @@ export default function () {
     const [expandedRowKeys, setExpandedRowKeys] = useState<string[]>([]);
 
     const actionRef = useRef<ActionType>()
-
-    const [formVisible, setFormVisible] = useState<boolean>(false);
 
     return (
 
@@ -56,7 +52,7 @@ export default function () {
 
                 revalidateOnFocus={false}
 
-                columns={TableColumnList(currentForm, setFormVisible, actionRef)}
+                columns={TableColumnList()}
 
                 options={{
                     fullScreen: true,
@@ -65,21 +61,6 @@ export default function () {
                 request={(params, sort, filter) => {
 
                     return SysRequestPage({...params, sort})
-
-                }}
-
-                toolbar={{
-
-                    actions: [
-
-                        <Button key={"1"} icon={<PlusOutlined/>} type="primary" onClick={() => {
-
-                            currentForm.current = {} as AdminInsertOrUpdateDTO
-                            setFormVisible(true)
-
-                        }}>新建</Button>
-
-                    ],
 
                 }}
 

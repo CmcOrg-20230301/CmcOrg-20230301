@@ -346,10 +346,10 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserProMapper, SysUserDO>
 
         SysUserInfoDO sysUserInfoDO =
             ChainWrappers.lambdaQueryChain(sysUserInfoMapper).eq(SysUserInfoDO::getId, notNullId.getId())
-                .select(SysUserInfoDO::getNickname, SysUserInfoDO::getAvatarUri, SysUserInfoDO::getBio).one();
+                .select(SysUserInfoDO::getNickname, SysUserInfoDO::getAvatarFileId, SysUserInfoDO::getBio).one();
 
         sysUserInfoByIdVO.setNickname(sysUserInfoDO.getNickname());
-        sysUserInfoByIdVO.setAvatarUri(sysUserInfoDO.getAvatarUri());
+        sysUserInfoByIdVO.setAvatarFileId(sysUserInfoDO.getAvatarFileId());
         sysUserInfoByIdVO.setBio(sysUserInfoDO.getBio());
 
         // 获取：用户绑定的角色 idSet
@@ -371,7 +371,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserProMapper, SysUserDO>
     public String resetAvatar(NotEmptyIdSet notEmptyIdSet) {
 
         ChainWrappers.lambdaUpdateChain(sysUserInfoMapper).in(SysUserInfoDO::getId, notEmptyIdSet.getIdSet())
-            .set(SysUserInfoDO::getAvatarUri, "").update();
+            .set(SysUserInfoDO::getAvatarFileId, "").update();
 
         return BaseBizCodeEnum.OK;
     }

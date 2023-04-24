@@ -17,7 +17,7 @@
         a.enable_flag AS enableFlag,
         IF ( a.`password` = '', 0, 1 ) AS passwordFlag,
         b.nickname AS nickname,
-        b.avatar_uri AS avatarUri
+        b.avatar_file_id AS avatarFileId
         FROM
         sys_user a
         LEFT JOIN sys_user_info b ON b.id = a.id

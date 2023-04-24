@@ -11,9 +11,6 @@ import java.util.Date;
 @Data
 public class UserSelfInfoVO extends UserSelfUpdateInfoDTO {
 
-    @Schema(description = "头像uri")
-    private String avatarUri;
-
     @Schema(description = "邮箱，会脱敏")
     private String email;
 
@@ -31,5 +28,8 @@ public class UserSelfInfoVO extends UserSelfUpdateInfoDTO {
 
     @Schema(description = "账号注册时间")
     private Date createTime;
+
+    @Schema(description = "头像 fileId（文件主键 id）")
+    private Long avatarFileId;
 
 }
