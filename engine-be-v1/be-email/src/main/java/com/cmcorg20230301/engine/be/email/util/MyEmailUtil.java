@@ -5,9 +5,9 @@ import cn.hutool.extra.mail.MailException;
 import cn.hutool.extra.mail.MailUtil;
 import com.cmcorg20230301.engine.be.email.enums.EmailMessageEnum;
 import com.cmcorg20230301.engine.be.email.exception.BizCodeEnum;
+import com.cmcorg20230301.engine.be.email.properties.EmailProperties;
 import com.cmcorg20230301.engine.be.security.model.vo.ApiResultVO;
 import com.cmcorg20230301.engine.be.security.properties.CommonProperties;
-import org.springframework.core.task.TaskExecutor;
 import org.springframework.stereotype.Component;
 
 /**
@@ -17,12 +17,12 @@ import org.springframework.stereotype.Component;
 public class MyEmailUtil {
 
     private static String platformName;
-    private static TaskExecutor taskExecutor;
+    private static EmailProperties emailProperties;
 
-    public MyEmailUtil(CommonProperties commonProperties, TaskExecutor taskExecutor) {
+    public MyEmailUtil(CommonProperties commonProperties, EmailProperties emailProperties) {
 
         MyEmailUtil.platformName = "【" + commonProperties.getPlatformName() + "】";
-        MyEmailUtil.taskExecutor = taskExecutor;
+        MyEmailUtil.emailProperties = emailProperties;
 
     }
 
@@ -42,7 +42,7 @@ public class MyEmailUtil {
 
         try {
 
-            MailUtil.send(to, emailMessageEnum.getSubject(), finalContent, isHtml);
+            MailUtil.send(emailProperties.getMailAccount(), to, emailMessageEnum.getSubject(), finalContent, isHtml);
 
         } catch (MailException e) {
 

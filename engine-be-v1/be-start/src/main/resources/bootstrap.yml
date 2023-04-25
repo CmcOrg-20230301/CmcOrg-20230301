@@ -34,5 +34,8 @@ spring:
           - data-id: sms.yml
             refresh: true
 
+          - data-id: email.yml
+            refresh: true
+
           - data-id: refresh.yml
             refresh: true

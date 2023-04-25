@@ -27,4 +27,6 @@ public interface PropertiesPrefixConstant {
 
     String MINIO = FILE + ".minio"; // minio文件相关
 
+    String EMAIL = PRE_BE + "email"; // 邮箱相关
+
 }
