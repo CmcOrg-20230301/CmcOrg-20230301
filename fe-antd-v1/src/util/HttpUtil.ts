@@ -13,7 +13,7 @@ let hiddenErrorMsgFlag = false
 
 const config: CreateAxiosDefaults = {
 
-    baseURL: '/api',
+    baseURL: import.meta.env.DEV ? '/api' : window.apiUrl,
     timeout: 30 * 60 * 1000, // 默认 30分钟
 
 }
