@@ -115,7 +115,7 @@ public class SignPhoneServiceImpl implements SignPhoneService {
         String key = PRE_REDIS_KEY_ENUM + currentUserPhoneNotAdmin;
 
         return SignUtil.sendCode(key, null, true,
-            com.cmcorg20230301.engine.be.tencent.exception.BizCodeEnum.PHONE_DOES_NOT_EXIST_PLEASE_RE_ENTER,
+            com.cmcorg20230301.engine.be.sms.tencent.exception.BizCodeEnum.PHONE_DOES_NOT_EXIST_PLEASE_RE_ENTER,
             (code) -> SmsUtil.sendUpdate(currentUserPhoneNotAdmin, code));
 
     }
@@ -141,7 +141,7 @@ public class SignPhoneServiceImpl implements SignPhoneService {
 
         return SignUtil
             .sendCode(key, ChainWrappers.lambdaQueryChain(sysUserMapper).eq(SysUserDO::getPhone, dto.getPhone()), true,
-                com.cmcorg20230301.engine.be.tencent.exception.BizCodeEnum.PHONE_NOT_REGISTERED,
+                com.cmcorg20230301.engine.be.sms.tencent.exception.BizCodeEnum.PHONE_NOT_REGISTERED,
                 (code) -> SmsUtil.sendForgetPassword(dto.getPhone(), code));
 
     }
@@ -218,7 +218,7 @@ public class SignPhoneServiceImpl implements SignPhoneService {
 
         return SignUtil
             .sendCode(key, ChainWrappers.lambdaQueryChain(sysUserMapper).eq(SysUserDO::getPhone, dto.getPhone()), true,
-                com.cmcorg20230301.engine.be.tencent.exception.BizCodeEnum.PHONE_NOT_REGISTERED,
+                com.cmcorg20230301.engine.be.sms.tencent.exception.BizCodeEnum.PHONE_NOT_REGISTERED,
                 (code) -> SmsUtil.sendSignIn(dto.getPhone(), code));
 
     }

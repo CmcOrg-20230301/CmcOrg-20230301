@@ -1,9 +1,9 @@
 package com.cmcorg20230301.engine.be.sms.util;
 
 import cn.hutool.core.util.StrUtil;
-import com.cmcorg20230301.engine.be.aliyun.util.SmsAliYunUtil;
+import com.cmcorg20230301.engine.be.sms.aliyun.util.SmsAliYunUtil;
 import com.cmcorg20230301.engine.be.sms.properties.SmsProperties;
-import com.cmcorg20230301.engine.be.tencent.util.SmsTencentUtil;
+import com.cmcorg20230301.engine.be.sms.tencent.util.SmsTencentUtil;
 import org.springframework.stereotype.Component;
 
 /**

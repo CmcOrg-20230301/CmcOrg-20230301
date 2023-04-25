@@ -21,10 +21,10 @@
             <version>${project.version}</version>
         </dependency>
 
-        <!-- be-aliyun -->
+        <!-- be-sms-aliyun -->
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>be-aliyun</artifactId>
+            <artifactId>be-sms-aliyun</artifactId>
             <version>${project.version}</version>
         </dependency>
 

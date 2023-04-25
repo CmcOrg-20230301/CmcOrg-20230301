@@ -9,21 +9,34 @@
         <version>2023.3.1</version>
     </parent>
 
-    <artifactId>be-sms</artifactId>
-    <description>短信服务相关</description>
+    <artifactId>be-sms-aliyun</artifactId>
+    <description>阿里云短信相关</description>
 
     <dependencies>
 
-        <!-- be-sms-tencent -->
+        <!-- nacos-config -->
         <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>be-sms-tencent</artifactId>
+            <groupId>com.alibaba.cloud</groupId>
+            <artifactId>spring-cloud-starter-alibaba-nacos-config</artifactId>
         </dependency>
 
-        <!-- be-sms-aliyun -->
+        <!-- be-util -->
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>be-sms-aliyun</artifactId>
+            <artifactId>be-util</artifactId>
+        </dependency>
+
+        <!-- be-model -->
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>be-model</artifactId>
+        </dependency>
+
+        <!-- 阿里云-短信相关 -->
+        <dependency>
+            <groupId>com.aliyun</groupId>
+            <artifactId>alibabacloud-dysmsapi20170525</artifactId>
+            <version>2.0.23</version>
         </dependency>
 
     </dependencies>

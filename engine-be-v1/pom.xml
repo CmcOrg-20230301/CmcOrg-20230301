@@ -38,7 +38,7 @@
         <module>be-kafka</module>
         <module>be-log</module>
         <module>be-model</module>
-        <module>be-tencent</module>
+        <module>be-sms-tencent</module>
         <module>be-wx</module>
         <module>be-xxl-job</module>
         <module>be-gateway</module>
@@ -57,7 +57,7 @@
         <module>be-netty-boot</module>
         <module>be-generate</module>
         <module>be-netty-websocket</module>
-        <module>be-aliyun</module>
+        <module>be-sms-aliyun</module>
         <module>be-sms</module>
     </modules>
 
@@ -71,10 +71,10 @@
                 <version>${project.version}</version>
             </dependency>
 
-            <!-- be-aliyun -->
+            <!-- be-sms-aliyun -->
             <dependency>
                 <groupId>${project.groupId}</groupId>
-                <artifactId>be-aliyun</artifactId>
+                <artifactId>be-sms-aliyun</artifactId>
                 <version>${project.version}</version>
             </dependency>
 
@@ -82,13 +82,6 @@
             <dependency>
                 <groupId>${project.groupId}</groupId>
                 <artifactId>be-netty-websocket</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-
-            <!-- be-generate -->
-            <dependency>
-                <groupId>${project.groupId}</groupId>
-                <artifactId>be-generate</artifactId>
                 <version>${project.version}</version>
             </dependency>
 
@@ -183,13 +176,6 @@
                 <version>${project.version}</version>
             </dependency>
 
-            <!-- be-gateway -->
-            <dependency>
-                <groupId>${project.groupId}</groupId>
-                <artifactId>be-gateway</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-
             <!-- be-xxl-job -->
             <dependency>
                 <groupId>${project.groupId}</groupId>
@@ -204,10 +190,10 @@
                 <version>${project.version}</version>
             </dependency>
 
-            <!-- be-tencent -->
+            <!-- be-sms-tencent -->
             <dependency>
                 <groupId>${project.groupId}</groupId>
-                <artifactId>be-tencent</artifactId>
+                <artifactId>be-sms-tencent</artifactId>
                 <version>${project.version}</version>
             </dependency>
 
@@ -381,21 +367,21 @@
                 <version>2.4.0</version>
             </dependency>
 
-            <!-- 阿里云，获取最新版本号：https://next.api.aliyun.com/api/Dysmsapi/2017-05-25/SendSms?lang=JAVAASYNC -->
+            <!-- 阿里云-短信相关，获取最新版本号：https://next.api.aliyun.com/api/Dysmsapi/2017-05-25/SendSms?lang=JAVAASYNC -->
             <dependency>
                 <groupId>com.aliyun</groupId>
                 <artifactId>alibabacloud-dysmsapi20170525</artifactId>
                 <version>2.0.23</version>
             </dependency>
 
-            <!-- 腾讯云，获取最新版本号：https://console.cloud.tencent.com/api/explorer?Product=sms&Version=2021-01-11&Action=SendSms -->
+            <!-- 腾讯云-短信相关，获取最新版本号：https://console.cloud.tencent.com/api/explorer?Product=sms&Version=2021-01-11&Action=SendSms -->
             <dependency>
                 <groupId>com.tencentcloudapi</groupId>
                 <artifactId>tencentcloud-sdk-java-sms</artifactId>
                 <version>3.1.739</version>
             </dependency>
 
-            <!-- 支付宝，获取最新版本号：https://github.com/alipay/alipay-sdk-java-all -->
+            <!-- 支付宝支付，获取最新版本号：https://github.com/alipay/alipay-sdk-java-all -->
             <dependency>
                 <groupId>com.alipay.sdk</groupId>
                 <artifactId>alipay-sdk-java-v3</artifactId>
