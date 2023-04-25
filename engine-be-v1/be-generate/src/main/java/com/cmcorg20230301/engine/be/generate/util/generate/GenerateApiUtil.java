@@ -142,6 +142,12 @@ public class GenerateApiUtil {
 
         }
 
+        String returnTypeStr = beApi.getReturnTypeStr(); // 返回的类型
+
+        if (StrUtil.isBlank(returnTypeStr)) {
+            returnTypeStr = "void";
+        }
+
         String httpStr; // 请求的类型
 
         if (beApi.getPath().contains("infoById")) {
@@ -160,12 +166,10 @@ public class GenerateApiUtil {
 
             httpStr = "myPost";
 
-        }
+            if (BooleanUtil.isTrue(beApi.getReturnTypeArrFlag())) {
+                returnTypeStr = returnTypeStr + "[]";
+            }
 
-        String returnTypeStr = beApi.getReturnTypeStr(); // 返回的类型
-
-        if (StrUtil.isBlank(returnTypeStr)) {
-            returnTypeStr = "void";
         }
 
         strBuilder.append(StrUtil
@@ -205,41 +209,27 @@ public class GenerateApiUtil {
 
                 BeApi.BeApiSchema dataBeApiSchema = (BeApi.BeApiSchema)data;
 
+                beApi.setReturnTypeArrFlag(dataBeApiSchema.getArrFlag());
+
                 BeApi.BeApiSchema dataRealBeApiSchema =
                     (BeApi.BeApiSchema)dataBeApiSchema.getFieldMap().get(dataBeApiSchema.getClassName());
 
                 // 如果是：分页排序查询相关
                 if (dataRealBeApiSchema.getClassName().startsWith(Page.class.getSimpleName())) {
 
-                    try {
+                    BeApi.BeApiSchema records = (BeApi.BeApiSchema)dataRealBeApiSchema.getFieldMap().get("records");
 
-                        BeApi.BeApiSchema records = (BeApi.BeApiSchema)dataRealBeApiSchema.getFieldMap().get("records");
+                    BeApi.BeApiSchema recordsBeApiSchema =
+                        (BeApi.BeApiSchema)records.getFieldMap().get(records.getClassName());
 
-                        BeApi.BeApiSchema recordsBeApiSchema =
-                            (BeApi.BeApiSchema)records.getFieldMap().get(records.getClassName());
+                    beApi.setReturnTypeStr(recordsBeApiSchema.getClassName());
 
-                        if (BooleanUtil.isTrue(dataBeApiSchema.getArrFlag())) {
-                            beApi.setReturnTypeStr(recordsBeApiSchema.getClassName() + "[]");
-                        } else {
-                            beApi.setReturnTypeStr(recordsBeApiSchema.getClassName());
-                        }
-
-                        // 生成：interface
-                        generateInterface(beApi, strBuilder, classNameSet, recordsBeApiSchema, "vo-page：");
-
-                    } catch (Exception e) {
-
-                        e.printStackTrace();
-
-                    }
+                    // 生成：interface
+                    generateInterface(beApi, strBuilder, classNameSet, recordsBeApiSchema, "vo-page：");
 
                 } else {
 
-                    if (BooleanUtil.isTrue(dataBeApiSchema.getArrFlag())) {
-                        beApi.setReturnTypeStr(dataRealBeApiSchema.getClassName() + "[]");
-                    } else {
-                        beApi.setReturnTypeStr(dataRealBeApiSchema.getClassName());
-                    }
+                    beApi.setReturnTypeStr(dataRealBeApiSchema.getClassName());
 
                     // 生成：interface
                     generateInterface(beApi, strBuilder, classNameSet, dataRealBeApiSchema, "vo：");
@@ -250,11 +240,9 @@ public class GenerateApiUtil {
 
                 BeApi.BeApiParameter dataBeApiParameter = (BeApi.BeApiParameter)data;
 
-                if (BooleanUtil.isTrue(dataBeApiParameter.getArrFlag())) {
-                    beApi.setReturnTypeStr(dataBeApiParameter.getType() + "[]");
-                } else {
-                    beApi.setReturnTypeStr(dataBeApiParameter.getType());
-                }
+                beApi.setReturnTypeStr(dataBeApiParameter.getType());
+
+                beApi.setReturnTypeArrFlag(dataBeApiParameter.getArrFlag());
 
             }
 

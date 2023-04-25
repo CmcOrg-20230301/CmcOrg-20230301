@@ -53,7 +53,7 @@ export function SysMenuPage(form: SysMenuPageDTO, config?: AxiosRequestConfig) {
 
 // 查询：树结构
 export function SysMenuTree(form: SysMenuPageDTO, config?: AxiosRequestConfig) {
-    return $http.myProTreePost<SysMenuDO[]>('/sys/menu/tree', form, config)
+    return $http.myProTreePost<SysMenuDO>('/sys/menu/tree', form, config)
 }
 
 export interface NotNullId {

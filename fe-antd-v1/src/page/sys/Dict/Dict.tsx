@@ -5,12 +5,12 @@ import {ColumnHeightOutlined, EllipsisOutlined, PlusOutlined, VerticalAlignMiddl
 import {
     SysDictAddOrderNo,
     SysDictDeleteByIdSet,
+    SysDictDO,
     SysDictInfoById,
     SysDictInsertOrUpdate,
     SysDictInsertOrUpdateDTO,
     SysDictPageDTO,
-    SysDictTree,
-    SysDictTreeVO
+    SysDictTree
 } from "@/api/SysDict";
 import TableColumnList from "./TableColumnList";
 import {ExecConfirm, ToastSuccess} from "@/util/ToastUtil";
@@ -39,7 +39,7 @@ export default function () {
 
         <>
 
-            <ProTable<SysDictTreeVO, SysDictPageDTO>
+            <ProTable<SysDictDO, SysDictPageDTO>
 
                 scroll={{x: 'max-content'}}
                 sticky={{offsetHeader: CommonConstant.NAV_TOP_HEIGHT}}

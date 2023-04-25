@@ -1,9 +1,9 @@
 import {YesNoDict} from "@/util/DictUtil";
 import {ActionType, ProColumns} from "@ant-design/pro-components";
-import {SysDictDeleteByIdSet, SysDictInsertOrUpdateDTO, SysDictTreeVO} from "@/api/SysDict";
+import {SysDictDeleteByIdSet, SysDictDO, SysDictInsertOrUpdateDTO} from "@/api/SysDict";
 import {ExecConfirm, ToastSuccess} from "@/util/ToastUtil";
 
-const TableColumnList = (currentForm: React.MutableRefObject<SysDictInsertOrUpdateDTO | null>, setFormVisible: React.Dispatch<React.SetStateAction<boolean>>, actionRef: React.RefObject<ActionType | undefined>): ProColumns<SysDictTreeVO>[] => [
+const TableColumnList = (currentForm: React.MutableRefObject<SysDictInsertOrUpdateDTO | null>, setFormVisible: React.Dispatch<React.SetStateAction<boolean>>, actionRef: React.RefObject<ActionType | undefined>): ProColumns<SysDictDO>[] => [
 
     {
         title: '序号',

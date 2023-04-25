@@ -44,7 +44,7 @@ export interface SysDictPageDTO {
 
 // 查询：树结构
 export function SysDictTree(form: SysDictPageDTO, config?: AxiosRequestConfig) {
-    return $http.myProTreePost<SysDictDO[]>('/sys/dict/tree', form, config)
+    return $http.myProTreePost<SysDictDO>('/sys/dict/tree', form, config)
 }
 
 // 分页排序查询
