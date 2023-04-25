@@ -1076,6 +1076,8 @@ public class SignUtil {
 
     /**
      * 检查等级
+     * TODO 改成：根据用户有无手机号，有无邮箱，有无密码，来做判断
+     * 敏感操作都需要调用此方法，例如：修改登录名，修改邮箱，修改手机号，修改绑定的微信，忘记密码，账号注销，绑定邮箱，绑定手机，绑定微信
      */
     public static void checkSignLevel(int signLevel) {
 
