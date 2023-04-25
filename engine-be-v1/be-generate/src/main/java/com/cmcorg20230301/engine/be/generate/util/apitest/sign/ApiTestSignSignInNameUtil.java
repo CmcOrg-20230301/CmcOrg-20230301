@@ -5,6 +5,7 @@ import cn.hutool.http.HttpRequest;
 import cn.hutool.json.JSONUtil;
 import cn.hutool.setting.Setting;
 import com.cmcorg20230301.engine.be.generate.util.apitest.ApiTestHelper;
+import com.cmcorg20230301.engine.be.generate.util.apitest.sys.ApiTestSysMenuUtil;
 import com.cmcorg20230301.engine.be.security.util.MyRsaUtil;
 import com.cmcorg20230301.engine.be.sign.email.model.dto.EmailNotBlankDTO;
 import com.cmcorg20230301.engine.be.sign.email.model.dto.SignEmailBindAccountDTO;
@@ -20,8 +21,8 @@ import lombok.extern.slf4j.Slf4j;
 public class ApiTestSignSignInNameUtil {
 
     // 执行，接口的地址，备注：最后面不要加斜杠 /
-    private static final String API_ENDPOINT = "http://43.154.37.130:10001";
-    //    private static final String API_ENDPOINT = "http://127.0.0.1:10001";
+    //    private static final String API_ENDPOINT = "http://43.154.37.130:10001";
+    private static final String API_ENDPOINT = "http://127.0.0.1:10001";
 
     // 配置文件
     private static final Setting SETTING = new Setting("sign.setting");
@@ -97,6 +98,9 @@ public class ApiTestSignSignInNameUtil {
 
         //        // 登录名-用户名账号密码登录
         //        jwt = signInNameSignIn(apiEndpoint, newSignInName, newPasswordTemp, rsaPublicKey);
+
+        // 菜单-获取：当前用户绑定的菜单
+        ApiTestSysMenuUtil.sysMenuUserSelfMenuList(apiEndpoint, jwt);
 
         // 登录名-账号注销
         signInNameSignDelete(apiEndpoint, newPasswordTemp, jwt, rsaPublicKey);

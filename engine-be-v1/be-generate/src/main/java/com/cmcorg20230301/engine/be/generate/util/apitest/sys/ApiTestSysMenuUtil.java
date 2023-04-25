@@ -147,7 +147,7 @@ public class ApiTestSysMenuUtil {
     /**
      * 菜单-获取：当前用户绑定的菜单
      */
-    private static void sysMenuUserSelfMenuList(String apiEndpoint, String jwt) {
+    public static void sysMenuUserSelfMenuList(String apiEndpoint, String jwt) {
 
         long currentTs = System.currentTimeMillis();
 
