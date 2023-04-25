@@ -105,7 +105,7 @@ export default function () {
 
                             ExecConfirm(() => {
 
-                                return SysUserDeleteByIdSet({idSet: selectedRowKeys as number[]}).then(res => {
+                                return SysUserDeleteByIdSet({idSet: selectedRowKeys as string[]}).then(res => {
 
                                     ToastSuccess(res.msg)
                                     actionRef.current?.reload()
@@ -193,7 +193,7 @@ export default function () {
 
                                         })
 
-                                    }, undefined, `确定删除【${currentForm.current.name}】吗？`)
+                                    }, undefined, `确定删除【${currentForm.current.signInName}】吗？`)
 
                                 }}>
 

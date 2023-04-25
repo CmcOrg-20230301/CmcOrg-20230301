@@ -62,7 +62,7 @@ export default function () {
                         record.nickname = undefined
                     }
 
-                    await doSysUserSelfUpdateInfo({...record, avatarUri: currentForm.current.avatarUri})
+                    await doSysUserSelfUpdateInfo({...record})
 
                     return true;
 

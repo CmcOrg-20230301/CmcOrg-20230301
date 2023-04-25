@@ -211,19 +211,27 @@ public class GenerateApiUtil {
                 // 如果是：分页排序查询相关
                 if (dataRealBeApiSchema.getClassName().startsWith(Page.class.getSimpleName())) {
 
-                    BeApi.BeApiSchema records = (BeApi.BeApiSchema)dataRealBeApiSchema.getFieldMap().get("records");
+                    try {
 
-                    BeApi.BeApiSchema recordsBeApiSchema =
-                        (BeApi.BeApiSchema)records.getFieldMap().get(records.getClassName());
+                        BeApi.BeApiSchema records = (BeApi.BeApiSchema)dataRealBeApiSchema.getFieldMap().get("records");
 
-                    if (BooleanUtil.isTrue(dataBeApiSchema.getArrFlag())) {
-                        beApi.setReturnTypeStr(recordsBeApiSchema.getClassName() + "[]");
-                    } else {
-                        beApi.setReturnTypeStr(recordsBeApiSchema.getClassName());
+                        BeApi.BeApiSchema recordsBeApiSchema =
+                            (BeApi.BeApiSchema)records.getFieldMap().get(records.getClassName());
+
+                        if (BooleanUtil.isTrue(dataBeApiSchema.getArrFlag())) {
+                            beApi.setReturnTypeStr(recordsBeApiSchema.getClassName() + "[]");
+                        } else {
+                            beApi.setReturnTypeStr(recordsBeApiSchema.getClassName());
+                        }
+
+                        // 生成：interface
+                        generateInterface(beApi, strBuilder, classNameSet, recordsBeApiSchema, "vo-page：");
+
+                    } catch (Exception e) {
+
+                        e.printStackTrace();
+
                     }
-
-                    // 生成：interface
-                    generateInterface(beApi, strBuilder, classNameSet, recordsBeApiSchema, "vo-page：");
 
                 } else {
 
@@ -352,17 +360,16 @@ public class GenerateApiUtil {
 
                 strBuilder.insert(0, API_IMPORT_BASE_MY_ORDER_DTO); // 在顶部添加导入
 
-                interfaceBuilder.append(StrUtil
-                    .format(API_INTERFACE_FIELD_TEMP, beApiSchema.getName(), "?", beApiSchema.getClassName(), "",
-                        "排序字段"));
-
                 classNameSet.add(SORT_ORDER);
 
                 strBuilder.insert(0, SORT_IMPORT); // 在顶部添加导入
 
-                interfaceBuilder.append(SORT);
-
             }
+
+            interfaceBuilder.append(StrUtil
+                .format(API_INTERFACE_FIELD_TEMP, beApiSchema.getName(), "?", beApiSchema.getClassName(), "", "排序字段"));
+
+            interfaceBuilder.append(SORT);
 
         } else {
 

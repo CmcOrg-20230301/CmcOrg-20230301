@@ -105,7 +105,7 @@ export default function () {
 
                             ExecConfirm(() => {
 
-                                return SysParamDeleteByIdSet({idSet: selectedRowKeys as number[]}).then(res => {
+                                return SysParamDeleteByIdSet({idSet: selectedRowKeys as string[]}).then(res => {
 
                                     ToastSuccess(res.msg)
                                     actionRef.current?.reload()

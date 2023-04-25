@@ -7,7 +7,7 @@ import {AliasToken} from "antd/es/theme/interface/alias";
 
 interface ISignLayout extends PropsWithChildren {
 
-    token?: AliasToken
+    token?: Partial<AliasToken>
 
 }
 

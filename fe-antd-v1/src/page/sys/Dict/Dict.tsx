@@ -169,7 +169,7 @@ export default function () {
                                 await SysDictAddOrderNo({
 
                                     idSet: selectedRowKeys as string[],
-                                    number: form.orderNo as string
+                                    number: String(form.orderNo)
 
                                 }).then(res => {
 

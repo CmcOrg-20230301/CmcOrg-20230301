@@ -3,6 +3,7 @@ package com.cmcorg20230301.engine.be.generate.util.generate;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.map.MapUtil;
 import cn.hutool.core.text.StrMatcher;
+import cn.hutool.core.util.BooleanUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.http.HttpRequest;
 import cn.hutool.json.JSONArray;
@@ -460,37 +461,20 @@ public class SpringDocUtil {
 
             JSONObject propertiesValue = (JSONObject)item.getValue();
 
-            String refStr = propertiesValue.getStr("$ref");
-
             Boolean arrFlag = null;
 
             if ("array".equals(propertiesValue.getStr("type"))) {
                 arrFlag = true;
             }
 
-            if (StrUtil.isBlank(refStr)) { // 为空则表示是：一般类型
+            String refStr = propertiesValue.getStr("$ref");
 
-                JSONObject items = propertiesValue.getJSONObject("items"); // 如果是：数组
+            if (BooleanUtil.isTrue(arrFlag)) { // 如果是：数组类型
 
-                if (items != null) {
+                JSONObject items = propertiesValue.getJSONObject("items");
 
-                    propertiesValue = items; // 替换为：数组里面元素的类型
-
-                }
-
-            } else { // 否则是：对象类型
-
-                JSONObject items = propertiesValue.getJSONObject("items"); // 如果是：数组
-
-                if (items != null) {
-
-                    refStr = items.getStr("$ref");
-
-                    if (StrUtil.isNotBlank(refStr)) {
-                        propertiesValue = items; // 替换为：数组里面元素的类型
-                    }
-
-                }
+                refStr = items.getStr("$ref"); // 重新获取：关联的类型
+                propertiesValue = items; // 替换为：数组里面元素的类型
 
             }
 

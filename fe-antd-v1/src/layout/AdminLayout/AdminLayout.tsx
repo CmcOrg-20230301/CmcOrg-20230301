@@ -277,7 +277,7 @@ function AdminLayoutElement(props: IAdminLayoutElement) {
                                     <Space>
 
                                         <Avatar size="small"
-                                                src={userSelfInfo.avatarUri || CommonConstant.FIXED_AVATAR_URL}/>
+                                                src={CommonConstant.FIXED_AVATAR_URL}/>
 
                                         <Typography.Text ellipsis style={{width: 75}}
                                                          type="secondary">{userSelfInfo.nickname}</Typography.Text>

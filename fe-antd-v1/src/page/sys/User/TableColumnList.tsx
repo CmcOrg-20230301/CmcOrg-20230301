@@ -82,7 +82,7 @@ const TableColumnList = (currentForm: React.MutableRefObject<SysUserInsertOrUpda
 
                     })
 
-                }, undefined, `确定删除【${entity.name}】吗？`)
+                }, undefined, `确定删除【${entity.signInName}】吗？`)
 
             }}>删除</a>,
 
