@@ -714,6 +714,7 @@
                               "children": {
                                 "className": "SysMenuDO",
                                 "name": "children",
+                                "description": "子节点",
                                 "arrFlag": true
                               },
                               "createId": {
@@ -931,6 +932,7 @@
               "data": {
                 "className": "SysMenuDO",
                 "name": "data",
+                "description": "数据",
                 "fieldMap": {
                   "SysMenuDO": {
                     "className": "SysMenuDO",
@@ -1026,6 +1028,7 @@
                       "children": {
                         "className": "SysMenuDO",
                         "name": "children",
+                        "description": "子节点",
                         "arrFlag": true
                       },
                       "createId": {
@@ -1216,6 +1219,7 @@
                       "children": {
                         "className": "SysMenuDO",
                         "name": "children",
+                        "description": "子节点",
                         "fieldMap": {
                           "SysMenuDO": {
                             "className": "SysMenuDO",
@@ -1311,6 +1315,7 @@
                               "children": {
                                 "className": "SysMenuDO",
                                 "name": "children",
+                                "description": "子节点",
                                 "arrFlag": true
                               },
                               "createId": {
@@ -1562,6 +1567,7 @@
               "data": {
                 "className": "SysMenuDO",
                 "name": "data",
+                "description": "数据",
                 "fieldMap": {
                   "SysMenuDO": {
                     "className": "SysMenuDO",
@@ -1657,6 +1663,7 @@
                       "children": {
                         "className": "SysMenuDO",
                         "name": "children",
+                        "description": "子节点",
                         "arrFlag": true
                       },
                       "createId": {
@@ -4273,6 +4280,12 @@
                         "description": "创建时间",
                         "format": "date-time"
                       },
+                      "children": {
+                        "className": "SysDictDO",
+                        "name": "children",
+                        "description": "字典的子节点",
+                        "arrFlag": true
+                      },
                       "createId": {
                         "name": "createId",
                         "type": "integer",
@@ -4394,10 +4407,10 @@
         }
       },
       "response": {
-        "className": "ApiResultVOListSysDictTreeVO",
+        "className": "ApiResultVOSetSysDictDO",
         "fieldMap": {
-          "ApiResultVOListSysDictTreeVO": {
-            "className": "ApiResultVOListSysDictTreeVO",
+          "ApiResultVOSetSysDictDO": {
+            "className": "ApiResultVOSetSysDictDO",
             "type": "object",
             "description": "统一响应实体类",
             "fieldMap": {
@@ -4413,13 +4426,14 @@
                 "format": "int32"
               },
               "data": {
-                "className": "SysDictTreeVO",
+                "className": "SysDictDO",
                 "name": "data",
+                "description": "数据",
                 "fieldMap": {
-                  "SysDictTreeVO": {
-                    "className": "SysDictTreeVO",
+                  "SysDictDO": {
+                    "className": "SysDictDO",
                     "type": "object",
-                    "description": "数据",
+                    "description": "主表：字典",
                     "fieldMap": {
                       "orderNo": {
                         "name": "orderNo",
@@ -4472,8 +4486,9 @@
                         "format": "date-time"
                       },
                       "children": {
-                        "className": "SysDictTreeVO",
+                        "className": "SysDictDO",
                         "name": "children",
+                        "description": "字典的子节点",
                         "arrFlag": true
                       },
                       "createId": {
@@ -4707,6 +4722,12 @@
                                 "type": "string",
                                 "description": "创建时间",
                                 "format": "date-time"
+                              },
+                              "children": {
+                                "className": "SysDictDO",
+                                "name": "children",
+                                "description": "字典的子节点",
+                                "arrFlag": true
                               },
                               "createId": {
                                 "name": "createId",
@@ -5011,6 +5032,7 @@
               "data": {
                 "className": "DictVO",
                 "name": "data",
+                "description": "数据",
                 "fieldMap": {
                   "DictVO": {
                     "className": "DictVO",

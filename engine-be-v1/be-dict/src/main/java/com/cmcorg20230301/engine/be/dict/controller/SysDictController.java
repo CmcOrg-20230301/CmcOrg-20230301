@@ -5,7 +5,6 @@ import com.cmcorg20230301.engine.be.dict.model.dto.SysDictInsertOrUpdateDTO;
 import com.cmcorg20230301.engine.be.dict.model.dto.SysDictListByDictKeyDTO;
 import com.cmcorg20230301.engine.be.dict.model.dto.SysDictPageDTO;
 import com.cmcorg20230301.engine.be.dict.model.entity.SysDictDO;
-import com.cmcorg20230301.engine.be.dict.model.vo.SysDictTreeVO;
 import com.cmcorg20230301.engine.be.dict.service.SysDictService;
 import com.cmcorg20230301.engine.be.model.model.dto.ChangeNumberDTO;
 import com.cmcorg20230301.engine.be.model.model.dto.NotEmptyIdSet;
@@ -22,7 +21,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
 import javax.validation.Valid;
-import java.util.List;
 import java.util.Set;
 
 @Tag(name = "字典-管理")
@@ -56,7 +54,7 @@ public class SysDictController {
     @Operation(summary = "查询：树结构")
     @PostMapping("/tree")
     @PreAuthorize("hasAuthority('sysDict:page')")
-    public ApiResultVO<List<SysDictTreeVO>> tree(@RequestBody @Valid SysDictPageDTO dto) {
+    public ApiResultVO<Set<SysDictDO>> tree(@RequestBody @Valid SysDictPageDTO dto) {
         return ApiResultVO.ok(baseService.tree(dto));
     }
 

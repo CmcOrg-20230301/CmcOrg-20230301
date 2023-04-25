@@ -1,6 +1,5 @@
 package com.cmcorg20230301.engine.be.dict.service.impl;
 
-import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.BooleanUtil;
 import cn.hutool.core.util.StrUtil;
@@ -16,7 +15,6 @@ import com.cmcorg20230301.engine.be.dict.model.dto.SysDictListByDictKeyDTO;
 import com.cmcorg20230301.engine.be.dict.model.dto.SysDictPageDTO;
 import com.cmcorg20230301.engine.be.dict.model.entity.SysDictDO;
 import com.cmcorg20230301.engine.be.dict.model.enums.SysDictTypeEnum;
-import com.cmcorg20230301.engine.be.dict.model.vo.SysDictTreeVO;
 import com.cmcorg20230301.engine.be.dict.service.SysDictService;
 import com.cmcorg20230301.engine.be.model.model.dto.ChangeNumberDTO;
 import com.cmcorg20230301.engine.be.model.model.dto.NotEmptyIdSet;
@@ -30,10 +28,7 @@ import com.cmcorg20230301.engine.be.security.model.vo.ApiResultVO;
 import com.cmcorg20230301.engine.be.security.util.MyEntityUtil;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -155,15 +150,13 @@ public class SysDictServiceImpl extends ServiceImpl<SysDictMapper, SysDictDO> im
      * 查询：树结构
      */
     @Override
-    public List<SysDictTreeVO> tree(SysDictPageDTO dto) {
+    public Set<SysDictDO> tree(SysDictPageDTO dto) {
 
         dto.setPageSize(-1); // 不分页
         List<SysDictDO> records = myPage(dto).getRecords();
 
-        List<SysDictTreeVO> resList = new ArrayList<>();
-
         if (records.size() == 0) {
-            return resList;
+            return new HashSet<>();
         }
 
         // 过滤出：为字典项的数据，目的：查询其所属字典，封装成树结构
@@ -173,21 +166,15 @@ public class SysDictServiceImpl extends ServiceImpl<SysDictMapper, SysDictDO> im
         if (dictItemList.size() == 0) {
 
             // 如果没有字典项类型数据，则直接返回
-            for (SysDictDO item : records) {
-
-                resList.add(BeanUtil.copyProperties(item, SysDictTreeVO.class));
-
-            }
-
-            return resList;
+            return new HashSet<>(records);
 
         }
 
-        // 查询出 字典项所属 字典的信息
-        List<SysDictDO> allDictList =
-            records.stream().filter(item -> SysDictTypeEnum.DICT.equals(item.getType())).collect(Collectors.toList());
+        // 查询出：字典项所属，字典的信息
+        Set<SysDictDO> allDictSet =
+            records.stream().filter(item -> SysDictTypeEnum.DICT.equals(item.getType())).collect(Collectors.toSet());
 
-        Set<Long> dictIdSet = allDictList.stream().map(BaseEntity::getId).collect(Collectors.toSet());
+        Set<Long> dictIdSet = allDictSet.stream().map(BaseEntity::getId).collect(Collectors.toSet());
         Set<String> dictKeySet = dictItemList.stream().map(SysDictDO::getDictKey).collect(Collectors.toSet());
 
         // 查询数据库
@@ -195,41 +182,30 @@ public class SysDictServiceImpl extends ServiceImpl<SysDictMapper, SysDictDO> im
             .in(dictKeySet.size() != 0, SysDictDO::getDictKey, dictKeySet).eq(SysDictDO::getType, SysDictTypeEnum.DICT)
             .orderByDesc(SysDictDO::getOrderNo).list();
 
-        // 拼接本次返回值所需的所有 字典
-        allDictList.addAll(sysDictDOList);
+        // 拼接本次返回值所需的，所有字典
+        allDictSet.addAll(sysDictDOList);
 
-        for (SysDictDO item : allDictList) {
-            resList.add(BeanUtil.copyProperties(item, SysDictTreeVO.class));
-        }
+        Map<String, SysDictDO> dictMap = allDictSet.stream().collect(Collectors.toMap(SysDictDO::getDictKey, it -> it));
 
         // 封装 children
         for (SysDictDO item : dictItemList) {
 
-            SysDictTreeVO sysDictTreeVO = BeanUtil.copyProperties(item, SysDictTreeVO.class);
+            SysDictDO dict = dictMap.get(item.getDictKey());
 
-            for (SysDictTreeVO subItem : resList) {
+            List<SysDictDO> children = dict.getChildren();
 
-                if (subItem.getDictKey().equals(item.getDictKey())) {
+            if (children == null) {
 
-                    List<SysDictTreeVO> children = subItem.getChildren();
-
-                    if (children == null) {
-
-                        children = new ArrayList<>();
-                        subItem.setChildren(children);
-
-                    }
-
-                    children.add(sysDictTreeVO);
-
-                    break;
-
-                }
+                children = new ArrayList<>();
+                dict.setChildren(children);
 
             }
+
+            children.add(item); // 添加：字典项
+
         }
 
-        return resList;
+        return allDictSet;
 
     }
 

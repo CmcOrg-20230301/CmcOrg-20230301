@@ -14,7 +14,6 @@ import com.cmcorg20230301.engine.be.dict.model.dto.SysDictListByDictKeyDTO;
 import com.cmcorg20230301.engine.be.dict.model.dto.SysDictPageDTO;
 import com.cmcorg20230301.engine.be.dict.model.entity.SysDictDO;
 import com.cmcorg20230301.engine.be.dict.model.enums.SysDictTypeEnum;
-import com.cmcorg20230301.engine.be.dict.model.vo.SysDictTreeVO;
 import com.cmcorg20230301.engine.be.generate.util.apitest.ApiTestHelper;
 import com.cmcorg20230301.engine.be.generate.util.apitest.sign.ApiTestSignSignInNameUtil;
 import com.cmcorg20230301.engine.be.model.model.dto.ChangeNumberDTO;
@@ -24,7 +23,6 @@ import com.cmcorg20230301.engine.be.security.model.vo.ApiResultVO;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -196,7 +194,7 @@ public class ApiTestSysDictUtil {
     /**
      * 查询：树结构
      */
-    private static List<SysDictTreeVO> sysDictTree(String apiEndpoint, String jwt, SysDictInsertOrUpdateDTO dto) {
+    private static Set<SysDictDO> sysDictTree(String apiEndpoint, String jwt, SysDictInsertOrUpdateDTO dto) {
 
         long currentTs = System.currentTimeMillis();
 
@@ -208,8 +206,8 @@ public class ApiTestSysDictUtil {
 
         log.info("字典-查询：树结构：耗时：{}，bodyStr：{}", ApiTestHelper.calcCostMs(currentTs), bodyStr);
 
-        ApiResultVO<List<SysDictTreeVO>> apiResultVO =
-            JSONUtil.toBean(bodyStr, new TypeReference<ApiResultVO<List<SysDictTreeVO>>>() {
+        ApiResultVO<Set<SysDictDO>> apiResultVO =
+            JSONUtil.toBean(bodyStr, new TypeReference<ApiResultVO<Set<SysDictDO>>>() {
             }, false);
 
         return apiResultVO.getData();

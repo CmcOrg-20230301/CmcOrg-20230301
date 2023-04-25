@@ -9,6 +9,8 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
+import java.util.List;
+
 @EqualsAndHashCode(callSuper = true)
 @TableName(value = "sys_dict")
 @Data
@@ -30,5 +32,9 @@ public class SysDictDO extends BaseEntity {
     @TableField(fill = FieldFill.INSERT)
     @Schema(description = "排序号（值越大越前面，默认为 0）")
     private Integer orderNo;
+
+    @TableField(exist = false)
+    @Schema(description = "字典的子节点")
+    private List<SysDictDO> children;
 
 }

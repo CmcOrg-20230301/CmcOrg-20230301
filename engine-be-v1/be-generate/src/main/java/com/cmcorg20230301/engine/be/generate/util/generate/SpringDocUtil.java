@@ -474,7 +474,12 @@ public class SpringDocUtil {
                 JSONObject items = propertiesValue.getJSONObject("items");
 
                 refStr = items.getStr("$ref"); // 重新获取：关联的类型
+
+                String description = propertiesValue.getStr("description");
+
                 propertiesValue = items; // 替换为：数组里面元素的类型
+
+                propertiesValue.set("description", description); // 描述字段，需要重新赋值
 
             }
 

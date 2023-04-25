@@ -38,7 +38,7 @@ export interface SysMenuDO {
     path?: string // 页面的 path，备注：相同父菜单下，子菜单 path不能重复
     router?: string // 路由
     createTime?: string // 创建时间，format：date-time
-    children?: SysMenuDO[] // null
+    children?: SysMenuDO[] // 子节点
     createId?: string // 创建人id，format：int64
     name?: string // 菜单名
     id?: string // 主键id，format：int64
@@ -77,7 +77,7 @@ export interface SysMenuInfoByIdVO {
     path?: string // 页面的 path，备注：相同父菜单下，子菜单 path不能重复
     router?: string // 路由
     createTime?: string // 创建时间，format：date-time
-    children?: SysMenuDO[] // null
+    children?: SysMenuDO[] // 子节点
     createId?: string // 创建人id，format：int64
     name?: string // 菜单名
     roleIdSet?: string[] // 角色 idSet，format：int64

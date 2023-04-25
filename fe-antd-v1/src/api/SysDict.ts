@@ -17,6 +17,7 @@ export interface SysDictDO {
     dictKey?: string // 字典 key（不能重复），字典项要冗余这个 key，目的：方便操作
     updateId?: string // 修改人id，format：int64
     createTime?: string // 创建时间，format：date-time
+    children?: SysDictDO[] // 字典的子节点
     createId?: string // 创建人id，format：int64
     name?: string // 字典/字典项 名
     id?: string // 主键id，format：int64
@@ -41,27 +42,9 @@ export interface SysDictPageDTO {
     sort?: Record<string, SortOrder> // 排序字段（只在前端使用，实际传值：order）
 }
 
-export interface SysDictTreeVO {
-    orderNo?: number // 排序号（值越大越前面，默认为 0），format：int32
-    updateTime?: string // 修改时间，format：date-time
-    remark?: string // 备注
-    delFlag?: boolean // 是否逻辑删除
-    type?: string // 字典类型
-    version?: number // 乐观锁，format：int32
-    dictKey?: string // 字典 key（不能重复），字典项要冗余这个 key，目的：方便操作
-    updateId?: string // 修改人id，format：int64
-    createTime?: string // 创建时间，format：date-time
-    children?: SysDictTreeVO[] // null
-    createId?: string // 创建人id，format：int64
-    name?: string // 字典/字典项 名
-    id?: string // 主键id，format：int64
-    enableFlag?: boolean // 是否启用
-    value?: number // 字典项 value（数字 123...）备注：字典为 -1，format：int32
-}
-
 // 查询：树结构
 export function SysDictTree(form: SysDictPageDTO, config?: AxiosRequestConfig) {
-    return $http.myProTreePost<SysDictTreeVO[]>('/sys/dict/tree', form, config)
+    return $http.myProTreePost<SysDictDO[]>('/sys/dict/tree', form, config)
 }
 
 // 分页排序查询
