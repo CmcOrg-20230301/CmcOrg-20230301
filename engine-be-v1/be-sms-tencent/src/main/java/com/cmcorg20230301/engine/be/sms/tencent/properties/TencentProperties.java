@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 
 @Data
 @Component
-@ConfigurationProperties(prefix = PropertiesPrefixConstant.TENCENT)
+@ConfigurationProperties(prefix = PropertiesPrefixConstant.SMS_TENCENT)
 @RefreshScope
 public class TencentProperties {
 

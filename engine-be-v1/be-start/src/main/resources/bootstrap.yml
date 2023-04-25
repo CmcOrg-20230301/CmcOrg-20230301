@@ -13,15 +13,26 @@ spring:
         namespace: engine-be-v1
         file-extension: yml
         extension-configs:
+
           - data-id: common.yml
+            refresh: true
+
           - data-id: redis.yml
+
           - data-id: mysql.yml
+
           - data-id: kafka.yml
+
           - data-id: cache.yml
+
           - data-id: xxl-job.yml
+
           - data-id: minio.yml
+
+          - data-id: wx.yml
+
           - data-id: sms.yml
-          - data-id: tencent.yml
-          - data-id: aliyun.yml
+            refresh: true
+
           - data-id: refresh.yml
             refresh: true

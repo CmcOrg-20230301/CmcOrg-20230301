@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 
 @Data
 @Component
-@ConfigurationProperties(prefix = PropertiesPrefixConstant.ALI_YUN)
+@ConfigurationProperties(prefix = PropertiesPrefixConstant.SMS_ALI_YUN)
 @RefreshScope
 public class AliYunProperties {
 
