@@ -468,7 +468,17 @@ public class SpringDocUtil {
                 arrFlag = true;
             }
 
-            if (StrUtil.isNotBlank(refStr)) {
+            if (StrUtil.isBlank(refStr)) { // 为空则表示是：一般类型
+
+                JSONObject items = propertiesValue.getJSONObject("items"); // 如果是：数组
+
+                if (items != null) {
+
+                    propertiesValue = items; // 替换为：数组里面元素的类型
+
+                }
+
+            } else { // 否则是：对象类型
 
                 JSONObject items = propertiesValue.getJSONObject("items"); // 如果是：数组
 
@@ -476,7 +486,7 @@ public class SpringDocUtil {
 
                     refStr = items.getStr("$ref");
 
-                    if (StrUtil.isBlank(refStr)) {
+                    if (StrUtil.isNotBlank(refStr)) {
                         propertiesValue = items; // 替换为：数组里面元素的类型
                     }
 
