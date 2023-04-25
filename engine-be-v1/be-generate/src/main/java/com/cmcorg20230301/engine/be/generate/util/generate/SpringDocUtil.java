@@ -464,13 +464,15 @@ public class SpringDocUtil {
 
             Boolean arrFlag = null;
 
+            if ("array".equals(propertiesValue.getStr("type"))) {
+                arrFlag = true;
+            }
+
             if (StrUtil.isNotBlank(refStr)) {
 
                 JSONObject items = propertiesValue.getJSONObject("items"); // 如果是：数组
 
                 if (items != null) {
-
-                    arrFlag = true;
 
                     refStr = items.getStr("$ref");
 
