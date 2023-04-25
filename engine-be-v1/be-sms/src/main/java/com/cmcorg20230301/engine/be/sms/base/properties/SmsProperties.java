@@ -1,4 +1,4 @@
-package com.cmcorg20230301.engine.be.sms.properties;
+package com.cmcorg20230301.engine.be.sms.base.properties;
 
 import com.cmcorg20230301.engine.be.model.model.constant.PropertiesPrefixConstant;
 import io.swagger.v3.oas.annotations.media.Schema;

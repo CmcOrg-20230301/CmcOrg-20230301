@@ -464,7 +464,7 @@ public class SpringDocUtil {
 
             Boolean arrFlag = null;
 
-            if (StrUtil.isBlank(refStr)) {
+            if (StrUtil.isNotBlank(refStr)) {
 
                 JSONObject items = propertiesValue.getJSONObject("items"); // 如果是：数组
 

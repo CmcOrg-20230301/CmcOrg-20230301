@@ -1,4 +1,4 @@
-package com.cmcorg20230301.engine.be.sms.aliyun.exception;
+package com.cmcorg20230301.engine.be.sms.base.exception;
 
 import com.cmcorg20230301.engine.be.model.exception.IBizCode;
 import lombok.AllArgsConstructor;

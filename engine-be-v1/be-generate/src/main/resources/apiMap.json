@@ -97,11 +97,6 @@
                     "type": "object",
                     "description": "数据",
                     "fieldMap": {
-                      "avatarUri": {
-                        "name": "avatarUri",
-                        "type": "string",
-                        "description": "头像uri"
-                      },
                       "passwordFlag": {
                         "name": "passwordFlag",
                         "type": "boolean",
@@ -122,6 +117,12 @@
                         "name": "wxOpenId",
                         "type": "string",
                         "description": "微信 openId，会脱敏"
+                      },
+                      "avatarFileId": {
+                        "name": "avatarFileId",
+                        "type": "integer",
+                        "description": "头像 fileId（文件主键 id）",
+                        "format": "int64"
                       },
                       "signInName": {
                         "name": "signInName",
@@ -624,17 +625,85 @@
                             "type": "object",
                             "description": "主表：菜单",
                             "fieldMap": {
-                              "updateId": {
-                                "name": "updateId",
-                                "type": "integer",
-                                "description": "修改人id",
-                                "format": "int64"
+                              "redirect": {
+                                "name": "redirect",
+                                "type": "string",
+                                "description": "重定向，优先级最高"
+                              },
+                              "linkFlag": {
+                                "name": "linkFlag",
+                                "type": "boolean",
+                                "description": "是否外链，即，打开页面会在一个新的窗口打开"
                               },
                               "orderNo": {
                                 "name": "orderNo",
                                 "type": "integer",
                                 "description": "排序号（值越大越前面，默认为 0）",
                                 "format": "int32"
+                              },
+                              "auths": {
+                                "name": "auths",
+                                "type": "string",
+                                "description": "权限，多个可用逗号拼接，例如：menu:insertOrUpdate,menu:page,menu:deleteByIdSet,menu:infoById"
+                              },
+                              "icon": {
+                                "name": "icon",
+                                "type": "string",
+                                "description": "图标"
+                              },
+                              "updateTime": {
+                                "name": "updateTime",
+                                "type": "string",
+                                "description": "修改时间",
+                                "format": "date-time"
+                              },
+                              "remark": {
+                                "name": "remark",
+                                "type": "string",
+                                "description": "备注"
+                              },
+                              "delFlag": {
+                                "name": "delFlag",
+                                "type": "boolean",
+                                "description": "是否逻辑删除"
+                              },
+                              "authFlag": {
+                                "name": "authFlag",
+                                "type": "boolean",
+                                "description": "是否是权限菜单，权限菜单：不显示，只代表菜单权限"
+                              },
+                              "version": {
+                                "name": "version",
+                                "type": "integer",
+                                "description": "乐观锁",
+                                "format": "int32"
+                              },
+                              "parentId": {
+                                "name": "parentId",
+                                "type": "integer",
+                                "description": "父节点id（顶级则为0）",
+                                "format": "int64"
+                              },
+                              "showFlag": {
+                                "name": "showFlag",
+                                "type": "boolean",
+                                "description": "是否显示在 左侧的菜单栏里面，如果为 false，也可以通过 $router.push()访问到"
+                              },
+                              "updateId": {
+                                "name": "updateId",
+                                "type": "integer",
+                                "description": "修改人id",
+                                "format": "int64"
+                              },
+                              "path": {
+                                "name": "path",
+                                "type": "string",
+                                "description": "页面的 path，备注：相同父菜单下，子菜单 path不能重复"
+                              },
+                              "router": {
+                                "name": "router",
+                                "type": "string",
+                                "description": "路由"
                               },
                               "createTime": {
                                 "name": "createTime",
@@ -654,16 +723,10 @@
                                 "description": "创建人id",
                                 "format": "int64"
                               },
-                              "updateTime": {
-                                "name": "updateTime",
+                              "name": {
+                                "name": "name",
                                 "type": "string",
-                                "description": "修改时间",
-                                "format": "date-time"
-                              },
-                              "remark": {
-                                "name": "remark",
-                                "type": "string",
-                                "description": "备注"
+                                "description": "菜单名"
                               },
                               "id": {
                                 "name": "id",
@@ -671,27 +734,15 @@
                                 "description": "主键id",
                                 "format": "int64"
                               },
-                              "delFlag": {
-                                "name": "delFlag",
+                              "firstFlag": {
+                                "name": "firstFlag",
                                 "type": "boolean",
-                                "description": "是否逻辑删除"
-                              },
-                              "version": {
-                                "name": "version",
-                                "type": "integer",
-                                "description": "乐观锁",
-                                "format": "int32"
+                                "description": "是否是起始页面，备注：只能存在一个 firstFlag === true 的菜单"
                               },
                               "enableFlag": {
                                 "name": "enableFlag",
                                 "type": "boolean",
                                 "description": "是否启用"
-                              },
-                              "parentId": {
-                                "name": "parentId",
-                                "type": "integer",
-                                "description": "父节点id（顶级则为0）",
-                                "format": "int64"
                               }
                             }
                           }
@@ -888,17 +939,85 @@
                     "type": "object",
                     "description": "主表：菜单",
                     "fieldMap": {
-                      "updateId": {
-                        "name": "updateId",
-                        "type": "integer",
-                        "description": "修改人id",
-                        "format": "int64"
+                      "redirect": {
+                        "name": "redirect",
+                        "type": "string",
+                        "description": "重定向，优先级最高"
+                      },
+                      "linkFlag": {
+                        "name": "linkFlag",
+                        "type": "boolean",
+                        "description": "是否外链，即，打开页面会在一个新的窗口打开"
                       },
                       "orderNo": {
                         "name": "orderNo",
                         "type": "integer",
                         "description": "排序号（值越大越前面，默认为 0）",
                         "format": "int32"
+                      },
+                      "auths": {
+                        "name": "auths",
+                        "type": "string",
+                        "description": "权限，多个可用逗号拼接，例如：menu:insertOrUpdate,menu:page,menu:deleteByIdSet,menu:infoById"
+                      },
+                      "icon": {
+                        "name": "icon",
+                        "type": "string",
+                        "description": "图标"
+                      },
+                      "updateTime": {
+                        "name": "updateTime",
+                        "type": "string",
+                        "description": "修改时间",
+                        "format": "date-time"
+                      },
+                      "remark": {
+                        "name": "remark",
+                        "type": "string",
+                        "description": "备注"
+                      },
+                      "delFlag": {
+                        "name": "delFlag",
+                        "type": "boolean",
+                        "description": "是否逻辑删除"
+                      },
+                      "authFlag": {
+                        "name": "authFlag",
+                        "type": "boolean",
+                        "description": "是否是权限菜单，权限菜单：不显示，只代表菜单权限"
+                      },
+                      "version": {
+                        "name": "version",
+                        "type": "integer",
+                        "description": "乐观锁",
+                        "format": "int32"
+                      },
+                      "parentId": {
+                        "name": "parentId",
+                        "type": "integer",
+                        "description": "父节点id（顶级则为0）",
+                        "format": "int64"
+                      },
+                      "showFlag": {
+                        "name": "showFlag",
+                        "type": "boolean",
+                        "description": "是否显示在 左侧的菜单栏里面，如果为 false，也可以通过 $router.push()访问到"
+                      },
+                      "updateId": {
+                        "name": "updateId",
+                        "type": "integer",
+                        "description": "修改人id",
+                        "format": "int64"
+                      },
+                      "path": {
+                        "name": "path",
+                        "type": "string",
+                        "description": "页面的 path，备注：相同父菜单下，子菜单 path不能重复"
+                      },
+                      "router": {
+                        "name": "router",
+                        "type": "string",
+                        "description": "路由"
                       },
                       "createTime": {
                         "name": "createTime",
@@ -918,16 +1037,10 @@
                         "description": "创建人id",
                         "format": "int64"
                       },
-                      "updateTime": {
-                        "name": "updateTime",
+                      "name": {
+                        "name": "name",
                         "type": "string",
-                        "description": "修改时间",
-                        "format": "date-time"
-                      },
-                      "remark": {
-                        "name": "remark",
-                        "type": "string",
-                        "description": "备注"
+                        "description": "菜单名"
                       },
                       "id": {
                         "name": "id",
@@ -935,27 +1048,15 @@
                         "description": "主键id",
                         "format": "int64"
                       },
-                      "delFlag": {
-                        "name": "delFlag",
+                      "firstFlag": {
+                        "name": "firstFlag",
                         "type": "boolean",
-                        "description": "是否逻辑删除"
-                      },
-                      "version": {
-                        "name": "version",
-                        "type": "integer",
-                        "description": "乐观锁",
-                        "format": "int32"
+                        "description": "是否是起始页面，备注：只能存在一个 firstFlag === true 的菜单"
                       },
                       "enableFlag": {
                         "name": "enableFlag",
                         "type": "boolean",
                         "description": "是否启用"
-                      },
-                      "parentId": {
-                        "name": "parentId",
-                        "type": "integer",
-                        "description": "父节点id（顶级则为0）",
-                        "format": "int64"
                       }
                     }
                   }
@@ -1125,17 +1226,85 @@
                             "type": "object",
                             "description": "主表：菜单",
                             "fieldMap": {
-                              "updateId": {
-                                "name": "updateId",
-                                "type": "integer",
-                                "description": "修改人id",
-                                "format": "int64"
+                              "redirect": {
+                                "name": "redirect",
+                                "type": "string",
+                                "description": "重定向，优先级最高"
+                              },
+                              "linkFlag": {
+                                "name": "linkFlag",
+                                "type": "boolean",
+                                "description": "是否外链，即，打开页面会在一个新的窗口打开"
                               },
                               "orderNo": {
                                 "name": "orderNo",
                                 "type": "integer",
                                 "description": "排序号（值越大越前面，默认为 0）",
                                 "format": "int32"
+                              },
+                              "auths": {
+                                "name": "auths",
+                                "type": "string",
+                                "description": "权限，多个可用逗号拼接，例如：menu:insertOrUpdate,menu:page,menu:deleteByIdSet,menu:infoById"
+                              },
+                              "icon": {
+                                "name": "icon",
+                                "type": "string",
+                                "description": "图标"
+                              },
+                              "updateTime": {
+                                "name": "updateTime",
+                                "type": "string",
+                                "description": "修改时间",
+                                "format": "date-time"
+                              },
+                              "remark": {
+                                "name": "remark",
+                                "type": "string",
+                                "description": "备注"
+                              },
+                              "delFlag": {
+                                "name": "delFlag",
+                                "type": "boolean",
+                                "description": "是否逻辑删除"
+                              },
+                              "authFlag": {
+                                "name": "authFlag",
+                                "type": "boolean",
+                                "description": "是否是权限菜单，权限菜单：不显示，只代表菜单权限"
+                              },
+                              "version": {
+                                "name": "version",
+                                "type": "integer",
+                                "description": "乐观锁",
+                                "format": "int32"
+                              },
+                              "parentId": {
+                                "name": "parentId",
+                                "type": "integer",
+                                "description": "父节点id（顶级则为0）",
+                                "format": "int64"
+                              },
+                              "showFlag": {
+                                "name": "showFlag",
+                                "type": "boolean",
+                                "description": "是否显示在 左侧的菜单栏里面，如果为 false，也可以通过 $router.push()访问到"
+                              },
+                              "updateId": {
+                                "name": "updateId",
+                                "type": "integer",
+                                "description": "修改人id",
+                                "format": "int64"
+                              },
+                              "path": {
+                                "name": "path",
+                                "type": "string",
+                                "description": "页面的 path，备注：相同父菜单下，子菜单 path不能重复"
+                              },
+                              "router": {
+                                "name": "router",
+                                "type": "string",
+                                "description": "路由"
                               },
                               "createTime": {
                                 "name": "createTime",
@@ -1155,16 +1324,10 @@
                                 "description": "创建人id",
                                 "format": "int64"
                               },
-                              "updateTime": {
-                                "name": "updateTime",
+                              "name": {
+                                "name": "name",
                                 "type": "string",
-                                "description": "修改时间",
-                                "format": "date-time"
-                              },
-                              "remark": {
-                                "name": "remark",
-                                "type": "string",
-                                "description": "备注"
+                                "description": "菜单名"
                               },
                               "id": {
                                 "name": "id",
@@ -1172,27 +1335,15 @@
                                 "description": "主键id",
                                 "format": "int64"
                               },
-                              "delFlag": {
-                                "name": "delFlag",
+                              "firstFlag": {
+                                "name": "firstFlag",
                                 "type": "boolean",
-                                "description": "是否逻辑删除"
-                              },
-                              "version": {
-                                "name": "version",
-                                "type": "integer",
-                                "description": "乐观锁",
-                                "format": "int32"
+                                "description": "是否是起始页面，备注：只能存在一个 firstFlag === true 的菜单"
                               },
                               "enableFlag": {
                                 "name": "enableFlag",
                                 "type": "boolean",
                                 "description": "是否启用"
-                              },
-                              "parentId": {
-                                "name": "parentId",
-                                "type": "integer",
-                                "description": "父节点id（顶级则为0）",
-                                "format": "int64"
                               }
                             }
                           }
@@ -1423,17 +1574,85 @@
                     "type": "object",
                     "description": "主表：菜单",
                     "fieldMap": {
-                      "updateId": {
-                        "name": "updateId",
-                        "type": "integer",
-                        "description": "修改人id",
-                        "format": "int64"
+                      "redirect": {
+                        "name": "redirect",
+                        "type": "string",
+                        "description": "重定向，优先级最高"
+                      },
+                      "linkFlag": {
+                        "name": "linkFlag",
+                        "type": "boolean",
+                        "description": "是否外链，即，打开页面会在一个新的窗口打开"
                       },
                       "orderNo": {
                         "name": "orderNo",
                         "type": "integer",
                         "description": "排序号（值越大越前面，默认为 0）",
                         "format": "int32"
+                      },
+                      "auths": {
+                        "name": "auths",
+                        "type": "string",
+                        "description": "权限，多个可用逗号拼接，例如：menu:insertOrUpdate,menu:page,menu:deleteByIdSet,menu:infoById"
+                      },
+                      "icon": {
+                        "name": "icon",
+                        "type": "string",
+                        "description": "图标"
+                      },
+                      "updateTime": {
+                        "name": "updateTime",
+                        "type": "string",
+                        "description": "修改时间",
+                        "format": "date-time"
+                      },
+                      "remark": {
+                        "name": "remark",
+                        "type": "string",
+                        "description": "备注"
+                      },
+                      "delFlag": {
+                        "name": "delFlag",
+                        "type": "boolean",
+                        "description": "是否逻辑删除"
+                      },
+                      "authFlag": {
+                        "name": "authFlag",
+                        "type": "boolean",
+                        "description": "是否是权限菜单，权限菜单：不显示，只代表菜单权限"
+                      },
+                      "version": {
+                        "name": "version",
+                        "type": "integer",
+                        "description": "乐观锁",
+                        "format": "int32"
+                      },
+                      "parentId": {
+                        "name": "parentId",
+                        "type": "integer",
+                        "description": "父节点id（顶级则为0）",
+                        "format": "int64"
+                      },
+                      "showFlag": {
+                        "name": "showFlag",
+                        "type": "boolean",
+                        "description": "是否显示在 左侧的菜单栏里面，如果为 false，也可以通过 $router.push()访问到"
+                      },
+                      "updateId": {
+                        "name": "updateId",
+                        "type": "integer",
+                        "description": "修改人id",
+                        "format": "int64"
+                      },
+                      "path": {
+                        "name": "path",
+                        "type": "string",
+                        "description": "页面的 path，备注：相同父菜单下，子菜单 path不能重复"
+                      },
+                      "router": {
+                        "name": "router",
+                        "type": "string",
+                        "description": "路由"
                       },
                       "createTime": {
                         "name": "createTime",
@@ -1453,16 +1672,10 @@
                         "description": "创建人id",
                         "format": "int64"
                       },
-                      "updateTime": {
-                        "name": "updateTime",
+                      "name": {
+                        "name": "name",
                         "type": "string",
-                        "description": "修改时间",
-                        "format": "date-time"
-                      },
-                      "remark": {
-                        "name": "remark",
-                        "type": "string",
-                        "description": "备注"
+                        "description": "菜单名"
                       },
                       "id": {
                         "name": "id",
@@ -1470,27 +1683,15 @@
                         "description": "主键id",
                         "format": "int64"
                       },
-                      "delFlag": {
-                        "name": "delFlag",
+                      "firstFlag": {
+                        "name": "firstFlag",
                         "type": "boolean",
-                        "description": "是否逻辑删除"
-                      },
-                      "version": {
-                        "name": "version",
-                        "type": "integer",
-                        "description": "乐观锁",
-                        "format": "int32"
+                        "description": "是否是起始页面，备注：只能存在一个 firstFlag === true 的菜单"
                       },
                       "enableFlag": {
                         "name": "enableFlag",
                         "type": "boolean",
                         "description": "是否启用"
-                      },
-                      "parentId": {
-                        "name": "parentId",
-                        "type": "integer",
-                        "description": "父节点id（顶级则为0）",
-                        "format": "int64"
                       }
                     }
                   }
@@ -2578,15 +2779,16 @@
                     "type": "object",
                     "description": "数据",
                     "fieldMap": {
-                      "avatarUri": {
-                        "name": "avatarUri",
-                        "type": "string",
-                        "description": "头像uri"
-                      },
                       "wxOpenId": {
                         "name": "wxOpenId",
                         "type": "string",
                         "description": "微信 openId，可以为空"
+                      },
+                      "avatarFileId": {
+                        "name": "avatarFileId",
+                        "type": "integer",
+                        "description": "头像 fileId（文件主键 id）",
+                        "format": "int64"
                       },
                       "bio": {
                         "name": "bio",
@@ -4053,7 +4255,7 @@
                       "type": {
                         "name": "type",
                         "type": "string",
-                        "description": "字典类型：1 字典 2 字典项"
+                        "description": "字典类型"
                       },
                       "version": {
                         "name": "version",
@@ -4161,8 +4363,7 @@
           "type": {
             "name": "type",
             "type": "string",
-            "description": "类型：1 字典 2 字典项",
-            "format": "byte"
+            "description": "字典类型"
           },
           "dictKey": {
             "name": "dictKey",
@@ -4253,7 +4454,7 @@
                       "type": {
                         "name": "type",
                         "type": "string",
-                        "description": "字典类型：1 字典 2 字典项"
+                        "description": "字典类型"
                       },
                       "version": {
                         "name": "version",
@@ -4368,8 +4569,7 @@
           "type": {
             "name": "type",
             "type": "string",
-            "description": "类型：1 字典 2 字典项",
-            "format": "byte"
+            "description": "字典类型"
           },
           "dictKey": {
             "name": "dictKey",
@@ -4492,7 +4692,7 @@
                               "type": {
                                 "name": "type",
                                 "type": "string",
-                                "description": "字典类型：1 字典 2 字典项"
+                                "description": "字典类型"
                               },
                               "version": {
                                 "name": "version",
@@ -4646,7 +4846,7 @@
             "name": "type",
             "type": "string",
             "required": true,
-            "description": "字典类型：1 字典 2 字典项"
+            "description": "字典类型"
           },
           "dictKey": {
             "name": "dictKey",
@@ -4759,6 +4959,88 @@
                 "name": "data",
                 "type": "string",
                 "description": "数据"
+              },
+              "service": {
+                "name": "service",
+                "type": "string",
+                "description": "服务名"
+              },
+              "successFlag": {
+                "name": "successFlag",
+                "type": "boolean",
+                "description": "服务器是否收到请求，只会返回 true"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/sys/dict/listByDictKey": {
+      "path": "/sys/dict/listByDictKey",
+      "method": "post",
+      "tag": "字典-管理",
+      "group": "SysDict",
+      "summary": "通过：dictKey获取字典项集合，备注：会进行缓存",
+      "contentType": "application/json",
+      "requestBody": {
+        "className": "SysDictListByDictKeyDTO",
+        "type": "object",
+        "required": false,
+        "fieldMap": {
+          "dictKey": {
+            "name": "dictKey",
+            "type": "string",
+            "required": true,
+            "description": "字典 key"
+          }
+        },
+        "requiredFieldName": [
+          "dictKey"
+        ]
+      },
+      "response": {
+        "className": "ApiResultVOSetDictVO",
+        "fieldMap": {
+          "ApiResultVOSetDictVO": {
+            "className": "ApiResultVOSetDictVO",
+            "type": "object",
+            "description": "统一响应实体类",
+            "fieldMap": {
+              "msg": {
+                "name": "msg",
+                "type": "string",
+                "description": "响应描述"
+              },
+              "code": {
+                "name": "code",
+                "type": "integer",
+                "description": "响应代码，成功返回：200",
+                "format": "int32"
+              },
+              "data": {
+                "className": "DictVO",
+                "name": "data",
+                "description": "数据",
+                "fieldMap": {
+                  "DictVO": {
+                    "className": "DictVO",
+                    "type": "object",
+                    "fieldMap": {
+                      "name": {
+                        "name": "name",
+                        "type": "string",
+                        "description": "显示用"
+                      },
+                      "id": {
+                        "name": "id",
+                        "type": "integer",
+                        "description": "传值用",
+                        "format": "int64"
+                      }
+                    }
+                  }
+                },
+                "arrFlag": true
               },
               "service": {
                 "name": "service",

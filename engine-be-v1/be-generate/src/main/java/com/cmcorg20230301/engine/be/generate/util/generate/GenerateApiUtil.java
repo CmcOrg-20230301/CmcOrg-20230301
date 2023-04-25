@@ -5,6 +5,7 @@ import cn.hutool.core.text.CharPool;
 import cn.hutool.core.text.StrBuilder;
 import cn.hutool.core.util.BooleanUtil;
 import cn.hutool.core.util.StrUtil;
+import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.cmcorg20230301.engine.be.generate.model.bo.BeApi;
 import com.cmcorg20230301.engine.be.model.model.dto.MyOrderDTO;
@@ -22,8 +23,8 @@ import java.util.*;
 public class GenerateApiUtil {
 
     // 读取：接口的地址
-    //    private static final String SPRING_DOC_ENDPOINT = "http://43.154.37.130:10001/v3/api-docs/be";
-    private static final String SPRING_DOC_ENDPOINT = "http://127.0.0.1:10001/v3/api-docs/be";
+    private static final String SPRING_DOC_ENDPOINT = "http://43.154.37.130:10001/v3/api-docs/be";
+    //    private static final String SPRING_DOC_ENDPOINT = "http://127.0.0.1:10001/v3/api-docs/be";
 
     private static final String SYSTEM_USER_DIR = System.getProperty("user.dir"); // 例如：D:\GitHub\CmcOrg-20230301
 
@@ -70,7 +71,7 @@ public class GenerateApiUtil {
 
         HashMap<String, HashMap<String, BeApi>> apiMap = SpringDocUtil.get(springDocEndpoint);
 
-        //        System.out.println(JSONUtil.toJsonStr(apiMap));
+        System.out.println(JSONUtil.toJsonStr(apiMap));
 
         log.info("清除：api文件夹：{}", API_PATH);
         FileUtil.del(API_PATH);
@@ -142,7 +143,6 @@ public class GenerateApiUtil {
         }
 
         String httpStr; // 请求的类型
-        String returnTypeStr = beApi.getReturnTypeStr(); // 返回的类型
 
         if (beApi.getPath().contains("infoById")) {
 
@@ -160,6 +160,12 @@ public class GenerateApiUtil {
 
             httpStr = "myPost";
 
+        }
+
+        String returnTypeStr = beApi.getReturnTypeStr(); // 返回的类型
+
+        if (StrUtil.isBlank(returnTypeStr)) {
+            returnTypeStr = "void";
         }
 
         strBuilder.append(StrUtil
@@ -210,14 +216,22 @@ public class GenerateApiUtil {
                     BeApi.BeApiSchema recordsBeApiSchema =
                         (BeApi.BeApiSchema)records.getFieldMap().get(records.getClassName());
 
-                    beApi.setReturnTypeStr(recordsBeApiSchema.getClassName());
+                    if (BooleanUtil.isTrue(dataBeApiSchema.getArrFlag())) {
+                        beApi.setReturnTypeStr(recordsBeApiSchema.getClassName() + "[]");
+                    } else {
+                        beApi.setReturnTypeStr(recordsBeApiSchema.getClassName());
+                    }
 
                     // 生成：interface
                     generateInterface(beApi, strBuilder, classNameSet, recordsBeApiSchema, "vo-page：");
 
                 } else {
 
-                    beApi.setReturnTypeStr(dataRealBeApiSchema.getClassName());
+                    if (BooleanUtil.isTrue(dataBeApiSchema.getArrFlag())) {
+                        beApi.setReturnTypeStr(dataRealBeApiSchema.getClassName() + "[]");
+                    } else {
+                        beApi.setReturnTypeStr(dataRealBeApiSchema.getClassName());
+                    }
 
                     // 生成：interface
                     generateInterface(beApi, strBuilder, classNameSet, dataRealBeApiSchema, "vo：");
@@ -228,7 +242,11 @@ public class GenerateApiUtil {
 
                 BeApi.BeApiParameter dataBeApiParameter = (BeApi.BeApiParameter)data;
 
-                beApi.setReturnTypeStr(dataBeApiParameter.getType());
+                if (BooleanUtil.isTrue(dataBeApiParameter.getArrFlag())) {
+                    beApi.setReturnTypeStr(dataBeApiParameter.getType() + "[]");
+                } else {
+                    beApi.setReturnTypeStr(dataBeApiParameter.getType());
+                }
 
             }
 

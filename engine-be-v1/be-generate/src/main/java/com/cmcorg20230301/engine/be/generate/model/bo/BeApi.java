@@ -59,7 +59,7 @@ public class BeApi {
     /**
      * 生成前端 api时用，api接口需要返回的类型
      */
-    private String returnTypeStr = "void";
+    private String returnTypeStr;
 
     /**
      * 字段对象的接口类
