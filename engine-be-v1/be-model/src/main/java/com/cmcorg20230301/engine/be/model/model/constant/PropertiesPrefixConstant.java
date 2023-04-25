@@ -17,12 +17,14 @@ public interface PropertiesPrefixConstant {
 
     String WX = PRE_BE + "wx"; // 微信相关
 
-    String MINIO = "minio"; // minio文件系统相关
-
     String SMS = PRE_BE + "sms"; // 短信服务相关
 
     String SMS_TENCENT = SMS + ".tencent"; // 腾讯短信相关
 
     String SMS_ALI_YUN = SMS + ".aliyun"; // 阿里云短信相关
+
+    String FILE = PRE_BE + "file"; // 文件相关
+
+    String MINIO = FILE + ".minio"; // minio文件相关
 
 }

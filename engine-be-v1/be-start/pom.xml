@@ -14,32 +14,40 @@
 
     <dependencies>
 
-        <!-- be-sms -->
+        <!-- be-file -->
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>be-sms</artifactId>
-            <version>${project.version}</version>
+            <artifactId>be-file</artifactId>
+        </dependency>
+
+        <!-- be-sms-tencent -->
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>be-sms-tencent</artifactId>
         </dependency>
 
         <!-- be-sms-aliyun -->
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>be-sms-aliyun</artifactId>
-            <version>${project.version}</version>
+        </dependency>
+
+        <!-- be-sms -->
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>be-sms</artifactId>
         </dependency>
 
         <!-- be-netty-websocket -->
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>be-netty-websocket</artifactId>
-            <version>${project.version}</version>
         </dependency>
 
         <!-- be-netty-boot -->
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>be-netty-boot</artifactId>
-            <version>${project.version}</version>
         </dependency>
 
         <!-- be-request -->

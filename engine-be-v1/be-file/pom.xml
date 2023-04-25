@@ -9,21 +9,27 @@
         <version>2023.3.1</version>
     </parent>
 
-    <artifactId>be-sms</artifactId>
-    <description>短信服务相关</description>
+    <artifactId>be-file</artifactId>
+    <description>文件相关</description>
 
     <dependencies>
 
-        <!-- be-sms-tencent -->
+        <!-- nacos-config -->
         <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>be-sms-tencent</artifactId>
+            <groupId>com.alibaba.cloud</groupId>
+            <artifactId>spring-cloud-starter-alibaba-nacos-config</artifactId>
         </dependency>
 
-        <!-- be-sms-aliyun -->
+        <!-- be-util -->
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>be-sms-aliyun</artifactId>
+            <artifactId>be-util</artifactId>
+        </dependency>
+
+        <!-- be-model -->
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>be-model</artifactId>
         </dependency>
 
     </dependencies>

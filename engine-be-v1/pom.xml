@@ -38,7 +38,6 @@
         <module>be-kafka</module>
         <module>be-log</module>
         <module>be-model</module>
-        <module>be-sms-tencent</module>
         <module>be-wx</module>
         <module>be-xxl-job</module>
         <module>be-gateway</module>
@@ -57,17 +56,26 @@
         <module>be-netty-boot</module>
         <module>be-generate</module>
         <module>be-netty-websocket</module>
-        <module>be-sms-aliyun</module>
         <module>be-sms</module>
+        <module>be-sms-aliyun</module>
+        <module>be-sms-tencent</module>
+        <module>be-file</module>
     </modules>
 
     <dependencyManagement>
         <dependencies>
 
-            <!-- be-sms -->
+            <!-- be-file -->
             <dependency>
                 <groupId>${project.groupId}</groupId>
-                <artifactId>be-sms</artifactId>
+                <artifactId>be-file</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <!-- be-sms-tencent -->
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>be-sms-tencent</artifactId>
                 <version>${project.version}</version>
             </dependency>
 
@@ -75,6 +83,13 @@
             <dependency>
                 <groupId>${project.groupId}</groupId>
                 <artifactId>be-sms-aliyun</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <!-- be-sms -->
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>be-sms</artifactId>
                 <version>${project.version}</version>
             </dependency>
 
@@ -187,13 +202,6 @@
             <dependency>
                 <groupId>${project.groupId}</groupId>
                 <artifactId>be-wx</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-
-            <!-- be-sms-tencent -->
-            <dependency>
-                <groupId>${project.groupId}</groupId>
-                <artifactId>be-sms-tencent</artifactId>
                 <version>${project.version}</version>
             </dependency>
 
