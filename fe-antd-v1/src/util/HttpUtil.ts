@@ -5,9 +5,9 @@ import {SignOut} from "./UserUtil";
 import axios, {AxiosInstance, AxiosRequestConfig, AxiosResponse, CreateAxiosDefaults} from "axios";
 import {RequestData} from '@ant-design/pro-components';
 
-export const TIMEOUT_MSG = '请求超时，请重试'
-export const BASE_ERROR_MSG = "请求错误："
-export const REQUEST_ERROR_MSG = "请求失败：服务器未启动"
+const TIMEOUT_MSG = '请求超时，请重试'
+const BASE_ERROR_MSG = "请求错误："
+const REQUEST_ERROR_MSG = "请求失败：服务器未启动"
 
 let hiddenErrorMsgFlag = false
 

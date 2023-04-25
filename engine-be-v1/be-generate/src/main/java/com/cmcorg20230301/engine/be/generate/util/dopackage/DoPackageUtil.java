@@ -149,16 +149,17 @@ public class DoPackageUtil {
 
             projectPath = projectPath + "/fe-antd-v1";
 
+            String viteBuildPath = projectPath + "/dist";
+
+            FileUtil.del(viteBuildPath); // 先删除：原来打包的文件夹
+            File file = FileUtil.mkdir(viteBuildPath); // 再创建文件夹
+
             RuntimeUtil.execForStr("cmd", "/c", "cd " + projectPath + " && npm run build");
 
             timeNumber = System.currentTimeMillis() - timeNumber;
             String timeStr = DateUtil.formatBetween(timeNumber);
 
             System.out.println("前端打包 ↑ 耗时：" + timeStr);
-
-            String viteBuildPath = projectPath + "/dist";
-
-            File file = FileUtil.newFile(viteBuildPath);
 
             long size = FileUtil.size(file);
 

@@ -25,7 +25,7 @@ export default ({mode}) =>
         server: {
             proxy: {
                 '/api': {
-                    target: window.apiUrl,
+                    target: 'http://localhost:10001',
                     changeOrigin: true,
                     rewrite: (path) => path.replace(/^\/api/, ''),
                 },
