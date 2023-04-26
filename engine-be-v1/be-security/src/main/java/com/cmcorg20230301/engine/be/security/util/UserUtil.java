@@ -212,10 +212,10 @@ public class UserUtil {
 
         Set<SysMenuDO> resultSet = new HashSet<>();
 
-        for (Long item : roleIdSet) {
+        // 获取：角色关联的菜单集合 map
+        Map<Long, Set<SysMenuDO>> roleRefMenuSetMap = getRoleRefMenuSetMap(redisKeyEnum);
 
-            // 获取：角色关联的菜单集合 map
-            Map<Long, Set<SysMenuDO>> roleRefMenuSetMap = getRoleRefMenuSetMap(type, redisKeyEnum, item);
+        for (Long item : roleIdSet) {
 
             // 获取：角色关联的菜单集合
             Set<SysMenuDO> roleRefMenuSet = roleRefMenuSetMap.get(item);
@@ -241,7 +241,7 @@ public class UserUtil {
      * 获取：角色关联的菜单集合 map
      */
     @NotNull
-    private static Map<Long, Set<SysMenuDO>> getRoleRefMenuSetMap(int type, RedisKeyEnum redisKeyEnum, Long item) {
+    private static Map<Long, Set<SysMenuDO>> getRoleRefMenuSetMap(RedisKeyEnum redisKeyEnum) {
 
         return MyCacheUtil.getMap(redisKeyEnum, CacheHelper.getDefaultLongSetMap(), () -> {
 
@@ -261,12 +261,12 @@ public class UserUtil {
 
             Map<Long, Set<SysMenuDO>> resultMap = MapUtil.newHashMap();
 
-            for (Long subItem : allRoleIdSet) {
+            for (Long item : allRoleIdSet) {
 
                 // 通过：roleId，获取：菜单 set
-                Set<SysMenuDO> sysMenuDOSet = doGetMenuSetByRoleId(type, item);
+                Set<SysMenuDO> sysMenuDOSet = doGetMenuSetByRoleId(redisKeyEnum, item);
 
-                resultMap.put(subItem, sysMenuDOSet); // 添加到：map里面
+                resultMap.put(item, sysMenuDOSet); // 添加到：map里面
 
             }
 
@@ -280,7 +280,7 @@ public class UserUtil {
      * 通过：roleId，获取：菜单 set
      */
     @Nullable
-    private static Set<SysMenuDO> doGetMenuSetByRoleId(int type, Long roleId) {
+    private static Set<SysMenuDO> doGetMenuSetByRoleId(RedisKeyEnum redisKeyEnum, Long roleId) {
 
         // 获取：角色关联的菜单 idSet
         Set<Long> menuIdSet = getRoleRefMenuIdSet(roleId);
@@ -291,7 +291,8 @@ public class UserUtil {
 
         // 获取：所有菜单
         List<SysMenuDO> allSysMenuDOList;
-        if (type == 1) {
+
+        if (RedisKeyEnum.ROLE_ID_REF_MENU_SET_ONE_CACHE.equals(redisKeyEnum)) {
 
             allSysMenuDOList = ChainWrappers.lambdaQueryChain(sysMenuMapper)
                 .select(BaseEntity::getId, BaseEntityTree::getParentId, SysMenuDO::getPath, SysMenuDO::getIcon,
@@ -312,15 +313,15 @@ public class UserUtil {
         }
 
         // 开始进行匹配，组装返回值
-        Set<SysMenuDO> resultSysMenuDOSet =
+        Set<SysMenuDO> resultSet =
             allSysMenuDOList.stream().filter(it -> menuIdSet.contains(it.getId())).collect(Collectors.toSet());
 
-        if (resultSysMenuDOSet.size() == 0) {
+        if (resultSet.size() == 0) {
             return null;
         }
 
         // 已经添加了 menuIdSet
-        Set<Long> addMenuIdSet = resultSysMenuDOSet.stream().map(BaseEntity::getId).collect(Collectors.toSet());
+        Set<Long> resultMenuIdSet = resultSet.stream().map(BaseEntity::getId).collect(Collectors.toSet());
 
         // 通过：parentId分组的 map
         Map<Long, Set<SysMenuDO>> groupMenuParentIdMap = allSysMenuDOList.stream().collect(
@@ -328,10 +329,15 @@ public class UserUtil {
 
         // 再添加 menuIdSet下的所有子级菜单
         for (Long item : menuIdSet) {
-            getMenuListByUserIdNext(resultSysMenuDOSet, item, addMenuIdSet, groupMenuParentIdMap);
+            getMenuListByUserIdNext(resultSet, item, resultMenuIdSet, groupMenuParentIdMap);
         }
 
-        return resultSysMenuDOSet;
+        // 根据底级节点 list，逆向生成整棵树 list
+        resultSet = MyTreeUtil.getFullTreeSet(resultSet, allSysMenuDOList);
+
+        // 勾选：上级菜单，自动包含全部子级菜单
+        // 勾选：子级菜单，自动包含全部上级菜单
+        return resultSet;
 
     }
 
@@ -339,7 +345,7 @@ public class UserUtil {
      * 再添加 menuIdSet的所有子级菜单
      */
     private static void getMenuListByUserIdNext(Set<SysMenuDO> resultSysMenuDOSet, Long parentId,
-        Set<Long> addMenuIdSet, Map<Long, Set<SysMenuDO>> groupMenuParentIdMap) {
+        Set<Long> resultMenuIdSet, Map<Long, Set<SysMenuDO>> groupMenuParentIdMap) {
 
         // 获取：自己下面的子级
         Set<SysMenuDO> sysMenuDOSet = groupMenuParentIdMap.get(parentId);
@@ -350,12 +356,14 @@ public class UserUtil {
 
         for (SysMenuDO item : sysMenuDOSet) {
 
-            if (BooleanUtil.isFalse(addMenuIdSet.contains(item.getId()))) { // 不能重复添加到 返回值里
-                addMenuIdSet.add(item.getId());
+            if (BooleanUtil.isFalse(resultMenuIdSet.contains(item.getId()))) { // 不能重复添加到 返回值里
+
+                resultMenuIdSet.add(item.getId());
                 resultSysMenuDOSet.add(item);
+
             }
 
-            getMenuListByUserIdNext(resultSysMenuDOSet, item.getId(), addMenuIdSet, groupMenuParentIdMap); // 继续匹配下一级
+            getMenuListByUserIdNext(resultSysMenuDOSet, item.getId(), resultMenuIdSet, groupMenuParentIdMap); // 继续匹配下一级
 
         }
 
