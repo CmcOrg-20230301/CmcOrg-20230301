@@ -77,27 +77,27 @@ public class ApiTestSignSignInNameUtil {
         // 登录名-用户名账号密码登录
         jwt = signInNameSignIn(apiEndpoint, newSignInName, newPasswordTemp, rsaPublicKey);
 
-        //        // 绑定邮箱-发送验证码
-        //        emailBindAccountSendCode(apiEndpoint, jwt, email);
-        //
-        //        String code = ApiTestHelper.getStringFromScanner("请输入验证码");
-        //
-        //        // 绑定邮箱
-        //        emailBindAccount(apiEndpoint, jwt, email, code);
+        // 绑定邮箱-发送验证码
+        emailBindAccountSendCode(apiEndpoint, jwt, email);
 
-        //        // 登录名-用户名账号密码登录
-        //        jwt = signInNameSignIn(apiEndpoint, newSignInName, newPasswordTemp, rsaPublicKey);
+        String code = ApiTestHelper.getStrFromScanner("请输入验证码");
 
-        //        // 绑定手机号-发送验证码
-        //        phoneBindAccountSendCode(apiEndpoint, jwt, phone);
-        //
-        //        String code = ApiTestHelper.getStringFromScanner("请输入验证码");
-        //
-        //        // 绑定手机号
-        //        phoneBindAccount(apiEndpoint, jwt, phone, code);
+        // 绑定邮箱
+        emailBindAccount(apiEndpoint, jwt, email, code);
 
-        //        // 登录名-用户名账号密码登录
-        //        jwt = signInNameSignIn(apiEndpoint, newSignInName, newPasswordTemp, rsaPublicKey);
+        // 登录名-用户名账号密码登录
+        jwt = signInNameSignIn(apiEndpoint, newSignInName, newPasswordTemp, rsaPublicKey);
+
+        // 绑定手机号-发送验证码
+        phoneBindAccountSendCode(apiEndpoint, jwt, phone);
+
+        code = ApiTestHelper.getStrFromScanner("请输入验证码");
+
+        // 绑定手机号
+        phoneBindAccount(apiEndpoint, jwt, phone, code);
+
+        // 登录名-用户名账号密码登录
+        jwt = signInNameSignIn(apiEndpoint, newSignInName, newPasswordTemp, rsaPublicKey);
 
         // 菜单-获取：当前用户绑定的菜单
         ApiTestSysMenuUtil.sysMenuUserSelfMenuList(apiEndpoint, jwt);

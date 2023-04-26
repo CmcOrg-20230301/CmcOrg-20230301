@@ -58,7 +58,7 @@ public class SignSignInNameServiceImpl implements SignSignInNameService {
     @Override
     public String updatePassword(SignSignInNameUpdatePasswordDTO dto) {
 
-        SignUtil.checkWillError(PRE_REDIS_KEY_ENUM, null); // 检查：是否可以进行操作
+        SignUtil.checkWillError(PRE_REDIS_KEY_ENUM, null, false); // 检查：是否可以进行操作
 
         return SignUtil.updatePassword(dto.getNewPassword(), dto.getOriginNewPassword(), PRE_REDIS_KEY_ENUM, null,
             dto.getOldPassword());
@@ -71,7 +71,7 @@ public class SignSignInNameServiceImpl implements SignSignInNameService {
     @Override
     public String updateAccount(SignSignInNameUpdateAccountDTO dto) {
 
-        SignUtil.checkWillError(PRE_REDIS_KEY_ENUM, null); // 检查：是否可以进行操作
+        SignUtil.checkWillError(PRE_REDIS_KEY_ENUM, null, false); // 检查：是否可以进行操作
 
         return SignUtil.updateAccount(null, null, PRE_REDIS_KEY_ENUM, dto.getNewSignInName(), dto.getCurrentPassword());
 
@@ -83,7 +83,7 @@ public class SignSignInNameServiceImpl implements SignSignInNameService {
     @Override
     public String signDelete(SignSignInNameSignDeleteDTO dto) {
 
-        SignUtil.checkWillError(PRE_REDIS_KEY_ENUM, null); // 检查：是否可以进行操作
+        SignUtil.checkWillError(PRE_REDIS_KEY_ENUM, null, false); // 检查：是否可以进行操作
 
         return SignUtil.signDelete(null, PRE_REDIS_KEY_ENUM, dto.getCurrentPassword());
 

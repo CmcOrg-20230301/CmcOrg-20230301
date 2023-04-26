@@ -1070,9 +1070,14 @@ public class SignUtil {
      * 检查：是否可以进行操作：根据用户有无手机号，有无邮箱，有无密码，来做判断
      * 敏感操作都需要调用此方法，例如：修改登录名，修改邮箱，修改手机号，修改绑定的微信，忘记密码，账号注销，绑定邮箱，绑定手机，绑定微信
      *
-     * @param account 一般情况为 null，目前只有忘记密码的时候，才会传值
+     * @param account      账号信息，一般情况为 null，目前只有忘记密码的时候，才会传值
+     * @param notCheckFlag 是否不检查，一般情况为 false，目前，在绑定邮箱，修改邮箱的时候，才会为 true，目的：不检查：是否有手机
      */
-    public static void checkWillError(RedisKeyEnum redisKeyEnum, String account) {
+    public static void checkWillError(RedisKeyEnum redisKeyEnum, String account, boolean notCheckFlag) {
+
+        if (notCheckFlag) {
+            return;
+        }
 
         Long userId = null;
 
@@ -1102,7 +1107,7 @@ public class SignUtil {
 
         if (BooleanUtil.isFalse(legalFlag)) { // 如果不合法
 
-            ApiResultVO.error(BaseBizCodeEnum.ILLEGAL_REQUEST);
+            ApiResultVO.error(BaseBizCodeEnum.ILLEGAL_REQUEST.getMsg() + "：" + redisKeyEnum.name());
 
         }
 
