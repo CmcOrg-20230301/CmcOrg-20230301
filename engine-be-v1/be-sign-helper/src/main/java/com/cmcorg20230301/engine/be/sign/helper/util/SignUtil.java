@@ -28,7 +28,6 @@ import com.cmcorg20230301.engine.be.security.model.entity.SysUserInfoDO;
 import com.cmcorg20230301.engine.be.security.model.vo.ApiResultVO;
 import com.cmcorg20230301.engine.be.security.properties.SecurityProperties;
 import com.cmcorg20230301.engine.be.security.util.*;
-import com.cmcorg20230301.engine.be.sign.helper.configuration.AbstractSignHelperSecurityPermitAllConfiguration;
 import com.cmcorg20230301.engine.be.sign.helper.exception.BizCodeEnum;
 import com.cmcorg20230301.engine.be.util.util.NicknameUtil;
 import com.cmcorg20230301.engine.be.util.util.VoidFunc2;
@@ -41,7 +40,6 @@ import org.redisson.api.RedissonClient;
 import org.springframework.stereotype.Component;
 
 import java.time.Duration;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
@@ -56,20 +54,14 @@ public class SignUtil {
     private static SysRoleRefUserMapper sysRoleRefUserMapper;
     private static RedissonClient redissonClient;
     private static SecurityProperties securityProperties;
-    private static List<AbstractSignHelperSecurityPermitAllConfiguration>
-        abstractSignHelperSecurityPermitAllConfigurationList;
 
     public SignUtil(SysUserInfoMapper sysUserInfoMapper, RedissonClient redissonClient, SysUserMapper sysUserMapper,
-        SecurityProperties securityProperties,
-        List<AbstractSignHelperSecurityPermitAllConfiguration> abstractSignHelperSecurityPermitAllConfigurationList,
-        SysRoleRefUserMapper sysRoleRefUserMapper) {
+        SecurityProperties securityProperties, SysRoleRefUserMapper sysRoleRefUserMapper) {
 
         SignUtil.sysUserInfoMapper = sysUserInfoMapper;
         SignUtil.sysUserMapper = sysUserMapper;
         SignUtil.redissonClient = redissonClient;
         SignUtil.securityProperties = securityProperties;
-        SignUtil.abstractSignHelperSecurityPermitAllConfigurationList =
-            abstractSignHelperSecurityPermitAllConfigurationList;
         SignUtil.sysRoleRefUserMapper = sysRoleRefUserMapper;
 
     }
@@ -1075,16 +1067,40 @@ public class SignUtil {
     }
 
     /**
-     * 检查等级
-     * TODO 改成：根据用户有无手机号，有无邮箱，有无密码，来做判断
+     * 检查：是否可以进行操作：根据用户有无手机号，有无邮箱，有无密码，来做判断
      * 敏感操作都需要调用此方法，例如：修改登录名，修改邮箱，修改手机号，修改绑定的微信，忘记密码，账号注销，绑定邮箱，绑定手机，绑定微信
+     *
+     * @param account 一般情况为 null，目前只有忘记密码的时候，才会传值
      */
-    public static void checkSignLevel(int signLevel) {
+    public static void checkWillError(RedisKeyEnum redisKeyEnum, String account) {
 
-        boolean anyMatch =
-            abstractSignHelperSecurityPermitAllConfigurationList.stream().anyMatch(it -> it.getSignLevel() > signLevel);
+        Long userId = null;
 
-        if (anyMatch) {
+        if (StrUtil.isBlank(account)) {
+            userId = UserUtil.getCurrentUserIdNotAdmin();
+        }
+
+        boolean legalFlag = false; // 是否合法
+
+        if (redisKeyEnum.equals(RedisKeyEnum.PRE_SIGN_IN_NAME)) { // 如果是：登录名
+
+            // 判断：密码不能为空，并且不能有邮箱，手机
+            legalFlag = ChainWrappers.lambdaQueryChain(sysUserMapper).eq(userId != null, BaseEntity::getId, userId)
+                .ne(SysUserDO::getPassword, "").eq(SysUserDO::getEmail, "").eq(SysUserDO::getPhone, "").exists();
+
+        } else if (redisKeyEnum.equals(RedisKeyEnum.PRE_EMAIL)) { // 如果是：邮箱
+
+            // 判断：不能有手机
+            legalFlag = ChainWrappers.lambdaQueryChain(sysUserMapper).eq(userId != null, BaseEntity::getId, userId)
+                .eq(userId == null, SysUserDO::getEmail, account).eq(SysUserDO::getPhone, "").exists();
+
+        } else if (redisKeyEnum.equals(RedisKeyEnum.PRE_PHONE)) { // 如果是：手机号
+
+            legalFlag = true; // 目前手机号操作，都合法
+
+        }
+
+        if (BooleanUtil.isFalse(legalFlag)) { // 如果不合法
 
             ApiResultVO.error(BaseBizCodeEnum.ILLEGAL_REQUEST);
 

@@ -13,18 +13,15 @@ import com.cmcorg20230301.engine.be.wx.model.vo.WxOpenIdVO;
 import com.cmcorg20230301.engine.be.wx.model.vo.WxPhoneByCodeVO;
 import com.cmcorg20230301.engine.be.wx.properties.WxProperties;
 import org.jetbrains.annotations.NotNull;
-import org.redisson.api.RedissonClient;
 import org.springframework.stereotype.Component;
 
 @Component
 public class WxUtil {
 
-    private static RedissonClient redissonClient;
     private static WxProperties wxProperties;
 
-    public WxUtil(RedissonClient redissonClient, WxProperties wxProperties) {
+    public WxUtil(WxProperties wxProperties) {
 
-        WxUtil.redissonClient = redissonClient;
         WxUtil.wxProperties = wxProperties;
 
     }

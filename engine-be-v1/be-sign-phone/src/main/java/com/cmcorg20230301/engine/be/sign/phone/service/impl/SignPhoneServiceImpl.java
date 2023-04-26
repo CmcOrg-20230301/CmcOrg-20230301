@@ -11,7 +11,6 @@ import com.cmcorg20230301.engine.be.security.properties.SecurityProperties;
 import com.cmcorg20230301.engine.be.security.util.UserUtil;
 import com.cmcorg20230301.engine.be.sign.helper.exception.BizCodeEnum;
 import com.cmcorg20230301.engine.be.sign.helper.util.SignUtil;
-import com.cmcorg20230301.engine.be.sign.phone.configuration.SignPhoneSecurityPermitAllConfiguration;
 import com.cmcorg20230301.engine.be.sign.phone.model.dto.*;
 import com.cmcorg20230301.engine.be.sign.phone.service.SignPhoneService;
 import com.cmcorg20230301.engine.be.sms.base.util.SmsUtil;
@@ -88,6 +87,8 @@ public class SignPhoneServiceImpl implements SignPhoneService {
     @Override
     public String updatePasswordSendCode() {
 
+        SignUtil.checkWillError(PRE_REDIS_KEY_ENUM, null); // 检查：是否可以进行操作
+
         return SignUtil
             .getAccountAndSendCode(PRE_REDIS_KEY_ENUM, (code, account) -> SmsUtil.sendUpdatePassword(account, code));
 
@@ -99,6 +100,8 @@ public class SignPhoneServiceImpl implements SignPhoneService {
     @Override
     public String updatePassword(SignPhoneUpdatePasswordDTO dto) {
 
+        SignUtil.checkWillError(PRE_REDIS_KEY_ENUM, null); // 检查：是否可以进行操作
+
         return SignUtil
             .updatePassword(dto.getNewPassword(), dto.getOriginNewPassword(), PRE_REDIS_KEY_ENUM, dto.getCode(), null);
 
@@ -109,6 +112,8 @@ public class SignPhoneServiceImpl implements SignPhoneService {
      */
     @Override
     public String updateAccountSendCode() {
+
+        SignUtil.checkWillError(PRE_REDIS_KEY_ENUM, null); // 检查：是否可以进行操作
 
         String currentUserPhoneNotAdmin = UserUtil.getCurrentUserPhoneNotAdmin();
 
@@ -126,6 +131,8 @@ public class SignPhoneServiceImpl implements SignPhoneService {
     @Override
     public String updateAccount(SignPhoneUpdateAccountDTO dto) {
 
+        SignUtil.checkWillError(PRE_REDIS_KEY_ENUM, null); // 检查：是否可以进行操作
+
         return SignUtil
             .updateAccount(dto.getOldPhoneCode(), dto.getNewPhoneCode(), PRE_REDIS_KEY_ENUM, dto.getNewPhone(), null);
 
@@ -136,6 +143,8 @@ public class SignPhoneServiceImpl implements SignPhoneService {
      */
     @Override
     public String forgetPasswordSendCode(PhoneNotBlankDTO dto) {
+
+        SignUtil.checkWillError(PRE_REDIS_KEY_ENUM, dto.getPhone()); // 检查：是否可以进行操作
 
         String key = PRE_REDIS_KEY_ENUM + dto.getPhone();
 
@@ -152,6 +161,8 @@ public class SignPhoneServiceImpl implements SignPhoneService {
     @Override
     public String forgetPassword(SignPhoneForgetPasswordDTO dto) {
 
+        SignUtil.checkWillError(PRE_REDIS_KEY_ENUM, dto.getPhone()); // 检查：是否可以进行操作
+
         return SignUtil
             .forgetPassword(dto.getNewPassword(), dto.getOriginNewPassword(), dto.getCode(), PRE_REDIS_KEY_ENUM,
                 dto.getPhone(), ChainWrappers.lambdaQueryChain(sysUserMapper).eq(SysUserDO::getPhone, dto.getPhone()));
@@ -164,8 +175,7 @@ public class SignPhoneServiceImpl implements SignPhoneService {
     @Override
     public String signDeleteSendCode() {
 
-        // 如果有更高级的账号注销-发送验证码，则禁用低级的账号注销-发送验证码
-        SignUtil.checkSignLevel(SignPhoneSecurityPermitAllConfiguration.SIGN_LEVEL);
+        SignUtil.checkWillError(PRE_REDIS_KEY_ENUM, null); // 检查：是否可以进行操作
 
         return SignUtil.getAccountAndSendCode(PRE_REDIS_KEY_ENUM, (code, account) -> SmsUtil.sendDelete(account, code));
 
@@ -177,8 +187,7 @@ public class SignPhoneServiceImpl implements SignPhoneService {
     @Override
     public String signDelete(NotBlankCodeDTO dto) {
 
-        // 如果有更高级的账号注销，则禁用低级的账号注销
-        SignUtil.checkSignLevel(SignPhoneSecurityPermitAllConfiguration.SIGN_LEVEL);
+        SignUtil.checkWillError(PRE_REDIS_KEY_ENUM, null); // 检查：是否可以进行操作
 
         return SignUtil.signDelete(dto.getCode(), PRE_REDIS_KEY_ENUM, null);
 
@@ -189,6 +198,8 @@ public class SignPhoneServiceImpl implements SignPhoneService {
      */
     @Override
     public String bindAccountSendCode(PhoneNotBlankDTO dto) {
+
+        SignUtil.checkWillError(PRE_REDIS_KEY_ENUM, null); // 检查：是否可以进行操作
 
         String key = PRE_REDIS_KEY_ENUM + dto.getPhone();
 
@@ -204,6 +215,8 @@ public class SignPhoneServiceImpl implements SignPhoneService {
     @Override
     public String bindAccount(SignPhoneBindAccountDTO dto) {
 
+        SignUtil.checkWillError(PRE_REDIS_KEY_ENUM, null); // 检查：是否可以进行操作
+
         return SignUtil.bindAccount(dto.getCode(), PRE_REDIS_KEY_ENUM, dto.getPhone());
 
     }
@@ -213,6 +226,8 @@ public class SignPhoneServiceImpl implements SignPhoneService {
      */
     @Override
     public String signInSendCode(PhoneNotBlankDTO dto) {
+
+        SignUtil.checkWillError(PRE_REDIS_KEY_ENUM, null); // 检查：是否可以进行操作
 
         String key = PRE_REDIS_KEY_ENUM + dto.getPhone();
 
@@ -228,6 +243,8 @@ public class SignPhoneServiceImpl implements SignPhoneService {
      */
     @Override
     public String signInCode(SignPhoneSignInCodeDTO dto) {
+
+        SignUtil.checkWillError(PRE_REDIS_KEY_ENUM, null); // 检查：是否可以进行操作
 
         return SignUtil
             .signInCode(ChainWrappers.lambdaQueryChain(sysUserMapper).eq(SysUserDO::getPhone, dto.getPhone()),

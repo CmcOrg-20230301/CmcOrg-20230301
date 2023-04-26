@@ -16,9 +16,6 @@ public abstract class AbstractSignHelperSecurityPermitAllConfiguration implement
 
     protected abstract String getSignPreUri();
 
-    // 等级：低等级的一些操作，会被禁用，比如注销
-    public abstract int getSignLevel();
-
     @Override
     public Set<String> devPermitAllSet() {
         return null;

@@ -11,7 +11,6 @@ import com.cmcorg20230301.engine.be.security.model.entity.SysUserDO;
 import com.cmcorg20230301.engine.be.security.model.vo.ApiResultVO;
 import com.cmcorg20230301.engine.be.security.properties.SecurityProperties;
 import com.cmcorg20230301.engine.be.security.util.UserUtil;
-import com.cmcorg20230301.engine.be.sign.email.configuration.SignEmailSecurityPermitAllConfiguration;
 import com.cmcorg20230301.engine.be.sign.email.model.dto.*;
 import com.cmcorg20230301.engine.be.sign.email.service.SignEmailService;
 import com.cmcorg20230301.engine.be.sign.helper.exception.BizCodeEnum;
@@ -90,6 +89,8 @@ public class SignEmailServiceImpl implements SignEmailService {
     @Override
     public String updatePasswordSendCode() {
 
+        SignUtil.checkWillError(PRE_REDIS_KEY_ENUM, null); // 检查：是否可以进行操作
+
         return SignUtil.getAccountAndSendCode(PRE_REDIS_KEY_ENUM,
             (code, account) -> MyEmailUtil.send(account, EmailMessageEnum.UPDATE_PASSWORD, code, false));
 
@@ -101,6 +102,8 @@ public class SignEmailServiceImpl implements SignEmailService {
     @Override
     public String updatePassword(SignEmailUpdatePasswordDTO dto) {
 
+        SignUtil.checkWillError(PRE_REDIS_KEY_ENUM, null); // 检查：是否可以进行操作
+
         return SignUtil
             .updatePassword(dto.getNewPassword(), dto.getOriginNewPassword(), PRE_REDIS_KEY_ENUM, dto.getCode(), null);
 
@@ -111,6 +114,8 @@ public class SignEmailServiceImpl implements SignEmailService {
      */
     @Override
     public String updateAccountSendCode() {
+
+        SignUtil.checkWillError(PRE_REDIS_KEY_ENUM, null); // 检查：是否可以进行操作
 
         String currentUserEmailNotAdmin = UserUtil.getCurrentUserEmailNotAdmin();
 
@@ -128,6 +133,8 @@ public class SignEmailServiceImpl implements SignEmailService {
     @Override
     public String updateAccount(SignEmailUpdateAccountDTO dto) {
 
+        SignUtil.checkWillError(PRE_REDIS_KEY_ENUM, null); // 检查：是否可以进行操作
+
         return SignUtil
             .updateAccount(dto.getOldEmailCode(), dto.getNewEmailCode(), PRE_REDIS_KEY_ENUM, dto.getNewEmail(), null);
 
@@ -138,6 +145,8 @@ public class SignEmailServiceImpl implements SignEmailService {
      */
     @Override
     public String forgetPasswordSendCode(EmailNotBlankDTO dto) {
+
+        SignUtil.checkWillError(PRE_REDIS_KEY_ENUM, dto.getEmail()); // 检查：是否可以进行操作
 
         String key = PRE_REDIS_KEY_ENUM + dto.getEmail();
 
@@ -154,6 +163,8 @@ public class SignEmailServiceImpl implements SignEmailService {
     @Override
     public String forgetPassword(SignEmailForgetPasswordDTO dto) {
 
+        SignUtil.checkWillError(PRE_REDIS_KEY_ENUM, dto.getEmail()); // 检查：是否可以进行操作
+
         return SignUtil
             .forgetPassword(dto.getNewPassword(), dto.getOriginNewPassword(), dto.getCode(), PRE_REDIS_KEY_ENUM,
                 dto.getEmail(), ChainWrappers.lambdaQueryChain(sysUserMapper).eq(SysUserDO::getEmail, dto.getEmail()));
@@ -166,8 +177,7 @@ public class SignEmailServiceImpl implements SignEmailService {
     @Override
     public String signDeleteSendCode() {
 
-        // 如果有更高级的账号注销-发送验证码，则禁用低级的账号注销-发送验证码
-        SignUtil.checkSignLevel(SignEmailSecurityPermitAllConfiguration.SIGN_LEVEL);
+        SignUtil.checkWillError(PRE_REDIS_KEY_ENUM, null); // 检查：是否可以进行操作
 
         return SignUtil.getAccountAndSendCode(PRE_REDIS_KEY_ENUM,
             (code, account) -> MyEmailUtil.send(account, EmailMessageEnum.SIGN_DELETE, code, false));
@@ -180,8 +190,7 @@ public class SignEmailServiceImpl implements SignEmailService {
     @Override
     public String signDelete(NotBlankCodeDTO dto) {
 
-        // 如果有更高级的账号注销，则禁用低级的账号注销
-        SignUtil.checkSignLevel(SignEmailSecurityPermitAllConfiguration.SIGN_LEVEL);
+        SignUtil.checkWillError(PRE_REDIS_KEY_ENUM, null); // 检查：是否可以进行操作
 
         return SignUtil.signDelete(dto.getCode(), PRE_REDIS_KEY_ENUM, null);
 
@@ -192,6 +201,8 @@ public class SignEmailServiceImpl implements SignEmailService {
      */
     @Override
     public String bindAccountSendCode(EmailNotBlankDTO dto) {
+
+        SignUtil.checkWillError(PRE_REDIS_KEY_ENUM, null); // 检查：是否可以进行操作
 
         String key = PRE_REDIS_KEY_ENUM + dto.getEmail();
 
@@ -207,6 +218,8 @@ public class SignEmailServiceImpl implements SignEmailService {
      */
     @Override
     public String bindAccount(SignEmailBindAccountDTO dto) {
+
+        SignUtil.checkWillError(PRE_REDIS_KEY_ENUM, null); // 检查：是否可以进行操作
 
         return SignUtil.bindAccount(dto.getCode(), PRE_REDIS_KEY_ENUM, dto.getEmail());
 

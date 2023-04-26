@@ -21,6 +21,8 @@ import javax.annotation.Resource;
 @Service
 public class SignWxServiceImpl implements SignWxService {
 
+    private static final RedisKeyEnum PRE_REDIS_KEY_ENUM = RedisKeyEnum.PRE_WX_OPEN_ID;
+
     @Resource
     SysUserMapper sysUserMapper;
 
@@ -51,7 +53,7 @@ public class SignWxServiceImpl implements SignWxService {
         // 直接通过：微信 openId登录
         return SignUtil.signInAccount(
             ChainWrappers.lambdaQueryChain(sysUserMapper).eq(SysUserDO::getWxOpenId, wxOpenIdVO.getOpenid()),
-            RedisKeyEnum.PRE_WX_OPEN_ID, wxOpenIdVO.getOpenid(), getWxSysUserInfoDO());
+            PRE_REDIS_KEY_ENUM, wxOpenIdVO.getOpenid(), getWxSysUserInfoDO());
 
     }
 
