@@ -1,14 +1,15 @@
 package com.cmcorg20230301.engine.be.file.minio.util;
 
+import com.cmcorg20230301.engine.be.util.util.MyMapUtil;
 import io.minio.*;
-import io.minio.messages.DeleteError;
 import io.minio.messages.DeleteObject;
 import lombok.SneakyThrows;
+import org.jetbrains.annotations.Nullable;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.InputStream;
-import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -42,6 +43,7 @@ public class FileMinioUtil {
      * 下载文件
      */
     @SneakyThrows
+    @Nullable
     private InputStream download(String bucketName, String objectName) {
 
         return minioClient.getObject(GetObjectArgs.builder().bucket(bucketName).object(objectName).build());
@@ -49,12 +51,12 @@ public class FileMinioUtil {
     }
 
     /**
-     * 删除文件
+     * 批量删除文件
      */
     @SneakyThrows
-    private Iterable<Result<DeleteError>> removeObject(String bucketName, Set<String> objectNameSet) {
+    private void remove(String bucketName, Set<String> objectNameSet) {
 
-        List<DeleteObject> objectList = new LinkedList<>();
+        List<DeleteObject> objectList = new ArrayList<>(MyMapUtil.getInitialCapacity(objectNameSet.size()));
 
         for (String item : objectNameSet) {
 
@@ -62,7 +64,7 @@ public class FileMinioUtil {
 
         }
 
-        return minioClient.removeObjects(RemoveObjectsArgs.builder().bucket(bucketName).objects(objectList).build());
+        minioClient.removeObjects(RemoveObjectsArgs.builder().bucket(bucketName).objects(objectList).build());
 
     }
 
