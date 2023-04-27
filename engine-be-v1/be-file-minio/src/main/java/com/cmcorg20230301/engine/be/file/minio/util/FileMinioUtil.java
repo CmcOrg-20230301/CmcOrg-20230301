@@ -34,7 +34,7 @@ public class FileMinioUtil {
     private static String getBucketName(String bucketName) {
 
         if (StrUtil.isBlank(bucketName)) {
-            bucketName = fileMinioProperties.getBucketName();
+            bucketName = fileMinioProperties.getBucketPublicName();
         }
 
         return bucketName;

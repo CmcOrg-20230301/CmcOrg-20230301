@@ -19,10 +19,16 @@ public class FileAliYunProperties {
     @Schema(description = "密钥对 accessKeySecret")
     private String accessKeySecret;
 
-    @Schema(description = "访问的端点")
-    private String endpoint;
+    @Schema(description = "上传的端点")
+    private String uploadEndpoint;
 
-    @Schema(description = "桶名")
-    private String bucketName;
+    @Schema(description = "下载的端点")
+    private String downloadEndpoint;
+
+    @Schema(description = "公开类型的桶名")
+    private String bucketPublicName;
+
+    @Schema(description = "私有类型的桶名")
+    private String bucketPrivateName;
 
 }

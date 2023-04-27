@@ -3,6 +3,7 @@ package com.cmcorg20230301.engine.be.file.aliyun.util;
 import cn.hutool.core.util.StrUtil;
 import com.aliyun.oss.OSS;
 import com.aliyun.oss.model.DeleteObjectsRequest;
+import com.aliyun.oss.model.PutObjectResult;
 import com.cmcorg20230301.engine.be.file.aliyun.properties.FileAliYunProperties;
 import lombok.SneakyThrows;
 import org.jetbrains.annotations.Nullable;
@@ -32,7 +33,7 @@ public class FileAliYunUtil {
     private static String getBucketName(String bucketName) {
 
         if (StrUtil.isBlank(bucketName)) {
-            bucketName = fileAliYunProperties.getBucketName();
+            bucketName = fileAliYunProperties.getBucketPublicName();
         }
 
         return bucketName;
@@ -48,7 +49,7 @@ public class FileAliYunUtil {
 
         bucketName = getBucketName(bucketName);
 
-        oss.putObject(bucketName, objectName, file.getInputStream());
+        PutObjectResult putObjectResult = oss.putObject(bucketName, objectName, file.getInputStream());
 
     }
 

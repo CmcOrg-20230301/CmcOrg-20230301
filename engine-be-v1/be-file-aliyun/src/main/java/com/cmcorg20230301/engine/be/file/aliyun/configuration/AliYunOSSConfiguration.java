@@ -14,10 +14,11 @@ public class AliYunOSSConfiguration {
     @Bean
     public OSS oss(FileAliYunProperties fileAliYunProperties) {
 
-        log.info("阿里云oss 启动：{}", fileAliYunProperties.getEndpoint());
+        log.info("阿里云oss 启动：{}", fileAliYunProperties.getUploadEndpoint());
 
-        return new OSSClientBuilder().build(fileAliYunProperties.getEndpoint(), fileAliYunProperties.getAccessKeyId(),
-            fileAliYunProperties.getAccessKeySecret());
+        return new OSSClientBuilder()
+            .build(fileAliYunProperties.getUploadEndpoint(), fileAliYunProperties.getAccessKeyId(),
+                fileAliYunProperties.getAccessKeySecret());
 
     }
 

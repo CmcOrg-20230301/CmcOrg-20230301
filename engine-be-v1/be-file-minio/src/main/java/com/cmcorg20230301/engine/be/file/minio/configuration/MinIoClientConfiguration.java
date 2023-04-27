@@ -13,10 +13,10 @@ public class MinIoClientConfiguration {
     @Bean
     public MinioClient minioClient(FileMinioProperties fileMinioProperties) {
 
-        log.info("minio 启动：{}", fileMinioProperties.getEndpoint());
+        log.info("minio 启动：{}", fileMinioProperties.getUploadEndpoint());
 
-        return MinioClient.builder().endpoint(fileMinioProperties.getEndpoint())
-            .credentials(fileMinioProperties.getAccessKey(), fileMinioProperties.getBucketName()).build();
+        return MinioClient.builder().endpoint(fileMinioProperties.getUploadEndpoint())
+            .credentials(fileMinioProperties.getAccessKey(), fileMinioProperties.getSecretKey()).build();
 
     }
 

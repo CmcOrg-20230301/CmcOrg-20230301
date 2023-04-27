@@ -11,10 +11,15 @@ public class MyRedissonConfigurationCustomizer implements RedissonAutoConfigurat
 
     @Override
     public void customize(Config config) {
+
         config.setCodec(new JsonJacksonCodec()); // 设置为：json序列化，目的：方便看
+
         if (config.isClusterConfig()) {
+
             config.useClusterServers().setReadMode(ReadMode.MASTER); // 默认为 SLAVE，会出现延迟的情况
+
         }
+
     }
 
 }
