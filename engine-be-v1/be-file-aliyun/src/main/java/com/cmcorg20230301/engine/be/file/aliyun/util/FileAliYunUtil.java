@@ -1,10 +1,8 @@
 package com.cmcorg20230301.engine.be.file.aliyun.util;
 
-import cn.hutool.core.util.StrUtil;
+import cn.hutool.core.collection.CollUtil;
 import com.aliyun.oss.OSS;
 import com.aliyun.oss.model.DeleteObjectsRequest;
-import com.aliyun.oss.model.PutObjectResult;
-import com.cmcorg20230301.engine.be.file.aliyun.properties.FileAliYunProperties;
 import lombok.SneakyThrows;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.stereotype.Component;
@@ -21,22 +19,10 @@ import java.util.Set;
 public class FileAliYunUtil {
 
     private static OSS oss;
-    private static FileAliYunProperties fileAliYunProperties;
 
-    public FileAliYunUtil(OSS oss, FileAliYunProperties fileAliYunProperties) {
+    public FileAliYunUtil(OSS oss) {
 
         FileAliYunUtil.oss = oss;
-        FileAliYunUtil.fileAliYunProperties = fileAliYunProperties;
-
-    }
-
-    private static String getBucketName(String bucketName) {
-
-        if (StrUtil.isBlank(bucketName)) {
-            bucketName = fileAliYunProperties.getBucketPublicName();
-        }
-
-        return bucketName;
 
     }
 
@@ -45,11 +31,9 @@ public class FileAliYunUtil {
      * 备注：objectName 相同会被覆盖掉
      */
     @SneakyThrows
-    public static void upload(@Nullable String bucketName, String objectName, MultipartFile file) {
+    public static void upload(String bucketName, String objectName, MultipartFile file) {
 
-        bucketName = getBucketName(bucketName);
-
-        PutObjectResult putObjectResult = oss.putObject(bucketName, objectName, file.getInputStream());
+        oss.putObject(bucketName, objectName, file.getInputStream());
 
     }
 
@@ -58,9 +42,7 @@ public class FileAliYunUtil {
      */
     @SneakyThrows
     @Nullable
-    public static InputStream download(@Nullable String bucketName, String objectName) {
-
-        bucketName = getBucketName(bucketName);
+    public static InputStream download(String bucketName, String objectName) {
 
         return oss.getObject(bucketName, objectName).getObjectContent();
 
@@ -70,9 +52,11 @@ public class FileAliYunUtil {
      * 批量删除文件
      */
     @SneakyThrows
-    public static void remove(@Nullable String bucketName, Set<String> objectNameSet) {
+    public static void remove(String bucketName, Set<String> objectNameSet) {
 
-        bucketName = getBucketName(bucketName);
+        if (CollUtil.isEmpty(objectNameSet)) {
+            return;
+        }
 
         DeleteObjectsRequest deleteObjectsRequest = new DeleteObjectsRequest(bucketName);
         deleteObjectsRequest.setKeys(new ArrayList<>(objectNameSet));

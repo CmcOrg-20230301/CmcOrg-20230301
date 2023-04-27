@@ -30,7 +30,7 @@ public enum SysFileUploadTypeEnum {
     private final int code; // 类型编码
     private final String folderName; // 文件夹名，备注：最后不要加斜杠
     private final Set<String> acceptFileTypeSet; // 支持上传的文件类型（字母必须全小写），为 null则表示支持所有文件，为 空集合则表示不支持所有文件
-    private final long maxFileSize; // 最大的文件大小 byte（包含），-1 则表示不限制大小 0 表示最大文件大小为0，则所有文件都不可以上传
+    private final long maxFileSize; // 最大的文件大小 byte（包含），-1 则表示不限制大小 0 表示最大文件大小为0，则只能上传空文件
 
     /**
      * 检查：文件类型，并返回文件类型（不含点），返回 null，则表示不支持此文件类型

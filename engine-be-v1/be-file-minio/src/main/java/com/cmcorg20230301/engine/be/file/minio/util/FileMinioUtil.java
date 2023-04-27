@@ -1,7 +1,6 @@
 package com.cmcorg20230301.engine.be.file.minio.util;
 
-import cn.hutool.core.util.StrUtil;
-import com.cmcorg20230301.engine.be.file.minio.properties.FileMinioProperties;
+import cn.hutool.core.collection.CollUtil;
 import com.cmcorg20230301.engine.be.util.util.MyMapUtil;
 import io.minio.*;
 import io.minio.messages.DeleteObject;
@@ -22,22 +21,10 @@ import java.util.Set;
 public class FileMinioUtil {
 
     private static MinioClient minioClient;
-    private static FileMinioProperties fileMinioProperties;
 
-    public FileMinioUtil(MinioClient minioClient, FileMinioProperties fileMinioProperties) {
+    public FileMinioUtil(MinioClient minioClient) {
 
         FileMinioUtil.minioClient = minioClient;
-        FileMinioUtil.fileMinioProperties = fileMinioProperties;
-
-    }
-
-    private static String getBucketName(String bucketName) {
-
-        if (StrUtil.isBlank(bucketName)) {
-            bucketName = fileMinioProperties.getBucketPublicName();
-        }
-
-        return bucketName;
 
     }
 
@@ -46,9 +33,7 @@ public class FileMinioUtil {
      * 备注：objectName 相同会被覆盖掉
      */
     @SneakyThrows
-    public static void upload(@Nullable String bucketName, String objectName, MultipartFile file) {
-
-        bucketName = getBucketName(bucketName);
+    public static void upload(String bucketName, String objectName, MultipartFile file) {
 
         minioClient.putObject(PutObjectArgs.builder().bucket(bucketName).object(objectName)
             .stream(file.getInputStream(), -1, ObjectWriteArgs.MAX_PART_SIZE).build());
@@ -60,9 +45,7 @@ public class FileMinioUtil {
      */
     @SneakyThrows
     @Nullable
-    public static InputStream download(@Nullable String bucketName, String objectName) {
-
-        bucketName = getBucketName(bucketName);
+    public static InputStream download(String bucketName, String objectName) {
 
         return minioClient.getObject(GetObjectArgs.builder().bucket(bucketName).object(objectName).build());
 
@@ -72,9 +55,11 @@ public class FileMinioUtil {
      * 批量删除文件
      */
     @SneakyThrows
-    public static void remove(@Nullable String bucketName, Set<String> objectNameSet) {
+    public static void remove(String bucketName, Set<String> objectNameSet) {
 
-        bucketName = getBucketName(bucketName);
+        if (CollUtil.isEmpty(objectNameSet)) {
+            return;
+        }
 
         List<DeleteObject> objectList = new ArrayList<>(MyMapUtil.getInitialCapacity(objectNameSet.size()));
 

@@ -6,14 +6,14 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 /**
- * 存放文件的服务器类型：枚举类
+ * 文件上传：文件类型，枚举类
  */
 @AllArgsConstructor
 @Getter
-public enum SysFileServerTypeEnum {
+public enum SysFileTypeEnum {
 
-    ALI_YUN(101), // aliyun
-    MINIO(201), // minio
+    FILE(101), // 文件
+    FOLDER(101), // 文件夹
 
     ;
 

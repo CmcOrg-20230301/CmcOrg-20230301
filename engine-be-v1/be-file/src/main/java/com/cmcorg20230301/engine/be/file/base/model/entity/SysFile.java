@@ -2,6 +2,9 @@ package com.cmcorg20230301.engine.be.file.base.model.entity;
 
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.cmcorg20230301.engine.be.security.model.entity.BaseEntity;
+import com.cmcorg20230301.engine.be.security.model.enums.SysFileStorageTypeEnum;
+import com.cmcorg20230301.engine.be.security.model.enums.SysFileTypeEnum;
+import com.cmcorg20230301.engine.be.security.model.enums.SysFileUploadTypeEnum;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -18,7 +21,7 @@ public class SysFile extends BaseEntity {
     @Schema(description = "桶名，例如：be-bucket")
     private String bucketName;
 
-    @Schema(description = "文件完整路径（包含文件类型，不包含请求端点），例如：/avatar/uuid.xxx")
+    @Schema(description = "文件完整路径（包含文件类型，不包含请求端点），例如：avatar/uuid.xxx")
     private String uri;
 
     @Schema(description = "文件原始名（包含文件类型）")
@@ -33,19 +36,25 @@ public class SysFile extends BaseEntity {
     @Schema(description = "额外信息（json格式）")
     private String extraJson;
 
-    @Schema(description = "文件上传类型：101 头像 201 文件系统-文件")
-    private Integer uploadType;
+    @Schema(description = "文件上传类型")
+    private SysFileUploadTypeEnum uploadType;
 
-    @Schema(description = "存放文件的服务器类型：101 阿里云oss 201 minio")
-    private Integer savaType;
+    @Schema(description = "存放文件的服务器类型")
+    private SysFileStorageTypeEnum storageType;
 
     @Schema(description = "上级文件夹的文件主键 id，默认为 0")
     private Long parentId;
 
-    @Schema(description = "类型：1 文件夹 2 文件")
-    private Integer type;
+    @Schema(description = "类型")
+    private SysFileTypeEnum type;
 
     @Schema(description = "展示用的文件名，默认为：原始文件名（包含文件类型）")
     private String showFileName;
+
+    @Schema(description = "引用的文件主键 id，没有则为 -1，如果有值，则文件地址从引用的文件里面获取，但是权限等信息，从本条数据获取")
+    private Long refFileId;
+
+    @Schema(description = "是否公开访问")
+    private Boolean publicFlag;
 
 }

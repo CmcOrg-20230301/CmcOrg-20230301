@@ -18,16 +18,10 @@ public class SysFileAuth extends BaseEntity {
     @Schema(description = "此权限拥有者的 userId")
     private Long userId;
 
-    @Schema(description = "冗余字段：文件归属者用户主键 id（拥有全部权限）")
-    private Long fileBelongId;
-
     @Schema(description = "是否可读：0 否 1 是")
     private Integer readFlag;
 
     @Schema(description = "是否可写：0 否 1 是")
     private Integer writeFlag;
-
-    @Schema(description = "是否可删除：0 否 1 是")
-    private Integer removeFlag;
 
 }
