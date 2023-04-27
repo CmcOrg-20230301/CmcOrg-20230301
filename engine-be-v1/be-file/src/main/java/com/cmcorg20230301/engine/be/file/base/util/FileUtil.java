@@ -2,7 +2,9 @@ package com.cmcorg20230301.engine.be.file.base.util;
 
 import cn.hutool.core.lang.Assert;
 import cn.hutool.core.util.StrUtil;
+import com.cmcorg20230301.engine.be.file.aliyun.util.FileAliYunUtil;
 import com.cmcorg20230301.engine.be.file.base.properties.FileProperties;
+import com.cmcorg20230301.engine.be.file.minio.util.FileMinioUtil;
 import com.cmcorg20230301.engine.be.security.model.dto.SysFileUploadDTO;
 import com.cmcorg20230301.engine.be.security.model.enums.SysFileUploadTypeEnum;
 import com.cmcorg20230301.engine.be.security.model.vo.ApiResultVO;
@@ -45,9 +47,15 @@ public class FileUtil {
 
             Long currentUserId = UserUtil.getCurrentUserId();
 
+            String objectName = folderName + "/" + currentUserId;
+
             if (fileProperties.getAvatarStorageType() == 1) { // 头像存放位置：1 阿里云 2 minio
 
+                FileAliYunUtil.upload(null, objectName, dto.getFile());
+
             } else if (fileProperties.getAvatarStorageType() == 2) {
+
+                FileMinioUtil.upload(null, objectName, dto.getFile());
 
             }
 

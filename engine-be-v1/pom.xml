@@ -70,7 +70,7 @@
             <!-- be-file-minio -->
             <dependency>
                 <groupId>${project.groupId}</groupId>
-                <artifactId>be-file-aliyun</artifactId>
+                <artifactId>be-file-minio</artifactId>
                 <version>${project.version}</version>
             </dependency>
 
