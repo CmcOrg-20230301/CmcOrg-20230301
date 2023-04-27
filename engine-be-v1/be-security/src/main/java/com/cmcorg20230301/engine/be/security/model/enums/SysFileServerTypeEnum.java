@@ -12,14 +12,13 @@ import lombok.Getter;
 @Getter
 public enum SysFileServerTypeEnum {
 
-    ALI_YUN(101, "aliyun"), //
-    MINIO(201, "minio"), //
+    ALI_YUN(101), // aliyun
+    MINIO(201), // minio
 
     ;
 
     @EnumValue
     @JsonValue
     private final int code; // 类型编码
-    private final String name; // 类型名称
 
 }
