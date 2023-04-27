@@ -49,14 +49,19 @@ CREATE TABLE `sys_file`
     `version`          int                                                           NOT NULL COMMENT '乐观锁',
     `del_flag`         tinyint(1)                                                    NOT NULL COMMENT '是否逻辑删除',
     `remark`           varchar(300) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '描述/备注',
-    `bucket_name`      varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci  NOT NULL COMMENT '桶名，例如：be',
-    `uri`              varchar(300) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '文件完整路径（包含文件类型），例如：/userId/avatar/newFileName.xxx',
+    `belong_id`        bigint                                                        NOT NULL COMMENT '归属者用户主键 id（拥有全部权限）',
+    `bucket_name`      varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci  NOT NULL COMMENT '桶名，例如：be-bucket',
+    `uri`              varchar(300) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '文件完整路径（包含文件类型，不包含请求端点），例如：/avatar/uuid.xxx',
     `origin_file_name` varchar(300) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '文件原始名（包含文件类型）',
-    `new_file_name`    varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci  NOT NULL COMMENT '新的文件名（包含文件类型）',
+    `new_file_name`    varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci  NOT NULL COMMENT '新的文件名（包含文件类型），例如：uuid.xxx',
     `file_ext_name`    varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci  NOT NULL COMMENT '文件类型（不含点），备注：这个是读取文件流的头部信息获得文件类型',
     `extra_json`       varchar(300) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '额外信息（json格式）',
-    `upload_type`      int                                                           NOT NULL COMMENT '文件上传类型：1 头像 2 文件系统-文件',
-    `sava_type`        int                                                           NOT NULL COMMENT '存放文件的服务器类型：1 minio 2 阿里云oss',
+    `upload_type`      int                                                           NOT NULL COMMENT '文件上传类型：101 头像 201 文件系统-文件',
+    `sava_type`        int                                                           NOT NULL COMMENT '存放文件的服务器类型：101 阿里云oss 201 minio ',
+    `parent_id`        bigint                                                        NOT NULL COMMENT '上级文件夹的文件主键 id，默认为 0',
+    `type`             int                                                           NOT NULL COMMENT '类型：1 文件夹 2 文件',
+    `show_file_name`   varchar(300) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '展示用的文件名，默认为：原始文件名（包含文件类型）',
+    `ref_file_id`      bigint                                                        NOT NULL COMMENT '引用的文件主键 id，没有则为 -1，如果有值，则文件地址从引用的文件里面获取',
     PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB
   CHARACTER SET = utf8mb4
@@ -84,8 +89,10 @@ CREATE TABLE `sys_file_auth`
     `remark`         varchar(300) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '描述/备注',
     `file_id`        bigint                                                        NOT NULL COMMENT '文件主键 id',
     `user_id`        bigint                                                        NOT NULL COMMENT '此权限拥有者的 userId',
-    `auth`           int                                                           NOT NULL COMMENT '权限：1 可读 2 可写',
-    `file_create_id` bigint                                                        NOT NULL COMMENT '冗余字段：文件创建人 userId',
+    `file_belong_id` bigint                                                        NOT NULL COMMENT '冗余字段：文件归属者用户主键 id（拥有全部权限）',
+    `read_flag`      tinyint(1)                                                    NOT NULL COMMENT '是否可读：0 否 1 是',
+    `write_flag`     tinyint(1)                                                    NOT NULL COMMENT '是否可写：0 否 1 是',
+    `remove_flag`    tinyint(1)                                                    NOT NULL COMMENT '是否可删除：0 否 1 是',
     PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB
   CHARACTER SET = utf8mb4
@@ -103,10 +110,19 @@ DROP TABLE IF EXISTS `sys_file_uri`;
 CREATE TABLE `sys_file_uri`
 (
     `id`             bigint                                                        NOT NULL,
-    `uri`            varchar(300) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '文件访问 uri（包含文件类型），不可重复，例如：/minio/public/uuid.xxx，/minio/private/uuid.xxx',
+    `create_id`      bigint                                                        NOT NULL,
+    `create_time`    datetime                                                      NOT NULL,
+    `update_id`      bigint                                                        NOT NULL,
+    `update_time`    datetime                                                      NOT NULL,
+    `enable_flag`    tinyint(1)                                                    NOT NULL COMMENT '启用/禁用',
+    `version`        int                                                           NOT NULL COMMENT '乐观锁',
+    `del_flag`       tinyint(1)                                                    NOT NULL COMMENT '是否逻辑删除',
+    `remark`         varchar(300) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '描述/备注',
+    `uri`            varchar(300) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '文件访问 uri（包含文件类型），不可重复，例如：/uuid.xxx',
     `file_id`        bigint                                                        NOT NULL COMMENT '文件主键 id',
+    `public_flag`    tinyint                                                       NOT NULL COMMENT '是否公开访问：0 否 1 是',
     `expire_time`    datetime                                                      NOT NULL COMMENT '过期时间（年月日时分秒），备注：会定期清理，或者获取时发现过期了，则也会清理，-1表示永久',
-    `file_create_id` bigint                                                        NOT NULL COMMENT '冗余字段：文件创建人 userId',
+    `file_belong_id` bigint                                                        NOT NULL COMMENT '冗余字段：文件归属者用户主键 id（拥有全部权限）',
     PRIMARY KEY (`id`) USING BTREE,
     UNIQUE INDEX `unique_uri` (`uri`) USING BTREE
 ) ENGINE = InnoDB
