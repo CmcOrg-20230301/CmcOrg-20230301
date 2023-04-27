@@ -12,7 +12,8 @@ import lombok.Getter;
 @Getter
 public enum SysFileServerTypeEnum {
 
-    MINIO(101, "minio"), //
+    ALI_YUN(101, "aliyun"), //
+    MINIO(201, "minio"), //
 
     ;
 

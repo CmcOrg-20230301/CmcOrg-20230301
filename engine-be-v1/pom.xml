@@ -60,10 +60,26 @@
         <module>be-sms-aliyun</module>
         <module>be-sms-tencent</module>
         <module>be-file</module>
+        <module>be-file-aliyun</module>
+        <module>be-file-minio</module>
     </modules>
 
     <dependencyManagement>
         <dependencies>
+
+            <!-- be-file-minio -->
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>be-file-aliyun</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <!-- be-file-aliyun -->
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>be-file-aliyun</artifactId>
+                <version>${project.version}</version>
+            </dependency>
 
             <!-- be-file -->
             <dependency>
@@ -310,6 +326,13 @@
                 <groupId>com.alibaba.cloud</groupId>
                 <artifactId>spring-cloud-starter-alibaba-nacos-config</artifactId>
                 <version>2021.0.5.0</version>
+            </dependency>
+
+            <!-- 阿里云oss文件存储 -->
+            <dependency>
+                <groupId>com.aliyun.oss</groupId>
+                <artifactId>aliyun-sdk-oss</artifactId>
+                <version>3.15.1</version>
             </dependency>
 
             <!-- minio文件系统 -->

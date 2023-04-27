@@ -1,4 +1,4 @@
-package com.cmcorg20230301.engine.be.file.util;
+package com.cmcorg20230301.engine.be.file.base.util;
 
 import org.springframework.stereotype.Component;
 

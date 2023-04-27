@@ -22,14 +22,12 @@ import java.util.Set;
 @Getter
 public enum SysFileUploadTypeEnum {
 
-    AVATAR(101, "be", "avatar", CollUtil.newHashSet("jpeg", "png", "jpg"), 1024 * 1024 * 2) // 头像
-
-    ;
+    // 头像
+    AVATAR(101, "avatar", CollUtil.newHashSet("jpeg", "png", "jpg"), 1024 * 1024 * 2);
 
     @EnumValue
     @JsonValue
     private final int code; // 类型编码
-    private final String bucketName; // 桶名
     private final String folderName; // 文件夹名
     private final Set<String> acceptFileTypeSet; // 支持上传的文件类型（字母必须全小写），为 null则表示支持所有文件，为 空集合则表示不支持所有文件
     private final long maxFileSize; // 最大的文件大小 byte（包含），-1 则表示不限制大小 0 表示最大文件大小为0，则所有文件都不可以上传
@@ -59,7 +57,7 @@ public enum SysFileUploadTypeEnum {
             return null;
         }
 
-        if (acceptFileTypeSet.contains(fileType)) {
+        if (acceptFileTypeSet.contains(fileType.toLowerCase())) { // 转换为，小写，进行匹配
             return fileType;
         }
 

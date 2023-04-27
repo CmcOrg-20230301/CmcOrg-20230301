@@ -1,4 +1,4 @@
-package com.cmcorg20230301.engine.be.file.properties;
+package com.cmcorg20230301.engine.be.file.base.properties;
 
 import com.cmcorg20230301.engine.be.model.model.constant.PropertiesPrefixConstant;
 import lombok.Data;

@@ -281,7 +281,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserProMapper, SysUserDO>
 
             Set<Long> roleIdSet = sysRoleDOList.stream().map(BaseEntity::getId).collect(Collectors.toSet());
 
-            List<SysRoleRefUserDO> insertList = new ArrayList<>();
+            List<SysRoleRefUserDO> insertList = new ArrayList<>(MyMapUtil.getInitialCapacity(roleIdSet.size()));
 
             for (Long item : roleIdSet) {
 

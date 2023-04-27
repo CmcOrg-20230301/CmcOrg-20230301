@@ -9,21 +9,15 @@
         <version>2023.3.1</version>
     </parent>
 
-    <artifactId>be-file</artifactId>
-    <description>文件相关</description>
+    <artifactId>be-file-minio</artifactId>
+    <description>minio文件相关</description>
 
     <dependencies>
 
-        <!-- be-file-minio -->
+        <!-- minio文件系统 -->
         <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>be-file-aliyun</artifactId>
-        </dependency>
-
-        <!-- be-file-aliyun -->
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>be-file-aliyun</artifactId>
+            <groupId>io.minio</groupId>
+            <artifactId>minio</artifactId>
         </dependency>
 
         <!-- be-security -->

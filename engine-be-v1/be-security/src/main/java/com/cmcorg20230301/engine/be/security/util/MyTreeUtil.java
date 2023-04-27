@@ -108,7 +108,7 @@ public class MyTreeUtil {
 
         HashMap<Long, T> listMap = MapUtil.newHashMap(list.size()); // 把 list的所有元素转换为：id -> 元素，格式
 
-        List<T> resultList = new ArrayList<>(); // 返回值
+        List<T> resultList = new LinkedList<>(); // 返回值
 
         for (T item : list) {
 
@@ -120,7 +120,7 @@ public class MyTreeUtil {
 
                 if (childrenFlag) {
 
-                    mapDTO.setChildren(new ArrayList<>()); // children 一直为集合
+                    mapDTO.setChildren(new LinkedList<>()); // children 一直为集合
 
                 } else {
 
@@ -151,7 +151,7 @@ public class MyTreeUtil {
 
                 parentDTO = (T)ReflectUtil.newInstance(item.getClass());
 
-                List<T> children = new ArrayList<>();
+                List<T> children = new LinkedList<>();
 
                 children.add(mapDTO);
 
@@ -165,7 +165,7 @@ public class MyTreeUtil {
 
                 if (children == null) {
 
-                    children = new ArrayList<>();
+                    children = new LinkedList<>();
 
                     children.add(mapDTO);
 

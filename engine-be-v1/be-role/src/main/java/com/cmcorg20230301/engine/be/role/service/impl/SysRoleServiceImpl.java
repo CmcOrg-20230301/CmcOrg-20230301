@@ -24,6 +24,7 @@ import com.cmcorg20230301.engine.be.security.mapper.SysUserMapper;
 import com.cmcorg20230301.engine.be.security.model.entity.*;
 import com.cmcorg20230301.engine.be.security.model.vo.ApiResultVO;
 import com.cmcorg20230301.engine.be.security.util.MyEntityUtil;
+import com.cmcorg20230301.engine.be.util.util.MyMapUtil;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -105,13 +106,15 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRoleDO> im
 
             Set<Long> menuIdSet = sysMenuDOList.stream().map(BaseEntity::getId).collect(Collectors.toSet());
 
-            List<SysRoleRefMenuDO> insertList = new ArrayList<>();
+            List<SysRoleRefMenuDO> insertList = new ArrayList<>(MyMapUtil.getInitialCapacity(menuIdSet.size()));
 
             for (Long menuId : menuIdSet) {
+
                 SysRoleRefMenuDO sysRoleRefMenuDO = new SysRoleRefMenuDO();
                 sysRoleRefMenuDO.setRoleId(sysRoleDO.getId());
                 sysRoleRefMenuDO.setMenuId(menuId);
                 insertList.add(sysRoleRefMenuDO);
+
             }
 
             sysRoleRefMenuService.saveBatch(insertList);
@@ -127,13 +130,15 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRoleDO> im
 
             Set<Long> userIdSet = sysUserDOList.stream().map(BaseEntity::getId).collect(Collectors.toSet());
 
-            List<SysRoleRefUserDO> insertList = new ArrayList<>();
+            List<SysRoleRefUserDO> insertList = new ArrayList<>(MyMapUtil.getInitialCapacity(userIdSet.size()));
 
             for (Long userId : userIdSet) {
+
                 SysRoleRefUserDO sysRoleRefUserDO = new SysRoleRefUserDO();
                 sysRoleRefUserDO.setRoleId(sysRoleDO.getId());
                 sysRoleRefUserDO.setUserId(userId);
                 insertList.add(sysRoleRefUserDO);
+
             }
 
             sysRoleRefUserService.saveBatch(insertList);

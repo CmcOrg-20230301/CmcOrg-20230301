@@ -25,6 +25,7 @@ import com.cmcorg20230301.engine.be.security.model.vo.ApiResultVO;
 import com.cmcorg20230301.engine.be.security.util.MyEntityUtil;
 import com.cmcorg20230301.engine.be.security.util.MyTreeUtil;
 import com.cmcorg20230301.engine.be.security.util.UserUtil;
+import com.cmcorg20230301.engine.be.util.util.MyMapUtil;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -109,7 +110,7 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenuDO> im
 
             Set<Long> roleIdSet = sysRoleDOList.stream().map(BaseEntity::getId).collect(Collectors.toSet());
 
-            List<SysRoleRefMenuDO> insertList = new ArrayList<>();
+            List<SysRoleRefMenuDO> insertList = new ArrayList<>(MyMapUtil.getInitialCapacity(roleIdSet.size()));
 
             for (Long item : roleIdSet) {
 
@@ -195,20 +196,18 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenuDO> im
     @Override
     public List<SysMenuDO> tree(SysMenuPageDTO dto) {
 
-        List<SysMenuDO> resList = new ArrayList<>();
-
         // 根据条件进行筛选，得到符合条件的数据，然后再逆向生成整棵树，并返回这个树结构
         dto.setPageSize(-1); // 不分页
         List<SysMenuDO> sysMenuDOList = myPage(dto).getRecords();
 
         if (sysMenuDOList.size() == 0) {
-            return resList;
+            return new ArrayList<>();
         }
 
         List<SysMenuDO> allList = list();
 
         if (allList.size() == 0) {
-            return resList;
+            return new ArrayList<>();
         }
 
         return MyTreeUtil.getFullTreeByDeepNode(sysMenuDOList, allList);

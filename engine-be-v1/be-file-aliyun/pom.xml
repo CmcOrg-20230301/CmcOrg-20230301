@@ -9,21 +9,15 @@
         <version>2023.3.1</version>
     </parent>
 
-    <artifactId>be-file</artifactId>
-    <description>文件相关</description>
+    <artifactId>be-file-aliyun</artifactId>
+    <description>阿里云文件相关</description>
 
     <dependencies>
 
-        <!-- be-file-minio -->
+        <!-- 阿里云oss文件存储 -->
         <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>be-file-aliyun</artifactId>
-        </dependency>
-
-        <!-- be-file-aliyun -->
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>be-file-aliyun</artifactId>
+            <groupId>com.aliyun.oss</groupId>
+            <artifactId>aliyun-sdk-oss</artifactId>
         </dependency>
 
         <!-- be-security -->

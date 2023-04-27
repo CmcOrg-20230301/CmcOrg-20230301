@@ -196,7 +196,7 @@ public class SysDictServiceImpl extends ServiceImpl<SysDictMapper, SysDictDO> im
 
             if (children == null) {
 
-                children = new ArrayList<>();
+                children = new LinkedList<>();
                 dict.setChildren(children);
 
             }

@@ -14,16 +14,28 @@
 
     <dependencies>
 
-        <!-- ssh，sftp -->
+        <!-- be-file-minio -->
         <dependency>
-            <groupId>com.jcraft</groupId>
-            <artifactId>jsch</artifactId>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>be-file-aliyun</artifactId>
+        </dependency>
+
+        <!-- be-file-aliyun -->
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>be-file-aliyun</artifactId>
         </dependency>
 
         <!-- be-file -->
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>be-file</artifactId>
+        </dependency>
+
+        <!-- ssh，sftp -->
+        <dependency>
+            <groupId>com.jcraft</groupId>
+            <artifactId>jsch</artifactId>
         </dependency>
 
         <!-- be-sms-tencent -->

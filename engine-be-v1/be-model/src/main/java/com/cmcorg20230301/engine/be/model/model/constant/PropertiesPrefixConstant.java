@@ -23,10 +23,12 @@ public interface PropertiesPrefixConstant {
 
     String SMS_ALI_YUN = SMS + ".aliyun"; // 阿里云短信相关
 
+    String EMAIL = PRE_BE + "email"; // 邮箱相关
+
     String FILE = PRE_BE + "file"; // 文件相关
 
-    String MINIO = FILE + ".minio"; // minio文件相关
+    String FILE_ALI_YUN = FILE + ".aliyun"; // 阿里云文件相关
 
-    String EMAIL = PRE_BE + "email"; // 邮箱相关
+    String FILE_MINIO = FILE + ".minio"; // minio文件相关
 
 }
