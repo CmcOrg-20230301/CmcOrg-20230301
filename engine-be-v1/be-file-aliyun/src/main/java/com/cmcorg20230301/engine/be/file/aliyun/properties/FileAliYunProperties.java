@@ -22,8 +22,8 @@ public class FileAliYunProperties {
     @Schema(description = "上传的端点")
     private String uploadEndpoint;
 
-    @Schema(description = "下载的端点")
-    private String downloadEndpoint;
+    @Schema(description = "公开下载的端点")
+    private String publicDownloadEndpoint;
 
     @Schema(description = "公开类型的桶名")
     private String bucketPublicName;

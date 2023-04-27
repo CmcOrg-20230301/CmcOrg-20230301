@@ -1,4 +1,4 @@
-package generator.entity;
+package com.cmcorg20230301.engine.be.file.base.model.entity;
 
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.cmcorg20230301.engine.be.security.model.entity.BaseEntity;
