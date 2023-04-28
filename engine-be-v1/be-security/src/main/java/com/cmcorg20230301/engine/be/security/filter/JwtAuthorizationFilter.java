@@ -2,6 +2,7 @@ package com.cmcorg20230301.engine.be.security.filter;
 
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.convert.Convert;
+import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.exceptions.ValidateException;
 import cn.hutool.core.util.BooleanUtil;
 import cn.hutool.core.util.NumberUtil;
@@ -56,11 +57,15 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
     protected void doFilterInternal(@NotNull HttpServletRequest request, @NotNull HttpServletResponse response,
         @NotNull FilterChain filterChain) {
 
+        long beginTime = System.currentTimeMillis();
+
         UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = getAuthentication(request, response);
 
         if (usernamePasswordAuthenticationToken != null) {
             SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
         }
+
+        log.info("鉴权耗时：{}", DateUtil.formatBetween(System.currentTimeMillis() - beginTime));
 
         filterChain.doFilter(request, response);
 
