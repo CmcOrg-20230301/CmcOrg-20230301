@@ -17,8 +17,8 @@ public class AliYunOSSConfiguration {
         log.info("阿里云oss 启动：{}", fileAliYunProperties.getUploadEndpoint());
 
         return new OSSClientBuilder()
-            .build(fileAliYunProperties.getUploadEndpoint(), fileAliYunProperties.getAccessKeyId(),
-                fileAliYunProperties.getAccessKeySecret());
+            .build(fileAliYunProperties.getUploadEndpoint(), fileAliYunProperties.getAccessKey(),
+                fileAliYunProperties.getSecretKey());
 
     }
 
