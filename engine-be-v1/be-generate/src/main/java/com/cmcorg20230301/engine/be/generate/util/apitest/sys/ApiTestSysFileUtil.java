@@ -24,7 +24,7 @@ public class ApiTestSysFileUtil {
     //    private static final String API_ENDPOINT = "http://127.0.0.1:10001";
 
     // 测试文件的地址，需要包含文件类型后缀
-    private static final String testFilePath = "/test/img/testImg.jpg";
+    private static final String TEST_FILE_PATH = "/test/img/testImg.jpg";
 
     public static void main(String[] args) {
 
@@ -56,7 +56,7 @@ public class ApiTestSysFileUtil {
 
         long currentTs = System.currentTimeMillis();
 
-        File file = FileUtil.file(testFilePath);
+        File file = FileUtil.file(TEST_FILE_PATH);
 
         SysFileUploadDTO dto = new SysFileUploadDTO();
         dto.setUploadType(SysFileUploadTypeEnum.AVATAR);
