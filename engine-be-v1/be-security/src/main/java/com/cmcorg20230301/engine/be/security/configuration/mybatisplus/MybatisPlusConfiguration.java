@@ -27,6 +27,7 @@ public class MybatisPlusConfiguration {
         mybatisPlusInterceptor.addInnerInterceptor(new OptimisticLockerInnerInterceptor());
 
         return mybatisPlusInterceptor;
+
     }
 
     /**
@@ -35,7 +36,9 @@ public class MybatisPlusConfiguration {
     @Bean
     @Primary
     public IdentifierGenerator idGenerator() {
+
         return entity -> IdGeneratorUtil.nextId();
+
     }
 
 }

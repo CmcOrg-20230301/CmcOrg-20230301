@@ -5,7 +5,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.cmcorg20230301.engine.be.file.base.mapper.SysFileMapper;
 import com.cmcorg20230301.engine.be.file.base.model.entity.SysFile;
 import com.cmcorg20230301.engine.be.file.base.service.SysFileService;
-import com.cmcorg20230301.engine.be.file.base.util.FileUtil;
+import com.cmcorg20230301.engine.be.file.base.util.SysFileUtil;
 import com.cmcorg20230301.engine.be.model.model.dto.NotEmptyIdSet;
 import com.cmcorg20230301.engine.be.model.model.dto.NotNullId;
 import com.cmcorg20230301.engine.be.security.exception.BaseBizCodeEnum;
@@ -27,7 +27,7 @@ public class SysFileServiceImpl extends ServiceImpl<SysFileMapper, SysFile> impl
     @Override
     public String upload(SysFileUploadDTO dto) {
 
-        FileUtil.upload(dto);
+        SysFileUtil.upload(dto);
 
         return BaseBizCodeEnum.OK;
 
@@ -40,7 +40,7 @@ public class SysFileServiceImpl extends ServiceImpl<SysFileMapper, SysFile> impl
     @Override
     public void privateDownload(NotNullId notNullId, HttpServletResponse response) {
 
-        InputStream inputStream = FileUtil.privateDownload(notNullId.getId());
+        InputStream inputStream = SysFileUtil.privateDownload(notNullId.getId());
 
         if (inputStream == null) {
             ApiResultVO.error("操作失败：文件流获取失败");
@@ -64,7 +64,7 @@ public class SysFileServiceImpl extends ServiceImpl<SysFileMapper, SysFile> impl
     @Override
     public String removeByFileIdSet(NotEmptyIdSet notEmptyIdSet) {
 
-        FileUtil.removeByFileIdSet(notEmptyIdSet.getIdSet());
+        SysFileUtil.removeByFileIdSet(notEmptyIdSet.getIdSet());
 
         return BaseBizCodeEnum.OK;
 

@@ -270,6 +270,13 @@
                 <version>${project.version}</version>
             </dependency>
 
+            <!-- be-start -->
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>be-start</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
             <!-- be-knife4j -->
             <dependency>
                 <groupId>${project.groupId}</groupId>

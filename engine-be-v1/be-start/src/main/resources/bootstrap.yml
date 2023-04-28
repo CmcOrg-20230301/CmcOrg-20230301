@@ -27,14 +27,15 @@ spring:
 
           - data-id: xxl-job.yml
 
-          - data-id: minio.yml
-
           - data-id: wx.yml
 
           - data-id: sms.yml
             refresh: true
 
           - data-id: email.yml
+            refresh: true
+
+          - data-id: file.yml
             refresh: true
 
           - data-id: refresh.yml

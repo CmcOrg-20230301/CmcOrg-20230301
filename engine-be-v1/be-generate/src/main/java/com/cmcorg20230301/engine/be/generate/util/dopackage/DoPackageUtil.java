@@ -69,6 +69,8 @@ public class DoPackageUtil {
 
         JschUtil.close(session);
 
+        System.exit(0);
+
     }
 
     /**

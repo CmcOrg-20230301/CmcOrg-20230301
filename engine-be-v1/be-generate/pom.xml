@@ -14,11 +14,16 @@
 
     <dependencies>
 
+        <!-- spring-boot-starter-test -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+        </dependency>
+
         <!-- be-start -->
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>be-start</artifactId>
-            <version>${project.version}</version>
         </dependency>
 
     </dependencies>

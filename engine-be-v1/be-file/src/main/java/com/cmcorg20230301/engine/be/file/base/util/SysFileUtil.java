@@ -42,7 +42,7 @@ import java.util.stream.Collectors;
  * 文件工具类
  */
 @Component
-public class FileUtil {
+public class SysFileUtil {
 
     private static SysFileProperties sysFileProperties;
 
@@ -52,17 +52,17 @@ public class FileUtil {
     private static FileAliYunProperties fileAliYunProperties;
     private static FileMinioProperties fileMinioProperties;
 
-    public FileUtil(SysFileProperties sysFileProperties, SysFileService sysFileService,
+    public SysFileUtil(SysFileProperties sysFileProperties, SysFileService sysFileService,
         SysFileAuthService sysFileAuthService, FileAliYunProperties fileAliYunProperties,
         FileMinioProperties fileMinioProperties) {
 
-        FileUtil.sysFileProperties = sysFileProperties;
+        SysFileUtil.sysFileProperties = sysFileProperties;
 
-        FileUtil.sysFileService = sysFileService;
-        FileUtil.sysFileAuthService = sysFileAuthService;
+        SysFileUtil.sysFileService = sysFileService;
+        SysFileUtil.sysFileAuthService = sysFileAuthService;
 
-        FileUtil.fileAliYunProperties = fileAliYunProperties;
-        FileUtil.fileMinioProperties = fileMinioProperties;
+        SysFileUtil.fileAliYunProperties = fileAliYunProperties;
+        SysFileUtil.fileMinioProperties = fileMinioProperties;
 
     }
 
@@ -211,7 +211,7 @@ public class FileUtil {
         sysFile.setOriginFileName(originalFilename);
         sysFile.setNewFileName(newFileName);
         sysFile.setFileExtName(fileType);
-        sysFile.setExtraJson("");
+        sysFile.setExtraJson(MyEntityUtil.getNotNullStr(dto.getExtraJson()));
         sysFile.setUploadType(dto.getUploadType());
         sysFile.setStorageType(storageType);
         sysFile.setParentId(MyEntityUtil.getNotNullParentId(null));
@@ -221,7 +221,7 @@ public class FileUtil {
         sysFile.setPublicFlag(publicFlag);
         sysFile.setEnableFlag(true);
         sysFile.setDelFlag(false);
-        sysFile.setRemark("");
+        sysFile.setRemark(MyEntityUtil.getNotNullStr(dto.getRemark()));
 
         sysFileService.save(sysFile);
 
