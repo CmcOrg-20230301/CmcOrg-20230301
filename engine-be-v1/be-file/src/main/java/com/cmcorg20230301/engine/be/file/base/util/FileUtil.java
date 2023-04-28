@@ -3,12 +3,13 @@ package com.cmcorg20230301.engine.be.file.base.util;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.lang.Assert;
 import cn.hutool.core.util.BooleanUtil;
+import cn.hutool.core.util.IdUtil;
 import cn.hutool.core.util.StrUtil;
 import com.cmcorg20230301.engine.be.file.aliyun.properties.FileAliYunProperties;
 import com.cmcorg20230301.engine.be.file.aliyun.util.FileAliYunUtil;
 import com.cmcorg20230301.engine.be.file.base.model.entity.SysFile;
 import com.cmcorg20230301.engine.be.file.base.model.entity.SysFileAuth;
-import com.cmcorg20230301.engine.be.file.base.properties.FileProperties;
+import com.cmcorg20230301.engine.be.file.base.properties.SysFileProperties;
 import com.cmcorg20230301.engine.be.file.base.service.SysFileAuthService;
 import com.cmcorg20230301.engine.be.file.base.service.SysFileService;
 import com.cmcorg20230301.engine.be.file.minio.properties.FileMinioProperties;
@@ -43,7 +44,7 @@ import java.util.stream.Collectors;
 @Component
 public class FileUtil {
 
-    private static FileProperties fileProperties;
+    private static SysFileProperties sysFileProperties;
 
     private static SysFileService sysFileService;
     private static SysFileAuthService sysFileAuthService;
@@ -51,10 +52,11 @@ public class FileUtil {
     private static FileAliYunProperties fileAliYunProperties;
     private static FileMinioProperties fileMinioProperties;
 
-    public FileUtil(FileProperties fileProperties, SysFileService sysFileService, SysFileAuthService sysFileAuthService,
-        FileAliYunProperties fileAliYunProperties, FileMinioProperties fileMinioProperties) {
+    public FileUtil(SysFileProperties sysFileProperties, SysFileService sysFileService,
+        SysFileAuthService sysFileAuthService, FileAliYunProperties fileAliYunProperties,
+        FileMinioProperties fileMinioProperties) {
 
-        FileUtil.fileProperties = fileProperties;
+        FileUtil.sysFileProperties = sysFileProperties;
 
         FileUtil.sysFileService = sysFileService;
         FileUtil.sysFileAuthService = sysFileAuthService;
@@ -111,7 +113,8 @@ public class FileUtil {
         // 如果是：头像
         if (SysFileUploadTypeEnum.AVATAR.equals(dto.getUploadType())) {
 
-            sysFileId = handleAvatar(dto, fileType);
+            // 通用：上传处理
+            sysFileId = uploadCommonHandler(dto, fileType, true);
 
         }
 
@@ -120,18 +123,18 @@ public class FileUtil {
     }
 
     /**
-     * 处理头像
+     * 通用：上传处理
      */
     @NotNull
-    private static Long handleAvatar(SysFileUploadDTO dto, String fileType) {
-
-        String folderName = dto.getUploadType().getFolderName();
+    private static Long uploadCommonHandler(SysFileUploadDTO dto, String fileType, boolean publicFlag) {
 
         Long currentUserId = UserUtil.getCurrentUserId();
 
+        String folderName = dto.getUploadType().getFolderName();
+
         String originalFilename = dto.getFile().getOriginalFilename(); // 旧的文件名
 
-        String newFileName = currentUserId + "." + fileType; // 新的文件名
+        String newFileName = IdUtil.simpleUUID() + "." + fileType; // 新的文件名
 
         String objectName = folderName + "/" + newFileName;
 
@@ -139,15 +142,23 @@ public class FileUtil {
 
         SysFileStorageTypeEnum storageType = null;
 
-        if (fileProperties.getAvatarStorageType() == 1) { // 头像存放位置：1 阿里云 2 minio
+        if (sysFileProperties.getAvatarStorageType() == 1) { // 文件存放位置：1 阿里云 2 minio
 
-            bucketName = fileAliYunProperties.getBucketPublicName();
+            if (publicFlag) {
+                bucketName = fileAliYunProperties.getBucketPublicName();
+            } else {
+                bucketName = fileAliYunProperties.getBucketPrivateName();
+            }
 
             storageType = SysFileStorageTypeEnum.ALI_YUN;
 
-        } else if (fileProperties.getAvatarStorageType() == 2) {
+        } else if (sysFileProperties.getAvatarStorageType() == 2) {
 
-            bucketName = fileMinioProperties.getBucketPublicName();
+            if (publicFlag) {
+                bucketName = fileMinioProperties.getBucketPublicName();
+            } else {
+                bucketName = fileMinioProperties.getBucketPrivateName();
+            }
 
             storageType = SysFileStorageTypeEnum.MINIO;
 
@@ -164,15 +175,15 @@ public class FileUtil {
 
         return TransactionUtil.exec(() -> {
 
-            // 保存：头像文件信息到数据库
-            Long sysFileId = saveAvatarSysFile(dto, fileType, currentUserId, originalFilename, newFileName, objectName,
-                finalBucketName, finalStorageType);
+            // 通用保存：文件信息到数据库
+            Long sysFileId = saveCommonSysFile(dto, fileType, currentUserId, originalFilename, newFileName, objectName,
+                finalBucketName, finalStorageType, publicFlag);
 
-            if (fileProperties.getAvatarStorageType() == 1) { // 头像存放位置：1 阿里云 2 minio
+            if (sysFileProperties.getAvatarStorageType() == 1) { // 文件存放位置：1 阿里云 2 minio
 
                 FileAliYunUtil.upload(finalBucketName, objectName, dto.getFile());
 
-            } else if (fileProperties.getAvatarStorageType() == 2) {
+            } else if (sysFileProperties.getAvatarStorageType() == 2) {
 
                 FileMinioUtil.upload(finalBucketName, objectName, dto.getFile());
 
@@ -185,12 +196,12 @@ public class FileUtil {
     }
 
     /**
-     * 保存：头像文件信息到数据库
+     * 通用保存：文件信息到数据库
      */
     @NotNull
-    private static Long saveAvatarSysFile(SysFileUploadDTO dto, String fileType, Long currentUserId,
+    private static Long saveCommonSysFile(SysFileUploadDTO dto, String fileType, Long currentUserId,
         String originalFilename, String newFileName, String objectName, String bucketName,
-        SysFileStorageTypeEnum storageType) {
+        SysFileStorageTypeEnum storageType, boolean publicFlag) {
 
         SysFile sysFile = new SysFile();
 
@@ -207,7 +218,7 @@ public class FileUtil {
         sysFile.setType(SysFileTypeEnum.FILE);
         sysFile.setShowFileName(originalFilename);
         sysFile.setRefFileId(BaseConstant.NEGATIVE_ONE);
-        sysFile.setPublicFlag(true);
+        sysFile.setPublicFlag(publicFlag);
         sysFile.setEnableFlag(true);
         sysFile.setDelFlag(false);
         sysFile.setRemark("");
@@ -237,7 +248,8 @@ public class FileUtil {
 
             // 检查：是否有可读权限
             boolean exists = sysFileAuthService.lambdaQuery().eq(SysFileAuth::getFileId, fileId)
-                .eq(SysFileAuth::getUserId, currentUserId).eq(SysFileAuth::getReadFlag, true).exists();
+                .eq(SysFileAuth::getUserId, currentUserId).eq(SysFileAuth::getReadFlag, true)
+                .eq(BaseEntityNoId::getEnableFlag, true).exists();
 
             if (BooleanUtil.isFalse(exists)) {
                 ApiResultVO.error(BaseBizCodeEnum.INSUFFICIENT_PERMISSIONS);
@@ -284,7 +296,7 @@ public class FileUtil {
      * 批量删除文件：共有和私有
      */
     @SneakyThrows
-    public static void remove(Set<Long> fileIdSet) {
+    public static void removeByFileIdSet(Set<Long> fileIdSet) {
 
         if (CollUtil.isEmpty(fileIdSet)) {
             return;

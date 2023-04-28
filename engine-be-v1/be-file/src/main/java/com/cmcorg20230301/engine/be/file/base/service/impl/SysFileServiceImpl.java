@@ -1,13 +1,74 @@
 package com.cmcorg20230301.engine.be.file.base.service.impl;
 
+import cn.hutool.core.io.IoUtil;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.cmcorg20230301.engine.be.file.base.mapper.SysFileMapper;
 import com.cmcorg20230301.engine.be.file.base.model.entity.SysFile;
 import com.cmcorg20230301.engine.be.file.base.service.SysFileService;
+import com.cmcorg20230301.engine.be.file.base.util.FileUtil;
+import com.cmcorg20230301.engine.be.model.model.dto.NotEmptyIdSet;
+import com.cmcorg20230301.engine.be.model.model.dto.NotNullId;
+import com.cmcorg20230301.engine.be.security.exception.BaseBizCodeEnum;
+import com.cmcorg20230301.engine.be.security.model.dto.SysFileUploadDTO;
+import com.cmcorg20230301.engine.be.security.model.vo.ApiResultVO;
+import lombok.SneakyThrows;
 import org.springframework.stereotype.Service;
+
+import javax.servlet.ServletOutputStream;
+import javax.servlet.http.HttpServletResponse;
+import java.io.InputStream;
 
 @Service
 public class SysFileServiceImpl extends ServiceImpl<SysFileMapper, SysFile> implements SysFileService {
+
+    /**
+     * 上传文件：共有和私有
+     */
+    @Override
+    public String upload(SysFileUploadDTO dto) {
+
+        FileUtil.upload(dto);
+
+        return BaseBizCodeEnum.OK;
+
+    }
+
+    /**
+     * 下载文件：私有
+     */
+    @SneakyThrows
+    @Override
+    public void privateDownload(NotNullId notNullId, HttpServletResponse response) {
+
+        InputStream inputStream = FileUtil.privateDownload(notNullId.getId());
+
+        if (inputStream == null) {
+            ApiResultVO.error("操作失败：文件流获取失败");
+        }
+
+        ServletOutputStream outputStream = response.getOutputStream();
+
+        IoUtil.copy(inputStream, outputStream);
+
+        outputStream.flush();
+
+        IoUtil.close(inputStream);
+
+        IoUtil.close(outputStream);
+
+    }
+
+    /**
+     * 批量删除文件：共有和私有
+     */
+    @Override
+    public String removeByFileIdSet(NotEmptyIdSet notEmptyIdSet) {
+
+        FileUtil.removeByFileIdSet(notEmptyIdSet.getIdSet());
+
+        return BaseBizCodeEnum.OK;
+
+    }
 
 }
 

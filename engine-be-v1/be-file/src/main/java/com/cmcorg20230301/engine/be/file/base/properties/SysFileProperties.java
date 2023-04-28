@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 @Component
 @ConfigurationProperties(prefix = PropertiesPrefixConstant.FILE)
 @RefreshScope
-public class FileProperties {
+public class SysFileProperties {
 
     @Schema(description = "头像存放位置：1 阿里云 2 minio")
     private Integer avatarStorageType;
