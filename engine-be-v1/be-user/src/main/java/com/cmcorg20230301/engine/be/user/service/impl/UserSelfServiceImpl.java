@@ -72,8 +72,8 @@ public class UserSelfServiceImpl extends ServiceImpl<SysUserMapper, SysUserDO> i
 
             sysUserSelfInfoVO.setPhone(DesensitizedUtil.mobilePhone(sysUserDO.getPhone())); // 脱敏
 
-            sysUserSelfInfoVO.setWxOpenId(DesensitizedUtil.mobilePhone(
-                StrUtil.hide(sysUserDO.getWxOpenId(), 3, sysUserDO.getWxOpenId().length() - 4))); // 脱敏：只显示前 3位，后 4位
+            sysUserSelfInfoVO.setWxOpenId(
+                StrUtil.hide(sysUserDO.getWxOpenId(), 3, sysUserDO.getWxOpenId().length() - 4)); // 脱敏：只显示前 3位，后 4位
 
             sysUserSelfInfoVO.setPasswordFlag(StrUtil.isNotBlank(sysUserDO.getPassword()));
             sysUserSelfInfoVO.setCreateTime(sysUserDO.getCreateTime());
