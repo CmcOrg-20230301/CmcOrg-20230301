@@ -7,8 +7,8 @@ import cn.hutool.core.util.IdUtil;
 import cn.hutool.core.util.StrUtil;
 import com.cmcorg20230301.engine.be.file.aliyun.properties.FileAliYunProperties;
 import com.cmcorg20230301.engine.be.file.aliyun.util.FileAliYunUtil;
-import com.cmcorg20230301.engine.be.file.base.model.entity.SysFile;
-import com.cmcorg20230301.engine.be.file.base.model.entity.SysFileAuth;
+import com.cmcorg20230301.engine.be.file.base.model.entity.SysFileAuthDO;
+import com.cmcorg20230301.engine.be.file.base.model.entity.SysFileDO;
 import com.cmcorg20230301.engine.be.file.base.properties.SysFileProperties;
 import com.cmcorg20230301.engine.be.file.base.service.SysFileAuthService;
 import com.cmcorg20230301.engine.be.file.base.service.SysFileService;
@@ -203,29 +203,29 @@ public class SysFileUtil {
         String originalFilename, String newFileName, String objectName, String bucketName,
         SysFileStorageTypeEnum storageType, boolean publicFlag) {
 
-        SysFile sysFile = new SysFile();
+        SysFileDO sysFileDO = new SysFileDO();
 
-        sysFile.setBelongId(currentUserId);
-        sysFile.setBucketName(bucketName);
-        sysFile.setUri(objectName);
-        sysFile.setOriginFileName(originalFilename);
-        sysFile.setNewFileName(newFileName);
-        sysFile.setFileExtName(fileType);
-        sysFile.setExtraJson(MyEntityUtil.getNotNullStr(dto.getExtraJson()));
-        sysFile.setUploadType(dto.getUploadType());
-        sysFile.setStorageType(storageType);
-        sysFile.setParentId(MyEntityUtil.getNotNullParentId(null));
-        sysFile.setType(SysFileTypeEnum.FILE);
-        sysFile.setShowFileName(originalFilename);
-        sysFile.setRefFileId(BaseConstant.NEGATIVE_ONE);
-        sysFile.setPublicFlag(publicFlag);
-        sysFile.setEnableFlag(true);
-        sysFile.setDelFlag(false);
-        sysFile.setRemark(MyEntityUtil.getNotNullStr(dto.getRemark()));
+        sysFileDO.setBelongId(currentUserId);
+        sysFileDO.setBucketName(bucketName);
+        sysFileDO.setUri(objectName);
+        sysFileDO.setOriginFileName(originalFilename);
+        sysFileDO.setNewFileName(newFileName);
+        sysFileDO.setFileExtName(fileType);
+        sysFileDO.setExtraJson(MyEntityUtil.getNotNullStr(dto.getExtraJson()));
+        sysFileDO.setUploadType(dto.getUploadType());
+        sysFileDO.setStorageType(storageType);
+        sysFileDO.setParentId(MyEntityUtil.getNotNullParentId(null));
+        sysFileDO.setType(SysFileTypeEnum.FILE);
+        sysFileDO.setShowFileName(originalFilename);
+        sysFileDO.setRefFileId(BaseConstant.NEGATIVE_ONE);
+        sysFileDO.setPublicFlag(publicFlag);
+        sysFileDO.setEnableFlag(true);
+        sysFileDO.setDelFlag(false);
+        sysFileDO.setRemark(MyEntityUtil.getNotNullStr(dto.getRemark()));
 
-        sysFileService.save(sysFile);
+        sysFileService.save(sysFileDO);
 
-        return sysFile.getId();
+        return sysFileDO.getId();
 
     }
 
@@ -236,19 +236,19 @@ public class SysFileUtil {
     @Nullable
     public static InputStream privateDownload(long fileId) {
 
-        SysFile sysFile = getPrivateDownloadSysFile(fileId);
+        SysFileDO sysFileDO = getPrivateDownloadSysFile(fileId);
 
-        if (SysFileTypeEnum.FOLDER.equals(sysFile.getType())) {
+        if (SysFileTypeEnum.FOLDER.equals(sysFileDO.getType())) {
             ApiResultVO.error("操作失败：暂不支持下载文件夹");
         }
 
-        if (BooleanUtil.isFalse(sysFile.getPublicFlag())) { // 如果：不是公开下载
+        if (BooleanUtil.isFalse(sysFileDO.getPublicFlag())) { // 如果：不是公开下载
 
             Long currentUserId = UserUtil.getCurrentUserId();
 
             // 检查：是否有可读权限
-            boolean exists = sysFileAuthService.lambdaQuery().eq(SysFileAuth::getFileId, fileId)
-                .eq(SysFileAuth::getUserId, currentUserId).eq(SysFileAuth::getReadFlag, true)
+            boolean exists = sysFileAuthService.lambdaQuery().eq(SysFileAuthDO::getFileId, fileId)
+                .eq(SysFileAuthDO::getUserId, currentUserId).eq(SysFileAuthDO::getReadFlag, true)
                 .eq(BaseEntityNoId::getEnableFlag, true).exists();
 
             if (BooleanUtil.isFalse(exists)) {
@@ -257,19 +257,19 @@ public class SysFileUtil {
 
         }
 
-        if (sysFile.getRefFileId() != BaseConstant.NEGATIVE_ONE) { // 如果有关联的文件，则使用关联文件的信息
+        if (sysFileDO.getRefFileId() != BaseConstant.NEGATIVE_ONE) { // 如果有关联的文件，则使用关联文件的信息
 
-            sysFile = getPrivateDownloadSysFile(sysFile.getRefFileId());
+            sysFileDO = getPrivateDownloadSysFile(sysFileDO.getRefFileId());
 
         }
 
-        if (SysFileStorageTypeEnum.ALI_YUN.equals(sysFile.getStorageType())) {
+        if (SysFileStorageTypeEnum.ALI_YUN.equals(sysFileDO.getStorageType())) {
 
-            return FileAliYunUtil.download(sysFile.getBucketName(), sysFile.getNewFileName());
+            return FileAliYunUtil.download(sysFileDO.getBucketName(), sysFileDO.getNewFileName());
 
-        } else if (SysFileStorageTypeEnum.MINIO.equals(sysFile.getStorageType())) {
+        } else if (SysFileStorageTypeEnum.MINIO.equals(sysFileDO.getStorageType())) {
 
-            return FileMinioUtil.download(sysFile.getBucketName(), sysFile.getNewFileName());
+            return FileMinioUtil.download(sysFileDO.getBucketName(), sysFileDO.getNewFileName());
 
         }
 
@@ -277,18 +277,18 @@ public class SysFileUtil {
 
     }
 
-    private static SysFile getPrivateDownloadSysFile(long fileId) {
+    private static SysFileDO getPrivateDownloadSysFile(long fileId) {
 
-        SysFile sysFile = sysFileService.lambdaQuery()
-            .select(SysFile::getBucketName, SysFile::getNewFileName, SysFile::getPublicFlag, SysFile::getRefFileId,
-                SysFile::getStorageType, SysFile::getType).eq(BaseEntityNoId::getEnableFlag, true)
-            .eq(BaseEntity::getId, fileId).one();
+        SysFileDO sysFileDO = sysFileService.lambdaQuery()
+            .select(SysFileDO::getBucketName, SysFileDO::getNewFileName, SysFileDO::getPublicFlag,
+                SysFileDO::getRefFileId, SysFileDO::getStorageType, SysFileDO::getType)
+            .eq(BaseEntityNoId::getEnableFlag, true).eq(BaseEntity::getId, fileId).one();
 
-        if (sysFile == null) {
+        if (sysFileDO == null) {
             ApiResultVO.error("操作失败：文件不存在");
         }
 
-        return sysFile;
+        return sysFileDO;
 
     }
 
@@ -305,46 +305,46 @@ public class SysFileUtil {
         Long currentUserId = UserUtil.getCurrentUserId();
 
         // 只有：文件拥有者才可以删除
-        List<SysFile> sysFileList = sysFileService.lambdaQuery()
-            .select(SysFile::getBucketName, SysFile::getNewFileName, SysFile::getStorageType, SysFile::getType)
+        List<SysFileDO> sysFileDOList = sysFileService.lambdaQuery()
+            .select(SysFileDO::getBucketName, SysFileDO::getNewFileName, SysFileDO::getStorageType, SysFileDO::getType)
             .in(BaseEntity::getId, fileIdSet).eq(BaseEntityNoId::getEnableFlag, true)
-            .eq(SysFile::getBelongId, currentUserId).list();
+            .eq(SysFileDO::getBelongId, currentUserId).list();
 
-        if (sysFileList.size() != fileIdSet.size()) {
+        if (sysFileDOList.size() != fileIdSet.size()) {
             ApiResultVO.error(BaseBizCodeEnum.INSUFFICIENT_PERMISSIONS);
         }
 
-        boolean anyMatch = sysFileList.stream().anyMatch(it -> SysFileTypeEnum.FOLDER.equals(it.getType()));
+        boolean anyMatch = sysFileDOList.stream().anyMatch(it -> SysFileTypeEnum.FOLDER.equals(it.getType()));
 
         if (anyMatch) {
             ApiResultVO.error("操作失败：暂不支持删除文件夹");
         }
 
-        Set<String> bucketNameSet = sysFileList.stream().map(SysFile::getBucketName).collect(Collectors.toSet());
+        Set<String> bucketNameSet = sysFileDOList.stream().map(SysFileDO::getBucketName).collect(Collectors.toSet());
 
         if (bucketNameSet.size() != 1) {
             ApiResultVO.error("操作失败：bucketName不相同");
         }
 
         // 可以随便取一个：bucketName，因为都是一样的
-        String bucketName = sysFileList.get(0).getBucketName();
+        String bucketName = sysFileDOList.get(0).getBucketName();
 
         // 移除：所有文件
         TransactionUtil.exec(() -> {
 
             sysFileService.removeBatchByIds(fileIdSet);
 
-            sysFileAuthService.lambdaUpdate().in(SysFileAuth::getFileId, fileIdSet).remove();
+            sysFileAuthService.lambdaUpdate().in(SysFileAuthDO::getFileId, fileIdSet).remove();
 
-            Map<SysFileStorageTypeEnum, List<SysFile>> groupMap =
-                sysFileList.stream().collect(Collectors.groupingBy(SysFile::getStorageType));
+            Map<SysFileStorageTypeEnum, List<SysFileDO>> groupMap =
+                sysFileDOList.stream().collect(Collectors.groupingBy(SysFileDO::getStorageType));
 
             Set<String> aliYunObjectNameSet = new HashSet<>();
             Set<String> minioObjectNameSet = new HashSet<>();
 
-            for (List<SysFile> item : groupMap.values()) {
+            for (List<SysFileDO> item : groupMap.values()) {
 
-                for (SysFile subItem : item) {
+                for (SysFileDO subItem : item) {
 
                     if (SysFileStorageTypeEnum.ALI_YUN.equals(subItem.getStorageType())) {
 

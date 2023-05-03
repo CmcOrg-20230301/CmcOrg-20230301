@@ -13,7 +13,7 @@ import lombok.EqualsAndHashCode;
 @TableName(value = "sys_file")
 @Data
 @Schema(description = "主表：文件")
-public class SysFile extends BaseEntity {
+public class SysFileDO extends BaseEntity {
 
     @Schema(description = "归属者用户主键 id（拥有全部权限）")
     private Long belongId;

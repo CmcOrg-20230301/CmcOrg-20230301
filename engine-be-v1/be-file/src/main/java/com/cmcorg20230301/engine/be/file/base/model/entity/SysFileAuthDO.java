@@ -10,7 +10,7 @@ import lombok.EqualsAndHashCode;
 @TableName(value = "sys_file_auth")
 @Data
 @Schema(description = "子表：文件操作权限，主表：文件")
-public class SysFileAuth extends BaseEntity {
+public class SysFileAuthDO extends BaseEntity {
 
     @Schema(description = "文件主键 id")
     private Long fileId;

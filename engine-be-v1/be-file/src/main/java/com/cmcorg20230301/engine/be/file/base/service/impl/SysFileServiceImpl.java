@@ -3,7 +3,7 @@ package com.cmcorg20230301.engine.be.file.base.service.impl;
 import cn.hutool.core.io.IoUtil;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.cmcorg20230301.engine.be.file.base.mapper.SysFileMapper;
-import com.cmcorg20230301.engine.be.file.base.model.entity.SysFile;
+import com.cmcorg20230301.engine.be.file.base.model.entity.SysFileDO;
 import com.cmcorg20230301.engine.be.file.base.service.SysFileService;
 import com.cmcorg20230301.engine.be.file.base.util.SysFileUtil;
 import com.cmcorg20230301.engine.be.model.model.dto.NotEmptyIdSet;
@@ -19,7 +19,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.InputStream;
 
 @Service
-public class SysFileServiceImpl extends ServiceImpl<SysFileMapper, SysFile> implements SysFileService {
+public class SysFileServiceImpl extends ServiceImpl<SysFileMapper, SysFileDO> implements SysFileService {
 
     /**
      * 上传文件：共有和私有
