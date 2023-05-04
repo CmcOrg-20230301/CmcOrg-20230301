@@ -1,10 +1,14 @@
 package com.cmcorg20230301.engine.be.generate.util.apitest.sys;
 
 import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.http.HttpRequest;
+import cn.hutool.json.JSONUtil;
 import com.cmcorg20230301.engine.be.generate.util.apitest.ApiTestHelper;
 import com.cmcorg20230301.engine.be.generate.util.apitest.sign.ApiTestSignSignInNameUtil;
+import com.cmcorg20230301.engine.be.model.model.dto.NotEmptyIdSet;
+import com.cmcorg20230301.engine.be.model.model.dto.NotNullId;
 import com.cmcorg20230301.engine.be.security.model.dto.SysFileUploadDTO;
 import com.cmcorg20230301.engine.be.security.model.enums.SysFileUploadTypeEnum;
 import lombok.SneakyThrows;
@@ -44,7 +48,66 @@ public class ApiTestSysFileUtil {
             ApiTestSignSignInNameUtil.signInNameSignIn(apiEndpoint, adminSignInName, adminPassword, rsaPublicKey);
 
         // 请求-上传文件：共有和私有
-        sysFileUpload(apiEndpoint, jwt);
+        Long fileId = sysFileUpload(apiEndpoint, jwt);
+
+        // 请求-下载文件：私有
+        sysFilePrivateDownload(apiEndpoint, jwt, fileId);
+
+        // 请求-批量获取：公开文件的 url
+        sysFileGetPublicUrl(apiEndpoint, jwt, fileId);
+
+        // 请求-批量删除文件：共有和私有
+        sysFileRemoveByFileIdSet(apiEndpoint, jwt, fileId);
+
+    }
+
+    /**
+     * 批量删除文件：共有和私有
+     */
+    private static void sysFileRemoveByFileIdSet(String apiEndpoint, String jwt, Long fileId) {
+
+        long currentTs = System.currentTimeMillis();
+
+        NotEmptyIdSet notEmptyIdSet = new NotEmptyIdSet(CollUtil.newHashSet(fileId));
+
+        String bodyStr = HttpRequest.post(apiEndpoint + "/sys/file/removeByFileIdSet").header("Authorization", jwt)
+            .body(JSONUtil.toJsonStr(notEmptyIdSet)).execute().body();
+
+        log.info("请求-批量删除文件：共有和私有：耗时：{}，bodyByte长度：{}", ApiTestHelper.calcCostMs(currentTs), bodyStr);
+
+    }
+
+    /**
+     * 批量获取：公开文件的 url
+     */
+    @SneakyThrows
+    private static void sysFileGetPublicUrl(String apiEndpoint, String jwt, Long fileId) {
+
+        long currentTs = System.currentTimeMillis();
+
+        NotEmptyIdSet notEmptyIdSet = new NotEmptyIdSet(CollUtil.newHashSet(fileId));
+
+        String bodyStr = HttpRequest.post(apiEndpoint + "/sys/file/getPublicUrl").header("Authorization", jwt)
+            .body(JSONUtil.toJsonStr(notEmptyIdSet)).execute().body();
+
+        log.info("请求-批量获取：公开文件的 url：耗时：{}，bodyByte长度：{}", ApiTestHelper.calcCostMs(currentTs), bodyStr);
+
+    }
+
+    /**
+     * 下载文件：私有
+     */
+    @SneakyThrows
+    private static void sysFilePrivateDownload(String apiEndpoint, String jwt, Long fileId) {
+
+        long currentTs = System.currentTimeMillis();
+
+        NotNullId notNullId = new NotNullId(fileId);
+
+        byte[] bodyByteArr = HttpRequest.post(apiEndpoint + "/sys/file/privateDownload").header("Authorization", jwt)
+            .body(JSONUtil.toJsonStr(notNullId)).execute().bodyBytes();
+
+        log.info("请求-下载文件：私有：耗时：{}，bodyByte长度：{}", ApiTestHelper.calcCostMs(currentTs), bodyByteArr.length);
 
     }
 
@@ -52,7 +115,7 @@ public class ApiTestSysFileUtil {
      * 请求-上传文件：共有和私有
      */
     @SneakyThrows
-    private static void sysFileUpload(String apiEndpoint, String jwt) {
+    private static Long sysFileUpload(String apiEndpoint, String jwt) {
 
         long currentTs = System.currentTimeMillis();
 
@@ -68,6 +131,8 @@ public class ApiTestSysFileUtil {
                 .execute().body();
 
         log.info("请求-上传文件：共有和私有：耗时：{}，bodyStr：{}", ApiTestHelper.calcCostMs(currentTs), bodyStr);
+
+        return JSONUtil.parseObj(bodyStr).getLong("data");
 
     }
 

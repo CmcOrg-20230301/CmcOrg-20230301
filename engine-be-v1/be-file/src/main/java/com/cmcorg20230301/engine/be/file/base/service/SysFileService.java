@@ -11,7 +11,7 @@ import javax.servlet.http.HttpServletResponse;
 
 public interface SysFileService extends IService<SysFileDO> {
 
-    String upload(SysFileUploadDTO dto);
+    Long upload(SysFileUploadDTO dto);
 
     void privateDownload(NotNullId notNullId, HttpServletResponse response);
 

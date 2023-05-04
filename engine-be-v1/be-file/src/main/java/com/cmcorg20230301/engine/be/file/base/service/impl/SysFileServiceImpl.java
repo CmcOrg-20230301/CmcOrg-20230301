@@ -25,11 +25,9 @@ public class SysFileServiceImpl extends ServiceImpl<SysFileMapper, SysFileDO> im
      * 上传文件：共有和私有
      */
     @Override
-    public String upload(SysFileUploadDTO dto) {
+    public Long upload(SysFileUploadDTO dto) {
 
-        SysFileUtil.upload(dto);
-
-        return BaseBizCodeEnum.OK;
+        return SysFileUtil.upload(dto);
 
     }
 

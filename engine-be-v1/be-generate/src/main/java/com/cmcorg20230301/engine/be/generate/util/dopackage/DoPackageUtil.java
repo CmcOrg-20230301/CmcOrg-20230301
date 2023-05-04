@@ -31,7 +31,9 @@ public class DoPackageUtil {
 
     private static final String SPRING_REMOTE_PATH = "/mydata/springboot";
 
-    private static final String SPRING_REMOTE_EXEC_CMD = "docker restart be-start-node-1";
+    private static final String SPRING_REMOTE_STOP_EXEC_CMD = "docker stop be-start-node-1";
+
+    private static final String SPRING_REMOTE_RESTART_EXEC_CMD = "docker restart be-start-node-1";
 
     /**
      * 打包：前端和后端
@@ -101,6 +103,9 @@ public class DoPackageUtil {
 
             System.out.println("后端打包上传 ↓ 大小：" + DataSizeUtil.format(FileUtil.size(file)));
 
+            // 先停止，再上传文件
+            JschUtil.exec(session, SPRING_REMOTE_STOP_EXEC_CMD, CharsetUtil.CHARSET_UTF_8);
+
             timeNumber = System.currentTimeMillis();
 
             sftp.put(jarPath, SPRING_REMOTE_PATH);
@@ -114,7 +119,7 @@ public class DoPackageUtil {
 
             timeNumber = System.currentTimeMillis();
 
-            JschUtil.exec(session, SPRING_REMOTE_EXEC_CMD, CharsetUtil.CHARSET_UTF_8);
+            JschUtil.exec(session, SPRING_REMOTE_RESTART_EXEC_CMD, CharsetUtil.CHARSET_UTF_8);
 
             timeNumber = System.currentTimeMillis() - timeNumber;
             timeStr = DateUtil.formatBetween(timeNumber);

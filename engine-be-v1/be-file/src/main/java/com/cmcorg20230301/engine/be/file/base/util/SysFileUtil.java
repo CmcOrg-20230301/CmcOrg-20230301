@@ -371,7 +371,7 @@ public class SysFileUtil {
 
         // 只有：文件拥有者才可以删除
         List<SysFileDO> sysFileDOList = sysFileService.lambdaQuery()
-            .select(SysFileDO::getBucketName, SysFileDO::getNewFileName, SysFileDO::getStorageType, SysFileDO::getType)
+            .select(SysFileDO::getBucketName, SysFileDO::getUri, SysFileDO::getStorageType, SysFileDO::getType)
             .in(BaseEntity::getId, fileIdSet).eq(BaseEntityNoId::getEnableFlag, true)
             .eq(SysFileDO::getBelongId, currentUserId).list();
 
@@ -413,11 +413,11 @@ public class SysFileUtil {
 
                     if (SysFileStorageTypeEnum.ALI_YUN.equals(subItem.getStorageType())) {
 
-                        aliYunObjectNameSet.add(subItem.getNewFileName());
+                        aliYunObjectNameSet.add(subItem.getUri());
 
                     } else if (SysFileStorageTypeEnum.MINIO.equals(subItem.getStorageType())) {
 
-                        minioObjectNameSet.add(subItem.getNewFileName());
+                        minioObjectNameSet.add(subItem.getUri());
 
                     }
 
