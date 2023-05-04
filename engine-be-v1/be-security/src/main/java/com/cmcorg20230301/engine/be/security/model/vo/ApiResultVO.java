@@ -28,10 +28,12 @@ public class ApiResultVO<T> {
     private String service = BaseConfiguration.applicationName;
 
     private ApiResultVO(Integer code, String msg, T data) {
+
         this.msg = msg;
         this.code = code;
         this.data = data;
         this.successFlag = true;
+
     }
 
     private void setSuccessFlag(boolean successFlag) {

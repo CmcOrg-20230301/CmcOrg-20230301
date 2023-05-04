@@ -3,6 +3,7 @@ package com.cmcorg20230301.engine.be.file.base.controller;
 import com.cmcorg20230301.engine.be.file.base.service.SysFileService;
 import com.cmcorg20230301.engine.be.model.model.dto.NotEmptyIdSet;
 import com.cmcorg20230301.engine.be.model.model.dto.NotNullId;
+import com.cmcorg20230301.engine.be.model.model.vo.LongObjectMapVO;
 import com.cmcorg20230301.engine.be.security.model.dto.SysFileUploadDTO;
 import com.cmcorg20230301.engine.be.security.model.vo.ApiResultVO;
 import io.swagger.v3.oas.annotations.Operation;
@@ -40,6 +41,12 @@ public class SysFileController {
     @PostMapping("/removeByFileIdSet")
     public ApiResultVO<String> removeByFileIdSet(@RequestBody @Valid NotEmptyIdSet notEmptyIdSet) {
         return ApiResultVO.ok(baseService.removeByFileIdSet(notEmptyIdSet));
+    }
+
+    @Operation(summary = "批量获取：公开文件的 url")
+    @PostMapping("/getPublicUrl")
+    public ApiResultVO<LongObjectMapVO<String>> getPublicUrl(@RequestBody @Valid NotEmptyIdSet notEmptyIdSet) {
+        return ApiResultVO.ok(baseService.getPublicUrl(notEmptyIdSet));
     }
 
 }

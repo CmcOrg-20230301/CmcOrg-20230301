@@ -5,6 +5,7 @@ import cn.hutool.core.lang.Assert;
 import cn.hutool.core.util.BooleanUtil;
 import cn.hutool.core.util.IdUtil;
 import cn.hutool.core.util.StrUtil;
+import com.baomidou.mybatisplus.extension.conditions.query.LambdaQueryChainWrapper;
 import com.cmcorg20230301.engine.be.file.aliyun.properties.FileAliYunProperties;
 import com.cmcorg20230301.engine.be.file.aliyun.util.FileAliYunUtil;
 import com.cmcorg20230301.engine.be.file.base.model.entity.SysFileAuthDO;
@@ -32,10 +33,7 @@ import org.jetbrains.annotations.Nullable;
 import org.springframework.stereotype.Component;
 
 import java.io.InputStream;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -114,7 +112,7 @@ public class SysFileUtil {
         if (SysFileUploadTypeEnum.AVATAR.equals(dto.getUploadType())) {
 
             // 通用：上传处理
-            sysFileId = uploadCommonHandler(dto, fileType, true);
+            sysFileId = uploadCommonHandler(dto, fileType, dto.getUploadType().isPublicFlag());
 
         }
 
@@ -257,11 +255,8 @@ public class SysFileUtil {
 
         }
 
-        if (sysFileDO.getRefFileId() != BaseConstant.NEGATIVE_ONE) { // 如果有关联的文件，则使用关联文件的信息
-
-            sysFileDO = getPrivateDownloadSysFile(sysFileDO.getRefFileId());
-
-        }
+        // 如果有关联的文件，则使用关联文件的信息，备注：这里是递归获取，要注意层级问题
+        sysFileDO = getDeepPrivateDownloadSysFile(sysFileDO);
 
         if (SysFileStorageTypeEnum.ALI_YUN.equals(sysFileDO.getStorageType())) {
 
@@ -271,24 +266,94 @@ public class SysFileUtil {
 
             return FileMinioUtil.download(sysFileDO.getBucketName(), sysFileDO.getNewFileName());
 
-        }
+        } else {
 
-        return null;
+            ApiResultVO.error("操作失败：文件存储位置不存在");
+            return null; // 备注：这里不会执行，只是为了通过语法检查
+
+        }
 
     }
 
+    /**
+     * 如果有关联的文件，则使用关联文件的信息，备注：这里是递归获取，要注意层级问题
+     */
+    @NotNull
+    private static SysFileDO getDeepPrivateDownloadSysFile(SysFileDO sysFileDO) {
+
+        if (sysFileDO.getRefFileId() != BaseConstant.NEGATIVE_ONE) {
+
+            sysFileDO = getPrivateDownloadSysFile(sysFileDO.getRefFileId());
+
+            return getDeepPrivateDownloadSysFile(sysFileDO);
+
+        }
+
+        return sysFileDO;
+
+    }
+
+    @NotNull
     private static SysFileDO getPrivateDownloadSysFile(long fileId) {
 
-        SysFileDO sysFileDO = sysFileService.lambdaQuery()
-            .select(SysFileDO::getBucketName, SysFileDO::getNewFileName, SysFileDO::getPublicFlag,
-                SysFileDO::getRefFileId, SysFileDO::getStorageType, SysFileDO::getType)
-            .eq(BaseEntityNoId::getEnableFlag, true).eq(BaseEntity::getId, fileId).one();
+        SysFileDO sysFileDO = getSysFileBaseLambdaQuery().eq(BaseEntity::getId, fileId).one();
 
         if (sysFileDO == null) {
             ApiResultVO.error("操作失败：文件不存在");
         }
 
         return sysFileDO;
+
+    }
+
+    private static LambdaQueryChainWrapper<SysFileDO> getSysFileBaseLambdaQuery() {
+
+        return sysFileService.lambdaQuery()
+            .select(SysFileDO::getBucketName, SysFileDO::getNewFileName, SysFileDO::getPublicFlag,
+                SysFileDO::getRefFileId, SysFileDO::getStorageType, SysFileDO::getType, BaseEntity::getId)
+            .eq(BaseEntityNoId::getEnableFlag, true);
+
+    }
+
+    /**
+     * 获取：公开文件的 url
+     */
+    @NotNull
+    public static Map<Long, String> getPublicUrl(Set<Long> fileIdSet) {
+
+        List<SysFileDO> sysFileDOList = getSysFileBaseLambdaQuery().in(BaseEntity::getId, fileIdSet).list();
+
+        Map<Long, String> result = new HashMap<>(sysFileDOList.size());
+
+        for (SysFileDO item : sysFileDOList) {
+
+            if (BooleanUtil.isTrue(item.getPublicFlag())) { // 如果：是公开下载
+
+                String url = null;
+
+                if (SysFileStorageTypeEnum.ALI_YUN.equals(item.getStorageType())) {
+
+                    url = fileAliYunProperties.getPublicDownloadEndpoint() + "/" + fileAliYunProperties
+                        .getBucketPublicName() + "/" + item.getUri();
+
+                } else if (SysFileStorageTypeEnum.MINIO.equals(item.getStorageType())) {
+
+                    url = fileMinioProperties.getPublicDownloadEndpoint() + "/" + fileMinioProperties
+                        .getBucketPublicName() + "/" + item.getUri();
+
+                }
+
+                if (url != null) {
+
+                    result.put(item.getId(), url);
+
+                }
+
+            }
+
+        }
+
+        return result;
 
     }
 

@@ -8,6 +8,7 @@ import com.cmcorg20230301.engine.be.file.base.service.SysFileService;
 import com.cmcorg20230301.engine.be.file.base.util.SysFileUtil;
 import com.cmcorg20230301.engine.be.model.model.dto.NotEmptyIdSet;
 import com.cmcorg20230301.engine.be.model.model.dto.NotNullId;
+import com.cmcorg20230301.engine.be.model.model.vo.LongObjectMapVO;
 import com.cmcorg20230301.engine.be.security.exception.BaseBizCodeEnum;
 import com.cmcorg20230301.engine.be.security.model.dto.SysFileUploadDTO;
 import com.cmcorg20230301.engine.be.security.model.vo.ApiResultVO;
@@ -67,6 +68,16 @@ public class SysFileServiceImpl extends ServiceImpl<SysFileMapper, SysFileDO> im
         SysFileUtil.removeByFileIdSet(notEmptyIdSet.getIdSet());
 
         return BaseBizCodeEnum.OK;
+
+    }
+
+    /**
+     * 批量获取：公开文件的 url
+     */
+    @Override
+    public LongObjectMapVO<String> getPublicUrl(NotEmptyIdSet notEmptyIdSet) {
+
+        return new LongObjectMapVO<>(SysFileUtil.getPublicUrl(notEmptyIdSet.getIdSet()));
 
     }
 
