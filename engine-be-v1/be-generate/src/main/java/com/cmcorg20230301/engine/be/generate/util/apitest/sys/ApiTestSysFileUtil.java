@@ -24,8 +24,8 @@ import java.util.Map;
 public class ApiTestSysFileUtil {
 
     // 执行，接口的地址，备注：最后面不要加斜杠 /
-    private static final String API_ENDPOINT = "http://43.154.37.130:10001";
-    //    private static final String API_ENDPOINT = "http://127.0.0.1:10001";
+    //    private static final String API_ENDPOINT = "http://43.154.37.130:10001";
+    private static final String API_ENDPOINT = "http://127.0.0.1:10001";
 
     // 测试文件的地址，需要包含文件类型后缀
     private static final String TEST_FILE_PATH = "/test/img/testImg.jpg";

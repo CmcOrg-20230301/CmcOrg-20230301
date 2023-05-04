@@ -310,8 +310,8 @@ public class SysFileUtil {
 
         return sysFileService.lambdaQuery()
             .select(SysFileDO::getBucketName, SysFileDO::getNewFileName, SysFileDO::getPublicFlag,
-                SysFileDO::getRefFileId, SysFileDO::getStorageType, SysFileDO::getType, BaseEntity::getId)
-            .eq(BaseEntityNoId::getEnableFlag, true);
+                SysFileDO::getRefFileId, SysFileDO::getStorageType, SysFileDO::getType, BaseEntity::getId,
+                SysFileDO::getUri).eq(BaseEntityNoId::getEnableFlag, true);
 
     }
 
