@@ -459,6 +459,2467 @@
       }
     }
   },
+  "SysUser": {
+    "/sys/user/infoById": {
+      "path": "/sys/user/infoById",
+      "method": "post",
+      "tag": "用户-管理",
+      "group": "SysUser",
+      "summary": "通过主键id，查看详情",
+      "contentType": "application/json",
+      "requestBody": {
+        "className": "NotNullId",
+        "type": "object",
+        "required": false,
+        "fieldMap": {
+          "id": {
+            "name": "id",
+            "type": "integer",
+            "required": true,
+            "description": "主键id",
+            "format": "int64"
+          }
+        },
+        "requiredFieldName": [
+          "id"
+        ]
+      },
+      "response": {
+        "className": "ApiResultVOSysUserInfoByIdVO",
+        "fieldMap": {
+          "ApiResultVOSysUserInfoByIdVO": {
+            "className": "ApiResultVOSysUserInfoByIdVO",
+            "type": "object",
+            "description": "统一响应实体类",
+            "fieldMap": {
+              "msg": {
+                "name": "msg",
+                "type": "string",
+                "description": "响应描述"
+              },
+              "code": {
+                "name": "code",
+                "type": "integer",
+                "description": "响应代码，成功返回：200",
+                "format": "int32"
+              },
+              "data": {
+                "className": "SysUserInfoByIdVO",
+                "name": "data",
+                "fieldMap": {
+                  "SysUserInfoByIdVO": {
+                    "className": "SysUserInfoByIdVO",
+                    "type": "object",
+                    "description": "数据",
+                    "fieldMap": {
+                      "wxOpenId": {
+                        "name": "wxOpenId",
+                        "type": "string",
+                        "description": "微信 openId，可以为空"
+                      },
+                      "avatarFileId": {
+                        "name": "avatarFileId",
+                        "type": "integer",
+                        "description": "头像 fileId（文件主键 id）",
+                        "format": "int64"
+                      },
+                      "bio": {
+                        "name": "bio",
+                        "type": "string",
+                        "description": "个人简介"
+                      },
+                      "updateTime": {
+                        "name": "updateTime",
+                        "type": "string",
+                        "description": "修改时间",
+                        "format": "date-time"
+                      },
+                      "remark": {
+                        "name": "remark",
+                        "type": "string",
+                        "description": "备注"
+                      },
+                      "delFlag": {
+                        "name": "delFlag",
+                        "type": "boolean",
+                        "description": "是否注销，未使用，而是采取直接删除的方式，目的：防止数据量越来越大"
+                      },
+                      "version": {
+                        "name": "version",
+                        "type": "integer",
+                        "description": "乐观锁",
+                        "format": "int32"
+                      },
+                      "updateId": {
+                        "name": "updateId",
+                        "type": "integer",
+                        "description": "修改人id",
+                        "format": "int64"
+                      },
+                      "password": {
+                        "name": "password",
+                        "type": "string",
+                        "description": "密码，可为空，如果为空，则登录时需要提示【进行忘记密码操作】"
+                      },
+                      "createTime": {
+                        "name": "createTime",
+                        "type": "string",
+                        "description": "创建时间",
+                        "format": "date-time"
+                      },
+                      "phone": {
+                        "name": "phone",
+                        "type": "string",
+                        "description": "手机号，可以为空"
+                      },
+                      "createId": {
+                        "name": "createId",
+                        "type": "integer",
+                        "description": "创建人id",
+                        "format": "int64"
+                      },
+                      "signInName": {
+                        "name": "signInName",
+                        "type": "string",
+                        "description": "登录名，可以为空"
+                      },
+                      "roleIdSet": {
+                        "name": "roleIdSet",
+                        "type": "integer",
+                        "description": "角色 idSet",
+                        "format": "int64",
+                        "arrFlag": true
+                      },
+                      "nickname": {
+                        "name": "nickname",
+                        "type": "string",
+                        "description": "昵称"
+                      },
+                      "id": {
+                        "name": "id",
+                        "type": "integer",
+                        "description": "主键id",
+                        "format": "int64"
+                      },
+                      "enableFlag": {
+                        "name": "enableFlag",
+                        "type": "boolean",
+                        "description": "正常/冻结"
+                      },
+                      "email": {
+                        "name": "email",
+                        "type": "string",
+                        "description": "邮箱，可以为空"
+                      }
+                    }
+                  }
+                }
+              },
+              "service": {
+                "name": "service",
+                "type": "string",
+                "description": "服务名"
+              },
+              "successFlag": {
+                "name": "successFlag",
+                "type": "boolean",
+                "description": "服务器是否收到请求，只会返回 true"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/sys/user/updatePassword": {
+      "path": "/sys/user/updatePassword",
+      "method": "post",
+      "tag": "用户-管理",
+      "group": "SysUser",
+      "summary": "批量：修改密码",
+      "contentType": "application/json",
+      "requestBody": {
+        "className": "SysUserUpdatePasswordDTO",
+        "type": "object",
+        "required": false,
+        "fieldMap": {
+          "idSet": {
+            "name": "idSet",
+            "type": "integer",
+            "required": true,
+            "description": "主键 idSet",
+            "format": "int64",
+            "arrFlag": true
+          },
+          "newPassword": {
+            "name": "newPassword",
+            "type": "string",
+            "description": "前端加密之后的，新密码"
+          },
+          "newOriginPassword": {
+            "name": "newOriginPassword",
+            "type": "string",
+            "description": "前端加密之后的原始密码，新密码"
+          }
+        },
+        "requiredFieldName": [
+          "idSet"
+        ]
+      },
+      "response": {
+        "className": "ApiResultVOString",
+        "fieldMap": {
+          "ApiResultVOString": {
+            "className": "ApiResultVOString",
+            "type": "object",
+            "description": "统一响应实体类",
+            "fieldMap": {
+              "msg": {
+                "name": "msg",
+                "type": "string",
+                "description": "响应描述"
+              },
+              "code": {
+                "name": "code",
+                "type": "integer",
+                "description": "响应代码，成功返回：200",
+                "format": "int32"
+              },
+              "data": {
+                "name": "data",
+                "type": "string",
+                "description": "数据"
+              },
+              "service": {
+                "name": "service",
+                "type": "string",
+                "description": "服务名"
+              },
+              "successFlag": {
+                "name": "successFlag",
+                "type": "boolean",
+                "description": "服务器是否收到请求，只会返回 true"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/sys/user/deleteByIdSet": {
+      "path": "/sys/user/deleteByIdSet",
+      "method": "post",
+      "tag": "用户-管理",
+      "group": "SysUser",
+      "summary": "批量：注销用户",
+      "contentType": "application/json",
+      "requestBody": {
+        "className": "NotEmptyIdSet",
+        "type": "object",
+        "required": false,
+        "fieldMap": {
+          "idSet": {
+            "name": "idSet",
+            "type": "integer",
+            "required": true,
+            "description": "主键 idSet",
+            "format": "int64",
+            "arrFlag": true
+          }
+        },
+        "requiredFieldName": [
+          "idSet"
+        ]
+      },
+      "response": {
+        "className": "ApiResultVOString",
+        "fieldMap": {
+          "ApiResultVOString": {
+            "className": "ApiResultVOString",
+            "type": "object",
+            "description": "统一响应实体类",
+            "fieldMap": {
+              "msg": {
+                "name": "msg",
+                "type": "string",
+                "description": "响应描述"
+              },
+              "code": {
+                "name": "code",
+                "type": "integer",
+                "description": "响应代码，成功返回：200",
+                "format": "int32"
+              },
+              "data": {
+                "name": "data",
+                "type": "string",
+                "description": "数据"
+              },
+              "service": {
+                "name": "service",
+                "type": "string",
+                "description": "服务名"
+              },
+              "successFlag": {
+                "name": "successFlag",
+                "type": "boolean",
+                "description": "服务器是否收到请求，只会返回 true"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/sys/user/page": {
+      "path": "/sys/user/page",
+      "method": "post",
+      "tag": "用户-管理",
+      "group": "SysUser",
+      "summary": "分页排序查询",
+      "contentType": "application/json",
+      "requestBody": {
+        "className": "SysUserPageDTO",
+        "type": "object",
+        "fieldMap": {
+          "avatarUri": {
+            "name": "avatarUri",
+            "type": "string",
+            "description": "头像uri"
+          },
+          "passwordFlag": {
+            "name": "passwordFlag",
+            "type": "boolean",
+            "description": "是否有密码"
+          },
+          "current": {
+            "name": "current",
+            "type": "integer",
+            "description": "第几页",
+            "format": "int64"
+          },
+          "phone": {
+            "name": "phone",
+            "type": "string",
+            "description": "手机号码"
+          },
+          "wxOpenId": {
+            "name": "wxOpenId",
+            "type": "string",
+            "description": "微信 openId"
+          },
+          "signInName": {
+            "name": "signInName",
+            "type": "string",
+            "description": "登录名"
+          },
+          "nickname": {
+            "name": "nickname",
+            "type": "string",
+            "description": "昵称"
+          },
+          "pageSize": {
+            "name": "pageSize",
+            "type": "integer",
+            "description": "每页显示条数",
+            "format": "int64"
+          },
+          "id": {
+            "name": "id",
+            "type": "integer",
+            "description": "主键 id",
+            "format": "int64"
+          },
+          "enableFlag": {
+            "name": "enableFlag",
+            "type": "boolean",
+            "description": "是否正常"
+          },
+          "email": {
+            "name": "email",
+            "type": "string",
+            "description": "邮箱"
+          },
+          "order": {
+            "className": "MyOrderDTO",
+            "name": "order",
+            "fieldMap": {
+              "MyOrderDTO": {
+                "className": "MyOrderDTO",
+                "type": "object",
+                "description": "排序字段",
+                "fieldMap": {
+                  "name": {
+                    "name": "name",
+                    "type": "string",
+                    "description": "排序的字段名"
+                  },
+                  "value": {
+                    "name": "value",
+                    "type": "string",
+                    "description": "ascend（升序，默认） descend（降序）"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "response": {
+        "className": "ApiResultVOPageSysUserPageVO",
+        "fieldMap": {
+          "ApiResultVOPageSysUserPageVO": {
+            "className": "ApiResultVOPageSysUserPageVO",
+            "type": "object",
+            "description": "统一响应实体类",
+            "fieldMap": {
+              "msg": {
+                "name": "msg",
+                "type": "string",
+                "description": "响应描述"
+              },
+              "code": {
+                "name": "code",
+                "type": "integer",
+                "description": "响应代码，成功返回：200",
+                "format": "int32"
+              },
+              "data": {
+                "className": "PageSysUserPageVO",
+                "name": "data",
+                "fieldMap": {
+                  "PageSysUserPageVO": {
+                    "className": "PageSysUserPageVO",
+                    "type": "object",
+                    "description": "数据",
+                    "fieldMap": {
+                      "total": {
+                        "name": "total",
+                        "type": "integer",
+                        "format": "int64"
+                      },
+                      "current": {
+                        "name": "current",
+                        "type": "integer",
+                        "format": "int64"
+                      },
+                      "pages": {
+                        "name": "pages",
+                        "type": "integer",
+                        "format": "int64"
+                      },
+                      "size": {
+                        "name": "size",
+                        "type": "integer",
+                        "format": "int64"
+                      },
+                      "optimizeCountSql": {
+                        "name": "optimizeCountSql",
+                        "type": "boolean"
+                      },
+                      "records": {
+                        "className": "SysUserPageVO",
+                        "name": "records",
+                        "fieldMap": {
+                          "SysUserPageVO": {
+                            "className": "SysUserPageVO",
+                            "type": "object",
+                            "fieldMap": {
+                              "avatarUri": {
+                                "name": "avatarUri",
+                                "type": "string",
+                                "description": "头像uri"
+                              },
+                              "passwordFlag": {
+                                "name": "passwordFlag",
+                                "type": "boolean",
+                                "description": "是否有密码"
+                              },
+                              "phone": {
+                                "name": "phone",
+                                "type": "string",
+                                "description": "手机号码，会脱敏"
+                              },
+                              "createTime": {
+                                "name": "createTime",
+                                "type": "string",
+                                "description": "创建时间",
+                                "format": "date-time"
+                              },
+                              "wxOpenId": {
+                                "name": "wxOpenId",
+                                "type": "string",
+                                "description": "微信 openId，会脱敏"
+                              },
+                              "signInName": {
+                                "name": "signInName",
+                                "type": "string",
+                                "description": "登录名，会脱敏"
+                              },
+                              "nickname": {
+                                "name": "nickname",
+                                "type": "string",
+                                "description": "昵称"
+                              },
+                              "roleIdSet": {
+                                "name": "roleIdSet",
+                                "type": "integer",
+                                "description": "角色 idSet",
+                                "format": "int64",
+                                "arrFlag": true
+                              },
+                              "updateTime": {
+                                "name": "updateTime",
+                                "type": "string",
+                                "description": "修改时间",
+                                "format": "date-time"
+                              },
+                              "id": {
+                                "name": "id",
+                                "type": "integer",
+                                "description": "主键id",
+                                "format": "int64"
+                              },
+                              "enableFlag": {
+                                "name": "enableFlag",
+                                "type": "boolean",
+                                "description": "正常/冻结"
+                              },
+                              "email": {
+                                "name": "email",
+                                "type": "string",
+                                "description": "邮箱，备注：会脱敏"
+                              }
+                            }
+                          }
+                        },
+                        "arrFlag": true
+                      },
+                      "maxLimit": {
+                        "name": "maxLimit",
+                        "type": "integer",
+                        "format": "int64"
+                      },
+                      "searchCount": {
+                        "name": "searchCount",
+                        "type": "boolean"
+                      },
+                      "optimizeJoinOfCountSql": {
+                        "name": "optimizeJoinOfCountSql",
+                        "type": "boolean"
+                      },
+                      "orders": {
+                        "className": "OrderItem",
+                        "name": "orders",
+                        "fieldMap": {
+                          "OrderItem": {
+                            "className": "OrderItem",
+                            "type": "object",
+                            "fieldMap": {
+                              "asc": {
+                                "name": "asc",
+                                "type": "boolean"
+                              },
+                              "column": {
+                                "name": "column",
+                                "type": "string"
+                              }
+                            }
+                          }
+                        },
+                        "arrFlag": true
+                      },
+                      "countId": {
+                        "name": "countId",
+                        "type": "string"
+                      }
+                    }
+                  }
+                }
+              },
+              "service": {
+                "name": "service",
+                "type": "string",
+                "description": "服务名"
+              },
+              "successFlag": {
+                "name": "successFlag",
+                "type": "boolean",
+                "description": "服务器是否收到请求，只会返回 true"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/sys/user/dictList": {
+      "path": "/sys/user/dictList",
+      "method": "post",
+      "tag": "用户-管理",
+      "group": "SysUser",
+      "summary": "下拉列表",
+      "contentType": "application/json",
+      "requestBody": {
+        "className": "SysUserDictListDTO",
+        "type": "object",
+        "fieldMap": {
+          "addAdminFlag": {
+            "name": "addAdminFlag",
+            "type": "boolean",
+            "description": "是否追加 admin账号"
+          }
+        }
+      },
+      "response": {
+        "className": "ApiResultVOPageDictVO",
+        "fieldMap": {
+          "ApiResultVOPageDictVO": {
+            "className": "ApiResultVOPageDictVO",
+            "type": "object",
+            "description": "统一响应实体类",
+            "fieldMap": {
+              "msg": {
+                "name": "msg",
+                "type": "string",
+                "description": "响应描述"
+              },
+              "code": {
+                "name": "code",
+                "type": "integer",
+                "description": "响应代码，成功返回：200",
+                "format": "int32"
+              },
+              "data": {
+                "className": "PageDictVO",
+                "name": "data",
+                "fieldMap": {
+                  "PageDictVO": {
+                    "className": "PageDictVO",
+                    "type": "object",
+                    "description": "数据",
+                    "fieldMap": {
+                      "total": {
+                        "name": "total",
+                        "type": "integer",
+                        "format": "int64"
+                      },
+                      "current": {
+                        "name": "current",
+                        "type": "integer",
+                        "format": "int64"
+                      },
+                      "pages": {
+                        "name": "pages",
+                        "type": "integer",
+                        "format": "int64"
+                      },
+                      "size": {
+                        "name": "size",
+                        "type": "integer",
+                        "format": "int64"
+                      },
+                      "optimizeCountSql": {
+                        "name": "optimizeCountSql",
+                        "type": "boolean"
+                      },
+                      "records": {
+                        "className": "DictVO",
+                        "name": "records",
+                        "fieldMap": {
+                          "DictVO": {
+                            "className": "DictVO",
+                            "type": "object",
+                            "fieldMap": {
+                              "name": {
+                                "name": "name",
+                                "type": "string",
+                                "description": "显示用"
+                              },
+                              "id": {
+                                "name": "id",
+                                "type": "integer",
+                                "description": "传值用",
+                                "format": "int64"
+                              }
+                            }
+                          }
+                        },
+                        "arrFlag": true
+                      },
+                      "maxLimit": {
+                        "name": "maxLimit",
+                        "type": "integer",
+                        "format": "int64"
+                      },
+                      "searchCount": {
+                        "name": "searchCount",
+                        "type": "boolean"
+                      },
+                      "optimizeJoinOfCountSql": {
+                        "name": "optimizeJoinOfCountSql",
+                        "type": "boolean"
+                      },
+                      "orders": {
+                        "className": "OrderItem",
+                        "name": "orders",
+                        "fieldMap": {
+                          "OrderItem": {
+                            "className": "OrderItem",
+                            "type": "object",
+                            "fieldMap": {
+                              "asc": {
+                                "name": "asc",
+                                "type": "boolean"
+                              },
+                              "column": {
+                                "name": "column",
+                                "type": "string"
+                              }
+                            }
+                          }
+                        },
+                        "arrFlag": true
+                      },
+                      "countId": {
+                        "name": "countId",
+                        "type": "string"
+                      }
+                    }
+                  }
+                }
+              },
+              "service": {
+                "name": "service",
+                "type": "string",
+                "description": "服务名"
+              },
+              "successFlag": {
+                "name": "successFlag",
+                "type": "boolean",
+                "description": "服务器是否收到请求，只会返回 true"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/sys/user/resetAvatar": {
+      "path": "/sys/user/resetAvatar",
+      "method": "post",
+      "tag": "用户-管理",
+      "group": "SysUser",
+      "summary": "批量：重置头像",
+      "contentType": "application/json",
+      "requestBody": {
+        "className": "NotEmptyIdSet",
+        "type": "object",
+        "required": false,
+        "fieldMap": {
+          "idSet": {
+            "name": "idSet",
+            "type": "integer",
+            "required": true,
+            "description": "主键 idSet",
+            "format": "int64",
+            "arrFlag": true
+          }
+        },
+        "requiredFieldName": [
+          "idSet"
+        ]
+      },
+      "response": {
+        "className": "ApiResultVOString",
+        "fieldMap": {
+          "ApiResultVOString": {
+            "className": "ApiResultVOString",
+            "type": "object",
+            "description": "统一响应实体类",
+            "fieldMap": {
+              "msg": {
+                "name": "msg",
+                "type": "string",
+                "description": "响应描述"
+              },
+              "code": {
+                "name": "code",
+                "type": "integer",
+                "description": "响应代码，成功返回：200",
+                "format": "int32"
+              },
+              "data": {
+                "name": "data",
+                "type": "string",
+                "description": "数据"
+              },
+              "service": {
+                "name": "service",
+                "type": "string",
+                "description": "服务名"
+              },
+              "successFlag": {
+                "name": "successFlag",
+                "type": "boolean",
+                "description": "服务器是否收到请求，只会返回 true"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/sys/user/insertOrUpdate": {
+      "path": "/sys/user/insertOrUpdate",
+      "method": "post",
+      "tag": "用户-管理",
+      "group": "SysUser",
+      "summary": "新增/修改",
+      "contentType": "application/json",
+      "requestBody": {
+        "className": "SysUserInsertOrUpdateDTO",
+        "type": "object",
+        "fieldMap": {
+          "password": {
+            "name": "password",
+            "type": "string",
+            "description": "前端加密之后的密码"
+          },
+          "phone": {
+            "name": "phone",
+            "type": "string",
+            "description": "手机号码",
+            "pattern": "^(13[0-9]|14[01456879]|15[0-35-9]|16[2567]|17[0-8]|18[0-9]|19[0-35-9])\\d{8}$",
+            "maxLength": 100,
+            "minLength": 0
+          },
+          "signInName": {
+            "name": "signInName",
+            "type": "string",
+            "description": "登录名",
+            "pattern": "^[\\u4E00-\\u9FA5A-Za-z0-9_-]{2,20}$",
+            "maxLength": 20,
+            "minLength": 0
+          },
+          "nickname": {
+            "name": "nickname",
+            "type": "string",
+            "description": "昵称",
+            "pattern": "^[\\u4E00-\\u9FA5A-Za-z0-9_-]{2,20}$"
+          },
+          "roleIdSet": {
+            "name": "roleIdSet",
+            "type": "integer",
+            "description": "角色 idSet",
+            "format": "int64",
+            "arrFlag": true
+          },
+          "bio": {
+            "name": "bio",
+            "type": "string",
+            "description": "个人简介"
+          },
+          "id": {
+            "name": "id",
+            "type": "integer",
+            "description": "主键 id",
+            "format": "int64"
+          },
+          "enableFlag": {
+            "name": "enableFlag",
+            "type": "boolean",
+            "description": "正常/冻结"
+          },
+          "email": {
+            "name": "email",
+            "type": "string",
+            "description": "邮箱",
+            "pattern": "^\\w+([-+.]\\w+)*@\\w+([-.]\\w+)*\\.\\w+([-.]\\w+)*$",
+            "maxLength": 200,
+            "minLength": 0
+          },
+          "originPassword": {
+            "name": "originPassword",
+            "type": "string",
+            "description": "前端加密之后的原始密码"
+          }
+        }
+      },
+      "response": {
+        "className": "ApiResultVOString",
+        "fieldMap": {
+          "ApiResultVOString": {
+            "className": "ApiResultVOString",
+            "type": "object",
+            "description": "统一响应实体类",
+            "fieldMap": {
+              "msg": {
+                "name": "msg",
+                "type": "string",
+                "description": "响应描述"
+              },
+              "code": {
+                "name": "code",
+                "type": "integer",
+                "description": "响应代码，成功返回：200",
+                "format": "int32"
+              },
+              "data": {
+                "name": "data",
+                "type": "string",
+                "description": "数据"
+              },
+              "service": {
+                "name": "service",
+                "type": "string",
+                "description": "服务名"
+              },
+              "successFlag": {
+                "name": "successFlag",
+                "type": "boolean",
+                "description": "服务器是否收到请求，只会返回 true"
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "SysParam": {
+    "/sys/param/infoById": {
+      "path": "/sys/param/infoById",
+      "method": "post",
+      "tag": "系统参数-管理",
+      "group": "SysParam",
+      "summary": "通过主键id，查看详情",
+      "contentType": "application/json",
+      "requestBody": {
+        "className": "NotNullId",
+        "type": "object",
+        "required": false,
+        "fieldMap": {
+          "id": {
+            "name": "id",
+            "type": "integer",
+            "required": true,
+            "description": "主键id",
+            "format": "int64"
+          }
+        },
+        "requiredFieldName": [
+          "id"
+        ]
+      },
+      "response": {
+        "className": "ApiResultVOSysParamDO",
+        "fieldMap": {
+          "ApiResultVOSysParamDO": {
+            "className": "ApiResultVOSysParamDO",
+            "type": "object",
+            "description": "统一响应实体类",
+            "fieldMap": {
+              "msg": {
+                "name": "msg",
+                "type": "string",
+                "description": "响应描述"
+              },
+              "code": {
+                "name": "code",
+                "type": "integer",
+                "description": "响应代码，成功返回：200",
+                "format": "int32"
+              },
+              "data": {
+                "className": "SysParamDO",
+                "name": "data",
+                "fieldMap": {
+                  "SysParamDO": {
+                    "className": "SysParamDO",
+                    "type": "object",
+                    "description": "主表：系统参数",
+                    "fieldMap": {
+                      "updateId": {
+                        "name": "updateId",
+                        "type": "integer",
+                        "description": "修改人id",
+                        "format": "int64"
+                      },
+                      "createTime": {
+                        "name": "createTime",
+                        "type": "string",
+                        "description": "创建时间",
+                        "format": "date-time"
+                      },
+                      "createId": {
+                        "name": "createId",
+                        "type": "integer",
+                        "description": "创建人id",
+                        "format": "int64"
+                      },
+                      "name": {
+                        "name": "name",
+                        "type": "string",
+                        "description": "配置名，以 id为不变值进行使用，不要用此属性"
+                      },
+                      "updateTime": {
+                        "name": "updateTime",
+                        "type": "string",
+                        "description": "修改时间",
+                        "format": "date-time"
+                      },
+                      "remark": {
+                        "name": "remark",
+                        "type": "string",
+                        "description": "备注"
+                      },
+                      "id": {
+                        "name": "id",
+                        "type": "integer",
+                        "description": "主键id",
+                        "format": "int64"
+                      },
+                      "delFlag": {
+                        "name": "delFlag",
+                        "type": "boolean",
+                        "description": "是否逻辑删除"
+                      },
+                      "version": {
+                        "name": "version",
+                        "type": "integer",
+                        "description": "乐观锁",
+                        "format": "int32"
+                      },
+                      "enableFlag": {
+                        "name": "enableFlag",
+                        "type": "boolean",
+                        "description": "是否启用"
+                      },
+                      "value": {
+                        "name": "value",
+                        "type": "string",
+                        "description": "值"
+                      }
+                    }
+                  }
+                }
+              },
+              "service": {
+                "name": "service",
+                "type": "string",
+                "description": "服务名"
+              },
+              "successFlag": {
+                "name": "successFlag",
+                "type": "boolean",
+                "description": "服务器是否收到请求，只会返回 true"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/sys/param/insertOrUpdate": {
+      "path": "/sys/param/insertOrUpdate",
+      "method": "post",
+      "tag": "系统参数-管理",
+      "group": "SysParam",
+      "summary": "新增/修改",
+      "contentType": "application/json",
+      "requestBody": {
+        "className": "SysParamInsertOrUpdateDTO",
+        "type": "object",
+        "required": false,
+        "fieldMap": {
+          "name": {
+            "name": "name",
+            "type": "string",
+            "required": true,
+            "description": "配置名，以 id为不变值进行使用，不要用此属性"
+          },
+          "remark": {
+            "name": "remark",
+            "type": "string",
+            "description": "备注"
+          },
+          "id": {
+            "name": "id",
+            "type": "integer",
+            "description": "主键 id",
+            "format": "int64"
+          },
+          "value": {
+            "name": "value",
+            "type": "string",
+            "required": true,
+            "description": "值"
+          },
+          "enableFlag": {
+            "name": "enableFlag",
+            "type": "boolean",
+            "description": "是否启用"
+          }
+        },
+        "requiredFieldName": [
+          "name",
+          "value"
+        ]
+      },
+      "response": {
+        "className": "ApiResultVOString",
+        "fieldMap": {
+          "ApiResultVOString": {
+            "className": "ApiResultVOString",
+            "type": "object",
+            "description": "统一响应实体类",
+            "fieldMap": {
+              "msg": {
+                "name": "msg",
+                "type": "string",
+                "description": "响应描述"
+              },
+              "code": {
+                "name": "code",
+                "type": "integer",
+                "description": "响应代码，成功返回：200",
+                "format": "int32"
+              },
+              "data": {
+                "name": "data",
+                "type": "string",
+                "description": "数据"
+              },
+              "service": {
+                "name": "service",
+                "type": "string",
+                "description": "服务名"
+              },
+              "successFlag": {
+                "name": "successFlag",
+                "type": "boolean",
+                "description": "服务器是否收到请求，只会返回 true"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/sys/param/deleteByIdSet": {
+      "path": "/sys/param/deleteByIdSet",
+      "method": "post",
+      "tag": "系统参数-管理",
+      "group": "SysParam",
+      "summary": "批量删除",
+      "contentType": "application/json",
+      "requestBody": {
+        "className": "NotEmptyIdSet",
+        "type": "object",
+        "required": false,
+        "fieldMap": {
+          "idSet": {
+            "name": "idSet",
+            "type": "integer",
+            "required": true,
+            "description": "主键 idSet",
+            "format": "int64",
+            "arrFlag": true
+          }
+        },
+        "requiredFieldName": [
+          "idSet"
+        ]
+      },
+      "response": {
+        "className": "ApiResultVOString",
+        "fieldMap": {
+          "ApiResultVOString": {
+            "className": "ApiResultVOString",
+            "type": "object",
+            "description": "统一响应实体类",
+            "fieldMap": {
+              "msg": {
+                "name": "msg",
+                "type": "string",
+                "description": "响应描述"
+              },
+              "code": {
+                "name": "code",
+                "type": "integer",
+                "description": "响应代码，成功返回：200",
+                "format": "int32"
+              },
+              "data": {
+                "name": "data",
+                "type": "string",
+                "description": "数据"
+              },
+              "service": {
+                "name": "service",
+                "type": "string",
+                "description": "服务名"
+              },
+              "successFlag": {
+                "name": "successFlag",
+                "type": "boolean",
+                "description": "服务器是否收到请求，只会返回 true"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/sys/param/page": {
+      "path": "/sys/param/page",
+      "method": "post",
+      "tag": "系统参数-管理",
+      "group": "SysParam",
+      "summary": "分页排序查询",
+      "contentType": "application/json",
+      "requestBody": {
+        "className": "SysParamPageDTO",
+        "type": "object",
+        "fieldMap": {
+          "current": {
+            "name": "current",
+            "type": "integer",
+            "description": "第几页",
+            "format": "int64"
+          },
+          "name": {
+            "name": "name",
+            "type": "string",
+            "description": "配置名，以 id为不变值进行使用，不要用此属性"
+          },
+          "pageSize": {
+            "name": "pageSize",
+            "type": "integer",
+            "description": "每页显示条数",
+            "format": "int64"
+          },
+          "remark": {
+            "name": "remark",
+            "type": "string",
+            "description": "备注"
+          },
+          "enableFlag": {
+            "name": "enableFlag",
+            "type": "boolean",
+            "description": "是否启用"
+          },
+          "order": {
+            "className": "MyOrderDTO",
+            "name": "order",
+            "fieldMap": {
+              "MyOrderDTO": {
+                "className": "MyOrderDTO",
+                "type": "object",
+                "description": "排序字段",
+                "fieldMap": {
+                  "name": {
+                    "name": "name",
+                    "type": "string",
+                    "description": "排序的字段名"
+                  },
+                  "value": {
+                    "name": "value",
+                    "type": "string",
+                    "description": "ascend（升序，默认） descend（降序）"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "response": {
+        "className": "ApiResultVOPageSysParamDO",
+        "fieldMap": {
+          "ApiResultVOPageSysParamDO": {
+            "className": "ApiResultVOPageSysParamDO",
+            "type": "object",
+            "description": "统一响应实体类",
+            "fieldMap": {
+              "msg": {
+                "name": "msg",
+                "type": "string",
+                "description": "响应描述"
+              },
+              "code": {
+                "name": "code",
+                "type": "integer",
+                "description": "响应代码，成功返回：200",
+                "format": "int32"
+              },
+              "data": {
+                "className": "PageSysParamDO",
+                "name": "data",
+                "fieldMap": {
+                  "PageSysParamDO": {
+                    "className": "PageSysParamDO",
+                    "type": "object",
+                    "description": "数据",
+                    "fieldMap": {
+                      "total": {
+                        "name": "total",
+                        "type": "integer",
+                        "format": "int64"
+                      },
+                      "current": {
+                        "name": "current",
+                        "type": "integer",
+                        "format": "int64"
+                      },
+                      "pages": {
+                        "name": "pages",
+                        "type": "integer",
+                        "format": "int64"
+                      },
+                      "size": {
+                        "name": "size",
+                        "type": "integer",
+                        "format": "int64"
+                      },
+                      "optimizeCountSql": {
+                        "name": "optimizeCountSql",
+                        "type": "boolean"
+                      },
+                      "records": {
+                        "className": "SysParamDO",
+                        "name": "records",
+                        "fieldMap": {
+                          "SysParamDO": {
+                            "className": "SysParamDO",
+                            "type": "object",
+                            "description": "主表：系统参数",
+                            "fieldMap": {
+                              "updateId": {
+                                "name": "updateId",
+                                "type": "integer",
+                                "description": "修改人id",
+                                "format": "int64"
+                              },
+                              "createTime": {
+                                "name": "createTime",
+                                "type": "string",
+                                "description": "创建时间",
+                                "format": "date-time"
+                              },
+                              "createId": {
+                                "name": "createId",
+                                "type": "integer",
+                                "description": "创建人id",
+                                "format": "int64"
+                              },
+                              "name": {
+                                "name": "name",
+                                "type": "string",
+                                "description": "配置名，以 id为不变值进行使用，不要用此属性"
+                              },
+                              "updateTime": {
+                                "name": "updateTime",
+                                "type": "string",
+                                "description": "修改时间",
+                                "format": "date-time"
+                              },
+                              "remark": {
+                                "name": "remark",
+                                "type": "string",
+                                "description": "备注"
+                              },
+                              "id": {
+                                "name": "id",
+                                "type": "integer",
+                                "description": "主键id",
+                                "format": "int64"
+                              },
+                              "delFlag": {
+                                "name": "delFlag",
+                                "type": "boolean",
+                                "description": "是否逻辑删除"
+                              },
+                              "version": {
+                                "name": "version",
+                                "type": "integer",
+                                "description": "乐观锁",
+                                "format": "int32"
+                              },
+                              "enableFlag": {
+                                "name": "enableFlag",
+                                "type": "boolean",
+                                "description": "是否启用"
+                              },
+                              "value": {
+                                "name": "value",
+                                "type": "string",
+                                "description": "值"
+                              }
+                            }
+                          }
+                        },
+                        "arrFlag": true
+                      },
+                      "maxLimit": {
+                        "name": "maxLimit",
+                        "type": "integer",
+                        "format": "int64"
+                      },
+                      "searchCount": {
+                        "name": "searchCount",
+                        "type": "boolean"
+                      },
+                      "optimizeJoinOfCountSql": {
+                        "name": "optimizeJoinOfCountSql",
+                        "type": "boolean"
+                      },
+                      "orders": {
+                        "className": "OrderItem",
+                        "name": "orders",
+                        "fieldMap": {
+                          "OrderItem": {
+                            "className": "OrderItem",
+                            "type": "object",
+                            "fieldMap": {
+                              "asc": {
+                                "name": "asc",
+                                "type": "boolean"
+                              },
+                              "column": {
+                                "name": "column",
+                                "type": "string"
+                              }
+                            }
+                          }
+                        },
+                        "arrFlag": true
+                      },
+                      "countId": {
+                        "name": "countId",
+                        "type": "string"
+                      }
+                    }
+                  }
+                }
+              },
+              "service": {
+                "name": "service",
+                "type": "string",
+                "description": "服务名"
+              },
+              "successFlag": {
+                "name": "successFlag",
+                "type": "boolean",
+                "description": "服务器是否收到请求，只会返回 true"
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "SignPhone": {
+    "/sign/phone/bindAccount/sendCode": {
+      "path": "/sign/phone/bindAccount/sendCode",
+      "method": "post",
+      "tag": "登录注册-手机",
+      "group": "SignPhone",
+      "summary": "绑定手机-发送验证码",
+      "contentType": "application/json",
+      "requestBody": {
+        "className": "PhoneNotBlankDTO",
+        "type": "object",
+        "required": false,
+        "fieldMap": {
+          "phone": {
+            "name": "phone",
+            "type": "string",
+            "required": true,
+            "description": "手机号码",
+            "pattern": "^(13[0-9]|14[01456879]|15[0-35-9]|16[2567]|17[0-8]|18[0-9]|19[0-35-9])\\d{8}$",
+            "maxLength": 100,
+            "minLength": 0
+          }
+        },
+        "requiredFieldName": [
+          "phone"
+        ]
+      },
+      "response": {
+        "className": "ApiResultVOString",
+        "fieldMap": {
+          "ApiResultVOString": {
+            "className": "ApiResultVOString",
+            "type": "object",
+            "description": "统一响应实体类",
+            "fieldMap": {
+              "msg": {
+                "name": "msg",
+                "type": "string",
+                "description": "响应描述"
+              },
+              "code": {
+                "name": "code",
+                "type": "integer",
+                "description": "响应代码，成功返回：200",
+                "format": "int32"
+              },
+              "data": {
+                "name": "data",
+                "type": "string",
+                "description": "数据"
+              },
+              "service": {
+                "name": "service",
+                "type": "string",
+                "description": "服务名"
+              },
+              "successFlag": {
+                "name": "successFlag",
+                "type": "boolean",
+                "description": "服务器是否收到请求，只会返回 true"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/sign/phone/bindAccount": {
+      "path": "/sign/phone/bindAccount",
+      "method": "post",
+      "tag": "登录注册-手机",
+      "group": "SignPhone",
+      "summary": "绑定手机",
+      "contentType": "application/json",
+      "requestBody": {
+        "className": "SignPhoneBindAccountDTO",
+        "type": "object",
+        "required": false,
+        "fieldMap": {
+          "code": {
+            "name": "code",
+            "type": "string",
+            "required": true,
+            "description": "手机验证码",
+            "pattern": "^[0-9]{6}$"
+          },
+          "phone": {
+            "name": "phone",
+            "type": "string",
+            "required": true,
+            "description": "手机号码",
+            "pattern": "^(13[0-9]|14[01456879]|15[0-35-9]|16[2567]|17[0-8]|18[0-9]|19[0-35-9])\\d{8}$",
+            "maxLength": 100,
+            "minLength": 0
+          }
+        },
+        "requiredFieldName": [
+          "code",
+          "phone"
+        ]
+      },
+      "response": {
+        "className": "ApiResultVOString",
+        "fieldMap": {
+          "ApiResultVOString": {
+            "className": "ApiResultVOString",
+            "type": "object",
+            "description": "统一响应实体类",
+            "fieldMap": {
+              "msg": {
+                "name": "msg",
+                "type": "string",
+                "description": "响应描述"
+              },
+              "code": {
+                "name": "code",
+                "type": "integer",
+                "description": "响应代码，成功返回：200",
+                "format": "int32"
+              },
+              "data": {
+                "name": "data",
+                "type": "string",
+                "description": "数据"
+              },
+              "service": {
+                "name": "service",
+                "type": "string",
+                "description": "服务名"
+              },
+              "successFlag": {
+                "name": "successFlag",
+                "type": "boolean",
+                "description": "服务器是否收到请求，只会返回 true"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/sign/phone/sign/in/sendCode": {
+      "path": "/sign/phone/sign/in/sendCode",
+      "method": "post",
+      "tag": "登录注册-手机",
+      "group": "SignPhone",
+      "summary": "手机验证码登录-发送验证码",
+      "contentType": "application/json",
+      "requestBody": {
+        "className": "PhoneNotBlankDTO",
+        "type": "object",
+        "required": false,
+        "fieldMap": {
+          "phone": {
+            "name": "phone",
+            "type": "string",
+            "required": true,
+            "description": "手机号码",
+            "pattern": "^(13[0-9]|14[01456879]|15[0-35-9]|16[2567]|17[0-8]|18[0-9]|19[0-35-9])\\d{8}$",
+            "maxLength": 100,
+            "minLength": 0
+          }
+        },
+        "requiredFieldName": [
+          "phone"
+        ]
+      },
+      "response": {
+        "className": "ApiResultVOString",
+        "fieldMap": {
+          "ApiResultVOString": {
+            "className": "ApiResultVOString",
+            "type": "object",
+            "description": "统一响应实体类",
+            "fieldMap": {
+              "msg": {
+                "name": "msg",
+                "type": "string",
+                "description": "响应描述"
+              },
+              "code": {
+                "name": "code",
+                "type": "integer",
+                "description": "响应代码，成功返回：200",
+                "format": "int32"
+              },
+              "data": {
+                "name": "data",
+                "type": "string",
+                "description": "数据"
+              },
+              "service": {
+                "name": "service",
+                "type": "string",
+                "description": "服务名"
+              },
+              "successFlag": {
+                "name": "successFlag",
+                "type": "boolean",
+                "description": "服务器是否收到请求，只会返回 true"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/sign/phone/signDelete/sendCode": {
+      "path": "/sign/phone/signDelete/sendCode",
+      "method": "post",
+      "tag": "登录注册-手机",
+      "group": "SignPhone",
+      "summary": "账号注销-发送验证码",
+      "response": {
+        "className": "ApiResultVOString",
+        "fieldMap": {
+          "ApiResultVOString": {
+            "className": "ApiResultVOString",
+            "type": "object",
+            "description": "统一响应实体类",
+            "fieldMap": {
+              "msg": {
+                "name": "msg",
+                "type": "string",
+                "description": "响应描述"
+              },
+              "code": {
+                "name": "code",
+                "type": "integer",
+                "description": "响应代码，成功返回：200",
+                "format": "int32"
+              },
+              "data": {
+                "name": "data",
+                "type": "string",
+                "description": "数据"
+              },
+              "service": {
+                "name": "service",
+                "type": "string",
+                "description": "服务名"
+              },
+              "successFlag": {
+                "name": "successFlag",
+                "type": "boolean",
+                "description": "服务器是否收到请求，只会返回 true"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/sign/phone/sign/up/sendCode": {
+      "path": "/sign/phone/sign/up/sendCode",
+      "method": "post",
+      "tag": "登录注册-手机",
+      "group": "SignPhone",
+      "summary": "注册-发送验证码",
+      "contentType": "application/json",
+      "requestBody": {
+        "className": "PhoneNotBlankDTO",
+        "type": "object",
+        "required": false,
+        "fieldMap": {
+          "phone": {
+            "name": "phone",
+            "type": "string",
+            "required": true,
+            "description": "手机号码",
+            "pattern": "^(13[0-9]|14[01456879]|15[0-35-9]|16[2567]|17[0-8]|18[0-9]|19[0-35-9])\\d{8}$",
+            "maxLength": 100,
+            "minLength": 0
+          }
+        },
+        "requiredFieldName": [
+          "phone"
+        ]
+      },
+      "response": {
+        "className": "ApiResultVOString",
+        "fieldMap": {
+          "ApiResultVOString": {
+            "className": "ApiResultVOString",
+            "type": "object",
+            "description": "统一响应实体类",
+            "fieldMap": {
+              "msg": {
+                "name": "msg",
+                "type": "string",
+                "description": "响应描述"
+              },
+              "code": {
+                "name": "code",
+                "type": "integer",
+                "description": "响应代码，成功返回：200",
+                "format": "int32"
+              },
+              "data": {
+                "name": "data",
+                "type": "string",
+                "description": "数据"
+              },
+              "service": {
+                "name": "service",
+                "type": "string",
+                "description": "服务名"
+              },
+              "successFlag": {
+                "name": "successFlag",
+                "type": "boolean",
+                "description": "服务器是否收到请求，只会返回 true"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/sign/phone/updateAccount/sendCode": {
+      "path": "/sign/phone/updateAccount/sendCode",
+      "method": "post",
+      "tag": "登录注册-手机",
+      "group": "SignPhone",
+      "summary": "修改手机-发送验证码",
+      "response": {
+        "className": "ApiResultVOString",
+        "fieldMap": {
+          "ApiResultVOString": {
+            "className": "ApiResultVOString",
+            "type": "object",
+            "description": "统一响应实体类",
+            "fieldMap": {
+              "msg": {
+                "name": "msg",
+                "type": "string",
+                "description": "响应描述"
+              },
+              "code": {
+                "name": "code",
+                "type": "integer",
+                "description": "响应代码，成功返回：200",
+                "format": "int32"
+              },
+              "data": {
+                "name": "data",
+                "type": "string",
+                "description": "数据"
+              },
+              "service": {
+                "name": "service",
+                "type": "string",
+                "description": "服务名"
+              },
+              "successFlag": {
+                "name": "successFlag",
+                "type": "boolean",
+                "description": "服务器是否收到请求，只会返回 true"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/sign/phone/sign/in/code": {
+      "path": "/sign/phone/sign/in/code",
+      "method": "post",
+      "tag": "登录注册-手机",
+      "group": "SignPhone",
+      "summary": "手机验证码登录",
+      "contentType": "application/json",
+      "requestBody": {
+        "className": "SignPhoneSignInCodeDTO",
+        "type": "object",
+        "required": false,
+        "fieldMap": {
+          "code": {
+            "name": "code",
+            "type": "string",
+            "required": true,
+            "description": "手机验证码",
+            "pattern": "^[0-9]{6}$"
+          },
+          "phone": {
+            "name": "phone",
+            "type": "string",
+            "required": true,
+            "description": "手机号码",
+            "pattern": "^(13[0-9]|14[01456879]|15[0-35-9]|16[2567]|17[0-8]|18[0-9]|19[0-35-9])\\d{8}$",
+            "maxLength": 100,
+            "minLength": 0
+          }
+        },
+        "requiredFieldName": [
+          "code",
+          "phone"
+        ]
+      },
+      "response": {
+        "className": "ApiResultVOString",
+        "fieldMap": {
+          "ApiResultVOString": {
+            "className": "ApiResultVOString",
+            "type": "object",
+            "description": "统一响应实体类",
+            "fieldMap": {
+              "msg": {
+                "name": "msg",
+                "type": "string",
+                "description": "响应描述"
+              },
+              "code": {
+                "name": "code",
+                "type": "integer",
+                "description": "响应代码，成功返回：200",
+                "format": "int32"
+              },
+              "data": {
+                "name": "data",
+                "type": "string",
+                "description": "数据"
+              },
+              "service": {
+                "name": "service",
+                "type": "string",
+                "description": "服务名"
+              },
+              "successFlag": {
+                "name": "successFlag",
+                "type": "boolean",
+                "description": "服务器是否收到请求，只会返回 true"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/sign/phone/updatePassword/sendCode": {
+      "path": "/sign/phone/updatePassword/sendCode",
+      "method": "post",
+      "tag": "登录注册-手机",
+      "group": "SignPhone",
+      "summary": "修改密码-发送验证码",
+      "response": {
+        "className": "ApiResultVOString",
+        "fieldMap": {
+          "ApiResultVOString": {
+            "className": "ApiResultVOString",
+            "type": "object",
+            "description": "统一响应实体类",
+            "fieldMap": {
+              "msg": {
+                "name": "msg",
+                "type": "string",
+                "description": "响应描述"
+              },
+              "code": {
+                "name": "code",
+                "type": "integer",
+                "description": "响应代码，成功返回：200",
+                "format": "int32"
+              },
+              "data": {
+                "name": "data",
+                "type": "string",
+                "description": "数据"
+              },
+              "service": {
+                "name": "service",
+                "type": "string",
+                "description": "服务名"
+              },
+              "successFlag": {
+                "name": "successFlag",
+                "type": "boolean",
+                "description": "服务器是否收到请求，只会返回 true"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/sign/phone/forgetPassword": {
+      "path": "/sign/phone/forgetPassword",
+      "method": "post",
+      "tag": "登录注册-手机",
+      "group": "SignPhone",
+      "summary": "忘记密码",
+      "contentType": "application/json",
+      "requestBody": {
+        "className": "SignPhoneForgetPasswordDTO",
+        "type": "object",
+        "required": false,
+        "fieldMap": {
+          "originNewPassword": {
+            "name": "originNewPassword",
+            "type": "string",
+            "required": true,
+            "description": "前端加密之后的原始新密码"
+          },
+          "code": {
+            "name": "code",
+            "type": "string",
+            "required": true,
+            "description": "手机验证码",
+            "pattern": "^[0-9]{6}$"
+          },
+          "phone": {
+            "name": "phone",
+            "type": "string",
+            "required": true,
+            "description": "手机号码",
+            "pattern": "^(13[0-9]|14[01456879]|15[0-35-9]|16[2567]|17[0-8]|18[0-9]|19[0-35-9])\\d{8}$",
+            "maxLength": 100,
+            "minLength": 0
+          },
+          "newPassword": {
+            "name": "newPassword",
+            "type": "string",
+            "required": true,
+            "description": "前端加密之后的新密码"
+          }
+        },
+        "requiredFieldName": [
+          "code",
+          "newPassword",
+          "originNewPassword",
+          "phone"
+        ]
+      },
+      "response": {
+        "className": "ApiResultVOString",
+        "fieldMap": {
+          "ApiResultVOString": {
+            "className": "ApiResultVOString",
+            "type": "object",
+            "description": "统一响应实体类",
+            "fieldMap": {
+              "msg": {
+                "name": "msg",
+                "type": "string",
+                "description": "响应描述"
+              },
+              "code": {
+                "name": "code",
+                "type": "integer",
+                "description": "响应代码，成功返回：200",
+                "format": "int32"
+              },
+              "data": {
+                "name": "data",
+                "type": "string",
+                "description": "数据"
+              },
+              "service": {
+                "name": "service",
+                "type": "string",
+                "description": "服务名"
+              },
+              "successFlag": {
+                "name": "successFlag",
+                "type": "boolean",
+                "description": "服务器是否收到请求，只会返回 true"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/sign/phone/updatePassword": {
+      "path": "/sign/phone/updatePassword",
+      "method": "post",
+      "tag": "登录注册-手机",
+      "group": "SignPhone",
+      "summary": "修改密码",
+      "contentType": "application/json",
+      "requestBody": {
+        "className": "SignPhoneUpdatePasswordDTO",
+        "type": "object",
+        "required": false,
+        "fieldMap": {
+          "originNewPassword": {
+            "name": "originNewPassword",
+            "type": "string",
+            "required": true,
+            "description": "前端加密之后的原始新密码"
+          },
+          "code": {
+            "name": "code",
+            "type": "string",
+            "required": true,
+            "description": "手机验证码",
+            "pattern": "^[0-9]{6}$"
+          },
+          "newPassword": {
+            "name": "newPassword",
+            "type": "string",
+            "required": true,
+            "description": "前端加密之后的新密码"
+          }
+        },
+        "requiredFieldName": [
+          "code",
+          "newPassword",
+          "originNewPassword"
+        ]
+      },
+      "response": {
+        "className": "ApiResultVOString",
+        "fieldMap": {
+          "ApiResultVOString": {
+            "className": "ApiResultVOString",
+            "type": "object",
+            "description": "统一响应实体类",
+            "fieldMap": {
+              "msg": {
+                "name": "msg",
+                "type": "string",
+                "description": "响应描述"
+              },
+              "code": {
+                "name": "code",
+                "type": "integer",
+                "description": "响应代码，成功返回：200",
+                "format": "int32"
+              },
+              "data": {
+                "name": "data",
+                "type": "string",
+                "description": "数据"
+              },
+              "service": {
+                "name": "service",
+                "type": "string",
+                "description": "服务名"
+              },
+              "successFlag": {
+                "name": "successFlag",
+                "type": "boolean",
+                "description": "服务器是否收到请求，只会返回 true"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/sign/phone/sign/up": {
+      "path": "/sign/phone/sign/up",
+      "method": "post",
+      "tag": "登录注册-手机",
+      "group": "SignPhone",
+      "summary": "注册",
+      "contentType": "application/json",
+      "requestBody": {
+        "className": "SignPhoneSignUpDTO",
+        "type": "object",
+        "required": false,
+        "fieldMap": {
+          "password": {
+            "name": "password",
+            "type": "string",
+            "required": true,
+            "description": "前端加密之后的密码"
+          },
+          "code": {
+            "name": "code",
+            "type": "string",
+            "required": true,
+            "description": "手机验证码",
+            "pattern": "^[0-9]{6}$"
+          },
+          "phone": {
+            "name": "phone",
+            "type": "string",
+            "required": true,
+            "description": "手机号码",
+            "pattern": "^(13[0-9]|14[01456879]|15[0-35-9]|16[2567]|17[0-8]|18[0-9]|19[0-35-9])\\d{8}$",
+            "maxLength": 100,
+            "minLength": 0
+          },
+          "originPassword": {
+            "name": "originPassword",
+            "type": "string",
+            "required": true,
+            "description": "前端加密之后的原始密码"
+          }
+        },
+        "requiredFieldName": [
+          "code",
+          "originPassword",
+          "password",
+          "phone"
+        ]
+      },
+      "response": {
+        "className": "ApiResultVOString",
+        "fieldMap": {
+          "ApiResultVOString": {
+            "className": "ApiResultVOString",
+            "type": "object",
+            "description": "统一响应实体类",
+            "fieldMap": {
+              "msg": {
+                "name": "msg",
+                "type": "string",
+                "description": "响应描述"
+              },
+              "code": {
+                "name": "code",
+                "type": "integer",
+                "description": "响应代码，成功返回：200",
+                "format": "int32"
+              },
+              "data": {
+                "name": "data",
+                "type": "string",
+                "description": "数据"
+              },
+              "service": {
+                "name": "service",
+                "type": "string",
+                "description": "服务名"
+              },
+              "successFlag": {
+                "name": "successFlag",
+                "type": "boolean",
+                "description": "服务器是否收到请求，只会返回 true"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/sign/phone/forgetPassword/sendCode": {
+      "path": "/sign/phone/forgetPassword/sendCode",
+      "method": "post",
+      "tag": "登录注册-手机",
+      "group": "SignPhone",
+      "summary": "忘记密码-发送验证码",
+      "contentType": "application/json",
+      "requestBody": {
+        "className": "PhoneNotBlankDTO",
+        "type": "object",
+        "required": false,
+        "fieldMap": {
+          "phone": {
+            "name": "phone",
+            "type": "string",
+            "required": true,
+            "description": "手机号码",
+            "pattern": "^(13[0-9]|14[01456879]|15[0-35-9]|16[2567]|17[0-8]|18[0-9]|19[0-35-9])\\d{8}$",
+            "maxLength": 100,
+            "minLength": 0
+          }
+        },
+        "requiredFieldName": [
+          "phone"
+        ]
+      },
+      "response": {
+        "className": "ApiResultVOString",
+        "fieldMap": {
+          "ApiResultVOString": {
+            "className": "ApiResultVOString",
+            "type": "object",
+            "description": "统一响应实体类",
+            "fieldMap": {
+              "msg": {
+                "name": "msg",
+                "type": "string",
+                "description": "响应描述"
+              },
+              "code": {
+                "name": "code",
+                "type": "integer",
+                "description": "响应代码，成功返回：200",
+                "format": "int32"
+              },
+              "data": {
+                "name": "data",
+                "type": "string",
+                "description": "数据"
+              },
+              "service": {
+                "name": "service",
+                "type": "string",
+                "description": "服务名"
+              },
+              "successFlag": {
+                "name": "successFlag",
+                "type": "boolean",
+                "description": "服务器是否收到请求，只会返回 true"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/sign/phone/updateAccount": {
+      "path": "/sign/phone/updateAccount",
+      "method": "post",
+      "tag": "登录注册-手机",
+      "group": "SignPhone",
+      "summary": "修改手机",
+      "contentType": "application/json",
+      "requestBody": {
+        "className": "SignPhoneUpdateAccountDTO",
+        "type": "object",
+        "required": false,
+        "fieldMap": {
+          "newPhone": {
+            "name": "newPhone",
+            "type": "string",
+            "required": true,
+            "description": "新手机号码",
+            "pattern": "^(13[0-9]|14[01456879]|15[0-35-9]|16[2567]|17[0-8]|18[0-9]|19[0-35-9])\\d{8}$",
+            "maxLength": 100,
+            "minLength": 0
+          },
+          "oldPhoneCode": {
+            "name": "oldPhoneCode",
+            "type": "string",
+            "required": true,
+            "description": "旧手机验证码",
+            "pattern": "^[0-9]{6}$"
+          },
+          "newPhoneCode": {
+            "name": "newPhoneCode",
+            "type": "string",
+            "required": true,
+            "description": "新手机验证码",
+            "pattern": "^[0-9]{6}$"
+          }
+        },
+        "requiredFieldName": [
+          "newPhone",
+          "newPhoneCode",
+          "oldPhoneCode"
+        ]
+      },
+      "response": {
+        "className": "ApiResultVOString",
+        "fieldMap": {
+          "ApiResultVOString": {
+            "className": "ApiResultVOString",
+            "type": "object",
+            "description": "统一响应实体类",
+            "fieldMap": {
+              "msg": {
+                "name": "msg",
+                "type": "string",
+                "description": "响应描述"
+              },
+              "code": {
+                "name": "code",
+                "type": "integer",
+                "description": "响应代码，成功返回：200",
+                "format": "int32"
+              },
+              "data": {
+                "name": "data",
+                "type": "string",
+                "description": "数据"
+              },
+              "service": {
+                "name": "service",
+                "type": "string",
+                "description": "服务名"
+              },
+              "successFlag": {
+                "name": "successFlag",
+                "type": "boolean",
+                "description": "服务器是否收到请求，只会返回 true"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/sign/phone/signDelete": {
+      "path": "/sign/phone/signDelete",
+      "method": "post",
+      "tag": "登录注册-手机",
+      "group": "SignPhone",
+      "summary": "账号注销",
+      "contentType": "application/json",
+      "requestBody": {
+        "className": "NotBlankCodeDTO",
+        "type": "object",
+        "required": false,
+        "fieldMap": {
+          "code": {
+            "name": "code",
+            "type": "string",
+            "required": true,
+            "description": "验证码",
+            "pattern": "^[0-9]{6}$"
+          }
+        },
+        "requiredFieldName": [
+          "code"
+        ]
+      },
+      "response": {
+        "className": "ApiResultVOString",
+        "fieldMap": {
+          "ApiResultVOString": {
+            "className": "ApiResultVOString",
+            "type": "object",
+            "description": "统一响应实体类",
+            "fieldMap": {
+              "msg": {
+                "name": "msg",
+                "type": "string",
+                "description": "响应描述"
+              },
+              "code": {
+                "name": "code",
+                "type": "integer",
+                "description": "响应代码，成功返回：200",
+                "format": "int32"
+              },
+              "data": {
+                "name": "data",
+                "type": "string",
+                "description": "数据"
+              },
+              "service": {
+                "name": "service",
+                "type": "string",
+                "description": "服务名"
+              },
+              "successFlag": {
+                "name": "successFlag",
+                "type": "boolean",
+                "description": "服务器是否收到请求，只会返回 true"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/sign/phone/sign/in/password": {
+      "path": "/sign/phone/sign/in/password",
+      "method": "post",
+      "tag": "登录注册-手机",
+      "group": "SignPhone",
+      "summary": "手机账号密码登录",
+      "contentType": "application/json",
+      "requestBody": {
+        "className": "SignPhoneSignInPasswordDTO",
+        "type": "object",
+        "required": false,
+        "fieldMap": {
+          "password": {
+            "name": "password",
+            "type": "string",
+            "required": true,
+            "description": "密码"
+          },
+          "phone": {
+            "name": "phone",
+            "type": "string",
+            "required": true,
+            "description": "手机号码",
+            "pattern": "^(13[0-9]|14[01456879]|15[0-35-9]|16[2567]|17[0-8]|18[0-9]|19[0-35-9])\\d{8}$",
+            "maxLength": 100,
+            "minLength": 0
+          }
+        },
+        "requiredFieldName": [
+          "password",
+          "phone"
+        ]
+      },
+      "response": {
+        "className": "ApiResultVOString",
+        "fieldMap": {
+          "ApiResultVOString": {
+            "className": "ApiResultVOString",
+            "type": "object",
+            "description": "统一响应实体类",
+            "fieldMap": {
+              "msg": {
+                "name": "msg",
+                "type": "string",
+                "description": "响应描述"
+              },
+              "code": {
+                "name": "code",
+                "type": "integer",
+                "description": "响应代码，成功返回：200",
+                "format": "int32"
+              },
+              "data": {
+                "name": "data",
+                "type": "string",
+                "description": "数据"
+              },
+              "service": {
+                "name": "service",
+                "type": "string",
+                "description": "服务名"
+              },
+              "successFlag": {
+                "name": "successFlag",
+                "type": "boolean",
+                "description": "服务器是否收到请求，只会返回 true"
+              }
+            }
+          }
+        }
+      }
+    }
+  },
   "SysMenu": {
     "/sys/menu/page": {
       "path": "/sys/menu/page",
@@ -2726,1457 +5187,6 @@
       }
     }
   },
-  "SysUser": {
-    "/sys/user/infoById": {
-      "path": "/sys/user/infoById",
-      "method": "post",
-      "tag": "用户-管理",
-      "group": "SysUser",
-      "summary": "通过主键id，查看详情",
-      "contentType": "application/json",
-      "requestBody": {
-        "className": "NotNullId",
-        "type": "object",
-        "required": false,
-        "fieldMap": {
-          "id": {
-            "name": "id",
-            "type": "integer",
-            "required": true,
-            "description": "主键id",
-            "format": "int64"
-          }
-        },
-        "requiredFieldName": [
-          "id"
-        ]
-      },
-      "response": {
-        "className": "ApiResultVOSysUserInfoByIdVO",
-        "fieldMap": {
-          "ApiResultVOSysUserInfoByIdVO": {
-            "className": "ApiResultVOSysUserInfoByIdVO",
-            "type": "object",
-            "description": "统一响应实体类",
-            "fieldMap": {
-              "msg": {
-                "name": "msg",
-                "type": "string",
-                "description": "响应描述"
-              },
-              "code": {
-                "name": "code",
-                "type": "integer",
-                "description": "响应代码，成功返回：200",
-                "format": "int32"
-              },
-              "data": {
-                "className": "SysUserInfoByIdVO",
-                "name": "data",
-                "fieldMap": {
-                  "SysUserInfoByIdVO": {
-                    "className": "SysUserInfoByIdVO",
-                    "type": "object",
-                    "description": "数据",
-                    "fieldMap": {
-                      "wxOpenId": {
-                        "name": "wxOpenId",
-                        "type": "string",
-                        "description": "微信 openId，可以为空"
-                      },
-                      "avatarFileId": {
-                        "name": "avatarFileId",
-                        "type": "integer",
-                        "description": "头像 fileId（文件主键 id）",
-                        "format": "int64"
-                      },
-                      "bio": {
-                        "name": "bio",
-                        "type": "string",
-                        "description": "个人简介"
-                      },
-                      "updateTime": {
-                        "name": "updateTime",
-                        "type": "string",
-                        "description": "修改时间",
-                        "format": "date-time"
-                      },
-                      "remark": {
-                        "name": "remark",
-                        "type": "string",
-                        "description": "备注"
-                      },
-                      "delFlag": {
-                        "name": "delFlag",
-                        "type": "boolean",
-                        "description": "是否注销，未使用，而是采取直接删除的方式，目的：防止数据量越来越大"
-                      },
-                      "version": {
-                        "name": "version",
-                        "type": "integer",
-                        "description": "乐观锁",
-                        "format": "int32"
-                      },
-                      "updateId": {
-                        "name": "updateId",
-                        "type": "integer",
-                        "description": "修改人id",
-                        "format": "int64"
-                      },
-                      "password": {
-                        "name": "password",
-                        "type": "string",
-                        "description": "密码，可为空，如果为空，则登录时需要提示【进行忘记密码操作】"
-                      },
-                      "createTime": {
-                        "name": "createTime",
-                        "type": "string",
-                        "description": "创建时间",
-                        "format": "date-time"
-                      },
-                      "phone": {
-                        "name": "phone",
-                        "type": "string",
-                        "description": "手机号，可以为空"
-                      },
-                      "createId": {
-                        "name": "createId",
-                        "type": "integer",
-                        "description": "创建人id",
-                        "format": "int64"
-                      },
-                      "signInName": {
-                        "name": "signInName",
-                        "type": "string",
-                        "description": "登录名，可以为空"
-                      },
-                      "roleIdSet": {
-                        "name": "roleIdSet",
-                        "type": "integer",
-                        "description": "角色 idSet",
-                        "format": "int64",
-                        "arrFlag": true
-                      },
-                      "nickname": {
-                        "name": "nickname",
-                        "type": "string",
-                        "description": "昵称"
-                      },
-                      "id": {
-                        "name": "id",
-                        "type": "integer",
-                        "description": "主键id",
-                        "format": "int64"
-                      },
-                      "enableFlag": {
-                        "name": "enableFlag",
-                        "type": "boolean",
-                        "description": "正常/冻结"
-                      },
-                      "email": {
-                        "name": "email",
-                        "type": "string",
-                        "description": "邮箱，可以为空"
-                      }
-                    }
-                  }
-                }
-              },
-              "service": {
-                "name": "service",
-                "type": "string",
-                "description": "服务名"
-              },
-              "successFlag": {
-                "name": "successFlag",
-                "type": "boolean",
-                "description": "服务器是否收到请求，只会返回 true"
-              }
-            }
-          }
-        }
-      }
-    },
-    "/sys/user/updatePassword": {
-      "path": "/sys/user/updatePassword",
-      "method": "post",
-      "tag": "用户-管理",
-      "group": "SysUser",
-      "summary": "批量：修改密码",
-      "contentType": "application/json",
-      "requestBody": {
-        "className": "SysUserUpdatePasswordDTO",
-        "type": "object",
-        "required": false,
-        "fieldMap": {
-          "idSet": {
-            "name": "idSet",
-            "type": "integer",
-            "required": true,
-            "description": "主键 idSet",
-            "format": "int64",
-            "arrFlag": true
-          },
-          "newPassword": {
-            "name": "newPassword",
-            "type": "string",
-            "description": "前端加密之后的，新密码"
-          },
-          "newOriginPassword": {
-            "name": "newOriginPassword",
-            "type": "string",
-            "description": "前端加密之后的原始密码，新密码"
-          }
-        },
-        "requiredFieldName": [
-          "idSet"
-        ]
-      },
-      "response": {
-        "className": "ApiResultVOString",
-        "fieldMap": {
-          "ApiResultVOString": {
-            "className": "ApiResultVOString",
-            "type": "object",
-            "description": "统一响应实体类",
-            "fieldMap": {
-              "msg": {
-                "name": "msg",
-                "type": "string",
-                "description": "响应描述"
-              },
-              "code": {
-                "name": "code",
-                "type": "integer",
-                "description": "响应代码，成功返回：200",
-                "format": "int32"
-              },
-              "data": {
-                "name": "data",
-                "type": "string",
-                "description": "数据"
-              },
-              "service": {
-                "name": "service",
-                "type": "string",
-                "description": "服务名"
-              },
-              "successFlag": {
-                "name": "successFlag",
-                "type": "boolean",
-                "description": "服务器是否收到请求，只会返回 true"
-              }
-            }
-          }
-        }
-      }
-    },
-    "/sys/user/deleteByIdSet": {
-      "path": "/sys/user/deleteByIdSet",
-      "method": "post",
-      "tag": "用户-管理",
-      "group": "SysUser",
-      "summary": "批量：注销用户",
-      "contentType": "application/json",
-      "requestBody": {
-        "className": "NotEmptyIdSet",
-        "type": "object",
-        "required": false,
-        "fieldMap": {
-          "idSet": {
-            "name": "idSet",
-            "type": "integer",
-            "required": true,
-            "description": "主键 idSet",
-            "format": "int64",
-            "arrFlag": true
-          }
-        },
-        "requiredFieldName": [
-          "idSet"
-        ]
-      },
-      "response": {
-        "className": "ApiResultVOString",
-        "fieldMap": {
-          "ApiResultVOString": {
-            "className": "ApiResultVOString",
-            "type": "object",
-            "description": "统一响应实体类",
-            "fieldMap": {
-              "msg": {
-                "name": "msg",
-                "type": "string",
-                "description": "响应描述"
-              },
-              "code": {
-                "name": "code",
-                "type": "integer",
-                "description": "响应代码，成功返回：200",
-                "format": "int32"
-              },
-              "data": {
-                "name": "data",
-                "type": "string",
-                "description": "数据"
-              },
-              "service": {
-                "name": "service",
-                "type": "string",
-                "description": "服务名"
-              },
-              "successFlag": {
-                "name": "successFlag",
-                "type": "boolean",
-                "description": "服务器是否收到请求，只会返回 true"
-              }
-            }
-          }
-        }
-      }
-    },
-    "/sys/user/page": {
-      "path": "/sys/user/page",
-      "method": "post",
-      "tag": "用户-管理",
-      "group": "SysUser",
-      "summary": "分页排序查询",
-      "contentType": "application/json",
-      "requestBody": {
-        "className": "SysUserPageDTO",
-        "type": "object",
-        "fieldMap": {
-          "avatarUri": {
-            "name": "avatarUri",
-            "type": "string",
-            "description": "头像uri"
-          },
-          "passwordFlag": {
-            "name": "passwordFlag",
-            "type": "boolean",
-            "description": "是否有密码"
-          },
-          "current": {
-            "name": "current",
-            "type": "integer",
-            "description": "第几页",
-            "format": "int64"
-          },
-          "phone": {
-            "name": "phone",
-            "type": "string",
-            "description": "手机号码"
-          },
-          "wxOpenId": {
-            "name": "wxOpenId",
-            "type": "string",
-            "description": "微信 openId"
-          },
-          "signInName": {
-            "name": "signInName",
-            "type": "string",
-            "description": "登录名"
-          },
-          "nickname": {
-            "name": "nickname",
-            "type": "string",
-            "description": "昵称"
-          },
-          "pageSize": {
-            "name": "pageSize",
-            "type": "integer",
-            "description": "每页显示条数",
-            "format": "int64"
-          },
-          "id": {
-            "name": "id",
-            "type": "integer",
-            "description": "主键 id",
-            "format": "int64"
-          },
-          "enableFlag": {
-            "name": "enableFlag",
-            "type": "boolean",
-            "description": "是否正常"
-          },
-          "email": {
-            "name": "email",
-            "type": "string",
-            "description": "邮箱"
-          },
-          "order": {
-            "className": "MyOrderDTO",
-            "name": "order",
-            "fieldMap": {
-              "MyOrderDTO": {
-                "className": "MyOrderDTO",
-                "type": "object",
-                "description": "排序字段",
-                "fieldMap": {
-                  "name": {
-                    "name": "name",
-                    "type": "string",
-                    "description": "排序的字段名"
-                  },
-                  "value": {
-                    "name": "value",
-                    "type": "string",
-                    "description": "ascend（升序，默认） descend（降序）"
-                  }
-                }
-              }
-            }
-          }
-        }
-      },
-      "response": {
-        "className": "ApiResultVOPageSysUserPageVO",
-        "fieldMap": {
-          "ApiResultVOPageSysUserPageVO": {
-            "className": "ApiResultVOPageSysUserPageVO",
-            "type": "object",
-            "description": "统一响应实体类",
-            "fieldMap": {
-              "msg": {
-                "name": "msg",
-                "type": "string",
-                "description": "响应描述"
-              },
-              "code": {
-                "name": "code",
-                "type": "integer",
-                "description": "响应代码，成功返回：200",
-                "format": "int32"
-              },
-              "data": {
-                "className": "PageSysUserPageVO",
-                "name": "data",
-                "fieldMap": {
-                  "PageSysUserPageVO": {
-                    "className": "PageSysUserPageVO",
-                    "type": "object",
-                    "description": "数据",
-                    "fieldMap": {
-                      "total": {
-                        "name": "total",
-                        "type": "integer",
-                        "format": "int64"
-                      },
-                      "current": {
-                        "name": "current",
-                        "type": "integer",
-                        "format": "int64"
-                      },
-                      "pages": {
-                        "name": "pages",
-                        "type": "integer",
-                        "format": "int64"
-                      },
-                      "size": {
-                        "name": "size",
-                        "type": "integer",
-                        "format": "int64"
-                      },
-                      "optimizeCountSql": {
-                        "name": "optimizeCountSql",
-                        "type": "boolean"
-                      },
-                      "records": {
-                        "className": "SysUserPageVO",
-                        "name": "records",
-                        "fieldMap": {
-                          "SysUserPageVO": {
-                            "className": "SysUserPageVO",
-                            "type": "object",
-                            "fieldMap": {
-                              "avatarUri": {
-                                "name": "avatarUri",
-                                "type": "string",
-                                "description": "头像uri"
-                              },
-                              "passwordFlag": {
-                                "name": "passwordFlag",
-                                "type": "boolean",
-                                "description": "是否有密码"
-                              },
-                              "phone": {
-                                "name": "phone",
-                                "type": "string",
-                                "description": "手机号码，会脱敏"
-                              },
-                              "createTime": {
-                                "name": "createTime",
-                                "type": "string",
-                                "description": "创建时间",
-                                "format": "date-time"
-                              },
-                              "wxOpenId": {
-                                "name": "wxOpenId",
-                                "type": "string",
-                                "description": "微信 openId，会脱敏"
-                              },
-                              "signInName": {
-                                "name": "signInName",
-                                "type": "string",
-                                "description": "登录名，会脱敏"
-                              },
-                              "nickname": {
-                                "name": "nickname",
-                                "type": "string",
-                                "description": "昵称"
-                              },
-                              "roleIdSet": {
-                                "name": "roleIdSet",
-                                "type": "integer",
-                                "description": "角色 idSet",
-                                "format": "int64",
-                                "arrFlag": true
-                              },
-                              "updateTime": {
-                                "name": "updateTime",
-                                "type": "string",
-                                "description": "修改时间",
-                                "format": "date-time"
-                              },
-                              "id": {
-                                "name": "id",
-                                "type": "integer",
-                                "description": "主键id",
-                                "format": "int64"
-                              },
-                              "enableFlag": {
-                                "name": "enableFlag",
-                                "type": "boolean",
-                                "description": "正常/冻结"
-                              },
-                              "email": {
-                                "name": "email",
-                                "type": "string",
-                                "description": "邮箱，备注：会脱敏"
-                              }
-                            }
-                          }
-                        },
-                        "arrFlag": true
-                      },
-                      "maxLimit": {
-                        "name": "maxLimit",
-                        "type": "integer",
-                        "format": "int64"
-                      },
-                      "searchCount": {
-                        "name": "searchCount",
-                        "type": "boolean"
-                      },
-                      "optimizeJoinOfCountSql": {
-                        "name": "optimizeJoinOfCountSql",
-                        "type": "boolean"
-                      },
-                      "orders": {
-                        "className": "OrderItem",
-                        "name": "orders",
-                        "fieldMap": {
-                          "OrderItem": {
-                            "className": "OrderItem",
-                            "type": "object",
-                            "fieldMap": {
-                              "asc": {
-                                "name": "asc",
-                                "type": "boolean"
-                              },
-                              "column": {
-                                "name": "column",
-                                "type": "string"
-                              }
-                            }
-                          }
-                        },
-                        "arrFlag": true
-                      },
-                      "countId": {
-                        "name": "countId",
-                        "type": "string"
-                      }
-                    }
-                  }
-                }
-              },
-              "service": {
-                "name": "service",
-                "type": "string",
-                "description": "服务名"
-              },
-              "successFlag": {
-                "name": "successFlag",
-                "type": "boolean",
-                "description": "服务器是否收到请求，只会返回 true"
-              }
-            }
-          }
-        }
-      }
-    },
-    "/sys/user/dictList": {
-      "path": "/sys/user/dictList",
-      "method": "post",
-      "tag": "用户-管理",
-      "group": "SysUser",
-      "summary": "下拉列表",
-      "contentType": "application/json",
-      "requestBody": {
-        "className": "SysUserDictListDTO",
-        "type": "object",
-        "fieldMap": {
-          "addAdminFlag": {
-            "name": "addAdminFlag",
-            "type": "boolean",
-            "description": "是否追加 admin账号"
-          }
-        }
-      },
-      "response": {
-        "className": "ApiResultVOPageDictVO",
-        "fieldMap": {
-          "ApiResultVOPageDictVO": {
-            "className": "ApiResultVOPageDictVO",
-            "type": "object",
-            "description": "统一响应实体类",
-            "fieldMap": {
-              "msg": {
-                "name": "msg",
-                "type": "string",
-                "description": "响应描述"
-              },
-              "code": {
-                "name": "code",
-                "type": "integer",
-                "description": "响应代码，成功返回：200",
-                "format": "int32"
-              },
-              "data": {
-                "className": "PageDictVO",
-                "name": "data",
-                "fieldMap": {
-                  "PageDictVO": {
-                    "className": "PageDictVO",
-                    "type": "object",
-                    "description": "数据",
-                    "fieldMap": {
-                      "total": {
-                        "name": "total",
-                        "type": "integer",
-                        "format": "int64"
-                      },
-                      "current": {
-                        "name": "current",
-                        "type": "integer",
-                        "format": "int64"
-                      },
-                      "pages": {
-                        "name": "pages",
-                        "type": "integer",
-                        "format": "int64"
-                      },
-                      "size": {
-                        "name": "size",
-                        "type": "integer",
-                        "format": "int64"
-                      },
-                      "optimizeCountSql": {
-                        "name": "optimizeCountSql",
-                        "type": "boolean"
-                      },
-                      "records": {
-                        "className": "DictVO",
-                        "name": "records",
-                        "fieldMap": {
-                          "DictVO": {
-                            "className": "DictVO",
-                            "type": "object",
-                            "fieldMap": {
-                              "name": {
-                                "name": "name",
-                                "type": "string",
-                                "description": "显示用"
-                              },
-                              "id": {
-                                "name": "id",
-                                "type": "integer",
-                                "description": "传值用",
-                                "format": "int64"
-                              }
-                            }
-                          }
-                        },
-                        "arrFlag": true
-                      },
-                      "maxLimit": {
-                        "name": "maxLimit",
-                        "type": "integer",
-                        "format": "int64"
-                      },
-                      "searchCount": {
-                        "name": "searchCount",
-                        "type": "boolean"
-                      },
-                      "optimizeJoinOfCountSql": {
-                        "name": "optimizeJoinOfCountSql",
-                        "type": "boolean"
-                      },
-                      "orders": {
-                        "className": "OrderItem",
-                        "name": "orders",
-                        "fieldMap": {
-                          "OrderItem": {
-                            "className": "OrderItem",
-                            "type": "object",
-                            "fieldMap": {
-                              "asc": {
-                                "name": "asc",
-                                "type": "boolean"
-                              },
-                              "column": {
-                                "name": "column",
-                                "type": "string"
-                              }
-                            }
-                          }
-                        },
-                        "arrFlag": true
-                      },
-                      "countId": {
-                        "name": "countId",
-                        "type": "string"
-                      }
-                    }
-                  }
-                }
-              },
-              "service": {
-                "name": "service",
-                "type": "string",
-                "description": "服务名"
-              },
-              "successFlag": {
-                "name": "successFlag",
-                "type": "boolean",
-                "description": "服务器是否收到请求，只会返回 true"
-              }
-            }
-          }
-        }
-      }
-    },
-    "/sys/user/resetAvatar": {
-      "path": "/sys/user/resetAvatar",
-      "method": "post",
-      "tag": "用户-管理",
-      "group": "SysUser",
-      "summary": "批量：重置头像",
-      "contentType": "application/json",
-      "requestBody": {
-        "className": "NotEmptyIdSet",
-        "type": "object",
-        "required": false,
-        "fieldMap": {
-          "idSet": {
-            "name": "idSet",
-            "type": "integer",
-            "required": true,
-            "description": "主键 idSet",
-            "format": "int64",
-            "arrFlag": true
-          }
-        },
-        "requiredFieldName": [
-          "idSet"
-        ]
-      },
-      "response": {
-        "className": "ApiResultVOString",
-        "fieldMap": {
-          "ApiResultVOString": {
-            "className": "ApiResultVOString",
-            "type": "object",
-            "description": "统一响应实体类",
-            "fieldMap": {
-              "msg": {
-                "name": "msg",
-                "type": "string",
-                "description": "响应描述"
-              },
-              "code": {
-                "name": "code",
-                "type": "integer",
-                "description": "响应代码，成功返回：200",
-                "format": "int32"
-              },
-              "data": {
-                "name": "data",
-                "type": "string",
-                "description": "数据"
-              },
-              "service": {
-                "name": "service",
-                "type": "string",
-                "description": "服务名"
-              },
-              "successFlag": {
-                "name": "successFlag",
-                "type": "boolean",
-                "description": "服务器是否收到请求，只会返回 true"
-              }
-            }
-          }
-        }
-      }
-    },
-    "/sys/user/insertOrUpdate": {
-      "path": "/sys/user/insertOrUpdate",
-      "method": "post",
-      "tag": "用户-管理",
-      "group": "SysUser",
-      "summary": "新增/修改",
-      "contentType": "application/json",
-      "requestBody": {
-        "className": "SysUserInsertOrUpdateDTO",
-        "type": "object",
-        "fieldMap": {
-          "password": {
-            "name": "password",
-            "type": "string",
-            "description": "前端加密之后的密码"
-          },
-          "phone": {
-            "name": "phone",
-            "type": "string",
-            "description": "手机号码",
-            "pattern": "^(13[0-9]|14[01456879]|15[0-35-9]|16[2567]|17[0-8]|18[0-9]|19[0-35-9])\\d{8}$",
-            "maxLength": 100,
-            "minLength": 0
-          },
-          "signInName": {
-            "name": "signInName",
-            "type": "string",
-            "description": "登录名",
-            "pattern": "^[\\u4E00-\\u9FA5A-Za-z0-9_-]{2,20}$",
-            "maxLength": 20,
-            "minLength": 0
-          },
-          "nickname": {
-            "name": "nickname",
-            "type": "string",
-            "description": "昵称",
-            "pattern": "^[\\u4E00-\\u9FA5A-Za-z0-9_-]{2,20}$"
-          },
-          "roleIdSet": {
-            "name": "roleIdSet",
-            "type": "integer",
-            "description": "角色 idSet",
-            "format": "int64",
-            "arrFlag": true
-          },
-          "bio": {
-            "name": "bio",
-            "type": "string",
-            "description": "个人简介"
-          },
-          "id": {
-            "name": "id",
-            "type": "integer",
-            "description": "主键 id",
-            "format": "int64"
-          },
-          "enableFlag": {
-            "name": "enableFlag",
-            "type": "boolean",
-            "description": "正常/冻结"
-          },
-          "email": {
-            "name": "email",
-            "type": "string",
-            "description": "邮箱",
-            "pattern": "^\\w+([-+.]\\w+)*@\\w+([-.]\\w+)*\\.\\w+([-.]\\w+)*$",
-            "maxLength": 200,
-            "minLength": 0
-          },
-          "originPassword": {
-            "name": "originPassword",
-            "type": "string",
-            "description": "前端加密之后的原始密码"
-          }
-        }
-      },
-      "response": {
-        "className": "ApiResultVOString",
-        "fieldMap": {
-          "ApiResultVOString": {
-            "className": "ApiResultVOString",
-            "type": "object",
-            "description": "统一响应实体类",
-            "fieldMap": {
-              "msg": {
-                "name": "msg",
-                "type": "string",
-                "description": "响应描述"
-              },
-              "code": {
-                "name": "code",
-                "type": "integer",
-                "description": "响应代码，成功返回：200",
-                "format": "int32"
-              },
-              "data": {
-                "name": "data",
-                "type": "string",
-                "description": "数据"
-              },
-              "service": {
-                "name": "service",
-                "type": "string",
-                "description": "服务名"
-              },
-              "successFlag": {
-                "name": "successFlag",
-                "type": "boolean",
-                "description": "服务器是否收到请求，只会返回 true"
-              }
-            }
-          }
-        }
-      }
-    }
-  },
-  "SysParam": {
-    "/sys/param/infoById": {
-      "path": "/sys/param/infoById",
-      "method": "post",
-      "tag": "系统参数-管理",
-      "group": "SysParam",
-      "summary": "通过主键id，查看详情",
-      "contentType": "application/json",
-      "requestBody": {
-        "className": "NotNullId",
-        "type": "object",
-        "required": false,
-        "fieldMap": {
-          "id": {
-            "name": "id",
-            "type": "integer",
-            "required": true,
-            "description": "主键id",
-            "format": "int64"
-          }
-        },
-        "requiredFieldName": [
-          "id"
-        ]
-      },
-      "response": {
-        "className": "ApiResultVOSysParamDO",
-        "fieldMap": {
-          "ApiResultVOSysParamDO": {
-            "className": "ApiResultVOSysParamDO",
-            "type": "object",
-            "description": "统一响应实体类",
-            "fieldMap": {
-              "msg": {
-                "name": "msg",
-                "type": "string",
-                "description": "响应描述"
-              },
-              "code": {
-                "name": "code",
-                "type": "integer",
-                "description": "响应代码，成功返回：200",
-                "format": "int32"
-              },
-              "data": {
-                "className": "SysParamDO",
-                "name": "data",
-                "fieldMap": {
-                  "SysParamDO": {
-                    "className": "SysParamDO",
-                    "type": "object",
-                    "description": "主表：系统参数",
-                    "fieldMap": {
-                      "updateId": {
-                        "name": "updateId",
-                        "type": "integer",
-                        "description": "修改人id",
-                        "format": "int64"
-                      },
-                      "createTime": {
-                        "name": "createTime",
-                        "type": "string",
-                        "description": "创建时间",
-                        "format": "date-time"
-                      },
-                      "createId": {
-                        "name": "createId",
-                        "type": "integer",
-                        "description": "创建人id",
-                        "format": "int64"
-                      },
-                      "name": {
-                        "name": "name",
-                        "type": "string",
-                        "description": "配置名，以 id为不变值进行使用，不要用此属性"
-                      },
-                      "updateTime": {
-                        "name": "updateTime",
-                        "type": "string",
-                        "description": "修改时间",
-                        "format": "date-time"
-                      },
-                      "remark": {
-                        "name": "remark",
-                        "type": "string",
-                        "description": "备注"
-                      },
-                      "id": {
-                        "name": "id",
-                        "type": "integer",
-                        "description": "主键id",
-                        "format": "int64"
-                      },
-                      "delFlag": {
-                        "name": "delFlag",
-                        "type": "boolean",
-                        "description": "是否逻辑删除"
-                      },
-                      "version": {
-                        "name": "version",
-                        "type": "integer",
-                        "description": "乐观锁",
-                        "format": "int32"
-                      },
-                      "enableFlag": {
-                        "name": "enableFlag",
-                        "type": "boolean",
-                        "description": "是否启用"
-                      },
-                      "value": {
-                        "name": "value",
-                        "type": "string",
-                        "description": "值"
-                      }
-                    }
-                  }
-                }
-              },
-              "service": {
-                "name": "service",
-                "type": "string",
-                "description": "服务名"
-              },
-              "successFlag": {
-                "name": "successFlag",
-                "type": "boolean",
-                "description": "服务器是否收到请求，只会返回 true"
-              }
-            }
-          }
-        }
-      }
-    },
-    "/sys/param/insertOrUpdate": {
-      "path": "/sys/param/insertOrUpdate",
-      "method": "post",
-      "tag": "系统参数-管理",
-      "group": "SysParam",
-      "summary": "新增/修改",
-      "contentType": "application/json",
-      "requestBody": {
-        "className": "SysParamInsertOrUpdateDTO",
-        "type": "object",
-        "required": false,
-        "fieldMap": {
-          "name": {
-            "name": "name",
-            "type": "string",
-            "required": true,
-            "description": "配置名，以 id为不变值进行使用，不要用此属性"
-          },
-          "remark": {
-            "name": "remark",
-            "type": "string",
-            "description": "备注"
-          },
-          "id": {
-            "name": "id",
-            "type": "integer",
-            "description": "主键 id",
-            "format": "int64"
-          },
-          "value": {
-            "name": "value",
-            "type": "string",
-            "required": true,
-            "description": "值"
-          },
-          "enableFlag": {
-            "name": "enableFlag",
-            "type": "boolean",
-            "description": "是否启用"
-          }
-        },
-        "requiredFieldName": [
-          "name",
-          "value"
-        ]
-      },
-      "response": {
-        "className": "ApiResultVOString",
-        "fieldMap": {
-          "ApiResultVOString": {
-            "className": "ApiResultVOString",
-            "type": "object",
-            "description": "统一响应实体类",
-            "fieldMap": {
-              "msg": {
-                "name": "msg",
-                "type": "string",
-                "description": "响应描述"
-              },
-              "code": {
-                "name": "code",
-                "type": "integer",
-                "description": "响应代码，成功返回：200",
-                "format": "int32"
-              },
-              "data": {
-                "name": "data",
-                "type": "string",
-                "description": "数据"
-              },
-              "service": {
-                "name": "service",
-                "type": "string",
-                "description": "服务名"
-              },
-              "successFlag": {
-                "name": "successFlag",
-                "type": "boolean",
-                "description": "服务器是否收到请求，只会返回 true"
-              }
-            }
-          }
-        }
-      }
-    },
-    "/sys/param/deleteByIdSet": {
-      "path": "/sys/param/deleteByIdSet",
-      "method": "post",
-      "tag": "系统参数-管理",
-      "group": "SysParam",
-      "summary": "批量删除",
-      "contentType": "application/json",
-      "requestBody": {
-        "className": "NotEmptyIdSet",
-        "type": "object",
-        "required": false,
-        "fieldMap": {
-          "idSet": {
-            "name": "idSet",
-            "type": "integer",
-            "required": true,
-            "description": "主键 idSet",
-            "format": "int64",
-            "arrFlag": true
-          }
-        },
-        "requiredFieldName": [
-          "idSet"
-        ]
-      },
-      "response": {
-        "className": "ApiResultVOString",
-        "fieldMap": {
-          "ApiResultVOString": {
-            "className": "ApiResultVOString",
-            "type": "object",
-            "description": "统一响应实体类",
-            "fieldMap": {
-              "msg": {
-                "name": "msg",
-                "type": "string",
-                "description": "响应描述"
-              },
-              "code": {
-                "name": "code",
-                "type": "integer",
-                "description": "响应代码，成功返回：200",
-                "format": "int32"
-              },
-              "data": {
-                "name": "data",
-                "type": "string",
-                "description": "数据"
-              },
-              "service": {
-                "name": "service",
-                "type": "string",
-                "description": "服务名"
-              },
-              "successFlag": {
-                "name": "successFlag",
-                "type": "boolean",
-                "description": "服务器是否收到请求，只会返回 true"
-              }
-            }
-          }
-        }
-      }
-    },
-    "/sys/param/page": {
-      "path": "/sys/param/page",
-      "method": "post",
-      "tag": "系统参数-管理",
-      "group": "SysParam",
-      "summary": "分页排序查询",
-      "contentType": "application/json",
-      "requestBody": {
-        "className": "SysParamPageDTO",
-        "type": "object",
-        "fieldMap": {
-          "current": {
-            "name": "current",
-            "type": "integer",
-            "description": "第几页",
-            "format": "int64"
-          },
-          "name": {
-            "name": "name",
-            "type": "string",
-            "description": "配置名，以 id为不变值进行使用，不要用此属性"
-          },
-          "pageSize": {
-            "name": "pageSize",
-            "type": "integer",
-            "description": "每页显示条数",
-            "format": "int64"
-          },
-          "remark": {
-            "name": "remark",
-            "type": "string",
-            "description": "备注"
-          },
-          "enableFlag": {
-            "name": "enableFlag",
-            "type": "boolean",
-            "description": "是否启用"
-          },
-          "order": {
-            "className": "MyOrderDTO",
-            "name": "order",
-            "fieldMap": {
-              "MyOrderDTO": {
-                "className": "MyOrderDTO",
-                "type": "object",
-                "description": "排序字段",
-                "fieldMap": {
-                  "name": {
-                    "name": "name",
-                    "type": "string",
-                    "description": "排序的字段名"
-                  },
-                  "value": {
-                    "name": "value",
-                    "type": "string",
-                    "description": "ascend（升序，默认） descend（降序）"
-                  }
-                }
-              }
-            }
-          }
-        }
-      },
-      "response": {
-        "className": "ApiResultVOPageSysParamDO",
-        "fieldMap": {
-          "ApiResultVOPageSysParamDO": {
-            "className": "ApiResultVOPageSysParamDO",
-            "type": "object",
-            "description": "统一响应实体类",
-            "fieldMap": {
-              "msg": {
-                "name": "msg",
-                "type": "string",
-                "description": "响应描述"
-              },
-              "code": {
-                "name": "code",
-                "type": "integer",
-                "description": "响应代码，成功返回：200",
-                "format": "int32"
-              },
-              "data": {
-                "className": "PageSysParamDO",
-                "name": "data",
-                "fieldMap": {
-                  "PageSysParamDO": {
-                    "className": "PageSysParamDO",
-                    "type": "object",
-                    "description": "数据",
-                    "fieldMap": {
-                      "total": {
-                        "name": "total",
-                        "type": "integer",
-                        "format": "int64"
-                      },
-                      "current": {
-                        "name": "current",
-                        "type": "integer",
-                        "format": "int64"
-                      },
-                      "pages": {
-                        "name": "pages",
-                        "type": "integer",
-                        "format": "int64"
-                      },
-                      "size": {
-                        "name": "size",
-                        "type": "integer",
-                        "format": "int64"
-                      },
-                      "optimizeCountSql": {
-                        "name": "optimizeCountSql",
-                        "type": "boolean"
-                      },
-                      "records": {
-                        "className": "SysParamDO",
-                        "name": "records",
-                        "fieldMap": {
-                          "SysParamDO": {
-                            "className": "SysParamDO",
-                            "type": "object",
-                            "description": "主表：系统参数",
-                            "fieldMap": {
-                              "updateId": {
-                                "name": "updateId",
-                                "type": "integer",
-                                "description": "修改人id",
-                                "format": "int64"
-                              },
-                              "createTime": {
-                                "name": "createTime",
-                                "type": "string",
-                                "description": "创建时间",
-                                "format": "date-time"
-                              },
-                              "createId": {
-                                "name": "createId",
-                                "type": "integer",
-                                "description": "创建人id",
-                                "format": "int64"
-                              },
-                              "name": {
-                                "name": "name",
-                                "type": "string",
-                                "description": "配置名，以 id为不变值进行使用，不要用此属性"
-                              },
-                              "updateTime": {
-                                "name": "updateTime",
-                                "type": "string",
-                                "description": "修改时间",
-                                "format": "date-time"
-                              },
-                              "remark": {
-                                "name": "remark",
-                                "type": "string",
-                                "description": "备注"
-                              },
-                              "id": {
-                                "name": "id",
-                                "type": "integer",
-                                "description": "主键id",
-                                "format": "int64"
-                              },
-                              "delFlag": {
-                                "name": "delFlag",
-                                "type": "boolean",
-                                "description": "是否逻辑删除"
-                              },
-                              "version": {
-                                "name": "version",
-                                "type": "integer",
-                                "description": "乐观锁",
-                                "format": "int32"
-                              },
-                              "enableFlag": {
-                                "name": "enableFlag",
-                                "type": "boolean",
-                                "description": "是否启用"
-                              },
-                              "value": {
-                                "name": "value",
-                                "type": "string",
-                                "description": "值"
-                              }
-                            }
-                          }
-                        },
-                        "arrFlag": true
-                      },
-                      "maxLimit": {
-                        "name": "maxLimit",
-                        "type": "integer",
-                        "format": "int64"
-                      },
-                      "searchCount": {
-                        "name": "searchCount",
-                        "type": "boolean"
-                      },
-                      "optimizeJoinOfCountSql": {
-                        "name": "optimizeJoinOfCountSql",
-                        "type": "boolean"
-                      },
-                      "orders": {
-                        "className": "OrderItem",
-                        "name": "orders",
-                        "fieldMap": {
-                          "OrderItem": {
-                            "className": "OrderItem",
-                            "type": "object",
-                            "fieldMap": {
-                              "asc": {
-                                "name": "asc",
-                                "type": "boolean"
-                              },
-                              "column": {
-                                "name": "column",
-                                "type": "string"
-                              }
-                            }
-                          }
-                        },
-                        "arrFlag": true
-                      },
-                      "countId": {
-                        "name": "countId",
-                        "type": "string"
-                      }
-                    }
-                  }
-                }
-              },
-              "service": {
-                "name": "service",
-                "type": "string",
-                "description": "服务名"
-              },
-              "successFlag": {
-                "name": "successFlag",
-                "type": "boolean",
-                "description": "服务器是否收到请求，只会返回 true"
-              }
-            }
-          }
-        }
-      }
-    }
-  },
   "SysDict": {
     "/sys/dict/infoById": {
       "path": "/sys/dict/infoById",
@@ -6066,31 +7076,109 @@
       }
     }
   },
-  "SignPhone": {
-    "/sign/phone/bindAccount/sendCode": {
-      "path": "/sign/phone/bindAccount/sendCode",
+  "SysFile": {
+    "/sys/file/upload": {
+      "path": "/sys/file/upload",
       "method": "post",
-      "tag": "登录注册-手机",
-      "group": "SignPhone",
-      "summary": "绑定手机-发送验证码",
+      "tag": "文件-管理",
+      "group": "SysFile",
+      "summary": "上传文件：共有和私有",
+      "parameter": {
+        "dto": {
+          "className": "SysFileUploadDTO",
+          "name": "dto",
+          "fieldMap": {
+            "SysFileUploadDTO": {
+              "className": "SysFileUploadDTO",
+              "type": "object",
+              "fieldMap": {
+                "file": {
+                  "name": "file",
+                  "type": "string",
+                  "format": "binary"
+                },
+                "uploadType": {
+                  "name": "uploadType",
+                  "type": "string",
+                  "description": "文件上传的类型"
+                },
+                "remark": {
+                  "name": "remark",
+                  "type": "string",
+                  "description": "备注"
+                },
+                "extraJson": {
+                  "name": "extraJson",
+                  "type": "string",
+                  "description": "额外信息（json格式）"
+                }
+              }
+            }
+          }
+        }
+      },
+      "response": {
+        "className": "ApiResultVOString",
+        "fieldMap": {
+          "ApiResultVOString": {
+            "className": "ApiResultVOString",
+            "type": "object",
+            "description": "统一响应实体类",
+            "fieldMap": {
+              "msg": {
+                "name": "msg",
+                "type": "string",
+                "description": "响应描述"
+              },
+              "code": {
+                "name": "code",
+                "type": "integer",
+                "description": "响应代码，成功返回：200",
+                "format": "int32"
+              },
+              "data": {
+                "name": "data",
+                "type": "string",
+                "description": "数据"
+              },
+              "service": {
+                "name": "service",
+                "type": "string",
+                "description": "服务名"
+              },
+              "successFlag": {
+                "name": "successFlag",
+                "type": "boolean",
+                "description": "服务器是否收到请求，只会返回 true"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/sys/file/removeByFileIdSet": {
+      "path": "/sys/file/removeByFileIdSet",
+      "method": "post",
+      "tag": "文件-管理",
+      "group": "SysFile",
+      "summary": "批量删除文件：共有和私有",
       "contentType": "application/json",
       "requestBody": {
-        "className": "PhoneNotBlankDTO",
+        "className": "NotEmptyIdSet",
         "type": "object",
         "required": false,
         "fieldMap": {
-          "phone": {
-            "name": "phone",
-            "type": "string",
+          "idSet": {
+            "name": "idSet",
+            "type": "integer",
             "required": true,
-            "description": "手机号码",
-            "pattern": "^(13[0-9]|14[01456879]|15[0-35-9]|16[2567]|17[0-8]|18[0-9]|19[0-35-9])\\d{8}$",
-            "maxLength": 100,
-            "minLength": 0
+            "description": "主键 idSet",
+            "format": "int64",
+            "arrFlag": true
           }
         },
         "requiredFieldName": [
-          "phone"
+          "idSet"
         ]
       },
       "response": {
@@ -6132,947 +7220,29 @@
         }
       }
     },
-    "/sign/phone/bindAccount": {
-      "path": "/sign/phone/bindAccount",
+    "/sys/file/privateDownload": {
+      "path": "/sys/file/privateDownload",
       "method": "post",
-      "tag": "登录注册-手机",
-      "group": "SignPhone",
-      "summary": "绑定手机",
+      "tag": "文件-管理",
+      "group": "SysFile",
+      "summary": "下载文件：私有",
       "contentType": "application/json",
       "requestBody": {
-        "className": "SignPhoneBindAccountDTO",
+        "className": "NotNullId",
         "type": "object",
         "required": false,
         "fieldMap": {
-          "code": {
-            "name": "code",
-            "type": "string",
+          "id": {
+            "name": "id",
+            "type": "integer",
             "required": true,
-            "description": "手机验证码",
-            "pattern": "^[0-9]{6}$"
-          },
-          "phone": {
-            "name": "phone",
-            "type": "string",
-            "required": true,
-            "description": "手机号码",
-            "pattern": "^(13[0-9]|14[01456879]|15[0-35-9]|16[2567]|17[0-8]|18[0-9]|19[0-35-9])\\d{8}$",
-            "maxLength": 100,
-            "minLength": 0
+            "description": "主键id",
+            "format": "int64"
           }
         },
         "requiredFieldName": [
-          "code",
-          "phone"
+          "id"
         ]
-      },
-      "response": {
-        "className": "ApiResultVOString",
-        "fieldMap": {
-          "ApiResultVOString": {
-            "className": "ApiResultVOString",
-            "type": "object",
-            "description": "统一响应实体类",
-            "fieldMap": {
-              "msg": {
-                "name": "msg",
-                "type": "string",
-                "description": "响应描述"
-              },
-              "code": {
-                "name": "code",
-                "type": "integer",
-                "description": "响应代码，成功返回：200",
-                "format": "int32"
-              },
-              "data": {
-                "name": "data",
-                "type": "string",
-                "description": "数据"
-              },
-              "service": {
-                "name": "service",
-                "type": "string",
-                "description": "服务名"
-              },
-              "successFlag": {
-                "name": "successFlag",
-                "type": "boolean",
-                "description": "服务器是否收到请求，只会返回 true"
-              }
-            }
-          }
-        }
-      }
-    },
-    "/sign/phone/sign/in/sendCode": {
-      "path": "/sign/phone/sign/in/sendCode",
-      "method": "post",
-      "tag": "登录注册-手机",
-      "group": "SignPhone",
-      "summary": "手机验证码登录-发送验证码",
-      "contentType": "application/json",
-      "requestBody": {
-        "className": "PhoneNotBlankDTO",
-        "type": "object",
-        "required": false,
-        "fieldMap": {
-          "phone": {
-            "name": "phone",
-            "type": "string",
-            "required": true,
-            "description": "手机号码",
-            "pattern": "^(13[0-9]|14[01456879]|15[0-35-9]|16[2567]|17[0-8]|18[0-9]|19[0-35-9])\\d{8}$",
-            "maxLength": 100,
-            "minLength": 0
-          }
-        },
-        "requiredFieldName": [
-          "phone"
-        ]
-      },
-      "response": {
-        "className": "ApiResultVOString",
-        "fieldMap": {
-          "ApiResultVOString": {
-            "className": "ApiResultVOString",
-            "type": "object",
-            "description": "统一响应实体类",
-            "fieldMap": {
-              "msg": {
-                "name": "msg",
-                "type": "string",
-                "description": "响应描述"
-              },
-              "code": {
-                "name": "code",
-                "type": "integer",
-                "description": "响应代码，成功返回：200",
-                "format": "int32"
-              },
-              "data": {
-                "name": "data",
-                "type": "string",
-                "description": "数据"
-              },
-              "service": {
-                "name": "service",
-                "type": "string",
-                "description": "服务名"
-              },
-              "successFlag": {
-                "name": "successFlag",
-                "type": "boolean",
-                "description": "服务器是否收到请求，只会返回 true"
-              }
-            }
-          }
-        }
-      }
-    },
-    "/sign/phone/signDelete/sendCode": {
-      "path": "/sign/phone/signDelete/sendCode",
-      "method": "post",
-      "tag": "登录注册-手机",
-      "group": "SignPhone",
-      "summary": "账号注销-发送验证码",
-      "response": {
-        "className": "ApiResultVOString",
-        "fieldMap": {
-          "ApiResultVOString": {
-            "className": "ApiResultVOString",
-            "type": "object",
-            "description": "统一响应实体类",
-            "fieldMap": {
-              "msg": {
-                "name": "msg",
-                "type": "string",
-                "description": "响应描述"
-              },
-              "code": {
-                "name": "code",
-                "type": "integer",
-                "description": "响应代码，成功返回：200",
-                "format": "int32"
-              },
-              "data": {
-                "name": "data",
-                "type": "string",
-                "description": "数据"
-              },
-              "service": {
-                "name": "service",
-                "type": "string",
-                "description": "服务名"
-              },
-              "successFlag": {
-                "name": "successFlag",
-                "type": "boolean",
-                "description": "服务器是否收到请求，只会返回 true"
-              }
-            }
-          }
-        }
-      }
-    },
-    "/sign/phone/sign/up/sendCode": {
-      "path": "/sign/phone/sign/up/sendCode",
-      "method": "post",
-      "tag": "登录注册-手机",
-      "group": "SignPhone",
-      "summary": "注册-发送验证码",
-      "contentType": "application/json",
-      "requestBody": {
-        "className": "PhoneNotBlankDTO",
-        "type": "object",
-        "required": false,
-        "fieldMap": {
-          "phone": {
-            "name": "phone",
-            "type": "string",
-            "required": true,
-            "description": "手机号码",
-            "pattern": "^(13[0-9]|14[01456879]|15[0-35-9]|16[2567]|17[0-8]|18[0-9]|19[0-35-9])\\d{8}$",
-            "maxLength": 100,
-            "minLength": 0
-          }
-        },
-        "requiredFieldName": [
-          "phone"
-        ]
-      },
-      "response": {
-        "className": "ApiResultVOString",
-        "fieldMap": {
-          "ApiResultVOString": {
-            "className": "ApiResultVOString",
-            "type": "object",
-            "description": "统一响应实体类",
-            "fieldMap": {
-              "msg": {
-                "name": "msg",
-                "type": "string",
-                "description": "响应描述"
-              },
-              "code": {
-                "name": "code",
-                "type": "integer",
-                "description": "响应代码，成功返回：200",
-                "format": "int32"
-              },
-              "data": {
-                "name": "data",
-                "type": "string",
-                "description": "数据"
-              },
-              "service": {
-                "name": "service",
-                "type": "string",
-                "description": "服务名"
-              },
-              "successFlag": {
-                "name": "successFlag",
-                "type": "boolean",
-                "description": "服务器是否收到请求，只会返回 true"
-              }
-            }
-          }
-        }
-      }
-    },
-    "/sign/phone/updateAccount/sendCode": {
-      "path": "/sign/phone/updateAccount/sendCode",
-      "method": "post",
-      "tag": "登录注册-手机",
-      "group": "SignPhone",
-      "summary": "修改手机-发送验证码",
-      "response": {
-        "className": "ApiResultVOString",
-        "fieldMap": {
-          "ApiResultVOString": {
-            "className": "ApiResultVOString",
-            "type": "object",
-            "description": "统一响应实体类",
-            "fieldMap": {
-              "msg": {
-                "name": "msg",
-                "type": "string",
-                "description": "响应描述"
-              },
-              "code": {
-                "name": "code",
-                "type": "integer",
-                "description": "响应代码，成功返回：200",
-                "format": "int32"
-              },
-              "data": {
-                "name": "data",
-                "type": "string",
-                "description": "数据"
-              },
-              "service": {
-                "name": "service",
-                "type": "string",
-                "description": "服务名"
-              },
-              "successFlag": {
-                "name": "successFlag",
-                "type": "boolean",
-                "description": "服务器是否收到请求，只会返回 true"
-              }
-            }
-          }
-        }
-      }
-    },
-    "/sign/phone/sign/in/code": {
-      "path": "/sign/phone/sign/in/code",
-      "method": "post",
-      "tag": "登录注册-手机",
-      "group": "SignPhone",
-      "summary": "手机验证码登录",
-      "contentType": "application/json",
-      "requestBody": {
-        "className": "SignPhoneSignInCodeDTO",
-        "type": "object",
-        "required": false,
-        "fieldMap": {
-          "code": {
-            "name": "code",
-            "type": "string",
-            "required": true,
-            "description": "手机验证码",
-            "pattern": "^[0-9]{6}$"
-          },
-          "phone": {
-            "name": "phone",
-            "type": "string",
-            "required": true,
-            "description": "手机号码",
-            "pattern": "^(13[0-9]|14[01456879]|15[0-35-9]|16[2567]|17[0-8]|18[0-9]|19[0-35-9])\\d{8}$",
-            "maxLength": 100,
-            "minLength": 0
-          }
-        },
-        "requiredFieldName": [
-          "code",
-          "phone"
-        ]
-      },
-      "response": {
-        "className": "ApiResultVOString",
-        "fieldMap": {
-          "ApiResultVOString": {
-            "className": "ApiResultVOString",
-            "type": "object",
-            "description": "统一响应实体类",
-            "fieldMap": {
-              "msg": {
-                "name": "msg",
-                "type": "string",
-                "description": "响应描述"
-              },
-              "code": {
-                "name": "code",
-                "type": "integer",
-                "description": "响应代码，成功返回：200",
-                "format": "int32"
-              },
-              "data": {
-                "name": "data",
-                "type": "string",
-                "description": "数据"
-              },
-              "service": {
-                "name": "service",
-                "type": "string",
-                "description": "服务名"
-              },
-              "successFlag": {
-                "name": "successFlag",
-                "type": "boolean",
-                "description": "服务器是否收到请求，只会返回 true"
-              }
-            }
-          }
-        }
-      }
-    },
-    "/sign/phone/updatePassword/sendCode": {
-      "path": "/sign/phone/updatePassword/sendCode",
-      "method": "post",
-      "tag": "登录注册-手机",
-      "group": "SignPhone",
-      "summary": "修改密码-发送验证码",
-      "response": {
-        "className": "ApiResultVOString",
-        "fieldMap": {
-          "ApiResultVOString": {
-            "className": "ApiResultVOString",
-            "type": "object",
-            "description": "统一响应实体类",
-            "fieldMap": {
-              "msg": {
-                "name": "msg",
-                "type": "string",
-                "description": "响应描述"
-              },
-              "code": {
-                "name": "code",
-                "type": "integer",
-                "description": "响应代码，成功返回：200",
-                "format": "int32"
-              },
-              "data": {
-                "name": "data",
-                "type": "string",
-                "description": "数据"
-              },
-              "service": {
-                "name": "service",
-                "type": "string",
-                "description": "服务名"
-              },
-              "successFlag": {
-                "name": "successFlag",
-                "type": "boolean",
-                "description": "服务器是否收到请求，只会返回 true"
-              }
-            }
-          }
-        }
-      }
-    },
-    "/sign/phone/forgetPassword": {
-      "path": "/sign/phone/forgetPassword",
-      "method": "post",
-      "tag": "登录注册-手机",
-      "group": "SignPhone",
-      "summary": "忘记密码",
-      "contentType": "application/json",
-      "requestBody": {
-        "className": "SignPhoneForgetPasswordDTO",
-        "type": "object",
-        "required": false,
-        "fieldMap": {
-          "originNewPassword": {
-            "name": "originNewPassword",
-            "type": "string",
-            "required": true,
-            "description": "前端加密之后的原始新密码"
-          },
-          "code": {
-            "name": "code",
-            "type": "string",
-            "required": true,
-            "description": "手机验证码",
-            "pattern": "^[0-9]{6}$"
-          },
-          "phone": {
-            "name": "phone",
-            "type": "string",
-            "required": true,
-            "description": "手机号码",
-            "pattern": "^(13[0-9]|14[01456879]|15[0-35-9]|16[2567]|17[0-8]|18[0-9]|19[0-35-9])\\d{8}$",
-            "maxLength": 100,
-            "minLength": 0
-          },
-          "newPassword": {
-            "name": "newPassword",
-            "type": "string",
-            "required": true,
-            "description": "前端加密之后的新密码"
-          }
-        },
-        "requiredFieldName": [
-          "code",
-          "newPassword",
-          "originNewPassword",
-          "phone"
-        ]
-      },
-      "response": {
-        "className": "ApiResultVOString",
-        "fieldMap": {
-          "ApiResultVOString": {
-            "className": "ApiResultVOString",
-            "type": "object",
-            "description": "统一响应实体类",
-            "fieldMap": {
-              "msg": {
-                "name": "msg",
-                "type": "string",
-                "description": "响应描述"
-              },
-              "code": {
-                "name": "code",
-                "type": "integer",
-                "description": "响应代码，成功返回：200",
-                "format": "int32"
-              },
-              "data": {
-                "name": "data",
-                "type": "string",
-                "description": "数据"
-              },
-              "service": {
-                "name": "service",
-                "type": "string",
-                "description": "服务名"
-              },
-              "successFlag": {
-                "name": "successFlag",
-                "type": "boolean",
-                "description": "服务器是否收到请求，只会返回 true"
-              }
-            }
-          }
-        }
-      }
-    },
-    "/sign/phone/updatePassword": {
-      "path": "/sign/phone/updatePassword",
-      "method": "post",
-      "tag": "登录注册-手机",
-      "group": "SignPhone",
-      "summary": "修改密码",
-      "contentType": "application/json",
-      "requestBody": {
-        "className": "SignPhoneUpdatePasswordDTO",
-        "type": "object",
-        "required": false,
-        "fieldMap": {
-          "originNewPassword": {
-            "name": "originNewPassword",
-            "type": "string",
-            "required": true,
-            "description": "前端加密之后的原始新密码"
-          },
-          "code": {
-            "name": "code",
-            "type": "string",
-            "required": true,
-            "description": "手机验证码",
-            "pattern": "^[0-9]{6}$"
-          },
-          "newPassword": {
-            "name": "newPassword",
-            "type": "string",
-            "required": true,
-            "description": "前端加密之后的新密码"
-          }
-        },
-        "requiredFieldName": [
-          "code",
-          "newPassword",
-          "originNewPassword"
-        ]
-      },
-      "response": {
-        "className": "ApiResultVOString",
-        "fieldMap": {
-          "ApiResultVOString": {
-            "className": "ApiResultVOString",
-            "type": "object",
-            "description": "统一响应实体类",
-            "fieldMap": {
-              "msg": {
-                "name": "msg",
-                "type": "string",
-                "description": "响应描述"
-              },
-              "code": {
-                "name": "code",
-                "type": "integer",
-                "description": "响应代码，成功返回：200",
-                "format": "int32"
-              },
-              "data": {
-                "name": "data",
-                "type": "string",
-                "description": "数据"
-              },
-              "service": {
-                "name": "service",
-                "type": "string",
-                "description": "服务名"
-              },
-              "successFlag": {
-                "name": "successFlag",
-                "type": "boolean",
-                "description": "服务器是否收到请求，只会返回 true"
-              }
-            }
-          }
-        }
-      }
-    },
-    "/sign/phone/sign/up": {
-      "path": "/sign/phone/sign/up",
-      "method": "post",
-      "tag": "登录注册-手机",
-      "group": "SignPhone",
-      "summary": "注册",
-      "contentType": "application/json",
-      "requestBody": {
-        "className": "SignPhoneSignUpDTO",
-        "type": "object",
-        "required": false,
-        "fieldMap": {
-          "password": {
-            "name": "password",
-            "type": "string",
-            "required": true,
-            "description": "前端加密之后的密码"
-          },
-          "code": {
-            "name": "code",
-            "type": "string",
-            "required": true,
-            "description": "手机验证码",
-            "pattern": "^[0-9]{6}$"
-          },
-          "phone": {
-            "name": "phone",
-            "type": "string",
-            "required": true,
-            "description": "手机号码",
-            "pattern": "^(13[0-9]|14[01456879]|15[0-35-9]|16[2567]|17[0-8]|18[0-9]|19[0-35-9])\\d{8}$",
-            "maxLength": 100,
-            "minLength": 0
-          },
-          "originPassword": {
-            "name": "originPassword",
-            "type": "string",
-            "required": true,
-            "description": "前端加密之后的原始密码"
-          }
-        },
-        "requiredFieldName": [
-          "code",
-          "originPassword",
-          "password",
-          "phone"
-        ]
-      },
-      "response": {
-        "className": "ApiResultVOString",
-        "fieldMap": {
-          "ApiResultVOString": {
-            "className": "ApiResultVOString",
-            "type": "object",
-            "description": "统一响应实体类",
-            "fieldMap": {
-              "msg": {
-                "name": "msg",
-                "type": "string",
-                "description": "响应描述"
-              },
-              "code": {
-                "name": "code",
-                "type": "integer",
-                "description": "响应代码，成功返回：200",
-                "format": "int32"
-              },
-              "data": {
-                "name": "data",
-                "type": "string",
-                "description": "数据"
-              },
-              "service": {
-                "name": "service",
-                "type": "string",
-                "description": "服务名"
-              },
-              "successFlag": {
-                "name": "successFlag",
-                "type": "boolean",
-                "description": "服务器是否收到请求，只会返回 true"
-              }
-            }
-          }
-        }
-      }
-    },
-    "/sign/phone/forgetPassword/sendCode": {
-      "path": "/sign/phone/forgetPassword/sendCode",
-      "method": "post",
-      "tag": "登录注册-手机",
-      "group": "SignPhone",
-      "summary": "忘记密码-发送验证码",
-      "contentType": "application/json",
-      "requestBody": {
-        "className": "PhoneNotBlankDTO",
-        "type": "object",
-        "required": false,
-        "fieldMap": {
-          "phone": {
-            "name": "phone",
-            "type": "string",
-            "required": true,
-            "description": "手机号码",
-            "pattern": "^(13[0-9]|14[01456879]|15[0-35-9]|16[2567]|17[0-8]|18[0-9]|19[0-35-9])\\d{8}$",
-            "maxLength": 100,
-            "minLength": 0
-          }
-        },
-        "requiredFieldName": [
-          "phone"
-        ]
-      },
-      "response": {
-        "className": "ApiResultVOString",
-        "fieldMap": {
-          "ApiResultVOString": {
-            "className": "ApiResultVOString",
-            "type": "object",
-            "description": "统一响应实体类",
-            "fieldMap": {
-              "msg": {
-                "name": "msg",
-                "type": "string",
-                "description": "响应描述"
-              },
-              "code": {
-                "name": "code",
-                "type": "integer",
-                "description": "响应代码，成功返回：200",
-                "format": "int32"
-              },
-              "data": {
-                "name": "data",
-                "type": "string",
-                "description": "数据"
-              },
-              "service": {
-                "name": "service",
-                "type": "string",
-                "description": "服务名"
-              },
-              "successFlag": {
-                "name": "successFlag",
-                "type": "boolean",
-                "description": "服务器是否收到请求，只会返回 true"
-              }
-            }
-          }
-        }
-      }
-    },
-    "/sign/phone/updateAccount": {
-      "path": "/sign/phone/updateAccount",
-      "method": "post",
-      "tag": "登录注册-手机",
-      "group": "SignPhone",
-      "summary": "修改手机",
-      "contentType": "application/json",
-      "requestBody": {
-        "className": "SignPhoneUpdateAccountDTO",
-        "type": "object",
-        "required": false,
-        "fieldMap": {
-          "newPhone": {
-            "name": "newPhone",
-            "type": "string",
-            "required": true,
-            "description": "新手机号码",
-            "pattern": "^(13[0-9]|14[01456879]|15[0-35-9]|16[2567]|17[0-8]|18[0-9]|19[0-35-9])\\d{8}$",
-            "maxLength": 100,
-            "minLength": 0
-          },
-          "oldPhoneCode": {
-            "name": "oldPhoneCode",
-            "type": "string",
-            "required": true,
-            "description": "旧手机验证码",
-            "pattern": "^[0-9]{6}$"
-          },
-          "newPhoneCode": {
-            "name": "newPhoneCode",
-            "type": "string",
-            "required": true,
-            "description": "新手机验证码",
-            "pattern": "^[0-9]{6}$"
-          }
-        },
-        "requiredFieldName": [
-          "newPhone",
-          "newPhoneCode",
-          "oldPhoneCode"
-        ]
-      },
-      "response": {
-        "className": "ApiResultVOString",
-        "fieldMap": {
-          "ApiResultVOString": {
-            "className": "ApiResultVOString",
-            "type": "object",
-            "description": "统一响应实体类",
-            "fieldMap": {
-              "msg": {
-                "name": "msg",
-                "type": "string",
-                "description": "响应描述"
-              },
-              "code": {
-                "name": "code",
-                "type": "integer",
-                "description": "响应代码，成功返回：200",
-                "format": "int32"
-              },
-              "data": {
-                "name": "data",
-                "type": "string",
-                "description": "数据"
-              },
-              "service": {
-                "name": "service",
-                "type": "string",
-                "description": "服务名"
-              },
-              "successFlag": {
-                "name": "successFlag",
-                "type": "boolean",
-                "description": "服务器是否收到请求，只会返回 true"
-              }
-            }
-          }
-        }
-      }
-    },
-    "/sign/phone/signDelete": {
-      "path": "/sign/phone/signDelete",
-      "method": "post",
-      "tag": "登录注册-手机",
-      "group": "SignPhone",
-      "summary": "账号注销",
-      "contentType": "application/json",
-      "requestBody": {
-        "className": "NotBlankCodeDTO",
-        "type": "object",
-        "required": false,
-        "fieldMap": {
-          "code": {
-            "name": "code",
-            "type": "string",
-            "required": true,
-            "description": "验证码",
-            "pattern": "^[0-9]{6}$"
-          }
-        },
-        "requiredFieldName": [
-          "code"
-        ]
-      },
-      "response": {
-        "className": "ApiResultVOString",
-        "fieldMap": {
-          "ApiResultVOString": {
-            "className": "ApiResultVOString",
-            "type": "object",
-            "description": "统一响应实体类",
-            "fieldMap": {
-              "msg": {
-                "name": "msg",
-                "type": "string",
-                "description": "响应描述"
-              },
-              "code": {
-                "name": "code",
-                "type": "integer",
-                "description": "响应代码，成功返回：200",
-                "format": "int32"
-              },
-              "data": {
-                "name": "data",
-                "type": "string",
-                "description": "数据"
-              },
-              "service": {
-                "name": "service",
-                "type": "string",
-                "description": "服务名"
-              },
-              "successFlag": {
-                "name": "successFlag",
-                "type": "boolean",
-                "description": "服务器是否收到请求，只会返回 true"
-              }
-            }
-          }
-        }
-      }
-    },
-    "/sign/phone/sign/in/password": {
-      "path": "/sign/phone/sign/in/password",
-      "method": "post",
-      "tag": "登录注册-手机",
-      "group": "SignPhone",
-      "summary": "手机账号密码登录",
-      "contentType": "application/json",
-      "requestBody": {
-        "className": "SignPhoneSignInPasswordDTO",
-        "type": "object",
-        "required": false,
-        "fieldMap": {
-          "password": {
-            "name": "password",
-            "type": "string",
-            "required": true,
-            "description": "密码"
-          },
-          "phone": {
-            "name": "phone",
-            "type": "string",
-            "required": true,
-            "description": "手机号码",
-            "pattern": "^(13[0-9]|14[01456879]|15[0-35-9]|16[2567]|17[0-8]|18[0-9]|19[0-35-9])\\d{8}$",
-            "maxLength": 100,
-            "minLength": 0
-          }
-        },
-        "requiredFieldName": [
-          "password",
-          "phone"
-        ]
-      },
-      "response": {
-        "className": "ApiResultVOString",
-        "fieldMap": {
-          "ApiResultVOString": {
-            "className": "ApiResultVOString",
-            "type": "object",
-            "description": "统一响应实体类",
-            "fieldMap": {
-              "msg": {
-                "name": "msg",
-                "type": "string",
-                "description": "响应描述"
-              },
-              "code": {
-                "name": "code",
-                "type": "integer",
-                "description": "响应代码，成功返回：200",
-                "format": "int32"
-              },
-              "data": {
-                "name": "data",
-                "type": "string",
-                "description": "数据"
-              },
-              "service": {
-                "name": "service",
-                "type": "string",
-                "description": "服务名"
-              },
-              "successFlag": {
-                "name": "successFlag",
-                "type": "boolean",
-                "description": "服务器是否收到请求，只会返回 true"
-              }
-            }
-          }
-        }
       }
     }
   },

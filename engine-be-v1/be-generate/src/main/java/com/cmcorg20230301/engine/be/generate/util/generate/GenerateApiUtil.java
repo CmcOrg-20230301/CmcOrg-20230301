@@ -197,6 +197,10 @@ public class GenerateApiUtil {
 
         BeApi.BeApiSchema response = (BeApi.BeApiSchema)beApi.getResponse();
 
+        if (response == null) {
+            return;
+        }
+
         boolean apiResultVOFlag = response.getClassName().startsWith(ApiResultVO.class.getSimpleName());
 
         if (apiResultVOFlag) {
