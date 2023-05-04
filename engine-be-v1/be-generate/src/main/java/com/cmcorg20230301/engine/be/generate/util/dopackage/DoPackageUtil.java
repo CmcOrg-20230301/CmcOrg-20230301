@@ -176,7 +176,30 @@ public class DoPackageUtil {
 
             timeNumber = System.currentTimeMillis();
 
-            sftp.delDir(VITE_REMOTE_PATH); // 先删除，再上传
+            String configFileName = "config.js";
+
+            for (String item : sftp.ls(VITE_REMOTE_PATH)) {
+
+                if (configFileName.equals(item)) {
+                    continue; // 不做处理
+                }
+
+                String fullFileName = VITE_REMOTE_PATH + "/" + item;
+
+                if (sftp.isDir(fullFileName)) {
+
+                    sftp.delDir(fullFileName); // 删除，目录
+
+                } else {
+
+                    sftp.delFile(fullFileName); // 删除：文件
+
+                }
+
+            }
+
+            // 移除该文件，目的：不覆盖服务器上的文件
+            FileUtil.del(file.getPath() + "/" + configFileName);
 
             sftp.syncUpload(file, VITE_REMOTE_PATH);
 
