@@ -1,5 +1,6 @@
 package com.cmcorg20230301.engine.be.security.util;
 
+import cn.hutool.core.io.IoUtil;
 import com.cmcorg20230301.engine.be.security.exception.BaseBizCodeEnum;
 import com.cmcorg20230301.engine.be.security.exception.BaseException;
 import com.cmcorg20230301.engine.be.security.model.vo.ApiResultVO;
@@ -7,6 +8,7 @@ import lombok.SneakyThrows;
 
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URLEncoder;
 
@@ -66,6 +68,24 @@ public class ResponseUtil {
             .setHeader("Content-Disposition", "attachment;filename=" + URLEncoder.encode(fileName, "UTF-8") + ".xlsx");
 
         return response.getOutputStream();
+
+    }
+
+    /**
+     * 把流复制给 response，然后返回给调用者
+     */
+    @SneakyThrows
+    public static void flush(HttpServletResponse response, InputStream inputStream) {
+
+        ServletOutputStream outputStream = response.getOutputStream();
+
+        IoUtil.copy(inputStream, outputStream);
+
+        outputStream.flush();
+
+        IoUtil.close(inputStream);
+
+        IoUtil.close(outputStream);
 
     }
 

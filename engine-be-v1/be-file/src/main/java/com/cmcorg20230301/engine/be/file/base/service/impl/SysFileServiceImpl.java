@@ -1,6 +1,5 @@
 package com.cmcorg20230301.engine.be.file.base.service.impl;
 
-import cn.hutool.core.io.IoUtil;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.cmcorg20230301.engine.be.file.base.mapper.SysFileMapper;
 import com.cmcorg20230301.engine.be.file.base.model.entity.SysFileDO;
@@ -12,10 +11,10 @@ import com.cmcorg20230301.engine.be.model.model.vo.LongObjectMapVO;
 import com.cmcorg20230301.engine.be.security.exception.BaseBizCodeEnum;
 import com.cmcorg20230301.engine.be.security.model.dto.SysFileUploadDTO;
 import com.cmcorg20230301.engine.be.security.model.vo.ApiResultVO;
+import com.cmcorg20230301.engine.be.security.util.ResponseUtil;
 import lombok.SneakyThrows;
 import org.springframework.stereotype.Service;
 
-import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
 import java.io.InputStream;
 
@@ -47,15 +46,8 @@ public class SysFileServiceImpl extends ServiceImpl<SysFileMapper, SysFileDO> im
             ApiResultVO.error("操作失败：文件流获取失败");
         }
 
-        ServletOutputStream outputStream = response.getOutputStream();
-
-        IoUtil.copy(inputStream, outputStream);
-
-        outputStream.flush();
-
-        IoUtil.close(inputStream);
-
-        IoUtil.close(outputStream);
+        // 推送
+        ResponseUtil.flush(response, inputStream);
 
     }
 
