@@ -4,6 +4,7 @@ import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.io.IoUtil;
 import com.cmcorg20230301.engine.be.util.util.MyMapUtil;
 import io.minio.*;
+import io.minio.messages.DeleteError;
 import io.minio.messages.DeleteObject;
 import lombok.SneakyThrows;
 import org.jetbrains.annotations.Nullable;
@@ -74,7 +75,15 @@ public class FileMinioUtil {
 
         }
 
-        minioClient.removeObjects(RemoveObjectsArgs.builder().bucket(bucketName).objects(objectList).build());
+        Iterable<Result<DeleteError>> resultIterable =
+            minioClient.removeObjects(RemoveObjectsArgs.builder().bucket(bucketName).objects(objectList).build());
+
+        // 备注：这里必须循环一下，才会进行删除
+        while (resultIterable.iterator().hasNext()) {
+
+            resultIterable.iterator().next();
+
+        }
 
     }
 
