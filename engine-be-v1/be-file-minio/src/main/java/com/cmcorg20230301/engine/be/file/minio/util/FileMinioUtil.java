@@ -1,6 +1,7 @@
 package com.cmcorg20230301.engine.be.file.minio.util;
 
 import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.io.IoUtil;
 import com.cmcorg20230301.engine.be.util.util.MyMapUtil;
 import io.minio.*;
 import io.minio.messages.DeleteObject;
@@ -35,8 +36,12 @@ public class FileMinioUtil {
     @SneakyThrows
     public static void upload(String bucketName, String objectName, MultipartFile file) {
 
+        InputStream inputStream = file.getInputStream();
+
         minioClient.putObject(PutObjectArgs.builder().bucket(bucketName).object(objectName)
-            .stream(file.getInputStream(), -1, ObjectWriteArgs.MAX_PART_SIZE).build());
+            .stream(inputStream, -1, ObjectWriteArgs.MAX_PART_SIZE).build());
+
+        IoUtil.close(inputStream);
 
     }
 

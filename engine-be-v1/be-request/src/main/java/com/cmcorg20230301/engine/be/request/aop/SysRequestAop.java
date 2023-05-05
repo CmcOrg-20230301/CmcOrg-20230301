@@ -26,6 +26,7 @@ import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
+import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
@@ -132,11 +133,15 @@ public class SysRequestAop {
 
         sysRequestDO.setRequestParam(StrUtil.maxLength(strBuilder.toString(), STR_MAX_LENGTH));
 
-        Object object;
+        Object object = null;
 
         try {
 
-            object = proceedingJoinPoint.proceed(); // 执行方法，备注：如果执行方法时抛出了异常，catch可以捕获到
+            if (((MethodSignature)proceedingJoinPoint.getSignature()).getReturnType() != void.class) {
+
+                object = proceedingJoinPoint.proceed(); // 执行方法，备注：如果执行方法时抛出了异常，catch可以捕获到
+
+            }
 
         } catch (Throwable e) {
 

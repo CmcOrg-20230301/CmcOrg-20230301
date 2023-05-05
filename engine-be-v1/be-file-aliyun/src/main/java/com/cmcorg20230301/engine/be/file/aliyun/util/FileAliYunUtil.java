@@ -1,6 +1,7 @@
 package com.cmcorg20230301.engine.be.file.aliyun.util;
 
 import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.io.IoUtil;
 import com.aliyun.oss.OSS;
 import com.aliyun.oss.model.DeleteObjectsRequest;
 import lombok.SneakyThrows;
@@ -33,7 +34,11 @@ public class FileAliYunUtil {
     @SneakyThrows
     public static void upload(String bucketName, String objectName, MultipartFile file) {
 
-        oss.putObject(bucketName, objectName, file.getInputStream());
+        InputStream inputStream = file.getInputStream();
+
+        oss.putObject(bucketName, objectName, inputStream);
+
+        IoUtil.close(inputStream);
 
     }
 
