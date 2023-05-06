@@ -2,18 +2,13 @@ package com.cmcorg20230301.engine.be.file.minio.util;
 
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.io.IoUtil;
-import com.cmcorg20230301.engine.be.util.util.MyMapUtil;
 import io.minio.*;
-import io.minio.messages.DeleteError;
-import io.minio.messages.DeleteObject;
 import lombok.SneakyThrows;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Set;
 
 /**
@@ -67,21 +62,9 @@ public class FileMinioUtil {
             return;
         }
 
-        List<DeleteObject> objectList = new ArrayList<>(MyMapUtil.getInitialCapacity(objectNameSet.size()));
-
         for (String item : objectNameSet) {
 
-            objectList.add(new DeleteObject(item));
-
-        }
-
-        Iterable<Result<DeleteError>> resultIterable =
-            minioClient.removeObjects(RemoveObjectsArgs.builder().bucket(bucketName).objects(objectList).build());
-
-        // 备注：这里必须循环一下，才会进行删除
-        while (resultIterable.iterator().hasNext()) {
-
-            resultIterable.iterator().next();
+            minioClient.removeObject(RemoveObjectArgs.builder().bucket(bucketName).object(item).build());
 
         }
 
