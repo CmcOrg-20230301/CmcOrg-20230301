@@ -9,7 +9,7 @@
         <version>2023.3.1</version>
     </parent>
 
-    <artifactId>be-alipay</artifactId>
+    <artifactId>be-pay-ali</artifactId>
     <description>支付宝支付相关</description>
 
     <dependencies>

@@ -1,4 +1,4 @@
-package com.cmcorg20230301.engine.be.alipay.util;
+package com.cmcorg20230301.engine.be.pay.ali.util;
 
 import com.alipay.v3.ApiClient;
 import com.alipay.v3.ApiException;
@@ -10,10 +10,10 @@ import lombok.SneakyThrows;
 import org.springframework.stereotype.Component;
 
 /**
- * 支付宝支付工具类
+ * 支付：支付宝工具类
  */
 @Component
-public class AliPayUtil {
+public class PayAliUtil {
 
     @SneakyThrows
     public static void main(String[] args) {

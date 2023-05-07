@@ -62,10 +62,18 @@
         <module>be-file</module>
         <module>be-file-aliyun</module>
         <module>be-file-minio</module>
+        <module>be-pay-ali</module>
     </modules>
 
     <dependencyManagement>
         <dependencies>
+
+            <!-- be-pay-ali -->
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>be-pay-ali</artifactId>
+                <version>${project.version}</version>
+            </dependency>
 
             <!-- be-file-minio -->
             <dependency>
