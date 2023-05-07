@@ -416,14 +416,14 @@
             <dependency>
                 <groupId>com.tencentcloudapi</groupId>
                 <artifactId>tencentcloud-sdk-java-sms</artifactId>
-                <version>3.1.739</version>
+                <version>3.1.749</version>
             </dependency>
 
             <!-- 支付宝支付，获取最新版本号：https://github.com/alipay/alipay-sdk-java-all -->
             <dependency>
                 <groupId>com.alipay.sdk</groupId>
                 <artifactId>alipay-sdk-java-v3</artifactId>
-                <version>1.0.2.ALL</version>
+                <version>2.4.0.ALL</version>
             </dependency>
 
             <!-- 邮件 -->
