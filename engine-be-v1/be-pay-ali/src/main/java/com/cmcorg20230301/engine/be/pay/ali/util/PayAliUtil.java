@@ -92,6 +92,7 @@ public class PayAliUtil {
 
         }
 
+        // 备注：这里返回的是 html的 form表单格式
         return response.getBody();
 
     }
