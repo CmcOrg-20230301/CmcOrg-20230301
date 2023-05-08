@@ -24,7 +24,7 @@ public class PayUtil {
 
         if (sysPayProperties.getBasePayType() == 1) { // 1 支付宝 2 微信 3 云闪付
 
-            PayAliUtil.pay(dto);
+           return PayAliUtil.pay(dto);
 
         }
 
