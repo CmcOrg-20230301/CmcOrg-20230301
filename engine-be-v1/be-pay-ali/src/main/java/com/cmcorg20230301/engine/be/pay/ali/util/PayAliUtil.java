@@ -1,13 +1,25 @@
 package com.cmcorg20230301.engine.be.pay.ali.util;
 
-import com.alipay.v3.ApiClient;
-import com.alipay.v3.ApiException;
-import com.alipay.v3.Configuration;
-import com.alipay.v3.api.AlipayTradeApi;
-import com.alipay.v3.model.*;
-import com.alipay.v3.util.model.AlipayConfig;
+import cn.hutool.core.date.DateUtil;
+import cn.hutool.core.lang.Assert;
+import cn.hutool.core.util.BooleanUtil;
+import cn.hutool.json.JSONObject;
+import cn.hutool.json.JSONUtil;
+import com.alipay.api.AlipayClient;
+import com.alipay.api.AlipayConfig;
+import com.alipay.api.DefaultAlipayClient;
+import com.alipay.api.request.AlipayTradePagePayRequest;
+import com.alipay.api.request.AlipayTradeQueryRequest;
+import com.alipay.api.response.AlipayTradePagePayResponse;
+import com.alipay.api.response.AlipayTradeQueryResponse;
+import com.cmcorg20230301.engine.be.model.model.dto.PayDTO;
+import com.cmcorg20230301.engine.be.pay.ali.properties.PayAliProperties;
+import com.cmcorg20230301.engine.be.security.model.enums.SysPayTradeStatusEnum;
+import com.cmcorg20230301.engine.be.security.model.vo.ApiResultVO;
 import lombok.SneakyThrows;
 import org.springframework.stereotype.Component;
+
+import java.util.Date;
 
 /**
  * 支付：支付宝工具类
@@ -15,51 +27,103 @@ import org.springframework.stereotype.Component;
 @Component
 public class PayAliUtil {
 
+    private static PayAliProperties payAliProperties;
+
+    public PayAliUtil(PayAliProperties payAliProperties) {
+
+        PayAliUtil.payAliProperties = payAliProperties;
+
+    }
+
+    public static AlipayConfig getAlipayConfig() {
+
+        AlipayConfig alipayConfig = new AlipayConfig();
+
+        alipayConfig.setServerUrl(payAliProperties.getServerUrl());
+        alipayConfig.setAppId(payAliProperties.getAppId());
+        alipayConfig.setPrivateKey(payAliProperties.getPrivateKey());
+        alipayConfig.setAlipayPublicKey(payAliProperties.getPlatformPublicKey());
+
+        return alipayConfig;
+
+    }
+
+    /**
+     * 支付
+     */
     @SneakyThrows
-    public static void main(String[] args) {
+    public static String pay(PayDTO dto) {
 
-        ApiClient defaultClient = Configuration.getDefaultApiClient();
-        defaultClient.setBasePath("https://openapi.alipay.com");
-        // 设置alipayConfig参数（全局设置一次）
-        AlipayConfig config = new AlipayConfig();
-        config.setAppId("app_id");
-        config.setPrivateKey("private_key");
-        // 密钥模式
-        config.setAlipayPublicKey("alipay_public_key");
-        // 证书模式
-        // config.setAppCertPath("../appCertPublicKey.crt");
-        // config.setAlipayPublicCertPath("../alipayCertPublicKey_RSA2.crt");
-        // config.setRootCertPath("../alipayRootCert.crt");
-        config.setEncryptKey("encrypt_key");
-        defaultClient.setAlipayConfig(config);
+        Assert.notBlank(dto.getOutTradeNo());
+        Assert.notNull(dto.getTotalAmount());
+        Assert.notBlank(dto.getSubject());
 
-        //实例化客户端
-        AlipayTradeApi api = new AlipayTradeApi();
-        //调用 alipay.trade.pay
-        AlipayTradePayModel alipayTradePayModel =
-            new AlipayTradePayModel().outTradeNo("20210817010101001").totalAmount("0.01").subject("测试商品")
-                .scene("bar_code").authCode("28763443825664394");
-        //发起调用
-        try {
-            AlipayTradePayResponseModel response = api.pay(alipayTradePayModel);
-        } catch (ApiException e) {
-            AlipayTradePayDefaultResponse errorObject = (AlipayTradePayDefaultResponse)e.getErrorObject();
-            if (errorObject != null && errorObject.getActualInstance() instanceof CommonErrorType) {
-                //获取公共错误码
-                CommonErrorType actualInstance = errorObject.getCommonErrorType();
-                System.out.println("CommonErrorType:" + actualInstance.toString());
-            } else if (errorObject != null && errorObject
-                .getActualInstance() instanceof AlipayTradePayErrorResponseModel) {
-                //获取业务错误码
-                AlipayTradePayErrorResponseModel actualInstance = errorObject.getAlipayTradePayErrorResponseModel();
-                System.out.println("AlipayTradePayErrorResponseModel:" + actualInstance.toString());
-            } else {
-                //获取其他报错（如加验签失败、http请求失败等）
-                System.err.println("Status code: " + e.getCode());
-                System.err.println("Reason: " + e.getResponseBody());
-                System.err.println("Response headers: " + e.getResponseHeaders());
-            }
+        int compare = DateUtil.compare(dto.getTimeExpire(), new Date());
+
+        if (compare < 0) {
+            ApiResultVO.error("操作失败：支付过期时间晚于当前时间");
         }
+
+        AlipayClient alipayClient = new DefaultAlipayClient(getAlipayConfig());
+
+        AlipayTradePagePayRequest aliPayRequest = new AlipayTradePagePayRequest();
+        aliPayRequest.setReturnUrl(payAliProperties.getReturnUrl());
+        aliPayRequest.setNotifyUrl(payAliProperties.getNotifyUrl());
+
+        JSONObject bizContent = JSONUtil.createObj();
+        bizContent.set("out_trade_no", dto.getOutTradeNo());
+        bizContent.set("total_amount", dto.getTotalAmount());
+        bizContent.set("subject", dto.getSubject());
+        bizContent.set("body", dto.getBody());
+        bizContent.set("product_code", "FAST_INSTANT_TRADE_PAY");
+        bizContent.set("time_expire", DateUtil.formatDateTime(dto.getTimeExpire()));
+
+        aliPayRequest.setBizContent(bizContent.toString());
+
+        AlipayTradePagePayResponse response = alipayClient.pageExecute(aliPayRequest);
+
+        if (BooleanUtil.isFalse(response.isSuccess())) {
+
+            // code，例如：40004
+            // msg，例如：Business Failed
+            // sub_code，例如：ACQ.TRADE_HAS_SUCCESS
+            // sub_msg，例如：交易已被支付
+            ApiResultVO.error("支付宝支付失败：" + response.getSubMsg());
+
+        }
+
+        return response.getBody();
+
+    }
+
+    /**
+     * 交易查询接口
+     *
+     * @param outTradeNo 商户订单号，商户网站订单系统中唯一订单号，必填
+     */
+    @SneakyThrows
+    public static SysPayTradeStatusEnum query(String outTradeNo) {
+
+        Assert.notBlank(outTradeNo);
+
+        AlipayClient alipayClient = new DefaultAlipayClient(getAlipayConfig());
+
+        AlipayTradeQueryRequest request = new AlipayTradeQueryRequest();
+
+        JSONObject bizContent = new JSONObject();
+        bizContent.set("out_trade_no", outTradeNo);
+
+        request.setBizContent(bizContent.toString());
+
+        AlipayTradeQueryResponse response = alipayClient.execute(request);
+
+        if (BooleanUtil.isFalse(response.isSuccess())) {
+
+            ApiResultVO.error("支付宝查询失败：" + response.getSubMsg());
+
+        }
+
+        return SysPayTradeStatusEnum.getByCode(response.getTradeStatus());
 
     }
 

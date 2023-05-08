@@ -9,15 +9,15 @@
         <version>2023.3.1</version>
     </parent>
 
-    <artifactId>be-pay-ali</artifactId>
-    <description>支付宝支付相关</description>
+    <artifactId>be-pay</artifactId>
+    <description>支付相关</description>
 
     <dependencies>
 
-        <!-- 支付宝支付，获取最新版本号：https://github.com/alipay/alipay-sdk-java-all -->
+        <!-- be-pay-ali -->
         <dependency>
-            <groupId>com.alipay.sdk</groupId>
-            <artifactId>alipay-sdk-java</artifactId>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>be-pay-ali</artifactId>
         </dependency>
 
         <!-- be-security -->

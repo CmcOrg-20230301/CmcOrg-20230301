@@ -14,6 +14,18 @@
 
     <dependencies>
 
+        <!-- be-pay-ali -->
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>be-pay-ali</artifactId>
+        </dependency>
+
+        <!-- be-pay -->
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>be-pay</artifactId>
+        </dependency>
+
         <!-- be-file-minio -->
         <dependency>
             <groupId>${project.groupId}</groupId>

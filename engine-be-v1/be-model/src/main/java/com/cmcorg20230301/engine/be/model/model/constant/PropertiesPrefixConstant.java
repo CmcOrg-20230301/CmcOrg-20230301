@@ -31,4 +31,8 @@ public interface PropertiesPrefixConstant {
 
     String FILE_MINIO = FILE + ".minio"; // minio文件相关
 
+    String PAY = PRE_BE + "pay"; // 支付相关
+
+    String PAY_ALI = PAY + ".ali"; // 支付宝支付相关
+
 }

@@ -1,4 +1,4 @@
-package com.cmcorg20230301.engine.be.file.base.properties;
+package com.cmcorg20230301.engine.be.pay.base.properties;
 
 import com.cmcorg20230301.engine.be.model.model.constant.PropertiesPrefixConstant;
 import lombok.Data;
@@ -8,13 +8,13 @@ import org.springframework.stereotype.Component;
 
 @Data
 @Component
-@ConfigurationProperties(prefix = PropertiesPrefixConstant.FILE)
+@ConfigurationProperties(prefix = PropertiesPrefixConstant.PAY)
 @RefreshScope
-public class SysFileProperties {
+public class SysPayProperties {
 
     /**
-     * 头像存放位置：1 阿里云 2 minio
+     * 基础支付方式：1 支付宝 2 微信 3 云闪付
      */
-    private Integer avatarStorageType;
+    private Integer basePayType;
 
 }
