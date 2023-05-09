@@ -35,4 +35,6 @@ public interface PropertiesPrefixConstant {
 
     String PAY_ALI = PAY + ".ali"; // 支付宝支付相关
 
+    String PAY_WX = PAY + ".wx"; // 微信支付相关
+
 }

@@ -64,10 +64,18 @@
         <module>be-file-minio</module>
         <module>be-pay</module>
         <module>be-pay-ali</module>
+        <module>be-pay-wx</module>
     </modules>
 
     <dependencyManagement>
         <dependencies>
+
+            <!-- be-pay-wx -->
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>be-pay-wx</artifactId>
+                <version>${project.version}</version>
+            </dependency>
 
             <!-- be-pay-ali -->
             <dependency>
@@ -349,6 +357,13 @@
                 <groupId>com.alibaba.cloud</groupId>
                 <artifactId>spring-cloud-starter-alibaba-nacos-config</artifactId>
                 <version>2021.0.5.0</version>
+            </dependency>
+
+            <!-- 微信支付，获取最新版本号：https://github.com/wechatpay-apiv3/wechatpay-java -->
+            <dependency>
+                <groupId>com.github.wechatpay-apiv3</groupId>
+                <artifactId>wechatpay-java</artifactId>
+                <version>0.2.7</version>
             </dependency>
 
             <!-- 阿里云oss文件存储 -->

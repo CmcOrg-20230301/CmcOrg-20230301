@@ -1,6 +1,6 @@
-package com.cmcorg20230301.engine.be.pay.ali.controller;
+package com.cmcorg20230301.engine.be.pay.wx.controller;
 
-import com.cmcorg20230301.engine.be.pay.ali.service.PayAliService;
+import com.cmcorg20230301.engine.be.pay.wx.service.PayWxService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -12,11 +12,11 @@ import javax.servlet.http.HttpServletRequest;
 
 @RestController
 @RequestMapping(value = "/sys/pay/ali")
-@Tag(name = "支付-支付宝")
-public class PayAliController {
+@Tag(name = "支付-微信")
+public class PayWxController {
 
     @Resource
-    PayAliService baseService;
+    PayWxService baseService;
 
     @Operation(summary = "服务器异步通知，备注：第三方应用调用")
     @PostMapping(value = "/notifyCallBack")
