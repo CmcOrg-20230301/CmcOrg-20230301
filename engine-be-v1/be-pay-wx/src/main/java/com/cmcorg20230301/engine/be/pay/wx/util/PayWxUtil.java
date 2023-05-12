@@ -8,6 +8,7 @@ import com.cmcorg20230301.engine.be.security.model.enums.SysPayTradeStatusEnum;
 import com.cmcorg20230301.engine.be.security.model.vo.ApiResultVO;
 import com.wechat.pay.java.core.RSAConfig;
 import com.wechat.pay.java.service.payments.h5.H5Service;
+import com.wechat.pay.java.service.payments.h5.model.Amount;
 import com.wechat.pay.java.service.payments.h5.model.PrepayRequest;
 import com.wechat.pay.java.service.payments.h5.model.PrepayResponse;
 import com.wechat.pay.java.service.payments.h5.model.QueryOrderByOutTradeNoRequest;
@@ -15,6 +16,7 @@ import com.wechat.pay.java.service.payments.model.Transaction;
 import lombok.SneakyThrows;
 import org.springframework.stereotype.Component;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 /**
@@ -76,6 +78,18 @@ public class PayWxUtil {
         }
 
         PrepayRequest request = new PrepayRequest();
+
+        Amount amount = new Amount();
+
+        amount.setTotal(dto.getTotalAmount().multiply(BigDecimal.valueOf(100)).intValue());
+
+        request.setAmount(amount);
+
+        request.setAppid("wxa9d9651ae******");
+        request.setMchid("190000****");
+        request.setDescription(dto.getSubject());
+        request.setNotifyUrl("https://notify_url");
+        request.setOutTradeNo(dto.getOutTradeNo());
 
         // 调用接口
         PrepayResponse prepayResponse = getH5Service().prepay(request);

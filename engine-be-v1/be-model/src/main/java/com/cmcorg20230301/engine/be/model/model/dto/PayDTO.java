@@ -12,7 +12,7 @@ public class PayDTO {
     @Schema(description = "商户订单号，商户网站订单系统中唯一订单号，必填")
     private String outTradeNo;
 
-    @Schema(description = "付款金额，必填")
+    @Schema(description = "付款金额，单位为元，必填")
     private BigDecimal totalAmount;
 
     @Schema(description = "订单名称，必填")
