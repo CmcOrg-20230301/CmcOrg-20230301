@@ -14,9 +14,9 @@ import java.util.Set;
 @Getter
 public enum SysPayTradeStatusEnum {
 
-    WAIT_BUYER_PAY("交易创建，等待买家付款", CollUtil.newHashSet("WAIT_BUYER_PAY")), //
-    TRADE_CLOSED("未付款交易超时关闭，或支付完成后全额退款", CollUtil.newHashSet("TRADE_CLOSED")), //
-    TRADE_SUCCESS("交易支付成功", CollUtil.newHashSet("TRADE_SUCCESS")), //
+    WAIT_BUYER_PAY("交易创建，等待买家付款", CollUtil.newHashSet("WAIT_BUYER_PAY", "NOTPAY")), //
+    TRADE_CLOSED("未付款交易超时关闭，或支付完成后全额退款", CollUtil.newHashSet("TRADE_CLOSED", "REFUND", "CLOSED")), //
+    TRADE_SUCCESS("交易支付成功", CollUtil.newHashSet("TRADE_SUCCESS", "SUCCESS")), //
     TRADE_FINISHED("交易结束，不可退款", CollUtil.newHashSet("TRADE_FINISHED")), //
 
     ;

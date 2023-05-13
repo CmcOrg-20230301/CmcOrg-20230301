@@ -11,7 +11,7 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
 @RestController
-@RequestMapping(value = "/sys/pay/ali")
+@RequestMapping(value = "/sys/pay/wx")
 @Tag(name = "支付-微信")
 public class PayWxController {
 

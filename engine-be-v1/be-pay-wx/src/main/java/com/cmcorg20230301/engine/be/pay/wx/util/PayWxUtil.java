@@ -1,22 +1,24 @@
 package com.cmcorg20230301.engine.be.pay.wx.util;
 
+import cn.hutool.core.date.DatePattern;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.lang.Assert;
+import com.cmcorg20230301.engine.be.model.model.constant.BaseConstant;
 import com.cmcorg20230301.engine.be.model.model.dto.PayDTO;
 import com.cmcorg20230301.engine.be.pay.wx.properties.PayWxProperties;
 import com.cmcorg20230301.engine.be.security.model.enums.SysPayTradeStatusEnum;
 import com.cmcorg20230301.engine.be.security.model.vo.ApiResultVO;
-import com.wechat.pay.java.core.RSAConfig;
-import com.wechat.pay.java.service.payments.h5.H5Service;
-import com.wechat.pay.java.service.payments.h5.model.Amount;
-import com.wechat.pay.java.service.payments.h5.model.PrepayRequest;
-import com.wechat.pay.java.service.payments.h5.model.PrepayResponse;
-import com.wechat.pay.java.service.payments.h5.model.QueryOrderByOutTradeNoRequest;
 import com.wechat.pay.java.service.payments.model.Transaction;
+import com.wechat.pay.java.service.payments.nativepay.NativePayService;
+import com.wechat.pay.java.service.payments.nativepay.model.Amount;
+import com.wechat.pay.java.service.payments.nativepay.model.PrepayRequest;
+import com.wechat.pay.java.service.payments.nativepay.model.PrepayResponse;
+import com.wechat.pay.java.service.payments.nativepay.model.QueryOrderByOutTradeNoRequest;
 import lombok.SneakyThrows;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.math.BigDecimal;
+import javax.annotation.Resource;
 import java.util.Date;
 
 /**
@@ -25,40 +27,18 @@ import java.util.Date;
 @Component
 public class PayWxUtil {
 
-    /**
-     * 商户号
-     */
-    public static String merchantId = "";
-
-    /**
-     * 商户API私钥路径
-     */
-    public static String privateKeyPath = "";
-
-    /**
-     * 商户证书序列号
-     */
-    public static String merchantSerialNumber = "";
-
-    public static String wechatPayCertificatePath = "";
-
     private static PayWxProperties payWxProperties;
 
-    public PayWxUtil(PayWxProperties payWxProperties) {
-
+    @Resource
+    public void setPayWxProperties(PayWxProperties payWxProperties) {
         PayWxUtil.payWxProperties = payWxProperties;
-
     }
 
-    public static H5Service getH5Service() {
+    private static NativePayService nativePayService;
 
-        RSAConfig rsaConfig = new RSAConfig.Builder().merchantId(merchantId)
-            // 使用 com.wechat.pay.java.core.util 中的函数从本地文件中加载商户私钥，商户私钥会用来生成请求的签名
-            .privateKeyFromPath(privateKeyPath).merchantSerialNumber(merchantSerialNumber)
-            .wechatPayCertificatesFromPath(wechatPayCertificatePath).build();
-
-        return new H5Service.Builder().config(rsaConfig).build();
-
+    @Autowired(required = false)
+    public void setNativePayService(NativePayService nativePayService) {
+        PayWxUtil.nativePayService = nativePayService;
     }
 
     /**
@@ -81,20 +61,21 @@ public class PayWxUtil {
 
         Amount amount = new Amount();
 
-        amount.setTotal(dto.getTotalAmount().multiply(BigDecimal.valueOf(100)).intValue());
+        amount.setTotal(dto.getTotalAmount().multiply(BaseConstant.BIG_DECIMAL_ONE_HUNDRED).intValue());
 
         request.setAmount(amount);
 
-        request.setAppid("wxa9d9651ae******");
-        request.setMchid("190000****");
+        request.setAppid(payWxProperties.getAppId());
+        request.setMchid(payWxProperties.getMerchantId());
         request.setDescription(dto.getSubject());
-        request.setNotifyUrl("https://notify_url");
+        request.setNotifyUrl(payWxProperties.getNotifyUrl());
         request.setOutTradeNo(dto.getOutTradeNo());
+        request.setTimeExpire(DatePattern.UTC_WITH_XXX_OFFSET_FORMAT.format(dto.getTimeExpire()));
 
         // 调用接口
-        PrepayResponse prepayResponse = getH5Service().prepay(request);
+        PrepayResponse prepayResponse = nativePayService.prepay(request);
 
-        return prepayResponse.getH5Url();
+        return prepayResponse.getCodeUrl();
 
     }
 
@@ -106,14 +87,16 @@ public class PayWxUtil {
     @SneakyThrows
     public static SysPayTradeStatusEnum query(String outTradeNo) {
 
-        QueryOrderByOutTradeNoRequest request = new QueryOrderByOutTradeNoRequest();
+        QueryOrderByOutTradeNoRequest queryRequest = new QueryOrderByOutTradeNoRequest();
+        queryRequest.setMchid(payWxProperties.getMerchantId());
+        queryRequest.setOutTradeNo(outTradeNo);
 
         // 调用接口
-        Transaction transaction = getH5Service().queryOrderByOutTradeNo(request);
+        Transaction transaction = nativePayService.queryOrderByOutTradeNo(queryRequest);
 
         Transaction.TradeStateEnum tradeStateEnum = transaction.getTradeState();
 
-        return null;
+        return SysPayTradeStatusEnum.getByCode(tradeStateEnum.name());
 
     }
 

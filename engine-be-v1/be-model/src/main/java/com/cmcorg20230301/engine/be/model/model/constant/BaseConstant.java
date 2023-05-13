@@ -1,5 +1,7 @@
 package com.cmcorg20230301.engine.be.model.model.constant;
 
+import java.math.BigDecimal;
+
 /**
  * 通用的常量类
  */
@@ -8,6 +10,7 @@ public interface BaseConstant {
     String NEGATIVE_ONE_STR = "-1";
 
     // 过期时间相关 ↓
+
     long ZERO = 0; // 0
     long NEGATIVE_ONE = -1L; // -1
 
@@ -36,6 +39,12 @@ public interface BaseConstant {
     long SHORT_CODE_EXPIRE_TIME = SECOND_20_EXPIRE_TIME; // 短暂验证码的过期时间
 
     // 过期时间相关 ↑
+
+    // 计算相关 ↓
+
+    BigDecimal BIG_DECIMAL_ONE_HUNDRED = BigDecimal.valueOf(100);
+
+    // 计算相关 ↑
 
     // id 相关 ↓
 

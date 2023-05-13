@@ -9,7 +9,7 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 @Slf4j
-public class AliYunOSSConfiguration {
+public class AliYunOssConfiguration {
 
     @Bean
     public OSS oss(FileAliYunProperties fileAliYunProperties) {

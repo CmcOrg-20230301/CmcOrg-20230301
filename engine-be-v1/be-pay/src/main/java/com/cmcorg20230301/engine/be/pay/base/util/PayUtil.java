@@ -3,6 +3,7 @@ package com.cmcorg20230301.engine.be.pay.base.util;
 import com.cmcorg20230301.engine.be.model.model.dto.PayDTO;
 import com.cmcorg20230301.engine.be.pay.ali.util.PayAliUtil;
 import com.cmcorg20230301.engine.be.pay.base.properties.SysPayProperties;
+import com.cmcorg20230301.engine.be.pay.wx.util.PayWxUtil;
 import com.cmcorg20230301.engine.be.security.model.enums.SysPayTradeStatusEnum;
 import org.springframework.stereotype.Component;
 
@@ -26,6 +27,10 @@ public class PayUtil {
 
             return PayAliUtil.pay(dto);
 
+        } else if (sysPayProperties.getBasePayType() == 2) {
+
+            return PayWxUtil.pay(dto);
+
         }
 
         return null;
@@ -42,6 +47,10 @@ public class PayUtil {
         if (sysPayProperties.getBasePayType() == 1) { // 1 支付宝 2 微信 3 云闪付
 
             return PayAliUtil.query(outTradeNo);
+
+        } else if (sysPayProperties.getBasePayType() == 2) {
+
+            return PayWxUtil.query(outTradeNo);
 
         }
 

@@ -15,4 +15,19 @@ import org.springframework.stereotype.Component;
 @RefreshScope
 public class PayWxProperties extends SysPayBaseProperties {
 
+    /**
+     * 商户号
+     */
+    private String merchantId;
+
+    /**
+     * 商户证书序列号
+     */
+    private String merchantSerialNumber;
+
+    /**
+     * 商户APIV3密钥
+     */
+    private String apiV3Key;
+
 }
