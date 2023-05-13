@@ -33,13 +33,13 @@ public class PayAliServiceImpl implements PayAliService {
 
         Map<String, String> paramsMap = new HashMap<>();
 
-        Map<String, String[]> requestParams = request.getParameterMap();
+        Map<String, String[]> requestParamMap = request.getParameterMap();
 
-        for (Iterator<String> iter = requestParams.keySet().iterator(); iter.hasNext(); ) {
+        for (Iterator<String> iter = requestParamMap.keySet().iterator(); iter.hasNext(); ) {
 
             String name = iter.next();
 
-            String[] values = requestParams.get(name);
+            String[] values = requestParamMap.get(name);
 
             String valueStr = "";
 
