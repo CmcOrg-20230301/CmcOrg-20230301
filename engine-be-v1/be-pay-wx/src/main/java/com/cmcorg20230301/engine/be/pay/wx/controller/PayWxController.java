@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 @RestController
 @RequestMapping(value = "/sys/pay/wx")
@@ -18,10 +19,10 @@ public class PayWxController {
     @Resource
     PayWxService baseService;
 
-    @Operation(summary = "服务器异步通知，备注：第三方应用调用")
-    @PostMapping(value = "/notifyCallBack")
-    public String notifyCallBack(HttpServletRequest request) {
-        return baseService.notifyCallBack(request);
+    @Operation(summary = "服务器异步通知-Native，备注：第三方应用调用")
+    @PostMapping(value = "/notifyCallBack/native")
+    public void notifyCallBackNative(HttpServletRequest request, HttpServletResponse response) {
+        baseService.notifyCallBackNative(request, response);
     }
 
 }

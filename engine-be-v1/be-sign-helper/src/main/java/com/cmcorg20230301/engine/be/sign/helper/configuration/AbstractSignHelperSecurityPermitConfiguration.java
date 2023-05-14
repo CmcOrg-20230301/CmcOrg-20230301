@@ -2,12 +2,12 @@ package com.cmcorg20230301.engine.be.sign.helper.configuration;
 
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.StrUtil;
-import com.cmcorg20230301.engine.be.model.model.configuration.ISecurityPermitAllConfiguration;
+import com.cmcorg20230301.engine.be.model.model.configuration.ISecurityPermitConfiguration;
 
 import java.util.Set;
 import java.util.stream.Collectors;
 
-public abstract class AbstractSignHelperSecurityPermitAllConfiguration implements ISecurityPermitAllConfiguration {
+public abstract class AbstractSignHelperSecurityPermitConfiguration implements ISecurityPermitConfiguration {
 
     private static final String BASE_PRE_URI = "/sign/";
 

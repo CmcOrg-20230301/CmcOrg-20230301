@@ -38,9 +38,18 @@ public class ResponseUtil {
     @SneakyThrows
     public static void out(HttpServletResponse response, String msg) {
 
+        out(response, msg, HttpServletResponse.SC_OK);
+
+    }
+
+    @SneakyThrows
+    public static void out(HttpServletResponse response, String msg, int status) {
+
         response.setContentType("application/json;charset=utf-8");
 
         ServletOutputStream servletOutputStream = response.getOutputStream();
+
+        response.setStatus(status);
 
         try {
 

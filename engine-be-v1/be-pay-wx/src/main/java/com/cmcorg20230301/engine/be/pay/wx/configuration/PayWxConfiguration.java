@@ -3,6 +3,7 @@ package com.cmcorg20230301.engine.be.pay.wx.configuration;
 import cn.hutool.core.util.StrUtil;
 import com.cmcorg20230301.engine.be.pay.wx.properties.PayWxProperties;
 import com.wechat.pay.java.core.RSAAutoCertificateConfig;
+import com.wechat.pay.java.core.notification.NotificationParser;
 import com.wechat.pay.java.service.payments.nativepay.NativePayService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -48,6 +49,22 @@ public class PayWxConfiguration {
         }
 
         return new NativePayService.Builder().config(rsaAutoCertificateConfig).build();
+
+    }
+
+    /**
+     * 解析回调通知的
+     */
+    @Bean
+    public NotificationParser notificationParser() {
+
+        RSAAutoCertificateConfig rsaAutoCertificateConfig = rsaAutoCertificateConfig();
+
+        if (rsaAutoCertificateConfig == null) {
+            return null;
+        }
+
+        return new NotificationParser(rsaAutoCertificateConfig);
 
     }
 

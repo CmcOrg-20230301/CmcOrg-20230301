@@ -5,7 +5,7 @@ import java.util.Set;
 /**
  * Security 不用权限就可以访问的 url配置类
  */
-public interface ISecurityPermitAllConfiguration {
+public interface ISecurityPermitConfiguration {
 
     /**
      * 开发环境 不用权限就可以访问的 url

@@ -2,7 +2,7 @@ package com.cmcorg20230301.engine.be.security.configuration.security;
 
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.ArrayUtil;
-import com.cmcorg20230301.engine.be.model.model.configuration.ISecurityPermitAllConfiguration;
+import com.cmcorg20230301.engine.be.model.model.configuration.ISecurityPermitConfiguration;
 import com.cmcorg20230301.engine.be.security.filter.JwtAuthorizationFilter;
 import com.cmcorg20230301.engine.be.security.properties.SecurityProperties;
 import lombok.SneakyThrows;
@@ -50,15 +50,15 @@ public class SecurityConfiguration {
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity,
         @Value("${spring.profiles.active:prod}") String profiles,
-        List<ISecurityPermitAllConfiguration> iSecurityPermitAllConfigurationList, RedissonClient redissonClient,
+        List<ISecurityPermitConfiguration> iSecurityPermitConfigurationList, RedissonClient redissonClient,
         SecurityProperties securityProperties, List<IJwtValidatorConfiguration> iJwtValidatorConfigurationList) {
 
         boolean prodFlag = "prod".equals(profiles);
 
         Set<String> permitAllSet = new HashSet<>();
 
-        if (CollUtil.isNotEmpty(iSecurityPermitAllConfigurationList)) {
-            for (ISecurityPermitAllConfiguration item : iSecurityPermitAllConfigurationList) {
+        if (CollUtil.isNotEmpty(iSecurityPermitConfigurationList)) {
+            for (ISecurityPermitConfiguration item : iSecurityPermitConfigurationList) {
                 if (prodFlag) {
                     CollUtil.addAll(permitAllSet, item.prodPermitAllSet());
                 } else {

@@ -94,9 +94,7 @@ public class PayWxUtil {
         // 调用接口
         Transaction transaction = nativePayService.queryOrderByOutTradeNo(queryRequest);
 
-        Transaction.TradeStateEnum tradeStateEnum = transaction.getTradeState();
-
-        return SysPayTradeStatusEnum.getByCode(tradeStateEnum.name());
+        return SysPayTradeStatusEnum.getByCode(transaction.getTradeState().name());
 
     }
 
