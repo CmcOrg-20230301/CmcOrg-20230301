@@ -19,7 +19,7 @@ public class PayWxController {
     @Resource
     PayWxService baseService;
 
-    @Operation(summary = "服务器异步通知-Native，备注：第三方应用调用")
+    @Operation(summary = "服务器异步通知-native，备注：第三方应用调用")
     @PostMapping(value = "/notifyCallBack/native")
     public void notifyCallBackNative(HttpServletRequest request, HttpServletResponse response) {
         baseService.notifyCallBackNative(request, response);
