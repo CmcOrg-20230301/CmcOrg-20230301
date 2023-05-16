@@ -1,7 +1,5 @@
 import AdminLayout from "@/layout/AdminLayout/AdminLayout";
 import NotFound from "@/componse/NotFound/NotFound";
-import SignIn from "@/page/sign/SignIn/SignIn";
-import SignUp from "@/page/sign/SignUp/SignUp";
 
 // 正则表达式转驼峰，默认：下划线转驼峰
 export function toHump(name: string, searchValue: string | RegExp = /_(\w)/g) {
@@ -27,14 +25,6 @@ RouterMap['NotFound'] = {
     element: NotFound
 }
 
-RouterMap['SignIn'] = {
-    element: SignIn
-}
-
-RouterMap['SignUp'] = {
-    element: SignUp
-}
-
 RouterMap['AdminLayout'] = {
     element: AdminLayout
 }
@@ -53,7 +43,7 @@ Object.keys(fileObj).forEach((item: string) => {
         return // 只要：/src/page/home/home.tsx
     }
 
-    // 例如：/src/page/home/home -> homeHome
+    // 例如：/src/page/home/home -> homeHome，/src/page/sign/SignIn/SignIn -> signSignInSignIn
     const fileName = toHump(item.split('/src/page/')[1].split('.tsx')[0], /\/(\w)/g)
 
     RouterMap[fileName] = {
