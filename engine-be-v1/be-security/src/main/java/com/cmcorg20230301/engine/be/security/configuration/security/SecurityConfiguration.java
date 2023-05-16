@@ -31,7 +31,7 @@ import java.util.Set;
 public class SecurityConfiguration {
 
     /**
-     * @param methodSecurityInterceptor 注意：这个名字不要该
+     * @param methodSecurityInterceptor 注意：这个名字不要改
      */
     public SecurityConfiguration(@Autowired(required = false) MethodInterceptor methodSecurityInterceptor) {
 
