@@ -49,11 +49,11 @@ public class SecurityConfiguration {
     @SneakyThrows
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity,
-        @Value("${spring.profiles.active:prod}") String profiles,
+        @Value("${spring.profiles.active:prod}") String profilesActive,
         List<ISecurityPermitConfiguration> iSecurityPermitConfigurationList, RedissonClient redissonClient,
         SecurityProperties securityProperties, List<IJwtValidatorConfiguration> iJwtValidatorConfigurationList) {
 
-        boolean prodFlag = "prod".equals(profiles);
+        boolean prodFlag = "prod".equals(profilesActive);
 
         Set<String> permitAllSet = new HashSet<>();
 

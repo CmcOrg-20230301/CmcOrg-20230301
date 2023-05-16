@@ -24,14 +24,14 @@ public class BaseConfiguration {
 
     public static String applicationName; // 服务名
     public static Integer port; // 启动的端口
-    public static String profile; // 启动的端口
+    public static String profilesActive; // 启动的端口
 
     public BaseConfiguration(@Value("${spring.application.name:applicationName}") String applicationName,
-        @Value("${server.port:8080}") int port, @Value("${spring.profiles.active:prod}") String profile) {
+        @Value("${server.port:8080}") int port, @Value("${spring.profiles.active:prod}") String profilesActive) {
 
         BaseConfiguration.applicationName = applicationName;
         BaseConfiguration.port = port;
-        BaseConfiguration.profile = profile;
+        BaseConfiguration.profilesActive = profilesActive;
 
     }
 
@@ -40,7 +40,7 @@ public class BaseConfiguration {
      */
     public static boolean prodFlag() {
 
-        return "prod".equals(BaseConfiguration.profile);
+        return "prod".equals(BaseConfiguration.profilesActive);
 
     }
 
