@@ -21,4 +21,5 @@ public class MyAuthenticationEntryPoint implements AuthenticationEntryPoint {
         ResponseUtil.out(response, BaseBizCodeEnum.NOT_LOGGED_IN_YET);
 
     }
+
 }
