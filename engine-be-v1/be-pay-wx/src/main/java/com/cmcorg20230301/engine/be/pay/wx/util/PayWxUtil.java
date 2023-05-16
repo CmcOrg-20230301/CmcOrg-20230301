@@ -49,7 +49,7 @@ public class PayWxUtil {
 
         int compare = DateUtil.compare(dto.getTimeExpire(), new Date());
 
-        if (compare < 0) {
+        if (compare <= 0) {
             ApiResultVO.error("操作失败：支付过期时间晚于当前时间");
         }
 
