@@ -35,7 +35,7 @@ export default function () {
                     element={<LoadElement elementStr="AdminLayout"/>}
                 >
 
-                    {userSelfMenuList.map((item, index) => (
+                    {userSelfMenuList.filter(it => it.path.startsWith(PathConstant.ADMIN_PATH)).map((item, index) => (
 
                         <Route
 
