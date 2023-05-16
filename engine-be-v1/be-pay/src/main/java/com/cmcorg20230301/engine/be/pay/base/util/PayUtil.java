@@ -29,7 +29,7 @@ public class PayUtil {
 
         } else if (sysPayProperties.getBasePayType() == 2) {
 
-            return PayWxUtil.pay(dto);
+            return PayWxUtil.payNative(dto);
 
         }
 
@@ -50,7 +50,7 @@ public class PayUtil {
 
         } else if (sysPayProperties.getBasePayType() == 2) {
 
-            return PayWxUtil.query(outTradeNo);
+            return PayWxUtil.queryNative(outTradeNo);
 
         }
 

@@ -10,10 +10,6 @@ import com.cmcorg20230301.engine.be.security.model.enums.SysPayTradeStatusEnum;
 import com.cmcorg20230301.engine.be.security.model.vo.ApiResultVO;
 import com.wechat.pay.java.service.payments.model.Transaction;
 import com.wechat.pay.java.service.payments.nativepay.NativePayService;
-import com.wechat.pay.java.service.payments.nativepay.model.Amount;
-import com.wechat.pay.java.service.payments.nativepay.model.PrepayRequest;
-import com.wechat.pay.java.service.payments.nativepay.model.PrepayResponse;
-import com.wechat.pay.java.service.payments.nativepay.model.QueryOrderByOutTradeNoRequest;
 import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -45,7 +41,7 @@ public class PayWxUtil {
      * 支付
      */
     @SneakyThrows
-    public static String pay(PayDTO dto) {
+    public static String payNative(PayDTO dto) {
 
         Assert.notBlank(dto.getOutTradeNo());
         Assert.notNull(dto.getTotalAmount());
@@ -57,9 +53,11 @@ public class PayWxUtil {
             ApiResultVO.error("操作失败：支付过期时间晚于当前时间");
         }
 
-        PrepayRequest request = new PrepayRequest();
+        com.wechat.pay.java.service.payments.nativepay.model.PrepayRequest request =
+            new com.wechat.pay.java.service.payments.nativepay.model.PrepayRequest();
 
-        Amount amount = new Amount();
+        com.wechat.pay.java.service.payments.nativepay.model.Amount amount =
+            new com.wechat.pay.java.service.payments.nativepay.model.Amount();
 
         amount.setTotal(dto.getTotalAmount().multiply(BaseConstant.BIG_DECIMAL_ONE_HUNDRED).intValue());
 
@@ -73,7 +71,8 @@ public class PayWxUtil {
         request.setTimeExpire(DatePattern.UTC_WITH_XXX_OFFSET_FORMAT.format(dto.getTimeExpire()));
 
         // 调用接口
-        PrepayResponse prepayResponse = nativePayService.prepay(request);
+        com.wechat.pay.java.service.payments.nativepay.model.PrepayResponse prepayResponse =
+            nativePayService.prepay(request);
 
         return prepayResponse.getCodeUrl();
 
@@ -85,9 +84,10 @@ public class PayWxUtil {
      * @param outTradeNo 商户订单号，商户网站订单系统中唯一订单号，必填
      */
     @SneakyThrows
-    public static SysPayTradeStatusEnum query(String outTradeNo) {
+    public static SysPayTradeStatusEnum queryNative(String outTradeNo) {
 
-        QueryOrderByOutTradeNoRequest queryRequest = new QueryOrderByOutTradeNoRequest();
+        com.wechat.pay.java.service.payments.nativepay.model.QueryOrderByOutTradeNoRequest queryRequest =
+            new com.wechat.pay.java.service.payments.nativepay.model.QueryOrderByOutTradeNoRequest();
         queryRequest.setMchid(payWxProperties.getMerchantId());
         queryRequest.setOutTradeNo(outTradeNo);
 
