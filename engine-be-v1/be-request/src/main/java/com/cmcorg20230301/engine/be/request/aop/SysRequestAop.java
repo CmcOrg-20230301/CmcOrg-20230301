@@ -48,7 +48,7 @@ public class SysRequestAop {
 
     private static List<SysRequestDO> SYS_REQUEST_DO_LIST = new CopyOnWriteArrayList<>();
 
-    private static final int STR_MAX_LENGTH = BaseConstant.STR_MAX_LENGTH_1000;
+    private static final int STR_MAX_LENGTH = BaseConstant.STR_MAX_LENGTH_1000 - 3;
 
     /**
      * 定时任务，保存数据
@@ -115,6 +115,8 @@ public class SysRequestAop {
         sysRequestDO.setSuccessFlag(true);
         sysRequestDO.setErrorMsg("");
 
+        sysRequestDO.setResponseValue("");
+
         StrBuilder strBuilder = StrBuilder.create();
 
         int index = 0;
@@ -137,9 +139,15 @@ public class SysRequestAop {
 
         try {
 
-            if (((MethodSignature)proceedingJoinPoint.getSignature()).getReturnType() != void.class) {
+            if (((MethodSignature)proceedingJoinPoint.getSignature()).getReturnType() == void.class) {
+
+                proceedingJoinPoint.proceed(); // 执行方法，备注：如果执行方法时抛出了异常，catch可以捕获到
+
+            } else {
 
                 object = proceedingJoinPoint.proceed(); // 执行方法，备注：如果执行方法时抛出了异常，catch可以捕获到
+
+                sysRequestDO.setResponseValue(StrUtil.maxLength(JSONUtil.toJsonStr(object), STR_MAX_LENGTH));
 
             }
 

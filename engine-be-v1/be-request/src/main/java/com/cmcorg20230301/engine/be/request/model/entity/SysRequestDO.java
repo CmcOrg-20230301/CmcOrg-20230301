@@ -46,4 +46,7 @@ public class SysRequestDO extends BaseEntity {
     @Schema(description = "请求类型")
     private String type;
 
+    @Schema(description = "请求返回的值")
+    private String responseValue;
+
 }
