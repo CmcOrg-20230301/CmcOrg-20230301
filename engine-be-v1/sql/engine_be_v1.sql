@@ -287,7 +287,7 @@ CREATE TABLE `sys_request`
     `name`          varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci  NOT NULL COMMENT '接口名（备用）',
     `cost_ms_str`   varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci  NOT NULL COMMENT '耗时（字符串）',
     `cost_ms`       bigint                                                         NOT NULL COMMENT '耗时（毫秒）',
-    `category`      tinyint                                                        NOT NULL COMMENT '请求类别',
+    `category`      int                                                        NOT NULL COMMENT '请求类别',
     `region`        varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci  NOT NULL COMMENT 'Ip2RegionUtil.getRegion() 获取到的 ip所处区域',
     `ip`            varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci  NOT NULL COMMENT 'ip',
     `success_flag`  tinyint(1)                                                     NOT NULL COMMENT '请求是否成功',
