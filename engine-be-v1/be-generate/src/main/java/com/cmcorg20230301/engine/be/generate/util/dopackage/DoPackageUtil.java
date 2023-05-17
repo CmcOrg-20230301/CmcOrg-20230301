@@ -90,7 +90,7 @@ public class DoPackageUtil {
 
             projectPath = projectPath + "/engine-be-v1";
 
-            RuntimeUtil.execForStr("cmd", "/c", "cd " + projectPath + " && mvn package");
+            RuntimeUtil.execForStr("cmd", "/c", "cd " + projectPath + " && mvn clean package");
 
             timeNumber = System.currentTimeMillis() - timeNumber;
             String timeStr = DateUtil.formatBetween(timeNumber);
