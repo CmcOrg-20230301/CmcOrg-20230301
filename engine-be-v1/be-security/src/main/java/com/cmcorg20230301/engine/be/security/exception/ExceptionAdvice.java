@@ -2,6 +2,7 @@ package com.cmcorg20230301.engine.be.security.exception;
 
 import cn.hutool.core.map.MapUtil;
 import com.cmcorg20230301.engine.be.security.model.vo.ApiResultVO;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.validation.BindingResult;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import java.util.Map;
 
 @RestControllerAdvice
+@Slf4j
 public class ExceptionAdvice {
 
     /**
@@ -23,15 +25,23 @@ public class ExceptionAdvice {
 
         // 返回详细的参数校验错误信息
         Map<String, String> map = MapUtil.newHashMap(e.getBindingResult().getFieldErrors().size());
+
         BindingResult bindingResult = e.getBindingResult();
+
         for (FieldError fieldError : bindingResult.getFieldErrors()) {
             map.put(fieldError.getField(), fieldError.getDefaultMessage());
         }
 
         try {
+
             ApiResultVO.error(BaseBizCodeEnum.PARAMETER_CHECK_ERROR, map); // 这里肯定会抛出 BaseException异常
+
         } catch (BaseException baseException) {
+
+            log.info("MethodArgumentNotValidException：{}", baseException.getMessage());
+
             return getBaseExceptionApiResult(baseException);
+
         }
 
         return null; // 这里不会执行，只是为了通过语法检查
@@ -47,9 +57,13 @@ public class ExceptionAdvice {
         e.printStackTrace();
 
         try {
+
             ApiResultVO.error(BaseBizCodeEnum.PARAMETER_CHECK_ERROR, e.getMessage()); // 这里肯定会抛出 BaseException异常
+
         } catch (BaseException baseException) {
+
             return getBaseExceptionApiResult(baseException);
+
         }
 
         return null; // 这里不会执行，只是为了通过语法检查
@@ -62,10 +76,16 @@ public class ExceptionAdvice {
     @ExceptionHandler(value = HttpMessageNotReadableException.class)
     public ApiResultVO<?> handlerHttpMessageNotReadableException(HttpMessageNotReadableException e) {
 
+        e.printStackTrace();
+
         try {
+
             ApiResultVO.error(BaseBizCodeEnum.PARAMETER_CHECK_ERROR, e.getMessage()); // 这里肯定会抛出 BaseException异常
+
         } catch (BaseException baseException) {
+
             return getBaseExceptionApiResult(baseException);
+
         }
 
         return null; // 这里不会执行，只是为了通过语法检查
@@ -93,9 +113,13 @@ public class ExceptionAdvice {
         e.printStackTrace();
 
         try {
+
             ApiResultVO.error(BaseBizCodeEnum.INSUFFICIENT_PERMISSIONS); // 这里肯定会抛出 BaseException异常
+
         } catch (BaseException baseException) {
+
             return getBaseExceptionApiResult(baseException);
+
         }
 
         return null; // 这里不会执行，只是为了通过语法检查
@@ -111,9 +135,13 @@ public class ExceptionAdvice {
         e.printStackTrace();
 
         try {
+
             ApiResultVO.sysError(); // 这里肯定会抛出 BaseException异常
+
         } catch (BaseException baseException) {
+
             return getBaseExceptionApiResult(baseException);
+
         }
 
         return null; // 这里不会执行，只是为了通过语法检查
@@ -121,7 +149,9 @@ public class ExceptionAdvice {
     }
 
     private ApiResultVO<?> getBaseExceptionApiResult(BaseException e) {
+
         return e.getApiResultVO();
+
     }
 
 }
