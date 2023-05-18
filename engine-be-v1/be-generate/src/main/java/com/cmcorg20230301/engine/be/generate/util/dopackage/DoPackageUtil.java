@@ -4,7 +4,9 @@ import cn.hutool.core.convert.Convert;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.io.unit.DataSizeUtil;
+import cn.hutool.core.lang.func.VoidFunc0;
 import cn.hutool.core.thread.ThreadUtil;
+import cn.hutool.core.util.BooleanUtil;
 import cn.hutool.core.util.CharsetUtil;
 import cn.hutool.core.util.RuntimeUtil;
 import cn.hutool.extra.ssh.JschUtil;
@@ -15,6 +17,7 @@ import lombok.SneakyThrows;
 
 import java.io.File;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * 打包工具类
@@ -108,7 +111,12 @@ public class DoPackageUtil {
 
             timeNumber = System.currentTimeMillis();
 
-            sftp.put(jarPath, SPRING_REMOTE_PATH);
+            // 持续执行
+            continueExec(() -> {
+
+                sftp.put(jarPath, SPRING_REMOTE_PATH);
+
+            });
 
             timeNumber = System.currentTimeMillis() - timeNumber;
             timeStr = DateUtil.formatBetween(timeNumber);
@@ -206,7 +214,12 @@ public class DoPackageUtil {
             // 移除该文件，目的：不覆盖服务器上的文件
             FileUtil.del(file.getPath() + "/" + configFileName);
 
-            sftp.syncUpload(file, VITE_REMOTE_PATH);
+            // 持续执行
+            continueExec(() -> {
+
+                sftp.syncUpload(file, VITE_REMOTE_PATH);
+
+            });
 
             timeNumber = System.currentTimeMillis() - timeNumber;
             timeStr = DateUtil.formatBetween(timeNumber);
@@ -223,6 +236,48 @@ public class DoPackageUtil {
 
             countDownLatch.countDown();
             JschUtil.close(sftp.getClient());
+
+        }
+
+    }
+
+    /**
+     * 持续执行
+     */
+    private static void continueExec(VoidFunc0 voidFunc0) {
+
+        AtomicBoolean okFlag = new AtomicBoolean(false);
+        AtomicBoolean firstFlag = new AtomicBoolean(true);
+
+        while (BooleanUtil.isFalse(okFlag.get())) {
+
+            if (firstFlag.get()) {
+
+                firstFlag.set(false);
+
+                ThreadUtil.execute(() -> {
+
+                    try {
+
+                        voidFunc0.call();
+
+                    } catch (Exception e) {
+
+                        e.printStackTrace();
+
+                    } finally {
+
+                        okFlag.set(true);
+
+                    }
+
+                });
+
+            } else {
+
+                ThreadUtil.safeSleep(2000);
+
+            }
 
         }
 
