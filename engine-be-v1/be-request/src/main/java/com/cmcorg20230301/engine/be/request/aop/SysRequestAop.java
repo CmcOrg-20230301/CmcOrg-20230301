@@ -20,6 +20,7 @@ import com.cmcorg20230301.engine.be.security.model.vo.ApiResultVO;
 import com.cmcorg20230301.engine.be.security.util.MyEntityUtil;
 import com.cmcorg20230301.engine.be.security.util.MyJwtUtil;
 import com.cmcorg20230301.engine.be.security.util.RequestUtil;
+import com.cmcorg20230301.engine.be.security.util.UserUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -98,6 +99,11 @@ public class SysRequestAop {
         sysRequestDO.setCostMsStr("");
         sysRequestDO.setCostMs(0L);
         sysRequestDO.setName(operation.summary());
+
+        Long currentUserIdDefault = UserUtil.getCurrentUserIdDefault();
+
+        sysRequestDO.setCreateId(currentUserIdDefault);
+        sysRequestDO.setUpdateId(currentUserIdDefault);
 
         sysRequestDO.setRemark("");
         sysRequestDO.setEnableFlag(true);
