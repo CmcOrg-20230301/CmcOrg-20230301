@@ -3,8 +3,8 @@ package com.cmcorg20230301.engine.be.sign.wx.controller;
 import com.cmcorg20230301.engine.be.model.model.constant.OperationDescriptionConstant;
 import com.cmcorg20230301.engine.be.security.exception.BaseBizCodeEnum;
 import com.cmcorg20230301.engine.be.security.model.vo.ApiResultVO;
-import com.cmcorg20230301.engine.be.sign.wx.model.dto.SignInCodeDTO;
-import com.cmcorg20230301.engine.be.sign.wx.model.dto.SignInPhoneCodeDTO;
+import com.cmcorg20230301.engine.be.sign.wx.model.dto.SignInMiniProgramCodeDTO;
+import com.cmcorg20230301.engine.be.sign.wx.model.dto.SignInMiniProgramPhoneCodeDTO;
 import com.cmcorg20230301.engine.be.sign.wx.service.SignWxService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -24,16 +24,16 @@ public class SignWxController {
     @Resource
     SignWxService signWxService;
 
-    @PostMapping(value = "/sign/in/phoneCode")
-    @Operation(summary = "手机号 code登录", description = OperationDescriptionConstant.SIGN_IN)
-    public ApiResultVO<String> signInPhoneCode(@RequestBody @Valid SignInPhoneCodeDTO dto) {
-        return ApiResultVO.ok(BaseBizCodeEnum.OK, signWxService.signInPhoneCode(dto));
+    @PostMapping(value = "/sign/in/miniProgram/phoneCode")
+    @Operation(summary = "小程序：手机号 code登录", description = OperationDescriptionConstant.SIGN_IN)
+    public ApiResultVO<String> signInMiniProgramPhoneCode(@RequestBody @Valid SignInMiniProgramPhoneCodeDTO dto) {
+        return ApiResultVO.ok(BaseBizCodeEnum.OK, signWxService.signInMiniProgramPhoneCode(dto));
     }
 
-    @PostMapping(value = "/sign/in/code")
-    @Operation(summary = "微信 code登录", description = OperationDescriptionConstant.SIGN_IN)
-    public ApiResultVO<String> signInCode(@RequestBody @Valid SignInCodeDTO dto) {
-        return ApiResultVO.ok(BaseBizCodeEnum.OK, signWxService.signInCode(dto));
+    @PostMapping(value = "/sign/in/miniProgram/code")
+    @Operation(summary = "小程序：微信 code登录", description = OperationDescriptionConstant.SIGN_IN)
+    public ApiResultVO<String> signInMiniProgramCode(@RequestBody @Valid SignInMiniProgramCodeDTO dto) {
+        return ApiResultVO.ok(BaseBizCodeEnum.OK, signWxService.signInMiniProgramCode(dto));
     }
 
 }

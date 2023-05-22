@@ -23,9 +23,11 @@ public enum RequestCategoryEnum {
 
     ANDROID(301, "安卓端"), //
     ANDROID_BROWSER(302, "安卓-浏览器"), //
+    ANDROID_BROWSER_WX(303, "安卓-浏览器-微信"), //
 
     IOS(401, "苹果端"), //
     IOS_BROWSER(402, "苹果-浏览器"), //
+    IOS_BROWSER_WX(403, "苹果-浏览器-微信"), //
 
     MINI_PROGRAM_WE_CHAT_ANDROID(501, "小程序-微信-安卓"), //
     MINI_PROGRAM_WE_CHAT_IOS(502, "小程序-微信-苹果"), //

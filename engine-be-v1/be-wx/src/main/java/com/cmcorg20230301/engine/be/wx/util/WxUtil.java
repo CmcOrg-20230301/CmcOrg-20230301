@@ -30,7 +30,7 @@ public class WxUtil {
      * 通过微信的 code，获取微信的 openId信息
      */
     @NotNull
-    public static WxOpenIdVO getWxOpenIdVOByCode(String code) {
+    public static WxOpenIdVO getWxMiniProgramOpenIdVOByCode(String code) {
 
         String jsonStr = HttpUtil.get(
             "https://api.weixin.qq.com/sns/jscode2session?appid=" + wxProperties.getAppId() + "&secret=" + wxProperties
@@ -48,7 +48,7 @@ public class WxUtil {
      * code换取用户手机号信息，每个code只能使用一次，code的有效期为5min
      */
     @NotNull
-    public static WxPhoneByCodeVO.WxPhoneInfoVO getWxPhoneInfoVOByCode(String code) {
+    public static WxPhoneByCodeVO.WxPhoneInfoVO getWxMiniProgramPhoneInfoVOByCode(String code) {
 
         String accessToken = getAccessToken();
 

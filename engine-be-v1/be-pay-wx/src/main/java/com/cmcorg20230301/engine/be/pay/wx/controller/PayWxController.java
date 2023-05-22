@@ -12,7 +12,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 @RestController
-@RequestMapping(value = "/sys/pay/wx")
+@RequestMapping(value = "/sys/payWx")
 @Tag(name = "支付-微信")
 public class PayWxController {
 

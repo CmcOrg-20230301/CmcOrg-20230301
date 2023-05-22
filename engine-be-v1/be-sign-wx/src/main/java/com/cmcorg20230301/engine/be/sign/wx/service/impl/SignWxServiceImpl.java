@@ -6,8 +6,8 @@ import com.cmcorg20230301.engine.be.security.mapper.SysUserMapper;
 import com.cmcorg20230301.engine.be.security.model.entity.SysUserDO;
 import com.cmcorg20230301.engine.be.security.model.entity.SysUserInfoDO;
 import com.cmcorg20230301.engine.be.sign.helper.util.SignUtil;
-import com.cmcorg20230301.engine.be.sign.wx.model.dto.SignInCodeDTO;
-import com.cmcorg20230301.engine.be.sign.wx.model.dto.SignInPhoneCodeDTO;
+import com.cmcorg20230301.engine.be.sign.wx.model.dto.SignInMiniProgramCodeDTO;
+import com.cmcorg20230301.engine.be.sign.wx.model.dto.SignInMiniProgramPhoneCodeDTO;
 import com.cmcorg20230301.engine.be.sign.wx.service.SignWxService;
 import com.cmcorg20230301.engine.be.util.util.NicknameUtil;
 import com.cmcorg20230301.engine.be.wx.model.vo.WxOpenIdVO;
@@ -27,13 +27,13 @@ public class SignWxServiceImpl implements SignWxService {
     SysUserMapper sysUserMapper;
 
     /**
-     * 手机号 code登录
+     * 小程序：手机号 code登录
      */
     @Override
-    public String signInPhoneCode(SignInPhoneCodeDTO dto) {
+    public String signInMiniProgramPhoneCode(SignInMiniProgramPhoneCodeDTO dto) {
 
         // 获取：用户手机号
-        WxPhoneByCodeVO.WxPhoneInfoVO wxPhoneInfoVO = WxUtil.getWxPhoneInfoVOByCode(dto.getPhoneCode());
+        WxPhoneByCodeVO.WxPhoneInfoVO wxPhoneInfoVO = WxUtil.getWxMiniProgramPhoneInfoVOByCode(dto.getPhoneCode());
 
         // 直接通过：手机号登录
         return SignUtil.signInAccount(
@@ -43,12 +43,12 @@ public class SignWxServiceImpl implements SignWxService {
     }
 
     /**
-     * 微信 code登录
+     * 小程序：微信 code登录
      */
     @Override
-    public String signInCode(SignInCodeDTO dto) {
+    public String signInMiniProgramCode(SignInMiniProgramCodeDTO dto) {
 
-        WxOpenIdVO wxOpenIdVO = WxUtil.getWxOpenIdVOByCode(dto.getCode());
+        WxOpenIdVO wxOpenIdVO = WxUtil.getWxMiniProgramOpenIdVOByCode(dto.getCode());
 
         // 直接通过：微信 openId登录
         return SignUtil.signInAccount(

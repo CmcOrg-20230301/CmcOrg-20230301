@@ -6,7 +6,7 @@ import lombok.Data;
 import javax.validation.constraints.NotBlank;
 
 @Data
-public class SignInCodeDTO {
+public class SignInMiniProgramCodeDTO {
 
     @NotBlank
     @Schema(description = "微信 code")

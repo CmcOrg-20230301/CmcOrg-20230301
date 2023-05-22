@@ -11,7 +11,7 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
 @RestController
-@RequestMapping(value = "/sys/pay/ali")
+@RequestMapping(value = "/sys/payAli")
 @Tag(name = "支付-支付宝")
 public class PayAliController {
 
