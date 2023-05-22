@@ -81,7 +81,7 @@ export default function () {
 
                 }}
 
-                postData={(data) => {
+                postData={(data: any) => {
 
                     hasChildrenIdList.current = GetIdListForHasChildrenNode(data)
                     return data
