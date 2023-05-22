@@ -6,6 +6,7 @@ import com.cmcorg20230301.engine.be.security.mapper.SysUserMapper;
 import com.cmcorg20230301.engine.be.security.model.entity.SysUserDO;
 import com.cmcorg20230301.engine.be.security.model.entity.SysUserInfoDO;
 import com.cmcorg20230301.engine.be.sign.helper.util.SignUtil;
+import com.cmcorg20230301.engine.be.sign.wx.model.dto.SignInBrowserCodeDTO;
 import com.cmcorg20230301.engine.be.sign.wx.model.dto.SignInMiniProgramCodeDTO;
 import com.cmcorg20230301.engine.be.sign.wx.model.dto.SignInMiniProgramPhoneCodeDTO;
 import com.cmcorg20230301.engine.be.sign.wx.service.SignWxService;
@@ -67,6 +68,21 @@ public class SignWxServiceImpl implements SignWxService {
         sysUserInfoDO.setNickname(NicknameUtil.getRandomNickname("微信用户"));
 
         return sysUserInfoDO;
+
+    }
+
+    /**
+     * 浏览器：微信 code登录
+     */
+    @Override
+    public String signInBrowserCode(SignInBrowserCodeDTO dto) {
+
+        WxOpenIdVO wxOpenIdVO = WxUtil.getWxBrowserOpenIdVOByCode(dto.getCode());
+
+        // 直接通过：微信 openId登录
+        return SignUtil.signInAccount(
+            ChainWrappers.lambdaQueryChain(sysUserMapper).eq(SysUserDO::getWxOpenId, wxOpenIdVO.getOpenid()),
+            PRE_REDIS_KEY_ENUM, wxOpenIdVO.getOpenid(), getWxSysUserInfoDO());
 
     }
 

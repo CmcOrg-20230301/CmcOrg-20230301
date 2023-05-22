@@ -3,6 +3,7 @@ package com.cmcorg20230301.engine.be.sign.wx.controller;
 import com.cmcorg20230301.engine.be.model.model.constant.OperationDescriptionConstant;
 import com.cmcorg20230301.engine.be.security.exception.BaseBizCodeEnum;
 import com.cmcorg20230301.engine.be.security.model.vo.ApiResultVO;
+import com.cmcorg20230301.engine.be.sign.wx.model.dto.SignInBrowserCodeDTO;
 import com.cmcorg20230301.engine.be.sign.wx.model.dto.SignInMiniProgramCodeDTO;
 import com.cmcorg20230301.engine.be.sign.wx.model.dto.SignInMiniProgramPhoneCodeDTO;
 import com.cmcorg20230301.engine.be.sign.wx.service.SignWxService;
@@ -34,6 +35,12 @@ public class SignWxController {
     @Operation(summary = "小程序：微信 code登录", description = OperationDescriptionConstant.SIGN_IN)
     public ApiResultVO<String> signInMiniProgramCode(@RequestBody @Valid SignInMiniProgramCodeDTO dto) {
         return ApiResultVO.ok(BaseBizCodeEnum.OK, signWxService.signInMiniProgramCode(dto));
+    }
+
+    @PostMapping(value = "/sign/in/browser/code")
+    @Operation(summary = "浏览器：微信 code登录", description = OperationDescriptionConstant.SIGN_IN)
+    public ApiResultVO<String> signInBrowserCode(@RequestBody @Valid SignInBrowserCodeDTO dto) {
+        return ApiResultVO.ok(BaseBizCodeEnum.OK, signWxService.signInBrowserCode(dto));
     }
 
 }

@@ -27,7 +27,7 @@ public class WxUtil {
     }
 
     /**
-     * 通过微信的 code，获取微信的 openId信息
+     * 通过微信小程序的 code，获取微信的 openId信息
      */
     @NotNull
     public static WxOpenIdVO getWxMiniProgramOpenIdVOByCode(String code) {
@@ -38,7 +38,7 @@ public class WxUtil {
 
         WxOpenIdVO wxOpenIdVO = JSONUtil.toBean(jsonStr, WxOpenIdVO.class);
 
-        checkWxVO(wxOpenIdVO, "openId"); // 检查：微信回调 vo对象
+        checkWxVO(wxOpenIdVO, "miniProgramOpenId"); // 检查：微信回调 vo对象
 
         return wxOpenIdVO;
 
@@ -63,6 +63,24 @@ public class WxUtil {
         checkWxVO(wxPhoneByCodeVO, "用户手机号"); // 检查：微信回调 vo对象
 
         return wxPhoneByCodeVO.getPhone_info();
+
+    }
+
+    /**
+     * 通过微信浏览器的 code，获取微信的 openId信息
+     */
+    @NotNull
+    public static WxOpenIdVO getWxBrowserOpenIdVOByCode(String code) {
+
+        String jsonStr = HttpUtil.get(
+            "https://api.weixin.qq.com/sns/oauth2/access_token?appid=" + wxProperties.getAppId() + "&secret="
+                + wxProperties.getSecret() + "&code=" + code + "&grant_type=authorization_code");
+
+        WxOpenIdVO wxOpenIdVO = JSONUtil.toBean(jsonStr, WxOpenIdVO.class);
+
+        checkWxVO(wxOpenIdVO, "browserOpenId"); // 检查：微信回调 vo对象
+
+        return wxOpenIdVO;
 
     }
 

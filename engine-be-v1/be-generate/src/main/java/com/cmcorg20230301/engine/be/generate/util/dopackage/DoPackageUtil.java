@@ -12,6 +12,7 @@ import cn.hutool.extra.ssh.Sftp;
 import com.cmcorg20230301.engine.be.generate.util.apitest.ApiTestHelper;
 import com.jcraft.jsch.Session;
 import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
 
 import java.io.File;
 import java.util.concurrent.CountDownLatch;
@@ -19,6 +20,7 @@ import java.util.concurrent.CountDownLatch;
 /**
  * 打包工具类
  */
+@Slf4j
 public class DoPackageUtil {
 
     private static final String HOST = "43.154.37.130";
@@ -96,7 +98,7 @@ public class DoPackageUtil {
 
         try {
 
-            System.out.println("后端打包 ↓");
+            log.info("后端打包 ↓");
 
             long timeNumber = System.currentTimeMillis();
 
@@ -107,13 +109,13 @@ public class DoPackageUtil {
             timeNumber = System.currentTimeMillis() - timeNumber;
             String timeStr = DateUtil.formatBetween(timeNumber);
 
-            System.out.println("后端打包 ↑ 耗时：" + timeStr);
+            log.info("后端打包 ↑ 耗时：" + timeStr);
 
             String jarPath = projectPath + "/be-start/target/be-start-2023.3.1.jar";
 
             File file = FileUtil.newFile(jarPath);
 
-            System.out.println("后端打包上传 ↓ 大小：" + DataSizeUtil.format(FileUtil.size(file)));
+            log.info("后端打包上传 ↓ 大小：" + DataSizeUtil.format(FileUtil.size(file)));
 
             // 先停止，再上传文件
             JschUtil.exec(session, SPRING_REMOTE_STOP_EXEC_CMD, CharsetUtil.CHARSET_UTF_8);
@@ -125,9 +127,9 @@ public class DoPackageUtil {
             timeNumber = System.currentTimeMillis() - timeNumber;
             timeStr = DateUtil.formatBetween(timeNumber);
 
-            System.out.println("后端打包上传 ↑ 耗时：" + timeStr);
+            log.info("后端打包上传 ↑ 耗时：" + timeStr);
 
-            System.out.println("启动后端 ↓");
+            log.info("启动后端 ↓");
 
             timeNumber = System.currentTimeMillis();
 
@@ -136,9 +138,9 @@ public class DoPackageUtil {
             timeNumber = System.currentTimeMillis() - timeNumber;
             timeStr = DateUtil.formatBetween(timeNumber);
 
-            System.out.println("启动后端 ↑ 耗时：" + timeStr);
+            log.info("启动后端 ↑ 耗时：" + timeStr);
 
-            System.out.println("后端相关操作执行完毕！====================");
+            log.info("后端相关操作执行完毕！====================");
 
         } catch (Exception e) {
 
@@ -162,7 +164,7 @@ public class DoPackageUtil {
 
         try {
 
-            System.out.println("前端打包 ↓");
+            log.info("前端打包 ↓");
 
             long timeNumber = System.currentTimeMillis();
 
@@ -178,18 +180,18 @@ public class DoPackageUtil {
             timeNumber = System.currentTimeMillis() - timeNumber;
             String timeStr = DateUtil.formatBetween(timeNumber);
 
-            System.out.println("前端打包 ↑ 耗时：" + timeStr);
+            log.info("前端打包 ↑ 耗时：" + timeStr);
 
             long size = FileUtil.size(file);
 
             if (size == 0) {
 
-                System.out.println("前端打包上传失败，文件大小为 0");
+                log.info("前端打包上传失败，文件大小为 0");
                 return;
 
             }
 
-            System.out.println("前端打包上传 ↓ 大小：" + DataSizeUtil.format(size));
+            log.info("前端打包上传 ↓ 大小：" + DataSizeUtil.format(size));
 
             timeNumber = System.currentTimeMillis();
 
@@ -223,9 +225,9 @@ public class DoPackageUtil {
             timeNumber = System.currentTimeMillis() - timeNumber;
             timeStr = DateUtil.formatBetween(timeNumber);
 
-            System.out.println("前端打包上传 ↑ 耗时：" + timeStr);
+            log.info("前端打包上传 ↑ 耗时：" + timeStr);
 
-            System.out.println("前端相关操作执行完毕！====================");
+            log.info("前端相关操作执行完毕！====================");
 
         } catch (Exception e) {
 
