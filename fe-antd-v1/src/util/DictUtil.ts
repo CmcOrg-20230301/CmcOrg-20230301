@@ -166,7 +166,7 @@ interface IDictTreeResult {
 }
 
 // 通用的，获取字典树集合
-export function GetDictTreeList<T extends IDictTreeResult, D extends MyPageDTO>(requestFunction: (value: D, config?: AxiosRequestConfig) => Promise<RequestData<T>>, toTreeFlag: boolean = true) {
+export function GetDictTreeList<T extends IDictTreeResult>(requestFunction: (value: MyPageDTO, config?: AxiosRequestConfig) => Promise<RequestData<T>>, toTreeFlag: boolean = true) {
 
     return new Promise<IMyTree[]>(resolve => {
 
