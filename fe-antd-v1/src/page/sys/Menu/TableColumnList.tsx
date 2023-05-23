@@ -3,9 +3,9 @@ import {ActionType} from "@ant-design/pro-components";
 import {SysMenuDeleteByIdSet, SysMenuDO, SysMenuInsertOrUpdateDTO} from "@/api/SysMenu";
 import {ExecConfirm, ToastSuccess} from "@/util/ToastUtil";
 import React from "react";
-import {ProSchema} from "@ant-design/pro-utils";
+import {ProColumns} from "@ant-design/pro-table/es/typing";
 
-const TableColumnList = (currentForm: React.MutableRefObject<SysMenuInsertOrUpdateDTO | null>, setFormOpen: React.Dispatch<React.SetStateAction<boolean>>, actionRef: React.RefObject<ActionType | undefined>): ProSchema<SysMenuDO>[] => [
+const TableColumnList = (currentForm: React.MutableRefObject<SysMenuInsertOrUpdateDTO | null>, setFormOpen: React.Dispatch<React.SetStateAction<boolean>>, actionRef: React.RefObject<ActionType | undefined>): ProColumns<SysMenuDO>[] => [
 
     {
         title: '序号',

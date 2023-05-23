@@ -2,11 +2,11 @@ import {RouterMapKeyList} from "@/router/RouterMap";
 import {GetDictList, GetDictTreeList, YesNoDict} from "@/util/DictUtil";
 import {SysMenuInsertOrUpdateDTO, SysMenuPage} from "@/api/SysMenu";
 import {SysRolePage} from "@/api/SysRole";
-import {ProSchema} from "@ant-design/pro-utils";
+import {ProFormColumnsType} from "@ant-design/pro-components";
 
 export const InitForm: SysMenuInsertOrUpdateDTO = {} as SysMenuInsertOrUpdateDTO
 
-const SchemaFormColumnList = (): ProSchema<SysMenuInsertOrUpdateDTO>[] => {
+const SchemaFormColumnList = (): ProFormColumnsType<SysMenuInsertOrUpdateDTO>[] => {
 
     return [
 

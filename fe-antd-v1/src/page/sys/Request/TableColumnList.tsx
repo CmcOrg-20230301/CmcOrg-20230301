@@ -1,8 +1,8 @@
 import {YesNoDict} from "@/util/DictUtil";
 import {SysRequestDO} from "@/api/SysRequest";
-import {ProSchema} from "@ant-design/pro-utils";
+import {ProColumns} from "@ant-design/pro-table/es/typing";
 
-const TableColumnList = (): ProSchema<SysRequestDO>[] => [
+const TableColumnList = (): ProColumns<SysRequestDO>[] => [
 
     {
         title: '序号',

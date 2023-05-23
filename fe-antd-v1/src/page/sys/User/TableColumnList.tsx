@@ -2,11 +2,11 @@ import {YesNoDict} from "@/util/DictUtil";
 import {ActionType} from "@ant-design/pro-components";
 import {SysUserDeleteByIdSet, SysUserInsertOrUpdateDTO, SysUserPageVO} from "@/api/SysUser";
 import {ExecConfirm, ToastSuccess} from "@/util/ToastUtil";
-import {ProSchema} from "@ant-design/pro-utils";
 import CommonConstant from "@/model/constant/CommonConstant";
 import {EyeOutlined} from "@ant-design/icons";
+import {ProColumns} from "@ant-design/pro-table/es/typing";
 
-const TableColumnList = (currentForm: React.MutableRefObject<SysUserInsertOrUpdateDTO | null>, setFormOpen: React.Dispatch<React.SetStateAction<boolean>>, actionRef: React.RefObject<ActionType | undefined>): ProSchema<SysUserPageVO>[] => [
+const TableColumnList = (currentForm: React.MutableRefObject<SysUserInsertOrUpdateDTO | null>, setFormOpen: React.Dispatch<React.SetStateAction<boolean>>, actionRef: React.RefObject<ActionType | undefined>): ProColumns<SysUserPageVO>[] => [
 
     {
         title: '序号',

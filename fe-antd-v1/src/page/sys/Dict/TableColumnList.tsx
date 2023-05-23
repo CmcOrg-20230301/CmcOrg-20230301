@@ -2,9 +2,9 @@ import {YesNoDict} from "@/util/DictUtil";
 import {ActionType} from "@ant-design/pro-components";
 import {SysDictDeleteByIdSet, SysDictDO, SysDictInsertOrUpdateDTO} from "@/api/SysDict";
 import {ExecConfirm, ToastSuccess} from "@/util/ToastUtil";
-import {ProSchema} from "@ant-design/pro-utils";
+import {ProColumns} from "@ant-design/pro-table/es/typing";
 
-const TableColumnList = (currentForm: React.MutableRefObject<SysDictInsertOrUpdateDTO | null>, setFormOpen: React.Dispatch<React.SetStateAction<boolean>>, actionRef: React.RefObject<ActionType | undefined>): ProSchema<SysDictDO>[] => [
+const TableColumnList = (currentForm: React.MutableRefObject<SysDictInsertOrUpdateDTO | null>, setFormOpen: React.Dispatch<React.SetStateAction<boolean>>, actionRef: React.RefObject<ActionType | undefined>): ProColumns<SysDictDO>[] => [
 
     {
         title: '序号',

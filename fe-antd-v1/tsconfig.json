@@ -23,6 +23,7 @@
     },
     /* Linting */
     "strict": true,
+    "noImplicitAny": false,
     "noFallthroughCasesInSwitch": true,
     "allowSyntheticDefaultImports": true
   },

@@ -50,7 +50,7 @@ YesNoBaseDict.set(false, {text: '否'})
 // 根据 list和 value，获取字典的 label值
 export function getByValueFromDictList(
     dictList: DictLongListVO [],
-    value: number,
+    value: string,
     defaultValue: string = '-'
 ) {
 
@@ -170,7 +170,7 @@ export function GetDictTreeList<T extends IDictTreeResult, D extends MyPageDTO>(
 
     return new Promise<IMyTree[]>(resolve => {
 
-        requestFunction({pageSize: -1 as string}).then(res => {
+        requestFunction({pageSize: '-1'}).then(res => {
 
             let dictList: IMyTree[] = []
 

@@ -1,13 +1,13 @@
 import {GetDictList, GetDictTreeList, YesNoDict} from "@/util/DictUtil";
 import {SysRoleInsertOrUpdateDTO} from "@/api/SysRole";
-import {ProSchema} from "@ant-design/pro-utils";
 import {TreeSelect} from "antd";
 import {SysMenuPage} from "@/api/SysMenu";
 import {SysUserDictList} from "@/api/SysUser";
+import {ProFormColumnsType} from "@ant-design/pro-components";
 
 export const InitForm: SysRoleInsertOrUpdateDTO = {} as SysRoleInsertOrUpdateDTO
 
-const SchemaFormColumnList = (): ProSchema<SysRoleInsertOrUpdateDTO>[] => {
+const SchemaFormColumnList = (): ProFormColumnsType<SysRoleInsertOrUpdateDTO>[] => {
 
     return [
 

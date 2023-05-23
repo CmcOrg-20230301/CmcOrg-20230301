@@ -2,9 +2,10 @@ import {YesNoDict} from "@/util/DictUtil";
 import {ActionType} from "@ant-design/pro-components";
 import {SysParamDeleteByIdSet, SysParamDO, SysParamInsertOrUpdateDTO} from "@/api/SysParam";
 import {ExecConfirm, ToastSuccess} from "@/util/ToastUtil";
-import {ProSchema} from "@ant-design/pro-utils";
+import {ProColumns} from "@ant-design/pro-table/es/typing";
+import {Typography} from "antd";
 
-const TableColumnList = (currentForm: React.MutableRefObject<SysParamInsertOrUpdateDTO | null>, setFormOpen: React.Dispatch<React.SetStateAction<boolean>>, actionRef: React.RefObject<ActionType | undefined>): ProSchema<SysParamDO>[] => [
+const TableColumnList = (currentForm: React.MutableRefObject<SysParamInsertOrUpdateDTO | null>, setFormOpen: React.Dispatch<React.SetStateAction<boolean>>, actionRef: React.RefObject<ActionType | undefined>): ProColumns<SysParamDO>[] => [
 
     {
         title: '序号',

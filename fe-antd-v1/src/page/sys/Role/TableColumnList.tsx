@@ -2,9 +2,9 @@ import {YesNoDict} from "@/util/DictUtil";
 import {ActionType} from "@ant-design/pro-components";
 import {SysRoleDeleteByIdSet, SysRoleDO, SysRoleInsertOrUpdateDTO} from "@/api/SysRole";
 import {ExecConfirm, ToastSuccess} from "@/util/ToastUtil";
-import {ProSchema} from "@ant-design/pro-utils";
+import {ProColumns} from "@ant-design/pro-table/es/typing";
 
-const TableColumnList = (currentForm: React.MutableRefObject<SysRoleInsertOrUpdateDTO | null>, setFormOpen: React.Dispatch<React.SetStateAction<boolean>>, actionRef: React.RefObject<ActionType | undefined>): ProSchema<SysRoleDO>[] => [
+const TableColumnList = (currentForm: React.MutableRefObject<SysRoleInsertOrUpdateDTO | null>, setFormOpen: React.Dispatch<React.SetStateAction<boolean>>, actionRef: React.RefObject<ActionType | undefined>): ProColumns<SysRoleDO>[] => [
 
     {
         title: '序号',
