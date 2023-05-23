@@ -119,7 +119,7 @@ export function GetDictList<T extends IDictResult>(requestFunction: (value: MyPa
 
     return new Promise<DictLongListVO[]>(resolve => {
 
-        requestFunction({pageSize: -1}).then(res => {
+        requestFunction({pageSize: '-1'}).then(res => {
 
             let dictList: DictLongListVO[] = []
 
