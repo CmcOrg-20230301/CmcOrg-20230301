@@ -1,9 +1,10 @@
 import {YesNoDict} from "@/util/DictUtil";
-import {ActionType, ProColumns} from "@ant-design/pro-components";
+import {ActionType} from "@ant-design/pro-components";
 import {SysRoleDeleteByIdSet, SysRoleDO, SysRoleInsertOrUpdateDTO} from "@/api/SysRole";
 import {ExecConfirm, ToastSuccess} from "@/util/ToastUtil";
+import {ProSchema} from "@ant-design/pro-utils";
 
-const TableColumnList = (currentForm: React.MutableRefObject<SysRoleInsertOrUpdateDTO | null>, setFormVisible: React.Dispatch<React.SetStateAction<boolean>>, actionRef: React.RefObject<ActionType | undefined>): ProColumns<SysRoleDO>[] => [
+const TableColumnList = (currentForm: React.MutableRefObject<SysRoleInsertOrUpdateDTO | null>, setFormOpen: React.Dispatch<React.SetStateAction<boolean>>, actionRef: React.RefObject<ActionType | undefined>): ProSchema<SysRoleDO>[] => [
 
     {
         title: '序号',
@@ -69,7 +70,7 @@ const TableColumnList = (currentForm: React.MutableRefObject<SysRoleInsertOrUpda
             <a key="1" onClick={() => {
 
                 currentForm.current = {id: entity.id} as SysRoleInsertOrUpdateDTO
-                setFormVisible(true)
+                setFormOpen(true)
 
             }}>编辑</a>,
 

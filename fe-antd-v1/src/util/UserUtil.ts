@@ -1,4 +1,4 @@
-import {getAppDispatch, getAppNav} from "@/App";
+import {getAppDispatch, getAppNav} from "@/MyApp";
 import {ToastSuccess} from "./ToastUtil";
 import PathConstant from "@/model/constant/PathConstant";
 import {signOut} from "@/store/userSlice";

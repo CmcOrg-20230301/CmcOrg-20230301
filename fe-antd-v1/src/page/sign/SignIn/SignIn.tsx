@@ -6,7 +6,7 @@ import IconSvg from '../../../../public/icon.svg'
 import SignLayout from "@/layout/SignLayout/SignLayout";
 import CommonConstant from "@/model/constant/CommonConstant";
 import {SignInFormHandler} from "@/page/sign/SignIn/SignInUtil";
-import {getAppNav} from "@/App";
+import {getAppNav} from "@/MyApp";
 import PathConstant from "@/model/constant/PathConstant";
 import Link from 'antd/es/typography/Link';
 import {PasswordRSAEncrypt, RSAEncryptPro} from "@/util/RsaUtil";

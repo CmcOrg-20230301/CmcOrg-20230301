@@ -1,35 +1,126 @@
-import {YesNoDict} from "@/util/DictUtil";
-import {ProFormColumnsType} from "@ant-design/pro-components";
-import {SysMenuInsertOrUpdateDTO} from "@/api/SysMenu";
+import {RouterMapKeyList} from "@/router/RouterMap";
+import {GetDictList, GetDictTreeList, YesNoDict} from "@/util/DictUtil";
+import {SysMenuInsertOrUpdateDTO, SysMenuPage} from "@/api/SysMenu";
+import {SysRolePage} from "@/api/SysRole";
+import {ProSchema} from "@ant-design/pro-utils";
 
 export const InitForm: SysMenuInsertOrUpdateDTO = {} as SysMenuInsertOrUpdateDTO
 
-const SchemaFormColumnList = (): ProFormColumnsType<SysMenuInsertOrUpdateDTO>[] => {
+const SchemaFormColumnList = (): ProSchema<SysMenuInsertOrUpdateDTO>[] => {
 
     return [
 
-
         {
-            title: '重定向',
-            dataIndex: 'redirect',
-            tooltip: '重定向，优先级最高',
+            title: '上级菜单',
+            dataIndex: 'parentId',
+            valueType: "treeSelect",
+            fieldProps: {
+                placeholder: '为空则表示顶级区域',
+                allowClear: true,
+                showSearch: true,
+                treeNodeFilterProp: 'title',
+            },
+            request: () => {
+                return GetDictTreeList(SysMenuPage);
+            }
         },
 
         {
-            title: '排序号',
-            dataIndex: 'orderNo',
-            tooltip: '排序号（值越大越前面，默认为 0）',
+            title: '菜单名',
+            dataIndex: 'name',
+            formItemProps: {
+                rules: [
+                    {
+                        required: true,
+                        whitespace: true,
+                    },
+                ],
+            },
         },
 
         {
-            title: '权限',
-            dataIndex: 'auths',
-            tooltip: '权限，多个可用逗号拼接，例如：menu:insertOrUpdate,menu:page,menu:deleteByIdSet,menu:infoById',
+            title: '路径',
+            dataIndex: 'path',
+            tooltip: '相同父菜单下，子菜单路径不能重复',
+        },
+
+        {
+            title: '路由',
+            dataIndex: 'router',
+            valueType: 'select',
+            fieldProps: {
+                showSearch: true,
+                options: RouterMapKeyList,
+            },
         },
 
         {
             title: '图标',
             dataIndex: 'icon',
+            tooltip: '地址：https://ant.design/components/icon-cn',
+        },
+
+        {
+            title: '权限',
+            dataIndex: 'auths',
+            tooltip: '示例：menu:insertOrUpdate,menu:page,menu:deleteByIdSet,menu:infoById',
+        },
+
+        {
+            title: '权限菜单',
+            dataIndex: 'authFlag',
+            valueEnum: YesNoDict,
+            valueType: 'switch',
+            tooltip: '不显示，只代表菜单权限',
+        },
+
+        {
+            title: '关联角色',
+            dataIndex: 'roleIdSet',
+            valueType: 'select',
+            fieldProps: {
+                showSearch: true,
+                mode: 'multiple',
+                maxTagCount: 'responsive',
+            },
+            request: () => {
+                return GetDictList(SysRolePage)
+            }
+        },
+
+        {
+            title: '是否启用',
+            dataIndex: 'enableFlag',
+            valueEnum: YesNoDict,
+            valueType: 'switch',
+        },
+
+        {
+            title: '起始页面',
+            dataIndex: 'firstFlag',
+            valueEnum: YesNoDict,
+            valueType: 'switch',
+            tooltip: '是否为默认打开的页面',
+        },
+
+        {
+            title: '排序号',
+            dataIndex: 'orderNo',
+            tooltip: '值越大越前面',
+        },
+
+        {
+            title: '是否显示',
+            dataIndex: 'showFlag',
+            valueEnum: YesNoDict,
+            valueType: 'switch',
+            tooltip: '是否在左侧菜单栏显示',
+        },
+
+        {
+            title: '重定向',
+            dataIndex: 'redirect',
+            tooltip: '优先级最高',
         },
 
         {
@@ -50,85 +141,6 @@ const SchemaFormColumnList = (): ProFormColumnsType<SysMenuInsertOrUpdateDTO>[] 
                 allowClear: true,
             }
         },
-
-        {
-            title: '是否是权限菜单',
-            dataIndex: 'authFlag',
-            valueEnum: YesNoDict,
-            valueType: 'switch',
-            tooltip: '是否是权限菜单，权限菜单：不显示，只代表菜单权限',
-        },
-
-        {
-            title: '父节点id',
-            dataIndex: 'parentId',
-            tooltip: '父节点id（顶级则为0）',
-        },
-
-        {
-            title: '是否显示在 左侧的菜单栏里面',
-            dataIndex: 'showFlag',
-            valueEnum: YesNoDict,
-            valueType: 'switch',
-            tooltip: '是否显示在 左侧的菜单栏里面，如果为 false，也可以通过 $router.push()访问到',
-        },
-
-        {
-            title: '页面的 path',
-            dataIndex: 'path',
-            tooltip: '页面的 path，备注：相同父菜单下，子菜单 path不能重复',
-        },
-
-        {
-            title: '路由',
-            dataIndex: 'router',
-        },
-
-        {
-            title: '菜单名',
-            dataIndex: 'name',
-            formItemProps: {
-                rules: [
-                    {
-                        required: true,
-                        whitespace: true,
-                    },
-                ],
-            },
-        },
-
-        {
-            title: '角色 idSet',
-            dataIndex: 'roleIdSet',
-            valueType: 'select',
-            fieldProps: {
-                showSearch: true,
-                mode: 'multiple',
-                maxTagCount: 'responsive',
-            },
-
-        },
-
-        {
-            title: '主键 id',
-            dataIndex: 'id',
-        },
-
-        {
-            title: '是否是起始页面',
-            dataIndex: 'firstFlag',
-            valueEnum: YesNoDict,
-            valueType: 'switch',
-            tooltip: '是否是起始页面，备注：只能存在一个 firstFlag === true 的菜单',
-        },
-
-        {
-            title: '是否启用',
-            dataIndex: 'enableFlag',
-            valueEnum: YesNoDict,
-            valueType: 'switch',
-        },
-
 
     ]
 

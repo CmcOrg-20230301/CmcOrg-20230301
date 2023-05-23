@@ -4,8 +4,10 @@ import NoLoginRouterList from "@/router/NoLoginRouterList";
 import RouterMap, {RouterMapKeyList} from "@/router/RouterMap";
 import {AppDispatch, useAppDispatch, useAppSelector} from "@/store";
 import PathConstant from "@/model/constant/PathConstant";
+import {App} from "antd";
+import {useAppProps} from "antd/es/app/context";
 
-// App
+// MyApp
 export default function () {
 
     const userSelfMenuList = useAppSelector(
@@ -76,11 +78,11 @@ interface ILoadElement {
 
 }
 
-let AppNav: NavigateFunction
+let appNav: NavigateFunction
 
 export function getAppNav() {
 
-    return AppNav
+    return appNav
 
 }
 
@@ -92,12 +94,22 @@ export function getAppDispatch() {
 
 }
 
+let myApp: useAppProps
+
+export function getApp() {
+
+    return myApp
+
+}
+
 // 加载 element
 function LoadElement(props: ILoadElement) {
 
-    AppNav = useNavigate()
+    appNav = useNavigate()
 
     appDispatch = useAppDispatch();
+
+    myApp = App.useApp();
 
     if (props.elementStr && RouterMapKeyList.includes(props.elementStr)) {
 

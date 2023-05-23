@@ -1,11 +1,11 @@
 import React from 'react'
 import ReactDOM from 'react-dom/client'
-import App from './App'
+import MyApp from './MyApp'
 import {Provider} from "react-redux";
 import store from "@/store";
 import dayjs from 'dayjs';
 import 'dayjs/locale/zh-cn';
-import {ConfigProvider, FloatButton} from 'antd';
+import {App, ConfigProvider, FloatButton} from 'antd';
 import zhCN from 'antd/locale/zh_CN';
 import 'antd/dist/reset.css';
 // 引入：自定义样式
@@ -21,13 +21,20 @@ ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
     // <React.StrictMode>
 
     <Provider store={store}>
+
         <ConfigProvider locale={zhCN}>
 
-            <App/>
+            <App>
 
-            <div title={"返回顶部"}>
-                <FloatButton.BackTop/>
-            </div>
+                <MyApp/>
+
+                <div title={"返回顶部"}>
+
+                    <FloatButton.BackTop/>
+
+                </div>
+
+            </App>
 
         </ConfigProvider>
 

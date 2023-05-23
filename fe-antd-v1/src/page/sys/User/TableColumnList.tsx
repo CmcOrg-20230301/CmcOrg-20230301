@@ -1,9 +1,10 @@
 import {YesNoDict} from "@/util/DictUtil";
-import {ActionType, ProColumns} from "@ant-design/pro-components";
+import {ActionType} from "@ant-design/pro-components";
 import {SysUserDeleteByIdSet, SysUserInsertOrUpdateDTO, SysUserPageVO} from "@/api/SysUser";
 import {ExecConfirm, ToastSuccess} from "@/util/ToastUtil";
+import {ProSchema} from "@ant-design/pro-utils";
 
-const TableColumnList = (currentForm: React.MutableRefObject<SysUserInsertOrUpdateDTO | null>, setFormVisible: React.Dispatch<React.SetStateAction<boolean>>, actionRef: React.RefObject<ActionType | undefined>): ProColumns<SysUserPageVO>[] => [
+const TableColumnList = (currentForm: React.MutableRefObject<SysUserInsertOrUpdateDTO | null>, setFormOpen: React.Dispatch<React.SetStateAction<boolean>>, actionRef: React.RefObject<ActionType | undefined>): ProSchema<SysUserPageVO>[] => [
 
     {
         title: '序号',
@@ -67,7 +68,7 @@ const TableColumnList = (currentForm: React.MutableRefObject<SysUserInsertOrUpda
             <a key="1" onClick={() => {
 
                 currentForm.current = {id: entity.id} as SysUserInsertOrUpdateDTO
-                setFormVisible(true)
+                setFormOpen(true)
 
             }}>编辑</a>,
 

@@ -8,7 +8,7 @@ import {
 } from "@ant-design/pro-components";
 import CommonConstant from "@/model/constant/CommonConstant";
 import {Outlet} from "react-router-dom";
-import {getAppDispatch, getAppNav} from "@/App";
+import {getAppDispatch, getAppNav} from "@/MyApp";
 import React, {useEffect, useState} from "react";
 import {SysMenuDO, SysMenuUserSelfMenuList} from "@/api/SysMenu";
 import PathConstant from "@/model/constant/PathConstant";
@@ -279,7 +279,7 @@ function AdminLayoutElement(props: IAdminLayoutElement) {
                                         <Avatar size="small"
                                                 src={CommonConstant.FIXED_AVATAR_URL}/>
 
-                                        <Typography.Text ellipsis style={{width: 75}}
+                                        <Typography.Text ellipsis style={{width: 95}}
                                                          type="secondary">{userSelfInfo.nickname}</Typography.Text>
 
                                     </Space>

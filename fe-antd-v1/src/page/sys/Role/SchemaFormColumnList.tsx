@@ -1,10 +1,9 @@
 import {YesNoDict} from "@/util/DictUtil";
-import {ProFormColumnsType} from "@ant-design/pro-components";
 import {SysRoleInsertOrUpdateDTO} from "@/api/SysRole";
 
 export const InitForm: SysRoleInsertOrUpdateDTO = {} as SysRoleInsertOrUpdateDTO
 
-const SchemaFormColumnList = (): ProFormColumnsType<SysRoleInsertOrUpdateDTO>[] => {
+const SchemaFormColumnList = (): ProSchema<SysRoleInsertOrUpdateDTO>[] => {
 
     return [
 

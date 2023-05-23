@@ -1,9 +1,10 @@
 import {ProSchemaValueEnumType, RequestData} from "@ant-design/pro-components";
 import {ListToTree} from "./TreeUtil";
 import MyPageDTO from "@/model/dto/MyPageDTO";
+import {AxiosRequestConfig} from "axios";
 
 // 将 map转换为 下拉选 list
-export function NumberTextMapToSelectList(map: Map<number, { text: string }>) {
+export function NumberTextMapToSelectList(map: Map<string, { text: string }>) {
 
     const resultList: DictLongListVO[] = []
 
@@ -21,7 +22,7 @@ export function NumberTextMapToSelectList(map: Map<number, { text: string }>) {
 }
 
 // 将 map转换为 下拉选 list
-export function NumberStringMapToSelectList(map: Map<number, string>) {
+export function NumberStringMapToSelectList(map: Map<string, string>) {
 
     const resultList: DictLongListVO[] = []
 
@@ -73,7 +74,7 @@ export function getByValueFromDictList(
 // 根据 list和 valueList，获取字典的 labelList值
 export function getByValueFromDictListPro(
     dictList: DictLongListVO [],
-    valueList?: number[],
+    valueList?: string[],
     defaultValue: string = '-',
     separator: string = '，'
 ) {
@@ -101,7 +102,7 @@ export function getByValueFromDictListPro(
 export interface DictLongListVO {
 
     label: string // 显示用
-    value: number // 传值用
+    value: string // 传值用
 
 }
 
@@ -109,12 +110,12 @@ export interface DictLongListVO {
 interface IDictResult {
 
     name?: string
-    id?: number
+    id?: string
 
 }
 
 // 通用的，获取字典集合
-export function GetDictList<T extends IDictResult>(requestFunction: (value: MyPageDTO | any) => Promise<RequestData<T>>) {
+export function GetDictList<T extends IDictResult>(requestFunction: (value: MyPageDTO, config?: AxiosRequestConfig) => Promise<RequestData<T>>) {
 
     return new Promise<DictLongListVO[]>(resolve => {
 
@@ -144,11 +145,11 @@ export function GetDictList<T extends IDictResult>(requestFunction: (value: MyPa
 // 通用的，获取字典树集合，方法返回值
 export interface IMyTree extends DictLongListVO {
 
-    id: number
-    key: number
+    id: string
+    key: string
     label: string // 备注：和 title是一样的值
     title: string
-    parentId: number
+    parentId: string
     orderNo: number
     children?: IMyTree []
 
@@ -158,14 +159,14 @@ export interface IMyTree extends DictLongListVO {
 interface IDictTreeResult {
 
     name?: string
-    id?: number
-    parentId?: number
+    id?: string
+    parentId?: string
     orderNo?: number
 
 }
 
 // 通用的，获取字典树集合
-export function GetDictTreeList<T extends IDictTreeResult>(requestFunction: (value: MyPageDTO) => Promise<RequestData<T>>, toTreeFlag: boolean = true) {
+export function GetDictTreeList<T extends IDictTreeResult, D extends MyPageDTO>(requestFunction: (value: D, config?: AxiosRequestConfig) => Promise<RequestData<T>>, toTreeFlag: boolean = true) {
 
     return new Promise<IMyTree[]>(resolve => {
 

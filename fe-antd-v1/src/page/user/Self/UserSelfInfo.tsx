@@ -1,7 +1,7 @@
 import {useRef} from "react";
 import {UserSelfInfo, UserSelfInfoVO, UserSelfUpdateInfo, UserSelfUpdateInfoDTO} from "@/api/UserSelf";
 import {setUserSelfInfo} from "@/store/userSlice";
-import {getAppDispatch} from "@/App";
+import {getAppDispatch} from "@/MyApp";
 import {ActionType, ProDescriptions} from "@ant-design/pro-components";
 import {ToastSuccess} from "@/util/ToastUtil";
 import {USER_CENTER_KEY_ONE} from "@/page/user/Self/Self";

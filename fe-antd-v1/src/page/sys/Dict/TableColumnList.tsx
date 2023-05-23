@@ -1,9 +1,10 @@
 import {YesNoDict} from "@/util/DictUtil";
-import {ActionType, ProColumns} from "@ant-design/pro-components";
+import {ActionType} from "@ant-design/pro-components";
 import {SysDictDeleteByIdSet, SysDictDO, SysDictInsertOrUpdateDTO} from "@/api/SysDict";
 import {ExecConfirm, ToastSuccess} from "@/util/ToastUtil";
+import {ProSchema} from "@ant-design/pro-utils";
 
-const TableColumnList = (currentForm: React.MutableRefObject<SysDictInsertOrUpdateDTO | null>, setFormVisible: React.Dispatch<React.SetStateAction<boolean>>, actionRef: React.RefObject<ActionType | undefined>): ProColumns<SysDictDO>[] => [
+const TableColumnList = (currentForm: React.MutableRefObject<SysDictInsertOrUpdateDTO | null>, setFormOpen: React.Dispatch<React.SetStateAction<boolean>>, actionRef: React.RefObject<ActionType | undefined>): ProSchema<SysDictDO>[] => [
 
     {
         title: '序号',
@@ -71,7 +72,7 @@ const TableColumnList = (currentForm: React.MutableRefObject<SysDictInsertOrUpda
             <a key="1" onClick={() => {
 
                 currentForm.current = {id: entity.id} as SysDictInsertOrUpdateDTO
-                setFormVisible(true)
+                setFormOpen(true)
 
             }}>编辑</a>,
 

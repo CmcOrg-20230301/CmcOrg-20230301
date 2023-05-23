@@ -27,7 +27,7 @@ export default function () {
 
     const [useForm] = Form.useForm<AdminInsertOrUpdateDTO>();
 
-    const [formVisible, setFormVisible] = useState<boolean>(false);
+    const [formOpen, setFormOpen] = useState<boolean>(false);
 
     const currentForm = useRef<AdminInsertOrUpdateDTO>({} as AdminInsertOrUpdateDTO)
 
@@ -70,7 +70,7 @@ export default function () {
 
                 revalidateOnFocus={false}
 
-                columns={TableColumnList(currentForm, setFormVisible, actionRef)}
+                columns={TableColumnList(currentForm, setFormOpen, actionRef)}
 
                 options={{
                     fullScreen: true,
@@ -89,7 +89,7 @@ export default function () {
                         <Button key={"1"} icon={<PlusOutlined/>} type="primary" onClick={() => {
 
                             currentForm.current = {} as AdminInsertOrUpdateDTO
-                            setFormVisible(true)
+                            setFormOpen(true)
 
                         }}>新建</Button>
 
@@ -187,7 +187,7 @@ export default function () {
 
                                         return AdminDeleteByIdSetApi({idSet: [currentForm.current.id!]}).then(res => {
 
-                                            setFormVisible(false)
+                                            setFormOpen(false)
                                             ToastSuccess(res.msg)
                                             actionRef.current?.reload()
 
@@ -229,8 +229,8 @@ export default function () {
 
                 }}
 
-                visible={formVisible}
-                onVisibleChange={setFormVisible}
+                open={formOpen}
+                onOpenChange={setFormOpen}
                 columns={SchemaFormColumnList()}
 
                 onFinish={async (form) => {

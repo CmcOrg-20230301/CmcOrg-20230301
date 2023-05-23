@@ -5,7 +5,7 @@ import {PasswordRSAEncrypt} from "@/util/RsaUtil";
 import {ToastSuccess} from "@/util/ToastUtil";
 import LocalStorageKey from "@/model/constant/LocalStorageKey";
 import {ApiResultVO} from "@/util/HttpUtil";
-import {getAppNav} from "@/App";
+import {getAppNav} from "@/MyApp";
 import PathConstant from "@/model/constant/PathConstant";
 import {validate} from "@/util/ValidatorUtil";
 import {SignEmailSignInPassword} from "@/api/SignEmail";

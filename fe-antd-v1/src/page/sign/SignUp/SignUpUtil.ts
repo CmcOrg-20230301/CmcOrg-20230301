@@ -2,7 +2,7 @@ import {PasswordRSAEncrypt, RSAEncryptPro} from "@/util/RsaUtil";
 import {ApiResultVO} from "@/util/HttpUtil";
 import PathConstant from "@/model/constant/PathConstant";
 import {ToastSuccess} from "@/util/ToastUtil";
-import {getAppNav} from "@/App";
+import {getAppNav} from "@/MyApp";
 import {SignEmailSignUp, SignEmailSignUpSendCode} from "@/api/SignEmail";
 import {ISignUpForm} from "@/page/sign/SignUp/SignUp";
 
