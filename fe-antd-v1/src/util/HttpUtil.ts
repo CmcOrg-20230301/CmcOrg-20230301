@@ -11,14 +11,14 @@ const REQUEST_ERROR_MSG = "请求失败：服务器未启动"
 
 let hiddenErrorMsgFlag = false
 
-const config: CreateAxiosDefaults = {
+const config: { baseURL: string; timeout: number } = {
 
     baseURL: import.meta.env.DEV ? '/api' : window.apiUrl,
     timeout: 30 * 60 * 1000, // 默认 30分钟
 
 }
 
-const $http = axios.create(config) as MyAxiosInstance
+const $http = axios.create(config as CreateAxiosDefaults) as MyAxiosInstance
 
 // 请求拦截器
 $http.interceptors.request.use(

@@ -10,9 +10,7 @@ const TableColumnList = (currentForm: React.MutableRefObject<AdminInsertOrUpdate
         valueType: 'index',
         width: 90,
     },
-
     AdminTableJson
-
     {
 
         title: '操作',

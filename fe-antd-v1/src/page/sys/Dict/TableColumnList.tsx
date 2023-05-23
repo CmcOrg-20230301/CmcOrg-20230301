@@ -13,31 +13,13 @@ const TableColumnList = (currentForm: React.MutableRefObject<SysDictInsertOrUpda
         width: 90,
     },
 
+    {title: 'key', dataIndex: 'dictKey', ellipsis: true,},
 
-    {title: '排序号', dataIndex: 'orderNo', ellipsis: true, width: 90,},
+    {title: '名称', dataIndex: 'name', ellipsis: true,},
 
-    {
-        title: '修改时间',
-        dataIndex: 'updateTime',
-        hideInSearch: true,
-        valueType: 'fromNow',
-    },
+    {title: 'value', dataIndex: 'value', ellipsis: true, width: 90,},
 
-    {title: '备注', dataIndex: 'remark', ellipsis: true, width: 90,},
-
-    {
-        title: '是否逻辑删除',
-        dataIndex: 'delFlag',
-        valueEnum: YesNoDict
-    },
-
-    {title: '字典类型：1 字典 2 字典项', dataIndex: 'type', ellipsis: true, width: 90,},
-
-    {title: '乐观锁', dataIndex: 'version', ellipsis: true, width: 90,},
-
-    {title: '字典 key', dataIndex: 'dictKey', ellipsis: true, width: 90,},
-
-    {title: '修改人id', dataIndex: 'updateId', ellipsis: true, width: 90,},
+    {title: '排序号', dataIndex: 'orderNo', ellipsis: true, hideInSearch: true,},
 
     {
         title: '创建时间',
@@ -46,11 +28,12 @@ const TableColumnList = (currentForm: React.MutableRefObject<SysDictInsertOrUpda
         valueType: 'fromNow',
     },
 
-    {title: '创建人id', dataIndex: 'createId', ellipsis: true, width: 90,},
-
-    {title: '字典/字典项 名', dataIndex: 'name', ellipsis: true, width: 90,},
-
-    {title: '主键id', dataIndex: 'id', ellipsis: true, width: 90,},
+    {
+        title: '修改时间',
+        dataIndex: 'updateTime',
+        hideInSearch: true,
+        valueType: 'fromNow',
+    },
 
     {
         title: '是否启用',
@@ -58,8 +41,7 @@ const TableColumnList = (currentForm: React.MutableRefObject<SysDictInsertOrUpda
         valueEnum: YesNoDict
     },
 
-    {title: '字典项 value', dataIndex: 'value', ellipsis: true, width: 90,},
-
+    {title: '备注', dataIndex: 'remark', ellipsis: true, width: 90,},
 
     {
 

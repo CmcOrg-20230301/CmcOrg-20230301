@@ -3,6 +3,8 @@ import {ActionType} from "@ant-design/pro-components";
 import {SysUserDeleteByIdSet, SysUserInsertOrUpdateDTO, SysUserPageVO} from "@/api/SysUser";
 import {ExecConfirm, ToastSuccess} from "@/util/ToastUtil";
 import {ProSchema} from "@ant-design/pro-utils";
+import CommonConstant from "@/model/constant/CommonConstant";
+import {EyeOutlined} from "@ant-design/icons";
 
 const TableColumnList = (currentForm: React.MutableRefObject<SysUserInsertOrUpdateDTO | null>, setFormOpen: React.Dispatch<React.SetStateAction<boolean>>, actionRef: React.RefObject<ActionType | undefined>): ProSchema<SysUserPageVO>[] => [
 
@@ -13,16 +15,36 @@ const TableColumnList = (currentForm: React.MutableRefObject<SysUserInsertOrUpda
         width: 90,
     },
 
+    {
+        title: '头像', dataIndex: 'avatarUri', valueType: 'image',
+        fieldProps: {
+            preview: {
+                mask: <EyeOutlined title={"预览"}/>,
+            }
+        },
+        renderText: (text) => {
+            return text || CommonConstant.FIXED_AVATAR_URL
+        }
+    },
 
-    {title: '头像uri', dataIndex: 'avatarUri', ellipsis: true, width: 90,},
+    {title: '昵称', dataIndex: 'nickname', ellipsis: true,},
+
+    {title: '登录名', dataIndex: 'signInName', ellipsis: true, width: 70,},
+
+    {title: '邮箱', dataIndex: 'email', ellipsis: true, width: 50,},
+
+    {
+        title: '是否正常',
+        dataIndex: 'enableFlag',
+        valueEnum: YesNoDict
+    },
 
     {
         title: '是否有密码',
         dataIndex: 'passwordFlag',
-        valueEnum: YesNoDict
+        valueEnum: YesNoDict,
+        width: 100,
     },
-
-    {title: '手机号码', dataIndex: 'phone', ellipsis: true, width: 90,},
 
     {
         title: '创建时间',
@@ -31,31 +53,12 @@ const TableColumnList = (currentForm: React.MutableRefObject<SysUserInsertOrUpda
         valueType: 'fromNow',
     },
 
-    {title: '微信 openId', dataIndex: 'wxOpenId', ellipsis: true, width: 90,},
-
-    {title: '登录名', dataIndex: 'signInName', ellipsis: true, width: 90,},
-
-    {title: '昵称', dataIndex: 'nickname', ellipsis: true, width: 90,},
-
-    {title: '角色 idSet', dataIndex: 'roleIdSet', ellipsis: true, width: 90,},
-
     {
         title: '修改时间',
         dataIndex: 'updateTime',
         hideInSearch: true,
         valueType: 'fromNow',
     },
-
-    {title: '主键id', dataIndex: 'id', ellipsis: true, width: 90,},
-
-    {
-        title: '正常/冻结',
-        dataIndex: 'enableFlag',
-        valueEnum: YesNoDict
-    },
-
-    {title: '邮箱', dataIndex: 'email', ellipsis: true, width: 90,},
-
 
     {
 

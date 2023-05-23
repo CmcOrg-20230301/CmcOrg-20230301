@@ -13,11 +13,10 @@ const TableColumnList = (currentForm: React.MutableRefObject<SysRoleInsertOrUpda
         width: 90,
     },
 
-
-    {title: '修改人id', dataIndex: 'updateId', ellipsis: true, width: 90,},
+    {title: '角色名', dataIndex: 'name', ellipsis: true,},
 
     {
-        title: '是否是默认角色',
+        title: '默认角色',
         dataIndex: 'defaultFlag',
         valueEnum: YesNoDict
     },
@@ -29,10 +28,6 @@ const TableColumnList = (currentForm: React.MutableRefObject<SysRoleInsertOrUpda
         valueType: 'fromNow',
     },
 
-    {title: '创建人id', dataIndex: 'createId', ellipsis: true, width: 90,},
-
-    {title: '角色名', dataIndex: 'name', ellipsis: true, width: 90,},
-
     {
         title: '修改时间',
         dataIndex: 'updateTime',
@@ -40,24 +35,13 @@ const TableColumnList = (currentForm: React.MutableRefObject<SysRoleInsertOrUpda
         valueType: 'fromNow',
     },
 
-    {title: '备注', dataIndex: 'remark', ellipsis: true, width: 90,},
-
-    {title: '主键id', dataIndex: 'id', ellipsis: true, width: 90,},
-
-    {
-        title: '是否逻辑删除',
-        dataIndex: 'delFlag',
-        valueEnum: YesNoDict
-    },
-
-    {title: '乐观锁', dataIndex: 'version', ellipsis: true, width: 90,},
-
     {
         title: '是否启用',
         dataIndex: 'enableFlag',
         valueEnum: YesNoDict
     },
 
+    {title: '备注', dataIndex: 'remark', ellipsis: true, width: 90,},
 
     {
 

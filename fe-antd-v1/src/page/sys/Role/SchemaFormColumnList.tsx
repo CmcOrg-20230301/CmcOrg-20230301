@@ -1,32 +1,15 @@
-import {YesNoDict} from "@/util/DictUtil";
+import {GetDictList, GetDictTreeList, YesNoDict} from "@/util/DictUtil";
 import {SysRoleInsertOrUpdateDTO} from "@/api/SysRole";
+import {ProSchema} from "@ant-design/pro-utils";
+import {TreeSelect} from "antd";
+import {SysMenuPage} from "@/api/SysMenu";
+import {SysUserDictList} from "@/api/SysUser";
 
 export const InitForm: SysRoleInsertOrUpdateDTO = {} as SysRoleInsertOrUpdateDTO
 
 const SchemaFormColumnList = (): ProSchema<SysRoleInsertOrUpdateDTO>[] => {
 
     return [
-
-
-        {
-            title: '用户 idSet',
-            dataIndex: 'userIdSet',
-            valueType: 'select',
-            fieldProps: {
-                showSearch: true,
-                mode: 'multiple',
-                maxTagCount: 'responsive',
-            },
-
-        },
-
-        {
-            title: '是否是默认角色',
-            dataIndex: 'defaultFlag',
-            valueEnum: YesNoDict,
-            valueType: 'switch',
-            tooltip: '是否是默认角色，备注：只会有一个默认角色',
-        },
 
         {
             title: '角色名',
@@ -39,19 +22,53 @@ const SchemaFormColumnList = (): ProSchema<SysRoleInsertOrUpdateDTO>[] => {
                     },
                 ],
             },
-            tooltip: '角色名，不能重复',
+            tooltip: '不能重复',
         },
 
         {
-            title: '菜单 idSet',
+            title: '关联菜单',
             dataIndex: 'menuIdSet',
+            valueType: 'treeSelect',
+            fieldProps: {
+                placeholder: '请选择',
+                allowClear: true,
+                treeNodeFilterProp: 'title',
+                maxTagCount: 'responsive',
+                treeCheckable: true,
+                showCheckedStrategy: TreeSelect.SHOW_PARENT,
+            },
+            request: () => {
+                return GetDictTreeList(SysMenuPage);
+            }
+        },
+
+        {
+            title: '关联用户',
+            dataIndex: 'userIdSet',
             valueType: 'select',
             fieldProps: {
                 showSearch: true,
                 mode: 'multiple',
                 maxTagCount: 'responsive',
             },
+            request: () => {
+                return GetDictList(SysUserDictList)
+            }
+        },
 
+        {
+            title: '默认角色',
+            dataIndex: 'defaultFlag',
+            valueEnum: YesNoDict,
+            valueType: 'switch',
+            tooltip: '每个用户都拥有此角色权限，备注：只会有一个默认角色',
+        },
+
+        {
+            title: '是否启用',
+            dataIndex: 'enableFlag',
+            valueEnum: YesNoDict,
+            valueType: 'switch',
         },
 
         {
@@ -72,19 +89,6 @@ const SchemaFormColumnList = (): ProSchema<SysRoleInsertOrUpdateDTO>[] => {
                 allowClear: true,
             }
         },
-
-        {
-            title: '主键 id',
-            dataIndex: 'id',
-        },
-
-        {
-            title: '是否启用',
-            dataIndex: 'enableFlag',
-            valueEnum: YesNoDict,
-            valueType: 'switch',
-        },
-
 
     ]
 

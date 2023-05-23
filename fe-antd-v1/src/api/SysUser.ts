@@ -100,7 +100,7 @@ export interface DictVO {
 
 // 下拉列表
 export function SysUserDictList(form: SysUserDictListDTO, config?: AxiosRequestConfig) {
-    return $http.myPost<DictVO>('/sys/user/dictList', form, config)
+    return $http.myProPagePost<DictVO>('/sys/user/dictList', form, config)
 }
 
 // 批量：重置头像

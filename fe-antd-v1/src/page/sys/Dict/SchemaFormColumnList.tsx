@@ -1,5 +1,6 @@
 import {YesNoDict} from "@/util/DictUtil";
 import {SysDictInsertOrUpdateDTO} from "@/api/SysDict";
+import {ProSchema} from "@ant-design/pro-utils";
 
 export const InitForm: SysDictInsertOrUpdateDTO = {} as SysDictInsertOrUpdateDTO
 
@@ -7,15 +8,21 @@ const SchemaFormColumnList = (): ProSchema<SysDictInsertOrUpdateDTO>[] => {
 
     return [
 
-
         {
-            title: '排序号',
-            dataIndex: 'orderNo',
-            tooltip: '排序号（值越大越前面，默认为 0）',
+            title: 'key',
+            dataIndex: 'dictKey',
+            formItemProps: {
+                rules: [
+                    {
+                        required: true,
+                        whitespace: true,
+                    },
+                ],
+            },
         },
 
         {
-            title: '字典/字典项 名',
+            title: '名称',
             dataIndex: 'name',
             formItemProps: {
                 rules: [
@@ -25,6 +32,37 @@ const SchemaFormColumnList = (): ProSchema<SysDictInsertOrUpdateDTO>[] => {
                     },
                 ],
             },
+        },
+
+        {
+            title: '字典类型',
+            dataIndex: 'type',
+            formItemProps: {
+                rules: [
+                    {
+                        required: true,
+                    },
+                ],
+            },
+            tooltip: '1 字典 2 字典项',
+        },
+
+        {
+            title: 'value',
+            dataIndex: 'value',
+            tooltip: '数字 1 2 3 ...',
+        },
+
+        {
+            title: '排序号',
+            dataIndex: 'orderNo',
+        },
+
+        {
+            title: '是否启用',
+            dataIndex: 'enableFlag',
+            valueEnum: YesNoDict,
+            valueType: 'switch',
         },
 
         {
@@ -45,52 +83,6 @@ const SchemaFormColumnList = (): ProSchema<SysDictInsertOrUpdateDTO>[] => {
                 allowClear: true,
             }
         },
-
-        {
-            title: '主键 id',
-            dataIndex: 'id',
-        },
-
-        {
-            title: '字典类型：1 字典 2 字典项',
-            dataIndex: 'type',
-            formItemProps: {
-                rules: [
-                    {
-                        required: true,
-                        whitespace: true,
-                    },
-                ],
-            },
-        },
-
-        {
-            title: '字典 key',
-            dataIndex: 'dictKey',
-            formItemProps: {
-                rules: [
-                    {
-                        required: true,
-                        whitespace: true,
-                    },
-                ],
-            },
-            tooltip: '字典 key（不能重复），字典项要冗余这个 key，目的：方便操作',
-        },
-
-        {
-            title: '字典项 value',
-            dataIndex: 'value',
-            tooltip: '字典项 value（数字 123...）备注：字典为 -1',
-        },
-
-        {
-            title: '是否启用',
-            dataIndex: 'enableFlag',
-            valueEnum: YesNoDict,
-            valueType: 'switch',
-        },
-
 
     ]
 

@@ -115,7 +115,7 @@ interface IDictResult {
 }
 
 // 通用的，获取字典集合
-export function GetDictList<T extends IDictResult>(requestFunction: (value: MyPageDTO, config?: AxiosRequestConfig) => Promise<RequestData<T>>) {
+export function GetDictList<T extends IDictResult>(requestFunction: (value: MyPageDTO | any, config?: AxiosRequestConfig) => Promise<RequestData<T>>) {
 
     return new Promise<DictLongListVO[]>(resolve => {
 
@@ -170,7 +170,7 @@ export function GetDictTreeList<T extends IDictTreeResult, D extends MyPageDTO>(
 
     return new Promise<IMyTree[]>(resolve => {
 
-        requestFunction({pageSize: -1}).then(res => {
+        requestFunction({pageSize: -1 as string}).then(res => {
 
             let dictList: IMyTree[] = []
 

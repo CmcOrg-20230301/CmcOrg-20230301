@@ -13,8 +13,13 @@ const TableColumnList = (currentForm: React.MutableRefObject<SysParamInsertOrUpd
         width: 90,
     },
 
+    {title: '配置名', dataIndex: 'name', ellipsis: true, width: 90,},
 
-    {title: '修改人id', dataIndex: 'updateId', ellipsis: true, width: 90,},
+    {
+        title: '值', dataIndex: 'value', hideInSearch: true, width: 300, render: (text) => {
+            return <Typography.Text ellipsis={{tooltip: true}} style={{width: 300}}>{text}</Typography.Text>
+        }
+    },
 
     {
         title: '创建时间',
@@ -23,10 +28,6 @@ const TableColumnList = (currentForm: React.MutableRefObject<SysParamInsertOrUpd
         valueType: 'fromNow',
     },
 
-    {title: '创建人id', dataIndex: 'createId', ellipsis: true, width: 90,},
-
-    {title: '配置名', dataIndex: 'name', ellipsis: true, width: 90,},
-
     {
         title: '修改时间',
         dataIndex: 'updateTime',
@@ -34,26 +35,18 @@ const TableColumnList = (currentForm: React.MutableRefObject<SysParamInsertOrUpd
         valueType: 'fromNow',
     },
 
-    {title: '备注', dataIndex: 'remark', ellipsis: true, width: 90,},
-
-    {title: '主键id', dataIndex: 'id', ellipsis: true, width: 90,},
-
-    {
-        title: '是否逻辑删除',
-        dataIndex: 'delFlag',
-        valueEnum: YesNoDict
-    },
-
-    {title: '乐观锁', dataIndex: 'version', ellipsis: true, width: 90,},
-
     {
         title: '是否启用',
         dataIndex: 'enableFlag',
-        valueEnum: YesNoDict
+        valueEnum: YesNoDict,
+        width: 90
     },
 
-    {title: '值', dataIndex: 'value', ellipsis: true, width: 90,},
-
+    {
+        title: '备注', dataIndex: 'remark', width: 300, render: (text) => {
+            return <Typography.Text ellipsis={{tooltip: true}} style={{width: 300}}>{text}</Typography.Text>
+        }
+    },
 
     {
 

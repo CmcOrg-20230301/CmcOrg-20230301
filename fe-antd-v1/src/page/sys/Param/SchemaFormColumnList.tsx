@@ -1,12 +1,12 @@
 import {YesNoDict} from "@/util/DictUtil";
 import {SysParamInsertOrUpdateDTO} from "@/api/SysParam";
+import {ProSchema} from "@ant-design/pro-utils";
 
 export const InitForm: SysParamInsertOrUpdateDTO = {} as SysParamInsertOrUpdateDTO
 
 const SchemaFormColumnList = (): ProSchema<SysParamInsertOrUpdateDTO>[] => {
 
     return [
-
 
         {
             title: '配置名',
@@ -19,7 +19,20 @@ const SchemaFormColumnList = (): ProSchema<SysParamInsertOrUpdateDTO>[] => {
                     },
                 ],
             },
-            tooltip: '配置名，以 id为不变值进行使用，不要用此属性',
+            tooltip: '以 id为不变值进行使用，不要用此属性',
+        },
+
+        {
+            title: '值',
+            dataIndex: 'value',
+            formItemProps: {
+                rules: [
+                    {
+                        required: true,
+                        whitespace: true,
+                    },
+                ],
+            },
         },
 
         {
@@ -42,30 +55,11 @@ const SchemaFormColumnList = (): ProSchema<SysParamInsertOrUpdateDTO>[] => {
         },
 
         {
-            title: '主键 id',
-            dataIndex: 'id',
-        },
-
-        {
-            title: '值',
-            dataIndex: 'value',
-            formItemProps: {
-                rules: [
-                    {
-                        required: true,
-                        whitespace: true,
-                    },
-                ],
-            },
-        },
-
-        {
             title: '是否启用',
             dataIndex: 'enableFlag',
             valueEnum: YesNoDict,
             valueType: 'switch',
         },
-
 
     ]
 
