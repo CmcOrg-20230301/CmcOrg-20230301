@@ -7,7 +7,7 @@
     "fe-electron-v1-start": "npm run build && chcp 65001 && electron ./dist/main.js"
   },
   "devDependencies": {
-    "electron": "^24.1.2",
+    "electron": "^24.3.1",
     "typescript": "^5.0.4"
   }
 }

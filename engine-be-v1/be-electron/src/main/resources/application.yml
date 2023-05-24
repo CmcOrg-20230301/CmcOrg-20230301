@@ -1,0 +1,6 @@
+server:
+  port: 11001
+
+spring:
+  application:
+    name: be-electron

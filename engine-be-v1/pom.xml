@@ -65,10 +65,18 @@
         <module>be-pay</module>
         <module>be-pay-ali</module>
         <module>be-pay-wx</module>
+        <module>be-electron</module>
     </modules>
 
     <dependencyManagement>
         <dependencies>
+
+            <!-- be-electron -->
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>be-electron</artifactId>
+                <version>${project.version}</version>
+            </dependency>
 
             <!-- be-pay-wx -->
             <dependency>
@@ -238,6 +246,13 @@
                 <version>${project.version}</version>
             </dependency>
 
+            <!-- be-gateway -->
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>be-gateway</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
             <!-- be-wx -->
             <dependency>
                 <groupId>${project.groupId}</groupId>
@@ -357,6 +372,13 @@
                 <groupId>com.alibaba.cloud</groupId>
                 <artifactId>spring-cloud-starter-alibaba-nacos-config</artifactId>
                 <version>2021.0.5.0</version>
+            </dependency>
+
+            <!-- javacv -->
+            <dependency>
+                <groupId>org.bytedeco</groupId>
+                <artifactId>javacv-platform</artifactId>
+                <version>1.5.8</version>
             </dependency>
 
             <!-- 微信支付，获取最新版本号：https://github.com/wechatpay-apiv3/wechatpay-java -->

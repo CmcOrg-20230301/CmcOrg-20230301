@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>com.cmcorg20230301</groupId>
+        <artifactId>engine-be-v1</artifactId>
+        <version>2023.3.1</version>
+    </parent>
+
+    <artifactId>be-electron</artifactId>
+    <description>electron相关</description>
+
+    <dependencies>
+
+        <!-- spring-boot-validation -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-validation</artifactId>
+        </dependency>
+
+        <!-- spring-boot-web -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+
+        <!-- be-util -->
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>be-util</artifactId>
+        </dependency>
+
+        <!-- be-model -->
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>be-model</artifactId>
+        </dependency>
+
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>
