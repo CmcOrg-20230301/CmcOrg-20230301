@@ -24,37 +24,44 @@ public class AwtUtil {
     @SneakyThrows
     public static void main(String[] args) {
 
-        log.info("开始匹配");
-
         while (true) {
 
-            // 通过：图片扫描屏幕
-            ScanResult scanResult = scanScreenByImage(SCAN_SCREEN_BY_IMAGE);
+            ThreadUtil.execute(() -> {
 
-            if (scanResult != null) {
+                // 通过：图片扫描屏幕
+                ScanResult scanResult = scanScreenByImage(SCAN_SCREEN_BY_IMAGE);
 
-                log.info("scanResult：{}，getCenterX()：{}，getCenterY：{}", JSONUtil.toJsonStr(scanResult),
-                    scanResult.getCenterX(), scanResult.getCenterY());
+                if (scanResult != null) {
 
-                Robot robot = new Robot();
+                    log.info("scanResult：{}，getCenterX()：{}，getCenterY：{}", JSONUtil.toJsonStr(scanResult),
+                        scanResult.getCenterX(), scanResult.getCenterY());
 
-                // 鼠标移动到某一点
-                robot.mouseMove(scanResult.getCenterX(), scanResult.getCenterY());
+                    try {
 
-                // 模拟鼠标按下左键
-                robot.mousePress(InputEvent.BUTTON1_MASK);
+                        Robot robot = new Robot();
 
-                // 模拟鼠标松开左键
-                robot.mouseRelease(InputEvent.BUTTON1_MASK);
+                        // 鼠标移动到某一点
+                        robot.mouseMove(scanResult.getCenterX(), scanResult.getCenterY());
 
-                return;
+                        // 模拟鼠标按下左键
+                        robot.mousePress(InputEvent.BUTTON1_MASK);
 
-            } else {
+                        // 模拟鼠标松开左键
+                        robot.mouseRelease(InputEvent.BUTTON1_MASK);
 
-                log.info("未匹配");
-                ThreadUtil.safeSleep(2000);
+                        System.exit(0);
 
-            }
+                    } catch (Exception e) {
+
+                        e.printStackTrace();
+
+                    }
+
+                }
+
+            });
+
+            ThreadUtil.safeSleep(2000);
 
         }
 
@@ -97,6 +104,8 @@ public class AwtUtil {
         // 截图
         BufferedImage source = robot.createScreenCapture(new Rectangle(screen.width, screen.height));
 
+        //        ImageIO.write(source, "png", FileUtil.touch("/test/img/" + IdUtil.simpleUUID() + ".png"));
+
         // 需要匹配的图片
         BufferedImage target = ImgUtil.read(scanScreenByImagePath);
 
@@ -104,6 +113,8 @@ public class AwtUtil {
         long gapValue = 1; // 误差
         int width = target.getWidth();
         int height = target.getHeight();
+
+        log.info("开始匹配，screen：{}，width：{}，height：{}", screen, width, height);
 
         for (int x = 0; x < width; x++) {
 
