@@ -24,6 +24,8 @@ public class AwtUtil {
     @SneakyThrows
     public static void main(String[] args) {
 
+        log.info("开始匹配");
+
         while (true) {
 
             // 通过：图片扫描屏幕
