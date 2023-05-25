@@ -138,8 +138,8 @@ CREATE TABLE `sys_menu`
 -- Records of sys_menu
 -- ----------------------------
 INSERT INTO `sys_menu`
-VALUES (3, 1, '2021-12-22 10:53:32', 1, '2022-06-23 16:36:39', 1, 2, 0, '', '系统管理', '', 'SettingOutlined',
-        221004205817000054, '', 1, 0, '', '', 9990, 0, 0);
+VALUES (3, 1, '2021-12-22 10:53:32', 0, '2023-05-23 22:18:42', 1, 2, 0, '', '系统管理', '', 'SettingOutlined',
+        221004205817000054, '', 1, 0, '', '', 9900, 0, 0);
 INSERT INTO `sys_menu`
 VALUES (4, 1, '2021-12-20 11:10:15', 1, '2022-05-03 16:21:50', 1, 2, 0, '', '菜单管理', '/admin/sys/menu', '', 3, '', 1, 0,
         'sysMenuMenu', '', 10000, 0, 0);
@@ -225,14 +225,20 @@ INSERT INTO `sys_menu`
 VALUES (63, 1, '2022-07-12 11:01:41', 1, '2022-07-12 11:02:01', 1, 2, 0, '', 'Helper App', 'https://cmc0.github.io',
         'CodeOutlined', 221004205817000054, '', 1, 1, '', '', 0, 0, 0);
 INSERT INTO `sys_menu`
-VALUES (221004205727000053, 0, '2022-10-04 12:57:27', 0, '2022-10-04 16:30:07', 1, 2, 0, '', '欢迎', '/admin/sys/welcome',
-        'SmileOutlined', 221004205817000054, '', 1, 0, 'sysWelcomeWelcome', '', 10000, 1, 0);
-INSERT INTO `sys_menu`
-VALUES (221004205817000054, 0, '2022-10-04 12:58:17', 0, '2022-10-04 13:12:47', 1, 2, 0, '', '系统平台', '',
-        'SettingOutlined', 0, '', 1, 0, '', '/admin/sys/welcome', 10000, 0, 0);
+VALUES (221004205817000054, 0, '2022-10-04 12:58:17', 0, '2023-05-23 22:16:10', 1, 2, 0, '', '系统平台', '',
+        'SettingOutlined', 0, '', 1, 0, '', '/admin/sys/menu', 10000, 0, 0);
 INSERT INTO `sys_menu`
 VALUES (221005155605000086, 0, '2022-10-05 07:56:05', 0, '2022-10-05 07:56:16', 1, 2, 0, '', '欢迎', '/admin/welcome',
         'SmileOutlined', 0, '', 1, 0, 'WelcomeWelcome', '', 11000, 0, 0);
+INSERT INTO `sys_menu`
+VALUES (230523221709113901, 0, '2023-05-23 22:17:10', 0, '2023-05-23 22:23:36', 1, 0, 0, '', '系统监控', '',
+        'FundProjectionScreenOutlined', 221004205817000054, '', 1, 0, '', '', 9800, 0, 0);
+INSERT INTO `sys_menu`
+VALUES (230523221904113916, 0, '2023-05-23 22:19:05', 0, '2023-05-23 22:23:53', 1, 0, 0, '', '请求监控',
+        '/admin/sys/request', '', 230523221709113901, '', 1, 0, 'sysRequestRequest', '', 10000, 0, 0);
+INSERT INTO `sys_menu`
+VALUES (230523222026113937, 0, '2023-05-23 22:20:27', 0, '2023-05-23 22:20:27', 1, 0, 0, '', '列表查询', '', '',
+        230523221904113916, 'sysRequest:page', 0, 0, '', '', 0, 0, 1);
 
 -- ----------------------------
 -- Table structure for sys_param
@@ -287,7 +293,7 @@ CREATE TABLE `sys_request`
     `name`          varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci  NOT NULL COMMENT '接口名（备用）',
     `cost_ms_str`   varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci  NOT NULL COMMENT '耗时（字符串）',
     `cost_ms`       bigint                                                         NOT NULL COMMENT '耗时（毫秒）',
-    `category`      int                                                        NOT NULL COMMENT '请求类别',
+    `category`      int                                                            NOT NULL COMMENT '请求类别',
     `region`        varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci  NOT NULL COMMENT 'Ip2RegionUtil.getRegion() 获取到的 ip所处区域',
     `ip`            varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci  NOT NULL COMMENT 'ip',
     `success_flag`  tinyint(1)                                                     NOT NULL COMMENT '请求是否成功',
