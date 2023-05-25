@@ -18,7 +18,7 @@ public class EmailProperties {
 
     private static final MailAccount MAIL_ACCOUNT = new MailAccount();
 
-    @PostConstruct
+    @PostConstruct // 初始化或者 @RefreshScope清除 bean缓存之后，每次调用实例的方法时，就会调用 @PostConstruct修饰的方法，注意：一定要调用实例的方法，调用静态方法不行
     public void postConstruct() {
 
         MAIL_ACCOUNT.setPort(getPort());
