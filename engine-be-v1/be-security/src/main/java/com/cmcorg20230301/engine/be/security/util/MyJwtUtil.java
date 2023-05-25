@@ -16,7 +16,7 @@ import com.cmcorg20230301.engine.be.security.exception.BaseBizCodeEnum;
 import com.cmcorg20230301.engine.be.security.mapper.SysUserMapper;
 import com.cmcorg20230301.engine.be.security.model.constant.SecurityConstant;
 import com.cmcorg20230301.engine.be.security.model.entity.SysMenuDO;
-import com.cmcorg20230301.engine.be.security.model.enums.RequestCategoryEnum;
+import com.cmcorg20230301.engine.be.security.model.enums.SysRequestCategoryEnum;
 import com.cmcorg20230301.engine.be.security.model.vo.ApiResultVO;
 import com.cmcorg20230301.engine.be.security.properties.SecurityProperties;
 import org.jetbrains.annotations.NotNull;
@@ -134,12 +134,13 @@ public class MyJwtUtil {
      * 生成 redis中，jwt存储使用的 key（jwtHash），目的：不直接暴露明文的 jwt
      */
     @NotNull
-    public static String generateRedisJwtHash(String jwtStr, Long userId, RequestCategoryEnum requestCategoryEnum) {
+    public static String generateRedisJwtHash(String jwtStr, Long userId,
+        SysRequestCategoryEnum sysRequestCategoryEnum) {
 
         StrBuilder strBuilder = StrBuilder.create();
 
         strBuilder.append(RedisKeyEnum.PRE_JWT_HASH.name()).append(":").append(userId).append(":")
-            .append(requestCategoryEnum.getCode()).append(":").append(DigestUtil.sha512Hex(jwtStr));
+            .append(sysRequestCategoryEnum.getCode()).append(":").append(DigestUtil.sha512Hex(jwtStr));
 
         return strBuilder.toString();
 

@@ -2,7 +2,7 @@ package com.cmcorg20230301.engine.be.security.util;
 
 import cn.hutool.core.convert.Convert;
 import com.cmcorg20230301.engine.be.security.model.constant.SecurityConstant;
-import com.cmcorg20230301.engine.be.security.model.enums.RequestCategoryEnum;
+import com.cmcorg20230301.engine.be.security.model.enums.SysRequestCategoryEnum;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.web.context.request.RequestContextHolder;
@@ -33,7 +33,7 @@ public class RequestUtil {
      * 获取请求类别
      */
     @NotNull
-    public static RequestCategoryEnum getRequestCategoryEnum() {
+    public static SysRequestCategoryEnum getRequestCategoryEnum() {
 
         return getRequestCategoryEnum(getRequest());
 
@@ -43,13 +43,13 @@ public class RequestUtil {
      * 获取请求类别
      */
     @NotNull
-    public static RequestCategoryEnum getRequestCategoryEnum(HttpServletRequest httpServletRequest) {
+    public static SysRequestCategoryEnum getRequestCategoryEnum(HttpServletRequest httpServletRequest) {
 
         if (httpServletRequest == null) {
-            return RequestCategoryEnum.PC_BROWSER_WINDOWS;
+            return SysRequestCategoryEnum.PC_BROWSER_WINDOWS;
         }
 
-        return RequestCategoryEnum
+        return SysRequestCategoryEnum
             .getByCode(Convert.toInt(httpServletRequest.getHeader(SecurityConstant.REQUEST_HEADER_CATEGORY)));
 
     }

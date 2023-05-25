@@ -11,7 +11,7 @@ import org.jetbrains.annotations.Nullable;
 @AllArgsConstructor
 @Getter
 @Schema(description = "请求类别")
-public enum RequestCategoryEnum {
+public enum SysRequestCategoryEnum {
 
     PC_BROWSER_WINDOWS(101, "windows-浏览器"), //
     PC_BROWSER_MAC(102, "mac-浏览器"), //
@@ -40,13 +40,13 @@ public enum RequestCategoryEnum {
     private final String name;
 
     @NotNull
-    public static RequestCategoryEnum getByCode(@Nullable Integer code) {
+    public static SysRequestCategoryEnum getByCode(@Nullable Integer code) {
 
         if (code == null) {
             return PC_BROWSER_WINDOWS;
         }
 
-        for (RequestCategoryEnum item : RequestCategoryEnum.values()) {
+        for (SysRequestCategoryEnum item : SysRequestCategoryEnum.values()) {
             if (item.getCode() == code) {
                 return item;
             }

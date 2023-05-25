@@ -1,4 +1,4 @@
-package com.cmcorg20230301.engine.be.electron.util;
+package com.cmcorg20230301.engine.be.util.util;
 
 import cn.hutool.core.img.ImgUtil;
 import cn.hutool.core.thread.ThreadUtil;

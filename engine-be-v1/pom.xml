@@ -65,16 +65,16 @@
         <module>be-pay</module>
         <module>be-pay-ali</module>
         <module>be-pay-wx</module>
-        <module>be-electron</module>
+        <module>be-socket</module>
     </modules>
 
     <dependencyManagement>
         <dependencies>
 
-            <!-- be-electron -->
+            <!-- be-socket -->
             <dependency>
                 <groupId>${project.groupId}</groupId>
-                <artifactId>be-electron</artifactId>
+                <artifactId>be-socket</artifactId>
                 <version>${project.version}</version>
             </dependency>
 
@@ -374,13 +374,6 @@
                 <version>2021.0.5.0</version>
             </dependency>
 
-            <!-- javacv -->
-            <dependency>
-                <groupId>org.bytedeco</groupId>
-                <artifactId>javacv-platform</artifactId>
-                <version>1.5.8</version>
-            </dependency>
-
             <!-- 微信支付，获取最新版本号：https://github.com/wechatpay-apiv3/wechatpay-java -->
             <dependency>
                 <groupId>com.github.wechatpay-apiv3</groupId>
@@ -544,28 +537,24 @@
         <dependency>
             <groupId>org.jetbrains</groupId>
             <artifactId>annotations</artifactId>
-            <optional>true</optional>
         </dependency>
 
         <!-- configuration-processor -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-configuration-processor</artifactId>
-            <optional>true</optional>
         </dependency>
 
         <!-- lombok -->
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
-            <optional>true</optional>
         </dependency>
 
         <!-- spring-boot-starter-test -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
-            <scope>test</scope>
         </dependency>
 
     </dependencies>
