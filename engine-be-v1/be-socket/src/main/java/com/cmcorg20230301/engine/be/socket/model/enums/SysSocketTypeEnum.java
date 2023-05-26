@@ -9,7 +9,7 @@ import lombok.Getter;
 @AllArgsConstructor
 @Getter
 @Schema(description = "socket类型")
-public enum SysSocketEnum {
+public enum SysSocketTypeEnum {
 
     TCP(101), //
     WEB_SOCKET(201), //

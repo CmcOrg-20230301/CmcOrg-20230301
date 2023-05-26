@@ -1,17 +1,23 @@
-package com.cmcorg20230301.engine.be.socket.model.entity;
+package com.cmcorg20230301.engine.be.socket.model.dto;
 
-import com.baomidou.mybatisplus.annotation.TableName;
-import com.cmcorg20230301.engine.be.security.model.entity.BaseEntity;
+import com.cmcorg20230301.engine.be.security.model.dto.MyPageDTO;
 import com.cmcorg20230301.engine.be.socket.model.enums.SysSocketTypeEnum;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 @EqualsAndHashCode(callSuper = true)
-@TableName(value = "sys_socket")
 @Data
-@Schema(description = "v20230301：主表：socket")
-public class SysSocketDO extends BaseEntity {
+public class SysSocketRefUserPageDTO extends MyPageDTO {
+
+    @Schema(description = "用户主键 id")
+    private Long userId;
+
+    @Schema(description = "socket主键 id")
+    private Long socketId;
+
+    @Schema(description = "冗余字段，昵称")
+    private String nickname;
 
     @Schema(description = "协议")
     private String scheme;
@@ -24,5 +30,8 @@ public class SysSocketDO extends BaseEntity {
 
     @Schema(description = "socket类型")
     private SysSocketTypeEnum type;
+
+    @Schema(description = "描述/备注")
+    private String remark;
 
 }

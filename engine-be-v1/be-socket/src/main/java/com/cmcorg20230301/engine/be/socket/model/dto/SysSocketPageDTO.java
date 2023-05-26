@@ -1,7 +1,7 @@
 package com.cmcorg20230301.engine.be.socket.model.dto;
 
 import com.cmcorg20230301.engine.be.security.model.dto.MyPageDTO;
-import com.cmcorg20230301.engine.be.socket.model.enums.SysSocketEnum;
+import com.cmcorg20230301.engine.be.socket.model.enums.SysSocketTypeEnum;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -20,7 +20,7 @@ public class SysSocketPageDTO extends MyPageDTO {
     private Integer port;
 
     @Schema(description = "socket类型")
-    private SysSocketEnum type;
+    private SysSocketTypeEnum type;
 
     @Schema(description = "是否启用")
     private Boolean enableFlag;
