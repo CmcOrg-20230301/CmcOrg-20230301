@@ -39,7 +39,7 @@ public interface PropertiesPrefixConstant {
 
     String SOCKET = PRE_BE + "socket"; // socket相关
 
-    String SOCKET_WEB_SOCKET = SOCKET + ".webSocket"; // webSocket相关
+    String SOCKET_WEB_SOCKET = SOCKET + ".web-socket"; // webSocket相关
 
     String SOCKET_WEB_TCP = SOCKET + ".tcp"; // tcp相关
 

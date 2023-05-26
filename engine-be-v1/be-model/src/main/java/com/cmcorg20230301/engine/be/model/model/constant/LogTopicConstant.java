@@ -21,4 +21,6 @@ public interface LogTopicConstant {
 
     String REQUEST = PRE_BE + "request"; // 请求相关
 
+    String NETTY_WEB_SOCKET = PRE_BE + "netty-web-socket"; // netty-web-socket相关
+
 }

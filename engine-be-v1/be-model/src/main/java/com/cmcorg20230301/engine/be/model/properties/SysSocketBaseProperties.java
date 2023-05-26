@@ -23,4 +23,9 @@ public class SysSocketBaseProperties {
      */
     private Integer port;
 
+    /**
+     * 路径
+     */
+    private String path;
+
 }
