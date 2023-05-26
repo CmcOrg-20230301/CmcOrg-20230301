@@ -1,4 +1,4 @@
-package com.cmcorg20230301.engine.be.netty.boot.model.annotation;
+package com.cmcorg20230301.engine.be.netty.websocket.annotation;
 
 import org.springframework.stereotype.Component;
 
@@ -9,6 +9,6 @@ import java.lang.annotation.*;
 @Inherited
 @Documented
 @Component
-public @interface NettyController {
+public @interface NettyWebSocketController {
 
 }

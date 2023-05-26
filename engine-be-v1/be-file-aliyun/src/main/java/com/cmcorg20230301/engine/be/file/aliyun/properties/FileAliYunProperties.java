@@ -1,7 +1,7 @@
 package com.cmcorg20230301.engine.be.file.aliyun.properties;
 
 import com.cmcorg20230301.engine.be.model.model.constant.PropertiesPrefixConstant;
-import com.cmcorg20230301.engine.be.security.properties.SysFileBaseProperties;
+import com.cmcorg20230301.engine.be.model.properties.SysFileBaseProperties;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.springframework.boot.context.properties.ConfigurationProperties;

@@ -1,4 +1,4 @@
-package com.cmcorg20230301.engine.be.security.properties;
+package com.cmcorg20230301.engine.be.model.properties;
 
 import lombok.Data;
 

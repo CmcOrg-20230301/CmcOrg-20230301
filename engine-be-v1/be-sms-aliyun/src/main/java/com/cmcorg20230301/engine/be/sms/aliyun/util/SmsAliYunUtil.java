@@ -10,7 +10,7 @@ import com.aliyun.sdk.service.dysmsapi20170525.models.SendSmsRequest;
 import com.aliyun.sdk.service.dysmsapi20170525.models.SendSmsResponse;
 import com.aliyun.sdk.service.dysmsapi20170525.models.SendSmsResponseBody;
 import com.cmcorg20230301.engine.be.model.model.constant.BaseConstant;
-import com.cmcorg20230301.engine.be.sms.aliyun.properties.AliYunProperties;
+import com.cmcorg20230301.engine.be.sms.aliyun.properties.SmsAliYunProperties;
 import darabonba.core.client.ClientOverrideConfiguration;
 import lombok.SneakyThrows;
 import org.springframework.stereotype.Component;
@@ -23,11 +23,11 @@ import java.util.concurrent.CompletableFuture;
 @Component
 public class SmsAliYunUtil {
 
-    public static AliYunProperties aliYunProperties;
+    public static SmsAliYunProperties smsAliYunProperties;
 
-    public SmsAliYunUtil(AliYunProperties aliYunProperties) {
+    public SmsAliYunUtil(SmsAliYunProperties smsAliYunProperties) {
 
-        SmsAliYunUtil.aliYunProperties = aliYunProperties;
+        SmsAliYunUtil.smsAliYunProperties = smsAliYunProperties;
 
     }
 
@@ -36,7 +36,7 @@ public class SmsAliYunUtil {
      */
     public static void sendDelete(String phoneNumber, String code) {
 
-        sendForCode(phoneNumber, code, aliYunProperties.getSendDelete());
+        sendForCode(phoneNumber, code, smsAliYunProperties.getSendDelete());
 
     }
 
@@ -45,7 +45,7 @@ public class SmsAliYunUtil {
      */
     public static void sendBind(String phoneNumber, String code) {
 
-        sendForCode(phoneNumber, code, aliYunProperties.getSendBind());
+        sendForCode(phoneNumber, code, smsAliYunProperties.getSendBind());
 
     }
 
@@ -54,7 +54,7 @@ public class SmsAliYunUtil {
      */
     public static void sendUpdate(String phoneNumber, String code) {
 
-        sendForCode(phoneNumber, code, aliYunProperties.getSendUpdate());
+        sendForCode(phoneNumber, code, smsAliYunProperties.getSendUpdate());
 
     }
 
@@ -63,7 +63,7 @@ public class SmsAliYunUtil {
      */
     public static void sendUpdatePassword(String phoneNumber, String code) {
 
-        sendForCode(phoneNumber, code, aliYunProperties.getSendUpdatePassword());
+        sendForCode(phoneNumber, code, smsAliYunProperties.getSendUpdatePassword());
 
     }
 
@@ -72,7 +72,7 @@ public class SmsAliYunUtil {
      */
     public static void sendForgetPassword(String phoneNumber, String code) {
 
-        sendForCode(phoneNumber, code, aliYunProperties.getSendForgetPassword());
+        sendForCode(phoneNumber, code, smsAliYunProperties.getSendForgetPassword());
 
     }
 
@@ -81,7 +81,7 @@ public class SmsAliYunUtil {
      */
     public static void sendSignIn(String phoneNumber, String code) {
 
-        sendForCode(phoneNumber, code, aliYunProperties.getSendSignIn());
+        sendForCode(phoneNumber, code, smsAliYunProperties.getSendSignIn());
 
     }
 
@@ -90,7 +90,7 @@ public class SmsAliYunUtil {
      */
     public static void sendSignUp(String phoneNumber, String code) {
 
-        sendForCode(phoneNumber, code, aliYunProperties.getSendSignUp());
+        sendForCode(phoneNumber, code, smsAliYunProperties.getSendSignUp());
 
     }
 
@@ -116,13 +116,13 @@ public class SmsAliYunUtil {
     public static void doSend(String templateCode, String templateParam, String phoneNumber) {
 
         SendSmsRequest sendSmsRequest =
-            SendSmsRequest.builder().phoneNumbers(phoneNumber).signName(aliYunProperties.getSignName())
+            SendSmsRequest.builder().phoneNumbers(phoneNumber).signName(smsAliYunProperties.getSignName())
                 .templateCode(templateCode).templateParam(templateParam).build();
 
         // Configure Credentials authentication information, including ak, secret, token
         StaticCredentialProvider provider = StaticCredentialProvider.create(
-            Credential.builder().accessKeyId(aliYunProperties.getAccessKeyId())
-                .accessKeySecret(aliYunProperties.getAccessKeySecret()).build());
+            Credential.builder().accessKeyId(smsAliYunProperties.getSecretId())
+                .accessKeySecret(smsAliYunProperties.getSecretKey()).build());
 
         // Configure the Client
         AsyncClient client = AsyncClient.builder().region("cn-hangzhou") // Region ID

@@ -86,12 +86,6 @@
             <artifactId>be-netty-websocket</artifactId>
         </dependency>
 
-        <!-- be-netty-boot -->
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>be-netty-boot</artifactId>
-        </dependency>
-
         <!-- be-request -->
         <dependency>
             <groupId>${project.groupId}</groupId>

@@ -1,7 +1,7 @@
 package com.cmcorg20230301.engine.be.pay.wx.properties;
 
 import com.cmcorg20230301.engine.be.model.model.constant.PropertiesPrefixConstant;
-import com.cmcorg20230301.engine.be.security.properties.SysPayBaseProperties;
+import com.cmcorg20230301.engine.be.model.properties.SysPayBaseProperties;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.springframework.boot.context.properties.ConfigurationProperties;

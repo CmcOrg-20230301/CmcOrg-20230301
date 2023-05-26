@@ -1,18 +1,19 @@
-package com.cmcorg20230301.engine.be.pay.ali.properties;
+package com.cmcorg20230301.engine.be.socket.properties;
 
 import com.cmcorg20230301.engine.be.model.model.constant.PropertiesPrefixConstant;
-import com.cmcorg20230301.engine.be.model.properties.SysPayBaseProperties;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.stereotype.Component;
 
-@EqualsAndHashCode(callSuper = true)
 @Data
 @Component
-@ConfigurationProperties(prefix = PropertiesPrefixConstant.PAY_ALI)
+@ConfigurationProperties(prefix = PropertiesPrefixConstant.SOCKET)
 @RefreshScope
-public class PayAliProperties extends SysPayBaseProperties {
+public class SocketProperties {
+
+    @Schema(description = "短信发送类型：1 腾讯云 2 阿里云")
+    private Integer type;
 
 }

@@ -53,7 +53,6 @@
         <module>be-menu</module>
         <module>be-server</module>
         <module>be-request</module>
-        <module>be-netty-boot</module>
         <module>be-generate</module>
         <module>be-netty-websocket</module>
         <module>be-sms</module>
@@ -145,13 +144,6 @@
             <dependency>
                 <groupId>${project.groupId}</groupId>
                 <artifactId>be-netty-websocket</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-
-            <!-- be-netty-boot -->
-            <dependency>
-                <groupId>${project.groupId}</groupId>
-                <artifactId>be-netty-boot</artifactId>
                 <version>${project.version}</version>
             </dependency>
 

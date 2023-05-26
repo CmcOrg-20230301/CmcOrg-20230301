@@ -3,7 +3,7 @@ package com.cmcorg20230301.engine.be.sms.tencent.util;
 import cn.hutool.core.util.BooleanUtil;
 import cn.hutool.core.util.StrUtil;
 import com.cmcorg20230301.engine.be.model.model.constant.BaseConstant;
-import com.cmcorg20230301.engine.be.sms.tencent.properties.TencentProperties;
+import com.cmcorg20230301.engine.be.sms.tencent.properties.SmsTencentProperties;
 import com.tencentcloudapi.common.Credential;
 import com.tencentcloudapi.common.profile.ClientProfile;
 import com.tencentcloudapi.common.profile.HttpProfile;
@@ -20,11 +20,11 @@ import org.springframework.stereotype.Component;
 @Component
 public class SmsTencentUtil {
 
-    public static TencentProperties tencentProperties;
+    public static SmsTencentProperties smsTencentProperties;
 
-    public SmsTencentUtil(TencentProperties tencentProperties) {
+    public SmsTencentUtil(SmsTencentProperties smsTencentProperties) {
 
-        SmsTencentUtil.tencentProperties = tencentProperties;
+        SmsTencentUtil.smsTencentProperties = smsTencentProperties;
 
     }
 
@@ -33,7 +33,7 @@ public class SmsTencentUtil {
      */
     public static void sendDelete(String phoneNumber, String code) {
 
-        sendForCode(phoneNumber, code, tencentProperties.getSendDelete());
+        sendForCode(phoneNumber, code, smsTencentProperties.getSendDelete());
 
     }
 
@@ -42,7 +42,7 @@ public class SmsTencentUtil {
      */
     public static void sendBind(String phoneNumber, String code) {
 
-        sendForCode(phoneNumber, code, tencentProperties.getSendBind());
+        sendForCode(phoneNumber, code, smsTencentProperties.getSendBind());
 
     }
 
@@ -51,7 +51,7 @@ public class SmsTencentUtil {
      */
     public static void sendUpdate(String phoneNumber, String code) {
 
-        sendForCode(phoneNumber, code, tencentProperties.getSendUpdate());
+        sendForCode(phoneNumber, code, smsTencentProperties.getSendUpdate());
 
     }
 
@@ -60,7 +60,7 @@ public class SmsTencentUtil {
      */
     public static void sendUpdatePassword(String phoneNumber, String code) {
 
-        sendForCode(phoneNumber, code, tencentProperties.getSendUpdatePassword());
+        sendForCode(phoneNumber, code, smsTencentProperties.getSendUpdatePassword());
 
     }
 
@@ -69,7 +69,7 @@ public class SmsTencentUtil {
      */
     public static void sendForgetPassword(String phoneNumber, String code) {
 
-        sendForCode(phoneNumber, code, tencentProperties.getSendForgetPassword());
+        sendForCode(phoneNumber, code, smsTencentProperties.getSendForgetPassword());
 
     }
 
@@ -78,7 +78,7 @@ public class SmsTencentUtil {
      */
     public static void sendSignIn(String phoneNumber, String code) {
 
-        sendForCode(phoneNumber, code, tencentProperties.getSendSignIn());
+        sendForCode(phoneNumber, code, smsTencentProperties.getSendSignIn());
 
     }
 
@@ -87,7 +87,7 @@ public class SmsTencentUtil {
      */
     public static void sendSignUp(String phoneNumber, String code) {
 
-        sendForCode(phoneNumber, code, tencentProperties.getSendSignUp());
+        sendForCode(phoneNumber, code, smsTencentProperties.getSendSignUp());
 
     }
 
@@ -114,7 +114,7 @@ public class SmsTencentUtil {
         // 实例化一个认证对象，入参需要传入腾讯云账户 SecretId 和 SecretKey，此处还需注意密钥对的保密
         // 代码泄露可能会导致 SecretId 和 SecretKey 泄露，并威胁账号下所有资源的安全性。以下代码示例仅供参考，建议采用更安全的方式来使用密钥，请参见：https://cloud.tencent.com/document/product/1278/85305
         // 密钥可前往官网控制台 https://console.cloud.tencent.com/cam/capi 进行获取
-        Credential cred = new Credential(tencentProperties.getSecretId(), tencentProperties.getSecretKey());
+        Credential cred = new Credential(smsTencentProperties.getSecretId(), smsTencentProperties.getSecretKey());
 
         // 实例化一个http选项，可选的，没有特殊需求可以跳过
         HttpProfile httpProfile = new HttpProfile();
@@ -130,11 +130,11 @@ public class SmsTencentUtil {
         // 实例化一个请求对象,每个接口都会对应一个request对象
         SendSmsRequest req = new SendSmsRequest();
 
-        req.setSmsSdkAppId(tencentProperties.getSdkAppId());
+        req.setSmsSdkAppId(smsTencentProperties.getSdkAppId());
 
         /* 短信签名内容: 使用 UTF-8 编码，必须填写已审核通过的签名 */
         // 签名信息可前往 [国内短信](https://console.cloud.tencent.com/smsv2/csms-sign) 或 [国际/港澳台短信](https://console.cloud.tencent.com/smsv2/isms-sign) 的签名管理查看
-        req.setSignName(tencentProperties.getSignName());
+        req.setSignName(smsTencentProperties.getSignName());
 
         /* 模板 ID: 必须填写已审核通过的模板 ID */
         // 模板 ID 可前往 [国内短信](https://console.cloud.tencent.com/smsv2/csms-template) 或 [国际/港澳台短信](https://console.cloud.tencent.com/smsv2/isms-template) 的正文模板管理查看

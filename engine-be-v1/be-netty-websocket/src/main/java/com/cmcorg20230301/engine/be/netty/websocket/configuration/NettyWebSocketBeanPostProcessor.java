@@ -1,10 +1,10 @@
-package com.cmcorg20230301.engine.be.netty.boot.configuration;
+package com.cmcorg20230301.engine.be.netty.websocket.configuration;
 
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.map.MapUtil;
 import cn.hutool.core.text.StrBuilder;
 import cn.hutool.core.util.StrUtil;
-import com.cmcorg20230301.engine.be.netty.boot.model.annotation.NettyController;
+import com.cmcorg20230301.engine.be.netty.websocket.annotation.NettyWebSocketController;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.jetbrains.annotations.NotNull;
@@ -18,10 +18,10 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * 映射：有 @NettyController 注解的 Bean
+ * 映射：有 @NettyWebSocketController 注解的 Bean
  */
 @Component
-public class NettyBeanPostProcessor implements BeanPostProcessor {
+public class NettyWebSocketBeanPostProcessor implements BeanPostProcessor {
 
     // 映射之后的 map
     private static final Map<String, MappingValue> MAPPING_MAP = MapUtil.newHashMap();
@@ -37,8 +37,11 @@ public class NettyBeanPostProcessor implements BeanPostProcessor {
     @Data
     @AllArgsConstructor
     public static class MappingValue {
-        Object bean;
-        Method method;
+
+        private Object bean;
+
+        private Method method;
+
     }
 
     @Override
@@ -46,9 +49,10 @@ public class NettyBeanPostProcessor implements BeanPostProcessor {
 
         Class<?> beanClass = bean.getClass();
 
-        NettyController nettyControllerAnnotation = beanClass.getAnnotation(NettyController.class);
+        NettyWebSocketController nettyWebSocketControllerAnnotation =
+            beanClass.getAnnotation(NettyWebSocketController.class);
 
-        if (nettyControllerAnnotation == null) {
+        if (nettyWebSocketControllerAnnotation == null) {
             return bean;
         }
 
@@ -82,7 +86,7 @@ public class NettyBeanPostProcessor implements BeanPostProcessor {
             String key = "/" + CollUtil.join(splitTrimList, "/");
 
             if (MAPPING_MAP.containsKey(key)) {
-                throw new RuntimeException(StrUtil.format("映射重复：【{}】", key));
+                throw new RuntimeException(StrUtil.format("NettyWebSocket，映射重复：【{}】", key));
             }
 
             // 添加到映射 map里
