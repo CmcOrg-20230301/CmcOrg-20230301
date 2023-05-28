@@ -2,6 +2,8 @@ package com.cmcorg20230301.engine.be.netty.websocket.server;
 
 import com.cmcorg20230301.engine.be.netty.websocket.configuration.NettyWebSocketBeanPostProcessor;
 import com.cmcorg20230301.engine.be.netty.websocket.properties.NettyWebSocketProperties;
+import com.cmcorg20230301.engine.be.redisson.util.IdGeneratorUtil;
+import com.cmcorg20230301.engine.be.security.configuration.base.BaseConfiguration;
 import com.cmcorg20230301.engine.be.security.util.MyEntityUtil;
 import com.cmcorg20230301.engine.be.security.util.MyThreadUtil;
 import com.cmcorg20230301.engine.be.socket.model.entity.SysSocketDO;
@@ -23,6 +25,7 @@ import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.annotation.Resource;
 
@@ -31,26 +34,34 @@ import javax.annotation.Resource;
 public class NettyWebSocketServer {
 
     @Resource
+    NettyWebSocketProperties nettyWebSocketProperties;
+
+    @Resource
+    NettyWebSocketServerHandler nettyWebSocketServerHandler;
+
+    @Resource
+    MyThreadUtil myThreadUtil;
+
+    @Resource
     SysSocketService sysSocketService;
+
+    @Resource
+    BaseConfiguration baseConfiguration;
+
+    @Resource
+    IdGeneratorUtil idGeneratorUtil;
 
     private Long sysSocketServerId = null; // 备注：启动完成之后，这个属性才有值
 
-    public NettyWebSocketServer(NettyWebSocketProperties nettyWebSocketProperties,
-        NettyWebSocketServerHandler nettyWebSocketServerHandler, MyThreadUtil myThreadUtil,
-        SysSocketService sysSocketService) {
+    @PostConstruct
+    public void postConstruct() {
 
-        if (nettyWebSocketProperties.getPort() == null) {
-
-            log.info("NettyWebSocket 启动失败：未指定端口号");
-            return;
-
-        }
+        int port = BaseConfiguration.port + 1;
 
         MyThreadUtil.execute(() -> {
 
             // 启动
-            start(nettyWebSocketProperties, nettyWebSocketServerHandler, nettyWebSocketProperties.getPort(),
-                sysSocketService);
+            start(nettyWebSocketProperties, nettyWebSocketServerHandler, port, sysSocketService);
 
         });
 
