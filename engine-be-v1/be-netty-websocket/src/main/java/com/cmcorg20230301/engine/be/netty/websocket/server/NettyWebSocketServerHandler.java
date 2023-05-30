@@ -82,36 +82,59 @@ public class NettyWebSocketServerHandler extends ChannelInboundHandlerAdapter {
     @Override
     public void channelRead(@NotNull ChannelHandlerContext ctx, @NotNull Object msg) {
 
-        try {
+        // 首次连接是 FullHttpRequest，处理参数
+        if (msg instanceof FullHttpRequest) {
 
-            // 首次连接是 FullHttpRequest，处理参数
-            if (msg instanceof FullHttpRequest) {
+            // 处理：FullHttpRequest
+            handleFullHttpRequest(ctx, (FullHttpRequest)msg);
 
-                FullHttpRequest fullHttpRequest = (FullHttpRequest)msg;
+            // 传递给下一个 handler，备注：这里不需要释放资源
+            ctx.fireChannelRead(msg);
 
-                UrlQuery urlQuery = UrlQuery.of(fullHttpRequest.uri(), CharsetUtil.CHARSET_UTF_8);
+        } else if (msg instanceof TextWebSocketFrame) {
 
-                String code = Convert.toStr(urlQuery.get("code")); // 随机码
+            try {
 
-                if (StrUtil.isBlank(code)) {
-                    ApiResultVO.error(BaseBizCodeEnum.ILLEGAL_REQUEST);
-                }
+                // 处理：TextWebSocketFrame
+                handleTextWebSocketFrame((TextWebSocketFrame)msg);
 
-                // url包含参数，需要舍弃
-                fullHttpRequest.setUri(nettyWebSocketProperties.getPath());
+            } finally {
 
-            } else if (msg instanceof TextWebSocketFrame) {
-
-                // 读取消息
-                TextWebSocketFrame textWebSocketFrame = (TextWebSocketFrame)msg;
+                ReferenceCountUtil.release(msg); // 备注：这里需要释放资源
 
             }
 
-        } finally {
+        } else {
 
-            ReferenceCountUtil.release(msg); // 释放资源
+            // 传递给下一个 handler，备注：这里不需要释放资源
+            ctx.fireChannelRead(msg);
 
         }
+
+    }
+
+    /**
+     * 处理：TextWebSocketFrame
+     */
+    private void handleTextWebSocketFrame(@NotNull TextWebSocketFrame textWebSocketFrame) {
+
+    }
+
+    /**
+     * 处理：FullHttpRequest
+     */
+    private void handleFullHttpRequest(@NotNull ChannelHandlerContext ctx, @NotNull FullHttpRequest fullHttpRequest) {
+
+        UrlQuery urlQuery = UrlQuery.of(fullHttpRequest.uri(), CharsetUtil.CHARSET_UTF_8);
+
+        String code = Convert.toStr(urlQuery.get("code")); // 随机码
+
+        if (StrUtil.isBlank(code)) {
+            ApiResultVO.error(BaseBizCodeEnum.ILLEGAL_REQUEST);
+        }
+
+        // url包含参数，需要舍弃
+        fullHttpRequest.setUri(nettyWebSocketProperties.getPath());
 
     }
 
