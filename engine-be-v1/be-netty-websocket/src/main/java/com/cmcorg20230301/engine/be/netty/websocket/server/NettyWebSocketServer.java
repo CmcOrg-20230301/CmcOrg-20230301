@@ -108,7 +108,7 @@ public class NettyWebSocketServer {
                     @Override
                     protected void initChannel(SocketChannel ch) { // 绑定客户端连接时候触发操作
 
-                        // websocket协议本身是基于http协议的，所以这边也要使用http解编码器
+                        // webSocket协议本身是基于http协议的，所以这边也要使用http解编码器
                         ch.pipeline().addLast(new HttpServerCodec());
 
                         // 以块的方式来写的处理器
