@@ -1,0 +1,9 @@
+syntax = "proto3";
+
+option java_package = "protobuf.proto";
+
+message SecurityRequest {
+
+  string code = 1; // 用于校验：是否是合法的连接
+
+}

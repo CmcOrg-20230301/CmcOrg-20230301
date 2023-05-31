@@ -87,15 +87,17 @@ public class NettyWebSocketServer {
     public void start(NettyWebSocketProperties nettyWebSocketProperties,
         NettyWebSocketServerHandler nettyWebSocketServerHandler, int port, SysSocketService sysSocketService) {
 
-        EventLoopGroup childGroup = new NioEventLoopGroup();
+        EventLoopGroup parentGroup = new NioEventLoopGroup(nettyWebSocketProperties.getParentSize());
 
-        EventLoopGroup parentGroup = new NioEventLoopGroup();
+        EventLoopGroup childGroup = new NioEventLoopGroup(nettyWebSocketProperties.getChildSize());
 
         try {
 
             ServerBootstrap serverBootstrap = new ServerBootstrap();
 
             serverBootstrap.option(ChannelOption.SO_BACKLOG, 1024); // 半连接池大小
+            serverBootstrap.option(ChannelOption.SO_REUSEADDR, true); // 允许重复使用本地地址和端口
+            serverBootstrap.option(ChannelOption.ALLOW_HALF_CLOSURE, false); // 一个连接的远端关闭时，本地端自动关闭
 
             serverBootstrap.group(parentGroup, childGroup) // 绑定线程池
 

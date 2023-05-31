@@ -11,8 +11,10 @@ import lombok.Getter;
 @Schema(description = "socket类型")
 public enum SysSocketTypeEnum {
 
-    TCP(101), //
+    TCP_PROTOBUF(101), //
+
     WEB_SOCKET(201), //
+
     UDP(301), //
 
     ;

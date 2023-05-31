@@ -1,0 +1,19 @@
+syntax = "proto3";
+
+option java_package = "protobuf.proto";
+
+message BaseRequest {
+
+  string uri = 1; // 路径
+  bytes body = 2; // body
+
+}
+
+message BaseResponse {
+
+  string uri = 1; // 路径
+  bytes data = 2; // 数据
+  int32 code = 3; // 响应代码，成功返回：200
+  string msg = 4; // 响应描述
+
+}

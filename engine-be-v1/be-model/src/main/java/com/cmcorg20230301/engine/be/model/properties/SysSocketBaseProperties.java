@@ -28,4 +28,14 @@ public class SysSocketBaseProperties {
      */
     private String path;
 
+    /**
+     * parentGroup的线程池大小
+     */
+    private Integer parentSize = 1;
+
+    /**
+     * childGroup的线程池大小
+     */
+    private Integer childSize = Runtime.getRuntime().availableProcessors() * 10;
+
 }

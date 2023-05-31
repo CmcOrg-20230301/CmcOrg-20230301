@@ -41,6 +41,6 @@ public interface PropertiesPrefixConstant {
 
     String SOCKET_WEB_SOCKET = SOCKET + ".web-socket"; // webSocket相关
 
-    String SOCKET_WEB_TCP = SOCKET + ".tcp"; // tcp相关
+    String SOCKET_WEB_TCP_PROTOBUF = SOCKET + ".tcp-protobuf"; // tcp-protobuf相关
 
 }
