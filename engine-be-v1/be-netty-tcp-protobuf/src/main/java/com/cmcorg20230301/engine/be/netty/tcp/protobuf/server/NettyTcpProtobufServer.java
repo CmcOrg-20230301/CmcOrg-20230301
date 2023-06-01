@@ -57,7 +57,7 @@ public class NettyTcpProtobufServer {
     @PostConstruct
     public void postConstruct() {
 
-        int port = BaseConfiguration.port + 1;
+        int port = BaseConfiguration.port + 2;
 
         MyThreadUtil.execute(() -> {
 

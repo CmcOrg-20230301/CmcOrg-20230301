@@ -11,6 +11,10 @@ import com.cmcorg20230301.engine.be.model.model.interfaces.IRedisKey;
 public enum RedisKeyEnum implements IRedisKey {
 
     // 【PRE_】开头 ↓
+    PRE_TCP_PROTOBUF_CODE, // tcp-protobuf连接锁，锁：【随机码】
+
+    PRE_WEB_SOCKET_CODE, // webSocket连接锁，锁：【随机码】
+
     PRE_IP_BLACK, // ip黑名单前端，后面跟 ip
 
     PRE_JWT_HASH, // jwtHash 前缀

@@ -7,9 +7,11 @@ import cn.hutool.core.util.CharsetUtil;
 import cn.hutool.core.util.StrUtil;
 import com.cmcorg20230301.engine.be.model.model.constant.LogTopicConstant;
 import com.cmcorg20230301.engine.be.netty.websocket.properties.NettyWebSocketProperties;
+import com.cmcorg20230301.engine.be.redisson.model.enums.RedisKeyEnum;
 import com.cmcorg20230301.engine.be.security.exception.BaseBizCodeEnum;
 import com.cmcorg20230301.engine.be.security.model.vo.ApiResultVO;
 import com.cmcorg20230301.engine.be.security.util.MyJwtUtil;
+import com.cmcorg20230301.engine.be.socket.model.entity.SysSocketRefUserDO;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
@@ -21,6 +23,7 @@ import io.netty.util.ReferenceCountUtil;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
+import org.redisson.api.RedissonClient;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
@@ -34,6 +37,9 @@ public class NettyWebSocketServerHandler extends ChannelInboundHandlerAdapter {
 
     @Resource
     NettyWebSocketProperties nettyWebSocketProperties;
+
+    @Resource
+    RedissonClient redissonClient;
 
     // 用户通道 map，key：用户主键 id，value：通道集合
     private static final Map<Long, Set<Channel>> USER_ID_CHANNEL_MAP = MapUtil.newConcurrentHashMap();
@@ -85,11 +91,21 @@ public class NettyWebSocketServerHandler extends ChannelInboundHandlerAdapter {
         // 首次连接是 FullHttpRequest，处理参数
         if (msg instanceof FullHttpRequest) {
 
-            // 处理：FullHttpRequest
-            handleFullHttpRequest(ctx, (FullHttpRequest)msg);
+            try {
 
-            // 传递给下一个 handler，备注：这里不需要释放资源
-            ctx.fireChannelRead(msg);
+                // 处理：FullHttpRequest
+                handleFullHttpRequest(ctx, (FullHttpRequest)msg);
+
+                // 传递给下一个 handler，备注：这里不需要释放资源
+                ctx.fireChannelRead(msg);
+
+            } catch (Exception e) {
+
+                ReferenceCountUtil.release(msg); // 备注：这里需要释放资源
+
+                throw e;
+
+            }
 
         } else if (msg instanceof TextWebSocketFrame) {
 
@@ -130,6 +146,18 @@ public class NettyWebSocketServerHandler extends ChannelInboundHandlerAdapter {
         String code = Convert.toStr(urlQuery.get("code")); // 随机码
 
         if (StrUtil.isBlank(code)) {
+            ApiResultVO.error(BaseBizCodeEnum.ILLEGAL_REQUEST);
+        }
+
+        String key = RedisKeyEnum.PRE_WEB_SOCKET_CODE.name() + code;
+
+        SysSocketRefUserDO sysSocketRefUserDO = redissonClient.<SysSocketRefUserDO>getBucket(key).getAndDelete();
+
+        if (sysSocketRefUserDO == null) {
+            ApiResultVO.error(BaseBizCodeEnum.ILLEGAL_REQUEST);
+        }
+
+        if (!sysSocketRefUserDO.getSocketId().equals(NettyWebSocketServer.sysSocketServerId)) {
             ApiResultVO.error(BaseBizCodeEnum.ILLEGAL_REQUEST);
         }
 

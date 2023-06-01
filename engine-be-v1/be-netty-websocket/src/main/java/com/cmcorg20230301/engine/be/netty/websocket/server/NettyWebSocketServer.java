@@ -51,7 +51,7 @@ public class NettyWebSocketServer {
     @Resource
     IdGeneratorUtil idGeneratorUtil;
 
-    private Long sysSocketServerId = null; // 备注：启动完成之后，这个属性才有值
+    public static Long sysSocketServerId = null; // 备注：启动完成之后，这个属性才有值
 
     @PostConstruct
     public void postConstruct() {
