@@ -160,7 +160,7 @@ interface ICalcOrderNoRecord {
 
 }
 
-export const defaultOrderNo = 10000 // 默认 orderNo为 10000
+export const DefaultOrderNo = 10000 // 默认 orderNo为 10000
 
 // 计算 orderNo
 export function CalcOrderNo<T extends ICalcOrderNoForm, D extends ICalcOrderNoRecord>(
@@ -180,11 +180,11 @@ export function CalcOrderNo<T extends ICalcOrderNoForm, D extends ICalcOrderNoRe
 
     if (record.children && record.children.length) {
 
-        let orderNo = Number(record.children[0].orderNo) - 10 // 默认为第一个子节点元素减去 10
+        let orderNo = Number(record.children[0].orderNo) - 100 // 默认为第一个子节点元素减去 100
 
         form.orderNo = orderNo < 0 ? 0 : orderNo
 
-        // 如果存在子节点，那么取最小的 orderNo - 10，如果 减完之后小于零，则为 0
+        // 如果存在子节点，那么取最小的 orderNo - 100，如果 减完之后小于零，则为 0
         record.children.forEach((item) => {
 
             if (calcFun) {
@@ -201,15 +201,17 @@ export function CalcOrderNo<T extends ICalcOrderNoForm, D extends ICalcOrderNoRe
 
             ) {
 
-                orderNo = item.orderNo - 10
+                orderNo = item.orderNo - 100
                 form.orderNo = orderNo < 0 ? 0 : orderNo
 
             }
+
         })
+
     } else {
 
         if (form.orderNo === undefined || form.orderNo === null) {
-            form.orderNo = defaultOrderNo
+            form.orderNo = DefaultOrderNo
         }
 
     }

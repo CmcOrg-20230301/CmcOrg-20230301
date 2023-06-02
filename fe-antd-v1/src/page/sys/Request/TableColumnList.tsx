@@ -1,9 +1,9 @@
 import {GetDictList, YesNoDict} from "@/util/DictUtil";
 import {SysRequestDO, SysRequestPageDTO} from "@/api/SysRequest";
-import {ProColumns} from "@ant-design/pro-table/es/typing";
 import {HandlerRegion} from "@/util/StrUtil";
 import {SysUserDictList} from "@/api/SysUser";
 import {Typography} from "antd";
+import {ProColumns} from "@ant-design/pro-components";
 
 const TableColumnList = (): ProColumns<SysRequestDO>[] => [
 

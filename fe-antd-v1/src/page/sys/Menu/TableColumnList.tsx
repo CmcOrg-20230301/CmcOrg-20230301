@@ -1,9 +1,14 @@
 import {YesNoDict} from "@/util/DictUtil";
-import {ActionType} from "@ant-design/pro-components";
-import {SysMenuDeleteByIdSet, SysMenuDO, SysMenuInsertOrUpdateDTO} from "@/api/SysMenu";
+import {ActionType, ModalForm, ProColumns, ProFormText} from "@ant-design/pro-components";
+import {SysMenuDeleteByIdSet, SysMenuDO, SysMenuInsertOrUpdate, SysMenuInsertOrUpdateDTO} from "@/api/SysMenu";
 import {ExecConfirm, ToastSuccess} from "@/util/ToastUtil";
 import React from "react";
-import {ProColumns} from "@ant-design/pro-table/es/typing";
+import {CalcOrderNo, DefaultOrderNo} from "@/util/TreeUtil";
+import CommonConstant from "@/model/constant/CommonConstant";
+import {Dropdown, Menu} from "antd";
+import {EllipsisOutlined} from "@ant-design/icons/lib";
+
+const QuicklyAddAuth = "快速添加权限"
 
 const TableColumnList = (currentForm: React.MutableRefObject<SysMenuInsertOrUpdateDTO | null>, setFormOpen: React.Dispatch<React.SetStateAction<boolean>>, actionRef: React.RefObject<ActionType | undefined>): ProColumns<SysMenuDO>[] => [
 
@@ -90,6 +95,135 @@ const TableColumnList = (currentForm: React.MutableRefObject<SysMenuInsertOrUpda
                 }, undefined, `确定删除【${entity.name}】吗？`)
 
             }}>删除</a>,
+
+            <Dropdown key="3" overlay={
+
+                <Menu
+                    items={[
+
+                        {
+                            key: '1',
+                            label: <a onClick={() => {
+                                currentForm.current = {parentId: entity.id}
+                                CalcOrderNo(currentForm.current, entity)
+                                setFormOpen(true)
+                            }}>
+                                添加下级
+                            </a>,
+                        },
+
+                        {
+                            key: '2',
+                            label:
+
+                                <ModalForm<SysMenuInsertOrUpdateDTO>
+
+                                    modalProps={{
+                                        maskClosable: false
+                                    }}
+
+                                    isKeyPressSubmit
+
+                                    width={CommonConstant.MODAL_FORM_WIDTH}
+
+                                    title={QuicklyAddAuth}
+
+                                    trigger={<a>{QuicklyAddAuth}</a>}
+
+                                    onFinish={
+
+                                        async (form) => {
+
+                                            const formTemp: SysMenuInsertOrUpdateDTO = {
+
+                                                parentId: entity.id,
+
+                                                authFlag: true,
+
+                                                enableFlag: true
+
+                                            }
+
+                                            await SysMenuInsertOrUpdate({
+
+                                                ...formTemp,
+
+                                                name: '新增修改',
+
+                                                auths: form.auths + ":insertOrUpdate",
+
+                                                orderNo: DefaultOrderNo
+
+                                            }).then(() => {
+
+                                                SysMenuInsertOrUpdate({
+
+                                                    ...formTemp,
+
+                                                    name: '列表查询',
+
+                                                    auths: form.auths + ":page",
+
+                                                    orderNo: DefaultOrderNo - 100
+
+                                                }).then(() => {
+
+                                                    SysMenuInsertOrUpdate({
+
+                                                        ...formTemp,
+
+                                                        name: '删除',
+
+                                                        auths: form.auths + ":deleteByIdSet",
+
+                                                        orderNo: DefaultOrderNo - 200
+
+                                                    }).then(() => {
+
+                                                        SysMenuInsertOrUpdate({
+
+                                                            ...formTemp,
+
+                                                            name: '查看详情',
+
+                                                            auths: form.auths + ":infoById",
+
+                                                            orderNo: DefaultOrderNo - 300
+
+                                                        }).then(res => {
+
+                                                            ToastSuccess(res.msg)
+
+                                                            actionRef.current?.reload()
+
+                                                        })
+                                                    })
+                                                })
+                                            })
+
+                                            return true
+
+                                        }}
+
+                                >
+
+                                    <ProFormText name={"auths"} label={"权限前缀"} rules={[{required: true}]}/>
+
+                                </ModalForm>,
+
+                        },
+
+                    ]}
+                >
+
+                </Menu>
+
+            }
+            >
+
+                <a><EllipsisOutlined/></a>
+
+            </Dropdown>
 
         ],
 
