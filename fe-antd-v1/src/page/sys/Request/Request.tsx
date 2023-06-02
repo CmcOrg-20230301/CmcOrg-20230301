@@ -1,4 +1,4 @@
-import {useRef, useState} from "react";
+import {useEffect, useRef, useState} from "react";
 import {ActionType, ColumnsState, ProTable} from "@ant-design/pro-components";
 import {
     SysRequestAllAvgPro,
@@ -32,6 +32,24 @@ export default function () {
 
     const [sysRequestAllAvgVO, setSysRequestAllAvgVO] = useState<SysRequestAllAvgVO>({avgMs: 0, count: '0'})
 
+    const [fullScreenFlag, setFullScreenFlag] = useState<boolean>(false)
+
+    useEffect(() => {
+
+        const handleFullScreenChange = () => {
+            setFullScreenFlag(document.fullscreenElement !== null)
+        }
+
+        document.addEventListener('fullscreenchange', handleFullScreenChange);
+
+        return () => {
+
+            document.removeEventListener('fullscreenchange', handleFullScreenChange);
+
+        }
+
+    }, [])
+
     return (
 
         <>
@@ -39,7 +57,7 @@ export default function () {
             <ProTable<SysRequestDO, SysRequestPageDTO>
 
                 scroll={{x: 'max-content'}}
-                sticky={{offsetHeader: CommonConstant.NAV_TOP_HEIGHT}}
+                sticky={{offsetHeader: fullScreenFlag ? 0 : CommonConstant.NAV_TOP_HEIGHT}}
                 actionRef={actionRef}
                 rowKey={"id"}
 

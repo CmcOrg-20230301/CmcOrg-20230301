@@ -1,4 +1,4 @@
-import {useRef, useState} from "react";
+import {useEffect, useRef, useState} from "react";
 import {ActionType, BetaSchemaForm, ColumnsState, ModalForm, ProFormDigit, ProTable} from "@ant-design/pro-components";
 import {Button, Dropdown, Form, Space} from "antd";
 import {ColumnHeightOutlined, EllipsisOutlined, PlusOutlined, VerticalAlignMiddleOutlined} from "@ant-design/icons/lib";
@@ -35,6 +35,24 @@ export default function () {
 
     const currentForm = useRef<SysDictInsertOrUpdateDTO>({} as SysDictInsertOrUpdateDTO)
 
+    const [fullScreenFlag, setFullScreenFlag] = useState<boolean>(false)
+
+    useEffect(() => {
+
+        const handleFullScreenChange = () => {
+            setFullScreenFlag(document.fullscreenElement !== null)
+        }
+
+        document.addEventListener('fullscreenchange', handleFullScreenChange);
+
+        return () => {
+
+            document.removeEventListener('fullscreenchange', handleFullScreenChange);
+
+        }
+
+    }, [])
+
     return (
 
         <>
@@ -42,7 +60,7 @@ export default function () {
             <ProTable<SysDictDO, SysDictPageDTO>
 
                 scroll={{x: 'max-content'}}
-                sticky={{offsetHeader: CommonConstant.NAV_TOP_HEIGHT}}
+                sticky={{offsetHeader: fullScreenFlag ? 0 : CommonConstant.NAV_TOP_HEIGHT}}
 
                 actionRef={actionRef}
                 rowKey={"id"}

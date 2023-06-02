@@ -1,4 +1,4 @@
-import {useRef, useState} from "react";
+import {useEffect, useRef, useState} from "react";
 import {ActionType, BetaSchemaForm, ColumnsState, ProTable} from "@ant-design/pro-components";
 import {Button, Form, Space} from "antd";
 import {PlusOutlined} from "@ant-design/icons/lib";
@@ -31,6 +31,24 @@ export default function () {
 
     const currentForm = useRef<SysRoleInsertOrUpdateDTO>({} as SysRoleInsertOrUpdateDTO)
 
+    const [fullScreenFlag, setFullScreenFlag] = useState<boolean>(false)
+
+    useEffect(() => {
+
+        const handleFullScreenChange = () => {
+            setFullScreenFlag(document.fullscreenElement !== null)
+        }
+
+        document.addEventListener('fullscreenchange', handleFullScreenChange);
+
+        return () => {
+
+            document.removeEventListener('fullscreenchange', handleFullScreenChange);
+
+        }
+
+    }, [])
+
     return (
 
         <>
@@ -38,7 +56,7 @@ export default function () {
             <ProTable<SysRoleDO, SysRolePageDTO>
 
                 scroll={{x: 'max-content'}}
-                sticky={{offsetHeader: CommonConstant.NAV_TOP_HEIGHT}}
+                sticky={{offsetHeader: fullScreenFlag ? 0 : CommonConstant.NAV_TOP_HEIGHT}}
                 actionRef={actionRef}
                 rowKey={"id"}
 
