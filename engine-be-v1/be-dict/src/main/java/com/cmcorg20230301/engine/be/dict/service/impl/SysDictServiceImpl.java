@@ -5,16 +5,10 @@ import cn.hutool.core.util.BooleanUtil;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.cmcorg20230301.engine.be.cache.util.CacheHelper;
-import com.cmcorg20230301.engine.be.cache.util.MyCacheUtil;
 import com.cmcorg20230301.engine.be.dict.exception.BizCodeEnum;
-import com.cmcorg20230301.engine.be.dict.handler.SysDictCanalKafkaHandler;
-import com.cmcorg20230301.engine.be.dict.mapper.SysDictMapper;
 import com.cmcorg20230301.engine.be.dict.model.dto.SysDictInsertOrUpdateDTO;
 import com.cmcorg20230301.engine.be.dict.model.dto.SysDictListByDictKeyDTO;
 import com.cmcorg20230301.engine.be.dict.model.dto.SysDictPageDTO;
-import com.cmcorg20230301.engine.be.dict.model.entity.SysDictDO;
-import com.cmcorg20230301.engine.be.dict.model.enums.SysDictTypeEnum;
 import com.cmcorg20230301.engine.be.dict.service.SysDictService;
 import com.cmcorg20230301.engine.be.model.model.dto.ChangeNumberDTO;
 import com.cmcorg20230301.engine.be.model.model.dto.NotEmptyIdSet;
@@ -22,10 +16,13 @@ import com.cmcorg20230301.engine.be.model.model.dto.NotNullId;
 import com.cmcorg20230301.engine.be.model.model.vo.DictVO;
 import com.cmcorg20230301.engine.be.mysql.model.annotation.MyTransactional;
 import com.cmcorg20230301.engine.be.security.exception.BaseBizCodeEnum;
+import com.cmcorg20230301.engine.be.security.mapper.SysDictMapper;
 import com.cmcorg20230301.engine.be.security.model.entity.BaseEntity;
-import com.cmcorg20230301.engine.be.security.model.entity.BaseEntityNoId;
+import com.cmcorg20230301.engine.be.security.model.entity.SysDictDO;
+import com.cmcorg20230301.engine.be.security.model.enums.SysDictTypeEnum;
 import com.cmcorg20230301.engine.be.security.model.vo.ApiResultVO;
 import com.cmcorg20230301.engine.be.security.util.MyEntityUtil;
+import com.cmcorg20230301.engine.be.security.util.SysDictUtil;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -130,19 +127,7 @@ public class SysDictServiceImpl extends ServiceImpl<SysDictMapper, SysDictDO> im
     @Override
     public List<DictVO> listByDictKey(SysDictListByDictKeyDTO dto) {
 
-        Map<String, List<DictVO>> dictMap =
-            MyCacheUtil.getMap(SysDictCanalKafkaHandler.SYS_DICT_CACHE, CacheHelper.getDefaultStringListMap(), () -> {
-
-                return lambdaQuery().eq(SysDictDO::getType, SysDictTypeEnum.DICT_ITEM)
-                    .eq(BaseEntityNoId::getEnableFlag, true) //
-                    .select(SysDictDO::getValue, SysDictDO::getName, SysDictDO::getDictKey) //
-                    .orderByDesc(SysDictDO::getOrderNo).list() //
-                    .stream().collect(Collectors.groupingBy(SysDictDO::getDictKey, Collectors
-                        .mapping(it -> new DictVO(it.getValue().longValue(), it.getName()), Collectors.toList())));
-
-            });
-
-        return dictMap.get(dto.getDictKey());
+        return SysDictUtil.listByDictKey(dto.getDictKey());
 
     }
 

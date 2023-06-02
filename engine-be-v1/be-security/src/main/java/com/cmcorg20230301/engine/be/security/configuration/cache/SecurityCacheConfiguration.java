@@ -57,6 +57,10 @@ public class SecurityCacheConfiguration {
         TABLE_NAME_ENUM_SET.add(new SecurityCache(TableNameEnum.SYS_ROLE,
             CollUtil.newHashSet(RedisKeyEnum.DEFAULT_ROLE_ID_CACHE, RedisKeyEnum.ROLE_ID_SET_CACHE)));
 
+        // 字典
+        TABLE_NAME_ENUM_SET
+            .add(new SecurityCache(TableNameEnum.SYS_DICT, CollUtil.newHashSet(RedisKeyEnum.SYS_DICT_CACHE)));
+
     }
 
     @Data

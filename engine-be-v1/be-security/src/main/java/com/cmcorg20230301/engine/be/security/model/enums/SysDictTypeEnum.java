@@ -1,4 +1,4 @@
-package com.cmcorg20230301.engine.be.dict.model.enums;
+package com.cmcorg20230301.engine.be.security.model.enums;
 
 import com.baomidou.mybatisplus.annotation.EnumValue;
 import com.fasterxml.jackson.annotation.JsonValue;

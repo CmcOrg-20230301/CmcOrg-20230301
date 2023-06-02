@@ -1,7 +1,7 @@
 package com.cmcorg20230301.engine.be.dict.model.dto;
 
-import com.cmcorg20230301.engine.be.dict.model.enums.SysDictTypeEnum;
 import com.cmcorg20230301.engine.be.security.model.dto.MyPageDTO;
+import com.cmcorg20230301.engine.be.security.model.enums.SysDictTypeEnum;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.EqualsAndHashCode;

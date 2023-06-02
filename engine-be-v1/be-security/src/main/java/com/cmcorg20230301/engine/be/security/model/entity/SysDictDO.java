@@ -1,10 +1,9 @@
-package com.cmcorg20230301.engine.be.dict.model.entity;
+package com.cmcorg20230301.engine.be.security.model.entity;
 
 import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
-import com.cmcorg20230301.engine.be.dict.model.enums.SysDictTypeEnum;
-import com.cmcorg20230301.engine.be.security.model.entity.BaseEntity;
+import com.cmcorg20230301.engine.be.security.model.enums.SysDictTypeEnum;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
