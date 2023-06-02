@@ -45,7 +45,7 @@
         <module>be-role</module>
         <module>be-param</module>
         <module>be-sign-helper</module>
-        <module>be-sign-signiname</module>
+        <module>be-sign-signinname</module>
         <module>be-sign-email</module>
         <module>be-sign-phone</module>
         <module>be-sign-wx</module>
@@ -204,10 +204,10 @@
                 <version>${project.version}</version>
             </dependency>
 
-            <!-- be-sign-signiname -->
+            <!-- be-sign-signinname -->
             <dependency>
                 <groupId>${project.groupId}</groupId>
-                <artifactId>be-sign-signiname</artifactId>
+                <artifactId>be-sign-signinname</artifactId>
                 <version>${project.version}</version>
             </dependency>
 

@@ -128,10 +128,10 @@
             <artifactId>be-sign-email</artifactId>
         </dependency>
 
-        <!-- be-sign-signiname -->
+        <!-- be-sign-signinname -->
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>be-sign-signiname</artifactId>
+            <artifactId>be-sign-signinname</artifactId>
         </dependency>
 
         <!-- be-param -->

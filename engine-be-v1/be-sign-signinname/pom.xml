@@ -9,7 +9,7 @@
         <version>2023.3.1</version>
     </parent>
 
-    <artifactId>be-sign-signiname</artifactId>
+    <artifactId>be-sign-signinname</artifactId>
     <description>登录名登录注册</description>
 
     <dependencies>
