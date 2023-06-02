@@ -26,8 +26,8 @@ const TableColumnList = (): ProColumns<SysRequestDO>[] => [
     },
 
     {
-        title: '失败信息', dataIndex: 'errorMsg', hideInSearch: true, width: 300, render: (text) => {
-            return <Typography.Text ellipsis={{tooltip: true}} style={{width: 300}}>{text}</Typography.Text>
+        title: '失败信息', dataIndex: 'errorMsg', hideInSearch: true, width: 100, render: (text) => {
+            return <Typography.Text ellipsis={{tooltip: true}} style={{width: 100}}>{text}</Typography.Text>
         }
     },
 
