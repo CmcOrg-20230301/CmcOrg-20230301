@@ -11,6 +11,7 @@ import com.cmcorg20230301.engine.be.request.model.entity.SysRequestDO;
 import com.cmcorg20230301.engine.be.request.model.vo.SysRequestAllAvgVO;
 import com.cmcorg20230301.engine.be.request.service.SysRequestService;
 import com.cmcorg20230301.engine.be.security.model.entity.BaseEntity;
+import com.cmcorg20230301.engine.be.security.model.entity.BaseEntityNoId;
 import com.cmcorg20230301.engine.be.security.util.UserUtil;
 import org.springframework.stereotype.Service;
 
@@ -35,7 +36,10 @@ public class SysRequestServiceImpl extends ServiceImpl<SysRequestMapper, SysRequ
             .eq(dto.getCategory() != null, SysRequestDO::getCategory, dto.getCategory())
             .eq(dto.getCreateId() != null, BaseEntity::getCreateId, dto.getCreateId())
             .eq(dto.getSuccessFlag() != null, SysRequestDO::getSuccessFlag, dto.getSuccessFlag())
-            .orderByDesc(BaseEntity::getCreateTime).page(dto.page(true));
+            .orderByDesc(BaseEntity::getCreateTime)
+            .select(SysRequestDO::getIp, SysRequestDO::getUri, SysRequestDO::getSuccessFlag, SysRequestDO::getCostMsStr,
+                BaseEntityNoId::getCreateTime, BaseEntityNoId::getCreateId, SysRequestDO::getName,
+                SysRequestDO::getCategory, SysRequestDO::getIp, SysRequestDO::getRegion).page(dto.page(true));
 
     }
 

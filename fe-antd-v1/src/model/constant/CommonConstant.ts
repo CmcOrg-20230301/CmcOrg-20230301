@@ -12,4 +12,6 @@ export default {
 
     NAV_TOP_HEIGHT: 55, // 顶部导航栏高度
 
+    POLLING_TIME: 20 * 1000, // 轮询时间
+
 }

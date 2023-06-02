@@ -1,8 +1,21 @@
 import {useRef, useState} from "react";
 import {ActionType, ColumnsState, ProTable} from "@ant-design/pro-components";
-import {SysRequestDO, SysRequestPage, SysRequestPageDTO} from "@/api/SysRequest";
+import {
+    SysRequestAllAvgPro,
+    SysRequestAllAvgVO,
+    SysRequestDO,
+    SysRequestPage,
+    SysRequestPageDTO
+} from "@/api/SysRequest";
 import TableColumnList from "./TableColumnList";
 import CommonConstant from "@/model/constant/CommonConstant";
+import {Badge, Button, Space, Tooltip, Typography} from "antd";
+import {LoadingOutlined, ReloadOutlined} from "@ant-design/icons";
+import dayjs from "dayjs";
+
+export function GetAvgType(avg: number) {
+    return avg < 800 ? 'success' : (avg > 1600 ? 'danger' : 'warning')
+}
 
 // 请求-管理
 export default function () {
@@ -12,6 +25,12 @@ export default function () {
     const [expandedRowKeys, setExpandedRowKeys] = useState<string[]>([]);
 
     const actionRef = useRef<ActionType>()
+
+    const [lastUpdateTime, setLastUpdateTime] = useState<Date>(new Date());
+
+    const [polling, setPolling] = useState<number | undefined>(CommonConstant.POLLING_TIME)
+
+    const [sysRequestAllAvgVO, setSysRequestAllAvgVO] = useState<SysRequestAllAvgVO>({avgMs: 0, count: '0'})
 
     return (
 
@@ -28,6 +47,42 @@ export default function () {
                     showQuickJumper: true,
                     showSizeChanger: true,
                 }}
+
+                headerTitle={
+
+                    <Space size={16}>
+
+                        <span>上次更新时间：{dayjs(lastUpdateTime).fromNow()}</span>
+
+                        <Tooltip title={`筛选条件，接口平均响应耗时，共请求 ${sysRequestAllAvgVO.count}次`}>
+
+                            <span className={"hand"}>
+
+                                <Badge status="processing"
+                                       text={
+
+                                           <Typography.Text
+
+                                               strong
+
+                                               type={GetAvgType(sysRequestAllAvgVO.avgMs!)}>
+
+                                               {sysRequestAllAvgVO.avgMs}ms
+
+                                           </Typography.Text>
+
+                                       }
+                                />
+
+                            </span>
+
+                        </Tooltip>
+
+                    </Space>
+
+                }
+
+                polling={polling}
 
                 columnEmptyText={false}
 
@@ -60,7 +115,47 @@ export default function () {
 
                 request={(params, sort, filter) => {
 
+                    setLastUpdateTime(new Date())
+
+                    SysRequestAllAvgPro({...params}).then(res => {
+                        setSysRequestAllAvgVO(res.data)
+                    })
+
                     return SysRequestPage({...params, sort})
+
+                }}
+
+                toolbar={{
+
+                    actions: [
+
+                        <Button
+
+                            key="1"
+                            type="primary"
+
+                            onClick={() => {
+
+                                if (polling) {
+
+                                    setPolling(undefined);
+
+                                    return;
+
+                                }
+
+                                setPolling(CommonConstant.POLLING_TIME);
+
+                            }}
+
+                        >
+
+                            {polling ? <LoadingOutlined/> : <ReloadOutlined/>}
+                            {polling ? '停止轮询' : '开始轮询'}
+
+                        </Button>,
+
+                    ],
 
                 }}
 

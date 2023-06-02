@@ -4,6 +4,7 @@ import MyApp from './MyApp'
 import {Provider} from "react-redux";
 import store from "@/store";
 import dayjs from 'dayjs';
+import relativeTime from 'dayjs/plugin/relativeTime'
 import 'dayjs/locale/zh-cn';
 import {App, ConfigProvider, FloatButton} from 'antd';
 import zhCN from 'antd/locale/zh_CN';
@@ -15,6 +16,7 @@ import './style/style.less'
 import './style/antd.less'
 import './style/theme.less'
 
+dayjs.extend(relativeTime)
 dayjs.locale('zh-cn');
 
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
