@@ -10,7 +10,7 @@ export interface NotNullId {
 export interface SysDictDO {
     orderNo?: number // 排序号（值越大越前面，默认为 0），format：int32
     updateTime?: string // 修改时间，format：date-time
-    remark?: string // 备注
+    remark?: string // 描述/备注
     delFlag?: boolean // 是否逻辑删除
     type?: string // 字典类型
     version?: number // 乐观锁，format：int32

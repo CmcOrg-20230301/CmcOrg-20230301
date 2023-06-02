@@ -201,7 +201,7 @@ public class SpringDocUtil {
         if (content == null) {
 
             log.info("没有返回值：key：{}，", item.getKey());
-            return; // 没有返回值
+            return;
 
         }
 
@@ -210,6 +210,13 @@ public class SpringDocUtil {
         JSONObject schema = jsonObject.getJSONObject("schema");
 
         String refStr = schema.getStr("$ref");
+
+        if (StrUtil.isBlank(refStr)) {
+
+            log.info("ref为空：key：{}，", item.getKey());
+            return;
+
+        }
 
         BeApi.BeApiSchema beApiSchema = new BeApi.BeApiSchema();
 

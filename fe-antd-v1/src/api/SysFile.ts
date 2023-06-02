@@ -10,6 +10,15 @@ export interface NotEmptyIdSet {
     idSet?: string[] // 主键 idSet，required：true，format：int64
 }
 
+export interface LongObjectMapVOString {
+    map?: object // map对象
+}
+
+// 批量获取：公开文件的 url
+export function SysFileGetPublicUrl(form: NotEmptyIdSet, config?: AxiosRequestConfig) {
+    return $http.myPost<LongObjectMapVOString>('/sys/file/getPublicUrl', form, config)
+}
+
 // 批量删除文件：共有和私有
 export function SysFileRemoveByFileIdSet(form: NotEmptyIdSet, config?: AxiosRequestConfig) {
     return $http.myPost<string>('/sys/file/removeByFileIdSet', form, config)

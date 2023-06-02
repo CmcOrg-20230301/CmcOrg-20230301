@@ -16,7 +16,7 @@ export interface SysRequestSelfLoginRecordPageDTO {
 export interface SysRequestDO {
     ip?: string // ip
     updateTime?: string // 修改时间，format：date-time
-    remark?: string // 备注
+    remark?: string // 描述/备注
     delFlag?: boolean // 是否逻辑删除
     requestParam?: string // 请求的参数
     type?: string // 请求类型
@@ -30,6 +30,7 @@ export interface SysRequestDO {
     createTime?: string // 创建时间，format：date-time
     createId?: string // 创建人id，format：int64
     name?: string // 接口名（备用）
+    responseValue?: string // 请求返回的值
     id?: string // 主键id，format：int64
     category?: string // 请求类别
     region?: string // Ip2RegionUtil.getRegion() 获取到的 ip所处区域

@@ -27,7 +27,7 @@ export interface SysRoleInfoByIdVO {
     userIdSet?: string[] // 用户 idSet，format：int64
     menuIdSet?: string[] // 菜单 idSet，format：int64
     updateTime?: string // 修改时间，format：date-time
-    remark?: string // 备注
+    remark?: string // 描述/备注
     delFlag?: boolean // 是否逻辑删除
     version?: number // 乐观锁，format：int32
     updateId?: string // 修改人id，format：int64
@@ -61,7 +61,7 @@ export interface SysRoleDO {
     createId?: string // 创建人id，format：int64
     name?: string // 角色名（不能重复）
     updateTime?: string // 修改时间，format：date-time
-    remark?: string // 备注
+    remark?: string // 描述/备注
     id?: string // 主键id，format：int64
     delFlag?: boolean // 是否逻辑删除
     version?: number // 乐观锁，format：int32
