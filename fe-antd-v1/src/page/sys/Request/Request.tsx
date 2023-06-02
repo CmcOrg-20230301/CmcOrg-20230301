@@ -11,7 +11,7 @@ import TableColumnList from "./TableColumnList";
 import CommonConstant from "@/model/constant/CommonConstant";
 import {Badge, Button, Space, Tooltip, Typography} from "antd";
 import {LoadingOutlined, ReloadOutlined} from "@ant-design/icons";
-import dayjs from "dayjs";
+import {FormatDateTime} from "@/util/DateUtil";
 
 export function GetAvgType(avg: number) {
     return avg < 800 ? 'success' : (avg > 1600 ? 'danger' : 'warning')
@@ -52,7 +52,7 @@ export default function () {
 
                     <Space size={16}>
 
-                        <span>上次更新时间：{dayjs(lastUpdateTime).fromNow()}</span>
+                        <span>上次更新时间：{FormatDateTime(lastUpdateTime)}</span>
 
                         <Tooltip title={`筛选条件，接口平均响应耗时，共请求 ${sysRequestAllAvgVO.count}次`}>
 

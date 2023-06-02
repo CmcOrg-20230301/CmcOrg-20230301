@@ -37,10 +37,10 @@
             AND a.cost_ms <![CDATA[<=]]> #{dto.endCostMs}
         </if>
         <if test="dto.ctBeginTime != null">
-            AND a.create_time <![CDATA[>=]]> #{ctBeginTime}
+            AND a.create_time <![CDATA[>=]]> #{dto.ctBeginTime}
         </if>
         <if test="dto.ctEndTime != null">
-            AND a.create_time <![CDATA[<=]]> #{ctEndTime}
+            AND a.create_time <![CDATA[<=]]> #{dto.ctEndTime}
         </if>
         <if test="dto.createId != null">
             AND a.create_id = #{dto.createId}

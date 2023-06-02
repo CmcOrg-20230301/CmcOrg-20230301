@@ -171,7 +171,8 @@ public class SysRequestAop {
         // 处理：耗时相关
         handleCostMs(costMs, sysRequestDO);
 
-        log.info("uri：{}，耗时：{}", sysRequestDO.getUri(), sysRequestDO.getCostMsStr());
+        log.info("uri：{}，耗时：{}，成功：{}", sysRequestDO.getUri(), sysRequestDO.getCostMsStr(),
+            sysRequestDO.getSuccessFlag());
 
         SYS_REQUEST_DO_LIST.add(sysRequestDO);
 
