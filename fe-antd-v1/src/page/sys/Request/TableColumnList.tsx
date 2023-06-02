@@ -1,4 +1,4 @@
-import {GetDictList, YesNoDict} from "@/util/DictUtil";
+import {GetDictList, GetDictListByKey, YesNoDict} from "@/util/DictUtil";
 import {SysRequestDO, SysRequestPageDTO} from "@/api/SysRequest";
 import {HandlerRegion} from "@/util/StrUtil";
 import {SysUserDictList} from "@/api/SysUser";
@@ -72,7 +72,12 @@ const TableColumnList = (): ProColumns<SysRequestDO>[] => [
         }
     },
 
-    {title: '请求类别', dataIndex: 'category', ellipsis: true, width: 90,},
+    {
+        title: '请求类别', dataIndex: 'category', ellipsis: true, width: 90, valueType: 'select',
+        request: () => {
+            return GetDictListByKey('sys_request_category')
+        }
+    },
 
     {title: 'ip', dataIndex: 'ip', ellipsis: true, width: 90,},
 

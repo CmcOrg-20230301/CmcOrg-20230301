@@ -2,6 +2,7 @@ import {ProSchemaValueEnumType, RequestData} from "@ant-design/pro-components";
 import {ListToTree} from "./TreeUtil";
 import MyPageDTO from "@/model/dto/MyPageDTO";
 import {AxiosRequestConfig} from "axios";
+import {SysDictListByDictKey} from "@/api/SysDict";
 
 // 将 map转换为 下拉选 list
 export function NumberTextMapToSelectList(map: Map<string, { text: string }>) {
@@ -195,6 +196,35 @@ export function GetDictTreeList<T extends IDictTreeResult>(requestFunction: (val
             } else {
                 resolve(dictList)
             }
+
+        })
+
+    })
+
+}
+
+// 通过 key，获取：字典集合
+export function GetDictListByKey(dictKey: string) {
+
+    return new Promise<DictLongListVO[]>(async resolve => {
+
+        await SysDictListByDictKey({dictKey}).then(res => {
+
+            let dictList: DictLongListVO[] = []
+
+            if (res.data) {
+
+                dictList = res.data.map(item => ({
+
+                    label: item.name!,
+
+                    value: item.id!,
+
+                }));
+
+            }
+
+            resolve(dictList)
 
         })
 

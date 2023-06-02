@@ -1,4 +1,4 @@
-import React, {ReactNode, useRef} from "react";
+import React, {ReactNode, useRef, useState} from "react";
 import {
     NotBlankCodeDTO,
     SignEmailBindAccount,
@@ -14,10 +14,18 @@ import {
     SignEmailUpdatePasswordSendCode
 } from "@/api//SignEmail";
 import {useAppSelector} from "@/store";
-import {List} from "antd";
+import {List, Modal} from "antd";
 import {ValidatorUtil} from "@/util/ValidatorUtil";
 import {ToastSuccess} from "@/util/ToastUtil";
-import {ModalForm, ProFormCaptcha, ProFormInstance, ProFormText} from "@ant-design/pro-components";
+import {
+    ModalForm,
+    ProFormCaptcha,
+    ProFormInstance,
+    ProFormText,
+    ProTable,
+    RouteContext,
+    RouteContextType
+} from "@ant-design/pro-components";
 import CommonConstant from "@/model/constant/CommonConstant";
 import {SignOut} from "@/util/UserUtil";
 import {USER_CENTER_KEY_TWO} from "@/page/user/Self/Self";
@@ -31,6 +39,9 @@ import {
     SignSignInNameUpdatePasswordDTO
 } from "@/api/SignSignInName";
 import {PasswordRSAEncrypt, RSAEncryptPro} from "@/util/RsaUtil";
+import {SysRequestDO, SysRequestPageDTO, SysRequestSelfLoginRecord} from "@/api/SysRequest";
+import {HandlerRegion} from "@/util/StrUtil";
+import {GetDictListByKey} from "@/util/DictUtil";
 
 interface IUserSelfSetting {
 
@@ -84,6 +95,13 @@ export default function () {
                     description: userSelfInfo.email || '暂无',
                     actions: [
                         userSelfInfo.email ? <UpdateEmailAccountModalForm/> : <SetEmailAccountModalForm/>
+                    ]
+                },
+
+                {
+                    title: RequestSelfLoginRecordModalTitle,
+                    actions: [
+                        <RequestSelfLoginRecordModal key={"1"}/>
                     ]
                 },
 
@@ -610,6 +628,131 @@ export function UserSelfDeleteByCodeModalForm() {
             />
 
         </ModalForm>
+
+    )
+
+}
+
+// 登录记录
+function RequestSelfLoginRecordModal() {
+
+    const [visible, setVisible] = useState(false);
+
+    return (
+
+        <RouteContext.Consumer>
+
+            {(routeContextType: RouteContextType) => {
+
+                return <>
+
+                    <a onClick={() => {
+                        setVisible(true)
+                    }}>查看记录</a>
+
+                    <Modal
+
+                        width={1200}
+
+                        title={RequestSelfLoginRecordModalTitle}
+
+                        onCancel={() => setVisible(false)}
+
+                        visible={visible}
+
+                        maskClosable={false}
+
+                        footer={false}
+
+                        className={"noFooterModal"}
+
+                    >
+                        <ProTable<SysRequestDO, SysRequestPageDTO>
+
+                            rowKey={"id"}
+
+                            columnEmptyText={false}
+
+                            revalidateOnFocus={false}
+
+                            scroll={{y: 440}}
+
+                            search={{
+                                filterType: 'light',
+                            }}
+
+                            columns={[
+
+                                {
+                                    title: '序号',
+                                    dataIndex: 'index',
+                                    valueType: 'index',
+                                    width: 50,
+                                },
+
+                                {
+                                    title: '创建时间',
+                                    dataIndex: 'createTime',
+                                    sorter: true,
+                                    valueType: 'fromNow',
+                                    ellipsis: true,
+                                    hideInSearch: true,
+                                    width: 90,
+                                },
+
+                                {title: 'ip', dataIndex: 'ip', width: 120, ellipsis: true,},
+
+                                {
+                                    title: 'ip位置',
+                                    dataIndex: 'region',
+                                    ellipsis: true,
+                                    copyable: true,
+                                    width: 180,
+                                    renderText: (text) => {
+                                        return HandlerRegion(text)
+                                    }
+                                },
+
+                                {
+                                    title: '来源',
+                                    dataIndex: 'category',
+                                    valueType: 'select',
+                                    width: 120,
+                                    ellipsis: true,
+                                    fieldProps: {
+                                        showSearch: true,
+                                    },
+                                    request: () => {
+                                        return GetDictListByKey('sys_request_category')
+                                    }
+                                },
+
+                            ]}
+
+                            pagination={{
+                                showQuickJumper: true,
+                                showSizeChanger: true,
+                            }}
+
+                            options={{
+                                fullScreen: true,
+                            }}
+
+                            request={(params, sort, filter) => {
+                                return SysRequestSelfLoginRecord({...params, sort})
+                            }}
+
+                        >
+
+                        </ProTable>
+
+                    </Modal>
+
+                </>
+
+            }}
+
+        </RouteContext.Consumer>
 
     )
 
