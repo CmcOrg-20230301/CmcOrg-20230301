@@ -142,8 +142,7 @@ public class IpFilter implements Filter {
 
             IP_SPEED_MAP.remove(ip); // 移除：ip计数
 
-            CacheRedisKafkaLocalUtil
-                .put(RedisKeyEnum.PRE_IP_BLACK, ":" + ip, "黑名单 ip", BaseConstant.DAY_1_EXPIRE_TIME, null);
+            CacheRedisKafkaLocalUtil.put(RedisKeyEnum.PRE_IP_BLACK, ip, "黑名单 ip", BaseConstant.DAY_1_EXPIRE_TIME, null);
 
             return "24小时";
 
