@@ -33,6 +33,51 @@ CREATE TABLE `sys_dict`
 -- ----------------------------
 -- Records of sys_dict
 -- ----------------------------
+INSERT INTO `sys_dict`
+VALUES (230602172317117446, 0, '2023-06-02 17:23:17', 0, '2023-06-02 17:23:17', 1, 0, 0, '', 'sys_request_category',
+        '请求类别', 1, -1, 10000);
+INSERT INTO `sys_dict`
+VALUES (230602172924117450, 0, '2023-06-02 17:29:24', 0, '2023-06-02 17:32:06', 1, 0, 0, '', 'sys_request_category',
+        'windows-浏览器', 2, 101, 10000);
+INSERT INTO `sys_dict`
+VALUES (230602173355117474, 0, '2023-06-02 17:33:56', 0, '2023-06-02 17:34:00', 1, 0, 0, '', 'sys_request_category',
+        'mac-浏览器', 2, 102, 9900);
+INSERT INTO `sys_dict`
+VALUES (230602173407117480, 0, '2023-06-02 17:34:08', 0, '2023-06-02 17:34:08', 1, 0, 0, '', 'sys_request_category',
+        'linux-浏览器', 2, 103, 9800);
+INSERT INTO `sys_dict`
+VALUES (230602173426117483, 0, '2023-06-02 17:34:27', 0, '2023-06-02 17:34:27', 1, 0, 0, '', 'sys_request_category',
+        'windows-客户端', 2, 201, 9700);
+INSERT INTO `sys_dict`
+VALUES (230602173437117486, 0, '2023-06-02 17:34:37', 0, '2023-06-02 17:34:37', 1, 0, 0, '', 'sys_request_category',
+        'mac-客户端', 2, 202, 9600);
+INSERT INTO `sys_dict`
+VALUES (230602173443117489, 0, '2023-06-02 17:34:43', 0, '2023-06-02 17:34:43', 1, 0, 0, '', 'sys_request_category',
+        'linux-客户端', 2, 203, 9500);
+INSERT INTO `sys_dict`
+VALUES (230602173451117492, 0, '2023-06-02 17:34:52', 0, '2023-06-02 17:34:52', 1, 0, 0, '', 'sys_request_category',
+        '安卓端', 2, 301, 9400);
+INSERT INTO `sys_dict`
+VALUES (230602173457117495, 0, '2023-06-02 17:34:58', 0, '2023-06-02 17:34:58', 1, 0, 0, '', 'sys_request_category',
+        '安卓-浏览器', 2, 302, 9300);
+INSERT INTO `sys_dict`
+VALUES (230602173503117498, 0, '2023-06-02 17:35:03', 0, '2023-06-02 17:35:03', 1, 0, 0, '', 'sys_request_category',
+        '安卓-浏览器-微信', 2, 303, 9200);
+INSERT INTO `sys_dict`
+VALUES (230602173512117501, 0, '2023-06-02 17:35:12', 0, '2023-06-02 17:35:12', 1, 0, 0, '', 'sys_request_category',
+        '苹果端', 2, 401, 9100);
+INSERT INTO `sys_dict`
+VALUES (230602173532117507, 0, '2023-06-02 17:35:32', 0, '2023-06-02 17:35:41', 1, 0, 0, '', 'sys_request_category',
+        '苹果-浏览器', 2, 402, 9000);
+INSERT INTO `sys_dict`
+VALUES (230602173538117510, 0, '2023-06-02 17:35:38', 0, '2023-06-02 17:35:38', 1, 0, 0, '', 'sys_request_category',
+        '苹果-浏览器-微信', 2, 403, 8900);
+INSERT INTO `sys_dict`
+VALUES (230602173552117516, 0, '2023-06-02 17:35:53', 0, '2023-06-02 17:35:53', 1, 0, 0, '', 'sys_request_category',
+        '小程序-微信-安卓', 2, 501, 8800);
+INSERT INTO `sys_dict`
+VALUES (230602173602117519, 0, '2023-06-02 17:36:03', 0, '2023-06-02 17:36:03', 1, 0, 0, '', 'sys_request_category',
+        '小程序-微信-苹果', 2, 502, 8700);
 
 -- ----------------------------
 -- Table structure for sys_file
@@ -62,6 +107,7 @@ CREATE TABLE `sys_file`
     `type`             int                                                           NOT NULL COMMENT '类型：1 文件夹 2 文件',
     `show_file_name`   varchar(300) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '展示用的文件名，默认为：原始文件名（包含文件类型）',
     `ref_file_id`      bigint                                                        NOT NULL COMMENT '引用的文件主键 id，没有则为 -1，如果有值，则文件地址从引用的文件里面获取，但是权限等信息，从本条数据获取',
+    `public_flag`      tinyint(1)                                                    NOT NULL COMMENT '是否公开访问：0 否 1 是',
     PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB
   CHARACTER SET = utf8mb4
@@ -71,6 +117,22 @@ CREATE TABLE `sys_file`
 -- ----------------------------
 -- Records of sys_file
 -- ----------------------------
+INSERT INTO `sys_file`
+VALUES (230429004223111103, 0, '2023-04-29 00:42:24', 0, '2023-04-29 00:42:24', 1, 0, 0, '', 0, 'be-public-bucket',
+        'avatar/a04f08ec428042f39a5cbe2b33f74595.jpg', 'testImg.jpg', 'a04f08ec428042f39a5cbe2b33f74595.jpg', 'jpg', '',
+        101, 201, 0, 101, 'testImg.jpg', -1, 1);
+INSERT INTO `sys_file`
+VALUES (230429004414111203, 0, '2023-04-29 00:44:14', 0, '2023-04-29 00:44:14', 1, 0, 0, '', 0, 'be-public-bucket',
+        'avatar/122686d0113c4806b41e75e6caf8f27b.jpg', 'testImg.jpg', '122686d0113c4806b41e75e6caf8f27b.jpg', 'jpg', '',
+        101, 201, 0, 101, 'testImg.jpg', -1, 1);
+INSERT INTO `sys_file`
+VALUES (230505004949111839, 0, '2023-05-05 00:49:49', 0, '2023-05-05 00:49:49', 1, 0, 0, '', 0, 'be-public-bucket',
+        'avatar/fd16dd51d85440ffadec9aed3c07bea6.jpg', 'testImg.jpg', 'fd16dd51d85440ffadec9aed3c07bea6.jpg', 'jpg', '',
+        101, 201, 0, 101, 'testImg.jpg', -1, 1);
+INSERT INTO `sys_file`
+VALUES (230505004955111841, 0, '2023-05-05 00:49:55', 0, '2023-05-05 00:49:55', 1, 0, 0, '', 0, 'be-public-bucket',
+        'avatar/3c28f112979349b8809a294a4515a5f4.jpg', 'testImg.jpg', '3c28f112979349b8809a294a4515a5f4.jpg', 'jpg', '',
+        101, 201, 0, 101, 'testImg.jpg', -1, 1);
 
 -- ----------------------------
 -- Table structure for sys_file_auth
@@ -141,7 +203,7 @@ INSERT INTO `sys_menu`
 VALUES (3, 1, '2021-12-22 10:53:32', 0, '2023-05-23 22:18:42', 1, 2, 0, '', '系统管理', '', 'SettingOutlined',
         221004205817000054, '', 1, 0, '', '', 9900, 0, 0);
 INSERT INTO `sys_menu`
-VALUES (4, 1, '2021-12-20 11:10:15', 1, '2022-05-03 16:21:50', 1, 2, 0, '', '菜单管理', '/admin/sys/menu', '', 3, '', 1, 0,
+VALUES (4, 1, '2021-12-20 11:10:15', 0, '2023-06-01 14:07:47', 1, 2, 0, '', '菜单管理', '/admin/sys/menu', '', 3, '', 1, 0,
         'sysMenuMenu', '', 10000, 0, 0);
 INSERT INTO `sys_menu`
 VALUES (5, 1, '2022-05-21 01:00:18', 1, '2022-05-21 01:00:18', 1, 2, 0, '', '新增修改', '', '', 4, 'sysMenu:insertOrUpdate',
@@ -225,8 +287,8 @@ INSERT INTO `sys_menu`
 VALUES (63, 1, '2022-07-12 11:01:41', 1, '2022-07-12 11:02:01', 1, 2, 0, '', 'Helper App', 'https://cmc0.github.io',
         'CodeOutlined', 221004205817000054, '', 1, 1, '', '', 0, 0, 0);
 INSERT INTO `sys_menu`
-VALUES (221004205817000054, 0, '2022-10-04 12:58:17', 0, '2023-05-23 22:16:10', 1, 2, 0, '', '系统平台', '',
-        'SettingOutlined', 0, '', 1, 0, '', '/admin/sys/menu', 10000, 0, 0);
+VALUES (221004205817000054, 0, '2022-10-04 12:58:17', 0, '2023-06-02 17:41:30', 1, 2, 0, '', '系统平台', '',
+        'SettingOutlined', 0, '', 1, 0, '', '/admin/sys/request', 10000, 0, 0);
 INSERT INTO `sys_menu`
 VALUES (221005155605000086, 0, '2022-10-05 07:56:05', 0, '2022-10-05 07:56:16', 1, 2, 0, '', '欢迎', '/admin/welcome',
         'SmileOutlined', 0, '', 1, 0, 'WelcomeWelcome', '', 11000, 0, 0);
@@ -234,8 +296,8 @@ INSERT INTO `sys_menu`
 VALUES (230523221709113901, 0, '2023-05-23 22:17:10', 0, '2023-05-23 22:23:36', 1, 0, 0, '', '系统监控', '',
         'FundProjectionScreenOutlined', 221004205817000054, '', 1, 0, '', '', 9800, 0, 0);
 INSERT INTO `sys_menu`
-VALUES (230523221904113916, 0, '2023-05-23 22:19:05', 0, '2023-05-23 22:23:53', 1, 0, 0, '', '请求监控',
-        '/admin/sys/request', '', 230523221709113901, '', 1, 0, 'sysRequestRequest', '', 10000, 0, 0);
+VALUES (230523221904113916, 0, '2023-05-23 22:19:05', 0, '2023-06-02 09:47:12', 1, 0, 0, '', '请求监控',
+        '/admin/sys/request', '', 230523221709113901, '', 1, 0, 'sysRequestRequest', '', 10000, 1, 0);
 INSERT INTO `sys_menu`
 VALUES (230523222026113937, 0, '2023-05-23 22:20:27', 0, '2023-05-23 22:20:27', 1, 0, 0, '', '列表查询', '', '',
         230523221904113916, 'sysRequest:page', 0, 0, '', '', 0, 0, 1);
@@ -271,7 +333,7 @@ VALUES (1, 1, '2021-12-26 11:32:38', 1, '2022-01-11 21:03:30', 1, 0, 0,
         '获取私钥方法：new RSA().getPrivateKeyBase64()，备注：获取公钥同理，但是必须使用同一个对象，因为必须成对', '非对称加密，私钥',
         'MIICdgIBADANBgkqhkiG9w0BAQEFAASCAmAwggJcAgEAAoGBANp2ZoJp983rckLlCwwr/6V7m+gIHgPM6xX3E4FmAYnKqeLOH39RwWQihFp7mt5t1ZS2c87gJOB0lu5K+79O0gg+P0N7n/CImKUUBZ3VV7uoZrHFPGpbAU2nun8UuvRikx4GM7KV2z0bIDVyeMiqu411i/6pFmex4TRKrZYRm6z1AgMBAAECgYAMjU//f0IvMS97+3gCh4alRfBjyQ+cbUo2lV8oCKne9meDcg9qO9LOQ5NyNXbk/8+NP1xxDvzfbqN7ZpCHYep8VoxJYMqr15czK9Sk34A5AdpOb5kQhUAgfyaQlIu+2s3NSjyJUXcNqLRRb0xiGhoJmH1V9zGSVFaJnGsUJuZAkwJBAPl/4VNtvcWTyoGBHFlJjto4V1lYkD63qKh66evXiI7PEQhGB4b8ubBFnEJephWQO/tWo6AYFipMrtjJ1z+KqWsCQQDgJ4IsRZleS5vr5bYhL5+YE8BN8TyzyJ/7MvSjV6ZB7Qoq+w7CSsWm4wTnO9zdSuJaXJ7QmMfDR9Y/tAx2MLsfAkBkdJOxtqbI7VeEywox/QbyX+rzg1AYoHPc2hhjJ9XIwiB2d1PCivDswypGIru2ROuRp/GbnPcXsuZXTPVIlTjfAkEAkhtukCj1pS8nfQYIR21hW6FUMfnSlWVqUjSOnYHeTw6RGB75Kc/PMc68PXUZq+zJyhihNFrBqxpCHtffX5K4BQJAIIs70dCXBmZ1AjWUTgRY1piEGtwoxPO229guHvF6P8IOyxCuFWrCgY/1UnZt3Yc/XubImBb/xQx5CcdFWYcgjw==');
 INSERT INTO `sys_param`
-VALUES (2, 1, '2021-12-26 11:32:38', 0, '2022-10-05 08:53:06', 1, 0, 0,
+VALUES (2, 1, '2021-12-26 11:32:38', 0, '2023-06-02 14:04:46', 1, 0, 0,
         '多少秒钟，一个 ip可以请求多少次，用冒号隔开的，任意值小于等于 0，则不会进行检查，超过了，则一天无法访问任何接口', 'ip请求速率', '10:75');
 
 -- ----------------------------
@@ -280,29 +342,29 @@ VALUES (2, 1, '2021-12-26 11:32:38', 0, '2022-10-05 08:53:06', 1, 0, 0,
 DROP TABLE IF EXISTS `sys_request`;
 CREATE TABLE `sys_request`
 (
-    `id`            bigint                                                         NOT NULL AUTO_INCREMENT,
-    `create_id`     bigint                                                         NOT NULL,
-    `create_time`   datetime                                                       NOT NULL,
-    `update_id`     bigint                                                         NOT NULL,
-    `update_time`   datetime                                                       NOT NULL,
-    `enable_flag`   tinyint(1)                                                     NOT NULL COMMENT '启用/禁用',
-    `version`       int                                                            NOT NULL COMMENT '乐观锁',
-    `del_flag`      tinyint(1)                                                     NOT NULL COMMENT '是否逻辑删除',
-    `remark`        varchar(300) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci  NOT NULL COMMENT '描述/备注',
-    `uri`           varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci  NOT NULL COMMENT '请求的uri',
-    `name`          varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci  NOT NULL COMMENT '接口名（备用）',
-    `cost_ms_str`   varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci  NOT NULL COMMENT '耗时（字符串）',
-    `cost_ms`       bigint                                                         NOT NULL COMMENT '耗时（毫秒）',
-    `category`      int                                                            NOT NULL COMMENT '请求类别',
-    `region`        varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci  NOT NULL COMMENT 'Ip2RegionUtil.getRegion() 获取到的 ip所处区域',
-    `ip`            varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci  NOT NULL COMMENT 'ip',
-    `success_flag`  tinyint(1)                                                     NOT NULL COMMENT '请求是否成功',
-    `error_msg`     varchar(1000) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '失败信息',
-    `request_param` varchar(1000) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '请求的参数',
-    `type`          varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci   NOT NULL COMMENT '请求类型',
+    `id`             bigint                                                         NOT NULL,
+    `create_id`      bigint                                                         NOT NULL,
+    `create_time`    datetime                                                       NOT NULL,
+    `update_id`      bigint                                                         NOT NULL,
+    `update_time`    datetime                                                       NOT NULL,
+    `enable_flag`    tinyint(1)                                                     NOT NULL COMMENT '启用/禁用',
+    `version`        int                                                            NOT NULL COMMENT '乐观锁',
+    `del_flag`       tinyint(1)                                                     NOT NULL COMMENT '是否逻辑删除',
+    `remark`         varchar(300) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci  NOT NULL COMMENT '描述/备注',
+    `uri`            varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci  NOT NULL COMMENT '请求的uri',
+    `name`           varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci  NOT NULL COMMENT '接口名（备用）',
+    `cost_ms_str`    varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci  NOT NULL COMMENT '耗时（字符串）',
+    `cost_ms`        bigint                                                         NOT NULL COMMENT '耗时（毫秒）',
+    `category`       int                                                            NOT NULL COMMENT '请求类别',
+    `region`         varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci  NOT NULL COMMENT 'Ip2RegionUtil.getRegion() 获取到的 ip所处区域',
+    `ip`             varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci  NOT NULL COMMENT 'ip',
+    `success_flag`   tinyint(1)                                                     NOT NULL COMMENT '请求是否成功',
+    `error_msg`      varchar(1000) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '失败信息',
+    `request_param`  varchar(1000) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '请求的参数',
+    `type`           varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci   NOT NULL COMMENT '请求类型',
+    `response_value` varchar(1000) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '请求返回的值',
     PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB
-  AUTO_INCREMENT = 230319172320001339
   CHARACTER SET = utf8mb4
   COLLATE = utf8mb4_general_ci COMMENT = 'v20230301：主表：请求'
   ROW_FORMAT = DYNAMIC;
@@ -338,7 +400,7 @@ CREATE TABLE `sys_role`
 -- Records of sys_role
 -- ----------------------------
 INSERT INTO `sys_role`
-VALUES (221005154618000085, 0, '2022-10-05 07:46:19', 0, '2022-10-06 06:23:20', 1, 0, 0, '只有查看的权限，没有修改和删除的权限', '游客角色',
+VALUES (221005154618000085, 0, '2022-10-05 07:46:19', 0, '2023-06-02 11:24:34', 1, 0, 0, '只有查看的权限，没有修改和删除的权限', '游客角色',
         1);
 
 -- ----------------------------
@@ -381,9 +443,9 @@ VALUES (221005154618000085, 55);
 INSERT INTO `sys_role_ref_menu`
 VALUES (221005154618000085, 63);
 INSERT INTO `sys_role_ref_menu`
-VALUES (221005154618000085, 221004205727000053);
-INSERT INTO `sys_role_ref_menu`
 VALUES (221005154618000085, 221005155605000086);
+INSERT INTO `sys_role_ref_menu`
+VALUES (221005154618000085, 230523221709113901);
 
 -- ----------------------------
 -- Table structure for sys_role_ref_user
@@ -401,6 +463,69 @@ CREATE TABLE `sys_role_ref_user`
 
 -- ----------------------------
 -- Records of sys_role_ref_user
+-- ----------------------------
+
+-- ----------------------------
+-- Table structure for sys_socket
+-- ----------------------------
+DROP TABLE IF EXISTS `sys_socket`;
+CREATE TABLE `sys_socket`
+(
+    `id`          bigint                                                        NOT NULL,
+    `create_id`   bigint                                                        NOT NULL,
+    `create_time` datetime                                                      NOT NULL,
+    `update_id`   bigint                                                        NOT NULL,
+    `update_time` datetime                                                      NOT NULL,
+    `enable_flag` tinyint(1)                                                    NOT NULL COMMENT '启用/禁用',
+    `version`     int                                                           NOT NULL COMMENT '乐观锁',
+    `del_flag`    tinyint(1)                                                    NOT NULL COMMENT '是否逻辑删除',
+    `remark`      varchar(300) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '描述/备注',
+    `scheme`      varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci  NOT NULL COMMENT '协议',
+    `host`        varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci  NOT NULL COMMENT '主机',
+    `port`        int                                                           NOT NULL COMMENT '端口',
+    `type`        int                                                           NOT NULL COMMENT 'socket类型：101 tcp 201 webSocket 301 udp',
+    PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB
+  CHARACTER SET = utf8mb4
+  COLLATE = utf8mb4_unicode_ci COMMENT = 'v20230301：主表：socket'
+  ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of sys_socket
+-- ----------------------------
+INSERT INTO `sys_socket`
+VALUES (230602174219117623, -1, '2023-06-02 17:42:20', -1, '2023-06-02 17:42:20', 1, 0, 0, '', '', '', 10002, 201);
+
+-- ----------------------------
+-- Table structure for sys_socket_ref_user
+-- ----------------------------
+DROP TABLE IF EXISTS `sys_socket_ref_user`;
+CREATE TABLE `sys_socket_ref_user`
+(
+    `id`          bigint                                                        NOT NULL,
+    `create_id`   bigint                                                        NOT NULL,
+    `create_time` datetime                                                      NOT NULL,
+    `update_id`   bigint                                                        NOT NULL,
+    `update_time` datetime                                                      NOT NULL,
+    `enable_flag` tinyint(1)                                                    NOT NULL COMMENT '启用/禁用',
+    `version`     int                                                           NOT NULL COMMENT '乐观锁',
+    `del_flag`    tinyint(1)                                                    NOT NULL COMMENT '是否逻辑删除',
+    `remark`      varchar(300) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '描述/备注',
+    `user_id`     bigint                                                        NOT NULL COMMENT '用户主键 id',
+    `socket_id`   bigint                                                        NOT NULL COMMENT 'socket主键 id',
+    `nickname`    varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci  NOT NULL COMMENT '冗余字段，昵称',
+    `scheme`      varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci  NOT NULL COMMENT '冗余字段，协议',
+    `host`        varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci  NOT NULL COMMENT '冗余字段，主机',
+    `port`        int                                                           NOT NULL COMMENT '冗余字段，端口',
+    `type`        int                                                           NOT NULL COMMENT '冗余字段，socket类型：101 tcp 201 webSocket 301 udp',
+    PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB
+  CHARACTER SET = utf8mb4
+  COLLATE = utf8mb4_unicode_ci COMMENT = 'v20230301：关联表：socket，用户'
+  ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of sys_socket_ref_user
 -- ----------------------------
 
 -- ----------------------------
