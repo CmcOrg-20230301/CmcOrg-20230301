@@ -54,7 +54,6 @@
         <module>be-server</module>
         <module>be-request</module>
         <module>be-generate</module>
-        <module>be-netty-websocket</module>
         <module>be-sms</module>
         <module>be-sms-aliyun</module>
         <module>be-sms-tencent</module>
@@ -65,10 +64,26 @@
         <module>be-pay-ali</module>
         <module>be-pay-wx</module>
         <module>be-socket</module>
+        <module>be-netty-websocket</module>
+        <module>be-netty-tcp-protobuf</module>
     </modules>
 
     <dependencyManagement>
         <dependencies>
+
+            <!-- be-netty-tcp-protobuf -->
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>be-netty-tcp-protobuf</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <!-- be-netty-websocket -->
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>be-netty-websocket</artifactId>
+                <version>${project.version}</version>
+            </dependency>
 
             <!-- be-socket -->
             <dependency>
@@ -137,13 +152,6 @@
             <dependency>
                 <groupId>${project.groupId}</groupId>
                 <artifactId>be-sms</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-
-            <!-- be-netty-websocket -->
-            <dependency>
-                <groupId>${project.groupId}</groupId>
-                <artifactId>be-netty-websocket</artifactId>
                 <version>${project.version}</version>
             </dependency>
 

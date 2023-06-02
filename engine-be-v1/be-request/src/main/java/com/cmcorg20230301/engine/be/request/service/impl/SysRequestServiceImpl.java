@@ -39,7 +39,8 @@ public class SysRequestServiceImpl extends ServiceImpl<SysRequestMapper, SysRequ
             .orderByDesc(BaseEntity::getCreateTime)
             .select(SysRequestDO::getIp, SysRequestDO::getUri, SysRequestDO::getSuccessFlag, SysRequestDO::getCostMsStr,
                 BaseEntityNoId::getCreateTime, BaseEntityNoId::getCreateId, SysRequestDO::getName,
-                SysRequestDO::getCategory, SysRequestDO::getIp, SysRequestDO::getRegion).page(dto.page(true));
+                SysRequestDO::getCategory, SysRequestDO::getIp, SysRequestDO::getRegion, SysRequestDO::getErrorMsg)
+            .page(dto.page(true));
 
     }
 
