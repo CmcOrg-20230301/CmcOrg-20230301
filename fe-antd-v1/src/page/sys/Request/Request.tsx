@@ -72,7 +72,7 @@ export default function () {
 
                         <span>上次更新时间：{FormatDateTime(lastUpdateTime)}</span>
 
-                        <Tooltip title={`筛选条件，接口平均响应耗时，共请求 ${sysRequestAllAvgVO.count}次`}>
+                        <Tooltip title={`筛选条件，接口平均响应耗时，共请求 ${sysRequestAllAvgVO.count} 次`}>
 
                             <span className={"hand"}>
 
@@ -85,7 +85,7 @@ export default function () {
 
                                                type={GetAvgType(sysRequestAllAvgVO.avgMs!)}>
 
-                                               {sysRequestAllAvgVO.avgMs}ms
+                                               {sysRequestAllAvgVO.avgMs || 0}ms
 
                                            </Typography.Text>
 
