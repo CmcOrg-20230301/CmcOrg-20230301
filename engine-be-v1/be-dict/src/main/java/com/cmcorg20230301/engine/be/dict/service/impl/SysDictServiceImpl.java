@@ -128,17 +128,17 @@ public class SysDictServiceImpl extends ServiceImpl<SysDictMapper, SysDictDO> im
      * 通过：dictKey获取字典项集合，备注：会进行缓存
      */
     @Override
-    public Set<DictVO> listByDictKey(SysDictListByDictKeyDTO dto) {
+    public List<DictVO> listByDictKey(SysDictListByDictKeyDTO dto) {
 
-        Map<String, Set<DictVO>> dictMap =
-            MyCacheUtil.getMap(SysDictCanalKafkaHandler.SYS_DICT_CACHE, CacheHelper.getDefaultStringSetMap(), () -> {
+        Map<String, List<DictVO>> dictMap =
+            MyCacheUtil.getMap(SysDictCanalKafkaHandler.SYS_DICT_CACHE, CacheHelper.getDefaultStringListMap(), () -> {
 
                 return lambdaQuery().eq(SysDictDO::getType, SysDictTypeEnum.DICT_ITEM)
                     .eq(BaseEntityNoId::getEnableFlag, true) //
                     .select(SysDictDO::getValue, SysDictDO::getName, SysDictDO::getDictKey) //
                     .orderByDesc(SysDictDO::getOrderNo).list() //
                     .stream().collect(Collectors.groupingBy(SysDictDO::getDictKey, Collectors
-                        .mapping(it -> new DictVO(it.getValue().longValue(), it.getName()), Collectors.toSet())));
+                        .mapping(it -> new DictVO(it.getValue().longValue(), it.getName()), Collectors.toList())));
 
             });
 

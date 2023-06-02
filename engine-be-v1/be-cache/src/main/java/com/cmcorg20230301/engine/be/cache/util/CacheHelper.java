@@ -74,6 +74,16 @@ public class CacheHelper {
     }
 
     @NotNull
+    public static <T> Map<String, List<T>> getDefaultStringListMap() {
+
+        Map<String, List<T>> result = MapUtil.newHashMap();
+        result.put("", new ArrayList<>());
+
+        return result;
+
+    }
+
+    @NotNull
     public static <T> Map<Long, List<T>> getDefaultLongListMap() {
 
         Map<Long, List<T>> result = MapUtil.newHashMap();

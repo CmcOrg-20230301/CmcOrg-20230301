@@ -11,6 +11,7 @@ import com.cmcorg20230301.engine.be.model.model.dto.NotEmptyIdSet;
 import com.cmcorg20230301.engine.be.model.model.dto.NotNullId;
 import com.cmcorg20230301.engine.be.model.model.vo.DictVO;
 
+import java.util.List;
 import java.util.Set;
 
 public interface SysDictService extends IService<SysDictDO> {
@@ -19,7 +20,7 @@ public interface SysDictService extends IService<SysDictDO> {
 
     Page<SysDictDO> myPage(SysDictPageDTO dto);
 
-    Set<DictVO> listByDictKey(SysDictListByDictKeyDTO dto);
+    List<DictVO> listByDictKey(SysDictListByDictKeyDTO dto);
 
     Set<SysDictDO> tree(SysDictPageDTO dto);
 

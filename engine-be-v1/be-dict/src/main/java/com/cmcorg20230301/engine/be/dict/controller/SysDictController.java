@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
 import javax.validation.Valid;
+import java.util.List;
 import java.util.Set;
 
 @Tag(name = "字典-管理")
@@ -47,7 +48,7 @@ public class SysDictController {
 
     @Operation(summary = "通过：dictKey获取字典项集合，备注：会进行缓存")
     @PostMapping("/listByDictKey")
-    public ApiResultVO<Set<DictVO>> listByDictKey(@RequestBody @Valid SysDictListByDictKeyDTO dto) {
+    public ApiResultVO<List<DictVO>> listByDictKey(@RequestBody @Valid SysDictListByDictKeyDTO dto) {
         return ApiResultVO.ok(baseService.listByDictKey(dto));
     }
 

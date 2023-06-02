@@ -1,7 +1,10 @@
 import {YesNoDict} from "@/util/DictUtil";
+import {Dropdown, Menu, Tag} from "antd";
+import {EllipsisOutlined} from "@ant-design/icons/lib";
 import {ActionType, ProColumns} from "@ant-design/pro-components";
 import {SysDictDeleteByIdSet, SysDictDO, SysDictInsertOrUpdateDTO} from "@/api/SysDict";
 import {ExecConfirm, ToastSuccess} from "@/util/ToastUtil";
+import {CalcOrderNo} from "@/util/TreeUtil";
 
 const TableColumnList = (currentForm: React.MutableRefObject<SysDictInsertOrUpdateDTO | null>, setFormOpen: React.Dispatch<React.SetStateAction<boolean>>, actionRef: React.RefObject<ActionType | undefined>): ProColumns<SysDictDO>[] => [
 
@@ -13,6 +16,12 @@ const TableColumnList = (currentForm: React.MutableRefObject<SysDictInsertOrUpda
     },
 
     {title: 'key', dataIndex: 'dictKey', ellipsis: true,},
+
+    {
+        title: '类别', dataIndex: "type",
+        render: (dom, entity) =>
+            <Tag color={entity.type === 1 ? 'purple' : 'green'}>{entity.type === 1 ? '字典' : '字典项'}</Tag>
+    },
 
     {title: '名称', dataIndex: 'name', ellipsis: true,},
 
@@ -71,6 +80,61 @@ const TableColumnList = (currentForm: React.MutableRefObject<SysDictInsertOrUpda
                 }, undefined, `确定删除【${entity.name}】吗？`)
 
             }}>删除</a>,
+
+            (
+
+                entity.type === 1 &&
+
+                <Dropdown key="3"
+
+                          overlay={
+
+                              <Menu
+
+                                  items={[
+
+                                      {
+
+                                          key: '1',
+
+                                          label: <a onClick={() => {
+
+                                              currentForm.current = {dictKey: entity.dictKey, type: 2, value: 1}
+
+                                              CalcOrderNo(currentForm.current!, entity, ({item}) => {
+
+                                                  if (item!.value! >= currentForm.current!.value!) {
+
+                                                      currentForm.current!.value = Number(item!.value) + 1 // 如果存在字典项，那么则取最大的 value + 1
+
+                                                  }
+
+                                              })
+
+                                              setFormOpen(true)
+
+                                          }}>
+
+                                              添加字典项
+
+                                          </a>,
+
+                                      },
+
+                                  ]}
+
+                              >
+
+                              </Menu>
+
+                          }
+                >
+
+                    <a><EllipsisOutlined/></a>
+
+                </Dropdown>
+
+            )
 
         ],
 
