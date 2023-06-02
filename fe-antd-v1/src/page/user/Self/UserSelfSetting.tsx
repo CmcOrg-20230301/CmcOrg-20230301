@@ -667,7 +667,8 @@ function RequestSelfLoginRecordModal() {
                         className={"noFooterModal"}
 
                     >
-                        <ProTable<SysRequestDO, SysRequestPageDTO>
+
+                    <ProTable<SysRequestDO, SysRequestPageDTO>
 
                             rowKey={"id"}
 
