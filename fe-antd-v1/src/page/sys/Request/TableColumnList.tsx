@@ -3,6 +3,7 @@ import {SysRequestDO, SysRequestPageDTO} from "@/api/SysRequest";
 import {ProColumns} from "@ant-design/pro-table/es/typing";
 import {HandlerRegion} from "@/util/StrUtil";
 import {SysUserDictList} from "@/api/SysUser";
+import {Typography} from "antd";
 
 const TableColumnList = (): ProColumns<SysRequestDO>[] => [
 
@@ -24,7 +25,11 @@ const TableColumnList = (): ProColumns<SysRequestDO>[] => [
         width: 90,
     },
 
-    {title: '失败信息', dataIndex: 'errorMsg', ellipsis: true, width: 90,},
+    {
+        title: '失败信息', dataIndex: 'errorMsg', hideInSearch: true, width: 300, render: (text) => {
+            return <Typography.Text ellipsis={{tooltip: true}} style={{width: 300}}>{text}</Typography.Text>
+        }
+    },
 
     {title: '耗时', dataIndex: 'costMsStr', ellipsis: true, width: 90, sorter: true, hideInSearch: true,},
 
