@@ -71,6 +71,7 @@ export default function () {
             }}
 
             column={1}
+
             columns={[
 
                 {
