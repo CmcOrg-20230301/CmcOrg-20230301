@@ -1,6 +1,14 @@
 import {useEffect, useRef, useState} from "react";
-import {ActionType, BetaSchemaForm, ColumnsState, ModalForm, ProFormDigit, ProTable} from "@ant-design/pro-components";
-import {Button, Dropdown, Form, Space} from "antd";
+import {
+    ActionType,
+    BetaSchemaForm,
+    ColumnsState,
+    FormInstance,
+    ModalForm,
+    ProFormDigit,
+    ProTable
+} from "@ant-design/pro-components";
+import {Button, Dropdown, Space} from "antd";
 import {ColumnHeightOutlined, EllipsisOutlined, PlusOutlined, VerticalAlignMiddleOutlined} from "@ant-design/icons/lib";
 import {
     SysDictAddOrderNo,
@@ -29,7 +37,7 @@ export default function () {
 
     const actionRef = useRef<ActionType>()
 
-    const [useForm] = Form.useForm<SysDictInsertOrUpdateDTO>();
+    const formRef = useRef<FormInstance<SysDictInsertOrUpdateDTO>>();
 
     const [formOpen, setFormOpen] = useState<boolean>(false);
 
@@ -252,7 +260,7 @@ export default function () {
                     maskClosable: false,
                 }}
 
-                form={useForm}
+                formRef={formRef}
 
                 isKeyPressSubmit
 
@@ -318,7 +326,7 @@ export default function () {
 
                 request={async () => {
 
-                    useForm.resetFields()
+                    formRef.current?.resetFields()
 
                     if (currentForm.current.id) {
 
@@ -330,7 +338,7 @@ export default function () {
 
                     }
 
-                    useForm.setFieldsValue(currentForm.current) // 组件会深度克隆 currentForm.current
+                    formRef.current?.setFieldsValue(currentForm.current) // 组件会深度克隆 currentForm.current
 
                     return InitForm
 

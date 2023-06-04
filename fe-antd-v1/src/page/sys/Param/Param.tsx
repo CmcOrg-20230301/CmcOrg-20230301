@@ -1,6 +1,6 @@
 import {useEffect, useRef, useState} from "react";
-import {ActionType, BetaSchemaForm, ColumnsState, ProTable} from "@ant-design/pro-components";
-import {Button, Form, Space} from "antd";
+import {ActionType, BetaSchemaForm, ColumnsState, FormInstance, ProTable} from "@ant-design/pro-components";
+import {Button, Space} from "antd";
 import {PlusOutlined} from "@ant-design/icons/lib";
 import {
     SysParamDeleteByIdSet,
@@ -25,7 +25,7 @@ export default function () {
 
     const actionRef = useRef<ActionType>()
 
-    const [useForm] = Form.useForm<SysParamInsertOrUpdateDTO>();
+    const formRef = useRef<FormInstance<SysParamInsertOrUpdateDTO>>();
 
     const [formOpen, setFormOpen] = useState<boolean>(false);
 
@@ -163,7 +163,7 @@ export default function () {
                     maskClosable: false,
                 }}
 
-                form={useForm}
+                formRef={formRef}
 
                 isKeyPressSubmit
 
@@ -229,7 +229,7 @@ export default function () {
 
                 request={async () => {
 
-                    useForm.resetFields()
+                    formRef.current?.resetFields()
 
                     if (currentForm.current.id) {
 
@@ -241,7 +241,7 @@ export default function () {
 
                     }
 
-                    useForm.setFieldsValue(currentForm.current) // 组件会深度克隆 currentForm.current
+                    formRef.current?.setFieldsValue(currentForm.current) // 组件会深度克隆 currentForm.current
 
                     return InitForm
 
