@@ -1,5 +1,5 @@
 import {YesNoDict} from "@/util/DictUtil";
-import {Dropdown, Menu, Tag} from "antd";
+import {Dropdown, Tag} from "antd";
 import {EllipsisOutlined} from "@ant-design/icons/lib";
 import {ActionType, ProColumns} from "@ant-design/pro-components";
 import {SysDictDeleteByIdSet, SysDictDO, SysDictInsertOrUpdateDTO} from "@/api/SysDict";
@@ -85,49 +85,45 @@ const TableColumnList = (currentForm: React.MutableRefObject<SysDictInsertOrUpda
 
                 entity.type === 1 &&
 
-                <Dropdown key="3"
+                <Dropdown
 
-                          overlay={
+                    key="3"
 
-                              <Menu
+                    menu={{
 
-                                  items={[
+                        items: [
 
-                                      {
+                            {
 
-                                          key: '1',
+                                key: '1',
 
-                                          label: <a onClick={() => {
+                                label: <a onClick={() => {
 
-                                              currentForm.current = {dictKey: entity.dictKey, type: 2, value: 1}
+                                    currentForm.current = {dictKey: entity.dictKey, type: 2, value: 1}
 
-                                              CalcOrderNo(currentForm.current!, entity, ({item}) => {
+                                    CalcOrderNo(currentForm.current!, entity, ({item}) => {
 
-                                                  if (item!.value! >= currentForm.current!.value!) {
+                                        if (item!.value! >= currentForm.current!.value!) {
 
-                                                      currentForm.current!.value = Number(item!.value) + 1 // 如果存在字典项，那么则取最大的 value + 1
+                                            currentForm.current!.value = Number(item!.value) + 1 // 如果存在字典项，那么则取最大的 value + 1
 
-                                                  }
+                                        }
 
-                                              })
+                                    })
 
-                                              setFormOpen(true)
+                                    setFormOpen(true)
 
-                                          }}>
+                                }}>
 
-                                              添加字典项
+                                    添加字典项
 
-                                          </a>,
+                                </a>,
 
-                                      },
+                            },
+                        ]
 
-                                  ]}
+                    }}
 
-                              >
-
-                              </Menu>
-
-                          }
                 >
 
                     <a><EllipsisOutlined/></a>

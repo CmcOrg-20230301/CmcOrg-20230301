@@ -3,7 +3,7 @@ import {AxiosRequestConfig} from "axios";
 
 // 上传文件：共有和私有
 export function SysFileUpload(config?: AxiosRequestConfig) {
-    return $http.myPost<string>('/sys/file/upload', undefined, config)
+    return $http.myPost<integer>('/sys/file/upload', undefined, config)
 }
 
 export interface NotEmptyIdSet {

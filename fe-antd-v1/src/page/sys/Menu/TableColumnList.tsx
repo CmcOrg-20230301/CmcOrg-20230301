@@ -5,7 +5,7 @@ import {ExecConfirm, ToastSuccess} from "@/util/ToastUtil";
 import React from "react";
 import {CalcOrderNo, DefaultOrderNo} from "@/util/TreeUtil";
 import CommonConstant from "@/model/constant/CommonConstant";
-import {Dropdown, Menu} from "antd";
+import {Dropdown} from "antd";
 import {EllipsisOutlined} from "@ant-design/icons/lib";
 
 const QuicklyAddAuth = "快速添加权限"
@@ -37,13 +37,6 @@ const TableColumnList = (currentForm: React.MutableRefObject<SysMenuInsertOrUpda
     {
         title: '是否显示',
         dataIndex: 'showFlag',
-        valueEnum: YesNoDict,
-        width: 90,
-    },
-
-    {
-        title: '是否外链',
-        dataIndex: 'linkFlag',
         valueEnum: YesNoDict,
         width: 90,
     },
@@ -96,10 +89,13 @@ const TableColumnList = (currentForm: React.MutableRefObject<SysMenuInsertOrUpda
 
             }}>删除</a>,
 
-            <Dropdown key="3" overlay={
+            <Dropdown
 
-                <Menu
-                    items={[
+                key="3"
+
+                menu={{
+
+                    items: [
 
                         {
                             key: '1',
@@ -213,12 +209,10 @@ const TableColumnList = (currentForm: React.MutableRefObject<SysMenuInsertOrUpda
 
                         },
 
-                    ]}
-                >
+                    ]
 
-                </Menu>
+                }}
 
-            }
             >
 
                 <a><EllipsisOutlined/></a>

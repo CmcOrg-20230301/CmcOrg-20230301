@@ -39,7 +39,7 @@ export interface SysRequestDO {
 
 // 当前用户：登录记录
 export function SysRequestSelfLoginRecord(form: SysRequestSelfLoginRecordPageDTO, config?: AxiosRequestConfig) {
-    return $http.myProPagePost<SysRequestDO>('/sys/request/self/loginRecord', form, config)
+    return $http.myPost<SysRequestDO>('/sys/request/self/loginRecord', form, config)
 }
 
 export interface SysRequestPageDTO {

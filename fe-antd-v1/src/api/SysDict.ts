@@ -12,7 +12,7 @@ export interface SysDictDO {
     updateTime?: string // 修改时间，format：date-time
     remark?: string // 描述/备注
     delFlag?: boolean // 是否逻辑删除
-    type?: number // 字典类型
+    type?: string // 字典类型
     version?: number // 乐观锁，format：int32
     dictKey?: string // 字典 key（不能重复），字典项要冗余这个 key，目的：方便操作
     updateId?: string // 修改人id，format：int64
@@ -57,7 +57,7 @@ export interface SysDictInsertOrUpdateDTO {
     name?: string // 字典/字典项 名，required：true
     remark?: string // 备注
     id?: string // 主键 id，format：int64
-    type?: number // 字典类型，required：true
+    type?: string // 字典类型，required：true
     dictKey?: string // 字典 key（不能重复），字典项要冗余这个 key，目的：方便操作，required：true
     value?: number // 字典项 value（数字 123...）备注：字典为 -1，format：int32
     enableFlag?: boolean // 是否启用
