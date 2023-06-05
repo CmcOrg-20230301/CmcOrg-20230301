@@ -26,7 +26,7 @@ export default function () {
 
     const [fileLoading, setFileLoading] = useState<boolean>(false)
 
-    const [avatarUrl, setAvatarUrl] = useState<String>('')
+    const [avatarUrl, setAvatarUrl] = useState<string>('')
 
     // 执行：更新用户基本信息
     function doSysUserSelfUpdateInfo(form: UserSelfUpdateInfoDTO) {
@@ -58,7 +58,7 @@ export default function () {
 
                         appDispatch(setUserSelfInfo(res.data))
 
-                        const avatarFileId = res.data.avatarFileId;
+                        const avatarFileId = res.data.avatarFileId!;
 
                         if (avatarFileId as any !== -1) {
 
@@ -204,7 +204,7 @@ export default function () {
 
                             </Upload>
 
-                            {entity.avatarUrl &&
+                            {avatarUrl &&
 
                             <a onClick={() => {
 
