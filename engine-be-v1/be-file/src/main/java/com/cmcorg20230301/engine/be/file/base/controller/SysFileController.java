@@ -26,7 +26,7 @@ public class SysFileController {
     @Resource
     SysFileService baseService;
 
-    @Operation(summary = "上传文件：共有和私有")
+    @Operation(summary = "上传文件：公有和私有")
     @PostMapping("/upload")
     public ApiResultVO<Long> upload(SysFileUploadDTO dto) {
         return ApiResultVO.ok(BaseBizCodeEnum.OK, baseService.upload(dto));
@@ -38,7 +38,7 @@ public class SysFileController {
         baseService.privateDownload(notNullId, response);
     }
 
-    @Operation(summary = "批量删除文件：共有和私有")
+    @Operation(summary = "批量删除文件：公有和私有")
     @PostMapping("/removeByFileIdSet")
     public ApiResultVO<String> removeByFileIdSet(@RequestBody @Valid NotEmptyIdSet notEmptyIdSet) {
         return ApiResultVO.ok(baseService.removeByFileIdSet(notEmptyIdSet));

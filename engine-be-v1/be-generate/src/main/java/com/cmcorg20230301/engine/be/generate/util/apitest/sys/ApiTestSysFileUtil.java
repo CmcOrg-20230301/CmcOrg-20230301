@@ -47,7 +47,7 @@ public class ApiTestSysFileUtil {
         String jwt =
             ApiTestSignSignInNameUtil.signInNameSignIn(apiEndpoint, adminSignInName, adminPassword, rsaPublicKey);
 
-        // 请求-上传文件：共有和私有
+        // 请求-上传文件：公有和私有
         Long fileId = sysFileUpload(apiEndpoint, jwt);
 
         // 请求-下载文件：私有
@@ -56,13 +56,13 @@ public class ApiTestSysFileUtil {
         // 请求-批量获取：公开文件的 url
         sysFileGetPublicUrl(apiEndpoint, jwt, fileId);
 
-        // 请求-批量删除文件：共有和私有
+        // 请求-批量删除文件：公有和私有
         sysFileRemoveByFileIdSet(apiEndpoint, jwt, fileId);
 
     }
 
     /**
-     * 批量删除文件：共有和私有
+     * 批量删除文件：公有和私有
      */
     private static void sysFileRemoveByFileIdSet(String apiEndpoint, String jwt, Long fileId) {
 
@@ -73,7 +73,7 @@ public class ApiTestSysFileUtil {
         String bodyStr = HttpRequest.post(apiEndpoint + "/sys/file/removeByFileIdSet").header("Authorization", jwt)
             .body(JSONUtil.toJsonStr(notEmptyIdSet)).execute().body();
 
-        log.info("请求-批量删除文件：共有和私有：耗时：{}，bodyByte长度：{}", ApiTestHelper.calcCostMs(currentTs), bodyStr);
+        log.info("请求-批量删除文件：公有和私有：耗时：{}，bodyByte长度：{}", ApiTestHelper.calcCostMs(currentTs), bodyStr);
 
     }
 
@@ -112,7 +112,7 @@ public class ApiTestSysFileUtil {
     }
 
     /**
-     * 请求-上传文件：共有和私有
+     * 请求-上传文件：公有和私有
      */
     @SneakyThrows
     private static Long sysFileUpload(String apiEndpoint, String jwt) {
@@ -130,7 +130,7 @@ public class ApiTestSysFileUtil {
             HttpRequest.post(apiEndpoint + "/sys/file/upload").form(map).form("file", file).header("Authorization", jwt)
                 .execute().body();
 
-        log.info("请求-上传文件：共有和私有：耗时：{}，bodyStr：{}", ApiTestHelper.calcCostMs(currentTs), bodyStr);
+        log.info("请求-上传文件：公有和私有：耗时：{}，bodyStr：{}", ApiTestHelper.calcCostMs(currentTs), bodyStr);
 
         return JSONUtil.parseObj(bodyStr).getLong("data");
 

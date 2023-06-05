@@ -22,7 +22,7 @@ import java.io.InputStream;
 public class SysFileServiceImpl extends ServiceImpl<SysFileMapper, SysFileDO> implements SysFileService {
 
     /**
-     * 上传文件：共有和私有
+     * 上传文件：公有和私有
      */
     @Override
     public Long upload(SysFileUploadDTO dto) {
@@ -50,7 +50,7 @@ public class SysFileServiceImpl extends ServiceImpl<SysFileMapper, SysFileDO> im
     }
 
     /**
-     * 批量删除文件：共有和私有
+     * 批量删除文件：公有和私有
      */
     @Override
     public String removeByFileIdSet(NotEmptyIdSet notEmptyIdSet) {

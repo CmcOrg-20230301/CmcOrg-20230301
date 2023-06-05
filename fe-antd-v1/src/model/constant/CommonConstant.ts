@@ -14,4 +14,6 @@ export default {
 
     POLLING_TIME: 20 * 1000, // 轮询时间
 
+    IMAGE_FILE_ACCEPT_TYPE: ".png,.jpeg,.jpg", // 图片文件的类型
+
 }

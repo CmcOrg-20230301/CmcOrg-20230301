@@ -1,9 +1,9 @@
 import $http from "@/util/HttpUtil";
 import {AxiosRequestConfig} from "axios";
 
-// 上传文件：共有和私有
-export function SysFileUpload(config?: AxiosRequestConfig) {
-    return $http.myPost<string>('/sys/file/upload', undefined, config)
+// 上传文件：公有和私有
+export function SysFileUpload(form: FormData, config?: AxiosRequestConfig) {
+    return $http.myPost<string>('/sys/file/upload', form, config)
 }
 
 export interface NotEmptyIdSet {
@@ -19,7 +19,7 @@ export function SysFileGetPublicUrl(form: NotEmptyIdSet, config?: AxiosRequestCo
     return $http.myPost<LongObjectMapVOString>('/sys/file/getPublicUrl', form, config)
 }
 
-// 批量删除文件：共有和私有
+// 批量删除文件：公有和私有
 export function SysFileRemoveByFileIdSet(form: NotEmptyIdSet, config?: AxiosRequestConfig) {
     return $http.myPost<string>('/sys/file/removeByFileIdSet', form, config)
 }

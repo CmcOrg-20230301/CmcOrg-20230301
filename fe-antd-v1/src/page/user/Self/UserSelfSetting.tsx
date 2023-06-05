@@ -636,7 +636,7 @@ export function UserSelfDeleteByCodeModalForm() {
 // 登录记录
 function RequestSelfLoginRecordModal() {
 
-    const [visible, setVisible] = useState(false);
+    const [open, setOpen] = useState(false);
 
     return (
 
@@ -647,7 +647,7 @@ function RequestSelfLoginRecordModal() {
                 return <>
 
                     <a onClick={() => {
-                        setVisible(true)
+                        setOpen(true)
                     }}>查看记录</a>
 
                     <Modal
@@ -656,9 +656,9 @@ function RequestSelfLoginRecordModal() {
 
                         title={RequestSelfLoginRecordModalTitle}
 
-                        onCancel={() => setVisible(false)}
+                        onCancel={() => setOpen(false)}
 
-                        visible={visible}
+                        open={open}
 
                         maskClosable={false}
 
@@ -668,7 +668,7 @@ function RequestSelfLoginRecordModal() {
 
                     >
 
-                    <ProTable<SysRequestDO, SysRequestPageDTO>
+                        <ProTable<SysRequestDO, SysRequestPageDTO>
 
                             rowKey={"id"}
 

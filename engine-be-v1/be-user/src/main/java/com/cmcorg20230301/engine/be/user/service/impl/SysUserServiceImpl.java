@@ -371,7 +371,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserProMapper, SysUserDO>
     public String resetAvatar(NotEmptyIdSet notEmptyIdSet) {
 
         ChainWrappers.lambdaUpdateChain(sysUserInfoMapper).in(SysUserInfoDO::getId, notEmptyIdSet.getIdSet())
-            .set(SysUserInfoDO::getAvatarFileId, "").update();
+            .set(SysUserInfoDO::getAvatarFileId, -1).update();
 
         return BaseBizCodeEnum.OK;
     }

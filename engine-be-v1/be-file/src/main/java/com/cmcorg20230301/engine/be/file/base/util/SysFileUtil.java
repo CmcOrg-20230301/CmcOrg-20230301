@@ -6,6 +6,7 @@ import cn.hutool.core.util.BooleanUtil;
 import cn.hutool.core.util.IdUtil;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.extension.conditions.query.LambdaQueryChainWrapper;
+import com.baomidou.mybatisplus.extension.toolkit.ChainWrappers;
 import com.cmcorg20230301.engine.be.file.aliyun.properties.FileAliYunProperties;
 import com.cmcorg20230301.engine.be.file.aliyun.util.FileAliYunUtil;
 import com.cmcorg20230301.engine.be.file.base.model.entity.SysFileAuthDO;
@@ -18,9 +19,11 @@ import com.cmcorg20230301.engine.be.file.minio.util.FileMinioUtil;
 import com.cmcorg20230301.engine.be.model.model.constant.BaseConstant;
 import com.cmcorg20230301.engine.be.mysql.util.TransactionUtil;
 import com.cmcorg20230301.engine.be.security.exception.BaseBizCodeEnum;
+import com.cmcorg20230301.engine.be.security.mapper.SysUserInfoMapper;
 import com.cmcorg20230301.engine.be.security.model.dto.SysFileUploadDTO;
 import com.cmcorg20230301.engine.be.security.model.entity.BaseEntity;
 import com.cmcorg20230301.engine.be.security.model.entity.BaseEntityNoId;
+import com.cmcorg20230301.engine.be.security.model.entity.SysUserInfoDO;
 import com.cmcorg20230301.engine.be.security.model.enums.SysFileStorageTypeEnum;
 import com.cmcorg20230301.engine.be.security.model.enums.SysFileTypeEnum;
 import com.cmcorg20230301.engine.be.security.model.enums.SysFileUploadTypeEnum;
@@ -34,6 +37,7 @@ import org.springframework.stereotype.Component;
 
 import java.io.InputStream;
 import java.util.*;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 /**
@@ -50,9 +54,11 @@ public class SysFileUtil {
     private static FileAliYunProperties fileAliYunProperties;
     private static FileMinioProperties fileMinioProperties;
 
+    private static SysUserInfoMapper sysUserInfoMapper;
+
     public SysFileUtil(SysFileProperties sysFileProperties, SysFileService sysFileService,
         SysFileAuthService sysFileAuthService, FileAliYunProperties fileAliYunProperties,
-        FileMinioProperties fileMinioProperties) {
+        FileMinioProperties fileMinioProperties, SysUserInfoMapper sysUserInfoMapper) {
 
         SysFileUtil.sysFileProperties = sysFileProperties;
 
@@ -61,6 +67,8 @@ public class SysFileUtil {
 
         SysFileUtil.fileAliYunProperties = fileAliYunProperties;
         SysFileUtil.fileMinioProperties = fileMinioProperties;
+
+        SysFileUtil.sysUserInfoMapper = sysUserInfoMapper;
 
     }
 
@@ -94,7 +102,7 @@ public class SysFileUtil {
     }
 
     /**
-     * 上传文件：共有和私有
+     * 上传文件：公有和私有
      * 备注：objectName 相同的，会被覆盖掉
      *
      * @return 保存到数据库的，文件主键 id
@@ -102,6 +110,8 @@ public class SysFileUtil {
     @SneakyThrows
     @Nullable
     public static Long upload(SysFileUploadDTO dto) {
+
+        Long currentUserIdNotAdmin = UserUtil.getCurrentUserIdNotAdmin();
 
         // 上传文件时的检查
         String fileType = uploadCheckWillError(dto);
@@ -112,7 +122,14 @@ public class SysFileUtil {
         if (SysFileUploadTypeEnum.AVATAR.equals(dto.getUploadType())) {
 
             // 通用：上传处理
-            sysFileId = uploadCommonHandler(dto, fileType, dto.getUploadType().isPublicFlag());
+            sysFileId = uploadCommonHandler(dto, fileType, dto.getUploadType().isPublicFlag(), currentUserIdNotAdmin,
+
+                (sysFileIdTemp) -> {
+
+                    ChainWrappers.lambdaUpdateChain(sysUserInfoMapper).eq(SysUserInfoDO::getId, currentUserIdNotAdmin)
+                        .set(SysUserInfoDO::getAvatarFileId, sysFileIdTemp).update();
+
+                });
 
         }
 
@@ -124,9 +141,8 @@ public class SysFileUtil {
      * 通用：上传处理
      */
     @NotNull
-    private static Long uploadCommonHandler(SysFileUploadDTO dto, String fileType, boolean publicFlag) {
-
-        Long currentUserId = UserUtil.getCurrentUserId();
+    private static Long uploadCommonHandler(SysFileUploadDTO dto, String fileType, boolean publicFlag,
+        Long currentUserId, Consumer<Long> consumer) {
 
         String folderName = dto.getUploadType().getFolderName();
 
@@ -176,6 +192,8 @@ public class SysFileUtil {
             // 通用保存：文件信息到数据库
             Long sysFileId = saveCommonSysFile(dto, fileType, currentUserId, originalFilename, newFileName, objectName,
                 finalBucketName, finalStorageType, publicFlag);
+
+            consumer.accept(sysFileId);
 
             if (sysFileProperties.getAvatarStorageType() == 1) { // 文件存放位置：1 阿里云 2 minio
 
@@ -358,7 +376,7 @@ public class SysFileUtil {
     }
 
     /**
-     * 批量删除文件：共有和私有
+     * 批量删除文件：公有和私有
      */
     @SneakyThrows
     public static void removeByFileIdSet(Set<Long> fileIdSet) {

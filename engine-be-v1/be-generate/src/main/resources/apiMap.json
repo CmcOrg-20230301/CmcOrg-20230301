@@ -7082,7 +7082,7 @@
       "method": "post",
       "tag": "文件-管理",
       "group": "SysFile",
-      "summary": "上传文件：共有和私有",
+      "summary": "上传文件：公有和私有",
       "parameter": {
         "dto": {
           "className": "SysFileUploadDTO",
@@ -7161,7 +7161,7 @@
       "method": "post",
       "tag": "文件-管理",
       "group": "SysFile",
-      "summary": "批量删除文件：共有和私有",
+      "summary": "批量删除文件：公有和私有",
       "contentType": "application/json",
       "requestBody": {
         "className": "NotEmptyIdSet",
