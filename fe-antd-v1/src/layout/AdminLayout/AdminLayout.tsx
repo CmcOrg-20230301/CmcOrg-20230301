@@ -12,7 +12,7 @@ import {getAppDispatch, getAppNav} from "@/MyApp";
 import React, {useEffect, useState} from "react";
 import {SysMenuDO, SysMenuUserSelfMenuList} from "@/api/SysMenu";
 import PathConstant from "@/model/constant/PathConstant";
-import {setUserSelfInfo, setUserSelfMenuList} from "@/store/userSlice";
+import {setUserSelfAvatarUrl, setUserSelfInfo, setUserSelfMenuList} from "@/store/userSlice";
 import {LogoutOutlined, UserOutlined} from "@ant-design/icons/lib";
 import {GetCopyright} from "@/layout/SignLayout/SignLayout";
 import {Avatar, Button, Dropdown, Space, Typography} from "antd";
@@ -114,9 +114,10 @@ function AdminLayoutElement(props: IAdminLayoutElement) {
 
     const [pathname, setPathname] = useState<string>('')
     const appDispatch = getAppDispatch();
+
     const userSelfInfo = useAppSelector((state) => state.user.userSelfInfo)
 
-    const [avatarUrl, setAvatarUrl] = useState<string>('')
+    const userSelfAvatarUrl = useAppSelector((state) => state.user.userSelfAvatarUrl)
 
     useEffect(() => {
 
@@ -132,7 +133,7 @@ function AdminLayoutElement(props: IAdminLayoutElement) {
 
                 SysFileGetPublicUrl({idSet: [avatarFileId!]}).then(res => {
 
-                    setAvatarUrl(res.data.map![avatarFileId] || '')
+                    appDispatch(setUserSelfAvatarUrl(res.data.map![avatarFileId] || ''))
 
                 })
 
@@ -298,7 +299,7 @@ function AdminLayoutElement(props: IAdminLayoutElement) {
                                             size="small"
 
                                             src={
-                                                avatarUrl ? avatarUrl : CommonConstant.FIXED_AVATAR_URL
+                                                userSelfAvatarUrl ? userSelfAvatarUrl : CommonConstant.FIXED_AVATAR_URL
                                             }
 
                                         />

@@ -7,24 +7,19 @@ interface IUserSlice {
 
     userSelfMenuList: SysMenuDO[] // 用户菜单
     userSelfInfo: UserSelfInfoVO // 当前用户，基本信息
+    userSelfAvatarUrl: string // 当前用户，头像链接
 
 }
 
 const initialState: IUserSlice = {
 
     userSelfMenuList: [],
+
     userSelfInfo: JSON.parse(
         localStorage.getItem(LocalStorageKey.USER_SELF_INFO) || '{}'
     ),
 
-}
-
-function setLocalStorageUserSelfInfo(userSelfInfo: UserSelfInfoVO) {
-
-    localStorage.setItem(
-        LocalStorageKey.USER_SELF_INFO,
-        JSON.stringify(userSelfInfo)
-    )
+    userSelfAvatarUrl: localStorage.getItem(LocalStorageKey.USER_SELF_AVATAR_URL) || ''
 
 }
 
@@ -41,7 +36,22 @@ export const userSlice = createSlice({
         setUserSelfInfo: (state, action: PayloadAction<UserSelfInfoVO>) => {
 
             state.userSelfInfo = action.payload
-            setLocalStorageUserSelfInfo(action.payload)
+
+            localStorage.setItem(
+                LocalStorageKey.USER_SELF_INFO,
+                JSON.stringify(action.payload)
+            )
+
+        },
+
+        setUserSelfAvatarUrl: (state, action: PayloadAction<string>) => {
+
+            state.userSelfAvatarUrl = action.payload
+
+            localStorage.setItem(
+                LocalStorageKey.USER_SELF_AVATAR_URL,
+                action.payload
+            )
 
         },
 
@@ -50,7 +60,7 @@ export const userSlice = createSlice({
             // 退出登录
             state.userSelfMenuList = []
             state.userSelfInfo = {}
-            setLocalStorageUserSelfInfo({})
+            state.userSelfAvatarUrl = ""
 
         }
 
@@ -58,7 +68,7 @@ export const userSlice = createSlice({
 
 })
 
-export const {setUserSelfMenuList, setUserSelfInfo, signOut} = userSlice.actions
+export const {setUserSelfMenuList, setUserSelfInfo, setUserSelfAvatarUrl, signOut} = userSlice.actions
 export const {} = userSlice.actions
 
 export default userSlice.reducer

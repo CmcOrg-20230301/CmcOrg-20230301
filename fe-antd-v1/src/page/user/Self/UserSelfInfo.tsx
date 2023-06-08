@@ -1,6 +1,6 @@
 import {useRef, useState} from "react";
 import {UserSelfInfo, UserSelfInfoVO, UserSelfUpdateInfo, UserSelfUpdateInfoDTO} from "@/api/UserSelf";
-import {setUserSelfInfo} from "@/store/userSlice";
+import {setUserSelfAvatarUrl, setUserSelfInfo} from "@/store/userSlice";
 import {getAppDispatch} from "@/MyApp";
 import {ActionType, ProDescriptions} from "@ant-design/pro-components";
 import {ExecConfirm, ToastError, ToastSuccess} from "@/util/ToastUtil";
@@ -29,7 +29,7 @@ export default function () {
 
     const [fileLoading, setFileLoading] = useState<boolean>(false)
 
-    const [avatarUrl, setAvatarUrl] = useState<string>('')
+    const userSelfAvatarUrl = useAppSelector((state) => state.user.userSelfAvatarUrl)
 
     // 执行：更新用户基本信息
     function doSysUserSelfUpdateInfo(form: UserSelfUpdateInfoDTO) {
@@ -67,7 +67,7 @@ export default function () {
 
                             SysFileGetPublicUrl({idSet: [avatarFileId!]}).then(res => {
 
-                                setAvatarUrl(res.data.map![avatarFileId] || '')
+                                appDispatch(setUserSelfAvatarUrl(res.data.map![avatarFileId] || ''))
 
                             })
 
@@ -124,7 +124,7 @@ export default function () {
                                     <Image
 
                                         src={
-                                            avatarUrl ? avatarUrl : CommonConstant.FIXED_AVATAR_URL
+                                            userSelfAvatarUrl ? userSelfAvatarUrl : CommonConstant.FIXED_AVATAR_URL
                                         }
 
                                         height={32}
@@ -207,27 +207,28 @@ export default function () {
 
                             </Upload>
 
-                            {avatarUrl &&
+                            {
+                                userSelfAvatarUrl &&
 
-                            <a onClick={() => {
+                                <a onClick={() => {
 
-                                if (fileLoading) {
-                                    return
-                                }
+                                    if (fileLoading) {
+                                        return
+                                    }
 
-                                ExecConfirm(async () => {
+                                    ExecConfirm(async () => {
 
-                                    actionRef.current?.reload()
-                                    ToastSuccess('操作成功')
-                                    setFileLoading(false)
+                                        actionRef.current?.reload()
+                                        ToastSuccess('操作成功')
+                                        setFileLoading(false)
 
-                                }, undefined, '确定移除头像吗？')
+                                    }, undefined, '确定移除头像吗？')
 
-                            }}>
+                                }}>
 
-                                <DeleteOutlined title={"移除头像"} className={"red3"}/>
+                                    <DeleteOutlined title={"移除头像"} className={"red3"}/>
 
-                            </a>
+                                </a>
 
                             }
 
