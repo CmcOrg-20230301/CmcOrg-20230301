@@ -26,6 +26,7 @@ import {ListToTree} from "@/util/TreeUtil";
 import {InDev} from "@/util/CommonUtil";
 import {SignOutSelf} from "@/api/SignOut";
 import {RouterMapKeyList} from "@/router/RouterMap";
+import {SysFileGetPublicUrl} from "@/api/SysFile";
 
 // 前往：第一个页面
 function goFirstPage(menuList: SysMenuDO[]) {
@@ -115,12 +116,28 @@ function AdminLayoutElement(props: IAdminLayoutElement) {
     const appDispatch = getAppDispatch();
     const userSelfInfo = useAppSelector((state) => state.user.userSelfInfo)
 
+    const [avatarUrl, setAvatarUrl] = useState<string>('')
+
     useEffect(() => {
 
         setPathname(window.location.pathname)
 
         UserSelfInfo().then(res => {
+
             appDispatch(setUserSelfInfo(res.data))
+
+            const avatarFileId = res.data.avatarFileId!;
+
+            if (avatarFileId as any !== -1) {
+
+                SysFileGetPublicUrl({idSet: [avatarFileId!]}).then(res => {
+
+                    setAvatarUrl(res.data.map![avatarFileId] || '')
+
+                })
+
+            }
+
         })
 
     }, [])
@@ -276,8 +293,15 @@ function AdminLayoutElement(props: IAdminLayoutElement) {
 
                                     <Space>
 
-                                        <Avatar size="small"
-                                                src={CommonConstant.FIXED_AVATAR_URL}/>
+                                        <Avatar
+
+                                            size="small"
+
+                                            src={
+                                                avatarUrl ? avatarUrl : CommonConstant.FIXED_AVATAR_URL
+                                            }
+
+                                        />
 
                                         <Typography.Text ellipsis style={{width: 95}}
                                                          type="secondary">{userSelfInfo.nickname}</Typography.Text>

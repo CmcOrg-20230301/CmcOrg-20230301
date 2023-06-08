@@ -12,15 +12,18 @@ import CommonConstant from "@/model/constant/CommonConstant";
 import MyIcon from "@/componse/MyIcon/MyIcon";
 import {CheckAvatarFileType, CheckFileSize, SysFileUploadPro} from "@/util/FileUtil";
 import {SysFileGetPublicUrl} from "@/api/SysFile";
+import {useAppSelector} from "@/store";
 
 // 个人资料
 export default function () {
 
     const appDispatch = getAppDispatch();
 
+    const userSelfInfo = useAppSelector((state) => state.user.userSelfInfo)
+
     const actionRef = useRef<ActionType>()
 
-    const currentForm = useRef<UserSelfInfoVO>({})
+    const currentForm = useRef<UserSelfInfoVO>(userSelfInfo)
 
     const [fileList, setFileList] = useState<UploadFile[]>([]);
 
