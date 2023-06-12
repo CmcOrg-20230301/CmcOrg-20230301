@@ -315,7 +315,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserProMapper, SysUserDO>
      * 刷新用户 jwt私钥后缀
      */
     @Override
-    public String refreshJwtSecretSuf(NotEmptyIdSet notEmptyIdSet, String password) {
+    public String refreshJwtSecretSuf(NotEmptyIdSet notEmptyIdSet) {
 
         for (Long item : notEmptyIdSet.getIdSet()) {
 
@@ -380,6 +380,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserProMapper, SysUserDO>
      * 批量修改密码
      */
     @Override
+    @MyTransactional
     public String updatePassword(SysUserUpdatePasswordDTO dto) {
 
         boolean passwordFlag =
@@ -406,7 +407,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserProMapper, SysUserDO>
 
         lambdaUpdate().in(BaseEntity::getId, dto.getIdSet()).set(SysUserDO::getPassword, password).update();
 
-        refreshJwtSecretSuf(new NotEmptyIdSet(dto.getIdSet()), password); // 刷新：jwt私钥后缀，并重新设置密码
+        refreshJwtSecretSuf(new NotEmptyIdSet(dto.getIdSet())); // 刷新：jwt私钥后缀
 
         return BaseBizCodeEnum.OK;
 

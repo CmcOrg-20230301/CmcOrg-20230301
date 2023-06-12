@@ -66,6 +66,13 @@ public class SysUserController {
         return ApiResultVO.ok(baseService.infoById(notNullId));
     }
 
+    @Operation(summary = "刷新：用户jwt私钥后缀")
+    @PostMapping(value = "/refreshJwtSecretSuf")
+    @PreAuthorize("hasAuthority('sysUser:insertOrUpdate')")
+    public ApiResultVO<String> refreshJwtSecretSuf(@RequestBody @Valid NotEmptyIdSet notEmptyIdSet) {
+        return ApiResultVO.ok(baseService.refreshJwtSecretSuf(notEmptyIdSet));
+    }
+
     @Operation(summary = "批量：重置头像")
     @PostMapping("/resetAvatar")
     @PreAuthorize("hasAuthority('sysUser:insertOrUpdate')")

@@ -23,7 +23,7 @@ public class SysUserInfoDO {
     @Schema(description = "个人简介")
     private String bio;
 
-    @Schema(description = "头像 fileId（文件主键 id）")
+    @Schema(description = "头像 fileId（文件主键 id），备注：没有时则为 -1")
     private Long avatarFileId;
 
 }

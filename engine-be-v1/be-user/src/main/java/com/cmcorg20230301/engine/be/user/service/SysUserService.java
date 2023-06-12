@@ -23,7 +23,7 @@ public interface SysUserService extends IService<SysUserDO> {
 
     String deleteByIdSet(NotEmptyIdSet notEmptyIdSet);
 
-    String refreshJwtSecretSuf(NotEmptyIdSet notEmptyIdSet, String password);
+    String refreshJwtSecretSuf(NotEmptyIdSet notEmptyIdSet);
 
     SysUserInfoByIdVO infoById(NotNullId notNullId);
 
