@@ -31,7 +31,17 @@ const TableColumnList = (): ProColumns<SysRequestDO>[] => [
         }
     },
 
-    {title: '耗时', dataIndex: 'costMsStr', ellipsis: true, width: 90, sorter: true, hideInSearch: true,},
+    {
+        title: '耗时',
+        dataIndex: 'costMs',
+        ellipsis: true,
+        width: 90,
+        sorter: true,
+        hideInSearch: true,
+        render: (text, entity) => {
+            return entity.costMsStr
+        }
+    },
 
     {
         title: '耗时(ms)', dataIndex: 'costMsRange', hideInTable: true, valueType: 'digitRange', search: {
