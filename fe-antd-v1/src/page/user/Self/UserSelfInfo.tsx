@@ -10,7 +10,7 @@ import {Avatar, Image, Space, Upload, UploadFile} from "antd";
 import {DeleteOutlined, EyeOutlined} from "@ant-design/icons";
 import CommonConstant from "@/model/constant/CommonConstant";
 import MyIcon from "@/componse/MyIcon/MyIcon";
-import {CheckAvatarFileType, CheckFileSize, SysFileUploadPro} from "@/util/FileUtil";
+import {CheckAvatarFileType, CheckFileSize, SysFileUpload} from "@/util/FileUtil";
 import {SysFileGetPublicUrl} from "@/api/SysFile";
 import {useAppSelector} from "@/store";
 
@@ -175,7 +175,7 @@ export default function () {
 
                                     setFileLoading(true)
 
-                                    SysFileUploadPro(options.file, 'AVATAR').then(res => {
+                                    SysFileUpload(options.file, 'AVATAR').then(res => {
 
                                         actionRef.current?.reload()
                                         ToastSuccess(res.msg)

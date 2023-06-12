@@ -1,5 +1,6 @@
 package com.cmcorg20230301.engine.be.generate.util.generate;
 
+import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.text.CharPool;
 import cn.hutool.core.text.StrBuilder;
@@ -10,6 +11,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.cmcorg20230301.engine.be.generate.model.bo.BeApi;
 import com.cmcorg20230301.engine.be.model.model.dto.MyOrderDTO;
 import com.cmcorg20230301.engine.be.security.model.vo.ApiResultVO;
+import com.cmcorg20230301.engine.be.util.util.CallBack;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 
@@ -93,6 +95,10 @@ public class GenerateApiUtil {
 
             for (BeApi subItem : item.getValue().values()) {
 
+                if (CollUtil.newArrayList("/sys/file/upload").contains(subItem.getPath())) {
+                    continue;
+                }
+
                 // 处理
                 handler(subItem, strBuilder, classNameSet);
 
@@ -116,18 +122,22 @@ public class GenerateApiUtil {
         // 生成 dto
         generateDTO(beApi, strBuilder, classNameSet);
 
+        // 生成 api的时候，是否使用：myProPagePost
+        CallBack<Boolean> myProPagePostCallBack = new CallBack<>(false);
+
         // 生成 vo
-        generateVO(beApi, strBuilder, classNameSet);
+        generateVO(beApi, strBuilder, classNameSet, myProPagePostCallBack);
 
         // 生成 api
-        generateApi(beApi, strBuilder, classNameSet);
+        generateApi(beApi, strBuilder, classNameSet, myProPagePostCallBack);
 
     }
 
     /**
      * 生成 api
      */
-    private static void generateApi(BeApi beApi, StrBuilder strBuilder, Set<String> classNameSet) {
+    private static void generateApi(BeApi beApi, StrBuilder strBuilder, Set<String> classNameSet,
+        CallBack<Boolean> myProPagePostCallBack) {
 
         // api的方法名
         String apiName = getApiName(beApi.getPath());
@@ -135,10 +145,27 @@ public class GenerateApiUtil {
         String formStr = ""; // 拼接 form参数
         String formValueStr = UNDEFINED; // 拼接 form值
 
+        Map<String, BeApi.BeApiField> parameter = beApi.getParameter();
+
         if (beApi.getRequestBody() != null && StrUtil.isNotBlank(beApi.getRequestBody().getClassName())) {
 
             formStr = StrUtil.format(API_REQUEST_FORM_TEMP, beApi.getRequestBody().getClassName());
             formValueStr = API_REQUEST_FORM_NAME;
+
+        } else if (CollUtil.isNotEmpty(parameter)) {
+
+            // 备注：这里只获取一个参数
+            BeApi.BeApiField beApiField = parameter.get(new ArrayList<>(parameter.keySet()).get(0));
+
+            // 如果是：对象类型
+            if (beApiField instanceof BeApi.BeApiSchema) {
+
+                BeApi.BeApiSchema parameterBeApiSchema = (BeApi.BeApiSchema)beApiField;
+
+                formStr = StrUtil.format(API_REQUEST_FORM_TEMP, parameterBeApiSchema.getClassName());
+                formValueStr = API_REQUEST_FORM_NAME;
+
+            }
 
         }
 
@@ -154,7 +181,7 @@ public class GenerateApiUtil {
 
             httpStr = "myProPost";
 
-        } else if (beApi.getPath().contains("page")) {
+        } else if (myProPagePostCallBack.getValue()) {
 
             httpStr = "myProPagePost";
 
@@ -193,7 +220,8 @@ public class GenerateApiUtil {
     /**
      * 生成 vo
      */
-    private static void generateVO(BeApi beApi, StrBuilder strBuilder, Set<String> classNameSet) {
+    private static void generateVO(BeApi beApi, StrBuilder strBuilder, Set<String> classNameSet,
+        CallBack<Boolean> myProPagePostCallBack) {
 
         BeApi.BeApiSchema response = (BeApi.BeApiSchema)beApi.getResponse();
 
@@ -231,6 +259,8 @@ public class GenerateApiUtil {
                     // 生成：interface
                     generateInterface(beApi, strBuilder, classNameSet, recordsBeApiSchema, "vo-page：");
 
+                    myProPagePostCallBack.setValue(true); // 设置：回调值
+
                 } else {
 
                     beApi.setReturnTypeStr(dataRealBeApiSchema.getClassName());
@@ -244,7 +274,12 @@ public class GenerateApiUtil {
 
                 BeApi.BeApiParameter dataBeApiParameter = (BeApi.BeApiParameter)data;
 
-                beApi.setReturnTypeStr(dataBeApiParameter.getType());
+                String type = dataBeApiParameter.getType();
+
+                // 处理：integer类型
+                type = handleIntegerType(dataBeApiParameter, type);
+
+                beApi.setReturnTypeStr(type);
 
                 beApi.setReturnTypeArrFlag(dataBeApiParameter.getArrFlag());
 
@@ -263,7 +298,30 @@ public class GenerateApiUtil {
      */
     private static void generateDTO(BeApi beApi, StrBuilder strBuilder, Set<String> classNameSet) {
 
-        BeApi.BeApiSchema requestBody = beApi.getRequestBody();
+        BeApi.BeApiSchema requestBody = null;
+
+        Map<String, BeApi.BeApiField> parameter = beApi.getParameter();
+
+        if (CollUtil.isNotEmpty(parameter)) {
+
+            // 备注：这里只获取一个参数
+            BeApi.BeApiField beApiField = parameter.get(new ArrayList<>(parameter.keySet()).get(0));
+
+            // 如果是：对象类型
+            if (beApiField instanceof BeApi.BeApiSchema) {
+
+                BeApi.BeApiSchema parameterBeApiSchema = (BeApi.BeApiSchema)beApiField;
+
+                requestBody =
+                    (BeApi.BeApiSchema)parameterBeApiSchema.getFieldMap().get(parameterBeApiSchema.getClassName());
+
+            }
+
+        } else {
+
+            requestBody = beApi.getRequestBody();
+
+        }
 
         if (requestBody == null) {
 
@@ -381,22 +439,8 @@ public class GenerateApiUtil {
 
         String type = beApiParameter.getType();
 
-        String integerStr = "integer";
-        String formatInt64 = "int64";
-
-        if (integerStr.equals(type)) {
-
-            if (formatInt64.equals(beApiParameter.getFormat())) {
-
-                type = "string"; // long 转换为 string
-
-            } else {
-
-                type = "number";
-
-            }
-
-        }
+        // 处理：integer类型
+        type = handleIntegerType(beApiParameter, type);
 
         interfaceBuilder.append(StrUtil.format(API_INTERFACE_FIELD_TEMP, fieldName, "?", type,
             BooleanUtil.isTrue(beApiParameter.getArrFlag()) ? "[]" : "", beApiParameter.getDescription()));
@@ -430,6 +474,32 @@ public class GenerateApiUtil {
             interfaceBuilder.append("，format：").append(beApiParameter.getFormat());
 
         }
+
+    }
+
+    /**
+     * 处理：integer类型
+     */
+    private static String handleIntegerType(BeApi.BeApiParameter beApiParameter, String type) {
+
+        String integerStr = "integer";
+        String formatInt64 = "int64";
+
+        if (integerStr.equals(type)) {
+
+            if (formatInt64.equals(beApiParameter.getFormat())) {
+
+                type = "string"; // long 转换为 string
+
+            } else {
+
+                type = "number";
+
+            }
+
+        }
+
+        return type;
 
     }
 

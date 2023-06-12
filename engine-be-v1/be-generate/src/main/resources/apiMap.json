@@ -334,15 +334,77 @@
     }
   },
   "SignWx": {
-    "/sign/wx/sign/in/code": {
-      "path": "/sign/wx/sign/in/code",
+    "/sign/wx/sign/in/miniProgram/phoneCode": {
+      "path": "/sign/wx/sign/in/miniProgram/phoneCode",
       "method": "post",
       "tag": "登录注册-微信",
       "group": "SignWx",
-      "summary": "微信 code登录",
+      "summary": "小程序：手机号 code登录",
       "contentType": "application/json",
       "requestBody": {
-        "className": "SignInCodeDTO",
+        "className": "SignInMiniProgramPhoneCodeDTO",
+        "type": "object",
+        "required": false,
+        "fieldMap": {
+          "phoneCode": {
+            "name": "phoneCode",
+            "type": "string",
+            "required": true,
+            "description": "手机号码 code"
+          }
+        },
+        "requiredFieldName": [
+          "phoneCode"
+        ]
+      },
+      "response": {
+        "className": "ApiResultVOString",
+        "fieldMap": {
+          "ApiResultVOString": {
+            "className": "ApiResultVOString",
+            "type": "object",
+            "description": "统一响应实体类",
+            "fieldMap": {
+              "msg": {
+                "name": "msg",
+                "type": "string",
+                "description": "响应描述"
+              },
+              "code": {
+                "name": "code",
+                "type": "integer",
+                "description": "响应代码，成功返回：200",
+                "format": "int32"
+              },
+              "data": {
+                "name": "data",
+                "type": "string",
+                "description": "数据"
+              },
+              "service": {
+                "name": "service",
+                "type": "string",
+                "description": "服务名"
+              },
+              "successFlag": {
+                "name": "successFlag",
+                "type": "boolean",
+                "description": "服务器是否收到请求，只会返回 true"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/sign/wx/sign/in/browser/code": {
+      "path": "/sign/wx/sign/in/browser/code",
+      "method": "post",
+      "tag": "登录注册-微信",
+      "group": "SignWx",
+      "summary": "浏览器：微信 code登录",
+      "contentType": "application/json",
+      "requestBody": {
+        "className": "SignInBrowserCodeDTO",
         "type": "object",
         "required": false,
         "fieldMap": {
@@ -396,27 +458,27 @@
         }
       }
     },
-    "/sign/wx/sign/in/phoneCode": {
-      "path": "/sign/wx/sign/in/phoneCode",
+    "/sign/wx/sign/in/miniProgram/code": {
+      "path": "/sign/wx/sign/in/miniProgram/code",
       "method": "post",
       "tag": "登录注册-微信",
       "group": "SignWx",
-      "summary": "手机号 code登录",
+      "summary": "小程序：微信 code登录",
       "contentType": "application/json",
       "requestBody": {
-        "className": "SignInPhoneCodeDTO",
+        "className": "SignInMiniProgramCodeDTO",
         "type": "object",
         "required": false,
         "fieldMap": {
-          "phoneCode": {
-            "name": "phoneCode",
+          "code": {
+            "name": "code",
             "type": "string",
             "required": true,
-            "description": "手机号码 code"
+            "description": "微信 code"
           }
         },
         "requiredFieldName": [
-          "phoneCode"
+          "code"
         ]
       },
       "response": {
@@ -537,7 +599,7 @@
                       "remark": {
                         "name": "remark",
                         "type": "string",
-                        "description": "备注"
+                        "description": "描述/备注"
                       },
                       "delFlag": {
                         "name": "delFlag",
@@ -710,6 +772,70 @@
       "tag": "用户-管理",
       "group": "SysUser",
       "summary": "批量：注销用户",
+      "contentType": "application/json",
+      "requestBody": {
+        "className": "NotEmptyIdSet",
+        "type": "object",
+        "required": false,
+        "fieldMap": {
+          "idSet": {
+            "name": "idSet",
+            "type": "integer",
+            "required": true,
+            "description": "主键 idSet",
+            "format": "int64",
+            "arrFlag": true
+          }
+        },
+        "requiredFieldName": [
+          "idSet"
+        ]
+      },
+      "response": {
+        "className": "ApiResultVOString",
+        "fieldMap": {
+          "ApiResultVOString": {
+            "className": "ApiResultVOString",
+            "type": "object",
+            "description": "统一响应实体类",
+            "fieldMap": {
+              "msg": {
+                "name": "msg",
+                "type": "string",
+                "description": "响应描述"
+              },
+              "code": {
+                "name": "code",
+                "type": "integer",
+                "description": "响应代码，成功返回：200",
+                "format": "int32"
+              },
+              "data": {
+                "name": "data",
+                "type": "string",
+                "description": "数据"
+              },
+              "service": {
+                "name": "service",
+                "type": "string",
+                "description": "服务名"
+              },
+              "successFlag": {
+                "name": "successFlag",
+                "type": "boolean",
+                "description": "服务器是否收到请求，只会返回 true"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/sys/user/refreshJwtSecretSuf": {
+      "path": "/sys/user/refreshJwtSecretSuf",
+      "method": "post",
+      "tag": "用户-管理",
+      "group": "SysUser",
+      "summary": "刷新：用户jwt私钥后缀",
       "contentType": "application/json",
       "requestBody": {
         "className": "NotEmptyIdSet",
@@ -1465,7 +1591,7 @@
                       "remark": {
                         "name": "remark",
                         "type": "string",
-                        "description": "备注"
+                        "description": "描述/备注"
                       },
                       "id": {
                         "name": "id",
@@ -1818,7 +1944,7 @@
                               "remark": {
                                 "name": "remark",
                                 "type": "string",
-                                "description": "备注"
+                                "description": "描述/备注"
                               },
                               "id": {
                                 "name": "id",
@@ -2920,6 +3046,311 @@
       }
     }
   },
+  "SysSocketRefUser": {
+    "/sys/socketRefUser/page": {
+      "path": "/sys/socketRefUser/page",
+      "method": "post",
+      "tag": "socket-用户管理",
+      "group": "SysSocketRefUser",
+      "summary": "分页排序查询",
+      "contentType": "application/json",
+      "requestBody": {
+        "className": "SysSocketRefUserPageDTO",
+        "type": "object",
+        "fieldMap": {
+          "socketId": {
+            "name": "socketId",
+            "type": "integer",
+            "description": "socket主键 id",
+            "format": "int64"
+          },
+          "current": {
+            "name": "current",
+            "type": "integer",
+            "description": "第几页",
+            "format": "int64"
+          },
+          "scheme": {
+            "name": "scheme",
+            "type": "string",
+            "description": "协议"
+          },
+          "port": {
+            "name": "port",
+            "type": "integer",
+            "description": "端口",
+            "format": "int32"
+          },
+          "nickname": {
+            "name": "nickname",
+            "type": "string",
+            "description": "冗余字段，昵称"
+          },
+          "host": {
+            "name": "host",
+            "type": "string",
+            "description": "主机"
+          },
+          "pageSize": {
+            "name": "pageSize",
+            "type": "integer",
+            "description": "每页显示条数",
+            "format": "int64"
+          },
+          "remark": {
+            "name": "remark",
+            "type": "string",
+            "description": "描述/备注"
+          },
+          "type": {
+            "name": "type",
+            "type": "string",
+            "description": "socket类型"
+          },
+          "userId": {
+            "name": "userId",
+            "type": "integer",
+            "description": "用户主键 id",
+            "format": "int64"
+          },
+          "order": {
+            "className": "MyOrderDTO",
+            "name": "order",
+            "fieldMap": {
+              "MyOrderDTO": {
+                "className": "MyOrderDTO",
+                "type": "object",
+                "description": "排序字段",
+                "fieldMap": {
+                  "name": {
+                    "name": "name",
+                    "type": "string",
+                    "description": "排序的字段名"
+                  },
+                  "value": {
+                    "name": "value",
+                    "type": "string",
+                    "description": "ascend（升序，默认） descend（降序）"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "response": {
+        "className": "ApiResultVOPageSysSocketRefUserDO",
+        "fieldMap": {
+          "ApiResultVOPageSysSocketRefUserDO": {
+            "className": "ApiResultVOPageSysSocketRefUserDO",
+            "type": "object",
+            "description": "统一响应实体类",
+            "fieldMap": {
+              "msg": {
+                "name": "msg",
+                "type": "string",
+                "description": "响应描述"
+              },
+              "code": {
+                "name": "code",
+                "type": "integer",
+                "description": "响应代码，成功返回：200",
+                "format": "int32"
+              },
+              "data": {
+                "className": "PageSysSocketRefUserDO",
+                "name": "data",
+                "fieldMap": {
+                  "PageSysSocketRefUserDO": {
+                    "className": "PageSysSocketRefUserDO",
+                    "type": "object",
+                    "description": "数据",
+                    "fieldMap": {
+                      "total": {
+                        "name": "total",
+                        "type": "integer",
+                        "format": "int64"
+                      },
+                      "current": {
+                        "name": "current",
+                        "type": "integer",
+                        "format": "int64"
+                      },
+                      "pages": {
+                        "name": "pages",
+                        "type": "integer",
+                        "format": "int64"
+                      },
+                      "size": {
+                        "name": "size",
+                        "type": "integer",
+                        "format": "int64"
+                      },
+                      "optimizeCountSql": {
+                        "name": "optimizeCountSql",
+                        "type": "boolean"
+                      },
+                      "records": {
+                        "className": "SysSocketRefUserDO",
+                        "name": "records",
+                        "fieldMap": {
+                          "SysSocketRefUserDO": {
+                            "className": "SysSocketRefUserDO",
+                            "type": "object",
+                            "description": "v20230301：关联表：socket，用户",
+                            "fieldMap": {
+                              "scheme": {
+                                "name": "scheme",
+                                "type": "string",
+                                "description": "冗余字段，协议"
+                              },
+                              "updateTime": {
+                                "name": "updateTime",
+                                "type": "string",
+                                "description": "修改时间",
+                                "format": "date-time"
+                              },
+                              "remark": {
+                                "name": "remark",
+                                "type": "string",
+                                "description": "描述/备注"
+                              },
+                              "delFlag": {
+                                "name": "delFlag",
+                                "type": "boolean",
+                                "description": "是否逻辑删除"
+                              },
+                              "type": {
+                                "name": "type",
+                                "type": "string",
+                                "description": "socket类型"
+                              },
+                              "version": {
+                                "name": "version",
+                                "type": "integer",
+                                "description": "乐观锁",
+                                "format": "int32"
+                              },
+                              "userId": {
+                                "name": "userId",
+                                "type": "integer",
+                                "description": "用户主键 id",
+                                "format": "int64"
+                              },
+                              "socketId": {
+                                "name": "socketId",
+                                "type": "integer",
+                                "description": "socket主键 id",
+                                "format": "int64"
+                              },
+                              "updateId": {
+                                "name": "updateId",
+                                "type": "integer",
+                                "description": "修改人id",
+                                "format": "int64"
+                              },
+                              "createTime": {
+                                "name": "createTime",
+                                "type": "string",
+                                "description": "创建时间",
+                                "format": "date-time"
+                              },
+                              "port": {
+                                "name": "port",
+                                "type": "integer",
+                                "description": "冗余字段，端口",
+                                "format": "int32"
+                              },
+                              "createId": {
+                                "name": "createId",
+                                "type": "integer",
+                                "description": "创建人id",
+                                "format": "int64"
+                              },
+                              "nickname": {
+                                "name": "nickname",
+                                "type": "string",
+                                "description": "冗余字段，昵称"
+                              },
+                              "host": {
+                                "name": "host",
+                                "type": "string",
+                                "description": "冗余字段，主机"
+                              },
+                              "id": {
+                                "name": "id",
+                                "type": "integer",
+                                "description": "主键id",
+                                "format": "int64"
+                              },
+                              "enableFlag": {
+                                "name": "enableFlag",
+                                "type": "boolean",
+                                "description": "是否启用"
+                              }
+                            }
+                          }
+                        },
+                        "arrFlag": true
+                      },
+                      "maxLimit": {
+                        "name": "maxLimit",
+                        "type": "integer",
+                        "format": "int64"
+                      },
+                      "searchCount": {
+                        "name": "searchCount",
+                        "type": "boolean"
+                      },
+                      "optimizeJoinOfCountSql": {
+                        "name": "optimizeJoinOfCountSql",
+                        "type": "boolean"
+                      },
+                      "orders": {
+                        "className": "OrderItem",
+                        "name": "orders",
+                        "fieldMap": {
+                          "OrderItem": {
+                            "className": "OrderItem",
+                            "type": "object",
+                            "fieldMap": {
+                              "asc": {
+                                "name": "asc",
+                                "type": "boolean"
+                              },
+                              "column": {
+                                "name": "column",
+                                "type": "string"
+                              }
+                            }
+                          }
+                        },
+                        "arrFlag": true
+                      },
+                      "countId": {
+                        "name": "countId",
+                        "type": "string"
+                      }
+                    }
+                  }
+                }
+              },
+              "service": {
+                "name": "service",
+                "type": "string",
+                "description": "服务名"
+              },
+              "successFlag": {
+                "name": "successFlag",
+                "type": "boolean",
+                "description": "服务器是否收到请求，只会返回 true"
+              }
+            }
+          }
+        }
+      }
+    }
+  },
   "SysMenu": {
     "/sys/menu/page": {
       "path": "/sys/menu/page",
@@ -3121,7 +3552,7 @@
                               "remark": {
                                 "name": "remark",
                                 "type": "string",
-                                "description": "备注"
+                                "description": "描述/备注"
                               },
                               "delFlag": {
                                 "name": "delFlag",
@@ -3435,7 +3866,7 @@
                       "remark": {
                         "name": "remark",
                         "type": "string",
-                        "description": "备注"
+                        "description": "描述/备注"
                       },
                       "delFlag": {
                         "name": "delFlag",
@@ -3626,7 +4057,7 @@
                       "remark": {
                         "name": "remark",
                         "type": "string",
-                        "description": "备注"
+                        "description": "描述/备注"
                       },
                       "delFlag": {
                         "name": "delFlag",
@@ -3722,7 +4153,7 @@
                               "remark": {
                                 "name": "remark",
                                 "type": "string",
-                                "description": "备注"
+                                "description": "描述/备注"
                               },
                               "delFlag": {
                                 "name": "delFlag",
@@ -4070,7 +4501,7 @@
                       "remark": {
                         "name": "remark",
                         "type": "string",
-                        "description": "备注"
+                        "description": "描述/备注"
                       },
                       "delFlag": {
                         "name": "delFlag",
@@ -4451,7 +4882,7 @@
                               "remark": {
                                 "name": "remark",
                                 "type": "string",
-                                "description": "备注"
+                                "description": "描述/备注"
                               },
                               "delFlag": {
                                 "name": "delFlag",
@@ -4522,6 +4953,11 @@
                                 "name": "name",
                                 "type": "string",
                                 "description": "接口名（备用）"
+                              },
+                              "responseValue": {
+                                "name": "responseValue",
+                                "type": "string",
+                                "description": "请求返回的值"
                               },
                               "id": {
                                 "name": "id",
@@ -4794,7 +5230,7 @@
                               "remark": {
                                 "name": "remark",
                                 "type": "string",
-                                "description": "备注"
+                                "description": "描述/备注"
                               },
                               "delFlag": {
                                 "name": "delFlag",
@@ -4865,6 +5301,11 @@
                                 "name": "name",
                                 "type": "string",
                                 "description": "接口名（备用）"
+                              },
+                              "responseValue": {
+                                "name": "responseValue",
+                                "type": "string",
+                                "description": "请求返回的值"
                               },
                               "id": {
                                 "name": "id",
@@ -5255,7 +5696,7 @@
                       "remark": {
                         "name": "remark",
                         "type": "string",
-                        "description": "备注"
+                        "description": "描述/备注"
                       },
                       "delFlag": {
                         "name": "delFlag",
@@ -5460,7 +5901,7 @@
                       "remark": {
                         "name": "remark",
                         "type": "string",
-                        "description": "备注"
+                        "description": "描述/备注"
                       },
                       "delFlag": {
                         "name": "delFlag",
@@ -5698,7 +6139,7 @@
                               "remark": {
                                 "name": "remark",
                                 "type": "string",
-                                "description": "备注"
+                                "description": "描述/备注"
                               },
                               "delFlag": {
                                 "name": "delFlag",
@@ -6021,10 +6462,10 @@
         ]
       },
       "response": {
-        "className": "ApiResultVOSetDictVO",
+        "className": "ApiResultVOListDictVO",
         "fieldMap": {
-          "ApiResultVOSetDictVO": {
-            "className": "ApiResultVOSetDictVO",
+          "ApiResultVOListDictVO": {
+            "className": "ApiResultVOListDictVO",
             "type": "object",
             "description": "统一响应实体类",
             "fieldMap": {
@@ -6135,6 +6576,282 @@
                 "name": "data",
                 "type": "string",
                 "description": "数据"
+              },
+              "service": {
+                "name": "service",
+                "type": "string",
+                "description": "服务名"
+              },
+              "successFlag": {
+                "name": "successFlag",
+                "type": "boolean",
+                "description": "服务器是否收到请求，只会返回 true"
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "SysSocket": {
+    "/sys/socket/page": {
+      "path": "/sys/socket/page",
+      "method": "post",
+      "tag": "socket-管理",
+      "group": "SysSocket",
+      "summary": "分页排序查询",
+      "contentType": "application/json",
+      "requestBody": {
+        "className": "SysSocketPageDTO",
+        "type": "object",
+        "fieldMap": {
+          "current": {
+            "name": "current",
+            "type": "integer",
+            "description": "第几页",
+            "format": "int64"
+          },
+          "scheme": {
+            "name": "scheme",
+            "type": "string",
+            "description": "协议"
+          },
+          "port": {
+            "name": "port",
+            "type": "integer",
+            "description": "端口",
+            "format": "int32"
+          },
+          "host": {
+            "name": "host",
+            "type": "string",
+            "description": "主机"
+          },
+          "pageSize": {
+            "name": "pageSize",
+            "type": "integer",
+            "description": "每页显示条数",
+            "format": "int64"
+          },
+          "remark": {
+            "name": "remark",
+            "type": "string",
+            "description": "描述/备注"
+          },
+          "type": {
+            "name": "type",
+            "type": "string",
+            "description": "socket类型"
+          },
+          "enableFlag": {
+            "name": "enableFlag",
+            "type": "boolean",
+            "description": "是否启用"
+          },
+          "order": {
+            "className": "MyOrderDTO",
+            "name": "order",
+            "fieldMap": {
+              "MyOrderDTO": {
+                "className": "MyOrderDTO",
+                "type": "object",
+                "description": "排序字段",
+                "fieldMap": {
+                  "name": {
+                    "name": "name",
+                    "type": "string",
+                    "description": "排序的字段名"
+                  },
+                  "value": {
+                    "name": "value",
+                    "type": "string",
+                    "description": "ascend（升序，默认） descend（降序）"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "response": {
+        "className": "ApiResultVOPageSysSocketDO",
+        "fieldMap": {
+          "ApiResultVOPageSysSocketDO": {
+            "className": "ApiResultVOPageSysSocketDO",
+            "type": "object",
+            "description": "统一响应实体类",
+            "fieldMap": {
+              "msg": {
+                "name": "msg",
+                "type": "string",
+                "description": "响应描述"
+              },
+              "code": {
+                "name": "code",
+                "type": "integer",
+                "description": "响应代码，成功返回：200",
+                "format": "int32"
+              },
+              "data": {
+                "className": "PageSysSocketDO",
+                "name": "data",
+                "fieldMap": {
+                  "PageSysSocketDO": {
+                    "className": "PageSysSocketDO",
+                    "type": "object",
+                    "description": "数据",
+                    "fieldMap": {
+                      "total": {
+                        "name": "total",
+                        "type": "integer",
+                        "format": "int64"
+                      },
+                      "current": {
+                        "name": "current",
+                        "type": "integer",
+                        "format": "int64"
+                      },
+                      "pages": {
+                        "name": "pages",
+                        "type": "integer",
+                        "format": "int64"
+                      },
+                      "size": {
+                        "name": "size",
+                        "type": "integer",
+                        "format": "int64"
+                      },
+                      "optimizeCountSql": {
+                        "name": "optimizeCountSql",
+                        "type": "boolean"
+                      },
+                      "records": {
+                        "className": "SysSocketDO",
+                        "name": "records",
+                        "fieldMap": {
+                          "SysSocketDO": {
+                            "className": "SysSocketDO",
+                            "type": "object",
+                            "description": "v20230301：主表：socket",
+                            "fieldMap": {
+                              "scheme": {
+                                "name": "scheme",
+                                "type": "string",
+                                "description": "协议"
+                              },
+                              "updateTime": {
+                                "name": "updateTime",
+                                "type": "string",
+                                "description": "修改时间",
+                                "format": "date-time"
+                              },
+                              "remark": {
+                                "name": "remark",
+                                "type": "string",
+                                "description": "描述/备注"
+                              },
+                              "delFlag": {
+                                "name": "delFlag",
+                                "type": "boolean",
+                                "description": "是否逻辑删除"
+                              },
+                              "type": {
+                                "name": "type",
+                                "type": "string",
+                                "description": "socket类型"
+                              },
+                              "version": {
+                                "name": "version",
+                                "type": "integer",
+                                "description": "乐观锁",
+                                "format": "int32"
+                              },
+                              "updateId": {
+                                "name": "updateId",
+                                "type": "integer",
+                                "description": "修改人id",
+                                "format": "int64"
+                              },
+                              "createTime": {
+                                "name": "createTime",
+                                "type": "string",
+                                "description": "创建时间",
+                                "format": "date-time"
+                              },
+                              "port": {
+                                "name": "port",
+                                "type": "integer",
+                                "description": "端口",
+                                "format": "int32"
+                              },
+                              "createId": {
+                                "name": "createId",
+                                "type": "integer",
+                                "description": "创建人id",
+                                "format": "int64"
+                              },
+                              "host": {
+                                "name": "host",
+                                "type": "string",
+                                "description": "主机"
+                              },
+                              "id": {
+                                "name": "id",
+                                "type": "integer",
+                                "description": "主键id",
+                                "format": "int64"
+                              },
+                              "enableFlag": {
+                                "name": "enableFlag",
+                                "type": "boolean",
+                                "description": "是否启用"
+                              }
+                            }
+                          }
+                        },
+                        "arrFlag": true
+                      },
+                      "maxLimit": {
+                        "name": "maxLimit",
+                        "type": "integer",
+                        "format": "int64"
+                      },
+                      "searchCount": {
+                        "name": "searchCount",
+                        "type": "boolean"
+                      },
+                      "optimizeJoinOfCountSql": {
+                        "name": "optimizeJoinOfCountSql",
+                        "type": "boolean"
+                      },
+                      "orders": {
+                        "className": "OrderItem",
+                        "name": "orders",
+                        "fieldMap": {
+                          "OrderItem": {
+                            "className": "OrderItem",
+                            "type": "object",
+                            "fieldMap": {
+                              "asc": {
+                                "name": "asc",
+                                "type": "boolean"
+                              },
+                              "column": {
+                                "name": "column",
+                                "type": "string"
+                              }
+                            }
+                          }
+                        },
+                        "arrFlag": true
+                      },
+                      "countId": {
+                        "name": "countId",
+                        "type": "string"
+                      }
+                    }
+                  }
+                }
               },
               "service": {
                 "name": "service",
@@ -6330,7 +7047,7 @@
                       "remark": {
                         "name": "remark",
                         "type": "string",
-                        "description": "备注"
+                        "description": "描述/备注"
                       },
                       "delFlag": {
                         "name": "delFlag",
@@ -6562,7 +7279,7 @@
                               "remark": {
                                 "name": "remark",
                                 "type": "string",
-                                "description": "备注"
+                                "description": "描述/备注"
                               },
                               "id": {
                                 "name": "id",
@@ -7076,6 +7793,15 @@
       }
     }
   },
+  "SysPayWx": {
+    "/sys/payWx/notifyCallBack/native": {
+      "path": "/sys/payWx/notifyCallBack/native",
+      "method": "post",
+      "tag": "支付-微信",
+      "group": "SysPayWx",
+      "summary": "服务器异步通知-native，备注：第三方应用调用"
+    }
+  },
   "SysFile": {
     "/sys/file/upload": {
       "path": "/sys/file/upload",
@@ -7118,10 +7844,10 @@
         }
       },
       "response": {
-        "className": "ApiResultVOString",
+        "className": "ApiResultVOLong",
         "fieldMap": {
-          "ApiResultVOString": {
-            "className": "ApiResultVOString",
+          "ApiResultVOLong": {
+            "className": "ApiResultVOLong",
             "type": "object",
             "description": "统一响应实体类",
             "fieldMap": {
@@ -7138,8 +7864,86 @@
               },
               "data": {
                 "name": "data",
+                "type": "integer",
+                "description": "数据",
+                "format": "int64"
+              },
+              "service": {
+                "name": "service",
                 "type": "string",
-                "description": "数据"
+                "description": "服务名"
+              },
+              "successFlag": {
+                "name": "successFlag",
+                "type": "boolean",
+                "description": "服务器是否收到请求，只会返回 true"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/sys/file/getPublicUrl": {
+      "path": "/sys/file/getPublicUrl",
+      "method": "post",
+      "tag": "文件-管理",
+      "group": "SysFile",
+      "summary": "批量获取：公开文件的 url",
+      "contentType": "application/json",
+      "requestBody": {
+        "className": "NotEmptyIdSet",
+        "type": "object",
+        "required": false,
+        "fieldMap": {
+          "idSet": {
+            "name": "idSet",
+            "type": "integer",
+            "required": true,
+            "description": "主键 idSet",
+            "format": "int64",
+            "arrFlag": true
+          }
+        },
+        "requiredFieldName": [
+          "idSet"
+        ]
+      },
+      "response": {
+        "className": "ApiResultVOLongObjectMapVOString",
+        "fieldMap": {
+          "ApiResultVOLongObjectMapVOString": {
+            "className": "ApiResultVOLongObjectMapVOString",
+            "type": "object",
+            "description": "统一响应实体类",
+            "fieldMap": {
+              "msg": {
+                "name": "msg",
+                "type": "string",
+                "description": "响应描述"
+              },
+              "code": {
+                "name": "code",
+                "type": "integer",
+                "description": "响应代码，成功返回：200",
+                "format": "int32"
+              },
+              "data": {
+                "className": "LongObjectMapVOString",
+                "name": "data",
+                "fieldMap": {
+                  "LongObjectMapVOString": {
+                    "className": "LongObjectMapVOString",
+                    "type": "object",
+                    "description": "数据",
+                    "fieldMap": {
+                      "map": {
+                        "name": "map",
+                        "type": "object",
+                        "description": "map对象"
+                      }
+                    }
+                  }
+                }
               },
               "service": {
                 "name": "service",
@@ -8116,6 +8920,15 @@
           }
         }
       }
+    }
+  },
+  "SysPayAli": {
+    "/sys/payAli/notifyCallBack": {
+      "path": "/sys/payAli/notifyCallBack",
+      "method": "post",
+      "tag": "支付-支付宝",
+      "group": "SysPayAli",
+      "summary": "服务器异步通知，备注：第三方应用调用"
     }
   }
 }

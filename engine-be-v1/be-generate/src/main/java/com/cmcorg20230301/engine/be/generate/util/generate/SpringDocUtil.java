@@ -191,7 +191,7 @@ public class SpringDocUtil {
 
         if (jsonObject200 == null) {
 
-            log.info("处理返回值失败：key：{}，", item.getKey());
+            log.info("处理返回值失败：key：{}", item.getKey());
             return;
 
         }
@@ -200,7 +200,7 @@ public class SpringDocUtil {
 
         if (content == null) {
 
-            log.info("没有返回值：key：{}，", item.getKey());
+            log.info("没有返回值：key：{}", item.getKey());
             return;
 
         }
@@ -213,7 +213,7 @@ public class SpringDocUtil {
 
         if (StrUtil.isBlank(refStr)) {
 
-            log.info("ref为空：key：{}，", item.getKey());
+            log.info("ref为空：key：{}", item.getKey());
             return;
 
         }
@@ -366,7 +366,7 @@ public class SpringDocUtil {
 
         if (StrUtil.isBlank(refStr)) {
 
-            log.info("暂时不支持：key：{}，", item.getKey());
+            log.info("暂时不支持：key：{}", item.getKey());
             return;
 
         }

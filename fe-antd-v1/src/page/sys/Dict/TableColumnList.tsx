@@ -20,7 +20,7 @@ const TableColumnList = (currentForm: React.MutableRefObject<SysDictInsertOrUpda
     {
         title: '类别', dataIndex: "type",
         render: (dom, entity) =>
-            <Tag color={entity.type === 1 ? 'purple' : 'green'}>{entity.type === 1 ? '字典' : '字典项'}</Tag>
+            <Tag color={entity.type as any === 1 ? 'purple' : 'green'}>{entity.type as any === 1 ? '字典' : '字典项'}</Tag>
     },
 
     {title: '名称', dataIndex: 'name', ellipsis: true,},
@@ -83,7 +83,7 @@ const TableColumnList = (currentForm: React.MutableRefObject<SysDictInsertOrUpda
 
             (
 
-                entity.type === 1 &&
+                entity.type as any === 1 &&
 
                 <Dropdown
 
@@ -99,7 +99,7 @@ const TableColumnList = (currentForm: React.MutableRefObject<SysDictInsertOrUpda
 
                                 label: <a onClick={() => {
 
-                                    currentForm.current = {dictKey: entity.dictKey, type: 2, value: 1}
+                                    currentForm.current = {dictKey: entity.dictKey, type: 2 as any, value: 1}
 
                                     CalcOrderNo(currentForm.current!, entity, ({item}) => {
 

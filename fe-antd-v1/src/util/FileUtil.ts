@@ -1,6 +1,6 @@
-import $http, {ApiResultVO} from "./HttpUtil";
+import $http from "./HttpUtil";
 import {RcFile} from "antd/es/upload";
-import {NotNullId, SysFileUpload} from "@/api/SysFile";
+import {NotNullId} from "@/api/SysFile";
 
 // 下载文件：需要这样请求 $http({responseType: 'blob'})
 // 使用：download(res.data, res.headers['content-disposition'])
@@ -76,8 +76,8 @@ export function SysFileDownload(url: string, form?: any) {
 // 101 头像
 type TSysFileUploadProType = 'AVATAR'
 
-// 文件-管理 文件上传，二次封装
-export function SysFileUploadPro(file: string | RcFile | Blob, type: TSysFileUploadProType) {
+// 文件-管理 文件上传
+export function SysFileUpload(file: string | RcFile | Blob, type: TSysFileUploadProType) {
 
     const formData = new FormData()
 
@@ -85,19 +85,7 @@ export function SysFileUploadPro(file: string | RcFile | Blob, type: TSysFileUpl
 
     formData.append('uploadType', type)
 
-    return new Promise<ApiResultVO>((resolve, reject) => {
-
-        SysFileUpload(formData, {headers: {'Content-Type': 'multipart/form-data'}}).then(res => {
-
-            resolve(res)
-
-        }).catch(() => {
-
-            reject()
-
-        })
-
-    })
+    return $http.myPost<string>('/sys/file/upload', formData, {headers: {'Content-Type': 'multipart/form-data'}})
 
 }
 

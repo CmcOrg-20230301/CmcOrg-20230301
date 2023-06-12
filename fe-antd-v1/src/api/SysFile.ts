@@ -1,11 +1,6 @@
 import $http from "@/util/HttpUtil";
 import {AxiosRequestConfig} from "axios";
 
-// 上传文件：公有和私有
-export function SysFileUpload(form: FormData, config?: AxiosRequestConfig) {
-    return $http.myPost<string>('/sys/file/upload', form, config)
-}
-
 export interface NotEmptyIdSet {
     idSet?: string[] // 主键 idSet，required：true，format：int64
 }

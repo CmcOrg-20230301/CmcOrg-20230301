@@ -53,6 +53,11 @@ export function SysUserDeleteByIdSet(form: NotEmptyIdSet, config?: AxiosRequestC
     return $http.myPost<string>('/sys/user/deleteByIdSet', form, config)
 }
 
+// 刷新：用户jwt私钥后缀
+export function SysUserRefreshJwtSecretSuf(form: NotEmptyIdSet, config?: AxiosRequestConfig) {
+    return $http.myPost<string>('/sys/user/refreshJwtSecretSuf', form, config)
+}
+
 export interface SysUserPageDTO {
     avatarUri?: string // 头像uri
     passwordFlag?: boolean // 是否有密码
