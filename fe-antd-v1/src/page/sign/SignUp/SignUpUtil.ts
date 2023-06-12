@@ -13,9 +13,9 @@ import {SignSignInNameSignUp} from "@/api/SignSignInName";
  */
 export async function SignUpFormHandler(form: ISignUpForm) {
 
-    const data = new Date()
-    const originPassword = RSAEncryptPro(form.password, data)
-    const password = PasswordRSAEncrypt(form.password, data)
+    const date = new Date()
+    const originPassword = RSAEncryptPro(form.password, date)
+    const password = PasswordRSAEncrypt(form.password, date)
 
     if (form.type === '1') { // 如果是：邮箱
 

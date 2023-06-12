@@ -11,6 +11,11 @@ export function UserSelfUpdateInfo(form: UserSelfUpdateInfoDTO, config?: AxiosRe
     return $http.myPost<string>('/user/self/updateInfo', form, config)
 }
 
+// 当前用户：重置头像
+export function UserSelfResetAvatar(config?: AxiosRequestConfig) {
+    return $http.myPost<string>('/user/self/resetAvatar', undefined, config)
+}
+
 export interface UserSelfInfoVO {
     passwordFlag?: boolean // 是否有密码，用于前端显示，修改密码/设置密码
     phone?: string // 手机号码，会脱敏
@@ -26,4 +31,9 @@ export interface UserSelfInfoVO {
 // 获取：当前用户，基本信息
 export function UserSelfInfo(config?: AxiosRequestConfig) {
     return $http.myPost<UserSelfInfoVO>('/user/self/info', undefined, config)
+}
+
+// 当前用户：刷新jwt私钥后缀
+export function UserSelfRefreshJwtSecretSuf(config?: AxiosRequestConfig) {
+    return $http.myPost<string>('/user/self/refreshJwtSecretSuf', undefined, config)
 }

@@ -34,4 +34,16 @@ public class UserSelfController {
         return ApiResultVO.ok(baseService.userSelfUpdateInfo(dto));
     }
 
+    @Operation(summary = "当前用户：刷新jwt私钥后缀")
+    @PostMapping(value = "/refreshJwtSecretSuf")
+    public ApiResultVO<String> userSelfRefreshJwtSecretSuf() {
+        return ApiResultVO.ok(baseService.userSelfRefreshJwtSecretSuf());
+    }
+
+    @Operation(summary = "当前用户：重置头像")
+    @PostMapping(value = "/resetAvatar")
+    public ApiResultVO<String> userSelfResetAvatar() {
+        return ApiResultVO.ok(baseService.userSelfResetAvatar());
+    }
+
 }

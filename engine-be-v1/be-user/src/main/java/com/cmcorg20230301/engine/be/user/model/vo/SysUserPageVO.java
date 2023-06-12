@@ -42,6 +42,9 @@ public class SysUserPageVO {
     @Schema(description = "修改时间")
     private Date updateTime;
 
+    @Schema(description = "最近活跃时间")
+    private Date lastActiveTime;
+
     @Schema(description = "角色 idSet")
     private Set<Long> roleIdSet;
 

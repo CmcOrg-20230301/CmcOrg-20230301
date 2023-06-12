@@ -103,4 +103,33 @@ public class UserSelfServiceImpl extends ServiceImpl<SysUserMapper, SysUserDO> i
 
     }
 
+    /**
+     * 当前用户：刷新jwt私钥后缀
+     */
+    @Override
+    public String userSelfRefreshJwtSecretSuf() {
+
+        Long currentUserIdNotAdmin = UserUtil.getCurrentUserIdNotAdmin();
+
+        UserUtil.setJwtSecretSuf(currentUserIdNotAdmin); // 设置：jwt秘钥后缀
+
+        return null;
+
+    }
+
+    /**
+     * 当前用户：重置头像
+     */
+    @Override
+    public String userSelfResetAvatar() {
+
+        Long currentUserIdNotAdmin = UserUtil.getCurrentUserIdNotAdmin();
+
+        ChainWrappers.lambdaUpdateChain(sysUserInfoMapper).eq(SysUserInfoDO::getId, currentUserIdNotAdmin)
+            .set(SysUserInfoDO::getAvatarFileId, -1).update();
+
+        return BaseBizCodeEnum.OK;
+
+    }
+
 }

@@ -75,6 +75,8 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserProMapper, SysUserDO>
 
             item.setEmail(DesensitizedUtil.email(item.getEmail())); // 脱敏
             item.setSignInName(DesensitizedUtil.chineseName(item.getSignInName())); // 脱敏
+            item.setPhone(DesensitizedUtil.mobilePhone(item.getPhone())); // 脱敏
+
             userIdSet.add(item.getId());
 
         }
@@ -374,6 +376,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserProMapper, SysUserDO>
             .set(SysUserInfoDO::getAvatarFileId, -1).update();
 
         return BaseBizCodeEnum.OK;
+
     }
 
     /**

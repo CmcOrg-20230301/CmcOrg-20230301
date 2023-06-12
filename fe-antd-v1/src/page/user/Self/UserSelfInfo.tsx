@@ -1,5 +1,11 @@
 import {useRef, useState} from "react";
-import {UserSelfInfo, UserSelfInfoVO, UserSelfUpdateInfo, UserSelfUpdateInfoDTO} from "@/api/UserSelf";
+import {
+    UserSelfInfo,
+    UserSelfInfoVO,
+    UserSelfResetAvatar,
+    UserSelfUpdateInfo,
+    UserSelfUpdateInfoDTO
+} from "@/api/UserSelf";
 import {setUserSelfAvatarUrl, setUserSelfInfo} from "@/store/userSlice";
 import {getAppDispatch} from "@/MyApp";
 import {ActionType, ProDescriptions} from "@ant-design/pro-components";
@@ -208,6 +214,7 @@ export default function () {
                             </Upload>
 
                             {
+
                                 userSelfAvatarUrl &&
 
                                 <a onClick={() => {
@@ -216,11 +223,14 @@ export default function () {
                                         return
                                     }
 
-                                    ExecConfirm(async () => {
+                                    ExecConfirm(() => {
 
-                                        actionRef.current?.reload()
-                                        ToastSuccess('操作成功')
-                                        setFileLoading(false)
+                                        return UserSelfResetAvatar().then(res => {
+
+                                            actionRef.current?.reload()
+                                            ToastSuccess(res.msg)
+
+                                        })
 
                                     }, undefined, '确定移除头像吗？')
 

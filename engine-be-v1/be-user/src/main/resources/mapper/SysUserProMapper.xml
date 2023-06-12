@@ -16,11 +16,13 @@
         a.update_time AS updateTime,
         a.enable_flag AS enableFlag,
         IF ( a.`password` = '', 0, 1 ) AS passwordFlag,
+        IFNULL( MAX( c.create_time ), a.create_time) AS lastActiveTime,
         b.nickname AS nickname,
         b.avatar_file_id AS avatarFileId
         FROM
         sys_user a
         LEFT JOIN sys_user_info b ON b.id = a.id
+        LEFT JOIN sys_request c ON c.create_id = a.id
         WHERE
         a.del_flag = FALSE
         <if test="dto.id != null">
@@ -28,9 +30,6 @@
         </if>
         <if test="dto.nickname != null and dto.nickname != ''">
             AND b.nickname LIKE CONCAT('%', #{dto.nickname}, '%')
-        </if>
-        <if test="dto.avatarUri != null and dto.avatarUri != ''">
-            AND b.avatar_uri LIKE CONCAT('%', #{dto.avatarUri}, '%')
         </if>
         <if test="dto.signInName != null and dto.signInName != ''">
             AND a.sign_in_name LIKE concat('%', #{dto.signInName}, '%')
@@ -50,7 +49,18 @@
         <if test="dto.passwordFlag != null">
             AND IF ( a.`password` = '', 0, 1 ) = #{dto.passwordFlag}
         </if>
-
+        <if test="dto.beginCreateTime != null">
+            AND a.create_time <![CDATA[>=]]> #{dto.beginCreateTime}
+        </if>
+        <if test="dto.endCreateTime != null">
+            AND a.create_time <![CDATA[<=]]> #{dto.endCreateTime}
+        </if>
+        <if test="dto.beginLastActiveTime != null">
+            AND IFNULL( MAX( c.create_time ), a.create_time) <![CDATA[>=]]> #{dto.beginLastActiveTime}
+        </if>
+        <if test="dto.endLastActiveTime != null">
+            AND IFNULL( MAX( c.create_time ), a.create_time) <![CDATA[<=]]> #{dto.endLastActiveTime}
+        </if>
     </select>
 
 </mapper>

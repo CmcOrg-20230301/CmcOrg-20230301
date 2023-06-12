@@ -59,31 +59,35 @@ export function SysUserRefreshJwtSecretSuf(form: NotEmptyIdSet, config?: AxiosRe
 }
 
 export interface SysUserPageDTO {
-    avatarUri?: string // 头像uri
     passwordFlag?: boolean // 是否有密码
-    current?: string // 第几页，format：int64
-    phone?: string // 手机号码
     wxOpenId?: string // 微信 openId
+    pageSize?: string // 每页显示条数，format：int64
+    endCreateTime?: string // 创建结束时间，format：date-time
+    current?: string // 第几页，format：int64
+    beginCreateTime?: string // 创建开始时间，format：date-time
+    phone?: string // 手机号码
     signInName?: string // 登录名
     nickname?: string // 昵称
-    pageSize?: string // 每页显示条数，format：int64
     id?: string // 主键 id，format：int64
     enableFlag?: boolean // 是否正常
+    endLastActiveTime?: string // 最近活跃结束时间，format：date-time
     email?: string // 邮箱
     order?: MyOrderDTO // 排序字段
     sort?: Record<string, SortOrder> // 排序字段（只在前端使用，实际传值：order）
+    beginLastActiveTime?: string // 最近活跃开始时间，format：date-time
 }
 
 export interface SysUserPageVO {
     avatarUri?: string // 头像uri
     passwordFlag?: boolean // 是否有密码
+    lastActiveTime?: string // 最近活跃时间，format：date-time
+    wxOpenId?: string // 微信 openId，会脱敏
+    updateTime?: string // 修改时间，format：date-time
     phone?: string // 手机号码，会脱敏
     createTime?: string // 创建时间，format：date-time
-    wxOpenId?: string // 微信 openId，会脱敏
     signInName?: string // 登录名，会脱敏
     nickname?: string // 昵称
     roleIdSet?: string[] // 角色 idSet，format：int64
-    updateTime?: string // 修改时间，format：date-time
     id?: string // 主键id，format：int64
     enableFlag?: boolean // 正常/冻结
     email?: string // 邮箱，备注：会脱敏

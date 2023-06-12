@@ -16,7 +16,7 @@ import {
 import {useAppSelector} from "@/store";
 import {List, Modal} from "antd";
 import {ValidatorUtil} from "@/util/ValidatorUtil";
-import {ToastSuccess} from "@/util/ToastUtil";
+import {ExecConfirm, ToastSuccess} from "@/util/ToastUtil";
 import {
     ModalForm,
     ProFormCaptcha,
@@ -42,6 +42,7 @@ import {PasswordRSAEncrypt, RSAEncryptPro} from "@/util/RsaUtil";
 import {SysRequestDO, SysRequestPageDTO, SysRequestSelfLoginRecord} from "@/api/SysRequest";
 import {HandlerRegion} from "@/util/StrUtil";
 import {GetDictListByKey} from "@/util/DictUtil";
+import {UserSelfRefreshJwtSecretSuf} from "@/api/UserSelf";
 
 interface IUserSelfSetting {
 
@@ -77,8 +78,8 @@ export default function () {
                 {
                     title: '密码',
                     actions: [
-                        userSelfInfo.email ? <UserSelfUpdatePasswordByCodeModalForm/> :
-                            <UserSelfUpdatePasswordByPasswordModalForm/>
+                        userSelfInfo.email ? <UserSelfUpdatePasswordByCodeModalForm key={"1"}/> :
+                            <UserSelfUpdatePasswordByPasswordModalForm key={"1"}/>
                     ]
                 },
 
@@ -86,7 +87,7 @@ export default function () {
                     title: '登录名',
                     description: userSelfInfo.signInName || '暂无',
                     actions: [
-                        <UpdateSignNameAccountModalForm/>
+                        <UpdateSignNameAccountModalForm key={"1"}/>
                     ]
                 },
 
@@ -94,7 +95,32 @@ export default function () {
                     title: '邮箱',
                     description: userSelfInfo.email || '暂无',
                     actions: [
-                        userSelfInfo.email ? <UpdateEmailAccountModalForm/> : <SetEmailAccountModalForm/>
+                        userSelfInfo.email ? <UpdateEmailAccountModalForm key={"1"}/> :
+                            <SetEmailAccountModalForm key={"1"}/>
+                    ]
+                },
+
+                {
+                    title: '刷新令牌',
+                    description: '刷新之后，执行任意操作，都会要求重新登录，用于：不修改密码，退出所有登录',
+                    actions: [
+
+                        <a key="1" onClick={() => {
+
+                            ExecConfirm(() => {
+
+                                return UserSelfRefreshJwtSecretSuf().then(res => {
+
+                                    ToastSuccess(res.msg)
+
+                                })
+
+                            }, undefined, '确定执行【刷新令牌】操作吗？')
+
+                        }}>
+                            执行刷新
+                        </a>
+
                     ]
                 },
 
@@ -109,7 +135,8 @@ export default function () {
                     title: UserSelfDeleteModalTitle,
                     description: userSelfInfo.createTime ? ('注册时间：' + userSelfInfo.createTime) : undefined,
                     actions: [
-                        userSelfInfo.email ? <UserSelfDeleteByCodeModalForm/> : <UserSelfDeleteByPasswordModalForm/>
+                        userSelfInfo.email ? <UserSelfDeleteByCodeModalForm key={"1"}/> :
+                            <UserSelfDeleteByPasswordModalForm key={"1"}/>
                     ]
                 },
 

@@ -5,6 +5,8 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
+import java.util.Date;
+
 @EqualsAndHashCode(callSuper = true)
 @Data
 public class SysUserPageDTO extends MyPageDTO {
@@ -14,9 +16,6 @@ public class SysUserPageDTO extends MyPageDTO {
 
     @Schema(description = "昵称")
     private String nickname;
-
-    @Schema(description = "头像uri")
-    private String avatarUri;
 
     @Schema(description = "登录名")
     private String signInName;
@@ -35,5 +34,17 @@ public class SysUserPageDTO extends MyPageDTO {
 
     @Schema(description = "是否有密码")
     private Boolean passwordFlag;
+
+    @Schema(description = "创建开始时间")
+    private Date beginCreateTime;
+
+    @Schema(description = "创建结束时间")
+    private Date endCreateTime;
+
+    @Schema(description = "最近活跃开始时间")
+    private Date beginLastActiveTime;
+
+    @Schema(description = "最近活跃结束时间")
+    private Date endLastActiveTime;
 
 }

@@ -11,4 +11,8 @@ public interface UserSelfService extends IService<SysUserDO> {
 
     String userSelfUpdateInfo(UserSelfUpdateInfoDTO dto);
 
+    String userSelfRefreshJwtSecretSuf();
+
+    String userSelfResetAvatar();
+
 }
