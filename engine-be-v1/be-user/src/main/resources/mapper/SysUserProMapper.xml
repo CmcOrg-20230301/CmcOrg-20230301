@@ -56,11 +56,14 @@
             AND a.create_time <![CDATA[<=]]> #{dto.endCreateTime}
         </if>
         <if test="dto.beginLastActiveTime != null">
-            AND IFNULL( MAX( c.create_time ), a.create_time) <![CDATA[>=]]> #{dto.beginLastActiveTime}
+            AND IFNULL( (SELECT MAX(create_time) FROM sys_request WHERE create_id = a.id ), a.create_time)
+            <![CDATA[>=]]> #{dto.beginLastActiveTime}
         </if>
         <if test="dto.endLastActiveTime != null">
-            AND IFNULL( MAX( c.create_time ), a.create_time) <![CDATA[<=]]> #{dto.endLastActiveTime}
+            AND IFNULL( (SELECT MAX(create_time) FROM sys_request WHERE create_id = a.id ), a.create_time)
+            <![CDATA[<=]]> #{dto.endLastActiveTime}
         </if>
+
     </select>
 
 </mapper>

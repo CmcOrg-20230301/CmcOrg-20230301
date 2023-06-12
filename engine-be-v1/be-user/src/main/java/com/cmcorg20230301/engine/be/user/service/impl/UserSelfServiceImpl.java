@@ -113,7 +113,7 @@ public class UserSelfServiceImpl extends ServiceImpl<SysUserMapper, SysUserDO> i
 
         UserUtil.setJwtSecretSuf(currentUserIdNotAdmin); // 设置：jwt秘钥后缀
 
-        return null;
+        return BaseBizCodeEnum.OK;
 
     }
 

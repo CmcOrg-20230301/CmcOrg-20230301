@@ -42,7 +42,9 @@ const TableColumnList = (currentForm: React.MutableRefObject<SysUserInsertOrUpda
 
     {title: '登录名', dataIndex: 'signInName', ellipsis: true, width: 70,},
 
-    {title: '邮箱', dataIndex: 'email', ellipsis: true, width: 50,},
+    {title: '邮箱', dataIndex: 'email', ellipsis: true, width: 120,},
+
+    {title: '手机号', dataIndex: 'phone', ellipsis: true, width: 120,},
 
     {
         title: '是否正常',
