@@ -63,6 +63,8 @@
             AND IFNULL( (SELECT MAX(create_time) FROM sys_request WHERE create_id = a.id ), a.create_time)
             <![CDATA[<=]]> #{dto.endLastActiveTime}
         </if>
+        GROUP BY
+        a.id
 
     </select>
 
