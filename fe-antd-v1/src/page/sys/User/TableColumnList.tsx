@@ -38,9 +38,9 @@ const TableColumnList = (currentForm: React.MutableRefObject<SysUserInsertOrUpda
         }
     },
 
-    {title: '昵称', dataIndex: 'nickname', ellipsis: true,},
+    {title: '昵称', dataIndex: 'nickname', ellipsis: true, width: 120,},
 
-    {title: '登录名', dataIndex: 'signInName', ellipsis: true, width: 70,},
+    {title: '登录名', dataIndex: 'signInName', ellipsis: true, width: 120,},
 
     {title: '邮箱', dataIndex: 'email', ellipsis: true, width: 120,},
 
