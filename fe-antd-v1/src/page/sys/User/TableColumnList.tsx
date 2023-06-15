@@ -17,7 +17,7 @@ import {ValidatorUtil} from "@/util/ValidatorUtil";
 import {PasswordRSAEncrypt, RSAEncryptPro} from "@/util/RsaUtil";
 import {Dropdown} from "antd";
 
-const TableColumnList = (currentForm: React.MutableRefObject<SysUserInsertOrUpdateDTO | null>, setFormOpen: React.Dispatch<React.SetStateAction<boolean>>, actionRef: React.RefObject<ActionType | undefined>): ProColumns<SysUserPageVO>[] => [
+const TableColumnList = (currentForm: React.MutableRefObject<SysUserInsertOrUpdateDTO | null>, setFormOpen: React.Dispatch<React.SetStateAction<boolean>>, actionRef: React.RefObject<ActionType | undefined>, userAvatarUrlObj: Record<string, string>): ProColumns<SysUserPageVO>[] => [
 
     {
         title: '序号',
@@ -27,14 +27,14 @@ const TableColumnList = (currentForm: React.MutableRefObject<SysUserInsertOrUpda
     },
 
     {
-        title: '头像', dataIndex: 'avatarUri', valueType: 'image',
+        title: '头像', dataIndex: 'avatarFileId', valueType: 'image',
         fieldProps: {
             preview: {
                 mask: <EyeOutlined title={"预览"}/>,
             }
         },
         renderText: (text) => {
-            return text || CommonConstant.FIXED_AVATAR_URL
+            return userAvatarUrlObj[text] || CommonConstant.FIXED_AVATAR_URL
         }
     },
 

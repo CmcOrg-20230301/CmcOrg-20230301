@@ -10,7 +10,6 @@ const SchemaFormColumnList = (): ProFormColumnsType<SysUserInsertOrUpdateDTO>[] 
 
     return [
 
-
         {
             title: '登录名',
             dataIndex: 'signInName',

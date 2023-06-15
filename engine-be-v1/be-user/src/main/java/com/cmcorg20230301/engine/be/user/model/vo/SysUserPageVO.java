@@ -15,8 +15,8 @@ public class SysUserPageVO {
     @Schema(description = "昵称")
     private String nickname;
 
-    @Schema(description = "头像uri")
-    private String avatarUri;
+    @Schema(description = "头像 fileId（文件主键 id），备注：没有时则为 -1")
+    private Long avatarFileId;
 
     @Schema(description = "邮箱，备注：会脱敏")
     private String email;

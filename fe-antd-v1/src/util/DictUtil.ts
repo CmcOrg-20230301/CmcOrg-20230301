@@ -40,11 +40,11 @@ export function NumberStringMapToSelectList(map: Map<string, string>) {
 
 }
 
-export const YesNoDict = new Map<any, ProSchemaValueEnumType>();
+export const YesNoDict = new Map<boolean, ProSchemaValueEnumType>();
 YesNoDict.set(true, {text: '是', status: 'success'})
 YesNoDict.set(false, {text: '否', status: 'error'})
 
-export const YesNoBaseDict = new Map<any, ProSchemaValueEnumType>();
+export const YesNoBaseDict = new Map<boolean, ProSchemaValueEnumType>();
 YesNoBaseDict.set(true, {text: '是'})
 YesNoBaseDict.set(false, {text: '否'})
 

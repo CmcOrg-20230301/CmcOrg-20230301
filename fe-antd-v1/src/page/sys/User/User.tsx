@@ -16,6 +16,7 @@ import TableColumnList from "./TableColumnList";
 import {ExecConfirm, ToastSuccess} from "@/util/ToastUtil";
 import SchemaFormColumnList, {InitForm} from "./SchemaFormColumnList";
 import CommonConstant from "@/model/constant/CommonConstant";
+import {SysFileGetPublicUrl} from "@/api/SysFile";
 
 // 用户-管理
 export default function () {
@@ -33,6 +34,8 @@ export default function () {
     const currentForm = useRef<SysUserInsertOrUpdateDTO>({} as SysUserInsertOrUpdateDTO)
 
     const [fullScreenFlag, setFullScreenFlag] = useState<boolean>(false)
+
+    const [userAvatarUrlObj, setUserAvatarUrlObj] = useState<Record<string, string>>({})
 
     useEffect(() => {
 
@@ -89,7 +92,7 @@ export default function () {
 
                 revalidateOnFocus={false}
 
-                columns={TableColumnList(currentForm, setFormOpen, actionRef)}
+                columns={TableColumnList(currentForm, setFormOpen, actionRef, userAvatarUrlObj)}
 
                 options={{
                     fullScreen: true,
@@ -98,6 +101,20 @@ export default function () {
                 request={(params, sort, filter) => {
 
                     return SysUserPage({...params, sort})
+
+                }}
+
+                postData={(data: SysUserPageVO[]) => {
+
+                    let userIdList = data.map(it => it.id!); // 用户 id集合
+
+                    SysFileGetPublicUrl({idSet: userIdList}).then(res => {
+
+                        setUserAvatarUrlObj(res.data.map as any)
+
+                    })
+
+                    return data
 
                 }}
 
