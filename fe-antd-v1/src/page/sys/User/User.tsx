@@ -10,9 +10,10 @@ import {
     SysUserPage,
     SysUserPageDTO,
     SysUserPageVO,
+    SysUserRefreshJwtSecretSuf,
     SysUserResetAvatar
 } from "@/api/SysUser";
-import TableColumnList from "./TableColumnList";
+import TableColumnList, {SysUserUpdatePasswordModalForm} from "./TableColumnList";
 import {ExecConfirm, ToastSuccess} from "@/util/ToastUtil";
 import SchemaFormColumnList, {InitForm} from "./SchemaFormColumnList";
 import CommonConstant from "@/model/constant/CommonConstant";
@@ -151,6 +152,23 @@ export default function () {
                             }, undefined, `确定重置选中的【${selectedRowKeys.length}】项的头像吗？`)
 
                         }}>重置头像</a>
+
+                        <SysUserUpdatePasswordModalForm idSet={selectedRowKeys as string[]} actionRef={actionRef}/>
+
+                        <a onClick={() => {
+
+                            ExecConfirm(() => {
+
+                                return SysUserRefreshJwtSecretSuf({idSet: selectedRowKeys as string[]}).then(res => {
+
+                                    ToastSuccess(res.msg)
+                                    actionRef.current?.reload()
+
+                                })
+
+                            }, undefined, `确定刷新选中的【${selectedRowKeys.length}】项的令牌吗？`)
+
+                        }}>刷新令牌</a>
 
                         <a className={"red3"} onClick={() => {
 
