@@ -106,9 +106,9 @@ export default function () {
 
                 postData={(data: SysUserPageVO[]) => {
 
-                    let userIdList = data.map(it => it.id!); // 用户 id集合
+                    let avatarFileIdList = data.map(it => it.avatarFileId!); // 用户头像文件 id集合
 
-                    SysFileGetPublicUrl({idSet: userIdList}).then(res => {
+                    SysFileGetPublicUrl({idSet: avatarFileIdList}).then(res => {
 
                         setUserAvatarUrlObj(res.data.map as any)
 

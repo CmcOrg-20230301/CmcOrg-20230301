@@ -78,9 +78,9 @@ export interface SysUserPageDTO {
 }
 
 export interface SysUserPageVO {
-    avatarUri?: string // 头像uri
     passwordFlag?: boolean // 是否有密码
     lastActiveTime?: string // 最近活跃时间，format：date-time
+    avatarFileId?: string // 头像 fileId（文件主键 id），备注：没有时则为 -1，format：int64
     wxOpenId?: string // 微信 openId，会脱敏
     updateTime?: string // 修改时间，format：date-time
     phone?: string // 手机号码，会脱敏
