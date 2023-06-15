@@ -125,6 +125,8 @@ export default function () {
 
                             <Avatar
 
+                                size={64}
+
                                 src={
 
                                     <Image
@@ -133,7 +135,7 @@ export default function () {
                                             userSelfAvatarUrl ? userSelfAvatarUrl : CommonConstant.FIXED_AVATAR_URL
                                         }
 
-                                        height={32}
+                                        height={64}
 
                                         preview={{mask: <EyeOutlined title={"预览"}/>}}
 
@@ -249,12 +251,14 @@ export default function () {
                 },
 
                 {
+
                     title: '昵称',
                     dataIndex: 'nickname',
                     fieldProps: {
                         maxLength: 20,
                         allowClear: true,
                     },
+
                     formItemProps: {
                         required: true,
                         rules: [
@@ -263,17 +267,21 @@ export default function () {
                             }
                         ],
                     },
+
                 },
 
                 {
+
                     title: '个人简介',
                     dataIndex: 'bio',
                     valueType: 'textarea',
+
                     fieldProps: {
                         showCount: true,
                         maxLength: 100,
                         allowClear: true,
                     },
+
                 },
 
             ]}
