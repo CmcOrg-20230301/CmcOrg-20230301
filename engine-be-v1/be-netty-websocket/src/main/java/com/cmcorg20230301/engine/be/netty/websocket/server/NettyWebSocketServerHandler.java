@@ -94,7 +94,7 @@ public class NettyWebSocketServerHandler extends ChannelInboundHandlerAdapter {
             try {
 
                 // 处理：FullHttpRequest
-                handleFullHttpRequest(ctx, (FullHttpRequest)msg);
+                handleFullHttpRequest(ctx, (FullHttpRequest) msg);
 
                 // 传递给下一个 handler，备注：这里不需要释放资源
                 ctx.fireChannelRead(msg);
@@ -112,7 +112,7 @@ public class NettyWebSocketServerHandler extends ChannelInboundHandlerAdapter {
             try {
 
                 // 处理：TextWebSocketFrame
-                handleTextWebSocketFrame((TextWebSocketFrame)msg);
+                    handleTextWebSocketFrame((TextWebSocketFrame) msg);
 
             } finally {
 

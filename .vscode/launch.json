@@ -1,0 +1,135 @@
+{
+    // 使用 IntelliSense 了解相关属性。
+    // 悬停以查看现有属性的描述。
+    // 欲了解更多信息，请访问: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "java",
+            "name": "Current File",
+            "request": "launch",
+            "mainClass": "${file}"
+        },
+        {
+            "type": "java",
+            "name": "BeGatewayApplication",
+            "request": "launch",
+            "mainClass": "com.cmcorg20230301.engine.be.gateway.BeGatewayApplication",
+            "projectName": "be-gateway"
+        },
+        {
+            "type": "java",
+            "name": "ApiTestSignEmailUtil",
+            "request": "launch",
+            "mainClass": "com.cmcorg20230301.engine.be.generate.util.apitest.sign.ApiTestSignEmailUtil",
+            "projectName": "be-generate"
+        },
+        {
+            "type": "java",
+            "name": "ApiTestSignPhoneUtil",
+            "request": "launch",
+            "mainClass": "com.cmcorg20230301.engine.be.generate.util.apitest.sign.ApiTestSignPhoneUtil",
+            "projectName": "be-generate"
+        },
+        {
+            "type": "java",
+            "name": "ApiTestSignSignInNameUtil",
+            "request": "launch",
+            "mainClass": "com.cmcorg20230301.engine.be.generate.util.apitest.sign.ApiTestSignSignInNameUtil",
+            "projectName": "be-generate"
+        },
+        {
+            "type": "java",
+            "name": "ApiTestSysDictUtil",
+            "request": "launch",
+            "mainClass": "com.cmcorg20230301.engine.be.generate.util.apitest.sys.ApiTestSysDictUtil",
+            "projectName": "be-generate"
+        },
+        {
+            "type": "java",
+            "name": "ApiTestSysFileUtil",
+            "request": "launch",
+            "mainClass": "com.cmcorg20230301.engine.be.generate.util.apitest.sys.ApiTestSysFileUtil",
+            "projectName": "be-generate"
+        },
+        {
+            "type": "java",
+            "name": "ApiTestSysMenuUtil",
+            "request": "launch",
+            "mainClass": "com.cmcorg20230301.engine.be.generate.util.apitest.sys.ApiTestSysMenuUtil",
+            "projectName": "be-generate"
+        },
+        {
+            "type": "java",
+            "name": "ApiTestSysParamUtil",
+            "request": "launch",
+            "mainClass": "com.cmcorg20230301.engine.be.generate.util.apitest.sys.ApiTestSysParamUtil",
+            "projectName": "be-generate"
+        },
+        {
+            "type": "java",
+            "name": "ApiTestSysRequestUtil",
+            "request": "launch",
+            "mainClass": "com.cmcorg20230301.engine.be.generate.util.apitest.sys.ApiTestSysRequestUtil",
+            "projectName": "be-generate"
+        },
+        {
+            "type": "java",
+            "name": "ApiTestSysRoleUtil",
+            "request": "launch",
+            "mainClass": "com.cmcorg20230301.engine.be.generate.util.apitest.sys.ApiTestSysRoleUtil",
+            "projectName": "be-generate"
+        },
+        {
+            "type": "java",
+            "name": "ApiTestSysUserUtil",
+            "request": "launch",
+            "mainClass": "com.cmcorg20230301.engine.be.generate.util.apitest.sys.ApiTestSysUserUtil",
+            "projectName": "be-generate"
+        },
+        {
+            "type": "java",
+            "name": "DoPackageUtil",
+            "request": "launch",
+            "mainClass": "com.cmcorg20230301.engine.be.generate.util.dopackage.DoPackageUtil",
+            "projectName": "be-generate"
+        },
+        {
+            "type": "java",
+            "name": "GenerateApiUtil",
+            "request": "launch",
+            "mainClass": "com.cmcorg20230301.engine.be.generate.util.generate.GenerateApiUtil",
+            "projectName": "be-generate"
+        },
+        {
+            "type": "java",
+            "name": "GeneratePageUtil",
+            "request": "launch",
+            "mainClass": "com.cmcorg20230301.engine.be.generate.util.generate.GeneratePageUtil",
+            "projectName": "be-generate"
+        },
+        {
+            "type": "java",
+            "name": "SpringDocUtil",
+            "request": "launch",
+            "mainClass": "com.cmcorg20230301.engine.be.generate.util.generate.SpringDocUtil",
+            "projectName": "be-generate"
+        },
+        {
+            "type": "java",
+            "name": "BeStartApplication",
+            "request": "launch",
+            "mainClass": "com.cmcorg20230301.engine.be.start.BeStartApplication",
+            "projectName": "be-start",
+            "vmArgs": "-Dfile.encoding=utf-8",
+            "args": "chcp 65001"
+        },
+        {
+            "type": "java",
+            "name": "AwtUtil",
+            "request": "launch",
+            "mainClass": "com.cmcorg20230301.engine.be.util.util.AwtUtil",
+            "projectName": "be-util"
+        }
+    ]
+}
