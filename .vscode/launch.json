@@ -122,7 +122,6 @@
             "mainClass": "com.cmcorg20230301.engine.be.start.BeStartApplication",
             "projectName": "be-start",
             "vmArgs": "-Dfile.encoding=utf-8",
-            "args": "chcp 65001"
         },
         {
             "type": "java",

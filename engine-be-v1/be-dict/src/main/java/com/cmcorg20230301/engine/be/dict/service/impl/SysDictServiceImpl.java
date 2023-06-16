@@ -42,8 +42,9 @@ public class SysDictServiceImpl extends ServiceImpl<SysDictMapper, SysDictDO> im
 
             // 字典 key和 name不能重复
             boolean exists = lambdaQuery().eq(SysDictDO::getType, SysDictTypeEnum.DICT)
-                .and(i -> i.eq(SysDictDO::getDictKey, dto.getDictKey()).or().eq(SysDictDO::getName, dto.getName()))
-                .eq(BaseEntity::getEnableFlag, true).ne(dto.getId() != null, BaseEntity::getId, dto.getId()).exists();
+                    .and(i -> i.eq(SysDictDO::getDictKey, dto.getDictKey()).or().eq(SysDictDO::getName, dto.getName()))
+                    .eq(BaseEntity::getEnableFlag, true).ne(dto.getId() != null, BaseEntity::getId, dto.getId())
+                    .exists();
 
             if (exists) {
                 ApiResultVO.error(BizCodeEnum.SAME_KEY_OR_NAME_EXIST);
@@ -58,8 +59,8 @@ public class SysDictServiceImpl extends ServiceImpl<SysDictMapper, SysDictDO> im
             }
 
             // 字典项 value和 name不能重复
-            boolean exists =
-                lambdaQuery().eq(SysDictDO::getType, SysDictTypeEnum.DICT_ITEM).eq(BaseEntity::getEnableFlag, true)
+            boolean exists = lambdaQuery().eq(SysDictDO::getType, SysDictTypeEnum.DICT_ITEM)
+                    .eq(BaseEntity::getEnableFlag, true)
                     .eq(SysDictDO::getDictKey, dto.getDictKey())
                     .and(i -> i.eq(SysDictDO::getValue, dto.getValue()).or().eq(SysDictDO::getName, dto.getName()))
                     .ne(dto.getId() != null, BaseEntity::getId, dto.getId()).exists();
@@ -82,8 +83,8 @@ public class SysDictServiceImpl extends ServiceImpl<SysDictMapper, SysDictDO> im
             if (!sysDictDO.getDictKey().equals(dto.getDictKey())) {
 
                 lambdaUpdate().eq(SysDictDO::getDictKey, sysDictDO.getDictKey())
-                    .eq(SysDictDO::getType, SysDictTypeEnum.DICT_ITEM).set(SysDictDO::getDictKey, dto.getDictKey())
-                    .update();
+                        .eq(SysDictDO::getType, SysDictTypeEnum.DICT_ITEM).set(SysDictDO::getDictKey, dto.getDictKey())
+                        .update();
 
             }
 
@@ -113,11 +114,11 @@ public class SysDictServiceImpl extends ServiceImpl<SysDictMapper, SysDictDO> im
     public Page<SysDictDO> myPage(SysDictPageDTO dto) {
 
         return lambdaQuery().like(StrUtil.isNotBlank(dto.getName()), SysDictDO::getName, dto.getName())
-            .like(StrUtil.isNotBlank(dto.getRemark()), BaseEntity::getRemark, dto.getRemark())
-            .like(StrUtil.isNotBlank(dto.getDictKey()), SysDictDO::getDictKey, dto.getDictKey())
-            .eq(dto.getType() != null, SysDictDO::getType, dto.getType())
-            .eq(dto.getEnableFlag() != null, BaseEntity::getEnableFlag, dto.getEnableFlag())
-            .orderByDesc(SysDictDO::getOrderNo).page(dto.page(true));
+                .like(StrUtil.isNotBlank(dto.getRemark()), BaseEntity::getRemark, dto.getRemark())
+                .like(StrUtil.isNotBlank(dto.getDictKey()), SysDictDO::getDictKey, dto.getDictKey())
+                .eq(dto.getType() != null, SysDictDO::getType, dto.getType())
+                .eq(dto.getEnableFlag() != null, BaseEntity::getEnableFlag, dto.getEnableFlag())
+                .orderByDesc(SysDictDO::getOrderNo).page(dto.page(true));
 
     }
 
@@ -145,8 +146,8 @@ public class SysDictServiceImpl extends ServiceImpl<SysDictMapper, SysDictDO> im
         }
 
         // 过滤出：为字典项的数据，目的：查询其所属字典，封装成树结构
-        List<SysDictDO> dictItemList =
-            records.stream().filter(it -> SysDictTypeEnum.DICT_ITEM.equals(it.getType())).collect(Collectors.toList());
+        List<SysDictDO> dictItemList = records.stream().filter(it -> SysDictTypeEnum.DICT_ITEM.equals(it.getType()))
+                .collect(Collectors.toList());
 
         if (dictItemList.size() == 0) {
 
@@ -156,16 +157,17 @@ public class SysDictServiceImpl extends ServiceImpl<SysDictMapper, SysDictDO> im
         }
 
         // 查询出：字典项所属，字典的信息
-        Set<SysDictDO> allDictSet =
-            records.stream().filter(item -> SysDictTypeEnum.DICT.equals(item.getType())).collect(Collectors.toSet());
+        Set<SysDictDO> allDictSet = records.stream().filter(item -> SysDictTypeEnum.DICT.equals(item.getType()))
+                .collect(Collectors.toSet());
 
         Set<Long> dictIdSet = allDictSet.stream().map(BaseEntity::getId).collect(Collectors.toSet());
         Set<String> dictKeySet = dictItemList.stream().map(SysDictDO::getDictKey).collect(Collectors.toSet());
 
         // 查询数据库
         List<SysDictDO> sysDictDOList = lambdaQuery().notIn(dictIdSet.size() != 0, BaseEntity::getId, dictIdSet)
-            .in(dictKeySet.size() != 0, SysDictDO::getDictKey, dictKeySet).eq(SysDictDO::getType, SysDictTypeEnum.DICT)
-            .orderByDesc(SysDictDO::getOrderNo).list();
+                .in(dictKeySet.size() != 0, SysDictDO::getDictKey, dictKeySet)
+                .eq(SysDictDO::getType, SysDictTypeEnum.DICT)
+                .orderByDesc(SysDictDO::getOrderNo).list();
 
         // 拼接本次返回值所需的，所有字典
         allDictSet.addAll(sysDictDOList);
@@ -204,8 +206,8 @@ public class SysDictServiceImpl extends ServiceImpl<SysDictMapper, SysDictDO> im
         // 根据 idSet删除
         removeByIds(notEmptyIdSet.getIdSet());
 
-        List<SysDictDO> sysDictDOList =
-            lambdaQuery().in(BaseEntity::getId, notEmptyIdSet.getIdSet()).eq(SysDictDO::getType, SysDictTypeEnum.DICT)
+        List<SysDictDO> sysDictDOList = lambdaQuery().in(BaseEntity::getId, notEmptyIdSet.getIdSet())
+                .eq(SysDictDO::getType, SysDictTypeEnum.DICT)
                 .select(SysDictDO::getDictKey).list();
 
         if (CollUtil.isEmpty(sysDictDOList)) {
@@ -245,7 +247,7 @@ public class SysDictServiceImpl extends ServiceImpl<SysDictMapper, SysDictDO> im
         List<SysDictDO> sysDictDOList = listByIds(dto.getIdSet());
 
         for (SysDictDO item : sysDictDOList) {
-            item.setOrderNo((int)(item.getOrderNo() + dto.getNumber()));
+            item.setOrderNo((int) (item.getOrderNo() + dto.getNumber()));
         }
 
         updateBatchById(sysDictDOList);
@@ -255,7 +257,3 @@ public class SysDictServiceImpl extends ServiceImpl<SysDictMapper, SysDictDO> im
     }
 
 }
-
-
-
-
