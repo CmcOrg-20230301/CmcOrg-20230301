@@ -5,6 +5,50 @@ CREATE DATABASE IF NOT EXISTS `engine_be_v1` CHARACTER SET 'utf8mb4' COLLATE 'ut
 USE `engine_be_v1`;
 
 -- ----------------------------
+-- Table structure for sys_area
+-- ----------------------------
+DROP TABLE IF EXISTS `sys_area`;
+CREATE TABLE `sys_area`
+(
+    `id`          bigint                                                        NOT NULL,
+    `create_id`   bigint                                                        NOT NULL,
+    `create_time` datetime                                                      NOT NULL,
+    `update_id`   bigint                                                        NOT NULL,
+    `update_time` datetime                                                      NOT NULL,
+    `enable_flag` tinyint(1)                                                    NOT NULL COMMENT '是否启用',
+    `version`     int                                                           NOT NULL COMMENT '乐观锁',
+    `del_flag`    tinyint(1)                                                    NOT NULL COMMENT '是否逻辑删除',
+    `remark`      varchar(300) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '备注',
+    `name`        varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '区域名',
+    PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB
+  CHARACTER SET = utf8mb4
+  COLLATE = utf8mb4_unicode_ci COMMENT = 'v20230301：主表：区域'
+  ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of sys_area
+-- ----------------------------
+
+-- ----------------------------
+-- Table structure for sys_area_ref_dept
+-- ----------------------------
+DROP TABLE IF EXISTS `sys_area_ref_dept`;
+CREATE TABLE `sys_area_ref_dept`
+(
+    `area_id` bigint NOT NULL COMMENT '区域主键 id',
+    `dept_id` bigint NOT NULL COMMENT '部门主键 id',
+    PRIMARY KEY (`area_id`, `dept_id`) USING BTREE
+) ENGINE = InnoDB
+  CHARACTER SET = utf8mb4
+  COLLATE = utf8mb4_unicode_ci COMMENT = 'v20230301：关联表：区域，部门'
+  ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of sys_area_ref_dept
+-- ----------------------------
+
+-- ----------------------------
 -- Table structure for sys_dict
 -- ----------------------------
 DROP TABLE IF EXISTS `sys_dict`;
@@ -27,7 +71,7 @@ CREATE TABLE `sys_dict`
     PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB
   CHARACTER SET = utf8mb4
-  COLLATE = utf8mb4_general_ci COMMENT = 'v20230301：主表：字典'
+  COLLATE = utf8mb4_unicode_ci COMMENT = 'v20230301：主表：字典'
   ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
@@ -193,7 +237,7 @@ CREATE TABLE `sys_menu`
     PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB
   CHARACTER SET = utf8mb4
-  COLLATE = utf8mb4_general_ci COMMENT = 'v20230301：主表：菜单'
+  COLLATE = utf8mb4_unicode_ci COMMENT = 'v20230301：主表：菜单'
   ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
@@ -322,7 +366,7 @@ CREATE TABLE `sys_param`
     PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB
   CHARACTER SET = utf8mb4
-  COLLATE = utf8mb4_general_ci COMMENT = 'v20230301：主表：系统参数'
+  COLLATE = utf8mb4_unicode_ci COMMENT = 'v20230301：主表：系统参数'
   ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
@@ -359,14 +403,14 @@ CREATE TABLE `sys_request`
     `region`         varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci  NOT NULL COMMENT 'Ip2RegionUtil.getRegion() 获取到的 ip所处区域',
     `ip`             varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci  NOT NULL COMMENT 'ip',
     `success_flag`   tinyint(1)                                                     NOT NULL COMMENT '请求是否成功',
-    `error_msg`      varchar(1000) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '失败信息',
-    `request_param`  varchar(1000) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '请求的参数',
-    `type`           varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci   NOT NULL COMMENT '请求类型',
-    `response_value` varchar(1000) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '请求返回的值',
+    `error_msg`      varchar(1000) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '失败信息',
+    `request_param`  varchar(1000) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '请求的参数',
+    `type`           varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci   NOT NULL COMMENT '请求类型',
+    `response_value` varchar(1000) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '请求返回的值',
     PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB
   CHARACTER SET = utf8mb4
-  COLLATE = utf8mb4_general_ci COMMENT = 'v20230301：主表：请求'
+  COLLATE = utf8mb4_unicode_ci COMMENT = 'v20230301：主表：请求'
   ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
@@ -393,7 +437,7 @@ CREATE TABLE `sys_role`
     PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB
   CHARACTER SET = utf8mb4
-  COLLATE = utf8mb4_general_ci COMMENT = 'v20230301：主表：角色'
+  COLLATE = utf8mb4_unicode_ci COMMENT = 'v20230301：主表：角色'
   ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
@@ -414,7 +458,7 @@ CREATE TABLE `sys_role_ref_menu`
     PRIMARY KEY (`role_id`, `menu_id`) USING BTREE
 ) ENGINE = InnoDB
   CHARACTER SET = utf8mb4
-  COLLATE = utf8mb4_general_ci COMMENT = 'v20230301：关联表：角色，菜单'
+  COLLATE = utf8mb4_unicode_ci COMMENT = 'v20230301：关联表：角色，菜单'
   ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
@@ -458,7 +502,7 @@ CREATE TABLE `sys_role_ref_user`
     PRIMARY KEY (`role_id`, `user_id`) USING BTREE
 ) ENGINE = InnoDB
   CHARACTER SET = utf8mb4
-  COLLATE = utf8mb4_general_ci COMMENT = 'v20230301：关联表：角色，用户'
+  COLLATE = utf8mb4_unicode_ci COMMENT = 'v20230301：关联表：角色，用户'
   ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
