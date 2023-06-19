@@ -12,7 +12,7 @@ export interface SysUserInfoByIdVO {
     avatarFileId?: string // 头像 fileId（文件主键 id），format：int64
     bio?: string // 个人简介
     updateTime?: string // 修改时间，format：date-time
-    remark?: string // 描述/备注
+    remark?: string // 备注
     delFlag?: boolean // 是否注销，未使用，而是采取直接删除的方式，目的：防止数据量越来越大
     version?: number // 乐观锁，format：int32
     updateId?: string // 修改人id，format：int64

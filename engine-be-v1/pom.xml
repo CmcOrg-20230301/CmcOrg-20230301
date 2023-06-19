@@ -66,10 +66,34 @@
         <module>be-socket</module>
         <module>be-netty-websocket</module>
         <module>be-netty-tcp-protobuf</module>
+        <module>be-area</module>
+        <module>be-dept</module>
+        <module>be-post</module>
     </modules>
 
     <dependencyManagement>
         <dependencies>
+
+            <!-- be-post -->
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>be-post</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <!-- be-dept -->
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>be-dept</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <!-- be-area -->
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>be-area</artifactId>
+                <version>${project.version}</version>
+            </dependency>
 
             <!-- be-netty-tcp-protobuf -->
             <dependency>

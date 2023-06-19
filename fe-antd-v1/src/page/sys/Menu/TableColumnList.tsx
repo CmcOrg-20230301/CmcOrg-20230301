@@ -7,6 +7,7 @@ import {CalcOrderNo, DefaultOrderNo} from "@/util/TreeUtil";
 import CommonConstant from "@/model/constant/CommonConstant";
 import {Dropdown} from "antd";
 import {EllipsisOutlined} from "@ant-design/icons/lib";
+import {RouterMapKeyList} from "@/router/RouterMap";
 
 const QuicklyAddAuth = "快速添加权限"
 
@@ -23,13 +24,27 @@ const TableColumnList = (currentForm: React.MutableRefObject<SysMenuInsertOrUpda
 
     {title: '路径', dataIndex: 'path', ellipsis: true, width: 90,},
 
-    {title: '路由', dataIndex: 'router', ellipsis: true, width: 90,},
+    {
+        title: '路由',
+        dataIndex: 'router',
+        valueType: 'select',
+        fieldProps: {
+            options: RouterMapKeyList,
+        },
+    },
 
     {title: '权限', dataIndex: 'auths', ellipsis: true, width: 90,},
 
     {
         title: '权限菜单',
         dataIndex: 'authFlag',
+        valueEnum: YesNoDict,
+        width: 90,
+    },
+
+    {
+        title: '是否外链',
+        dataIndex: 'linkFlag',
         valueEnum: YesNoDict,
         width: 90,
     },

@@ -28,7 +28,7 @@ export interface SysMenuDO {
     auths?: string // 权限，多个可用逗号拼接，例如：menu:insertOrUpdate,menu:page,menu:deleteByIdSet,menu:infoById
     icon?: string // 图标
     updateTime?: string // 修改时间，format：date-time
-    remark?: string // 描述/备注
+    remark?: string // 备注
     delFlag?: boolean // 是否逻辑删除
     authFlag?: boolean // 是否是权限菜单，权限菜单：不显示，只代表菜单权限
     version?: number // 乐观锁，format：int32
@@ -67,7 +67,7 @@ export interface SysMenuInfoByIdVO {
     auths?: string // 权限，多个可用逗号拼接，例如：menu:insertOrUpdate,menu:page,menu:deleteByIdSet,menu:infoById
     icon?: string // 图标
     updateTime?: string // 修改时间，format：date-time
-    remark?: string // 描述/备注
+    remark?: string // 备注
     delFlag?: boolean // 是否逻辑删除
     authFlag?: boolean // 是否是权限菜单，权限菜单：不显示，只代表菜单权限
     version?: number // 乐观锁，format：int32

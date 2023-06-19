@@ -25,7 +25,7 @@ public class SysSocketPageDTO extends MyPageDTO {
     @Schema(description = "是否启用")
     private Boolean enableFlag;
 
-    @Schema(description = "描述/备注")
+    @Schema(description = "备注")
     private String remark;
 
 }

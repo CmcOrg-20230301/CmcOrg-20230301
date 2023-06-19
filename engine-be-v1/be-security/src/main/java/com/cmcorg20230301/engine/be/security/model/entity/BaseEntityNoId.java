@@ -40,7 +40,7 @@ public class BaseEntityNoId {
     @Schema(description = "是否逻辑删除")
     private Boolean delFlag;
 
-    @Schema(description = "描述/备注")
+    @Schema(description = "备注")
     private String remark;
 
 }

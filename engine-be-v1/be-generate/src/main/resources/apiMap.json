@@ -599,7 +599,7 @@
                       "remark": {
                         "name": "remark",
                         "type": "string",
-                        "description": "描述/备注"
+                        "description": "备注"
                       },
                       "delFlag": {
                         "name": "delFlag",
@@ -1591,7 +1591,7 @@
                       "remark": {
                         "name": "remark",
                         "type": "string",
-                        "description": "描述/备注"
+                        "description": "备注"
                       },
                       "id": {
                         "name": "id",
@@ -1944,7 +1944,7 @@
                               "remark": {
                                 "name": "remark",
                                 "type": "string",
-                                "description": "描述/备注"
+                                "description": "备注"
                               },
                               "id": {
                                 "name": "id",
@@ -3100,7 +3100,7 @@
           "remark": {
             "name": "remark",
             "type": "string",
-            "description": "描述/备注"
+            "description": "备注"
           },
           "type": {
             "name": "type",
@@ -3213,7 +3213,7 @@
                               "remark": {
                                 "name": "remark",
                                 "type": "string",
-                                "description": "描述/备注"
+                                "description": "备注"
                               },
                               "delFlag": {
                                 "name": "delFlag",
@@ -3552,7 +3552,7 @@
                               "remark": {
                                 "name": "remark",
                                 "type": "string",
-                                "description": "描述/备注"
+                                "description": "备注"
                               },
                               "delFlag": {
                                 "name": "delFlag",
@@ -3866,7 +3866,7 @@
                       "remark": {
                         "name": "remark",
                         "type": "string",
-                        "description": "描述/备注"
+                        "description": "备注"
                       },
                       "delFlag": {
                         "name": "delFlag",
@@ -4057,7 +4057,7 @@
                       "remark": {
                         "name": "remark",
                         "type": "string",
-                        "description": "描述/备注"
+                        "description": "备注"
                       },
                       "delFlag": {
                         "name": "delFlag",
@@ -4153,7 +4153,7 @@
                               "remark": {
                                 "name": "remark",
                                 "type": "string",
-                                "description": "描述/备注"
+                                "description": "备注"
                               },
                               "delFlag": {
                                 "name": "delFlag",
@@ -4501,7 +4501,7 @@
                       "remark": {
                         "name": "remark",
                         "type": "string",
-                        "description": "描述/备注"
+                        "description": "备注"
                       },
                       "delFlag": {
                         "name": "delFlag",
@@ -4882,7 +4882,7 @@
                               "remark": {
                                 "name": "remark",
                                 "type": "string",
-                                "description": "描述/备注"
+                                "description": "备注"
                               },
                               "delFlag": {
                                 "name": "delFlag",
@@ -5230,7 +5230,7 @@
                               "remark": {
                                 "name": "remark",
                                 "type": "string",
-                                "description": "描述/备注"
+                                "description": "备注"
                               },
                               "delFlag": {
                                 "name": "delFlag",
@@ -5696,7 +5696,7 @@
                       "remark": {
                         "name": "remark",
                         "type": "string",
-                        "description": "描述/备注"
+                        "description": "备注"
                       },
                       "delFlag": {
                         "name": "delFlag",
@@ -5815,7 +5815,7 @@
           "remark": {
             "name": "remark",
             "type": "string",
-            "description": "描述/备注"
+            "description": "备注"
           },
           "type": {
             "name": "type",
@@ -5830,7 +5830,7 @@
           "enableFlag": {
             "name": "enableFlag",
             "type": "boolean",
-            "description": "启用/禁用"
+            "description": "是否启用"
           },
           "order": {
             "className": "MyOrderDTO",
@@ -5901,7 +5901,7 @@
                       "remark": {
                         "name": "remark",
                         "type": "string",
-                        "description": "描述/备注"
+                        "description": "备注"
                       },
                       "delFlag": {
                         "name": "delFlag",
@@ -6021,7 +6021,7 @@
           "remark": {
             "name": "remark",
             "type": "string",
-            "description": "描述/备注"
+            "description": "备注"
           },
           "type": {
             "name": "type",
@@ -6036,7 +6036,7 @@
           "enableFlag": {
             "name": "enableFlag",
             "type": "boolean",
-            "description": "启用/禁用"
+            "description": "是否启用"
           },
           "order": {
             "className": "MyOrderDTO",
@@ -6139,7 +6139,7 @@
                               "remark": {
                                 "name": "remark",
                                 "type": "string",
-                                "description": "描述/备注"
+                                "description": "备注"
                               },
                               "delFlag": {
                                 "name": "delFlag",
@@ -6636,7 +6636,7 @@
           "remark": {
             "name": "remark",
             "type": "string",
-            "description": "描述/备注"
+            "description": "备注"
           },
           "type": {
             "name": "type",
@@ -6748,7 +6748,7 @@
                               "remark": {
                                 "name": "remark",
                                 "type": "string",
-                                "description": "描述/备注"
+                                "description": "备注"
                               },
                               "delFlag": {
                                 "name": "delFlag",
@@ -7047,7 +7047,7 @@
                       "remark": {
                         "name": "remark",
                         "type": "string",
-                        "description": "描述/备注"
+                        "description": "备注"
                       },
                       "delFlag": {
                         "name": "delFlag",
@@ -7279,7 +7279,7 @@
                               "remark": {
                                 "name": "remark",
                                 "type": "string",
-                                "description": "描述/备注"
+                                "description": "备注"
                               },
                               "id": {
                                 "name": "id",

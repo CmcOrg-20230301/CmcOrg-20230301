@@ -11,7 +11,7 @@ export interface SysSocketRefUserPageDTO {
     nickname?: string // 冗余字段，昵称
     host?: string // 主机
     pageSize?: string // 每页显示条数，format：int64
-    remark?: string // 描述/备注
+    remark?: string // 备注
     type?: string // socket类型
     userId?: string // 用户主键 id，format：int64
     order?: MyOrderDTO // 排序字段
@@ -21,7 +21,7 @@ export interface SysSocketRefUserPageDTO {
 export interface SysSocketRefUserDO {
     scheme?: string // 冗余字段，协议
     updateTime?: string // 修改时间，format：date-time
-    remark?: string // 描述/备注
+    remark?: string // 备注
     delFlag?: boolean // 是否逻辑删除
     type?: string // socket类型
     version?: number // 乐观锁，format：int32

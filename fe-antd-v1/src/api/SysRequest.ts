@@ -16,7 +16,7 @@ export interface SysRequestSelfLoginRecordPageDTO {
 export interface SysRequestDO {
     ip?: string // ip
     updateTime?: string // 修改时间，format：date-time
-    remark?: string // 描述/备注
+    remark?: string // 备注
     delFlag?: boolean // 是否逻辑删除
     requestParam?: string // 请求的参数
     type?: string // 请求类型

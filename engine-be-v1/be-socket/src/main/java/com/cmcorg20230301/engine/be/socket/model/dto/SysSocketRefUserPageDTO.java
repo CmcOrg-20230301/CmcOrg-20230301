@@ -31,7 +31,7 @@ public class SysSocketRefUserPageDTO extends MyPageDTO {
     @Schema(description = "socket类型")
     private SysSocketTypeEnum type;
 
-    @Schema(description = "描述/备注")
+    @Schema(description = "备注")
     private String remark;
 
 }

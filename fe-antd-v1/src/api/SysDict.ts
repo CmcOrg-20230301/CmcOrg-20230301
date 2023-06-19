@@ -10,7 +10,7 @@ export interface NotNullId {
 export interface SysDictDO {
     orderNo?: number // 排序号（值越大越前面，默认为 0），format：int32
     updateTime?: string // 修改时间，format：date-time
-    remark?: string // 描述/备注
+    remark?: string // 备注
     delFlag?: boolean // 是否逻辑删除
     type?: string // 字典类型
     version?: number // 乐观锁，format：int32
@@ -34,10 +34,10 @@ export interface SysDictPageDTO {
     current?: string // 第几页，format：int64
     name?: string // 字典/字典项 名
     pageSize?: string // 每页显示条数，format：int64
-    remark?: string // 描述/备注
+    remark?: string // 备注
     type?: string // 字典类型
     dictKey?: string // 字典 key（不能重复），字典项要冗余这个 key，目的：方便操作
-    enableFlag?: boolean // 启用/禁用
+    enableFlag?: boolean // 是否启用
     order?: MyOrderDTO // 排序字段
     sort?: Record<string, SortOrder> // 排序字段（只在前端使用，实际传值：order）
 }

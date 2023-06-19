@@ -20,7 +20,10 @@ import com.cmcorg20230301.engine.be.role.service.SysRoleRefMenuService;
 import com.cmcorg20230301.engine.be.role.service.SysRoleService;
 import com.cmcorg20230301.engine.be.security.exception.BaseBizCodeEnum;
 import com.cmcorg20230301.engine.be.security.mapper.SysMenuMapper;
-import com.cmcorg20230301.engine.be.security.model.entity.*;
+import com.cmcorg20230301.engine.be.security.model.entity.BaseEntity;
+import com.cmcorg20230301.engine.be.security.model.entity.BaseEntityTree;
+import com.cmcorg20230301.engine.be.security.model.entity.SysMenuDO;
+import com.cmcorg20230301.engine.be.security.model.entity.SysRoleRefMenuDO;
 import com.cmcorg20230301.engine.be.security.model.vo.ApiResultVO;
 import com.cmcorg20230301.engine.be.security.util.MyEntityUtil;
 import com.cmcorg20230301.engine.be.security.util.MyTreeUtil;
@@ -104,15 +107,10 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenuDO> im
         // 新增：菜单角色 关联表数据
         if (CollUtil.isNotEmpty(dto.getRoleIdSet())) {
 
-            // 获取：没有被禁用的角色 idSet
-            List<SysRoleDO> sysRoleDOList = sysRoleService.lambdaQuery().in(BaseEntity::getId, dto.getRoleIdSet())
-                .eq(BaseEntity::getEnableFlag, true).select(BaseEntity::getId).list();
+            List<SysRoleRefMenuDO> insertList =
+                new ArrayList<>(MyMapUtil.getInitialCapacity(dto.getRoleIdSet().size()));
 
-            Set<Long> roleIdSet = sysRoleDOList.stream().map(BaseEntity::getId).collect(Collectors.toSet());
-
-            List<SysRoleRefMenuDO> insertList = new ArrayList<>(MyMapUtil.getInitialCapacity(roleIdSet.size()));
-
-            for (Long item : roleIdSet) {
+            for (Long item : dto.getRoleIdSet()) {
 
                 SysRoleRefMenuDO sysRoleRefMenuDO = new SysRoleRefMenuDO();
 
@@ -291,7 +289,7 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenuDO> im
             return null;
         }
 
-        // 设置 角色 idSet
+        // 设置：角色 idSet
         List<SysRoleRefMenuDO> sysRoleRefMenuDOList =
             sysRoleRefMenuService.lambdaQuery().eq(SysRoleRefMenuDO::getMenuId, notNullId.getId())
                 .select(SysRoleRefMenuDO::getRoleId).list();

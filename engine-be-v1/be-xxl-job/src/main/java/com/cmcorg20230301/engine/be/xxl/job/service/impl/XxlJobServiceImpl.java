@@ -17,11 +17,9 @@ import com.cmcorg20230301.engine.be.security.model.vo.ApiResultVO;
 import com.cmcorg20230301.engine.be.util.util.MyDateUtil;
 import com.cmcorg20230301.engine.be.xxl.job.model.dto.XxlJobInsertDTO;
 import com.cmcorg20230301.engine.be.xxl.job.service.XxlJobService;
-import org.redisson.api.RedissonClient;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.Resource;
 import java.net.HttpCookie;
 import java.util.Date;
 import java.util.List;
@@ -37,9 +35,6 @@ public class XxlJobServiceImpl implements XxlJobService {
 
     @Value("${xxl.job.admin.password}")
     private String password;
-
-    @Resource
-    RedissonClient redissonClient;
 
     /**
      * 新增 xxl-job 定时任务
@@ -116,7 +111,6 @@ public class XxlJobServiceImpl implements XxlJobService {
 
             // 移除 redis中的 cookie，然后再执行一次本方法
             CacheRedisKafkaLocalUtil.remove(RedisKeyEnum.XXL_JOB_COOKIE_CACHE, null);
-
             return doAddJob(formJson, null);
 
         }

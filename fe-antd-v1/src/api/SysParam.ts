@@ -13,7 +13,7 @@ export interface SysParamDO {
     createId?: string // 创建人id，format：int64
     name?: string // 配置名，以 id为不变值进行使用，不要用此属性
     updateTime?: string // 修改时间，format：date-time
-    remark?: string // 描述/备注
+    remark?: string // 备注
     id?: string // 主键id，format：int64
     delFlag?: boolean // 是否逻辑删除
     version?: number // 乐观锁，format：int32

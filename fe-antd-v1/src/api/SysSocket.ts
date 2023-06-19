@@ -9,7 +9,7 @@ export interface SysSocketPageDTO {
     port?: number // 端口，format：int32
     host?: string // 主机
     pageSize?: string // 每页显示条数，format：int64
-    remark?: string // 描述/备注
+    remark?: string // 备注
     type?: string // socket类型
     enableFlag?: boolean // 是否启用
     order?: MyOrderDTO // 排序字段
@@ -19,7 +19,7 @@ export interface SysSocketPageDTO {
 export interface SysSocketDO {
     scheme?: string // 协议
     updateTime?: string // 修改时间，format：date-time
-    remark?: string // 描述/备注
+    remark?: string // 备注
     delFlag?: boolean // 是否逻辑删除
     type?: string // socket类型
     version?: number // 乐观锁，format：int32
