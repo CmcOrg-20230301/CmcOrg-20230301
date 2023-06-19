@@ -10,7 +10,7 @@
   },
   "dependencies": {
     "@ant-design/icons": "^5.1.4",
-    "@ant-design/pro-components": "^2.5.10",
+    "@ant-design/pro-components": "^2.5.11",
     "@reduxjs/toolkit": "^1.9.5",
     "antd": "^5.6.1",
     "crypto-js": "^4.1.1",
@@ -32,7 +32,7 @@
     "vite": "^4.3.9",
     "@typescript-eslint/eslint-plugin": "^5.59.11",
     "@typescript-eslint/parser": "^5.59.11",
-    "eslint": "^8.42.0",
+    "eslint": "^8.43.0",
     "eslint-plugin-react-hooks": "^4.6.0",
     "eslint-plugin-react-refresh": "^0.4.1"
   }
