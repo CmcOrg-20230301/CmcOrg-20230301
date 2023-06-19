@@ -63,7 +63,7 @@ const SchemaFormColumnList = (formRef: React.MutableRefObject<FormInstance<SysMe
 
                         {
                             title: '权限',
-                            tooltip: '示例：menu:insertOrUpdate,menu:page,menu:deleteByIdSet,menu:infoById',
+                            tooltip: '示例：sysMenu:insertOrUpdate,sysMenu:page,sysMenu:deleteByIdSet,sysMenu:infoById',
                             dataIndex: 'auths',
                             formItemProps: {
                                 rules: [
@@ -132,30 +132,11 @@ const SchemaFormColumnList = (formRef: React.MutableRefObject<FormInstance<SysMe
                         },
 
                         {
-
-                            valueType: 'dependency',
-
-                            name: ['path'],
-
-                            columns: ({path}: SysMenuInsertOrUpdateDTO): ProFormColumnsType<SysMenuInsertOrUpdateDTO>[] => {
-
-                                let disabled = path?.startsWith("http");
-
-                                return [
-
-                                    {
-                                        title: '外链',
-                                        dataIndex: 'linkFlag',
-                                        valueEnum: YesNoDict,
-                                        fieldProps: {disabled: disabled},
-                                        tooltip: '如果开启，打开页面时，会在一个新的窗口打开此页面，可以配合 router',
-                                        valueType: 'switch',
-                                    },
-
-                                ]
-
-                            }
-
+                            title: '外链',
+                            dataIndex: 'linkFlag',
+                            valueEnum: YesNoDict,
+                            tooltip: '如果开启，打开页面时，会在一个新的窗口打开此页面，可以配合 router',
+                            valueType: 'switch',
                         },
 
                         {
