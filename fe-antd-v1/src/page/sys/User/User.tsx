@@ -18,7 +18,6 @@ import {ExecConfirm, ToastSuccess} from "@/util/ToastUtil";
 import SchemaFormColumnList, {InitForm} from "./SchemaFormColumnList";
 import CommonConstant from "@/model/constant/CommonConstant";
 import {SysFileGetPublicUrl} from "@/api/SysFile";
-import {SysRoleInsertOrUpdateDTO} from "@/api/SysRole";
 
 // 用户-管理
 export default function () {
@@ -29,7 +28,7 @@ export default function () {
 
     const actionRef = useRef<ActionType>()
 
-    const formRef = useRef<FormInstance<SysRoleInsertOrUpdateDTO>>();
+    const formRef = useRef<FormInstance<SysUserInsertOrUpdateDTO>>();
 
     const [formOpen, setFormOpen] = useState<boolean>(false);
 
