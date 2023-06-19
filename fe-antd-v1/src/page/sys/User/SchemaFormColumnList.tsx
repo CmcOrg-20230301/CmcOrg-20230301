@@ -1,12 +1,13 @@
 import {GetDictList, YesNoDict} from "@/util/DictUtil";
 import {SysUserInsertOrUpdateDTO} from "@/api/SysUser";
 import {validate, ValidatorUtil} from "@/util/ValidatorUtil";
-import {SysRolePage} from "@/api/SysRole";
-import {ProFormColumnsType} from "@ant-design/pro-components";
+import {SysRoleInsertOrUpdateDTO, SysRolePage} from "@/api/SysRole";
+import {FormInstance, ProFormColumnsType} from "@ant-design/pro-components";
+import {RandomNickname} from "@/util/UserUtil";
 
 export const InitForm: SysUserInsertOrUpdateDTO = {} as SysUserInsertOrUpdateDTO
 
-const SchemaFormColumnList = (): ProFormColumnsType<SysUserInsertOrUpdateDTO>[] => {
+const SchemaFormColumnList = (formRef: React.MutableRefObject<FormInstance<SysRoleInsertOrUpdateDTO> | undefined>): ProFormColumnsType<SysUserInsertOrUpdateDTO>[] => {
 
     return [
 
@@ -39,20 +40,36 @@ const SchemaFormColumnList = (): ProFormColumnsType<SysUserInsertOrUpdateDTO>[] 
         },
 
         {
-            title: '密码',
-            dataIndex: 'password',
-            formItemProps: {
-                tooltip: '只有新增时设置值才会生效',
-                rules: [
-                    {
-                        validator: ValidatorUtil.passwordCanNullValidate
-                    },
-                ],
-            },
+
+            valueType: 'dependency',
+
+            name: ['id'],
+
+            columns: ({id}: SysUserInsertOrUpdateDTO): ProFormColumnsType<SysUserInsertOrUpdateDTO>[] => {
+
+                return id ?
+
+                    [] : [
+
+                        {
+                            title: '密码',
+                            dataIndex: 'password',
+                            formItemProps: {
+                                rules: [
+                                    {
+                                        validator: ValidatorUtil.passwordCanNullValidate
+                                    }
+                                ],
+                            },
+                        }
+
+                    ]
+
+            }
+
         },
 
         {
-            title: '昵称',
             dataIndex: 'nickname',
             formItemProps: {
                 rules: [
@@ -61,6 +78,17 @@ const SchemaFormColumnList = (): ProFormColumnsType<SysUserInsertOrUpdateDTO>[] 
                     },
                 ],
             },
+            title: (props, type, dom) => <>
+
+                <span>昵称</span>
+
+                <a className={"m-l-4"} onClick={() => {
+
+                    formRef.current?.setFieldsValue({nickname: RandomNickname()})
+
+                }}>随机</a>
+
+            </>
         },
 
         {

@@ -1,6 +1,6 @@
 import {useEffect, useRef, useState} from "react";
-import {ActionType, BetaSchemaForm, ColumnsState, ProTable} from "@ant-design/pro-components";
-import {Button, Form, Space} from "antd";
+import {ActionType, BetaSchemaForm, ColumnsState, FormInstance, ProTable} from "@ant-design/pro-components";
+import {Button, Space} from "antd";
 import {PlusOutlined} from "@ant-design/icons/lib";
 import {
     SysUserDeleteByIdSet,
@@ -18,6 +18,7 @@ import {ExecConfirm, ToastSuccess} from "@/util/ToastUtil";
 import SchemaFormColumnList, {InitForm} from "./SchemaFormColumnList";
 import CommonConstant from "@/model/constant/CommonConstant";
 import {SysFileGetPublicUrl} from "@/api/SysFile";
+import {SysRoleInsertOrUpdateDTO} from "@/api/SysRole";
 
 // 用户-管理
 export default function () {
@@ -28,7 +29,7 @@ export default function () {
 
     const actionRef = useRef<ActionType>()
 
-    const [useForm] = Form.useForm<SysUserInsertOrUpdateDTO>();
+    const formRef = useRef<FormInstance<SysRoleInsertOrUpdateDTO>>();
 
     const [formOpen, setFormOpen] = useState<boolean>(false);
 
@@ -214,7 +215,7 @@ export default function () {
                     maskClosable: false,
                 }}
 
-                form={useForm}
+                formRef={formRef}
 
                 isKeyPressSubmit
 
@@ -280,7 +281,7 @@ export default function () {
 
                 request={async () => {
 
-                    useForm.resetFields()
+                    formRef.current?.resetFields()
 
                     if (currentForm.current.id) {
 
@@ -292,7 +293,7 @@ export default function () {
 
                     }
 
-                    useForm.setFieldsValue(currentForm.current) // 组件会深度克隆 currentForm.current
+                    formRef.current?.setFieldsValue(currentForm.current) // 组件会深度克隆 currentForm.current
 
                     return InitForm
 
@@ -300,7 +301,7 @@ export default function () {
 
                 open={formOpen}
                 onOpenChange={setFormOpen}
-                columns={SchemaFormColumnList()}
+                columns={SchemaFormColumnList(formRef)}
 
                 onFinish={async (form) => {
 

@@ -346,7 +346,7 @@ export default function () {
 
                 open={formOpen}
                 onOpenChange={setFormOpen}
-                columns={SchemaFormColumnList()}
+                columns={SchemaFormColumnList(formRef)}
 
                 onFinish={async (form) => {
 
