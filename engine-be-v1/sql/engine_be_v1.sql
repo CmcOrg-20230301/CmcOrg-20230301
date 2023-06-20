@@ -20,6 +20,8 @@ CREATE TABLE `sys_area`
     `del_flag`    tinyint(1)                                                    NOT NULL COMMENT '是否逻辑删除',
     `remark`      varchar(300) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '备注',
     `name`        varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '区域名',
+    `parent_id`   bigint                                                        NOT NULL COMMENT '父节点id（顶级则为0）',
+    `order_no`    int                                                           NOT NULL COMMENT '排序号（值越大越前面，默认为 0）',
     PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB
   CHARACTER SET = utf8mb4
@@ -46,6 +48,52 @@ CREATE TABLE `sys_area_ref_dept`
 
 -- ----------------------------
 -- Records of sys_area_ref_dept
+-- ----------------------------
+
+-- ----------------------------
+-- Table structure for sys_dept
+-- ----------------------------
+DROP TABLE IF EXISTS `sys_dept`;
+CREATE TABLE `sys_dept`
+(
+    `id`          bigint                                                        NOT NULL,
+    `create_id`   bigint                                                        NOT NULL,
+    `create_time` datetime                                                      NOT NULL,
+    `update_id`   bigint                                                        NOT NULL,
+    `update_time` datetime                                                      NOT NULL,
+    `enable_flag` tinyint(1)                                                    NOT NULL COMMENT '是否启用',
+    `version`     int                                                           NOT NULL COMMENT '乐观锁',
+    `del_flag`    tinyint(1)                                                    NOT NULL COMMENT '是否逻辑删除',
+    `remark`      varchar(300) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '备注',
+    `name`        varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '部门名',
+    `parent_id`   bigint                                                        NOT NULL COMMENT '父节点id（顶级则为0）',
+    `order_no`    int                                                           NOT NULL COMMENT '排序号（值越大越前面，默认为 0）',
+    PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB
+  CHARACTER SET = utf8mb4
+  COLLATE = utf8mb4_unicode_ci COMMENT = 'v20230301：主表：部门'
+  ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of sys_dept
+-- ----------------------------
+
+-- ----------------------------
+-- Table structure for sys_dept_ref_user
+-- ----------------------------
+DROP TABLE IF EXISTS `sys_dept_ref_user`;
+CREATE TABLE `sys_dept_ref_user`
+(
+    `dept_id` bigint NOT NULL COMMENT '部门主键 id',
+    `user_id` bigint NOT NULL COMMENT '用户主键 id',
+    PRIMARY KEY (`dept_id`, `user_id`) USING BTREE
+) ENGINE = InnoDB
+  CHARACTER SET = utf8mb4
+  COLLATE = utf8mb4_unicode_ci COMMENT = 'v20230301：关联表：部门，用户'
+  ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of sys_dept_ref_user
 -- ----------------------------
 
 -- ----------------------------
@@ -161,22 +209,6 @@ CREATE TABLE `sys_file`
 -- ----------------------------
 -- Records of sys_file
 -- ----------------------------
-INSERT INTO `sys_file`
-VALUES (230429004223111103, 0, '2023-04-29 00:42:24', 0, '2023-04-29 00:42:24', 1, 0, 0, '', 0, 'be-public-bucket',
-        'avatar/a04f08ec428042f39a5cbe2b33f74595.jpg', 'testImg.jpg', 'a04f08ec428042f39a5cbe2b33f74595.jpg', 'jpg', '',
-        101, 201, 0, 101, 'testImg.jpg', -1, 1);
-INSERT INTO `sys_file`
-VALUES (230429004414111203, 0, '2023-04-29 00:44:14', 0, '2023-04-29 00:44:14', 1, 0, 0, '', 0, 'be-public-bucket',
-        'avatar/122686d0113c4806b41e75e6caf8f27b.jpg', 'testImg.jpg', '122686d0113c4806b41e75e6caf8f27b.jpg', 'jpg', '',
-        101, 201, 0, 101, 'testImg.jpg', -1, 1);
-INSERT INTO `sys_file`
-VALUES (230505004949111839, 0, '2023-05-05 00:49:49', 0, '2023-05-05 00:49:49', 1, 0, 0, '', 0, 'be-public-bucket',
-        'avatar/fd16dd51d85440ffadec9aed3c07bea6.jpg', 'testImg.jpg', 'fd16dd51d85440ffadec9aed3c07bea6.jpg', 'jpg', '',
-        101, 201, 0, 101, 'testImg.jpg', -1, 1);
-INSERT INTO `sys_file`
-VALUES (230505004955111841, 0, '2023-05-05 00:49:55', 0, '2023-05-05 00:49:55', 1, 0, 0, '', 0, 'be-public-bucket',
-        'avatar/3c28f112979349b8809a294a4515a5f4.jpg', 'testImg.jpg', '3c28f112979349b8809a294a4515a5f4.jpg', 'jpg', '',
-        101, 201, 0, 101, 'testImg.jpg', -1, 1);
 
 -- ----------------------------
 -- Table structure for sys_file_auth
@@ -381,6 +413,52 @@ VALUES (2, 1, '2021-12-26 11:32:38', 0, '2023-06-02 14:04:46', 1, 0, 0,
         '多少秒钟，一个 ip可以请求多少次，用冒号隔开的，任意值小于等于 0，则不会进行检查，超过了，则一天无法访问任何接口', 'ip请求速率', '10:75');
 
 -- ----------------------------
+-- Table structure for sys_post
+-- ----------------------------
+DROP TABLE IF EXISTS `sys_post`;
+CREATE TABLE `sys_post`
+(
+    `id`          bigint                                                        NOT NULL,
+    `create_id`   bigint                                                        NOT NULL,
+    `create_time` datetime                                                      NOT NULL,
+    `update_id`   bigint                                                        NOT NULL,
+    `update_time` datetime                                                      NOT NULL,
+    `enable_flag` tinyint(1)                                                    NOT NULL COMMENT '是否启用',
+    `version`     int                                                           NOT NULL COMMENT '乐观锁',
+    `del_flag`    tinyint(1)                                                    NOT NULL COMMENT '是否逻辑删除',
+    `remark`      varchar(300) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '备注',
+    `name`        varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '岗位名',
+    `parent_id`   bigint                                                        NOT NULL COMMENT '父节点id（顶级则为0）',
+    `order_no`    int                                                           NOT NULL COMMENT '排序号（值越大越前面，默认为 0）',
+    PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB
+  CHARACTER SET = utf8mb4
+  COLLATE = utf8mb4_unicode_ci COMMENT = 'v20230301：主表：岗位'
+  ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of sys_post
+-- ----------------------------
+
+-- ----------------------------
+-- Table structure for sys_post_ref_user
+-- ----------------------------
+DROP TABLE IF EXISTS `sys_post_ref_user`;
+CREATE TABLE `sys_post_ref_user`
+(
+    `post_id` bigint NOT NULL COMMENT '岗位主键 id',
+    `user_id` bigint NOT NULL COMMENT '用户主键 id',
+    PRIMARY KEY (`post_id`, `user_id`) USING BTREE
+) ENGINE = InnoDB
+  CHARACTER SET = utf8mb4
+  COLLATE = utf8mb4_unicode_ci COMMENT = 'v20230301：关联表：岗位，用户'
+  ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of sys_post_ref_user
+-- ----------------------------
+
+-- ----------------------------
 -- Table structure for sys_request
 -- ----------------------------
 DROP TABLE IF EXISTS `sys_request`;
@@ -537,8 +615,6 @@ CREATE TABLE `sys_socket`
 -- ----------------------------
 -- Records of sys_socket
 -- ----------------------------
-INSERT INTO `sys_socket`
-VALUES (230602174219117623, -1, '2023-06-02 17:42:20', -1, '2023-06-02 17:42:20', 1, 0, 0, '', '', '', 10002, 201);
 
 -- ----------------------------
 -- Table structure for sys_socket_ref_user
