@@ -80,9 +80,9 @@ interface ILoadElement {
 
 let appNav: NavigateFunction
 
-export function getAppNav() {
+export function getAppNav(): Function {
 
-    return appNav
+    return appNav as Function
 
 }
 

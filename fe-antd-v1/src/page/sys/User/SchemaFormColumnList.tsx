@@ -97,11 +97,6 @@ const SchemaFormColumnList = (formRef: React.MutableRefObject<FormInstance<SysUs
         },
 
         {
-            title: '头像uri',
-            dataIndex: 'avatarUri',
-        },
-
-        {
             title: '是否正常',
             dataIndex: 'enableFlag',
             valueEnum: YesNoDict,

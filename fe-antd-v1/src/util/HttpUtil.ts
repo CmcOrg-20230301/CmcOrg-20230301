@@ -29,7 +29,8 @@ $http.interceptors.request.use(
             // 不以 http开头的，才携带 jwt
             config.headers!['Authorization'] =
                 localStorage.getItem(LocalStorageKey.JWT) || ''
-            config.headers!['category'] = 101 // 请求类别
+
+            config.headers!['category'] = window.WeixinJSBridge ? 303 : 101 // 请求类别
 
         }
 
