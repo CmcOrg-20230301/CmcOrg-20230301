@@ -25,8 +25,8 @@ import java.util.*;
 public class GeneratePageUtil {
 
     // 读取：接口的地址
-    private static final String SPRING_DOC_ENDPOINT = "http://43.154.37.130:10001/v3/api-docs/be";
-    //    private static final String SPRING_DOC_ENDPOINT = "http://127.0.0.1:10001/v3/api-docs/be";
+    //    private static final String SPRING_DOC_ENDPOINT = "http://43.154.37.130:10001/v3/api-docs/be";
+    private static final String SPRING_DOC_ENDPOINT = "http://127.0.0.1:10001/v3/api-docs/be";
 
     private static final String SYSTEM_USER_DIR = System.getProperty("user.dir"); // 例如：D:\GitHub\CmcOrg-20230301
 
@@ -223,7 +223,7 @@ public class GeneratePageUtil {
         System.out.println(JSONUtil.toJsonStr(apiMap.keySet()));
 
         String group = ApiTestHelper.getStrFromScanner(
-            "请输入要生成页面的 group，多个用空格隔开，例如：SysMenu SysRequest SysUser SysParam SysDict SysRole，为【all】则生成全部");
+            "请输入要生成页面的 group，多个用空格隔开，例如：SysMenu SysRequest SysUser SysParam SysDict SysRole SysArea SysDept SysPost，为【all】则生成全部");
 
         Collection<String> groupSet;
 

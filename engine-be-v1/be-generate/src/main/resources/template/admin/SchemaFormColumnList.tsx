@@ -1,8 +1,9 @@
 import {AdminInsertOrUpdateDTO} from "@/api/AdminController";
+import {ProFormColumnsType} from "@ant-design/pro-components";
 
 export const InitForm: AdminInsertOrUpdateDTO = {} as AdminInsertOrUpdateDTO
 
-const SchemaFormColumnList = (): ProSchema<AdminInsertOrUpdateDTO>[] => {
+const SchemaFormColumnList = (): ProFormColumnsType<AdminInsertOrUpdateDTO>[] => {
 
     return [
         AdminFormJson

@@ -25,4 +25,7 @@ public class SysDictPageDTO extends MyPageDTO {
     @Schema(description = "是否启用")
     private Boolean enableFlag;
 
+    @Schema(description = "字典项 value（数字 123...）备注：字典为 -1")
+    private Integer value;
+
 }

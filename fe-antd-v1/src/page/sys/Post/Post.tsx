@@ -11,22 +11,22 @@ import {
 import {Button, Dropdown, Space} from "antd";
 import {ColumnHeightOutlined, EllipsisOutlined, PlusOutlined, VerticalAlignMiddleOutlined} from "@ant-design/icons/lib";
 import {
-    AdminAddOrderNoApi,
-    AdminDeleteByIdSetApi,
-    AdminInfoByIdApi,
-    AdminInsertOrUpdateApi,
-    AdminInsertOrUpdateDTO,
-    AdminPageDTO,
-    AdminPageVO,
-    AdminTreeApi
-} from "@/api/AdminController";
+    SysPostAddOrderNo,
+    SysPostDeleteByIdSet,
+    SysPostDO,
+    SysPostInfoById,
+    SysPostInsertOrUpdate,
+    SysPostInsertOrUpdateDTO,
+    SysPostPageDTO,
+    SysPostTree
+} from "@/api/SysPost";
 import TableColumnList from "./TableColumnList";
 import {ExecConfirm, ToastSuccess} from "@/util/ToastUtil";
 import SchemaFormColumnList, {InitForm} from "./SchemaFormColumnList";
 import {GetIdListForHasChildrenNode} from "@/util/TreeUtil";
 import CommonConstant from "@/model/constant/CommonConstant";
 
-// AdminTsxTitle
+// 岗位-管理
 export default function () {
 
     const [columnsStateMap, setColumnsStateMap] = useState<Record<string, ColumnsState>>();
@@ -37,11 +37,11 @@ export default function () {
 
     const actionRef = useRef<ActionType>()
 
-    const formRef = useRef<FormInstance<AdminInsertOrUpdateDTO>>();
+    const formRef = useRef<FormInstance<SysPostInsertOrUpdateDTO>>();
 
     const [formOpen, setFormOpen] = useState<boolean>(false);
 
-    const currentForm = useRef<AdminInsertOrUpdateDTO>({} as AdminInsertOrUpdateDTO)
+    const currentForm = useRef<SysPostInsertOrUpdateDTO>({} as SysPostInsertOrUpdateDTO)
 
     const [fullScreenFlag, setFullScreenFlag] = useState<boolean>(false)
 
@@ -65,7 +65,7 @@ export default function () {
 
         <>
 
-            <ProTable<AdminPageVO, AdminPageDTO>
+            <ProTable<SysPostDO, SysPostPageDTO>
 
                 scroll={{x: 'max-content'}}
                 sticky={{offsetHeader: fullScreenFlag ? 0 : CommonConstant.NAV_TOP_HEIGHT}}
@@ -103,7 +103,7 @@ export default function () {
 
                 request={(params, sort, filter) => {
 
-                    return AdminTreeApi({...params, sort})
+                    return SysPostTree({...params, sort})
 
                 }}
 
@@ -165,7 +165,7 @@ export default function () {
 
                         <Button key={"1"} icon={<PlusOutlined/>} type="primary" onClick={() => {
 
-                            currentForm.current = {} as AdminInsertOrUpdateDTO
+                            currentForm.current = {} as SysPostInsertOrUpdateDTO
                             setFormOpen(true)
 
                         }}>新建</Button>
@@ -178,7 +178,7 @@ export default function () {
 
                     <Space size={16}>
 
-                        <ModalForm<AdminInsertOrUpdateDTO>
+                        <ModalForm<SysPostInsertOrUpdateDTO>
 
                             modalProps={{
                                 maskClosable: false
@@ -192,7 +192,7 @@ export default function () {
 
                             onFinish={async (form) => {
 
-                                await AdminAddOrderNoApi({
+                                await SysPostAddOrderNo({
 
                                     idSet: selectedRowKeys as string[],
                                     number: String(form.orderNo)
@@ -219,7 +219,7 @@ export default function () {
 
                             ExecConfirm(() => {
 
-                                return AdminDeleteByIdSetApi({idSet: selectedRowKeys as string[]}).then(res => {
+                                return SysPostDeleteByIdSet({idSet: selectedRowKeys as string[]}).then(res => {
 
                                     ToastSuccess(res.msg)
                                     actionRef.current?.reload()
@@ -241,9 +241,9 @@ export default function () {
 
             </ProTable>
 
-            <BetaSchemaForm<AdminInsertOrUpdateDTO>
+            <BetaSchemaForm<SysPostInsertOrUpdateDTO>
 
-                title={currentForm.current.id ? "编辑AdminModalFormTitle" : "新建AdminModalFormTitle"}
+                title={currentForm.current.id ? "编辑岗位" : "新建岗位"}
                 layoutType={"ModalForm"}
 
                 grid
@@ -300,7 +300,7 @@ export default function () {
 
                                     ExecConfirm(async () => {
 
-                                        return AdminDeleteByIdSetApi({idSet: [currentForm.current.id!]}).then(res => {
+                                        return SysPostDeleteByIdSet({idSet: [currentForm.current.id!]}).then(res => {
 
                                             setFormOpen(false)
                                             ToastSuccess(res.msg)
@@ -308,7 +308,7 @@ export default function () {
 
                                         })
 
-                                    }, undefined, `确定删除【${currentForm.current.AdminDeleteName}】吗？`)
+                                    }, undefined, `确定删除【${currentForm.current.name}】吗？`)
 
                                 }}>
 
@@ -330,9 +330,9 @@ export default function () {
 
                     if (currentForm.current.id) {
 
-                        await AdminInfoByIdApi({id: currentForm.current.id}).then(res => {
+                        await SysPostInfoById({id: currentForm.current.id}).then(res => {
 
-                            currentForm.current = res as AdminInsertOrUpdateDTO
+                            currentForm.current = res as SysPostInsertOrUpdateDTO
 
                         })
 
@@ -350,7 +350,7 @@ export default function () {
 
                 onFinish={async (form) => {
 
-                    await AdminInsertOrUpdateApi({...currentForm.current, ...form}).then(res => {
+                    await SysPostInsertOrUpdate({...currentForm.current, ...form}).then(res => {
 
                         ToastSuccess(res.msg)
                         actionRef.current?.reload()
