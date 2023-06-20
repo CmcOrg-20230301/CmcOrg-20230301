@@ -1,13 +1,13 @@
 import {GetDictList, YesNoDict} from "@/util/DictUtil";
 import {SysUserInsertOrUpdateDTO} from "@/api/SysUser";
 import {validate, ValidatorUtil} from "@/util/ValidatorUtil";
-import {SysRoleInsertOrUpdateDTO, SysRolePage} from "@/api/SysRole";
+import {SysRolePage} from "@/api/SysRole";
 import {FormInstance, ProFormColumnsType} from "@ant-design/pro-components";
 import {RandomNickname} from "@/util/UserUtil";
 
 export const InitForm: SysUserInsertOrUpdateDTO = {} as SysUserInsertOrUpdateDTO
 
-const SchemaFormColumnList = (formRef: React.MutableRefObject<FormInstance<SysRoleInsertOrUpdateDTO> | undefined>): ProFormColumnsType<SysUserInsertOrUpdateDTO>[] => {
+const SchemaFormColumnList = (formRef: React.MutableRefObject<FormInstance<SysUserInsertOrUpdateDTO> | undefined>): ProFormColumnsType<SysUserInsertOrUpdateDTO>[] => {
 
     return [
 
