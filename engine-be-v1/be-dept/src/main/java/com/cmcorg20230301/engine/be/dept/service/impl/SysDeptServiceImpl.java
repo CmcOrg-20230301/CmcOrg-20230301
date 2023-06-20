@@ -167,6 +167,7 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptMapper, SysDeptDO> im
         }
 
         return MyTreeUtil.getFullTreeByDeepNode(sysDeptDOList, allList);
+
     }
 
     /**
@@ -263,6 +264,7 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptMapper, SysDeptDO> im
         return BaseBizCodeEnum.OK;
 
     }
+
 }
 
 
