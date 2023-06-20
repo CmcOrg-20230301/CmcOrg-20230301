@@ -63,6 +63,51 @@
         }
       }
     },
+    "/user/self/resetAvatar": {
+      "path": "/user/self/resetAvatar",
+      "method": "post",
+      "tag": "用户-自我-管理",
+      "group": "UserSelf",
+      "summary": "当前用户：重置头像",
+      "response": {
+        "className": "ApiResultVOString",
+        "fieldMap": {
+          "ApiResultVOString": {
+            "className": "ApiResultVOString",
+            "type": "object",
+            "description": "统一响应实体类",
+            "fieldMap": {
+              "msg": {
+                "name": "msg",
+                "type": "string",
+                "description": "响应描述"
+              },
+              "code": {
+                "name": "code",
+                "type": "integer",
+                "description": "响应代码，成功返回：200",
+                "format": "int32"
+              },
+              "data": {
+                "name": "data",
+                "type": "string",
+                "description": "数据"
+              },
+              "service": {
+                "name": "service",
+                "type": "string",
+                "description": "服务名"
+              },
+              "successFlag": {
+                "name": "successFlag",
+                "type": "boolean",
+                "description": "服务器是否收到请求，只会返回 true"
+              }
+            }
+          }
+        }
+      }
+    },
     "/user/self/info": {
       "path": "/user/self/info",
       "method": "post",
@@ -148,6 +193,51 @@
                     }
                   }
                 }
+              },
+              "service": {
+                "name": "service",
+                "type": "string",
+                "description": "服务名"
+              },
+              "successFlag": {
+                "name": "successFlag",
+                "type": "boolean",
+                "description": "服务器是否收到请求，只会返回 true"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/user/self/refreshJwtSecretSuf": {
+      "path": "/user/self/refreshJwtSecretSuf",
+      "method": "post",
+      "tag": "用户-自我-管理",
+      "group": "UserSelf",
+      "summary": "当前用户：刷新jwt私钥后缀",
+      "response": {
+        "className": "ApiResultVOString",
+        "fieldMap": {
+          "ApiResultVOString": {
+            "className": "ApiResultVOString",
+            "type": "object",
+            "description": "统一响应实体类",
+            "fieldMap": {
+              "msg": {
+                "name": "msg",
+                "type": "string",
+                "description": "响应描述"
+              },
+              "code": {
+                "name": "code",
+                "type": "integer",
+                "description": "响应代码，成功返回：200",
+                "format": "int32"
+              },
+              "data": {
+                "name": "data",
+                "type": "string",
+                "description": "数据"
               },
               "service": {
                 "name": "service",
@@ -905,15 +995,27 @@
         "className": "SysUserPageDTO",
         "type": "object",
         "fieldMap": {
-          "avatarUri": {
-            "name": "avatarUri",
-            "type": "string",
-            "description": "头像uri"
-          },
           "passwordFlag": {
             "name": "passwordFlag",
             "type": "boolean",
             "description": "是否有密码"
+          },
+          "wxOpenId": {
+            "name": "wxOpenId",
+            "type": "string",
+            "description": "微信 openId"
+          },
+          "pageSize": {
+            "name": "pageSize",
+            "type": "integer",
+            "description": "每页显示条数",
+            "format": "int64"
+          },
+          "endCreateTime": {
+            "name": "endCreateTime",
+            "type": "string",
+            "description": "创建结束时间",
+            "format": "date-time"
           },
           "current": {
             "name": "current",
@@ -921,15 +1023,16 @@
             "description": "第几页",
             "format": "int64"
           },
+          "beginCreateTime": {
+            "name": "beginCreateTime",
+            "type": "string",
+            "description": "创建开始时间",
+            "format": "date-time"
+          },
           "phone": {
             "name": "phone",
             "type": "string",
             "description": "手机号码"
-          },
-          "wxOpenId": {
-            "name": "wxOpenId",
-            "type": "string",
-            "description": "微信 openId"
           },
           "signInName": {
             "name": "signInName",
@@ -941,12 +1044,6 @@
             "type": "string",
             "description": "昵称"
           },
-          "pageSize": {
-            "name": "pageSize",
-            "type": "integer",
-            "description": "每页显示条数",
-            "format": "int64"
-          },
           "id": {
             "name": "id",
             "type": "integer",
@@ -957,6 +1054,12 @@
             "name": "enableFlag",
             "type": "boolean",
             "description": "是否正常"
+          },
+          "endLastActiveTime": {
+            "name": "endLastActiveTime",
+            "type": "string",
+            "description": "最近活跃结束时间",
+            "format": "date-time"
           },
           "email": {
             "name": "email",
@@ -985,6 +1088,12 @@
                 }
               }
             }
+          },
+          "beginLastActiveTime": {
+            "name": "beginLastActiveTime",
+            "type": "string",
+            "description": "最近活跃开始时间",
+            "format": "date-time"
           }
         }
       },
@@ -1048,15 +1157,33 @@
                             "className": "SysUserPageVO",
                             "type": "object",
                             "fieldMap": {
-                              "avatarUri": {
-                                "name": "avatarUri",
-                                "type": "string",
-                                "description": "头像uri"
-                              },
                               "passwordFlag": {
                                 "name": "passwordFlag",
                                 "type": "boolean",
                                 "description": "是否有密码"
+                              },
+                              "lastActiveTime": {
+                                "name": "lastActiveTime",
+                                "type": "string",
+                                "description": "最近活跃时间",
+                                "format": "date-time"
+                              },
+                              "avatarFileId": {
+                                "name": "avatarFileId",
+                                "type": "integer",
+                                "description": "头像 fileId（文件主键 id），备注：没有时则为 -1",
+                                "format": "int64"
+                              },
+                              "wxOpenId": {
+                                "name": "wxOpenId",
+                                "type": "string",
+                                "description": "微信 openId，会脱敏"
+                              },
+                              "updateTime": {
+                                "name": "updateTime",
+                                "type": "string",
+                                "description": "修改时间",
+                                "format": "date-time"
                               },
                               "phone": {
                                 "name": "phone",
@@ -1068,11 +1195,6 @@
                                 "type": "string",
                                 "description": "创建时间",
                                 "format": "date-time"
-                              },
-                              "wxOpenId": {
-                                "name": "wxOpenId",
-                                "type": "string",
-                                "description": "微信 openId，会脱敏"
                               },
                               "signInName": {
                                 "name": "signInName",
@@ -1090,12 +1212,6 @@
                                 "description": "角色 idSet",
                                 "format": "int64",
                                 "arrFlag": true
-                              },
-                              "updateTime": {
-                                "name": "updateTime",
-                                "type": "string",
-                                "description": "修改时间",
-                                "format": "date-time"
                               },
                               "id": {
                                 "name": "id",
@@ -1465,6 +1581,839 @@
             "description": "前端加密之后的原始密码"
           }
         }
+      },
+      "response": {
+        "className": "ApiResultVOString",
+        "fieldMap": {
+          "ApiResultVOString": {
+            "className": "ApiResultVOString",
+            "type": "object",
+            "description": "统一响应实体类",
+            "fieldMap": {
+              "msg": {
+                "name": "msg",
+                "type": "string",
+                "description": "响应描述"
+              },
+              "code": {
+                "name": "code",
+                "type": "integer",
+                "description": "响应代码，成功返回：200",
+                "format": "int32"
+              },
+              "data": {
+                "name": "data",
+                "type": "string",
+                "description": "数据"
+              },
+              "service": {
+                "name": "service",
+                "type": "string",
+                "description": "服务名"
+              },
+              "successFlag": {
+                "name": "successFlag",
+                "type": "boolean",
+                "description": "服务器是否收到请求，只会返回 true"
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "SysDept": {
+    "/sys/dept/insertOrUpdate": {
+      "path": "/sys/dept/insertOrUpdate",
+      "method": "post",
+      "tag": "部门-管理",
+      "group": "SysDept",
+      "summary": "新增/修改",
+      "contentType": "application/json",
+      "requestBody": {
+        "className": "SysDeptInsertOrUpdateDTO",
+        "type": "object",
+        "required": false,
+        "fieldMap": {
+          "orderNo": {
+            "name": "orderNo",
+            "type": "integer",
+            "description": "排序号（值越大越前面，默认为 0）",
+            "format": "int32"
+          },
+          "userIdSet": {
+            "name": "userIdSet",
+            "type": "integer",
+            "description": "用户 idSet",
+            "format": "int64",
+            "arrFlag": true
+          },
+          "name": {
+            "name": "name",
+            "type": "string",
+            "required": true,
+            "description": "部门名"
+          },
+          "areaIdSet": {
+            "name": "areaIdSet",
+            "type": "integer",
+            "description": "区域 idSet",
+            "format": "int64",
+            "arrFlag": true
+          },
+          "remark": {
+            "name": "remark",
+            "type": "string",
+            "description": "备注"
+          },
+          "id": {
+            "name": "id",
+            "type": "integer",
+            "description": "主键 id",
+            "format": "int64"
+          },
+          "enableFlag": {
+            "name": "enableFlag",
+            "type": "boolean",
+            "description": "是否启用"
+          },
+          "parentId": {
+            "name": "parentId",
+            "type": "integer",
+            "description": "父节点id（顶级则为0）",
+            "format": "int64"
+          }
+        },
+        "requiredFieldName": [
+          "name"
+        ]
+      },
+      "response": {
+        "className": "ApiResultVOString",
+        "fieldMap": {
+          "ApiResultVOString": {
+            "className": "ApiResultVOString",
+            "type": "object",
+            "description": "统一响应实体类",
+            "fieldMap": {
+              "msg": {
+                "name": "msg",
+                "type": "string",
+                "description": "响应描述"
+              },
+              "code": {
+                "name": "code",
+                "type": "integer",
+                "description": "响应代码，成功返回：200",
+                "format": "int32"
+              },
+              "data": {
+                "name": "data",
+                "type": "string",
+                "description": "数据"
+              },
+              "service": {
+                "name": "service",
+                "type": "string",
+                "description": "服务名"
+              },
+              "successFlag": {
+                "name": "successFlag",
+                "type": "boolean",
+                "description": "服务器是否收到请求，只会返回 true"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/sys/dept/page": {
+      "path": "/sys/dept/page",
+      "method": "post",
+      "tag": "部门-管理",
+      "group": "SysDept",
+      "summary": "分页排序查询",
+      "contentType": "application/json",
+      "requestBody": {
+        "className": "SysDeptPageDTO",
+        "type": "object",
+        "fieldMap": {
+          "current": {
+            "name": "current",
+            "type": "integer",
+            "description": "第几页",
+            "format": "int64"
+          },
+          "name": {
+            "name": "name",
+            "type": "string",
+            "description": "部门名"
+          },
+          "pageSize": {
+            "name": "pageSize",
+            "type": "integer",
+            "description": "每页显示条数",
+            "format": "int64"
+          },
+          "remark": {
+            "name": "remark",
+            "type": "string",
+            "description": "备注"
+          },
+          "enableFlag": {
+            "name": "enableFlag",
+            "type": "boolean",
+            "description": "是否启用"
+          },
+          "order": {
+            "className": "MyOrderDTO",
+            "name": "order",
+            "fieldMap": {
+              "MyOrderDTO": {
+                "className": "MyOrderDTO",
+                "type": "object",
+                "description": "排序字段",
+                "fieldMap": {
+                  "name": {
+                    "name": "name",
+                    "type": "string",
+                    "description": "排序的字段名"
+                  },
+                  "value": {
+                    "name": "value",
+                    "type": "string",
+                    "description": "ascend（升序，默认） descend（降序）"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "response": {
+        "className": "ApiResultVOPageSysDeptDO",
+        "fieldMap": {
+          "ApiResultVOPageSysDeptDO": {
+            "className": "ApiResultVOPageSysDeptDO",
+            "type": "object",
+            "description": "统一响应实体类",
+            "fieldMap": {
+              "msg": {
+                "name": "msg",
+                "type": "string",
+                "description": "响应描述"
+              },
+              "code": {
+                "name": "code",
+                "type": "integer",
+                "description": "响应代码，成功返回：200",
+                "format": "int32"
+              },
+              "data": {
+                "className": "PageSysDeptDO",
+                "name": "data",
+                "fieldMap": {
+                  "PageSysDeptDO": {
+                    "className": "PageSysDeptDO",
+                    "type": "object",
+                    "description": "数据",
+                    "fieldMap": {
+                      "total": {
+                        "name": "total",
+                        "type": "integer",
+                        "format": "int64"
+                      },
+                      "current": {
+                        "name": "current",
+                        "type": "integer",
+                        "format": "int64"
+                      },
+                      "pages": {
+                        "name": "pages",
+                        "type": "integer",
+                        "format": "int64"
+                      },
+                      "size": {
+                        "name": "size",
+                        "type": "integer",
+                        "format": "int64"
+                      },
+                      "optimizeCountSql": {
+                        "name": "optimizeCountSql",
+                        "type": "boolean"
+                      },
+                      "records": {
+                        "className": "SysDeptDO",
+                        "name": "records",
+                        "fieldMap": {
+                          "SysDeptDO": {
+                            "className": "SysDeptDO",
+                            "type": "object",
+                            "description": "主表：部门",
+                            "fieldMap": {
+                              "orderNo": {
+                                "name": "orderNo",
+                                "type": "integer",
+                                "description": "排序号（值越大越前面，默认为 0）",
+                                "format": "int32"
+                              },
+                              "updateTime": {
+                                "name": "updateTime",
+                                "type": "string",
+                                "description": "修改时间",
+                                "format": "date-time"
+                              },
+                              "remark": {
+                                "name": "remark",
+                                "type": "string",
+                                "description": "备注"
+                              },
+                              "delFlag": {
+                                "name": "delFlag",
+                                "type": "boolean",
+                                "description": "是否逻辑删除"
+                              },
+                              "version": {
+                                "name": "version",
+                                "type": "integer",
+                                "description": "乐观锁",
+                                "format": "int32"
+                              },
+                              "parentId": {
+                                "name": "parentId",
+                                "type": "integer",
+                                "description": "父节点id（顶级则为0）",
+                                "format": "int64"
+                              },
+                              "updateId": {
+                                "name": "updateId",
+                                "type": "integer",
+                                "description": "修改人id",
+                                "format": "int64"
+                              },
+                              "createTime": {
+                                "name": "createTime",
+                                "type": "string",
+                                "description": "创建时间",
+                                "format": "date-time"
+                              },
+                              "children": {
+                                "className": "SysDeptDO",
+                                "name": "children",
+                                "description": "子节点",
+                                "arrFlag": true
+                              },
+                              "createId": {
+                                "name": "createId",
+                                "type": "integer",
+                                "description": "创建人id",
+                                "format": "int64"
+                              },
+                              "name": {
+                                "name": "name",
+                                "type": "string",
+                                "description": "部门名"
+                              },
+                              "id": {
+                                "name": "id",
+                                "type": "integer",
+                                "description": "主键id",
+                                "format": "int64"
+                              },
+                              "enableFlag": {
+                                "name": "enableFlag",
+                                "type": "boolean",
+                                "description": "是否启用"
+                              }
+                            }
+                          }
+                        },
+                        "arrFlag": true
+                      },
+                      "maxLimit": {
+                        "name": "maxLimit",
+                        "type": "integer",
+                        "format": "int64"
+                      },
+                      "searchCount": {
+                        "name": "searchCount",
+                        "type": "boolean"
+                      },
+                      "optimizeJoinOfCountSql": {
+                        "name": "optimizeJoinOfCountSql",
+                        "type": "boolean"
+                      },
+                      "orders": {
+                        "className": "OrderItem",
+                        "name": "orders",
+                        "fieldMap": {
+                          "OrderItem": {
+                            "className": "OrderItem",
+                            "type": "object",
+                            "fieldMap": {
+                              "asc": {
+                                "name": "asc",
+                                "type": "boolean"
+                              },
+                              "column": {
+                                "name": "column",
+                                "type": "string"
+                              }
+                            }
+                          }
+                        },
+                        "arrFlag": true
+                      },
+                      "countId": {
+                        "name": "countId",
+                        "type": "string"
+                      }
+                    }
+                  }
+                }
+              },
+              "service": {
+                "name": "service",
+                "type": "string",
+                "description": "服务名"
+              },
+              "successFlag": {
+                "name": "successFlag",
+                "type": "boolean",
+                "description": "服务器是否收到请求，只会返回 true"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/sys/dept/infoById": {
+      "path": "/sys/dept/infoById",
+      "method": "post",
+      "tag": "部门-管理",
+      "group": "SysDept",
+      "summary": "通过主键id，查看详情",
+      "contentType": "application/json",
+      "requestBody": {
+        "className": "NotNullId",
+        "type": "object",
+        "required": false,
+        "fieldMap": {
+          "id": {
+            "name": "id",
+            "type": "integer",
+            "required": true,
+            "description": "主键id",
+            "format": "int64"
+          }
+        },
+        "requiredFieldName": [
+          "id"
+        ]
+      },
+      "response": {
+        "className": "ApiResultVOSysDeptDO",
+        "fieldMap": {
+          "ApiResultVOSysDeptDO": {
+            "className": "ApiResultVOSysDeptDO",
+            "type": "object",
+            "description": "统一响应实体类",
+            "fieldMap": {
+              "msg": {
+                "name": "msg",
+                "type": "string",
+                "description": "响应描述"
+              },
+              "code": {
+                "name": "code",
+                "type": "integer",
+                "description": "响应代码，成功返回：200",
+                "format": "int32"
+              },
+              "data": {
+                "className": "SysDeptDO",
+                "name": "data",
+                "fieldMap": {
+                  "SysDeptDO": {
+                    "className": "SysDeptDO",
+                    "type": "object",
+                    "description": "主表：部门",
+                    "fieldMap": {
+                      "orderNo": {
+                        "name": "orderNo",
+                        "type": "integer",
+                        "description": "排序号（值越大越前面，默认为 0）",
+                        "format": "int32"
+                      },
+                      "updateTime": {
+                        "name": "updateTime",
+                        "type": "string",
+                        "description": "修改时间",
+                        "format": "date-time"
+                      },
+                      "remark": {
+                        "name": "remark",
+                        "type": "string",
+                        "description": "备注"
+                      },
+                      "delFlag": {
+                        "name": "delFlag",
+                        "type": "boolean",
+                        "description": "是否逻辑删除"
+                      },
+                      "version": {
+                        "name": "version",
+                        "type": "integer",
+                        "description": "乐观锁",
+                        "format": "int32"
+                      },
+                      "parentId": {
+                        "name": "parentId",
+                        "type": "integer",
+                        "description": "父节点id（顶级则为0）",
+                        "format": "int64"
+                      },
+                      "updateId": {
+                        "name": "updateId",
+                        "type": "integer",
+                        "description": "修改人id",
+                        "format": "int64"
+                      },
+                      "createTime": {
+                        "name": "createTime",
+                        "type": "string",
+                        "description": "创建时间",
+                        "format": "date-time"
+                      },
+                      "children": {
+                        "className": "SysDeptDO",
+                        "name": "children",
+                        "description": "子节点",
+                        "arrFlag": true
+                      },
+                      "createId": {
+                        "name": "createId",
+                        "type": "integer",
+                        "description": "创建人id",
+                        "format": "int64"
+                      },
+                      "name": {
+                        "name": "name",
+                        "type": "string",
+                        "description": "部门名"
+                      },
+                      "id": {
+                        "name": "id",
+                        "type": "integer",
+                        "description": "主键id",
+                        "format": "int64"
+                      },
+                      "enableFlag": {
+                        "name": "enableFlag",
+                        "type": "boolean",
+                        "description": "是否启用"
+                      }
+                    }
+                  }
+                }
+              },
+              "service": {
+                "name": "service",
+                "type": "string",
+                "description": "服务名"
+              },
+              "successFlag": {
+                "name": "successFlag",
+                "type": "boolean",
+                "description": "服务器是否收到请求，只会返回 true"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/sys/dept/tree": {
+      "path": "/sys/dept/tree",
+      "method": "post",
+      "tag": "部门-管理",
+      "group": "SysDept",
+      "summary": "查询：树结构",
+      "contentType": "application/json",
+      "requestBody": {
+        "className": "SysDeptPageDTO",
+        "type": "object",
+        "fieldMap": {
+          "current": {
+            "name": "current",
+            "type": "integer",
+            "description": "第几页",
+            "format": "int64"
+          },
+          "name": {
+            "name": "name",
+            "type": "string",
+            "description": "部门名"
+          },
+          "pageSize": {
+            "name": "pageSize",
+            "type": "integer",
+            "description": "每页显示条数",
+            "format": "int64"
+          },
+          "remark": {
+            "name": "remark",
+            "type": "string",
+            "description": "备注"
+          },
+          "enableFlag": {
+            "name": "enableFlag",
+            "type": "boolean",
+            "description": "是否启用"
+          },
+          "order": {
+            "className": "MyOrderDTO",
+            "name": "order",
+            "fieldMap": {
+              "MyOrderDTO": {
+                "className": "MyOrderDTO",
+                "type": "object",
+                "description": "排序字段",
+                "fieldMap": {
+                  "name": {
+                    "name": "name",
+                    "type": "string",
+                    "description": "排序的字段名"
+                  },
+                  "value": {
+                    "name": "value",
+                    "type": "string",
+                    "description": "ascend（升序，默认） descend（降序）"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "response": {
+        "className": "ApiResultVOListSysDeptDO",
+        "fieldMap": {
+          "ApiResultVOListSysDeptDO": {
+            "className": "ApiResultVOListSysDeptDO",
+            "type": "object",
+            "description": "统一响应实体类",
+            "fieldMap": {
+              "msg": {
+                "name": "msg",
+                "type": "string",
+                "description": "响应描述"
+              },
+              "code": {
+                "name": "code",
+                "type": "integer",
+                "description": "响应代码，成功返回：200",
+                "format": "int32"
+              },
+              "data": {
+                "className": "SysDeptDO",
+                "name": "data",
+                "description": "数据",
+                "fieldMap": {
+                  "SysDeptDO": {
+                    "className": "SysDeptDO",
+                    "type": "object",
+                    "description": "主表：部门",
+                    "fieldMap": {
+                      "orderNo": {
+                        "name": "orderNo",
+                        "type": "integer",
+                        "description": "排序号（值越大越前面，默认为 0）",
+                        "format": "int32"
+                      },
+                      "updateTime": {
+                        "name": "updateTime",
+                        "type": "string",
+                        "description": "修改时间",
+                        "format": "date-time"
+                      },
+                      "remark": {
+                        "name": "remark",
+                        "type": "string",
+                        "description": "备注"
+                      },
+                      "delFlag": {
+                        "name": "delFlag",
+                        "type": "boolean",
+                        "description": "是否逻辑删除"
+                      },
+                      "version": {
+                        "name": "version",
+                        "type": "integer",
+                        "description": "乐观锁",
+                        "format": "int32"
+                      },
+                      "parentId": {
+                        "name": "parentId",
+                        "type": "integer",
+                        "description": "父节点id（顶级则为0）",
+                        "format": "int64"
+                      },
+                      "updateId": {
+                        "name": "updateId",
+                        "type": "integer",
+                        "description": "修改人id",
+                        "format": "int64"
+                      },
+                      "createTime": {
+                        "name": "createTime",
+                        "type": "string",
+                        "description": "创建时间",
+                        "format": "date-time"
+                      },
+                      "children": {
+                        "className": "SysDeptDO",
+                        "name": "children",
+                        "description": "子节点",
+                        "arrFlag": true
+                      },
+                      "createId": {
+                        "name": "createId",
+                        "type": "integer",
+                        "description": "创建人id",
+                        "format": "int64"
+                      },
+                      "name": {
+                        "name": "name",
+                        "type": "string",
+                        "description": "部门名"
+                      },
+                      "id": {
+                        "name": "id",
+                        "type": "integer",
+                        "description": "主键id",
+                        "format": "int64"
+                      },
+                      "enableFlag": {
+                        "name": "enableFlag",
+                        "type": "boolean",
+                        "description": "是否启用"
+                      }
+                    }
+                  }
+                },
+                "arrFlag": true
+              },
+              "service": {
+                "name": "service",
+                "type": "string",
+                "description": "服务名"
+              },
+              "successFlag": {
+                "name": "successFlag",
+                "type": "boolean",
+                "description": "服务器是否收到请求，只会返回 true"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/sys/dept/deleteByIdSet": {
+      "path": "/sys/dept/deleteByIdSet",
+      "method": "post",
+      "tag": "部门-管理",
+      "group": "SysDept",
+      "summary": "批量删除",
+      "contentType": "application/json",
+      "requestBody": {
+        "className": "NotEmptyIdSet",
+        "type": "object",
+        "required": false,
+        "fieldMap": {
+          "idSet": {
+            "name": "idSet",
+            "type": "integer",
+            "required": true,
+            "description": "主键 idSet",
+            "format": "int64",
+            "arrFlag": true
+          }
+        },
+        "requiredFieldName": [
+          "idSet"
+        ]
+      },
+      "response": {
+        "className": "ApiResultVOString",
+        "fieldMap": {
+          "ApiResultVOString": {
+            "className": "ApiResultVOString",
+            "type": "object",
+            "description": "统一响应实体类",
+            "fieldMap": {
+              "msg": {
+                "name": "msg",
+                "type": "string",
+                "description": "响应描述"
+              },
+              "code": {
+                "name": "code",
+                "type": "integer",
+                "description": "响应代码，成功返回：200",
+                "format": "int32"
+              },
+              "data": {
+                "name": "data",
+                "type": "string",
+                "description": "数据"
+              },
+              "service": {
+                "name": "service",
+                "type": "string",
+                "description": "服务名"
+              },
+              "successFlag": {
+                "name": "successFlag",
+                "type": "boolean",
+                "description": "服务器是否收到请求，只会返回 true"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/sys/dept/addOrderNo": {
+      "path": "/sys/dept/addOrderNo",
+      "method": "post",
+      "tag": "部门-管理",
+      "group": "SysDept",
+      "summary": "通过主键 idSet，加减排序号",
+      "contentType": "application/json",
+      "requestBody": {
+        "className": "ChangeNumberDTO",
+        "type": "object",
+        "required": false,
+        "fieldMap": {
+          "idSet": {
+            "name": "idSet",
+            "type": "integer",
+            "required": true,
+            "description": "主键 idSet",
+            "format": "int64",
+            "arrFlag": true
+          },
+          "number": {
+            "name": "number",
+            "type": "integer",
+            "required": true,
+            "description": "需要改变的数值",
+            "format": "int64"
+          }
+        },
+        "requiredFieldName": [
+          "idSet",
+          "number"
+        ]
       },
       "response": {
         "className": "ApiResultVOString",
@@ -1972,6 +2921,922 @@
                                 "name": "value",
                                 "type": "string",
                                 "description": "值"
+                              }
+                            }
+                          }
+                        },
+                        "arrFlag": true
+                      },
+                      "maxLimit": {
+                        "name": "maxLimit",
+                        "type": "integer",
+                        "format": "int64"
+                      },
+                      "searchCount": {
+                        "name": "searchCount",
+                        "type": "boolean"
+                      },
+                      "optimizeJoinOfCountSql": {
+                        "name": "optimizeJoinOfCountSql",
+                        "type": "boolean"
+                      },
+                      "orders": {
+                        "className": "OrderItem",
+                        "name": "orders",
+                        "fieldMap": {
+                          "OrderItem": {
+                            "className": "OrderItem",
+                            "type": "object",
+                            "fieldMap": {
+                              "asc": {
+                                "name": "asc",
+                                "type": "boolean"
+                              },
+                              "column": {
+                                "name": "column",
+                                "type": "string"
+                              }
+                            }
+                          }
+                        },
+                        "arrFlag": true
+                      },
+                      "countId": {
+                        "name": "countId",
+                        "type": "string"
+                      }
+                    }
+                  }
+                }
+              },
+              "service": {
+                "name": "service",
+                "type": "string",
+                "description": "服务名"
+              },
+              "successFlag": {
+                "name": "successFlag",
+                "type": "boolean",
+                "description": "服务器是否收到请求，只会返回 true"
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "SysArea": {
+    "/sys/area/tree": {
+      "path": "/sys/area/tree",
+      "method": "post",
+      "tag": "区域-管理",
+      "group": "SysArea",
+      "summary": "查询：树结构",
+      "contentType": "application/json",
+      "requestBody": {
+        "className": "SysAreaPageDTO",
+        "type": "object",
+        "fieldMap": {
+          "current": {
+            "name": "current",
+            "type": "integer",
+            "description": "第几页",
+            "format": "int64"
+          },
+          "name": {
+            "name": "name",
+            "type": "string",
+            "description": "区域名"
+          },
+          "pageSize": {
+            "name": "pageSize",
+            "type": "integer",
+            "description": "每页显示条数",
+            "format": "int64"
+          },
+          "remark": {
+            "name": "remark",
+            "type": "string",
+            "description": "备注"
+          },
+          "enableFlag": {
+            "name": "enableFlag",
+            "type": "boolean",
+            "description": "是否启用"
+          },
+          "order": {
+            "className": "MyOrderDTO",
+            "name": "order",
+            "fieldMap": {
+              "MyOrderDTO": {
+                "className": "MyOrderDTO",
+                "type": "object",
+                "description": "排序字段",
+                "fieldMap": {
+                  "name": {
+                    "name": "name",
+                    "type": "string",
+                    "description": "排序的字段名"
+                  },
+                  "value": {
+                    "name": "value",
+                    "type": "string",
+                    "description": "ascend（升序，默认） descend（降序）"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "response": {
+        "className": "ApiResultVOListSysAreaDO",
+        "fieldMap": {
+          "ApiResultVOListSysAreaDO": {
+            "className": "ApiResultVOListSysAreaDO",
+            "type": "object",
+            "description": "统一响应实体类",
+            "fieldMap": {
+              "msg": {
+                "name": "msg",
+                "type": "string",
+                "description": "响应描述"
+              },
+              "code": {
+                "name": "code",
+                "type": "integer",
+                "description": "响应代码，成功返回：200",
+                "format": "int32"
+              },
+              "data": {
+                "className": "SysAreaDO",
+                "name": "data",
+                "description": "数据",
+                "fieldMap": {
+                  "SysAreaDO": {
+                    "className": "SysAreaDO",
+                    "type": "object",
+                    "description": "主表：区域",
+                    "fieldMap": {
+                      "orderNo": {
+                        "name": "orderNo",
+                        "type": "integer",
+                        "description": "排序号（值越大越前面，默认为 0）",
+                        "format": "int32"
+                      },
+                      "updateTime": {
+                        "name": "updateTime",
+                        "type": "string",
+                        "description": "修改时间",
+                        "format": "date-time"
+                      },
+                      "remark": {
+                        "name": "remark",
+                        "type": "string",
+                        "description": "备注"
+                      },
+                      "delFlag": {
+                        "name": "delFlag",
+                        "type": "boolean",
+                        "description": "是否逻辑删除"
+                      },
+                      "version": {
+                        "name": "version",
+                        "type": "integer",
+                        "description": "乐观锁",
+                        "format": "int32"
+                      },
+                      "parentId": {
+                        "name": "parentId",
+                        "type": "integer",
+                        "description": "父节点id（顶级则为0）",
+                        "format": "int64"
+                      },
+                      "updateId": {
+                        "name": "updateId",
+                        "type": "integer",
+                        "description": "修改人id",
+                        "format": "int64"
+                      },
+                      "createTime": {
+                        "name": "createTime",
+                        "type": "string",
+                        "description": "创建时间",
+                        "format": "date-time"
+                      },
+                      "children": {
+                        "className": "SysAreaDO",
+                        "name": "children",
+                        "description": "子节点",
+                        "arrFlag": true
+                      },
+                      "createId": {
+                        "name": "createId",
+                        "type": "integer",
+                        "description": "创建人id",
+                        "format": "int64"
+                      },
+                      "name": {
+                        "name": "name",
+                        "type": "string",
+                        "description": "区域名"
+                      },
+                      "id": {
+                        "name": "id",
+                        "type": "integer",
+                        "description": "主键id",
+                        "format": "int64"
+                      },
+                      "enableFlag": {
+                        "name": "enableFlag",
+                        "type": "boolean",
+                        "description": "是否启用"
+                      }
+                    }
+                  }
+                },
+                "arrFlag": true
+              },
+              "service": {
+                "name": "service",
+                "type": "string",
+                "description": "服务名"
+              },
+              "successFlag": {
+                "name": "successFlag",
+                "type": "boolean",
+                "description": "服务器是否收到请求，只会返回 true"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/sys/area/insertOrUpdate": {
+      "path": "/sys/area/insertOrUpdate",
+      "method": "post",
+      "tag": "区域-管理",
+      "group": "SysArea",
+      "summary": "新增/修改",
+      "contentType": "application/json",
+      "requestBody": {
+        "className": "SysAreaInsertOrUpdateDTO",
+        "type": "object",
+        "required": false,
+        "fieldMap": {
+          "orderNo": {
+            "name": "orderNo",
+            "type": "integer",
+            "description": "排序号（值越大越前面，默认为 0）",
+            "format": "int32"
+          },
+          "deptIdSet": {
+            "name": "deptIdSet",
+            "type": "integer",
+            "description": "部门 idSet",
+            "format": "int64",
+            "arrFlag": true
+          },
+          "name": {
+            "name": "name",
+            "type": "string",
+            "required": true,
+            "description": "区域名"
+          },
+          "remark": {
+            "name": "remark",
+            "type": "string",
+            "description": "备注"
+          },
+          "id": {
+            "name": "id",
+            "type": "integer",
+            "description": "主键 id",
+            "format": "int64"
+          },
+          "enableFlag": {
+            "name": "enableFlag",
+            "type": "boolean",
+            "description": "是否启用"
+          },
+          "parentId": {
+            "name": "parentId",
+            "type": "integer",
+            "description": "父节点id（顶级则为0）",
+            "format": "int64"
+          }
+        },
+        "requiredFieldName": [
+          "name"
+        ]
+      },
+      "response": {
+        "className": "ApiResultVOString",
+        "fieldMap": {
+          "ApiResultVOString": {
+            "className": "ApiResultVOString",
+            "type": "object",
+            "description": "统一响应实体类",
+            "fieldMap": {
+              "msg": {
+                "name": "msg",
+                "type": "string",
+                "description": "响应描述"
+              },
+              "code": {
+                "name": "code",
+                "type": "integer",
+                "description": "响应代码，成功返回：200",
+                "format": "int32"
+              },
+              "data": {
+                "name": "data",
+                "type": "string",
+                "description": "数据"
+              },
+              "service": {
+                "name": "service",
+                "type": "string",
+                "description": "服务名"
+              },
+              "successFlag": {
+                "name": "successFlag",
+                "type": "boolean",
+                "description": "服务器是否收到请求，只会返回 true"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/sys/area/deleteByIdSet": {
+      "path": "/sys/area/deleteByIdSet",
+      "method": "post",
+      "tag": "区域-管理",
+      "group": "SysArea",
+      "summary": "批量删除",
+      "contentType": "application/json",
+      "requestBody": {
+        "className": "NotEmptyIdSet",
+        "type": "object",
+        "required": false,
+        "fieldMap": {
+          "idSet": {
+            "name": "idSet",
+            "type": "integer",
+            "required": true,
+            "description": "主键 idSet",
+            "format": "int64",
+            "arrFlag": true
+          }
+        },
+        "requiredFieldName": [
+          "idSet"
+        ]
+      },
+      "response": {
+        "className": "ApiResultVOString",
+        "fieldMap": {
+          "ApiResultVOString": {
+            "className": "ApiResultVOString",
+            "type": "object",
+            "description": "统一响应实体类",
+            "fieldMap": {
+              "msg": {
+                "name": "msg",
+                "type": "string",
+                "description": "响应描述"
+              },
+              "code": {
+                "name": "code",
+                "type": "integer",
+                "description": "响应代码，成功返回：200",
+                "format": "int32"
+              },
+              "data": {
+                "name": "data",
+                "type": "string",
+                "description": "数据"
+              },
+              "service": {
+                "name": "service",
+                "type": "string",
+                "description": "服务名"
+              },
+              "successFlag": {
+                "name": "successFlag",
+                "type": "boolean",
+                "description": "服务器是否收到请求，只会返回 true"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/sys/area/infoById": {
+      "path": "/sys/area/infoById",
+      "method": "post",
+      "tag": "区域-管理",
+      "group": "SysArea",
+      "summary": "通过主键id，查看详情",
+      "contentType": "application/json",
+      "requestBody": {
+        "className": "NotNullId",
+        "type": "object",
+        "required": false,
+        "fieldMap": {
+          "id": {
+            "name": "id",
+            "type": "integer",
+            "required": true,
+            "description": "主键id",
+            "format": "int64"
+          }
+        },
+        "requiredFieldName": [
+          "id"
+        ]
+      },
+      "response": {
+        "className": "ApiResultVOSysAreaInfoByIdVO",
+        "fieldMap": {
+          "ApiResultVOSysAreaInfoByIdVO": {
+            "className": "ApiResultVOSysAreaInfoByIdVO",
+            "type": "object",
+            "description": "统一响应实体类",
+            "fieldMap": {
+              "msg": {
+                "name": "msg",
+                "type": "string",
+                "description": "响应描述"
+              },
+              "code": {
+                "name": "code",
+                "type": "integer",
+                "description": "响应代码，成功返回：200",
+                "format": "int32"
+              },
+              "data": {
+                "className": "SysAreaInfoByIdVO",
+                "name": "data",
+                "fieldMap": {
+                  "SysAreaInfoByIdVO": {
+                    "className": "SysAreaInfoByIdVO",
+                    "type": "object",
+                    "description": "数据",
+                    "fieldMap": {
+                      "orderNo": {
+                        "name": "orderNo",
+                        "type": "integer",
+                        "description": "排序号（值越大越前面，默认为 0）",
+                        "format": "int32"
+                      },
+                      "updateTime": {
+                        "name": "updateTime",
+                        "type": "string",
+                        "description": "修改时间",
+                        "format": "date-time"
+                      },
+                      "remark": {
+                        "name": "remark",
+                        "type": "string",
+                        "description": "备注"
+                      },
+                      "delFlag": {
+                        "name": "delFlag",
+                        "type": "boolean",
+                        "description": "是否逻辑删除"
+                      },
+                      "version": {
+                        "name": "version",
+                        "type": "integer",
+                        "description": "乐观锁",
+                        "format": "int32"
+                      },
+                      "parentId": {
+                        "name": "parentId",
+                        "type": "integer",
+                        "description": "父节点id（顶级则为0）",
+                        "format": "int64"
+                      },
+                      "updateId": {
+                        "name": "updateId",
+                        "type": "integer",
+                        "description": "修改人id",
+                        "format": "int64"
+                      },
+                      "deptIdSet": {
+                        "name": "deptIdSet",
+                        "type": "integer",
+                        "description": "部门 idSet",
+                        "format": "int64",
+                        "arrFlag": true
+                      },
+                      "createTime": {
+                        "name": "createTime",
+                        "type": "string",
+                        "description": "创建时间",
+                        "format": "date-time"
+                      },
+                      "children": {
+                        "className": "SysAreaDO",
+                        "name": "children",
+                        "description": "子节点",
+                        "fieldMap": {
+                          "SysAreaDO": {
+                            "className": "SysAreaDO",
+                            "type": "object",
+                            "description": "主表：区域",
+                            "fieldMap": {
+                              "orderNo": {
+                                "name": "orderNo",
+                                "type": "integer",
+                                "description": "排序号（值越大越前面，默认为 0）",
+                                "format": "int32"
+                              },
+                              "updateTime": {
+                                "name": "updateTime",
+                                "type": "string",
+                                "description": "修改时间",
+                                "format": "date-time"
+                              },
+                              "remark": {
+                                "name": "remark",
+                                "type": "string",
+                                "description": "备注"
+                              },
+                              "delFlag": {
+                                "name": "delFlag",
+                                "type": "boolean",
+                                "description": "是否逻辑删除"
+                              },
+                              "version": {
+                                "name": "version",
+                                "type": "integer",
+                                "description": "乐观锁",
+                                "format": "int32"
+                              },
+                              "parentId": {
+                                "name": "parentId",
+                                "type": "integer",
+                                "description": "父节点id（顶级则为0）",
+                                "format": "int64"
+                              },
+                              "updateId": {
+                                "name": "updateId",
+                                "type": "integer",
+                                "description": "修改人id",
+                                "format": "int64"
+                              },
+                              "createTime": {
+                                "name": "createTime",
+                                "type": "string",
+                                "description": "创建时间",
+                                "format": "date-time"
+                              },
+                              "children": {
+                                "className": "SysAreaDO",
+                                "name": "children",
+                                "description": "子节点",
+                                "arrFlag": true
+                              },
+                              "createId": {
+                                "name": "createId",
+                                "type": "integer",
+                                "description": "创建人id",
+                                "format": "int64"
+                              },
+                              "name": {
+                                "name": "name",
+                                "type": "string",
+                                "description": "区域名"
+                              },
+                              "id": {
+                                "name": "id",
+                                "type": "integer",
+                                "description": "主键id",
+                                "format": "int64"
+                              },
+                              "enableFlag": {
+                                "name": "enableFlag",
+                                "type": "boolean",
+                                "description": "是否启用"
+                              }
+                            }
+                          }
+                        },
+                        "arrFlag": true
+                      },
+                      "createId": {
+                        "name": "createId",
+                        "type": "integer",
+                        "description": "创建人id",
+                        "format": "int64"
+                      },
+                      "name": {
+                        "name": "name",
+                        "type": "string",
+                        "description": "区域名"
+                      },
+                      "id": {
+                        "name": "id",
+                        "type": "integer",
+                        "description": "主键id",
+                        "format": "int64"
+                      },
+                      "enableFlag": {
+                        "name": "enableFlag",
+                        "type": "boolean",
+                        "description": "是否启用"
+                      }
+                    }
+                  }
+                }
+              },
+              "service": {
+                "name": "service",
+                "type": "string",
+                "description": "服务名"
+              },
+              "successFlag": {
+                "name": "successFlag",
+                "type": "boolean",
+                "description": "服务器是否收到请求，只会返回 true"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/sys/area/addOrderNo": {
+      "path": "/sys/area/addOrderNo",
+      "method": "post",
+      "tag": "区域-管理",
+      "group": "SysArea",
+      "summary": "通过主键 idSet，加减排序号",
+      "contentType": "application/json",
+      "requestBody": {
+        "className": "ChangeNumberDTO",
+        "type": "object",
+        "required": false,
+        "fieldMap": {
+          "idSet": {
+            "name": "idSet",
+            "type": "integer",
+            "required": true,
+            "description": "主键 idSet",
+            "format": "int64",
+            "arrFlag": true
+          },
+          "number": {
+            "name": "number",
+            "type": "integer",
+            "required": true,
+            "description": "需要改变的数值",
+            "format": "int64"
+          }
+        },
+        "requiredFieldName": [
+          "idSet",
+          "number"
+        ]
+      },
+      "response": {
+        "className": "ApiResultVOString",
+        "fieldMap": {
+          "ApiResultVOString": {
+            "className": "ApiResultVOString",
+            "type": "object",
+            "description": "统一响应实体类",
+            "fieldMap": {
+              "msg": {
+                "name": "msg",
+                "type": "string",
+                "description": "响应描述"
+              },
+              "code": {
+                "name": "code",
+                "type": "integer",
+                "description": "响应代码，成功返回：200",
+                "format": "int32"
+              },
+              "data": {
+                "name": "data",
+                "type": "string",
+                "description": "数据"
+              },
+              "service": {
+                "name": "service",
+                "type": "string",
+                "description": "服务名"
+              },
+              "successFlag": {
+                "name": "successFlag",
+                "type": "boolean",
+                "description": "服务器是否收到请求，只会返回 true"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/sys/area/page": {
+      "path": "/sys/area/page",
+      "method": "post",
+      "tag": "区域-管理",
+      "group": "SysArea",
+      "summary": "分页排序查询",
+      "contentType": "application/json",
+      "requestBody": {
+        "className": "SysAreaPageDTO",
+        "type": "object",
+        "fieldMap": {
+          "current": {
+            "name": "current",
+            "type": "integer",
+            "description": "第几页",
+            "format": "int64"
+          },
+          "name": {
+            "name": "name",
+            "type": "string",
+            "description": "区域名"
+          },
+          "pageSize": {
+            "name": "pageSize",
+            "type": "integer",
+            "description": "每页显示条数",
+            "format": "int64"
+          },
+          "remark": {
+            "name": "remark",
+            "type": "string",
+            "description": "备注"
+          },
+          "enableFlag": {
+            "name": "enableFlag",
+            "type": "boolean",
+            "description": "是否启用"
+          },
+          "order": {
+            "className": "MyOrderDTO",
+            "name": "order",
+            "fieldMap": {
+              "MyOrderDTO": {
+                "className": "MyOrderDTO",
+                "type": "object",
+                "description": "排序字段",
+                "fieldMap": {
+                  "name": {
+                    "name": "name",
+                    "type": "string",
+                    "description": "排序的字段名"
+                  },
+                  "value": {
+                    "name": "value",
+                    "type": "string",
+                    "description": "ascend（升序，默认） descend（降序）"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "response": {
+        "className": "ApiResultVOPageSysAreaDO",
+        "fieldMap": {
+          "ApiResultVOPageSysAreaDO": {
+            "className": "ApiResultVOPageSysAreaDO",
+            "type": "object",
+            "description": "统一响应实体类",
+            "fieldMap": {
+              "msg": {
+                "name": "msg",
+                "type": "string",
+                "description": "响应描述"
+              },
+              "code": {
+                "name": "code",
+                "type": "integer",
+                "description": "响应代码，成功返回：200",
+                "format": "int32"
+              },
+              "data": {
+                "className": "PageSysAreaDO",
+                "name": "data",
+                "fieldMap": {
+                  "PageSysAreaDO": {
+                    "className": "PageSysAreaDO",
+                    "type": "object",
+                    "description": "数据",
+                    "fieldMap": {
+                      "total": {
+                        "name": "total",
+                        "type": "integer",
+                        "format": "int64"
+                      },
+                      "current": {
+                        "name": "current",
+                        "type": "integer",
+                        "format": "int64"
+                      },
+                      "pages": {
+                        "name": "pages",
+                        "type": "integer",
+                        "format": "int64"
+                      },
+                      "size": {
+                        "name": "size",
+                        "type": "integer",
+                        "format": "int64"
+                      },
+                      "optimizeCountSql": {
+                        "name": "optimizeCountSql",
+                        "type": "boolean"
+                      },
+                      "records": {
+                        "className": "SysAreaDO",
+                        "name": "records",
+                        "fieldMap": {
+                          "SysAreaDO": {
+                            "className": "SysAreaDO",
+                            "type": "object",
+                            "description": "主表：区域",
+                            "fieldMap": {
+                              "orderNo": {
+                                "name": "orderNo",
+                                "type": "integer",
+                                "description": "排序号（值越大越前面，默认为 0）",
+                                "format": "int32"
+                              },
+                              "updateTime": {
+                                "name": "updateTime",
+                                "type": "string",
+                                "description": "修改时间",
+                                "format": "date-time"
+                              },
+                              "remark": {
+                                "name": "remark",
+                                "type": "string",
+                                "description": "备注"
+                              },
+                              "delFlag": {
+                                "name": "delFlag",
+                                "type": "boolean",
+                                "description": "是否逻辑删除"
+                              },
+                              "version": {
+                                "name": "version",
+                                "type": "integer",
+                                "description": "乐观锁",
+                                "format": "int32"
+                              },
+                              "parentId": {
+                                "name": "parentId",
+                                "type": "integer",
+                                "description": "父节点id（顶级则为0）",
+                                "format": "int64"
+                              },
+                              "updateId": {
+                                "name": "updateId",
+                                "type": "integer",
+                                "description": "修改人id",
+                                "format": "int64"
+                              },
+                              "createTime": {
+                                "name": "createTime",
+                                "type": "string",
+                                "description": "创建时间",
+                                "format": "date-time"
+                              },
+                              "children": {
+                                "className": "SysAreaDO",
+                                "name": "children",
+                                "description": "子节点",
+                                "arrFlag": true
+                              },
+                              "createId": {
+                                "name": "createId",
+                                "type": "integer",
+                                "description": "创建人id",
+                                "format": "int64"
+                              },
+                              "name": {
+                                "name": "name",
+                                "type": "string",
+                                "description": "区域名"
+                              },
+                              "id": {
+                                "name": "id",
+                                "type": "integer",
+                                "description": "主键id",
+                                "format": "int64"
+                              },
+                              "enableFlag": {
+                                "name": "enableFlag",
+                                "type": "boolean",
+                                "description": "是否启用"
                               }
                             }
                           }
@@ -6576,6 +8441,922 @@
                 "name": "data",
                 "type": "string",
                 "description": "数据"
+              },
+              "service": {
+                "name": "service",
+                "type": "string",
+                "description": "服务名"
+              },
+              "successFlag": {
+                "name": "successFlag",
+                "type": "boolean",
+                "description": "服务器是否收到请求，只会返回 true"
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "SysPost": {
+    "/sys/post/deleteByIdSet": {
+      "path": "/sys/post/deleteByIdSet",
+      "method": "post",
+      "tag": "岗位-管理",
+      "group": "SysPost",
+      "summary": "批量删除",
+      "contentType": "application/json",
+      "requestBody": {
+        "className": "NotEmptyIdSet",
+        "type": "object",
+        "required": false,
+        "fieldMap": {
+          "idSet": {
+            "name": "idSet",
+            "type": "integer",
+            "required": true,
+            "description": "主键 idSet",
+            "format": "int64",
+            "arrFlag": true
+          }
+        },
+        "requiredFieldName": [
+          "idSet"
+        ]
+      },
+      "response": {
+        "className": "ApiResultVOString",
+        "fieldMap": {
+          "ApiResultVOString": {
+            "className": "ApiResultVOString",
+            "type": "object",
+            "description": "统一响应实体类",
+            "fieldMap": {
+              "msg": {
+                "name": "msg",
+                "type": "string",
+                "description": "响应描述"
+              },
+              "code": {
+                "name": "code",
+                "type": "integer",
+                "description": "响应代码，成功返回：200",
+                "format": "int32"
+              },
+              "data": {
+                "name": "data",
+                "type": "string",
+                "description": "数据"
+              },
+              "service": {
+                "name": "service",
+                "type": "string",
+                "description": "服务名"
+              },
+              "successFlag": {
+                "name": "successFlag",
+                "type": "boolean",
+                "description": "服务器是否收到请求，只会返回 true"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/sys/post/page": {
+      "path": "/sys/post/page",
+      "method": "post",
+      "tag": "岗位-管理",
+      "group": "SysPost",
+      "summary": "分页排序查询",
+      "contentType": "application/json",
+      "requestBody": {
+        "className": "SysPostPageDTO",
+        "type": "object",
+        "fieldMap": {
+          "current": {
+            "name": "current",
+            "type": "integer",
+            "description": "第几页",
+            "format": "int64"
+          },
+          "name": {
+            "name": "name",
+            "type": "string",
+            "description": "岗位名"
+          },
+          "pageSize": {
+            "name": "pageSize",
+            "type": "integer",
+            "description": "每页显示条数",
+            "format": "int64"
+          },
+          "remark": {
+            "name": "remark",
+            "type": "string",
+            "description": "备注"
+          },
+          "enableFlag": {
+            "name": "enableFlag",
+            "type": "boolean",
+            "description": "是否启用"
+          },
+          "order": {
+            "className": "MyOrderDTO",
+            "name": "order",
+            "fieldMap": {
+              "MyOrderDTO": {
+                "className": "MyOrderDTO",
+                "type": "object",
+                "description": "排序字段",
+                "fieldMap": {
+                  "name": {
+                    "name": "name",
+                    "type": "string",
+                    "description": "排序的字段名"
+                  },
+                  "value": {
+                    "name": "value",
+                    "type": "string",
+                    "description": "ascend（升序，默认） descend（降序）"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "response": {
+        "className": "ApiResultVOPageSysPostDO",
+        "fieldMap": {
+          "ApiResultVOPageSysPostDO": {
+            "className": "ApiResultVOPageSysPostDO",
+            "type": "object",
+            "description": "统一响应实体类",
+            "fieldMap": {
+              "msg": {
+                "name": "msg",
+                "type": "string",
+                "description": "响应描述"
+              },
+              "code": {
+                "name": "code",
+                "type": "integer",
+                "description": "响应代码，成功返回：200",
+                "format": "int32"
+              },
+              "data": {
+                "className": "PageSysPostDO",
+                "name": "data",
+                "fieldMap": {
+                  "PageSysPostDO": {
+                    "className": "PageSysPostDO",
+                    "type": "object",
+                    "description": "数据",
+                    "fieldMap": {
+                      "total": {
+                        "name": "total",
+                        "type": "integer",
+                        "format": "int64"
+                      },
+                      "current": {
+                        "name": "current",
+                        "type": "integer",
+                        "format": "int64"
+                      },
+                      "pages": {
+                        "name": "pages",
+                        "type": "integer",
+                        "format": "int64"
+                      },
+                      "size": {
+                        "name": "size",
+                        "type": "integer",
+                        "format": "int64"
+                      },
+                      "optimizeCountSql": {
+                        "name": "optimizeCountSql",
+                        "type": "boolean"
+                      },
+                      "records": {
+                        "className": "SysPostDO",
+                        "name": "records",
+                        "fieldMap": {
+                          "SysPostDO": {
+                            "className": "SysPostDO",
+                            "type": "object",
+                            "description": "主表：岗位",
+                            "fieldMap": {
+                              "orderNo": {
+                                "name": "orderNo",
+                                "type": "integer",
+                                "description": "排序号（值越大越前面，默认为 0）",
+                                "format": "int32"
+                              },
+                              "updateTime": {
+                                "name": "updateTime",
+                                "type": "string",
+                                "description": "修改时间",
+                                "format": "date-time"
+                              },
+                              "remark": {
+                                "name": "remark",
+                                "type": "string",
+                                "description": "备注"
+                              },
+                              "delFlag": {
+                                "name": "delFlag",
+                                "type": "boolean",
+                                "description": "是否逻辑删除"
+                              },
+                              "version": {
+                                "name": "version",
+                                "type": "integer",
+                                "description": "乐观锁",
+                                "format": "int32"
+                              },
+                              "parentId": {
+                                "name": "parentId",
+                                "type": "integer",
+                                "description": "父节点id（顶级则为0）",
+                                "format": "int64"
+                              },
+                              "updateId": {
+                                "name": "updateId",
+                                "type": "integer",
+                                "description": "修改人id",
+                                "format": "int64"
+                              },
+                              "createTime": {
+                                "name": "createTime",
+                                "type": "string",
+                                "description": "创建时间",
+                                "format": "date-time"
+                              },
+                              "children": {
+                                "className": "SysPostDO",
+                                "name": "children",
+                                "description": "子节点",
+                                "arrFlag": true
+                              },
+                              "createId": {
+                                "name": "createId",
+                                "type": "integer",
+                                "description": "创建人id",
+                                "format": "int64"
+                              },
+                              "name": {
+                                "name": "name",
+                                "type": "string",
+                                "description": "岗位名"
+                              },
+                              "id": {
+                                "name": "id",
+                                "type": "integer",
+                                "description": "主键id",
+                                "format": "int64"
+                              },
+                              "enableFlag": {
+                                "name": "enableFlag",
+                                "type": "boolean",
+                                "description": "是否启用"
+                              }
+                            }
+                          }
+                        },
+                        "arrFlag": true
+                      },
+                      "maxLimit": {
+                        "name": "maxLimit",
+                        "type": "integer",
+                        "format": "int64"
+                      },
+                      "searchCount": {
+                        "name": "searchCount",
+                        "type": "boolean"
+                      },
+                      "optimizeJoinOfCountSql": {
+                        "name": "optimizeJoinOfCountSql",
+                        "type": "boolean"
+                      },
+                      "orders": {
+                        "className": "OrderItem",
+                        "name": "orders",
+                        "fieldMap": {
+                          "OrderItem": {
+                            "className": "OrderItem",
+                            "type": "object",
+                            "fieldMap": {
+                              "asc": {
+                                "name": "asc",
+                                "type": "boolean"
+                              },
+                              "column": {
+                                "name": "column",
+                                "type": "string"
+                              }
+                            }
+                          }
+                        },
+                        "arrFlag": true
+                      },
+                      "countId": {
+                        "name": "countId",
+                        "type": "string"
+                      }
+                    }
+                  }
+                }
+              },
+              "service": {
+                "name": "service",
+                "type": "string",
+                "description": "服务名"
+              },
+              "successFlag": {
+                "name": "successFlag",
+                "type": "boolean",
+                "description": "服务器是否收到请求，只会返回 true"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/sys/post/addOrderNo": {
+      "path": "/sys/post/addOrderNo",
+      "method": "post",
+      "tag": "岗位-管理",
+      "group": "SysPost",
+      "summary": "通过主键 idSet，加减排序号",
+      "contentType": "application/json",
+      "requestBody": {
+        "className": "ChangeNumberDTO",
+        "type": "object",
+        "required": false,
+        "fieldMap": {
+          "idSet": {
+            "name": "idSet",
+            "type": "integer",
+            "required": true,
+            "description": "主键 idSet",
+            "format": "int64",
+            "arrFlag": true
+          },
+          "number": {
+            "name": "number",
+            "type": "integer",
+            "required": true,
+            "description": "需要改变的数值",
+            "format": "int64"
+          }
+        },
+        "requiredFieldName": [
+          "idSet",
+          "number"
+        ]
+      },
+      "response": {
+        "className": "ApiResultVOString",
+        "fieldMap": {
+          "ApiResultVOString": {
+            "className": "ApiResultVOString",
+            "type": "object",
+            "description": "统一响应实体类",
+            "fieldMap": {
+              "msg": {
+                "name": "msg",
+                "type": "string",
+                "description": "响应描述"
+              },
+              "code": {
+                "name": "code",
+                "type": "integer",
+                "description": "响应代码，成功返回：200",
+                "format": "int32"
+              },
+              "data": {
+                "name": "data",
+                "type": "string",
+                "description": "数据"
+              },
+              "service": {
+                "name": "service",
+                "type": "string",
+                "description": "服务名"
+              },
+              "successFlag": {
+                "name": "successFlag",
+                "type": "boolean",
+                "description": "服务器是否收到请求，只会返回 true"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/sys/post/insertOrUpdate": {
+      "path": "/sys/post/insertOrUpdate",
+      "method": "post",
+      "tag": "岗位-管理",
+      "group": "SysPost",
+      "summary": "新增/修改",
+      "contentType": "application/json",
+      "requestBody": {
+        "className": "SysPostInsertOrUpdateDTO",
+        "type": "object",
+        "required": false,
+        "fieldMap": {
+          "orderNo": {
+            "name": "orderNo",
+            "type": "integer",
+            "description": "排序号（值越大越前面，默认为 0）",
+            "format": "int32"
+          },
+          "userIdSet": {
+            "name": "userIdSet",
+            "type": "integer",
+            "description": "用户 idSet",
+            "format": "int64",
+            "arrFlag": true
+          },
+          "name": {
+            "name": "name",
+            "type": "string",
+            "required": true,
+            "description": "岗位名"
+          },
+          "remark": {
+            "name": "remark",
+            "type": "string",
+            "description": "备注"
+          },
+          "id": {
+            "name": "id",
+            "type": "integer",
+            "description": "主键 id",
+            "format": "int64"
+          },
+          "enableFlag": {
+            "name": "enableFlag",
+            "type": "boolean",
+            "description": "是否启用"
+          },
+          "parentId": {
+            "name": "parentId",
+            "type": "integer",
+            "description": "父节点id（顶级则为0）",
+            "format": "int64"
+          }
+        },
+        "requiredFieldName": [
+          "name"
+        ]
+      },
+      "response": {
+        "className": "ApiResultVOString",
+        "fieldMap": {
+          "ApiResultVOString": {
+            "className": "ApiResultVOString",
+            "type": "object",
+            "description": "统一响应实体类",
+            "fieldMap": {
+              "msg": {
+                "name": "msg",
+                "type": "string",
+                "description": "响应描述"
+              },
+              "code": {
+                "name": "code",
+                "type": "integer",
+                "description": "响应代码，成功返回：200",
+                "format": "int32"
+              },
+              "data": {
+                "name": "data",
+                "type": "string",
+                "description": "数据"
+              },
+              "service": {
+                "name": "service",
+                "type": "string",
+                "description": "服务名"
+              },
+              "successFlag": {
+                "name": "successFlag",
+                "type": "boolean",
+                "description": "服务器是否收到请求，只会返回 true"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/sys/post/infoById": {
+      "path": "/sys/post/infoById",
+      "method": "post",
+      "tag": "岗位-管理",
+      "group": "SysPost",
+      "summary": "通过主键id，查看详情",
+      "contentType": "application/json",
+      "requestBody": {
+        "className": "NotNullId",
+        "type": "object",
+        "required": false,
+        "fieldMap": {
+          "id": {
+            "name": "id",
+            "type": "integer",
+            "required": true,
+            "description": "主键id",
+            "format": "int64"
+          }
+        },
+        "requiredFieldName": [
+          "id"
+        ]
+      },
+      "response": {
+        "className": "ApiResultVOSysPostInfoByIdVO",
+        "fieldMap": {
+          "ApiResultVOSysPostInfoByIdVO": {
+            "className": "ApiResultVOSysPostInfoByIdVO",
+            "type": "object",
+            "description": "统一响应实体类",
+            "fieldMap": {
+              "msg": {
+                "name": "msg",
+                "type": "string",
+                "description": "响应描述"
+              },
+              "code": {
+                "name": "code",
+                "type": "integer",
+                "description": "响应代码，成功返回：200",
+                "format": "int32"
+              },
+              "data": {
+                "className": "SysPostInfoByIdVO",
+                "name": "data",
+                "fieldMap": {
+                  "SysPostInfoByIdVO": {
+                    "className": "SysPostInfoByIdVO",
+                    "type": "object",
+                    "description": "数据",
+                    "fieldMap": {
+                      "orderNo": {
+                        "name": "orderNo",
+                        "type": "integer",
+                        "description": "排序号（值越大越前面，默认为 0）",
+                        "format": "int32"
+                      },
+                      "userIdSet": {
+                        "name": "userIdSet",
+                        "type": "integer",
+                        "description": "用户 idSet",
+                        "format": "int64",
+                        "arrFlag": true
+                      },
+                      "updateTime": {
+                        "name": "updateTime",
+                        "type": "string",
+                        "description": "修改时间",
+                        "format": "date-time"
+                      },
+                      "remark": {
+                        "name": "remark",
+                        "type": "string",
+                        "description": "备注"
+                      },
+                      "delFlag": {
+                        "name": "delFlag",
+                        "type": "boolean",
+                        "description": "是否逻辑删除"
+                      },
+                      "version": {
+                        "name": "version",
+                        "type": "integer",
+                        "description": "乐观锁",
+                        "format": "int32"
+                      },
+                      "parentId": {
+                        "name": "parentId",
+                        "type": "integer",
+                        "description": "父节点id（顶级则为0）",
+                        "format": "int64"
+                      },
+                      "updateId": {
+                        "name": "updateId",
+                        "type": "integer",
+                        "description": "修改人id",
+                        "format": "int64"
+                      },
+                      "createTime": {
+                        "name": "createTime",
+                        "type": "string",
+                        "description": "创建时间",
+                        "format": "date-time"
+                      },
+                      "children": {
+                        "className": "SysPostDO",
+                        "name": "children",
+                        "description": "子节点",
+                        "fieldMap": {
+                          "SysPostDO": {
+                            "className": "SysPostDO",
+                            "type": "object",
+                            "description": "主表：岗位",
+                            "fieldMap": {
+                              "orderNo": {
+                                "name": "orderNo",
+                                "type": "integer",
+                                "description": "排序号（值越大越前面，默认为 0）",
+                                "format": "int32"
+                              },
+                              "updateTime": {
+                                "name": "updateTime",
+                                "type": "string",
+                                "description": "修改时间",
+                                "format": "date-time"
+                              },
+                              "remark": {
+                                "name": "remark",
+                                "type": "string",
+                                "description": "备注"
+                              },
+                              "delFlag": {
+                                "name": "delFlag",
+                                "type": "boolean",
+                                "description": "是否逻辑删除"
+                              },
+                              "version": {
+                                "name": "version",
+                                "type": "integer",
+                                "description": "乐观锁",
+                                "format": "int32"
+                              },
+                              "parentId": {
+                                "name": "parentId",
+                                "type": "integer",
+                                "description": "父节点id（顶级则为0）",
+                                "format": "int64"
+                              },
+                              "updateId": {
+                                "name": "updateId",
+                                "type": "integer",
+                                "description": "修改人id",
+                                "format": "int64"
+                              },
+                              "createTime": {
+                                "name": "createTime",
+                                "type": "string",
+                                "description": "创建时间",
+                                "format": "date-time"
+                              },
+                              "children": {
+                                "className": "SysPostDO",
+                                "name": "children",
+                                "description": "子节点",
+                                "arrFlag": true
+                              },
+                              "createId": {
+                                "name": "createId",
+                                "type": "integer",
+                                "description": "创建人id",
+                                "format": "int64"
+                              },
+                              "name": {
+                                "name": "name",
+                                "type": "string",
+                                "description": "岗位名"
+                              },
+                              "id": {
+                                "name": "id",
+                                "type": "integer",
+                                "description": "主键id",
+                                "format": "int64"
+                              },
+                              "enableFlag": {
+                                "name": "enableFlag",
+                                "type": "boolean",
+                                "description": "是否启用"
+                              }
+                            }
+                          }
+                        },
+                        "arrFlag": true
+                      },
+                      "createId": {
+                        "name": "createId",
+                        "type": "integer",
+                        "description": "创建人id",
+                        "format": "int64"
+                      },
+                      "name": {
+                        "name": "name",
+                        "type": "string",
+                        "description": "岗位名"
+                      },
+                      "id": {
+                        "name": "id",
+                        "type": "integer",
+                        "description": "主键id",
+                        "format": "int64"
+                      },
+                      "enableFlag": {
+                        "name": "enableFlag",
+                        "type": "boolean",
+                        "description": "是否启用"
+                      }
+                    }
+                  }
+                }
+              },
+              "service": {
+                "name": "service",
+                "type": "string",
+                "description": "服务名"
+              },
+              "successFlag": {
+                "name": "successFlag",
+                "type": "boolean",
+                "description": "服务器是否收到请求，只会返回 true"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/sys/post/tree": {
+      "path": "/sys/post/tree",
+      "method": "post",
+      "tag": "岗位-管理",
+      "group": "SysPost",
+      "summary": "查询：树结构",
+      "contentType": "application/json",
+      "requestBody": {
+        "className": "SysPostPageDTO",
+        "type": "object",
+        "fieldMap": {
+          "current": {
+            "name": "current",
+            "type": "integer",
+            "description": "第几页",
+            "format": "int64"
+          },
+          "name": {
+            "name": "name",
+            "type": "string",
+            "description": "岗位名"
+          },
+          "pageSize": {
+            "name": "pageSize",
+            "type": "integer",
+            "description": "每页显示条数",
+            "format": "int64"
+          },
+          "remark": {
+            "name": "remark",
+            "type": "string",
+            "description": "备注"
+          },
+          "enableFlag": {
+            "name": "enableFlag",
+            "type": "boolean",
+            "description": "是否启用"
+          },
+          "order": {
+            "className": "MyOrderDTO",
+            "name": "order",
+            "fieldMap": {
+              "MyOrderDTO": {
+                "className": "MyOrderDTO",
+                "type": "object",
+                "description": "排序字段",
+                "fieldMap": {
+                  "name": {
+                    "name": "name",
+                    "type": "string",
+                    "description": "排序的字段名"
+                  },
+                  "value": {
+                    "name": "value",
+                    "type": "string",
+                    "description": "ascend（升序，默认） descend（降序）"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "response": {
+        "className": "ApiResultVOListSysPostDO",
+        "fieldMap": {
+          "ApiResultVOListSysPostDO": {
+            "className": "ApiResultVOListSysPostDO",
+            "type": "object",
+            "description": "统一响应实体类",
+            "fieldMap": {
+              "msg": {
+                "name": "msg",
+                "type": "string",
+                "description": "响应描述"
+              },
+              "code": {
+                "name": "code",
+                "type": "integer",
+                "description": "响应代码，成功返回：200",
+                "format": "int32"
+              },
+              "data": {
+                "className": "SysPostDO",
+                "name": "data",
+                "description": "数据",
+                "fieldMap": {
+                  "SysPostDO": {
+                    "className": "SysPostDO",
+                    "type": "object",
+                    "description": "主表：岗位",
+                    "fieldMap": {
+                      "orderNo": {
+                        "name": "orderNo",
+                        "type": "integer",
+                        "description": "排序号（值越大越前面，默认为 0）",
+                        "format": "int32"
+                      },
+                      "updateTime": {
+                        "name": "updateTime",
+                        "type": "string",
+                        "description": "修改时间",
+                        "format": "date-time"
+                      },
+                      "remark": {
+                        "name": "remark",
+                        "type": "string",
+                        "description": "备注"
+                      },
+                      "delFlag": {
+                        "name": "delFlag",
+                        "type": "boolean",
+                        "description": "是否逻辑删除"
+                      },
+                      "version": {
+                        "name": "version",
+                        "type": "integer",
+                        "description": "乐观锁",
+                        "format": "int32"
+                      },
+                      "parentId": {
+                        "name": "parentId",
+                        "type": "integer",
+                        "description": "父节点id（顶级则为0）",
+                        "format": "int64"
+                      },
+                      "updateId": {
+                        "name": "updateId",
+                        "type": "integer",
+                        "description": "修改人id",
+                        "format": "int64"
+                      },
+                      "createTime": {
+                        "name": "createTime",
+                        "type": "string",
+                        "description": "创建时间",
+                        "format": "date-time"
+                      },
+                      "children": {
+                        "className": "SysPostDO",
+                        "name": "children",
+                        "description": "子节点",
+                        "arrFlag": true
+                      },
+                      "createId": {
+                        "name": "createId",
+                        "type": "integer",
+                        "description": "创建人id",
+                        "format": "int64"
+                      },
+                      "name": {
+                        "name": "name",
+                        "type": "string",
+                        "description": "岗位名"
+                      },
+                      "id": {
+                        "name": "id",
+                        "type": "integer",
+                        "description": "主键id",
+                        "format": "int64"
+                      },
+                      "enableFlag": {
+                        "name": "enableFlag",
+                        "type": "boolean",
+                        "description": "是否启用"
+                      }
+                    }
+                  }
+                },
+                "arrFlag": true
               },
               "service": {
                 "name": "service",
