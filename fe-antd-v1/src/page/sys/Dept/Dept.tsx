@@ -23,8 +23,9 @@ import {
 import TableColumnList from "./TableColumnList";
 import {ExecConfirm, ToastSuccess} from "@/util/ToastUtil";
 import SchemaFormColumnList, {InitForm} from "./SchemaFormColumnList";
-import {GetIdListForHasChildrenNode} from "@/util/TreeUtil";
+import {CalcOrderNo, GetIdListForHasChildrenNode} from "@/util/TreeUtil";
 import CommonConstant from "@/model/constant/CommonConstant";
+import {IMyTree} from "@/util/DictUtil";
 
 // 部门-管理
 export default function () {
@@ -44,6 +45,8 @@ export default function () {
     const currentForm = useRef<SysDeptInsertOrUpdateDTO>({} as SysDeptInsertOrUpdateDTO)
 
     const [fullScreenFlag, setFullScreenFlag] = useState<boolean>(false)
+
+    const treeListRef = useRef<IMyTree[]>([]) // table的数据
 
     useEffect(() => {
 
@@ -109,7 +112,10 @@ export default function () {
 
                 postData={(data: any) => {
 
+                    treeListRef.current = data
+
                     hasChildrenIdList.current = GetIdListForHasChildrenNode(data)
+
                     return data
 
                 }}
@@ -166,6 +172,9 @@ export default function () {
                         <Button key={"1"} icon={<PlusOutlined/>} type="primary" onClick={() => {
 
                             currentForm.current = {} as SysDeptInsertOrUpdateDTO
+
+                            CalcOrderNo(currentForm.current, {children: treeListRef.current});
+
                             setFormOpen(true)
 
                         }}>新建</Button>

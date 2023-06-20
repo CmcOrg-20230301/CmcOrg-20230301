@@ -115,9 +115,13 @@ const TableColumnList = (currentForm: React.MutableRefObject<SysMenuInsertOrUpda
                         {
                             key: '1',
                             label: <a onClick={() => {
+
                                 currentForm.current = {parentId: entity.id}
+
                                 CalcOrderNo(currentForm.current, entity)
+
                                 setFormOpen(true)
+
                             }}>
                                 添加下级
                             </a>,
