@@ -69,12 +69,12 @@ public class SysAreaServiceImpl extends ServiceImpl<SysAreaMapper, SysAreaDO> im
         sysAreaDO.setDelFlag(false);
 
         if (dto.getId() != null) {
-            deleteByIdSetSub(CollUtil.newHashSet(dto.getId())); // 先删除 子表数据
+            deleteByIdSetSub(CollUtil.newHashSet(dto.getId())); // 先删除：子表数据
         }
 
         saveOrUpdate(sysAreaDO);
 
-        insertOrUpdateSub(dto, sysAreaDO); // 新增 子表数据
+        insertOrUpdateSub(dto, sysAreaDO); // 新增：子表数据
 
         return BaseBizCodeEnum.OK;
     }
@@ -156,7 +156,7 @@ public class SysAreaServiceImpl extends ServiceImpl<SysAreaMapper, SysAreaDO> im
     public String deleteByIdSet(NotEmptyIdSet notEmptyIdSet) {
 
         // 如果存在下级，则无法删除
-        boolean exists = lambdaQuery().in(SysAreaDO::getParentId, notEmptyIdSet.getIdSet()).exists();
+        boolean exists = lambdaQuery().in(BaseEntityTree::getParentId, notEmptyIdSet.getIdSet()).exists();
 
         if (exists) {
             ApiResultVO.error(BaseBizCodeEnum.PLEASE_DELETE_THE_CHILD_NODE_FIRST);
