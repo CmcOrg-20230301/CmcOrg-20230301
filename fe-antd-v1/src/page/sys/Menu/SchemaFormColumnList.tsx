@@ -9,7 +9,7 @@ import {OptionProps} from "antd/es/mentions";
 
 export const InitForm: SysMenuInsertOrUpdateDTO = {} as SysMenuInsertOrUpdateDTO
 
-const SchemaFormColumnList = (formRef: React.MutableRefObject<FormInstance<SysMenuInsertOrUpdateDTO>>): ProFormColumnsType<SysMenuInsertOrUpdateDTO>[] => {
+const SchemaFormColumnList = (formRef: React.MutableRefObject<FormInstance<SysMenuInsertOrUpdateDTO | undefined>>): ProFormColumnsType<SysMenuInsertOrUpdateDTO>[] => {
 
     return [
 
