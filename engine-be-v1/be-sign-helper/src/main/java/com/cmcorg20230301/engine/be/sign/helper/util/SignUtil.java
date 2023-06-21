@@ -8,6 +8,8 @@ import cn.hutool.core.util.ReUtil;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.extension.conditions.query.LambdaQueryChainWrapper;
 import com.baomidou.mybatisplus.extension.toolkit.ChainWrappers;
+import com.cmcorg20230301.engine.be.dept.mapper.SysDeptRefUserMapper;
+import com.cmcorg20230301.engine.be.dept.model.entity.SysDeptRefUserDO;
 import com.cmcorg20230301.engine.be.model.exception.IBizCode;
 import com.cmcorg20230301.engine.be.model.model.constant.BaseConstant;
 import com.cmcorg20230301.engine.be.model.model.constant.BaseRegexConstant;
@@ -15,6 +17,8 @@ import com.cmcorg20230301.engine.be.model.model.constant.LogTopicConstant;
 import com.cmcorg20230301.engine.be.model.model.constant.ParamConstant;
 import com.cmcorg20230301.engine.be.model.model.interfaces.IRedisKey;
 import com.cmcorg20230301.engine.be.mysql.util.TransactionUtil;
+import com.cmcorg20230301.engine.be.post.mapper.SysPostRefUserMapper;
+import com.cmcorg20230301.engine.be.post.model.entity.SysPostRefUserDO;
 import com.cmcorg20230301.engine.be.redisson.model.enums.RedisKeyEnum;
 import com.cmcorg20230301.engine.be.redisson.util.RedissonUtil;
 import com.cmcorg20230301.engine.be.security.exception.BaseBizCodeEnum;
@@ -54,15 +58,20 @@ public class SignUtil {
     private static SysRoleRefUserMapper sysRoleRefUserMapper;
     private static RedissonClient redissonClient;
     private static SecurityProperties securityProperties;
+    private static SysDeptRefUserMapper sysDeptRefUserMapper;
+    private static SysPostRefUserMapper sysPostRefUserMapper;
 
     public SignUtil(SysUserInfoMapper sysUserInfoMapper, RedissonClient redissonClient, SysUserMapper sysUserMapper,
-        SecurityProperties securityProperties, SysRoleRefUserMapper sysRoleRefUserMapper) {
+        SecurityProperties securityProperties, SysRoleRefUserMapper sysRoleRefUserMapper,
+        SysDeptRefUserMapper sysDeptRefUserMapper, SysPostRefUserMapper sysPostRefUserMapper) {
 
         SignUtil.sysUserInfoMapper = sysUserInfoMapper;
         SignUtil.sysUserMapper = sysUserMapper;
         SignUtil.redissonClient = redissonClient;
         SignUtil.securityProperties = securityProperties;
         SignUtil.sysRoleRefUserMapper = sysRoleRefUserMapper;
+        SignUtil.sysDeptRefUserMapper = sysDeptRefUserMapper;
+        SignUtil.sysPostRefUserMapper = sysPostRefUserMapper;
 
     }
 
@@ -1007,12 +1016,20 @@ public class SignUtil {
         TransactionUtil.exec(() -> {
 
             if (removeUserInfoFlag) {
+
                 // 直接：删除用户基本信息
                 ChainWrappers.lambdaUpdateChain(sysUserInfoMapper).in(SysUserInfoDO::getId, idSet).remove();
+
             }
 
             // 直接：删除用户绑定的角色
             ChainWrappers.lambdaUpdateChain(sysRoleRefUserMapper).in(SysRoleRefUserDO::getUserId, idSet).remove();
+
+            // 直接：删除用户绑定的部门
+            ChainWrappers.lambdaUpdateChain(sysDeptRefUserMapper).in(SysDeptRefUserDO::getUserId, idSet).remove();
+
+            // 直接：删除用户绑定的岗位
+            ChainWrappers.lambdaUpdateChain(sysPostRefUserMapper).in(SysPostRefUserDO::getUserId, idSet).remove();
 
         });
 

@@ -1,9 +1,12 @@
-import {GetDictList, YesNoDict} from "@/util/DictUtil";
+import {GetDictList, GetDictTreeList, YesNoDict} from "@/util/DictUtil";
 import {SysUserInsertOrUpdateDTO} from "@/api/SysUser";
 import {validate, ValidatorUtil} from "@/util/ValidatorUtil";
 import {SysRolePage} from "@/api/SysRole";
 import {FormInstance, ProFormColumnsType} from "@ant-design/pro-components";
 import {RandomNickname} from "@/util/UserUtil";
+import {TreeSelect} from "antd";
+import {SysDeptPage} from "@/api/SysDept";
+import {SysPostPage} from "@/api/SysPost";
 
 export const InitForm: SysUserInsertOrUpdateDTO = {} as SysUserInsertOrUpdateDTO
 
@@ -114,6 +117,40 @@ const SchemaFormColumnList = (formRef: React.MutableRefObject<FormInstance<SysUs
             },
             request: () => {
                 return GetDictList(SysRolePage)
+            }
+        },
+
+        {
+            title: '关联部门',
+            dataIndex: 'deptIdSet',
+            valueType: 'treeSelect',
+            fieldProps: {
+                placeholder: '请选择',
+                allowClear: true,
+                treeNodeFilterProp: 'title',
+                maxTagCount: 'responsive',
+                treeCheckable: true,
+                showCheckedStrategy: TreeSelect.SHOW_PARENT,
+            },
+            request: () => {
+                return GetDictTreeList(SysDeptPage);
+            }
+        },
+
+        {
+            title: '关联岗位',
+            dataIndex: 'postIdSet',
+            valueType: 'treeSelect',
+            fieldProps: {
+                placeholder: '请选择',
+                allowClear: true,
+                treeNodeFilterProp: 'title',
+                maxTagCount: 'responsive',
+                treeCheckable: true,
+                showCheckedStrategy: TreeSelect.SHOW_PARENT,
+            },
+            request: () => {
+                return GetDictTreeList(SysPostPage);
             }
         },
 

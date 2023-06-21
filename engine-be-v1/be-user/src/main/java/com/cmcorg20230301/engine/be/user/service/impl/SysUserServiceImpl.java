@@ -10,6 +10,8 @@ import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.baomidou.mybatisplus.extension.toolkit.ChainWrappers;
+import com.cmcorg20230301.engine.be.dept.model.entity.SysDeptRefUserDO;
+import com.cmcorg20230301.engine.be.dept.service.SysDeptRefUserService;
 import com.cmcorg20230301.engine.be.model.model.constant.BaseConstant;
 import com.cmcorg20230301.engine.be.model.model.constant.BaseRegexConstant;
 import com.cmcorg20230301.engine.be.model.model.constant.ParamConstant;
@@ -18,6 +20,8 @@ import com.cmcorg20230301.engine.be.model.model.dto.NotNullId;
 import com.cmcorg20230301.engine.be.model.model.interfaces.IRedisKey;
 import com.cmcorg20230301.engine.be.model.model.vo.DictVO;
 import com.cmcorg20230301.engine.be.mysql.model.annotation.MyTransactional;
+import com.cmcorg20230301.engine.be.post.model.entity.SysPostRefUserDO;
+import com.cmcorg20230301.engine.be.post.service.SysPostRefUserService;
 import com.cmcorg20230301.engine.be.redisson.model.enums.RedisKeyEnum;
 import com.cmcorg20230301.engine.be.redisson.util.RedissonUtil;
 import com.cmcorg20230301.engine.be.role.service.SysRoleRefUserService;
@@ -25,7 +29,10 @@ import com.cmcorg20230301.engine.be.role.service.SysRoleService;
 import com.cmcorg20230301.engine.be.security.exception.BaseBizCodeEnum;
 import com.cmcorg20230301.engine.be.security.mapper.SysUserInfoMapper;
 import com.cmcorg20230301.engine.be.security.mapper.SysUserMapper;
-import com.cmcorg20230301.engine.be.security.model.entity.*;
+import com.cmcorg20230301.engine.be.security.model.entity.BaseEntity;
+import com.cmcorg20230301.engine.be.security.model.entity.SysRoleRefUserDO;
+import com.cmcorg20230301.engine.be.security.model.entity.SysUserDO;
+import com.cmcorg20230301.engine.be.security.model.entity.SysUserInfoDO;
 import com.cmcorg20230301.engine.be.security.model.vo.ApiResultVO;
 import com.cmcorg20230301.engine.be.security.properties.SecurityProperties;
 import com.cmcorg20230301.engine.be.security.util.*;
@@ -52,14 +59,24 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserProMapper, SysUserDO>
 
     @Resource
     SysRoleRefUserService sysRoleRefUserService;
+
     @Resource
     SysUserInfoMapper sysUserInfoMapper;
+
     @Resource
     SecurityProperties securityProperties;
+
     @Resource
     SysUserMapper sysUserMapper;
+
     @Resource
     SysRoleService sysRoleService;
+
+    @Resource
+    SysDeptRefUserService sysDeptRefUserService;
+
+    @Resource
+    SysPostRefUserService sysPostRefUserService;
 
     /**
      * 分页排序查询
@@ -277,24 +294,63 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserProMapper, SysUserDO>
         // 新增数据到：角色用户关联表
         if (CollUtil.isNotEmpty(dto.getRoleIdSet())) {
 
-            // 获取：没有被禁用的角色 idSet
-            List<SysRoleDO> sysRoleDOList = sysRoleService.lambdaQuery().in(BaseEntity::getId, dto.getRoleIdSet())
-                .eq(BaseEntity::getEnableFlag, true).select(BaseEntity::getId).list();
+            List<SysRoleRefUserDO> insertList =
+                new ArrayList<>(MyMapUtil.getInitialCapacity(dto.getRoleIdSet().size()));
 
-            Set<Long> roleIdSet = sysRoleDOList.stream().map(BaseEntity::getId).collect(Collectors.toSet());
-
-            List<SysRoleRefUserDO> insertList = new ArrayList<>(MyMapUtil.getInitialCapacity(roleIdSet.size()));
-
-            for (Long item : roleIdSet) {
+            for (Long item : dto.getRoleIdSet()) {
 
                 SysRoleRefUserDO sysRoleRefUserDO = new SysRoleRefUserDO();
+
                 sysRoleRefUserDO.setRoleId(item);
                 sysRoleRefUserDO.setUserId(sysUserDO.getId());
+
                 insertList.add(sysRoleRefUserDO);
 
             }
 
             sysRoleRefUserService.saveBatch(insertList);
+
+        }
+
+        // 新增数据到：部门用户关联表
+        if (CollUtil.isNotEmpty(dto.getDeptIdSet())) {
+
+            List<SysDeptRefUserDO> insertList =
+                new ArrayList<>(MyMapUtil.getInitialCapacity(dto.getDeptIdSet().size()));
+
+            for (Long item : dto.getDeptIdSet()) {
+
+                SysDeptRefUserDO sysDeptRefUserDO = new SysDeptRefUserDO();
+
+                sysDeptRefUserDO.setDeptId(item);
+                sysDeptRefUserDO.setUserId(sysUserDO.getId());
+
+                insertList.add(sysDeptRefUserDO);
+
+            }
+
+            sysDeptRefUserService.saveBatch(insertList);
+
+        }
+
+        // 新增数据到：岗位用户关联表
+        if (CollUtil.isNotEmpty(dto.getPostIdSet())) {
+
+            List<SysPostRefUserDO> insertList =
+                new ArrayList<>(MyMapUtil.getInitialCapacity(dto.getPostIdSet().size()));
+
+            for (Long item : dto.getPostIdSet()) {
+
+                SysPostRefUserDO sysPostRefUserDO = new SysPostRefUserDO();
+
+                sysPostRefUserDO.setPostId(item);
+                sysPostRefUserDO.setUserId(sysUserDO.getId());
+
+                insertList.add(sysPostRefUserDO);
+
+            }
+
+            sysPostRefUserService.saveBatch(insertList);
 
         }
 
