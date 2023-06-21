@@ -3,7 +3,7 @@ import {ActionType, ProColumns} from "@ant-design/pro-components";
 import {SysRoleDeleteByIdSet, SysRoleDO, SysRoleInsertOrUpdateDTO} from "@/api/SysRole";
 import {ExecConfirm, ToastSuccess} from "@/util/ToastUtil";
 
-const TableColumnList = (currentForm: React.MutableRefObject<SysRoleInsertOrUpdateDTO | null>, setFormOpen: React.Dispatch<React.SetStateAction<boolean>>, actionRef: React.RefObject<ActionType | undefined>): ProColumns<SysRoleDO>[] => [
+const TableColumnList = (currentForm: React.MutableRefObject<SysRoleInsertOrUpdateDTO>, setFormOpen: React.Dispatch<React.SetStateAction<boolean>>, actionRef: React.RefObject<ActionType | undefined>): ProColumns<SysRoleDO>[] => [
 
     {
         title: '序号',

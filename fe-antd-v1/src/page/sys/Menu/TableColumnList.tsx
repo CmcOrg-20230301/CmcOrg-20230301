@@ -11,7 +11,7 @@ import {RouterMapKeyList} from "@/router/RouterMap";
 
 const QuicklyAddAuth = "快速添加权限"
 
-const TableColumnList = (currentForm: React.MutableRefObject<SysMenuInsertOrUpdateDTO | null>, setFormOpen: React.Dispatch<React.SetStateAction<boolean>>, actionRef: React.RefObject<ActionType | undefined>): ProColumns<SysMenuDO>[] => [
+const TableColumnList = (currentForm: React.MutableRefObject<SysMenuInsertOrUpdateDTO>, setFormOpen: React.Dispatch<React.SetStateAction<boolean>>, actionRef: React.RefObject<ActionType | undefined>): ProColumns<SysMenuDO>[] => [
 
     {
         title: '序号',

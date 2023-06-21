@@ -7,7 +7,7 @@ import {EllipsisOutlined} from "@ant-design/icons";
 import {Dropdown} from "antd";
 import React from "react";
 
-const TableColumnList = (currentForm: React.MutableRefObject<SysAreaInsertOrUpdateDTO | null>, setFormOpen: React.Dispatch<React.SetStateAction<boolean>>, actionRef: React.RefObject<ActionType | undefined>): ProColumns<SysAreaDO>[] => [
+const TableColumnList = (currentForm: React.MutableRefObject<SysAreaInsertOrUpdateDTO>, setFormOpen: React.Dispatch<React.SetStateAction<boolean>>, actionRef: React.RefObject<ActionType | undefined>): ProColumns<SysAreaDO>[] => [
 
     {
         title: '序号',

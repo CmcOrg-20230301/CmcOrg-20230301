@@ -1,6 +1,7 @@
-import {YesNoDict} from "@/util/DictUtil";
-import {SysPostInsertOrUpdateDTO} from "@/api/SysPost";
+import {GetDictList, GetDictTreeList, YesNoDict} from "@/util/DictUtil";
+import {SysPostInsertOrUpdateDTO, SysPostPage} from "@/api/SysPost";
 import {ProFormColumnsType} from "@ant-design/pro-components";
+import {SysUserDictList} from "@/api/SysUser";
 
 export const InitForm: SysPostInsertOrUpdateDTO = {} as SysPostInsertOrUpdateDTO
 
@@ -9,21 +10,18 @@ const SchemaFormColumnList = (): ProFormColumnsType<SysPostInsertOrUpdateDTO>[] 
     return [
 
         {
-            title: '排序号',
-            dataIndex: 'orderNo',
-            tooltip: '排序号（值越大越前面，默认为 0）',
-        },
-
-        {
-            title: '用户 idSet',
-            dataIndex: 'userIdSet',
-            valueType: 'select',
+            title: '上级岗位',
+            dataIndex: 'parentId',
+            valueType: "treeSelect",
             fieldProps: {
+                placeholder: '为空则表示顶级岗位',
+                allowClear: true,
                 showSearch: true,
-                mode: 'multiple',
-                maxTagCount: 'responsive',
+                treeNodeFilterProp: 'title',
             },
-
+            request: () => {
+                return GetDictTreeList(SysPostPage);
+            }
         },
 
         {
@@ -37,6 +35,33 @@ const SchemaFormColumnList = (): ProFormColumnsType<SysPostInsertOrUpdateDTO>[] 
                     },
                 ],
             },
+        },
+
+        {
+            title: '关联用户',
+            dataIndex: 'userIdSet',
+            valueType: 'select',
+            fieldProps: {
+                showSearch: true,
+                mode: 'multiple',
+                maxTagCount: 'responsive',
+            },
+            request: () => {
+                return GetDictList(SysUserDictList)
+            }
+        },
+
+        {
+            title: '是否启用',
+            dataIndex: 'enableFlag',
+            valueEnum: YesNoDict,
+            valueType: 'switch',
+        },
+
+        {
+            title: '排序号',
+            dataIndex: 'orderNo',
+            tooltip: '排序号（值越大越前面，默认为 0）',
         },
 
         {
@@ -56,24 +81,6 @@ const SchemaFormColumnList = (): ProFormColumnsType<SysPostInsertOrUpdateDTO>[] 
                 maxLength: 300,
                 allowClear: true,
             }
-        },
-
-        {
-            title: '主键 id',
-            dataIndex: 'id',
-        },
-
-        {
-            title: '是否启用',
-            dataIndex: 'enableFlag',
-            valueEnum: YesNoDict,
-            valueType: 'switch',
-        },
-
-        {
-            title: '父节点id',
-            dataIndex: 'parentId',
-            tooltip: '父节点id（顶级则为0）',
         },
 
     ]

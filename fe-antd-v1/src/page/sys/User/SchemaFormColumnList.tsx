@@ -7,7 +7,7 @@ import {RandomNickname} from "@/util/UserUtil";
 
 export const InitForm: SysUserInsertOrUpdateDTO = {} as SysUserInsertOrUpdateDTO
 
-const SchemaFormColumnList = (formRef: React.MutableRefObject<FormInstance<SysUserInsertOrUpdateDTO> | undefined>): ProFormColumnsType<SysUserInsertOrUpdateDTO>[] => {
+const SchemaFormColumnList = (formRef: React.MutableRefObject<FormInstance<SysUserInsertOrUpdateDTO>>): ProFormColumnsType<SysUserInsertOrUpdateDTO>[] => {
 
     return [
 

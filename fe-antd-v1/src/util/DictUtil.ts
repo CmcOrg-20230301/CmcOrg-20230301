@@ -192,9 +192,13 @@ export function GetDictTreeList<T extends IDictTreeResult>(requestFunction: (val
             }
 
             if (toTreeFlag) {
+
                 resolve(ListToTree(dictList))
+
             } else {
+
                 resolve(dictList)
+
             }
 
         })

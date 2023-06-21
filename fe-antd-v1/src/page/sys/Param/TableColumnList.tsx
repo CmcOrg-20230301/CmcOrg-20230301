@@ -4,7 +4,7 @@ import {SysParamDeleteByIdSet, SysParamDO, SysParamInsertOrUpdateDTO} from "@/ap
 import {ExecConfirm, ToastSuccess} from "@/util/ToastUtil";
 import {Typography} from "antd";
 
-const TableColumnList = (currentForm: React.MutableRefObject<SysParamInsertOrUpdateDTO | null>, setFormOpen: React.Dispatch<React.SetStateAction<boolean>>, actionRef: React.RefObject<ActionType | undefined>): ProColumns<SysParamDO>[] => [
+const TableColumnList = (currentForm: React.MutableRefObject<SysParamInsertOrUpdateDTO>, setFormOpen: React.Dispatch<React.SetStateAction<boolean>>, actionRef: React.RefObject<ActionType | undefined>): ProColumns<SysParamDO>[] => [
 
     {
         title: '序号',

@@ -2,8 +2,12 @@ import {YesNoDict} from "@/util/DictUtil";
 import {ActionType, ProColumns} from "@ant-design/pro-components";
 import {SysPostDeleteByIdSet, SysPostDO, SysPostInsertOrUpdateDTO} from "@/api/SysPost";
 import {ExecConfirm, ToastSuccess} from "@/util/ToastUtil";
+import {CalcOrderNo} from "@/util/TreeUtil";
+import {EllipsisOutlined} from "@ant-design/icons";
+import {Dropdown} from "antd";
+import React from "react";
 
-const TableColumnList = (currentForm: React.MutableRefObject<SysPostInsertOrUpdateDTO | null>, setFormOpen: React.Dispatch<React.SetStateAction<boolean>>, actionRef: React.RefObject<ActionType | undefined>): ProColumns<SysPostDO>[] => [
+const TableColumnList = (currentForm: React.MutableRefObject<SysPostInsertOrUpdateDTO>, setFormOpen: React.Dispatch<React.SetStateAction<boolean>>, actionRef: React.RefObject<ActionType | undefined>): ProColumns<SysPostDO>[] => [
 
     {
         title: '序号',
@@ -12,28 +16,9 @@ const TableColumnList = (currentForm: React.MutableRefObject<SysPostInsertOrUpda
         width: 90,
     },
 
-    {title: '排序号', dataIndex: 'orderNo', ellipsis: true, width: 90,},
+    {title: '岗位名', dataIndex: 'name', ellipsis: true, width: 200,},
 
-    {
-        title: '修改时间',
-        dataIndex: 'updateTime',
-        hideInSearch: true,
-        valueType: 'fromNow',
-    },
-
-    {title: '备注', dataIndex: 'remark', ellipsis: true, width: 90,},
-
-    {
-        title: '是否逻辑删除',
-        dataIndex: 'delFlag',
-        valueEnum: YesNoDict
-    },
-
-    {title: '乐观锁', dataIndex: 'version', ellipsis: true, width: 90,},
-
-    {title: '父节点id', dataIndex: 'parentId', ellipsis: true, width: 90,},
-
-    {title: '修改人id', dataIndex: 'updateId', ellipsis: true, width: 90,},
+    {title: '排序号', dataIndex: 'orderNo', ellipsis: true, hideInSearch: true, width: 120,},
 
     {
         title: '创建时间',
@@ -42,17 +27,20 @@ const TableColumnList = (currentForm: React.MutableRefObject<SysPostInsertOrUpda
         valueType: 'fromNow',
     },
 
-    {title: '创建人id', dataIndex: 'createId', ellipsis: true, width: 90,},
-
-    {title: '岗位名', dataIndex: 'name', ellipsis: true, width: 90,},
-
-    {title: '主键id', dataIndex: 'id', ellipsis: true, width: 90,},
+    {
+        title: '修改时间',
+        dataIndex: 'updateTime',
+        hideInSearch: true,
+        valueType: 'fromNow',
+    },
 
     {
         title: '是否启用',
         dataIndex: 'enableFlag',
         valueEnum: YesNoDict
     },
+
+    {title: '备注', dataIndex: 'remark', ellipsis: true, width: 200,},
 
     {
 
@@ -83,6 +71,39 @@ const TableColumnList = (currentForm: React.MutableRefObject<SysPostInsertOrUpda
                 }, undefined, `确定删除【${entity.name}】吗？`)
 
             }}>删除</a>,
+
+            <Dropdown
+
+                key="3"
+
+                menu={{
+
+                    items: [
+
+                        {
+                            key: '1',
+                            label: <a onClick={() => {
+
+                                currentForm.current = {parentId: entity.id}
+
+                                CalcOrderNo(currentForm.current, entity)
+
+                                setFormOpen(true)
+
+                            }}>
+                                添加下级
+                            </a>,
+                        },
+
+                    ]
+
+                }}
+
+            >
+
+                <a><EllipsisOutlined/></a>
+
+            </Dropdown>
 
         ],
 

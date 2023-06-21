@@ -6,7 +6,7 @@ import {SysDictDeleteByIdSet, SysDictDO, SysDictInsertOrUpdateDTO} from "@/api/S
 import {ExecConfirm, ToastSuccess} from "@/util/ToastUtil";
 import {CalcOrderNo} from "@/util/TreeUtil";
 
-const TableColumnList = (currentForm: React.MutableRefObject<SysDictInsertOrUpdateDTO | null>, setFormOpen: React.Dispatch<React.SetStateAction<boolean>>, actionRef: React.RefObject<ActionType | undefined>): ProColumns<SysDictDO>[] => [
+const TableColumnList = (currentForm: React.MutableRefObject<SysDictInsertOrUpdateDTO>, setFormOpen: React.Dispatch<React.SetStateAction<boolean>>, actionRef: React.RefObject<ActionType | undefined>): ProColumns<SysDictDO>[] => [
 
     {
         title: '序号',
@@ -101,11 +101,11 @@ const TableColumnList = (currentForm: React.MutableRefObject<SysDictInsertOrUpda
 
                                     currentForm.current = {dictKey: entity.dictKey, type: 2 as any, value: 1}
 
-                                    CalcOrderNo(currentForm.current!, entity, ({item}) => {
+                                    CalcOrderNo(currentForm.current, entity, ({item}) => {
 
-                                        if (item!.value! >= currentForm.current!.value!) {
+                                        if (item!.value! >= currentForm.current.value!) {
 
-                                            currentForm.current!.value = Number(item!.value) + 1 // 如果存在字典项，那么则取最大的 value + 1
+                                            currentForm.current.value = Number(item!.value) + 1 // 如果存在字典项，那么则取最大的 value + 1
 
                                         }
 

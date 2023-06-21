@@ -17,7 +17,7 @@ import {ValidatorUtil} from "@/util/ValidatorUtil";
 import {PasswordRSAEncrypt, RSAEncryptPro} from "@/util/RsaUtil";
 import {Dropdown} from "antd";
 
-const TableColumnList = (currentForm: React.MutableRefObject<SysUserInsertOrUpdateDTO | null>, setFormOpen: React.Dispatch<React.SetStateAction<boolean>>, actionRef: React.RefObject<ActionType | undefined>, userAvatarUrlObj: Record<string, string>): ProColumns<SysUserPageVO>[] => [
+const TableColumnList = (currentForm: React.MutableRefObject<SysUserInsertOrUpdateDTO>, setFormOpen: React.Dispatch<React.SetStateAction<boolean>>, actionRef: React.RefObject<ActionType | undefined>, userAvatarUrlObj: Record<string, string>): ProColumns<SysUserPageVO>[] => [
 
     {
         title: '序号',
@@ -34,7 +34,9 @@ const TableColumnList = (currentForm: React.MutableRefObject<SysUserInsertOrUpda
             }
         },
         renderText: (text) => {
+
             return userAvatarUrlObj[text] || CommonConstant.FIXED_AVATAR_URL
+
         }
     },
 
@@ -69,12 +71,16 @@ const TableColumnList = (currentForm: React.MutableRefObject<SysUserInsertOrUpda
 
     {
         title: '创建时间', dataIndex: 'createTimeRange', hideInTable: true, valueType: 'dateTimeRange', search: {
+
             transform: (value) => {
+
                 return {
                     beginCreateTime: value[0],
                     endCreateTime: value[1],
                 } as SysUserPageDTO
+
             }
+
         }
     },
 
@@ -89,12 +95,16 @@ const TableColumnList = (currentForm: React.MutableRefObject<SysUserInsertOrUpda
 
     {
         title: '最近活跃', dataIndex: 'lastActiveTimeRange', hideInTable: true, valueType: 'dateTimeRange', search: {
+
             transform: (value) => {
+
                 return {
                     beginLastActiveTime: value[0],
                     endLastActiveTime: value[1],
                 } as SysUserPageDTO
+
             }
+
         }
     },
 

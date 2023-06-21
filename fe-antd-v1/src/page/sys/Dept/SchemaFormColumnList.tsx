@@ -1,6 +1,9 @@
-import {YesNoDict} from "@/util/DictUtil";
-import {SysDeptInsertOrUpdateDTO} from "@/api/SysDept";
+import {GetDictList, GetDictTreeList, YesNoDict} from "@/util/DictUtil";
+import {SysDeptInsertOrUpdateDTO, SysDeptPage} from "@/api/SysDept";
 import {ProFormColumnsType} from "@ant-design/pro-components";
+import {SysAreaPage} from "@/api/SysArea";
+import {SysUserDictList} from "@/api/SysUser";
+import {TreeSelect} from "antd";
 
 export const InitForm: SysDeptInsertOrUpdateDTO = {} as SysDeptInsertOrUpdateDTO
 
@@ -9,21 +12,18 @@ const SchemaFormColumnList = (): ProFormColumnsType<SysDeptInsertOrUpdateDTO>[] 
     return [
 
         {
-            title: '排序号',
-            dataIndex: 'orderNo',
-            tooltip: '排序号（值越大越前面，默认为 0）',
-        },
-
-        {
-            title: '用户 idSet',
-            dataIndex: 'userIdSet',
-            valueType: 'select',
+            title: '上级部门',
+            dataIndex: 'parentId',
+            valueType: "treeSelect",
             fieldProps: {
+                placeholder: '为空则表示顶级部门',
+                allowClear: true,
                 showSearch: true,
-                mode: 'multiple',
-                maxTagCount: 'responsive',
+                treeNodeFilterProp: 'title',
             },
-
+            request: () => {
+                return GetDictTreeList(SysDeptPage);
+            }
         },
 
         {
@@ -40,15 +40,47 @@ const SchemaFormColumnList = (): ProFormColumnsType<SysDeptInsertOrUpdateDTO>[] 
         },
 
         {
-            title: '区域 idSet',
+            title: '关联区域',
             dataIndex: 'areaIdSet',
+            valueType: 'treeSelect',
+            fieldProps: {
+                placeholder: '请选择',
+                allowClear: true,
+                treeNodeFilterProp: 'title',
+                maxTagCount: 'responsive',
+                treeCheckable: true,
+                showCheckedStrategy: TreeSelect.SHOW_PARENT,
+            },
+            request: () => {
+                return GetDictTreeList(SysAreaPage);
+            }
+        },
+
+        {
+            title: '关联用户',
+            dataIndex: 'userIdSet',
             valueType: 'select',
             fieldProps: {
                 showSearch: true,
                 mode: 'multiple',
                 maxTagCount: 'responsive',
             },
+            request: () => {
+                return GetDictList(SysUserDictList)
+            }
+        },
 
+        {
+            title: '是否启用',
+            dataIndex: 'enableFlag',
+            valueEnum: YesNoDict,
+            valueType: 'switch',
+        },
+
+        {
+            title: '排序号',
+            dataIndex: 'orderNo',
+            tooltip: '排序号（值越大越前面，默认为 0）',
         },
 
         {
@@ -68,24 +100,6 @@ const SchemaFormColumnList = (): ProFormColumnsType<SysDeptInsertOrUpdateDTO>[] 
                 maxLength: 300,
                 allowClear: true,
             }
-        },
-
-        {
-            title: '主键 id',
-            dataIndex: 'id',
-        },
-
-        {
-            title: '是否启用',
-            dataIndex: 'enableFlag',
-            valueEnum: YesNoDict,
-            valueType: 'switch',
-        },
-
-        {
-            title: '父节点id',
-            dataIndex: 'parentId',
-            tooltip: '父节点id（顶级则为0）',
         },
 
     ]
