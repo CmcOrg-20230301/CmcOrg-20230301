@@ -414,9 +414,26 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserProMapper, SysUserDO>
         List<SysRoleRefUserDO> refUserDOList =
             sysRoleRefUserService.lambdaQuery().eq(SysRoleRefUserDO::getUserId, notNullId.getId())
                 .select(SysRoleRefUserDO::getRoleId).list();
+
         Set<Long> roleIdSet = refUserDOList.stream().map(SysRoleRefUserDO::getRoleId).collect(Collectors.toSet());
 
+        // 获取：用户绑定的部门 idSet
+        List<SysDeptRefUserDO> deptRefUserDOList =
+            sysDeptRefUserService.lambdaQuery().eq(SysDeptRefUserDO::getUserId, notNullId.getId())
+                .select(SysDeptRefUserDO::getDeptId).list();
+
+        Set<Long> deptIdSet = deptRefUserDOList.stream().map(SysDeptRefUserDO::getDeptId).collect(Collectors.toSet());
+
+        // 获取：用户绑定的岗位 idSet
+        List<SysPostRefUserDO> jobRefUserDOList =
+            sysPostRefUserService.lambdaQuery().eq(SysPostRefUserDO::getUserId, notNullId.getId())
+                .select(SysPostRefUserDO::getPostId).list();
+
+        Set<Long> postIdSet = jobRefUserDOList.stream().map(SysPostRefUserDO::getPostId).collect(Collectors.toSet());
+
         sysUserInfoByIdVO.setRoleIdSet(roleIdSet);
+        sysUserInfoByIdVO.setDeptIdSet(deptIdSet);
+        sysUserInfoByIdVO.setPostIdSet(postIdSet);
 
         return sysUserInfoByIdVO;
 

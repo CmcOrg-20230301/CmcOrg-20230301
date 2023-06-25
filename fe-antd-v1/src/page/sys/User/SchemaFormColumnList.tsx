@@ -43,6 +43,20 @@ const SchemaFormColumnList = (formRef: React.MutableRefObject<FormInstance<SysUs
         },
 
         {
+            title: '手机号',
+            dataIndex: 'phone',
+            formItemProps: {
+                rules: [
+                    {
+                        min: 0,
+                        max: 200,
+                        pattern: validate.phone.regex,
+                    },
+                ],
+            },
+        },
+
+        {
 
             valueType: 'dependency',
 

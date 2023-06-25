@@ -11,9 +11,6 @@ import java.util.Set;
 @Data
 public class SysUserInfoByIdVO extends SysUserDO {
 
-    @Schema(description = "角色 idSet")
-    private Set<Long> roleIdSet;
-
     @Schema(description = "昵称")
     private String nickname;
 
@@ -22,5 +19,14 @@ public class SysUserInfoByIdVO extends SysUserDO {
 
     @Schema(description = "头像 fileId（文件主键 id）")
     private Long avatarFileId;
+
+    @Schema(description = "角色 idSet")
+    private Set<Long> roleIdSet;
+
+    @Schema(description = "部门 idSet")
+    private Set<Long> deptIdSet;
+
+    @Schema(description = "岗位 idSet")
+    private Set<Long> postIdSet;
 
 }
