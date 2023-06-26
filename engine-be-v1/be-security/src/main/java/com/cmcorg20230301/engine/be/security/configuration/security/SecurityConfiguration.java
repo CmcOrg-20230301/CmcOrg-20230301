@@ -3,13 +3,13 @@ package com.cmcorg20230301.engine.be.security.configuration.security;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.ArrayUtil;
 import com.cmcorg20230301.engine.be.model.model.configuration.ISecurityPermitConfiguration;
+import com.cmcorg20230301.engine.be.security.configuration.base.BaseConfiguration;
 import com.cmcorg20230301.engine.be.security.filter.JwtAuthorizationFilter;
 import com.cmcorg20230301.engine.be.security.properties.SecurityProperties;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.aopalliance.intercept.MethodInterceptor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.access.intercept.aopalliance.MethodSecurityInterceptor;
 import org.springframework.security.access.vote.AffirmativeBased;
@@ -45,14 +45,16 @@ public class SecurityConfiguration {
 
     }
 
+    /**
+     * @param baseConfiguration 不要删除，目的：让 springboot实例化该对象
+     */
     @SneakyThrows
     @Bean
-    SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity,
-        @Value("${spring.profiles.active:prod}") String profilesActive,
+    SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity, BaseConfiguration baseConfiguration,
         List<ISecurityPermitConfiguration> iSecurityPermitConfigurationList, SecurityProperties securityProperties,
         List<IJwtValidatorConfiguration> iJwtValidatorConfigurationList) {
 
-        boolean prodFlag = "prod".equals(profilesActive);
+        boolean prodFlag = BaseConfiguration.prodFlag();
 
         Set<String> permitAllSet = new HashSet<>();
 
@@ -78,8 +80,7 @@ public class SecurityConfiguration {
 
         log.info("permitAllSet：{}", permitAllSet);
 
-        httpSecurity.authorizeRequests().antMatchers(ArrayUtil.toArray(permitAllSet, String.class))
-            .permitAll() // 可以匿名访问的请求
+        httpSecurity.authorizeRequests().antMatchers(ArrayUtil.toArray(permitAllSet, String.class)).permitAll() // 可以匿名访问的请求
             .anyRequest().authenticated(); // 拦截所有请求
 
         httpSecurity.addFilterBefore(new JwtAuthorizationFilter(securityProperties, iJwtValidatorConfigurationList),
