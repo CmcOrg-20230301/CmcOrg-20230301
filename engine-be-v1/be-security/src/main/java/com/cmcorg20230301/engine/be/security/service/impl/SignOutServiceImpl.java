@@ -9,7 +9,6 @@ import com.cmcorg20230301.engine.be.security.service.SignOutService;
 import com.cmcorg20230301.engine.be.security.util.MyJwtUtil;
 import com.cmcorg20230301.engine.be.security.util.RequestUtil;
 import com.cmcorg20230301.engine.be.security.util.UserUtil;
-import org.redisson.api.RedissonClient;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -21,8 +20,6 @@ public class SignOutServiceImpl implements SignOutService {
 
     @Resource
     HttpServletRequest httpServletRequest;
-    @Resource
-    RedissonClient redissonClient;
 
     /**
      * 退出登录

@@ -8,7 +8,6 @@ import com.cmcorg20230301.engine.be.security.properties.SecurityProperties;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.aopalliance.intercept.MethodInterceptor;
-import org.redisson.api.RedissonClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -50,22 +49,31 @@ public class SecurityConfiguration {
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity,
         @Value("${spring.profiles.active:prod}") String profilesActive,
-        List<ISecurityPermitConfiguration> iSecurityPermitConfigurationList, RedissonClient redissonClient,
-        SecurityProperties securityProperties, List<IJwtValidatorConfiguration> iJwtValidatorConfigurationList) {
+        List<ISecurityPermitConfiguration> iSecurityPermitConfigurationList, SecurityProperties securityProperties,
+        List<IJwtValidatorConfiguration> iJwtValidatorConfigurationList) {
 
         boolean prodFlag = "prod".equals(profilesActive);
 
         Set<String> permitAllSet = new HashSet<>();
 
         if (CollUtil.isNotEmpty(iSecurityPermitConfigurationList)) {
+
             for (ISecurityPermitConfiguration item : iSecurityPermitConfigurationList) {
+
                 if (prodFlag) {
+
                     CollUtil.addAll(permitAllSet, item.prodPermitAllSet());
+
                 } else {
+
                     CollUtil.addAll(permitAllSet, item.devPermitAllSet());
+
                 }
+
                 CollUtil.addAll(permitAllSet, item.anyPermitAllSet());
+
             }
+
         }
 
         log.info("permitAllSet：{}", permitAllSet);
@@ -74,8 +82,7 @@ public class SecurityConfiguration {
             .permitAll() // 可以匿名访问的请求
             .anyRequest().authenticated(); // 拦截所有请求
 
-        httpSecurity.addFilterBefore(
-            new JwtAuthorizationFilter(redissonClient, securityProperties, iJwtValidatorConfigurationList),
+        httpSecurity.addFilterBefore(new JwtAuthorizationFilter(securityProperties, iJwtValidatorConfigurationList),
             UsernamePasswordAuthenticationFilter.class);
 
         httpSecurity.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS); // 不需要session

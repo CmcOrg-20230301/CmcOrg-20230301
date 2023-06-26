@@ -11,11 +11,16 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 import java.util.Map;
 
 @RestControllerAdvice
 @Slf4j
 public class ExceptionAdvice {
+
+    @Resource
+    HttpServletRequest httpServletRequest;
 
     /**
      * 参数校验异常：@Valid

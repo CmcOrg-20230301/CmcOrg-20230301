@@ -22,7 +22,6 @@ import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.redisson.api.RedissonClient;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -39,14 +38,12 @@ import java.util.List;
 @Slf4j
 public class JwtAuthorizationFilter extends OncePerRequestFilter {
 
-    private static RedissonClient redissonClient;
     private static SecurityProperties securityProperties;
     private static List<IJwtValidatorConfiguration> iJwtValidatorConfigurationList;
 
-    public JwtAuthorizationFilter(RedissonClient redissonClient, SecurityProperties securityProperties,
+    public JwtAuthorizationFilter(SecurityProperties securityProperties,
         List<IJwtValidatorConfiguration> iJwtValidatorConfigurationList) {
 
-        JwtAuthorizationFilter.redissonClient = redissonClient;
         JwtAuthorizationFilter.securityProperties = securityProperties;
         JwtAuthorizationFilter.iJwtValidatorConfigurationList = iJwtValidatorConfigurationList;
 
