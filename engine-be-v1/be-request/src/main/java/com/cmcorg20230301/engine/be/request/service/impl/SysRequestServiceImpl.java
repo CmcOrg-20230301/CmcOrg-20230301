@@ -7,11 +7,11 @@ import com.cmcorg20230301.engine.be.model.model.constant.OperationDescriptionCon
 import com.cmcorg20230301.engine.be.request.mapper.SysRequestMapper;
 import com.cmcorg20230301.engine.be.request.model.dto.SysRequestPageDTO;
 import com.cmcorg20230301.engine.be.request.model.dto.SysRequestSelfLoginRecordPageDTO;
-import com.cmcorg20230301.engine.be.request.model.entity.SysRequestDO;
 import com.cmcorg20230301.engine.be.request.model.vo.SysRequestAllAvgVO;
 import com.cmcorg20230301.engine.be.request.service.SysRequestService;
 import com.cmcorg20230301.engine.be.security.model.entity.BaseEntity;
 import com.cmcorg20230301.engine.be.security.model.entity.BaseEntityNoId;
+import com.cmcorg20230301.engine.be.security.model.entity.SysRequestDO;
 import com.cmcorg20230301.engine.be.security.util.UserUtil;
 import org.springframework.stereotype.Service;
 

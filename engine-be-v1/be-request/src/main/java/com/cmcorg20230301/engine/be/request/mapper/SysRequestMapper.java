@@ -2,8 +2,8 @@ package com.cmcorg20230301.engine.be.request.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.cmcorg20230301.engine.be.request.model.dto.SysRequestPageDTO;
-import com.cmcorg20230301.engine.be.request.model.entity.SysRequestDO;
 import com.cmcorg20230301.engine.be.request.model.vo.SysRequestAllAvgVO;
+import com.cmcorg20230301.engine.be.security.model.entity.SysRequestDO;
 import org.apache.ibatis.annotations.Param;
 
 public interface SysRequestMapper extends BaseMapper<SysRequestDO> {

@@ -1,7 +1,6 @@
-package com.cmcorg20230301.engine.be.request.model.entity;
+package com.cmcorg20230301.engine.be.security.model.entity;
 
 import com.baomidou.mybatisplus.annotation.TableName;
-import com.cmcorg20230301.engine.be.security.model.entity.BaseEntity;
 import com.cmcorg20230301.engine.be.security.model.enums.SysRequestCategoryEnum;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;

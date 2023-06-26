@@ -23,6 +23,10 @@ public class ExceptionAdvice {
     @ExceptionHandler(value = MethodArgumentNotValidException.class)
     public ApiResultVO<?> handlerValidException(MethodArgumentNotValidException e) {
 
+        e.printStackTrace();
+
+        e.getParameter().getMethod();
+
         // 返回详细的参数校验错误信息
         Map<String, String> map = MapUtil.newHashMap(e.getBindingResult().getFieldErrors().size());
 
@@ -37,8 +41,6 @@ public class ExceptionAdvice {
             ApiResultVO.error(BaseBizCodeEnum.PARAMETER_CHECK_ERROR, map); // 这里肯定会抛出 BaseException异常
 
         } catch (BaseException baseException) {
-
-            log.info("MethodArgumentNotValidException：{}", baseException.getMessage());
 
             return getBaseExceptionApiResult(baseException);
 
