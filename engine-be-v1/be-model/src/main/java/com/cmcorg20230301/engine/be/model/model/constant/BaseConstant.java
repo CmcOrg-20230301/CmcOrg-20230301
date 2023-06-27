@@ -56,8 +56,8 @@ public interface BaseConstant {
 
     // 字符串长度限制 ↓
 
-    int STR_MAX_LENGTH_500 = 500;
-    int STR_MAX_LENGTH_1000 = 1000;
+    int STR_MAX_LENGTH_500 = 500 - 3;
+    int STR_MAX_LENGTH_1000 = 1000 - 3;
 
     // 字符串长度限制 ↑
 

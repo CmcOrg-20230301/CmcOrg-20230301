@@ -72,9 +72,9 @@ public class NettyWebSocketServer {
 
         if (sysSocketServerId != null) {
 
-            sysSocketService.removeById(sysSocketServerId);
+            boolean removeFlag = sysSocketService.removeById(sysSocketServerId);
 
-            log.info("NettyWebSocket 下线成功：{}", sysSocketServerId);
+            log.info("NettyWebSocket 下线{}：{}", removeFlag ? "成功" : "失败", sysSocketServerId);
 
         }
 

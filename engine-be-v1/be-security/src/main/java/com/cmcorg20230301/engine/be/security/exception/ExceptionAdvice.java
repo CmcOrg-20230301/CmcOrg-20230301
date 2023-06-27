@@ -1,7 +1,17 @@
 package com.cmcorg20230301.engine.be.security.exception;
 
 import cn.hutool.core.map.MapUtil;
+import cn.hutool.core.util.StrUtil;
+import cn.hutool.extra.servlet.ServletUtil;
+import cn.hutool.json.JSONUtil;
+import com.cmcorg20230301.engine.be.ip2region.util.Ip2RegionUtil;
+import com.cmcorg20230301.engine.be.model.model.constant.BaseConstant;
+import com.cmcorg20230301.engine.be.security.model.entity.SysRequestDO;
 import com.cmcorg20230301.engine.be.security.model.vo.ApiResultVO;
+import com.cmcorg20230301.engine.be.security.util.MyEntityUtil;
+import com.cmcorg20230301.engine.be.security.util.RequestUtil;
+import com.cmcorg20230301.engine.be.security.util.UserUtil;
+import io.swagger.v3.oas.annotations.Operation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.access.AccessDeniedException;
@@ -13,6 +23,8 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import java.lang.reflect.Method;
+import java.util.Date;
 import java.util.Map;
 
 @RestControllerAdvice
@@ -30,15 +42,13 @@ public class ExceptionAdvice {
 
         e.printStackTrace();
 
-        e.getParameter().getMethod();
-
         // 返回详细的参数校验错误信息
         Map<String, String> map = MapUtil.newHashMap(e.getBindingResult().getFieldErrors().size());
 
         BindingResult bindingResult = e.getBindingResult();
 
-        for (FieldError fieldError : bindingResult.getFieldErrors()) {
-            map.put(fieldError.getField(), fieldError.getDefaultMessage());
+        for (FieldError item : bindingResult.getFieldErrors()) {
+            map.put(item.getField(), item.getDefaultMessage());
         }
 
         try {
@@ -47,11 +57,67 @@ public class ExceptionAdvice {
 
         } catch (BaseException baseException) {
 
+            Method method = e.getParameter().getMethod();
+
+            if (method != null) {
+
+                // 处理：请求
+                handleRequest(method.getAnnotation(Operation.class),
+                    StrUtil.maxLength(baseException.getMessage(), BaseConstant.STR_MAX_LENGTH_1000), StrUtil
+                        .maxLength(JSONUtil.toJsonStr(e.getBindingResult().getTarget()),
+                            BaseConstant.STR_MAX_LENGTH_1000));
+
+            }
+
             return getBaseExceptionApiResult(baseException);
 
         }
 
         return null; // 这里不会执行，只是为了通过语法检查
+
+    }
+
+    /**
+     * 处理：请求
+     */
+    private void handleRequest(Operation operation, String errorMsg, String requestParam) {
+
+        Date date = new Date();
+
+        Long currentUserIdDefault = UserUtil.getCurrentUserIdDefault();
+
+        String uri = httpServletRequest.getRequestURI();
+
+        SysRequestDO sysRequestDO = new SysRequestDO();
+
+        sysRequestDO.setUri(uri);
+        sysRequestDO.setCostMsStr("");
+        sysRequestDO.setCostMs(0L);
+        sysRequestDO.setName(operation == null ? "" : operation.summary());
+
+        sysRequestDO.setCategory(RequestUtil.getRequestCategoryEnum(httpServletRequest));
+        sysRequestDO.setIp(ServletUtil.getClientIP(httpServletRequest));
+        sysRequestDO.setRegion(Ip2RegionUtil.getRegion(sysRequestDO.getIp()));
+
+        sysRequestDO.setSuccessFlag(false);
+        sysRequestDO.setErrorMsg(errorMsg);
+        sysRequestDO.setRequestParam(requestParam);
+
+        // 设置：类型
+        sysRequestDO.setType(operation == null ? "" : MyEntityUtil.getNotNullAndTrimStr(operation.description()));
+        sysRequestDO.setResponseValue("");
+
+        sysRequestDO.setCreateId(currentUserIdDefault);
+        sysRequestDO.setCreateTime(date);
+        sysRequestDO.setUpdateId(currentUserIdDefault);
+        sysRequestDO.setUpdateTime(date);
+
+        sysRequestDO.setEnableFlag(true);
+        sysRequestDO.setDelFlag(false);
+        sysRequestDO.setRemark("");
+
+        // 添加一个：请求数据
+        RequestUtil.add(sysRequestDO);
 
     }
 
@@ -91,6 +157,9 @@ public class ExceptionAdvice {
 
         } catch (BaseException baseException) {
 
+            // 处理：请求
+            handleRequest(null, StrUtil.maxLength(baseException.getMessage(), BaseConstant.STR_MAX_LENGTH_1000), "");
+
             return getBaseExceptionApiResult(baseException);
 
         }
@@ -124,6 +193,9 @@ public class ExceptionAdvice {
             ApiResultVO.error(BaseBizCodeEnum.INSUFFICIENT_PERMISSIONS); // 这里肯定会抛出 BaseException异常
 
         } catch (BaseException baseException) {
+
+            // 处理：请求
+            handleRequest(null, StrUtil.maxLength(baseException.getMessage(), BaseConstant.STR_MAX_LENGTH_1000), "");
 
             return getBaseExceptionApiResult(baseException);
 

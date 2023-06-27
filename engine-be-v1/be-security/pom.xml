@@ -14,6 +14,12 @@
 
     <dependencies>
 
+        <!-- be-ip2region -->
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>be-ip2region</artifactId>
+        </dependency>
+
         <!-- 二维码工具类 -->
         <dependency>
             <groupId>com.google.zxing</groupId>

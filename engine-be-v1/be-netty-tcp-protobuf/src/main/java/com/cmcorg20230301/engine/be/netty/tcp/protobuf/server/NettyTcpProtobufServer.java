@@ -73,9 +73,9 @@ public class NettyTcpProtobufServer {
 
         if (sysSocketServerId != null) {
 
-            sysSocketService.removeById(sysSocketServerId);
+            boolean removeFlag = sysSocketService.removeById(sysSocketServerId);
 
-            log.info("NettyTcpProtobuf 下线成功：{}", sysSocketServerId);
+            log.info("NettyTcpProtobuf 下线{}：{}", removeFlag ? "成功" : "失败", sysSocketServerId);
 
         }
 

@@ -1,6 +1,5 @@
 package com.cmcorg20230301.engine.be.request.aop;
 
-import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.date.BetweenFormatter;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.exceptions.ExceptionUtil;
@@ -14,7 +13,6 @@ import com.cmcorg20230301.engine.be.ip2region.util.Ip2RegionUtil;
 import com.cmcorg20230301.engine.be.model.model.constant.BaseConstant;
 import com.cmcorg20230301.engine.be.model.model.constant.LogTopicConstant;
 import com.cmcorg20230301.engine.be.model.model.constant.OperationDescriptionConstant;
-import com.cmcorg20230301.engine.be.request.service.SysRequestService;
 import com.cmcorg20230301.engine.be.security.model.entity.SysRequestDO;
 import com.cmcorg20230301.engine.be.security.model.vo.ApiResultVO;
 import com.cmcorg20230301.engine.be.security.util.MyEntityUtil;
@@ -28,14 +26,11 @@ import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 import org.aspectj.lang.reflect.MethodSignature;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.PreDestroy;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
-import java.util.List;
-import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.Date;
 
 @Aspect
 @Component
@@ -43,40 +38,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 public class SysRequestAop {
 
     @Resource
-    SysRequestService sysRequestService;
-    @Resource
     HttpServletRequest httpServletRequest;
-
-    private static List<SysRequestDO> SYS_REQUEST_DO_LIST = new CopyOnWriteArrayList<>();
-
-    private static final int STR_MAX_LENGTH = BaseConstant.STR_MAX_LENGTH_1000 - 3;
-
-    /**
-     * 定时任务，保存数据
-     */
-    @PreDestroy
-    @Scheduled(fixedDelay = 5000)
-    public void scheduledSava() {
-
-        List<SysRequestDO> tempSysRequestDOList;
-
-        synchronized (SYS_REQUEST_DO_LIST) {
-
-            if (CollUtil.isEmpty(SYS_REQUEST_DO_LIST)) {
-                return;
-            }
-
-            tempSysRequestDOList = SYS_REQUEST_DO_LIST;
-            SYS_REQUEST_DO_LIST = new CopyOnWriteArrayList<>();
-
-        }
-
-        log.info("保存请求数据，长度：{}", tempSysRequestDOList.size());
-
-        // 批量保存数据
-        sysRequestService.saveBatch(tempSysRequestDOList);
-
-    }
 
     /**
      * 切入点
@@ -89,6 +51,8 @@ public class SysRequestAop {
     public Object around(ProceedingJoinPoint proceedingJoinPoint, Operation operation) throws Throwable {
 
         long costMs = System.currentTimeMillis();
+
+        Date date = new Date();
 
         String uri = httpServletRequest.getRequestURI();
 
@@ -103,7 +67,9 @@ public class SysRequestAop {
         Long currentUserIdDefault = UserUtil.getCurrentUserIdDefault();
 
         sysRequestDO.setCreateId(currentUserIdDefault);
+        sysRequestDO.setCreateTime(date);
         sysRequestDO.setUpdateId(currentUserIdDefault);
+        sysRequestDO.setUpdateTime(date);
 
         sysRequestDO.setRemark("");
         sysRequestDO.setEnableFlag(true);
@@ -139,7 +105,7 @@ public class SysRequestAop {
 
         }
 
-        sysRequestDO.setRequestParam(StrUtil.maxLength(strBuilder.toString(), STR_MAX_LENGTH));
+        sysRequestDO.setRequestParam(StrUtil.maxLength(strBuilder.toString(), BaseConstant.STR_MAX_LENGTH_1000));
 
         Object object = null;
 
@@ -153,7 +119,8 @@ public class SysRequestAop {
 
                 object = proceedingJoinPoint.proceed(); // 执行方法，备注：如果执行方法时抛出了异常，catch可以捕获到
 
-                sysRequestDO.setResponseValue(StrUtil.maxLength(JSONUtil.toJsonStr(object), STR_MAX_LENGTH));
+                sysRequestDO
+                    .setResponseValue(StrUtil.maxLength(JSONUtil.toJsonStr(object), BaseConstant.STR_MAX_LENGTH_1000));
 
             }
 
@@ -174,7 +141,8 @@ public class SysRequestAop {
         log.info("uri：{}，耗时：{}，成功：{}", sysRequestDO.getUri(), sysRequestDO.getCostMsStr(),
             sysRequestDO.getSuccessFlag());
 
-        SYS_REQUEST_DO_LIST.add(sysRequestDO);
+        // 添加一个：请求数据
+        RequestUtil.add(sysRequestDO);
 
         return object;
 
@@ -200,14 +168,15 @@ public class SysRequestAop {
 
         sysRequestDO.setSuccessFlag(false); // 设置：请求失败
 
-        String errorMsg = ExceptionUtil.stacktraceToString(e, STR_MAX_LENGTH);
+        String errorMsg = ExceptionUtil.stacktraceToString(e, BaseConstant.STR_MAX_LENGTH_1000);
 
         sysRequestDO.setErrorMsg(errorMsg);
 
         // 处理：耗时相关
         handleCostMs(costMs, sysRequestDO);
 
-        SYS_REQUEST_DO_LIST.add(sysRequestDO);
+        // 添加一个：请求数据
+        RequestUtil.add(sysRequestDO);
 
     }
 
