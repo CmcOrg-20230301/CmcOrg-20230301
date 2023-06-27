@@ -1,5 +1,6 @@
 package com.cmcorg20230301.engine.be.user.model.dto;
 
+import com.cmcorg20230301.engine.be.model.model.annotation.NotBlankPattern;
 import com.cmcorg20230301.engine.be.model.model.constant.BaseRegexConstant;
 import com.cmcorg20230301.engine.be.model.model.dto.BaseInsertOrUpdateDTO;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -15,17 +16,17 @@ import java.util.Set;
 public class SysUserInsertOrUpdateDTO extends BaseInsertOrUpdateDTO {
 
     @Size(max = 20)
-    @Pattern(regexp = BaseRegexConstant.SIGN_IN_NAME_REGEXP)
+    @NotBlankPattern(regexp = BaseRegexConstant.SIGN_IN_NAME_REGEXP)
     @Schema(description = "登录名")
     private String signInName;
 
     @Size(max = 200)
-    @Pattern(regexp = BaseRegexConstant.EMAIL)
+    @NotBlankPattern(regexp = BaseRegexConstant.EMAIL)
     @Schema(description = "邮箱")
     private String email;
 
     @Size(max = 100)
-    @Pattern(regexp = BaseRegexConstant.PHONE)
+    @NotBlankPattern(regexp = BaseRegexConstant.PHONE)
     @Schema(description = "手机号码")
     private String phone;
 

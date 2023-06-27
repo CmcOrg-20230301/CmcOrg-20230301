@@ -1,6 +1,6 @@
 import {useEffect, useRef, useState} from "react";
 import {ActionType, BetaSchemaForm, ColumnsState, FormInstance, ProTable} from "@ant-design/pro-components";
-import {Button, Space} from "antd";
+import {Button, Space, Typography} from "antd";
 import {PlusOutlined} from "@ant-design/icons/lib";
 import {
     SysUserDeleteByIdSet,
@@ -18,6 +18,10 @@ import {ExecConfirm, ToastSuccess} from "@/util/ToastUtil";
 import SchemaFormColumnList, {InitForm} from "./SchemaFormColumnList";
 import CommonConstant from "@/model/constant/CommonConstant";
 import {SysFileGetPublicUrl} from "@/api/SysFile";
+import {DictLongListVO, GetByValueFromDictListPro, GetDictList} from "@/util/DictUtil";
+import {SysDeptPage} from "@/api/SysDept";
+import {SysPostPage} from "@/api/SysPost";
+import {SysRolePage} from "@/api/SysRole";
 
 // 用户-管理
 export default function () {
@@ -37,6 +41,34 @@ export default function () {
     const [fullScreenFlag, setFullScreenFlag] = useState<boolean>(false)
 
     const [userAvatarUrlObj, setUserAvatarUrlObj] = useState<Record<string, string>>({})
+
+    const deptDictListRef = useRef<DictLongListVO[]>([])
+
+    const postDictListRef = useRef<DictLongListVO[]>([])
+
+    const roleDictListRef = useRef<DictLongListVO[]>([])
+
+    function doGetDictList() {
+
+        GetDictList(SysDeptPage).then(res => {
+
+            deptDictListRef.current = res
+
+        })
+
+        GetDictList(SysPostPage).then(res => {
+
+            postDictListRef.current = res
+
+        })
+
+        GetDictList(SysRolePage).then(res => {
+
+            roleDictListRef.current = res
+
+        })
+
+    }
 
     useEffect(() => {
 
@@ -89,6 +121,50 @@ export default function () {
 
                     },
 
+                    expandedRowRender: record => (
+
+                        <div className={"flex-c"}>
+
+                            <span>
+
+                                <Typography.Text mark>
+                                    部门
+                                </Typography.Text>
+
+                                <Typography.Text type="secondary">
+                                    ：{GetByValueFromDictListPro(deptDictListRef.current, record.deptIdSet)}
+                                </Typography.Text>
+
+                            </span>
+
+                            <span>
+
+                                <Typography.Text mark>
+                                    岗位
+                                </Typography.Text>
+
+                                <Typography.Text type="secondary">
+                                    ：{GetByValueFromDictListPro(postDictListRef.current, record.jobIdSet)}
+                                </Typography.Text>
+
+                            </span>
+
+                            <span>
+
+                                <Typography.Text mark>
+                                    角色
+                                </Typography.Text>
+
+                                <Typography.Text type="secondary">
+                                    ：{GetByValueFromDictListPro(roleDictListRef.current, record.roleIdSet)}
+                                </Typography.Text>
+
+                            </span>
+
+                        </div>
+
+                    )
+
                 }}
 
                 revalidateOnFocus={false}
@@ -106,6 +182,8 @@ export default function () {
                 }}
 
                 postData={(data: SysUserPageVO[]) => {
+
+                    doGetDictList()
 
                     let avatarFileIdList = data.map(it => it.avatarFileId!); // 用户头像文件 id集合
 

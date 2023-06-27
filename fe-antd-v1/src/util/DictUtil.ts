@@ -49,7 +49,7 @@ YesNoBaseDict.set(true, {text: '是'})
 YesNoBaseDict.set(false, {text: '否'})
 
 // 根据 list和 value，获取字典的 label值
-export function getByValueFromDictList(
+export function GetByValueFromDictList(
     dictList: DictLongListVO [],
     value: string,
     defaultValue: string = '-'
@@ -73,7 +73,7 @@ export function getByValueFromDictList(
 }
 
 // 根据 list和 valueList，获取字典的 labelList值
-export function getByValueFromDictListPro(
+export function GetByValueFromDictListPro(
     dictList: DictLongListVO [],
     valueList?: string[],
     defaultValue: string = '-',

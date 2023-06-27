@@ -45,12 +45,18 @@ const TableColumnList = (): ProColumns<SysRequestDO>[] => [
 
     {
         title: '耗时(ms)', dataIndex: 'costMsRange', hideInTable: true, valueType: 'digitRange', search: {
+
             transform: (value) => {
+
                 return {
+
                     beginCostMs: value[0],
                     endCostMs: value[1],
+
                 } as SysRequestPageDTO
+
             }
+
         }
     },
 
@@ -60,17 +66,24 @@ const TableColumnList = (): ProColumns<SysRequestDO>[] => [
         hideInSearch: true,
         valueType: 'fromNow',
         width: 90,
-        sorter: true
+        sorter: true,
+        defaultSortOrder: 'descend',
     },
 
     {
         title: '创建时间', dataIndex: 'createTimeRange', hideInTable: true, valueType: 'dateTimeRange', search: {
+
             transform: (value) => {
+
                 return {
+
                     ctBeginTime: value[0],
                     ctEndTime: value[1],
+
                 } as SysRequestPageDTO
+
             }
+
         }
     },
 
