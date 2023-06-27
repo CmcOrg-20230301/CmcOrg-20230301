@@ -121,7 +121,7 @@ export default function () {
 
                     },
 
-                    expandedRowRender: record => (
+                    expandedRowRender: (record) => (
 
                         <div className={"flex-c"}>
 
@@ -144,7 +144,7 @@ export default function () {
                                 </Typography.Text>
 
                                 <Typography.Text type="secondary">
-                                    ：{GetByValueFromDictListPro(postDictListRef.current, record.jobIdSet)}
+                                    ：{GetByValueFromDictListPro(postDictListRef.current, record.postIdSet)}
                                 </Typography.Text>
 
                             </span>

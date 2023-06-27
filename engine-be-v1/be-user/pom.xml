@@ -14,6 +14,18 @@
 
     <dependencies>
 
+        <!-- be-post -->
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>be-post</artifactId>
+        </dependency>
+
+        <!-- be-dept -->
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>be-dept</artifactId>
+        </dependency>
+
         <!-- be-sign-helper -->
         <dependency>
             <groupId>${project.groupId}</groupId>

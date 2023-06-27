@@ -25,7 +25,6 @@ import com.cmcorg20230301.engine.be.post.service.SysPostRefUserService;
 import com.cmcorg20230301.engine.be.redisson.model.enums.RedisKeyEnum;
 import com.cmcorg20230301.engine.be.redisson.util.RedissonUtil;
 import com.cmcorg20230301.engine.be.role.service.SysRoleRefUserService;
-import com.cmcorg20230301.engine.be.role.service.SysRoleService;
 import com.cmcorg20230301.engine.be.security.exception.BaseBizCodeEnum;
 import com.cmcorg20230301.engine.be.security.mapper.SysUserInfoMapper;
 import com.cmcorg20230301.engine.be.security.mapper.SysUserMapper;
@@ -70,9 +69,6 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserProMapper, SysUserDO>
     SysUserMapper sysUserMapper;
 
     @Resource
-    SysRoleService sysRoleService;
-
-    @Resource
     SysDeptRefUserService sysDeptRefUserService;
 
     @Resource
@@ -100,16 +96,39 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserProMapper, SysUserDO>
 
         if (userIdSet.size() != 0) {
 
-            // 组装：roleIdSet
             List<SysRoleRefUserDO> sysRoleRefUserDOList =
                 sysRoleRefUserService.lambdaQuery().in(SysRoleRefUserDO::getUserId, userIdSet)
                     .select(SysRoleRefUserDO::getUserId, SysRoleRefUserDO::getRoleId).list();
+
+            List<SysDeptRefUserDO> sysDeptRefUserDOList =
+                sysDeptRefUserService.lambdaQuery().in(SysDeptRefUserDO::getUserId, userIdSet)
+                    .select(SysDeptRefUserDO::getUserId, SysDeptRefUserDO::getDeptId).list();
+
+            List<SysPostRefUserDO> sysPostRefUserDOList =
+                sysPostRefUserService.lambdaQuery().in(SysPostRefUserDO::getUserId, userIdSet)
+                    .select(SysPostRefUserDO::getUserId, SysPostRefUserDO::getPostId).list();
 
             Map<Long, Set<Long>> roleUserGroupMap = sysRoleRefUserDOList.stream().collect(Collectors
                 .groupingBy(SysRoleRefUserDO::getUserId,
                     Collectors.mapping(SysRoleRefUserDO::getRoleId, Collectors.toSet())));
 
-            page.getRecords().forEach(it -> it.setRoleIdSet(roleUserGroupMap.get(it.getId())));
+            Map<Long, Set<Long>> deptUserGroupMap = sysDeptRefUserDOList.stream().collect(Collectors
+                .groupingBy(SysDeptRefUserDO::getUserId,
+                    Collectors.mapping(SysDeptRefUserDO::getDeptId, Collectors.toSet())));
+
+            Map<Long, Set<Long>> postUserGroupMap = sysPostRefUserDOList.stream().collect(Collectors
+                .groupingBy(SysPostRefUserDO::getUserId,
+                    Collectors.mapping(SysPostRefUserDO::getPostId, Collectors.toSet())));
+
+            page.getRecords().forEach(it -> {
+
+                it.setRoleIdSet(roleUserGroupMap.get(it.getId()));
+
+                it.setDeptIdSet(deptUserGroupMap.get(it.getId()));
+
+                it.setPostIdSet(postUserGroupMap.get(it.getId()));
+
+            });
 
         }
 
