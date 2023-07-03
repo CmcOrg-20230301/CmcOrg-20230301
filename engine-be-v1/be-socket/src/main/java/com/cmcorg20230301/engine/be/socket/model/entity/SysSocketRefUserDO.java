@@ -19,7 +19,7 @@ public class SysSocketRefUserDO extends BaseEntity {
     @Schema(description = "socket主键 id")
     private Long socketId;
 
-    @Schema(description = "冗余字段，昵称")
+    @Schema(description = "冗余字段，用户昵称")
     private String nickname;
 
     @Schema(description = "冗余字段，协议")
@@ -33,5 +33,11 @@ public class SysSocketRefUserDO extends BaseEntity {
 
     @Schema(description = "冗余字段，socket类型")
     private SysSocketTypeEnum type;
+
+    @Schema(description = "Ip2RegionUtil.getRegion() 获取到的 ip所处区域")
+    private String region;
+
+    @Schema(description = "ip")
+    private String ip;
 
 }

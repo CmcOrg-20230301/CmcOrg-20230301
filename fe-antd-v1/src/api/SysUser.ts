@@ -88,6 +88,8 @@ export interface SysUserPageVO {
     signInName?: string // 登录名，会脱敏
     nickname?: string // 昵称
     roleIdSet?: string[] // 角色 idSet，format：int64
+    deptIdSet?: string[] // 部门 idSet，format：int64
+    postIdSet?: string[] // 岗位 idSet，format：int64
     id?: string // 主键id，format：int64
     enableFlag?: boolean // 正常/冻结
     email?: string // 邮箱，备注：会脱敏

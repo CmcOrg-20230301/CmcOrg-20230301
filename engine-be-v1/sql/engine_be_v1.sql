@@ -633,7 +633,7 @@ CREATE TABLE `sys_socket_ref_user`
     `remark`      varchar(300) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '备注',
     `user_id`     bigint                                                        NOT NULL COMMENT '用户主键 id',
     `socket_id`   bigint                                                        NOT NULL COMMENT 'socket主键 id',
-    `nickname`    varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci  NOT NULL COMMENT '冗余字段，昵称',
+    `nickname`    varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci  NOT NULL COMMENT '冗余字段，用户昵称',
     `scheme`      varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci  NOT NULL COMMENT '冗余字段，协议',
     `host`        varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci  NOT NULL COMMENT '冗余字段，主机',
     `port`        int                                                           NOT NULL COMMENT '冗余字段，端口',
