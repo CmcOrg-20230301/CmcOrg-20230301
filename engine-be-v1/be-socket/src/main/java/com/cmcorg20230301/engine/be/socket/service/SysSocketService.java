@@ -9,4 +9,6 @@ public interface SysSocketService extends IService<SysSocketDO> {
 
     Page<SysSocketDO> myPage(SysSocketPageDTO dto);
 
+    SysSocketDO getSocketDOOfMinConnectNumber(SysSocketDO sysSocketDO);
+
 }

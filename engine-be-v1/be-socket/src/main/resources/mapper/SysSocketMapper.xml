@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.cmcorg20230301.engine.be.socket.mapper.SysSocketMapper">
+
+    <!-- 获取：最小连接数的 socket对象 -->
+    <select id="getSocketDOOfMinConnectNumber"
+            resultType="com.cmcorg20230301.engine.be.socket.model.entity.SysSocketDO">
+
+        SELECT a.id     AS id,
+               a.host   AS host,
+               a.port   AS port,
+               COUNT(1) AS connectNumber
+        FROM sys_socket a
+                 LEFT JOIN sys_socket_ref_user b ON b.socket_id = a.id
+        GROUP BY a.id
+        ORDER BY connectNumber
+        LIMIT 1
+
+    </select>
+
+</mapper>

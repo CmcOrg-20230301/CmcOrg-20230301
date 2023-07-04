@@ -6,15 +6,15 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 /**
- * webSocket 在线状态
+ * socket 在线状态
  */
 @AllArgsConstructor
 @Getter
 public enum SysSocketOnlineTypeEnum {
 
-    ONLINE(1), // 在线
+    ONLINE(101), // 在线
 
-    HIDDEN(2), // 隐身
+    HIDDEN(201), // 隐身
 
     ;
 

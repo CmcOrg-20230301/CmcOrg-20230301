@@ -30,6 +30,16 @@ public class SysSocketServiceImpl extends ServiceImpl<SysSocketMapper, SysSocket
 
     }
 
+    /**
+     * 获取：最小连接数的 socket对象
+     */
+    @Override
+    public SysSocketDO getSocketDOOfMinConnectNumber(SysSocketDO sysSocketDO) {
+
+        return baseMapper.getSocketDOOfMinConnectNumber(sysSocketDO);
+
+    }
+
 }
 
 

@@ -1,0 +1,17 @@
+package com.cmcorg20230301.engine.be.model.model.dto;
+
+import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+
+import javax.validation.constraints.NotNull;
+
+@EqualsAndHashCode(callSuper = true)
+@Data
+public class NotNullIdAndIntegerValue extends NotNullId {
+
+    @NotNull
+    @Schema(description = "值")
+    private Integer value;
+
+}

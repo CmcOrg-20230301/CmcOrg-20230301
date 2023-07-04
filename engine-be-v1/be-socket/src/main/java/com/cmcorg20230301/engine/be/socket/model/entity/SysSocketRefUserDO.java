@@ -2,6 +2,7 @@ package com.cmcorg20230301.engine.be.socket.model.entity;
 
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.cmcorg20230301.engine.be.security.model.entity.BaseEntity;
+import com.cmcorg20230301.engine.be.socket.model.enums.SysSocketOnlineTypeEnum;
 import com.cmcorg20230301.engine.be.socket.model.enums.SysSocketTypeEnum;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
@@ -33,6 +34,9 @@ public class SysSocketRefUserDO extends BaseEntity {
 
     @Schema(description = "冗余字段，socket类型")
     private SysSocketTypeEnum type;
+
+    @Schema(description = "socket 在线状态")
+    private SysSocketOnlineTypeEnum onlineType;
 
     @Schema(description = "Ip2RegionUtil.getRegion() 获取到的 ip所处区域")
     private String region;
