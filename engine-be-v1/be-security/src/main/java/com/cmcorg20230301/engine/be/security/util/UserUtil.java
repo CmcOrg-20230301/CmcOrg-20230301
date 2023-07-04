@@ -35,15 +35,17 @@ public class UserUtil {
     private static SysRoleRefMenuMapper sysRoleRefMenuMapper;
     private static SysRoleRefUserMapper sysRoleRefUserMapper;
     private static SysUserMapper sysUserMapper;
+    private static SysUserInfoMapper sysUserInfoMapper;
 
     public UserUtil(SysMenuMapper sysMenuMapper, SysRoleMapper sysRoleMapper, SysRoleRefMenuMapper sysRoleRefMenuMapper,
-        SysRoleRefUserMapper sysRoleRefUserMapper, SysUserMapper sysUserMapper) {
+        SysRoleRefUserMapper sysRoleRefUserMapper, SysUserMapper sysUserMapper, SysUserInfoMapper sysUserInfoMapper) {
 
         UserUtil.sysMenuMapper = sysMenuMapper;
         UserUtil.sysRoleMapper = sysRoleMapper;
         UserUtil.sysRoleRefMenuMapper = sysRoleRefMenuMapper;
         UserUtil.sysRoleRefUserMapper = sysRoleRefUserMapper;
         UserUtil.sysUserMapper = sysUserMapper;
+        UserUtil.sysUserInfoMapper = sysUserInfoMapper;
 
     }
 
@@ -61,6 +63,26 @@ public class UserUtil {
         }
 
         return userId;
+
+    }
+
+    /**
+     * 获取当前用户的昵称
+     * 这里只会返回实际的昵称，如果为 null，则会抛出异常
+     */
+    @NotNull
+    public static String getCurrentUserNickName() {
+
+        Long userId = getCurrentUserId();
+
+        SysUserInfoDO sysUserInfoDO = ChainWrappers.lambdaQueryChain(sysUserInfoMapper).eq(SysUserInfoDO::getId, userId)
+            .select(SysUserInfoDO::getNickname).one();
+
+        if (sysUserInfoDO == null) {
+            return "";
+        }
+
+        return sysUserInfoDO.getNickname();
 
     }
 

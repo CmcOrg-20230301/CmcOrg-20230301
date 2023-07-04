@@ -9,6 +9,7 @@ import cn.hutool.crypto.digest.DigestUtil;
 import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
 import cn.hutool.jwt.JWT;
+import cn.hutool.jwt.RegisteredPayload;
 import com.cmcorg20230301.engine.be.model.model.constant.BaseConstant;
 import com.cmcorg20230301.engine.be.redisson.model.enums.RedisKeyEnum;
 import com.cmcorg20230301.engine.be.redisson.util.RedissonUtil;
@@ -19,6 +20,7 @@ import com.cmcorg20230301.engine.be.security.model.entity.SysMenuDO;
 import com.cmcorg20230301.engine.be.security.model.enums.SysRequestCategoryEnum;
 import com.cmcorg20230301.engine.be.security.model.vo.ApiResultVO;
 import com.cmcorg20230301.engine.be.security.properties.SecurityProperties;
+import com.cmcorg20230301.engine.be.util.util.CallBack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -249,6 +251,47 @@ public class MyJwtUtil {
         }
 
         return authSet.stream().map(SimpleGrantedAuthority::new).collect(Collectors.toSet());
+
+    }
+
+    /**
+     * 获取：请求里面的 jwtHash值
+     */
+    public static String getJwtHashByRequest(HttpServletRequest httpServletRequest,
+        CallBack<Long> jwtHashRemainMsCallBack) {
+
+        // 从请求头里，获取：jwt字符串
+        String jwtStr = MyJwtUtil.getJwtStrByRequest(httpServletRequest);
+
+        if (jwtStr == null) {
+            return null;
+        }
+
+        JWT jwt = JWT.of(jwtStr); // 备注：这里不会报错
+
+        JSONObject claimsJson = jwt.getPayload().getClaimsJson();
+
+        Date expiresDate = claimsJson.getDate(RegisteredPayload.EXPIRES_AT);
+
+        if (expiresDate == null) { // 备注：这里不会为 null
+            return null;
+        }
+
+        Long currentUserId = UserUtil.getCurrentUserId();
+
+        String jwtHash = MyJwtUtil
+            .generateRedisJwtHash(jwtStr, currentUserId, RequestUtil.getRequestCategoryEnum(httpServletRequest));
+
+        // jwt剩余时间
+        long remainMs = expiresDate.getTime() - System.currentTimeMillis();
+
+        if (jwtHashRemainMsCallBack != null) {
+
+            jwtHashRemainMsCallBack.setValue(remainMs);
+
+        }
+
+        return jwtHash;
 
     }
 

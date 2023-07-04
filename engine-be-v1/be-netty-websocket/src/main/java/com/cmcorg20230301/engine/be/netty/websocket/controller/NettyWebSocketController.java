@@ -1,6 +1,6 @@
 package com.cmcorg20230301.engine.be.netty.websocket.controller;
 
-import com.cmcorg20230301.engine.be.model.model.dto.NotNullId;
+import com.cmcorg20230301.engine.be.model.model.dto.NotNullInteger;
 import com.cmcorg20230301.engine.be.netty.websocket.model.vo.NettyWebSocketRegisterVO;
 import com.cmcorg20230301.engine.be.netty.websocket.service.NettyWebSocketService;
 import com.cmcorg20230301.engine.be.security.model.vo.ApiResultVO;
@@ -24,8 +24,8 @@ public class NettyWebSocketController {
 
     @PostMapping("/register")
     @Operation(summary = "获取：webSocket连接地址和随机码")
-    public ApiResultVO<NettyWebSocketRegisterVO> register(@RequestBody @Valid NotNullId notNullId) {
-        return ApiResultVO.ok(baseService.register(notNullId));
+    public ApiResultVO<NettyWebSocketRegisterVO> register(@RequestBody @Valid NotNullInteger notNullInteger) {
+        return ApiResultVO.ok(baseService.register(notNullInteger));
     }
 
 }

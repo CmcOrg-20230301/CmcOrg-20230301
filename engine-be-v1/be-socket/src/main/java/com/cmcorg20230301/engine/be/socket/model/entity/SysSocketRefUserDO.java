@@ -2,6 +2,7 @@ package com.cmcorg20230301.engine.be.socket.model.entity;
 
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.cmcorg20230301.engine.be.security.model.entity.BaseEntity;
+import com.cmcorg20230301.engine.be.security.model.enums.SysRequestCategoryEnum;
 import com.cmcorg20230301.engine.be.socket.model.enums.SysSocketOnlineTypeEnum;
 import com.cmcorg20230301.engine.be.socket.model.enums.SysSocketTypeEnum;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -38,10 +39,22 @@ public class SysSocketRefUserDO extends BaseEntity {
     @Schema(description = "socket 在线状态")
     private SysSocketOnlineTypeEnum onlineType;
 
+    @Schema(description = "ip")
+    private String ip;
+
     @Schema(description = "Ip2RegionUtil.getRegion() 获取到的 ip所处区域")
     private String region;
 
-    @Schema(description = "ip")
-    private String ip;
+    @Schema(description = "请求类别")
+    private SysRequestCategoryEnum category;
+
+    @Schema(description = "jwtHash")
+    private String jwtHash;
+
+    @Schema(description = "jwtHash剩余时间，单位：毫秒")
+    private Long jwtHashRemainMs;
+
+    @Schema(description = "User-Agent信息对象，json字符串")
+    private String userAgentJsonStr;
 
 }

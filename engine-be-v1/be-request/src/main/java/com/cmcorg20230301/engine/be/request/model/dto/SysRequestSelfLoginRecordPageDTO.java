@@ -13,10 +13,10 @@ public class SysRequestSelfLoginRecordPageDTO extends MyPageDTO {
     @Schema(description = "请求类别")
     private SysRequestCategoryEnum category;
 
-    @Schema(description = "Ip2RegionUtil.getRegion() 获取到的 ip所处区域")
-    private String region;
-
     @Schema(description = "ip")
     private String ip;
+
+    @Schema(description = "Ip2RegionUtil.getRegion() 获取到的 ip所处区域")
+    private String region;
 
 }

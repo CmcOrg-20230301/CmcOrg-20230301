@@ -9,6 +9,8 @@
         SELECT a.id     AS id,
                a.host   AS host,
                a.port   AS port,
+               a.scheme AS scheme,
+               a.type   AS type,
                COUNT(1) AS connectNumber
         FROM sys_socket a
                  LEFT JOIN sys_socket_ref_user b ON b.socket_id = a.id

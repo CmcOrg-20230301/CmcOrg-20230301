@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.annotation.EnumValue;
 import com.fasterxml.jackson.annotation.JsonValue;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * socket 在线状态
@@ -21,5 +22,26 @@ public enum SysSocketOnlineTypeEnum {
     @EnumValue
     @JsonValue
     private final int code;
+
+    @NotNull
+    public static SysSocketOnlineTypeEnum getByCode(Integer code) {
+
+        if (code == null) {
+            return ONLINE;
+        }
+
+        for (SysSocketOnlineTypeEnum item : SysSocketOnlineTypeEnum.values()) {
+
+            if (item.getCode() == code) {
+
+                return item;
+
+            }
+
+        }
+
+        return ONLINE;
+
+    }
 
 }
