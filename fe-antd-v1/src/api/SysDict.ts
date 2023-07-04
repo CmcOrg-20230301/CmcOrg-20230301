@@ -38,6 +38,7 @@ export interface SysDictPageDTO {
     type?: string // 字典类型
     dictKey?: string // 字典 key（不能重复），字典项要冗余这个 key，目的：方便操作
     enableFlag?: boolean // 是否启用
+    value?: number // 字典项 value（数字 123...）备注：字典为 -1，format：int32
     order?: MyOrderDTO // 排序字段
     sort?: Record<string, SortOrder> // 排序字段（只在前端使用，实际传值：order）
 }
