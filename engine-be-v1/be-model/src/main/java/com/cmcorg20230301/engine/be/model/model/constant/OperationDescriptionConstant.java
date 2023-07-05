@@ -7,4 +7,6 @@ public interface OperationDescriptionConstant {
 
     String SIGN_IN = "SIGN_IN"; // 登录
 
+    String WEB_SOCKET_CONNECT_ERROR = "WEB_SOCKET_CONNECT_ERROR"; // WebSocket连接错误时，使用
+
 }

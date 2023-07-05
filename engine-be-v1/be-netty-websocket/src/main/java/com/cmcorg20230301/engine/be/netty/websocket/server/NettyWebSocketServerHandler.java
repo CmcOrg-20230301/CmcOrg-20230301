@@ -5,11 +5,16 @@ import cn.hutool.core.map.MapUtil;
 import cn.hutool.core.net.url.UrlQuery;
 import cn.hutool.core.util.CharsetUtil;
 import cn.hutool.core.util.StrUtil;
+import com.cmcorg20230301.engine.be.ip2region.util.Ip2RegionUtil;
 import com.cmcorg20230301.engine.be.model.model.constant.LogTopicConstant;
+import com.cmcorg20230301.engine.be.model.model.constant.OperationDescriptionConstant;
 import com.cmcorg20230301.engine.be.netty.websocket.properties.NettyWebSocketProperties;
 import com.cmcorg20230301.engine.be.redisson.model.enums.RedisKeyEnum;
 import com.cmcorg20230301.engine.be.security.exception.BaseBizCodeEnum;
+import com.cmcorg20230301.engine.be.security.model.entity.SysRequestDO;
+import com.cmcorg20230301.engine.be.security.model.enums.SysRequestCategoryEnum;
 import com.cmcorg20230301.engine.be.security.model.vo.ApiResultVO;
+import com.cmcorg20230301.engine.be.security.util.RequestUtil;
 import com.cmcorg20230301.engine.be.socket.mapper.SysSocketRefUserMapper;
 import com.cmcorg20230301.engine.be.socket.model.entity.SysSocketRefUserDO;
 import io.netty.channel.Channel;
@@ -27,6 +32,7 @@ import org.redisson.api.RedissonClient;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
+import java.net.InetSocketAddress;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Component
@@ -168,7 +174,7 @@ public class NettyWebSocketServerHandler extends ChannelInboundHandlerAdapter {
         String code = Convert.toStr(urlQuery.get("code")); // 随机码
 
         if (StrUtil.isBlank(code)) {
-            handleFullHttpRequestError(ctx);
+            handleFullHttpRequestError(ctx, urlQuery.toString(), "code为空");
         }
 
         String key = RedisKeyEnum.PRE_WEB_SOCKET_CODE.name() + code;
@@ -176,11 +182,11 @@ public class NettyWebSocketServerHandler extends ChannelInboundHandlerAdapter {
         SysSocketRefUserDO sysSocketRefUserDO = redissonClient.<SysSocketRefUserDO>getBucket(key).getAndDelete();
 
         if (sysSocketRefUserDO == null) {
-            handleFullHttpRequestError(ctx); // 处理：非法连接
+            handleFullHttpRequestError(ctx, urlQuery.toString(), "SysSocketRefUserDO为null"); // 处理：非法连接
         }
 
         if (!sysSocketRefUserDO.getSocketId().equals(NettyWebSocketServer.sysSocketServerId)) {
-            handleFullHttpRequestError(ctx); // 处理：非法连接
+            handleFullHttpRequestError(ctx, urlQuery.toString(), "SocketId不相同"); // 处理：非法连接
         }
 
         // url包含参数，需要舍弃
@@ -220,9 +226,34 @@ public class NettyWebSocketServerHandler extends ChannelInboundHandlerAdapter {
     /**
      * 处理：非法连接
      */
-    private void handleFullHttpRequestError(@NotNull ChannelHandlerContext ctx) {
+    private void handleFullHttpRequestError(@NotNull ChannelHandlerContext ctx, String requestParam, String errorMsg) {
 
         ctx.close();
+
+        SysRequestDO sysRequestDO = new SysRequestDO();
+
+        sysRequestDO.setUri("");
+        sysRequestDO.setCostMsStr("");
+        sysRequestDO.setCostMs(0L);
+        sysRequestDO.setName("WebSocket连接错误");
+        sysRequestDO.setCategory(SysRequestCategoryEnum.PC_BROWSER_WINDOWS);
+
+        InetSocketAddress inetSocketAddress = (InetSocketAddress)ctx.channel().remoteAddress();
+        String ip = inetSocketAddress.getAddress().getHostAddress();
+
+        sysRequestDO.setIp(ip);
+        sysRequestDO.setRegion(Ip2RegionUtil.getRegion(sysRequestDO.getIp()));
+
+        sysRequestDO.setSuccessFlag(false);
+        sysRequestDO.setErrorMsg(errorMsg);
+        sysRequestDO.setRequestParam(requestParam);
+        sysRequestDO.setType(OperationDescriptionConstant.WEB_SOCKET_CONNECT_ERROR);
+        sysRequestDO.setResponseValue("");
+        sysRequestDO.setEnableFlag(true);
+        sysRequestDO.setDelFlag(false);
+        sysRequestDO.setRemark("");
+
+        RequestUtil.add(sysRequestDO);
 
         ApiResultVO.error(BaseBizCodeEnum.ILLEGAL_REQUEST);
 
