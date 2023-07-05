@@ -82,8 +82,8 @@ export function GetByValueFromDictListPro(
 
     let resList: string[] = []
 
-    console.log('dictList', dictList)
-    console.log('valueList', valueList)
+    // console.log('dictList', dictList)
+    // console.log('valueList', valueList)
 
     if (dictList && valueList && valueList.length) {
 
