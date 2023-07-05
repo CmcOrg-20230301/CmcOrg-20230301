@@ -23,7 +23,7 @@ public class NettyWebSocketController {
     NettyWebSocketService baseService;
 
     @PostMapping("/register")
-    @Operation(summary = "获取：webSocket连接地址和随机码")
+    @Operation(summary = "获取：webSocket连接地址")
     public ApiResultVO<NettyWebSocketRegisterVO> register(@RequestBody @Valid NotNullInteger notNullInteger) {
         return ApiResultVO.ok(baseService.register(notNullInteger));
     }

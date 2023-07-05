@@ -47,7 +47,7 @@ public class NettyWebSocketServiceImpl implements NettyWebSocketService {
     HttpServletRequest httpServletRequest;
 
     /**
-     * 获取：webSocket连接地址和随机码
+     * 获取：webSocket连接地址
      */
     @Override
     public NettyWebSocketRegisterVO register(NotNullInteger notNullInteger) {

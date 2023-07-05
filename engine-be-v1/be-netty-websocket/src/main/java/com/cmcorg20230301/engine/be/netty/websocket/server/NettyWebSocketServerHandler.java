@@ -15,8 +15,8 @@ import com.cmcorg20230301.engine.be.security.model.entity.SysRequestDO;
 import com.cmcorg20230301.engine.be.security.model.enums.SysRequestCategoryEnum;
 import com.cmcorg20230301.engine.be.security.model.vo.ApiResultVO;
 import com.cmcorg20230301.engine.be.security.util.RequestUtil;
-import com.cmcorg20230301.engine.be.socket.mapper.SysSocketRefUserMapper;
 import com.cmcorg20230301.engine.be.socket.model.entity.SysSocketRefUserDO;
+import com.cmcorg20230301.engine.be.socket.service.SysSocketRefUserService;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
@@ -47,7 +47,7 @@ public class NettyWebSocketServerHandler extends ChannelInboundHandlerAdapter {
     RedissonClient redissonClient;
 
     @Resource
-    SysSocketRefUserMapper sysSocketRefUserMapper;
+    SysSocketRefUserService sysSocketRefUserService;
 
     // userId key
     private static final AttributeKey<Long> USER_ID_KEY = AttributeKey.valueOf("USER_ID_KEY");
@@ -91,7 +91,7 @@ public class NettyWebSocketServerHandler extends ChannelInboundHandlerAdapter {
 
         log.info("WebSocket 连接断开，用户：{}，连接数：{}", userId, channelMap.size());
 
-        sysSocketRefUserMapper.deleteById(sysSocketRefUserId);
+        sysSocketRefUserService.removeById(sysSocketRefUserId);
 
         super.channelInactive(ctx);
 
@@ -202,7 +202,7 @@ public class NettyWebSocketServerHandler extends ChannelInboundHandlerAdapter {
      */
     private void onlineHandle(Channel channel, SysSocketRefUserDO sysSocketRefUserDO) {
 
-        sysSocketRefUserMapper.insert(sysSocketRefUserDO);
+        sysSocketRefUserService.save(sysSocketRefUserDO);
 
         Long userId = sysSocketRefUserDO.getUserId();
 
