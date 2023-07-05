@@ -253,6 +253,7 @@ public class NettyWebSocketServerHandler extends ChannelInboundHandlerAdapter {
         sysRequestDO.setDelFlag(false);
         sysRequestDO.setRemark("");
 
+        // 添加一个：请求数据
         RequestUtil.add(sysRequestDO);
 
         ApiResultVO.error(BaseBizCodeEnum.ILLEGAL_REQUEST);
