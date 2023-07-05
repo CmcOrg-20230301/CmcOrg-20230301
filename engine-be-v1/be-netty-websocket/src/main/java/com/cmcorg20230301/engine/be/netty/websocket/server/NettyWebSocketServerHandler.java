@@ -27,9 +27,7 @@ import org.redisson.api.RedissonClient;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
-import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.CopyOnWriteArraySet;
+import java.util.concurrent.ConcurrentHashMap;
 
 @Component
 @ChannelHandler.Sharable
@@ -52,8 +50,9 @@ public class NettyWebSocketServerHandler extends ChannelInboundHandlerAdapter {
     private static final AttributeKey<Long> SYS_SOCKET_REF_USER_ID_KEY =
         AttributeKey.valueOf("SYS_SOCKET_REF_USER_ID_KEY");
 
-    // 用户通道 map，key：用户主键 id，value：通道集合
-    private static final Map<Long, Set<Channel>> USER_ID_CHANNEL_MAP = MapUtil.newConcurrentHashMap();
+    // 用户通道 map，大key：用户主键 id，小key：sysSocketRefUserId，value：通道
+    private static final ConcurrentHashMap<Long, ConcurrentHashMap<Long, Channel>> USER_ID_CHANNEL_MAP =
+        MapUtil.newConcurrentHashMap();
 
     /**
      * 连接成功时
@@ -79,9 +78,12 @@ public class NettyWebSocketServerHandler extends ChannelInboundHandlerAdapter {
 
         Long sysSocketRefUserId = channel.attr(SYS_SOCKET_REF_USER_ID_KEY).get();
 
-        //        Set<Channel> channelSet = USER_ID_CHANNEL_MAP.computeIfAbsent(userId, k -> new CopyOnWriteArraySet<>());
-        //
-        //        channelSet.remove(channel);
+        ConcurrentHashMap<Long, Channel> channelMap =
+            USER_ID_CHANNEL_MAP.computeIfAbsent(userId, k -> MapUtil.newConcurrentHashMap());
+
+        channelMap.remove(sysSocketRefUserId);
+
+        log.info("WebSocket 连接断开，用户：{}，连接数：{}", userId, channelMap.size());
 
         sysSocketRefUserMapper.deleteById(sysSocketRefUserId);
 
@@ -196,16 +198,22 @@ public class NettyWebSocketServerHandler extends ChannelInboundHandlerAdapter {
 
         sysSocketRefUserMapper.insert(sysSocketRefUserDO);
 
+        Long userId = sysSocketRefUserDO.getUserId();
+
+        Long sysSocketRefUserDOId = sysSocketRefUserDO.getId();
+
         // 绑定 userId
-        channel.attr(USER_ID_KEY).set(sysSocketRefUserDO.getUserId());
+        channel.attr(USER_ID_KEY).set(userId);
 
         // 绑定 sysSocketRefUserId
-        channel.attr(SYS_SOCKET_REF_USER_ID_KEY).set(sysSocketRefUserDO.getId());
+        channel.attr(SYS_SOCKET_REF_USER_ID_KEY).set(sysSocketRefUserDOId);
 
-        Set<Channel> channelSet =
-            USER_ID_CHANNEL_MAP.computeIfAbsent(sysSocketRefUserDO.getUserId(), k -> new CopyOnWriteArraySet<>());
+        ConcurrentHashMap<Long, Channel> channelMap =
+            USER_ID_CHANNEL_MAP.computeIfAbsent(userId, k -> MapUtil.newConcurrentHashMap());
 
-        channelSet.add(channel);
+        channelMap.put(sysSocketRefUserDOId, channel);
+
+        log.info("WebSocket 连接成功，用户：{}，连接数：{}", userId, channelMap.size());
 
     }
 

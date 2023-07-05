@@ -1,12 +1,16 @@
 package com.cmcorg20230301.engine.be.netty.tcp.protobuf.server;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.cmcorg20230301.engine.be.netty.tcp.protobuf.configuration.NettyTcpProtobufBeanPostProcessor;
 import com.cmcorg20230301.engine.be.netty.tcp.protobuf.properties.NettyTcpProtobufProperties;
 import com.cmcorg20230301.engine.be.redisson.util.IdGeneratorUtil;
 import com.cmcorg20230301.engine.be.security.configuration.base.BaseConfiguration;
 import com.cmcorg20230301.engine.be.security.util.MyEntityUtil;
 import com.cmcorg20230301.engine.be.security.util.MyThreadUtil;
+import com.cmcorg20230301.engine.be.socket.mapper.SysSocketRefUserMapper;
 import com.cmcorg20230301.engine.be.socket.model.entity.SysSocketDO;
+import com.cmcorg20230301.engine.be.socket.model.entity.SysSocketRefUserDO;
 import com.cmcorg20230301.engine.be.socket.model.enums.SysSocketTypeEnum;
 import com.cmcorg20230301.engine.be.socket.service.SysSocketService;
 import io.netty.bootstrap.ServerBootstrap;
@@ -52,6 +56,9 @@ public class NettyTcpProtobufServer {
     @Resource
     IdGeneratorUtil idGeneratorUtil;
 
+    @Resource
+    SysSocketRefUserMapper sysSocketRefUserMapper;
+
     private Long sysSocketServerId = null; // 备注：启动完成之后，这个属性才有值
 
     @PostConstruct
@@ -73,9 +80,16 @@ public class NettyTcpProtobufServer {
 
         if (sysSocketServerId != null) {
 
+            LambdaQueryWrapper<SysSocketRefUserDO> lambdaQueryWrapper = Wrappers.lambdaQuery();
+
+            // 备注：这里只能这样写，不然会报错
+            int deleteSysSocketRefUserCount = sysSocketRefUserMapper
+                .delete(lambdaQueryWrapper.eq(SysSocketRefUserDO::getSocketId, sysSocketServerId));
+
             boolean removeFlag = sysSocketService.removeById(sysSocketServerId);
 
-            log.info("NettyTcpProtobuf 下线{}：{}", removeFlag ? "成功" : "失败", sysSocketServerId);
+            log.info("NettyTcpProtobuf 下线{}：{}，移除连接：{}", removeFlag ? "成功" : "失败", sysSocketServerId,
+                deleteSysSocketRefUserCount);
 
         }
 
