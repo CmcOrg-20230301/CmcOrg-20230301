@@ -83,13 +83,13 @@ export function ConnectWebSocket() {
     return new Promise(async (resolve, reject) => {
 
             if (!window.WebSocket) {
-                return reject(new Error('您的浏览器不支持 webSocket协议，请更换浏览器再试'))
+                return reject(new Error('您的浏览器不支持 WebSocket协议，请更换浏览器再试'))
             }
 
             await GetWebSocketRegisterData()
 
             if (!webSocketUrl) {
-                return reject(new Error('连接 webSocket失败：暂无可用的服务器'))
+                return reject(new Error('连接 WebSocket失败：暂无可用的服务器'))
             }
 
             if (webSocket) {
@@ -115,7 +115,7 @@ export function ConnectWebSocket() {
 
             webSocket.onopen = (event) => {
 
-                console.log(`webSocket 连接 >> ${webSocketUrl?.substring(0, webSocketUrl!.indexOf("?"))}`)
+                console.log(`WebSocket 连接 >> ${webSocketUrl?.substring(0, webSocketUrl!.indexOf("?"))}`)
 
                 getAppDispatch()(setWebSocketStatus(true))
 
@@ -123,7 +123,7 @@ export function ConnectWebSocket() {
 
             webSocket.onclose = (event) => {
 
-                console.log('webSocket 关闭')
+                console.log('WebSocket 关闭')
 
                 getAppDispatch()(setWebSocketStatus(false))
 
