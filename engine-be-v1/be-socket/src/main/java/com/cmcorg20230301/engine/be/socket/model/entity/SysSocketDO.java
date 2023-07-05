@@ -13,7 +13,7 @@ import lombok.EqualsAndHashCode;
 @Schema(description = "v20230301：主表：socket")
 public class SysSocketDO extends BaseEntity {
 
-    @Schema(description = "协议")
+    @Schema(description = "协议：例如：ws://，wss://，http://，https://，等")
     private String scheme;
 
     @Schema(description = "主机")

@@ -67,7 +67,7 @@ public class NettyWebSocketServer {
 
         MyThreadUtil.execute(() -> {
 
-            // 启动，备注：如果是本地启动，请配置：--be.socket.web-socket.host=127.0.0.1
+            // 启动，备注：如果是本地启动，请配置：--be.socket.web-socket.scheme=ws:// --be.socket.web-socket.host=127.0.0.1
             start(nettyWebSocketProperties, nettyWebSocketServerHandler, port, sysSocketService);
 
         });

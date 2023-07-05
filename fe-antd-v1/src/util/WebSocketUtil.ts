@@ -96,9 +96,7 @@ export function ConnectWebSocket() {
                 return
             }
 
-            webSocket = new WebSocket(
-                `${import.meta.env.DEV ? 'ws:' : 'wss:'}//${webSocketUrl}`
-            )
+            webSocket = new WebSocket(webSocketUrl)
 
             webSocket.onmessage = (message: MessageEvent<string>) => {
 

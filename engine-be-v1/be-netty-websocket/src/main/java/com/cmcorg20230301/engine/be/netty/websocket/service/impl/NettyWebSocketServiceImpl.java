@@ -79,8 +79,15 @@ public class NettyWebSocketServiceImpl implements NettyWebSocketService {
 
         StrBuilder strBuilder = StrBuilder.create();
 
-        strBuilder.append(sysSocketDO.getHost()).append(":").append(sysSocketDO.getPort()).append(sysSocketDO.getPath())
-            .append("?code=").append(code);
+        strBuilder.append(sysSocketDO.getScheme()).append(sysSocketDO.getHost());
+
+        if ("ws://".equals(sysSocketDO.getScheme())) { // ws，才需要端口号
+
+            strBuilder.append(":").append(sysSocketDO.getPort());
+
+        }
+
+        strBuilder.append(sysSocketDO.getPath()).append("?code=").append(code);
 
         nettyWebSocketRegisterVO.setWebSocketUrl(strBuilder.toString());
 
