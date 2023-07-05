@@ -6,8 +6,7 @@ export interface NotNullInteger {
 }
 
 export interface NettyWebSocketRegisterVO {
-    code?: string // webSocket 连接码，备注：只能使用一次
-    webSocketUrl?: string // webSocket 连接地址，ip:port
+    webSocketUrl?: string // webSocket 连接地址，ip:port/path?code=xxx
 }
 
 // 获取：webSocket连接地址和随机码

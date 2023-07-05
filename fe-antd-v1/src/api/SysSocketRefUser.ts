@@ -29,6 +29,7 @@ export interface SysSocketRefUserDO {
     userId?: string // 用户主键 id，format：int64
     socketId?: string // socket主键 id，format：int64
     updateId?: string // 修改人id，format：int64
+    path?: string // 路径
     onlineType?: string // socket 在线状态
     createTime?: string // 创建时间，format：date-time
     port?: number // 冗余字段，端口，format：int32

@@ -17,13 +17,14 @@ export interface SysSocketPageDTO {
 }
 
 export interface SysSocketDO {
-    scheme?: string // 协议
+    scheme?: string // 协议：例如：ws://，wss://，http://，https://，等
     updateTime?: string // 修改时间，format：date-time
     remark?: string // 备注
     delFlag?: boolean // 是否逻辑删除
     type?: string // socket类型
     version?: number // 乐观锁，format：int32
     updateId?: string // 修改人id，format：int64
+    path?: string // 路径，备注：以 / 开头
     createTime?: string // 创建时间，format：date-time
     port?: number // 端口，format：int32
     createId?: string // 创建人id，format：int64
