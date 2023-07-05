@@ -6,7 +6,7 @@ export interface NotNullInteger {
 }
 
 export interface NettyWebSocketRegisterVO {
-    webSocketUrl?: string // webSocket 连接地址，ip:port/path?code=xxx
+    webSocketUrl?: string // webSocket 连接地址，scheme://ip:port/path?code=xxx
 }
 
 // 获取：webSocket连接地址和随机码
