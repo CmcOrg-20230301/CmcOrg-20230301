@@ -18,4 +18,6 @@ interface Window {
 
     WeixinJSBridge: any // WeixinJSBridge
 
+    WebSocket: WebSocket
+
 }

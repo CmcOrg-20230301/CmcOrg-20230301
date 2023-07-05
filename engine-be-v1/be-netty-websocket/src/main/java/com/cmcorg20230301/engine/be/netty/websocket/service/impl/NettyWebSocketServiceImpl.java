@@ -1,5 +1,6 @@
 package com.cmcorg20230301.engine.be.netty.websocket.service.impl;
 
+import cn.hutool.core.text.StrBuilder;
 import cn.hutool.core.util.IdUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.extra.servlet.ServletUtil;
@@ -76,8 +77,12 @@ public class NettyWebSocketServiceImpl implements NettyWebSocketService {
 
         String code = IdUtil.simpleUUID();
 
-        nettyWebSocketRegisterVO.setWebSocketUrl(sysSocketDO.getHost() + ":" + sysSocketDO.getPort());
-        nettyWebSocketRegisterVO.setCode(code);
+        StrBuilder strBuilder = StrBuilder.create();
+
+        strBuilder.append(sysSocketDO.getHost()).append(":").append(sysSocketDO.getPort()).append(sysSocketDO.getPath())
+            .append("?code=").append(code);
+
+        nettyWebSocketRegisterVO.setWebSocketUrl(strBuilder.toString());
 
         String key = RedisKeyEnum.PRE_WEB_SOCKET_CODE.name() + code;
 
@@ -91,6 +96,7 @@ public class NettyWebSocketServiceImpl implements NettyWebSocketService {
         sysSocketRefUserDO.setScheme(sysSocketDO.getScheme());
         sysSocketRefUserDO.setHost(sysSocketDO.getHost());
         sysSocketRefUserDO.setPort(sysSocketDO.getPort());
+        sysSocketRefUserDO.setPath(sysSocketDO.getPath());
         sysSocketRefUserDO.setType(sysSocketDO.getType());
 
         sysSocketRefUserDO.setOnlineType(SysSocketOnlineTypeEnum.getByCode(notNullInteger.getValue()));

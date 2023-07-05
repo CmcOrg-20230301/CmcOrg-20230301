@@ -132,6 +132,7 @@ public class NettyTcpProtobufServer {
             sysSocketDO.setScheme(MyEntityUtil.getNotNullStr(nettyTcpProtobufProperties.getScheme()));
             sysSocketDO.setHost(MyEntityUtil.getNotNullStr(nettyTcpProtobufProperties.getHost()));
             sysSocketDO.setPort(port);
+            sysSocketDO.setPath(MyEntityUtil.getNotNullStr(nettyTcpProtobufProperties.getPath()));
             sysSocketDO.setType(SysSocketTypeEnum.TCP_PROTOBUF);
             sysSocketDO.setEnableFlag(true);
             sysSocketDO.setDelFlag(false);

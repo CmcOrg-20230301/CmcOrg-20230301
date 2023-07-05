@@ -7,26 +7,27 @@ import {
     RouteContextType
 } from "@ant-design/pro-components";
 import CommonConstant from "@/model/constant/CommonConstant";
-import { Outlet } from "react-router-dom";
-import { getAppDispatch, getAppNav } from "@/MyApp";
-import React, { useEffect, useState } from "react";
-import { SysMenuDO, SysMenuUserSelfMenuList } from "@/api/SysMenu";
+import {Outlet} from "react-router-dom";
+import {getAppDispatch, getAppNav} from "@/MyApp";
+import React, {useEffect, useState} from "react";
+import {SysMenuDO, SysMenuUserSelfMenuList} from "@/api/SysMenu";
 import PathConstant from "@/model/constant/PathConstant";
-import { setUserSelfAvatarUrl, setUserSelfInfo, setUserSelfMenuList } from "@/store/userSlice";
-import { LogoutOutlined, UserOutlined } from "@ant-design/icons/lib";
-import { GetCopyright } from "@/layout/SignLayout/SignLayout";
-import { Avatar, Button, Dropdown, Space, Typography } from "antd";
+import {setUserSelfAvatarUrl, setUserSelfInfo, setUserSelfMenuList} from "@/store/userSlice";
+import {LogoutOutlined, UserOutlined} from "@ant-design/icons/lib";
+import {GetCopyright} from "@/layout/SignLayout/SignLayout";
+import {Avatar, Button, Dropdown, Space, Typography} from "antd";
 import SessionStorageKey from "@/model/constant/SessionStorageKey";
-import { ExecConfirm, ToastError, ToastSuccess } from "@/util/ToastUtil";
-import { SignOut } from "@/util/UserUtil";
-import { useAppSelector } from "@/store";
-import { UserSelfInfo } from "@/api/UserSelf";
+import {ExecConfirm, ToastError, ToastSuccess} from "@/util/ToastUtil";
+import {SignOut} from "@/util/UserUtil";
+import {useAppSelector} from "@/store";
+import {UserSelfInfo} from "@/api/UserSelf";
 import MyIcon from "@/componse/MyIcon/MyIcon";
-import { ListToTree } from "@/util/TreeUtil";
-import { InDev } from "@/util/CommonUtil";
-import { SignOutSelf } from "@/api/SignOut";
-import { RouterMapKeyList } from "@/router/RouterMap";
-import { SysFileGetPublicUrl } from "@/api/SysFile";
+import {ListToTree} from "@/util/TreeUtil";
+import {InDev} from "@/util/CommonUtil";
+import {SignOutSelf} from "@/api/SignOut";
+import {RouterMapKeyList} from "@/router/RouterMap";
+import {SysFileGetPublicUrl} from "@/api/SysFile";
+import {ConnectWebSocket} from "@/util/WebSocketUtil";
 
 // 前往：第一个页面
 function goFirstPage(menuList: SysMenuDO[]) {
@@ -73,7 +74,7 @@ export default function () {
     function doSetElement(userSelfMenuList: SysMenuDO[]) {
 
         if (element == null) {
-            setElement(<AdminLayoutElement userSelfMenuList={userSelfMenuList} />)
+            setElement(<AdminLayoutElement userSelfMenuList={userSelfMenuList}/>)
         }
 
     }
@@ -94,6 +95,8 @@ export default function () {
             appDispatch(setUserSelfMenuList(res.data))
             doSetElement(res.data)
             goFirstPage(res.data)
+
+            ConnectWebSocket() // 连接 webSocket
 
         })
 
@@ -131,7 +134,7 @@ function AdminLayoutElement(props: IAdminLayoutElement) {
 
             if (avatarFileId as any !== -1) {
 
-                SysFileGetPublicUrl({ idSet: [avatarFileId!] }).then(res => {
+                SysFileGetPublicUrl({idSet: [avatarFileId!]}).then(res => {
 
                     appDispatch(setUserSelfAvatarUrl(res.data.map![avatarFileId] || ''))
 
@@ -160,7 +163,7 @@ function AdminLayoutElement(props: IAdminLayoutElement) {
 
                     userSelfMenuListTemp.forEach(item => {
 
-                        item.icon = <MyIcon icon={item.icon as string} />
+                        item.icon = <MyIcon icon={item.icon as string}/>
                         item.hideInMenu = !item.showFlag
 
                     })
@@ -252,7 +255,7 @@ function AdminLayoutElement(props: IAdminLayoutElement) {
                                             个人中心
                                         </a>,
 
-                                        icon: <UserOutlined />
+                                        icon: <UserOutlined/>
                                     },
                                     {
                                         key: '2',
@@ -276,7 +279,7 @@ function AdminLayoutElement(props: IAdminLayoutElement) {
                                             退出登录
                                         </a>,
 
-                                        icon: <LogoutOutlined />
+                                        icon: <LogoutOutlined/>
                                     },
                                 ]
                             }}>
@@ -304,8 +307,8 @@ function AdminLayoutElement(props: IAdminLayoutElement) {
 
                                         />
 
-                                        <Typography.Text ellipsis style={{ width: 95 }}
-                                            type="secondary">{userSelfInfo.nickname}</Typography.Text>
+                                        <Typography.Text ellipsis style={{width: 95}}
+                                                         type="secondary">{userSelfInfo.nickname}</Typography.Text>
 
                                     </Space>
 
@@ -331,7 +334,7 @@ function AdminLayoutElement(props: IAdminLayoutElement) {
 
             <PageContainer>
 
-                <Outlet />
+                <Outlet/>
 
             </PageContainer>
 

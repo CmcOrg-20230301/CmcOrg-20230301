@@ -135,6 +135,7 @@ public class NettyWebSocketServer {
             sysSocketDO.setScheme(MyEntityUtil.getNotNullStr(nettyWebSocketProperties.getScheme()));
             sysSocketDO.setHost(MyEntityUtil.getNotNullStr(nettyWebSocketProperties.getHost()));
             sysSocketDO.setPort(port);
+            sysSocketDO.setPath(MyEntityUtil.getNotNullStr(nettyWebSocketProperties.getPath()));
             sysSocketDO.setType(SysSocketTypeEnum.WEB_SOCKET);
             sysSocketDO.setEnableFlag(true);
             sysSocketDO.setDelFlag(false);

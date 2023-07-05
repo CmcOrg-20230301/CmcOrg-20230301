@@ -13,6 +13,7 @@ import {PasswordRSAEncrypt, RSAEncryptPro} from "@/util/RsaUtil";
 import {SignEmailForgetPassword, SignEmailForgetPasswordDTO, SignEmailForgetPasswordSendCode} from "@/api/SignEmail";
 import {ToastSuccess} from "@/util/ToastUtil";
 import {ValidatorUtil} from "@/util/ValidatorUtil";
+import {UseEffectSign} from "@/page/sign/SignUp/SignUpUtil";
 
 type TSignInType = 'account'; // 登录方式
 
@@ -25,6 +26,8 @@ export interface ISignInForm {
 
 // 登录
 export default function () {
+
+    UseEffectSign()
 
     const [signInType, setSignInType] = useState<TSignInType>('account');
 

@@ -33,6 +33,9 @@ public class SysSocketRefUserDO extends BaseEntity {
     @Schema(description = "冗余字段，端口")
     private Integer port;
 
+    @Schema(description = "路径")
+    private String path;
+
     @Schema(description = "冗余字段，socket类型")
     private SysSocketTypeEnum type;
 

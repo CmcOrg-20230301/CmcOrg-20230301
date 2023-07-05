@@ -7,7 +7,7 @@ import {Tabs} from "antd";
 import {LockOutlined, SafetyCertificateOutlined, UserOutlined} from "@ant-design/icons/lib";
 import {getAppNav} from "@/MyApp";
 import PathConstant from "@/model/constant/PathConstant";
-import {SendCode, SignUpFormHandler} from "@/page/sign/SignUp/SignUpUtil";
+import {SendCode, SignUpFormHandler, UseEffectSign} from "@/page/sign/SignUp/SignUpUtil";
 import {ValidatorUtil} from "@/util/ValidatorUtil";
 import Link from "antd/lib/typography/Link";
 
@@ -27,6 +27,8 @@ const signUpTypeArr = ['登录名', '邮箱']
 
 // 注册
 export default function () {
+
+    UseEffectSign()
 
     const [activeKey, setActiveKey] = useState<TSignUpType>('0');
     const formRef = useRef<ProFormInstance<ISignUpForm>>();

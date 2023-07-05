@@ -22,6 +22,9 @@ public class SysSocketDO extends BaseEntity {
     @Schema(description = "端口")
     private Integer port;
 
+    @Schema(description = "路径，备注：以 / 开头")
+    private String path;
+
     @Schema(description = "socket类型")
     private SysSocketTypeEnum type;
 

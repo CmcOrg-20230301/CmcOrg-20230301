@@ -1,18 +1,34 @@
-import {createSlice} from '@reduxjs/toolkit'
+import {IWebSocketMessage} from "@/util/WebSocketUtil";
+import {createSlice, PayloadAction} from '@reduxjs/toolkit'
 
 interface ICommonSlice {
+    webSocketMessage: IWebSocketMessage<any> // webSocket消息
+    webSocketStatus: boolean // webSocket连接状态
 }
 
-const initialState: ICommonSlice = {}
+const initialState: ICommonSlice = {
+    webSocketMessage: {} as IWebSocketMessage<any>,
+    webSocketStatus: false,
+}
 
 export const commonSlice = createSlice({
 
     name: 'commonSlice',
     initialState,
-    reducers: {},
+    reducers: {
+
+        setWebSocketMessage(state, action: PayloadAction<IWebSocketMessage<any>>) {
+            state.webSocketMessage = action.payload
+        },
+
+        setWebSocketStatus(state, action: PayloadAction<boolean>) {
+            state.webSocketStatus = action.payload
+        },
+
+    },
 
 })
 
-export const {} = commonSlice.actions
+export const {setWebSocketMessage, setWebSocketStatus} = commonSlice.actions
 
 export default commonSlice.reducer

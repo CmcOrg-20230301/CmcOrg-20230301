@@ -9,6 +9,7 @@
         SELECT a.id     AS id,
                a.host   AS host,
                a.port   AS port,
+               a.path   AS path,
                a.scheme AS scheme,
                a.type   AS type,
                COUNT(1) AS connectNumber

@@ -1,7 +1,5 @@
-// import {SignEmailSignInPassword} from "@/api/sign/SignEmailController";
 import {ISignInForm} from "@/page/sign/SignIn/SignIn";
 import {PasswordRSAEncrypt} from "@/util/RsaUtil";
-// import {SignSignInNameSignInPassword} from "@/api/sign/SignSignInNameController";
 import {ToastSuccess} from "@/util/ToastUtil";
 import LocalStorageKey from "@/model/constant/LocalStorageKey";
 import {ApiResultVO} from "@/util/HttpUtil";

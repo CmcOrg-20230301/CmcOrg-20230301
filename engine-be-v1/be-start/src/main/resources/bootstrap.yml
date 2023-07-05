@@ -38,5 +38,10 @@ spring:
           - data-id: file.yml
             refresh: true
 
+          - data-id: pay.yml
+            refresh: true
+
+          - data-id: socket.yml
+
           - data-id: refresh.yml
             refresh: true

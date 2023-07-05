@@ -30,7 +30,7 @@ $http.interceptors.request.use(
             config.headers!['Authorization'] =
                 localStorage.getItem(LocalStorageKey.JWT) || ''
 
-            config.headers!['category'] = window.WeixinJSBridge ? 303 : 101 // 请求类别
+            config.headers!['category'] = 101 // 请求类别
 
         }
 

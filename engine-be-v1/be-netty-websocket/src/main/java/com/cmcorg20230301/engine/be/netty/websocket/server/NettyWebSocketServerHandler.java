@@ -10,7 +10,7 @@ import com.cmcorg20230301.engine.be.netty.websocket.properties.NettyWebSocketPro
 import com.cmcorg20230301.engine.be.redisson.model.enums.RedisKeyEnum;
 import com.cmcorg20230301.engine.be.security.exception.BaseBizCodeEnum;
 import com.cmcorg20230301.engine.be.security.model.vo.ApiResultVO;
-import com.cmcorg20230301.engine.be.security.util.MyJwtUtil;
+import com.cmcorg20230301.engine.be.socket.mapper.SysSocketRefUserMapper;
 import com.cmcorg20230301.engine.be.socket.model.entity.SysSocketRefUserDO;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandler;
@@ -29,6 +29,7 @@ import org.springframework.stereotype.Component;
 import javax.annotation.Resource;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.CopyOnWriteArraySet;
 
 @Component
 @ChannelHandler.Sharable
@@ -41,11 +42,18 @@ public class NettyWebSocketServerHandler extends ChannelInboundHandlerAdapter {
     @Resource
     RedissonClient redissonClient;
 
-    // 用户通道 map，key：用户主键 id，value：通道集合
-    private static final Map<Long, Set<Channel>> USER_ID_CHANNEL_MAP = MapUtil.newConcurrentHashMap();
+    @Resource
+    SysSocketRefUserMapper sysSocketRefUserMapper;
 
     // userId key
-    private static final AttributeKey<Long> USER_ID_KEY = AttributeKey.valueOf(MyJwtUtil.PAYLOAD_MAP_USER_ID_KEY);
+    private static final AttributeKey<Long> USER_ID_KEY = AttributeKey.valueOf("USER_ID_KEY");
+
+    // sysSocketRefUserId key
+    private static final AttributeKey<Long> SYS_SOCKET_REF_USER_ID_KEY =
+        AttributeKey.valueOf("SYS_SOCKET_REF_USER_ID_KEY");
+
+    // 用户通道 map，key：用户主键 id，value：通道集合
+    private static final Map<Long, Set<Channel>> USER_ID_CHANNEL_MAP = MapUtil.newConcurrentHashMap();
 
     /**
      * 连接成功时
@@ -64,6 +72,18 @@ public class NettyWebSocketServerHandler extends ChannelInboundHandlerAdapter {
     @SneakyThrows
     @Override
     public void channelInactive(@NotNull ChannelHandlerContext ctx) {
+
+        Channel channel = ctx.channel();
+
+        Long userId = channel.attr(USER_ID_KEY).get();
+
+        Long sysSocketRefUserId = channel.attr(SYS_SOCKET_REF_USER_ID_KEY).get();
+
+        //        Set<Channel> channelSet = USER_ID_CHANNEL_MAP.computeIfAbsent(userId, k -> new CopyOnWriteArraySet<>());
+        //
+        //        channelSet.remove(channel);
+
+        sysSocketRefUserMapper.deleteById(sysSocketRefUserId);
 
         super.channelInactive(ctx);
 
@@ -154,18 +174,44 @@ public class NettyWebSocketServerHandler extends ChannelInboundHandlerAdapter {
         SysSocketRefUserDO sysSocketRefUserDO = redissonClient.<SysSocketRefUserDO>getBucket(key).getAndDelete();
 
         if (sysSocketRefUserDO == null) {
-            handleFullHttpRequestError(ctx);
+            handleFullHttpRequestError(ctx); // 处理：非法连接
         }
 
         if (!sysSocketRefUserDO.getSocketId().equals(NettyWebSocketServer.sysSocketServerId)) {
-            handleFullHttpRequestError(ctx);
+            handleFullHttpRequestError(ctx); // 处理：非法连接
         }
 
         // url包含参数，需要舍弃
         fullHttpRequest.setUri(nettyWebSocketProperties.getPath());
 
+        // 处理：上线操作
+        onlineHandle(ctx.channel(), sysSocketRefUserDO);
+
     }
 
+    /**
+     * 处理：上线操作
+     */
+    private void onlineHandle(Channel channel, SysSocketRefUserDO sysSocketRefUserDO) {
+
+        sysSocketRefUserMapper.insert(sysSocketRefUserDO);
+
+        // 绑定 userId
+        channel.attr(USER_ID_KEY).set(sysSocketRefUserDO.getUserId());
+
+        // 绑定 sysSocketRefUserId
+        channel.attr(SYS_SOCKET_REF_USER_ID_KEY).set(sysSocketRefUserDO.getId());
+
+        Set<Channel> channelSet =
+            USER_ID_CHANNEL_MAP.computeIfAbsent(sysSocketRefUserDO.getUserId(), k -> new CopyOnWriteArraySet<>());
+
+        channelSet.add(channel);
+
+    }
+
+    /**
+     * 处理：非法连接
+     */
     private void handleFullHttpRequestError(@NotNull ChannelHandlerContext ctx) {
 
         ctx.close();

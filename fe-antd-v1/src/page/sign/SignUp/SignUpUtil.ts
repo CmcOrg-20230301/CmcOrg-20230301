@@ -7,6 +7,18 @@ import {SignEmailSignUp, SignEmailSignUpSendCode} from "@/api/SignEmail";
 import {ISignUpForm} from "@/page/sign/SignUp/SignUp";
 
 import {SignSignInNameSignUp} from "@/api/SignSignInName";
+import {useEffect} from "react";
+import {CloseWebSocket} from "@/util/WebSocketUtil";
+
+export function UseEffectSign() {
+
+    useEffect(() => {
+
+        CloseWebSocket() // 关闭 webSocket
+
+    }, [])
+
+}
 
 /**
  * 处理表单
