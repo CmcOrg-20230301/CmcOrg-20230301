@@ -14,6 +14,8 @@ function handleAllWebSocketUrl(webSocketUrlArr: string[], resolve: (value: (Prom
 
     let resWebSocketId = "" // 返回值：webSocketId
 
+    let checkMaxMs = 3000; // 检测时的最大延迟，单位：毫秒
+
     // 获取：对应的延迟
     webSocketUrlArr.forEach(item => {
 
@@ -26,6 +28,12 @@ function handleAllWebSocketUrl(webSocketUrlArr: string[], resolve: (value: (Prom
             beginTs = new Date().getTime();
 
             HeartBeatRequest(webSocket); // 心跳检测，请求
+
+            setTimeout(() => {
+
+                webSocket.close()
+
+            }, checkMaxMs)
 
         }
 
@@ -60,7 +68,7 @@ function handleAllWebSocketUrl(webSocketUrlArr: string[], resolve: (value: (Prom
 
         resolve(resWebSocketId) // 返回值
 
-    }, 3000)
+    }, checkMaxMs)
 
 }
 

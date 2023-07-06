@@ -67,7 +67,7 @@ export function CloseWebSocket() {
 export interface IWebSocketMessage<T> {
     uri: string // 路径
     data?: T // 数据
-    code: string // 响应代码，成功返回：200
+    code?: string // 响应代码，成功返回：200
 }
 
 // // 连接 webSocket
