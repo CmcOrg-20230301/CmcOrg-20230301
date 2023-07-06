@@ -64,6 +64,7 @@ function handleAllWebSocketUrl(webSocketUrlArr: string[], resolve: (value: (Prom
 
     setTimeout(() => {
 
+        console.log('resWebSocketId：', resWebSocketId)
         console.log('webSocketIdAndTsObj：', JSON.stringify(webSocketIdAndTsObj))
 
         resolve(resWebSocketId) // 返回值
