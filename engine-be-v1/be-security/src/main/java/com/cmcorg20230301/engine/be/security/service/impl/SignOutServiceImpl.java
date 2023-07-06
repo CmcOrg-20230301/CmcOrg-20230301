@@ -25,7 +25,7 @@ public class SignOutServiceImpl implements SignOutService {
 
         CallBack<Long> jwtHashRemainMsCallBack = new CallBack<>();
 
-        String jwtHash = MyJwtUtil.getJwtHashByRequest(httpServletRequest, jwtHashRemainMsCallBack);
+        String jwtHash = MyJwtUtil.getJwtHashByRequest(httpServletRequest, jwtHashRemainMsCallBack, null);
 
         if (StrUtil.isBlank(jwtHash)) {
             return BaseBizCodeEnum.OK;

@@ -1,20 +1,27 @@
 package com.cmcorg20230301.engine.be.netty.websocket.server;
 
+import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.convert.Convert;
 import cn.hutool.core.map.MapUtil;
 import cn.hutool.core.net.url.UrlQuery;
+import cn.hutool.core.util.ArrayUtil;
 import cn.hutool.core.util.CharsetUtil;
+import cn.hutool.core.util.ReflectUtil;
 import cn.hutool.core.util.StrUtil;
+import cn.hutool.json.JSONUtil;
 import com.cmcorg20230301.engine.be.ip2region.util.Ip2RegionUtil;
 import com.cmcorg20230301.engine.be.model.model.constant.LogTopicConstant;
 import com.cmcorg20230301.engine.be.model.model.constant.OperationDescriptionConstant;
+import com.cmcorg20230301.engine.be.netty.websocket.configuration.NettyWebSocketBeanPostProcessor;
 import com.cmcorg20230301.engine.be.netty.websocket.properties.NettyWebSocketProperties;
+import com.cmcorg20230301.engine.be.netty.websocket.util.WebSocketUtil;
 import com.cmcorg20230301.engine.be.redisson.model.enums.RedisKeyEnum;
 import com.cmcorg20230301.engine.be.security.exception.BaseBizCodeEnum;
 import com.cmcorg20230301.engine.be.security.model.entity.SysRequestDO;
 import com.cmcorg20230301.engine.be.security.model.enums.SysRequestCategoryEnum;
 import com.cmcorg20230301.engine.be.security.model.vo.ApiResultVO;
 import com.cmcorg20230301.engine.be.security.util.RequestUtil;
+import com.cmcorg20230301.engine.be.socket.model.dto.WebSocketMessageDTO;
 import com.cmcorg20230301.engine.be.socket.model.entity.SysSocketRefUserDO;
 import com.cmcorg20230301.engine.be.socket.service.SysSocketRefUserService;
 import io.netty.channel.Channel;
@@ -32,6 +39,7 @@ import org.redisson.api.RedissonClient;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
+import java.lang.reflect.Parameter;
 import java.net.InetSocketAddress;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -140,7 +148,7 @@ public class NettyWebSocketServerHandler extends ChannelInboundHandlerAdapter {
             try {
 
                 // 处理：TextWebSocketFrame
-                handleTextWebSocketFrame((TextWebSocketFrame)msg);
+                handleTextWebSocketFrame((TextWebSocketFrame)msg, ctx.channel());
 
             } finally {
 
@@ -160,7 +168,64 @@ public class NettyWebSocketServerHandler extends ChannelInboundHandlerAdapter {
     /**
      * 处理：TextWebSocketFrame
      */
-    private void handleTextWebSocketFrame(@NotNull TextWebSocketFrame textWebSocketFrame) {
+    private void handleTextWebSocketFrame(@NotNull TextWebSocketFrame textWebSocketFrame, Channel channel) {
+
+        String text = textWebSocketFrame.text();
+
+        WebSocketMessageDTO<?> dto = JSONUtil.toBean(text, WebSocketMessageDTO.class);
+
+        String uri = dto.getUri();
+
+        NettyWebSocketBeanPostProcessor.MappingValue mappingValue =
+            NettyWebSocketBeanPostProcessor.getMappingValueByKey(uri);
+
+        if (mappingValue == null) {
+
+            WebSocketMessageDTO<?> webSocketMessageDTO = new WebSocketMessageDTO<>();
+
+            webSocketMessageDTO.setUri(uri);
+            webSocketMessageDTO.setCode(404);
+
+            WebSocketUtil.send(channel, webSocketMessageDTO);
+
+            return;
+
+        }
+
+        Parameter[] parameterArr = mappingValue.getMethod().getParameters();
+
+        Object[] args = null;
+
+        if (ArrayUtil.isNotEmpty(parameterArr)) {
+
+            Parameter parameter = parameterArr[0];
+
+            Class<?> type = parameter.getType();
+
+            Object object = BeanUtil.toBean(dto.getData(), type);
+
+            args = new Object[] {object};
+
+        }
+
+        // 执行方法，备注：方法必须返回【NettyTcpProtoBufVO】类型
+        try {
+
+            Object invoke = ReflectUtil.invoke(mappingValue.getBean(), mappingValue.getMethod(), args);
+
+            WebSocketMessageDTO<Object> webSocketMessageDTO = new WebSocketMessageDTO<>();
+
+            webSocketMessageDTO.setUri(uri);
+            webSocketMessageDTO.setCode(200);
+            webSocketMessageDTO.setData(invoke);
+
+            WebSocketUtil.send(channel, webSocketMessageDTO);
+
+        } catch (Throwable e) {
+
+            e.printStackTrace();
+
+        }
 
     }
 

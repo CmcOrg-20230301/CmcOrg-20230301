@@ -2,6 +2,7 @@ import {NettyWebSocketRegister} from "@/api/http/NettyWebSocket";
 import LocalStorageKey from "@/model/constant/LocalStorageKey";
 import {getAppDispatch} from "@/MyApp";
 import {setWebSocketMessage, setWebSocketStatus} from "@/store/commonSlice";
+import {WebSocketSend} from "@/util/webSocket/WebSocketHelper";
 
 let webSocketUrl: string | undefined = ''
 let webSocket: WebSocket | null = null
@@ -63,15 +64,6 @@ export function CloseWebSocket() {
 
 }
 
-export const WebSocketMap = new Map<string, <T>(data: IWebSocketMessage<T>) => void>();
-
-WebSocketMap.set("/netty/webSocket/heartBeat/response", (data: IWebSocketMessage<number>) => {
-
-
-})
-
-Send({uri: '/netty/webSocket/heartBeat/request', data: new Date().getTime()});
-
 export interface IWebSocketMessage<T> {
     uri: string // 路径
     data?: T // 数据
@@ -90,10 +82,6 @@ export function ConnectWebSocket() {
 
     return new Promise(async (resolve, reject) => {
 
-            if (!window.WebSocket) {
-                return reject(new Error('您的浏览器不支持 WebSocket协议，请更换浏览器再试'))
-            }
-
             await GetWebSocketRegisterData()
 
             if (!webSocketUrl) {
@@ -105,19 +93,6 @@ export function ConnectWebSocket() {
             }
 
             webSocket = new WebSocket(webSocketUrl)
-
-            webSocket.onmessage = (message: MessageEvent<string>) => {
-
-                const webSocketMessage: IWebSocketMessage<any> = JSON.parse(message.data)
-
-                // 更新 redux里面 webSocket的值
-                getAppDispatch()(setWebSocketMessage({} as IWebSocketMessage<any>)) // 先重置，再设置值
-
-                setTimeout(() => {
-                    getAppDispatch()(setWebSocketMessage(webSocketMessage))
-                }, 200)
-
-            }
 
             webSocket.onopen = (event) => {
 
@@ -131,20 +106,34 @@ export function ConnectWebSocket() {
 
                 heartBeatInterval = setInterval(() => {
 
+                    Send({uri: '/netty/webSocket/heartBeat/request', data: new Date().getTime()});
 
                 }, 30 * 1000);
 
             }
 
-            webSocket.onclose = (event) => {
+        webSocket.onmessage = (message: MessageEvent<string>) => {
 
-                console.log('WebSocket 关闭')
+            const webSocketMessage: IWebSocketMessage<any> = JSON.parse(message.data)
 
-                getAppDispatch()(setWebSocketStatus(false))
+            // 更新 redux里面 webSocket的值
+            getAppDispatch()(setWebSocketMessage({} as IWebSocketMessage<any>)) // 先重置，再设置值
 
-                if (heartBeatInterval) {
-                    clearInterval(heartBeatInterval)
-                }
+            setTimeout(() => {
+                getAppDispatch()(setWebSocketMessage(webSocketMessage))
+            }, 200)
+
+        }
+
+        webSocket.onclose = (event) => {
+
+            console.log('WebSocket 关闭')
+
+            getAppDispatch()(setWebSocketStatus(false))
+
+            if (heartBeatInterval) {
+                clearInterval(heartBeatInterval)
+            }
 
                 setTimeout(() => {
 
@@ -164,14 +153,6 @@ export function ConnectWebSocket() {
  */
 export function Send<T>(webSocketMessage: IWebSocketMessage<T>) {
 
-    if (webSocket != null && webSocket.readyState == webSocket.OPEN) {
-
-        webSocket.send(JSON.stringify(webSocketMessage))
-
-        return true;
-
-    }
-
-    return false;
+    return WebSocketSend(webSocket, webSocketMessage);
 
 }

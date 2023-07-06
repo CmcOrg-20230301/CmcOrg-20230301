@@ -1,4 +1,4 @@
-import {IWebSocketMessage} from "@/util/WebSocketUtil";
+import {IWebSocketMessage} from "@/util/webSocket/WebSocketUtil";
 import {createSlice, PayloadAction} from '@reduxjs/toolkit'
 
 interface ICommonSlice {

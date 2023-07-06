@@ -54,8 +54,8 @@ public class SysSocketRefUserDO extends BaseEntity {
     @Schema(description = "jwtHash")
     private String jwtHash;
 
-    @Schema(description = "jwtHash剩余时间，单位：毫秒")
-    private Long jwtHashRemainMs;
+    @Schema(description = "jwtHash未来过期的时间戳")
+    private Long jwtHashExpireTs;
 
     @Schema(description = "User-Agent信息对象，json字符串")
     private String userAgentJsonStr;

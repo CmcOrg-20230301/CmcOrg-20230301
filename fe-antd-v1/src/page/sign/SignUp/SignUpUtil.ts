@@ -8,7 +8,7 @@ import {ISignUpForm} from "@/page/sign/SignUp/SignUp";
 
 import {SignSignInNameSignUp} from "@/api/http/SignSignInName";
 import {useEffect} from "react";
-import {CloseWebSocket} from "@/util/WebSocketUtil";
+import {CloseWebSocket} from "@/util/webSocket/WebSocketUtil";
 
 export function UseEffectSign() {
 

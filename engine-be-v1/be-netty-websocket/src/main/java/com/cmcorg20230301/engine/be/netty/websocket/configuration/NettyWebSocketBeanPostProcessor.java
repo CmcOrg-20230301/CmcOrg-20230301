@@ -23,7 +23,7 @@ import java.util.Map;
 @Component
 public class NettyWebSocketBeanPostProcessor implements BeanPostProcessor {
 
-    // 映射之后的 map
+    // 映射之后的 map，key：uri，value：对象
     private static final Map<String, MappingValue> MAPPING_MAP = MapUtil.newHashMap();
 
     public static MappingValue getMappingValueByKey(String key) {

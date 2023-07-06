@@ -258,7 +258,7 @@ public class MyJwtUtil {
      * 获取：请求里面的 jwtHash值
      */
     public static String getJwtHashByRequest(HttpServletRequest httpServletRequest,
-        CallBack<Long> jwtHashRemainMsCallBack) {
+        @Nullable CallBack<Long> jwtHashRemainMsCallBack, @Nullable CallBack<Long> expireTsCallBack) {
 
         // 从请求头里，获取：jwt字符串
         String jwtStr = MyJwtUtil.getJwtStrByRequest(httpServletRequest);
@@ -288,6 +288,12 @@ public class MyJwtUtil {
         if (jwtHashRemainMsCallBack != null) {
 
             jwtHashRemainMsCallBack.setValue(remainMs);
+
+        }
+
+        if (expireTsCallBack != null) {
+
+            expireTsCallBack.setValue(expiresDate.getTime());
 
         }
 
