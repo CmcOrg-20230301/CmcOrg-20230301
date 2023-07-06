@@ -1,7 +1,7 @@
 import {GetDictList, GetDictListByKey, YesNoDict} from "@/util/DictUtil";
-import {SysRequestDO, SysRequestPageDTO} from "@/api/SysRequest";
+import {SysRequestDO, SysRequestPageDTO} from "@/api/http/SysRequest";
 import {HandlerRegion} from "@/util/StrUtil";
-import {SysUserDictList} from "@/api/SysUser";
+import {SysUserDictList} from "@/api/http/SysUser";
 import {Typography} from "antd";
 import {ProColumns} from "@ant-design/pro-components";
 

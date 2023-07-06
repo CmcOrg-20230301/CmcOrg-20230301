@@ -1,10 +1,11 @@
-import {NettyWebSocketRegister} from "@/api/NettyWebSocket";
+import {NettyWebSocketRegister} from "@/api/http/NettyWebSocket";
 import LocalStorageKey from "@/model/constant/LocalStorageKey";
 import {getAppDispatch} from "@/MyApp";
 import {setWebSocketMessage, setWebSocketStatus} from "@/store/commonSlice";
 
 let webSocketUrl: string | undefined = ''
 let webSocket: WebSocket | null = null
+let heartBeatInterval: any = null // 心跳检测，定时器
 
 // 备注：开发环境的超时时间设置长一点
 const retryTime = import.meta.env.DEV ? 5000 : 2000
@@ -64,8 +65,15 @@ export function CloseWebSocket() {
 
 export const WebSocketMap = new Map<string, <T>(data: IWebSocketMessage<T>) => void>();
 
+WebSocketMap.set("/netty/webSocket/heartBeat/response", (data: IWebSocketMessage<number>) => {
+
+
+})
+
+Send({uri: '/netty/webSocket/heartBeat/request', data: new Date().getTime()});
+
 export interface IWebSocketMessage<T> {
-    path: string // 路径
+    uri: string // 路径
     data?: T // 数据
 }
 
@@ -117,6 +125,15 @@ export function ConnectWebSocket() {
 
                 getAppDispatch()(setWebSocketStatus(true))
 
+                if (heartBeatInterval) {
+                    clearInterval(heartBeatInterval)
+                }
+
+                heartBeatInterval = setInterval(() => {
+
+
+                }, 30 * 1000);
+
             }
 
             webSocket.onclose = (event) => {
@@ -124,6 +141,10 @@ export function ConnectWebSocket() {
                 console.log('WebSocket 关闭')
 
                 getAppDispatch()(setWebSocketStatus(false))
+
+                if (heartBeatInterval) {
+                    clearInterval(heartBeatInterval)
+                }
 
                 setTimeout(() => {
 
@@ -136,4 +157,21 @@ export function ConnectWebSocket() {
 
         }
     )
+}
+
+/**
+ * 发送消息
+ */
+export function Send<T>(webSocketMessage: IWebSocketMessage<T>) {
+
+    if (webSocket != null && webSocket.readyState == webSocket.OPEN) {
+
+        webSocket.send(JSON.stringify(webSocketMessage))
+
+        return true;
+
+    }
+
+    return false;
+
 }

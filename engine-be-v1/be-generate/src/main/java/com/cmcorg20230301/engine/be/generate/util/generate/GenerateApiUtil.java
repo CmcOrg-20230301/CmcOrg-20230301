@@ -30,7 +30,7 @@ public class GenerateApiUtil {
 
     private static final String SYSTEM_USER_DIR = System.getProperty("user.dir"); // 例如：D:\GitHub\CmcOrg-20230301
 
-    private static final String API_PATH = SYSTEM_USER_DIR + "/fe-antd-v1/src/api/";
+    private static final String API_PATH = SYSTEM_USER_DIR + "/fe-antd-v1/src/api/http";
 
     private static final String TS = ".ts";
 

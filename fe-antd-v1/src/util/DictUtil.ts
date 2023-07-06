@@ -2,7 +2,7 @@ import {ProSchemaValueEnumType, RequestData} from "@ant-design/pro-components";
 import {ListToTree} from "./TreeUtil";
 import MyPageDTO from "@/model/dto/MyPageDTO";
 import {AxiosRequestConfig} from "axios";
-import {SysDictListByDictKey} from "@/api/SysDict";
+import {SysDictListByDictKey} from "@/api/http/SysDict";
 
 // 将 map转换为 下拉选 list
 export function NumberTextMapToSelectList(map: Map<string, { text: string }>) {

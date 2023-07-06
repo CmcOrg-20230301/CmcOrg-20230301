@@ -10,7 +10,11 @@ import {getAppNav} from "@/MyApp";
 import PathConstant from "@/model/constant/PathConstant";
 import Link from 'antd/es/typography/Link';
 import {PasswordRSAEncrypt, RSAEncryptPro} from "@/util/RsaUtil";
-import {SignEmailForgetPassword, SignEmailForgetPasswordDTO, SignEmailForgetPasswordSendCode} from "@/api/SignEmail";
+import {
+    SignEmailForgetPassword,
+    SignEmailForgetPasswordDTO,
+    SignEmailForgetPasswordSendCode
+} from "@/api/http/SignEmail";
 import {ToastSuccess} from "@/util/ToastUtil";
 import {ValidatorUtil} from "@/util/ValidatorUtil";
 import {UseEffectSign} from "@/page/sign/SignUp/SignUpUtil";

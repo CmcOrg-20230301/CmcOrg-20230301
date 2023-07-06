@@ -10,7 +10,7 @@ import CommonConstant from "@/model/constant/CommonConstant";
 import {Outlet} from "react-router-dom";
 import {getAppDispatch, getAppNav} from "@/MyApp";
 import React, {useEffect, useState} from "react";
-import {SysMenuDO, SysMenuUserSelfMenuList} from "@/api/SysMenu";
+import {SysMenuDO, SysMenuUserSelfMenuList} from "@/api/http/SysMenu";
 import PathConstant from "@/model/constant/PathConstant";
 import {setUserSelfAvatarUrl, setUserSelfInfo, setUserSelfMenuList} from "@/store/userSlice";
 import {LogoutOutlined, UserOutlined} from "@ant-design/icons/lib";
@@ -20,13 +20,13 @@ import SessionStorageKey from "@/model/constant/SessionStorageKey";
 import {ExecConfirm, ToastError, ToastSuccess} from "@/util/ToastUtil";
 import {SignOut} from "@/util/UserUtil";
 import {useAppSelector} from "@/store";
-import {UserSelfInfo} from "@/api/UserSelf";
+import {UserSelfInfo} from "@/api/http/UserSelf";
 import MyIcon from "@/componse/MyIcon/MyIcon";
 import {ListToTree} from "@/util/TreeUtil";
 import {InDev} from "@/util/CommonUtil";
-import {SignOutSelf} from "@/api/SignOut";
+import {SignOutSelf} from "@/api/http/SignOut";
 import {RouterMapKeyList} from "@/router/RouterMap";
-import {SysFileGetPublicUrl} from "@/api/SysFile";
+import {SysFileGetPublicUrl} from "@/api/http/SysFile";
 import {ConnectWebSocket} from "@/util/WebSocketUtil";
 
 // 前往：第一个页面

@@ -5,7 +5,7 @@ import {
     UserSelfResetAvatar,
     UserSelfUpdateInfo,
     UserSelfUpdateInfoDTO
-} from "@/api/UserSelf";
+} from "@/api/http/UserSelf";
 import {setUserSelfAvatarUrl, setUserSelfInfo} from "@/store/userSlice";
 import {getAppDispatch} from "@/MyApp";
 import {ActionType, ProDescriptions} from "@ant-design/pro-components";
@@ -17,7 +17,7 @@ import {DeleteOutlined, EyeOutlined} from "@ant-design/icons";
 import CommonConstant from "@/model/constant/CommonConstant";
 import MyIcon from "@/componse/MyIcon/MyIcon";
 import {CheckAvatarFileType, CheckFileSize, SysFileUpload} from "@/util/FileUtil";
-import {SysFileGetPublicUrl} from "@/api/SysFile";
+import {SysFileGetPublicUrl} from "@/api/http/SysFile";
 import {useAppSelector} from "@/store";
 
 // 个人资料

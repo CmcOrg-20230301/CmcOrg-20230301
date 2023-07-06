@@ -12,7 +12,7 @@ import {
     SignEmailUpdatePassword,
     SignEmailUpdatePasswordDTO,
     SignEmailUpdatePasswordSendCode
-} from "@/api//SignEmail";
+} from "@/api/http/SignEmail";
 import {useAppSelector} from "@/store";
 import {List, Modal} from "antd";
 import {ValidatorUtil} from "@/util/ValidatorUtil";
@@ -37,12 +37,12 @@ import {
     SignSignInNameUpdateAccountDTO,
     SignSignInNameUpdatePassword,
     SignSignInNameUpdatePasswordDTO
-} from "@/api/SignSignInName";
+} from "@/api/http/SignSignInName";
 import {PasswordRSAEncrypt, RSAEncryptPro} from "@/util/RsaUtil";
-import {SysRequestDO, SysRequestPageDTO, SysRequestSelfLoginRecord} from "@/api/SysRequest";
+import {SysRequestDO, SysRequestPageDTO, SysRequestSelfLoginRecord} from "@/api/http/SysRequest";
 import {HandlerRegion} from "@/util/StrUtil";
 import {GetDictListByKey} from "@/util/DictUtil";
-import {UserSelfRefreshJwtSecretSuf} from "@/api/UserSelf";
+import {UserSelfRefreshJwtSecretSuf} from "@/api/http/UserSelf";
 
 interface IUserSelfSetting {
 

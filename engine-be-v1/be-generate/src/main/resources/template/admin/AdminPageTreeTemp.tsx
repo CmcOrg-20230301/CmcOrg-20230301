@@ -19,7 +19,7 @@ import {
     AdminPageDTO,
     AdminPageVO,
     AdminTreeApi
-} from "@/api/AdminController";
+} from "@/api/http/AdminController";
 import TableColumnList from "./TableColumnList";
 import {ExecConfirm, ToastSuccess} from "@/util/ToastUtil";
 import SchemaFormColumnList, {InitForm} from "./SchemaFormColumnList";

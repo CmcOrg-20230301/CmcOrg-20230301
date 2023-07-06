@@ -1,5 +1,5 @@
 import {YesNoDict} from "@/util/DictUtil";
-import {SysDictInsertOrUpdateDTO} from "@/api/SysDict";
+import {SysDictInsertOrUpdateDTO} from "@/api/http/SysDict";
 import {ProFormColumnsType} from "@ant-design/pro-components";
 
 export const InitForm: SysDictInsertOrUpdateDTO = {} as SysDictInsertOrUpdateDTO

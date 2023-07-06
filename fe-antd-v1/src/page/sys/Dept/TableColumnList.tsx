@@ -1,6 +1,6 @@
 import {YesNoDict} from "@/util/DictUtil";
 import {ActionType, ProColumns} from "@ant-design/pro-components";
-import {SysDeptDeleteByIdSet, SysDeptDO, SysDeptInsertOrUpdateDTO} from "@/api/SysDept";
+import {SysDeptDeleteByIdSet, SysDeptDO, SysDeptInsertOrUpdateDTO} from "@/api/http/SysDept";
 import {ExecConfirm, ToastSuccess} from "@/util/ToastUtil";
 import {Dropdown} from "antd";
 import {CalcOrderNo} from "@/util/TreeUtil";

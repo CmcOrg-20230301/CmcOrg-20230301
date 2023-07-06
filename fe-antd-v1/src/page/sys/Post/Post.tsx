@@ -19,7 +19,7 @@ import {
     SysPostInsertOrUpdateDTO,
     SysPostPageDTO,
     SysPostTree
-} from "@/api/SysPost";
+} from "@/api/http/SysPost";
 import TableColumnList from "./TableColumnList";
 import {ExecConfirm, ToastSuccess} from "@/util/ToastUtil";
 import SchemaFormColumnList, {InitForm} from "./SchemaFormColumnList";

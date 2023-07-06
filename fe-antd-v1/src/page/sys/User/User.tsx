@@ -12,16 +12,16 @@ import {
     SysUserPageVO,
     SysUserRefreshJwtSecretSuf,
     SysUserResetAvatar
-} from "@/api/SysUser";
+} from "@/api/http/SysUser";
 import TableColumnList, {SysUserUpdatePasswordModalForm} from "./TableColumnList";
 import {ExecConfirm, ToastSuccess} from "@/util/ToastUtil";
 import SchemaFormColumnList, {InitForm} from "./SchemaFormColumnList";
 import CommonConstant from "@/model/constant/CommonConstant";
-import {SysFileGetPublicUrl} from "@/api/SysFile";
+import {SysFileGetPublicUrl} from "@/api/http/SysFile";
 import {DictLongListVO, GetByValueFromDictListPro, GetDictList} from "@/util/DictUtil";
-import {SysDeptPage} from "@/api/SysDept";
-import {SysPostPage} from "@/api/SysPost";
-import {SysRolePage} from "@/api/SysRole";
+import {SysDeptPage} from "@/api/http/SysDept";
+import {SysPostPage} from "@/api/http/SysPost";
+import {SysRolePage} from "@/api/http/SysRole";
 
 // 用户-管理
 export default function () {

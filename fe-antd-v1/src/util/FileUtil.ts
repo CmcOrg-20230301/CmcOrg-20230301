@@ -1,6 +1,6 @@
 import $http from "./HttpUtil";
 import {RcFile} from "antd/es/upload";
-import {NotNullId} from "@/api/SysFile";
+import {NotNullId} from "@/api/http/SysFile";
 
 // 下载文件：需要这样请求 $http({responseType: 'blob'})
 // 使用：download(res.data, res.headers['content-disposition'])

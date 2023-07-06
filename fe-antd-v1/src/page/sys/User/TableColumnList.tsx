@@ -9,7 +9,7 @@ import {
     SysUserResetAvatar,
     SysUserUpdatePassword,
     SysUserUpdatePasswordDTO
-} from "@/api/SysUser";
+} from "@/api/http/SysUser";
 import {ExecConfirm, ToastSuccess} from "@/util/ToastUtil";
 import CommonConstant from "@/model/constant/CommonConstant";
 import {EllipsisOutlined, EyeOutlined} from "@ant-design/icons";

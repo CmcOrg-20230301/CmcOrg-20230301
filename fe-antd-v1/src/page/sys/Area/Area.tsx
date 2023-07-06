@@ -19,7 +19,7 @@ import {
     SysAreaInsertOrUpdateDTO,
     SysAreaPageDTO,
     SysAreaTree
-} from "@/api/SysArea";
+} from "@/api/http/SysArea";
 import TableColumnList from "./TableColumnList";
 import {ExecConfirm, ToastSuccess} from "@/util/ToastUtil";
 import SchemaFormColumnList, {InitForm} from "./SchemaFormColumnList";

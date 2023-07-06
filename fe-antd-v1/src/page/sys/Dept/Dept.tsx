@@ -19,7 +19,7 @@ import {
     SysDeptInsertOrUpdateDTO,
     SysDeptPageDTO,
     SysDeptTree
-} from "@/api/SysDept";
+} from "@/api/http/SysDept";
 import TableColumnList from "./TableColumnList";
 import {ExecConfirm, ToastSuccess} from "@/util/ToastUtil";
 import SchemaFormColumnList, {InitForm} from "./SchemaFormColumnList";

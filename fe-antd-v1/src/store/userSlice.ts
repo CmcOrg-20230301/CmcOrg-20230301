@@ -1,5 +1,5 @@
-import {SysMenuDO} from "@/api/SysMenu";
-import {UserSelfInfoVO} from "@/api/UserSelf";
+import {SysMenuDO} from "@/api/http/SysMenu";
+import {UserSelfInfoVO} from "@/api/http/UserSelf";
 import LocalStorageKey from "@/model/constant/LocalStorageKey";
 import {createSlice, PayloadAction} from '@reduxjs/toolkit'
 

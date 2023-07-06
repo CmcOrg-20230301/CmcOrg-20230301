@@ -1,7 +1,7 @@
 import {GetDictList, GetDictTreeList, YesNoDict} from "@/util/DictUtil";
-import {SysPostInsertOrUpdateDTO, SysPostPage} from "@/api/SysPost";
+import {SysPostInsertOrUpdateDTO, SysPostPage} from "@/api/http/SysPost";
 import {ProFormColumnsType} from "@ant-design/pro-components";
-import {SysUserDictList} from "@/api/SysUser";
+import {SysUserDictList} from "@/api/http/SysUser";
 
 export const InitForm: SysPostInsertOrUpdateDTO = {} as SysPostInsertOrUpdateDTO
 

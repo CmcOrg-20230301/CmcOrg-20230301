@@ -6,7 +6,7 @@ import {
     SysRequestDO,
     SysRequestPage,
     SysRequestPageDTO
-} from "@/api/SysRequest";
+} from "@/api/http/SysRequest";
 import TableColumnList from "./TableColumnList";
 import CommonConstant from "@/model/constant/CommonConstant";
 import {Badge, Button, Space, Tooltip, Typography} from "antd";

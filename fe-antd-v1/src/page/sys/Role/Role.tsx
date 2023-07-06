@@ -10,7 +10,7 @@ import {
     SysRoleInsertOrUpdateDTO,
     SysRolePage,
     SysRolePageDTO
-} from "@/api/SysRole";
+} from "@/api/http/SysRole";
 import TableColumnList from "./TableColumnList";
 import {ExecConfirm, ToastSuccess} from "@/util/ToastUtil";
 import SchemaFormColumnList, {InitForm} from "./SchemaFormColumnList";

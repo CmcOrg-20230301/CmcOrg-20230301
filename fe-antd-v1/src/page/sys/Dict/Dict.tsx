@@ -19,7 +19,7 @@ import {
     SysDictInsertOrUpdateDTO,
     SysDictPageDTO,
     SysDictTree
-} from "@/api/SysDict";
+} from "@/api/http/SysDict";
 import TableColumnList from "./TableColumnList";
 import {ExecConfirm, ToastSuccess} from "@/util/ToastUtil";
 import SchemaFormColumnList, {InitForm} from "./SchemaFormColumnList";

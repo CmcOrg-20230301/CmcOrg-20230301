@@ -6,8 +6,8 @@ import {ApiResultVO} from "@/util/HttpUtil";
 import {getAppNav} from "@/MyApp";
 import PathConstant from "@/model/constant/PathConstant";
 import {validate} from "@/util/ValidatorUtil";
-import {SignEmailSignInPassword} from "@/api/SignEmail";
-import {SignSignInNameSignInPassword} from "@/api/SignSignInName";
+import {SignEmailSignInPassword} from "@/api/http/SignEmail";
+import {SignSignInNameSignInPassword} from "@/api/http/SignSignInName";
 
 /**
  * 处理表单

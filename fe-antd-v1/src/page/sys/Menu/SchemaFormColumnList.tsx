@@ -1,7 +1,7 @@
 import {RouterMapKeyList} from "@/router/RouterMap";
 import {GetDictList, GetDictTreeList, YesNoDict} from "@/util/DictUtil";
-import {SysMenuInsertOrUpdateDTO, SysMenuPage} from "@/api/SysMenu";
-import {SysRolePage} from "@/api/SysRole";
+import {SysMenuInsertOrUpdateDTO, SysMenuPage} from "@/api/http/SysMenu";
+import {SysRolePage} from "@/api/http/SysRole";
 import {FormInstance, ProFormColumnsType} from "@ant-design/pro-components";
 import MyIcon, {IconList} from "@/componse/MyIcon/MyIcon";
 import {Space} from "antd";

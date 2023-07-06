@@ -1,6 +1,6 @@
 import {YesNoDict} from "@/util/DictUtil";
 import {ActionType, ProColumns} from "@ant-design/pro-components";
-import {SysParamDeleteByIdSet, SysParamDO, SysParamInsertOrUpdateDTO} from "@/api/SysParam";
+import {SysParamDeleteByIdSet, SysParamDO, SysParamInsertOrUpdateDTO} from "@/api/http/SysParam";
 import {ExecConfirm, ToastSuccess} from "@/util/ToastUtil";
 import {Typography} from "antd";
 

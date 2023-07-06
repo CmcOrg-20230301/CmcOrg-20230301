@@ -2,7 +2,7 @@ import {YesNoDict} from "@/util/DictUtil";
 import {Dropdown, Tag} from "antd";
 import {EllipsisOutlined} from "@ant-design/icons/lib";
 import {ActionType, ProColumns} from "@ant-design/pro-components";
-import {SysDictDeleteByIdSet, SysDictDO, SysDictInsertOrUpdateDTO} from "@/api/SysDict";
+import {SysDictDeleteByIdSet, SysDictDO, SysDictInsertOrUpdateDTO} from "@/api/http/SysDict";
 import {ExecConfirm, ToastSuccess} from "@/util/ToastUtil";
 import {CalcOrderNo} from "@/util/TreeUtil";
 

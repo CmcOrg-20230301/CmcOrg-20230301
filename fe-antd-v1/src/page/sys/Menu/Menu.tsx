@@ -19,7 +19,7 @@ import {
     SysMenuInsertOrUpdateDTO,
     SysMenuPageDTO,
     SysMenuTree
-} from "@/api/SysMenu";
+} from "@/api/http/SysMenu";
 import TableColumnList from "./TableColumnList";
 import {ExecConfirm, ToastSuccess} from "@/util/ToastUtil";
 import SchemaFormColumnList, {InitForm} from "./SchemaFormColumnList";

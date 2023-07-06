@@ -1,12 +1,12 @@
 import {GetDictList, GetDictTreeList, YesNoDict} from "@/util/DictUtil";
-import {SysUserInsertOrUpdateDTO} from "@/api/SysUser";
+import {SysUserInsertOrUpdateDTO} from "@/api/http/SysUser";
 import {validate, ValidatorUtil} from "@/util/ValidatorUtil";
-import {SysRolePage} from "@/api/SysRole";
+import {SysRolePage} from "@/api/http/SysRole";
 import {FormInstance, ProFormColumnsType} from "@ant-design/pro-components";
 import {RandomNickname} from "@/util/UserUtil";
 import {TreeSelect} from "antd";
-import {SysDeptPage} from "@/api/SysDept";
-import {SysPostPage} from "@/api/SysPost";
+import {SysDeptPage} from "@/api/http/SysDept";
+import {SysPostPage} from "@/api/http/SysPost";
 
 export const InitForm: SysUserInsertOrUpdateDTO = {} as SysUserInsertOrUpdateDTO
 

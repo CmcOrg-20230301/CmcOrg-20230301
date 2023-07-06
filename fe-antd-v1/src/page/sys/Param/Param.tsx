@@ -10,7 +10,7 @@ import {
     SysParamInsertOrUpdateDTO,
     SysParamPage,
     SysParamPageDTO
-} from "@/api/SysParam";
+} from "@/api/http/SysParam";
 import TableColumnList from "./TableColumnList";
 import {ExecConfirm, ToastSuccess} from "@/util/ToastUtil";
 import SchemaFormColumnList, {InitForm} from "./SchemaFormColumnList";

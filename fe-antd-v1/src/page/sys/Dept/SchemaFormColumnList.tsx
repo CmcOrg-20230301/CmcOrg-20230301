@@ -1,8 +1,8 @@
 import {GetDictList, GetDictTreeList, YesNoDict} from "@/util/DictUtil";
-import {SysDeptInsertOrUpdateDTO, SysDeptPage} from "@/api/SysDept";
+import {SysDeptInsertOrUpdateDTO, SysDeptPage} from "@/api/http/SysDept";
 import {ProFormColumnsType} from "@ant-design/pro-components";
-import {SysAreaPage} from "@/api/SysArea";
-import {SysUserDictList} from "@/api/SysUser";
+import {SysAreaPage} from "@/api/http/SysArea";
+import {SysUserDictList} from "@/api/http/SysUser";
 import {TreeSelect} from "antd";
 
 export const InitForm: SysDeptInsertOrUpdateDTO = {} as SysDeptInsertOrUpdateDTO

@@ -3,10 +3,10 @@ import {ApiResultVO} from "@/util/HttpUtil";
 import PathConstant from "@/model/constant/PathConstant";
 import {ToastSuccess} from "@/util/ToastUtil";
 import {getAppNav} from "@/MyApp";
-import {SignEmailSignUp, SignEmailSignUpSendCode} from "@/api/SignEmail";
+import {SignEmailSignUp, SignEmailSignUpSendCode} from "@/api/http/SignEmail";
 import {ISignUpForm} from "@/page/sign/SignUp/SignUp";
 
-import {SignSignInNameSignUp} from "@/api/SignSignInName";
+import {SignSignInNameSignUp} from "@/api/http/SignSignInName";
 import {useEffect} from "react";
 import {CloseWebSocket} from "@/util/WebSocketUtil";
 

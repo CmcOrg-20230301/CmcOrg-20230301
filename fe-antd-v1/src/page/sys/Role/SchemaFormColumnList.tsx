@@ -1,8 +1,8 @@
 import {GetDictList, GetDictTreeList, YesNoDict} from "@/util/DictUtil";
-import {SysRoleInsertOrUpdateDTO} from "@/api/SysRole";
+import {SysRoleInsertOrUpdateDTO} from "@/api/http/SysRole";
 import {TreeSelect} from "antd";
-import {SysMenuPage} from "@/api/SysMenu";
-import {SysUserDictList} from "@/api/SysUser";
+import {SysMenuPage} from "@/api/http/SysMenu";
+import {SysUserDictList} from "@/api/http/SysUser";
 import {ProFormColumnsType} from "@ant-design/pro-components";
 
 export const InitForm: SysRoleInsertOrUpdateDTO = {} as SysRoleInsertOrUpdateDTO

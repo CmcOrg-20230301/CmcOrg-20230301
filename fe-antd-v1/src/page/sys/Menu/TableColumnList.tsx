@@ -1,6 +1,6 @@
 import {YesNoDict} from "@/util/DictUtil";
 import {ActionType, ModalForm, ProColumns, ProFormText} from "@ant-design/pro-components";
-import {SysMenuDeleteByIdSet, SysMenuDO, SysMenuInsertOrUpdate, SysMenuInsertOrUpdateDTO} from "@/api/SysMenu";
+import {SysMenuDeleteByIdSet, SysMenuDO, SysMenuInsertOrUpdate, SysMenuInsertOrUpdateDTO} from "@/api/http/SysMenu";
 import {ExecConfirm, ToastSuccess} from "@/util/ToastUtil";
 import React from "react";
 import {CalcOrderNo, DefaultOrderNo} from "@/util/TreeUtil";
