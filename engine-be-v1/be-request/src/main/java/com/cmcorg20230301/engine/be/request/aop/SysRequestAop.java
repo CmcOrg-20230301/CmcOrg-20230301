@@ -28,7 +28,6 @@ import org.aspectj.lang.annotation.Pointcut;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
 
@@ -36,9 +35,6 @@ import java.util.Date;
 @Component
 @Slf4j(topic = LogTopicConstant.REQUEST)
 public class SysRequestAop {
-
-    @Resource
-    HttpServletRequest httpServletRequest;
 
     /**
      * 切入点
@@ -50,11 +46,30 @@ public class SysRequestAop {
     @Around("pointcut() && @annotation(operation)")
     public Object around(ProceedingJoinPoint proceedingJoinPoint, Operation operation) throws Throwable {
 
+        HttpServletRequest httpServletRequest = RequestUtil.getRequest();
+
+        // 目的：因为 socket也会走这里，但是 socket没有 httpServletRequest对象
+        if (httpServletRequest == null) {
+
+            if (((MethodSignature)proceedingJoinPoint.getSignature()).getReturnType() == void.class) {
+
+                proceedingJoinPoint.proceed();
+
+                return null;
+
+            } else {
+
+                return proceedingJoinPoint.proceed();
+
+            }
+
+        }
+
+        String uri = httpServletRequest.getRequestURI();
+
         long costMs = System.currentTimeMillis();
 
         Date date = new Date();
-
-        String uri = httpServletRequest.getRequestURI();
 
         SysRequestDO sysRequestDO = new SysRequestDO();
 

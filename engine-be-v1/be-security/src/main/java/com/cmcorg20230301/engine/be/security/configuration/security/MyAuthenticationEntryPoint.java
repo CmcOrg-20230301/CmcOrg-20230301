@@ -1,6 +1,7 @@
 package com.cmcorg20230301.engine.be.security.configuration.security;
 
 import com.cmcorg20230301.engine.be.security.exception.BaseBizCodeEnum;
+import com.cmcorg20230301.engine.be.security.exception.ExceptionAdvice;
 import com.cmcorg20230301.engine.be.security.util.ResponseUtil;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;
@@ -19,6 +20,8 @@ public class MyAuthenticationEntryPoint implements AuthenticationEntryPoint {
 
         // 尚未登录，请先登录
         ResponseUtil.out(response, BaseBizCodeEnum.NOT_LOGGED_IN_YET);
+
+        ExceptionAdvice.handleRequest(request, null, BaseBizCodeEnum.NOT_LOGGED_IN_YET.getMsg(), "");
 
     }
 

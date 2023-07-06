@@ -13,6 +13,7 @@ import com.cmcorg20230301.engine.be.security.util.RequestUtil;
 import com.cmcorg20230301.engine.be.security.util.UserUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.extern.slf4j.Slf4j;
+import org.jetbrains.annotations.Nullable;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.validation.BindingResult;
@@ -62,7 +63,7 @@ public class ExceptionAdvice {
             if (method != null) {
 
                 // 处理：请求
-                handleRequest(method.getAnnotation(Operation.class),
+                handleRequest(httpServletRequest, method.getAnnotation(Operation.class),
                     StrUtil.maxLength(baseException.getMessage(), BaseConstant.STR_MAX_LENGTH_1000), StrUtil
                         .maxLength(JSONUtil.toJsonStr(e.getBindingResult().getTarget()),
                             BaseConstant.STR_MAX_LENGTH_1000));
@@ -80,7 +81,8 @@ public class ExceptionAdvice {
     /**
      * 处理：请求
      */
-    private void handleRequest(Operation operation, String errorMsg, String requestParam) {
+    public static void handleRequest(HttpServletRequest httpServletRequest, @Nullable Operation operation,
+        String errorMsg, String requestParam) {
 
         Date date = new Date();
 
@@ -158,7 +160,8 @@ public class ExceptionAdvice {
         } catch (BaseException baseException) {
 
             // 处理：请求
-            handleRequest(null, StrUtil.maxLength(baseException.getMessage(), BaseConstant.STR_MAX_LENGTH_1000), "");
+            handleRequest(httpServletRequest, null,
+                StrUtil.maxLength(baseException.getMessage(), BaseConstant.STR_MAX_LENGTH_1000), "");
 
             return getBaseExceptionApiResult(baseException);
 
@@ -186,7 +189,9 @@ public class ExceptionAdvice {
     @ExceptionHandler(value = AccessDeniedException.class)
     public ApiResultVO<?> handlerAccessDeniedException(AccessDeniedException e) {
 
-        e.printStackTrace();
+        Long currentUserIdDefault = UserUtil.getCurrentUserIdDefault();
+
+        log.info("权限不足：{}", currentUserIdDefault);
 
         try {
 
@@ -195,7 +200,8 @@ public class ExceptionAdvice {
         } catch (BaseException baseException) {
 
             // 处理：请求
-            handleRequest(null, StrUtil.maxLength(baseException.getMessage(), BaseConstant.STR_MAX_LENGTH_1000), "");
+            handleRequest(httpServletRequest, null,
+                StrUtil.maxLength(baseException.getMessage(), BaseConstant.STR_MAX_LENGTH_1000), "");
 
             return getBaseExceptionApiResult(baseException);
 

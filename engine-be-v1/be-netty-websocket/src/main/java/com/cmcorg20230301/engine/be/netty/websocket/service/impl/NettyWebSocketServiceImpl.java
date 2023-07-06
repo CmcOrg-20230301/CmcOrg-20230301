@@ -11,7 +11,6 @@ import cn.hutool.http.useragent.UserAgentUtil;
 import cn.hutool.json.JSONUtil;
 import com.cmcorg20230301.engine.be.ip2region.util.Ip2RegionUtil;
 import com.cmcorg20230301.engine.be.model.model.constant.BaseConstant;
-import com.cmcorg20230301.engine.be.model.model.dto.NotNullInteger;
 import com.cmcorg20230301.engine.be.netty.websocket.service.NettyWebSocketService;
 import com.cmcorg20230301.engine.be.redisson.model.enums.RedisKeyEnum;
 import com.cmcorg20230301.engine.be.security.model.entity.BaseEntityNoId;
@@ -52,7 +51,7 @@ public class NettyWebSocketServiceImpl implements NettyWebSocketService {
      * 获取：所有 webSocket连接地址，格式：scheme://ip:port/path?code=xxx
      */
     @Override
-    public Set<String> getAllWebSocketUrl(NotNullInteger notNullInteger) {
+    public Set<String> getAllWebSocketUrl() {
 
         CallBack<Long> expireTsCallBack = new CallBack<>();
 
@@ -76,8 +75,6 @@ public class NettyWebSocketServiceImpl implements NettyWebSocketService {
 
         Long currentUserId = UserUtil.getCurrentUserId();
 
-        SysSocketOnlineTypeEnum sysSocketOnlineTypeEnum = SysSocketOnlineTypeEnum.getByCode(notNullInteger.getValue());
-
         String ip = ServletUtil.getClientIP(httpServletRequest);
 
         String region = Ip2RegionUtil.getRegion(ip);
@@ -95,8 +92,8 @@ public class NettyWebSocketServiceImpl implements NettyWebSocketService {
         for (SysSocketDO item : sysSocketDOList) {
 
             // 处理：获取：所有 webSocket连接地址
-            handleGetAllWebSocketUrl(expireTsCallBack, jwtHash, currentUserNickName, currentUserId,
-                sysSocketOnlineTypeEnum, ip, region, sysRequestCategoryEnum, userAgentJsonStr, resSet, item);
+            handleGetAllWebSocketUrl(expireTsCallBack, jwtHash, currentUserNickName, currentUserId, ip, region,
+                sysRequestCategoryEnum, userAgentJsonStr, resSet, item);
 
         }
 
@@ -108,9 +105,8 @@ public class NettyWebSocketServiceImpl implements NettyWebSocketService {
      * 处理：获取：所有 webSocket连接地址
      */
     private void handleGetAllWebSocketUrl(CallBack<Long> expireTsCallBack, String jwtHash, String currentUserNickName,
-        Long currentUserId, SysSocketOnlineTypeEnum sysSocketOnlineTypeEnum, String ip, String region,
-        SysRequestCategoryEnum sysRequestCategoryEnum, String userAgentJsonStr, HashSet<String> resSet,
-        SysSocketDO sysSocketDO) {
+        Long currentUserId, String ip, String region, SysRequestCategoryEnum sysRequestCategoryEnum,
+        String userAgentJsonStr, HashSet<String> resSet, SysSocketDO sysSocketDO) {
 
         String code = IdUtil.simpleUUID();
 
@@ -141,7 +137,7 @@ public class NettyWebSocketServiceImpl implements NettyWebSocketService {
         sysSocketRefUserDO.setPath(sysSocketDO.getPath());
         sysSocketRefUserDO.setType(sysSocketDO.getType());
 
-        sysSocketRefUserDO.setOnlineType(sysSocketOnlineTypeEnum);
+        sysSocketRefUserDO.setOnlineType(SysSocketOnlineTypeEnum.ONLINE);
         sysSocketRefUserDO.setIp(ip);
         sysSocketRefUserDO.setRegion(region);
 

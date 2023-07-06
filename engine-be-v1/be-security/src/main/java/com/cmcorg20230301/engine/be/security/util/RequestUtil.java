@@ -102,7 +102,8 @@ public class RequestUtil {
             return SysRequestCategoryEnum.PC_BROWSER_WINDOWS;
         }
 
-        return SysRequestCategoryEnum.getByCode(Convert.toInt(httpServletRequest.getHeader(SecurityConstant.REQUEST_HEADER_CATEGORY)));
+        return SysRequestCategoryEnum
+            .getByCode(Convert.toInt(httpServletRequest.getHeader(SecurityConstant.REQUEST_HEADER_CATEGORY)));
 
     }
 

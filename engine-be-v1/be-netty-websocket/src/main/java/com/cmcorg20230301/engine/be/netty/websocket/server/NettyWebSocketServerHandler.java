@@ -39,6 +39,7 @@ import org.redisson.api.RedissonClient;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Parameter;
 import java.net.InetSocketAddress;
 import java.util.concurrent.ConcurrentHashMap;
@@ -208,10 +209,9 @@ public class NettyWebSocketServerHandler extends ChannelInboundHandlerAdapter {
 
         }
 
-        // 执行方法，备注：方法必须返回【NettyTcpProtoBufVO】类型
         try {
 
-            Object invoke = ReflectUtil.invoke(mappingValue.getBean(), mappingValue.getMethod(), args);
+            Object invoke = ReflectUtil.invokeRaw(mappingValue.getBean(), mappingValue.getMethod(), args);
 
             WebSocketMessageDTO<Object> webSocketMessageDTO = new WebSocketMessageDTO<>();
 
@@ -223,7 +223,17 @@ public class NettyWebSocketServerHandler extends ChannelInboundHandlerAdapter {
 
         } catch (Throwable e) {
 
-            e.printStackTrace();
+            if (e instanceof InvocationTargetException) {
+
+                Throwable targetException = ((InvocationTargetException)e).getTargetException();
+
+                targetException.printStackTrace();
+
+            } else {
+
+                e.printStackTrace();
+
+            }
 
         }
 

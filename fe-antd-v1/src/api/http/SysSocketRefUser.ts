@@ -19,6 +19,7 @@ export interface SysSocketRefUserPageDTO {
 }
 
 export interface SysSocketRefUserDO {
+    jwtHashExpireTs?: string // jwtHash未来过期的时间戳，format：int64
     scheme?: string // 冗余字段，协议
     ip?: string // ip
     updateTime?: string // 修改时间，format：date-time
@@ -41,7 +42,6 @@ export interface SysSocketRefUserDO {
     region?: string // Ip2RegionUtil.getRegion() 获取到的 ip所处区域
     category?: string // 请求类别
     enableFlag?: boolean // 是否启用
-    jwtHashRemainMs?: string // jwtHash剩余时间，单位：毫秒，format：int64
     jwtHash?: string // jwtHash
 }
 

@@ -27,7 +27,7 @@ import {InDev} from "@/util/CommonUtil";
 import {SignOutSelf} from "@/api/http/SignOut";
 import {RouterMapKeyList} from "@/router/RouterMap";
 import {SysFileGetPublicUrl} from "@/api/http/SysFile";
-import {ConnectWebSocket} from "@/util/webSocket/WebSocketUtil";
+import {GetWebSocketId} from "@/util/webSocket/WebSocketHelper";
 
 // 前往：第一个页面
 function goFirstPage(menuList: SysMenuDO[]) {
@@ -96,7 +96,8 @@ export default function () {
             doSetElement(res.data)
             goFirstPage(res.data)
 
-            ConnectWebSocket() // 连接 webSocket
+            // ConnectWebSocket() // 连接 webSocket
+            GetWebSocketId()
 
         })
 

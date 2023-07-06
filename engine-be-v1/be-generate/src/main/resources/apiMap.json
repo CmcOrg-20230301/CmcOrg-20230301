@@ -664,6 +664,13 @@
                     "type": "object",
                     "description": "数据",
                     "fieldMap": {
+                      "postIdSet": {
+                        "name": "postIdSet",
+                        "type": "integer",
+                        "description": "岗位 idSet",
+                        "format": "int64",
+                        "arrFlag": true
+                      },
                       "wxOpenId": {
                         "name": "wxOpenId",
                         "type": "string",
@@ -713,6 +720,13 @@
                         "type": "string",
                         "description": "密码，可为空，如果为空，则登录时需要提示【进行忘记密码操作】"
                       },
+                      "deptIdSet": {
+                        "name": "deptIdSet",
+                        "type": "integer",
+                        "description": "部门 idSet",
+                        "format": "int64",
+                        "arrFlag": true
+                      },
                       "createTime": {
                         "name": "createTime",
                         "type": "string",
@@ -735,17 +749,17 @@
                         "type": "string",
                         "description": "登录名，可以为空"
                       },
+                      "nickname": {
+                        "name": "nickname",
+                        "type": "string",
+                        "description": "昵称"
+                      },
                       "roleIdSet": {
                         "name": "roleIdSet",
                         "type": "integer",
                         "description": "角色 idSet",
                         "format": "int64",
                         "arrFlag": true
-                      },
-                      "nickname": {
-                        "name": "nickname",
-                        "type": "string",
-                        "description": "昵称"
                       },
                       "id": {
                         "name": "id",
@@ -1162,6 +1176,13 @@
                                 "type": "boolean",
                                 "description": "是否有密码"
                               },
+                              "postIdSet": {
+                                "name": "postIdSet",
+                                "type": "integer",
+                                "description": "岗位 idSet",
+                                "format": "int64",
+                                "arrFlag": true
+                              },
                               "lastActiveTime": {
                                 "name": "lastActiveTime",
                                 "type": "string",
@@ -1184,6 +1205,13 @@
                                 "type": "string",
                                 "description": "修改时间",
                                 "format": "date-time"
+                              },
+                              "deptIdSet": {
+                                "name": "deptIdSet",
+                                "type": "integer",
+                                "description": "部门 idSet",
+                                "format": "int64",
+                                "arrFlag": true
                               },
                               "phone": {
                                 "name": "phone",
@@ -1522,11 +1550,24 @@
             "type": "string",
             "description": "前端加密之后的密码"
           },
+          "postIdSet": {
+            "name": "postIdSet",
+            "type": "integer",
+            "description": "岗位 idSet",
+            "format": "int64",
+            "arrFlag": true
+          },
+          "deptIdSet": {
+            "name": "deptIdSet",
+            "type": "integer",
+            "description": "部门 idSet",
+            "format": "int64",
+            "arrFlag": true
+          },
           "phone": {
             "name": "phone",
             "type": "string",
             "description": "手机号码",
-            "pattern": "^(13[0-9]|14[01456879]|15[0-35-9]|16[2567]|17[0-8]|18[0-9]|19[0-35-9])\\d{8}$",
             "maxLength": 100,
             "minLength": 0
           },
@@ -1534,7 +1575,6 @@
             "name": "signInName",
             "type": "string",
             "description": "登录名",
-            "pattern": "^[\\u4E00-\\u9FA5A-Za-z0-9_-]{2,20}$",
             "maxLength": 20,
             "minLength": 0
           },
@@ -1571,7 +1611,6 @@
             "name": "email",
             "type": "string",
             "description": "邮箱",
-            "pattern": "^\\w+([-+.]\\w+)*@\\w+([-.]\\w+)*\\.\\w+([-.]\\w+)*$",
             "maxLength": 200,
             "minLength": 0
           },
@@ -1620,6 +1659,61 @@
           }
         }
       }
+    }
+  },
+  "NettyWebSocket": {
+    "/netty/webSocket/getAllWebSocketUrl": {
+      "path": "/netty/webSocket/getAllWebSocketUrl",
+      "method": "post",
+      "tag": "netty-webSocket",
+      "group": "NettyWebSocket",
+      "summary": "获取：所有 webSocket连接地址，格式：scheme://ip:port/path?code=xxx",
+      "response": {
+        "className": "ApiResultVOSetString",
+        "fieldMap": {
+          "ApiResultVOSetString": {
+            "className": "ApiResultVOSetString",
+            "type": "object",
+            "description": "统一响应实体类",
+            "fieldMap": {
+              "msg": {
+                "name": "msg",
+                "type": "string",
+                "description": "响应描述"
+              },
+              "code": {
+                "name": "code",
+                "type": "integer",
+                "description": "响应代码，成功返回：200",
+                "format": "int32"
+              },
+              "data": {
+                "name": "data",
+                "type": "string",
+                "description": "数据",
+                "arrFlag": true
+              },
+              "service": {
+                "name": "service",
+                "type": "string",
+                "description": "服务名"
+              },
+              "successFlag": {
+                "name": "successFlag",
+                "type": "boolean",
+                "description": "服务器是否收到请求，只会返回 true"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/netty/webSocket/heartBeat": {
+      "path": "/netty/webSocket/heartBeat",
+      "method": "post",
+      "tag": "WebSocket-心跳检测",
+      "group": "NettyWebSocket",
+      "summary": "心跳检测"
     }
   },
   "SysDept": {
@@ -5064,10 +5158,21 @@
                             "type": "object",
                             "description": "v20230301：关联表：socket，用户",
                             "fieldMap": {
+                              "jwtHashExpireTs": {
+                                "name": "jwtHashExpireTs",
+                                "type": "integer",
+                                "description": "jwtHash未来过期的时间戳",
+                                "format": "int64"
+                              },
                               "scheme": {
                                 "name": "scheme",
                                 "type": "string",
                                 "description": "冗余字段，协议"
+                              },
+                              "ip": {
+                                "name": "ip",
+                                "type": "string",
+                                "description": "ip"
                               },
                               "updateTime": {
                                 "name": "updateTime",
@@ -5088,7 +5193,7 @@
                               "type": {
                                 "name": "type",
                                 "type": "string",
-                                "description": "socket类型"
+                                "description": "冗余字段，socket类型"
                               },
                               "version": {
                                 "name": "version",
@@ -5114,6 +5219,16 @@
                                 "description": "修改人id",
                                 "format": "int64"
                               },
+                              "path": {
+                                "name": "path",
+                                "type": "string",
+                                "description": "路径"
+                              },
+                              "onlineType": {
+                                "name": "onlineType",
+                                "type": "string",
+                                "description": "socket 在线状态"
+                              },
                               "createTime": {
                                 "name": "createTime",
                                 "type": "string",
@@ -5135,12 +5250,17 @@
                               "nickname": {
                                 "name": "nickname",
                                 "type": "string",
-                                "description": "冗余字段，昵称"
+                                "description": "冗余字段，用户昵称"
                               },
                               "host": {
                                 "name": "host",
                                 "type": "string",
                                 "description": "冗余字段，主机"
+                              },
+                              "userAgentJsonStr": {
+                                "name": "userAgentJsonStr",
+                                "type": "string",
+                                "description": "User-Agent信息对象，json字符串"
                               },
                               "id": {
                                 "name": "id",
@@ -5148,10 +5268,25 @@
                                 "description": "主键id",
                                 "format": "int64"
                               },
+                              "region": {
+                                "name": "region",
+                                "type": "string",
+                                "description": "Ip2RegionUtil.getRegion() 获取到的 ip所处区域"
+                              },
+                              "category": {
+                                "name": "category",
+                                "type": "string",
+                                "description": "请求类别"
+                              },
                               "enableFlag": {
                                 "name": "enableFlag",
                                 "type": "boolean",
                                 "description": "是否启用"
+                              },
+                              "jwtHash": {
+                                "name": "jwtHash",
+                                "type": "string",
+                                "description": "jwtHash"
                               }
                             }
                           }
@@ -7697,6 +7832,12 @@
             "type": "boolean",
             "description": "是否启用"
           },
+          "value": {
+            "name": "value",
+            "type": "integer",
+            "description": "字典项 value（数字 123...）备注：字典为 -1",
+            "format": "int32"
+          },
           "order": {
             "className": "MyOrderDTO",
             "name": "order",
@@ -7902,6 +8043,12 @@
             "name": "enableFlag",
             "type": "boolean",
             "description": "是否启用"
+          },
+          "value": {
+            "name": "value",
+            "type": "integer",
+            "description": "字典项 value（数字 123...）备注：字典为 -1",
+            "format": "int32"
           },
           "order": {
             "className": "MyOrderDTO",
@@ -9518,7 +9665,7 @@
                               "scheme": {
                                 "name": "scheme",
                                 "type": "string",
-                                "description": "协议"
+                                "description": "协议：例如：ws://，wss://，http://，https://，等"
                               },
                               "updateTime": {
                                 "name": "updateTime",
@@ -9552,6 +9699,11 @@
                                 "type": "integer",
                                 "description": "修改人id",
                                 "format": "int64"
+                              },
+                              "path": {
+                                "name": "path",
+                                "type": "string",
+                                "description": "路径，备注：以 / 开头"
                               },
                               "createTime": {
                                 "name": "createTime",
