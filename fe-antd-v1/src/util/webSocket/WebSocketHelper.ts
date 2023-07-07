@@ -85,10 +85,11 @@ function handleAllWebSocketUrl(webSocketUrlArr: string[], resolve: (value: (Prom
  */
 export function GetWebSocketId() {
 
-    return new Promise<string>((resolve, reject) => {
+    return new Promise<string | void>(resolve => {
 
         if (!window.WebSocket) {
-            return reject(new Error('您的浏览器不支持 WebSocket协议，请更换浏览器再试'))
+            console.log('您的浏览器不支持 WebSocket协议，请更换浏览器再试')
+            return;
         }
 
         // 获取：所有的 webSocket连接
@@ -99,7 +100,7 @@ export function GetWebSocketId() {
 
         }).catch(() => {
 
-            reject(null)
+            resolve() // 备注：void就是 undefined
 
         })
 

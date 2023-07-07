@@ -69,7 +69,8 @@ export function ConnectWebSocket() {
 
 
     if (!window.WebSocket) {
-        throw new Error('您的浏览器不支持 WebSocket协议，请更换浏览器再试')
+        console.log('您的浏览器不支持 WebSocket协议，请更换浏览器再试')
+        return;
     }
 
     GetWebSocketUrl().then(webSocketUrl => {
@@ -83,7 +84,9 @@ export function ConnectWebSocket() {
 
             }, retryTime)
 
-            throw new Error('连接 WebSocket失败：暂无可用的服务器')
+            console.log('连接 WebSocket失败：暂无可用的服务器')
+            return;
+
         }
 
         if (myWebSocket) {

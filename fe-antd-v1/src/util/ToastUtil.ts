@@ -40,17 +40,17 @@ export function ExecConfirm(
 
         onOk: () => {
 
-            return new Promise(async (resolve, reject) => {
+            return new Promise<void>(async resolve => {
 
                 if (confirmFun) {
 
                     return await confirmFun()
-                        .then(() => resolve(null))
-                        .catch(() => resolve(null))
+                        .then(() => resolve())
+                        .catch(() => resolve())
 
                 }
 
-                return resolve(null) // 关闭 confirm弹窗
+                return resolve() // 关闭 confirm弹窗
 
             })
 
@@ -58,17 +58,17 @@ export function ExecConfirm(
 
         onCancel() {
 
-            return new Promise(async (resolve, reject) => {
+            return new Promise<void>(async resolve => {
 
                 if (cancelFun) {
 
                     return await cancelFun()
-                        .then(() => resolve(null))
-                        .catch(() => resolve(null))
+                        .then(() => resolve())
+                        .catch(() => resolve())
 
                 }
 
-                return resolve(null) // 关闭 confirm弹窗
+                return resolve() // 关闭 confirm弹窗
 
             })
 

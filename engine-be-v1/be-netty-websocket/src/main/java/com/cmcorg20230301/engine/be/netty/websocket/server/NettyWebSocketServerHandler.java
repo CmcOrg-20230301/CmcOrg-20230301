@@ -114,7 +114,7 @@ public class NettyWebSocketServerHandler extends ChannelInboundHandlerAdapter {
 
         int sum = USER_ID_CHANNEL_MAP.values().stream().mapToInt(it -> it.values().size()).sum();
 
-        log.info("WebSocket 保存连接数据，长度：{}，连接总数：{}", tempSysSocketRefUserDOList.size(), sum);
+        log.info("WebSocket 保存数据，长度：{}，连接总数：{}", tempSysSocketRefUserDOList.size(), sum);
 
         sysSocketRefUserService.saveBatch(tempSysSocketRefUserDOList);
 
@@ -140,7 +140,7 @@ public class NettyWebSocketServerHandler extends ChannelInboundHandlerAdapter {
 
         int sum = USER_ID_CHANNEL_MAP.values().stream().mapToInt(it -> it.values().size()).sum();
 
-        log.info("WebSocket 移除连接数据，长度：{}，连接总数：{}", tempSysSocketRefUserIdSet.size(), sum);
+        log.info("WebSocket 移除数据，长度：{}，连接总数：{}", tempSysSocketRefUserIdSet.size(), sum);
 
         sysSocketRefUserService.removeByIds(tempSysSocketRefUserIdSet);
 
@@ -175,7 +175,7 @@ public class NettyWebSocketServerHandler extends ChannelInboundHandlerAdapter {
 
         channelMap.remove(sysSocketRefUserId);
 
-        log.info("WebSocket 连接断开，用户：{}，连接数：{}", userId, channelMap.size());
+        log.info("WebSocket 断开，用户：{}，连接数：{}", userId, channelMap.size());
 
         SYS_SOCKET_REF_USER_ID_SET.add(sysSocketRefUserId);
 
@@ -397,7 +397,7 @@ public class NettyWebSocketServerHandler extends ChannelInboundHandlerAdapter {
 
         channelMap.put(sysSocketRefUserDOId, channel);
 
-        log.info("WebSocket 连接成功，用户：{}，连接数：{}", userId, channelMap.size());
+        log.info("WebSocket 连接，用户：{}，连接数：{}", userId, channelMap.size());
 
     }
 
