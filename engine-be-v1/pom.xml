@@ -6,7 +6,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>2.7.12</version>
+        <version>2.7.13</version>
         <relativePath/>
     </parent>
 
@@ -379,7 +379,7 @@
             <dependency>
                 <groupId>org.springframework.cloud</groupId>
                 <artifactId>spring-cloud-dependencies</artifactId>
-                <version>2021.0.6</version>
+                <version>2021.0.8</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
@@ -402,21 +402,21 @@
             <dependency>
                 <groupId>com.github.wechatpay-apiv3</groupId>
                 <artifactId>wechatpay-java</artifactId>
-                <version>0.2.7</version>
+                <version>0.2.9</version>
             </dependency>
 
             <!-- 阿里云oss文件存储 -->
             <dependency>
                 <groupId>com.aliyun.oss</groupId>
                 <artifactId>aliyun-sdk-oss</artifactId>
-                <version>3.15.1</version>
+                <version>3.17.0</version>
             </dependency>
 
             <!-- minio文件系统 -->
             <dependency>
                 <groupId>io.minio</groupId>
                 <artifactId>minio</artifactId>
-                <version>8.5.2</version>
+                <version>8.5.4</version>
             </dependency>
 
             <!-- 二维码工具类 -->
@@ -440,11 +440,11 @@
                 <version>5.2.1</version>
             </dependency>
 
-            <!-- protobuf：下载地址，例如：https://github.com/protocolbuffers/protobuf/releases/tag/v22.0 -->
+            <!-- protobuf：下载地址，例如：https://github.com/protocolbuffers/protobuf/releases/tag/v23.4 -->
             <dependency>
                 <groupId>com.google.protobuf</groupId>
                 <artifactId>protobuf-java</artifactId>
-                <version>3.23.2</version>
+                <version>3.23.4</version>
             </dependency>
 
             <!-- ssh，sftp -->
@@ -458,14 +458,14 @@
             <dependency>
                 <groupId>com.alibaba</groupId>
                 <artifactId>easyexcel</artifactId>
-                <version>3.2.1</version>
+                <version>3.3.2</version>
             </dependency>
 
             <!-- 基于JNA的操作系统和硬件信息库 -->
             <dependency>
                 <groupId>com.github.oshi</groupId>
                 <artifactId>oshi-core</artifactId>
-                <version>6.4.1</version>
+                <version>6.4.4</version>
             </dependency>
 
             <!-- xxl-job -->
@@ -479,7 +479,7 @@
             <dependency>
                 <groupId>com.aliyun</groupId>
                 <artifactId>alibabacloud-dysmsapi20170525</artifactId>
-                <version>2.0.23</version>
+                <version>2.0.24</version>
             </dependency>
 
             <!-- 腾讯云-短信相关，获取最新版本号：https://console.cloud.tencent.com/api/explorer?Product=sms&Version=2021-01-11&Action=SendSms -->
@@ -493,7 +493,7 @@
             <dependency>
                 <groupId>com.alipay.sdk</groupId>
                 <artifactId>alipay-sdk-java</artifactId>
-                <version>4.35.120.ALL</version>
+                <version>4.38.4.ALL</version>
             </dependency>
 
             <!-- 邮件 -->
@@ -507,7 +507,7 @@
             <dependency>
                 <groupId>org.redisson</groupId>
                 <artifactId>redisson-spring-boot-starter</artifactId>
-                <version>3.20.1</version>
+                <version>3.22.1</version>
             </dependency>
 
             <!-- 离线IP地址定位库 -->
@@ -535,7 +535,7 @@
             <dependency>
                 <groupId>cn.hutool</groupId>
                 <artifactId>hutool-all</artifactId>
-                <version>5.8.18</version>
+                <version>5.8.20</version>
             </dependency>
 
             <!-- mybatis-plus -->
