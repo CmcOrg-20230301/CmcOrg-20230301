@@ -1,3 +1,4 @@
+# 本地启动时。参数：--be.socket.web-socket.scheme=ws:// --be.socket.web-socket.host=127.0.0.1 --spring.cloud.nacos.discovery.instance-enabled=false
 server:
   port: 10001
 

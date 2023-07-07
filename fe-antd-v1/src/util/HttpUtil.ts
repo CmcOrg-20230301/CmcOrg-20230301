@@ -46,7 +46,7 @@ $http.interceptors.request.use(
 
         ToastError(BASE_ERROR_MSG + err.message)
 
-        return Promise.reject(err) // 这里会 触发 catch
+        return Promise.reject(err) // 这里会触发 catch，备注：如果没有 catch，则会报错
 
     }
 )
@@ -91,7 +91,7 @@ $http.interceptors.response.use(
 
             }
 
-            return Promise.reject(res) // 这里会 触发 catch
+            return Promise.reject(res) // 这里会触发 catch，备注：如果没有 catch，则会报错
 
         } else {
 
@@ -103,7 +103,7 @@ $http.interceptors.response.use(
     (err) => {
 
         if (hiddenErrorMsgFlag) {
-            return Promise.reject(err) // 这里会触发 catch
+            return Promise.reject(err) // 这里会触发 catch，备注：如果没有 catch，则会报错
         }
 
         // 所有的请求错误，例如 500 404 错误，超出 2xx 范围的状态码都会触发该函数。
@@ -125,7 +125,7 @@ $http.interceptors.response.use(
 
         ToastError(msg || (BASE_ERROR_MSG + err.message))
 
-        return Promise.reject(err) // 这里会触发 catch
+        return Promise.reject(err) // 这里会触发 catch，备注：如果没有 catch，则会报错
 
     }
 )

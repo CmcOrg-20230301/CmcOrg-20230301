@@ -32,6 +32,10 @@ async function GetWebSocketUrl(): Promise<string | null> {
 
             webSocketUrl = res.data
 
+        }).catch(() => {
+
+            // 备注：如果不写这个 catch，并且请求出错时，那么就会报错，然后导致 webSocket重连失败
+
         })
 
     })
