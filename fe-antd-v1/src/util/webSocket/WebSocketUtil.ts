@@ -5,11 +5,11 @@ import {GetWebSocketId, IWebSocketMessage, WebSocketSend} from "@/util/webSocket
 import {NettyWebSocketGetWebSocketUrlById} from "@/api/http/NettyWebSocket";
 import {HeartBeatRequest} from "@/api/socket/WebSocket";
 
-let MyWebSocket: WebSocket | null = null
+let myWebSocket: WebSocket | null = null
 let heartBeatInterval: any = null // 心跳检测，定时器
 
 export function GetMyWebSocket() {
-    return MyWebSocket
+    return myWebSocket
 }
 
 // 备注：开发环境的超时时间设置长一点
@@ -43,10 +43,10 @@ async function GetWebSocketUrl(): Promise<string | null> {
 // 关闭 webSocket
 export function CloseWebSocket() {
 
-    if (MyWebSocket) {
+    if (myWebSocket) {
 
-        MyWebSocket.close()
-        MyWebSocket = null
+        myWebSocket.close()
+        myWebSocket = null
 
     }
 
@@ -55,7 +55,7 @@ export function CloseWebSocket() {
 // 连接 webSocket
 export function ConnectWebSocket() {
 
-    if (MyWebSocket) {
+    if (myWebSocket) {
         return
     }
 
@@ -74,7 +74,7 @@ export function ConnectWebSocket() {
 
             setTimeout(() => {
 
-                MyWebSocket = null // 重置 webSocket对象，为了可以重新获取 webSocket连接地址
+                myWebSocket = null // 重置 webSocket对象，为了可以重新获取 webSocket连接地址
                 ConnectWebSocket();
 
             }, retryTime)
@@ -82,13 +82,13 @@ export function ConnectWebSocket() {
             throw new Error('连接 WebSocket失败：暂无可用的服务器')
         }
 
-        if (MyWebSocket) {
+        if (myWebSocket) {
             return
         }
 
-        MyWebSocket = new WebSocket(webSocketUrl)
+        myWebSocket = new WebSocket(webSocketUrl)
 
-        MyWebSocket.onopen = (event) => {
+        myWebSocket.onopen = (event) => {
 
             console.log(`WebSocket 连接 >> ${webSocketUrl?.substring(0, webSocketUrl!.indexOf("?"))}`)
 
@@ -106,7 +106,7 @@ export function ConnectWebSocket() {
 
         }
 
-        MyWebSocket.onmessage = (message: MessageEvent<string>) => {
+        myWebSocket.onmessage = (message: MessageEvent<string>) => {
 
             const webSocketMessage: IWebSocketMessage<any> = JSON.parse(message.data)
 
@@ -119,7 +119,7 @@ export function ConnectWebSocket() {
 
         }
 
-        MyWebSocket.onclose = (event) => {
+        myWebSocket.onclose = (event) => {
 
             console.log('WebSocket 关闭')
 
@@ -131,7 +131,7 @@ export function ConnectWebSocket() {
 
             setTimeout(() => {
 
-                MyWebSocket = null // 重置 webSocket对象，为了可以重新获取 webSocket连接地址
+                myWebSocket = null // 重置 webSocket对象，为了可以重新获取 webSocket连接地址
                 ConnectWebSocket()
 
             }, retryTime) // 等一定时间，再去重连webSocket
@@ -147,6 +147,6 @@ export function ConnectWebSocket() {
  */
 export function Send<T>(webSocketMessage: IWebSocketMessage<T>) {
 
-    return WebSocketSend(MyWebSocket, webSocketMessage);
+    return WebSocketSend(myWebSocket, webSocketMessage);
 
 }
