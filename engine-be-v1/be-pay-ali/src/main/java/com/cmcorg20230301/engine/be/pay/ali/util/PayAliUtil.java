@@ -80,7 +80,8 @@ public class PayAliUtil {
 
         aliPayRequest.setBizContent(bizContent.toString());
 
-        AlipayTradePagePayResponse response = alipayClient.pageExecute(aliPayRequest);
+        // 备注：指定为 GET，那么 body就是 url，反之就是：html的 form表单格式
+        AlipayTradePagePayResponse response = alipayClient.pageExecute(aliPayRequest, "GET");
 
         if (BooleanUtil.isFalse(response.isSuccess())) {
 
@@ -92,7 +93,7 @@ public class PayAliUtil {
 
         }
 
-        // 备注：这里返回的是 html的 form表单格式
+        // 备注：这里返回的是 url链接
         return response.getBody();
 
     }
