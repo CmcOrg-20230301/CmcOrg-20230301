@@ -1,6 +1,12 @@
-import {IWebSocketMessage} from "@/util/webSocket/WebSocketUtil";
 import {HeartBeatRequest, NETTY_WEB_SOCKET_HEART_BEAT} from "@/api/socket/WebSocket";
 import {NettyWebSocketGetAllWebSocketUrl} from "@/api/http/NettyWebSocket";
+
+export interface IWebSocketMessage<T> {
+    uri: string // 路径
+    data?: T // 数据
+    code?: string // 响应代码，成功返回：200
+    msg?: string // 响应描述
+}
 
 /**
  * 处理：所有 webSocketUrl
@@ -56,6 +62,8 @@ function handleAllWebSocketUrl(webSocketUrlArr: string[], resolve: (value: (Prom
 
                 }
 
+                webSocket.close()
+
             }
 
         }
@@ -64,7 +72,6 @@ function handleAllWebSocketUrl(webSocketUrlArr: string[], resolve: (value: (Prom
 
     setTimeout(() => {
 
-        console.log('resWebSocketId：', resWebSocketId)
         console.log('webSocketIdAndTsObj：', JSON.stringify(webSocketIdAndTsObj))
 
         resolve(resWebSocketId) // 返回值
@@ -89,6 +96,10 @@ export function GetWebSocketId() {
 
             // 处理：所有 webSocketUrl
             handleAllWebSocketUrl(res.data, resolve);
+
+        }).catch(() => {
+
+            reject(null)
 
         })
 

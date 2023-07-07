@@ -11,8 +11,11 @@ import cn.hutool.http.useragent.UserAgentUtil;
 import cn.hutool.json.JSONUtil;
 import com.cmcorg20230301.engine.be.ip2region.util.Ip2RegionUtil;
 import com.cmcorg20230301.engine.be.model.model.constant.BaseConstant;
+import com.cmcorg20230301.engine.be.model.model.dto.NotNullIdAndIntegerValue;
 import com.cmcorg20230301.engine.be.netty.websocket.service.NettyWebSocketService;
 import com.cmcorg20230301.engine.be.redisson.model.enums.RedisKeyEnum;
+import com.cmcorg20230301.engine.be.redisson.util.IdGeneratorUtil;
+import com.cmcorg20230301.engine.be.security.model.entity.BaseEntity;
 import com.cmcorg20230301.engine.be.security.model.entity.BaseEntityNoId;
 import com.cmcorg20230301.engine.be.security.model.enums.SysRequestCategoryEnum;
 import com.cmcorg20230301.engine.be.security.util.MyJwtUtil;
@@ -25,6 +28,8 @@ import com.cmcorg20230301.engine.be.socket.model.enums.SysSocketTypeEnum;
 import com.cmcorg20230301.engine.be.socket.service.SysSocketService;
 import com.cmcorg20230301.engine.be.util.util.CallBack;
 import com.cmcorg20230301.engine.be.util.util.MyMapUtil;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.redisson.api.RedissonClient;
 import org.springframework.stereotype.Service;
 
@@ -53,19 +58,34 @@ public class NettyWebSocketServiceImpl implements NettyWebSocketService {
     @Override
     public Set<String> getAllWebSocketUrl() {
 
+        // 获取：webSocket连接地址
+        return handleGetAllWebSocketUrl(null, SysSocketOnlineTypeEnum.PING_TEST);
+
+    }
+
+    /**
+     * 获取：webSocket连接地址
+     */
+    @NotNull
+    private HashSet<String> handleGetAllWebSocketUrl(@Nullable List<SysSocketDO> sysSocketDOList,
+        @NotNull SysSocketOnlineTypeEnum sysSocketOnlineTypeEnum) {
+
         CallBack<Long> expireTsCallBack = new CallBack<>();
 
         // 获取：请求里面的 jwtHash值
         String jwtHash = MyJwtUtil.getJwtHashByRequest(httpServletRequest, null, expireTsCallBack);
 
         if (StrUtil.isBlank(jwtHash)) {
-            return null;
+            return new HashSet<>();
         }
 
         // 获取：所有 webSocket
-        List<SysSocketDO> sysSocketDOList =
-            sysSocketService.lambdaQuery().eq(SysSocketDO::getType, SysSocketTypeEnum.WEB_SOCKET)
+        if (sysSocketDOList == null) {
+
+            sysSocketDOList = sysSocketService.lambdaQuery().eq(SysSocketDO::getType, SysSocketTypeEnum.WEB_SOCKET)
                 .eq(BaseEntityNoId::getEnableFlag, true).list();
+
+        }
 
         if (CollUtil.isEmpty(sysSocketDOList)) {
             return new HashSet<>();
@@ -92,8 +112,8 @@ public class NettyWebSocketServiceImpl implements NettyWebSocketService {
         for (SysSocketDO item : sysSocketDOList) {
 
             // 处理：获取：所有 webSocket连接地址
-            handleGetAllWebSocketUrl(expireTsCallBack, jwtHash, currentUserNickName, currentUserId, ip, region,
-                sysRequestCategoryEnum, userAgentJsonStr, resSet, item);
+            doHandleGetAllWebSocketUrl(expireTsCallBack, jwtHash, currentUserNickName, currentUserId, ip, region,
+                sysRequestCategoryEnum, userAgentJsonStr, resSet, item, sysSocketOnlineTypeEnum);
 
         }
 
@@ -102,11 +122,33 @@ public class NettyWebSocketServiceImpl implements NettyWebSocketService {
     }
 
     /**
+     * 通过主键 id，获取：webSocket连接地址，格式：scheme://ip:port/path?code=xxx
+     */
+    @Override
+    public String getWebSocketUrlById(NotNullIdAndIntegerValue notNullIdAndIntegerValue) {
+
+        SysSocketDO sysSocketDO = sysSocketService.lambdaQuery().eq(BaseEntity::getId, notNullIdAndIntegerValue.getId())
+            .eq(SysSocketDO::getType, SysSocketTypeEnum.WEB_SOCKET).eq(BaseEntityNoId::getEnableFlag, true).one();
+
+        Integer value = notNullIdAndIntegerValue.getValue();
+
+        SysSocketOnlineTypeEnum sysSocketOnlineTypeEnum = SysSocketOnlineTypeEnum.getByCode(value);
+
+        // 获取：webSocket连接地址
+        Set<String> webSocketUrlSet =
+            handleGetAllWebSocketUrl(CollUtil.newArrayList(sysSocketDO), sysSocketOnlineTypeEnum);
+
+        return CollUtil.getFirst(webSocketUrlSet);
+
+    }
+
+    /**
      * 处理：获取：所有 webSocket连接地址
      */
-    private void handleGetAllWebSocketUrl(CallBack<Long> expireTsCallBack, String jwtHash, String currentUserNickName,
+    private void doHandleGetAllWebSocketUrl(CallBack<Long> expireTsCallBack, String jwtHash, String currentUserNickName,
         Long currentUserId, String ip, String region, SysRequestCategoryEnum sysRequestCategoryEnum,
-        String userAgentJsonStr, HashSet<String> resSet, SysSocketDO sysSocketDO) {
+        String userAgentJsonStr, HashSet<String> resSet, SysSocketDO sysSocketDO,
+        SysSocketOnlineTypeEnum sysSocketOnlineTypeEnum) {
 
         String code = IdUtil.simpleUUID();
 
@@ -128,6 +170,9 @@ public class NettyWebSocketServiceImpl implements NettyWebSocketService {
 
         SysSocketRefUserDO sysSocketRefUserDO = new SysSocketRefUserDO();
 
+        Long nextId = IdGeneratorUtil.nextId();
+        sysSocketRefUserDO.setId(nextId); // 备注：这里手动设置 id，目的：增加并发能力
+
         sysSocketRefUserDO.setUserId(currentUserId);
         sysSocketRefUserDO.setSocketId(sysSocketDO.getId());
         sysSocketRefUserDO.setNickname(currentUserNickName);
@@ -137,7 +182,7 @@ public class NettyWebSocketServiceImpl implements NettyWebSocketService {
         sysSocketRefUserDO.setPath(sysSocketDO.getPath());
         sysSocketRefUserDO.setType(sysSocketDO.getType());
 
-        sysSocketRefUserDO.setOnlineType(SysSocketOnlineTypeEnum.ONLINE);
+        sysSocketRefUserDO.setOnlineType(sysSocketOnlineTypeEnum);
         sysSocketRefUserDO.setIp(ip);
         sysSocketRefUserDO.setRegion(region);
 
@@ -150,7 +195,9 @@ public class NettyWebSocketServiceImpl implements NettyWebSocketService {
 
         sysSocketRefUserDO.setCreateId(currentUserId);
         sysSocketRefUserDO.setUpdateId(currentUserId);
-        sysSocketRefUserDO.setEnableFlag(true);
+
+        sysSocketRefUserDO.setEnableFlag(sysSocketOnlineTypeEnum.equals(SysSocketOnlineTypeEnum.PING_TEST) == false);
+
         sysSocketRefUserDO.setDelFlag(false);
         sysSocketRefUserDO.setRemark("");
 

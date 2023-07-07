@@ -15,4 +15,7 @@ public class WebSocketMessageDTO<T> {
     @Schema(description = "响应代码，成功返回：200")
     private Integer code;
 
+    @Schema(description = "响应描述")
+    private String msg;
+
 }

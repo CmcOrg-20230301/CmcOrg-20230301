@@ -17,6 +17,8 @@ public enum SysSocketOnlineTypeEnum {
 
     HIDDEN(201), // 隐身
 
+    PING_TEST(100001), // ping测试，用于：获取延迟最低的 socket服务器
+
     ;
 
     @EnumValue

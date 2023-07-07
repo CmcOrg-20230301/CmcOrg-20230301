@@ -14,6 +14,7 @@ public class BaseException extends RuntimeException {
     public BaseException(ApiResultVO<?> apiResult) {
 
         super(JSONUtil.toJsonStr(apiResult)); // 把信息封装成json格式
+
         setApiResultVO(apiResult);
 
     }

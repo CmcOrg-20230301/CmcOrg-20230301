@@ -2,6 +2,7 @@ package com.cmcorg20230301.engine.be.netty.websocket.websocket;
 
 import com.cmcorg20230301.engine.be.netty.websocket.annotation.NettyWebSocketController;
 import com.cmcorg20230301.engine.be.netty.websocket.service.NettyWebSocketHeartBeatService;
+import com.cmcorg20230301.engine.be.security.model.vo.ApiResultVO;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -19,8 +20,8 @@ public class NettyWebSocketHeartBeatController {
 
     @Operation(summary = "心跳检测")
     @PostMapping
-    public Long heartBeat() {
-        return baseService.heartBeat();
+    public ApiResultVO<Long> heartBeat() {
+        return ApiResultVO.ok(baseService.heartBeat());
     }
 
 }

@@ -17,7 +17,6 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 import javax.annotation.PreDestroy;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
-import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 @Component
@@ -27,7 +26,7 @@ public class RequestUtil {
     @Resource
     BaseSysRequestService baseSysRequestService;
 
-    private static List<SysRequestDO> SYS_REQUEST_DO_LIST = new CopyOnWriteArrayList<>();
+    private static CopyOnWriteArrayList<SysRequestDO> SYS_REQUEST_DO_LIST = new CopyOnWriteArrayList<>();
 
     /**
      * 添加一个：请求数据
@@ -45,7 +44,7 @@ public class RequestUtil {
     @Scheduled(fixedDelay = 5000)
     public void scheduledSava() {
 
-        List<SysRequestDO> tempSysRequestDOList;
+        CopyOnWriteArrayList<SysRequestDO> tempSysRequestDOList;
 
         synchronized (SYS_REQUEST_DO_LIST) {
 

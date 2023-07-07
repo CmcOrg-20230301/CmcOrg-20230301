@@ -46,7 +46,7 @@ $http.interceptors.request.use(
 
         ToastError(BASE_ERROR_MSG + err.message)
 
-        return Promise.reject(err)
+        return Promise.reject(err) // 这里会 触发 catch
 
     }
 )

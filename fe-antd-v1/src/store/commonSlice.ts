@@ -1,5 +1,5 @@
-import {IWebSocketMessage} from "@/util/webSocket/WebSocketUtil";
 import {createSlice, PayloadAction} from '@reduxjs/toolkit'
+import {IWebSocketMessage} from "@/util/webSocket/WebSocketHelper";
 
 interface ICommonSlice {
     webSocketMessage: IWebSocketMessage<any> // webSocket消息
