@@ -72,7 +72,7 @@ public class NettyWebSocketServerHandler extends ChannelInboundHandlerAdapter {
         AttributeKey.valueOf("SYS_SOCKET_REF_USER_ID_KEY");
 
     // 用户通道 map，大key：用户主键 id，小key：sysSocketRefUserId，value：通道
-    private static final ConcurrentHashMap<Long, ConcurrentHashMap<Long, Channel>> USER_ID_CHANNEL_MAP =
+    public static final ConcurrentHashMap<Long, ConcurrentHashMap<Long, Channel>> USER_ID_CHANNEL_MAP =
         MapUtil.newConcurrentHashMap();
 
     private CopyOnWriteArraySet<Long> SYS_SOCKET_REF_USER_ID_SET = new CopyOnWriteArraySet<>();

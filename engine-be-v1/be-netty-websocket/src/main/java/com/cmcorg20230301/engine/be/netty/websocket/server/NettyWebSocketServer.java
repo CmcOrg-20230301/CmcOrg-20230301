@@ -1,7 +1,5 @@
 package com.cmcorg20230301.engine.be.netty.websocket.server;
 
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.cmcorg20230301.engine.be.netty.websocket.configuration.NettyWebSocketBeanPostProcessor;
 import com.cmcorg20230301.engine.be.netty.websocket.properties.NettyWebSocketProperties;
 import com.cmcorg20230301.engine.be.redisson.util.IdGeneratorUtil;
@@ -10,14 +8,10 @@ import com.cmcorg20230301.engine.be.security.util.MyEntityUtil;
 import com.cmcorg20230301.engine.be.security.util.MyThreadUtil;
 import com.cmcorg20230301.engine.be.socket.mapper.SysSocketRefUserMapper;
 import com.cmcorg20230301.engine.be.socket.model.entity.SysSocketDO;
-import com.cmcorg20230301.engine.be.socket.model.entity.SysSocketRefUserDO;
 import com.cmcorg20230301.engine.be.socket.model.enums.SysSocketTypeEnum;
 import com.cmcorg20230301.engine.be.socket.service.SysSocketService;
 import io.netty.bootstrap.ServerBootstrap;
-import io.netty.channel.ChannelFuture;
-import io.netty.channel.ChannelInitializer;
-import io.netty.channel.ChannelOption;
-import io.netty.channel.EventLoopGroup;
+import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
@@ -32,6 +26,7 @@ import org.springframework.stereotype.Component;
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.annotation.Resource;
+import java.util.concurrent.ConcurrentHashMap;
 
 @Component
 @Slf4j
@@ -79,16 +74,23 @@ public class NettyWebSocketServer {
 
         if (sysSocketServerId != null) {
 
-            LambdaQueryWrapper<SysSocketRefUserDO> lambdaQueryWrapper = Wrappers.lambdaQuery();
+            long closeChannelCount = 0;
 
-            // 备注：这里只能这样写，不然会报错
-            int deleteSysSocketRefUserCount = sysSocketRefUserMapper
-                .delete(lambdaQueryWrapper.eq(SysSocketRefUserDO::getSocketId, sysSocketServerId));
+            for (ConcurrentHashMap<Long, Channel> item : NettyWebSocketServerHandler.USER_ID_CHANNEL_MAP.values()) {
+
+                for (Channel subItem : item.values()) {
+
+                    subItem.close();
+
+                    closeChannelCount++;
+
+                }
+
+            }
 
             boolean removeFlag = sysSocketService.removeById(sysSocketServerId);
 
-            log.info("NettyWebSocket 下线{}：{}，移除连接：{}", removeFlag ? "成功" : "失败", sysSocketServerId,
-                deleteSysSocketRefUserCount);
+            log.info("NettyWebSocket 下线{}：{}，移除连接：{}", removeFlag ? "成功" : "失败", sysSocketServerId, closeChannelCount);
 
         }
 

@@ -3,7 +3,6 @@ package com.cmcorg20230301.engine.be.netty.tcp.protobuf.server;
 import cn.hutool.core.map.MapUtil;
 import com.cmcorg20230301.engine.be.model.model.constant.LogTopicConstant;
 import com.cmcorg20230301.engine.be.netty.tcp.protobuf.properties.NettyTcpProtobufProperties;
-import com.cmcorg20230301.engine.be.security.util.MyJwtUtil;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
@@ -17,8 +16,7 @@ import org.springframework.stereotype.Component;
 import protobuf.proto.BaseProto;
 
 import javax.annotation.Resource;
-import java.util.Map;
-import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 @Component
 @ChannelHandler.Sharable
@@ -28,11 +26,16 @@ public class NettyTcpProtobufServerHandler extends ChannelInboundHandlerAdapter 
     @Resource
     NettyTcpProtobufProperties nettyTcpProtobufProperties;
 
-    // 用户通道 map，key：用户主键 id，value：通道集合
-    private static final Map<Long, Set<Channel>> USER_ID_CHANNEL_MAP = MapUtil.newConcurrentHashMap();
-
     // userId key
-    private static final AttributeKey<Long> USER_ID_KEY = AttributeKey.valueOf(MyJwtUtil.PAYLOAD_MAP_USER_ID_KEY);
+    private static final AttributeKey<Long> USER_ID_KEY = AttributeKey.valueOf("USER_ID_KEY");
+
+    // sysSocketRefUserId key
+    private static final AttributeKey<Long> SYS_SOCKET_REF_USER_ID_KEY =
+        AttributeKey.valueOf("SYS_SOCKET_REF_USER_ID_KEY");
+
+    // 用户通道 map，大key：用户主键 id，小key：sysSocketRefUserId，value：通道
+    public static final ConcurrentHashMap<Long, ConcurrentHashMap<Long, Channel>> USER_ID_CHANNEL_MAP =
+        MapUtil.newConcurrentHashMap();
 
     /**
      * 连接成功时
