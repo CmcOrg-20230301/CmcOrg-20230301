@@ -22,11 +22,11 @@ async function GetWebSocketUrl(): Promise<string | null> {
 
     await GetWebSocketId().then(async res => {
 
-        console.log('webSocketId：', res)
-
         if (!res) {
             return
         }
+
+        console.log('webSocketId：', res)
 
         await NettyWebSocketGetWebSocketUrlById({id: res, value: 101}).then(res => {
 
