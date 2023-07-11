@@ -93,7 +93,15 @@ export function GetWebSocketId() {
         }
 
         // 获取：所有的 webSocket连接
-        NettyWebSocketGetAllWebSocketUrl().then(res => {
+        NettyWebSocketGetAllWebSocketUrl({
+
+            headers: {
+
+                hiddenErrorMsg: true
+
+            } as any
+
+        }).then(res => {
 
             // 处理：所有 webSocketUrl
             handleAllWebSocketUrl(res.data, resolve);
