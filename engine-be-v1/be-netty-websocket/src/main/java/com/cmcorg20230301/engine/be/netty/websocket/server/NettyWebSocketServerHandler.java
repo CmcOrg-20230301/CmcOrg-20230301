@@ -77,6 +77,9 @@ public class NettyWebSocketServerHandler extends ChannelInboundHandlerAdapter {
     public static final AttributeKey<SysRequestCategoryEnum> SYS_REQUEST_CATEGORY_ENUM_KEY =
         AttributeKey.valueOf("SYS_REQUEST_CATEGORY_ENUM_KEY");
 
+    // Ip key
+    public static final AttributeKey<String> IP_KEY = AttributeKey.valueOf("IP_KEY");
+
     // 用户通道 map，大key：用户主键 id，小key：sysSocketRefUserId，value：通道
     public static final ConcurrentHashMap<Long, ConcurrentHashMap<Long, Channel>> USER_ID_CHANNEL_MAP =
         MapUtil.newConcurrentHashMap();
@@ -403,6 +406,9 @@ public class NettyWebSocketServerHandler extends ChannelInboundHandlerAdapter {
 
         // 绑定 SysRequestCategoryEnum
         channel.attr(SYS_REQUEST_CATEGORY_ENUM_KEY).set(sysSocketRefUserDO.getCategory());
+
+        // 绑定 Ip
+        channel.attr(IP_KEY).set(sysSocketRefUserDO.getIp());
 
         ConcurrentHashMap<Long, Channel> channelMap =
             USER_ID_CHANNEL_MAP.computeIfAbsent(userId, k -> MapUtil.newConcurrentHashMap());

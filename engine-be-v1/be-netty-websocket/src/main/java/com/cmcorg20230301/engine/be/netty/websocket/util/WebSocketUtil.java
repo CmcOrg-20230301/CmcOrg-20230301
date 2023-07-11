@@ -19,7 +19,6 @@ import org.springframework.stereotype.Component;
 
 import javax.annotation.Nullable;
 import javax.annotation.Resource;
-import java.net.InetSocketAddress;
 import java.util.Date;
 
 @Component
@@ -71,8 +70,7 @@ public class WebSocketUtil {
         sysRequestDO.setName(summary);
         sysRequestDO.setCategory(channel.attr(NettyWebSocketServerHandler.SYS_REQUEST_CATEGORY_ENUM_KEY).get());
 
-        InetSocketAddress inetSocketAddress = (InetSocketAddress)channel.remoteAddress();
-        String ip = inetSocketAddress.getAddress().getHostAddress();
+        String ip = channel.attr(NettyWebSocketServerHandler.IP_KEY).get();
 
         sysRequestDO.setIp(ip);
         sysRequestDO.setRegion(Ip2RegionUtil.getRegion(sysRequestDO.getIp()));
