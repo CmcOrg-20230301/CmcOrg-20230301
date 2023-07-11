@@ -26,7 +26,7 @@ async function GetWebSocketUrl(): Promise<string | null> {
             return
         }
 
-        console.log('webSocketId：', res)
+        // console.log('webSocketId：', res)
 
         await NettyWebSocketGetWebSocketUrlById({id: res, value: 101}).then(res => {
 
