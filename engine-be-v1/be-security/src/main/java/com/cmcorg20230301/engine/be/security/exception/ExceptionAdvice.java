@@ -225,6 +225,10 @@ public class ExceptionAdvice {
 
         } catch (BaseException baseException) {
 
+            // 处理：请求
+            handleRequest(httpServletRequest, null, StrUtil.maxLength(e.getMessage(), BaseConstant.STR_MAX_LENGTH_1000),
+                "");
+
             return getBaseExceptionApiResult(baseException);
 
         }

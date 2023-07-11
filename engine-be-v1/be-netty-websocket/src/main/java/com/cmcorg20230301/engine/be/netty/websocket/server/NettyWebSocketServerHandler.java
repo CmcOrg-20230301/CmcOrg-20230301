@@ -11,6 +11,7 @@ import cn.hutool.core.util.ReflectUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONUtil;
 import com.cmcorg20230301.engine.be.ip2region.util.Ip2RegionUtil;
+import com.cmcorg20230301.engine.be.model.model.constant.BaseConstant;
 import com.cmcorg20230301.engine.be.model.model.constant.LogTopicConstant;
 import com.cmcorg20230301.engine.be.model.model.constant.OperationDescriptionConstant;
 import com.cmcorg20230301.engine.be.netty.websocket.configuration.NettyWebSocketBeanPostProcessor;
@@ -46,6 +47,7 @@ import javax.annotation.Resource;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Parameter;
 import java.net.InetSocketAddress;
+import java.util.Date;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.CopyOnWriteArraySet;
@@ -64,12 +66,16 @@ public class NettyWebSocketServerHandler extends ChannelInboundHandlerAdapter {
     @Resource
     SysSocketRefUserService sysSocketRefUserService;
 
-    // userId key
-    private static final AttributeKey<Long> USER_ID_KEY = AttributeKey.valueOf("USER_ID_KEY");
+    // UserId key
+    public static final AttributeKey<Long> USER_ID_KEY = AttributeKey.valueOf("USER_ID_KEY");
 
-    // sysSocketRefUserId key
-    private static final AttributeKey<Long> SYS_SOCKET_REF_USER_ID_KEY =
+    // SysSocketRefUserId key
+    public static final AttributeKey<Long> SYS_SOCKET_REF_USER_ID_KEY =
         AttributeKey.valueOf("SYS_SOCKET_REF_USER_ID_KEY");
+
+    // SysRequestCategoryEnum key
+    public static final AttributeKey<SysRequestCategoryEnum> SYS_REQUEST_CATEGORY_ENUM_KEY =
+        AttributeKey.valueOf("SYS_REQUEST_CATEGORY_ENUM_KEY");
 
     // 用户通道 map，大key：用户主键 id，小key：sysSocketRefUserId，value：通道
     public static final ConcurrentHashMap<Long, ConcurrentHashMap<Long, Channel>> USER_ID_CHANNEL_MAP =
@@ -248,6 +254,8 @@ public class NettyWebSocketServerHandler extends ChannelInboundHandlerAdapter {
      */
     private void handleTextWebSocketFrame(@NotNull TextWebSocketFrame textWebSocketFrame, Channel channel) {
 
+        long costMs = System.currentTimeMillis();
+
         String text = textWebSocketFrame.text();
 
         WebSocketMessageDTO<?> dto = JSONUtil.toBean(text, WebSocketMessageDTO.class);
@@ -264,7 +272,7 @@ public class NettyWebSocketServerHandler extends ChannelInboundHandlerAdapter {
             webSocketMessageDTO.setUri(uri);
             webSocketMessageDTO.setCode(404);
 
-            WebSocketUtil.send(channel, webSocketMessageDTO);
+            WebSocketUtil.send(channel, webSocketMessageDTO, text, costMs, null, "");
 
             return;
 
@@ -306,7 +314,7 @@ public class NettyWebSocketServerHandler extends ChannelInboundHandlerAdapter {
 
             }
 
-            WebSocketUtil.send(channel, webSocketMessageDTO);
+            WebSocketUtil.send(channel, webSocketMessageDTO, text, costMs, mappingValue, "");
 
         } catch (Throwable e) {
 
@@ -336,7 +344,8 @@ public class NettyWebSocketServerHandler extends ChannelInboundHandlerAdapter {
 
             }
 
-            WebSocketUtil.send(channel, webSocketMessageDTO);
+            WebSocketUtil.send(channel, webSocketMessageDTO, text, costMs, mappingValue,
+                StrUtil.maxLength(e.getMessage(), BaseConstant.STR_MAX_LENGTH_1000));
 
         }
 
@@ -386,11 +395,14 @@ public class NettyWebSocketServerHandler extends ChannelInboundHandlerAdapter {
 
         Long sysSocketRefUserDOId = sysSocketRefUserDO.getId();
 
-        // 绑定 userId
+        // 绑定 UserId
         channel.attr(USER_ID_KEY).set(userId);
 
-        // 绑定 sysSocketRefUserId
+        // 绑定 SysSocketRefUserId
         channel.attr(SYS_SOCKET_REF_USER_ID_KEY).set(sysSocketRefUserDOId);
+
+        // 绑定 SysRequestCategoryEnum
+        channel.attr(SYS_REQUEST_CATEGORY_ENUM_KEY).set(sysSocketRefUserDO.getCategory());
 
         ConcurrentHashMap<Long, Channel> channelMap =
             USER_ID_CHANNEL_MAP.computeIfAbsent(userId, k -> MapUtil.newConcurrentHashMap());
@@ -407,6 +419,8 @@ public class NettyWebSocketServerHandler extends ChannelInboundHandlerAdapter {
     private void handleFullHttpRequestError(@NotNull ChannelHandlerContext ctx, String requestParam, String errorMsg) {
 
         ctx.close();
+
+        Date date = new Date();
 
         SysRequestDO sysRequestDO = new SysRequestDO();
 
@@ -427,6 +441,10 @@ public class NettyWebSocketServerHandler extends ChannelInboundHandlerAdapter {
         sysRequestDO.setRequestParam(requestParam);
         sysRequestDO.setType(OperationDescriptionConstant.WEB_SOCKET_CONNECT_ERROR);
         sysRequestDO.setResponseValue("");
+
+        sysRequestDO.setCreateTime(date);
+        sysRequestDO.setUpdateTime(date);
+
         sysRequestDO.setEnableFlag(true);
         sysRequestDO.setDelFlag(false);
         sysRequestDO.setRemark("");

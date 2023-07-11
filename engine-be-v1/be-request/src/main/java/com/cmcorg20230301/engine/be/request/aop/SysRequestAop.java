@@ -65,9 +65,9 @@ public class SysRequestAop {
 
         }
 
-        String uri = httpServletRequest.getRequestURI();
-
         long costMs = System.currentTimeMillis();
+
+        String uri = httpServletRequest.getRequestURI();
 
         Date date = new Date();
 

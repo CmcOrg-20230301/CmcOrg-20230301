@@ -1,5 +1,6 @@
 package com.cmcorg20230301.engine.be.socket.model.dto;
 
+import com.cmcorg20230301.engine.be.security.configuration.base.BaseConfiguration;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
@@ -17,5 +18,8 @@ public class WebSocketMessageDTO<T> {
 
     @Schema(description = "响应描述")
     private String msg;
+
+    @Schema(description = "服务名")
+    private String service = BaseConfiguration.applicationName;
 
 }
