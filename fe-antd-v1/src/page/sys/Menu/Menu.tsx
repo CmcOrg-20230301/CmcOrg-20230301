@@ -339,9 +339,11 @@ export default function () {
 
                     if (currentForm.current.id) {
 
-                        await SysMenuInfoById({id: currentForm.current.id}).then(res => {
+                        SysMenuInfoById({id: currentForm.current.id}).then(res => {
 
                             currentForm.current = res as SysMenuInsertOrUpdateDTO
+
+                            formRef.current?.setFieldsValue(currentForm.current) // 组件会深度克隆 currentForm.current
 
                         })
 

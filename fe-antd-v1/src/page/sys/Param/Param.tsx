@@ -233,9 +233,11 @@ export default function () {
 
                     if (currentForm.current.id) {
 
-                        await SysParamInfoById({id: currentForm.current.id}).then(res => {
+                        SysParamInfoById({id: currentForm.current.id}).then(res => {
 
                             currentForm.current = res as SysParamInsertOrUpdateDTO
+
+                            formRef.current?.setFieldsValue(currentForm.current) // 组件会深度克隆 currentForm.current
 
                         })
 

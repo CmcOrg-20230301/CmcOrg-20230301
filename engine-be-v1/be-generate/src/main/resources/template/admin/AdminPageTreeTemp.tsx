@@ -339,9 +339,11 @@ export default function () {
 
                     if (currentForm.current.id) {
 
-                        await AdminInfoByIdApi({id: currentForm.current.id}).then(res => {
+                        AdminInfoByIdApi({id: currentForm.current.id}).then(res => {
 
                             currentForm.current = res as AdminInsertOrUpdateDTO
+
+                            formRef.current?.setFieldsValue(currentForm.current) // 组件会深度克隆 currentForm.current
 
                         })
 

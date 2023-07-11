@@ -362,9 +362,11 @@ export default function () {
 
                     if (currentForm.current.id) {
 
-                        await SysUserInfoById({id: currentForm.current.id}).then(res => {
+                        SysUserInfoById({id: currentForm.current.id}).then(res => {
 
                             currentForm.current = res as SysUserInsertOrUpdateDTO
+
+                            formRef.current?.setFieldsValue(currentForm.current) // 组件会深度克隆 currentForm.current
 
                         })
 

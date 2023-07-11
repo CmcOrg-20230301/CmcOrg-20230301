@@ -233,9 +233,11 @@ export default function () {
 
                     if (currentForm.current.id) {
 
-                        await SysRoleInfoById({id: currentForm.current.id}).then(res => {
+                        SysRoleInfoById({id: currentForm.current.id}).then(res => {
 
                             currentForm.current = res as SysRoleInsertOrUpdateDTO
+
+                            formRef.current?.setFieldsValue(currentForm.current) // 组件会深度克隆 currentForm.current
 
                         })
 
