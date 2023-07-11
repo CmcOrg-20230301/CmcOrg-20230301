@@ -23,6 +23,10 @@ import java.util.concurrent.CopyOnWriteArrayList;
 @Slf4j
 public class RequestUtil {
 
+    public static final String[] IP_HEADER_ARR =
+        {"X-Forwarded-For", "X-Real-IP", "Proxy-Client-IP", "WL-Proxy-Client-IP", "HTTP_CLIENT_IP",
+            "HTTP_X_FORWARDED_FOR"};
+
     @Resource
     BaseSysRequestService baseSysRequestService;
 

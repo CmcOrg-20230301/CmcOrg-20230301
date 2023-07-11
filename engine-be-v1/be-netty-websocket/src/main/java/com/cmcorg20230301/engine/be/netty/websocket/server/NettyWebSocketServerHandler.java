@@ -4,6 +4,7 @@ import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.convert.Convert;
 import cn.hutool.core.map.MapUtil;
+import cn.hutool.core.net.NetUtil;
 import cn.hutool.core.net.url.UrlQuery;
 import cn.hutool.core.util.ArrayUtil;
 import cn.hutool.core.util.CharsetUtil;
@@ -46,7 +47,6 @@ import javax.annotation.PreDestroy;
 import javax.annotation.Resource;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Parameter;
-import java.net.InetSocketAddress;
 import java.util.Date;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -364,7 +364,7 @@ public class NettyWebSocketServerHandler extends ChannelInboundHandlerAdapter {
         String code = Convert.toStr(urlQuery.get("code")); // 随机码
 
         if (StrUtil.isBlank(code)) {
-            handleFullHttpRequestError(ctx, urlQuery.toString(), "code为空");
+            handleFullHttpRequestError(ctx, urlQuery.toString(), "code为空", fullHttpRequest);
         }
 
         String key = RedisKeyEnum.PRE_WEB_SOCKET_CODE.name() + code;
@@ -372,11 +372,11 @@ public class NettyWebSocketServerHandler extends ChannelInboundHandlerAdapter {
         SysSocketRefUserDO sysSocketRefUserDO = redissonClient.<SysSocketRefUserDO>getBucket(key).getAndDelete();
 
         if (sysSocketRefUserDO == null) {
-            handleFullHttpRequestError(ctx, urlQuery.toString(), "SysSocketRefUserDO为null"); // 处理：非法连接
+            handleFullHttpRequestError(ctx, urlQuery.toString(), "SysSocketRefUserDO为null", fullHttpRequest); // 处理：非法连接
         }
 
         if (!sysSocketRefUserDO.getSocketId().equals(NettyWebSocketServer.sysSocketServerId)) {
-            handleFullHttpRequestError(ctx, urlQuery.toString(), "SocketId不相同"); // 处理：非法连接
+            handleFullHttpRequestError(ctx, urlQuery.toString(), "SocketId不相同", fullHttpRequest); // 处理：非法连接
         }
 
         // url包含参数，需要舍弃
@@ -422,7 +422,8 @@ public class NettyWebSocketServerHandler extends ChannelInboundHandlerAdapter {
     /**
      * 处理：非法连接
      */
-    private void handleFullHttpRequestError(@NotNull ChannelHandlerContext ctx, String requestParam, String errorMsg) {
+    private void handleFullHttpRequestError(@NotNull ChannelHandlerContext ctx, String requestParam, String errorMsg,
+        @NotNull FullHttpRequest fullHttpRequest) {
 
         ctx.close();
 
@@ -436,8 +437,21 @@ public class NettyWebSocketServerHandler extends ChannelInboundHandlerAdapter {
         sysRequestDO.setName("WebSocket连接错误");
         sysRequestDO.setCategory(SysRequestCategoryEnum.PC_BROWSER_WINDOWS);
 
-        InetSocketAddress inetSocketAddress = (InetSocketAddress)ctx.channel().remoteAddress();
-        String ip = inetSocketAddress.getAddress().getHostAddress();
+        String ip = "";
+
+        for (String item : RequestUtil.IP_HEADER_ARR) {
+
+            ip = fullHttpRequest.headers().get(item);
+
+            if (false == NetUtil.isUnknown(ip)) {
+
+                ip = NetUtil.getMultistageReverseProxyIp(ip);
+
+                break;
+
+            }
+
+        }
 
         sysRequestDO.setIp(ip);
         sysRequestDO.setRegion(Ip2RegionUtil.getRegion(sysRequestDO.getIp()));
