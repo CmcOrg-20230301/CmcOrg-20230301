@@ -7,4 +7,6 @@ public interface PayWxService {
 
     void notifyCallBackNative(HttpServletRequest request, HttpServletResponse response);
 
+    void notifyCallBackJsApi(HttpServletRequest request, HttpServletResponse response);
+
 }

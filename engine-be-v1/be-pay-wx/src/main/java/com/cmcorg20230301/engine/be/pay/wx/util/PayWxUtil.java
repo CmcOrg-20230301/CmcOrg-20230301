@@ -8,6 +8,7 @@ import com.cmcorg20230301.engine.be.model.model.dto.PayDTO;
 import com.cmcorg20230301.engine.be.pay.wx.properties.PayWxProperties;
 import com.cmcorg20230301.engine.be.security.model.enums.SysPayTradeStatusEnum;
 import com.cmcorg20230301.engine.be.security.model.vo.ApiResultVO;
+import com.wechat.pay.java.service.payments.jsapi.JsapiServiceExtension;
 import com.wechat.pay.java.service.payments.model.Transaction;
 import com.wechat.pay.java.service.payments.nativepay.NativePayService;
 import lombok.SneakyThrows;
@@ -35,6 +36,13 @@ public class PayWxUtil {
     @Autowired(required = false)
     public void setNativePayService(NativePayService nativePayService) {
         PayWxUtil.nativePayService = nativePayService;
+    }
+
+    private static JsapiServiceExtension jsapiServiceExtension;
+
+    @Autowired(required = false)
+    public void setJsapiService(JsapiServiceExtension jsapiServiceExtension) {
+        PayWxUtil.jsapiServiceExtension = jsapiServiceExtension;
     }
 
     /**
@@ -75,6 +83,52 @@ public class PayWxUtil {
             nativePayService.prepay(request);
 
         return prepayResponse.getCodeUrl();
+
+    }
+
+    /**
+     * 获取：jsApi调起支付需要的参数
+     */
+    @SneakyThrows
+    public static Object payJsApi(PayDTO dto) {
+
+        Assert.notBlank(dto.getOutTradeNo());
+        Assert.notNull(dto.getTotalAmount());
+        Assert.notBlank(dto.getSubject());
+        Assert.notBlank(dto.getOpenId());
+
+        int compare = DateUtil.compare(dto.getTimeExpire(), new Date());
+
+        if (compare <= 0) {
+            ApiResultVO.error("操作失败：支付过期时间晚于当前时间");
+        }
+
+        com.wechat.pay.java.service.payments.jsapi.model.PrepayRequest request =
+            new com.wechat.pay.java.service.payments.jsapi.model.PrepayRequest();
+
+        com.wechat.pay.java.service.payments.jsapi.model.Amount amount =
+            new com.wechat.pay.java.service.payments.jsapi.model.Amount();
+
+        amount.setTotal(dto.getTotalAmount().multiply(BaseConstant.BIG_DECIMAL_ONE_HUNDRED).intValue());
+
+        request.setAmount(amount);
+
+        request.setAppid(payWxProperties.getAppId());
+        request.setMchid(payWxProperties.getMerchantId());
+        request.setDescription(dto.getSubject());
+        request.setNotifyUrl(payWxProperties.getNotifyUrl());
+        request.setOutTradeNo(dto.getOutTradeNo());
+        request.setTimeExpire(DatePattern.UTC_WITH_XXX_OFFSET_FORMAT.format(dto.getTimeExpire()));
+
+        com.wechat.pay.java.service.payments.jsapi.model.Payer payer =
+            new com.wechat.pay.java.service.payments.jsapi.model.Payer();
+
+        payer.setOpenid(dto.getOpenId());
+
+        request.setPayer(payer);
+
+        // 执行
+        return jsapiServiceExtension.prepayWithRequestPayment(request);
 
     }
 

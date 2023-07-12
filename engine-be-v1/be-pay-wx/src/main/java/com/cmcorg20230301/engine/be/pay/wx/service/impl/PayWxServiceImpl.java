@@ -95,4 +95,33 @@ public class PayWxServiceImpl implements PayWxService {
 
     }
 
+    /**
+     * 服务器异步通知-jsApi，备注：第三方应用调用
+     */
+    @Override
+    public void notifyCallBackJsApi(HttpServletRequest request, HttpServletResponse response) {
+
+        commonHandleNotifyCallBack(request, response, (requestParam) -> {
+
+            // 以支付通知回调为例，验签、解密并转换成 Transaction
+            com.wechat.pay.java.service.partnerpayments.jsapi.model.Transaction transaction = notificationParser
+                .parse(requestParam, com.wechat.pay.java.service.partnerpayments.jsapi.model.Transaction.class);
+
+            SysPayTradeStatusEnum sysPayTradeStatusEnum =
+                SysPayTradeStatusEnum.getByCode(transaction.getTradeState().name());
+
+            if (SysPayTradeStatusEnum.TRADE_SUCCESS.equals(sysPayTradeStatusEnum)) {
+
+                // 支付成功，处理业务
+
+                return true;
+
+            }
+
+            return false;
+
+        });
+
+    }
+
 }

@@ -24,4 +24,7 @@ public class PayDTO {
     @Schema(description = "商品描述，可空")
     private String body;
 
+    @Schema(description = "用户的 openId，看情况可空")
+    private String openId;
+
 }

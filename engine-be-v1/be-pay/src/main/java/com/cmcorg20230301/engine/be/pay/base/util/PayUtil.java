@@ -48,7 +48,9 @@ public class PayUtil {
 
         }
 
-        return iPay.pay(dto);
+        String url = iPay.pay(dto);
+
+        return url;
 
     }
 

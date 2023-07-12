@@ -25,4 +25,10 @@ public class PayWxController {
         baseService.notifyCallBackNative(request, response);
     }
 
+    @Operation(summary = "服务器异步通知-jsApi，备注：第三方应用调用")
+    @PostMapping(value = "/notifyCallBack/jsApi")
+    public void notifyCallBackJsApi(HttpServletRequest request, HttpServletResponse response) {
+        baseService.notifyCallBackJsApi(request, response);
+    }
+
 }

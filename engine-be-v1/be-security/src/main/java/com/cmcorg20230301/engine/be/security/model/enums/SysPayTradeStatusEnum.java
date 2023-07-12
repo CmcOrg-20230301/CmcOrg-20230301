@@ -1,6 +1,8 @@
 package com.cmcorg20230301.engine.be.security.model.enums;
 
 import cn.hutool.core.collection.CollUtil;
+import com.baomidou.mybatisplus.annotation.EnumValue;
+import com.fasterxml.jackson.annotation.JsonValue;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
@@ -14,14 +16,16 @@ import java.util.Set;
 @Getter
 public enum SysPayTradeStatusEnum {
 
-    WAIT_BUYER_PAY("交易创建，等待买家付款", CollUtil.newHashSet("WAIT_BUYER_PAY", "NOTPAY")), //
-    TRADE_CLOSED("未付款交易超时关闭，或支付完成后全额退款", CollUtil.newHashSet("TRADE_CLOSED", "REFUND", "CLOSED")), //
-    TRADE_SUCCESS("交易支付成功", CollUtil.newHashSet("TRADE_SUCCESS", "SUCCESS")), //
-    TRADE_FINISHED("交易结束，不可退款", CollUtil.newHashSet("TRADE_FINISHED")), //
+    WAIT_BUYER_PAY(101, CollUtil.newHashSet("WAIT_BUYER_PAY", "NOTPAY")), // 交易创建，等待买家付款
+    TRADE_CLOSED(201, CollUtil.newHashSet("TRADE_CLOSED", "REFUND", "CLOSED")), // 未付款交易超时关闭，或支付完成后全额退款
+    TRADE_SUCCESS(301, CollUtil.newHashSet("TRADE_SUCCESS", "SUCCESS")), // 交易支付成功
+    TRADE_FINISHED(401, CollUtil.newHashSet("TRADE_FINISHED")), // 交易结束，不可退款
 
     ;
 
-    private final String name; // 描述
+    @EnumValue
+    @JsonValue
+    private final int code;
     private final Set<String> codeSet; // 映射：支付平台的 code
 
     /**
