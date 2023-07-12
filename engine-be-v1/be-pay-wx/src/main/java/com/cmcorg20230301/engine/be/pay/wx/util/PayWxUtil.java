@@ -79,7 +79,7 @@ public class PayWxUtil {
     }
 
     /**
-     * 交易查询接口
+     * 查询订单状态
      *
      * @param outTradeNo 商户订单号，商户网站订单系统中唯一订单号，必填
      */
@@ -88,6 +88,7 @@ public class PayWxUtil {
 
         com.wechat.pay.java.service.payments.nativepay.model.QueryOrderByOutTradeNoRequest queryRequest =
             new com.wechat.pay.java.service.payments.nativepay.model.QueryOrderByOutTradeNoRequest();
+
         queryRequest.setMchid(payWxProperties.getMerchantId());
         queryRequest.setOutTradeNo(outTradeNo);
 

@@ -1,7 +1,11 @@
 package com.cmcorg20230301.engine.be.pay.wx.configuration;
 
 import cn.hutool.core.util.StrUtil;
+import com.cmcorg20230301.engine.be.model.model.dto.PayDTO;
 import com.cmcorg20230301.engine.be.pay.wx.properties.PayWxProperties;
+import com.cmcorg20230301.engine.be.pay.wx.util.PayWxUtil;
+import com.cmcorg20230301.engine.be.security.model.configuration.IPay;
+import com.cmcorg20230301.engine.be.security.model.enums.SysPayTradeStatusEnum;
 import com.wechat.pay.java.core.RSAAutoCertificateConfig;
 import com.wechat.pay.java.core.notification.NotificationParser;
 import com.wechat.pay.java.service.payments.nativepay.NativePayService;
@@ -14,7 +18,7 @@ import javax.annotation.Resource;
  * 微信支付相关配置类
  */
 @Configuration
-public class PayWxConfiguration {
+public class PayWxConfiguration implements IPay {
 
     @Resource
     PayWxProperties payWxProperties;
@@ -66,6 +70,30 @@ public class PayWxConfiguration {
 
         return new NotificationParser(rsaAutoCertificateConfig);
 
+    }
+
+    /**
+     * 1 支付宝 2 微信 3 云闪付
+     */
+    @Override
+    public int getType() {
+        return 2;
+    }
+
+    /**
+     * 支付，返回 url
+     */
+    @Override
+    public String pay(PayDTO dto) {
+        return PayWxUtil.payNative(dto);
+    }
+
+    /**
+     * 查询订单状态
+     */
+    @Override
+    public SysPayTradeStatusEnum query(String outTradeNo) {
+        return PayWxUtil.queryNative(outTradeNo);
     }
 
 }

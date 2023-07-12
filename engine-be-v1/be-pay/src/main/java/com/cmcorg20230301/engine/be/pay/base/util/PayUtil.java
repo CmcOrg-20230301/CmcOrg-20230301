@@ -1,60 +1,73 @@
 package com.cmcorg20230301.engine.be.pay.base.util;
 
+import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.map.MapUtil;
 import com.cmcorg20230301.engine.be.model.model.dto.PayDTO;
-import com.cmcorg20230301.engine.be.pay.ali.util.PayAliUtil;
 import com.cmcorg20230301.engine.be.pay.base.properties.SysPayProperties;
-import com.cmcorg20230301.engine.be.pay.wx.util.PayWxUtil;
+import com.cmcorg20230301.engine.be.security.model.configuration.IPay;
 import com.cmcorg20230301.engine.be.security.model.enums.SysPayTradeStatusEnum;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import java.util.List;
+import java.util.Map;
 
 @Component
 public class PayUtil {
 
     private static SysPayProperties sysPayProperties;
 
-    public PayUtil(SysPayProperties sysPayProperties) {
+    private static final Map<Integer, IPay> PAY_MAP = MapUtil.newHashMap();
+
+    public PayUtil(SysPayProperties sysPayProperties, @Autowired(required = false) List<IPay> iPayList) {
 
         PayUtil.sysPayProperties = sysPayProperties;
 
-    }
+        if (CollUtil.isNotEmpty(iPayList)) {
 
-    /**
-     * 支付
-     */
-    public static String pay(PayDTO dto) {
+            for (IPay item : iPayList) {
 
-        if (sysPayProperties.getBasePayType() == 1) { // 1 支付宝 2 微信 3 云闪付
+                PAY_MAP.put(item.getType(), item);
 
-            return PayAliUtil.pay(dto);
-
-        } else if (sysPayProperties.getBasePayType() == 2) {
-
-            return PayWxUtil.payNative(dto);
+            }
 
         }
 
-        return null;
+    }
+
+    /**
+     * 支付，返回 url
+     */
+    public static String pay(PayDTO dto) {
+
+        IPay iPay = PAY_MAP.get(sysPayProperties.getBasePayType());
+
+        if (iPay == null) {
+
+            return null;
+
+        }
+
+        return iPay.pay(dto);
 
     }
 
     /**
-     * 交易查询接口
+     * 查询订单状态
      *
      * @param outTradeNo 商户订单号，商户网站订单系统中唯一订单号，必填
      */
     public static SysPayTradeStatusEnum query(String outTradeNo) {
 
-        if (sysPayProperties.getBasePayType() == 1) { // 1 支付宝 2 微信 3 云闪付
+        IPay iPay = PAY_MAP.get(sysPayProperties.getBasePayType());
 
-            return PayAliUtil.query(outTradeNo);
+        if (iPay == null) {
 
-        } else if (sysPayProperties.getBasePayType() == 2) {
-
-            return PayWxUtil.queryNative(outTradeNo);
+            return null;
 
         }
 
-        return null;
+        return iPay.query(outTradeNo);
 
     }
 
