@@ -14,18 +14,6 @@
 
     <dependencies>
 
-        <!-- be-pay-wx -->
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>be-pay-wx</artifactId>
-        </dependency>
-
-        <!-- be-pay-ali -->
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>be-pay-ali</artifactId>
-        </dependency>
-
         <!-- be-security -->
         <dependency>
             <groupId>${project.groupId}</groupId>

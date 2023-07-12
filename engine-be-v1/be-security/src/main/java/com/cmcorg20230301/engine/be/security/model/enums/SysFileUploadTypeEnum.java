@@ -10,9 +10,9 @@ import com.fasterxml.jackson.annotation.JsonValue;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.SneakyThrows;
+import org.jetbrains.annotations.Nullable;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.annotation.Nullable;
 import java.util.Set;
 
 /**

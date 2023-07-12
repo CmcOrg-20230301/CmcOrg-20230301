@@ -20,6 +20,12 @@
             <artifactId>wechatpay-java</artifactId>
         </dependency>
 
+        <!-- be-pay -->
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>be-pay</artifactId>
+        </dependency>
+
         <!-- be-security -->
         <dependency>
             <groupId>${project.groupId}</groupId>

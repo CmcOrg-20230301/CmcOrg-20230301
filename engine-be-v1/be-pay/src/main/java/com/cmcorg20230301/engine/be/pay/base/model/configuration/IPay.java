@@ -1,7 +1,7 @@
-package com.cmcorg20230301.engine.be.security.model.configuration;
+package com.cmcorg20230301.engine.be.pay.base.model.configuration;
 
 import com.cmcorg20230301.engine.be.model.model.dto.PayDTO;
-import com.cmcorg20230301.engine.be.security.model.enums.SysPayTradeStatusEnum;
+import com.cmcorg20230301.engine.be.pay.base.model.enums.SysPayTradeStatusEnum;
 
 public interface IPay {
 

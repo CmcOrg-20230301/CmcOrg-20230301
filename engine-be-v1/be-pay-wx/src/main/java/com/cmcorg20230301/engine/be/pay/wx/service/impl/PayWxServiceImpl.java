@@ -2,10 +2,9 @@ package com.cmcorg20230301.engine.be.pay.wx.service.impl;
 
 import cn.hutool.core.io.IoUtil;
 import cn.hutool.core.lang.func.Func1;
-import cn.hutool.json.JSONUtil;
+import com.cmcorg20230301.engine.be.pay.base.model.bo.TradeNotifyBO;
+import com.cmcorg20230301.engine.be.pay.base.util.PayUtil;
 import com.cmcorg20230301.engine.be.pay.wx.service.PayWxService;
-import com.cmcorg20230301.engine.be.security.model.enums.SysPayTradeStatusEnum;
-import com.cmcorg20230301.engine.be.security.util.ResponseUtil;
 import com.wechat.pay.java.core.notification.NotificationParser;
 import com.wechat.pay.java.core.notification.RequestParam;
 import lombok.SneakyThrows;
@@ -27,41 +26,30 @@ public class PayWxServiceImpl implements PayWxService {
     /**
      * 通用的处理：回调参数
      */
+    @SneakyThrows
     private void commonHandleNotifyCallBack(HttpServletRequest request, HttpServletResponse response,
-        Func1<RequestParam, Boolean> func1) {
+        Func1<RequestParam, TradeNotifyBO> func1) {
 
-        try {
+        String signature = request.getHeader("Wechatpay-Signature");
+        String nonce = request.getHeader("Wechatpay-Nonce");
+        String timestamp = request.getHeader("Wechatpay-Timestamp");
+        String serial = request.getHeader("Wechatpay-Serial");
+        String signatureType = request.getHeader("Wechatpay-Signature-Type");
 
-            String signature = request.getHeader("Wechatpay-Signature");
-            String nonce = request.getHeader("Wechatpay-Nonce");
-            String timestamp = request.getHeader("Wechatpay-Timestamp");
-            String serial = request.getHeader("Wechatpay-Serial");
-            String signatureType = request.getHeader("Wechatpay-Signature-Type");
+        ServletInputStream inputStream = request.getInputStream();
 
-            ServletInputStream inputStream = request.getInputStream();
+        String body = IoUtil.readUtf8(inputStream);
 
-            String body = IoUtil.readUtf8(inputStream);
+        // 构造 RequestParam
+        RequestParam requestParam =
+            new RequestParam.Builder().serialNumber(serial).nonce(nonce).signature(signature).signType(signatureType)
+                .timestamp(timestamp).body(body).build();
 
-            // 构造 RequestParam
-            RequestParam requestParam =
-                new RequestParam.Builder().serialNumber(serial).nonce(nonce).signature(signature)
-                    .signType(signatureType).timestamp(timestamp).body(body).build();
+        // 调用方法，获取：订单状态
+        TradeNotifyBO tradeNotifyBO = func1.call(requestParam);
 
-            // 调用方法
-            if (func1.call(requestParam)) {
-                return;
-            }
-
-            ResponseUtil
-                .out(response, JSONUtil.createObj().set("code", "FAIL").set("message", "操作失败：订单状态不是支付成功").toString(),
-                    HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-
-        } catch (Exception e) {
-
-            ResponseUtil.out(response, JSONUtil.createObj().set("code", "FAIL").set("message", "操作失败：验签异常").toString(),
-                HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-
-        }
+        // 处理：订单
+        PayUtil.handleTrade(tradeNotifyBO);
 
     }
 
@@ -78,18 +66,15 @@ public class PayWxServiceImpl implements PayWxService {
             com.wechat.pay.java.service.partnerpayments.nativepay.model.Transaction transaction = notificationParser
                 .parse(requestParam, com.wechat.pay.java.service.partnerpayments.nativepay.model.Transaction.class);
 
-            SysPayTradeStatusEnum sysPayTradeStatusEnum =
-                SysPayTradeStatusEnum.getByStatus(transaction.getTradeState().name());
+            TradeNotifyBO tradeNotifyBO = new TradeNotifyBO();
 
-            if (SysPayTradeStatusEnum.TRADE_SUCCESS.equals(sysPayTradeStatusEnum)) {
+            tradeNotifyBO.setTradeStatus(transaction.getTradeState().name());
+            tradeNotifyBO.setOutTradeNo(transaction.getOutTradeNo());
+            tradeNotifyBO.setTradeNo(transaction.getTransactionId());
+            tradeNotifyBO.setTotalAmount(transaction.getAmount().getPayerTotal().toString());
+            tradeNotifyBO.setPayCurrency(transaction.getAmount().getPayerCurrency());
 
-                // 支付成功，处理业务
-
-                return true;
-
-            }
-
-            return false;
+            return tradeNotifyBO;
 
         });
 
@@ -107,18 +92,15 @@ public class PayWxServiceImpl implements PayWxService {
             com.wechat.pay.java.service.partnerpayments.jsapi.model.Transaction transaction = notificationParser
                 .parse(requestParam, com.wechat.pay.java.service.partnerpayments.jsapi.model.Transaction.class);
 
-            SysPayTradeStatusEnum sysPayTradeStatusEnum =
-                SysPayTradeStatusEnum.getByStatus(transaction.getTradeState().name());
+            TradeNotifyBO tradeNotifyBO = new TradeNotifyBO();
 
-            if (SysPayTradeStatusEnum.TRADE_SUCCESS.equals(sysPayTradeStatusEnum)) {
+            tradeNotifyBO.setTradeStatus(transaction.getTradeState().name());
+            tradeNotifyBO.setOutTradeNo(transaction.getOutTradeNo());
+            tradeNotifyBO.setTradeNo(transaction.getTransactionId());
+            tradeNotifyBO.setTotalAmount(transaction.getAmount().getPayerTotal().toString());
+            tradeNotifyBO.setPayCurrency(transaction.getAmount().getPayerCurrency());
 
-                // 支付成功，处理业务
-
-                return true;
-
-            }
-
-            return false;
+            return tradeNotifyBO;
 
         });
 

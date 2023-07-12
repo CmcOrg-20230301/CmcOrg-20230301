@@ -2,8 +2,8 @@ package com.cmcorg20230301.engine.be.pay.ali.configuration;
 
 import com.cmcorg20230301.engine.be.model.model.dto.PayDTO;
 import com.cmcorg20230301.engine.be.pay.ali.util.PayAliUtil;
-import com.cmcorg20230301.engine.be.security.model.configuration.IPay;
-import com.cmcorg20230301.engine.be.security.model.enums.SysPayTradeStatusEnum;
+import com.cmcorg20230301.engine.be.pay.base.model.configuration.IPay;
+import com.cmcorg20230301.engine.be.pay.base.model.enums.SysPayTradeStatusEnum;
 import org.springframework.context.annotation.Configuration;
 
 /**

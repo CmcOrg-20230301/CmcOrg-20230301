@@ -2,10 +2,10 @@ package com.cmcorg20230301.engine.be.pay.wx.configuration;
 
 import cn.hutool.core.util.StrUtil;
 import com.cmcorg20230301.engine.be.model.model.dto.PayDTO;
+import com.cmcorg20230301.engine.be.pay.base.model.configuration.IPay;
+import com.cmcorg20230301.engine.be.pay.base.model.enums.SysPayTradeStatusEnum;
 import com.cmcorg20230301.engine.be.pay.wx.properties.PayWxProperties;
 import com.cmcorg20230301.engine.be.pay.wx.util.PayWxUtil;
-import com.cmcorg20230301.engine.be.security.model.configuration.IPay;
-import com.cmcorg20230301.engine.be.security.model.enums.SysPayTradeStatusEnum;
 import com.wechat.pay.java.core.RSAAutoCertificateConfig;
 import com.wechat.pay.java.core.notification.NotificationParser;
 import com.wechat.pay.java.service.payments.nativepay.NativePayService;

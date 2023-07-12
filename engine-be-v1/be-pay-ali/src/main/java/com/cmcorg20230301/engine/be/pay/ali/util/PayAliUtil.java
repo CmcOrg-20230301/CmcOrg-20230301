@@ -14,7 +14,7 @@ import com.alipay.api.response.AlipayTradePagePayResponse;
 import com.alipay.api.response.AlipayTradeQueryResponse;
 import com.cmcorg20230301.engine.be.model.model.dto.PayDTO;
 import com.cmcorg20230301.engine.be.pay.ali.properties.PayAliProperties;
-import com.cmcorg20230301.engine.be.security.model.enums.SysPayTradeStatusEnum;
+import com.cmcorg20230301.engine.be.pay.base.model.enums.SysPayTradeStatusEnum;
 import com.cmcorg20230301.engine.be.security.model.vo.ApiResultVO;
 import lombok.SneakyThrows;
 import org.springframework.stereotype.Component;

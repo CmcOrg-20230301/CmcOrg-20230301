@@ -15,9 +15,9 @@ import io.netty.channel.Channel;
 import io.netty.handler.codec.http.websocketx.TextWebSocketFrame;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.SneakyThrows;
+import org.jetbrains.annotations.Nullable;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.Nullable;
 import javax.annotation.Resource;
 import java.util.Date;
 

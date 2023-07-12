@@ -2,15 +2,14 @@ package com.cmcorg20230301.engine.be.pay.ali.service.impl;
 
 import com.alipay.api.AlipayConfig;
 import com.alipay.api.internal.util.AlipaySignature;
-import com.cmcorg20230301.engine.be.pay.ali.properties.PayAliProperties;
 import com.cmcorg20230301.engine.be.pay.ali.service.PayAliService;
 import com.cmcorg20230301.engine.be.pay.ali.util.PayAliUtil;
-import com.cmcorg20230301.engine.be.security.model.enums.SysPayTradeStatusEnum;
+import com.cmcorg20230301.engine.be.pay.base.model.bo.TradeNotifyBO;
+import com.cmcorg20230301.engine.be.pay.base.util.PayUtil;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
@@ -20,9 +19,6 @@ import java.util.Map;
 @Service
 @Slf4j
 public class PayAliServiceImpl implements PayAliService {
-
-    @Resource
-    PayAliProperties payAliProperties;
 
     /**
      * 服务器异步通知，备注：第三方应用调用
@@ -77,17 +73,20 @@ public class PayAliServiceImpl implements PayAliService {
             String tradeStatus = new String(request.getParameter("trade_status").getBytes(StandardCharsets.ISO_8859_1),
                 StandardCharsets.UTF_8);
 
-            if (SysPayTradeStatusEnum.TRADE_SUCCESS.getStatusSet().contains(tradeStatus)) {
+            TradeNotifyBO tradeNotifyBO = new TradeNotifyBO();
 
-                // 支付成功，处理业务
+            tradeNotifyBO.setTradeStatus(tradeStatus);
+            tradeNotifyBO.setOutTradeNo(outTradeNo);
+            tradeNotifyBO.setTradeNo(tradeNo);
+            tradeNotifyBO.setTotalAmount(totalAmount);
+            tradeNotifyBO.setPayCurrency("CNY");
 
-            }
-
-            return "success";
+            // 处理：订单
+            PayUtil.handleTrade(tradeNotifyBO);
 
         }
 
-        return "failure";
+        return "success"; // 备注：这里一直都返回 success，原因：如果返回 failure，则支付宝那边会再次回调，没有这个必要
 
     }
 

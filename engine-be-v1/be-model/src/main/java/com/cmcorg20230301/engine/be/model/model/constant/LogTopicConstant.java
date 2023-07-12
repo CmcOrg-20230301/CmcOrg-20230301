@@ -25,4 +25,6 @@ public interface LogTopicConstant {
 
     String NETTY_TCP_PROTOBUF = PRE_BE + "netty-tcp-protobuf"; // netty-tcp-protobuf相关
 
+    String PAY = PRE_BE + "pay"; // 支付相关
+
 }

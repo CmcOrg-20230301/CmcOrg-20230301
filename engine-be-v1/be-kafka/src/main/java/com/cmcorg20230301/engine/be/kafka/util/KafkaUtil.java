@@ -23,9 +23,18 @@ public class KafkaUtil {
     /**
      * 发送消息，备注：建议封装一层
      */
-    public static <T> void send(KafkaTopicEnum kafkaTopicEnum, T data) {
+    public static void send(KafkaTopicEnum kafkaTopicEnum, Object data) {
 
         kafkaTemplate.send(kafkaTopicEnum.name(), JSONUtil.toJsonStr(data));
+
+    }
+
+    /**
+     * 发送消息：支付状态发生改变时的 topic
+     */
+    public static void sendPayStatusChangeTopic(Object sysPayDO) {
+
+        send(KafkaTopicEnum.PAY_STATUS_CHANGE_TOPIC, sysPayDO);
 
     }
 
