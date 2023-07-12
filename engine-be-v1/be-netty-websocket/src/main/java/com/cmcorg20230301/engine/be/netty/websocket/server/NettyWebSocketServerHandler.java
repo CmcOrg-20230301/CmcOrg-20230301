@@ -4,7 +4,6 @@ import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.convert.Convert;
 import cn.hutool.core.map.MapUtil;
-import cn.hutool.core.net.NetUtil;
 import cn.hutool.core.net.url.UrlQuery;
 import cn.hutool.core.util.ArrayUtil;
 import cn.hutool.core.util.CharsetUtil;
@@ -28,6 +27,7 @@ import com.cmcorg20230301.engine.be.security.util.RequestUtil;
 import com.cmcorg20230301.engine.be.socket.model.dto.WebSocketMessageDTO;
 import com.cmcorg20230301.engine.be.socket.model.entity.SysSocketRefUserDO;
 import com.cmcorg20230301.engine.be.socket.service.SysSocketRefUserService;
+import com.cmcorg20230301.engine.be.socket.util.SocketUtil;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
@@ -384,14 +384,15 @@ public class NettyWebSocketServerHandler extends ChannelInboundHandlerAdapter {
         fullHttpRequest.setUri(nettyWebSocketProperties.getPath());
 
         // 处理：上线操作
-        onlineHandle(ctx.channel(), sysSocketRefUserDO);
+        onlineHandle(ctx.channel(), sysSocketRefUserDO, fullHttpRequest);
 
     }
 
     /**
      * 处理：上线操作
      */
-    private void onlineHandle(Channel channel, SysSocketRefUserDO sysSocketRefUserDO) {
+    private void onlineHandle(Channel channel, SysSocketRefUserDO sysSocketRefUserDO,
+        @NotNull FullHttpRequest fullHttpRequest) {
 
         SYS_SOCKET_REF_USER_DO_LIST.add(sysSocketRefUserDO);
 
@@ -409,7 +410,7 @@ public class NettyWebSocketServerHandler extends ChannelInboundHandlerAdapter {
         channel.attr(SYS_REQUEST_CATEGORY_ENUM_KEY).set(sysSocketRefUserDO.getCategory());
 
         // 绑定 Ip
-        channel.attr(IP_KEY).set(sysSocketRefUserDO.getIp());
+        channel.attr(IP_KEY).set(SocketUtil.getIp(fullHttpRequest));
 
         ConcurrentHashMap<Long, Channel> channelMap =
             USER_ID_CHANNEL_MAP.computeIfAbsent(userId, k -> MapUtil.newConcurrentHashMap());
@@ -438,23 +439,7 @@ public class NettyWebSocketServerHandler extends ChannelInboundHandlerAdapter {
         sysRequestDO.setName("WebSocket连接错误");
         sysRequestDO.setCategory(SysRequestCategoryEnum.PC_BROWSER_WINDOWS);
 
-        String ip = "";
-
-        for (String item : RequestUtil.IP_HEADER_ARR) {
-
-            ip = fullHttpRequest.headers().get(item);
-
-            if (false == NetUtil.isUnknown(ip)) {
-
-                ip = NetUtil.getMultistageReverseProxyIp(ip);
-
-                break;
-
-            }
-
-        }
-
-        sysRequestDO.setIp(ip);
+        sysRequestDO.setIp(SocketUtil.getIp(fullHttpRequest));
         sysRequestDO.setRegion(Ip2RegionUtil.getRegion(sysRequestDO.getIp()));
 
         sysRequestDO.setSuccessFlag(false);
