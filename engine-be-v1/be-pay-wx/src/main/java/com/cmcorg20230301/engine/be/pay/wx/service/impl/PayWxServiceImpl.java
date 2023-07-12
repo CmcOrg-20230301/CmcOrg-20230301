@@ -79,7 +79,7 @@ public class PayWxServiceImpl implements PayWxService {
                 .parse(requestParam, com.wechat.pay.java.service.partnerpayments.nativepay.model.Transaction.class);
 
             SysPayTradeStatusEnum sysPayTradeStatusEnum =
-                SysPayTradeStatusEnum.getByCode(transaction.getTradeState().name());
+                SysPayTradeStatusEnum.getByStatus(transaction.getTradeState().name());
 
             if (SysPayTradeStatusEnum.TRADE_SUCCESS.equals(sysPayTradeStatusEnum)) {
 
@@ -108,7 +108,7 @@ public class PayWxServiceImpl implements PayWxService {
                 .parse(requestParam, com.wechat.pay.java.service.partnerpayments.jsapi.model.Transaction.class);
 
             SysPayTradeStatusEnum sysPayTradeStatusEnum =
-                SysPayTradeStatusEnum.getByCode(transaction.getTradeState().name());
+                SysPayTradeStatusEnum.getByStatus(transaction.getTradeState().name());
 
             if (SysPayTradeStatusEnum.TRADE_SUCCESS.equals(sysPayTradeStatusEnum)) {
 

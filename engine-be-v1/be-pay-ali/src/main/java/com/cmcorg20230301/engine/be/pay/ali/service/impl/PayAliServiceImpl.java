@@ -77,7 +77,7 @@ public class PayAliServiceImpl implements PayAliService {
             String tradeStatus = new String(request.getParameter("trade_status").getBytes(StandardCharsets.ISO_8859_1),
                 StandardCharsets.UTF_8);
 
-            if (SysPayTradeStatusEnum.TRADE_SUCCESS.getCodeSet().contains(tradeStatus)) {
+            if (SysPayTradeStatusEnum.TRADE_SUCCESS.getStatusSet().contains(tradeStatus)) {
 
                 // 支付成功，处理业务
 

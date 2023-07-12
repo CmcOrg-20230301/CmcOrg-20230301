@@ -26,17 +26,17 @@ public enum SysPayTradeStatusEnum {
     @EnumValue
     @JsonValue
     private final int code;
-    private final Set<String> codeSet; // 映射：支付平台的 code
+    private final Set<String> statusSet; // 映射：支付平台的 状态
 
     /**
-     * 通过：code，获取枚举类
+     * 通过：status，获取枚举类
      */
     @Nullable
-    public static SysPayTradeStatusEnum getByCode(String code) {
+    public static SysPayTradeStatusEnum getByStatus(String status) {
 
         for (SysPayTradeStatusEnum item : SysPayTradeStatusEnum.values()) {
 
-            if (item.getCodeSet().contains(code)) {
+            if (item.getStatusSet().contains(status)) {
                 return item;
             }
         }

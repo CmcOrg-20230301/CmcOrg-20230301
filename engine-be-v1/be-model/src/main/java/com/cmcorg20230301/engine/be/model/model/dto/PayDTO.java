@@ -9,6 +9,9 @@ import java.util.Date;
 @Data
 public class PayDTO {
 
+    @Schema(description = "用户主键 id，必填")
+    private Long userId;
+
     @Schema(description = "商户订单号，商户网站订单系统中唯一订单号，必填")
     private String outTradeNo;
 
@@ -24,7 +27,7 @@ public class PayDTO {
     @Schema(description = "商品描述，可空")
     private String body;
 
-    @Schema(description = "用户的 openId，看情况可空")
+    @Schema(description = "用户 openId，可空")
     private String openId;
 
 }

@@ -125,7 +125,7 @@ public class PayAliUtil {
 
         }
 
-        return SysPayTradeStatusEnum.getByCode(response.getTradeStatus());
+        return SysPayTradeStatusEnum.getByStatus(response.getTradeStatus());
 
     }
 
