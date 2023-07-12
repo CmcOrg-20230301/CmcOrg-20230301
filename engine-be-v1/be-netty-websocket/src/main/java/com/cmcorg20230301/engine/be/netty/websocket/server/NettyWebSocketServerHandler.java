@@ -364,7 +364,7 @@ public class NettyWebSocketServerHandler extends ChannelInboundHandlerAdapter {
         String code = Convert.toStr(urlQuery.get("code")); // 随机码
 
         if (StrUtil.isBlank(code)) {
-            handleFullHttpRequestError(ctx, urlQuery.toString(), "code为空", fullHttpRequest);
+            handleFullHttpRequestError(ctx, fullHttpRequest.uri(), "code为空", fullHttpRequest);
         }
 
         String key = RedisKeyEnum.PRE_WEB_SOCKET_CODE.name() + code;
@@ -372,11 +372,12 @@ public class NettyWebSocketServerHandler extends ChannelInboundHandlerAdapter {
         SysSocketRefUserDO sysSocketRefUserDO = redissonClient.<SysSocketRefUserDO>getBucket(key).getAndDelete();
 
         if (sysSocketRefUserDO == null) {
-            handleFullHttpRequestError(ctx, urlQuery.toString(), "SysSocketRefUserDO为null", fullHttpRequest); // 处理：非法连接
+            handleFullHttpRequestError(ctx, fullHttpRequest.uri(), "SysSocketRefUserDO为null",
+                fullHttpRequest); // 处理：非法连接
         }
 
         if (!sysSocketRefUserDO.getSocketId().equals(NettyWebSocketServer.sysSocketServerId)) {
-            handleFullHttpRequestError(ctx, urlQuery.toString(), "SocketId不相同", fullHttpRequest); // 处理：非法连接
+            handleFullHttpRequestError(ctx, fullHttpRequest.uri(), "SocketId不相同", fullHttpRequest); // 处理：非法连接
         }
 
         // url包含参数，需要舍弃
