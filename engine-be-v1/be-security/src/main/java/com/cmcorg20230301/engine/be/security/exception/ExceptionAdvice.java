@@ -191,7 +191,7 @@ public class ExceptionAdvice {
 
         Long currentUserIdDefault = UserUtil.getCurrentUserIdDefault();
 
-        log.info("权限不足：{}", currentUserIdDefault);
+        log.info("权限不足：{}，uri：{}", currentUserIdDefault, httpServletRequest.getRequestURI());
 
         try {
 
