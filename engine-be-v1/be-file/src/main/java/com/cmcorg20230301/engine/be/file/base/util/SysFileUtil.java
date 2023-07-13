@@ -351,8 +351,7 @@ public class SysFileUtil {
 
                 if (SysFileStorageTypeEnum.ALI_YUN.equals(item.getStorageType())) {
 
-                    url = fileAliYunProperties.getPublicDownloadEndpoint() + "/" + fileAliYunProperties
-                        .getBucketPublicName() + "/" + item.getUri();
+                    url = fileAliYunProperties.getPublicDownloadEndpoint() + "/" + item.getUri();
 
                 } else if (SysFileStorageTypeEnum.MINIO.equals(item.getStorageType())) {
 
