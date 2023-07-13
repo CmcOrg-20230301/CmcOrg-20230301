@@ -18,7 +18,7 @@ public enum KafkaTopicEnum {
 
     LOCAL_CACHE_REMOVE_MAP_TOPIC, // 本地缓存更新的 topic，针对往 map里面移除值
 
-    PAY_STATUS_CHANGE_TOPIC, // 支付状态发生改变时的 topic
+    SYS_PAY_TRADE_NOTIFY_TOPIC, // 支付订单回调通知时的 topic
 
     ;
 

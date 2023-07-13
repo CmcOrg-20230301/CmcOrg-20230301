@@ -2,7 +2,7 @@ package com.cmcorg20230301.engine.be.pay.ali.configuration;
 
 import com.cmcorg20230301.engine.be.model.model.dto.PayDTO;
 import com.cmcorg20230301.engine.be.pay.ali.util.PayAliUtil;
-import com.cmcorg20230301.engine.be.pay.base.model.configuration.IPay;
+import com.cmcorg20230301.engine.be.pay.base.model.configuration.ISysPay;
 import com.cmcorg20230301.engine.be.pay.base.model.enums.SysPayTradeStatusEnum;
 import org.springframework.context.annotation.Configuration;
 
@@ -10,7 +10,7 @@ import org.springframework.context.annotation.Configuration;
  * 支付宝支付相关配置类
  */
 @Configuration
-public class PayAliConfiguration implements IPay {
+public class PayAliConfiguration implements ISysPay {
 
     /**
      * 1 支付宝 2 微信 3 云闪付

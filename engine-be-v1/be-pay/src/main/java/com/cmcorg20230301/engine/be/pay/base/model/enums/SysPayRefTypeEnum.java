@@ -10,7 +10,7 @@ import lombok.Getter;
  */
 @AllArgsConstructor
 @Getter
-public enum PayRefTypeEnum {
+public enum SysPayRefTypeEnum {
 
     NONE(101), // 无
 

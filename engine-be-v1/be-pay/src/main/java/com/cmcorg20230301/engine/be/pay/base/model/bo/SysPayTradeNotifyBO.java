@@ -3,7 +3,7 @@ package com.cmcorg20230301.engine.be.pay.base.model.bo;
 import lombok.Data;
 
 @Data
-public class TradeNotifyBO {
+public class SysPayTradeNotifyBO {
 
     /**
      * 第三方平台的订单状态

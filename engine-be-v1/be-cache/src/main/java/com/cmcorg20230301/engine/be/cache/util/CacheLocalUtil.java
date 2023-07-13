@@ -3,13 +3,19 @@ package com.cmcorg20230301.engine.be.cache.util;
 import cn.hutool.cache.Cache;
 import cn.hutool.cache.CacheUtil;
 import cn.hutool.core.collection.CollUtil;
+import cn.hutool.json.JSONUtil;
 import com.cmcorg20230301.engine.be.model.model.constant.BaseConstant;
 import com.cmcorg20230301.engine.be.model.model.constant.LogTopicConstant;
 import com.cmcorg20230301.engine.be.model.model.interfaces.IRedisKey;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.redisson.api.RKeys;
+import org.redisson.api.RedissonClient;
+import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.stereotype.Component;
 
+import javax.annotation.Resource;
 import java.util.Set;
 
 /**
@@ -17,6 +23,7 @@ import java.util.Set;
  * 备注：不建议直接使用本类的方法，建议再封装一层
  */
 @Slf4j(topic = LogTopicConstant.CACHE_LOCAL)
+@Component
 public class CacheLocalUtil {
 
     private static final long TIMEOUT = BaseConstant.SECOND_20_EXPIRE_TIME;
@@ -28,6 +35,40 @@ public class CacheLocalUtil {
 
         // 定时清理 map，过期的条目
         LOCAL_CACHE.schedulePrune(TIMEOUT + BaseConstant.SECOND_3_EXPIRE_TIME);
+
+    }
+
+    @Resource
+    RedissonClient redissonClient;
+
+    /**
+     * 定时任务，清除本地缓存不存在的 key
+     */
+    @Scheduled(fixedDelay = 10000)
+    public void scheduledRemove() {
+
+        // 需要移除的：本地缓存 keySet
+        Set<String> removeKeySet = LOCAL_CACHE.keySet();
+
+        RKeys rKeys = redissonClient.getKeys();
+
+        for (String item : rKeys.getKeys()) {
+
+            removeKeySet.remove(item); // 如果：redis还存在该值，则不需要本地缓存移除该 key
+
+        }
+
+        if (removeKeySet.size() != 0) {
+
+            log.info("定时任务，移除本地缓存：{}", JSONUtil.toJsonStr(removeKeySet));
+
+            for (String item : removeKeySet) {
+
+                LOCAL_CACHE.remove(item);
+
+            }
+
+        }
 
     }
 

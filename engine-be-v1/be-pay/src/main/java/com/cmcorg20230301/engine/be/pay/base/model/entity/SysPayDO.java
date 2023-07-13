@@ -2,7 +2,7 @@ package com.cmcorg20230301.engine.be.pay.base.model.entity;
 
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
-import com.cmcorg20230301.engine.be.pay.base.model.enums.PayRefTypeEnum;
+import com.cmcorg20230301.engine.be.pay.base.model.enums.SysPayRefTypeEnum;
 import com.cmcorg20230301.engine.be.pay.base.model.enums.SysPayTradeStatusEnum;
 import com.cmcorg20230301.engine.be.security.model.entity.BaseEntityNoId;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -59,7 +59,7 @@ public class SysPayDO extends BaseEntityNoId {
     private String payReturnValue;
 
     @Schema(description = "关联的类型")
-    private PayRefTypeEnum refType;
+    private SysPayRefTypeEnum refType;
 
     @Schema(description = "关联的 id")
     private Long refId;

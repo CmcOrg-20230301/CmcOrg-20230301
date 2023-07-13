@@ -2,7 +2,7 @@ package com.cmcorg20230301.engine.be.pay.wx.configuration;
 
 import cn.hutool.core.util.StrUtil;
 import com.cmcorg20230301.engine.be.model.model.dto.PayDTO;
-import com.cmcorg20230301.engine.be.pay.base.model.configuration.IPay;
+import com.cmcorg20230301.engine.be.pay.base.model.configuration.ISysPay;
 import com.cmcorg20230301.engine.be.pay.base.model.enums.SysPayTradeStatusEnum;
 import com.cmcorg20230301.engine.be.pay.wx.properties.PayWxProperties;
 import com.cmcorg20230301.engine.be.pay.wx.util.PayWxUtil;
@@ -18,7 +18,7 @@ import javax.annotation.Resource;
  * 微信支付相关配置类
  */
 @Configuration
-public class PayWxConfiguration implements IPay {
+public class PayWxConfiguration implements ISysPay {
 
     @Resource
     PayWxProperties payWxProperties;

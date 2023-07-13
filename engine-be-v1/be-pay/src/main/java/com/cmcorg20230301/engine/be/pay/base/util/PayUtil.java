@@ -6,10 +6,10 @@ import com.cmcorg20230301.engine.be.kafka.util.KafkaUtil;
 import com.cmcorg20230301.engine.be.model.model.constant.LogTopicConstant;
 import com.cmcorg20230301.engine.be.model.model.dto.PayDTO;
 import com.cmcorg20230301.engine.be.mysql.util.TransactionUtil;
-import com.cmcorg20230301.engine.be.pay.base.model.bo.TradeNotifyBO;
-import com.cmcorg20230301.engine.be.pay.base.model.configuration.IPay;
+import com.cmcorg20230301.engine.be.pay.base.model.bo.SysPayTradeNotifyBO;
+import com.cmcorg20230301.engine.be.pay.base.model.configuration.ISysPay;
 import com.cmcorg20230301.engine.be.pay.base.model.entity.SysPayDO;
-import com.cmcorg20230301.engine.be.pay.base.model.enums.PayRefTypeEnum;
+import com.cmcorg20230301.engine.be.pay.base.model.enums.SysPayRefTypeEnum;
 import com.cmcorg20230301.engine.be.pay.base.model.enums.SysPayTradeStatusEnum;
 import com.cmcorg20230301.engine.be.pay.base.properties.SysPayProperties;
 import com.cmcorg20230301.engine.be.pay.base.service.SysPayService;
@@ -34,21 +34,21 @@ public class PayUtil {
 
     private static SysPayProperties sysPayProperties;
 
-    private static final Map<Integer, IPay> PAY_MAP = MapUtil.newHashMap();
+    private static final Map<Integer, ISysPay> SYS_PAY_MAP = MapUtil.newHashMap();
 
     private static SysPayService sysPayService;
 
-    public PayUtil(SysPayProperties sysPayProperties, @Autowired(required = false) List<IPay> iPayList,
+    public PayUtil(SysPayProperties sysPayProperties, @Autowired(required = false) List<ISysPay> iSysPayList,
         SysPayService sysPayService) {
 
         PayUtil.sysPayProperties = sysPayProperties;
         PayUtil.sysPayService = sysPayService;
 
-        if (CollUtil.isNotEmpty(iPayList)) {
+        if (CollUtil.isNotEmpty(iSysPayList)) {
 
-            for (IPay item : iPayList) {
+            for (ISysPay item : iSysPayList) {
 
-                PAY_MAP.put(item.getType(), item);
+                SYS_PAY_MAP.put(item.getType(), item);
 
             }
 
@@ -81,7 +81,7 @@ public class PayUtil {
         log.info("保存支付数据，长度：{}", tempSysPayDOList.size());
 
         // 批量保存数据
-        sysPayService.saveBatch(tempSysPayDOList);
+        sysPayService.updateBatchById(tempSysPayDOList);
 
     }
 
@@ -92,20 +92,20 @@ public class PayUtil {
      */
     public static SysPayDO pay(PayDTO dto, Consumer<SysPayDO> consumer) {
 
-        IPay iPay = PAY_MAP.get(sysPayProperties.getBasePayType());
+        ISysPay iSysPay = SYS_PAY_MAP.get(sysPayProperties.getBasePayType());
 
-        if (iPay == null) {
+        if (iSysPay == null) {
 
             ApiResultVO.error("操作失败：支付方式未找到：{}", sysPayProperties.getBasePayType());
 
         }
 
-        String url = iPay.pay(dto);
+        String url = iSysPay.pay(dto);
 
         SysPayDO sysPayDO = new SysPayDO();
 
         sysPayDO.setId(IdGeneratorUtil.nextId());
-        sysPayDO.setPayType(iPay.getType());
+        sysPayDO.setPayType(iSysPay.getType());
         sysPayDO.setUserId(dto.getUserId());
         sysPayDO.setSubject(dto.getSubject());
         sysPayDO.setBody(dto.getBody());
@@ -117,7 +117,7 @@ public class PayUtil {
         sysPayDO.setStatus(SysPayTradeStatusEnum.WAIT_BUYER_PAY);
         sysPayDO.setTradeNo("");
         sysPayDO.setPayReturnValue(url);
-        sysPayDO.setRefType(PayRefTypeEnum.NONE);
+        sysPayDO.setRefType(SysPayRefTypeEnum.NONE);
         sysPayDO.setRefId(-1L);
         sysPayDO.setEnableFlag(true);
         sysPayDO.setDelFlag(false);
@@ -146,41 +146,42 @@ public class PayUtil {
      */
     public static SysPayTradeStatusEnum query(String outTradeNo) {
 
-        IPay iPay = PAY_MAP.get(sysPayProperties.getBasePayType());
+        ISysPay iSysPay = SYS_PAY_MAP.get(sysPayProperties.getBasePayType());
 
-        if (iPay == null) {
+        if (iSysPay == null) {
 
             ApiResultVO.error("操作失败：支付方式未找到：{}", sysPayProperties.getBasePayType());
 
         }
 
-        return iPay.query(outTradeNo);
+        return iSysPay.query(outTradeNo);
 
     }
 
     /**
-     * 处理：订单
+     * 处理：订单回调
      */
-    public static void handleTrade(TradeNotifyBO tradeNotifyBO) {
+    public static void handleTradeNotify(SysPayTradeNotifyBO sysPayTradeNotifyBO) {
 
-        SysPayTradeStatusEnum sysPayTradeStatusEnum = SysPayTradeStatusEnum.getByStatus(tradeNotifyBO.getTradeStatus());
+        SysPayTradeStatusEnum sysPayTradeStatusEnum =
+            SysPayTradeStatusEnum.getByStatus(sysPayTradeNotifyBO.getTradeStatus());
 
         if (sysPayTradeStatusEnum == null) {
             return;
         }
 
         // 查询：订单状态不同的数据
-        SysPayDO sysPayDO = sysPayService.lambdaQuery().eq(SysPayDO::getId, tradeNotifyBO.getOutTradeNo())
+        SysPayDO sysPayDO = sysPayService.lambdaQuery().eq(SysPayDO::getId, sysPayTradeNotifyBO.getOutTradeNo())
             .ne(SysPayDO::getStatus, sysPayTradeStatusEnum).one();
 
         if (sysPayDO == null) {
             return;
         }
 
-        sysPayDO.setPayPrice(new BigDecimal(tradeNotifyBO.getTotalAmount()));
+        sysPayDO.setPayPrice(new BigDecimal(sysPayTradeNotifyBO.getTotalAmount()));
         sysPayDO.setStatus(sysPayTradeStatusEnum);
-        sysPayDO.setTradeNo(tradeNotifyBO.getTradeNo());
-        sysPayDO.setPayCurrency(tradeNotifyBO.getPayCurrency());
+        sysPayDO.setTradeNo(sysPayTradeNotifyBO.getTradeNo());
+        sysPayDO.setPayCurrency(MyEntityUtil.getNotNullStr(sysPayTradeNotifyBO.getPayCurrency()));
 
         SYS_PAY_DO_LIST.add(sysPayDO);
 

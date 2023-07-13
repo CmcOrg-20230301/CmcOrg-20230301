@@ -4,7 +4,7 @@ import com.alipay.api.AlipayConfig;
 import com.alipay.api.internal.util.AlipaySignature;
 import com.cmcorg20230301.engine.be.pay.ali.service.PayAliService;
 import com.cmcorg20230301.engine.be.pay.ali.util.PayAliUtil;
-import com.cmcorg20230301.engine.be.pay.base.model.bo.TradeNotifyBO;
+import com.cmcorg20230301.engine.be.pay.base.model.bo.SysPayTradeNotifyBO;
 import com.cmcorg20230301.engine.be.pay.base.util.PayUtil;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -73,16 +73,16 @@ public class PayAliServiceImpl implements PayAliService {
             String tradeStatus = new String(request.getParameter("trade_status").getBytes(StandardCharsets.ISO_8859_1),
                 StandardCharsets.UTF_8);
 
-            TradeNotifyBO tradeNotifyBO = new TradeNotifyBO();
+            SysPayTradeNotifyBO sysPayTradeNotifyBO = new SysPayTradeNotifyBO();
 
-            tradeNotifyBO.setTradeStatus(tradeStatus);
-            tradeNotifyBO.setOutTradeNo(outTradeNo);
-            tradeNotifyBO.setTradeNo(tradeNo);
-            tradeNotifyBO.setTotalAmount(totalAmount);
-            tradeNotifyBO.setPayCurrency("CNY");
+            sysPayTradeNotifyBO.setTradeStatus(tradeStatus);
+            sysPayTradeNotifyBO.setOutTradeNo(outTradeNo);
+            sysPayTradeNotifyBO.setTradeNo(tradeNo);
+            sysPayTradeNotifyBO.setTotalAmount(totalAmount);
+            sysPayTradeNotifyBO.setPayCurrency("CNY");
 
-            // 处理：订单
-            PayUtil.handleTrade(tradeNotifyBO);
+            // 处理：订单回调
+            PayUtil.handleTradeNotify(sysPayTradeNotifyBO);
 
         }
 

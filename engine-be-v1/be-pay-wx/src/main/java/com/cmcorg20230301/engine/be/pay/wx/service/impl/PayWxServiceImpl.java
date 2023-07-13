@@ -2,7 +2,7 @@ package com.cmcorg20230301.engine.be.pay.wx.service.impl;
 
 import cn.hutool.core.io.IoUtil;
 import cn.hutool.core.lang.func.Func1;
-import com.cmcorg20230301.engine.be.pay.base.model.bo.TradeNotifyBO;
+import com.cmcorg20230301.engine.be.pay.base.model.bo.SysPayTradeNotifyBO;
 import com.cmcorg20230301.engine.be.pay.base.util.PayUtil;
 import com.cmcorg20230301.engine.be.pay.wx.service.PayWxService;
 import com.wechat.pay.java.core.notification.NotificationParser;
@@ -28,7 +28,7 @@ public class PayWxServiceImpl implements PayWxService {
      */
     @SneakyThrows
     private void commonHandleNotifyCallBack(HttpServletRequest request, HttpServletResponse response,
-        Func1<RequestParam, TradeNotifyBO> func1) {
+        Func1<RequestParam, SysPayTradeNotifyBO> func1) {
 
         String signature = request.getHeader("Wechatpay-Signature");
         String nonce = request.getHeader("Wechatpay-Nonce");
@@ -46,10 +46,10 @@ public class PayWxServiceImpl implements PayWxService {
                 .timestamp(timestamp).body(body).build();
 
         // 调用方法，获取：订单状态
-        TradeNotifyBO tradeNotifyBO = func1.call(requestParam);
+        SysPayTradeNotifyBO sysPayTradeNotifyBO = func1.call(requestParam);
 
-        // 处理：订单
-        PayUtil.handleTrade(tradeNotifyBO);
+        // 处理：订单回调
+        PayUtil.handleTradeNotify(sysPayTradeNotifyBO);
 
     }
 
@@ -66,15 +66,15 @@ public class PayWxServiceImpl implements PayWxService {
             com.wechat.pay.java.service.partnerpayments.nativepay.model.Transaction transaction = notificationParser
                 .parse(requestParam, com.wechat.pay.java.service.partnerpayments.nativepay.model.Transaction.class);
 
-            TradeNotifyBO tradeNotifyBO = new TradeNotifyBO();
+            SysPayTradeNotifyBO sysPayTradeNotifyBO = new SysPayTradeNotifyBO();
 
-            tradeNotifyBO.setTradeStatus(transaction.getTradeState().name());
-            tradeNotifyBO.setOutTradeNo(transaction.getOutTradeNo());
-            tradeNotifyBO.setTradeNo(transaction.getTransactionId());
-            tradeNotifyBO.setTotalAmount(transaction.getAmount().getPayerTotal().toString());
-            tradeNotifyBO.setPayCurrency(transaction.getAmount().getPayerCurrency());
+            sysPayTradeNotifyBO.setTradeStatus(transaction.getTradeState().name());
+            sysPayTradeNotifyBO.setOutTradeNo(transaction.getOutTradeNo());
+            sysPayTradeNotifyBO.setTradeNo(transaction.getTransactionId());
+            sysPayTradeNotifyBO.setTotalAmount(transaction.getAmount().getPayerTotal().toString());
+            sysPayTradeNotifyBO.setPayCurrency(transaction.getAmount().getPayerCurrency());
 
-            return tradeNotifyBO;
+            return sysPayTradeNotifyBO;
 
         });
 
@@ -92,15 +92,15 @@ public class PayWxServiceImpl implements PayWxService {
             com.wechat.pay.java.service.partnerpayments.jsapi.model.Transaction transaction = notificationParser
                 .parse(requestParam, com.wechat.pay.java.service.partnerpayments.jsapi.model.Transaction.class);
 
-            TradeNotifyBO tradeNotifyBO = new TradeNotifyBO();
+            SysPayTradeNotifyBO sysPayTradeNotifyBO = new SysPayTradeNotifyBO();
 
-            tradeNotifyBO.setTradeStatus(transaction.getTradeState().name());
-            tradeNotifyBO.setOutTradeNo(transaction.getOutTradeNo());
-            tradeNotifyBO.setTradeNo(transaction.getTransactionId());
-            tradeNotifyBO.setTotalAmount(transaction.getAmount().getPayerTotal().toString());
-            tradeNotifyBO.setPayCurrency(transaction.getAmount().getPayerCurrency());
+            sysPayTradeNotifyBO.setTradeStatus(transaction.getTradeState().name());
+            sysPayTradeNotifyBO.setOutTradeNo(transaction.getOutTradeNo());
+            sysPayTradeNotifyBO.setTradeNo(transaction.getTransactionId());
+            sysPayTradeNotifyBO.setTotalAmount(transaction.getAmount().getPayerTotal().toString());
+            sysPayTradeNotifyBO.setPayCurrency(transaction.getAmount().getPayerCurrency());
 
-            return tradeNotifyBO;
+            return sysPayTradeNotifyBO;
 
         });
 

@@ -34,7 +34,7 @@ public class KafkaUtil {
      */
     public static void sendPayStatusChangeTopic(Object sysPayDO) {
 
-        send(KafkaTopicEnum.PAY_STATUS_CHANGE_TOPIC, sysPayDO);
+        send(KafkaTopicEnum.SYS_PAY_TRADE_NOTIFY_TOPIC, sysPayDO);
 
     }
 
