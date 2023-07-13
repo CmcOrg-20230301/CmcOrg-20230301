@@ -177,23 +177,27 @@ public class NettyWebSocketServerHandler extends ChannelInboundHandlerAdapter {
 
         Long userId = channel.attr(USER_ID_KEY).get();
 
-        Long sysSocketRefUserId = channel.attr(SYS_SOCKET_REF_USER_ID_KEY).get();
+        if (userId != null) {
 
-        ConcurrentHashMap<Long, Channel> channelMap =
-            USER_ID_CHANNEL_MAP.computeIfAbsent(userId, k -> MapUtil.newConcurrentHashMap());
+            Long sysSocketRefUserId = channel.attr(SYS_SOCKET_REF_USER_ID_KEY).get();
 
-        channelMap.remove(sysSocketRefUserId);
+            ConcurrentHashMap<Long, Channel> channelMap =
+                USER_ID_CHANNEL_MAP.computeIfAbsent(userId, k -> MapUtil.newConcurrentHashMap());
 
-        log.info("WebSocket 断开，用户：{}，连接数：{}", userId, channelMap.size());
+            channelMap.remove(sysSocketRefUserId);
 
-        SYS_SOCKET_REF_USER_ID_SET.add(sysSocketRefUserId);
+            log.info("WebSocket 断开，用户：{}，连接数：{}", userId, channelMap.size());
+
+            SYS_SOCKET_REF_USER_ID_SET.add(sysSocketRefUserId);
+
+        }
 
         super.channelInactive(ctx);
 
     }
 
     /**
-     * 发生异常时，比如：远程主机强迫关闭了一个现有的连接
+     * 发生异常时，比如：远程主机强迫关闭了一个现有的连接，或者任何没有被捕获的异常
      */
     @SneakyThrows
     @Override
@@ -201,7 +205,7 @@ public class NettyWebSocketServerHandler extends ChannelInboundHandlerAdapter {
 
         ctx.close(); // 会执行：channelInactive 方法
 
-        super.exceptionCaught(ctx, e);
+        super.exceptionCaught(ctx, e); // 会打印日志
 
     }
 
@@ -457,8 +461,6 @@ public class NettyWebSocketServerHandler extends ChannelInboundHandlerAdapter {
 
         // 添加一个：请求数据
         RequestUtil.add(sysRequestDO);
-
-        ApiResultVO.error(BaseBizCodeEnum.ILLEGAL_REQUEST);
 
     }
 
