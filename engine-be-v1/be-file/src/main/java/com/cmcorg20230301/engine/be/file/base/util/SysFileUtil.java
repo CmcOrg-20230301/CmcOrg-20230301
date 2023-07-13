@@ -184,6 +184,16 @@ public class SysFileUtil {
 
         }
 
+        if (sysFileProperties.getAvatarStorageType() == 1) { // 文件存放位置：1 阿里云 2 minio
+
+            FileAliYunUtil.upload(bucketName, objectName, dto.getFile());
+
+        } else if (sysFileProperties.getAvatarStorageType() == 2) {
+
+            FileMinioUtil.upload(bucketName, objectName, dto.getFile());
+
+        }
+
         SysFileStorageTypeEnum finalStorageType = storageType;
         String finalBucketName = bucketName;
 
@@ -193,15 +203,9 @@ public class SysFileUtil {
             Long sysFileId = saveCommonSysFile(dto, fileType, currentUserId, originalFilename, newFileName, objectName,
                 finalBucketName, finalStorageType, publicFlag);
 
-            consumer.accept(sysFileId);
+            if (consumer != null) {
 
-            if (sysFileProperties.getAvatarStorageType() == 1) { // 文件存放位置：1 阿里云 2 minio
-
-                FileAliYunUtil.upload(finalBucketName, objectName, dto.getFile());
-
-            } else if (sysFileProperties.getAvatarStorageType() == 2) {
-
-                FileMinioUtil.upload(finalBucketName, objectName, dto.getFile());
+                consumer.accept(sysFileId);
 
             }
 
@@ -411,41 +415,41 @@ public class SysFileUtil {
         // 可以随便取一个：bucketName，因为都是一样的
         String bucketName = sysFileDOList.get(0).getBucketName();
 
+        Map<SysFileStorageTypeEnum, List<SysFileDO>> groupMap =
+            sysFileDOList.stream().collect(Collectors.groupingBy(SysFileDO::getStorageType));
+
+        Set<String> aliYunObjectNameSet = new HashSet<>();
+        Set<String> minioObjectNameSet = new HashSet<>();
+
+        for (List<SysFileDO> item : groupMap.values()) {
+
+            for (SysFileDO subItem : item) {
+
+                if (SysFileStorageTypeEnum.ALI_YUN.equals(subItem.getStorageType())) {
+
+                    aliYunObjectNameSet.add(subItem.getUri());
+
+                } else if (SysFileStorageTypeEnum.MINIO.equals(subItem.getStorageType())) {
+
+                    minioObjectNameSet.add(subItem.getUri());
+
+                }
+
+            }
+
+        }
+
+        // 移除：文件存储系统里面的文件
+        FileAliYunUtil.remove(bucketName, aliYunObjectNameSet);
+
+        FileMinioUtil.remove(bucketName, minioObjectNameSet);
+
         // 移除：所有文件
         TransactionUtil.exec(() -> {
 
             sysFileService.removeBatchByIds(fileIdSet);
 
             sysFileAuthService.lambdaUpdate().in(SysFileAuthDO::getFileId, fileIdSet).remove();
-
-            Map<SysFileStorageTypeEnum, List<SysFileDO>> groupMap =
-                sysFileDOList.stream().collect(Collectors.groupingBy(SysFileDO::getStorageType));
-
-            Set<String> aliYunObjectNameSet = new HashSet<>();
-            Set<String> minioObjectNameSet = new HashSet<>();
-
-            for (List<SysFileDO> item : groupMap.values()) {
-
-                for (SysFileDO subItem : item) {
-
-                    if (SysFileStorageTypeEnum.ALI_YUN.equals(subItem.getStorageType())) {
-
-                        aliYunObjectNameSet.add(subItem.getUri());
-
-                    } else if (SysFileStorageTypeEnum.MINIO.equals(subItem.getStorageType())) {
-
-                        minioObjectNameSet.add(subItem.getUri());
-
-                    }
-
-                }
-
-            }
-
-            // 移除：文件存储系统里面的文件
-            FileAliYunUtil.remove(bucketName, aliYunObjectNameSet);
-
-            FileMinioUtil.remove(bucketName, minioObjectNameSet);
 
         });
 
