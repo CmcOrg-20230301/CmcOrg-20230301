@@ -19,22 +19,22 @@ public class SysFileBaseProperties {
     private String secretKey;
 
     /**
-     * 上传的端点
+     * 上传的端点，例如：oss-rg-china-mainland.aliyuncs.com
      */
     private String uploadEndpoint;
 
     /**
-     * 公开下载的端点
+     * 公开下载的端点，例如：be-public-bucket.oss-rg-china-mainland.aliyuncs.com
      */
     private String publicDownloadEndpoint;
 
     /**
-     * 公开类型的桶名
+     * 公开类型的桶名，例如：be-public-bucket
      */
     private String bucketPublicName;
 
     /**
-     * 私有类型的桶名
+     * 私有类型的桶名，例如：be-private-bucket
      */
     private String bucketPrivateName;
 
