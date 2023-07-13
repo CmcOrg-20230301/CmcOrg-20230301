@@ -443,8 +443,9 @@ public class SysFileUtil {
 
             }
 
-            // 移除：文件系统里面的文件
+            // 移除：文件存储系统里面的文件
             FileAliYunUtil.remove(bucketName, aliYunObjectNameSet);
+
             FileMinioUtil.remove(bucketName, minioObjectNameSet);
 
         });
