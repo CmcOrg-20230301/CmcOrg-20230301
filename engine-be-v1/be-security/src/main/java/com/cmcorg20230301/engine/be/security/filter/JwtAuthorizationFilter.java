@@ -11,6 +11,7 @@ import cn.hutool.jwt.JWT;
 import cn.hutool.jwt.JWTValidator;
 import com.cmcorg20230301.engine.be.cache.util.MyCacheUtil;
 import com.cmcorg20230301.engine.be.model.model.constant.BaseConstant;
+import com.cmcorg20230301.engine.be.model.model.constant.LogTopicConstant;
 import com.cmcorg20230301.engine.be.security.configuration.base.BaseConfiguration;
 import com.cmcorg20230301.engine.be.security.configuration.security.IJwtValidatorConfiguration;
 import com.cmcorg20230301.engine.be.security.exception.BaseBizCodeEnum;
@@ -35,7 +36,7 @@ import java.util.List;
 /**
  * 自定义 jwt过滤器，备注：后续接口方法，无需判断账号是否封禁或者不存在
  */
-@Slf4j
+@Slf4j(topic = LogTopicConstant.REQUEST)
 public class JwtAuthorizationFilter extends OncePerRequestFilter {
 
     private static SecurityProperties securityProperties;

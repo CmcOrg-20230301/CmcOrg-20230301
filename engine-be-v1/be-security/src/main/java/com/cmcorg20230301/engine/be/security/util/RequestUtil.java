@@ -2,6 +2,7 @@ package com.cmcorg20230301.engine.be.security.util;
 
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.convert.Convert;
+import com.cmcorg20230301.engine.be.model.model.constant.LogTopicConstant;
 import com.cmcorg20230301.engine.be.security.model.constant.SecurityConstant;
 import com.cmcorg20230301.engine.be.security.model.entity.SysRequestDO;
 import com.cmcorg20230301.engine.be.security.model.enums.SysRequestCategoryEnum;
@@ -20,7 +21,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 @Component
-@Slf4j
+@Slf4j(topic = LogTopicConstant.REQUEST)
 public class RequestUtil {
 
     public static final String[] IP_HEADER_ARR =
