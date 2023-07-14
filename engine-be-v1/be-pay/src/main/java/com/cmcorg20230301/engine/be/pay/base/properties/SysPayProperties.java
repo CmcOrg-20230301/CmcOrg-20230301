@@ -13,7 +13,7 @@ import org.springframework.stereotype.Component;
 public class SysPayProperties {
 
     /**
-     * 基础支付方式：1 支付宝 2 微信 3 云闪付
+     * 基础支付方式：101 支付宝 201 微信 301 云闪付
      */
     private Integer basePayType;
 

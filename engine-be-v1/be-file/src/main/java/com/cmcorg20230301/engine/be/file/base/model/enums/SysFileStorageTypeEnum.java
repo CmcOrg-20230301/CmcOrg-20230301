@@ -1,4 +1,4 @@
-package com.cmcorg20230301.engine.be.security.model.enums;
+package com.cmcorg20230301.engine.be.file.base.model.enums;
 
 import com.baomidou.mybatisplus.annotation.EnumValue;
 import com.fasterxml.jackson.annotation.JsonValue;
@@ -6,14 +6,17 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 /**
- * 文件上传：文件类型，枚举类
+ * 存放文件的服务器类型：枚举类
  */
 @AllArgsConstructor
 @Getter
-public enum SysFileTypeEnum {
+public enum SysFileStorageTypeEnum {
 
-    FILE(101), // 文件
-    FOLDER(101), // 文件夹
+    EMPTY(0), // 无，一般用于引用类型的文件
+
+    ALI_YUN(101), // aliyun
+
+    MINIO(201), // minio
 
     ;
 

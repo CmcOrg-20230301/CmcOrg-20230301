@@ -1,6 +1,6 @@
-package com.cmcorg20230301.engine.be.security.model.dto;
+package com.cmcorg20230301.engine.be.file.base.model.dto;
 
-import com.cmcorg20230301.engine.be.security.model.enums.SysFileUploadTypeEnum;
+import com.cmcorg20230301.engine.be.file.base.model.enums.SysFileUploadTypeEnum;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import org.springframework.web.multipart.MultipartFile;

@@ -4,6 +4,7 @@ import cn.hutool.core.util.StrUtil;
 import com.cmcorg20230301.engine.be.model.model.dto.PayDTO;
 import com.cmcorg20230301.engine.be.pay.base.model.configuration.ISysPay;
 import com.cmcorg20230301.engine.be.pay.base.model.enums.SysPayTradeStatusEnum;
+import com.cmcorg20230301.engine.be.pay.base.model.enums.SysPayTypeEnum;
 import com.cmcorg20230301.engine.be.pay.wx.properties.PayWxProperties;
 import com.cmcorg20230301.engine.be.pay.wx.util.PayWxUtil;
 import com.wechat.pay.java.core.RSAAutoCertificateConfig;
@@ -73,11 +74,11 @@ public class PayWxConfiguration implements ISysPay {
     }
 
     /**
-     * 1 支付宝 2 微信 3 云闪付
+     * 支付方式类型
      */
     @Override
-    public int getType() {
-        return 2;
+    public SysPayTypeEnum getSysPayType() {
+        return SysPayTypeEnum.WX;
     }
 
     /**

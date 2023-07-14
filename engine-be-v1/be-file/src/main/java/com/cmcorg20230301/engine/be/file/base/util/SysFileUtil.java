@@ -2,41 +2,43 @@ package com.cmcorg20230301.engine.be.file.base.util;
 
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.lang.Assert;
+import cn.hutool.core.map.MapUtil;
 import cn.hutool.core.util.BooleanUtil;
 import cn.hutool.core.util.IdUtil;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.extension.conditions.query.LambdaQueryChainWrapper;
 import com.baomidou.mybatisplus.extension.toolkit.ChainWrappers;
-import com.cmcorg20230301.engine.be.file.aliyun.properties.FileAliYunProperties;
-import com.cmcorg20230301.engine.be.file.aliyun.util.FileAliYunUtil;
+import com.cmcorg20230301.engine.be.file.base.model.configuration.ISysFile;
+import com.cmcorg20230301.engine.be.file.base.model.dto.SysFileUploadDTO;
 import com.cmcorg20230301.engine.be.file.base.model.entity.SysFileAuthDO;
 import com.cmcorg20230301.engine.be.file.base.model.entity.SysFileDO;
+import com.cmcorg20230301.engine.be.file.base.model.enums.SysFileStorageTypeEnum;
+import com.cmcorg20230301.engine.be.file.base.model.enums.SysFileTypeEnum;
+import com.cmcorg20230301.engine.be.file.base.model.enums.SysFileUploadTypeEnum;
 import com.cmcorg20230301.engine.be.file.base.properties.SysFileProperties;
 import com.cmcorg20230301.engine.be.file.base.service.SysFileAuthService;
 import com.cmcorg20230301.engine.be.file.base.service.SysFileService;
-import com.cmcorg20230301.engine.be.file.minio.properties.FileMinioProperties;
-import com.cmcorg20230301.engine.be.file.minio.util.FileMinioUtil;
 import com.cmcorg20230301.engine.be.model.model.constant.BaseConstant;
 import com.cmcorg20230301.engine.be.mysql.util.TransactionUtil;
 import com.cmcorg20230301.engine.be.security.exception.BaseBizCodeEnum;
 import com.cmcorg20230301.engine.be.security.mapper.SysUserInfoMapper;
-import com.cmcorg20230301.engine.be.security.model.dto.SysFileUploadDTO;
 import com.cmcorg20230301.engine.be.security.model.entity.BaseEntity;
 import com.cmcorg20230301.engine.be.security.model.entity.BaseEntityNoId;
 import com.cmcorg20230301.engine.be.security.model.entity.SysUserInfoDO;
-import com.cmcorg20230301.engine.be.security.model.enums.SysFileStorageTypeEnum;
-import com.cmcorg20230301.engine.be.security.model.enums.SysFileTypeEnum;
-import com.cmcorg20230301.engine.be.security.model.enums.SysFileUploadTypeEnum;
 import com.cmcorg20230301.engine.be.security.model.vo.ApiResultVO;
 import com.cmcorg20230301.engine.be.security.util.MyEntityUtil;
 import com.cmcorg20230301.engine.be.security.util.UserUtil;
 import lombok.SneakyThrows;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.io.InputStream;
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
@@ -51,24 +53,30 @@ public class SysFileUtil {
     private static SysFileService sysFileService;
     private static SysFileAuthService sysFileAuthService;
 
-    private static FileAliYunProperties fileAliYunProperties;
-    private static FileMinioProperties fileMinioProperties;
-
     private static SysUserInfoMapper sysUserInfoMapper;
 
+    private static final Map<Integer, ISysFile> SYS_FILE_MAP = MapUtil.newHashMap();
+
     public SysFileUtil(SysFileProperties sysFileProperties, SysFileService sysFileService,
-        SysFileAuthService sysFileAuthService, FileAliYunProperties fileAliYunProperties,
-        FileMinioProperties fileMinioProperties, SysUserInfoMapper sysUserInfoMapper) {
+        SysFileAuthService sysFileAuthService, SysUserInfoMapper sysUserInfoMapper,
+        @Autowired(required = false) List<ISysFile> iSysFileList) {
 
         SysFileUtil.sysFileProperties = sysFileProperties;
 
         SysFileUtil.sysFileService = sysFileService;
         SysFileUtil.sysFileAuthService = sysFileAuthService;
 
-        SysFileUtil.fileAliYunProperties = fileAliYunProperties;
-        SysFileUtil.fileMinioProperties = fileMinioProperties;
-
         SysFileUtil.sysUserInfoMapper = sysUserInfoMapper;
+
+        if (CollUtil.isNotEmpty(iSysFileList)) {
+
+            for (ISysFile item : iSysFileList) {
+
+                SYS_FILE_MAP.put(item.getSysFileStorageType().getCode(), item);
+
+            }
+
+        }
 
     }
 
@@ -122,14 +130,16 @@ public class SysFileUtil {
         if (SysFileUploadTypeEnum.AVATAR.equals(dto.getUploadType())) {
 
             // 通用：上传处理
-            sysFileId = uploadCommonHandler(dto, fileType, dto.getUploadType().isPublicFlag(), currentUserIdNotAdmin,
+            sysFileId =
+                uploadCommonHandle(dto, fileType, currentUserIdNotAdmin, sysFileProperties.getAvatarStorageType(),
 
-                (sysFileIdTemp) -> {
+                    (sysFileIdTemp) -> {
 
-                    ChainWrappers.lambdaUpdateChain(sysUserInfoMapper).eq(SysUserInfoDO::getId, currentUserIdNotAdmin)
-                        .set(SysUserInfoDO::getAvatarFileId, sysFileIdTemp).update();
+                        ChainWrappers.lambdaUpdateChain(sysUserInfoMapper)
+                            .eq(SysUserInfoDO::getId, currentUserIdNotAdmin)
+                            .set(SysUserInfoDO::getAvatarFileId, sysFileIdTemp).update();
 
-                });
+                    });
 
         }
 
@@ -141,8 +151,18 @@ public class SysFileUtil {
      * 通用：上传处理
      */
     @NotNull
-    private static Long uploadCommonHandler(SysFileUploadDTO dto, String fileType, boolean publicFlag,
-        Long currentUserId, Consumer<Long> consumer) {
+    private static Long uploadCommonHandle(SysFileUploadDTO dto, String fileType, Long currentUserId,
+        Integer storageType, @Nullable Consumer<Long> consumer) {
+
+        ISysFile iSysFile = SYS_FILE_MAP.get(storageType);
+
+        if (iSysFile == null) {
+
+            ApiResultVO.error("操作失败：文件存储方式未找到：{}", storageType);
+
+        }
+
+        SysFileStorageTypeEnum sysFileStorageTypeEnum = iSysFile.getSysFileStorageType();
 
         String folderName = dto.getUploadType().getFolderName();
 
@@ -152,29 +172,15 @@ public class SysFileUtil {
 
         String objectName = folderName + "/" + newFileName;
 
-        String bucketName = null;
+        String bucketName;
 
-        SysFileStorageTypeEnum storageType = null;
+        if (dto.getUploadType().isPublicFlag()) {
 
-        if (sysFileProperties.getAvatarStorageType() == 1) { // 文件存放位置：1 阿里云 2 minio
+            bucketName = iSysFile.getSysFileBaseProperties().getBucketPublicName();
 
-            if (publicFlag) {
-                bucketName = fileAliYunProperties.getBucketPublicName();
-            } else {
-                bucketName = fileAliYunProperties.getBucketPrivateName();
-            }
+        } else {
 
-            storageType = SysFileStorageTypeEnum.ALI_YUN;
-
-        } else if (sysFileProperties.getAvatarStorageType() == 2) {
-
-            if (publicFlag) {
-                bucketName = fileMinioProperties.getBucketPublicName();
-            } else {
-                bucketName = fileMinioProperties.getBucketPrivateName();
-            }
-
-            storageType = SysFileStorageTypeEnum.MINIO;
+            bucketName = iSysFile.getSysFileBaseProperties().getBucketPrivateName();
 
         }
 
@@ -184,24 +190,16 @@ public class SysFileUtil {
 
         }
 
-        if (sysFileProperties.getAvatarStorageType() == 1) { // 文件存放位置：1 阿里云 2 minio
+        // 执行：文件上传
+        iSysFile.upload(bucketName, objectName, dto.getFile());
 
-            FileAliYunUtil.upload(bucketName, objectName, dto.getFile());
-
-        } else if (sysFileProperties.getAvatarStorageType() == 2) {
-
-            FileMinioUtil.upload(bucketName, objectName, dto.getFile());
-
-        }
-
-        SysFileStorageTypeEnum finalStorageType = storageType;
         String finalBucketName = bucketName;
 
         return TransactionUtil.exec(() -> {
 
             // 通用保存：文件信息到数据库
             Long sysFileId = saveCommonSysFile(dto, fileType, currentUserId, originalFilename, newFileName, objectName,
-                finalBucketName, finalStorageType, publicFlag);
+                finalBucketName, sysFileStorageTypeEnum);
 
             if (consumer != null) {
 
@@ -221,7 +219,7 @@ public class SysFileUtil {
     @NotNull
     private static Long saveCommonSysFile(SysFileUploadDTO dto, String fileType, Long currentUserId,
         String originalFilename, String newFileName, String objectName, String bucketName,
-        SysFileStorageTypeEnum storageType, boolean publicFlag) {
+        SysFileStorageTypeEnum storageType) {
 
         SysFileDO sysFileDO = new SysFileDO();
 
@@ -232,13 +230,15 @@ public class SysFileUtil {
         sysFileDO.setNewFileName(newFileName);
         sysFileDO.setFileExtName(fileType);
         sysFileDO.setExtraJson(MyEntityUtil.getNotNullStr(dto.getExtraJson()));
+
         sysFileDO.setUploadType(dto.getUploadType());
         sysFileDO.setStorageType(storageType);
         sysFileDO.setParentId(MyEntityUtil.getNotNullParentId(null));
         sysFileDO.setType(SysFileTypeEnum.FILE);
         sysFileDO.setShowFileName(originalFilename);
         sysFileDO.setRefFileId(BaseConstant.NEGATIVE_ONE);
-        sysFileDO.setPublicFlag(publicFlag);
+        sysFileDO.setPublicFlag(dto.getUploadType().isPublicFlag());
+
         sysFileDO.setEnableFlag(true);
         sysFileDO.setDelFlag(false);
         sysFileDO.setRemark(MyEntityUtil.getNotNullStr(dto.getRemark()));
@@ -280,20 +280,15 @@ public class SysFileUtil {
         // 如果有关联的文件，则使用关联文件的信息，备注：这里是递归获取，要注意层级问题
         sysFileDO = getDeepPrivateDownloadSysFile(sysFileDO);
 
-        if (SysFileStorageTypeEnum.ALI_YUN.equals(sysFileDO.getStorageType())) {
+        ISysFile iSysFile = SYS_FILE_MAP.get(sysFileDO.getStorageType().getCode());
 
-            return FileAliYunUtil.download(sysFileDO.getBucketName(), sysFileDO.getNewFileName());
+        if (iSysFile == null) {
 
-        } else if (SysFileStorageTypeEnum.MINIO.equals(sysFileDO.getStorageType())) {
-
-            return FileMinioUtil.download(sysFileDO.getBucketName(), sysFileDO.getNewFileName());
-
-        } else {
-
-            ApiResultVO.error("操作失败：文件存储位置不存在");
-            return null; // 备注：这里不会执行，只是为了通过语法检查
+            ApiResultVO.error("操作失败：文件存储位置不存在：{}", sysFileDO.getStorageType().getCode());
 
         }
+
+        return iSysFile.download(sysFileDO.getBucketName(), sysFileDO.getNewFileName());
 
     }
 
@@ -351,22 +346,11 @@ public class SysFileUtil {
 
             if (BooleanUtil.isTrue(item.getPublicFlag())) { // 如果：是公开下载
 
-                String url = null;
+                ISysFile iSysFile = SYS_FILE_MAP.get(item.getStorageType().getCode());
 
-                if (SysFileStorageTypeEnum.ALI_YUN.equals(item.getStorageType())) {
+                if (iSysFile != null) {
 
-                    url = fileAliYunProperties.getPublicDownloadEndpoint() + "/" + item.getUri();
-
-                } else if (SysFileStorageTypeEnum.MINIO.equals(item.getStorageType())) {
-
-                    url = fileMinioProperties.getPublicDownloadEndpoint() + "/" + fileMinioProperties
-                        .getBucketPublicName() + "/" + item.getUri();
-
-                }
-
-                if (url != null) {
-
-                    result.put(item.getId(), url);
+                    result.put(item.getId(), iSysFile.getUrl(item.getUri()));
 
                 }
 
@@ -418,31 +402,20 @@ public class SysFileUtil {
         Map<SysFileStorageTypeEnum, List<SysFileDO>> groupMap =
             sysFileDOList.stream().collect(Collectors.groupingBy(SysFileDO::getStorageType));
 
-        Set<String> aliYunObjectNameSet = new HashSet<>();
-        Set<String> minioObjectNameSet = new HashSet<>();
+        for (Map.Entry<SysFileStorageTypeEnum, List<SysFileDO>> item : groupMap.entrySet()) {
 
-        for (List<SysFileDO> item : groupMap.values()) {
+            ISysFile iSysFile = SYS_FILE_MAP.get(item.getKey().getCode());
 
-            for (SysFileDO subItem : item) {
-
-                if (SysFileStorageTypeEnum.ALI_YUN.equals(subItem.getStorageType())) {
-
-                    aliYunObjectNameSet.add(subItem.getUri());
-
-                } else if (SysFileStorageTypeEnum.MINIO.equals(subItem.getStorageType())) {
-
-                    minioObjectNameSet.add(subItem.getUri());
-
-                }
-
+            if (iSysFile == null) {
+                continue;
             }
 
+            Set<String> objectNameSet = item.getValue().stream().map(SysFileDO::getUri).collect(Collectors.toSet());
+
+            // 移除：文件存储系统里面的文件
+            iSysFile.remove(bucketName, objectNameSet);
+
         }
-
-        // 移除：文件存储系统里面的文件
-        FileAliYunUtil.remove(bucketName, aliYunObjectNameSet);
-
-        FileMinioUtil.remove(bucketName, minioObjectNameSet);
 
         // 移除：所有文件
         TransactionUtil.exec(() -> {

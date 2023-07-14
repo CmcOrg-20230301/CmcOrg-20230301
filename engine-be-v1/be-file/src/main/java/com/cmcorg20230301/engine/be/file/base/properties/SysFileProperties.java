@@ -13,7 +13,7 @@ import org.springframework.stereotype.Component;
 public class SysFileProperties {
 
     /**
-     * 头像存放位置：1 阿里云 2 minio
+     * 头像存放位置
      */
     private Integer avatarStorageType;
 

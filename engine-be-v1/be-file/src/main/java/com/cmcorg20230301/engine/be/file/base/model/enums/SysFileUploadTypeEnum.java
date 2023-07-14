@@ -1,4 +1,4 @@
-package com.cmcorg20230301.engine.be.security.model.enums;
+package com.cmcorg20230301.engine.be.file.base.model.enums;
 
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.io.unit.DataSizeUtil;

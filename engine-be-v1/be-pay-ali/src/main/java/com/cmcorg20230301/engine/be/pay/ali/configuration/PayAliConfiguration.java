@@ -4,6 +4,7 @@ import com.cmcorg20230301.engine.be.model.model.dto.PayDTO;
 import com.cmcorg20230301.engine.be.pay.ali.util.PayAliUtil;
 import com.cmcorg20230301.engine.be.pay.base.model.configuration.ISysPay;
 import com.cmcorg20230301.engine.be.pay.base.model.enums.SysPayTradeStatusEnum;
+import com.cmcorg20230301.engine.be.pay.base.model.enums.SysPayTypeEnum;
 import org.springframework.context.annotation.Configuration;
 
 /**
@@ -13,11 +14,11 @@ import org.springframework.context.annotation.Configuration;
 public class PayAliConfiguration implements ISysPay {
 
     /**
-     * 1 支付宝 2 微信 3 云闪付
+     * 支付方式类型
      */
     @Override
-    public int getType() {
-        return 1;
+    public SysPayTypeEnum getSysPayType() {
+        return SysPayTypeEnum.ALI;
     }
 
     /**

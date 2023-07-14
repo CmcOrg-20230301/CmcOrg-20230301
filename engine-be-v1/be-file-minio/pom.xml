@@ -14,6 +14,12 @@
 
     <dependencies>
 
+        <!-- be-file -->
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>be-file</artifactId>
+        </dependency>
+
         <!-- minio文件系统 -->
         <dependency>
             <groupId>io.minio</groupId>

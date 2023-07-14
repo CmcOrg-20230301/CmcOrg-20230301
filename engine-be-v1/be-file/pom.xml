@@ -14,18 +14,6 @@
 
     <dependencies>
 
-        <!-- be-file-minio -->
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>be-file-minio</artifactId>
-        </dependency>
-
-        <!-- be-file-aliyun -->
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>be-file-aliyun</artifactId>
-        </dependency>
-
         <!-- be-security -->
         <dependency>
             <groupId>${project.groupId}</groupId>

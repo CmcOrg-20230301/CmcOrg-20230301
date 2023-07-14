@@ -5,12 +5,12 @@ import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.http.HttpRequest;
 import cn.hutool.json.JSONUtil;
+import com.cmcorg20230301.engine.be.file.base.model.dto.SysFileUploadDTO;
+import com.cmcorg20230301.engine.be.file.base.model.enums.SysFileUploadTypeEnum;
 import com.cmcorg20230301.engine.be.generate.util.apitest.ApiTestHelper;
 import com.cmcorg20230301.engine.be.generate.util.apitest.sign.ApiTestSignSignInNameUtil;
 import com.cmcorg20230301.engine.be.model.model.dto.NotEmptyIdSet;
 import com.cmcorg20230301.engine.be.model.model.dto.NotNullId;
-import com.cmcorg20230301.engine.be.security.model.dto.SysFileUploadDTO;
-import com.cmcorg20230301.engine.be.security.model.enums.SysFileUploadTypeEnum;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 

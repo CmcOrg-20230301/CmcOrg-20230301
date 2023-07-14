@@ -2,6 +2,7 @@ package com.cmcorg20230301.engine.be.file.base.service.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.cmcorg20230301.engine.be.file.base.mapper.SysFileMapper;
+import com.cmcorg20230301.engine.be.file.base.model.dto.SysFileUploadDTO;
 import com.cmcorg20230301.engine.be.file.base.model.entity.SysFileDO;
 import com.cmcorg20230301.engine.be.file.base.service.SysFileService;
 import com.cmcorg20230301.engine.be.file.base.util.SysFileUtil;
@@ -9,7 +10,6 @@ import com.cmcorg20230301.engine.be.model.model.dto.NotEmptyIdSet;
 import com.cmcorg20230301.engine.be.model.model.dto.NotNullId;
 import com.cmcorg20230301.engine.be.model.model.vo.LongObjectMapVO;
 import com.cmcorg20230301.engine.be.security.exception.BaseBizCodeEnum;
-import com.cmcorg20230301.engine.be.security.model.dto.SysFileUploadDTO;
 import com.cmcorg20230301.engine.be.security.model.vo.ApiResultVO;
 import com.cmcorg20230301.engine.be.security.util.ResponseUtil;
 import lombok.SneakyThrows;

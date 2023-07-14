@@ -48,7 +48,7 @@ public class PayUtil {
 
             for (ISysPay item : iSysPayList) {
 
-                SYS_PAY_MAP.put(item.getType(), item);
+                SYS_PAY_MAP.put(item.getSysPayType().getCode(), item);
 
             }
 
@@ -105,7 +105,7 @@ public class PayUtil {
         SysPayDO sysPayDO = new SysPayDO();
 
         sysPayDO.setId(IdGeneratorUtil.nextId());
-        sysPayDO.setPayType(iSysPay.getType());
+        sysPayDO.setPayType(iSysPay.getSysPayType());
         sysPayDO.setUserId(dto.getUserId());
         sysPayDO.setSubject(dto.getSubject());
         sysPayDO.setBody(dto.getBody());
