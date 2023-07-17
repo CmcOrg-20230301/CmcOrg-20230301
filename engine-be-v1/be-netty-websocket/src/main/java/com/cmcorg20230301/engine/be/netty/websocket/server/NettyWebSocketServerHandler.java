@@ -368,7 +368,11 @@ public class NettyWebSocketServerHandler extends ChannelInboundHandlerAdapter {
         String code = Convert.toStr(urlQuery.get("code")); // 随机码
 
         if (StrUtil.isBlank(code)) {
+
             handleFullHttpRequestError(ctx, fullHttpRequest.uri(), "code为空", fullHttpRequest);
+
+            return;
+
         }
 
         String key = RedisKeyEnum.PRE_WEB_SOCKET_CODE.name() + code;
@@ -376,12 +380,20 @@ public class NettyWebSocketServerHandler extends ChannelInboundHandlerAdapter {
         SysSocketRefUserDO sysSocketRefUserDO = redissonClient.<SysSocketRefUserDO>getBucket(key).getAndDelete();
 
         if (sysSocketRefUserDO == null) {
+
             handleFullHttpRequestError(ctx, fullHttpRequest.uri(), "SysSocketRefUserDO为null",
                 fullHttpRequest); // 处理：非法连接
+
+            return;
+
         }
 
         if (!sysSocketRefUserDO.getSocketId().equals(NettyWebSocketServer.sysSocketServerId)) {
+
             handleFullHttpRequestError(ctx, fullHttpRequest.uri(), "SocketId不相同", fullHttpRequest); // 处理：非法连接
+
+            return;
+
         }
 
         // url包含参数，需要舍弃
