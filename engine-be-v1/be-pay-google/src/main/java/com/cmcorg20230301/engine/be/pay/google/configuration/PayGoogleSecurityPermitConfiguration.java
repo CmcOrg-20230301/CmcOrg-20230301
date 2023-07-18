@@ -1,4 +1,4 @@
-package com.cmcorg20230301.engine.be.pay.ali.configuration;
+package com.cmcorg20230301.engine.be.pay.google.configuration;
 
 import cn.hutool.core.collection.CollUtil;
 import com.cmcorg20230301.engine.be.model.model.configuration.ISecurityPermitConfiguration;
@@ -7,7 +7,7 @@ import org.springframework.context.annotation.Configuration;
 import java.util.Set;
 
 @Configuration
-public class PayAliSecurityPermitConfiguration implements ISecurityPermitConfiguration {
+public class PayGoogleSecurityPermitConfiguration implements ISecurityPermitConfiguration {
 
     @Override
     public Set<String> devPermitAllSet() {
@@ -21,7 +21,7 @@ public class PayAliSecurityPermitConfiguration implements ISecurityPermitConfigu
 
     @Override
     public Set<String> anyPermitAllSet() {
-        return CollUtil.newHashSet("/sys/payAli/notifyCallBack/**");
+        return CollUtil.newHashSet("/sys/pay/google/notifyCallBack/**");
     }
 
 }

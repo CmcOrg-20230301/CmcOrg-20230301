@@ -63,6 +63,7 @@
         <module>be-pay</module>
         <module>be-pay-ali</module>
         <module>be-pay-wx</module>
+        <module>be-pay-google</module>
         <module>be-socket</module>
         <module>be-netty-websocket</module>
         <module>be-netty-tcp-protobuf</module>
@@ -113,6 +114,13 @@
             <dependency>
                 <groupId>${project.groupId}</groupId>
                 <artifactId>be-socket</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <!-- be-pay-google -->
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>be-pay-google</artifactId>
                 <version>${project.version}</version>
             </dependency>
 
@@ -396,6 +404,12 @@
                 <groupId>com.alibaba.cloud</groupId>
                 <artifactId>spring-cloud-starter-alibaba-nacos-config</artifactId>
                 <version>2021.0.5.0</version>
+            </dependency>
+
+            <!-- 谷歌支付 -->
+            <dependency>
+                <groupId>com.android.billingclient</groupId>
+                <artifactId>billing</artifactId>
             </dependency>
 
             <!-- 微信支付，获取最新版本号：https://github.com/wechatpay-apiv3/wechatpay-java -->

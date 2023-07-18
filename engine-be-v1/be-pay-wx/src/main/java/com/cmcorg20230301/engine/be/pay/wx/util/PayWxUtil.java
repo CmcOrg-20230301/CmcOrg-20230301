@@ -19,7 +19,7 @@ import javax.annotation.Resource;
 import java.util.Date;
 
 /**
- * 支付：支付宝工具类
+ * 支付：微信工具类
  */
 @Component
 public class PayWxUtil {

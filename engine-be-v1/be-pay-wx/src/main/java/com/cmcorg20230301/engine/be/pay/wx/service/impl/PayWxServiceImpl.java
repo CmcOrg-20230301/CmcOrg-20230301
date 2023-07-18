@@ -49,7 +49,7 @@ public class PayWxServiceImpl implements PayWxService {
         SysPayTradeNotifyBO sysPayTradeNotifyBO = func1.call(requestParam);
 
         // 处理：订单回调
-        PayUtil.handleTradeNotify(sysPayTradeNotifyBO);
+        PayUtil.handleTradeNotify(sysPayTradeNotifyBO, null);
 
     }
 

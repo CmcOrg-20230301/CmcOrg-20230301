@@ -17,9 +17,14 @@ import java.util.Set;
 public enum SysPayTradeStatusEnum {
 
     WAIT_BUYER_PAY(101, CollUtil.newHashSet("WAIT_BUYER_PAY", "NOTPAY")), // 交易创建，等待买家付款
-    TRADE_CLOSED(201, CollUtil.newHashSet("TRADE_CLOSED", "REFUND", "CLOSED")), // 未付款交易超时关闭，或支付完成后全额退款
-    TRADE_SUCCESS(301, CollUtil.newHashSet("TRADE_SUCCESS", "SUCCESS")), // 交易支付成功
-    TRADE_FINISHED(401, CollUtil.newHashSet("TRADE_FINISHED")), // 交易结束，不可退款
+
+    WAIT_BUYER_CONSUME(201, CollUtil.newHashSet("WAIT_BUYER_CONSUME")), // 支付完成，等待核销，例如：谷歌支付
+
+    TRADE_CLOSED(301, CollUtil.newHashSet("TRADE_CLOSED", "REFUND", "CLOSED")), // 未付款交易超时关闭，或支付完成后全额退款
+
+    TRADE_SUCCESS(401, CollUtil.newHashSet("TRADE_SUCCESS", "SUCCESS")), // 交易支付成功
+
+    TRADE_FINISHED(501, CollUtil.newHashSet("TRADE_FINISHED")), // 交易结束，不可退款
 
     ;
 

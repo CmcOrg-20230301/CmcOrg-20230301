@@ -1,24 +1,24 @@
-package com.cmcorg20230301.engine.be.pay.ali.configuration;
+package com.cmcorg20230301.engine.be.pay.google.configuration;
 
 import com.cmcorg20230301.engine.be.model.model.dto.PayDTO;
-import com.cmcorg20230301.engine.be.pay.ali.util.PayAliUtil;
 import com.cmcorg20230301.engine.be.pay.base.model.configuration.ISysPay;
 import com.cmcorg20230301.engine.be.pay.base.model.enums.SysPayTradeStatusEnum;
 import com.cmcorg20230301.engine.be.pay.base.model.enums.SysPayTypeEnum;
+import com.cmcorg20230301.engine.be.pay.google.util.PayGoogleUtil;
 import org.springframework.context.annotation.Configuration;
 
 /**
- * 支付宝支付相关配置类
+ * 谷歌支付相关配置类
  */
 @Configuration
-public class PayAliConfiguration implements ISysPay {
+public class PayGoogleConfiguration implements ISysPay {
 
     /**
      * 支付方式类型
      */
     @Override
     public SysPayTypeEnum getSysPayType() {
-        return SysPayTypeEnum.ALI;
+        return SysPayTypeEnum.GOOGLE;
     }
 
     /**
@@ -26,7 +26,7 @@ public class PayAliConfiguration implements ISysPay {
      */
     @Override
     public String pay(PayDTO dto) {
-        return PayAliUtil.pay(dto);
+        return PayGoogleUtil.pay(dto);
     }
 
     /**
@@ -34,7 +34,7 @@ public class PayAliConfiguration implements ISysPay {
      */
     @Override
     public SysPayTradeStatusEnum query(String outTradeNo) {
-        return PayAliUtil.query(outTradeNo);
+        return PayGoogleUtil.query(outTradeNo, null);
     }
 
 }

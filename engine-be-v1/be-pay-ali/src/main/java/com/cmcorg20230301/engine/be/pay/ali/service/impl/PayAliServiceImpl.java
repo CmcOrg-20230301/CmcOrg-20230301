@@ -82,7 +82,7 @@ public class PayAliServiceImpl implements PayAliService {
             sysPayTradeNotifyBO.setPayCurrency("CNY");
 
             // 处理：订单回调
-            PayUtil.handleTradeNotify(sysPayTradeNotifyBO);
+            PayUtil.handleTradeNotify(sysPayTradeNotifyBO, null);
 
         }
 

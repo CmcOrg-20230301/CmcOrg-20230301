@@ -37,6 +37,8 @@ public interface PropertiesPrefixConstant {
 
     String PAY_WX = PAY + ".wx"; // 微信支付相关
 
+    String PAY_GOOGLE = PAY + ".google"; // 谷歌支付相关
+
     String SOCKET = PRE_BE + "socket"; // socket相关
 
     String SOCKET_WEB_SOCKET = SOCKET + ".web-socket"; // webSocket相关

@@ -21,7 +21,7 @@ public class PayWxSecurityPermitConfiguration implements ISecurityPermitConfigur
 
     @Override
     public Set<String> anyPermitAllSet() {
-        return CollUtil.newHashSet("/sys/pay/wx/notifyCallBack/**");
+        return CollUtil.newHashSet("/sys/payWx/notifyCallBack/**");
     }
 
 }

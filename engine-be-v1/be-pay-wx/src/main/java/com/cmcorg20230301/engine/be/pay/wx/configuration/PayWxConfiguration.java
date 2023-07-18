@@ -82,7 +82,7 @@ public class PayWxConfiguration implements ISysPay {
     }
 
     /**
-     * 支付，返回 url
+     * 支付返回值，备注：一般返回 url
      */
     @Override
     public String pay(PayDTO dto) {

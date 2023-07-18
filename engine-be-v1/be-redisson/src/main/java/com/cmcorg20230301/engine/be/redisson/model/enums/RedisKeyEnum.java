@@ -11,6 +11,8 @@ import com.cmcorg20230301.engine.be.model.model.interfaces.IRedisKey;
 public enum RedisKeyEnum implements IRedisKey {
 
     // 【PRE_】开头 ↓
+    PRE_PAY, // 支付锁，锁：【支付主键 id】
+
     PRE_TCP_PROTOBUF_CODE, // tcp-protobuf连接锁，锁：【随机码】
 
     PRE_WEB_SOCKET_CODE, // webSocket连接锁，锁：【随机码】

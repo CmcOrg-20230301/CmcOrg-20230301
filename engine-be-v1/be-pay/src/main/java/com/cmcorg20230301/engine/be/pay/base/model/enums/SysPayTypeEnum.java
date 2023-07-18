@@ -18,6 +18,8 @@ public enum SysPayTypeEnum {
 
     UNION(301), // 云闪付
 
+    GOOGLE(401), // 谷歌
+
     ;
 
     @EnumValue
