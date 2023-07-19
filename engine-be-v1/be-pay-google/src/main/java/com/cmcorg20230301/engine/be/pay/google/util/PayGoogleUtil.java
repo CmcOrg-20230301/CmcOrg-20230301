@@ -85,7 +85,7 @@ public class PayGoogleUtil {
         if (sysPayTradeNotifyBO != null) {
 
             sysPayTradeNotifyBO.setTradeNo(orderId);
-            sysPayTradeNotifyBO.setTotalAmount("0"); // 备注：官方暂时没有返回实际支付金额的字段
+            sysPayTradeNotifyBO.setTotalAmount("-1"); // 备注：官方暂时没有返回实际支付金额的字段
             sysPayTradeNotifyBO.setPayCurrency("");
 
         }
