@@ -68,8 +68,9 @@ public class PayGoogleUtil {
         // 查询：谷歌那边的订单状态，文档地址：https://developers.google.com/android-publisher/api-ref/rest/v3/purchases.products/get?hl=zh-cn
         // https://androidpublisher.googleapis.com/androidpublisher/v3/applications/{packageName}/purchases/products/{productId}/tokens/{token}
         String url = StrUtil.format(
-            "https://androidpublisher.googleapis.com/androidpublisher/v3/applications/{}/purchases/products/{}/tokens/{}",
-            sysPayDO.getPackageName(), sysPayDO.getProductId(), sysPayDO.getToken());
+            "https://androidpublisher.googleapis.com/androidpublisher/v3/applications/{}/purchases/products/{}/tokens/{}?key={}",
+            sysPayDO.getPackageName(), sysPayDO.getProductId(), sysPayDO.getToken(),
+            payGoogleProperties.getPrivateKey());
 
         String body = HttpRequest.get(url).execute().body();
 
