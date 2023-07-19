@@ -26,7 +26,7 @@ public class SignSignInNameController {
     @PostMapping(value = "/sign/up")
     @Operation(summary = "注册")
     public ApiResultVO<String> signUp(@RequestBody @Valid SignSignInNameSignUpDTO dto) {
-        return ApiResultVO.ok(baseService.signUp(dto));
+        return ApiResultVO.okMsg(baseService.signUp(dto));
     }
 
     @PostMapping(value = "/sign/in/password")
@@ -38,19 +38,19 @@ public class SignSignInNameController {
     @PostMapping(value = "/updatePassword")
     @Operation(summary = "修改密码")
     public ApiResultVO<String> updatePassword(@RequestBody @Valid SignSignInNameUpdatePasswordDTO dto) {
-        return ApiResultVO.ok(baseService.updatePassword(dto));
+        return ApiResultVO.okMsg(baseService.updatePassword(dto));
     }
 
     @PostMapping(value = "/updateAccount")
     @Operation(summary = "修改账号")
     public ApiResultVO<String> updateAccount(@RequestBody @Valid SignSignInNameUpdateAccountDTO dto) {
-        return ApiResultVO.ok(baseService.updateAccount(dto));
+        return ApiResultVO.okMsg(baseService.updateAccount(dto));
     }
 
     @PostMapping(value = "/signDelete")
     @Operation(summary = "账号注销")
     public ApiResultVO<String> signDelete(@RequestBody @Valid SignSignInNameSignDeleteDTO dto) {
-        return ApiResultVO.ok(baseService.signDelete(dto));
+        return ApiResultVO.okMsg(baseService.signDelete(dto));
     }
 
 }

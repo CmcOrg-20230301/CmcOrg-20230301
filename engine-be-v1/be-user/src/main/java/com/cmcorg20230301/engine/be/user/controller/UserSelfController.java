@@ -31,19 +31,19 @@ public class UserSelfController {
     @Operation(summary = "当前用户：基本信息：修改")
     @PostMapping(value = "/updateInfo")
     public ApiResultVO<String> userSelfUpdateInfo(@RequestBody @Valid UserSelfUpdateInfoDTO dto) {
-        return ApiResultVO.ok(baseService.userSelfUpdateInfo(dto));
+        return ApiResultVO.okMsg(baseService.userSelfUpdateInfo(dto));
     }
 
     @Operation(summary = "当前用户：刷新jwt私钥后缀")
     @PostMapping(value = "/refreshJwtSecretSuf")
     public ApiResultVO<String> userSelfRefreshJwtSecretSuf() {
-        return ApiResultVO.ok(baseService.userSelfRefreshJwtSecretSuf());
+        return ApiResultVO.okMsg(baseService.userSelfRefreshJwtSecretSuf());
     }
 
     @Operation(summary = "当前用户：重置头像")
     @PostMapping(value = "/resetAvatar")
     public ApiResultVO<String> userSelfResetAvatar() {
-        return ApiResultVO.ok(baseService.userSelfResetAvatar());
+        return ApiResultVO.okMsg(baseService.userSelfResetAvatar());
     }
 
 }

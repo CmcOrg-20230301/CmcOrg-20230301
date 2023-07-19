@@ -1,10 +1,17 @@
 package com.cmcorg20230301.engine.be.pay.google.util;
 
 import cn.hutool.core.lang.Assert;
+import cn.hutool.core.util.StrUtil;
+import cn.hutool.http.HttpRequest;
+import cn.hutool.json.JSONUtil;
 import com.cmcorg20230301.engine.be.model.model.dto.PayDTO;
 import com.cmcorg20230301.engine.be.pay.base.model.bo.SysPayTradeNotifyBO;
+import com.cmcorg20230301.engine.be.pay.base.model.entity.SysPayDO;
 import com.cmcorg20230301.engine.be.pay.base.model.enums.SysPayTradeStatusEnum;
+import com.cmcorg20230301.engine.be.pay.base.service.SysPayService;
+import com.cmcorg20230301.engine.be.pay.google.model.bo.SysPayGooglePurchasesBO;
 import com.cmcorg20230301.engine.be.pay.google.properties.PayGoogleProperties;
+import com.cmcorg20230301.engine.be.security.model.vo.ApiResultVO;
 import lombok.SneakyThrows;
 import org.springframework.stereotype.Component;
 
@@ -21,6 +28,13 @@ public class PayGoogleUtil {
     @Resource
     public void setPayWxProperties(PayGoogleProperties payGoogleProperties) {
         PayGoogleUtil.payGoogleProperties = payGoogleProperties;
+    }
+
+    private static SysPayService sysPayService;
+
+    @Resource
+    public void setSysPayService(SysPayService sysPayService) {
+        PayGoogleUtil.sysPayService = sysPayService;
     }
 
     /**
@@ -44,34 +58,34 @@ public class PayGoogleUtil {
 
         Assert.notBlank(outTradeNo);
 
-        //        Assert.notBlank(outTradeNo);
-        //
-        //        AlipayClient alipayClient = new DefaultAlipayClient(getAlipayConfig());
-        //
-        //        AlipayTradeQueryRequest request = new AlipayTradeQueryRequest();
-        //
-        //        JSONObject bizContent = new JSONObject();
-        //        bizContent.set("out_trade_no", outTradeNo);
-        //
-        //        request.setBizContent(bizContent.toString());
-        //
-        //        AlipayTradeQueryResponse response = alipayClient.execute(request);
-        //
-        //        if (BooleanUtil.isFalse(response.isSuccess())) {
-        //
-        //            ApiResultVO.error("支付宝查询失败：" + response.getSubMsg());
-        //
-        //        }
-        //
-        //        return SysPayTradeStatusEnum.getByStatus(response.getTradeStatus());
+        SysPayDO sysPayDO = sysPayService.lambdaQuery().eq(SysPayDO::getId, outTradeNo)
+            .select(SysPayDO::getPackageName, SysPayDO::getProductId, SysPayDO::getToken).one();
 
-        // TODO：查询谷歌那边的订单状态
+        if (sysPayDO == null) {
+            ApiResultVO.errorData("谷歌支付查询失败：本系统不存在该支付", outTradeNo);
+        }
+
+        // 查询：谷歌那边的订单状态，文档地址：https://developers.google.com/android-publisher/api-ref/rest/v3/purchases.products/get?hl=zh-cn
+        // https://androidpublisher.googleapis.com/androidpublisher/v3/applications/{packageName}/purchases/products/{productId}/tokens/{token}
+        String url = StrUtil.format(
+            "https://androidpublisher.googleapis.com/androidpublisher/v3/applications/{}/purchases/products/{}/tokens/{}",
+            sysPayDO.getPackageName(), sysPayDO.getProductId(), sysPayDO.getToken());
+
+        String body = HttpRequest.get(url).execute().body();
+
+        SysPayGooglePurchasesBO sysPayGooglePurchasesBO = JSONUtil.toBean(body, SysPayGooglePurchasesBO.class);
+
+        String orderId = sysPayGooglePurchasesBO.getOrderId();
+
+        if (StrUtil.isBlank(orderId)) {
+            ApiResultVO.errorData("谷歌支付查询失败：订单不存在", outTradeNo);
+        }
 
         if (sysPayTradeNotifyBO != null) {
 
-            sysPayTradeNotifyBO.setTradeNo("tradeNo");
-            sysPayTradeNotifyBO.setTotalAmount("totalAmount");
-            sysPayTradeNotifyBO.setPayCurrency("CNY");
+            sysPayTradeNotifyBO.setTradeNo(orderId);
+            sysPayTradeNotifyBO.setTotalAmount("0");
+            sysPayTradeNotifyBO.setPayCurrency("");
 
         }
 

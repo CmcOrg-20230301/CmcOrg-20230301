@@ -34,7 +34,7 @@ public class SysPostController {
     @PostMapping("/insertOrUpdate")
     @PreAuthorize("hasAuthority('sysPost:insertOrUpdate')")
     public ApiResultVO<String> insertOrUpdate(@RequestBody @Valid SysPostInsertOrUpdateDTO dto) {
-        return ApiResultVO.ok(baseService.insertOrUpdate(dto));
+        return ApiResultVO.okMsg(baseService.insertOrUpdate(dto));
     }
 
     @Operation(summary = "分页排序查询")
@@ -55,7 +55,7 @@ public class SysPostController {
     @PostMapping("/deleteByIdSet")
     @PreAuthorize("hasAuthority('sysPost:deleteByIdSet')")
     public ApiResultVO<String> deleteByIdSet(@RequestBody @Valid NotEmptyIdSet notEmptyIdSet) {
-        return ApiResultVO.ok(baseService.deleteByIdSet(notEmptyIdSet));
+        return ApiResultVO.okMsg(baseService.deleteByIdSet(notEmptyIdSet));
     }
 
     @Operation(summary = "通过主键id，查看详情")
@@ -69,7 +69,7 @@ public class SysPostController {
     @PostMapping("/addOrderNo")
     @PreAuthorize("hasAuthority('sysPost:insertOrUpdate')")
     public ApiResultVO<String> addOrderNo(@RequestBody @Valid ChangeNumberDTO dto) {
-        return ApiResultVO.ok(baseService.addOrderNo(dto));
+        return ApiResultVO.okMsg(baseService.addOrderNo(dto));
     }
 
 }

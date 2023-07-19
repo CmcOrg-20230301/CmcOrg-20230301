@@ -406,12 +406,6 @@
                 <version>2021.0.5.0</version>
             </dependency>
 
-            <!-- 谷歌支付 -->
-            <dependency>
-                <groupId>com.android.billingclient</groupId>
-                <artifactId>billing</artifactId>
-            </dependency>
-
             <!-- 微信支付，获取最新版本号：https://github.com/wechatpay-apiv3/wechatpay-java -->
             <dependency>
                 <groupId>com.github.wechatpay-apiv3</groupId>

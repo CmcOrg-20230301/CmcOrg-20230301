@@ -1,5 +1,6 @@
 package com.cmcorg20230301.engine.be.security.configuration.base;
 
+import cn.hutool.http.HttpGlobalConfig;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -32,6 +33,9 @@ public class BaseConfiguration {
         BaseConfiguration.applicationName = applicationName;
         BaseConfiguration.port = port;
         BaseConfiguration.profilesActive = profilesActive;
+
+        // 设置：http超时时间，默认：30分钟
+        HttpGlobalConfig.setTimeout(30 * 60 * 1000);
 
     }
 

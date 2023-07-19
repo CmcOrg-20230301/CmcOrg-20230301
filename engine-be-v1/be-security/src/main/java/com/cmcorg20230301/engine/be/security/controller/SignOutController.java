@@ -21,7 +21,7 @@ public class SignOutController {
     @PostMapping(value = "/self")
     @Operation(summary = "当前用户-退出登录")
     public ApiResultVO<String> signOut() {
-        return ApiResultVO.ok(baseService.signOut());
+        return ApiResultVO.okMsg(baseService.signOut());
     }
 
 }

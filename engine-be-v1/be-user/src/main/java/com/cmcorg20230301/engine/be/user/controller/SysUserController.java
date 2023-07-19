@@ -49,14 +49,14 @@ public class SysUserController {
     @PostMapping("/insertOrUpdate")
     @PreAuthorize("hasAuthority('sysUser:insertOrUpdate')")
     public ApiResultVO<String> insertOrUpdate(@RequestBody @Valid SysUserInsertOrUpdateDTO dto) {
-        return ApiResultVO.ok(baseService.insertOrUpdate(dto));
+        return ApiResultVO.okMsg(baseService.insertOrUpdate(dto));
     }
 
     @Operation(summary = "批量：注销用户")
     @PostMapping("/deleteByIdSet")
     @PreAuthorize("hasAuthority('sysUser:deleteByIdSet')")
     public ApiResultVO<String> deleteByIdSet(@RequestBody @Valid NotEmptyIdSet notEmptyIdSet) {
-        return ApiResultVO.ok(baseService.deleteByIdSet(notEmptyIdSet));
+        return ApiResultVO.okMsg(baseService.deleteByIdSet(notEmptyIdSet));
     }
 
     @Operation(summary = "通过主键id，查看详情")
@@ -70,21 +70,21 @@ public class SysUserController {
     @PostMapping(value = "/refreshJwtSecretSuf")
     @PreAuthorize("hasAuthority('sysUser:insertOrUpdate')")
     public ApiResultVO<String> refreshJwtSecretSuf(@RequestBody @Valid NotEmptyIdSet notEmptyIdSet) {
-        return ApiResultVO.ok(baseService.refreshJwtSecretSuf(notEmptyIdSet));
+        return ApiResultVO.okMsg(baseService.refreshJwtSecretSuf(notEmptyIdSet));
     }
 
     @Operation(summary = "批量：重置头像")
     @PostMapping("/resetAvatar")
     @PreAuthorize("hasAuthority('sysUser:insertOrUpdate')")
     public ApiResultVO<String> resetAvatar(@RequestBody @Valid NotEmptyIdSet notEmptyIdSet) {
-        return ApiResultVO.ok(baseService.resetAvatar(notEmptyIdSet));
+        return ApiResultVO.okMsg(baseService.resetAvatar(notEmptyIdSet));
     }
 
     @Operation(summary = "批量：修改密码")
     @PostMapping("/updatePassword")
     @PreAuthorize("hasAuthority('sysUser:insertOrUpdate')")
     public ApiResultVO<String> updatePassword(@RequestBody @Valid SysUserUpdatePasswordDTO dto) {
-        return ApiResultVO.ok(baseService.updatePassword(dto));
+        return ApiResultVO.okMsg(baseService.updatePassword(dto));
     }
 
 }

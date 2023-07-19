@@ -32,7 +32,7 @@ public class SysRoleController {
     @PostMapping("/insertOrUpdate")
     @PreAuthorize("hasAuthority('sysRole:insertOrUpdate')")
     public ApiResultVO<String> insertOrUpdate(@RequestBody @Valid SysRoleInsertOrUpdateDTO dto) {
-        return ApiResultVO.ok(baseService.insertOrUpdate(dto));
+        return ApiResultVO.okMsg(baseService.insertOrUpdate(dto));
     }
 
     @Operation(summary = "分页排序查询")
@@ -53,7 +53,7 @@ public class SysRoleController {
     @PostMapping("/deleteByIdSet")
     @PreAuthorize("hasAuthority('sysRole:deleteByIdSet')")
     public ApiResultVO<String> deleteByIdSet(@RequestBody @Valid NotEmptyIdSet notEmptyIdSet) {
-        return ApiResultVO.ok(baseService.deleteByIdSet(notEmptyIdSet));
+        return ApiResultVO.okMsg(baseService.deleteByIdSet(notEmptyIdSet));
     }
 
 }

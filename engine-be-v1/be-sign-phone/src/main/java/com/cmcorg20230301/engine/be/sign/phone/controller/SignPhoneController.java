@@ -27,13 +27,13 @@ public class SignPhoneController {
     @PostMapping(value = "/sign/up/sendCode")
     @Operation(summary = "注册-发送验证码")
     public ApiResultVO<String> signUpSendCode(@RequestBody @Valid PhoneNotBlankDTO dto) {
-        return ApiResultVO.ok(baseService.signUpSendCode(dto));
+        return ApiResultVO.okMsg(baseService.signUpSendCode(dto));
     }
 
     @PostMapping(value = "/sign/up")
     @Operation(summary = "注册")
     public ApiResultVO<String> signUp(@RequestBody @Valid SignPhoneSignUpDTO dto) {
-        return ApiResultVO.ok(baseService.signUp(dto));
+        return ApiResultVO.okMsg(baseService.signUp(dto));
     }
 
     @PostMapping(value = "/sign/in/password")
@@ -45,67 +45,67 @@ public class SignPhoneController {
     @PostMapping(value = "/updatePassword/sendCode")
     @Operation(summary = "修改密码-发送验证码")
     public ApiResultVO<String> updatePasswordSendCode() {
-        return ApiResultVO.ok(baseService.updatePasswordSendCode());
+        return ApiResultVO.okMsg(baseService.updatePasswordSendCode());
     }
 
     @PostMapping(value = "/updatePassword")
     @Operation(summary = "修改密码")
     public ApiResultVO<String> updatePassword(@RequestBody @Valid SignPhoneUpdatePasswordDTO dto) {
-        return ApiResultVO.ok(baseService.updatePassword(dto));
+        return ApiResultVO.okMsg(baseService.updatePassword(dto));
     }
 
     @PostMapping(value = "/updateAccount/sendCode")
     @Operation(summary = "修改手机-发送验证码")
     public ApiResultVO<String> updateAccountSendCode() {
-        return ApiResultVO.ok(baseService.updateAccountSendCode());
+        return ApiResultVO.okMsg(baseService.updateAccountSendCode());
     }
 
     @PostMapping(value = "/updateAccount")
     @Operation(summary = "修改手机")
     public ApiResultVO<String> updateAccount(@RequestBody @Valid SignPhoneUpdateAccountDTO dto) {
-        return ApiResultVO.ok(baseService.updateAccount(dto));
+        return ApiResultVO.okMsg(baseService.updateAccount(dto));
     }
 
     @PostMapping(value = "/forgetPassword/sendCode")
     @Operation(summary = "忘记密码-发送验证码")
     public ApiResultVO<String> forgetPasswordSendCode(@RequestBody @Valid PhoneNotBlankDTO dto) {
-        return ApiResultVO.ok(baseService.forgetPasswordSendCode(dto));
+        return ApiResultVO.okMsg(baseService.forgetPasswordSendCode(dto));
     }
 
     @PostMapping(value = "/forgetPassword")
     @Operation(summary = "忘记密码")
     public ApiResultVO<String> forgetPassword(@RequestBody @Valid SignPhoneForgetPasswordDTO dto) {
-        return ApiResultVO.ok(baseService.forgetPassword(dto));
+        return ApiResultVO.okMsg(baseService.forgetPassword(dto));
     }
 
     @PostMapping(value = "/signDelete/sendCode")
     @Operation(summary = "账号注销-发送验证码")
     public ApiResultVO<String> signDeleteSendCode() {
-        return ApiResultVO.ok(baseService.signDeleteSendCode());
+        return ApiResultVO.okMsg(baseService.signDeleteSendCode());
     }
 
     @PostMapping(value = "/signDelete")
     @Operation(summary = "账号注销")
     public ApiResultVO<String> signDelete(@RequestBody @Valid NotBlankCodeDTO dto) {
-        return ApiResultVO.ok(baseService.signDelete(dto));
+        return ApiResultVO.okMsg(baseService.signDelete(dto));
     }
 
     @PostMapping(value = "/bindAccount/sendCode")
     @Operation(summary = "绑定手机-发送验证码")
     public ApiResultVO<String> bindAccountSendCode(@RequestBody @Valid PhoneNotBlankDTO dto) {
-        return ApiResultVO.ok(baseService.bindAccountSendCode(dto));
+        return ApiResultVO.okMsg(baseService.bindAccountSendCode(dto));
     }
 
     @PostMapping(value = "/bindAccount")
     @Operation(summary = "绑定手机")
     public ApiResultVO<String> bindAccount(@RequestBody @Valid SignPhoneBindAccountDTO dto) {
-        return ApiResultVO.ok(baseService.bindAccount(dto));
+        return ApiResultVO.okMsg(baseService.bindAccount(dto));
     }
 
     @PostMapping(value = "/sign/in/sendCode")
     @Operation(summary = "手机验证码登录-发送验证码")
     public ApiResultVO<String> signInSendCode(@RequestBody @Valid PhoneNotBlankDTO dto) {
-        return ApiResultVO.ok(baseService.signInSendCode(dto));
+        return ApiResultVO.okMsg(baseService.signInSendCode(dto));
     }
 
     @PostMapping(value = "/sign/in/code")

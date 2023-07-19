@@ -41,7 +41,7 @@ public class SysFileController {
     @Operation(summary = "批量删除文件：公有和私有")
     @PostMapping("/removeByFileIdSet")
     public ApiResultVO<String> removeByFileIdSet(@RequestBody @Valid NotEmptyIdSet notEmptyIdSet) {
-        return ApiResultVO.ok(baseService.removeByFileIdSet(notEmptyIdSet));
+        return ApiResultVO.okMsg(baseService.removeByFileIdSet(notEmptyIdSet));
     }
 
     @Operation(summary = "批量获取：公开文件的 url")

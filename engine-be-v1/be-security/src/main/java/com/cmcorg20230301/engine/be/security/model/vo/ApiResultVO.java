@@ -44,7 +44,7 @@ public class ApiResultVO<T> {
         // 不允许修改 service的值
     }
 
-    public ApiResultVO<T> end() {
+    public ApiResultVO<T> error() {
         throw new BaseException(this);
     }
 
@@ -59,16 +59,20 @@ public class ApiResultVO<T> {
      * 操作失败
      */
     public static <T> ApiResultVO<T> error(IBizCode iBizCode) {
-        return new ApiResultVO<T>(iBizCode.getCode(), iBizCode.getMsg(), null).end();
+        return new ApiResultVO<T>(iBizCode.getCode(), iBizCode.getMsg(), null).error();
     }
 
     public static <T> ApiResultVO<T> error(IBizCode iBizCode, T data) {
-        return new ApiResultVO<>(iBizCode.getCode(), iBizCode.getMsg(), data).end();
+        return new ApiResultVO<>(iBizCode.getCode(), iBizCode.getMsg(), data).error();
     }
 
     public static <T> ApiResultVO<T> error(String msgTemp, Object... paramArr) {
         return new ApiResultVO<T>(BaseBizCodeEnum.API_RESULT_SYS_ERROR.getCode(), StrUtil.format(msgTemp, paramArr),
-            null).end();
+            null).error();
+    }
+
+    public static <T> ApiResultVO<T> errorData(String msg, T data) {
+        return new ApiResultVO<T>(BaseBizCodeEnum.API_RESULT_SYS_ERROR.getCode(), msg, data).error();
     }
 
     /**
@@ -82,7 +86,7 @@ public class ApiResultVO<T> {
         return new ApiResultVO<>(BaseBizCodeEnum.API_RESULT_OK.getCode(), BaseBizCodeEnum.API_RESULT_OK.getMsg(), data);
     }
 
-    public static <T> ApiResultVO<T> ok(String msg) {
+    public static <T> ApiResultVO<T> okMsg(String msg) {
         return new ApiResultVO<>(BaseBizCodeEnum.API_RESULT_OK.getCode(), msg, null);
     }
 

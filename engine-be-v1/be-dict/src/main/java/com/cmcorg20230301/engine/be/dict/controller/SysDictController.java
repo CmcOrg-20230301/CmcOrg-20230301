@@ -36,7 +36,7 @@ public class SysDictController {
     @PostMapping("/insertOrUpdate")
     @PreAuthorize("hasAuthority('sysDict:insertOrUpdate')")
     public ApiResultVO<String> insertOrUpdate(@RequestBody @Valid SysDictInsertOrUpdateDTO dto) {
-        return ApiResultVO.ok(baseService.insertOrUpdate(dto));
+        return ApiResultVO.okMsg(baseService.insertOrUpdate(dto));
     }
 
     @Operation(summary = "分页排序查询")
@@ -63,7 +63,7 @@ public class SysDictController {
     @PostMapping("/deleteByIdSet")
     @PreAuthorize("hasAuthority('sysDict:deleteByIdSet')")
     public ApiResultVO<String> deleteByIdSet(@RequestBody @Valid NotEmptyIdSet notEmptyIdSet) {
-        return ApiResultVO.ok(baseService.deleteByIdSet(notEmptyIdSet));
+        return ApiResultVO.okMsg(baseService.deleteByIdSet(notEmptyIdSet));
     }
 
     @Operation(summary = "通过主键id，查看详情")
@@ -77,7 +77,7 @@ public class SysDictController {
     @PostMapping("/addOrderNo")
     @PreAuthorize("hasAuthority('sysDict:insertOrUpdate')")
     public ApiResultVO<String> addOrderNo(@RequestBody @Valid ChangeNumberDTO dto) {
-        return ApiResultVO.ok(baseService.addOrderNo(dto));
+        return ApiResultVO.okMsg(baseService.addOrderNo(dto));
     }
 
 }
