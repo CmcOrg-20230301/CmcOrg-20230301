@@ -90,7 +90,20 @@ public class PayGoogleUtil {
 
         }
 
-        return null;
+        if (sysPayGooglePurchasesBO.getConsumptionState() != null
+            && sysPayGooglePurchasesBO.getConsumptionState() == 1) {
+
+            return SysPayTradeStatusEnum.TRADE_FINISHED;
+
+        }
+
+        if (sysPayGooglePurchasesBO.getPurchaseState() != null && sysPayGooglePurchasesBO.getPurchaseState() == 0) {
+
+            return SysPayTradeStatusEnum.WAIT_BUYER_CONSUME;
+
+        }
+
+        return SysPayTradeStatusEnum.WAIT_BUYER_PAY;
 
     }
 
