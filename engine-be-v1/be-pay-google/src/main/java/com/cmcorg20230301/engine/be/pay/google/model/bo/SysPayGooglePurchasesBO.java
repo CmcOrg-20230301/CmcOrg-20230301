@@ -23,7 +23,13 @@ public class SysPayGooglePurchasesBO {
     /**
      * 开发者指定的字符串，其中包含关于订单的补充信息。
      */
+    @Deprecated
     private String developerPayload;
+
+    /**
+     * 在应用中与用户帐号唯一关联的 ID 的模糊版本，此标识符限制为 64 个字符。
+     */
+    private String obfuscatedExternalAccountId;
 
     /**
      * 与购买应用内商品相关的订单 ID。
