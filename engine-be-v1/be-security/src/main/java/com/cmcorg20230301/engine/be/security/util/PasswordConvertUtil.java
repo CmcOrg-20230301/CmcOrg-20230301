@@ -21,7 +21,7 @@ public class PasswordConvertUtil {
 
         if (StrUtil.isBlank(password)) {
             if (checkPasswordBlank) {
-                ApiResultVO.error("密码不能为空");
+                ApiResultVO.errorMsg("密码不能为空");
             } else {
                 return "";
             }
@@ -63,10 +63,10 @@ public class PasswordConvertUtil {
     public static boolean match(String source, String target) {
 
         if (StrUtil.isBlank(source)) {
-            ApiResultVO.error("原密码不能为空");
+            ApiResultVO.errorMsg("原密码不能为空");
         }
         if (StrUtil.isBlank(target)) {
-            ApiResultVO.error("需要比对的密码不能为空");
+            ApiResultVO.errorMsg("需要比对的密码不能为空");
         }
 
         String[] split = source.split(REGEX);

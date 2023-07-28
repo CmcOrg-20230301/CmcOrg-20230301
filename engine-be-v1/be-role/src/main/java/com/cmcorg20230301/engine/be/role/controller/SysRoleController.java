@@ -39,14 +39,14 @@ public class SysRoleController {
     @PostMapping("/page")
     @PreAuthorize("hasAuthority('sysRole:page')")
     public ApiResultVO<Page<SysRoleDO>> myPage(@RequestBody @Valid SysRolePageDTO dto) {
-        return ApiResultVO.ok(baseService.myPage(dto));
+        return ApiResultVO.okData(baseService.myPage(dto));
     }
 
     @Operation(summary = "通过主键id，查看详情")
     @PostMapping("/infoById")
     @PreAuthorize("hasAuthority('sysRole:infoById')")
     public ApiResultVO<SysRoleInfoByIdVO> infoById(@RequestBody @Valid NotNullId notNullId) {
-        return ApiResultVO.ok(baseService.infoById(notNullId));
+        return ApiResultVO.okData(baseService.infoById(notNullId));
     }
 
     @Operation(summary = "批量删除")

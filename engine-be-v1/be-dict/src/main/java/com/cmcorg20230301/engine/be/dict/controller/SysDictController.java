@@ -43,20 +43,20 @@ public class SysDictController {
     @PostMapping("/page")
     @PreAuthorize("hasAuthority('sysDict:page')")
     public ApiResultVO<Page<SysDictDO>> myPage(@RequestBody @Valid SysDictPageDTO dto) {
-        return ApiResultVO.ok(baseService.myPage(dto));
+        return ApiResultVO.okData(baseService.myPage(dto));
     }
 
     @Operation(summary = "通过：dictKey获取字典项集合，备注：会进行缓存")
     @PostMapping("/listByDictKey")
     public ApiResultVO<List<DictVO>> listByDictKey(@RequestBody @Valid SysDictListByDictKeyDTO dto) {
-        return ApiResultVO.ok(baseService.listByDictKey(dto));
+        return ApiResultVO.okData(baseService.listByDictKey(dto));
     }
 
     @Operation(summary = "查询：树结构")
     @PostMapping("/tree")
     @PreAuthorize("hasAuthority('sysDict:page')")
     public ApiResultVO<Set<SysDictDO>> tree(@RequestBody @Valid SysDictPageDTO dto) {
-        return ApiResultVO.ok(baseService.tree(dto));
+        return ApiResultVO.okData(baseService.tree(dto));
     }
 
     @Operation(summary = "批量删除")
@@ -70,7 +70,7 @@ public class SysDictController {
     @PostMapping("/infoById")
     @PreAuthorize("hasAuthority('sysDict:infoById')")
     public ApiResultVO<SysDictDO> infoById(@RequestBody @Valid NotNullId notNullId) {
-        return ApiResultVO.ok(baseService.infoById(notNullId));
+        return ApiResultVO.okData(baseService.infoById(notNullId));
     }
 
     @Operation(summary = "通过主键 idSet，加减排序号")

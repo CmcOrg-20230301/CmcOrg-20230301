@@ -3,7 +3,8 @@ package com.cmcorg20230301.engine.be.socket.service.impl;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.cmcorg20230301.engine.be.security.model.entity.BaseEntityNoId;
+import com.cmcorg20230301.engine.be.model.model.dto.NotEmptyIdSet;
+import com.cmcorg20230301.engine.be.security.exception.BaseBizCodeEnum;
 import com.cmcorg20230301.engine.be.socket.mapper.SysSocketRefUserMapper;
 import com.cmcorg20230301.engine.be.socket.model.dto.SysSocketRefUserPageDTO;
 import com.cmcorg20230301.engine.be.socket.model.entity.SysSocketRefUserDO;
@@ -28,7 +29,19 @@ public class SysSocketRefUserServiceImpl extends ServiceImpl<SysSocketRefUserMap
             .eq(dto.getPort() != null, SysSocketRefUserDO::getPort, dto.getPort())
             .eq(dto.getType() != null, SysSocketRefUserDO::getType, dto.getType())
             .like(StrUtil.isNotBlank(dto.getRemark()), SysSocketRefUserDO::getRemark, dto.getRemark())
-            .orderByDesc(BaseEntityNoId::getUpdateTime).page(dto.page(true));
+            .page(dto.page(true));
+
+    }
+
+    /**
+     * 批量：下线用户
+     */
+    @Override
+    public String offlineByIdSet(NotEmptyIdSet notEmptyIdSet) {
+
+        lambdaUpdate().in(SysSocketRefUserDO::getId, notEmptyIdSet.getIdSet()).remove();
+
+        return BaseBizCodeEnum.OK;
 
     }
 

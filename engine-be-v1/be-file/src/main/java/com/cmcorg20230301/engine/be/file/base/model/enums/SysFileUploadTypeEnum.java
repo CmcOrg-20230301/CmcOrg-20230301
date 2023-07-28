@@ -78,7 +78,7 @@ public enum SysFileUploadTypeEnum {
         }
 
         if (file.getSize() > maxFileSize) {
-            ApiResultVO.error("操作失败：文件大小超过：【" + DataSizeUtil.format(maxFileSize) + "】，请重新选择");
+            ApiResultVO.errorMsg("操作失败：文件大小超过：【" + DataSizeUtil.format(maxFileSize) + "】，请重新选择");
         }
 
     }

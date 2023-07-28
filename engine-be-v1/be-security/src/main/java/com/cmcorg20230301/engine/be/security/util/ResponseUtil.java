@@ -53,7 +53,7 @@ public class ResponseUtil {
 
         try {
 
-            ApiResultVO.error(msg); // 这里肯定会抛出 BaseException异常
+            ApiResultVO.errorMsg(msg); // 这里肯定会抛出 BaseException异常
 
         } catch (BaseException e) {
 

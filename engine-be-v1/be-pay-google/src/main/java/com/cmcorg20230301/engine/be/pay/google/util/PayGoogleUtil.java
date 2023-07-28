@@ -62,7 +62,7 @@ public class PayGoogleUtil {
             .select(SysPayDO::getPackageName, SysPayDO::getProductId, SysPayDO::getToken).one();
 
         if (sysPayDO == null) {
-            ApiResultVO.errorData("谷歌支付查询失败：本系统不存在该支付", outTradeNo);
+            ApiResultVO.error("谷歌支付查询失败：本系统不存在该支付", outTradeNo);
         }
 
         // 查询：谷歌那边的订单状态，文档地址：https://developers.google.com/android-publisher/api-ref/rest/v3/purchases.products/get?hl=zh-cn
@@ -79,7 +79,7 @@ public class PayGoogleUtil {
         String orderId = sysPayGooglePurchasesBO.getOrderId();
 
         if (StrUtil.isBlank(orderId)) {
-            ApiResultVO.errorData("谷歌支付查询失败：订单不存在", outTradeNo);
+            ApiResultVO.error("谷歌支付查询失败：订单不存在", outTradeNo);
         }
 
         if (sysPayTradeNotifyBO != null) {

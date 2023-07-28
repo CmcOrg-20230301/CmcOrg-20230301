@@ -51,7 +51,7 @@ public class SignPhoneServiceImpl implements SignPhoneService {
     private void checkSignUpEnable() {
 
         if (BooleanUtil.isFalse(securityProperties.getPhoneSignUpEnable())) {
-            ApiResultVO.error("操作失败：不允许手机号码注册，请联系管理员");
+            ApiResultVO.errorMsg("操作失败：不允许手机号码注册，请联系管理员");
         }
 
     }

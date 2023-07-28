@@ -1,4 +1,4 @@
-import {useEffect, useRef, useState} from "react";
+import {useRef, useState} from "react";
 import {
     ActionType,
     BetaSchemaForm,
@@ -26,6 +26,7 @@ import SchemaFormColumnList, {InitForm} from "./SchemaFormColumnList";
 import {CalcOrderNo, GetIdListForHasChildrenNode} from "@/util/TreeUtil";
 import CommonConstant from "@/model/constant/CommonConstant";
 import {IMyTree} from "@/util/DictUtil";
+import {UseEffectFullScreenChange} from "@/page/sys/Menu/Menu";
 
 // 部门-管理
 export default function () {
@@ -48,21 +49,7 @@ export default function () {
 
     const treeListRef = useRef<IMyTree[]>([]) // table的数据
 
-    useEffect(() => {
-
-        const handleFullScreenChange = () => {
-            setFullScreenFlag(document.fullscreenElement !== null)
-        }
-
-        document.addEventListener('fullscreenchange', handleFullScreenChange);
-
-        return () => {
-
-            document.removeEventListener('fullscreenchange', handleFullScreenChange);
-
-        }
-
-    }, [])
+    UseEffectFullScreenChange(setFullScreenFlag) // 监听是否：全屏
 
     return (
 

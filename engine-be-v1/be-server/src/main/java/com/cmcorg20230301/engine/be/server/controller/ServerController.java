@@ -24,7 +24,7 @@ public class ServerController {
     @PostMapping("/workInfo")
     @Operation(summary = "服务器运行情况")
     public ApiResultVO<ServerWorkInfoVO> workInfo() {
-        return ApiResultVO.ok(baseService.workInfo());
+        return ApiResultVO.okData(baseService.workInfo());
     }
 
 }

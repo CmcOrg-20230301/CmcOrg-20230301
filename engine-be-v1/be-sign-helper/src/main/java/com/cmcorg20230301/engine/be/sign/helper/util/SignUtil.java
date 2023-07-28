@@ -787,7 +787,7 @@ public class SignUtil {
                 if (deleteRedisFlag) {
                     newBucket.delete();
                 }
-                ApiResultVO.error("操作失败：已被人占用");
+                ApiResultVO.errorMsg("操作失败：已被人占用");
             }
 
             SysUserDO sysUserDO = new SysUserDO();
@@ -1054,7 +1054,7 @@ public class SignUtil {
             if (exist) {
 
                 bucket.delete();
-                ApiResultVO.error("操作失败：账号已被绑定，请重试");
+                ApiResultVO.errorMsg("操作失败：账号已被绑定，请重试");
 
             }
 
@@ -1124,7 +1124,7 @@ public class SignUtil {
 
         if (BooleanUtil.isFalse(legalFlag)) { // 如果不合法
 
-            ApiResultVO.error(BaseBizCodeEnum.ILLEGAL_REQUEST.getMsg() + "：" + redisKeyEnum.name());
+            ApiResultVO.errorMsg(BaseBizCodeEnum.ILLEGAL_REQUEST.getMsg() + "：" + redisKeyEnum.name());
 
         }
 

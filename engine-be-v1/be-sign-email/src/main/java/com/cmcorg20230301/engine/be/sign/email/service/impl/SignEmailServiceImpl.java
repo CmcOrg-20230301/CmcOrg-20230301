@@ -53,7 +53,7 @@ public class SignEmailServiceImpl implements SignEmailService {
     private void checkSignUpEnable() {
 
         if (BooleanUtil.isFalse(securityProperties.getEmailSignUpEnable())) {
-            ApiResultVO.error("操作失败：不允许邮箱注册，请联系管理员");
+            ApiResultVO.errorMsg("操作失败：不允许邮箱注册，请联系管理员");
         }
 
     }

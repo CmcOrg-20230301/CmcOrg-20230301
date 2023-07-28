@@ -47,7 +47,7 @@ public class SysFileController {
     @Operation(summary = "批量获取：公开文件的 url")
     @PostMapping("/getPublicUrl")
     public ApiResultVO<LongObjectMapVO<String>> getPublicUrl(@RequestBody @Valid NotEmptyIdSet notEmptyIdSet) {
-        return ApiResultVO.ok(baseService.getPublicUrl(notEmptyIdSet));
+        return ApiResultVO.okData(baseService.getPublicUrl(notEmptyIdSet));
     }
 
 }

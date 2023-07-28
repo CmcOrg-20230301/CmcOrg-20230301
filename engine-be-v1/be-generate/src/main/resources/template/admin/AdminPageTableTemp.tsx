@@ -1,4 +1,4 @@
-import {useEffect, useRef, useState} from "react";
+import {useRef, useState} from "react";
 import {ActionType, BetaSchemaForm, ColumnsState, FormInstance, ProTable} from "@ant-design/pro-components";
 import {Button, Space} from "antd";
 import {PlusOutlined} from "@ant-design/icons/lib";
@@ -15,6 +15,7 @@ import TableColumnList from "./TableColumnList";
 import {ExecConfirm, ToastSuccess} from "@/util/ToastUtil";
 import SchemaFormColumnList, {InitForm} from "./SchemaFormColumnList";
 import CommonConstant from "@/model/constant/CommonConstant";
+import {UseEffectFullScreenChange} from "@/page/sys/Menu/Menu";
 
 // AdminTsxTitle
 export default function () {
@@ -33,21 +34,7 @@ export default function () {
 
     const [fullScreenFlag, setFullScreenFlag] = useState<boolean>(false)
 
-    useEffect(() => {
-
-        const handleFullScreenChange = () => {
-            setFullScreenFlag(document.fullscreenElement !== null)
-        }
-
-        document.addEventListener('fullscreenchange', handleFullScreenChange);
-
-        return () => {
-
-            document.removeEventListener('fullscreenchange', handleFullScreenChange);
-
-        }
-
-    }, [])
+    UseEffectFullScreenChange(setFullScreenFlag) // 监听是否：全屏
 
     return (
 

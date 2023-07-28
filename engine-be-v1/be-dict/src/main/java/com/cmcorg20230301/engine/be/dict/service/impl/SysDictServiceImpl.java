@@ -76,7 +76,7 @@ public class SysDictServiceImpl extends ServiceImpl<SysDictMapper, SysDictDO> im
             SysDictDO sysDictDO = lambdaQuery().eq(BaseEntity::getId, dto.getId()).select(SysDictDO::getDictKey).one();
 
             if (sysDictDO == null) {
-                ApiResultVO.error("操作失败：字典不存在，请刷新重试");
+                ApiResultVO.errorMsg("操作失败：字典不存在，请刷新重试");
             }
 
             if (!sysDictDO.getDictKey().equals(dto.getDictKey())) {

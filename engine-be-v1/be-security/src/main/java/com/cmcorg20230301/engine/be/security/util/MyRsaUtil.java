@@ -83,7 +83,7 @@ public class MyRsaUtil {
 
         // 不能和服务器时间相差过大
         if (checkTs > EXPIRE_TIME) {
-            ApiResultVO.error("操作失败：您的时间：{}，与当前时间：{}，相差过大，请调整时间后再试", userTs, currentTimeMillis);
+            ApiResultVO.errorMsg("操作失败：您的时间：{}，与当前时间：{}，相差过大，请调整时间后再试", userTs, currentTimeMillis);
         }
 
         return split[0]; // 返回解密之后的 字符串

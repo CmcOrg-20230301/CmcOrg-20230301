@@ -55,7 +55,7 @@ public class SysPostServiceImpl extends ServiceImpl<SysPostMapper, SysPostDO> im
             .ne(dto.getId() != null, BaseEntity::getId, dto.getId()).exists();
 
         if (exists) {
-            ApiResultVO.error("操作失败：相同父节点下，岗位名不能重复");
+            ApiResultVO.errorMsg("操作失败：相同父节点下，岗位名不能重复");
         }
 
         if (dto.getId() != null) { // 如果是修改

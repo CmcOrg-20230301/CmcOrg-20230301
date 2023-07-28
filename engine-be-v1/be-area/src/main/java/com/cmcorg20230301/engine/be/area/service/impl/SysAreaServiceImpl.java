@@ -56,7 +56,7 @@ public class SysAreaServiceImpl extends ServiceImpl<SysAreaMapper, SysAreaDO> im
             .ne(dto.getId() != null, BaseEntity::getId, dto.getId()).exists();
 
         if (exists) {
-            ApiResultVO.error("操作失败：相同父节点下，区域名不能重复");
+            ApiResultVO.errorMsg("操作失败：相同父节点下，区域名不能重复");
         }
 
         SysAreaDO sysAreaDO = new SysAreaDO();

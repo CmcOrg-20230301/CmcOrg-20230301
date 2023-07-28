@@ -41,7 +41,7 @@ public class SysFileServiceImpl extends ServiceImpl<SysFileMapper, SysFileDO> im
         InputStream inputStream = SysFileUtil.privateDownload(notNullId.getId());
 
         if (inputStream == null) {
-            ApiResultVO.error("操作失败：文件流获取失败");
+            ApiResultVO.errorMsg("操作失败：文件流获取失败");
         }
 
         // 推送

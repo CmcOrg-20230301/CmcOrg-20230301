@@ -66,13 +66,13 @@ public class ApiResultVO<T> {
         return new ApiResultVO<>(iBizCode.getCode(), iBizCode.getMsg(), data).error();
     }
 
-    public static <T> ApiResultVO<T> error(String msgTemp, Object... paramArr) {
-        return new ApiResultVO<T>(BaseBizCodeEnum.API_RESULT_SYS_ERROR.getCode(), StrUtil.format(msgTemp, paramArr),
-            null).error();
+    public static <T> ApiResultVO<T> error(String msg, T data) {
+        return new ApiResultVO<T>(BaseBizCodeEnum.API_RESULT_SYS_ERROR.getCode(), msg, data).error();
     }
 
-    public static <T> ApiResultVO<T> errorData(String msg, T data) {
-        return new ApiResultVO<T>(BaseBizCodeEnum.API_RESULT_SYS_ERROR.getCode(), msg, data).error();
+    public static <T> ApiResultVO<T> errorMsg(String msgTemp, Object... paramArr) {
+        return new ApiResultVO<T>(BaseBizCodeEnum.API_RESULT_SYS_ERROR.getCode(), StrUtil.format(msgTemp, paramArr),
+            null).error();
     }
 
     /**
@@ -82,7 +82,7 @@ public class ApiResultVO<T> {
         return new ApiResultVO<>(BaseBizCodeEnum.API_RESULT_OK.getCode(), msg, data);
     }
 
-    public static <T> ApiResultVO<T> ok(T data) {
+    public static <T> ApiResultVO<T> okData(T data) {
         return new ApiResultVO<>(BaseBizCodeEnum.API_RESULT_OK.getCode(), BaseBizCodeEnum.API_RESULT_OK.getMsg(), data);
     }
 

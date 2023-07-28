@@ -1,0 +1,1 @@
+# npm i时，如果过慢，请先执行：npm config set ELECTRON_MIRROR http://npm.taobao.org/mirrors/electron/，然后再执行 npm i

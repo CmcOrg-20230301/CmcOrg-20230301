@@ -1,4 +1,4 @@
-package com.cmcorg20230301.engine.be.netty.websocket.websocket;
+package com.cmcorg20230301.engine.be.netty.websocket.controller.websocket;
 
 import com.cmcorg20230301.engine.be.netty.websocket.annotation.NettyWebSocketController;
 import com.cmcorg20230301.engine.be.netty.websocket.service.NettyWebSocketHeartBeatService;
@@ -21,7 +21,7 @@ public class NettyWebSocketHeartBeatController {
     @Operation(summary = "心跳检测")
     @PostMapping
     public ApiResultVO<Long> heartBeat() {
-        return ApiResultVO.ok(baseService.heartBeat());
+        return ApiResultVO.okData(baseService.heartBeat());
     }
 
 }

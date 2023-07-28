@@ -26,7 +26,7 @@ public class NettyWebSocketHttpController {
     @PostMapping(value = "/getAllWebSocketUrl")
     @Operation(summary = "获取：所有 webSocket连接地址，格式：scheme://ip:port/path?code=xxx")
     public ApiResultVO<Set<String>> getAllWebSocketUrl() {
-        return ApiResultVO.ok(baseService.getAllWebSocketUrl());
+        return ApiResultVO.okData(baseService.getAllWebSocketUrl());
     }
 
     @PostMapping(value = "/getWebSocketUrlById")

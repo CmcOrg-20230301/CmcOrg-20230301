@@ -32,7 +32,7 @@ public class SignSignInNameServiceImpl implements SignSignInNameService {
     public String signUp(SignSignInNameSignUpDTO dto) {
 
         if (BooleanUtil.isFalse(securityProperties.getSignInNameSignUpEnable())) {
-            ApiResultVO.error("操作失败：不允许用户名注册，请联系管理员");
+            ApiResultVO.errorMsg("操作失败：不允许用户名注册，请联系管理员");
         }
 
         return SignUtil

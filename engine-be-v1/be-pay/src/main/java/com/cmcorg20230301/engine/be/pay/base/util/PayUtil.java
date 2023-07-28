@@ -99,7 +99,7 @@ public class PayUtil {
 
         if (iSysPay == null) {
 
-            ApiResultVO.error("操作失败：支付方式未找到：{}", sysPayProperties.getBasePayType());
+            ApiResultVO.errorMsg("操作失败：支付方式未找到：{}", sysPayProperties.getBasePayType());
 
         }
 
@@ -171,7 +171,7 @@ public class PayUtil {
 
         if (iSysPay == null) {
 
-            ApiResultVO.error("操作失败：支付方式未找到：{}", sysPayProperties.getBasePayType());
+            ApiResultVO.errorMsg("操作失败：支付方式未找到：{}", sysPayProperties.getBasePayType());
 
         }
 

@@ -61,7 +61,7 @@ public class PayAliUtil {
         int compare = DateUtil.compare(dto.getTimeExpire(), new Date());
 
         if (compare <= 0) {
-            ApiResultVO.error("操作失败：支付过期时间晚于当前时间");
+            ApiResultVO.errorMsg("操作失败：支付过期时间晚于当前时间");
         }
 
         AlipayClient alipayClient = new DefaultAlipayClient(getAlipayConfig());
@@ -89,7 +89,7 @@ public class PayAliUtil {
             // msg，例如：Business Failed
             // sub_code，例如：ACQ.TRADE_HAS_SUCCESS
             // sub_msg，例如：交易已被支付
-            ApiResultVO.error("支付宝支付失败：" + response.getSubMsg());
+            ApiResultVO.errorMsg("支付宝支付失败：" + response.getSubMsg());
 
         }
 
@@ -121,7 +121,7 @@ public class PayAliUtil {
 
         if (BooleanUtil.isFalse(response.isSuccess())) {
 
-            ApiResultVO.error("支付宝查询失败：" + response.getSubMsg());
+            ApiResultVO.errorMsg("支付宝查询失败：" + response.getSubMsg());
 
         }
 

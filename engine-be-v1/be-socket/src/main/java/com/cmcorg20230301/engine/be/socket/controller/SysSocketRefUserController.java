@@ -1,6 +1,7 @@
 package com.cmcorg20230301.engine.be.socket.controller;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.cmcorg20230301.engine.be.model.model.dto.NotEmptyIdSet;
 import com.cmcorg20230301.engine.be.security.model.vo.ApiResultVO;
 import com.cmcorg20230301.engine.be.socket.model.dto.SysSocketRefUserPageDTO;
 import com.cmcorg20230301.engine.be.socket.model.entity.SysSocketRefUserDO;
@@ -28,7 +29,14 @@ public class SysSocketRefUserController {
     @PostMapping("/page")
     @PreAuthorize("hasAuthority('sysSocketRefUser:page')")
     public ApiResultVO<Page<SysSocketRefUserDO>> myPage(@RequestBody @Valid SysSocketRefUserPageDTO dto) {
-        return ApiResultVO.ok(baseService.myPage(dto));
+        return ApiResultVO.okData(baseService.myPage(dto));
+    }
+
+    @Operation(summary = "批量：下线用户")
+    @PostMapping("/offlineByIdSet")
+    @PreAuthorize("hasAuthority('sysSocketRefUser:insertOrUpdate')")
+    public ApiResultVO<String> offlineByIdSet(@RequestBody @Valid NotEmptyIdSet notEmptyIdSet) {
+        return ApiResultVO.okMsg(baseService.offlineByIdSet(notEmptyIdSet));
     }
 
 }

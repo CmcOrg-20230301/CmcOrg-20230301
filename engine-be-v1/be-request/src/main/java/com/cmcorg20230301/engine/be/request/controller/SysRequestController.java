@@ -30,25 +30,25 @@ public class SysRequestController {
     @PostMapping("/page")
     @Operation(summary = "分页排序查询")
     public ApiResultVO<Page<SysRequestDO>> myPage(@RequestBody @Valid SysRequestPageDTO dto) {
-        return ApiResultVO.ok(baseService.myPage(dto));
+        return ApiResultVO.okData(baseService.myPage(dto));
     }
 
     @PostMapping("/allAvgPro")
     @Operation(summary = "所有请求的平均耗时-增强：增加筛选项")
     public ApiResultVO<SysRequestAllAvgVO> allAvgPro(@RequestBody @Valid SysRequestPageDTO dto) {
-        return ApiResultVO.ok(baseService.allAvgPro(dto));
+        return ApiResultVO.okData(baseService.allAvgPro(dto));
     }
 
     @PostMapping("/allAvg")
     @Operation(summary = "所有请求的平均耗时")
     public ApiResultVO<SysRequestAllAvgVO> allAvg() {
-        return ApiResultVO.ok(baseService.allAvg());
+        return ApiResultVO.okData(baseService.allAvg());
     }
 
     @PostMapping("/self/loginRecord")
     @Operation(summary = "当前用户：登录记录")
     public ApiResultVO<Page<SysRequestDO>> selfLoginRecord(@RequestBody @Valid SysRequestSelfLoginRecordPageDTO dto) {
-        return ApiResultVO.ok(baseService.selfLoginRecord(dto));
+        return ApiResultVO.okData(baseService.selfLoginRecord(dto));
     }
 
 }

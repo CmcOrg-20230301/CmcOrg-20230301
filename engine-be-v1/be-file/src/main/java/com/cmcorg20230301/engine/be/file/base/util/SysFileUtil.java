@@ -94,14 +94,14 @@ public class SysFileUtil {
         String originalFilename = dto.getFile().getOriginalFilename();
 
         if (StrUtil.isBlank(originalFilename)) {
-            ApiResultVO.error("操作失败：上传的文件名不能为空");
+            ApiResultVO.errorMsg("操作失败：上传的文件名不能为空");
         }
 
         String fileType = dto.getUploadType().checkFileType(dto.getFile());
 
         if (fileType == null) {
 
-            ApiResultVO.error("操作失败：暂不支持此文件类型【" + originalFilename + "】，请重新选择");
+            ApiResultVO.errorMsg("操作失败：暂不支持此文件类型【" + originalFilename + "】，请重新选择");
 
         }
 
@@ -158,7 +158,7 @@ public class SysFileUtil {
 
         if (iSysFile == null) {
 
-            ApiResultVO.error("操作失败：文件存储方式未找到：{}", storageType);
+            ApiResultVO.errorMsg("操作失败：文件存储方式未找到：{}", storageType);
 
         }
 
@@ -186,7 +186,7 @@ public class SysFileUtil {
 
         if (StrUtil.isBlank(bucketName)) {
 
-            ApiResultVO.error("操作失败：bucketName为空，请联系管理员");
+            ApiResultVO.errorMsg("操作失败：bucketName为空，请联系管理员");
 
         }
 
@@ -259,7 +259,7 @@ public class SysFileUtil {
         SysFileDO sysFileDO = getPrivateDownloadSysFile(fileId);
 
         if (SysFileTypeEnum.FOLDER.equals(sysFileDO.getType())) {
-            ApiResultVO.error("操作失败：暂不支持下载文件夹");
+            ApiResultVO.errorMsg("操作失败：暂不支持下载文件夹");
         }
 
         if (BooleanUtil.isFalse(sysFileDO.getPublicFlag())) { // 如果：不是公开下载
@@ -284,7 +284,7 @@ public class SysFileUtil {
 
         if (iSysFile == null) {
 
-            ApiResultVO.error("操作失败：文件存储位置不存在：{}", sysFileDO.getStorageType().getCode());
+            ApiResultVO.errorMsg("操作失败：文件存储位置不存在：{}", sysFileDO.getStorageType().getCode());
 
         }
 
@@ -316,7 +316,7 @@ public class SysFileUtil {
         SysFileDO sysFileDO = getSysFileBaseLambdaQuery().eq(BaseEntity::getId, fileId).one();
 
         if (sysFileDO == null) {
-            ApiResultVO.error("操作失败：文件不存在");
+            ApiResultVO.errorMsg("操作失败：文件不存在");
         }
 
         return sysFileDO;
@@ -387,13 +387,13 @@ public class SysFileUtil {
         boolean anyMatch = sysFileDOList.stream().anyMatch(it -> SysFileTypeEnum.FOLDER.equals(it.getType()));
 
         if (anyMatch) {
-            ApiResultVO.error("操作失败：暂不支持删除文件夹");
+            ApiResultVO.errorMsg("操作失败：暂不支持删除文件夹");
         }
 
         Set<String> bucketNameSet = sysFileDOList.stream().map(SysFileDO::getBucketName).collect(Collectors.toSet());
 
         if (bucketNameSet.size() != 1) {
-            ApiResultVO.error("操作失败：bucketName不相同");
+            ApiResultVO.errorMsg("操作失败：bucketName不相同");
         }
 
         // 可以随便取一个：bucketName，因为都是一样的

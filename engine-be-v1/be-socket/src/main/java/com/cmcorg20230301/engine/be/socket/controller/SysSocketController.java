@@ -1,6 +1,7 @@
 package com.cmcorg20230301.engine.be.socket.controller;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.cmcorg20230301.engine.be.model.model.dto.NotEmptyIdSet;
 import com.cmcorg20230301.engine.be.security.model.vo.ApiResultVO;
 import com.cmcorg20230301.engine.be.socket.model.dto.SysSocketPageDTO;
 import com.cmcorg20230301.engine.be.socket.model.entity.SysSocketDO;
@@ -28,7 +29,14 @@ public class SysSocketController {
     @PostMapping("/page")
     @PreAuthorize("hasAuthority('sysSocket:page')")
     public ApiResultVO<Page<SysSocketDO>> myPage(@RequestBody @Valid SysSocketPageDTO dto) {
-        return ApiResultVO.ok(baseService.myPage(dto));
+        return ApiResultVO.okData(baseService.myPage(dto));
+    }
+
+    @Operation(summary = "批量：禁用socket")
+    @PostMapping("/disableByIdSet")
+    @PreAuthorize("hasAuthority('sysSocket:insertOrUpdate')")
+    public ApiResultVO<String> disableByIdSet(@RequestBody @Valid NotEmptyIdSet notEmptyIdSet) {
+        return ApiResultVO.okMsg(baseService.disableByIdSet(notEmptyIdSet));
     }
 
 }

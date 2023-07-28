@@ -36,12 +36,12 @@ public class CodeUtil {
 
         // 如果不存在验证码
         if (StrUtil.isBlank(targetCode)) {
-            ApiResultVO.error(targetCodeBlankError);
+            ApiResultVO.errorMsg(targetCodeBlankError);
         }
 
         // 如果验证码不匹配
         if (BooleanUtil.isFalse(targetCode.equalsIgnoreCase(sourceCode))) {
-            ApiResultVO.error(notEqualsError);
+            ApiResultVO.errorMsg(notEqualsError);
         }
 
     }

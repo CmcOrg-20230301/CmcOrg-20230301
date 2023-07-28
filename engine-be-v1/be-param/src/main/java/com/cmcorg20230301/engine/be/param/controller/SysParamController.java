@@ -38,14 +38,14 @@ public class SysParamController {
     @PostMapping("/page")
     @PreAuthorize("hasAuthority('sysParam:page')")
     public ApiResultVO<Page<SysParamDO>> myPage(@RequestBody @Valid SysParamPageDTO dto) {
-        return ApiResultVO.ok(baseService.myPage(dto));
+        return ApiResultVO.okData(baseService.myPage(dto));
     }
 
     @Operation(summary = "通过主键id，查看详情")
     @PostMapping("/infoById")
     @PreAuthorize("hasAuthority('sysParam:infoById')")
     public ApiResultVO<SysParamDO> infoById(@RequestBody @Valid NotNullId notNullId) {
-        return ApiResultVO.ok(baseService.infoById(notNullId));
+        return ApiResultVO.okData(baseService.infoById(notNullId));
     }
 
     @Operation(summary = "批量删除")

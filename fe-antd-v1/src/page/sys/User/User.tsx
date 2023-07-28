@@ -1,4 +1,4 @@
-import {useEffect, useRef, useState} from "react";
+import {useRef, useState} from "react";
 import {ActionType, BetaSchemaForm, ColumnsState, FormInstance, ProTable} from "@ant-design/pro-components";
 import {Button, Space, Typography} from "antd";
 import {PlusOutlined} from "@ant-design/icons/lib";
@@ -22,6 +22,7 @@ import {DictLongListVO, GetByValueFromDictListPro, GetDictList} from "@/util/Dic
 import {SysDeptPage} from "@/api/http/SysDept";
 import {SysPostPage} from "@/api/http/SysPost";
 import {SysRolePage} from "@/api/http/SysRole";
+import {UseEffectFullScreenChange} from "@/page/sys/Menu/Menu";
 
 // 用户-管理
 export default function () {
@@ -70,21 +71,7 @@ export default function () {
 
     }
 
-    useEffect(() => {
-
-        const handleFullScreenChange = () => {
-            setFullScreenFlag(document.fullscreenElement !== null)
-        }
-
-        document.addEventListener('fullscreenchange', handleFullScreenChange);
-
-        return () => {
-
-            document.removeEventListener('fullscreenchange', handleFullScreenChange);
-
-        }
-
-    }, [])
+    UseEffectFullScreenChange(setFullScreenFlag) // 监听是否：全屏
 
     return (
 

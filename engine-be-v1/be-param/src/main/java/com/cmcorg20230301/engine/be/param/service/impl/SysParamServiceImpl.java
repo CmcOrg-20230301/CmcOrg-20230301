@@ -74,7 +74,7 @@ public class SysParamServiceImpl extends ServiceImpl<SysParamMapper, SysParamDO>
 
         for (Long item : notDeleteIdSet) {
             if (notEmptyIdSet.getIdSet().contains(item)) {
-                ApiResultVO.error("操作失败：id【{}】不允许删除", item);
+                ApiResultVO.errorMsg("操作失败：id【{}】不允许删除", item);
             }
         }
 

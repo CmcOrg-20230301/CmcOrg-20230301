@@ -58,7 +58,7 @@ public class PayWxUtil {
         int compare = DateUtil.compare(dto.getTimeExpire(), new Date());
 
         if (compare <= 0) {
-            ApiResultVO.error("操作失败：支付过期时间晚于当前时间");
+            ApiResultVO.errorMsg("操作失败：支付过期时间晚于当前时间");
         }
 
         com.wechat.pay.java.service.payments.nativepay.model.PrepayRequest request =
@@ -100,7 +100,7 @@ public class PayWxUtil {
         int compare = DateUtil.compare(dto.getTimeExpire(), new Date());
 
         if (compare <= 0) {
-            ApiResultVO.error("操作失败：支付过期时间晚于当前时间");
+            ApiResultVO.errorMsg("操作失败：支付过期时间晚于当前时间");
         }
 
         com.wechat.pay.java.service.payments.jsapi.model.PrepayRequest request =

@@ -40,14 +40,14 @@ public class SysDeptController {
     @PostMapping("/page")
     @PreAuthorize("hasAuthority('sysDept:page')")
     public ApiResultVO<Page<SysDeptDO>> myPage(@RequestBody @Valid SysDeptPageDTO dto) {
-        return ApiResultVO.ok(baseService.myPage(dto));
+        return ApiResultVO.okData(baseService.myPage(dto));
     }
 
     @Operation(summary = "查询：树结构")
     @PostMapping("/tree")
     @PreAuthorize("hasAuthority('sysDept:page')")
     public ApiResultVO<List<SysDeptDO>> tree(@RequestBody @Valid SysDeptPageDTO dto) {
-        return ApiResultVO.ok(baseService.tree(dto));
+        return ApiResultVO.okData(baseService.tree(dto));
     }
 
     @Operation(summary = "批量删除")
@@ -61,7 +61,7 @@ public class SysDeptController {
     @PostMapping("/infoById")
     @PreAuthorize("hasAuthority('sysDept:infoById')")
     public ApiResultVO<SysDeptDO> infoById(@RequestBody @Valid NotNullId notNullId) {
-        return ApiResultVO.ok(baseService.infoById(notNullId));
+        return ApiResultVO.okData(baseService.infoById(notNullId));
     }
 
     @Operation(summary = "通过主键 idSet，加减排序号")

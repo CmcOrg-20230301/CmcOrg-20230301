@@ -443,7 +443,7 @@ public class NettyWebSocketServerHandler extends ChannelInboundHandlerAdapter {
     private void handleFullHttpRequestError(@NotNull ChannelHandlerContext ctx, String requestParam, String errorMsg,
         @NotNull FullHttpRequest fullHttpRequest) {
 
-        ctx.close();
+        ctx.close(); // 关闭连接
 
         Date date = new Date();
 

@@ -43,7 +43,7 @@ public class XxlJobServiceImpl implements XxlJobService {
     public Long insert(XxlJobInsertDTO dto) {
 
         if (!JSONUtil.isTypeJSON(dto.getExecutorParam())) {
-            ApiResultVO.error("操作失败：executorParam 必须是 json格式字符串");
+            ApiResultVO.errorMsg("操作失败：executorParam 必须是 json格式字符串");
         }
 
         if (dto.getProSendTime() != null) {
@@ -53,7 +53,7 @@ public class XxlJobServiceImpl implements XxlJobService {
         }
 
         if (StrUtil.isBlank(dto.getScheduleConf())) {
-            ApiResultVO.error("操作失败：scheduleConf 不能为空");
+            ApiResultVO.errorMsg("操作失败：scheduleConf 不能为空");
         }
 
         HttpCookie cookie = getCookie();
@@ -62,7 +62,7 @@ public class XxlJobServiceImpl implements XxlJobService {
         }
 
         if (StrUtil.isBlank(dto.getJobGroup())) {
-            ApiResultVO.error("操作失败：jobGroup 不能为空");
+            ApiResultVO.errorMsg("操作失败：jobGroup 不能为空");
         }
 
         return doAddJob(JSONUtil.parseObj(dto), cookie); // 执行：新增 xxl-job 任务
@@ -87,12 +87,12 @@ public class XxlJobServiceImpl implements XxlJobService {
             JSONObject bodyJson = JSONUtil.parseObj(response.body());
 
             if (!response.isOk()) {
-                ApiResultVO.error("操作失败：新增任务失败：" + bodyJson);
+                ApiResultVO.errorMsg("操作失败：新增任务失败：" + bodyJson);
             }
 
             Long id = bodyJson.getLong("content"); // 会返回本次 新增任务的 id
             if (id == null) {
-                ApiResultVO.error("操作失败：新增任务失败：content 为空");
+                ApiResultVO.errorMsg("操作失败：新增任务失败：content 为空");
             }
 
             // 启动任务，备注：因为新增的时候，不支持启动，所以只有再调用启动接口
@@ -102,7 +102,7 @@ public class XxlJobServiceImpl implements XxlJobService {
 
             bodyJson = JSONUtil.parseObj(response.body());
             if (!response.isOk()) {
-                ApiResultVO.error("操作失败：启动任务失败：" + bodyJson);
+                ApiResultVO.errorMsg("操作失败：启动任务失败：" + bodyJson);
             }
 
             return id;
@@ -138,7 +138,7 @@ public class XxlJobServiceImpl implements XxlJobService {
             JSONObject bodyJson = JSONUtil.parseObj(response.body());
 
             if (!response.isOk()) {
-                ApiResultVO.error("操作失败：获取执行器失败：" + bodyJson);
+                ApiResultVO.errorMsg("操作失败：获取执行器失败：" + bodyJson);
             }
 
             JSONArray data = bodyJson.getJSONArray("data");
@@ -154,7 +154,7 @@ public class XxlJobServiceImpl implements XxlJobService {
                 bodyJson = JSONUtil.parseObj(response.body());
 
                 if (!response.isOk()) {
-                    ApiResultVO.error("操作失败：创建执行器失败：" + bodyJson);
+                    ApiResultVO.errorMsg("操作失败：创建执行器失败：" + bodyJson);
                 }
 
                 setJobGroup(dto, cookie); // 再次设置【执行器 id】
@@ -190,13 +190,13 @@ public class XxlJobServiceImpl implements XxlJobService {
                     .execute();
 
             if (BooleanUtil.isFalse(response.isOk())) {
-                ApiResultVO.error("操作失败：登录 xxl-job失败：" + JSONUtil.parseObj(response.body()));
+                ApiResultVO.errorMsg("操作失败：登录 xxl-job失败：" + JSONUtil.parseObj(response.body()));
             }
 
             List<HttpCookie> cookieList = response.getCookies();
 
             if (CollUtil.isEmpty(cookieList)) {
-                ApiResultVO.error("操作失败：登录 xxl-job失败：cookieList 为空");
+                ApiResultVO.errorMsg("操作失败：登录 xxl-job失败：cookieList 为空");
             }
 
             HttpCookie httpCookie = cookieList.get(0);
@@ -216,7 +216,7 @@ public class XxlJobServiceImpl implements XxlJobService {
     public void deleteById(NotNullId notNullId) {
 
         if (notNullId.getId() == null) {
-            ApiResultVO.error("操作失败：删除任务失败：id 不能为空");
+            ApiResultVO.errorMsg("操作失败：删除任务失败：id 不能为空");
         }
 
         HttpCookie cookie = getCookie();
@@ -231,7 +231,7 @@ public class XxlJobServiceImpl implements XxlJobService {
             JSONObject bodyJson = JSONUtil.parseObj(response.body());
 
             if (!response.isOk()) {
-                ApiResultVO.error("操作失败：删除任务失败：" + bodyJson);
+                ApiResultVO.errorMsg("操作失败：删除任务失败：" + bodyJson);
             }
 
         } catch (Exception e) {

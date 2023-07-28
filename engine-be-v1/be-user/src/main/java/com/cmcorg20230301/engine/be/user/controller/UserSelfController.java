@@ -25,7 +25,7 @@ public class UserSelfController {
     @Operation(summary = "获取：当前用户，基本信息")
     @PostMapping(value = "/info")
     public ApiResultVO<UserSelfInfoVO> userSelfInfo() {
-        return ApiResultVO.ok(baseService.userSelfInfo());
+        return ApiResultVO.okData(baseService.userSelfInfo());
     }
 
     @Operation(summary = "当前用户：基本信息：修改")

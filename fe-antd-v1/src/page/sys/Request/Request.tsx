@@ -1,4 +1,4 @@
-import {useEffect, useRef, useState} from "react";
+import {useRef, useState} from "react";
 import {ActionType, ColumnsState, ProTable} from "@ant-design/pro-components";
 import {
     SysRequestAllAvgPro,
@@ -12,6 +12,7 @@ import CommonConstant from "@/model/constant/CommonConstant";
 import {Badge, Button, Space, Tooltip, Typography} from "antd";
 import {LoadingOutlined, ReloadOutlined} from "@ant-design/icons";
 import {FormatDateTime} from "@/util/DateUtil";
+import {UseEffectFullScreenChange} from "@/page/sys/Menu/Menu";
 
 export function GetAvgType(avg: number) {
     return avg < 800 ? 'success' : (avg > 1600 ? 'danger' : 'warning')
@@ -34,21 +35,7 @@ export default function () {
 
     const [fullScreenFlag, setFullScreenFlag] = useState<boolean>(false)
 
-    useEffect(() => {
-
-        const handleFullScreenChange = () => {
-            setFullScreenFlag(document.fullscreenElement !== null)
-        }
-
-        document.addEventListener('fullscreenchange', handleFullScreenChange);
-
-        return () => {
-
-            document.removeEventListener('fullscreenchange', handleFullScreenChange);
-
-        }
-
-    }, [])
+    UseEffectFullScreenChange(setFullScreenFlag) // 监听是否：全屏
 
     return (
 

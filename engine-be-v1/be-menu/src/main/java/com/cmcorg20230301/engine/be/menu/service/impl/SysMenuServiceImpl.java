@@ -58,7 +58,7 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenuDO> im
         }
 
         if (BooleanUtil.isTrue(dto.getAuthFlag()) && StrUtil.isBlank(dto.getAuths())) {
-            ApiResultVO.error("操作失败：权限菜单的权限不能为空");
+            ApiResultVO.errorMsg("操作失败：权限菜单的权限不能为空");
         }
 
         // path不能重复

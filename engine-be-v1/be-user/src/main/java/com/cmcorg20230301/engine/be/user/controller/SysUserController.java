@@ -35,14 +35,14 @@ public class SysUserController {
     @PostMapping("/page")
     @PreAuthorize("hasAuthority('sysUser:page')")
     public ApiResultVO<Page<SysUserPageVO>> myPage(@RequestBody @Valid SysUserPageDTO dto) {
-        return ApiResultVO.ok(baseService.myPage(dto));
+        return ApiResultVO.okData(baseService.myPage(dto));
     }
 
     @Operation(summary = "下拉列表")
     @PostMapping("/dictList")
     @PreAuthorize("hasAuthority('sysUser:page')")
     public ApiResultVO<Page<DictVO>> dictList(@RequestBody @Valid SysUserDictListDTO dto) {
-        return ApiResultVO.ok(baseService.dictList(dto));
+        return ApiResultVO.okData(baseService.dictList(dto));
     }
 
     @Operation(summary = "新增/修改")
@@ -63,7 +63,7 @@ public class SysUserController {
     @PostMapping("/infoById")
     @PreAuthorize("hasAuthority('sysUser:infoById')")
     public ApiResultVO<SysUserInfoByIdVO> infoById(@RequestBody @Valid NotNullId notNullId) {
-        return ApiResultVO.ok(baseService.infoById(notNullId));
+        return ApiResultVO.okData(baseService.infoById(notNullId));
     }
 
     @Operation(summary = "刷新：用户jwt私钥后缀")

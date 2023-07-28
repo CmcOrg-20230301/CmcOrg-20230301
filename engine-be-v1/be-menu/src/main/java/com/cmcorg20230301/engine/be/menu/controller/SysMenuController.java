@@ -41,14 +41,14 @@ public class SysMenuController {
     @PostMapping("/page")
     @PreAuthorize("hasAuthority('sysMenu:page')")
     public ApiResultVO<Page<SysMenuDO>> myPage(@RequestBody @Valid SysMenuPageDTO dto) {
-        return ApiResultVO.ok(baseService.myPage(dto));
+        return ApiResultVO.okData(baseService.myPage(dto));
     }
 
     @Operation(summary = "查询：树结构")
     @PostMapping("/tree")
     @PreAuthorize("hasAuthority('sysMenu:page')")
     public ApiResultVO<List<SysMenuDO>> tree(@RequestBody @Valid SysMenuPageDTO dto) {
-        return ApiResultVO.ok(baseService.tree(dto));
+        return ApiResultVO.okData(baseService.tree(dto));
     }
 
     @Operation(summary = "批量删除")
@@ -62,13 +62,13 @@ public class SysMenuController {
     @PostMapping("/infoById")
     @PreAuthorize("hasAuthority('sysMenu:infoById')")
     public ApiResultVO<SysMenuInfoByIdVO> infoById(@RequestBody @Valid NotNullId notNullId) {
-        return ApiResultVO.ok(baseService.infoById(notNullId));
+        return ApiResultVO.okData(baseService.infoById(notNullId));
     }
 
     @PostMapping("/userSelfMenuList")
     @Operation(summary = "获取：当前用户绑定的菜单")
     public ApiResultVO<List<SysMenuDO>> userSelfMenuList() {
-        return ApiResultVO.ok(baseService.userSelfMenuList());
+        return ApiResultVO.okData(baseService.userSelfMenuList());
     }
 
     @Operation(summary = "通过主键 idSet，加减排序号")
