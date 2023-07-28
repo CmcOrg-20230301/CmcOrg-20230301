@@ -3,6 +3,7 @@ package com.cmcorg20230301.engine.be.socket.service.impl;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.cmcorg20230301.engine.be.kafka.util.KafkaUtil;
 import com.cmcorg20230301.engine.be.model.model.dto.NotEmptyIdSet;
 import com.cmcorg20230301.engine.be.security.exception.BaseBizCodeEnum;
 import com.cmcorg20230301.engine.be.security.model.entity.BaseEntity;
@@ -39,6 +40,9 @@ public class SysSocketServiceImpl extends ServiceImpl<SysSocketMapper, SysSocket
 
         lambdaUpdate().in(BaseEntity::getId, notEmptyIdSet.getIdSet()).set(BaseEntityNoId::getEnableFlag, false)
             .update();
+
+        // 发送消息：socket禁用的 topic
+        KafkaUtil.sendSocketDisableTopic(notEmptyIdSet.getIdSet());
 
         return BaseBizCodeEnum.OK;
 

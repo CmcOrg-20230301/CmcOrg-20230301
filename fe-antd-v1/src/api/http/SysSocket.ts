@@ -3,6 +3,15 @@ import MyOrderDTO from "@/model/dto/MyOrderDTO";
 import $http from "@/util/HttpUtil";
 import {AxiosRequestConfig} from "axios";
 
+export interface NotEmptyIdSet {
+    idSet?: string[] // 主键 idSet，required：true，format：int64
+}
+
+// 批量：禁用socket
+export function SysSocketDisableByIdSet(form: NotEmptyIdSet, config?: AxiosRequestConfig) {
+    return $http.myPost<string>('/sys/socket/disableByIdSet', form, config)
+}
+
 export interface SysSocketPageDTO {
     current?: string // 第几页，format：int64
     scheme?: string // 协议

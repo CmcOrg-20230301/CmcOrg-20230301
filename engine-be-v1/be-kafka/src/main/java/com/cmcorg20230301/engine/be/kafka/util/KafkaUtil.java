@@ -30,6 +30,15 @@ public class KafkaUtil {
     }
 
     /**
+     * 发送消息：socket禁用的 topic
+     */
+    public static void sendSocketDisableTopic(Set<Long> socketIdSet) {
+
+        send(KafkaTopicEnum.SOCKET_DISABLE_TOPIC, socketIdSet);
+
+    }
+
+    /**
      * 发送消息：支付状态发生改变时的 topic
      */
     public static void sendPayStatusChangeTopic(Object sysPayDO) {

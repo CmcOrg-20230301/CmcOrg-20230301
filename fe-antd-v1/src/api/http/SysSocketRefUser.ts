@@ -49,3 +49,12 @@ export interface SysSocketRefUserDO {
 export function SysSocketRefUserPage(form: SysSocketRefUserPageDTO, config?: AxiosRequestConfig) {
     return $http.myProPagePost<SysSocketRefUserDO>('/sys/socketRefUser/page', form, config)
 }
+
+export interface NotEmptyIdSet {
+    idSet?: string[] // 主键 idSet，required：true，format：int64
+}
+
+// 批量：下线用户
+export function SysSocketRefUserOfflineByIdSet(form: NotEmptyIdSet, config?: AxiosRequestConfig) {
+    return $http.myPost<string>('/sys/socketRefUser/offlineByIdSet', form, config)
+}
