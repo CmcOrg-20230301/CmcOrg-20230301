@@ -10,8 +10,12 @@ import com.cmcorg20230301.engine.be.socket.mapper.SysSocketRefUserMapper;
 import com.cmcorg20230301.engine.be.socket.model.entity.SysSocketDO;
 import com.cmcorg20230301.engine.be.socket.model.enums.SysSocketTypeEnum;
 import com.cmcorg20230301.engine.be.socket.service.SysSocketService;
+import com.cmcorg20230301.engine.be.socket.util.SocketUtil;
 import io.netty.bootstrap.ServerBootstrap;
-import io.netty.channel.*;
+import io.netty.channel.ChannelFuture;
+import io.netty.channel.ChannelInitializer;
+import io.netty.channel.ChannelOption;
+import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
@@ -27,150 +31,174 @@ import protobuf.proto.BaseProto;
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.annotation.Resource;
-import java.util.concurrent.ConcurrentHashMap;
 
 @Component
 @Slf4j
 public class NettyTcpProtobufServer {
 
-    @Resource
-    NettyTcpProtobufProperties nettyTcpProtobufProperties;
+    private static NettyTcpProtobufProperties nettyTcpProtobufProperties;
 
     @Resource
-    NettyTcpProtobufServerHandler nettyTcpProtobufServerHandler;
+    public void setNettyWebSocketProperties(NettyTcpProtobufProperties nettyTcpProtobufProperties) {
+        NettyTcpProtobufServer.nettyTcpProtobufProperties = nettyTcpProtobufProperties;
+    }
+
+    private static NettyTcpProtobufServerHandler nettyTcpProtobufServerHandler;
 
     @Resource
-    MyThreadUtil myThreadUtil;
+    public void setNettyWebSocketServerHandler(NettyTcpProtobufServerHandler nettyTcpProtobufServerHandler) {
+        NettyTcpProtobufServer.nettyTcpProtobufServerHandler = nettyTcpProtobufServerHandler;
+    }
+
+    private static MyThreadUtil myThreadUtil;
 
     @Resource
-    SysSocketService sysSocketService;
+    public void setMyThreadUtil(MyThreadUtil myThreadUtil) {
+        NettyTcpProtobufServer.myThreadUtil = myThreadUtil;
+    }
+
+    private static SysSocketService sysSocketService;
 
     @Resource
-    BaseConfiguration baseConfiguration;
+    public void setSysSocketService(SysSocketService sysSocketService) {
+        NettyTcpProtobufServer.sysSocketService = sysSocketService;
+    }
+
+    private static BaseConfiguration baseConfiguration;
 
     @Resource
-    IdGeneratorUtil idGeneratorUtil;
+    public void setBaseConfiguration(BaseConfiguration baseConfiguration) {
+        NettyTcpProtobufServer.baseConfiguration = baseConfiguration;
+    }
+
+    private static IdGeneratorUtil idGeneratorUtil;
 
     @Resource
-    SysSocketRefUserMapper sysSocketRefUserMapper;
+    public void setIdGeneratorUtil(IdGeneratorUtil idGeneratorUtil) {
+        NettyTcpProtobufServer.idGeneratorUtil = idGeneratorUtil;
+    }
 
-    private Long sysSocketServerId = null; // 备注：启动完成之后，这个属性才有值
+    private static SysSocketRefUserMapper sysSocketRefUserMapper;
+
+    @Resource
+    public void setSysSocketRefUserMapper(SysSocketRefUserMapper sysSocketRefUserMapper) {
+        NettyTcpProtobufServer.sysSocketRefUserMapper = sysSocketRefUserMapper;
+    }
+
+    private static SocketUtil socketUtil;
+
+    @Resource
+    public void setSocketUtil(SocketUtil socketUtil) {
+        NettyTcpProtobufServer.socketUtil = socketUtil;
+    }
+
+    public static Long sysSocketServerId = null; // 备注：启动完成之后，这个属性才有值
+
+    private static ChannelFuture channelFuture = null; // 备注：启动完成之后，这个属性才有值
+
+    private static EventLoopGroup parentGroup = null; // 备注：启动完成之后，这个属性才有值
+
+    private static EventLoopGroup childGroup = null; // 备注：启动完成之后，这个属性才有值
+
+    /**
+     * 重启 socket
+     */
+    public static void restart() {
+
+        close(); // 关闭 socket
+
+        start(); // 启动 socket
+
+    }
+
+    /**
+     * 关闭 socket
+     */
+    public static void close() {
+
+        // 关闭 socket
+        SocketUtil.closeSocket(channelFuture, parentGroup, childGroup, sysSocketServerId,
+            NettyTcpProtobufServerHandler.USER_ID_CHANNEL_MAP, "NettyTcpProtobuf");
+
+    }
 
     @PostConstruct
     public void postConstruct() {
 
-        int port = BaseConfiguration.port + 2;
-
-        MyThreadUtil.execute(() -> {
-
-            // 启动
-            start(nettyTcpProtobufProperties, nettyTcpProtobufServerHandler, port, sysSocketService);
-
-        });
+        // 启动 socket
+        start();
 
     }
 
     @PreDestroy
     public void preDestroy() {
 
-        if (sysSocketServerId != null) {
-
-            long closeChannelCount = 0;
-
-            for (ConcurrentHashMap<Long, Channel> item : NettyTcpProtobufServerHandler.USER_ID_CHANNEL_MAP.values()) {
-
-                for (Channel subItem : item.values()) {
-
-                    subItem.close();
-
-                    closeChannelCount++;
-
-                }
-
-            }
-
-            boolean removeFlag = sysSocketService.removeById(sysSocketServerId);
-
-            log.info("NettyTcpProtobuf 下线{}：{}，移除连接：{}", removeFlag ? "成功" : "失败", sysSocketServerId,
-                closeChannelCount);
-
-        }
+        // 关闭 socket
+        close();
 
     }
 
     /**
-     * 启动
+     * 启动 socket
      */
     @SneakyThrows
-    public void start(NettyTcpProtobufProperties nettyTcpProtobufProperties,
-        NettyTcpProtobufServerHandler nettyTcpProtobufServerHandler, int port, SysSocketService sysSocketService) {
+    public static void start() {
 
-        EventLoopGroup parentGroup = new NioEventLoopGroup(nettyTcpProtobufProperties.getParentSize());
+        int port = BaseConfiguration.port + 2;
 
-        EventLoopGroup childGroup = new NioEventLoopGroup(nettyTcpProtobufProperties.getParentSize());
+        parentGroup = new NioEventLoopGroup(nettyTcpProtobufProperties.getParentSize());
 
-        try {
+        childGroup = new NioEventLoopGroup(nettyTcpProtobufProperties.getParentSize());
 
-            ServerBootstrap serverBootstrap = new ServerBootstrap();
+        ServerBootstrap serverBootstrap = new ServerBootstrap();
 
-            serverBootstrap.option(ChannelOption.SO_BACKLOG, 1024); // 半连接池大小
-            serverBootstrap.option(ChannelOption.SO_REUSEADDR, true); // 允许重复使用本地地址和端口
-            serverBootstrap.childOption(ChannelOption.ALLOW_HALF_CLOSURE, false); // 一个连接的远端关闭时，本地端自动关闭
+        serverBootstrap.option(ChannelOption.SO_BACKLOG, 1024); // 半连接池大小
+        serverBootstrap.option(ChannelOption.SO_REUSEADDR, true); // 允许重复使用本地地址和端口
+        serverBootstrap.childOption(ChannelOption.ALLOW_HALF_CLOSURE, false); // 一个连接的远端关闭时，本地端自动关闭
 
-            serverBootstrap.group(parentGroup, childGroup) // 绑定线程池
+        serverBootstrap.group(parentGroup, childGroup) // 绑定线程池
 
-                .channel(NioServerSocketChannel.class) // 指定使用的channel
+            .channel(NioServerSocketChannel.class) // 指定使用的channel
 
-                .localAddress(port) // 绑定监听端口
+            .localAddress(port) // 绑定监听端口
 
-                .childHandler(new ChannelInitializer<SocketChannel>() { // 绑定客户端连接时候触发操作
+            .childHandler(new ChannelInitializer<SocketChannel>() { // 绑定客户端连接时候触发操作
 
-                    @Override
-                    protected void initChannel(SocketChannel ch) { // 绑定客户端连接时候触发操作
+                @Override
+                protected void initChannel(SocketChannel ch) { // 绑定客户端连接时候触发操作
 
-                        ch.pipeline().addLast(new ProtobufVarint32FrameDecoder());
+                    ch.pipeline().addLast(new ProtobufVarint32FrameDecoder());
 
-                        ch.pipeline().addLast(new ProtobufDecoder(BaseProto.BaseRequest.getDefaultInstance()));
+                    ch.pipeline().addLast(new ProtobufDecoder(BaseProto.BaseRequest.getDefaultInstance()));
 
-                        ch.pipeline().addLast(new ProtobufVarint32LengthFieldPrepender());
+                    ch.pipeline().addLast(new ProtobufVarint32LengthFieldPrepender());
 
-                        ch.pipeline().addLast(new ProtobufEncoder());
+                    ch.pipeline().addLast(new ProtobufEncoder());
 
-                        ch.pipeline().addLast(nettyTcpProtobufServerHandler);
+                    ch.pipeline().addLast(nettyTcpProtobufServerHandler);
 
-                    }
+                }
 
-                });
+            });
 
-            ChannelFuture channelFuture = serverBootstrap.bind().sync(); // 服务器同步创建绑定
+        channelFuture = serverBootstrap.bind().sync(); // 服务器同步创建绑定
 
-            SysSocketDO sysSocketDO = new SysSocketDO();
+        SysSocketDO sysSocketDO = new SysSocketDO();
 
-            sysSocketDO.setScheme(MyEntityUtil.getNotNullStr(nettyTcpProtobufProperties.getScheme()));
-            sysSocketDO.setHost(MyEntityUtil.getNotNullStr(nettyTcpProtobufProperties.getHost()));
-            sysSocketDO.setPort(port);
-            sysSocketDO.setPath(MyEntityUtil.getNotNullStr(nettyTcpProtobufProperties.getPath()));
-            sysSocketDO.setType(SysSocketTypeEnum.TCP_PROTOBUF);
-            sysSocketDO.setEnableFlag(true);
-            sysSocketDO.setDelFlag(false);
-            sysSocketDO.setRemark("");
+        sysSocketDO.setScheme(MyEntityUtil.getNotNullStr(nettyTcpProtobufProperties.getScheme()));
+        sysSocketDO.setHost(MyEntityUtil.getNotNullStr(nettyTcpProtobufProperties.getHost()));
+        sysSocketDO.setPort(port);
+        sysSocketDO.setPath(MyEntityUtil.getNotNullStr(nettyTcpProtobufProperties.getPath()));
+        sysSocketDO.setType(SysSocketTypeEnum.TCP_PROTOBUF);
+        sysSocketDO.setEnableFlag(true);
+        sysSocketDO.setDelFlag(false);
+        sysSocketDO.setRemark("");
 
-            sysSocketService.save(sysSocketDO);
+        sysSocketService.save(sysSocketDO);
 
-            sysSocketServerId = sysSocketDO.getId();
+        sysSocketServerId = sysSocketDO.getId();
 
-            log.info("NettyTcpProtobuf 启动完成：端口：{}，总接口个数：{}个", port,
-                NettyTcpProtobufBeanPostProcessor.getMappingMapSize());
-
-            channelFuture.channel().closeFuture().sync(); // 阻塞线程，监听关闭事件
-
-        } finally {
-
-            parentGroup.shutdownGracefully().sync(); // 释放线程池资源
-
-            childGroup.shutdownGracefully().sync();
-
-        }
+        log.info("NettyTcpProtobuf 启动完成：端口：{}，总接口个数：{}个", port, NettyTcpProtobufBeanPostProcessor.getMappingMapSize());
 
     }
 
