@@ -11,6 +11,7 @@ import io.netty.handler.codec.http.FullHttpRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.Resource;
 import java.net.InetSocketAddress;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -20,7 +21,8 @@ public class SocketUtil {
 
     private static SysSocketService sysSocketService;
 
-    public static void setSysSocketService(SysSocketService sysSocketService) {
+    @Resource
+    public void setSysSocketService(SysSocketService sysSocketService) {
         SocketUtil.sysSocketService = sysSocketService;
     }
 
@@ -93,7 +95,7 @@ public class SocketUtil {
 
         log.info("logInfo：{}", 333);
 
-        log.info("{} 下线{}：{}，移除连接：{}", removeFlag ? "成功" : "失败", name, sysSocketServerId, closeChannelCount);
+        log.info("{} 下线{}：{}，移除连接：{}", name, removeFlag ? "成功" : "失败", sysSocketServerId, closeChannelCount);
 
         if (channelFuture != null) {
 

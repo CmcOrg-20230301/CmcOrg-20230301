@@ -14,7 +14,8 @@ public class INettyWebSocketDisable implements ISocketDisable {
 
         if (socketIdSet.contains(NettyWebSocketServer.sysSocketServerId)) {
 
-            // TODO
+            // 重启 webSocket
+            NettyWebSocketServer.restart();
 
         }
 

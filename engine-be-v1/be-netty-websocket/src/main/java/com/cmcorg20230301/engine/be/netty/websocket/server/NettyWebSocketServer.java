@@ -132,8 +132,6 @@ public class NettyWebSocketServer {
     @PreDestroy
     public void preDestroy() {
 
-        log.info("logInfo：{}", "preDestroy");
-
         // 关闭 socket
         close();
 
