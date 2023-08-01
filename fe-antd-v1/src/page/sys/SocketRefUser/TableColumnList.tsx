@@ -2,6 +2,7 @@ import {GetDictListByKey} from "@/util/DictUtil";
 import {ActionType, ProColumns} from "@ant-design/pro-components";
 import {SysSocketRefUserDO} from "@/api/http/SysSocketRefUser";
 import {HandlerRegion} from "@/util/StrUtil";
+import {Typography} from "antd";
 
 const TableColumnList = (actionRef: React.RefObject<ActionType | undefined>): ProColumns<SysSocketRefUserDO>[] => [
 
@@ -32,7 +33,11 @@ const TableColumnList = (actionRef: React.RefObject<ActionType | undefined>): Pr
 
     {title: '在线状态', dataIndex: 'onlineType', ellipsis: true, width: 90,},
 
-    {title: 'User-Agent', dataIndex: 'userAgentJsonStr', ellipsis: true, width: 90,},
+    {
+        title: 'User-Agent', dataIndex: 'userAgentJsonStr', width: 90, render: (text) => {
+            return <Typography.Text ellipsis={{tooltip: true}} style={{width: 90}}>{text}</Typography.Text>
+        }
+    },
 
     {title: 'ip', dataIndex: 'ip', ellipsis: true, width: 90,},
 
@@ -56,6 +61,7 @@ const TableColumnList = (actionRef: React.RefObject<ActionType | undefined>): Pr
         valueType: 'fromNow',
         sorter: true,
         defaultSortOrder: 'descend',
+        width: 90,
     },
 
     {title: '备注', dataIndex: 'remark', ellipsis: true, width: 90,},

@@ -16,7 +16,11 @@ const TableColumnList = (): ProColumns<SysRequestDO>[] => [
 
     {title: 'uri', dataIndex: 'uri', ellipsis: true, width: 90, copyable: true},
 
-    {title: '接口名', dataIndex: 'name', ellipsis: true, width: 90,},
+    {
+        title: '接口名', dataIndex: 'name', width: 90, render: (text) => {
+            return <Typography.Text ellipsis={{tooltip: true}} style={{width: 90}}>{text}</Typography.Text>
+        }
+    },
 
     {
         title: '是否成功',

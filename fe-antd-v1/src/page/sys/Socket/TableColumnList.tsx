@@ -30,6 +30,7 @@ const TableColumnList = (actionRef: React.RefObject<ActionType | undefined>): Pr
         valueType: 'fromNow',
         sorter: true,
         defaultSortOrder: 'descend',
+        width: 90,
     },
 
     {
