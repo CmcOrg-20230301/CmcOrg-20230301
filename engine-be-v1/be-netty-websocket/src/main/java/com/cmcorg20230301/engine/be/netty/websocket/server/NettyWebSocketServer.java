@@ -106,6 +106,8 @@ public class NettyWebSocketServer {
 
         stop(false); // 关闭 socket
 
+        sysSocketServerId = null;
+
         start(); // 启动 socket
 
     }
