@@ -1,5 +1,5 @@
 # npm i 时，如果过慢，请先执行：npm config set ELECTRON_MIRROR http://npm.taobao.org/mirrors/electron/，然后再执行 npm i
 
 # 或者执行：以下命令 ↓
-# npm config set registry https://registry.npm.taobao.org/
-# npm config set ELECTRON_MIRROR http://npm.taobao.org/mirrors/electron/
+# npm config edit
+# 然后在文件里面添加一行：electron_mirror=https://cdn.npm.taobao.org/dist/electron/
