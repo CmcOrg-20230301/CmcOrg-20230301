@@ -103,11 +103,9 @@ public class NettyTcpProtobufServer {
     /**
      * 重启 socket
      */
-    public static void restart() {
+    public synchronized static void restart() {
 
         stop(false); // 关闭 socket
-
-        sysSocketServerId = null;
 
         start(); // 启动 socket
 
@@ -116,11 +114,21 @@ public class NettyTcpProtobufServer {
     /**
      * 关闭 socket
      */
-    public static void stop(boolean disableFlag) {
+    public synchronized static void stop(boolean disableFlag) {
 
         // 关闭 socket
         SocketUtil.closeSocket(channelFuture, parentGroup, childGroup, sysSocketServerId,
             NettyTcpProtobufServerHandler.USER_ID_CHANNEL_MAP, "NettyTcpProtobuf", disableFlag);
+
+        if (!disableFlag) {
+
+            sysSocketServerId = null;
+
+        }
+
+        channelFuture = null;
+        parentGroup = null;
+        childGroup = null;
 
     }
 
@@ -144,7 +152,7 @@ public class NettyTcpProtobufServer {
      * 启动 socket
      */
     @SneakyThrows
-    private static void start() {
+    private synchronized static void start() {
 
         if (sysSocketServerId != null) {
             return;
