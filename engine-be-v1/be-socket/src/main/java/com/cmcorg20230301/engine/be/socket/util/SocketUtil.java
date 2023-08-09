@@ -1,6 +1,7 @@
 package com.cmcorg20230301.engine.be.socket.util;
 
 import cn.hutool.core.net.NetUtil;
+import cn.hutool.core.util.StrUtil;
 import com.cmcorg20230301.engine.be.model.model.constant.LogTopicConstant;
 import com.cmcorg20230301.engine.be.security.util.RequestUtil;
 import com.cmcorg20230301.engine.be.socket.service.SysSocketService;
@@ -40,7 +41,7 @@ public class SocketUtil {
     /**
      * 获取：ip
      */
-    public static String getIp(FullHttpRequest fullHttpRequest) {
+    public static String getIp(FullHttpRequest fullHttpRequest, Channel channel) {
 
         String ip = "";
 
@@ -53,6 +54,18 @@ public class SocketUtil {
                 return NetUtil.getMultistageReverseProxyIp(ip);
 
             }
+
+        }
+
+        if (StrUtil.isBlank(ip)) {
+
+            ip = getIp(channel);
+
+        }
+
+        if (StrUtil.isBlank(ip)) {
+
+            ip = "";
 
         }
 

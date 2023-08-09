@@ -1,4 +1,4 @@
-import {useRef, useState} from "react";
+import {useEffect, useRef, useState} from "react";
 import {
     ActionType,
     BetaSchemaForm,
@@ -30,7 +30,21 @@ import {IMyTree} from "@/util/DictUtil";
 // 监听是否：全屏
 export function UseEffectFullScreenChange(setFullScreenFlag: (value: (((prevState: boolean) => boolean) | boolean)) => void) {
 
-    UseEffectFullScreenChange(setFullScreenFlag) // 监听是否：全屏
+    useEffect(() => {
+
+        const handleFullScreenChange = () => {
+            setFullScreenFlag(document.fullscreenElement !== null)
+        }
+
+        document.addEventListener('fullscreenchange', handleFullScreenChange);
+
+        return () => {
+
+            document.removeEventListener('fullscreenchange', handleFullScreenChange);
+
+        }
+
+    }, [])
 
 }
 

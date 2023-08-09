@@ -144,7 +144,7 @@ public class NettyTcpProtobufServer {
      * 启动 socket
      */
     @SneakyThrows
-    public static void start() {
+    private static void start() {
 
         if (sysSocketServerId != null) {
             return;

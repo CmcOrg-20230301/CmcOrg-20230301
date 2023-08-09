@@ -426,7 +426,7 @@ public class NettyWebSocketServerHandler extends ChannelInboundHandlerAdapter {
         channel.attr(SYS_REQUEST_CATEGORY_ENUM_KEY).set(sysSocketRefUserDO.getCategory());
 
         // 绑定 Ip
-        channel.attr(IP_KEY).set(SocketUtil.getIp(fullHttpRequest));
+        channel.attr(IP_KEY).set(SocketUtil.getIp(fullHttpRequest, channel));
 
         ConcurrentHashMap<Long, Channel> channelMap =
             USER_ID_CHANNEL_MAP.computeIfAbsent(userId, k -> MapUtil.newConcurrentHashMap());
@@ -455,7 +455,7 @@ public class NettyWebSocketServerHandler extends ChannelInboundHandlerAdapter {
         sysRequestDO.setName("WebSocket连接错误");
         sysRequestDO.setCategory(SysRequestCategoryEnum.PC_BROWSER_WINDOWS);
 
-        sysRequestDO.setIp(SocketUtil.getIp(fullHttpRequest));
+        sysRequestDO.setIp(SocketUtil.getIp(fullHttpRequest, ctx.channel()));
         sysRequestDO.setRegion(Ip2RegionUtil.getRegion(sysRequestDO.getIp()));
 
         sysRequestDO.setSuccessFlag(false);

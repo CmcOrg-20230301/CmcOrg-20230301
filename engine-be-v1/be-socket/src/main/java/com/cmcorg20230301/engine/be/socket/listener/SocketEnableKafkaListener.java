@@ -42,10 +42,14 @@ public class SocketEnableKafkaListener {
             .flatMap(Collection::stream)  //
             .collect(Collectors.toSet());
 
-        for (ISocketEnable item : iSocketEnableList) {
+        if (CollUtil.isNotEmpty(iSocketEnableList)) {
 
-            // 执行：处理
-            item.handle(socketIdSet);
+            for (ISocketEnable item : iSocketEnableList) {
+
+                // 执行：处理
+                item.handle(socketIdSet);
+
+            }
 
         }
 
