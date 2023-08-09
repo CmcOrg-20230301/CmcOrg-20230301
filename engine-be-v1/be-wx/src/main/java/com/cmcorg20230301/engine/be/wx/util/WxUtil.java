@@ -105,7 +105,7 @@ public class WxUtil {
         // 检查：微信回调 vo对象
         checkWxVO(wxAccessTokenVO, "accessToken");
 
-        CacheRedisKafkaLocalUtil.put(RedisKeyEnum.WX_ACCESS_TOKEN_CACHE.name(), wxAccessTokenVO.getExpires_in(),
+        CacheRedisKafkaLocalUtil.put(RedisKeyEnum.WX_ACCESS_TOKEN_CACHE.name(), wxAccessTokenVO.getExpires_in() * 1000,
             wxAccessTokenVO::getAccess_token);
 
         return wxAccessTokenVO.getAccess_token();

@@ -3,7 +3,11 @@ package com.cmcorg20230301.engine.be.pay.google.util;
 import cn.hutool.core.lang.Assert;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.http.HttpRequest;
+import cn.hutool.http.HttpUtil;
+import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
+import com.cmcorg20230301.engine.be.cache.util.CacheRedisKafkaLocalUtil;
+import com.cmcorg20230301.engine.be.cache.util.MyCacheUtil;
 import com.cmcorg20230301.engine.be.model.model.dto.PayDTO;
 import com.cmcorg20230301.engine.be.pay.base.model.bo.SysPayTradeNotifyBO;
 import com.cmcorg20230301.engine.be.pay.base.model.entity.SysPayDO;
@@ -11,6 +15,7 @@ import com.cmcorg20230301.engine.be.pay.base.model.enums.SysPayTradeStatusEnum;
 import com.cmcorg20230301.engine.be.pay.base.service.SysPayService;
 import com.cmcorg20230301.engine.be.pay.google.model.bo.SysPayGooglePurchasesBO;
 import com.cmcorg20230301.engine.be.pay.google.properties.PayGoogleProperties;
+import com.cmcorg20230301.engine.be.redisson.model.enums.RedisKeyEnum;
 import com.cmcorg20230301.engine.be.security.model.vo.ApiResultVO;
 import lombok.SneakyThrows;
 import org.springframework.stereotype.Component;
@@ -65,14 +70,16 @@ public class PayGoogleUtil {
             ApiResultVO.error("谷歌支付查询失败：本系统不存在该支付", outTradeNo);
         }
 
+        // 获取：accessToken
+        String accessToken = getAccessToken();
+
         // 查询：谷歌那边的订单状态，文档地址：https://developers.google.com/android-publisher/api-ref/rest/v3/purchases.products/get?hl=zh-cn
         // https://androidpublisher.googleapis.com/androidpublisher/v3/applications/{packageName}/purchases/products/{productId}/tokens/{token}
         String url = StrUtil.format(
-            "https://androidpublisher.googleapis.com/androidpublisher/v3/applications/{}/purchases/products/{}/tokens/{}?key={}",
-            sysPayDO.getPackageName(), sysPayDO.getProductId(), sysPayDO.getToken(),
-            payGoogleProperties.getPrivateKey());
+            "https://androidpublisher.googleapis.com/androidpublisher/v3/applications/{}/purchases/products/{}/tokens/{}",
+            sysPayDO.getPackageName(), sysPayDO.getProductId(), sysPayDO.getToken());
 
-        String body = HttpRequest.get(url).execute().body();
+        String body = HttpRequest.get(url).header("Authorization", "Bearer " + accessToken).execute().body();
 
         SysPayGooglePurchasesBO sysPayGooglePurchasesBO = JSONUtil.toBean(body, SysPayGooglePurchasesBO.class);
 
@@ -104,6 +111,47 @@ public class PayGoogleUtil {
         }
 
         return SysPayTradeStatusEnum.WAIT_BUYER_PAY;
+
+    }
+
+    /**
+     * 获取：google接口调用凭据
+     */
+    public static String getAccessToken() {
+
+        String accessToken = MyCacheUtil.onlyGet(RedisKeyEnum.GOOGLE_ACCESS_TOKEN_CACHE, null, true);
+
+        if (StrUtil.isNotBlank(accessToken)) {
+            return accessToken;
+        }
+
+        JSONObject formJson = JSONUtil.createObj();
+
+        formJson.set("grant_type", "refresh_token");
+        formJson.set("client_id", payGoogleProperties.getAppId());
+        formJson.set("client_secret", payGoogleProperties.getPrivateKey());
+        formJson.set("refresh_token", payGoogleProperties.getPlatformPublicKey());
+
+        String jsonStr = HttpUtil.post("https://accounts.google.com/o/oauth2/token", formJson);
+
+        JSONObject jsonObject = JSONUtil.parseObj(jsonStr);
+
+        accessToken = jsonObject.getStr("access_token");
+
+        if (StrUtil.isBlank(accessToken)) {
+
+            ApiResultVO.error("谷歌：获取【access_token】失败，请联系管理员", jsonStr);
+
+        }
+
+        Integer expiresIn = jsonObject.getInt("expires_in"); // 这里的单位是：秒
+
+        String finalAccessToken = accessToken;
+
+        CacheRedisKafkaLocalUtil
+            .put(RedisKeyEnum.GOOGLE_ACCESS_TOKEN_CACHE.name(), expiresIn * 1000, () -> finalAccessToken);
+
+        return accessToken;
 
     }
 

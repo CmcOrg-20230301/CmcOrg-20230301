@@ -30,6 +30,8 @@ public enum RedisKeyEnum implements IRedisKey {
     PRE_PASSWORD_ERROR_COUNT, // 密码错误总数：锁【用户主键 id】
 
     // 【_CACHE】结尾 ↓
+    GOOGLE_ACCESS_TOKEN_CACHE, // google接口调用凭据
+
     XXL_JOB_COOKIE_CACHE, // xxl-job cookie缓存
 
     WX_ACCESS_TOKEN_CACHE, // 微信小程序全局唯一后台接口调用凭据
