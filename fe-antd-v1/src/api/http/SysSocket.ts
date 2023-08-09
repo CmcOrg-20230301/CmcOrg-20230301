@@ -7,6 +7,11 @@ export interface NotEmptyIdSet {
     idSet?: string[] // 主键 idSet，required：true，format：int64
 }
 
+// 批量：启用socket
+export function SysSocketEnableByIdSet(form: NotEmptyIdSet, config?: AxiosRequestConfig) {
+    return $http.myPost<string>('/sys/socket/enableByIdSet', form, config)
+}
+
 // 批量：禁用socket
 export function SysSocketDisableByIdSet(form: NotEmptyIdSet, config?: AxiosRequestConfig) {
     return $http.myPost<string>('/sys/socket/disableByIdSet', form, config)

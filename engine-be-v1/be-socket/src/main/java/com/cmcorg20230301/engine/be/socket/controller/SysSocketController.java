@@ -39,4 +39,11 @@ public class SysSocketController {
         return ApiResultVO.okMsg(baseService.disableByIdSet(notEmptyIdSet));
     }
 
+    @Operation(summary = "批量：启用socket")
+    @PostMapping("/enableByIdSet")
+    @PreAuthorize("hasAuthority('sysSocket:insertOrUpdate')")
+    public ApiResultVO<String> enableByIdSet(@RequestBody @Valid NotEmptyIdSet notEmptyIdSet) {
+        return ApiResultVO.okMsg(baseService.enableByIdSet(notEmptyIdSet));
+    }
+
 }

@@ -62,12 +62,12 @@ public class SocketUtil {
 
     /**
      * 关闭 socket
+     *
+     * @param disableFlag 是否是禁用，即：不删除数据库里面的数据
      */
     public static void closeSocket(ChannelFuture channelFuture, EventLoopGroup parentGroup, EventLoopGroup childGroup,
-        Long sysSocketServerId, ConcurrentHashMap<Long, ConcurrentHashMap<Long, Channel>> userIdChannelMap,
-        String name) {
-
-        log.info("logInfo：{}", 111);
+        Long sysSocketServerId, ConcurrentHashMap<Long, ConcurrentHashMap<Long, Channel>> userIdChannelMap, String name,
+        boolean disableFlag) {
 
         long closeChannelCount = 0;
 
@@ -83,17 +83,21 @@ public class SocketUtil {
 
         }
 
-        log.info("logInfo：{}", 222);
-
         boolean removeFlag = false;
 
         if (sysSocketServerId != null) {
 
-            removeFlag = sysSocketService.removeById(sysSocketServerId);
+            if (disableFlag) {
+
+                removeFlag = true;
+
+            } else {
+
+                removeFlag = sysSocketService.removeById(sysSocketServerId);
+
+            }
 
         }
-
-        log.info("logInfo：{}", 333);
 
         log.info("{} 下线{}：{}，移除连接：{}", name, removeFlag ? "成功" : "失败", sysSocketServerId, closeChannelCount);
 
@@ -103,23 +107,17 @@ public class SocketUtil {
 
         }
 
-        log.info("logInfo：{}", 444);
-
         if (parentGroup != null) {
 
             parentGroup.shutdownGracefully().syncUninterruptibly(); // 释放线程池资源
 
         }
 
-        log.info("logInfo：{}", 555);
-
         if (childGroup != null) {
 
             childGroup.shutdownGracefully().syncUninterruptibly(); // 释放线程池资源
 
         }
-
-        log.info("logInfo：{}", 666);
 
     }
 

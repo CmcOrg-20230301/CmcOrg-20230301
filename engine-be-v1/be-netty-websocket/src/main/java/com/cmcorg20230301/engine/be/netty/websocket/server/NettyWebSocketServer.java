@@ -104,7 +104,7 @@ public class NettyWebSocketServer {
      */
     public static void restart() {
 
-        close(); // 关闭 socket
+        stop(false); // 关闭 socket
 
         start(); // 启动 socket
 
@@ -113,11 +113,11 @@ public class NettyWebSocketServer {
     /**
      * 关闭 socket
      */
-    public static void close() {
+    public static void stop(boolean disableFlag) {
 
         // 关闭 socket
         SocketUtil.closeSocket(channelFuture, parentGroup, childGroup, sysSocketServerId,
-            NettyWebSocketServerHandler.USER_ID_CHANNEL_MAP, "NettyWebSocket");
+            NettyWebSocketServerHandler.USER_ID_CHANNEL_MAP, "NettyWebSocket", disableFlag);
 
     }
 
@@ -133,7 +133,7 @@ public class NettyWebSocketServer {
     public void preDestroy() {
 
         // 关闭 socket
-        close();
+        stop(false);
 
     }
 
@@ -142,6 +142,10 @@ public class NettyWebSocketServer {
      */
     @SneakyThrows
     public static void start() {
+
+        if (sysSocketServerId != null) {
+            return;
+        }
 
         int port = BaseConfiguration.port + 1;
 

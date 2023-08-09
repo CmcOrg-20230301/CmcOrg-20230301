@@ -1,6 +1,7 @@
 import {YesNoDict} from "@/util/DictUtil";
 import {ActionType, ProColumns} from "@ant-design/pro-components";
-import {SysSocketDO} from "@/api/http/SysSocket";
+import {SysSocketDisableByIdSet, SysSocketDO, SysSocketEnableByIdSet} from "@/api/http/SysSocket";
+import {ExecConfirm, ToastSuccess} from "@/util/ToastUtil";
 
 const TableColumnList = (actionRef: React.RefObject<ActionType | undefined>): ProColumns<SysSocketDO>[] => [
 
@@ -46,14 +47,37 @@ const TableColumnList = (actionRef: React.RefObject<ActionType | undefined>): Pr
         title: '操作',
         dataIndex: 'option',
         valueType: 'option',
+        width: 90,
 
-        render: (dom, entity) => [
+        render: (dom, entity) => {
 
-            <a key="1" className={"red3"} onClick={() => {
+            let txt = entity.enableFlag ? '禁用' : '启用'
 
-            }}>禁用</a>,
+            return [
 
-        ],
+                <a key="1" className={"red3"} onClick={() => {
+
+                    ExecConfirm(() => {
+
+                        return entity.enableFlag ? SysSocketDisableByIdSet({idSet: [entity.id!]}).then(res => {
+
+                            ToastSuccess(res.msg)
+                            actionRef.current?.reload()
+
+                        }) : SysSocketEnableByIdSet({idSet: [entity.id!]}).then(res => {
+
+                            ToastSuccess(res.msg)
+                            actionRef.current?.reload()
+
+                        })
+
+                    }, undefined, `确定${txt}【${entity.id}】吗？`)
+
+                }}>${txt}</a>,
+
+            ]
+
+        }
 
     },
 

@@ -32,6 +32,8 @@ public enum KafkaTopicEnum {
 
     SOCKET_DISABLE_TOPIC, // socket禁用的 topic，即：会断开所有的 socket连接
 
+    SOCKET_ENABLE_TOPIC, // socket启用的 topic
+
     // socket相关 ↑
 
     ;

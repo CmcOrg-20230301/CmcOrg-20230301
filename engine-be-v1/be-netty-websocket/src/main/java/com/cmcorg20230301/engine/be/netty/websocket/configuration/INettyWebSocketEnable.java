@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 import java.util.Set;
 
 @Component
-public class INettyWebSocketDisable implements ISocketDisable {
+public class INettyWebSocketEnable implements ISocketDisable {
 
     @Override
     public void handle(Set<Long> socketIdSet) {
@@ -15,7 +15,7 @@ public class INettyWebSocketDisable implements ISocketDisable {
         if (socketIdSet.contains(NettyWebSocketServer.sysSocketServerId)) {
 
             // 关闭 webSocket
-            NettyWebSocketServer.stop(true);
+            NettyWebSocketServer.restart();
 
         }
 

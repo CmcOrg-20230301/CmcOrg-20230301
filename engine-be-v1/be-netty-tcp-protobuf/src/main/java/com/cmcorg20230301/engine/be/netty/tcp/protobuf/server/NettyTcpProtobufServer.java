@@ -105,7 +105,7 @@ public class NettyTcpProtobufServer {
      */
     public static void restart() {
 
-        close(); // 关闭 socket
+        stop(); // 关闭 socket
 
         start(); // 启动 socket
 
@@ -114,7 +114,7 @@ public class NettyTcpProtobufServer {
     /**
      * 关闭 socket
      */
-    public static void close() {
+    public static void stop() {
 
         // 关闭 socket
         SocketUtil.closeSocket(channelFuture, parentGroup, childGroup, sysSocketServerId,
@@ -134,7 +134,7 @@ public class NettyTcpProtobufServer {
     public void preDestroy() {
 
         // 关闭 socket
-        close();
+        stop();
 
     }
 
@@ -143,6 +143,10 @@ public class NettyTcpProtobufServer {
      */
     @SneakyThrows
     public static void start() {
+
+        if (sysSocketServerId != null) {
+            return;
+        }
 
         int port = BaseConfiguration.port + 2;
 

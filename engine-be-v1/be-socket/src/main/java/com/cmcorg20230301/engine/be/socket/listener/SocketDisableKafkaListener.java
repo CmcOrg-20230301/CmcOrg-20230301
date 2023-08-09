@@ -18,12 +18,12 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
- * socket的 kafka监听器
+ * socket禁用的 kafka监听器
  */
 @Component
 @KafkaListener(topics = "#{__listener.TOPIC_LIST}", groupId = "#{kafkaDynamicGroupIdConfiguration.getGroupId()}", batch = "true")
 @Slf4j(topic = LogTopicConstant.SOCKET)
-public class SocketKafkaListener {
+public class SocketDisableKafkaListener {
 
     public static final List<String> TOPIC_LIST = CollUtil.newArrayList(KafkaTopicEnum.SOCKET_DISABLE_TOPIC.name());
 
@@ -31,7 +31,7 @@ public class SocketKafkaListener {
 
     @Autowired(required = false)
     public void setISocketDisableList(List<ISocketDisable> iSocketDisableList) {
-        SocketKafkaListener.iSocketDisableList = iSocketDisableList;
+        SocketDisableKafkaListener.iSocketDisableList = iSocketDisableList;
     }
 
     @KafkaHandler

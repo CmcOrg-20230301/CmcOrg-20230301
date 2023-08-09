@@ -48,6 +48,22 @@ public class SysSocketServiceImpl extends ServiceImpl<SysSocketMapper, SysSocket
 
     }
 
+    /**
+     * 批量：启用socket
+     */
+    @Override
+    public String enableByIdSet(NotEmptyIdSet notEmptyIdSet) {
+
+        lambdaUpdate().in(BaseEntity::getId, notEmptyIdSet.getIdSet()).set(BaseEntityNoId::getEnableFlag, true)
+            .update();
+
+        // 发送消息：socket启用的 topic
+        KafkaUtil.sendSocketEnableTopic(notEmptyIdSet.getIdSet());
+
+        return BaseBizCodeEnum.OK;
+
+    }
+
 }
 
 

@@ -30,6 +30,15 @@ public class KafkaUtil {
     }
 
     /**
+     * 发送消息：socket启用的 topic
+     */
+    public static void sendSocketEnableTopic(Set<Long> socketIdSet) {
+
+        send(KafkaTopicEnum.SOCKET_ENABLE_TOPIC, socketIdSet);
+
+    }
+
+    /**
      * 发送消息：socket禁用的 topic
      */
     public static void sendSocketDisableTopic(Set<Long> socketIdSet) {
