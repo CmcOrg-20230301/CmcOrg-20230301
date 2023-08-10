@@ -5,6 +5,10 @@
  * 102 mac-浏览器
  * 103 linux-浏览器
  *
+ * 104 windows-浏览器-微信
+ * 105 mac-浏览器-微信
+ * 106 linux-浏览器-微信
+ *
  * 302 安卓-浏览器
  * 303 安卓-浏览器-微信
  *
@@ -20,6 +24,24 @@ export function GetBrowserCategory(): number {
     const userAgent = navigator.userAgent;
 
     if (/(MicroMessenger)/i.test(userAgent)) {
+
+        if (/(iPhone|iPad|iPod|iOS)/i.test(userAgent)) {
+
+            return 403 // 苹果-浏览器-微信
+
+        } else if (/(Mac)/i.test(userAgent)) {
+
+            return 105 // mac-浏览器-微信
+
+        } else if (/(Linux)/i.test(userAgent)) {
+
+            return 106 // linux-浏览器-微信
+
+        } else if (/(Windows)/i.test(userAgent)) {
+
+            return 104 // windows-浏览器-微信
+
+        }
 
         return 303 // 安卓-浏览器-微信
 

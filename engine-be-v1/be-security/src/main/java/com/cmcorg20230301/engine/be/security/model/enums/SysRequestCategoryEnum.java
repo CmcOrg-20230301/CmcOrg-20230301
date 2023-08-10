@@ -17,6 +17,10 @@ public enum SysRequestCategoryEnum {
     PC_BROWSER_MAC(102, "mac-浏览器"), //
     PC_BROWSER_LINUX(103, "linux-浏览器"), //
 
+    PC_BROWSER_WINDOWS_WX(104, "windows-浏览器-微信"), //
+    PC_BROWSER_MAC_WX(105, "mac-浏览器-微信"), //
+    PC_BROWSER_LINUX_WX(106, "linux-浏览器-微信"), //
+
     PC_CLIENT_WINDOWS(201, "windows-客户端"), //
     PC_CLIENT_MAC(202, "mac-客户端"), //
     PC_CLIENT_LINUX(203, "linux-客户端"), //
