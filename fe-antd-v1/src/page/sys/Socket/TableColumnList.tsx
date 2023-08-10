@@ -37,7 +37,8 @@ const TableColumnList = (actionRef: React.RefObject<ActionType | undefined>): Pr
     {
         title: '是否启用',
         dataIndex: 'enableFlag',
-        valueEnum: YesNoDict
+        valueEnum: YesNoDict,
+        width: 90,
     },
 
     {title: '备注', dataIndex: 'remark', ellipsis: true, width: 90,},
@@ -55,7 +56,7 @@ const TableColumnList = (actionRef: React.RefObject<ActionType | undefined>): Pr
 
             return [
 
-                <a key="1" className={entity.enableFlag ? "red3" : ""} onClick={() => {
+                <a key="1" className={entity.enableFlag ? "red3" : "green2"} onClick={() => {
 
                     ExecConfirm(() => {
 

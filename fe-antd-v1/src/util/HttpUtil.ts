@@ -4,6 +4,7 @@ import LocalStorageKey from "@/model/constant/LocalStorageKey";
 import {SignOut} from "./UserUtil";
 import axios, {AxiosInstance, AxiosRequestConfig, AxiosResponse, CreateAxiosDefaults} from "axios";
 import {RequestData} from '@ant-design/pro-components';
+import {GetBrowserCategory} from "@/util/BrowserCategoryUtil";
 
 const TIMEOUT_MSG = '请求超时，请重试'
 const BASE_ERROR_MSG = "请求错误："
@@ -30,7 +31,7 @@ $http.interceptors.request.use(
             config.headers!['Authorization'] =
                 localStorage.getItem(LocalStorageKey.JWT) || ''
 
-            config.headers!['category'] = 101 // 请求类别
+            config.headers!['category'] = GetBrowserCategory() // 请求类别
 
         }
 

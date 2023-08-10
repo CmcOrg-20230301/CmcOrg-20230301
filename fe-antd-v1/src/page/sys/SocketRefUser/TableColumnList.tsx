@@ -1,8 +1,9 @@
 import {GetDictListByKey} from "@/util/DictUtil";
 import {ActionType, ProColumns} from "@ant-design/pro-components";
-import {SysSocketRefUserDO} from "@/api/http/SysSocketRefUser";
+import {SysSocketRefUserDO, SysSocketRefUserOfflineByIdSet} from "@/api/http/SysSocketRefUser";
 import {HandlerRegion} from "@/util/StrUtil";
 import {Typography} from "antd";
+import {ExecConfirm, ToastSuccess} from "@/util/ToastUtil";
 
 const TableColumnList = (actionRef: React.RefObject<ActionType | undefined>): ProColumns<SysSocketRefUserDO>[] => [
 
@@ -76,6 +77,17 @@ const TableColumnList = (actionRef: React.RefObject<ActionType | undefined>): Pr
         render: (dom, entity) => [
 
             <a key="1" className={"red3"} onClick={() => {
+
+                ExecConfirm(() => {
+
+                    return SysSocketRefUserOfflineByIdSet({idSet: [entity.id!]}).then(res => {
+
+                        ToastSuccess(res.msg)
+                        actionRef.current?.reload()
+
+                    })
+
+                }, undefined, `确定下线【${entity.id}】吗？`)
 
             }}>下线</a>,
 

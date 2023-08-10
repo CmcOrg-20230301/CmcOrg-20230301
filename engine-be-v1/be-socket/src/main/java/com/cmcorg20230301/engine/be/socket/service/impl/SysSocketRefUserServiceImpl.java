@@ -1,15 +1,20 @@
 package com.cmcorg20230301.engine.be.socket.service.impl;
 
+import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.cmcorg20230301.engine.be.cache.util.CacheRedisKafkaLocalUtil;
 import com.cmcorg20230301.engine.be.model.model.dto.NotEmptyIdSet;
 import com.cmcorg20230301.engine.be.security.exception.BaseBizCodeEnum;
+import com.cmcorg20230301.engine.be.security.model.entity.BaseEntity;
 import com.cmcorg20230301.engine.be.socket.mapper.SysSocketRefUserMapper;
 import com.cmcorg20230301.engine.be.socket.model.dto.SysSocketRefUserPageDTO;
 import com.cmcorg20230301.engine.be.socket.model.entity.SysSocketRefUserDO;
 import com.cmcorg20230301.engine.be.socket.service.SysSocketRefUserService;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public class SysSocketRefUserServiceImpl extends ServiceImpl<SysSocketRefUserMapper, SysSocketRefUserDO>
@@ -39,7 +44,21 @@ public class SysSocketRefUserServiceImpl extends ServiceImpl<SysSocketRefUserMap
     @Override
     public String offlineByIdSet(NotEmptyIdSet notEmptyIdSet) {
 
-        lambdaUpdate().in(SysSocketRefUserDO::getId, notEmptyIdSet.getIdSet()).remove();
+        List<SysSocketRefUserDO> sysSocketRefUserDOList = lambdaQuery().in(BaseEntity::getId, notEmptyIdSet.getIdSet())
+            .select(SysSocketRefUserDO::getJwtHash, SysSocketRefUserDO::getJwtHashExpireTs).list();
+
+        if (CollUtil.isNotEmpty(sysSocketRefUserDOList)) {
+
+            for (SysSocketRefUserDO sysSocketRefUserDO : sysSocketRefUserDOList) {
+
+                CacheRedisKafkaLocalUtil
+                    .put(sysSocketRefUserDO.getJwtHash(), sysSocketRefUserDO.getJwtHashExpireTs(), () -> "不可用的 jwt：下线");
+
+            }
+
+            lambdaUpdate().in(BaseEntity::getId, notEmptyIdSet.getIdSet()).remove();
+
+        }
 
         return BaseBizCodeEnum.OK;
 
