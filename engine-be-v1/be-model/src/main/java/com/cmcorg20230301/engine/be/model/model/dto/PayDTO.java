@@ -30,4 +30,13 @@ public class PayDTO {
     @Schema(description = "用户 openId，可空")
     private String openId;
 
+    @Schema(description = "app包名，必须是创建登录 api项目时，创建 android客户端 id使用包名，例如：谷歌支付")
+    private String packageName;
+
+    @Schema(description = "对应购买商品的商品 id，例如：谷歌支付")
+    private String productId;
+
+    @Schema(description = "购买成功后 Purchase对象的 getPurchaseToken()，例如：谷歌支付")
+    private String token;
+
 }

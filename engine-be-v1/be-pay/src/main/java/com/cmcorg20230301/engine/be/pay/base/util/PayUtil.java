@@ -136,9 +136,9 @@ public class PayUtil {
         sysPayDO.setRefType(SysPayRefTypeEnum.NONE);
         sysPayDO.setRefId(-1L);
 
-        sysPayDO.setPackageName("");
-        sysPayDO.setProductId("");
-        sysPayDO.setToken("");
+        sysPayDO.setPackageName(MyEntityUtil.getNotNullAndTrimStr(dto.getPackageName()));
+        sysPayDO.setProductId(MyEntityUtil.getNotNullAndTrimStr(dto.getProductId()));
+        sysPayDO.setToken(MyEntityUtil.getNotNullAndTrimStr(dto.getToken()));
 
         sysPayDO.setEnableFlag(true);
         sysPayDO.setDelFlag(false);
