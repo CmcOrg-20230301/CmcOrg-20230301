@@ -1,10 +1,16 @@
 import {useRef, useState} from "react";
 import {ActionType, ColumnsState, ProTable} from "@ant-design/pro-components";
 import {Space} from "antd";
-import {SysSocketRefUserDO, SysSocketRefUserPage, SysSocketRefUserPageDTO} from "@/api/http/SysSocketRefUser";
+import {
+    SysSocketRefUserDO,
+    SysSocketRefUserOfflineByIdSet,
+    SysSocketRefUserPage,
+    SysSocketRefUserPageDTO
+} from "@/api/http/SysSocketRefUser";
 import TableColumnList from "./TableColumnList";
 import CommonConstant from "@/model/constant/CommonConstant";
 import {UseEffectFullScreenChange} from "@/page/sys/Menu/Menu";
+import {ExecConfirm, ToastSuccess} from "@/util/ToastUtil";
 
 // socket-用户管理
 export default function () {
@@ -75,6 +81,18 @@ export default function () {
                     <Space size={16}>
 
                         <a className={"red3"} onClick={() => {
+
+                            ExecConfirm(() => {
+
+                                return SysSocketRefUserOfflineByIdSet({idSet: selectedRowKeys as string[]}).then(res => {
+
+                                    ToastSuccess(res.msg)
+                                    actionRef.current?.reload()
+                                    onCleanSelected()
+
+                                })
+
+                            }, undefined, `确定下线选中的【${selectedRowKeys.length}】项吗？`)
 
                         }}>批量下线</a>
 

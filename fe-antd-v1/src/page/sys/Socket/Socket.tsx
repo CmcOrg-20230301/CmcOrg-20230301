@@ -1,10 +1,17 @@
 import {useRef, useState} from "react";
 import {ActionType, ColumnsState, ProTable} from "@ant-design/pro-components";
 import {Space} from "antd";
-import {SysSocketDO, SysSocketPage, SysSocketPageDTO} from "@/api/http/SysSocket";
+import {
+    SysSocketDisableByIdSet,
+    SysSocketDO,
+    SysSocketEnableByIdSet,
+    SysSocketPage,
+    SysSocketPageDTO
+} from "@/api/http/SysSocket";
 import TableColumnList from "./TableColumnList";
 import CommonConstant from "@/model/constant/CommonConstant";
 import {UseEffectFullScreenChange} from "@/page/sys/Menu/Menu";
+import {ExecConfirm, ToastSuccess} from "@/util/ToastUtil";
 
 // socket-管理
 export default function () {
@@ -76,7 +83,35 @@ export default function () {
 
                         <a className={"red3"} onClick={() => {
 
+                            ExecConfirm(() => {
+
+                                return SysSocketDisableByIdSet({idSet: selectedRowKeys as string[]}).then(res => {
+
+                                    ToastSuccess(res.msg)
+                                    actionRef.current?.reload()
+                                    onCleanSelected()
+
+                                })
+
+                            }, undefined, `确定禁用选中的【${selectedRowKeys.length}】项吗？`)
+
                         }}>批量禁用</a>
+
+                        <a className={"green2"} onClick={() => {
+
+                            ExecConfirm(() => {
+
+                                return SysSocketEnableByIdSet({idSet: selectedRowKeys as string[]}).then(res => {
+
+                                    ToastSuccess(res.msg)
+                                    actionRef.current?.reload()
+                                    onCleanSelected()
+
+                                })
+
+                            }, undefined, `确定启用选中的【${selectedRowKeys.length}】项吗？`)
+
+                        }}>批量启用</a>
 
                         <a onClick={onCleanSelected}>取消选择</a>
 
