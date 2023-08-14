@@ -2,7 +2,7 @@
 
 interface ImportMetaEnv {
 
-    readonly NODE_ENV: string
+    // readonly NODE_ENV: string
 
 }
 
