@@ -22,7 +22,7 @@ const TableColumnList = (actionRef: React.RefObject<ActionType | undefined>): Pr
 
     {title: '端口', dataIndex: 'port', ellipsis: true, width: 90,},
 
-    {title: '路径', dataIndex: 'path', ellipsis: true, width: 90,},
+    {title: '路径', dataIndex: 'path', ellipsis: true, width: 90, hideInSearch: true},
 
     {
         title: '创建时间',

@@ -28,6 +28,7 @@ public class SysSocketServiceImpl extends ServiceImpl<SysSocketMapper, SysSocket
             .eq(dto.getPort() != null, SysSocketDO::getPort, dto.getPort())
             .eq(dto.getType() != null, SysSocketDO::getType, dto.getType())
             .eq(dto.getEnableFlag() != null, BaseEntity::getEnableFlag, dto.getEnableFlag())
+            .eq(dto.getId() != null, BaseEntity::getId, dto.getId())
             .like(StrUtil.isNotBlank(dto.getRemark()), SysSocketDO::getRemark, dto.getRemark()).page(dto.page(true));
 
     }

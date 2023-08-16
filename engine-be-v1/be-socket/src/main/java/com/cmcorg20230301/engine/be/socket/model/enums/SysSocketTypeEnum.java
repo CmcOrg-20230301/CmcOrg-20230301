@@ -16,7 +16,7 @@ public enum SysSocketTypeEnum {
 
     WEB_SOCKET(201), //
 
-    UDP(301), //
+    UDP_PROTOBUF(301), //
 
     ;
 

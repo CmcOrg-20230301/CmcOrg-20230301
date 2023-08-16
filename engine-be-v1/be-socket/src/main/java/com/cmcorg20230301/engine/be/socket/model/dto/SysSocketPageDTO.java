@@ -10,6 +10,9 @@ import lombok.EqualsAndHashCode;
 @Data
 public class SysSocketPageDTO extends MyPageDTO {
 
+    @Schema(description = "主键 id")
+    private Long id;
+
     @Schema(description = "协议")
     private String scheme;
 
