@@ -1,6 +1,7 @@
 package com.cmcorg20230301.engine.be.socket.model.dto;
 
 import com.cmcorg20230301.engine.be.security.model.dto.MyPageDTO;
+import com.cmcorg20230301.engine.be.socket.model.enums.SysSocketOnlineTypeEnum;
 import com.cmcorg20230301.engine.be.socket.model.enums.SysSocketTypeEnum;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
@@ -33,5 +34,14 @@ public class SysSocketRefUserPageDTO extends MyPageDTO {
 
     @Schema(description = "备注")
     private String remark;
+
+    @Schema(description = "socket 在线状态")
+    private SysSocketOnlineTypeEnum onlineType;
+
+    @Schema(description = "ip")
+    private String ip;
+
+    @Schema(description = "Ip2RegionUtil.getRegion() 获取到的 ip所处区域")
+    private String region;
 
 }

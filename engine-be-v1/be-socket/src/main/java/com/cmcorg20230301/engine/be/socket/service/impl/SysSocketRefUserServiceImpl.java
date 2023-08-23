@@ -28,12 +28,14 @@ public class SysSocketRefUserServiceImpl extends ServiceImpl<SysSocketRefUserMap
 
         return lambdaQuery().eq(dto.getUserId() != null, SysSocketRefUserDO::getUserId, dto.getUserId())
             .eq(dto.getSocketId() != null, SysSocketRefUserDO::getSocketId, dto.getSocketId())
-            .like(StrUtil.isNotBlank(dto.getNickname()), SysSocketRefUserDO::getNickname, dto.getNickname())
             .like(StrUtil.isNotBlank(dto.getScheme()), SysSocketRefUserDO::getScheme, dto.getScheme())
             .like(StrUtil.isNotBlank(dto.getHost()), SysSocketRefUserDO::getHost, dto.getHost())
             .eq(dto.getPort() != null, SysSocketRefUserDO::getPort, dto.getPort())
             .eq(dto.getType() != null, SysSocketRefUserDO::getType, dto.getType())
             .eq(dto.getId() != null, BaseEntity::getId, dto.getId())
+            .eq(dto.getOnlineType() != null, SysSocketRefUserDO::getOnlineType, dto.getOnlineType())
+            .eq(StrUtil.isNotBlank(dto.getIp()), SysSocketRefUserDO::getIp, dto.getIp())
+            .eq(StrUtil.isNotBlank(dto.getRegion()), SysSocketRefUserDO::getRegion, dto.getRegion())
             .like(StrUtil.isNotBlank(dto.getRemark()), SysSocketRefUserDO::getRemark, dto.getRemark())
             .page(dto.page(true));
 
