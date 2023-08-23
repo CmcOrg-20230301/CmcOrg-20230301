@@ -1,9 +1,10 @@
-import {GetDictListByKey} from "@/util/DictUtil";
+import {GetDictList, GetDictListByKey} from "@/util/DictUtil";
 import {ActionType, ProColumns} from "@ant-design/pro-components";
 import {SysSocketRefUserDO, SysSocketRefUserOfflineByIdSet} from "@/api/http/SysSocketRefUser";
 import {HandlerRegion} from "@/util/StrUtil";
 import {Typography} from "antd";
 import {ExecConfirm, ToastSuccess} from "@/util/ToastUtil";
+import {SysUserDictList} from "@/api/http/SysUser";
 
 const TableColumnList = (actionRef: React.RefObject<ActionType | undefined>): ProColumns<SysSocketRefUserDO>[] => [
 
@@ -16,13 +17,21 @@ const TableColumnList = (actionRef: React.RefObject<ActionType | undefined>): Pr
 
     {title: 'id', dataIndex: 'id', ellipsis: true, width: 90,},
 
-    {title: '用户id', dataIndex: 'userId', ellipsis: true, width: 90,},
-
-    {title: '用户昵称', dataIndex: 'nickname', ellipsis: true, width: 90,},
+    {
+        title: '用户', dataIndex: 'userId', ellipsis: true, width: 90, valueType: 'select',
+        request: () => {
+            return GetDictList(SysUserDictList)
+        }
+    },
 
     {title: 'socketId', dataIndex: 'socketId', ellipsis: true, width: 90,},
 
-    {title: '类型', dataIndex: 'type', ellipsis: true, width: 90,},
+    {
+        title: '类型', dataIndex: 'type', ellipsis: true, width: 90, valueType: 'select',
+        request: () => {
+            return GetDictListByKey('sys_socket_type')
+        }
+    },
 
     {title: '协议', dataIndex: 'scheme', ellipsis: true, width: 90,},
 
@@ -30,12 +39,17 @@ const TableColumnList = (actionRef: React.RefObject<ActionType | undefined>): Pr
 
     {title: '端口', dataIndex: 'port', ellipsis: true, width: 90,},
 
-    {title: '路径', dataIndex: 'path', ellipsis: true, width: 90,},
-
-    {title: '在线状态', dataIndex: 'onlineType', ellipsis: true, width: 90,},
+    {title: '路径', dataIndex: 'path', ellipsis: true, width: 90, hideInSearch: true,},
 
     {
-        title: 'User-Agent', dataIndex: 'userAgentJsonStr', width: 90, render: (text) => {
+        title: '在线状态', dataIndex: 'onlineType', ellipsis: true, width: 90, valueType: 'select',
+        request: () => {
+            return GetDictListByKey('sys_socket_online_type')
+        }
+    },
+
+    {
+        title: 'User-Agent', dataIndex: 'userAgentJsonStr', width: 90, hideInSearch: true, render: (text) => {
             return <Typography.Text ellipsis={{tooltip: true}} style={{width: 90}}>{text}</Typography.Text>
         }
     },

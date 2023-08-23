@@ -92,8 +92,7 @@ const TableColumnList = (): ProColumns<SysRequestDO>[] => [
     },
 
     {
-        title: '创建人id', dataIndex: 'createId', ellipsis: true, width: 90,
-        valueType: 'select',
+        title: '创建人', dataIndex: 'createId', ellipsis: true, width: 90, valueType: 'select',
         request: () => {
             return GetDictList(SysUserDictList)
         }

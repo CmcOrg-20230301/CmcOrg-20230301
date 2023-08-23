@@ -10,14 +10,14 @@ import lombok.EqualsAndHashCode;
 @Data
 public class SysSocketRefUserPageDTO extends MyPageDTO {
 
+    @Schema(description = "主键 id")
+    private Long id;
+
     @Schema(description = "用户主键 id")
     private Long userId;
 
     @Schema(description = "socket主键 id")
     private Long socketId;
-
-    @Schema(description = "冗余字段，昵称")
-    private String nickname;
 
     @Schema(description = "协议")
     private String scheme;

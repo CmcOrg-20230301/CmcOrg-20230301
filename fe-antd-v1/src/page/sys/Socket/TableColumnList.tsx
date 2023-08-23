@@ -1,4 +1,4 @@
-import {YesNoDict} from "@/util/DictUtil";
+import {GetDictListByKey, YesNoDict} from "@/util/DictUtil";
 import {ActionType, ProColumns} from "@ant-design/pro-components";
 import {SysSocketDisableByIdSet, SysSocketDO, SysSocketEnableByIdSet} from "@/api/http/SysSocket";
 import {ExecConfirm, ToastSuccess} from "@/util/ToastUtil";
@@ -14,7 +14,12 @@ const TableColumnList = (actionRef: React.RefObject<ActionType | undefined>): Pr
 
     {title: 'id', dataIndex: 'id', ellipsis: true, width: 90,},
 
-    {title: '类型', dataIndex: 'type', ellipsis: true, width: 90,},
+    {
+        title: '类型', dataIndex: 'type', ellipsis: true, width: 90, valueType: 'select',
+        request: () => {
+            return GetDictListByKey('sys_socket_type')
+        }
+    },
 
     {title: '协议', dataIndex: 'scheme', ellipsis: true, width: 90,},
 

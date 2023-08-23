@@ -33,6 +33,7 @@ public class SysSocketRefUserServiceImpl extends ServiceImpl<SysSocketRefUserMap
             .like(StrUtil.isNotBlank(dto.getHost()), SysSocketRefUserDO::getHost, dto.getHost())
             .eq(dto.getPort() != null, SysSocketRefUserDO::getPort, dto.getPort())
             .eq(dto.getType() != null, SysSocketRefUserDO::getType, dto.getType())
+            .eq(dto.getId() != null, BaseEntity::getId, dto.getId())
             .like(StrUtil.isNotBlank(dto.getRemark()), SysSocketRefUserDO::getRemark, dto.getRemark())
             .page(dto.page(true));
 
