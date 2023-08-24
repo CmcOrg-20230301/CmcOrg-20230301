@@ -11,6 +11,7 @@ import com.cmcorg20230301.engine.be.sign.email.model.dto.EmailNotBlankDTO;
 import com.cmcorg20230301.engine.be.sign.email.model.dto.SignEmailBindAccountDTO;
 import com.cmcorg20230301.engine.be.sign.phone.model.dto.PhoneNotBlankDTO;
 import com.cmcorg20230301.engine.be.sign.phone.model.dto.SignPhoneBindAccountDTO;
+import com.cmcorg20230301.engine.be.sign.signinname.model.dto.*;
 import lombok.extern.slf4j.Slf4j;
 
 /**
