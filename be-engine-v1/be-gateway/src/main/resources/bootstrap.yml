@@ -8,7 +8,7 @@ spring:
     nacos:
       server-addr: 43.154.37.130:8848
       discovery:
-        namespace: engine-be-v1
+        namespace: be-engine-v1
     gateway:
       discovery:
         locator:

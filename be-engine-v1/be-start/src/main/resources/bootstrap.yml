@@ -11,7 +11,7 @@ spring:
       discovery:
         namespace: ${spring.cloud.nacos.config.namespace}
       config:
-        namespace: engine-be-v1
+        namespace: be-engine-v1
         file-extension: yml
         extension-configs:
 
