@@ -31,6 +31,17 @@ CREATE TABLE `sys_area`
 -- ----------------------------
 -- Records of sys_area
 -- ----------------------------
+INSERT INTO `sys_area`
+VALUES (230620163514124150, 0, '2023-06-20 16:35:14', 0, '2023-06-20 16:35:14', 1, 0, 0, '', '中国', 0, 10000);
+INSERT INTO `sys_area`
+VALUES (230620163619124173, 0, '2023-06-20 16:36:20', 0, '2023-06-20 16:36:20', 1, 0, 0, '', '重庆', 230620163514124150,
+        10000);
+INSERT INTO `sys_area`
+VALUES (230621113426125005, 0, '2023-06-21 11:34:26', 0, '2023-06-21 11:34:26', 1, 0, 0, '', '四川', 230620163514124150,
+        9900);
+INSERT INTO `sys_area`
+VALUES (230621164316125196, 0, '2023-06-21 16:43:17', 0, '2023-06-21 16:43:17', 1, 0, 0, '', '深圳', 230620163514124150,
+        9800);
 
 -- ----------------------------
 -- Table structure for sys_area_ref_dept
@@ -49,6 +60,8 @@ CREATE TABLE `sys_area_ref_dept`
 -- ----------------------------
 -- Records of sys_area_ref_dept
 -- ----------------------------
+INSERT INTO `sys_area_ref_dept`
+VALUES (230620163619124173, 230621205652125276);
 
 -- ----------------------------
 -- Table structure for sys_dept
@@ -77,6 +90,44 @@ CREATE TABLE `sys_dept`
 -- ----------------------------
 -- Records of sys_dept
 -- ----------------------------
+INSERT INTO `sys_dept`
+VALUES (230621103954124820, 0, '2023-06-21 10:39:54', 0, '2023-06-21 10:39:54', 1, 0, 0, '', '开发部门', 0, 10000);
+INSERT INTO `sys_dept`
+VALUES (230621104000124826, 0, '2023-06-21 10:40:01', 0, '2023-06-21 10:40:01', 1, 0, 0, '', '测试部门', 0, 9900);
+INSERT INTO `sys_dept`
+VALUES (230621104012124832, 0, '2023-06-21 10:40:13', 0, '2023-06-21 10:40:13', 1, 0, 0, '', '财务部门', 0, 9800);
+INSERT INTO `sys_dept`
+VALUES (230621104027124838, 0, '2023-06-21 10:40:28', 0, '2023-06-21 10:40:28', 1, 0, 0, '', '后勤部门', 0, 9700);
+INSERT INTO `sys_dept`
+VALUES (230621112807124923, 0, '2023-06-21 11:28:07', 0, '2023-06-21 11:28:07', 1, 0, 0, '', 'java开发',
+        230621103954124820, 10000);
+INSERT INTO `sys_dept`
+VALUES (230621113131124934, 0, '2023-06-21 11:31:32', 0, '2023-06-21 11:31:32', 1, 0, 0, '', 'python开发',
+        230621103954124820, 9900);
+INSERT INTO `sys_dept`
+VALUES (230621113138124940, 0, '2023-06-21 11:31:39', 0, '2023-06-21 11:31:39', 1, 0, 0, '', 'unity开发',
+        230621103954124820, 9800);
+INSERT INTO `sys_dept`
+VALUES (230621113152124946, 0, '2023-06-21 11:31:52', 0, '2023-06-21 11:31:52', 1, 0, 0, '', '网页前端开发',
+        230621103954124820, 9700);
+INSERT INTO `sys_dept`
+VALUES (230621113316124971, 0, '2023-06-21 11:33:16', 0, '2023-06-21 11:33:16', 1, 0, 0, '', '通用后端开发',
+        230621103954124820, 9600);
+INSERT INTO `sys_dept`
+VALUES (230621113332124979, 0, '2023-06-21 11:33:33', 0, '2023-06-21 11:33:33', 1, 0, 0, '', '通用前端开发',
+        230621103954124820, 9500);
+INSERT INTO `sys_dept`
+VALUES (230621113342124985, 0, '2023-06-21 11:33:43', 0, '2023-06-21 11:33:43', 1, 0, 0, '', '网页测试', 230621104000124826,
+        10000);
+INSERT INTO `sys_dept`
+VALUES (230621113351124991, 0, '2023-06-21 11:33:51', 0, '2023-06-21 11:33:51', 1, 0, 0, '', '游戏测试', 230621104000124826,
+        9900);
+INSERT INTO `sys_dept`
+VALUES (230621113357124997, 0, '2023-06-21 11:33:58', 0, '2023-06-21 11:33:58', 1, 0, 0, '', '通用测试', 230621104000124826,
+        9800);
+INSERT INTO `sys_dept`
+VALUES (230621205652125276, 0, '2023-06-21 20:56:53', 0, '2023-06-21 20:57:24', 1, 0, 0, '', '通用开发', 230621103954124820,
+        9400);
 
 -- ----------------------------
 -- Table structure for sys_dept_ref_user
@@ -170,6 +221,39 @@ VALUES (230602173552117516, 0, '2023-06-02 17:35:53', 0, '2023-06-02 17:35:53', 
 INSERT INTO `sys_dict`
 VALUES (230602173602117519, 0, '2023-06-02 17:36:03', 0, '2023-06-02 17:36:03', 1, 0, 0, '', 'sys_request_category',
         '小程序-微信-苹果', 2, 502, 8700);
+INSERT INTO `sys_dict`
+VALUES (230810115441152907, 0, '2023-08-10 11:54:42', 0, '2023-08-10 12:01:29', 1, 0, 0, '', 'sys_request_category',
+        'windows-浏览器-微信', 2, 104, 9790);
+INSERT INTO `sys_dict`
+VALUES (230810120204152982, 0, '2023-08-10 12:02:04', 0, '2023-08-10 12:02:04', 1, 0, 0, '', 'sys_request_category',
+        'mac-浏览器-微信', 2, 105, 9780);
+INSERT INTO `sys_dict`
+VALUES (230810120224152985, 0, '2023-08-10 12:02:24', 0, '2023-08-10 12:02:24', 1, 0, 0, '', 'sys_request_category',
+        'linux-浏览器-微信', 2, 106, 9770);
+INSERT INTO `sys_dict`
+VALUES (230816153518154273, 0, '2023-08-16 15:35:18', 0, '2023-08-16 15:35:18', 1, 0, 0, '', 'sys_socket_type',
+        'socket类型', 1, -1, 9900);
+INSERT INTO `sys_dict`
+VALUES (230816153602154277, 0, '2023-08-16 15:36:02', 0, '2023-08-23 17:08:24', 1, 0, 0, '', 'sys_socket_type',
+        'tcp_protobuf', 2, 101, 10000);
+INSERT INTO `sys_dict`
+VALUES (230816153610154281, 0, '2023-08-16 15:36:11', 0, '2023-08-23 17:08:28', 1, 0, 0, '', 'sys_socket_type',
+        'web_socket', 2, 201, 9900);
+INSERT INTO `sys_dict`
+VALUES (230816153619154284, 0, '2023-08-16 15:36:19', 0, '2023-08-23 17:08:31', 1, 0, 0, '', 'sys_socket_type',
+        'udp_protobuf', 2, 301, 9800);
+INSERT INTO `sys_dict`
+VALUES (230823164923154681, 0, '2023-08-23 16:49:23', 0, '2023-08-23 16:49:43', 1, 0, 0, '', 'sys_socket_online_type',
+        'socket在线状态', 1, -1, 9800);
+INSERT INTO `sys_dict`
+VALUES (230823165012154695, 0, '2023-08-23 16:50:12', 0, '2023-08-23 16:50:12', 1, 0, 0, '', 'sys_socket_online_type',
+        '在线', 2, 101, 10000);
+INSERT INTO `sys_dict`
+VALUES (230823165035154700, 0, '2023-08-23 16:50:36', 0, '2023-08-23 16:50:36', 1, 0, 0, '', 'sys_socket_online_type',
+        '隐身', 2, 201, 9900);
+INSERT INTO `sys_dict`
+VALUES (230823165101154704, 0, '2023-08-23 16:51:01', 0, '2023-08-23 16:51:01', 1, 0, 0, '', 'sys_socket_online_type',
+        'ping_test', 2, 100001, 9800);
 
 -- ----------------------------
 -- Table structure for sys_file
@@ -309,8 +393,8 @@ INSERT INTO `sys_menu`
 VALUES (13, 1, '2022-05-21 01:03:26', 1, '2022-05-21 01:03:26', 1, 2, 0, '', '查看详情', '', '', 9, 'sysRole:infoById', 0,
         0, '', '', 9970, 0, 1);
 INSERT INTO `sys_menu`
-VALUES (14, 1, '2021-12-22 11:09:16', 1, '2022-05-03 17:00:27', 1, 2, 0, '', '用户管理', '/admin/sys/user', '', 3, '', 1, 0,
-        'sysUserUser', '', 9980, 0, 0);
+VALUES (14, 1, '2021-12-22 11:09:16', 0, '2023-06-27 15:41:02', 1, 2, 0, '', '用户管理', '/admin/sys/user', '', 3, '', 1, 0,
+        'sysUserUser', '', 9980, 1, 0);
 INSERT INTO `sys_menu`
 VALUES (15, 1, '2022-05-21 01:03:16', 1, '2022-05-21 01:03:16', 1, 2, 0, '', '新增修改', '', '', 14,
         'sysUser:insertOrUpdate', 0, 0, '', '', 10000, 0, 1);
@@ -363,20 +447,101 @@ INSERT INTO `sys_menu`
 VALUES (63, 1, '2022-07-12 11:01:41', 1, '2022-07-12 11:02:01', 1, 2, 0, '', 'Helper App', 'https://cmc0.github.io',
         'CodeOutlined', 221004205817000054, '', 1, 1, '', '', 0, 0, 0);
 INSERT INTO `sys_menu`
-VALUES (221004205817000054, 0, '2022-10-04 12:58:17', 0, '2023-06-02 17:41:30', 1, 2, 0, '', '系统平台', '',
-        'SettingOutlined', 0, '', 1, 0, '', '/admin/sys/request', 10000, 0, 0);
+VALUES (221004205817000054, 0, '2022-10-04 12:58:17', 0, '2023-06-27 15:40:23', 1, 2, 0, '', '系统平台', '',
+        'SettingOutlined', 0, '', 1, 0, '', '/admin/sys/user', 10000, 0, 0);
 INSERT INTO `sys_menu`
-VALUES (221005155605000086, 0, '2022-10-05 07:56:05', 0, '2022-10-05 07:56:16', 1, 2, 0, '', '欢迎', '/admin/welcome',
+VALUES (221005155605000086, 0, '2022-10-05 07:56:05', 0, '2023-07-11 12:04:49', 1, 2, 0, '', '欢迎', '/admin/welcome',
         'SmileOutlined', 0, '', 1, 0, 'WelcomeWelcome', '', 11000, 0, 0);
 INSERT INTO `sys_menu`
-VALUES (230523221709113901, 0, '2023-05-23 22:17:10', 0, '2023-05-23 22:23:36', 1, 0, 0, '', '系统监控', '',
-        'FundProjectionScreenOutlined', 221004205817000054, '', 1, 0, '', '', 9800, 0, 0);
+VALUES (230523221709113901, 0, '2023-05-23 22:17:10', 0, '2023-07-30 14:05:05', 1, 0, 0, '', '系统监控', '',
+        'FundProjectionScreenOutlined', 221004205817000054, '', 1, 0, '', '', 1000, 0, 0);
 INSERT INTO `sys_menu`
 VALUES (230523221904113916, 0, '2023-05-23 22:19:05', 0, '2023-06-02 09:47:12', 1, 0, 0, '', '请求监控',
-        '/admin/sys/request', '', 230523221709113901, '', 1, 0, 'sysRequestRequest', '', 10000, 1, 0);
+        '/admin/sys/request', '', 230523221709113901, '', 1, 0, 'sysRequestRequest', '', 10000, 0, 0);
 INSERT INTO `sys_menu`
 VALUES (230523222026113937, 0, '2023-05-23 22:20:27', 0, '2023-05-23 22:20:27', 1, 0, 0, '', '列表查询', '', '',
         230523221904113916, 'sysRequest:page', 0, 0, '', '', 0, 0, 1);
+INSERT INTO `sys_menu`
+VALUES (230620155859123966, 0, '2023-06-20 15:58:59', 0, '2023-06-20 16:00:52', 1, 0, 0, '', '组织管理', '',
+        'ApartmentOutlined', 221004205817000054, '', 1, 0, '', '', 9800, 0, 0);
+INSERT INTO `sys_menu`
+VALUES (230620155944123975, 0, '2023-06-20 15:59:45', 0, '2023-06-20 16:01:26', 1, 0, 0, '', '区域管理', '/admin/sys/area',
+        '', 230620155859123966, '', 1, 0, 'sysAreaArea', '', 10000, 0, 0);
+INSERT INTO `sys_menu`
+VALUES (230620160002123980, 0, '2023-06-20 16:00:02', 0, '2023-06-20 16:01:37', 1, 0, 0, '', '部门管理', '/admin/sys/dept',
+        '', 230620155859123966, '', 1, 0, 'sysDeptDept', '', 9900, 0, 0);
+INSERT INTO `sys_menu`
+VALUES (230620160014123985, 0, '2023-06-20 16:00:14', 0, '2023-06-20 16:01:48', 1, 0, 0, '', '岗位管理', '/admin/sys/post',
+        '', 230620155859123966, '', 1, 0, 'sysPostPost', '', 9800, 0, 0);
+INSERT INTO `sys_menu`
+VALUES (230620160155124026, 0, '2023-06-20 16:01:56', 0, '2023-06-20 16:01:56', 1, 0, 0, '', '新增修改', '', '',
+        230620155944123975, 'sysArea:insertOrUpdate', 0, 0, '', '', 10000, 0, 1);
+INSERT INTO `sys_menu`
+VALUES (230620160156124028, 0, '2023-06-20 16:01:57', 0, '2023-06-20 16:01:57', 1, 0, 0, '', '列表查询', '', '',
+        230620155944123975, 'sysArea:page', 0, 0, '', '', 9900, 0, 1);
+INSERT INTO `sys_menu`
+VALUES (230620160156124029, 0, '2023-06-20 16:01:57', 0, '2023-06-20 16:01:57', 1, 0, 0, '', '删除', '', '',
+        230620155944123975, 'sysArea:deleteByIdSet', 0, 0, '', '', 9800, 0, 1);
+INSERT INTO `sys_menu`
+VALUES (230620160157124030, 0, '2023-06-20 16:01:57', 0, '2023-06-20 16:01:57', 1, 0, 0, '', '查看详情', '', '',
+        230620155944123975, 'sysArea:infoById', 0, 0, '', '', 9700, 0, 1);
+INSERT INTO `sys_menu`
+VALUES (230620160215124035, 0, '2023-06-20 16:02:15', 0, '2023-06-20 16:02:15', 1, 0, 0, '', '新增修改', '', '',
+        230620160002123980, 'sysDept:insertOrUpdate', 0, 0, '', '', 10000, 0, 1);
+INSERT INTO `sys_menu`
+VALUES (230620160215124036, 0, '2023-06-20 16:02:16', 0, '2023-06-20 16:02:16', 1, 0, 0, '', '列表查询', '', '',
+        230620160002123980, 'sysDept:page', 0, 0, '', '', 9900, 0, 1);
+INSERT INTO `sys_menu`
+VALUES (230620160216124037, 0, '2023-06-20 16:02:16', 0, '2023-06-20 16:02:16', 1, 0, 0, '', '删除', '', '',
+        230620160002123980, 'sysDept:deleteByIdSet', 0, 0, '', '', 9800, 0, 1);
+INSERT INTO `sys_menu`
+VALUES (230620160216124040, 0, '2023-06-20 16:02:17', 0, '2023-06-20 16:02:17', 1, 0, 0, '', '查看详情', '', '',
+        230620160002123980, 'sysDept:infoById', 0, 0, '', '', 9700, 0, 1);
+INSERT INTO `sys_menu`
+VALUES (230620160233124044, 0, '2023-06-20 16:02:33', 0, '2023-06-20 16:02:33', 1, 0, 0, '', '新增修改', '', '',
+        230620160014123985, 'sysPost:insertOrUpdate', 0, 0, '', '', 10000, 0, 1);
+INSERT INTO `sys_menu`
+VALUES (230620160233124045, 0, '2023-06-20 16:02:34', 0, '2023-06-20 16:02:34', 1, 0, 0, '', '列表查询', '', '',
+        230620160014123985, 'sysPost:page', 0, 0, '', '', 9900, 0, 1);
+INSERT INTO `sys_menu`
+VALUES (230620160234124046, 0, '2023-06-20 16:02:34', 0, '2023-06-20 16:02:34', 1, 0, 0, '', '删除', '', '',
+        230620160014123985, 'sysPost:deleteByIdSet', 0, 0, '', '', 9800, 0, 1);
+INSERT INTO `sys_menu`
+VALUES (230620160234124047, 0, '2023-06-20 16:02:35', 0, '2023-06-20 16:02:35', 1, 0, 0, '', '查看详情', '', '',
+        230620160014123985, 'sysPost:infoById', 0, 0, '', '', 9700, 0, 1);
+INSERT INTO `sys_menu`
+VALUES (230728151103147771, 0, '2023-07-28 15:11:04', 0, '2023-07-28 16:15:13', 1, 0, 0, '', '连接管理', '', 'ApiOutlined',
+        221004205817000054, '', 1, 0, '', '', 9600, 0, 0);
+INSERT INTO `sys_menu`
+VALUES (230728151435147782, 0, '2023-07-28 15:14:36', 0, '2023-07-28 15:39:06', 1, 0, 0, '', '连接服务',
+        '/admin/sys/socket', '', 230728151103147771, '', 1, 0, 'sysSocketSocket', '', 10000, 0, 0);
+INSERT INTO `sys_menu`
+VALUES (230728151554147791, 0, '2023-07-28 15:15:54', 0, '2023-07-28 15:15:54', 1, 0, 0, '', '在线用户',
+        '/admin/sys/socketRefUser', '', 230728151103147771, '', 1, 0, 'sysSocketRefUserSocketRefUser', '', 9900, 0, 0);
+INSERT INTO `sys_menu`
+VALUES (230810002442152333, 0, '2023-08-10 00:24:43', 0, '2023-08-10 00:24:43', 1, 0, 0, '', '新增修改', '', '',
+        230728151435147782, 'sysSocket:insertOrUpdate', 0, 0, '', '', 10000, 0, 1);
+INSERT INTO `sys_menu`
+VALUES (230810002442152334, 0, '2023-08-10 00:24:43', 0, '2023-08-10 00:24:43', 1, 0, 0, '', '列表查询', '', '',
+        230728151435147782, 'sysSocket:page', 0, 0, '', '', 9900, 0, 1);
+INSERT INTO `sys_menu`
+VALUES (230810002442152335, 0, '2023-08-10 00:24:43', 0, '2023-08-10 00:24:43', 1, 0, 0, '', '删除', '', '',
+        230728151435147782, 'sysSocket:deleteByIdSet', 0, 0, '', '', 9800, 0, 1);
+INSERT INTO `sys_menu`
+VALUES (230810002442152336, 0, '2023-08-10 00:24:43', 0, '2023-08-10 00:24:43', 1, 0, 0, '', '查看详情', '', '',
+        230728151435147782, 'sysSocket:infoById', 0, 0, '', '', 9700, 0, 1);
+INSERT INTO `sys_menu`
+VALUES (230810002513152343, 0, '2023-08-10 00:25:14', 0, '2023-08-10 00:25:14', 1, 0, 0, '', '新增修改', '', '',
+        230728151554147791, 'sysSocketRefUser:insertOrUpdate', 0, 0, '', '', 10000, 0, 1);
+INSERT INTO `sys_menu`
+VALUES (230810002513152344, 0, '2023-08-10 00:25:14', 0, '2023-08-10 00:25:14', 1, 0, 0, '', '列表查询', '', '',
+        230728151554147791, 'sysSocketRefUser:page', 0, 0, '', '', 9900, 0, 1);
+INSERT INTO `sys_menu`
+VALUES (230810002513152345, 0, '2023-08-10 00:25:14', 0, '2023-08-10 00:25:14', 1, 0, 0, '', '删除', '', '',
+        230728151554147791, 'sysSocketRefUser:deleteByIdSet', 0, 0, '', '', 9800, 0, 1);
+INSERT INTO `sys_menu`
+VALUES (230810002513152346, 0, '2023-08-10 00:25:14', 0, '2023-08-10 00:25:14', 1, 0, 0, '', '查看详情', '', '',
+        230728151554147791, 'sysSocketRefUser:infoById', 0, 0, '', '', 9700, 0, 1);
 
 -- ----------------------------
 -- Table structure for sys_param
@@ -413,6 +578,49 @@ VALUES (2, 1, '2021-12-26 11:32:38', 0, '2023-06-02 14:04:46', 1, 0, 0,
         '多少秒钟，一个 ip可以请求多少次，用冒号隔开的，任意值小于等于 0，则不会进行检查，超过了，则一天无法访问任何接口', 'ip请求速率', '10:75');
 
 -- ----------------------------
+-- Table structure for sys_pay
+-- ----------------------------
+DROP TABLE IF EXISTS `sys_pay`;
+CREATE TABLE `sys_pay`
+(
+    `id`               bigint                                                        NOT NULL AUTO_INCREMENT,
+    `create_id`        bigint                                                        NOT NULL,
+    `create_time`      datetime                                                      NOT NULL,
+    `update_id`        bigint                                                        NOT NULL,
+    `update_time`      datetime                                                      NOT NULL,
+    `enable_flag`      tinyint(1)                                                    NOT NULL COMMENT '是否启用',
+    `version`          int                                                           NOT NULL COMMENT '乐观锁',
+    `del_flag`         tinyint(1)                                                    NOT NULL COMMENT '是否逻辑删除',
+    `remark`           varchar(300) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '描述/备注',
+    `pay_type`         int                                                           NOT NULL COMMENT '支付方式',
+    `user_id`          bigint                                                        NOT NULL COMMENT '用户主键 id',
+    `subject`          varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '订单名称',
+    `body`             varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '商品描述',
+    `origin_price`     decimal(13, 3)                                                NOT NULL COMMENT '订单原始的钱',
+    `pay_price`        decimal(13, 3)                                                NOT NULL COMMENT '订单支付的钱',
+    `pay_currency`     varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci  NOT NULL COMMENT '订单支付的钱的单位，例如：人民币 CNY',
+    `expire_time`      datetime                                                      NOT NULL COMMENT '订单过期时间',
+    `open_id`          varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '用户 openId',
+    `status`           int                                                           NOT NULL COMMENT '订单状态',
+    `trade_no`         varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '订单号',
+    `pay_return_value` varchar(300) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '支付返回的参数',
+    `ref_type`         int                                                           NOT NULL COMMENT '关联的类型',
+    `ref_id`           bigint                                                        NOT NULL COMMENT '关联的 id',
+    `package_name`     varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'app包名，必须是创建登录 api项目时，创建 android客户端 id使用包名，例如：谷歌支付',
+    `product_id`       varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '对应购买商品的商品 id，例如：谷歌支付',
+    `token`            varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '购买成功后 Purchase对象的 getPurchaseToken()，例如：谷歌支付',
+    PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB
+  AUTO_INCREMENT = 1
+  CHARACTER SET = utf8mb4
+  COLLATE = utf8mb4_unicode_ci COMMENT = 'v20230301：主表：支付'
+  ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of sys_pay
+-- ----------------------------
+
+-- ----------------------------
 -- Table structure for sys_post
 -- ----------------------------
 DROP TABLE IF EXISTS `sys_post`;
@@ -439,6 +647,42 @@ CREATE TABLE `sys_post`
 -- ----------------------------
 -- Records of sys_post
 -- ----------------------------
+INSERT INTO `sys_post`
+VALUES (230621110656124852, 0, '2023-06-21 11:06:56', 0, '2023-06-21 11:07:17', 1, 0, 0, '', '开发岗位', 0, 10000);
+INSERT INTO `sys_post`
+VALUES (230621110704124857, 0, '2023-06-21 11:07:05', 0, '2023-06-21 11:07:20', 1, 0, 0, '', '测试岗位', 0, 9900);
+INSERT INTO `sys_post`
+VALUES (230621110712124862, 0, '2023-06-21 11:07:12', 0, '2023-06-21 11:07:24', 1, 0, 0, '', '后勤岗位', 0, 9800);
+INSERT INTO `sys_post`
+VALUES (230621110735124882, 0, '2023-06-21 11:07:36', 0, '2023-06-21 11:07:36', 1, 0, 0, '', 'java开发',
+        230621110656124852, 10000);
+INSERT INTO `sys_post`
+VALUES (230621110745124887, 0, '2023-06-21 11:07:46', 0, '2023-06-21 11:07:46', 1, 0, 0, '', 'python开发',
+        230621110656124852, 9900);
+INSERT INTO `sys_post`
+VALUES (230621110757124892, 0, '2023-06-21 11:07:58', 0, '2023-06-21 11:08:07', 1, 0, 0, '', 'unity开发',
+        230621110656124852, 9800);
+INSERT INTO `sys_post`
+VALUES (230621112649124902, 0, '2023-06-21 11:26:50', 0, '2023-06-21 11:26:50', 1, 0, 0, '', '网页测试', 230621110704124857,
+        10000);
+INSERT INTO `sys_post`
+VALUES (230621112700124907, 0, '2023-06-21 11:27:00', 0, '2023-06-21 11:27:00', 1, 0, 0, '', '游戏测试', 230621110704124857,
+        9900);
+INSERT INTO `sys_post`
+VALUES (230621112728124912, 0, '2023-06-21 11:27:28', 0, '2023-06-21 20:57:39', 1, 0, 0, '', '通用测试', 230621110704124857,
+        9800);
+INSERT INTO `sys_post`
+VALUES (230621113206124950, 0, '2023-06-21 11:32:07', 0, '2023-06-21 11:32:07', 1, 0, 0, '', '网页前端开发',
+        230621110656124852, 9700);
+INSERT INTO `sys_post`
+VALUES (230621113241124959, 0, '2023-06-21 11:32:41', 0, '2023-06-21 11:32:41', 1, 0, 0, '', '通用后端开发',
+        230621110656124852, 9600);
+INSERT INTO `sys_post`
+VALUES (230621113251124964, 0, '2023-06-21 11:32:51', 0, '2023-06-21 11:32:51', 1, 0, 0, '', '通用前端开发',
+        230621110656124852, 9500);
+INSERT INTO `sys_post`
+VALUES (230621205701125280, 0, '2023-06-21 20:57:02', 0, '2023-06-21 20:57:33', 1, 0, 0, '', '通用开发', 230621110656124852,
+        9400);
 
 -- ----------------------------
 -- Table structure for sys_post_ref_user
@@ -478,8 +722,8 @@ CREATE TABLE `sys_request`
     `cost_ms_str`    varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci  NOT NULL COMMENT '耗时（字符串）',
     `cost_ms`        bigint                                                         NOT NULL COMMENT '耗时（毫秒）',
     `category`       int                                                            NOT NULL COMMENT '请求类别',
-    `region`         varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci  NOT NULL COMMENT 'Ip2RegionUtil.getRegion() 获取到的 ip所处区域',
     `ip`             varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci  NOT NULL COMMENT 'ip',
+    `region`         varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci  NOT NULL COMMENT 'Ip2RegionUtil.getRegion() 获取到的 ip所处区域',
     `success_flag`   tinyint(1)                                                     NOT NULL COMMENT '请求是否成功',
     `error_msg`      varchar(1000) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '失败信息',
     `request_param`  varchar(1000) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '请求的参数',
@@ -522,7 +766,7 @@ CREATE TABLE `sys_role`
 -- Records of sys_role
 -- ----------------------------
 INSERT INTO `sys_role`
-VALUES (221005154618000085, 0, '2022-10-05 07:46:19', 0, '2023-06-02 11:24:34', 1, 0, 0, '只有查看的权限，没有修改和删除的权限', '游客角色',
+VALUES (221005154618000085, 0, '2022-10-05 07:46:19', 0, '2023-08-10 00:25:41', 1, 0, 0, '只有查看的权限，没有修改和删除的权限', '游客角色',
         1);
 
 -- ----------------------------
@@ -542,32 +786,6 @@ CREATE TABLE `sys_role_ref_menu`
 -- ----------------------------
 -- Records of sys_role_ref_menu
 -- ----------------------------
-INSERT INTO `sys_role_ref_menu`
-VALUES (221005154618000085, 6);
-INSERT INTO `sys_role_ref_menu`
-VALUES (221005154618000085, 8);
-INSERT INTO `sys_role_ref_menu`
-VALUES (221005154618000085, 11);
-INSERT INTO `sys_role_ref_menu`
-VALUES (221005154618000085, 13);
-INSERT INTO `sys_role_ref_menu`
-VALUES (221005154618000085, 16);
-INSERT INTO `sys_role_ref_menu`
-VALUES (221005154618000085, 21);
-INSERT INTO `sys_role_ref_menu`
-VALUES (221005154618000085, 23);
-INSERT INTO `sys_role_ref_menu`
-VALUES (221005154618000085, 26);
-INSERT INTO `sys_role_ref_menu`
-VALUES (221005154618000085, 28);
-INSERT INTO `sys_role_ref_menu`
-VALUES (221005154618000085, 55);
-INSERT INTO `sys_role_ref_menu`
-VALUES (221005154618000085, 63);
-INSERT INTO `sys_role_ref_menu`
-VALUES (221005154618000085, 221005155605000086);
-INSERT INTO `sys_role_ref_menu`
-VALUES (221005154618000085, 230523221709113901);
 
 -- ----------------------------
 -- Table structure for sys_role_ref_user
@@ -605,6 +823,7 @@ CREATE TABLE `sys_socket`
     `scheme`      varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci  NOT NULL COMMENT '协议',
     `host`        varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci  NOT NULL COMMENT '主机',
     `port`        int                                                           NOT NULL COMMENT '端口',
+    `path`        varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci  NOT NULL COMMENT '路径',
     `type`        int                                                           NOT NULL COMMENT 'socket类型：101 tcp 201 webSocket 301 udp',
     PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB
@@ -622,22 +841,30 @@ CREATE TABLE `sys_socket`
 DROP TABLE IF EXISTS `sys_socket_ref_user`;
 CREATE TABLE `sys_socket_ref_user`
 (
-    `id`          bigint                                                        NOT NULL,
-    `create_id`   bigint                                                        NOT NULL,
-    `create_time` datetime                                                      NOT NULL,
-    `update_id`   bigint                                                        NOT NULL,
-    `update_time` datetime                                                      NOT NULL,
-    `enable_flag` tinyint(1)                                                    NOT NULL COMMENT '是否启用',
-    `version`     int                                                           NOT NULL COMMENT '乐观锁',
-    `del_flag`    tinyint(1)                                                    NOT NULL COMMENT '是否逻辑删除',
-    `remark`      varchar(300) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '备注',
-    `user_id`     bigint                                                        NOT NULL COMMENT '用户主键 id',
-    `socket_id`   bigint                                                        NOT NULL COMMENT 'socket主键 id',
-    `nickname`    varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci  NOT NULL COMMENT '冗余字段，用户昵称',
-    `scheme`      varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci  NOT NULL COMMENT '冗余字段，协议',
-    `host`        varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci  NOT NULL COMMENT '冗余字段，主机',
-    `port`        int                                                           NOT NULL COMMENT '冗余字段，端口',
-    `type`        int                                                           NOT NULL COMMENT '冗余字段，socket类型：101 tcp 201 webSocket 301 udp',
+    `id`                  bigint                                                        NOT NULL,
+    `create_id`           bigint                                                        NOT NULL,
+    `create_time`         datetime                                                      NOT NULL,
+    `update_id`           bigint                                                        NOT NULL,
+    `update_time`         datetime                                                      NOT NULL,
+    `enable_flag`         tinyint(1)                                                    NOT NULL COMMENT '是否启用',
+    `version`             int                                                           NOT NULL COMMENT '乐观锁',
+    `del_flag`            tinyint(1)                                                    NOT NULL COMMENT '是否逻辑删除',
+    `remark`              varchar(300) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '备注',
+    `user_id`             bigint                                                        NOT NULL COMMENT '用户主键 id',
+    `socket_id`           bigint                                                        NOT NULL COMMENT 'socket主键 id',
+    `nickname`            varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci  NOT NULL COMMENT '冗余字段，用户昵称',
+    `scheme`              varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci  NOT NULL COMMENT '冗余字段，协议',
+    `host`                varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci  NOT NULL COMMENT '冗余字段，主机',
+    `port`                int                                                           NOT NULL COMMENT '冗余字段，端口',
+    `path`                varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci  NOT NULL COMMENT '路径',
+    `type`                int                                                           NOT NULL COMMENT '冗余字段，socket类型',
+    `online_type`         int                                                           NOT NULL COMMENT 'socket 在线状态',
+    `ip`                  varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'ip',
+    `region`              varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'Ip2RegionUtil.getRegion() 获取到的 ip所处区域',
+    `category`            int                                                           NOT NULL COMMENT '请求类别',
+    `jwt_hash`            varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'jwtHash',
+    `jwt_hash_expire_ts`  bigint                                                        NOT NULL COMMENT 'jwtHash未来过期的时间戳',
+    `user_agent_json_str` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'User-Agent信息对象，json字符串',
     PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB
   CHARACTER SET = utf8mb4
