@@ -594,7 +594,7 @@ CREATE TABLE `sys_pay`
     `remark`           varchar(300) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '描述/备注',
     `pay_type`         int                                                           NOT NULL COMMENT '支付方式',
     `user_id`          bigint                                                        NOT NULL COMMENT '用户主键 id',
-    `subject`          varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '订单名称',
+    `subject`          varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '订单名称',
     `body`             varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '商品描述',
     `origin_price`     decimal(13, 3)                                                NOT NULL COMMENT '订单原始的钱',
     `pay_price`        decimal(13, 3)                                                NOT NULL COMMENT '订单支付的钱',
