@@ -12,7 +12,6 @@ import com.cmcorg20230301.engine.be.model.model.vo.DictVO;
 import com.cmcorg20230301.engine.be.security.model.entity.SysDictDO;
 
 import java.util.List;
-import java.util.Set;
 
 public interface SysDictService extends IService<SysDictDO> {
 
@@ -22,7 +21,7 @@ public interface SysDictService extends IService<SysDictDO> {
 
     List<DictVO> listByDictKey(SysDictListByDictKeyDTO dto);
 
-    Set<SysDictDO> tree(SysDictPageDTO dto);
+    List<SysDictDO> tree(SysDictPageDTO dto);
 
     String deleteByIdSet(NotEmptyIdSet notEmptyIdSet);
 

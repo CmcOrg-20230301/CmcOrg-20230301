@@ -22,7 +22,6 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.annotation.Resource;
 import javax.validation.Valid;
 import java.util.List;
-import java.util.Set;
 
 @Tag(name = "字典-管理")
 @RestController
@@ -55,7 +54,7 @@ public class SysDictController {
     @Operation(summary = "查询：树结构")
     @PostMapping("/tree")
     @PreAuthorize("hasAuthority('sysDict:page')")
-    public ApiResultVO<Set<SysDictDO>> tree(@RequestBody @Valid SysDictPageDTO dto) {
+    public ApiResultVO<List<SysDictDO>> tree(@RequestBody @Valid SysDictPageDTO dto) {
         return ApiResultVO.okData(baseService.tree(dto));
     }
 

@@ -136,13 +136,13 @@ public class SysDictServiceImpl extends ServiceImpl<SysDictMapper, SysDictDO> im
      * 查询：树结构
      */
     @Override
-    public Set<SysDictDO> tree(SysDictPageDTO dto) {
+    public List<SysDictDO> tree(SysDictPageDTO dto) {
 
         dto.setPageSize(-1); // 不分页
         List<SysDictDO> records = myPage(dto).getRecords();
 
         if (records.size() == 0) {
-            return new HashSet<>();
+            return new ArrayList<>();
         }
 
         // 过滤出：为字典项的数据，目的：查询其所属字典，封装成树结构
@@ -152,15 +152,15 @@ public class SysDictServiceImpl extends ServiceImpl<SysDictMapper, SysDictDO> im
         if (dictItemList.size() == 0) {
 
             // 如果没有字典项类型数据，则直接返回
-            return new HashSet<>(records);
+            return records;
 
         }
 
         // 查询出：字典项所属，字典的信息
-        Set<SysDictDO> allDictSet =
-            records.stream().filter(item -> SysDictTypeEnum.DICT.equals(item.getType())).collect(Collectors.toSet());
+        List<SysDictDO> allDictList =
+            records.stream().filter(item -> SysDictTypeEnum.DICT.equals(item.getType())).collect(Collectors.toList());
 
-        Set<Long> dictIdSet = allDictSet.stream().map(BaseEntity::getId).collect(Collectors.toSet());
+        Set<Long> dictIdSet = allDictList.stream().map(BaseEntity::getId).collect(Collectors.toSet());
         Set<String> dictKeySet = dictItemList.stream().map(SysDictDO::getDictKey).collect(Collectors.toSet());
 
         // 查询数据库
@@ -169,9 +169,10 @@ public class SysDictServiceImpl extends ServiceImpl<SysDictMapper, SysDictDO> im
             .orderByDesc(SysDictDO::getOrderNo).list();
 
         // 拼接本次返回值所需的，所有字典
-        allDictSet.addAll(sysDictDOList);
+        allDictList.addAll(sysDictDOList);
 
-        Map<String, SysDictDO> dictMap = allDictSet.stream().collect(Collectors.toMap(SysDictDO::getDictKey, it -> it));
+        Map<String, SysDictDO> dictMap =
+            allDictList.stream().collect(Collectors.toMap(SysDictDO::getDictKey, it -> it));
 
         // 封装 children
         for (SysDictDO item : dictItemList) {
@@ -191,7 +192,7 @@ public class SysDictServiceImpl extends ServiceImpl<SysDictMapper, SysDictDO> im
 
         }
 
-        return allDictSet;
+        return allDictList;
 
     }
 
