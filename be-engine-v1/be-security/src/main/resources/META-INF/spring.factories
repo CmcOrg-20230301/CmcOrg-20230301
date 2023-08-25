@@ -1,2 +1,2 @@
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
-com.cmcorg20230301.engine.be.security.configuration.base.BaseConfiguration
+com.cmcorg20230301.be.engine.security.configuration.base.BaseConfiguration

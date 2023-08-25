@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.cmcorg20230301.engine.be.user.mapper.SysUserProMapper">
+<mapper namespace="com.cmcorg20230301.be.engine.user.mapper.SysUserProMapper">
 
     <!-- 分页排序查询 -->
-    <select id="myPage" resultType="com.cmcorg20230301.engine.be.user.model.vo.SysUserPageVO">
+    <select id="myPage" resultType="com.cmcorg20230301.be.engine.user.model.vo.SysUserPageVO">
 
         SELECT
         a.id AS id,

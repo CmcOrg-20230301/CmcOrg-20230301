@@ -70,6 +70,7 @@
         <module>be-area</module>
         <module>be-dept</module>
         <module>be-post</module>
+        <module>be-tenant</module>
     </modules>
 
     <dependencyManagement>
