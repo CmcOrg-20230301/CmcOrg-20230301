@@ -10,6 +10,9 @@ import lombok.Data;
 @Schema(description = "关联表：岗位，用户")
 public class SysPostRefUserDO {
 
+    @Schema(description = "租户id")
+    private Long tenantId;
+
     @TableId
     @Schema(description = "岗位主键 id")
     private Long postId;

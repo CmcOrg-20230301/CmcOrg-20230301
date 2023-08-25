@@ -10,6 +10,9 @@ import lombok.Data;
 @Schema(description = "关联表：角色，菜单")
 public class SysRoleRefMenuDO {
 
+    @Schema(description = "租户id")
+    private Long tenantId;
+
     @TableId
     @Schema(description = "角色id")
     private Long roleId;

@@ -10,6 +10,9 @@ import lombok.Data;
 @Schema(description = "关联表：区域，部门")
 public class SysAreaRefDeptDO {
 
+    @Schema(description = "租户id")
+    private Long tenantId;
+
     @TableId
     @Schema(description = "区域主键 id")
     private Long areaId;

@@ -19,6 +19,9 @@ import java.util.Date;
 @Schema(description = "主表：支付")
 public class SysPayDO extends BaseEntityNoId {
 
+    @Schema(description = "租户id")
+    private Long tenantId;
+
     @TableId
     @Schema(description = "主键id")
     private Long id;
