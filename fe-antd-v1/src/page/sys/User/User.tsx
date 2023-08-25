@@ -1,7 +1,7 @@
 import {useRef, useState} from "react";
 import {ActionType, BetaSchemaForm, ColumnsState, FormInstance, ProTable} from "@ant-design/pro-components";
-import {Button, Space, Typography} from "antd";
-import {PlusOutlined} from "@ant-design/icons/lib";
+import {Button, Dropdown, Space, Typography} from "antd";
+import {ColumnHeightOutlined, EllipsisOutlined, PlusOutlined, VerticalAlignMiddleOutlined} from "@ant-design/icons/lib";
 import {
     SysUserDeleteByIdSet,
     SysUserInfoById,
@@ -30,6 +30,8 @@ export default function () {
     const [columnsStateMap, setColumnsStateMap] = useState<Record<string, ColumnsState>>();
 
     const [expandedRowKeys, setExpandedRowKeys] = useState<string[]>([]);
+
+    const hasChildrenIdList = useRef<string[]>([]); // 有子节点的 idList
 
     const actionRef = useRef<ActionType>()
 
@@ -180,11 +182,58 @@ export default function () {
 
                     })
 
+                    hasChildrenIdList.current = data.map(it => it.id) as string[];
+
                     return data
 
                 }}
 
                 toolbar={{
+
+                    title:
+
+                        <Dropdown menu={{
+
+                            items: [
+                                {
+
+                                    key: '1',
+
+                                    label: <a onClick={() => {
+
+                                        setExpandedRowKeys(hasChildrenIdList.current)
+
+                                    }}>
+                                        展开全部
+                                    </a>,
+
+                                    icon: <ColumnHeightOutlined/>
+
+                                },
+
+                                {
+
+                                    key: '2',
+
+                                    label: <a onClick={() => {
+
+                                        setExpandedRowKeys([])
+
+                                    }}>
+                                        收起全部
+                                    </a>,
+
+                                    icon: <VerticalAlignMiddleOutlined/>
+
+                                },
+
+                            ]
+
+                        }}>
+
+                            <Button size={"small"} icon={<EllipsisOutlined/>}/>
+
+                        </Dropdown>,
 
                     actions: [
 
