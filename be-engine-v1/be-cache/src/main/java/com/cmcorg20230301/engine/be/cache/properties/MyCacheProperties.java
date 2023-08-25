@@ -12,6 +12,6 @@ import org.springframework.stereotype.Component;
 public class MyCacheProperties {
 
     @Schema(description = "需要缓存的数据库名")
-    private String databaseName = "engine_be_v1";
+    private String databaseName = "be_engine_v1";
 
 }

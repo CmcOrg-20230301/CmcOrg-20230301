@@ -1,8 +1,8 @@
 SET NAMES utf8mb4;
 SET FOREIGN_KEY_CHECKS = 0;
 
-CREATE DATABASE IF NOT EXISTS `engine_be_v1` CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_ci';
-USE `engine_be_v1`;
+CREATE DATABASE IF NOT EXISTS `be_engine_v1` CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_ci';
+USE `be_engine_v1`;
 
 -- ----------------------------
 -- Table structure for sys_area
