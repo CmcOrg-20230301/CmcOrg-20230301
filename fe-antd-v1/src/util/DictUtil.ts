@@ -121,9 +121,16 @@ interface IDictResult {
 // 通用的，获取字典集合
 export function GetDictList<T extends IDictResult>(requestFunction: (value: MyPageDTO | any, config?: AxiosRequestConfig) => Promise<RequestData<T>>) {
 
+    return DoGetDictList(requestFunction({pageSize: '-1'}))
+
+}
+
+// 通用的，获取字典集合
+export function DoGetDictList<T extends IDictResult>(promise: Promise<RequestData<T>>) {
+
     return new Promise<DictLongListVO[]>(resolve => {
 
-        requestFunction({pageSize: '-1'}).then(res => {
+        promise.then(res => {
 
             let dictList: DictLongListVO[] = []
 

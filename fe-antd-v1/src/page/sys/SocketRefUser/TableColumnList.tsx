@@ -1,4 +1,4 @@
-import {GetDictList, GetDictListByKey} from "@/util/DictUtil";
+import {DoGetDictList, GetDictListByKey} from "@/util/DictUtil";
 import {ActionType, ProColumns} from "@ant-design/pro-components";
 import {SysSocketRefUserDO, SysSocketRefUserOfflineByIdSet} from "@/api/http/SysSocketRefUser";
 import {HandlerRegion} from "@/util/StrUtil";
@@ -20,7 +20,7 @@ const TableColumnList = (actionRef: React.RefObject<ActionType | undefined>): Pr
     {
         title: '用户', dataIndex: 'userId', ellipsis: true, width: 90, valueType: 'select',
         request: () => {
-            return GetDictList(SysUserDictList)
+            return DoGetDictList(SysUserDictList({addAdminFlag: true}))
         }
     },
 

@@ -1,4 +1,4 @@
-import {GetDictList, GetDictListByKey, YesNoDict} from "@/util/DictUtil";
+import {DoGetDictList, GetDictListByKey, YesNoDict} from "@/util/DictUtil";
 import {SysRequestDO, SysRequestPageDTO} from "@/api/http/SysRequest";
 import {HandlerRegion} from "@/util/StrUtil";
 import {SysUserDictList} from "@/api/http/SysUser";
@@ -94,7 +94,7 @@ const TableColumnList = (): ProColumns<SysRequestDO>[] => [
     {
         title: '创建人', dataIndex: 'createId', ellipsis: true, width: 90, valueType: 'select',
         request: () => {
-            return GetDictList(SysUserDictList)
+            return DoGetDictList(SysUserDictList({addAdminFlag: true}))
         }
     },
 
