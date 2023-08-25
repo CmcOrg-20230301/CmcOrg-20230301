@@ -1,5 +1,6 @@
 package com.cmcorg20230301.engine.be.security.properties;
 
+import cn.hutool.crypto.digest.DigestUtil;
 import com.cmcorg20230301.engine.be.model.model.constant.PropertiesPrefixConstant;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
@@ -23,7 +24,7 @@ public class SecurityProperties {
     @Schema(description = "admin 的昵称")
     private String adminNickname = "admin";
 
-    @Schema(description = "admin 的密码，默认为 suancai，下面是 suancai经过 sha加密之后的字符串，加密次数和方法和前端需进行统一，输入 suancai即可登录")
+    @Schema(description = "admin 的密码，默认为 suancai，下面是 suancai经过 sha加密之后的字符串，加密次数和方法和前端需进行统一，输入 suancai即可登录，也可以使用本类的 generateAdminPassword，快速生成新的 admin密码")
     private String adminPassword = "89750f4648ab240704529a1504ac8bbb4c85abd9b88522cef992eee8eb2304b2";
 
     @Schema(description = "是否启用：用户名注册功能，默认启用")
@@ -37,5 +38,25 @@ public class SecurityProperties {
 
     @Schema(description = "是否启用：ipFilter，默认启用")
     private Boolean ipFilterEnable = true;
+
+    public static void main(String[] args) {
+
+        generateAdminPassword();
+
+    }
+
+    /**
+     * 生成 admin的密码
+     * 备注：需要和前端一致：先 512，然后再 256
+     */
+    private static void generateAdminPassword() {
+
+        String password = "";
+
+        password = DigestUtil.sha256Hex((DigestUtil.sha512Hex(password)));
+
+        System.out.println(password);
+
+    }
 
 }

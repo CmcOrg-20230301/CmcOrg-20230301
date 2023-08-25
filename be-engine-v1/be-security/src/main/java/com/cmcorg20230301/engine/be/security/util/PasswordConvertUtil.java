@@ -65,6 +65,7 @@ public class PasswordConvertUtil {
         if (StrUtil.isBlank(source)) {
             ApiResultVO.errorMsg("原密码不能为空");
         }
+
         if (StrUtil.isBlank(target)) {
             ApiResultVO.errorMsg("需要比对的密码不能为空");
         }

@@ -10,7 +10,7 @@ export function PasswordRSAEncrypt(
     rsaPublicKey: string = RSA_PUBLIC_KEY
 ) {
 
-    // 备注：512太长了，所以就 256/512混合
+    // 备注：SHA512方法，入参太长了会报错，所以就先 512，然后再 256
     return RSAEncryptPro(
         SHA256(SHA512(password).toString()).toString(),
         date,
