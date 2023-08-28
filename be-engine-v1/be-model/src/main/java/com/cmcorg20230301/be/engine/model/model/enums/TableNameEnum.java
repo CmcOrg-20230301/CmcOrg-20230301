@@ -21,6 +21,8 @@ public enum TableNameEnum {
 
     SYS_USER_INFO, // 用户信息
 
+    SYS_TENANT, // 租户
+
     ;
 
 }

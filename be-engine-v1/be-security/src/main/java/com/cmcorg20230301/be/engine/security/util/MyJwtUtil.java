@@ -11,6 +11,8 @@ import cn.hutool.json.JSONUtil;
 import cn.hutool.jwt.JWT;
 import cn.hutool.jwt.RegisteredPayload;
 import com.baomidou.mybatisplus.extension.toolkit.ChainWrappers;
+import com.cmcorg20230301.be.engine.cache.util.CacheHelper;
+import com.cmcorg20230301.be.engine.cache.util.MyCacheUtil;
 import com.cmcorg20230301.be.engine.model.model.constant.BaseConstant;
 import com.cmcorg20230301.be.engine.redisson.model.enums.RedisKeyEnum;
 import com.cmcorg20230301.be.engine.redisson.util.RedissonUtil;
@@ -20,6 +22,7 @@ import com.cmcorg20230301.be.engine.security.mapper.SysUserMapper;
 import com.cmcorg20230301.be.engine.security.model.constant.SecurityConstant;
 import com.cmcorg20230301.be.engine.security.model.entity.BaseEntity;
 import com.cmcorg20230301.be.engine.security.model.entity.SysMenuDO;
+import com.cmcorg20230301.be.engine.security.model.entity.SysTenantDO;
 import com.cmcorg20230301.be.engine.security.model.enums.SysRequestCategoryEnum;
 import com.cmcorg20230301.be.engine.security.model.vo.ApiResultVO;
 import com.cmcorg20230301.be.engine.security.properties.SecurityProperties;
@@ -30,10 +33,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Component;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
@@ -183,10 +183,18 @@ public class MyJwtUtil {
 
         }
 
-        boolean exists = ChainWrappers.lambdaQueryChain(sysTenantMapper).eq(BaseEntity::getId, tenantId)
-            .eq(BaseEntity::getEnableFlag, true).exists();
+        Map<Long, String> map =
+            MyCacheUtil.getMap(RedisKeyEnum.SYS_TENANT_CACHE, CacheHelper.getDefaultLongMap(), () -> {
 
-        if (!exists) {
+                List<SysTenantDO> sysTenantDOList =
+                    ChainWrappers.lambdaQueryChain(sysTenantMapper).select(BaseEntity::getId, SysTenantDO::getName)
+                        .eq(BaseEntity::getEnableFlag, true).list();
+
+                return sysTenantDOList.stream().collect(Collectors.toMap(BaseEntity::getId, SysTenantDO::getName));
+
+            });
+
+        if (!map.containsKey(tenantId)) {
 
             ApiResultVO.error("操作失败：租户不存在", tenantId);
 
