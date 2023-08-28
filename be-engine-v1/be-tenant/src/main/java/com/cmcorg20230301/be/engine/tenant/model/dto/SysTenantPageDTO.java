@@ -9,6 +9,9 @@ import lombok.EqualsAndHashCode;
 @Data
 public class SysTenantPageDTO extends MyPageDTO {
 
+    @Schema(description = "主键 id")
+    private Long id;
+
     @Schema(description = "租户名")
     private String name;
 
