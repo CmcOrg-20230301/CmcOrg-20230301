@@ -62,8 +62,8 @@ public class SecurityCacheConfiguration {
             .add(new SecurityCache(TableNameEnum.SYS_DICT, CollUtil.newHashSet(RedisKeyEnum.SYS_DICT_CACHE)));
 
         // 租户
-        TABLE_NAME_ENUM_SET
-            .add(new SecurityCache(TableNameEnum.SYS_TENANT, CollUtil.newHashSet(RedisKeyEnum.SYS_TENANT_CACHE)));
+        TABLE_NAME_ENUM_SET.add(new SecurityCache(TableNameEnum.SYS_TENANT,
+            CollUtil.newHashSet(RedisKeyEnum.SYS_TENANT_CACHE, RedisKeyEnum.SYS_TENANT_DEEP_ID_SET_CACHE)));
 
     }
 
