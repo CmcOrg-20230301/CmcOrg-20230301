@@ -19,6 +19,7 @@ import com.cmcorg20230301.be.engine.security.model.entity.SysTenantRefUserDO;
 import com.cmcorg20230301.be.engine.security.model.vo.ApiResultVO;
 import com.cmcorg20230301.be.engine.security.util.MyEntityUtil;
 import com.cmcorg20230301.be.engine.security.util.MyTreeUtil;
+import com.cmcorg20230301.be.engine.security.util.UserUtil;
 import com.cmcorg20230301.be.engine.tenant.model.dto.SysTenantInsertOrUpdateDTO;
 import com.cmcorg20230301.be.engine.tenant.model.dto.SysTenantPageDTO;
 import com.cmcorg20230301.be.engine.tenant.model.vo.SysTenantInfoByIdVO;
@@ -45,13 +46,20 @@ public class SysTenantServiceImpl extends ServiceImpl<SysTenantMapper, SysTenant
     @MyTransactional
     public String insertOrUpdate(SysTenantInsertOrUpdateDTO dto) {
 
+        Long parentId = MyEntityUtil.getNotNullParentId(dto.getParentId());
+
+        if (parentId == 0) {
+
+            parentId = UserUtil.getCurrentTenantIdDefault(); // 赋值为：当前的租户 id
+
+        }
+
         if (dto.getId() != null && dto.getId().equals(dto.getParentId())) {
             ApiResultVO.error(BaseBizCodeEnum.PARENT_ID_CANNOT_BE_EQUAL_TO_ID);
         }
 
         // 相同父节点下：租户名（不能重复）
-        boolean exists = lambdaQuery().eq(SysTenantDO::getName, dto.getName())
-            .eq(BaseEntityTree::getParentId, MyEntityUtil.getNotNullParentId(dto.getParentId()))
+        boolean exists = lambdaQuery().eq(SysTenantDO::getName, dto.getName()).eq(BaseEntityTree::getParentId, parentId)
             .ne(dto.getId() != null, BaseEntity::getId, dto.getId()).exists();
 
         if (exists) {
@@ -66,7 +74,7 @@ public class SysTenantServiceImpl extends ServiceImpl<SysTenantMapper, SysTenant
         sysTenantDO.setEnableFlag(BooleanUtil.isTrue(dto.getEnableFlag()));
         sysTenantDO.setName(dto.getName());
         sysTenantDO.setOrderNo(dto.getOrderNo());
-        sysTenantDO.setParentId(MyEntityUtil.getNotNullParentId(dto.getParentId()));
+        sysTenantDO.setParentId(parentId);
         sysTenantDO.setId(dto.getId());
         sysTenantDO.setRemark(MyEntityUtil.getNotNullStr(dto.getRemark()));
         sysTenantDO.setDelFlag(false);
