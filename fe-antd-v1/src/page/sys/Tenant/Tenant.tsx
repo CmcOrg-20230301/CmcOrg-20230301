@@ -1,38 +1,53 @@
 import {useRef, useState} from "react";
-import {ActionType, BetaSchemaForm, ColumnsState, FormInstance, ProTable} from "@ant-design/pro-components";
-import {Button, Space} from "antd";
-import {PlusOutlined} from "@ant-design/icons/lib";
 import {
-    AdminDeleteByIdSetApi,
-    AdminInfoByIdApi,
-    AdminInsertOrUpdateApi,
-    AdminInsertOrUpdateDTO,
-    AdminPageApi,
-    AdminPageDTO,
-    AdminPageVO
-} from "@/api/http/AdminController";
+    ActionType,
+    BetaSchemaForm,
+    ColumnsState,
+    FormInstance,
+    ModalForm,
+    ProFormDigit,
+    ProTable
+} from "@ant-design/pro-components";
+import {Button, Dropdown, Space} from "antd";
+import {ColumnHeightOutlined, EllipsisOutlined, PlusOutlined, VerticalAlignMiddleOutlined} from "@ant-design/icons/lib";
+import {
+    SysTenantAddOrderNo,
+    SysTenantDeleteByIdSet,
+    SysTenantDO,
+    SysTenantInfoById,
+    SysTenantInsertOrUpdate,
+    SysTenantInsertOrUpdateDTO,
+    SysTenantPageDTO,
+    SysTenantTree
+} from "@/api/http/SysTenant";
 import TableColumnList from "./TableColumnList";
 import {ExecConfirm, ToastSuccess} from "@/util/ToastUtil";
 import SchemaFormColumnList, {InitForm} from "./SchemaFormColumnList";
+import {CalcOrderNo, GetIdListForHasChildrenNode} from "@/util/TreeUtil";
 import CommonConstant from "@/model/constant/CommonConstant";
+import {IMyTree} from "@/util/DictUtil";
 import {UseEffectFullScreenChange} from "@/util/DocumentUtil";
 
-// AdminTsxTitle
+// 租户-管理
 export default function () {
 
     const [columnsStateMap, setColumnsStateMap] = useState<Record<string, ColumnsState>>();
 
     const [expandedRowKeys, setExpandedRowKeys] = useState<string[]>([]);
 
+    const hasChildrenIdList = useRef<string[]>([]); // 有子节点的 idList
+
     const actionRef = useRef<ActionType>()
 
-    const formRef = useRef<FormInstance<AdminInsertOrUpdateDTO>>();
+    const formRef = useRef<FormInstance<SysTenantInsertOrUpdateDTO>>();
 
     const [formOpen, setFormOpen] = useState<boolean>(false);
 
-    const currentForm = useRef<AdminInsertOrUpdateDTO>({} as AdminInsertOrUpdateDTO)
+    const currentForm = useRef<SysTenantInsertOrUpdateDTO>({} as SysTenantInsertOrUpdateDTO)
 
     const [fullScreenFlag, setFullScreenFlag] = useState<boolean>(false)
+
+    const treeListRef = useRef<IMyTree[]>([]) // table的数据
 
     UseEffectFullScreenChange(setFullScreenFlag) // 监听是否：全屏
 
@@ -40,18 +55,14 @@ export default function () {
 
         <>
 
-            <ProTable<AdminPageVO, AdminPageDTO>
+            <ProTable<SysTenantDO, SysTenantPageDTO>
 
                 scroll={{x: 'max-content'}}
                 sticky={{offsetHeader: fullScreenFlag ? 0 : CommonConstant.NAV_TOP_HEIGHT}}
+
                 actionRef={actionRef}
                 rowKey={"id"}
-
-                pagination={{
-                    showQuickJumper: true,
-                    showSizeChanger: true,
-                }}
-
+                pagination={false}
                 columnEmptyText={false}
 
                 columnsState={{
@@ -60,7 +71,6 @@ export default function () {
                 }}
 
                 rowSelection={{}}
-
                 expandable={{
 
                     expandedRowKeys,
@@ -83,17 +93,75 @@ export default function () {
 
                 request={(params, sort, filter) => {
 
-                    return AdminPageApi({...params, sort})
+                    return SysTenantTree({...params, sort})
+
+                }}
+
+                postData={(data: any) => {
+
+                    treeListRef.current = data
+
+                    hasChildrenIdList.current = GetIdListForHasChildrenNode(data)
+
+                    return data
 
                 }}
 
                 toolbar={{
 
+                    title:
+
+                        <Dropdown menu={{
+
+                            items: [
+                                {
+
+                                    key: '1',
+
+                                    label: <a onClick={() => {
+
+                                        setExpandedRowKeys(hasChildrenIdList.current)
+
+                                    }}>
+                                        展开全部
+                                    </a>,
+
+                                    icon: <ColumnHeightOutlined/>
+
+                                },
+
+                                {
+
+                                    key: '2',
+
+                                    label: <a onClick={() => {
+
+                                        setExpandedRowKeys([])
+
+                                    }}>
+                                        收起全部
+                                    </a>,
+
+                                    icon: <VerticalAlignMiddleOutlined/>
+
+                                },
+
+                            ]
+
+                        }}>
+
+                            <Button size={"small"} icon={<EllipsisOutlined/>}/>
+
+                        </Dropdown>,
+
                     actions: [
 
                         <Button key={"1"} icon={<PlusOutlined/>} type="primary" onClick={() => {
 
-                            currentForm.current = {} as AdminInsertOrUpdateDTO
+                            currentForm.current = {} as SysTenantInsertOrUpdateDTO
+
+                            CalcOrderNo(currentForm.current, {children: treeListRef.current});
+
                             setFormOpen(true)
 
                         }}>新建</Button>
@@ -106,11 +174,48 @@ export default function () {
 
                     <Space size={16}>
 
+                        <ModalForm<SysTenantInsertOrUpdateDTO>
+
+                            modalProps={{
+                                maskClosable: false
+                            }}
+
+                            isKeyPressSubmit
+
+                            width={CommonConstant.MODAL_FORM_WIDTH}
+                            title={CommonConstant.ADD_ORDER_NO}
+                            trigger={<a>{CommonConstant.ADD_ORDER_NO}</a>}
+
+                            onFinish={async (form) => {
+
+                                await SysTenantAddOrderNo({
+
+                                    idSet: selectedRowKeys as string[],
+                                    number: String(form.orderNo)
+
+                                }).then(res => {
+
+                                    ToastSuccess(res.msg)
+                                    actionRef.current?.reload()
+
+                                })
+
+                                return true
+
+                            }}
+
+                        >
+
+                            <ProFormDigit label="排序号" name="orderNo" min={Number.MIN_SAFE_INTEGER} className={"w100"}
+                                          rules={[{required: true}]}/>
+
+                        </ModalForm>
+
                         <a className={"red3"} onClick={() => {
 
                             ExecConfirm(() => {
 
-                                return AdminDeleteByIdSetApi({idSet: selectedRowKeys as string[]}).then(res => {
+                                return SysTenantDeleteByIdSet({idSet: selectedRowKeys as string[]}).then(res => {
 
                                     ToastSuccess(res.msg)
                                     actionRef.current?.reload()
@@ -132,10 +237,11 @@ export default function () {
 
             </ProTable>
 
-            <BetaSchemaForm<AdminInsertOrUpdateDTO>
+            <BetaSchemaForm<SysTenantInsertOrUpdateDTO>
 
-                title={currentForm.current.id ? "编辑AdminModalFormTitle" : "新建AdminModalFormTitle"}
+                title={currentForm.current.id ? "编辑租户" : "新建租户"}
                 layoutType={"ModalForm"}
+
                 grid
 
                 rowProps={{
@@ -190,7 +296,7 @@ export default function () {
 
                                     ExecConfirm(async () => {
 
-                                        return AdminDeleteByIdSetApi({idSet: [currentForm.current.id!]}).then(res => {
+                                        return SysTenantDeleteByIdSet({idSet: [currentForm.current.id!]}).then(res => {
 
                                             setFormOpen(false)
                                             ToastSuccess(res.msg)
@@ -198,7 +304,7 @@ export default function () {
 
                                         })
 
-                                    }, undefined, `确定删除【${currentForm.current.AdminDeleteName}】吗？`)
+                                    }, undefined, `确定删除【${currentForm.current.name}】吗？`)
 
                                 }}>
 
@@ -220,9 +326,9 @@ export default function () {
 
                     if (currentForm.current.id) {
 
-                        AdminInfoByIdApi({id: currentForm.current.id}).then(res => {
+                        SysTenantInfoById({id: currentForm.current.id}).then(res => {
 
-                            currentForm.current = res as AdminInsertOrUpdateDTO
+                            currentForm.current = res as SysTenantInsertOrUpdateDTO
 
                             formRef.current?.setFieldsValue(currentForm.current) // 组件会深度克隆 currentForm.current
 
@@ -242,7 +348,7 @@ export default function () {
 
                 onFinish={async (form) => {
 
-                    await AdminInsertOrUpdateApi({...currentForm.current, ...form}).then(res => {
+                    await SysTenantInsertOrUpdate({...currentForm.current, ...form}).then(res => {
 
                         ToastSuccess(res.msg)
                         actionRef.current?.reload()

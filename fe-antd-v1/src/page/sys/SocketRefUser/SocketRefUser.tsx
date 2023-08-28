@@ -9,7 +9,7 @@ import {
 } from "@/api/http/SysSocketRefUser";
 import TableColumnList from "./TableColumnList";
 import CommonConstant from "@/model/constant/CommonConstant";
-import {UseEffectFullScreenChange} from "@/page/sys/Menu/Menu";
+import {UseEffectFullScreenChange} from "@/util/DocumentUtil";
 import {ExecConfirm, ToastSuccess} from "@/util/ToastUtil";
 
 // socket-用户管理

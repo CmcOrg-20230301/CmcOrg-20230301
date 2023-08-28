@@ -11,6 +11,9 @@ import java.util.Date;
 @Data
 public class UserSelfInfoVO extends UserSelfUpdateInfoDTO {
 
+    @Schema(description = "租户id，可以为空，为空则表示：默认租户：0")
+    private Long tenantId;
+
     @Schema(description = "邮箱，会脱敏")
     private String email;
 

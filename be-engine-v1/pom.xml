@@ -6,7 +6,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>2.7.14</version>
+        <version>2.7.15</version>
         <relativePath/>
     </parent>
 
@@ -75,6 +75,13 @@
 
     <dependencyManagement>
         <dependencies>
+
+            <!-- be-tenant -->
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>be-tenant</artifactId>
+                <version>${project.version}</version>
+            </dependency>
 
             <!-- be-post -->
             <dependency>
@@ -411,28 +418,28 @@
             <dependency>
                 <groupId>com.github.wechatpay-apiv3</groupId>
                 <artifactId>wechatpay-java</artifactId>
-                <version>0.2.9</version>
+                <version>0.2.11</version>
             </dependency>
 
             <!-- 阿里云oss文件存储 -->
             <dependency>
                 <groupId>com.aliyun.oss</groupId>
                 <artifactId>aliyun-sdk-oss</artifactId>
-                <version>3.17.0</version>
+                <version>3.17.1</version>
             </dependency>
 
             <!-- minio文件系统 -->
             <dependency>
                 <groupId>io.minio</groupId>
                 <artifactId>minio</artifactId>
-                <version>8.5.4</version>
+                <version>8.5.5</version>
             </dependency>
 
             <!-- 二维码工具类 -->
             <dependency>
                 <groupId>com.google.zxing</groupId>
                 <artifactId>core</artifactId>
-                <version>3.5.1</version>
+                <version>3.5.2</version>
             </dependency>
 
             <!-- 解决：sharding-jdbc 启动报错，备注：这个只指定版本号即可，不用引入 -->
@@ -474,7 +481,7 @@
             <dependency>
                 <groupId>com.github.oshi</groupId>
                 <artifactId>oshi-core</artifactId>
-                <version>6.4.4</version>
+                <version>6.4.5</version>
             </dependency>
 
             <!-- xxl-job -->
@@ -502,7 +509,7 @@
             <dependency>
                 <groupId>com.alipay.sdk</groupId>
                 <artifactId>alipay-sdk-java</artifactId>
-                <version>4.38.4.ALL</version>
+                <version>4.38.61.ALL</version>
             </dependency>
 
             <!-- 邮件 -->
@@ -516,7 +523,7 @@
             <dependency>
                 <groupId>org.redisson</groupId>
                 <artifactId>redisson-spring-boot-starter</artifactId>
-                <version>3.22.1</version>
+                <version>3.23.3</version>
             </dependency>
 
             <!-- 离线IP地址定位库 -->
@@ -551,7 +558,7 @@
             <dependency>
                 <groupId>com.baomidou</groupId>
                 <artifactId>mybatis-plus-boot-starter</artifactId>
-                <version>3.5.3.1</version>
+                <version>3.5.3.2</version>
             </dependency>
 
             <!-- jetbrains-annotations -->

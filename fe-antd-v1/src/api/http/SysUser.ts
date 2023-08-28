@@ -23,8 +23,10 @@ export interface SysUserInfoByIdVO {
     phone?: string // 手机号，可以为空
     createId?: string // 创建人id，format：int64
     signInName?: string // 登录名，可以为空
+    tenantId?: string // 租户id，format：int64
     nickname?: string // 昵称
     roleIdSet?: string[] // 角色 idSet，format：int64
+    tenantIdSet?: string[] // 租户 idSet，format：int64
     id?: string // 主键id，format：int64
     enableFlag?: boolean // 正常/冻结
     email?: string // 邮箱，可以为空
@@ -92,6 +94,7 @@ export interface SysUserPageVO {
     signInName?: string // 登录名，会脱敏
     nickname?: string // 昵称
     roleIdSet?: string[] // 角色 idSet，format：int64
+    tenantIdSet?: string[] // 租户 idSet，format：int64
     id?: string // 主键id，format：int64
     enableFlag?: boolean // 正常/冻结
     email?: string // 邮箱，备注：会脱敏
@@ -122,18 +125,19 @@ export function SysUserResetAvatar(form: NotEmptyIdSet, config?: AxiosRequestCon
 }
 
 export interface SysUserInsertOrUpdateDTO {
-    password?: string // 前端加密之后的密码
     postIdSet?: string[] // 岗位 idSet，format：int64
+    bio?: string // 个人简介
+    originPassword?: string // 前端加密之后的原始密码
+    password?: string // 前端加密之后的密码
     deptIdSet?: string[] // 部门 idSet，format：int64
     phone?: string // 手机号码，maxLength：100，minLength：0
     signInName?: string // 登录名，maxLength：20，minLength：0
+    tenantId?: string // 租户id，可以为空，为空则表示：默认租户：0，format：int64
     nickname?: string // 昵称，正则表达式：^[\u4E00-\u9FA5A-Za-z0-9_-]{2,20}$
     roleIdSet?: string[] // 角色 idSet，format：int64
-    bio?: string // 个人简介
     id?: string // 主键 id，format：int64
     enableFlag?: boolean // 正常/冻结
     email?: string // 邮箱，maxLength：200，minLength：0
-    originPassword?: string // 前端加密之后的原始密码
 }
 
 // 新增/修改

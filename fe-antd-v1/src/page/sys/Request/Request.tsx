@@ -12,7 +12,7 @@ import CommonConstant from "@/model/constant/CommonConstant";
 import {Badge, Button, Space, Tooltip, Typography} from "antd";
 import {LoadingOutlined, ReloadOutlined} from "@ant-design/icons";
 import {FormatDateTime} from "@/util/DateUtil";
-import {UseEffectFullScreenChange} from "@/page/sys/Menu/Menu";
+import {UseEffectFullScreenChange} from "@/util/DocumentUtil";
 
 export function GetAvgType(avg: number) {
     return avg < 800 ? 'success' : (avg > 1600 ? 'danger' : 'warning')

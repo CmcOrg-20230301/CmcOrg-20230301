@@ -436,6 +436,12 @@
         "type": "object",
         "required": false,
         "fieldMap": {
+          "tenantId": {
+            "name": "tenantId",
+            "type": "integer",
+            "description": "租户id，可以为空，为空则表示：默认租户：0",
+            "format": "int64"
+          },
           "phoneCode": {
             "name": "phoneCode",
             "type": "string",
@@ -503,6 +509,12 @@
             "type": "string",
             "required": true,
             "description": "微信 code"
+          },
+          "tenantId": {
+            "name": "tenantId",
+            "type": "integer",
+            "description": "租户id，可以为空，为空则表示：默认租户：0",
+            "format": "int64"
           }
         },
         "requiredFieldName": [
@@ -565,6 +577,12 @@
             "type": "string",
             "required": true,
             "description": "微信 code"
+          },
+          "tenantId": {
+            "name": "tenantId",
+            "type": "integer",
+            "description": "租户id，可以为空，为空则表示：默认租户：0",
+            "format": "int64"
           }
         },
         "requiredFieldName": [
@@ -748,6 +766,12 @@
                         "name": "signInName",
                         "type": "string",
                         "description": "登录名，可以为空"
+                      },
+                      "tenantId": {
+                        "name": "tenantId",
+                        "type": "integer",
+                        "description": "租户id",
+                        "format": "int64"
                       },
                       "nickname": {
                         "name": "nickname",
@@ -1545,17 +1569,27 @@
         "className": "SysUserInsertOrUpdateDTO",
         "type": "object",
         "fieldMap": {
-          "password": {
-            "name": "password",
-            "type": "string",
-            "description": "前端加密之后的密码"
-          },
           "postIdSet": {
             "name": "postIdSet",
             "type": "integer",
             "description": "岗位 idSet",
             "format": "int64",
             "arrFlag": true
+          },
+          "bio": {
+            "name": "bio",
+            "type": "string",
+            "description": "个人简介"
+          },
+          "originPassword": {
+            "name": "originPassword",
+            "type": "string",
+            "description": "前端加密之后的原始密码"
+          },
+          "password": {
+            "name": "password",
+            "type": "string",
+            "description": "前端加密之后的密码"
           },
           "deptIdSet": {
             "name": "deptIdSet",
@@ -1578,6 +1612,12 @@
             "maxLength": 20,
             "minLength": 0
           },
+          "tenantId": {
+            "name": "tenantId",
+            "type": "integer",
+            "description": "租户id，可以为空，为空则表示：默认租户：0",
+            "format": "int64"
+          },
           "nickname": {
             "name": "nickname",
             "type": "string",
@@ -1590,11 +1630,6 @@
             "description": "角色 idSet",
             "format": "int64",
             "arrFlag": true
-          },
-          "bio": {
-            "name": "bio",
-            "type": "string",
-            "description": "个人简介"
           },
           "id": {
             "name": "id",
@@ -1613,11 +1648,6 @@
             "description": "邮箱",
             "maxLength": 200,
             "minLength": 0
-          },
-          "originPassword": {
-            "name": "originPassword",
-            "type": "string",
-            "description": "前端加密之后的原始密码"
           }
         }
       },
@@ -1662,6 +1692,77 @@
     }
   },
   "NettyWebSocket": {
+    "/netty/webSocket/getWebSocketUrlById": {
+      "path": "/netty/webSocket/getWebSocketUrlById",
+      "method": "post",
+      "tag": "netty-webSocket",
+      "group": "NettyWebSocket",
+      "summary": "通过主键 id，获取：webSocket连接地址，格式：scheme://ip:port/path?code=xxx",
+      "contentType": "application/json",
+      "requestBody": {
+        "className": "NotNullIdAndIntegerValue",
+        "type": "object",
+        "required": false,
+        "fieldMap": {
+          "id": {
+            "name": "id",
+            "type": "integer",
+            "required": true,
+            "description": "主键id",
+            "format": "int64"
+          },
+          "value": {
+            "name": "value",
+            "type": "integer",
+            "required": true,
+            "description": "值",
+            "format": "int32"
+          }
+        },
+        "requiredFieldName": [
+          "id",
+          "value"
+        ]
+      },
+      "response": {
+        "className": "ApiResultVOString",
+        "fieldMap": {
+          "ApiResultVOString": {
+            "className": "ApiResultVOString",
+            "type": "object",
+            "description": "统一响应实体类",
+            "fieldMap": {
+              "msg": {
+                "name": "msg",
+                "type": "string",
+                "description": "响应描述"
+              },
+              "code": {
+                "name": "code",
+                "type": "integer",
+                "description": "响应代码，成功返回：200",
+                "format": "int32"
+              },
+              "data": {
+                "name": "data",
+                "type": "string",
+                "description": "数据"
+              },
+              "service": {
+                "name": "service",
+                "type": "string",
+                "description": "服务名"
+              },
+              "successFlag": {
+                "name": "successFlag",
+                "type": "boolean",
+                "description": "服务器是否收到请求，只会返回 true"
+              }
+            }
+          }
+        }
+      }
+    },
     "/netty/webSocket/getAllWebSocketUrl": {
       "path": "/netty/webSocket/getAllWebSocketUrl",
       "method": "post",
@@ -1713,7 +1814,46 @@
       "method": "post",
       "tag": "WebSocket-心跳检测",
       "group": "NettyWebSocket",
-      "summary": "心跳检测"
+      "summary": "心跳检测",
+      "response": {
+        "className": "ApiResultVOLong",
+        "fieldMap": {
+          "ApiResultVOLong": {
+            "className": "ApiResultVOLong",
+            "type": "object",
+            "description": "统一响应实体类",
+            "fieldMap": {
+              "msg": {
+                "name": "msg",
+                "type": "string",
+                "description": "响应描述"
+              },
+              "code": {
+                "name": "code",
+                "type": "integer",
+                "description": "响应代码，成功返回：200",
+                "format": "int32"
+              },
+              "data": {
+                "name": "data",
+                "type": "integer",
+                "description": "数据",
+                "format": "int64"
+              },
+              "service": {
+                "name": "service",
+                "type": "string",
+                "description": "服务名"
+              },
+              "successFlag": {
+                "name": "successFlag",
+                "type": "boolean",
+                "description": "服务器是否收到请求，只会返回 true"
+              }
+            }
+          }
+        }
+      }
     }
   },
   "SysDept": {
@@ -2003,6 +2143,12 @@
                                 "description": "创建人id",
                                 "format": "int64"
                               },
+                              "tenantId": {
+                                "name": "tenantId",
+                                "type": "integer",
+                                "description": "租户id",
+                                "format": "int64"
+                              },
                               "name": {
                                 "name": "name",
                                 "type": "string",
@@ -2191,6 +2337,12 @@
                         "description": "创建人id",
                         "format": "int64"
                       },
+                      "tenantId": {
+                        "name": "tenantId",
+                        "type": "integer",
+                        "description": "租户id",
+                        "format": "int64"
+                      },
                       "name": {
                         "name": "name",
                         "type": "string",
@@ -2374,6 +2526,12 @@
                         "name": "createId",
                         "type": "integer",
                         "description": "创建人id",
+                        "format": "int64"
+                      },
+                      "tenantId": {
+                        "name": "tenantId",
+                        "type": "integer",
+                        "description": "租户id",
                         "format": "int64"
                       },
                       "name": {
@@ -2618,6 +2776,12 @@
                         "name": "createId",
                         "type": "integer",
                         "description": "创建人id",
+                        "format": "int64"
+                      },
+                      "tenantId": {
+                        "name": "tenantId",
+                        "type": "integer",
+                        "description": "租户id",
                         "format": "int64"
                       },
                       "name": {
@@ -2973,6 +3137,12 @@
                                 "description": "创建人id",
                                 "format": "int64"
                               },
+                              "tenantId": {
+                                "name": "tenantId",
+                                "type": "integer",
+                                "description": "租户id",
+                                "format": "int64"
+                              },
                               "name": {
                                 "name": "name",
                                 "type": "string",
@@ -3228,6 +3398,12 @@
                         "name": "createId",
                         "type": "integer",
                         "description": "创建人id",
+                        "format": "int64"
+                      },
+                      "tenantId": {
+                        "name": "tenantId",
+                        "type": "integer",
+                        "description": "租户id",
                         "format": "int64"
                       },
                       "name": {
@@ -3600,6 +3776,12 @@
                                 "description": "创建人id",
                                 "format": "int64"
                               },
+                              "tenantId": {
+                                "name": "tenantId",
+                                "type": "integer",
+                                "description": "租户id",
+                                "format": "int64"
+                              },
                               "name": {
                                 "name": "name",
                                 "type": "string",
@@ -3625,6 +3807,12 @@
                         "name": "createId",
                         "type": "integer",
                         "description": "创建人id",
+                        "format": "int64"
+                      },
+                      "tenantId": {
+                        "name": "tenantId",
+                        "type": "integer",
+                        "description": "租户id",
                         "format": "int64"
                       },
                       "name": {
@@ -3916,6 +4104,12 @@
                                 "description": "创建人id",
                                 "format": "int64"
                               },
+                              "tenantId": {
+                                "name": "tenantId",
+                                "type": "integer",
+                                "description": "租户id",
+                                "format": "int64"
+                              },
                               "name": {
                                 "name": "name",
                                 "type": "string",
@@ -4016,6 +4210,12 @@
             "pattern": "^(13[0-9]|14[01456879]|15[0-35-9]|16[2567]|17[0-8]|18[0-9]|19[0-35-9])\\d{8}$",
             "maxLength": 100,
             "minLength": 0
+          },
+          "tenantId": {
+            "name": "tenantId",
+            "type": "integer",
+            "description": "租户id，可以为空，为空则表示：默认租户：0",
+            "format": "int64"
           }
         },
         "requiredFieldName": [
@@ -4154,6 +4354,12 @@
             "pattern": "^(13[0-9]|14[01456879]|15[0-35-9]|16[2567]|17[0-8]|18[0-9]|19[0-35-9])\\d{8}$",
             "maxLength": 100,
             "minLength": 0
+          },
+          "tenantId": {
+            "name": "tenantId",
+            "type": "integer",
+            "description": "租户id，可以为空，为空则表示：默认租户：0",
+            "format": "int64"
           }
         },
         "requiredFieldName": [
@@ -4264,6 +4470,12 @@
             "pattern": "^(13[0-9]|14[01456879]|15[0-35-9]|16[2567]|17[0-8]|18[0-9]|19[0-35-9])\\d{8}$",
             "maxLength": 100,
             "minLength": 0
+          },
+          "tenantId": {
+            "name": "tenantId",
+            "type": "integer",
+            "description": "租户id，可以为空，为空则表示：默认租户：0",
+            "format": "int64"
           }
         },
         "requiredFieldName": [
@@ -4381,6 +4593,12 @@
             "pattern": "^(13[0-9]|14[01456879]|15[0-35-9]|16[2567]|17[0-8]|18[0-9]|19[0-35-9])\\d{8}$",
             "maxLength": 100,
             "minLength": 0
+          },
+          "tenantId": {
+            "name": "tenantId",
+            "type": "integer",
+            "description": "租户id，可以为空，为空则表示：默认租户：0",
+            "format": "int64"
           }
         },
         "requiredFieldName": [
@@ -4505,6 +4723,12 @@
             "pattern": "^(13[0-9]|14[01456879]|15[0-35-9]|16[2567]|17[0-8]|18[0-9]|19[0-35-9])\\d{8}$",
             "maxLength": 100,
             "minLength": 0
+          },
+          "tenantId": {
+            "name": "tenantId",
+            "type": "integer",
+            "description": "租户id，可以为空，为空则表示：默认租户：0",
+            "format": "int64"
           },
           "newPassword": {
             "name": "newPassword",
@@ -4670,6 +4894,12 @@
             "maxLength": 100,
             "minLength": 0
           },
+          "tenantId": {
+            "name": "tenantId",
+            "type": "integer",
+            "description": "租户id，可以为空，为空则表示：默认租户：0",
+            "format": "int64"
+          },
           "originPassword": {
             "name": "originPassword",
             "type": "string",
@@ -4743,6 +4973,12 @@
             "pattern": "^(13[0-9]|14[01456879]|15[0-35-9]|16[2567]|17[0-8]|18[0-9]|19[0-35-9])\\d{8}$",
             "maxLength": 100,
             "minLength": 0
+          },
+          "tenantId": {
+            "name": "tenantId",
+            "type": "integer",
+            "description": "租户id，可以为空，为空则表示：默认租户：0",
+            "format": "int64"
           }
         },
         "requiredFieldName": [
@@ -4958,6 +5194,12 @@
             "pattern": "^(13[0-9]|14[01456879]|15[0-35-9]|16[2567]|17[0-8]|18[0-9]|19[0-35-9])\\d{8}$",
             "maxLength": 100,
             "minLength": 0
+          },
+          "tenantId": {
+            "name": "tenantId",
+            "type": "integer",
+            "description": "租户id，可以为空，为空则表示：默认租户：0",
+            "format": "int64"
           }
         },
         "requiredFieldName": [
@@ -5017,38 +5259,15 @@
         "className": "SysSocketRefUserPageDTO",
         "type": "object",
         "fieldMap": {
-          "socketId": {
-            "name": "socketId",
-            "type": "integer",
-            "description": "socket主键 id",
-            "format": "int64"
-          },
-          "current": {
-            "name": "current",
-            "type": "integer",
-            "description": "第几页",
-            "format": "int64"
-          },
           "scheme": {
             "name": "scheme",
             "type": "string",
             "description": "协议"
           },
-          "port": {
-            "name": "port",
-            "type": "integer",
-            "description": "端口",
-            "format": "int32"
-          },
-          "nickname": {
-            "name": "nickname",
+          "ip": {
+            "name": "ip",
             "type": "string",
-            "description": "冗余字段，昵称"
-          },
-          "host": {
-            "name": "host",
-            "type": "string",
-            "description": "主机"
+            "description": "ip"
           },
           "pageSize": {
             "name": "pageSize",
@@ -5071,6 +5290,45 @@
             "type": "integer",
             "description": "用户主键 id",
             "format": "int64"
+          },
+          "socketId": {
+            "name": "socketId",
+            "type": "integer",
+            "description": "socket主键 id",
+            "format": "int64"
+          },
+          "current": {
+            "name": "current",
+            "type": "integer",
+            "description": "第几页",
+            "format": "int64"
+          },
+          "onlineType": {
+            "name": "onlineType",
+            "type": "string",
+            "description": "socket 在线状态"
+          },
+          "port": {
+            "name": "port",
+            "type": "integer",
+            "description": "端口",
+            "format": "int32"
+          },
+          "host": {
+            "name": "host",
+            "type": "string",
+            "description": "主机"
+          },
+          "id": {
+            "name": "id",
+            "type": "integer",
+            "description": "主键 id",
+            "format": "int64"
+          },
+          "region": {
+            "name": "region",
+            "type": "string",
+            "description": "Ip2RegionUtil.getRegion() 获取到的 ip所处区域"
           },
           "order": {
             "className": "MyOrderDTO",
@@ -5158,27 +5416,10 @@
                             "type": "object",
                             "description": "v20230301：关联表：socket，用户",
                             "fieldMap": {
-                              "jwtHashExpireTs": {
-                                "name": "jwtHashExpireTs",
-                                "type": "integer",
-                                "description": "jwtHash未来过期的时间戳",
-                                "format": "int64"
-                              },
                               "scheme": {
                                 "name": "scheme",
                                 "type": "string",
                                 "description": "冗余字段，协议"
-                              },
-                              "ip": {
-                                "name": "ip",
-                                "type": "string",
-                                "description": "ip"
-                              },
-                              "updateTime": {
-                                "name": "updateTime",
-                                "type": "string",
-                                "description": "修改时间",
-                                "format": "date-time"
                               },
                               "remark": {
                                 "name": "remark",
@@ -5194,18 +5435,6 @@
                                 "name": "type",
                                 "type": "string",
                                 "description": "冗余字段，socket类型"
-                              },
-                              "version": {
-                                "name": "version",
-                                "type": "integer",
-                                "description": "乐观锁",
-                                "format": "int32"
-                              },
-                              "userId": {
-                                "name": "userId",
-                                "type": "integer",
-                                "description": "用户主键 id",
-                                "format": "int64"
                               },
                               "socketId": {
                                 "name": "socketId",
@@ -5223,6 +5452,61 @@
                                 "name": "path",
                                 "type": "string",
                                 "description": "路径"
+                              },
+                              "nickname": {
+                                "name": "nickname",
+                                "type": "string",
+                                "description": "冗余字段，用户昵称"
+                              },
+                              "host": {
+                                "name": "host",
+                                "type": "string",
+                                "description": "冗余字段，主机"
+                              },
+                              "id": {
+                                "name": "id",
+                                "type": "integer",
+                                "description": "主键id",
+                                "format": "int64"
+                              },
+                              "enableFlag": {
+                                "name": "enableFlag",
+                                "type": "boolean",
+                                "description": "是否启用"
+                              },
+                              "jwtHash": {
+                                "name": "jwtHash",
+                                "type": "string",
+                                "description": "jwtHash"
+                              },
+                              "jwtHashExpireTs": {
+                                "name": "jwtHashExpireTs",
+                                "type": "integer",
+                                "description": "jwtHash未来过期的时间戳",
+                                "format": "int64"
+                              },
+                              "ip": {
+                                "name": "ip",
+                                "type": "string",
+                                "description": "ip"
+                              },
+                              "updateTime": {
+                                "name": "updateTime",
+                                "type": "string",
+                                "description": "修改时间",
+                                "format": "date-time"
+                              },
+                              "version": {
+                                "name": "version",
+                                "type": "integer",
+                                "description": "乐观锁",
+                                "format": "int32"
+                              },
+                              "userId": {
+                                "name": "userId",
+                                "type": "integer",
+                                "description": "用户主键 id",
+                                "format": "int64"
                               },
                               "onlineType": {
                                 "name": "onlineType",
@@ -5247,26 +5531,16 @@
                                 "description": "创建人id",
                                 "format": "int64"
                               },
-                              "nickname": {
-                                "name": "nickname",
-                                "type": "string",
-                                "description": "冗余字段，用户昵称"
-                              },
-                              "host": {
-                                "name": "host",
-                                "type": "string",
-                                "description": "冗余字段，主机"
+                              "tenantId": {
+                                "name": "tenantId",
+                                "type": "integer",
+                                "description": "租户id",
+                                "format": "int64"
                               },
                               "userAgentJsonStr": {
                                 "name": "userAgentJsonStr",
                                 "type": "string",
                                 "description": "User-Agent信息对象，json字符串"
-                              },
-                              "id": {
-                                "name": "id",
-                                "type": "integer",
-                                "description": "主键id",
-                                "format": "int64"
                               },
                               "region": {
                                 "name": "region",
@@ -5277,16 +5551,6 @@
                                 "name": "category",
                                 "type": "string",
                                 "description": "请求类别"
-                              },
-                              "enableFlag": {
-                                "name": "enableFlag",
-                                "type": "boolean",
-                                "description": "是否启用"
-                              },
-                              "jwtHash": {
-                                "name": "jwtHash",
-                                "type": "string",
-                                "description": "jwtHash"
                               }
                             }
                           }
@@ -5334,6 +5598,1010 @@
                     }
                   }
                 }
+              },
+              "service": {
+                "name": "service",
+                "type": "string",
+                "description": "服务名"
+              },
+              "successFlag": {
+                "name": "successFlag",
+                "type": "boolean",
+                "description": "服务器是否收到请求，只会返回 true"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/sys/socketRefUser/offlineByIdSet": {
+      "path": "/sys/socketRefUser/offlineByIdSet",
+      "method": "post",
+      "tag": "socket-用户管理",
+      "group": "SysSocketRefUser",
+      "summary": "批量：下线用户",
+      "contentType": "application/json",
+      "requestBody": {
+        "className": "NotEmptyIdSet",
+        "type": "object",
+        "required": false,
+        "fieldMap": {
+          "idSet": {
+            "name": "idSet",
+            "type": "integer",
+            "required": true,
+            "description": "主键 idSet",
+            "format": "int64",
+            "arrFlag": true
+          }
+        },
+        "requiredFieldName": [
+          "idSet"
+        ]
+      },
+      "response": {
+        "className": "ApiResultVOString",
+        "fieldMap": {
+          "ApiResultVOString": {
+            "className": "ApiResultVOString",
+            "type": "object",
+            "description": "统一响应实体类",
+            "fieldMap": {
+              "msg": {
+                "name": "msg",
+                "type": "string",
+                "description": "响应描述"
+              },
+              "code": {
+                "name": "code",
+                "type": "integer",
+                "description": "响应代码，成功返回：200",
+                "format": "int32"
+              },
+              "data": {
+                "name": "data",
+                "type": "string",
+                "description": "数据"
+              },
+              "service": {
+                "name": "service",
+                "type": "string",
+                "description": "服务名"
+              },
+              "successFlag": {
+                "name": "successFlag",
+                "type": "boolean",
+                "description": "服务器是否收到请求，只会返回 true"
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "SysTenant": {
+    "/sys/tenant/insertOrUpdate": {
+      "path": "/sys/tenant/insertOrUpdate",
+      "method": "post",
+      "tag": "租户-管理",
+      "group": "SysTenant",
+      "summary": "新增/修改",
+      "contentType": "application/json",
+      "requestBody": {
+        "className": "SysTenantInsertOrUpdateDTO",
+        "type": "object",
+        "required": false,
+        "fieldMap": {
+          "orderNo": {
+            "name": "orderNo",
+            "type": "integer",
+            "description": "排序号（值越大越前面，默认为 0）",
+            "format": "int32"
+          },
+          "userIdSet": {
+            "name": "userIdSet",
+            "type": "integer",
+            "description": "用户 idSet",
+            "format": "int64",
+            "arrFlag": true
+          },
+          "name": {
+            "name": "name",
+            "type": "string",
+            "required": true,
+            "description": "租户名"
+          },
+          "remark": {
+            "name": "remark",
+            "type": "string",
+            "description": "备注"
+          },
+          "id": {
+            "name": "id",
+            "type": "integer",
+            "description": "主键 id",
+            "format": "int64"
+          },
+          "enableFlag": {
+            "name": "enableFlag",
+            "type": "boolean",
+            "description": "是否启用"
+          },
+          "parentId": {
+            "name": "parentId",
+            "type": "integer",
+            "description": "父节点id（顶级则为0）",
+            "format": "int64"
+          }
+        },
+        "requiredFieldName": [
+          "name"
+        ]
+      },
+      "response": {
+        "className": "ApiResultVOString",
+        "fieldMap": {
+          "ApiResultVOString": {
+            "className": "ApiResultVOString",
+            "type": "object",
+            "description": "统一响应实体类",
+            "fieldMap": {
+              "msg": {
+                "name": "msg",
+                "type": "string",
+                "description": "响应描述"
+              },
+              "code": {
+                "name": "code",
+                "type": "integer",
+                "description": "响应代码，成功返回：200",
+                "format": "int32"
+              },
+              "data": {
+                "name": "data",
+                "type": "string",
+                "description": "数据"
+              },
+              "service": {
+                "name": "service",
+                "type": "string",
+                "description": "服务名"
+              },
+              "successFlag": {
+                "name": "successFlag",
+                "type": "boolean",
+                "description": "服务器是否收到请求，只会返回 true"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/sys/tenant/deleteByIdSet": {
+      "path": "/sys/tenant/deleteByIdSet",
+      "method": "post",
+      "tag": "租户-管理",
+      "group": "SysTenant",
+      "summary": "批量删除",
+      "contentType": "application/json",
+      "requestBody": {
+        "className": "NotEmptyIdSet",
+        "type": "object",
+        "required": false,
+        "fieldMap": {
+          "idSet": {
+            "name": "idSet",
+            "type": "integer",
+            "required": true,
+            "description": "主键 idSet",
+            "format": "int64",
+            "arrFlag": true
+          }
+        },
+        "requiredFieldName": [
+          "idSet"
+        ]
+      },
+      "response": {
+        "className": "ApiResultVOString",
+        "fieldMap": {
+          "ApiResultVOString": {
+            "className": "ApiResultVOString",
+            "type": "object",
+            "description": "统一响应实体类",
+            "fieldMap": {
+              "msg": {
+                "name": "msg",
+                "type": "string",
+                "description": "响应描述"
+              },
+              "code": {
+                "name": "code",
+                "type": "integer",
+                "description": "响应代码，成功返回：200",
+                "format": "int32"
+              },
+              "data": {
+                "name": "data",
+                "type": "string",
+                "description": "数据"
+              },
+              "service": {
+                "name": "service",
+                "type": "string",
+                "description": "服务名"
+              },
+              "successFlag": {
+                "name": "successFlag",
+                "type": "boolean",
+                "description": "服务器是否收到请求，只会返回 true"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/sys/tenant/tree": {
+      "path": "/sys/tenant/tree",
+      "method": "post",
+      "tag": "租户-管理",
+      "group": "SysTenant",
+      "summary": "查询：树结构",
+      "contentType": "application/json",
+      "requestBody": {
+        "className": "SysTenantPageDTO",
+        "type": "object",
+        "fieldMap": {
+          "current": {
+            "name": "current",
+            "type": "integer",
+            "description": "第几页",
+            "format": "int64"
+          },
+          "name": {
+            "name": "name",
+            "type": "string",
+            "description": "租户名"
+          },
+          "pageSize": {
+            "name": "pageSize",
+            "type": "integer",
+            "description": "每页显示条数",
+            "format": "int64"
+          },
+          "remark": {
+            "name": "remark",
+            "type": "string",
+            "description": "备注"
+          },
+          "enableFlag": {
+            "name": "enableFlag",
+            "type": "boolean",
+            "description": "是否启用"
+          },
+          "order": {
+            "className": "MyOrderDTO",
+            "name": "order",
+            "fieldMap": {
+              "MyOrderDTO": {
+                "className": "MyOrderDTO",
+                "type": "object",
+                "description": "排序字段",
+                "fieldMap": {
+                  "name": {
+                    "name": "name",
+                    "type": "string",
+                    "description": "排序的字段名"
+                  },
+                  "value": {
+                    "name": "value",
+                    "type": "string",
+                    "description": "ascend（升序，默认） descend（降序）"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "response": {
+        "className": "ApiResultVOListSysTenantDO",
+        "fieldMap": {
+          "ApiResultVOListSysTenantDO": {
+            "className": "ApiResultVOListSysTenantDO",
+            "type": "object",
+            "description": "统一响应实体类",
+            "fieldMap": {
+              "msg": {
+                "name": "msg",
+                "type": "string",
+                "description": "响应描述"
+              },
+              "code": {
+                "name": "code",
+                "type": "integer",
+                "description": "响应代码，成功返回：200",
+                "format": "int32"
+              },
+              "data": {
+                "className": "SysTenantDO",
+                "name": "data",
+                "description": "数据",
+                "fieldMap": {
+                  "SysTenantDO": {
+                    "className": "SysTenantDO",
+                    "type": "object",
+                    "description": "主表：租户",
+                    "fieldMap": {
+                      "orderNo": {
+                        "name": "orderNo",
+                        "type": "integer",
+                        "description": "排序号（值越大越前面，默认为 0）",
+                        "format": "int32"
+                      },
+                      "updateTime": {
+                        "name": "updateTime",
+                        "type": "string",
+                        "description": "修改时间",
+                        "format": "date-time"
+                      },
+                      "remark": {
+                        "name": "remark",
+                        "type": "string",
+                        "description": "备注"
+                      },
+                      "delFlag": {
+                        "name": "delFlag",
+                        "type": "boolean",
+                        "description": "是否逻辑删除"
+                      },
+                      "version": {
+                        "name": "version",
+                        "type": "integer",
+                        "description": "乐观锁",
+                        "format": "int32"
+                      },
+                      "parentId": {
+                        "name": "parentId",
+                        "type": "integer",
+                        "description": "父节点id（顶级则为0）",
+                        "format": "int64"
+                      },
+                      "updateId": {
+                        "name": "updateId",
+                        "type": "integer",
+                        "description": "修改人id",
+                        "format": "int64"
+                      },
+                      "createTime": {
+                        "name": "createTime",
+                        "type": "string",
+                        "description": "创建时间",
+                        "format": "date-time"
+                      },
+                      "children": {
+                        "className": "SysTenantDO",
+                        "name": "children",
+                        "description": "子节点",
+                        "arrFlag": true
+                      },
+                      "createId": {
+                        "name": "createId",
+                        "type": "integer",
+                        "description": "创建人id",
+                        "format": "int64"
+                      },
+                      "tenantId": {
+                        "name": "tenantId",
+                        "type": "integer",
+                        "description": "租户id",
+                        "format": "int64"
+                      },
+                      "name": {
+                        "name": "name",
+                        "type": "string",
+                        "description": "租户名"
+                      },
+                      "id": {
+                        "name": "id",
+                        "type": "integer",
+                        "description": "主键id",
+                        "format": "int64"
+                      },
+                      "enableFlag": {
+                        "name": "enableFlag",
+                        "type": "boolean",
+                        "description": "是否启用"
+                      }
+                    }
+                  }
+                },
+                "arrFlag": true
+              },
+              "service": {
+                "name": "service",
+                "type": "string",
+                "description": "服务名"
+              },
+              "successFlag": {
+                "name": "successFlag",
+                "type": "boolean",
+                "description": "服务器是否收到请求，只会返回 true"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/sys/tenant/page": {
+      "path": "/sys/tenant/page",
+      "method": "post",
+      "tag": "租户-管理",
+      "group": "SysTenant",
+      "summary": "分页排序查询",
+      "contentType": "application/json",
+      "requestBody": {
+        "className": "SysTenantPageDTO",
+        "type": "object",
+        "fieldMap": {
+          "current": {
+            "name": "current",
+            "type": "integer",
+            "description": "第几页",
+            "format": "int64"
+          },
+          "name": {
+            "name": "name",
+            "type": "string",
+            "description": "租户名"
+          },
+          "pageSize": {
+            "name": "pageSize",
+            "type": "integer",
+            "description": "每页显示条数",
+            "format": "int64"
+          },
+          "remark": {
+            "name": "remark",
+            "type": "string",
+            "description": "备注"
+          },
+          "enableFlag": {
+            "name": "enableFlag",
+            "type": "boolean",
+            "description": "是否启用"
+          },
+          "order": {
+            "className": "MyOrderDTO",
+            "name": "order",
+            "fieldMap": {
+              "MyOrderDTO": {
+                "className": "MyOrderDTO",
+                "type": "object",
+                "description": "排序字段",
+                "fieldMap": {
+                  "name": {
+                    "name": "name",
+                    "type": "string",
+                    "description": "排序的字段名"
+                  },
+                  "value": {
+                    "name": "value",
+                    "type": "string",
+                    "description": "ascend（升序，默认） descend（降序）"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "response": {
+        "className": "ApiResultVOPageSysTenantDO",
+        "fieldMap": {
+          "ApiResultVOPageSysTenantDO": {
+            "className": "ApiResultVOPageSysTenantDO",
+            "type": "object",
+            "description": "统一响应实体类",
+            "fieldMap": {
+              "msg": {
+                "name": "msg",
+                "type": "string",
+                "description": "响应描述"
+              },
+              "code": {
+                "name": "code",
+                "type": "integer",
+                "description": "响应代码，成功返回：200",
+                "format": "int32"
+              },
+              "data": {
+                "className": "PageSysTenantDO",
+                "name": "data",
+                "fieldMap": {
+                  "PageSysTenantDO": {
+                    "className": "PageSysTenantDO",
+                    "type": "object",
+                    "description": "数据",
+                    "fieldMap": {
+                      "total": {
+                        "name": "total",
+                        "type": "integer",
+                        "format": "int64"
+                      },
+                      "current": {
+                        "name": "current",
+                        "type": "integer",
+                        "format": "int64"
+                      },
+                      "pages": {
+                        "name": "pages",
+                        "type": "integer",
+                        "format": "int64"
+                      },
+                      "size": {
+                        "name": "size",
+                        "type": "integer",
+                        "format": "int64"
+                      },
+                      "optimizeCountSql": {
+                        "name": "optimizeCountSql",
+                        "type": "boolean"
+                      },
+                      "records": {
+                        "className": "SysTenantDO",
+                        "name": "records",
+                        "fieldMap": {
+                          "SysTenantDO": {
+                            "className": "SysTenantDO",
+                            "type": "object",
+                            "description": "主表：租户",
+                            "fieldMap": {
+                              "orderNo": {
+                                "name": "orderNo",
+                                "type": "integer",
+                                "description": "排序号（值越大越前面，默认为 0）",
+                                "format": "int32"
+                              },
+                              "updateTime": {
+                                "name": "updateTime",
+                                "type": "string",
+                                "description": "修改时间",
+                                "format": "date-time"
+                              },
+                              "remark": {
+                                "name": "remark",
+                                "type": "string",
+                                "description": "备注"
+                              },
+                              "delFlag": {
+                                "name": "delFlag",
+                                "type": "boolean",
+                                "description": "是否逻辑删除"
+                              },
+                              "version": {
+                                "name": "version",
+                                "type": "integer",
+                                "description": "乐观锁",
+                                "format": "int32"
+                              },
+                              "parentId": {
+                                "name": "parentId",
+                                "type": "integer",
+                                "description": "父节点id（顶级则为0）",
+                                "format": "int64"
+                              },
+                              "updateId": {
+                                "name": "updateId",
+                                "type": "integer",
+                                "description": "修改人id",
+                                "format": "int64"
+                              },
+                              "createTime": {
+                                "name": "createTime",
+                                "type": "string",
+                                "description": "创建时间",
+                                "format": "date-time"
+                              },
+                              "children": {
+                                "className": "SysTenantDO",
+                                "name": "children",
+                                "description": "子节点",
+                                "arrFlag": true
+                              },
+                              "createId": {
+                                "name": "createId",
+                                "type": "integer",
+                                "description": "创建人id",
+                                "format": "int64"
+                              },
+                              "tenantId": {
+                                "name": "tenantId",
+                                "type": "integer",
+                                "description": "租户id",
+                                "format": "int64"
+                              },
+                              "name": {
+                                "name": "name",
+                                "type": "string",
+                                "description": "租户名"
+                              },
+                              "id": {
+                                "name": "id",
+                                "type": "integer",
+                                "description": "主键id",
+                                "format": "int64"
+                              },
+                              "enableFlag": {
+                                "name": "enableFlag",
+                                "type": "boolean",
+                                "description": "是否启用"
+                              }
+                            }
+                          }
+                        },
+                        "arrFlag": true
+                      },
+                      "maxLimit": {
+                        "name": "maxLimit",
+                        "type": "integer",
+                        "format": "int64"
+                      },
+                      "searchCount": {
+                        "name": "searchCount",
+                        "type": "boolean"
+                      },
+                      "optimizeJoinOfCountSql": {
+                        "name": "optimizeJoinOfCountSql",
+                        "type": "boolean"
+                      },
+                      "orders": {
+                        "className": "OrderItem",
+                        "name": "orders",
+                        "fieldMap": {
+                          "OrderItem": {
+                            "className": "OrderItem",
+                            "type": "object",
+                            "fieldMap": {
+                              "asc": {
+                                "name": "asc",
+                                "type": "boolean"
+                              },
+                              "column": {
+                                "name": "column",
+                                "type": "string"
+                              }
+                            }
+                          }
+                        },
+                        "arrFlag": true
+                      },
+                      "countId": {
+                        "name": "countId",
+                        "type": "string"
+                      }
+                    }
+                  }
+                }
+              },
+              "service": {
+                "name": "service",
+                "type": "string",
+                "description": "服务名"
+              },
+              "successFlag": {
+                "name": "successFlag",
+                "type": "boolean",
+                "description": "服务器是否收到请求，只会返回 true"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/sys/tenant/infoById": {
+      "path": "/sys/tenant/infoById",
+      "method": "post",
+      "tag": "租户-管理",
+      "group": "SysTenant",
+      "summary": "通过主键id，查看详情",
+      "contentType": "application/json",
+      "requestBody": {
+        "className": "NotNullId",
+        "type": "object",
+        "required": false,
+        "fieldMap": {
+          "id": {
+            "name": "id",
+            "type": "integer",
+            "required": true,
+            "description": "主键id",
+            "format": "int64"
+          }
+        },
+        "requiredFieldName": [
+          "id"
+        ]
+      },
+      "response": {
+        "className": "ApiResultVOSysTenantInfoByIdVO",
+        "fieldMap": {
+          "ApiResultVOSysTenantInfoByIdVO": {
+            "className": "ApiResultVOSysTenantInfoByIdVO",
+            "type": "object",
+            "description": "统一响应实体类",
+            "fieldMap": {
+              "msg": {
+                "name": "msg",
+                "type": "string",
+                "description": "响应描述"
+              },
+              "code": {
+                "name": "code",
+                "type": "integer",
+                "description": "响应代码，成功返回：200",
+                "format": "int32"
+              },
+              "data": {
+                "className": "SysTenantInfoByIdVO",
+                "name": "data",
+                "fieldMap": {
+                  "SysTenantInfoByIdVO": {
+                    "className": "SysTenantInfoByIdVO",
+                    "type": "object",
+                    "description": "数据",
+                    "fieldMap": {
+                      "orderNo": {
+                        "name": "orderNo",
+                        "type": "integer",
+                        "description": "排序号（值越大越前面，默认为 0）",
+                        "format": "int32"
+                      },
+                      "userIdSet": {
+                        "name": "userIdSet",
+                        "type": "integer",
+                        "description": "用户 idSet",
+                        "format": "int64",
+                        "arrFlag": true
+                      },
+                      "updateTime": {
+                        "name": "updateTime",
+                        "type": "string",
+                        "description": "修改时间",
+                        "format": "date-time"
+                      },
+                      "remark": {
+                        "name": "remark",
+                        "type": "string",
+                        "description": "备注"
+                      },
+                      "delFlag": {
+                        "name": "delFlag",
+                        "type": "boolean",
+                        "description": "是否逻辑删除"
+                      },
+                      "version": {
+                        "name": "version",
+                        "type": "integer",
+                        "description": "乐观锁",
+                        "format": "int32"
+                      },
+                      "parentId": {
+                        "name": "parentId",
+                        "type": "integer",
+                        "description": "父节点id（顶级则为0）",
+                        "format": "int64"
+                      },
+                      "updateId": {
+                        "name": "updateId",
+                        "type": "integer",
+                        "description": "修改人id",
+                        "format": "int64"
+                      },
+                      "createTime": {
+                        "name": "createTime",
+                        "type": "string",
+                        "description": "创建时间",
+                        "format": "date-time"
+                      },
+                      "children": {
+                        "className": "SysTenantDO",
+                        "name": "children",
+                        "description": "子节点",
+                        "fieldMap": {
+                          "SysTenantDO": {
+                            "className": "SysTenantDO",
+                            "type": "object",
+                            "description": "主表：租户",
+                            "fieldMap": {
+                              "orderNo": {
+                                "name": "orderNo",
+                                "type": "integer",
+                                "description": "排序号（值越大越前面，默认为 0）",
+                                "format": "int32"
+                              },
+                              "updateTime": {
+                                "name": "updateTime",
+                                "type": "string",
+                                "description": "修改时间",
+                                "format": "date-time"
+                              },
+                              "remark": {
+                                "name": "remark",
+                                "type": "string",
+                                "description": "备注"
+                              },
+                              "delFlag": {
+                                "name": "delFlag",
+                                "type": "boolean",
+                                "description": "是否逻辑删除"
+                              },
+                              "version": {
+                                "name": "version",
+                                "type": "integer",
+                                "description": "乐观锁",
+                                "format": "int32"
+                              },
+                              "parentId": {
+                                "name": "parentId",
+                                "type": "integer",
+                                "description": "父节点id（顶级则为0）",
+                                "format": "int64"
+                              },
+                              "updateId": {
+                                "name": "updateId",
+                                "type": "integer",
+                                "description": "修改人id",
+                                "format": "int64"
+                              },
+                              "createTime": {
+                                "name": "createTime",
+                                "type": "string",
+                                "description": "创建时间",
+                                "format": "date-time"
+                              },
+                              "children": {
+                                "className": "SysTenantDO",
+                                "name": "children",
+                                "description": "子节点",
+                                "arrFlag": true
+                              },
+                              "createId": {
+                                "name": "createId",
+                                "type": "integer",
+                                "description": "创建人id",
+                                "format": "int64"
+                              },
+                              "tenantId": {
+                                "name": "tenantId",
+                                "type": "integer",
+                                "description": "租户id",
+                                "format": "int64"
+                              },
+                              "name": {
+                                "name": "name",
+                                "type": "string",
+                                "description": "租户名"
+                              },
+                              "id": {
+                                "name": "id",
+                                "type": "integer",
+                                "description": "主键id",
+                                "format": "int64"
+                              },
+                              "enableFlag": {
+                                "name": "enableFlag",
+                                "type": "boolean",
+                                "description": "是否启用"
+                              }
+                            }
+                          }
+                        },
+                        "arrFlag": true
+                      },
+                      "createId": {
+                        "name": "createId",
+                        "type": "integer",
+                        "description": "创建人id",
+                        "format": "int64"
+                      },
+                      "tenantId": {
+                        "name": "tenantId",
+                        "type": "integer",
+                        "description": "租户id",
+                        "format": "int64"
+                      },
+                      "name": {
+                        "name": "name",
+                        "type": "string",
+                        "description": "租户名"
+                      },
+                      "id": {
+                        "name": "id",
+                        "type": "integer",
+                        "description": "主键id",
+                        "format": "int64"
+                      },
+                      "enableFlag": {
+                        "name": "enableFlag",
+                        "type": "boolean",
+                        "description": "是否启用"
+                      }
+                    }
+                  }
+                }
+              },
+              "service": {
+                "name": "service",
+                "type": "string",
+                "description": "服务名"
+              },
+              "successFlag": {
+                "name": "successFlag",
+                "type": "boolean",
+                "description": "服务器是否收到请求，只会返回 true"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/sys/tenant/addOrderNo": {
+      "path": "/sys/tenant/addOrderNo",
+      "method": "post",
+      "tag": "租户-管理",
+      "group": "SysTenant",
+      "summary": "通过主键 idSet，加减排序号",
+      "contentType": "application/json",
+      "requestBody": {
+        "className": "ChangeNumberDTO",
+        "type": "object",
+        "required": false,
+        "fieldMap": {
+          "idSet": {
+            "name": "idSet",
+            "type": "integer",
+            "required": true,
+            "description": "主键 idSet",
+            "format": "int64",
+            "arrFlag": true
+          },
+          "number": {
+            "name": "number",
+            "type": "integer",
+            "required": true,
+            "description": "需要改变的数值",
+            "format": "int64"
+          }
+        },
+        "requiredFieldName": [
+          "idSet",
+          "number"
+        ]
+      },
+      "response": {
+        "className": "ApiResultVOString",
+        "fieldMap": {
+          "ApiResultVOString": {
+            "className": "ApiResultVOString",
+            "type": "object",
+            "description": "统一响应实体类",
+            "fieldMap": {
+              "msg": {
+                "name": "msg",
+                "type": "string",
+                "description": "响应描述"
+              },
+              "code": {
+                "name": "code",
+                "type": "integer",
+                "description": "响应代码，成功返回：200",
+                "format": "int32"
+              },
+              "data": {
+                "name": "data",
+                "type": "string",
+                "description": "数据"
               },
               "service": {
                 "name": "service",
@@ -5613,6 +6881,12 @@
                                 "name": "createId",
                                 "type": "integer",
                                 "description": "创建人id",
+                                "format": "int64"
+                              },
+                              "tenantId": {
+                                "name": "tenantId",
+                                "type": "integer",
+                                "description": "租户id",
                                 "format": "int64"
                               },
                               "name": {
@@ -5929,6 +7203,12 @@
                         "description": "创建人id",
                         "format": "int64"
                       },
+                      "tenantId": {
+                        "name": "tenantId",
+                        "type": "integer",
+                        "description": "租户id",
+                        "format": "int64"
+                      },
                       "name": {
                         "name": "name",
                         "type": "string",
@@ -6216,6 +7496,12 @@
                                 "description": "创建人id",
                                 "format": "int64"
                               },
+                              "tenantId": {
+                                "name": "tenantId",
+                                "type": "integer",
+                                "description": "租户id",
+                                "format": "int64"
+                              },
                               "name": {
                                 "name": "name",
                                 "type": "string",
@@ -6246,6 +7532,12 @@
                         "name": "createId",
                         "type": "integer",
                         "description": "创建人id",
+                        "format": "int64"
+                      },
+                      "tenantId": {
+                        "name": "tenantId",
+                        "type": "integer",
+                        "description": "租户id",
                         "format": "int64"
                       },
                       "name": {
@@ -6562,6 +7854,12 @@
                         "name": "createId",
                         "type": "integer",
                         "description": "创建人id",
+                        "format": "int64"
+                      },
+                      "tenantId": {
+                        "name": "tenantId",
+                        "type": "integer",
+                        "description": "租户id",
                         "format": "int64"
                       },
                       "name": {
@@ -6949,6 +8247,12 @@
                                 "description": "创建人id",
                                 "format": "int64"
                               },
+                              "tenantId": {
+                                "name": "tenantId",
+                                "type": "integer",
+                                "description": "租户id",
+                                "format": "int64"
+                              },
                               "name": {
                                 "name": "name",
                                 "type": "string",
@@ -7295,6 +8599,12 @@
                                 "name": "createId",
                                 "type": "integer",
                                 "description": "创建人id",
+                                "format": "int64"
+                              },
+                              "tenantId": {
+                                "name": "tenantId",
+                                "type": "integer",
+                                "description": "租户id",
                                 "format": "int64"
                               },
                               "name": {
@@ -7743,6 +9053,12 @@
                         "description": "创建人id",
                         "format": "int64"
                       },
+                      "tenantId": {
+                        "name": "tenantId",
+                        "type": "integer",
+                        "description": "租户id",
+                        "format": "int64"
+                      },
                       "name": {
                         "name": "name",
                         "type": "string",
@@ -7864,10 +9180,10 @@
         }
       },
       "response": {
-        "className": "ApiResultVOSetSysDictDO",
+        "className": "ApiResultVOListSysDictDO",
         "fieldMap": {
-          "ApiResultVOSetSysDictDO": {
-            "className": "ApiResultVOSetSysDictDO",
+          "ApiResultVOListSysDictDO": {
+            "className": "ApiResultVOListSysDictDO",
             "type": "object",
             "description": "统一响应实体类",
             "fieldMap": {
@@ -7952,6 +9268,12 @@
                         "name": "createId",
                         "type": "integer",
                         "description": "创建人id",
+                        "format": "int64"
+                      },
+                      "tenantId": {
+                        "name": "tenantId",
+                        "type": "integer",
+                        "description": "租户id",
                         "format": "int64"
                       },
                       "name": {
@@ -8196,6 +9518,12 @@
                                 "name": "createId",
                                 "type": "integer",
                                 "description": "创建人id",
+                                "format": "int64"
+                              },
+                              "tenantId": {
+                                "name": "tenantId",
+                                "type": "integer",
+                                "description": "租户id",
                                 "format": "int64"
                               },
                               "name": {
@@ -8852,6 +10180,12 @@
                                 "description": "创建人id",
                                 "format": "int64"
                               },
+                              "tenantId": {
+                                "name": "tenantId",
+                                "type": "integer",
+                                "description": "租户id",
+                                "format": "int64"
+                              },
                               "name": {
                                 "name": "name",
                                 "type": "string",
@@ -9272,6 +10606,12 @@
                                 "description": "创建人id",
                                 "format": "int64"
                               },
+                              "tenantId": {
+                                "name": "tenantId",
+                                "type": "integer",
+                                "description": "租户id",
+                                "format": "int64"
+                              },
                               "name": {
                                 "name": "name",
                                 "type": "string",
@@ -9297,6 +10637,12 @@
                         "name": "createId",
                         "type": "integer",
                         "description": "创建人id",
+                        "format": "int64"
+                      },
+                      "tenantId": {
+                        "name": "tenantId",
+                        "type": "integer",
+                        "description": "租户id",
                         "format": "int64"
                       },
                       "name": {
@@ -9484,6 +10830,12 @@
                         "description": "创建人id",
                         "format": "int64"
                       },
+                      "tenantId": {
+                        "name": "tenantId",
+                        "type": "integer",
+                        "description": "租户id",
+                        "format": "int64"
+                      },
                       "name": {
                         "name": "name",
                         "type": "string",
@@ -9522,6 +10874,134 @@
     }
   },
   "SysSocket": {
+    "/sys/socket/enableByIdSet": {
+      "path": "/sys/socket/enableByIdSet",
+      "method": "post",
+      "tag": "socket-管理",
+      "group": "SysSocket",
+      "summary": "批量：启用socket",
+      "contentType": "application/json",
+      "requestBody": {
+        "className": "NotEmptyIdSet",
+        "type": "object",
+        "required": false,
+        "fieldMap": {
+          "idSet": {
+            "name": "idSet",
+            "type": "integer",
+            "required": true,
+            "description": "主键 idSet",
+            "format": "int64",
+            "arrFlag": true
+          }
+        },
+        "requiredFieldName": [
+          "idSet"
+        ]
+      },
+      "response": {
+        "className": "ApiResultVOString",
+        "fieldMap": {
+          "ApiResultVOString": {
+            "className": "ApiResultVOString",
+            "type": "object",
+            "description": "统一响应实体类",
+            "fieldMap": {
+              "msg": {
+                "name": "msg",
+                "type": "string",
+                "description": "响应描述"
+              },
+              "code": {
+                "name": "code",
+                "type": "integer",
+                "description": "响应代码，成功返回：200",
+                "format": "int32"
+              },
+              "data": {
+                "name": "data",
+                "type": "string",
+                "description": "数据"
+              },
+              "service": {
+                "name": "service",
+                "type": "string",
+                "description": "服务名"
+              },
+              "successFlag": {
+                "name": "successFlag",
+                "type": "boolean",
+                "description": "服务器是否收到请求，只会返回 true"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/sys/socket/disableByIdSet": {
+      "path": "/sys/socket/disableByIdSet",
+      "method": "post",
+      "tag": "socket-管理",
+      "group": "SysSocket",
+      "summary": "批量：禁用socket",
+      "contentType": "application/json",
+      "requestBody": {
+        "className": "NotEmptyIdSet",
+        "type": "object",
+        "required": false,
+        "fieldMap": {
+          "idSet": {
+            "name": "idSet",
+            "type": "integer",
+            "required": true,
+            "description": "主键 idSet",
+            "format": "int64",
+            "arrFlag": true
+          }
+        },
+        "requiredFieldName": [
+          "idSet"
+        ]
+      },
+      "response": {
+        "className": "ApiResultVOString",
+        "fieldMap": {
+          "ApiResultVOString": {
+            "className": "ApiResultVOString",
+            "type": "object",
+            "description": "统一响应实体类",
+            "fieldMap": {
+              "msg": {
+                "name": "msg",
+                "type": "string",
+                "description": "响应描述"
+              },
+              "code": {
+                "name": "code",
+                "type": "integer",
+                "description": "响应代码，成功返回：200",
+                "format": "int32"
+              },
+              "data": {
+                "name": "data",
+                "type": "string",
+                "description": "数据"
+              },
+              "service": {
+                "name": "service",
+                "type": "string",
+                "description": "服务名"
+              },
+              "successFlag": {
+                "name": "successFlag",
+                "type": "boolean",
+                "description": "服务器是否收到请求，只会返回 true"
+              }
+            }
+          }
+        }
+      }
+    },
     "/sys/socket/page": {
       "path": "/sys/socket/page",
       "method": "post",
@@ -9565,6 +11045,12 @@
             "name": "remark",
             "type": "string",
             "description": "备注"
+          },
+          "id": {
+            "name": "id",
+            "type": "integer",
+            "description": "主键 id",
+            "format": "int64"
           },
           "type": {
             "name": "type",
@@ -9721,6 +11207,12 @@
                                 "name": "createId",
                                 "type": "integer",
                                 "description": "创建人id",
+                                "format": "int64"
+                              },
+                              "tenantId": {
+                                "name": "tenantId",
+                                "type": "integer",
+                                "description": "租户id",
                                 "format": "int64"
                               },
                               "host": {
@@ -10011,6 +11503,12 @@
                         "description": "创建人id",
                         "format": "int64"
                       },
+                      "tenantId": {
+                        "name": "tenantId",
+                        "type": "integer",
+                        "description": "租户id",
+                        "format": "int64"
+                      },
                       "name": {
                         "name": "name",
                         "type": "string",
@@ -10196,6 +11694,12 @@
                                 "name": "createId",
                                 "type": "integer",
                                 "description": "创建人id",
+                                "format": "int64"
+                              },
+                              "tenantId": {
+                                "name": "tenantId",
+                                "type": "integer",
+                                "description": "租户id",
                                 "format": "int64"
                               },
                               "name": {
@@ -10529,6 +12033,12 @@
             "maxLength": 20,
             "minLength": 0
           },
+          "tenantId": {
+            "name": "tenantId",
+            "type": "integer",
+            "description": "租户id，可以为空，为空则表示：默认租户：0",
+            "format": "int64"
+          },
           "originPassword": {
             "name": "originPassword",
             "type": "string",
@@ -10679,6 +12189,12 @@
             "pattern": "^[\\u4E00-\\u9FA5A-Za-z0-9_-]{2,20}$",
             "maxLength": 20,
             "minLength": 0
+          },
+          "tenantId": {
+            "name": "tenantId",
+            "type": "integer",
+            "description": "租户id，可以为空，为空则表示：默认租户：0",
+            "format": "int64"
           }
         },
         "requiredFieldName": [
@@ -10727,6 +12243,13 @@
     }
   },
   "SysPayWx": {
+    "/sys/payWx/notifyCallBack/jsApi": {
+      "path": "/sys/payWx/notifyCallBack/jsApi",
+      "method": "post",
+      "tag": "支付-微信",
+      "group": "SysPayWx",
+      "summary": "服务器异步通知-jsApi，备注：第三方应用调用"
+    },
     "/sys/payWx/notifyCallBack/native": {
       "path": "/sys/payWx/notifyCallBack/native",
       "method": "post",
@@ -11082,6 +12605,12 @@
             "description": "邮箱验证码",
             "pattern": "^[0-9]{6}$"
           },
+          "tenantId": {
+            "name": "tenantId",
+            "type": "integer",
+            "description": "租户id，可以为空，为空则表示：默认租户：0",
+            "format": "int64"
+          },
           "email": {
             "name": "email",
             "type": "string",
@@ -11156,6 +12685,12 @@
         "type": "object",
         "required": false,
         "fieldMap": {
+          "tenantId": {
+            "name": "tenantId",
+            "type": "integer",
+            "description": "租户id，可以为空，为空则表示：默认租户：0",
+            "format": "int64"
+          },
           "email": {
             "name": "email",
             "type": "string",
@@ -11221,6 +12756,12 @@
         "type": "object",
         "required": false,
         "fieldMap": {
+          "tenantId": {
+            "name": "tenantId",
+            "type": "integer",
+            "description": "租户id，可以为空，为空则表示：默认租户：0",
+            "format": "int64"
+          },
           "email": {
             "name": "email",
             "type": "string",
@@ -11299,6 +12840,12 @@
             "description": "邮箱验证码",
             "pattern": "^[0-9]{6}$"
           },
+          "tenantId": {
+            "name": "tenantId",
+            "type": "integer",
+            "description": "租户id，可以为空，为空则表示：默认租户：0",
+            "format": "int64"
+          },
           "newPassword": {
             "name": "newPassword",
             "type": "string",
@@ -11373,6 +12920,12 @@
         "type": "object",
         "required": false,
         "fieldMap": {
+          "tenantId": {
+            "name": "tenantId",
+            "type": "integer",
+            "description": "租户id，可以为空，为空则表示：默认租户：0",
+            "format": "int64"
+          },
           "email": {
             "name": "email",
             "type": "string",
@@ -11799,6 +13352,12 @@
             "type": "string",
             "required": true,
             "description": "密码"
+          },
+          "tenantId": {
+            "name": "tenantId",
+            "type": "integer",
+            "description": "租户id，可以为空，为空则表示：默认租户：0",
+            "format": "int64"
           },
           "email": {
             "name": "email",

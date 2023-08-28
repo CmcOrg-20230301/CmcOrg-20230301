@@ -15,7 +15,7 @@ import TableColumnList from "./TableColumnList";
 import {ExecConfirm, ToastSuccess} from "@/util/ToastUtil";
 import SchemaFormColumnList, {InitForm} from "./SchemaFormColumnList";
 import CommonConstant from "@/model/constant/CommonConstant";
-import {UseEffectFullScreenChange} from "@/page/sys/Menu/Menu";
+import {UseEffectFullScreenChange} from "@/util/DocumentUtil";
 
 // 角色-管理
 export default function () {

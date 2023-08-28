@@ -3,6 +3,7 @@ import {AxiosRequestConfig} from "axios";
 
 export interface PhoneNotBlankDTO {
     phone?: string // 手机号码，正则表达式：^(13[0-9]|14[01456879]|15[0-35-9]|16[2567]|17[0-8]|18[0-9]|19[0-35-9])\d{8}$，maxLength：100，minLength：0，required：true
+    tenantId?: string // 租户id，可以为空，为空则表示：默认租户：0，format：int64
 }
 
 // 绑定手机-发送验证码
@@ -43,6 +44,7 @@ export function SignPhoneUpdateAccountSendCode(config?: AxiosRequestConfig) {
 export interface SignPhoneSignInCodeDTO {
     code?: string // 手机验证码，正则表达式：^[0-9]{6}$，required：true
     phone?: string // 手机号码，正则表达式：^(13[0-9]|14[01456879]|15[0-35-9]|16[2567]|17[0-8]|18[0-9]|19[0-35-9])\d{8}$，maxLength：100，minLength：0，required：true
+    tenantId?: string // 租户id，可以为空，为空则表示：默认租户：0，format：int64
 }
 
 // 手机验证码登录
@@ -59,6 +61,7 @@ export interface SignPhoneForgetPasswordDTO {
     originNewPassword?: string // 前端加密之后的原始新密码，required：true
     code?: string // 手机验证码，正则表达式：^[0-9]{6}$，required：true
     phone?: string // 手机号码，正则表达式：^(13[0-9]|14[01456879]|15[0-35-9]|16[2567]|17[0-8]|18[0-9]|19[0-35-9])\d{8}$，maxLength：100，minLength：0，required：true
+    tenantId?: string // 租户id，可以为空，为空则表示：默认租户：0，format：int64
     newPassword?: string // 前端加密之后的新密码，required：true
 }
 
@@ -82,6 +85,7 @@ export interface SignPhoneSignUpDTO {
     password?: string // 前端加密之后的密码，required：true
     code?: string // 手机验证码，正则表达式：^[0-9]{6}$，required：true
     phone?: string // 手机号码，正则表达式：^(13[0-9]|14[01456879]|15[0-35-9]|16[2567]|17[0-8]|18[0-9]|19[0-35-9])\d{8}$，maxLength：100，minLength：0，required：true
+    tenantId?: string // 租户id，可以为空，为空则表示：默认租户：0，format：int64
     originPassword?: string // 前端加密之后的原始密码，required：true
 }
 
@@ -118,6 +122,7 @@ export function SignPhoneSignDelete(form: NotBlankCodeDTO, config?: AxiosRequest
 export interface SignPhoneSignInPasswordDTO {
     password?: string // 密码，required：true
     phone?: string // 手机号码，正则表达式：^(13[0-9]|14[01456879]|15[0-35-9]|16[2567]|17[0-8]|18[0-9]|19[0-35-9])\d{8}$，maxLength：100，minLength：0，required：true
+    tenantId?: string // 租户id，可以为空，为空则表示：默认租户：0，format：int64
 }
 
 // 手机账号密码登录

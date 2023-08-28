@@ -28,14 +28,12 @@ import com.cmcorg20230301.be.engine.role.service.SysRoleRefUserService;
 import com.cmcorg20230301.be.engine.security.exception.BaseBizCodeEnum;
 import com.cmcorg20230301.be.engine.security.mapper.SysUserInfoMapper;
 import com.cmcorg20230301.be.engine.security.mapper.SysUserMapper;
-import com.cmcorg20230301.be.engine.security.model.entity.BaseEntity;
-import com.cmcorg20230301.be.engine.security.model.entity.SysRoleRefUserDO;
-import com.cmcorg20230301.be.engine.security.model.entity.SysUserDO;
-import com.cmcorg20230301.be.engine.security.model.entity.SysUserInfoDO;
+import com.cmcorg20230301.be.engine.security.model.entity.*;
 import com.cmcorg20230301.be.engine.security.model.vo.ApiResultVO;
 import com.cmcorg20230301.be.engine.security.properties.SecurityProperties;
 import com.cmcorg20230301.be.engine.security.util.*;
 import com.cmcorg20230301.be.engine.sign.helper.util.SignUtil;
+import com.cmcorg20230301.be.engine.tenant.service.SysTenantRefUserService;
 import com.cmcorg20230301.be.engine.user.exception.BizCodeEnum;
 import com.cmcorg20230301.be.engine.user.mapper.SysUserProMapper;
 import com.cmcorg20230301.be.engine.user.model.dto.SysUserDictListDTO;
@@ -74,6 +72,9 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserProMapper, SysUserDO>
     @Resource
     SysPostRefUserService sysPostRefUserService;
 
+    @Resource
+    SysTenantRefUserService sysTenantRefUserService;
+
     /**
      * 分页排序查询
      */
@@ -108,6 +109,10 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserProMapper, SysUserDO>
                 sysPostRefUserService.lambdaQuery().in(SysPostRefUserDO::getUserId, userIdSet)
                     .select(SysPostRefUserDO::getUserId, SysPostRefUserDO::getPostId).list();
 
+            List<SysTenantRefUserDO> sysTenantRefUserDOList =
+                sysTenantRefUserService.lambdaQuery().in(SysTenantRefUserDO::getUserId, userIdSet)
+                    .select(SysTenantRefUserDO::getUserId, SysTenantRefUserDO::getTenantId).list();
+
             Map<Long, Set<Long>> roleUserGroupMap = sysRoleRefUserDOList.stream().collect(Collectors
                 .groupingBy(SysRoleRefUserDO::getUserId,
                     Collectors.mapping(SysRoleRefUserDO::getRoleId, Collectors.toSet())));
@@ -120,6 +125,10 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserProMapper, SysUserDO>
                 .groupingBy(SysPostRefUserDO::getUserId,
                     Collectors.mapping(SysPostRefUserDO::getPostId, Collectors.toSet())));
 
+            Map<Long, Set<Long>> tenantUserGroupMap = sysTenantRefUserDOList.stream().collect(Collectors
+                .groupingBy(SysTenantRefUserDO::getUserId,
+                    Collectors.mapping(SysTenantRefUserDO::getTenantId, Collectors.toSet())));
+
             page.getRecords().forEach(it -> {
 
                 it.setRoleIdSet(roleUserGroupMap.get(it.getId()));
@@ -127,6 +136,8 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserProMapper, SysUserDO>
                 it.setDeptIdSet(deptUserGroupMap.get(it.getId()));
 
                 it.setPostIdSet(postUserGroupMap.get(it.getId()));
+
+                it.setTenantIdSet(tenantUserGroupMap.get(it.getId()));
 
             });
 
@@ -451,9 +462,18 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserProMapper, SysUserDO>
 
         Set<Long> postIdSet = jobRefUserDOList.stream().map(SysPostRefUserDO::getPostId).collect(Collectors.toSet());
 
+        // 获取：用户绑定的租户 idSet
+        List<SysTenantRefUserDO> tenantRefUserDOList =
+            sysTenantRefUserService.lambdaQuery().eq(SysTenantRefUserDO::getUserId, notNullId.getId())
+                .select(SysTenantRefUserDO::getTenantId).list();
+
+        Set<Long> tenantIdSet =
+            tenantRefUserDOList.stream().map(SysTenantRefUserDO::getTenantId).collect(Collectors.toSet());
+
         sysUserInfoByIdVO.setRoleIdSet(roleIdSet);
         sysUserInfoByIdVO.setDeptIdSet(deptIdSet);
         sysUserInfoByIdVO.setPostIdSet(postIdSet);
+        sysUserInfoByIdVO.setTenantIdSet(tenantIdSet);
 
         return sysUserInfoByIdVO;
 

@@ -19,6 +19,7 @@ export interface SysDictDO {
     createTime?: string // 创建时间，format：date-time
     children?: SysDictDO[] // 字典的子节点
     createId?: string // 创建人id，format：int64
+    tenantId?: string // 租户id，format：int64
     name?: string // 字典/字典项 名
     id?: string // 主键id，format：int64
     enableFlag?: boolean // 是否启用

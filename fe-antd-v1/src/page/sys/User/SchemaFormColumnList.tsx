@@ -7,6 +7,7 @@ import {RandomNickname} from "@/util/UserUtil";
 import {TreeSelect} from "antd";
 import {SysDeptPage} from "@/api/http/SysDept";
 import {SysPostPage} from "@/api/http/SysPost";
+import {SysTenantPage} from "@/api/http/SysTenant";
 
 export const InitForm: SysUserInsertOrUpdateDTO = {} as SysUserInsertOrUpdateDTO
 
@@ -165,6 +166,23 @@ const SchemaFormColumnList = (formRef: React.MutableRefObject<FormInstance<SysUs
             },
             request: () => {
                 return GetDictTreeList(SysPostPage);
+            }
+        },
+
+        {
+            title: '关联租户',
+            dataIndex: 'tenantIdSet',
+            valueType: 'treeSelect',
+            fieldProps: {
+                placeholder: '请选择',
+                allowClear: true,
+                treeNodeFilterProp: 'title',
+                maxTagCount: 'responsive',
+                treeCheckable: true,
+                showCheckedStrategy: TreeSelect.SHOW_PARENT,
+            },
+            request: () => {
+                return GetDictTreeList(SysTenantPage);
             }
         },
 

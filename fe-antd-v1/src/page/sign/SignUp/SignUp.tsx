@@ -10,6 +10,7 @@ import PathConstant from "@/model/constant/PathConstant";
 import {SendCode, SignUpFormHandler, UseEffectSign} from "@/page/sign/SignUp/SignUpUtil";
 import {ValidatorUtil} from "@/util/ValidatorUtil";
 import Link from "antd/lib/typography/Link";
+import {useParams} from 'react-router-dom';
 
 type TSignUpType = '0' | '1'; // 注册方式
 
@@ -20,6 +21,7 @@ export interface ISignUpForm {
     password: string // 密码
     code?: string // 验证码
     type: TSignUpType // 注册方式
+    tenantId?: string // 租户 id
 
 }
 
@@ -29,6 +31,8 @@ const signUpTypeArr = ['登录名', '邮箱']
 export default function () {
 
     UseEffectSign()
+
+    const {tenantId} = useParams();
 
     const [activeKey, setActiveKey] = useState<TSignUpType>('0');
     const formRef = useRef<ProFormInstance<ISignUpForm>>();
@@ -45,12 +49,13 @@ export default function () {
                 submitter={{searchConfig: {submitText: '注册'}}}
                 subTitle="Will have the most powerful !"
                 actions={
-                    <Link title={"登录已有账号"} onClick={() => getAppNav()(PathConstant.SIGN_IN_PATH)}>登录已有账号</Link>
+                    <Link title={"登录已有账号"}
+                          onClick={() => getAppNav()(`${PathConstant.SIGN_IN_PATH}??tenantId=${tenantId ? tenantId : 0}`)}>登录已有账号</Link>
                 }
 
                 onFinish={async (form) => {
 
-                    await SignUpFormHandler({...form, type: activeKey})
+                    await SignUpFormHandler({...form, type: activeKey, tenantId})
                     return true
 
                 }}

@@ -14,25 +14,28 @@
 
     <dependencies>
 
+        <!-- be-tenant -->
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>be-tenant</artifactId>
+        </dependency>
+
         <!-- be-post -->
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>be-post</artifactId>
-            <version>${project.version}</version>
         </dependency>
 
         <!-- be-dept -->
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>be-dept</artifactId>
-            <version>${project.version}</version>
         </dependency>
 
         <!-- be-area -->
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>be-area</artifactId>
-            <version>${project.version}</version>
         </dependency>
 
         <!-- be-netty-websocket -->

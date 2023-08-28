@@ -17,6 +17,7 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.io.File;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * 生成页面的工具类
@@ -25,8 +26,8 @@ import java.util.*;
 public class GeneratePageUtil {
 
     // 读取：接口的地址
-    private static final String SPRING_DOC_ENDPOINT = "http://43.154.37.130:10001/v3/api-docs/be";
-    //    private static final String SPRING_DOC_ENDPOINT = "http://127.0.0.1:10001/v3/api-docs/be";
+    //    private static final String SPRING_DOC_ENDPOINT = "http://43.154.37.130:10001/v3/api-docs/be";
+    private static final String SPRING_DOC_ENDPOINT = "http://127.0.0.1:10001/v3/api-docs/be";
 
     private static final String SYSTEM_USER_DIR = System.getProperty("user.dir"); // 例如：D:\GitHub\CmcOrg-20230301
 
@@ -49,14 +50,6 @@ public class GeneratePageUtil {
     // Admin Table 页面模板
     private static final String ADMIN_TABLE_FILE_NAME = "TableColumnList" + TSX;
     private static final String ADMIN_TABLE_TEMP = FileUtil.readUtf8String("template/admin/TableColumnList.txt");
-
-    // 要识别：路径
-    private static final String ADD_ORDER_NO = "/addOrderNo";
-    private static final String DELETE_BY_ID_SET = "/deleteByIdSet";
-    private static final String INFO_BY_ID = "/infoById";
-    private static final String INSERT_OR_UPDATE = "/insertOrUpdate";
-    private static final String PAGE = "/page";
-    private static final String TREE = "/tree";
 
     // 要替换的字符
     private static final String ADMIN_DELETE_BY_ID_SET_API = "AdminDeleteByIdSetApi";
@@ -123,15 +116,6 @@ public class GeneratePageUtil {
     private static final String ADMIN_FORM_JSON_ITEM_FORM_ITEM_PROPS_TYPE_NUMBER =
         "\n                        type: 'number',";
 
-    // YesNoDict 下拉选
-    private static final String DICT_UTIL = "DictUtil";
-
-    private static final String GET_DICT_LIST = "GetDictList";
-
-    private static final String GET_DICT_TREE_LIST = "GetDictTreeList";
-
-    private static final String IMPORT_YES_NO_DICT_AND_GET = "import {{}, YesNoDict} from \"@/util/DictUtil\";\n";
-
     private static final String YES_NO_DICT = "YesNoDict";
 
     private static final String IMPORT_YES_NO_DICT = "import {YesNoDict} from \"@/util/DictUtil\";\n";
@@ -149,9 +133,6 @@ public class GeneratePageUtil {
     private static final String ADMIN_TABLE_JSON_ITEM_FROM_NOW_AND_HIDE_IN_SEARCH =
         "\n    {}{\n" + "        title: '{}',\n" + "        dataIndex: '{}',\n" + "        hideInSearch: true,\n"
             + "        valueType: 'fromNow',\n" + "    },\n";
-
-    // hideInSearch：true
-    private static final String ADMIN_TABLE_JSON_ITEM_HIDE_IN_SEARCH = " hideInSearch: true,";
 
     // 最大长度为 300的文字域输入框，remark
     private static final String REMARK = "remark";
@@ -171,40 +152,6 @@ public class GeneratePageUtil {
             + "                mode: 'multiple',\n" + "                maxTagCount: 'responsive',\n"
             + "            },\n{}\n";
 
-    // fieldProps：下拉选，单选
-    private static final String ADMIN_JSON_FIELD_PROPS_SELECT =
-        "            valueType: 'select',\n" + "            fieldProps: {\n" + "                showSearch: true,\n{}"
-            + "            },\n";
-
-    // fieldProps：树形下拉选，多选
-    private static final String ADMIN_JSON_FIELD_PROPS_TREE_SELECT_MULTIPLE =
-        "            valueType: 'treeSelect',\n" + "            fieldProps: {\n"
-            + "                placeholder: '请选择',\n" + "                allowClear: true,\n"
-            + "                treeNodeFilterProp: 'title',\n" + "                maxTagCount: 'responsive',\n"
-            + "                treeCheckable: true,\n"
-            + "                showCheckedStrategy: TreeSelect.SHOW_PARENT,\n" + "            },\n{}\n";
-
-    // fieldProps：树形下拉选，单选
-    private static final String ADMIN_JSON_FIELD_PROPS_TREE_SELECT =
-        "            valueType: \"treeSelect\",\n" + "            fieldProps: {\n"
-            + "                placeholder: '为空则表示顶级节点',\n" + "                allowClear: true,\n"
-            + "                showSearch: true,\n" + "                treeNodeFilterProp: 'title',\n"
-            + "            },\n{}\n";
-
-    // fieldProps：获取选项
-    private static final String ADMIN_JSON_DICT_REQUEST =
-        "            request: () => {\n" + "                return GetDictList({})\n" + "            }";
-
-    // fieldProps：获取树形结构选项
-    private static final String ADMIN_JSON_DICT_TREE_REQUEST =
-        "            request: () => {\n" + "                return GetDictTreeList({});\n" + "            }";
-
-    private static final String ADMIN_JSON_DICT_TREE_OPTIONS = "                options: {},\n";
-
-    private static final String IMPORT_TREE_SELECT = "import {TreeSelect} from \"antd\";\n";
-
-    private static final String TREE_SELECT = "TreeSelect";
-
     public static void main(String[] args) {
 
         // 执行
@@ -219,11 +166,14 @@ public class GeneratePageUtil {
 
         HashMap<String, HashMap<String, BeApi>> apiMap = SpringDocUtil.get(springDocEndpoint);
 
-        System.out.println("所有的group ↓");
+        System.out.println("所有的 group ↓");
         System.out.println(JSONUtil.toJsonStr(apiMap.keySet()));
+        System.out.println("所有的 group ↑");
 
-        String group = ApiTestHelper.getStrFromScanner(
-            "请输入要生成页面的 group，多个用空格隔开，例如：SysMenu SysRequest SysUser SysParam SysDict SysRole SysArea SysDept SysPost，为【all】则生成全部");
+        String sysGroupStr =
+            apiMap.keySet().stream().filter(it -> it.startsWith("Sys")).collect(Collectors.joining(" "));
+
+        String group = ApiTestHelper.getStrFromScanner("请输入要生成页面的 group，多个用空格隔开，例如：" + sysGroupStr + "，为【all】则生成全部");
 
         Collection<String> groupSet;
 

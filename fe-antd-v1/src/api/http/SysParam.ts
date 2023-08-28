@@ -11,6 +11,7 @@ export interface SysParamDO {
     updateId?: string // 修改人id，format：int64
     createTime?: string // 创建时间，format：date-time
     createId?: string // 创建人id，format：int64
+    tenantId?: string // 租户id，format：int64
     name?: string // 配置名，以 id为不变值进行使用，不要用此属性
     updateTime?: string // 修改时间，format：date-time
     remark?: string // 备注

@@ -11,7 +11,7 @@ import lombok.EqualsAndHashCode;
 @Schema(description = "主表：租户")
 public class SysTenantDO extends BaseEntityTree<SysTenantDO> {
 
-    @Schema(description = "租户名（不能重复）")
+    @Schema(description = "租户名")
     private String name;
 
     @Schema(description = "父节点id（顶级则为0）")

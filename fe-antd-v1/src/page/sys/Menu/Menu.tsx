@@ -1,4 +1,4 @@
-import {useEffect, useRef, useState} from "react";
+import {useRef, useState} from "react";
 import {
     ActionType,
     BetaSchemaForm,
@@ -26,27 +26,7 @@ import SchemaFormColumnList, {InitForm} from "./SchemaFormColumnList";
 import {CalcOrderNo, GetIdListForHasChildrenNode} from "@/util/TreeUtil";
 import CommonConstant from "@/model/constant/CommonConstant";
 import {IMyTree} from "@/util/DictUtil";
-
-// 监听是否：全屏
-export function UseEffectFullScreenChange(setFullScreenFlag: (value: (((prevState: boolean) => boolean) | boolean)) => void) {
-
-    useEffect(() => {
-
-        const handleFullScreenChange = () => {
-            setFullScreenFlag(document.fullscreenElement !== null)
-        }
-
-        document.addEventListener('fullscreenchange', handleFullScreenChange);
-
-        return () => {
-
-            document.removeEventListener('fullscreenchange', handleFullScreenChange);
-
-        }
-
-    }, [])
-
-}
+import {UseEffectFullScreenChange} from "@/util/DocumentUtil";
 
 // 菜单-管理
 export default function () {

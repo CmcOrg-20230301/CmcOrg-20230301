@@ -29,4 +29,7 @@ public class SysUserInfoByIdVO extends SysUserDO {
     @Schema(description = "岗位 idSet")
     private Set<Long> postIdSet;
 
+    @Schema(description = "租户 idSet")
+    private Set<Long> tenantIdSet;
+
 }

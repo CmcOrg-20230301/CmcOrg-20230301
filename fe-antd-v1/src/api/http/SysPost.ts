@@ -33,6 +33,7 @@ export interface SysPostDO {
     createTime?: string // 创建时间，format：date-time
     children?: SysPostDO[] // 子节点
     createId?: string // 创建人id，format：int64
+    tenantId?: string // 租户id，format：int64
     name?: string // 岗位名
     id?: string // 主键id，format：int64
     enableFlag?: boolean // 是否启用
@@ -84,6 +85,7 @@ export interface SysPostInfoByIdVO {
     createTime?: string // 创建时间，format：date-time
     children?: SysPostDO[] // 子节点
     createId?: string // 创建人id，format：int64
+    tenantId?: string // 租户id，format：int64
     name?: string // 岗位名
     id?: string // 主键id，format：int64
     enableFlag?: boolean // 是否启用

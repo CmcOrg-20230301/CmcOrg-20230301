@@ -38,7 +38,11 @@ public class UserSelfServiceImpl extends ServiceImpl<SysUserMapper, SysUserDO> i
 
         Long currentUserId = UserUtil.getCurrentUserId();
 
+        Long currentTenantIdDefault = UserUtil.getCurrentTenantIdDefault();
+
         UserSelfInfoVO sysUserSelfInfoVO = new UserSelfInfoVO();
+
+        sysUserSelfInfoVO.setTenantId(currentTenantIdDefault);
 
         if (BaseConstant.ADMIN_ID.equals(currentUserId)) {
 

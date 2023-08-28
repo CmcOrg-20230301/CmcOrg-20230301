@@ -40,6 +40,7 @@ export interface SysMenuDO {
     createTime?: string // 创建时间，format：date-time
     children?: SysMenuDO[] // 子节点
     createId?: string // 创建人id，format：int64
+    tenantId?: string // 租户id，format：int64
     name?: string // 菜单名
     id?: string // 主键id，format：int64
     firstFlag?: boolean // 是否是起始页面，备注：只能存在一个 firstFlag === true 的菜单
@@ -79,6 +80,7 @@ export interface SysMenuInfoByIdVO {
     createTime?: string // 创建时间，format：date-time
     children?: SysMenuDO[] // 子节点
     createId?: string // 创建人id，format：int64
+    tenantId?: string // 租户id，format：int64
     name?: string // 菜单名
     roleIdSet?: string[] // 角色 idSet，format：int64
     id?: string // 主键id，format：int64

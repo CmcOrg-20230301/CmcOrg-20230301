@@ -22,7 +22,8 @@ import {DictLongListVO, GetByValueFromDictListPro, GetDictList} from "@/util/Dic
 import {SysDeptPage} from "@/api/http/SysDept";
 import {SysPostPage} from "@/api/http/SysPost";
 import {SysRolePage} from "@/api/http/SysRole";
-import {UseEffectFullScreenChange} from "@/page/sys/Menu/Menu";
+import {UseEffectFullScreenChange} from "@/util/DocumentUtil";
+import {SysTenantPage} from "@/api/http/SysTenant";
 
 // 用户-管理
 export default function () {
@@ -51,6 +52,8 @@ export default function () {
 
     const roleDictListRef = useRef<DictLongListVO[]>([])
 
+    const tenantDictListRef = useRef<DictLongListVO[]>([])
+
     function doGetDictList() {
 
         GetDictList(SysDeptPage).then(res => {
@@ -68,6 +71,12 @@ export default function () {
         GetDictList(SysRolePage).then(res => {
 
             roleDictListRef.current = res
+
+        })
+
+        GetDictList(SysTenantPage).then(res => {
+
+            tenantDictListRef.current = res
 
         })
 
@@ -146,6 +155,18 @@ export default function () {
 
                                 <Typography.Text type="secondary">
                                     ：{GetByValueFromDictListPro(roleDictListRef.current, record.roleIdSet)}
+                                </Typography.Text>
+
+                            </span>
+
+                            <span>
+
+                                <Typography.Text mark>
+                                    租户
+                                </Typography.Text>
+
+                                <Typography.Text type="secondary">
+                                    ：{GetByValueFromDictListPro(tenantDictListRef.current, record.tenantIdSet)}
                                 </Typography.Text>
 
                             </span>

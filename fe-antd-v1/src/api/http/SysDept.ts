@@ -40,6 +40,7 @@ export interface SysDeptDO {
     createTime?: string // 创建时间，format：date-time
     children?: SysDeptDO[] // 子节点
     createId?: string // 创建人id，format：int64
+    tenantId?: string // 租户id，format：int64
     name?: string // 部门名
     id?: string // 主键id，format：int64
     enableFlag?: boolean // 是否启用
