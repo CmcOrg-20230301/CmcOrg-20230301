@@ -47,6 +47,7 @@ import com.cmcorg20230301.be.engine.util.util.MyMapUtil;
 import com.cmcorg20230301.be.engine.util.util.NicknameUtil;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.Nullable;
 import javax.annotation.Resource;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -214,7 +215,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserProMapper, SysUserDO>
             // 检查：账号是否存在
             for (Enum<? extends IRedisKey> item : redisKeyEnumSet) {
 
-                if (accountIsExist(dto, item, accountMap)) {
+                if (accountIsExist(dto, item, accountMap, dto.getTenantId())) {
 
                     SignUtil.accountIsExistError();
 
@@ -287,23 +288,23 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserProMapper, SysUserDO>
      * 判断：账号是否重复
      */
     private boolean accountIsExist(SysUserInsertOrUpdateDTO dto, Enum<? extends IRedisKey> item,
-        Map<Enum<? extends IRedisKey>, String> map) {
+        Map<Enum<? extends IRedisKey>, String> map, @Nullable Long tenantId) {
 
         boolean exist = false;
 
         if (RedisKeyEnum.PRE_EMAIL.equals(item)) {
 
-            exist = SignUtil.accountIsExists(item, dto.getEmail(), dto.getId());
+            exist = SignUtil.accountIsExists(item, dto.getEmail(), dto.getId(), tenantId);
             map.put(item, dto.getEmail());
 
         } else if (RedisKeyEnum.PRE_SIGN_IN_NAME.equals(item)) {
 
-            exist = SignUtil.accountIsExists(item, dto.getSignInName(), dto.getId());
+            exist = SignUtil.accountIsExists(item, dto.getSignInName(), dto.getId(), tenantId);
             map.put(item, dto.getSignInName());
 
         } else if (RedisKeyEnum.PRE_PHONE.equals(item)) {
 
-            exist = SignUtil.accountIsExists(item, dto.getPhone(), dto.getId());
+            exist = SignUtil.accountIsExists(item, dto.getPhone(), dto.getId(), tenantId);
             map.put(item, dto.getPhone());
 
         }
@@ -382,6 +383,27 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserProMapper, SysUserDO>
             }
 
             sysPostRefUserService.saveBatch(insertList);
+
+        }
+
+        // 新增数据到：租户用户关联表
+        if (CollUtil.isNotEmpty(dto.getTenantIdSet())) {
+
+            List<SysTenantRefUserDO> insertList =
+                new ArrayList<>(MyMapUtil.getInitialCapacity(dto.getTenantIdSet().size()));
+
+            for (Long item : dto.getTenantIdSet()) {
+
+                SysTenantRefUserDO sysTenantRefUserDO = new SysTenantRefUserDO();
+
+                sysTenantRefUserDO.setTenantId(item);
+                sysTenantRefUserDO.setUserId(sysUserDO.getId());
+
+                insertList.add(sysTenantRefUserDO);
+
+            }
+
+            sysTenantRefUserService.saveBatch(insertList);
 
         }
 

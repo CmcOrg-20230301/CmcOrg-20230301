@@ -7,3 +7,22 @@ export function InDev() {
     ToastWarning(InDevMsg)
 
 }
+
+/**
+ * 获取：URLSearchParams
+ * 调用：get方法即可获取 url参数里面对应的值
+ */
+export function GetURLSearchParams() {
+
+    return new URLSearchParams(window.location.search)
+
+}
+
+/**
+ * 获取：url参数里面的 租户 id
+ */
+export function GetTenantId(): string {
+
+    return GetURLSearchParams().get("tenantId") || '0'
+
+}

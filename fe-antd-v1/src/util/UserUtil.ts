@@ -20,7 +20,7 @@ export function SignOut(msg ?: string) {
 
     getAppDispatch()(signOut()) // store 退出登录
 
-    getAppNav()(`${PathConstant.SIGN_IN_PATH}??tenantId=${tenantId ? tenantId : 0}`)
+    getAppNav()(`${PathConstant.SIGN_IN_PATH}?tenantId=${tenantId ? tenantId : 0}`)
 
     if (msg) {
 

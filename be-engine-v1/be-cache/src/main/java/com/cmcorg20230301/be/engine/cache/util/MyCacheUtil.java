@@ -15,10 +15,10 @@ import org.redisson.api.RMap;
 import org.redisson.api.RedissonClient;
 import org.springframework.stereotype.Component;
 
+import java.time.Duration;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.TimeUnit;
 
 /**
  * 缓存工具类
@@ -89,7 +89,7 @@ public class MyCacheUtil {
         if (timeToLive < 1) {
             redissonClient.<T>getBucket(key).set(result); // 先加入到 redis里
         } else {
-            redissonClient.<T>getBucket(key).set(result, timeToLive, TimeUnit.MILLISECONDS); // 先加入到 redis里
+            redissonClient.<T>getBucket(key).set(result, Duration.ofMillis(timeToLive)); // 先加入到 redis里
         }
 
         log.info("{}：加入 本地缓存", key);

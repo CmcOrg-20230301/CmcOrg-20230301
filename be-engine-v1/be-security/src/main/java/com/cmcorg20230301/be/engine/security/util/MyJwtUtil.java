@@ -177,7 +177,7 @@ public class MyJwtUtil {
     @NotNull
     public static Long getTenantId(@Nullable Long tenantId) {
 
-        if (tenantId == null) {
+        if (tenantId == null || tenantId.equals(BaseConstant.TENANT_ID)) {
 
             return BaseConstant.TENANT_ID;
 

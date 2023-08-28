@@ -58,4 +58,7 @@ public class SysUserInsertOrUpdateDTO extends BaseInsertOrUpdateDTO {
     @Schema(description = "岗位 idSet")
     private Set<Long> postIdSet;
 
+    @Schema(description = "租户 idSet")
+    private Set<Long> tenantIdSet;
+
 }

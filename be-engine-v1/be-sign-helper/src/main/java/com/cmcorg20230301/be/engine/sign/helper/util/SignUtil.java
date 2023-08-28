@@ -23,6 +23,7 @@ import com.cmcorg20230301.be.engine.redisson.model.enums.RedisKeyEnum;
 import com.cmcorg20230301.be.engine.redisson.util.RedissonUtil;
 import com.cmcorg20230301.be.engine.security.exception.BaseBizCodeEnum;
 import com.cmcorg20230301.be.engine.security.mapper.SysRoleRefUserMapper;
+import com.cmcorg20230301.be.engine.security.mapper.SysTenantRefUserMapper;
 import com.cmcorg20230301.be.engine.security.mapper.SysUserInfoMapper;
 import com.cmcorg20230301.be.engine.security.mapper.SysUserMapper;
 import com.cmcorg20230301.be.engine.security.model.entity.*;
@@ -43,7 +44,6 @@ import org.springframework.stereotype.Component;
 import java.time.Duration;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 
 @Component
@@ -57,10 +57,12 @@ public class SignUtil {
     private static SecurityProperties securityProperties;
     private static SysDeptRefUserMapper sysDeptRefUserMapper;
     private static SysPostRefUserMapper sysPostRefUserMapper;
+    private static SysTenantRefUserMapper sysTenantRefUserMapper;
 
     public SignUtil(SysUserInfoMapper sysUserInfoMapper, RedissonClient redissonClient, SysUserMapper sysUserMapper,
         SecurityProperties securityProperties, SysRoleRefUserMapper sysRoleRefUserMapper,
-        SysDeptRefUserMapper sysDeptRefUserMapper, SysPostRefUserMapper sysPostRefUserMapper) {
+        SysDeptRefUserMapper sysDeptRefUserMapper, SysPostRefUserMapper sysPostRefUserMapper,
+        SysTenantRefUserMapper sysTenantRefUserMapper) {
 
         SignUtil.sysUserInfoMapper = sysUserInfoMapper;
         SignUtil.sysUserMapper = sysUserMapper;
@@ -69,6 +71,7 @@ public class SignUtil {
         SignUtil.sysRoleRefUserMapper = sysRoleRefUserMapper;
         SignUtil.sysDeptRefUserMapper = sysDeptRefUserMapper;
         SignUtil.sysPostRefUserMapper = sysPostRefUserMapper;
+        SignUtil.sysTenantRefUserMapper = sysTenantRefUserMapper;
 
     }
 
@@ -109,7 +112,7 @@ public class SignUtil {
             String code = CodeUtil.getCode();
 
             // 保存到 redis中，设置 10分钟过期
-            redissonClient.getBucket(key).set(code, BaseConstant.LONG_CODE_EXPIRE_TIME, TimeUnit.MILLISECONDS);
+            redissonClient.getBucket(key).set(code, Duration.ofMillis(BaseConstant.LONG_CODE_EXPIRE_TIME));
 
             consumer.accept(code); // 进行额外的处理
 
@@ -150,7 +153,7 @@ public class SignUtil {
 
         // 保存到 redis中，设置 10分钟过期
         redissonClient.getBucket(redisKeyEnum + account)
-            .set(code, BaseConstant.LONG_CODE_EXPIRE_TIME, TimeUnit.MILLISECONDS);
+            .set(code, Duration.ofMillis(BaseConstant.LONG_CODE_EXPIRE_TIME));
 
         // 执行：发送验证码操作
         voidFunc2.call(code, account);
@@ -197,7 +200,7 @@ public class SignUtil {
             }
 
             // 检查：注册的登录账号是否存在
-            boolean exist = accountIsExists(redisKeyEnum, account, null);
+            boolean exist = accountIsExists(redisKeyEnum, account, null, tenantId);
 
             if (exist) {
 
@@ -415,7 +418,7 @@ public class SignUtil {
         if (BaseConstant.ADMIN_ACCOUNT.equals(account)) {
 
             if (signInPasswordForAdmin(password)) {
-                return MyJwtUtil.generateJwt(BaseConstant.ADMIN_ID, null, null, null);
+                return MyJwtUtil.generateJwt(BaseConstant.ADMIN_ID, null, null, tenantId);
             }
 
         }
@@ -747,6 +750,8 @@ public class SignUtil {
 
         Long currentUserIdNotAdmin = UserUtil.getCurrentUserIdNotAdmin();
 
+        Long currentTenantIdDefault = UserUtil.getCurrentTenantIdDefault();
+
         if (RedisKeyEnum.PRE_SIGN_IN_NAME.equals(redisKeyEnum)) {
             checkCurrentPassword(currentPassword, currentUserIdNotAdmin, null);
         }
@@ -788,7 +793,7 @@ public class SignUtil {
             }
 
             // 检查：新的登录账号是否存在
-            boolean exist = accountIsExists(redisKeyEnum, newAccount, null);
+            boolean exist = accountIsExists(redisKeyEnum, newAccount, null, currentTenantIdDefault);
 
             // 是否删除：redis中的验证码
             boolean deleteRedisFlag =
@@ -858,11 +863,14 @@ public class SignUtil {
     /**
      * 检查登录账号是否存在
      */
-    public static boolean accountIsExists(Enum<? extends IRedisKey> redisKeyEnum, String newAccount,
-        @Nullable Long id) {
+    public static boolean accountIsExists(Enum<? extends IRedisKey> redisKeyEnum, String newAccount, @Nullable Long id,
+        @Nullable Long tenantId) {
+
+        tenantId = MyJwtUtil.getTenantId(tenantId);
 
         LambdaQueryChainWrapper<SysUserDO> lambdaQueryChainWrapper =
-            ChainWrappers.lambdaQueryChain(sysUserMapper).ne(id != null, BaseEntity::getId, id);
+            ChainWrappers.lambdaQueryChain(sysUserMapper).ne(id != null, BaseEntity::getId, id)
+                .eq(BaseEntityNoId::getTenantId, tenantId);
 
         if (RedisKeyEnum.PRE_EMAIL.equals(redisKeyEnum)) {
 
@@ -1042,6 +1050,9 @@ public class SignUtil {
             // 直接：删除用户绑定的岗位
             ChainWrappers.lambdaUpdateChain(sysPostRefUserMapper).in(SysPostRefUserDO::getUserId, idSet).remove();
 
+            // 直接：删除用户绑定的租户
+            ChainWrappers.lambdaUpdateChain(sysTenantRefUserMapper).in(SysTenantRefUserDO::getUserId, idSet).remove();
+
         });
 
     }
@@ -1053,6 +1064,8 @@ public class SignUtil {
 
         Long currentUserIdNotAdmin = UserUtil.getCurrentUserIdNotAdmin();
 
+        Long currentTenantIdDefault = UserUtil.getCurrentTenantIdDefault();
+
         String key = redisKeyEnum + account;
 
         return RedissonUtil.doLock(key, () -> {
@@ -1060,7 +1073,7 @@ public class SignUtil {
             RBucket<String> bucket = redissonClient.getBucket(key);
 
             // 检查：绑定的登录账号是否存在
-            boolean exist = accountIsExists(redisKeyEnum, account, null);
+            boolean exist = accountIsExists(redisKeyEnum, account, null, currentTenantIdDefault);
 
             if (exist) {
 

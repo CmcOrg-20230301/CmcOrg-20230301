@@ -18,7 +18,7 @@ import {
 import {ToastSuccess} from "@/util/ToastUtil";
 import {ValidatorUtil} from "@/util/ValidatorUtil";
 import {UseEffectSign} from "@/page/sign/SignUp/SignUpUtil";
-import {useParams} from 'react-router-dom';
+import {GetTenantId} from "@/util/CommonUtil";
 
 type TSignInType = 'account'; // 登录方式
 
@@ -26,7 +26,7 @@ export interface ISignInForm {
 
     account: string // 账号
     password: string // 密码
-    tenantId?: string // 租户 id
+    tenantId: string // 租户 id
 
 }
 
@@ -34,8 +34,6 @@ export interface ISignInForm {
 export default function () {
 
     UseEffectSign()
-
-    const {tenantId} = useParams();
 
     const [signInType, setSignInType] = useState<TSignInType>('account');
 
@@ -51,12 +49,12 @@ export default function () {
 
                 actions={
                     <div>或者 <Link title={"注册"}
-                                  onClick={() => getAppNav()(`${PathConstant.SIGN_UP_PATH}?tenantId=${tenantId ? tenantId : 0}`)}>注册</Link>
+                                  onClick={() => getAppNav()(`${PathConstant.SIGN_UP_PATH}?tenantId=${GetTenantId()}`)}>注册</Link>
                     </div>
                 }
 
                 onFinish={async (form) => {
-                    await SignInFormHandler({...form, tenantId})
+                    await SignInFormHandler({...form, tenantId: GetTenantId()})
                     return true
                 }}
 
@@ -135,8 +133,6 @@ export function UserForgetPasswordModalForm() {
 
     const formRef = useRef<ProFormInstance<SignEmailForgetPasswordDTO>>();
 
-    const {tenantId} = useParams();
-
     return <ModalForm<SignEmailForgetPasswordDTO>
 
         modalProps={{
@@ -150,7 +146,7 @@ export function UserForgetPasswordModalForm() {
 
         onFinish={async (form) => {
 
-            const formTemp = {...form, tenantId}
+            const formTemp = {...form, tenantId: GetTenantId()}
             formTemp.originNewPassword = RSAEncryptPro(formTemp.newPassword!)
             formTemp.newPassword = PasswordRSAEncrypt(formTemp.newPassword!)
 
@@ -196,7 +192,7 @@ export function UserForgetPasswordModalForm() {
 
                 await formRef.current?.validateFields(['email']).then(async res => {
 
-                    await SignEmailForgetPasswordSendCode({email: res.email, tenantId}).then(res => {
+                    await SignEmailForgetPasswordSendCode({email: res.email, tenantId: GetTenantId()}).then(res => {
 
                         ToastSuccess(res.msg)
 
