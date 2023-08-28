@@ -29,10 +29,10 @@ public class SysParamUtil {
     }
 
     /**
-     * 通过主键 id，获取 value，没有 value则返回 null
+     * 通过主键 paramId，获取 value，没有 value则返回 null
      */
     @Nullable
-    public static String getValueById(Long id) {
+    public static String getValueById(Long paramId) {
 
         Map<Long, String> map =
             MyCacheUtil.getMap(RedisKeyEnum.SYS_PARAM_CACHE, CacheHelper.getDefaultLongMap(), () -> {
@@ -47,7 +47,7 @@ public class SysParamUtil {
 
             });
 
-        return map.get(id);
+        return map.get(paramId);
 
     }
 

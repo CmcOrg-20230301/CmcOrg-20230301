@@ -10,12 +10,15 @@ import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
 import cn.hutool.jwt.JWT;
 import cn.hutool.jwt.RegisteredPayload;
+import com.baomidou.mybatisplus.extension.toolkit.ChainWrappers;
 import com.cmcorg20230301.be.engine.model.model.constant.BaseConstant;
 import com.cmcorg20230301.be.engine.redisson.model.enums.RedisKeyEnum;
 import com.cmcorg20230301.be.engine.redisson.util.RedissonUtil;
 import com.cmcorg20230301.be.engine.security.exception.BaseBizCodeEnum;
+import com.cmcorg20230301.be.engine.security.mapper.SysTenantMapper;
 import com.cmcorg20230301.be.engine.security.mapper.SysUserMapper;
 import com.cmcorg20230301.be.engine.security.model.constant.SecurityConstant;
+import com.cmcorg20230301.be.engine.security.model.entity.BaseEntity;
 import com.cmcorg20230301.be.engine.security.model.entity.SysMenuDO;
 import com.cmcorg20230301.be.engine.security.model.enums.SysRequestCategoryEnum;
 import com.cmcorg20230301.be.engine.security.model.vo.ApiResultVO;
@@ -43,13 +46,18 @@ public class MyJwtUtil {
 
     public static final String PAYLOAD_MAP_USER_ID_KEY = "userId";
 
+    public static final String PAYLOAD_MAP_TENANT_ID_KEY = "tenantId";
+
     private static SecurityProperties securityProperties;
     private static SysUserMapper sysUserMapper;
+    private static SysTenantMapper sysTenantMapper;
 
-    public MyJwtUtil(SecurityProperties securityProperties, SysUserMapper sysUserMapper) {
+    public MyJwtUtil(SecurityProperties securityProperties, SysUserMapper sysUserMapper,
+        SysTenantMapper sysTenantMapper) {
 
         MyJwtUtil.securityProperties = securityProperties;
         MyJwtUtil.sysUserMapper = sysUserMapper;
+        MyJwtUtil.sysTenantMapper = sysTenantMapper;
 
     }
 
@@ -74,10 +82,31 @@ public class MyJwtUtil {
     }
 
     /**
+     * 获取：jwt中的 tenantId值
+     */
+    @Nullable
+    public static Long getPayloadMapTenantIdValue(@Nullable JSONObject claimsJson) {
+
+        if (claimsJson == null) {
+            return null;
+        }
+
+        NumberWithFormat numberWithFormat = (NumberWithFormat)claimsJson.get(MyJwtUtil.PAYLOAD_MAP_TENANT_ID_KEY);
+
+        if (numberWithFormat == null) {
+            return null;
+        }
+
+        return numberWithFormat.longValue();
+
+    }
+
+    /**
      * 统一生成 jwt
      */
     @Nullable
-    public static String generateJwt(Long userId, String jwtSecretSuf, Consumer<JSONObject> consumer) {
+    public static String generateJwt(Long userId, String jwtSecretSuf, Consumer<JSONObject> consumer,
+        @Nullable Long tenantId) {
 
         if (userId == null) {
             return null;
@@ -89,8 +118,10 @@ public class MyJwtUtil {
         }
 
         if (StrUtil.isBlank(jwtSecretSuf)) {
+
             // 获取用户 jwt私钥后缀，通过 userId
             jwtSecretSuf = MyJwtUtil.getUserJwtSecretSufByUserId(userId);
+
         }
 
         if (BooleanUtil.isFalse(BaseConstant.ADMIN_ID.equals(userId)) && StrUtil.isBlank(jwtSecretSuf)) {
@@ -106,7 +137,7 @@ public class MyJwtUtil {
         });
 
         // 生成 jwt
-        return MyJwtUtil.sign(userId, jwtSecretSuf, consumer);
+        return MyJwtUtil.sign(userId, jwtSecretSuf, consumer, tenantId);
 
     }
 
@@ -114,9 +145,17 @@ public class MyJwtUtil {
      * 生成 jwt
      */
     @NotNull
-    private static String sign(Long userId, String jwtSecretSuf, Consumer<JSONObject> consumer) {
+    private static String sign(Long userId, String jwtSecretSuf, Consumer<JSONObject> consumer,
+        @Nullable Long tenantId) {
 
-        JSONObject payloadMap = JSONUtil.createObj().set(PAYLOAD_MAP_USER_ID_KEY, userId);
+        JSONObject payloadMap = JSONUtil.createObj();
+
+        payloadMap.set(PAYLOAD_MAP_USER_ID_KEY, userId);
+
+        // 获取：租户 id
+        tenantId = getTenantId(tenantId);
+
+        payloadMap.set(PAYLOAD_MAP_TENANT_ID_KEY, tenantId);
 
         if (consumer != null) {
             consumer.accept(payloadMap);
@@ -129,6 +168,31 @@ public class MyJwtUtil {
             .sign();
 
         return SecurityConstant.JWT_PREFIX + jwt;
+
+    }
+
+    /**
+     * 获取：租户 id
+     */
+    @NotNull
+    public static Long getTenantId(@Nullable Long tenantId) {
+
+        if (tenantId == null) {
+
+            return BaseConstant.TENANT_ID;
+
+        }
+
+        boolean exists = ChainWrappers.lambdaQueryChain(sysTenantMapper).eq(BaseEntity::getId, tenantId)
+            .eq(BaseEntity::getEnableFlag, true).exists();
+
+        if (!exists) {
+
+            ApiResultVO.error("操作失败：租户不存在", tenantId);
+
+        }
+
+        return tenantId;
 
     }
 

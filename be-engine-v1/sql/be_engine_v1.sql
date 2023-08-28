@@ -583,7 +583,7 @@ VALUES (2, 1, '2021-12-26 11:32:38', 0, '2023-06-02 14:04:46', 1, 0, 0,
 DROP TABLE IF EXISTS `sys_pay`;
 CREATE TABLE `sys_pay`
 (
-    `id`               bigint                                                        NOT NULL AUTO_INCREMENT,
+    `id`               bigint                                                        NOT NULL,
     `create_id`        bigint                                                        NOT NULL,
     `create_time`      datetime                                                      NOT NULL,
     `update_id`        bigint                                                        NOT NULL,
@@ -609,12 +609,10 @@ CREATE TABLE `sys_pay`
     `package_name`     varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'app包名，必须是创建登录 api项目时，创建 android客户端 id使用包名，例如：谷歌支付',
     `product_id`       varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '对应购买商品的商品 id，例如：谷歌支付',
     `token`            varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '购买成功后 Purchase对象的 getPurchaseToken()，例如：谷歌支付',
-    PRIMARY KEY (`id`) USING BTREE
+    PRIMARY KEY (`id`)
 ) ENGINE = InnoDB
-  AUTO_INCREMENT = 1
-  CHARACTER SET = utf8mb4
-  COLLATE = utf8mb4_unicode_ci COMMENT = 'v20230301：主表：支付'
-  ROW_FORMAT = Dynamic;
+  DEFAULT CHARSET = utf8mb4
+  COLLATE = utf8mb4_unicode_ci COMMENT ='v20230301：主表：支付';
 
 -- ----------------------------
 -- Records of sys_pay

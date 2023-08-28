@@ -52,6 +52,8 @@ public interface BaseConstant {
     String ADMIN_ACCOUNT = "admin"; // 管理员 登录名，如果修改，请注意【登录名】注册，是否会有影响
     Long SYS_ID = NEGATIVE_ONE; // 系统/缺省 id，或者表示不存在
 
+    Long TENANT_ID = ZERO; // 默认的 租户 id
+
     // id 相关 ↑
 
     // 字符串长度限制 ↓

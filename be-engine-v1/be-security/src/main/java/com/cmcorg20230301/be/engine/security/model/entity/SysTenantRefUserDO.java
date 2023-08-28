@@ -6,19 +6,16 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
-@TableName(value = "sys_role_ref_user")
+@TableName(value = "sys_tenant_ref_user")
 @Data
-@Schema(description = "关联表：角色，用户")
-public class SysRoleRefUserDO {
-
-    @Schema(description = "租户id")
-    private Long tenantId;
+@Schema(description = "关联表：租户，用户")
+public class SysTenantRefUserDO {
 
     @TableId(type = IdType.INPUT)
-    @Schema(description = "角色id")
-    private Long roleId;
+    @Schema(description = "租户主键 id")
+    private Long tenantId;
 
-    @Schema(description = "用户id")
+    @Schema(description = "用户主键 id")
     private Long userId;
 
 }

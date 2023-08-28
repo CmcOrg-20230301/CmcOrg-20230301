@@ -36,7 +36,8 @@ public class SignSignInNameServiceImpl implements SignSignInNameService {
         }
 
         return SignUtil
-            .signUp(dto.getPassword(), dto.getOriginPassword(), null, PRE_REDIS_KEY_ENUM, dto.getSignInName());
+            .signUp(dto.getPassword(), dto.getOriginPassword(), null, PRE_REDIS_KEY_ENUM, dto.getSignInName(),
+                dto.getTenantId());
 
     }
 
@@ -48,7 +49,7 @@ public class SignSignInNameServiceImpl implements SignSignInNameService {
 
         return SignUtil.signInPassword(
             ChainWrappers.lambdaQueryChain(sysUserMapper).eq(SysUserDO::getSignInName, dto.getSignInName()),
-            dto.getPassword(), dto.getSignInName());
+            dto.getPassword(), dto.getSignInName(), dto.getTenantId());
 
     }
 

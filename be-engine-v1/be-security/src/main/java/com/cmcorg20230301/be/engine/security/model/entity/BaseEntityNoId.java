@@ -12,6 +12,7 @@ import java.util.Date;
 @Schema(description = "实体类基类-没有主键 id")
 public class BaseEntityNoId {
 
+    @TableField(fill = FieldFill.INSERT)
     @Schema(description = "租户id")
     private Long tenantId;
 

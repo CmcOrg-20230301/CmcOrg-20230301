@@ -67,7 +67,8 @@ public class SignEmailServiceImpl implements SignEmailService {
         checkSignUpEnable(); // 检查：是否允许注册
 
         return SignUtil
-            .signUp(dto.getPassword(), dto.getOriginPassword(), dto.getCode(), PRE_REDIS_KEY_ENUM, dto.getEmail());
+            .signUp(dto.getPassword(), dto.getOriginPassword(), dto.getCode(), PRE_REDIS_KEY_ENUM, dto.getEmail(),
+                dto.getTenantId());
 
     }
 
@@ -79,7 +80,7 @@ public class SignEmailServiceImpl implements SignEmailService {
 
         return SignUtil
             .signInPassword(ChainWrappers.lambdaQueryChain(sysUserMapper).eq(SysUserDO::getEmail, dto.getEmail()),
-                dto.getPassword(), dto.getEmail());
+                dto.getPassword(), dto.getEmail(), dto.getTenantId());
 
     }
 

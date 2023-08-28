@@ -217,8 +217,9 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserProMapper, SysUserDO>
                 sysUserInfoDO.setNickname(dto.getNickname());
                 sysUserInfoDO.setBio(dto.getBio());
 
-                SysUserDO sysUserDO =
-                    SignUtil.insertUser(dto.getPassword(), accountMap, false, sysUserInfoDO, dto.getEnableFlag());
+                SysUserDO sysUserDO = SignUtil
+                    .insertUser(dto.getPassword(), accountMap, false, sysUserInfoDO, dto.getEnableFlag(),
+                        dto.getTenantId());
 
                 insertOrUpdateSub(sysUserDO, dto); // 新增数据到子表
 

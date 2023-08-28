@@ -117,7 +117,7 @@ public class UserUtil {
             .select(SysUserDO::getPhone).one();
 
         if (sysUserDO == null || StrUtil.isBlank(sysUserDO.getPhone())) {
-            ApiResultVO.error(BaseBizCodeEnum.UNABLE_TO_SEND_VERIFICATION_CODE_BECAUSE_THE_EMAIL_ADDRESS_IS_NOT_BOUND);
+            ApiResultVO.error(BaseBizCodeEnum.UNABLE_TO_SEND_VERIFICATION_CODE_BECAUSE_THE_PHONE_IS_NOT_BOUND);
         }
 
         return sysUserDO.getPhone();
@@ -158,6 +158,22 @@ public class UserUtil {
     }
 
     /**
+     * 这里只会返回实际的 tenantId 或者 0，备注：0表示默认的 租户 id
+     */
+    @NotNull
+    public static Long getCurrentTenantIdDefault() {
+
+        Long userId = getCurrentTenantIdWillNull();
+
+        if (userId == null) {
+            userId = BaseConstant.TENANT_ID;
+        }
+
+        return userId;
+
+    }
+
+    /**
      * 获取当前 userId，注意：这里获取 userId之后需要做 非空判断
      * 这里只会返回实际的 userId或者 null
      */
@@ -165,6 +181,17 @@ public class UserUtil {
     private static Long getCurrentUserIdWillNull() {
 
         return MyJwtUtil.getPayloadMapUserIdValue(getSecurityContextHolderContextAuthenticationPrincipalJsonObject());
+
+    }
+
+    /**
+     * 获取当前 tenantId，注意：这里获取 tenantId之后需要做 非空判断
+     * 这里只会返回实际的 tenantId或者 null
+     */
+    @Nullable
+    private static Long getCurrentTenantIdWillNull() {
+
+        return MyJwtUtil.getPayloadMapTenantIdValue(getSecurityContextHolderContextAuthenticationPrincipalJsonObject());
 
     }
 

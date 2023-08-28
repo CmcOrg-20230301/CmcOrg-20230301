@@ -1,5 +1,6 @@
 package com.cmcorg20230301.be.engine.pay.base.model.entity;
 
+import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.cmcorg20230301.be.engine.pay.base.model.enums.SysPayRefTypeEnum;
@@ -19,10 +20,7 @@ import java.util.Date;
 @Schema(description = "主表：支付")
 public class SysPayDO extends BaseEntityNoId {
 
-    @Schema(description = "租户id")
-    private Long tenantId;
-
-    @TableId
+    @TableId(type = IdType.INPUT)
     @Schema(description = "主键id")
     private Long id;
 

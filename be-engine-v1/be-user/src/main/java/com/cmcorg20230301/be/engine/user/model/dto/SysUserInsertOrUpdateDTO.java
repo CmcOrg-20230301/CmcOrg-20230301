@@ -15,6 +15,9 @@ import java.util.Set;
 @Data
 public class SysUserInsertOrUpdateDTO extends BaseInsertOrUpdateDTO {
 
+    @Schema(description = "租户id，可以为空，为空则表示：默认租户：0")
+    private Long tenantId;
+
     @Size(max = 20)
     @NotBlankPattern(regexp = BaseRegexConstant.SIGN_IN_NAME_REGEXP)
     @Schema(description = "登录名")

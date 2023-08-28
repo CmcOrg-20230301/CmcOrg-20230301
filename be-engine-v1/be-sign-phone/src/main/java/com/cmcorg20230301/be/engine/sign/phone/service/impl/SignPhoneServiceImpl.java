@@ -65,7 +65,8 @@ public class SignPhoneServiceImpl implements SignPhoneService {
         checkSignUpEnable(); // 检查：是否允许注册
 
         return SignUtil
-            .signUp(dto.getPassword(), dto.getOriginPassword(), dto.getCode(), PRE_REDIS_KEY_ENUM, dto.getPhone());
+            .signUp(dto.getPassword(), dto.getOriginPassword(), dto.getCode(), PRE_REDIS_KEY_ENUM, dto.getPhone(),
+                dto.getTenantId());
 
     }
 
@@ -77,7 +78,7 @@ public class SignPhoneServiceImpl implements SignPhoneService {
 
         return SignUtil
             .signInPassword(ChainWrappers.lambdaQueryChain(sysUserMapper).eq(SysUserDO::getPhone, dto.getPhone()),
-                dto.getPassword(), dto.getPhone());
+                dto.getPassword(), dto.getPhone(), dto.getTenantId());
 
     }
 
@@ -248,7 +249,7 @@ public class SignPhoneServiceImpl implements SignPhoneService {
 
         return SignUtil
             .signInCode(ChainWrappers.lambdaQueryChain(sysUserMapper).eq(SysUserDO::getPhone, dto.getPhone()),
-                dto.getCode(), PRE_REDIS_KEY_ENUM, dto.getPhone());
+                dto.getCode(), PRE_REDIS_KEY_ENUM, dto.getPhone(), dto.getTenantId());
 
     }
 

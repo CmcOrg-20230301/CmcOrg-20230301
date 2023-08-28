@@ -39,7 +39,7 @@ public class SignWxServiceImpl implements SignWxService {
         // 直接通过：手机号登录
         return SignUtil.signInAccount(
             ChainWrappers.lambdaQueryChain(sysUserMapper).eq(SysUserDO::getPhone, wxPhoneInfoVO.getPhoneNumber()),
-            RedisKeyEnum.PRE_PHONE, wxPhoneInfoVO.getPhoneNumber(), getWxSysUserInfoDO());
+            RedisKeyEnum.PRE_PHONE, wxPhoneInfoVO.getPhoneNumber(), getWxSysUserInfoDO(), dto.getTenantId());
 
     }
 
@@ -54,7 +54,7 @@ public class SignWxServiceImpl implements SignWxService {
         // 直接通过：微信 openId登录
         return SignUtil.signInAccount(
             ChainWrappers.lambdaQueryChain(sysUserMapper).eq(SysUserDO::getWxOpenId, wxOpenIdVO.getOpenid()),
-            PRE_REDIS_KEY_ENUM, wxOpenIdVO.getOpenid(), getWxSysUserInfoDO());
+            PRE_REDIS_KEY_ENUM, wxOpenIdVO.getOpenid(), getWxSysUserInfoDO(), dto.getTenantId());
 
     }
 
@@ -82,7 +82,7 @@ public class SignWxServiceImpl implements SignWxService {
         // 直接通过：微信 openId登录
         return SignUtil.signInAccount(
             ChainWrappers.lambdaQueryChain(sysUserMapper).eq(SysUserDO::getWxOpenId, wxOpenIdVO.getOpenid()),
-            PRE_REDIS_KEY_ENUM, wxOpenIdVO.getOpenid(), getWxSysUserInfoDO());
+            PRE_REDIS_KEY_ENUM, wxOpenIdVO.getOpenid(), getWxSysUserInfoDO(), dto.getTenantId());
 
     }
 

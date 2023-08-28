@@ -160,7 +160,7 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
 
             if (NumberUtil.isNumber(jwtStr)) {
 
-                String jwtStrTmp = MyJwtUtil.generateJwt(Convert.toLong(jwtStr), null, null);
+                String jwtStrTmp = MyJwtUtil.generateJwt(Convert.toLong(jwtStr), null, null, null);
 
                 log.info("jwtStrTmp：{}", jwtStrTmp);
 

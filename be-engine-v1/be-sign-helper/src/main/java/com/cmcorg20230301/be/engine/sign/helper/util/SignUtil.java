@@ -25,10 +25,7 @@ import com.cmcorg20230301.be.engine.security.exception.BaseBizCodeEnum;
 import com.cmcorg20230301.be.engine.security.mapper.SysRoleRefUserMapper;
 import com.cmcorg20230301.be.engine.security.mapper.SysUserInfoMapper;
 import com.cmcorg20230301.be.engine.security.mapper.SysUserMapper;
-import com.cmcorg20230301.be.engine.security.model.entity.BaseEntity;
-import com.cmcorg20230301.be.engine.security.model.entity.SysRoleRefUserDO;
-import com.cmcorg20230301.be.engine.security.model.entity.SysUserDO;
-import com.cmcorg20230301.be.engine.security.model.entity.SysUserInfoDO;
+import com.cmcorg20230301.be.engine.security.model.entity.*;
 import com.cmcorg20230301.be.engine.security.model.vo.ApiResultVO;
 import com.cmcorg20230301.be.engine.security.properties.SecurityProperties;
 import com.cmcorg20230301.be.engine.security.util.*;
@@ -166,7 +163,7 @@ public class SignUtil {
      * 注册
      */
     public static String signUp(String password, String originPassword, String code,
-        Enum<? extends IRedisKey> redisKeyEnum, String account) {
+        Enum<? extends IRedisKey> redisKeyEnum, String account, @Nullable Long tenantId) {
 
         if (BaseConstant.ADMIN_ACCOUNT.equals(account)) {
 
@@ -218,7 +215,7 @@ public class SignUtil {
             accountMap.put(redisKeyEnum, account);
 
             // 新增：用户
-            SignUtil.insertUser(finalPassword, accountMap, true, null, null);
+            SignUtil.insertUser(finalPassword, accountMap, true, null, null, tenantId);
 
             if (checkCodeFlag) {
                 bucket.delete(); // 删除：验证码
@@ -234,18 +231,20 @@ public class SignUtil {
      * 新增：用户
      */
     public static SysUserDO insertUser(String password, Map<Enum<? extends IRedisKey>, String> accountMap,
-        boolean checkPasswordBlank, SysUserInfoDO tempSysUserInfoDO, Boolean enableFlag) {
+        boolean checkPasswordBlank, SysUserInfoDO tempSysUserInfoDO, Boolean enableFlag, @Nullable Long tenantId) {
 
         // 获取：SysUserDO对象
-        SysUserDO sysUserDO = insertUserGetSysUserDO(password, accountMap, checkPasswordBlank, enableFlag);
+        SysUserDO sysUserDO = insertUserGetSysUserDO(password, accountMap, checkPasswordBlank, enableFlag, tenantId);
 
         return TransactionUtil.exec(() -> {
 
             sysUserMapper.insert(sysUserDO); // 保存：用户
 
             SysUserInfoDO sysUserInfoDO = new SysUserInfoDO();
+
             sysUserInfoDO.setId(sysUserDO.getId());
             sysUserInfoDO.setUuid(IdUtil.simpleUUID());
+            sysUserInfoDO.setTenantId(sysUserDO.getTenantId()); // 设置：租户 id
 
             if (tempSysUserInfoDO == null) {
 
@@ -280,7 +279,7 @@ public class SignUtil {
      */
     @NotNull
     private static SysUserDO insertUserGetSysUserDO(String password, Map<Enum<? extends IRedisKey>, String> accountMap,
-        boolean checkPasswordBlank, Boolean enableFlag) {
+        boolean checkPasswordBlank, Boolean enableFlag, @Nullable Long tenantId) {
 
         SysUserDO sysUserDO = new SysUserDO();
 
@@ -322,6 +321,10 @@ public class SignUtil {
 
         sysUserDO.setPassword(PasswordConvertUtil.convert(password, checkPasswordBlank));
 
+        tenantId = MyJwtUtil.getTenantId(tenantId);
+
+        sysUserDO.setTenantId(tenantId); // 设置：租户 id
+
         return sysUserDO;
 
     }
@@ -332,14 +335,15 @@ public class SignUtil {
      */
     @NotNull
     public static String signInAccount(LambdaQueryChainWrapper<SysUserDO> lambdaQueryChainWrapper,
-        Enum<? extends IRedisKey> redisKeyEnum, String account, SysUserInfoDO tempSysUserInfoDO) {
+        Enum<? extends IRedisKey> redisKeyEnum, String account, SysUserInfoDO tempSysUserInfoDO,
+        @Nullable Long tenantId) {
 
         String key = redisKeyEnum + account;
 
         return RedissonUtil.doLock(key, () -> {
 
             // 登录时，获取账号信息
-            SysUserDO sysUserDO = signInGetSysUserDO(lambdaQueryChainWrapper, false);
+            SysUserDO sysUserDO = signInGetSysUserDO(lambdaQueryChainWrapper, false, tenantId);
 
             if (sysUserDO == null) {
 
@@ -348,7 +352,7 @@ public class SignUtil {
 
                 accountMap.put(redisKeyEnum, account);
 
-                sysUserDO = SignUtil.insertUser(null, accountMap, false, tempSysUserInfoDO, null);
+                sysUserDO = SignUtil.insertUser(null, accountMap, false, tempSysUserInfoDO, null, tenantId);
 
             }
 
@@ -364,10 +368,10 @@ public class SignUtil {
      */
     @NotNull
     public static String signInCode(LambdaQueryChainWrapper<SysUserDO> lambdaQueryChainWrapper, String code,
-        Enum<? extends IRedisKey> redisKeyEnum, String account) {
+        Enum<? extends IRedisKey> redisKeyEnum, String account, @Nullable Long tenantId) {
 
         // 登录时，获取账号信息
-        final SysUserDO[] sysUserDOArr = {signInGetSysUserDO(lambdaQueryChainWrapper, false)};
+        SysUserDO sysUserDOTemp = signInGetSysUserDO(lambdaQueryChainWrapper, false, tenantId);
 
         String key = redisKeyEnum + account;
 
@@ -377,20 +381,22 @@ public class SignUtil {
 
             CodeUtil.checkCode(code, bucket.get()); // 检查 code是否正确
 
-            if (sysUserDOArr[0] == null) {
+            SysUserDO sysUserDO = sysUserDOTemp;
+
+            if (sysUserDO == null) {
 
                 // 如果登录的账号不存在，则进行新增
                 Map<Enum<? extends IRedisKey>, String> accountMap = MapUtil.newHashMap();
                 accountMap.put(redisKeyEnum, account);
 
-                sysUserDOArr[0] = SignUtil.insertUser(null, accountMap, false, null, null);
+                sysUserDO = SignUtil.insertUser(null, accountMap, false, null, null, tenantId);
 
             }
 
             bucket.delete(); // 删除：验证码
 
             // 登录时，获取：jwt
-            return signInGetJwt(sysUserDOArr[0]);
+            return signInGetJwt(sysUserDO);
 
         });
 
@@ -400,7 +406,7 @@ public class SignUtil {
      * 账号密码登录
      */
     public static String signInPassword(LambdaQueryChainWrapper<SysUserDO> lambdaQueryChainWrapper, String password,
-        String account) {
+        String account, @Nullable Long tenantId) {
 
         // 密码解密
         password = MyRsaUtil.rsaDecrypt(password);
@@ -409,13 +415,13 @@ public class SignUtil {
         if (BaseConstant.ADMIN_ACCOUNT.equals(account)) {
 
             if (signInPasswordForAdmin(password)) {
-                return MyJwtUtil.generateJwt(BaseConstant.ADMIN_ID, null, null);
+                return MyJwtUtil.generateJwt(BaseConstant.ADMIN_ID, null, null, null);
             }
 
         }
 
         // 登录时，获取账号信息
-        SysUserDO sysUserDO = signInGetSysUserDO(lambdaQueryChainWrapper, true);
+        SysUserDO sysUserDO = signInGetSysUserDO(lambdaQueryChainWrapper, true, tenantId);
 
         if (sysUserDO == null || StrUtil.isBlank(sysUserDO.getPassword())) { // 备注：这里 sysUserDO不会为 null
             ApiResultVO.error(BizCodeEnum.NO_PASSWORD_SET); // 未设置密码，请点击【忘记密码】，进行密码设置
@@ -486,7 +492,7 @@ public class SignUtil {
         String jwtSecretSuf = UserUtil.getJwtSecretSuf(sysUserDO.getId());
 
         // 颁发，并返回 jwt
-        return MyJwtUtil.generateJwt(sysUserDO.getId(), jwtSecretSuf, null);
+        return MyJwtUtil.generateJwt(sysUserDO.getId(), jwtSecretSuf, null, sysUserDO.getTenantId());
 
     }
 
@@ -495,10 +501,15 @@ public class SignUtil {
      */
     @Nullable
     private static SysUserDO signInGetSysUserDO(LambdaQueryChainWrapper<SysUserDO> lambdaQueryChainWrapper,
-        boolean errorFlag) {
+        boolean errorFlag, @Nullable Long tenantId) {
 
-        SysUserDO sysUserDO =
-            lambdaQueryChainWrapper.select(SysUserDO::getPassword, BaseEntity::getEnableFlag, BaseEntity::getId).one();
+        tenantId = MyJwtUtil.getTenantId(tenantId);
+
+        lambdaQueryChainWrapper.eq(BaseEntityNoId::getTenantId, tenantId);
+
+        SysUserDO sysUserDO = lambdaQueryChainWrapper
+            .select(SysUserDO::getPassword, BaseEntity::getEnableFlag, BaseEntity::getId, BaseEntityNoId::getTenantId)
+            .one();
 
         // 账户是否存在
         if (sysUserDO == null) {
