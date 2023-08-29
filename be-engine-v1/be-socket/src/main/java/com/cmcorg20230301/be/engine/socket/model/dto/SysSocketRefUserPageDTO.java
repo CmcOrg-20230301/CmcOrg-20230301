@@ -1,6 +1,6 @@
 package com.cmcorg20230301.be.engine.socket.model.dto;
 
-import com.cmcorg20230301.be.engine.security.model.dto.MyPageDTO;
+import com.cmcorg20230301.be.engine.security.model.dto.MyTenantPageDTO;
 import com.cmcorg20230301.be.engine.socket.model.enums.SysSocketOnlineTypeEnum;
 import com.cmcorg20230301.be.engine.socket.model.enums.SysSocketTypeEnum;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -9,7 +9,7 @@ import lombok.EqualsAndHashCode;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
-public class SysSocketRefUserPageDTO extends MyPageDTO {
+public class SysSocketRefUserPageDTO extends MyTenantPageDTO {
 
     @Schema(description = "主键 id")
     private Long id;

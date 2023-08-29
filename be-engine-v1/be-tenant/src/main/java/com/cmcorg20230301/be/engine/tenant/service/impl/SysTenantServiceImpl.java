@@ -6,6 +6,7 @@ import cn.hutool.core.util.BooleanUtil;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.baomidou.mybatisplus.extension.toolkit.ChainWrappers;
 import com.cmcorg20230301.be.engine.model.model.constant.BaseConstant;
 import com.cmcorg20230301.be.engine.model.model.dto.ChangeNumberDTO;
 import com.cmcorg20230301.be.engine.model.model.dto.NotEmptyIdSet;
@@ -15,10 +16,7 @@ import com.cmcorg20230301.be.engine.model.model.vo.DictVO;
 import com.cmcorg20230301.be.engine.mysql.model.annotation.MyTransactional;
 import com.cmcorg20230301.be.engine.security.exception.BaseBizCodeEnum;
 import com.cmcorg20230301.be.engine.security.mapper.SysTenantMapper;
-import com.cmcorg20230301.be.engine.security.model.entity.BaseEntity;
-import com.cmcorg20230301.be.engine.security.model.entity.BaseEntityTree;
-import com.cmcorg20230301.be.engine.security.model.entity.SysTenantDO;
-import com.cmcorg20230301.be.engine.security.model.entity.SysTenantRefUserDO;
+import com.cmcorg20230301.be.engine.security.model.entity.*;
 import com.cmcorg20230301.be.engine.security.model.vo.ApiResultVO;
 import com.cmcorg20230301.be.engine.security.util.MyEntityUtil;
 import com.cmcorg20230301.be.engine.security.util.MyTreeUtil;
@@ -51,6 +49,9 @@ public class SysTenantServiceImpl extends ServiceImpl<SysTenantMapper, SysTenant
     @MyTransactional
     public String insertOrUpdate(SysTenantInsertOrUpdateDTO dto) {
 
+        // 检查：租户 id是否合法
+        TenantUtil.getTenantId(dto.getTenantId());
+
         Long parentId = MyEntityUtil.getNotNullParentId(dto.getParentId());
 
         if (parentId == 0) {
@@ -76,6 +77,7 @@ public class SysTenantServiceImpl extends ServiceImpl<SysTenantMapper, SysTenant
         }
 
         SysTenantDO sysTenantDO = new SysTenantDO();
+
         sysTenantDO.setEnableFlag(BooleanUtil.isTrue(dto.getEnableFlag()));
         sysTenantDO.setName(dto.getName());
         sysTenantDO.setOrderNo(dto.getOrderNo());
@@ -130,10 +132,15 @@ public class SysTenantServiceImpl extends ServiceImpl<SysTenantMapper, SysTenant
     @Override
     public Page<SysTenantDO> myPage(SysTenantPageDTO dto) {
 
+        // 通过：dto的 tenantId，获取：tenantIdSet
+        Set<Long> tenantIdSet = TenantUtil.getTenantIdSetByDtoTenantId(dto.getTenantId());
+
         return lambdaQuery().like(StrUtil.isNotBlank(dto.getName()), SysTenantDO::getName, dto.getName())
             .like(StrUtil.isNotBlank(dto.getRemark()), BaseEntityTree::getRemark, dto.getRemark())
             .eq(dto.getEnableFlag() != null, BaseEntityTree::getEnableFlag, dto.getEnableFlag())
-            .eq(dto.getId() != null, BaseEntity::getId, dto.getId()).eq(BaseEntityTree::getDelFlag, false)
+            .eq(dto.getId() != null, BaseEntity::getId, dto.getId()) //
+            .eq(BaseEntityTree::getDelFlag, false) //
+            .in(BaseEntityNoId::getTenantId, tenantIdSet) //
             .orderByDesc(BaseEntityTree::getOrderNo).page(dto.page(true));
 
     }
@@ -194,6 +201,9 @@ public class SysTenantServiceImpl extends ServiceImpl<SysTenantMapper, SysTenant
     @MyTransactional
     public String deleteByIdSet(NotEmptyIdSet notEmptyIdSet) {
 
+        // 检查：是否非法操作
+        TenantUtil.checkIllegal(notEmptyIdSet.getIdSet(), ChainWrappers.lambdaQueryChain(getBaseMapper()));
+
         // 如果存在下级，则无法删除
         boolean exists = lambdaQuery().in(BaseEntityTree::getParentId, notEmptyIdSet.getIdSet()).exists();
 
@@ -225,12 +235,18 @@ public class SysTenantServiceImpl extends ServiceImpl<SysTenantMapper, SysTenant
     @Override
     public SysTenantInfoByIdVO infoById(NotNullId notNullId) {
 
-        SysTenantInfoByIdVO sysTenantInfoByIdVO =
-            BeanUtil.copyProperties(getById(notNullId.getId()), SysTenantInfoByIdVO.class);
+        // 通过：dto的 tenantId，获取：tenantIdSet
+        Set<Long> queryTenantIdSet = TenantUtil.getTenantIdSetByDtoTenantId(null);
 
-        if (sysTenantInfoByIdVO == null) {
+        SysTenantDO sysTenantDO =
+            lambdaQuery().eq(BaseEntity::getId, notNullId.getId()).in(BaseEntityNoId::getTenantId, queryTenantIdSet)
+                .one();
+
+        if (sysTenantDO == null) {
             return null;
         }
+
+        SysTenantInfoByIdVO sysTenantInfoByIdVO = BeanUtil.copyProperties(sysTenantDO, SysTenantInfoByIdVO.class);
 
         // 获取：绑定的用户 idSet
         List<SysTenantRefUserDO> sysTenantRefUserDOList =
@@ -254,6 +270,9 @@ public class SysTenantServiceImpl extends ServiceImpl<SysTenantMapper, SysTenant
     @Override
     @MyTransactional
     public String addOrderNo(ChangeNumberDTO dto) {
+
+        // 检查：是否非法操作
+        TenantUtil.checkIllegal(dto.getIdSet(), ChainWrappers.lambdaQueryChain(getBaseMapper()));
 
         if (dto.getNumber() == 0) {
             return BaseBizCodeEnum.OK;

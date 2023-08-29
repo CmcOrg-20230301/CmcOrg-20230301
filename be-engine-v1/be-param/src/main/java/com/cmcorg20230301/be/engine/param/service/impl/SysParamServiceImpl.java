@@ -63,7 +63,9 @@ public class SysParamServiceImpl extends ServiceImpl<SysParamMapper, SysParamDO>
      */
     @Override
     public SysParamDO infoById(NotNullId notNullId) {
+
         return getById(notNullId.getId());
+
     }
 
     /**

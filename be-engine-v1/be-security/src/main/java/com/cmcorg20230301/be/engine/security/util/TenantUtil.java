@@ -1,6 +1,7 @@
 package com.cmcorg20230301.be.engine.security.util;
 
 import cn.hutool.core.collection.CollUtil;
+import com.baomidou.mybatisplus.extension.conditions.query.LambdaQueryChainWrapper;
 import com.baomidou.mybatisplus.extension.toolkit.ChainWrappers;
 import com.cmcorg20230301.be.engine.cache.util.CacheHelper;
 import com.cmcorg20230301.be.engine.cache.util.MyCacheUtil;
@@ -238,6 +239,26 @@ public class TenantUtil {
         }
 
         return tenantIdSet;
+
+    }
+
+    /**
+     * 检查：是否非法操作
+     */
+    public static <T extends BaseEntity> void checkIllegal(Set<Long> idSet,
+        LambdaQueryChainWrapper<T> lambdaQueryChainWrapper) {
+
+        // 通过：dto的 tenantId，获取：tenantIdSet
+        Set<Long> tenantIdSet = TenantUtil.getTenantIdSetByDtoTenantId(null);
+
+        Long count =
+            lambdaQueryChainWrapper.in(BaseEntityNoId::getTenantId, tenantIdSet).in(BaseEntity::getId, idSet).count();
+
+        if (idSet.size() != count) {
+
+            ApiResultVO.error(BaseBizCodeEnum.ILLEGAL_REQUEST);
+
+        }
 
     }
 

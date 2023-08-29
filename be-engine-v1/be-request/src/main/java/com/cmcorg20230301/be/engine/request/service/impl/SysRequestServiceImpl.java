@@ -42,7 +42,7 @@ public class SysRequestServiceImpl extends ServiceImpl<SysRequestMapper, SysRequ
             .eq(dto.getCategory() != null, SysRequestDO::getCategory, dto.getCategory())
             .eq(dto.getCreateId() != null, BaseEntity::getCreateId, dto.getCreateId())
             .eq(dto.getSuccessFlag() != null, SysRequestDO::getSuccessFlag, dto.getSuccessFlag())
-            .in(SysRequestDO::getTenantId, tenantIdSet) //
+            .in(BaseEntityNoId::getTenantId, tenantIdSet) //
             .orderByDesc(BaseEntity::getCreateTime)
             .select(SysRequestDO::getIp, SysRequestDO::getUri, SysRequestDO::getSuccessFlag, SysRequestDO::getCostMsStr,
                 BaseEntityNoId::getCreateTime, BaseEntityNoId::getCreateId, SysRequestDO::getName,

@@ -2,7 +2,7 @@ package com.cmcorg20230301.be.engine.user.model.dto;
 
 import com.cmcorg20230301.be.engine.model.model.annotation.NotBlankPattern;
 import com.cmcorg20230301.be.engine.model.model.constant.BaseRegexConstant;
-import com.cmcorg20230301.be.engine.model.model.dto.BaseInsertOrUpdateDTO;
+import com.cmcorg20230301.be.engine.model.model.dto.BaseTenantInsertOrUpdateDTO;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -13,10 +13,7 @@ import java.util.Set;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
-public class SysUserInsertOrUpdateDTO extends BaseInsertOrUpdateDTO {
-
-    @Schema(description = "租户id，可以为空，为空则表示：默认租户：0")
-    private Long tenantId;
+public class SysUserInsertOrUpdateDTO extends BaseTenantInsertOrUpdateDTO {
 
     @Size(max = 20)
     @NotBlankPattern(regexp = BaseRegexConstant.SIGN_IN_NAME_REGEXP)

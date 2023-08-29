@@ -24,6 +24,7 @@ import com.cmcorg20230301.be.engine.security.mapper.SysUserMapper;
 import com.cmcorg20230301.be.engine.security.model.entity.*;
 import com.cmcorg20230301.be.engine.security.model.vo.ApiResultVO;
 import com.cmcorg20230301.be.engine.security.util.MyEntityUtil;
+import com.cmcorg20230301.be.engine.security.util.TenantUtil;
 import com.cmcorg20230301.be.engine.util.util.MyMapUtil;
 import org.springframework.stereotype.Service;
 
@@ -51,6 +52,9 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRoleDO> im
     @Override
     @MyTransactional
     public String insertOrUpdate(SysRoleInsertOrUpdateDTO dto) {
+
+        // 检查：租户 id是否合法
+        TenantUtil.getTenantId(dto.getTenantId());
 
         // 角色名，不能重复
         boolean exists =
@@ -153,10 +157,14 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRoleDO> im
     @Override
     public Page<SysRoleDO> myPage(SysRolePageDTO dto) {
 
+        // 通过：dto的 tenantId，获取：tenantIdSet
+        Set<Long> tenantIdSet = TenantUtil.getTenantIdSetByDtoTenantId(dto.getTenantId());
+
         return lambdaQuery().like(StrUtil.isNotBlank(dto.getName()), SysRoleDO::getName, dto.getName())
             .like(StrUtil.isNotBlank(dto.getRemark()), BaseEntity::getRemark, dto.getRemark())
             .eq(dto.getEnableFlag() != null, BaseEntity::getEnableFlag, dto.getEnableFlag())
             .eq(dto.getDefaultFlag() != null, SysRoleDO::getDefaultFlag, dto.getDefaultFlag())
+            .in(BaseEntityNoId::getTenantId, tenantIdSet) //
             .orderByDesc(BaseEntity::getUpdateTime).page(dto.page(true));
 
     }
@@ -167,12 +175,18 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRoleDO> im
     @Override
     public SysRoleInfoByIdVO infoById(NotNullId notNullId) {
 
-        SysRoleInfoByIdVO sysRoleInfoByIdVO =
-            BeanUtil.copyProperties(getById(notNullId.getId()), SysRoleInfoByIdVO.class);
+        // 通过：dto的 tenantId，获取：tenantIdSet
+        Set<Long> queryTenantIdSet = TenantUtil.getTenantIdSetByDtoTenantId(null);
 
-        if (sysRoleInfoByIdVO == null) {
+        SysRoleDO sysRoleDO =
+            lambdaQuery().eq(BaseEntity::getId, notNullId.getId()).in(BaseEntityNoId::getTenantId, queryTenantIdSet)
+                .one();
+
+        if (sysRoleDO == null) {
             return null;
         }
+
+        SysRoleInfoByIdVO sysRoleInfoByIdVO = BeanUtil.copyProperties(sysRoleDO, SysRoleInfoByIdVO.class);
 
         // 完善子表的数据
         List<SysRoleRefMenuDO> menuList =
@@ -196,6 +210,9 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRoleDO> im
     @Override
     @MyTransactional
     public String deleteByIdSet(NotEmptyIdSet notEmptyIdSet) {
+
+        // 检查：是否非法操作
+        TenantUtil.checkIllegal(notEmptyIdSet.getIdSet(), ChainWrappers.lambdaQueryChain(getBaseMapper()));
 
         deleteByIdSetSub(notEmptyIdSet.getIdSet()); // 删除子表数据
 

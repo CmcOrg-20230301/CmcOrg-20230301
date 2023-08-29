@@ -6,6 +6,7 @@ import cn.hutool.core.util.BooleanUtil;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.baomidou.mybatisplus.extension.toolkit.ChainWrappers;
 import com.cmcorg20230301.be.engine.model.model.dto.ChangeNumberDTO;
 import com.cmcorg20230301.be.engine.model.model.dto.NotEmptyIdSet;
 import com.cmcorg20230301.be.engine.model.model.dto.NotNullId;
@@ -20,10 +21,12 @@ import com.cmcorg20230301.be.engine.post.service.SysPostRefUserService;
 import com.cmcorg20230301.be.engine.post.service.SysPostService;
 import com.cmcorg20230301.be.engine.security.exception.BaseBizCodeEnum;
 import com.cmcorg20230301.be.engine.security.model.entity.BaseEntity;
+import com.cmcorg20230301.be.engine.security.model.entity.BaseEntityNoId;
 import com.cmcorg20230301.be.engine.security.model.entity.BaseEntityTree;
 import com.cmcorg20230301.be.engine.security.model.vo.ApiResultVO;
 import com.cmcorg20230301.be.engine.security.util.MyEntityUtil;
 import com.cmcorg20230301.be.engine.security.util.MyTreeUtil;
+import com.cmcorg20230301.be.engine.security.util.TenantUtil;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -45,6 +48,9 @@ public class SysPostServiceImpl extends ServiceImpl<SysPostMapper, SysPostDO> im
     @MyTransactional
     public String insertOrUpdate(SysPostInsertOrUpdateDTO dto) {
 
+        // 检查：租户 id是否合法
+        TenantUtil.getTenantId(dto.getTenantId());
+
         if (dto.getId() != null && dto.getId().equals(dto.getParentId())) {
             ApiResultVO.error(BaseBizCodeEnum.PARENT_ID_CANNOT_BE_EQUAL_TO_ID);
         }
@@ -63,6 +69,7 @@ public class SysPostServiceImpl extends ServiceImpl<SysPostMapper, SysPostDO> im
         }
 
         SysPostDO sysPostDO = new SysPostDO();
+
         sysPostDO.setEnableFlag(BooleanUtil.isTrue(dto.getEnableFlag()));
         sysPostDO.setName(dto.getName());
         sysPostDO.setOrderNo(dto.getOrderNo());
@@ -112,9 +119,13 @@ public class SysPostServiceImpl extends ServiceImpl<SysPostMapper, SysPostDO> im
     @Override
     public Page<SysPostDO> myPage(SysPostPageDTO dto) {
 
+        // 通过：dto的 tenantId，获取：tenantIdSet
+        Set<Long> tenantIdSet = TenantUtil.getTenantIdSetByDtoTenantId(dto.getTenantId());
+
         return lambdaQuery().like(StrUtil.isNotBlank(dto.getName()), SysPostDO::getName, dto.getName())
             .like(StrUtil.isNotBlank(dto.getRemark()), BaseEntityTree::getRemark, dto.getRemark())
             .eq(dto.getEnableFlag() != null, BaseEntityTree::getEnableFlag, dto.getEnableFlag())
+            .in(BaseEntityNoId::getTenantId, tenantIdSet) //
             .eq(BaseEntityTree::getDelFlag, false).orderByDesc(BaseEntityTree::getOrderNo).page(dto.page(true));
 
     }
@@ -150,6 +161,9 @@ public class SysPostServiceImpl extends ServiceImpl<SysPostMapper, SysPostDO> im
     @MyTransactional
     public String deleteByIdSet(NotEmptyIdSet notEmptyIdSet) {
 
+        // 检查：是否非法操作
+        TenantUtil.checkIllegal(notEmptyIdSet.getIdSet(), ChainWrappers.lambdaQueryChain(getBaseMapper()));
+
         // 如果存在下级，则无法删除
         boolean exists = lambdaQuery().in(BaseEntityTree::getParentId, notEmptyIdSet.getIdSet()).exists();
 
@@ -181,12 +195,18 @@ public class SysPostServiceImpl extends ServiceImpl<SysPostMapper, SysPostDO> im
     @Override
     public SysPostInfoByIdVO infoById(NotNullId notNullId) {
 
-        SysPostInfoByIdVO sysPostInfoByIdVO =
-            BeanUtil.copyProperties(getById(notNullId.getId()), SysPostInfoByIdVO.class);
+        // 通过：dto的 tenantId，获取：tenantIdSet
+        Set<Long> queryTenantIdSet = TenantUtil.getTenantIdSetByDtoTenantId(null);
 
-        if (sysPostInfoByIdVO == null) {
+        SysPostDO sysPostDO =
+            lambdaQuery().eq(BaseEntity::getId, notNullId.getId()).in(BaseEntityNoId::getTenantId, queryTenantIdSet)
+                .one();
+
+        if (sysPostDO == null) {
             return null;
         }
+
+        SysPostInfoByIdVO sysPostInfoByIdVO = BeanUtil.copyProperties(sysPostDO, SysPostInfoByIdVO.class);
 
         // 获取：绑定的用户 idSet
         List<SysPostRefUserDO> sysPostRefUserDOList =
@@ -210,6 +230,9 @@ public class SysPostServiceImpl extends ServiceImpl<SysPostMapper, SysPostDO> im
     @Override
     @MyTransactional
     public String addOrderNo(ChangeNumberDTO dto) {
+
+        // 检查：是否非法操作
+        TenantUtil.checkIllegal(dto.getIdSet(), ChainWrappers.lambdaQueryChain(getBaseMapper()));
 
         if (dto.getNumber() == 0) {
             return BaseBizCodeEnum.OK;

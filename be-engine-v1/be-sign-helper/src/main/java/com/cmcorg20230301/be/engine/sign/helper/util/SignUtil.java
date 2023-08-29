@@ -1008,15 +1008,18 @@ public class SignUtil {
     /**
      * 执行：账号注销
      */
-    public static void doSignDelete(Set<Long> idSet) {
+    public static void doSignDelete(Set<Long> userIdSet) {
+
+        // 检查：是否非法操作
+        TenantUtil.checkIllegal(userIdSet, ChainWrappers.lambdaQueryChain(sysUserMapper));
 
         TransactionUtil.exec(() -> {
 
-            sysUserMapper.deleteBatchIds(idSet); // 直接：删除用户
+            sysUserMapper.deleteBatchIds(userIdSet); // 直接：删除用户
 
-            doSignDeleteSub(idSet, true); // 删除子表数据
+            doSignDeleteSub(userIdSet, true); // 删除子表数据
 
-            for (Long item : idSet) {
+            for (Long item : userIdSet) {
 
                 // 删除 jwt后缀
                 UserUtil.removeJwtSecretSuf(item);

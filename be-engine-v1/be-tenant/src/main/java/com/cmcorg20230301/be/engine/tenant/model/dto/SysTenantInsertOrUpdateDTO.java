@@ -1,6 +1,6 @@
 package com.cmcorg20230301.be.engine.tenant.model.dto;
 
-import com.cmcorg20230301.be.engine.model.model.dto.BaseInsertOrUpdateDTO;
+import com.cmcorg20230301.be.engine.model.model.dto.BaseTenantInsertOrUpdateDTO;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -10,7 +10,7 @@ import java.util.Set;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
-public class SysTenantInsertOrUpdateDTO extends BaseInsertOrUpdateDTO {
+public class SysTenantInsertOrUpdateDTO extends BaseTenantInsertOrUpdateDTO {
 
     @Schema(description = "排序号（值越大越前面，默认为 0）")
     private Integer orderNo;

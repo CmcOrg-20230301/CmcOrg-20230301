@@ -1,6 +1,6 @@
 package com.cmcorg20230301.be.engine.role.model.dto;
 
-import com.cmcorg20230301.be.engine.model.model.dto.BaseInsertOrUpdateDTO;
+import com.cmcorg20230301.be.engine.model.model.dto.BaseTenantInsertOrUpdateDTO;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -10,7 +10,7 @@ import java.util.Set;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
-public class SysRoleInsertOrUpdateDTO extends BaseInsertOrUpdateDTO {
+public class SysRoleInsertOrUpdateDTO extends BaseTenantInsertOrUpdateDTO {
 
     @NotBlank
     @Schema(description = "角色名，不能重复")

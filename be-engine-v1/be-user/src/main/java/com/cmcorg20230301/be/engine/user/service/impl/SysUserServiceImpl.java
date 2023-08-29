@@ -187,6 +187,9 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserProMapper, SysUserDO>
     @MyTransactional
     public String insertOrUpdate(SysUserInsertOrUpdateDTO dto) {
 
+        // 检查：租户 id是否合法
+        TenantUtil.getTenantId(dto.getTenantId());
+
         boolean emailBlank = StrUtil.isBlank(dto.getEmail());
         boolean signInNameBlank = StrUtil.isBlank(dto.getSignInName());
         boolean phoneBlank = StrUtil.isBlank(dto.getPhone());
@@ -330,6 +333,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserProMapper, SysUserDO>
         if (BooleanUtil.isFalse(sysUserDO.getEnableFlag())) {
 
             UserUtil.setDisable(sysUserDO.getId()); // 设置：账号被冻结
+
             return;
 
         } else {
@@ -443,6 +447,9 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserProMapper, SysUserDO>
     @Override
     public String refreshJwtSecretSuf(NotEmptyIdSet notEmptyIdSet) {
 
+        // 检查：是否非法操作
+        TenantUtil.checkIllegal(notEmptyIdSet.getIdSet(), ChainWrappers.lambdaQueryChain(sysUserMapper));
+
         for (Long item : notEmptyIdSet.getIdSet()) {
 
             UserUtil.setJwtSecretSuf(item); // 设置：jwt秘钥后缀
@@ -459,13 +466,18 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserProMapper, SysUserDO>
     @Override
     public SysUserInfoByIdVO infoById(NotNullId notNullId) {
 
-        SysUserDO sysUserDO = lambdaQuery().eq(BaseEntity::getId, notNullId.getId()).one();
+        // 通过：dto的 tenantId，获取：tenantIdSet
+        Set<Long> queryTenantIdSet = TenantUtil.getTenantIdSetByDtoTenantId(null);
 
-        SysUserInfoByIdVO sysUserInfoByIdVO = BeanUtil.copyProperties(sysUserDO, SysUserInfoByIdVO.class);
+        SysUserDO sysUserDO =
+            lambdaQuery().eq(BaseEntity::getId, notNullId.getId()).in(BaseEntityNoId::getTenantId, queryTenantIdSet)
+                .one();
 
-        if (sysUserInfoByIdVO == null) {
+        if (sysUserDO == null) {
             return null;
         }
+
+        SysUserInfoByIdVO sysUserInfoByIdVO = BeanUtil.copyProperties(sysUserDO, SysUserInfoByIdVO.class);
 
         SysUserInfoDO sysUserInfoDO =
             ChainWrappers.lambdaQueryChain(sysUserInfoMapper).eq(SysUserInfoDO::getId, notNullId.getId())
@@ -519,8 +531,11 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserProMapper, SysUserDO>
     @Override
     public String resetAvatar(NotEmptyIdSet notEmptyIdSet) {
 
+        // 通过：dto的 tenantId，获取：tenantIdSet
+        Set<Long> tenantIdSet = TenantUtil.getTenantIdSetByDtoTenantId(null);
+
         ChainWrappers.lambdaUpdateChain(sysUserInfoMapper).in(SysUserInfoDO::getId, notEmptyIdSet.getIdSet())
-            .set(SysUserInfoDO::getAvatarFileId, -1).update();
+            .in(SysUserInfoDO::getTenantId, tenantIdSet).set(SysUserInfoDO::getAvatarFileId, -1).update();
 
         return BaseBizCodeEnum.OK;
 
@@ -532,6 +547,9 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserProMapper, SysUserDO>
     @Override
     @MyTransactional
     public String updatePassword(SysUserUpdatePasswordDTO dto) {
+
+        // 检查：是否非法操作
+        TenantUtil.checkIllegal(dto.getIdSet(), ChainWrappers.lambdaQueryChain(sysUserMapper));
 
         boolean passwordFlag =
             StrUtil.isNotBlank(dto.getNewPassword()) && StrUtil.isNotBlank(dto.getNewOriginPassword());
