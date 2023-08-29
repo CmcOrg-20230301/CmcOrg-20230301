@@ -1,23 +1,16 @@
 package com.cmcorg20230301.be.engine.request.model.dto;
 
-import com.cmcorg20230301.be.engine.security.model.dto.MyPageDTO;
+import com.cmcorg20230301.be.engine.security.model.dto.MyTenantPageDTO;
 import com.cmcorg20230301.be.engine.security.model.enums.SysRequestCategoryEnum;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 import java.util.Date;
-import java.util.Set;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
-public class SysRequestPageDTO extends MyPageDTO {
-
-    @Schema(description = "租户 id")
-    private Long tenantId;
-
-    @Schema(description = "租户 idSet")
-    private Set<Long> tenantIdSet;
+public class SysRequestPageDTO extends MyTenantPageDTO {
 
     @Schema(description = "请求的uri")
     private String uri;

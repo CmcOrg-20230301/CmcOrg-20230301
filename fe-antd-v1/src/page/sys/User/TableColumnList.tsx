@@ -1,4 +1,4 @@
-import {YesNoDict} from "@/util/DictUtil";
+import {GetDictList, YesNoDict} from "@/util/DictUtil";
 import {ActionType, ModalForm, ProColumns, ProFormText} from "@ant-design/pro-components";
 import {
     SysUserDeleteByIdSet,
@@ -16,6 +16,7 @@ import {EllipsisOutlined, EyeOutlined} from "@ant-design/icons";
 import {ValidatorUtil} from "@/util/ValidatorUtil";
 import {PasswordRSAEncrypt, RSAEncryptPro} from "@/util/RsaUtil";
 import {Dropdown} from "antd";
+import {SysTenantDictList} from "@/api/http/SysTenant";
 
 const TableColumnList = (currentForm: React.MutableRefObject<SysUserInsertOrUpdateDTO>, setFormOpen: React.Dispatch<React.SetStateAction<boolean>>, actionRef: React.RefObject<ActionType | undefined>, userAvatarUrlObj: Record<string, string>): ProColumns<SysUserPageVO>[] => [
 
@@ -37,6 +38,13 @@ const TableColumnList = (currentForm: React.MutableRefObject<SysUserInsertOrUpda
 
             return userAvatarUrlObj[text] || CommonConstant.FIXED_AVATAR_URL
 
+        }
+    },
+
+    {
+        title: '租户', dataIndex: 'tenantId', ellipsis: true, width: 90, valueType: 'select',
+        request: () => {
+            return GetDictList(SysTenantDictList)
         }
     },
 

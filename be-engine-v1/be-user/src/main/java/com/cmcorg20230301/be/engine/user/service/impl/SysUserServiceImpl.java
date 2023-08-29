@@ -82,6 +82,11 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserProMapper, SysUserDO>
     @Override
     public Page<SysUserPageVO> myPage(SysUserPageDTO dto) {
 
+        // 通过：dto的 tenantId，获取：tenantIdSet
+        Set<Long> tenantIdSet = TenantUtil.getTenantIdSetByDtoTenantId(dto.getTenantId());
+
+        dto.setTenantIdSet(tenantIdSet);
+
         Page<SysUserPageVO> page = baseMapper.myPage(dto.createTimeDescDefaultOrderPage(), dto);
 
         Set<Long> userIdSet = new HashSet<>(MyMapUtil.getInitialCapacity(page.getRecords().size()));
@@ -154,9 +159,12 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserProMapper, SysUserDO>
     @Override
     public Page<DictVO> dictList(SysUserDictListDTO dto) {
 
+        // 通过：dto的 tenantId，获取：tenantIdSet
+        Set<Long> tenantIdSet = TenantUtil.getTenantIdSetByDtoTenantId(null);
+
         List<SysUserInfoDO> sysUserInfoDOList =
             ChainWrappers.lambdaQueryChain(sysUserInfoMapper).select(SysUserInfoDO::getId, SysUserInfoDO::getNickname)
-                .list();
+                .in(SysUserInfoDO::getTenantId, tenantIdSet).list();
 
         List<DictVO> dictListVOList =
             sysUserInfoDOList.stream().map(it -> new DictVO(it.getId(), it.getNickname())).collect(Collectors.toList());

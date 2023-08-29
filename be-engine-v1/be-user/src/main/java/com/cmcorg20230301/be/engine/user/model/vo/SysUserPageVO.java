@@ -9,6 +9,9 @@ import java.util.Set;
 @Data
 public class SysUserPageVO {
 
+    @Schema(description = "租户 id")
+    private Long tenantId;
+
     @Schema(description = "主键id")
     private Long id;
 

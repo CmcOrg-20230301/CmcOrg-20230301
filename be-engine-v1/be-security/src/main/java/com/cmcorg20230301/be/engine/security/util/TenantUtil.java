@@ -6,6 +6,7 @@ import com.cmcorg20230301.be.engine.cache.util.CacheHelper;
 import com.cmcorg20230301.be.engine.cache.util.MyCacheUtil;
 import com.cmcorg20230301.be.engine.model.model.constant.BaseConstant;
 import com.cmcorg20230301.be.engine.redisson.model.enums.RedisKeyEnum;
+import com.cmcorg20230301.be.engine.security.exception.BaseBizCodeEnum;
 import com.cmcorg20230301.be.engine.security.mapper.SysTenantMapper;
 import com.cmcorg20230301.be.engine.security.mapper.SysTenantRefUserMapper;
 import com.cmcorg20230301.be.engine.security.model.entity.*;
@@ -56,6 +57,23 @@ public class TenantUtil {
         } else if (sysTenantDO.getEnableFlag() == false) {
 
             ApiResultVO.error("操作失败：租户已被禁用", tenantId);
+
+        }
+
+        Long currentUserIdDefault = UserUtil.getCurrentUserIdDefault();
+
+        if (currentUserIdDefault.equals(BaseConstant.SYS_ID)) {
+
+            return tenantId; // 如果：未登录，则直接返回 租户 id
+
+        }
+
+        // 如果登录了，则需要判断，租户 id是否是：用户关联的租户
+        Set<Long> tenantIdSet = TenantUtil.getTenantIdSetByDtoTenantId(null);
+
+        if (tenantIdSet.contains(tenantId) == false) {
+
+            ApiResultVO.error(BaseBizCodeEnum.ILLEGAL_REQUEST, tenantId);
 
         }
 

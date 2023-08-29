@@ -126,7 +126,7 @@ export default function () {
                             <span>
 
                                 <Typography.Text mark>
-                                    部门
+                                    关联部门
                                 </Typography.Text>
 
                                 <Typography.Text type="secondary">
@@ -138,7 +138,7 @@ export default function () {
                             <span>
 
                                 <Typography.Text mark>
-                                    岗位
+                                    关联岗位
                                 </Typography.Text>
 
                                 <Typography.Text type="secondary">
@@ -150,7 +150,7 @@ export default function () {
                             <span>
 
                                 <Typography.Text mark>
-                                    角色
+                                    关联角色
                                 </Typography.Text>
 
                                 <Typography.Text type="secondary">
@@ -162,7 +162,7 @@ export default function () {
                             <span>
 
                                 <Typography.Text mark>
-                                    租户
+                                    关联租户
                                 </Typography.Text>
 
                                 <Typography.Text type="secondary">
@@ -197,11 +197,15 @@ export default function () {
 
                     let avatarFileIdList = data.map(it => it.avatarFileId!); // 用户头像文件 id集合
 
-                    SysFileGetPublicUrl({idSet: avatarFileIdList}).then(res => {
+                    if (avatarFileIdList.length) {
 
-                        setUserAvatarUrlObj(res.data.map as any)
+                        SysFileGetPublicUrl({idSet: avatarFileIdList}).then(res => {
 
-                    })
+                            setUserAvatarUrlObj(res.data.map as any)
+
+                        })
+
+                    }
 
                     hasChildrenIdList.current = data.map(it => it.id) as string[];
 
