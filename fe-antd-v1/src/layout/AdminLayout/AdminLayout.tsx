@@ -28,6 +28,7 @@ import {SignOutSelf} from "@/api/http/SignOut";
 import {RouterMapKeyList} from "@/router/RouterMap";
 import {SysFileGetPublicUrl} from "@/api/http/SysFile";
 import {ConnectWebSocket} from "@/util/webSocket/WebSocketUtil";
+import {SysTenantGetNameById} from "@/api/http/SysTenant";
 
 // 前往：第一个页面
 function goFirstPage(menuList: SysMenuDO[]) {
@@ -122,6 +123,8 @@ function AdminLayoutElement(props: IAdminLayoutElement) {
 
     const userSelfAvatarUrl = useAppSelector((state) => state.user.userSelfAvatarUrl)
 
+    const [tenantName, setTenantName] = useState<string>(""); // 租户名
+
     useEffect(() => {
 
         setPathname(window.location.pathname)
@@ -142,6 +145,20 @@ function AdminLayoutElement(props: IAdminLayoutElement) {
 
             }
 
+            SysTenantGetNameById({value: res.data.tenantId}).then(res => {
+
+                if (res.data) {
+
+                    setTenantName(res.data + " - ")
+
+                } else {
+
+                    setTenantName("")
+
+                }
+
+            })
+
         })
 
     }, [])
@@ -150,7 +167,8 @@ function AdminLayoutElement(props: IAdminLayoutElement) {
 
         <ProLayout
 
-            title={CommonConstant.SYS_NAME}
+            title={tenantName + CommonConstant.SYS_NAME}
+
             location={{
                 pathname
             }}

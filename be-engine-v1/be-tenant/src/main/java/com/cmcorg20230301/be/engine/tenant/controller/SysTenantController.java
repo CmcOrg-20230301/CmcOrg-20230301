@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.cmcorg20230301.be.engine.model.model.dto.ChangeNumberDTO;
 import com.cmcorg20230301.be.engine.model.model.dto.NotEmptyIdSet;
 import com.cmcorg20230301.be.engine.model.model.dto.NotNullId;
+import com.cmcorg20230301.be.engine.model.model.dto.NotNullLong;
 import com.cmcorg20230301.be.engine.model.model.vo.DictVO;
 import com.cmcorg20230301.be.engine.security.model.entity.SysTenantDO;
 import com.cmcorg20230301.be.engine.security.model.vo.ApiResultVO;
@@ -82,8 +83,8 @@ public class SysTenantController {
 
     @Operation(summary = "通过主键id，获取租户名")
     @PostMapping("/getNameById")
-    public ApiResultVO<String> getNameById(@RequestBody @Valid NotNullId notNullId) {
-        return ApiResultVO.okData(baseService.getNameById(notNullId));
+    public ApiResultVO<String> getNameById(@RequestBody @Valid NotNullLong notNullLong) {
+        return ApiResultVO.okData(baseService.getNameById(notNullLong));
     }
 
 }

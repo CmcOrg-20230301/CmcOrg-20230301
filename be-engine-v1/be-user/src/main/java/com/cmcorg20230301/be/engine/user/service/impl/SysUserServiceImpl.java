@@ -168,7 +168,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserProMapper, SysUserDO>
 
         }
 
-        return new Page<DictVO>().setTotal(sysUserInfoDOList.size()).setRecords(dictListVOList);
+        return new Page<DictVO>().setTotal(dictListVOList.size()).setRecords(dictListVOList);
 
     }
 

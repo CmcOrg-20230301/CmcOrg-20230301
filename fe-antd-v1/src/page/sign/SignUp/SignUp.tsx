@@ -39,9 +39,17 @@ export default function () {
 
     useEffect(() => {
 
-        SysTenantGetNameById({id: tenantIdRef.current}).then(res => {
+        SysTenantGetNameById({value: tenantIdRef.current}).then(res => {
 
-            setTenantName(res.data || "")
+            if (res.data) {
+
+                setTenantName(res.data + " - ")
+
+            } else {
+
+                setTenantName("")
+
+            }
 
         })
 
@@ -60,7 +68,7 @@ export default function () {
 
                 logo={IconSvg}
 
-                title={tenantName + " - " + CommonConstant.SYS_NAME}
+                title={tenantName + CommonConstant.SYS_NAME}
 
                 submitter={{searchConfig: {submitText: '注册'}}}
 

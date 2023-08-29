@@ -39,12 +39,6 @@ public class SysRequestController {
         return ApiResultVO.okData(baseService.allAvgPro(dto));
     }
 
-    @PostMapping("/allAvg")
-    @Operation(summary = "所有请求的平均耗时")
-    public ApiResultVO<SysRequestAllAvgVO> allAvg() {
-        return ApiResultVO.okData(baseService.allAvg());
-    }
-
     @PostMapping("/self/loginRecord")
     @Operation(summary = "当前用户：登录记录")
     public ApiResultVO<Page<SysRequestDO>> selfLoginRecord(@RequestBody @Valid SysRequestSelfLoginRecordPageDTO dto) {

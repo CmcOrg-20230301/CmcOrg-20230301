@@ -7,10 +7,17 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 import java.util.Date;
+import java.util.Set;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
 public class SysRequestPageDTO extends MyPageDTO {
+
+    @Schema(description = "租户 id")
+    private Long tenantId;
+
+    @Schema(description = "租户 idSet")
+    private Set<Long> tenantIdSet;
 
     @Schema(description = "请求的uri")
     private String uri;

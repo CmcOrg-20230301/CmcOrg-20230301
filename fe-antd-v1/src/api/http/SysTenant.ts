@@ -102,8 +102,12 @@ export function SysTenantInfoById(form: NotNullId, config?: AxiosRequestConfig) 
     return $http.myProPost<SysTenantInfoByIdVO>('/sys/tenant/infoById', form, config)
 }
 
+export interface NotNullLong {
+    value?: string // 值，required：true，format：int64
+}
+
 // 通过主键id，获取租户名
-export function SysTenantGetNameById(form: NotNullId, config?: AxiosRequestConfig) {
+export function SysTenantGetNameById(form: NotNullLong, config?: AxiosRequestConfig) {
     return $http.myPost<string>('/sys/tenant/getNameById', form, config)
 }
 

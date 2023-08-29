@@ -10,6 +10,7 @@ import com.cmcorg20230301.be.engine.model.model.constant.BaseConstant;
 import com.cmcorg20230301.be.engine.model.model.dto.ChangeNumberDTO;
 import com.cmcorg20230301.be.engine.model.model.dto.NotEmptyIdSet;
 import com.cmcorg20230301.be.engine.model.model.dto.NotNullId;
+import com.cmcorg20230301.be.engine.model.model.dto.NotNullLong;
 import com.cmcorg20230301.be.engine.model.model.vo.DictVO;
 import com.cmcorg20230301.be.engine.mysql.model.annotation.MyTransactional;
 import com.cmcorg20230301.be.engine.security.exception.BaseBizCodeEnum;
@@ -143,13 +144,22 @@ public class SysTenantServiceImpl extends ServiceImpl<SysTenantMapper, SysTenant
     @Override
     public Page<DictVO> dictList() {
 
+        // 通过：dto的 tenantId，获取：tenantIdSet
+        Set<Long> tenantIdSet = TenantUtil.getTenantIdSetByDtoTenantId(null);
+
         Map<Long, SysTenantDO> sysTenantCacheMap = TenantUtil.getSysTenantCacheMap();
 
         List<DictVO> dictListVOList =
-            sysTenantCacheMap.entrySet().stream().map(it -> new DictVO(it.getKey(), it.getValue().getName()))
-                .collect(Collectors.toList());
+            sysTenantCacheMap.entrySet().stream().filter(it -> tenantIdSet.contains(it.getKey()))
+                .map(it -> new DictVO(it.getKey(), it.getValue().getName())).collect(Collectors.toList());
 
-        return new Page<DictVO>().setTotal(sysTenantCacheMap.size()).setRecords(dictListVOList);
+        if (tenantIdSet.contains(BaseConstant.TENANT_ID)) {
+
+            dictListVOList.add(new DictVO(BaseConstant.TENANT_ID, BaseConstant.TENANT_NAME));
+
+        }
+
+        return new Page<DictVO>().setTotal(dictListVOList.size()).setRecords(dictListVOList);
 
     }
 
@@ -265,15 +275,15 @@ public class SysTenantServiceImpl extends ServiceImpl<SysTenantMapper, SysTenant
      * 通过主键id，获取租户名
      */
     @Override
-    public String getNameById(NotNullId notNullId) {
+    public String getNameById(NotNullLong notNullLong) {
 
-        if (notNullId.getId().equals(BaseConstant.TENANT_ID)) {
+        if (notNullLong.getValue().equals(BaseConstant.TENANT_ID)) {
 
             return "";
 
         }
 
-        SysTenantDO sysTenantDO = TenantUtil.getSysTenantCacheMap().get(notNullId.getId());
+        SysTenantDO sysTenantDO = TenantUtil.getSysTenantCacheMap().get(notNullLong.getValue());
 
         if (sysTenantDO == null) {
 

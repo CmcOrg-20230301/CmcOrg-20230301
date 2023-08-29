@@ -13,8 +13,6 @@ public interface SysRequestService extends IService<SysRequestDO> {
 
     SysRequestAllAvgVO allAvgPro(SysRequestPageDTO dto);
 
-    SysRequestAllAvgVO allAvg();
-
     Page<SysRequestDO> selfLoginRecord(SysRequestSelfLoginRecordPageDTO dto);
 
 }

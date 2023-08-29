@@ -52,8 +52,10 @@ export interface SysRequestPageDTO {
     successFlag?: boolean // 请求是否成功
     current?: string // 第几页，format：int64
     createId?: string // 创建人id，format：int64
+    tenantId?: string // 租户 id，format：int64
     name?: string // 接口名（备用）
     endCostMs?: string // 耗时结束（毫秒），format：int64
+    tenantIdSet?: string[] // 租户 idSet，format：int64
     ctEndTime?: string // 结束时间：创建时间，format：date-time
     category?: string // 请求类别
     region?: string // Ip2RegionUtil.getRegion() 获取到的 ip所处区域
@@ -75,9 +77,4 @@ export interface SysRequestAllAvgVO {
 // 所有请求的平均耗时-增强：增加筛选项
 export function SysRequestAllAvgPro(form: SysRequestPageDTO, config?: AxiosRequestConfig) {
     return $http.myPost<SysRequestAllAvgVO>('/sys/request/allAvgPro', form, config)
-}
-
-// 所有请求的平均耗时
-export function SysRequestAllAvg(config?: AxiosRequestConfig) {
-    return $http.myPost<SysRequestAllAvgVO>('/sys/request/allAvg', undefined, config)
 }

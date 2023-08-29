@@ -12,8 +12,11 @@ import com.cmcorg20230301.be.engine.request.service.SysRequestService;
 import com.cmcorg20230301.be.engine.security.model.entity.BaseEntity;
 import com.cmcorg20230301.be.engine.security.model.entity.BaseEntityNoId;
 import com.cmcorg20230301.be.engine.security.model.entity.SysRequestDO;
+import com.cmcorg20230301.be.engine.security.util.TenantUtil;
 import com.cmcorg20230301.be.engine.security.util.UserUtil;
 import org.springframework.stereotype.Service;
+
+import java.util.Set;
 
 @Service
 public class SysRequestServiceImpl extends ServiceImpl<SysRequestMapper, SysRequestDO> implements SysRequestService {
@@ -23,6 +26,9 @@ public class SysRequestServiceImpl extends ServiceImpl<SysRequestMapper, SysRequ
      */
     @Override
     public Page<SysRequestDO> myPage(SysRequestPageDTO dto) {
+
+        // 通过：dto的 tenantId，获取：tenantIdSet
+        Set<Long> tenantIdSet = TenantUtil.getTenantIdSetByDtoTenantId(dto.getTenantId());
 
         return lambdaQuery().like(StrUtil.isNotBlank(dto.getUri()), SysRequestDO::getUri, dto.getUri())
             .like(StrUtil.isNotBlank(dto.getName()), SysRequestDO::getName, dto.getName())
@@ -36,11 +42,12 @@ public class SysRequestServiceImpl extends ServiceImpl<SysRequestMapper, SysRequ
             .eq(dto.getCategory() != null, SysRequestDO::getCategory, dto.getCategory())
             .eq(dto.getCreateId() != null, BaseEntity::getCreateId, dto.getCreateId())
             .eq(dto.getSuccessFlag() != null, SysRequestDO::getSuccessFlag, dto.getSuccessFlag())
+            .in(SysRequestDO::getTenantId, tenantIdSet) //
             .orderByDesc(BaseEntity::getCreateTime)
             .select(SysRequestDO::getIp, SysRequestDO::getUri, SysRequestDO::getSuccessFlag, SysRequestDO::getCostMsStr,
                 BaseEntityNoId::getCreateTime, BaseEntityNoId::getCreateId, SysRequestDO::getName,
                 SysRequestDO::getCategory, SysRequestDO::getIp, SysRequestDO::getRegion, SysRequestDO::getErrorMsg,
-                BaseEntity::getId).page(dto.page(true));
+                BaseEntity::getId, BaseEntityNoId::getTenantId).page(dto.page(true));
 
     }
 
@@ -50,17 +57,12 @@ public class SysRequestServiceImpl extends ServiceImpl<SysRequestMapper, SysRequ
     @Override
     public SysRequestAllAvgVO allAvgPro(SysRequestPageDTO dto) {
 
+        // 通过：dto的 tenantId，获取：tenantIdSet
+        Set<Long> tenantIdSet = TenantUtil.getTenantIdSetByDtoTenantId(dto.getTenantId());
+
+        dto.setTenantIdSet(tenantIdSet);
+
         return baseMapper.allAvgPro(dto);
-
-    }
-
-    /**
-     * 所有请求的平均耗时
-     */
-    @Override
-    public SysRequestAllAvgVO allAvg() {
-
-        return baseMapper.allAvg();
 
     }
 
@@ -72,7 +74,10 @@ public class SysRequestServiceImpl extends ServiceImpl<SysRequestMapper, SysRequ
 
         Long currentUserId = UserUtil.getCurrentUserId();
 
+        Long currentTenantIdDefault = UserUtil.getCurrentTenantIdDefault();
+
         SysRequestPageDTO sysRequestPageDTO = new SysRequestPageDTO();
+
         sysRequestPageDTO.setType(OperationDescriptionConstant.SIGN_IN);
         sysRequestPageDTO.setCreateId(currentUserId);
         sysRequestPageDTO.setCategory(dto.getCategory());
@@ -81,6 +86,8 @@ public class SysRequestServiceImpl extends ServiceImpl<SysRequestMapper, SysRequ
         sysRequestPageDTO.setCurrent(dto.getCurrent());
         sysRequestPageDTO.setPageSize(dto.getPageSize());
         sysRequestPageDTO.setOrder(dto.getOrder());
+
+        sysRequestPageDTO.setTenantId(currentTenantIdDefault);
 
         return myPage(sysRequestPageDTO);
 

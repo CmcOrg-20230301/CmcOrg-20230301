@@ -313,9 +313,9 @@ public class UserUtil {
             for (Long item : allRoleIdSet) {
 
                 // 通过：roleId，获取：菜单 set
-                Set<SysMenuDO> sysMenuDOSet = doGetMenuSetByRoleId(redisKeyEnum, item);
+                Set<SysMenuDO> sysMenuDoSet = doGetMenuSetByRoleId(redisKeyEnum, item);
 
-                resultMap.put(item, sysMenuDOSet); // 添加到：map里面
+                resultMap.put(item, sysMenuDoSet); // 添加到：map里面
 
             }
 
@@ -393,26 +393,26 @@ public class UserUtil {
     /**
      * 再添加 menuIdSet的所有子级菜单
      */
-    private static void getMenuListByUserIdNext(Set<SysMenuDO> resultSysMenuDOSet, Long parentId,
+    private static void getMenuListByUserIdNext(Set<SysMenuDO> resultSysMenuDoSet, Long parentId,
         Set<Long> resultMenuIdSet, Map<Long, Set<SysMenuDO>> groupMenuParentIdMap) {
 
         // 获取：自己下面的子级
-        Set<SysMenuDO> sysMenuDOSet = groupMenuParentIdMap.get(parentId);
+        Set<SysMenuDO> sysMenuDoSet = groupMenuParentIdMap.get(parentId);
 
-        if (CollUtil.isEmpty(sysMenuDOSet)) {
+        if (CollUtil.isEmpty(sysMenuDoSet)) {
             return;
         }
 
-        for (SysMenuDO item : sysMenuDOSet) {
+        for (SysMenuDO item : sysMenuDoSet) {
 
             if (BooleanUtil.isFalse(resultMenuIdSet.contains(item.getId()))) { // 不能重复添加到 返回值里
 
                 resultMenuIdSet.add(item.getId());
-                resultSysMenuDOSet.add(item);
+                resultSysMenuDoSet.add(item);
 
             }
 
-            getMenuListByUserIdNext(resultSysMenuDOSet, item.getId(), resultMenuIdSet, groupMenuParentIdMap); // 继续匹配下一级
+            getMenuListByUserIdNext(resultSysMenuDoSet, item.getId(), resultMenuIdSet, groupMenuParentIdMap); // 继续匹配下一级
 
         }
 

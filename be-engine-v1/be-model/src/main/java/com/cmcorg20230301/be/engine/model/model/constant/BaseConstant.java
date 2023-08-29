@@ -53,6 +53,7 @@ public interface BaseConstant {
     Long SYS_ID = NEGATIVE_ONE; // 系统/缺省 id，或者表示不存在
 
     Long TENANT_ID = ZERO; // 默认的 租户 id
+    String TENANT_NAME = "默认租户"; // 默认的 租户名
 
     // id 相关 ↑
 

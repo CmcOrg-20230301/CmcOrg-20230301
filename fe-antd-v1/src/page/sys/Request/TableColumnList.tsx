@@ -1,4 +1,4 @@
-import {DoGetDictList, GetDictListByKey, YesNoDict} from "@/util/DictUtil";
+import {DoGetDictList, GetDictList, GetDictListByKey, YesNoDict} from "@/util/DictUtil";
 import {SysRequestDO, SysRequestPageDTO} from "@/api/http/SysRequest";
 import {HandlerRegion} from "@/util/StrUtil";
 import {SysUserDictList} from "@/api/http/SysUser";
@@ -95,7 +95,7 @@ const TableColumnList = (): ProColumns<SysRequestDO>[] => [
     {
         title: '租户', dataIndex: 'tenantId', ellipsis: true, width: 90, valueType: 'select',
         request: () => {
-            return DoGetDictList(SysTenantDictList)
+            return GetDictList(SysTenantDictList)
         }
     },
 
