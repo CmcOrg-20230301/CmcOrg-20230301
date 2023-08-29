@@ -80,6 +80,9 @@ public class NettyWebSocketServerHandler extends ChannelInboundHandlerAdapter {
     // Ip key
     public static final AttributeKey<String> IP_KEY = AttributeKey.valueOf("IP_KEY");
 
+    // TenantId key
+    public static final AttributeKey<Long> TENANT_ID_KEY = AttributeKey.valueOf("TENANT_ID_KEY");
+
     // 用户通道 map，大key：用户主键 id，小key：sysSocketRefUserId，value：通道
     public static final ConcurrentHashMap<Long, ConcurrentHashMap<Long, Channel>> USER_ID_CHANNEL_MAP =
         MapUtil.newConcurrentHashMap();
@@ -414,13 +417,15 @@ public class NettyWebSocketServerHandler extends ChannelInboundHandlerAdapter {
 
         Long userId = sysSocketRefUserDO.getUserId();
 
-        Long sysSocketRefUserDOId = sysSocketRefUserDO.getId();
+        Long sysSocketRefUserDoId = sysSocketRefUserDO.getId();
+
+        Long tenantId = sysSocketRefUserDO.getTenantId();
 
         // 绑定 UserId
         channel.attr(USER_ID_KEY).set(userId);
 
         // 绑定 SysSocketRefUserId
-        channel.attr(SYS_SOCKET_REF_USER_ID_KEY).set(sysSocketRefUserDOId);
+        channel.attr(SYS_SOCKET_REF_USER_ID_KEY).set(sysSocketRefUserDoId);
 
         // 绑定 SysRequestCategoryEnum
         channel.attr(SYS_REQUEST_CATEGORY_ENUM_KEY).set(sysSocketRefUserDO.getCategory());
@@ -428,10 +433,13 @@ public class NettyWebSocketServerHandler extends ChannelInboundHandlerAdapter {
         // 绑定 Ip
         channel.attr(IP_KEY).set(SocketUtil.getIp(fullHttpRequest, channel));
 
+        // 绑定 TenantId
+        channel.attr(TENANT_ID_KEY).set(tenantId);
+
         ConcurrentHashMap<Long, Channel> channelMap =
             USER_ID_CHANNEL_MAP.computeIfAbsent(userId, k -> MapUtil.newConcurrentHashMap());
 
-        channelMap.put(sysSocketRefUserDOId, channel);
+        channelMap.put(sysSocketRefUserDoId, channel);
 
         log.info("WebSocket 连接，用户：{}，连接数：{}", userId, channelMap.size());
 

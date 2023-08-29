@@ -41,6 +41,8 @@ public class WebSocketUtil {
 
         Long userId = channel.attr(NettyWebSocketServerHandler.USER_ID_KEY).get();
 
+        Long tenantId = channel.attr(NettyWebSocketServerHandler.TENANT_ID_KEY).get();
+
         Date date = new Date();
 
         costMs = System.currentTimeMillis() - costMs; // 耗时（毫秒）
@@ -80,6 +82,8 @@ public class WebSocketUtil {
         sysRequestDO.setRequestParam(text);
         sysRequestDO.setType(OperationDescriptionConstant.WEB_SOCKET);
         sysRequestDO.setResponseValue(jsonStr);
+
+        sysRequestDO.setTenantId(tenantId);
 
         sysRequestDO.setCreateId(userId);
         sysRequestDO.setCreateTime(date);

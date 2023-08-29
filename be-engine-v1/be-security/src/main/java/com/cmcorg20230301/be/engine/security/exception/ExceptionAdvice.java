@@ -88,6 +88,8 @@ public class ExceptionAdvice {
 
         Long currentUserIdDefault = UserUtil.getCurrentUserIdDefault();
 
+        Long currentTenantIdDefault = UserUtil.getCurrentTenantIdDefault();
+
         String uri = httpServletRequest.getRequestURI();
 
         SysRequestDO sysRequestDO = new SysRequestDO();
@@ -108,6 +110,8 @@ public class ExceptionAdvice {
         // 设置：类型
         sysRequestDO.setType(operation == null ? "" : MyEntityUtil.getNotNullAndTrimStr(operation.description()));
         sysRequestDO.setResponseValue("");
+
+        sysRequestDO.setTenantId(currentTenantIdDefault);
 
         sysRequestDO.setCreateId(currentUserIdDefault);
         sysRequestDO.setCreateTime(date);

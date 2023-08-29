@@ -81,6 +81,10 @@ public class SysRequestAop {
 
         Long currentUserIdDefault = UserUtil.getCurrentUserIdDefault();
 
+        Long currentTenantIdDefault = UserUtil.getCurrentTenantIdDefault();
+
+        sysRequestDO.setTenantId(currentTenantIdDefault);
+
         sysRequestDO.setCreateId(currentUserIdDefault);
         sysRequestDO.setCreateTime(date);
         sysRequestDO.setUpdateId(currentUserIdDefault);
