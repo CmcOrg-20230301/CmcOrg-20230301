@@ -63,7 +63,7 @@ const SchemaFormColumnList = (formRef: React.MutableRefObject<FormInstance<SysMe
 
                         {
                             title: '权限',
-                            tooltip: '示例：sysMenu:insertOrUpdate,sysMenu:page,sysMenu:deleteByIdSet,sysMenu:infoById',
+                            tooltip: '示例：sysMenu:insertOrUpdate,sysMenu:page,sysMenu:deleteByIdSet,sysMenu:infoById,sysMenu:dictList',
                             dataIndex: 'auths',
                             formItemProps: {
                                 rules: [

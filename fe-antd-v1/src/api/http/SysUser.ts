@@ -135,6 +135,7 @@ export interface SysUserInsertOrUpdateDTO {
     tenantId?: string // 租户id，可以为空，为空则表示：默认租户：0，format：int64
     nickname?: string // 昵称，正则表达式：^[\u4E00-\u9FA5A-Za-z0-9_-]{2,20}$
     roleIdSet?: string[] // 角色 idSet，format：int64
+    tenantIdSet?: string[] // 租户 idSet，format：int64
     id?: string // 主键 id，format：int64
     enableFlag?: boolean // 正常/冻结
     email?: string // 邮箱，maxLength：200，minLength：0

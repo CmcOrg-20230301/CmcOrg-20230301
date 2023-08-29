@@ -10,19 +10,12 @@ import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
 import cn.hutool.jwt.JWT;
 import cn.hutool.jwt.RegisteredPayload;
-import com.baomidou.mybatisplus.extension.toolkit.ChainWrappers;
-import com.cmcorg20230301.be.engine.cache.util.CacheHelper;
-import com.cmcorg20230301.be.engine.cache.util.MyCacheUtil;
 import com.cmcorg20230301.be.engine.model.model.constant.BaseConstant;
 import com.cmcorg20230301.be.engine.redisson.model.enums.RedisKeyEnum;
 import com.cmcorg20230301.be.engine.redisson.util.RedissonUtil;
 import com.cmcorg20230301.be.engine.security.exception.BaseBizCodeEnum;
-import com.cmcorg20230301.be.engine.security.mapper.SysTenantMapper;
-import com.cmcorg20230301.be.engine.security.mapper.SysUserMapper;
 import com.cmcorg20230301.be.engine.security.model.constant.SecurityConstant;
-import com.cmcorg20230301.be.engine.security.model.entity.BaseEntity;
 import com.cmcorg20230301.be.engine.security.model.entity.SysMenuDO;
-import com.cmcorg20230301.be.engine.security.model.entity.SysTenantDO;
 import com.cmcorg20230301.be.engine.security.model.enums.SysRequestCategoryEnum;
 import com.cmcorg20230301.be.engine.security.model.vo.ApiResultVO;
 import com.cmcorg20230301.be.engine.security.properties.SecurityProperties;
@@ -33,7 +26,10 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Component;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.*;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
@@ -49,15 +45,10 @@ public class MyJwtUtil {
     public static final String PAYLOAD_MAP_TENANT_ID_KEY = "tenantId";
 
     private static SecurityProperties securityProperties;
-    private static SysUserMapper sysUserMapper;
-    private static SysTenantMapper sysTenantMapper;
 
-    public MyJwtUtil(SecurityProperties securityProperties, SysUserMapper sysUserMapper,
-        SysTenantMapper sysTenantMapper) {
+    public MyJwtUtil(SecurityProperties securityProperties) {
 
         MyJwtUtil.securityProperties = securityProperties;
-        MyJwtUtil.sysUserMapper = sysUserMapper;
-        MyJwtUtil.sysTenantMapper = sysTenantMapper;
 
     }
 
@@ -153,7 +144,7 @@ public class MyJwtUtil {
         payloadMap.set(PAYLOAD_MAP_USER_ID_KEY, userId);
 
         // 获取：租户 id
-        tenantId = getTenantId(tenantId);
+        tenantId = TenantUtil.getTenantId(tenantId);
 
         payloadMap.set(PAYLOAD_MAP_TENANT_ID_KEY, tenantId);
 
@@ -168,39 +159,6 @@ public class MyJwtUtil {
             .sign();
 
         return SecurityConstant.JWT_PREFIX + jwt;
-
-    }
-
-    /**
-     * 获取：租户 id
-     */
-    @NotNull
-    public static Long getTenantId(@Nullable Long tenantId) {
-
-        if (tenantId == null || tenantId.equals(BaseConstant.TENANT_ID)) {
-
-            return BaseConstant.TENANT_ID;
-
-        }
-
-        Map<Long, String> map =
-            MyCacheUtil.getMap(RedisKeyEnum.SYS_TENANT_CACHE, CacheHelper.getDefaultLongMap(), () -> {
-
-                List<SysTenantDO> sysTenantDOList =
-                    ChainWrappers.lambdaQueryChain(sysTenantMapper).select(BaseEntity::getId, SysTenantDO::getName)
-                        .eq(BaseEntity::getEnableFlag, true).list();
-
-                return sysTenantDOList.stream().collect(Collectors.toMap(BaseEntity::getId, SysTenantDO::getName));
-
-            });
-
-        if (!map.containsKey(tenantId)) {
-
-            ApiResultVO.error("操作失败：租户不存在", tenantId);
-
-        }
-
-        return tenantId;
 
     }
 
@@ -293,13 +251,13 @@ public class MyJwtUtil {
         }
 
         // 通过用户 id，获取 菜单 set
-        Set<SysMenuDO> sysMenuDOSet = UserUtil.getMenuSetByUserId(userId, 2);
+        Set<SysMenuDO> sysMenuDoSet = UserUtil.getMenuSetByUserId(userId, 2);
 
-        if (CollUtil.isEmpty(sysMenuDOSet)) {
+        if (CollUtil.isEmpty(sysMenuDoSet)) {
             return null;
         }
 
-        Set<String> authsSet = sysMenuDOSet.stream().map(SysMenuDO::getAuths).collect(Collectors.toSet());
+        Set<String> authsSet = sysMenuDoSet.stream().map(SysMenuDO::getAuths).collect(Collectors.toSet());
 
         // 组装权限，并去重
         Set<String> authSet = new HashSet<>();

@@ -90,7 +90,7 @@ public class WxUtil {
     @NotNull
     private static String getAccessToken() {
 
-        String accessToken = MyCacheUtil.onlyGet(RedisKeyEnum.WX_ACCESS_TOKEN_CACHE, null, true);
+        String accessToken = MyCacheUtil.onlyGet(RedisKeyEnum.WX_ACCESS_TOKEN_CACHE, null);
 
         if (StrUtil.isNotBlank(accessToken)) {
             return accessToken;

@@ -320,7 +320,14 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserProMapper, SysUserDO>
 
         // 如果禁用了，则子表不进行新增操作
         if (BooleanUtil.isFalse(sysUserDO.getEnableFlag())) {
+
+            UserUtil.setDisable(sysUserDO.getId()); // 设置：账号被冻结
             return;
+
+        } else {
+
+            UserUtil.removeDisable(sysUserDO.getId()); // 移除：账号被冻结
+
         }
 
         // 新增数据到：角色用户关联表
@@ -444,10 +451,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserProMapper, SysUserDO>
     @Override
     public SysUserInfoByIdVO infoById(NotNullId notNullId) {
 
-        SysUserDO sysUserDO = lambdaQuery()
-            .select(SysUserDO::getSignInName, SysUserDO::getEmail, SysUserDO::getEnableFlag, SysUserDO::getPhone,
-                BaseEntity::getId, BaseEntity::getUpdateTime, BaseEntity::getCreateTime)
-            .eq(BaseEntity::getId, notNullId.getId()).one();
+        SysUserDO sysUserDO = lambdaQuery().eq(BaseEntity::getId, notNullId.getId()).one();
 
         SysUserInfoByIdVO sysUserInfoByIdVO = BeanUtil.copyProperties(sysUserDO, SysUserInfoByIdVO.class);
 

@@ -1,4 +1,4 @@
-package com.cmcorg20230301.be.engine.security.configuration.security;
+package com.cmcorg20230301.be.engine.security.model.configuration;
 
 import cn.hutool.jwt.JWT;
 

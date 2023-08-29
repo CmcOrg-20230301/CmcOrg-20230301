@@ -11,7 +11,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.redisson.api.RBucket;
-import org.redisson.api.RMap;
 import org.redisson.api.RedissonClient;
 import org.springframework.stereotype.Component;
 
@@ -70,7 +69,7 @@ public class MyCacheUtil {
 
         String key = CacheHelper.getKey(redisKeyEnum, sufKey);
 
-        T result = onlyGet(key, false);
+        T result = onlyGet(key);
 
         if (result != null) {
             return result;
@@ -104,23 +103,20 @@ public class MyCacheUtil {
      */
     @SneakyThrows
     @Nullable
-    public static <T> T onlyGet(@NotNull Enum<? extends IRedisKey> redisKeyEnum, @Nullable String sufKey,
-        boolean getRemainTimeFlag) {
+    public static <T> T onlyGet(@NotNull Enum<? extends IRedisKey> redisKeyEnum, @Nullable String sufKey) {
 
         String key = CacheHelper.getKey(redisKeyEnum, sufKey);
 
-        return onlyGet(key, getRemainTimeFlag);
+        return onlyGet(key);
 
     }
 
     /**
      * 只获取值
-     *
-     * @param getRemainTimeFlag 是否获取 redis的过期时间
      */
     @SneakyThrows
     @Nullable
-    public static <T> T onlyGet(@NotNull String key, boolean getRemainTimeFlag) {
+    public static <T> T onlyGet(@NotNull String key) {
 
         T result = CacheLocalUtil.get(key);
 
@@ -143,15 +139,59 @@ public class MyCacheUtil {
 
         log.info("{}：加入 本地缓存，并返回 redis缓存", key);
 
-        long remainTimeToLive;
-
-        if (getRemainTimeFlag) {
-            remainTimeToLive = bucket.remainTimeToLive();
-        } else {
-            remainTimeToLive = -1;
-        }
+        long remainTimeToLive = bucket.remainTimeToLive();
 
         CacheLocalUtil.put(key, result, remainTimeToLive);
+
+        return result;
+
+    }
+
+    /**
+     * 只获取值从 map里
+     */
+    @SneakyThrows
+    @Nullable
+    public static <T> T onlyGetSecondMap(@NotNull Enum<? extends IRedisKey> redisKeyEnum, @Nullable String sufKey,
+        @NotNull String secondKey) {
+
+        String key = CacheHelper.getKey(redisKeyEnum, sufKey);
+
+        return onlyGetSecondMap(key, secondKey);
+
+    }
+
+    /**
+     * 只获取值从 map里
+     */
+    @SneakyThrows
+    @Nullable
+    public static <T> T onlyGetSecondMap(@NotNull String key, @NotNull String secondKey) {
+
+        if (StrUtil.isBlank(secondKey)) {
+            throw new RuntimeException("操作失败：获取时，secondKey不能为空，请联系管理员");
+        }
+
+        T result = CacheLocalUtil.getSecondMap(key, secondKey);
+
+        if (result != null) {
+
+            log.info("{}：返回 本地缓存", key);
+            return result;
+
+        }
+
+        result = redissonClient.<String, T>getMap(key).get(secondKey);
+
+        if (result == null) {
+
+            return null;
+
+        }
+
+        log.info("{}：加入 本地缓存，并返回 redis缓存", key);
+
+        CacheLocalUtil.putSecondMap(key, secondKey, result);
 
         return result;
 
@@ -165,46 +205,25 @@ public class MyCacheUtil {
     public static <T> T getSecondMap(@NotNull Enum<? extends IRedisKey> redisKeyEnum, @Nullable String sufKey,
         @NotNull String secondKey, @Nullable T defaultResult, @Nullable Func0<T> func0) {
 
-        if (StrUtil.isBlank(secondKey)) {
-            throw new RuntimeException("操作失败：获取时，secondKey不能为空，请联系管理员");
-        }
-
         String key = CacheHelper.getKey(redisKeyEnum, sufKey);
 
-        T result = CacheLocalUtil.getSecondMap(key, secondKey);
+        T result = onlyGetSecondMap(key, secondKey);
 
         if (result != null) {
-
-            log.info("{}：返回 本地缓存", key);
             return result;
-
         }
 
-        RMap<String, T> rMap = redissonClient.getMap(key);
+        if (func0 != null) {
 
-        result = rMap.get(secondKey);
-
-        if (result == null) {
-
-            if (func0 != null) {
-
-                log.info("{}：读取提供者的数据", key);
-                result = func0.call();
-
-            }
-
-        } else {
-
-            log.info("{}：加入 本地缓存，并返回 redis缓存", key);
-            CacheLocalUtil.putSecondMap(key, secondKey, result);
-            return result;
+            log.info("{}：读取提供者的数据", key);
+            result = func0.call();
 
         }
 
         result = CacheHelper.checkAndReturnResult(result, defaultResult); // 检查并设置值
 
         log.info("{}：加入 redis缓存", key);
-        rMap.put(secondKey, result); // 先加入到 redis里
+        redissonClient.getMap(key).put(secondKey, result); // 先加入到 redis里
 
         log.info("{}：加入 本地缓存", key);
         CacheLocalUtil.putSecondMap(key, secondKey, result);

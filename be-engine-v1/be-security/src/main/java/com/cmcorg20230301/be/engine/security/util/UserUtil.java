@@ -546,4 +546,35 @@ public class UserUtil {
 
     }
 
+    /**
+     * 统一的：设置：用户冻结
+     */
+    public static void setDisable(long userId) {
+
+        CacheRedisKafkaLocalUtil
+            .putSecondMap(RedisKeyEnum.SYS_USER_DISABLE_CACHE, null, String.valueOf(userId), true, null);
+
+    }
+
+    /**
+     * 统一的：获取：用户冻结
+     */
+    public static boolean getDisable(long userId) {
+
+        Boolean disableFlag =
+            MyCacheUtil.onlyGetSecondMap(RedisKeyEnum.SYS_USER_DISABLE_CACHE, null, String.valueOf(userId));
+
+        return BooleanUtil.isTrue(disableFlag);
+
+    }
+
+    /**
+     * 统一的：删除：用户冻结
+     */
+    public static void removeDisable(long userId) {
+
+        CacheRedisKafkaLocalUtil.removeSecondMap(RedisKeyEnum.SYS_USER_DISABLE_CACHE, null, String.valueOf(userId));
+
+    }
+
 }

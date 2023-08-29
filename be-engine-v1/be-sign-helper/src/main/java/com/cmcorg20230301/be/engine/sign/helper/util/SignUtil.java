@@ -324,7 +324,7 @@ public class SignUtil {
 
         sysUserDO.setPassword(PasswordConvertUtil.convert(password, checkPasswordBlank));
 
-        tenantId = MyJwtUtil.getTenantId(tenantId);
+        tenantId = TenantUtil.getTenantId(tenantId);
 
         sysUserDO.setTenantId(tenantId); // 设置：租户 id
 
@@ -488,7 +488,7 @@ public class SignUtil {
         // 校验密码，成功之后，再判断是否被冻结，免得透露用户被封号的信息
         if (BooleanUtil.isFalse(sysUserDO.getEnableFlag())) {
 
-            ApiResultVO.error(BizCodeEnum.ACCOUNT_IS_DISABLED);
+            ApiResultVO.error(BaseBizCodeEnum.ACCOUNT_IS_DISABLED);
 
         }
 
@@ -506,7 +506,7 @@ public class SignUtil {
     private static SysUserDO signInGetSysUserDO(LambdaQueryChainWrapper<SysUserDO> lambdaQueryChainWrapper,
         boolean errorFlag, @Nullable Long tenantId) {
 
-        tenantId = MyJwtUtil.getTenantId(tenantId);
+        tenantId = TenantUtil.getTenantId(tenantId);
 
         lambdaQueryChainWrapper.eq(BaseEntityNoId::getTenantId, tenantId);
 
@@ -866,7 +866,7 @@ public class SignUtil {
     public static boolean accountIsExists(Enum<? extends IRedisKey> redisKeyEnum, String newAccount, @Nullable Long id,
         @Nullable Long tenantId) {
 
-        tenantId = MyJwtUtil.getTenantId(tenantId);
+        tenantId = TenantUtil.getTenantId(tenantId);
 
         LambdaQueryChainWrapper<SysUserDO> lambdaQueryChainWrapper =
             ChainWrappers.lambdaQueryChain(sysUserMapper).ne(id != null, BaseEntity::getId, id)

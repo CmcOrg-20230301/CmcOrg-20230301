@@ -119,7 +119,7 @@ public class PayGoogleUtil {
      */
     public static String getAccessToken() {
 
-        String accessToken = MyCacheUtil.onlyGet(RedisKeyEnum.GOOGLE_ACCESS_TOKEN_CACHE, null, true);
+        String accessToken = MyCacheUtil.onlyGet(RedisKeyEnum.GOOGLE_ACCESS_TOKEN_CACHE, null);
 
         if (StrUtil.isNotBlank(accessToken)) {
             return accessToken;

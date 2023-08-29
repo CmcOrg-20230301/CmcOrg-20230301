@@ -6,9 +6,11 @@ import cn.hutool.core.util.BooleanUtil;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.cmcorg20230301.be.engine.model.model.constant.BaseConstant;
 import com.cmcorg20230301.be.engine.model.model.dto.ChangeNumberDTO;
 import com.cmcorg20230301.be.engine.model.model.dto.NotEmptyIdSet;
 import com.cmcorg20230301.be.engine.model.model.dto.NotNullId;
+import com.cmcorg20230301.be.engine.model.model.vo.DictVO;
 import com.cmcorg20230301.be.engine.mysql.model.annotation.MyTransactional;
 import com.cmcorg20230301.be.engine.security.exception.BaseBizCodeEnum;
 import com.cmcorg20230301.be.engine.security.mapper.SysTenantMapper;
@@ -19,6 +21,7 @@ import com.cmcorg20230301.be.engine.security.model.entity.SysTenantRefUserDO;
 import com.cmcorg20230301.be.engine.security.model.vo.ApiResultVO;
 import com.cmcorg20230301.be.engine.security.util.MyEntityUtil;
 import com.cmcorg20230301.be.engine.security.util.MyTreeUtil;
+import com.cmcorg20230301.be.engine.security.util.TenantUtil;
 import com.cmcorg20230301.be.engine.security.util.UserUtil;
 import com.cmcorg20230301.be.engine.tenant.model.dto.SysTenantInsertOrUpdateDTO;
 import com.cmcorg20230301.be.engine.tenant.model.dto.SysTenantPageDTO;
@@ -30,6 +33,7 @@ import org.springframework.stereotype.Service;
 import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -92,6 +96,11 @@ public class SysTenantServiceImpl extends ServiceImpl<SysTenantMapper, SysTenant
      */
     private void insertOrUpdateSub(SysTenantInsertOrUpdateDTO dto, SysTenantDO sysTenantDO) {
 
+        // 如果禁用了，则子表不进行新增操作
+        if (BooleanUtil.isFalse(sysTenantDO.getEnableFlag())) {
+            return;
+        }
+
         // 再新增子表数据
         if (CollUtil.isNotEmpty(dto.getUserIdSet())) {
 
@@ -125,6 +134,22 @@ public class SysTenantServiceImpl extends ServiceImpl<SysTenantMapper, SysTenant
             .eq(dto.getEnableFlag() != null, BaseEntityTree::getEnableFlag, dto.getEnableFlag())
             .eq(dto.getId() != null, BaseEntity::getId, dto.getId()).eq(BaseEntityTree::getDelFlag, false)
             .orderByDesc(BaseEntityTree::getOrderNo).page(dto.page(true));
+
+    }
+
+    /**
+     * 下拉列表
+     */
+    @Override
+    public Page<DictVO> dictList() {
+
+        Map<Long, SysTenantDO> sysTenantCacheMap = TenantUtil.getSysTenantCacheMap();
+
+        List<DictVO> dictListVOList =
+            sysTenantCacheMap.entrySet().stream().map(it -> new DictVO(it.getKey(), it.getValue().getName()))
+                .collect(Collectors.toList());
+
+        return new Page<DictVO>().setTotal(sysTenantCacheMap.size()).setRecords(dictListVOList);
 
     }
 
@@ -233,6 +258,30 @@ public class SysTenantServiceImpl extends ServiceImpl<SysTenantMapper, SysTenant
         updateBatchById(sysTenantDOList);
 
         return BaseBizCodeEnum.OK;
+
+    }
+
+    /**
+     * 通过主键id，获取租户名
+     */
+    @Override
+    public String getNameById(NotNullId notNullId) {
+
+        if (notNullId.getId().equals(BaseConstant.TENANT_ID)) {
+
+            return "";
+
+        }
+
+        SysTenantDO sysTenantDO = TenantUtil.getSysTenantCacheMap().get(notNullId.getId());
+
+        if (sysTenantDO == null) {
+
+            return null;
+
+        }
+
+        return sysTenantDO.getName();
 
     }
 

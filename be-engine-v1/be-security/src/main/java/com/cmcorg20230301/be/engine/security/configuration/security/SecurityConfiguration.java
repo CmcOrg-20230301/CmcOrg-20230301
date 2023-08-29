@@ -5,6 +5,7 @@ import cn.hutool.core.util.ArrayUtil;
 import com.cmcorg20230301.be.engine.model.model.configuration.ISecurityPermitConfiguration;
 import com.cmcorg20230301.be.engine.security.configuration.base.BaseConfiguration;
 import com.cmcorg20230301.be.engine.security.filter.JwtAuthorizationFilter;
+import com.cmcorg20230301.be.engine.security.model.configuration.IJwtValidatorConfiguration;
 import com.cmcorg20230301.be.engine.security.properties.SecurityProperties;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;

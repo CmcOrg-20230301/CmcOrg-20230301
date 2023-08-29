@@ -35,6 +35,10 @@ public class SecurityCacheConfiguration {
 
     static {
 
+        // 用户
+        TABLE_NAME_ENUM_SET
+            .add(new SecurityCache(TableNameEnum.SYS_USER, CollUtil.newHashSet(RedisKeyEnum.SYS_USER_CACHE)));
+
         // 系统参数
         TABLE_NAME_ENUM_SET
             .add(new SecurityCache(TableNameEnum.SYS_PARAM, CollUtil.newHashSet(RedisKeyEnum.SYS_PARAM_CACHE)));
@@ -64,6 +68,10 @@ public class SecurityCacheConfiguration {
         // 租户
         TABLE_NAME_ENUM_SET.add(new SecurityCache(TableNameEnum.SYS_TENANT,
             CollUtil.newHashSet(RedisKeyEnum.SYS_TENANT_CACHE, RedisKeyEnum.SYS_TENANT_DEEP_ID_SET_CACHE)));
+
+        // 租户关联用户
+        TABLE_NAME_ENUM_SET.add(new SecurityCache(TableNameEnum.SYS_TENANT_REF_USER,
+            CollUtil.newHashSet(RedisKeyEnum.USER_ID_REF_TENANT_ID_SET_CACHE)));
 
     }
 

@@ -94,7 +94,7 @@ public class IpFilter implements Filter {
         String key = RedisKeyEnum.PRE_IP_BLACK + ":" + ip;
 
         // 判断是否在 黑名单里
-        String ipBlackStr = MyCacheUtil.onlyGet(key, true);
+        String ipBlackStr = MyCacheUtil.onlyGet(key);
 
         if (StrUtil.isNotBlank(ipBlackStr)) {
 

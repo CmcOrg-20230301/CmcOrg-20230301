@@ -32,6 +32,7 @@ export interface SysTenantPageDTO {
     name?: string // 租户名
     pageSize?: string // 每页显示条数，format：int64
     remark?: string // 备注
+    id?: string // 主键 id，format：int64
     enableFlag?: boolean // 是否启用
     order?: MyOrderDTO // 排序字段
     sort?: Record<string, SortOrder> // 排序字段（只在前端使用，实际传值：order）
@@ -89,6 +90,11 @@ export interface SysTenantInfoByIdVO {
 // 通过主键id，查看详情
 export function SysTenantInfoById(form: NotNullId, config?: AxiosRequestConfig) {
     return $http.myProPost<SysTenantInfoByIdVO>('/sys/tenant/infoById', form, config)
+}
+
+// 通过主键id，获取租户名
+export function SysTenantGetNameById(form: NotNullId, config?: AxiosRequestConfig) {
+    return $http.myPost<string>('/sys/tenant/getNameById', form, config)
 }
 
 export interface ChangeNumberDTO {

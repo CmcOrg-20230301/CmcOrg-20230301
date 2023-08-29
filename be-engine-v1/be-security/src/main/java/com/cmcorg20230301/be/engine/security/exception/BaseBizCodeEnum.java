@@ -24,6 +24,7 @@ public enum BaseBizCodeEnum implements IBizCode {
     PLEASE_DELETE_THE_CHILD_NODE_FIRST(100031, "请先删除子节点"), //
     INSUFFICIENT_PERMISSIONS(100041, "权限不足"), //
     NO_DATA_AFFECTED(100051, "操作失败：未有数据发生变化"), //
+    ACCOUNT_IS_DISABLED(100061, "账户被冻结，请联系管理员"), //
     NOT_LOGGED_IN_YET(100111, "尚未登录，请先登录"), // 返回这个 code（100111），会触发前端，登出功能
     LOGIN_EXPIRED(100111, "登录过期，请重新登录"), //
     THE_ACCOUNT_IS_LOGGED_IN_ELSEWHERE(100111, "账号在其他地方登录，您被迫下线"), //

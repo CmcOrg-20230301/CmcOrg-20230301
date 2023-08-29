@@ -207,13 +207,30 @@ const TableColumnList = (currentForm: React.MutableRefObject<SysMenuInsertOrUpda
 
                                                         }).then(res => {
 
-                                                            ToastSuccess(res.msg)
+                                                            SysMenuInsertOrUpdate({
 
-                                                            actionRef.current?.reload()
+                                                                ...formTemp,
+
+                                                                name: '下拉列表',
+
+                                                                auths: form.auths + ":dictList",
+
+                                                                orderNo: DefaultOrderNo - 400
+
+                                                            }).then(res => {
+
+                                                                ToastSuccess(res.msg)
+
+                                                                actionRef.current?.reload()
+
+                                                            })
 
                                                         })
+
                                                     })
+
                                                 })
+
                                             })
 
                                             return true

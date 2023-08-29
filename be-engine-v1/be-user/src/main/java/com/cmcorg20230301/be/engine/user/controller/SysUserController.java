@@ -40,7 +40,7 @@ public class SysUserController {
 
     @Operation(summary = "下拉列表")
     @PostMapping("/dictList")
-    @PreAuthorize("hasAuthority('sysUser:page')")
+    @PreAuthorize("hasAuthority('sysUser:dictList')")
     public ApiResultVO<Page<DictVO>> dictList(@RequestBody @Valid SysUserDictListDTO dto) {
         return ApiResultVO.okData(baseService.dictList(dto));
     }

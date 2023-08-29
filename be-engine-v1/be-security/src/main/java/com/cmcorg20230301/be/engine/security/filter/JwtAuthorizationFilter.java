@@ -13,8 +13,8 @@ import com.cmcorg20230301.be.engine.cache.util.MyCacheUtil;
 import com.cmcorg20230301.be.engine.model.model.constant.BaseConstant;
 import com.cmcorg20230301.be.engine.model.model.constant.LogTopicConstant;
 import com.cmcorg20230301.be.engine.security.configuration.base.BaseConfiguration;
-import com.cmcorg20230301.be.engine.security.configuration.security.IJwtValidatorConfiguration;
 import com.cmcorg20230301.be.engine.security.exception.BaseBizCodeEnum;
+import com.cmcorg20230301.be.engine.security.model.configuration.IJwtValidatorConfiguration;
 import com.cmcorg20230301.be.engine.security.properties.SecurityProperties;
 import com.cmcorg20230301.be.engine.security.util.MyJwtUtil;
 import com.cmcorg20230301.be.engine.security.util.RequestUtil;
@@ -100,7 +100,7 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
 
         String jwtHash = MyJwtUtil.generateRedisJwtHash(jwtStr, userId, RequestUtil.getRequestCategoryEnum(request));
 
-        String jwtHashRedis = MyCacheUtil.onlyGet(jwtHash, true);
+        String jwtHashRedis = MyCacheUtil.onlyGet(jwtHash);
 
         // 判断 jwtHash是否存在于 redis中，如果存在，则表示不能使用
         if (StrUtil.isNotBlank(jwtHashRedis)) {
@@ -113,7 +113,7 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
         }
 
         // 验证算法
-        if (!jwt.verify()) {
+        if (jwt.verify() == false) {
             return loginExpired(response); // 提示登录过期，请重新登录，目的：为了可以随时修改配置的 jwt前缀，或者用户 jwt后缀修改
         }
 

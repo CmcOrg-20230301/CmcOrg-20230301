@@ -30,9 +30,13 @@ public enum RedisKeyEnum implements IRedisKey {
     PRE_PASSWORD_ERROR_COUNT, // 密码错误总数：锁【用户主键 id】
 
     // 【_CACHE】结尾 ↓
-    SYS_TENANT_DEEP_ID_SET_CACHE, // 租户 id，关联的所有的 子租户（包含本租户）
+    SYS_USER_DISABLE_CACHE, // 用户是否被冻结，如果存在，则表示，用户被禁用了
 
-    SYS_TENANT_CACHE, // 租户缓存
+    USER_ID_REF_TENANT_ID_SET_CACHE, // 用户 id关联的 tenantIdSet
+
+    SYS_TENANT_DEEP_ID_SET_CACHE, // key：租户 id，value：关联的所有的 子租户（包含本租户）
+
+    SYS_TENANT_CACHE, // 租户缓存，key：租户 id，value：租户信息
 
     GOOGLE_ACCESS_TOKEN_CACHE, // google接口调用凭据
 

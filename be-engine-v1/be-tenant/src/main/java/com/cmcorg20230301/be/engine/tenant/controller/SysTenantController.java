@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.cmcorg20230301.be.engine.model.model.dto.ChangeNumberDTO;
 import com.cmcorg20230301.be.engine.model.model.dto.NotEmptyIdSet;
 import com.cmcorg20230301.be.engine.model.model.dto.NotNullId;
+import com.cmcorg20230301.be.engine.model.model.vo.DictVO;
 import com.cmcorg20230301.be.engine.security.model.entity.SysTenantDO;
 import com.cmcorg20230301.be.engine.security.model.vo.ApiResultVO;
 import com.cmcorg20230301.be.engine.tenant.model.dto.SysTenantInsertOrUpdateDTO;
@@ -44,6 +45,13 @@ public class SysTenantController {
         return ApiResultVO.okData(baseService.myPage(dto));
     }
 
+    @Operation(summary = "下拉列表")
+    @PostMapping("/dictList")
+    @PreAuthorize("hasAuthority('sysTenant:dictList')")
+    public ApiResultVO<Page<DictVO>> dictList() {
+        return ApiResultVO.okData(baseService.dictList());
+    }
+
     @Operation(summary = "查询：树结构")
     @PostMapping("/tree")
     @PreAuthorize("hasAuthority('sysTenant:page')")
@@ -70,6 +78,12 @@ public class SysTenantController {
     @PreAuthorize("hasAuthority('sysTenant:insertOrUpdate')")
     public ApiResultVO<String> addOrderNo(@RequestBody @Valid ChangeNumberDTO dto) {
         return ApiResultVO.okMsg(baseService.addOrderNo(dto));
+    }
+
+    @Operation(summary = "通过主键id，获取租户名")
+    @PostMapping("/getNameById")
+    public ApiResultVO<String> getNameById(@RequestBody @Valid NotNullId notNullId) {
+        return ApiResultVO.okData(baseService.getNameById(notNullId));
     }
 
 }

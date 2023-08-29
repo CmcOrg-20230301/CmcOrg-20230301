@@ -23,6 +23,6 @@ public enum TableNameEnum {
 
     SYS_TENANT, // 租户
 
-    ;
+    SYS_TENANT_REF_USER, // 租户关联用户
 
 }
