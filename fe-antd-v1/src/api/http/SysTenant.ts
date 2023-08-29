@@ -18,6 +18,16 @@ export function SysTenantInsertOrUpdate(form: SysTenantInsertOrUpdateDTO, config
     return $http.myPost<string>('/sys/tenant/insertOrUpdate', form, config)
 }
 
+export interface DictVO {
+    name?: string // 显示用
+    id?: string // 传值用，format：int64
+}
+
+// 下拉列表
+export function SysTenantDictList(config?: AxiosRequestConfig) {
+    return $http.myProPagePost<DictVO>('/sys/tenant/dictList', undefined, config)
+}
+
 export interface NotEmptyIdSet {
     idSet?: string[] // 主键 idSet，required：true，format：int64
 }

@@ -7,8 +7,6 @@ import {GetTenantId} from "@/util/CommonUtil";
 // 404页面
 export default function () {
 
-    const tenantId = GetTenantId();
-
     console.log("NotFound")
 
     if (!sessionStorage.getItem(SessionStorageKey.ADMIN_REDIRECT_PATH)) {
@@ -18,6 +16,6 @@ export default function () {
     const jwt = localStorage.getItem(LocalStorageKey.JWT);
 
     return <Navigate
-        to={jwt ? PathConstant.ADMIN_PATH : `${PathConstant.SIGN_IN_PATH}?tenantId=${tenantId}`}/>
+        to={jwt ? PathConstant.ADMIN_PATH : `${PathConstant.SIGN_IN_PATH}?tenantId=${GetTenantId()}`}/>
 
 }

@@ -1,4 +1,4 @@
-import {useRef, useState} from "react";
+import {useEffect, useRef, useState} from "react";
 import SignLayout from "@/layout/SignLayout/SignLayout";
 import {LoginForm, ProFormCaptcha, ProFormInstance, ProFormText} from "@ant-design/pro-components";
 import CommonConstant from "@/model/constant/CommonConstant";
@@ -11,6 +11,7 @@ import {SendCode, SignUpFormHandler, UseEffectSign} from "@/page/sign/SignUp/Sig
 import {ValidatorUtil} from "@/util/ValidatorUtil";
 import Link from "antd/lib/typography/Link";
 import {GetTenantId} from "@/util/CommonUtil";
+import {SysTenantGetNameById} from "@/api/http/SysTenant";
 
 type TSignUpType = '0' | '1'; // 注册方式
 
@@ -32,6 +33,20 @@ export default function () {
 
     UseEffectSign()
 
+    const tenantIdRef = useRef<string>(GetTenantId());
+
+    const [tenantName, setTenantName] = useState<string>(""); // 租户名
+
+    useEffect(() => {
+
+        SysTenantGetNameById({id: tenantIdRef.current}).then(res => {
+
+            setTenantName(res.data || "")
+
+        })
+
+    }, [])
+
     const [activeKey, setActiveKey] = useState<TSignUpType>('0');
     const formRef = useRef<ProFormInstance<ISignUpForm>>();
 
@@ -42,18 +57,26 @@ export default function () {
             <LoginForm<ISignUpForm>
 
                 formRef={formRef}
+
                 logo={IconSvg}
-                title={CommonConstant.SYS_NAME}
+
+                title={tenantName + " - " + CommonConstant.SYS_NAME}
+
                 submitter={{searchConfig: {submitText: '注册'}}}
-                subTitle="Will have the most powerful !"
+
+                subTitle={CommonConstant.SYS_SUB_TITLE}
+
                 actions={
+
                     <Link title={"登录已有账号"}
-                          onClick={() => getAppNav()(`${PathConstant.SIGN_IN_PATH}?tenantId=${GetTenantId()}`)}>登录已有账号</Link>
+                          onClick={() => getAppNav()(`${PathConstant.SIGN_IN_PATH}?tenantId=${tenantIdRef.current}`)}>登录已有账号</Link>
+
                 }
 
                 onFinish={async (form) => {
 
-                    await SignUpFormHandler({...form, type: activeKey, tenantId: GetTenantId()})
+                    await SignUpFormHandler({...form, type: activeKey, tenantId: tenantIdRef.current})
+
                     return true
 
                 }}

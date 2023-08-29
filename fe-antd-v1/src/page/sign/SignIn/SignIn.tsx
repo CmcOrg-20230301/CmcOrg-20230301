@@ -1,7 +1,7 @@
 import {LockOutlined, UserOutlined,} from '@ant-design/icons';
 import {LoginForm, ModalForm, ProFormCaptcha, ProFormInstance, ProFormText} from '@ant-design/pro-components';
 import {Tabs} from 'antd';
-import {useRef, useState} from 'react';
+import {useEffect, useRef, useState} from 'react';
 import IconSvg from '../../../../public/icon.svg'
 import SignLayout from "@/layout/SignLayout/SignLayout";
 import CommonConstant from "@/model/constant/CommonConstant";
@@ -19,6 +19,7 @@ import {ToastSuccess} from "@/util/ToastUtil";
 import {ValidatorUtil} from "@/util/ValidatorUtil";
 import {UseEffectSign} from "@/page/sign/SignUp/SignUpUtil";
 import {GetTenantId} from "@/util/CommonUtil";
+import {SysTenantGetNameById} from "@/api/http/SysTenant";
 
 type TSignInType = 'account'; // 登录方式
 
@@ -35,6 +36,20 @@ export default function () {
 
     UseEffectSign()
 
+    const tenantIdRef = useRef<string>(GetTenantId()); // 租户 id
+
+    const [tenantName, setTenantName] = useState<string>(""); // 租户名
+
+    useEffect(() => {
+
+        SysTenantGetNameById({id: tenantIdRef.current}).then(res => {
+
+            setTenantName(res.data || "")
+
+        })
+
+    }, [])
+
     const [signInType, setSignInType] = useState<TSignInType>('account');
 
     return (
@@ -44,18 +59,30 @@ export default function () {
             <LoginForm<ISignInForm>
 
                 logo={IconSvg}
-                title={CommonConstant.SYS_NAME}
-                subTitle="Will have the most powerful !"
+
+                title={tenantName + " - " + CommonConstant.SYS_NAME}
+
+                subTitle={CommonConstant.SYS_SUB_TITLE}
 
                 actions={
-                    <div>或者 <Link title={"注册"}
-                                  onClick={() => getAppNav()(`${PathConstant.SIGN_UP_PATH}?tenantId=${GetTenantId()}`)}>注册</Link>
+
+                    <div>
+
+                        或者
+
+                        <Link title={"注册"}
+                              onClick={() => getAppNav()(`${PathConstant.SIGN_UP_PATH}?tenantId=${tenantIdRef.current}`)}>注册</Link>
+
                     </div>
+
                 }
 
                 onFinish={async (form) => {
-                    await SignInFormHandler({...form, tenantId: GetTenantId()})
+
+                    await SignInFormHandler({...form, tenantId: tenantIdRef.current})
+
                     return true
+
                 }}
 
             >

@@ -9,7 +9,6 @@ import {ISignUpForm} from "@/page/sign/SignUp/SignUp";
 import {SignSignInNameSignUp} from "@/api/http/SignSignInName";
 import {useEffect} from "react";
 import {CloseWebSocket} from "@/util/webSocket/WebSocketUtil";
-import {GetTenantId} from "@/util/CommonUtil";
 
 export function UseEffectSign() {
 
@@ -42,20 +41,22 @@ export async function SignUpFormHandler(form: ISignUpForm) {
 
         }).then(res => {
 
-            SignUpSuccess(res)
+            SignUpSuccess(res, form.tenantId)
 
         })
 
     } else {
 
         await SignSignInNameSignUp({
+
             signInName: form.account,
             password,
             originPassword,
             tenantId: form.tenantId
+
         }).then(res => {
 
-            SignUpSuccess(res)
+            SignUpSuccess(res, form.tenantId)
 
         })
 
@@ -65,10 +66,10 @@ export async function SignUpFormHandler(form: ISignUpForm) {
 /**
  * 注册成功之后的处理
  */
-function SignUpSuccess(res: ApiResultVO) {
+function SignUpSuccess(res: ApiResultVO, tenantId: string) {
 
     ToastSuccess(res.msg)
-    getAppNav()(`${PathConstant.SIGN_IN_PATH}?tenantId=${GetTenantId()}`)
+    getAppNav()(`${PathConstant.SIGN_IN_PATH}?tenantId=${tenantId}`)
 
 }
 

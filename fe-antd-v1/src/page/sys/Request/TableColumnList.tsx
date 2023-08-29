@@ -4,6 +4,7 @@ import {HandlerRegion} from "@/util/StrUtil";
 import {SysUserDictList} from "@/api/http/SysUser";
 import {Typography} from "antd";
 import {ProColumns} from "@ant-design/pro-components";
+import {SysTenantDictList} from "@/api/http/SysTenant";
 
 const TableColumnList = (): ProColumns<SysRequestDO>[] => [
 
@@ -88,6 +89,13 @@ const TableColumnList = (): ProColumns<SysRequestDO>[] => [
 
             }
 
+        }
+    },
+
+    {
+        title: '租户', dataIndex: 'tenantId', ellipsis: true, width: 90, valueType: 'select',
+        request: () => {
+            return DoGetDictList(SysTenantDictList)
         }
     },
 
