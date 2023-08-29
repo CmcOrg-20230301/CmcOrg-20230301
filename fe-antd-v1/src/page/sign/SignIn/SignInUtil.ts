@@ -3,11 +3,12 @@ import {PasswordRSAEncrypt} from "@/util/RsaUtil";
 import {ToastSuccess} from "@/util/ToastUtil";
 import LocalStorageKey from "@/model/constant/LocalStorageKey";
 import {ApiResultVO} from "@/util/HttpUtil";
-import {getAppNav} from "@/MyApp";
+import {getAppDispatch, getAppNav} from "@/MyApp";
 import PathConstant from "@/model/constant/PathConstant";
 import {validate} from "@/util/ValidatorUtil";
 import {SignEmailSignInPassword} from "@/api/http/SignEmail";
 import {SignSignInNameSignInPassword} from "@/api/http/SignSignInName";
+import {signOut} from "@/store/userSlice";
 
 /**
  * 处理表单
@@ -39,6 +40,9 @@ function SignInSuccess(apiResultVO: ApiResultVO) {
 
     localStorage.clear()
     sessionStorage.clear()
+
+    getAppDispatch()(signOut()) // store 退出登录
+
     ToastSuccess('欢迎回来~')
 
     localStorage.setItem(LocalStorageKey.JWT, apiResultVO.data)

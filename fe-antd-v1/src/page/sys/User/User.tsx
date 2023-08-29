@@ -1,7 +1,7 @@
 import {useRef, useState} from "react";
 import {ActionType, BetaSchemaForm, ColumnsState, FormInstance, ProTable} from "@ant-design/pro-components";
-import {Button, Dropdown, Space, Typography} from "antd";
-import {ColumnHeightOutlined, EllipsisOutlined, PlusOutlined, VerticalAlignMiddleOutlined} from "@ant-design/icons/lib";
+import {Button, Space, Typography} from "antd";
+import {ColumnHeightOutlined, PlusOutlined, VerticalAlignMiddleOutlined} from "@ant-design/icons/lib";
 import {
     SysUserDeleteByIdSet,
     SysUserInfoById,
@@ -217,48 +217,41 @@ export default function () {
 
                     title:
 
-                        <Dropdown menu={{
+                        <Space size={16}>
 
-                            items: [
-                                {
+                            <Button
 
-                                    key: '1',
+                                onClick={() => {
 
-                                    label: <a onClick={() => {
+                                    setExpandedRowKeys(hasChildrenIdList.current)
 
-                                        setExpandedRowKeys(hasChildrenIdList.current)
+                                }}
 
-                                    }}>
-                                        展开全部
-                                    </a>,
+                                icon={<ColumnHeightOutlined/>}
 
-                                    icon: <ColumnHeightOutlined/>
+                            >
 
-                                },
+                                展开
 
-                                {
+                            </Button>
 
-                                    key: '2',
+                            <Button
 
-                                    label: <a onClick={() => {
+                                onClick={() => {
 
-                                        setExpandedRowKeys([])
+                                    setExpandedRowKeys([])
 
-                                    }}>
-                                        收起全部
-                                    </a>,
+                                }}
 
-                                    icon: <VerticalAlignMiddleOutlined/>
+                                icon={<VerticalAlignMiddleOutlined/>}
 
-                                },
+                            >
 
-                            ]
+                                收起
 
-                        }}>
+                            </Button>
 
-                            <Button size={"small"} icon={<EllipsisOutlined/>}/>
-
-                        </Dropdown>,
+                        </Space>,
 
                     actions: [
 
@@ -378,8 +371,10 @@ export default function () {
                                     }, undefined, "确定重置表单吗？")
 
                                 }}
+
                             >
-                                重置
+
+                            重置
 
                             </Button>,
 

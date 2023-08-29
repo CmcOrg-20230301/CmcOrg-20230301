@@ -1011,7 +1011,9 @@ public class SignUtil {
     public static void doSignDelete(Set<Long> userIdSet) {
 
         // 检查：是否非法操作
-        TenantUtil.checkIllegal(userIdSet, ChainWrappers.lambdaQueryChain(sysUserMapper));
+        TenantUtil.checkIllegal(userIdSet,
+            tenantIdSet -> ChainWrappers.lambdaQueryChain(sysUserMapper).in(BaseEntity::getId, userIdSet)
+                .in(BaseEntityNoId::getTenantId, tenantIdSet).count());
 
         TransactionUtil.exec(() -> {
 

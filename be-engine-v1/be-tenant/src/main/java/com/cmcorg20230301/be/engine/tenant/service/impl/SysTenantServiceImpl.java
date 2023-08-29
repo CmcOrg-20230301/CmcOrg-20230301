@@ -6,7 +6,6 @@ import cn.hutool.core.util.BooleanUtil;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.baomidou.mybatisplus.extension.toolkit.ChainWrappers;
 import com.cmcorg20230301.be.engine.model.model.constant.BaseConstant;
 import com.cmcorg20230301.be.engine.model.model.dto.ChangeNumberDTO;
 import com.cmcorg20230301.be.engine.model.model.dto.NotEmptyIdSet;
@@ -59,6 +58,9 @@ public class SysTenantServiceImpl extends ServiceImpl<SysTenantMapper, SysTenant
             parentId = UserUtil.getCurrentTenantIdDefault(); // 赋值为：当前的租户 id
 
         }
+
+        // 上级租户 id，和本级租户 id，保持一致
+        dto.setTenantId(parentId);
 
         if (dto.getId() != null && dto.getId().equals(dto.getParentId())) {
             ApiResultVO.error(BaseBizCodeEnum.PARENT_ID_CANNOT_BE_EQUAL_TO_ID);
@@ -202,7 +204,9 @@ public class SysTenantServiceImpl extends ServiceImpl<SysTenantMapper, SysTenant
     public String deleteByIdSet(NotEmptyIdSet notEmptyIdSet) {
 
         // 检查：是否非法操作
-        TenantUtil.checkIllegal(notEmptyIdSet.getIdSet(), ChainWrappers.lambdaQueryChain(getBaseMapper()));
+        TenantUtil.checkIllegal(notEmptyIdSet.getIdSet(),
+            tenantIdSet -> lambdaQuery().in(BaseEntity::getId, notEmptyIdSet.getIdSet())
+                .in(BaseEntityNoId::getTenantId, tenantIdSet).count());
 
         // 如果存在下级，则无法删除
         boolean exists = lambdaQuery().in(BaseEntityTree::getParentId, notEmptyIdSet.getIdSet()).exists();
@@ -272,7 +276,8 @@ public class SysTenantServiceImpl extends ServiceImpl<SysTenantMapper, SysTenant
     public String addOrderNo(ChangeNumberDTO dto) {
 
         // 检查：是否非法操作
-        TenantUtil.checkIllegal(dto.getIdSet(), ChainWrappers.lambdaQueryChain(getBaseMapper()));
+        TenantUtil.checkIllegal(dto.getIdSet(), tenantIdSet -> lambdaQuery().in(BaseEntity::getId, dto.getIdSet())
+            .in(BaseEntityNoId::getTenantId, tenantIdSet).count());
 
         if (dto.getNumber() == 0) {
             return BaseBizCodeEnum.OK;

@@ -1,4 +1,4 @@
-import {YesNoDict} from "@/util/DictUtil";
+import {GetDictList, YesNoDict} from "@/util/DictUtil";
 import {ActionType, ProColumns} from "@ant-design/pro-components";
 import {SysAreaDeleteByIdSet, SysAreaDO, SysAreaInsertOrUpdateDTO} from "@/api/http/SysArea";
 import {ExecConfirm, ToastSuccess} from "@/util/ToastUtil";
@@ -6,6 +6,7 @@ import {CalcOrderNo} from "@/util/TreeUtil";
 import {EllipsisOutlined} from "@ant-design/icons";
 import {Dropdown} from "antd";
 import React from "react";
+import {SysTenantDictList} from "@/api/http/SysTenant";
 
 const TableColumnList = (currentForm: React.MutableRefObject<SysAreaInsertOrUpdateDTO>, setFormOpen: React.Dispatch<React.SetStateAction<boolean>>, actionRef: React.RefObject<ActionType | undefined>): ProColumns<SysAreaDO>[] => [
 
@@ -14,6 +15,13 @@ const TableColumnList = (currentForm: React.MutableRefObject<SysAreaInsertOrUpda
         dataIndex: 'index',
         valueType: 'index',
         width: 90,
+    },
+
+    {
+        title: '租户', dataIndex: 'tenantId', ellipsis: true, width: 90, valueType: 'select',
+        request: () => {
+            return GetDictList(SysTenantDictList)
+        }
     },
 
     {title: '区域名', dataIndex: 'name', ellipsis: true, width: 200,},

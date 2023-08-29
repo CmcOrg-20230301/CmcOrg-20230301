@@ -1,7 +1,7 @@
 package com.cmcorg20230301.be.engine.security.util;
 
 import cn.hutool.core.collection.CollUtil;
-import com.baomidou.mybatisplus.extension.conditions.query.LambdaQueryChainWrapper;
+import cn.hutool.core.lang.func.Func1;
 import com.baomidou.mybatisplus.extension.toolkit.ChainWrappers;
 import com.cmcorg20230301.be.engine.cache.util.CacheHelper;
 import com.cmcorg20230301.be.engine.cache.util.MyCacheUtil;
@@ -12,6 +12,7 @@ import com.cmcorg20230301.be.engine.security.mapper.SysTenantMapper;
 import com.cmcorg20230301.be.engine.security.mapper.SysTenantRefUserMapper;
 import com.cmcorg20230301.be.engine.security.model.entity.*;
 import com.cmcorg20230301.be.engine.security.model.vo.ApiResultVO;
+import lombok.SneakyThrows;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.stereotype.Component;
@@ -245,14 +246,13 @@ public class TenantUtil {
     /**
      * 检查：是否非法操作
      */
-    public static <T extends BaseEntity> void checkIllegal(Set<Long> idSet,
-        LambdaQueryChainWrapper<T> lambdaQueryChainWrapper) {
+    @SneakyThrows
+    public static void checkIllegal(Set<Long> idSet, @NotNull Func1<Set<Long>, Long> func1) {
 
         // 通过：dto的 tenantId，获取：tenantIdSet
         Set<Long> tenantIdSet = TenantUtil.getTenantIdSetByDtoTenantId(null);
 
-        Long count =
-            lambdaQueryChainWrapper.in(BaseEntityNoId::getTenantId, tenantIdSet).in(BaseEntity::getId, idSet).count();
+        Long count = func1.call(tenantIdSet);
 
         if (idSet.size() != count) {
 

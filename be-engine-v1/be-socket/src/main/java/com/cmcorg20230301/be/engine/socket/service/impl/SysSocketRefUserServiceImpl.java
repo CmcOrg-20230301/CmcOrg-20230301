@@ -4,7 +4,6 @@ import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.baomidou.mybatisplus.extension.toolkit.ChainWrappers;
 import com.cmcorg20230301.be.engine.cache.util.CacheRedisKafkaLocalUtil;
 import com.cmcorg20230301.be.engine.model.model.dto.NotEmptyIdSet;
 import com.cmcorg20230301.be.engine.security.exception.BaseBizCodeEnum;
@@ -56,7 +55,9 @@ public class SysSocketRefUserServiceImpl extends ServiceImpl<SysSocketRefUserMap
     public String offlineByIdSet(NotEmptyIdSet notEmptyIdSet) {
 
         // 检查：是否非法操作
-        TenantUtil.checkIllegal(notEmptyIdSet.getIdSet(), ChainWrappers.lambdaQueryChain(getBaseMapper()));
+        TenantUtil.checkIllegal(notEmptyIdSet.getIdSet(),
+            tenantIdSet -> lambdaQuery().in(BaseEntity::getId, notEmptyIdSet.getIdSet())
+                .in(BaseEntityNoId::getTenantId, tenantIdSet).count());
 
         List<SysSocketRefUserDO> sysSocketRefUserDOList = lambdaQuery().in(BaseEntity::getId, notEmptyIdSet.getIdSet())
             .select(SysSocketRefUserDO::getJwtHash, SysSocketRefUserDO::getJwtHashExpireTs).list();

@@ -1,7 +1,8 @@
-import {YesNoDict} from "@/util/DictUtil";
+import {GetDictList, YesNoDict} from "@/util/DictUtil";
 import {ActionType, ProColumns} from "@ant-design/pro-components";
 import {SysRoleDeleteByIdSet, SysRoleDO, SysRoleInsertOrUpdateDTO} from "@/api/http/SysRole";
 import {ExecConfirm, ToastSuccess} from "@/util/ToastUtil";
+import {SysTenantDictList} from "@/api/http/SysTenant";
 
 const TableColumnList = (currentForm: React.MutableRefObject<SysRoleInsertOrUpdateDTO>, setFormOpen: React.Dispatch<React.SetStateAction<boolean>>, actionRef: React.RefObject<ActionType | undefined>): ProColumns<SysRoleDO>[] => [
 
@@ -10,6 +11,13 @@ const TableColumnList = (currentForm: React.MutableRefObject<SysRoleInsertOrUpda
         dataIndex: 'index',
         valueType: 'index',
         width: 90,
+    },
+
+    {
+        title: '租户', dataIndex: 'tenantId', ellipsis: true, width: 90, valueType: 'select',
+        request: () => {
+            return GetDictList(SysTenantDictList)
+        }
     },
 
     {title: '角色名', dataIndex: 'name', ellipsis: true,},

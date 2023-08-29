@@ -6,6 +6,7 @@ import {AxiosRequestConfig} from "axios";
 export interface SysTenantInsertOrUpdateDTO {
     orderNo?: number // 排序号（值越大越前面，默认为 0），format：int32
     userIdSet?: string[] // 用户 idSet，format：int64
+    tenantId?: string // 租户id，可以为空，为空则表示：默认租户：0，format：int64
     name?: string // 租户名，required：true
     remark?: string // 备注
     id?: string // 主键 id，format：int64
@@ -39,8 +40,10 @@ export function SysTenantDeleteByIdSet(form: NotEmptyIdSet, config?: AxiosReques
 
 export interface SysTenantPageDTO {
     current?: string // 第几页，format：int64
+    tenantId?: string // 租户 id，format：int64
     name?: string // 租户名
     pageSize?: string // 每页显示条数，format：int64
+    tenantIdSet?: string[] // 租户 idSet，format：int64
     remark?: string // 备注
     id?: string // 主键 id，format：int64
     enableFlag?: boolean // 是否启用

@@ -448,7 +448,9 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserProMapper, SysUserDO>
     public String refreshJwtSecretSuf(NotEmptyIdSet notEmptyIdSet) {
 
         // 检查：是否非法操作
-        TenantUtil.checkIllegal(notEmptyIdSet.getIdSet(), ChainWrappers.lambdaQueryChain(sysUserMapper));
+        TenantUtil.checkIllegal(notEmptyIdSet.getIdSet(),
+            tenantIdSet -> lambdaQuery().in(BaseEntity::getId, notEmptyIdSet.getIdSet())
+                .in(BaseEntityNoId::getTenantId, tenantIdSet).count());
 
         for (Long item : notEmptyIdSet.getIdSet()) {
 
@@ -549,7 +551,8 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserProMapper, SysUserDO>
     public String updatePassword(SysUserUpdatePasswordDTO dto) {
 
         // 检查：是否非法操作
-        TenantUtil.checkIllegal(dto.getIdSet(), ChainWrappers.lambdaQueryChain(sysUserMapper));
+        TenantUtil.checkIllegal(dto.getIdSet(), tenantIdSet -> lambdaQuery().in(BaseEntity::getId, dto.getIdSet())
+            .in(BaseEntityNoId::getTenantId, tenantIdSet).count());
 
         boolean passwordFlag =
             StrUtil.isNotBlank(dto.getNewPassword()) && StrUtil.isNotBlank(dto.getNewOriginPassword());

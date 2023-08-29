@@ -1,4 +1,4 @@
-import {YesNoDict} from "@/util/DictUtil";
+import {GetDictList, YesNoDict} from "@/util/DictUtil";
 import {ActionType, ProColumns} from "@ant-design/pro-components";
 import {SysPostDeleteByIdSet, SysPostDO, SysPostInsertOrUpdateDTO} from "@/api/http/SysPost";
 import {ExecConfirm, ToastSuccess} from "@/util/ToastUtil";
@@ -6,6 +6,7 @@ import {CalcOrderNo} from "@/util/TreeUtil";
 import {EllipsisOutlined} from "@ant-design/icons";
 import {Dropdown} from "antd";
 import React from "react";
+import {SysTenantDictList} from "@/api/http/SysTenant";
 
 const TableColumnList = (currentForm: React.MutableRefObject<SysPostInsertOrUpdateDTO>, setFormOpen: React.Dispatch<React.SetStateAction<boolean>>, actionRef: React.RefObject<ActionType | undefined>): ProColumns<SysPostDO>[] => [
 
@@ -14,6 +15,13 @@ const TableColumnList = (currentForm: React.MutableRefObject<SysPostInsertOrUpda
         dataIndex: 'index',
         valueType: 'index',
         width: 90,
+    },
+
+    {
+        title: '租户', dataIndex: 'tenantId', ellipsis: true, width: 90, valueType: 'select',
+        request: () => {
+            return GetDictList(SysTenantDictList)
+        }
     },
 
     {title: '岗位名', dataIndex: 'name', ellipsis: true, width: 200,},

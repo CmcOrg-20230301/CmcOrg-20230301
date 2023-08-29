@@ -14,8 +14,10 @@ export function SysPostDeleteByIdSet(form: NotEmptyIdSet, config?: AxiosRequestC
 
 export interface SysPostPageDTO {
     current?: string // 第几页，format：int64
+    tenantId?: string // 租户 id，format：int64
     name?: string // 岗位名
     pageSize?: string // 每页显示条数，format：int64
+    tenantIdSet?: string[] // 租户 idSet，format：int64
     remark?: string // 备注
     enableFlag?: boolean // 是否启用
     order?: MyOrderDTO // 排序字段
@@ -57,6 +59,7 @@ export function SysPostAddOrderNo(form: ChangeNumberDTO, config?: AxiosRequestCo
 export interface SysPostInsertOrUpdateDTO {
     orderNo?: number // 排序号（值越大越前面，默认为 0），format：int32
     userIdSet?: string[] // 用户 idSet，format：int64
+    tenantId?: string // 租户id，可以为空，为空则表示：默认租户：0，format：int64
     name?: string // 岗位名，required：true
     remark?: string // 备注
     id?: string // 主键 id，format：int64

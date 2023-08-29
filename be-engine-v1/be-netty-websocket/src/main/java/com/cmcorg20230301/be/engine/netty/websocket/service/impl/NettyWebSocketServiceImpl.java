@@ -35,10 +35,10 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import java.time.Duration;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.concurrent.TimeUnit;
 
 @Service
 public class NettyWebSocketServiceImpl implements NettyWebSocketService {
@@ -109,11 +109,14 @@ public class NettyWebSocketServiceImpl implements NettyWebSocketService {
 
         HashSet<String> resSet = new HashSet<>(MyMapUtil.getInitialCapacity(sysSocketDOList.size()));
 
+        Long currentTenantIdDefault = UserUtil.getCurrentTenantIdDefault();
+
         for (SysSocketDO item : sysSocketDOList) {
 
             // 处理：获取：所有 webSocket连接地址
             doHandleGetAllWebSocketUrl(expireTsCallBack, jwtHash, currentUserNickName, currentUserId, ip, region,
-                sysRequestCategoryEnum, userAgentJsonStr, resSet, item, sysSocketOnlineTypeEnum);
+                sysRequestCategoryEnum, userAgentJsonStr, resSet, item, sysSocketOnlineTypeEnum,
+                currentTenantIdDefault);
 
         }
 
@@ -148,7 +151,7 @@ public class NettyWebSocketServiceImpl implements NettyWebSocketService {
     private void doHandleGetAllWebSocketUrl(CallBack<Long> expireTsCallBack, String jwtHash, String currentUserNickName,
         Long currentUserId, String ip, String region, SysRequestCategoryEnum sysRequestCategoryEnum,
         String userAgentJsonStr, HashSet<String> resSet, SysSocketDO sysSocketDO,
-        SysSocketOnlineTypeEnum sysSocketOnlineTypeEnum) {
+        SysSocketOnlineTypeEnum sysSocketOnlineTypeEnum, Long currentTenantIdDefault) {
 
         String code = IdUtil.simpleUUID();
 
@@ -193,6 +196,8 @@ public class NettyWebSocketServiceImpl implements NettyWebSocketService {
 
         sysSocketRefUserDO.setUserAgentJsonStr(userAgentJsonStr);
 
+        sysSocketRefUserDO.setTenantId(currentTenantIdDefault);
+
         sysSocketRefUserDO.setCreateId(currentUserId);
         sysSocketRefUserDO.setUpdateId(currentUserId);
 
@@ -203,7 +208,7 @@ public class NettyWebSocketServiceImpl implements NettyWebSocketService {
 
         // 设置到：redis里面，用于连接的时候用
         redissonClient.<SysSocketRefUserDO>getBucket(key)
-            .set(sysSocketRefUserDO, BaseConstant.SHORT_CODE_EXPIRE_TIME, TimeUnit.MILLISECONDS);
+            .set(sysSocketRefUserDO, Duration.ofMillis(BaseConstant.SHORT_CODE_EXPIRE_TIME));
 
     }
 

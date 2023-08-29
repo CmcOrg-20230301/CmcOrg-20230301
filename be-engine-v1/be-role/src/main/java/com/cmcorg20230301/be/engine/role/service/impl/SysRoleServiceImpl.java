@@ -212,7 +212,9 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRoleDO> im
     public String deleteByIdSet(NotEmptyIdSet notEmptyIdSet) {
 
         // 检查：是否非法操作
-        TenantUtil.checkIllegal(notEmptyIdSet.getIdSet(), ChainWrappers.lambdaQueryChain(getBaseMapper()));
+        TenantUtil.checkIllegal(notEmptyIdSet.getIdSet(),
+            tenantIdSet -> lambdaQuery().in(BaseEntity::getId, notEmptyIdSet.getIdSet())
+                .in(BaseEntityNoId::getTenantId, tenantIdSet).count());
 
         deleteByIdSetSub(notEmptyIdSet.getIdSet()); // 删除子表数据
 

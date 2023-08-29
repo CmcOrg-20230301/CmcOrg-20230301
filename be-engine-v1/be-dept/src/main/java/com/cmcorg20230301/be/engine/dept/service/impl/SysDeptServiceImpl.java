@@ -6,7 +6,6 @@ import cn.hutool.core.util.BooleanUtil;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.baomidou.mybatisplus.extension.toolkit.ChainWrappers;
 import com.cmcorg20230301.be.engine.area.model.entity.SysAreaRefDeptDO;
 import com.cmcorg20230301.be.engine.area.service.SysAreaRefDeptService;
 import com.cmcorg20230301.be.engine.dept.mapper.SysDeptMapper;
@@ -190,7 +189,9 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptMapper, SysDeptDO> im
     public String deleteByIdSet(NotEmptyIdSet notEmptyIdSet) {
 
         // 检查：是否非法操作
-        TenantUtil.checkIllegal(notEmptyIdSet.getIdSet(), ChainWrappers.lambdaQueryChain(getBaseMapper()));
+        TenantUtil.checkIllegal(notEmptyIdSet.getIdSet(),
+            tenantIdSet -> lambdaQuery().in(BaseEntity::getId, notEmptyIdSet.getIdSet())
+                .in(BaseEntityNoId::getTenantId, tenantIdSet).count());
 
         // 如果存在下级，则无法删除
         boolean exists = lambdaQuery().in(BaseEntityTree::getParentId, notEmptyIdSet.getIdSet()).exists();
@@ -271,7 +272,8 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptMapper, SysDeptDO> im
     public String addOrderNo(ChangeNumberDTO dto) {
 
         // 检查：是否非法操作
-        TenantUtil.checkIllegal(dto.getIdSet(), ChainWrappers.lambdaQueryChain(getBaseMapper()));
+        TenantUtil.checkIllegal(dto.getIdSet(), tenantIdSet -> lambdaQuery().in(BaseEntity::getId, dto.getIdSet())
+            .in(BaseEntityNoId::getTenantId, tenantIdSet).count());
 
         if (dto.getNumber() == 0) {
             return BaseBizCodeEnum.OK;

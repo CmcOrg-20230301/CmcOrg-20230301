@@ -14,7 +14,9 @@ export interface SysSocketRefUserPageDTO {
     current?: string // 第几页，format：int64
     onlineType?: string // socket 在线状态
     port?: number // 端口，format：int32
+    tenantId?: string // 租户 id，format：int64
     host?: string // 主机
+    tenantIdSet?: string[] // 租户 idSet，format：int64
     id?: string // 主键 id，format：int64
     region?: string // Ip2RegionUtil.getRegion() 获取到的 ip所处区域
     order?: MyOrderDTO // 排序字段
