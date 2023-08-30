@@ -116,7 +116,7 @@ interface IDictResult {
 }
 
 // 通用的，获取字典集合
-export function GetDictList<T extends IDictResult>(requestFunction: (value: MyPageDTO | any, config?: AxiosRequestConfig) => Promise<RequestData<T>>) {
+export function GetDictList<T extends IDictResult>(requestFunction: (form: MyPageDTO | any, config?: AxiosRequestConfig) => Promise<RequestData<T>>) {
 
     return DoGetDictList(requestFunction({pageSize: '-1'}))
 
@@ -174,43 +174,65 @@ interface IDictTreeResult {
 }
 
 // 通用的，获取字典树集合
-export function GetDictTreeList<T extends IDictTreeResult>(requestFunction: (value: MyPageDTO, config?: AxiosRequestConfig) => Promise<RequestData<T>>, toTreeFlag: boolean = true, pid: string | number = '0') {
+export function GetDictTreeList<T extends IDictTreeResult>(requestFunction: (form: MyPageDTO, config?: AxiosRequestConfig) => Promise<RequestData<T>>, toTreeFlag: boolean = true, pid: string | number = '0') {
 
     return new Promise<IMyTree[]>(resolve => {
 
         requestFunction({pageSize: '-1'}).then(res => {
 
-            let dictList: IMyTree[] = []
-
-            if (res.data) {
-
-                dictList = res.data.map(item => ({
-
-                    id: item.id!,
-                    key: item.id!,
-                    value: item.id!,
-                    label: item.name!,
-                    title: item.name!,
-                    parentId: item.parentId!,
-                    orderNo: item.orderNo!,
-
-                }));
-
-            }
-
-            if (toTreeFlag) {
-
-                resolve(ListToTree(dictList, pid))
-
-            } else {
-
-                resolve(dictList)
-
-            }
+            HandleGetDictTreeList(res, toTreeFlag, resolve, pid);
 
         })
 
     })
+
+}
+
+// 通用的，获取字典树集合
+export function NoFormGetDictTreeList<T extends IDictTreeResult>(requestFunction: (config?: AxiosRequestConfig) => Promise<RequestData<T>>, toTreeFlag: boolean = true, pid: string | number = '0') {
+
+    return new Promise<IMyTree[]>(resolve => {
+
+        requestFunction().then(res => {
+
+            HandleGetDictTreeList(res, toTreeFlag, resolve, pid);
+
+        })
+
+    })
+
+}
+
+// 处理：返回值
+function HandleGetDictTreeList<T extends IDictTreeResult>(res: { data: T[] | undefined; success?: boolean; total?: number } & Record<string, any>, toTreeFlag: boolean, resolve: (value: (PromiseLike<IMyTree[]> | IMyTree[])) => void, pid: string | number) {
+
+    let dictList: IMyTree[] = []
+
+    if (res.data) {
+
+        dictList = res.data.map(item => ({
+
+            id: item.id!,
+            key: item.id!,
+            value: item.id!,
+            label: item.name!,
+            title: item.name!,
+            parentId: item.parentId!,
+            orderNo: item.orderNo!,
+
+        }));
+
+    }
+
+    if (toTreeFlag) {
+
+        resolve(ListToTree(dictList, pid))
+
+    } else {
+
+        resolve(dictList)
+
+    }
 
 }
 
@@ -228,7 +250,6 @@ export function GetDictListByKey(dictKey: string) {
                 dictList = res.data.map(item => ({
 
                     label: item.name!,
-
                     value: item.id!,
 
                 }));

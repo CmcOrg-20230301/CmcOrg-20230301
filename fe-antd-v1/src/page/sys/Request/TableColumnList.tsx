@@ -1,4 +1,4 @@
-import {DoGetDictList, GetDictList, GetDictListByKey, GetDictTreeList, YesNoDict} from "@/util/DictUtil";
+import {DoGetDictList, GetDictList, GetDictListByKey, NoFormGetDictTreeList, YesNoDict} from "@/util/DictUtil";
 import {SysRequestDO, SysRequestPageDTO} from "@/api/http/SysRequest";
 import {HandlerRegion} from "@/util/StrUtil";
 import {SysUserDictList} from "@/api/http/SysUser";
@@ -33,7 +33,7 @@ const TableColumnList = (): ProColumns<SysRequestDO>[] => [
             showCheckedStrategy: TreeSelect.SHOW_CHILD,
         },
         request: () => {
-            return GetDictTreeList(SysTenantDictList, true, '-1')
+            return NoFormGetDictTreeList(SysTenantDictList, true, '-1')
         }
     },
 

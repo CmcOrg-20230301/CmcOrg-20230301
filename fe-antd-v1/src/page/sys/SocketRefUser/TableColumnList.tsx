@@ -1,4 +1,4 @@
-import {DoGetDictList, GetDictList, GetDictListByKey, GetDictTreeList} from "@/util/DictUtil";
+import {DoGetDictList, GetDictList, GetDictListByKey, NoFormGetDictTreeList} from "@/util/DictUtil";
 import {ActionType, ProColumns} from "@ant-design/pro-components";
 import {SysSocketRefUserDO, SysSocketRefUserOfflineByIdSet} from "@/api/http/SysSocketRefUser";
 import {HandlerRegion} from "@/util/StrUtil";
@@ -36,7 +36,7 @@ const TableColumnList = (actionRef: React.RefObject<ActionType | undefined>): Pr
             showCheckedStrategy: TreeSelect.SHOW_CHILD,
         },
         request: () => {
-            return GetDictTreeList(SysTenantDictList, true, '-1')
+            return NoFormGetDictTreeList(SysTenantDictList, true, '-1')
         }
     },
 

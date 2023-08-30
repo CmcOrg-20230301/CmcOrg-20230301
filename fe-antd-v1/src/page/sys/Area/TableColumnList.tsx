@@ -1,4 +1,4 @@
-import {GetDictList, GetDictTreeList, YesNoDict} from "@/util/DictUtil";
+import {GetDictList, NoFormGetDictTreeList, YesNoDict} from "@/util/DictUtil";
 import {ActionType, ProColumns} from "@ant-design/pro-components";
 import {SysAreaDeleteByIdSet, SysAreaDO, SysAreaInsertOrUpdateDTO} from "@/api/http/SysArea";
 import {ExecConfirm, ToastSuccess} from "@/util/ToastUtil";
@@ -35,7 +35,7 @@ const TableColumnList = (currentForm: React.MutableRefObject<SysAreaInsertOrUpda
             showCheckedStrategy: TreeSelect.SHOW_CHILD,
         },
         request: () => {
-            return GetDictTreeList(SysTenantDictList, true, '-1')
+            return NoFormGetDictTreeList(SysTenantDictList, true, '-1')
         }
     },
 

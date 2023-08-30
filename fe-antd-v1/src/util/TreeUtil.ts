@@ -76,27 +76,18 @@ export function GetIdListForHasChildrenNode(data: any[]) {
 
 }
 
-interface IListToTree {
-
-    id: string | number,
-    parentId: string | number,
-
-    [x: string]: any
-
-}
-
 // childrenFlag：true：children始终为 [] false：children为空时，children = ''
-export function ListToTree<T extends IListToTree>(
-    list: T[],
+export function ListToTree(
+    list: any[],
     pid: string | number = '0',
     childrenFlag: boolean = true,
     childrenName: string = 'children'
 ) {
 
-    const resultList: T[] = [] // 本方法返回值
-    const listMap = new Map<string | number, T>(); // 把 list的所有元素转换为：id -> 元素，格式
+    const resultList: any[] = [] // 本方法返回值
+    const listMap = new Map<string | number, any>(); // 把 list的所有元素转换为：id -> 元素，格式
 
-    list.forEach((item: T) => {
+    list.forEach((item) => {
 
         let mapDTO = listMap.get(item.id);
 
@@ -109,16 +100,16 @@ export function ListToTree<T extends IListToTree>(
 
             mapDTO = item;
 
-            if (!mapDTO[childrenName]) { // 避免：mapDTO里面原来就有 children
+            if (!mapDTO![childrenName]) { // 避免：mapDTO里面原来就有 children
 
                 // 如果 item不存在 children
                 if (childrenFlag) {
 
-                    mapDTO[childrenName] = []
+                    mapDTO![childrenName] = []
 
                 } else {
 
-                    mapDTO[childrenName] = ''
+                    mapDTO![childrenName] = ''
 
                 }
 
@@ -148,7 +139,7 @@ export function ListToTree<T extends IListToTree>(
 
         } else {
 
-            listMap.set(mapDTO.parentId, {[childrenName]: [mapDTO]} as T)
+            listMap.set(mapDTO.parentId, {[childrenName]: [mapDTO]})
 
         }
 
@@ -162,7 +153,7 @@ export function ListToTree<T extends IListToTree>(
 }
 
 // 如果，顶层的节点不是 0，则需要找到顶层节点的 id
-function ListToTreeHandleResultList<T extends IListToTree>(resultList: T[], listMap: Map<string | number, T>) {
+function ListToTreeHandleResultList(resultList: any[], listMap: Map<string | number, any>) {
 
     if (listMap.size === 0 || resultList.length !== 0) {
         return;
@@ -177,7 +168,7 @@ function ListToTreeHandleResultList<T extends IListToTree>(resultList: T[], list
 
         if (set) {
 
-            set.add(value.id)
+            set.add(value.id!)
 
         } else {
 
@@ -197,7 +188,7 @@ function ListToTreeHandleResultList<T extends IListToTree>(resultList: T[], list
 
             value.forEach(subValue => {
 
-                resultList.push(listMap.get(subValue)!); // 添加：顶层节点
+                resultList.push(listMap.get(subValue)); // 添加：顶层节点
 
             })
 

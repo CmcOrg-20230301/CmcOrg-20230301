@@ -1,4 +1,4 @@
-import {GetDictList, GetDictTreeList, YesNoDict} from "@/util/DictUtil";
+import {GetDictList, NoFormGetDictTreeList, YesNoDict} from "@/util/DictUtil";
 import {ActionType, ModalForm, ProColumns, ProFormText} from "@ant-design/pro-components";
 import {
     SysUserDeleteByIdSet,
@@ -45,7 +45,7 @@ const TableColumnList = (currentForm: React.MutableRefObject<SysUserInsertOrUpda
             showCheckedStrategy: TreeSelect.SHOW_CHILD,
         },
         request: () => {
-            return GetDictTreeList(SysTenantDictList, true, '-1')
+            return NoFormGetDictTreeList(SysTenantDictList, true, '-1')
         }
     },
 
