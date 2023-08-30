@@ -341,7 +341,8 @@ public class UserUtil {
         if (RedisKeyEnum.ROLE_ID_REF_MENU_SET_ONE_CACHE.equals(redisKeyEnum)) {
 
             allSysMenuDOList = getSysMenuCacheMap().values().stream()
-                .sorted(Comparator.comparing(BaseEntityTree::getOrderNo, Comparator.reverseOrder())).collect(Collectors.toList());
+                .sorted(Comparator.comparing(BaseEntityTree::getOrderNo, Comparator.reverseOrder()))
+                .collect(Collectors.toList());
 
         } else {
 
@@ -517,21 +518,25 @@ public class UserUtil {
      */
     private static void getDefaultRoleId(Set<Long> roleIdSet) {
 
-        Long defaultRoleId = MyCacheUtil.get(RedisKeyEnum.DEFAULT_ROLE_ID_CACHE, BaseConstant.SYS_ID, () -> {
+        Long currentTenantIdDefault = UserUtil.getCurrentTenantIdDefault();
 
-            SysRoleDO sysRoleDO = ChainWrappers.lambdaQueryChain(sysRoleMapper).eq(SysRoleDO::getDefaultFlag, true)
-                .eq(BaseEntity::getEnableFlag, true).select(BaseEntity::getId).one();
+        Map<Long, Long> map =
+            MyCacheUtil.getMap(RedisKeyEnum.TENANT_DEFAULT_ROLE_ID_CACHE, CacheHelper.getDefaultLongMap(), () -> {
 
-            if (sysRoleDO != null) {
-                return sysRoleDO.getId();
-            }
+                List<SysRoleDO> sysRoleDOList =
+                    ChainWrappers.lambdaQueryChain(sysRoleMapper).select(BaseEntity::getId, BaseEntityNoId::getTenantId)
+                        .eq(BaseEntity::getEnableFlag, true).list();
 
-            return null;
+                return sysRoleDOList.stream().collect(Collectors.toMap(BaseEntityNoId::getTenantId, BaseEntity::getId));
 
-        });
+            });
 
-        if (BooleanUtil.isFalse(BaseConstant.SYS_ID.equals(defaultRoleId))) {
+        Long defaultRoleId = map.get(currentTenantIdDefault);
+
+        if (defaultRoleId != null) {
+
             roleIdSet.add(defaultRoleId);
+
         }
 
     }

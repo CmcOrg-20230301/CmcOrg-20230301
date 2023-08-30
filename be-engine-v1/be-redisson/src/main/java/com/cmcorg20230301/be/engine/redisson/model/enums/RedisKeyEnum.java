@@ -47,7 +47,7 @@ public enum RedisKeyEnum implements IRedisKey {
     USER_ID_AND_JWT_SECRET_SUF_CACHE, // 用户 id和 jwt私钥后缀
 
     USER_ID_REF_ROLE_ID_SET_CACHE, // 用户 id关联的 roleIdSet
-    DEFAULT_ROLE_ID_CACHE, // 默认角色 id
+    TENANT_DEFAULT_ROLE_ID_CACHE, // 每个租户的，默认角色 id，map
     ROLE_ID_REF_MENU_ID_SET_CACHE, // 角色 id关联的 menuIdSet
     ROLE_ID_SET_CACHE, // 角色 idSet
 
