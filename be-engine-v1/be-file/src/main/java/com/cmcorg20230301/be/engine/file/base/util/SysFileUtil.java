@@ -345,6 +345,13 @@ public class SysFileUtil {
     @NotNull
     public static Map<Long, String> getPublicUrl(Set<Long> fileIdSet) {
 
+        // 先移除：所有 -1的文件 id
+        fileIdSet.removeAll(CollUtil.newHashSet(-1L));
+
+        if (CollUtil.isEmpty(fileIdSet)) {
+            return MapUtil.newHashMap();
+        }
+
         // 检查：是否非法操作
         TenantUtil.checkIllegal(fileIdSet, tenantIdSet -> sysFileService.lambdaQuery().in(BaseEntity::getId, fileIdSet)
             .in(BaseEntityNoId::getTenantId, tenantIdSet).count());
