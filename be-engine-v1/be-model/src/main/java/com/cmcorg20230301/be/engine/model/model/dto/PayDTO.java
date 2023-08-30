@@ -9,6 +9,9 @@ import java.util.Date;
 @Data
 public class PayDTO {
 
+    @Schema(description = "租户 id，必填")
+    private Long tenantId;
+
     @Schema(description = "用户主键 id，必填")
     private Long userId;
 

@@ -91,7 +91,7 @@ public class PayUtil {
     /**
      * 支付
      *
-     * @param consumer 注意：SysPayDO对象，只建议设置：refType 和 refId这两个属性，其他属性不建议重新设置
+     * @param consumer 注意：SysPayDO对象，只建议修改：refType 和 refId这两个属性，其他属性不建议修改
      */
     public static SysPayDO pay(PayDTO dto, @Nullable Consumer<SysPayDO> consumer) {
 
@@ -114,6 +114,8 @@ public class PayUtil {
         sysPayDO.setId(payId);
 
         sysPayDO.setPayType(iSysPay.getSysPayType());
+
+        sysPayDO.setTenantId(dto.getTenantId());
 
         sysPayDO.setUserId(dto.getUserId());
 
