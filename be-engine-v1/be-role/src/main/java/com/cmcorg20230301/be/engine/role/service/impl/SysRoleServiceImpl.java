@@ -25,6 +25,7 @@ import com.cmcorg20230301.be.engine.security.model.entity.*;
 import com.cmcorg20230301.be.engine.security.model.vo.ApiResultVO;
 import com.cmcorg20230301.be.engine.security.util.MyEntityUtil;
 import com.cmcorg20230301.be.engine.security.util.TenantUtil;
+import com.cmcorg20230301.be.engine.security.util.UserUtil;
 import com.cmcorg20230301.be.engine.util.util.MyMapUtil;
 import org.springframework.stereotype.Service;
 
@@ -39,10 +40,13 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRoleDO> im
 
     @Resource
     SysRoleRefMenuService sysRoleRefMenuService;
+
     @Resource
     SysRoleRefUserService sysRoleRefUserService;
+
     @Resource
     SysMenuMapper sysMenuMapper;
+
     @Resource
     SysUserMapper sysUserMapper;
 
@@ -53,13 +57,21 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRoleDO> im
     @MyTransactional
     public String insertOrUpdate(SysRoleInsertOrUpdateDTO dto) {
 
+        Long tenantId = dto.getTenantId();
+
         // 检查：租户 id是否合法
-        TenantUtil.getTenantId(dto.getTenantId());
+        TenantUtil.getTenantId(tenantId);
+
+        if (tenantId == null) {
+
+            tenantId = UserUtil.getCurrentTenantIdDefault();
+
+        }
 
         // 角色名，不能重复
         boolean exists =
             lambdaQuery().eq(SysRoleDO::getName, dto.getName()).ne(dto.getId() != null, BaseEntity::getId, dto.getId())
-                .exists();
+                .eq(BaseEntityNoId::getTenantId, tenantId).exists();
 
         if (exists) {
             ApiResultVO.error(BizCodeEnum.THE_SAME_ROLE_NAME_EXIST);

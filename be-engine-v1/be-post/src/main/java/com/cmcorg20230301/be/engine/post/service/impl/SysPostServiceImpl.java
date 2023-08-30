@@ -26,6 +26,7 @@ import com.cmcorg20230301.be.engine.security.model.vo.ApiResultVO;
 import com.cmcorg20230301.be.engine.security.util.MyEntityUtil;
 import com.cmcorg20230301.be.engine.security.util.MyTreeUtil;
 import com.cmcorg20230301.be.engine.security.util.TenantUtil;
+import com.cmcorg20230301.be.engine.security.util.UserUtil;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -47,8 +48,16 @@ public class SysPostServiceImpl extends ServiceImpl<SysPostMapper, SysPostDO> im
     @MyTransactional
     public String insertOrUpdate(SysPostInsertOrUpdateDTO dto) {
 
+        Long tenantId = dto.getTenantId();
+
         // 检查：租户 id是否合法
-        TenantUtil.getTenantId(dto.getTenantId());
+        TenantUtil.getTenantId(tenantId);
+
+        if (tenantId == null) {
+
+            tenantId = UserUtil.getCurrentTenantIdDefault();
+
+        }
 
         if (dto.getId() != null && dto.getId().equals(dto.getParentId())) {
             ApiResultVO.error(BaseBizCodeEnum.PARENT_ID_CANNOT_BE_EQUAL_TO_ID);
@@ -57,7 +66,7 @@ public class SysPostServiceImpl extends ServiceImpl<SysPostMapper, SysPostDO> im
         // 相同父节点下：岗位名（不能重复）
         boolean exists = lambdaQuery().eq(SysPostDO::getName, dto.getName())
             .eq(BaseEntityTree::getParentId, MyEntityUtil.getNotNullParentId(dto.getParentId()))
-            .ne(dto.getId() != null, BaseEntity::getId, dto.getId()).exists();
+            .ne(dto.getId() != null, BaseEntity::getId, dto.getId()).eq(BaseEntityNoId::getTenantId, tenantId).exists();
 
         if (exists) {
             ApiResultVO.errorMsg("操作失败：相同父节点下，岗位名不能重复");

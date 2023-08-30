@@ -8,6 +8,7 @@ export interface SysTenantInsertOrUpdateDTO {
     userIdSet?: string[] // 用户 idSet，format：int64
     tenantId?: string // 租户id，可以为空，为空则表示：默认租户：0，format：int64
     name?: string // 租户名，required：true
+    menuIdSet?: string[] // 菜单 idSet，format：int64
     remark?: string // 备注
     id?: string // 主键 id，format：int64
     enableFlag?: boolean // 是否启用
@@ -85,6 +86,7 @@ export interface NotNullId {
 export interface SysTenantInfoByIdVO {
     orderNo?: number // 排序号（值越大越前面，默认为 0），format：int32
     userIdSet?: string[] // 用户 idSet，format：int64
+    menuIdSet?: string[] // 菜单 idSet，format：int64
     updateTime?: string // 修改时间，format：date-time
     remark?: string // 备注
     delFlag?: boolean // 是否逻辑删除

@@ -31,4 +31,7 @@ public class SysTenantInsertOrUpdateDTO extends BaseTenantInsertOrUpdateDTO {
     @Schema(description = "用户 idSet")
     private Set<Long> userIdSet;
 
+    @Schema(description = "菜单 idSet")
+    private Set<Long> menuIdSet;
+
 }

@@ -48,8 +48,16 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenuDO> im
     @MyTransactional
     public String insertOrUpdate(SysMenuInsertOrUpdateDTO dto) {
 
+        Long tenantId = dto.getTenantId();
+
         // 检查：租户 id是否合法
-        TenantUtil.getTenantId(dto.getTenantId());
+        TenantUtil.getTenantId(tenantId);
+
+        if (tenantId == null) {
+
+            tenantId = UserUtil.getCurrentTenantIdDefault();
+
+        }
 
         if (dto.getId() != null && dto.getId().equals(dto.getParentId())) {
             ApiResultVO.error(BaseBizCodeEnum.PARENT_ID_CANNOT_BE_EQUAL_TO_ID);
@@ -62,8 +70,9 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenuDO> im
         // path不能重复
         if (StrUtil.isNotBlank(dto.getPath())) {
 
-            boolean exists = lambdaQuery().eq(SysMenuDO::getPath, dto.getPath())
-                .ne(dto.getId() != null, BaseEntity::getId, dto.getId()).exists();
+            boolean exists =
+                lambdaQuery().eq(SysMenuDO::getPath, dto.getPath()).eq(BaseEntityNoId::getTenantId, tenantId)
+                    .ne(dto.getId() != null, BaseEntity::getId, dto.getId()).exists();
 
             if (exists) {
                 ApiResultVO.error(BizCodeEnum.MENU_URI_IS_EXIST);
@@ -75,7 +84,8 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenuDO> im
         if (BooleanUtil.isTrue(dto.getFirstFlag())) {
 
             lambdaUpdate().set(SysMenuDO::getFirstFlag, false).eq(SysMenuDO::getFirstFlag, true)
-                .ne(dto.getId() != null, BaseEntity::getId, dto.getId()).update();
+                .eq(BaseEntityNoId::getTenantId, tenantId).ne(dto.getId() != null, BaseEntity::getId, dto.getId())
+                .update();
 
         }
 
@@ -84,6 +94,7 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenuDO> im
         }
 
         SysMenuDO sysMenuDO = getEntityByDTO(dto);
+
         saveOrUpdate(sysMenuDO);
 
         insertOrUpdateSub(sysMenuDO, dto); // 新增 子表数据
@@ -114,6 +125,7 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenuDO> im
 
                 sysRoleRefMenuDO.setRoleId(item);
                 sysRoleRefMenuDO.setMenuId(sysMenuDO.getId());
+
                 insertList.add(sysRoleRefMenuDO);
 
             }

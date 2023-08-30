@@ -6,6 +6,7 @@ import cn.hutool.core.util.BooleanUtil;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.cmcorg20230301.be.engine.menu.service.SysMenuService;
 import com.cmcorg20230301.be.engine.model.model.constant.BaseConstant;
 import com.cmcorg20230301.be.engine.model.model.dto.ChangeNumberDTO;
 import com.cmcorg20230301.be.engine.model.model.dto.NotEmptyIdSet;
@@ -41,6 +42,9 @@ public class SysTenantServiceImpl extends ServiceImpl<SysTenantMapper, SysTenant
     @Resource
     SysTenantRefUserService sysTenantRefUserService;
 
+    @Resource
+    SysMenuService sysMenuService;
+
     /**
      * 新增/修改
      */
@@ -48,8 +52,19 @@ public class SysTenantServiceImpl extends ServiceImpl<SysTenantMapper, SysTenant
     @MyTransactional
     public String insertOrUpdate(SysTenantInsertOrUpdateDTO dto) {
 
+        Long tenantId = dto.getTenantId();
+
         // 检查：租户 id是否合法
-        TenantUtil.getTenantId(dto.getTenantId());
+        TenantUtil.getTenantId(tenantId);
+
+        if (tenantId == null) {
+
+            tenantId = UserUtil.getCurrentTenantIdDefault();
+
+        }
+
+        // 检查：menuIdSet
+        insertOrUpdateCheckMenuIdSet(dto);
 
         Long parentId = MyEntityUtil.getNotNullParentId(dto.getParentId());
 
@@ -59,7 +74,7 @@ public class SysTenantServiceImpl extends ServiceImpl<SysTenantMapper, SysTenant
 
         }
 
-        // 上级租户 id，和本级租户 id，保持一致
+        // 租户 id，和上级租户 id，保持一致
         dto.setTenantId(parentId);
 
         if (dto.getId() != null && dto.getId().equals(dto.getParentId())) {
@@ -68,7 +83,7 @@ public class SysTenantServiceImpl extends ServiceImpl<SysTenantMapper, SysTenant
 
         // 相同父节点下：租户名（不能重复）
         boolean exists = lambdaQuery().eq(SysTenantDO::getName, dto.getName()).eq(BaseEntityTree::getParentId, parentId)
-            .ne(dto.getId() != null, BaseEntity::getId, dto.getId()).exists();
+            .ne(dto.getId() != null, BaseEntity::getId, dto.getId()).eq(BaseEntityNoId::getTenantId, tenantId).exists();
 
         if (exists) {
             ApiResultVO.errorMsg("操作失败：相同父节点下，租户名不能重复");
@@ -93,6 +108,38 @@ public class SysTenantServiceImpl extends ServiceImpl<SysTenantMapper, SysTenant
         insertOrUpdateSub(dto, sysTenantDO); // 新增：子表数据
 
         return BaseBizCodeEnum.OK;
+
+    }
+
+    /**
+     * 检查：menuIdSet
+     */
+    private void insertOrUpdateCheckMenuIdSet(SysTenantInsertOrUpdateDTO dto) {
+
+        if (CollUtil.isEmpty(dto.getMenuIdSet())) {
+
+            return;
+
+        }
+
+        Long currentUserId = UserUtil.getCurrentUserId();
+
+        Set<SysMenuDO> sysMenuDoSet = UserUtil.getMenuSetByUserId(currentUserId, 2);
+
+        if (CollUtil.isEmpty(sysMenuDoSet)) {
+
+            ApiResultVO.error(BaseBizCodeEnum.ILLEGAL_REQUEST);
+
+        }
+
+        // 用户：拥有的菜单 idSet
+        Set<Long> menuIdSet = sysMenuDoSet.stream().map(BaseEntity::getId).collect(Collectors.toSet());
+
+        if (!CollUtil.containsAll(menuIdSet, dto.getMenuIdSet())) {
+
+            ApiResultVO.error(BaseBizCodeEnum.ILLEGAL_REQUEST);
+
+        }
 
     }
 
@@ -123,6 +170,36 @@ public class SysTenantServiceImpl extends ServiceImpl<SysTenantMapper, SysTenant
             }
 
             sysTenantRefUserService.saveBatch(insertList);
+
+        }
+
+        // 再新增子表数据
+        if (CollUtil.isNotEmpty(dto.getMenuIdSet())) {
+
+            Map<Long, SysMenuDO> sysMenuCacheMap = UserUtil.getSysMenuCacheMap();
+
+            Set<SysMenuDO> fullSysMenuDoSet =
+                UserUtil.getFullSysMenuDoSet(dto.getMenuIdSet(), sysMenuCacheMap.values());
+
+            if (CollUtil.isNotEmpty(fullSysMenuDoSet)) {
+
+                List<SysMenuDO> insertList = new ArrayList<>();
+
+                Long tenantId = dto.getTenantId();
+
+                for (SysMenuDO item : fullSysMenuDoSet) {
+
+                    SysMenuDO newSysMenuDO = BeanUtil.copyProperties(item, SysMenuDO.class);
+
+                    newSysMenuDO.setTenantId(tenantId); // 设置：新的租户 id
+
+                    insertList.add(newSysMenuDO);
+
+                }
+
+                sysMenuService.saveBatch(insertList);
+
+            }
 
         }
 
@@ -233,6 +310,8 @@ public class SysTenantServiceImpl extends ServiceImpl<SysTenantMapper, SysTenant
 
         sysTenantRefUserService.removeByIds(idSet);
 
+        sysMenuService.lambdaUpdate().in(BaseEntityNoId::getTenantId, idSet).remove();
+
     }
 
     /**
@@ -262,7 +341,16 @@ public class SysTenantServiceImpl extends ServiceImpl<SysTenantMapper, SysTenant
         Set<Long> userIdSet =
             sysTenantRefUserDOList.stream().map(SysTenantRefUserDO::getUserId).collect(Collectors.toSet());
 
+        // 获取：绑定的菜单 idSet
+        List<SysMenuDO> sysMenuDOList =
+            sysMenuService.lambdaQuery().eq(BaseEntityNoId::getTenantId, notNullId.getId()).select(BaseEntity::getId)
+                .list();
+
+        Set<Long> menuIdSet = sysMenuDOList.stream().map(BaseEntity::getId).collect(Collectors.toSet());
+
         sysTenantInfoByIdVO.setUserIdSet(userIdSet);
+
+        sysTenantInfoByIdVO.setMenuIdSet(menuIdSet);
 
         MyEntityUtil.handleParentId(sysTenantInfoByIdVO);
 

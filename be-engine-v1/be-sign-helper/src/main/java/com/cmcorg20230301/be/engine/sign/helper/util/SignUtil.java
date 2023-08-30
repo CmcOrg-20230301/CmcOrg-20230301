@@ -894,6 +894,9 @@ public class SignUtil {
 
     }
 
+    /**
+     * 抛出：该账号已被注册，异常
+     */
     public static void accountIsExistError() {
 
         ApiResultVO.error(BizCodeEnum.THE_ACCOUNT_HAS_ALREADY_BEEN_REGISTERED);

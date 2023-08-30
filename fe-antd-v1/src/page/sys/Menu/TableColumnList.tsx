@@ -9,6 +9,7 @@ import {Dropdown, TreeSelect} from "antd";
 import {EllipsisOutlined} from "@ant-design/icons/lib";
 import {RouterMapKeyList} from "@/router/RouterMap";
 import {SysTenantDictList} from "@/api/http/SysTenant";
+import {SearchTransform} from "@/util/CommonUtil";
 
 const QuicklyAddAuth = "快速添加权限"
 
@@ -36,10 +37,15 @@ const TableColumnList = (currentForm: React.MutableRefObject<SysMenuInsertOrUpda
             treeNodeFilterProp: 'title',
             maxTagCount: 'responsive',
             treeCheckable: true,
-            showCheckedStrategy: TreeSelect.SHOW_CHILD,
+            showCheckedStrategy: TreeSelect.SHOW_ALL,
+            treeCheckStrictly: true,
         },
         request: () => {
             return NoFormGetDictTreeList(SysTenantDictList, true, '-1')
+        },
+        search: {
+            transform: (valueArr: { label: string, value: string }[]) =>
+                SearchTransform(valueArr, 'tenantIdSet')
         }
     },
 

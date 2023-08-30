@@ -17,23 +17,25 @@ public class MyTreeUtil {
      * 根据底级节点 list，逆向生成整棵树
      * 备注：有子节点时，children才是集合
      */
-    public static <T extends BaseEntityTree<T>> List<T> getFullTreeByDeepNode(List<T> deepNodeList, List<T> allList) {
+    public static <T extends BaseEntityTree<T>> List<T> getFullTreeByDeepNode(List<T> deepNodeList,
+        List<T> allCollection) {
 
-        return listToTree(getFullTreeList(deepNodeList, allList), false);
+        return listToTree(getFullTreeList(deepNodeList, allCollection), false);
 
     }
 
     /**
      * 根据底级节点 list，逆向生成整棵树 list
      *
-     * @param allList      所有的list
-     * @param deepNodeList 底级节点list
+     * @param allCollection 所有的集合
+     * @param deepNodeList  底级节点list
      */
-    public static <T extends BaseEntityTree<T>> List<T> getFullTreeList(List<T> deepNodeList, Collection<T> allList) {
+    public static <T extends BaseEntityTree<T>> List<T> getFullTreeList(List<T> deepNodeList,
+        Collection<T> allCollection) {
 
         List<T> resultList = new ArrayList<>(deepNodeList); // 先添加底级节点
 
-        doGetFullTree(deepNodeList, allList, resultList);
+        doGetFullTree(deepNodeList, allCollection, resultList);
 
         return resultList;
 
@@ -42,25 +44,25 @@ public class MyTreeUtil {
     /**
      * 根据底级节点 set，逆向生成整棵树 set
      *
-     * @param allSet      所有的set
-     * @param deepNodeSet 底级节点set
+     * @param allCollection 所有的节点
+     * @param deepNodeSet   底级节点set
      */
-    public static <T extends BaseEntityTree<T>> Set<T> getFullTreeSet(Set<T> deepNodeSet, Collection<T> allSet) {
+    public static <T extends BaseEntityTree<T>> Set<T> getFullTreeSet(Set<T> deepNodeSet, Collection<T> allCollection) {
 
         Set<T> resultSet = new HashSet<>(deepNodeSet); // 先添加底级节点
 
-        doGetFullTree(deepNodeSet, allSet, resultSet);
+        doGetFullTree(deepNodeSet, allCollection, resultSet);
 
         return resultSet;
 
     }
 
-    private static <T extends BaseEntityTree<T>> void doGetFullTree(Collection<T> deepNodeSet, Collection<T> allSet,
-        Collection<T> resultSet) {
+    private static <T extends BaseEntityTree<T>> void doGetFullTree(Collection<T> deepNodeSet,
+        Collection<T> allCollection, Collection<T> resultSet) {
 
         Set<Long> parentIdSet = deepNodeSet.stream().map(BaseEntityTree::getParentId).collect(Collectors.toSet());
 
-        Map<Long, T> allMap = allSet.stream().collect(Collectors.toMap(BaseEntityTree::getId, it -> it));
+        Map<Long, T> allMap = allCollection.stream().collect(Collectors.toMap(BaseEntityTree::getId, it -> it));
 
         // 已经添加了 idSet
         Set<Long> resultIdSet = resultSet.stream().map(BaseEntity::getId).collect(Collectors.toSet());

@@ -26,3 +26,18 @@ export function GetTenantId(): string {
     return GetURLSearchParams().get("tenantId") || '0'
 
 }
+
+/**
+ * 搜索时转换
+ */
+export function SearchTransform(valueArr: { label: string, value: string }[], key: string) {
+
+    if (valueArr && valueArr.length) {
+
+        return {[key]: valueArr.map(it => it.value)}
+
+    }
+
+    return valueArr
+
+}

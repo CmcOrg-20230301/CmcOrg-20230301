@@ -38,7 +38,7 @@ public class TenantUtil {
     }
 
     /**
-     * 获取：租户 id
+     * 获取：租户 id，也可以检查：租户 id是否合法
      */
     @NotNull
     public static Long getTenantId(@Nullable Long tenantId) {

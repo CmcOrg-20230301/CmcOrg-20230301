@@ -185,8 +185,16 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserProMapper, SysUserDO>
     @MyTransactional
     public String insertOrUpdate(SysUserInsertOrUpdateDTO dto) {
 
+        Long tenantId = dto.getTenantId();
+
         // 检查：租户 id是否合法
-        TenantUtil.getTenantId(dto.getTenantId());
+        TenantUtil.getTenantId(tenantId);
+
+        if (tenantId == null) {
+
+            tenantId = UserUtil.getCurrentTenantIdDefault();
+
+        }
 
         boolean emailBlank = StrUtil.isBlank(dto.getEmail());
         boolean signInNameBlank = StrUtil.isBlank(dto.getSignInName());
@@ -217,6 +225,8 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserProMapper, SysUserDO>
             redisKeyEnumSet.add(RedisKeyEnum.PRE_PHONE);
         }
 
+        Long finalTenantId = tenantId;
+
         return RedissonUtil.doMultiLock(null, redisKeyEnumSet, () -> {
 
             Map<Enum<? extends IRedisKey>, String> accountMap = MapUtil.newHashMap();
@@ -224,7 +234,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserProMapper, SysUserDO>
             // 检查：账号是否存在
             for (Enum<? extends IRedisKey> item : redisKeyEnumSet) {
 
-                if (accountIsExist(dto, item, accountMap, dto.getTenantId())) {
+                if (accountIsExist(dto, item, accountMap, finalTenantId)) {
 
                     SignUtil.accountIsExistError();
 
@@ -240,7 +250,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserProMapper, SysUserDO>
 
                 SysUserDO sysUserDO = SignUtil
                     .insertUser(dto.getPassword(), accountMap, false, sysUserInfoDO, dto.getEnableFlag(),
-                        dto.getTenantId());
+                        finalTenantId);
 
                 insertOrUpdateSub(sysUserDO, dto); // 新增数据到子表
 

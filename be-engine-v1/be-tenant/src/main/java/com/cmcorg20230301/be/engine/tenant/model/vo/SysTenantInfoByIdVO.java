@@ -14,4 +14,7 @@ public class SysTenantInfoByIdVO extends SysTenantDO {
     @Schema(description = "用户 idSet")
     private Set<Long> userIdSet;
 
+    @Schema(description = "菜单 idSet")
+    private Set<Long> menuIdSet;
+
 }

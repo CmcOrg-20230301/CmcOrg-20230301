@@ -7,6 +7,7 @@ import {EllipsisOutlined} from "@ant-design/icons";
 import {Dropdown, TreeSelect} from "antd";
 import React from "react";
 import {SysTenantDictList} from "@/api/http/SysTenant";
+import {SearchTransform} from "@/util/CommonUtil";
 
 const TableColumnList = (currentForm: React.MutableRefObject<SysPostInsertOrUpdateDTO>, setFormOpen: React.Dispatch<React.SetStateAction<boolean>>, actionRef: React.RefObject<ActionType | undefined>): ProColumns<SysPostDO>[] => [
 
@@ -32,10 +33,15 @@ const TableColumnList = (currentForm: React.MutableRefObject<SysPostInsertOrUpda
             treeNodeFilterProp: 'title',
             maxTagCount: 'responsive',
             treeCheckable: true,
-            showCheckedStrategy: TreeSelect.SHOW_CHILD,
+            showCheckedStrategy: TreeSelect.SHOW_ALL,
+            treeCheckStrictly: true,
         },
         request: () => {
             return NoFormGetDictTreeList(SysTenantDictList, true, '-1')
+        },
+        search: {
+            transform: (valueArr: { label: string, value: string }[]) =>
+                SearchTransform(valueArr, 'tenantIdSet')
         }
     },
 

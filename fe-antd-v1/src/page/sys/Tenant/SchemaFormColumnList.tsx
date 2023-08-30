@@ -2,6 +2,8 @@ import {GetDictList, GetDictTreeList, YesNoDict} from "@/util/DictUtil";
 import {SysTenantInsertOrUpdateDTO, SysTenantPage} from "@/api/http/SysTenant";
 import {ProFormColumnsType} from "@ant-design/pro-components";
 import {SysUserDictList} from "@/api/http/SysUser";
+import {TreeSelect} from "antd";
+import {SysMenuPage} from "@/api/http/SysMenu";
 
 export const InitForm: SysTenantInsertOrUpdateDTO = {} as SysTenantInsertOrUpdateDTO
 
@@ -48,6 +50,23 @@ const SchemaFormColumnList = (): ProFormColumnsType<SysTenantInsertOrUpdateDTO>[
             },
             request: () => {
                 return GetDictList(SysUserDictList)
+            }
+        },
+
+        {
+            title: '关联菜单',
+            dataIndex: 'menuIdSet',
+            valueType: 'treeSelect',
+            fieldProps: {
+                placeholder: '请选择',
+                allowClear: true,
+                treeNodeFilterProp: 'title',
+                maxTagCount: 'responsive',
+                treeCheckable: true,
+                showCheckedStrategy: TreeSelect.SHOW_PARENT,
+            },
+            request: () => {
+                return GetDictTreeList(SysMenuPage);
             }
         },
 

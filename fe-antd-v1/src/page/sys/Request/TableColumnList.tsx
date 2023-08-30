@@ -5,6 +5,7 @@ import {SysUserDictList} from "@/api/http/SysUser";
 import {TreeSelect, Typography} from "antd";
 import {ProColumns} from "@ant-design/pro-components";
 import {SysTenantDictList} from "@/api/http/SysTenant";
+import {SearchTransform} from "@/util/CommonUtil";
 
 const TableColumnList = (): ProColumns<SysRequestDO>[] => [
 
@@ -30,10 +31,15 @@ const TableColumnList = (): ProColumns<SysRequestDO>[] => [
             treeNodeFilterProp: 'title',
             maxTagCount: 'responsive',
             treeCheckable: true,
-            showCheckedStrategy: TreeSelect.SHOW_CHILD,
+            showCheckedStrategy: TreeSelect.SHOW_ALL,
+            treeCheckStrictly: true,
         },
         request: () => {
             return NoFormGetDictTreeList(SysTenantDictList, true, '-1')
+        },
+        search: {
+            transform: (valueArr: { label: string, value: string }[]) =>
+                SearchTransform(valueArr, 'tenantIdSet')
         }
     },
 

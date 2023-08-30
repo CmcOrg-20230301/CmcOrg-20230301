@@ -341,8 +341,7 @@ public class UserUtil {
         if (RedisKeyEnum.ROLE_ID_REF_MENU_SET_ONE_CACHE.equals(redisKeyEnum)) {
 
             allSysMenuDOList = getSysMenuCacheMap().values().stream()
-                .sorted(Comparator.comparing(BaseEntityTree::getOrderNo, Comparator.reverseOrder()))
-                .collect(Collectors.toList());
+                .sorted(Comparator.comparing(BaseEntityTree::getOrderNo, Comparator.reverseOrder())).collect(Collectors.toList());
 
         } else {
 
@@ -355,9 +354,21 @@ public class UserUtil {
             return null;
         }
 
+        // 通过：menuIdSet，获取：完整的 menuDoSet
+        return getFullSysMenuDoSet(menuIdSet, allSysMenuDOList);
+
+    }
+
+    /**
+     * 通过：menuIdSet，获取：完整的 menuDoSet
+     */
+    @Nullable
+    public static Set<SysMenuDO> getFullSysMenuDoSet(Set<Long> menuIdSet,
+        Collection<SysMenuDO> allSysMenuDoCollection) {
+
         // 开始进行匹配，组装返回值
         Set<SysMenuDO> resultSet =
-            allSysMenuDOList.stream().filter(it -> menuIdSet.contains(it.getId())).collect(Collectors.toSet());
+            allSysMenuDoCollection.stream().filter(it -> menuIdSet.contains(it.getId())).collect(Collectors.toSet());
 
         if (resultSet.size() == 0) {
             return null;
@@ -367,7 +378,7 @@ public class UserUtil {
         Set<Long> resultMenuIdSet = resultSet.stream().map(BaseEntity::getId).collect(Collectors.toSet());
 
         // 通过：parentId分组的 map
-        Map<Long, Set<SysMenuDO>> groupMenuParentIdMap = allSysMenuDOList.stream().collect(
+        Map<Long, Set<SysMenuDO>> groupMenuParentIdMap = allSysMenuDoCollection.stream().collect(
             Collectors.groupingBy(BaseEntityTree::getParentId, Collectors.mapping(it -> it, Collectors.toSet())));
 
         // 再添加 menuIdSet下的所有子级菜单
@@ -376,7 +387,7 @@ public class UserUtil {
         }
 
         // 根据底级节点 list，逆向生成整棵树 list
-        resultSet = MyTreeUtil.getFullTreeSet(resultSet, allSysMenuDOList);
+        resultSet = MyTreeUtil.getFullTreeSet(resultSet, allSysMenuDoCollection);
 
         // 勾选：上级菜单，自动包含全部子级菜单
         // 勾选：子级菜单，自动包含全部上级菜单

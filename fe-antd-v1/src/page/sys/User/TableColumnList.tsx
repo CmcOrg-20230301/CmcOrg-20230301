@@ -17,6 +17,7 @@ import {ValidatorUtil} from "@/util/ValidatorUtil";
 import {PasswordRSAEncrypt, RSAEncryptPro} from "@/util/RsaUtil";
 import {Dropdown, TreeSelect} from "antd";
 import {SysTenantDictList} from "@/api/http/SysTenant";
+import {SearchTransform} from "@/util/CommonUtil";
 
 const TableColumnList = (currentForm: React.MutableRefObject<SysUserInsertOrUpdateDTO>, setFormOpen: React.Dispatch<React.SetStateAction<boolean>>, actionRef: React.RefObject<ActionType | undefined>, userAvatarUrlObj: Record<string, string>): ProColumns<SysUserPageVO>[] => [
 
@@ -42,10 +43,15 @@ const TableColumnList = (currentForm: React.MutableRefObject<SysUserInsertOrUpda
             treeNodeFilterProp: 'title',
             maxTagCount: 'responsive',
             treeCheckable: true,
-            showCheckedStrategy: TreeSelect.SHOW_CHILD,
+            showCheckedStrategy: TreeSelect.SHOW_ALL,
+            treeCheckStrictly: true,
         },
         request: () => {
             return NoFormGetDictTreeList(SysTenantDictList, true, '-1')
+        },
+        search: {
+            transform: (valueArr: { label: string, value: string }[]) =>
+                SearchTransform(valueArr, 'tenantIdSet')
         }
     },
 
