@@ -152,7 +152,7 @@ public class SysPostServiceImpl extends ServiceImpl<SysPostMapper, SysPostDO> im
             return new ArrayList<>();
         }
 
-        List<SysPostDO> allList = list();
+        List<SysPostDO> allList = lambdaQuery().in(BaseEntityNoId::getTenantId, dto.getTenantIdSet()).list();
 
         if (allList.size() == 0) {
             return new ArrayList<>();

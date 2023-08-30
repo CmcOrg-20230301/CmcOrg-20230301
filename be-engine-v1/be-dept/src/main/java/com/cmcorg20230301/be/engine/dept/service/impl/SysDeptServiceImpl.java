@@ -180,7 +180,7 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptMapper, SysDeptDO> im
             return new ArrayList<>();
         }
 
-        List<SysDeptDO> allList = list();
+        List<SysDeptDO> allList = lambdaQuery().in(BaseEntityNoId::getTenantId, dto.getTenantIdSet()).list();
 
         if (allList.size() == 0) {
             return new ArrayList<>();

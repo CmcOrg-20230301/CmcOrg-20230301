@@ -21,10 +21,7 @@ import com.cmcorg20230301.be.engine.security.exception.BaseBizCodeEnum;
 import com.cmcorg20230301.be.engine.security.mapper.SysMenuMapper;
 import com.cmcorg20230301.be.engine.security.model.entity.*;
 import com.cmcorg20230301.be.engine.security.model.vo.ApiResultVO;
-import com.cmcorg20230301.be.engine.security.util.MyEntityUtil;
-import com.cmcorg20230301.be.engine.security.util.MyTreeUtil;
-import com.cmcorg20230301.be.engine.security.util.TenantUtil;
-import com.cmcorg20230301.be.engine.security.util.UserUtil;
+import com.cmcorg20230301.be.engine.security.util.*;
 import com.cmcorg20230301.be.engine.util.util.MyMapUtil;
 import org.springframework.stereotype.Service;
 
@@ -208,16 +205,6 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenuDO> im
     @Override
     public List<SysMenuDO> tree(SysMenuPageDTO dto) {
 
-        if (CollUtil.isEmpty(dto.getTenantIdSet())) {
-
-            dto.setTenantIdSet(CollUtil.newHashSet(UserUtil.getCurrentTenantIdDefault()));
-
-        } else if (dto.getTenantIdSet().size() > 0) { // 只能单选，不然会报错
-
-            dto.setTenantIdSet(CollUtil.newHashSet(CollUtil.getFirst(dto.getTenantIdSet())));
-
-        }
-
         // 根据条件进行筛选，得到符合条件的数据，然后再逆向生成整棵树，并返回这个树结构
         dto.setPageSize(-1); // 不分页
         List<SysMenuDO> sysMenuDOList = myPage(dto).getRecords();
@@ -226,7 +213,7 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenuDO> im
             return new ArrayList<>();
         }
 
-        List<SysMenuDO> allList = list();
+        List<SysMenuDO> allList = lambdaQuery().in(BaseEntityNoId::getTenantId, dto.getTenantIdSet()).list();
 
         if (allList.size() == 0) {
             return new ArrayList<>();
@@ -285,7 +272,7 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenuDO> im
         if (BaseConstant.ADMIN_ID.equals(userId)) {
 
             // 如果是 admin账号，则查询所有【不是被禁用了的】菜单
-            return UserUtil.getSysMenuCacheMap().values().stream()
+            return SysMenuUtil.getSysMenuCacheMap().values().stream()
                 .sorted(Comparator.comparing(BaseEntityTree::getOrderNo, Comparator.reverseOrder()))
                 .collect(Collectors.toList());
 

@@ -19,10 +19,7 @@ import com.cmcorg20230301.be.engine.security.mapper.SysTenantMapper;
 import com.cmcorg20230301.be.engine.security.model.configuration.ITenantDeleteConfiguration;
 import com.cmcorg20230301.be.engine.security.model.entity.*;
 import com.cmcorg20230301.be.engine.security.model.vo.ApiResultVO;
-import com.cmcorg20230301.be.engine.security.util.MyEntityUtil;
-import com.cmcorg20230301.be.engine.security.util.MyTreeUtil;
-import com.cmcorg20230301.be.engine.security.util.TenantUtil;
-import com.cmcorg20230301.be.engine.security.util.UserUtil;
+import com.cmcorg20230301.be.engine.security.util.*;
 import com.cmcorg20230301.be.engine.tenant.model.dto.SysTenantInsertOrUpdateDTO;
 import com.cmcorg20230301.be.engine.tenant.model.dto.SysTenantPageDTO;
 import com.cmcorg20230301.be.engine.tenant.model.vo.SysTenantInfoByIdVO;
@@ -169,11 +166,13 @@ public class SysTenantServiceImpl extends ServiceImpl<SysTenantMapper, SysTenant
 
             List<SysTenantRefUserDO> insertList = new ArrayList<>();
 
+            Long tenantId = sysTenantDO.getId();
+
             for (Long item : dto.getUserIdSet()) {
 
                 SysTenantRefUserDO sysTenantRefUserDO = new SysTenantRefUserDO();
 
-                sysTenantRefUserDO.setTenantId(sysTenantDO.getId());
+                sysTenantRefUserDO.setTenantId(tenantId);
                 sysTenantRefUserDO.setUserId(item);
 
                 insertList.add(sysTenantRefUserDO);
@@ -187,16 +186,16 @@ public class SysTenantServiceImpl extends ServiceImpl<SysTenantMapper, SysTenant
         // 再新增子表数据
         if (CollUtil.isNotEmpty(dto.getMenuIdSet())) {
 
-            Map<Long, SysMenuDO> sysMenuCacheMap = UserUtil.getSysMenuCacheMap();
+            Map<Long, SysMenuDO> sysMenuCacheMap = SysMenuUtil.getSysMenuCacheMap();
 
             Set<SysMenuDO> fullSysMenuDoSet =
-                UserUtil.getFullSysMenuDoSet(dto.getMenuIdSet(), sysMenuCacheMap.values());
+                SysMenuUtil.getFullSysMenuDoSet(dto.getMenuIdSet(), sysMenuCacheMap.values());
 
             if (CollUtil.isNotEmpty(fullSysMenuDoSet)) {
 
                 List<SysMenuDO> insertList = new ArrayList<>();
 
-                Long tenantId = dto.getTenantId();
+                Long tenantId = sysTenantDO.getId();
 
                 for (SysMenuDO item : fullSysMenuDoSet) {
 
@@ -207,6 +206,9 @@ public class SysTenantServiceImpl extends ServiceImpl<SysTenantMapper, SysTenant
                     insertList.add(newSysMenuDO);
 
                 }
+
+                // 重新设置：id 和 parentId
+                MyTreeUtil.treeListSetNewIdAndParentId(insertList);
 
                 sysMenuService.saveBatch(insertList);
 
@@ -276,7 +278,7 @@ public class SysTenantServiceImpl extends ServiceImpl<SysTenantMapper, SysTenant
             return new ArrayList<>();
         }
 
-        List<SysTenantDO> allList = list();
+        List<SysTenantDO> allList = lambdaQuery().in(BaseEntityNoId::getTenantId, dto.getTenantIdSet()).list();
 
         if (allList.size() == 0) {
             return new ArrayList<>();

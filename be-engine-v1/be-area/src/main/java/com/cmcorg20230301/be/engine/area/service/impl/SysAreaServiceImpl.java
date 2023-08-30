@@ -158,7 +158,7 @@ public class SysAreaServiceImpl extends ServiceImpl<SysAreaMapper, SysAreaDO> im
             return new ArrayList<>();
         }
 
-        List<SysAreaDO> allList = list();
+        List<SysAreaDO> allList = lambdaQuery().in(BaseEntityNoId::getTenantId, dto.getTenantIdSet()).list();
 
         if (allList.size() == 0) {
             return new ArrayList<>();
