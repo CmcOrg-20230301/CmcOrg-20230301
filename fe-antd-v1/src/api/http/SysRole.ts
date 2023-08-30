@@ -48,7 +48,6 @@ export function SysRoleInfoById(form: NotNullId, config?: AxiosRequestConfig) {
 export interface SysRolePageDTO {
     current?: string // 第几页，format：int64
     defaultFlag?: boolean // 是否是默认角色，备注：只会有一个默认角色
-    tenantId?: string // 租户 id，format：int64
     name?: string // 角色名（不能重复）
     pageSize?: string // 每页显示条数，format：int64
     tenantIdSet?: string[] // 租户 idSet，format：int64

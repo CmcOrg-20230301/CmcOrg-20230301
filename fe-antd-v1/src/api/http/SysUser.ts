@@ -71,7 +71,6 @@ export interface SysUserPageDTO {
     beginCreateTime?: string // 创建开始时间，format：date-time
     phone?: string // 手机号码
     signInName?: string // 登录名
-    tenantId?: string // 租户 id，format：int64
     nickname?: string // 昵称
     tenantIdSet?: string[] // 租户 idSet，format：int64
     id?: string // 主键 id，format：int64

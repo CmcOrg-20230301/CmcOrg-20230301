@@ -1,5 +1,6 @@
 package com.cmcorg20230301.be.engine.request.service.impl;
 
+import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -83,7 +84,7 @@ public class SysRequestServiceImpl extends ServiceImpl<SysRequestMapper, SysRequ
         sysRequestPageDTO.setPageSize(dto.getPageSize());
         sysRequestPageDTO.setOrder(dto.getOrder());
 
-        sysRequestPageDTO.setTenantId(currentTenantIdDefault);
+        sysRequestPageDTO.setTenantIdSet(CollUtil.newHashSet(currentTenantIdDefault));
 
         return myPage(sysRequestPageDTO);
 

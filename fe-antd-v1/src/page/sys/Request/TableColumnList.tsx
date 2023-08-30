@@ -1,8 +1,8 @@
-import {DoGetDictList, GetDictList, GetDictListByKey, YesNoDict} from "@/util/DictUtil";
+import {DoGetDictList, GetDictList, GetDictListByKey, GetDictTreeList, YesNoDict} from "@/util/DictUtil";
 import {SysRequestDO, SysRequestPageDTO} from "@/api/http/SysRequest";
 import {HandlerRegion} from "@/util/StrUtil";
 import {SysUserDictList} from "@/api/http/SysUser";
-import {Typography} from "antd";
+import {TreeSelect, Typography} from "antd";
 import {ProColumns} from "@ant-design/pro-components";
 import {SysTenantDictList} from "@/api/http/SysTenant";
 
@@ -93,9 +93,24 @@ const TableColumnList = (): ProColumns<SysRequestDO>[] => [
     },
 
     {
-        title: '租户', dataIndex: 'tenantId', ellipsis: true, width: 90, valueType: 'select',
+        title: '租户', dataIndex: 'tenantId', ellipsis: true, width: 90, hideInSearch: true, valueType: 'select',
         request: () => {
             return GetDictList(SysTenantDictList)
+        }
+    },
+
+    {
+        title: '租户', dataIndex: 'tenantIdSet', ellipsis: true, width: 90, hideInTable: true, valueType: 'treeSelect',
+        fieldProps: {
+            placeholder: '请选择',
+            allowClear: true,
+            treeNodeFilterProp: 'title',
+            maxTagCount: 'responsive',
+            treeCheckable: true,
+            showCheckedStrategy: TreeSelect.SHOW_CHILD,
+        },
+        request: () => {
+            return GetDictTreeList(SysTenantDictList, true, '-1')
         }
     },
 

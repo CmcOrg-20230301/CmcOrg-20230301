@@ -1,4 +1,4 @@
-import {GetDictTreeList, YesNoDict} from "@/util/DictUtil";
+import {GetDictList, GetDictTreeList, YesNoDict} from "@/util/DictUtil";
 import {ActionType, ModalForm, ProColumns, ProFormText} from "@ant-design/pro-components";
 import {
     SysUserDeleteByIdSet,
@@ -28,6 +28,28 @@ const TableColumnList = (currentForm: React.MutableRefObject<SysUserInsertOrUpda
     },
 
     {
+        title: '租户', dataIndex: 'tenantId', ellipsis: true, width: 90, hideInSearch: true, valueType: 'select',
+        request: () => {
+            return GetDictList(SysTenantDictList)
+        }
+    },
+
+    {
+        title: '租户', dataIndex: 'tenantIdSet', ellipsis: true, width: 90, hideInTable: true, valueType: 'treeSelect',
+        fieldProps: {
+            placeholder: '请选择',
+            allowClear: true,
+            treeNodeFilterProp: 'title',
+            maxTagCount: 'responsive',
+            treeCheckable: true,
+            showCheckedStrategy: TreeSelect.SHOW_CHILD,
+        },
+        request: () => {
+            return GetDictTreeList(SysTenantDictList, true, '-1')
+        }
+    },
+
+    {
         title: '头像', dataIndex: 'avatarFileId', valueType: 'image',
         fieldProps: {
             preview: {
@@ -38,21 +60,6 @@ const TableColumnList = (currentForm: React.MutableRefObject<SysUserInsertOrUpda
 
             return userAvatarUrlObj[text] || CommonConstant.FIXED_AVATAR_URL
 
-        }
-    },
-
-    {
-        title: '租户', dataIndex: 'tenantId', ellipsis: true, width: 90, valueType: 'treeSelect',
-        fieldProps: {
-            placeholder: '请选择',
-            allowClear: true,
-            treeNodeFilterProp: 'title',
-            maxTagCount: 'responsive',
-            treeCheckable: true,
-            showCheckedStrategy: TreeSelect.SHOW_PARENT,
-        },
-        request: () => {
-            return GetDictTreeList(SysTenantDictList)
         }
     },
 

@@ -14,7 +14,6 @@ export function SysPostDeleteByIdSet(form: NotEmptyIdSet, config?: AxiosRequestC
 
 export interface SysPostPageDTO {
     current?: string // 第几页，format：int64
-    tenantId?: string // 租户 id，format：int64
     name?: string // 岗位名
     pageSize?: string // 每页显示条数，format：int64
     tenantIdSet?: string[] // 租户 idSet，format：int64

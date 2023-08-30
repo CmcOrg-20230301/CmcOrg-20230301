@@ -11,7 +11,7 @@ import com.cmcorg20230301.be.engine.model.model.dto.ChangeNumberDTO;
 import com.cmcorg20230301.be.engine.model.model.dto.NotEmptyIdSet;
 import com.cmcorg20230301.be.engine.model.model.dto.NotNullId;
 import com.cmcorg20230301.be.engine.model.model.dto.NotNullLong;
-import com.cmcorg20230301.be.engine.model.model.vo.DictVO;
+import com.cmcorg20230301.be.engine.model.model.vo.DictTreeVO;
 import com.cmcorg20230301.be.engine.mysql.model.annotation.MyTransactional;
 import com.cmcorg20230301.be.engine.security.exception.BaseBizCodeEnum;
 import com.cmcorg20230301.be.engine.security.mapper.SysTenantMapper;
@@ -151,24 +151,26 @@ public class SysTenantServiceImpl extends ServiceImpl<SysTenantMapper, SysTenant
      * 下拉列表
      */
     @Override
-    public Page<DictVO> dictList() {
+    public Page<DictTreeVO> dictList() {
 
         // 获取：用户关联的租户
         Set<Long> tenantIdSet = TenantUtil.getUserRefTenantIdSet();
 
         Map<Long, SysTenantDO> sysTenantCacheMap = TenantUtil.getSysTenantCacheMap();
 
-        List<DictVO> dictListVOList =
+        List<DictTreeVO> dictListVOList =
             sysTenantCacheMap.entrySet().stream().filter(it -> tenantIdSet.contains(it.getKey()))
-                .map(it -> new DictVO(it.getKey(), it.getValue().getName())).collect(Collectors.toList());
+                .map(it -> new DictTreeVO(it.getValue().getId(), it.getValue().getName(), it.getValue().getParentId()))
+                .collect(Collectors.toList());
 
         if (tenantIdSet.contains(BaseConstant.TENANT_ID)) {
 
-            dictListVOList.add(new DictVO(BaseConstant.TENANT_ID, BaseConstant.TENANT_NAME));
+            dictListVOList
+                .add(new DictTreeVO(BaseConstant.TENANT_ID, BaseConstant.TENANT_NAME, BaseConstant.NEGATIVE_ONE));
 
         }
 
-        return new Page<DictVO>().setTotal(dictListVOList.size()).setRecords(dictListVOList);
+        return new Page<DictTreeVO>().setTotal(dictListVOList.size()).setRecords(dictListVOList);
 
     }
 

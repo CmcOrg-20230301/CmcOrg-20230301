@@ -88,8 +88,8 @@ interface IListToTree {
 // childrenFlag：true：children始终为 [] false：children为空时，children = ''
 export function ListToTree<T extends IListToTree>(
     list: T[],
-    childrenFlag: boolean = true,
     pid: string | number = '0',
+    childrenFlag: boolean = true,
     childrenName: string = 'children'
 ) {
 

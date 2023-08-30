@@ -19,14 +19,15 @@ export function SysTenantInsertOrUpdate(form: SysTenantInsertOrUpdateDTO, config
     return $http.myPost<string>('/sys/tenant/insertOrUpdate', form, config)
 }
 
-export interface DictVO {
+export interface DictTreeVO {
     name?: string // 显示用
     id?: string // 传值用，format：int64
+    parentId?: string // 父级 id，format：int64
 }
 
 // 下拉列表
 export function SysTenantDictList(config?: AxiosRequestConfig) {
-    return $http.myProPagePost<DictVO>('/sys/tenant/dictList', undefined, config)
+    return $http.myProPagePost<DictTreeVO>('/sys/tenant/dictList', undefined, config)
 }
 
 export interface NotEmptyIdSet {
@@ -40,7 +41,6 @@ export function SysTenantDeleteByIdSet(form: NotEmptyIdSet, config?: AxiosReques
 
 export interface SysTenantPageDTO {
     current?: string // 第几页，format：int64
-    tenantId?: string // 租户 id，format：int64
     name?: string // 租户名
     pageSize?: string // 每页显示条数，format：int64
     tenantIdSet?: string[] // 租户 idSet，format：int64

@@ -52,7 +52,6 @@ export interface SysRequestPageDTO {
     successFlag?: boolean // 请求是否成功
     current?: string // 第几页，format：int64
     createId?: string // 创建人id，format：int64
-    tenantId?: string // 租户 id，format：int64
     name?: string // 接口名（备用）
     endCostMs?: string // 耗时结束（毫秒），format：int64
     tenantIdSet?: string[] // 租户 idSet，format：int64

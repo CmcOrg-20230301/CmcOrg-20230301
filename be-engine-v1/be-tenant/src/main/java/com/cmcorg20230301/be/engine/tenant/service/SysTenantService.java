@@ -6,7 +6,7 @@ import com.cmcorg20230301.be.engine.model.model.dto.ChangeNumberDTO;
 import com.cmcorg20230301.be.engine.model.model.dto.NotEmptyIdSet;
 import com.cmcorg20230301.be.engine.model.model.dto.NotNullId;
 import com.cmcorg20230301.be.engine.model.model.dto.NotNullLong;
-import com.cmcorg20230301.be.engine.model.model.vo.DictVO;
+import com.cmcorg20230301.be.engine.model.model.vo.DictTreeVO;
 import com.cmcorg20230301.be.engine.security.model.entity.SysTenantDO;
 import com.cmcorg20230301.be.engine.tenant.model.dto.SysTenantInsertOrUpdateDTO;
 import com.cmcorg20230301.be.engine.tenant.model.dto.SysTenantPageDTO;
@@ -20,7 +20,7 @@ public interface SysTenantService extends IService<SysTenantDO> {
 
     Page<SysTenantDO> myPage(SysTenantPageDTO dto);
 
-    Page<DictVO> dictList();
+    Page<DictTreeVO> dictList();
 
     List<SysTenantDO> tree(SysTenantPageDTO dto);
 

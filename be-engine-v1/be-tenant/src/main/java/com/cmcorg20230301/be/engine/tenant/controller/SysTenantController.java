@@ -5,7 +5,7 @@ import com.cmcorg20230301.be.engine.model.model.dto.ChangeNumberDTO;
 import com.cmcorg20230301.be.engine.model.model.dto.NotEmptyIdSet;
 import com.cmcorg20230301.be.engine.model.model.dto.NotNullId;
 import com.cmcorg20230301.be.engine.model.model.dto.NotNullLong;
-import com.cmcorg20230301.be.engine.model.model.vo.DictVO;
+import com.cmcorg20230301.be.engine.model.model.vo.DictTreeVO;
 import com.cmcorg20230301.be.engine.security.model.entity.SysTenantDO;
 import com.cmcorg20230301.be.engine.security.model.vo.ApiResultVO;
 import com.cmcorg20230301.be.engine.tenant.model.dto.SysTenantInsertOrUpdateDTO;
@@ -49,7 +49,7 @@ public class SysTenantController {
     @Operation(summary = "下拉列表")
     @PostMapping("/dictList")
     @PreAuthorize("hasAuthority('sysTenant:dictList')")
-    public ApiResultVO<Page<DictVO>> dictList() {
+    public ApiResultVO<Page<DictTreeVO>> dictList() {
         return ApiResultVO.okData(baseService.dictList());
     }
 

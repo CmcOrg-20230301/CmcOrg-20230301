@@ -1,8 +1,8 @@
-import {GetDictList, YesNoDict} from "@/util/DictUtil";
+import {GetDictList, GetDictTreeList, YesNoDict} from "@/util/DictUtil";
 import {ActionType, ProColumns} from "@ant-design/pro-components";
 import {SysDeptDeleteByIdSet, SysDeptDO, SysDeptInsertOrUpdateDTO} from "@/api/http/SysDept";
 import {ExecConfirm, ToastSuccess} from "@/util/ToastUtil";
-import {Dropdown} from "antd";
+import {Dropdown, TreeSelect} from "antd";
 import {CalcOrderNo} from "@/util/TreeUtil";
 import {EllipsisOutlined} from "@ant-design/icons";
 import React from "react";
@@ -18,9 +18,24 @@ const TableColumnList = (currentForm: React.MutableRefObject<SysDeptInsertOrUpda
     },
 
     {
-        title: '租户', dataIndex: 'tenantId', ellipsis: true, width: 90, valueType: 'select',
+        title: '租户', dataIndex: 'tenantId', ellipsis: true, width: 90, hideInSearch: true, valueType: 'select',
         request: () => {
             return GetDictList(SysTenantDictList)
+        }
+    },
+
+    {
+        title: '租户', dataIndex: 'tenantIdSet', ellipsis: true, width: 90, hideInTable: true, valueType: 'treeSelect',
+        fieldProps: {
+            placeholder: '请选择',
+            allowClear: true,
+            treeNodeFilterProp: 'title',
+            maxTagCount: 'responsive',
+            treeCheckable: true,
+            showCheckedStrategy: TreeSelect.SHOW_CHILD,
+        },
+        request: () => {
+            return GetDictTreeList(SysTenantDictList, true, '-1')
         }
     },
 

@@ -174,7 +174,7 @@ interface IDictTreeResult {
 }
 
 // 通用的，获取字典树集合
-export function GetDictTreeList<T extends IDictTreeResult>(requestFunction: (value: MyPageDTO, config?: AxiosRequestConfig) => Promise<RequestData<T>>, toTreeFlag: boolean = true) {
+export function GetDictTreeList<T extends IDictTreeResult>(requestFunction: (value: MyPageDTO, config?: AxiosRequestConfig) => Promise<RequestData<T>>, toTreeFlag: boolean = true, pid: string | number = '0') {
 
     return new Promise<IMyTree[]>(resolve => {
 
@@ -200,7 +200,7 @@ export function GetDictTreeList<T extends IDictTreeResult>(requestFunction: (val
 
             if (toTreeFlag) {
 
-                resolve(ListToTree(dictList))
+                resolve(ListToTree(dictList, pid))
 
             } else {
 
