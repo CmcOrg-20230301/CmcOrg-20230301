@@ -1,13 +1,14 @@
-import {YesNoDict} from "@/util/DictUtil";
+import {GetDictList, GetDictTreeList, YesNoDict} from "@/util/DictUtil";
 import {ActionType, ModalForm, ProColumns, ProFormText} from "@ant-design/pro-components";
 import {SysMenuDeleteByIdSet, SysMenuDO, SysMenuInsertOrUpdate, SysMenuInsertOrUpdateDTO} from "@/api/http/SysMenu";
 import {ExecConfirm, ToastSuccess} from "@/util/ToastUtil";
 import React from "react";
 import {CalcOrderNo, DefaultOrderNo} from "@/util/TreeUtil";
 import CommonConstant from "@/model/constant/CommonConstant";
-import {Dropdown} from "antd";
+import {Dropdown, TreeSelect} from "antd";
 import {EllipsisOutlined} from "@ant-design/icons/lib";
 import {RouterMapKeyList} from "@/router/RouterMap";
+import {SysTenantDictList} from "@/api/http/SysTenant";
 
 const QuicklyAddAuth = "快速添加权限"
 
@@ -18,6 +19,28 @@ const TableColumnList = (currentForm: React.MutableRefObject<SysMenuInsertOrUpda
         dataIndex: 'index',
         valueType: 'index',
         width: 110,
+    },
+
+    {
+        title: '租户', dataIndex: 'tenantId', ellipsis: true, width: 90, hideInSearch: true, valueType: 'select',
+        request: () => {
+            return GetDictList(SysTenantDictList)
+        }
+    },
+
+    {
+        title: '租户', dataIndex: 'tenantIdSet', ellipsis: true, width: 90, hideInTable: true, valueType: 'treeSelect',
+        fieldProps: {
+            placeholder: '请选择',
+            allowClear: true,
+            treeNodeFilterProp: 'title',
+            maxTagCount: 'responsive',
+            treeCheckable: true,
+            showCheckedStrategy: TreeSelect.SHOW_CHILD,
+        },
+        request: () => {
+            return GetDictTreeList(SysTenantDictList, true, '-1')
+        }
     },
 
     {title: '菜单名', dataIndex: 'name', ellipsis: true, width: 90,},

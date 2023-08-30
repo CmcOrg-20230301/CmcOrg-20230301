@@ -21,10 +21,7 @@ import org.jetbrains.annotations.Nullable;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Component
@@ -343,12 +340,9 @@ public class UserUtil {
 
         if (RedisKeyEnum.ROLE_ID_REF_MENU_SET_ONE_CACHE.equals(redisKeyEnum)) {
 
-            allSysMenuDOList = ChainWrappers.lambdaQueryChain(sysMenuMapper)
-                .select(BaseEntity::getId, BaseEntityTree::getParentId, SysMenuDO::getPath, SysMenuDO::getIcon,
-                    SysMenuDO::getRouter, SysMenuDO::getName, SysMenuDO::getFirstFlag, SysMenuDO::getLinkFlag,
-                    SysMenuDO::getShowFlag, SysMenuDO::getAuths, SysMenuDO::getAuthFlag, BaseEntityTree::getOrderNo,
-                    SysMenuDO::getRedirect).eq(BaseEntity::getEnableFlag, true).orderByDesc(BaseEntityTree::getOrderNo)
-                .list();
+            allSysMenuDOList = getSysMenuCacheMap().values().stream()
+                .sorted(Comparator.comparing(BaseEntityTree::getOrderNo, Comparator.reverseOrder()))
+                .collect(Collectors.toList());
 
         } else {
 
@@ -415,6 +409,23 @@ public class UserUtil {
             getMenuListByUserIdNext(resultSysMenuDoSet, item.getId(), resultMenuIdSet, groupMenuParentIdMap); // 继续匹配下一级
 
         }
+
+    }
+
+    /**
+     * 获取：菜单缓存数据：map
+     */
+    @NotNull
+    public static Map<Long, SysMenuDO> getSysMenuCacheMap() {
+
+        return MyCacheUtil.getMap(RedisKeyEnum.SYS_MENU_CACHE, CacheHelper.getDefaultLongMap(), () -> {
+
+            List<SysMenuDO> sysMenuDOList =
+                ChainWrappers.lambdaQueryChain(sysMenuMapper).eq(BaseEntityNoId::getEnableFlag, true).list();
+
+            return sysMenuDOList.stream().collect(Collectors.toMap(BaseEntity::getId, it -> it));
+
+        });
 
     }
 

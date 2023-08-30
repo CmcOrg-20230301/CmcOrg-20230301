@@ -1,6 +1,6 @@
 package com.cmcorg20230301.be.engine.menu.model.dto;
 
-import com.cmcorg20230301.be.engine.model.model.dto.BaseInsertOrUpdateDTO;
+import com.cmcorg20230301.be.engine.model.model.dto.BaseTenantInsertOrUpdateDTO;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -10,7 +10,7 @@ import java.util.Set;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
-public class SysMenuInsertOrUpdateDTO extends BaseInsertOrUpdateDTO {
+public class SysMenuInsertOrUpdateDTO extends BaseTenantInsertOrUpdateDTO {
 
     @Schema(description = "父节点id（顶级则为0）")
     private Long parentId;

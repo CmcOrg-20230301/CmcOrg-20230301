@@ -15,6 +15,28 @@ const TableColumnList = (): ProColumns<SysRequestDO>[] => [
         width: 90,
     },
 
+    {
+        title: '租户', dataIndex: 'tenantId', ellipsis: true, width: 90, hideInSearch: true, valueType: 'select',
+        request: () => {
+            return GetDictList(SysTenantDictList)
+        }
+    },
+
+    {
+        title: '租户', dataIndex: 'tenantIdSet', ellipsis: true, width: 90, hideInTable: true, valueType: 'treeSelect',
+        fieldProps: {
+            placeholder: '请选择',
+            allowClear: true,
+            treeNodeFilterProp: 'title',
+            maxTagCount: 'responsive',
+            treeCheckable: true,
+            showCheckedStrategy: TreeSelect.SHOW_CHILD,
+        },
+        request: () => {
+            return GetDictTreeList(SysTenantDictList, true, '-1')
+        }
+    },
+
     {title: 'uri', dataIndex: 'uri', ellipsis: true, width: 90, copyable: true},
 
     {
@@ -89,28 +111,6 @@ const TableColumnList = (): ProColumns<SysRequestDO>[] => [
 
             }
 
-        }
-    },
-
-    {
-        title: '租户', dataIndex: 'tenantId', ellipsis: true, width: 90, hideInSearch: true, valueType: 'select',
-        request: () => {
-            return GetDictList(SysTenantDictList)
-        }
-    },
-
-    {
-        title: '租户', dataIndex: 'tenantIdSet', ellipsis: true, width: 90, hideInTable: true, valueType: 'treeSelect',
-        fieldProps: {
-            placeholder: '请选择',
-            allowClear: true,
-            treeNodeFilterProp: 'title',
-            maxTagCount: 'responsive',
-            treeCheckable: true,
-            showCheckedStrategy: TreeSelect.SHOW_CHILD,
-        },
-        request: () => {
-            return GetDictTreeList(SysTenantDictList, true, '-1')
         }
     },
 

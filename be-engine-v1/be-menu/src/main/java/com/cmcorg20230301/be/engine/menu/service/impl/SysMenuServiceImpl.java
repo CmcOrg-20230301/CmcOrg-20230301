@@ -17,16 +17,13 @@ import com.cmcorg20230301.be.engine.model.model.dto.NotEmptyIdSet;
 import com.cmcorg20230301.be.engine.model.model.dto.NotNullId;
 import com.cmcorg20230301.be.engine.mysql.model.annotation.MyTransactional;
 import com.cmcorg20230301.be.engine.role.service.SysRoleRefMenuService;
-import com.cmcorg20230301.be.engine.role.service.SysRoleService;
 import com.cmcorg20230301.be.engine.security.exception.BaseBizCodeEnum;
 import com.cmcorg20230301.be.engine.security.mapper.SysMenuMapper;
-import com.cmcorg20230301.be.engine.security.model.entity.BaseEntity;
-import com.cmcorg20230301.be.engine.security.model.entity.BaseEntityTree;
-import com.cmcorg20230301.be.engine.security.model.entity.SysMenuDO;
-import com.cmcorg20230301.be.engine.security.model.entity.SysRoleRefMenuDO;
+import com.cmcorg20230301.be.engine.security.model.entity.*;
 import com.cmcorg20230301.be.engine.security.model.vo.ApiResultVO;
 import com.cmcorg20230301.be.engine.security.util.MyEntityUtil;
 import com.cmcorg20230301.be.engine.security.util.MyTreeUtil;
+import com.cmcorg20230301.be.engine.security.util.TenantUtil;
 import com.cmcorg20230301.be.engine.security.util.UserUtil;
 import com.cmcorg20230301.be.engine.util.util.MyMapUtil;
 import org.springframework.stereotype.Service;
@@ -43,8 +40,6 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenuDO> im
 
     @Resource
     SysRoleRefMenuService sysRoleRefMenuService;
-    @Resource
-    SysRoleService sysRoleService;
 
     /**
      * 新增/修改
@@ -52,6 +47,9 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenuDO> im
     @Override
     @MyTransactional
     public String insertOrUpdate(SysMenuInsertOrUpdateDTO dto) {
+
+        // 检查：租户 id是否合法
+        TenantUtil.getTenantId(dto.getTenantId());
 
         if (dto.getId() != null && dto.getId().equals(dto.getParentId())) {
             ApiResultVO.error(BaseBizCodeEnum.PARENT_ID_CANNOT_BE_EQUAL_TO_ID);
@@ -173,6 +171,9 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenuDO> im
     @Override
     public Page<SysMenuDO> myPage(SysMenuPageDTO dto) {
 
+        // 处理：MyTenantPageDTO
+        TenantUtil.handleMyTenantPageDTO(dto);
+
         return lambdaQuery().like(StrUtil.isNotBlank(dto.getName()), SysMenuDO::getName, dto.getName())
             .like(StrUtil.isNotBlank(dto.getPath()), SysMenuDO::getPath, dto.getPath())
             .like(StrUtil.isNotBlank(dto.getAuths()), SysMenuDO::getAuths, dto.getAuths())
@@ -219,6 +220,11 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenuDO> im
     @MyTransactional
     public String deleteByIdSet(NotEmptyIdSet notEmptyIdSet) {
 
+        // 检查：是否非法操作
+        TenantUtil.checkIllegal(notEmptyIdSet.getIdSet(),
+            tenantIdSet -> lambdaQuery().in(BaseEntity::getId, notEmptyIdSet.getIdSet())
+                .in(BaseEntityNoId::getTenantId, tenantIdSet).count());
+
         // 如果存在下级，则无法删除
         boolean exists = lambdaQuery().in(SysMenuDO::getParentId, notEmptyIdSet.getIdSet()).exists();
 
@@ -256,22 +262,20 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenuDO> im
         if (BaseConstant.ADMIN_ID.equals(userId)) {
 
             // 如果是 admin账号，则查询所有【不是被禁用了的】菜单
-            return lambdaQuery()
-                .select(BaseEntity::getId, BaseEntityTree::getParentId, SysMenuDO::getPath, SysMenuDO::getIcon,
-                    SysMenuDO::getRouter, SysMenuDO::getName, SysMenuDO::getFirstFlag, SysMenuDO::getLinkFlag,
-                    SysMenuDO::getShowFlag, SysMenuDO::getAuths, SysMenuDO::getAuthFlag, SysMenuDO::getRedirect)
-                .eq(BaseEntityTree::getEnableFlag, true).orderByDesc(SysMenuDO::getOrderNo).list();
+            return UserUtil.getSysMenuCacheMap().values().stream()
+                .sorted(Comparator.comparing(BaseEntityTree::getOrderNo, Comparator.reverseOrder()))
+                .collect(Collectors.toList());
 
         }
 
         // 获取当前用户绑定的菜单
-        Set<SysMenuDO> sysMenuDOSet = UserUtil.getMenuSetByUserId(userId, 1);
+        Set<SysMenuDO> sysMenuDoSet = UserUtil.getMenuSetByUserId(userId, 1);
 
-        if (CollUtil.isEmpty(sysMenuDOSet)) {
+        if (CollUtil.isEmpty(sysMenuDoSet)) {
             return new ArrayList<>();
         }
 
-        return sysMenuDOSet.stream().sorted(Comparator.comparing(BaseEntityTree::getOrderNo, Comparator.reverseOrder()))
+        return sysMenuDoSet.stream().sorted(Comparator.comparing(BaseEntityTree::getOrderNo, Comparator.reverseOrder()))
             .collect(Collectors.toList());
 
     }
@@ -282,12 +286,18 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenuDO> im
     @Override
     public SysMenuInfoByIdVO infoById(NotNullId notNullId) {
 
-        SysMenuInfoByIdVO sysMenuInfoByIdVO =
-            BeanUtil.copyProperties(getById(notNullId.getId()), SysMenuInfoByIdVO.class);
+        // 获取：用户关联的租户
+        Set<Long> queryTenantIdSet = TenantUtil.getUserRefTenantIdSet();
 
-        if (sysMenuInfoByIdVO == null) {
+        SysMenuDO sysMenuDO =
+            lambdaQuery().eq(BaseEntity::getId, notNullId.getId()).in(BaseEntityNoId::getTenantId, queryTenantIdSet)
+                .one();
+
+        if (sysMenuDO == null) {
             return null;
         }
+
+        SysMenuInfoByIdVO sysMenuInfoByIdVO = BeanUtil.copyProperties(sysMenuDO, SysMenuInfoByIdVO.class);
 
         // 设置：角色 idSet
         List<SysRoleRefMenuDO> sysRoleRefMenuDOList =
@@ -310,6 +320,10 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenuDO> im
     @MyTransactional
     public String addOrderNo(ChangeNumberDTO dto) {
 
+        // 检查：是否非法操作
+        TenantUtil.checkIllegal(dto.getIdSet(), tenantIdSet -> lambdaQuery().in(BaseEntity::getId, dto.getIdSet())
+            .in(BaseEntityNoId::getTenantId, tenantIdSet).count());
+
         if (dto.getNumber() == 0) {
             return BaseBizCodeEnum.OK;
         }
@@ -325,6 +339,7 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenuDO> im
         return BaseBizCodeEnum.OK;
 
     }
+
 }
 
 

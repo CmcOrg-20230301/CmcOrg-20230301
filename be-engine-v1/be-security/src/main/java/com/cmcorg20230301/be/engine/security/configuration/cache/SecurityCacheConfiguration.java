@@ -42,7 +42,7 @@ public class SecurityCacheConfiguration {
         // 菜单
         TABLE_NAME_ENUM_SET.add(new SecurityCache(TableNameEnum.SYS_MENU, CollUtil
             .newHashSet(RedisKeyEnum.ALL_MENU_ID_AND_AUTHS_LIST_CACHE, RedisKeyEnum.ROLE_ID_REF_MENU_SET_ONE_CACHE,
-                RedisKeyEnum.ROLE_ID_REF_MENU_SET_TWO_CACHE)));
+                RedisKeyEnum.ROLE_ID_REF_MENU_SET_TWO_CACHE, RedisKeyEnum.SYS_MENU_CACHE)));
 
         // 角色关联用户
         TABLE_NAME_ENUM_SET.add(new SecurityCache(TableNameEnum.SYS_ROLE_REF_USER,

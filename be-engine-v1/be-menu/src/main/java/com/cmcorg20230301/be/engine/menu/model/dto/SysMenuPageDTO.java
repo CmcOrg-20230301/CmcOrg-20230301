@@ -1,13 +1,13 @@
 package com.cmcorg20230301.be.engine.menu.model.dto;
 
-import com.cmcorg20230301.be.engine.security.model.dto.MyPageDTO;
+import com.cmcorg20230301.be.engine.security.model.dto.MyTenantPageDTO;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
-public class SysMenuPageDTO extends MyPageDTO {
+public class SysMenuPageDTO extends MyTenantPageDTO {
 
     @Schema(description = "菜单名")
     private String name;
