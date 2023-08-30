@@ -27,7 +27,7 @@ import com.cmcorg20230301.be.engine.security.model.entity.BaseEntityNoId;
 import com.cmcorg20230301.be.engine.security.model.entity.SysUserInfoDO;
 import com.cmcorg20230301.be.engine.security.model.vo.ApiResultVO;
 import com.cmcorg20230301.be.engine.security.util.MyEntityUtil;
-import com.cmcorg20230301.be.engine.security.util.TenantUtil;
+import com.cmcorg20230301.be.engine.security.util.SysTenantUtil;
 import com.cmcorg20230301.be.engine.security.util.UserUtil;
 import lombok.SneakyThrows;
 import org.jetbrains.annotations.NotNull;
@@ -260,7 +260,7 @@ public class SysFileUtil {
         Set<Long> idSet = CollUtil.newHashSet(fileId);
 
         // 检查：是否非法操作
-        TenantUtil.checkIllegal(idSet, tenantIdSet -> sysFileService.lambdaQuery().in(BaseEntity::getId, idSet)
+        SysTenantUtil.checkIllegal(idSet, tenantIdSet -> sysFileService.lambdaQuery().in(BaseEntity::getId, idSet)
             .in(BaseEntityNoId::getTenantId, tenantIdSet).count());
 
         SysFileDO sysFileDO = getPrivateDownloadSysFile(fileId);
@@ -353,8 +353,9 @@ public class SysFileUtil {
         }
 
         // 检查：是否非法操作
-        TenantUtil.checkIllegal(fileIdSet, tenantIdSet -> sysFileService.lambdaQuery().in(BaseEntity::getId, fileIdSet)
-            .in(BaseEntityNoId::getTenantId, tenantIdSet).count());
+        SysTenantUtil.checkIllegal(fileIdSet,
+            tenantIdSet -> sysFileService.lambdaQuery().in(BaseEntity::getId, fileIdSet)
+                .in(BaseEntityNoId::getTenantId, tenantIdSet).count());
 
         List<SysFileDO> sysFileDOList = getSysFileBaseLambdaQuery().in(BaseEntity::getId, fileIdSet).list();
 
@@ -393,8 +394,9 @@ public class SysFileUtil {
         }
 
         // 检查：是否非法操作
-        TenantUtil.checkIllegal(fileIdSet, tenantIdSet -> sysFileService.lambdaQuery().in(BaseEntity::getId, fileIdSet)
-            .in(BaseEntityNoId::getTenantId, tenantIdSet).count());
+        SysTenantUtil.checkIllegal(fileIdSet,
+            tenantIdSet -> sysFileService.lambdaQuery().in(BaseEntity::getId, fileIdSet)
+                .in(BaseEntityNoId::getTenantId, tenantIdSet).count());
 
         List<SysFileDO> sysFileDOList;
 

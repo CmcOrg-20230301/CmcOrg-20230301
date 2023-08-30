@@ -25,7 +25,7 @@ import com.cmcorg20230301.be.engine.security.model.entity.BaseEntityTree;
 import com.cmcorg20230301.be.engine.security.model.vo.ApiResultVO;
 import com.cmcorg20230301.be.engine.security.util.MyEntityUtil;
 import com.cmcorg20230301.be.engine.security.util.MyTreeUtil;
-import com.cmcorg20230301.be.engine.security.util.TenantUtil;
+import com.cmcorg20230301.be.engine.security.util.SysTenantUtil;
 import com.cmcorg20230301.be.engine.security.util.UserUtil;
 import com.cmcorg20230301.be.engine.util.util.MyMapUtil;
 import org.springframework.stereotype.Service;
@@ -52,7 +52,7 @@ public class SysAreaServiceImpl extends ServiceImpl<SysAreaMapper, SysAreaDO> im
         Long tenantId = dto.getTenantId();
 
         // 检查：租户 id是否合法
-        TenantUtil.getTenantId(tenantId);
+        SysTenantUtil.getTenantId(tenantId);
 
         if (tenantId == null) {
 
@@ -134,7 +134,7 @@ public class SysAreaServiceImpl extends ServiceImpl<SysAreaMapper, SysAreaDO> im
     public Page<SysAreaDO> myPage(SysAreaPageDTO dto) {
 
         // 处理：MyTenantPageDTO
-        TenantUtil.handleMyTenantPageDTO(dto, true);
+        SysTenantUtil.handleMyTenantPageDTO(dto, true);
 
         return lambdaQuery().like(StrUtil.isNotBlank(dto.getName()), SysAreaDO::getName, dto.getName())
             .like(StrUtil.isNotBlank(dto.getRemark()), BaseEntityTree::getRemark, dto.getRemark())
@@ -176,7 +176,7 @@ public class SysAreaServiceImpl extends ServiceImpl<SysAreaMapper, SysAreaDO> im
     public String deleteByIdSet(NotEmptyIdSet notEmptyIdSet) {
 
         // 检查：是否非法操作
-        TenantUtil.checkIllegal(notEmptyIdSet.getIdSet(),
+        SysTenantUtil.checkIllegal(notEmptyIdSet.getIdSet(),
             tenantIdSet -> lambdaQuery().in(BaseEntity::getId, notEmptyIdSet.getIdSet())
                 .in(BaseEntityNoId::getTenantId, tenantIdSet).count());
 
@@ -213,7 +213,7 @@ public class SysAreaServiceImpl extends ServiceImpl<SysAreaMapper, SysAreaDO> im
     public SysAreaInfoByIdVO infoById(NotNullId notNullId) {
 
         // 获取：用户关联的租户
-        Set<Long> queryTenantIdSet = TenantUtil.getUserRefTenantIdSet();
+        Set<Long> queryTenantIdSet = SysTenantUtil.getUserRefTenantIdSet();
 
         SysAreaDO sysAreaDO =
             lambdaQuery().eq(BaseEntity::getId, notNullId.getId()).in(BaseEntityNoId::getTenantId, queryTenantIdSet)
@@ -247,7 +247,7 @@ public class SysAreaServiceImpl extends ServiceImpl<SysAreaMapper, SysAreaDO> im
     public String addOrderNo(ChangeNumberDTO dto) {
 
         // 检查：是否非法操作
-        TenantUtil.checkIllegal(dto.getIdSet(), tenantIdSet -> lambdaQuery().in(BaseEntity::getId, dto.getIdSet())
+        SysTenantUtil.checkIllegal(dto.getIdSet(), tenantIdSet -> lambdaQuery().in(BaseEntity::getId, dto.getIdSet())
             .in(BaseEntityNoId::getTenantId, tenantIdSet).count());
 
         if (dto.getNumber() == 0) {

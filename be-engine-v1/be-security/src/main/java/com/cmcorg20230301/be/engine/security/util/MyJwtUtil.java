@@ -144,7 +144,7 @@ public class MyJwtUtil {
         payloadMap.set(PAYLOAD_MAP_USER_ID_KEY, userId);
 
         // 获取：租户 id
-        tenantId = TenantUtil.getTenantId(tenantId);
+        tenantId = SysTenantUtil.getTenantId(tenantId);
 
         payloadMap.set(PAYLOAD_MAP_TENANT_ID_KEY, tenantId);
 

@@ -9,7 +9,7 @@ import com.cmcorg20230301.be.engine.model.model.dto.NotEmptyIdSet;
 import com.cmcorg20230301.be.engine.security.exception.BaseBizCodeEnum;
 import com.cmcorg20230301.be.engine.security.model.entity.BaseEntity;
 import com.cmcorg20230301.be.engine.security.model.entity.BaseEntityNoId;
-import com.cmcorg20230301.be.engine.security.util.TenantUtil;
+import com.cmcorg20230301.be.engine.security.util.SysTenantUtil;
 import com.cmcorg20230301.be.engine.socket.mapper.SysSocketRefUserMapper;
 import com.cmcorg20230301.be.engine.socket.model.dto.SysSocketRefUserPageDTO;
 import com.cmcorg20230301.be.engine.socket.model.entity.SysSocketRefUserDO;
@@ -29,7 +29,7 @@ public class SysSocketRefUserServiceImpl extends ServiceImpl<SysSocketRefUserMap
     public Page<SysSocketRefUserDO> myPage(SysSocketRefUserPageDTO dto) {
 
         // 处理：MyTenantPageDTO
-        TenantUtil.handleMyTenantPageDTO(dto, true);
+        SysTenantUtil.handleMyTenantPageDTO(dto, true);
 
         return lambdaQuery().eq(dto.getUserId() != null, SysSocketRefUserDO::getUserId, dto.getUserId())
             .eq(dto.getSocketId() != null, SysSocketRefUserDO::getSocketId, dto.getSocketId())
@@ -54,7 +54,7 @@ public class SysSocketRefUserServiceImpl extends ServiceImpl<SysSocketRefUserMap
     public String offlineByIdSet(NotEmptyIdSet notEmptyIdSet) {
 
         // 检查：是否非法操作
-        TenantUtil.checkIllegal(notEmptyIdSet.getIdSet(),
+        SysTenantUtil.checkIllegal(notEmptyIdSet.getIdSet(),
             tenantIdSet -> lambdaQuery().in(BaseEntity::getId, notEmptyIdSet.getIdSet())
                 .in(BaseEntityNoId::getTenantId, tenantIdSet).count());
 

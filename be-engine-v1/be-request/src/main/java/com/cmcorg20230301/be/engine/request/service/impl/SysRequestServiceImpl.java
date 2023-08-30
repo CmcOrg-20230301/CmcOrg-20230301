@@ -13,7 +13,7 @@ import com.cmcorg20230301.be.engine.request.service.SysRequestService;
 import com.cmcorg20230301.be.engine.security.model.entity.BaseEntity;
 import com.cmcorg20230301.be.engine.security.model.entity.BaseEntityNoId;
 import com.cmcorg20230301.be.engine.security.model.entity.SysRequestDO;
-import com.cmcorg20230301.be.engine.security.util.TenantUtil;
+import com.cmcorg20230301.be.engine.security.util.SysTenantUtil;
 import com.cmcorg20230301.be.engine.security.util.UserUtil;
 import org.springframework.stereotype.Service;
 
@@ -27,7 +27,7 @@ public class SysRequestServiceImpl extends ServiceImpl<SysRequestMapper, SysRequ
     public Page<SysRequestDO> myPage(SysRequestPageDTO dto) {
 
         // 处理：MyTenantPageDTO
-        TenantUtil.handleMyTenantPageDTO(dto, true);
+        SysTenantUtil.handleMyTenantPageDTO(dto, true);
 
         return lambdaQuery().like(StrUtil.isNotBlank(dto.getUri()), SysRequestDO::getUri, dto.getUri())
             .like(StrUtil.isNotBlank(dto.getName()), SysRequestDO::getName, dto.getName())
@@ -57,7 +57,7 @@ public class SysRequestServiceImpl extends ServiceImpl<SysRequestMapper, SysRequ
     public SysRequestAllAvgVO allAvgPro(SysRequestPageDTO dto) {
 
         // 处理：MyTenantPageDTO
-        TenantUtil.handleMyTenantPageDTO(dto, true);
+        SysTenantUtil.handleMyTenantPageDTO(dto, true);
 
         return baseMapper.allAvgPro(dto);
 

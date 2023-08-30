@@ -7,7 +7,7 @@ import com.cmcorg20230301.be.engine.security.model.configuration.IJwtValidatorCo
 import com.cmcorg20230301.be.engine.security.model.vo.ApiResultVO;
 import com.cmcorg20230301.be.engine.security.util.MyJwtUtil;
 import com.cmcorg20230301.be.engine.security.util.ResponseUtil;
-import com.cmcorg20230301.be.engine.security.util.TenantUtil;
+import com.cmcorg20230301.be.engine.security.util.SysTenantUtil;
 import com.cmcorg20230301.be.engine.security.util.UserUtil;
 import org.springframework.stereotype.Component;
 
@@ -54,7 +54,7 @@ public class SecurityJwtValidatorConfiguration implements IJwtValidatorConfigura
         try {
 
             // 这里会校验：租户是否被禁用
-            TenantUtil.getTenantId(tenantId);
+            SysTenantUtil.getTenantId(tenantId);
 
         } catch (BaseException e) {
 

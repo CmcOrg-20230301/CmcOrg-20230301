@@ -331,7 +331,7 @@ public class SignUtil {
 
         sysUserDO.setPassword(PasswordConvertUtil.convert(password, checkPasswordBlank));
 
-        tenantId = TenantUtil.getTenantId(tenantId);
+        tenantId = SysTenantUtil.getTenantId(tenantId);
 
         sysUserDO.setTenantId(tenantId); // 设置：租户 id
 
@@ -513,7 +513,7 @@ public class SignUtil {
     private static SysUserDO signInGetSysUserDO(LambdaQueryChainWrapper<SysUserDO> lambdaQueryChainWrapper,
         boolean errorFlag, @Nullable Long tenantId) {
 
-        tenantId = TenantUtil.getTenantId(tenantId);
+        tenantId = SysTenantUtil.getTenantId(tenantId);
 
         lambdaQueryChainWrapper.eq(BaseEntityNoId::getTenantId, tenantId);
 
@@ -873,7 +873,7 @@ public class SignUtil {
     public static boolean accountIsExists(Enum<? extends IRedisKey> redisKeyEnum, String newAccount, @Nullable Long id,
         @Nullable Long tenantId) {
 
-        tenantId = TenantUtil.getTenantId(tenantId);
+        tenantId = SysTenantUtil.getTenantId(tenantId);
 
         LambdaQueryChainWrapper<SysUserDO> lambdaQueryChainWrapper =
             ChainWrappers.lambdaQueryChain(sysUserMapper).ne(id != null, BaseEntity::getId, id)
@@ -1021,7 +1021,7 @@ public class SignUtil {
     public static void doSignDelete(Set<Long> userIdSet) {
 
         // 检查：是否非法操作
-        TenantUtil.checkIllegal(userIdSet,
+        SysTenantUtil.checkIllegal(userIdSet,
             tenantIdSet -> ChainWrappers.lambdaQueryChain(sysUserMapper).in(BaseEntity::getId, userIdSet)
                 .in(BaseEntityNoId::getTenantId, tenantIdSet).count());
 

@@ -24,7 +24,7 @@ import com.cmcorg20230301.be.engine.security.mapper.SysUserMapper;
 import com.cmcorg20230301.be.engine.security.model.entity.*;
 import com.cmcorg20230301.be.engine.security.model.vo.ApiResultVO;
 import com.cmcorg20230301.be.engine.security.util.MyEntityUtil;
-import com.cmcorg20230301.be.engine.security.util.TenantUtil;
+import com.cmcorg20230301.be.engine.security.util.SysTenantUtil;
 import com.cmcorg20230301.be.engine.security.util.UserUtil;
 import com.cmcorg20230301.be.engine.util.util.MyMapUtil;
 import org.springframework.stereotype.Service;
@@ -60,7 +60,7 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRoleDO> im
         Long tenantId = dto.getTenantId();
 
         // 检查：租户 id是否合法
-        TenantUtil.getTenantId(tenantId);
+        SysTenantUtil.getTenantId(tenantId);
 
         if (tenantId == null) {
 
@@ -170,7 +170,7 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRoleDO> im
     public Page<SysRoleDO> myPage(SysRolePageDTO dto) {
 
         // 处理：MyTenantPageDTO
-        TenantUtil.handleMyTenantPageDTO(dto, true);
+        SysTenantUtil.handleMyTenantPageDTO(dto, true);
 
         return lambdaQuery().like(StrUtil.isNotBlank(dto.getName()), SysRoleDO::getName, dto.getName())
             .like(StrUtil.isNotBlank(dto.getRemark()), BaseEntity::getRemark, dto.getRemark())
@@ -188,7 +188,7 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRoleDO> im
     public SysRoleInfoByIdVO infoById(NotNullId notNullId) {
 
         // 获取：用户关联的租户
-        Set<Long> queryTenantIdSet = TenantUtil.getUserRefTenantIdSet();
+        Set<Long> queryTenantIdSet = SysTenantUtil.getUserRefTenantIdSet();
 
         SysRoleDO sysRoleDO =
             lambdaQuery().eq(BaseEntity::getId, notNullId.getId()).in(BaseEntityNoId::getTenantId, queryTenantIdSet)
@@ -224,7 +224,7 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRoleDO> im
     public String deleteByIdSet(NotEmptyIdSet notEmptyIdSet) {
 
         // 检查：是否非法操作
-        TenantUtil.checkIllegal(notEmptyIdSet.getIdSet(),
+        SysTenantUtil.checkIllegal(notEmptyIdSet.getIdSet(),
             tenantIdSet -> lambdaQuery().in(BaseEntity::getId, notEmptyIdSet.getIdSet())
                 .in(BaseEntityNoId::getTenantId, tenantIdSet).count());
 

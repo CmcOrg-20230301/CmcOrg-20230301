@@ -25,15 +25,15 @@ import java.util.stream.Collectors;
  * 租户相关的工具类
  */
 @Component
-public class TenantUtil {
+public class SysTenantUtil {
 
     private static SysTenantMapper sysTenantMapper;
     private static SysTenantRefUserMapper sysTenantRefUserMapper;
 
-    public TenantUtil(SysTenantMapper sysTenantMapper, SysTenantRefUserMapper sysTenantRefUserMapper) {
+    public SysTenantUtil(SysTenantMapper sysTenantMapper, SysTenantRefUserMapper sysTenantRefUserMapper) {
 
-        TenantUtil.sysTenantMapper = sysTenantMapper;
-        TenantUtil.sysTenantRefUserMapper = sysTenantRefUserMapper;
+        SysTenantUtil.sysTenantMapper = sysTenantMapper;
+        SysTenantUtil.sysTenantRefUserMapper = sysTenantRefUserMapper;
 
     }
 
@@ -72,7 +72,7 @@ public class TenantUtil {
         }
 
         // 如果登录了，则需要判断，租户 id是否是：用户关联的租户
-        Set<Long> tenantIdSet = TenantUtil.getUserRefTenantIdSet();
+        Set<Long> tenantIdSet = SysTenantUtil.getUserRefTenantIdSet();
 
         if (tenantIdSet.contains(tenantId) == false) {
 
@@ -229,7 +229,7 @@ public class TenantUtil {
         Set<Long> tenantIdSet = dto.getTenantIdSet();
 
         // 获取：用户关联的租户
-        Set<Long> userRefTenantIdSet = TenantUtil.getUserRefTenantIdSet();
+        Set<Long> userRefTenantIdSet = SysTenantUtil.getUserRefTenantIdSet();
 
         if (CollUtil.isEmpty(tenantIdSet)) {
 
@@ -265,7 +265,7 @@ public class TenantUtil {
     public static void checkIllegal(Set<Long> idSet, @NotNull Func1<Set<Long>, Long> func1) {
 
         // 获取：用户关联的租户
-        Set<Long> tenantIdSet = TenantUtil.getUserRefTenantIdSet();
+        Set<Long> tenantIdSet = SysTenantUtil.getUserRefTenantIdSet();
 
         Long count = func1.call(tenantIdSet);
 

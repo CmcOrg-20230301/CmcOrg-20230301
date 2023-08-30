@@ -83,7 +83,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserProMapper, SysUserDO>
     public Page<SysUserPageVO> myPage(SysUserPageDTO dto) {
 
         // 处理：MyTenantPageDTO
-        TenantUtil.handleMyTenantPageDTO(dto, true);
+        SysTenantUtil.handleMyTenantPageDTO(dto, true);
 
         Page<SysUserPageVO> page = baseMapper.myPage(dto.createTimeDescDefaultOrderPage(), dto);
 
@@ -158,7 +158,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserProMapper, SysUserDO>
     public Page<DictVO> dictList(SysUserDictListDTO dto) {
 
         // 获取：用户关联的租户
-        Set<Long> tenantIdSet = TenantUtil.getUserRefTenantIdSet();
+        Set<Long> tenantIdSet = SysTenantUtil.getUserRefTenantIdSet();
 
         List<SysUserInfoDO> sysUserInfoDOList =
             ChainWrappers.lambdaQueryChain(sysUserInfoMapper).select(SysUserInfoDO::getId, SysUserInfoDO::getNickname)
@@ -188,7 +188,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserProMapper, SysUserDO>
         Long tenantId = dto.getTenantId();
 
         // 检查：租户 id是否合法
-        TenantUtil.getTenantId(tenantId);
+        SysTenantUtil.getTenantId(tenantId);
 
         if (tenantId == null) {
 
@@ -456,7 +456,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserProMapper, SysUserDO>
     public String refreshJwtSecretSuf(NotEmptyIdSet notEmptyIdSet) {
 
         // 检查：是否非法操作
-        TenantUtil.checkIllegal(notEmptyIdSet.getIdSet(),
+        SysTenantUtil.checkIllegal(notEmptyIdSet.getIdSet(),
             tenantIdSet -> lambdaQuery().in(BaseEntity::getId, notEmptyIdSet.getIdSet())
                 .in(BaseEntityNoId::getTenantId, tenantIdSet).count());
 
@@ -477,7 +477,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserProMapper, SysUserDO>
     public SysUserInfoByIdVO infoById(NotNullId notNullId) {
 
         // 获取：用户关联的租户
-        Set<Long> queryTenantIdSet = TenantUtil.getUserRefTenantIdSet();
+        Set<Long> queryTenantIdSet = SysTenantUtil.getUserRefTenantIdSet();
 
         SysUserDO sysUserDO =
             lambdaQuery().eq(BaseEntity::getId, notNullId.getId()).in(BaseEntityNoId::getTenantId, queryTenantIdSet)
@@ -542,10 +542,9 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserProMapper, SysUserDO>
     public String resetAvatar(NotEmptyIdSet notEmptyIdSet) {
 
         // 检查：是否非法操作
-        TenantUtil.checkIllegal(notEmptyIdSet.getIdSet(),
+        SysTenantUtil.checkIllegal(notEmptyIdSet.getIdSet(),
             tenantIdSet -> ChainWrappers.lambdaQueryChain(sysUserInfoMapper)
-                .in(SysUserInfoDO::getId, notEmptyIdSet.getIdSet()).in(SysUserInfoDO::getTenantId, tenantIdSet)
-                .count());
+                .in(SysUserInfoDO::getId, notEmptyIdSet.getIdSet()).in(SysUserInfoDO::getTenantId, tenantIdSet).count());
 
         ChainWrappers.lambdaUpdateChain(sysUserInfoMapper).in(SysUserInfoDO::getId, notEmptyIdSet.getIdSet())
             .set(SysUserInfoDO::getAvatarFileId, -1).update();
@@ -562,7 +561,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserProMapper, SysUserDO>
     public String updatePassword(SysUserUpdatePasswordDTO dto) {
 
         // 检查：是否非法操作
-        TenantUtil.checkIllegal(dto.getIdSet(),
+        SysTenantUtil.checkIllegal(dto.getIdSet(),
             tenantIdSet -> ChainWrappers.lambdaQueryChain(sysUserMapper).in(BaseEntity::getId, dto.getIdSet())
                 .in(BaseEntityNoId::getTenantId, tenantIdSet).count());
 
