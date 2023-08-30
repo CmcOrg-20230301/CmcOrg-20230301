@@ -430,14 +430,18 @@ public class UserUtil {
     @NotNull
     public static Map<Long, SysMenuDO> getSysMenuCacheMap() {
 
-        return MyCacheUtil.getMap(RedisKeyEnum.SYS_MENU_CACHE, CacheHelper.getDefaultLongMap(), () -> {
+        Long currentTenantIdDefault = UserUtil.getCurrentTenantIdDefault();
 
-            List<SysMenuDO> sysMenuDOList =
-                ChainWrappers.lambdaQueryChain(sysMenuMapper).eq(BaseEntityNoId::getEnableFlag, true).list();
+        return MyCacheUtil.<Map<Long, Map<Long, SysMenuDO>>>getMap(RedisKeyEnum.TENANT_SYS_MENU_CACHE,
+            CacheHelper.getDefaultLongMap(), () -> {
 
-            return sysMenuDOList.stream().collect(Collectors.toMap(BaseEntity::getId, it -> it));
+                List<SysMenuDO> sysMenuDOList =
+                    ChainWrappers.lambdaQueryChain(sysMenuMapper).eq(BaseEntityNoId::getEnableFlag, true).list();
 
-        });
+                return sysMenuDOList.stream().collect(
+                    Collectors.groupingBy(BaseEntity::getTenantId, Collectors.toMap(BaseEntity::getId, it -> it)));
+
+            }).get(currentTenantIdDefault);
 
     }
 

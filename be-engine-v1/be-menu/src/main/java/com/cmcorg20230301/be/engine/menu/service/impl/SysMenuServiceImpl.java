@@ -197,6 +197,7 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenuDO> im
             .eq(dto.getFirstFlag() != null, SysMenuDO::getFirstFlag, dto.getFirstFlag())
             .eq(dto.getAuthFlag() != null, SysMenuDO::getAuthFlag, dto.getAuthFlag())
             .eq(dto.getShowFlag() != null, SysMenuDO::getShowFlag, dto.getShowFlag())
+            .in(BaseEntityNoId::getTenantId, dto.getTenantIdSet()) //
             .orderByDesc(BaseEntityTree::getOrderNo).page(dto.page(true));
 
     }
@@ -206,6 +207,16 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenuDO> im
      */
     @Override
     public List<SysMenuDO> tree(SysMenuPageDTO dto) {
+
+        if (CollUtil.isEmpty(dto.getTenantIdSet())) {
+
+            dto.setTenantIdSet(CollUtil.newHashSet(UserUtil.getCurrentTenantIdDefault()));
+
+        } else if (dto.getTenantIdSet().size() > 0) { // 只能单选，不然会报错
+
+            dto.setTenantIdSet(CollUtil.newHashSet(CollUtil.getFirst(dto.getTenantIdSet())));
+
+        }
 
         // 根据条件进行筛选，得到符合条件的数据，然后再逆向生成整棵树，并返回这个树结构
         dto.setPageSize(-1); // 不分页

@@ -243,6 +243,7 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRoleDO> im
 
         // 删除 角色菜单关联表
         sysRoleRefMenuService.removeByIds(idSet);
+
         // 删除 角色用户关联表
         sysRoleRefUserService.removeByIds(idSet);
 

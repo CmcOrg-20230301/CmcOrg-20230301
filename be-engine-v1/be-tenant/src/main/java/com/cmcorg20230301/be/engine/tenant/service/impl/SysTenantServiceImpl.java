@@ -16,6 +16,7 @@ import com.cmcorg20230301.be.engine.model.model.vo.DictTreeVO;
 import com.cmcorg20230301.be.engine.mysql.model.annotation.MyTransactional;
 import com.cmcorg20230301.be.engine.security.exception.BaseBizCodeEnum;
 import com.cmcorg20230301.be.engine.security.mapper.SysTenantMapper;
+import com.cmcorg20230301.be.engine.security.model.configuration.ITenantDeleteConfiguration;
 import com.cmcorg20230301.be.engine.security.model.entity.*;
 import com.cmcorg20230301.be.engine.security.model.vo.ApiResultVO;
 import com.cmcorg20230301.be.engine.security.util.MyEntityUtil;
@@ -27,6 +28,7 @@ import com.cmcorg20230301.be.engine.tenant.model.dto.SysTenantPageDTO;
 import com.cmcorg20230301.be.engine.tenant.model.vo.SysTenantInfoByIdVO;
 import com.cmcorg20230301.be.engine.tenant.service.SysTenantRefUserService;
 import com.cmcorg20230301.be.engine.tenant.service.SysTenantService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -44,6 +46,15 @@ public class SysTenantServiceImpl extends ServiceImpl<SysTenantMapper, SysTenant
 
     @Resource
     SysMenuService sysMenuService;
+
+    List<ITenantDeleteConfiguration> iTenantDeleteConfigurationList;
+
+    public SysTenantServiceImpl(
+        @Autowired(required = false) List<ITenantDeleteConfiguration> iTenantDeleteConfigurationList) {
+
+        this.iTenantDeleteConfigurationList = iTenantDeleteConfigurationList;
+
+    }
 
     /**
      * 新增/修改
@@ -90,7 +101,7 @@ public class SysTenantServiceImpl extends ServiceImpl<SysTenantMapper, SysTenant
         }
 
         if (dto.getId() != null) { // 如果是修改
-            deleteByIdSetSub(CollUtil.newHashSet(dto.getId())); // 先移除子表数据
+            deleteByIdSetSub(CollUtil.newHashSet(dto.getId()), false); // 先移除子表数据
         }
 
         SysTenantDO sysTenantDO = new SysTenantDO();
@@ -295,7 +306,7 @@ public class SysTenantServiceImpl extends ServiceImpl<SysTenantMapper, SysTenant
         }
 
         // 移除子表数据
-        deleteByIdSetSub(notEmptyIdSet.getIdSet());
+        deleteByIdSetSub(notEmptyIdSet.getIdSet(), true);
 
         removeByIds(notEmptyIdSet.getIdSet());
 
@@ -305,12 +316,28 @@ public class SysTenantServiceImpl extends ServiceImpl<SysTenantMapper, SysTenant
 
     /**
      * 批量删除：移除子表数据
+     *
+     * @param deleteFlag 是否是删除
      */
-    private void deleteByIdSetSub(Set<Long> idSet) {
+    private void deleteByIdSetSub(Set<Long> idSet, boolean deleteFlag) {
 
         sysTenantRefUserService.removeByIds(idSet);
 
         sysMenuService.lambdaUpdate().in(BaseEntityNoId::getTenantId, idSet).remove();
+
+        if (deleteFlag) {
+
+            if (CollUtil.isNotEmpty(iTenantDeleteConfigurationList) && CollUtil.isNotEmpty(idSet)) {
+
+                for (ITenantDeleteConfiguration item : iTenantDeleteConfigurationList) {
+
+                    item.handle(idSet); // 移除：租户相关的数据
+
+                }
+
+            }
+
+        }
 
     }
 
