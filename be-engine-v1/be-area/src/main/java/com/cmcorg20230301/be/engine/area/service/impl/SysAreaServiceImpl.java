@@ -124,13 +124,13 @@ public class SysAreaServiceImpl extends ServiceImpl<SysAreaMapper, SysAreaDO> im
     @Override
     public Page<SysAreaDO> myPage(SysAreaPageDTO dto) {
 
-        // 通过：dto的 tenantId，获取：tenantIdSet
-        Set<Long> tenantIdSet = TenantUtil.getTenantIdSetByDtoTenantId(dto.getTenantId());
+        // 处理：MyTenantPageDTO
+        TenantUtil.handleMyTenantPageDTO(dto);
 
         return lambdaQuery().like(StrUtil.isNotBlank(dto.getName()), SysAreaDO::getName, dto.getName())
             .like(StrUtil.isNotBlank(dto.getRemark()), BaseEntityTree::getRemark, dto.getRemark())
             .eq(dto.getEnableFlag() != null, BaseEntityTree::getEnableFlag, dto.getEnableFlag())
-            .in(BaseEntityNoId::getTenantId, tenantIdSet) //
+            .in(BaseEntityNoId::getTenantId, dto.getTenantIdSet()) //
             .orderByDesc(BaseEntityTree::getOrderNo).page(dto.page(true));
 
     }
@@ -203,8 +203,8 @@ public class SysAreaServiceImpl extends ServiceImpl<SysAreaMapper, SysAreaDO> im
     @Override
     public SysAreaInfoByIdVO infoById(NotNullId notNullId) {
 
-        // 通过：dto的 tenantId，获取：tenantIdSet
-        Set<Long> queryTenantIdSet = TenantUtil.getTenantIdSetByDtoTenantId(null);
+        // 获取：用户关联的租户
+        Set<Long> queryTenantIdSet = TenantUtil.getUserRefTenantIdSet();
 
         SysAreaDO sysAreaDO =
             lambdaQuery().eq(BaseEntity::getId, notNullId.getId()).in(BaseEntityNoId::getTenantId, queryTenantIdSet)

@@ -1,4 +1,4 @@
-import {GetDictList, YesNoDict} from "@/util/DictUtil";
+import {GetDictTreeList, YesNoDict} from "@/util/DictUtil";
 import {ActionType, ModalForm, ProColumns, ProFormText} from "@ant-design/pro-components";
 import {
     SysUserDeleteByIdSet,
@@ -15,7 +15,7 @@ import CommonConstant from "@/model/constant/CommonConstant";
 import {EllipsisOutlined, EyeOutlined} from "@ant-design/icons";
 import {ValidatorUtil} from "@/util/ValidatorUtil";
 import {PasswordRSAEncrypt, RSAEncryptPro} from "@/util/RsaUtil";
-import {Dropdown} from "antd";
+import {Dropdown, TreeSelect} from "antd";
 import {SysTenantDictList} from "@/api/http/SysTenant";
 
 const TableColumnList = (currentForm: React.MutableRefObject<SysUserInsertOrUpdateDTO>, setFormOpen: React.Dispatch<React.SetStateAction<boolean>>, actionRef: React.RefObject<ActionType | undefined>, userAvatarUrlObj: Record<string, string>): ProColumns<SysUserPageVO>[] => [
@@ -42,9 +42,17 @@ const TableColumnList = (currentForm: React.MutableRefObject<SysUserInsertOrUpda
     },
 
     {
-        title: '租户', dataIndex: 'tenantId', ellipsis: true, width: 90, valueType: 'select',
+        title: '租户', dataIndex: 'tenantId', ellipsis: true, width: 90, valueType: 'treeSelect',
+        fieldProps: {
+            placeholder: '请选择',
+            allowClear: true,
+            treeNodeFilterProp: 'title',
+            maxTagCount: 'responsive',
+            treeCheckable: true,
+            showCheckedStrategy: TreeSelect.SHOW_PARENT,
+        },
         request: () => {
-            return GetDictList(SysTenantDictList)
+            return GetDictTreeList(SysTenantDictList)
         }
     },
 

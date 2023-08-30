@@ -17,7 +17,6 @@ import com.cmcorg20230301.be.engine.socket.service.SysSocketRefUserService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Set;
 
 @Service
 public class SysSocketRefUserServiceImpl extends ServiceImpl<SysSocketRefUserMapper, SysSocketRefUserDO>
@@ -29,8 +28,8 @@ public class SysSocketRefUserServiceImpl extends ServiceImpl<SysSocketRefUserMap
     @Override
     public Page<SysSocketRefUserDO> myPage(SysSocketRefUserPageDTO dto) {
 
-        // 通过：dto的 tenantId，获取：tenantIdSet
-        Set<Long> tenantIdSet = TenantUtil.getTenantIdSetByDtoTenantId(dto.getTenantId());
+        // 处理：MyTenantPageDTO
+        TenantUtil.handleMyTenantPageDTO(dto);
 
         return lambdaQuery().eq(dto.getUserId() != null, SysSocketRefUserDO::getUserId, dto.getUserId())
             .eq(dto.getSocketId() != null, SysSocketRefUserDO::getSocketId, dto.getSocketId())
@@ -43,7 +42,7 @@ public class SysSocketRefUserServiceImpl extends ServiceImpl<SysSocketRefUserMap
             .eq(StrUtil.isNotBlank(dto.getIp()), SysSocketRefUserDO::getIp, dto.getIp())
             .eq(StrUtil.isNotBlank(dto.getRegion()), SysSocketRefUserDO::getRegion, dto.getRegion())
             .like(StrUtil.isNotBlank(dto.getRemark()), SysSocketRefUserDO::getRemark, dto.getRemark())
-            .in(BaseEntityNoId::getTenantId, tenantIdSet) //
+            .in(BaseEntityNoId::getTenantId, dto.getTenantIdSet()) //
             .page(dto.page(true));
 
     }

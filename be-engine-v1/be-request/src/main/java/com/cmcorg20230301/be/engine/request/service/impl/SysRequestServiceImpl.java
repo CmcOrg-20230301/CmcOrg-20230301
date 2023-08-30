@@ -16,8 +16,6 @@ import com.cmcorg20230301.be.engine.security.util.TenantUtil;
 import com.cmcorg20230301.be.engine.security.util.UserUtil;
 import org.springframework.stereotype.Service;
 
-import java.util.Set;
-
 @Service
 public class SysRequestServiceImpl extends ServiceImpl<SysRequestMapper, SysRequestDO> implements SysRequestService {
 
@@ -27,8 +25,8 @@ public class SysRequestServiceImpl extends ServiceImpl<SysRequestMapper, SysRequ
     @Override
     public Page<SysRequestDO> myPage(SysRequestPageDTO dto) {
 
-        // 通过：dto的 tenantId，获取：tenantIdSet
-        Set<Long> tenantIdSet = TenantUtil.getTenantIdSetByDtoTenantId(dto.getTenantId());
+        // 处理：MyTenantPageDTO
+        TenantUtil.handleMyTenantPageDTO(dto);
 
         return lambdaQuery().like(StrUtil.isNotBlank(dto.getUri()), SysRequestDO::getUri, dto.getUri())
             .like(StrUtil.isNotBlank(dto.getName()), SysRequestDO::getName, dto.getName())
@@ -42,7 +40,7 @@ public class SysRequestServiceImpl extends ServiceImpl<SysRequestMapper, SysRequ
             .eq(dto.getCategory() != null, SysRequestDO::getCategory, dto.getCategory())
             .eq(dto.getCreateId() != null, BaseEntity::getCreateId, dto.getCreateId())
             .eq(dto.getSuccessFlag() != null, SysRequestDO::getSuccessFlag, dto.getSuccessFlag())
-            .in(BaseEntityNoId::getTenantId, tenantIdSet) //
+            .in(BaseEntityNoId::getTenantId, dto.getTenantIdSet()) //
             .orderByDesc(BaseEntity::getCreateTime)
             .select(SysRequestDO::getIp, SysRequestDO::getUri, SysRequestDO::getSuccessFlag, SysRequestDO::getCostMsStr,
                 BaseEntityNoId::getCreateTime, BaseEntityNoId::getCreateId, SysRequestDO::getName,
@@ -57,10 +55,8 @@ public class SysRequestServiceImpl extends ServiceImpl<SysRequestMapper, SysRequ
     @Override
     public SysRequestAllAvgVO allAvgPro(SysRequestPageDTO dto) {
 
-        // 通过：dto的 tenantId，获取：tenantIdSet
-        Set<Long> tenantIdSet = TenantUtil.getTenantIdSetByDtoTenantId(dto.getTenantId());
-
-        dto.setTenantIdSet(tenantIdSet);
+        // 处理：MyTenantPageDTO
+        TenantUtil.handleMyTenantPageDTO(dto);
 
         return baseMapper.allAvgPro(dto);
 

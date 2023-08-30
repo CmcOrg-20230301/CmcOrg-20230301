@@ -134,15 +134,15 @@ public class SysTenantServiceImpl extends ServiceImpl<SysTenantMapper, SysTenant
     @Override
     public Page<SysTenantDO> myPage(SysTenantPageDTO dto) {
 
-        // 通过：dto的 tenantId，获取：tenantIdSet
-        Set<Long> tenantIdSet = TenantUtil.getTenantIdSetByDtoTenantId(dto.getTenantId());
+        // 处理：MyTenantPageDTO
+        TenantUtil.handleMyTenantPageDTO(dto);
 
         return lambdaQuery().like(StrUtil.isNotBlank(dto.getName()), SysTenantDO::getName, dto.getName())
             .like(StrUtil.isNotBlank(dto.getRemark()), BaseEntityTree::getRemark, dto.getRemark())
             .eq(dto.getEnableFlag() != null, BaseEntityTree::getEnableFlag, dto.getEnableFlag())
             .eq(dto.getId() != null, BaseEntity::getId, dto.getId()) //
             .eq(BaseEntityTree::getDelFlag, false) //
-            .in(BaseEntityNoId::getTenantId, tenantIdSet) //
+            .in(BaseEntityNoId::getTenantId, dto.getTenantIdSet()) //
             .orderByDesc(BaseEntityTree::getOrderNo).page(dto.page(true));
 
     }
@@ -153,8 +153,8 @@ public class SysTenantServiceImpl extends ServiceImpl<SysTenantMapper, SysTenant
     @Override
     public Page<DictVO> dictList() {
 
-        // 通过：dto的 tenantId，获取：tenantIdSet
-        Set<Long> tenantIdSet = TenantUtil.getTenantIdSetByDtoTenantId(null);
+        // 获取：用户关联的租户
+        Set<Long> tenantIdSet = TenantUtil.getUserRefTenantIdSet();
 
         Map<Long, SysTenantDO> sysTenantCacheMap = TenantUtil.getSysTenantCacheMap();
 
@@ -239,8 +239,8 @@ public class SysTenantServiceImpl extends ServiceImpl<SysTenantMapper, SysTenant
     @Override
     public SysTenantInfoByIdVO infoById(NotNullId notNullId) {
 
-        // 通过：dto的 tenantId，获取：tenantIdSet
-        Set<Long> queryTenantIdSet = TenantUtil.getTenantIdSetByDtoTenantId(null);
+        // 获取：用户关联的租户
+        Set<Long> queryTenantIdSet = TenantUtil.getUserRefTenantIdSet();
 
         SysTenantDO sysTenantDO =
             lambdaQuery().eq(BaseEntity::getId, notNullId.getId()).in(BaseEntityNoId::getTenantId, queryTenantIdSet)

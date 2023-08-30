@@ -10,6 +10,7 @@ import com.cmcorg20230301.be.engine.redisson.model.enums.RedisKeyEnum;
 import com.cmcorg20230301.be.engine.security.exception.BaseBizCodeEnum;
 import com.cmcorg20230301.be.engine.security.mapper.SysTenantMapper;
 import com.cmcorg20230301.be.engine.security.mapper.SysTenantRefUserMapper;
+import com.cmcorg20230301.be.engine.security.model.dto.MyTenantPageDTO;
 import com.cmcorg20230301.be.engine.security.model.entity.*;
 import com.cmcorg20230301.be.engine.security.model.vo.ApiResultVO;
 import lombok.SneakyThrows;
@@ -71,7 +72,7 @@ public class TenantUtil {
         }
 
         // 如果登录了，则需要判断，租户 id是否是：用户关联的租户
-        Set<Long> tenantIdSet = TenantUtil.getTenantIdSetByDtoTenantId(null);
+        Set<Long> tenantIdSet = TenantUtil.getUserRefTenantIdSet();
 
         if (tenantIdSet.contains(tenantId) == false) {
 
@@ -106,7 +107,7 @@ public class TenantUtil {
      * 获取：用户关联的租户
      * 备注：即表示：用户可以查看关联租户的信息
      */
-    private static Set<Long> getUserRefTenantIdSet() {
+    public static Set<Long> getUserRefTenantIdSet() {
 
         Long currentUserId = UserUtil.getCurrentUserId();
 
@@ -218,28 +219,31 @@ public class TenantUtil {
     }
 
     /**
-     * 通过：dto的 tenantId，获取：tenantIdSet
-     *
-     * @param tenantId 传 null，就返回用户关联所有的 tenantId
+     * 处理：MyTenantPageDTO
      */
-    @NotNull
-    public static Set<Long> getTenantIdSetByDtoTenantId(@Nullable Long tenantId) {
+    public static void handleMyTenantPageDTO(@NotNull MyTenantPageDTO dto) {
 
-        Set<Long> tenantIdSet = CollUtil.newHashSet();
+        Set<Long> tenantIdSet = dto.getTenantIdSet();
 
+        // 获取：用户关联的租户
         Set<Long> userRefTenantIdSet = TenantUtil.getUserRefTenantIdSet();
 
-        if (userRefTenantIdSet.contains(tenantId) == false) {
+        if (CollUtil.isEmpty(tenantIdSet)) {
 
             tenantIdSet = userRefTenantIdSet;
 
         } else {
 
-            tenantIdSet.add(tenantId);
+            // 必须完全符合 userRefTenantIdSet
+            if (!CollUtil.containsAll(userRefTenantIdSet, tenantIdSet)) {
+
+                ApiResultVO.error(BaseBizCodeEnum.ILLEGAL_REQUEST);
+
+            }
 
         }
 
-        return tenantIdSet;
+        dto.setTenantIdSet(tenantIdSet);
 
     }
 
@@ -249,8 +253,8 @@ public class TenantUtil {
     @SneakyThrows
     public static void checkIllegal(Set<Long> idSet, @NotNull Func1<Set<Long>, Long> func1) {
 
-        // 通过：dto的 tenantId，获取：tenantIdSet
-        Set<Long> tenantIdSet = TenantUtil.getTenantIdSetByDtoTenantId(null);
+        // 获取：用户关联的租户
+        Set<Long> tenantIdSet = TenantUtil.getUserRefTenantIdSet();
 
         Long count = func1.call(tenantIdSet);
 
