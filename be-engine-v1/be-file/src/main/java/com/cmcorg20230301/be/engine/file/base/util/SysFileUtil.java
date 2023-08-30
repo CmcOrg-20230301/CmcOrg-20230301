@@ -27,6 +27,7 @@ import com.cmcorg20230301.be.engine.security.model.entity.BaseEntityNoId;
 import com.cmcorg20230301.be.engine.security.model.entity.SysUserInfoDO;
 import com.cmcorg20230301.be.engine.security.model.vo.ApiResultVO;
 import com.cmcorg20230301.be.engine.security.util.MyEntityUtil;
+import com.cmcorg20230301.be.engine.security.util.TenantUtil;
 import com.cmcorg20230301.be.engine.security.util.UserUtil;
 import lombok.SneakyThrows;
 import org.jetbrains.annotations.NotNull;
@@ -256,6 +257,12 @@ public class SysFileUtil {
     @Nullable
     public static InputStream privateDownload(long fileId) {
 
+        Set<Long> idSet = CollUtil.newHashSet(fileId);
+
+        // 检查：是否非法操作
+        TenantUtil.checkIllegal(idSet, tenantIdSet -> sysFileService.lambdaQuery().in(BaseEntity::getId, idSet)
+            .in(BaseEntityNoId::getTenantId, tenantIdSet).count());
+
         SysFileDO sysFileDO = getPrivateDownloadSysFile(fileId);
 
         if (SysFileTypeEnum.FOLDER.equals(sysFileDO.getType())) {
@@ -338,6 +345,10 @@ public class SysFileUtil {
     @NotNull
     public static Map<Long, String> getPublicUrl(Set<Long> fileIdSet) {
 
+        // 检查：是否非法操作
+        TenantUtil.checkIllegal(fileIdSet, tenantIdSet -> sysFileService.lambdaQuery().in(BaseEntity::getId, fileIdSet)
+            .in(BaseEntityNoId::getTenantId, tenantIdSet).count());
+
         List<SysFileDO> sysFileDOList = getSysFileBaseLambdaQuery().in(BaseEntity::getId, fileIdSet).list();
 
         Map<Long, String> result = new HashMap<>(sysFileDOList.size());
@@ -372,6 +383,10 @@ public class SysFileUtil {
             return;
         }
 
+        // 检查：是否非法操作
+        TenantUtil.checkIllegal(fileIdSet, tenantIdSet -> sysFileService.lambdaQuery().in(BaseEntity::getId, fileIdSet)
+            .in(BaseEntityNoId::getTenantId, tenantIdSet).count());
+
         Long currentUserId = UserUtil.getCurrentUserId();
 
         // 只有：文件拥有者才可以删除
@@ -390,19 +405,11 @@ public class SysFileUtil {
             ApiResultVO.errorMsg("操作失败：暂不支持删除文件夹");
         }
 
-        Set<String> bucketNameSet = sysFileDOList.stream().map(SysFileDO::getBucketName).collect(Collectors.toSet());
-
-        if (bucketNameSet.size() != 1) {
-            ApiResultVO.errorMsg("操作失败：bucketName不相同");
-        }
-
-        // 可以随便取一个：bucketName，因为都是一样的
-        String bucketName = sysFileDOList.get(0).getBucketName();
-
-        Map<SysFileStorageTypeEnum, List<SysFileDO>> groupMap =
+        // 根据：存储类型分类
+        Map<SysFileStorageTypeEnum, List<SysFileDO>> storageTypeGroupMap =
             sysFileDOList.stream().collect(Collectors.groupingBy(SysFileDO::getStorageType));
 
-        for (Map.Entry<SysFileStorageTypeEnum, List<SysFileDO>> item : groupMap.entrySet()) {
+        for (Map.Entry<SysFileStorageTypeEnum, List<SysFileDO>> item : storageTypeGroupMap.entrySet()) {
 
             ISysFile iSysFile = SYS_FILE_MAP.get(item.getKey().getCode());
 
@@ -410,10 +417,16 @@ public class SysFileUtil {
                 continue;
             }
 
-            Set<String> objectNameSet = item.getValue().stream().map(SysFileDO::getUri).collect(Collectors.toSet());
+            // 根据：桶名，进行分类
+            Map<String, Set<String>> bucketGroupMap = item.getValue().stream().collect(Collectors
+                .groupingBy(SysFileDO::getBucketName, Collectors.mapping(SysFileDO::getUri, Collectors.toSet())));
 
-            // 移除：文件存储系统里面的文件
-            iSysFile.remove(bucketName, objectNameSet);
+            for (Map.Entry<String, Set<String>> subItem : bucketGroupMap.entrySet()) {
+
+                // 移除：文件存储系统里面的文件
+                iSysFile.remove(subItem.getKey(), subItem.getValue());
+
+            }
 
         }
 
