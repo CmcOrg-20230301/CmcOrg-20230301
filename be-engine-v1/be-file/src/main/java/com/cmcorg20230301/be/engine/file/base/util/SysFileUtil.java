@@ -382,9 +382,11 @@ public class SysFileUtil {
 
     /**
      * 批量删除文件：公有和私有
+     *
+     * @param checkBelongFlag 是否检查：文件拥有者才可以删除
      */
     @SneakyThrows
-    public static void removeByFileIdSet(Set<Long> fileIdSet) {
+    public static void removeByFileIdSet(Set<Long> fileIdSet, boolean checkBelongFlag) {
 
         if (CollUtil.isEmpty(fileIdSet)) {
             return;
@@ -394,16 +396,28 @@ public class SysFileUtil {
         TenantUtil.checkIllegal(fileIdSet, tenantIdSet -> sysFileService.lambdaQuery().in(BaseEntity::getId, fileIdSet)
             .in(BaseEntityNoId::getTenantId, tenantIdSet).count());
 
-        Long currentUserId = UserUtil.getCurrentUserId();
+        List<SysFileDO> sysFileDOList;
 
-        // 只有：文件拥有者才可以删除
-        List<SysFileDO> sysFileDOList = sysFileService.lambdaQuery()
-            .select(SysFileDO::getBucketName, SysFileDO::getUri, SysFileDO::getStorageType, SysFileDO::getType)
-            .in(BaseEntity::getId, fileIdSet).eq(BaseEntityNoId::getEnableFlag, true)
-            .eq(SysFileDO::getBelongId, currentUserId).list();
+        LambdaQueryChainWrapper<SysFileDO> lambdaQueryChainWrapper = sysFileService.lambdaQuery()
+            .select(SysFileDO::getBucketName, SysFileDO::getUri, SysFileDO::getStorageType, SysFileDO::getType,
+                BaseEntity::getId).in(BaseEntity::getId, fileIdSet);
 
-        if (sysFileDOList.size() != fileIdSet.size()) {
-            ApiResultVO.error(BaseBizCodeEnum.INSUFFICIENT_PERMISSIONS);
+        if (checkBelongFlag) {
+
+            Long currentUserId = UserUtil.getCurrentUserId();
+
+            // 只有：文件拥有者才可以删除
+            sysFileDOList = lambdaQueryChainWrapper.eq(SysFileDO::getBelongId, currentUserId).list();
+
+        } else {
+
+            // 直接删除
+            sysFileDOList = lambdaQueryChainWrapper.list();
+
+        }
+
+        if (sysFileDOList.size() == 0) {
+            return;
         }
 
         boolean anyMatch = sysFileDOList.stream().anyMatch(it -> SysFileTypeEnum.FOLDER.equals(it.getType()));
@@ -437,12 +451,14 @@ public class SysFileUtil {
 
         }
 
+        Set<Long> finalFileIdSet = sysFileDOList.stream().map(BaseEntity::getId).collect(Collectors.toSet());
+
         // 移除：所有文件
         TransactionUtil.exec(() -> {
 
-            sysFileService.removeBatchByIds(fileIdSet);
+            sysFileService.removeBatchByIds(finalFileIdSet);
 
-            sysFileAuthService.lambdaUpdate().in(SysFileAuthDO::getFileId, fileIdSet).remove();
+            sysFileAuthService.lambdaUpdate().in(SysFileAuthDO::getFileId, finalFileIdSet).remove();
 
         });
 

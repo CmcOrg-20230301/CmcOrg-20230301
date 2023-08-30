@@ -55,7 +55,7 @@ public class SysFileServiceImpl extends ServiceImpl<SysFileMapper, SysFileDO> im
     @Override
     public String removeByFileIdSet(NotEmptyIdSet notEmptyIdSet) {
 
-        SysFileUtil.removeByFileIdSet(notEmptyIdSet.getIdSet());
+        SysFileUtil.removeByFileIdSet(notEmptyIdSet.getIdSet(), true);
 
         return BaseBizCodeEnum.OK;
 

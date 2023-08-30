@@ -10,6 +10,9 @@ import com.baomidou.mybatisplus.extension.conditions.query.LambdaQueryChainWrapp
 import com.baomidou.mybatisplus.extension.toolkit.ChainWrappers;
 import com.cmcorg20230301.be.engine.dept.mapper.SysDeptRefUserMapper;
 import com.cmcorg20230301.be.engine.dept.model.entity.SysDeptRefUserDO;
+import com.cmcorg20230301.be.engine.file.base.model.entity.SysFileDO;
+import com.cmcorg20230301.be.engine.file.base.service.SysFileService;
+import com.cmcorg20230301.be.engine.file.base.util.SysFileUtil;
 import com.cmcorg20230301.be.engine.model.exception.IBizCode;
 import com.cmcorg20230301.be.engine.model.model.constant.BaseConstant;
 import com.cmcorg20230301.be.engine.model.model.constant.BaseRegexConstant;
@@ -42,9 +45,11 @@ import org.redisson.api.RedissonClient;
 import org.springframework.stereotype.Component;
 
 import java.time.Duration;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Consumer;
+import java.util.stream.Collectors;
 
 @Component
 @Slf4j(topic = LogTopicConstant.USER)
@@ -58,11 +63,12 @@ public class SignUtil {
     private static SysDeptRefUserMapper sysDeptRefUserMapper;
     private static SysPostRefUserMapper sysPostRefUserMapper;
     private static SysTenantRefUserMapper sysTenantRefUserMapper;
+    private static SysFileService sysFileService;
 
     public SignUtil(SysUserInfoMapper sysUserInfoMapper, RedissonClient redissonClient, SysUserMapper sysUserMapper,
         SecurityProperties securityProperties, SysRoleRefUserMapper sysRoleRefUserMapper,
         SysDeptRefUserMapper sysDeptRefUserMapper, SysPostRefUserMapper sysPostRefUserMapper,
-        SysTenantRefUserMapper sysTenantRefUserMapper) {
+        SysTenantRefUserMapper sysTenantRefUserMapper, SysFileService sysFileService) {
 
         SignUtil.sysUserInfoMapper = sysUserInfoMapper;
         SignUtil.sysUserMapper = sysUserMapper;
@@ -72,6 +78,7 @@ public class SignUtil {
         SignUtil.sysDeptRefUserMapper = sysDeptRefUserMapper;
         SignUtil.sysPostRefUserMapper = sysPostRefUserMapper;
         SignUtil.sysTenantRefUserMapper = sysTenantRefUserMapper;
+        SignUtil.sysFileService = sysFileService;
 
     }
 
@@ -1018,11 +1025,20 @@ public class SignUtil {
             tenantIdSet -> ChainWrappers.lambdaQueryChain(sysUserMapper).in(BaseEntity::getId, userIdSet)
                 .in(BaseEntityNoId::getTenantId, tenantIdSet).count());
 
+        // 找到用户：拥有的文件
+        List<SysFileDO> sysFileDOList =
+            sysFileService.lambdaQuery().in(SysFileDO::getBelongId, userIdSet).select(BaseEntity::getId).list();
+
+        Set<Long> fileIdSet = sysFileDOList.stream().map(BaseEntity::getId).collect(Collectors.toSet());
+
         TransactionUtil.exec(() -> {
 
             sysUserMapper.deleteBatchIds(userIdSet); // 直接：删除用户
 
             doSignDeleteSub(userIdSet, true); // 删除子表数据
+
+            // 删除：用户的文件
+            SysFileUtil.removeByFileIdSet(fileIdSet, false);
 
             for (Long item : userIdSet) {
 
