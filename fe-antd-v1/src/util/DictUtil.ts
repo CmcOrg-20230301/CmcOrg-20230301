@@ -80,10 +80,7 @@ export function GetByValueFromDictListPro(
     separator: string = '，'
 ) {
 
-    let resList: string[] = []
-
-    // console.log('dictList', dictList)
-    // console.log('valueList', valueList)
+    let resultList: string[] = []
 
     if (dictList && valueList && valueList.length) {
 
@@ -91,14 +88,14 @@ export function GetByValueFromDictListPro(
 
             if (valueList.includes(item.value)) {
 
-                resList.push(item.label)
+                resultList.push(item.label)
 
             }
 
         })
     }
 
-    return resList.length ? resList.join(separator) : defaultValue
+    return resultList.length ? resultList.join(separator) : defaultValue
 
 }
 

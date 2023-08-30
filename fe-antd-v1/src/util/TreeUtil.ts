@@ -11,10 +11,10 @@ export function FlatTree<T extends IFlatTree>(
     checkFun?: (item: T) => boolean
 ) {
 
-    let resList: T[] = []
+    let resultList: T[] = []
 
     if (!data) {
-        return resList
+        return resultList
     }
 
     data.forEach((item) => {
@@ -33,18 +33,18 @@ export function FlatTree<T extends IFlatTree>(
 
                 if (hasParentFlag) {
 
-                    resList.push(JSON.parse(JSON.stringify({...item, children: null}))) // 添加
+                    resultList.push(JSON.parse(JSON.stringify({...item, children: null}))) // 添加
 
                 }
 
                 // 组装数据
-                resList = resList.concat(
+                resultList = resultList.concat(
                     FlatTree(item.children, hasParentFlag, checkFun)
                 )
 
             } else {
 
-                resList.push(JSON.parse(JSON.stringify({...item, children: null}))) // 添加
+                resultList.push(JSON.parse(JSON.stringify({...item, children: null}))) // 添加
 
             }
 
@@ -52,37 +52,39 @@ export function FlatTree<T extends IFlatTree>(
 
     })
 
-    return resList
+    return resultList
 
 }
 
 // 获取树结构，所有 有子节点的 id集合
 export function GetIdListForHasChildrenNode(data: any[]) {
 
-    let resList: string[] = []
+    let resultList: string[] = []
 
     data.forEach((item) => {
 
         if (item.children && item.children.length) {
 
-            resList.push(item.id)
-            resList = resList.concat(GetIdListForHasChildrenNode(item.children))
+            resultList.push(item.id)
+            resultList = resultList.concat(GetIdListForHasChildrenNode(item.children))
 
         }
 
     })
 
-    return resList
+    return resultList
 
 }
 
 interface IListToTree {
 
+    id: string | number,
+    parentId: string | number,
+
     [x: string]: any
 
 }
 
-// list 转 tree 结构，比原始的递归快
 // childrenFlag：true：children始终为 [] false：children为空时，children = ''
 export function ListToTree<T extends IListToTree>(
     list: T[],
@@ -91,60 +93,117 @@ export function ListToTree<T extends IListToTree>(
     childrenName: string = 'children'
 ) {
 
-    const resList: T[] = [] // 本方法返回值
-    const obj: any = {} // 格式：{ id: {...item} }
+    const resultList: T[] = [] // 本方法返回值
+    const listMap = new Map<string | number, T>(); // 把 list的所有元素转换为：id -> 元素，格式
 
-    list.forEach((item: any) => {
+    list.forEach((item: T) => {
 
-        if (obj[item.id]) {
+        let mapDTO = listMap.get(item.id);
+
+        if (mapDTO) {
 
             // 如果存在 当前元素，则补充其他属性
-            item = {...item, ...obj[item.id]}
+            mapDTO = {...item, ...mapDTO}
 
         } else {
 
-            // 如果不存在 当前元素
-            if (!item[childrenName]) {
+            mapDTO = item;
+
+            if (!mapDTO[childrenName]) { // 避免：mapDTO里面原来就有 children
 
                 // 如果 item不存在 children
                 if (childrenFlag) {
-                    item[childrenName] = []
+
+                    mapDTO[childrenName] = []
+
                 } else {
-                    item[childrenName] = ''
+
+                    mapDTO[childrenName] = ''
+
                 }
 
             }
 
-            obj[item.id] = item // 赋值到 obj里面
-
         }
 
-        if (item.parentId === pid) {
+        listMap.set(mapDTO.id, mapDTO);
 
-            resList.push(item) // 添加到返回值里
+        if (mapDTO.parentId === pid) {
+
+            resultList.push(mapDTO) // 添加到返回值里
             return
 
         }
 
-        if (obj[item.parentId]) {
+        // 把自己添加到：父节点的 children上
+        let parentDTO = listMap.get(mapDTO.parentId);
 
-            // 如果存在 父级元素
-            if (obj[item.parentId][childrenName]) {
-                obj[item.parentId][childrenName].push(item)
+        if (parentDTO) {
+
+            if (parentDTO[childrenName]) {
+                parentDTO[childrenName].push(mapDTO)
             } else {
-                obj[item.parentId][childrenName] = [item]
+                parentDTO[childrenName] = [mapDTO]
             }
 
         } else {
 
-            // 如果不存在 父级元素
-            obj[item.parentId] = {[childrenName]: [item]}
+            listMap.set(mapDTO.parentId, {[childrenName]: [mapDTO]} as T)
 
         }
 
     })
 
-    return resList
+    // 如果，顶层的节点不是 0，则需要找到顶层节点的 id
+    ListToTreeHandleResultList(resultList, listMap);
+
+    return resultList
+
+}
+
+// 如果，顶层的节点不是 0，则需要找到顶层节点的 id
+function ListToTreeHandleResultList<T extends IListToTree>(resultList: T[], listMap: Map<string | number, T>) {
+
+    if (listMap.size === 0 || resultList.length !== 0) {
+        return;
+    }
+
+    // 处理：topIdSet：通过：父级 id分组，value：子级 idSet
+    const groupParentIdMap = new Map<string | number, Set<string | number>>();
+
+    listMap.forEach((value) => {
+
+        let set = groupParentIdMap.get(value.parentId);
+
+        if (set) {
+
+            set.add(value.id)
+
+        } else {
+
+            set = new Set<string | number>();
+
+            set.add(value.id)
+
+            groupParentIdMap.set(value.parentId, set)
+
+        }
+
+    })
+
+    groupParentIdMap.forEach((value, key) => {
+
+        if (!groupParentIdMap.has(key)) { // 如果：不存在该父节点，则表示是：顶层节点
+
+            value.forEach(subValue => {
+
+                resultList.push(listMap.get(subValue)!); // 添加：顶层节点
+
+            })
+
+        }
+
+    })
 
 }
 

@@ -1,6 +1,7 @@
 package com.cmcorg20230301.be.engine.security.util;
 
 import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.map.MapUtil;
 import cn.hutool.core.util.ReflectUtil;
 import com.cmcorg20230301.be.engine.security.model.entity.BaseEntity;
@@ -106,7 +107,7 @@ public class MyTreeUtil {
     @SneakyThrows
     public static <T extends BaseEntityTree<T>> List<T> listToTree(List<T> list, boolean childrenFlag) {
 
-        HashMap<Long, T> listMap = MapUtil.newHashMap(list.size()); // 把 list的所有元素转换为：id -> 元素，格式
+        Map<Long, T> listMap = MapUtil.newHashMap(list.size()); // 把 list的所有元素转换为：id -> 元素，格式
 
         List<T> resultList = new LinkedList<>(); // 返回值
 
@@ -118,21 +119,25 @@ public class MyTreeUtil {
 
                 mapDTO = item;
 
-                if (childrenFlag) {
+                if (CollUtil.isEmpty(mapDTO.getChildren())) { // 避免：mapDTO里面原来就有 children
 
-                    mapDTO.setChildren(new LinkedList<>()); // children 一直为集合
+                    if (childrenFlag) {
 
-                } else {
+                        mapDTO.setChildren(new LinkedList<>()); // children 一直为集合
 
-                    mapDTO.setChildren(null); // 无子节点时，children 为 null
+                    } else {
+
+                        mapDTO.setChildren(null); // 无子节点时，children 为 null
+
+                    }
 
                 }
 
-                listMap.put(item.getId(), mapDTO);
+                listMap.put(mapDTO.getId(), mapDTO);
 
             } else {
 
-                // 如果存在，则只保留 children属性，并 补全其他属性
+                // 如果存在，则只保留 children属性，并补全其他属性
                 BeanUtil.copyProperties(item, mapDTO, "children");
 
             }
@@ -145,6 +150,7 @@ public class MyTreeUtil {
 
             }
 
+            // 把自己添加到：父节点的 children上
             T parentDTO = listMap.get(mapDTO.getParentId());
 
             if (parentDTO == null) {
@@ -178,9 +184,43 @@ public class MyTreeUtil {
                 }
 
             }
+
         }
 
+        // 如果，顶层的节点不是 0，则需要找到顶层节点的 id
+        listToTreeHandleResultList(resultList, listMap);
+
         return resultList;
+
+    }
+
+    /**
+     * 如果，顶层的节点不是 0，则需要找到顶层节点的 id
+     */
+    private static <T extends BaseEntityTree<T>> void listToTreeHandleResultList(List<T> resultList,
+        Map<Long, T> listMap) {
+
+        if (listMap.size() == 0 || resultList.size() != 0) {
+            return;
+        }
+
+        // 处理：topIdSet：通过：父级 id分组，value：子级 idSet
+        Map<Long, Set<Long>> groupParentIdMap = listMap.values().stream().collect(Collectors
+            .groupingBy(BaseEntityTree::getParentId, Collectors.mapping(BaseEntity::getId, Collectors.toSet())));
+
+        for (Map.Entry<Long, Set<Long>> item : groupParentIdMap.entrySet()) {
+
+            if (!groupParentIdMap.containsKey(item.getKey())) { // 如果：不存在该父节点，则表示是：顶层节点
+
+                for (Long subItem : item.getValue()) {
+
+                    resultList.add(listMap.get(subItem)); // 添加：顶层节点
+
+                }
+
+            }
+
+        }
 
     }
 
