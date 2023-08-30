@@ -21,7 +21,10 @@ import com.cmcorg20230301.be.engine.security.exception.BaseBizCodeEnum;
 import com.cmcorg20230301.be.engine.security.mapper.SysMenuMapper;
 import com.cmcorg20230301.be.engine.security.model.entity.*;
 import com.cmcorg20230301.be.engine.security.model.vo.ApiResultVO;
-import com.cmcorg20230301.be.engine.security.util.*;
+import com.cmcorg20230301.be.engine.security.util.MyEntityUtil;
+import com.cmcorg20230301.be.engine.security.util.MyTreeUtil;
+import com.cmcorg20230301.be.engine.security.util.TenantUtil;
+import com.cmcorg20230301.be.engine.security.util.UserUtil;
 import com.cmcorg20230301.be.engine.util.util.MyMapUtil;
 import org.springframework.stereotype.Service;
 
@@ -181,7 +184,7 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenuDO> im
     public Page<SysMenuDO> myPage(SysMenuPageDTO dto) {
 
         // 处理：MyTenantPageDTO
-        TenantUtil.handleMyTenantPageDTO(dto);
+        TenantUtil.handleMyTenantPageDTO(dto, true);
 
         return lambdaQuery().like(StrUtil.isNotBlank(dto.getName()), SysMenuDO::getName, dto.getName())
             .like(StrUtil.isNotBlank(dto.getPath()), SysMenuDO::getPath, dto.getPath())

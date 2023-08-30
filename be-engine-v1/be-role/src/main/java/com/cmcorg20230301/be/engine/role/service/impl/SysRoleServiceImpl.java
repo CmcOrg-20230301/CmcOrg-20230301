@@ -170,7 +170,7 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRoleDO> im
     public Page<SysRoleDO> myPage(SysRolePageDTO dto) {
 
         // 处理：MyTenantPageDTO
-        TenantUtil.handleMyTenantPageDTO(dto);
+        TenantUtil.handleMyTenantPageDTO(dto, true);
 
         return lambdaQuery().like(StrUtil.isNotBlank(dto.getName()), SysRoleDO::getName, dto.getName())
             .like(StrUtil.isNotBlank(dto.getRemark()), BaseEntity::getRemark, dto.getRemark())

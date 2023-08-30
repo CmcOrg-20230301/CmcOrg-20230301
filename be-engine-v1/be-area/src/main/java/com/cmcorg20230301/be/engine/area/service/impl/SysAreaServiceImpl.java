@@ -134,7 +134,7 @@ public class SysAreaServiceImpl extends ServiceImpl<SysAreaMapper, SysAreaDO> im
     public Page<SysAreaDO> myPage(SysAreaPageDTO dto) {
 
         // 处理：MyTenantPageDTO
-        TenantUtil.handleMyTenantPageDTO(dto);
+        TenantUtil.handleMyTenantPageDTO(dto, true);
 
         return lambdaQuery().like(StrUtil.isNotBlank(dto.getName()), SysAreaDO::getName, dto.getName())
             .like(StrUtil.isNotBlank(dto.getRemark()), BaseEntityTree::getRemark, dto.getRemark())

@@ -29,7 +29,7 @@ public class SysSocketRefUserServiceImpl extends ServiceImpl<SysSocketRefUserMap
     public Page<SysSocketRefUserDO> myPage(SysSocketRefUserPageDTO dto) {
 
         // 处理：MyTenantPageDTO
-        TenantUtil.handleMyTenantPageDTO(dto);
+        TenantUtil.handleMyTenantPageDTO(dto, true);
 
         return lambdaQuery().eq(dto.getUserId() != null, SysSocketRefUserDO::getUserId, dto.getUserId())
             .eq(dto.getSocketId() != null, SysSocketRefUserDO::getSocketId, dto.getSocketId())

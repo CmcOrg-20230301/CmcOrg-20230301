@@ -19,7 +19,10 @@ import com.cmcorg20230301.be.engine.security.mapper.SysTenantMapper;
 import com.cmcorg20230301.be.engine.security.model.configuration.ITenantDeleteConfiguration;
 import com.cmcorg20230301.be.engine.security.model.entity.*;
 import com.cmcorg20230301.be.engine.security.model.vo.ApiResultVO;
-import com.cmcorg20230301.be.engine.security.util.*;
+import com.cmcorg20230301.be.engine.security.util.MyEntityUtil;
+import com.cmcorg20230301.be.engine.security.util.MyTreeUtil;
+import com.cmcorg20230301.be.engine.security.util.TenantUtil;
+import com.cmcorg20230301.be.engine.security.util.UserUtil;
 import com.cmcorg20230301.be.engine.tenant.model.dto.SysTenantInsertOrUpdateDTO;
 import com.cmcorg20230301.be.engine.tenant.model.dto.SysTenantPageDTO;
 import com.cmcorg20230301.be.engine.tenant.model.vo.SysTenantInfoByIdVO;
@@ -225,7 +228,7 @@ public class SysTenantServiceImpl extends ServiceImpl<SysTenantMapper, SysTenant
     public Page<SysTenantDO> myPage(SysTenantPageDTO dto) {
 
         // 处理：MyTenantPageDTO
-        TenantUtil.handleMyTenantPageDTO(dto);
+        TenantUtil.handleMyTenantPageDTO(dto, true);
 
         return lambdaQuery().like(StrUtil.isNotBlank(dto.getName()), SysTenantDO::getName, dto.getName())
             .like(StrUtil.isNotBlank(dto.getRemark()), BaseEntityTree::getRemark, dto.getRemark())

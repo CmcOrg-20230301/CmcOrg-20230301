@@ -128,7 +128,7 @@ public class SysPostServiceImpl extends ServiceImpl<SysPostMapper, SysPostDO> im
     public Page<SysPostDO> myPage(SysPostPageDTO dto) {
 
         // 处理：MyTenantPageDTO
-        TenantUtil.handleMyTenantPageDTO(dto);
+        TenantUtil.handleMyTenantPageDTO(dto, true);
 
         return lambdaQuery().like(StrUtil.isNotBlank(dto.getName()), SysPostDO::getName, dto.getName())
             .like(StrUtil.isNotBlank(dto.getRemark()), BaseEntityTree::getRemark, dto.getRemark())

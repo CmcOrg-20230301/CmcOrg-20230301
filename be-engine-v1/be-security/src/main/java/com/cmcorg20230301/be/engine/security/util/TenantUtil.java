@@ -104,9 +104,10 @@ public class TenantUtil {
     }
 
     /**
-     * 获取：用户关联的租户
+     * 获取：用户关联的租户，包含自身的租户
      * 备注：即表示：用户可以查看关联租户的信息
      */
+    @NotNull
     public static Set<Long> getUserRefTenantIdSet() {
 
         Long currentUserId = UserUtil.getCurrentUserId();
@@ -220,8 +221,10 @@ public class TenantUtil {
 
     /**
      * 处理：MyTenantPageDTO
+     *
+     * @param onlySelfTenantIdFlag 如果 dto没有传递 tenantIdSet，是否设置为：自身租户
      */
-    public static void handleMyTenantPageDTO(@NotNull MyTenantPageDTO dto) {
+    public static void handleMyTenantPageDTO(@NotNull MyTenantPageDTO dto, boolean onlySelfTenantIdFlag) {
 
         Set<Long> tenantIdSet = dto.getTenantIdSet();
 
@@ -230,7 +233,15 @@ public class TenantUtil {
 
         if (CollUtil.isEmpty(tenantIdSet)) {
 
-            tenantIdSet = userRefTenantIdSet;
+            if (onlySelfTenantIdFlag) {
+
+                tenantIdSet = CollUtil.newHashSet(UserUtil.getCurrentTenantIdDefault());
+
+            } else {
+
+                tenantIdSet = userRefTenantIdSet;
+
+            }
 
         } else {
 

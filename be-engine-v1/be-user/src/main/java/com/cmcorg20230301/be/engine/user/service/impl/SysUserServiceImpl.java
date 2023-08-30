@@ -83,7 +83,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserProMapper, SysUserDO>
     public Page<SysUserPageVO> myPage(SysUserPageDTO dto) {
 
         // 处理：MyTenantPageDTO
-        TenantUtil.handleMyTenantPageDTO(dto);
+        TenantUtil.handleMyTenantPageDTO(dto, true);
 
         Page<SysUserPageVO> page = baseMapper.myPage(dto.createTimeDescDefaultOrderPage(), dto);
 

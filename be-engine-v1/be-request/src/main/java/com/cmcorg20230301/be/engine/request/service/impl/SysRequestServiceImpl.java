@@ -27,7 +27,7 @@ public class SysRequestServiceImpl extends ServiceImpl<SysRequestMapper, SysRequ
     public Page<SysRequestDO> myPage(SysRequestPageDTO dto) {
 
         // 处理：MyTenantPageDTO
-        TenantUtil.handleMyTenantPageDTO(dto);
+        TenantUtil.handleMyTenantPageDTO(dto, true);
 
         return lambdaQuery().like(StrUtil.isNotBlank(dto.getUri()), SysRequestDO::getUri, dto.getUri())
             .like(StrUtil.isNotBlank(dto.getName()), SysRequestDO::getName, dto.getName())
@@ -57,7 +57,7 @@ public class SysRequestServiceImpl extends ServiceImpl<SysRequestMapper, SysRequ
     public SysRequestAllAvgVO allAvgPro(SysRequestPageDTO dto) {
 
         // 处理：MyTenantPageDTO
-        TenantUtil.handleMyTenantPageDTO(dto);
+        TenantUtil.handleMyTenantPageDTO(dto, true);
 
         return baseMapper.allAvgPro(dto);
 
