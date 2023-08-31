@@ -207,19 +207,17 @@ public class MyTreeUtil {
             return;
         }
 
-        // 处理：topIdSet：通过：父级 id分组，value：子级 idSet
-        Map<Long, Set<Long>> groupParentIdMap = listMap.values().stream().collect(Collectors
-            .groupingBy(BaseEntityTree::getParentId, Collectors.mapping(BaseEntity::getId, Collectors.toSet())));
+        for (T item : listMap.values()) {
 
-        for (Map.Entry<Long, Set<Long>> item : groupParentIdMap.entrySet()) {
+            Long parentId = item.getParentId();
 
-            if (!groupParentIdMap.containsKey(item.getKey())) { // 如果：不存在该父节点，则表示是：顶层节点
+            if (parentId == null) { // 如果不存在，父级 id，则不处理
+                return;
+            }
 
-                for (Long subItem : item.getValue()) {
+            if (listMap.get(parentId).getId() == null) { // 如果：不存在该父节点，则表示是：顶层节点
 
-                    resultList.add(listMap.get(subItem)); // 添加：顶层节点
-
-                }
+                resultList.add(item); // 添加：顶层节点
 
             }
 

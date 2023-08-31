@@ -24,6 +24,7 @@ import com.cmcorg20230301.be.engine.security.mapper.SysUserMapper;
 import com.cmcorg20230301.be.engine.security.model.entity.*;
 import com.cmcorg20230301.be.engine.security.model.vo.ApiResultVO;
 import com.cmcorg20230301.be.engine.security.util.MyEntityUtil;
+import com.cmcorg20230301.be.engine.security.util.SysMenuUtil;
 import com.cmcorg20230301.be.engine.security.util.SysTenantUtil;
 import com.cmcorg20230301.be.engine.security.util.UserUtil;
 import com.cmcorg20230301.be.engine.util.util.MyMapUtil;
@@ -79,11 +80,15 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRoleDO> im
 
         // 如果是默认角色，则取消之前的默认角色
         if (BooleanUtil.isTrue(dto.getDefaultFlag())) {
+
             lambdaUpdate().set(SysRoleDO::getDefaultFlag, false).eq(SysRoleDO::getDefaultFlag, true)
-                .ne(dto.getId() != null, BaseEntity::getId, dto.getId()).update();
+                .eq(BaseEntityNoId::getTenantId, tenantId).ne(dto.getId() != null, BaseEntity::getId, dto.getId())
+                .update();
+
         }
 
         SysRoleDO sysRoleDO = new SysRoleDO();
+
         sysRoleDO.setName(dto.getName());
         sysRoleDO.setDefaultFlag(BooleanUtil.isTrue(dto.getDefaultFlag()));
         sysRoleDO.setEnableFlag(BooleanUtil.isTrue(dto.getEnableFlag()));
@@ -92,7 +97,9 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRoleDO> im
         sysRoleDO.setId(dto.getId());
 
         if (dto.getId() != null) {
+
             deleteByIdSetSub(CollUtil.newHashSet(dto.getId())); // 先删除子表数据
+
         }
 
         saveOrUpdate(sysRoleDO);
@@ -116,17 +123,16 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRoleDO> im
         if (CollUtil.isNotEmpty(dto.getMenuIdSet())) {
 
             // 获取：没有被禁用的菜单 idSet
-            List<SysMenuDO> sysMenuDOList =
-                ChainWrappers.lambdaQueryChain(sysMenuMapper).in(BaseEntity::getId, dto.getMenuIdSet())
-                    .eq(BaseEntity::getEnableFlag, true).select(BaseEntity::getId).list();
-
-            Set<Long> menuIdSet = sysMenuDOList.stream().map(BaseEntity::getId).collect(Collectors.toSet());
+            Set<Long> menuIdSet =
+                SysMenuUtil.getSysMenuCacheMap().keySet().stream().filter(it -> dto.getMenuIdSet().contains(it))
+                    .collect(Collectors.toSet());
 
             List<SysRoleRefMenuDO> insertList = new ArrayList<>(MyMapUtil.getInitialCapacity(menuIdSet.size()));
 
             for (Long menuId : menuIdSet) {
 
                 SysRoleRefMenuDO sysRoleRefMenuDO = new SysRoleRefMenuDO();
+
                 sysRoleRefMenuDO.setRoleId(sysRoleDO.getId());
                 sysRoleRefMenuDO.setMenuId(menuId);
                 insertList.add(sysRoleRefMenuDO);
@@ -151,6 +157,7 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRoleDO> im
             for (Long userId : userIdSet) {
 
                 SysRoleRefUserDO sysRoleRefUserDO = new SysRoleRefUserDO();
+
                 sysRoleRefUserDO.setRoleId(sysRoleDO.getId());
                 sysRoleRefUserDO.setUserId(userId);
                 insertList.add(sysRoleRefUserDO);

@@ -159,38 +159,15 @@ function ListToTreeHandleResultList(resultList: any[], listMap: Map<string | num
         return;
     }
 
-    // 处理：topIdSet：通过：父级 id分组，value：子级 idSet
-    const groupParentIdMap = new Map<string | number, Set<string | number>>();
-
     listMap.forEach((value) => {
 
-        let set = groupParentIdMap.get(value.parentId);
-
-        if (set) {
-
-            set.add(value.id!)
-
-        } else {
-
-            set = new Set<string | number>();
-
-            set.add(value.id)
-
-            groupParentIdMap.set(value.parentId, set)
-
+        if (!value.parentId) { // 如果不存在，父级 id，则不处理
+            return
         }
 
-    })
+        if (!listMap.get(value.parentId)!.id) { // 如果：不存在该父节点，则表示是：顶层节点
 
-    groupParentIdMap.forEach((value, key) => {
-
-        if (!groupParentIdMap.has(key)) { // 如果：不存在该父节点，则表示是：顶层节点
-
-            value.forEach(subValue => {
-
-                resultList.push(listMap.get(subValue)); // 添加：顶层节点
-
-            })
+            resultList.push(value); // 添加：顶层节点
 
         }
 

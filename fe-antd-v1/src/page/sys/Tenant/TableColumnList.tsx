@@ -1,11 +1,12 @@
-import {YesNoDict} from "@/util/DictUtil";
+import {GetDictList, NoFormGetDictTreeList, YesNoDict} from "@/util/DictUtil";
 import {ActionType, ProColumns} from "@ant-design/pro-components";
-import {SysTenantDeleteByIdSet, SysTenantDO, SysTenantInsertOrUpdateDTO} from "@/api/http/SysTenant";
+import {SysTenantDeleteByIdSet, SysTenantDictList, SysTenantDO, SysTenantInsertOrUpdateDTO} from "@/api/http/SysTenant";
 import {ExecConfirm, ToastSuccess} from "@/util/ToastUtil";
 import {CalcOrderNo} from "@/util/TreeUtil";
 import {EllipsisOutlined} from "@ant-design/icons";
-import {Dropdown} from "antd";
+import {Dropdown, TreeSelect} from "antd";
 import React from "react";
+import {SearchTransform} from "@/util/CommonUtil";
 
 const TableColumnList = (currentForm: React.MutableRefObject<SysTenantInsertOrUpdateDTO>, setFormOpen: React.Dispatch<React.SetStateAction<boolean>>, actionRef: React.RefObject<ActionType | undefined>): ProColumns<SysTenantDO>[] => [
 
@@ -14,6 +15,33 @@ const TableColumnList = (currentForm: React.MutableRefObject<SysTenantInsertOrUp
         dataIndex: 'index',
         valueType: 'index',
         width: 90,
+    },
+
+    {
+        title: '租户', dataIndex: 'tenantId', ellipsis: true, width: 90, hideInSearch: true, valueType: 'select',
+        request: () => {
+            return GetDictList(SysTenantDictList)
+        }
+    },
+
+    {
+        title: '租户', dataIndex: 'tenantIdSet', ellipsis: true, width: 90, hideInTable: true, valueType: 'treeSelect',
+        fieldProps: {
+            placeholder: '请选择',
+            allowClear: true,
+            treeNodeFilterProp: 'title',
+            maxTagCount: 'responsive',
+            treeCheckable: true,
+            showCheckedStrategy: TreeSelect.SHOW_ALL,
+            treeCheckStrictly: true,
+        },
+        request: () => {
+            return NoFormGetDictTreeList(SysTenantDictList, true, '-1')
+        },
+        search: {
+            transform: (valueArr: { label: string, value: string }[]) =>
+                SearchTransform(valueArr, 'tenantIdSet')
+        }
     },
 
     {title: '租户id', dataIndex: 'id', ellipsis: true, width: 200,},

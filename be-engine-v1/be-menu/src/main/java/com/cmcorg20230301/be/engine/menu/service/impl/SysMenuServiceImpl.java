@@ -21,10 +21,7 @@ import com.cmcorg20230301.be.engine.security.exception.BaseBizCodeEnum;
 import com.cmcorg20230301.be.engine.security.mapper.SysMenuMapper;
 import com.cmcorg20230301.be.engine.security.model.entity.*;
 import com.cmcorg20230301.be.engine.security.model.vo.ApiResultVO;
-import com.cmcorg20230301.be.engine.security.util.MyEntityUtil;
-import com.cmcorg20230301.be.engine.security.util.MyTreeUtil;
-import com.cmcorg20230301.be.engine.security.util.SysTenantUtil;
-import com.cmcorg20230301.be.engine.security.util.UserUtil;
+import com.cmcorg20230301.be.engine.security.util.*;
 import com.cmcorg20230301.be.engine.util.util.MyMapUtil;
 import org.springframework.stereotype.Service;
 
@@ -274,8 +271,11 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenuDO> im
 
         if (BaseConstant.ADMIN_ID.equals(userId)) {
 
+            Long currentTenantIdDefault = UserUtil.getCurrentTenantIdDefault();
+
             // 如果是 admin账号，则查询所有【不是被禁用了的】菜单
             return SysMenuUtil.getSysMenuCacheMap().values().stream()
+                .filter(it -> currentTenantIdDefault.equals(it.getTenantId()))
                 .sorted(Comparator.comparing(BaseEntityTree::getOrderNo, Comparator.reverseOrder()))
                 .collect(Collectors.toList());
 

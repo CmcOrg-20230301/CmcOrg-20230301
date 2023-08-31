@@ -17,8 +17,6 @@ const TableColumnList = (actionRef: React.RefObject<ActionType | undefined>): Pr
         width: 90,
     },
 
-    {title: 'id', dataIndex: 'id', ellipsis: true, width: 90,},
-
     {
         title: '租户', dataIndex: 'tenantId', ellipsis: true, width: 90, hideInSearch: true, valueType: 'select',
         request: () => {
@@ -45,6 +43,8 @@ const TableColumnList = (actionRef: React.RefObject<ActionType | undefined>): Pr
                 SearchTransform(valueArr, 'tenantIdSet')
         }
     },
+
+    {title: 'id', dataIndex: 'id', ellipsis: true, width: 90,},
 
     {
         title: '用户', dataIndex: 'userId', ellipsis: true, width: 90, valueType: 'select',
