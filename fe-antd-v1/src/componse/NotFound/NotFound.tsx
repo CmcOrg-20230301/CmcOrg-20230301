@@ -2,7 +2,7 @@ import {Navigate} from 'react-router-dom';
 import PathConstant from "@/model/constant/PathConstant";
 import SessionStorageKey from "@/model/constant/SessionStorageKey";
 import LocalStorageKey from "@/model/constant/LocalStorageKey";
-import {GetTenantId} from "@/util/CommonUtil";
+import {GetTenantIdFromStorage} from "@/util/CommonUtil";
 
 // 404页面
 export default function () {
@@ -15,7 +15,9 @@ export default function () {
 
     const jwt = localStorage.getItem(LocalStorageKey.JWT);
 
+    const tenantId = GetTenantIdFromStorage();
+
     return <Navigate
-        to={jwt ? PathConstant.ADMIN_PATH : `${PathConstant.SIGN_IN_PATH}?tenantId=${GetTenantId()}`}/>
+        to={jwt ? PathConstant.ADMIN_PATH : `${PathConstant.SIGN_IN_PATH}?tenantId=${tenantId}`}/>
 
 }

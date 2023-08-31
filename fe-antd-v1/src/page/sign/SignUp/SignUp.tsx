@@ -10,7 +10,6 @@ import PathConstant from "@/model/constant/PathConstant";
 import {SendCode, SignUpFormHandler, UseEffectSign} from "@/page/sign/SignUp/SignUpUtil";
 import {ValidatorUtil} from "@/util/ValidatorUtil";
 import Link from "antd/lib/typography/Link";
-import {GetTenantId} from "@/util/CommonUtil";
 
 type TSignUpType = '0' | '1'; // 注册方式
 
@@ -30,7 +29,7 @@ const signUpTypeArr = ['登录名', '邮箱']
 // 注册
 export default function () {
 
-    const tenantIdRef = useRef<string>(GetTenantId());
+    const tenantIdRef = useRef<string>('0');
 
     const [tenantName, setTenantName] = useState<string>(""); // 租户名
 

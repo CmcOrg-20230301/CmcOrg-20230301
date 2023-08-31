@@ -344,19 +344,32 @@ public class SysTenantUtil {
             return;
         }
 
+        if (insertOrUpdateCommonCheck()) {
+            return;
+        }
+
+        ApiResultVO.errorMsg("操作失败：租户不能进行新增操作");
+
+    }
+
+    /**
+     * 新增或者修改操作，通用的检查方法
+     */
+    public static boolean insertOrUpdateCommonCheck() {
+
         Long currentUserId = UserUtil.getCurrentUserId();
 
         if (BaseConstant.ADMIN_ID.equals(currentUserId)) { // admin可以进行任何操作
-            return;
+            return true;
         }
 
         Long currentTenantIdDefault = UserUtil.getCurrentTenantIdDefault();
 
-        if (BaseConstant.TENANT_ID.equals(currentTenantIdDefault)) { // 如果是：顶层租户的 用户，则可以新增
-            return;
+        if (BaseConstant.TENANT_ID.equals(currentTenantIdDefault)) { // 如果是：顶层租户的 用户，则可以：新增或者修改
+            return true;
         }
 
-        ApiResultVO.error(BaseBizCodeEnum.INSUFFICIENT_PERMISSIONS); // 提示：权限不足
+        return false;
 
     }
 

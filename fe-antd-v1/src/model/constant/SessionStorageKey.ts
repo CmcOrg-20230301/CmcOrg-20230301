@@ -4,4 +4,6 @@ export default {
 
     WEB_SOCKET_ID: 'WEB_SOCKET_ID',
 
+    TENANT_ID: 'TENANT_ID', // 租户 id，用于：手动清除 LocalStorage之后，有一个备份，如果把 SessionStorage，也清除的话，则就没有办法复原了
+
 }

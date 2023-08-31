@@ -1,4 +1,6 @@
 import {ToastWarning} from "./ToastUtil";
+import LocalStorageKey from "@/model/constant/LocalStorageKey";
+import SessionStorageKey from "@/model/constant/SessionStorageKey";
 
 export const InDevMsg = "功能开发中，敬请期待~"
 
@@ -23,7 +25,29 @@ export function GetURLSearchParams() {
  */
 export function GetTenantId(): string {
 
-    return GetURLSearchParams().get("tenantId") || '0'
+    const tenantId = GetURLSearchParams().get("tenantId") || '0';
+
+    localStorage.setItem(LocalStorageKey.TENANT_ID, tenantId)
+    sessionStorage.setItem(SessionStorageKey.TENANT_ID, tenantId)
+
+    return tenantId
+
+}
+
+/**
+ * 从：Storage里面获取 TenantId
+ */
+export function GetTenantIdFromStorage() {
+
+    let tenantId = localStorage.getItem(LocalStorageKey.TENANT_ID);
+
+    if (!tenantId) {
+
+        tenantId = sessionStorage.getItem(SessionStorageKey.TENANT_ID);
+
+    }
+
+    return tenantId || '0'
 
 }
 

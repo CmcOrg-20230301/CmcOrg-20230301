@@ -9,6 +9,7 @@ import {validate} from "@/util/ValidatorUtil";
 import {SignEmailSignInPassword} from "@/api/http/SignEmail";
 import {SignSignInNameSignInPassword} from "@/api/http/SignSignInName";
 import {signOut} from "@/store/userSlice";
+import SessionStorageKey from "@/model/constant/SessionStorageKey";
 
 /**
  * 处理表单
@@ -20,13 +21,13 @@ export async function SignInFormHandler(form: ISignInForm) {
     if (validate.email.regex.test(form.account)) { // 如果是：邮箱
 
         await SignEmailSignInPassword({email: form.account, password, tenantId: form.tenantId}).then(res => {
-            SignInSuccess(res)
+            SignInSuccess(res, form.tenantId)
         })
 
     } else { // 否则是：登录名
 
         await SignSignInNameSignInPassword({signInName: form.account, password, tenantId: form.tenantId}).then(res => {
-            SignInSuccess(res)
+            SignInSuccess(res, form.tenantId)
         });
 
     }
@@ -36,7 +37,7 @@ export async function SignInFormHandler(form: ISignInForm) {
 /**
  * 登录成功之后的处理
  */
-function SignInSuccess(apiResultVO: ApiResultVO) {
+function SignInSuccess(apiResultVO: ApiResultVO, tenantId: string) {
 
     localStorage.clear()
     sessionStorage.clear()
@@ -46,6 +47,10 @@ function SignInSuccess(apiResultVO: ApiResultVO) {
     ToastSuccess('欢迎回来~')
 
     localStorage.setItem(LocalStorageKey.JWT, apiResultVO.data)
+
+    localStorage.setItem(LocalStorageKey.TENANT_ID, tenantId)
+    sessionStorage.setItem(SessionStorageKey.TENANT_ID, tenantId)
+
     getAppNav()(PathConstant.ADMIN_PATH)
 
 }

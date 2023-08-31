@@ -10,12 +10,13 @@ import {SignSignInNameSignUp} from "@/api/http/SignSignInName";
 import {useEffect} from "react";
 import {CloseWebSocket} from "@/util/webSocket/WebSocketUtil";
 import {SysTenantGetNameById} from "@/api/http/SysTenant";
+import {GetTenantId} from "@/util/CommonUtil";
 
 export function UseEffectSign(tenantIdRef: React.MutableRefObject<string>, setTenantName: (value: (((prevState: string) => string) | string)) => void) {
 
     useEffect(() => {
 
-        CloseWebSocket() // 关闭 webSocket
+        tenantIdRef.current = GetTenantId()
 
         SysTenantGetNameById({value: tenantIdRef.current}).then(res => {
 
@@ -30,6 +31,8 @@ export function UseEffectSign(tenantIdRef: React.MutableRefObject<string>, setTe
             }
 
         })
+
+        CloseWebSocket() // 关闭 webSocket
 
     }, [])
 
@@ -84,6 +87,7 @@ export async function SignUpFormHandler(form: ISignUpForm) {
 function SignUpSuccess(res: ApiResultVO, tenantId: string) {
 
     ToastSuccess(res.msg)
+
     getAppNav()(`${PathConstant.SIGN_IN_PATH}?tenantId=${tenantId}`)
 
 }

@@ -1,22 +1,26 @@
-import {getAppDispatch, getAppNav, getUserSelfInfo} from "@/MyApp";
+import {getAppDispatch, getAppNav} from "@/MyApp";
 import {ToastSuccess} from "./ToastUtil";
 import PathConstant from "@/model/constant/PathConstant";
 import {signOut} from "@/store/userSlice";
 import {RandomStr} from "@/util/StrUtil";
+import LocalStorageKey from "@/model/constant/LocalStorageKey";
+import SessionStorageKey from "@/model/constant/SessionStorageKey";
+import {GetTenantIdFromStorage} from "@/util/CommonUtil";
 
 // 退出登录
 export function SignOut(msg ?: string) {
 
-    const userSelfInfo = getUserSelfInfo();
-
-    const tenantId = userSelfInfo.tenantId;
+    const tenantId = GetTenantIdFromStorage();
 
     localStorage.clear()
     sessionStorage.clear()
 
+    localStorage.setItem(LocalStorageKey.TENANT_ID, tenantId)
+    sessionStorage.setItem(SessionStorageKey.TENANT_ID, tenantId)
+
     getAppDispatch()(signOut()) // store 退出登录
 
-    getAppNav()(`${PathConstant.SIGN_IN_PATH}?tenantId=${tenantId ? tenantId : 0}`)
+    getAppNav()(`${PathConstant.SIGN_IN_PATH}?tenantId=${tenantId}`)
 
     if (msg) {
 

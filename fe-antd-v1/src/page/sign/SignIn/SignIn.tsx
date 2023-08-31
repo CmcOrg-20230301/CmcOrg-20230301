@@ -33,7 +33,7 @@ export interface ISignInForm {
 // 登录
 export default function () {
 
-    const tenantIdRef = useRef<string>(GetTenantId()); // 租户 id
+    const tenantIdRef = useRef<string>('0'); // 租户 id
 
     const [tenantName, setTenantName] = useState<string>(""); // 租户名
 
@@ -163,6 +163,7 @@ export function UserForgetPasswordModalForm() {
         onFinish={async (form) => {
 
             const formTemp = {...form, tenantId: GetTenantId()}
+
             formTemp.originNewPassword = RSAEncryptPro(formTemp.newPassword!)
             formTemp.newPassword = PasswordRSAEncrypt(formTemp.newPassword!)
 
@@ -206,6 +207,7 @@ export function UserForgetPasswordModalForm() {
 
             onGetCaptcha={async () => {
 
+                // @ts-ignore
                 await formRef.current?.validateFields(['email']).then(async res => {
 
                     await SignEmailForgetPasswordSendCode({email: res.email, tenantId: GetTenantId()}).then(res => {

@@ -54,6 +54,9 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenuDO> im
         SysTenantUtil.handleBaseTenantInsertOrUpdateDTO(dto, getCheckIllegalFunc1(CollUtil.newHashSet(dto.getId())),
             getTenantIdBaseEntityFunc1());
 
+        // 检查：是否可以修改一些属性
+        dto = checkUpdate(dto, dto.getId());
+
         if (dto.getId() != null && dto.getId().equals(dto.getParentId())) {
             ApiResultVO.error(BaseBizCodeEnum.PARENT_ID_CANNOT_BE_EQUAL_TO_ID);
         }
@@ -95,6 +98,46 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenuDO> im
         insertOrUpdateSub(sysMenuDO, dto); // 新增 子表数据
 
         return BaseBizCodeEnum.OK;
+
+    }
+
+    /**
+     * 检查：是否可以修改一些属性
+     */
+    private SysMenuInsertOrUpdateDTO checkUpdate(SysMenuInsertOrUpdateDTO dto, Long id) {
+
+        if (id == null) {
+            return dto;
+        }
+
+        if (SysTenantUtil.insertOrUpdateCommonCheck()) {
+            return dto;
+        }
+
+        SysMenuDO sysMenuDO = lambdaQuery().eq(BaseEntity::getId, id)
+            .select(SysMenuDO::getRouter, SysMenuDO::getAuths, SysMenuDO::getAuthFlag).one();
+
+        SysMenuInsertOrUpdateDTO sysMenuInsertOrUpdateDTO = new SysMenuInsertOrUpdateDTO();
+
+        sysMenuInsertOrUpdateDTO.setParentId(dto.getParentId());
+        sysMenuInsertOrUpdateDTO.setName(dto.getName());
+        sysMenuInsertOrUpdateDTO.setPath(dto.getPath());
+        sysMenuInsertOrUpdateDTO.setIcon(dto.getIcon());
+        sysMenuInsertOrUpdateDTO.setRoleIdSet(dto.getRoleIdSet());
+        sysMenuInsertOrUpdateDTO.setEnableFlag(dto.getEnableFlag());
+        sysMenuInsertOrUpdateDTO.setFirstFlag(dto.getFirstFlag());
+        sysMenuInsertOrUpdateDTO.setOrderNo(dto.getOrderNo());
+        sysMenuInsertOrUpdateDTO.setShowFlag(dto.getShowFlag());
+        sysMenuInsertOrUpdateDTO.setRedirect(dto.getRedirect());
+        sysMenuInsertOrUpdateDTO.setRemark(dto.getRemark());
+        sysMenuInsertOrUpdateDTO.setTenantId(dto.getTenantId());
+        sysMenuInsertOrUpdateDTO.setId(id);
+
+        sysMenuInsertOrUpdateDTO.setRouter(sysMenuDO.getRouter()); // 不能修改
+        sysMenuInsertOrUpdateDTO.setAuths(sysMenuDO.getAuths()); // 不能修改
+        sysMenuInsertOrUpdateDTO.setAuthFlag(sysMenuDO.getAuthFlag()); // 不能修改
+
+        return sysMenuInsertOrUpdateDTO;
 
     }
 
