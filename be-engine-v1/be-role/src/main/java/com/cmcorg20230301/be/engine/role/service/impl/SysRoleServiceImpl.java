@@ -224,6 +224,10 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRoleDO> im
     @MyTransactional
     public String deleteByIdSet(NotEmptyIdSet notEmptyIdSet) {
 
+        if (CollUtil.isEmpty(notEmptyIdSet.getIdSet())) {
+            return BaseBizCodeEnum.OK;
+        }
+
         // 检查：是否非法操作
         SysTenantUtil.checkIllegal(notEmptyIdSet.getIdSet(), getCheckIllegalFunc1(notEmptyIdSet.getIdSet()));
 

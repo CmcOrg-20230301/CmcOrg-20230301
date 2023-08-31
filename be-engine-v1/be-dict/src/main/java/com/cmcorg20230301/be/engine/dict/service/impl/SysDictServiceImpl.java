@@ -203,6 +203,10 @@ public class SysDictServiceImpl extends ServiceImpl<SysDictMapper, SysDictDO> im
     @MyTransactional
     public String deleteByIdSet(NotEmptyIdSet notEmptyIdSet) {
 
+        if (CollUtil.isEmpty(notEmptyIdSet.getIdSet())) {
+            return BaseBizCodeEnum.OK;
+        }
+
         // 根据 idSet删除
         removeByIds(notEmptyIdSet.getIdSet());
 

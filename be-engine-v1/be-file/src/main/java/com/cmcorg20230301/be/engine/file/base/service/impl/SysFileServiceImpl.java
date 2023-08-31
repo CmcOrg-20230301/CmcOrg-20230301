@@ -1,5 +1,6 @@
 package com.cmcorg20230301.be.engine.file.base.service.impl;
 
+import cn.hutool.core.collection.CollUtil;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.cmcorg20230301.be.engine.file.base.mapper.SysFileMapper;
 import com.cmcorg20230301.be.engine.file.base.model.dto.SysFileUploadDTO;
@@ -54,6 +55,10 @@ public class SysFileServiceImpl extends ServiceImpl<SysFileMapper, SysFileDO> im
      */
     @Override
     public String removeByFileIdSet(NotEmptyIdSet notEmptyIdSet) {
+
+        if (CollUtil.isEmpty(notEmptyIdSet.getIdSet())) {
+            return BaseBizCodeEnum.OK;
+        }
 
         SysFileUtil.removeByFileIdSet(notEmptyIdSet.getIdSet(), true);
 

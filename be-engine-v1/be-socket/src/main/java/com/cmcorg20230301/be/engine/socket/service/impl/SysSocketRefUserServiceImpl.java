@@ -53,6 +53,10 @@ public class SysSocketRefUserServiceImpl extends ServiceImpl<SysSocketRefUserMap
     @Override
     public String offlineByIdSet(NotEmptyIdSet notEmptyIdSet) {
 
+        if (CollUtil.isEmpty(notEmptyIdSet.getIdSet())) {
+            return BaseBizCodeEnum.OK;
+        }
+
         // 检查：是否非法操作
         SysTenantUtil.checkIllegal(notEmptyIdSet.getIdSet(),
             tenantIdSet -> lambdaQuery().in(BaseEntity::getId, notEmptyIdSet.getIdSet())

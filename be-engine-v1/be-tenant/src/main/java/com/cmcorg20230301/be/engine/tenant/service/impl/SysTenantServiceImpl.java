@@ -300,6 +300,10 @@ public class SysTenantServiceImpl extends ServiceImpl<SysTenantMapper, SysTenant
     @MyTransactional
     public String deleteByIdSet(NotEmptyIdSet notEmptyIdSet) {
 
+        if (CollUtil.isEmpty(notEmptyIdSet.getIdSet())) {
+            return BaseBizCodeEnum.OK;
+        }
+
         // 检查：是否非法操作
         SysTenantUtil.checkIllegal(notEmptyIdSet.getIdSet(), getCheckIllegalFunc1(notEmptyIdSet.getIdSet()));
 
@@ -328,7 +332,16 @@ public class SysTenantServiceImpl extends ServiceImpl<SysTenantMapper, SysTenant
 
         sysTenantRefUserService.removeByIds(idSet);
 
-        sysMenuService.lambdaUpdate().in(BaseEntityNoId::getTenantId, idSet).remove();
+        List<SysMenuDO> sysMenuDOList =
+            sysMenuService.lambdaQuery().in(BaseEntityNoId::getTenantId, idSet).select(BaseEntity::getId).list();
+
+        if (CollUtil.isNotEmpty(sysMenuDOList)) {
+
+            Set<Long> menuIdSet = sysMenuDOList.stream().map(BaseEntity::getId).collect(Collectors.toSet());
+
+            sysMenuService.deleteByIdSet(new NotEmptyIdSet(menuIdSet));
+
+        }
 
         if (deleteFlag) {
 

@@ -436,6 +436,10 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserProMapper, SysUserDO>
     @MyTransactional
     public String deleteByIdSet(NotEmptyIdSet notEmptyIdSet) {
 
+        if (CollUtil.isEmpty(notEmptyIdSet.getIdSet())) {
+            return BaseBizCodeEnum.OK;
+        }
+
         SignUtil.doSignDelete(notEmptyIdSet.getIdSet());
 
         return BaseBizCodeEnum.OK;
@@ -447,6 +451,10 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserProMapper, SysUserDO>
      */
     @Override
     public String refreshJwtSecretSuf(NotEmptyIdSet notEmptyIdSet) {
+
+        if (CollUtil.isEmpty(notEmptyIdSet.getIdSet())) {
+            return BaseBizCodeEnum.OK;
+        }
 
         // 检查：是否非法操作
         SysTenantUtil.checkIllegal(notEmptyIdSet.getIdSet(), getCheckIllegalFunc1(notEmptyIdSet.getIdSet()));
@@ -531,6 +539,10 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserProMapper, SysUserDO>
      */
     @Override
     public String resetAvatar(NotEmptyIdSet notEmptyIdSet) {
+
+        if (CollUtil.isEmpty(notEmptyIdSet.getIdSet())) {
+            return BaseBizCodeEnum.OK;
+        }
 
         // 检查：是否非法操作
         SysTenantUtil.checkIllegal(notEmptyIdSet.getIdSet(), getCheckIllegalFunc1(notEmptyIdSet.getIdSet()));

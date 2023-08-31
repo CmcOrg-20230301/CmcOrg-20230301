@@ -320,12 +320,16 @@ public class SysTenantUtil {
     @SneakyThrows
     public static void checkIllegal(Set<Long> idSet, @NotNull Func1<Set<Long>, Long> func1) {
 
+        if (CollUtil.isEmpty(idSet)) {
+            return;
+        }
+
         // 获取：用户关联的租户
         Set<Long> tenantIdSet = SysTenantUtil.getUserRefTenantIdSet();
 
         Long count = func1.call(tenantIdSet);
 
-        if (idSet.size() != count) {
+        if (count != 0 && idSet.size() != count) {
 
             ApiResultVO.error(BaseBizCodeEnum.ILLEGAL_REQUEST);
 

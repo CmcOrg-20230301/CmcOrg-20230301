@@ -74,6 +74,10 @@ public class SysParamServiceImpl extends ServiceImpl<SysParamMapper, SysParamDO>
     @Override
     public String deleteByIdSet(NotEmptyIdSet notEmptyIdSet) {
 
+        if (CollUtil.isEmpty(notEmptyIdSet.getIdSet())) {
+            return BaseBizCodeEnum.OK;
+        }
+
         for (Long item : notDeleteIdSet) {
 
             if (notEmptyIdSet.getIdSet().contains(item)) {

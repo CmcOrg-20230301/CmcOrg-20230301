@@ -1,5 +1,6 @@
 package com.cmcorg20230301.be.engine.socket.service.impl;
 
+import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -39,6 +40,10 @@ public class SysSocketServiceImpl extends ServiceImpl<SysSocketMapper, SysSocket
     @Override
     public String disableByIdSet(NotEmptyIdSet notEmptyIdSet) {
 
+        if (CollUtil.isEmpty(notEmptyIdSet.getIdSet())) {
+            return BaseBizCodeEnum.OK;
+        }
+
         lambdaUpdate().in(BaseEntity::getId, notEmptyIdSet.getIdSet()).set(BaseEntityNoId::getEnableFlag, false)
             .update();
 
@@ -54,6 +59,10 @@ public class SysSocketServiceImpl extends ServiceImpl<SysSocketMapper, SysSocket
      */
     @Override
     public String enableByIdSet(NotEmptyIdSet notEmptyIdSet) {
+
+        if (CollUtil.isEmpty(notEmptyIdSet.getIdSet())) {
+            return BaseBizCodeEnum.OK;
+        }
 
         lambdaUpdate().in(BaseEntity::getId, notEmptyIdSet.getIdSet()).set(BaseEntityNoId::getEnableFlag, true)
             .update();
