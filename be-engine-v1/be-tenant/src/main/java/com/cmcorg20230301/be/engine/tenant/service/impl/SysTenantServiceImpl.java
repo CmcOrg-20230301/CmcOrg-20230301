@@ -31,10 +31,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -128,7 +125,17 @@ public class SysTenantServiceImpl extends ServiceImpl<SysTenantMapper, SysTenant
 
         Long currentUserId = UserUtil.getCurrentUserId();
 
-        Set<SysMenuDO> sysMenuDoSet = UserUtil.getMenuSetByUserId(currentUserId, 2);
+        Set<SysMenuDO> sysMenuDoSet;
+
+        if (BaseConstant.ADMIN_ID.equals(currentUserId)) { // 如果是：admin，则是全部的菜单
+
+            sysMenuDoSet = new HashSet<>(SysMenuUtil.getSysMenuCacheMap().values());
+
+        } else {
+
+            sysMenuDoSet = UserUtil.getMenuSetByUserId(currentUserId, 2);
+
+        }
 
         if (CollUtil.isEmpty(sysMenuDoSet)) {
 
