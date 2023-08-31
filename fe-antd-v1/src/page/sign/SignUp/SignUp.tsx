@@ -1,4 +1,4 @@
-import {useEffect, useRef, useState} from "react";
+import {useRef, useState} from "react";
 import SignLayout from "@/layout/SignLayout/SignLayout";
 import {LoginForm, ProFormCaptcha, ProFormInstance, ProFormText} from "@ant-design/pro-components";
 import CommonConstant from "@/model/constant/CommonConstant";
@@ -11,7 +11,6 @@ import {SendCode, SignUpFormHandler, UseEffectSign} from "@/page/sign/SignUp/Sig
 import {ValidatorUtil} from "@/util/ValidatorUtil";
 import Link from "antd/lib/typography/Link";
 import {GetTenantId} from "@/util/CommonUtil";
-import {SysTenantGetNameById} from "@/api/http/SysTenant";
 
 type TSignUpType = '0' | '1'; // 注册方式
 
@@ -31,29 +30,11 @@ const signUpTypeArr = ['登录名', '邮箱']
 // 注册
 export default function () {
 
-    UseEffectSign()
-
     const tenantIdRef = useRef<string>(GetTenantId());
 
     const [tenantName, setTenantName] = useState<string>(""); // 租户名
 
-    useEffect(() => {
-
-        SysTenantGetNameById({value: tenantIdRef.current}).then(res => {
-
-            if (res.data) {
-
-                setTenantName(res.data + " - ")
-
-            } else {
-
-                setTenantName("")
-
-            }
-
-        })
-
-    }, [])
+    UseEffectSign(tenantIdRef, setTenantName)
 
     const [activeKey, setActiveKey] = useState<TSignUpType>('0');
     const formRef = useRef<ProFormInstance<ISignUpForm>>();

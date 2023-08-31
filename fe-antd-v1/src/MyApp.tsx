@@ -6,6 +6,7 @@ import {AppDispatch, useAppDispatch, useAppSelector} from "@/store";
 import PathConstant from "@/model/constant/PathConstant";
 import {App} from "antd";
 import {useAppProps} from "antd/es/app/context";
+import {UserSelfInfoVO} from "@/api/http/UserSelf";
 
 // MyApp
 export default function () {
@@ -102,6 +103,15 @@ export function getApp() {
 
 }
 
+let userSelfInfo: UserSelfInfoVO
+
+// 获取：用户信息
+export function getUserSelfInfo() {
+
+    return userSelfInfo
+
+}
+
 // 加载 element
 function LoadElement(props: ILoadElement) {
 
@@ -110,6 +120,8 @@ function LoadElement(props: ILoadElement) {
     appDispatch = useAppDispatch();
 
     myApp = App.useApp();
+
+    userSelfInfo = useAppSelector((state) => state.user.userSelfInfo)
 
     if (props.elementStr && RouterMapKeyList.includes(props.elementStr)) {
 

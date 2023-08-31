@@ -1,7 +1,7 @@
 import {LockOutlined, UserOutlined,} from '@ant-design/icons';
 import {LoginForm, ModalForm, ProFormCaptcha, ProFormInstance, ProFormText} from '@ant-design/pro-components';
 import {Tabs} from 'antd';
-import {useEffect, useRef, useState} from 'react';
+import {useRef, useState} from 'react';
 import IconSvg from '../../../../public/icon.svg'
 import SignLayout from "@/layout/SignLayout/SignLayout";
 import CommonConstant from "@/model/constant/CommonConstant";
@@ -19,7 +19,6 @@ import {ToastSuccess} from "@/util/ToastUtil";
 import {ValidatorUtil} from "@/util/ValidatorUtil";
 import {UseEffectSign} from "@/page/sign/SignUp/SignUpUtil";
 import {GetTenantId} from "@/util/CommonUtil";
-import {SysTenantGetNameById} from "@/api/http/SysTenant";
 
 type TSignInType = 'account'; // 登录方式
 
@@ -34,29 +33,11 @@ export interface ISignInForm {
 // 登录
 export default function () {
 
-    UseEffectSign()
-
     const tenantIdRef = useRef<string>(GetTenantId()); // 租户 id
 
     const [tenantName, setTenantName] = useState<string>(""); // 租户名
 
-    useEffect(() => {
-
-        SysTenantGetNameById({value: tenantIdRef.current}).then(res => {
-
-            if (res.data) {
-
-                setTenantName(res.data + " - ")
-
-            } else {
-
-                setTenantName("")
-
-            }
-
-        })
-
-    }, [])
+    UseEffectSign(tenantIdRef, setTenantName)
 
     const [signInType, setSignInType] = useState<TSignInType>('account');
 

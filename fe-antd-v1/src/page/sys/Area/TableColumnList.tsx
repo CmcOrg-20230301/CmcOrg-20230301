@@ -9,6 +9,7 @@ import React from "react";
 import {SysTenantDictList} from "@/api/http/SysTenant";
 import {SearchTransform} from "@/util/CommonUtil";
 
+// @ts-ignore
 const TableColumnList = (currentForm: React.MutableRefObject<SysAreaInsertOrUpdateDTO>, setFormOpen: React.Dispatch<React.SetStateAction<boolean>>, actionRef: React.RefObject<ActionType | undefined>): ProColumns<SysAreaDO>[] => [
 
     {

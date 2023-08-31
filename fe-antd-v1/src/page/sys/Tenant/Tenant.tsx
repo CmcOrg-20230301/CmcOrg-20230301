@@ -61,6 +61,9 @@ export default function () {
                 sticky={{offsetHeader: fullScreenFlag ? 0 : CommonConstant.NAV_TOP_HEIGHT}}
 
                 actionRef={actionRef}
+
+                formRef={tableFormRef}
+
                 rowKey={"id"}
                 pagination={false}
                 columnEmptyText={false}
@@ -277,7 +280,7 @@ export default function () {
 
                             >
 
-                            重置
+                                重置
 
                             </Button>,
 

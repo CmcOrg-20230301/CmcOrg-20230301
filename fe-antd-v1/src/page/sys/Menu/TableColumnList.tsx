@@ -13,6 +13,7 @@ import {SearchTransform} from "@/util/CommonUtil";
 
 const QuicklyAddAuth = "快速添加权限"
 
+// @ts-ignore
 const TableColumnList = (currentForm: React.MutableRefObject<SysMenuInsertOrUpdateDTO>, setFormOpen: React.Dispatch<React.SetStateAction<boolean>>, actionRef: React.RefObject<ActionType | undefined>): ProColumns<SysMenuDO>[] => [
 
     {

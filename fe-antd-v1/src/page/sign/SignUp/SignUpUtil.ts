@@ -9,12 +9,27 @@ import {ISignUpForm} from "@/page/sign/SignUp/SignUp";
 import {SignSignInNameSignUp} from "@/api/http/SignSignInName";
 import {useEffect} from "react";
 import {CloseWebSocket} from "@/util/webSocket/WebSocketUtil";
+import {SysTenantGetNameById} from "@/api/http/SysTenant";
 
-export function UseEffectSign() {
+export function UseEffectSign(tenantIdRef: React.MutableRefObject<string>, setTenantName: (value: (((prevState: string) => string) | string)) => void) {
 
     useEffect(() => {
 
         CloseWebSocket() // 关闭 webSocket
+
+        SysTenantGetNameById({value: tenantIdRef.current}).then(res => {
+
+            if (res.data) {
+
+                setTenantName(res.data + " - ")
+
+            } else {
+
+                setTenantName("")
+
+            }
+
+        })
 
     }, [])
 

@@ -3,6 +3,7 @@ import {ActionType, ProColumns} from "@ant-design/pro-components";
 import {SysSocketDisableByIdSet, SysSocketDO, SysSocketEnableByIdSet} from "@/api/http/SysSocket";
 import {ExecConfirm, ToastSuccess} from "@/util/ToastUtil";
 
+// @ts-ignore
 const TableColumnList = (actionRef: React.RefObject<ActionType | undefined>): ProColumns<SysSocketDO>[] => [
 
     {

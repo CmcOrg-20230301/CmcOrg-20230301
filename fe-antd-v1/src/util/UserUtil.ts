@@ -1,17 +1,13 @@
-import {getAppDispatch, getAppNav} from "@/MyApp";
+import {getAppDispatch, getAppNav, getUserSelfInfo} from "@/MyApp";
 import {ToastSuccess} from "./ToastUtil";
 import PathConstant from "@/model/constant/PathConstant";
 import {signOut} from "@/store/userSlice";
 import {RandomStr} from "@/util/StrUtil";
-import LocalStorageKey from "@/model/constant/LocalStorageKey";
-import {UserSelfInfoVO} from "@/api/http/UserSelf";
 
 // 退出登录
 export function SignOut(msg ?: string) {
 
-    const userSelfInfo: UserSelfInfoVO = JSON.parse(
-        localStorage.getItem(LocalStorageKey.USER_SELF_INFO) || '{}'
-    );
+    const userSelfInfo = getUserSelfInfo();
 
     const tenantId = userSelfInfo.tenantId;
 
