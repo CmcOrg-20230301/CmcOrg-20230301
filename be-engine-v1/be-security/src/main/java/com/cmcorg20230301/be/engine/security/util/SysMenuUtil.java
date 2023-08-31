@@ -141,14 +141,14 @@ public class SysMenuUtil {
     /**
      * 通过：roleId，获取：菜单 set
      */
-    @Nullable
+    @NotNull
     private static Set<SysMenuDO> doGetMenuSetByRoleId(RedisKeyEnum redisKeyEnum, Long roleId) {
 
         // 获取：角色关联的菜单 idSet
         Set<Long> menuIdSet = getRoleRefMenuIdSet(roleId);
 
         if (CollUtil.isEmpty(menuIdSet)) {
-            return null;
+            return new HashSet<>();
         }
 
         // 获取：所有菜单
@@ -168,7 +168,7 @@ public class SysMenuUtil {
         }
 
         if (CollUtil.isEmpty(allSysMenuDOList)) {
-            return null;
+            return new HashSet<>();
         }
 
         // 通过：menuIdSet，获取：完整的 menuDoSet
@@ -179,7 +179,7 @@ public class SysMenuUtil {
     /**
      * 通过：menuIdSet，获取：完整的 menuDoSet
      */
-    @Nullable
+    @NotNull
     public static Set<SysMenuDO> getFullSysMenuDoSet(Set<Long> menuIdSet,
         Collection<SysMenuDO> allSysMenuDoCollection) {
 
@@ -188,7 +188,7 @@ public class SysMenuUtil {
             allSysMenuDoCollection.stream().filter(it -> menuIdSet.contains(it.getId())).collect(Collectors.toSet());
 
         if (resultSet.size() == 0) {
-            return null;
+            return new HashSet<>();
         }
 
         // 已经添加了 menuIdSet
