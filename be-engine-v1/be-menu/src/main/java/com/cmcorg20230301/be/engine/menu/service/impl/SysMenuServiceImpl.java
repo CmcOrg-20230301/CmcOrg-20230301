@@ -47,6 +47,9 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenuDO> im
     @MyTransactional
     public String insertOrUpdate(SysMenuInsertOrUpdateDTO dto) {
 
+        // 检查：是否可以新增
+        SysTenantUtil.checkInsert(dto);
+
         // 处理：BaseTenantInsertOrUpdateDTO
         SysTenantUtil.handleBaseTenantInsertOrUpdateDTO(dto, getCheckIllegalFunc1(CollUtil.newHashSet(dto.getId())),
             getTenantIdBaseEntityFunc1());

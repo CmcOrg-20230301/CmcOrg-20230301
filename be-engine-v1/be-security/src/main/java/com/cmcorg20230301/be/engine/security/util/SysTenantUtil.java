@@ -333,4 +333,31 @@ public class SysTenantUtil {
 
     }
 
+    /**
+     * 检查：是否可以新增
+     */
+    public static void checkInsert(BaseTenantInsertOrUpdateDTO dto) {
+
+        Long id = dto.getId();
+
+        if (id != null) {
+            return;
+        }
+
+        Long currentUserId = UserUtil.getCurrentUserId();
+
+        if (BaseConstant.ADMIN_ID.equals(currentUserId)) { // admin可以进行任何操作
+            return;
+        }
+
+        Long currentTenantIdDefault = UserUtil.getCurrentTenantIdDefault();
+
+        if (BaseConstant.TENANT_ID.equals(currentTenantIdDefault)) { // 如果是：顶层租户的 用户，则可以新增
+            return;
+        }
+
+        ApiResultVO.error(BaseBizCodeEnum.INSUFFICIENT_PERMISSIONS); // 提示：权限不足
+
+    }
+
 }
