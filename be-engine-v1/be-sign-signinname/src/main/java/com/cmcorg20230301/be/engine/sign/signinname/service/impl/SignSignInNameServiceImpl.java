@@ -7,6 +7,7 @@ import com.cmcorg20230301.be.engine.security.mapper.SysUserMapper;
 import com.cmcorg20230301.be.engine.security.model.entity.SysUserDO;
 import com.cmcorg20230301.be.engine.security.model.vo.ApiResultVO;
 import com.cmcorg20230301.be.engine.security.properties.SecurityProperties;
+import com.cmcorg20230301.be.engine.security.util.UserUtil;
 import com.cmcorg20230301.be.engine.sign.helper.util.SignUtil;
 import com.cmcorg20230301.be.engine.sign.signinname.model.dto.*;
 import com.cmcorg20230301.be.engine.sign.signinname.service.SignSignInNameService;
@@ -59,7 +60,7 @@ public class SignSignInNameServiceImpl implements SignSignInNameService {
     @Override
     public String updatePassword(SignSignInNameUpdatePasswordDTO dto) {
 
-        SignUtil.checkWillError(PRE_REDIS_KEY_ENUM, null, false); // 检查：是否可以进行操作
+        SignUtil.checkWillError(PRE_REDIS_KEY_ENUM, null, false, UserUtil.getCurrentTenantIdDefault()); // 检查：是否可以进行操作
 
         return SignUtil.updatePassword(dto.getNewPassword(), dto.getOriginNewPassword(), PRE_REDIS_KEY_ENUM, null,
             dto.getOldPassword());
@@ -72,7 +73,7 @@ public class SignSignInNameServiceImpl implements SignSignInNameService {
     @Override
     public String updateAccount(SignSignInNameUpdateAccountDTO dto) {
 
-        SignUtil.checkWillError(PRE_REDIS_KEY_ENUM, null, false); // 检查：是否可以进行操作
+        SignUtil.checkWillError(PRE_REDIS_KEY_ENUM, null, false, UserUtil.getCurrentTenantIdDefault()); // 检查：是否可以进行操作
 
         return SignUtil.updateAccount(null, null, PRE_REDIS_KEY_ENUM, dto.getNewSignInName(), dto.getCurrentPassword());
 
@@ -84,7 +85,7 @@ public class SignSignInNameServiceImpl implements SignSignInNameService {
     @Override
     public String signDelete(SignSignInNameSignDeleteDTO dto) {
 
-        SignUtil.checkWillError(PRE_REDIS_KEY_ENUM, null, false); // 检查：是否可以进行操作
+        SignUtil.checkWillError(PRE_REDIS_KEY_ENUM, null, false, UserUtil.getCurrentTenantIdDefault()); // 检查：是否可以进行操作
 
         return SignUtil.signDelete(null, PRE_REDIS_KEY_ENUM, dto.getCurrentPassword());
 

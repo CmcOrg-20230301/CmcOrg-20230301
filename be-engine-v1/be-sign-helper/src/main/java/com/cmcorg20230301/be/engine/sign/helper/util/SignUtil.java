@@ -1138,7 +1138,7 @@ public class SignUtil {
      * @param account      账号信息，一般情况为 null，目前只有忘记密码的时候，才会传值
      * @param notCheckFlag 是否不检查，一般情况为 false，目前，在绑定邮箱，修改邮箱的时候，才会为 true，目的：不检查：是否有手机
      */
-    public static void checkWillError(RedisKeyEnum redisKeyEnum, String account, boolean notCheckFlag) {
+    public static void checkWillError(RedisKeyEnum redisKeyEnum, String account, boolean notCheckFlag, long tenantId) {
 
         if (notCheckFlag) {
             return;
@@ -1155,14 +1155,16 @@ public class SignUtil {
         if (redisKeyEnum.equals(RedisKeyEnum.PRE_SIGN_IN_NAME)) { // 如果是：登录名
 
             // 判断：密码不能为空，并且不能有邮箱，手机
-            legalFlag = ChainWrappers.lambdaQueryChain(sysUserMapper).eq(userId != null, BaseEntity::getId, userId)
-                .ne(SysUserDO::getPassword, "").eq(SysUserDO::getEmail, "").eq(SysUserDO::getPhone, "").exists();
+            legalFlag = !ChainWrappers.lambdaQueryChain(sysUserMapper).eq(userId != null, BaseEntity::getId, userId)
+                .ne(SysUserDO::getPassword, "").eq(SysUserDO::getEmail, "").eq(SysUserDO::getPhone, "")
+                .eq(BaseEntityNoId::getTenantId, tenantId).exists();
 
         } else if (redisKeyEnum.equals(RedisKeyEnum.PRE_EMAIL)) { // 如果是：邮箱
 
             // 判断：不能有手机
-            legalFlag = ChainWrappers.lambdaQueryChain(sysUserMapper).eq(userId != null, BaseEntity::getId, userId)
-                .eq(userId == null, SysUserDO::getEmail, account).eq(SysUserDO::getPhone, "").exists();
+            legalFlag = !ChainWrappers.lambdaQueryChain(sysUserMapper).eq(userId != null, BaseEntity::getId, userId)
+                .eq(userId == null, SysUserDO::getEmail, account).eq(SysUserDO::getPhone, "")
+                .eq(BaseEntityNoId::getTenantId, tenantId).exists();
 
         } else if (redisKeyEnum.equals(RedisKeyEnum.PRE_PHONE)) { // 如果是：手机号
 

@@ -90,7 +90,7 @@ public class SignEmailServiceImpl implements SignEmailService {
     @Override
     public String updatePasswordSendCode() {
 
-        SignUtil.checkWillError(PRE_REDIS_KEY_ENUM, null, false); // 检查：是否可以进行操作
+        SignUtil.checkWillError(PRE_REDIS_KEY_ENUM, null, false, UserUtil.getCurrentTenantIdDefault()); // 检查：是否可以进行操作
 
         return SignUtil.getAccountAndSendCode(PRE_REDIS_KEY_ENUM,
             (code, account) -> MyEmailUtil.send(account, EmailMessageEnum.UPDATE_PASSWORD, code, false));
@@ -103,7 +103,7 @@ public class SignEmailServiceImpl implements SignEmailService {
     @Override
     public String updatePassword(SignEmailUpdatePasswordDTO dto) {
 
-        SignUtil.checkWillError(PRE_REDIS_KEY_ENUM, null, false); // 检查：是否可以进行操作
+        SignUtil.checkWillError(PRE_REDIS_KEY_ENUM, null, false, UserUtil.getCurrentTenantIdDefault()); // 检查：是否可以进行操作
 
         return SignUtil
             .updatePassword(dto.getNewPassword(), dto.getOriginNewPassword(), PRE_REDIS_KEY_ENUM, dto.getCode(), null);
@@ -116,7 +116,7 @@ public class SignEmailServiceImpl implements SignEmailService {
     @Override
     public String updateAccountSendCode() {
 
-        SignUtil.checkWillError(PRE_REDIS_KEY_ENUM, null, true); // 检查：是否可以进行操作
+        SignUtil.checkWillError(PRE_REDIS_KEY_ENUM, null, true, UserUtil.getCurrentTenantIdDefault()); // 检查：是否可以进行操作
 
         String currentUserEmailNotAdmin = UserUtil.getCurrentUserEmailNotAdmin();
 
@@ -134,7 +134,7 @@ public class SignEmailServiceImpl implements SignEmailService {
     @Override
     public String updateAccount(SignEmailUpdateAccountDTO dto) {
 
-        SignUtil.checkWillError(PRE_REDIS_KEY_ENUM, null, true); // 检查：是否可以进行操作
+        SignUtil.checkWillError(PRE_REDIS_KEY_ENUM, null, true, UserUtil.getCurrentTenantIdDefault()); // 检查：是否可以进行操作
 
         return SignUtil
             .updateAccount(dto.getOldEmailCode(), dto.getNewEmailCode(), PRE_REDIS_KEY_ENUM, dto.getNewEmail(), null);
@@ -147,7 +147,7 @@ public class SignEmailServiceImpl implements SignEmailService {
     @Override
     public String forgetPasswordSendCode(EmailNotBlankDTO dto) {
 
-        SignUtil.checkWillError(PRE_REDIS_KEY_ENUM, dto.getEmail(), false); // 检查：是否可以进行操作
+        SignUtil.checkWillError(PRE_REDIS_KEY_ENUM, dto.getEmail(), false, dto.getTenantId()); // 检查：是否可以进行操作
 
         String key = PRE_REDIS_KEY_ENUM + dto.getEmail();
 
@@ -164,7 +164,7 @@ public class SignEmailServiceImpl implements SignEmailService {
     @Override
     public String forgetPassword(SignEmailForgetPasswordDTO dto) {
 
-        SignUtil.checkWillError(PRE_REDIS_KEY_ENUM, dto.getEmail(), false); // 检查：是否可以进行操作
+        SignUtil.checkWillError(PRE_REDIS_KEY_ENUM, dto.getEmail(), false, dto.getTenantId()); // 检查：是否可以进行操作
 
         return SignUtil
             .forgetPassword(dto.getNewPassword(), dto.getOriginNewPassword(), dto.getCode(), PRE_REDIS_KEY_ENUM,
@@ -178,7 +178,7 @@ public class SignEmailServiceImpl implements SignEmailService {
     @Override
     public String signDeleteSendCode() {
 
-        SignUtil.checkWillError(PRE_REDIS_KEY_ENUM, null, false); // 检查：是否可以进行操作
+        SignUtil.checkWillError(PRE_REDIS_KEY_ENUM, null, false, UserUtil.getCurrentTenantIdDefault()); // 检查：是否可以进行操作
 
         return SignUtil.getAccountAndSendCode(PRE_REDIS_KEY_ENUM,
             (code, account) -> MyEmailUtil.send(account, EmailMessageEnum.SIGN_DELETE, code, false));
@@ -191,7 +191,7 @@ public class SignEmailServiceImpl implements SignEmailService {
     @Override
     public String signDelete(NotBlankCodeDTO dto) {
 
-        SignUtil.checkWillError(PRE_REDIS_KEY_ENUM, null, false); // 检查：是否可以进行操作
+        SignUtil.checkWillError(PRE_REDIS_KEY_ENUM, null, false, UserUtil.getCurrentTenantIdDefault()); // 检查：是否可以进行操作
 
         return SignUtil.signDelete(dto.getCode(), PRE_REDIS_KEY_ENUM, null);
 
@@ -203,7 +203,7 @@ public class SignEmailServiceImpl implements SignEmailService {
     @Override
     public String bindAccountSendCode(EmailNotBlankDTO dto) {
 
-        SignUtil.checkWillError(PRE_REDIS_KEY_ENUM, null, true); // 检查：是否可以进行操作
+        SignUtil.checkWillError(PRE_REDIS_KEY_ENUM, null, true, UserUtil.getCurrentTenantIdDefault()); // 检查：是否可以进行操作
 
         String key = PRE_REDIS_KEY_ENUM + dto.getEmail();
 
@@ -220,7 +220,7 @@ public class SignEmailServiceImpl implements SignEmailService {
     @Override
     public String bindAccount(SignEmailBindAccountDTO dto) {
 
-        SignUtil.checkWillError(PRE_REDIS_KEY_ENUM, null, true); // 检查：是否可以进行操作
+        SignUtil.checkWillError(PRE_REDIS_KEY_ENUM, null, true, UserUtil.getCurrentTenantIdDefault()); // 检查：是否可以进行操作
 
         return SignUtil.bindAccount(dto.getCode(), PRE_REDIS_KEY_ENUM, dto.getEmail());
 
