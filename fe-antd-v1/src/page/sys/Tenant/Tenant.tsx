@@ -62,8 +62,6 @@ export default function () {
 
                 actionRef={actionRef}
 
-                formRef={tableFormRef}
-
                 rowKey={"id"}
                 pagination={false}
                 columnEmptyText={false}
