@@ -2,6 +2,7 @@ package com.cmcorg20230301.be.engine.user.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.lang.func.Func1;
 import cn.hutool.core.map.MapUtil;
 import cn.hutool.core.util.BooleanUtil;
 import cn.hutool.core.util.DesensitizedUtil;
@@ -45,6 +46,7 @@ import com.cmcorg20230301.be.engine.user.model.vo.SysUserPageVO;
 import com.cmcorg20230301.be.engine.user.service.SysUserService;
 import com.cmcorg20230301.be.engine.util.util.MyMapUtil;
 import com.cmcorg20230301.be.engine.util.util.NicknameUtil;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Nullable;
@@ -185,16 +187,9 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserProMapper, SysUserDO>
     @MyTransactional
     public String insertOrUpdate(SysUserInsertOrUpdateDTO dto) {
 
-        Long tenantId = dto.getTenantId();
-
-        // 检查：租户 id是否合法
-        SysTenantUtil.getTenantId(tenantId);
-
-        if (tenantId == null) {
-
-            tenantId = UserUtil.getCurrentTenantIdDefault();
-
-        }
+        // 处理：BaseTenantInsertOrUpdateDTO
+        SysTenantUtil.handleBaseTenantInsertOrUpdateDTO(dto, getCheckIllegalFunc1(CollUtil.newHashSet(dto.getId())),
+            getTenantIdBaseEntityFunc1());
 
         boolean emailBlank = StrUtil.isBlank(dto.getEmail());
         boolean signInNameBlank = StrUtil.isBlank(dto.getSignInName());
@@ -225,8 +220,6 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserProMapper, SysUserDO>
             redisKeyEnumSet.add(RedisKeyEnum.PRE_PHONE);
         }
 
-        Long finalTenantId = tenantId;
-
         return RedissonUtil.doMultiLock(null, redisKeyEnumSet, () -> {
 
             Map<Enum<? extends IRedisKey>, String> accountMap = MapUtil.newHashMap();
@@ -234,7 +227,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserProMapper, SysUserDO>
             // 检查：账号是否存在
             for (Enum<? extends IRedisKey> item : redisKeyEnumSet) {
 
-                if (accountIsExist(dto, item, accountMap, finalTenantId)) {
+                if (accountIsExist(dto, item, accountMap, dto.getTenantId())) {
 
                     SignUtil.accountIsExistError();
 
@@ -250,7 +243,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserProMapper, SysUserDO>
 
                 SysUserDO sysUserDO = SignUtil
                     .insertUser(dto.getPassword(), accountMap, false, sysUserInfoDO, dto.getEnableFlag(),
-                        finalTenantId);
+                        dto.getTenantId());
 
                 insertOrUpdateSub(sysUserDO, dto); // 新增数据到子表
 
@@ -456,9 +449,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserProMapper, SysUserDO>
     public String refreshJwtSecretSuf(NotEmptyIdSet notEmptyIdSet) {
 
         // 检查：是否非法操作
-        SysTenantUtil.checkIllegal(notEmptyIdSet.getIdSet(),
-            tenantIdSet -> lambdaQuery().in(BaseEntity::getId, notEmptyIdSet.getIdSet())
-                .in(BaseEntityNoId::getTenantId, tenantIdSet).count());
+        SysTenantUtil.checkIllegal(notEmptyIdSet.getIdSet(), getCheckIllegalFunc1(notEmptyIdSet.getIdSet()));
 
         for (Long item : notEmptyIdSet.getIdSet()) {
 
@@ -542,9 +533,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserProMapper, SysUserDO>
     public String resetAvatar(NotEmptyIdSet notEmptyIdSet) {
 
         // 检查：是否非法操作
-        SysTenantUtil.checkIllegal(notEmptyIdSet.getIdSet(),
-            tenantIdSet -> ChainWrappers.lambdaQueryChain(sysUserInfoMapper)
-                .in(SysUserInfoDO::getId, notEmptyIdSet.getIdSet()).in(SysUserInfoDO::getTenantId, tenantIdSet).count());
+        SysTenantUtil.checkIllegal(notEmptyIdSet.getIdSet(), getCheckIllegalFunc1(notEmptyIdSet.getIdSet()));
 
         ChainWrappers.lambdaUpdateChain(sysUserInfoMapper).in(SysUserInfoDO::getId, notEmptyIdSet.getIdSet())
             .set(SysUserInfoDO::getAvatarFileId, -1).update();
@@ -561,9 +550,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserProMapper, SysUserDO>
     public String updatePassword(SysUserUpdatePasswordDTO dto) {
 
         // 检查：是否非法操作
-        SysTenantUtil.checkIllegal(dto.getIdSet(),
-            tenantIdSet -> ChainWrappers.lambdaQueryChain(sysUserMapper).in(BaseEntity::getId, dto.getIdSet())
-                .in(BaseEntityNoId::getTenantId, tenantIdSet).count());
+        SysTenantUtil.checkIllegal(dto.getIdSet(), getCheckIllegalFunc1(dto.getIdSet()));
 
         boolean passwordFlag =
             StrUtil.isNotBlank(dto.getNewPassword()) && StrUtil.isNotBlank(dto.getNewOriginPassword());
@@ -592,6 +579,27 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserProMapper, SysUserDO>
         refreshJwtSecretSuf(new NotEmptyIdSet(dto.getIdSet())); // 刷新：jwt私钥后缀
 
         return BaseBizCodeEnum.OK;
+
+    }
+
+    /**
+     * 获取：检查：是否非法操作的 getCheckIllegalFunc1
+     */
+    @NotNull
+    private Func1<Set<Long>, Long> getCheckIllegalFunc1(Set<Long> idSet) {
+
+        return tenantIdSet -> lambdaQuery().in(BaseEntity::getId, idSet).in(BaseEntityNoId::getTenantId, tenantIdSet)
+            .count();
+
+    }
+
+    /**
+     * 获取：检查：是否非法操作的 getTenantIdBaseEntityFunc1
+     */
+    @NotNull
+    private Func1<Long, BaseEntity> getTenantIdBaseEntityFunc1() {
+
+        return id -> lambdaQuery().eq(BaseEntity::getId, id).select(BaseEntity::getTenantId).one();
 
     }
 

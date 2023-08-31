@@ -2,6 +2,7 @@ package com.cmcorg20230301.be.engine.role.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.lang.func.Func1;
 import cn.hutool.core.util.BooleanUtil;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -26,8 +27,8 @@ import com.cmcorg20230301.be.engine.security.model.vo.ApiResultVO;
 import com.cmcorg20230301.be.engine.security.util.MyEntityUtil;
 import com.cmcorg20230301.be.engine.security.util.SysMenuUtil;
 import com.cmcorg20230301.be.engine.security.util.SysTenantUtil;
-import com.cmcorg20230301.be.engine.security.util.UserUtil;
 import com.cmcorg20230301.be.engine.util.util.MyMapUtil;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -58,21 +59,14 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRoleDO> im
     @MyTransactional
     public String insertOrUpdate(SysRoleInsertOrUpdateDTO dto) {
 
-        Long tenantId = dto.getTenantId();
-
-        // 检查：租户 id是否合法
-        SysTenantUtil.getTenantId(tenantId);
-
-        if (tenantId == null) {
-
-            tenantId = UserUtil.getCurrentTenantIdDefault();
-
-        }
+        // 处理：BaseTenantInsertOrUpdateDTO
+        SysTenantUtil.handleBaseTenantInsertOrUpdateDTO(dto, getCheckIllegalFunc1(CollUtil.newHashSet(dto.getId())),
+            getTenantIdBaseEntityFunc1());
 
         // 角色名，不能重复
         boolean exists =
             lambdaQuery().eq(SysRoleDO::getName, dto.getName()).ne(dto.getId() != null, BaseEntity::getId, dto.getId())
-                .eq(BaseEntityNoId::getTenantId, tenantId).exists();
+                .eq(BaseEntityNoId::getTenantId, dto.getTenantId()).exists();
 
         if (exists) {
             ApiResultVO.error(BizCodeEnum.THE_SAME_ROLE_NAME_EXIST);
@@ -82,8 +76,8 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRoleDO> im
         if (BooleanUtil.isTrue(dto.getDefaultFlag())) {
 
             lambdaUpdate().set(SysRoleDO::getDefaultFlag, false).eq(SysRoleDO::getDefaultFlag, true)
-                .eq(BaseEntityNoId::getTenantId, tenantId).ne(dto.getId() != null, BaseEntity::getId, dto.getId())
-                .update();
+                .eq(BaseEntityNoId::getTenantId, dto.getTenantId())
+                .ne(dto.getId() != null, BaseEntity::getId, dto.getId()).update();
 
         }
 
@@ -231,9 +225,7 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRoleDO> im
     public String deleteByIdSet(NotEmptyIdSet notEmptyIdSet) {
 
         // 检查：是否非法操作
-        SysTenantUtil.checkIllegal(notEmptyIdSet.getIdSet(),
-            tenantIdSet -> lambdaQuery().in(BaseEntity::getId, notEmptyIdSet.getIdSet())
-                .in(BaseEntityNoId::getTenantId, tenantIdSet).count());
+        SysTenantUtil.checkIllegal(notEmptyIdSet.getIdSet(), getCheckIllegalFunc1(notEmptyIdSet.getIdSet()));
 
         deleteByIdSetSub(notEmptyIdSet.getIdSet()); // 删除子表数据
 
@@ -253,6 +245,27 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRoleDO> im
 
         // 删除 角色用户关联表
         sysRoleRefUserService.removeByIds(idSet);
+
+    }
+
+    /**
+     * 获取：检查：是否非法操作的 getCheckIllegalFunc1
+     */
+    @NotNull
+    private Func1<Set<Long>, Long> getCheckIllegalFunc1(Set<Long> idSet) {
+
+        return tenantIdSet -> lambdaQuery().in(BaseEntity::getId, idSet).in(BaseEntityNoId::getTenantId, tenantIdSet)
+            .count();
+
+    }
+
+    /**
+     * 获取：检查：是否非法操作的 getTenantIdBaseEntityFunc1
+     */
+    @NotNull
+    private Func1<Long, BaseEntity> getTenantIdBaseEntityFunc1() {
+
+        return id -> lambdaQuery().eq(BaseEntity::getId, id).select(BaseEntity::getTenantId).one();
 
     }
 

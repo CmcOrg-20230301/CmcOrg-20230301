@@ -176,24 +176,23 @@ interface IDictTreeResult {
 // 通用的，获取字典树集合
 export function GetDictTreeList<T extends IDictTreeResult>(requestFunction: (form: MyPageDTO, config?: AxiosRequestConfig) => Promise<RequestData<T>>, toTreeFlag: boolean = true, pid: string | number = '0') {
 
-    return new Promise<IMyTree[]>(resolve => {
-
-        requestFunction({pageSize: '-1'}).then(res => {
-
-            HandleGetDictTreeList(res, toTreeFlag, resolve, pid);
-
-        })
-
-    })
+    return DoGetDictTreeList(requestFunction({pageSize: '-1'}), toTreeFlag, pid)
 
 }
 
 // 通用的，获取字典树集合
 export function NoFormGetDictTreeList<T extends IDictTreeResult>(requestFunction: (config?: AxiosRequestConfig) => Promise<RequestData<T>>, toTreeFlag: boolean = true, pid: string | number = '0') {
 
+    return DoGetDictTreeList(requestFunction(), toTreeFlag, pid)
+
+}
+
+// 通用的，获取字典树集合
+export function DoGetDictTreeList<T extends IDictTreeResult>(promise: Promise<RequestData<T>>, toTreeFlag: boolean = true, pid: string | number = '0') {
+
     return new Promise<IMyTree[]>(resolve => {
 
-        requestFunction().then(res => {
+        promise.then(res => {
 
             HandleGetDictTreeList(res, toTreeFlag, resolve, pid);
 
@@ -203,7 +202,7 @@ export function NoFormGetDictTreeList<T extends IDictTreeResult>(requestFunction
 
 }
 
-// 处理：返回值
+// 处理：获取字典树集合，返回值
 function HandleGetDictTreeList<T extends IDictTreeResult>(res: { data: T[] | undefined; success?: boolean; total?: number } & Record<string, any>, toTreeFlag: boolean, resolve: (value: (PromiseLike<IMyTree[]> | IMyTree[])) => void, pid: string | number) {
 
     let dictList: IMyTree[] = []

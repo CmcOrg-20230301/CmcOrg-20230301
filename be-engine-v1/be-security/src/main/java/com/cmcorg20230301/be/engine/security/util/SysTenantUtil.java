@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.extension.toolkit.ChainWrappers;
 import com.cmcorg20230301.be.engine.cache.util.CacheHelper;
 import com.cmcorg20230301.be.engine.cache.util.MyCacheUtil;
 import com.cmcorg20230301.be.engine.model.model.constant.BaseConstant;
+import com.cmcorg20230301.be.engine.model.model.dto.BaseTenantInsertOrUpdateDTO;
 import com.cmcorg20230301.be.engine.redisson.model.enums.RedisKeyEnum;
 import com.cmcorg20230301.be.engine.security.exception.BaseBizCodeEnum;
 import com.cmcorg20230301.be.engine.security.mapper.SysTenantMapper;
@@ -71,7 +72,19 @@ public class SysTenantUtil {
 
         }
 
-        // 如果登录了，则需要判断，租户 id是否是：用户关联的租户
+        // 如果登录了，则需要判断，租户 id是否是：用户关联的租户 id
+        checkTenantId(tenantId);
+
+        return tenantId;
+
+    }
+
+    /**
+     * 如果登录了，则需要判断，租户 id是否是：用户关联的租户 id
+     */
+    public static void checkTenantId(@NotNull Long tenantId) {
+
+        // 如果登录了，则需要判断，租户 id是否是：用户关联的租户 id
         Set<Long> tenantIdSet = SysTenantUtil.getUserRefTenantIdSet();
 
         if (tenantIdSet.contains(tenantId) == false) {
@@ -79,8 +92,6 @@ public class SysTenantUtil {
             ApiResultVO.error(BaseBizCodeEnum.ILLEGAL_REQUEST, tenantId);
 
         }
-
-        return tenantId;
 
     }
 
@@ -255,6 +266,51 @@ public class SysTenantUtil {
         }
 
         dto.setTenantIdSet(tenantIdSet);
+
+    }
+
+    /**
+     * 处理：BaseTenantInsertOrUpdateDTO
+     */
+    @SneakyThrows
+    public static void handleBaseTenantInsertOrUpdateDTO(@NotNull BaseTenantInsertOrUpdateDTO dto,
+        @NotNull Func1<Set<Long>, Long> getCheckIllegalFunc1,
+        @NotNull Func1<Long, BaseEntity> getTenantIdBaseEntityFunc1) {
+
+        Long id = dto.getId();
+
+        if (id == null) {
+
+            dto.setTenantId(UserUtil.getCurrentTenantIdDefault());
+
+            return;
+
+        }
+
+        Long tenantId = dto.getTenantId();
+
+        if (tenantId == null) {
+
+            BaseEntity baseEntity = getTenantIdBaseEntityFunc1.call(id);
+
+            if (baseEntity == null) {
+
+                ApiResultVO.error("操作失败：id不存在", id);
+
+            }
+
+            if (baseEntity.getTenantId() == null) {
+
+                ApiResultVO.errorMsg("操作失败：tenantId为空，请联系管理员");
+
+            }
+
+            dto.setTenantId(baseEntity.getTenantId());
+
+        }
+
+        // 检查：是否非法操作
+        SysTenantUtil.checkIllegal(CollUtil.newHashSet(id), getCheckIllegalFunc1);
 
     }
 
