@@ -3,6 +3,7 @@ package com.cmcorg20230301.be.engine.security.util;
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.util.ClassUtil;
 import cn.hutool.core.util.StrUtil;
+import com.cmcorg20230301.be.engine.model.model.constant.BaseConstant;
 import com.cmcorg20230301.be.engine.security.model.entity.BaseEntityTree;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -41,7 +42,7 @@ public class MyEntityUtil {
      */
     @NotNull
     public static Long getNotNullParentId(Long aLong) {
-        return getNotNullLong(aLong, 0L);
+        return getNotNullLong(aLong, BaseConstant.TOP_PARENT_ID);
     }
 
     /**
@@ -49,7 +50,7 @@ public class MyEntityUtil {
      */
     public static void handleParentId(BaseEntityTree<?> baseEntityTree) {
 
-        if (baseEntityTree.getParentId() == 0L) {
+        if (BaseConstant.TOP_PARENT_ID.equals(baseEntityTree.getParentId())) {
             baseEntityTree.setParentId(null);
         }
 

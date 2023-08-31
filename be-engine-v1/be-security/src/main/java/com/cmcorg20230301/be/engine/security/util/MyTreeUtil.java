@@ -4,6 +4,7 @@ import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.map.MapUtil;
 import cn.hutool.core.util.ReflectUtil;
+import com.cmcorg20230301.be.engine.redisson.util.IdGeneratorUtil;
 import com.cmcorg20230301.be.engine.security.model.entity.BaseEntity;
 import com.cmcorg20230301.be.engine.security.model.entity.BaseEntityTree;
 import lombok.SneakyThrows;
@@ -221,6 +222,29 @@ public class MyTreeUtil {
                 }
 
             }
+
+        }
+
+    }
+
+    /**
+     * 给树形结构的 集合（还没有转换为树形结构），重新设置 id和 parentId
+     */
+    public static <T extends BaseEntityTree<T>> void treeListSetNewIdAndParentId(List<T> flatList) {
+
+        // 旧 id，新 id，map
+        Map<Long, Long> idMap =
+            flatList.stream().collect(Collectors.toMap(BaseEntity::getId, it -> IdGeneratorUtil.nextId()));
+
+        for (T item : flatList) {
+
+            Long newId = idMap.get(item.getId());
+
+            item.setId(newId);
+
+            Long newParentId = idMap.get(item.getParentId());
+
+            item.setParentId(MyEntityUtil.getNotNullParentId(newParentId));
 
         }
 

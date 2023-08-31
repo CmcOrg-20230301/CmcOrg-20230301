@@ -55,6 +55,8 @@ public interface BaseConstant {
     Long TENANT_ID = ZERO; // 默认的 租户 id
     String TENANT_NAME = "默认"; // 默认的 租户名
 
+    Long TOP_PARENT_ID = ZERO; // 顶层 parentId：0
+
     // id 相关 ↑
 
     // 字符串长度限制 ↓
