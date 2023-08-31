@@ -236,7 +236,7 @@ public class UserUtil {
      * type：1 完整的菜单信息 2 给 security获取权限时使用
      */
     @Nullable
-    public static Set<SysMenuDO> getMenuSetByUserId(@NotNull Long userId, int type) {
+    public static Set<SysMenuDO> getMenuSetByUserId(@NotNull Long userId, int type, @NotNull Long tenantId) {
 
         Set<Long> roleIdSet = new HashSet<>();
 
@@ -244,7 +244,7 @@ public class UserUtil {
         getUserRefRoleIdSet(userId, roleIdSet);
 
         // 获取：默认角色 id
-        getDefaultRoleId(roleIdSet);
+        getDefaultRoleId(roleIdSet, tenantId);
 
         if (roleIdSet.size() == 0) {
             return null;
@@ -312,9 +312,7 @@ public class UserUtil {
     /**
      * 获取默认角色 id
      */
-    private static void getDefaultRoleId(Set<Long> roleIdSet) {
-
-        Long currentTenantIdDefault = UserUtil.getCurrentTenantIdDefault();
+    private static void getDefaultRoleId(Set<Long> roleIdSet, @NotNull Long tenantId) {
 
         Map<Long, Long> map =
             MyCacheUtil.getMap(RedisKeyEnum.TENANT_DEFAULT_ROLE_ID_CACHE, CacheHelper.getDefaultLongMap(), () -> {
@@ -327,7 +325,7 @@ public class UserUtil {
 
             });
 
-        Long defaultRoleId = map.get(currentTenantIdDefault);
+        Long defaultRoleId = map.get(tenantId);
 
         if (defaultRoleId != null) {
 

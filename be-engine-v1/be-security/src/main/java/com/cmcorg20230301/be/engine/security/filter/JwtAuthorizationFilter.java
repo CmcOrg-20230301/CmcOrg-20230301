@@ -94,7 +94,10 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
         // 获取：userId的值
         Long userId = MyJwtUtil.getPayloadMapUserIdValue(jwt.getPayload().getClaimsJson());
 
-        if (userId == null) {
+        // 获取：tenantId的值
+        Long tenantId = MyJwtUtil.getPayloadMapTenantIdValue(jwt.getPayload().getClaimsJson());
+
+        if (userId == null || tenantId == null) {
             return null;
         }
 
@@ -145,7 +148,7 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
 
         // 通过 userId 获取用户具有的权限
         return new UsernamePasswordAuthenticationToken(jwt.getPayload().getClaimsJson(), null,
-            MyJwtUtil.getSimpleGrantedAuthorityListByUserId(userId));
+            MyJwtUtil.getSimpleGrantedAuthorityListByUserId(userId, tenantId));
 
     }
 

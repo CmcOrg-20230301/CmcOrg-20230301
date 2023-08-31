@@ -238,9 +238,9 @@ public class MyJwtUtil {
      * 通过 userId获取到权限的 set
      */
     @Nullable
-    public static Set<SimpleGrantedAuthority> getSimpleGrantedAuthorityListByUserId(Long userId) {
+    public static Set<SimpleGrantedAuthority> getSimpleGrantedAuthorityListByUserId(Long userId, Long tenantId) {
 
-        if (userId == null) {
+        if (userId == null || tenantId == null) {
             ApiResultVO.error(BaseBizCodeEnum.ILLEGAL_REQUEST); // 直接抛出异常
             return null;
         }
@@ -251,7 +251,7 @@ public class MyJwtUtil {
         }
 
         // 通过用户 id，获取 菜单 set
-        Set<SysMenuDO> sysMenuDoSet = UserUtil.getMenuSetByUserId(userId, 2);
+        Set<SysMenuDO> sysMenuDoSet = UserUtil.getMenuSetByUserId(userId, 2, tenantId);
 
         if (CollUtil.isEmpty(sysMenuDoSet)) {
             return null;

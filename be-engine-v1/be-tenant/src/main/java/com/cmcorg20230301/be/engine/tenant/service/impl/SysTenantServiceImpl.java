@@ -133,7 +133,9 @@ public class SysTenantServiceImpl extends ServiceImpl<SysTenantMapper, SysTenant
 
         } else {
 
-            sysMenuDoSet = UserUtil.getMenuSetByUserId(currentUserId, 2);
+            Long currentTenantIdDefault = UserUtil.getCurrentTenantIdDefault();
+
+            sysMenuDoSet = UserUtil.getMenuSetByUserId(currentUserId, 2, currentTenantIdDefault);
 
         }
 

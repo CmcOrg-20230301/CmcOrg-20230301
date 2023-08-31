@@ -265,9 +265,9 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenuDO> im
 
         Long userId = UserUtil.getCurrentUserId();
 
-        if (BaseConstant.ADMIN_ID.equals(userId)) {
+        Long currentTenantIdDefault = UserUtil.getCurrentTenantIdDefault();
 
-            Long currentTenantIdDefault = UserUtil.getCurrentTenantIdDefault();
+        if (BaseConstant.ADMIN_ID.equals(userId)) {
 
             // 如果是 admin账号，则查询所有【不是被禁用了的】菜单
             return SysMenuUtil.getSysMenuCacheMap().values().stream()
@@ -278,7 +278,7 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenuDO> im
         }
 
         // 获取当前用户绑定的菜单
-        Set<SysMenuDO> sysMenuDoSet = UserUtil.getMenuSetByUserId(userId, 1);
+        Set<SysMenuDO> sysMenuDoSet = UserUtil.getMenuSetByUserId(userId, 1, currentTenantIdDefault);
 
         if (CollUtil.isEmpty(sysMenuDoSet)) {
             return new ArrayList<>();
