@@ -79,7 +79,7 @@ public class IpFilter implements Filter {
         if (timeStr == null) {
             chain.doFilter(request, response);
         } else {
-            ResponseUtil.out((HttpServletResponse)response, "操作次数过多，请在 " + timeStr + "后，再进行操作");
+            ResponseUtil.out((HttpServletResponse)response, "操作次数过多，请在 " + timeStr + "后，再进行操作", true);
         }
 
     }

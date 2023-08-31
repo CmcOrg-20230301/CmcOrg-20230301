@@ -35,15 +35,18 @@ public class ResponseUtil {
 
     }
 
+    /**
+     * @param convertFlag 是否转换
+     */
     @SneakyThrows
-    public static void out(HttpServletResponse response, String msg) {
+    public static void out(HttpServletResponse response, String msg, boolean convertFlag) {
 
-        out(response, msg, HttpServletResponse.SC_OK);
+        out(response, msg, HttpServletResponse.SC_OK, convertFlag);
 
     }
 
     @SneakyThrows
-    public static void out(HttpServletResponse response, String msg, int status) {
+    public static void out(HttpServletResponse response, String msg, int status, boolean convertFlag) {
 
         response.setContentType("application/json;charset=utf-8");
 
@@ -51,17 +54,25 @@ public class ResponseUtil {
 
         response.setStatus(status);
 
-        try {
+        String writeMsg = msg;
 
-            ApiResultVO.errorMsg(msg); // 这里肯定会抛出 BaseException异常
+        if (convertFlag) {
 
-        } catch (BaseException e) {
+            try {
 
-            servletOutputStream.write(e.getMessage().getBytes()); // json字符串，输出给前端
-            servletOutputStream.flush();
-            servletOutputStream.close();
+                ApiResultVO.errorMsg(msg); // 这里肯定会抛出 BaseException异常
+
+            } catch (BaseException e) {
+
+                writeMsg = e.getMessage();
+
+            }
 
         }
+
+        servletOutputStream.write(writeMsg.getBytes()); // json字符串，输出给前端
+        servletOutputStream.flush();
+        servletOutputStream.close();
 
     }
 

@@ -212,7 +212,7 @@ public class MyTreeUtil {
             Long parentId = item.getParentId();
 
             if (parentId == null) { // 如果不存在，父级 id，则不处理
-                return;
+                continue;
             }
 
             if (listMap.get(parentId).getId() == null) { // 如果：不存在该父节点，则表示是：顶层节点

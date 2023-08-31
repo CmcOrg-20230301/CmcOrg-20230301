@@ -40,7 +40,7 @@ public class SecurityJwtValidatorConfiguration implements IJwtValidatorConfigura
 
             } catch (BaseException e) {
 
-                ResponseUtil.out(response, e.getMessage());
+                ResponseUtil.out(response, e.getMessage(), false);
 
             }
 
@@ -58,7 +58,7 @@ public class SecurityJwtValidatorConfiguration implements IJwtValidatorConfigura
 
         } catch (BaseException e) {
 
-            ResponseUtil.out(response, e.getMessage());
+            ResponseUtil.out(response, e.getMessage(), false);
 
         }
 

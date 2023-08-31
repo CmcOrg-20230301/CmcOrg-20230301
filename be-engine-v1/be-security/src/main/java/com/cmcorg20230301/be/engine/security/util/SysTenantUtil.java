@@ -56,11 +56,11 @@ public class SysTenantUtil {
 
         if (sysTenantDO == null) {
 
-            ApiResultVO.error("操作失败：租户不存在", tenantId);
+            ApiResultVO.error(BaseBizCodeEnum.TENANT_DOES_NOT_EXIST, tenantId);
 
         } else if (sysTenantDO.getEnableFlag() == false) {
 
-            ApiResultVO.error("操作失败：租户已被禁用", tenantId);
+            ApiResultVO.error(BaseBizCodeEnum.TENANT_HAS_BEEN_DISABLED, tenantId);
 
         }
 
