@@ -188,8 +188,8 @@ public class SysTenantServiceImpl extends ServiceImpl<SysTenantMapper, SysTenant
 
         }
 
-        // 再新增子表数据
-        if (CollUtil.isNotEmpty(dto.getMenuIdSet())) {
+        // 如果是：新增，再新增子表数据
+        if (dto.getId() == null && CollUtil.isNotEmpty(dto.getMenuIdSet())) {
 
             Map<Long, SysMenuDO> sysMenuCacheMap = SysMenuUtil.getSysMenuCacheMap();
 
@@ -332,18 +332,18 @@ public class SysTenantServiceImpl extends ServiceImpl<SysTenantMapper, SysTenant
 
         sysTenantRefUserService.removeByIds(idSet);
 
-        List<SysMenuDO> sysMenuDOList =
-            sysMenuService.lambdaQuery().in(BaseEntityNoId::getTenantId, idSet).select(BaseEntity::getId).list();
-
-        if (CollUtil.isNotEmpty(sysMenuDOList)) {
-
-            Set<Long> menuIdSet = sysMenuDOList.stream().map(BaseEntity::getId).collect(Collectors.toSet());
-
-            sysMenuService.deleteByIdSet(new NotEmptyIdSet(menuIdSet));
-
-        }
-
         if (deleteFlag) {
+
+            List<SysMenuDO> sysMenuDOList =
+                sysMenuService.lambdaQuery().in(BaseEntityNoId::getTenantId, idSet).select(BaseEntity::getId).list();
+
+            if (CollUtil.isNotEmpty(sysMenuDOList)) {
+
+                Set<Long> menuIdSet = sysMenuDOList.stream().map(BaseEntity::getId).collect(Collectors.toSet());
+
+                sysMenuService.deleteByIdSet(new NotEmptyIdSet(menuIdSet));
+
+            }
 
             if (CollUtil.isNotEmpty(iTenantDeleteConfigurationList) && CollUtil.isNotEmpty(idSet)) {
 

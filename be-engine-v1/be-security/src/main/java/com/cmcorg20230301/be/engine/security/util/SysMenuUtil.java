@@ -120,7 +120,7 @@ public class SysMenuUtil {
     /**
      * 获取角色关联的菜单 idSet
      */
-    @NotNull
+    @Nullable
     private static Set<Long> getRoleRefMenuIdSet(Long roleId) {
 
         Map<Long, Set<Long>> roleRefMenuIdSetMap =

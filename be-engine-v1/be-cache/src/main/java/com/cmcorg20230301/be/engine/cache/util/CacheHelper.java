@@ -170,13 +170,29 @@ public class CacheHelper {
 
         if (result == null) {
 
-            throw new RuntimeException("操作失败：result == null"); // 不能为 null，目的：防止缓存不写入数据
+            throw new RuntimeException("操作失败：result 为null"); // 不能为 null，目的：防止缓存不写入数据
 
         } else if (result instanceof Map) {
 
-            if (CollUtil.isEmpty((Map<?, ?>)result)) {
+            Map<?, ?> map = (Map<?, ?>)result;
 
-                throw new RuntimeException("操作失败：defaultResult为 Map类型，但是长度为 0"); // 不能为 null，目的：防止缓存不写入数据
+            if (CollUtil.isEmpty(map)) {
+
+                throw new RuntimeException("操作失败：result为 Map类型，但是长度为 0"); // 不能为 null，目的：防止缓存不写入数据
+
+            } else {
+
+                // map里面的key 和 value，都不能为 null
+                for (Map.Entry<?, ?> item : map.entrySet()) {
+
+                    if (item.getValue() == null) {
+
+                        throw new RuntimeException(
+                            "操作失败：result为 Map类型，但是 value为 null，key：" + item.getKey()); // 不能为 null，目的：防止缓存不写入数据
+
+                    }
+
+                }
 
             }
 
@@ -184,7 +200,7 @@ public class CacheHelper {
 
             if (CollUtil.isEmpty((Iterator<?>)result)) {
 
-                throw new RuntimeException("操作失败：defaultResult为 Iterator类型，但是长度为 0"); // 不能为 null，目的：防止缓存不写入数据
+                throw new RuntimeException("操作失败：result为 Iterator类型，但是长度为 0"); // 不能为 null，目的：防止缓存不写入数据
 
             }
 
