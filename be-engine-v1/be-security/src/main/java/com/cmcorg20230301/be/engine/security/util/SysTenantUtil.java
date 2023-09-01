@@ -327,6 +327,28 @@ public class SysTenantUtil {
     }
 
     /**
+     * 检查：是否可以修改
+     */
+    public static boolean checkUpdate() {
+
+        return insertOrUpdateOrDeleteCommonCheck();
+
+    }
+
+    /**
+     * 检查：是否可以删除
+     */
+    public static void checkDelete() {
+
+        if (insertOrUpdateOrDeleteCommonCheck()) {
+            return;
+        }
+
+        ApiResultVO.errorMsg("操作失败：租户不能进行删除操作");
+
+    }
+
+    /**
      * 新增，修改，或者删除操作，通用的检查方法
      *
      * @return true 可以进行操作 false 不可以进行操作

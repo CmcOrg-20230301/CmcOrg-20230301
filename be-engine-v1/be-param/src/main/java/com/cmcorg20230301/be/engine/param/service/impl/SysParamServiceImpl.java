@@ -1,6 +1,7 @@
 package com.cmcorg20230301.be.engine.param.service.impl;
 
 import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.lang.func.Func1;
 import cn.hutool.core.util.BooleanUtil;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -13,9 +14,12 @@ import com.cmcorg20230301.be.engine.param.service.SysParamService;
 import com.cmcorg20230301.be.engine.security.exception.BaseBizCodeEnum;
 import com.cmcorg20230301.be.engine.security.mapper.SysParamMapper;
 import com.cmcorg20230301.be.engine.security.model.entity.BaseEntity;
+import com.cmcorg20230301.be.engine.security.model.entity.BaseEntityNoId;
 import com.cmcorg20230301.be.engine.security.model.entity.SysParamDO;
 import com.cmcorg20230301.be.engine.security.model.vo.ApiResultVO;
 import com.cmcorg20230301.be.engine.security.util.MyEntityUtil;
+import com.cmcorg20230301.be.engine.security.util.SysTenantUtil;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Service;
 
 import java.util.Set;
@@ -31,7 +35,18 @@ public class SysParamServiceImpl extends ServiceImpl<SysParamMapper, SysParamDO>
     @Override
     public String insertOrUpdate(SysParamInsertOrUpdateDTO dto) {
 
+        // 检查：是否可以新增
+        SysTenantUtil.checkInsert(dto);
+
+        // 处理：BaseTenantInsertOrUpdateDTO
+        SysTenantUtil.handleBaseTenantInsertOrUpdateDTO(dto, getCheckIllegalFunc1(CollUtil.newHashSet(dto.getId())),
+            getTenantIdBaseEntityFunc1());
+
+        // 检查：是否可以修改一些属性
+        dto = checkUpdate(dto, dto.getId());
+
         SysParamDO sysParamDO = new SysParamDO();
+
         sysParamDO.setName(dto.getName());
         sysParamDO.setValue(dto.getValue());
         sysParamDO.setRemark(MyEntityUtil.getNotNullStr(dto.getRemark()));
@@ -46,10 +61,33 @@ public class SysParamServiceImpl extends ServiceImpl<SysParamMapper, SysParamDO>
     }
 
     /**
+     * 检查：是否可以修改一些属性
+     */
+    private SysParamInsertOrUpdateDTO checkUpdate(SysParamInsertOrUpdateDTO dto, Long id) {
+
+        if (id == null) {
+            return dto;
+        }
+
+        // 检查：是否可以修改
+        if (SysTenantUtil.checkUpdate()) {
+            return dto;
+        }
+
+        ApiResultVO.errorMsg("操作失败：租户不能进行修改操作");
+
+        return dto;
+
+    }
+
+    /**
      * 分页排序查询
      */
     @Override
     public Page<SysParamDO> myPage(SysParamPageDTO dto) {
+
+        // 处理：MyTenantPageDTO
+        SysTenantUtil.handleMyTenantPageDTO(dto, true);
 
         return lambdaQuery().like(StrUtil.isNotBlank(dto.getName()), SysParamDO::getName, dto.getName())
             .like(StrUtil.isNotBlank(dto.getRemark()), BaseEntity::getRemark, dto.getRemark())
@@ -74,13 +112,21 @@ public class SysParamServiceImpl extends ServiceImpl<SysParamMapper, SysParamDO>
     @Override
     public String deleteByIdSet(NotEmptyIdSet notEmptyIdSet) {
 
-        if (CollUtil.isEmpty(notEmptyIdSet.getIdSet())) {
+        Set<Long> idSet = notEmptyIdSet.getIdSet();
+
+        if (CollUtil.isEmpty(idSet)) {
             return BaseBizCodeEnum.OK;
         }
 
+        // 检查：是否非法操作
+        SysTenantUtil.checkIllegal(idSet, getCheckIllegalFunc1(idSet));
+
+        // 检查：是否可以删除
+        SysTenantUtil.checkDelete();
+
         for (Long item : notDeleteIdSet) {
 
-            if (notEmptyIdSet.getIdSet().contains(item)) {
+            if (idSet.contains(item)) {
 
                 ApiResultVO.errorMsg("操作失败：id【{}】不允许删除", item);
 
@@ -88,11 +134,33 @@ public class SysParamServiceImpl extends ServiceImpl<SysParamMapper, SysParamDO>
 
         }
 
-        removeByIds(notEmptyIdSet.getIdSet());
+        removeByIds(idSet); // 根据 idSet删除
 
         return BaseBizCodeEnum.OK;
 
     }
+
+    /**
+     * 获取：检查：是否非法操作的 getCheckIllegalFunc1
+     */
+    @NotNull
+    private Func1<Set<Long>, Long> getCheckIllegalFunc1(Set<Long> idSet) {
+
+        return tenantIdSet -> lambdaQuery().in(BaseEntity::getId, idSet).in(BaseEntityNoId::getTenantId, tenantIdSet)
+            .count();
+
+    }
+
+    /**
+     * 获取：检查：是否非法操作的 getTenantIdBaseEntityFunc1
+     */
+    @NotNull
+    private Func1<Long, BaseEntity> getTenantIdBaseEntityFunc1() {
+
+        return id -> lambdaQuery().eq(BaseEntity::getId, id).select(BaseEntity::getTenantId).one();
+
+    }
+
 }
 
 
