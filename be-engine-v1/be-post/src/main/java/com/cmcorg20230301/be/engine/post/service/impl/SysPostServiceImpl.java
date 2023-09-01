@@ -31,9 +31,7 @@ import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -162,26 +160,40 @@ public class SysPostServiceImpl extends ServiceImpl<SysPostMapper, SysPostDO> im
      */
     @Override
     @MyTransactional
-    public String deleteByIdSet(NotEmptyIdSet notEmptyIdSet) {
+    public String deleteByIdSet(NotEmptyIdSet notEmptyIdSet, boolean checkChildrenFlag) {
 
-        if (CollUtil.isEmpty(notEmptyIdSet.getIdSet())) {
+        Set<Long> idSet = notEmptyIdSet.getIdSet();
+
+        if (CollUtil.isEmpty(idSet)) {
             return BaseBizCodeEnum.OK;
         }
 
         // 检查：是否非法操作
-        SysTenantUtil.checkIllegal(notEmptyIdSet.getIdSet(), getCheckIllegalFunc1(notEmptyIdSet.getIdSet()));
+        SysTenantUtil.checkIllegal(idSet, getCheckIllegalFunc1(idSet));
 
-        // 如果存在下级，则无法删除
-        boolean exists = lambdaQuery().in(BaseEntityTree::getParentId, notEmptyIdSet.getIdSet()).exists();
+        if (checkChildrenFlag) {
 
-        if (exists) {
-            ApiResultVO.error(BaseBizCodeEnum.PLEASE_DELETE_THE_CHILD_NODE_FIRST);
+            // 如果存在下级，则无法删除
+            boolean exists = lambdaQuery().in(BaseEntityTree::getParentId, idSet).exists();
+
+            if (exists) {
+                ApiResultVO.error(BaseBizCodeEnum.PLEASE_DELETE_THE_CHILD_NODE_FIRST);
+            }
+
+        } else {
+
+            Map<Long, Set<Long>> idAndDeepIdSetMap =
+                MyTreeUtil.getIdAndDeepIdSetMap(lambdaQuery().in(BaseEntity::getId, idSet).list(), null);
+
+            // 获取：所有下级（包含本级）idSet
+            idSet = idAndDeepIdSetMap.values().stream().flatMap(Collection::stream).collect(Collectors.toSet());
+
         }
 
         // 移除子表数据
-        deleteByIdSetSub(notEmptyIdSet.getIdSet());
+        deleteByIdSetSub(idSet);
 
-        removeByIds(notEmptyIdSet.getIdSet());
+        removeByIds(idSet);
 
         return BaseBizCodeEnum.OK;
 

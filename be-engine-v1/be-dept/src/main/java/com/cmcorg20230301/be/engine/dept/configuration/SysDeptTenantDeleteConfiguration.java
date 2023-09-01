@@ -27,7 +27,7 @@ public class SysDeptTenantDeleteConfiguration implements ITenantDeleteConfigurat
 
         Set<Long> deptIdSet = sysDeptDOList.stream().map(BaseEntity::getId).collect(Collectors.toSet());
 
-        sysDeptService.deleteByIdSet(new NotEmptyIdSet(deptIdSet));
+        sysDeptService.deleteByIdSet(new NotEmptyIdSet(deptIdSet), false);
 
     }
 

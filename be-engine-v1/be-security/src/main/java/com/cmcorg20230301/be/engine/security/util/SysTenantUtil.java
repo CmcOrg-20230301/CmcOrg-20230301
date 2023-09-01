@@ -12,14 +12,20 @@ import com.cmcorg20230301.be.engine.security.exception.BaseBizCodeEnum;
 import com.cmcorg20230301.be.engine.security.mapper.SysTenantMapper;
 import com.cmcorg20230301.be.engine.security.mapper.SysTenantRefUserMapper;
 import com.cmcorg20230301.be.engine.security.model.dto.MyTenantPageDTO;
-import com.cmcorg20230301.be.engine.security.model.entity.*;
+import com.cmcorg20230301.be.engine.security.model.entity.BaseEntity;
+import com.cmcorg20230301.be.engine.security.model.entity.BaseEntityNoId;
+import com.cmcorg20230301.be.engine.security.model.entity.SysTenantDO;
+import com.cmcorg20230301.be.engine.security.model.entity.SysTenantRefUserDO;
 import com.cmcorg20230301.be.engine.security.model.vo.ApiResultVO;
 import lombok.SneakyThrows;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.stereotype.Component;
 
-import java.util.*;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -164,51 +170,9 @@ public class SysTenantUtil {
             .<Map<Long, Set<Long>>>getMap(RedisKeyEnum.SYS_TENANT_DEEP_ID_SET_CACHE, CacheHelper.getDefaultLongSetMap(),
                 () -> {
 
-                    Map<Long, SysTenantDO> sysTenantCacheMap = getSysTenantCacheMap();
-
-                    // 通过：父级 id分组，value：子级 idSet
-                    Map<Long, Set<Long>> groupParentIdMap = sysTenantCacheMap.values().stream().collect(Collectors
-                        .groupingBy(BaseEntityTree::getParentId,
-                            Collectors.mapping(BaseEntity::getId, Collectors.toSet())));
-
-                    Map<Long, Set<Long>> resultMap = new HashMap<>(sysTenantCacheMap.size());
-
-                    for (Long item : sysTenantCacheMap.keySet()) {
-
-                        Set<Long> resultSet = new HashSet<>();
-
-                        getUserRefTenantIdListNext(resultSet, item, groupParentIdMap);
-
-                        resultMap.put(item, resultSet);
-
-                    }
-
-                    return resultMap;
+                    return MyTreeUtil.getIdAndDeepIdSetMap(getSysTenantCacheMap().values(), null);
 
                 }).get(tenantId);
-
-    }
-
-    /**
-     * 获取：下级租户
-     */
-    private static void getUserRefTenantIdListNext(Set<Long> resultSet, Long parentId,
-        Map<Long, Set<Long>> groupParentIdMap) {
-
-        // 获取：自己下面的子级
-        Set<Long> childrenIdSet = groupParentIdMap.get(parentId);
-
-        if (CollUtil.isEmpty(childrenIdSet)) {
-            return;
-        }
-
-        for (Long item : childrenIdSet) {
-
-            resultSet.add(item);
-
-            getUserRefTenantIdListNext(resultSet, item, groupParentIdMap); // 继续匹配下一级
-
-        }
 
     }
 

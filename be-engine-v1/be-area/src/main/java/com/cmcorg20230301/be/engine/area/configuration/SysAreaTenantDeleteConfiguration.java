@@ -27,7 +27,7 @@ public class SysAreaTenantDeleteConfiguration implements ITenantDeleteConfigurat
 
         Set<Long> areaIdSet = sysAreaDOList.stream().map(BaseEntity::getId).collect(Collectors.toSet());
 
-        sysAreaService.deleteByIdSet(new NotEmptyIdSet(areaIdSet));
+        sysAreaService.deleteByIdSet(new NotEmptyIdSet(areaIdSet), false);
 
     }
 

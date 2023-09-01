@@ -27,7 +27,7 @@ public class SysPostTenantDeleteConfiguration implements ITenantDeleteConfigurat
 
         Set<Long> postIdSet = sysPostDOList.stream().map(BaseEntity::getId).collect(Collectors.toSet());
 
-        sysPostService.deleteByIdSet(new NotEmptyIdSet(postIdSet));
+        sysPostService.deleteByIdSet(new NotEmptyIdSet(postIdSet), false);
 
     }
 

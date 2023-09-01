@@ -55,7 +55,7 @@ public class SysMenuController {
     @PostMapping("/deleteByIdSet")
     @PreAuthorize("hasAuthority('sysMenu:deleteByIdSet')")
     public ApiResultVO<String> deleteByIdSet(@RequestBody @Valid NotEmptyIdSet notEmptyIdSet) {
-        return ApiResultVO.okMsg(baseService.deleteByIdSet(notEmptyIdSet));
+        return ApiResultVO.okMsg(baseService.deleteByIdSet(notEmptyIdSet, true));
     }
 
     @Operation(summary = "通过主键id，查看详情")

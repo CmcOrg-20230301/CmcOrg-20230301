@@ -20,7 +20,7 @@ public interface SysMenuService extends IService<SysMenuDO> {
 
     List<SysMenuDO> tree(SysMenuPageDTO dto);
 
-    String deleteByIdSet(NotEmptyIdSet notEmptyIdSet);
+    String deleteByIdSet(NotEmptyIdSet notEmptyIdSet, boolean checkChildrenFlag);
 
     List<SysMenuDO> userSelfMenuList();
 

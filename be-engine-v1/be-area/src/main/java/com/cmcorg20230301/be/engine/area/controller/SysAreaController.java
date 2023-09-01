@@ -55,7 +55,7 @@ public class SysAreaController {
     @PostMapping("/deleteByIdSet")
     @PreAuthorize("hasAuthority('sysArea:deleteByIdSet')")
     public ApiResultVO<String> deleteByIdSet(@RequestBody @Valid NotEmptyIdSet notEmptyIdSet) {
-        return ApiResultVO.okMsg(baseService.deleteByIdSet(notEmptyIdSet));
+        return ApiResultVO.okMsg(baseService.deleteByIdSet(notEmptyIdSet, true));
     }
 
     @Operation(summary = "通过主键id，查看详情")

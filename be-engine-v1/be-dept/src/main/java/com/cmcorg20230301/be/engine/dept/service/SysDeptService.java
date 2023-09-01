@@ -19,7 +19,7 @@ public interface SysDeptService extends IService<SysDeptDO> {
 
     List<SysDeptDO> tree(SysDeptPageDTO dto);
 
-    String deleteByIdSet(NotEmptyIdSet notEmptyIdSet);
+    String deleteByIdSet(NotEmptyIdSet notEmptyIdSet, boolean checkChildrenFlag);
 
     SysDeptDO infoById(NotNullId notNullId);
 

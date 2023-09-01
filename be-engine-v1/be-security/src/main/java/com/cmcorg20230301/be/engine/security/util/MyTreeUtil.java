@@ -8,6 +8,7 @@ import com.cmcorg20230301.be.engine.redisson.util.IdGeneratorUtil;
 import com.cmcorg20230301.be.engine.security.model.entity.BaseEntity;
 import com.cmcorg20230301.be.engine.security.model.entity.BaseEntityTree;
 import lombok.SneakyThrows;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -18,25 +19,25 @@ public class MyTreeUtil {
      * 根据底级节点 list，逆向生成整棵树
      * 备注：有子节点时，children才是集合
      */
-    public static <T extends BaseEntityTree<T>> List<T> getFullTreeByDeepNode(List<T> deepNodeList,
+    public static <T extends BaseEntityTree<T>> List<T> getFullTreeByDeepNode(Collection<T> deepNodeCollection,
         List<T> allCollection) {
 
-        return listToTree(getFullTreeList(deepNodeList, allCollection), false);
+        return listToTree(getFullTreeList(deepNodeCollection, allCollection), false);
 
     }
 
     /**
      * 根据底级节点 list，逆向生成整棵树 list
      *
-     * @param allCollection 所有的集合
-     * @param deepNodeList  底级节点list
+     * @param allCollection      所有的集合
+     * @param deepNodeCollection 底级节点集合
      */
-    public static <T extends BaseEntityTree<T>> List<T> getFullTreeList(List<T> deepNodeList,
+    public static <T extends BaseEntityTree<T>> List<T> getFullTreeList(Collection<T> deepNodeCollection,
         Collection<T> allCollection) {
 
-        List<T> resultList = new ArrayList<>(deepNodeList); // 先添加底级节点
+        List<T> resultList = new ArrayList<>(deepNodeCollection); // 先添加底级节点
 
-        doGetFullTree(deepNodeList, allCollection, resultList);
+        doGetFullTree(deepNodeCollection, allCollection, resultList);
 
         return resultList;
 
@@ -45,37 +46,39 @@ public class MyTreeUtil {
     /**
      * 根据底级节点 set，逆向生成整棵树 set
      *
-     * @param allCollection 所有的节点
-     * @param deepNodeSet   底级节点set
+     * @param allCollection      所有的节点
+     * @param deepNodeCollection 底级节点
      */
-    public static <T extends BaseEntityTree<T>> Set<T> getFullTreeSet(Set<T> deepNodeSet, Collection<T> allCollection) {
+    public static <T extends BaseEntityTree<T>> Set<T> getFullTreeSet(Set<T> deepNodeCollection,
+        Collection<T> allCollection) {
 
-        Set<T> resultSet = new HashSet<>(deepNodeSet); // 先添加底级节点
+        Set<T> resultSet = new HashSet<>(deepNodeCollection); // 先添加底级节点
 
-        doGetFullTree(deepNodeSet, allCollection, resultSet);
+        doGetFullTree(deepNodeCollection, allCollection, resultSet);
 
         return resultSet;
 
     }
 
-    private static <T extends BaseEntityTree<T>> void doGetFullTree(Collection<T> deepNodeSet,
-        Collection<T> allCollection, Collection<T> resultSet) {
+    private static <T extends BaseEntityTree<T>> void doGetFullTree(Collection<T> deepNodeCollection,
+        Collection<T> allCollection, Collection<T> resultCollection) {
 
-        Set<Long> parentIdSet = deepNodeSet.stream().map(BaseEntityTree::getParentId).collect(Collectors.toSet());
+        Set<Long> parentIdSet =
+            deepNodeCollection.stream().map(BaseEntityTree::getParentId).collect(Collectors.toSet());
 
         Map<Long, T> allMap = allCollection.stream().collect(Collectors.toMap(BaseEntityTree::getId, it -> it));
 
         // 已经添加了 idSet
-        Set<Long> resultIdSet = resultSet.stream().map(BaseEntity::getId).collect(Collectors.toSet());
+        Set<Long> resultIdSet = resultCollection.stream().map(BaseEntity::getId).collect(Collectors.toSet());
 
         for (Long item : parentIdSet) {
-            getFullTreeListHandle(allMap, resultSet, item, resultIdSet); // 添加父级节点
+            getFullTreeListHandle(allMap, resultCollection, item, resultIdSet); // 添加父级节点
         }
 
     }
 
     private static <T extends BaseEntityTree<T>> void getFullTreeListHandle(Map<Long, T> allMap,
-        Collection<T> resultList, Long parentId, Set<Long> resultIdSet) {
+        Collection<T> resultCollection, Long parentId, Set<Long> resultIdSet) {
 
         if (parentId == 0) {
             return;
@@ -95,9 +98,9 @@ public class MyTreeUtil {
         }
 
         resultIdSet.add(item.getId());
-        resultList.add(item); // 添加父节点
+        resultCollection.add(item); // 添加父节点
 
-        getFullTreeListHandle(allMap, resultList, item.getParentId(), resultIdSet);
+        getFullTreeListHandle(allMap, resultCollection, item.getParentId(), resultIdSet);
 
     }
 
@@ -228,13 +231,13 @@ public class MyTreeUtil {
     /**
      * 给树形结构的 集合（还没有转换为树形结构），重新设置 id和 parentId
      */
-    public static <T extends BaseEntityTree<T>> void treeListSetNewIdAndParentId(List<T> flatList) {
+    public static <T extends BaseEntityTree<T>> void treeListSetNewIdAndParentId(Collection<T> flatCollection) {
 
         // 旧 id，新 id，map
         Map<Long, Long> idMap =
-            flatList.stream().collect(Collectors.toMap(BaseEntity::getId, it -> IdGeneratorUtil.nextId()));
+            flatCollection.stream().collect(Collectors.toMap(BaseEntity::getId, it -> IdGeneratorUtil.nextId()));
 
-        for (T item : flatList) {
+        for (T item : flatCollection) {
 
             Long newId = idMap.get(item.getId());
 
@@ -243,6 +246,90 @@ public class MyTreeUtil {
             Long newParentId = idMap.get(item.getParentId());
 
             item.setParentId(MyEntityUtil.getNotNullParentId(newParentId));
+
+        }
+
+    }
+
+    /**
+     * 获取：包含本节点，以及所有下级节点的 idSet的 map
+     * key：id，value：包含本节点，以及所有下级节点的 idSet
+     *
+     * @param matchIdSet 需要匹配的 idSet，如果为 null，则表示需要匹配所有 id
+     */
+    public static <T extends BaseEntityTree<T>> Map<Long, Set<Long>> getIdAndDeepIdSetMap(Collection<T> collection,
+        @Nullable Set<Long> matchIdSet) {
+
+        // 通过：父级 id分组，value：子级 idSet
+        Map<Long, Set<Long>> groupParentIdMap = collection.stream().collect(Collectors
+            .groupingBy(BaseEntityTree::getParentId, Collectors.mapping(BaseEntity::getId, Collectors.toSet())));
+
+        Map<Long, Set<Long>> resultMap;
+
+        if (CollUtil.isEmpty(matchIdSet)) {
+
+            resultMap = new HashMap<>(collection.size());
+
+            for (T item : collection) {
+
+                // 处理
+                getIdAndDeepIdSetMapHandle(groupParentIdMap, resultMap, item.getId());
+
+            }
+
+        } else {
+
+            resultMap = new HashMap<>(matchIdSet.size());
+
+            for (Long id : matchIdSet) {
+
+                // 处理
+                getIdAndDeepIdSetMapHandle(groupParentIdMap, resultMap, id);
+
+            }
+
+        }
+
+        return resultMap;
+
+    }
+
+    /**
+     * 处理
+     */
+    private static void getIdAndDeepIdSetMapHandle(Map<Long, Set<Long>> groupParentIdMap,
+        Map<Long, Set<Long>> resultMap, Long id) {
+
+        Set<Long> resultSet = new HashSet<>();
+
+        resultSet.add(id);
+
+        // 获取：下级节点
+        getIdAndDeepIdSetMapNext(resultSet, id, groupParentIdMap);
+
+        resultMap.put(id, resultSet);
+
+    }
+
+    /**
+     * 获取：下级节点
+     */
+    private static void getIdAndDeepIdSetMapNext(Set<Long> resultSet, Long parentId,
+        Map<Long, Set<Long>> groupParentIdMap) {
+
+        // 获取：自己下面的子级
+        Set<Long> childrenIdSet = groupParentIdMap.get(parentId);
+
+        if (CollUtil.isEmpty(childrenIdSet)) {
+            return;
+        }
+
+        for (Long item : childrenIdSet) {
+
+            resultSet.add(item);
+
+            // 继续匹配下一级
+            getIdAndDeepIdSetMapNext(resultSet, item, groupParentIdMap);
 
         }
 

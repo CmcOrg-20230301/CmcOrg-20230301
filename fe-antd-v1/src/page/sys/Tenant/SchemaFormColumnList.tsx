@@ -55,39 +55,21 @@ const SchemaFormColumnList = (): ProFormColumnsType<SysTenantInsertOrUpdateDTO>[
         },
 
         {
-
-            valueType: 'dependency',
-
-            name: ['id'],
-
-            columns: ({id}: SysTenantInsertOrUpdateDTO): ProFormColumnsType<SysTenantInsertOrUpdateDTO>[] => {
-
-                // @ts-ignore
-                return id ?
-
-                    [] : [
-
-                        {
-                            title: '关联菜单',
-                            dataIndex: 'menuIdSet',
-                            valueType: 'treeSelect',
-                            fieldProps: {
-                                placeholder: '请选择',
-                                allowClear: true,
-                                treeNodeFilterProp: 'title',
-                                maxTagCount: 'responsive',
-                                treeCheckable: true,
-                                showCheckedStrategy: TreeSelect.SHOW_PARENT,
-                            },
-                            request: () => {
-                                return GetDictTreeList(SysMenuPage);
-                            }
-                        },
-
-                    ]
-
-            }
-
+            title: '关联菜单',
+            dataIndex: 'menuIdSet',
+            valueType: 'treeSelect',
+            fieldProps: {
+                placeholder: '请选择',
+                allowClear: true,
+                treeNodeFilterProp: 'title',
+                maxTagCount: 'responsive',
+                treeCheckable: true,
+                showCheckedStrategy: TreeSelect.SHOW_PARENT,
+            },
+            request: () => {
+                return GetDictTreeList(SysMenuPage);
+            },
+            tooltip: '如果存在关联菜单，则无法修改',
         },
 
         {

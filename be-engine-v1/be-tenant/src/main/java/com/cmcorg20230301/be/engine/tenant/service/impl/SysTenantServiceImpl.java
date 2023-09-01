@@ -188,8 +188,22 @@ public class SysTenantServiceImpl extends ServiceImpl<SysTenantMapper, SysTenant
 
         }
 
-        // 如果是：新增，再新增子表数据
-        if (dto.getId() == null && CollUtil.isNotEmpty(dto.getMenuIdSet())) {
+        boolean addMenuFlag;
+
+        if (dto.getId() == null) {
+
+            addMenuFlag = true;
+
+        } else { // 如果原本就没有菜单，则也可以新增
+
+            addMenuFlag =
+                !sysMenuService.lambdaQuery().eq(BaseEntityNoId::getTenantId, dto.getId()).select(BaseEntity::getId)
+                    .exists();
+
+        }
+
+        // 再新增菜单
+        if (addMenuFlag && CollUtil.isNotEmpty(dto.getMenuIdSet())) {
 
             Map<Long, SysMenuDO> sysMenuCacheMap = SysMenuUtil.getSysMenuCacheMap();
 
@@ -341,7 +355,7 @@ public class SysTenantServiceImpl extends ServiceImpl<SysTenantMapper, SysTenant
 
                 Set<Long> menuIdSet = sysMenuDOList.stream().map(BaseEntity::getId).collect(Collectors.toSet());
 
-                sysMenuService.deleteByIdSet(new NotEmptyIdSet(menuIdSet));
+                sysMenuService.deleteByIdSet(new NotEmptyIdSet(menuIdSet), false);
 
             }
 
