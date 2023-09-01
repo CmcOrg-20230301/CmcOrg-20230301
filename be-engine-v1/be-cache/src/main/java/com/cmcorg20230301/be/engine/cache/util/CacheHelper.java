@@ -4,6 +4,7 @@ import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.map.MapUtil;
 import cn.hutool.core.util.StrUtil;
 import com.cmcorg20230301.be.engine.model.model.constant.BaseConstant;
+import com.cmcorg20230301.be.engine.model.model.constant.LogTopicConstant;
 import com.cmcorg20230301.be.engine.model.model.interfaces.IRedisKey;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
@@ -14,7 +15,7 @@ import java.util.*;
 /**
  * 缓存帮助类
  */
-@Slf4j
+@Slf4j(topic = LogTopicConstant.CACHE)
 public class CacheHelper {
 
     /**
@@ -141,12 +142,7 @@ public class CacheHelper {
             return false;
         }
 
-        if (collection instanceof List) {
-            return ((List<T>)collection).get(0) == null;
-        }
-
-        // 这里是检查：set等集合
-        return collection.contains(null);
+        return CollUtil.getFirst(collection) == null;
 
     }
 

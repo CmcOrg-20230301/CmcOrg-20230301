@@ -54,8 +54,9 @@ public class SecurityCacheConfiguration {
                 RedisKeyEnum.ROLE_ID_REF_MENU_SET_TWO_CACHE)));
 
         // 角色
-        TABLE_NAME_ENUM_SET.add(new SecurityCache(TableNameEnum.SYS_ROLE,
-            CollUtil.newHashSet(RedisKeyEnum.TENANT_DEFAULT_ROLE_ID_CACHE, RedisKeyEnum.ROLE_ID_SET_CACHE)));
+        TABLE_NAME_ENUM_SET.add(new SecurityCache(TableNameEnum.SYS_ROLE, CollUtil
+            .newHashSet(RedisKeyEnum.TENANT_DEFAULT_ROLE_ID_CACHE, RedisKeyEnum.ROLE_ID_SET_CACHE,
+                RedisKeyEnum.ROLE_ID_REF_MENU_SET_ONE_CACHE, RedisKeyEnum.ROLE_ID_REF_MENU_SET_TWO_CACHE)));
 
         // 字典
         TABLE_NAME_ENUM_SET
