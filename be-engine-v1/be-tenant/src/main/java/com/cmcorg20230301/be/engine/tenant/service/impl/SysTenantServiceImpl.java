@@ -7,6 +7,7 @@ import cn.hutool.core.util.BooleanUtil;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.cmcorg20230301.be.engine.dict.service.SysDictService;
 import com.cmcorg20230301.be.engine.menu.service.SysMenuService;
 import com.cmcorg20230301.be.engine.model.model.constant.BaseConstant;
 import com.cmcorg20230301.be.engine.model.model.dto.ChangeNumberDTO;
@@ -15,6 +16,7 @@ import com.cmcorg20230301.be.engine.model.model.dto.NotNullId;
 import com.cmcorg20230301.be.engine.model.model.dto.NotNullLong;
 import com.cmcorg20230301.be.engine.model.model.vo.DictTreeVO;
 import com.cmcorg20230301.be.engine.mysql.model.annotation.MyTransactional;
+import com.cmcorg20230301.be.engine.param.service.SysParamService;
 import com.cmcorg20230301.be.engine.security.exception.BaseBizCodeEnum;
 import com.cmcorg20230301.be.engine.security.mapper.SysTenantMapper;
 import com.cmcorg20230301.be.engine.security.model.configuration.ITenantDeleteConfiguration;
@@ -42,6 +44,12 @@ public class SysTenantServiceImpl extends ServiceImpl<SysTenantMapper, SysTenant
 
     @Resource
     SysMenuService sysMenuService;
+
+    @Resource
+    SysParamService sysParamService;
+
+    @Resource
+    SysDictService sysDictService;
 
     List<ITenantDeleteConfiguration> iTenantDeleteConfigurationList;
 
@@ -239,6 +247,10 @@ public class SysTenantServiceImpl extends ServiceImpl<SysTenantMapper, SysTenant
 
         }
 
+        // 新增：字典
+
+        // 新增：参数
+
     }
 
     /**
@@ -360,6 +372,30 @@ public class SysTenantServiceImpl extends ServiceImpl<SysTenantMapper, SysTenant
     private void deleteByIdSetSub(Set<Long> idSet, boolean deleteFlag) {
 
         sysTenantRefUserService.removeByIds(idSet);
+
+        // 删除：关联的参数
+        List<SysParamDO> sysParamDOList =
+            sysParamService.lambdaQuery().in(BaseEntityNoId::getTenantId, idSet).select(BaseEntity::getId).list();
+
+        if (CollUtil.isNotEmpty(sysParamDOList)) {
+
+            Set<Long> paramIdSet = sysParamDOList.stream().map(BaseEntity::getId).collect(Collectors.toSet());
+
+            sysParamService.deleteByIdSet(new NotEmptyIdSet(paramIdSet));
+
+        }
+
+        // 删除：关联的字典
+        List<SysDictDO> sysDictDOList =
+            sysDictService.lambdaQuery().in(BaseEntityNoId::getTenantId, idSet).select(BaseEntity::getId).list();
+
+        if (CollUtil.isNotEmpty(sysDictDOList)) {
+
+            Set<Long> dictIdSet = sysDictDOList.stream().map(BaseEntity::getId).collect(Collectors.toSet());
+
+            sysDictService.deleteByIdSet(new NotEmptyIdSet(dictIdSet));
+
+        }
 
         if (deleteFlag) {
 
