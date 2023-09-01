@@ -15,6 +15,7 @@ import com.cmcorg20230301.be.engine.model.model.constant.LogTopicConstant;
 import com.cmcorg20230301.be.engine.security.configuration.base.BaseConfiguration;
 import com.cmcorg20230301.be.engine.security.exception.BaseBizCodeEnum;
 import com.cmcorg20230301.be.engine.security.model.configuration.IJwtValidatorConfiguration;
+import com.cmcorg20230301.be.engine.security.model.vo.ApiResultVO;
 import com.cmcorg20230301.be.engine.security.properties.SecurityProperties;
 import com.cmcorg20230301.be.engine.security.util.MyJwtUtil;
 import com.cmcorg20230301.be.engine.security.util.RequestUtil;
@@ -107,7 +108,7 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
 
         // 判断 jwtHash是否存在于 redis中，如果存在，则表示不能使用
         if (StrUtil.isNotBlank(jwtHashRedis)) {
-            return loginExpired(response); // 提示登录过期，请重新登录
+            return loginExpired(response, userId); // 提示登录过期，请重新登录
         }
 
         // 设置：jwt的密钥
@@ -117,7 +118,7 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
 
         // 验证算法
         if (jwt.verify() == false) {
-            return loginExpired(response); // 提示登录过期，请重新登录，目的：为了可以随时修改配置的 jwt前缀，或者用户 jwt后缀修改
+            return loginExpired(response, userId); // 提示登录过期，请重新登录，目的：为了可以随时修改配置的 jwt前缀，或者用户 jwt后缀修改
         }
 
         try {
@@ -127,7 +128,7 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
 
         } catch (ValidateException e) {
 
-            return loginExpired(response); // 提示登录过期，请重新登录
+            return loginExpired(response, userId); // 提示登录过期，请重新登录
 
         }
 
@@ -209,11 +210,14 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
 
     /**
      * 提示登录过期，请重新登录
+     * 备注：这里抛出异常不会进入：ExceptionAdvice
      */
     @Nullable
-    public static UsernamePasswordAuthenticationToken loginExpired(HttpServletResponse response) {
+    public static UsernamePasswordAuthenticationToken loginExpired(HttpServletResponse response, Long userId) {
 
         ResponseUtil.out(response, BaseBizCodeEnum.LOGIN_EXPIRED);
+
+        ApiResultVO.error(BaseBizCodeEnum.LOGIN_EXPIRED, userId);
 
         return null;
 
