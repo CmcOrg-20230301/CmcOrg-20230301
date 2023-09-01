@@ -274,7 +274,7 @@ public class MyCacheUtil {
         RedissonUtil.batch((batch) -> {
 
             batch.getMap(key).deleteAsync();
-            batch.getMap(key).putAllAsync(finalResult);
+            batch.getMap(key).putAllAsync(finalResult); // 备注：value不能为 null
 
         });
 

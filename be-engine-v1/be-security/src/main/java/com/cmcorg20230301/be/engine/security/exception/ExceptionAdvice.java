@@ -39,7 +39,7 @@ public class ExceptionAdvice {
      * 参数校验异常：@Valid
      */
     @ExceptionHandler(value = MethodArgumentNotValidException.class)
-    public ApiResultVO<?> handlerValidException(MethodArgumentNotValidException e) {
+    public ApiResultVO<?> handleValidException(MethodArgumentNotValidException e) {
 
         e.printStackTrace();
 
@@ -104,7 +104,7 @@ public class ExceptionAdvice {
         sysRequestDO.setRegion(Ip2RegionUtil.getRegion(sysRequestDO.getIp()));
 
         sysRequestDO.setSuccessFlag(false);
-        sysRequestDO.setErrorMsg(errorMsg);
+        sysRequestDO.setErrorMsg(MyEntityUtil.getNotNullStr(errorMsg));
         sysRequestDO.setRequestParam(requestParam);
 
         // 设置：类型
@@ -131,7 +131,7 @@ public class ExceptionAdvice {
      * 参数校验异常：断言
      */
     @ExceptionHandler(value = IllegalArgumentException.class)
-    public ApiResultVO<?> handlerIllegalArgumentException(IllegalArgumentException e) {
+    public ApiResultVO<?> handleIllegalArgumentException(IllegalArgumentException e) {
 
         e.printStackTrace();
 
@@ -153,7 +153,7 @@ public class ExceptionAdvice {
      * 参数校验异常：springframework
      */
     @ExceptionHandler(value = HttpMessageNotReadableException.class)
-    public ApiResultVO<?> handlerHttpMessageNotReadableException(HttpMessageNotReadableException e) {
+    public ApiResultVO<?> handleHttpMessageNotReadableException(HttpMessageNotReadableException e) {
 
         e.printStackTrace();
 
@@ -179,7 +179,7 @@ public class ExceptionAdvice {
      * 自定义异常
      */
     @ExceptionHandler(value = BaseException.class)
-    public ApiResultVO<?> handlerBaseException(BaseException e) {
+    public ApiResultVO<?> handleBaseException(BaseException e) {
 
         e.printStackTrace();
 
@@ -191,7 +191,7 @@ public class ExceptionAdvice {
      * 权限不够时的异常处理
      */
     @ExceptionHandler(value = AccessDeniedException.class)
-    public ApiResultVO<?> handlerAccessDeniedException(AccessDeniedException e) {
+    public ApiResultVO<?> handleAccessDeniedException(AccessDeniedException e) {
 
         Long currentUserIdDefault = UserUtil.getCurrentUserIdDefault();
 
@@ -216,10 +216,30 @@ public class ExceptionAdvice {
     }
 
     /**
+     * 不记录日志的异常
+     */
+    @ExceptionHandler(value = NoLogException.class)
+    public ApiResultVO<?> handleNoLogException(NoLogException e) {
+
+        try {
+
+            ApiResultVO.sysError(); // 这里肯定会抛出 BaseException异常
+
+        } catch (BaseException baseException) {
+
+            return getBaseExceptionApiResult(baseException);
+
+        }
+
+        return null; // 这里不会执行，只是为了通过语法检查
+
+    }
+
+    /**
      * 缺省异常处理，直接提示系统异常
      */
     @ExceptionHandler(value = Throwable.class)
-    public ApiResultVO<?> handlerThrowable(Throwable e) {
+    public ApiResultVO<?> handleThrowable(Throwable e) {
 
         e.printStackTrace();
 

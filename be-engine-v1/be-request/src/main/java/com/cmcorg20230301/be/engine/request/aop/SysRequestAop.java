@@ -13,6 +13,7 @@ import com.cmcorg20230301.be.engine.ip2region.util.Ip2RegionUtil;
 import com.cmcorg20230301.be.engine.model.model.constant.BaseConstant;
 import com.cmcorg20230301.be.engine.model.model.constant.LogTopicConstant;
 import com.cmcorg20230301.be.engine.model.model.constant.OperationDescriptionConstant;
+import com.cmcorg20230301.be.engine.security.exception.NoLogException;
 import com.cmcorg20230301.be.engine.security.model.entity.SysRequestDO;
 import com.cmcorg20230301.be.engine.security.model.vo.ApiResultVO;
 import com.cmcorg20230301.be.engine.security.util.MyEntityUtil;
@@ -147,7 +148,7 @@ public class SysRequestAop {
 
             handleThrowable(sysRequestDO, e, costMs); // 处理：异常
 
-            throw e;
+            throw new NoLogException();
 
         }
 
@@ -185,11 +186,13 @@ public class SysRequestAop {
      */
     private void handleThrowable(SysRequestDO sysRequestDO, Throwable e, long costMs) {
 
+        e.printStackTrace(); // 打印日志
+
         sysRequestDO.setSuccessFlag(false); // 设置：请求失败
 
         String errorMsg = ExceptionUtil.stacktraceToString(e, BaseConstant.STR_MAX_LENGTH_1000);
 
-        sysRequestDO.setErrorMsg(errorMsg);
+        sysRequestDO.setErrorMsg(MyEntityUtil.getNotNullStr(errorMsg));
 
         // 处理：耗时相关
         handleCostMs(costMs, sysRequestDO);

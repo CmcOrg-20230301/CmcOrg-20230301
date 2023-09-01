@@ -64,6 +64,14 @@ public class RequestUtil {
 
         log.info("保存请求数据，长度：{}", tempSysRequestDOList.size());
 
+        for (SysRequestDO item : tempSysRequestDOList) {
+
+            if (item.getErrorMsg() == null) {
+                System.out.println();
+            }
+
+        }
+
         // 批量保存数据
         baseSysRequestService.saveBatch(tempSysRequestDOList);
 

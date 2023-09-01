@@ -113,7 +113,7 @@ public class CacheHelper {
     public static <T> List<T> getDefaultList() {
 
         List<T> result = new ArrayList<>();
-        result.add(null); // 注意：这里要小心使用
+        result.add(null); // 注意：这里要小心使用，备注：redis是支持 list和 set里存放 null元素的
 
         return result;
 
@@ -123,18 +123,18 @@ public class CacheHelper {
     public static <T> Set<T> getDefaultSet() {
 
         Set<T> result = new HashSet<>();
-        result.add(null); // 注意：这里要小心使用
+        result.add(null); // 注意：这里要小心使用，备注：redis是支持 list和 set里存放 null元素的
 
         return result;
 
     }
 
     /**
-     * 是否是：默认的集合返回值
+     * 是否是：默认的集合返回值，或者空集合
      */
     public static <T> boolean defaultCollectionFlag(Collection<T> collection) {
 
-        if (collection == null) {
+        if (CollUtil.isEmpty(collection)) {
             return true;
         }
 
@@ -209,11 +209,7 @@ public class CacheHelper {
 
         } else if (result instanceof Collection) {
 
-            Collection<?> collection = (Collection<?>)result;
-
-            CollUtil.removeNull(collection); // 移除：为 null的元素
-
-            if (CollUtil.isEmpty(collection)) {
+            if (CollUtil.isEmpty((Collection<?>)result)) {
 
                 throw new RuntimeException("操作失败：result为 Collection类型，但是长度为 0"); // 不能为 null，目的：防止缓存不写入数据
 
