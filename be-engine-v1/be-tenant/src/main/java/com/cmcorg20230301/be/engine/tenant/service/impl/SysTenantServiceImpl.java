@@ -74,17 +74,13 @@ public class SysTenantServiceImpl extends ServiceImpl<SysTenantMapper, SysTenant
 
         }
 
-        // 租户 id，和上级租户 id，保持一致
-        dto.setTenantId(parentId);
-
         if (dto.getId() != null && dto.getId().equals(dto.getParentId())) {
             ApiResultVO.error(BaseBizCodeEnum.PARENT_ID_CANNOT_BE_EQUAL_TO_ID);
         }
 
         // 相同父节点下：租户名（不能重复）
         boolean exists = lambdaQuery().eq(SysTenantDO::getName, dto.getName()).eq(BaseEntityTree::getParentId, parentId)
-            .ne(dto.getId() != null, BaseEntity::getId, dto.getId()).eq(BaseEntityNoId::getTenantId, dto.getTenantId())
-            .exists();
+            .ne(dto.getId() != null, BaseEntity::getId, dto.getId()).exists();
 
         if (exists) {
             ApiResultVO.errorMsg("操作失败：相同父节点下，租户名不能重复");
@@ -99,10 +95,18 @@ public class SysTenantServiceImpl extends ServiceImpl<SysTenantMapper, SysTenant
         sysTenantDO.setEnableFlag(BooleanUtil.isTrue(dto.getEnableFlag()));
         sysTenantDO.setName(dto.getName());
         sysTenantDO.setOrderNo(dto.getOrderNo());
-        sysTenantDO.setParentId(parentId);
         sysTenantDO.setId(dto.getId());
         sysTenantDO.setRemark(MyEntityUtil.getNotNullStr(dto.getRemark()));
         sysTenantDO.setDelFlag(false);
+
+        if (dto.getId() == null) {
+
+            // 租户 id，和上级租户 id，保持一致
+            sysTenantDO.setTenantId(parentId);
+
+            sysTenantDO.setParentId(parentId);
+
+        }
 
         saveOrUpdate(sysTenantDO);
 
