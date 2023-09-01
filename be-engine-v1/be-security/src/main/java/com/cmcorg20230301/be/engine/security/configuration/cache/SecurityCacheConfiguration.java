@@ -41,8 +41,8 @@ public class SecurityCacheConfiguration {
 
         // 菜单
         TABLE_NAME_ENUM_SET.add(new SecurityCache(TableNameEnum.SYS_MENU, CollUtil
-            .newHashSet(RedisKeyEnum.ALL_MENU_ID_AND_AUTHS_LIST_CACHE, RedisKeyEnum.ROLE_ID_REF_MENU_SET_ONE_CACHE,
-                RedisKeyEnum.ROLE_ID_REF_MENU_SET_TWO_CACHE, RedisKeyEnum.SYS_MENU_CACHE)));
+            .newHashSet(RedisKeyEnum.ALL_MENU_ID_AND_AUTHS_LIST_CACHE, RedisKeyEnum.ROLE_ID_REF_FULL_MENU_SET_CACHE,
+                RedisKeyEnum.ROLE_ID_REF_SECURITY_MENU_SET_CACHE, RedisKeyEnum.SYS_MENU_CACHE)));
 
         // 角色关联用户
         TABLE_NAME_ENUM_SET.add(new SecurityCache(TableNameEnum.SYS_ROLE_REF_USER,
@@ -50,13 +50,13 @@ public class SecurityCacheConfiguration {
 
         // 角色关联菜单
         TABLE_NAME_ENUM_SET.add(new SecurityCache(TableNameEnum.SYS_ROLE_REF_MENU, CollUtil
-            .newHashSet(RedisKeyEnum.ROLE_ID_REF_MENU_ID_SET_CACHE, RedisKeyEnum.ROLE_ID_REF_MENU_SET_ONE_CACHE,
-                RedisKeyEnum.ROLE_ID_REF_MENU_SET_TWO_CACHE)));
+            .newHashSet(RedisKeyEnum.ROLE_ID_REF_MENU_ID_SET_CACHE, RedisKeyEnum.ROLE_ID_REF_FULL_MENU_SET_CACHE,
+                RedisKeyEnum.ROLE_ID_REF_SECURITY_MENU_SET_CACHE)));
 
         // 角色
         TABLE_NAME_ENUM_SET.add(new SecurityCache(TableNameEnum.SYS_ROLE, CollUtil
             .newHashSet(RedisKeyEnum.TENANT_DEFAULT_ROLE_ID_CACHE, RedisKeyEnum.ROLE_ID_SET_CACHE,
-                RedisKeyEnum.ROLE_ID_REF_MENU_SET_ONE_CACHE, RedisKeyEnum.ROLE_ID_REF_MENU_SET_TWO_CACHE)));
+                RedisKeyEnum.ROLE_ID_REF_FULL_MENU_SET_CACHE, RedisKeyEnum.ROLE_ID_REF_SECURITY_MENU_SET_CACHE)));
 
         // 字典
         TABLE_NAME_ENUM_SET

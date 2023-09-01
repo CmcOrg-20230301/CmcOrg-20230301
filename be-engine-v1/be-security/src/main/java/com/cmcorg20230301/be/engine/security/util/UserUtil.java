@@ -253,9 +253,9 @@ public class UserUtil {
         RedisKeyEnum redisKeyEnum;
 
         if (type == 1) {
-            redisKeyEnum = RedisKeyEnum.ROLE_ID_REF_MENU_SET_ONE_CACHE;
+            redisKeyEnum = RedisKeyEnum.ROLE_ID_REF_FULL_MENU_SET_CACHE;
         } else {
-            redisKeyEnum = RedisKeyEnum.ROLE_ID_REF_MENU_SET_TWO_CACHE;
+            redisKeyEnum = RedisKeyEnum.ROLE_ID_REF_SECURITY_MENU_SET_CACHE;
         }
 
         Set<SysMenuDO> resultSet = new HashSet<>();

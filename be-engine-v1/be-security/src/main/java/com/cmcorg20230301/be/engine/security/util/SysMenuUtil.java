@@ -160,7 +160,7 @@ public class SysMenuUtil {
         // 获取：所有菜单
         List<SysMenuDO> allSysMenuDOList;
 
-        if (RedisKeyEnum.ROLE_ID_REF_MENU_SET_ONE_CACHE.equals(redisKeyEnum)) {
+        if (RedisKeyEnum.ROLE_ID_REF_FULL_MENU_SET_CACHE.equals(redisKeyEnum)) {
 
             allSysMenuDOList = SysMenuUtil.getSysMenuCacheMap().values().stream()
                 .sorted(Comparator.comparing(BaseEntityTree::getOrderNo, Comparator.reverseOrder()))
