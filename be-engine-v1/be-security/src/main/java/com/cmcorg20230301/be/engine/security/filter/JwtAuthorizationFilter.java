@@ -140,7 +140,9 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
                 boolean validFlag = item.validator(jwt, request.getRequestURI(), response);
 
                 if (BooleanUtil.isFalse(validFlag)) {
-                    return null;
+
+                    ApiResultVO.error(BaseBizCodeEnum.LOGIN_EXPIRED, userId);
+
                 }
 
             }
