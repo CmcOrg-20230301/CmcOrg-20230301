@@ -31,7 +31,9 @@ import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -179,14 +181,6 @@ public class SysPostServiceImpl extends ServiceImpl<SysPostMapper, SysPostDO> im
             if (exists) {
                 ApiResultVO.error(BaseBizCodeEnum.PLEASE_DELETE_THE_CHILD_NODE_FIRST);
             }
-
-        } else {
-
-            Map<Long, Set<Long>> idAndDeepIdSetMap =
-                MyTreeUtil.getIdAndDeepIdSetMap(lambdaQuery().in(BaseEntity::getId, idSet).list(), null);
-
-            // 获取：所有下级（包含本级）idSet
-            idSet = idAndDeepIdSetMap.values().stream().flatMap(Collection::stream).collect(Collectors.toSet());
 
         }
 
