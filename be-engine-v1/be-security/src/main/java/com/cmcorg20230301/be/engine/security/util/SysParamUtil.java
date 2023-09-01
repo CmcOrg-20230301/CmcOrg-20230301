@@ -35,7 +35,7 @@ public class SysParamUtil {
     public static String getValueById(Long paramId) {
 
         Map<Long, String> map =
-            MyCacheUtil.getMap(RedisKeyEnum.SYS_PARAM_CACHE, CacheHelper.getDefaultLongMap(), () -> {
+            MyCacheUtil.getMap(RedisKeyEnum.SYS_PARAM_CACHE, CacheHelper.getDefaultLongMap(""), () -> {
 
                 List<SysParamDO> sysParamDOList =
                     ChainWrappers.lambdaQueryChain(sysParamMapper).select(BaseEntity::getId, SysParamDO::getValue)

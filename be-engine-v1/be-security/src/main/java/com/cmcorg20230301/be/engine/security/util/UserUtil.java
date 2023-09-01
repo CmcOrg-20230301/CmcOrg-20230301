@@ -314,16 +314,18 @@ public class UserUtil {
      */
     private static void getDefaultRoleId(Set<Long> roleIdSet, @NotNull Long tenantId) {
 
-        Map<Long, Long> map =
-            MyCacheUtil.getMap(RedisKeyEnum.TENANT_DEFAULT_ROLE_ID_CACHE, CacheHelper.getDefaultLongMap(), () -> {
+        Map<Long, Long> map = MyCacheUtil
+            .getMap(RedisKeyEnum.TENANT_DEFAULT_ROLE_ID_CACHE, CacheHelper.getDefaultLongMap(BaseConstant.SYS_ID),
+                () -> {
 
-                List<SysRoleDO> sysRoleDOList =
-                    ChainWrappers.lambdaQueryChain(sysRoleMapper).select(BaseEntity::getId, BaseEntityNoId::getTenantId)
-                        .eq(BaseEntity::getEnableFlag, true).list();
+                    List<SysRoleDO> sysRoleDOList = ChainWrappers.lambdaQueryChain(sysRoleMapper)
+                        .select(BaseEntity::getId, BaseEntityNoId::getTenantId).eq(BaseEntity::getEnableFlag, true)
+                        .list();
 
-                return sysRoleDOList.stream().collect(Collectors.toMap(BaseEntityNoId::getTenantId, BaseEntity::getId));
+                    return sysRoleDOList.stream()
+                        .collect(Collectors.toMap(BaseEntityNoId::getTenantId, BaseEntity::getId));
 
-            });
+                });
 
         Long defaultRoleId = map.get(tenantId);
 

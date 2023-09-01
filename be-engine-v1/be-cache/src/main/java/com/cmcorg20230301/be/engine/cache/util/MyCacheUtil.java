@@ -148,6 +148,41 @@ public class MyCacheUtil {
     }
 
     /**
+     * 获取：一般类型的缓存从 map里
+     */
+    @SneakyThrows
+    @NotNull
+    public static <T> T getSecondMap(@NotNull Enum<? extends IRedisKey> redisKeyEnum, @Nullable String sufKey,
+        @NotNull String secondKey, @Nullable T defaultResult, @Nullable Func0<T> func0) {
+
+        String key = CacheHelper.getKey(redisKeyEnum, sufKey);
+
+        T result = onlyGetSecondMap(key, secondKey);
+
+        if (result != null) {
+            return result;
+        }
+
+        if (func0 != null) {
+
+            log.info("{}：读取提供者的数据", key);
+            result = func0.call();
+
+        }
+
+        result = CacheHelper.checkAndReturnResult(result, defaultResult); // 检查并设置值
+
+        log.info("{}：加入 redis缓存", key);
+        redissonClient.getMap(key).put(secondKey, result); // 先加入到 redis里
+
+        log.info("{}：加入 本地缓存", key);
+        CacheLocalUtil.putSecondMap(key, secondKey, result);
+
+        return result;
+
+    }
+
+    /**
      * 只获取值从 map里
      */
     @SneakyThrows
@@ -198,41 +233,6 @@ public class MyCacheUtil {
     }
 
     /**
-     * 获取：一般类型的缓存从 map里
-     */
-    @SneakyThrows
-    @NotNull
-    public static <T> T getSecondMap(@NotNull Enum<? extends IRedisKey> redisKeyEnum, @Nullable String sufKey,
-        @NotNull String secondKey, @Nullable T defaultResult, @Nullable Func0<T> func0) {
-
-        String key = CacheHelper.getKey(redisKeyEnum, sufKey);
-
-        T result = onlyGetSecondMap(key, secondKey);
-
-        if (result != null) {
-            return result;
-        }
-
-        if (func0 != null) {
-
-            log.info("{}：读取提供者的数据", key);
-            result = func0.call();
-
-        }
-
-        result = CacheHelper.checkAndReturnResult(result, defaultResult); // 检查并设置值
-
-        log.info("{}：加入 redis缓存", key);
-        redissonClient.getMap(key).put(secondKey, result); // 先加入到 redis里
-
-        log.info("{}：加入 本地缓存", key);
-        CacheLocalUtil.putSecondMap(key, secondKey, result);
-
-        return result;
-
-    }
-
-    /**
      * 获取：map类型的缓存
      */
     @SneakyThrows
@@ -254,23 +254,10 @@ public class MyCacheUtil {
 
         String key = CacheHelper.getKey(redisKeyEnum, sufKey);
 
-        T result = CacheLocalUtil.get(key);
+        T result = onlyGetMap(key);
 
-        if (CollUtil.isNotEmpty(result)) {
-
-            log.info("{}：返回 本地缓存", key);
+        if (result != null) {
             return result;
-
-        }
-
-        result = (T)redissonClient.getMap(key).readAllMap();
-
-        if (CollUtil.isNotEmpty(result)) {
-
-            log.info("{}：加入 本地缓存，并返回 redis缓存", key);
-            CacheLocalUtil.put(key, result, -1);
-            return result;
-
         }
 
         if (func0 != null) {
@@ -299,6 +286,37 @@ public class MyCacheUtil {
     }
 
     /**
+     * 只获取值：map
+     */
+    @SneakyThrows
+    @Nullable
+    public static <T extends Map<?, ?>> T onlyGetMap(@NotNull String key) {
+
+        T result = CacheLocalUtil.get(key);
+
+        if (CollUtil.isNotEmpty(result)) {
+
+            log.info("{}：返回 本地缓存", key);
+            return result;
+
+        }
+
+        result = (T)redissonClient.getMap(key).readAllMap(); // 不会为 null
+
+        if (CollUtil.isEmpty(result)) {
+
+            return null;
+
+        }
+
+        log.info("{}：加入 本地缓存，并返回 redis缓存", key);
+        CacheLocalUtil.put(key, result, -1);
+
+        return result;
+
+    }
+
+    /**
      * 获取：collection类型的缓存
      */
     @SneakyThrows
@@ -320,33 +338,12 @@ public class MyCacheUtil {
 
         String key = CacheHelper.getKey(redisKeyEnum, sufKey);
 
-        T result = CacheLocalUtil.get(key);
-
-        if (CollUtil.isNotEmpty(result)) {
-
-            log.info("{}：返回 本地缓存", key);
-            return result;
-
-        }
-
         boolean setFlag = defaultResult instanceof Set;
 
-        if (setFlag) {
+        T result = onlyGetCollection(key, setFlag);
 
-            result = (T)redissonClient.getSet(key).readAll();
-
-        } else {
-
-            result = (T)redissonClient.getList(key).readAll();
-
-        }
-
-        if (CollUtil.isNotEmpty(result)) {
-
-            log.info("{}：加入 本地缓存，并返回 redis缓存", key);
-            CacheLocalUtil.put(key, result, -1);
+        if (result != null) {
             return result;
-
         }
 
         if (func0 != null) {
@@ -378,6 +375,45 @@ public class MyCacheUtil {
         });
 
         log.info("{}：加入 本地缓存", key);
+        CacheLocalUtil.put(key, result, -1);
+
+        return result;
+
+    }
+
+    /**
+     * 只获取值：collection
+     */
+    @SneakyThrows
+    @Nullable
+    public static <T extends Collection<?>> T onlyGetCollection(@NotNull String key, boolean setFlag) {
+
+        T result = CacheLocalUtil.get(key);
+
+        if (CollUtil.isNotEmpty(result)) {
+
+            log.info("{}：返回 本地缓存", key);
+            return result;
+
+        }
+
+        if (setFlag) {
+
+            result = (T)redissonClient.getSet(key).readAll(); // 不会为 null
+
+        } else {
+
+            result = (T)redissonClient.getList(key).readAll(); // 不会为 null
+
+        }
+
+        if (CollUtil.isEmpty(result)) {
+
+            return null;
+
+        }
+
+        log.info("{}：加入 本地缓存，并返回 redis缓存", key);
         CacheLocalUtil.put(key, result, -1);
 
         return result;

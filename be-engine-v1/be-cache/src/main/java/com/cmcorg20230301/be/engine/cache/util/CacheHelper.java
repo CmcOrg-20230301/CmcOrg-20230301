@@ -34,20 +34,35 @@ public class CacheHelper {
     }
 
     @NotNull
-    public static <T> Map<Long, T> getDefaultLongMap() {
+    public static <T> Map<Long, T> getDefaultLongMap(@NotNull T t) {
 
         Map<Long, T> result = MapUtil.newHashMap();
-        result.put(BaseConstant.SYS_ID, null);
+        result.put(BaseConstant.SYS_ID, t);
 
         return result;
 
     }
 
+    /**
+     * 处理：默认的 map，移除：默认值
+     */
+    public static <T> Map<Long, T> handleDefaultLongMap(Map<Long, T> map) {
+
+        if (map.size() == 1 && map.containsKey(BaseConstant.SYS_ID)) {
+
+            return new HashMap<>();
+
+        }
+
+        return map;
+
+    }
+
     @NotNull
-    public static <T> Map<String, T> getDefaultStringMap() {
+    public static <T> Map<String, T> getDefaultStringMap(@NotNull T t) {
 
         Map<String, T> result = MapUtil.newHashMap();
-        result.put("", null);
+        result.put("", t);
 
         return result;
 
@@ -152,9 +167,9 @@ public class CacheHelper {
             log.info("CacheHelper：Map设置默认值：{}", defaultResult);
             result = defaultResult;
 
-        } else if (result instanceof Iterator && CollUtil.isEmpty((Iterator<?>)result)) {
+        } else if (result instanceof Collection && CollUtil.isEmpty((Collection<?>)result)) {
 
-            log.info("CacheHelper：Iterator设置默认值：{}", defaultResult);
+            log.info("CacheHelper：Collection设置默认值：{}", defaultResult);
             result = defaultResult;
 
         }
@@ -182,7 +197,7 @@ public class CacheHelper {
 
             } else {
 
-                // map里面的key 和 value，都不能为 null
+                // map里面的 value，不能为 null
                 for (Map.Entry<?, ?> item : map.entrySet()) {
 
                     if (item.getValue() == null) {
@@ -196,11 +211,15 @@ public class CacheHelper {
 
             }
 
-        } else if (result instanceof Iterator) {
+        } else if (result instanceof Collection) {
 
-            if (CollUtil.isEmpty((Iterator<?>)result)) {
+            Collection<?> collection = (Collection<?>)result;
 
-                throw new RuntimeException("操作失败：result为 Iterator类型，但是长度为 0"); // 不能为 null，目的：防止缓存不写入数据
+            CollUtil.removeNull(collection); // 移除：为 null的元素
+
+            if (CollUtil.isEmpty(collection)) {
+
+                throw new RuntimeException("操作失败：result为 Collection类型，但是长度为 0"); // 不能为 null，目的：防止缓存不写入数据
 
             }
 

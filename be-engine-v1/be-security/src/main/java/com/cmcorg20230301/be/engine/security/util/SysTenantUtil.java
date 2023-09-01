@@ -108,15 +108,21 @@ public class SysTenantUtil {
     @NotNull
     public static Map<Long, SysTenantDO> getSysTenantCacheMap() {
 
-        return MyCacheUtil.getMap(RedisKeyEnum.SYS_TENANT_CACHE, CacheHelper.getDefaultLongMap(), () -> {
+        Map<Long, SysTenantDO> map =
+            MyCacheUtil.getMap(RedisKeyEnum.SYS_TENANT_CACHE, CacheHelper.getDefaultLongMap(new SysTenantDO()), () -> {
 
-            List<SysTenantDO> sysTenantDOList = ChainWrappers.lambdaQueryChain(sysTenantMapper)
-                .select(BaseEntity::getId, SysTenantDO::getName, BaseEntityNoId::getEnableFlag,
-                    SysTenantDO::getParentId).list();
+                List<SysTenantDO> sysTenantDOList = ChainWrappers.lambdaQueryChain(sysTenantMapper)
+                    .select(BaseEntity::getId, SysTenantDO::getName, BaseEntityNoId::getEnableFlag,
+                        SysTenantDO::getParentId).list();
 
-            return sysTenantDOList.stream().collect(Collectors.toMap(BaseEntity::getId, it -> it));
+                return sysTenantDOList.stream().collect(Collectors.toMap(BaseEntity::getId, it -> it));
 
-        });
+            });
+
+        // 移除：默认值
+        map = CacheHelper.handleDefaultLongMap(map);
+
+        return map;
 
     }
 

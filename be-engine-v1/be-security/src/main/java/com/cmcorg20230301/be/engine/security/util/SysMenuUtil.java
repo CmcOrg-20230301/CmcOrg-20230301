@@ -40,14 +40,20 @@ public class SysMenuUtil {
     @NotNull
     public static Map<Long, SysMenuDO> getSysMenuCacheMap() {
 
-        return MyCacheUtil.getMap(RedisKeyEnum.SYS_MENU_CACHE, CacheHelper.getDefaultLongMap(), () -> {
+        Map<Long, SysMenuDO> map =
+            MyCacheUtil.getMap(RedisKeyEnum.SYS_MENU_CACHE, CacheHelper.getDefaultLongMap(new SysMenuDO()), () -> {
 
-            List<SysMenuDO> sysMenuDOList =
-                ChainWrappers.lambdaQueryChain(sysMenuMapper).eq(BaseEntityNoId::getEnableFlag, true).list();
+                List<SysMenuDO> sysMenuDOList =
+                    ChainWrappers.lambdaQueryChain(sysMenuMapper).eq(BaseEntityNoId::getEnableFlag, true).list();
 
-            return sysMenuDOList.stream().collect(Collectors.toMap(BaseEntity::getId, it -> it));
+                return sysMenuDOList.stream().collect(Collectors.toMap(BaseEntity::getId, it -> it));
 
-        });
+            });
+
+        // 移除：默认值
+        map = CacheHelper.handleDefaultLongMap(map);
+
+        return map;
 
     }
 
