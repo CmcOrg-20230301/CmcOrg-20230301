@@ -277,7 +277,7 @@ export default function () {
 
                             >
 
-                            重置
+                                重置
 
                             </Button>,
 
@@ -339,7 +339,7 @@ export default function () {
 
                 open={formOpen}
                 onOpenChange={setFormOpen}
-                columns={SchemaFormColumnList(formRef)}
+                columns={SchemaFormColumnList()}
 
                 onFinish={async (form) => {
 

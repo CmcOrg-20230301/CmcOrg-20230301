@@ -9,6 +9,7 @@ export const InitForm: SysTenantInsertOrUpdateDTO = {} as SysTenantInsertOrUpdat
 
 const SchemaFormColumnList = (): ProFormColumnsType<SysTenantInsertOrUpdateDTO>[] => {
 
+    // @ts-ignore
     return [
 
         {
@@ -23,7 +24,7 @@ const SchemaFormColumnList = (): ProFormColumnsType<SysTenantInsertOrUpdateDTO>[
             },
             request: () => {
                 return GetDictTreeList(SysTenantPage);
-            }
+            },
         },
 
         {
@@ -54,20 +55,39 @@ const SchemaFormColumnList = (): ProFormColumnsType<SysTenantInsertOrUpdateDTO>[
         },
 
         {
-            title: '关联菜单',
-            dataIndex: 'menuIdSet',
-            valueType: 'treeSelect',
-            fieldProps: {
-                placeholder: '请选择',
-                allowClear: true,
-                treeNodeFilterProp: 'title',
-                maxTagCount: 'responsive',
-                treeCheckable: true,
-                showCheckedStrategy: TreeSelect.SHOW_PARENT,
-            },
-            request: () => {
-                return GetDictTreeList(SysMenuPage);
+
+            valueType: 'dependency',
+
+            name: ['id'],
+
+            columns: ({id}: SysTenantInsertOrUpdateDTO): ProFormColumnsType<SysTenantInsertOrUpdateDTO>[] => {
+
+                // @ts-ignore
+                return id ?
+
+                    [] : [
+
+                        {
+                            title: '关联菜单',
+                            dataIndex: 'menuIdSet',
+                            valueType: 'treeSelect',
+                            fieldProps: {
+                                placeholder: '请选择',
+                                allowClear: true,
+                                treeNodeFilterProp: 'title',
+                                maxTagCount: 'responsive',
+                                treeCheckable: true,
+                                showCheckedStrategy: TreeSelect.SHOW_PARENT,
+                            },
+                            request: () => {
+                                return GetDictTreeList(SysMenuPage);
+                            }
+                        },
+
+                    ]
+
             }
+
         },
 
         {

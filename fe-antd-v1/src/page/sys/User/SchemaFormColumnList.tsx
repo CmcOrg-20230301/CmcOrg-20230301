@@ -13,6 +13,7 @@ export const InitForm: SysUserInsertOrUpdateDTO = {} as SysUserInsertOrUpdateDTO
 
 const SchemaFormColumnList = (formRef: React.MutableRefObject<FormInstance<SysUserInsertOrUpdateDTO> | undefined>): ProFormColumnsType<SysUserInsertOrUpdateDTO>[] => {
 
+    // @ts-ignore
     return [
 
         {
@@ -68,6 +69,7 @@ const SchemaFormColumnList = (formRef: React.MutableRefObject<FormInstance<SysUs
 
             columns: ({id}: SysUserInsertOrUpdateDTO): ProFormColumnsType<SysUserInsertOrUpdateDTO>[] => {
 
+                // @ts-ignore
                 return id ?
 
                     [] : [
