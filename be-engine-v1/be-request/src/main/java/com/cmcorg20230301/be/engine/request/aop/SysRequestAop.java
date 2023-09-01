@@ -13,6 +13,7 @@ import com.cmcorg20230301.be.engine.ip2region.util.Ip2RegionUtil;
 import com.cmcorg20230301.be.engine.model.model.constant.BaseConstant;
 import com.cmcorg20230301.be.engine.model.model.constant.LogTopicConstant;
 import com.cmcorg20230301.be.engine.model.model.constant.OperationDescriptionConstant;
+import com.cmcorg20230301.be.engine.security.exception.BaseException;
 import com.cmcorg20230301.be.engine.security.exception.NoLogException;
 import com.cmcorg20230301.be.engine.security.model.entity.SysRequestDO;
 import com.cmcorg20230301.be.engine.security.model.vo.ApiResultVO;
@@ -148,6 +149,14 @@ public class SysRequestAop {
 
             handleThrowable(sysRequestDO, e, costMs); // 处理：异常
 
+            if (e instanceof BaseException || e instanceof IllegalArgumentException) {
+
+                throw e;
+
+            }
+
+            e.printStackTrace(); // 打印日志
+
             throw new NoLogException();
 
         }
@@ -185,8 +194,6 @@ public class SysRequestAop {
      * 处理：异常
      */
     private void handleThrowable(SysRequestDO sysRequestDO, Throwable e, long costMs) {
-
-        e.printStackTrace(); // 打印日志
 
         sysRequestDO.setSuccessFlag(false); // 设置：请求失败
 

@@ -9,7 +9,7 @@ import {validate} from "@/util/ValidatorUtil";
 import {SignEmailSignInPassword} from "@/api/http/SignEmail";
 import {SignSignInNameSignInPassword} from "@/api/http/SignSignInName";
 import {signOut} from "@/store/userSlice";
-import SessionStorageKey from "@/model/constant/SessionStorageKey";
+import {SetTenantIdToStorage} from "@/util/CommonUtil";
 
 /**
  * 处理表单
@@ -48,8 +48,7 @@ function SignInSuccess(apiResultVO: ApiResultVO, tenantId: string) {
 
     localStorage.setItem(LocalStorageKey.JWT, apiResultVO.data)
 
-    localStorage.setItem(LocalStorageKey.TENANT_ID, tenantId)
-    sessionStorage.setItem(SessionStorageKey.TENANT_ID, tenantId)
+    SetTenantIdToStorage(tenantId);
 
     getAppNav()(PathConstant.ADMIN_PATH)
 

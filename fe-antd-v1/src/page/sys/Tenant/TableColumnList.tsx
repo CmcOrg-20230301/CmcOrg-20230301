@@ -6,7 +6,8 @@ import {CalcOrderNo} from "@/util/TreeUtil";
 import {EllipsisOutlined} from "@ant-design/icons";
 import {Dropdown, TreeSelect} from "antd";
 import React from "react";
-import {SearchTransform} from "@/util/CommonUtil";
+import {SearchTransform, SetTenantIdToStorage} from "@/util/CommonUtil";
+import {SignOut} from "@/util/UserUtil";
 
 const TableColumnList = (currentForm: React.MutableRefObject<SysTenantInsertOrUpdateDTO>, setFormOpen: React.Dispatch<React.SetStateAction<boolean>>, actionRef: React.RefObject<ActionType | undefined>): ProColumns<SysTenantDO>[] => [
 
@@ -44,7 +45,19 @@ const TableColumnList = (currentForm: React.MutableRefObject<SysTenantInsertOrUp
         }
     },
 
-    {title: '租户id', dataIndex: 'id', ellipsis: true, width: 200,},
+    {
+        title: '租户id', dataIndex: 'id', ellipsis: true, width: 200,
+        render: (dom, entity) =>
+
+            <a title={"登录租户"} onClick={() => {
+
+                SetTenantIdToStorage(entity.id);
+
+                SignOut();
+
+            }}>{entity.id}</a>,
+
+    },
 
     {title: '租户名', dataIndex: 'name', ellipsis: true, width: 200,},
 

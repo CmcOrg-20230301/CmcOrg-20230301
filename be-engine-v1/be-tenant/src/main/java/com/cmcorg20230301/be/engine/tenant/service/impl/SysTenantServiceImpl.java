@@ -247,8 +247,19 @@ public class SysTenantServiceImpl extends ServiceImpl<SysTenantMapper, SysTenant
     @Override
     public Page<SysTenantDO> myPage(SysTenantPageDTO dto) {
 
-        // 处理：MyTenantPageDTO
-        SysTenantUtil.handleMyTenantPageDTO(dto, false);
+        Long currentTenantIdDefault = UserUtil.getCurrentTenantIdDefault();
+
+        if (BaseConstant.TENANT_ID.equals(currentTenantIdDefault)) {
+
+            // 处理：MyTenantPageDTO
+            SysTenantUtil.handleMyTenantPageDTO(dto, false);
+
+        } else {
+
+            // 处理：MyTenantPageDTO
+            SysTenantUtil.handleMyTenantPageDTO(dto, true);
+
+        }
 
         return lambdaQuery().like(StrUtil.isNotBlank(dto.getName()), SysTenantDO::getName, dto.getName())
             .like(StrUtil.isNotBlank(dto.getRemark()), BaseEntityTree::getRemark, dto.getRemark())

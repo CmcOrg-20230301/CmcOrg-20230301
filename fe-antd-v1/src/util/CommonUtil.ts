@@ -27,10 +27,19 @@ export function GetTenantId(): string {
 
     const tenantId = GetURLSearchParams().get("tenantId") || '0';
 
-    localStorage.setItem(LocalStorageKey.TENANT_ID, tenantId)
-    sessionStorage.setItem(SessionStorageKey.TENANT_ID, tenantId)
+    SetTenantIdToStorage(tenantId);
 
     return tenantId
+
+}
+
+/**
+ * 设置：TenantId 到 Storage里面
+ */
+export function SetTenantIdToStorage(tenantId: string) {
+
+    localStorage.setItem(LocalStorageKey.TENANT_ID, tenantId)
+    sessionStorage.setItem(SessionStorageKey.TENANT_ID, tenantId)
 
 }
 

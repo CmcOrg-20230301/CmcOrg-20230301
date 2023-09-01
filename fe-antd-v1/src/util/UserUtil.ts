@@ -3,9 +3,7 @@ import {ToastSuccess} from "./ToastUtil";
 import PathConstant from "@/model/constant/PathConstant";
 import {signOut} from "@/store/userSlice";
 import {RandomStr} from "@/util/StrUtil";
-import LocalStorageKey from "@/model/constant/LocalStorageKey";
-import SessionStorageKey from "@/model/constant/SessionStorageKey";
-import {GetTenantIdFromStorage} from "@/util/CommonUtil";
+import {GetTenantIdFromStorage, SetTenantIdToStorage} from "@/util/CommonUtil";
 
 // 退出登录
 export function SignOut(msg ?: string) {
@@ -15,8 +13,7 @@ export function SignOut(msg ?: string) {
     localStorage.clear()
     sessionStorage.clear()
 
-    localStorage.setItem(LocalStorageKey.TENANT_ID, tenantId)
-    sessionStorage.setItem(SessionStorageKey.TENANT_ID, tenantId)
+    SetTenantIdToStorage(tenantId);
 
     getAppDispatch()(signOut()) // store 退出登录
 

@@ -1,6 +1,7 @@
 package com.cmcorg20230301.be.engine.dict.service.impl;
 
 import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.lang.func.Func1;
 import cn.hutool.core.util.BooleanUtil;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -18,11 +19,14 @@ import com.cmcorg20230301.be.engine.mysql.model.annotation.MyTransactional;
 import com.cmcorg20230301.be.engine.security.exception.BaseBizCodeEnum;
 import com.cmcorg20230301.be.engine.security.mapper.SysDictMapper;
 import com.cmcorg20230301.be.engine.security.model.entity.BaseEntity;
+import com.cmcorg20230301.be.engine.security.model.entity.BaseEntityNoId;
 import com.cmcorg20230301.be.engine.security.model.entity.SysDictDO;
 import com.cmcorg20230301.be.engine.security.model.enums.SysDictTypeEnum;
 import com.cmcorg20230301.be.engine.security.model.vo.ApiResultVO;
 import com.cmcorg20230301.be.engine.security.util.MyEntityUtil;
 import com.cmcorg20230301.be.engine.security.util.SysDictUtil;
+import com.cmcorg20230301.be.engine.security.util.SysTenantUtil;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -37,6 +41,13 @@ public class SysDictServiceImpl extends ServiceImpl<SysDictMapper, SysDictDO> im
     @Override
     @MyTransactional
     public String insertOrUpdate(SysDictInsertOrUpdateDTO dto) {
+
+        // 检查：是否可以新增
+        SysTenantUtil.checkInsert(dto);
+
+        // 处理：BaseTenantInsertOrUpdateDTO
+        SysTenantUtil.handleBaseTenantInsertOrUpdateDTO(dto, getCheckIllegalFunc1(CollUtil.newHashSet(dto.getId())),
+            getTenantIdBaseEntityFunc1());
 
         if (SysDictTypeEnum.DICT.equals(dto.getType())) {
 
@@ -203,15 +214,20 @@ public class SysDictServiceImpl extends ServiceImpl<SysDictMapper, SysDictDO> im
     @MyTransactional
     public String deleteByIdSet(NotEmptyIdSet notEmptyIdSet) {
 
-        if (CollUtil.isEmpty(notEmptyIdSet.getIdSet())) {
+        Set<Long> idSet = notEmptyIdSet.getIdSet();
+
+        if (CollUtil.isEmpty(idSet)) {
             return BaseBizCodeEnum.OK;
         }
 
+        // 检查：是否非法操作
+        SysTenantUtil.checkIllegal(idSet, getCheckIllegalFunc1(idSet));
+
         // 根据 idSet删除
-        removeByIds(notEmptyIdSet.getIdSet());
+        removeByIds(idSet);
 
         List<SysDictDO> sysDictDOList =
-            lambdaQuery().in(BaseEntity::getId, notEmptyIdSet.getIdSet()).eq(SysDictDO::getType, SysDictTypeEnum.DICT)
+            lambdaQuery().in(BaseEntity::getId, idSet).eq(SysDictDO::getType, SysDictTypeEnum.DICT)
                 .select(SysDictDO::getDictKey).list();
 
         if (CollUtil.isEmpty(sysDictDOList)) {
@@ -257,6 +273,27 @@ public class SysDictServiceImpl extends ServiceImpl<SysDictMapper, SysDictDO> im
         updateBatchById(sysDictDOList);
 
         return BaseBizCodeEnum.OK;
+
+    }
+
+    /**
+     * 获取：检查：是否非法操作的 getCheckIllegalFunc1
+     */
+    @NotNull
+    private Func1<Set<Long>, Long> getCheckIllegalFunc1(Set<Long> idSet) {
+
+        return tenantIdSet -> lambdaQuery().in(BaseEntity::getId, idSet).in(BaseEntityNoId::getTenantId, tenantIdSet)
+            .count();
+
+    }
+
+    /**
+     * 获取：检查：是否非法操作的 getTenantIdBaseEntityFunc1
+     */
+    @NotNull
+    private Func1<Long, BaseEntity> getTenantIdBaseEntityFunc1() {
+
+        return id -> lambdaQuery().eq(BaseEntity::getId, id).select(BaseEntity::getTenantId).one();
 
     }
 

@@ -1,6 +1,6 @@
 package com.cmcorg20230301.be.engine.dict.model.dto;
 
-import com.cmcorg20230301.be.engine.model.model.dto.BaseInsertOrUpdateDTO;
+import com.cmcorg20230301.be.engine.model.model.dto.BaseTenantInsertOrUpdateDTO;
 import com.cmcorg20230301.be.engine.security.model.enums.SysDictTypeEnum;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
@@ -11,7 +11,7 @@ import javax.validation.constraints.NotNull;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
-public class SysDictInsertOrUpdateDTO extends BaseInsertOrUpdateDTO {
+public class SysDictInsertOrUpdateDTO extends BaseTenantInsertOrUpdateDTO {
 
     @NotBlank
     @Schema(description = "字典 key（不能重复），字典项要冗余这个 key，目的：方便操作")
