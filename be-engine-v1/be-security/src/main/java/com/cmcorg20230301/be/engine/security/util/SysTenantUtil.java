@@ -318,7 +318,7 @@ public class SysTenantUtil {
             return;
         }
 
-        if (insertOrUpdateCommonCheck()) {
+        if (insertOrUpdateOrDeleteCommonCheck()) {
             return;
         }
 
@@ -327,9 +327,11 @@ public class SysTenantUtil {
     }
 
     /**
-     * 新增或者修改操作，通用的检查方法
+     * 新增，修改，或者删除操作，通用的检查方法
+     *
+     * @return true 可以进行操作 false 不可以进行操作
      */
-    public static boolean insertOrUpdateCommonCheck() {
+    public static boolean insertOrUpdateOrDeleteCommonCheck() {
 
         Long currentUserId = UserUtil.getCurrentUserId();
 

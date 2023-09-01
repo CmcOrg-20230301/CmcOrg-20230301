@@ -110,7 +110,7 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenuDO> im
             return dto;
         }
 
-        if (SysTenantUtil.insertOrUpdateCommonCheck()) {
+        if (SysTenantUtil.insertOrUpdateOrDeleteCommonCheck()) {
             return dto;
         }
 
@@ -279,6 +279,9 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenuDO> im
 
         // 检查：是否非法操作
         SysTenantUtil.checkIllegal(idSet, getCheckIllegalFunc1(idSet));
+
+        // 检查：是否可以删除
+        SysTenantUtil.insertOrUpdateOrDeleteCommonCheck();
 
         if (checkChildrenFlag) {
 
