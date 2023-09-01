@@ -11,7 +11,6 @@ export const InitForm: SysMenuInsertOrUpdateDTO = {} as SysMenuInsertOrUpdateDTO
 
 const SchemaFormColumnList = (): ProFormColumnsType<SysMenuInsertOrUpdateDTO>[] => {
 
-    // @ts-ignore
     return [
 
         {

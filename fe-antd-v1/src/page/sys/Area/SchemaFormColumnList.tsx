@@ -8,7 +8,6 @@ export const InitForm: SysAreaInsertOrUpdateDTO = {} as SysAreaInsertOrUpdateDTO
 
 const SchemaFormColumnList = (): ProFormColumnsType<SysAreaInsertOrUpdateDTO>[] => {
 
-    // @ts-ignore
     return [
 
         {

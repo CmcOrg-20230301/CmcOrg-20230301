@@ -4,7 +4,6 @@ import {SysParamDeleteByIdSet, SysParamDO, SysParamInsertOrUpdateDTO} from "@/ap
 import {ExecConfirm, ToastSuccess} from "@/util/ToastUtil";
 import {Typography} from "antd";
 
-// @ts-ignore
 const TableColumnList = (currentForm: React.MutableRefObject<SysParamInsertOrUpdateDTO>, setFormOpen: React.Dispatch<React.SetStateAction<boolean>>, actionRef: React.RefObject<ActionType | undefined>): ProColumns<SysParamDO>[] => [
 
     {

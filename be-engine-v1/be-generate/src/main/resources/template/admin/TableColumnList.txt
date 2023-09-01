@@ -2,7 +2,6 @@ import {ActionType, ProColumns} from "@ant-design/pro-components";
 import {AdminDeleteByIdSetApi, AdminInsertOrUpdateDTO, AdminPageVO} from "@/api/http/AdminController";
 import {ExecConfirm, ToastSuccess} from "@/util/ToastUtil";
 
-// @ts-ignore
 const TableColumnList = (currentForm: React.MutableRefObject<AdminInsertOrUpdateDTO>, setFormOpen: React.Dispatch<React.SetStateAction<boolean>>, actionRef: React.RefObject<ActionType | undefined>): ProColumns<AdminPageVO>[] => [
 
     {

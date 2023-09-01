@@ -8,7 +8,6 @@ import {Dropdown, TreeSelect} from "antd";
 import React from "react";
 import {SearchTransform} from "@/util/CommonUtil";
 
-// @ts-ignore
 const TableColumnList = (currentForm: React.MutableRefObject<SysTenantInsertOrUpdateDTO>, setFormOpen: React.Dispatch<React.SetStateAction<boolean>>, actionRef: React.RefObject<ActionType | undefined>): ProColumns<SysTenantDO>[] => [
 
     {

@@ -6,7 +6,6 @@ export const InitForm: SysParamInsertOrUpdateDTO = {} as SysParamInsertOrUpdateD
 
 const SchemaFormColumnList = (): ProFormColumnsType<SysParamInsertOrUpdateDTO>[] => {
 
-    // @ts-ignore
     return [
 
         {

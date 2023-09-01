@@ -6,7 +6,6 @@ import {SysDictDeleteByIdSet, SysDictDO, SysDictInsertOrUpdateDTO} from "@/api/h
 import {ExecConfirm, ToastSuccess} from "@/util/ToastUtil";
 import {CalcOrderNo} from "@/util/TreeUtil";
 
-// @ts-ignore
 const TableColumnList = (currentForm: React.MutableRefObject<SysDictInsertOrUpdateDTO>, setFormOpen: React.Dispatch<React.SetStateAction<boolean>>, actionRef: React.RefObject<ActionType | undefined>): ProColumns<SysDictDO>[] => [
 
     {

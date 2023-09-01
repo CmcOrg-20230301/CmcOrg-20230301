@@ -207,7 +207,6 @@ export function UserForgetPasswordModalForm() {
 
             onGetCaptcha={async () => {
 
-                // @ts-ignore
                 await formRef.current?.validateFields(['email']).then(async res => {
 
                     await SignEmailForgetPasswordSendCode({email: res.email, tenantId: GetTenantId()}).then(res => {
