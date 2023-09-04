@@ -46,19 +46,23 @@ public class SysDictUtil {
      */
     public static List<DictVO> listByDictKey(String dictKey) {
 
-        Map<String, List<DictVO>> dictMap =
-            MyCacheUtil.getMap(RedisKeyEnum.SYS_DICT_CACHE, CacheHelper.getDefaultStringListMap(), () -> {
+        Long currentTenantIdDefault = UserUtil.getCurrentTenantIdDefault();
+
+        Map<Long, Map<String, List<DictVO>>> dictMap =
+            MyCacheUtil.getMap(RedisKeyEnum.SYS_DICT_CACHE, CacheHelper.getDefaultLongMapStringListMap(), () -> {
 
                 return ChainWrappers.lambdaQueryChain(sysDictMapper).eq(SysDictDO::getType, SysDictTypeEnum.DICT_ITEM)
                     .eq(BaseEntityNoId::getEnableFlag, true) //
-                    .select(SysDictDO::getValue, SysDictDO::getName, SysDictDO::getDictKey) //
+                    .select(SysDictDO::getValue, SysDictDO::getName, SysDictDO::getDictKey,
+                        BaseEntityNoId::getTenantId) //
                     .orderByDesc(SysDictDO::getOrderNo).list() //
-                    .stream().collect(Collectors.groupingBy(SysDictDO::getDictKey,
-                        Collectors.mapping(it -> new DictVO(it.getValue().longValue(), it.getName()), Collectors.toList())));
+                    .stream().collect(Collectors.groupingBy(BaseEntityNoId::getTenantId, Collectors
+                        .groupingBy(SysDictDO::getDictKey, Collectors
+                            .mapping(it -> new DictVO(it.getValue().longValue(), it.getName()), Collectors.toList()))));
 
             });
 
-        return dictMap.get(dictKey);
+        return dictMap.get(currentTenantIdDefault).get(dictKey);
 
     }
 

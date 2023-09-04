@@ -35,6 +35,28 @@ public class CacheHelper {
     }
 
     @NotNull
+    public static <T> Map<Long, Map<Long, T>> getDefaultLongMapLongMap() {
+
+        Map<Long, Map<Long, T>> defaultMap = MapUtil.newHashMap();
+
+        defaultMap.put(BaseConstant.SYS_ID, MapUtil.newHashMap());
+
+        return defaultMap;
+
+    }
+
+    @NotNull
+    public static <T> Map<Long, Map<String, List<T>>> getDefaultLongMapStringListMap() {
+
+        Map<Long, Map<String, List<T>>> defaultMap = MapUtil.newHashMap();
+
+        defaultMap.put(BaseConstant.SYS_ID, MapUtil.newHashMap());
+
+        return defaultMap;
+
+    }
+
+    @NotNull
     public static <T> Map<Long, T> getDefaultLongMap(@NotNull T t) {
 
         Map<Long, T> result = MapUtil.newHashMap();
