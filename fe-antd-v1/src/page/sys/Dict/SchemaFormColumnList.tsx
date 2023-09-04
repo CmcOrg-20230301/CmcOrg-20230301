@@ -1,8 +1,12 @@
 import {YesNoDict} from "@/util/DictUtil";
 import {SysDictInsertOrUpdateDTO} from "@/api/http/SysDict";
-import {ProFormColumnsType} from "@ant-design/pro-components";
+import {ProFormColumnsType, ProSchemaValueEnumType} from "@ant-design/pro-components";
 
 export const InitForm: SysDictInsertOrUpdateDTO = {} as SysDictInsertOrUpdateDTO
+
+export const DictTypeDict = new Map<boolean, ProSchemaValueEnumType>();
+DictTypeDict.set(1, {text: '字典'})
+DictTypeDict.set(2, {text: '字典项'})
 
 const SchemaFormColumnList = (): ProFormColumnsType<SysDictInsertOrUpdateDTO>[] => {
 
@@ -44,13 +48,38 @@ const SchemaFormColumnList = (): ProFormColumnsType<SysDictInsertOrUpdateDTO>[] 
                     },
                 ],
             },
-            tooltip: '1 字典 2 字典项',
+            valueEnum: DictTypeDict,
         },
 
         {
-            title: 'value',
-            dataIndex: 'value',
-            tooltip: '数字 1 2 3 ...',
+
+            valueType: 'dependency',
+
+            name: ['type'],
+
+            columns: ({type}: SysDictInsertOrUpdateDTO): ProFormColumnsType<SysDictInsertOrUpdateDTO>[] => {
+
+                return type === 2 ?
+
+                    [
+
+                        {
+                            title: '值',
+                            dataIndex: 'value',
+                            formItemProps: {
+                                rules: [
+                                    {
+                                        required: true,
+                                    },
+                                ],
+                            },
+                            tooltip: '一般为数字：101 201 301 ...',
+                        },
+
+                    ] : []
+
+            }
+
         },
 
         {

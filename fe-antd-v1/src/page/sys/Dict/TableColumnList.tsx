@@ -1,10 +1,13 @@
-import {YesNoDict} from "@/util/DictUtil";
-import {Dropdown, Tag} from "antd";
+import {GetDictList, NoFormGetDictTreeList, YesNoDict} from "@/util/DictUtil";
+import {Dropdown, Tag, TreeSelect} from "antd";
 import {EllipsisOutlined} from "@ant-design/icons/lib";
 import {ActionType, ProColumns} from "@ant-design/pro-components";
 import {SysDictDeleteByIdSet, SysDictDO, SysDictInsertOrUpdateDTO} from "@/api/http/SysDict";
 import {ExecConfirm, ToastSuccess} from "@/util/ToastUtil";
 import {CalcOrderNo} from "@/util/TreeUtil";
+import {SysTenantDictList} from "@/api/http/SysTenant";
+import {SearchTransform} from "@/util/CommonUtil";
+import {DictTypeDict} from "@/page/sys/Dict/SchemaFormColumnList";
 
 const TableColumnList = (currentForm: React.MutableRefObject<SysDictInsertOrUpdateDTO>, setFormOpen: React.Dispatch<React.SetStateAction<boolean>>, actionRef: React.RefObject<ActionType | undefined>): ProColumns<SysDictDO>[] => [
 
@@ -15,17 +18,44 @@ const TableColumnList = (currentForm: React.MutableRefObject<SysDictInsertOrUpda
         width: 90,
     },
 
+    {
+        title: '租户', dataIndex: 'tenantId', ellipsis: true, width: 90, hideInSearch: true, valueType: 'select',
+        request: () => {
+            return GetDictList(SysTenantDictList)
+        }
+    },
+
+    {
+        title: '租户', dataIndex: 'tenantIdSet', ellipsis: true, width: 90, hideInTable: true, valueType: 'treeSelect',
+        fieldProps: {
+            placeholder: '请选择',
+            allowClear: true,
+            treeNodeFilterProp: 'title',
+            maxTagCount: 'responsive',
+            treeCheckable: true,
+            showCheckedStrategy: TreeSelect.SHOW_ALL,
+            treeCheckStrictly: true,
+        },
+        request: () => {
+            return NoFormGetDictTreeList(SysTenantDictList, true, '-1')
+        },
+        search: {
+            transform: (valueArr: { label: string, value: string }[]) =>
+                SearchTransform(valueArr, 'tenantIdSet')
+        }
+    },
+
     {title: 'key', dataIndex: 'dictKey', ellipsis: true,},
 
     {
-        title: '类别', dataIndex: "type",
+        title: '类别', dataIndex: "type", valueEnum: DictTypeDict,
         render: (dom, entity) =>
             <Tag color={entity.type as any === 1 ? 'purple' : 'green'}>{entity.type as any === 1 ? '字典' : '字典项'}</Tag>
     },
 
     {title: '名称', dataIndex: 'name', ellipsis: true,},
 
-    {title: 'value', dataIndex: 'value', ellipsis: true, width: 90,},
+    {title: '值', dataIndex: 'value', ellipsis: true, width: 90,},
 
     {title: '排序号', dataIndex: 'orderNo', ellipsis: true, hideInSearch: true,},
 

@@ -157,6 +157,7 @@ public class SysDictServiceImpl extends ServiceImpl<SysDictMapper, SysDictDO> im
             .eq(dto.getType() != null, SysDictDO::getType, dto.getType())
             .eq(dto.getValue() != null, SysDictDO::getValue, dto.getValue())
             .eq(dto.getEnableFlag() != null, BaseEntity::getEnableFlag, dto.getEnableFlag())
+            .in(BaseEntityNoId::getTenantId, dto.getTenantIdSet()) //
             .orderByDesc(SysDictDO::getOrderNo).page(dto.page(true));
 
     }
@@ -212,12 +213,12 @@ public class SysDictServiceImpl extends ServiceImpl<SysDictMapper, SysDictDO> im
         allDictList.addAll(sysDictDOList);
 
         Map<String, SysDictDO> dictMap =
-            allDictList.stream().collect(Collectors.toMap(SysDictDO::getDictKey, it -> it));
+            allDictList.stream().collect(Collectors.toMap(it -> it.getTenantId() + it.getDictKey(), it -> it));
 
         // 封装 children
         for (SysDictDO item : dictItemList) {
 
-            SysDictDO sysDictDO = dictMap.get(item.getDictKey());
+            SysDictDO sysDictDO = dictMap.get(item.getTenantId() + item.getDictKey());
 
             List<SysDictDO> children = sysDictDO.getChildren();
 

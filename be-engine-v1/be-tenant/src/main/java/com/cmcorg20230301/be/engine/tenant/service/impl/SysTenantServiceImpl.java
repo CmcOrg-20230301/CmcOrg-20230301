@@ -178,12 +178,12 @@ public class SysTenantServiceImpl extends ServiceImpl<SysTenantMapper, SysTenant
             return;
         }
 
+        Long tenantId = sysTenantDO.getId();
+
         // 再新增子表数据
         if (CollUtil.isNotEmpty(dto.getUserIdSet())) {
 
             List<SysTenantRefUserDO> insertList = new ArrayList<>();
-
-            Long tenantId = sysTenantDO.getId();
 
             for (Long item : dto.getUserIdSet()) {
 
@@ -226,8 +226,6 @@ public class SysTenantServiceImpl extends ServiceImpl<SysTenantMapper, SysTenant
 
                 List<SysMenuDO> insertList = new ArrayList<>();
 
-                Long tenantId = sysTenantDO.getId();
-
                 for (SysMenuDO item : fullSysMenuDoSet) {
 
                     SysMenuDO newSysMenuDO = BeanUtil.copyProperties(item, SysMenuDO.class);
@@ -248,8 +246,34 @@ public class SysTenantServiceImpl extends ServiceImpl<SysTenantMapper, SysTenant
         }
 
         // 新增：字典
+        List<SysDictDO> sysDictDOList =
+            sysDictService.lambdaQuery().eq(BaseEntityNoId::getTenantId, BaseConstant.TENANT_ID).list();
+
+        for (SysDictDO item : sysDictDOList) {
+
+            item.setId(null);
+            item.setCreateTime(null);
+            item.setUpdateTime(null);
+            item.setTenantId(tenantId);
+
+        }
+
+        sysDictService.saveBatch(sysDictDOList);
 
         // 新增：参数
+        List<SysParamDO> sysParamDOList =
+            sysParamService.lambdaQuery().eq(BaseEntityNoId::getTenantId, BaseConstant.TENANT_ID).list();
+
+        for (SysParamDO item : sysParamDOList) {
+
+            item.setId(null);
+            item.setCreateTime(null);
+            item.setUpdateTime(null);
+            item.setTenantId(tenantId);
+
+        }
+
+        sysParamService.saveBatch(sysParamDOList);
 
     }
 

@@ -92,6 +92,7 @@ public class SysParamServiceImpl extends ServiceImpl<SysParamMapper, SysParamDO>
         return lambdaQuery().like(StrUtil.isNotBlank(dto.getName()), SysParamDO::getName, dto.getName())
             .like(StrUtil.isNotBlank(dto.getRemark()), BaseEntity::getRemark, dto.getRemark())
             .eq(dto.getEnableFlag() != null, BaseEntity::getEnableFlag, dto.getEnableFlag())
+            .in(BaseEntityNoId::getTenantId, dto.getTenantIdSet()) //
             .orderByDesc(BaseEntity::getUpdateTime).page(dto.page(true));
 
     }
