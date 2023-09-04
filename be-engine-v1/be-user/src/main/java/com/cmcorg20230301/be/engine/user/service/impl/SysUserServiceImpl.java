@@ -84,8 +84,19 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserProMapper, SysUserDO>
     @Override
     public Page<SysUserPageVO> myPage(SysUserPageDTO dto) {
 
-        // 处理：MyTenantPageDTO
-        SysTenantUtil.handleMyTenantPageDTO(dto, true);
+        Long currentTenantIdDefault = UserUtil.getCurrentTenantIdDefault();
+
+        if (BaseConstant.TENANT_ID.equals(currentTenantIdDefault)) {
+
+            // 处理：MyTenantPageDTO
+            SysTenantUtil.handleMyTenantPageDTO(dto, false);
+
+        } else {
+
+            // 处理：MyTenantPageDTO
+            SysTenantUtil.handleMyTenantPageDTO(dto, true);
+
+        }
 
         Page<SysUserPageVO> page = baseMapper.myPage(dto.createTimeDescDefaultOrderPage(), dto);
 
