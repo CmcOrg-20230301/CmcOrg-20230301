@@ -51,7 +51,7 @@ const TableColumnList = (currentForm: React.MutableRefObject<SysTenantInsertOrUp
 
             <a title={"登录租户"} onClick={() => {
 
-                SetTenantIdToStorage(entity.id);
+                SetTenantIdToStorage(entity.id!);
 
                 SignOut();
 

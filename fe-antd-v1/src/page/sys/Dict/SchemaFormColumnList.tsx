@@ -4,7 +4,7 @@ import {ProFormColumnsType, ProSchemaValueEnumType} from "@ant-design/pro-compon
 
 export const InitForm: SysDictInsertOrUpdateDTO = {} as SysDictInsertOrUpdateDTO
 
-export const DictTypeDict = new Map<boolean, ProSchemaValueEnumType>();
+export const DictTypeDict = new Map<number, ProSchemaValueEnumType>();
 DictTypeDict.set(1, {text: '字典'})
 DictTypeDict.set(2, {text: '字典项'})
 
@@ -59,7 +59,7 @@ const SchemaFormColumnList = (): ProFormColumnsType<SysDictInsertOrUpdateDTO>[] 
 
             columns: ({type}: SysDictInsertOrUpdateDTO): ProFormColumnsType<SysDictInsertOrUpdateDTO>[] => {
 
-                return type === 2 ?
+                return type as any === 2 ?
 
                     [
 
