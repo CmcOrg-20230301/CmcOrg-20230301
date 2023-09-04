@@ -17,7 +17,8 @@ public class SysUserInfoDO {
     @Schema(description = "租户id")
     private Long tenantId;
 
-    @Schema(description = "该用户的 uuid，本系统使用 id，不使用此字段（uuid）")
+    @TableField(fill = FieldFill.INSERT)
+    @Schema(description = "该用户的 uuid，本系统使用 id，不使用此字段（uuid），备注：不允许修改")
     private String uuid;
 
     @Schema(description = "昵称")

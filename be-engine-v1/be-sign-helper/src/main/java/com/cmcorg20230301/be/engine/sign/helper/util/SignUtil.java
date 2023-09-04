@@ -3,7 +3,6 @@ package com.cmcorg20230301.be.engine.sign.helper.util;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.map.MapUtil;
 import cn.hutool.core.util.BooleanUtil;
-import cn.hutool.core.util.IdUtil;
 import cn.hutool.core.util.ReUtil;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.extension.conditions.query.LambdaQueryChainWrapper;
@@ -253,7 +252,6 @@ public class SignUtil {
             SysUserInfoDO sysUserInfoDO = new SysUserInfoDO();
 
             sysUserInfoDO.setId(sysUserDO.getId());
-            sysUserInfoDO.setUuid(IdUtil.simpleUUID());
             sysUserInfoDO.setTenantId(sysUserDO.getTenantId()); // 设置：租户 id
 
             if (tempSysUserInfoDO == null) {

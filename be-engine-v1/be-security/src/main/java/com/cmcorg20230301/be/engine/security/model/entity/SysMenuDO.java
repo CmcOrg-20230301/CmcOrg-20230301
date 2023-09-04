@@ -1,5 +1,7 @@
 package com.cmcorg20230301.be.engine.security.model.entity;
 
+import com.baomidou.mybatisplus.annotation.FieldFill;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
@@ -40,6 +42,10 @@ public class SysMenuDO extends BaseEntityTree<SysMenuDO> {
 
     @Schema(description = "图标")
     private String icon;
+
+    @TableField(fill = FieldFill.INSERT)
+    @Schema(description = "该菜单的 uuid，用于：同步租户菜单等操作，备注：不允许修改")
+    private String uuid;
 
 }
 

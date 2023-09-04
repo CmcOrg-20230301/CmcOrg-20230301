@@ -1,5 +1,6 @@
 package com.cmcorg20230301.be.engine.security.configuration.mybatisplus;
 
+import cn.hutool.core.util.IdUtil;
 import com.baomidou.mybatisplus.core.handlers.MetaObjectHandler;
 import com.cmcorg20230301.be.engine.security.util.UserUtil;
 import org.apache.ibatis.reflection.MetaObject;
@@ -32,6 +33,8 @@ public class MetaObjectHandlerConfiguration implements MetaObjectHandler {
         this.strictInsertFill(metaObject, "updateTime", Date.class, date);
 
         this.strictInsertFill(metaObject, "version", Integer.class, 0);
+
+        this.strictInsertFill(metaObject, "uuid", String.class, IdUtil.simpleUUID());
 
     }
 
