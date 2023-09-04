@@ -34,10 +34,13 @@ public class CacheHelper {
 
     }
 
+    /**
+     * 注意：小 map的key，不能是 Long类型，必须是 String类型，因为 redis里面存的时候，就是存的 String类型
+     */
     @NotNull
-    public static <T> Map<Long, Map<Long, T>> getDefaultLongMapLongMap() {
+    public static <T> Map<Long, Map<String, T>> getDefaultLongMapStringMap() {
 
-        Map<Long, Map<Long, T>> defaultMap = MapUtil.newHashMap();
+        Map<Long, Map<String, T>> defaultMap = MapUtil.newHashMap();
 
         defaultMap.put(BaseConstant.SYS_ID, MapUtil.newHashMap());
 

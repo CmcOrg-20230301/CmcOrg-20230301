@@ -37,8 +37,8 @@ public class SysParamUtil {
 
         Long currentTenantIdDefault = UserUtil.getCurrentTenantIdDefault();
 
-        Map<Long, Map<Long, String>> map =
-            MyCacheUtil.getMap(RedisKeyEnum.SYS_PARAM_CACHE, CacheHelper.getDefaultLongMapLongMap(), () -> {
+        Map<Long, Map<String, String>> map =
+            MyCacheUtil.getMap(RedisKeyEnum.SYS_PARAM_CACHE, CacheHelper.getDefaultLongMapStringMap(), () -> {
 
                 List<SysParamDO> sysParamDOList = ChainWrappers.lambdaQueryChain(sysParamMapper)
                     .select(BaseEntity::getId, SysParamDO::getValue, BaseEntityNoId::getTenantId)
@@ -47,11 +47,11 @@ public class SysParamUtil {
                 // 注意：Collectors.toMap()方法，key不能重复，不然会报错
                 // 可以用第三个参数，解决这个报错：(v1, v2) -> v2 不覆盖（留前值）(v1, v2) -> v1 覆盖（取后值）
                 return sysParamDOList.stream().collect(Collectors.groupingBy(BaseEntityNoId::getTenantId,
-                    Collectors.toMap(BaseEntity::getId, SysParamDO::getValue)));
+                    Collectors.toMap(it -> it.getId().toString(), SysParamDO::getValue)));
 
             });
 
-        return map.get(currentTenantIdDefault).get(paramId);
+        return map.get(currentTenantIdDefault).get(paramId.toString());
 
     }
 
