@@ -84,8 +84,6 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserProMapper, SysUserDO>
     @Override
     public Page<SysUserPageVO> myPage(SysUserPageDTO dto) {
 
-        Long currentTenantIdDefault = UserUtil.getCurrentTenantIdDefault();
-
         // 处理：MyTenantPageDTO
         SysTenantUtil.handleMyTenantPageDTO(dto, false);
 

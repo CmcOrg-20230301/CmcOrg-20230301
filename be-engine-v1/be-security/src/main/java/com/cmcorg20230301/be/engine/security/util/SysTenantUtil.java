@@ -22,10 +22,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.stereotype.Component;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -176,7 +173,17 @@ public class SysTenantUtil {
             .<Map<Long, Set<Long>>>getMap(RedisKeyEnum.SYS_TENANT_DEEP_ID_SET_CACHE, CacheHelper.getDefaultLongSetMap(),
                 () -> {
 
-                    return MyTreeUtil.getIdAndDeepIdSetMap(getSysTenantCacheMap().values(), null);
+                    List<SysTenantDO> tenantDOList = new ArrayList<>(getSysTenantCacheMap().values());
+
+                    SysTenantDO sysTenantDO = new SysTenantDO();
+
+                    sysTenantDO.setId(BaseConstant.TENANT_ID);
+                    sysTenantDO.setParentId(BaseConstant.NEGATIVE_ONE);
+                    sysTenantDO.setName(BaseConstant.TENANT_NAME);
+
+                    tenantDOList.add(sysTenantDO); // 添加：默认租户
+
+                    return MyTreeUtil.getIdAndDeepIdSetMap(tenantDOList, null);
 
                 }).get(tenantId);
 

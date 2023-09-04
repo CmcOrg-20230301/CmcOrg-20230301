@@ -18,7 +18,7 @@
         a.update_time AS updateTime,
         a.enable_flag AS enableFlag,
         IF ( a.`password` = '', 0, 1 ) AS passwordFlag,
-        IFNULL( MAX( c.create_time ), a.create_time) AS lastActiveTime,
+        IFNULL( (SELECT MAX(create_time) FROM sys_request WHERE create_id = a.id ), a.create_time) AS lastActiveTime,
         b.nickname AS nickname,
         b.avatar_file_id AS avatarFileId
 
@@ -27,7 +27,6 @@
         sys_user a
 
         LEFT JOIN sys_user_info b ON b.id = a.id
-        LEFT JOIN sys_request c ON c.create_id = a.id
 
         WHERE
 

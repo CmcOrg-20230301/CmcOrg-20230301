@@ -10,7 +10,6 @@ import com.cmcorg20230301.be.engine.security.exception.BaseBizCodeEnum;
 import com.cmcorg20230301.be.engine.security.model.entity.BaseEntity;
 import com.cmcorg20230301.be.engine.security.model.entity.BaseEntityNoId;
 import com.cmcorg20230301.be.engine.security.util.SysTenantUtil;
-import com.cmcorg20230301.be.engine.security.util.UserUtil;
 import com.cmcorg20230301.be.engine.socket.mapper.SysSocketRefUserMapper;
 import com.cmcorg20230301.be.engine.socket.model.dto.SysSocketRefUserPageDTO;
 import com.cmcorg20230301.be.engine.socket.model.entity.SysSocketRefUserDO;
@@ -28,8 +27,6 @@ public class SysSocketRefUserServiceImpl extends ServiceImpl<SysSocketRefUserMap
      */
     @Override
     public Page<SysSocketRefUserDO> myPage(SysSocketRefUserPageDTO dto) {
-
-        Long currentTenantIdDefault = UserUtil.getCurrentTenantIdDefault();
 
         // 处理：MyTenantPageDTO
         SysTenantUtil.handleMyTenantPageDTO(dto, false);
