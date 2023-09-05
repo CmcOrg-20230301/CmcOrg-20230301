@@ -260,8 +260,6 @@ function AdminLayoutElement(props: IAdminLayoutElement) {
 
                             <Dropdown
 
-                                destroyPopupOnHide
-
                                 menu={{
 
                                     items: [

@@ -103,8 +103,6 @@ const TableColumnList = (currentForm: React.MutableRefObject<SysPostInsertOrUpda
 
             <Dropdown
 
-                destroyPopupOnHide
-
                 key="3"
 
                 menu={{
