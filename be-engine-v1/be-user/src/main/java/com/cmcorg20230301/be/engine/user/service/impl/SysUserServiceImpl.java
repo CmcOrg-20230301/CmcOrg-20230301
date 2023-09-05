@@ -11,6 +11,8 @@ import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.baomidou.mybatisplus.extension.toolkit.ChainWrappers;
+import com.cmcorg20230301.be.engine.cache.util.CacheHelper;
+import com.cmcorg20230301.be.engine.cache.util.MyCacheUtil;
 import com.cmcorg20230301.be.engine.dept.model.entity.SysDeptRefUserDO;
 import com.cmcorg20230301.be.engine.dept.service.SysDeptRefUserService;
 import com.cmcorg20230301.be.engine.model.model.constant.BaseConstant;
@@ -27,8 +29,10 @@ import com.cmcorg20230301.be.engine.redisson.model.enums.RedisKeyEnum;
 import com.cmcorg20230301.be.engine.redisson.util.RedissonUtil;
 import com.cmcorg20230301.be.engine.role.service.SysRoleRefUserService;
 import com.cmcorg20230301.be.engine.security.exception.BaseBizCodeEnum;
+import com.cmcorg20230301.be.engine.security.mapper.BaseSysRequestMapper;
 import com.cmcorg20230301.be.engine.security.mapper.SysUserInfoMapper;
 import com.cmcorg20230301.be.engine.security.mapper.SysUserMapper;
+import com.cmcorg20230301.be.engine.security.model.dto.MyPageDTO;
 import com.cmcorg20230301.be.engine.security.model.entity.*;
 import com.cmcorg20230301.be.engine.security.model.vo.ApiResultVO;
 import com.cmcorg20230301.be.engine.security.properties.SecurityProperties;
@@ -78,6 +82,9 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserProMapper, SysUserDO>
     @Resource
     SysTenantRefUserService sysTenantRefUserService;
 
+    @Resource
+    BaseSysRequestMapper baseSysRequestMapper;
+
     /**
      * 分页排序查询
      */
@@ -87,7 +94,40 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserProMapper, SysUserDO>
         // 处理：MyTenantPageDTO
         SysTenantUtil.handleMyTenantPageDTO(dto, false);
 
-        Page<SysUserPageVO> page = baseMapper.myPage(dto.createTimeDescDefaultOrderPage(), dto);
+        // 过滤：request表的数据
+        dto.setIdSet(new HashSet<>()); // 先清除：idSet的数据
+
+        if (dto.getBeginLastActiveTime() != null || dto.getEndLastActiveTime() != null) {
+
+            List<SysRequestDO> sysRequestDOList = ChainWrappers.lambdaQueryChain(baseSysRequestMapper)
+                .le(dto.getEndLastActiveTime() != null, BaseEntityNoId::getCreateTime, dto.getEndLastActiveTime())
+                .ge(dto.getBeginLastActiveTime() != null, BaseEntityNoId::getCreateTime, dto.getBeginLastActiveTime())
+                .select(BaseEntityNoId::getCreateId).groupBy(BaseEntityNoId::getCreateId).list();
+
+            Set<Long> idSet = sysRequestDOList.stream().map(BaseEntityNoId::getCreateId).collect(Collectors.toSet());
+
+            dto.setIdSet(idSet);
+
+        }
+
+        Page<SysUserPageVO> dtoPage = dto.page();
+
+        if (dto.orderEmpty()) {
+
+            dtoPage.orders().add(MyPageDTO.createTimeOrderItem()); // 如果不存在排序，则默认根据：创建时间排序
+
+        } else {
+
+            if ("createTime".equals(dto.getOrder().getName())) {
+
+                // 添加 orderList里面的排序规则
+                dtoPage.orders().add(MyPageDTO.orderToOrderItem(dto.getOrder(), false));
+
+            }
+
+        }
+
+        Page<SysUserPageVO> page = baseMapper.myPage(dtoPage, dto);
 
         Set<Long> userIdSet = new HashSet<>(MyMapUtil.getInitialCapacity(page.getRecords().size()));
 
@@ -119,6 +159,11 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserProMapper, SysUserDO>
                 sysTenantRefUserService.lambdaQuery().in(SysTenantRefUserDO::getUserId, userIdSet)
                     .select(SysTenantRefUserDO::getUserId, SysTenantRefUserDO::getTenantId).list();
 
+            // 备注：mysql 是先 group by 再 order by
+            List<SysRequestDO> sysRequestDOList =
+                ChainWrappers.queryChain(baseSysRequestMapper).select(" create_id, MAX( create_time ) AS createTime")
+                    .groupBy("create_id").list();
+
             Map<Long, Set<Long>> roleUserGroupMap = sysRoleRefUserDOList.stream().collect(Collectors
                 .groupingBy(SysRoleRefUserDO::getUserId,
                     Collectors.mapping(SysRoleRefUserDO::getRoleId, Collectors.toSet())));
@@ -135,17 +180,51 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserProMapper, SysUserDO>
                 .groupingBy(SysTenantRefUserDO::getUserId,
                     Collectors.mapping(SysTenantRefUserDO::getTenantId, Collectors.toSet())));
 
+            Map<Long, Date> requestCreateIdAndCreateTimeMap = sysRequestDOList.stream()
+                .collect(Collectors.toMap(BaseEntityNoId::getCreateId, BaseEntityNoId::getCreateTime));
+
             page.getRecords().forEach(it -> {
 
-                it.setRoleIdSet(roleUserGroupMap.get(it.getId()));
+                Long id = it.getId();
 
-                it.setDeptIdSet(deptUserGroupMap.get(it.getId()));
+                it.setRoleIdSet(roleUserGroupMap.get(id));
 
-                it.setPostIdSet(postUserGroupMap.get(it.getId()));
+                it.setDeptIdSet(deptUserGroupMap.get(id));
 
-                it.setTenantIdSet(tenantUserGroupMap.get(it.getId()));
+                it.setPostIdSet(postUserGroupMap.get(id));
+
+                it.setTenantIdSet(tenantUserGroupMap.get(id));
+
+                it.setLastActiveTime(requestCreateIdAndCreateTimeMap.getOrDefault(id, it.getCreateTime()));
 
             });
+
+        }
+
+        // 排序
+        if (dto.orderEmpty() == false) {
+
+            if ("lastActiveTime".equals(dto.getOrder().getName())) {
+
+                List<SysUserPageVO> sysUserPageVOList;
+
+                if ("descend".equals(dto.getOrder().getValue())) { // 降序
+
+                    sysUserPageVOList = page.getRecords().stream()
+                        .sorted(Comparator.comparing(SysUserPageVO::getLastActiveTime, Comparator.reverseOrder()))
+                        .collect(Collectors.toList());
+
+                } else { // 升序
+
+                    sysUserPageVOList =
+                        page.getRecords().stream().sorted(Comparator.comparing(SysUserPageVO::getLastActiveTime))
+                            .collect(Collectors.toList());
+
+                }
+
+                page.setRecords(sysUserPageVOList);
+
+            }
 
         }
 
@@ -162,12 +241,18 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserProMapper, SysUserDO>
         // 获取：用户关联的租户
         Set<Long> tenantIdSet = SysTenantUtil.getUserRefTenantIdSet();
 
+        // 获取所有：用户信息
         List<SysUserInfoDO> sysUserInfoDOList =
-            ChainWrappers.lambdaQueryChain(sysUserInfoMapper).select(SysUserInfoDO::getId, SysUserInfoDO::getNickname)
-                .in(SysUserInfoDO::getTenantId, tenantIdSet).list();
+            MyCacheUtil.getCollection(RedisKeyEnum.SYS_USER_INFO_CACHE, CacheHelper.getDefaultList(), () -> {
 
-        List<DictVO> dictListVOList =
-            sysUserInfoDOList.stream().map(it -> new DictVO(it.getId(), it.getNickname())).collect(Collectors.toList());
+                return ChainWrappers.lambdaQueryChain(sysUserInfoMapper)
+                    .select(SysUserInfoDO::getId, SysUserInfoDO::getNickname, SysUserInfoDO::getTenantId)
+                    .orderByDesc(SysUserInfoDO::getId).list();
+
+            });
+
+        List<DictVO> dictListVOList = sysUserInfoDOList.stream().filter(it -> tenantIdSet.contains(it.getTenantId()))
+            .map(it -> new DictVO(it.getId(), it.getNickname())).collect(Collectors.toList());
 
         // 增加 admin账号
         if (BooleanUtil.isTrue(dto.getAddAdminFlag())) {

@@ -31,14 +31,26 @@ public class MyPageDTO {
 
     /**
      * 分页属性拷贝
-     * toUnderlineCaseFlag：一般为 true
      */
-    public <T> Page<T> page(boolean toUnderlineCaseFlag) {
+    public <T> Page<T> page() {
 
         Page<T> page = new Page<>();
 
         page.setCurrent(getCurrent());
         page.setSize(getPageSize());
+
+        return page;
+
+    }
+
+    /**
+     * 分页属性拷贝
+     * toUnderlineCaseFlag：一般为 true
+     * 备注：order by 和 group by 可以使用别名，where里面不能使用别名
+     */
+    public <T> Page<T> page(boolean toUnderlineCaseFlag) {
+
+        Page<T> page = page();
 
         if (orderEmpty()) {
             return page;
@@ -53,15 +65,15 @@ public class MyPageDTO {
 
     /**
      * 自定义的排序规则，转换为 mybatis plus 的排序规则
-     * underscoreFlag：是否驼峰转下划线
+     * underscoreFlag：是否：驼峰转下划线
      */
-    private static OrderItem orderToOrderItem(MyOrderDTO order, boolean toUnderlineFlag) {
+    public static OrderItem orderToOrderItem(MyOrderDTO order, boolean toUnderlineFlag) {
 
         OrderItem orderItem = new OrderItem();
         orderItem.setColumn(toUnderlineFlag ? StrUtil.toUnderlineCase(order.getName()) : order.getName());
 
         if (StrUtil.isNotBlank(order.getValue())) {
-            orderItem.setAsc("ascend".equals(order.getValue()));
+            orderItem.setAsc(!"descend".equals(order.getValue()));
         }
 
         return orderItem;
@@ -71,16 +83,24 @@ public class MyPageDTO {
     /**
      * 分页属性拷贝-增加：默认创建时间 倒序排序
      */
-    @Schema()
-    public <T> Page<T> createTimeDescDefaultOrderPage() {
+    public <T> Page<T> createTimeDescDefaultOrderPage(boolean toUnderlineFlag) {
 
-        Page<T> page = page(false);
+        Page<T> page = page(toUnderlineFlag);
 
         if (orderEmpty()) {
-            page.orders().add(new OrderItem("createTime", false));
+            page.orders().add(createTimeOrderItem());
         }
 
         return page;
+
+    }
+
+    /**
+     * 获取：默认的创建时间排序
+     */
+    public static OrderItem createTimeOrderItem() {
+
+        return new OrderItem("createTime", false);
 
     }
 

@@ -35,6 +35,10 @@ public class SecurityCacheConfiguration {
 
     static {
 
+        // 用户信息
+        TABLE_NAME_ENUM_SET
+            .add(new SecurityCache(TableNameEnum.SYS_USER_INFO, CollUtil.newHashSet(RedisKeyEnum.SYS_USER_INFO_CACHE)));
+
         // 系统参数
         TABLE_NAME_ENUM_SET
             .add(new SecurityCache(TableNameEnum.SYS_PARAM, CollUtil.newHashSet(RedisKeyEnum.SYS_PARAM_CACHE)));

@@ -15,10 +15,8 @@
         a.phone as phone,
         a.wx_open_id as wxOpenId,
         a.create_time AS createTime,
-        a.update_time AS updateTime,
         a.enable_flag AS enableFlag,
         IF ( a.`password` = '', 0, 1 ) AS passwordFlag,
-        IFNULL( (SELECT MAX(create_time) FROM sys_request WHERE create_id = a.id ), a.create_time) AS lastActiveTime,
         b.nickname AS nickname,
         b.avatar_file_id AS avatarFileId
 
@@ -70,16 +68,6 @@
 
         <if test="dto.endCreateTime != null">
             AND a.create_time <![CDATA[<=]]> #{dto.endCreateTime}
-        </if>
-
-        <if test="dto.beginLastActiveTime != null">
-            AND IFNULL( (SELECT MAX(create_time) FROM sys_request WHERE create_id = a.id ), a.create_time)
-            <![CDATA[>=]]> #{dto.beginLastActiveTime}
-        </if>
-
-        <if test="dto.endLastActiveTime != null">
-            AND IFNULL( (SELECT MAX(create_time) FROM sys_request WHERE create_id = a.id ), a.create_time)
-            <![CDATA[<=]]> #{dto.endLastActiveTime}
         </if>
 
         <if test="dto.tenantIdSet != null and dto.tenantIdSet.size != 0">

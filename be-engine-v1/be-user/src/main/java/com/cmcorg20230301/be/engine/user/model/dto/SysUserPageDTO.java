@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 import java.util.Date;
+import java.util.Set;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
@@ -13,6 +14,9 @@ public class SysUserPageDTO extends MyTenantPageDTO {
 
     @Schema(description = "主键 id")
     private Long id;
+
+    @Schema(description = "主键 idSet，备注：后端使用，前端不使用")
+    private Set<Long> idSet;
 
     @Schema(description = "昵称")
     private String nickname;

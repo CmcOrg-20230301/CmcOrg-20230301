@@ -30,6 +30,8 @@ public enum RedisKeyEnum implements IRedisKey {
     PRE_PASSWORD_ERROR_COUNT, // 密码错误总数：锁【用户主键 id】
 
     // 【_CACHE】结尾 ↓
+    SYS_USER_INFO_CACHE, // 用户信息缓存
+
     SYS_USER_DISABLE_CACHE, // 用户是否被冻结，如果存在，则表示，用户被冻结了
 
     USER_ID_REF_TENANT_ID_SET_CACHE, // 用户 id关联的 tenantIdSet
