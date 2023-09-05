@@ -1,6 +1,7 @@
-import {GetDictList, NoFormGetDictTreeList, YesNoDict} from "@/util/DictUtil";
-import {ActionType, ProColumns} from "@ant-design/pro-components";
+import {DoGetDictList, GetDictList, NoFormGetDictTreeList, YesNoDict} from "@/util/DictUtil";
+import {ActionType, ModalForm, ProColumns, ProFormSelect} from "@ant-design/pro-components";
 import {
+    NotNullIdAndNotEmptyLongSet,
     SysTenantDeleteByIdSet,
     SysTenantDictList,
     SysTenantDO,
@@ -15,6 +16,7 @@ import {Dropdown, TreeSelect} from "antd";
 import React from "react";
 import {SearchTransform, SetTenantIdToStorage} from "@/util/CommonUtil";
 import {SignOut} from "@/util/UserUtil";
+import CommonConstant from "@/model/constant/CommonConstant";
 
 const TableColumnList = (currentForm: React.MutableRefObject<SysTenantInsertOrUpdateDTO>, setFormOpen: React.Dispatch<React.SetStateAction<boolean>>, actionRef: React.RefObject<ActionType | undefined>): ProColumns<SysTenantDO>[] => [
 
@@ -145,24 +147,11 @@ const TableColumnList = (currentForm: React.MutableRefObject<SysTenantInsertOrUp
                             </a>,
                         },
 
+
                         {
                             key: '2',
-                            label: <a onClick={() => {
-
-                                SysTenantGetSyncMenuInfo({id: entity.id}).then(res => {
-
-                                    const idList = res.data.map(it => it.id);
-
-                                    SysTenantDoSyncMenu({id: entity.id, valueSet: idList}).then(res => {
-
-
-                                    })
-
-                                })
-
-                            }}>
-                                同步菜单
-                            </a>,
+                            label: <SysTenantSyncMenuModalForm id={entity.id!} actionRef={actionRef}
+                                                               titlePre={entity.name}/>
                         },
 
                     ]
@@ -182,3 +171,67 @@ const TableColumnList = (currentForm: React.MutableRefObject<SysTenantInsertOrUp
 ];
 
 export default TableColumnList
+
+const SysTenantSyncMenuTitle = "新增菜单"
+
+interface ISysTenantSyncMenuModalForm {
+
+    id: string
+
+    titlePre: string
+
+    actionRef: React.RefObject<ActionType | undefined>
+
+}
+
+export function SysTenantSyncMenuModalForm(props: ISysTenantSyncMenuModalForm) {
+
+    return <ModalForm<NotNullIdAndNotEmptyLongSet>
+
+        modalProps={{
+            maskClosable: false,
+            destroyOnClose: true
+        }}
+
+        isKeyPressSubmit
+
+        width={CommonConstant.MODAL_FORM_WIDTH}
+
+        title={props.titlePre + " - " + SysTenantSyncMenuTitle}
+
+        trigger={<a>{SysTenantSyncMenuTitle}</a>}
+
+        onFinish={async (form) => {
+
+            await SysTenantDoSyncMenu({
+
+                ...form,
+                id: props.id
+
+            }).then(res => {
+
+                ToastSuccess(res.msg)
+                props.actionRef.current?.reload()
+
+            })
+
+            return true
+
+        }}
+    >
+
+        <ProFormSelect
+            maxTagCount={'responsive'}
+            showSearch
+            allowClear
+            mode="multiple"
+            name="valueSet"
+            label="新增菜单"
+            request={() => DoGetDictList(SysTenantGetSyncMenuInfo({id: props.id}))}
+            placeholder="选择需要新增的菜单"
+            rules={[{required: true, message: '请选择需要新增的菜单'}]}
+        />
+
+    </ModalForm>
+
+}
