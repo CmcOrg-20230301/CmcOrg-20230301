@@ -192,7 +192,7 @@ public class SysTenantUtil {
     /**
      * 获取：用户 id关联的 tenantIdSet，map
      */
-    private static Map<Long, Set<Long>> getUserIdRefTenantIdSetMap() {
+    public static Map<Long, Set<Long>> getUserIdRefTenantIdSetMap() {
 
         return MyCacheUtil
             .getMap(RedisKeyEnum.USER_ID_REF_TENANT_ID_SET_CACHE, CacheHelper.getDefaultLongSetMap(), () -> {

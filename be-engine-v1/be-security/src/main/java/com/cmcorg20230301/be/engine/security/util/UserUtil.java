@@ -290,8 +290,23 @@ public class UserUtil {
      */
     private static void getUserRefRoleIdSet(Long userId, Set<Long> roleIdSet) {
 
-        Map<Long, Set<Long>> userRefRoleIdSetMap =
-            MyCacheUtil.getMap(RedisKeyEnum.USER_ID_REF_ROLE_ID_SET_CACHE, CacheHelper.getDefaultLongSetMap(), () -> {
+        Map<Long, Set<Long>> userRefRoleIdSetMap = getUserRefRoleIdSetMap();
+
+        Set<Long> userRefRoleIdSet = userRefRoleIdSetMap.get(userId);
+
+        if (CollUtil.isNotEmpty(userRefRoleIdSet)) {
+            roleIdSet.addAll(userRefRoleIdSet);
+        }
+
+    }
+
+    /**
+     * 获取：用户 id关联的 roleIdSet
+     */
+    public static Map<Long, Set<Long>> getUserRefRoleIdSetMap() {
+
+        return MyCacheUtil
+            .getMap(RedisKeyEnum.USER_ID_REF_ROLE_ID_SET_CACHE, CacheHelper.getDefaultLongSetMap(), () -> {
 
                 List<SysRoleRefUserDO> sysRoleRefUserDOList = ChainWrappers.lambdaQueryChain(sysRoleRefUserMapper)
                     .select(SysRoleRefUserDO::getRoleId, SysRoleRefUserDO::getUserId).list();
@@ -300,12 +315,6 @@ public class UserUtil {
                     Collectors.mapping(SysRoleRefUserDO::getRoleId, Collectors.toSet())));
 
             });
-
-        Set<Long> userRefRoleIdSet = userRefRoleIdSetMap.get(userId);
-
-        if (CollUtil.isNotEmpty(userRefRoleIdSet)) {
-            roleIdSet.addAll(userRefRoleIdSet);
-        }
 
     }
 

@@ -143,10 +143,6 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserProMapper, SysUserDO>
 
         if (userIdSet.size() != 0) {
 
-            List<SysRoleRefUserDO> sysRoleRefUserDOList =
-                sysRoleRefUserService.lambdaQuery().in(SysRoleRefUserDO::getUserId, userIdSet)
-                    .select(SysRoleRefUserDO::getUserId, SysRoleRefUserDO::getRoleId).list();
-
             List<SysDeptRefUserDO> sysDeptRefUserDOList =
                 sysDeptRefUserService.lambdaQuery().in(SysDeptRefUserDO::getUserId, userIdSet)
                     .select(SysDeptRefUserDO::getUserId, SysDeptRefUserDO::getDeptId).list();
@@ -155,18 +151,10 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserProMapper, SysUserDO>
                 sysPostRefUserService.lambdaQuery().in(SysPostRefUserDO::getUserId, userIdSet)
                     .select(SysPostRefUserDO::getUserId, SysPostRefUserDO::getPostId).list();
 
-            List<SysTenantRefUserDO> sysTenantRefUserDOList =
-                sysTenantRefUserService.lambdaQuery().in(SysTenantRefUserDO::getUserId, userIdSet)
-                    .select(SysTenantRefUserDO::getUserId, SysTenantRefUserDO::getTenantId).list();
-
             // 备注：mysql 是先 group by 再 order by
             List<SysRequestDO> sysRequestDOList =
                 ChainWrappers.queryChain(baseSysRequestMapper).select(" create_id, MAX( create_time ) AS createTime")
-                    .groupBy("create_id").list();
-
-            Map<Long, Set<Long>> roleUserGroupMap = sysRoleRefUserDOList.stream().collect(Collectors
-                .groupingBy(SysRoleRefUserDO::getUserId,
-                    Collectors.mapping(SysRoleRefUserDO::getRoleId, Collectors.toSet())));
+                    .in("create_id", userIdSet).groupBy("create_id").list();
 
             Map<Long, Set<Long>> deptUserGroupMap = sysDeptRefUserDOList.stream().collect(Collectors
                 .groupingBy(SysDeptRefUserDO::getUserId,
@@ -176,22 +164,18 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserProMapper, SysUserDO>
                 .groupingBy(SysPostRefUserDO::getUserId,
                     Collectors.mapping(SysPostRefUserDO::getPostId, Collectors.toSet())));
 
-            Map<Long, Set<Long>> tenantUserGroupMap = sysTenantRefUserDOList.stream().collect(Collectors
-                .groupingBy(SysTenantRefUserDO::getUserId,
-                    Collectors.mapping(SysTenantRefUserDO::getTenantId, Collectors.toSet())));
-
             Map<Long, Date> requestCreateIdAndCreateTimeMap = sysRequestDOList.stream()
                 .collect(Collectors.toMap(BaseEntityNoId::getCreateId, BaseEntityNoId::getCreateTime));
 
             page.getRecords().forEach(it -> {
 
-                it.setRoleIdSet(roleUserGroupMap.get(it.getId()));
+                it.setRoleIdSet(UserUtil.getUserRefRoleIdSetMap().get(it.getId()));
 
                 it.setDeptIdSet(deptUserGroupMap.get(it.getId()));
 
                 it.setPostIdSet(postUserGroupMap.get(it.getId()));
 
-                it.setTenantIdSet(tenantUserGroupMap.get(it.getId()));
+                it.setTenantIdSet(SysTenantUtil.getUserIdRefTenantIdSetMap().get(it.getId()));
 
                 it.setLastActiveTime(requestCreateIdAndCreateTimeMap.getOrDefault(it.getId(), it.getCreateTime()));
 
