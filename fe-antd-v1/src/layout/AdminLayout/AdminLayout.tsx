@@ -258,49 +258,57 @@ function AdminLayoutElement(props: IAdminLayoutElement) {
 
                         return <Space size={"large"}>
 
-                            <Dropdown menu={{
+                            <Dropdown
 
-                                items: [
-                                    {
-                                        key: '1',
-                                        label: <a onClick={() => {
+                                destroyPopupOnHide
 
-                                            setPathname(PathConstant.USER_SELF_PATH)
-                                            getAppNav()(PathConstant.USER_SELF_PATH)
+                                menu={{
 
-                                        }
-                                        }>
-                                            个人中心
-                                        </a>,
+                                    items: [
 
-                                        icon: <UserOutlined/>
-                                    },
-                                    {
-                                        key: '2',
-                                        danger: true,
-                                        label: <a
-                                            onClick={() => {
+                                        {
+                                            key: '1',
+                                            label: <a onClick={() => {
 
-                                                ExecConfirm(() => {
+                                                setPathname(PathConstant.USER_SELF_PATH)
+                                                getAppNav()(PathConstant.USER_SELF_PATH)
 
-                                                    return SignOutSelf().then((res) => {
+                                            }
+                                            }>
+                                                个人中心
+                                            </a>,
 
-                                                        ToastSuccess(res.msg)
-                                                        SignOut()
+                                            icon: <UserOutlined/>
+                                        },
 
-                                                    })
+                                        {
+                                            key: '2',
+                                            danger: true,
+                                            label: <a
+                                                onClick={() => {
 
-                                                }, undefined, "确定退出登录吗？")
+                                                    ExecConfirm(() => {
 
-                                            }}
-                                        >
-                                            退出登录
-                                        </a>,
+                                                        return SignOutSelf().then((res) => {
 
-                                        icon: <LogoutOutlined/>
-                                    },
-                                ]
-                            }}>
+                                                            ToastSuccess(res.msg)
+                                                            SignOut()
+
+                                                        })
+
+                                                    }, undefined, "确定退出登录吗？")
+
+                                                }}
+                                            >
+                                                退出登录
+                                            </a>,
+
+                                            icon: <LogoutOutlined/>
+                                        },
+
+                                    ]
+
+                                }}>
 
                                 <Button className={"m-r-10"} type="text" onClick={() => {
 

@@ -135,6 +135,8 @@ const TableColumnList = (currentForm: React.MutableRefObject<SysMenuInsertOrUpda
 
             <Dropdown
 
+                destroyPopupOnHide
+
                 key="3"
 
                 menu={{
@@ -163,7 +165,8 @@ const TableColumnList = (currentForm: React.MutableRefObject<SysMenuInsertOrUpda
                                 <ModalForm<SysMenuInsertOrUpdateDTO>
 
                                     modalProps={{
-                                        maskClosable: false
+                                        maskClosable: false,
+                                        destroyOnClose: true
                                     }}
 
                                     isKeyPressSubmit
