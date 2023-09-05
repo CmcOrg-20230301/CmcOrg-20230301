@@ -223,6 +223,11 @@ export function SysTenantSyncMenuModalForm(props: ISysTenantSyncMenuModalForm) {
     >
 
         <ProFormSelect
+            fieldProps={
+                {
+                    maxTagCount: 'responsive'
+                }
+            }
             showSearch
             allowClear
             mode="multiple"
