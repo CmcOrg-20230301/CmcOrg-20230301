@@ -153,7 +153,7 @@ const TableColumnList = (currentForm: React.MutableRefObject<SysTenantInsertOrUp
                         {
                             key: '2',
                             label: <SysTenantSyncMenuModalForm id={entity.id!} actionRef={actionRef}
-                                                               titlePre={entity.name}/>
+                                                               titlePre={entity.name!}/>
                         },
 
                     ]
@@ -223,7 +223,6 @@ export function SysTenantSyncMenuModalForm(props: ISysTenantSyncMenuModalForm) {
     >
 
         <ProFormSelect
-            maxTagCount={'responsive'}
             showSearch
             allowClear
             mode="multiple"
