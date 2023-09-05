@@ -8,16 +8,17 @@ export interface NotNullId {
 }
 
 export interface SysParamDO {
+    updateTime?: string // 修改时间，format：date-time
+    remark?: string // 备注
+    delFlag?: boolean // 是否逻辑删除
+    version?: number // 乐观锁，format：int32
+    uuid?: string // 该参数的 uuid，用于：同步租户参数等操作，备注：不允许修改
     updateId?: string // 修改人id，format：int64
     createTime?: string // 创建时间，format：date-time
     createId?: string // 创建人id，format：int64
     tenantId?: string // 租户id，format：int64
     name?: string // 配置名，以 id为不变值进行使用，不要用此属性
-    updateTime?: string // 修改时间，format：date-time
-    remark?: string // 备注
     id?: string // 主键id，format：int64
-    delFlag?: boolean // 是否逻辑删除
-    version?: number // 乐观锁，format：int32
     enableFlag?: boolean // 是否启用
     value?: string // 值
 }
@@ -28,6 +29,7 @@ export function SysParamInfoById(form: NotNullId, config?: AxiosRequestConfig) {
 }
 
 export interface SysParamInsertOrUpdateDTO {
+    tenantId?: string // 租户id，可以为空，为空则表示：默认租户：0，format：int64
     name?: string // 配置名，以 id为不变值进行使用，不要用此属性，required：true
     remark?: string // 备注
     id?: string // 主键 id，format：int64
@@ -53,6 +55,7 @@ export interface SysParamPageDTO {
     current?: string // 第几页，format：int64
     name?: string // 配置名，以 id为不变值进行使用，不要用此属性
     pageSize?: string // 每页显示条数，format：int64
+    tenantIdSet?: string[] // 租户 idSet，format：int64
     remark?: string // 备注
     enableFlag?: boolean // 是否启用
     order?: MyOrderDTO // 排序字段

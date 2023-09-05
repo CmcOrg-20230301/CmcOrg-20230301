@@ -1,6 +1,13 @@
 import {GetDictList, NoFormGetDictTreeList, YesNoDict} from "@/util/DictUtil";
 import {ActionType, ProColumns} from "@ant-design/pro-components";
-import {SysTenantDeleteByIdSet, SysTenantDictList, SysTenantDO, SysTenantInsertOrUpdateDTO} from "@/api/http/SysTenant";
+import {
+    SysTenantDeleteByIdSet,
+    SysTenantDictList,
+    SysTenantDO,
+    SysTenantDoSyncMenu,
+    SysTenantGetSyncMenuInfo,
+    SysTenantInsertOrUpdateDTO
+} from "@/api/http/SysTenant";
 import {ExecConfirm, ToastSuccess} from "@/util/ToastUtil";
 import {CalcOrderNo} from "@/util/TreeUtil";
 import {EllipsisOutlined} from "@ant-design/icons";
@@ -135,6 +142,26 @@ const TableColumnList = (currentForm: React.MutableRefObject<SysTenantInsertOrUp
 
                             }}>
                                 添加下级
+                            </a>,
+                        },
+
+                        {
+                            key: '2',
+                            label: <a onClick={() => {
+
+                                SysTenantGetSyncMenuInfo({id: entity.id}).then(res => {
+
+                                    const idList = res.data.map(it => it.id);
+
+                                    SysTenantDoSyncMenu({id: entity.id, valueSet: idList}).then(res => {
+
+
+                                    })
+
+                                })
+
+                            }}>
+                                同步菜单
                             </a>,
                         },
 

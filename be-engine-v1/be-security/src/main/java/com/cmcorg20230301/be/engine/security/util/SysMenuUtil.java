@@ -184,6 +184,7 @@ public class SysMenuUtil {
 
     /**
      * 通过：menuIdSet，获取：完整的 menuDoSet
+     * 注意：由于这里是从：公用的缓存里面获取的值，所以这里的返回值，不要随意改动
      */
     @NotNull
     public static Set<SysMenuDO> getFullSysMenuDoSet(Set<Long> menuIdSet,

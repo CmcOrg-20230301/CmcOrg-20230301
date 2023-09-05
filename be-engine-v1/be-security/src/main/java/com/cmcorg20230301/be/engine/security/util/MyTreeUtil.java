@@ -2,6 +2,7 @@ package com.cmcorg20230301.be.engine.security.util;
 
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.lang.func.VoidFunc1;
 import cn.hutool.core.map.MapUtil;
 import cn.hutool.core.util.ReflectUtil;
 import com.cmcorg20230301.be.engine.redisson.util.IdGeneratorUtil;
@@ -231,11 +232,19 @@ public class MyTreeUtil {
     /**
      * 给树形结构的 集合（还没有转换为树形结构），重新设置 id和 parentId
      */
-    public static <T extends BaseEntityTree<T>> void treeListSetNewIdAndParentId(Collection<T> flatCollection) {
+    @SneakyThrows
+    public static <T extends BaseEntityTree<T>> void treeListSetNewIdAndParentId(Collection<T> flatCollection,
+        @Nullable VoidFunc1<Map<Long, Long>> voidFunc1) {
 
         // 旧 id，新 id，map
         Map<Long, Long> idMap =
             flatCollection.stream().collect(Collectors.toMap(BaseEntity::getId, it -> IdGeneratorUtil.nextId()));
+
+        if (voidFunc1 != null) {
+
+            voidFunc1.call(idMap);
+
+        }
 
         for (T item : flatCollection) {
 

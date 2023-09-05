@@ -1,11 +1,9 @@
 package com.cmcorg20230301.be.engine.tenant.controller;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.cmcorg20230301.be.engine.model.model.dto.ChangeNumberDTO;
-import com.cmcorg20230301.be.engine.model.model.dto.NotEmptyIdSet;
-import com.cmcorg20230301.be.engine.model.model.dto.NotNullId;
-import com.cmcorg20230301.be.engine.model.model.dto.NotNullLong;
+import com.cmcorg20230301.be.engine.model.model.dto.*;
 import com.cmcorg20230301.be.engine.model.model.vo.DictTreeVO;
+import com.cmcorg20230301.be.engine.model.model.vo.DictVO;
 import com.cmcorg20230301.be.engine.security.model.entity.SysTenantDO;
 import com.cmcorg20230301.be.engine.security.model.vo.ApiResultVO;
 import com.cmcorg20230301.be.engine.tenant.model.dto.SysTenantInsertOrUpdateDTO;
@@ -85,6 +83,20 @@ public class SysTenantController {
     @PostMapping("/getNameById")
     public ApiResultVO<String> getNameById(@RequestBody @Valid NotNullLong notNullLong) {
         return ApiResultVO.okData(baseService.getNameById(notNullLong));
+    }
+
+    @Operation(summary = "获取：需要同步给租户的菜单")
+    @PostMapping("/getSyncMenuInfo")
+    @PreAuthorize("hasAuthority('sysTenant:syncMenu')")
+    public ApiResultVO<List<DictVO>> getSyncMenuInfo(@RequestBody @Valid NotNullId notNullId) {
+        return ApiResultVO.okData(baseService.getSyncMenuInfo(notNullId));
+    }
+
+    @Operation(summary = "执行：同步菜单给租户")
+    @PostMapping("/doSyncMenu")
+    @PreAuthorize("hasAuthority('sysTenant:syncMenu')")
+    public ApiResultVO<String> doSyncMenu(@RequestBody @Valid NotNullIdAndNotEmptyLongSet notNullIdAndNotEmptyLongSet) {
+        return ApiResultVO.okMsg(baseService.doSyncMenu(notNullIdAndNotEmptyLongSet));
     }
 
 }

@@ -67,6 +67,7 @@ export interface SysUserPageDTO {
     wxOpenId?: string // 微信 openId
     pageSize?: string // 每页显示条数，format：int64
     endCreateTime?: string // 创建结束时间，format：date-time
+    idSet?: string[] // 主键 idSet，备注：后端使用，前端不使用，format：int64
     current?: string // 第几页，format：int64
     beginCreateTime?: string // 创建开始时间，format：date-time
     phone?: string // 手机号码
@@ -88,7 +89,6 @@ export interface SysUserPageVO {
     lastActiveTime?: string // 最近活跃时间，format：date-time
     avatarFileId?: string // 头像 fileId（文件主键 id），备注：没有时则为 -1，format：int64
     wxOpenId?: string // 微信 openId，会脱敏
-    updateTime?: string // 修改时间，format：date-time
     deptIdSet?: string[] // 部门 idSet，format：int64
     phone?: string // 手机号码，会脱敏
     createTime?: string // 创建时间，format：date-time

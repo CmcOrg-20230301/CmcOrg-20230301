@@ -3,6 +3,8 @@ package com.cmcorg20230301.be.engine.tenant.service.impl;
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.lang.func.Func1;
+import cn.hutool.core.lang.func.VoidFunc1;
+import cn.hutool.core.map.MapUtil;
 import cn.hutool.core.util.BooleanUtil;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -10,11 +12,9 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.cmcorg20230301.be.engine.dict.service.SysDictService;
 import com.cmcorg20230301.be.engine.menu.service.SysMenuService;
 import com.cmcorg20230301.be.engine.model.model.constant.BaseConstant;
-import com.cmcorg20230301.be.engine.model.model.dto.ChangeNumberDTO;
-import com.cmcorg20230301.be.engine.model.model.dto.NotEmptyIdSet;
-import com.cmcorg20230301.be.engine.model.model.dto.NotNullId;
-import com.cmcorg20230301.be.engine.model.model.dto.NotNullLong;
+import com.cmcorg20230301.be.engine.model.model.dto.*;
 import com.cmcorg20230301.be.engine.model.model.vo.DictTreeVO;
+import com.cmcorg20230301.be.engine.model.model.vo.DictVO;
 import com.cmcorg20230301.be.engine.mysql.model.annotation.MyTransactional;
 import com.cmcorg20230301.be.engine.param.service.SysParamService;
 import com.cmcorg20230301.be.engine.security.exception.BaseBizCodeEnum;
@@ -29,6 +29,7 @@ import com.cmcorg20230301.be.engine.tenant.model.vo.SysTenantInfoByIdVO;
 import com.cmcorg20230301.be.engine.tenant.service.SysTenantRefUserService;
 import com.cmcorg20230301.be.engine.tenant.service.SysTenantService;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -72,7 +73,7 @@ public class SysTenantServiceImpl extends ServiceImpl<SysTenantMapper, SysTenant
             getTenantIdBaseEntityFunc1());
 
         // 检查：menuIdSet
-        insertOrUpdateCheckMenuIdSet(dto);
+        insertOrUpdateCheckMenuIdSet(dto.getMenuIdSet());
 
         Long parentId = MyEntityUtil.getNotNullParentId(dto.getParentId());
 
@@ -127,9 +128,9 @@ public class SysTenantServiceImpl extends ServiceImpl<SysTenantMapper, SysTenant
     /**
      * 检查：menuIdSet
      */
-    private void insertOrUpdateCheckMenuIdSet(SysTenantInsertOrUpdateDTO dto) {
+    private void insertOrUpdateCheckMenuIdSet(Set<Long> checkMenuIdSet) {
 
-        if (CollUtil.isEmpty(dto.getMenuIdSet())) {
+        if (CollUtil.isEmpty(checkMenuIdSet)) {
 
             return;
 
@@ -160,7 +161,7 @@ public class SysTenantServiceImpl extends ServiceImpl<SysTenantMapper, SysTenant
         // 用户：拥有的菜单 idSet
         Set<Long> menuIdSet = sysMenuDoSet.stream().map(BaseEntity::getId).collect(Collectors.toSet());
 
-        if (!CollUtil.containsAll(menuIdSet, dto.getMenuIdSet())) {
+        if (!CollUtil.containsAll(menuIdSet, checkMenuIdSet)) {
 
             ApiResultVO.error(BaseBizCodeEnum.ILLEGAL_REQUEST);
 
@@ -222,26 +223,8 @@ public class SysTenantServiceImpl extends ServiceImpl<SysTenantMapper, SysTenant
             Set<SysMenuDO> fullSysMenuDoSet =
                 SysMenuUtil.getFullSysMenuDoSet(dto.getMenuIdSet(), sysMenuCacheMap.values());
 
-            if (CollUtil.isNotEmpty(fullSysMenuDoSet)) {
-
-                List<SysMenuDO> insertList = new ArrayList<>();
-
-                for (SysMenuDO item : fullSysMenuDoSet) {
-
-                    SysMenuDO newSysMenuDO = BeanUtil.copyProperties(item, SysMenuDO.class);
-
-                    newSysMenuDO.setTenantId(tenantId); // 设置：新的租户 id
-
-                    insertList.add(newSysMenuDO);
-
-                }
-
-                // 重新设置：id 和 parentId
-                MyTreeUtil.treeListSetNewIdAndParentId(insertList);
-
-                sysMenuService.saveBatch(insertList);
-
-            }
+            // 新增菜单
+            handleFullSysMenuDoSet(tenantId, fullSysMenuDoSet, null);
 
         }
 
@@ -274,6 +257,37 @@ public class SysTenantServiceImpl extends ServiceImpl<SysTenantMapper, SysTenant
         }
 
         sysParamService.saveBatch(sysParamDOList);
+
+    }
+
+    /**
+     * 新增菜单
+     */
+    private void handleFullSysMenuDoSet(Long tenantId, Set<SysMenuDO> fullSysMenuDoSet,
+        @Nullable VoidFunc1<Map<Long, Long>> voidFunc1) {
+
+        if (CollUtil.isEmpty(fullSysMenuDoSet)) {
+
+            return;
+
+        }
+
+        List<SysMenuDO> insertList = new ArrayList<>();
+
+        for (SysMenuDO item : fullSysMenuDoSet) {
+
+            SysMenuDO newSysMenuDO = BeanUtil.copyProperties(item, SysMenuDO.class);
+
+            newSysMenuDO.setTenantId(tenantId); // 设置：新的租户 id
+
+            insertList.add(newSysMenuDO);
+
+        }
+
+        // 重新设置：id 和 parentId
+        MyTreeUtil.treeListSetNewIdAndParentId(insertList, voidFunc1);
+
+        sysMenuService.saveBatch(insertList);
 
     }
 
@@ -560,6 +574,137 @@ public class SysTenantServiceImpl extends ServiceImpl<SysTenantMapper, SysTenant
     private Func1<Long, BaseEntity> getTenantIdBaseEntityFunc1() {
 
         return id -> lambdaQuery().eq(BaseEntity::getId, id).select(BaseEntity::getTenantId).one();
+
+    }
+
+    /**
+     * 获取：同步最新的数据给租户的数据
+     */
+    @Override
+    public List<DictVO> getSyncMenuInfo(NotNullId notNullId) {
+
+        // 检查：租户 id
+        SysTenantUtil.checkTenantId(notNullId.getId());
+
+        Map<Long, SysMenuDO> sysMenuCacheMap = SysMenuUtil.getSysMenuCacheMap();
+
+        // 查询出：所有的菜单数据
+        Collection<SysMenuDO> allSysMenuDoCollection = sysMenuCacheMap.values();
+
+        // 获取：当前租户的菜单信息
+        List<SysMenuDO> sysMenuDOList =
+            allSysMenuDoCollection.stream().filter(it -> it.getTenantId().equals(notNullId.getId()))
+                .collect(Collectors.toList());
+
+        // 当前租户菜单的 uuidSet
+        Set<String> uuidSet = sysMenuDOList.stream().map(SysMenuDO::getUuid).collect(Collectors.toSet());
+
+        // 获取：需要增加的菜单 idSet
+        Set<Long> todoAddIdSet = allSysMenuDoCollection.stream()
+            .filter(it -> it.getTenantId().equals(BaseConstant.TENANT_ID) && !uuidSet.contains(it.getUuid()))
+            .map(BaseEntity::getId).collect(Collectors.toSet());
+
+        // 组装为完整的路径名，返回给前端
+        Map<Long, SysMenuDO> groupIdMap =
+            allSysMenuDoCollection.stream().collect(Collectors.toMap(BaseEntityTree::getId, it -> it));
+
+        List<DictVO> resultList = new ArrayList<>();
+
+        for (Long item : todoAddIdSet) {
+
+            List<String> list = new ArrayList<>();
+
+            getSyncMenuInfoNext(item, groupIdMap, list);
+
+            String fullName = CollUtil.join(list, "/"); // 包含：本级名称
+
+            resultList.add(new DictVO(item, fullName));
+
+        }
+
+        return resultList;
+
+    }
+
+    /**
+     * 组装为完整的路径名，返回给前端
+     */
+    private void getSyncMenuInfoNext(Long item, Map<Long, SysMenuDO> groupIdMap, List<String> list) {
+
+        SysMenuDO sysMenuDO = groupIdMap.get(item);
+
+        if (sysMenuDO == null) {
+            return;
+        }
+
+        list.add(0, sysMenuDO.getName()); // 添加到，最前面
+
+        getSyncMenuInfoNext(sysMenuDO.getParentId(), groupIdMap, list);
+
+    }
+
+    /**
+     * 执行：同步最新的数据给租户
+     */
+    @Override
+    public String doSyncMenu(NotNullIdAndNotEmptyLongSet notNullIdAndNotEmptyLongSet) {
+
+        Set<Long> valueSet = notNullIdAndNotEmptyLongSet.getValueSet();
+
+        if (CollUtil.isEmpty(valueSet)) {
+            return BaseBizCodeEnum.OK;
+        }
+
+        Long tenantId = notNullIdAndNotEmptyLongSet.getId();
+
+        // 检查：租户 id
+        SysTenantUtil.checkTenantId(tenantId);
+
+        // 检查：菜单是否合法
+        insertOrUpdateCheckMenuIdSet(valueSet);
+
+        // 执行：新增菜单
+        Map<Long, SysMenuDO> sysMenuCacheMap = SysMenuUtil.getSysMenuCacheMap();
+
+        Set<SysMenuDO> fullSysMenuDoSet = SysMenuUtil.getFullSysMenuDoSet(valueSet, sysMenuCacheMap.values());
+
+        // 获取：当前租户的菜单信息
+        List<SysMenuDO> sysMenuDOList =
+            sysMenuCacheMap.values().stream().filter(it -> it.getTenantId().equals(tenantId))
+                .collect(Collectors.toList());
+
+        // 当前租户菜单的 uuid，菜单，map
+        Map<String, SysMenuDO> currentUuidAndSysMenuDoMap =
+            sysMenuDOList.stream().collect(Collectors.toMap(SysMenuDO::getUuid, it -> it));
+
+        Map<Long, Long> removeIdMap = MapUtil.newHashMap(); // 被移除的 idMap
+
+        Set<SysMenuDO> newFullSysMenuDoSet = new HashSet<>();
+
+        for (SysMenuDO item : fullSysMenuDoSet) {
+
+            if (currentUuidAndSysMenuDoMap.containsKey(item.getUuid())) {
+
+                SysMenuDO sysMenuDO = currentUuidAndSysMenuDoMap.get(item.getUuid()); // 获取：该租户对应的菜单信息
+
+                removeIdMap.put(item.getId(), sysMenuDO.getId());
+
+            } else { // 过滤掉：已经存在的菜单
+
+                newFullSysMenuDoSet.add(item);
+
+            }
+
+        }
+
+        // 新增菜单
+        handleFullSysMenuDoSet(tenantId, newFullSysMenuDoSet, idMap -> {
+
+            idMap.putAll(removeIdMap); // 这里需要把：移除的 id，添加进去，目的：避免找不到对应的 parentId
+
+        });
+
+        return BaseBizCodeEnum.OK;
 
     }
 

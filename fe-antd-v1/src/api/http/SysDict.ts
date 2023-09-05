@@ -35,6 +35,7 @@ export interface SysDictPageDTO {
     current?: string // 第几页，format：int64
     name?: string // 字典/字典项 名
     pageSize?: string // 每页显示条数，format：int64
+    tenantIdSet?: string[] // 租户 idSet，format：int64
     remark?: string // 备注
     type?: string // 字典类型
     dictKey?: string // 字典 key（不能重复），字典项要冗余这个 key，目的：方便操作
@@ -56,6 +57,7 @@ export function SysDictPage(form: SysDictPageDTO, config?: AxiosRequestConfig) {
 
 export interface SysDictInsertOrUpdateDTO {
     orderNo?: number // 排序号（值越大越前面，默认为 0），format：int32
+    tenantId?: string // 租户id，可以为空，为空则表示：默认租户：0，format：int64
     name?: string // 字典/字典项 名，required：true
     remark?: string // 备注
     id?: string // 主键 id，format：int64

@@ -74,6 +74,16 @@ export function SysTenantTree(form: SysTenantPageDTO, config?: AxiosRequestConfi
     return $http.myProTreePost<SysTenantDO>('/sys/tenant/tree', form, config)
 }
 
+export interface NotNullIdAndNotEmptyLongSet {
+    valueSet?: string[] // 值 set，required：true，format：int64
+    id?: string // 主键id，required：true，format：int64
+}
+
+// 执行：同步菜单给租户
+export function SysTenantDoSyncMenu(form: NotNullIdAndNotEmptyLongSet, config?: AxiosRequestConfig) {
+    return $http.myPost<string>('/sys/tenant/doSyncMenu', form, config)
+}
+
 // 分页排序查询
 export function SysTenantPage(form: SysTenantPageDTO, config?: AxiosRequestConfig) {
     return $http.myProPagePost<SysTenantDO>('/sys/tenant/page', form, config)
@@ -114,6 +124,16 @@ export interface NotNullLong {
 // 通过主键id，获取租户名
 export function SysTenantGetNameById(form: NotNullLong, config?: AxiosRequestConfig) {
     return $http.myPost<string>('/sys/tenant/getNameById', form, config)
+}
+
+export interface DictVO {
+    name?: string // 显示用
+    id?: string // 传值用，format：int64
+}
+
+// 获取：需要同步给租户的菜单
+export function SysTenantGetSyncMenuInfo(form: NotNullId, config?: AxiosRequestConfig) {
+    return $http.myPost<DictVO[]>('/sys/tenant/getSyncMenuInfo', form, config)
 }
 
 export interface ChangeNumberDTO {
