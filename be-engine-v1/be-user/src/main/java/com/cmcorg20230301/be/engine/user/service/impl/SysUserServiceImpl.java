@@ -185,17 +185,15 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserProMapper, SysUserDO>
 
             page.getRecords().forEach(it -> {
 
-                Long id = it.getId();
+                it.setRoleIdSet(roleUserGroupMap.get(it.getId()));
 
-                it.setRoleIdSet(roleUserGroupMap.get(id));
+                it.setDeptIdSet(deptUserGroupMap.get(it.getId()));
 
-                it.setDeptIdSet(deptUserGroupMap.get(id));
+                it.setPostIdSet(postUserGroupMap.get(it.getId()));
 
-                it.setPostIdSet(postUserGroupMap.get(id));
+                it.setTenantIdSet(tenantUserGroupMap.get(it.getId()));
 
-                it.setTenantIdSet(tenantUserGroupMap.get(id));
-
-                it.setLastActiveTime(requestCreateIdAndCreateTimeMap.getOrDefault(id, it.getCreateTime()));
+                it.setLastActiveTime(requestCreateIdAndCreateTimeMap.getOrDefault(it.getId(), it.getCreateTime()));
 
             });
 
