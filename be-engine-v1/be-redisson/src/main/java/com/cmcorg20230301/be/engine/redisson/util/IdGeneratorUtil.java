@@ -29,11 +29,11 @@ public class IdGeneratorUtil {
     // 最大的，自增值
     private static final int MAX_INCREMENT_VALUE = 999999;
 
-    // id池最大大小
-    private static final int ID_SET_SIZE = 100;
-
     // id池最小大小
     private static final int ID_SET_MIN_SIZE = 10;
+
+    // id池最大大小
+    private static final int ID_SET_SIZE = 100 + ID_SET_MIN_SIZE;
 
     // id池，备注：需要上锁进行操作
     private static final LinkedList<Long> ID_POOL = new LinkedList<>();
