@@ -152,9 +152,9 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserProMapper, SysUserDO>
                     .select(SysPostRefUserDO::getUserId, SysPostRefUserDO::getPostId).list();
 
             // 备注：mysql 是先 group by 再 order by
-            List<SysRequestDO> sysRequestDOList =
-                ChainWrappers.queryChain(baseSysRequestMapper).select(" create_id, MAX( create_time ) AS createTime")
-                    .in("create_id", userIdSet).groupBy("create_id").list();
+            List<SysRequestDO> sysRequestDOList = ChainWrappers.queryChain(baseSysRequestMapper)
+                .select(" create_id, MAX( create_time ) AS createTime, region").in("create_id", userIdSet)
+                .groupBy("create_id").list();
 
             Map<Long, Set<Long>> deptUserGroupMap = sysDeptRefUserDOList.stream().collect(Collectors
                 .groupingBy(SysDeptRefUserDO::getUserId,
@@ -164,8 +164,8 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserProMapper, SysUserDO>
                 .groupingBy(SysPostRefUserDO::getUserId,
                     Collectors.mapping(SysPostRefUserDO::getPostId, Collectors.toSet())));
 
-            Map<Long, Date> requestCreateIdAndCreateTimeMap = sysRequestDOList.stream()
-                .collect(Collectors.toMap(BaseEntityNoId::getCreateId, BaseEntityNoId::getCreateTime));
+            Map<Long, SysRequestDO> requestCreateIdMap =
+                sysRequestDOList.stream().collect(Collectors.toMap(BaseEntityNoId::getCreateId, it -> it));
 
             page.getRecords().forEach(it -> {
 
@@ -177,7 +177,18 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserProMapper, SysUserDO>
 
                 it.setTenantIdSet(SysTenantUtil.getUserIdRefTenantIdSetMap().get(it.getId()));
 
-                it.setLastActiveTime(requestCreateIdAndCreateTimeMap.getOrDefault(it.getId(), it.getCreateTime()));
+                SysRequestDO sysRequestDO = requestCreateIdMap.get(it.getId());
+
+                if (sysRequestDO == null) {
+
+                    it.setLastActiveTime(it.getCreateTime());
+
+                } else {
+
+                    it.setLastActiveTime(sysRequestDO.getCreateTime());
+                    it.setRegion(sysRequestDO.getRegion());
+
+                }
 
             });
 

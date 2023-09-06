@@ -18,6 +18,7 @@ import {PasswordRSAEncrypt, RSAEncryptPro} from "@/util/RsaUtil";
 import {Dropdown, TreeSelect} from "antd";
 import {SysTenantDictList} from "@/api/http/SysTenant";
 import {SearchTransform} from "@/util/CommonUtil";
+import {HandlerRegion} from "@/util/StrUtil";
 
 const TableColumnList = (currentForm: React.MutableRefObject<SysUserInsertOrUpdateDTO>, setFormOpen: React.Dispatch<React.SetStateAction<boolean>>, actionRef: React.RefObject<ActionType | undefined>, userAvatarUrlObj: Record<string, string>): ProColumns<SysUserPageVO>[] => [
 
@@ -134,6 +135,12 @@ const TableColumnList = (currentForm: React.MutableRefObject<SysUserInsertOrUpda
 
             }
 
+        }
+    },
+
+    {
+        title: 'ip位置', dataIndex: 'region', ellipsis: true, width: 90, renderText: (text) => {
+            return HandlerRegion(text)
         }
     },
 
