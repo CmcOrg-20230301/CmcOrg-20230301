@@ -74,6 +74,12 @@ const TableColumnList = (currentForm: React.MutableRefObject<SysDictInsertOrUpda
     },
 
     {
+        title: '系统内置',
+        dataIndex: 'systemFlag',
+        valueEnum: YesNoDict
+    },
+
+    {
         title: '是否启用',
         dataIndex: 'enableFlag',
         valueEnum: YesNoDict
