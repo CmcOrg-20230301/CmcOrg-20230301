@@ -100,6 +100,8 @@ public class DoPackageUtil {
 
             log.info("后端打包 ↓");
 
+            long beginTimeNumber = System.currentTimeMillis();
+
             long timeNumber = System.currentTimeMillis();
 
             projectPath = projectPath + "/be-engine-v1";
@@ -140,7 +142,10 @@ public class DoPackageUtil {
 
             log.info("启动后端 ↑ 耗时：" + timeStr);
 
-            log.info("后端相关操作执行完毕！====================");
+            beginTimeNumber = System.currentTimeMillis() - beginTimeNumber;
+            timeStr = DateUtil.formatBetween(beginTimeNumber);
+
+            log.info("后端相关操作执行完毕！==================== 总耗时：" + timeStr);
 
         } catch (Exception e) {
 
@@ -165,6 +170,8 @@ public class DoPackageUtil {
         try {
 
             log.info("前端打包 ↓");
+
+            long beginTimeNumber = System.currentTimeMillis();
 
             long timeNumber = System.currentTimeMillis();
 
@@ -227,7 +234,10 @@ public class DoPackageUtil {
 
             log.info("前端打包上传 ↑ 耗时：" + timeStr);
 
-            log.info("前端相关操作执行完毕！====================");
+            beginTimeNumber = System.currentTimeMillis() - beginTimeNumber;
+            timeStr = DateUtil.formatBetween(beginTimeNumber);
+
+            log.info("前端相关操作执行完毕！==================== 总耗时：" + timeStr);
 
         } catch (Exception e) {
 
