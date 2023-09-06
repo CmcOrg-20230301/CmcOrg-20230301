@@ -52,7 +52,6 @@ public class SysParamServiceImpl extends ServiceImpl<SysParamMapper, SysParamDO>
 
         sysParamDO.setName(dto.getName());
         sysParamDO.setValue(dto.getValue());
-        sysParamDO.setRemark(MyEntityUtil.getNotNullStr(dto.getRemark()));
         sysParamDO.setEnableFlag(BooleanUtil.isTrue(dto.getEnableFlag()));
         sysParamDO.setDelFlag(false);
         sysParamDO.setId(dto.getId());
@@ -62,6 +61,7 @@ public class SysParamServiceImpl extends ServiceImpl<SysParamMapper, SysParamDO>
         if (BaseConstant.TENANT_ID.equals(currentTenantIdDefault)) { // 如果是：顶层租户
 
             sysParamDO.setSystemFlag(BooleanUtil.isTrue(dto.getSystemFlag()));
+            sysParamDO.setRemark(MyEntityUtil.getNotNullStr(dto.getRemark()));
 
         } else {
 
