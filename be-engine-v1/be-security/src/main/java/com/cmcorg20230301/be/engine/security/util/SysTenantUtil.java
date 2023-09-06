@@ -1,11 +1,13 @@
 package com.cmcorg20230301.be.engine.security.util;
 
 import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.convert.Convert;
 import cn.hutool.core.lang.func.Func1;
 import com.baomidou.mybatisplus.extension.toolkit.ChainWrappers;
 import com.cmcorg20230301.be.engine.cache.util.CacheHelper;
 import com.cmcorg20230301.be.engine.cache.util.MyCacheUtil;
 import com.cmcorg20230301.be.engine.model.model.constant.BaseConstant;
+import com.cmcorg20230301.be.engine.model.model.constant.ParamConstant;
 import com.cmcorg20230301.be.engine.model.model.dto.BaseTenantInsertOrUpdateDTO;
 import com.cmcorg20230301.be.engine.redisson.model.enums.RedisKeyEnum;
 import com.cmcorg20230301.be.engine.security.exception.BaseBizCodeEnum;
@@ -151,10 +153,18 @@ public class SysTenantUtil {
 
             CollUtil.addAll(resultSet, tenantIdSet);
 
-            // 获取：下级租户
-            for (Long item : resultSet) {
+            String refChildrenFlagStr = SysParamUtil.getValueByUuid(ParamConstant.TENANT_REF_CHILDREN_FLAG_UUID);
 
-                CollUtil.addAll(resultSet, getTenantDeepIdSet(item));
+            Boolean refChildrenFlag = Convert.toBool(refChildrenFlagStr, false); // 默认：不关联
+
+            if (refChildrenFlag) { // 如果：默认关联子级租户，则：获取下级租户
+
+                // 获取：下级租户
+                for (Long item : resultSet) {
+
+                    CollUtil.addAll(resultSet, getTenantDeepIdSet(item));
+
+                }
 
             }
 

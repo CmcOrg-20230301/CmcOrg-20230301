@@ -40,6 +40,7 @@ public class SysParamUtil {
 
     /**
      * 通过：参数的 uuid，获取 value，没有 value则返回 null
+     * 备注：请不要直接传字符串，请在：ParamConstant 类里面加一个常量
      */
     @Nullable
     public static String getValueByUuid(String paramUuid) {
