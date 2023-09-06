@@ -18,7 +18,7 @@ export interface SysParamDO {
     createTime?: string // 创建时间，format：date-time
     createId?: string // 创建人id，format：int64
     tenantId?: string // 租户id，format：int64
-    name?: string // 配置名，以 id为不变值进行使用，不要用此属性
+    name?: string // 配置名，以 uuid为不变值进行使用，不要用此属性
     id?: string // 主键id，format：int64
     enableFlag?: boolean // 是否启用
     value?: string // 值
@@ -32,7 +32,7 @@ export function SysParamInfoById(form: NotNullId, config?: AxiosRequestConfig) {
 export interface SysParamInsertOrUpdateDTO {
     systemFlag?: boolean // 系统内置：是 强制同步给租户 否 不同步给租户
     tenantId?: string // 租户id，可以为空，为空则表示：默认租户：0，format：int64
-    name?: string // 配置名，以 id为不变值进行使用，不要用此属性，required：true
+    name?: string // 配置名，以 uuid为不变值进行使用，不要用此属性，required：true
     remark?: string // 备注
     id?: string // 主键 id，format：int64
     value?: string // 值，required：true
@@ -55,7 +55,7 @@ export function SysParamDeleteByIdSet(form: NotEmptyIdSet, config?: AxiosRequest
 
 export interface SysParamPageDTO {
     current?: string // 第几页，format：int64
-    name?: string // 配置名，以 id为不变值进行使用，不要用此属性
+    name?: string // 配置名，以 uuid为不变值进行使用，不要用此属性
     pageSize?: string // 每页显示条数，format：int64
     tenantIdSet?: string[] // 租户 idSet，format：int64
     remark?: string // 备注

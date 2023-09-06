@@ -1,6 +1,7 @@
 package com.cmcorg20230301.be.engine.param.service.impl;
 
 import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.convert.Convert;
 import cn.hutool.core.lang.func.Func1;
 import cn.hutool.core.util.BooleanUtil;
 import cn.hutool.core.util.StrUtil;
@@ -19,6 +20,7 @@ import com.cmcorg20230301.be.engine.security.model.entity.BaseEntityNoId;
 import com.cmcorg20230301.be.engine.security.model.entity.SysParamDO;
 import com.cmcorg20230301.be.engine.security.model.vo.ApiResultVO;
 import com.cmcorg20230301.be.engine.security.util.MyEntityUtil;
+import com.cmcorg20230301.be.engine.security.util.SysParamUtil;
 import com.cmcorg20230301.be.engine.security.util.SysTenantUtil;
 import com.cmcorg20230301.be.engine.security.util.UserUtil;
 import org.jetbrains.annotations.NotNull;
@@ -28,8 +30,6 @@ import java.util.Set;
 
 @Service
 public class SysParamServiceImpl extends ServiceImpl<SysParamMapper, SysParamDO> implements SysParamService {
-
-    private final Set<Long> notDeleteIdSet = CollUtil.newHashSet(1L, 2L); // 不允许删除的 idSet
 
     /**
      * 新增/修改
@@ -91,16 +91,14 @@ public class SysParamServiceImpl extends ServiceImpl<SysParamMapper, SysParamDO>
             return dto;
         }
 
-        boolean exists = lambdaQuery().eq(BaseEntity::getId, id).eq(SysParamDO::getSystemFlag, true).exists();
-
-        if (exists) {
-            ApiResultVO.errorMsg("操作失败：租户不能修改系统内置");
-        }
-
-        // 只能修改：value
         SysParamInsertOrUpdateDTO sysParamInsertOrUpdateDTO = new SysParamInsertOrUpdateDTO();
 
-        sysParamInsertOrUpdateDTO.setValue(dto.getValue());
+        sysParamInsertOrUpdateDTO.setName(null); // 不允许修改
+        sysParamInsertOrUpdateDTO.setValue(dto.getValue()); // 允许修改，备注：现在只允许修改 value和 remark字段，如果新允许了其他字段，则：租户参数同步也要进行修改
+        sysParamInsertOrUpdateDTO.setRemark(dto.getRemark()); // 允许修改
+        sysParamInsertOrUpdateDTO.setEnableFlag(true); // 不允许修改
+        sysParamInsertOrUpdateDTO.setTenantId(dto.getTenantId());
+        sysParamInsertOrUpdateDTO.setId(id);
 
         return sysParamInsertOrUpdateDTO;
 
@@ -151,9 +149,9 @@ public class SysParamServiceImpl extends ServiceImpl<SysParamMapper, SysParamDO>
         // 检查：是否可以删除
         SysTenantUtil.checkDelete();
 
-        for (Long item : notDeleteIdSet) {
+        for (String item : SysParamUtil.SYSTEM_PARAM_UUID_SET) {
 
-            if (idSet.contains(item)) {
+            if (idSet.contains(Convert.toLong(item))) {
 
                 ApiResultVO.errorMsg("操作失败：id【{}】不允许删除", item);
 

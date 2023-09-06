@@ -9,7 +9,7 @@ import lombok.EqualsAndHashCode;
 @Data
 public class SysParamPageDTO extends MyTenantPageDTO {
 
-    @Schema(description = "配置名，以 id为不变值进行使用，不要用此属性")
+    @Schema(description = "配置名，以 uuid为不变值进行使用，不要用此属性")
     private String name;
 
     @Schema(description = "是否启用")

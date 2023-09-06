@@ -7,9 +7,9 @@ public interface ParamConstant {
 
     // 参数配置相关 ↓
 
-    long RSA_PRIVATE_KEY_ID = 1L; // 非对称加密，密钥 主键id
+    String RSA_PRIVATE_KEY_UUID = "1"; // 非对称加密，密钥 uuid
 
-    long IP_REQUESTS_PER_SECOND_ID = 2L; // ip请求速率 主键id
+    String IP_REQUESTS_PER_SECOND_UUID = "2"; // ip请求速率 uuid
 
     // 参数配置相关 ↑
 

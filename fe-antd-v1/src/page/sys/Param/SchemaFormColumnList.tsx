@@ -19,7 +19,7 @@ const SchemaFormColumnList = (): ProFormColumnsType<SysParamInsertOrUpdateDTO>[]
                     },
                 ],
             },
-            tooltip: '以 id为不变值进行使用，不要用此属性',
+            tooltip: '以 uuid为不变值进行使用，不要用此属性',
         },
 
         {

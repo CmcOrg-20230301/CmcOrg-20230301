@@ -12,7 +12,7 @@ import javax.validation.constraints.NotBlank;
 public class SysParamInsertOrUpdateDTO extends BaseTenantInsertOrUpdateDTO {
 
     @NotBlank
-    @Schema(description = "配置名，以 id为不变值进行使用，不要用此属性")
+    @Schema(description = "配置名，以 uuid为不变值进行使用，不要用此属性")
     private String name;
 
     @NotBlank

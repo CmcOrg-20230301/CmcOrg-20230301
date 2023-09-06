@@ -350,7 +350,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserProMapper, SysUserDO>
      */
     private void insertOrUpdateHandlePassword(SysUserInsertOrUpdateDTO dto) {
 
-        String paramValue = SysParamUtil.getValueById(ParamConstant.RSA_PRIVATE_KEY_ID); // 获取非对称 私钥
+        String paramValue = SysParamUtil.getValueByUuid(ParamConstant.RSA_PRIVATE_KEY_UUID); // 获取非对称 私钥
         dto.setOriginPassword(MyRsaUtil.rsaDecrypt(dto.getOriginPassword(), paramValue));
         dto.setPassword(MyRsaUtil.rsaDecrypt(dto.getPassword(), paramValue));
 
@@ -638,7 +638,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserProMapper, SysUserDO>
 
         if (passwordFlag) {
 
-            String paramValue = SysParamUtil.getValueById(ParamConstant.RSA_PRIVATE_KEY_ID); // 获取非对称 私钥
+            String paramValue = SysParamUtil.getValueByUuid(ParamConstant.RSA_PRIVATE_KEY_UUID); // 获取非对称 私钥
             dto.setNewOriginPassword(MyRsaUtil.rsaDecrypt(dto.getNewOriginPassword(), paramValue));
             dto.setNewPassword(MyRsaUtil.rsaDecrypt(dto.getNewPassword(), paramValue));
 

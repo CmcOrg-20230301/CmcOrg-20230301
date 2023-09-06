@@ -180,7 +180,7 @@ public class SignUtil {
 
         }
 
-        String paramValue = SysParamUtil.getValueById(ParamConstant.RSA_PRIVATE_KEY_ID); // 获取非对称 私钥
+        String paramValue = SysParamUtil.getValueByUuid(ParamConstant.RSA_PRIVATE_KEY_UUID); // 获取非对称 私钥
         password = MyRsaUtil.rsaDecrypt(password, paramValue);
         originPassword = MyRsaUtil.rsaDecrypt(originPassword, paramValue);
 
@@ -593,7 +593,7 @@ public class SignUtil {
 
         Long currentUserIdNotAdmin = UserUtil.getCurrentUserIdNotAdmin();
 
-        String paramValue = SysParamUtil.getValueById(ParamConstant.RSA_PRIVATE_KEY_ID); // 获取非对称 私钥
+        String paramValue = SysParamUtil.getValueByUuid(ParamConstant.RSA_PRIVATE_KEY_UUID); // 获取非对称 私钥
 
         if (RedisKeyEnum.PRE_SIGN_IN_NAME.equals(redisKeyEnum)) {
             checkCurrentPassword(oldPassword, currentUserIdNotAdmin, paramValue); // 检查：当前密码是否正确
@@ -915,7 +915,7 @@ public class SignUtil {
         Enum<? extends IRedisKey> redisKeyEnum, String account,
         LambdaQueryChainWrapper<SysUserDO> lambdaQueryChainWrapper) {
 
-        String paramValue = SysParamUtil.getValueById(ParamConstant.RSA_PRIVATE_KEY_ID); // 获取非对称 私钥
+        String paramValue = SysParamUtil.getValueByUuid(ParamConstant.RSA_PRIVATE_KEY_UUID); // 获取非对称 私钥
         String newPassword = MyRsaUtil.rsaDecrypt(newPasswordTemp, paramValue);
         String originNewPassword = MyRsaUtil.rsaDecrypt(originNewPasswordTemp, paramValue);
 

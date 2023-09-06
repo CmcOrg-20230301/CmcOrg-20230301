@@ -245,7 +245,7 @@ public class SysTenantServiceImpl extends ServiceImpl<SysTenantMapper, SysTenant
         // 新增：参数
         List<SysParamDO> sysParamDOList =
             sysParamService.lambdaQuery().eq(BaseEntityNoId::getTenantId, BaseConstant.TENANT_ID)
-                .eq(SysParamDO::getSystemFlag, true).list();
+                .eq(SysParamDO::getSystemFlag, false).list();
 
         // 执行：新增参数
         doHandleAndAddParam(tenantId, sysParamDOList, true);
@@ -851,7 +851,7 @@ public class SysTenantServiceImpl extends ServiceImpl<SysTenantMapper, SysTenant
 
                 List<SysDictDO> tenantDictKeySysDictDOList = tenantDictKeyMap.get(item.getKey());
 
-                // 这里需要拷贝一份
+                // 复制一份新的集合
                 List<SysDictDO> newSystemSysDictDOList =
                     item.getValue().stream().map(it -> BeanUtil.copyProperties(it, SysDictDO.class))
                         .collect(Collectors.toList());
@@ -862,9 +862,7 @@ public class SysTenantServiceImpl extends ServiceImpl<SysTenantMapper, SysTenant
                 insertList.addAll(newSystemSysDictDOList); // 添加到：待新增集合里
 
                 if (CollUtil.isEmpty(tenantDictKeySysDictDOList)) {
-
                     continue; // 如果：该租户不存在该字典
-
                 }
 
                 // 如果：该租户存在该字典，则找到该租户新增的字典项
@@ -929,12 +927,68 @@ public class SysTenantServiceImpl extends ServiceImpl<SysTenantMapper, SysTenant
     @MyTransactional
     public String doSyncParam() {
 
-        //        // 新增：参数
-        //        List<SysParamDO> sysParamDOList =
-        //            sysParamService.lambdaQuery().eq(BaseEntityNoId::getTenantId, BaseConstant.TENANT_ID).list();
-        //
-        //        // 执行：新增参数
-        //        doAddParam(tenantId, sysParamDOList);
+        // 查询出：所有租户
+        List<SysTenantDO> sysTenantDOList = lambdaQuery().select(BaseEntity::getId).list();
+
+        Set<Long> tenantIdSet = sysTenantDOList.stream().map(BaseEntity::getId).collect(Collectors.toSet());
+
+        // 查询出：所有的参数
+        List<SysParamDO> allSysParamDOList = sysParamService.lambdaQuery().list();
+
+        // 默认租户的，非系统内置字典
+        List<SysParamDO> defaultTenantSysParamDOList = allSysParamDOList.stream()
+            .filter(it -> !it.getSystemFlag() && it.getTenantId().equals(BaseConstant.TENANT_ID))
+            .collect(Collectors.toList());
+
+        List<SysParamDO> insertList = new ArrayList<>();
+
+        // 通过：租户id，进行分组的 map
+        Map<Long, List<SysParamDO>> tenantIdGroupMap =
+            allSysParamDOList.stream().collect(Collectors.groupingBy(BaseEntityNoId::getTenantId));
+
+        for (Long tenantId : tenantIdSet) {
+
+            // 复制一份新的集合
+            List<SysParamDO> newDefaultTenantSysParamDOList =
+                defaultTenantSysParamDOList.stream().map(it -> BeanUtil.copyProperties(it, SysParamDO.class))
+                    .collect(Collectors.toList());
+
+            // 把租户自定义的一些值，覆盖：默认值
+            List<SysParamDO> tenantSysParamDOList = tenantIdGroupMap.get(tenantId);
+
+            if (CollUtil.isNotEmpty(tenantSysParamDOList)) {
+
+                // 根据 uuid进行分组
+                Map<String, SysParamDO> uuidGroupMap =
+                    newDefaultTenantSysParamDOList.stream().collect(Collectors.toMap(SysParamDO::getUuid, it -> it));
+
+                for (SysParamDO sysParamDO : tenantSysParamDOList) {
+
+                    SysParamDO newDefaultTenantSysParamDO = uuidGroupMap.get(sysParamDO.getUuid());
+
+                    if (newDefaultTenantSysParamDO == null) {
+                        continue; // 如果不存在该配置，则继续下一次循环
+                    }
+
+                    // 如果存在该配置，则替换一些属性，备注：这里需要和：SysParamServiceImpl#checkUpdate，方法可以修改字段一致
+                    newDefaultTenantSysParamDO.setValue(sysParamDO.getValue());
+                    newDefaultTenantSysParamDO.setRemark(sysParamDO.getRemark());
+
+                }
+
+            }
+
+            // 处理：newDefaultTenantSysParamDOList
+            doHandleAndAddParam(tenantId, newDefaultTenantSysParamDOList, false);
+
+            insertList.addAll(newDefaultTenantSysParamDOList); // 添加到：待新增集合里
+
+        }
+
+        // 删除：租户的所有参数，然后再新增
+        sysParamService.lambdaUpdate().ne(BaseEntityNoId::getTenantId, BaseConstant.TENANT_ID).remove();
+
+        sysParamService.saveBatch(insertList);
 
         return BaseBizCodeEnum.OK;
 

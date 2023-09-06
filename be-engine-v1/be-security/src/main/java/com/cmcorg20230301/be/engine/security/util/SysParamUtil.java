@@ -1,8 +1,11 @@
 package com.cmcorg20230301.be.engine.security.util;
 
+import cn.hutool.core.collection.CollUtil;
 import com.baomidou.mybatisplus.extension.toolkit.ChainWrappers;
 import com.cmcorg20230301.be.engine.cache.util.CacheHelper;
 import com.cmcorg20230301.be.engine.cache.util.MyCacheUtil;
+import com.cmcorg20230301.be.engine.model.model.constant.BaseConstant;
+import com.cmcorg20230301.be.engine.model.model.constant.ParamConstant;
 import com.cmcorg20230301.be.engine.redisson.model.enums.RedisKeyEnum;
 import com.cmcorg20230301.be.engine.security.mapper.SysParamMapper;
 import com.cmcorg20230301.be.engine.security.model.entity.BaseEntity;
@@ -14,6 +17,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -23,6 +27,11 @@ import java.util.stream.Collectors;
 @Slf4j
 public class SysParamUtil {
 
+    // 系统内置参数 uuidSet，备注：不允许删除
+    // 备注：系统内置参数的 uuid等于 id
+    public static final Set<String> SYSTEM_PARAM_UUID_SET =
+        CollUtil.newHashSet(ParamConstant.RSA_PRIVATE_KEY_UUID, ParamConstant.IP_REQUESTS_PER_SECOND_UUID);
+
     private static SysParamMapper sysParamMapper;
 
     public SysParamUtil(SysParamMapper sysParamMapper) {
@@ -30,28 +39,38 @@ public class SysParamUtil {
     }
 
     /**
-     * 通过主键 paramId，获取 value，没有 value则返回 null
+     * 通过：参数的 uuid，获取 value，没有 value则返回 null
      */
     @Nullable
-    public static String getValueById(Long paramId) {
+    public static String getValueByUuid(String paramUuid) {
 
-        Long currentTenantIdDefault = UserUtil.getCurrentTenantIdDefault();
+        Long currentTenantIdDefault;
+
+        if (SYSTEM_PARAM_UUID_SET.contains(paramUuid)) { // 如果是：系统内置参数
+
+            currentTenantIdDefault = BaseConstant.TENANT_ID; // 则使用默认租户
+
+        } else {
+
+            currentTenantIdDefault = UserUtil.getCurrentTenantIdDefault();
+
+        }
 
         Map<Long, Map<String, String>> map =
             MyCacheUtil.getMap(RedisKeyEnum.SYS_PARAM_CACHE, CacheHelper.getDefaultLongMapStringMap(), () -> {
 
                 List<SysParamDO> sysParamDOList = ChainWrappers.lambdaQueryChain(sysParamMapper)
-                    .select(BaseEntity::getId, SysParamDO::getValue, BaseEntityNoId::getTenantId)
+                    .select(SysParamDO::getUuid, SysParamDO::getValue, BaseEntityNoId::getTenantId)
                     .eq(BaseEntity::getEnableFlag, true).list();
 
                 // 注意：Collectors.toMap()方法，key不能重复，不然会报错
                 // 可以用第三个参数，解决这个报错：(v1, v2) -> v2 不覆盖（留前值）(v1, v2) -> v1 覆盖（取后值）
                 return sysParamDOList.stream().collect(Collectors.groupingBy(BaseEntityNoId::getTenantId,
-                    Collectors.toMap(it -> it.getId().toString(), SysParamDO::getValue)));
+                    Collectors.toMap(SysParamDO::getUuid, SysParamDO::getValue)));
 
             });
 
-        return map.get(currentTenantIdDefault).get(paramId.toString());
+        return map.get(currentTenantIdDefault).get(paramUuid);
 
     }
 

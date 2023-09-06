@@ -558,7 +558,7 @@ CREATE TABLE `sys_param`
     `version`     int                                                           NOT NULL COMMENT '乐观锁',
     `del_flag`    tinyint(1)                                                    NOT NULL COMMENT '是否逻辑删除',
     `remark`      varchar(300) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '备注',
-    `name`        varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '配置名，以 id为不变值进行使用，不要用此属性',
+    `name`        varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '配置名，以 uuid为不变值进行使用，不要用此属性',
     `value`       text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci         NOT NULL COMMENT '值',
     PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB

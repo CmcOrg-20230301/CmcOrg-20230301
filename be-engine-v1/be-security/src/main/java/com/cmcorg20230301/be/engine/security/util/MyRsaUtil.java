@@ -24,7 +24,7 @@ public class MyRsaUtil {
      */
     public static String rsaDecrypt(String str) {
 
-        String paramValue = SysParamUtil.getValueById(ParamConstant.RSA_PRIVATE_KEY_ID); // 获取非对称加密，私钥
+        String paramValue = SysParamUtil.getValueByUuid(ParamConstant.RSA_PRIVATE_KEY_UUID); // 获取非对称加密，私钥
 
         return rsaDecrypt(str, paramValue); // 返回解密之后的 字符串
 
