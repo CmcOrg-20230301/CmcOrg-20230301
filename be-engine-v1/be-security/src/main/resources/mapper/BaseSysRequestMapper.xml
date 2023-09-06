@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.cmcorg20230301.be.engine.security.mapper.BaseSysRequestMapper">
+
+    <!-- 查询：最后活跃时间 -->
+    <select id="selectLastActiveTime" resultType="com.cmcorg20230301.be.engine.security.model.entity.SysRequestDO">
+
+        SELECT a.create_id AS createId,
+        a.create_time AS createTime,
+        a.region AS region
+
+        FROM sys_request a
+
+        WHERE a.id IN (
+
+        SELECT MAX(b.id)
+
+        FROM sys_request b
+
+        WHERE b.del_flag = FALSE
+
+        <if test="userIdSet != null and userIdSet.size != 0">
+            AND b.create_id IN
+            <foreach collection="userIdSet" separator="," open="(" close=")" item="item">
+                #{item}
+            </foreach>
+        </if>
+
+        GROUP BY b.create_id
+        )
+
+    </select>
+
+</mapper>

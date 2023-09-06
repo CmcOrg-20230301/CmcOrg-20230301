@@ -81,14 +81,15 @@ const TableColumnList = (currentForm: React.MutableRefObject<SysUserInsertOrUpda
     {
         title: '是否正常',
         dataIndex: 'enableFlag',
-        valueEnum: YesNoDict
+        valueEnum: YesNoDict,
+        width: 90,
     },
 
     {
-        title: '是否有密码',
+        title: '设置密码',
         dataIndex: 'passwordFlag',
         valueEnum: YesNoDict,
-        width: 100,
+        width: 90,
     },
 
     {

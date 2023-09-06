@@ -154,7 +154,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserProMapper, SysUserDO>
             // 备注：mysql 是先 group by 再 order by
             List<SysRequestDO> sysRequestDOList = ChainWrappers.queryChain(baseSysRequestMapper)
                 .select(" create_id, MAX( create_time ) AS createTime, region").in("create_id", userIdSet)
-                .groupBy("create_id").list();
+                .groupBy("create_id").orderByDesc("create_time").list();
 
             Map<Long, Set<Long>> deptUserGroupMap = sysDeptRefUserDOList.stream().collect(Collectors
                 .groupingBy(SysDeptRefUserDO::getUserId,
