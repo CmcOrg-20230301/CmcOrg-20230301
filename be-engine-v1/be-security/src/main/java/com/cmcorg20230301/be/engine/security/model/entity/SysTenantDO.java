@@ -25,4 +25,8 @@ public class SysTenantDO extends BaseEntityTree<SysTenantDO> {
     @Schema(description = "关联菜单的数量")
     private Long refMenuCount;
 
+    @TableField(exist = false)
+    @Schema(description = "用户的数量")
+    private Long userCount;
+
 }

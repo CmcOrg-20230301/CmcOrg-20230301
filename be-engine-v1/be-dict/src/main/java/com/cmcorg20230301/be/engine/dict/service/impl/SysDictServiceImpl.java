@@ -45,22 +45,18 @@ public class SysDictServiceImpl extends ServiceImpl<SysDictMapper, SysDictDO> im
     @MyTransactional
     public String insertOrUpdate(SysDictInsertOrUpdateDTO dto) {
 
-        // 检查：是否可以新增
-        SysTenantUtil.checkInsert(dto);
-
         // 处理：BaseTenantInsertOrUpdateDTO
         SysTenantUtil.handleBaseTenantInsertOrUpdateDTO(dto, getCheckIllegalFunc1(CollUtil.newHashSet(dto.getId())),
             getTenantIdBaseEntityFunc1());
 
         // 检查：是否可以修改一些属性
-        dto = checkUpdate(dto, dto.getId());
+        checkInsertOrUpdate(dto, dto.getId());
 
         if (SysDictTypeEnum.DICT.equals(dto.getType())) {
 
             // 字典 key和 name不能重复
-            SysDictInsertOrUpdateDTO finalDto = dto;
-            boolean exists = lambdaQuery().eq(SysDictDO::getType, SysDictTypeEnum.DICT).and(
-                i -> i.eq(SysDictDO::getDictKey, finalDto.getDictKey()).or().eq(SysDictDO::getName, finalDto.getName()))
+            boolean exists = lambdaQuery().eq(SysDictDO::getType, SysDictTypeEnum.DICT)
+                .and(i -> i.eq(SysDictDO::getDictKey, dto.getDictKey()).or().eq(SysDictDO::getName, dto.getName()))
                 .eq(BaseEntity::getEnableFlag, true).ne(dto.getId() != null, BaseEntity::getId, dto.getId()).exists();
 
             if (exists) {
@@ -76,11 +72,10 @@ public class SysDictServiceImpl extends ServiceImpl<SysDictMapper, SysDictDO> im
             }
 
             // 字典项 value和 name不能重复
-            SysDictInsertOrUpdateDTO finalDto = dto;
             boolean exists =
                 lambdaQuery().eq(SysDictDO::getType, SysDictTypeEnum.DICT_ITEM).eq(BaseEntity::getEnableFlag, true)
-                    .eq(SysDictDO::getDictKey, dto.getDictKey()).and(
-                    i -> i.eq(SysDictDO::getValue, finalDto.getValue()).or().eq(SysDictDO::getName, finalDto.getName()))
+                    .eq(SysDictDO::getDictKey, dto.getDictKey())
+                    .and(i -> i.eq(SysDictDO::getValue, dto.getValue()).or().eq(SysDictDO::getName, dto.getName()))
                     .ne(dto.getId() != null, BaseEntity::getId, dto.getId()).exists();
 
             if (exists) {
@@ -127,7 +122,9 @@ public class SysDictServiceImpl extends ServiceImpl<SysDictMapper, SysDictDO> im
 
         } else {
 
-            sysDictDO.setSystemFlag(false);
+            if (dto.getId() == null) {
+                sysDictDO.setSystemFlag(false);
+            }
 
         }
 
@@ -140,20 +137,29 @@ public class SysDictServiceImpl extends ServiceImpl<SysDictMapper, SysDictDO> im
     /**
      * 检查：是否可以修改一些属性
      */
-    private SysDictInsertOrUpdateDTO checkUpdate(SysDictInsertOrUpdateDTO dto, Long id) {
+    private void checkInsertOrUpdate(SysDictInsertOrUpdateDTO dto, Long id) {
+
+        if (SysTenantUtil.insertOrUpdateOrDeleteCommonCheck()) {
+            return;
+        }
 
         if (id == null) {
-            return dto;
+
+            if (dto.getType().equals(SysDictTypeEnum.DICT)) {
+
+                ApiResultVO.errorMsg("操作失败：租户不能新增字典，只能新增字典项");
+
+            }
+
+            return;
+
         }
 
-        // 检查：是否可以修改
-        if (SysTenantUtil.checkUpdate()) {
-            return dto;
+        boolean exists = lambdaQuery().eq(BaseEntity::getId, id).eq(SysDictDO::getSystemFlag, true).exists();
+
+        if (exists) {
+            ApiResultVO.errorMsg("操作失败：租户不能修改系统内置");
         }
-
-        ApiResultVO.errorMsg("操作失败：租户不能进行修改操作");
-
-        return dto;
 
     }
 
@@ -268,8 +274,12 @@ public class SysDictServiceImpl extends ServiceImpl<SysDictMapper, SysDictDO> im
         // 检查：是否非法操作
         SysTenantUtil.checkIllegal(idSet, getCheckIllegalFunc1(idSet));
 
-        // 检查：是否可以删除
-        SysTenantUtil.checkDelete();
+        boolean exists =
+            lambdaQuery().in(BaseEntity::getId, notEmptyIdSet.getIdSet()).eq(SysDictDO::getSystemFlag, true).exists();
+
+        if (exists) {
+            ApiResultVO.errorMsg("操作失败：租户不能删除系统内置");
+        }
 
         List<SysDictDO> sysDictDOList =
             lambdaQuery().in(BaseEntity::getId, idSet).eq(SysDictDO::getType, SysDictTypeEnum.DICT)

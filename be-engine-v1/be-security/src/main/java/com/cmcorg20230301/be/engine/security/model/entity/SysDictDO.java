@@ -39,4 +39,8 @@ public class SysDictDO extends BaseEntity {
     @Schema(description = "系统内置：是 强制同步给租户 否 不同步给租户")
     private Boolean systemFlag;
 
+    @TableField(fill = FieldFill.INSERT)
+    @Schema(description = "该字典的 uuid，用于：同步租户字典等操作，备注：不允许修改")
+    private String uuid;
+
 }

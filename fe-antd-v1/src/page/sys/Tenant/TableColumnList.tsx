@@ -94,6 +94,8 @@ const TableColumnList = (currentForm: React.MutableRefObject<SysTenantInsertOrUp
 
     {title: '菜单数量', dataIndex: 'refMenuCount', width: 90,},
 
+    {title: '用户数量', dataIndex: 'userCount', width: 90,},
+
     {title: '备注', dataIndex: 'remark', ellipsis: true, width: 200,},
 
     {

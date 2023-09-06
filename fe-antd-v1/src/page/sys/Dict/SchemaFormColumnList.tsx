@@ -70,6 +70,7 @@ const SchemaFormColumnList = (): ProFormColumnsType<SysDictInsertOrUpdateDTO>[] 
                                 rules: [
                                     {
                                         required: true,
+                                        type: number,
                                     },
                                 ],
                             },

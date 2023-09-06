@@ -9,6 +9,7 @@ import cn.hutool.core.util.BooleanUtil;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.baomidou.mybatisplus.extension.toolkit.ChainWrappers;
 import com.cmcorg20230301.be.engine.dict.service.SysDictService;
 import com.cmcorg20230301.be.engine.menu.service.SysMenuService;
 import com.cmcorg20230301.be.engine.model.model.constant.BaseConstant;
@@ -19,8 +20,10 @@ import com.cmcorg20230301.be.engine.mysql.model.annotation.MyTransactional;
 import com.cmcorg20230301.be.engine.param.service.SysParamService;
 import com.cmcorg20230301.be.engine.security.exception.BaseBizCodeEnum;
 import com.cmcorg20230301.be.engine.security.mapper.SysTenantMapper;
+import com.cmcorg20230301.be.engine.security.mapper.SysUserMapper;
 import com.cmcorg20230301.be.engine.security.model.configuration.ITenantDeleteConfiguration;
 import com.cmcorg20230301.be.engine.security.model.entity.*;
+import com.cmcorg20230301.be.engine.security.model.enums.SysDictTypeEnum;
 import com.cmcorg20230301.be.engine.security.model.vo.ApiResultVO;
 import com.cmcorg20230301.be.engine.security.util.*;
 import com.cmcorg20230301.be.engine.tenant.model.dto.SysTenantInsertOrUpdateDTO;
@@ -51,6 +54,9 @@ public class SysTenantServiceImpl extends ServiceImpl<SysTenantMapper, SysTenant
 
     @Resource
     SysDictService sysDictService;
+
+    @Resource
+    SysUserMapper sysUserMapper;
 
     List<ITenantDeleteConfiguration> iTenantDeleteConfigurationList;
 
@@ -234,7 +240,7 @@ public class SysTenantServiceImpl extends ServiceImpl<SysTenantMapper, SysTenant
                 .eq(SysDictDO::getSystemFlag, true).list();
 
         // 执行：新增字典
-        doAddDict(tenantId, sysDictDOList);
+        doHandleAndAddDict(tenantId, sysDictDOList, true);
 
         // 新增：参数
         List<SysParamDO> sysParamDOList =
@@ -242,14 +248,14 @@ public class SysTenantServiceImpl extends ServiceImpl<SysTenantMapper, SysTenant
                 .eq(SysParamDO::getSystemFlag, true).list();
 
         // 执行：新增参数
-        doAddParam(tenantId, sysParamDOList);
+        doHandleAndAddParam(tenantId, sysParamDOList, true);
 
     }
 
     /**
      * 执行：新增参数
      */
-    private void doAddParam(Long tenantId, List<SysParamDO> sysParamDOList) {
+    private void doHandleAndAddParam(Long tenantId, List<SysParamDO> sysParamDOList, boolean savaFlag) {
 
         for (SysParamDO item : sysParamDOList) {
 
@@ -260,14 +266,18 @@ public class SysTenantServiceImpl extends ServiceImpl<SysTenantMapper, SysTenant
 
         }
 
-        sysParamService.saveBatch(sysParamDOList);
+        if (savaFlag) {
+
+            sysParamService.saveBatch(sysParamDOList);
+
+        }
 
     }
 
     /**
      * 执行：新增字典
      */
-    private void doAddDict(Long tenantId, List<SysDictDO> sysDictDOList) {
+    private void doHandleAndAddDict(Long tenantId, List<SysDictDO> sysDictDOList, boolean savaFlag) {
 
         for (SysDictDO item : sysDictDOList) {
 
@@ -278,7 +288,11 @@ public class SysTenantServiceImpl extends ServiceImpl<SysTenantMapper, SysTenant
 
         }
 
-        sysDictService.saveBatch(sysDictDOList);
+        if (savaFlag) {
+
+            sysDictService.saveBatch(sysDictDOList);
+
+        }
 
     }
 
@@ -342,13 +356,13 @@ public class SysTenantServiceImpl extends ServiceImpl<SysTenantMapper, SysTenant
                 .in(BaseEntityNoId::getTenantId, dto.getTenantIdSet()) //
                 .orderByDesc(BaseEntityTree::getOrderNo).page(dto.page(true));
 
-        Set<Long> idSet = page.getRecords().stream().map(BaseEntity::getId).collect(Collectors.toSet());
-
-        if (CollUtil.isEmpty(idSet)) {
+        if (CollUtil.isEmpty(page.getRecords())) {
             return page;
         }
 
-        // 获取：绑定的菜单 idSet
+        Set<Long> idSet = page.getRecords().stream().map(BaseEntity::getId).collect(Collectors.toSet());
+
+        // 获取：绑定的菜单
         List<SysMenuDO> sysMenuDOList =
             sysMenuService.lambdaQuery().in(BaseEntityNoId::getTenantId, idSet).select(BaseEntityNoId::getTenantId)
                 .list();
@@ -356,9 +370,18 @@ public class SysTenantServiceImpl extends ServiceImpl<SysTenantMapper, SysTenant
         Map<Long, Long> refMenuCountMap =
             sysMenuDOList.stream().collect(Collectors.groupingBy(BaseEntityNoId::getTenantId, Collectors.counting()));
 
+        // 获取：用户
+        List<SysUserDO> sysUserDOList =
+            ChainWrappers.lambdaQueryChain(sysUserMapper).in(BaseEntityNoId::getTenantId, idSet)
+                .select(BaseEntityNoId::getTenantId).list();
+
+        Map<Long, Long> userCountMap =
+            sysUserDOList.stream().collect(Collectors.groupingBy(BaseEntityNoId::getTenantId, Collectors.counting()));
+
         for (SysTenantDO item : page.getRecords()) {
 
             item.setRefMenuCount(refMenuCountMap.getOrDefault(item.getId(), 0L));
+            item.setUserCount(userCountMap.getOrDefault(item.getId(), 0L));
 
         }
 
@@ -756,8 +779,7 @@ public class SysTenantServiceImpl extends ServiceImpl<SysTenantMapper, SysTenant
 
     /**
      * 执行：同步字典给租户
-     * 备注：租户只能新增字典项，不能修改字典项，并且不能新增修改字典
-     * 所以：必须存在全部，默认租户的，系统内置的，字典和字典项
+     * 备注：租户只能，新增修改删除字典项，并且不能是系统内置的字典项
      */
     @Override
     @MyTransactional
@@ -776,23 +798,98 @@ public class SysTenantServiceImpl extends ServiceImpl<SysTenantMapper, SysTenant
             .filter(it -> it.getSystemFlag() && it.getTenantId().equals(BaseConstant.TENANT_ID))
             .collect(Collectors.toList());
 
+        // 根据：字典 key，进行分组
+        Map<String, List<SysDictDO>> systemDictKeyMap =
+            systemSysDictDOList.stream().collect(Collectors.groupingBy(SysDictDO::getDictKey));
+
         // 通过：租户id，进行分组的 map
         Map<Long, List<SysDictDO>> tenantIdGroupMap =
             allSysDictDOList.stream().collect(Collectors.groupingBy(BaseEntityNoId::getTenantId));
 
+        List<SysDictDO> insertList = new ArrayList<>();
+
         for (Long tenantId : tenantIdSet) {
 
-            // 获取：当前租户的字典数据
-            List<SysDictDO> sysDictDOList = tenantIdGroupMap.get(tenantId);
+            List<SysDictDO> tenantSysDictDOList = tenantIdGroupMap.get(tenantId);
+
+            // 当前租户的字典数据，根据：字典 key，进行分组
+            Map<String, List<SysDictDO>> tenantDictKeyMap;
+
+            if (tenantSysDictDOList == null) {
+
+                tenantDictKeyMap = MapUtil.newHashMap();
+
+            } else {
+
+                tenantDictKeyMap = tenantSysDictDOList.stream().collect(Collectors.groupingBy(SysDictDO::getDictKey));
+
+            }
+
+            // 添加：需要新增的数据
+            for (Map.Entry<String, List<SysDictDO>> item : systemDictKeyMap.entrySet()) {
+
+                List<SysDictDO> tenantDictKeySysDictDOList = tenantDictKeyMap.get(item.getKey());
+
+                // 这里需要拷贝一份
+                List<SysDictDO> newSystemSysDictDOList =
+                    item.getValue().stream().map(it -> BeanUtil.copyProperties(it, SysDictDO.class))
+                        .collect(Collectors.toList());
+
+                // 处理：newSystemSysDictDOList
+                doHandleAndAddDict(tenantId, newSystemSysDictDOList, false);
+
+                insertList.addAll(newSystemSysDictDOList); // 添加到：待新增集合里
+
+                if (CollUtil.isEmpty(tenantDictKeySysDictDOList)) {
+
+                    continue; // 如果：该租户不存在该字典
+
+                }
+
+                // 如果：该租户存在该字典，则找到该租户新增的字典项
+                Set<String> systemDictKeySet =
+                    newSystemSysDictDOList.stream().map(SysDictDO::getUuid).collect(Collectors.toSet());
+
+                // 该租户新增的字典项
+                List<SysDictDO> tenantAddDictItemSysDictDOList = tenantDictKeySysDictDOList.stream().filter(
+                    it -> it.getType().equals(SysDictTypeEnum.DICT_ITEM) && !systemDictKeySet.contains(it.getDictKey()))
+                    .collect(Collectors.toList());
+
+                if (CollUtil.isEmpty(tenantAddDictItemSysDictDOList)) {
+                    continue; // 如果租户没有新增额外的字典项
+                }
+
+                // 判断：如果：value，冲突了，则需要修改该租户，字典项的 value
+                Set<Integer> systemDictValueSet =
+                    newSystemSysDictDOList.stream().map(SysDictDO::getValue).collect(Collectors.toSet());
+
+                int maxValue = newSystemSysDictDOList.stream().mapToInt(SysDictDO::getValue).max().orElse(1);
+
+                int value = maxValue + 1;
+
+                for (SysDictDO sysDictDO : tenantAddDictItemSysDictDOList) {
+
+                    if (!systemDictValueSet.contains(sysDictDO.getValue())) {
+                        continue;
+                    }
+
+                    // 如果包含了，该 value，则为：value
+                    sysDictDO.setValue(value);
+
+                    value = value + 1; // value加 1
+
+                }
+
+                insertList.addAll(tenantAddDictItemSysDictDOList); // 添加到：待新增集合里
+
+            }
 
         }
 
-        //        // 新增：字典
-        //        List<SysDictDO> sysDictDOList =
-        //            sysDictService.lambdaQuery().eq(BaseEntityNoId::getTenantId, BaseConstant.TENANT_ID).list();
-        //
-        //        // 执行：新增字典
-        //        doAddDict(tenantId, sysDictDOList);
+        // 删除：租户的所有字典，然后再新增
+        sysDictService.lambdaUpdate().ne(BaseEntityNoId::getTenantId, BaseConstant.TENANT_ID).remove();
+
+        sysDictService.saveBatch(insertList);
 
         return BaseBizCodeEnum.OK;
 

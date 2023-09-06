@@ -65,7 +65,9 @@ public class SysParamServiceImpl extends ServiceImpl<SysParamMapper, SysParamDO>
 
         } else {
 
-            sysParamDO.setSystemFlag(false);
+            if (dto.getId() == null) {
+                sysParamDO.setSystemFlag(false);
+            }
 
         }
 
@@ -89,9 +91,18 @@ public class SysParamServiceImpl extends ServiceImpl<SysParamMapper, SysParamDO>
             return dto;
         }
 
-        ApiResultVO.errorMsg("操作失败：租户不能进行修改操作");
+        boolean exists = lambdaQuery().eq(BaseEntity::getId, id).eq(SysParamDO::getSystemFlag, true).exists();
 
-        return dto;
+        if (exists) {
+            ApiResultVO.errorMsg("操作失败：租户不能修改系统内置");
+        }
+
+        // 只能修改：value
+        SysParamInsertOrUpdateDTO sysParamInsertOrUpdateDTO = new SysParamInsertOrUpdateDTO();
+
+        sysParamInsertOrUpdateDTO.setValue(dto.getValue());
+
+        return sysParamInsertOrUpdateDTO;
 
     }
 
