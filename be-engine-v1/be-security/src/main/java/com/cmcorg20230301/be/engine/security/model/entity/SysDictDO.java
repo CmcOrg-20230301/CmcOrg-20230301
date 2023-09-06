@@ -36,4 +36,7 @@ public class SysDictDO extends BaseEntity {
     @Schema(description = "字典的子节点")
     private List<SysDictDO> children;
 
+    @Schema(description = "系统内置：是 强制同步给租户 否 不同步给租户")
+    private Boolean systemFlag;
+
 }

@@ -6,6 +6,7 @@ import cn.hutool.core.util.BooleanUtil;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.cmcorg20230301.be.engine.model.model.constant.BaseConstant;
 import com.cmcorg20230301.be.engine.model.model.dto.NotEmptyIdSet;
 import com.cmcorg20230301.be.engine.model.model.dto.NotNullId;
 import com.cmcorg20230301.be.engine.param.model.dto.SysParamInsertOrUpdateDTO;
@@ -19,6 +20,7 @@ import com.cmcorg20230301.be.engine.security.model.entity.SysParamDO;
 import com.cmcorg20230301.be.engine.security.model.vo.ApiResultVO;
 import com.cmcorg20230301.be.engine.security.util.MyEntityUtil;
 import com.cmcorg20230301.be.engine.security.util.SysTenantUtil;
+import com.cmcorg20230301.be.engine.security.util.UserUtil;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Service;
 
@@ -31,6 +33,7 @@ public class SysParamServiceImpl extends ServiceImpl<SysParamMapper, SysParamDO>
 
     /**
      * 新增/修改
+     * 备注：这里修改了，租户管理那边也要一起修改
      */
     @Override
     public String insertOrUpdate(SysParamInsertOrUpdateDTO dto) {
@@ -53,6 +56,18 @@ public class SysParamServiceImpl extends ServiceImpl<SysParamMapper, SysParamDO>
         sysParamDO.setEnableFlag(BooleanUtil.isTrue(dto.getEnableFlag()));
         sysParamDO.setDelFlag(false);
         sysParamDO.setId(dto.getId());
+
+        Long currentTenantIdDefault = UserUtil.getCurrentTenantIdDefault();
+
+        if (BaseConstant.TENANT_ID.equals(currentTenantIdDefault)) { // 如果是：顶层租户
+
+            sysParamDO.setSystemFlag(BooleanUtil.isTrue(dto.getSystemFlag()));
+
+        } else {
+
+            sysParamDO.setSystemFlag(false);
+
+        }
 
         saveOrUpdate(sysParamDO);
 

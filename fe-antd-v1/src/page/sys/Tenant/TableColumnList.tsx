@@ -92,6 +92,8 @@ const TableColumnList = (currentForm: React.MutableRefObject<SysTenantInsertOrUp
         valueEnum: YesNoDict
     },
 
+    {title: '菜单数量', dataIndex: 'refMenuCount', width: 90,},
+
     {title: '备注', dataIndex: 'remark', ellipsis: true, width: 200,},
 
     {
@@ -221,19 +223,27 @@ export function SysTenantSyncMenuModalForm(props: ISysTenantSyncMenuModalForm) {
     >
 
         <ProFormSelect
+
             fieldProps={
                 {
                     maxTagCount: 'responsive'
                 }
             }
+
             showSearch
+
             allowClear
+
             mode="multiple"
             name="valueSet"
             label="新增菜单"
+
             request={() => DoGetDictList(SysTenantGetSyncMenuInfo({id: props.id}))}
+
             placeholder="选择需要新增的菜单"
+
             rules={[{required: true, message: '请选择需要新增的菜单'}]}
+
         />
 
     </ModalForm>

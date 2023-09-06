@@ -16,6 +16,7 @@ import {ExecConfirm, ToastSuccess} from "@/util/ToastUtil";
 import SchemaFormColumnList, {InitForm} from "./SchemaFormColumnList";
 import CommonConstant from "@/model/constant/CommonConstant";
 import {UseEffectFullScreenChange} from "@/util/DocumentUtil";
+import {SysTenantDoSyncParam} from "@/api/http/SysTenant";
 
 // 系统参数-管理
 export default function () {
@@ -88,6 +89,20 @@ export default function () {
                 }}
 
                 toolbar={{
+
+                    title: <Button type="primary" onClick={() => {
+
+                        ExecConfirm(() => {
+
+                            return SysTenantDoSyncParam().then(res => {
+
+                                ToastSuccess(res.msg)
+
+                            })
+
+                        }, undefined, `确定同步参数到租户吗？`)
+
+                    }}>同步租户</Button>,
 
                     actions: [
 
@@ -178,7 +193,7 @@ export default function () {
 
                             >
 
-                            重置
+                                重置
 
                             </Button>,
 
@@ -232,7 +247,11 @@ export default function () {
 
                     }
 
-                    formRef.current?.setFieldsValue(currentForm.current) // 组件会深度克隆 currentForm.current
+                    setTimeout(() => {
+
+                        formRef.current?.setFieldsValue(currentForm.current) // 组件会深度克隆 currentForm.current
+
+                    }, CommonConstant.SHORT_DELAY)
 
                     return InitForm
 

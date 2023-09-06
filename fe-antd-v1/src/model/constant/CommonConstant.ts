@@ -18,4 +18,6 @@ export default {
 
     MOBILE_WIDTH: 768, // 小于这个数值，就是移动端
 
+    SHORT_DELAY: 100, // 短的延迟
+
 }

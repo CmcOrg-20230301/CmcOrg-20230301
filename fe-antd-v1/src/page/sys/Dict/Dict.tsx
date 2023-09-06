@@ -27,6 +27,7 @@ import {CalcOrderNo, GetIdListForHasChildrenNode} from "@/util/TreeUtil";
 import CommonConstant from "@/model/constant/CommonConstant";
 import {IMyTree} from "@/util/DictUtil";
 import {UseEffectFullScreenChange} from "@/util/DocumentUtil";
+import {SysTenantDoSyncDict} from "@/api/http/SysTenant";
 
 // 字典-管理
 export default function () {
@@ -144,6 +145,20 @@ export default function () {
                                 收起
 
                             </Button>
+
+                            <Button type="primary" onClick={() => {
+
+                                ExecConfirm(() => {
+
+                                    return SysTenantDoSyncDict().then(res => {
+
+                                        ToastSuccess(res.msg)
+
+                                    })
+
+                                }, undefined, `确定同步字典到租户吗？`)
+
+                            }}>同步租户</Button>
 
                         </Space>,
 
@@ -277,7 +292,7 @@ export default function () {
 
                             >
 
-                            重置
+                                重置
 
                             </Button>,
 
@@ -331,7 +346,11 @@ export default function () {
 
                     }
 
-                    formRef.current?.setFieldsValue(currentForm.current) // 组件会深度克隆 currentForm.current
+                    setTimeout(() => {
+
+                        formRef.current?.setFieldsValue(currentForm.current) // 组件会深度克隆 currentForm.current
+
+                    }, CommonConstant.SHORT_DELAY)
 
                     return InitForm
 

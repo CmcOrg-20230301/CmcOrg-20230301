@@ -15,6 +15,7 @@ export interface SysDictDO {
     type?: string // 字典类型
     version?: number // 乐观锁，format：int32
     dictKey?: string // 字典 key（不能重复），字典项要冗余这个 key，目的：方便操作
+    systemFlag?: boolean // 系统内置：是 强制同步给租户 否 不同步给租户
     updateId?: string // 修改人id，format：int64
     createTime?: string // 创建时间，format：date-time
     children?: SysDictDO[] // 字典的子节点
@@ -56,6 +57,7 @@ export function SysDictPage(form: SysDictPageDTO, config?: AxiosRequestConfig) {
 }
 
 export interface SysDictInsertOrUpdateDTO {
+    systemFlag?: boolean // 系统内置：是 强制同步给租户 否 不同步给租户
     orderNo?: number // 排序号（值越大越前面，默认为 0），format：int32
     tenantId?: string // 租户id，可以为空，为空则表示：默认租户：0，format：int64
     name?: string // 字典/字典项 名，required：true

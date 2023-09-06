@@ -13,6 +13,7 @@ export interface SysParamDO {
     delFlag?: boolean // 是否逻辑删除
     version?: number // 乐观锁，format：int32
     uuid?: string // 该参数的 uuid，用于：同步租户参数等操作，备注：不允许修改
+    systemFlag?: boolean // 系统内置：是 强制同步给租户 否 不同步给租户
     updateId?: string // 修改人id，format：int64
     createTime?: string // 创建时间，format：date-time
     createId?: string // 创建人id，format：int64
@@ -29,6 +30,7 @@ export function SysParamInfoById(form: NotNullId, config?: AxiosRequestConfig) {
 }
 
 export interface SysParamInsertOrUpdateDTO {
+    systemFlag?: boolean // 系统内置：是 强制同步给租户 否 不同步给租户
     tenantId?: string // 租户id，可以为空，为空则表示：默认租户：0，format：int64
     name?: string // 配置名，以 id为不变值进行使用，不要用此属性，required：true
     remark?: string // 备注

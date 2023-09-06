@@ -230,22 +230,26 @@ public class SysTenantServiceImpl extends ServiceImpl<SysTenantMapper, SysTenant
 
         // 新增：字典
         List<SysDictDO> sysDictDOList =
-            sysDictService.lambdaQuery().eq(BaseEntityNoId::getTenantId, BaseConstant.TENANT_ID).list();
+            sysDictService.lambdaQuery().eq(BaseEntityNoId::getTenantId, BaseConstant.TENANT_ID)
+                .eq(SysDictDO::getSystemFlag, true).list();
 
-        for (SysDictDO item : sysDictDOList) {
-
-            item.setId(null);
-            item.setCreateTime(null);
-            item.setUpdateTime(null);
-            item.setTenantId(tenantId);
-
-        }
-
-        sysDictService.saveBatch(sysDictDOList);
+        // 执行：新增字典
+        doAddDict(tenantId, sysDictDOList);
 
         // 新增：参数
         List<SysParamDO> sysParamDOList =
-            sysParamService.lambdaQuery().eq(BaseEntityNoId::getTenantId, BaseConstant.TENANT_ID).list();
+            sysParamService.lambdaQuery().eq(BaseEntityNoId::getTenantId, BaseConstant.TENANT_ID)
+                .eq(SysParamDO::getSystemFlag, true).list();
+
+        // 执行：新增参数
+        doAddParam(tenantId, sysParamDOList);
+
+    }
+
+    /**
+     * 执行：新增参数
+     */
+    private void doAddParam(Long tenantId, List<SysParamDO> sysParamDOList) {
 
         for (SysParamDO item : sysParamDOList) {
 
@@ -257,6 +261,24 @@ public class SysTenantServiceImpl extends ServiceImpl<SysTenantMapper, SysTenant
         }
 
         sysParamService.saveBatch(sysParamDOList);
+
+    }
+
+    /**
+     * 执行：新增字典
+     */
+    private void doAddDict(Long tenantId, List<SysDictDO> sysDictDOList) {
+
+        for (SysDictDO item : sysDictDOList) {
+
+            item.setId(null);
+            item.setCreateTime(null);
+            item.setUpdateTime(null);
+            item.setTenantId(tenantId);
+
+        }
+
+        sysDictService.saveBatch(sysDictDOList);
 
     }
 
@@ -311,13 +333,36 @@ public class SysTenantServiceImpl extends ServiceImpl<SysTenantMapper, SysTenant
 
         }
 
-        return lambdaQuery().like(StrUtil.isNotBlank(dto.getName()), SysTenantDO::getName, dto.getName())
-            .like(StrUtil.isNotBlank(dto.getRemark()), BaseEntityTree::getRemark, dto.getRemark())
-            .eq(dto.getEnableFlag() != null, BaseEntityTree::getEnableFlag, dto.getEnableFlag())
-            .eq(dto.getId() != null, BaseEntity::getId, dto.getId()) //
-            .eq(BaseEntityTree::getDelFlag, false) //
-            .in(BaseEntityNoId::getTenantId, dto.getTenantIdSet()) //
-            .orderByDesc(BaseEntityTree::getOrderNo).page(dto.page(true));
+        Page<SysTenantDO> page =
+            lambdaQuery().like(StrUtil.isNotBlank(dto.getName()), SysTenantDO::getName, dto.getName())
+                .like(StrUtil.isNotBlank(dto.getRemark()), BaseEntityTree::getRemark, dto.getRemark())
+                .eq(dto.getEnableFlag() != null, BaseEntityTree::getEnableFlag, dto.getEnableFlag())
+                .eq(dto.getId() != null, BaseEntity::getId, dto.getId()) //
+                .eq(BaseEntityTree::getDelFlag, false) //
+                .in(BaseEntityNoId::getTenantId, dto.getTenantIdSet()) //
+                .orderByDesc(BaseEntityTree::getOrderNo).page(dto.page(true));
+
+        Set<Long> idSet = page.getRecords().stream().map(BaseEntity::getId).collect(Collectors.toSet());
+
+        if (CollUtil.isEmpty(idSet)) {
+            return page;
+        }
+
+        // 获取：绑定的菜单 idSet
+        List<SysMenuDO> sysMenuDOList =
+            sysMenuService.lambdaQuery().in(BaseEntityNoId::getTenantId, idSet).select(BaseEntityNoId::getTenantId)
+                .list();
+
+        Map<Long, Long> refMenuCountMap =
+            sysMenuDOList.stream().collect(Collectors.groupingBy(BaseEntityNoId::getTenantId, Collectors.counting()));
+
+        for (SysTenantDO item : page.getRecords()) {
+
+            item.setRefMenuCount(refMenuCountMap.getOrDefault(item.getId(), 0L));
+
+        }
+
+        return page;
 
     }
 
@@ -647,6 +692,7 @@ public class SysTenantServiceImpl extends ServiceImpl<SysTenantMapper, SysTenant
      * 执行：同步最新的数据给租户
      */
     @Override
+    @MyTransactional
     public String doSyncMenu(NotNullIdAndNotEmptyLongSet notNullIdAndNotEmptyLongSet) {
 
         Set<Long> valueSet = notNullIdAndNotEmptyLongSet.getValueSet();
@@ -703,6 +749,69 @@ public class SysTenantServiceImpl extends ServiceImpl<SysTenantMapper, SysTenant
             idMap.putAll(removeIdMap); // 这里需要把：移除的 id，添加进去，目的：避免找不到对应的 parentId
 
         });
+
+        return BaseBizCodeEnum.OK;
+
+    }
+
+    /**
+     * 执行：同步字典给租户
+     * 备注：租户只能新增字典项，不能修改字典项，并且不能新增修改字典
+     * 所以：必须存在全部，默认租户的，系统内置的，字典和字典项
+     */
+    @Override
+    @MyTransactional
+    public String doSyncDict() {
+
+        // 查询出：所有租户
+        List<SysTenantDO> sysTenantDOList = lambdaQuery().select(BaseEntity::getId).list();
+
+        Set<Long> tenantIdSet = sysTenantDOList.stream().map(BaseEntity::getId).collect(Collectors.toSet());
+
+        // 查询出：所有的字典
+        List<SysDictDO> allSysDictDOList = sysDictService.lambdaQuery().list();
+
+        // 默认租户的，系统内置字典
+        List<SysDictDO> systemSysDictDOList = allSysDictDOList.stream()
+            .filter(it -> it.getSystemFlag() && it.getTenantId().equals(BaseConstant.TENANT_ID))
+            .collect(Collectors.toList());
+
+        // 通过：租户id，进行分组的 map
+        Map<Long, List<SysDictDO>> tenantIdGroupMap =
+            allSysDictDOList.stream().collect(Collectors.groupingBy(BaseEntityNoId::getTenantId));
+
+        for (Long tenantId : tenantIdSet) {
+
+            // 获取：当前租户的字典数据
+            List<SysDictDO> sysDictDOList = tenantIdGroupMap.get(tenantId);
+
+        }
+
+        //        // 新增：字典
+        //        List<SysDictDO> sysDictDOList =
+        //            sysDictService.lambdaQuery().eq(BaseEntityNoId::getTenantId, BaseConstant.TENANT_ID).list();
+        //
+        //        // 执行：新增字典
+        //        doAddDict(tenantId, sysDictDOList);
+
+        return BaseBizCodeEnum.OK;
+
+    }
+
+    /**
+     * 执行：同步参数给租户
+     * 备注：租户只能修改非系统内置参数，并且不能新增参数
+     */
+    @Override
+    @MyTransactional
+    public String doSyncParam() {
+
+        //        // 新增：参数
+        //        List<SysParamDO> sysParamDOList =
+        //            sysParamService.lambdaQuery().eq(BaseEntityNoId::getTenantId, BaseConstant.TENANT_ID).list();
+        //
+        //        // 执行：新增参数
+        //        doAddParam(tenantId, sysParamDOList);
 
         return BaseBizCodeEnum.OK;
 

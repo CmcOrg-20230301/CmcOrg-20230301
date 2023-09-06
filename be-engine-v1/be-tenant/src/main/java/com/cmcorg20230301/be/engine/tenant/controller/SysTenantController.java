@@ -99,4 +99,18 @@ public class SysTenantController {
         return ApiResultVO.okMsg(baseService.doSyncMenu(notNullIdAndNotEmptyLongSet));
     }
 
+    @Operation(summary = "执行：同步字典给租户")
+    @PostMapping("/doSyncDict")
+    @PreAuthorize("hasAuthority('sysTenant:syncDict')")
+    public ApiResultVO<String> doSyncDict() {
+        return ApiResultVO.okMsg(baseService.doSyncDict());
+    }
+
+    @Operation(summary = "执行：同步参数给租户")
+    @PostMapping("/doSyncParam")
+    @PreAuthorize("hasAuthority('sysTenant:syncParam')")
+    public ApiResultVO<String> doSyncParam() {
+        return ApiResultVO.okMsg(baseService.doSyncParam());
+    }
+
 }

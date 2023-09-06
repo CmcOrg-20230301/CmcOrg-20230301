@@ -37,4 +37,7 @@ public class SysDictInsertOrUpdateDTO extends BaseTenantInsertOrUpdateDTO {
     @Schema(description = "备注")
     private String remark;
 
+    @Schema(description = "系统内置：是 强制同步给租户 否 不同步给租户")
+    private Boolean systemFlag;
+
 }

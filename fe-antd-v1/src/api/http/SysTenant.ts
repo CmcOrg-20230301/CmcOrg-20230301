@@ -54,6 +54,7 @@ export interface SysTenantPageDTO {
 
 export interface SysTenantDO {
     orderNo?: number // 排序号（值越大越前面，默认为 0），format：int32
+    refMenuCount?: string // 关联菜单的数量，format：int64
     updateTime?: string // 修改时间，format：date-time
     remark?: string // 备注
     delFlag?: boolean // 是否逻辑删除
@@ -95,6 +96,7 @@ export interface NotNullId {
 
 export interface SysTenantInfoByIdVO {
     orderNo?: number // 排序号（值越大越前面，默认为 0），format：int32
+    refMenuCount?: string // 关联菜单的数量，format：int64
     userIdSet?: string[] // 用户 idSet，format：int64
     menuIdSet?: string[] // 菜单 idSet，format：int64
     updateTime?: string // 修改时间，format：date-time
@@ -126,6 +128,11 @@ export function SysTenantGetNameById(form: NotNullLong, config?: AxiosRequestCon
     return $http.myPost<string>('/sys/tenant/getNameById', form, config)
 }
 
+// 执行：同步字典给租户
+export function SysTenantDoSyncDict(config?: AxiosRequestConfig) {
+    return $http.myPost<string>('/sys/tenant/doSyncDict', undefined, config)
+}
+
 export interface DictVO {
     name?: string // 显示用
     id?: string // 传值用，format：int64
@@ -134,6 +141,11 @@ export interface DictVO {
 // 获取：需要同步给租户的菜单
 export function SysTenantGetSyncMenuInfo(form: NotNullId, config?: AxiosRequestConfig) {
     return $http.myPost<DictVO[]>('/sys/tenant/getSyncMenuInfo', form, config)
+}
+
+// 执行：同步参数给租户
+export function SysTenantDoSyncParam(config?: AxiosRequestConfig) {
+    return $http.myPost<string>('/sys/tenant/doSyncParam', undefined, config)
 }
 
 export interface ChangeNumberDTO {

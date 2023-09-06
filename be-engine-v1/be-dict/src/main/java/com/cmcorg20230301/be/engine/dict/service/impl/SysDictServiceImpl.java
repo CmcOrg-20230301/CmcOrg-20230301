@@ -11,6 +11,7 @@ import com.cmcorg20230301.be.engine.dict.model.dto.SysDictInsertOrUpdateDTO;
 import com.cmcorg20230301.be.engine.dict.model.dto.SysDictListByDictKeyDTO;
 import com.cmcorg20230301.be.engine.dict.model.dto.SysDictPageDTO;
 import com.cmcorg20230301.be.engine.dict.service.SysDictService;
+import com.cmcorg20230301.be.engine.model.model.constant.BaseConstant;
 import com.cmcorg20230301.be.engine.model.model.dto.ChangeNumberDTO;
 import com.cmcorg20230301.be.engine.model.model.dto.NotEmptyIdSet;
 import com.cmcorg20230301.be.engine.model.model.dto.NotNullId;
@@ -26,6 +27,7 @@ import com.cmcorg20230301.be.engine.security.model.vo.ApiResultVO;
 import com.cmcorg20230301.be.engine.security.util.MyEntityUtil;
 import com.cmcorg20230301.be.engine.security.util.SysDictUtil;
 import com.cmcorg20230301.be.engine.security.util.SysTenantUtil;
+import com.cmcorg20230301.be.engine.security.util.UserUtil;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Service;
 
@@ -37,6 +39,7 @@ public class SysDictServiceImpl extends ServiceImpl<SysDictMapper, SysDictDO> im
 
     /**
      * 新增/修改
+     * 备注：这里修改了，租户管理那边也要一起修改
      */
     @Override
     @MyTransactional
@@ -115,6 +118,18 @@ public class SysDictServiceImpl extends ServiceImpl<SysDictMapper, SysDictDO> im
         sysDictDO.setRemark(MyEntityUtil.getNotNullStr(dto.getRemark()));
         sysDictDO.setDelFlag(false);
         sysDictDO.setId(dto.getId());
+
+        Long currentTenantIdDefault = UserUtil.getCurrentTenantIdDefault();
+
+        if (BaseConstant.TENANT_ID.equals(currentTenantIdDefault)) { // 如果是：顶层租户
+
+            sysDictDO.setSystemFlag(BooleanUtil.isTrue(dto.getSystemFlag()));
+
+        } else {
+
+            sysDictDO.setSystemFlag(false);
+
+        }
 
         saveOrUpdate(sysDictDO);
 
@@ -256,11 +271,11 @@ public class SysDictServiceImpl extends ServiceImpl<SysDictMapper, SysDictDO> im
         // 检查：是否可以删除
         SysTenantUtil.checkDelete();
 
-        removeByIds(idSet); // 根据 idSet删除
-
         List<SysDictDO> sysDictDOList =
             lambdaQuery().in(BaseEntity::getId, idSet).eq(SysDictDO::getType, SysDictTypeEnum.DICT)
                 .select(SysDictDO::getDictKey).list();
+
+        removeByIds(idSet); // 根据 idSet删除
 
         if (CollUtil.isEmpty(sysDictDOList)) {
             return BaseBizCodeEnum.OK;

@@ -25,4 +25,7 @@ public class SysParamInsertOrUpdateDTO extends BaseTenantInsertOrUpdateDTO {
     @Schema(description = "是否启用")
     private Boolean enableFlag;
 
+    @Schema(description = "系统内置：是 强制同步给租户 否 不同步给租户")
+    private Boolean systemFlag;
+
 }

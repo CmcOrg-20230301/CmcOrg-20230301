@@ -374,7 +374,7 @@ export default function () {
 
                             >
 
-                            重置
+                                重置
 
                             </Button>,
 
@@ -428,7 +428,11 @@ export default function () {
 
                     }
 
-                    formRef.current?.setFieldsValue(currentForm.current) // 组件会深度克隆 currentForm.current
+                    setTimeout(() => {
+
+                        formRef.current?.setFieldsValue(currentForm.current) // 组件会深度克隆 currentForm.current
+
+                    }, CommonConstant.SHORT_DELAY)
 
                     return InitForm
 

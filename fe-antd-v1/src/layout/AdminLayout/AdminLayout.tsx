@@ -29,6 +29,7 @@ import {RouterMapKeyList} from "@/router/RouterMap";
 import {SysFileGetPublicUrl} from "@/api/http/SysFile";
 import {ConnectWebSocket} from "@/util/webSocket/WebSocketUtil";
 import {SysTenantGetNameById} from "@/api/http/SysTenant";
+import LocalStorageKey from "@/model/constant/LocalStorageKey";
 
 // 前往：第一个页面
 function goFirstPage(menuList: SysMenuDO[]) {
@@ -56,10 +57,11 @@ function goFirstPage(menuList: SysMenuDO[]) {
         if (item.firstFlag && item.path) {
 
             getAppNav()(item.path)
+            return true
 
         }
 
-        return item.firstFlag
+        return false
 
     })
 
@@ -81,6 +83,15 @@ export default function () {
     }
 
     useEffect(() => {
+
+        const jwt = localStorage.getItem(LocalStorageKey.JWT);
+
+        if (!jwt) {
+
+            SignOut()
+            return
+
+        }
 
         // 加载菜单
         SysMenuUserSelfMenuList().then(res => {
