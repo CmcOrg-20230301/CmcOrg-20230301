@@ -11,6 +11,15 @@ interface IValidate {
 
 export const validate: Record<string, IValidate> = {
 
+    integer: {
+        regex: /^-?\d+$/,
+        emptyErrorMsg: '请输入数字',
+        errorMsg: '请输入数字',
+        validate(value: string) {
+            return this.regex.test(value)
+        },
+    },
+
     email: {
         regex: /^\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$/,
         emptyErrorMsg: '请输入邮箱',

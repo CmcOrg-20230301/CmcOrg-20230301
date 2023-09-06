@@ -325,7 +325,7 @@ public class SysTenantUtil {
             return;
         }
 
-        if (insertOrUpdateOrDeleteCommonCheck()) {
+        if (adminOrDefaultTenantFlag()) {
             return;
         }
 
@@ -338,7 +338,7 @@ public class SysTenantUtil {
      */
     public static boolean checkUpdate() {
 
-        return insertOrUpdateOrDeleteCommonCheck();
+        return adminOrDefaultTenantFlag();
 
     }
 
@@ -347,7 +347,7 @@ public class SysTenantUtil {
      */
     public static void checkDelete() {
 
-        if (insertOrUpdateOrDeleteCommonCheck()) {
+        if (adminOrDefaultTenantFlag()) {
             return;
         }
 
@@ -356,11 +356,11 @@ public class SysTenantUtil {
     }
 
     /**
-     * 新增，修改，或者删除操作，通用的检查方法
+     * 是否是：admin 或者 顶层租户（默认租户）
      *
-     * @return true 可以进行操作 false 不可以进行操作
+     * @return true 是 false 不是
      */
-    public static boolean insertOrUpdateOrDeleteCommonCheck() {
+    public static boolean adminOrDefaultTenantFlag() {
 
         Long currentUserId = UserUtil.getCurrentUserId();
 
@@ -370,7 +370,7 @@ public class SysTenantUtil {
 
         Long currentTenantIdDefault = UserUtil.getCurrentTenantIdDefault();
 
-        if (BaseConstant.TENANT_ID.equals(currentTenantIdDefault)) { // 如果是：顶层租户的 用户，则可以：新增或者修改
+        if (BaseConstant.TENANT_ID.equals(currentTenantIdDefault)) {
             return true;
         }
 

@@ -1,6 +1,7 @@
 import {YesNoDict} from "@/util/DictUtil";
 import {SysDictInsertOrUpdateDTO} from "@/api/http/SysDict";
 import {ProFormColumnsType, ProSchemaValueEnumType} from "@ant-design/pro-components";
+import {ValidatorUtil} from "@/util/ValidatorUtil";
 
 export const InitForm: SysDictInsertOrUpdateDTO = {} as SysDictInsertOrUpdateDTO
 
@@ -68,10 +69,7 @@ const SchemaFormColumnList = (): ProFormColumnsType<SysDictInsertOrUpdateDTO>[] 
                             dataIndex: 'value',
                             formItemProps: {
                                 rules: [
-                                    {
-                                        required: true,
-                                        type: number,
-                                    },
+                                    {validator: ValidatorUtil.integerValidate}
                                 ],
                             },
                             tooltip: '一般为数字：101 201 301 ...',
@@ -86,6 +84,13 @@ const SchemaFormColumnList = (): ProFormColumnsType<SysDictInsertOrUpdateDTO>[] 
         {
             title: '排序号',
             dataIndex: 'orderNo',
+        },
+
+        {
+            title: '系统内置',
+            dataIndex: 'systemFlag',
+            valueEnum: YesNoDict,
+            valueType: 'switch',
         },
 
         {

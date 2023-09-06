@@ -378,10 +378,31 @@ public class SysTenantServiceImpl extends ServiceImpl<SysTenantMapper, SysTenant
         Map<Long, Long> userCountMap =
             sysUserDOList.stream().collect(Collectors.groupingBy(BaseEntityNoId::getTenantId, Collectors.counting()));
 
+        // 获取：字典
+        List<SysDictDO> sysDictDOList =
+            sysDictService.lambdaQuery().in(BaseEntityNoId::getTenantId, idSet).select(BaseEntityNoId::getTenantId)
+                .list();
+
+        Map<Long, Long> dictCountMap =
+            sysDictDOList.stream().collect(Collectors.groupingBy(BaseEntityNoId::getTenantId, Collectors.counting()));
+
+        // 获取：参数
+        List<SysParamDO> sysParamDOList =
+            sysParamService.lambdaQuery().in(BaseEntityNoId::getTenantId, idSet).select(BaseEntityNoId::getTenantId)
+                .list();
+
+        Map<Long, Long> paramCountMap =
+            sysParamDOList.stream().collect(Collectors.groupingBy(BaseEntityNoId::getTenantId, Collectors.counting()));
+
         for (SysTenantDO item : page.getRecords()) {
 
             item.setRefMenuCount(refMenuCountMap.getOrDefault(item.getId(), 0L));
+
             item.setUserCount(userCountMap.getOrDefault(item.getId(), 0L));
+
+            item.setDictCount(dictCountMap.getOrDefault(item.getId(), 0L));
+
+            item.setParamCount(paramCountMap.getOrDefault(item.getId(), 0L));
 
         }
 
@@ -850,9 +871,14 @@ public class SysTenantServiceImpl extends ServiceImpl<SysTenantMapper, SysTenant
                 Set<String> systemDictKeySet =
                     newSystemSysDictDOList.stream().map(SysDictDO::getUuid).collect(Collectors.toSet());
 
+                // 不要：名字相同的字典项
+                Set<String> systemDictNameSet =
+                    newSystemSysDictDOList.stream().map(SysDictDO::getName).collect(Collectors.toSet());
+
                 // 该租户新增的字典项
                 List<SysDictDO> tenantAddDictItemSysDictDOList = tenantDictKeySysDictDOList.stream().filter(
-                    it -> it.getType().equals(SysDictTypeEnum.DICT_ITEM) && !systemDictKeySet.contains(it.getDictKey()))
+                    it -> !it.getSystemFlag() && it.getType().equals(SysDictTypeEnum.DICT_ITEM) && !systemDictKeySet
+                        .contains(it.getUuid()) && !systemDictNameSet.contains(it.getName()))
                     .collect(Collectors.toList());
 
                 if (CollUtil.isEmpty(tenantAddDictItemSysDictDOList)) {

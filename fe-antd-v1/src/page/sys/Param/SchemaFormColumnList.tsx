@@ -55,6 +55,13 @@ const SchemaFormColumnList = (): ProFormColumnsType<SysParamInsertOrUpdateDTO>[]
         },
 
         {
+            title: '系统内置',
+            dataIndex: 'systemFlag',
+            valueEnum: YesNoDict,
+            valueType: 'switch',
+        },
+
+        {
             title: '是否启用',
             dataIndex: 'enableFlag',
             valueEnum: YesNoDict,

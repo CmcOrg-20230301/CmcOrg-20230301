@@ -57,7 +57,8 @@ public class SysDictServiceImpl extends ServiceImpl<SysDictMapper, SysDictDO> im
             // 字典 key和 name不能重复
             boolean exists = lambdaQuery().eq(SysDictDO::getType, SysDictTypeEnum.DICT)
                 .and(i -> i.eq(SysDictDO::getDictKey, dto.getDictKey()).or().eq(SysDictDO::getName, dto.getName()))
-                .eq(BaseEntity::getEnableFlag, true).ne(dto.getId() != null, BaseEntity::getId, dto.getId()).exists();
+                .eq(BaseEntity::getEnableFlag, true).ne(dto.getId() != null, BaseEntity::getId, dto.getId())
+                .eq(BaseEntityNoId::getTenantId, dto.getTenantId()).exists();
 
             if (exists) {
                 ApiResultVO.error(BizCodeEnum.SAME_KEY_OR_NAME_EXIST);
@@ -76,7 +77,8 @@ public class SysDictServiceImpl extends ServiceImpl<SysDictMapper, SysDictDO> im
                 lambdaQuery().eq(SysDictDO::getType, SysDictTypeEnum.DICT_ITEM).eq(BaseEntity::getEnableFlag, true)
                     .eq(SysDictDO::getDictKey, dto.getDictKey())
                     .and(i -> i.eq(SysDictDO::getValue, dto.getValue()).or().eq(SysDictDO::getName, dto.getName()))
-                    .ne(dto.getId() != null, BaseEntity::getId, dto.getId()).exists();
+                    .ne(dto.getId() != null, BaseEntity::getId, dto.getId())
+                    .eq(BaseEntityNoId::getTenantId, dto.getTenantId()).exists();
 
             if (exists) {
                 ApiResultVO.error(BizCodeEnum.SAME_VALUE_OR_NAME_EXIST);
@@ -139,7 +141,7 @@ public class SysDictServiceImpl extends ServiceImpl<SysDictMapper, SysDictDO> im
      */
     private void checkInsertOrUpdate(SysDictInsertOrUpdateDTO dto, Long id) {
 
-        if (SysTenantUtil.insertOrUpdateOrDeleteCommonCheck()) {
+        if (SysTenantUtil.adminOrDefaultTenantFlag()) {
             return;
         }
 
@@ -274,11 +276,16 @@ public class SysDictServiceImpl extends ServiceImpl<SysDictMapper, SysDictDO> im
         // 检查：是否非法操作
         SysTenantUtil.checkIllegal(idSet, getCheckIllegalFunc1(idSet));
 
-        boolean exists =
-            lambdaQuery().in(BaseEntity::getId, notEmptyIdSet.getIdSet()).eq(SysDictDO::getSystemFlag, true).exists();
+        if (!SysTenantUtil.adminOrDefaultTenantFlag()) {
 
-        if (exists) {
-            ApiResultVO.errorMsg("操作失败：租户不能删除系统内置");
+            boolean exists =
+                lambdaQuery().in(BaseEntity::getId, notEmptyIdSet.getIdSet()).eq(SysDictDO::getSystemFlag, true)
+                    .exists();
+
+            if (exists) {
+                ApiResultVO.errorMsg("操作失败：租户不能删除系统内置");
+            }
+
         }
 
         List<SysDictDO> sysDictDOList =

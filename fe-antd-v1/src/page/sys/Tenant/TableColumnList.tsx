@@ -55,7 +55,7 @@ const TableColumnList = (currentForm: React.MutableRefObject<SysTenantInsertOrUp
     },
 
     {
-        title: '租户id', dataIndex: 'id', ellipsis: true, width: 200,
+        title: '租户id', dataIndex: 'id', ellipsis: true, width: 150,
         render: (dom, entity) =>
 
             <a title={"登录租户"} onClick={() => {
@@ -68,7 +68,7 @@ const TableColumnList = (currentForm: React.MutableRefObject<SysTenantInsertOrUp
 
     },
 
-    {title: '租户名', dataIndex: 'name', ellipsis: true, width: 200,},
+    {title: '租户名', dataIndex: 'name', ellipsis: true, width: 120,},
 
     {title: '排序号', dataIndex: 'orderNo', ellipsis: true, hideInSearch: true, width: 120,},
 
@@ -77,6 +77,7 @@ const TableColumnList = (currentForm: React.MutableRefObject<SysTenantInsertOrUp
         dataIndex: 'createTime',
         hideInSearch: true,
         valueType: 'fromNow',
+        width: 90,
     },
 
     {
@@ -84,25 +85,32 @@ const TableColumnList = (currentForm: React.MutableRefObject<SysTenantInsertOrUp
         dataIndex: 'updateTime',
         hideInSearch: true,
         valueType: 'fromNow',
+        width: 90,
     },
 
     {
         title: '是否启用',
         dataIndex: 'enableFlag',
-        valueEnum: YesNoDict
+        valueEnum: YesNoDict,
+        width: 90,
     },
-
-    {title: '菜单数量', dataIndex: 'refMenuCount', width: 90,},
 
     {title: '用户数量', dataIndex: 'userCount', width: 90,},
 
-    {title: '备注', dataIndex: 'remark', ellipsis: true, width: 200,},
+    {title: '菜单数量', dataIndex: 'refMenuCount', width: 90,},
+
+    {title: '字典数量', dataIndex: 'dictCount', width: 90,},
+
+    {title: '参数数量', dataIndex: 'paramCount', width: 90,},
+
+    {title: '备注', dataIndex: 'remark', ellipsis: true, width: 90,},
 
     {
 
         title: '操作',
         dataIndex: 'option',
         valueType: 'option',
+        width: 120,
 
         render: (dom, entity) => [
 
