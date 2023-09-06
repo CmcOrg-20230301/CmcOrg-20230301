@@ -94,8 +94,7 @@ public class SysParamServiceImpl extends ServiceImpl<SysParamMapper, SysParamDO>
         SysParamInsertOrUpdateDTO sysParamInsertOrUpdateDTO = new SysParamInsertOrUpdateDTO();
 
         sysParamInsertOrUpdateDTO.setName(null); // 不允许修改
-        sysParamInsertOrUpdateDTO.setValue(dto.getValue()); // 允许修改，备注：现在只允许修改 value和 remark字段，如果新允许了其他字段，则：租户参数同步也要进行修改
-        sysParamInsertOrUpdateDTO.setRemark(dto.getRemark()); // 允许修改
+        sysParamInsertOrUpdateDTO.setValue(dto.getValue()); // 允许修改，备注：现在只允许修改 value字段，如果新允许了其他字段，则：租户参数同步也要进行修改
         sysParamInsertOrUpdateDTO.setEnableFlag(true); // 不允许修改
         sysParamInsertOrUpdateDTO.setTenantId(dto.getTenantId());
         sysParamInsertOrUpdateDTO.setId(id);

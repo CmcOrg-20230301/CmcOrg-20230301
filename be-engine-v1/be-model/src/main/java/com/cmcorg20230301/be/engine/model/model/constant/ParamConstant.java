@@ -11,6 +11,8 @@ public interface ParamConstant {
 
     String IP_REQUESTS_PER_SECOND_UUID = "2"; // ip请求速率 uuid
 
+    String TENANT_REF_CHILDREN_FLAG_UUID = "3"; // 是否关联子级租户 uuid
+
     // 参数配置相关 ↑
 
 }

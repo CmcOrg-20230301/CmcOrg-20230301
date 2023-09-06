@@ -60,7 +60,10 @@ export interface SysTenantDO {
     delFlag?: boolean // 是否逻辑删除
     version?: number // 乐观锁，format：int32
     parentId?: string // 父节点id（顶级则为0），format：int64
+    dictCount?: string // 字典数量，format：int64
     updateId?: string // 修改人id，format：int64
+    userCount?: string // 用户数量，format：int64
+    paramCount?: string // 参数数量，format：int64
     createTime?: string // 创建时间，format：date-time
     children?: SysTenantDO[] // 子节点
     createId?: string // 创建人id，format：int64
@@ -104,7 +107,10 @@ export interface SysTenantInfoByIdVO {
     delFlag?: boolean // 是否逻辑删除
     version?: number // 乐观锁，format：int32
     parentId?: string // 父节点id（顶级则为0），format：int64
+    dictCount?: string // 字典数量，format：int64
     updateId?: string // 修改人id，format：int64
+    userCount?: string // 用户数量，format：int64
+    paramCount?: string // 参数数量，format：int64
     createTime?: string // 创建时间，format：date-time
     children?: SysTenantDO[] // 子节点
     createId?: string // 创建人id，format：int64

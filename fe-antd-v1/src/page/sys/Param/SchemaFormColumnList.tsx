@@ -59,6 +59,7 @@ const SchemaFormColumnList = (): ProFormColumnsType<SysParamInsertOrUpdateDTO>[]
             dataIndex: 'systemFlag',
             valueEnum: YesNoDict,
             valueType: 'switch',
+            tooltip: '不会同步给租户'
         },
 
         {

@@ -15,6 +15,7 @@ export interface SysDictDO {
     type?: string // 字典类型
     version?: number // 乐观锁，format：int32
     dictKey?: string // 字典 key（不能重复），字典项要冗余这个 key，目的：方便操作
+    uuid?: string // 该字典的 uuid，用于：同步租户字典等操作，备注：不允许修改
     systemFlag?: boolean // 系统内置：是 强制同步给租户 否 不同步给租户
     updateId?: string // 修改人id，format：int64
     createTime?: string // 创建时间，format：date-time

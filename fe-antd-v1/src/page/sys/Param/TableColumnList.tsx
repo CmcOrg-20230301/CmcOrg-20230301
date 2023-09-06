@@ -68,7 +68,7 @@ const TableColumnList = (currentForm: React.MutableRefObject<SysParamInsertOrUpd
         title: '是否启用',
         dataIndex: 'enableFlag',
         valueEnum: YesNoDict,
-        width: 90
+        width: 90,
     },
 
     {
@@ -82,6 +82,7 @@ const TableColumnList = (currentForm: React.MutableRefObject<SysParamInsertOrUpd
         title: '操作',
         dataIndex: 'option',
         valueType: 'option',
+        width: 120,
 
         render: (dom, entity) => [
 

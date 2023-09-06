@@ -972,7 +972,6 @@ public class SysTenantServiceImpl extends ServiceImpl<SysTenantMapper, SysTenant
 
                     // 如果存在该配置，则替换一些属性，备注：这里需要和：SysParamServiceImpl#checkUpdate，方法可以修改字段一致
                     newDefaultTenantSysParamDO.setValue(sysParamDO.getValue());
-                    newDefaultTenantSysParamDO.setRemark(sysParamDO.getRemark());
 
                 }
 

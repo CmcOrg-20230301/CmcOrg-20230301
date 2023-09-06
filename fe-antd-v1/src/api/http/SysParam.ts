@@ -12,7 +12,7 @@ export interface SysParamDO {
     remark?: string // 备注
     delFlag?: boolean // 是否逻辑删除
     version?: number // 乐观锁，format：int32
-    uuid?: string // 该参数的 uuid，用于：同步租户参数等操作，备注：不允许修改
+    uuid?: string // 该参数的 uuid，用于：同步租户参数等操作，备注：不允许修改，并且系统内置参数的 uuid等于 id
     systemFlag?: boolean // 系统内置：是 强制同步给租户 否 不同步给租户
     updateId?: string // 修改人id，format：int64
     createTime?: string // 创建时间，format：date-time

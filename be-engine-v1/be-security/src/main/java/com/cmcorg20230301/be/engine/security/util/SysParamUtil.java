@@ -29,8 +29,9 @@ public class SysParamUtil {
 
     // 系统内置参数 uuidSet，备注：不允许删除
     // 备注：系统内置参数的 uuid等于 id
-    public static final Set<String> SYSTEM_PARAM_UUID_SET =
-        CollUtil.newHashSet(ParamConstant.RSA_PRIVATE_KEY_UUID, ParamConstant.IP_REQUESTS_PER_SECOND_UUID);
+    public static final Set<String> SYSTEM_PARAM_UUID_SET = CollUtil
+        .newHashSet(ParamConstant.RSA_PRIVATE_KEY_UUID, ParamConstant.IP_REQUESTS_PER_SECOND_UUID,
+            ParamConstant.TENANT_REF_CHILDREN_FLAG_UUID);
 
     private static SysParamMapper sysParamMapper;
 
