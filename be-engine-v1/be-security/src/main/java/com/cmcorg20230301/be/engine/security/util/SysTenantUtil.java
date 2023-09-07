@@ -112,7 +112,7 @@ public class SysTenantUtil {
 
                 List<SysTenantDO> sysTenantDOList = ChainWrappers.lambdaQueryChain(sysTenantMapper)
                     .select(BaseEntity::getId, SysTenantDO::getName, BaseEntityNoId::getEnableFlag,
-                        SysTenantDO::getParentId).list();
+                        SysTenantDO::getParentId).orderByDesc(SysTenantDO::getOrderNo).list();
 
                 return sysTenantDOList.stream().collect(Collectors.toMap(BaseEntity::getId, it -> it));
 
