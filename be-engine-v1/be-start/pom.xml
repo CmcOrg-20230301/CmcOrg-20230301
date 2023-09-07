@@ -9,6 +9,12 @@
         <version>2023.3.1</version>
     </parent>
 
+    <!-- 备注：引入本依赖的时候，请要显式引入下面这个依赖，不然 security的配置不会生效 -->
+    <!-- be-security -->
+    <!--    <dependency>-->
+    <!--        <groupId>${cmcorg.groupId}</groupId>-->
+    <!--        <artifactId>be-security</artifactId>-->
+    <!--    </dependency>-->
     <artifactId>be-start</artifactId>
     <description>启动包</description>
 
