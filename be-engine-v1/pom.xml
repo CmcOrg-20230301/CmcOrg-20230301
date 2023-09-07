@@ -414,6 +414,19 @@
                 <version>2021.0.5.0</version>
             </dependency>
 
+            <!-- 向量数据库 -->
+            <dependency>
+                <groupId>io.milvus</groupId>
+                <artifactId>milvus-sdk-java</artifactId>
+                <version>2.3.1</version>
+                <exclusions>
+                    <exclusion>
+                        <artifactId>log4j-slf4j-impl</artifactId>
+                        <groupId>org.apache.logging.log4j</groupId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+
             <!-- 微信支付，获取最新版本号：https://github.com/wechatpay-apiv3/wechatpay-java -->
             <dependency>
                 <groupId>com.github.wechatpay-apiv3</groupId>
