@@ -16,7 +16,7 @@
 
         <!-- be-ip2region -->
         <dependency>
-            <groupId>${project.groupId}</groupId>
+            <groupId>${cmcorg.groupId}</groupId>
             <artifactId>be-ip2region</artifactId>
         </dependency>
 
@@ -28,49 +28,49 @@
 
         <!-- be-kafka -->
         <dependency>
-            <groupId>${project.groupId}</groupId>
+            <groupId>${cmcorg.groupId}</groupId>
             <artifactId>be-kafka</artifactId>
         </dependency>
 
         <!-- be-log -->
         <dependency>
-            <groupId>${project.groupId}</groupId>
+            <groupId>${cmcorg.groupId}</groupId>
             <artifactId>be-log</artifactId>
         </dependency>
 
         <!-- be-util -->
         <dependency>
-            <groupId>${project.groupId}</groupId>
+            <groupId>${cmcorg.groupId}</groupId>
             <artifactId>be-util</artifactId>
         </dependency>
 
         <!-- be-knife4j -->
         <dependency>
-            <groupId>${project.groupId}</groupId>
+            <groupId>${cmcorg.groupId}</groupId>
             <artifactId>be-knife4j</artifactId>
         </dependency>
 
         <!-- be-model -->
         <dependency>
-            <groupId>${project.groupId}</groupId>
+            <groupId>${cmcorg.groupId}</groupId>
             <artifactId>be-model</artifactId>
         </dependency>
 
         <!-- be-cache -->
         <dependency>
-            <groupId>${project.groupId}</groupId>
+            <groupId>${cmcorg.groupId}</groupId>
             <artifactId>be-cache</artifactId>
         </dependency>
 
         <!-- be-redisson -->
         <dependency>
-            <groupId>${project.groupId}</groupId>
+            <groupId>${cmcorg.groupId}</groupId>
             <artifactId>be-redisson</artifactId>
         </dependency>
 
         <!-- be-mysql -->
         <dependency>
-            <groupId>${project.groupId}</groupId>
+            <groupId>${cmcorg.groupId}</groupId>
             <artifactId>be-mysql</artifactId>
         </dependency>
 

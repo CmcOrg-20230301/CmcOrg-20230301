@@ -16,19 +16,19 @@
 
         <!-- be-log -->
         <dependency>
-            <groupId>${project.groupId}</groupId>
+            <groupId>${cmcorg.groupId}</groupId>
             <artifactId>be-log</artifactId>
         </dependency>
 
         <!-- be-redisson -->
         <dependency>
-            <groupId>${project.groupId}</groupId>
+            <groupId>${cmcorg.groupId}</groupId>
             <artifactId>be-redisson</artifactId>
         </dependency>
 
         <!-- be-kafka -->
         <dependency>
-            <groupId>${project.groupId}</groupId>
+            <groupId>${cmcorg.groupId}</groupId>
             <artifactId>be-kafka</artifactId>
         </dependency>
 

@@ -16,13 +16,13 @@
 
         <!-- be-sms-tencent -->
         <dependency>
-            <groupId>${project.groupId}</groupId>
+            <groupId>${cmcorg.groupId}</groupId>
             <artifactId>be-sms-tencent</artifactId>
         </dependency>
 
         <!-- be-sms-aliyun -->
         <dependency>
-            <groupId>${project.groupId}</groupId>
+            <groupId>${cmcorg.groupId}</groupId>
             <artifactId>be-sms-aliyun</artifactId>
         </dependency>
 

@@ -16,7 +16,7 @@
 
         <!-- be-file -->
         <dependency>
-            <groupId>${project.groupId}</groupId>
+            <groupId>${cmcorg.groupId}</groupId>
             <artifactId>be-file</artifactId>
         </dependency>
 
@@ -28,7 +28,7 @@
 
         <!-- be-security -->
         <dependency>
-            <groupId>${project.groupId}</groupId>
+            <groupId>${cmcorg.groupId}</groupId>
             <artifactId>be-security</artifactId>
         </dependency>
 

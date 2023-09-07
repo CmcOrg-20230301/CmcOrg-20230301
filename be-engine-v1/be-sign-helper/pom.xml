@@ -16,37 +16,37 @@
 
         <!-- be-file -->
         <dependency>
-            <groupId>${project.groupId}</groupId>
+            <groupId>${cmcorg.groupId}</groupId>
             <artifactId>be-file</artifactId>
         </dependency>
 
         <!-- be-tenant -->
         <dependency>
-            <groupId>${project.groupId}</groupId>
+            <groupId>${cmcorg.groupId}</groupId>
             <artifactId>be-tenant</artifactId>
         </dependency>
 
         <!-- be-post -->
         <dependency>
-            <groupId>${project.groupId}</groupId>
+            <groupId>${cmcorg.groupId}</groupId>
             <artifactId>be-post</artifactId>
         </dependency>
 
         <!-- be-dept -->
         <dependency>
-            <groupId>${project.groupId}</groupId>
+            <groupId>${cmcorg.groupId}</groupId>
             <artifactId>be-dept</artifactId>
         </dependency>
 
         <!-- be-param -->
         <dependency>
-            <groupId>${project.groupId}</groupId>
+            <groupId>${cmcorg.groupId}</groupId>
             <artifactId>be-param</artifactId>
         </dependency>
 
         <!-- be-security -->
         <dependency>
-            <groupId>${project.groupId}</groupId>
+            <groupId>${cmcorg.groupId}</groupId>
             <artifactId>be-security</artifactId>
         </dependency>
 

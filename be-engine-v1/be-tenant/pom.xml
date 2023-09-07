@@ -16,25 +16,25 @@
 
         <!-- be-dict -->
         <dependency>
-            <groupId>${project.groupId}</groupId>
+            <groupId>${cmcorg.groupId}</groupId>
             <artifactId>be-dict</artifactId>
         </dependency>
 
         <!-- be-param -->
         <dependency>
-            <groupId>${project.groupId}</groupId>
+            <groupId>${cmcorg.groupId}</groupId>
             <artifactId>be-param</artifactId>
         </dependency>
 
         <!-- be-menu -->
         <dependency>
-            <groupId>${project.groupId}</groupId>
+            <groupId>${cmcorg.groupId}</groupId>
             <artifactId>be-menu</artifactId>
         </dependency>
 
         <!-- be-security -->
         <dependency>
-            <groupId>${project.groupId}</groupId>
+            <groupId>${cmcorg.groupId}</groupId>
             <artifactId>be-security</artifactId>
         </dependency>
 

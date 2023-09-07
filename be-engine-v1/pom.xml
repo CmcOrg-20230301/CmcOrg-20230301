@@ -22,6 +22,8 @@
         <java.version>1.8</java.version>
         <!-- 打包时跳过测试 -->
         <skipTests>true</skipTests>
+        <cmcorg.groupId>com.cmcorg20230301</cmcorg.groupId>
+        <cmcorg.version>2023.3.1</cmcorg.version>
     </properties>
 
     <modules>
@@ -78,317 +80,317 @@
 
             <!-- be-tenant -->
             <dependency>
-                <groupId>${project.groupId}</groupId>
+                <groupId>${cmcorg.groupId}</groupId>
                 <artifactId>be-tenant</artifactId>
-                <version>${project.version}</version>
+                <version>${cmcorg.version}</version>
             </dependency>
 
             <!-- be-post -->
             <dependency>
-                <groupId>${project.groupId}</groupId>
+                <groupId>${cmcorg.groupId}</groupId>
                 <artifactId>be-post</artifactId>
-                <version>${project.version}</version>
+                <version>${cmcorg.version}</version>
             </dependency>
 
             <!-- be-dept -->
             <dependency>
-                <groupId>${project.groupId}</groupId>
+                <groupId>${cmcorg.groupId}</groupId>
                 <artifactId>be-dept</artifactId>
-                <version>${project.version}</version>
+                <version>${cmcorg.version}</version>
             </dependency>
 
             <!-- be-area -->
             <dependency>
-                <groupId>${project.groupId}</groupId>
+                <groupId>${cmcorg.groupId}</groupId>
                 <artifactId>be-area</artifactId>
-                <version>${project.version}</version>
+                <version>${cmcorg.version}</version>
             </dependency>
 
             <!-- be-netty-tcp-protobuf -->
             <dependency>
-                <groupId>${project.groupId}</groupId>
+                <groupId>${cmcorg.groupId}</groupId>
                 <artifactId>be-netty-tcp-protobuf</artifactId>
-                <version>${project.version}</version>
+                <version>${cmcorg.version}</version>
             </dependency>
 
             <!-- be-netty-websocket -->
             <dependency>
-                <groupId>${project.groupId}</groupId>
+                <groupId>${cmcorg.groupId}</groupId>
                 <artifactId>be-netty-websocket</artifactId>
-                <version>${project.version}</version>
+                <version>${cmcorg.version}</version>
             </dependency>
 
             <!-- be-socket -->
             <dependency>
-                <groupId>${project.groupId}</groupId>
+                <groupId>${cmcorg.groupId}</groupId>
                 <artifactId>be-socket</artifactId>
-                <version>${project.version}</version>
+                <version>${cmcorg.version}</version>
             </dependency>
 
             <!-- be-pay-google -->
             <dependency>
-                <groupId>${project.groupId}</groupId>
+                <groupId>${cmcorg.groupId}</groupId>
                 <artifactId>be-pay-google</artifactId>
-                <version>${project.version}</version>
+                <version>${cmcorg.version}</version>
             </dependency>
 
             <!-- be-pay-wx -->
             <dependency>
-                <groupId>${project.groupId}</groupId>
+                <groupId>${cmcorg.groupId}</groupId>
                 <artifactId>be-pay-wx</artifactId>
-                <version>${project.version}</version>
+                <version>${cmcorg.version}</version>
             </dependency>
 
             <!-- be-pay-ali -->
             <dependency>
-                <groupId>${project.groupId}</groupId>
+                <groupId>${cmcorg.groupId}</groupId>
                 <artifactId>be-pay-ali</artifactId>
-                <version>${project.version}</version>
+                <version>${cmcorg.version}</version>
             </dependency>
 
             <!-- be-pay -->
             <dependency>
-                <groupId>${project.groupId}</groupId>
+                <groupId>${cmcorg.groupId}</groupId>
                 <artifactId>be-pay</artifactId>
-                <version>${project.version}</version>
+                <version>${cmcorg.version}</version>
             </dependency>
 
             <!-- be-file-minio -->
             <dependency>
-                <groupId>${project.groupId}</groupId>
+                <groupId>${cmcorg.groupId}</groupId>
                 <artifactId>be-file-minio</artifactId>
-                <version>${project.version}</version>
+                <version>${cmcorg.version}</version>
             </dependency>
 
             <!-- be-file-aliyun -->
             <dependency>
-                <groupId>${project.groupId}</groupId>
+                <groupId>${cmcorg.groupId}</groupId>
                 <artifactId>be-file-aliyun</artifactId>
-                <version>${project.version}</version>
+                <version>${cmcorg.version}</version>
             </dependency>
 
             <!-- be-file -->
             <dependency>
-                <groupId>${project.groupId}</groupId>
+                <groupId>${cmcorg.groupId}</groupId>
                 <artifactId>be-file</artifactId>
-                <version>${project.version}</version>
+                <version>${cmcorg.version}</version>
             </dependency>
 
             <!-- be-sms-tencent -->
             <dependency>
-                <groupId>${project.groupId}</groupId>
+                <groupId>${cmcorg.groupId}</groupId>
                 <artifactId>be-sms-tencent</artifactId>
-                <version>${project.version}</version>
+                <version>${cmcorg.version}</version>
             </dependency>
 
             <!-- be-sms-aliyun -->
             <dependency>
-                <groupId>${project.groupId}</groupId>
+                <groupId>${cmcorg.groupId}</groupId>
                 <artifactId>be-sms-aliyun</artifactId>
-                <version>${project.version}</version>
+                <version>${cmcorg.version}</version>
             </dependency>
 
             <!-- be-sms -->
             <dependency>
-                <groupId>${project.groupId}</groupId>
+                <groupId>${cmcorg.groupId}</groupId>
                 <artifactId>be-sms</artifactId>
-                <version>${project.version}</version>
+                <version>${cmcorg.version}</version>
             </dependency>
 
             <!-- be-request -->
             <dependency>
-                <groupId>${project.groupId}</groupId>
+                <groupId>${cmcorg.groupId}</groupId>
                 <artifactId>be-request</artifactId>
-                <version>${project.version}</version>
+                <version>${cmcorg.version}</version>
             </dependency>
 
             <!-- be-server -->
             <dependency>
-                <groupId>${project.groupId}</groupId>
+                <groupId>${cmcorg.groupId}</groupId>
                 <artifactId>be-server</artifactId>
-                <version>${project.version}</version>
+                <version>${cmcorg.version}</version>
             </dependency>
 
             <!-- be-menu -->
             <dependency>
-                <groupId>${project.groupId}</groupId>
+                <groupId>${cmcorg.groupId}</groupId>
                 <artifactId>be-menu</artifactId>
-                <version>${project.version}</version>
+                <version>${cmcorg.version}</version>
             </dependency>
 
             <!-- be-dict -->
             <dependency>
-                <groupId>${project.groupId}</groupId>
+                <groupId>${cmcorg.groupId}</groupId>
                 <artifactId>be-dict</artifactId>
-                <version>${project.version}</version>
+                <version>${cmcorg.version}</version>
             </dependency>
 
             <!-- be-sign-wx -->
             <dependency>
-                <groupId>${project.groupId}</groupId>
+                <groupId>${cmcorg.groupId}</groupId>
                 <artifactId>be-sign-wx</artifactId>
-                <version>${project.version}</version>
+                <version>${cmcorg.version}</version>
             </dependency>
 
             <!-- be-sign-phone -->
             <dependency>
-                <groupId>${project.groupId}</groupId>
+                <groupId>${cmcorg.groupId}</groupId>
                 <artifactId>be-sign-phone</artifactId>
-                <version>${project.version}</version>
+                <version>${cmcorg.version}</version>
             </dependency>
 
             <!-- be-sign-email -->
             <dependency>
-                <groupId>${project.groupId}</groupId>
+                <groupId>${cmcorg.groupId}</groupId>
                 <artifactId>be-sign-email</artifactId>
-                <version>${project.version}</version>
+                <version>${cmcorg.version}</version>
             </dependency>
 
             <!-- be-sign-signinname -->
             <dependency>
-                <groupId>${project.groupId}</groupId>
+                <groupId>${cmcorg.groupId}</groupId>
                 <artifactId>be-sign-signinname</artifactId>
-                <version>${project.version}</version>
+                <version>${cmcorg.version}</version>
             </dependency>
 
             <!-- be-sign-helper -->
             <dependency>
-                <groupId>${project.groupId}</groupId>
+                <groupId>${cmcorg.groupId}</groupId>
                 <artifactId>be-sign-helper</artifactId>
-                <version>${project.version}</version>
+                <version>${cmcorg.version}</version>
             </dependency>
 
             <!-- be-param -->
             <dependency>
-                <groupId>${project.groupId}</groupId>
+                <groupId>${cmcorg.groupId}</groupId>
                 <artifactId>be-param</artifactId>
-                <version>${project.version}</version>
+                <version>${cmcorg.version}</version>
             </dependency>
 
             <!-- be-role -->
             <dependency>
-                <groupId>${project.groupId}</groupId>
+                <groupId>${cmcorg.groupId}</groupId>
                 <artifactId>be-role</artifactId>
-                <version>${project.version}</version>
+                <version>${cmcorg.version}</version>
             </dependency>
 
             <!-- be-user -->
             <dependency>
-                <groupId>${project.groupId}</groupId>
+                <groupId>${cmcorg.groupId}</groupId>
                 <artifactId>be-user</artifactId>
-                <version>${project.version}</version>
+                <version>${cmcorg.version}</version>
             </dependency>
 
             <!-- be-xxl-job -->
             <dependency>
-                <groupId>${project.groupId}</groupId>
+                <groupId>${cmcorg.groupId}</groupId>
                 <artifactId>be-xxl-job</artifactId>
-                <version>${project.version}</version>
+                <version>${cmcorg.version}</version>
             </dependency>
 
             <!-- be-gateway -->
             <dependency>
-                <groupId>${project.groupId}</groupId>
+                <groupId>${cmcorg.groupId}</groupId>
                 <artifactId>be-gateway</artifactId>
-                <version>${project.version}</version>
+                <version>${cmcorg.version}</version>
             </dependency>
 
             <!-- be-wx -->
             <dependency>
-                <groupId>${project.groupId}</groupId>
+                <groupId>${cmcorg.groupId}</groupId>
                 <artifactId>be-wx</artifactId>
-                <version>${project.version}</version>
+                <version>${cmcorg.version}</version>
             </dependency>
 
             <!-- be-model -->
             <dependency>
-                <groupId>${project.groupId}</groupId>
+                <groupId>${cmcorg.groupId}</groupId>
                 <artifactId>be-model</artifactId>
-                <version>${project.version}</version>
+                <version>${cmcorg.version}</version>
             </dependency>
 
             <!-- be-log -->
             <dependency>
-                <groupId>${project.groupId}</groupId>
+                <groupId>${cmcorg.groupId}</groupId>
                 <artifactId>be-log</artifactId>
-                <version>${project.version}</version>
+                <version>${cmcorg.version}</version>
             </dependency>
 
             <!-- be-kafka -->
             <dependency>
-                <groupId>${project.groupId}</groupId>
+                <groupId>${cmcorg.groupId}</groupId>
                 <artifactId>be-kafka</artifactId>
-                <version>${project.version}</version>
+                <version>${cmcorg.version}</version>
             </dependency>
 
             <!-- be-ip2region -->
             <dependency>
-                <groupId>${project.groupId}</groupId>
+                <groupId>${cmcorg.groupId}</groupId>
                 <artifactId>be-ip2region</artifactId>
-                <version>${project.version}</version>
+                <version>${cmcorg.version}</version>
             </dependency>
 
             <!-- be-email -->
             <dependency>
-                <groupId>${project.groupId}</groupId>
+                <groupId>${cmcorg.groupId}</groupId>
                 <artifactId>be-email</artifactId>
-                <version>${project.version}</version>
+                <version>${cmcorg.version}</version>
             </dependency>
 
             <!-- be-cache -->
             <dependency>
-                <groupId>${project.groupId}</groupId>
+                <groupId>${cmcorg.groupId}</groupId>
                 <artifactId>be-cache</artifactId>
-                <version>${project.version}</version>
+                <version>${cmcorg.version}</version>
             </dependency>
 
             <!-- be-nacos -->
             <dependency>
-                <groupId>${project.groupId}</groupId>
+                <groupId>${cmcorg.groupId}</groupId>
                 <artifactId>be-nacos</artifactId>
-                <version>${project.version}</version>
+                <version>${cmcorg.version}</version>
             </dependency>
 
             <!-- be-start -->
             <dependency>
-                <groupId>${project.groupId}</groupId>
+                <groupId>${cmcorg.groupId}</groupId>
                 <artifactId>be-start</artifactId>
-                <version>${project.version}</version>
+                <version>${cmcorg.version}</version>
             </dependency>
 
             <!-- be-knife4j -->
             <dependency>
-                <groupId>${project.groupId}</groupId>
+                <groupId>${cmcorg.groupId}</groupId>
                 <artifactId>be-knife4j</artifactId>
-                <version>${project.version}</version>
+                <version>${cmcorg.version}</version>
             </dependency>
 
             <!-- be-mysql -->
             <dependency>
-                <groupId>${project.groupId}</groupId>
+                <groupId>${cmcorg.groupId}</groupId>
                 <artifactId>be-mysql</artifactId>
-                <version>${project.version}</version>
+                <version>${cmcorg.version}</version>
             </dependency>
 
             <!-- be-util -->
             <dependency>
-                <groupId>${project.groupId}</groupId>
+                <groupId>${cmcorg.groupId}</groupId>
                 <artifactId>be-util</artifactId>
-                <version>${project.version}</version>
+                <version>${cmcorg.version}</version>
             </dependency>
 
             <!-- be-redisson -->
             <dependency>
-                <groupId>${project.groupId}</groupId>
+                <groupId>${cmcorg.groupId}</groupId>
                 <artifactId>be-redisson</artifactId>
-                <version>${project.version}</version>
+                <version>${cmcorg.version}</version>
             </dependency>
 
             <!-- be-security -->
             <dependency>
-                <groupId>${project.groupId}</groupId>
+                <groupId>${cmcorg.groupId}</groupId>
                 <artifactId>be-security</artifactId>
-                <version>${project.version}</version>
+                <version>${cmcorg.version}</version>
             </dependency>
 
             <!-- spring-cloud-dependencies -->

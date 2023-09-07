@@ -16,7 +16,7 @@
 
         <!-- be-start -->
         <dependency>
-            <groupId>${project.groupId}</groupId>
+            <groupId>${cmcorg.groupId}</groupId>
             <artifactId>be-start</artifactId>
         </dependency>
 

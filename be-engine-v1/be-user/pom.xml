@@ -16,37 +16,37 @@
 
         <!-- be-tenant -->
         <dependency>
-            <groupId>${project.groupId}</groupId>
+            <groupId>${cmcorg.groupId}</groupId>
             <artifactId>be-tenant</artifactId>
         </dependency>
 
         <!-- be-post -->
         <dependency>
-            <groupId>${project.groupId}</groupId>
+            <groupId>${cmcorg.groupId}</groupId>
             <artifactId>be-post</artifactId>
         </dependency>
 
         <!-- be-dept -->
         <dependency>
-            <groupId>${project.groupId}</groupId>
+            <groupId>${cmcorg.groupId}</groupId>
             <artifactId>be-dept</artifactId>
         </dependency>
 
         <!-- be-sign-helper -->
         <dependency>
-            <groupId>${project.groupId}</groupId>
+            <groupId>${cmcorg.groupId}</groupId>
             <artifactId>be-sign-helper</artifactId>
         </dependency>
 
         <!-- be-role -->
         <dependency>
-            <groupId>${project.groupId}</groupId>
+            <groupId>${cmcorg.groupId}</groupId>
             <artifactId>be-role</artifactId>
         </dependency>
 
         <!-- be-security -->
         <dependency>
-            <groupId>${project.groupId}</groupId>
+            <groupId>${cmcorg.groupId}</groupId>
             <artifactId>be-security</artifactId>
         </dependency>
 

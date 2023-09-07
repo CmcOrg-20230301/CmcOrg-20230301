@@ -16,7 +16,7 @@
 
         <!-- be-security -->
         <dependency>
-            <groupId>${project.groupId}</groupId>
+            <groupId>${cmcorg.groupId}</groupId>
             <artifactId>be-security</artifactId>
         </dependency>
 
@@ -28,13 +28,13 @@
 
         <!-- be-redisson -->
         <dependency>
-            <groupId>${project.groupId}</groupId>
+            <groupId>${cmcorg.groupId}</groupId>
             <artifactId>be-redisson</artifactId>
         </dependency>
 
         <!-- be-model -->
         <dependency>
-            <groupId>${project.groupId}</groupId>
+            <groupId>${cmcorg.groupId}</groupId>
             <artifactId>be-model</artifactId>
         </dependency>
 

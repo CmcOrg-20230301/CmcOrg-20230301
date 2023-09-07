@@ -16,7 +16,7 @@
 
         <!-- be-sign-helper -->
         <dependency>
-            <groupId>${project.groupId}</groupId>
+            <groupId>${cmcorg.groupId}</groupId>
             <artifactId>be-sign-helper</artifactId>
         </dependency>
 

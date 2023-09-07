@@ -16,7 +16,7 @@
 
         <!-- be-util -->
         <dependency>
-            <groupId>${project.groupId}</groupId>
+            <groupId>${cmcorg.groupId}</groupId>
             <artifactId>be-util</artifactId>
         </dependency>
 
