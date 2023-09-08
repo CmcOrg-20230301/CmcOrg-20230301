@@ -31,6 +31,7 @@
         <module>be-redisson</module>
         <module>be-util</module>
         <module>be-mysql</module>
+        <module>be-datasource</module>
         <module>be-knife4j</module>
         <module>be-start</module>
         <module>be-nacos</module>
@@ -73,10 +74,18 @@
         <module>be-dept</module>
         <module>be-post</module>
         <module>be-tenant</module>
+        <module>be-milvus</module>
     </modules>
 
     <dependencyManagement>
         <dependencies>
+
+            <!-- be-milvus -->
+            <dependency>
+                <groupId>${cmcorg.groupId}</groupId>
+                <artifactId>be-milvus</artifactId>
+                <version>${cmcorg.version}</version>
+            </dependency>
 
             <!-- be-tenant -->
             <dependency>
@@ -365,6 +374,13 @@
                 <version>${cmcorg.version}</version>
             </dependency>
 
+            <!-- be-datasource -->
+            <dependency>
+                <groupId>${cmcorg.groupId}</groupId>
+                <artifactId>be-datasource</artifactId>
+                <version>${cmcorg.version}</version>
+            </dependency>
+
             <!-- be-mysql -->
             <dependency>
                 <groupId>${cmcorg.groupId}</groupId>
@@ -469,6 +485,13 @@
                 <groupId>org.apache.shardingsphere</groupId>
                 <artifactId>shardingsphere-jdbc-core-spring-boot-starter</artifactId>
                 <version>5.2.1</version>
+            </dependency>
+
+            <!-- 动态数据源 -->
+            <dependency>
+                <groupId>com.baomidou</groupId>
+                <artifactId>dynamic-datasource-spring-boot-starter</artifactId>
+                <version>4.1.3</version>
             </dependency>
 
             <!-- protobuf：下载地址，例如：https://github.com/protocolbuffers/protobuf/releases/tag/v23.4 -->

@@ -10,7 +10,7 @@
     </parent>
 
     <artifactId>be-mysql</artifactId>
-    <description>数据库相关</description>
+    <description>mysql数据库相关</description>
 
     <dependencies>
 

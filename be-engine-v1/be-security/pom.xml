@@ -68,10 +68,10 @@
             <artifactId>be-redisson</artifactId>
         </dependency>
 
-        <!-- be-mysql -->
+        <!-- be-datasource -->
         <dependency>
             <groupId>${cmcorg.groupId}</groupId>
-            <artifactId>be-mysql</artifactId>
+            <artifactId>be-datasource</artifactId>
         </dependency>
 
         <!-- spring-boot-web -->

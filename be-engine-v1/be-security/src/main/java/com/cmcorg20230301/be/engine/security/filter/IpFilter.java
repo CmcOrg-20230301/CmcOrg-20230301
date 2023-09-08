@@ -40,7 +40,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 /**
  * ip 拦截器
  */
-@Order(value = Integer.MIN_VALUE)
+@Order(value = Integer.MIN_VALUE) // 越小越前面
 @Component
 @WebFilter(urlPatterns = "/*")
 public class IpFilter implements Filter {
