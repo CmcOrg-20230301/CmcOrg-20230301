@@ -26,6 +26,9 @@ public class DynamicDataSourceShardingJdbcProvider implements DynamicDataSourceP
     @Resource
     DynamicDataSourceProperties dynamicDataSourceProperties;
 
+    /**
+     * 由于本类比 ShardingJdbc，加载更前面，所以要加 Lazy注解，防止注入不进来
+     */
     @Lazy
     @Resource
     AbstractDataSourceAdapter abstractDataSourceAdapter;
@@ -42,6 +45,9 @@ public class DynamicDataSourceShardingJdbcProvider implements DynamicDataSourceP
 
     }
 
+    /**
+     * Primary，注解的目的：因为 ShardingJdbc也会注册一个数据源，所以这里需要加 Primary注解
+     */
     @Primary
     @Bean
     public DataSource myDataSource() {
