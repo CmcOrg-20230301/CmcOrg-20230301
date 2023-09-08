@@ -14,6 +14,7 @@ import java.lang.annotation.*;
  * <p>
  * 备注：@DS，在 @PostConstruct 注解, InitializingBean接口, 自定义init-method，里面使用会无效，因为不会进入 aop
  * 备注：@DS，在一个方法调用另外一个方法的时候，也不会生效，因为不会进入 aop
+ * 备注：但是可以手动切换数据源：DynamicDataSourceContextHolder.push("slave"); 但是使用完毕之后，要 DynamicDataSourceContextHolder.clear()，不然该线程还会有这个数据源
  */
 @Target({ElementType.TYPE, ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)
