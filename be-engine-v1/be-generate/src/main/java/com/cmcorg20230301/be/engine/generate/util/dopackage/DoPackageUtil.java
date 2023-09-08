@@ -59,13 +59,18 @@ public class DoPackageUtil {
 
         String projectPath = System.getProperty("user.dir"); // 例如：D:\GitHub\CmcOrg-20230301
 
+        if (!projectPath.contains("CmcOrg-20230301")) {
+            projectPath = projectPath + "\\CmcOrg-20230301";
+        }
+
         CountDownLatch countDownLatch = ThreadUtil.newCountDownLatch(threadCount);
 
+        String finalProjectPath = projectPath;
         if (number == 1 || number == 2) {
 
             new Thread(() -> {
 
-                doBePackage(projectPath, session, countDownLatch);
+                doBePackage(finalProjectPath, session, countDownLatch);
 
             }).start();
 
@@ -75,7 +80,7 @@ public class DoPackageUtil {
 
             new Thread(() -> {
 
-                doFePackage(projectPath, session, countDownLatch);
+                doFePackage(finalProjectPath, session, countDownLatch);
 
             }).start();
 
