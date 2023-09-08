@@ -8,12 +8,12 @@ import cn.hutool.core.util.BooleanUtil;
 import cn.hutool.core.util.DesensitizedUtil;
 import cn.hutool.core.util.ReUtil;
 import cn.hutool.core.util.StrUtil;
+import com.baomidou.dynamic.datasource.annotation.DSTransactional;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.baomidou.mybatisplus.extension.toolkit.ChainWrappers;
 import com.cmcorg20230301.be.engine.cache.util.CacheHelper;
 import com.cmcorg20230301.be.engine.cache.util.MyCacheUtil;
-import com.cmcorg20230301.be.engine.datasource.annotation.MyTransactional;
 import com.cmcorg20230301.be.engine.dept.model.entity.SysDeptRefUserDO;
 import com.cmcorg20230301.be.engine.dept.service.SysDeptRefUserService;
 import com.cmcorg20230301.be.engine.model.model.constant.BaseConstant;
@@ -260,7 +260,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserProMapper, SysUserDO>
      * 新增/修改
      */
     @Override
-    @MyTransactional
+    @DSTransactional
     public String insertOrUpdate(SysUserInsertOrUpdateDTO dto) {
 
         // 处理：BaseTenantInsertOrUpdateDTO
@@ -509,7 +509,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserProMapper, SysUserDO>
      * 批量注销用户
      */
     @Override
-    @MyTransactional
+    @DSTransactional
     public String deleteByIdSet(NotEmptyIdSet notEmptyIdSet) {
 
         if (CollUtil.isEmpty(notEmptyIdSet.getIdSet())) {
@@ -634,7 +634,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserProMapper, SysUserDO>
      * 批量修改密码
      */
     @Override
-    @MyTransactional
+    @DSTransactional
     public String updatePassword(SysUserUpdatePasswordDTO dto) {
 
         // 检查：是否非法操作

@@ -7,10 +7,10 @@ import cn.hutool.core.lang.func.VoidFunc1;
 import cn.hutool.core.map.MapUtil;
 import cn.hutool.core.util.BooleanUtil;
 import cn.hutool.core.util.StrUtil;
+import com.baomidou.dynamic.datasource.annotation.DSTransactional;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.baomidou.mybatisplus.extension.toolkit.ChainWrappers;
-import com.cmcorg20230301.be.engine.datasource.annotation.MyTransactional;
 import com.cmcorg20230301.be.engine.dict.service.SysDictService;
 import com.cmcorg20230301.be.engine.menu.service.SysMenuService;
 import com.cmcorg20230301.be.engine.model.model.constant.BaseConstant;
@@ -71,7 +71,7 @@ public class SysTenantServiceImpl extends ServiceImpl<SysTenantMapper, SysTenant
      * 新增/修改
      */
     @Override
-    @MyTransactional
+    @DSTransactional
     public String insertOrUpdate(SysTenantInsertOrUpdateDTO dto) {
 
         // 处理：BaseTenantInsertOrUpdateDTO
@@ -465,7 +465,7 @@ public class SysTenantServiceImpl extends ServiceImpl<SysTenantMapper, SysTenant
      * 批量删除
      */
     @Override
-    @MyTransactional
+    @DSTransactional
     public String deleteByIdSet(NotEmptyIdSet notEmptyIdSet) {
 
         if (CollUtil.isEmpty(notEmptyIdSet.getIdSet())) {
@@ -599,7 +599,7 @@ public class SysTenantServiceImpl extends ServiceImpl<SysTenantMapper, SysTenant
      * 通过主键 idSet，加减排序号
      */
     @Override
-    @MyTransactional
+    @DSTransactional
     public String addOrderNo(ChangeNumberDTO dto) {
 
         // 检查：是否非法操作
@@ -736,7 +736,7 @@ public class SysTenantServiceImpl extends ServiceImpl<SysTenantMapper, SysTenant
      * 执行：同步最新的数据给租户
      */
     @Override
-    @MyTransactional
+    @DSTransactional
     public String doSyncMenu(NotNullIdAndNotEmptyLongSet notNullIdAndNotEmptyLongSet) {
 
         Set<Long> valueSet = notNullIdAndNotEmptyLongSet.getValueSet();
@@ -803,7 +803,7 @@ public class SysTenantServiceImpl extends ServiceImpl<SysTenantMapper, SysTenant
      * 备注：租户只能，新增修改删除字典项，并且不能是系统内置的字典项
      */
     @Override
-    @MyTransactional
+    @DSTransactional
     public String doSyncDict() {
 
         // 查询出：所有租户
@@ -924,7 +924,7 @@ public class SysTenantServiceImpl extends ServiceImpl<SysTenantMapper, SysTenant
      * 备注：租户只能修改非系统内置参数，并且不能新增参数
      */
     @Override
-    @MyTransactional
+    @DSTransactional
     public String doSyncParam() {
 
         // 查询出：所有租户

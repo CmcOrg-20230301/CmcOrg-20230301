@@ -5,6 +5,7 @@ import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.lang.func.Func1;
 import cn.hutool.core.util.BooleanUtil;
 import cn.hutool.core.util.StrUtil;
+import com.baomidou.dynamic.datasource.annotation.DSTransactional;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.cmcorg20230301.be.engine.area.mapper.SysAreaMapper;
@@ -15,7 +16,6 @@ import com.cmcorg20230301.be.engine.area.model.entity.SysAreaRefDeptDO;
 import com.cmcorg20230301.be.engine.area.model.vo.SysAreaInfoByIdVO;
 import com.cmcorg20230301.be.engine.area.service.SysAreaRefDeptService;
 import com.cmcorg20230301.be.engine.area.service.SysAreaService;
-import com.cmcorg20230301.be.engine.datasource.annotation.MyTransactional;
 import com.cmcorg20230301.be.engine.model.model.dto.ChangeNumberDTO;
 import com.cmcorg20230301.be.engine.model.model.dto.NotEmptyIdSet;
 import com.cmcorg20230301.be.engine.model.model.dto.NotNullId;
@@ -47,7 +47,7 @@ public class SysAreaServiceImpl extends ServiceImpl<SysAreaMapper, SysAreaDO> im
      * 新增/修改
      */
     @Override
-    @MyTransactional
+    @DSTransactional
     public String insertOrUpdate(SysAreaInsertOrUpdateDTO dto) {
 
         // 处理：BaseTenantInsertOrUpdateDTO
@@ -167,7 +167,7 @@ public class SysAreaServiceImpl extends ServiceImpl<SysAreaMapper, SysAreaDO> im
      * 批量删除
      */
     @Override
-    @MyTransactional
+    @DSTransactional
     public String deleteByIdSet(NotEmptyIdSet notEmptyIdSet, boolean checkChildrenFlag) {
 
         Set<Long> idSet = notEmptyIdSet.getIdSet();
@@ -246,7 +246,7 @@ public class SysAreaServiceImpl extends ServiceImpl<SysAreaMapper, SysAreaDO> im
      * 通过主键 idSet，加减排序号
      */
     @Override
-    @MyTransactional
+    @DSTransactional
     public String addOrderNo(ChangeNumberDTO dto) {
 
         // 检查：是否非法操作

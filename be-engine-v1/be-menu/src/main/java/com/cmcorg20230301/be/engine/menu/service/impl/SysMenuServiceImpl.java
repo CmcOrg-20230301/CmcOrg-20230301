@@ -5,9 +5,9 @@ import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.lang.func.Func1;
 import cn.hutool.core.util.BooleanUtil;
 import cn.hutool.core.util.StrUtil;
+import com.baomidou.dynamic.datasource.annotation.DSTransactional;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.cmcorg20230301.be.engine.datasource.annotation.MyTransactional;
 import com.cmcorg20230301.be.engine.menu.exception.BizCodeEnum;
 import com.cmcorg20230301.be.engine.menu.model.dto.SysMenuInsertOrUpdateDTO;
 import com.cmcorg20230301.be.engine.menu.model.dto.SysMenuPageDTO;
@@ -44,7 +44,7 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenuDO> im
      * 新增/修改
      */
     @Override
-    @MyTransactional
+    @DSTransactional
     public String insertOrUpdate(SysMenuInsertOrUpdateDTO dto) {
 
         // 检查：是否可以新增
@@ -269,7 +269,7 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenuDO> im
      * 批量删除
      */
     @Override
-    @MyTransactional
+    @DSTransactional
     public String deleteByIdSet(NotEmptyIdSet notEmptyIdSet, boolean checkChildrenFlag) {
 
         Set<Long> idSet = notEmptyIdSet.getIdSet();
@@ -383,7 +383,7 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenuDO> im
      * 通过主键 idSet，加减排序号
      */
     @Override
-    @MyTransactional
+    @DSTransactional
     public String addOrderNo(ChangeNumberDTO dto) {
 
         // 检查：是否非法操作

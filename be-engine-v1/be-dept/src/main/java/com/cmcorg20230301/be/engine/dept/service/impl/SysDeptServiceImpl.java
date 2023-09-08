@@ -5,11 +5,11 @@ import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.lang.func.Func1;
 import cn.hutool.core.util.BooleanUtil;
 import cn.hutool.core.util.StrUtil;
+import com.baomidou.dynamic.datasource.annotation.DSTransactional;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.cmcorg20230301.be.engine.area.model.entity.SysAreaRefDeptDO;
 import com.cmcorg20230301.be.engine.area.service.SysAreaRefDeptService;
-import com.cmcorg20230301.be.engine.datasource.annotation.MyTransactional;
 import com.cmcorg20230301.be.engine.dept.mapper.SysDeptMapper;
 import com.cmcorg20230301.be.engine.dept.model.dto.SysDeptInsertOrUpdateDTO;
 import com.cmcorg20230301.be.engine.dept.model.dto.SysDeptPageDTO;
@@ -51,7 +51,7 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptMapper, SysDeptDO> im
      * 新增/修改
      */
     @Override
-    @MyTransactional
+    @DSTransactional
     public String insertOrUpdate(SysDeptInsertOrUpdateDTO dto) {
 
         // 处理：BaseTenantInsertOrUpdateDTO
@@ -189,7 +189,7 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptMapper, SysDeptDO> im
      * 批量删除
      */
     @Override
-    @MyTransactional
+    @DSTransactional
     public String deleteByIdSet(NotEmptyIdSet notEmptyIdSet, boolean checkChildrenFlag) {
 
         Set<Long> idSet = notEmptyIdSet.getIdSet();
@@ -280,7 +280,7 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptMapper, SysDeptDO> im
      * 通过主键 idSet，加减排序号
      */
     @Override
-    @MyTransactional
+    @DSTransactional
     public String addOrderNo(ChangeNumberDTO dto) {
 
         // 检查：是否非法操作

@@ -4,9 +4,9 @@ import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.lang.func.Func1;
 import cn.hutool.core.util.BooleanUtil;
 import cn.hutool.core.util.StrUtil;
+import com.baomidou.dynamic.datasource.annotation.DSTransactional;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.cmcorg20230301.be.engine.datasource.annotation.MyTransactional;
 import com.cmcorg20230301.be.engine.dict.exception.BizCodeEnum;
 import com.cmcorg20230301.be.engine.dict.model.dto.SysDictInsertOrUpdateDTO;
 import com.cmcorg20230301.be.engine.dict.model.dto.SysDictListByDictKeyDTO;
@@ -42,7 +42,7 @@ public class SysDictServiceImpl extends ServiceImpl<SysDictMapper, SysDictDO> im
      * 备注：这里修改了，租户管理那边也要一起修改
      */
     @Override
-    @MyTransactional
+    @DSTransactional
     public String insertOrUpdate(SysDictInsertOrUpdateDTO dto) {
 
         // 处理：BaseTenantInsertOrUpdateDTO
@@ -264,7 +264,7 @@ public class SysDictServiceImpl extends ServiceImpl<SysDictMapper, SysDictDO> im
      * 批量删除
      */
     @Override
-    @MyTransactional
+    @DSTransactional
     public String deleteByIdSet(NotEmptyIdSet notEmptyIdSet) {
 
         Set<Long> idSet = notEmptyIdSet.getIdSet();
@@ -321,7 +321,7 @@ public class SysDictServiceImpl extends ServiceImpl<SysDictMapper, SysDictDO> im
      * 通过主键 idSet，加减排序号
      */
     @Override
-    @MyTransactional
+    @DSTransactional
     public String addOrderNo(ChangeNumberDTO dto) {
 
         if (dto.getNumber() == 0) {
