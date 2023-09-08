@@ -1,6 +1,5 @@
 package com.cmcorg20230301.be.engine.security.configuration.mybatisplus;
 
-import com.baomidou.mybatisplus.annotation.DbType;
 import com.baomidou.mybatisplus.core.incrementer.IdentifierGenerator;
 import com.baomidou.mybatisplus.extension.plugins.MybatisPlusInterceptor;
 import com.baomidou.mybatisplus.extension.plugins.inner.OptimisticLockerInnerInterceptor;
@@ -21,8 +20,8 @@ public class MybatisPlusConfiguration {
 
         MybatisPlusInterceptor mybatisPlusInterceptor = new MybatisPlusInterceptor();
 
-        // 分页插件
-        mybatisPlusInterceptor.addInnerInterceptor(new PaginationInnerInterceptor(DbType.MYSQL));
+        // 分页插件，由于多数据源，所以不指定 db类型
+        mybatisPlusInterceptor.addInnerInterceptor(new PaginationInnerInterceptor());
 
         // 乐观锁
         mybatisPlusInterceptor.addInnerInterceptor(new OptimisticLockerInnerInterceptor());

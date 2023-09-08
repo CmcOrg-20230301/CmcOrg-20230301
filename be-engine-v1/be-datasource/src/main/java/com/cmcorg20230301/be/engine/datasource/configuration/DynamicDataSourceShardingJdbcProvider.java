@@ -47,6 +47,7 @@ public class DynamicDataSourceShardingJdbcProvider implements DynamicDataSourceP
 
     /**
      * Primary，注解的目的：因为 ShardingJdbc也会注册一个数据源，所以这里需要加 Primary注解
+     * 并且一定要在：DynamicDataSourceAutoConfiguration 之前加载该 Bean，并且 Bean的名字不能相同，不然会报错
      */
     @Primary
     @Bean
