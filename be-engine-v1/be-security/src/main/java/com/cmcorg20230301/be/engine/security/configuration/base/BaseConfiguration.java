@@ -3,6 +3,7 @@ package com.cmcorg20230301.be.engine.security.configuration.base;
 import cn.hutool.http.HttpGlobalConfig;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.AutoConfigureOrder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -21,6 +22,7 @@ import java.util.concurrent.ThreadPoolExecutor;
 @MapperScan(basePackages = "com.cmcorg20230301.**.mapper")
 @EnableAsync
 @EnableScheduling
+@AutoConfigureOrder(value = Integer.MIN_VALUE)
 public class BaseConfiguration {
 
     public static String applicationName; // 服务名

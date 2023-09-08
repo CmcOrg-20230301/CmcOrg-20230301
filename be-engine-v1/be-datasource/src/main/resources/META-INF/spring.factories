@@ -1,0 +1,2 @@
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+com.cmcorg20230301.be.engine.datasource.configuration.DynamicDataSourceShardingJdbcProvider
