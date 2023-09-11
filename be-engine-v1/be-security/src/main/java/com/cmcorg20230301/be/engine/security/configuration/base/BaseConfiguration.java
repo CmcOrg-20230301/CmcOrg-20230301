@@ -22,7 +22,7 @@ import java.util.concurrent.ThreadPoolExecutor;
 @MapperScan(basePackages = "com.cmcorg20230301.**.mapper")
 @EnableAsync
 @EnableScheduling
-@AutoConfigureOrder(value = Integer.MIN_VALUE)
+@AutoConfigureOrder(value = Integer.MIN_VALUE) // 如果配置在；spring.factories 文件里，则可以通过该注解指定加载顺序
 public class BaseConfiguration {
 
     public static String applicationName; // 服务名
