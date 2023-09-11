@@ -13,6 +13,9 @@ import java.lang.invoke.MethodHandles;
 import java.util.regex.Matcher;
 import java.util.regex.PatternSyntaxException;
 
+/**
+ * 备注：参考 {@link org.hibernate.validator.internal.constraintvalidators.bv.PatternValidator}
+ */
 public class NotBlankPatternValidator implements ConstraintValidator<NotBlankPattern, CharSequence> {
 
     private static final Log LOG = LoggerFactory.make(MethodHandles.lookup());
@@ -54,8 +57,7 @@ public class NotBlankPatternValidator implements ConstraintValidator<NotBlankPat
 
         if (constraintValidatorContext instanceof HibernateConstraintValidatorContext) {
 
-            constraintValidatorContext.unwrap(HibernateConstraintValidatorContext.class)
-                .addMessageParameter("regexp", escapedRegexp);
+            constraintValidatorContext.unwrap(HibernateConstraintValidatorContext.class).addMessageParameter("regexp", escapedRegexp);
 
         }
 
