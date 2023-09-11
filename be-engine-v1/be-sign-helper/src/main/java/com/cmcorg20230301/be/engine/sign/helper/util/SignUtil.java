@@ -623,6 +623,7 @@ public class SignUtil {
             }
 
             SysUserDO sysUserDO = new SysUserDO();
+
             sysUserDO.setId(currentUserIdNotAdmin);
 
             sysUserDO.setPassword(PasswordConvertUtil.convert(newPassword, true));
