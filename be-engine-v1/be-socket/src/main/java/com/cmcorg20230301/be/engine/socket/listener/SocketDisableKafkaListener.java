@@ -6,6 +6,7 @@ import com.cmcorg20230301.be.engine.kafka.model.enums.KafkaTopicEnum;
 import com.cmcorg20230301.be.engine.model.model.constant.LogTopicConstant;
 import com.cmcorg20230301.be.engine.socket.model.configuration.ISocketDisable;
 import lombok.extern.slf4j.Slf4j;
+import org.jetbrains.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.annotation.KafkaHandler;
 import org.springframework.kafka.annotation.KafkaListener;
@@ -27,6 +28,7 @@ public class SocketDisableKafkaListener {
 
     public static final List<String> TOPIC_LIST = CollUtil.newArrayList(KafkaTopicEnum.SOCKET_DISABLE_TOPIC.name());
 
+    @Nullable
     private static List<ISocketDisable> iSocketDisableList;
 
     @Autowired(required = false)

@@ -12,6 +12,7 @@ import com.wechat.pay.java.service.payments.jsapi.JsapiServiceExtension;
 import com.wechat.pay.java.service.payments.model.Transaction;
 import com.wechat.pay.java.service.payments.nativepay.NativePayService;
 import lombok.SneakyThrows;
+import org.jetbrains.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -31,6 +32,7 @@ public class PayWxUtil {
         PayWxUtil.payWxProperties = payWxProperties;
     }
 
+    @Nullable
     private static NativePayService nativePayService;
 
     @Autowired(required = false)
@@ -38,6 +40,7 @@ public class PayWxUtil {
         PayWxUtil.nativePayService = nativePayService;
     }
 
+    @Nullable
     private static JsapiServiceExtension jsapiServiceExtension;
 
     @Autowired(required = false)
@@ -50,6 +53,10 @@ public class PayWxUtil {
      */
     @SneakyThrows
     public static String payNative(PayDTO dto) {
+
+        if (nativePayService == null) {
+            ApiResultVO.errorMsg("操作失败：未配置该支付方式，请联系管理员");
+        }
 
         Assert.notBlank(dto.getOutTradeNo());
         Assert.notNull(dto.getTotalAmount());
@@ -91,6 +98,10 @@ public class PayWxUtil {
      */
     @SneakyThrows
     public static Object payJsApi(PayDTO dto) {
+
+        if (jsapiServiceExtension == null) {
+            ApiResultVO.errorMsg("操作失败：未配置该支付方式，请联系管理员");
+        }
 
         Assert.notBlank(dto.getOutTradeNo());
         Assert.notNull(dto.getTotalAmount());
@@ -139,6 +150,10 @@ public class PayWxUtil {
      */
     @SneakyThrows
     public static SysPayTradeStatusEnum queryNative(String outTradeNo) {
+
+        if (nativePayService == null) {
+            ApiResultVO.errorMsg("操作失败：未配置该支付查询方式，请联系管理员");
+        }
 
         com.wechat.pay.java.service.payments.nativepay.model.QueryOrderByOutTradeNoRequest queryRequest =
             new com.wechat.pay.java.service.payments.nativepay.model.QueryOrderByOutTradeNoRequest();

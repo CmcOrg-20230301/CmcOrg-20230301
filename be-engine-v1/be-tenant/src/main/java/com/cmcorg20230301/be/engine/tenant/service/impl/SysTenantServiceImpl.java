@@ -58,10 +58,10 @@ public class SysTenantServiceImpl extends ServiceImpl<SysTenantMapper, SysTenant
     @Resource
     SysUserMapper sysUserMapper;
 
-    List<ITenantDeleteConfiguration> iTenantDeleteConfigurationList;
+    @Nullable List<ITenantDeleteConfiguration> iTenantDeleteConfigurationList;
 
     public SysTenantServiceImpl(
-        @Autowired(required = false) List<ITenantDeleteConfiguration> iTenantDeleteConfigurationList) {
+        @Autowired(required = false) @Nullable List<ITenantDeleteConfiguration> iTenantDeleteConfigurationList) {
 
         this.iTenantDeleteConfigurationList = iTenantDeleteConfigurationList;
 

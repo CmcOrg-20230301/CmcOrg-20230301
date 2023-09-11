@@ -9,6 +9,7 @@ import com.wechat.pay.java.core.notification.NotificationParser;
 import com.wechat.pay.java.core.notification.RequestParam;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import org.jetbrains.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -20,8 +21,14 @@ import javax.servlet.http.HttpServletResponse;
 @Slf4j
 public class PayWxServiceImpl implements PayWxService {
 
-    @Autowired(required = false)
-    NotificationParser notificationParser;
+    @Nullable
+    private static NotificationParser notificationParser;
+
+    public PayWxServiceImpl(@Autowired(required = false) @Nullable NotificationParser notificationParser) {
+
+        PayWxServiceImpl.notificationParser = notificationParser;
+
+    }
 
     /**
      * 通用的处理：回调参数
@@ -60,6 +67,10 @@ public class PayWxServiceImpl implements PayWxService {
     @SneakyThrows
     public void notifyCallBackNative(HttpServletRequest request, HttpServletResponse response) {
 
+        if (notificationParser == null) {
+            return;
+        }
+
         commonHandleNotifyCallBack(request, response, (requestParam) -> {
 
             // 以支付通知回调为例，验签、解密并转换成 Transaction
@@ -85,6 +96,10 @@ public class PayWxServiceImpl implements PayWxService {
      */
     @Override
     public void notifyCallBackJsApi(HttpServletRequest request, HttpServletResponse response) {
+
+        if (notificationParser == null) {
+            return;
+        }
 
         commonHandleNotifyCallBack(request, response, (requestParam) -> {
 

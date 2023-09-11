@@ -60,7 +60,7 @@ public class SysFileUtil {
 
     public SysFileUtil(SysFileProperties sysFileProperties, SysFileService sysFileService,
         SysFileAuthService sysFileAuthService, SysUserInfoMapper sysUserInfoMapper,
-        @Autowired(required = false) List<ISysFile> iSysFileList) {
+        @Autowired(required = false) @Nullable List<ISysFile> iSysFileList) {
 
         SysFileUtil.sysFileProperties = sysFileProperties;
 

@@ -51,9 +51,9 @@ import com.cmcorg20230301.be.engine.user.service.SysUserService;
 import com.cmcorg20230301.be.engine.util.util.MyMapUtil;
 import com.cmcorg20230301.be.engine.util.util.NicknameUtil;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.Nullable;
 import javax.annotation.Resource;
 import java.util.*;
 import java.util.stream.Collectors;

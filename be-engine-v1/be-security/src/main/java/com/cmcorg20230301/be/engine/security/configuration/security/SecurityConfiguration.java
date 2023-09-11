@@ -10,6 +10,7 @@ import com.cmcorg20230301.be.engine.security.properties.SecurityProperties;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.aopalliance.intercept.MethodInterceptor;
+import org.jetbrains.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.access.intercept.aopalliance.MethodSecurityInterceptor;
@@ -33,7 +34,7 @@ public class SecurityConfiguration {
     /**
      * @param methodSecurityInterceptor 注意：这个名字不要改
      */
-    public SecurityConfiguration(@Autowired(required = false) MethodInterceptor methodSecurityInterceptor) {
+    public SecurityConfiguration(@Autowired(required = false) @Nullable MethodInterceptor methodSecurityInterceptor) {
 
         if (methodSecurityInterceptor instanceof MethodSecurityInterceptor) {
 
@@ -81,7 +82,8 @@ public class SecurityConfiguration {
 
         log.info("permitAllSet：{}", permitAllSet);
 
-        httpSecurity.authorizeRequests().antMatchers(ArrayUtil.toArray(permitAllSet, String.class)).permitAll() // 可以匿名访问的请求
+        httpSecurity.authorizeRequests().antMatchers(ArrayUtil.toArray(permitAllSet, String.class))
+            .permitAll() // 可以匿名访问的请求
             .anyRequest().authenticated(); // 拦截所有请求
 
         httpSecurity.addFilterBefore(new JwtAuthorizationFilter(securityProperties, iJwtValidatorConfigurationList),

@@ -7,6 +7,7 @@ import com.cmcorg20230301.be.engine.cache.model.dto.CanalKafkaDTO;
 import com.cmcorg20230301.be.engine.model.model.constant.LogTopicConstant;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
+import org.jetbrains.annotations.Nullable;
 import org.redisson.api.RBatch;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -47,7 +48,8 @@ public class CanalKafkaListenerHelper {
 
     }
 
-    public CanalKafkaListenerHelper(@Autowired(required = false) List<ICanalKafkaHandler> iCanalKafkaHandlerList) {
+    public CanalKafkaListenerHelper(
+        @Autowired(required = false) @Nullable List<ICanalKafkaHandler> iCanalKafkaHandlerList) {
 
         if (CollUtil.isNotEmpty(iCanalKafkaHandlerList)) {
 

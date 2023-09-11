@@ -19,11 +19,11 @@ import com.cmcorg20230301.be.engine.redisson.util.RedissonUtil;
 import com.cmcorg20230301.be.engine.security.model.vo.ApiResultVO;
 import com.cmcorg20230301.be.engine.security.util.MyEntityUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.jetbrains.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.Nullable;
 import javax.annotation.PreDestroy;
 import java.math.BigDecimal;
 import java.util.List;
@@ -41,7 +41,7 @@ public class PayUtil {
 
     private static SysPayService sysPayService;
 
-    public PayUtil(SysPayProperties sysPayProperties, @Autowired(required = false) List<ISysPay> iSysPayList,
+    public PayUtil(SysPayProperties sysPayProperties, @Autowired(required = false) @Nullable List<ISysPay> iSysPayList,
         SysPayService sysPayService) {
 
         PayUtil.sysPayProperties = sysPayProperties;
@@ -184,8 +184,12 @@ public class PayUtil {
     /**
      * 处理：订单回调
      */
-    public static boolean handleTradeNotify(SysPayTradeNotifyBO sysPayTradeNotifyBO,
+    public static boolean handleTradeNotify(@Nullable SysPayTradeNotifyBO sysPayTradeNotifyBO,
         @Nullable Consumer<SysPayDO> consumer) {
+
+        if (sysPayTradeNotifyBO == null) {
+            return false;
+        }
 
         SysPayTradeStatusEnum sysPayTradeStatusEnum =
             SysPayTradeStatusEnum.getByStatus(sysPayTradeNotifyBO.getTradeStatus());
