@@ -226,13 +226,13 @@ public class MilvusUtil {
 
         SearchResultsWrapper searchResultsWrapper = new SearchResultsWrapper(searchResults.getData().getResults());
 
-        List<SearchResultsWrapper.IDScore> idScoreList = searchResultsWrapper.getIDScore(0);
-
-        if (CollUtil.isEmpty(idScoreList)) {
+        if (searchResultsWrapper.getRowRecords().size() == 0) { // 防止：没有匹配数据
             return null;
         }
 
-        if (idScoreList.get(0).getScore() > score) {
+        List<SearchResultsWrapper.IDScore> idScoreList = searchResultsWrapper.getIDScore(0);
+
+        if (idScoreList.get(0).getScore() > score) { // 检查：得分
             return null;
         }
 
@@ -332,7 +332,8 @@ public class MilvusUtil {
 
         }
 
-        InsertParam insertParam = InsertParam.newBuilder().withCollectionName(collectionName).withRows(insertList).build();
+        InsertParam insertParam =
+            InsertParam.newBuilder().withCollectionName(collectionName).withRows(insertList).build();
 
         // 注意：如果 主键为自增，则不能有值，不然这会报错，并且不能包含 id字段
         milvusServiceClient.insert(insertParam);
