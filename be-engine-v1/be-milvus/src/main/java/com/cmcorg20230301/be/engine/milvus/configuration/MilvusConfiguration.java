@@ -35,7 +35,7 @@ public class MilvusConfiguration {
 
         }
 
-        log.info("milvus 启动：{}", milvusProperties.getHost());
+        log.info("milvus 启动：{}:{}", milvusProperties.getHost(), milvusProperties.getPort());
 
         return new MilvusServiceClient(builder.build());
 
