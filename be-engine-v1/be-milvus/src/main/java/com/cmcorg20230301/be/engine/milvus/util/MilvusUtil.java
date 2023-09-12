@@ -80,18 +80,8 @@ public class MilvusUtil {
 
     /**
      * 创建并加载 collection
-     */
-    public static void createAndLoadCollection(String collectionName, @Nullable List<FieldType> fieldTypeList) {
-
-        // 创建并加载 collection
-        createAndLoadCollection(collectionName, 2000, fieldTypeList);
-
-    }
-
-    /**
-     * 创建并加载 collection
      *
-     * @param vectorLength 向量集合长度
+     * @param vectorLength 向量集合长度，注意：这里的向量长度必须完全一致，不然会报错
      */
     public static void createAndLoadCollection(String collectionName, int vectorLength,
         @Nullable List<FieldType> fieldTypeList) {
@@ -223,23 +213,26 @@ public class MilvusUtil {
         exprStrBuilder.append(" tenantId == ").append(tenantId).append(" and userId == ").append(userId);
 
         if (StrUtil.isNotBlank(exprStr)) {
-            exprStrBuilder.append(" ").append(exprStr); // 添加：额外的查询条件
+            exprStrBuilder.append(" and ").append(exprStr); // 添加：额外的查询条件
         }
 
         SearchParam searchParam = SearchParam.newBuilder().withCollectionName(collectionName)
             .withConsistencyLevel(ConsistencyLevelEnum.STRONG).withMetricType(MetricType.L2).withOutFields(outFieldList)
             .withTopK(topK).withVectors(vectorList).withVectorFieldName(vectorFieldName).withParams(param)
-            .withExpr(exprStrBuilder.toString()).build();
+            .withExpr(exprStrBuilder.toString()) //
+            .build();
 
         R<SearchResults> searchResults = milvusServiceClient.search(searchParam);
 
-        if (!searchResults.getData().getResults().getIds().hasIntId()) {
+        SearchResultsWrapper searchResultsWrapper = new SearchResultsWrapper(searchResults.getData().getResults());
+
+        List<SearchResultsWrapper.IDScore> idScoreList = searchResultsWrapper.getIDScore(0);
+
+        if (CollUtil.isEmpty(idScoreList)) {
             return null;
         }
 
-        SearchResultsWrapper searchResultsWrapper = new SearchResultsWrapper(searchResults.getData().getResults());
-
-        if (searchResultsWrapper.getIDScore(0).get(0).getScore() > score) {
+        if (idScoreList.get(0).getScore() > score) {
             return null;
         }
 
@@ -293,6 +286,16 @@ public class MilvusUtil {
      */
     public static <T> boolean insert(String collectionName, List<T> insertRowList, @Nullable Consumer<T> consumer) {
 
+        return insert(collectionName, insertRowList, "id", consumer);
+
+    }
+
+    /**
+     * 新增，备注：milvus 暂时不支持修改，请删除之后，再新增，以达到修改的目的
+     */
+    public static <T> boolean insert(String collectionName, List<T> insertRowList, @Nullable String idFieldName,
+        @Nullable Consumer<T> consumer) {
+
         if (milvusServiceClient == null) {
             return false;
         }
@@ -303,21 +306,35 @@ public class MilvusUtil {
 
         List<JSONObject> insertList = new ArrayList<>();
 
+        boolean idFieldNameNotBlankFlag = StrUtil.isNotBlank(idFieldName);
+
+        boolean consumerNotNullFlag = consumer != null;
+
         for (T item : insertRowList) {
 
-            if (consumer != null) {
+            if (consumerNotNullFlag) {
                 consumer.accept(item);
             }
 
-            JSONObject jsonObject = BeanUtil.copyProperties(item, JSONObject.class);
+            JSONObject jsonObject;
+
+            if (idFieldNameNotBlankFlag) {
+
+                jsonObject = BeanUtil.copyProperties(item, JSONObject.class, idFieldName);
+
+            } else {
+
+                jsonObject = BeanUtil.copyProperties(item, JSONObject.class);
+
+            }
 
             insertList.add(jsonObject);
 
         }
 
-        InsertParam insertParam =
-            InsertParam.newBuilder().withCollectionName(collectionName).withRows(insertList).build();
+        InsertParam insertParam = InsertParam.newBuilder().withCollectionName(collectionName).withRows(insertList).build();
 
+        // 注意：如果 主键为自增，则不能有值，不然这会报错，并且不能包含 id字段
         milvusServiceClient.insert(insertParam);
 
         return true;
