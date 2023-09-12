@@ -12,6 +12,9 @@ import javax.validation.constraints.Min;
 @Data
 public class BaseInsertOrUpdateDTO {
 
+    /**
+     * 允许为 null
+     */
     @Min(1)
     @Schema(description = "主键 id")
     private Long id;

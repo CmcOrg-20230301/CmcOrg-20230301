@@ -1,11 +1,14 @@
 package com.cmcorg20230301.be.engine.milvus.util;
 
+import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.text.StrBuilder;
 import cn.hutool.core.util.StrUtil;
+import com.alibaba.fastjson.JSONObject;
 import io.milvus.client.MilvusServiceClient;
 import io.milvus.common.clientenum.ConsistencyLevelEnum;
 import io.milvus.grpc.DataType;
+import io.milvus.grpc.QueryResults;
 import io.milvus.grpc.SearchResults;
 import io.milvus.param.IndexType;
 import io.milvus.param.MetricType;
@@ -13,16 +16,21 @@ import io.milvus.param.R;
 import io.milvus.param.collection.CreateCollectionParam;
 import io.milvus.param.collection.FieldType;
 import io.milvus.param.collection.LoadCollectionParam;
+import io.milvus.param.dml.DeleteParam;
+import io.milvus.param.dml.InsertParam;
+import io.milvus.param.dml.QueryParam;
 import io.milvus.param.dml.SearchParam;
 import io.milvus.param.index.CreateIndexParam;
+import io.milvus.response.QueryResultsWrapper;
 import io.milvus.response.SearchResultsWrapper;
 import lombok.extern.slf4j.Slf4j;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
+import java.util.function.Consumer;
 
 /**
  * milvus工具类
@@ -40,6 +48,16 @@ public class MilvusUtil {
     }
 
     /**
+     * 租户 id
+     */
+    public static final String TENANT_ID_FIELD_NAME = "tenantId";
+
+    /**
+     * 用户 id
+     */
+    public static final String USER_ID_FIELD_NAME = "userId";
+
+    /**
      * 返回值
      */
     public static final String RESULT_FIELD_NAME = "result";
@@ -52,17 +70,23 @@ public class MilvusUtil {
     /**
      * 向量
      */
-    public static final String VECTOR_FIELD_NAME = "vector";
+    public static final String VECTOR_LIST_FIELD_NAME = "vectorList";
 
     /**
-     * 租户 id
+     * 字段名集合，备注：不包含：向量字段
      */
-    public static final String TENANT_ID_FIELD_NAME = "tenantId";
+    public static final List<String> FIELD_NAME_LIST =
+        CollUtil.newArrayList(TENANT_ID_FIELD_NAME, USER_ID_FIELD_NAME, RESULT_FIELD_NAME, VECTOR_TEXT_FIELD_NAME);
 
     /**
-     * 用户 id
+     * 创建并加载 collection
      */
-    public static final String USER_ID_FIELD_NAME = "userId";
+    public static void createAndLoadCollection(String collectionName, @Nullable List<FieldType> fieldTypeList) {
+
+        // 创建并加载 collection
+        createAndLoadCollection(collectionName, 2000, fieldTypeList);
+
+    }
 
     /**
      * 创建并加载 collection
@@ -87,7 +111,7 @@ public class MilvusUtil {
                 .build();
 
         FieldType vectorFieldType =
-            FieldType.newBuilder().withName(VECTOR_FIELD_NAME).withDataType(DataType.FloatVector)
+            FieldType.newBuilder().withName(VECTOR_LIST_FIELD_NAME).withDataType(DataType.FloatVector)
                 .withDimension(vectorLength).build();
 
         // 创建并加载 collection
@@ -148,10 +172,10 @@ public class MilvusUtil {
      * @return null 则表示没有匹配上
      */
     @Nullable
-    public static String search(List<Float> floatList, String collectionName, long tenantId, long userId,
+    public static String match(List<Float> floatList, String collectionName, long tenantId, long userId,
         @Nullable String exprStr) {
 
-        return search(floatList, collectionName, RESULT_FIELD_NAME, VECTOR_FIELD_NAME, tenantId, userId, exprStr);
+        return match(floatList, collectionName, RESULT_FIELD_NAME, VECTOR_LIST_FIELD_NAME, tenantId, userId, exprStr);
 
     }
 
@@ -161,11 +185,11 @@ public class MilvusUtil {
      * @return null 则表示没有匹配上
      */
     @Nullable
-    public static String search(List<Float> floatList, String collectionName, String resultFieldName,
+    public static String match(List<Float> floatList, String collectionName, String resultFieldName,
         String vectorFieldName, long tenantId, long userId, @Nullable String exprStr) {
 
         // 得分在 0.2以下，则算匹配上了向量数据库
-        return search(floatList, collectionName, resultFieldName, vectorFieldName, 0.2f, tenantId, userId, exprStr);
+        return match(floatList, collectionName, resultFieldName, vectorFieldName, 0.2f, tenantId, userId, exprStr);
 
     }
 
@@ -176,7 +200,7 @@ public class MilvusUtil {
      * @return null 则表示没有匹配上
      */
     @Nullable
-    public static String search(List<Float> floatList, String collectionName, String resultFieldName,
+    public static String match(List<Float> floatList, String collectionName, String resultFieldName,
         String vectorFieldName, float score, long tenantId, long userId, @Nullable String exprStr) {
 
         if (milvusServiceClient == null) {
@@ -221,6 +245,116 @@ public class MilvusUtil {
 
         // 获取：查询字段的值
         return (String)searchResultsWrapper.getFieldData(resultFieldName, 0).get(0);
+
+    }
+
+    /**
+     * 查询
+     */
+    @NotNull
+    public static <T> List<T> query(String collectionName, @Nullable String exprStr, List<String> outFieldList,
+        long offset, long limit, Class<T> tClass) {
+
+        if (milvusServiceClient == null) {
+            return new ArrayList<>();
+        }
+
+        QueryParam.Builder builder = QueryParam.newBuilder().withCollectionName(collectionName)
+            .withConsistencyLevel(ConsistencyLevelEnum.STRONG);
+
+        if (StrUtil.isNotBlank(exprStr)) {
+            builder.withExpr(exprStr);
+        }
+
+        QueryParam queryParam = builder.withOutFields(outFieldList).withOffset(offset).withLimit(limit).build();
+
+        R<QueryResults> queryResultsR = milvusServiceClient.query(queryParam);
+
+        QueryResultsWrapper queryResultsWrapper = new QueryResultsWrapper(queryResultsR.getData());
+
+        List<T> resultList = new ArrayList<>(); // 本方法返回值
+
+        for (QueryResultsWrapper.RowRecord item : queryResultsWrapper.getRowRecords()) {
+
+            Map<String, Object> fieldValueMap = item.getFieldValues();
+
+            T t = BeanUtil.copyProperties(fieldValueMap, tClass); // 属性拷贝
+
+            resultList.add(t);
+
+        }
+
+        return resultList;
+
+    }
+
+    /**
+     * 新增，备注：milvus 暂时不支持修改，请删除之后，再新增，以达到修改的目的
+     */
+    public static <T> boolean insert(String collectionName, List<T> insertRowList, @Nullable Consumer<T> consumer) {
+
+        if (milvusServiceClient == null) {
+            return false;
+        }
+
+        if (CollUtil.isEmpty(insertRowList)) {
+            return true;
+        }
+
+        List<JSONObject> insertList = new ArrayList<>();
+
+        for (T item : insertRowList) {
+
+            if (consumer != null) {
+                consumer.accept(item);
+            }
+
+            JSONObject jsonObject = BeanUtil.copyProperties(item, JSONObject.class);
+
+            insertList.add(jsonObject);
+
+        }
+
+        InsertParam insertParam =
+            InsertParam.newBuilder().withCollectionName(collectionName).withRows(insertList).build();
+
+        milvusServiceClient.insert(insertParam);
+
+        return true;
+
+    }
+
+    /**
+     * 删除：根据主键 idSet
+     */
+    public static boolean delete(String collectionName, Set<Long> idSet) {
+
+        // 条件
+        StrBuilder exprStrBuilder = StrBuilder.create();
+
+        exprStrBuilder.append("id in [");
+
+        String joinStr = CollUtil.join(idSet, ",");
+
+        exprStrBuilder.append(joinStr).append("]");
+
+        return delete(collectionName, exprStrBuilder.toString());
+
+    }
+
+    /**
+     * 删除
+     */
+    public static boolean delete(String collectionName, String exprStr) {
+
+        if (milvusServiceClient == null) {
+            return false;
+        }
+
+        milvusServiceClient
+            .delete(DeleteParam.newBuilder().withCollectionName(collectionName).withExpr(exprStr).build());
+
+        return true;
 
     }
 

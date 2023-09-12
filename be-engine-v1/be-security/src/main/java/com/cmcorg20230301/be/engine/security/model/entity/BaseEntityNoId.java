@@ -13,7 +13,7 @@ import java.util.Date;
 public class BaseEntityNoId {
 
     @TableField(fill = FieldFill.INSERT)
-    @Schema(description = "租户id")
+    @Schema(description = "租户 id")
     private Long tenantId;
 
     @TableField(fill = FieldFill.INSERT)
