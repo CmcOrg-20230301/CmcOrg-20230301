@@ -9,7 +9,6 @@ import io.milvus.grpc.SearchResults;
 import io.milvus.param.IndexType;
 import io.milvus.param.MetricType;
 import io.milvus.param.R;
-import io.milvus.param.RpcStatus;
 import io.milvus.param.collection.CreateCollectionParam;
 import io.milvus.param.collection.FieldType;
 import io.milvus.param.collection.LoadCollectionParam;
@@ -89,6 +88,7 @@ public class MilvusUtil {
         FieldType userIdFieldType =
             FieldType.newBuilder().withName(USER_ID_FIELD_NAME).withDataType(DataType.Int64).build();
 
+        // 创建并加载 collection
         createAndLoadCollection(collectionName, resultFieldType, vectorTextFieldType, vectorFieldType,
             tenantIdFieldType, userIdFieldType);
 
@@ -114,31 +114,25 @@ public class MilvusUtil {
             FieldType.newBuilder().withName("id").withDataType(DataType.Int64).withPrimaryKey(true).withAutoID(true)
                 .build();
 
+        // 备注：不建议使用：withDatabaseName(databaseName)，原因：因为 search的时候不能指定 databaseName
         CreateCollectionParam createCollectionParam =
             CreateCollectionParam.newBuilder().withCollectionName(collectionName).addFieldType(idFieldType)
                 .addFieldType(resultFieldType).addFieldType(vectorTextFieldType).addFieldType(vectorFieldType)
                 .addFieldType(tenantIdFieldType).addFieldType(userIdFieldType).build();
 
         // 创建集合，备注：如果存在则不会重新创建
-        R<RpcStatus> rpcStatusR = milvusServiceClient.createCollection(createCollectionParam);
-
-        log.info("rpcStatusR-1：{}", rpcStatusR);
+        milvusServiceClient.createCollection(createCollectionParam);
 
         IndexType indexType = IndexType.IVF_FLAT; // IndexType
         String indexParam = "{\"nlist\":1024}"; // ExtraParam，备注：值越大占用的空间越多
 
         // 创建索引，备注：如果存在则不会重新创建
-        rpcStatusR = milvusServiceClient.createIndex(
+        milvusServiceClient.createIndex(
             CreateIndexParam.newBuilder().withCollectionName(collectionName).withFieldName(vectorFieldType.getName())
                 .withIndexType(indexType).withMetricType(MetricType.L2).withExtraParam(indexParam)
                 .withSyncMode(Boolean.FALSE).build());
 
-        log.info("rpcStatusR-2：{}", rpcStatusR);
-
-        rpcStatusR = milvusServiceClient
-            .loadCollection(LoadCollectionParam.newBuilder().withCollectionName(collectionName).build());
-
-        log.info("rpcStatusR-3：{}", rpcStatusR);
+        milvusServiceClient.loadCollection(LoadCollectionParam.newBuilder().withCollectionName(collectionName).build());
 
     }
 
