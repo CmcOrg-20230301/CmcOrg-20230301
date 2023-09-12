@@ -45,4 +45,6 @@ public interface PropertiesPrefixConstant {
 
     String SOCKET_WEB_TCP_PROTOBUF = SOCKET + ".tcp-protobuf"; // tcp-protobuf相关
 
+    String MILVUS = PRE_BE + "milvus"; // 向量数据库相关
+
 }

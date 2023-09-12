@@ -14,6 +14,18 @@
 
     <dependencies>
 
+        <!-- be-model -->
+        <dependency>
+            <groupId>${cmcorg.groupId}</groupId>
+            <artifactId>be-model</artifactId>
+        </dependency>
+
+        <!-- be-util -->
+        <dependency>
+            <groupId>${cmcorg.groupId}</groupId>
+            <artifactId>be-util</artifactId>
+        </dependency>
+
         <!-- 向量数据库 -->
         <dependency>
             <groupId>io.milvus</groupId>
