@@ -499,6 +499,7 @@ public class SysTenantServiceImpl extends ServiceImpl<SysTenantMapper, SysTenant
 
         sysTenantInfoByIdVO.setMenuIdSet(menuIdSet);
 
+        // 处理：父级 id
         MyEntityUtil.handleParentId(sysTenantInfoByIdVO);
 
         return sysTenantInfoByIdVO;

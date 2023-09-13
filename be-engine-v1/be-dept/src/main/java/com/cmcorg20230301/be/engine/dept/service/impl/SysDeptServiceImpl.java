@@ -225,6 +225,7 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptMapper, SysDeptDO> im
         sysDeptInfoByIdVO.setAreaIdSet(areaIdSet);
         sysDeptInfoByIdVO.setUserIdSet(userIdSet);
 
+        // 处理：父级 id
         MyEntityUtil.handleParentId(sysDeptInfoByIdVO);
 
         return sysDeptInfoByIdVO;

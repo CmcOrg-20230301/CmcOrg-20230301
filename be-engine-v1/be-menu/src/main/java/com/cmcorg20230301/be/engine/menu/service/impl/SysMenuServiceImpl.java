@@ -292,6 +292,7 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenuDO> im
         sysMenuInfoByIdVO
             .setRoleIdSet(sysRoleRefMenuDOList.stream().map(SysRoleRefMenuDO::getRoleId).collect(Collectors.toSet()));
 
+        // 处理：父级 id
         MyEntityUtil.handleParentId(sysMenuInfoByIdVO);
 
         return sysMenuInfoByIdVO;

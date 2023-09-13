@@ -186,6 +186,7 @@ public class SysPostServiceImpl extends ServiceImpl<SysPostMapper, SysPostDO> im
 
         sysPostInfoByIdVO.setUserIdSet(userIdSet);
 
+        // 处理：父级 id
         MyEntityUtil.handleParentId(sysPostInfoByIdVO);
 
         return sysPostInfoByIdVO;
