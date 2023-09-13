@@ -158,6 +158,41 @@ public class SysPostServiceImpl extends ServiceImpl<SysPostMapper, SysPostDO> im
     }
 
     /**
+     * 通过主键id，查看详情
+     */
+    @Override
+    public SysPostInfoByIdVO infoById(NotNullId notNullId) {
+
+        // 获取：用户关联的租户
+        Set<Long> queryTenantIdSet = SysTenantUtil.getUserRefTenantIdSet();
+
+        SysPostDO sysPostDO =
+            lambdaQuery().eq(BaseEntity::getId, notNullId.getId()).in(BaseEntityNoId::getTenantId, queryTenantIdSet)
+                .one();
+
+        if (sysPostDO == null) {
+            return null;
+        }
+
+        SysPostInfoByIdVO sysPostInfoByIdVO = BeanUtil.copyProperties(sysPostDO, SysPostInfoByIdVO.class);
+
+        // 获取：绑定的用户 idSet
+        List<SysPostRefUserDO> sysPostRefUserDOList =
+            sysPostRefUserService.lambdaQuery().eq(SysPostRefUserDO::getPostId, notNullId.getId())
+                .select(SysPostRefUserDO::getUserId).list();
+
+        Set<Long> userIdSet =
+            sysPostRefUserDOList.stream().map(SysPostRefUserDO::getUserId).collect(Collectors.toSet());
+
+        sysPostInfoByIdVO.setUserIdSet(userIdSet);
+
+        MyEntityUtil.handleParentId(sysPostInfoByIdVO);
+
+        return sysPostInfoByIdVO;
+
+    }
+
+    /**
      * 批量删除
      */
     @Override
@@ -199,41 +234,6 @@ public class SysPostServiceImpl extends ServiceImpl<SysPostMapper, SysPostDO> im
     private void deleteByIdSetSub(Set<Long> idSet) {
 
         sysPostRefUserService.removeByIds(idSet);
-
-    }
-
-    /**
-     * 通过主键id，查看详情
-     */
-    @Override
-    public SysPostInfoByIdVO infoById(NotNullId notNullId) {
-
-        // 获取：用户关联的租户
-        Set<Long> queryTenantIdSet = SysTenantUtil.getUserRefTenantIdSet();
-
-        SysPostDO sysPostDO =
-            lambdaQuery().eq(BaseEntity::getId, notNullId.getId()).in(BaseEntityNoId::getTenantId, queryTenantIdSet)
-                .one();
-
-        if (sysPostDO == null) {
-            return null;
-        }
-
-        SysPostInfoByIdVO sysPostInfoByIdVO = BeanUtil.copyProperties(sysPostDO, SysPostInfoByIdVO.class);
-
-        // 获取：绑定的用户 idSet
-        List<SysPostRefUserDO> sysPostRefUserDOList =
-            sysPostRefUserService.lambdaQuery().eq(SysPostRefUserDO::getPostId, notNullId.getId())
-                .select(SysPostRefUserDO::getUserId).list();
-
-        Set<Long> userIdSet =
-            sysPostRefUserDOList.stream().map(SysPostRefUserDO::getUserId).collect(Collectors.toSet());
-
-        sysPostInfoByIdVO.setUserIdSet(userIdSet);
-
-        MyEntityUtil.handleParentId(sysPostInfoByIdVO);
-
-        return sysPostInfoByIdVO;
 
     }
 

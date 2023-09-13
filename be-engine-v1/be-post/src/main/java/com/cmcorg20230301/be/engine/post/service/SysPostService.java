@@ -20,9 +20,9 @@ public interface SysPostService extends IService<SysPostDO> {
 
     List<SysPostDO> tree(SysPostPageDTO dto);
 
-    String deleteByIdSet(NotEmptyIdSet notEmptyIdSet, boolean checkChildrenFlag);
-
     SysPostInfoByIdVO infoById(NotNullId notNullId);
+
+    String deleteByIdSet(NotEmptyIdSet notEmptyIdSet, boolean checkChildrenFlag);
 
     String addOrderNo(ChangeNumberDTO dto);
 

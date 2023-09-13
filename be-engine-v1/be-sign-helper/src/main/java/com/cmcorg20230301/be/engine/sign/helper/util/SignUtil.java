@@ -28,6 +28,7 @@ import com.cmcorg20230301.be.engine.security.mapper.SysRoleRefUserMapper;
 import com.cmcorg20230301.be.engine.security.mapper.SysTenantRefUserMapper;
 import com.cmcorg20230301.be.engine.security.mapper.SysUserInfoMapper;
 import com.cmcorg20230301.be.engine.security.mapper.SysUserMapper;
+import com.cmcorg20230301.be.engine.security.model.configuration.IUserDeleteConfiguration;
 import com.cmcorg20230301.be.engine.security.model.entity.*;
 import com.cmcorg20230301.be.engine.security.model.vo.ApiResultVO;
 import com.cmcorg20230301.be.engine.security.properties.SecurityProperties;
@@ -41,6 +42,7 @@ import org.jetbrains.annotations.Nullable;
 import org.redisson.api.RAtomicLong;
 import org.redisson.api.RBucket;
 import org.redisson.api.RedissonClient;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.time.Duration;
@@ -64,10 +66,14 @@ public class SignUtil {
     private static SysTenantRefUserMapper sysTenantRefUserMapper;
     private static SysFileService sysFileService;
 
+    @Nullable
+    private static List<IUserDeleteConfiguration> iUserDeleteConfigurationList;
+
     public SignUtil(SysUserInfoMapper sysUserInfoMapper, RedissonClient redissonClient, SysUserMapper sysUserMapper,
         SecurityProperties securityProperties, SysRoleRefUserMapper sysRoleRefUserMapper,
         SysDeptRefUserMapper sysDeptRefUserMapper, SysPostRefUserMapper sysPostRefUserMapper,
-        SysTenantRefUserMapper sysTenantRefUserMapper, SysFileService sysFileService) {
+        SysTenantRefUserMapper sysTenantRefUserMapper, SysFileService sysFileService,
+        @Autowired(required = false) @Nullable List<IUserDeleteConfiguration> iUserDeleteConfigurationList) {
 
         SignUtil.sysUserInfoMapper = sysUserInfoMapper;
         SignUtil.sysUserMapper = sysUserMapper;
@@ -78,6 +84,7 @@ public class SignUtil {
         SignUtil.sysPostRefUserMapper = sysPostRefUserMapper;
         SignUtil.sysTenantRefUserMapper = sysTenantRefUserMapper;
         SignUtil.sysFileService = sysFileService;
+        SignUtil.iUserDeleteConfigurationList = iUserDeleteConfigurationList;
 
     }
 
@@ -1041,7 +1048,7 @@ public class SignUtil {
 
             for (Long item : userIdSet) {
 
-                // 删除 jwt后缀
+                // 删除：jwt后缀
                 UserUtil.removeJwtSecretSuf(item);
 
             }
@@ -1052,15 +1059,27 @@ public class SignUtil {
 
     /**
      * 执行：账号注销，删除子表数据
+     *
+     * @param deleteFlag true 账号注销，需要删除用户相关的数据 false 修改用户的基础绑定信息
      */
-    public static void doSignDeleteSub(Set<Long> idSet, boolean removeUserInfoFlag) {
+    public static void doSignDeleteSub(Set<Long> idSet, boolean deleteFlag) {
 
         TransactionUtil.exec(() -> {
 
-            if (removeUserInfoFlag) {
+            if (deleteFlag) {
 
                 // 直接：删除用户基本信息
                 ChainWrappers.lambdaUpdateChain(sysUserInfoMapper).in(SysUserInfoDO::getId, idSet).remove();
+
+                if (CollUtil.isNotEmpty(iUserDeleteConfigurationList) && CollUtil.isNotEmpty(idSet)) {
+
+                    for (IUserDeleteConfiguration item : iUserDeleteConfigurationList) {
+
+                        item.handle(idSet); // 移除：用户相关的数据
+
+                    }
+
+                }
 
             }
 

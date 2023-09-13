@@ -78,11 +78,16 @@ public class MilvusUtil {
     public static final String VECTOR_LIST_FIELD_NAME = "vectorList";
 
     /**
-     * 字段名集合，备注：不包含：向量字段
+     * 统计总数
+     */
+    public static final String COUNT_ALL_FIELD_NAME = "count(*)";
+
+    /**
+     * 字段名集合
      */
     public static final List<String> FIELD_NAME_LIST = CollUtil
         .newArrayList(ID_FIELD_NAME, TENANT_ID_FIELD_NAME, USER_ID_FIELD_NAME, RESULT_FIELD_NAME,
-            VECTOR_TEXT_FIELD_NAME);
+            VECTOR_TEXT_FIELD_NAME, VECTOR_LIST_FIELD_NAME);
 
     /**
      * 创建并加载 collection
@@ -304,6 +309,38 @@ public class MilvusUtil {
     }
 
     /**
+     * 查询：总数
+     */
+    public static long count(String collectionName, @Nullable String exprStr) {
+
+        if (milvusServiceClient == null) {
+            return 0;
+        }
+
+        QueryParam.Builder builder = QueryParam.newBuilder().withCollectionName(collectionName)
+            .withConsistencyLevel(ConsistencyLevelEnum.STRONG);
+
+        if (StrUtil.isNotBlank(exprStr)) {
+            builder.withExpr(exprStr);
+        }
+
+        List<String> outFieldList = CollUtil.newArrayList(COUNT_ALL_FIELD_NAME);
+
+        QueryParam queryParam = builder.withOutFields(outFieldList).build();
+
+        R<QueryResults> queryResultsR = milvusServiceClient.query(queryParam);
+
+        QueryResultsWrapper queryResultsWrapper = new QueryResultsWrapper(queryResultsR.getData());
+
+        if (queryResultsWrapper.getRowCount() != 1) {
+            return 0L;
+        }
+
+        return (long)queryResultsWrapper.getRowRecords().get(0).get(COUNT_ALL_FIELD_NAME);
+
+    }
+
+    /**
      * 查询
      */
     @NotNull
@@ -363,11 +400,7 @@ public class MilvusUtil {
         // 条件
         StrBuilder exprStrBuilder = StrBuilder.create();
 
-        exprStrBuilder.append("id in [");
-
-        String joinStr = CollUtil.join(idSet, ",");
-
-        exprStrBuilder.append(joinStr).append("]");
+        exprStrBuilder.append("id in [").append(CollUtil.join(idSet, ",")).append("]");
 
         return exprStrBuilder;
 

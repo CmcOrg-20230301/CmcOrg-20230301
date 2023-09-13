@@ -15,7 +15,7 @@ public enum CanalKafkaTypeEnum {
     CREATE, // 创建表
     ALTER, // 修改表结构：新增，删除，修改 字段，删除外键（新增外键没有）
     ERASE, // 删除表
-    QUERY, // 新建，删除 数据库
+    QUERY, // 新建，删除，数据库
     TRUNCATE, // 截断表
     RENAME, // 修改表名称
     CINDEX, // 创建索引

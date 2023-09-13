@@ -114,6 +114,8 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRoleDO> im
             return;
         }
 
+        Long roleId = sysRoleDO.getId();
+
         if (CollUtil.isNotEmpty(dto.getMenuIdSet())) {
 
             // 获取：没有被禁用的菜单 idSet
@@ -127,8 +129,9 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRoleDO> im
 
                 SysRoleRefMenuDO sysRoleRefMenuDO = new SysRoleRefMenuDO();
 
-                sysRoleRefMenuDO.setRoleId(sysRoleDO.getId());
+                sysRoleRefMenuDO.setRoleId(roleId);
                 sysRoleRefMenuDO.setMenuId(menuId);
+
                 insertList.add(sysRoleRefMenuDO);
 
             }
@@ -152,8 +155,9 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRoleDO> im
 
                 SysRoleRefUserDO sysRoleRefUserDO = new SysRoleRefUserDO();
 
-                sysRoleRefUserDO.setRoleId(sysRoleDO.getId());
+                sysRoleRefUserDO.setRoleId(roleId);
                 sysRoleRefUserDO.setUserId(userId);
+
                 insertList.add(sysRoleRefUserDO);
 
             }
@@ -244,10 +248,10 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRoleDO> im
      */
     private void deleteByIdSetSub(Set<Long> idSet) {
 
-        // 删除 角色菜单关联表
+        // 删除：角色菜单关联表
         sysRoleRefMenuService.removeByIds(idSet);
 
-        // 删除 角色用户关联表
+        // 删除：角色用户关联表
         sysRoleRefUserService.removeByIds(idSet);
 
     }

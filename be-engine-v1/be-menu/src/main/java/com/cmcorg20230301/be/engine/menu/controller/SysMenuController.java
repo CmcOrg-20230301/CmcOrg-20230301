@@ -51,18 +51,18 @@ public class SysMenuController {
         return ApiResultVO.okData(baseService.tree(dto));
     }
 
-    @Operation(summary = "批量删除")
-    @PostMapping("/deleteByIdSet")
-    @PreAuthorize("hasAuthority('sysMenu:deleteByIdSet')")
-    public ApiResultVO<String> deleteByIdSet(@RequestBody @Valid NotEmptyIdSet notEmptyIdSet) {
-        return ApiResultVO.okMsg(baseService.deleteByIdSet(notEmptyIdSet, true));
-    }
-
     @Operation(summary = "通过主键id，查看详情")
     @PostMapping("/infoById")
     @PreAuthorize("hasAuthority('sysMenu:infoById')")
     public ApiResultVO<SysMenuInfoByIdVO> infoById(@RequestBody @Valid NotNullId notNullId) {
         return ApiResultVO.okData(baseService.infoById(notNullId));
+    }
+
+    @Operation(summary = "批量删除")
+    @PostMapping("/deleteByIdSet")
+    @PreAuthorize("hasAuthority('sysMenu:deleteByIdSet')")
+    public ApiResultVO<String> deleteByIdSet(@RequestBody @Valid NotEmptyIdSet notEmptyIdSet) {
+        return ApiResultVO.okMsg(baseService.deleteByIdSet(notEmptyIdSet, true));
     }
 
     @PostMapping("/userSelfMenuList")

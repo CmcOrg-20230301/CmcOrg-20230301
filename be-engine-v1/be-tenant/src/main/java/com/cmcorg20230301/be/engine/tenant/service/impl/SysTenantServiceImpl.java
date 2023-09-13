@@ -462,6 +462,50 @@ public class SysTenantServiceImpl extends ServiceImpl<SysTenantMapper, SysTenant
     }
 
     /**
+     * 通过主键id，查看详情
+     */
+    @Override
+    public SysTenantInfoByIdVO infoById(NotNullId notNullId) {
+
+        // 获取：用户关联的租户
+        Set<Long> queryTenantIdSet = SysTenantUtil.getUserRefTenantIdSet();
+
+        SysTenantDO sysTenantDO =
+            lambdaQuery().eq(BaseEntity::getId, notNullId.getId()).in(BaseEntityNoId::getTenantId, queryTenantIdSet)
+                .one();
+
+        if (sysTenantDO == null) {
+            return null;
+        }
+
+        SysTenantInfoByIdVO sysTenantInfoByIdVO = BeanUtil.copyProperties(sysTenantDO, SysTenantInfoByIdVO.class);
+
+        // 获取：绑定的用户 idSet
+        List<SysTenantRefUserDO> sysTenantRefUserDOList =
+            sysTenantRefUserService.lambdaQuery().eq(SysTenantRefUserDO::getTenantId, notNullId.getId())
+                .select(SysTenantRefUserDO::getUserId).list();
+
+        Set<Long> userIdSet =
+            sysTenantRefUserDOList.stream().map(SysTenantRefUserDO::getUserId).collect(Collectors.toSet());
+
+        // 获取：绑定的菜单 idSet
+        List<SysMenuDO> sysMenuDOList =
+            sysMenuService.lambdaQuery().eq(BaseEntityNoId::getTenantId, notNullId.getId()).select(BaseEntity::getId)
+                .list();
+
+        Set<Long> menuIdSet = sysMenuDOList.stream().map(BaseEntity::getId).collect(Collectors.toSet());
+
+        sysTenantInfoByIdVO.setUserIdSet(userIdSet);
+
+        sysTenantInfoByIdVO.setMenuIdSet(menuIdSet);
+
+        MyEntityUtil.handleParentId(sysTenantInfoByIdVO);
+
+        return sysTenantInfoByIdVO;
+
+    }
+
+    /**
      * 批量删除
      */
     @Override
@@ -548,50 +592,6 @@ public class SysTenantServiceImpl extends ServiceImpl<SysTenantMapper, SysTenant
             }
 
         }
-
-    }
-
-    /**
-     * 通过主键id，查看详情
-     */
-    @Override
-    public SysTenantInfoByIdVO infoById(NotNullId notNullId) {
-
-        // 获取：用户关联的租户
-        Set<Long> queryTenantIdSet = SysTenantUtil.getUserRefTenantIdSet();
-
-        SysTenantDO sysTenantDO =
-            lambdaQuery().eq(BaseEntity::getId, notNullId.getId()).in(BaseEntityNoId::getTenantId, queryTenantIdSet)
-                .one();
-
-        if (sysTenantDO == null) {
-            return null;
-        }
-
-        SysTenantInfoByIdVO sysTenantInfoByIdVO = BeanUtil.copyProperties(sysTenantDO, SysTenantInfoByIdVO.class);
-
-        // 获取：绑定的用户 idSet
-        List<SysTenantRefUserDO> sysTenantRefUserDOList =
-            sysTenantRefUserService.lambdaQuery().eq(SysTenantRefUserDO::getTenantId, notNullId.getId())
-                .select(SysTenantRefUserDO::getUserId).list();
-
-        Set<Long> userIdSet =
-            sysTenantRefUserDOList.stream().map(SysTenantRefUserDO::getUserId).collect(Collectors.toSet());
-
-        // 获取：绑定的菜单 idSet
-        List<SysMenuDO> sysMenuDOList =
-            sysMenuService.lambdaQuery().eq(BaseEntityNoId::getTenantId, notNullId.getId()).select(BaseEntity::getId)
-                .list();
-
-        Set<Long> menuIdSet = sysMenuDOList.stream().map(BaseEntity::getId).collect(Collectors.toSet());
-
-        sysTenantInfoByIdVO.setUserIdSet(userIdSet);
-
-        sysTenantInfoByIdVO.setMenuIdSet(menuIdSet);
-
-        MyEntityUtil.handleParentId(sysTenantInfoByIdVO);
-
-        return sysTenantInfoByIdVO;
 
     }
 

@@ -112,6 +112,7 @@ public class SysAreaServiceImpl extends ServiceImpl<SysAreaMapper, SysAreaDO> im
 
                 sysAreaRefDeptDO.setAreaId(sysAreaDO.getId());
                 sysAreaRefDeptDO.setDeptId(item);
+
                 insertList.add(sysAreaRefDeptDO);
 
             }
@@ -164,6 +165,39 @@ public class SysAreaServiceImpl extends ServiceImpl<SysAreaMapper, SysAreaDO> im
     }
 
     /**
+     * 通过主键id，查看详情
+     */
+    @Override
+    public SysAreaInfoByIdVO infoById(NotNullId notNullId) {
+
+        // 获取：用户关联的租户
+        Set<Long> queryTenantIdSet = SysTenantUtil.getUserRefTenantIdSet();
+
+        SysAreaDO sysAreaDO =
+            lambdaQuery().eq(BaseEntity::getId, notNullId.getId()).in(BaseEntityNoId::getTenantId, queryTenantIdSet)
+                .one();
+
+        if (sysAreaDO == null) {
+            return null;
+        }
+
+        SysAreaInfoByIdVO sysAreaInfoByIdVO = BeanUtil.copyProperties(sysAreaDO, SysAreaInfoByIdVO.class);
+
+        // 设置：部门 idSet
+        List<SysAreaRefDeptDO> areaRefDeptDOList =
+            areaRefDeptService.lambdaQuery().eq(SysAreaRefDeptDO::getAreaId, notNullId.getId())
+                .select(SysAreaRefDeptDO::getDeptId).list();
+
+        sysAreaInfoByIdVO
+            .setDeptIdSet(areaRefDeptDOList.stream().map(SysAreaRefDeptDO::getDeptId).collect(Collectors.toSet()));
+
+        MyEntityUtil.handleParentId(sysAreaInfoByIdVO);
+
+        return sysAreaInfoByIdVO;
+
+    }
+
+    /**
      * 批量删除
      */
     @Override
@@ -206,39 +240,6 @@ public class SysAreaServiceImpl extends ServiceImpl<SysAreaMapper, SysAreaDO> im
 
         // 删除：区域部门关联表
         areaRefDeptService.lambdaUpdate().in(SysAreaRefDeptDO::getAreaId, idSet).remove();
-
-    }
-
-    /**
-     * 通过主键id，查看详情
-     */
-    @Override
-    public SysAreaInfoByIdVO infoById(NotNullId notNullId) {
-
-        // 获取：用户关联的租户
-        Set<Long> queryTenantIdSet = SysTenantUtil.getUserRefTenantIdSet();
-
-        SysAreaDO sysAreaDO =
-            lambdaQuery().eq(BaseEntity::getId, notNullId.getId()).in(BaseEntityNoId::getTenantId, queryTenantIdSet)
-                .one();
-
-        if (sysAreaDO == null) {
-            return null;
-        }
-
-        SysAreaInfoByIdVO sysAreaInfoByIdVO = BeanUtil.copyProperties(sysAreaDO, SysAreaInfoByIdVO.class);
-
-        // 设置：部门 idSet
-        List<SysAreaRefDeptDO> areaRefDeptDOList =
-            areaRefDeptService.lambdaQuery().eq(SysAreaRefDeptDO::getAreaId, notNullId.getId())
-                .select(SysAreaRefDeptDO::getDeptId).list();
-
-        sysAreaInfoByIdVO
-            .setDeptIdSet(areaRefDeptDOList.stream().map(SysAreaRefDeptDO::getDeptId).collect(Collectors.toSet()));
-
-        MyEntityUtil.handleParentId(sysAreaInfoByIdVO);
-
-        return sysAreaInfoByIdVO;
 
     }
 

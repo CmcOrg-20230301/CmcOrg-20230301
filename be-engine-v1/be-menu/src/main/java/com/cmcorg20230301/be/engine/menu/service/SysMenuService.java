@@ -20,11 +20,11 @@ public interface SysMenuService extends IService<SysMenuDO> {
 
     List<SysMenuDO> tree(SysMenuPageDTO dto);
 
+    SysMenuInfoByIdVO infoById(NotNullId notNullId);
+
     String deleteByIdSet(NotEmptyIdSet notEmptyIdSet, boolean checkChildrenFlag);
 
     List<SysMenuDO> userSelfMenuList();
-
-    SysMenuInfoByIdVO infoById(NotNullId notNullId);
 
     String addOrderNo(ChangeNumberDTO dto);
 

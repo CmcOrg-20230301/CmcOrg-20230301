@@ -64,6 +64,7 @@ public class FileAliYunUtil {
         }
 
         DeleteObjectsRequest deleteObjectsRequest = new DeleteObjectsRequest(bucketName);
+
         deleteObjectsRequest.setKeys(new ArrayList<>(objectNameSet));
 
         oss.deleteObject(deleteObjectsRequest);

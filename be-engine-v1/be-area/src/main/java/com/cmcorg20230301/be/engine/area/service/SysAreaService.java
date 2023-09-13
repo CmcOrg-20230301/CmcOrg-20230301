@@ -20,9 +20,9 @@ public interface SysAreaService extends IService<SysAreaDO> {
 
     List<SysAreaDO> tree(SysAreaPageDTO dto);
 
-    String deleteByIdSet(NotEmptyIdSet notEmptyIdSet, boolean checkChildrenFlag);
-
     SysAreaInfoByIdVO infoById(NotNullId notNullId);
+
+    String deleteByIdSet(NotEmptyIdSet notEmptyIdSet, boolean checkChildrenFlag);
 
     String addOrderNo(ChangeNumberDTO dto);
 

@@ -24,21 +24,21 @@ public class MyThreadUtil {
     /**
      * 异步执行
      */
-    public static void execute(Runnable task) {
+    public static void execute(Runnable runnable) {
 
-        taskExecutor.execute(task);
+        taskExecutor.execute(runnable);
 
     }
 
     /**
      * 提交任务调度请求
      *
-     * @param task    待执行任务
-     * @param trigger 使用 Trigger指定任务调度规则
+     * @param runnable 待执行任务
+     * @param trigger  使用 Trigger指定任务调度规则
      */
-    public static ScheduledFuture<?> schedule(Runnable task, Trigger trigger) {
+    public static ScheduledFuture<?> schedule(Runnable runnable, Trigger trigger) {
 
-        return taskScheduler.schedule(task, trigger);
+        return taskScheduler.schedule(runnable, trigger);
 
     }
 
@@ -46,12 +46,12 @@ public class MyThreadUtil {
      * 提交任务调度请求
      * 注意任务只执行一次，使用 startTime指定其启动时间
      *
-     * @param task      待执行任务
+     * @param runnable      待执行任务
      * @param startTime 任务启动时间
      */
-    public static ScheduledFuture<?> schedule(Runnable task, Date startTime) {
+    public static ScheduledFuture<?> schedule(Runnable runnable, Date startTime) {
 
-        return taskScheduler.schedule(task, startTime);
+        return taskScheduler.schedule(runnable, startTime);
 
     }
 
@@ -59,13 +59,13 @@ public class MyThreadUtil {
      * 使用 fixedRate的方式提交任务调度请求
      * 任务首次启动时间由传入参数指定
      *
-     * @param task      待执行的任务
+     * @param runnable      待执行的任务
      * @param startTime 任务启动时间
      * @param period    两次任务启动时间之间的间隔时间，默认单位是毫秒
      */
-    public static ScheduledFuture<?> scheduleAtFixedRate(Runnable task, Date startTime, long period) {
+    public static ScheduledFuture<?> scheduleAtFixedRate(Runnable runnable, Date startTime, long period) {
 
-        return taskScheduler.scheduleAtFixedRate(task, startTime, period);
+        return taskScheduler.scheduleAtFixedRate(runnable, startTime, period);
 
     }
 
@@ -73,12 +73,12 @@ public class MyThreadUtil {
      * 使用 fixedRate的方式提交任务调度请求
      * 任务首次启动时间未设置，任务池将会尽可能早的启动任务
      *
-     * @param task   待执行任务
+     * @param runnable   待执行任务
      * @param period 两次任务启动时间之间的间隔时间，默认单位是毫秒
      */
-    public static ScheduledFuture<?> scheduleAtFixedRate(Runnable task, long period) {
+    public static ScheduledFuture<?> scheduleAtFixedRate(Runnable runnable, long period) {
 
-        return taskScheduler.scheduleAtFixedRate(task, period);
+        return taskScheduler.scheduleAtFixedRate(runnable, period);
 
     }
 
@@ -86,13 +86,13 @@ public class MyThreadUtil {
      * 使用 fixedDelay的方式提交任务调度请求
      * 任务首次启动时间由传入参数指定
      *
-     * @param task      待执行的任务
+     * @param runnable      待执行的任务
      * @param startTime 任务启动时间
      * @param period    两次任务启动时间之间的间隔时间，默认单位是毫秒
      */
-    public static ScheduledFuture<?> scheduleWithFixedDelay(Runnable task, Date startTime, long period) {
+    public static ScheduledFuture<?> scheduleWithFixedDelay(Runnable runnable, Date startTime, long period) {
 
-        return taskScheduler.scheduleWithFixedDelay(task, startTime, period);
+        return taskScheduler.scheduleWithFixedDelay(runnable, startTime, period);
 
     }
 
@@ -100,12 +100,12 @@ public class MyThreadUtil {
      * 使用 fixedDelay的方式提交任务调度请求
      * 任务首次启动时间未设置，任务池将会尽可能早的启动任务
      *
-     * @param task   待执行任务
+     * @param runnable   待执行任务
      * @param period 两次任务启动时间之间的间隔时间，默认单位是毫秒
      */
-    public static ScheduledFuture<?> scheduleWithFixedDelay(Runnable task, long period) {
+    public static ScheduledFuture<?> scheduleWithFixedDelay(Runnable runnable, long period) {
 
-        return taskScheduler.scheduleWithFixedDelay(task, period);
+        return taskScheduler.scheduleWithFixedDelay(runnable, period);
 
     }
 

@@ -111,6 +111,7 @@ public class CanalKafkaListenerHelper {
             if (NumberUtil.isNumber(tableIndexStr)) {
 
                 splitTrimList.remove(splitTrimList.size() - 1); // 移除：最后一个元素，即：分表的 index
+
                 return CollUtil.join(splitTrimList, underlineStr); // 重新：组装 key
 
             }

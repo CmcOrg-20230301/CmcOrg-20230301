@@ -19,9 +19,9 @@ public interface SysDeptService extends IService<SysDeptDO> {
 
     List<SysDeptDO> tree(SysDeptPageDTO dto);
 
-    String deleteByIdSet(NotEmptyIdSet notEmptyIdSet, boolean checkChildrenFlag);
-
     SysDeptDO infoById(NotNullId notNullId);
+
+    String deleteByIdSet(NotEmptyIdSet notEmptyIdSet, boolean checkChildrenFlag);
 
     String addOrderNo(ChangeNumberDTO dto);
 

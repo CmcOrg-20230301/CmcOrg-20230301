@@ -506,46 +506,6 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserProMapper, SysUserDO>
     }
 
     /**
-     * 批量注销用户
-     */
-    @Override
-    @DSTransactional
-    public String deleteByIdSet(NotEmptyIdSet notEmptyIdSet) {
-
-        if (CollUtil.isEmpty(notEmptyIdSet.getIdSet())) {
-            return BaseBizCodeEnum.OK;
-        }
-
-        SignUtil.doSignDelete(notEmptyIdSet.getIdSet());
-
-        return BaseBizCodeEnum.OK;
-
-    }
-
-    /**
-     * 刷新用户 jwt私钥后缀
-     */
-    @Override
-    public String refreshJwtSecretSuf(NotEmptyIdSet notEmptyIdSet) {
-
-        if (CollUtil.isEmpty(notEmptyIdSet.getIdSet())) {
-            return BaseBizCodeEnum.OK;
-        }
-
-        // 检查：是否非法操作
-        SysTenantUtil.checkIllegal(notEmptyIdSet.getIdSet(), getCheckIllegalFunc1(notEmptyIdSet.getIdSet()));
-
-        for (Long item : notEmptyIdSet.getIdSet()) {
-
-            UserUtil.setJwtSecretSuf(item); // 设置：jwt秘钥后缀
-
-        }
-
-        return BaseBizCodeEnum.OK;
-
-    }
-
-    /**
      * 通过主键id，查看详情
      */
     @Override
@@ -607,6 +567,47 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserProMapper, SysUserDO>
         sysUserInfoByIdVO.setTenantIdSet(tenantIdSet);
 
         return sysUserInfoByIdVO;
+
+    }
+
+    /**
+     * 批量注销用户
+     */
+    @Override
+    @DSTransactional
+    public String deleteByIdSet(NotEmptyIdSet notEmptyIdSet) {
+
+        if (CollUtil.isEmpty(notEmptyIdSet.getIdSet())) {
+            return BaseBizCodeEnum.OK;
+        }
+
+        // 执行：账号注销
+        SignUtil.doSignDelete(notEmptyIdSet.getIdSet());
+
+        return BaseBizCodeEnum.OK;
+
+    }
+
+    /**
+     * 刷新用户 jwt私钥后缀
+     */
+    @Override
+    public String refreshJwtSecretSuf(NotEmptyIdSet notEmptyIdSet) {
+
+        if (CollUtil.isEmpty(notEmptyIdSet.getIdSet())) {
+            return BaseBizCodeEnum.OK;
+        }
+
+        // 检查：是否非法操作
+        SysTenantUtil.checkIllegal(notEmptyIdSet.getIdSet(), getCheckIllegalFunc1(notEmptyIdSet.getIdSet()));
+
+        for (Long item : notEmptyIdSet.getIdSet()) {
+
+            UserUtil.setJwtSecretSuf(item); // 设置：jwt秘钥后缀
+
+        }
+
+        return BaseBizCodeEnum.OK;
 
     }
 

@@ -88,7 +88,7 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenuDO> im
         }
 
         if (dto.getId() != null) {
-            deleteByIdSetSub(CollUtil.newHashSet(dto.getId())); // 先删除 子表数据
+            deleteByIdSetSub(CollUtil.newHashSet(dto.getId())); // 先删除：子表数据
         }
 
         SysMenuDO sysMenuDO = getEntityByDTO(dto);
@@ -266,6 +266,39 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenuDO> im
     }
 
     /**
+     * 通过主键id，查看详情
+     */
+    @Override
+    public SysMenuInfoByIdVO infoById(NotNullId notNullId) {
+
+        // 获取：用户关联的租户
+        Set<Long> queryTenantIdSet = SysTenantUtil.getUserRefTenantIdSet();
+
+        SysMenuDO sysMenuDO =
+            lambdaQuery().eq(BaseEntity::getId, notNullId.getId()).in(BaseEntityNoId::getTenantId, queryTenantIdSet)
+                .one();
+
+        if (sysMenuDO == null) {
+            return null;
+        }
+
+        SysMenuInfoByIdVO sysMenuInfoByIdVO = BeanUtil.copyProperties(sysMenuDO, SysMenuInfoByIdVO.class);
+
+        // 设置：角色 idSet
+        List<SysRoleRefMenuDO> sysRoleRefMenuDOList =
+            sysRoleRefMenuService.lambdaQuery().eq(SysRoleRefMenuDO::getMenuId, notNullId.getId())
+                .select(SysRoleRefMenuDO::getRoleId).list();
+
+        sysMenuInfoByIdVO
+            .setRoleIdSet(sysRoleRefMenuDOList.stream().map(SysRoleRefMenuDO::getRoleId).collect(Collectors.toSet()));
+
+        MyEntityUtil.handleParentId(sysMenuInfoByIdVO);
+
+        return sysMenuInfoByIdVO;
+
+    }
+
+    /**
      * 批量删除
      */
     @Override
@@ -343,39 +376,6 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenuDO> im
 
         return sysMenuDoSet.stream().sorted(Comparator.comparing(BaseEntityTree::getOrderNo, Comparator.reverseOrder()))
             .collect(Collectors.toList());
-
-    }
-
-    /**
-     * 通过主键id，查看详情
-     */
-    @Override
-    public SysMenuInfoByIdVO infoById(NotNullId notNullId) {
-
-        // 获取：用户关联的租户
-        Set<Long> queryTenantIdSet = SysTenantUtil.getUserRefTenantIdSet();
-
-        SysMenuDO sysMenuDO =
-            lambdaQuery().eq(BaseEntity::getId, notNullId.getId()).in(BaseEntityNoId::getTenantId, queryTenantIdSet)
-                .one();
-
-        if (sysMenuDO == null) {
-            return null;
-        }
-
-        SysMenuInfoByIdVO sysMenuInfoByIdVO = BeanUtil.copyProperties(sysMenuDO, SysMenuInfoByIdVO.class);
-
-        // 设置：角色 idSet
-        List<SysRoleRefMenuDO> sysRoleRefMenuDOList =
-            sysRoleRefMenuService.lambdaQuery().eq(SysRoleRefMenuDO::getMenuId, notNullId.getId())
-                .select(SysRoleRefMenuDO::getRoleId).list();
-
-        sysMenuInfoByIdVO
-            .setRoleIdSet(sysRoleRefMenuDOList.stream().map(SysRoleRefMenuDO::getRoleId).collect(Collectors.toSet()));
-
-        MyEntityUtil.handleParentId(sysMenuInfoByIdVO);
-
-        return sysMenuInfoByIdVO;
 
     }
 

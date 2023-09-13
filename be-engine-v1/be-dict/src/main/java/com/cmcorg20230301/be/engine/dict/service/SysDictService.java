@@ -23,9 +23,9 @@ public interface SysDictService extends IService<SysDictDO> {
 
     List<SysDictDO> tree(SysDictPageDTO dto);
 
-    String deleteByIdSet(NotEmptyIdSet notEmptyIdSet);
-
     SysDictDO infoById(NotNullId notNullId);
+
+    String deleteByIdSet(NotEmptyIdSet notEmptyIdSet);
 
     String addOrderNo(ChangeNumberDTO dto);
 

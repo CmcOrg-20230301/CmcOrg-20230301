@@ -52,18 +52,18 @@ public class SysUserController {
         return ApiResultVO.okMsg(baseService.insertOrUpdate(dto));
     }
 
-    @Operation(summary = "批量：注销用户")
-    @PostMapping("/deleteByIdSet")
-    @PreAuthorize("hasAuthority('sysUser:deleteByIdSet')")
-    public ApiResultVO<String> deleteByIdSet(@RequestBody @Valid NotEmptyIdSet notEmptyIdSet) {
-        return ApiResultVO.okMsg(baseService.deleteByIdSet(notEmptyIdSet));
-    }
-
     @Operation(summary = "通过主键id，查看详情")
     @PostMapping("/infoById")
     @PreAuthorize("hasAuthority('sysUser:infoById')")
     public ApiResultVO<SysUserInfoByIdVO> infoById(@RequestBody @Valid NotNullId notNullId) {
         return ApiResultVO.okData(baseService.infoById(notNullId));
+    }
+
+    @Operation(summary = "批量：注销用户")
+    @PostMapping("/deleteByIdSet")
+    @PreAuthorize("hasAuthority('sysUser:deleteByIdSet')")
+    public ApiResultVO<String> deleteByIdSet(@RequestBody @Valid NotEmptyIdSet notEmptyIdSet) {
+        return ApiResultVO.okMsg(baseService.deleteByIdSet(notEmptyIdSet));
     }
 
     @Operation(summary = "刷新：用户jwt私钥后缀")

@@ -155,7 +155,7 @@ public class GenerateApiUtil {
         } else if (CollUtil.isNotEmpty(parameter)) {
 
             // 备注：这里只获取一个参数
-            BeApi.BeApiField beApiField = parameter.get(new ArrayList<>(parameter.keySet()).get(0));
+            BeApi.BeApiField beApiField = parameter.get(CollUtil.getFirst(parameter.keySet()));
 
             // 如果是：对象类型
             if (beApiField instanceof BeApi.BeApiSchema) {
@@ -305,7 +305,7 @@ public class GenerateApiUtil {
         if (CollUtil.isNotEmpty(parameter)) {
 
             // 备注：这里只获取一个参数
-            BeApi.BeApiField beApiField = parameter.get(new ArrayList<>(parameter.keySet()).get(0));
+            BeApi.BeApiField beApiField = parameter.get(CollUtil.getFirst(parameter.keySet()));
 
             // 如果是：对象类型
             if (beApiField instanceof BeApi.BeApiSchema) {

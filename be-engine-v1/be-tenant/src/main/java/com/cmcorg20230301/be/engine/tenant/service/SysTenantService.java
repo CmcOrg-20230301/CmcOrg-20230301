@@ -22,9 +22,9 @@ public interface SysTenantService extends IService<SysTenantDO> {
 
     List<SysTenantDO> tree(SysTenantPageDTO dto);
 
-    String deleteByIdSet(NotEmptyIdSet notEmptyIdSet);
-
     SysTenantInfoByIdVO infoById(NotNullId notNullId);
+
+    String deleteByIdSet(NotEmptyIdSet notEmptyIdSet);
 
     String addOrderNo(ChangeNumberDTO dto);
 

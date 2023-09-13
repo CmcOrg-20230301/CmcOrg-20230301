@@ -112,6 +112,7 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptMapper, SysDeptDO> im
             for (Long item : dto.getAreaIdSet()) {
 
                 SysAreaRefDeptDO sysAreaRefDeptDO = new SysAreaRefDeptDO();
+
                 sysAreaRefDeptDO.setAreaId(item);
                 sysAreaRefDeptDO.setDeptId(sysDeptDO.getId());
 
@@ -127,6 +128,7 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptMapper, SysDeptDO> im
         if (CollUtil.isNotEmpty(dto.getUserIdSet())) {
 
             List<SysDeptRefUserDO> insertList = new ArrayList<>();
+
             for (Long item : dto.getUserIdSet()) {
 
                 SysDeptRefUserDO sysDeptRefUserDO = new SysDeptRefUserDO();
@@ -186,6 +188,50 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptMapper, SysDeptDO> im
     }
 
     /**
+     * 通过主键id，查看详情
+     */
+    @Override
+    public SysDeptInfoByIdVO infoById(NotNullId notNullId) {
+
+        // 获取：用户关联的租户
+        Set<Long> queryTenantIdSet = SysTenantUtil.getUserRefTenantIdSet();
+
+        SysDeptDO sysDeptDO =
+            lambdaQuery().eq(BaseEntity::getId, notNullId.getId()).in(BaseEntityNoId::getTenantId, queryTenantIdSet)
+                .one();
+
+        if (sysDeptDO == null) {
+            return null;
+        }
+
+        SysDeptInfoByIdVO sysDeptInfoByIdVO = BeanUtil.copyProperties(sysDeptDO, SysDeptInfoByIdVO.class);
+
+        // 获取：绑定的区域 idSet
+        List<SysAreaRefDeptDO> sysAreaRefDeptDOList =
+            sysAreaRefDeptService.lambdaQuery().eq(SysAreaRefDeptDO::getDeptId, notNullId.getId())
+                .select(SysAreaRefDeptDO::getAreaId).list();
+
+        Set<Long> areaIdSet =
+            sysAreaRefDeptDOList.stream().map(SysAreaRefDeptDO::getAreaId).collect(Collectors.toSet());
+
+        // 获取：绑定的用户 idSet
+        List<SysDeptRefUserDO> sysDeptRefUserDOList =
+            sysDeptRefUserService.lambdaQuery().eq(SysDeptRefUserDO::getDeptId, notNullId.getId())
+                .select(SysDeptRefUserDO::getUserId).list();
+
+        Set<Long> userIdSet =
+            sysDeptRefUserDOList.stream().map(SysDeptRefUserDO::getUserId).collect(Collectors.toSet());
+
+        sysDeptInfoByIdVO.setAreaIdSet(areaIdSet);
+        sysDeptInfoByIdVO.setUserIdSet(userIdSet);
+
+        MyEntityUtil.handleParentId(sysDeptInfoByIdVO);
+
+        return sysDeptInfoByIdVO;
+
+    }
+
+    /**
      * 批量删除
      */
     @Override
@@ -229,50 +275,6 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptMapper, SysDeptDO> im
         sysAreaRefDeptService.lambdaUpdate().in(SysAreaRefDeptDO::getDeptId, idSet).remove();
 
         sysDeptRefUserService.lambdaUpdate().in(SysDeptRefUserDO::getDeptId, idSet).remove();
-
-    }
-
-    /**
-     * 通过主键id，查看详情
-     */
-    @Override
-    public SysDeptInfoByIdVO infoById(NotNullId notNullId) {
-
-        // 获取：用户关联的租户
-        Set<Long> queryTenantIdSet = SysTenantUtil.getUserRefTenantIdSet();
-
-        SysDeptDO sysDeptDO =
-            lambdaQuery().eq(BaseEntity::getId, notNullId.getId()).in(BaseEntityNoId::getTenantId, queryTenantIdSet)
-                .one();
-
-        if (sysDeptDO == null) {
-            return null;
-        }
-
-        SysDeptInfoByIdVO sysDeptInfoByIdVO = BeanUtil.copyProperties(sysDeptDO, SysDeptInfoByIdVO.class);
-
-        // 获取：绑定的区域 idSet
-        List<SysAreaRefDeptDO> sysAreaRefDeptDOList =
-            sysAreaRefDeptService.lambdaQuery().eq(SysAreaRefDeptDO::getDeptId, notNullId.getId())
-                .select(SysAreaRefDeptDO::getAreaId).list();
-
-        Set<Long> areaIdSet =
-            sysAreaRefDeptDOList.stream().map(SysAreaRefDeptDO::getAreaId).collect(Collectors.toSet());
-
-        // 获取：绑定的用户 idSet
-        List<SysDeptRefUserDO> sysDeptRefUserDOList =
-            sysDeptRefUserService.lambdaQuery().eq(SysDeptRefUserDO::getDeptId, notNullId.getId())
-                .select(SysDeptRefUserDO::getUserId).list();
-
-        Set<Long> userIdSet =
-            sysDeptRefUserDOList.stream().map(SysDeptRefUserDO::getUserId).collect(Collectors.toSet());
-
-        sysDeptInfoByIdVO.setAreaIdSet(areaIdSet);
-        sysDeptInfoByIdVO.setUserIdSet(userIdSet);
-
-        MyEntityUtil.handleParentId(sysDeptInfoByIdVO);
-
-        return sysDeptInfoByIdVO;
 
     }
 

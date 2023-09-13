@@ -261,6 +261,16 @@ public class SysDictServiceImpl extends ServiceImpl<SysDictMapper, SysDictDO> im
     }
 
     /**
+     * 通过主键id，查看详情
+     */
+    @Override
+    public SysDictDO infoById(NotNullId notNullId) {
+
+        return getById(notNullId.getId());
+
+    }
+
+    /**
      * 批量删除
      */
     @Override
@@ -304,16 +314,6 @@ public class SysDictServiceImpl extends ServiceImpl<SysDictMapper, SysDictDO> im
         lambdaUpdate().in(SysDictDO::getDictKey, dictKeySet).remove();
 
         return BaseBizCodeEnum.OK;
-
-    }
-
-    /**
-     * 通过主键id，查看详情
-     */
-    @Override
-    public SysDictDO infoById(NotNullId notNullId) {
-
-        return getById(notNullId.getId());
 
     }
 

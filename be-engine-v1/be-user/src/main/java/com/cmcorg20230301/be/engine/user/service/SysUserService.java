@@ -21,11 +21,11 @@ public interface SysUserService extends IService<SysUserDO> {
 
     String insertOrUpdate(SysUserInsertOrUpdateDTO dto);
 
+    SysUserInfoByIdVO infoById(NotNullId notNullId);
+
     String deleteByIdSet(NotEmptyIdSet notEmptyIdSet);
 
     String refreshJwtSecretSuf(NotEmptyIdSet notEmptyIdSet);
-
-    SysUserInfoByIdVO infoById(NotNullId notNullId);
 
     String resetAvatar(NotEmptyIdSet notEmptyIdSet);
 
