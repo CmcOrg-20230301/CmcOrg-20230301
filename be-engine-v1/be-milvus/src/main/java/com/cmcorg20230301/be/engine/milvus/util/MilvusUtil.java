@@ -162,10 +162,9 @@ public class MilvusUtil {
      * @return null 则表示没有匹配上
      */
     @Nullable
-    public static String match(List<Float> floatList, String collectionName, long tenantId, long userId,
-        @Nullable String exprStr) {
+    public static String match(List<Float> floatList, String collectionName, @Nullable String exprStr) {
 
-        return match(floatList, collectionName, RESULT_FIELD_NAME, VECTOR_LIST_FIELD_NAME, tenantId, userId, exprStr);
+        return match(floatList, collectionName, RESULT_FIELD_NAME, VECTOR_LIST_FIELD_NAME, exprStr);
 
     }
 
@@ -176,10 +175,10 @@ public class MilvusUtil {
      */
     @Nullable
     public static String match(List<Float> floatList, String collectionName, String resultFieldName,
-        String vectorFieldName, long tenantId, long userId, @Nullable String exprStr) {
+        String vectorFieldName, @Nullable String exprStr) {
 
         // 得分在 0.2以下，则算匹配上了向量数据库
-        return match(floatList, collectionName, resultFieldName, vectorFieldName, 0.2f, tenantId, userId, exprStr);
+        return match(floatList, collectionName, resultFieldName, vectorFieldName, 0.2f, exprStr);
 
     }
 
@@ -191,7 +190,7 @@ public class MilvusUtil {
      */
     @Nullable
     public static String match(List<Float> floatList, String collectionName, String resultFieldName,
-        String vectorFieldName, float score, long tenantId, long userId, @Nullable String exprStr) {
+        String vectorFieldName, float score, @Nullable String exprStr) {
 
         if (milvusServiceClient == null) {
             return null;
@@ -207,22 +206,15 @@ public class MilvusUtil {
         List<String> outFieldList = Collections.singletonList(resultFieldName);
         List<List<Float>> vectorList = Collections.singletonList(floatList);
 
-        // 过滤器表达式
-        StrBuilder exprStrBuilder = StrBuilder.create();
-
-        exprStrBuilder.append(" tenantId == ").append(tenantId).append(" and userId == ").append(userId);
+        SearchParam.Builder builder = SearchParam.newBuilder().withCollectionName(collectionName)
+            .withConsistencyLevel(ConsistencyLevelEnum.STRONG).withMetricType(MetricType.L2).withOutFields(outFieldList)
+            .withTopK(topK).withVectors(vectorList).withVectorFieldName(vectorFieldName).withParams(param);
 
         if (StrUtil.isNotBlank(exprStr)) {
-            exprStrBuilder.append(" and ").append(exprStr); // 添加：额外的查询条件
+            builder.withExpr(exprStr); // 添加：额外的查询条件
         }
 
-        SearchParam searchParam = SearchParam.newBuilder().withCollectionName(collectionName)
-            .withConsistencyLevel(ConsistencyLevelEnum.STRONG).withMetricType(MetricType.L2).withOutFields(outFieldList)
-            .withTopK(topK).withVectors(vectorList).withVectorFieldName(vectorFieldName).withParams(param)
-            .withExpr(exprStrBuilder.toString()) //
-            .build();
-
-        R<SearchResults> searchResults = milvusServiceClient.search(searchParam);
+        R<SearchResults> searchResults = milvusServiceClient.search(builder.build());
 
         SearchResultsWrapper searchResultsWrapper = new SearchResultsWrapper(searchResults.getData().getResults());
 
