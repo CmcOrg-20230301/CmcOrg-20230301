@@ -53,6 +53,16 @@ public class MilvusUtil {
     public static final String ID_FIELD_NAME = "id";
 
     /**
+     * 租户 id
+     */
+    public static final String TENANT_ID_FIELD_NAME = "tenantId";
+
+    /**
+     * 用户 id
+     */
+    public static final String USER_ID_FIELD_NAME = "userId";
+
+    /**
      * 返回值
      */
     public static final String RESULT_FIELD_NAME = "result";
@@ -70,8 +80,9 @@ public class MilvusUtil {
     /**
      * 字段名集合，备注：不包含：向量字段
      */
-    public static final List<String> FIELD_NAME_LIST =
-        CollUtil.newArrayList(ID_FIELD_NAME, RESULT_FIELD_NAME, VECTOR_TEXT_FIELD_NAME);
+    public static final List<String> FIELD_NAME_LIST = CollUtil
+        .newArrayList(ID_FIELD_NAME, TENANT_ID_FIELD_NAME, USER_ID_FIELD_NAME, RESULT_FIELD_NAME,
+            VECTOR_TEXT_FIELD_NAME);
 
     /**
      * 创建并加载 collection
@@ -79,11 +90,17 @@ public class MilvusUtil {
      *
      * @param vectorLength 向量集合长度，注意：这里的向量长度必须完全一致，不然会报错
      */
-    public static void createAndLoadCollection(String collectionName, int vectorLength,
-        @Nullable List<FieldType> fieldTypeList) {
+    public static boolean createAndLoadCollection(String collectionName, int vectorLength,
+        @Nullable List<FieldType> otherFieldTypeList) {
 
         FieldType idFieldType =
             FieldType.newBuilder().withName(ID_FIELD_NAME).withDataType(DataType.Int64).withPrimaryKey(true).build();
+
+        FieldType tenantIdFieldType =
+            FieldType.newBuilder().withName(TENANT_ID_FIELD_NAME).withDataType(DataType.Int64).build();
+
+        FieldType userIdFieldType =
+            FieldType.newBuilder().withName(USER_ID_FIELD_NAME).withDataType(DataType.Int64).build();
 
         FieldType resultFieldType =
             FieldType.newBuilder().withName(RESULT_FIELD_NAME).withDataType(DataType.VarChar).withMaxLength(2000)
@@ -93,38 +110,40 @@ public class MilvusUtil {
             FieldType.newBuilder().withName(VECTOR_TEXT_FIELD_NAME).withDataType(DataType.VarChar).withMaxLength(2000)
                 .build();
 
-        FieldType vectorFieldType =
+        FieldType vectorListFieldType =
             FieldType.newBuilder().withName(VECTOR_LIST_FIELD_NAME).withDataType(DataType.FloatVector)
                 .withDimension(vectorLength).build();
 
         // 创建并加载 collection
-        createAndLoadCollection(collectionName, idFieldType, resultFieldType, vectorTextFieldType, vectorFieldType,
-            fieldTypeList);
+        return createAndLoadCollection(collectionName, idFieldType, tenantIdFieldType, userIdFieldType, resultFieldType,
+            vectorTextFieldType, vectorListFieldType, otherFieldTypeList);
 
     }
 
     /**
      * 创建并加载 collection
      */
-    public static void createAndLoadCollection(String collectionName, FieldType idFieldType, FieldType resultFieldType,
-        FieldType vectorTextFieldType, FieldType vectorFieldType, @Nullable List<FieldType> fieldTypeList) {
+    public static boolean createAndLoadCollection(String collectionName, FieldType idFieldType,
+        FieldType tenantIdFieldType, FieldType userIdFieldType, FieldType resultFieldType,
+        FieldType vectorTextFieldType, FieldType vectorListFieldType, @Nullable List<FieldType> otherFieldTypeList) {
 
         if (milvusServiceClient == null) {
-            return;
+            return false;
         }
 
-        if (collectionName == null || idFieldType == null || resultFieldType == null || vectorTextFieldType == null
-            || vectorFieldType == null) {
-            return;
+        if (collectionName == null || idFieldType == null || tenantIdFieldType == null || userIdFieldType == null
+            || resultFieldType == null || vectorTextFieldType == null || vectorListFieldType == null) {
+            return false;
         }
 
         // 备注：不建议使用：withDatabaseName(databaseName)，原因：因为 search的时候不能指定 databaseName
         CreateCollectionParam.Builder builder =
             CreateCollectionParam.newBuilder().withCollectionName(collectionName).addFieldType(idFieldType)
-                .addFieldType(resultFieldType).addFieldType(vectorTextFieldType).addFieldType(vectorFieldType);
+                .addFieldType(tenantIdFieldType).addFieldType(userIdFieldType).addFieldType(resultFieldType)
+                .addFieldType(vectorTextFieldType).addFieldType(vectorListFieldType);
 
-        if (CollUtil.isNotEmpty(fieldTypeList)) {
-            builder.withFieldTypes(fieldTypeList); // 添加：额外的字段
+        if (CollUtil.isNotEmpty(otherFieldTypeList)) {
+            builder.withFieldTypes(otherFieldTypeList); // 添加：额外的字段
         }
 
         // 创建集合，备注：如果存在则不会重新创建
@@ -134,12 +153,13 @@ public class MilvusUtil {
         String indexParam = "{\"nlist\":1024}"; // ExtraParam，备注：值越大占用的空间越多
 
         // 创建索引，备注：如果存在则不会重新创建
-        milvusServiceClient.createIndex(
-            CreateIndexParam.newBuilder().withCollectionName(collectionName).withFieldName(vectorFieldType.getName())
-                .withIndexType(indexType).withMetricType(MetricType.L2).withExtraParam(indexParam)
-                .withSyncMode(Boolean.FALSE).build());
+        milvusServiceClient.createIndex(CreateIndexParam.newBuilder().withCollectionName(collectionName)
+            .withFieldName(vectorListFieldType.getName()).withIndexType(indexType).withMetricType(MetricType.L2)
+            .withExtraParam(indexParam).withSyncMode(Boolean.FALSE).build());
 
         milvusServiceClient.loadCollection(LoadCollectionParam.newBuilder().withCollectionName(collectionName).build());
+
+        return true;
 
     }
 
@@ -223,7 +243,7 @@ public class MilvusUtil {
     /**
      * 新增，备注：milvus 暂时不支持修改，请删除之后，再新增，以达到修改的目的
      *
-     * @param insertRowList 注意：id字段一定要有值，不然会报错
+     * @param insertRowList 注意：id字段一定要有值，不然会报错，建议：继承 {@link com.cmcorg20230301.be.engine.milvus.mode.entity.milvus.BaseMilvusDO} 该类，方便 统一管理
      */
     public static <T> boolean insert(String collectionName, List<T> insertRowList, @Nullable Consumer<T> consumer) {
 
