@@ -336,7 +336,7 @@ public class MilvusUtil {
 
     /**
      * 查询
-     * 注意：like只支持：like ab%，不支持 %ab%
+     * 注意：like只支持：like ab%，不支持 %ab%，不然会报错
      */
     @NotNull
     public static <T> List<T> query(String collectionName, @Nullable String exprStr, List<String> outFieldList,
