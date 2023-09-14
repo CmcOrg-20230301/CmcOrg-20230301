@@ -368,7 +368,15 @@ public class MilvusUtil {
             builder.withExpr(exprStr);
         }
 
-        QueryParam queryParam = builder.withOutFields(outFieldList).withOffset(offset).withLimit(limit).build();
+        if (offset > 0) {
+            builder.withOffset(offset);
+        }
+
+        if (limit > 0) { // 不能小于：0，并且不能大于：16384
+            builder.withLimit(limit);
+        }
+
+        QueryParam queryParam = builder.withOutFields(outFieldList).build();
 
         R<QueryResults> queryResultsR = milvusServiceClient.query(queryParam);
 

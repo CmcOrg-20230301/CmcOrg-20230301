@@ -21,7 +21,7 @@ public class MyPageUtil {
         }
 
         if (pageSize < 1) {
-            pageSize = 0;
+            pageSize = 1;
         }
 
         return (pageNo - 1) * pageSize;

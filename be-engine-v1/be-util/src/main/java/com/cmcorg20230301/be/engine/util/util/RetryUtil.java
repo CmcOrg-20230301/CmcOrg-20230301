@@ -1,6 +1,5 @@
 package com.cmcorg20230301.be.engine.util.util;
 
-import cn.hutool.core.io.IORuntimeException;
 import cn.hutool.http.HttpRequest;
 import lombok.extern.slf4j.Slf4j;
 
@@ -18,46 +17,28 @@ public class RetryUtil {
     public static String execHttpRequest(HttpRequest httpRequest) {
 
         // 重试 3次
-        return execHttpRequest(httpRequest, 3);
+        return execHttpRequest(httpRequest, 10);
 
     }
 
     /**
      * 执行：http请求
      *
-     * @param retryNumber 传值多少，则方法会执行多少次
+     * @param execNumber 传值多少，则方法会执行多少次
      */
-    public static String execHttpRequest(HttpRequest httpRequest, int retryNumber) {
+    public static String execHttpRequest(HttpRequest httpRequest, int execNumber) {
 
-        String resultStr;
-
-        try {
-
-            resultStr = httpRequest.execute().body();
-
-        } catch (IORuntimeException e) { // 发生 IO异常，比如：建立连接超时等
-
-            log.info("execHttpRequest，重试：{}", retryNumber);
-
-            if (retryNumber == 1) {
-                throw e;
-            }
-
-            // 执行
-            return execHttpRequest(httpRequest, retryNumber - 1);
-
-        }
-
-        return resultStr;
+        // 执行
+        return execSupplier(() -> httpRequest.execute().body(), execNumber);
 
     }
 
     /**
-     * 执行：http请求
+     * 执行
      *
-     * @param retryNumber 传值多少，则方法会执行多少次
+     * @param execNumber 传值多少，则方法会执行多少次
      */
-    public static <T> T execSupplier(Supplier<T> supplier, int retryNumber) {
+    public static <T> T execSupplier(Supplier<T> supplier, int execNumber) {
 
         T result;
 
@@ -67,14 +48,14 @@ public class RetryUtil {
 
         } catch (Exception e) {
 
-            log.info("execSupplier，重试：{}", retryNumber);
+            log.info("重试：{}", execNumber);
 
-            if (retryNumber == 1) {
+            if (execNumber == 1) {
                 throw e;
             }
 
             // 执行
-            return execSupplier(supplier, retryNumber - 1);
+            return execSupplier(supplier, execNumber - 1);
 
         }
 
