@@ -4,10 +4,8 @@ import com.cmcorg20230301.be.engine.netty.tcp.protobuf.configuration.NettyTcpPro
 import com.cmcorg20230301.be.engine.netty.tcp.protobuf.properties.NettyTcpProtobufProperties;
 import com.cmcorg20230301.be.engine.redisson.util.IdGeneratorUtil;
 import com.cmcorg20230301.be.engine.security.configuration.base.BaseConfiguration;
-import com.cmcorg20230301.be.engine.security.util.MyEntityUtil;
 import com.cmcorg20230301.be.engine.security.util.MyThreadUtil;
 import com.cmcorg20230301.be.engine.socket.mapper.SysSocketRefUserMapper;
-import com.cmcorg20230301.be.engine.socket.model.entity.SysSocketDO;
 import com.cmcorg20230301.be.engine.socket.model.enums.SysSocketTypeEnum;
 import com.cmcorg20230301.be.engine.socket.service.SysSocketService;
 import com.cmcorg20230301.be.engine.socket.util.SocketUtil;
@@ -197,20 +195,8 @@ public class NettyTcpProtobufServer {
 
         channelFuture = serverBootstrap.bind().sync(); // 服务器同步创建绑定
 
-        SysSocketDO sysSocketDO = new SysSocketDO();
-
-        sysSocketDO.setScheme(MyEntityUtil.getNotNullStr(nettyTcpProtobufProperties.getScheme()));
-        sysSocketDO.setHost(MyEntityUtil.getNotNullStr(nettyTcpProtobufProperties.getHost()));
-        sysSocketDO.setPort(port);
-        sysSocketDO.setPath(MyEntityUtil.getNotNullStr(nettyTcpProtobufProperties.getPath()));
-        sysSocketDO.setType(SysSocketTypeEnum.TCP_PROTOBUF);
-        sysSocketDO.setEnableFlag(true);
-        sysSocketDO.setDelFlag(false);
-        sysSocketDO.setRemark("");
-
-        sysSocketService.save(sysSocketDO);
-
-        sysSocketServerId = sysSocketDO.getId();
+        sysSocketServerId =
+            SocketUtil.getSysSocketServerId(port, nettyTcpProtobufProperties, SysSocketTypeEnum.TCP_PROTOBUF);
 
         log.info("NettyTcpProtobuf 启动完成：端口：{}，总接口个数：{}个", port, NettyTcpProtobufBeanPostProcessor.getMappingMapSize());
 

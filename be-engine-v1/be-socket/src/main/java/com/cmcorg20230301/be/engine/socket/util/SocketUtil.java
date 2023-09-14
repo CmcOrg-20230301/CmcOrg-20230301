@@ -1,9 +1,17 @@
 package com.cmcorg20230301.be.engine.socket.util;
 
+import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.net.NetUtil;
 import cn.hutool.core.util.StrUtil;
 import com.cmcorg20230301.be.engine.model.model.constant.LogTopicConstant;
+import com.cmcorg20230301.be.engine.model.properties.SysSocketBaseProperties;
+import com.cmcorg20230301.be.engine.security.model.entity.BaseEntity;
+import com.cmcorg20230301.be.engine.security.util.MyEntityUtil;
 import com.cmcorg20230301.be.engine.security.util.RequestUtil;
+import com.cmcorg20230301.be.engine.socket.model.entity.SysSocketDO;
+import com.cmcorg20230301.be.engine.socket.model.entity.SysSocketRefUserDO;
+import com.cmcorg20230301.be.engine.socket.model.enums.SysSocketTypeEnum;
+import com.cmcorg20230301.be.engine.socket.service.SysSocketRefUserService;
 import com.cmcorg20230301.be.engine.socket.service.SysSocketService;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
@@ -14,7 +22,10 @@ import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
 import java.net.InetSocketAddress;
+import java.util.List;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
 
 @Component
 @Slf4j(topic = LogTopicConstant.SOCKET)
@@ -25,6 +36,13 @@ public class SocketUtil {
     @Resource
     public void setSysSocketService(SysSocketService sysSocketService) {
         SocketUtil.sysSocketService = sysSocketService;
+    }
+
+    private static SysSocketRefUserService sysSocketRefUserService;
+
+    @Resource
+    public void setSysSocketService(SysSocketRefUserService sysSocketRefUserService) {
+        SocketUtil.sysSocketRefUserService = sysSocketRefUserService;
     }
 
     /**
@@ -131,6 +149,47 @@ public class SocketUtil {
             childGroup.shutdownGracefully().syncUninterruptibly(); // 释放线程池资源
 
         }
+
+    }
+
+    /**
+     * 获取：sysSocketServerId
+     */
+    public static Long getSysSocketServerId(int port, SysSocketBaseProperties sysSocketBaseProperties,
+        SysSocketTypeEnum sysSocketTypeEnum) {
+
+        SysSocketDO sysSocketDO = new SysSocketDO();
+
+        sysSocketDO.setScheme(MyEntityUtil.getNotNullStr(sysSocketBaseProperties.getScheme()));
+        sysSocketDO.setHost(MyEntityUtil.getNotNullStr(sysSocketBaseProperties.getHost()));
+        sysSocketDO.setPort(port);
+        sysSocketDO.setPath(MyEntityUtil.getNotNullStr(sysSocketBaseProperties.getPath()));
+        sysSocketDO.setType(sysSocketTypeEnum);
+
+        sysSocketDO.setMacAddress(NetUtil.getLocalMacAddress());
+
+        sysSocketDO.setEnableFlag(true);
+        sysSocketDO.setDelFlag(false);
+        sysSocketDO.setRemark("");
+
+        // 移除：mac地址，port，相同的 socket数据
+        List<SysSocketDO> sysSocketDOList =
+            sysSocketService.lambdaQuery().eq(SysSocketDO::getMacAddress, sysSocketDO.getMacAddress())
+                .eq(SysSocketDO::getPort, sysSocketDO.getPort()).select(BaseEntity::getId).list();
+
+        if (CollUtil.isNotEmpty(sysSocketDOList)) {
+
+            Set<Long> socketIdSet = sysSocketDOList.stream().map(BaseEntity::getId).collect(Collectors.toSet());
+
+            sysSocketRefUserService.lambdaUpdate().in(SysSocketRefUserDO::getSocketId, socketIdSet).remove();
+
+            sysSocketService.removeBatchByIds(socketIdSet);
+
+        }
+
+        sysSocketService.save(sysSocketDO);
+
+        return sysSocketDO.getId();
 
     }
 

@@ -28,4 +28,7 @@ public class SysSocketDO extends BaseEntity {
     @Schema(description = "socket类型")
     private SysSocketTypeEnum type;
 
+    @Schema(description = "mac地址，用于：和 port一起判断是否是重复启动，如果是，则需要移除之前的 socket信息")
+    private String macAddress;
+
 }
