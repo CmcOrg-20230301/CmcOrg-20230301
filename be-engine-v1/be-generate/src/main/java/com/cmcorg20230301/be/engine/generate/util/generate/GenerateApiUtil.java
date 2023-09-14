@@ -12,6 +12,7 @@ import com.cmcorg20230301.be.engine.generate.model.bo.BeApi;
 import com.cmcorg20230301.be.engine.model.model.dto.MyOrderDTO;
 import com.cmcorg20230301.be.engine.security.model.vo.ApiResultVO;
 import com.cmcorg20230301.be.engine.util.util.CallBack;
+import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 
@@ -22,61 +23,63 @@ import java.util.*;
  * 生成 api的工具类
  */
 @Slf4j
+@Data
 public class GenerateApiUtil {
 
     // 读取：接口的地址
-    //    private static final String SPRING_DOC_ENDPOINT = "http://43.154.37.130:10001/v3/api-docs/be";
-    private static final String SPRING_DOC_ENDPOINT = "http://127.0.0.1:10001/v3/api-docs/be";
+    //    public String SPRING_DOC_ENDPOINT = "http://43.154.37.130:10001/v3/api-docs/be";
+    private String springDocEndpoint = "http://127.0.0.1:10001/v3/api-docs/be";
 
-    private static final String SYSTEM_USER_DIR = System.getProperty("user.dir"); // 例如：D:\GitHub\CmcOrg-20230301
+    private String systemUserDir = System.getProperty("user.dir"); // 例如：D:\GitHub\CmcOrg-20230301
 
-    private static final String API_PATH = SYSTEM_USER_DIR + "/fe-antd-v1/src/api/http/";
+    private String apiPath = systemUserDir + "/fe-antd-v1/src/api/http/";
 
-    private static final String TS = ".ts";
+    private String ts = ".ts";
 
-    private static final String API_INTERFACE_TEMP = "\nexport interface {} {\n{}\n}\n";
+    private String apiInterfaceTemp = "\nexport interface {} {\n{}\n}\n";
 
-    private static final String API_INTERFACE_FIELD_TEMP = "    {}{}: {}{} // {}";
+    private String apiInterfaceFieldTemp = "    {}{}: {}{} // {}";
 
-    private static final String API_REQUEST_TEMP =
-        "\n" + "// {}\n" + "export function {}({}config?: AxiosRequestConfig) {\n"
-            + "    return $http.{}<{}>('{}', {}, config)\n" + "}\n";
+    private String apiRequestTemp = "\n" + "// {}\n" + "export function {}({}config?: AxiosRequestConfig) {\n"
+        + "    return $http.{}<{}>('{}', {}, config)\n" + "}\n";
 
-    private static final String API_REQUEST_FORM_NAME = "form";
+    private String apiRequestFormName = "form";
 
-    private static final String API_REQUEST_FORM_TEMP = API_REQUEST_FORM_NAME + ": {}, ";
+    private String apiRequestFormTemp = apiRequestFormName + ": {}, ";
 
-    private static final String API_IMPORT_BASE =
+    private String apiImportBase =
         "import $http from \"@/util/HttpUtil\";\nimport {AxiosRequestConfig} from \"axios\";\n";
 
-    private static final String API_IMPORT_BASE_MY_ORDER_DTO = "import MyOrderDTO from \"@/model/dto/MyOrderDTO\";\n";
+    private String apiImportBaseMyOrderDTO = "import MyOrderDTO from \"@/model/dto/MyOrderDTO\";\n";
 
-    private static final String SORT = "\n    sort?: Record<string, SortOrder> // 排序字段（只在前端使用，实际传值：order）";
+    private String sort = "\n    sort?: Record<string, SortOrder> // 排序字段（只在前端使用，实际传值：order）";
 
-    private static final String SORT_IMPORT = "import {SortOrder} from \"antd/es/table/interface\";\n";
+    private String sortImport = "import {SortOrder} from \"antd/es/table/interface\";\n";
 
-    private static final String SORT_ORDER = "SortOrder";
+    private String sortOrder = "SortOrder";
 
-    private static final String UNDEFINED = "undefined";
+    private String undefined = "undefined";
 
     public static void main(String[] args) {
 
+        GenerateApiUtil generateApiUtil = new GenerateApiUtil();
+
         // 执行
-        exec(SPRING_DOC_ENDPOINT, API_PATH, TS);
+        generateApiUtil.exec();
 
     }
 
     /**
      * 执行
      */
-    private static void exec(String springDocEndpoint, String apiPath, String ts) {
+    public void exec() {
 
-        HashMap<String, HashMap<String, BeApi>> apiMap = SpringDocUtil.get(springDocEndpoint);
+        HashMap<String, HashMap<String, BeApi>> apiMap = SpringDocUtil.get(getSpringDocEndpoint());
 
         System.out.println(JSONUtil.toJsonStr(apiMap));
 
-        log.info("清除：api文件夹：{}", API_PATH);
-        FileUtil.del(API_PATH);
+        log.info("清除：api文件夹：{}", getApiPath());
+        FileUtil.del(getApiPath());
 
         log.info("生成：api文件夹：执行开始 =====================>");
         long startTs = System.currentTimeMillis();
@@ -86,10 +89,10 @@ public class GenerateApiUtil {
         for (Map.Entry<String, HashMap<String, BeApi>> item : apiMap.entrySet()) {
 
             // 生成：api文件
-            File apiFile = FileUtil.touch(apiPath + item.getKey() + ts);
+            File apiFile = FileUtil.touch(getApiPath() + item.getKey() + getTs());
 
             // 要导入的基础内容
-            strBuilder.append(API_IMPORT_BASE);
+            strBuilder.append(getApiImportBase());
 
             Set<String> classNameSet = new HashSet<>(); // 防止重复写入
 
@@ -117,7 +120,7 @@ public class GenerateApiUtil {
     /**
      * 处理
      */
-    private static void handler(BeApi beApi, StrBuilder strBuilder, Set<String> classNameSet) {
+    public void handler(BeApi beApi, StrBuilder strBuilder, Set<String> classNameSet) {
 
         // 生成 dto
         generateDTO(beApi, strBuilder, classNameSet);
@@ -136,21 +139,21 @@ public class GenerateApiUtil {
     /**
      * 生成 api
      */
-    private static void generateApi(BeApi beApi, StrBuilder strBuilder, Set<String> classNameSet,
+    public void generateApi(BeApi beApi, StrBuilder strBuilder, Set<String> classNameSet,
         CallBack<Boolean> myProPagePostCallBack) {
 
         // api的方法名
         String apiName = getApiName(beApi.getPath());
 
         String formStr = ""; // 拼接 form参数
-        String formValueStr = UNDEFINED; // 拼接 form值
+        String formValueStr = getUndefined(); // 拼接 form值
 
         Map<String, BeApi.BeApiField> parameter = beApi.getParameter();
 
         if (beApi.getRequestBody() != null && StrUtil.isNotBlank(beApi.getRequestBody().getClassName())) {
 
-            formStr = StrUtil.format(API_REQUEST_FORM_TEMP, beApi.getRequestBody().getClassName());
-            formValueStr = API_REQUEST_FORM_NAME;
+            formStr = StrUtil.format(getApiRequestFormTemp(), beApi.getRequestBody().getClassName());
+            formValueStr = getApiRequestFormName();
 
         } else if (CollUtil.isNotEmpty(parameter)) {
 
@@ -162,8 +165,8 @@ public class GenerateApiUtil {
 
                 BeApi.BeApiSchema parameterBeApiSchema = (BeApi.BeApiSchema)beApiField;
 
-                formStr = StrUtil.format(API_REQUEST_FORM_TEMP, parameterBeApiSchema.getClassName());
-                formValueStr = API_REQUEST_FORM_NAME;
+                formStr = StrUtil.format(getApiRequestFormTemp(), parameterBeApiSchema.getClassName());
+                formValueStr = getApiRequestFormName();
 
             }
 
@@ -200,7 +203,7 @@ public class GenerateApiUtil {
         }
 
         strBuilder.append(StrUtil
-            .format(API_REQUEST_TEMP, beApi.getSummary(), apiName, formStr, httpStr, returnTypeStr, beApi.getPath(),
+            .format(getApiRequestTemp(), beApi.getSummary(), apiName, formStr, httpStr, returnTypeStr, beApi.getPath(),
                 formValueStr));
 
     }
@@ -209,7 +212,7 @@ public class GenerateApiUtil {
      * 通过：path，获取：api的方法名
      */
     @NotNull
-    static String getApiName(String path) {
+    public static String getApiName(String path) {
 
         List<String> splitTrimList = StrUtil.splitTrim(path, CharPool.SLASH);
 
@@ -220,7 +223,7 @@ public class GenerateApiUtil {
     /**
      * 生成 vo
      */
-    private static void generateVO(BeApi beApi, StrBuilder strBuilder, Set<String> classNameSet,
+    public void generateVO(BeApi beApi, StrBuilder strBuilder, Set<String> classNameSet,
         CallBack<Boolean> myProPagePostCallBack) {
 
         BeApi.BeApiSchema response = (BeApi.BeApiSchema)beApi.getResponse();
@@ -229,9 +232,9 @@ public class GenerateApiUtil {
             return;
         }
 
-        boolean apiResultVOFlag = response.getClassName().startsWith(ApiResultVO.class.getSimpleName());
+        boolean apiResultVoFlag = response.getClassName().startsWith(ApiResultVO.class.getSimpleName());
 
-        if (apiResultVOFlag) {
+        if (apiResultVoFlag) {
 
             BeApi.BeApiSchema beApiSchema = (BeApi.BeApiSchema)response.getFieldMap().get(response.getClassName());
 
@@ -296,7 +299,7 @@ public class GenerateApiUtil {
     /**
      * 生成 dto
      */
-    private static void generateDTO(BeApi beApi, StrBuilder strBuilder, Set<String> classNameSet) {
+    public void generateDTO(BeApi beApi, StrBuilder strBuilder, Set<String> classNameSet) {
 
         BeApi.BeApiSchema requestBody = null;
 
@@ -347,7 +350,7 @@ public class GenerateApiUtil {
     /**
      * 生成：interface
      */
-    private static void generateInterface(BeApi beApi, StrBuilder strBuilder, Set<String> classNameSet,
+    public void generateInterface(BeApi beApi, StrBuilder strBuilder, Set<String> classNameSet,
         BeApi.BeApiSchema beApiSchema, String preMsg) {
 
         String className = beApiSchema.getClassName();
@@ -391,14 +394,14 @@ public class GenerateApiUtil {
 
         }
 
-        strBuilder.append(StrUtil.format(API_INTERFACE_TEMP, className, interfaceBuilder.toString()));
+        strBuilder.append(StrUtil.format(getApiInterfaceTemp(), className, interfaceBuilder.toString()));
 
     }
 
     /**
      * 生成 interface，BeApiSchema类型
      */
-    private static void generateInterfaceSchema(BeApi beApi, StrBuilder strBuilder, Set<String> classNameSet,
+    public void generateInterfaceSchema(BeApi beApi, StrBuilder strBuilder, Set<String> classNameSet,
         StrBuilder interfaceBuilder, BeApi.BeApiSchema beApiSchema, String preMsg) {
 
         // 如果是：排序字段
@@ -408,23 +411,24 @@ public class GenerateApiUtil {
 
                 classNameSet.add(beApiSchema.getClassName());
 
-                strBuilder.insert(0, API_IMPORT_BASE_MY_ORDER_DTO); // 在顶部添加导入
+                strBuilder.insert(0, getApiImportBaseMyOrderDTO()); // 在顶部添加导入
 
-                classNameSet.add(SORT_ORDER);
+                classNameSet.add(getSortOrder());
 
-                strBuilder.insert(0, SORT_IMPORT); // 在顶部添加导入
+                strBuilder.insert(0, getSortImport()); // 在顶部添加导入
 
             }
 
             interfaceBuilder.append(StrUtil
-                .format(API_INTERFACE_FIELD_TEMP, beApiSchema.getName(), "?", beApiSchema.getClassName(), "", "排序字段"));
+                .format(getApiInterfaceFieldTemp(), beApiSchema.getName(), "?", beApiSchema.getClassName(), "",
+                    "排序字段"));
 
-            interfaceBuilder.append(SORT);
+            interfaceBuilder.append(getSort());
 
         } else {
 
             interfaceBuilder.append(StrUtil
-                .format(API_INTERFACE_FIELD_TEMP, beApiSchema.getName(), "?", beApiSchema.getClassName(),
+                .format(getApiInterfaceFieldTemp(), beApiSchema.getName(), "?", beApiSchema.getClassName(),
                     BooleanUtil.isTrue(beApiSchema.getArrFlag()) ? "[]" : "", beApiSchema.getDescription()));
 
         }
@@ -434,7 +438,7 @@ public class GenerateApiUtil {
     /**
      * 生成 interface，BeApiParameter类型
      */
-    private static void generateInterfaceParameter(StrBuilder interfaceBuilder, String fieldName,
+    public void generateInterfaceParameter(StrBuilder interfaceBuilder, String fieldName,
         BeApi.BeApiParameter beApiParameter) {
 
         String type = beApiParameter.getType();
@@ -442,7 +446,7 @@ public class GenerateApiUtil {
         // 处理：integer类型
         type = handleIntegerType(beApiParameter, type);
 
-        interfaceBuilder.append(StrUtil.format(API_INTERFACE_FIELD_TEMP, fieldName, "?", type,
+        interfaceBuilder.append(StrUtil.format(getApiInterfaceFieldTemp(), fieldName, "?", type,
             BooleanUtil.isTrue(beApiParameter.getArrFlag()) ? "[]" : "", beApiParameter.getDescription()));
 
         if (StrUtil.isNotBlank(beApiParameter.getPattern())) {
@@ -480,7 +484,7 @@ public class GenerateApiUtil {
     /**
      * 处理：integer类型
      */
-    private static String handleIntegerType(BeApi.BeApiParameter beApiParameter, String type) {
+    public String handleIntegerType(BeApi.BeApiParameter beApiParameter, String type) {
 
         String integerStr = "integer";
         String formatInt64 = "int64";

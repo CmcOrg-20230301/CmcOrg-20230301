@@ -11,6 +11,7 @@ import cn.hutool.extra.ssh.JschUtil;
 import cn.hutool.extra.ssh.Sftp;
 import com.cmcorg20230301.be.engine.generate.util.apitest.ApiTestHelper;
 import com.jcraft.jsch.Session;
+import lombok.Data;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 
@@ -21,27 +22,37 @@ import java.util.concurrent.CountDownLatch;
  * 打包工具类
  */
 @Slf4j
+@Data
 public class DoPackageUtil {
 
-    private static final String HOST = "43.154.37.130";
+    private String host = "43.154.37.130";
 
-    private static final String USER = "root";
+    private String user = "root";
 
-    private static final String PRIVATE_KEY_PATH = "/key/key1.pem";
+    private String privateKeyPath = "/key/key1.pem";
 
-    private static final String VITE_REMOTE_PATH = "/mydata/nginx/node-1/html/h5";
+    private String viteRemotePath = "/mydata/nginx/node-1/html/h5";
 
-    private static final String SPRING_REMOTE_PATH = "/mydata/springboot";
+    private String springRemotePath = "/mydata/springboot";
 
-    private static final String SPRING_REMOTE_STOP_EXEC_CMD = "docker stop be-start-node-1";
+    private String springRemoteStopCmd = "docker stop be-start-node-1";
 
-    private static final String SPRING_REMOTE_RESTART_EXEC_CMD = "docker restart be-start-node-1";
+    private String springRemoteRestartCmd = "docker restart be-start-node-1";
 
     /**
      * 打包：前端和后端
      */
     @SneakyThrows
     public static void main(String[] args) {
+
+        DoPackageUtil doPackageUtil = new DoPackageUtil();
+
+        doPackageUtil.exec();
+
+    }
+
+    @SneakyThrows
+    public void exec() {
 
         String nextLine = ApiTestHelper.getStrFromScanner("请输入：1 全部打包 2 后端打包 3 前端打包");
 
@@ -55,22 +66,17 @@ public class DoPackageUtil {
             threadCount = 2;
         }
 
-        Session session = JschUtil.getSession(HOST, 22, USER, PRIVATE_KEY_PATH, null);
+        Session session = JschUtil.getSession(getHost(), 22, getUser(), getPrivateKeyPath(), null);
 
         String projectPath = System.getProperty("user.dir"); // 例如：D:\GitHub\CmcOrg-20230301
 
-        if (!projectPath.contains("CmcOrg-20230301")) {
-            projectPath = projectPath + "\\CmcOrg-20230301";
-        }
-
         CountDownLatch countDownLatch = ThreadUtil.newCountDownLatch(threadCount);
 
-        String finalProjectPath = projectPath;
         if (number == 1 || number == 2) {
 
             new Thread(() -> {
 
-                doBePackage(finalProjectPath, session, countDownLatch);
+                doBePackage(projectPath, session, countDownLatch);
 
             }).start();
 
@@ -80,7 +86,7 @@ public class DoPackageUtil {
 
             new Thread(() -> {
 
-                doFePackage(finalProjectPath, session, countDownLatch);
+                doFePackage(projectPath, session, countDownLatch);
 
             }).start();
 
@@ -97,7 +103,7 @@ public class DoPackageUtil {
     /**
      * 后端打包
      */
-    private static void doBePackage(String projectPath, Session session, CountDownLatch countDownLatch) {
+    public void doBePackage(String projectPath, Session session, CountDownLatch countDownLatch) {
 
         Sftp sftp = JschUtil.createSftp(session);
 
@@ -125,11 +131,11 @@ public class DoPackageUtil {
             log.info("后端打包上传 ↓ 大小：" + DataSizeUtil.format(FileUtil.size(file)));
 
             // 先停止，再上传文件
-            JschUtil.exec(session, SPRING_REMOTE_STOP_EXEC_CMD, CharsetUtil.CHARSET_UTF_8);
+            JschUtil.exec(session, getSpringRemoteStopCmd(), CharsetUtil.CHARSET_UTF_8);
 
             timeNumber = System.currentTimeMillis();
 
-            sftp.put(jarPath, SPRING_REMOTE_PATH);
+            sftp.put(jarPath, getSpringRemotePath());
 
             timeNumber = System.currentTimeMillis() - timeNumber;
             timeStr = DateUtil.formatBetween(timeNumber);
@@ -140,7 +146,7 @@ public class DoPackageUtil {
 
             timeNumber = System.currentTimeMillis();
 
-            JschUtil.exec(session, SPRING_REMOTE_RESTART_EXEC_CMD, CharsetUtil.CHARSET_UTF_8);
+            JschUtil.exec(session, getSpringRemoteRestartCmd(), CharsetUtil.CHARSET_UTF_8);
 
             timeNumber = System.currentTimeMillis() - timeNumber;
             timeStr = DateUtil.formatBetween(timeNumber);
@@ -168,7 +174,7 @@ public class DoPackageUtil {
     /**
      * 前端打包
      */
-    public static void doFePackage(String projectPath, Session session, CountDownLatch countDownLatch) {
+    public void doFePackage(String projectPath, Session session, CountDownLatch countDownLatch) {
 
         Sftp sftp = JschUtil.createSftp(session);
 
@@ -209,13 +215,13 @@ public class DoPackageUtil {
 
             String configFileName = "config.js";
 
-            for (String item : sftp.ls(VITE_REMOTE_PATH)) {
+            for (String item : sftp.ls(getViteRemotePath())) {
 
                 if (configFileName.equals(item)) {
                     continue; // 不做处理
                 }
 
-                String fullFileName = VITE_REMOTE_PATH + "/" + item;
+                String fullFileName = getViteRemotePath() + "/" + item;
 
                 if (sftp.isDir(fullFileName)) {
 
@@ -232,7 +238,7 @@ public class DoPackageUtil {
             // 移除该文件，目的：不覆盖服务器上的文件
             FileUtil.del(file.getPath() + "/" + configFileName);
 
-            sftp.syncUpload(file, VITE_REMOTE_PATH);
+            sftp.syncUpload(file, getViteRemotePath());
 
             timeNumber = System.currentTimeMillis() - timeNumber;
             timeStr = DateUtil.formatBetween(timeNumber);

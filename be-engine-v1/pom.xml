@@ -206,6 +206,13 @@
                 <version>${cmcorg.version}</version>
             </dependency>
 
+            <!-- be-generate -->
+            <dependency>
+                <groupId>${cmcorg.groupId}</groupId>
+                <artifactId>be-generate</artifactId>
+                <version>${cmcorg.version}</version>
+            </dependency>
+
             <!-- be-request -->
             <dependency>
                 <groupId>${cmcorg.groupId}</groupId>
