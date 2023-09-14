@@ -242,17 +242,17 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserProMapper, SysUserDO>
 
             });
 
-        List<DictVO> dictListVOList = sysUserInfoDOList.stream().filter(it -> tenantIdSet.contains(it.getTenantId()))
+        List<DictVO> dictVOList = sysUserInfoDOList.stream().filter(it -> tenantIdSet.contains(it.getTenantId()))
             .map(it -> new DictVO(it.getId(), it.getNickname())).collect(Collectors.toList());
 
         // 增加 admin账号
         if (BooleanUtil.isTrue(dto.getAddAdminFlag())) {
 
-            dictListVOList.add(new DictVO(BaseConstant.ADMIN_ID, securityProperties.getAdminNickname()));
+            dictVOList.add(new DictVO(BaseConstant.ADMIN_ID, securityProperties.getAdminNickname()));
 
         }
 
-        return new Page<DictVO>().setTotal(dictListVOList.size()).setRecords(dictListVOList);
+        return new Page<DictVO>().setTotal(dictVOList.size()).setRecords(dictVOList);
 
     }
 
