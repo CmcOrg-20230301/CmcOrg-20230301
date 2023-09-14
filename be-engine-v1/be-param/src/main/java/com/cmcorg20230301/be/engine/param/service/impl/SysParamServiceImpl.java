@@ -126,7 +126,11 @@ public class SysParamServiceImpl extends ServiceImpl<SysParamMapper, SysParamDO>
     @Override
     public SysParamDO infoById(NotNullId notNullId) {
 
-        return getById(notNullId.getId());
+        // 获取：用户关联的租户
+        Set<Long> queryTenantIdSet = SysTenantUtil.getUserRefTenantIdSet();
+
+        return lambdaQuery().eq(BaseEntity::getId, notNullId.getId()).in(BaseEntityNoId::getTenantId, queryTenantIdSet)
+            .one();
 
     }
 
