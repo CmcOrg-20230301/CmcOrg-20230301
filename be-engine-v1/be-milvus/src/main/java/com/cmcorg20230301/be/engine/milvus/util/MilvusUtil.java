@@ -330,18 +330,13 @@ public class MilvusUtil {
 
         R<QueryResults> queryResultsR = milvusServiceClient.query(queryParam);
 
-        QueryResultsWrapper queryResultsWrapper = new QueryResultsWrapper(queryResultsR.getData());
-
-        if (queryResultsWrapper.getRowCount() != 1) {
-            return 0L;
-        }
-
-        return (long)queryResultsWrapper.getRowRecords().get(0).get(COUNT_ALL_FIELD_NAME);
+        return queryResultsR.getData().getFieldsData(0).getScalars().getLongData().getData(0);
 
     }
 
     /**
      * 查询
+     * 注意：like只支持：like ab%，不支持 %ab%
      */
     @NotNull
     public static <T> List<T> query(String collectionName, @Nullable String exprStr, List<String> outFieldList,
