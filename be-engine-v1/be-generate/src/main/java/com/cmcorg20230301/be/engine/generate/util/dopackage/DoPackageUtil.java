@@ -39,6 +39,24 @@ public class DoPackageUtil {
 
     private String springRemoteRestartCmd = "docker restart be-start-node-1";
 
+    private String projectPath = System.getProperty("user.dir"); // 例如：D:\GitHub\CmcOrg-20230301
+
+    private String feName = "fe-antd-v1";
+
+    private String beName = "be-engine-v1";
+
+    private String beJarName = "be-start/target/be-start-2023.3.1.jar";
+
+    public String getProjectPath() {
+
+        if (!projectPath.contains("CmcOrg-20230301")) {
+            return projectPath + "/CmcOrg-20230301";
+        }
+
+        return projectPath;
+
+    }
+
     /**
      * 打包：前端和后端
      */
@@ -68,15 +86,13 @@ public class DoPackageUtil {
 
         Session session = JschUtil.getSession(getHost(), 22, getUser(), getPrivateKeyPath(), null);
 
-        String projectPath = System.getProperty("user.dir"); // 例如：D:\GitHub\CmcOrg-20230301
-
         CountDownLatch countDownLatch = ThreadUtil.newCountDownLatch(threadCount);
 
         if (number == 1 || number == 2) {
 
             new Thread(() -> {
 
-                doBePackage(projectPath, session, countDownLatch);
+                doBePackage(getProjectPath(), session, countDownLatch);
 
             }).start();
 
@@ -86,7 +102,7 @@ public class DoPackageUtil {
 
             new Thread(() -> {
 
-                doFePackage(projectPath, session, countDownLatch);
+                doFePackage(getProjectPath(), session, countDownLatch);
 
             }).start();
 
@@ -115,7 +131,7 @@ public class DoPackageUtil {
 
             long timeNumber = System.currentTimeMillis();
 
-            projectPath = projectPath + "/be-engine-v1";
+            projectPath = projectPath + "/" + getBeName();
 
             RuntimeUtil.execForStr("cmd", "/c", "cd " + projectPath + " && mvn package");
 
@@ -124,7 +140,7 @@ public class DoPackageUtil {
 
             log.info("后端打包 ↑ 耗时：" + timeStr);
 
-            String jarPath = projectPath + "/be-start/target/be-start-2023.3.1.jar";
+            String jarPath = projectPath + "/" + getBeJarName();
 
             File file = FileUtil.newFile(jarPath);
 
@@ -186,7 +202,7 @@ public class DoPackageUtil {
 
             long timeNumber = System.currentTimeMillis();
 
-            projectPath = projectPath + "/fe-antd-v1";
+            projectPath = projectPath + "/" + getFeName();
 
             String viteBuildPath = projectPath + "/dist";
 

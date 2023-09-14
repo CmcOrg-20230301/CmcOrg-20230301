@@ -7,7 +7,6 @@ import {CalcOrderNo, DefaultOrderNo} from "@/util/TreeUtil";
 import CommonConstant from "@/model/constant/CommonConstant";
 import {Dropdown, TreeSelect} from "antd";
 import {EllipsisOutlined} from "@ant-design/icons/lib";
-import {RouterMapKeyList} from "@/router/RouterMap";
 import {SysTenantDictList} from "@/api/http/SysTenant";
 import {SearchTransform} from "@/util/CommonUtil";
 
@@ -52,15 +51,6 @@ const TableColumnList = (currentForm: React.MutableRefObject<SysMenuInsertOrUpda
     {title: '菜单名', dataIndex: 'name', ellipsis: true, width: 90,},
 
     {title: '路径', dataIndex: 'path', ellipsis: true, width: 90,},
-
-    {
-        title: '路由',
-        dataIndex: 'router',
-        valueType: 'select',
-        fieldProps: {
-            options: RouterMapKeyList,
-        },
-    },
 
     {title: '权限', dataIndex: 'auths', ellipsis: true, width: 90,},
 

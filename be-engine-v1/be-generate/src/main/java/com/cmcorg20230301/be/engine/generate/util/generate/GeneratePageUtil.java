@@ -33,7 +33,7 @@ public class GeneratePageUtil {
 
     private String systemUserDir = System.getProperty("user.dir"); // 例如：D:\GitHub\CmcOrg-20230301
 
-    private String pagePath = systemUserDir + "/fe-antd-v1/src/page/sys";
+    private String pagePath = getSystemUserDir() + "/fe-antd-v1/src/page/sys";
 
     // 其他常量
     private String tsx = ".tsx"; // 页面文件后缀
@@ -148,6 +148,16 @@ public class GeneratePageUtil {
         "            valueType: 'select',\n" + "            fieldProps: {\n" + "                showSearch: true,\n"
             + "                mode: 'multiple',\n" + "                maxTagCount: 'responsive',\n"
             + "            },\n{}\n";
+
+    public String getSystemUserDir() {
+
+        if (!systemUserDir.contains("CmcOrg-20230301")) {
+            return systemUserDir + "/CmcOrg-20230301";
+        }
+
+        return systemUserDir;
+
+    }
 
     public static void main(String[] args) {
 

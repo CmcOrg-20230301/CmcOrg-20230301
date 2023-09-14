@@ -32,7 +32,7 @@ public class GenerateApiUtil {
 
     private String systemUserDir = System.getProperty("user.dir"); // 例如：D:\GitHub\CmcOrg-20230301
 
-    private String apiPath = systemUserDir + "/fe-antd-v1/src/api/http/";
+    private String apiPath = getSystemUserDir() + "/fe-antd-v1/src/api/http/";
 
     private String ts = ".ts";
 
@@ -59,6 +59,16 @@ public class GenerateApiUtil {
     private String sortOrder = "SortOrder";
 
     private String undefined = "undefined";
+
+    public String getSystemUserDir() {
+
+        if (!systemUserDir.contains("CmcOrg-20230301")) {
+            return systemUserDir + "/CmcOrg-20230301";
+        }
+
+        return systemUserDir;
+
+    }
 
     public static void main(String[] args) {
 
