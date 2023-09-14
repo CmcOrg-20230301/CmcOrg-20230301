@@ -17,6 +17,9 @@ public class BaseMilvusDO {
     @Schema(description = "用户 id")
     private Long userId;
 
+    @Schema(description = "是否启用")
+    private Boolean enableFlag;
+
     @Schema(description = "返回值")
     private String result;
 
