@@ -83,11 +83,11 @@ public class MilvusUtil {
     public static final String COUNT_ALL_FIELD_NAME = "count(*)";
 
     /**
-     * 字段名集合
+     * 字段名集合，备注：不包含向量字段，因为数据量太大了，如果想返回向量字段，可以手动添加，添加之后就可以返回该字段的数据了
      */
     public static final List<String> FIELD_NAME_LIST = CollUtil
         .newArrayList(ID_FIELD_NAME, TENANT_ID_FIELD_NAME, USER_ID_FIELD_NAME, RESULT_FIELD_NAME,
-            VECTOR_TEXT_FIELD_NAME, VECTOR_LIST_FIELD_NAME);
+            VECTOR_TEXT_FIELD_NAME);
 
     /**
      * 创建并加载 collection

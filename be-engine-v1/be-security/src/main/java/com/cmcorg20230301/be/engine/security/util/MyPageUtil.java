@@ -7,8 +7,8 @@ public class MyPageUtil {
      * 此方法用于不包括结束位置的分页方法<br>
      * 例如：
      * <p>
-     * 页码：0，每页10 =》 0
      * 页码：1，每页10 =》 10
+     * 页码：2，每页10 =》 20
      *
      * @param pageNo   页码（从0计数）
      * @param pageSize 每页条目数
@@ -16,15 +16,15 @@ public class MyPageUtil {
      */
     public static long getOffset(long pageNo, long pageSize) {
 
-        if (pageNo < 0) {
-            pageNo = 0;
+        if (pageNo < 1) {
+            pageNo = 1;
         }
 
         if (pageSize < 1) {
             pageSize = 0;
         }
 
-        return pageNo * pageSize;
+        return (pageNo - 1) * pageSize;
 
     }
 
