@@ -11,7 +11,7 @@ DROP TABLE IF EXISTS `sys_area`;
 CREATE TABLE `sys_area`
 (
     `id`          bigint                                                        NOT NULL,
-    `tenant_id`   bigint                                                        NOT NULL COMMENT '租户id',
+    `tenant_id`   bigint                                                        NOT NULL COMMENT '租户 id',
     `create_id`   bigint                                                        NOT NULL,
     `create_time` datetime                                                      NOT NULL,
     `update_id`   bigint                                                        NOT NULL,
@@ -39,7 +39,7 @@ CREATE TABLE `sys_area`
 DROP TABLE IF EXISTS `sys_area_ref_dept`;
 CREATE TABLE `sys_area_ref_dept`
 (
-    `tenant_id` bigint NOT NULL COMMENT '租户id',
+    `tenant_id` bigint NOT NULL COMMENT '租户 id',
     `area_id`   bigint NOT NULL COMMENT '区域主键 id',
     `dept_id`   bigint NOT NULL COMMENT '部门主键 id',
     PRIMARY KEY (`area_id`, `dept_id`) USING BTREE
@@ -59,7 +59,7 @@ DROP TABLE IF EXISTS `sys_dept`;
 CREATE TABLE `sys_dept`
 (
     `id`          bigint                                                        NOT NULL,
-    `tenant_id`   bigint                                                        NOT NULL COMMENT '租户id',
+    `tenant_id`   bigint                                                        NOT NULL COMMENT '租户 id',
     `create_id`   bigint                                                        NOT NULL,
     `create_time` datetime                                                      NOT NULL,
     `update_id`   bigint                                                        NOT NULL,
@@ -87,7 +87,7 @@ CREATE TABLE `sys_dept`
 DROP TABLE IF EXISTS `sys_dept_ref_user`;
 CREATE TABLE `sys_dept_ref_user`
 (
-    `tenant_id` bigint NOT NULL COMMENT '租户id',
+    `tenant_id` bigint NOT NULL COMMENT '租户 id',
     `dept_id`   bigint NOT NULL COMMENT '部门主键 id',
     `user_id`   bigint NOT NULL COMMENT '用户主键 id',
     PRIMARY KEY (`dept_id`, `user_id`) USING BTREE
@@ -107,7 +107,7 @@ DROP TABLE IF EXISTS `sys_dict`;
 CREATE TABLE `sys_dict`
 (
     `id`          bigint                                                        NOT NULL,
-    `tenant_id`   bigint                                                        NOT NULL COMMENT '租户id',
+    `tenant_id`   bigint                                                        NOT NULL COMMENT '租户 id',
     `create_id`   bigint                                                        NOT NULL,
     `create_time` datetime                                                      NOT NULL,
     `update_id`   bigint                                                        NOT NULL,
@@ -270,7 +270,7 @@ DROP TABLE IF EXISTS `sys_file`;
 CREATE TABLE `sys_file`
 (
     `id`               bigint                                                        NOT NULL,
-    `tenant_id`        bigint                                                        NOT NULL COMMENT '租户id',
+    `tenant_id`        bigint                                                        NOT NULL COMMENT '租户 id',
     `create_id`        bigint                                                        NOT NULL,
     `create_time`      datetime                                                      NOT NULL,
     `update_id`        bigint                                                        NOT NULL,
@@ -310,7 +310,7 @@ DROP TABLE IF EXISTS `sys_file_auth`;
 CREATE TABLE `sys_file_auth`
 (
     `id`          bigint                                                        NOT NULL,
-    `tenant_id`   bigint                                                        NOT NULL COMMENT '租户id',
+    `tenant_id`   bigint                                                        NOT NULL COMMENT '租户 id',
     `create_id`   bigint                                                        NOT NULL,
     `create_time` datetime                                                      NOT NULL,
     `update_id`   bigint                                                        NOT NULL,
@@ -340,7 +340,7 @@ DROP TABLE IF EXISTS `sys_menu`;
 CREATE TABLE `sys_menu`
 (
     `id`          bigint                                                        NOT NULL,
-    `tenant_id`   bigint                                                        NOT NULL COMMENT '租户id',
+    `tenant_id`   bigint                                                        NOT NULL COMMENT '租户 id',
     `create_id`   bigint                                                        NOT NULL,
     `create_time` datetime                                                      NOT NULL,
     `update_id`   bigint                                                        NOT NULL,
@@ -744,7 +744,7 @@ DROP TABLE IF EXISTS `sys_param`;
 CREATE TABLE `sys_param`
 (
     `id`          bigint                                                        NOT NULL,
-    `tenant_id`   bigint                                                        NOT NULL COMMENT '租户id',
+    `tenant_id`   bigint                                                        NOT NULL COMMENT '租户 id',
     `create_id`   bigint                                                        NOT NULL,
     `create_time` datetime                                                      NOT NULL,
     `update_id`   bigint                                                        NOT NULL,
@@ -785,7 +785,7 @@ DROP TABLE IF EXISTS `sys_pay`;
 CREATE TABLE `sys_pay`
 (
     `id`               bigint                                                        NOT NULL,
-    `tenant_id`        bigint                                                        NOT NULL COMMENT '租户id',
+    `tenant_id`        bigint                                                        NOT NULL COMMENT '租户 id',
     `create_id`        bigint                                                        NOT NULL,
     `create_time`      datetime                                                      NOT NULL,
     `update_id`        bigint                                                        NOT NULL,
@@ -828,7 +828,7 @@ DROP TABLE IF EXISTS `sys_post`;
 CREATE TABLE `sys_post`
 (
     `id`          bigint                                                        NOT NULL,
-    `tenant_id`   bigint                                                        NOT NULL COMMENT '租户id',
+    `tenant_id`   bigint                                                        NOT NULL COMMENT '租户 id',
     `create_id`   bigint                                                        NOT NULL,
     `create_time` datetime                                                      NOT NULL,
     `update_id`   bigint                                                        NOT NULL,
@@ -856,7 +856,7 @@ CREATE TABLE `sys_post`
 DROP TABLE IF EXISTS `sys_post_ref_user`;
 CREATE TABLE `sys_post_ref_user`
 (
-    `tenant_id` bigint NOT NULL COMMENT '租户id',
+    `tenant_id` bigint NOT NULL COMMENT '租户 id',
     `post_id`   bigint NOT NULL COMMENT '岗位主键 id',
     `user_id`   bigint NOT NULL COMMENT '用户主键 id',
     PRIMARY KEY (`post_id`, `user_id`) USING BTREE
@@ -876,7 +876,7 @@ DROP TABLE IF EXISTS `sys_request`;
 CREATE TABLE `sys_request`
 (
     `id`             bigint                                                         NOT NULL,
-    `tenant_id`      bigint                                                         NOT NULL COMMENT '租户id',
+    `tenant_id`      bigint                                                         NOT NULL COMMENT '租户 id',
     `create_id`      bigint                                                         NOT NULL,
     `create_time`    datetime                                                       NOT NULL,
     `update_id`      bigint                                                         NOT NULL,
@@ -914,7 +914,7 @@ DROP TABLE IF EXISTS `sys_role`;
 CREATE TABLE `sys_role`
 (
     `id`           bigint                                                        NOT NULL,
-    `tenant_id`    bigint                                                        NOT NULL COMMENT '租户id',
+    `tenant_id`    bigint                                                        NOT NULL COMMENT '租户 id',
     `create_id`    bigint                                                        NOT NULL,
     `create_time`  datetime                                                      NOT NULL,
     `update_id`    bigint                                                        NOT NULL,
@@ -941,7 +941,7 @@ CREATE TABLE `sys_role`
 DROP TABLE IF EXISTS `sys_role_ref_menu`;
 CREATE TABLE `sys_role_ref_menu`
 (
-    `tenant_id` bigint NOT NULL COMMENT '租户id',
+    `tenant_id` bigint NOT NULL COMMENT '租户 id',
     `role_id`   bigint NOT NULL COMMENT '角色主键 id',
     `menu_id`   bigint NOT NULL COMMENT '菜单主键 id',
     PRIMARY KEY (`role_id`, `menu_id`) USING BTREE
@@ -960,7 +960,7 @@ CREATE TABLE `sys_role_ref_menu`
 DROP TABLE IF EXISTS `sys_role_ref_user`;
 CREATE TABLE `sys_role_ref_user`
 (
-    `tenant_id` bigint NOT NULL COMMENT '租户id',
+    `tenant_id` bigint NOT NULL COMMENT '租户 id',
     `role_id`   bigint NOT NULL COMMENT '角色主键 id',
     `user_id`   bigint NOT NULL COMMENT '用户主键 id',
     PRIMARY KEY (`role_id`, `user_id`) USING BTREE
@@ -980,7 +980,7 @@ DROP TABLE IF EXISTS `sys_socket`;
 CREATE TABLE `sys_socket`
 (
     `id`          bigint                                                        NOT NULL,
-    `tenant_id`   bigint                                                        NOT NULL COMMENT '租户id',
+    `tenant_id`   bigint                                                        NOT NULL COMMENT '租户 id',
     `create_id`   bigint                                                        NOT NULL,
     `create_time` datetime                                                      NOT NULL,
     `update_id`   bigint                                                        NOT NULL,
@@ -994,6 +994,7 @@ CREATE TABLE `sys_socket`
     `port`        int                                                           NOT NULL COMMENT '端口',
     `path`        varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci  NOT NULL COMMENT '路径',
     `type`        int                                                           NOT NULL COMMENT 'socket类型：101 tcp 201 webSocket 301 udp',
+    `mac_address` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci  NOT NULL COMMENT 'mac地址，用于：和 port一起判断是否是重复启动，如果是，则需要移除之前的 socket信息',
     PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB
   CHARACTER SET = utf8mb4
@@ -1011,7 +1012,7 @@ DROP TABLE IF EXISTS `sys_socket_ref_user`;
 CREATE TABLE `sys_socket_ref_user`
 (
     `id`                  bigint                                                        NOT NULL,
-    `tenant_id`           bigint                                                        NOT NULL COMMENT '租户id',
+    `tenant_id`           bigint                                                        NOT NULL COMMENT '租户 id',
     `create_id`           bigint                                                        NOT NULL,
     `create_time`         datetime                                                      NOT NULL,
     `update_id`           bigint                                                        NOT NULL,
@@ -1052,7 +1053,7 @@ DROP TABLE IF EXISTS `sys_tenant`;
 CREATE TABLE `sys_tenant`
 (
     `id`          bigint                                                        NOT NULL,
-    `tenant_id`   bigint                                                        NOT NULL COMMENT '租户id',
+    `tenant_id`   bigint                                                        NOT NULL COMMENT '租户 id',
     `create_id`   bigint                                                        NOT NULL,
     `create_time` datetime                                                      NOT NULL,
     `update_id`   bigint                                                        NOT NULL,
@@ -1099,7 +1100,7 @@ DROP TABLE IF EXISTS `sys_user`;
 CREATE TABLE `sys_user`
 (
     `id`           bigint                                                        NOT NULL,
-    `tenant_id`    bigint                                                        NOT NULL COMMENT '租户id',
+    `tenant_id`    bigint                                                        NOT NULL COMMENT '租户 id',
     `create_id`    bigint                                                        NOT NULL,
     `create_time`  datetime                                                      NOT NULL,
     `update_id`    bigint                                                        NOT NULL,
@@ -1130,7 +1131,7 @@ DROP TABLE IF EXISTS `sys_user_0`;
 CREATE TABLE `sys_user_0`
 (
     `id`           bigint                                                        NOT NULL,
-    `tenant_id`    bigint                                                        NOT NULL COMMENT '租户id',
+    `tenant_id`    bigint                                                        NOT NULL COMMENT '租户 id',
     `create_id`    bigint                                                        NOT NULL,
     `create_time`  datetime                                                      NOT NULL,
     `update_id`    bigint                                                        NOT NULL,
@@ -1161,7 +1162,7 @@ DROP TABLE IF EXISTS `sys_user_1`;
 CREATE TABLE `sys_user_1`
 (
     `id`           bigint                                                        NOT NULL,
-    `tenant_id`    bigint                                                        NOT NULL COMMENT '租户id',
+    `tenant_id`    bigint                                                        NOT NULL COMMENT '租户 id',
     `create_id`    bigint                                                        NOT NULL,
     `create_time`  datetime                                                      NOT NULL,
     `update_id`    bigint                                                        NOT NULL,
@@ -1192,7 +1193,7 @@ DROP TABLE IF EXISTS `sys_user_info`;
 CREATE TABLE `sys_user_info`
 (
     `id`             bigint                                                        NOT NULL COMMENT '用户主键 id',
-    `tenant_id`      bigint                                                        NOT NULL COMMENT '租户id',
+    `tenant_id`      bigint                                                        NOT NULL COMMENT '租户 id',
     `uuid`           varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci  NOT NULL COMMENT '该用户的 uuid，本系统使用 id，不使用此字段（uuid），备注：不允许修改',
     `nickname`       varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci  NOT NULL COMMENT '昵称',
     `bio`            varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '个人简介',
@@ -1214,7 +1215,7 @@ DROP TABLE IF EXISTS `sys_user_info_0`;
 CREATE TABLE `sys_user_info_0`
 (
     `id`             bigint                                                        NOT NULL COMMENT '用户主键 id',
-    `tenant_id`      bigint                                                        NOT NULL COMMENT '租户id',
+    `tenant_id`      bigint                                                        NOT NULL COMMENT '租户 id',
     `uuid`           varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci  NOT NULL COMMENT '该用户的 uuid，本系统使用 id，不使用此字段（uuid），备注：不允许修改',
     `nickname`       varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci  NOT NULL COMMENT '昵称',
     `bio`            varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '个人简介',
@@ -1236,7 +1237,7 @@ DROP TABLE IF EXISTS `sys_user_info_1`;
 CREATE TABLE `sys_user_info_1`
 (
     `id`             bigint                                                        NOT NULL COMMENT '用户主键 id',
-    `tenant_id`      bigint                                                        NOT NULL COMMENT '租户id',
+    `tenant_id`      bigint                                                        NOT NULL COMMENT '租户 id',
     `uuid`           varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci  NOT NULL COMMENT '该用户的 uuid，本系统使用 id，不使用此字段（uuid），备注：不允许修改',
     `nickname`       varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci  NOT NULL COMMENT '昵称',
     `bio`            varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '个人简介',
