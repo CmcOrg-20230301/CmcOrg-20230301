@@ -1,6 +1,7 @@
 package com.cmcorg20230301.be.engine.milvus.util;
 
 import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.bean.copier.CopyOptions;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.text.StrBuilder;
 import cn.hutool.core.util.StrUtil;
@@ -287,7 +288,12 @@ public class MilvusUtil {
 
         List<JSONObject> insertList = new ArrayList<>();
 
-        boolean idFieldNameNotBlankFlag = StrUtil.isNotBlank(idFieldName);
+        // 忽略：null值
+        CopyOptions copyOptions = CopyOptions.create().ignoreNullValue();
+
+        if (StrUtil.isNotBlank(idFieldName)) {
+            copyOptions.setIgnoreProperties(idFieldName);
+        }
 
         boolean consumerNotNullFlag = consumer != null;
 
@@ -297,17 +303,10 @@ public class MilvusUtil {
                 consumer.accept(item);
             }
 
-            JSONObject jsonObject;
+            JSONObject jsonObject = new JSONObject();
 
-            if (idFieldNameNotBlankFlag) {
-
-                jsonObject = BeanUtil.copyProperties(item, JSONObject.class, idFieldName);
-
-            } else {
-
-                jsonObject = BeanUtil.copyProperties(item, JSONObject.class);
-
-            }
+            // 属性：拷贝
+            BeanUtil.copyProperties(item, jsonObject, copyOptions);
 
             insertList.add(jsonObject);
 
