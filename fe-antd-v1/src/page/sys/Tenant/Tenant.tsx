@@ -326,7 +326,7 @@ export default function () {
 
                             currentForm.current = res as SysTenantInsertOrUpdateDTO
 
-                            formRef.current?.setFieldsValue(currentForm.current) // 组件会深度克隆 currentForm.current
+                            formRef.current?.setFieldsValue(currentForm.current)
 
                         })
 
@@ -334,7 +334,7 @@ export default function () {
 
                     setTimeout(() => {
 
-                        formRef.current?.setFieldsValue(currentForm.current) // 组件会深度克隆 currentForm.current
+                        formRef.current?.setFieldsValue(currentForm.current)
 
                     }, CommonConstant.SHORT_DELAY)
 
