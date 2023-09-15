@@ -103,7 +103,7 @@ public class MyJwtUtil {
             return null;
         }
 
-        if (BaseConstant.ADMIN_ID.equals(userId) && BooleanUtil
+        if (UserUtil.getCurrentUserAdminFlag(userId) && BooleanUtil
             .isFalse(MyJwtUtil.securityProperties.getAdminEnable())) {
             return null;
         }
@@ -115,7 +115,7 @@ public class MyJwtUtil {
 
         }
 
-        if (BooleanUtil.isFalse(BaseConstant.ADMIN_ID.equals(userId)) && StrUtil.isBlank(jwtSecretSuf)) {
+        if (BooleanUtil.isFalse(UserUtil.getCurrentUserAdminFlag(userId)) && StrUtil.isBlank(jwtSecretSuf)) {
             return null;
         }
 
@@ -226,7 +226,7 @@ public class MyJwtUtil {
     @Nullable
     public static String getUserJwtSecretSufByUserId(Long userId) {
 
-        if (userId == null || BaseConstant.ADMIN_ID.equals(userId)) {
+        if (userId == null || UserUtil.getCurrentUserAdminFlag(userId)) {
             return null;
         }
 
@@ -246,7 +246,7 @@ public class MyJwtUtil {
         }
 
         // admin账号，自带所有权限
-        if (BaseConstant.ADMIN_ID.equals(userId)) {
+        if (UserUtil.getCurrentUserAdminFlag(userId)) {
             return null;
         }
 

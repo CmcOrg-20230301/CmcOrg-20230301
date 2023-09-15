@@ -13,7 +13,6 @@ import com.cmcorg20230301.be.engine.menu.model.dto.SysMenuInsertOrUpdateDTO;
 import com.cmcorg20230301.be.engine.menu.model.dto.SysMenuPageDTO;
 import com.cmcorg20230301.be.engine.menu.model.vo.SysMenuInfoByIdVO;
 import com.cmcorg20230301.be.engine.menu.service.SysMenuService;
-import com.cmcorg20230301.be.engine.model.model.constant.BaseConstant;
 import com.cmcorg20230301.be.engine.model.model.dto.ChangeNumberDTO;
 import com.cmcorg20230301.be.engine.model.model.dto.NotEmptyIdSet;
 import com.cmcorg20230301.be.engine.model.model.dto.NotNullId;
@@ -358,7 +357,7 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenuDO> im
 
         Long currentTenantIdDefault = UserUtil.getCurrentTenantIdDefault();
 
-        if (BaseConstant.ADMIN_ID.equals(userId)) {
+        if (UserUtil.getCurrentUserAdminFlag(userId)) {
 
             // 如果是 admin账号，则查询所有【不是被禁用了的】菜单
             return SysMenuUtil.getSysMenuCacheMap().values().stream()

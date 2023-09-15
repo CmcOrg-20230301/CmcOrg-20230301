@@ -44,7 +44,7 @@ public class UserSelfServiceImpl extends ServiceImpl<SysUserMapper, SysUserDO> i
 
         sysUserSelfInfoVO.setTenantId(currentTenantIdDefault);
 
-        if (BaseConstant.ADMIN_ID.equals(currentUserId)) {
+        if (UserUtil.getCurrentUserAdminFlag(currentUserId)) {
 
             sysUserSelfInfoVO.setAvatarFileId(BaseConstant.SYS_ID);
             sysUserSelfInfoVO.setNickname(securityProperties.getAdminNickname());

@@ -140,7 +140,7 @@ public class SysTenantUtil {
 
         resultSet.add(currentTenantIdDefault); // 添加：默认的租户 id
 
-        if (BaseConstant.ADMIN_ID.equals(currentUserId)) {
+        if (UserUtil.getCurrentUserAdminFlag(currentUserId)) {
 
             CollUtil.addAll(resultSet, getSysTenantCacheMap().keySet()); // 添加：所有的 租户 id
 
@@ -387,7 +387,7 @@ public class SysTenantUtil {
 
         Long currentUserId = UserUtil.getCurrentUserId();
 
-        if (BaseConstant.ADMIN_ID.equals(currentUserId)) { // admin可以进行任何操作
+        if (UserUtil.getCurrentUserAdminFlag(currentUserId)) { // admin可以进行任何操作
             return true;
         }
 

@@ -10,7 +10,6 @@ import cn.hutool.core.util.StrUtil;
 import cn.hutool.jwt.JWT;
 import cn.hutool.jwt.JWTValidator;
 import com.cmcorg20230301.be.engine.cache.util.MyCacheUtil;
-import com.cmcorg20230301.be.engine.model.model.constant.BaseConstant;
 import com.cmcorg20230301.be.engine.model.model.constant.LogTopicConstant;
 import com.cmcorg20230301.be.engine.security.configuration.base.BaseConfiguration;
 import com.cmcorg20230301.be.engine.security.exception.BaseBizCodeEnum;
@@ -20,6 +19,7 @@ import com.cmcorg20230301.be.engine.security.properties.SecurityProperties;
 import com.cmcorg20230301.be.engine.security.util.MyJwtUtil;
 import com.cmcorg20230301.be.engine.security.util.RequestUtil;
 import com.cmcorg20230301.be.engine.security.util.ResponseUtil;
+import com.cmcorg20230301.be.engine.security.util.UserUtil;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
@@ -187,7 +187,7 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
 
         String jwtSecretSuf = null;
 
-        if (BaseConstant.ADMIN_ID.equals(userId)) {
+        if (UserUtil.getCurrentUserAdminFlag(userId)) {
 
             if (BooleanUtil.isFalse(securityProperties.getAdminEnable())) {
                 return true;

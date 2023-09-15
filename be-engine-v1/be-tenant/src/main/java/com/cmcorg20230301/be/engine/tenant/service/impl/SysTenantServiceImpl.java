@@ -146,7 +146,7 @@ public class SysTenantServiceImpl extends ServiceImpl<SysTenantMapper, SysTenant
 
         Set<SysMenuDO> sysMenuDoSet;
 
-        if (BaseConstant.ADMIN_ID.equals(currentUserId)) { // 如果是：admin，则是全部的菜单
+        if (UserUtil.getCurrentUserAdminFlag(currentUserId)) { // 如果是：admin，则是全部的菜单
 
             sysMenuDoSet = new HashSet<>(SysMenuUtil.getSysMenuCacheMap().values());
 

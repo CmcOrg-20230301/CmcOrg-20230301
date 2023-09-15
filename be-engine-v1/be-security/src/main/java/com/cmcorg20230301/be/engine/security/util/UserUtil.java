@@ -131,7 +131,7 @@ public class UserUtil {
 
         Long currentUserId = getCurrentUserId();
 
-        if (BaseConstant.ADMIN_ID.equals(currentUserId)) {
+        if (UserUtil.getCurrentUserAdminFlag(currentUserId)) {
             ApiResultVO.error(BaseBizCodeEnum.THE_ADMIN_ACCOUNT_DOES_NOT_SUPPORT_THIS_OPERATION);
         }
 
@@ -152,6 +152,24 @@ public class UserUtil {
         }
 
         return userId;
+
+    }
+
+    /**
+     * 用户是否是系统管理员
+     */
+    public static boolean getCurrentUserAdminFlag() {
+
+        return BaseConstant.ADMIN_ID.equals(getCurrentUserIdDefault());
+
+    }
+
+    /**
+     * 用户是否是系统管理员
+     */
+    public static boolean getCurrentUserAdminFlag(Long userId) {
+
+        return BaseConstant.ADMIN_ID.equals(userId);
 
     }
 
