@@ -347,7 +347,7 @@ public class UserUtil {
 
                     List<SysRoleDO> sysRoleDOList = ChainWrappers.lambdaQueryChain(sysRoleMapper)
                         .select(BaseEntity::getId, BaseEntityNoId::getTenantId).eq(BaseEntity::getEnableFlag, true)
-                        .list();
+                        .eq(SysRoleDO::getDefaultFlag, true).list();
 
                     return sysRoleDOList.stream()
                         .collect(Collectors.toMap(BaseEntityNoId::getTenantId, BaseEntity::getId));
