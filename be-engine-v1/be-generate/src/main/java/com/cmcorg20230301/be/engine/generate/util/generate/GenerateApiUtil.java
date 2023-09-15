@@ -104,7 +104,7 @@ public class GenerateApiUtil {
             // 要导入的基础内容
             strBuilder.append(getApiImportBase());
 
-            Set<String> classNameSet = new HashSet<>(); // 防止重复写入
+            Set<String> classNameSet = new HashSet<>(); // 防止重复写入，类名 set
 
             for (BeApi subItem : item.getValue().values()) {
 
@@ -270,7 +270,7 @@ public class GenerateApiUtil {
                     beApi.setReturnTypeStr(recordsBeApiSchema.getClassName());
 
                     // 生成：interface
-                    generateInterface(beApi, strBuilder, classNameSet, recordsBeApiSchema, "vo-page：");
+                    generateInterface(strBuilder, classNameSet, recordsBeApiSchema, "vo-page：");
 
                     myProPagePostCallBack.setValue(true); // 设置：回调值
 
@@ -279,7 +279,7 @@ public class GenerateApiUtil {
                     beApi.setReturnTypeStr(dataRealBeApiSchema.getClassName());
 
                     // 生成：interface
-                    generateInterface(beApi, strBuilder, classNameSet, dataRealBeApiSchema, "vo：");
+                    generateInterface(strBuilder, classNameSet, dataRealBeApiSchema, "vo：");
 
                 }
 
@@ -353,15 +353,15 @@ public class GenerateApiUtil {
         }
 
         // 生成：interface
-        generateInterface(beApi, strBuilder, classNameSet, requestBody, "dto：");
+        generateInterface(strBuilder, classNameSet, requestBody, "dto：");
 
     }
 
     /**
      * 生成：interface
      */
-    public void generateInterface(BeApi beApi, StrBuilder strBuilder, Set<String> classNameSet,
-        BeApi.BeApiSchema beApiSchema, String preMsg) {
+    public void generateInterface(StrBuilder strBuilder, Set<String> classNameSet, BeApi.BeApiSchema beApiSchema,
+        String preMsg) {
 
         String className = beApiSchema.getClassName();
 
@@ -389,8 +389,7 @@ public class GenerateApiUtil {
             } else if (beApiField instanceof BeApi.BeApiSchema) {
 
                 // 生成 interface，BeApiSchema类型
-                generateInterfaceSchema(beApi, strBuilder, classNameSet, interfaceBuilder,
-                    (BeApi.BeApiSchema)beApiField, preMsg);
+                generateInterfaceSchema(strBuilder, classNameSet, interfaceBuilder, (BeApi.BeApiSchema)beApiField);
 
             }
 
@@ -411,8 +410,8 @@ public class GenerateApiUtil {
     /**
      * 生成 interface，BeApiSchema类型
      */
-    public void generateInterfaceSchema(BeApi beApi, StrBuilder strBuilder, Set<String> classNameSet,
-        StrBuilder interfaceBuilder, BeApi.BeApiSchema beApiSchema, String preMsg) {
+    public void generateInterfaceSchema(StrBuilder strBuilder, Set<String> classNameSet, StrBuilder interfaceBuilder,
+        BeApi.BeApiSchema beApiSchema) {
 
         // 如果是：排序字段
         if (beApiSchema.getClassName().equals(MyOrderDTO.class.getSimpleName())) {
@@ -436,6 +435,20 @@ public class GenerateApiUtil {
             interfaceBuilder.append(getSort());
 
         } else {
+
+            // 如果：没有该对象的 ts类，则生成一个
+            if (BooleanUtil.isFalse(classNameSet.contains(beApiSchema.getClassName()))) {
+
+                BeApi.BeApiField beApiField = beApiSchema.getFieldMap().get(beApiSchema.getClassName());
+
+                if (beApiField instanceof BeApi.BeApiSchema) {
+
+                    // 生成：interface
+                    generateInterface(strBuilder, classNameSet, (BeApi.BeApiSchema)beApiField, "dto：内部类");
+
+                }
+
+            }
 
             interfaceBuilder.append(StrUtil
                 .format(getApiInterfaceFieldTemp(), beApiSchema.getName(), "?", beApiSchema.getClassName(),
