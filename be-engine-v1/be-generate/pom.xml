@@ -14,10 +14,10 @@
 
     <dependencies>
 
-        <!-- be-start -->
+        <!-- be-start-jar -->
         <dependency>
             <groupId>${cmcorg.groupId}</groupId>
-            <artifactId>be-start</artifactId>
+            <artifactId>be-start-jar</artifactId>
         </dependency>
 
     </dependencies>

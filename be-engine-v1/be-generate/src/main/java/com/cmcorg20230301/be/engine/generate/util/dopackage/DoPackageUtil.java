@@ -17,6 +17,7 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.io.File;
 import java.util.concurrent.CountDownLatch;
+import java.util.function.Consumer;
 
 /**
  * 打包工具类
@@ -33,6 +34,9 @@ public class DoPackageUtil {
 
     private String viteRemotePath = "/mydata/nginx/node-1/html/h5";
 
+    /**
+     * 备注：最后不要加 /
+     */
     private String springRemotePath = "/mydata/springboot";
 
     private String springRemoteStopCmd = "docker stop be-start-node-1";
@@ -45,7 +49,25 @@ public class DoPackageUtil {
 
     private String beName = "be-engine-v1";
 
-    private String beJarName = "be-start/target/be-start-2023.3.1.jar";
+    private String beJarName = "be-start-2023.3.1.jar";
+
+    private String beJarPath = "be-start/target/" + getBeJarName();
+
+    private String npmBuildCmd = "npm run build";
+
+    /**
+     * 后端，打包之前的操作
+     */
+    public Consumer<String> getBePackagePreConsumer() {
+        return null;
+    }
+
+    /**
+     * 后端，重启之前的操作
+     */
+    public Consumer<Session> getBeRemoteRestartConsumer() {
+        return null;
+    }
 
     public String getProjectPath() {
 
@@ -133,6 +155,15 @@ public class DoPackageUtil {
 
             projectPath = projectPath + "/" + getBeName();
 
+            Consumer<String> bePackagePreConsumer = getBePackagePreConsumer();
+
+            if (bePackagePreConsumer != null) {
+
+                // 执行：打包之前的操作
+                bePackagePreConsumer.accept(projectPath);
+
+            }
+
             RuntimeUtil.execForStr("cmd", "/c", "cd " + projectPath + " && mvn package");
 
             timeNumber = System.currentTimeMillis() - timeNumber;
@@ -140,7 +171,7 @@ public class DoPackageUtil {
 
             log.info("后端打包 ↑ 耗时：" + timeStr);
 
-            String jarPath = projectPath + "/" + getBeJarName();
+            String jarPath = projectPath + "/" + getBeJarPath();
 
             File file = FileUtil.newFile(jarPath);
 
@@ -161,6 +192,15 @@ public class DoPackageUtil {
             log.info("启动后端 ↓");
 
             timeNumber = System.currentTimeMillis();
+
+            Consumer<Session> beRemoteRestartConsumer = getBeRemoteRestartConsumer();
+
+            if (beRemoteRestartConsumer != null) {
+
+                // 执行：重启之前的操作
+                beRemoteRestartConsumer.accept(session);
+
+            }
 
             JschUtil.exec(session, getSpringRemoteRestartCmd(), CharsetUtil.CHARSET_UTF_8);
 
@@ -209,7 +249,7 @@ public class DoPackageUtil {
             FileUtil.del(viteBuildPath); // 先删除：原来打包的文件夹
             File file = FileUtil.mkdir(viteBuildPath); // 再创建文件夹
 
-            RuntimeUtil.execForStr("cmd", "/c", "cd " + projectPath + " && npm run build");
+            RuntimeUtil.execForStr("cmd", "/c", "cd " + projectPath + " && " + getNpmBuildCmd());
 
             timeNumber = System.currentTimeMillis() - timeNumber;
             String timeStr = DateUtil.formatBetween(timeNumber);

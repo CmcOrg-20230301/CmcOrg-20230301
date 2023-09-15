@@ -75,10 +75,18 @@
         <module>be-post</module>
         <module>be-tenant</module>
         <module>be-milvus</module>
+        <module>be-start-jar</module>
     </modules>
 
     <dependencyManagement>
         <dependencies>
+
+            <!-- be-start-jar -->
+            <dependency>
+                <groupId>${cmcorg.groupId}</groupId>
+                <artifactId>be-start-jar</artifactId>
+                <version>${cmcorg.version}</version>
+            </dependency>
 
             <!-- be-milvus -->
             <dependency>
@@ -364,13 +372,6 @@
             <dependency>
                 <groupId>${cmcorg.groupId}</groupId>
                 <artifactId>be-nacos</artifactId>
-                <version>${cmcorg.version}</version>
-            </dependency>
-
-            <!-- be-start -->
-            <dependency>
-                <groupId>${cmcorg.groupId}</groupId>
-                <artifactId>be-start</artifactId>
                 <version>${cmcorg.version}</version>
             </dependency>
 
