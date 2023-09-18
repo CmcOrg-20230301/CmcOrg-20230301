@@ -44,7 +44,7 @@ export interface SysSocketRefUserDO {
     createTime?: string // 创建时间，format：date-time
     port?: number // 冗余字段，端口，format：int32
     createId?: string // 创建人id，format：int64
-    tenantId?: string // 租户id，format：int64
+    tenantId?: string // 租户 id，format：int64
     userAgentJsonStr?: string // User-Agent信息对象，json字符串
     region?: string // Ip2RegionUtil.getRegion() 获取到的 ip所处区域
     category?: string // 请求类别

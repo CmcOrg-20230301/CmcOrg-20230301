@@ -439,7 +439,7 @@
           "tenantId": {
             "name": "tenantId",
             "type": "integer",
-            "description": "租户id，可以为空，为空则表示：默认租户：0",
+            "description": "租户 id，可以为空，为空则表示：默认租户：0",
             "format": "int64"
           },
           "phoneCode": {
@@ -513,7 +513,7 @@
           "tenantId": {
             "name": "tenantId",
             "type": "integer",
-            "description": "租户id，可以为空，为空则表示：默认租户：0",
+            "description": "租户 id，可以为空，为空则表示：默认租户：0",
             "format": "int64"
           }
         },
@@ -581,7 +581,7 @@
           "tenantId": {
             "name": "tenantId",
             "type": "integer",
-            "description": "租户id，可以为空，为空则表示：默认租户：0",
+            "description": "租户 id，可以为空，为空则表示：默认租户：0",
             "format": "int64"
           }
         },
@@ -770,7 +770,7 @@
                       "tenantId": {
                         "name": "tenantId",
                         "type": "integer",
-                        "description": "租户id",
+                        "description": "租户 id",
                         "format": "int64"
                       },
                       "nickname": {
@@ -1615,7 +1615,7 @@
           "tenantId": {
             "name": "tenantId",
             "type": "integer",
-            "description": "租户id，可以为空，为空则表示：默认租户：0",
+            "description": "租户 id，可以为空，为空则表示：默认租户：0",
             "format": "int64"
           },
           "nickname": {
@@ -2146,7 +2146,7 @@
                               "tenantId": {
                                 "name": "tenantId",
                                 "type": "integer",
-                                "description": "租户id",
+                                "description": "租户 id",
                                 "format": "int64"
                               },
                               "name": {
@@ -2340,7 +2340,7 @@
                       "tenantId": {
                         "name": "tenantId",
                         "type": "integer",
-                        "description": "租户id",
+                        "description": "租户 id",
                         "format": "int64"
                       },
                       "name": {
@@ -2531,7 +2531,7 @@
                       "tenantId": {
                         "name": "tenantId",
                         "type": "integer",
-                        "description": "租户id",
+                        "description": "租户 id",
                         "format": "int64"
                       },
                       "name": {
@@ -2781,7 +2781,7 @@
                       "tenantId": {
                         "name": "tenantId",
                         "type": "integer",
-                        "description": "租户id",
+                        "description": "租户 id",
                         "format": "int64"
                       },
                       "name": {
@@ -3140,7 +3140,7 @@
                               "tenantId": {
                                 "name": "tenantId",
                                 "type": "integer",
-                                "description": "租户id",
+                                "description": "租户 id",
                                 "format": "int64"
                               },
                               "name": {
@@ -3403,7 +3403,7 @@
                       "tenantId": {
                         "name": "tenantId",
                         "type": "integer",
-                        "description": "租户id",
+                        "description": "租户 id",
                         "format": "int64"
                       },
                       "name": {
@@ -3779,7 +3779,7 @@
                               "tenantId": {
                                 "name": "tenantId",
                                 "type": "integer",
-                                "description": "租户id",
+                                "description": "租户 id",
                                 "format": "int64"
                               },
                               "name": {
@@ -3812,7 +3812,7 @@
                       "tenantId": {
                         "name": "tenantId",
                         "type": "integer",
-                        "description": "租户id",
+                        "description": "租户 id",
                         "format": "int64"
                       },
                       "name": {
@@ -4107,7 +4107,7 @@
                               "tenantId": {
                                 "name": "tenantId",
                                 "type": "integer",
-                                "description": "租户id",
+                                "description": "租户 id",
                                 "format": "int64"
                               },
                               "name": {
@@ -4214,7 +4214,7 @@
           "tenantId": {
             "name": "tenantId",
             "type": "integer",
-            "description": "租户id，可以为空，为空则表示：默认租户：0",
+            "description": "租户 id，可以为空，为空则表示：默认租户：0",
             "format": "int64"
           }
         },
@@ -4358,7 +4358,7 @@
           "tenantId": {
             "name": "tenantId",
             "type": "integer",
-            "description": "租户id，可以为空，为空则表示：默认租户：0",
+            "description": "租户 id，可以为空，为空则表示：默认租户：0",
             "format": "int64"
           }
         },
@@ -4474,7 +4474,7 @@
           "tenantId": {
             "name": "tenantId",
             "type": "integer",
-            "description": "租户id，可以为空，为空则表示：默认租户：0",
+            "description": "租户 id，可以为空，为空则表示：默认租户：0",
             "format": "int64"
           }
         },
@@ -4597,7 +4597,7 @@
           "tenantId": {
             "name": "tenantId",
             "type": "integer",
-            "description": "租户id，可以为空，为空则表示：默认租户：0",
+            "description": "租户 id，可以为空，为空则表示：默认租户：0",
             "format": "int64"
           }
         },
@@ -4727,7 +4727,7 @@
           "tenantId": {
             "name": "tenantId",
             "type": "integer",
-            "description": "租户id，可以为空，为空则表示：默认租户：0",
+            "description": "租户 id，可以为空，为空则表示：默认租户：0",
             "format": "int64"
           },
           "newPassword": {
@@ -4897,7 +4897,7 @@
           "tenantId": {
             "name": "tenantId",
             "type": "integer",
-            "description": "租户id，可以为空，为空则表示：默认租户：0",
+            "description": "租户 id，可以为空，为空则表示：默认租户：0",
             "format": "int64"
           },
           "originPassword": {
@@ -4977,7 +4977,7 @@
           "tenantId": {
             "name": "tenantId",
             "type": "integer",
-            "description": "租户id，可以为空，为空则表示：默认租户：0",
+            "description": "租户 id，可以为空，为空则表示：默认租户：0",
             "format": "int64"
           }
         },
@@ -5198,7 +5198,7 @@
           "tenantId": {
             "name": "tenantId",
             "type": "integer",
-            "description": "租户id，可以为空，为空则表示：默认租户：0",
+            "description": "租户 id，可以为空，为空则表示：默认租户：0",
             "format": "int64"
           }
         },
@@ -5534,7 +5534,7 @@
                               "tenantId": {
                                 "name": "tenantId",
                                 "type": "integer",
-                                "description": "租户id",
+                                "description": "租户 id",
                                 "format": "int64"
                               },
                               "userAgentJsonStr": {
@@ -5994,7 +5994,7 @@
                       "tenantId": {
                         "name": "tenantId",
                         "type": "integer",
-                        "description": "租户id",
+                        "description": "租户 id",
                         "format": "int64"
                       },
                       "name": {
@@ -6218,7 +6218,7 @@
                               "tenantId": {
                                 "name": "tenantId",
                                 "type": "integer",
-                                "description": "租户id",
+                                "description": "租户 id",
                                 "format": "int64"
                               },
                               "name": {
@@ -6475,7 +6475,7 @@
                               "tenantId": {
                                 "name": "tenantId",
                                 "type": "integer",
-                                "description": "租户id",
+                                "description": "租户 id",
                                 "format": "int64"
                               },
                               "name": {
@@ -6508,7 +6508,7 @@
                       "tenantId": {
                         "name": "tenantId",
                         "type": "integer",
-                        "description": "租户id",
+                        "description": "租户 id",
                         "format": "int64"
                       },
                       "name": {
@@ -6886,7 +6886,7 @@
                               "tenantId": {
                                 "name": "tenantId",
                                 "type": "integer",
-                                "description": "租户id",
+                                "description": "租户 id",
                                 "format": "int64"
                               },
                               "name": {
@@ -7206,7 +7206,7 @@
                       "tenantId": {
                         "name": "tenantId",
                         "type": "integer",
-                        "description": "租户id",
+                        "description": "租户 id",
                         "format": "int64"
                       },
                       "name": {
@@ -7499,7 +7499,7 @@
                               "tenantId": {
                                 "name": "tenantId",
                                 "type": "integer",
-                                "description": "租户id",
+                                "description": "租户 id",
                                 "format": "int64"
                               },
                               "name": {
@@ -7537,7 +7537,7 @@
                       "tenantId": {
                         "name": "tenantId",
                         "type": "integer",
-                        "description": "租户id",
+                        "description": "租户 id",
                         "format": "int64"
                       },
                       "name": {
@@ -7859,7 +7859,7 @@
                       "tenantId": {
                         "name": "tenantId",
                         "type": "integer",
-                        "description": "租户id",
+                        "description": "租户 id",
                         "format": "int64"
                       },
                       "name": {
@@ -8250,7 +8250,7 @@
                               "tenantId": {
                                 "name": "tenantId",
                                 "type": "integer",
-                                "description": "租户id",
+                                "description": "租户 id",
                                 "format": "int64"
                               },
                               "name": {
@@ -8604,7 +8604,7 @@
                               "tenantId": {
                                 "name": "tenantId",
                                 "type": "integer",
-                                "description": "租户id",
+                                "description": "租户 id",
                                 "format": "int64"
                               },
                               "name": {
@@ -9056,7 +9056,7 @@
                       "tenantId": {
                         "name": "tenantId",
                         "type": "integer",
-                        "description": "租户id",
+                        "description": "租户 id",
                         "format": "int64"
                       },
                       "name": {
@@ -9273,7 +9273,7 @@
                       "tenantId": {
                         "name": "tenantId",
                         "type": "integer",
-                        "description": "租户id",
+                        "description": "租户 id",
                         "format": "int64"
                       },
                       "name": {
@@ -9523,7 +9523,7 @@
                               "tenantId": {
                                 "name": "tenantId",
                                 "type": "integer",
-                                "description": "租户id",
+                                "description": "租户 id",
                                 "format": "int64"
                               },
                               "name": {
@@ -10183,7 +10183,7 @@
                               "tenantId": {
                                 "name": "tenantId",
                                 "type": "integer",
-                                "description": "租户id",
+                                "description": "租户 id",
                                 "format": "int64"
                               },
                               "name": {
@@ -10609,7 +10609,7 @@
                               "tenantId": {
                                 "name": "tenantId",
                                 "type": "integer",
-                                "description": "租户id",
+                                "description": "租户 id",
                                 "format": "int64"
                               },
                               "name": {
@@ -10642,7 +10642,7 @@
                       "tenantId": {
                         "name": "tenantId",
                         "type": "integer",
-                        "description": "租户id",
+                        "description": "租户 id",
                         "format": "int64"
                       },
                       "name": {
@@ -10833,7 +10833,7 @@
                       "tenantId": {
                         "name": "tenantId",
                         "type": "integer",
-                        "description": "租户id",
+                        "description": "租户 id",
                         "format": "int64"
                       },
                       "name": {
@@ -11212,7 +11212,7 @@
                               "tenantId": {
                                 "name": "tenantId",
                                 "type": "integer",
-                                "description": "租户id",
+                                "description": "租户 id",
                                 "format": "int64"
                               },
                               "host": {
@@ -11506,7 +11506,7 @@
                       "tenantId": {
                         "name": "tenantId",
                         "type": "integer",
-                        "description": "租户id",
+                        "description": "租户 id",
                         "format": "int64"
                       },
                       "name": {
@@ -11699,7 +11699,7 @@
                               "tenantId": {
                                 "name": "tenantId",
                                 "type": "integer",
-                                "description": "租户id",
+                                "description": "租户 id",
                                 "format": "int64"
                               },
                               "name": {
@@ -12036,7 +12036,7 @@
           "tenantId": {
             "name": "tenantId",
             "type": "integer",
-            "description": "租户id，可以为空，为空则表示：默认租户：0",
+            "description": "租户 id，可以为空，为空则表示：默认租户：0",
             "format": "int64"
           },
           "originPassword": {
@@ -12193,7 +12193,7 @@
           "tenantId": {
             "name": "tenantId",
             "type": "integer",
-            "description": "租户id，可以为空，为空则表示：默认租户：0",
+            "description": "租户 id，可以为空，为空则表示：默认租户：0",
             "format": "int64"
           }
         },
@@ -12608,7 +12608,7 @@
           "tenantId": {
             "name": "tenantId",
             "type": "integer",
-            "description": "租户id，可以为空，为空则表示：默认租户：0",
+            "description": "租户 id，可以为空，为空则表示：默认租户：0",
             "format": "int64"
           },
           "email": {
@@ -12688,7 +12688,7 @@
           "tenantId": {
             "name": "tenantId",
             "type": "integer",
-            "description": "租户id，可以为空，为空则表示：默认租户：0",
+            "description": "租户 id，可以为空，为空则表示：默认租户：0",
             "format": "int64"
           },
           "email": {
@@ -12759,7 +12759,7 @@
           "tenantId": {
             "name": "tenantId",
             "type": "integer",
-            "description": "租户id，可以为空，为空则表示：默认租户：0",
+            "description": "租户 id，可以为空，为空则表示：默认租户：0",
             "format": "int64"
           },
           "email": {
@@ -12843,7 +12843,7 @@
           "tenantId": {
             "name": "tenantId",
             "type": "integer",
-            "description": "租户id，可以为空，为空则表示：默认租户：0",
+            "description": "租户 id，可以为空，为空则表示：默认租户：0",
             "format": "int64"
           },
           "newPassword": {
@@ -12923,7 +12923,7 @@
           "tenantId": {
             "name": "tenantId",
             "type": "integer",
-            "description": "租户id，可以为空，为空则表示：默认租户：0",
+            "description": "租户 id，可以为空，为空则表示：默认租户：0",
             "format": "int64"
           },
           "email": {
@@ -13356,7 +13356,7 @@
           "tenantId": {
             "name": "tenantId",
             "type": "integer",
-            "description": "租户id，可以为空，为空则表示：默认租户：0",
+            "description": "租户 id，可以为空，为空则表示：默认租户：0",
             "format": "int64"
           },
           "email": {

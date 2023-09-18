@@ -43,7 +43,7 @@ export interface SysSocketDO {
     createTime?: string // 创建时间，format：date-time
     port?: number // 端口，format：int32
     createId?: string // 创建人id，format：int64
-    tenantId?: string // 租户id，format：int64
+    tenantId?: string // 租户 id，format：int64
     host?: string // 主机
     id?: string // 主键id，format：int64
     enableFlag?: boolean // 是否启用

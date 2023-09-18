@@ -167,7 +167,7 @@ const TableColumnList = (currentForm: React.MutableRefObject<SysMenuInsertOrUpda
 
                                     onFinish={
 
-                                        async (form) => {
+                                        (form) => {
 
                                             const formTemp: SysMenuInsertOrUpdateDTO = {
 
@@ -179,27 +179,17 @@ const TableColumnList = (currentForm: React.MutableRefObject<SysMenuInsertOrUpda
 
                                             }
 
-                                            await SysMenuInsertOrUpdate({
-
-                                                ...formTemp,
-
-                                                name: '新增修改',
-
-                                                auths: form.auths + ":insertOrUpdate",
-
-                                                orderNo: DefaultOrderNo
-
-                                            }).then(() => {
+                                            return new Promise<boolean>(resolve => {
 
                                                 SysMenuInsertOrUpdate({
 
                                                     ...formTemp,
 
-                                                    name: '列表查询',
+                                                    name: '新增修改',
 
-                                                    auths: form.auths + ":page",
+                                                    auths: form.auths + ":insertOrUpdate",
 
-                                                    orderNo: DefaultOrderNo - 100
+                                                    orderNo: DefaultOrderNo
 
                                                 }).then(() => {
 
@@ -207,11 +197,11 @@ const TableColumnList = (currentForm: React.MutableRefObject<SysMenuInsertOrUpda
 
                                                         ...formTemp,
 
-                                                        name: '删除',
+                                                        name: '列表查询',
 
-                                                        auths: form.auths + ":deleteByIdSet",
+                                                        auths: form.auths + ":page",
 
-                                                        orderNo: DefaultOrderNo - 200
+                                                        orderNo: DefaultOrderNo - 100
 
                                                     }).then(() => {
 
@@ -219,29 +209,45 @@ const TableColumnList = (currentForm: React.MutableRefObject<SysMenuInsertOrUpda
 
                                                             ...formTemp,
 
-                                                            name: '查看详情',
+                                                            name: '删除',
 
-                                                            auths: form.auths + ":infoById",
+                                                            auths: form.auths + ":deleteByIdSet",
 
-                                                            orderNo: DefaultOrderNo - 300
+                                                            orderNo: DefaultOrderNo - 200
 
-                                                        }).then(res => {
+                                                        }).then(() => {
 
                                                             SysMenuInsertOrUpdate({
 
                                                                 ...formTemp,
 
-                                                                name: '下拉列表',
+                                                                name: '查看详情',
 
-                                                                auths: form.auths + ":dictList",
+                                                                auths: form.auths + ":infoById",
 
-                                                                orderNo: DefaultOrderNo - 400
+                                                                orderNo: DefaultOrderNo - 300
 
                                                             }).then(res => {
 
-                                                                ToastSuccess(res.msg)
+                                                                SysMenuInsertOrUpdate({
 
-                                                                actionRef.current?.reload()
+                                                                    ...formTemp,
+
+                                                                    name: '下拉列表',
+
+                                                                    auths: form.auths + ":dictList",
+
+                                                                    orderNo: DefaultOrderNo - 400
+
+                                                                }).then(res => {
+
+                                                                    resolve(true)
+
+                                                                    ToastSuccess(res.msg)
+
+                                                                    actionRef.current?.reload()
+
+                                                                })
 
                                                             })
 
@@ -252,8 +258,6 @@ const TableColumnList = (currentForm: React.MutableRefObject<SysMenuInsertOrUpda
                                                 })
 
                                             })
-
-                                            return true
 
                                         }}
 

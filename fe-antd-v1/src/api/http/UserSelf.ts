@@ -24,7 +24,7 @@ export interface UserSelfInfoVO {
     avatarFileId?: string // 头像 fileId（文件主键 id），format：int64
     signInName?: string // 登录名，会脱敏
     nickname?: string // 昵称，正则表达式：^[\u4E00-\u9FA5A-Za-z0-9_-]{2,20}$
-    tenantId?: string // 租户id，可以为空，为空则表示：默认租户：0，format：int64
+    tenantId?: string // 租户 id，可以为空，为空则表示：默认租户：0，format：int64
     bio?: string // 个人简介
     email?: string // 邮箱，会脱敏
 }

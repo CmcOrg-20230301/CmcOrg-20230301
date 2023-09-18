@@ -29,7 +29,7 @@ export interface SysRequestDO {
     costMsStr?: string // 耗时（字符串）
     createTime?: string // 创建时间，format：date-time
     createId?: string // 创建人id，format：int64
-    tenantId?: string // 租户id，format：int64
+    tenantId?: string // 租户 id，format：int64
     name?: string // 接口名（备用）
     responseValue?: string // 请求返回的值
     id?: string // 主键id，format：int64

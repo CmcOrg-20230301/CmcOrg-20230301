@@ -824,7 +824,7 @@ public class SysTenantServiceImpl extends ServiceImpl<SysTenantMapper, SysTenant
         Map<String, List<SysDictDO>> systemDictKeyMap =
             systemSysDictDOList.stream().collect(Collectors.groupingBy(SysDictDO::getDictKey));
 
-        // 通过：租户id，进行分组的 map
+        // 通过：租户 id，进行分组的 map
         Map<Long, List<SysDictDO>> tenantIdGroupMap =
             allSysDictDOList.stream().collect(Collectors.groupingBy(BaseEntityNoId::getTenantId));
 
@@ -943,7 +943,7 @@ public class SysTenantServiceImpl extends ServiceImpl<SysTenantMapper, SysTenant
 
         List<SysParamDO> insertList = new ArrayList<>();
 
-        // 通过：租户id，进行分组的 map
+        // 通过：租户 id，进行分组的 map
         Map<Long, List<SysParamDO>> tenantIdGroupMap =
             allSysParamDOList.stream().collect(Collectors.groupingBy(BaseEntityNoId::getTenantId));
 

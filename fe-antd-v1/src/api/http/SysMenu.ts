@@ -42,7 +42,7 @@ export interface SysMenuDO {
     createTime?: string // 创建时间，format：date-time
     children?: SysMenuDO[] // 子节点
     createId?: string // 创建人id，format：int64
-    tenantId?: string // 租户id，format：int64
+    tenantId?: string // 租户 id，format：int64
     name?: string // 菜单名
     id?: string // 主键id，format：int64
     firstFlag?: boolean // 是否是起始页面，备注：只能存在一个 firstFlag === true 的菜单
@@ -86,7 +86,7 @@ export interface SysMenuInfoByIdVO {
     parentId?: string // 父节点id（顶级则为0），format：int64
     createTime?: string // 创建时间，format：date-time
     createId?: string // 创建人id，format：int64
-    tenantId?: string // 租户id，format：int64
+    tenantId?: string // 租户 id，format：int64
     name?: string // 菜单名
     roleIdSet?: string[] // 角色 idSet，format：int64
 }
@@ -131,7 +131,7 @@ export interface SysMenuInsertOrUpdateDTO {
     showFlag?: boolean // 是否显示在 左侧的菜单栏里面，如果为 false，也可以通过 $router.push()访问到
     path?: string // 页面的 path，备注：相同父菜单下，子菜单 path不能重复
     router?: string // 路由
-    tenantId?: string // 租户id，可以为空，为空则表示：默认租户：0，format：int64
+    tenantId?: string // 租户 id，可以为空，为空则表示：默认租户：0，format：int64
     name?: string // 菜单名，required：true
     roleIdSet?: string[] // 角色 idSet，format：int64
     id?: string // 主键 id，format：int64

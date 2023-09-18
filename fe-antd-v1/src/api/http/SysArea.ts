@@ -25,7 +25,7 @@ export interface SysAreaDO {
     createTime?: string // 创建时间，format：date-time
     children?: SysAreaDO[] // 子节点
     createId?: string // 创建人id，format：int64
-    tenantId?: string // 租户id，format：int64
+    tenantId?: string // 租户 id，format：int64
     name?: string // 区域名
     id?: string // 主键id，format：int64
     enableFlag?: boolean // 是否启用
@@ -39,7 +39,7 @@ export function SysAreaTree(form: SysAreaPageDTO, config?: AxiosRequestConfig) {
 export interface SysAreaInsertOrUpdateDTO {
     orderNo?: number // 排序号（值越大越前面，默认为 0），format：int32
     deptIdSet?: string[] // 部门 idSet，format：int64
-    tenantId?: string // 租户id，可以为空，为空则表示：默认租户：0，format：int64
+    tenantId?: string // 租户 id，可以为空，为空则表示：默认租户：0，format：int64
     name?: string // 区域名，required：true
     remark?: string // 备注
     id?: string // 主键 id，format：int64
@@ -77,7 +77,7 @@ export interface SysAreaInfoByIdVO {
     createTime?: string // 创建时间，format：date-time
     children?: SysAreaDO[] // 子节点
     createId?: string // 创建人id，format：int64
-    tenantId?: string // 租户id，format：int64
+    tenantId?: string // 租户 id，format：int64
     name?: string // 区域名
     id?: string // 主键id，format：int64
     enableFlag?: boolean // 是否启用

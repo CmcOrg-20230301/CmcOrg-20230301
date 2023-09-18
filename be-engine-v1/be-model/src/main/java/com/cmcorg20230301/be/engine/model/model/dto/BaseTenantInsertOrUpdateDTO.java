@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 @Data
 public class BaseTenantInsertOrUpdateDTO extends BaseInsertOrUpdateDTO {
 
-    @Schema(description = "租户id，可以为空，为空则表示：默认租户：0")
+    @Schema(description = "租户 id，可以为空，为空则表示：默认租户：0")
     private Long tenantId;
 
 }

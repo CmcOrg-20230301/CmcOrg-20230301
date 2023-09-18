@@ -6,7 +6,7 @@ import {AxiosRequestConfig} from "axios";
 export interface SysTenantInsertOrUpdateDTO {
     orderNo?: number // 排序号（值越大越前面，默认为 0），format：int32
     userIdSet?: string[] // 用户 idSet，format：int64
-    tenantId?: string // 租户id，可以为空，为空则表示：默认租户：0，format：int64
+    tenantId?: string // 租户 id，可以为空，为空则表示：默认租户：0，format：int64
     name?: string // 租户名，required：true
     menuIdSet?: string[] // 菜单 idSet，format：int64
     remark?: string // 备注
@@ -67,7 +67,7 @@ export interface SysTenantDO {
     createTime?: string // 创建时间，format：date-time
     children?: SysTenantDO[] // 子节点
     createId?: string // 创建人id，format：int64
-    tenantId?: string // 租户id，format：int64
+    tenantId?: string // 租户 id，format：int64
     name?: string // 租户名
     id?: string // 主键id，format：int64
     enableFlag?: boolean // 是否启用
@@ -114,7 +114,7 @@ export interface SysTenantInfoByIdVO {
     createTime?: string // 创建时间，format：date-time
     children?: SysTenantDO[] // 子节点
     createId?: string // 创建人id，format：int64
-    tenantId?: string // 租户id，format：int64
+    tenantId?: string // 租户 id，format：int64
     name?: string // 租户名
     id?: string // 主键id，format：int64
     enableFlag?: boolean // 是否启用
