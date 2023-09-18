@@ -14,6 +14,14 @@ import java.util.Map;
 public class MyEntityUtil {
 
     /**
+     * 获取不为 null对象
+     */
+    @NotNull
+    public static <T> T getNotNullObject(T value, T defaultValue) {
+        return value == null ? defaultValue : value;
+    }
+
+    /**
      * 获取不为 null对象，并且去掉前后空格的 字符串
      */
     @NotNull
