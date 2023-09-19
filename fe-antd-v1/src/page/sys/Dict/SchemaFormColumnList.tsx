@@ -69,7 +69,10 @@ const SchemaFormColumnList = (): ProFormColumnsType<SysDictInsertOrUpdateDTO>[] 
                             dataIndex: 'value',
                             formItemProps: {
                                 rules: [
-                                    {validator: ValidatorUtil.integerValidate}
+                                    {
+                                        required: true,
+                                        validator: ValidatorUtil.integerValidate
+                                    }
                                 ],
                             },
                             tooltip: '一般为数字：101 201 301 ...',
