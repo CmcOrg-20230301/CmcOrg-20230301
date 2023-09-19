@@ -187,13 +187,13 @@ export default function () {
 
                 request={(params, sort, filter) => {
 
+                    doGetDictList()
+
                     return SysUserPage({...params, sort})
 
                 }}
 
                 postData={(data: SysUserPageVO[]) => {
-
-                    doGetDictList()
 
                     let avatarFileIdList = data.map(it => it.avatarFileId!); // 用户头像文件 id集合
 
