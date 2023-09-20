@@ -349,6 +349,23 @@ public class MilvusUtil {
     }
 
     /**
+     * 最大的 limit值
+     */
+    public static final long MAX_LIMIT = 16384;
+
+    /**
+     * 查询所有数据
+     * 注意：like只支持：like ab%，不支持 %ab%，不然会报错
+     */
+    @NotNull
+    public static <T> List<T> queryAll(String collectionName, @Nullable String exprStr, List<String> outFieldList,
+        Class<T> tClass) {
+
+        return query(collectionName, exprStr, outFieldList, 0, MAX_LIMIT, tClass);
+
+    }
+
+    /**
      * 查询
      * 注意：like只支持：like ab%，不支持 %ab%，不然会报错
      */
@@ -402,6 +419,10 @@ public class MilvusUtil {
      */
     public static boolean deleteByIdSet(String collectionName, Set<Long> idSet) {
 
+        if (CollUtil.isEmpty(idSet)) {
+            return true;
+        }
+
         StrBuilder exprStrBuilder = getExprIdInStrBuilder(idSet);
 
         return delete(collectionName, exprStrBuilder.toString());
@@ -425,6 +446,7 @@ public class MilvusUtil {
 
     /**
      * 删除
+     * 注意：milvus，暂时只支持主键 删除，不支持其他删除，所以：不建议调用本方法
      */
     public static boolean delete(String collectionName, String exprStr) {
 
