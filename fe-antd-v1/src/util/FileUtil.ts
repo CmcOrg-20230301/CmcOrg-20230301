@@ -37,26 +37,8 @@ export function download(
 
 }
 
-// 文件-管理 文件下载
-export function SysFilePrivateDownload(form: NotNullId) {
-
-    $http.request({
-
-        url: '/sys/file/privateDownload',
-        responseType: 'blob',
-        method: 'post',
-        data: form
-
-    }).then(res => {
-
-        download(res.data, res.headers['content-disposition'])
-
-    })
-
-}
-
-// 文件-管理 文件下载
-export function SysFileDownload(url: string, form?: any) {
+// 文件下载
+export function FileDownload<T>(url: string, form?: T) {
 
     $http.request({
 
@@ -70,6 +52,13 @@ export function SysFileDownload(url: string, form?: any) {
         download(res.data, res.headers['content-disposition'])
 
     })
+
+}
+
+// 文件-管理 文件下载
+export function SysFilePrivateDownload(form: NotNullId) {
+
+    FileDownload('/sys/file/privateDownload', form)
 
 }
 
