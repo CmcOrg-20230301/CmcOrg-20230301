@@ -400,7 +400,7 @@ public class MilvusUtil {
     /**
      * 删除：根据主键 idSet
      */
-    public static boolean delete(String collectionName, Set<Long> idSet) {
+    public static boolean deleteByIdSet(String collectionName, Set<Long> idSet) {
 
         StrBuilder exprStrBuilder = getExprIdInStrBuilder(idSet);
 

@@ -282,7 +282,6 @@ public class SysTenantUtil {
         if (id == null) {
 
             dto.setTenantId(UserUtil.getCurrentTenantIdDefault());
-
             return;
 
         }
