@@ -92,7 +92,7 @@ export function CheckAvatarFileType(avatarFileType: string) {
     return AvatarFileTypeList.includes(avatarFileType)
 }
 
-export const ExcelFileTypeList = ["application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "application/vnd.ms-excel"]
+export const ExcelFileTypeList = ["application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"]
 
 // 检查：excel文件类型
 export function CheckExcelFileType(excelFileType: string) {

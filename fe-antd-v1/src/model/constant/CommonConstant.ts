@@ -16,7 +16,7 @@ export default {
 
     IMAGE_FILE_ACCEPT_TYPE: ".png,.jpeg,.jpg", // 图片文件的类型
 
-    EXCEL_FILE_ACCEPT_TYPE: ".xls,.xlsx", // excel文件的类型
+    EXCEL_FILE_ACCEPT_TYPE: ".xlsx", // excel文件的类型
 
     MOBILE_WIDTH: 768, // 小于这个数值，就是移动端
 

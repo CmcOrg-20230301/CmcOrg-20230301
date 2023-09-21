@@ -29,7 +29,7 @@ public enum SysFileUploadTypeEnum implements ISysFileUploadType {
     AVATAR(101, "avatar", CollUtil.newHashSet("jpeg", "png", "jpg"), 1024 * 1024 * 2, true), //
 
     // excel
-    EXCEL(201, "excel", CollUtil.newHashSet("xls", "xlsx"), 1024 * 1024 * 2, false), //
+    EXCEL(201, "excel", CollUtil.newHashSet("xlsx"), 1024 * 1024 * 2, false), //
 
     ;
 
