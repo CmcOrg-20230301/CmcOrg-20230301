@@ -1,7 +1,6 @@
 package com.cmcorg20230301.be.engine.file.base.util;
 
 import cn.hutool.core.collection.CollUtil;
-import cn.hutool.core.lang.Assert;
 import cn.hutool.core.map.MapUtil;
 import cn.hutool.core.util.BooleanUtil;
 import cn.hutool.core.util.IdUtil;
@@ -15,7 +14,6 @@ import com.cmcorg20230301.be.engine.file.base.model.entity.SysFileAuthDO;
 import com.cmcorg20230301.be.engine.file.base.model.entity.SysFileDO;
 import com.cmcorg20230301.be.engine.file.base.model.enums.SysFileStorageTypeEnum;
 import com.cmcorg20230301.be.engine.file.base.model.enums.SysFileTypeEnum;
-import com.cmcorg20230301.be.engine.file.base.model.enums.SysFileUploadTypeEnum;
 import com.cmcorg20230301.be.engine.file.base.properties.SysFileProperties;
 import com.cmcorg20230301.be.engine.file.base.service.SysFileAuthService;
 import com.cmcorg20230301.be.engine.file.base.service.SysFileService;
@@ -25,6 +23,7 @@ import com.cmcorg20230301.be.engine.security.mapper.SysUserInfoMapper;
 import com.cmcorg20230301.be.engine.security.model.entity.BaseEntity;
 import com.cmcorg20230301.be.engine.security.model.entity.BaseEntityNoId;
 import com.cmcorg20230301.be.engine.security.model.entity.SysUserInfoDO;
+import com.cmcorg20230301.be.engine.security.model.enums.SysFileUploadTypeEnum;
 import com.cmcorg20230301.be.engine.security.model.vo.ApiResultVO;
 import com.cmcorg20230301.be.engine.security.util.MyEntityUtil;
 import com.cmcorg20230301.be.engine.security.util.SysTenantUtil;
@@ -82,35 +81,6 @@ public class SysFileUtil {
     }
 
     /**
-     * 上传文件时的检查
-     */
-    @NotNull
-    public static String uploadCheckWillError(SysFileUploadDTO dto) {
-
-        Assert.notNull(dto.getFile(), "file 不能为空");
-        Assert.notNull(dto.getUploadType(), "uploadType 不能为空");
-
-        dto.getUploadType().checkFileSize(dto.getFile()); // 检查：文件大小
-
-        String originalFilename = dto.getFile().getOriginalFilename();
-
-        if (StrUtil.isBlank(originalFilename)) {
-            ApiResultVO.errorMsg("操作失败：上传的文件名不能为空");
-        }
-
-        String fileType = dto.getUploadType().checkFileType(dto.getFile());
-
-        if (fileType == null) {
-
-            ApiResultVO.errorMsg("操作失败：暂不支持此文件类型【" + originalFilename + "】，请重新选择");
-
-        }
-
-        return fileType;
-
-    }
-
-    /**
      * 上传文件：公有和私有
      * 备注：objectName 相同的，会被覆盖掉
      *
@@ -123,7 +93,7 @@ public class SysFileUtil {
         Long currentUserIdNotAdmin = UserUtil.getCurrentUserIdNotAdmin();
 
         // 上传文件时的检查
-        String fileType = uploadCheckWillError(dto);
+        String fileType = SysFileUploadTypeEnum.uploadCheckWillError(dto.getFile(), dto.getUploadType());
 
         Long sysFileId = null;
 

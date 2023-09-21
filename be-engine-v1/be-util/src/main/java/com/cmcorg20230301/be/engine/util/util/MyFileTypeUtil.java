@@ -3,6 +3,7 @@ package com.cmcorg20230301.be.engine.util.util;
 import cn.hutool.core.io.FileTypeUtil;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.io.IoUtil;
+import cn.hutool.core.util.StrUtil;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.InputStream;
@@ -19,10 +20,15 @@ public class MyFileTypeUtil {
 
         IoUtil.close(inputStream); // 这里直接关闭流，因为这个流已经不完整了
 
+        if (StrUtil.isBlank(fileName)) {
+            return typeName;
+        }
+
         if ("xls".equals(typeName)) {
 
             // xls、doc、msi的头一样，使用扩展名辅助判断
             final String extName = FileUtil.extName(fileName);
+
             if ("doc".equalsIgnoreCase(extName)) {
                 typeName = "doc";
             } else if ("msi".equalsIgnoreCase(extName)) {

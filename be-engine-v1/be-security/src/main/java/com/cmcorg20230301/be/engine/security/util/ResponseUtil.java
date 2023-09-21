@@ -82,7 +82,9 @@ public class ResponseUtil {
     @SneakyThrows
     public static OutputStream getExcelOutputStream(HttpServletResponse response, String fileName) {
 
-        response.setContentType("application/vnd.ms-excel;charset=utf-8");
+        // 备注：.xls是：application/vnd.ms-excel
+        // 备注：.xlsx是：application/vnd.openxmlformats-officedocument.spreadsheetml.sheet
+        response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8");
 
         response
             .setHeader("Content-Disposition", "attachment;filename=" + URLEncoder.encode(fileName, "UTF-8") + ".xlsx");

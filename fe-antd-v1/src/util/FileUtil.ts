@@ -74,7 +74,14 @@ export function SysFileUpload(file: string | RcFile | Blob, type: TSysFileUpload
 
     formData.append('uploadType', type)
 
-    return $http.myPost<string>('/sys/file/upload', formData, {headers: {'Content-Type': 'multipart/form-data'}})
+    return FileUpload(formData, '/sys/file/upload');
+
+}
+
+// 文件上传
+export function FileUpload(formData: FormData, url: string) {
+
+    return $http.myPost<string>(url, formData, {headers: {'Content-Type': 'multipart/form-data'}})
 
 }
 
@@ -83,6 +90,13 @@ export const AvatarFileTypeList = ["image/jpeg", "image/png", "image/jpg"]
 // 检查：头像的文件类型
 export function CheckAvatarFileType(avatarFileType: string) {
     return AvatarFileTypeList.includes(avatarFileType)
+}
+
+export const ExcelFileTypeList = ["application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "application/vnd.ms-excel"]
+
+// 检查：excel文件类型
+export function CheckExcelFileType(excelFileType: string) {
+    return ExcelFileTypeList.includes(excelFileType)
 }
 
 // 检查：文件的文件类型，2097152（字节）= 2MB

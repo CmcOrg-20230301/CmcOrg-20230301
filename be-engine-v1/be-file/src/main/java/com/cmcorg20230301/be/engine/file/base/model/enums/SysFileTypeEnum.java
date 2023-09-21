@@ -13,6 +13,7 @@ import lombok.Getter;
 public enum SysFileTypeEnum {
 
     FILE(101), // 文件
+
     FOLDER(101), // 文件夹
 
     ;
