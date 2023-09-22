@@ -5,8 +5,9 @@ import com.baomidou.mybatisplus.annotation.EnumValue;
 import com.fasterxml.jackson.annotation.JsonValue;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.NotNull;
 
+import java.util.HashSet;
 import java.util.Set;
 
 /**
@@ -15,6 +16,8 @@ import java.util.Set;
 @AllArgsConstructor
 @Getter
 public enum SysPayTradeStatusEnum {
+
+    NOT_EXIST(-1, new HashSet<>()), // 订单不存在
 
     WAIT_BUYER_PAY(101, CollUtil.newHashSet("WAIT_BUYER_PAY", "NOTPAY")), // 交易创建，等待买家付款
 
@@ -36,7 +39,7 @@ public enum SysPayTradeStatusEnum {
     /**
      * 通过：status，获取枚举类
      */
-    @Nullable
+    @NotNull
     public static SysPayTradeStatusEnum getByStatus(String status) {
 
         for (SysPayTradeStatusEnum item : SysPayTradeStatusEnum.values()) {
@@ -46,7 +49,7 @@ public enum SysPayTradeStatusEnum {
             }
         }
 
-        return null;
+        return NOT_EXIST;
 
     }
 

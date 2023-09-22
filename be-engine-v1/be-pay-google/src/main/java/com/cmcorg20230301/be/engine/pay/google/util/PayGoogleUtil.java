@@ -21,6 +21,7 @@ import com.cmcorg20230301.be.engine.pay.google.model.bo.SysPayGooglePurchasesBO;
 import com.cmcorg20230301.be.engine.redisson.model.enums.RedisKeyEnum;
 import com.cmcorg20230301.be.engine.security.model.vo.ApiResultVO;
 import lombok.SneakyThrows;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
@@ -42,10 +43,13 @@ public class PayGoogleUtil {
      * 支付
      */
     @SneakyThrows
+    @NotNull
     public static SysPayReturnBO pay(PayDTO dto) {
 
-        // 备注：这里不用返回任何值
-        return null;
+        SysPayConfigurationDO sysPayConfigurationDO =
+            PayHelper.getSysPayConfigurationDO(dto.getTenantId(), SysPayTypeEnum.GOOGLE);
+
+        return new SysPayReturnBO("", sysPayConfigurationDO.getAppId());
 
     }
 
@@ -55,6 +59,7 @@ public class PayGoogleUtil {
      * @param outTradeNo 商户订单号，商户网站订单系统中唯一订单号，必填
      */
     @SneakyThrows
+    @NotNull
     public static SysPayTradeStatusEnum query(String outTradeNo, SysPayTradeNotifyBO sysPayTradeNotifyBO,
         Long tenantId) {
 

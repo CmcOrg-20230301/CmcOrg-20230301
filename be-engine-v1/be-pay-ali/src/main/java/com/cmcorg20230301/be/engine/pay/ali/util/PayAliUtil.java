@@ -3,7 +3,6 @@ package com.cmcorg20230301.be.engine.pay.ali.util;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.lang.Assert;
 import cn.hutool.core.util.BooleanUtil;
-import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
 import com.alipay.api.AlipayClient;
@@ -72,6 +71,7 @@ public class PayAliUtil {
      * 支付
      */
     @SneakyThrows
+    @NotNull
     public static SysPayReturnBO pay(PayDTO dto) {
 
         CallBack<SysPayConfigurationDO> sysPayConfigurationDoCallBack = new CallBack<>();
@@ -80,13 +80,6 @@ public class PayAliUtil {
             new DefaultAlipayClient(getAlipayConfig(dto.getTenantId(), sysPayConfigurationDoCallBack));
 
         AlipayTradePagePayRequest aliPayRequest = new AlipayTradePagePayRequest();
-
-        if (StrUtil.isNotBlank(sysPayConfigurationDoCallBack.getValue().getReturnUrl())) {
-
-            aliPayRequest
-                .setReturnUrl(sysPayConfigurationDoCallBack.getValue().getReturnUrl() + "/" + dto.getTenantId());
-
-        }
 
         aliPayRequest.setNotifyUrl(sysPayConfigurationDoCallBack.getValue().getNotifyUrl() + "/" + dto.getTenantId());
 
@@ -124,6 +117,7 @@ public class PayAliUtil {
      * @param outTradeNo 商户订单号，商户网站订单系统中唯一订单号，必填
      */
     @SneakyThrows
+    @NotNull
     public static SysPayTradeStatusEnum query(String outTradeNo, Long tenantId) {
 
         Assert.notBlank(outTradeNo);

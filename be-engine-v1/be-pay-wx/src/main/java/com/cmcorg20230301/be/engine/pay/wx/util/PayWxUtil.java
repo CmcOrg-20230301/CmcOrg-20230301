@@ -17,6 +17,7 @@ import com.wechat.pay.java.service.payments.jsapi.model.PrepayWithRequestPayment
 import com.wechat.pay.java.service.payments.model.Transaction;
 import com.wechat.pay.java.service.payments.nativepay.NativePayService;
 import lombok.SneakyThrows;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Nullable;
@@ -70,6 +71,7 @@ public class PayWxUtil {
      * 支付-native
      */
     @SneakyThrows
+    @NotNull
     public static SysPayReturnBO payNative(PayDTO dto) {
 
         CallBack<SysPayConfigurationDO> sysPayConfigurationDoCallBack = new CallBack<>();
@@ -107,6 +109,7 @@ public class PayWxUtil {
      * @param outTradeNo 商户订单号，商户网站订单系统中唯一订单号，必填
      */
     @SneakyThrows
+    @NotNull
     public static SysPayTradeStatusEnum queryNative(String outTradeNo, Long tenantId) {
 
         CallBack<SysPayConfigurationDO> sysPayConfigurationDoCallBack = new CallBack<>();
@@ -143,6 +146,7 @@ public class PayWxUtil {
      * 支付-jsApi：jsApi调起支付需要的参数
      */
     @SneakyThrows
+    @NotNull
     public static SysPayReturnBO payJsApi(PayDTO dto) {
 
         Assert.notBlank(dto.getOpenId());
@@ -192,6 +196,7 @@ public class PayWxUtil {
      * @param outTradeNo 商户订单号，商户网站订单系统中唯一订单号，必填
      */
     @SneakyThrows
+    @NotNull
     public static SysPayTradeStatusEnum queryJsApi(String outTradeNo, Long tenantId) {
 
         CallBack<SysPayConfigurationDO> sysPayConfigurationDoCallBack = new CallBack<>();

@@ -120,6 +120,7 @@ public class PayUtil {
 
         dto.setOutTradeNo(payId.toString()); // 设置：支付的订单号
 
+        // 调用：第三方支付
         SysPayReturnBO sysPayReturnBO = iSysPay.pay(dto);
 
         Assert.notBlank(sysPayReturnBO.getPayAppId());
@@ -211,10 +212,11 @@ public class PayUtil {
             return false;
         }
 
+        // 获取：订单状态
         SysPayTradeStatusEnum sysPayTradeStatusEnum =
             SysPayTradeStatusEnum.getByStatus(sysPayTradeNotifyBO.getTradeStatus());
 
-        if (sysPayTradeStatusEnum == null) {
+        if (SysPayTradeStatusEnum.NOT_EXIST.equals(sysPayTradeStatusEnum)) {
             return false;
         }
 
