@@ -23,6 +23,7 @@ import com.cmcorg20230301.be.engine.security.exception.BaseException;
 import com.cmcorg20230301.be.engine.security.model.entity.SysRequestDO;
 import com.cmcorg20230301.be.engine.security.model.enums.SysRequestCategoryEnum;
 import com.cmcorg20230301.be.engine.security.model.vo.ApiResultVO;
+import com.cmcorg20230301.be.engine.security.util.MyEntityUtil;
 import com.cmcorg20230301.be.engine.security.util.RequestUtil;
 import com.cmcorg20230301.be.engine.socket.model.dto.WebSocketMessageDTO;
 import com.cmcorg20230301.be.engine.socket.model.entity.SysSocketRefUserDO;
@@ -282,7 +283,7 @@ public class NettyWebSocketServerHandler extends ChannelInboundHandlerAdapter {
             webSocketMessageDTO.setUri(uri);
             webSocketMessageDTO.setCode(404);
 
-            WebSocketUtil.send(channel, webSocketMessageDTO, text, costMs, null, "");
+            WebSocketUtil.send(channel, webSocketMessageDTO, text, costMs, null, "", false);
 
             return;
 
@@ -324,7 +325,7 @@ public class NettyWebSocketServerHandler extends ChannelInboundHandlerAdapter {
 
             }
 
-            WebSocketUtil.send(channel, webSocketMessageDTO, text, costMs, mappingValue, "");
+            WebSocketUtil.send(channel, webSocketMessageDTO, text, costMs, mappingValue, "", true);
 
         } catch (Throwable e) {
 
@@ -355,7 +356,7 @@ public class NettyWebSocketServerHandler extends ChannelInboundHandlerAdapter {
             }
 
             WebSocketUtil.send(channel, webSocketMessageDTO, text, costMs, mappingValue,
-                StrUtil.maxLength(e.getMessage(), BaseConstant.STR_MAX_LENGTH_1000));
+                MyEntityUtil.getNotNullStr(StrUtil.maxLength(e.getMessage(), BaseConstant.STR_MAX_LENGTH_1000)), false);
 
         }
 

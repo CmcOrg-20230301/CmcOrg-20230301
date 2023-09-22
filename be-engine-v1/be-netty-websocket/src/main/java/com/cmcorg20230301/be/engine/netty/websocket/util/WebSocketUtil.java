@@ -2,7 +2,6 @@ package com.cmcorg20230301.be.engine.netty.websocket.util;
 
 import cn.hutool.core.date.BetweenFormatter;
 import cn.hutool.core.date.DateUtil;
-import cn.hutool.core.util.StrUtil;
 import com.cmcorg20230301.be.engine.ip2region.util.Ip2RegionUtil;
 import com.cmcorg20230301.be.engine.model.model.constant.OperationDescriptionConstant;
 import com.cmcorg20230301.be.engine.netty.websocket.configuration.NettyWebSocketBeanPostProcessor;
@@ -37,7 +36,7 @@ public class WebSocketUtil {
      */
     @SneakyThrows
     public static <T> void send(Channel channel, WebSocketMessageDTO<T> dto, String text, long costMs,
-        @Nullable NettyWebSocketBeanPostProcessor.MappingValue mappingValue, String errorMsg) {
+        @Nullable NettyWebSocketBeanPostProcessor.MappingValue mappingValue, String errorMsg, boolean successFlag) {
 
         Long userId = channel.attr(NettyWebSocketServerHandler.USER_ID_KEY).get();
 
@@ -77,7 +76,7 @@ public class WebSocketUtil {
         sysRequestDO.setIp(ip);
         sysRequestDO.setRegion(Ip2RegionUtil.getRegion(sysRequestDO.getIp()));
 
-        sysRequestDO.setSuccessFlag(StrUtil.isBlank(errorMsg));
+        sysRequestDO.setSuccessFlag(successFlag);
         sysRequestDO.setErrorMsg(errorMsg);
         sysRequestDO.setRequestParam(text);
         sysRequestDO.setType(OperationDescriptionConstant.WEB_SOCKET);

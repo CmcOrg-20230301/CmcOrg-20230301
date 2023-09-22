@@ -126,7 +126,8 @@ public class SysRequestAop {
 
         }
 
-        sysRequestDO.setRequestParam(StrUtil.maxLength(strBuilder.toString(), BaseConstant.STR_MAX_LENGTH_1000));
+        sysRequestDO.setRequestParam(
+            MyEntityUtil.getNotNullStr(StrUtil.maxLength(strBuilder.toString(), BaseConstant.STR_MAX_LENGTH_1000)));
 
         Object object = null;
 
@@ -140,8 +141,8 @@ public class SysRequestAop {
 
                 object = proceedingJoinPoint.proceed(); // 执行方法，备注：如果执行方法时抛出了异常，catch可以捕获到
 
-                sysRequestDO
-                    .setResponseValue(StrUtil.maxLength(JSONUtil.toJsonStr(object), BaseConstant.STR_MAX_LENGTH_1000));
+                sysRequestDO.setResponseValue(MyEntityUtil
+                    .getNotNullStr(StrUtil.maxLength(JSONUtil.toJsonStr(object), BaseConstant.STR_MAX_LENGTH_1000)));
 
             }
 

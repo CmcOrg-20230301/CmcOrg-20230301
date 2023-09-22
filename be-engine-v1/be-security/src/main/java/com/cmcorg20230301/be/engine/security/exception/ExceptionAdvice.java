@@ -63,10 +63,10 @@ public class ExceptionAdvice {
             if (method != null) {
 
                 // 处理：请求
-                handleRequest(httpServletRequest, method.getAnnotation(Operation.class),
-                    StrUtil.maxLength(baseException.getMessage(), BaseConstant.STR_MAX_LENGTH_1000), StrUtil
-                        .maxLength(JSONUtil.toJsonStr(e.getBindingResult().getTarget()),
-                            BaseConstant.STR_MAX_LENGTH_1000));
+                handleRequest(httpServletRequest, method.getAnnotation(Operation.class), MyEntityUtil
+                        .getNotNullStr(StrUtil.maxLength(baseException.getMessage(), BaseConstant.STR_MAX_LENGTH_1000)), //
+                    MyEntityUtil.getNotNullStr(StrUtil.maxLength(JSONUtil.toJsonStr(e.getBindingResult().getTarget()),
+                        BaseConstant.STR_MAX_LENGTH_1000)));
 
             }
 
@@ -164,8 +164,8 @@ public class ExceptionAdvice {
         } catch (BaseException baseException) {
 
             // 处理：请求
-            handleRequest(httpServletRequest, null,
-                StrUtil.maxLength(baseException.getMessage(), BaseConstant.STR_MAX_LENGTH_1000), "");
+            handleRequest(httpServletRequest, null, MyEntityUtil
+                .getNotNullStr(StrUtil.maxLength(baseException.getMessage(), BaseConstant.STR_MAX_LENGTH_1000)), "");
 
             return getBaseExceptionApiResult(baseException);
 
@@ -204,8 +204,8 @@ public class ExceptionAdvice {
         } catch (BaseException baseException) {
 
             // 处理：请求
-            handleRequest(httpServletRequest, null,
-                StrUtil.maxLength(baseException.getMessage(), BaseConstant.STR_MAX_LENGTH_1000), "");
+            handleRequest(httpServletRequest, null, MyEntityUtil
+                .getNotNullStr(StrUtil.maxLength(baseException.getMessage(), BaseConstant.STR_MAX_LENGTH_1000)), "");
 
             return getBaseExceptionApiResult(baseException);
 
@@ -250,8 +250,8 @@ public class ExceptionAdvice {
         } catch (BaseException baseException) {
 
             // 处理：请求
-            handleRequest(httpServletRequest, null, StrUtil.maxLength(e.getMessage(), BaseConstant.STR_MAX_LENGTH_1000),
-                "");
+            handleRequest(httpServletRequest, null,
+                MyEntityUtil.getNotNullStr(StrUtil.maxLength(e.getMessage(), BaseConstant.STR_MAX_LENGTH_1000)), "");
 
             return getBaseExceptionApiResult(baseException);
 

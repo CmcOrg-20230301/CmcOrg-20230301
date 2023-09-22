@@ -71,7 +71,7 @@ public class RetryUtil {
             }
 
             if (gapMs > 0) {
-                ThreadUtil.safeSleep(gapMs); // 睡眠
+                ThreadUtil.sleep(gapMs); // 睡眠
             }
 
             // 执行
@@ -105,7 +105,7 @@ public class RetryUtil {
             }
 
             if (gapMs > 0) {
-                ThreadUtil.safeSleep(gapMs); // 睡眠
+                ThreadUtil.sleep(gapMs); // 睡眠
             }
 
             // 执行
