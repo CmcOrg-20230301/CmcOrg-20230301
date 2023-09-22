@@ -88,14 +88,14 @@ export interface SysDictListByDictKeyDTO {
     dictKey?: string // 字典 key，required：true
 }
 
-export interface DictVO {
+export interface DictIntegerVO {
     name?: string // 显示用
-    id?: string // 传值用，format：int64
+    id?: number // 传值用，format：int32
 }
 
 // 通过：dictKey获取字典项集合，备注：会进行缓存
 export function SysDictListByDictKey(form: SysDictListByDictKeyDTO, config?: AxiosRequestConfig) {
-    return $http.myPost<DictVO[]>('/sys/dict/listByDictKey', form, config)
+    return $http.myPost<DictIntegerVO[]>('/sys/dict/listByDictKey', form, config)
 }
 
 export interface ChangeNumberDTO {
