@@ -8,7 +8,7 @@ import com.cmcorg20230301.be.engine.dict.service.SysDictService;
 import com.cmcorg20230301.be.engine.model.model.dto.ChangeNumberDTO;
 import com.cmcorg20230301.be.engine.model.model.dto.NotEmptyIdSet;
 import com.cmcorg20230301.be.engine.model.model.dto.NotNullId;
-import com.cmcorg20230301.be.engine.model.model.vo.DictVO;
+import com.cmcorg20230301.be.engine.model.model.vo.DictIntegerVO;
 import com.cmcorg20230301.be.engine.security.model.entity.SysDictDO;
 import com.cmcorg20230301.be.engine.security.model.vo.ApiResultVO;
 import io.swagger.v3.oas.annotations.Operation;
@@ -47,7 +47,7 @@ public class SysDictController {
 
     @Operation(summary = "通过：dictKey获取字典项集合，备注：会进行缓存")
     @PostMapping("/listByDictKey")
-    public ApiResultVO<List<DictVO>> listByDictKey(@RequestBody @Valid SysDictListByDictKeyDTO dto) {
+    public ApiResultVO<List<DictIntegerVO>> listByDictKey(@RequestBody @Valid SysDictListByDictKeyDTO dto) {
         return ApiResultVO.okData(baseService.listByDictKey(dto));
     }
 

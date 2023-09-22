@@ -41,11 +41,11 @@ public class SysPayConfigurationServiceImpl extends ServiceImpl<SysPayConfigurat
     public String insertOrUpdate(SysPayConfigurationInsertOrUpdateDTO dto) {
 
         if (!ReUtil.isMatch(PatternPool.URL, dto.getServerUrl())) {
-            ApiResultVO.errorMsg("操作失败：支付平台，网关地址，不合法");
+            ApiResultVO.errorMsg("操作失败：网关地址，不合法");
         }
 
         if (StrUtil.isNotBlank(dto.getNotifyUrl()) && !ReUtil.isMatch(PatternPool.URL, dto.getNotifyUrl())) {
-            ApiResultVO.errorMsg("操作失败：支付平台，异步接收地址，不合法");
+            ApiResultVO.errorMsg("操作失败：异步接收地址，不合法");
         }
 
         // 每个支付方式，需要单独检查 dto
@@ -99,12 +99,13 @@ public class SysPayConfigurationServiceImpl extends ServiceImpl<SysPayConfigurat
         SysTenantUtil.handleMyTenantPageDTO(dto, true);
 
         return lambdaQuery().like(StrUtil.isNotBlank(dto.getName()), SysPayConfigurationDO::getName, dto.getName())
+            .like(StrUtil.isNotBlank(dto.getAppId()), SysPayConfigurationDO::getAppId, dto.getAppId())
             .like(StrUtil.isNotBlank(dto.getRemark()), BaseEntity::getRemark, dto.getRemark())
+            .eq(dto.getType() != null, SysPayConfigurationDO::getType, dto.getType())
             .eq(dto.getEnableFlag() != null, BaseEntity::getEnableFlag, dto.getEnableFlag())
             .in(BaseEntityNoId::getTenantId, dto.getTenantIdSet()) //
             .select(BaseEntity::getId, BaseEntityNoIdFather::getTenantId, SysPayConfigurationDO::getAppId,
-                SysPayConfigurationDO::getType, SysPayConfigurationDO::getName, SysPayConfigurationDO::getServerUrl,
-                SysPayConfigurationDO::getNotifyUrl, BaseEntityNoIdFather::getCreateId,
+                SysPayConfigurationDO::getType, SysPayConfigurationDO::getName, BaseEntityNoIdFather::getCreateId,
                 BaseEntityNoIdFather::getCreateTime, BaseEntityNoIdFather::getUpdateId,
                 BaseEntityNoIdFather::getUpdateTime, BaseEntityNoId::getEnableFlag, BaseEntityNoId::getRemark)
             .orderByDesc(BaseEntity::getUpdateTime).page(dto.page(true));

@@ -48,6 +48,15 @@ public class SysOtherAppServiceImpl extends ServiceImpl<SysOtherAppMapper, SysOt
             ApiResultVO.errorMsg("操作失败：第三方应用名不能重复");
         }
 
+        // 第三方 appId，不能重复
+        exists = lambdaQuery().eq(SysOtherAppDO::getAppId, dto.getAppId())
+            .ne(dto.getId() != null, BaseEntity::getId, dto.getId()).eq(BaseEntityNoId::getTenantId, dto.getTenantId())
+            .exists();
+
+        if (exists) {
+            ApiResultVO.errorMsg("操作失败：第三方 appId不能重复");
+        }
+
         SysOtherAppDO sysOtherAppDO = new SysOtherAppDO();
 
         sysOtherAppDO.setType(dto.getType());

@@ -3,7 +3,7 @@ package com.cmcorg20230301.be.engine.security.util;
 import com.baomidou.mybatisplus.extension.toolkit.ChainWrappers;
 import com.cmcorg20230301.be.engine.cache.util.CacheHelper;
 import com.cmcorg20230301.be.engine.cache.util.MyCacheUtil;
-import com.cmcorg20230301.be.engine.model.model.vo.DictVO;
+import com.cmcorg20230301.be.engine.model.model.vo.DictIntegerVO;
 import com.cmcorg20230301.be.engine.redisson.model.enums.RedisKeyEnum;
 import com.cmcorg20230301.be.engine.security.mapper.SysDictMapper;
 import com.cmcorg20230301.be.engine.security.model.entity.BaseEntityNoId;
@@ -35,7 +35,7 @@ public class SysDictUtil {
     /**
      * 通过：dictKey获取字典项集合，备注：会进行缓存
      */
-    public static List<DictVO> listByDictKey(SysDictDictKeyEnum sysDictDictKeyEnum) {
+    public static List<DictIntegerVO> listByDictKey(SysDictDictKeyEnum sysDictDictKeyEnum) {
 
         return listByDictKey(sysDictDictKeyEnum.name().toLowerCase());
 
@@ -44,11 +44,11 @@ public class SysDictUtil {
     /**
      * 通过：dictKey获取字典项集合，备注：会进行缓存
      */
-    public static List<DictVO> listByDictKey(String dictKey) {
+    public static List<DictIntegerVO> listByDictKey(String dictKey) {
 
         Long currentTenantIdDefault = UserUtil.getCurrentTenantIdDefault();
 
-        Map<Long, Map<String, List<DictVO>>> dictMap =
+        Map<Long, Map<String, List<DictIntegerVO>>> dictMap =
             MyCacheUtil.getMap(RedisKeyEnum.SYS_DICT_CACHE, CacheHelper.getDefaultLongMapStringListMap(), () -> {
 
                 return ChainWrappers.lambdaQueryChain(sysDictMapper).eq(SysDictDO::getType, SysDictTypeEnum.DICT_ITEM)
@@ -58,7 +58,7 @@ public class SysDictUtil {
                     .orderByDesc(SysDictDO::getOrderNo).list() //
                     .stream().collect(Collectors.groupingBy(BaseEntityNoId::getTenantId, Collectors
                         .groupingBy(SysDictDO::getDictKey, Collectors
-                            .mapping(it -> new DictVO(it.getValue().longValue(), it.getName()), Collectors.toList()))));
+                            .mapping(it -> new DictIntegerVO(it.getValue(), it.getName()), Collectors.toList()))));
 
             });
 

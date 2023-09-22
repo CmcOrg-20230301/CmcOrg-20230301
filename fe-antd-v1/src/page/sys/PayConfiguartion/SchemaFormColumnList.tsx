@@ -1,6 +1,7 @@
 import {YesNoDict} from "@/util/DictUtil";
 import {SysPayConfigurationInsertOrUpdateDTO} from "@/api/http/SysPayConfiguration";
 import {ProFormColumnsType} from "@ant-design/pro-components";
+import {GetDictListByKey} from "../../../../../../LxSaas-20230907/fe-saas-v1/src/util/DictUtil";
 
 export const InitForm: SysPayConfigurationInsertOrUpdateDTO = {} as SysPayConfigurationInsertOrUpdateDTO
 
@@ -9,21 +10,109 @@ const SchemaFormColumnList = (): ProFormColumnsType<SysPayConfigurationInsertOrU
     return [
 
         {
-            title: '支付平台',
-            dataIndex: 'apiV3Key',
-            tooltip: '支付平台，商户APIV3密钥',
+            title: '类型',
+            dataIndex: 'type',
+            valueType: 'select',
+            fieldProps: {
+                showSearch: true,
+            },
+            formItemProps: {
+                rules: [
+                    {
+                        required: true,
+                    },
+                ],
+            },
+            request: () => {
+                return GetDictListByKey('sys_pay_type')
+            },
         },
 
         {
-            title: '支付平台',
+            title: '名称',
+            dataIndex: 'name',
+            formItemProps: {
+                rules: [
+                    {
+                        required: true,
+                        whitespace: true,
+                    },
+                ],
+            },
+            tooltip: '不能重复',
+        },
+
+        {
+            title: '网关地址',
+            dataIndex: 'serverUrl',
+            formItemProps: {
+                rules: [
+                    {
+                        required: true,
+                        whitespace: true,
+                    },
+                ],
+            },
+            tooltip: '例如：https://openapi.alipay.com/gateway.do',
+        },
+
+        {
+            title: 'appId',
+            dataIndex: 'appId',
+            formItemProps: {
+                rules: [
+                    {
+                        required: true,
+                        whitespace: true,
+                    },
+                ],
+            },
+        },
+
+        {
+            title: '私钥',
+            dataIndex: 'privateKey',
+            formItemProps: {
+                rules: [
+                    {
+                        required: true,
+                        whitespace: true,
+                    },
+                ],
+            },
+        },
+
+        {
+            title: '平台公钥',
             dataIndex: 'platformPublicKey',
-            tooltip: '支付平台，公钥',
         },
 
         {
-            title: '支付平台',
+            title: '异步接收地址',
+            dataIndex: 'notifyUrl',
+        },
+
+        {
+            title: '商户号',
+            dataIndex: 'merchantId',
+        },
+
+        {
+            title: '证书序列',
             dataIndex: 'merchantSerialNumber',
-            tooltip: '支付平台，商户证书序列号',
+            tooltip: '商户证书序列号',
+        },
+
+        {
+            title: 'apiV3Key',
+            dataIndex: 'apiV3Key',
+        },
+
+        {
+            title: '是否启用',
+            dataIndex: 'enableFlag',
+            valueEnum: YesNoDict,
+            valueType: 'switch',
         },
 
         {
@@ -43,105 +132,6 @@ const SchemaFormColumnList = (): ProFormColumnsType<SysPayConfigurationInsertOrU
                 maxLength: 300,
                 allowClear: true,
             }
-        },
-
-        {
-            title: '支付类型：101 支付宝 201 微信 301 云闪付 401 谷歌',
-            dataIndex: 'type',
-            formItemProps: {
-                rules: [
-                    {
-                        required: true,
-                        whitespace: true,
-                    },
-                ],
-            },
-        },
-
-        {
-            title: '支付平台',
-            dataIndex: 'privateKey',
-            formItemProps: {
-                rules: [
-                    {
-                        required: true,
-                        whitespace: true,
-                    },
-                ],
-            },
-            tooltip: '支付平台，私钥',
-        },
-
-        {
-            title: '支付平台',
-            dataIndex: 'merchantId',
-            tooltip: '支付平台，商户号',
-        },
-
-        {
-            title: '支付平台',
-            dataIndex: 'serverUrl',
-            formItemProps: {
-                rules: [
-                    {
-                        required: true,
-                        whitespace: true,
-                    },
-                ],
-            },
-            tooltip: '支付平台，网关地址，例如：https://openapi.alipay.com/gateway.do',
-        },
-
-        {
-            title: '支付平台',
-            dataIndex: 'appId',
-            formItemProps: {
-                rules: [
-                    {
-                        required: true,
-                        whitespace: true,
-                    },
-                ],
-            },
-            tooltip: '支付平台，应用 id',
-        },
-
-        {
-            title: '租户 id',
-            dataIndex: 'tenantId',
-            tooltip: '租户 id，可以为空，为空则表示：默认租户：0',
-        },
-
-        {
-            title: '支付名',
-            dataIndex: 'name',
-            formItemProps: {
-                rules: [
-                    {
-                        required: true,
-                        whitespace: true,
-                    },
-                ],
-            },
-            tooltip: '支付名（不可重复）',
-        },
-
-        {
-            title: '支付平台',
-            dataIndex: 'notifyUrl',
-            tooltip: '支付平台，异步接收地址',
-        },
-
-        {
-            title: '主键 id',
-            dataIndex: 'id',
-        },
-
-        {
-            title: '是否启用',
-            dataIndex: 'enableFlag',
-            valueEnum: YesNoDict,
-            valueType: 'switch',
         },
 
     ]

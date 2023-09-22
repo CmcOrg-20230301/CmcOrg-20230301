@@ -8,7 +8,7 @@ import com.cmcorg20230301.be.engine.dict.model.dto.SysDictPageDTO;
 import com.cmcorg20230301.be.engine.model.model.dto.ChangeNumberDTO;
 import com.cmcorg20230301.be.engine.model.model.dto.NotEmptyIdSet;
 import com.cmcorg20230301.be.engine.model.model.dto.NotNullId;
-import com.cmcorg20230301.be.engine.model.model.vo.DictVO;
+import com.cmcorg20230301.be.engine.model.model.vo.DictIntegerVO;
 import com.cmcorg20230301.be.engine.security.model.entity.SysDictDO;
 
 import java.util.List;
@@ -19,7 +19,7 @@ public interface SysDictService extends IService<SysDictDO> {
 
     Page<SysDictDO> myPage(SysDictPageDTO dto);
 
-    List<DictVO> listByDictKey(SysDictListByDictKeyDTO dto);
+    List<DictIntegerVO> listByDictKey(SysDictListByDictKeyDTO dto);
 
     List<SysDictDO> tree(SysDictPageDTO dto);
 

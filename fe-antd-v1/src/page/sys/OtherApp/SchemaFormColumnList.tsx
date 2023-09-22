@@ -12,6 +12,7 @@ const SchemaFormColumnList = (): ProFormColumnsType<SysOtherAppInsertOrUpdateDTO
         {
             title: '类型',
             dataIndex: 'type',
+            valueType: 'select',
             fieldProps: {
                 showSearch: true,
             },

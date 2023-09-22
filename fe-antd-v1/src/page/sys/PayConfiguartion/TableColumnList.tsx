@@ -1,4 +1,4 @@
-import {YesNoDict} from "@/util/DictUtil";
+import {GetDictList, GetDictListByKey, NoFormGetDictTreeList, YesNoDict} from "@/util/DictUtil";
 import {ActionType, ProColumns} from "@ant-design/pro-components";
 import {
     SysPayConfigurationDeleteByIdSet,
@@ -6,6 +6,9 @@ import {
     SysPayConfigurationInsertOrUpdateDTO
 } from "@/api/http/SysPayConfiguration";
 import {ExecConfirm, ToastSuccess} from "@/util/ToastUtil";
+import {SysTenantDictList} from "@/api/http/SysTenant";
+import {TreeSelect} from "antd";
+import {SearchTransform} from "@/util/CommonUtil";
 
 const TableColumnList = (currentForm: React.MutableRefObject<SysPayConfigurationInsertOrUpdateDTO>, setFormOpen: React.Dispatch<React.SetStateAction<boolean>>, actionRef: React.RefObject<ActionType | undefined>): ProColumns<SysPayConfigurationDO>[] => [
 
@@ -16,34 +19,50 @@ const TableColumnList = (currentForm: React.MutableRefObject<SysPayConfiguration
         width: 90,
     },
 
-    {title: '支付平台', dataIndex: 'apiV3Key', ellipsis: true, width: 90,},
-
-    {title: '支付平台', dataIndex: 'platformPublicKey', ellipsis: true, width: 90,},
-
-    {title: '支付平台', dataIndex: 'merchantSerialNumber', ellipsis: true, width: 90,},
-
     {
-        title: '修改时间',
-        dataIndex: 'updateTime',
-        hideInSearch: true,
-        valueType: 'fromNow',
+        title: '租户', dataIndex: 'tenantId', ellipsis: true, width: 90, hideInSearch: true, valueType: 'select',
+        request: () => {
+            return GetDictList(SysTenantDictList)
+        }
     },
 
-    {title: '备注', dataIndex: 'remark', ellipsis: true, width: 90,},
-
     {
-        title: '是否逻辑删除',
-        dataIndex: 'delFlag',
-        valueEnum: YesNoDict
+        title: '租户', dataIndex: 'tenantIdSet', ellipsis: true, width: 90, hideInTable: true, valueType: 'treeSelect',
+        fieldProps: {
+            placeholder: '请选择',
+            allowClear: true,
+            treeNodeFilterProp: 'title',
+            maxTagCount: 'responsive',
+            treeCheckable: true,
+            showCheckedStrategy: TreeSelect.SHOW_ALL,
+            treeCheckStrictly: true,
+        },
+        request: () => {
+            return NoFormGetDictTreeList(SysTenantDictList, true, '-1')
+        },
+        search: {
+            transform: (valueArr: { label: string, value: string }[]) =>
+                SearchTransform(valueArr, 'tenantIdSet')
+        }
     },
 
-    {title: '支付类型：101 支付宝 201 微信 301 云闪付 401 谷歌', dataIndex: 'type', ellipsis: true, width: 90,},
+    {
+        title: '类型', dataIndex: 'type', ellipsis: true, width: 90, valueType: 'select',
+        request: () => {
+            return GetDictListByKey('sys_pay_type')
+        }
+    },
 
-    {title: '乐观锁', dataIndex: 'version', ellipsis: true, width: 90,},
+    {title: '名称', dataIndex: 'name', ellipsis: true, width: 90,},
 
-    {title: '修改人id', dataIndex: 'updateId', ellipsis: true, width: 90,},
+    {title: 'appId', dataIndex: 'appId', ellipsis: true, width: 90,},
 
-    {title: '支付平台', dataIndex: 'privateKey', ellipsis: true, width: 90,},
+    {
+        title: '是否启用',
+        dataIndex: 'enableFlag',
+        valueEnum: YesNoDict,
+        width: 90,
+    },
 
     {
         title: '创建时间',
@@ -52,27 +71,14 @@ const TableColumnList = (currentForm: React.MutableRefObject<SysPayConfiguration
         valueType: 'fromNow',
     },
 
-    {title: '支付平台', dataIndex: 'merchantId', ellipsis: true, width: 90,},
-
-    {title: '创建人id', dataIndex: 'createId', ellipsis: true, width: 90,},
-
-    {title: '支付平台', dataIndex: 'serverUrl', ellipsis: true, width: 90,},
-
-    {title: '支付平台', dataIndex: 'appId', ellipsis: true, width: 90,},
-
-    {title: '租户 id', dataIndex: 'tenantId', ellipsis: true, width: 90,},
-
-    {title: '支付名', dataIndex: 'name', ellipsis: true, width: 90,},
-
-    {title: '支付平台', dataIndex: 'notifyUrl', ellipsis: true, width: 90,},
-
-    {title: '主键id', dataIndex: 'id', ellipsis: true, width: 90,},
-
     {
-        title: '是否启用',
-        dataIndex: 'enableFlag',
-        valueEnum: YesNoDict
+        title: '修改时间',
+        dataIndex: 'updateTime',
+        hideInSearch: true,
+        valueType: 'fromNow',
     },
+
+    {title: '备注', dataIndex: 'remark', ellipsis: true, width: 200,},
 
     {
 

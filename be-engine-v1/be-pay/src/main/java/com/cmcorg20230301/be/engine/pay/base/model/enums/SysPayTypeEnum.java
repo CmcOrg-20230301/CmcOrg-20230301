@@ -18,8 +18,8 @@ public enum SysPayTypeEnum {
 
     ALI(101, dto -> {
 
-        Assert.notBlank(dto.getPlatformPublicKey());
-        Assert.notBlank(dto.getNotifyUrl());
+        Assert.notBlank(dto.getPlatformPublicKey(), "平台公钥不能为空");
+        Assert.notBlank(dto.getNotifyUrl(), "异步接收地址不能为空");
 
     }), // 支付宝
 
@@ -29,14 +29,14 @@ public enum SysPayTypeEnum {
 
     UNION(301, dto -> {
 
-        Assert.notBlank(dto.getPlatformPublicKey());
-        Assert.notBlank(dto.getNotifyUrl());
+        Assert.notBlank(dto.getPlatformPublicKey(), "平台公钥不能为空");
+        Assert.notBlank(dto.getNotifyUrl(), "异步接收地址不能为空");
 
     }), // 云闪付
 
     GOOGLE(401, dto -> {
 
-        Assert.notBlank(dto.getPlatformPublicKey());
+        Assert.notBlank(dto.getPlatformPublicKey(), "平台公钥不能为空");
 
     }), // 谷歌
 
@@ -56,11 +56,11 @@ public enum SysPayTypeEnum {
 
         return dto -> {
 
-            Assert.notBlank(dto.getPlatformPublicKey());
-            Assert.notBlank(dto.getNotifyUrl());
-            Assert.notBlank(dto.getMerchantId());
-            Assert.notBlank(dto.getMerchantSerialNumber());
-            Assert.notBlank(dto.getApiV3Key());
+            Assert.notBlank(dto.getPlatformPublicKey(), "平台公钥不能为空");
+            Assert.notBlank(dto.getNotifyUrl(), "异步接收地址不能为空");
+            Assert.notBlank(dto.getMerchantId(), "商户号不能为空");
+            Assert.notBlank(dto.getMerchantSerialNumber(), "商户证书序列号不能为空");
+            Assert.notBlank(dto.getApiV3Key(), "apiV3Key不能为空");
 
         };
 

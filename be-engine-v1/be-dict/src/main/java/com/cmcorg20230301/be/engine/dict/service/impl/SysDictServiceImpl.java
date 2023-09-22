@@ -16,7 +16,7 @@ import com.cmcorg20230301.be.engine.model.model.constant.BaseConstant;
 import com.cmcorg20230301.be.engine.model.model.dto.ChangeNumberDTO;
 import com.cmcorg20230301.be.engine.model.model.dto.NotEmptyIdSet;
 import com.cmcorg20230301.be.engine.model.model.dto.NotNullId;
-import com.cmcorg20230301.be.engine.model.model.vo.DictVO;
+import com.cmcorg20230301.be.engine.model.model.vo.DictIntegerVO;
 import com.cmcorg20230301.be.engine.security.exception.BaseBizCodeEnum;
 import com.cmcorg20230301.be.engine.security.mapper.SysDictMapper;
 import com.cmcorg20230301.be.engine.security.model.entity.BaseEntity;
@@ -189,7 +189,7 @@ public class SysDictServiceImpl extends ServiceImpl<SysDictMapper, SysDictDO> im
      * 通过：dictKey获取字典项集合，备注：会进行缓存
      */
     @Override
-    public List<DictVO> listByDictKey(SysDictListByDictKeyDTO dto) {
+    public List<DictIntegerVO> listByDictKey(SysDictListByDictKeyDTO dto) {
 
         return SysDictUtil.listByDictKey(dto.getDictKey());
 

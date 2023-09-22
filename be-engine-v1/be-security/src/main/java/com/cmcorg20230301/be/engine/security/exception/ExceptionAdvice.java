@@ -137,7 +137,7 @@ public class ExceptionAdvice {
 
         try {
 
-            ApiResultVO.error(BaseBizCodeEnum.PARAMETER_CHECK_ERROR, e.getMessage()); // 这里肯定会抛出 BaseException异常
+            ApiResultVO.errorMsg(e.getMessage()); // 这里肯定会抛出 BaseException异常
 
         } catch (BaseException baseException) {
 
