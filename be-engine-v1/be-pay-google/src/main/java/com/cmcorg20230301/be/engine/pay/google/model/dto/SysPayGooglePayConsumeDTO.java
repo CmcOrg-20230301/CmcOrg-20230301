@@ -7,10 +7,7 @@ import lombok.EqualsAndHashCode;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
-public class SysPayGooglePaySuccessDTO extends NotNullId {
-
-    @Schema(description = "购买成功后 Purchase对象的 getPurchaseToken()")
-    private String token;
+public class SysPayGooglePayConsumeDTO extends NotNullId {
 
     @Schema(description = "租户主键 id")
     private Long tenantId;

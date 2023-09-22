@@ -3,6 +3,7 @@ package com.cmcorg20230301.be.engine.pay.ali.util;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.lang.Assert;
 import cn.hutool.core.util.BooleanUtil;
+import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
 import com.alipay.api.AlipayClient;
@@ -12,14 +13,19 @@ import com.alipay.api.request.AlipayTradePagePayRequest;
 import com.alipay.api.request.AlipayTradeQueryRequest;
 import com.alipay.api.response.AlipayTradePagePayResponse;
 import com.alipay.api.response.AlipayTradeQueryResponse;
-import com.cmcorg20230301.be.engine.model.model.dto.PayDTO;
-import com.cmcorg20230301.be.engine.pay.ali.properties.PayAliProperties;
+import com.cmcorg20230301.be.engine.pay.base.model.bo.SysPayReturnBO;
+import com.cmcorg20230301.be.engine.pay.base.model.dto.PayDTO;
+import com.cmcorg20230301.be.engine.pay.base.model.entity.SysPayConfigurationDO;
 import com.cmcorg20230301.be.engine.pay.base.model.enums.SysPayTradeStatusEnum;
+import com.cmcorg20230301.be.engine.pay.base.model.enums.SysPayTypeEnum;
+import com.cmcorg20230301.be.engine.pay.base.service.SysPayConfigurationService;
+import com.cmcorg20230301.be.engine.pay.base.util.PayHelper;
 import com.cmcorg20230301.be.engine.security.model.vo.ApiResultVO;
+import com.cmcorg20230301.be.engine.util.util.CallBack;
 import lombok.SneakyThrows;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.springframework.stereotype.Component;
-
-import java.util.Date;
 
 /**
  * 支付：支付宝工具类
@@ -27,22 +33,36 @@ import java.util.Date;
 @Component
 public class PayAliUtil {
 
-    private static PayAliProperties payAliProperties;
+    private static SysPayConfigurationService sysPayConfigurationService;
 
-    public PayAliUtil(PayAliProperties payAliProperties) {
+    public PayAliUtil(SysPayConfigurationService sysPayConfigurationService) {
 
-        PayAliUtil.payAliProperties = payAliProperties;
+        PayAliUtil.sysPayConfigurationService = sysPayConfigurationService;
 
     }
 
-    public static AlipayConfig getAlipayConfig() {
+    /**
+     * 获取：支付相关配置对象
+     */
+    @NotNull
+    public static AlipayConfig getAlipayConfig(@Nullable Long tenantId,
+        @Nullable CallBack<SysPayConfigurationDO> sysPayConfigurationDoCallBack) {
+
+        SysPayConfigurationDO sysPayConfigurationDO = PayHelper.getSysPayConfigurationDO(tenantId, SysPayTypeEnum.ALI);
+
+        if (sysPayConfigurationDoCallBack != null) {
+
+            // 设置：回调值
+            sysPayConfigurationDoCallBack.setValue(sysPayConfigurationDO);
+
+        }
 
         AlipayConfig alipayConfig = new AlipayConfig();
 
-        alipayConfig.setServerUrl(payAliProperties.getServerUrl());
-        alipayConfig.setAppId(payAliProperties.getAppId());
-        alipayConfig.setPrivateKey(payAliProperties.getPrivateKey());
-        alipayConfig.setAlipayPublicKey(payAliProperties.getPlatformPublicKey());
+        alipayConfig.setServerUrl(sysPayConfigurationDO.getServerUrl());
+        alipayConfig.setAppId(sysPayConfigurationDO.getAppId());
+        alipayConfig.setPrivateKey(sysPayConfigurationDO.getPrivateKey());
+        alipayConfig.setAlipayPublicKey(sysPayConfigurationDO.getPlatformPublicKey());
 
         return alipayConfig;
 
@@ -52,23 +72,23 @@ public class PayAliUtil {
      * 支付
      */
     @SneakyThrows
-    public static String pay(PayDTO dto) {
+    public static SysPayReturnBO pay(PayDTO dto) {
 
-        Assert.notBlank(dto.getOutTradeNo());
-        Assert.notNull(dto.getTotalAmount());
-        Assert.notBlank(dto.getSubject());
+        CallBack<SysPayConfigurationDO> sysPayConfigurationDoCallBack = new CallBack<>();
 
-        int compare = DateUtil.compare(dto.getTimeExpire(), new Date());
-
-        if (compare <= 0) {
-            ApiResultVO.errorMsg("操作失败：支付过期时间晚于当前时间");
-        }
-
-        AlipayClient alipayClient = new DefaultAlipayClient(getAlipayConfig());
+        AlipayClient alipayClient =
+            new DefaultAlipayClient(getAlipayConfig(dto.getTenantId(), sysPayConfigurationDoCallBack));
 
         AlipayTradePagePayRequest aliPayRequest = new AlipayTradePagePayRequest();
-        aliPayRequest.setReturnUrl(payAliProperties.getReturnUrl());
-        aliPayRequest.setNotifyUrl(payAliProperties.getNotifyUrl());
+
+        if (StrUtil.isNotBlank(sysPayConfigurationDoCallBack.getValue().getReturnUrl())) {
+
+            aliPayRequest
+                .setReturnUrl(sysPayConfigurationDoCallBack.getValue().getReturnUrl() + "/" + dto.getTenantId());
+
+        }
+
+        aliPayRequest.setNotifyUrl(sysPayConfigurationDoCallBack.getValue().getNotifyUrl() + "/" + dto.getTenantId());
 
         JSONObject bizContent = JSONUtil.createObj();
         bizContent.set("out_trade_no", dto.getOutTradeNo());
@@ -93,8 +113,8 @@ public class PayAliUtil {
 
         }
 
-        // 备注：这里返回的是 url链接
-        return response.getBody();
+        // 备注：response.getBody() 返回的是 url链接
+        return new SysPayReturnBO(response.getBody(), sysPayConfigurationDoCallBack.getValue().getAppId());
 
     }
 
@@ -104,11 +124,11 @@ public class PayAliUtil {
      * @param outTradeNo 商户订单号，商户网站订单系统中唯一订单号，必填
      */
     @SneakyThrows
-    public static SysPayTradeStatusEnum query(String outTradeNo) {
+    public static SysPayTradeStatusEnum query(String outTradeNo, Long tenantId) {
 
         Assert.notBlank(outTradeNo);
 
-        AlipayClient alipayClient = new DefaultAlipayClient(getAlipayConfig());
+        AlipayClient alipayClient = new DefaultAlipayClient(getAlipayConfig(tenantId, null));
 
         AlipayTradeQueryRequest request = new AlipayTradeQueryRequest();
 

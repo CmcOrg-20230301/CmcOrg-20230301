@@ -3,14 +3,14 @@ package com.cmcorg20230301.be.engine.pay.wx.service.impl;
 import cn.hutool.core.io.IoUtil;
 import cn.hutool.core.lang.func.Func1;
 import com.cmcorg20230301.be.engine.pay.base.model.bo.SysPayTradeNotifyBO;
+import com.cmcorg20230301.be.engine.pay.base.model.enums.SysPayTypeEnum;
 import com.cmcorg20230301.be.engine.pay.base.util.PayUtil;
 import com.cmcorg20230301.be.engine.pay.wx.service.PayWxService;
+import com.cmcorg20230301.be.engine.pay.wx.util.PayWxUtil;
 import com.wechat.pay.java.core.notification.NotificationParser;
 import com.wechat.pay.java.core.notification.RequestParam;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-import org.jetbrains.annotations.Nullable;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.ServletInputStream;
@@ -20,15 +20,6 @@ import javax.servlet.http.HttpServletResponse;
 @Service
 @Slf4j
 public class PayWxServiceImpl implements PayWxService {
-
-    @Nullable
-    private static NotificationParser notificationParser;
-
-    public PayWxServiceImpl(@Autowired(required = false) @Nullable NotificationParser notificationParser) {
-
-        PayWxServiceImpl.notificationParser = notificationParser;
-
-    }
 
     /**
      * 通用的处理：回调参数
@@ -65,11 +56,10 @@ public class PayWxServiceImpl implements PayWxService {
      */
     @Override
     @SneakyThrows
-    public void notifyCallBackNative(HttpServletRequest request, HttpServletResponse response) {
+    public void notifyCallBackNative(HttpServletRequest request, HttpServletResponse response, Long tenantId) {
 
-        if (notificationParser == null) {
-            return;
-        }
+        NotificationParser notificationParser =
+            new NotificationParser(PayWxUtil.getRsaAutoCertificateConfig(tenantId, null, SysPayTypeEnum.WX_NATIVE));
 
         commonHandleNotifyCallBack(request, response, (requestParam) -> {
 
@@ -95,11 +85,10 @@ public class PayWxServiceImpl implements PayWxService {
      * 服务器异步通知-jsApi，备注：第三方应用调用
      */
     @Override
-    public void notifyCallBackJsApi(HttpServletRequest request, HttpServletResponse response) {
+    public void notifyCallBackJsApi(HttpServletRequest request, HttpServletResponse response, Long tenantId) {
 
-        if (notificationParser == null) {
-            return;
-        }
+        NotificationParser notificationParser =
+            new NotificationParser(PayWxUtil.getRsaAutoCertificateConfig(tenantId, null, SysPayTypeEnum.WX_JSAPI));
 
         commonHandleNotifyCallBack(request, response, (requestParam) -> {
 

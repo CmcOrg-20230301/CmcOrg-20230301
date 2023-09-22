@@ -27,6 +27,9 @@ public class SysPayDO extends BaseEntityNoId {
     @Schema(description = "支付方式")
     private SysPayTypeEnum payType;
 
+    @Schema(description = "支付平台，应用 id")
+    private String payAppId;
+
     @Schema(description = "用户主键 id")
     private Long userId;
 
@@ -54,7 +57,7 @@ public class SysPayDO extends BaseEntityNoId {
     @Schema(description = "订单状态")
     private SysPayTradeStatusEnum status;
 
-    @Schema(description = "订单号")
+    @Schema(description = "支付平台，订单号")
     private String tradeNo;
 
     @Schema(description = "支付返回的参数")

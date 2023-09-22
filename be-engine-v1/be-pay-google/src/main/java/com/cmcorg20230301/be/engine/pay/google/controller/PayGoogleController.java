@@ -1,6 +1,6 @@
 package com.cmcorg20230301.be.engine.pay.google.controller;
 
-import com.cmcorg20230301.be.engine.model.model.dto.NotNullId;
+import com.cmcorg20230301.be.engine.pay.google.model.dto.SysPayGooglePayConsumeDTO;
 import com.cmcorg20230301.be.engine.pay.google.model.dto.SysPayGooglePaySuccessDTO;
 import com.cmcorg20230301.be.engine.pay.google.service.PayGoogleService;
 import com.cmcorg20230301.be.engine.security.exception.BaseBizCodeEnum;
@@ -31,8 +31,8 @@ public class PayGoogleController {
 
     @Operation(summary = "支付核销的回调，备注：由客户端调用")
     @PostMapping(value = "/payConsume")
-    public ApiResultVO<Boolean> payConsume(@RequestBody @Valid NotNullId notNullId) {
-        return ApiResultVO.ok(BaseBizCodeEnum.OK, baseService.payConsume(notNullId));
+    public ApiResultVO<Boolean> payConsume(@RequestBody @Valid SysPayGooglePayConsumeDTO dto) {
+        return ApiResultVO.ok(BaseBizCodeEnum.OK, baseService.payConsume(dto));
     }
 
 }

@@ -5,8 +5,8 @@ import javax.servlet.http.HttpServletResponse;
 
 public interface PayWxService {
 
-    void notifyCallBackNative(HttpServletRequest request, HttpServletResponse response);
+    void notifyCallBackNative(HttpServletRequest request, HttpServletResponse response, Long tenantId);
 
-    void notifyCallBackJsApi(HttpServletRequest request, HttpServletResponse response);
+    void notifyCallBackJsApi(HttpServletRequest request, HttpServletResponse response, Long tenantId);
 
 }

@@ -1,7 +1,8 @@
 package com.cmcorg20230301.be.engine.pay.google.configuration;
 
-import com.cmcorg20230301.be.engine.model.model.dto.PayDTO;
+import com.cmcorg20230301.be.engine.pay.base.model.bo.SysPayReturnBO;
 import com.cmcorg20230301.be.engine.pay.base.model.configuration.ISysPay;
+import com.cmcorg20230301.be.engine.pay.base.model.dto.PayDTO;
 import com.cmcorg20230301.be.engine.pay.base.model.enums.SysPayTradeStatusEnum;
 import com.cmcorg20230301.be.engine.pay.base.model.enums.SysPayTypeEnum;
 import com.cmcorg20230301.be.engine.pay.google.util.PayGoogleUtil;
@@ -25,7 +26,7 @@ public class PayGoogleConfiguration implements ISysPay {
      * 支付返回值，备注：一般返回 url
      */
     @Override
-    public String pay(PayDTO dto) {
+    public SysPayReturnBO pay(PayDTO dto) {
         return PayGoogleUtil.pay(dto);
     }
 
@@ -33,8 +34,8 @@ public class PayGoogleConfiguration implements ISysPay {
      * 查询订单状态
      */
     @Override
-    public SysPayTradeStatusEnum query(String outTradeNo) {
-        return PayGoogleUtil.query(outTradeNo, null);
+    public SysPayTradeStatusEnum query(String outTradeNo, Long tenantId) {
+        return PayGoogleUtil.query(outTradeNo, null, tenantId);
     }
 
 }

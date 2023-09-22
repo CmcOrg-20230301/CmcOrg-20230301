@@ -1,10 +1,11 @@
 package com.cmcorg20230301.be.engine.pay.google.service.impl;
 
 import cn.hutool.core.collection.CollUtil;
-import com.cmcorg20230301.be.engine.model.model.dto.NotNullId;
+import com.cmcorg20230301.be.engine.model.model.constant.BaseConstant;
 import com.cmcorg20230301.be.engine.pay.base.model.bo.SysPayTradeNotifyBO;
 import com.cmcorg20230301.be.engine.pay.base.model.enums.SysPayTradeStatusEnum;
 import com.cmcorg20230301.be.engine.pay.base.util.PayUtil;
+import com.cmcorg20230301.be.engine.pay.google.model.dto.SysPayGooglePayConsumeDTO;
 import com.cmcorg20230301.be.engine.pay.google.model.dto.SysPayGooglePaySuccessDTO;
 import com.cmcorg20230301.be.engine.pay.google.service.PayGoogleService;
 import com.cmcorg20230301.be.engine.pay.google.util.PayGoogleUtil;
@@ -22,9 +23,14 @@ public class PayGoogleServiceImpl implements PayGoogleService {
     @Override
     public boolean paySuccess(SysPayGooglePaySuccessDTO dto) {
 
+        if (dto.getTenantId() == null) {
+            dto.setTenantId(BaseConstant.TENANT_ID);
+        }
+
         SysPayTradeNotifyBO sysPayTradeNotifyBO = new SysPayTradeNotifyBO();
 
-        SysPayTradeStatusEnum sysPayTradeStatusEnum = PayGoogleUtil.query(dto.getId().toString(), sysPayTradeNotifyBO);
+        SysPayTradeStatusEnum sysPayTradeStatusEnum =
+            PayGoogleUtil.query(dto.getId().toString(), sysPayTradeNotifyBO, dto.getTenantId());
 
         if (SysPayTradeStatusEnum.WAIT_BUYER_CONSUME.equals(sysPayTradeStatusEnum) == false) {
             return false;
@@ -47,19 +53,23 @@ public class PayGoogleServiceImpl implements PayGoogleService {
      */
     @Override
     @SneakyThrows
-    public boolean payConsume(NotNullId notNullId) {
+    public boolean payConsume(SysPayGooglePayConsumeDTO dto) {
+
+        if (dto.getTenantId() == null) {
+            dto.setTenantId(BaseConstant.TENANT_ID);
+        }
 
         SysPayTradeNotifyBO sysPayTradeNotifyBO = new SysPayTradeNotifyBO();
 
         SysPayTradeStatusEnum sysPayTradeStatusEnum =
-            PayGoogleUtil.query(notNullId.getId().toString(), sysPayTradeNotifyBO);
+            PayGoogleUtil.query(dto.getId().toString(), sysPayTradeNotifyBO, dto.getTenantId());
 
         if (SysPayTradeStatusEnum.TRADE_FINISHED.equals(sysPayTradeStatusEnum) == false) {
             return false;
         }
 
         sysPayTradeNotifyBO.setTradeStatus(CollUtil.getFirst(sysPayTradeStatusEnum.getStatusSet()));
-        sysPayTradeNotifyBO.setOutTradeNo(notNullId.getId().toString());
+        sysPayTradeNotifyBO.setOutTradeNo(dto.getId().toString());
 
         // 处理：订单回调
         return PayUtil.handleTradeNotify(sysPayTradeNotifyBO, null);

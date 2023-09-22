@@ -1,5 +1,6 @@
-package com.cmcorg20230301.be.engine.model.model.dto;
+package com.cmcorg20230301.be.engine.pay.base.model.dto;
 
+import com.cmcorg20230301.be.engine.pay.base.model.enums.SysPayTypeEnum;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
@@ -8,6 +9,9 @@ import java.util.Date;
 
 @Data
 public class PayDTO {
+
+    @Schema(description = "支付方式，必填")
+    private SysPayTypeEnum payType;
 
     @Schema(description = "租户 id，必填")
     private Long tenantId;

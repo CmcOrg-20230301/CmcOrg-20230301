@@ -1,25 +1,25 @@
-package com.cmcorg20230301.be.engine.pay.ali.configuration;
+package com.cmcorg20230301.be.engine.pay.wx.configuration;
 
-import com.cmcorg20230301.be.engine.pay.ali.util.PayAliUtil;
 import com.cmcorg20230301.be.engine.pay.base.model.bo.SysPayReturnBO;
 import com.cmcorg20230301.be.engine.pay.base.model.configuration.ISysPay;
 import com.cmcorg20230301.be.engine.pay.base.model.dto.PayDTO;
 import com.cmcorg20230301.be.engine.pay.base.model.enums.SysPayTradeStatusEnum;
 import com.cmcorg20230301.be.engine.pay.base.model.enums.SysPayTypeEnum;
+import com.cmcorg20230301.be.engine.pay.wx.util.PayWxUtil;
 import org.springframework.context.annotation.Configuration;
 
 /**
- * 支付宝支付相关配置类
+ * 微信支付相关配置类
  */
 @Configuration
-public class PayAliConfiguration implements ISysPay {
+public class PayWxJsApiConfiguration implements ISysPay {
 
     /**
      * 支付方式类型
      */
     @Override
     public SysPayTypeEnum getSysPayType() {
-        return SysPayTypeEnum.ALI;
+        return SysPayTypeEnum.WX_JSAPI;
     }
 
     /**
@@ -27,7 +27,7 @@ public class PayAliConfiguration implements ISysPay {
      */
     @Override
     public SysPayReturnBO pay(PayDTO dto) {
-        return PayAliUtil.pay(dto);
+        return PayWxUtil.payJsApi(dto);
     }
 
     /**
@@ -35,7 +35,7 @@ public class PayAliConfiguration implements ISysPay {
      */
     @Override
     public SysPayTradeStatusEnum query(String outTradeNo, Long tenantId) {
-        return PayAliUtil.query(outTradeNo, tenantId);
+        return PayWxUtil.queryJsApi(outTradeNo, tenantId);
     }
 
 }

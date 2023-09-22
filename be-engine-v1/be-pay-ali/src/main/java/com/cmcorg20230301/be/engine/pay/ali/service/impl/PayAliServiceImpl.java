@@ -25,7 +25,7 @@ public class PayAliServiceImpl implements PayAliService {
      */
     @SneakyThrows
     @Override
-    public String notifyCallBack(HttpServletRequest request) {
+    public String notifyCallBack(HttpServletRequest request, Long tenantId) {
 
         Map<String, String> paramsMap = new HashMap<>();
 
@@ -49,7 +49,7 @@ public class PayAliServiceImpl implements PayAliService {
 
         }
 
-        AlipayConfig alipayConfig = PayAliUtil.getAlipayConfig();
+        AlipayConfig alipayConfig = PayAliUtil.getAlipayConfig(tenantId, null);
 
         boolean signVerified = AlipaySignature
             .rsaCheckV1(paramsMap, alipayConfig.getAlipayPublicKey(), alipayConfig.getCharset(),

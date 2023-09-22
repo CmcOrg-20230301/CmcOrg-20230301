@@ -14,7 +14,9 @@ public enum SysPayTypeEnum {
 
     ALI(101), // 支付宝
 
-    WX(201), // 微信
+    WX_NATIVE(201), // 微信-native
+
+    WX_JSAPI(202), // 微信-JsApi
 
     UNION(301), // 云闪付
 
