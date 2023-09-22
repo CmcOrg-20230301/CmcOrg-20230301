@@ -100,6 +100,14 @@ export function GetByValueFromDictListPro(
 }
 
 // 通用的，获取字典集合，方法返回值
+export interface DictIntegerListVO {
+
+    label: string // 显示用
+    value: number // 传值用
+
+}
+
+// 通用的，获取字典集合，方法返回值
 export interface DictLongListVO {
 
     label: string // 显示用
@@ -115,15 +123,15 @@ interface IDictResult {
 
 }
 
-// 通用的，获取字典集合
-export function GetDictList<T extends IDictResult>(requestFunction: (form: MyPageDTO | any, config?: AxiosRequestConfig) => Promise<RequestData<T>>) {
+// 通用的，获取字典集合，没有加查询条件的请求，可以调用这个方法
+export function GetDictList<T extends IDictResult>(requestFunction: (form: MyPageDTO | any, config?: AxiosRequestConfig) => Promise<RequestData<T>>, name: string = "name") {
 
-    return DoGetDictList(requestFunction({pageSize: '-1'}))
+    return DoGetDictList(requestFunction({pageSize: '-1'}), name)
 
 }
 
-// 通用的，获取字典集合
-export function DoGetDictList<T extends IDictResult>(promise: Promise<RequestData<T>>) {
+// 通用的，获取字典集合，加了查询条件的请求，可以调用这个方法
+export function DoGetDictList<T extends IDictResult>(promise: Promise<RequestData<T>>, name: string = "name") {
 
     return new Promise<DictLongListVO[]>(resolve => {
 
@@ -135,7 +143,7 @@ export function DoGetDictList<T extends IDictResult>(promise: Promise<RequestDat
 
                 dictList = res.data.map(item => ({
 
-                    label: item.name!,
+                    label: item[name]!,
                     value: item.id!,
 
                 }));
@@ -238,11 +246,11 @@ function HandleGetDictTreeList<T extends IDictTreeResult>(res: { data: T[] | und
 // 通过 key，获取：字典集合
 export function GetDictListByKey(dictKey: string) {
 
-    return new Promise<DictLongListVO[]>(async resolve => {
+    return new Promise<DictIntegerListVO[]>(async resolve => {
 
         await SysDictListByDictKey({dictKey}).then(res => {
 
-            let dictList: DictLongListVO[] = []
+            let dictList: DictIntegerListVO[] = []
 
             if (res.data) {
 
