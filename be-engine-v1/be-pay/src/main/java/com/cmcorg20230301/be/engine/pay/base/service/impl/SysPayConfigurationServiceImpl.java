@@ -10,6 +10,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.cmcorg20230301.be.engine.model.model.dto.NotEmptyIdSet;
 import com.cmcorg20230301.be.engine.model.model.dto.NotNullId;
+import com.cmcorg20230301.be.engine.model.model.vo.DictVO;
 import com.cmcorg20230301.be.engine.pay.base.mapper.SysPayConfigurationMapper;
 import com.cmcorg20230301.be.engine.pay.base.model.dto.SysPayConfigurationInsertOrUpdateDTO;
 import com.cmcorg20230301.be.engine.pay.base.model.dto.SysPayConfigurationPageDTO;
@@ -25,7 +26,9 @@ import com.cmcorg20230301.be.engine.security.util.SysTenantUtil;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 public class SysPayConfigurationServiceImpl extends ServiceImpl<SysPayConfigurationMapper, SysPayConfigurationDO>
@@ -105,6 +108,26 @@ public class SysPayConfigurationServiceImpl extends ServiceImpl<SysPayConfigurat
                 BaseEntityNoIdFather::getCreateTime, BaseEntityNoIdFather::getUpdateId,
                 BaseEntityNoIdFather::getUpdateTime, BaseEntityNoId::getEnableFlag, BaseEntityNoId::getRemark)
             .orderByDesc(BaseEntity::getUpdateTime).page(dto.page(true));
+
+    }
+
+    /**
+     * 下拉列表
+     */
+    @Override
+    public Page<DictVO> dictList() {
+
+        // 获取：用户关联的租户
+        Set<Long> tenantIdSet = SysTenantUtil.getUserRefTenantIdSet();
+
+        List<SysPayConfigurationDO> sysPayConfigurationDOList =
+            lambdaQuery().select(BaseEntity::getId, SysPayConfigurationDO::getName)
+                .in(BaseEntityNoIdFather::getTenantId, tenantIdSet).orderByDesc(BaseEntity::getUpdateTime).list();
+
+        List<DictVO> dictVOList = sysPayConfigurationDOList.stream().map(it -> new DictVO(it.getId(), it.getName()))
+            .collect(Collectors.toList());
+
+        return new Page<DictVO>().setTotal(dictVOList.size()).setRecords(dictVOList);
 
     }
 

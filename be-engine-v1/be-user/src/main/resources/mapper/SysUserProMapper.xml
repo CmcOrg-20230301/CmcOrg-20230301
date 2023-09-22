@@ -56,7 +56,7 @@
         </if>
 
         <if test="dto.wxAppId != null and dto.wxAppId != ''">
-            AND a.wx_app_id LIKE concat('%', #{wxAppId}, '%')
+            AND a.wx_app_id LIKE concat('%', #{dto.wxAppId}, '%')
         </if>
 
         <if test="dto.enableFlag != null">

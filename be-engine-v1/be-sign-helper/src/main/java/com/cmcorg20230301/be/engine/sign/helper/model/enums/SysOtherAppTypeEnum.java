@@ -10,11 +10,13 @@ import lombok.Getter;
  */
 @AllArgsConstructor
 @Getter
-public enum SysOtherAppEnum {
+public enum SysOtherAppTypeEnum {
 
-    DICT(101), // 微信小程序
+    WX_MINI_PROGRAM(101), // 微信小程序
 
-    DICT_ITEM(102), // 微信公众号
+    WX_PUBLIC_ACCOUNT(102), // 微信公众号
+
+    ALI_PAY_PROGRAM(201), // 支付宝小程序
 
     ;
 

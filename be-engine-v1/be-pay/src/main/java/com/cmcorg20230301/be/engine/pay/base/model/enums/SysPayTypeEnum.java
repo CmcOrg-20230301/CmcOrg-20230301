@@ -25,7 +25,7 @@ public enum SysPayTypeEnum {
 
     WX_NATIVE(201, getWxCheckSysPayConfigurationInsertOrUpdateDtoConsumer()), // 微信-native
 
-    WX_JSAPI(202, getWxCheckSysPayConfigurationInsertOrUpdateDtoConsumer()), // 微信-JsApi
+    WX_JSAPI(202, getWxCheckSysPayConfigurationInsertOrUpdateDtoConsumer()), // 微信-jsApi
 
     UNION(301, dto -> {
 

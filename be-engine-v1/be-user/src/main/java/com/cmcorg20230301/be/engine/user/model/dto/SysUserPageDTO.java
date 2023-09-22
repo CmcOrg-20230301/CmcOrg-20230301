@@ -33,6 +33,9 @@ public class SysUserPageDTO extends MyTenantPageDTO {
     @Schema(description = "微信 openId")
     private String wxOpenId;
 
+    @Schema(description = "微信 appId")
+    private String wxAppId;
+
     @Schema(description = "是否正常")
     private Boolean enableFlag;
 

@@ -3,6 +3,7 @@ package com.cmcorg20230301.be.engine.pay.base.controller;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.cmcorg20230301.be.engine.model.model.dto.NotEmptyIdSet;
 import com.cmcorg20230301.be.engine.model.model.dto.NotNullId;
+import com.cmcorg20230301.be.engine.model.model.vo.DictVO;
 import com.cmcorg20230301.be.engine.pay.base.model.dto.SysPayConfigurationInsertOrUpdateDTO;
 import com.cmcorg20230301.be.engine.pay.base.model.dto.SysPayConfigurationPageDTO;
 import com.cmcorg20230301.be.engine.pay.base.model.entity.SysPayConfigurationDO;
@@ -19,7 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.annotation.Resource;
 import javax.validation.Valid;
 
-@RequestMapping("/sys/payConfiguartion")
+@RequestMapping("/sys/payConfiguration")
 @RestController
 @Tag(name = "支付配置-管理")
 public class SysPayConfigurationController {
@@ -39,6 +40,13 @@ public class SysPayConfigurationController {
     @PreAuthorize("hasAuthority('sysPayConfiguration:page')")
     public ApiResultVO<Page<SysPayConfigurationDO>> myPage(@RequestBody @Valid SysPayConfigurationPageDTO dto) {
         return ApiResultVO.okData(baseService.myPage(dto));
+    }
+
+    @Operation(summary = "下拉列表")
+    @PostMapping("/dictList")
+    @PreAuthorize("hasAuthority('sysPayConfiguration:dictList')")
+    public ApiResultVO<Page<DictVO>> dictList() {
+        return ApiResultVO.okData(baseService.dictList());
     }
 
     @Operation(summary = "通过主键id，查看详情")

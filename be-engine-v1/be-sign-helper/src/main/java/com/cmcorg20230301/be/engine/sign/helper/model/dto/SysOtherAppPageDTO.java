@@ -1,7 +1,7 @@
 package com.cmcorg20230301.be.engine.sign.helper.model.dto;
 
 import com.cmcorg20230301.be.engine.security.model.dto.MyTenantPageDTO;
-import com.cmcorg20230301.be.engine.sign.helper.model.enums.SysOtherAppEnum;
+import com.cmcorg20230301.be.engine.sign.helper.model.enums.SysOtherAppTypeEnum;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -11,7 +11,7 @@ import lombok.EqualsAndHashCode;
 public class SysOtherAppPageDTO extends MyTenantPageDTO {
 
     @Schema(description = "第三方应用类型")
-    private SysOtherAppEnum type;
+    private SysOtherAppTypeEnum type;
 
     @Schema(description = "第三方应用名，备注：同一租户不能重复，不同租户可以重复")
     private String name;

@@ -40,6 +40,7 @@ export interface SysSocketDO {
     version?: number // 乐观锁，format：int32
     updateId?: string // 修改人id，format：int64
     path?: string // 路径，备注：以 / 开头
+    macAddress?: string // mac地址，用于：和 port一起判断是否是重复启动，如果是，则需要移除之前的 socket信息
     createTime?: string // 创建时间，format：date-time
     port?: number // 端口，format：int32
     createId?: string // 创建人id，format：int64

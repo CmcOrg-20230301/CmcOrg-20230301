@@ -20,14 +20,14 @@ public class PayWxController {
     @Resource
     PayWxService baseService;
 
-    @Operation(summary = "服务器异步通知-native，备注：第三方应用调用")
+    @Operation(summary = "服务器异步通知-native，备注：第三方应用调用", hidden = true)
     @PostMapping(value = "/notifyCallBack/native/{tenantId}")
     public void notifyCallBackNative(HttpServletRequest request, HttpServletResponse response,
         @PathVariable Long tenantId) {
         baseService.notifyCallBackNative(request, response, tenantId);
     }
 
-    @Operation(summary = "服务器异步通知-jsApi，备注：第三方应用调用")
+    @Operation(summary = "服务器异步通知-jsApi，备注：第三方应用调用", hidden = true)
     @PostMapping(value = "/notifyCallBack/jsApi/{tenantId}")
     public void notifyCallBackJsApi(HttpServletRequest request, HttpServletResponse response,
         @PathVariable Long tenantId) {

@@ -11,6 +11,7 @@ export interface SysUserInfoByIdVO {
     postIdSet?: string[] // 岗位 idSet，format：int64
     wxOpenId?: string // 微信 openId，可以为空
     avatarFileId?: string // 头像 fileId（文件主键 id），format：int64
+    wxAppId?: string // 微信 appId，可以为空
     bio?: string // 个人简介
     updateTime?: string // 修改时间，format：date-time
     remark?: string // 备注
@@ -65,6 +66,7 @@ export function SysUserRefreshJwtSecretSuf(form: NotEmptyIdSet, config?: AxiosRe
 export interface SysUserPageDTO {
     passwordFlag?: boolean // 是否有密码
     wxOpenId?: string // 微信 openId
+    wxAppId?: string // 微信 appId
     pageSize?: string // 每页显示条数，format：int64
     endCreateTime?: string // 创建结束时间，format：date-time
     idSet?: string[] // 主键 idSet，备注：后端使用，前端不使用，format：int64
@@ -88,7 +90,8 @@ export interface SysUserPageVO {
     postIdSet?: string[] // 岗位 idSet，format：int64
     lastActiveTime?: string // 最近活跃时间，format：date-time
     avatarFileId?: string // 头像 fileId（文件主键 id），备注：没有时则为 -1，format：int64
-    wxOpenId?: string // 微信 openId，会脱敏
+    wxOpenId?: string // 微信 openId
+    wxAppId?: string // 微信 appId
     deptIdSet?: string[] // 部门 idSet，format：int64
     phone?: string // 手机号码，会脱敏
     createTime?: string // 创建时间，format：date-time
@@ -98,6 +101,7 @@ export interface SysUserPageVO {
     roleIdSet?: string[] // 角色 idSet，format：int64
     tenantIdSet?: string[] // 租户 idSet，format：int64
     id?: string // 主键id，format：int64
+    region?: string // Ip2RegionUtil.getRegion() 获取到的 ip所处区域
     enableFlag?: boolean // 正常/冻结
     email?: string // 邮箱，备注：会脱敏
 }
