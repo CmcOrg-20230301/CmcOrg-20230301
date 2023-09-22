@@ -16,9 +16,9 @@ import org.jetbrains.annotations.Nullable;
 import org.redisson.api.RedissonClient;
 import org.springframework.stereotype.Component;
 
+import java.time.Duration;
 import java.util.Collection;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
 
 /**
  * redis缓存本地化，通过 kafka实现
@@ -152,7 +152,7 @@ public class CacheRedisKafkaLocalUtil {
 
             value = CacheHelper.checkAndReturnResult(value, defaultResult); // 检查并设置值
 
-            redissonClient.getBucket(key).set(value, timeToLive, TimeUnit.MILLISECONDS); // 添加 redis缓存
+            redissonClient.getBucket(key).set(value, Duration.ofMillis(timeToLive)); // 添加 redis缓存
 
             CacheLocalUtil.put(key, value, timeToLive); // 添加本地缓存
 

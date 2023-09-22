@@ -1,4 +1,4 @@
-package com.cmcorg20230301.be.engine.security.model.enums;
+package com.cmcorg20230301.be.engine.sign.helper.model.enums;
 
 import com.baomidou.mybatisplus.annotation.EnumValue;
 import com.fasterxml.jackson.annotation.JsonValue;
@@ -6,15 +6,15 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 /**
- * 字典类型
+ * 第三方应用类型，枚举类
  */
 @AllArgsConstructor
 @Getter
-public enum SysDictTypeEnum {
+public enum SysOtherAppEnum {
 
-    DICT(1), // 字典
+    DICT(101), // 微信小程序
 
-    DICT_ITEM(2), // 字典项
+    DICT_ITEM(102), // 微信公众号
 
     ;
 

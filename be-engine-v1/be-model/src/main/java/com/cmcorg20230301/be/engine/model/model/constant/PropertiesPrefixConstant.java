@@ -15,7 +15,7 @@ public interface PropertiesPrefixConstant {
 
     String CACHE = PRE_BE + "cache"; // 缓存相关
 
-    String WX = PRE_BE + "wx"; // 微信相关
+    //    String WX = PRE_BE + "wx"; // 微信相关
 
     String SMS = PRE_BE + "sms"; // 短信服务相关
 

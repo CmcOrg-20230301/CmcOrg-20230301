@@ -32,4 +32,7 @@ public class SysUserDO extends BaseEntity {
     @Schema(description = "微信 openId，可以为空")
     private String wxOpenId;
 
+    @Schema(description = "微信 appId，可以为空")
+    private String wxAppId;
+
 }

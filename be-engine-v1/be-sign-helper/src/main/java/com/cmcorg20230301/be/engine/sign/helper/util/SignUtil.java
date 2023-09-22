@@ -311,6 +311,7 @@ public class SignUtil {
         sysUserDO.setSignInName("");
         sysUserDO.setPhone("");
         sysUserDO.setWxOpenId("");
+        sysUserDO.setWxAppId("");
 
         for (Map.Entry<Enum<? extends IRedisKey>, String> item : accountMap.entrySet()) {
 
@@ -330,6 +331,10 @@ public class SignUtil {
 
                 sysUserDO.setWxOpenId(item.getValue());
 
+            } else if (RedisKeyEnum.PRE_WX_APP_ID.equals(item.getKey())) {
+
+                sysUserDO.setWxAppId(item.getValue());
+
             }
 
         }
@@ -347,11 +352,13 @@ public class SignUtil {
     /**
      * 直接通过账号登录
      * 注意：这是一个高风险方法，调用时，请确认账号来源的可靠性！
+     *
+     * @param consumer 可以给 userDO对象，额外增加一些属性
      */
     @NotNull
     public static String signInAccount(LambdaQueryChainWrapper<SysUserDO> lambdaQueryChainWrapper,
         Enum<? extends IRedisKey> redisKeyEnum, String account, SysUserInfoDO tempSysUserInfoDO,
-        @Nullable Long tenantId) {
+        @Nullable Long tenantId, @Nullable Consumer<Map<Enum<? extends IRedisKey>, String>> consumer) {
 
         String key = redisKeyEnum + account;
 
@@ -366,6 +373,10 @@ public class SignUtil {
                 Map<Enum<? extends IRedisKey>, String> accountMap = MapUtil.newHashMap();
 
                 accountMap.put(redisKeyEnum, account);
+
+                if (consumer != null) {
+                    consumer.accept(accountMap);
+                }
 
                 sysUserDO = SignUtil.insertUser(null, accountMap, false, tempSysUserInfoDO, null, tenantId);
 

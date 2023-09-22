@@ -14,6 +14,7 @@
         a.sign_in_name as signInName,
         a.phone as phone,
         a.wx_open_id as wxOpenId,
+        a.wx_app_id as wxAppId,
         a.create_time AS createTime,
         a.enable_flag AS enableFlag,
         IF ( a.`password` = '', 0, 1 ) AS passwordFlag,
@@ -52,6 +53,10 @@
 
         <if test="dto.wxOpenId != null and dto.wxOpenId != ''">
             AND a.wx_open_id LIKE concat('%', #{dto.wxOpenId}, '%')
+        </if>
+
+        <if test="dto.wxAppId != null and dto.wxAppId != ''">
+            AND a.wx_app_id LIKE concat('%', #{wxAppId}, '%')
         </if>
 
         <if test="dto.enableFlag != null">

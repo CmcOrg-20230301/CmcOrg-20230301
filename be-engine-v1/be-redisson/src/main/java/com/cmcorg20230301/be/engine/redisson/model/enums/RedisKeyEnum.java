@@ -21,6 +21,7 @@ public enum RedisKeyEnum implements IRedisKey {
 
     PRE_JWT_HASH, // jwtHash 前缀
 
+    PRE_WX_APP_ID, // 微信 appId：锁【微信 appId】
     PRE_WX_OPEN_ID, // 微信 openId：锁【微信 openId】
     PRE_PHONE, // 手机号码：锁【手机号码】
     PRE_EMAIL, // 邮箱：锁【邮箱】

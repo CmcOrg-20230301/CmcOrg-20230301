@@ -133,9 +133,12 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserProMapper, SysUserDO>
 
         for (SysUserPageVO item : page.getRecords()) {
 
+            // 备注：要和 userSelfInfo接口保持一致
             item.setEmail(DesensitizedUtil.email(item.getEmail())); // 脱敏
             item.setSignInName(DesensitizedUtil.chineseName(item.getSignInName())); // 脱敏
             item.setPhone(DesensitizedUtil.mobilePhone(item.getPhone())); // 脱敏
+            item.setWxOpenId(StrUtil.hide(item.getWxOpenId(), 3, item.getWxOpenId().length() - 4)); // 脱敏：只显示前 3位，后 4位
+            item.setWxAppId(StrUtil.hide(item.getWxAppId(), 3, item.getWxAppId().length() - 4)); // 脱敏：只显示前 3位，后 4位
 
             userIdSet.add(item.getId());
 

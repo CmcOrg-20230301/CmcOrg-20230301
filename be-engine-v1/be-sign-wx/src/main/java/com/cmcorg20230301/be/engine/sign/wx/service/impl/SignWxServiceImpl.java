@@ -34,12 +34,18 @@ public class SignWxServiceImpl implements SignWxService {
     public String signInMiniProgramPhoneCode(SignInMiniProgramPhoneCodeDTO dto) {
 
         // 获取：用户手机号
-        WxPhoneByCodeVO.WxPhoneInfoVO wxPhoneInfoVO = WxUtil.getWxMiniProgramPhoneInfoVOByCode(dto.getPhoneCode());
+        WxPhoneByCodeVO.WxPhoneInfoVO wxPhoneInfoVO =
+            WxUtil.getWxMiniProgramPhoneInfoVoByCode(dto.getTenantId(), dto.getPhoneCode(), dto.getAppId());
 
         // 直接通过：手机号登录
         return SignUtil.signInAccount(
             ChainWrappers.lambdaQueryChain(sysUserMapper).eq(SysUserDO::getPhone, wxPhoneInfoVO.getPhoneNumber()),
-            RedisKeyEnum.PRE_PHONE, wxPhoneInfoVO.getPhoneNumber(), getWxSysUserInfoDO(), dto.getTenantId());
+            RedisKeyEnum.PRE_PHONE, wxPhoneInfoVO.getPhoneNumber(), getWxSysUserInfoDO(), dto.getTenantId(),
+            accountMap -> {
+
+                accountMap.put(RedisKeyEnum.PRE_WX_APP_ID, dto.getAppId());
+
+            });
 
     }
 
@@ -49,12 +55,17 @@ public class SignWxServiceImpl implements SignWxService {
     @Override
     public String signInMiniProgramCode(SignInMiniProgramCodeDTO dto) {
 
-        WxOpenIdVO wxOpenIdVO = WxUtil.getWxMiniProgramOpenIdVOByCode(dto.getCode());
+        WxOpenIdVO wxOpenIdVO = WxUtil.getWxMiniProgramOpenIdVoByCode(dto.getTenantId(), dto.getCode(), dto.getAppId());
 
         // 直接通过：微信 openId登录
         return SignUtil.signInAccount(
-            ChainWrappers.lambdaQueryChain(sysUserMapper).eq(SysUserDO::getWxOpenId, wxOpenIdVO.getOpenid()),
-            PRE_REDIS_KEY_ENUM, wxOpenIdVO.getOpenid(), getWxSysUserInfoDO(), dto.getTenantId());
+            ChainWrappers.lambdaQueryChain(sysUserMapper).eq(SysUserDO::getWxOpenId, wxOpenIdVO.getOpenid())
+                .eq(SysUserDO::getWxAppId, dto.getAppId()), PRE_REDIS_KEY_ENUM, wxOpenIdVO.getOpenid(),
+            getWxSysUserInfoDO(), dto.getTenantId(), accountMap -> {
+
+                accountMap.put(RedisKeyEnum.PRE_WX_APP_ID, dto.getAppId());
+
+            });
 
     }
 
@@ -77,12 +88,17 @@ public class SignWxServiceImpl implements SignWxService {
     @Override
     public String signInBrowserCode(SignInBrowserCodeDTO dto) {
 
-        WxOpenIdVO wxOpenIdVO = WxUtil.getWxBrowserOpenIdVOByCode(dto.getCode());
+        WxOpenIdVO wxOpenIdVO = WxUtil.getWxBrowserOpenIdVoByCode(dto.getTenantId(), dto.getCode(), dto.getAppId());
 
         // 直接通过：微信 openId登录
         return SignUtil.signInAccount(
-            ChainWrappers.lambdaQueryChain(sysUserMapper).eq(SysUserDO::getWxOpenId, wxOpenIdVO.getOpenid()),
-            PRE_REDIS_KEY_ENUM, wxOpenIdVO.getOpenid(), getWxSysUserInfoDO(), dto.getTenantId());
+            ChainWrappers.lambdaQueryChain(sysUserMapper).eq(SysUserDO::getWxOpenId, wxOpenIdVO.getOpenid())
+                .eq(SysUserDO::getWxAppId, dto.getAppId()), PRE_REDIS_KEY_ENUM, wxOpenIdVO.getOpenid(),
+            getWxSysUserInfoDO(), dto.getTenantId(), accountMap -> {
+
+                accountMap.put(RedisKeyEnum.PRE_WX_APP_ID, dto.getAppId());
+
+            });
 
     }
 

@@ -12,6 +12,10 @@ import javax.validation.constraints.NotBlank;
 public class SignInMiniProgramPhoneCodeDTO extends UserSignBaseDTO {
 
     @NotBlank
+    @Schema(description = "微信 appId")
+    private String appId;
+
+    @NotBlank
     @Schema(description = "手机号码 code")
     private String phoneCode;
 

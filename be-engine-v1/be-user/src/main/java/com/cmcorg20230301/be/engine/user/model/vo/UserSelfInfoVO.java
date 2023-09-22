@@ -29,6 +29,9 @@ public class UserSelfInfoVO extends UserSelfUpdateInfoDTO {
     @Schema(description = "微信 openId，会脱敏")
     private String wxOpenId;
 
+    @Schema(description = "微信 appId，会脱敏")
+    private String wxAppId;
+
     @Schema(description = "账号注册时间")
     private Date createTime;
 
