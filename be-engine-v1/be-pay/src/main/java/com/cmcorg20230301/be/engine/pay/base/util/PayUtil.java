@@ -12,6 +12,7 @@ import com.cmcorg20230301.be.engine.pay.base.model.bo.SysPayReturnBO;
 import com.cmcorg20230301.be.engine.pay.base.model.bo.SysPayTradeNotifyBO;
 import com.cmcorg20230301.be.engine.pay.base.model.configuration.ISysPay;
 import com.cmcorg20230301.be.engine.pay.base.model.dto.PayDTO;
+import com.cmcorg20230301.be.engine.pay.base.model.entity.SysPayConfigurationDO;
 import com.cmcorg20230301.be.engine.pay.base.model.entity.SysPayDO;
 import com.cmcorg20230301.be.engine.pay.base.model.enums.SysPayRefTypeEnum;
 import com.cmcorg20230301.be.engine.pay.base.model.enums.SysPayTradeStatusEnum;
@@ -185,8 +186,8 @@ public class PayUtil {
      *
      * @param outTradeNo 商户订单号，商户网站订单系统中唯一订单号，必填
      */
-    public static SysPayTradeStatusEnum query(SysPayTypeEnum sysPayTypeEnum, String outTradeNo,
-        @Nullable Long tenantId) {
+    public static SysPayTradeStatusEnum query(SysPayTypeEnum sysPayTypeEnum, String outTradeNo, @Nullable Long tenantId,
+        @Nullable SysPayConfigurationDO sysPayConfigurationDoTemp) {
 
         ISysPay iSysPay = SYS_PAY_MAP.get(sysPayTypeEnum);
 
@@ -198,7 +199,7 @@ public class PayUtil {
             tenantId = BaseConstant.TENANT_ID;
         }
 
-        return iSysPay.query(outTradeNo, tenantId);
+        return iSysPay.query(outTradeNo, tenantId, sysPayConfigurationDoTemp);
 
     }
 

@@ -45,9 +45,20 @@ public class PayAliUtil {
      */
     @NotNull
     public static AlipayConfig getAlipayConfig(@Nullable Long tenantId,
-        @Nullable CallBack<SysPayConfigurationDO> sysPayConfigurationDoCallBack) {
+        @Nullable CallBack<SysPayConfigurationDO> sysPayConfigurationDoCallBack,
+        @Nullable SysPayConfigurationDO sysPayConfigurationDoTemp) {
 
-        SysPayConfigurationDO sysPayConfigurationDO = PayHelper.getSysPayConfigurationDO(tenantId, SysPayTypeEnum.ALI);
+        SysPayConfigurationDO sysPayConfigurationDO;
+
+        if (sysPayConfigurationDoTemp == null) {
+
+            sysPayConfigurationDO = PayHelper.getSysPayConfigurationDO(tenantId, SysPayTypeEnum.ALI);
+
+        } else {
+
+            sysPayConfigurationDO = sysPayConfigurationDoTemp;
+
+        }
 
         if (sysPayConfigurationDoCallBack != null) {
 
@@ -76,12 +87,14 @@ public class PayAliUtil {
 
         CallBack<SysPayConfigurationDO> sysPayConfigurationDoCallBack = new CallBack<>();
 
-        AlipayClient alipayClient =
-            new DefaultAlipayClient(getAlipayConfig(dto.getTenantId(), sysPayConfigurationDoCallBack));
+        AlipayClient alipayClient = new DefaultAlipayClient(
+            getAlipayConfig(dto.getTenantId(), sysPayConfigurationDoCallBack, dto.getSysPayConfigurationDoTemp()));
 
         AlipayTradePagePayRequest aliPayRequest = new AlipayTradePagePayRequest();
 
-        aliPayRequest.setNotifyUrl(sysPayConfigurationDoCallBack.getValue().getNotifyUrl() + "/" + dto.getTenantId());
+        aliPayRequest.setNotifyUrl(
+            sysPayConfigurationDoCallBack.getValue().getNotifyUrl() + "/" + dto.getTenantId() + "/"
+                + sysPayConfigurationDoCallBack.getValue().getId());
 
         JSONObject bizContent = JSONUtil.createObj();
         bizContent.set("out_trade_no", dto.getOutTradeNo());
@@ -118,11 +131,12 @@ public class PayAliUtil {
      */
     @SneakyThrows
     @NotNull
-    public static SysPayTradeStatusEnum query(String outTradeNo, Long tenantId) {
+    public static SysPayTradeStatusEnum query(String outTradeNo, Long tenantId,
+        @Nullable SysPayConfigurationDO sysPayConfigurationDoTemp) {
 
         Assert.notBlank(outTradeNo);
 
-        AlipayClient alipayClient = new DefaultAlipayClient(getAlipayConfig(tenantId, null));
+        AlipayClient alipayClient = new DefaultAlipayClient(getAlipayConfig(tenantId, null, sysPayConfigurationDoTemp));
 
         AlipayTradeQueryRequest request = new AlipayTradeQueryRequest();
 

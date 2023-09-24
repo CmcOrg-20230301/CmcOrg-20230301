@@ -29,8 +29,8 @@ public class PayGoogleServiceImpl implements PayGoogleService {
 
         SysPayTradeNotifyBO sysPayTradeNotifyBO = new SysPayTradeNotifyBO();
 
-        SysPayTradeStatusEnum sysPayTradeStatusEnum =
-            PayGoogleUtil.query(dto.getId().toString(), sysPayTradeNotifyBO, dto.getTenantId());
+        SysPayTradeStatusEnum sysPayTradeStatusEnum = PayGoogleUtil
+            .query(dto.getId().toString(), sysPayTradeNotifyBO, dto.getTenantId(), sysPayConfigurationDoTemp);
 
         if (SysPayTradeStatusEnum.WAIT_BUYER_CONSUME.equals(sysPayTradeStatusEnum) == false) {
             return false;
@@ -61,8 +61,8 @@ public class PayGoogleServiceImpl implements PayGoogleService {
 
         SysPayTradeNotifyBO sysPayTradeNotifyBO = new SysPayTradeNotifyBO();
 
-        SysPayTradeStatusEnum sysPayTradeStatusEnum =
-            PayGoogleUtil.query(dto.getId().toString(), sysPayTradeNotifyBO, dto.getTenantId());
+        SysPayTradeStatusEnum sysPayTradeStatusEnum = PayGoogleUtil
+            .query(dto.getId().toString(), sysPayTradeNotifyBO, dto.getTenantId(), sysPayConfigurationDoTemp);
 
         if (SysPayTradeStatusEnum.TRADE_FINISHED.equals(sysPayTradeStatusEnum) == false) {
             return false;

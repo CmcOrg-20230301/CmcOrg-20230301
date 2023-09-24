@@ -5,6 +5,9 @@ import com.alipay.api.internal.util.AlipaySignature;
 import com.cmcorg20230301.be.engine.pay.ali.service.PayAliService;
 import com.cmcorg20230301.be.engine.pay.ali.util.PayAliUtil;
 import com.cmcorg20230301.be.engine.pay.base.model.bo.SysPayTradeNotifyBO;
+import com.cmcorg20230301.be.engine.pay.base.model.entity.SysPayConfigurationDO;
+import com.cmcorg20230301.be.engine.pay.base.model.enums.SysPayTypeEnum;
+import com.cmcorg20230301.be.engine.pay.base.util.PayHelper;
 import com.cmcorg20230301.be.engine.pay.base.util.PayUtil;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -25,7 +28,7 @@ public class PayAliServiceImpl implements PayAliService {
      */
     @SneakyThrows
     @Override
-    public String notifyCallBack(HttpServletRequest request, Long tenantId) {
+    public String notifyCallBack(HttpServletRequest request, Long tenantId, long sysPayConfigurationId) {
 
         Map<String, String> paramsMap = new HashMap<>();
 
@@ -49,7 +52,10 @@ public class PayAliServiceImpl implements PayAliService {
 
         }
 
-        AlipayConfig alipayConfig = PayAliUtil.getAlipayConfig(tenantId, null);
+        SysPayConfigurationDO sysPayConfigurationDoTemp =
+            PayHelper.getSysPayConfigurationDO(tenantId, sysPayConfigurationId, SysPayTypeEnum.ALI);
+
+        AlipayConfig alipayConfig = PayAliUtil.getAlipayConfig(tenantId, null, sysPayConfigurationDoTemp);
 
         boolean signVerified = AlipaySignature
             .rsaCheckV1(paramsMap, alipayConfig.getAlipayPublicKey(), alipayConfig.getCharset(),

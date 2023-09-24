@@ -6,12 +6,13 @@ import com.cmcorg20230301.be.engine.model.model.constant.BaseConstant;
 import com.cmcorg20230301.be.engine.pay.base.model.entity.SysPayConfigurationDO;
 import com.cmcorg20230301.be.engine.pay.base.model.enums.SysPayTypeEnum;
 import com.cmcorg20230301.be.engine.pay.base.service.SysPayConfigurationService;
+import com.cmcorg20230301.be.engine.security.model.entity.BaseEntity;
 import com.cmcorg20230301.be.engine.security.model.entity.BaseEntityNoId;
 import com.cmcorg20230301.be.engine.security.model.entity.BaseEntityNoIdFather;
 import com.cmcorg20230301.be.engine.security.model.vo.ApiResultVO;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.Nullable;
 import javax.annotation.Resource;
 import java.util.List;
 
@@ -46,6 +47,18 @@ public class PayHelper {
 
         // 随机取一个
         return RandomUtil.randomEle(sysPayConfigurationDOList);
+
+    }
+
+    /**
+     * 获取：SysPayConfigurationDO对象
+     */
+    @Nullable
+    public static SysPayConfigurationDO getSysPayConfigurationDO(Long tenantId, long sysPayConfigurationId,
+        SysPayTypeEnum sysPayTypeEnum) {
+
+        return sysPayConfigurationService.lambdaQuery().eq(BaseEntityNoIdFather::getTenantId, tenantId)
+            .eq(SysPayConfigurationDO::getType, sysPayTypeEnum).eq(BaseEntity::getId, sysPayConfigurationId).one();
 
     }
 

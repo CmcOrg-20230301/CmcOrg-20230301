@@ -22,6 +22,7 @@ import com.cmcorg20230301.be.engine.redisson.model.enums.RedisKeyEnum;
 import com.cmcorg20230301.be.engine.security.model.vo.ApiResultVO;
 import lombok.SneakyThrows;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
@@ -46,8 +47,17 @@ public class PayGoogleUtil {
     @NotNull
     public static SysPayReturnBO pay(PayDTO dto) {
 
-        SysPayConfigurationDO sysPayConfigurationDO =
-            PayHelper.getSysPayConfigurationDO(dto.getTenantId(), SysPayTypeEnum.GOOGLE);
+        SysPayConfigurationDO sysPayConfigurationDO;
+
+        if (dto.getSysPayConfigurationDoTemp() == null) {
+
+            sysPayConfigurationDO = PayHelper.getSysPayConfigurationDO(dto.getTenantId(), SysPayTypeEnum.GOOGLE);
+
+        } else {
+
+            sysPayConfigurationDO = dto.getSysPayConfigurationDoTemp();
+
+        }
 
         return new SysPayReturnBO("", sysPayConfigurationDO.getAppId());
 
@@ -60,8 +70,8 @@ public class PayGoogleUtil {
      */
     @SneakyThrows
     @NotNull
-    public static SysPayTradeStatusEnum query(String outTradeNo, SysPayTradeNotifyBO sysPayTradeNotifyBO,
-        Long tenantId) {
+    public static SysPayTradeStatusEnum query(String outTradeNo, SysPayTradeNotifyBO sysPayTradeNotifyBO, Long tenantId,
+        @Nullable SysPayConfigurationDO sysPayConfigurationDoTemp) {
 
         Assert.notBlank(outTradeNo);
 
@@ -74,7 +84,7 @@ public class PayGoogleUtil {
         }
 
         // 获取：accessToken
-        String accessToken = getAccessToken(tenantId);
+        String accessToken = getAccessToken(tenantId, sysPayConfigurationDoTemp);
 
         // 查询：谷歌那边的订单状态，文档地址：https://developers.google.com/android-publisher/api-ref/rest/v3/purchases.products/get?hl=zh-cn
         // https://androidpublisher.googleapis.com/androidpublisher/v3/applications/{packageName}/purchases/products/{productId}/tokens/{token}
@@ -120,16 +130,39 @@ public class PayGoogleUtil {
     /**
      * 获取：google接口调用凭据
      */
-    public static String getAccessToken(Long tenantId) {
+    public static String getAccessToken(Long tenantId, @Nullable SysPayConfigurationDO sysPayConfigurationDoTemp) {
 
-        String accessToken = MyCacheUtil.onlyGet(RedisKeyEnum.GOOGLE_ACCESS_TOKEN_CACHE, tenantId.toString());
+        SysPayConfigurationDO sysPayConfigurationDO;
 
-        if (StrUtil.isNotBlank(accessToken)) {
-            return accessToken;
+        String sufKey;
+
+        if (sysPayConfigurationDoTemp == null) {
+
+            sufKey = tenantId.toString();
+
+            String accessToken = MyCacheUtil.onlyGet(RedisKeyEnum.GOOGLE_ACCESS_TOKEN_CACHE, sufKey);
+
+            if (StrUtil.isNotBlank(accessToken)) {
+                return accessToken;
+            }
+
+            sysPayConfigurationDO = PayHelper.getSysPayConfigurationDO(tenantId, SysPayTypeEnum.GOOGLE);
+
+        } else {
+
+            long sysPayConfigurationId = sysPayConfigurationDoTemp.getId();
+
+            sufKey = tenantId + ":" + sysPayConfigurationId;
+
+            String accessToken = MyCacheUtil.onlyGet(RedisKeyEnum.GOOGLE_ACCESS_TOKEN_CACHE, sufKey);
+
+            if (StrUtil.isNotBlank(accessToken)) {
+                return accessToken;
+            }
+
+            sysPayConfigurationDO = sysPayConfigurationDoTemp;
+
         }
-
-        SysPayConfigurationDO sysPayConfigurationDO =
-            PayHelper.getSysPayConfigurationDO(tenantId, SysPayTypeEnum.GOOGLE);
 
         JSONObject formJson = JSONUtil.createObj();
 
@@ -142,9 +175,9 @@ public class PayGoogleUtil {
 
         JSONObject jsonObject = JSONUtil.parseObj(jsonStr);
 
-        accessToken = jsonObject.getStr("access_token");
+        String accessTokenResult = jsonObject.getStr("access_token");
 
-        if (StrUtil.isBlank(accessToken)) {
+        if (StrUtil.isBlank(accessTokenResult)) {
 
             ApiResultVO.error("谷歌：获取【access_token】失败，请联系管理员", jsonStr);
 
@@ -152,12 +185,10 @@ public class PayGoogleUtil {
 
         Integer expiresIn = jsonObject.getInt("expires_in"); // 这里的单位是：秒
 
-        String finalAccessToken = accessToken;
-
         CacheRedisKafkaLocalUtil
-            .put(RedisKeyEnum.GOOGLE_ACCESS_TOKEN_CACHE.name(), expiresIn * 1000, () -> finalAccessToken);
+            .put(RedisKeyEnum.GOOGLE_ACCESS_TOKEN_CACHE, sufKey, null, expiresIn * 1000, () -> accessTokenResult);
 
-        return accessToken;
+        return accessTokenResult;
 
     }
 

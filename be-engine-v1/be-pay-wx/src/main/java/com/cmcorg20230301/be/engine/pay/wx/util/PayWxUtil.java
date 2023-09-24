@@ -18,9 +18,8 @@ import com.wechat.pay.java.service.payments.model.Transaction;
 import com.wechat.pay.java.service.payments.nativepay.NativePayService;
 import lombok.SneakyThrows;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.springframework.stereotype.Component;
-
-import javax.annotation.Nullable;
 
 /**
  * 支付：微信工具类
@@ -32,13 +31,20 @@ public class PayWxUtil {
      * 获取：RSAAutoCertificateConfig 对象
      */
     public static RSAAutoCertificateConfig getRsaAutoCertificateConfig(@Nullable Long tenantId,
-        @Nullable CallBack<SysPayConfigurationDO> sysPayConfigurationDoCallBack, SysPayTypeEnum sysPayTypeEnum) {
+        @Nullable CallBack<SysPayConfigurationDO> sysPayConfigurationDoCallBack, SysPayTypeEnum sysPayTypeEnum,
+        @Nullable SysPayConfigurationDO sysPayConfigurationDoTemp) {
 
-        if (tenantId == null) {
-            tenantId = BaseConstant.TENANT_ID;
+        SysPayConfigurationDO sysPayConfigurationDO;
+
+        if (sysPayConfigurationDoTemp == null) {
+
+            sysPayConfigurationDO = PayHelper.getSysPayConfigurationDO(tenantId, sysPayTypeEnum);
+
+        } else {
+
+            sysPayConfigurationDO = sysPayConfigurationDoTemp;
+
         }
-
-        SysPayConfigurationDO sysPayConfigurationDO = PayHelper.getSysPayConfigurationDO(tenantId, sysPayTypeEnum);
 
         if (sysPayConfigurationDoCallBack != null) {
 
@@ -58,10 +64,12 @@ public class PayWxUtil {
      * 获取：NativePayService 对象
      */
     private static NativePayService getNativePayService(@Nullable Long tenantId,
-        @Nullable CallBack<SysPayConfigurationDO> sysPayConfigurationDoCallBack) {
+        @Nullable CallBack<SysPayConfigurationDO> sysPayConfigurationDoCallBack,
+        @Nullable SysPayConfigurationDO sysPayConfigurationDoTemp) {
 
         RSAAutoCertificateConfig rsaAutoCertificateConfig =
-            getRsaAutoCertificateConfig(tenantId, sysPayConfigurationDoCallBack, SysPayTypeEnum.WX_NATIVE);
+            getRsaAutoCertificateConfig(tenantId, sysPayConfigurationDoCallBack, SysPayTypeEnum.WX_NATIVE,
+                sysPayConfigurationDoTemp);
 
         return new NativePayService.Builder().config(rsaAutoCertificateConfig).build();
 
@@ -76,7 +84,8 @@ public class PayWxUtil {
 
         CallBack<SysPayConfigurationDO> sysPayConfigurationDoCallBack = new CallBack<>();
 
-        NativePayService nativePayService = getNativePayService(dto.getTenantId(), sysPayConfigurationDoCallBack);
+        NativePayService nativePayService =
+            getNativePayService(dto.getTenantId(), sysPayConfigurationDoCallBack, dto.getSysPayConfigurationDoTemp());
 
         com.wechat.pay.java.service.payments.nativepay.model.PrepayRequest request =
             new com.wechat.pay.java.service.payments.nativepay.model.PrepayRequest();
@@ -91,7 +100,10 @@ public class PayWxUtil {
         request.setAppid(sysPayConfigurationDoCallBack.getValue().getAppId());
         request.setMchid(sysPayConfigurationDoCallBack.getValue().getMerchantId());
         request.setDescription(dto.getSubject());
-        request.setNotifyUrl(sysPayConfigurationDoCallBack.getValue().getNotifyUrl() + "/" + dto.getTenantId());
+
+        request.setNotifyUrl(sysPayConfigurationDoCallBack.getValue().getNotifyUrl() + "/" + dto.getTenantId() + "/"
+            + sysPayConfigurationDoCallBack.getValue().getId());
+
         request.setOutTradeNo(dto.getOutTradeNo());
         request.setTimeExpire(DatePattern.UTC_WITH_XXX_OFFSET_FORMAT.format(dto.getTimeExpire()));
 
@@ -110,11 +122,13 @@ public class PayWxUtil {
      */
     @SneakyThrows
     @NotNull
-    public static SysPayTradeStatusEnum queryNative(String outTradeNo, Long tenantId) {
+    public static SysPayTradeStatusEnum queryNative(String outTradeNo, Long tenantId,
+        @Nullable SysPayConfigurationDO sysPayConfigurationDoTemp) {
 
         CallBack<SysPayConfigurationDO> sysPayConfigurationDoCallBack = new CallBack<>();
 
-        NativePayService nativePayService = getNativePayService(tenantId, sysPayConfigurationDoCallBack);
+        NativePayService nativePayService =
+            getNativePayService(tenantId, sysPayConfigurationDoCallBack, sysPayConfigurationDoTemp);
 
         com.wechat.pay.java.service.payments.nativepay.model.QueryOrderByOutTradeNoRequest queryRequest =
             new com.wechat.pay.java.service.payments.nativepay.model.QueryOrderByOutTradeNoRequest();
@@ -133,10 +147,12 @@ public class PayWxUtil {
      * 获取：JsapiServiceExtension 对象
      */
     private static JsapiServiceExtension getJsapiServiceExtension(@Nullable Long tenantId,
-        @Nullable CallBack<SysPayConfigurationDO> sysPayConfigurationDoCallBack) {
+        @Nullable CallBack<SysPayConfigurationDO> sysPayConfigurationDoCallBack,
+        @Nullable SysPayConfigurationDO sysPayConfigurationDoTemp) {
 
         RSAAutoCertificateConfig rsaAutoCertificateConfig =
-            getRsaAutoCertificateConfig(tenantId, sysPayConfigurationDoCallBack, SysPayTypeEnum.WX_JSAPI);
+            getRsaAutoCertificateConfig(tenantId, sysPayConfigurationDoCallBack, SysPayTypeEnum.WX_JSAPI,
+                sysPayConfigurationDoTemp);
 
         return new JsapiServiceExtension.Builder().config(rsaAutoCertificateConfig).build();
 
@@ -154,7 +170,8 @@ public class PayWxUtil {
         CallBack<SysPayConfigurationDO> sysPayConfigurationDoCallBack = new CallBack<>();
 
         JsapiServiceExtension jsapiServiceExtension =
-            getJsapiServiceExtension(dto.getTenantId(), sysPayConfigurationDoCallBack);
+            getJsapiServiceExtension(dto.getTenantId(), sysPayConfigurationDoCallBack,
+                dto.getSysPayConfigurationDoTemp());
 
         com.wechat.pay.java.service.payments.jsapi.model.PrepayRequest request =
             new com.wechat.pay.java.service.payments.jsapi.model.PrepayRequest();
@@ -169,7 +186,10 @@ public class PayWxUtil {
         request.setAppid(sysPayConfigurationDoCallBack.getValue().getAppId());
         request.setMchid(sysPayConfigurationDoCallBack.getValue().getMerchantId());
         request.setDescription(dto.getSubject());
-        request.setNotifyUrl(sysPayConfigurationDoCallBack.getValue().getNotifyUrl() + "/" + dto.getTenantId());
+
+        request.setNotifyUrl(sysPayConfigurationDoCallBack.getValue().getNotifyUrl() + "/" + dto.getTenantId() + "/"
+            + sysPayConfigurationDoCallBack.getValue().getId());
+
         request.setOutTradeNo(dto.getOutTradeNo());
         request.setTimeExpire(DatePattern.UTC_WITH_XXX_OFFSET_FORMAT.format(dto.getTimeExpire()));
 
@@ -197,11 +217,13 @@ public class PayWxUtil {
      */
     @SneakyThrows
     @NotNull
-    public static SysPayTradeStatusEnum queryJsApi(String outTradeNo, Long tenantId) {
+    public static SysPayTradeStatusEnum queryJsApi(String outTradeNo, Long tenantId,
+        @Nullable SysPayConfigurationDO sysPayConfigurationDoTemp) {
 
         CallBack<SysPayConfigurationDO> sysPayConfigurationDoCallBack = new CallBack<>();
 
-        JsapiServiceExtension jsapiServiceExtension = getJsapiServiceExtension(tenantId, sysPayConfigurationDoCallBack);
+        JsapiServiceExtension jsapiServiceExtension =
+            getJsapiServiceExtension(tenantId, sysPayConfigurationDoCallBack, sysPayConfigurationDoTemp);
 
         com.wechat.pay.java.service.payments.jsapi.model.QueryOrderByOutTradeNoRequest queryRequest =
             new com.wechat.pay.java.service.payments.jsapi.model.QueryOrderByOutTradeNoRequest();

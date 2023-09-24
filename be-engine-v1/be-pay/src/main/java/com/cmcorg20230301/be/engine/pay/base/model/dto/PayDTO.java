@@ -1,5 +1,6 @@
 package com.cmcorg20230301.be.engine.pay.base.model.dto;
 
+import com.cmcorg20230301.be.engine.pay.base.model.entity.SysPayConfigurationDO;
 import com.cmcorg20230301.be.engine.pay.base.model.enums.SysPayTypeEnum;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
@@ -45,5 +46,8 @@ public class PayDTO {
 
     @Schema(description = "购买成功后 Purchase对象的 getPurchaseToken()，例如：谷歌支付")
     private String token;
+
+    @Schema(description = "支付配置，不必传，如果传递此字段，那么配置会从该字段里面取值")
+    private SysPayConfigurationDO sysPayConfigurationDoTemp;
 
 }

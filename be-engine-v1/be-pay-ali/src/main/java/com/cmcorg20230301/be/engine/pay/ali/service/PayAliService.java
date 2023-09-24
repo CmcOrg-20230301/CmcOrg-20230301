@@ -4,6 +4,6 @@ import javax.servlet.http.HttpServletRequest;
 
 public interface PayAliService {
 
-    String notifyCallBack(HttpServletRequest request, Long tenantId);
+    String notifyCallBack(HttpServletRequest request, Long tenantId, long sysPayConfigurationId);
 
 }

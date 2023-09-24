@@ -4,9 +4,11 @@ import com.cmcorg20230301.be.engine.pay.ali.util.PayAliUtil;
 import com.cmcorg20230301.be.engine.pay.base.model.bo.SysPayReturnBO;
 import com.cmcorg20230301.be.engine.pay.base.model.configuration.ISysPay;
 import com.cmcorg20230301.be.engine.pay.base.model.dto.PayDTO;
+import com.cmcorg20230301.be.engine.pay.base.model.entity.SysPayConfigurationDO;
 import com.cmcorg20230301.be.engine.pay.base.model.enums.SysPayTradeStatusEnum;
 import com.cmcorg20230301.be.engine.pay.base.model.enums.SysPayTypeEnum;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.springframework.context.annotation.Configuration;
 
 /**
@@ -38,8 +40,9 @@ public class PayAliConfiguration implements ISysPay {
      */
     @Override
     @NotNull
-    public SysPayTradeStatusEnum query(String outTradeNo, Long tenantId) {
-        return PayAliUtil.query(outTradeNo, tenantId);
+    public SysPayTradeStatusEnum query(String outTradeNo, Long tenantId,
+        @Nullable SysPayConfigurationDO sysPayConfigurationDoTemp) {
+        return PayAliUtil.query(outTradeNo, tenantId, sysPayConfigurationDoTemp);
     }
 
 }

@@ -3,7 +3,9 @@ package com.cmcorg20230301.be.engine.pay.wx.service.impl;
 import cn.hutool.core.io.IoUtil;
 import cn.hutool.core.lang.func.Func1;
 import com.cmcorg20230301.be.engine.pay.base.model.bo.SysPayTradeNotifyBO;
+import com.cmcorg20230301.be.engine.pay.base.model.entity.SysPayConfigurationDO;
 import com.cmcorg20230301.be.engine.pay.base.model.enums.SysPayTypeEnum;
+import com.cmcorg20230301.be.engine.pay.base.util.PayHelper;
 import com.cmcorg20230301.be.engine.pay.base.util.PayUtil;
 import com.cmcorg20230301.be.engine.pay.wx.service.PayWxService;
 import com.cmcorg20230301.be.engine.pay.wx.util.PayWxUtil;
@@ -56,10 +58,14 @@ public class PayWxServiceImpl implements PayWxService {
      */
     @Override
     @SneakyThrows
-    public void notifyCallBackNative(HttpServletRequest request, HttpServletResponse response, Long tenantId) {
+    public void notifyCallBackNative(HttpServletRequest request, HttpServletResponse response, Long tenantId,
+        long sysPayConfigurationId) {
 
-        NotificationParser notificationParser =
-            new NotificationParser(PayWxUtil.getRsaAutoCertificateConfig(tenantId, null, SysPayTypeEnum.WX_NATIVE));
+        SysPayConfigurationDO sysPayConfigurationDoTemp =
+            PayHelper.getSysPayConfigurationDO(tenantId, sysPayConfigurationId, SysPayTypeEnum.WX_NATIVE);
+
+        NotificationParser notificationParser = new NotificationParser(
+            PayWxUtil.getRsaAutoCertificateConfig(tenantId, null, SysPayTypeEnum.WX_NATIVE, sysPayConfigurationDoTemp));
 
         commonHandleNotifyCallBack(request, response, (requestParam) -> {
 
@@ -85,10 +91,18 @@ public class PayWxServiceImpl implements PayWxService {
      * 服务器异步通知-jsApi，备注：第三方应用调用
      */
     @Override
-    public void notifyCallBackJsApi(HttpServletRequest request, HttpServletResponse response, Long tenantId) {
+    public void notifyCallBackJsApi(HttpServletRequest request, HttpServletResponse response, Long tenantId,
+        long sysPayConfigurationId) {
 
-        NotificationParser notificationParser =
-            new NotificationParser(PayWxUtil.getRsaAutoCertificateConfig(tenantId, null, SysPayTypeEnum.WX_JSAPI));
+        SysPayConfigurationDO sysPayConfigurationDoTemp =
+            PayHelper.getSysPayConfigurationDO(tenantId, sysPayConfigurationId, SysPayTypeEnum.WX_JSAPI);
+
+        if (sysPayConfigurationDoTemp == null) {
+            return;
+        }
+
+        NotificationParser notificationParser = new NotificationParser(
+            PayWxUtil.getRsaAutoCertificateConfig(tenantId, null, SysPayTypeEnum.WX_JSAPI, sysPayConfigurationDoTemp));
 
         commonHandleNotifyCallBack(request, response, (requestParam) -> {
 
