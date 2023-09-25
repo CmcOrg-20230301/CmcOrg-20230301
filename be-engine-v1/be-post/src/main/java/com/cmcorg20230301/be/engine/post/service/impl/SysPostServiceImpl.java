@@ -8,25 +8,24 @@ import cn.hutool.core.util.StrUtil;
 import com.baomidou.dynamic.datasource.annotation.DSTransactional;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.baomidou.mybatisplus.extension.toolkit.ChainWrappers;
 import com.cmcorg20230301.be.engine.model.model.dto.ChangeNumberDTO;
 import com.cmcorg20230301.be.engine.model.model.dto.NotEmptyIdSet;
 import com.cmcorg20230301.be.engine.model.model.dto.NotNullId;
-import com.cmcorg20230301.be.engine.post.mapper.SysPostMapper;
 import com.cmcorg20230301.be.engine.post.model.dto.SysPostInsertOrUpdateDTO;
 import com.cmcorg20230301.be.engine.post.model.dto.SysPostPageDTO;
-import com.cmcorg20230301.be.engine.post.model.entity.SysPostDO;
-import com.cmcorg20230301.be.engine.post.model.entity.SysPostRefUserDO;
 import com.cmcorg20230301.be.engine.post.model.vo.SysPostInfoByIdVO;
 import com.cmcorg20230301.be.engine.post.service.SysPostRefUserService;
 import com.cmcorg20230301.be.engine.post.service.SysPostService;
 import com.cmcorg20230301.be.engine.security.exception.BaseBizCodeEnum;
-import com.cmcorg20230301.be.engine.security.model.entity.BaseEntity;
-import com.cmcorg20230301.be.engine.security.model.entity.BaseEntityNoId;
-import com.cmcorg20230301.be.engine.security.model.entity.BaseEntityTree;
+import com.cmcorg20230301.be.engine.security.mapper.SysPostMapper;
+import com.cmcorg20230301.be.engine.security.mapper.SysUserMapper;
+import com.cmcorg20230301.be.engine.security.model.entity.*;
 import com.cmcorg20230301.be.engine.security.model.vo.ApiResultVO;
 import com.cmcorg20230301.be.engine.security.util.MyEntityUtil;
 import com.cmcorg20230301.be.engine.security.util.MyTreeUtil;
 import com.cmcorg20230301.be.engine.security.util.SysTenantUtil;
+import com.cmcorg20230301.be.engine.util.util.MyMapUtil;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Service;
 
@@ -41,6 +40,9 @@ public class SysPostServiceImpl extends ServiceImpl<SysPostMapper, SysPostDO> im
 
     @Resource
     SysPostRefUserService sysPostRefUserService;
+
+    @Resource
+    SysUserMapper sysUserMapper;
 
     /**
      * 新增/修改
@@ -97,7 +99,16 @@ public class SysPostServiceImpl extends ServiceImpl<SysPostMapper, SysPostDO> im
         // 再新增子表数据
         if (CollUtil.isNotEmpty(dto.getUserIdSet())) {
 
-            List<SysPostRefUserDO> insertList = new ArrayList<>();
+            // 检查：用户 idSet，是否合法
+            Long count = ChainWrappers.lambdaQueryChain(sysUserMapper).in(BaseEntity::getId, dto.getUserIdSet())
+                .eq(BaseEntityNoIdFather::getTenantId, dto.getTenantId()).count();
+
+            if (count != dto.getUserIdSet().size()) {
+                ApiResultVO.errorMsg("操作失败：关联的用户数据非法");
+            }
+
+            List<SysPostRefUserDO> insertList =
+                new ArrayList<>(MyMapUtil.getInitialCapacity(dto.getUserIdSet().size()));
 
             for (Long item : dto.getUserIdSet()) {
 

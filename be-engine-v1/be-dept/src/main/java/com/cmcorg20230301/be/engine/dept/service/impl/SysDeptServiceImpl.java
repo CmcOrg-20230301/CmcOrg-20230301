@@ -8,13 +8,10 @@ import cn.hutool.core.util.StrUtil;
 import com.baomidou.dynamic.datasource.annotation.DSTransactional;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.cmcorg20230301.be.engine.area.model.entity.SysAreaRefDeptDO;
+import com.baomidou.mybatisplus.extension.toolkit.ChainWrappers;
 import com.cmcorg20230301.be.engine.area.service.SysAreaRefDeptService;
-import com.cmcorg20230301.be.engine.dept.mapper.SysDeptMapper;
 import com.cmcorg20230301.be.engine.dept.model.dto.SysDeptInsertOrUpdateDTO;
 import com.cmcorg20230301.be.engine.dept.model.dto.SysDeptPageDTO;
-import com.cmcorg20230301.be.engine.dept.model.entity.SysDeptDO;
-import com.cmcorg20230301.be.engine.dept.model.entity.SysDeptRefUserDO;
 import com.cmcorg20230301.be.engine.dept.model.vo.SysDeptInfoByIdVO;
 import com.cmcorg20230301.be.engine.dept.service.SysDeptRefUserService;
 import com.cmcorg20230301.be.engine.dept.service.SysDeptService;
@@ -22,13 +19,15 @@ import com.cmcorg20230301.be.engine.model.model.dto.ChangeNumberDTO;
 import com.cmcorg20230301.be.engine.model.model.dto.NotEmptyIdSet;
 import com.cmcorg20230301.be.engine.model.model.dto.NotNullId;
 import com.cmcorg20230301.be.engine.security.exception.BaseBizCodeEnum;
-import com.cmcorg20230301.be.engine.security.model.entity.BaseEntity;
-import com.cmcorg20230301.be.engine.security.model.entity.BaseEntityNoId;
-import com.cmcorg20230301.be.engine.security.model.entity.BaseEntityTree;
+import com.cmcorg20230301.be.engine.security.mapper.SysAreaMapper;
+import com.cmcorg20230301.be.engine.security.mapper.SysDeptMapper;
+import com.cmcorg20230301.be.engine.security.mapper.SysUserMapper;
+import com.cmcorg20230301.be.engine.security.model.entity.*;
 import com.cmcorg20230301.be.engine.security.model.vo.ApiResultVO;
 import com.cmcorg20230301.be.engine.security.util.MyEntityUtil;
 import com.cmcorg20230301.be.engine.security.util.MyTreeUtil;
 import com.cmcorg20230301.be.engine.security.util.SysTenantUtil;
+import com.cmcorg20230301.be.engine.util.util.MyMapUtil;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Service;
 
@@ -46,6 +45,12 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptMapper, SysDeptDO> im
 
     @Resource
     SysDeptRefUserService sysDeptRefUserService;
+
+    @Resource
+    SysAreaMapper sysAreaMapper;
+
+    @Resource
+    SysUserMapper sysUserMapper;
 
     /**
      * 新增/修改
@@ -107,7 +112,16 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptMapper, SysDeptDO> im
         // 插入子表数据：区域，部门关联表
         if (CollUtil.isNotEmpty(dto.getAreaIdSet())) {
 
-            List<SysAreaRefDeptDO> insertList = new ArrayList<>();
+            // 检查：区域 idSet，是否合法
+            Long count = ChainWrappers.lambdaQueryChain(sysAreaMapper).in(BaseEntity::getId, dto.getAreaIdSet())
+                .eq(BaseEntityNoIdFather::getTenantId, dto.getTenantId()).count();
+
+            if (count != dto.getAreaIdSet().size()) {
+                ApiResultVO.errorMsg("操作失败：关联的区域数据非法");
+            }
+
+            List<SysAreaRefDeptDO> insertList =
+                new ArrayList<>(MyMapUtil.getInitialCapacity(dto.getAreaIdSet().size()));
 
             for (Long item : dto.getAreaIdSet()) {
 
@@ -127,7 +141,16 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptMapper, SysDeptDO> im
         // 插入子表数据：部门，用户关联表
         if (CollUtil.isNotEmpty(dto.getUserIdSet())) {
 
-            List<SysDeptRefUserDO> insertList = new ArrayList<>();
+            // 检查：用户 idSet，是否合法
+            Long count = ChainWrappers.lambdaQueryChain(sysUserMapper).in(BaseEntity::getId, dto.getUserIdSet())
+                .eq(BaseEntityNoIdFather::getTenantId, dto.getTenantId()).count();
+
+            if (count != dto.getUserIdSet().size()) {
+                ApiResultVO.errorMsg("操作失败：关联的用户数据非法");
+            }
+
+            List<SysDeptRefUserDO> insertList =
+                new ArrayList<>(MyMapUtil.getInitialCapacity(dto.getUserIdSet().size()));
 
             for (Long item : dto.getUserIdSet()) {
 

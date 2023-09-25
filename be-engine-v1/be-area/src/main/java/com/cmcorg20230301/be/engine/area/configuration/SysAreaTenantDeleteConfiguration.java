@@ -1,11 +1,11 @@
 package com.cmcorg20230301.be.engine.area.configuration;
 
-import com.cmcorg20230301.be.engine.area.model.entity.SysAreaDO;
 import com.cmcorg20230301.be.engine.area.service.SysAreaService;
 import com.cmcorg20230301.be.engine.model.model.dto.NotEmptyIdSet;
 import com.cmcorg20230301.be.engine.security.model.configuration.ITenantDeleteConfiguration;
 import com.cmcorg20230301.be.engine.security.model.entity.BaseEntity;
 import com.cmcorg20230301.be.engine.security.model.entity.BaseEntityNoId;
+import com.cmcorg20230301.be.engine.security.model.entity.SysAreaDO;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;

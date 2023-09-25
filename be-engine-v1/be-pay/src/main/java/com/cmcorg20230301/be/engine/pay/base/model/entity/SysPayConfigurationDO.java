@@ -10,7 +10,7 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = true)
 @TableName(value = "sys_pay_configuration")
 @Data
-@Schema(description = "v20230301：主表：支付配置")
+@Schema(description = "主表：支付配置")
 public class SysPayConfigurationDO extends BaseEntity {
 
     @Schema(description = "是否是默认支付方式，备注：只会有一个默认支付方式")

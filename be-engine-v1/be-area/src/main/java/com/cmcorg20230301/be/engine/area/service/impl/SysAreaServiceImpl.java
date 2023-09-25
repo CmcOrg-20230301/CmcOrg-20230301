@@ -8,11 +8,9 @@ import cn.hutool.core.util.StrUtil;
 import com.baomidou.dynamic.datasource.annotation.DSTransactional;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.cmcorg20230301.be.engine.area.mapper.SysAreaMapper;
+import com.baomidou.mybatisplus.extension.toolkit.ChainWrappers;
 import com.cmcorg20230301.be.engine.area.model.dto.SysAreaInsertOrUpdateDTO;
 import com.cmcorg20230301.be.engine.area.model.dto.SysAreaPageDTO;
-import com.cmcorg20230301.be.engine.area.model.entity.SysAreaDO;
-import com.cmcorg20230301.be.engine.area.model.entity.SysAreaRefDeptDO;
 import com.cmcorg20230301.be.engine.area.model.vo.SysAreaInfoByIdVO;
 import com.cmcorg20230301.be.engine.area.service.SysAreaRefDeptService;
 import com.cmcorg20230301.be.engine.area.service.SysAreaService;
@@ -20,9 +18,9 @@ import com.cmcorg20230301.be.engine.model.model.dto.ChangeNumberDTO;
 import com.cmcorg20230301.be.engine.model.model.dto.NotEmptyIdSet;
 import com.cmcorg20230301.be.engine.model.model.dto.NotNullId;
 import com.cmcorg20230301.be.engine.security.exception.BaseBizCodeEnum;
-import com.cmcorg20230301.be.engine.security.model.entity.BaseEntity;
-import com.cmcorg20230301.be.engine.security.model.entity.BaseEntityNoId;
-import com.cmcorg20230301.be.engine.security.model.entity.BaseEntityTree;
+import com.cmcorg20230301.be.engine.security.mapper.SysAreaMapper;
+import com.cmcorg20230301.be.engine.security.mapper.SysDeptMapper;
+import com.cmcorg20230301.be.engine.security.model.entity.*;
 import com.cmcorg20230301.be.engine.security.model.vo.ApiResultVO;
 import com.cmcorg20230301.be.engine.security.util.MyEntityUtil;
 import com.cmcorg20230301.be.engine.security.util.MyTreeUtil;
@@ -42,6 +40,9 @@ public class SysAreaServiceImpl extends ServiceImpl<SysAreaMapper, SysAreaDO> im
 
     @Resource
     SysAreaRefDeptService areaRefDeptService;
+
+    @Resource
+    SysDeptMapper sysDeptMapper;
 
     /**
      * 新增/修改
@@ -102,6 +103,14 @@ public class SysAreaServiceImpl extends ServiceImpl<SysAreaMapper, SysAreaDO> im
 
         // 再插入子表数据
         if (CollUtil.isNotEmpty(dto.getDeptIdSet())) {
+
+            // 检查：部门 idSet，是否合法
+            Long count = ChainWrappers.lambdaQueryChain(sysDeptMapper).in(BaseEntity::getId, dto.getDeptIdSet())
+                .eq(BaseEntityNoIdFather::getTenantId, dto.getTenantId()).count();
+
+            if (count != dto.getDeptIdSet().size()) {
+                ApiResultVO.errorMsg("操作失败：关联的部门数据非法");
+            }
 
             List<SysAreaRefDeptDO> insertList =
                 new ArrayList<>(MyMapUtil.getInitialCapacity(dto.getDeptIdSet().size()));

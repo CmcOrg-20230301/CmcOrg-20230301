@@ -10,7 +10,7 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = true)
 @TableName(value = "sys_other_app")
 @Data
-@Schema(description = "v20230301：主表：第三方应用相关配置")
+@Schema(description = "主表：第三方应用相关配置")
 public class SysOtherAppDO extends BaseEntity {
 
     @Schema(description = "第三方应用类型")

@@ -1,7 +1,7 @@
-package com.cmcorg20230301.be.engine.area.mapper;
+package com.cmcorg20230301.be.engine.security.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.cmcorg20230301.be.engine.area.model.entity.SysAreaDO;
+import com.cmcorg20230301.be.engine.security.model.entity.SysAreaDO;
 import org.apache.ibatis.annotations.Mapper;
 
 @Mapper

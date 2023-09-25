@@ -119,24 +119,28 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRoleDO> im
         if (CollUtil.isNotEmpty(dto.getMenuIdSet())) {
 
             // 获取：没有被禁用的菜单 idSet
-            Set<Long> menuIdSet =
-                SysMenuUtil.getSysMenuCacheMap().keySet().stream().filter(it -> dto.getMenuIdSet().contains(it))
-                    .collect(Collectors.toSet());
+            Set<Long> menuIdSet = SysMenuUtil.getSysMenuCacheMap().values().stream()
+                .filter(it -> it.getTenantId().equals(dto.getTenantId()) && dto.getMenuIdSet().contains(it.getId()))
+                .map(BaseEntity::getId).collect(Collectors.toSet());
 
-            List<SysRoleRefMenuDO> insertList = new ArrayList<>(MyMapUtil.getInitialCapacity(menuIdSet.size()));
+            if (CollUtil.isNotEmpty(menuIdSet)) {
 
-            for (Long menuId : menuIdSet) {
+                List<SysRoleRefMenuDO> insertList = new ArrayList<>(MyMapUtil.getInitialCapacity(menuIdSet.size()));
 
-                SysRoleRefMenuDO sysRoleRefMenuDO = new SysRoleRefMenuDO();
+                for (Long menuId : menuIdSet) {
 
-                sysRoleRefMenuDO.setRoleId(roleId);
-                sysRoleRefMenuDO.setMenuId(menuId);
+                    SysRoleRefMenuDO sysRoleRefMenuDO = new SysRoleRefMenuDO();
 
-                insertList.add(sysRoleRefMenuDO);
+                    sysRoleRefMenuDO.setRoleId(roleId);
+                    sysRoleRefMenuDO.setMenuId(menuId);
+
+                    insertList.add(sysRoleRefMenuDO);
+
+                }
+
+                sysRoleRefMenuService.saveBatch(insertList);
 
             }
-
-            sysRoleRefMenuService.saveBatch(insertList);
 
         }
 
@@ -145,24 +149,29 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRoleDO> im
             // 获取：没有被禁用的用户 idSet
             List<SysUserDO> sysUserDOList =
                 ChainWrappers.lambdaQueryChain(sysUserMapper).in(BaseEntity::getId, dto.getUserIdSet())
-                    .eq(BaseEntity::getEnableFlag, true).select(BaseEntity::getId).list();
+                    .eq(BaseEntity::getEnableFlag, true).eq(BaseEntityNoIdFather::getTenantId, dto.getTenantId())
+                    .select(BaseEntity::getId).list();
 
-            Set<Long> userIdSet = sysUserDOList.stream().map(BaseEntity::getId).collect(Collectors.toSet());
+            if (CollUtil.isNotEmpty(sysUserDOList)) {
 
-            List<SysRoleRefUserDO> insertList = new ArrayList<>(MyMapUtil.getInitialCapacity(userIdSet.size()));
+                Set<Long> userIdSet = sysUserDOList.stream().map(BaseEntity::getId).collect(Collectors.toSet());
 
-            for (Long userId : userIdSet) {
+                List<SysRoleRefUserDO> insertList = new ArrayList<>(MyMapUtil.getInitialCapacity(userIdSet.size()));
 
-                SysRoleRefUserDO sysRoleRefUserDO = new SysRoleRefUserDO();
+                for (Long userId : userIdSet) {
 
-                sysRoleRefUserDO.setRoleId(roleId);
-                sysRoleRefUserDO.setUserId(userId);
+                    SysRoleRefUserDO sysRoleRefUserDO = new SysRoleRefUserDO();
 
-                insertList.add(sysRoleRefUserDO);
+                    sysRoleRefUserDO.setRoleId(roleId);
+                    sysRoleRefUserDO.setUserId(userId);
+
+                    insertList.add(sysRoleRefUserDO);
+
+                }
+
+                sysRoleRefUserService.saveBatch(insertList);
 
             }
-
-            sysRoleRefUserService.saveBatch(insertList);
 
         }
 

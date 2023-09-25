@@ -1,4 +1,4 @@
-package com.cmcorg20230301.be.engine.area.model.entity;
+package com.cmcorg20230301.be.engine.security.model.entity;
 
 import com.baomidou.mybatisplus.annotation.*;
 import io.swagger.v3.oas.annotations.media.Schema;

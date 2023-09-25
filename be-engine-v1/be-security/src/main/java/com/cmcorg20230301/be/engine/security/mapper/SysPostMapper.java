@@ -1,7 +1,7 @@
-package com.cmcorg20230301.be.engine.post.mapper;
+package com.cmcorg20230301.be.engine.security.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.cmcorg20230301.be.engine.post.model.entity.SysPostDO;
+import com.cmcorg20230301.be.engine.security.model.entity.SysPostDO;
 import org.apache.ibatis.annotations.Mapper;
 
 @Mapper

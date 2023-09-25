@@ -1,7 +1,6 @@
-package com.cmcorg20230301.be.engine.dept.model.entity;
+package com.cmcorg20230301.be.engine.security.model.entity;
 
 import com.baomidou.mybatisplus.annotation.TableName;
-import com.cmcorg20230301.be.engine.security.model.entity.BaseEntityTree;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.EqualsAndHashCode;

@@ -4,10 +4,10 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.cmcorg20230301.be.engine.dept.model.dto.SysDeptInsertOrUpdateDTO;
 import com.cmcorg20230301.be.engine.dept.model.dto.SysDeptPageDTO;
-import com.cmcorg20230301.be.engine.dept.model.entity.SysDeptDO;
 import com.cmcorg20230301.be.engine.model.model.dto.ChangeNumberDTO;
 import com.cmcorg20230301.be.engine.model.model.dto.NotEmptyIdSet;
 import com.cmcorg20230301.be.engine.model.model.dto.NotNullId;
+import com.cmcorg20230301.be.engine.security.model.entity.SysDeptDO;
 
 import java.util.List;
 

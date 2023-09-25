@@ -8,6 +8,7 @@ import cn.hutool.core.util.StrUtil;
 import com.baomidou.dynamic.datasource.annotation.DSTransactional;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.baomidou.mybatisplus.extension.toolkit.ChainWrappers;
 import com.cmcorg20230301.be.engine.menu.exception.BizCodeEnum;
 import com.cmcorg20230301.be.engine.menu.model.dto.SysMenuInsertOrUpdateDTO;
 import com.cmcorg20230301.be.engine.menu.model.dto.SysMenuPageDTO;
@@ -19,6 +20,7 @@ import com.cmcorg20230301.be.engine.model.model.dto.NotNullId;
 import com.cmcorg20230301.be.engine.role.service.SysRoleRefMenuService;
 import com.cmcorg20230301.be.engine.security.exception.BaseBizCodeEnum;
 import com.cmcorg20230301.be.engine.security.mapper.SysMenuMapper;
+import com.cmcorg20230301.be.engine.security.mapper.SysRoleMapper;
 import com.cmcorg20230301.be.engine.security.model.entity.*;
 import com.cmcorg20230301.be.engine.security.model.vo.ApiResultVO;
 import com.cmcorg20230301.be.engine.security.util.*;
@@ -38,6 +40,9 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenuDO> im
 
     @Resource
     SysRoleRefMenuService sysRoleRefMenuService;
+
+    @Resource
+    SysRoleMapper sysRoleMapper;
 
     /**
      * 新增/修改
@@ -153,6 +158,14 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenuDO> im
 
         // 新增：菜单角色 关联表数据
         if (CollUtil.isNotEmpty(dto.getRoleIdSet())) {
+
+            // 检查：角色 idSet，是否合法
+            Long count = ChainWrappers.lambdaQueryChain(sysRoleMapper).in(BaseEntity::getId, dto.getRoleIdSet())
+                .eq(BaseEntityNoIdFather::getTenantId, dto.getTenantId()).count();
+
+            if (count != dto.getRoleIdSet().size()) {
+                ApiResultVO.errorMsg("操作失败：关联的角色数据非法");
+            }
 
             List<SysRoleRefMenuDO> insertList =
                 new ArrayList<>(MyMapUtil.getInitialCapacity(dto.getRoleIdSet().size()));

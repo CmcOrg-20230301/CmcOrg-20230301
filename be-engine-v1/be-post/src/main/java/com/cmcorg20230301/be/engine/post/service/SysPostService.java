@@ -7,8 +7,8 @@ import com.cmcorg20230301.be.engine.model.model.dto.NotEmptyIdSet;
 import com.cmcorg20230301.be.engine.model.model.dto.NotNullId;
 import com.cmcorg20230301.be.engine.post.model.dto.SysPostInsertOrUpdateDTO;
 import com.cmcorg20230301.be.engine.post.model.dto.SysPostPageDTO;
-import com.cmcorg20230301.be.engine.post.model.entity.SysPostDO;
 import com.cmcorg20230301.be.engine.post.model.vo.SysPostInfoByIdVO;
+import com.cmcorg20230301.be.engine.security.model.entity.SysPostDO;
 
 import java.util.List;
 

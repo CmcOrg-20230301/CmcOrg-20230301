@@ -1,6 +1,6 @@
 package com.cmcorg20230301.be.engine.post.model.vo;
 
-import com.cmcorg20230301.be.engine.post.model.entity.SysPostDO;
+import com.cmcorg20230301.be.engine.security.model.entity.SysPostDO;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
