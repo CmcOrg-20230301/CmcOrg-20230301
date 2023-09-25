@@ -7,7 +7,6 @@ import com.cmcorg20230301.be.engine.kafka.model.enums.KafkaTopicEnum;
 import com.cmcorg20230301.be.engine.model.model.constant.LogTopicConstant;
 import com.cmcorg20230301.be.engine.pay.base.model.configuration.ISysPayRefHandler;
 import com.cmcorg20230301.be.engine.pay.base.model.entity.SysPayDO;
-import com.cmcorg20230301.be.engine.pay.base.model.enums.SysPayRefTypeEnum;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,7 +29,7 @@ public class SysPayTradeNotifyKafkaListener {
     public static final List<String> TOPIC_LIST =
         CollUtil.newArrayList(KafkaTopicEnum.SYS_PAY_TRADE_NOTIFY_TOPIC.name());
 
-    private static final Map<SysPayRefTypeEnum, ISysPayRefHandler> SYS_PAY_REF_HANDLER_MAP = MapUtil.newHashMap();
+    private static final Map<Integer, ISysPayRefHandler> SYS_PAY_REF_HANDLER_MAP = MapUtil.newHashMap();
 
     public SysPayTradeNotifyKafkaListener(
         @Autowired(required = false) @Nullable List<ISysPayRefHandler> iSysPayRefHandlerList) {
@@ -39,7 +38,7 @@ public class SysPayTradeNotifyKafkaListener {
 
             for (ISysPayRefHandler item : iSysPayRefHandlerList) {
 
-                SYS_PAY_REF_HANDLER_MAP.put(item.getSysPayRefType(), item);
+                SYS_PAY_REF_HANDLER_MAP.put(item.getSysPayRefType().getCode(), item);
 
             }
 
@@ -52,7 +51,7 @@ public class SysPayTradeNotifyKafkaListener {
 
         SysPayDO sysPayDO = JSONUtil.toBean(recordStr, SysPayDO.class);
 
-        ISysPayRefHandler iSysPayRefHandler = SYS_PAY_REF_HANDLER_MAP.get(sysPayDO.getRefType());
+        ISysPayRefHandler iSysPayRefHandler = SYS_PAY_REF_HANDLER_MAP.get(sysPayDO.getRefType().getCode());
 
         if (iSysPayRefHandler != null) {
 

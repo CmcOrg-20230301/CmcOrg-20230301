@@ -1,6 +1,7 @@
 package com.cmcorg20230301.be.engine.pay.base.model.enums;
 
 import com.baomidou.mybatisplus.annotation.EnumValue;
+import com.cmcorg20230301.be.engine.pay.base.model.interfaces.ISysPayRefType;
 import com.fasterxml.jackson.annotation.JsonValue;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -10,7 +11,7 @@ import lombok.Getter;
  */
 @AllArgsConstructor
 @Getter
-public enum SysPayRefTypeEnum {
+public enum SysPayRefTypeEnum implements ISysPayRefType {
 
     NONE(101), // 无
 
