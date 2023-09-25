@@ -121,8 +121,8 @@ public class SysPayConfigurationServiceImpl extends ServiceImpl<SysPayConfigurat
             .select(BaseEntity::getId, BaseEntityNoIdFather::getTenantId, SysPayConfigurationDO::getAppId,
                 SysPayConfigurationDO::getType, SysPayConfigurationDO::getName, BaseEntityNoIdFather::getCreateId,
                 BaseEntityNoIdFather::getCreateTime, BaseEntityNoIdFather::getUpdateId,
-                BaseEntityNoIdFather::getUpdateTime, BaseEntityNoId::getEnableFlag, BaseEntityNoId::getRemark)
-            .orderByDesc(BaseEntity::getUpdateTime, SysPayConfigurationDO::getDefaultFlag).page(dto.page(true));
+                BaseEntityNoIdFather::getUpdateTime, BaseEntityNoId::getEnableFlag, BaseEntityNoId::getRemark,
+                SysPayConfigurationDO::getDefaultFlag).orderByDesc(BaseEntity::getUpdateTime).page(dto.page(true));
 
     }
 
