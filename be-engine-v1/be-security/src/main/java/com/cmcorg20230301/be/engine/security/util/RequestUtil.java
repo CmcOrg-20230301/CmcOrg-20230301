@@ -31,14 +31,14 @@ public class RequestUtil {
     @Resource
     BaseSysRequestService baseSysRequestService;
 
-    private static CopyOnWriteArrayList<SysRequestDO> SYS_REQUEST_DO_LIST = new CopyOnWriteArrayList<>();
+    private static CopyOnWriteArrayList<SysRequestDO> sysRequestDOList = new CopyOnWriteArrayList<>();
 
     /**
      * 添加一个：请求数据
      */
     public static void add(SysRequestDO sysRequestDO) {
 
-        SYS_REQUEST_DO_LIST.add(sysRequestDO);
+        sysRequestDOList.add(sysRequestDO);
 
     }
 
@@ -51,26 +51,18 @@ public class RequestUtil {
 
         CopyOnWriteArrayList<SysRequestDO> tempSysRequestDOList;
 
-        synchronized (SYS_REQUEST_DO_LIST) {
+        synchronized (sysRequestDOList) {
 
-            if (CollUtil.isEmpty(SYS_REQUEST_DO_LIST)) {
+            if (CollUtil.isEmpty(sysRequestDOList)) {
                 return;
             }
 
-            tempSysRequestDOList = SYS_REQUEST_DO_LIST;
-            SYS_REQUEST_DO_LIST = new CopyOnWriteArrayList<>();
+            tempSysRequestDOList = sysRequestDOList;
+            sysRequestDOList = new CopyOnWriteArrayList<>();
 
         }
 
         log.info("保存请求数据，长度：{}", tempSysRequestDOList.size());
-
-        for (SysRequestDO item : tempSysRequestDOList) {
-
-            if (item.getErrorMsg() == null) {
-                System.out.println();
-            }
-
-        }
 
         // 批量保存数据
         baseSysRequestService.saveBatch(tempSysRequestDOList);
