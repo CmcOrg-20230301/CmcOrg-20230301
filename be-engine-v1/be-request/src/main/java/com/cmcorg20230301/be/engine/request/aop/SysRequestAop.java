@@ -3,10 +3,10 @@ package com.cmcorg20230301.be.engine.request.aop;
 import cn.hutool.core.date.BetweenFormatter;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.exceptions.ExceptionUtil;
-import cn.hutool.core.text.StrBuilder;
 import cn.hutool.core.util.BooleanUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.extra.servlet.ServletUtil;
+import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
 import cn.hutool.jwt.JWT;
 import com.cmcorg20230301.be.engine.ip2region.util.Ip2RegionUtil;
@@ -110,24 +110,19 @@ public class SysRequestAop {
 
         sysRequestDO.setResponseValue("");
 
-        StrBuilder strBuilder = StrBuilder.create();
+        JSONObject jsonObject = JSONUtil.createObj();
 
         int index = 0;
 
         for (Object item : proceedingJoinPoint.getArgs()) {
 
-            if (index != 0) {
-                strBuilder.append(";");
-            }
-
-            strBuilder.append(JSONUtil.toJsonStr(item));
+            jsonObject.set(item.getClass().getSimpleName(), JSONUtil.toJsonStr(item));
 
             index++;
 
         }
 
-        sysRequestDO.setRequestParam(
-            MyEntityUtil.getNotNullStr(StrUtil.maxLength(strBuilder.toString(), BaseConstant.STR_MAX_LENGTH_1000)));
+        sysRequestDO.setRequestParam(jsonObject.toString());
 
         Object object = null;
 
