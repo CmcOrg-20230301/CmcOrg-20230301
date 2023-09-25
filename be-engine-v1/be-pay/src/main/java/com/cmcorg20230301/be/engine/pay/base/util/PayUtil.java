@@ -17,13 +17,16 @@ import com.cmcorg20230301.be.engine.pay.base.model.entity.SysPayDO;
 import com.cmcorg20230301.be.engine.pay.base.model.enums.SysPayRefTypeEnum;
 import com.cmcorg20230301.be.engine.pay.base.model.enums.SysPayTradeStatusEnum;
 import com.cmcorg20230301.be.engine.pay.base.model.enums.SysPayTypeEnum;
+import com.cmcorg20230301.be.engine.pay.base.service.SysPayConfigurationService;
 import com.cmcorg20230301.be.engine.pay.base.service.SysPayService;
 import com.cmcorg20230301.be.engine.redisson.model.enums.RedisKeyEnum;
 import com.cmcorg20230301.be.engine.redisson.util.IdGeneratorUtil;
 import com.cmcorg20230301.be.engine.redisson.util.RedissonUtil;
+import com.cmcorg20230301.be.engine.security.model.entity.BaseEntityNoIdFather;
 import com.cmcorg20230301.be.engine.security.model.vo.ApiResultVO;
 import com.cmcorg20230301.be.engine.security.util.MyEntityUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -45,7 +48,10 @@ public class PayUtil {
 
     private static SysPayService sysPayService;
 
-    public PayUtil(@Autowired(required = false) @Nullable List<ISysPay> iSysPayList, SysPayService sysPayService) {
+    private static SysPayConfigurationService sysPayConfigurationService;
+
+    public PayUtil(@Autowired(required = false) @Nullable List<ISysPay> iSysPayList, SysPayService sysPayService,
+        SysPayConfigurationService sysPayConfigurationService) {
 
         PayUtil.sysPayService = sysPayService;
 
@@ -58,6 +64,8 @@ public class PayUtil {
             }
 
         }
+
+        PayUtil.sysPayConfigurationService = sysPayConfigurationService;
 
     }
 
@@ -111,6 +119,21 @@ public class PayUtil {
             ApiResultVO.errorMsg("操作失败：支付过期时间晚于当前时间");
         }
 
+        if (SysPayTypeEnum.DEFAULT.equals(dto.getPayType())) { // 如果是：默认支付
+
+            SysPayConfigurationDO sysPayConfigurationDO =
+                sysPayConfigurationService.lambdaQuery().eq(BaseEntityNoIdFather::getTenantId, dto.getTenantId())
+                    .eq(SysPayConfigurationDO::getDefaultFlag, true).one();
+
+            if (sysPayConfigurationDO == null) {
+                ApiResultVO.errorMsg("操作失败：暂未配置默认支付方式，请联系管理员");
+            }
+
+            dto.setPayType(sysPayConfigurationDO.getType());
+            dto.setSysPayConfigurationDoTemp(sysPayConfigurationDO);
+
+        }
+
         ISysPay iSysPay = SYS_PAY_MAP.get(dto.getPayType());
 
         if (iSysPay == null) {
@@ -126,11 +149,38 @@ public class PayUtil {
 
         Assert.notBlank(sysPayReturnBO.getPayAppId());
 
+        // 获取：SysPayDO对象
+        SysPayDO sysPayDO = getSysPayDO(dto, iSysPay, payId, sysPayReturnBO);
+
+        TransactionUtil.exec(() -> {
+
+            if (consumer != null) {
+
+                consumer.accept(sysPayDO);
+
+            }
+
+            sysPayService.save(sysPayDO);
+
+        });
+
+        return sysPayDO;
+
+    }
+
+    /**
+     * 获取：SysPayDO对象
+     */
+    @NotNull
+    private static SysPayDO getSysPayDO(PayDTO dto, ISysPay iSysPay, Long payId, SysPayReturnBO sysPayReturnBO) {
+
         SysPayDO sysPayDO = new SysPayDO();
 
         sysPayDO.setId(payId);
 
         sysPayDO.setPayType(iSysPay.getSysPayType());
+
+        sysPayDO.setSysPayConfigurationId(dto.getSysPayConfigurationDoTemp().getId());
 
         sysPayDO.setPayAppId(sysPayReturnBO.getPayAppId());
 
@@ -163,19 +213,7 @@ public class PayUtil {
 
         sysPayDO.setEnableFlag(true);
         sysPayDO.setDelFlag(false);
-        sysPayDO.setRemark("");
-
-        TransactionUtil.exec(() -> {
-
-            if (consumer != null) {
-
-                consumer.accept(sysPayDO);
-
-            }
-
-            sysPayService.save(sysPayDO);
-
-        });
+        sysPayDO.setRemark(MyEntityUtil.getNotNullStr(dto.getRemark()));
 
         return sysPayDO;
 

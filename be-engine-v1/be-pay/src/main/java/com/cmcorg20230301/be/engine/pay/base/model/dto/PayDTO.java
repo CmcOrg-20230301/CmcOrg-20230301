@@ -47,7 +47,10 @@ public class PayDTO {
     @Schema(description = "购买成功后 Purchase对象的 getPurchaseToken()，例如：谷歌支付")
     private String token;
 
-    @Schema(description = "支付配置，不必传，如果传递此字段，那么配置会从该字段里面取值")
+    @Schema(description = "支付配置，不必传，如果传递此字段，那么配置会从该字段里面取值，备注：调用支付之后，这个字段会被赋值")
     private SysPayConfigurationDO sysPayConfigurationDoTemp;
+
+    @Schema(description = "备注")
+    private String remark;
 
 }

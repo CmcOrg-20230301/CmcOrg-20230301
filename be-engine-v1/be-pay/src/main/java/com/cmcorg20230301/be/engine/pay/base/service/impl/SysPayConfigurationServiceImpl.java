@@ -6,6 +6,7 @@ import cn.hutool.core.lang.func.Func1;
 import cn.hutool.core.util.BooleanUtil;
 import cn.hutool.core.util.ReUtil;
 import cn.hutool.core.util.StrUtil;
+import com.baomidou.dynamic.datasource.annotation.DSTransactional;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.cmcorg20230301.be.engine.model.model.dto.NotEmptyIdSet;
@@ -38,6 +39,7 @@ public class SysPayConfigurationServiceImpl extends ServiceImpl<SysPayConfigurat
      * 新增/修改
      */
     @Override
+    @DSTransactional
     public String insertOrUpdate(SysPayConfigurationInsertOrUpdateDTO dto) {
 
         if (!ReUtil.isMatch(PatternPool.URL, dto.getServerUrl())) {
@@ -64,7 +66,18 @@ public class SysPayConfigurationServiceImpl extends ServiceImpl<SysPayConfigurat
             ApiResultVO.errorMsg("操作失败：支付名不能重复");
         }
 
+        // 如果是默认支付方式，则取消之前的默认支付方式
+        if (BooleanUtil.isTrue(dto.getDefaultFlag())) {
+
+            lambdaUpdate().set(SysPayConfigurationDO::getDefaultFlag, false)
+                .eq(SysPayConfigurationDO::getDefaultFlag, true).eq(BaseEntityNoId::getTenantId, dto.getTenantId())
+                .ne(dto.getId() != null, BaseEntity::getId, dto.getId()).update();
+
+        }
+
         SysPayConfigurationDO sysPayConfigurationDO = new SysPayConfigurationDO();
+
+        sysPayConfigurationDO.setDefaultFlag(BooleanUtil.isTrue(dto.getDefaultFlag()));
 
         sysPayConfigurationDO.setType(dto.getType());
         sysPayConfigurationDO.setName(dto.getName());
@@ -102,6 +115,7 @@ public class SysPayConfigurationServiceImpl extends ServiceImpl<SysPayConfigurat
             .like(StrUtil.isNotBlank(dto.getAppId()), SysPayConfigurationDO::getAppId, dto.getAppId())
             .like(StrUtil.isNotBlank(dto.getRemark()), BaseEntity::getRemark, dto.getRemark())
             .eq(dto.getType() != null, SysPayConfigurationDO::getType, dto.getType())
+            .eq(dto.getDefaultFlag() != null, SysPayConfigurationDO::getDefaultFlag, dto.getDefaultFlag())
             .eq(dto.getEnableFlag() != null, BaseEntity::getEnableFlag, dto.getEnableFlag())
             .in(BaseEntityNoId::getTenantId, dto.getTenantIdSet()) //
             .select(BaseEntity::getId, BaseEntityNoIdFather::getTenantId, SysPayConfigurationDO::getAppId,

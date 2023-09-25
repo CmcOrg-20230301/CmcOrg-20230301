@@ -90,6 +90,8 @@ public class PayAliUtil {
         AlipayClient alipayClient = new DefaultAlipayClient(
             getAlipayConfig(dto.getTenantId(), sysPayConfigurationDoCallBack, dto.getSysPayConfigurationDoTemp()));
 
+        dto.setSysPayConfigurationDoTemp(sysPayConfigurationDoCallBack.getValue());
+
         AlipayTradePagePayRequest aliPayRequest = new AlipayTradePagePayRequest();
 
         aliPayRequest.setNotifyUrl(

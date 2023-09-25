@@ -109,6 +109,14 @@ const SchemaFormColumnList = (): ProFormColumnsType<SysPayConfigurationInsertOrU
         },
 
         {
+            title: '默认支付',
+            dataIndex: 'defaultFlag',
+            valueEnum: YesNoDict,
+            valueType: 'switch',
+            tooltip: '是否是默认支付方式，备注：只会有一个默认支付方式',
+        },
+
+        {
             title: '是否启用',
             dataIndex: 'enableFlag',
             valueEnum: YesNoDict,

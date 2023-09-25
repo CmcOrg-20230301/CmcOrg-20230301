@@ -12,4 +12,7 @@ public class SysPayGooglePayConsumeDTO extends NotNullId {
     @Schema(description = "租户主键 id")
     private Long tenantId;
 
+    @Schema(description = "支付配置主键 id")
+    private Long sysPayConfigurationId;
+
 }

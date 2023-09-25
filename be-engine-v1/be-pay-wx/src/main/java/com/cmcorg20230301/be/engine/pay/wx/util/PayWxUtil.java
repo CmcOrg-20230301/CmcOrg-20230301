@@ -87,6 +87,8 @@ public class PayWxUtil {
         NativePayService nativePayService =
             getNativePayService(dto.getTenantId(), sysPayConfigurationDoCallBack, dto.getSysPayConfigurationDoTemp());
 
+        dto.setSysPayConfigurationDoTemp(sysPayConfigurationDoCallBack.getValue());
+
         com.wechat.pay.java.service.payments.nativepay.model.PrepayRequest request =
             new com.wechat.pay.java.service.payments.nativepay.model.PrepayRequest();
 
@@ -172,6 +174,8 @@ public class PayWxUtil {
         JsapiServiceExtension jsapiServiceExtension =
             getJsapiServiceExtension(dto.getTenantId(), sysPayConfigurationDoCallBack,
                 dto.getSysPayConfigurationDoTemp());
+
+        dto.setSysPayConfigurationDoTemp(sysPayConfigurationDoCallBack.getValue());
 
         com.wechat.pay.java.service.payments.jsapi.model.PrepayRequest request =
             new com.wechat.pay.java.service.payments.jsapi.model.PrepayRequest();

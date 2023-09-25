@@ -16,6 +16,8 @@ import java.util.function.Consumer;
 @Getter
 public enum SysPayTypeEnum {
 
+    DEFAULT(1, null), // 默认，注意：这个类型不要存储到数据库里，这里是代码调用支付时使用，用于表示使用默认支付
+
     ALI(101, dto -> {
 
         Assert.notBlank(dto.getPlatformPublicKey(), "平台公钥不能为空");

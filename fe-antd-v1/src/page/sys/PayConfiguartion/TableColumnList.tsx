@@ -58,6 +58,12 @@ const TableColumnList = (currentForm: React.MutableRefObject<SysPayConfiguration
     {title: 'appId', dataIndex: 'appId', ellipsis: true, width: 90,},
 
     {
+        title: '默认支付',
+        dataIndex: 'defaultFlag',
+        valueEnum: YesNoDict
+    },
+
+    {
         title: '是否启用',
         dataIndex: 'enableFlag',
         valueEnum: YesNoDict,

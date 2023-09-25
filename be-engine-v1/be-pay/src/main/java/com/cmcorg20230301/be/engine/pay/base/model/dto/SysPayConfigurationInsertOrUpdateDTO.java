@@ -13,6 +13,9 @@ import javax.validation.constraints.NotNull;
 @Data
 public class SysPayConfigurationInsertOrUpdateDTO extends BaseTenantInsertOrUpdateDTO {
 
+    @Schema(description = "是否是默认支付方式，备注：只会有一个默认支付方式")
+    private Boolean defaultFlag;
+
     @NotNull
     @Schema(description = "支付类型：101 支付宝 201 微信 301 云闪付 401 谷歌")
     private SysPayTypeEnum type;
