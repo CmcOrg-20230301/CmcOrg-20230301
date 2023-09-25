@@ -4,7 +4,6 @@ import cn.hutool.core.date.BetweenFormatter;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.exceptions.ExceptionUtil;
 import cn.hutool.core.util.BooleanUtil;
-import cn.hutool.core.util.StrUtil;
 import cn.hutool.extra.servlet.ServletUtil;
 import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
@@ -136,8 +135,7 @@ public class SysRequestAop {
 
                 object = proceedingJoinPoint.proceed(); // 执行方法，备注：如果执行方法时抛出了异常，catch可以捕获到
 
-                sysRequestDO.setResponseValue(MyEntityUtil
-                    .getNotNullStr(StrUtil.maxLength(JSONUtil.toJsonStr(object), BaseConstant.STR_MAX_LENGTH_1000)));
+                sysRequestDO.setResponseValue(MyEntityUtil.getNotNullStr(JSONUtil.toJsonStr(object)));
 
             }
 

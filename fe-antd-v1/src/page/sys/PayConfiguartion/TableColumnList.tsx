@@ -60,7 +60,8 @@ const TableColumnList = (currentForm: React.MutableRefObject<SysPayConfiguration
     {
         title: '默认支付',
         dataIndex: 'defaultFlag',
-        valueEnum: YesNoDict
+        valueEnum: YesNoDict,
+        width: 90,
     },
 
     {

@@ -65,7 +65,7 @@ public class ExceptionAdvice {
                 // 处理：请求
                 handleRequest(httpServletRequest, method.getAnnotation(Operation.class), MyEntityUtil
                         .getNotNullStr(StrUtil.maxLength(baseException.getMessage(), BaseConstant.STR_MAX_LENGTH_1000)), //
-                    JSONUtil.toJsonStr(e.getBindingResult().getTarget()));
+                    MyEntityUtil.getNotNullStr(JSONUtil.toJsonStr(e.getBindingResult().getTarget())));
 
             }
 

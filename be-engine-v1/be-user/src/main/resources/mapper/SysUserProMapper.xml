@@ -27,9 +27,7 @@
 
         LEFT JOIN sys_user_info b ON b.id = a.id
 
-        WHERE
-
-        a.del_flag = FALSE
+        WHERE 1 = 1
 
         <if test="dto.id != null">
             AND a.id = #{dto.id}

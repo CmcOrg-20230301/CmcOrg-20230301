@@ -13,9 +13,7 @@
 
         FROM sys_request a
 
-        WHERE a.del_flag = FALSE
-
-        AND a.cost_ms > 1
+        WHERE a.cost_ms > 1
 
         <if test="dto.uri != null and dto.uri != ''">
             AND a.uri LIKE concat('%', #{dto.uri}, '%')

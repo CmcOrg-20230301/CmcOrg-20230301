@@ -37,7 +37,7 @@ import lombok.EqualsAndHashCode;
  * `ip` VARCHAR ( 200 ) NOT NULL COMMENT "ip",
  * `region` VARCHAR ( 200 ) NOT NULL COMMENT "Ip2RegionUtil.getRegion() 获取到的 ip所处区域",
  * `success_flag` BOOLEAN NOT NULL COMMENT "请求是否成功",
- * `error_msg` STRING NOT NULL COMMENT "失败信息",
+ * `error_msg` VARCHAR ( 1000 ) NOT NULL COMMENT "失败信息",
  * `request_param` STRING NOT NULL COMMENT "请求的参数",
  * `type` VARCHAR ( 100 ) NOT NULL COMMENT "请求类型",
  * `response_value` STRING NOT NULL COMMENT "请求返回的值",
