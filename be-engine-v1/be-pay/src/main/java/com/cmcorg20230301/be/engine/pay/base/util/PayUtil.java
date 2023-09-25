@@ -105,6 +105,10 @@ public class PayUtil {
      */
     public static SysPayDO pay(PayDTO dto, @Nullable Consumer<SysPayDO> consumer) {
 
+        if (dto.getSysPayConfigurationDoTemp() != null) {
+            dto.setPayType(dto.getSysPayConfigurationDoTemp().getType()); // 保证一致性
+        }
+
         Assert.notNull(dto.getPayType());
         Assert.notNull(dto.getTenantId());
         Assert.notNull(dto.getUserId());
