@@ -124,7 +124,10 @@ const TableColumnList = (): ProColumns<SysRequestDO>[] => [
         title: '创建人', dataIndex: 'createId', ellipsis: true, width: 90, valueType: 'select',
         request: () => {
             return DoGetDictList(SysUserDictList({addAdminFlag: true}))
-        }
+        },
+        fieldProps: {
+            showSearch: true,
+        },
     },
 
     {

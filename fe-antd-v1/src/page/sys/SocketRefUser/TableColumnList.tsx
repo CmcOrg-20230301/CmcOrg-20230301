@@ -50,7 +50,10 @@ const TableColumnList = (actionRef: React.RefObject<ActionType | undefined>): Pr
         title: '用户', dataIndex: 'userId', ellipsis: true, width: 90, valueType: 'select',
         request: () => {
             return DoGetDictList(SysUserDictList({addAdminFlag: true}))
-        }
+        },
+        fieldProps: {
+            showSearch: true,
+        },
     },
 
     {title: 'socketId', dataIndex: 'socketId', ellipsis: true, width: 90,},
