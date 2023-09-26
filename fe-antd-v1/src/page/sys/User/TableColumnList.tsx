@@ -98,6 +98,7 @@ const TableColumnList = (currentForm: React.MutableRefObject<SysUserInsertOrUpda
         hideInSearch: true,
         valueType: 'fromNow',
         sorter: true,
+        width: 90,
     },
 
     {
@@ -122,6 +123,7 @@ const TableColumnList = (currentForm: React.MutableRefObject<SysUserInsertOrUpda
         valueType: 'fromNow',
         sorter: true,
         defaultSortOrder: 'descend',
+        width: 90,
     },
 
     {

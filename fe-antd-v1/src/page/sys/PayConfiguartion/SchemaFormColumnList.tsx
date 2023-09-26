@@ -1,7 +1,6 @@
-import {YesNoDict} from "@/util/DictUtil";
+import {GetDictListByKey, YesNoDict} from "@/util/DictUtil";
 import {SysPayConfigurationInsertOrUpdateDTO} from "@/api/http/SysPayConfiguration";
 import {ProFormColumnsType} from "@ant-design/pro-components";
-import {GetDictListByKey} from "../../../../../../LxSaas-20230907/fe-saas-v1/src/util/DictUtil";
 
 export const InitForm: SysPayConfigurationInsertOrUpdateDTO = {} as SysPayConfigurationInsertOrUpdateDTO
 
