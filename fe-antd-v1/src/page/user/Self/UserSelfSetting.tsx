@@ -705,10 +705,6 @@ function RequestSelfLoginRecordModal() {
 
                             scroll={{y: 440}}
 
-                            search={{
-                                filterType: 'light',
-                            }}
-
                             columns={[
 
                                 {
