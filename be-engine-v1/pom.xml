@@ -440,6 +440,13 @@
                 <version>2021.0.5.0</version>
             </dependency>
 
+            <!-- 计算：chatGPT，token数量，项目地址：https://github.com/knuddelsgmbh/jtokkit -->
+            <dependency>
+                <groupId>com.knuddels</groupId>
+                <artifactId>jtokkit</artifactId>
+                <version>0.6.1</version>
+            </dependency>
+
             <!-- 向量数据库 -->
             <dependency>
                 <groupId>io.milvus</groupId>
