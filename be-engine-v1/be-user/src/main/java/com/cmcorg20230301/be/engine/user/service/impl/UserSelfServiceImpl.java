@@ -62,7 +62,7 @@ public class UserSelfServiceImpl extends ServiceImpl<SysUserMapper, SysUserDO> i
 
         SysUserDO sysUserDO = lambdaQuery().eq(BaseEntity::getId, currentUserId)
             .select(SysUserDO::getEmail, SysUserDO::getPassword, SysUserDO::getSignInName, SysUserDO::getPhone,
-                SysUserDO::getWxOpenId, BaseEntity::getCreateTime).one();
+                SysUserDO::getWxOpenId, BaseEntity::getCreateTime, SysUserDO::getWxAppId).one();
 
         if (sysUserInfoDO != null && sysUserDO != null) {
 
