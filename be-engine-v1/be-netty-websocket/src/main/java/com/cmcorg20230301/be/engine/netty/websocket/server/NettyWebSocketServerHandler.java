@@ -11,7 +11,6 @@ import cn.hutool.core.util.ReflectUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONUtil;
 import com.cmcorg20230301.be.engine.ip2region.util.Ip2RegionUtil;
-import com.cmcorg20230301.be.engine.model.model.constant.BaseConstant;
 import com.cmcorg20230301.be.engine.model.model.constant.LogTopicConstant;
 import com.cmcorg20230301.be.engine.model.model.constant.OperationDescriptionConstant;
 import com.cmcorg20230301.be.engine.netty.websocket.configuration.NettyWebSocketBeanPostProcessor;
@@ -356,7 +355,7 @@ public class NettyWebSocketServerHandler extends ChannelInboundHandlerAdapter {
             }
 
             WebSocketUtil.send(channel, webSocketMessageDTO, text, costMs, mappingValue,
-                MyEntityUtil.getNotNullStr(StrUtil.maxLength(e.getMessage(), BaseConstant.STR_MAX_LENGTH_1000)), false);
+                MyEntityUtil.getNotNullStr(e.getMessage()), false);
 
         }
 

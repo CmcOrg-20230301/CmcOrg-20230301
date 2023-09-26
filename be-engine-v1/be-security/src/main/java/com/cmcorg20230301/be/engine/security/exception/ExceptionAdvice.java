@@ -1,11 +1,9 @@
 package com.cmcorg20230301.be.engine.security.exception;
 
 import cn.hutool.core.map.MapUtil;
-import cn.hutool.core.util.StrUtil;
 import cn.hutool.extra.servlet.ServletUtil;
 import cn.hutool.json.JSONUtil;
 import com.cmcorg20230301.be.engine.ip2region.util.Ip2RegionUtil;
-import com.cmcorg20230301.be.engine.model.model.constant.BaseConstant;
 import com.cmcorg20230301.be.engine.security.model.entity.SysRequestDO;
 import com.cmcorg20230301.be.engine.security.model.vo.ApiResultVO;
 import com.cmcorg20230301.be.engine.security.util.MyEntityUtil;
@@ -63,8 +61,8 @@ public class ExceptionAdvice {
             if (method != null) {
 
                 // 处理：请求
-                handleRequest(httpServletRequest, method.getAnnotation(Operation.class), MyEntityUtil
-                        .getNotNullStr(StrUtil.maxLength(baseException.getMessage(), BaseConstant.STR_MAX_LENGTH_1000)), //
+                handleRequest(httpServletRequest, method.getAnnotation(Operation.class),
+                    MyEntityUtil.getNotNullStr(baseException.getMessage()), //
                     MyEntityUtil.getNotNullStr(JSONUtil.toJsonStr(e.getBindingResult().getTarget())));
 
             }
@@ -163,8 +161,7 @@ public class ExceptionAdvice {
         } catch (BaseException baseException) {
 
             // 处理：请求
-            handleRequest(httpServletRequest, null, MyEntityUtil
-                .getNotNullStr(StrUtil.maxLength(baseException.getMessage(), BaseConstant.STR_MAX_LENGTH_1000)), "");
+            handleRequest(httpServletRequest, null, MyEntityUtil.getNotNullStr(baseException.getMessage()), "");
 
             return getBaseExceptionApiResult(baseException);
 
@@ -203,8 +200,7 @@ public class ExceptionAdvice {
         } catch (BaseException baseException) {
 
             // 处理：请求
-            handleRequest(httpServletRequest, null, MyEntityUtil
-                .getNotNullStr(StrUtil.maxLength(baseException.getMessage(), BaseConstant.STR_MAX_LENGTH_1000)), "");
+            handleRequest(httpServletRequest, null, MyEntityUtil.getNotNullStr(baseException.getMessage()), "");
 
             return getBaseExceptionApiResult(baseException);
 
@@ -249,8 +245,7 @@ public class ExceptionAdvice {
         } catch (BaseException baseException) {
 
             // 处理：请求
-            handleRequest(httpServletRequest, null,
-                MyEntityUtil.getNotNullStr(StrUtil.maxLength(e.getMessage(), BaseConstant.STR_MAX_LENGTH_1000)), "");
+            handleRequest(httpServletRequest, null, MyEntityUtil.getNotNullStr(e.getMessage()), "");
 
             return getBaseExceptionApiResult(baseException);
 

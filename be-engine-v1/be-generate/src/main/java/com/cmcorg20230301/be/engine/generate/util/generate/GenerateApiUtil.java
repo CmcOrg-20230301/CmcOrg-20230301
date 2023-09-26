@@ -376,6 +376,13 @@ public class GenerateApiUtil {
 
         int index = 0;
 
+        if (CollUtil.isEmpty(beApiSchema.getFieldMap())) {
+
+            log.info("处理失败，fieldMap是空，preMsg：{}，className：{}", preMsg, className);
+            return;
+
+        }
+
         for (Map.Entry<String, BeApi.BeApiField> item : beApiSchema.getFieldMap().entrySet()) {
 
             // 一个字段

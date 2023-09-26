@@ -9,7 +9,6 @@ import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
 import cn.hutool.jwt.JWT;
 import com.cmcorg20230301.be.engine.ip2region.util.Ip2RegionUtil;
-import com.cmcorg20230301.be.engine.model.model.constant.BaseConstant;
 import com.cmcorg20230301.be.engine.model.model.constant.LogTopicConstant;
 import com.cmcorg20230301.be.engine.model.model.constant.OperationDescriptionConstant;
 import com.cmcorg20230301.be.engine.security.exception.BaseException;
@@ -191,7 +190,7 @@ public class SysRequestAop {
 
         sysRequestDO.setSuccessFlag(false); // 设置：请求失败
 
-        String errorMsg = ExceptionUtil.stacktraceToString(e, BaseConstant.STR_MAX_LENGTH_1000);
+        String errorMsg = ExceptionUtil.stacktraceToString(e);
 
         sysRequestDO.setErrorMsg(MyEntityUtil.getNotNullStr(errorMsg));
 
