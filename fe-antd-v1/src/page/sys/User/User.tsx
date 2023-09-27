@@ -187,7 +187,11 @@ export default function () {
 
                 request={(params, sort, filter) => {
 
-                    doGetDictList()
+                    setTimeout(() => {
+
+                        doGetDictList()
+
+                    }, 1000)
 
                     return SysUserPage({...params, sort})
 
@@ -199,11 +203,15 @@ export default function () {
 
                     if (avatarFileIdList.length) {
 
-                        SysFileGetPublicUrl({idSet: avatarFileIdList}).then(res => {
+                        setTimeout(() => {
 
-                            setUserAvatarUrlObj(res.data.map as any)
+                            SysFileGetPublicUrl({idSet: avatarFileIdList}).then(res => {
 
-                        })
+                                setUserAvatarUrlObj(res.data.map as any)
+
+                            })
+
+                        }, 2000)
 
                     }
 
