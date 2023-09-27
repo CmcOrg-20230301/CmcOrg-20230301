@@ -87,9 +87,9 @@ public class NettyWebSocketServerHandler extends ChannelInboundHandlerAdapter {
     public static final ConcurrentHashMap<Long, ConcurrentHashMap<Long, Channel>> USER_ID_CHANNEL_MAP =
         MapUtil.newConcurrentHashMap();
 
-    private CopyOnWriteArraySet<Long> SYS_SOCKET_REF_USER_ID_SET = new CopyOnWriteArraySet<>();
+    private static CopyOnWriteArraySet<Long> SYS_SOCKET_REF_USER_ID_SET = new CopyOnWriteArraySet<>();
 
-    private CopyOnWriteArrayList<SysSocketRefUserDO> SYS_SOCKET_REF_USER_DO_LIST = new CopyOnWriteArrayList<>();
+    private static CopyOnWriteArrayList<SysSocketRefUserDO> SYS_SOCKET_REF_USER_DO_LIST = new CopyOnWriteArrayList<>();
 
     /**
      * 定时任务，保存数据

@@ -31,14 +31,14 @@ public class RequestUtil {
     @Resource
     BaseSysRequestService baseSysRequestService;
 
-    private static CopyOnWriteArrayList<SysRequestDO> sysRequestDOList = new CopyOnWriteArrayList<>();
+    private static CopyOnWriteArrayList<SysRequestDO> SYS_REQUEST_DO_LIST = new CopyOnWriteArrayList<>();
 
     /**
      * 添加一个：请求数据
      */
     public static void add(SysRequestDO sysRequestDO) {
 
-        sysRequestDOList.add(sysRequestDO);
+        SYS_REQUEST_DO_LIST.add(sysRequestDO);
 
     }
 
@@ -51,14 +51,14 @@ public class RequestUtil {
 
         CopyOnWriteArrayList<SysRequestDO> tempSysRequestDOList;
 
-        synchronized (sysRequestDOList) {
+        synchronized (SYS_REQUEST_DO_LIST) {
 
-            if (CollUtil.isEmpty(sysRequestDOList)) {
+            if (CollUtil.isEmpty(SYS_REQUEST_DO_LIST)) {
                 return;
             }
 
-            tempSysRequestDOList = sysRequestDOList;
-            sysRequestDOList = new CopyOnWriteArrayList<>();
+            tempSysRequestDOList = SYS_REQUEST_DO_LIST;
+            SYS_REQUEST_DO_LIST = new CopyOnWriteArrayList<>();
 
         }
 
