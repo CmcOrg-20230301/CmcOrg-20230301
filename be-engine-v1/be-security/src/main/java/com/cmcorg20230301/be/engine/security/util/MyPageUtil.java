@@ -1,5 +1,7 @@
 package com.cmcorg20230301.be.engine.security.util;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+
 public class MyPageUtil {
 
     /**
@@ -10,7 +12,7 @@ public class MyPageUtil {
      * 页码：1，每页10 =》 10
      * 页码：2，每页10 =》 20
      *
-     * @param pageNo   页码（从0计数）
+     * @param pageNo   页码（从 1计数）
      * @param pageSize 每页条目数
      * @return 开始位置
      */
@@ -25,6 +27,15 @@ public class MyPageUtil {
         }
 
         return (pageNo - 1) * pageSize;
+
+    }
+
+    /**
+     * 获取：只有一个数据的 page对象
+     */
+    public static <T> Page<T> getLimit1Page() {
+
+        return new Page<>(0, 1, 0, false);
 
     }
 

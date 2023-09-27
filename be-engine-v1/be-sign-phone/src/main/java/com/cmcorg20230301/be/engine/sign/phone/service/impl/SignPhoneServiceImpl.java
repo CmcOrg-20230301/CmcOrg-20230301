@@ -3,7 +3,7 @@ package com.cmcorg20230301.be.engine.sign.phone.service.impl;
 import cn.hutool.core.util.BooleanUtil;
 import com.baomidou.mybatisplus.extension.toolkit.ChainWrappers;
 import com.cmcorg20230301.be.engine.model.model.dto.NotBlankCodeDTO;
-import com.cmcorg20230301.be.engine.redisson.model.enums.RedisKeyEnum;
+import com.cmcorg20230301.be.engine.redisson.model.enums.BaseRedisKeyEnum;
 import com.cmcorg20230301.be.engine.security.mapper.SysUserMapper;
 import com.cmcorg20230301.be.engine.security.model.entity.SysUserDO;
 import com.cmcorg20230301.be.engine.security.model.vo.ApiResultVO;
@@ -21,7 +21,7 @@ import javax.annotation.Resource;
 @Service
 public class SignPhoneServiceImpl implements SignPhoneService {
 
-    private static final RedisKeyEnum PRE_REDIS_KEY_ENUM = RedisKeyEnum.PRE_PHONE;
+    private static final BaseRedisKeyEnum PRE_REDIS_KEY_ENUM = BaseRedisKeyEnum.PRE_PHONE;
 
     @Resource
     SysUserMapper sysUserMapper;

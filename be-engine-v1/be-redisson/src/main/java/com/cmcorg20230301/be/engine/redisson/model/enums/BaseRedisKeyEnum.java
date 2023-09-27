@@ -8,7 +8,7 @@ import com.cmcorg20230301.be.engine.model.model.interfaces.IRedisKey;
  * 备注：【PRE_】开头，表示 key后面还要跟字符串
  * 备注：【_CACHE】结尾，表示 key后面不用跟字符串
  */
-public enum RedisKeyEnum implements IRedisKey {
+public enum BaseRedisKeyEnum implements IRedisKey {
 
     // 【PRE_】开头 ↓
     PRE_PAY, // 支付锁，锁：【支付主键 id】

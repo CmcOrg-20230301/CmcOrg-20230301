@@ -10,7 +10,7 @@ import com.cmcorg20230301.be.engine.cache.util.CacheHelper;
 import com.cmcorg20230301.be.engine.cache.util.CacheRedisKafkaLocalUtil;
 import com.cmcorg20230301.be.engine.cache.util.MyCacheUtil;
 import com.cmcorg20230301.be.engine.model.model.constant.BaseConstant;
-import com.cmcorg20230301.be.engine.redisson.model.enums.RedisKeyEnum;
+import com.cmcorg20230301.be.engine.redisson.model.enums.BaseRedisKeyEnum;
 import com.cmcorg20230301.be.engine.security.exception.BaseBizCodeEnum;
 import com.cmcorg20230301.be.engine.security.mapper.SysRoleMapper;
 import com.cmcorg20230301.be.engine.security.mapper.SysRoleRefUserMapper;
@@ -268,18 +268,18 @@ public class UserUtil {
             return null;
         }
 
-        RedisKeyEnum redisKeyEnum;
+        BaseRedisKeyEnum baseRedisKeyEnum;
 
         if (type == 1) {
-            redisKeyEnum = RedisKeyEnum.ROLE_ID_REF_FULL_MENU_SET_CACHE;
+            baseRedisKeyEnum = BaseRedisKeyEnum.ROLE_ID_REF_FULL_MENU_SET_CACHE;
         } else {
-            redisKeyEnum = RedisKeyEnum.ROLE_ID_REF_SECURITY_MENU_SET_CACHE;
+            baseRedisKeyEnum = BaseRedisKeyEnum.ROLE_ID_REF_SECURITY_MENU_SET_CACHE;
         }
 
         Set<SysMenuDO> resultSet = new HashSet<>();
 
         // 获取：角色关联的菜单集合 map
-        Map<Long, Set<SysMenuDO>> roleRefMenuSetMap = SysMenuUtil.getRoleRefMenuSetMap(redisKeyEnum);
+        Map<Long, Set<SysMenuDO>> roleRefMenuSetMap = SysMenuUtil.getRoleRefMenuSetMap(baseRedisKeyEnum);
 
         for (Long item : roleIdSet) {
 
@@ -324,7 +324,7 @@ public class UserUtil {
     public static Map<Long, Set<Long>> getUserRefRoleIdSetMap() {
 
         return MyCacheUtil
-            .getMap(RedisKeyEnum.USER_ID_REF_ROLE_ID_SET_CACHE, CacheHelper.getDefaultLongSetMap(), () -> {
+            .getMap(BaseRedisKeyEnum.USER_ID_REF_ROLE_ID_SET_CACHE, CacheHelper.getDefaultLongSetMap(), () -> {
 
                 List<SysRoleRefUserDO> sysRoleRefUserDOList = ChainWrappers.lambdaQueryChain(sysRoleRefUserMapper)
                     .select(SysRoleRefUserDO::getRoleId, SysRoleRefUserDO::getUserId).list();
@@ -342,7 +342,7 @@ public class UserUtil {
     private static void getDefaultRoleId(Set<Long> roleIdSet, @NotNull Long tenantId) {
 
         Map<Long, Long> map = MyCacheUtil
-            .getMap(RedisKeyEnum.TENANT_DEFAULT_ROLE_ID_CACHE, CacheHelper.getDefaultLongMap(BaseConstant.SYS_ID),
+            .getMap(BaseRedisKeyEnum.TENANT_DEFAULT_ROLE_ID_CACHE, CacheHelper.getDefaultLongMap(BaseConstant.SYS_ID),
                 () -> {
 
                     List<SysRoleDO> sysRoleDOList = ChainWrappers.lambdaQueryChain(sysRoleMapper)
@@ -370,7 +370,7 @@ public class UserUtil {
     public static void setJwtSecretSuf(long userId) {
 
         CacheRedisKafkaLocalUtil
-            .putSecondMap(RedisKeyEnum.USER_ID_AND_JWT_SECRET_SUF_CACHE, null, String.valueOf(userId),
+            .putSecondMap(BaseRedisKeyEnum.USER_ID_AND_JWT_SECRET_SUF_CACHE, null, String.valueOf(userId),
                 IdUtil.simpleUUID(), null);
 
     }
@@ -381,7 +381,7 @@ public class UserUtil {
     @NotNull
     public static String getJwtSecretSuf(long userId) {
 
-        return MyCacheUtil.getSecondMap(RedisKeyEnum.USER_ID_AND_JWT_SECRET_SUF_CACHE, null, String.valueOf(userId),
+        return MyCacheUtil.getSecondMap(BaseRedisKeyEnum.USER_ID_AND_JWT_SECRET_SUF_CACHE, null, String.valueOf(userId),
             IdUtil.simpleUUID(), null);
 
     }
@@ -392,7 +392,7 @@ public class UserUtil {
     public static void removeJwtSecretSuf(long userId) {
 
         CacheRedisKafkaLocalUtil
-            .removeSecondMap(RedisKeyEnum.USER_ID_AND_JWT_SECRET_SUF_CACHE, null, String.valueOf(userId));
+            .removeSecondMap(BaseRedisKeyEnum.USER_ID_AND_JWT_SECRET_SUF_CACHE, null, String.valueOf(userId));
 
     }
 
@@ -402,7 +402,7 @@ public class UserUtil {
     public static void setDisable(long userId) {
 
         CacheRedisKafkaLocalUtil
-            .putSecondMap(RedisKeyEnum.SYS_USER_DISABLE_CACHE, null, String.valueOf(userId), true, null);
+            .putSecondMap(BaseRedisKeyEnum.SYS_USER_DISABLE_CACHE, null, String.valueOf(userId), true, null);
 
     }
 
@@ -412,7 +412,7 @@ public class UserUtil {
     public static boolean getDisable(long userId) {
 
         Boolean disableFlag =
-            MyCacheUtil.onlyGetSecondMap(RedisKeyEnum.SYS_USER_DISABLE_CACHE, null, String.valueOf(userId));
+            MyCacheUtil.onlyGetSecondMap(BaseRedisKeyEnum.SYS_USER_DISABLE_CACHE, null, String.valueOf(userId));
 
         return BooleanUtil.isTrue(disableFlag);
 
@@ -423,7 +423,7 @@ public class UserUtil {
      */
     public static void removeDisable(long userId) {
 
-        CacheRedisKafkaLocalUtil.removeSecondMap(RedisKeyEnum.SYS_USER_DISABLE_CACHE, null, String.valueOf(userId));
+        CacheRedisKafkaLocalUtil.removeSecondMap(BaseRedisKeyEnum.SYS_USER_DISABLE_CACHE, null, String.valueOf(userId));
 
     }
 

@@ -4,7 +4,7 @@ import cn.hutool.core.convert.Convert;
 import cn.hutool.core.date.DatePattern;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.StrUtil;
-import com.cmcorg20230301.be.engine.redisson.model.enums.RedisKeyEnum;
+import com.cmcorg20230301.be.engine.redisson.model.enums.BaseRedisKeyEnum;
 import org.jetbrains.annotations.NotNull;
 import org.redisson.api.RAtomicLong;
 import org.redisson.api.RedissonClient;
@@ -57,7 +57,7 @@ public class IdGeneratorUtil {
         // 需要补充的数量
         int needSize = ID_SET_SIZE - ID_POOL.size();
 
-        RAtomicLong atomicLong = redissonClient.getAtomicLong(RedisKeyEnum.ATOMIC_LONG_ID_GENERATOR.name());
+        RAtomicLong atomicLong = redissonClient.getAtomicLong(BaseRedisKeyEnum.ATOMIC_LONG_ID_GENERATOR.name());
 
         long endId = atomicLong.addAndGet(needSize);
 

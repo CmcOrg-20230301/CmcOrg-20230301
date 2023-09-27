@@ -1,7 +1,7 @@
 package com.cmcorg20230301.be.engine.sign.wx.service.impl;
 
 import com.baomidou.mybatisplus.extension.toolkit.ChainWrappers;
-import com.cmcorg20230301.be.engine.redisson.model.enums.RedisKeyEnum;
+import com.cmcorg20230301.be.engine.redisson.model.enums.BaseRedisKeyEnum;
 import com.cmcorg20230301.be.engine.security.mapper.SysUserMapper;
 import com.cmcorg20230301.be.engine.security.model.entity.SysUserDO;
 import com.cmcorg20230301.be.engine.security.model.entity.SysUserInfoDO;
@@ -22,7 +22,7 @@ import javax.annotation.Resource;
 @Service
 public class SignWxServiceImpl implements SignWxService {
 
-    private static final RedisKeyEnum PRE_REDIS_KEY_ENUM = RedisKeyEnum.PRE_WX_OPEN_ID;
+    private static final BaseRedisKeyEnum PRE_REDIS_KEY_ENUM = BaseRedisKeyEnum.PRE_WX_OPEN_ID;
 
     @Resource
     SysUserMapper sysUserMapper;
@@ -40,10 +40,10 @@ public class SignWxServiceImpl implements SignWxService {
         // 直接通过：手机号登录
         return SignUtil.signInAccount(
             ChainWrappers.lambdaQueryChain(sysUserMapper).eq(SysUserDO::getPhone, wxPhoneInfoVO.getPhoneNumber()),
-            RedisKeyEnum.PRE_PHONE, wxPhoneInfoVO.getPhoneNumber(), getWxSysUserInfoDO(), dto.getTenantId(),
+            BaseRedisKeyEnum.PRE_PHONE, wxPhoneInfoVO.getPhoneNumber(), getWxSysUserInfoDO(), dto.getTenantId(),
             accountMap -> {
 
-                accountMap.put(RedisKeyEnum.PRE_WX_APP_ID, dto.getAppId());
+                accountMap.put(BaseRedisKeyEnum.PRE_WX_APP_ID, dto.getAppId());
 
             });
 
@@ -63,7 +63,7 @@ public class SignWxServiceImpl implements SignWxService {
                 .eq(SysUserDO::getWxAppId, dto.getAppId()), PRE_REDIS_KEY_ENUM, wxOpenIdVO.getOpenid(),
             getWxSysUserInfoDO(), dto.getTenantId(), accountMap -> {
 
-                accountMap.put(RedisKeyEnum.PRE_WX_APP_ID, dto.getAppId());
+                accountMap.put(BaseRedisKeyEnum.PRE_WX_APP_ID, dto.getAppId());
 
             });
 
@@ -96,7 +96,7 @@ public class SignWxServiceImpl implements SignWxService {
                 .eq(SysUserDO::getWxAppId, dto.getAppId()), PRE_REDIS_KEY_ENUM, wxOpenIdVO.getOpenid(),
             getWxSysUserInfoDO(), dto.getTenantId(), accountMap -> {
 
-                accountMap.put(RedisKeyEnum.PRE_WX_APP_ID, dto.getAppId());
+                accountMap.put(BaseRedisKeyEnum.PRE_WX_APP_ID, dto.getAppId());
 
             });
 

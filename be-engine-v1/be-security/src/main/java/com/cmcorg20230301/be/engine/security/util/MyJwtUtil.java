@@ -11,7 +11,7 @@ import cn.hutool.json.JSONUtil;
 import cn.hutool.jwt.JWT;
 import cn.hutool.jwt.RegisteredPayload;
 import com.cmcorg20230301.be.engine.model.model.constant.BaseConstant;
-import com.cmcorg20230301.be.engine.redisson.model.enums.RedisKeyEnum;
+import com.cmcorg20230301.be.engine.redisson.model.enums.BaseRedisKeyEnum;
 import com.cmcorg20230301.be.engine.redisson.util.RedissonUtil;
 import com.cmcorg20230301.be.engine.security.exception.BaseBizCodeEnum;
 import com.cmcorg20230301.be.engine.security.model.constant.SecurityConstant;
@@ -122,8 +122,8 @@ public class MyJwtUtil {
         RedissonUtil.batch((batch) -> {
 
             // 移除密码错误次数相关
-            batch.getBucket(RedisKeyEnum.PRE_PASSWORD_ERROR_COUNT.name() + ":" + userId).deleteAsync();
-            batch.getMap(RedisKeyEnum.PRE_TOO_MANY_PASSWORD_ERROR.name()).removeAsync(userId);
+            batch.getBucket(BaseRedisKeyEnum.PRE_PASSWORD_ERROR_COUNT.name() + ":" + userId).deleteAsync();
+            batch.getMap(BaseRedisKeyEnum.PRE_TOO_MANY_PASSWORD_ERROR.name()).removeAsync(userId);
 
         });
 
@@ -171,7 +171,7 @@ public class MyJwtUtil {
 
         StrBuilder strBuilder = StrBuilder.create();
 
-        strBuilder.append(RedisKeyEnum.PRE_JWT_HASH.name()).append(":").append(userId).append(":")
+        strBuilder.append(BaseRedisKeyEnum.PRE_JWT_HASH.name()).append(":").append(userId).append(":")
             .append(sysRequestCategoryEnum.getCode()).append(":").append(DigestUtil.sha512Hex(jwtStr));
 
         return strBuilder.toString();

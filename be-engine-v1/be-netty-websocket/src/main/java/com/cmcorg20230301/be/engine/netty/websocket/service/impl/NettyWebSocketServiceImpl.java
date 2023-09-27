@@ -13,7 +13,7 @@ import com.cmcorg20230301.be.engine.ip2region.util.Ip2RegionUtil;
 import com.cmcorg20230301.be.engine.model.model.constant.BaseConstant;
 import com.cmcorg20230301.be.engine.model.model.dto.NotNullIdAndIntegerValue;
 import com.cmcorg20230301.be.engine.netty.websocket.service.NettyWebSocketService;
-import com.cmcorg20230301.be.engine.redisson.model.enums.RedisKeyEnum;
+import com.cmcorg20230301.be.engine.redisson.model.enums.BaseRedisKeyEnum;
 import com.cmcorg20230301.be.engine.redisson.util.IdGeneratorUtil;
 import com.cmcorg20230301.be.engine.security.model.entity.BaseEntity;
 import com.cmcorg20230301.be.engine.security.model.entity.BaseEntityNoId;
@@ -169,7 +169,7 @@ public class NettyWebSocketServiceImpl implements NettyWebSocketService {
 
         resSet.add(strBuilder.toString()); // 添加到返回值里
 
-        String key = RedisKeyEnum.PRE_WEB_SOCKET_CODE.name() + code;
+        String key = BaseRedisKeyEnum.PRE_WEB_SOCKET_CODE.name() + code;
 
         SysSocketRefUserDO sysSocketRefUserDO = new SysSocketRefUserDO();
 

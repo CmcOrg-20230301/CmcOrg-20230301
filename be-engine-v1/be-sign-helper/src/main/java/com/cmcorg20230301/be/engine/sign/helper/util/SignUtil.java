@@ -17,7 +17,7 @@ import com.cmcorg20230301.be.engine.model.model.constant.BaseRegexConstant;
 import com.cmcorg20230301.be.engine.model.model.constant.LogTopicConstant;
 import com.cmcorg20230301.be.engine.model.model.constant.ParamConstant;
 import com.cmcorg20230301.be.engine.model.model.interfaces.IRedisKey;
-import com.cmcorg20230301.be.engine.redisson.model.enums.RedisKeyEnum;
+import com.cmcorg20230301.be.engine.redisson.model.enums.BaseRedisKeyEnum;
 import com.cmcorg20230301.be.engine.redisson.util.RedissonUtil;
 import com.cmcorg20230301.be.engine.security.exception.BaseBizCodeEnum;
 import com.cmcorg20230301.be.engine.security.mapper.*;
@@ -136,7 +136,7 @@ public class SignUtil {
 
         String account = getAccountByIdAndRedisKeyEnum(redisKeyEnum, UserUtil.getCurrentUserIdNotAdmin());
 
-        if (RedisKeyEnum.PRE_EMAIL.equals(redisKeyEnum)) {
+        if (BaseRedisKeyEnum.PRE_EMAIL.equals(redisKeyEnum)) {
 
             if (StrUtil.isBlank(account)) {
 
@@ -145,7 +145,7 @@ public class SignUtil {
 
             }
 
-        } else if (RedisKeyEnum.PRE_PHONE.equals(redisKeyEnum)) {
+        } else if (BaseRedisKeyEnum.PRE_PHONE.equals(redisKeyEnum)) {
 
             if (StrUtil.isBlank(account)) {
 
@@ -197,7 +197,7 @@ public class SignUtil {
         RBucket<String> bucket = redissonClient.getBucket(key);
 
         boolean checkCodeFlag =
-            RedisKeyEnum.PRE_EMAIL.equals(redisKeyEnum) || RedisKeyEnum.PRE_PHONE.equals(redisKeyEnum);
+            BaseRedisKeyEnum.PRE_EMAIL.equals(redisKeyEnum) || BaseRedisKeyEnum.PRE_PHONE.equals(redisKeyEnum);
 
         return RedissonUtil.doLock(key, () -> {
 
@@ -308,23 +308,23 @@ public class SignUtil {
 
         for (Map.Entry<Enum<? extends IRedisKey>, String> item : accountMap.entrySet()) {
 
-            if (RedisKeyEnum.PRE_EMAIL.equals(item.getKey())) {
+            if (BaseRedisKeyEnum.PRE_EMAIL.equals(item.getKey())) {
 
                 sysUserDO.setEmail(item.getValue());
 
-            } else if (RedisKeyEnum.PRE_SIGN_IN_NAME.equals(item.getKey())) {
+            } else if (BaseRedisKeyEnum.PRE_SIGN_IN_NAME.equals(item.getKey())) {
 
                 sysUserDO.setSignInName(item.getValue());
 
-            } else if (RedisKeyEnum.PRE_PHONE.equals(item.getKey())) {
+            } else if (BaseRedisKeyEnum.PRE_PHONE.equals(item.getKey())) {
 
                 sysUserDO.setPhone(item.getValue());
 
-            } else if (RedisKeyEnum.PRE_WX_OPEN_ID.equals(item.getKey())) {
+            } else if (BaseRedisKeyEnum.PRE_WX_OPEN_ID.equals(item.getKey())) {
 
                 sysUserDO.setWxOpenId(item.getValue());
 
-            } else if (RedisKeyEnum.PRE_WX_APP_ID.equals(item.getKey())) {
+            } else if (BaseRedisKeyEnum.PRE_WX_APP_ID.equals(item.getKey())) {
 
                 sysUserDO.setWxAppId(item.getValue());
 
@@ -558,7 +558,7 @@ public class SignUtil {
     private static void checkTooManyPasswordError(Long userId) {
 
         String lockMessageStr =
-            redissonClient.<Long, String>getMap(RedisKeyEnum.PRE_TOO_MANY_PASSWORD_ERROR.name()).get(userId);
+            redissonClient.<Long, String>getMap(BaseRedisKeyEnum.PRE_TOO_MANY_PASSWORD_ERROR.name()).get(userId);
 
         if (StrUtil.isNotBlank(lockMessageStr)) {
             ApiResultVO.error(BizCodeEnum.TOO_MANY_PASSWORD_ERROR);
@@ -576,7 +576,7 @@ public class SignUtil {
         }
 
         RAtomicLong atomicLong =
-            redissonClient.getAtomicLong(RedisKeyEnum.PRE_PASSWORD_ERROR_COUNT.name() + ":" + userId);
+            redissonClient.getAtomicLong(BaseRedisKeyEnum.PRE_PASSWORD_ERROR_COUNT.name() + ":" + userId);
 
         long count = atomicLong.incrementAndGet(); // 次数 + 1
 
@@ -587,7 +587,7 @@ public class SignUtil {
         if (count > 10) {
 
             // 超过十次密码错误，则封禁账号，下次再错误，则才会提示
-            redissonClient.<Long, String>getMap(RedisKeyEnum.PRE_TOO_MANY_PASSWORD_ERROR.name())
+            redissonClient.<Long, String>getMap(BaseRedisKeyEnum.PRE_TOO_MANY_PASSWORD_ERROR.name())
                 .put(userId, "密码错误次数过多，被锁定的账号");
 
             atomicLong.delete(); // 清空错误次数
@@ -606,7 +606,7 @@ public class SignUtil {
 
         String paramValue = SysParamUtil.getValueByUuid(ParamConstant.RSA_PRIVATE_KEY_UUID); // 获取非对称 私钥
 
-        if (RedisKeyEnum.PRE_SIGN_IN_NAME.equals(redisKeyEnum)) {
+        if (BaseRedisKeyEnum.PRE_SIGN_IN_NAME.equals(redisKeyEnum)) {
             checkCurrentPassword(oldPassword, currentUserIdNotAdmin, paramValue); // 检查：当前密码是否正确
         }
 
@@ -627,7 +627,7 @@ public class SignUtil {
             RBucket<String> bucket = redissonClient.getBucket(key);
 
             // 是否检查：验证码
-            boolean checkCodeFlag = BooleanUtil.isFalse(RedisKeyEnum.PRE_SIGN_IN_NAME.equals(redisKeyEnum));
+            boolean checkCodeFlag = BooleanUtil.isFalse(BaseRedisKeyEnum.PRE_SIGN_IN_NAME.equals(redisKeyEnum));
 
             if (checkCodeFlag) {
                 CodeUtil.checkCode(code, bucket.get()); // 检查 code是否正确
@@ -699,15 +699,15 @@ public class SignUtil {
         // 获取：用户信息
         SysUserDO sysUserDO = getSysUserDOByIdAndRedisKeyEnum(redisKeyEnum, currentUserIdNotAdmin);
 
-        if (RedisKeyEnum.PRE_EMAIL.equals(redisKeyEnum)) {
+        if (BaseRedisKeyEnum.PRE_EMAIL.equals(redisKeyEnum)) {
 
             return sysUserDO.getEmail();
 
-        } else if (RedisKeyEnum.PRE_SIGN_IN_NAME.equals(redisKeyEnum)) {
+        } else if (BaseRedisKeyEnum.PRE_SIGN_IN_NAME.equals(redisKeyEnum)) {
 
             return sysUserDO.getSignInName();
 
-        } else if (RedisKeyEnum.PRE_PHONE.equals(redisKeyEnum)) {
+        } else if (BaseRedisKeyEnum.PRE_PHONE.equals(redisKeyEnum)) {
 
             return sysUserDO.getPhone();
 
@@ -731,15 +731,15 @@ public class SignUtil {
         LambdaQueryChainWrapper<SysUserDO> lambdaQueryChainWrapper =
             ChainWrappers.lambdaQueryChain(sysUserMapper).eq(BaseEntity::getId, currentUserIdNotAdmin);
 
-        if (RedisKeyEnum.PRE_EMAIL.equals(redisKeyEnum)) {
+        if (BaseRedisKeyEnum.PRE_EMAIL.equals(redisKeyEnum)) {
 
             lambdaQueryChainWrapper.select(SysUserDO::getEmail);
 
-        } else if (RedisKeyEnum.PRE_SIGN_IN_NAME.equals(redisKeyEnum)) {
+        } else if (BaseRedisKeyEnum.PRE_SIGN_IN_NAME.equals(redisKeyEnum)) {
 
             lambdaQueryChainWrapper.select(SysUserDO::getSignInName);
 
-        } else if (RedisKeyEnum.PRE_PHONE.equals(redisKeyEnum)) {
+        } else if (BaseRedisKeyEnum.PRE_PHONE.equals(redisKeyEnum)) {
 
             lambdaQueryChainWrapper.select(SysUserDO::getPhone);
 
@@ -769,7 +769,7 @@ public class SignUtil {
 
         Long currentTenantIdDefault = UserUtil.getCurrentTenantIdDefault();
 
-        if (RedisKeyEnum.PRE_SIGN_IN_NAME.equals(redisKeyEnum)) {
+        if (BaseRedisKeyEnum.PRE_SIGN_IN_NAME.equals(redisKeyEnum)) {
             checkCurrentPassword(currentPassword, currentUserIdNotAdmin, null);
         }
 
@@ -783,12 +783,12 @@ public class SignUtil {
 
             RBucket<String> oldBucket = redissonClient.getBucket(oldKey);
 
-            if (RedisKeyEnum.PRE_EMAIL.equals(redisKeyEnum)) {
+            if (BaseRedisKeyEnum.PRE_EMAIL.equals(redisKeyEnum)) {
 
                 // 检查 code是否正确
                 CodeUtil.checkCode(oldCode, oldBucket.get(), "操作失败：请先获取旧邮箱的验证码", "旧邮箱验证码有误，请重新输入");
 
-            } else if (RedisKeyEnum.PRE_PHONE.equals(redisKeyEnum)) {
+            } else if (BaseRedisKeyEnum.PRE_PHONE.equals(redisKeyEnum)) {
 
                 // 检查 code是否正确
                 CodeUtil.checkCode(oldCode, oldBucket.get(), "操作失败：请先获取旧手机号码的验证码", "旧手机号码验证码有误，请重新输入");
@@ -797,12 +797,12 @@ public class SignUtil {
 
             RBucket<String> newBucket = redissonClient.getBucket(newKey);
 
-            if (RedisKeyEnum.PRE_EMAIL.equals(redisKeyEnum)) {
+            if (BaseRedisKeyEnum.PRE_EMAIL.equals(redisKeyEnum)) {
 
                 // 检查 code是否正确
                 CodeUtil.checkCode(newCode, newBucket.get(), "操作失败：请先获取新邮箱的验证码", "新邮箱验证码有误，请重新输入");
 
-            } else if (RedisKeyEnum.PRE_PHONE.equals(redisKeyEnum)) {
+            } else if (BaseRedisKeyEnum.PRE_PHONE.equals(redisKeyEnum)) {
 
                 // 检查 code是否正确
                 CodeUtil.checkCode(oldCode, oldBucket.get(), "操作失败：请先获取新手机号码的验证码", "新手机号码验证码有误，请重新输入");
@@ -814,7 +814,7 @@ public class SignUtil {
 
             // 是否删除：redis中的验证码
             boolean deleteRedisFlag =
-                RedisKeyEnum.PRE_EMAIL.equals(redisKeyEnum) || RedisKeyEnum.PRE_PHONE.equals(redisKeyEnum);
+                BaseRedisKeyEnum.PRE_EMAIL.equals(redisKeyEnum) || BaseRedisKeyEnum.PRE_PHONE.equals(redisKeyEnum);
 
             if (exist) {
                 if (deleteRedisFlag) {
@@ -826,7 +826,7 @@ public class SignUtil {
             SysUserDO sysUserDO = new SysUserDO();
             sysUserDO.setId(currentUserIdNotAdmin);
 
-            // 通过：RedisKeyEnum，设置：账号
+            // 通过：BaseRedisKeyEnum，设置：账号
             setSysUserDOAccountByRedisKeyEnum(redisKeyEnum, newAccount, sysUserDO);
 
             return TransactionUtil.exec(() -> {
@@ -852,20 +852,20 @@ public class SignUtil {
     }
 
     /**
-     * 通过：RedisKeyEnum，设置：账号
+     * 通过：BaseRedisKeyEnum，设置：账号
      */
     private static void setSysUserDOAccountByRedisKeyEnum(Enum<? extends IRedisKey> redisKeyEnum, String newAccount,
         SysUserDO sysUserDO) {
 
-        if (RedisKeyEnum.PRE_EMAIL.equals(redisKeyEnum)) {
+        if (BaseRedisKeyEnum.PRE_EMAIL.equals(redisKeyEnum)) {
 
             sysUserDO.setEmail(newAccount);
 
-        } else if (RedisKeyEnum.PRE_SIGN_IN_NAME.equals(redisKeyEnum)) {
+        } else if (BaseRedisKeyEnum.PRE_SIGN_IN_NAME.equals(redisKeyEnum)) {
 
             sysUserDO.setSignInName(newAccount);
 
-        } else if (RedisKeyEnum.PRE_PHONE.equals(redisKeyEnum)) {
+        } else if (BaseRedisKeyEnum.PRE_PHONE.equals(redisKeyEnum)) {
 
             sysUserDO.setPhone(newAccount);
 
@@ -889,15 +889,15 @@ public class SignUtil {
             ChainWrappers.lambdaQueryChain(sysUserMapper).ne(id != null, BaseEntity::getId, id)
                 .eq(BaseEntityNoId::getTenantId, tenantId);
 
-        if (RedisKeyEnum.PRE_EMAIL.equals(redisKeyEnum)) {
+        if (BaseRedisKeyEnum.PRE_EMAIL.equals(redisKeyEnum)) {
 
             lambdaQueryChainWrapper.eq(SysUserDO::getEmail, newAccount);
 
-        } else if (RedisKeyEnum.PRE_SIGN_IN_NAME.equals(redisKeyEnum)) {
+        } else if (BaseRedisKeyEnum.PRE_SIGN_IN_NAME.equals(redisKeyEnum)) {
 
             lambdaQueryChainWrapper.eq(SysUserDO::getSignInName, newAccount);
 
-        } else if (RedisKeyEnum.PRE_PHONE.equals(redisKeyEnum)) {
+        } else if (BaseRedisKeyEnum.PRE_PHONE.equals(redisKeyEnum)) {
 
             lambdaQueryChainWrapper.eq(SysUserDO::getPhone, newAccount);
 
@@ -962,9 +962,9 @@ public class SignUtil {
                 RedissonUtil.batch((batch) -> {
 
                     // 移除密码错误次数相关
-                    batch.getBucket(RedisKeyEnum.PRE_PASSWORD_ERROR_COUNT.name() + ":" + sysUserDO.getId())
+                    batch.getBucket(BaseRedisKeyEnum.PRE_PASSWORD_ERROR_COUNT.name() + ":" + sysUserDO.getId())
                         .deleteAsync();
-                    batch.getMap(RedisKeyEnum.PRE_TOO_MANY_PASSWORD_ERROR.name()).removeAsync(sysUserDO.getId());
+                    batch.getMap(BaseRedisKeyEnum.PRE_TOO_MANY_PASSWORD_ERROR.name()).removeAsync(sysUserDO.getId());
 
                     // 删除：验证码
                     batch.getBucket(key).deleteAsync();
@@ -1002,7 +1002,7 @@ public class SignUtil {
             RBucket<String> bucket = redissonClient.getBucket(key);
 
             // 是否：检查验证码
-            boolean checkCodeFlag = BooleanUtil.isFalse(RedisKeyEnum.PRE_SIGN_IN_NAME.equals(redisKeyEnum));
+            boolean checkCodeFlag = BooleanUtil.isFalse(BaseRedisKeyEnum.PRE_SIGN_IN_NAME.equals(redisKeyEnum));
 
             if (checkCodeFlag) {
                 CodeUtil.checkCode(code, bucket.get()); // 检查 code是否正确
@@ -1132,7 +1132,7 @@ public class SignUtil {
 
             SysUserDO sysUserDO = new SysUserDO();
 
-            // 通过：RedisKeyEnum，设置：账号
+            // 通过：BaseRedisKeyEnum，设置：账号
             setSysUserDOAccountByRedisKeyEnum(redisKeyEnum, account, sysUserDO);
 
             sysUserDO.setId(currentUserIdNotAdmin);
@@ -1160,7 +1160,8 @@ public class SignUtil {
      * @param account      账号信息，一般情况为 null，目前只有忘记密码的时候，才会传值
      * @param notCheckFlag 是否不检查，一般情况为 false，目前，在绑定邮箱，修改邮箱的时候，才会为 true，目的：不检查：是否有手机
      */
-    public static void checkWillError(RedisKeyEnum redisKeyEnum, String account, boolean notCheckFlag, long tenantId) {
+    public static void checkWillError(BaseRedisKeyEnum baseRedisKeyEnum, String account, boolean notCheckFlag,
+        long tenantId) {
 
         if (notCheckFlag) {
             return;
@@ -1174,21 +1175,21 @@ public class SignUtil {
 
         boolean legalFlag = false; // 是否合法
 
-        if (redisKeyEnum.equals(RedisKeyEnum.PRE_SIGN_IN_NAME)) { // 如果是：登录名
+        if (baseRedisKeyEnum.equals(BaseRedisKeyEnum.PRE_SIGN_IN_NAME)) { // 如果是：登录名
 
             // 判断：密码不能为空，并且不能有邮箱，手机
             legalFlag = !ChainWrappers.lambdaQueryChain(sysUserMapper).eq(userId != null, BaseEntity::getId, userId)
                 .ne(SysUserDO::getPassword, "").eq(SysUserDO::getEmail, "").eq(SysUserDO::getPhone, "")
                 .eq(BaseEntityNoId::getTenantId, tenantId).exists();
 
-        } else if (redisKeyEnum.equals(RedisKeyEnum.PRE_EMAIL)) { // 如果是：邮箱
+        } else if (baseRedisKeyEnum.equals(BaseRedisKeyEnum.PRE_EMAIL)) { // 如果是：邮箱
 
             // 判断：不能有手机
             legalFlag = !ChainWrappers.lambdaQueryChain(sysUserMapper).eq(userId != null, BaseEntity::getId, userId)
                 .eq(userId == null, SysUserDO::getEmail, account).eq(SysUserDO::getPhone, "")
                 .eq(BaseEntityNoId::getTenantId, tenantId).exists();
 
-        } else if (redisKeyEnum.equals(RedisKeyEnum.PRE_PHONE)) { // 如果是：手机号
+        } else if (baseRedisKeyEnum.equals(BaseRedisKeyEnum.PRE_PHONE)) { // 如果是：手机号
 
             legalFlag = true; // 目前手机号操作，都合法
 
@@ -1196,7 +1197,7 @@ public class SignUtil {
 
         if (BooleanUtil.isFalse(legalFlag)) { // 如果不合法
 
-            ApiResultVO.errorMsg(BaseBizCodeEnum.ILLEGAL_REQUEST.getMsg() + "：" + redisKeyEnum.name());
+            ApiResultVO.errorMsg(BaseBizCodeEnum.ILLEGAL_REQUEST.getMsg() + "：" + baseRedisKeyEnum.name());
 
         }
 

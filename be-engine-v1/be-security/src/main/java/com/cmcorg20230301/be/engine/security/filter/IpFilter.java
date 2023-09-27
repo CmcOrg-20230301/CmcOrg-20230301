@@ -13,7 +13,7 @@ import com.cmcorg20230301.be.engine.cache.util.CacheRedisKafkaLocalUtil;
 import com.cmcorg20230301.be.engine.cache.util.MyCacheUtil;
 import com.cmcorg20230301.be.engine.model.model.constant.BaseConstant;
 import com.cmcorg20230301.be.engine.model.model.constant.ParamConstant;
-import com.cmcorg20230301.be.engine.redisson.model.enums.RedisKeyEnum;
+import com.cmcorg20230301.be.engine.redisson.model.enums.BaseRedisKeyEnum;
 import com.cmcorg20230301.be.engine.security.properties.SecurityProperties;
 import com.cmcorg20230301.be.engine.security.util.ResponseUtil;
 import com.cmcorg20230301.be.engine.security.util.SysParamUtil;
@@ -91,7 +91,7 @@ public class IpFilter implements Filter {
     @Nullable
     private String ipCheckHandler(String ip) {
 
-        String key = RedisKeyEnum.PRE_IP_BLACK + ":" + ip;
+        String key = BaseRedisKeyEnum.PRE_IP_BLACK + ":" + ip;
 
         // 判断是否在 黑名单里
         String ipBlackStr = MyCacheUtil.onlyGet(key);
@@ -142,7 +142,8 @@ public class IpFilter implements Filter {
 
             IP_SPEED_MAP.remove(ip); // 移除：ip计数
 
-            CacheRedisKafkaLocalUtil.put(RedisKeyEnum.PRE_IP_BLACK, ip, "黑名单 ip", BaseConstant.DAY_1_EXPIRE_TIME, null);
+            CacheRedisKafkaLocalUtil
+                .put(BaseRedisKeyEnum.PRE_IP_BLACK, ip, "黑名单 ip", BaseConstant.DAY_1_EXPIRE_TIME, null);
 
             return "24小时";
 

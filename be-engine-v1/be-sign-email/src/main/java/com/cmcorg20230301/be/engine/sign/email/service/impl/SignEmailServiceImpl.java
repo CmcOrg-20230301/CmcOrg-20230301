@@ -5,7 +5,7 @@ import com.baomidou.mybatisplus.extension.toolkit.ChainWrappers;
 import com.cmcorg20230301.be.engine.email.enums.EmailMessageEnum;
 import com.cmcorg20230301.be.engine.email.util.MyEmailUtil;
 import com.cmcorg20230301.be.engine.model.model.dto.NotBlankCodeDTO;
-import com.cmcorg20230301.be.engine.redisson.model.enums.RedisKeyEnum;
+import com.cmcorg20230301.be.engine.redisson.model.enums.BaseRedisKeyEnum;
 import com.cmcorg20230301.be.engine.security.mapper.SysUserMapper;
 import com.cmcorg20230301.be.engine.security.model.entity.SysUserDO;
 import com.cmcorg20230301.be.engine.security.model.vo.ApiResultVO;
@@ -22,7 +22,7 @@ import javax.annotation.Resource;
 @Service
 public class SignEmailServiceImpl implements SignEmailService {
 
-    private static final RedisKeyEnum PRE_REDIS_KEY_ENUM = RedisKeyEnum.PRE_EMAIL;
+    private static final BaseRedisKeyEnum PRE_REDIS_KEY_ENUM = BaseRedisKeyEnum.PRE_EMAIL;
 
     @Resource
     SysUserMapper sysUserMapper;

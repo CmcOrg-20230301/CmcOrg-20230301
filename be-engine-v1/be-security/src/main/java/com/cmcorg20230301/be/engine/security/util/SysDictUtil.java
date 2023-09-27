@@ -4,7 +4,7 @@ import com.baomidou.mybatisplus.extension.toolkit.ChainWrappers;
 import com.cmcorg20230301.be.engine.cache.util.CacheHelper;
 import com.cmcorg20230301.be.engine.cache.util.MyCacheUtil;
 import com.cmcorg20230301.be.engine.model.model.vo.DictIntegerVO;
-import com.cmcorg20230301.be.engine.redisson.model.enums.RedisKeyEnum;
+import com.cmcorg20230301.be.engine.redisson.model.enums.BaseRedisKeyEnum;
 import com.cmcorg20230301.be.engine.security.mapper.SysDictMapper;
 import com.cmcorg20230301.be.engine.security.model.entity.BaseEntityNoId;
 import com.cmcorg20230301.be.engine.security.model.entity.SysDictDO;
@@ -49,7 +49,7 @@ public class SysDictUtil {
         Long currentTenantIdDefault = UserUtil.getCurrentTenantIdDefault();
 
         Map<Long, Map<String, List<DictIntegerVO>>> dictMap =
-            MyCacheUtil.getMap(RedisKeyEnum.SYS_DICT_CACHE, CacheHelper.getDefaultLongMapStringListMap(), () -> {
+            MyCacheUtil.getMap(BaseRedisKeyEnum.SYS_DICT_CACHE, CacheHelper.getDefaultLongMapStringListMap(), () -> {
 
                 return ChainWrappers.lambdaQueryChain(sysDictMapper).eq(SysDictDO::getType, SysDictTypeEnum.DICT_ITEM)
                     .eq(BaseEntityNoId::getEnableFlag, true) //

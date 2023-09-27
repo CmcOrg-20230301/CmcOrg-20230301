@@ -7,7 +7,7 @@ import com.cmcorg20230301.be.engine.cache.util.CanalKafkaListenerHelper;
 import com.cmcorg20230301.be.engine.model.model.constant.LogTopicConstant;
 import com.cmcorg20230301.be.engine.model.model.enums.TableNameEnum;
 import com.cmcorg20230301.be.engine.model.model.interfaces.IRedisKey;
-import com.cmcorg20230301.be.engine.redisson.model.enums.RedisKeyEnum;
+import com.cmcorg20230301.be.engine.redisson.model.enums.BaseRedisKeyEnum;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -36,43 +36,46 @@ public class SecurityCacheConfiguration {
     static {
 
         // 用户信息
-        TABLE_NAME_ENUM_SET
-            .add(new SecurityCache(TableNameEnum.SYS_USER_INFO, CollUtil.newHashSet(RedisKeyEnum.SYS_USER_INFO_CACHE)));
+        TABLE_NAME_ENUM_SET.add(
+            new SecurityCache(TableNameEnum.SYS_USER_INFO, CollUtil.newHashSet(BaseRedisKeyEnum.SYS_USER_INFO_CACHE)));
 
         // 系统参数
         TABLE_NAME_ENUM_SET
-            .add(new SecurityCache(TableNameEnum.SYS_PARAM, CollUtil.newHashSet(RedisKeyEnum.SYS_PARAM_CACHE)));
+            .add(new SecurityCache(TableNameEnum.SYS_PARAM, CollUtil.newHashSet(BaseRedisKeyEnum.SYS_PARAM_CACHE)));
 
         // 菜单
         TABLE_NAME_ENUM_SET.add(new SecurityCache(TableNameEnum.SYS_MENU, CollUtil
-            .newHashSet(RedisKeyEnum.ALL_MENU_ID_AND_AUTHS_LIST_CACHE, RedisKeyEnum.ROLE_ID_REF_FULL_MENU_SET_CACHE,
-                RedisKeyEnum.ROLE_ID_REF_SECURITY_MENU_SET_CACHE, RedisKeyEnum.SYS_MENU_CACHE)));
+            .newHashSet(BaseRedisKeyEnum.ALL_MENU_ID_AND_AUTHS_LIST_CACHE,
+                BaseRedisKeyEnum.ROLE_ID_REF_FULL_MENU_SET_CACHE, BaseRedisKeyEnum.ROLE_ID_REF_SECURITY_MENU_SET_CACHE,
+                BaseRedisKeyEnum.SYS_MENU_CACHE)));
 
         // 角色关联用户
         TABLE_NAME_ENUM_SET.add(new SecurityCache(TableNameEnum.SYS_ROLE_REF_USER,
-            CollUtil.newHashSet(RedisKeyEnum.USER_ID_REF_ROLE_ID_SET_CACHE)));
+            CollUtil.newHashSet(BaseRedisKeyEnum.USER_ID_REF_ROLE_ID_SET_CACHE)));
 
         // 角色关联菜单
         TABLE_NAME_ENUM_SET.add(new SecurityCache(TableNameEnum.SYS_ROLE_REF_MENU, CollUtil
-            .newHashSet(RedisKeyEnum.ROLE_ID_REF_MENU_ID_SET_CACHE, RedisKeyEnum.ROLE_ID_REF_FULL_MENU_SET_CACHE,
-                RedisKeyEnum.ROLE_ID_REF_SECURITY_MENU_SET_CACHE)));
+            .newHashSet(BaseRedisKeyEnum.ROLE_ID_REF_MENU_ID_SET_CACHE,
+                BaseRedisKeyEnum.ROLE_ID_REF_FULL_MENU_SET_CACHE,
+                BaseRedisKeyEnum.ROLE_ID_REF_SECURITY_MENU_SET_CACHE)));
 
         // 角色
         TABLE_NAME_ENUM_SET.add(new SecurityCache(TableNameEnum.SYS_ROLE, CollUtil
-            .newHashSet(RedisKeyEnum.TENANT_DEFAULT_ROLE_ID_CACHE, RedisKeyEnum.ROLE_ID_SET_CACHE,
-                RedisKeyEnum.ROLE_ID_REF_FULL_MENU_SET_CACHE, RedisKeyEnum.ROLE_ID_REF_SECURITY_MENU_SET_CACHE)));
+            .newHashSet(BaseRedisKeyEnum.TENANT_DEFAULT_ROLE_ID_CACHE, BaseRedisKeyEnum.ROLE_ID_SET_CACHE,
+                BaseRedisKeyEnum.ROLE_ID_REF_FULL_MENU_SET_CACHE,
+                BaseRedisKeyEnum.ROLE_ID_REF_SECURITY_MENU_SET_CACHE)));
 
         // 字典
         TABLE_NAME_ENUM_SET
-            .add(new SecurityCache(TableNameEnum.SYS_DICT, CollUtil.newHashSet(RedisKeyEnum.SYS_DICT_CACHE)));
+            .add(new SecurityCache(TableNameEnum.SYS_DICT, CollUtil.newHashSet(BaseRedisKeyEnum.SYS_DICT_CACHE)));
 
         // 租户
         TABLE_NAME_ENUM_SET.add(new SecurityCache(TableNameEnum.SYS_TENANT,
-            CollUtil.newHashSet(RedisKeyEnum.SYS_TENANT_CACHE, RedisKeyEnum.SYS_TENANT_DEEP_ID_SET_CACHE)));
+            CollUtil.newHashSet(BaseRedisKeyEnum.SYS_TENANT_CACHE, BaseRedisKeyEnum.SYS_TENANT_DEEP_ID_SET_CACHE)));
 
         // 租户关联用户
         TABLE_NAME_ENUM_SET.add(new SecurityCache(TableNameEnum.SYS_TENANT_REF_USER,
-            CollUtil.newHashSet(RedisKeyEnum.USER_ID_REF_TENANT_ID_SET_CACHE)));
+            CollUtil.newHashSet(BaseRedisKeyEnum.USER_ID_REF_TENANT_ID_SET_CACHE)));
 
     }
 

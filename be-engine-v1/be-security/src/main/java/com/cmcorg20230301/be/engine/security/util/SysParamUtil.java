@@ -6,7 +6,7 @@ import com.cmcorg20230301.be.engine.cache.util.CacheHelper;
 import com.cmcorg20230301.be.engine.cache.util.MyCacheUtil;
 import com.cmcorg20230301.be.engine.model.model.constant.BaseConstant;
 import com.cmcorg20230301.be.engine.model.model.constant.ParamConstant;
-import com.cmcorg20230301.be.engine.redisson.model.enums.RedisKeyEnum;
+import com.cmcorg20230301.be.engine.redisson.model.enums.BaseRedisKeyEnum;
 import com.cmcorg20230301.be.engine.security.mapper.SysParamMapper;
 import com.cmcorg20230301.be.engine.security.model.entity.BaseEntity;
 import com.cmcorg20230301.be.engine.security.model.entity.BaseEntityNoId;
@@ -58,7 +58,7 @@ public class SysParamUtil {
         }
 
         Map<Long, Map<String, String>> map =
-            MyCacheUtil.getMap(RedisKeyEnum.SYS_PARAM_CACHE, CacheHelper.getDefaultLongMapStringMap(), () -> {
+            MyCacheUtil.getMap(BaseRedisKeyEnum.SYS_PARAM_CACHE, CacheHelper.getDefaultLongMapStringMap(), () -> {
 
                 List<SysParamDO> sysParamDOList = ChainWrappers.lambdaQueryChain(sysParamMapper)
                     .select(SysParamDO::getUuid, SysParamDO::getValue, BaseEntityNoId::getTenantId)

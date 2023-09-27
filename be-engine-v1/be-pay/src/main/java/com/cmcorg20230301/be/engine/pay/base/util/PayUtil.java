@@ -19,7 +19,7 @@ import com.cmcorg20230301.be.engine.pay.base.model.enums.SysPayTradeStatusEnum;
 import com.cmcorg20230301.be.engine.pay.base.model.enums.SysPayTypeEnum;
 import com.cmcorg20230301.be.engine.pay.base.service.SysPayConfigurationService;
 import com.cmcorg20230301.be.engine.pay.base.service.SysPayService;
-import com.cmcorg20230301.be.engine.redisson.model.enums.RedisKeyEnum;
+import com.cmcorg20230301.be.engine.redisson.model.enums.BaseRedisKeyEnum;
 import com.cmcorg20230301.be.engine.redisson.util.IdGeneratorUtil;
 import com.cmcorg20230301.be.engine.redisson.util.RedissonUtil;
 import com.cmcorg20230301.be.engine.security.model.entity.BaseEntityNoIdFather;
@@ -263,7 +263,7 @@ public class PayUtil {
             return false;
         }
 
-        return RedissonUtil.doLock(RedisKeyEnum.PRE_PAY.name() + sysPayTradeNotifyBO.getOutTradeNo(), () -> {
+        return RedissonUtil.doLock(BaseRedisKeyEnum.PRE_PAY.name() + sysPayTradeNotifyBO.getOutTradeNo(), () -> {
 
             // 查询：订单状态不同的数据
             SysPayDO sysPayDO = sysPayService.lambdaQuery().eq(SysPayDO::getId, sysPayTradeNotifyBO.getOutTradeNo())

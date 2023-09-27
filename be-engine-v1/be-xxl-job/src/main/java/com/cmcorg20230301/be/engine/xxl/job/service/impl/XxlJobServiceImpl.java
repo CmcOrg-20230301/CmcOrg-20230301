@@ -12,7 +12,7 @@ import com.cmcorg20230301.be.engine.cache.util.CacheRedisKafkaLocalUtil;
 import com.cmcorg20230301.be.engine.cache.util.MyCacheUtil;
 import com.cmcorg20230301.be.engine.model.model.constant.BaseConstant;
 import com.cmcorg20230301.be.engine.model.model.dto.NotNullId;
-import com.cmcorg20230301.be.engine.redisson.model.enums.RedisKeyEnum;
+import com.cmcorg20230301.be.engine.redisson.model.enums.BaseRedisKeyEnum;
 import com.cmcorg20230301.be.engine.security.model.vo.ApiResultVO;
 import com.cmcorg20230301.be.engine.util.util.MyDateUtil;
 import com.cmcorg20230301.be.engine.xxl.job.model.dto.XxlJobInsertDTO;
@@ -110,7 +110,7 @@ public class XxlJobServiceImpl implements XxlJobService {
         } catch (Exception e) {
 
             // 移除 redis中的 cookie，然后再执行一次本方法
-            CacheRedisKafkaLocalUtil.remove(RedisKeyEnum.XXL_JOB_COOKIE_CACHE, null);
+            CacheRedisKafkaLocalUtil.remove(BaseRedisKeyEnum.XXL_JOB_COOKIE_CACHE, null);
             return doAddJob(formJson, null);
 
         }
@@ -168,7 +168,7 @@ public class XxlJobServiceImpl implements XxlJobService {
         } catch (Exception e) {
 
             // 移除 redis中的 cookie，然后再执行一次本方法
-            CacheRedisKafkaLocalUtil.remove(RedisKeyEnum.XXL_JOB_COOKIE_CACHE, null);
+            CacheRedisKafkaLocalUtil.remove(BaseRedisKeyEnum.XXL_JOB_COOKIE_CACHE, null);
             setJobGroup(dto, null);
 
         }
@@ -180,7 +180,7 @@ public class XxlJobServiceImpl implements XxlJobService {
      */
     private HttpCookie getCookie() {
 
-        JSONObject jsonObject = MyCacheUtil.getMap(RedisKeyEnum.XXL_JOB_COOKIE_CACHE, null, () -> {
+        JSONObject jsonObject = MyCacheUtil.getMap(BaseRedisKeyEnum.XXL_JOB_COOKIE_CACHE, null, () -> {
 
             JSONObject formJson =
                 JSONUtil.createObj().set("userName", userName).set("password", password).set("ifRemember", "on");
@@ -237,7 +237,7 @@ public class XxlJobServiceImpl implements XxlJobService {
         } catch (Exception e) {
 
             // 移除 redis中的 cookie，然后再执行一次本方法
-            CacheRedisKafkaLocalUtil.remove(RedisKeyEnum.XXL_JOB_COOKIE_CACHE, null);
+            CacheRedisKafkaLocalUtil.remove(BaseRedisKeyEnum.XXL_JOB_COOKIE_CACHE, null);
             deleteById(notNullId);
 
         }

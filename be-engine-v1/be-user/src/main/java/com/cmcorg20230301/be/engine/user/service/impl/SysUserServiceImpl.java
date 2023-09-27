@@ -23,7 +23,7 @@ import com.cmcorg20230301.be.engine.model.model.dto.NotNullId;
 import com.cmcorg20230301.be.engine.model.model.interfaces.IRedisKey;
 import com.cmcorg20230301.be.engine.model.model.vo.DictVO;
 import com.cmcorg20230301.be.engine.post.service.SysPostRefUserService;
-import com.cmcorg20230301.be.engine.redisson.model.enums.RedisKeyEnum;
+import com.cmcorg20230301.be.engine.redisson.model.enums.BaseRedisKeyEnum;
 import com.cmcorg20230301.be.engine.redisson.util.RedissonUtil;
 import com.cmcorg20230301.be.engine.role.service.SysRoleRefUserService;
 import com.cmcorg20230301.be.engine.security.exception.BaseBizCodeEnum;
@@ -235,7 +235,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserProMapper, SysUserDO>
 
         // 获取所有：用户信息
         List<SysUserInfoDO> sysUserInfoDOList =
-            MyCacheUtil.getCollection(RedisKeyEnum.SYS_USER_INFO_CACHE, CacheHelper.getDefaultList(), () -> {
+            MyCacheUtil.getCollection(BaseRedisKeyEnum.SYS_USER_INFO_CACHE, CacheHelper.getDefaultList(), () -> {
 
                 return ChainWrappers.lambdaQueryChain(sysUserInfoMapper)
                     .select(SysUserInfoDO::getId, SysUserInfoDO::getNickname, SysUserInfoDO::getTenantId)
@@ -288,13 +288,13 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserProMapper, SysUserDO>
         Set<Enum<? extends IRedisKey>> redisKeyEnumSet = CollUtil.newHashSet();
 
         if (!emailBlank) {
-            redisKeyEnumSet.add(RedisKeyEnum.PRE_EMAIL);
+            redisKeyEnumSet.add(BaseRedisKeyEnum.PRE_EMAIL);
         }
         if (!signInNameBlank) {
-            redisKeyEnumSet.add(RedisKeyEnum.PRE_SIGN_IN_NAME);
+            redisKeyEnumSet.add(BaseRedisKeyEnum.PRE_SIGN_IN_NAME);
         }
         if (!phoneBlank) {
-            redisKeyEnumSet.add(RedisKeyEnum.PRE_PHONE);
+            redisKeyEnumSet.add(BaseRedisKeyEnum.PRE_PHONE);
         }
 
         return RedissonUtil.doMultiLock(null, redisKeyEnumSet, () -> {
@@ -381,17 +381,17 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserProMapper, SysUserDO>
 
         boolean exist = false;
 
-        if (RedisKeyEnum.PRE_EMAIL.equals(item)) {
+        if (BaseRedisKeyEnum.PRE_EMAIL.equals(item)) {
 
             exist = SignUtil.accountIsExists(item, dto.getEmail(), dto.getId(), tenantId);
             map.put(item, dto.getEmail());
 
-        } else if (RedisKeyEnum.PRE_SIGN_IN_NAME.equals(item)) {
+        } else if (BaseRedisKeyEnum.PRE_SIGN_IN_NAME.equals(item)) {
 
             exist = SignUtil.accountIsExists(item, dto.getSignInName(), dto.getId(), tenantId);
             map.put(item, dto.getSignInName());
 
-        } else if (RedisKeyEnum.PRE_PHONE.equals(item)) {
+        } else if (BaseRedisKeyEnum.PRE_PHONE.equals(item)) {
 
             exist = SignUtil.accountIsExists(item, dto.getPhone(), dto.getId(), tenantId);
             map.put(item, dto.getPhone());

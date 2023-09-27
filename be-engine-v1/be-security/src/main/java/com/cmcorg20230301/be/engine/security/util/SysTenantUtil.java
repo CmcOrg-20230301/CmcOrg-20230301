@@ -9,7 +9,7 @@ import com.cmcorg20230301.be.engine.cache.util.MyCacheUtil;
 import com.cmcorg20230301.be.engine.model.model.constant.BaseConstant;
 import com.cmcorg20230301.be.engine.model.model.constant.ParamConstant;
 import com.cmcorg20230301.be.engine.model.model.dto.BaseTenantInsertOrUpdateDTO;
-import com.cmcorg20230301.be.engine.redisson.model.enums.RedisKeyEnum;
+import com.cmcorg20230301.be.engine.redisson.model.enums.BaseRedisKeyEnum;
 import com.cmcorg20230301.be.engine.security.exception.BaseBizCodeEnum;
 import com.cmcorg20230301.be.engine.security.mapper.SysTenantMapper;
 import com.cmcorg20230301.be.engine.security.mapper.SysTenantRefUserMapper;
@@ -107,8 +107,8 @@ public class SysTenantUtil {
     @NotNull
     public static Map<Long, SysTenantDO> getSysTenantCacheMap() {
 
-        Map<Long, SysTenantDO> map =
-            MyCacheUtil.getMap(RedisKeyEnum.SYS_TENANT_CACHE, CacheHelper.getDefaultLongMap(new SysTenantDO()), () -> {
+        Map<Long, SysTenantDO> map = MyCacheUtil
+            .getMap(BaseRedisKeyEnum.SYS_TENANT_CACHE, CacheHelper.getDefaultLongMap(new SysTenantDO()), () -> {
 
                 List<SysTenantDO> sysTenantDOList = ChainWrappers.lambdaQueryChain(sysTenantMapper)
                     .select(BaseEntity::getId, SysTenantDO::getName, BaseEntityNoId::getEnableFlag,
@@ -179,17 +179,16 @@ public class SysTenantUtil {
      */
     private static Set<Long> getTenantDeepIdSet(Long tenantId) {
 
-        return MyCacheUtil
-            .<Map<Long, Set<Long>>>getMap(RedisKeyEnum.SYS_TENANT_DEEP_ID_SET_CACHE, CacheHelper.getDefaultLongSetMap(),
-                () -> {
+        return MyCacheUtil.<Map<Long, Set<Long>>>getMap(BaseRedisKeyEnum.SYS_TENANT_DEEP_ID_SET_CACHE,
+            CacheHelper.getDefaultLongSetMap(), () -> {
 
-                    List<SysTenantDO> tenantDOList = new ArrayList<>(getSysTenantCacheMap().values());
+                List<SysTenantDO> tenantDOList = new ArrayList<>(getSysTenantCacheMap().values());
 
-                    SysTenantDO sysTenantDO = new SysTenantDO();
+                SysTenantDO sysTenantDO = new SysTenantDO();
 
-                    sysTenantDO.setId(BaseConstant.TENANT_ID);
-                    sysTenantDO.setParentId(BaseConstant.NEGATIVE_ONE);
-                    sysTenantDO.setName(BaseConstant.TENANT_NAME);
+                sysTenantDO.setId(BaseConstant.TENANT_ID);
+                sysTenantDO.setParentId(BaseConstant.NEGATIVE_ONE);
+                sysTenantDO.setName(BaseConstant.TENANT_NAME);
 
                     tenantDOList.add(sysTenantDO); // 添加：默认租户
 
@@ -205,7 +204,7 @@ public class SysTenantUtil {
     public static Map<Long, Set<Long>> getUserIdRefTenantIdSetMap() {
 
         return MyCacheUtil
-            .getMap(RedisKeyEnum.USER_ID_REF_TENANT_ID_SET_CACHE, CacheHelper.getDefaultLongSetMap(), () -> {
+            .getMap(BaseRedisKeyEnum.USER_ID_REF_TENANT_ID_SET_CACHE, CacheHelper.getDefaultLongSetMap(), () -> {
 
                 List<SysTenantRefUserDO> sysTenantRefUserDOList = ChainWrappers.lambdaQueryChain(sysTenantRefUserMapper)
                     .select(SysTenantRefUserDO::getTenantId, SysTenantRefUserDO::getUserId).list();

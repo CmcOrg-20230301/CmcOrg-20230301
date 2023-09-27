@@ -16,7 +16,7 @@ import com.cmcorg20230301.be.engine.model.model.constant.OperationDescriptionCon
 import com.cmcorg20230301.be.engine.netty.websocket.configuration.NettyWebSocketBeanPostProcessor;
 import com.cmcorg20230301.be.engine.netty.websocket.properties.NettyWebSocketProperties;
 import com.cmcorg20230301.be.engine.netty.websocket.util.WebSocketUtil;
-import com.cmcorg20230301.be.engine.redisson.model.enums.RedisKeyEnum;
+import com.cmcorg20230301.be.engine.redisson.model.enums.BaseRedisKeyEnum;
 import com.cmcorg20230301.be.engine.security.exception.BaseBizCodeEnum;
 import com.cmcorg20230301.be.engine.security.exception.BaseException;
 import com.cmcorg20230301.be.engine.security.model.entity.SysRequestDO;
@@ -378,7 +378,7 @@ public class NettyWebSocketServerHandler extends ChannelInboundHandlerAdapter {
 
         }
 
-        String key = RedisKeyEnum.PRE_WEB_SOCKET_CODE.name() + code;
+        String key = BaseRedisKeyEnum.PRE_WEB_SOCKET_CODE.name() + code;
 
         SysSocketRefUserDO sysSocketRefUserDO = redissonClient.<SysSocketRefUserDO>getBucket(key).getAndDelete();
 

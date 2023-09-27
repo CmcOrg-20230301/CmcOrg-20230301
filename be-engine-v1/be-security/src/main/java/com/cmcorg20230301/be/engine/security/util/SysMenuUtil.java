@@ -6,7 +6,7 @@ import cn.hutool.core.util.BooleanUtil;
 import com.baomidou.mybatisplus.extension.toolkit.ChainWrappers;
 import com.cmcorg20230301.be.engine.cache.util.CacheHelper;
 import com.cmcorg20230301.be.engine.cache.util.MyCacheUtil;
-import com.cmcorg20230301.be.engine.redisson.model.enums.RedisKeyEnum;
+import com.cmcorg20230301.be.engine.redisson.model.enums.BaseRedisKeyEnum;
 import com.cmcorg20230301.be.engine.security.mapper.SysMenuMapper;
 import com.cmcorg20230301.be.engine.security.mapper.SysRoleMapper;
 import com.cmcorg20230301.be.engine.security.mapper.SysRoleRefMenuMapper;
@@ -41,7 +41,7 @@ public class SysMenuUtil {
     public static Map<Long, SysMenuDO> getSysMenuCacheMap() {
 
         Map<Long, SysMenuDO> map =
-            MyCacheUtil.getMap(RedisKeyEnum.SYS_MENU_CACHE, CacheHelper.getDefaultLongMap(new SysMenuDO()), () -> {
+            MyCacheUtil.getMap(BaseRedisKeyEnum.SYS_MENU_CACHE, CacheHelper.getDefaultLongMap(new SysMenuDO()), () -> {
 
                 List<SysMenuDO> sysMenuDOList =
                     ChainWrappers.lambdaQueryChain(sysMenuMapper).eq(BaseEntityNoId::getEnableFlag, true).list();
@@ -64,7 +64,7 @@ public class SysMenuUtil {
     private static List<SysMenuDO> getAllMenuIdAndAuthsList() {
 
         List<SysMenuDO> sysMenuDOList = MyCacheUtil
-            .getCollection(RedisKeyEnum.ALL_MENU_ID_AND_AUTHS_LIST_CACHE, CacheHelper.getDefaultList(), () -> {
+            .getCollection(BaseRedisKeyEnum.ALL_MENU_ID_AND_AUTHS_LIST_CACHE, CacheHelper.getDefaultList(), () -> {
 
                 return ChainWrappers.lambdaQueryChain(sysMenuMapper)
                     .select(BaseEntity::getId, BaseEntityTree::getParentId, SysMenuDO::getAuths)
@@ -88,13 +88,13 @@ public class SysMenuUtil {
      * 获取：角色关联的菜单集合 map
      */
     @NotNull
-    public static Map<Long, Set<SysMenuDO>> getRoleRefMenuSetMap(RedisKeyEnum redisKeyEnum) {
+    public static Map<Long, Set<SysMenuDO>> getRoleRefMenuSetMap(BaseRedisKeyEnum baseRedisKeyEnum) {
 
-        return MyCacheUtil.getMap(redisKeyEnum, CacheHelper.getDefaultLongSetMap(), () -> {
+        return MyCacheUtil.getMap(baseRedisKeyEnum, CacheHelper.getDefaultLongSetMap(), () -> {
 
             // 获取所有：roleIdSet
             Set<Long> allRoleIdSet =
-                MyCacheUtil.getCollection(RedisKeyEnum.ROLE_ID_SET_CACHE, CacheHelper.getDefaultSet(), () -> {
+                MyCacheUtil.getCollection(BaseRedisKeyEnum.ROLE_ID_SET_CACHE, CacheHelper.getDefaultSet(), () -> {
 
                     return ChainWrappers.lambdaQueryChain(sysRoleMapper).select(BaseEntity::getId)
                         .eq(BaseEntityNoId::getEnableFlag, true).list().stream().map(BaseEntity::getId)
@@ -111,7 +111,7 @@ public class SysMenuUtil {
             for (Long item : allRoleIdSet) {
 
                 // 通过：roleId，获取：菜单 set
-                Set<SysMenuDO> sysMenuDoSet = doGetMenuSetByRoleId(redisKeyEnum, item);
+                Set<SysMenuDO> sysMenuDoSet = doGetMenuSetByRoleId(baseRedisKeyEnum, item);
 
                 resultMap.put(item, sysMenuDoSet); // 添加到：map里面
 
@@ -129,8 +129,8 @@ public class SysMenuUtil {
     @Nullable
     private static Set<Long> getRoleRefMenuIdSet(Long roleId) {
 
-        Map<Long, Set<Long>> roleRefMenuIdSetMap =
-            MyCacheUtil.getMap(RedisKeyEnum.ROLE_ID_REF_MENU_ID_SET_CACHE, CacheHelper.getDefaultLongSetMap(), () -> {
+        Map<Long, Set<Long>> roleRefMenuIdSetMap = MyCacheUtil
+            .getMap(BaseRedisKeyEnum.ROLE_ID_REF_MENU_ID_SET_CACHE, CacheHelper.getDefaultLongSetMap(), () -> {
 
                 List<SysRoleRefMenuDO> sysRoleRefMenuDOList = ChainWrappers.lambdaQueryChain(sysRoleRefMenuMapper)
                     .select(SysRoleRefMenuDO::getRoleId, SysRoleRefMenuDO::getMenuId).list();
@@ -148,7 +148,7 @@ public class SysMenuUtil {
      * 通过：roleId，获取：菜单 set
      */
     @NotNull
-    private static Set<SysMenuDO> doGetMenuSetByRoleId(RedisKeyEnum redisKeyEnum, Long roleId) {
+    private static Set<SysMenuDO> doGetMenuSetByRoleId(BaseRedisKeyEnum baseRedisKeyEnum, Long roleId) {
 
         // 获取：角色关联的菜单 idSet
         Set<Long> menuIdSet = getRoleRefMenuIdSet(roleId);
@@ -160,7 +160,7 @@ public class SysMenuUtil {
         // 获取：所有菜单
         List<SysMenuDO> allSysMenuDOList;
 
-        if (RedisKeyEnum.ROLE_ID_REF_FULL_MENU_SET_CACHE.equals(redisKeyEnum)) {
+        if (BaseRedisKeyEnum.ROLE_ID_REF_FULL_MENU_SET_CACHE.equals(baseRedisKeyEnum)) {
 
             allSysMenuDOList = SysMenuUtil.getSysMenuCacheMap().values().stream()
                 .sorted(Comparator.comparing(BaseEntityTree::getOrderNo, Comparator.reverseOrder()))

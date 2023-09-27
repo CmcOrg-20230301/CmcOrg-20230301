@@ -18,7 +18,7 @@ import com.cmcorg20230301.be.engine.pay.base.model.enums.SysPayTypeEnum;
 import com.cmcorg20230301.be.engine.pay.base.service.SysPayService;
 import com.cmcorg20230301.be.engine.pay.base.util.PayHelper;
 import com.cmcorg20230301.be.engine.pay.google.model.bo.SysPayGooglePurchasesBO;
-import com.cmcorg20230301.be.engine.redisson.model.enums.RedisKeyEnum;
+import com.cmcorg20230301.be.engine.redisson.model.enums.BaseRedisKeyEnum;
 import com.cmcorg20230301.be.engine.security.model.vo.ApiResultVO;
 import lombok.SneakyThrows;
 import org.jetbrains.annotations.NotNull;
@@ -142,7 +142,7 @@ public class PayGoogleUtil {
 
             sufKey = tenantId.toString();
 
-            String accessToken = MyCacheUtil.onlyGet(RedisKeyEnum.GOOGLE_ACCESS_TOKEN_CACHE, sufKey);
+            String accessToken = MyCacheUtil.onlyGet(BaseRedisKeyEnum.GOOGLE_ACCESS_TOKEN_CACHE, sufKey);
 
             if (StrUtil.isNotBlank(accessToken)) {
                 return accessToken;
@@ -156,7 +156,7 @@ public class PayGoogleUtil {
 
             sufKey = tenantId + ":" + sysPayConfigurationId;
 
-            String accessToken = MyCacheUtil.onlyGet(RedisKeyEnum.GOOGLE_ACCESS_TOKEN_CACHE, sufKey);
+            String accessToken = MyCacheUtil.onlyGet(BaseRedisKeyEnum.GOOGLE_ACCESS_TOKEN_CACHE, sufKey);
 
             if (StrUtil.isNotBlank(accessToken)) {
                 return accessToken;
@@ -188,7 +188,7 @@ public class PayGoogleUtil {
         Integer expiresIn = jsonObject.getInt("expires_in"); // 这里的单位是：秒
 
         CacheRedisKafkaLocalUtil
-            .put(RedisKeyEnum.GOOGLE_ACCESS_TOKEN_CACHE, sufKey, null, expiresIn * 1000, () -> accessTokenResult);
+            .put(BaseRedisKeyEnum.GOOGLE_ACCESS_TOKEN_CACHE, sufKey, null, expiresIn * 1000, () -> accessTokenResult);
 
         return accessTokenResult;
 

@@ -7,7 +7,7 @@ import cn.hutool.json.JSONUtil;
 import com.cmcorg20230301.be.engine.cache.util.CacheRedisKafkaLocalUtil;
 import com.cmcorg20230301.be.engine.cache.util.MyCacheUtil;
 import com.cmcorg20230301.be.engine.model.model.constant.BaseConstant;
-import com.cmcorg20230301.be.engine.redisson.model.enums.RedisKeyEnum;
+import com.cmcorg20230301.be.engine.redisson.model.enums.BaseRedisKeyEnum;
 import com.cmcorg20230301.be.engine.security.exception.BaseBizCodeEnum;
 import com.cmcorg20230301.be.engine.security.model.entity.BaseEntityNoIdFather;
 import com.cmcorg20230301.be.engine.security.model.vo.ApiResultVO;
@@ -141,7 +141,7 @@ public class WxUtil {
             tenantId = BaseConstant.TENANT_ID;
         }
 
-        String accessToken = MyCacheUtil.onlyGet(RedisKeyEnum.WX_ACCESS_TOKEN_CACHE, appId);
+        String accessToken = MyCacheUtil.onlyGet(BaseRedisKeyEnum.WX_ACCESS_TOKEN_CACHE, appId);
 
         if (StrUtil.isNotBlank(accessToken)) {
             return accessToken;
@@ -166,7 +166,7 @@ public class WxUtil {
         checkWxVO(wxAccessTokenVO, errorMessageStr, tenantId, appId);
 
         CacheRedisKafkaLocalUtil
-            .put(RedisKeyEnum.WX_ACCESS_TOKEN_CACHE, appId, null, wxAccessTokenVO.getExpires_in() * 1000,
+            .put(BaseRedisKeyEnum.WX_ACCESS_TOKEN_CACHE, appId, null, wxAccessTokenVO.getExpires_in() * 1000,
                 wxAccessTokenVO::getAccess_token);
 
         return wxAccessTokenVO.getAccess_token();
