@@ -55,6 +55,7 @@ const TableColumnList = (currentForm: React.MutableRefObject<SysParamInsertOrUpd
         dataIndex: 'createTime',
         hideInSearch: true,
         valueType: 'fromNow',
+        width: 90,
     },
 
     {
@@ -62,12 +63,14 @@ const TableColumnList = (currentForm: React.MutableRefObject<SysParamInsertOrUpd
         dataIndex: 'updateTime',
         hideInSearch: true,
         valueType: 'fromNow',
+        width: 90,
     },
 
     {
         title: '系统内置',
         dataIndex: 'systemFlag',
-        valueEnum: YesNoDict
+        valueEnum: YesNoDict,
+        width: 90,
     },
 
     {
