@@ -330,10 +330,12 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserProMapper, SysUserDO>
                 SignUtil.doSignDeleteSub(CollUtil.newHashSet(dto.getId()), false);
 
                 SysUserDO sysUserDO = new SysUserDO();
+
                 sysUserDO.setId(dto.getId());
                 sysUserDO.setEnableFlag(BooleanUtil.isTrue(dto.getEnableFlag()));
                 sysUserDO.setEmail(MyEntityUtil.getNotNullStr(dto.getEmail()));
                 sysUserDO.setSignInName(MyEntityUtil.getNotNullStr(dto.getSignInName()));
+
                 sysUserMapper.updateById(sysUserDO);
 
                 // 新增数据到子表

@@ -1,9 +1,12 @@
 package com.cmcorg20230301.be.engine.security.model.entity;
 
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+
+import java.util.List;
 
 @EqualsAndHashCode(callSuper = true)
 @TableName(value = "sys_user")
@@ -16,6 +19,13 @@ public class SysUserDO extends BaseEntity {
 
     @Schema(description = "是否注销，未使用，而是采取直接删除的方式，目的：防止数据量越来越大")
     private Boolean delFlag;
+
+    @Schema(description = "父节点id（顶级则为0）")
+    private Long parentId;
+
+    @TableField(exist = false)
+    @Schema(description = "子节点")
+    private List<SysUserDO> children;
 
     @Schema(description = "密码，可为空，如果为空，则登录时需要提示【进行忘记密码操作】")
     private String password;

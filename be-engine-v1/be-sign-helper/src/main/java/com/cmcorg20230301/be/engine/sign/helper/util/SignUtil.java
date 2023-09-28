@@ -297,6 +297,8 @@ public class SignUtil {
             sysUserDO.setEnableFlag(enableFlag);
         }
 
+        sysUserDO.setParentId(BaseConstant.TOP_PARENT_ID);
+
         sysUserDO.setDelFlag(false);
         sysUserDO.setRemark("");
 
@@ -824,6 +826,7 @@ public class SignUtil {
             }
 
             SysUserDO sysUserDO = new SysUserDO();
+
             sysUserDO.setId(currentUserIdNotAdmin);
 
             // 通过：BaseRedisKeyEnum，设置：账号
