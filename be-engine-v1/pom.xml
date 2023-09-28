@@ -76,10 +76,26 @@
         <module>be-tenant</module>
         <module>be-milvus</module>
         <module>be-start-jar</module>
+        <module>be-wallet</module>
+        <module>be-profit-share</module>
     </modules>
 
     <dependencyManagement>
         <dependencies>
+
+            <!-- be-profit-share -->
+            <dependency>
+                <groupId>${cmcorg.groupId}</groupId>
+                <artifactId>be-profit-share</artifactId>
+                <version>${cmcorg.version}</version>
+            </dependency>
+
+            <!-- be-wallet -->
+            <dependency>
+                <groupId>${cmcorg.groupId}</groupId>
+                <artifactId>be-wallet</artifactId>
+                <version>${cmcorg.version}</version>
+            </dependency>
 
             <!-- be-start-jar -->
             <dependency>

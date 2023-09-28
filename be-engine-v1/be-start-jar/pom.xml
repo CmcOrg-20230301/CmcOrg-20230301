@@ -15,6 +15,18 @@
 
     <dependencies>
 
+        <!-- be-profit-share -->
+        <dependency>
+            <groupId>${cmcorg.groupId}</groupId>
+            <artifactId>be-profit-share</artifactId>
+        </dependency>
+
+        <!-- be-wallet -->
+        <dependency>
+            <groupId>${cmcorg.groupId}</groupId>
+            <artifactId>be-wallet</artifactId>
+        </dependency>
+
         <!-- be-tenant -->
         <dependency>
             <groupId>${cmcorg.groupId}</groupId>
