@@ -14,10 +14,7 @@ import com.cmcorg20230301.be.engine.security.exception.BaseBizCodeEnum;
 import com.cmcorg20230301.be.engine.security.mapper.SysTenantMapper;
 import com.cmcorg20230301.be.engine.security.mapper.SysTenantRefUserMapper;
 import com.cmcorg20230301.be.engine.security.model.dto.MyTenantPageDTO;
-import com.cmcorg20230301.be.engine.security.model.entity.BaseEntity;
-import com.cmcorg20230301.be.engine.security.model.entity.BaseEntityNoId;
-import com.cmcorg20230301.be.engine.security.model.entity.SysTenantDO;
-import com.cmcorg20230301.be.engine.security.model.entity.SysTenantRefUserDO;
+import com.cmcorg20230301.be.engine.security.model.entity.*;
 import com.cmcorg20230301.be.engine.security.model.vo.ApiResultVO;
 import lombok.SneakyThrows;
 import org.jetbrains.annotations.NotNull;
@@ -190,11 +187,11 @@ public class SysTenantUtil {
                 sysTenantDO.setParentId(BaseConstant.NEGATIVE_ONE);
                 sysTenantDO.setName(BaseConstant.TENANT_NAME);
 
-                    tenantDOList.add(sysTenantDO); // 添加：默认租户
+                tenantDOList.add(sysTenantDO); // 添加：默认租户
 
-                    return MyTreeUtil.getIdAndDeepIdSetMap(tenantDOList, null);
+                return MyTreeUtil.getIdAndDeepIdSetMap(tenantDOList, null);
 
-                }).get(tenantId);
+            }).get(tenantId);
 
     }
 
@@ -270,11 +267,13 @@ public class SysTenantUtil {
 
     /**
      * 处理：BaseTenantInsertOrUpdateDTO
+     *
+     * @param getTenantIdBaseEntityFunc1 备注：只会使用 BaseEntityNoIdFather的 tenantId属性
      */
     @SneakyThrows
     public static void handleBaseTenantInsertOrUpdateDTO(@NotNull BaseTenantInsertOrUpdateDTO dto,
         @NotNull Func1<Set<Long>, Long> getCheckIllegalFunc1,
-        @NotNull Func1<Long, BaseEntity> getTenantIdBaseEntityFunc1) {
+        @NotNull Func1<Long, ? extends BaseEntityNoIdFather> getTenantIdBaseEntityFunc1) {
 
         Long id = dto.getId();
 
@@ -289,21 +288,21 @@ public class SysTenantUtil {
 
         if (tenantId == null) {
 
-            BaseEntity baseEntity = getTenantIdBaseEntityFunc1.call(id);
+            BaseEntityNoIdFather baseEntityNoIdFather = getTenantIdBaseEntityFunc1.call(id);
 
-            if (baseEntity == null) {
+            if (baseEntityNoIdFather == null) {
 
                 ApiResultVO.error("操作失败：id不存在", id);
 
             }
 
-            if (baseEntity.getTenantId() == null) {
+            if (baseEntityNoIdFather.getTenantId() == null) {
 
                 ApiResultVO.errorMsg("操作失败：tenantId为空，请联系管理员");
 
             }
 
-            dto.setTenantId(baseEntity.getTenantId());
+            dto.setTenantId(baseEntityNoIdFather.getTenantId());
 
         }
 

@@ -16,8 +16,8 @@ import java.math.BigDecimal;
 @Schema(description = "主表：用户钱包")
 public class SysUserWalletDO extends BaseEntityNoId {
 
-    @Schema(description = "用户主键 id")
     @TableId(type = IdType.INPUT)
+    @Schema(description = "用户主键 id")
     private Long id;
 
     @Schema(description = "总金额")
