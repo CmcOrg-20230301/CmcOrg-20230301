@@ -44,7 +44,7 @@ public class MyEmailUtil {
             sysEmailConfigurationService.lambdaQuery().eq(SysEmailConfigurationDO::getId, tenantId).one();
 
         if (sysEmailConfigurationDO == null) {
-            ApiResultVO.error("操作失败：未配置短信，请联系管理员", tenantId);
+            ApiResultVO.error("操作失败：未配置邮箱参数，请联系管理员", tenantId);
         }
 
         // 消息内容，加上统一的前缀
