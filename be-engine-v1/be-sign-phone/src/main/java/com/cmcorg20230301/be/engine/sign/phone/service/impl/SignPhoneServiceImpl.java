@@ -5,9 +5,10 @@ import com.baomidou.mybatisplus.extension.toolkit.ChainWrappers;
 import com.cmcorg20230301.be.engine.model.model.dto.NotBlankCodeDTO;
 import com.cmcorg20230301.be.engine.redisson.model.enums.BaseRedisKeyEnum;
 import com.cmcorg20230301.be.engine.security.mapper.SysUserMapper;
+import com.cmcorg20230301.be.engine.security.model.entity.SysUserConfigurationDO;
 import com.cmcorg20230301.be.engine.security.model.entity.SysUserDO;
 import com.cmcorg20230301.be.engine.security.model.vo.ApiResultVO;
-import com.cmcorg20230301.be.engine.security.properties.SecurityProperties;
+import com.cmcorg20230301.be.engine.security.service.SysUserConfigurationService;
 import com.cmcorg20230301.be.engine.security.util.UserUtil;
 import com.cmcorg20230301.be.engine.sign.helper.exception.BizCodeEnum;
 import com.cmcorg20230301.be.engine.sign.helper.util.SignUtil;
@@ -27,7 +28,7 @@ public class SignPhoneServiceImpl implements SignPhoneService {
     SysUserMapper sysUserMapper;
 
     @Resource
-    SecurityProperties securityProperties;
+    SysUserConfigurationService sysUserConfigurationService;
 
     /**
      * 注册-发送验证码
@@ -35,7 +36,7 @@ public class SignPhoneServiceImpl implements SignPhoneService {
     @Override
     public String signUpSendCode(PhoneNotBlankDTO dto) {
 
-        checkSignUpEnable(); // 检查：是否允许注册
+        checkSignUpEnable(dto.getTenantId()); // 检查：是否允许注册
 
         String key = PRE_REDIS_KEY_ENUM + dto.getPhone();
 
@@ -48,9 +49,12 @@ public class SignPhoneServiceImpl implements SignPhoneService {
     /**
      * 检查：是否允许注册
      */
-    private void checkSignUpEnable() {
+    private void checkSignUpEnable(Long tenantId) {
 
-        if (BooleanUtil.isFalse(securityProperties.getPhoneSignUpEnable())) {
+        SysUserConfigurationDO sysUserConfigurationDO =
+            sysUserConfigurationService.getSysUserConfigurationDoByTenantId(tenantId);
+
+        if (BooleanUtil.isFalse(sysUserConfigurationDO.getPhoneSignUpEnable())) {
             ApiResultVO.errorMsg("操作失败：不允许手机号码注册，请联系管理员");
         }
 
@@ -62,7 +66,7 @@ public class SignPhoneServiceImpl implements SignPhoneService {
     @Override
     public String signUp(SignPhoneSignUpDTO dto) {
 
-        checkSignUpEnable(); // 检查：是否允许注册
+        checkSignUpEnable(dto.getTenantId()); // 检查：是否允许注册
 
         return SignUtil
             .signUp(dto.getPassword(), dto.getOriginPassword(), dto.getCode(), PRE_REDIS_KEY_ENUM, dto.getPhone(),

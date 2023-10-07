@@ -7,30 +7,52 @@ export interface NotNullId {
     id?: string // 主键id，required：true，format：int64
 }
 
-export interface SysUserInfoByIdVO {
-    postIdSet?: string[] // 岗位 idSet，format：int64
+export interface SysUserDO {
     wxOpenId?: string // 微信 openId，可以为空
-    avatarFileId?: string // 头像 fileId（文件主键 id），format：int64
     wxAppId?: string // 微信 appId，可以为空
-    bio?: string // 个人简介
     updateTime?: string // 修改时间，format：date-time
     remark?: string // 备注
     delFlag?: boolean // 是否注销，未使用，而是采取直接删除的方式，目的：防止数据量越来越大
     version?: number // 乐观锁，format：int32
+    parentId?: string // 父节点id（顶级则为0），format：int64
     updateId?: string // 修改人id，format：int64
     password?: string // 密码，可为空，如果为空，则登录时需要提示【进行忘记密码操作】
+    createTime?: string // 创建时间，format：date-time
+    phone?: string // 手机号，可以为空
+    createId?: string // 创建人id，format：int64
+    signInName?: string // 登录名，可以为空
+    tenantId?: string // 租户 id，format：int64
+    id?: string // 主键id，format：int64
+    enableFlag?: boolean // 正常/冻结
+    email?: string // 邮箱，可以为空
+}
+
+export interface SysUserInfoByIdVO {
+    wxOpenId?: string // 微信 openId，可以为空
+    bio?: string // 个人简介
+    remark?: string // 备注
+    delFlag?: boolean // 是否注销，未使用，而是采取直接删除的方式，目的：防止数据量越来越大
+    updateId?: string // 修改人id，format：int64
+    password?: string // 密码，可为空，如果为空，则登录时需要提示【进行忘记密码操作】
+    children?: SysUserDO[] // 子节点
+    nickname?: string // 昵称
+    tenantIdSet?: string[] // 租户 idSet，format：int64
+    id?: string // 主键id，format：int64
+    enableFlag?: boolean // 正常/冻结
+    email?: string // 邮箱，可以为空
+    postIdSet?: string[] // 岗位 idSet，format：int64
+    avatarFileId?: string // 头像 fileId（文件主键 id），format：int64
+    wxAppId?: string // 微信 appId，可以为空
+    updateTime?: string // 修改时间，format：date-time
+    version?: number // 乐观锁，format：int32
+    parentId?: string // 父节点id（顶级则为0），format：int64
     deptIdSet?: string[] // 部门 idSet，format：int64
     createTime?: string // 创建时间，format：date-time
     phone?: string // 手机号，可以为空
     createId?: string // 创建人id，format：int64
     signInName?: string // 登录名，可以为空
     tenantId?: string // 租户 id，format：int64
-    nickname?: string // 昵称
     roleIdSet?: string[] // 角色 idSet，format：int64
-    tenantIdSet?: string[] // 租户 idSet，format：int64
-    id?: string // 主键id，format：int64
-    enableFlag?: boolean // 正常/冻结
-    email?: string // 邮箱，可以为空
 }
 
 // 通过主键id，查看详情

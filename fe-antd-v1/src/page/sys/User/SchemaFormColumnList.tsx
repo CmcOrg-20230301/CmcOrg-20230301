@@ -37,7 +37,7 @@ const SchemaFormColumnList = (formRef: React.MutableRefObject<FormInstance<SysUs
                 rules: [
                     {
                         min: 0,
-                        max: 200,
+                        max: 100,
                         pattern: validate.email.regex,
                         message: validate.email.errorMsg,
                     },
@@ -52,7 +52,7 @@ const SchemaFormColumnList = (formRef: React.MutableRefObject<FormInstance<SysUs
                 rules: [
                     {
                         min: 0,
-                        max: 200,
+                        max: 100,
                         pattern: validate.phone.regex,
                         message: validate.phone.errorMsg,
                     },

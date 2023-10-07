@@ -18,6 +18,8 @@ public enum SysUserWalletWithdrawStatusEnum {
 
     REJECT(301), // 已拒绝
 
+    CANCEL(401), // 已取消
+
     ;
 
     @EnumValue

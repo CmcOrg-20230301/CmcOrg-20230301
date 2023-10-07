@@ -27,6 +27,7 @@ public class UserSelfServiceImpl extends ServiceImpl<SysUserMapper, SysUserDO> i
 
     @Resource
     SecurityProperties securityProperties;
+
     @Resource
     SysUserInfoMapper sysUserInfoMapper;
 

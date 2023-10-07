@@ -4,9 +4,10 @@ import cn.hutool.core.util.BooleanUtil;
 import com.baomidou.mybatisplus.extension.toolkit.ChainWrappers;
 import com.cmcorg20230301.be.engine.redisson.model.enums.BaseRedisKeyEnum;
 import com.cmcorg20230301.be.engine.security.mapper.SysUserMapper;
+import com.cmcorg20230301.be.engine.security.model.entity.SysUserConfigurationDO;
 import com.cmcorg20230301.be.engine.security.model.entity.SysUserDO;
 import com.cmcorg20230301.be.engine.security.model.vo.ApiResultVO;
-import com.cmcorg20230301.be.engine.security.properties.SecurityProperties;
+import com.cmcorg20230301.be.engine.security.service.SysUserConfigurationService;
 import com.cmcorg20230301.be.engine.security.util.UserUtil;
 import com.cmcorg20230301.be.engine.sign.helper.util.SignUtil;
 import com.cmcorg20230301.be.engine.sign.signinname.model.dto.*;
@@ -24,7 +25,7 @@ public class SignSignInNameServiceImpl implements SignSignInNameService {
     SysUserMapper sysUserMapper;
 
     @Resource
-    SecurityProperties securityProperties;
+    SysUserConfigurationService sysUserConfigurationService;
 
     /**
      * 注册
@@ -32,7 +33,10 @@ public class SignSignInNameServiceImpl implements SignSignInNameService {
     @Override
     public String signUp(SignSignInNameSignUpDTO dto) {
 
-        if (BooleanUtil.isFalse(securityProperties.getSignInNameSignUpEnable())) {
+        SysUserConfigurationDO sysUserConfigurationDO =
+            sysUserConfigurationService.getSysUserConfigurationDoByTenantId(dto.getTenantId());
+
+        if (BooleanUtil.isFalse(sysUserConfigurationDO.getSignInNameSignUpEnable())) {
             ApiResultVO.errorMsg("操作失败：不允许用户名注册，请联系管理员");
         }
 

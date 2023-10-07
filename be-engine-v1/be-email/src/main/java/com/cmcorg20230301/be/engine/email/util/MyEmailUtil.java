@@ -1,13 +1,17 @@
 package com.cmcorg20230301.be.engine.email.util;
 
+import cn.hutool.core.util.BooleanUtil;
 import cn.hutool.core.util.StrUtil;
+import cn.hutool.extra.mail.MailAccount;
 import cn.hutool.extra.mail.MailException;
 import cn.hutool.extra.mail.MailUtil;
 import com.cmcorg20230301.be.engine.email.enums.EmailMessageEnum;
 import com.cmcorg20230301.be.engine.email.exception.BizCodeEnum;
-import com.cmcorg20230301.be.engine.email.properties.EmailProperties;
+import com.cmcorg20230301.be.engine.email.model.entity.SysEmailConfigurationDO;
+import com.cmcorg20230301.be.engine.email.service.SysEmailConfigurationService;
 import com.cmcorg20230301.be.engine.security.model.vo.ApiResultVO;
-import com.cmcorg20230301.be.engine.security.properties.CommonProperties;
+import com.cmcorg20230301.be.engine.security.util.SysTenantUtil;
+import org.jetbrains.annotations.Nullable;
 import org.springframework.stereotype.Component;
 
 /**
@@ -16,33 +20,53 @@ import org.springframework.stereotype.Component;
 @Component
 public class MyEmailUtil {
 
-    private static String platformName;
-    private static EmailProperties emailProperties;
+    private static SysEmailConfigurationService sysEmailConfigurationService;
 
-    public MyEmailUtil(CommonProperties commonProperties, EmailProperties emailProperties) {
+    public MyEmailUtil(SysEmailConfigurationService sysEmailConfigurationService) {
 
-        MyEmailUtil.platformName = "【" + commonProperties.getPlatformName() + "】";
-        MyEmailUtil.emailProperties = emailProperties;
+        MyEmailUtil.sysEmailConfigurationService = sysEmailConfigurationService;
 
     }
 
     /**
      * 发送邮件
      */
-    public static void send(String to, EmailMessageEnum emailMessageEnum, String content, boolean isHtml) {
+    public static void send(String to, EmailMessageEnum emailMessageEnum, String content, boolean isHtml,
+        @Nullable Long tenantId) {
 
         if (StrUtil.isBlank(to)) {
             ApiResultVO.sysError(); // 因为这里 to字段都是由程序来赋值的，所以基本不会为空
         }
 
+        tenantId = SysTenantUtil.getTenantId(tenantId);
+
+        SysEmailConfigurationDO sysEmailConfigurationDO =
+            sysEmailConfigurationService.lambdaQuery().eq(SysEmailConfigurationDO::getId, tenantId).one();
+
+        if (sysEmailConfigurationDO == null) {
+            ApiResultVO.error("操作失败：未配置短信，请联系管理员", tenantId);
+        }
+
         // 消息内容，加上统一的前缀
-        content = platformName + StrUtil.format(emailMessageEnum.getContentTemp(), content);
+        content = "【" + sysEmailConfigurationDO.getContentPre() + "】" + StrUtil
+            .format(emailMessageEnum.getContentTemp(), content);
 
         String finalContent = content;
 
+        MailAccount mailAccount = new MailAccount();
+
+        mailAccount.setPort(sysEmailConfigurationDO.getPort());
+        mailAccount.setFrom(sysEmailConfigurationDO.getFromEmail());
+        mailAccount.setPass(sysEmailConfigurationDO.getPass());
+
+        if (BooleanUtil.isTrue(sysEmailConfigurationDO.getSslFlag())) {
+            mailAccount.setStarttlsEnable(true);
+            mailAccount.setSslEnable(true);
+        }
+
         try {
 
-            MailUtil.send(emailProperties.getMailAccount(), to, emailMessageEnum.getSubject(), finalContent, isHtml);
+            MailUtil.send(mailAccount, to, emailMessageEnum.getSubject(), finalContent, isHtml);
 
         } catch (MailException e) {
 
