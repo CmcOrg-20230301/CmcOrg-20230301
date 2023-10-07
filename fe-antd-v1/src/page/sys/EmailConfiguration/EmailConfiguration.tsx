@@ -2,6 +2,7 @@ import React, {useRef} from "react";
 import {BetaSchemaForm, FormInstance, ProFormColumnsType} from "@ant-design/pro-components";
 import {ExecConfirm, ToastSuccess} from "@/util/ToastUtil";
 import {
+    SysEmailConfigurationDO,
     SysEmailConfigurationInfoById,
     SysEmailConfigurationInsertOrUpdate,
     SysEmailConfigurationInsertOrUpdateDTO
@@ -127,7 +128,7 @@ export default function () {
 
                         name: ['id'],
 
-                        columns: ({id}: SysEmailConfigurationInsertOrUpdateDTO): ProFormColumnsType<SysEmailConfigurationInsertOrUpdateDTO>[] => {
+                        columns: ({id}: SysEmailConfigurationDO): ProFormColumnsType<SysEmailConfigurationInsertOrUpdateDTO>[] => {
 
                             return id ?
 

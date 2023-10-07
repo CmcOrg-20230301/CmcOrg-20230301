@@ -1,9 +1,12 @@
 import React, {useRef} from "react";
 import {BetaSchemaForm, FormInstance} from "@ant-design/pro-components";
 import {ExecConfirm, ToastSuccess} from "@/util/ToastUtil";
-import {SysUserConfigurationInsertOrUpdateDTO} from "@/api/http/UserConfiguration";
+import {
+    SysUserConfigurationInfoById,
+    SysUserConfigurationInsertOrUpdate,
+    SysUserConfigurationInsertOrUpdateDTO
+} from "@/api/http/SysUserConfiguration";
 import {YesNoDict} from "@/util/DictUtil";
-import {SysUserConfigurationInfoById, SysUserConfigurationInsertOrUpdate} from "@/api/http/SysUserConfiguration";
 
 // 用户配置
 export default function () {
