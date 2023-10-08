@@ -185,10 +185,13 @@ public class SysUserWalletServiceImpl extends ServiceImpl<SysUserWalletMapper, S
                 sysUserWalletLogDO.setUserId(item.getId());
                 sysUserWalletLogDO.setName(sysUserWalletLogTypeEnum.getName());
                 sysUserWalletLogDO.setType(sysUserWalletLogTypeEnum);
+
                 sysUserWalletLogDO.setTotalMoneyPre(preTotalMoney);
                 sysUserWalletLogDO.setTotalMoneySuf(item.getTotalMoney());
+
                 sysUserWalletLogDO.setWithdrawableMoneyPre(item.getWithdrawableMoney());
                 sysUserWalletLogDO.setWithdrawableMoneySuf(item.getWithdrawableMoney());
+
                 sysUserWalletLogDO.setId(IdGeneratorUtil.nextId());
                 sysUserWalletLogDO.setEnableFlag(true);
                 sysUserWalletLogDO.setDelFlag(false);
@@ -198,6 +201,9 @@ public class SysUserWalletServiceImpl extends ServiceImpl<SysUserWalletMapper, S
                 sysUserWalletLogDO.setCreateTime(date);
                 sysUserWalletLogDO.setUpdateId(currentUserId);
                 sysUserWalletLogDO.setUpdateTime(date);
+
+                // 通用：处理：SysUserWalletLogDO
+                commonHandleSysUserWalletLogDO(sysUserWalletLogDO);
 
                 sysUserWalletLogDoList.add(sysUserWalletLogDO);
 
@@ -214,6 +220,19 @@ public class SysUserWalletServiceImpl extends ServiceImpl<SysUserWalletMapper, S
         }
 
         return BaseBizCodeEnum.OK;
+
+    }
+
+    /**
+     * 通用：处理：SysUserWalletLogDO
+     */
+    private void commonHandleSysUserWalletLogDO(SysUserWalletLogDO sysUserWalletLogDO) {
+
+        sysUserWalletLogDO
+            .setTotalMoneyChange(sysUserWalletLogDO.getTotalMoneySuf().subtract(sysUserWalletLogDO.getTotalMoneyPre()));
+
+        sysUserWalletLogDO.setWithdrawableMoneyChange(
+            sysUserWalletLogDO.getWithdrawableMoneySuf().subtract(sysUserWalletLogDO.getWithdrawableMoneyPre()));
 
     }
 
@@ -282,10 +301,13 @@ public class SysUserWalletServiceImpl extends ServiceImpl<SysUserWalletMapper, S
                 sysUserWalletLogDO.setUserId(item.getId());
                 sysUserWalletLogDO.setName(sysUserWalletLogTypeEnum.getName());
                 sysUserWalletLogDO.setType(sysUserWalletLogTypeEnum);
+
                 sysUserWalletLogDO.setTotalMoneyPre(item.getTotalMoney());
                 sysUserWalletLogDO.setTotalMoneySuf(item.getTotalMoney());
+
                 sysUserWalletLogDO.setWithdrawableMoneyPre(preWithdrawableMoney);
                 sysUserWalletLogDO.setWithdrawableMoneySuf(item.getWithdrawableMoney());
+
                 sysUserWalletLogDO.setId(IdGeneratorUtil.nextId());
                 sysUserWalletLogDO.setEnableFlag(true);
                 sysUserWalletLogDO.setDelFlag(false);
@@ -295,6 +317,9 @@ public class SysUserWalletServiceImpl extends ServiceImpl<SysUserWalletMapper, S
                 sysUserWalletLogDO.setCreateTime(date);
                 sysUserWalletLogDO.setUpdateId(currentUserId);
                 sysUserWalletLogDO.setUpdateTime(date);
+
+                // 通用：处理：SysUserWalletLogDO
+                commonHandleSysUserWalletLogDO(sysUserWalletLogDO);
 
                 sysUserWalletLogDoList.add(sysUserWalletLogDO);
 

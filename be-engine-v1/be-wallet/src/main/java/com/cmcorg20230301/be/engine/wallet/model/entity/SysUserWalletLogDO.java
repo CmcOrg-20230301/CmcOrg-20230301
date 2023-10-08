@@ -27,11 +27,17 @@ public class SysUserWalletLogDO extends BaseEntity {
     @Schema(description = "总金额，前")
     private BigDecimal totalMoneyPre;
 
+    @Schema(description = "总金额，变")
+    private BigDecimal totalMoneyChange;
+
     @Schema(description = "总金额，后")
     private BigDecimal totalMoneySuf;
 
     @Schema(description = "可提现的钱，前")
     private BigDecimal withdrawableMoneyPre;
+
+    @Schema(description = "可提现的钱，变")
+    private BigDecimal withdrawableMoneyChange;
 
     @Schema(description = "可提现的钱，后")
     private BigDecimal withdrawableMoneySuf;
