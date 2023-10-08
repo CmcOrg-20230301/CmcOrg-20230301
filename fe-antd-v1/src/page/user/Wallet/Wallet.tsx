@@ -5,8 +5,6 @@ import {WalletOutlined} from "@ant-design/icons";
 import UserWallet from "@/page/user/Wallet/UserWallet";
 
 export const USER_WALLET_KEY_ONE = "钱包"
-export const USER_WALLET_KEY_TWO = "钱包日志"
-export const USER_WALLET_KEY_THREE = "提现记录"
 
 // 用户钱包
 export default function () {
