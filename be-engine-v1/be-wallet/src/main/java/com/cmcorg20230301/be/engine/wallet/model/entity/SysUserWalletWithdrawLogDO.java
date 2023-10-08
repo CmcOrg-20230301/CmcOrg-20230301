@@ -21,16 +21,16 @@ public class SysUserWalletWithdrawLogDO extends BaseEntity {
     @Schema(description = "提现金额")
     private BigDecimal withdrawMoney;
 
-    @Schema(description = "卡号")
+    @Schema(description = "冗余字段：卡号")
     private String bankCardNo;
 
-    @Schema(description = "开户行")
+    @Schema(description = "冗余字段：开户行")
     private String openBankName;
 
-    @Schema(description = "支行")
+    @Schema(description = "冗余字段：支行")
     private String branchBankName;
 
-    @Schema(description = "收款人姓名")
+    @Schema(description = "冗余字段：收款人姓名")
     private String payeeName;
 
     @Schema(description = "提现状态")

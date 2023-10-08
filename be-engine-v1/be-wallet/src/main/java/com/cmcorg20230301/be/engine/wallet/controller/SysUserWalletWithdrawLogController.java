@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.cmcorg20230301.be.engine.model.model.dto.NotEmptyIdSet;
 import com.cmcorg20230301.be.engine.model.model.dto.NotNullId;
 import com.cmcorg20230301.be.engine.model.model.dto.NotNullIdAndStringValue;
+import com.cmcorg20230301.be.engine.model.model.vo.DictIntegerVO;
 import com.cmcorg20230301.be.engine.security.model.vo.ApiResultVO;
 import com.cmcorg20230301.be.engine.wallet.model.dto.SysUserWalletWithdrawLogInsertOrUpdateUserSelfDTO;
 import com.cmcorg20230301.be.engine.wallet.model.dto.SysUserWalletWithdrawLogPageDTO;
@@ -28,6 +29,12 @@ public class SysUserWalletWithdrawLogController {
 
     @Resource
     SysUserWalletWithdrawLogService baseService;
+
+    @Operation(summary = "下拉列表-提现状态")
+    @PostMapping("/dictList/withdrawStatus")
+    public ApiResultVO<Page<DictIntegerVO>> withdrawStatusDictList() {
+        return ApiResultVO.okData(baseService.withdrawStatusDictList());
+    }
 
     @Operation(summary = "分页排序查询")
     @PostMapping("/page")

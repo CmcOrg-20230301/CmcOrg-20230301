@@ -3,6 +3,7 @@ package com.cmcorg20230301.be.engine.wallet.service.impl;
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.lang.func.Func1;
+import cn.hutool.core.util.DesensitizedUtil;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.dynamic.datasource.annotation.DSTransactional;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -10,6 +11,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.cmcorg20230301.be.engine.model.model.dto.NotEmptyIdSet;
 import com.cmcorg20230301.be.engine.model.model.dto.NotNullId;
 import com.cmcorg20230301.be.engine.model.model.dto.NotNullIdAndStringValue;
+import com.cmcorg20230301.be.engine.model.model.vo.DictIntegerVO;
 import com.cmcorg20230301.be.engine.redisson.model.enums.BaseRedisKeyEnum;
 import com.cmcorg20230301.be.engine.redisson.util.RedissonUtil;
 import com.cmcorg20230301.be.engine.security.exception.BaseBizCodeEnum;
@@ -33,7 +35,9 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Set;
 
 @Service
@@ -45,6 +49,24 @@ public class SysUserWalletWithdrawLogServiceImpl
     SysUserWalletService sysUserWalletService;
 
     /**
+     * 下拉列表-提现状态
+     */
+    @Override
+    public Page<DictIntegerVO> withdrawStatusDictList() {
+
+        List<DictIntegerVO> dictVOList = new ArrayList<>();
+
+        for (SysUserWalletWithdrawStatusEnum item : SysUserWalletWithdrawStatusEnum.values()) {
+
+            dictVOList.add(new DictIntegerVO(item.getCode(), item.getName()));
+
+        }
+
+        return new Page<DictIntegerVO>().setTotal(dictVOList.size()).setRecords(dictVOList);
+
+    }
+
+    /**
      * 分页排序查询
      */
     @Override
@@ -53,19 +75,35 @@ public class SysUserWalletWithdrawLogServiceImpl
         // 处理：MyTenantPageDTO
         SysTenantUtil.handleMyTenantPageDTO(dto, true);
 
-        return lambdaQuery().eq(dto.getUserId() != null, SysUserWalletWithdrawLogDO::getUserId, dto.getUserId())
-            .like(StrUtil.isNotBlank(dto.getBankCardNo()), SysUserWalletWithdrawLogDO::getBankCardNo,
-                dto.getBankCardNo()) //
-            .like(StrUtil.isNotBlank(dto.getOpenBankName()), SysUserWalletWithdrawLogDO::getOpenBankName,
-                dto.getOpenBankName()) //
-            .like(StrUtil.isNotBlank(dto.getBranchBankName()), SysUserWalletWithdrawLogDO::getOpenBankName,
-                dto.getBranchBankName()) //
-            .like(StrUtil.isNotBlank(dto.getPayeeName()), SysUserWalletWithdrawLogDO::getPayeeName,
-                dto.getPayeeName()) //
-            .eq(dto.getWithdrawStatus() != null, SysUserWalletWithdrawLogDO::getWithdrawStatus,
-                dto.getWithdrawStatus()) //
-            .in(BaseEntityNoId::getTenantId, dto.getTenantIdSet()) //
-            .orderByDesc(SysUserWalletWithdrawLogDO::getUpdateTime).page(dto.page(true));
+        Page<SysUserWalletWithdrawLogDO> page =
+            lambdaQuery().eq(dto.getUserId() != null, SysUserWalletWithdrawLogDO::getUserId, dto.getUserId())
+                .like(StrUtil.isNotBlank(dto.getBankCardNo()), SysUserWalletWithdrawLogDO::getBankCardNo,
+                    dto.getBankCardNo()) //
+                .like(StrUtil.isNotBlank(dto.getOpenBankName()), SysUserWalletWithdrawLogDO::getOpenBankName,
+                    dto.getOpenBankName()) //
+                .like(StrUtil.isNotBlank(dto.getBranchBankName()), SysUserWalletWithdrawLogDO::getOpenBankName,
+                    dto.getBranchBankName()) //
+                .like(StrUtil.isNotBlank(dto.getPayeeName()), SysUserWalletWithdrawLogDO::getPayeeName,
+                    dto.getPayeeName()) //
+                .eq(dto.getWithdrawStatus() != null, SysUserWalletWithdrawLogDO::getWithdrawStatus,
+                    dto.getWithdrawStatus()) //
+                .le(dto.getCtEndTime() != null, SysUserWalletWithdrawLogDO::getCreateTime, dto.getCtEndTime())
+                .ge(dto.getCtBeginTime() != null, SysUserWalletWithdrawLogDO::getCreateTime, dto.getCtBeginTime())
+                .in(BaseEntityNoId::getTenantId, dto.getTenantIdSet()) //
+                .orderByDesc(SysUserWalletWithdrawLogDO::getUpdateTime).page(dto.page(true));
+
+        for (SysUserWalletWithdrawLogDO item : page.getRecords()) {
+
+            item.setBankCardNo(DesensitizedUtil.bankCard(item.getBankCardNo())); // 脱敏
+
+            item.setBranchBankName(DesensitizedUtil
+                .desensitized(item.getBranchBankName(), DesensitizedUtil.DesensitizedType.ADDRESS)); // 脱敏
+
+            item.setPayeeName(DesensitizedUtil.chineseName(item.getPayeeName())); // 脱敏
+
+        }
+
+        return page;
 
     }
 
@@ -362,6 +400,7 @@ public class SysUserWalletWithdrawLogServiceImpl
                 }
 
                 sysUserWalletWithdrawLogDO.setWithdrawStatus(SysUserWalletWithdrawStatusEnum.REJECT);
+                sysUserWalletWithdrawLogDO.setRejectReason(notNullIdAndStringValue.getValue());
 
                 updateById(sysUserWalletWithdrawLogDO); // 先更新提现记录状态，原因：如果后面报错了，则会回滚该更新
 

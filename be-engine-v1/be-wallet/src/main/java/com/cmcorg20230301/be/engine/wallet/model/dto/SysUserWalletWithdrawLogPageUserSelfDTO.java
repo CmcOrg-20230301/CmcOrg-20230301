@@ -6,6 +6,8 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
+import java.util.Date;
+
 @EqualsAndHashCode(callSuper = true)
 @Data
 public class SysUserWalletWithdrawLogPageUserSelfDTO extends MyTenantPageDTO {
@@ -24,5 +26,11 @@ public class SysUserWalletWithdrawLogPageUserSelfDTO extends MyTenantPageDTO {
 
     @Schema(description = "提现状态")
     private SysUserWalletWithdrawStatusEnum withdrawStatus;
+
+    @Schema(description = "起始时间：创建时间")
+    private Date ctBeginTime;
+
+    @Schema(description = "结束时间：创建时间")
+    private Date ctEndTime;
 
 }
