@@ -20,19 +20,19 @@ public class SysUserWalletWithdrawLogInsertOrUpdateUserSelfDTO extends BaseTenan
     private BigDecimal withdrawMoney;
 
     @NotBlank
-    @Schema(description = "银行")
-    private String bankName;
-
-    @NotBlank
-    @Schema(description = "户名")
-    private String accountName;
-
-    @NotBlank
     @Schema(description = "卡号")
     private String bankCardNo;
 
     @NotBlank
     @Schema(description = "开户行")
     private String openBankName;
+
+    @NotBlank
+    @Schema(description = "支行")
+    private String branchBankName;
+
+    @NotBlank
+    @Schema(description = "收款人姓名")
+    private String payeeName;
 
 }

@@ -54,13 +54,14 @@ public class SysUserWalletWithdrawLogServiceImpl
         SysTenantUtil.handleMyTenantPageDTO(dto, true);
 
         return lambdaQuery().eq(dto.getUserId() != null, SysUserWalletWithdrawLogDO::getUserId, dto.getUserId())
-            .like(StrUtil.isNotBlank(dto.getBankName()), SysUserWalletWithdrawLogDO::getBankName, dto.getBankName()) //
-            .like(StrUtil.isNotBlank(dto.getAccountName()), SysUserWalletWithdrawLogDO::getAccountName,
-                dto.getAccountName()) //
             .like(StrUtil.isNotBlank(dto.getBankCardNo()), SysUserWalletWithdrawLogDO::getBankCardNo,
                 dto.getBankCardNo()) //
             .like(StrUtil.isNotBlank(dto.getOpenBankName()), SysUserWalletWithdrawLogDO::getOpenBankName,
                 dto.getOpenBankName()) //
+            .like(StrUtil.isNotBlank(dto.getBranchBankName()), SysUserWalletWithdrawLogDO::getOpenBankName,
+                dto.getBranchBankName()) //
+            .like(StrUtil.isNotBlank(dto.getPayeeName()), SysUserWalletWithdrawLogDO::getPayeeName,
+                dto.getPayeeName()) //
             .eq(dto.getWithdrawStatus() != null, SysUserWalletWithdrawLogDO::getWithdrawStatus,
                 dto.getWithdrawStatus()) //
             .in(BaseEntityNoId::getTenantId, dto.getTenantIdSet()) //
@@ -178,10 +179,10 @@ public class SysUserWalletWithdrawLogServiceImpl
 
         sysUserWalletWithdrawLogDO.setUserId(currentUserId);
         sysUserWalletWithdrawLogDO.setWithdrawMoney(dto.getWithdrawMoney());
-        sysUserWalletWithdrawLogDO.setBankName(dto.getBankName());
-        sysUserWalletWithdrawLogDO.setAccountName(dto.getAccountName());
-        sysUserWalletWithdrawLogDO.setBankCardNo(dto.getBankCardNo());
         sysUserWalletWithdrawLogDO.setOpenBankName(dto.getOpenBankName());
+        sysUserWalletWithdrawLogDO.setPayeeName(dto.getPayeeName());
+        sysUserWalletWithdrawLogDO.setBankCardNo(dto.getBankCardNo());
+        sysUserWalletWithdrawLogDO.setBranchBankName(dto.getBranchBankName());
 
         sysUserWalletWithdrawLogDO.setWithdrawStatus(SysUserWalletWithdrawStatusEnum.DRAFT);
 
@@ -304,7 +305,7 @@ public class SysUserWalletWithdrawLogServiceImpl
     }
 
     /**
-     * 已成功-用户的提现记录
+     * 成功-用户的提现记录
      */
     @Override
     public String success(NotNullId notNullId) {
@@ -337,7 +338,7 @@ public class SysUserWalletWithdrawLogServiceImpl
     }
 
     /**
-     * 已拒绝-用户的提现记录
+     * 拒绝-用户的提现记录
      */
     @Override
     public String reject(NotNullIdAndStringValue notNullIdAndStringValue) {

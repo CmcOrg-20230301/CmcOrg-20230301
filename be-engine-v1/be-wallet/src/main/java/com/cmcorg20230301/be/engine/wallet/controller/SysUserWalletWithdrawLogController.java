@@ -77,14 +77,14 @@ public class SysUserWalletWithdrawLogController {
         return ApiResultVO.okMsg(baseService.accept(notNullId));
     }
 
-    @Operation(summary = "已成功-用户的提现记录")
+    @Operation(summary = "成功-用户的提现记录")
     @PostMapping("/success")
     @PreAuthorize("hasAuthority('sysUserWalletWithdrawLog:success')")
     public ApiResultVO<String> success(@RequestBody @Valid NotNullId notNullId) {
         return ApiResultVO.okMsg(baseService.success(notNullId));
     }
 
-    @Operation(summary = "已拒绝-用户的提现记录")
+    @Operation(summary = "拒绝-用户的提现记录")
     @PostMapping("/reject")
     @PreAuthorize("hasAuthority('sysUserWalletWithdrawLog:reject')")
     public ApiResultVO<String> reject(@RequestBody @Valid NotNullIdAndStringValue notNullIdAndStringValue) {
