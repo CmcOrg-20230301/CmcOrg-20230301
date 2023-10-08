@@ -17,15 +17,7 @@ import {useAppSelector} from "@/store";
 import {List, Modal} from "antd";
 import {ValidatorUtil} from "@/util/ValidatorUtil";
 import {ExecConfirm, ToastSuccess} from "@/util/ToastUtil";
-import {
-    ModalForm,
-    ProFormCaptcha,
-    ProFormInstance,
-    ProFormText,
-    ProTable,
-    RouteContext,
-    RouteContextType
-} from "@ant-design/pro-components";
+import {ModalForm, ProFormCaptcha, ProFormInstance, ProFormText, ProTable} from "@ant-design/pro-components";
 import CommonConstant from "@/model/constant/CommonConstant";
 import {SignOut} from "@/util/UserUtil";
 import {USER_CENTER_KEY_TWO} from "@/page/user/Self/Self";
@@ -43,6 +35,7 @@ import {SysRequestDO, SysRequestPageDTO, SysRequestSelfLoginRecord} from "@/api/
 import {HandlerRegion} from "@/util/StrUtil";
 import {GetDictListByKey} from "@/util/DictUtil";
 import {UserSelfRefreshJwtSecretSuf} from "@/api/http/UserSelf";
+import {UseEffectFullScreenChange} from "@/util/DocumentUtil";
 
 interface IUserSelfSetting {
 
@@ -665,118 +658,114 @@ function RequestSelfLoginRecordModal() {
 
     const [open, setOpen] = useState(false);
 
+    const [fullScreenFlag, setFullScreenFlag] = useState<boolean>(false)
+
+    UseEffectFullScreenChange(setFullScreenFlag) // 监听是否：全屏
+
     return (
 
-        <RouteContext.Consumer>
+        <>
 
-            {(routeContextType: RouteContextType) => {
+            <a onClick={() => {
+                setOpen(true)
+            }}>查看记录</a>
 
-                return <>
+            <Modal
 
-                    <a onClick={() => {
-                        setOpen(true)
-                    }}>查看记录</a>
+                width={1200}
 
-                    <Modal
+                title={RequestSelfLoginRecordModalTitle}
 
-                        width={1200}
+                onCancel={() => setOpen(false)}
 
-                        title={RequestSelfLoginRecordModalTitle}
+                open={open}
 
-                        onCancel={() => setOpen(false)}
+                maskClosable={false}
 
-                        open={open}
+                footer={false}
 
-                        maskClosable={false}
+                className={"noFooterModal"}
 
-                        footer={false}
+            >
 
-                        className={"noFooterModal"}
+                <ProTable<SysRequestDO, SysRequestPageDTO>
 
-                    >
+                    rowKey={"id"}
 
-                        <ProTable<SysRequestDO, SysRequestPageDTO>
+                    columnEmptyText={false}
 
-                            rowKey={"id"}
+                    revalidateOnFocus={false}
 
-                            columnEmptyText={false}
+                    scroll={fullScreenFlag ? undefined : {y: 440}}
 
-                            revalidateOnFocus={false}
+                    columns={[
 
-                            scroll={{y: 440}}
+                        {
+                            title: '序号',
+                            dataIndex: 'index',
+                            valueType: 'index',
+                            width: 50,
+                        },
 
-                            columns={[
+                        {
+                            title: '创建时间',
+                            dataIndex: 'createTime',
+                            sorter: true,
+                            valueType: 'fromNow',
+                            ellipsis: true,
+                            hideInSearch: true,
+                            width: 90,
+                        },
 
-                                {
-                                    title: '序号',
-                                    dataIndex: 'index',
-                                    valueType: 'index',
-                                    width: 50,
-                                },
+                        {title: 'ip', dataIndex: 'ip', width: 120, ellipsis: true,},
 
-                                {
-                                    title: '创建时间',
-                                    dataIndex: 'createTime',
-                                    sorter: true,
-                                    valueType: 'fromNow',
-                                    ellipsis: true,
-                                    hideInSearch: true,
-                                    width: 90,
-                                },
+                        {
+                            title: 'ip位置',
+                            dataIndex: 'region',
+                            ellipsis: true,
+                            copyable: true,
+                            width: 180,
+                            renderText: (text) => {
+                                return HandlerRegion(text)
+                            }
+                        },
 
-                                {title: 'ip', dataIndex: 'ip', width: 120, ellipsis: true,},
+                        {
+                            title: '来源',
+                            dataIndex: 'category',
+                            valueType: 'select',
+                            width: 120,
+                            ellipsis: true,
+                            fieldProps: {
+                                showSearch: true,
+                            },
+                            request: () => {
+                                return GetDictListByKey('sys_request_category')
+                            }
+                        },
 
-                                {
-                                    title: 'ip位置',
-                                    dataIndex: 'region',
-                                    ellipsis: true,
-                                    copyable: true,
-                                    width: 180,
-                                    renderText: (text) => {
-                                        return HandlerRegion(text)
-                                    }
-                                },
+                    ]}
 
-                                {
-                                    title: '来源',
-                                    dataIndex: 'category',
-                                    valueType: 'select',
-                                    width: 120,
-                                    ellipsis: true,
-                                    fieldProps: {
-                                        showSearch: true,
-                                    },
-                                    request: () => {
-                                        return GetDictListByKey('sys_request_category')
-                                    }
-                                },
+                    pagination={{
+                        showQuickJumper: true,
+                        showSizeChanger: true,
+                    }}
 
-                            ]}
+                    options={{
+                        fullScreen: true,
+                    }}
 
-                            pagination={{
-                                showQuickJumper: true,
-                                showSizeChanger: true,
-                            }}
+                    request={(params, sort, filter) => {
+                        return SysRequestSelfLoginRecord({...params, sort})
+                    }}
 
-                            options={{
-                                fullScreen: true,
-                            }}
+                >
 
-                            request={(params, sort, filter) => {
-                                return SysRequestSelfLoginRecord({...params, sort})
-                            }}
+                </ProTable>
 
-                        >
+            </Modal>
 
-                        </ProTable>
-
-                    </Modal>
-
-                </>
-
-            }}
-
-        </RouteContext.Consumer>
+        </>
 
     )
 

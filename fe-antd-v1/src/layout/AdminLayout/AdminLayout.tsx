@@ -13,7 +13,7 @@ import React, {useEffect, useState} from "react";
 import {SysMenuDO, SysMenuUserSelfMenuList} from "@/api/http/SysMenu";
 import PathConstant from "@/model/constant/PathConstant";
 import {setUserSelfAvatarUrl, setUserSelfInfo, setUserSelfMenuList} from "@/store/userSlice";
-import {LogoutOutlined, UserOutlined} from "@ant-design/icons/lib";
+import {LogoutOutlined, UserOutlined, WalletOutlined} from "@ant-design/icons/lib";
 import {GetCopyright} from "@/layout/SignLayout/SignLayout";
 import {Avatar, Button, Dropdown, Space, Typography} from "antd";
 import SessionStorageKey from "@/model/constant/SessionStorageKey";
@@ -292,6 +292,21 @@ function AdminLayoutElement(props: IAdminLayoutElement) {
 
                                         {
                                             key: '2',
+                                            label: <a onClick={() => {
+
+                                                setPathname(PathConstant.SYS_USER_WALLET_PATH)
+                                                getAppNav()(PathConstant.SYS_USER_WALLET_PATH)
+
+                                            }
+                                            }>
+                                                钱包
+                                            </a>,
+
+                                            icon: <WalletOutlined/>
+                                        },
+
+                                        {
+                                            key: '3',
                                             danger: true,
                                             label: <a
                                                 onClick={() => {

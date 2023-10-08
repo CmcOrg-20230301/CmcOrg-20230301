@@ -205,7 +205,7 @@ export default function () {
 
                                 <a>
 
-                                <MyIcon
+                                    <MyIcon
 
                                         title={fileLoading ? '上传中' : '上传头像'}
 

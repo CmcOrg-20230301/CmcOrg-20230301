@@ -6,6 +6,8 @@ export default {
 
     ADMIN_PATH: '/admin',
 
-    USER_SELF_PATH: '/admin/user/self',
+    USER_SELF_PATH: '/admin/user/self', // 个人中心
+
+    SYS_USER_WALLET_PATH: '/admin/sys/userWallet', // 钱包
 
 }

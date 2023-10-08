@@ -5,6 +5,7 @@ import {AxiosRequestConfig} from "axios";
 
 export interface SysPayConfigurationPageDTO {
     current?: string // 第几页，format：int64
+    defaultFlag?: boolean // 是否是默认支付方式，备注：只会有一个默认支付方式
     appId?: string // 支付平台，应用 id
     name?: string // 支付名（不可重复）
     pageSize?: string // 每页显示条数，format：int64
@@ -17,6 +18,7 @@ export interface SysPayConfigurationPageDTO {
 }
 
 export interface SysPayConfigurationDO {
+    defaultFlag?: boolean // 是否是默认支付方式，备注：只会有一个默认支付方式
     apiV3Key?: string // 支付平台，商户APIV3密钥
     platformPublicKey?: string // 支付平台，公钥
     merchantSerialNumber?: string // 支付平台，商户证书序列号
@@ -64,6 +66,7 @@ export function SysPayConfigurationDictList(config?: AxiosRequestConfig) {
 }
 
 export interface SysPayConfigurationInsertOrUpdateDTO {
+    defaultFlag?: boolean // 是否是默认支付方式，备注：只会有一个默认支付方式
     apiV3Key?: string // 支付平台，商户APIV3密钥
     platformPublicKey?: string // 支付平台，公钥
     merchantSerialNumber?: string // 支付平台，商户证书序列号

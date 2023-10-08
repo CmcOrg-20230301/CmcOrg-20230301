@@ -75,7 +75,7 @@ export function GetByValueFromDictList(
 // 根据 list和 valueList，获取字典的 labelList值
 export function GetByValueFromDictListPro(
     dictList: DictLongListVO [],
-    valueList?: string[],
+    valueList?: (string | number)[],
     defaultValue: string = '-',
     separator: string = '，'
 ) {
@@ -111,7 +111,7 @@ export interface DictIntegerListVO {
 export interface DictLongListVO {
 
     label: string // 显示用
-    value: string // 传值用
+    value: string | number // 传值用
 
 }
 
@@ -119,7 +119,7 @@ export interface DictLongListVO {
 interface IDictResult {
 
     name?: string
-    id?: string
+    id?: string | number
 
 }
 
