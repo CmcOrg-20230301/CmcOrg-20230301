@@ -9,6 +9,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.cmcorg20230301.be.engine.model.model.dto.NotEmptyIdSet;
 import com.cmcorg20230301.be.engine.model.model.dto.NotNullId;
+import com.cmcorg20230301.be.engine.model.model.dto.NotNullIdAndStringValue;
 import com.cmcorg20230301.be.engine.redisson.model.enums.BaseRedisKeyEnum;
 import com.cmcorg20230301.be.engine.redisson.util.RedissonUtil;
 import com.cmcorg20230301.be.engine.security.exception.BaseBizCodeEnum;
@@ -23,18 +24,25 @@ import com.cmcorg20230301.be.engine.wallet.model.dto.SysUserWalletWithdrawLogIns
 import com.cmcorg20230301.be.engine.wallet.model.dto.SysUserWalletWithdrawLogPageDTO;
 import com.cmcorg20230301.be.engine.wallet.model.dto.SysUserWalletWithdrawLogPageUserSelfDTO;
 import com.cmcorg20230301.be.engine.wallet.model.entity.SysUserWalletWithdrawLogDO;
+import com.cmcorg20230301.be.engine.wallet.model.enums.SysUserWalletLogTypeEnum;
 import com.cmcorg20230301.be.engine.wallet.model.enums.SysUserWalletWithdrawStatusEnum;
+import com.cmcorg20230301.be.engine.wallet.service.SysUserWalletService;
 import com.cmcorg20230301.be.engine.wallet.service.SysUserWalletWithdrawLogService;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.Resource;
 import java.math.BigDecimal;
+import java.util.Date;
 import java.util.Set;
 
 @Service
 public class SysUserWalletWithdrawLogServiceImpl
     extends ServiceImpl<SysUserWalletWithdrawLogMapper, SysUserWalletWithdrawLogDO>
     implements SysUserWalletWithdrawLogService {
+
+    @Resource
+    SysUserWalletService sysUserWalletService;
 
     /**
      * 分页排序查询
@@ -192,9 +200,178 @@ public class SysUserWalletWithdrawLogServiceImpl
      */
     @Override
     @DSTransactional
-    public String commitUserSelf(NotEmptyIdSet notEmptyIdSet) {
+    public String commitUserSelf(NotNullId notNullId) {
 
-        return BaseBizCodeEnum.OK;
+        Long currentUserId = UserUtil.getCurrentUserId();
+
+        return RedissonUtil.doLock(BaseRedisKeyEnum.PRE_USER_WALLET_WITHDRAW_LOG.name() + notNullId.getId(), () -> {
+
+            SysUserWalletWithdrawLogDO sysUserWalletWithdrawLogDO =
+                lambdaQuery().eq(BaseEntity::getId, notNullId.getId())
+                    .eq(SysUserWalletWithdrawLogDO::getUserId, currentUserId).one();
+
+            if (sysUserWalletWithdrawLogDO == null) {
+                ApiResultVO.error(BaseBizCodeEnum.ILLEGAL_REQUEST, notNullId.getId());
+            }
+
+            // 只有草稿状态的提现记录，才可以提交
+            if (!SysUserWalletWithdrawStatusEnum.DRAFT.equals(sysUserWalletWithdrawLogDO.getWithdrawStatus())) {
+                ApiResultVO.error("操作失败：只能提交草稿状态的提现记录", notNullId.getId());
+            }
+
+            sysUserWalletWithdrawLogDO.setWithdrawStatus(SysUserWalletWithdrawStatusEnum.COMMIT);
+
+            updateById(sysUserWalletWithdrawLogDO); // 先更新提现记录状态，原因：如果后面报错了，则会回滚该更新
+
+            // 检查和增加：用户钱包的可提现余额
+            sysUserWalletService.doAddTotalMoney(currentUserId, new Date(), CollUtil.newHashSet(notNullId.getId()),
+                sysUserWalletWithdrawLogDO.getWithdrawMoney().negate(), SysUserWalletLogTypeEnum.REDUCE_WITHDRAW, true);
+
+            return BaseBizCodeEnum.OK;
+
+        });
+
+    }
+
+    /**
+     * 撤回-用户
+     */
+    @Override
+    public String revokeUserSelf(NotNullId notNullId) {
+
+        Long currentUserId = UserUtil.getCurrentUserId();
+
+        return RedissonUtil.doLock(BaseRedisKeyEnum.PRE_USER_WALLET_WITHDRAW_LOG.name() + notNullId.getId(), () -> {
+
+            SysUserWalletWithdrawLogDO sysUserWalletWithdrawLogDO =
+                lambdaQuery().eq(BaseEntity::getId, notNullId.getId())
+                    .eq(SysUserWalletWithdrawLogDO::getUserId, currentUserId).one();
+
+            if (sysUserWalletWithdrawLogDO == null) {
+                ApiResultVO.error(BaseBizCodeEnum.ILLEGAL_REQUEST, notNullId.getId());
+            }
+
+            // 只有待受理状态的提现记录，才可以撤回
+            if (!SysUserWalletWithdrawStatusEnum.COMMIT.equals(sysUserWalletWithdrawLogDO.getWithdrawStatus())) {
+                ApiResultVO.error("操作失败：只能撤回待受理状态的提现记录", notNullId.getId());
+            }
+
+            sysUserWalletWithdrawLogDO.setWithdrawStatus(SysUserWalletWithdrawStatusEnum.DRAFT);
+
+            updateById(sysUserWalletWithdrawLogDO); // 先更新提现记录状态，原因：如果后面报错了，则会回滚该更新
+
+            // 检查和增加：用户钱包的可提现余额
+            sysUserWalletService.doAddTotalMoney(currentUserId, new Date(), CollUtil.newHashSet(notNullId.getId()),
+                sysUserWalletWithdrawLogDO.getWithdrawMoney(), SysUserWalletLogTypeEnum.REDUCE_WITHDRAW, true);
+
+            return BaseBizCodeEnum.OK;
+
+        });
+
+    }
+
+    /**
+     * 受理-用户的提现记录
+     */
+    @Override
+    public String accept(NotNullId notNullId) {
+
+        Long currentUserId = UserUtil.getCurrentUserId();
+
+        return RedissonUtil.doLock(BaseRedisKeyEnum.PRE_USER_WALLET_WITHDRAW_LOG.name() + notNullId.getId(), () -> {
+
+            SysUserWalletWithdrawLogDO sysUserWalletWithdrawLogDO =
+                lambdaQuery().eq(BaseEntity::getId, notNullId.getId())
+                    .eq(SysUserWalletWithdrawLogDO::getUserId, currentUserId).one();
+
+            if (sysUserWalletWithdrawLogDO == null) {
+                ApiResultVO.error(BaseBizCodeEnum.ILLEGAL_REQUEST, notNullId.getId());
+            }
+
+            // 只有待受理状态的提现记录，才可以受理
+            if (!SysUserWalletWithdrawStatusEnum.COMMIT.equals(sysUserWalletWithdrawLogDO.getWithdrawStatus())) {
+                ApiResultVO.error("操作失败：只能受理待受理状态的提现记录", notNullId.getId());
+            }
+
+            sysUserWalletWithdrawLogDO.setWithdrawStatus(SysUserWalletWithdrawStatusEnum.ACCEPT);
+
+            updateById(sysUserWalletWithdrawLogDO); // 先更新提现记录状态，原因：如果后面报错了，则会回滚该更新
+
+            return BaseBizCodeEnum.OK;
+
+        });
+
+    }
+
+    /**
+     * 已成功-用户的提现记录
+     */
+    @Override
+    public String success(NotNullId notNullId) {
+
+        Long currentUserId = UserUtil.getCurrentUserId();
+
+        return RedissonUtil.doLock(BaseRedisKeyEnum.PRE_USER_WALLET_WITHDRAW_LOG.name() + notNullId.getId(), () -> {
+
+            SysUserWalletWithdrawLogDO sysUserWalletWithdrawLogDO =
+                lambdaQuery().eq(BaseEntity::getId, notNullId.getId())
+                    .eq(SysUserWalletWithdrawLogDO::getUserId, currentUserId).one();
+
+            if (sysUserWalletWithdrawLogDO == null) {
+                ApiResultVO.error(BaseBizCodeEnum.ILLEGAL_REQUEST, notNullId.getId());
+            }
+
+            // 只有受理中状态的提现记录，才可以成功
+            if (!SysUserWalletWithdrawStatusEnum.ACCEPT.equals(sysUserWalletWithdrawLogDO.getWithdrawStatus())) {
+                ApiResultVO.error("操作失败：只能成功受理中状态的提现记录", notNullId.getId());
+            }
+
+            sysUserWalletWithdrawLogDO.setWithdrawStatus(SysUserWalletWithdrawStatusEnum.SUCCESS);
+
+            updateById(sysUserWalletWithdrawLogDO); // 先更新提现记录状态，原因：如果后面报错了，则会回滚该更新
+
+            return BaseBizCodeEnum.OK;
+
+        });
+
+    }
+
+    /**
+     * 已拒绝-用户的提现记录
+     */
+    @Override
+    public String reject(NotNullIdAndStringValue notNullIdAndStringValue) {
+
+        Long currentUserId = UserUtil.getCurrentUserId();
+
+        return RedissonUtil
+            .doLock(BaseRedisKeyEnum.PRE_USER_WALLET_WITHDRAW_LOG.name() + notNullIdAndStringValue.getId(), () -> {
+
+                SysUserWalletWithdrawLogDO sysUserWalletWithdrawLogDO =
+                    lambdaQuery().eq(BaseEntity::getId, notNullIdAndStringValue.getId())
+                        .eq(SysUserWalletWithdrawLogDO::getUserId, currentUserId).one();
+
+                if (sysUserWalletWithdrawLogDO == null) {
+                    ApiResultVO.error(BaseBizCodeEnum.ILLEGAL_REQUEST, notNullIdAndStringValue.getId());
+                }
+
+                // 只有受理中状态的提现记录，才可以拒绝
+                if (!SysUserWalletWithdrawStatusEnum.ACCEPT.equals(sysUserWalletWithdrawLogDO.getWithdrawStatus())) {
+                    ApiResultVO.error("操作失败：只能拒绝受理中状态的提现记录", notNullIdAndStringValue.getId());
+                }
+
+                sysUserWalletWithdrawLogDO.setWithdrawStatus(SysUserWalletWithdrawStatusEnum.REJECT);
+
+                updateById(sysUserWalletWithdrawLogDO); // 先更新提现记录状态，原因：如果后面报错了，则会回滚该更新
+
+                // 检查和增加：用户钱包的可提现余额
+                sysUserWalletService
+                    .doAddTotalMoney(currentUserId, new Date(), CollUtil.newHashSet(notNullIdAndStringValue.getId()),
+                        sysUserWalletWithdrawLogDO.getWithdrawMoney(), SysUserWalletLogTypeEnum.REDUCE_WITHDRAW, true);
+
+                return BaseBizCodeEnum.OK;
+
+            });
 
     }
 

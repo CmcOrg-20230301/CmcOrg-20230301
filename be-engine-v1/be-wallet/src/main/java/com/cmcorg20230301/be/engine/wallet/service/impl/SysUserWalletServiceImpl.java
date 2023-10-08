@@ -15,6 +15,7 @@ import com.cmcorg20230301.be.engine.redisson.util.RedissonUtil;
 import com.cmcorg20230301.be.engine.security.exception.BaseBizCodeEnum;
 import com.cmcorg20230301.be.engine.security.model.entity.BaseEntityNoId;
 import com.cmcorg20230301.be.engine.security.model.entity.BaseEntityNoIdFather;
+import com.cmcorg20230301.be.engine.security.model.vo.ApiResultVO;
 import com.cmcorg20230301.be.engine.security.util.SysTenantUtil;
 import com.cmcorg20230301.be.engine.security.util.UserUtil;
 import com.cmcorg20230301.be.engine.wallet.mapper.SysUserWalletMapper;
@@ -138,17 +139,19 @@ public class SysUserWalletServiceImpl extends ServiceImpl<SysUserWalletMapper, S
                 SysUserWalletLogTypeEnum.REDUCE_BACKGROUND;
 
         // 执行
-        return doAddTotalMoney(currentUserId, new Date(), dto.getIdSet(), changeNumber, sysUserWalletLogTypeEnum);
+        return doAddTotalMoney(currentUserId, new Date(), dto.getIdSet(), changeNumber, sysUserWalletLogTypeEnum,
+            false);
 
     }
 
     /**
      * 执行：通过主键 idSet，加减总金额
      */
+    @Override
     @NotNull
     @DSTransactional
     public String doAddTotalMoney(Long currentUserId, Date date, Set<Long> idSet, BigDecimal changeNumber,
-        SysUserWalletLogTypeEnum sysUserWalletLogTypeEnum) {
+        SysUserWalletLogTypeEnum sysUserWalletLogTypeEnum, boolean lowErrorFlag) {
 
         if (changeNumber.equals(BigDecimal.ZERO)) {
             return BaseBizCodeEnum.OK;
@@ -168,6 +171,14 @@ public class SysUserWalletServiceImpl extends ServiceImpl<SysUserWalletMapper, S
                 BigDecimal preTotalMoney = item.getTotalMoney();
 
                 item.setTotalMoney(item.getTotalMoney().add(changeNumber)); // 修改：数字
+
+                if (item.getTotalMoney().compareTo(BigDecimal.ZERO) < 0) {
+                    if (lowErrorFlag) {
+                        ApiResultVO.error("操作失败：可提现余额不足", item.getId());
+                    } else {
+                        item.setTotalMoney(BigDecimal.ZERO);
+                    }
+                }
 
                 SysUserWalletLogDO sysUserWalletLogDO = new SysUserWalletLogDO();
 
@@ -225,18 +236,19 @@ public class SysUserWalletServiceImpl extends ServiceImpl<SysUserWalletMapper, S
                 SysUserWalletLogTypeEnum.REDUCE_BACKGROUND;
 
         // 执行
-        return doAddWithdrawableMoney(currentUserId, new Date(), dto.getIdSet(), changeNumber,
-            sysUserWalletLogTypeEnum);
+        return doAddWithdrawableMoney(currentUserId, new Date(), dto.getIdSet(), changeNumber, sysUserWalletLogTypeEnum,
+            false);
 
     }
 
     /**
      * 执行：通过主键 idSet，加减可提现的钱
      */
+    @Override
     @NotNull
     @DSTransactional
     public String doAddWithdrawableMoney(Long currentUserId, Date date, Set<Long> idSet, BigDecimal changeNumber,
-        SysUserWalletLogTypeEnum sysUserWalletLogTypeEnum) {
+        SysUserWalletLogTypeEnum sysUserWalletLogTypeEnum, boolean lowErrorFlag) {
 
         if (changeNumber.equals(BigDecimal.ZERO)) {
             return BaseBizCodeEnum.OK;
@@ -256,6 +268,14 @@ public class SysUserWalletServiceImpl extends ServiceImpl<SysUserWalletMapper, S
                 BigDecimal preWithdrawableMoney = item.getWithdrawableMoney();
 
                 item.setWithdrawableMoney(item.getWithdrawableMoney().add(changeNumber)); // 修改：数字
+
+                if (item.getWithdrawableMoney().compareTo(BigDecimal.ZERO) < 0) {
+                    if (lowErrorFlag) {
+                        ApiResultVO.error("操作失败：可提现余额不足", item.getId());
+                    } else {
+                        item.setWithdrawableMoney(BigDecimal.ZERO);
+                    }
+                }
 
                 SysUserWalletLogDO sysUserWalletLogDO = new SysUserWalletLogDO();
 

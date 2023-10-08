@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.cmcorg20230301.be.engine.model.model.dto.NotEmptyIdSet;
 import com.cmcorg20230301.be.engine.model.model.dto.NotNullId;
+import com.cmcorg20230301.be.engine.model.model.dto.NotNullIdAndStringValue;
 import com.cmcorg20230301.be.engine.wallet.model.dto.SysUserWalletWithdrawLogInsertOrUpdateUserSelfDTO;
 import com.cmcorg20230301.be.engine.wallet.model.dto.SysUserWalletWithdrawLogPageDTO;
 import com.cmcorg20230301.be.engine.wallet.model.dto.SysUserWalletWithdrawLogPageUserSelfDTO;
@@ -19,7 +20,15 @@ public interface SysUserWalletWithdrawLogService extends IService<SysUserWalletW
 
     String insertOrUpdateUserSelf(SysUserWalletWithdrawLogInsertOrUpdateUserSelfDTO dto);
 
-    String commitUserSelf(NotEmptyIdSet notEmptyIdSet);
+    String commitUserSelf(NotNullId notNullId);
+
+    String revokeUserSelf(NotNullId notNullId);
+
+    String accept(NotNullId notNullId);
+
+    String success(NotNullId notNullId);
+
+    String reject(NotNullIdAndStringValue notNullIdAndStringValue);
 
     Page<SysUserWalletWithdrawLogDO> myPageUserSelf(SysUserWalletWithdrawLogPageUserSelfDTO dto);
 

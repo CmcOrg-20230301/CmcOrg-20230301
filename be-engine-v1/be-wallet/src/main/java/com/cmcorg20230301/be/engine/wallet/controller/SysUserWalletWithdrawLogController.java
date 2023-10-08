@@ -3,6 +3,7 @@ package com.cmcorg20230301.be.engine.wallet.controller;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.cmcorg20230301.be.engine.model.model.dto.NotEmptyIdSet;
 import com.cmcorg20230301.be.engine.model.model.dto.NotNullId;
+import com.cmcorg20230301.be.engine.model.model.dto.NotNullIdAndStringValue;
 import com.cmcorg20230301.be.engine.security.model.vo.ApiResultVO;
 import com.cmcorg20230301.be.engine.wallet.model.dto.SysUserWalletWithdrawLogInsertOrUpdateUserSelfDTO;
 import com.cmcorg20230301.be.engine.wallet.model.dto.SysUserWalletWithdrawLogPageDTO;
@@ -59,8 +60,35 @@ public class SysUserWalletWithdrawLogController {
 
     @Operation(summary = "提交-用户")
     @PostMapping("/commit/userSelf")
-    public ApiResultVO<String> commitUserSelf(@RequestBody @Valid NotEmptyIdSet notEmptyIdSet) {
-        return ApiResultVO.okMsg(baseService.commitUserSelf(notEmptyIdSet));
+    public ApiResultVO<String> commitUserSelf(@RequestBody @Valid NotNullId notNullId) {
+        return ApiResultVO.okMsg(baseService.commitUserSelf(notNullId));
+    }
+
+    @Operation(summary = "撤回-用户")
+    @PostMapping("/revoke/userSelf")
+    public ApiResultVO<String> revokeUserSelf(@RequestBody @Valid NotNullId notNullId) {
+        return ApiResultVO.okMsg(baseService.revokeUserSelf(notNullId));
+    }
+
+    @Operation(summary = "受理-用户的提现记录")
+    @PostMapping("/accept")
+    @PreAuthorize("hasAuthority('sysUserWalletWithdrawLog:accept')")
+    public ApiResultVO<String> accept(@RequestBody @Valid NotNullId notNullId) {
+        return ApiResultVO.okMsg(baseService.accept(notNullId));
+    }
+
+    @Operation(summary = "已成功-用户的提现记录")
+    @PostMapping("/success")
+    @PreAuthorize("hasAuthority('sysUserWalletWithdrawLog:success')")
+    public ApiResultVO<String> success(@RequestBody @Valid NotNullId notNullId) {
+        return ApiResultVO.okMsg(baseService.success(notNullId));
+    }
+
+    @Operation(summary = "已拒绝-用户的提现记录")
+    @PostMapping("/reject")
+    @PreAuthorize("hasAuthority('sysUserWalletWithdrawLog:reject')")
+    public ApiResultVO<String> reject(@RequestBody @Valid NotNullIdAndStringValue notNullIdAndStringValue) {
+        return ApiResultVO.okMsg(baseService.reject(notNullIdAndStringValue));
     }
 
     @Operation(summary = "分页排序查询-用户")

@@ -14,9 +14,9 @@ public enum SysUserWalletWithdrawStatusEnum {
 
     DRAFT(101), // 草稿（只有草稿状态才可以编辑和删除）
 
-    ACCEPT(201), // 待受理（可取消为草稿）
+    COMMIT(201), // 待受理（可取消为草稿）
 
-    PENDING(301), // 受理中（不可取消为草稿）
+    ACCEPT(301), // 受理中（不可取消为草稿）
 
     SUCCESS(401), // 已成功
 
