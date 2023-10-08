@@ -28,18 +28,10 @@ spring:
 
           - data-id: xxl-job.yml
 
-          - data-id: wx.yml
-
           - data-id: sms.yml
             refresh: true
 
-          - data-id: email.yml
-            refresh: true
-
           - data-id: file.yml
-            refresh: true
-
-          - data-id: pay.yml
             refresh: true
 
           - data-id: socket.yml
