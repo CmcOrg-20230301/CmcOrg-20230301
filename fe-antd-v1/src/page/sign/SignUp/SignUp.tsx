@@ -40,7 +40,7 @@ export default function () {
 
     return (
 
-        <SignLayout token={{colorPrimary: '#13C2C2FF'}}>
+        <SignLayout token={{colorPrimary: '#13C2C2FF'}} tenantName={tenantName}>
 
             <LoginForm<ISignUpForm>
 
@@ -122,36 +122,41 @@ export default function () {
                 />
 
                 {
-                    activeKey === '1' && (<>
+                    activeKey === '1' && (
 
-                        <ProFormCaptcha
+                        <>
 
-                            fieldProps={{
-                                size: 'large',
-                                maxLength: 6,
-                                allowClear: true,
-                                prefix: <SafetyCertificateOutlined/>,
-                            }}
-                            captchaProps={{
-                                size: 'large',
-                            }}
+                            <ProFormCaptcha
 
-                            rules={[{validator: ValidatorUtil.codeValidate}]}
-                            placeholder={'请输入验证码'}
-                            name="code"
-                            onGetCaptcha={async () => {
+                                fieldProps={{
+                                    size: 'large',
+                                    maxLength: 6,
+                                    allowClear: true,
+                                    prefix: <SafetyCertificateOutlined/>,
+                                }}
 
-                                await formRef.current?.validateFields(['account']).then(async res => {
+                                captchaProps={{
+                                    size: 'large',
+                                }}
 
-                                    await SendCode({...res, type: activeKey})
+                                rules={[{validator: ValidatorUtil.codeValidate}]}
+                                placeholder={'请输入验证码'}
+                                name="code"
+                                onGetCaptcha={async () => {
 
-                                })
+                                    await formRef.current?.validateFields(['account']).then(async res => {
 
-                            }}
+                                        await SendCode({...res, type: activeKey, tenantId: tenantIdRef.current})
 
-                        />
+                                    })
 
-                    </>)
+                                }}
+
+                            />
+
+                        </>
+
+                    )
 
                 }
 

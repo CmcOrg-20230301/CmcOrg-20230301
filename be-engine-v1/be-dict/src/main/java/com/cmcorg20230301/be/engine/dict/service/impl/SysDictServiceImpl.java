@@ -325,14 +325,17 @@ public class SysDictServiceImpl extends ServiceImpl<SysDictMapper, SysDictDO> im
      * 通过主键 idSet，加减排序号
      */
     @Override
-    @DSTransactional
     public String addOrderNo(ChangeNumberDTO dto) {
 
+        // 检查：是否非法操作
+        SysTenantUtil.checkIllegal(dto.getIdSet(), getCheckIllegalFunc1(dto.getIdSet()));
+
         if (dto.getNumber() == 0) {
-            return BaseBizCodeEnum.API_RESULT_OK.getMsg();
+            return BaseBizCodeEnum.OK;
         }
 
-        List<SysDictDO> sysDictDOList = listByIds(dto.getIdSet());
+        List<SysDictDO> sysDictDOList =
+            lambdaQuery().in(BaseEntity::getId, dto.getIdSet()).select(BaseEntity::getId, SysDictDO::getOrderNo).list();
 
         for (SysDictDO item : sysDictDOList) {
             item.setOrderNo((int)(item.getOrderNo() + dto.getNumber()));

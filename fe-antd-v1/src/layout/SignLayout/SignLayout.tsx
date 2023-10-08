@@ -4,16 +4,19 @@ import {Navigate} from "react-router-dom";
 import {CopyrightOutlined} from "@ant-design/icons/lib";
 import {ConfigProvider} from "antd";
 import {AliasToken} from "antd/es/theme/interface/alias";
+import {RemoveTenantNameSuf} from "@/page/sign/SignUp/SignUpUtil";
 
 interface ISignLayout extends PropsWithChildren {
 
     token?: Partial<AliasToken>
 
+    tenantName?: string
+
 }
 
-export function GetCopyright() {
+export function GetCopyright(tenantName ?: string) {
 
-    return `2021-${new Date().getFullYear()} Cmc Org. All Rights Reserved.`
+    return `2021-${new Date().getFullYear()} ${RemoveTenantNameSuf(tenantName) || 'Cmc Org'}. All Rights Reserved.`
 
 }
 
@@ -27,9 +30,11 @@ export default function (props: ISignLayout) {
     return (
 
         <ConfigProvider
+
             theme={{
                 token: props.token,
             }}
+
         >
 
             <div className={"p-t-50 p-b-10 flex-c vwh100"}>
@@ -42,7 +47,7 @@ export default function (props: ISignLayout) {
 
                         <div className={"m-r-10 f-14 black1"}>
 
-                            <CopyrightOutlined/> {GetCopyright()}
+                            <CopyrightOutlined/> {GetCopyright(props.tenantName)}
 
                         </div>
 

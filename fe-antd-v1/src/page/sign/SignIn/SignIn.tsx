@@ -43,7 +43,7 @@ export default function () {
 
     return (
 
-        <SignLayout>
+        <SignLayout tenantName={tenantName}>
 
             <LoginForm<ISignInForm>
 

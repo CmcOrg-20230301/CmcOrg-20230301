@@ -819,10 +819,13 @@ public class SignUtil {
                 BaseRedisKeyEnum.PRE_EMAIL.equals(redisKeyEnum) || BaseRedisKeyEnum.PRE_PHONE.equals(redisKeyEnum);
 
             if (exist) {
+
                 if (deleteRedisFlag) {
                     newBucket.delete();
                 }
+
                 ApiResultVO.errorMsg("操作失败：已被人占用");
+
             }
 
             SysUserDO sysUserDO = new SysUserDO();

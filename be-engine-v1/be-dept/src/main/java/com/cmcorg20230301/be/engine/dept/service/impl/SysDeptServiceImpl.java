@@ -306,7 +306,6 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptMapper, SysDeptDO> im
      * 通过主键 idSet，加减排序号
      */
     @Override
-    @DSTransactional
     public String addOrderNo(ChangeNumberDTO dto) {
 
         // 检查：是否非法操作
@@ -316,7 +315,9 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptMapper, SysDeptDO> im
             return BaseBizCodeEnum.OK;
         }
 
-        List<SysDeptDO> sysDeptDOList = listByIds(dto.getIdSet());
+        List<SysDeptDO> sysDeptDOList =
+            lambdaQuery().in(BaseEntity::getId, dto.getIdSet()).select(BaseEntity::getId, BaseEntityTree::getOrderNo)
+                .list();
 
         for (SysDeptDO item : sysDeptDOList) {
             item.setOrderNo((int)(item.getOrderNo() + dto.getNumber()));

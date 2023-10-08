@@ -257,7 +257,6 @@ public class SysAreaServiceImpl extends ServiceImpl<SysAreaMapper, SysAreaDO> im
      * 通过主键 idSet，加减排序号
      */
     @Override
-    @DSTransactional
     public String addOrderNo(ChangeNumberDTO dto) {
 
         // 检查：是否非法操作
@@ -267,7 +266,9 @@ public class SysAreaServiceImpl extends ServiceImpl<SysAreaMapper, SysAreaDO> im
             return BaseBizCodeEnum.OK;
         }
 
-        List<SysAreaDO> sysAreaDOList = listByIds(dto.getIdSet());
+        List<SysAreaDO> sysAreaDOList =
+            lambdaQuery().in(BaseEntity::getId, dto.getIdSet()).select(BaseEntity::getId, BaseEntityTree::getOrderNo)
+                .list();
 
         for (SysAreaDO item : sysAreaDOList) {
             item.setOrderNo((int)(item.getOrderNo() + dto.getNumber()));

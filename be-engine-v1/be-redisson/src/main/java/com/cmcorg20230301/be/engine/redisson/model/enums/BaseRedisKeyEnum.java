@@ -11,6 +11,10 @@ import com.cmcorg20230301.be.engine.model.model.interfaces.IRedisKey;
 public enum BaseRedisKeyEnum implements IRedisKey {
 
     // 【PRE_】开头 ↓
+    PRE_USER_WALLET_WITHDRAW_LOG, // 用户钱包-提现记录锁，锁：【提现记录主键 id】
+
+    PRE_USER_WALLET, // 用户钱包锁，锁：【用户钱包主键 id】
+
     PRE_SIGN_CONFIGURATION, // 用户登录注册相关配置锁，锁：【租户主键 id】
 
     PRE_PAY, // 支付锁，锁：【支付主键 id】

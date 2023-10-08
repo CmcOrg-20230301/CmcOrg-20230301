@@ -12,6 +12,9 @@ import {CloseWebSocket} from "@/util/webSocket/WebSocketUtil";
 import {SysTenantGetNameById} from "@/api/http/SysTenant";
 import {GetTenantId} from "@/util/CommonUtil";
 
+// 租户名后缀
+export const TENANT_NAME_SUF = " - "
+
 export function UseEffectSign(tenantIdRef: React.MutableRefObject<string>, setTenantName: (value: (((prevState: string) => string) | string)) => void) {
 
     useEffect(() => {
@@ -22,7 +25,7 @@ export function UseEffectSign(tenantIdRef: React.MutableRefObject<string>, setTe
 
             if (res.data) {
 
-                setTenantName(res.data + " - ")
+                setTenantName(res.data + TENANT_NAME_SUF)
 
             } else {
 
@@ -35,6 +38,21 @@ export function UseEffectSign(tenantIdRef: React.MutableRefObject<string>, setTe
         CloseWebSocket() // 关闭 webSocket
 
     }, [])
+
+}
+
+/**
+ * 移除：租户名后缀
+ */
+export function RemoveTenantNameSuf(tenantName?: string) {
+
+    if (!tenantName) {
+        return ""
+    }
+
+    const regExp = new RegExp(TENANT_NAME_SUF);
+
+    return tenantName.replace(regExp, "");
 
 }
 
@@ -103,7 +121,7 @@ export async function SendCode(form: ISignUpForm) {
 
     if (form.type === '1') { // 如果是：邮箱
 
-        await SignEmailSignUpSendCode({email: form.account}).then(res => {
+        await SignEmailSignUpSendCode({email: form.account, tenantId: form.tenantId}).then(res => {
 
             ToastSuccess(res.msg)
 

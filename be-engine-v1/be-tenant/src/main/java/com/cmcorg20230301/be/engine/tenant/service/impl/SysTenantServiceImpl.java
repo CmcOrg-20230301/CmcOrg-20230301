@@ -137,9 +137,7 @@ public class SysTenantServiceImpl extends ServiceImpl<SysTenantMapper, SysTenant
     private void insertOrUpdateCheckMenuIdSet(Set<Long> checkMenuIdSet) {
 
         if (CollUtil.isEmpty(checkMenuIdSet)) {
-
             return;
-
         }
 
         Long currentUserId = UserUtil.getCurrentUserId();
@@ -159,18 +157,14 @@ public class SysTenantServiceImpl extends ServiceImpl<SysTenantMapper, SysTenant
         }
 
         if (CollUtil.isEmpty(sysMenuDoSet)) {
-
             ApiResultVO.error(BaseBizCodeEnum.ILLEGAL_REQUEST);
-
         }
 
         // 用户：拥有的菜单 idSet
         Set<Long> menuIdSet = sysMenuDoSet.stream().map(BaseEntity::getId).collect(Collectors.toSet());
 
         if (!CollUtil.containsAll(menuIdSet, checkMenuIdSet)) {
-
             ApiResultVO.error(BaseBizCodeEnum.ILLEGAL_REQUEST);
-
         }
 
     }
@@ -303,9 +297,7 @@ public class SysTenantServiceImpl extends ServiceImpl<SysTenantMapper, SysTenant
         @Nullable VoidFunc1<Map<Long, Long>> voidFunc1) {
 
         if (CollUtil.isEmpty(fullSysMenuDoSet)) {
-
             return;
-
         }
 
         List<SysMenuDO> insertList = new ArrayList<>();
@@ -600,7 +592,6 @@ public class SysTenantServiceImpl extends ServiceImpl<SysTenantMapper, SysTenant
      * 通过主键 idSet，加减排序号
      */
     @Override
-    @DSTransactional
     public String addOrderNo(ChangeNumberDTO dto) {
 
         // 检查：是否非法操作
@@ -610,7 +601,9 @@ public class SysTenantServiceImpl extends ServiceImpl<SysTenantMapper, SysTenant
             return BaseBizCodeEnum.OK;
         }
 
-        List<SysTenantDO> sysTenantDOList = listByIds(dto.getIdSet());
+        List<SysTenantDO> sysTenantDOList =
+            lambdaQuery().in(BaseEntity::getId, dto.getIdSet()).select(BaseEntity::getId, BaseEntityTree::getOrderNo)
+                .list();
 
         for (SysTenantDO item : sysTenantDOList) {
             item.setOrderNo((int)(item.getOrderNo() + dto.getNumber()));

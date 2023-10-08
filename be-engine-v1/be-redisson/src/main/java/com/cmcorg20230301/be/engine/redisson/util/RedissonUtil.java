@@ -152,6 +152,7 @@ public class RedissonUtil {
         for (Object item : nameSet) {
 
             lockArr[i] = redissonClient.getLock(PRE_REDISSON + preName + item); // 设置锁名
+
             i++;
 
         }
@@ -159,8 +160,11 @@ public class RedissonUtil {
         if (tempLockArr != null) {
 
             for (RLock item : tempLockArr) {
+
                 lockArr[i] = item;
+
                 i++;
+
             }
 
         }

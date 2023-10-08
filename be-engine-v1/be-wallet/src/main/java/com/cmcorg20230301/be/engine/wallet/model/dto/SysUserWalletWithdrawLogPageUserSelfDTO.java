@@ -1,25 +1,14 @@
-package com.cmcorg20230301.be.engine.wallet.model.entity;
+package com.cmcorg20230301.be.engine.wallet.model.dto;
 
-import com.baomidou.mybatisplus.annotation.TableName;
-import com.cmcorg20230301.be.engine.security.model.entity.BaseEntity;
+import com.cmcorg20230301.be.engine.security.model.dto.MyTenantPageDTO;
 import com.cmcorg20230301.be.engine.wallet.model.enums.SysUserWalletWithdrawStatusEnum;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
-import java.math.BigDecimal;
-
 @EqualsAndHashCode(callSuper = true)
-@TableName(value = "sys_user_wallet_withdraw_log")
 @Data
-@Schema(description = "主表：用户钱包提现记录")
-public class SysUserWalletWithdrawLogDO extends BaseEntity {
-
-    @Schema(description = "用户主键 id")
-    private Long userId;
-
-    @Schema(description = "提现金额")
-    private BigDecimal withdrawMoney;
+public class SysUserWalletWithdrawLogPageUserSelfDTO extends MyTenantPageDTO {
 
     @Schema(description = "银行")
     private String bankName;
@@ -35,8 +24,5 @@ public class SysUserWalletWithdrawLogDO extends BaseEntity {
 
     @Schema(description = "提现状态")
     private SysUserWalletWithdrawStatusEnum withdrawStatus;
-
-    @Schema(description = "拒绝理由")
-    private String rejectReason;
 
 }

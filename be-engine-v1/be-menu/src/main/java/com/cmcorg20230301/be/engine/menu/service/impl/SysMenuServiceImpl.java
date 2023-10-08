@@ -396,7 +396,6 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenuDO> im
      * 通过主键 idSet，加减排序号
      */
     @Override
-    @DSTransactional
     public String addOrderNo(ChangeNumberDTO dto) {
 
         // 检查：是否非法操作
@@ -406,7 +405,9 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenuDO> im
             return BaseBizCodeEnum.OK;
         }
 
-        List<SysMenuDO> sysMenuDOList = listByIds(dto.getIdSet());
+        List<SysMenuDO> sysMenuDOList =
+            lambdaQuery().in(BaseEntity::getId, dto.getIdSet()).select(BaseEntity::getId, BaseEntityTree::getOrderNo)
+                .list();
 
         for (SysMenuDO item : sysMenuDOList) {
             item.setOrderNo((int)(item.getOrderNo() + dto.getNumber()));
