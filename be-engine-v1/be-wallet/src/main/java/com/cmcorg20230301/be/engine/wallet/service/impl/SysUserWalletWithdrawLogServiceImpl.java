@@ -209,7 +209,7 @@ public class SysUserWalletWithdrawLogServiceImpl
         saveOrUpdate(sysUserWalletWithdrawLogDO); // 先操作数据库，原因：如果后面报错了，则会回滚该更新
 
         // 检查和增加：用户钱包的可提现余额
-        sysUserWalletService.doAddTotalMoney(currentUserId, new Date(), CollUtil.newHashSet(currentUserId),
+        sysUserWalletService.doAddWithdrawableMoney(currentUserId, new Date(), CollUtil.newHashSet(currentUserId),
             sysUserWalletWithdrawLogDO.getWithdrawMoney().negate(), SysUserWalletLogTypeEnum.REDUCE_WITHDRAW, true);
 
         return BaseBizCodeEnum.OK;
@@ -244,7 +244,7 @@ public class SysUserWalletWithdrawLogServiceImpl
             updateById(sysUserWalletWithdrawLogDO); // 先更新提现记录状态，原因：如果后面报错了，则会回滚该更新
 
             // 检查和增加：用户钱包的可提现余额
-            sysUserWalletService.doAddTotalMoney(currentUserId, new Date(), CollUtil.newHashSet(currentUserId),
+            sysUserWalletService.doAddWithdrawableMoney(currentUserId, new Date(), CollUtil.newHashSet(currentUserId),
                 sysUserWalletWithdrawLogDO.getWithdrawMoney(), SysUserWalletLogTypeEnum.REDUCE_WITHDRAW, true);
 
             return BaseBizCodeEnum.OK;
@@ -349,8 +349,9 @@ public class SysUserWalletWithdrawLogServiceImpl
                 updateById(sysUserWalletWithdrawLogDO); // 先更新提现记录状态，原因：如果后面报错了，则会回滚该更新
 
                 // 检查和增加：用户钱包的可提现余额
-                sysUserWalletService.doAddTotalMoney(currentUserId, new Date(), CollUtil.newHashSet(currentUserId),
-                    sysUserWalletWithdrawLogDO.getWithdrawMoney(), SysUserWalletLogTypeEnum.REDUCE_WITHDRAW, true);
+                sysUserWalletService
+                    .doAddWithdrawableMoney(currentUserId, new Date(), CollUtil.newHashSet(currentUserId),
+                        sysUserWalletWithdrawLogDO.getWithdrawMoney(), SysUserWalletLogTypeEnum.REDUCE_WITHDRAW, true);
 
                 return BaseBizCodeEnum.OK;
 
