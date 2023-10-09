@@ -8,22 +8,26 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
-import java.math.BigDecimal;
-
 @EqualsAndHashCode(callSuper = true)
-@TableName(value = "sys_user_wallet")
+@TableName(value = "sys_user_bank_card")
 @Data
-@Schema(description = "子表：用户钱包，主表：用户")
-public class SysUserWalletDO extends BaseEntityNoId {
+@Schema(description = "子表：用户银行卡，主表：用户")
+public class SysUserBankCardDO extends BaseEntityNoId {
 
     @TableId(type = IdType.INPUT)
     @Schema(description = "用户主键 id")
     private Long id;
 
-    @Schema(description = "总金额")
-    private BigDecimal totalMoney;
+    @Schema(description = "卡号")
+    private String bankCardNo;
 
-    @Schema(description = "可提现的钱")
-    private BigDecimal withdrawableMoney;
+    @Schema(description = "开户行")
+    private String openBankName;
+
+    @Schema(description = "支行")
+    private String branchBankName;
+
+    @Schema(description = "收款人姓名")
+    private String payeeName;
 
 }

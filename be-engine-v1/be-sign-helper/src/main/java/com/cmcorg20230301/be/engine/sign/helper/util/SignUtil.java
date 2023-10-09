@@ -21,7 +21,7 @@ import com.cmcorg20230301.be.engine.redisson.model.enums.BaseRedisKeyEnum;
 import com.cmcorg20230301.be.engine.redisson.util.RedissonUtil;
 import com.cmcorg20230301.be.engine.security.exception.BaseBizCodeEnum;
 import com.cmcorg20230301.be.engine.security.mapper.*;
-import com.cmcorg20230301.be.engine.security.model.configuration.IUserDeleteConfiguration;
+import com.cmcorg20230301.be.engine.security.model.configuration.IUserSignConfiguration;
 import com.cmcorg20230301.be.engine.security.model.entity.*;
 import com.cmcorg20230301.be.engine.security.model.vo.ApiResultVO;
 import com.cmcorg20230301.be.engine.security.properties.SecurityProperties;
@@ -60,13 +60,13 @@ public class SignUtil {
     private static SysFileService sysFileService;
 
     @Nullable
-    private static List<IUserDeleteConfiguration> iUserDeleteConfigurationList;
+    private static List<IUserSignConfiguration> iUserSignConfigurationList;
 
     public SignUtil(SysUserInfoMapper sysUserInfoMapper, RedissonClient redissonClient, SysUserMapper sysUserMapper,
         SecurityProperties securityProperties, SysRoleRefUserMapper sysRoleRefUserMapper,
         SysDeptRefUserMapper sysDeptRefUserMapper, SysPostRefUserMapper sysPostRefUserMapper,
         SysTenantRefUserMapper sysTenantRefUserMapper, SysFileService sysFileService,
-        @Autowired(required = false) @Nullable List<IUserDeleteConfiguration> iUserDeleteConfigurationList) {
+        @Autowired(required = false) @Nullable List<IUserSignConfiguration> iUserSignConfigurationList) {
 
         SignUtil.sysUserInfoMapper = sysUserInfoMapper;
         SignUtil.sysUserMapper = sysUserMapper;
@@ -77,7 +77,7 @@ public class SignUtil {
         SignUtil.sysPostRefUserMapper = sysPostRefUserMapper;
         SignUtil.sysTenantRefUserMapper = sysTenantRefUserMapper;
         SignUtil.sysFileService = sysFileService;
-        SignUtil.iUserDeleteConfigurationList = iUserDeleteConfigurationList;
+        SignUtil.iUserSignConfigurationList = iUserSignConfigurationList;
 
     }
 
@@ -273,6 +273,16 @@ public class SignUtil {
             }
 
             sysUserInfoMapper.insert(sysUserInfoDO); // 保存：用户基本信息
+
+            if (CollUtil.isNotEmpty(iUserSignConfigurationList)) {
+
+                for (IUserSignConfiguration item : iUserSignConfigurationList) {
+
+                    item.signUp(sysUserDO.getId(), sysUserDO.getTenantId()); // 添加：用户额外的数据
+
+                }
+
+            }
 
             UserUtil.setJwtSecretSuf(sysUserDO.getId()); // 设置：jwt秘钥后缀
 
@@ -1081,11 +1091,11 @@ public class SignUtil {
                 // 直接：删除用户基本信息
                 ChainWrappers.lambdaUpdateChain(sysUserInfoMapper).in(SysUserInfoDO::getId, idSet).remove();
 
-                if (CollUtil.isNotEmpty(iUserDeleteConfigurationList) && CollUtil.isNotEmpty(idSet)) {
+                if (CollUtil.isNotEmpty(iUserSignConfigurationList) && CollUtil.isNotEmpty(idSet)) {
 
-                    for (IUserDeleteConfiguration item : iUserDeleteConfigurationList) {
+                    for (IUserSignConfiguration item : iUserSignConfigurationList) {
 
-                        item.handle(idSet); // 移除：用户相关的数据
+                        item.delete(idSet); // 移除：用户额外的数据
 
                     }
 

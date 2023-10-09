@@ -21,7 +21,7 @@ import com.cmcorg20230301.be.engine.param.service.SysParamService;
 import com.cmcorg20230301.be.engine.security.exception.BaseBizCodeEnum;
 import com.cmcorg20230301.be.engine.security.mapper.SysTenantMapper;
 import com.cmcorg20230301.be.engine.security.mapper.SysUserMapper;
-import com.cmcorg20230301.be.engine.security.model.configuration.ITenantDeleteConfiguration;
+import com.cmcorg20230301.be.engine.security.model.configuration.ITenantSignConfiguration;
 import com.cmcorg20230301.be.engine.security.model.entity.*;
 import com.cmcorg20230301.be.engine.security.model.enums.SysDictTypeEnum;
 import com.cmcorg20230301.be.engine.security.model.vo.ApiResultVO;
@@ -58,12 +58,12 @@ public class SysTenantServiceImpl extends ServiceImpl<SysTenantMapper, SysTenant
     @Resource
     SysUserMapper sysUserMapper;
 
-    @Nullable List<ITenantDeleteConfiguration> iTenantDeleteConfigurationList;
+    @Nullable List<ITenantSignConfiguration> iTenantSignConfigurationList;
 
     public SysTenantServiceImpl(
-        @Autowired(required = false) @Nullable List<ITenantDeleteConfiguration> iTenantDeleteConfigurationList) {
+        @Autowired(required = false) @Nullable List<ITenantSignConfiguration> iTenantSignConfigurationList) {
 
-        this.iTenantDeleteConfigurationList = iTenantDeleteConfigurationList;
+        this.iTenantSignConfigurationList = iTenantSignConfigurationList;
 
     }
 
@@ -126,6 +126,20 @@ public class SysTenantServiceImpl extends ServiceImpl<SysTenantMapper, SysTenant
         saveOrUpdate(sysTenantDO);
 
         insertOrUpdateSub(dto, sysTenantDO); // 新增：子表数据
+
+        if (dto.getId() == null) {
+
+            if (CollUtil.isNotEmpty(iTenantSignConfigurationList)) {
+
+                for (ITenantSignConfiguration item : iTenantSignConfigurationList) {
+
+                    item.signUp(sysTenantDO.getId()); // 添加：租户额外的数据
+
+                }
+
+            }
+
+        }
 
         return BaseBizCodeEnum.OK;
 
@@ -574,11 +588,11 @@ public class SysTenantServiceImpl extends ServiceImpl<SysTenantMapper, SysTenant
 
             }
 
-            if (CollUtil.isNotEmpty(iTenantDeleteConfigurationList) && CollUtil.isNotEmpty(idSet)) {
+            if (CollUtil.isNotEmpty(iTenantSignConfigurationList) && CollUtil.isNotEmpty(idSet)) {
 
-                for (ITenantDeleteConfiguration item : iTenantDeleteConfigurationList) {
+                for (ITenantSignConfiguration item : iTenantSignConfigurationList) {
 
-                    item.handle(idSet); // 移除：租户相关的数据
+                    item.delete(idSet); // 移除：租户额外的数据
 
                 }
 

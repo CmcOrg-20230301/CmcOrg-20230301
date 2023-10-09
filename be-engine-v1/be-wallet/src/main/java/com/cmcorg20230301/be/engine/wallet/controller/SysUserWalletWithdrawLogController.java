@@ -44,6 +44,13 @@ public class SysUserWalletWithdrawLogController {
         return ApiResultVO.okData(baseService.myPage(dto));
     }
 
+    @Operation(summary = "分页排序查询-用户")
+    @PostMapping("/page/userSelf")
+    public ApiResultVO<Page<SysUserWalletWithdrawLogDO>> myPageUserSelf(
+        @RequestBody @Valid SysUserWalletWithdrawLogPageUserSelfDTO dto) {
+        return ApiResultVO.okData(baseService.myPageUserSelf(dto));
+    }
+
     @Operation(summary = "通过主键id，查看详情")
     @PostMapping("/infoById")
     @PreAuthorize("hasAuthority('sysUserWalletWithdrawLog:infoById')")
@@ -51,11 +58,23 @@ public class SysUserWalletWithdrawLogController {
         return ApiResultVO.okData(baseService.infoById(notNullId));
     }
 
+    @Operation(summary = "通过主键id，查看详情-用户")
+    @PostMapping("/infoById/userSelf")
+    public ApiResultVO<SysUserWalletWithdrawLogDO> infoByIdUserSelf(@RequestBody @Valid NotNullId notNullId) {
+        return ApiResultVO.okData(baseService.infoByIdUserSelf(notNullId));
+    }
+
     @Operation(summary = "批量删除")
     @PostMapping("/deleteByIdSet")
     @PreAuthorize("hasAuthority('sysUserWalletWithdrawLog:deleteByIdSet')")
     public ApiResultVO<String> deleteByIdSet(@RequestBody @Valid NotEmptyIdSet notEmptyIdSet) {
         return ApiResultVO.okMsg(baseService.deleteByIdSet(notEmptyIdSet));
+    }
+
+    @Operation(summary = "批量删除-用户")
+    @PostMapping("/deleteByIdSet/userSelf")
+    public ApiResultVO<String> deleteByIdSetUserSelf(@RequestBody @Valid NotEmptyIdSet notEmptyIdSet) {
+        return ApiResultVO.okMsg(baseService.deleteByIdSetUserSelf(notEmptyIdSet));
     }
 
     @Operation(summary = "新增/修改-用户")
@@ -96,25 +115,6 @@ public class SysUserWalletWithdrawLogController {
     @PreAuthorize("hasAuthority('sysUserWalletWithdrawLog:reject')")
     public ApiResultVO<String> reject(@RequestBody @Valid NotNullIdAndStringValue notNullIdAndStringValue) {
         return ApiResultVO.okMsg(baseService.reject(notNullIdAndStringValue));
-    }
-
-    @Operation(summary = "分页排序查询-用户")
-    @PostMapping("/page/userSelf")
-    public ApiResultVO<Page<SysUserWalletWithdrawLogDO>> myPageUserSelf(
-        @RequestBody @Valid SysUserWalletWithdrawLogPageUserSelfDTO dto) {
-        return ApiResultVO.okData(baseService.myPageUserSelf(dto));
-    }
-
-    @Operation(summary = "通过主键id，查看详情-用户")
-    @PostMapping("/infoById/userSelf")
-    public ApiResultVO<SysUserWalletWithdrawLogDO> infoByIdUserSelf(@RequestBody @Valid NotNullId notNullId) {
-        return ApiResultVO.okData(baseService.infoByIdUserSelf(notNullId));
-    }
-
-    @Operation(summary = "批量删除-用户")
-    @PostMapping("/deleteByIdSet/userSelf")
-    public ApiResultVO<String> deleteByIdSetUserSelf(@RequestBody @Valid NotEmptyIdSet notEmptyIdSet) {
-        return ApiResultVO.okMsg(baseService.deleteByIdSetUserSelf(notEmptyIdSet));
     }
 
 }

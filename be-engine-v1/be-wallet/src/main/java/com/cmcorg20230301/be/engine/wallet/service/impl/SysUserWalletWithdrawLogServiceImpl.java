@@ -94,16 +94,47 @@ public class SysUserWalletWithdrawLogServiceImpl
 
         for (SysUserWalletWithdrawLogDO item : page.getRecords()) {
 
-            item.setBankCardNo(DesensitizedUtil.bankCard(item.getBankCardNo())); // 脱敏
-
-            item.setBranchBankName(DesensitizedUtil
-                .desensitized(item.getBranchBankName(), DesensitizedUtil.DesensitizedType.ADDRESS)); // 脱敏
-
-            item.setPayeeName(DesensitizedUtil.chineseName(item.getPayeeName())); // 脱敏
+            // 脱敏：SysUserWalletWithdrawLogDO
+            desensitizedSysUserWalletWithdrawLogDO(item);
 
         }
 
         return page;
+
+    }
+
+    /**
+     * 脱敏：SysUserWalletWithdrawLogDO
+     */
+    private void desensitizedSysUserWalletWithdrawLogDO(SysUserWalletWithdrawLogDO sysUserWalletWithdrawLogDO) {
+
+        // 备注：需要和：银行卡的脱敏一致
+        sysUserWalletWithdrawLogDO
+            .setBankCardNo(DesensitizedUtil.bankCard(sysUserWalletWithdrawLogDO.getBankCardNo())); // 脱敏
+
+        sysUserWalletWithdrawLogDO.setBranchBankName(DesensitizedUtil
+            .desensitized(sysUserWalletWithdrawLogDO.getBranchBankName(),
+                DesensitizedUtil.DesensitizedType.ADDRESS)); // 脱敏
+
+        sysUserWalletWithdrawLogDO
+            .setPayeeName(DesensitizedUtil.chineseName(sysUserWalletWithdrawLogDO.getPayeeName())); // 脱敏
+
+    }
+
+    /**
+     * 分页排序查询-用户
+     */
+    @Override
+    public Page<SysUserWalletWithdrawLogDO> myPageUserSelf(SysUserWalletWithdrawLogPageUserSelfDTO dto) {
+
+        Long currentUserId = UserUtil.getCurrentUserId();
+
+        SysUserWalletWithdrawLogPageDTO sysUserWalletWithdrawLogPageDTO =
+            BeanUtil.copyProperties(dto, SysUserWalletWithdrawLogPageDTO.class);
+
+        sysUserWalletWithdrawLogPageDTO.setUserId(currentUserId);
+
+        return myPage(sysUserWalletWithdrawLogPageDTO);
 
     }
 
@@ -118,6 +149,25 @@ public class SysUserWalletWithdrawLogServiceImpl
 
         return lambdaQuery().eq(SysUserWalletWithdrawLogDO::getId, notNullId.getId())
             .in(BaseEntityNoId::getTenantId, queryTenantIdSet).one();
+
+    }
+
+    /**
+     * 通过主键id，查看详情-用户
+     */
+    @Override
+    public SysUserWalletWithdrawLogDO infoByIdUserSelf(NotNullId notNullId) {
+
+        Long currentUserId = UserUtil.getCurrentUserId();
+
+        SysUserWalletWithdrawLogDO sysUserWalletWithdrawLogDO =
+            lambdaQuery().eq(SysUserWalletWithdrawLogDO::getId, notNullId.getId())
+                .eq(SysUserWalletWithdrawLogDO::getUserId, currentUserId).one();
+
+        // 脱敏：SysUserWalletWithdrawLogDO
+        desensitizedSysUserWalletWithdrawLogDO(sysUserWalletWithdrawLogDO);
+
+        return sysUserWalletWithdrawLogDO;
 
     }
 
@@ -161,6 +211,32 @@ public class SysUserWalletWithdrawLogServiceImpl
             return BaseBizCodeEnum.OK;
 
         });
+
+    }
+
+    /**
+     * 批量删除-用户
+     */
+    @Override
+    public String deleteByIdSetUserSelf(NotEmptyIdSet notEmptyIdSet) {
+
+        Set<Long> idSet = notEmptyIdSet.getIdSet();
+
+        if (CollUtil.isEmpty(idSet)) {
+            return BaseBizCodeEnum.OK;
+        }
+
+        Long currentUserId = UserUtil.getCurrentUserId();
+
+        Long checkCount =
+            lambdaQuery().in(BaseEntity::getId, idSet).eq(SysUserWalletWithdrawLogDO::getUserId, currentUserId).count();
+
+        if (checkCount != idSet.size()) {
+            ApiResultVO.error(BaseBizCodeEnum.ILLEGAL_REQUEST);
+        }
+
+        // 执行：批量删除
+        return deleteByIdSetCommonHandle(idSet);
 
     }
 
@@ -412,62 +488,6 @@ public class SysUserWalletWithdrawLogServiceImpl
                 return BaseBizCodeEnum.OK;
 
             });
-
-    }
-
-    /**
-     * 分页排序查询-用户
-     */
-    @Override
-    public Page<SysUserWalletWithdrawLogDO> myPageUserSelf(SysUserWalletWithdrawLogPageUserSelfDTO dto) {
-
-        Long currentUserId = UserUtil.getCurrentUserId();
-
-        SysUserWalletWithdrawLogPageDTO sysUserWalletWithdrawLogPageDTO =
-            BeanUtil.copyProperties(dto, SysUserWalletWithdrawLogPageDTO.class);
-
-        sysUserWalletWithdrawLogPageDTO.setUserId(currentUserId);
-
-        return myPage(sysUserWalletWithdrawLogPageDTO);
-
-    }
-
-    /**
-     * 通过主键id，查看详情-用户
-     */
-    @Override
-    public SysUserWalletWithdrawLogDO infoByIdUserSelf(NotNullId notNullId) {
-
-        Long currentUserId = UserUtil.getCurrentUserId();
-
-        return lambdaQuery().eq(SysUserWalletWithdrawLogDO::getId, notNullId.getId())
-            .in(SysUserWalletWithdrawLogDO::getUserId, currentUserId).one();
-
-    }
-
-    /**
-     * 批量删除-用户
-     */
-    @Override
-    public String deleteByIdSetUserSelf(NotEmptyIdSet notEmptyIdSet) {
-
-        Set<Long> idSet = notEmptyIdSet.getIdSet();
-
-        if (CollUtil.isEmpty(idSet)) {
-            return BaseBizCodeEnum.OK;
-        }
-
-        Long currentUserId = UserUtil.getCurrentUserId();
-
-        Long checkCount =
-            lambdaQuery().in(BaseEntity::getId, idSet).eq(SysUserWalletWithdrawLogDO::getUserId, currentUserId).count();
-
-        if (checkCount != idSet.size()) {
-            ApiResultVO.error(BaseBizCodeEnum.ILLEGAL_REQUEST);
-        }
-
-        // 执行：批量删除
-        return deleteByIdSetCommonHandle(idSet);
 
     }
 

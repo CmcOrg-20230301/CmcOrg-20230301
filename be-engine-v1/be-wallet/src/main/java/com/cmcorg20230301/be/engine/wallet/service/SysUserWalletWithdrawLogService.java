@@ -17,9 +17,15 @@ public interface SysUserWalletWithdrawLogService extends IService<SysUserWalletW
 
     Page<SysUserWalletWithdrawLogDO> myPage(SysUserWalletWithdrawLogPageDTO dto);
 
+    Page<SysUserWalletWithdrawLogDO> myPageUserSelf(SysUserWalletWithdrawLogPageUserSelfDTO dto);
+
     SysUserWalletWithdrawLogDO infoById(NotNullId notNullId);
 
+    SysUserWalletWithdrawLogDO infoByIdUserSelf(NotNullId notNullId);
+
     String deleteByIdSet(NotEmptyIdSet notEmptyIdSet);
+
+    String deleteByIdSetUserSelf(NotEmptyIdSet notEmptyIdSet);
 
     String insertOrUpdateUserSelf(SysUserWalletWithdrawLogInsertOrUpdateUserSelfDTO dto);
 
@@ -32,11 +38,5 @@ public interface SysUserWalletWithdrawLogService extends IService<SysUserWalletW
     String success(NotNullId notNullId);
 
     String reject(NotNullIdAndStringValue notNullIdAndStringValue);
-
-    Page<SysUserWalletWithdrawLogDO> myPageUserSelf(SysUserWalletWithdrawLogPageUserSelfDTO dto);
-
-    SysUserWalletWithdrawLogDO infoByIdUserSelf(NotNullId notNullId);
-
-    String deleteByIdSetUserSelf(NotEmptyIdSet notEmptyIdSet);
 
 }

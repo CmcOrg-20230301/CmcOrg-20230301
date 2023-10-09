@@ -25,4 +25,6 @@ public interface BaseRegexConstant {
 
     String ID_NUMBER = "(^\\d{15}$)|(^\\d{18}$)|(^\\d{17}(\\d|X|x)$)"; // 身份证号
 
+    String BANK_DEBIT_CARD = "^(\\d{16}|\\d{19}|\\d{17})$"; // 银行卡号-借记卡
+
 }

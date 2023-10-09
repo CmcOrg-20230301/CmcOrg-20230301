@@ -13,6 +13,7 @@ public interface BaseConstant {
 
     long ZERO = 0; // 0
     long NEGATIVE_ONE = -1L; // -1
+    long NEGATIVE_TWO = -2L; // -2
 
     long DAY_1_EXPIRE_TIME = 60 * 60 * 1000 * 24; // 1天过期
     long DAY_7_EXPIRE_TIME = 60 * 60 * 1000 * 24 * 7L; // 7天过期
@@ -54,7 +55,8 @@ public interface BaseConstant {
 
     Long TENANT_ID = ZERO; // 默认租户 id
     String TENANT_NAME = "默认"; // 默认租户名
-    Long TENANT_USER_ID = NEGATIVE_ONE; // 默认租户的用户 id
+
+    Long TENANT_USER_ID = NEGATIVE_TWO; // 租户的用户 id
 
     Long TOP_PARENT_ID = ZERO; // 顶层 parentId：0
 
