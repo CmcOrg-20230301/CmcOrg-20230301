@@ -6,6 +6,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 @EqualsAndHashCode(callSuper = true)
@@ -27,6 +28,9 @@ public class SysUserWalletWithdrawLogPageUserSelfDTO extends MyTenantPageDTO {
     @Schema(description = "提现状态")
     private SysUserWalletWithdrawStatusEnum withdrawStatus;
 
+    @Schema(description = "拒绝理由")
+    private String rejectReason;
+
     @Schema(description = "起始时间：创建时间")
     private Date ctBeginTime;
 
@@ -34,9 +38,9 @@ public class SysUserWalletWithdrawLogPageUserSelfDTO extends MyTenantPageDTO {
     private Date ctEndTime;
 
     @Schema(description = "提现金额：开始值")
-    private Date beginWithdrawMoney;
+    private BigDecimal beginWithdrawMoney;
 
     @Schema(description = "提现金额：结束值")
-    private Date endWithdrawMoney;
+    private BigDecimal endWithdrawMoney;
 
 }

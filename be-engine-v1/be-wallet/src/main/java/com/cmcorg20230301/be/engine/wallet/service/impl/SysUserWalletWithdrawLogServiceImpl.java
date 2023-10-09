@@ -94,6 +94,9 @@ public class SysUserWalletWithdrawLogServiceImpl
                 .like(StrUtil.isNotBlank(dto.getPayeeName()), SysUserWalletWithdrawLogDO::getPayeeName,
                     dto.getPayeeName()) //
 
+                .like(StrUtil.isNotBlank(dto.getRejectReason()), SysUserWalletWithdrawLogDO::getRejectReason,
+                    dto.getRejectReason()) //
+
                 .eq(dto.getWithdrawStatus() != null, SysUserWalletWithdrawLogDO::getWithdrawStatus,
                     dto.getWithdrawStatus()) //
 
@@ -101,10 +104,12 @@ public class SysUserWalletWithdrawLogServiceImpl
                 .ge(dto.getCtBeginTime() != null, SysUserWalletWithdrawLogDO::getCreateTime, dto.getCtBeginTime())
 
                 .le(dto.getEndWithdrawMoney() != null, SysUserWalletWithdrawLogDO::getWithdrawMoney,
-                    dto.getEndWithdrawMoney())
+                    dto.getEndWithdrawMoney()) //
 
                 .ge(dto.getBeginWithdrawMoney() != null, SysUserWalletWithdrawLogDO::getWithdrawMoney,
-                    dto.getBeginWithdrawMoney()).in(BaseEntityNoId::getTenantId, dto.getTenantIdSet()) //
+                    dto.getBeginWithdrawMoney()) //
+
+                .in(BaseEntityNoId::getTenantId, dto.getTenantIdSet()) //
 
                 .orderByDesc(SysUserWalletWithdrawLogDO::getUpdateTime).page(dto.page(true));
 
