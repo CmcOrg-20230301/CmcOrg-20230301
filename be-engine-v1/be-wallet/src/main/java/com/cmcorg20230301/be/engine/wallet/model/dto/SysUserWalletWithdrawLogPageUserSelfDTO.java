@@ -33,4 +33,10 @@ public class SysUserWalletWithdrawLogPageUserSelfDTO extends MyTenantPageDTO {
     @Schema(description = "结束时间：创建时间")
     private Date ctEndTime;
 
+    @Schema(description = "提现金额：开始值")
+    private Date beginWithdrawMoney;
+
+    @Schema(description = "提现金额：结束值")
+    private Date endWithdrawMoney;
+
 }

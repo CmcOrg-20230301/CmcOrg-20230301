@@ -21,8 +21,6 @@ public interface SysUserWalletWithdrawLogService extends IService<SysUserWalletW
 
     SysUserWalletWithdrawLogDO infoById(NotNullId notNullId);
 
-    SysUserWalletWithdrawLogDO infoByIdUserSelf(NotNullId notNullId);
-
     String deleteByIdSet(NotEmptyIdSet notEmptyIdSet);
 
     String deleteByIdSetUserSelf(NotEmptyIdSet notEmptyIdSet);
@@ -31,7 +29,7 @@ public interface SysUserWalletWithdrawLogService extends IService<SysUserWalletW
 
     String commitUserSelf(NotNullId notNullId);
 
-    String revokeUserSelf(NotNullId notNullId);
+    String cancelUserSelf(NotNullId notNullId);
 
     String accept(NotNullId notNullId);
 

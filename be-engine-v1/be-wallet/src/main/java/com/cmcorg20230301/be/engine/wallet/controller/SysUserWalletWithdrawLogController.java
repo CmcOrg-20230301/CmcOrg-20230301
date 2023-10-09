@@ -58,12 +58,6 @@ public class SysUserWalletWithdrawLogController {
         return ApiResultVO.okData(baseService.infoById(notNullId));
     }
 
-    @Operation(summary = "通过主键id，查看详情-用户")
-    @PostMapping("/infoById/userSelf")
-    public ApiResultVO<SysUserWalletWithdrawLogDO> infoByIdUserSelf(@RequestBody @Valid NotNullId notNullId) {
-        return ApiResultVO.okData(baseService.infoByIdUserSelf(notNullId));
-    }
-
     @Operation(summary = "批量删除")
     @PostMapping("/deleteByIdSet")
     @PreAuthorize("hasAuthority('sysUserWalletWithdrawLog:deleteByIdSet')")
@@ -90,10 +84,10 @@ public class SysUserWalletWithdrawLogController {
         return ApiResultVO.okMsg(baseService.commitUserSelf(notNullId));
     }
 
-    @Operation(summary = "撤回-用户")
-    @PostMapping("/revoke/userSelf")
-    public ApiResultVO<String> revokeUserSelf(@RequestBody @Valid NotNullId notNullId) {
-        return ApiResultVO.okMsg(baseService.revokeUserSelf(notNullId));
+    @Operation(summary = "取消-用户")
+    @PostMapping("/cancel/userSelf")
+    public ApiResultVO<String> cancelUserSelf(@RequestBody @Valid NotNullId notNullId) {
+        return ApiResultVO.okMsg(baseService.cancelUserSelf(notNullId));
     }
 
     @Operation(summary = "受理-用户的提现记录")

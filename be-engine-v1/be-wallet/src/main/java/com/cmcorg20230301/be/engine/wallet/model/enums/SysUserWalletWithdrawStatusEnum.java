@@ -12,15 +12,15 @@ import lombok.Getter;
 @AllArgsConstructor
 public enum SysUserWalletWithdrawStatusEnum {
 
-    DRAFT(101, "草稿"), // 草稿（只有草稿状态才可以编辑和删除）
+    COMMIT(101, "待受理"), // 待受理（可取消）
 
-    COMMIT(201, "待受理"), // 待受理（可取消为草稿）
+    ACCEPT(201, "受理中"), // 受理中（不可取消）
 
-    ACCEPT(301, "受理中"), // 受理中（不可取消为草稿）
+    SUCCESS(301, "已成功"), // 已成功
 
-    SUCCESS(401, "已成功"), // 已成功
+    REJECT(401, "已拒绝"), // 已拒绝（需要填写拒绝理由）
 
-    REJECT(501, "已拒绝"), // 已拒绝（需要填写拒绝理由）
+    CANCEL(501, "已取消"), // 已取消（用户在待受理的时候，可以取消）
 
     ;
 

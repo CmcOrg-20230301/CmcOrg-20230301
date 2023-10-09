@@ -5,7 +5,6 @@ import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.lang.func.Func1;
 import cn.hutool.core.util.DesensitizedUtil;
 import cn.hutool.core.util.StrUtil;
-import com.baomidou.dynamic.datasource.annotation.DSTransactional;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.baomidou.mybatisplus.extension.toolkit.ChainWrappers;
@@ -83,19 +82,31 @@ public class SysUserWalletWithdrawLogServiceImpl
 
         Page<SysUserWalletWithdrawLogDO> page =
             lambdaQuery().eq(dto.getUserId() != null, SysUserWalletWithdrawLogDO::getUserId, dto.getUserId())
+
                 .like(StrUtil.isNotBlank(dto.getBankCardNo()), SysUserWalletWithdrawLogDO::getBankCardNo,
                     dto.getBankCardNo()) //
+
                 .like(StrUtil.isNotBlank(dto.getOpenBankName()), SysUserWalletWithdrawLogDO::getOpenBankName,
                     dto.getOpenBankName()) //
+
                 .like(StrUtil.isNotBlank(dto.getBranchBankName()), SysUserWalletWithdrawLogDO::getOpenBankName,
                     dto.getBranchBankName()) //
+
                 .like(StrUtil.isNotBlank(dto.getPayeeName()), SysUserWalletWithdrawLogDO::getPayeeName,
                     dto.getPayeeName()) //
+
                 .eq(dto.getWithdrawStatus() != null, SysUserWalletWithdrawLogDO::getWithdrawStatus,
                     dto.getWithdrawStatus()) //
+
                 .le(dto.getCtEndTime() != null, SysUserWalletWithdrawLogDO::getCreateTime, dto.getCtEndTime())
                 .ge(dto.getCtBeginTime() != null, SysUserWalletWithdrawLogDO::getCreateTime, dto.getCtBeginTime())
-                .in(BaseEntityNoId::getTenantId, dto.getTenantIdSet()) //
+
+                .le(dto.getEndWithdrawMoney() != null, SysUserWalletWithdrawLogDO::getWithdrawMoney,
+                    dto.getEndWithdrawMoney())
+
+                .ge(dto.getBeginWithdrawMoney() != null, SysUserWalletWithdrawLogDO::getWithdrawMoney,
+                    dto.getBeginWithdrawMoney()).in(BaseEntityNoId::getTenantId, dto.getTenantIdSet()) //
+
                 .orderByDesc(SysUserWalletWithdrawLogDO::getUpdateTime).page(dto.page(true));
 
         for (SysUserWalletWithdrawLogDO item : page.getRecords()) {
@@ -156,25 +167,6 @@ public class SysUserWalletWithdrawLogServiceImpl
 
         return lambdaQuery().eq(SysUserWalletWithdrawLogDO::getId, notNullId.getId())
             .in(BaseEntityNoId::getTenantId, queryTenantIdSet).one();
-
-    }
-
-    /**
-     * 通过主键id，查看详情-用户
-     */
-    @Override
-    public SysUserWalletWithdrawLogDO infoByIdUserSelf(NotNullId notNullId) {
-
-        Long currentUserId = UserUtil.getCurrentUserId();
-
-        SysUserWalletWithdrawLogDO sysUserWalletWithdrawLogDO =
-            lambdaQuery().eq(SysUserWalletWithdrawLogDO::getId, notNullId.getId())
-                .eq(SysUserWalletWithdrawLogDO::getUserId, currentUserId).one();
-
-        // 脱敏：SysUserWalletWithdrawLogDO
-        desensitizedSysUserWalletWithdrawLogDO(sysUserWalletWithdrawLogDO);
-
-        return sysUserWalletWithdrawLogDO;
 
     }
 
@@ -253,92 +245,52 @@ public class SysUserWalletWithdrawLogServiceImpl
     @Override
     public String insertOrUpdateUserSelf(SysUserWalletWithdrawLogInsertOrUpdateUserSelfDTO dto) {
 
+        Long currentUserId = UserUtil.getCurrentUserId();
+
         if (dto.getWithdrawMoney().compareTo(BigDecimal.ZERO) <= 0) { // 如果：提现金额 <= 0
             ApiResultVO.errorMsg("操作失败：提现金额不能小于等于 0");
         }
-
-        // 只能修改：草稿状态的提现记录
-        if (dto.getId() != null) {
-
-            Long currentUserId = UserUtil.getCurrentUserId();
-
-            RedissonUtil.doLock(BaseRedisKeyEnum.PRE_USER_WALLET_WITHDRAW_LOG.name() + dto.getId(), () -> {
-
-                SysUserWalletWithdrawLogDO sysUserWalletWithdrawLogDO = lambdaQuery().eq(BaseEntity::getId, dto.getId())
-                    .eq(SysUserWalletWithdrawLogDO::getUserId, currentUserId).one();
-
-                if (sysUserWalletWithdrawLogDO == null) {
-                    ApiResultVO.error(BaseBizCodeEnum.ILLEGAL_REQUEST, dto.getId());
-                }
-
-                // 只有待受理状态的提现记录，才可以撤回
-                if (!SysUserWalletWithdrawStatusEnum.DRAFT.equals(sysUserWalletWithdrawLogDO.getWithdrawStatus())) {
-                    ApiResultVO.error("操作失败：只能修改草稿状态的提现记录", dto.getId());
-                }
-
-                // 执行
-                doInsertOrUpdateUserSelf(dto);
-
-            });
-
-        } else {
-
-            // 执行
-            doInsertOrUpdateUserSelf(dto);
-
-        }
-
-        return BaseBizCodeEnum.OK;
-
-    }
-
-    /**
-     * 执行：新增/修改-用户
-     */
-    private void doInsertOrUpdateUserSelf(SysUserWalletWithdrawLogInsertOrUpdateUserSelfDTO dto) {
-
-        Long currentUserId = UserUtil.getCurrentUserId();
 
         SysUserWalletWithdrawLogDO sysUserWalletWithdrawLogDO = new SysUserWalletWithdrawLogDO();
 
         sysUserWalletWithdrawLogDO.setUserId(currentUserId);
         sysUserWalletWithdrawLogDO.setWithdrawMoney(dto.getWithdrawMoney());
 
-        if (dto.getId() == null) {
+        // 查询：用户银行卡信息
+        SysUserBankCardDO sysUserBankCardDO =
+            ChainWrappers.lambdaQueryChain(sysUserBankCardMapper).eq(SysUserBankCardDO::getId, currentUserId).one();
 
-            // 查询：用户银行卡信息
-            SysUserBankCardDO sysUserBankCardDO =
-                ChainWrappers.lambdaQueryChain(sysUserBankCardMapper).eq(SysUserBankCardDO::getId, currentUserId).one();
-
-            if (sysUserBankCardDO == null) {
-                ApiResultVO.errorMsg("操作失败：请绑定银行卡");
-            }
-
-            sysUserWalletWithdrawLogDO.setOpenBankName(sysUserBankCardDO.getOpenBankName());
-            sysUserWalletWithdrawLogDO.setPayeeName(sysUserBankCardDO.getPayeeName());
-            sysUserWalletWithdrawLogDO.setBankCardNo(sysUserBankCardDO.getBankCardNo());
-            sysUserWalletWithdrawLogDO.setBranchBankName(sysUserBankCardDO.getBranchBankName());
-
+        if (sysUserBankCardDO == null) {
+            ApiResultVO.errorMsg("操作失败：请先绑定银行卡");
         }
 
-        sysUserWalletWithdrawLogDO.setWithdrawStatus(SysUserWalletWithdrawStatusEnum.DRAFT);
+        sysUserWalletWithdrawLogDO.setOpenBankName(sysUserBankCardDO.getOpenBankName());
+        sysUserWalletWithdrawLogDO.setPayeeName(sysUserBankCardDO.getPayeeName());
+        sysUserWalletWithdrawLogDO.setBankCardNo(sysUserBankCardDO.getBankCardNo());
+        sysUserWalletWithdrawLogDO.setBranchBankName(sysUserBankCardDO.getBranchBankName());
+
+        sysUserWalletWithdrawLogDO.setWithdrawStatus(SysUserWalletWithdrawStatusEnum.COMMIT);
 
         sysUserWalletWithdrawLogDO.setRejectReason("");
-        sysUserWalletWithdrawLogDO.setId(dto.getId());
         sysUserWalletWithdrawLogDO.setEnableFlag(true);
         sysUserWalletWithdrawLogDO.setDelFlag(false);
         sysUserWalletWithdrawLogDO.setRemark("");
 
-        saveOrUpdate(sysUserWalletWithdrawLogDO); // 操作数据库
+        saveOrUpdate(sysUserWalletWithdrawLogDO); // 先操作数据库，原因：如果后面报错了，则会回滚该更新
+
+        // 检查和增加：用户钱包的可提现余额
+        sysUserWalletService.doAddTotalMoney(currentUserId, new Date(), CollUtil.newHashSet(currentUserId),
+            sysUserWalletWithdrawLogDO.getWithdrawMoney().negate(), SysUserWalletLogTypeEnum.REDUCE_WITHDRAW, true);
+
+        return BaseBizCodeEnum.OK;
 
     }
 
     /**
-     * 提交-用户
+     * 取消-用户
      */
     @Override
-    @DSTransactional
-    public String commitUserSelf(NotNullId notNullId) {
+    public String cancelUserSelf(NotNullId notNullId) {
 
         Long currentUserId = UserUtil.getCurrentUserId();
 
@@ -352,54 +304,17 @@ public class SysUserWalletWithdrawLogServiceImpl
                 ApiResultVO.error(BaseBizCodeEnum.ILLEGAL_REQUEST, notNullId.getId());
             }
 
-            // 只有草稿状态的提现记录，才可以提交
-            if (!SysUserWalletWithdrawStatusEnum.DRAFT.equals(sysUserWalletWithdrawLogDO.getWithdrawStatus())) {
-                ApiResultVO.error("操作失败：只能提交草稿状态的提现记录", notNullId.getId());
-            }
-
-            sysUserWalletWithdrawLogDO.setWithdrawStatus(SysUserWalletWithdrawStatusEnum.COMMIT);
-
-            updateById(sysUserWalletWithdrawLogDO); // 先更新提现记录状态，原因：如果后面报错了，则会回滚该更新
-
-            // 检查和增加：用户钱包的可提现余额
-            sysUserWalletService.doAddTotalMoney(currentUserId, new Date(), CollUtil.newHashSet(notNullId.getId()),
-                sysUserWalletWithdrawLogDO.getWithdrawMoney().negate(), SysUserWalletLogTypeEnum.REDUCE_WITHDRAW, true);
-
-            return BaseBizCodeEnum.OK;
-
-        });
-
-    }
-
-    /**
-     * 撤回-用户
-     */
-    @Override
-    public String revokeUserSelf(NotNullId notNullId) {
-
-        Long currentUserId = UserUtil.getCurrentUserId();
-
-        return RedissonUtil.doLock(BaseRedisKeyEnum.PRE_USER_WALLET_WITHDRAW_LOG.name() + notNullId.getId(), () -> {
-
-            SysUserWalletWithdrawLogDO sysUserWalletWithdrawLogDO =
-                lambdaQuery().eq(BaseEntity::getId, notNullId.getId())
-                    .eq(SysUserWalletWithdrawLogDO::getUserId, currentUserId).one();
-
-            if (sysUserWalletWithdrawLogDO == null) {
-                ApiResultVO.error(BaseBizCodeEnum.ILLEGAL_REQUEST, notNullId.getId());
-            }
-
-            // 只有待受理状态的提现记录，才可以撤回
+            // 只有待受理状态的提现记录，才可以取消
             if (!SysUserWalletWithdrawStatusEnum.COMMIT.equals(sysUserWalletWithdrawLogDO.getWithdrawStatus())) {
-                ApiResultVO.error("操作失败：只能撤回待受理状态的提现记录", notNullId.getId());
+                ApiResultVO.error("操作失败：只能取消待受理状态的提现记录", notNullId.getId());
             }
 
-            sysUserWalletWithdrawLogDO.setWithdrawStatus(SysUserWalletWithdrawStatusEnum.DRAFT);
+            sysUserWalletWithdrawLogDO.setWithdrawStatus(SysUserWalletWithdrawStatusEnum.CANCEL);
 
             updateById(sysUserWalletWithdrawLogDO); // 先更新提现记录状态，原因：如果后面报错了，则会回滚该更新
 
             // 检查和增加：用户钱包的可提现余额
-            sysUserWalletService.doAddTotalMoney(currentUserId, new Date(), CollUtil.newHashSet(notNullId.getId()),
+            sysUserWalletService.doAddTotalMoney(currentUserId, new Date(), CollUtil.newHashSet(currentUserId),
                 sysUserWalletWithdrawLogDO.getWithdrawMoney(), SysUserWalletLogTypeEnum.REDUCE_WITHDRAW, true);
 
             return BaseBizCodeEnum.OK;
@@ -504,9 +419,8 @@ public class SysUserWalletWithdrawLogServiceImpl
                 updateById(sysUserWalletWithdrawLogDO); // 先更新提现记录状态，原因：如果后面报错了，则会回滚该更新
 
                 // 检查和增加：用户钱包的可提现余额
-                sysUserWalletService
-                    .doAddTotalMoney(currentUserId, new Date(), CollUtil.newHashSet(notNullIdAndStringValue.getId()),
-                        sysUserWalletWithdrawLogDO.getWithdrawMoney(), SysUserWalletLogTypeEnum.REDUCE_WITHDRAW, true);
+                sysUserWalletService.doAddTotalMoney(currentUserId, new Date(), CollUtil.newHashSet(currentUserId),
+                    sysUserWalletWithdrawLogDO.getWithdrawMoney(), SysUserWalletLogTypeEnum.REDUCE_WITHDRAW, true);
 
                 return BaseBizCodeEnum.OK;
 
