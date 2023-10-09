@@ -8,6 +8,7 @@ import cn.hutool.core.util.StrUtil;
 import com.baomidou.dynamic.datasource.annotation.DSTransactional;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.baomidou.mybatisplus.extension.toolkit.ChainWrappers;
 import com.cmcorg20230301.be.engine.model.model.dto.NotEmptyIdSet;
 import com.cmcorg20230301.be.engine.model.model.dto.NotNullId;
 import com.cmcorg20230301.be.engine.model.model.dto.NotNullIdAndStringValue;
@@ -21,10 +22,12 @@ import com.cmcorg20230301.be.engine.security.model.entity.BaseEntityNoIdFather;
 import com.cmcorg20230301.be.engine.security.model.vo.ApiResultVO;
 import com.cmcorg20230301.be.engine.security.util.SysTenantUtil;
 import com.cmcorg20230301.be.engine.security.util.UserUtil;
+import com.cmcorg20230301.be.engine.wallet.mapper.SysUserBankCardMapper;
 import com.cmcorg20230301.be.engine.wallet.mapper.SysUserWalletWithdrawLogMapper;
 import com.cmcorg20230301.be.engine.wallet.model.dto.SysUserWalletWithdrawLogInsertOrUpdateUserSelfDTO;
 import com.cmcorg20230301.be.engine.wallet.model.dto.SysUserWalletWithdrawLogPageDTO;
 import com.cmcorg20230301.be.engine.wallet.model.dto.SysUserWalletWithdrawLogPageUserSelfDTO;
+import com.cmcorg20230301.be.engine.wallet.model.entity.SysUserBankCardDO;
 import com.cmcorg20230301.be.engine.wallet.model.entity.SysUserWalletWithdrawLogDO;
 import com.cmcorg20230301.be.engine.wallet.model.enums.SysUserWalletLogTypeEnum;
 import com.cmcorg20230301.be.engine.wallet.model.enums.SysUserWalletWithdrawStatusEnum;
@@ -47,6 +50,9 @@ public class SysUserWalletWithdrawLogServiceImpl
 
     @Resource
     SysUserWalletService sysUserWalletService;
+
+    @Resource
+    SysUserBankCardMapper sysUserBankCardMapper;
 
     /**
      * 下拉列表-提现状态
@@ -134,6 +140,7 @@ public class SysUserWalletWithdrawLogServiceImpl
 
         sysUserWalletWithdrawLogPageDTO.setUserId(currentUserId);
 
+        // 执行
         return myPage(sysUserWalletWithdrawLogPageDTO);
 
     }
@@ -250,19 +257,22 @@ public class SysUserWalletWithdrawLogServiceImpl
             ApiResultVO.errorMsg("操作失败：提现金额不能小于等于 0");
         }
 
-        // 处理：BaseTenantInsertOrUpdateDTO
-        SysTenantUtil.handleBaseTenantInsertOrUpdateDTO(dto, getCheckIllegalFunc1(CollUtil.newHashSet(dto.getId())),
-            getTenantIdBaseEntityFunc1());
-
         // 只能修改：草稿状态的提现记录
         if (dto.getId() != null) {
 
+            Long currentUserId = UserUtil.getCurrentUserId();
+
             RedissonUtil.doLock(BaseRedisKeyEnum.PRE_USER_WALLET_WITHDRAW_LOG.name() + dto.getId(), () -> {
 
-                boolean exists = lambdaQuery().eq(BaseEntity::getId, dto.getId())
-                    .eq(SysUserWalletWithdrawLogDO::getWithdrawStatus, SysUserWalletWithdrawStatusEnum.DRAFT).exists();
+                SysUserWalletWithdrawLogDO sysUserWalletWithdrawLogDO = lambdaQuery().eq(BaseEntity::getId, dto.getId())
+                    .eq(SysUserWalletWithdrawLogDO::getUserId, currentUserId).one();
 
-                if (!exists) {
+                if (sysUserWalletWithdrawLogDO == null) {
+                    ApiResultVO.error(BaseBizCodeEnum.ILLEGAL_REQUEST, dto.getId());
+                }
+
+                // 只有待受理状态的提现记录，才可以撤回
+                if (!SysUserWalletWithdrawStatusEnum.DRAFT.equals(sysUserWalletWithdrawLogDO.getWithdrawStatus())) {
                     ApiResultVO.error("操作失败：只能修改草稿状态的提现记录", dto.getId());
                 }
 
@@ -293,10 +303,23 @@ public class SysUserWalletWithdrawLogServiceImpl
 
         sysUserWalletWithdrawLogDO.setUserId(currentUserId);
         sysUserWalletWithdrawLogDO.setWithdrawMoney(dto.getWithdrawMoney());
-        sysUserWalletWithdrawLogDO.setOpenBankName(dto.getOpenBankName());
-        sysUserWalletWithdrawLogDO.setPayeeName(dto.getPayeeName());
-        sysUserWalletWithdrawLogDO.setBankCardNo(dto.getBankCardNo());
-        sysUserWalletWithdrawLogDO.setBranchBankName(dto.getBranchBankName());
+
+        if (dto.getId() == null) {
+
+            // 查询：用户银行卡信息
+            SysUserBankCardDO sysUserBankCardDO =
+                ChainWrappers.lambdaQueryChain(sysUserBankCardMapper).eq(SysUserBankCardDO::getId, currentUserId).one();
+
+            if (sysUserBankCardDO == null) {
+                ApiResultVO.errorMsg("操作失败：请绑定银行卡");
+            }
+
+            sysUserWalletWithdrawLogDO.setOpenBankName(sysUserBankCardDO.getOpenBankName());
+            sysUserWalletWithdrawLogDO.setPayeeName(sysUserBankCardDO.getPayeeName());
+            sysUserWalletWithdrawLogDO.setBankCardNo(sysUserBankCardDO.getBankCardNo());
+            sysUserWalletWithdrawLogDO.setBranchBankName(sysUserBankCardDO.getBranchBankName());
+
+        }
 
         sysUserWalletWithdrawLogDO.setWithdrawStatus(SysUserWalletWithdrawStatusEnum.DRAFT);
 

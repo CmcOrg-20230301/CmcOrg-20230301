@@ -2,6 +2,7 @@ package com.cmcorg20230301.be.engine.wallet.model.entity;
 
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.cmcorg20230301.be.engine.security.model.entity.BaseEntity;
+import com.cmcorg20230301.be.engine.wallet.model.enums.SysOpenBankNameEnum;
 import com.cmcorg20230301.be.engine.wallet.model.enums.SysUserWalletWithdrawStatusEnum;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
@@ -25,7 +26,7 @@ public class SysUserWalletWithdrawLogDO extends BaseEntity {
     private String bankCardNo;
 
     @Schema(description = "冗余字段：开户行")
-    private String openBankName;
+    private SysOpenBankNameEnum openBankName;
 
     @Schema(description = "冗余字段：支行")
     private String branchBankName;
