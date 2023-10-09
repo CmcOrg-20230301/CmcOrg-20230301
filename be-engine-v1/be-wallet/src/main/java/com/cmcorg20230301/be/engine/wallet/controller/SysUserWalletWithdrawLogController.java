@@ -1,7 +1,6 @@
 package com.cmcorg20230301.be.engine.wallet.controller;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.cmcorg20230301.be.engine.model.model.dto.NotEmptyIdSet;
 import com.cmcorg20230301.be.engine.model.model.dto.NotNullId;
 import com.cmcorg20230301.be.engine.model.model.dto.NotNullIdAndStringValue;
 import com.cmcorg20230301.be.engine.model.model.vo.DictIntegerVO;
@@ -58,30 +57,11 @@ public class SysUserWalletWithdrawLogController {
         return ApiResultVO.okData(baseService.infoById(notNullId));
     }
 
-    @Operation(summary = "批量删除")
-    @PostMapping("/deleteByIdSet")
-    @PreAuthorize("hasAuthority('sysUserWalletWithdrawLog:deleteByIdSet')")
-    public ApiResultVO<String> deleteByIdSet(@RequestBody @Valid NotEmptyIdSet notEmptyIdSet) {
-        return ApiResultVO.okMsg(baseService.deleteByIdSet(notEmptyIdSet));
-    }
-
-    @Operation(summary = "批量删除-用户")
-    @PostMapping("/deleteByIdSet/userSelf")
-    public ApiResultVO<String> deleteByIdSetUserSelf(@RequestBody @Valid NotEmptyIdSet notEmptyIdSet) {
-        return ApiResultVO.okMsg(baseService.deleteByIdSetUserSelf(notEmptyIdSet));
-    }
-
     @Operation(summary = "新增/修改-用户")
     @PostMapping("/insertOrUpdate/userSelf")
     public ApiResultVO<String> insertOrUpdateUserSelf(
         @RequestBody @Valid SysUserWalletWithdrawLogInsertOrUpdateUserSelfDTO dto) {
         return ApiResultVO.okMsg(baseService.insertOrUpdateUserSelf(dto));
-    }
-
-    @Operation(summary = "提交-用户")
-    @PostMapping("/commit/userSelf")
-    public ApiResultVO<String> commitUserSelf(@RequestBody @Valid NotNullId notNullId) {
-        return ApiResultVO.okMsg(baseService.commitUserSelf(notNullId));
     }
 
     @Operation(summary = "取消-用户")

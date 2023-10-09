@@ -8,7 +8,6 @@ import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.baomidou.mybatisplus.extension.toolkit.ChainWrappers;
-import com.cmcorg20230301.be.engine.model.model.dto.NotEmptyIdSet;
 import com.cmcorg20230301.be.engine.model.model.dto.NotNullId;
 import com.cmcorg20230301.be.engine.model.model.dto.NotNullIdAndStringValue;
 import com.cmcorg20230301.be.engine.model.model.vo.DictIntegerVO;
@@ -167,75 +166,6 @@ public class SysUserWalletWithdrawLogServiceImpl
 
         return lambdaQuery().eq(SysUserWalletWithdrawLogDO::getId, notNullId.getId())
             .in(BaseEntityNoId::getTenantId, queryTenantIdSet).one();
-
-    }
-
-    /**
-     * 批量删除
-     */
-    @Override
-    public String deleteByIdSet(NotEmptyIdSet notEmptyIdSet) {
-
-        Set<Long> idSet = notEmptyIdSet.getIdSet();
-
-        if (CollUtil.isEmpty(idSet)) {
-            return BaseBizCodeEnum.OK;
-        }
-
-        // 检查：是否非法操作
-        SysTenantUtil.checkIllegal(idSet, getCheckIllegalFunc1(idSet));
-
-        // 执行：批量删除
-        return deleteByIdSetCommonHandle(idSet);
-
-    }
-
-    /**
-     * 执行：批量删除
-     */
-    private String deleteByIdSetCommonHandle(Set<Long> idSet) {
-
-        return RedissonUtil.doMultiLock(BaseRedisKeyEnum.PRE_USER_WALLET_WITHDRAW_LOG.name(), idSet, () -> {
-
-            // 只有草稿状态的提现记录才可以删除
-            Long count = lambdaQuery().in(BaseEntity::getId, idSet)
-                .eq(SysUserWalletWithdrawLogDO::getWithdrawStatus, SysUserWalletWithdrawStatusEnum.DRAFT).count();
-
-            if (count != idSet.size()) {
-                ApiResultVO.errorMsg("操作失败：只能删除草稿状态的提现记录");
-            }
-
-            removeByIds(idSet); // 根据 idSet删除
-
-            return BaseBizCodeEnum.OK;
-
-        });
-
-    }
-
-    /**
-     * 批量删除-用户
-     */
-    @Override
-    public String deleteByIdSetUserSelf(NotEmptyIdSet notEmptyIdSet) {
-
-        Set<Long> idSet = notEmptyIdSet.getIdSet();
-
-        if (CollUtil.isEmpty(idSet)) {
-            return BaseBizCodeEnum.OK;
-        }
-
-        Long currentUserId = UserUtil.getCurrentUserId();
-
-        Long checkCount =
-            lambdaQuery().in(BaseEntity::getId, idSet).eq(SysUserWalletWithdrawLogDO::getUserId, currentUserId).count();
-
-        if (checkCount != idSet.size()) {
-            ApiResultVO.error(BaseBizCodeEnum.ILLEGAL_REQUEST);
-        }
-
-        // 执行：批量删除
-        return deleteByIdSetCommonHandle(idSet);
 
     }
 
