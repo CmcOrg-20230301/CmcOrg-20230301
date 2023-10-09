@@ -94,6 +94,10 @@ public class SysUserBankCardServiceImpl extends ServiceImpl<SysUserBankCardMappe
      */
     private void desensitizedSysUserBankCardDO(SysUserBankCardDO sysUserBankCardDO) {
 
+        if (sysUserBankCardDO == null) {
+            return;
+        }
+
         // 备注：需要和：提现记录的脱敏一致
         sysUserBankCardDO.setBankCardNo(DesensitizedUtil.bankCard(sysUserBankCardDO.getBankCardNo())); // 脱敏
 

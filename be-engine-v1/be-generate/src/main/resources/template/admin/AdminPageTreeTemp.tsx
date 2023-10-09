@@ -234,7 +234,6 @@ export default function () {
 
                 title={currentForm.current.id ? "编辑AdminModalFormTitle" : "新建AdminModalFormTitle"}
                 layoutType={"ModalForm"}
-
                 grid
 
                 rowProps={{
@@ -329,13 +328,15 @@ export default function () {
 
                         })
 
+                    } else {
+
+                        setTimeout(() => {
+
+                            formRef.current?.setFieldsValue(currentForm.current)
+
+                        }, CommonConstant.SHORT_DELAY)
+
                     }
-
-                    setTimeout(() => {
-
-                        formRef.current?.setFieldsValue(currentForm.current)
-
-                    }, CommonConstant.SHORT_DELAY)
 
                     return InitForm
 

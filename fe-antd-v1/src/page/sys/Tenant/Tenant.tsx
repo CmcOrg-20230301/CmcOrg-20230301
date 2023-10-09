@@ -330,13 +330,15 @@ export default function () {
 
                         })
 
+                    } else {
+
+                        setTimeout(() => {
+
+                            formRef.current?.setFieldsValue(currentForm.current)
+
+                        }, CommonConstant.SHORT_DELAY)
+
                     }
-
-                    setTimeout(() => {
-
-                        formRef.current?.setFieldsValue(currentForm.current)
-
-                    }, CommonConstant.SHORT_DELAY)
 
                     return InitForm
 

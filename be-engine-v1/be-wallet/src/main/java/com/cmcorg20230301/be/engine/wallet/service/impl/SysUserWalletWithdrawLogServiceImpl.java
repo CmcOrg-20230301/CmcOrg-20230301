@@ -108,6 +108,10 @@ public class SysUserWalletWithdrawLogServiceImpl
      */
     private void desensitizedSysUserWalletWithdrawLogDO(SysUserWalletWithdrawLogDO sysUserWalletWithdrawLogDO) {
 
+        if (sysUserWalletWithdrawLogDO == null) {
+            return;
+        }
+
         // 备注：需要和：银行卡的脱敏一致
         sysUserWalletWithdrawLogDO
             .setBankCardNo(DesensitizedUtil.bankCard(sysUserWalletWithdrawLogDO.getBankCardNo())); // 脱敏
