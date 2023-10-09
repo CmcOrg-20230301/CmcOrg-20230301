@@ -18,7 +18,7 @@ public class SysUserWalletDO extends BaseEntityNoId {
     @Schema(description = "用户主键 id")
     private Long id;
 
-    @TableField(value = "SUM( withdrawable_money ) AS totalMoney", property = "totalMoney", insertStrategy = FieldStrategy.NEVER, updateStrategy = FieldStrategy.NEVER)
+    @TableField(value = "SUM( withdrawable_money )", insertStrategy = FieldStrategy.NEVER, updateStrategy = FieldStrategy.NEVER)
     @Schema(description = "总金额")
     private BigDecimal totalMoney;
 
