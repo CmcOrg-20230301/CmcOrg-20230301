@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.cmcorg20230301.be.engine.security.model.entity.BaseEntityNoId;
+import com.cmcorg20230301.be.engine.wallet.model.enums.SysOpenBankNameEnum;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -22,7 +23,7 @@ public class SysUserBankCardDO extends BaseEntityNoId {
     private String bankCardNo;
 
     @Schema(description = "开户行")
-    private String openBankName;
+    private SysOpenBankNameEnum openBankName;
 
     @Schema(description = "支行")
     private String branchBankName;

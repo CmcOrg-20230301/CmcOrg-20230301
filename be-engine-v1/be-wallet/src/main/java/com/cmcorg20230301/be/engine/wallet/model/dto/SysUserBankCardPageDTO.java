@@ -1,6 +1,7 @@
 package com.cmcorg20230301.be.engine.wallet.model.dto;
 
 import com.cmcorg20230301.be.engine.security.model.dto.MyTenantPageDTO;
+import com.cmcorg20230301.be.engine.wallet.model.enums.SysOpenBankNameEnum;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -16,7 +17,7 @@ public class SysUserBankCardPageDTO extends MyTenantPageDTO {
     private String bankCardNo;
 
     @Schema(description = "开户行")
-    private String openBankName;
+    private SysOpenBankNameEnum openBankName;
 
     @Schema(description = "支行")
     private String branchBankName;

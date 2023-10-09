@@ -13,7 +13,7 @@ public interface IUserSignConfiguration {
      * 用户新增时，额外的操作
      * 用于：添加额外的用户数据
      */
-    void signUp(@NotNull Long userId, @NotNull Long tenantId);
+    Object signUp(@NotNull Long userId, @NotNull Long tenantId);
 
     /**
      * 用户注销时，额外的操作

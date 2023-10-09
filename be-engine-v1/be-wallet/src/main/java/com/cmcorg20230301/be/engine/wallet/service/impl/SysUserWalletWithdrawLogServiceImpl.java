@@ -113,12 +113,8 @@ public class SysUserWalletWithdrawLogServiceImpl
         }
 
         // 备注：需要和：银行卡的脱敏一致
-        sysUserWalletWithdrawLogDO
-            .setBankCardNo(DesensitizedUtil.bankCard(sysUserWalletWithdrawLogDO.getBankCardNo())); // 脱敏
-
-        sysUserWalletWithdrawLogDO.setBranchBankName(DesensitizedUtil
-            .desensitized(sysUserWalletWithdrawLogDO.getBranchBankName(),
-                DesensitizedUtil.DesensitizedType.ADDRESS)); // 脱敏
+        sysUserWalletWithdrawLogDO.setBankCardNo(
+            StrUtil.cleanBlank(DesensitizedUtil.bankCard(sysUserWalletWithdrawLogDO.getBankCardNo()))); // 脱敏
 
         sysUserWalletWithdrawLogDO
             .setPayeeName(DesensitizedUtil.chineseName(sysUserWalletWithdrawLogDO.getPayeeName())); // 脱敏

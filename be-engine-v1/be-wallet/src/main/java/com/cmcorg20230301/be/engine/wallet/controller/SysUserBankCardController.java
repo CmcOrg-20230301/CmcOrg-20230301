@@ -2,6 +2,7 @@ package com.cmcorg20230301.be.engine.wallet.controller;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.cmcorg20230301.be.engine.model.model.dto.NotNullId;
+import com.cmcorg20230301.be.engine.model.model.vo.DictStringVO;
 import com.cmcorg20230301.be.engine.security.model.vo.ApiResultVO;
 import com.cmcorg20230301.be.engine.wallet.model.dto.SysUserBankCardInsertOrUpdateUserSelfDTO;
 import com.cmcorg20230301.be.engine.wallet.model.dto.SysUserBankCardPageDTO;
@@ -38,6 +39,12 @@ public class SysUserBankCardController {
     @PreAuthorize("hasAuthority('sysUserBankCard:page')")
     public ApiResultVO<Page<SysUserBankCardDO>> myPage(@RequestBody @Valid SysUserBankCardPageDTO dto) {
         return ApiResultVO.okData(baseService.myPage(dto));
+    }
+
+    @Operation(summary = "下拉列表-开户行名称")
+    @PostMapping("/dictList/openBankName")
+    public ApiResultVO<Page<DictStringVO>> openBankNameDictList() {
+        return ApiResultVO.okData(baseService.openBankNameDictList());
     }
 
     @Operation(summary = "通过主键id，查看详情")

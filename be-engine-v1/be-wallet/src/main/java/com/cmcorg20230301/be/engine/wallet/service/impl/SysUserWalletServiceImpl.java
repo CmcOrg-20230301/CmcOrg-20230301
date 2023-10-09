@@ -18,6 +18,7 @@ import com.cmcorg20230301.be.engine.security.model.entity.BaseEntityNoIdFather;
 import com.cmcorg20230301.be.engine.security.model.vo.ApiResultVO;
 import com.cmcorg20230301.be.engine.security.util.SysTenantUtil;
 import com.cmcorg20230301.be.engine.security.util.UserUtil;
+import com.cmcorg20230301.be.engine.wallet.configuration.SysUserWalletUserSignConfiguration;
 import com.cmcorg20230301.be.engine.wallet.mapper.SysUserWalletMapper;
 import com.cmcorg20230301.be.engine.wallet.model.dto.SysUserWalletInsertOrUpdateDTO;
 import com.cmcorg20230301.be.engine.wallet.model.dto.SysUserWalletPageDTO;
@@ -28,6 +29,7 @@ import com.cmcorg20230301.be.engine.wallet.service.SysUserWalletService;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.Resource;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
@@ -37,6 +39,9 @@ import java.util.Set;
 @Service
 public class SysUserWalletServiceImpl extends ServiceImpl<SysUserWalletMapper, SysUserWalletDO>
     implements SysUserWalletService {
+
+    @Resource
+    SysUserWalletUserSignConfiguration sysUserWalletUserSignConfiguration;
 
     /**
      * 新增/修改
@@ -96,6 +101,29 @@ public class SysUserWalletServiceImpl extends ServiceImpl<SysUserWalletMapper, S
 
         return lambdaQuery().eq(SysUserWalletDO::getId, notNullId.getId())
             .in(BaseEntityNoId::getTenantId, queryTenantIdSet).one();
+
+    }
+
+    /**
+     * 通过主键id，查看详情-用户
+     */
+    @Override
+    public SysUserWalletDO infoByIdUserSelf() {
+
+        Long currentUserId = UserUtil.getCurrentUserId();
+
+        Long currentTenantIdDefault = UserUtil.getCurrentTenantIdDefault();
+
+        SysUserWalletDO sysUserWalletDO = lambdaQuery().eq(SysUserWalletDO::getId, currentUserId).one();
+
+        if (sysUserWalletDO == null) {
+
+            sysUserWalletDO =
+                (SysUserWalletDO)sysUserWalletUserSignConfiguration.signUp(currentUserId, currentTenantIdDefault);
+
+        }
+
+        return sysUserWalletDO;
 
     }
 

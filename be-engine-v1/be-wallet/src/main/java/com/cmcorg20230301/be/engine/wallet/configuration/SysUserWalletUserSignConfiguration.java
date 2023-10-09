@@ -1,8 +1,8 @@
 package com.cmcorg20230301.be.engine.wallet.configuration;
 
 import com.cmcorg20230301.be.engine.security.model.configuration.IUserSignConfiguration;
+import com.cmcorg20230301.be.engine.wallet.mapper.SysUserWalletMapper;
 import com.cmcorg20230301.be.engine.wallet.model.entity.SysUserWalletDO;
-import com.cmcorg20230301.be.engine.wallet.service.SysUserWalletService;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Component;
 
@@ -14,10 +14,10 @@ import java.util.Set;
 public class SysUserWalletUserSignConfiguration implements IUserSignConfiguration {
 
     @Resource
-    SysUserWalletService sysUserWalletService;
+    SysUserWalletMapper sysUserWalletMapper;
 
     @Override
-    public void signUp(@NotNull Long userId, @NotNull Long tenantId) {
+    public Object signUp(@NotNull Long userId, @NotNull Long tenantId) {
 
         SysUserWalletDO sysUserWalletDO = new SysUserWalletDO();
 
@@ -31,7 +31,9 @@ public class SysUserWalletUserSignConfiguration implements IUserSignConfiguratio
         sysUserWalletDO.setRemark("");
         sysUserWalletDO.setTenantId(tenantId);
 
-        sysUserWalletService.save(sysUserWalletDO);
+        sysUserWalletMapper.insert(sysUserWalletDO);
+
+        return sysUserWalletDO;
 
     }
 

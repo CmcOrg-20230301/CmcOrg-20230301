@@ -49,6 +49,12 @@ public class SysUserWalletController {
         return ApiResultVO.okData(baseService.infoById(notNullId));
     }
 
+    @Operation(summary = "通过主键id，查看详情-用户")
+    @PostMapping("/infoById/userSelf")
+    public ApiResultVO<SysUserWalletDO> infoByIdUserSelf() {
+        return ApiResultVO.okData(baseService.infoByIdUserSelf());
+    }
+
     @Operation(summary = "批量删除")
     @PostMapping("/deleteByIdSet")
     @PreAuthorize("hasAuthority('sysUserWallet:deleteByIdSet')")

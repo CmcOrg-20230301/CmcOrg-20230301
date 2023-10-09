@@ -22,6 +22,8 @@ public interface SysUserWalletService extends IService<SysUserWalletDO> {
 
     SysUserWalletDO infoById(NotNullId notNullId);
 
+    SysUserWalletDO infoByIdUserSelf();
+
     String deleteByIdSet(NotEmptyIdSet notEmptyIdSet);
 
     String addTotalMoneyBackground(ChangeBigDecimalNumberDTO dto);

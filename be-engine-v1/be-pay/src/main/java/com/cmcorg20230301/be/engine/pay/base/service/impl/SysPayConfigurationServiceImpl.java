@@ -1,10 +1,8 @@
 package com.cmcorg20230301.be.engine.pay.base.service.impl;
 
 import cn.hutool.core.collection.CollUtil;
-import cn.hutool.core.lang.PatternPool;
 import cn.hutool.core.lang.func.Func1;
 import cn.hutool.core.util.BooleanUtil;
-import cn.hutool.core.util.ReUtil;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.dynamic.datasource.annotation.DSTransactional;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -41,14 +39,6 @@ public class SysPayConfigurationServiceImpl extends ServiceImpl<SysPayConfigurat
     @Override
     @DSTransactional
     public String insertOrUpdate(SysPayConfigurationInsertOrUpdateDTO dto) {
-
-        if (!ReUtil.isMatch(PatternPool.URL, dto.getServerUrl())) {
-            ApiResultVO.errorMsg("操作失败：网关地址，不合法");
-        }
-
-        if (StrUtil.isNotBlank(dto.getNotifyUrl()) && !ReUtil.isMatch(PatternPool.URL, dto.getNotifyUrl())) {
-            ApiResultVO.errorMsg("操作失败：异步接收地址，不合法");
-        }
 
         // 每个支付方式，需要单独检查 dto
         dto.getType().getCheckSysPayConfigurationInsertOrUpdateDTOConsumer().accept(dto);

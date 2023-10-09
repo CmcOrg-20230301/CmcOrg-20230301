@@ -5,6 +5,7 @@ import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.cmcorg20230301.be.engine.model.model.dto.NotNullId;
+import com.cmcorg20230301.be.engine.model.model.vo.DictStringVO;
 import com.cmcorg20230301.be.engine.security.exception.BaseBizCodeEnum;
 import com.cmcorg20230301.be.engine.security.model.entity.BaseEntityNoId;
 import com.cmcorg20230301.be.engine.security.model.entity.BaseEntityNoIdFather;
@@ -14,6 +15,7 @@ import com.cmcorg20230301.be.engine.wallet.mapper.SysUserBankCardMapper;
 import com.cmcorg20230301.be.engine.wallet.model.dto.SysUserBankCardInsertOrUpdateUserSelfDTO;
 import com.cmcorg20230301.be.engine.wallet.model.dto.SysUserBankCardPageDTO;
 import com.cmcorg20230301.be.engine.wallet.model.entity.SysUserBankCardDO;
+import com.cmcorg20230301.be.engine.wallet.model.enums.SysOpenBankNameEnum;
 import com.cmcorg20230301.be.engine.wallet.service.SysUserBankCardService;
 import org.springframework.stereotype.Service;
 
@@ -71,7 +73,7 @@ public class SysUserBankCardServiceImpl extends ServiceImpl<SysUserBankCardMappe
 
         Page<SysUserBankCardDO> page = lambdaQuery().eq(dto.getId() != null, SysUserBankCardDO::getId, dto.getId())
             .like(StrUtil.isNotBlank(dto.getBankCardNo()), SysUserBankCardDO::getBankCardNo, dto.getBankCardNo())
-            .like(StrUtil.isNotBlank(dto.getOpenBankName()), SysUserBankCardDO::getOpenBankName, dto.getOpenBankName())
+            .eq(dto.getOpenBankName() != null, SysUserBankCardDO::getOpenBankName, dto.getOpenBankName())
             .like(StrUtil.isNotBlank(dto.getBranchBankName()), SysUserBankCardDO::getBranchBankName,
                 dto.getBranchBankName())
             .like(StrUtil.isNotBlank(dto.getPayeeName()), SysUserBankCardDO::getPayeeName, dto.getPayeeName())
@@ -99,12 +101,21 @@ public class SysUserBankCardServiceImpl extends ServiceImpl<SysUserBankCardMappe
         }
 
         // 备注：需要和：提现记录的脱敏一致
-        sysUserBankCardDO.setBankCardNo(DesensitizedUtil.bankCard(sysUserBankCardDO.getBankCardNo())); // 脱敏
-
-        sysUserBankCardDO.setBranchBankName(DesensitizedUtil
-            .desensitized(sysUserBankCardDO.getBranchBankName(), DesensitizedUtil.DesensitizedType.ADDRESS)); // 脱敏
+        sysUserBankCardDO
+            .setBankCardNo(StrUtil.cleanBlank(DesensitizedUtil.bankCard(sysUserBankCardDO.getBankCardNo()))); // 脱敏
 
         sysUserBankCardDO.setPayeeName(DesensitizedUtil.chineseName(sysUserBankCardDO.getPayeeName())); // 脱敏
+
+    }
+
+    /**
+     * 下拉列表-开户行名称
+     */
+    @Override
+    public Page<DictStringVO> openBankNameDictList() {
+
+        return new Page<DictStringVO>().setTotal(SysOpenBankNameEnum.DICT_VO_LIST.size())
+            .setRecords(SysOpenBankNameEnum.DICT_VO_LIST);
 
     }
 

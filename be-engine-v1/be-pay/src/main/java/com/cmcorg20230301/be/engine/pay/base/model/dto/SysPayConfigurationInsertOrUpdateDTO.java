@@ -1,5 +1,7 @@
 package com.cmcorg20230301.be.engine.pay.base.model.dto;
 
+import cn.hutool.core.lang.RegexPool;
+import com.cmcorg20230301.be.engine.model.model.annotation.NotBlankPattern;
 import com.cmcorg20230301.be.engine.model.model.dto.BaseTenantInsertOrUpdateDTO;
 import com.cmcorg20230301.be.engine.pay.base.model.enums.SysPayTypeEnum;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -8,6 +10,7 @@ import lombok.EqualsAndHashCode;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
@@ -24,6 +27,7 @@ public class SysPayConfigurationInsertOrUpdateDTO extends BaseTenantInsertOrUpda
     @Schema(description = "支付名（不可重复）")
     private String name;
 
+    @Pattern(regexp = RegexPool.URL)
     @NotBlank
     @Schema(description = "支付平台，网关地址，例如：https://openapi.alipay.com/gateway.do")
     private String serverUrl;
@@ -39,6 +43,7 @@ public class SysPayConfigurationInsertOrUpdateDTO extends BaseTenantInsertOrUpda
     @Schema(description = "支付平台，公钥")
     private String platformPublicKey;
 
+    @NotBlankPattern(regexp = RegexPool.URL)
     @Schema(description = "支付平台，异步接收地址")
     private String notifyUrl;
 
