@@ -149,109 +149,6 @@ public class SysUserWalletServiceImpl extends ServiceImpl<SysUserWalletMapper, S
     }
 
     /**
-     * 通过主键 idSet，加减总金额
-     */
-    @Override
-    @DSTransactional
-    public String addTotalMoneyBackground(ChangeBigDecimalNumberDTO dto) {
-
-        Long currentUserId = UserUtil.getCurrentUserId();
-
-        BigDecimal changeNumber = dto.getNumber();
-
-        // 检查：是否非法操作
-        SysTenantUtil.checkIllegal(dto.getIdSet(), getCheckIllegalFunc1(dto.getIdSet()));
-
-        SysUserWalletLogTypeEnum sysUserWalletLogTypeEnum =
-            changeNumber.compareTo(BigDecimal.ZERO) > 0 ? SysUserWalletLogTypeEnum.ADD_BACKGROUND :
-                SysUserWalletLogTypeEnum.REDUCE_BACKGROUND;
-
-        // 执行
-        return doAddTotalMoney(currentUserId, new Date(), dto.getIdSet(), changeNumber, sysUserWalletLogTypeEnum,
-            false);
-
-    }
-
-    /**
-     * 执行：通过主键 idSet，加减总金额
-     */
-    @Override
-    @NotNull
-    @DSTransactional
-    public String doAddTotalMoney(Long currentUserId, Date date, Set<Long> idSet, BigDecimal changeNumber,
-        SysUserWalletLogTypeEnum sysUserWalletLogTypeEnum, boolean lowErrorFlag) {
-
-        if (changeNumber.equals(BigDecimal.ZERO)) {
-            return BaseBizCodeEnum.OK;
-        }
-
-        // 日志集合
-        List<SysUserWalletLogDO> sysUserWalletLogDoList = new ArrayList<>();
-
-        RedissonUtil.doMultiLock(BaseRedisKeyEnum.PRE_USER_WALLET.name(), idSet, () -> {
-
-            List<SysUserWalletDO> sysUserWalletDOList = lambdaQuery().in(SysUserWalletDO::getId, idSet)
-                .select(SysUserWalletDO::getId, SysUserWalletDO::getWithdrawableMoney, BaseEntityNoId::getVersion,
-                    BaseEntityNoIdFather::getTenantId, SysUserWalletDO::getTotalMoney).list();
-
-            for (SysUserWalletDO item : sysUserWalletDOList) {
-
-                BigDecimal preTotalMoney = item.getTotalMoney();
-
-                item.setTotalMoney(item.getTotalMoney().add(changeNumber)); // 修改：数字
-
-                if (item.getTotalMoney().compareTo(BigDecimal.ZERO) < 0) {
-                    if (lowErrorFlag) {
-                        ApiResultVO.error("操作失败：可提现余额不足", item.getId());
-                    } else {
-                        item.setTotalMoney(BigDecimal.ZERO);
-                    }
-                }
-
-                SysUserWalletLogDO sysUserWalletLogDO = new SysUserWalletLogDO();
-
-                sysUserWalletLogDO.setUserId(item.getId());
-                sysUserWalletLogDO.setName(sysUserWalletLogTypeEnum.getName());
-                sysUserWalletLogDO.setType(sysUserWalletLogTypeEnum);
-
-                sysUserWalletLogDO.setTotalMoneyPre(preTotalMoney);
-                sysUserWalletLogDO.setTotalMoneySuf(item.getTotalMoney());
-
-                sysUserWalletLogDO.setWithdrawableMoneyPre(item.getWithdrawableMoney());
-                sysUserWalletLogDO.setWithdrawableMoneySuf(item.getWithdrawableMoney());
-
-                sysUserWalletLogDO.setId(IdGeneratorUtil.nextId());
-                sysUserWalletLogDO.setEnableFlag(true);
-                sysUserWalletLogDO.setDelFlag(false);
-                sysUserWalletLogDO.setRemark("");
-                sysUserWalletLogDO.setTenantId(item.getTenantId());
-                sysUserWalletLogDO.setCreateId(currentUserId);
-                sysUserWalletLogDO.setCreateTime(date);
-                sysUserWalletLogDO.setUpdateId(currentUserId);
-                sysUserWalletLogDO.setUpdateTime(date);
-
-                // 通用：处理：SysUserWalletLogDO
-                commonHandleSysUserWalletLogDO(sysUserWalletLogDO);
-
-                sysUserWalletLogDoList.add(sysUserWalletLogDO);
-
-            }
-
-            updateBatchById(sysUserWalletDOList);
-
-        });
-
-        for (SysUserWalletLogDO item : sysUserWalletLogDoList) {
-
-            SysUserWalletLogServiceImpl.add(item); // 保存日志
-
-        }
-
-        return BaseBizCodeEnum.OK;
-
-    }
-
-    /**
      * 通用：处理：SysUserWalletLogDO
      */
     private void commonHandleSysUserWalletLogDO(SysUserWalletLogDO sysUserWalletLogDO) {
@@ -312,8 +209,10 @@ public class SysUserWalletServiceImpl extends ServiceImpl<SysUserWalletMapper, S
 
             for (SysUserWalletDO item : sysUserWalletDOList) {
 
+                BigDecimal preTotalMoney = item.getTotalMoney();
                 BigDecimal preWithdrawableMoney = item.getWithdrawableMoney();
 
+                item.setTotalMoney(item.getTotalMoney().add(changeNumber)); // 修改：数字
                 item.setWithdrawableMoney(item.getWithdrawableMoney().add(changeNumber)); // 修改：数字
 
                 if (item.getWithdrawableMoney().compareTo(BigDecimal.ZERO) < 0) {
@@ -330,7 +229,7 @@ public class SysUserWalletServiceImpl extends ServiceImpl<SysUserWalletMapper, S
                 sysUserWalletLogDO.setName(sysUserWalletLogTypeEnum.getName());
                 sysUserWalletLogDO.setType(sysUserWalletLogTypeEnum);
 
-                sysUserWalletLogDO.setTotalMoneyPre(item.getTotalMoney());
+                sysUserWalletLogDO.setTotalMoneyPre(preTotalMoney);
                 sysUserWalletLogDO.setTotalMoneySuf(item.getTotalMoney());
 
                 sysUserWalletLogDO.setWithdrawableMoneyPre(preWithdrawableMoney);

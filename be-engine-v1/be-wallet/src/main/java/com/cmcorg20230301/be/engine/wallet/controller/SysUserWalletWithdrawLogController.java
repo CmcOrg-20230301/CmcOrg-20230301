@@ -1,6 +1,7 @@
 package com.cmcorg20230301.be.engine.wallet.controller;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.cmcorg20230301.be.engine.model.model.dto.NotEmptyIdSet;
 import com.cmcorg20230301.be.engine.model.model.dto.NotNullId;
 import com.cmcorg20230301.be.engine.model.model.dto.NotNullIdAndStringValue;
 import com.cmcorg20230301.be.engine.model.model.vo.DictIntegerVO;
@@ -43,18 +44,18 @@ public class SysUserWalletWithdrawLogController {
         return ApiResultVO.okData(baseService.myPage(dto));
     }
 
-    @Operation(summary = "分页排序查询-用户")
-    @PostMapping("/page/userSelf")
-    public ApiResultVO<Page<SysUserWalletWithdrawLogDO>> myPageUserSelf(
-        @RequestBody @Valid SysUserWalletWithdrawLogPageUserSelfDTO dto) {
-        return ApiResultVO.okData(baseService.myPageUserSelf(dto));
-    }
-
     @Operation(summary = "通过主键id，查看详情")
     @PostMapping("/infoById")
     @PreAuthorize("hasAuthority('sysUserWalletWithdrawLog:infoById')")
     public ApiResultVO<SysUserWalletWithdrawLogDO> infoById(@RequestBody @Valid NotNullId notNullId) {
         return ApiResultVO.okData(baseService.infoById(notNullId));
+    }
+
+    @Operation(summary = "分页排序查询-用户")
+    @PostMapping("/page/userSelf")
+    public ApiResultVO<Page<SysUserWalletWithdrawLogDO>> myPageUserSelf(
+        @RequestBody @Valid SysUserWalletWithdrawLogPageUserSelfDTO dto) {
+        return ApiResultVO.okData(baseService.myPageUserSelf(dto));
     }
 
     @Operation(summary = "新增/修改-用户")
@@ -73,8 +74,8 @@ public class SysUserWalletWithdrawLogController {
     @Operation(summary = "受理-用户的提现记录")
     @PostMapping("/accept")
     @PreAuthorize("hasAuthority('sysUserWalletWithdrawLog:accept')")
-    public ApiResultVO<String> accept(@RequestBody @Valid NotNullId notNullId) {
-        return ApiResultVO.okMsg(baseService.accept(notNullId));
+    public ApiResultVO<String> accept(@RequestBody @Valid NotEmptyIdSet notEmptyIdSet) {
+        return ApiResultVO.okMsg(baseService.accept(notEmptyIdSet));
     }
 
     @Operation(summary = "成功-用户的提现记录")

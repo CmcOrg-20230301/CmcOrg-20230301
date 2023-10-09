@@ -2,6 +2,7 @@ package com.cmcorg20230301.be.engine.wallet.service;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.cmcorg20230301.be.engine.model.model.dto.NotEmptyIdSet;
 import com.cmcorg20230301.be.engine.model.model.dto.NotNullId;
 import com.cmcorg20230301.be.engine.model.model.dto.NotNullIdAndStringValue;
 import com.cmcorg20230301.be.engine.model.model.vo.DictIntegerVO;
@@ -16,15 +17,15 @@ public interface SysUserWalletWithdrawLogService extends IService<SysUserWalletW
 
     Page<SysUserWalletWithdrawLogDO> myPage(SysUserWalletWithdrawLogPageDTO dto);
 
-    Page<SysUserWalletWithdrawLogDO> myPageUserSelf(SysUserWalletWithdrawLogPageUserSelfDTO dto);
-
     SysUserWalletWithdrawLogDO infoById(NotNullId notNullId);
+
+    Page<SysUserWalletWithdrawLogDO> myPageUserSelf(SysUserWalletWithdrawLogPageUserSelfDTO dto);
 
     String insertOrUpdateUserSelf(SysUserWalletWithdrawLogInsertOrUpdateUserSelfDTO dto);
 
     String cancelUserSelf(NotNullId notNullId);
 
-    String accept(NotNullId notNullId);
+    String accept(NotEmptyIdSet notEmptyIdSet);
 
     String success(NotNullId notNullId);
 

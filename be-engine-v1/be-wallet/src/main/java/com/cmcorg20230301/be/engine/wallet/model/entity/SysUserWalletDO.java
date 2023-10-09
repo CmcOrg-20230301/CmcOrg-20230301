@@ -1,8 +1,6 @@
 package com.cmcorg20230301.be.engine.wallet.model.entity;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableName;
+import com.baomidou.mybatisplus.annotation.*;
 import com.cmcorg20230301.be.engine.security.model.entity.BaseEntityNoId;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
@@ -20,6 +18,7 @@ public class SysUserWalletDO extends BaseEntityNoId {
     @Schema(description = "用户主键 id")
     private Long id;
 
+    @TableField(value = "SUM( withdrawable_money ) AS totalMoney", property = "totalMoney", insertStrategy = FieldStrategy.NEVER, updateStrategy = FieldStrategy.NEVER)
     @Schema(description = "总金额")
     private BigDecimal totalMoney;
 

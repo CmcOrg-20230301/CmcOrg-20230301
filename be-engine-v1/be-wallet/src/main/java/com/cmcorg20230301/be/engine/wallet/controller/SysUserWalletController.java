@@ -62,13 +62,6 @@ public class SysUserWalletController {
         return ApiResultVO.okMsg(baseService.deleteByIdSet(notEmptyIdSet));
     }
 
-    @Operation(summary = "通过主键 idSet，加减总金额")
-    @PostMapping("/addTotalMoney/background")
-    @PreAuthorize("hasAuthority('sysUserWallet:addTotalMoney')")
-    public ApiResultVO<String> addTotalMoneyBackground(@RequestBody @Valid ChangeBigDecimalNumberDTO dto) {
-        return ApiResultVO.okMsg(baseService.addTotalMoneyBackground(dto));
-    }
-
     @Operation(summary = "通过主键 idSet，加减可提现的钱")
     @PostMapping("/addWithdrawableMoney/background")
     @PreAuthorize("hasAuthority('sysUserWallet:addWithdrawableMoney')")

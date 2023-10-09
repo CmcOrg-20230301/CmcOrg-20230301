@@ -11,7 +11,7 @@ import java.math.BigDecimal;
 public class SysUserWalletWithdrawLogInsertOrUpdateUserSelfDTO {
 
     @NotNull
-    @Min(0)
+    @Min(1)
     @Schema(description = "提现金额")
     private BigDecimal withdrawMoney;
 

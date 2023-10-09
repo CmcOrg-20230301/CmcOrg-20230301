@@ -26,11 +26,6 @@ public interface SysUserWalletService extends IService<SysUserWalletDO> {
 
     String deleteByIdSet(NotEmptyIdSet notEmptyIdSet);
 
-    String addTotalMoneyBackground(ChangeBigDecimalNumberDTO dto);
-
-    String doAddTotalMoney(Long currentUserId, Date date, Set<Long> idSet, BigDecimal changeNumber,
-        SysUserWalletLogTypeEnum sysUserWalletLogTypeEnum, boolean lowErrorFlag);
-
     String addWithdrawableMoneyBackground(ChangeBigDecimalNumberDTO dto);
 
     String doAddWithdrawableMoney(Long currentUserId, Date date, Set<Long> idSet, BigDecimal changeNumber,
