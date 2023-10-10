@@ -74,7 +74,7 @@ export interface SysPayConfigurationInsertOrUpdateDTO {
     type?: string // 支付类型：101 支付宝 201 微信 301 云闪付 401 谷歌，required：true
     privateKey?: string // 支付平台，私钥，required：true
     merchantId?: string // 支付平台，商户号
-    serverUrl?: string // 支付平台，网关地址，例如：https://openapi.alipay.com/gateway.do，required：true
+    serverUrl?: string // 支付平台，网关地址，例如：https://openapi.alipay.com/gateway.do，正则表达式：[a-zA-Z]+://[\w-+&@#/%?=~_|!:,.;]*[\w-+&@#/%=~_|]，required：true
     appId?: string // 支付平台，应用 id，required：true
     tenantId?: string // 租户 id，可以为空，为空则表示：默认租户：0，format：int64
     name?: string // 支付名（不可重复），required：true

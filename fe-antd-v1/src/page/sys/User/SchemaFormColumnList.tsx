@@ -1,6 +1,6 @@
 import {GetDictList, GetDictTreeList, YesNoDict} from "@/util/DictUtil";
 import {SysUserInsertOrUpdateDTO} from "@/api/http/SysUser";
-import {validate, ValidatorUtil} from "@/util/ValidatorUtil";
+import {Validate} from "@/util/ValidatorUtil";
 import {SysRolePage} from "@/api/http/SysRole";
 import {FormInstance, ProFormColumnsType} from "@ant-design/pro-components";
 import {RandomNickname} from "@/util/UserUtil";
@@ -23,8 +23,8 @@ const SchemaFormColumnList = (formRef: React.MutableRefObject<FormInstance<SysUs
                     {
                         min: 0,
                         max: 20,
-                        pattern: validate.signInName.regex,
-                        message: validate.signInName.errorMsg,
+                        pattern: Validate.signInName.regex,
+                        message: Validate.signInName.errorMsg,
                     },
                 ],
             },
@@ -38,8 +38,8 @@ const SchemaFormColumnList = (formRef: React.MutableRefObject<FormInstance<SysUs
                     {
                         min: 0,
                         max: 100,
-                        pattern: validate.email.regex,
-                        message: validate.email.errorMsg,
+                        pattern: Validate.email.regex,
+                        message: Validate.email.errorMsg,
                     },
                 ],
             },
@@ -53,8 +53,8 @@ const SchemaFormColumnList = (formRef: React.MutableRefObject<FormInstance<SysUs
                     {
                         min: 0,
                         max: 100,
-                        pattern: validate.phone.regex,
-                        message: validate.phone.errorMsg,
+                        pattern: Validate.phone.regex,
+                        message: Validate.phone.errorMsg,
                     },
                 ],
             },
@@ -78,7 +78,7 @@ const SchemaFormColumnList = (formRef: React.MutableRefObject<FormInstance<SysUs
                             formItemProps: {
                                 rules: [
                                     {
-                                        validator: ValidatorUtil.passwordCanNullValidate
+                                        validator: Validate.password.canNullValidator
                                     }
                                 ],
                             },
@@ -95,7 +95,7 @@ const SchemaFormColumnList = (formRef: React.MutableRefObject<FormInstance<SysUs
             formItemProps: {
                 rules: [
                     {
-                        validator: ValidatorUtil.nicknameCanNullValidate
+                        validator: Validate.nickname.canNullValidator
                     },
                 ],
             },

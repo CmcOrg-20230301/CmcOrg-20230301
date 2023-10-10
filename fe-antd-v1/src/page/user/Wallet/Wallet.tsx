@@ -25,7 +25,7 @@ export default function () {
 
                     <div className={"flex-center p-b-50"}>
 
-                        <Card>
+                        <Card style={{width: routeContextType.isMobile ? '100%' : '45%'}}>
 
                             <Tabs items={itemArr} tabPosition={routeContextType.isMobile ? 'top' : 'left'}/>
 

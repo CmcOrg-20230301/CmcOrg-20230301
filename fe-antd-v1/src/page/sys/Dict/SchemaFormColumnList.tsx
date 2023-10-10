@@ -1,7 +1,7 @@
 import {YesNoDict} from "@/util/DictUtil";
 import {SysDictInsertOrUpdateDTO} from "@/api/http/SysDict";
 import {ProFormColumnsType, ProSchemaValueEnumType} from "@ant-design/pro-components";
-import {ValidatorUtil} from "@/util/ValidatorUtil";
+import {Validate} from "@/util/ValidatorUtil";
 
 export const InitForm: SysDictInsertOrUpdateDTO = {} as SysDictInsertOrUpdateDTO
 
@@ -71,7 +71,7 @@ const SchemaFormColumnList = (): ProFormColumnsType<SysDictInsertOrUpdateDTO>[] 
                                 rules: [
                                     {
                                         required: true,
-                                        validator: ValidatorUtil.integerValidate
+                                        validator: Validate.integer.validator
                                     }
                                 ],
                             },

@@ -17,9 +17,9 @@ export default function (props: IMyIcon) {
         return null
     }
 
-    if (IconList.includes(props.icon)) {
+    const Element = IconTemp[props.icon]
 
-        const Element = IconTemp[props.icon]
+    if (Element) {
 
         return <Element {...props} />
 

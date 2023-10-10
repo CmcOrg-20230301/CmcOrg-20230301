@@ -234,7 +234,6 @@ export default function () {
 
                 title={currentForm.current.id ? "编辑部门" : "新建部门"}
                 layoutType={"ModalForm"}
-
                 grid
 
                 rowProps={{

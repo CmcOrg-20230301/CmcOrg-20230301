@@ -5,7 +5,7 @@ import LocalStorageKey from "@/model/constant/LocalStorageKey";
 import {ApiResultVO} from "@/util/HttpUtil";
 import {getAppDispatch, getAppNav} from "@/MyApp";
 import PathConstant from "@/model/constant/PathConstant";
-import {validate} from "@/util/ValidatorUtil";
+import {Validate} from "@/util/ValidatorUtil";
 import {SignEmailSignInPassword} from "@/api/http/SignEmail";
 import {SignSignInNameSignInPassword} from "@/api/http/SignSignInName";
 import {signOut} from "@/store/userSlice";
@@ -18,7 +18,7 @@ export async function SignInFormHandler(form: ISignInForm) {
 
     const password = PasswordRSAEncrypt(form.password) // 密码加密
 
-    if (validate.email.regex.test(form.account)) { // 如果是：邮箱
+    if (Validate.email.regex.test(form.account)) { // 如果是：邮箱
 
         await SignEmailSignInPassword({email: form.account, password, tenantId: form.tenantId}).then(res => {
             SignInSuccess(res, form.tenantId)

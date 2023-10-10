@@ -1,6 +1,7 @@
 import {GetDictListByKey, YesNoDict} from "@/util/DictUtil";
 import {SysPayConfigurationInsertOrUpdateDTO} from "@/api/http/SysPayConfiguration";
 import {ProFormColumnsType} from "@ant-design/pro-components";
+import {Validate} from "@/util/ValidatorUtil";
 
 export const InitForm: SysPayConfigurationInsertOrUpdateDTO = {} as SysPayConfigurationInsertOrUpdateDTO
 
@@ -49,6 +50,7 @@ const SchemaFormColumnList = (): ProFormColumnsType<SysPayConfigurationInsertOrU
                     {
                         required: true,
                         whitespace: true,
+                        validator: Validate.url.validator
                     },
                 ],
             },
@@ -89,6 +91,14 @@ const SchemaFormColumnList = (): ProFormColumnsType<SysPayConfigurationInsertOrU
         {
             title: '异步接收地址',
             dataIndex: 'notifyUrl',
+            formItemProps: {
+                rules: [
+                    {
+                        whitespace: true,
+                        validator: Validate.url.canNullValidator
+                    },
+                ],
+            },
         },
 
         {

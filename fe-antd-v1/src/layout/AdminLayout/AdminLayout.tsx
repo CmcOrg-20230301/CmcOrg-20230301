@@ -30,6 +30,7 @@ import {SysFileGetPublicUrl} from "@/api/http/SysFile";
 import {ConnectWebSocket} from "@/util/webSocket/WebSocketUtil";
 import {SysTenantGetNameById} from "@/api/http/SysTenant";
 import LocalStorageKey from "@/model/constant/LocalStorageKey";
+import {TENANT_NAME_SUF} from "@/page/sign/SignUp/SignUpUtil";
 
 // 前往：第一个页面
 function goFirstPage(menuList: SysMenuDO[]) {
@@ -160,7 +161,7 @@ function AdminLayoutElement(props: IAdminLayoutElement) {
 
                 if (res.data) {
 
-                    setTenantName(res.data + " - ")
+                    setTenantName(res.data + TENANT_NAME_SUF)
 
                 } else {
 
@@ -299,7 +300,7 @@ function AdminLayoutElement(props: IAdminLayoutElement) {
 
                                             }
                                             }>
-                                                钱包
+                                                我的钱包
                                             </a>,
 
                                             icon: <WalletOutlined/>
@@ -376,7 +377,7 @@ function AdminLayoutElement(props: IAdminLayoutElement) {
             footerRender={() => (
 
                 <DefaultFooter
-                    copyright={GetCopyright()}
+                    copyright={GetCopyright(tenantName)}
                 />
 
             )}

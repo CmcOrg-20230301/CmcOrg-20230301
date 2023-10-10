@@ -1,15 +1,65 @@
 import {Rule} from "antd/lib/form"
 
-interface IValidate {
+/**
+ * 校验
+ */
+function Validator(rule: Rule, fieldValue: string, iValidateHandle: IValidateHandle) {
 
-    regex: RegExp
-    errorMsg: string
-    validate: (value: string) => boolean
-    emptyErrorMsg: string
+    if (!fieldValue) {
+        return Promise.reject(new Error(iValidateHandle.emptyErrorMsg))
+    }
+
+    if (!iValidateHandle.validate(fieldValue)) {
+        return Promise.reject(new Error(iValidateHandle.errorMsg))
+    }
+
+    return Promise.resolve()
 
 }
 
-export const validate: Record<string, IValidate> = {
+/**
+ * 校验：可以为空
+ */
+function CanNullValidator(rule: Rule, fieldValue: string, iValidateHandle: IValidateHandle) {
+
+    if (!fieldValue) {
+        return Promise.resolve()
+    }
+
+    if (!iValidateHandle.validate(fieldValue)) {
+        return Promise.reject(new Error(iValidateHandle.errorMsg))
+    }
+
+    return Promise.resolve()
+
+}
+
+interface IValidateHandle {
+
+    regex: RegExp
+    emptyErrorMsg: string
+    errorMsg: string
+    validate: (value: string) => boolean
+    validator: (rule: Rule, fieldValue: string) => Promise<void>
+    canNullValidator: (rule: Rule, fieldValue: string) => Promise<void>
+
+}
+
+export interface IValidate {
+
+    integer: IValidateHandle,
+    email: IValidateHandle
+    password: IValidateHandle
+    code: IValidateHandle
+    nickname: IValidateHandle
+    phone: IValidateHandle
+    signInName: IValidateHandle
+    url: IValidateHandle
+    bankDebitCard: IValidateHandle
+
+}
+
+export const Validate: IValidate = {
 
     integer: {
         regex: /^-?\d+$/,
@@ -17,6 +67,12 @@ export const validate: Record<string, IValidate> = {
         errorMsg: '请输入数字',
         validate(value: string) {
             return this.regex.test(value)
+        },
+        validator: (rule: Rule, fieldValue: string,) => {
+            return Validator(rule, fieldValue, Validate.integer)
+        },
+        canNullValidator: (rule: Rule, fieldValue: string,) => {
+            return CanNullValidator(rule, fieldValue, Validate.integer)
         },
     },
 
@@ -27,15 +83,26 @@ export const validate: Record<string, IValidate> = {
         validate(value: string) {
             return this.regex.test(value)
         },
+        validator: (rule: Rule, fieldValue: string,) => {
+            return Validator(rule, fieldValue, Validate.email)
+        },
+        canNullValidator: (rule: Rule, fieldValue: string,) => {
+            return CanNullValidator(rule, fieldValue, Validate.email)
+        },
     },
 
     password: {
         regex: /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,20}$/,
         emptyErrorMsg: '请输入密码',
-        errorMsg:
-            '密码格式错误：必须包含大小写字母和数字，可以使用特殊字符，长度8-20',
+        errorMsg: '密码格式错误：必须包含大小写字母和数字，可以使用特殊字符，长度8-20',
         validate(value: string) {
             return this.regex.test(value)
+        },
+        validator: (rule: Rule, fieldValue: string,) => {
+            return Validator(rule, fieldValue, Validate.password)
+        },
+        canNullValidator: (rule: Rule, fieldValue: string,) => {
+            return CanNullValidator(rule, fieldValue, Validate.password)
         },
     },
 
@@ -46,6 +113,12 @@ export const validate: Record<string, IValidate> = {
         validate(value: string) {
             return this.regex.test(value)
         },
+        validator: (rule: Rule, fieldValue: string,) => {
+            return Validator(rule, fieldValue, Validate.code)
+        },
+        canNullValidator: (rule: Rule, fieldValue: string,) => {
+            return CanNullValidator(rule, fieldValue, Validate.code)
+        },
     },
 
     nickname: {
@@ -54,6 +127,12 @@ export const validate: Record<string, IValidate> = {
         errorMsg: '昵称格式错误：只能包含中文，数字，字母，下划线，横杠，长度2-20',
         validate(value: string) {
             return this.regex.test(value)
+        },
+        validator: (rule: Rule, fieldValue: string,) => {
+            return Validator(rule, fieldValue, Validate.nickname)
+        },
+        canNullValidator: (rule: Rule, fieldValue: string,) => {
+            return CanNullValidator(rule, fieldValue, Validate.nickname)
         },
     },
 
@@ -64,6 +143,12 @@ export const validate: Record<string, IValidate> = {
         validate(value: string) {
             return this.regex.test(value)
         },
+        validator: (rule: Rule, fieldValue: string,) => {
+            return Validator(rule, fieldValue, Validate.phone)
+        },
+        canNullValidator: (rule: Rule, fieldValue: string,) => {
+            return CanNullValidator(rule, fieldValue, Validate.phone)
+        },
     },
 
     signInName: {
@@ -73,56 +158,42 @@ export const validate: Record<string, IValidate> = {
         validate(value: string) {
             return this.regex.test(value)
         },
+        validator: (rule: Rule, fieldValue: string,) => {
+            return Validator(rule, fieldValue, Validate.signInName)
+        },
+        canNullValidator: (rule: Rule, fieldValue: string,) => {
+            return CanNullValidator(rule, fieldValue, Validate.signInName)
+        },
+    },
+
+    url: {
+        regex: /^[a-zA-Z]+:\/\/[\w-+&@#/%?=~_|!:,.;]*[\w-+&@#/%=~_|]$/,
+        emptyErrorMsg: '请输入地址',
+        errorMsg: '地址格式错误',
+        validate(value: string) {
+            return this.regex.test(value)
+        },
+        validator: (rule: Rule, fieldValue: string,) => {
+            return Validator(rule, fieldValue, Validate.url)
+        },
+        canNullValidator: (rule: Rule, fieldValue: string,) => {
+            return CanNullValidator(rule, fieldValue, Validate.url)
+        },
+    },
+
+    bankDebitCard: {
+        regex: /^(\d{16}|\d{19}|\d{17})$/,
+        emptyErrorMsg: '请输入银行卡号',
+        errorMsg: '银行卡号格式错误',
+        validate(value: string) {
+            return this.regex.test(value)
+        },
+        validator: (rule: Rule, fieldValue: string,) => {
+            return Validator(rule, fieldValue, Validate.bankDebitCard)
+        },
+        canNullValidator: (rule: Rule, fieldValue: string,) => {
+            return CanNullValidator(rule, fieldValue, Validate.bankDebitCard)
+        },
     }
 
 }
-
-export const ValidatorUtil: Record<string,
-    (rule: Rule, fieldValue: string) => Promise<void>> = {}
-
-Object.keys(validate).forEach((item) => {
-
-    ValidatorUtil[item + 'Validate'] = (
-        rule: Rule,
-        fieldValue: string,
-    ): Promise<void> => {
-
-        if (!fieldValue) {
-
-            return Promise.reject(new Error(validate[item].emptyErrorMsg))
-
-        }
-
-        if (!validate[item].validate(fieldValue)) {
-
-            return Promise.reject(new Error(validate[item].errorMsg))
-
-        }
-
-        return Promise.resolve()
-
-    }
-
-    // 可以为空的校验
-    ValidatorUtil[item + 'CanNullValidate'] = (
-        rule: Rule,
-        fieldValue: string,
-    ): Promise<void> => {
-
-        if (!fieldValue) {
-
-            return Promise.resolve()
-
-        }
-
-        if (!validate[item].validate(fieldValue)) {
-
-            return Promise.reject(new Error(validate[item].errorMsg))
-
-        }
-
-        return Promise.resolve()
-
-    }
-
-})

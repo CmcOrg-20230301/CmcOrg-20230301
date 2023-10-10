@@ -8,7 +8,7 @@ import {
     SysEmailConfigurationInsertOrUpdateDTO
 } from "@/api/http/SysEmailConfiguration";
 import {YesNoDict} from "@/util/DictUtil";
-import {validate} from "@/util/ValidatorUtil";
+import {Validate} from "@/util/ValidatorUtil";
 
 // 邮箱配置
 export default function () {
@@ -115,8 +115,8 @@ export default function () {
                                     required: true,
                                     min: 0,
                                     max: 100,
-                                    pattern: validate.email.regex,
-                                    message: validate.email.errorMsg,
+                                    pattern: Validate.email.regex,
+                                    message: Validate.email.errorMsg,
                                 },
                             ],
                         },

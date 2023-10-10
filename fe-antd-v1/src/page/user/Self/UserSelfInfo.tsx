@@ -11,7 +11,7 @@ import {getAppDispatch} from "@/MyApp";
 import {ActionType, ProDescriptions} from "@ant-design/pro-components";
 import {ExecConfirm, ToastError, ToastSuccess} from "@/util/ToastUtil";
 import {USER_CENTER_KEY_ONE} from "@/page/user/Self/Self";
-import {ValidatorUtil} from "@/util/ValidatorUtil";
+import {Validate} from "@/util/ValidatorUtil";
 import {Avatar, Image, Space, Upload, UploadFile} from "antd";
 import {DeleteOutlined, EyeOutlined} from "@ant-design/icons";
 import CommonConstant from "@/model/constant/CommonConstant";
@@ -265,7 +265,7 @@ export default function () {
                         required: true,
                         rules: [
                             {
-                                validator: ValidatorUtil.nicknameCanNullValidate
+                                validator: Validate.nickname.canNullValidator
                             }
                         ],
                     },

@@ -234,7 +234,6 @@ export default function () {
 
                 title={currentForm.current.id ? "编辑菜单" : "新建菜单"}
                 layoutType={"ModalForm"}
-
                 grid
 
                 rowProps={{

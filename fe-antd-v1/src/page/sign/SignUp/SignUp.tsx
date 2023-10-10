@@ -8,7 +8,7 @@ import {LockOutlined, SafetyCertificateOutlined, UserOutlined} from "@ant-design
 import {getAppNav} from "@/MyApp";
 import PathConstant from "@/model/constant/PathConstant";
 import {SendCode, SignUpFormHandler, UseEffectSign} from "@/page/sign/SignUp/SignUpUtil";
-import {ValidatorUtil} from "@/util/ValidatorUtil";
+import {Validate} from "@/util/ValidatorUtil";
 import Link from "antd/lib/typography/Link";
 
 type TSignUpType = '0' | '1'; // 注册方式
@@ -98,7 +98,7 @@ export default function () {
 
                     rules={[
                         {
-                            validator: ValidatorUtil[activeKey === '0' ? 'signInNameValidate' : 'emailValidate']
+                            validator: activeKey === '0' ? Validate.signInName.validator : Validate.email.validator
                         }
                     ]}
 
@@ -115,7 +115,7 @@ export default function () {
                     placeholder={'密码'}
                     rules={[
                         {
-                            validator: ValidatorUtil.passwordValidate
+                            validator: Validate.password.validator
                         }
                     ]}
 
@@ -139,7 +139,7 @@ export default function () {
                                     size: 'large',
                                 }}
 
-                                rules={[{validator: ValidatorUtil.codeValidate}]}
+                                rules={[{validator: Validate.code.validator}]}
                                 placeholder={'请输入验证码'}
                                 name="code"
                                 onGetCaptcha={async () => {

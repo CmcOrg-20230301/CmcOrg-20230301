@@ -3,16 +3,6 @@ import MyOrderDTO from "@/model/dto/MyOrderDTO";
 import $http from "@/util/HttpUtil";
 import {AxiosRequestConfig} from "axios";
 
-export interface ChangeBigDecimalNumberDTO {
-    idSet?: string[] // 主键 idSet，required：true，format：int64
-    number?: number // 需要改变的数值，required：true
-}
-
-// 通过主键 idSet，加减总金额
-export function SysUserWalletAddTotalMoneyBackground(form: ChangeBigDecimalNumberDTO, config?: AxiosRequestConfig) {
-    return $http.myPost<string>('/sys/userWallet/addTotalMoney/background', form, config)
-}
-
 export interface NotNullId {
     id?: string // 主键id，required：true，format：int64
 }
@@ -37,6 +27,11 @@ export function SysUserWalletInfoById(form: NotNullId, config?: AxiosRequestConf
     return $http.myProPost<SysUserWalletDO>('/sys/userWallet/infoById', form, config)
 }
 
+// 通过主键id，查看详情-用户
+export function SysUserWalletInfoByIdUserSelf(config?: AxiosRequestConfig) {
+    return $http.myProPost<SysUserWalletDO>('/sys/userWallet/infoById/userSelf', undefined, config)
+}
+
 export interface SysUserWalletPageDTO {
     current?: string // 第几页，format：int64
     pageSize?: string // 每页显示条数，format：int64
@@ -59,6 +54,11 @@ export interface NotEmptyIdSet {
 // 批量删除
 export function SysUserWalletDeleteByIdSet(form: NotEmptyIdSet, config?: AxiosRequestConfig) {
     return $http.myPost<string>('/sys/userWallet/deleteByIdSet', form, config)
+}
+
+export interface ChangeBigDecimalNumberDTO {
+    idSet?: string[] // 主键 idSet，required：true，format：int64
+    number?: number // 需要改变的数值，required：true
 }
 
 // 通过主键 idSet，加减可提现的钱

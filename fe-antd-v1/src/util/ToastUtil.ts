@@ -1,4 +1,5 @@
 import {getApp} from "@/MyApp";
+import React from "react";
 
 export function ToastSuccess(msg: string, duration: number = 5) {
 
@@ -28,7 +29,7 @@ export function ToastError(msg: string, duration: number = 5) {
 export function ExecConfirm(
     confirmFun: () => Promise<void>,
     cancelFun?: () => Promise<void>,
-    msg?: string
+    msg?: React.ReactNode
 ) {
 
     getApp().modal.confirm({

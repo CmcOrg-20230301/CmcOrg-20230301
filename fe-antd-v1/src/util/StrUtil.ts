@@ -30,3 +30,30 @@ export function RandomStr(length: number = 6) {
     return resStr
 
 }
+
+/**
+ * 通过：text，获取 Typography.Text.type
+ */
+export function GetTextType(text: any) {
+
+    let type
+
+    const textNumber = Number(text);
+
+    if (textNumber === 0) {
+
+        type = 'secondary'
+
+    } else if (textNumber > 0) {
+
+        type = 'success'
+
+    } else {
+
+        type = 'danger'
+
+    }
+
+    return type;
+
+}

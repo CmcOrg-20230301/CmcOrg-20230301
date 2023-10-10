@@ -13,7 +13,7 @@ import {
 import {ExecConfirm, ToastSuccess} from "@/util/ToastUtil";
 import CommonConstant from "@/model/constant/CommonConstant";
 import {EllipsisOutlined, EyeOutlined} from "@ant-design/icons";
-import {ValidatorUtil} from "@/util/ValidatorUtil";
+import {Validate} from "@/util/ValidatorUtil";
 import {PasswordRSAEncrypt, RSAEncryptPro} from "@/util/RsaUtil";
 import {Dropdown, TreeSelect} from "antd";
 import {SysTenantDictList} from "@/api/http/SysTenant";
@@ -302,7 +302,7 @@ export function SysUserUpdatePasswordModalForm(props: ISysUserUpdatePasswordModa
     >
 
         <ProFormText label="新密码" tooltip={"可以为空"} name="newPassword"
-                     rules={[{validator: ValidatorUtil.passwordCanNullValidate}]}/>
+                     rules={[{validator: Validate.password.canNullValidator}]}/>
 
     </ModalForm>
 

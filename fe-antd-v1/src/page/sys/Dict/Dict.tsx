@@ -249,7 +249,6 @@ export default function () {
 
                 title={currentForm.current.id ? "编辑字典" : "新建字典"}
                 layoutType={"ModalForm"}
-
                 grid
 
                 rowProps={{

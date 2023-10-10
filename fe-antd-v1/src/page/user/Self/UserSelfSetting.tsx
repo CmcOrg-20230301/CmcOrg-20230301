@@ -15,7 +15,7 @@ import {
 } from "@/api/http/SignEmail";
 import {useAppSelector} from "@/store";
 import {List, Modal} from "antd";
-import {ValidatorUtil} from "@/util/ValidatorUtil";
+import {Validate} from "@/util/ValidatorUtil";
 import {ExecConfirm, ToastSuccess} from "@/util/ToastUtil";
 import {ModalForm, ProFormCaptcha, ProFormInstance, ProFormText, ProTable} from "@ant-design/pro-components";
 import CommonConstant from "@/model/constant/CommonConstant";
@@ -194,7 +194,7 @@ export function SetEmailAccountModalForm() {
             placeholder={'请输入邮箱'}
             rules={[
                 {
-                    validator: ValidatorUtil.emailValidate
+                    validator: Validate.email.validator
                 }
             ]}
         />
@@ -208,7 +208,7 @@ export function SetEmailAccountModalForm() {
             label="验证码"
             name="code"
             placeholder={"请输入验证码"}
-            rules={[{validator: ValidatorUtil.codeValidate}]}
+            rules={[{validator: Validate.code.validator}]}
             onGetCaptcha={async () => {
 
                 await formRef.current?.validateFields(['email']).then(async res => {
@@ -271,7 +271,7 @@ export function UpdateEmailAccountModalForm() {
 
             rules={[
                 {
-                    validator: ValidatorUtil.emailValidate
+                    validator: Validate.email.validator
                 }
             ]}
 
@@ -288,7 +288,7 @@ export function UpdateEmailAccountModalForm() {
             label="新邮箱验证码"
             name="newEmailCode"
             placeholder={"请输入新邮箱验证码"}
-            rules={[{validator: ValidatorUtil.codeValidate}]}
+            rules={[{validator: Validate.code.validator}]}
 
             onGetCaptcha={async () => {
 
@@ -317,7 +317,7 @@ export function UpdateEmailAccountModalForm() {
             label="旧邮箱验证码"
             name="oldEmailCode"
             placeholder={"请输入旧邮箱验证码"}
-            rules={[{validator: ValidatorUtil.codeValidate}]}
+            rules={[{validator: Validate.code.validator}]}
 
             onGetCaptcha={async () => {
 
@@ -382,7 +382,7 @@ export function UpdateSignNameAccountModalForm() {
             placeholder={'请输入新登录名'}
             rules={[
                 {
-                    validator: ValidatorUtil.signInNameValidate
+                    validator: Validate.signInName.validator
                 }
             ]}
 
@@ -460,7 +460,7 @@ export function UserSelfUpdatePasswordByPasswordModalForm() {
             fieldProps={{
                 allowClear: true,
             }}
-            rules={[{validator: ValidatorUtil.passwordValidate}]}
+            rules={[{validator: Validate.password.validator}]}
 
         />
 
@@ -511,7 +511,7 @@ export function UserSelfUpdatePasswordByCodeModalForm() {
             label="验证码"
             placeholder={'请输入验证码'}
             name="code"
-            rules={[{validator: ValidatorUtil.codeValidate}]}
+            rules={[{validator: Validate.code.validator}]}
 
             onGetCaptcha={async () => {
 
@@ -532,7 +532,7 @@ export function UserSelfUpdatePasswordByCodeModalForm() {
             fieldProps={{
                 allowClear: true,
             }}
-            rules={[{validator: ValidatorUtil.passwordValidate}]}
+            rules={[{validator: Validate.password.validator}]}
 
         />
 
@@ -633,7 +633,7 @@ export function UserSelfDeleteByCodeModalForm() {
                 label="验证码"
                 name="code"
                 placeholder={"请输入验证码"}
-                rules={[{validator: ValidatorUtil.codeValidate}]}
+                rules={[{validator: Validate.code.validator}]}
 
                 onGetCaptcha={async () => {
 

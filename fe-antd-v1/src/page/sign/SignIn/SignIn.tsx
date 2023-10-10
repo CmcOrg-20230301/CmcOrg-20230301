@@ -16,7 +16,7 @@ import {
     SignEmailForgetPasswordSendCode
 } from "@/api/http/SignEmail";
 import {ToastSuccess} from "@/util/ToastUtil";
-import {ValidatorUtil} from "@/util/ValidatorUtil";
+import {Validate} from "@/util/ValidatorUtil";
 import {UseEffectSign} from "@/page/sign/SignUp/SignUpUtil";
 import {GetTenantId} from "@/util/CommonUtil";
 
@@ -187,7 +187,7 @@ export function UserForgetPasswordModalForm() {
             required
             label="邮箱"
             placeholder={'请输入邮箱'}
-            rules={[{validator: ValidatorUtil.emailValidate}]}
+            rules={[{validator: Validate.email.validator}]}
 
         />
 
@@ -203,7 +203,7 @@ export function UserForgetPasswordModalForm() {
             placeholder={'请输入验证码'}
             name="code"
 
-            rules={[{validator: ValidatorUtil.codeValidate}]}
+            rules={[{validator: Validate.code.validator}]}
 
             onGetCaptcha={async () => {
 
@@ -232,7 +232,7 @@ export function UserForgetPasswordModalForm() {
                 allowClear: true,
             }}
 
-            rules={[{validator: ValidatorUtil.passwordValidate}]}
+            rules={[{validator: Validate.password.validator}]}
 
         />
 
