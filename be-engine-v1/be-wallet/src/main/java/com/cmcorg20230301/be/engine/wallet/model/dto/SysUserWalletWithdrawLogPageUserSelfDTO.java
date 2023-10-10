@@ -13,6 +13,9 @@ import java.util.Date;
 @Data
 public class SysUserWalletWithdrawLogPageUserSelfDTO extends MyTenantPageDTO {
 
+    @Schema(description = "提现编号")
+    private Long id;
+
     @Schema(description = "卡号")
     private String bankCardNo;
 

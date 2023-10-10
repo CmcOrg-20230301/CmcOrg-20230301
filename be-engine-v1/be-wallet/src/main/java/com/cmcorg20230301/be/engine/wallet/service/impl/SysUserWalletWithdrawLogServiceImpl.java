@@ -82,6 +82,8 @@ public class SysUserWalletWithdrawLogServiceImpl
         Page<SysUserWalletWithdrawLogDO> page =
             lambdaQuery().eq(dto.getUserId() != null, SysUserWalletWithdrawLogDO::getUserId, dto.getUserId())
 
+                .eq(dto.getId() != null, SysUserWalletWithdrawLogDO::getId, dto.getId())
+
                 .like(StrUtil.isNotBlank(dto.getBankCardNo()), SysUserWalletWithdrawLogDO::getBankCardNo,
                     dto.getBankCardNo()) //
 
@@ -267,7 +269,7 @@ public class SysUserWalletWithdrawLogServiceImpl
             .doMultiLock(BaseRedisKeyEnum.PRE_USER_WALLET_WITHDRAW_LOG.name(), notEmptyIdSet.getIdSet(), () -> {
 
                 List<SysUserWalletWithdrawLogDO> sysUserWalletWithdrawLogDOList =
-                    lambdaQuery().eq(BaseEntity::getId, notEmptyIdSet.getIdSet())
+                    lambdaQuery().in(BaseEntity::getId, notEmptyIdSet.getIdSet())
                         .eq(SysUserWalletWithdrawLogDO::getWithdrawStatus, SysUserWalletWithdrawStatusEnum.COMMIT)
                         .list();
 
