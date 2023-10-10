@@ -231,7 +231,9 @@ public class SysUserWalletWithdrawLogServiceImpl
 
             SysUserWalletWithdrawLogDO sysUserWalletWithdrawLogDO =
                 lambdaQuery().eq(BaseEntity::getId, notNullId.getId())
-                    .eq(SysUserWalletWithdrawLogDO::getUserId, currentUserId).one();
+                    .eq(SysUserWalletWithdrawLogDO::getUserId, currentUserId)
+                    .select(BaseEntity::getId, SysUserWalletWithdrawLogDO::getWithdrawMoney,
+                        SysUserWalletWithdrawLogDO::getWithdrawStatus).one();
 
             if (sysUserWalletWithdrawLogDO == null) {
                 ApiResultVO.error(BaseBizCodeEnum.ILLEGAL_REQUEST, notNullId.getId());
@@ -304,7 +306,8 @@ public class SysUserWalletWithdrawLogServiceImpl
 
             SysUserWalletWithdrawLogDO sysUserWalletWithdrawLogDO =
                 lambdaQuery().eq(BaseEntity::getId, notNullId.getId())
-                    .eq(SysUserWalletWithdrawLogDO::getWithdrawStatus, SysUserWalletWithdrawStatusEnum.ACCEPT).one();
+                    .eq(SysUserWalletWithdrawLogDO::getWithdrawStatus, SysUserWalletWithdrawStatusEnum.ACCEPT)
+                    .select(BaseEntity::getId).one();
 
             if (sysUserWalletWithdrawLogDO == null) {
                 ApiResultVO.error("操作失败：只能成功受理中状态的提现记录", notNullId.getId());
@@ -339,7 +342,8 @@ public class SysUserWalletWithdrawLogServiceImpl
                 SysUserWalletWithdrawLogDO sysUserWalletWithdrawLogDO =
                     lambdaQuery().eq(BaseEntity::getId, notNullIdAndStringValue.getId())
                         .eq(SysUserWalletWithdrawLogDO::getWithdrawStatus, SysUserWalletWithdrawStatusEnum.ACCEPT)
-                        .one();
+                        .select(BaseEntity::getId, SysUserWalletWithdrawLogDO::getWithdrawMoney,
+                            SysUserWalletWithdrawLogDO::getUserId).one();
 
                 if (sysUserWalletWithdrawLogDO == null) {
                     ApiResultVO.error("操作失败：只能拒绝受理中状态的提现记录", notNullIdAndStringValue.getId());
