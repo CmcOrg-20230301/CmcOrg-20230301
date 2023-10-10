@@ -393,7 +393,7 @@ interface IUserWalletWithdrawLogRejectModal {
 
     currentForm: MutableRefObject<SysUserWalletWithdrawLogDO>
 
-    actionRef: MutableRefObject<ActionType>
+    actionRef: MutableRefObject<ActionType | undefined>
 
 }
 
