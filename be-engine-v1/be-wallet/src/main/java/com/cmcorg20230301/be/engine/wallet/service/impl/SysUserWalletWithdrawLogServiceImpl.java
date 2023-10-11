@@ -213,7 +213,8 @@ public class SysUserWalletWithdrawLogServiceImpl
 
         // 检查和增加：用户钱包的可提现余额
         sysUserWalletService.doAddWithdrawableMoney(currentUserId, new Date(), CollUtil.newHashSet(currentUserId),
-            sysUserWalletWithdrawLogDO.getWithdrawMoney().negate(), SysUserWalletLogTypeEnum.REDUCE_WITHDRAW, true);
+            sysUserWalletWithdrawLogDO.getWithdrawMoney().negate(), SysUserWalletLogTypeEnum.REDUCE_WITHDRAW, true,
+            true, false);
 
         return BaseBizCodeEnum.OK;
 
@@ -250,7 +251,8 @@ public class SysUserWalletWithdrawLogServiceImpl
 
             // 检查和增加：用户钱包的可提现余额
             sysUserWalletService.doAddWithdrawableMoney(currentUserId, new Date(), CollUtil.newHashSet(currentUserId),
-                sysUserWalletWithdrawLogDO.getWithdrawMoney(), SysUserWalletLogTypeEnum.REDUCE_WITHDRAW, true);
+                sysUserWalletWithdrawLogDO.getWithdrawMoney(), SysUserWalletLogTypeEnum.REDUCE_WITHDRAW, true, true,
+                false);
 
             return BaseBizCodeEnum.OK;
 
@@ -357,7 +359,8 @@ public class SysUserWalletWithdrawLogServiceImpl
                 // 检查和增加：用户钱包的可提现余额
                 sysUserWalletService.doAddWithdrawableMoney(currentUserId, new Date(),
                     CollUtil.newHashSet(sysUserWalletWithdrawLogDO.getUserId()),
-                    sysUserWalletWithdrawLogDO.getWithdrawMoney(), SysUserWalletLogTypeEnum.REDUCE_WITHDRAW, true);
+                    sysUserWalletWithdrawLogDO.getWithdrawMoney(), SysUserWalletLogTypeEnum.REDUCE_WITHDRAW, true, true,
+                    false);
 
                 return BaseBizCodeEnum.OK;
 

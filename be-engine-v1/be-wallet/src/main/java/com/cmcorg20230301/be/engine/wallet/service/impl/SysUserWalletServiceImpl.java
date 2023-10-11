@@ -6,6 +6,7 @@ import cn.hutool.core.util.BooleanUtil;
 import com.baomidou.dynamic.datasource.annotation.DSTransactional;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.cmcorg20230301.be.engine.model.model.constant.BaseConstant;
 import com.cmcorg20230301.be.engine.model.model.dto.ChangeBigDecimalNumberDTO;
 import com.cmcorg20230301.be.engine.model.model.dto.NotEmptyIdSet;
 import com.cmcorg20230301.be.engine.model.model.dto.NotNullId;
@@ -20,7 +21,6 @@ import com.cmcorg20230301.be.engine.security.util.SysTenantUtil;
 import com.cmcorg20230301.be.engine.security.util.UserUtil;
 import com.cmcorg20230301.be.engine.wallet.configuration.SysUserWalletUserSignConfiguration;
 import com.cmcorg20230301.be.engine.wallet.mapper.SysUserWalletMapper;
-import com.cmcorg20230301.be.engine.wallet.model.dto.SysUserWalletInsertOrUpdateDTO;
 import com.cmcorg20230301.be.engine.wallet.model.dto.SysUserWalletPageDTO;
 import com.cmcorg20230301.be.engine.wallet.model.entity.SysUserWalletDO;
 import com.cmcorg20230301.be.engine.wallet.model.entity.SysUserWalletLogDO;
@@ -44,33 +44,54 @@ public class SysUserWalletServiceImpl extends ServiceImpl<SysUserWalletMapper, S
     SysUserWalletUserSignConfiguration sysUserWalletUserSignConfiguration;
 
     /**
-     * 新增/修改
+     * 批量冻结
      */
     @Override
-    public String insertOrUpdate(SysUserWalletInsertOrUpdateDTO dto) {
+    public String frozenByIdSet(NotEmptyIdSet notEmptyIdSet) {
 
-        // 处理：BaseTenantInsertOrUpdateDTO
-        SysTenantUtil.handleBaseTenantInsertOrUpdateDTO(dto, getCheckIllegalFunc1(CollUtil.newHashSet(dto.getId())),
-            getTenantIdBaseEntityFunc1());
+        notEmptyIdSet.getIdSet().remove(BaseConstant.TENANT_USER_ID);
 
-        SysUserWalletDO sysUserWalletDO = new SysUserWalletDO();
+        // 改变：钱包冻结状态
+        return changeEnableFlag(notEmptyIdSet, false);
 
-        sysUserWalletDO.setId(dto.getId());
+    }
 
-        if (dto.getId() == null) {
+    /**
+     * 改变：钱包冻结状态
+     */
+    @Override
+    public String changeEnableFlag(NotEmptyIdSet notEmptyIdSet, boolean enableFlag) {
 
-            sysUserWalletDO.setTotalMoney(BigDecimal.ZERO);
-            sysUserWalletDO.setWithdrawableMoney(BigDecimal.ZERO);
+        Set<Long> idSet = notEmptyIdSet.getIdSet();
 
+        if (CollUtil.isEmpty(idSet)) {
+            return BaseBizCodeEnum.OK;
         }
 
-        sysUserWalletDO.setEnableFlag(BooleanUtil.isTrue(dto.getEnableFlag()));
-        sysUserWalletDO.setDelFlag(false);
-        sysUserWalletDO.setRemark("");
+        // 检查：是否非法操作
+        SysTenantUtil.checkIllegal(idSet, getCheckIllegalFunc1(idSet));
 
-        saveOrUpdate(sysUserWalletDO); // 操作数据库
+        return RedissonUtil.doMultiLock(BaseRedisKeyEnum.PRE_USER_WALLET.name(), idSet, () -> {
 
-        return BaseBizCodeEnum.OK;
+            lambdaUpdate().in(SysUserWalletDO::getId, notEmptyIdSet.getIdSet())
+                .set(BaseEntityNoId::getEnableFlag, enableFlag).update();
+
+            return BaseBizCodeEnum.OK;
+
+        });
+
+    }
+
+    /**
+     * 批量解冻
+     */
+    @Override
+    public String thawByIdSet(NotEmptyIdSet notEmptyIdSet) {
+
+        notEmptyIdSet.getIdSet().remove(BaseConstant.TENANT_USER_ID);
+
+        // 改变：钱包冻结状态
+        return changeEnableFlag(notEmptyIdSet, true);
 
     }
 
@@ -80,11 +101,37 @@ public class SysUserWalletServiceImpl extends ServiceImpl<SysUserWalletMapper, S
     @Override
     public Page<SysUserWalletDO> myPage(SysUserWalletPageDTO dto) {
 
+        // 执行
+        return doMyPage(dto, false);
+
+    }
+
+    /**
+     * 执行：分页排序查询
+     */
+    @Override
+    public Page<SysUserWalletDO> doMyPage(SysUserWalletPageDTO dto, boolean tenantFlag) {
+
         // 处理：MyTenantPageDTO
         SysTenantUtil.handleMyTenantPageDTO(dto, true);
 
+        if (tenantFlag) {
+
+            dto.setId(BaseConstant.TENANT_USER_ID);
+
+        } else {
+
+            if (BaseConstant.TENANT_USER_ID.equals(dto.getId())) {
+
+                dto.setId(null);
+
+            }
+
+        }
+
         return lambdaQuery().eq(dto.getId() != null, SysUserWalletDO::getId, dto.getId())
             .eq(dto.getEnableFlag() != null, BaseEntityNoId::getEnableFlag, dto.getEnableFlag())
+            .ne(!tenantFlag, SysUserWalletDO::getId, BaseConstant.TENANT_USER_ID)
             .in(BaseEntityNoId::getTenantId, dto.getTenantIdSet()) //
             .orderByDesc(SysUserWalletDO::getUpdateTime).page(dto.page(true));
 
@@ -95,6 +142,10 @@ public class SysUserWalletServiceImpl extends ServiceImpl<SysUserWalletMapper, S
      */
     @Override
     public SysUserWalletDO infoById(NotNullId notNullId) {
+
+        if (notNullId.getId().equals(BaseConstant.TENANT_USER_ID)) {
+            ApiResultVO.error(BaseBizCodeEnum.ILLEGAL_REQUEST);
+        }
 
         // 获取：用户关联的租户
         Set<Long> queryTenantIdSet = SysTenantUtil.getUserRefTenantIdSet();
@@ -128,40 +179,6 @@ public class SysUserWalletServiceImpl extends ServiceImpl<SysUserWalletMapper, S
     }
 
     /**
-     * 批量删除
-     */
-    @Override
-    public String deleteByIdSet(NotEmptyIdSet notEmptyIdSet) {
-
-        Set<Long> idSet = notEmptyIdSet.getIdSet();
-
-        if (CollUtil.isEmpty(idSet)) {
-            return BaseBizCodeEnum.OK;
-        }
-
-        // 检查：是否非法操作
-        SysTenantUtil.checkIllegal(idSet, getCheckIllegalFunc1(idSet));
-
-        removeByIds(idSet); // 根据 idSet删除
-
-        return BaseBizCodeEnum.OK;
-
-    }
-
-    /**
-     * 通用：处理：SysUserWalletLogDO
-     */
-    private void commonHandleSysUserWalletLogDO(SysUserWalletLogDO sysUserWalletLogDO) {
-
-        sysUserWalletLogDO
-            .setTotalMoneyChange(sysUserWalletLogDO.getTotalMoneySuf().subtract(sysUserWalletLogDO.getTotalMoneyPre()));
-
-        sysUserWalletLogDO.setWithdrawableMoneyChange(
-            sysUserWalletLogDO.getWithdrawableMoneySuf().subtract(sysUserWalletLogDO.getWithdrawableMoneyPre()));
-
-    }
-
-    /**
      * 通过主键 idSet，加减可提现的钱
      */
     @Override
@@ -181,7 +198,7 @@ public class SysUserWalletServiceImpl extends ServiceImpl<SysUserWalletMapper, S
 
         // 执行
         return doAddWithdrawableMoney(currentUserId, new Date(), dto.getIdSet(), changeNumber, sysUserWalletLogTypeEnum,
-            false);
+            false, false, false);
 
     }
 
@@ -192,7 +209,8 @@ public class SysUserWalletServiceImpl extends ServiceImpl<SysUserWalletMapper, S
     @NotNull
     @DSTransactional
     public String doAddWithdrawableMoney(Long currentUserId, Date date, Set<Long> idSet, BigDecimal changeNumber,
-        SysUserWalletLogTypeEnum sysUserWalletLogTypeEnum, boolean lowErrorFlag) {
+        SysUserWalletLogTypeEnum sysUserWalletLogTypeEnum, boolean lowErrorFlag, boolean checkWalletEnableFlag,
+        boolean tenantFlag) {
 
         if (changeNumber.equals(BigDecimal.ZERO)) {
             return BaseBizCodeEnum.OK;
@@ -203,55 +221,18 @@ public class SysUserWalletServiceImpl extends ServiceImpl<SysUserWalletMapper, S
 
         RedissonUtil.doMultiLock(BaseRedisKeyEnum.PRE_USER_WALLET.name(), idSet, () -> {
 
-            List<SysUserWalletDO> sysUserWalletDOList = lambdaQuery().in(SysUserWalletDO::getId, idSet)
+            List<SysUserWalletDO> sysUserWalletDOList = lambdaQuery().in(!tenantFlag, SysUserWalletDO::getId, idSet)
+                .eq(tenantFlag, SysUserWalletDO::getId, BaseConstant.TENANT_USER_ID)
+                .in(tenantFlag, BaseEntityNoIdFather::getTenantId, idSet)
                 .select(SysUserWalletDO::getId, SysUserWalletDO::getWithdrawableMoney, BaseEntityNoId::getVersion,
-                    BaseEntityNoIdFather::getTenantId, SysUserWalletDO::getTotalMoney).list();
+                    BaseEntityNoIdFather::getTenantId, SysUserWalletDO::getTotalMoney, BaseEntityNoId::getEnableFlag)
+                .list();
 
-            for (SysUserWalletDO item : sysUserWalletDOList) {
+            // 处理：sysUserWalletDOList
+            handleSysUserWalletDOList(currentUserId, date, changeNumber, sysUserWalletLogTypeEnum, lowErrorFlag,
+                checkWalletEnableFlag, sysUserWalletLogDoList, sysUserWalletDOList);
 
-                BigDecimal preTotalMoney = item.getTotalMoney();
-                BigDecimal preWithdrawableMoney = item.getWithdrawableMoney();
-
-                item.setTotalMoney(item.getTotalMoney().add(changeNumber)); // 修改：数字
-                item.setWithdrawableMoney(item.getWithdrawableMoney().add(changeNumber)); // 修改：数字
-
-                if (item.getWithdrawableMoney().compareTo(BigDecimal.ZERO) < 0) {
-                    if (lowErrorFlag) {
-                        ApiResultVO.error("操作失败：可提现余额不足", item.getId());
-                    } else {
-                        item.setWithdrawableMoney(BigDecimal.ZERO);
-                    }
-                }
-
-                SysUserWalletLogDO sysUserWalletLogDO = new SysUserWalletLogDO();
-
-                sysUserWalletLogDO.setUserId(item.getId());
-                sysUserWalletLogDO.setName(sysUserWalletLogTypeEnum.getName());
-                sysUserWalletLogDO.setType(sysUserWalletLogTypeEnum);
-
-                sysUserWalletLogDO.setTotalMoneyPre(preTotalMoney);
-                sysUserWalletLogDO.setTotalMoneySuf(item.getTotalMoney());
-
-                sysUserWalletLogDO.setWithdrawableMoneyPre(preWithdrawableMoney);
-                sysUserWalletLogDO.setWithdrawableMoneySuf(item.getWithdrawableMoney());
-
-                sysUserWalletLogDO.setId(IdGeneratorUtil.nextId());
-                sysUserWalletLogDO.setEnableFlag(true);
-                sysUserWalletLogDO.setDelFlag(false);
-                sysUserWalletLogDO.setRemark("");
-                sysUserWalletLogDO.setTenantId(item.getTenantId());
-                sysUserWalletLogDO.setCreateId(currentUserId);
-                sysUserWalletLogDO.setCreateTime(date);
-                sysUserWalletLogDO.setUpdateId(currentUserId);
-                sysUserWalletLogDO.setUpdateTime(date);
-
-                // 通用：处理：SysUserWalletLogDO
-                commonHandleSysUserWalletLogDO(sysUserWalletLogDO);
-
-                sysUserWalletLogDoList.add(sysUserWalletLogDO);
-
-            }
-
+            // 操作数据库
             updateBatchById(sysUserWalletDOList);
 
         });
@@ -263,6 +244,79 @@ public class SysUserWalletServiceImpl extends ServiceImpl<SysUserWalletMapper, S
         }
 
         return BaseBizCodeEnum.OK;
+
+    }
+
+    /**
+     * 处理：sysUserWalletDOList
+     */
+    private void handleSysUserWalletDOList(Long currentUserId, Date date, BigDecimal changeNumber,
+        SysUserWalletLogTypeEnum sysUserWalletLogTypeEnum, boolean lowErrorFlag, boolean checkWalletEnableFlag,
+        List<SysUserWalletLogDO> sysUserWalletLogDoList, List<SysUserWalletDO> sysUserWalletDOList) {
+
+        for (SysUserWalletDO item : sysUserWalletDOList) {
+
+            if (checkWalletEnableFlag) {
+                if (BooleanUtil.isFalse(item.getEnableFlag())) {
+                    ApiResultVO.error("操作失败：钱包已被冻结，请联系管理员", item.getId());
+                }
+            }
+
+            BigDecimal preTotalMoney = item.getTotalMoney();
+            BigDecimal preWithdrawableMoney = item.getWithdrawableMoney();
+
+            item.setTotalMoney(item.getTotalMoney().add(changeNumber)); // 修改：数字
+            item.setWithdrawableMoney(item.getWithdrawableMoney().add(changeNumber)); // 修改：数字
+
+            if (item.getWithdrawableMoney().compareTo(BigDecimal.ZERO) < 0) {
+                if (lowErrorFlag) {
+                    ApiResultVO.error("操作失败：可提现余额不足", item.getId());
+                } else {
+                    item.setWithdrawableMoney(BigDecimal.ZERO);
+                }
+            }
+
+            SysUserWalletLogDO sysUserWalletLogDO = new SysUserWalletLogDO();
+
+            sysUserWalletLogDO.setUserId(item.getId());
+            sysUserWalletLogDO.setName(sysUserWalletLogTypeEnum.getName());
+            sysUserWalletLogDO.setType(sysUserWalletLogTypeEnum);
+
+            sysUserWalletLogDO.setTotalMoneyPre(preTotalMoney);
+            sysUserWalletLogDO.setTotalMoneySuf(item.getTotalMoney());
+
+            sysUserWalletLogDO.setWithdrawableMoneyPre(preWithdrawableMoney);
+            sysUserWalletLogDO.setWithdrawableMoneySuf(item.getWithdrawableMoney());
+
+            sysUserWalletLogDO.setId(IdGeneratorUtil.nextId());
+            sysUserWalletLogDO.setEnableFlag(true);
+            sysUserWalletLogDO.setDelFlag(false);
+            sysUserWalletLogDO.setRemark("");
+            sysUserWalletLogDO.setTenantId(item.getTenantId());
+            sysUserWalletLogDO.setCreateId(currentUserId);
+            sysUserWalletLogDO.setCreateTime(date);
+            sysUserWalletLogDO.setUpdateId(currentUserId);
+            sysUserWalletLogDO.setUpdateTime(date);
+
+            // 通用：处理：SysUserWalletLogDO
+            commonHandleSysUserWalletLogDO(sysUserWalletLogDO);
+
+            sysUserWalletLogDoList.add(sysUserWalletLogDO);
+
+        }
+
+    }
+
+    /**
+     * 通用：处理：SysUserWalletLogDO
+     */
+    private void commonHandleSysUserWalletLogDO(SysUserWalletLogDO sysUserWalletLogDO) {
+
+        sysUserWalletLogDO
+            .setTotalMoneyChange(sysUserWalletLogDO.getTotalMoneySuf().subtract(sysUserWalletLogDO.getTotalMoneyPre()));
+
+        sysUserWalletLogDO.setWithdrawableMoneyChange(
+            sysUserWalletLogDO.getWithdrawableMoneySuf().subtract(sysUserWalletLogDO.getWithdrawableMoneyPre()));
 
     }
 
