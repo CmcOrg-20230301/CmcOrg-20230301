@@ -131,7 +131,14 @@ public class SysUserWalletServiceImpl extends ServiceImpl<SysUserWalletMapper, S
 
         return lambdaQuery().eq(dto.getId() != null, SysUserWalletDO::getId, dto.getId())
             .eq(dto.getEnableFlag() != null, BaseEntityNoId::getEnableFlag, dto.getEnableFlag())
-            .ne(!tenantFlag, SysUserWalletDO::getId, BaseConstant.TENANT_USER_ID)
+            .ne(!tenantFlag, SysUserWalletDO::getId, BaseConstant.TENANT_USER_ID) //
+
+            .le(dto.getEndWithdrawableMoney() != null, SysUserWalletDO::getWithdrawableMoney,
+                dto.getEndWithdrawableMoney()) //
+
+            .ge(dto.getBeginWithdrawableMoney() != null, SysUserWalletDO::getWithdrawableMoney,
+                dto.getBeginWithdrawableMoney()) //
+
             .in(BaseEntityNoId::getTenantId, dto.getTenantIdSet()) //
             .orderByDesc(SysUserWalletDO::getUpdateTime).page(dto.page(true));
 

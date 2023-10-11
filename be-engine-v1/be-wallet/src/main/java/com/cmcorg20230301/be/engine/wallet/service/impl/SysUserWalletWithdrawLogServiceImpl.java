@@ -5,6 +5,7 @@ import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.lang.func.Func1;
 import cn.hutool.core.util.DesensitizedUtil;
 import cn.hutool.core.util.StrUtil;
+import com.baomidou.dynamic.datasource.annotation.DSTransactional;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.baomidou.mybatisplus.extension.toolkit.ChainWrappers;
@@ -27,19 +28,19 @@ import com.cmcorg20230301.be.engine.wallet.model.dto.SysUserWalletWithdrawLogIns
 import com.cmcorg20230301.be.engine.wallet.model.dto.SysUserWalletWithdrawLogPageDTO;
 import com.cmcorg20230301.be.engine.wallet.model.dto.SysUserWalletWithdrawLogPageUserSelfDTO;
 import com.cmcorg20230301.be.engine.wallet.model.entity.SysUserBankCardDO;
+import com.cmcorg20230301.be.engine.wallet.model.entity.SysUserWalletDO;
 import com.cmcorg20230301.be.engine.wallet.model.entity.SysUserWalletWithdrawLogDO;
 import com.cmcorg20230301.be.engine.wallet.model.enums.SysUserWalletLogTypeEnum;
 import com.cmcorg20230301.be.engine.wallet.model.enums.SysUserWalletWithdrawStatusEnum;
 import com.cmcorg20230301.be.engine.wallet.service.SysUserWalletService;
 import com.cmcorg20230301.be.engine.wallet.service.SysUserWalletWithdrawLogService;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class SysUserWalletWithdrawLogServiceImpl
@@ -180,6 +181,7 @@ public class SysUserWalletWithdrawLogServiceImpl
      * 新增/修改-用户
      */
     @Override
+    @DSTransactional
     public String insertOrUpdateUserSelf(SysUserWalletWithdrawLogInsertOrUpdateUserSelfDTO dto) {
 
         Long currentUserId = UserUtil.getCurrentUserId();
@@ -224,6 +226,7 @@ public class SysUserWalletWithdrawLogServiceImpl
      * 取消-用户
      */
     @Override
+    @DSTransactional
     public String cancelUserSelf(NotNullId notNullId) {
 
         Long currentUserId = UserUtil.getCurrentUserId();
@@ -281,6 +284,21 @@ public class SysUserWalletWithdrawLogServiceImpl
                     return BaseBizCodeEnum.OK;
                 }
 
+                Map<Long, List<SysUserWalletWithdrawLogDO>> groupMap = sysUserWalletWithdrawLogDOList.stream()
+                    .collect(Collectors.groupingBy(SysUserWalletWithdrawLogDO::getUserId));
+
+                // 检查：用户钱包是否被冻结
+                String resStr =
+                    checkUserWallet(sysUserWalletWithdrawLogDOList, groupMap, notEmptyIdSet.getIdSet().size() == 1);
+
+                if (StrUtil.isNotBlank(resStr)) {
+                    return resStr;
+                }
+
+                if (CollUtil.isEmpty(sysUserWalletWithdrawLogDOList)) {
+                    return BaseBizCodeEnum.OK;
+                }
+
                 for (SysUserWalletWithdrawLogDO item : sysUserWalletWithdrawLogDOList) {
                     item.setWithdrawStatus(SysUserWalletWithdrawStatusEnum.ACCEPT);
                 }
@@ -290,6 +308,44 @@ public class SysUserWalletWithdrawLogServiceImpl
                 return BaseBizCodeEnum.OK;
 
             });
+
+    }
+
+    /**
+     * 检查：用户钱包是否被冻结
+     */
+    @Nullable
+    private String checkUserWallet(List<SysUserWalletWithdrawLogDO> sysUserWalletWithdrawLogDOList,
+        Map<Long, List<SysUserWalletWithdrawLogDO>> groupMap, boolean errorFlag) {
+
+        return RedissonUtil.doMultiLock(BaseRedisKeyEnum.PRE_USER_WALLET.name(), groupMap.keySet(), () -> {
+
+            // 只要：没有被冻结的钱包
+            List<SysUserWalletDO> sysUserWalletDOList =
+                sysUserWalletService.lambdaQuery().in(SysUserWalletDO::getId, groupMap.keySet())
+                    .eq(BaseEntityNoId::getEnableFlag, true).select(SysUserWalletDO::getId).list();
+
+            if (CollUtil.isEmpty(sysUserWalletDOList)) {
+
+                if (errorFlag) {
+                    ApiResultVO.error("操作失败：钱包已被冻结，请联系管理员", sysUserWalletWithdrawLogDOList.get(0).getUserId());
+                }
+
+                return BaseBizCodeEnum.OK;
+
+            }
+
+            sysUserWalletWithdrawLogDOList.clear(); // 先移除原始数据
+
+            for (SysUserWalletDO item : sysUserWalletDOList) {
+
+                sysUserWalletWithdrawLogDOList.addAll(groupMap.get(item.getId())); // 再添加数据
+
+            }
+
+            return null;
+
+        });
 
     }
 
@@ -309,10 +365,19 @@ public class SysUserWalletWithdrawLogServiceImpl
             SysUserWalletWithdrawLogDO sysUserWalletWithdrawLogDO =
                 lambdaQuery().eq(BaseEntity::getId, notNullId.getId())
                     .eq(SysUserWalletWithdrawLogDO::getWithdrawStatus, SysUserWalletWithdrawStatusEnum.ACCEPT)
-                    .select(BaseEntity::getId).one();
+                    .select(BaseEntity::getId, SysUserWalletWithdrawLogDO::getUserId).one();
 
             if (sysUserWalletWithdrawLogDO == null) {
                 ApiResultVO.error("操作失败：只能成功受理中状态的提现记录", notNullId.getId());
+            }
+
+            // 只要：没有被冻结的钱包
+            boolean userWalletEnableFlag =
+                sysUserWalletService.lambdaQuery().eq(SysUserWalletDO::getId, sysUserWalletWithdrawLogDO.getUserId())
+                    .eq(BaseEntityNoId::getEnableFlag, true).exists();
+
+            if (!userWalletEnableFlag) {
+                ApiResultVO.error("操作失败：钱包已被冻结，请联系管理员", sysUserWalletWithdrawLogDO.getUserId());
             }
 
             sysUserWalletWithdrawLogDO.setWithdrawStatus(SysUserWalletWithdrawStatusEnum.SUCCESS);
@@ -329,6 +394,7 @@ public class SysUserWalletWithdrawLogServiceImpl
      * 拒绝-用户的提现记录
      */
     @Override
+    @DSTransactional
     public String reject(NotNullIdAndStringValue notNullIdAndStringValue) {
 
         Long currentUserId = UserUtil.getCurrentUserId();
