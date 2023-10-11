@@ -15,6 +15,12 @@
 
     <dependencies>
 
+        <!-- be-tenant -->
+        <dependency>
+            <groupId>${cmcorg.groupId}</groupId>
+            <artifactId>be-tenant</artifactId>
+        </dependency>
+
         <!-- be-security -->
         <dependency>
             <groupId>${cmcorg.groupId}</groupId>

@@ -20,4 +20,10 @@ public interface SysUserBankCardService extends IService<SysUserBankCardDO> {
 
     SysUserBankCardDO infoByIdUserSelf();
 
+    // ================================ 分割线
+
+    String doInsertOrUpdate(SysUserBankCardInsertOrUpdateUserSelfDTO dto, boolean tenantFlag);
+
+    Page<SysUserBankCardDO> doMyPage(SysUserBankCardPageDTO dto, boolean tenantFlag);
+
 }

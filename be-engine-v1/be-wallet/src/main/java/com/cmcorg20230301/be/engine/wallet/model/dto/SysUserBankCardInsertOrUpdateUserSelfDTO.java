@@ -1,19 +1,24 @@
 package com.cmcorg20230301.be.engine.wallet.model.dto;
 
 import com.cmcorg20230301.be.engine.model.model.constant.BaseRegexConstant;
-import com.cmcorg20230301.be.engine.model.model.dto.BaseInsertOrUpdateDTO;
 import com.cmcorg20230301.be.engine.wallet.model.enums.SysOpenBankNameEnum;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 
-@EqualsAndHashCode(callSuper = true)
 @Data
-public class SysUserBankCardInsertOrUpdateUserSelfDTO extends BaseInsertOrUpdateDTO {
+public class SysUserBankCardInsertOrUpdateUserSelfDTO {
+
+    /**
+     * 可以为 null
+     */
+    @Min(0)
+    @Schema(description = "租户主键 id")
+    private Long tenantId;
 
     @NotBlank
     @Pattern(regexp = BaseRegexConstant.BANK_DEBIT_CARD)
