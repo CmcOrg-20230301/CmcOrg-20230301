@@ -10,7 +10,6 @@ import com.cmcorg20230301.be.engine.model.model.vo.DictStringVO;
 import com.cmcorg20230301.be.engine.security.exception.BaseBizCodeEnum;
 import com.cmcorg20230301.be.engine.security.model.entity.BaseEntityNoId;
 import com.cmcorg20230301.be.engine.security.model.entity.BaseEntityNoIdFather;
-import com.cmcorg20230301.be.engine.security.model.vo.ApiResultVO;
 import com.cmcorg20230301.be.engine.security.util.SysTenantUtil;
 import com.cmcorg20230301.be.engine.security.util.UserUtil;
 import com.cmcorg20230301.be.engine.wallet.mapper.SysUserBankCardMapper;
@@ -181,7 +180,7 @@ public class SysUserBankCardServiceImpl extends ServiceImpl<SysUserBankCardMappe
     public SysUserBankCardDO infoById(NotNullId notNullId) {
 
         if (notNullId.getId().equals(BaseConstant.TENANT_USER_ID)) {
-            ApiResultVO.error(BaseBizCodeEnum.ILLEGAL_REQUEST);
+            return null;
         }
 
         // 获取：用户关联的租户

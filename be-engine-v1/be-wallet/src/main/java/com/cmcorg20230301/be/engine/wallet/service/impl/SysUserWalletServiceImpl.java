@@ -144,7 +144,7 @@ public class SysUserWalletServiceImpl extends ServiceImpl<SysUserWalletMapper, S
     public SysUserWalletDO infoById(NotNullId notNullId) {
 
         if (notNullId.getId().equals(BaseConstant.TENANT_USER_ID)) {
-            ApiResultVO.error(BaseBizCodeEnum.ILLEGAL_REQUEST);
+            return null;
         }
 
         // 获取：用户关联的租户
