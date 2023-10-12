@@ -113,7 +113,7 @@ public class SysUserWalletServiceImpl extends ServiceImpl<SysUserWalletMapper, S
     public Page<SysUserWalletDO> doMyPage(SysUserWalletPageDTO dto, boolean tenantFlag) {
 
         // 处理：MyTenantPageDTO
-        SysTenantUtil.handleMyTenantPageDTO(dto, true);
+        SysTenantUtil.handleMyTenantPageDTO(dto, !tenantFlag);
 
         if (tenantFlag) {
 
@@ -144,7 +144,8 @@ public class SysUserWalletServiceImpl extends ServiceImpl<SysUserWalletMapper, S
             .ge(dto.getUtBeginTime() != null, SysUserWalletDO::getUpdateTime, dto.getUtBeginTime()) //
 
             .in(BaseEntityNoId::getTenantId, dto.getTenantIdSet()) //
-            .groupBy(SysUserWalletDO::getId) // 备注：因为 totalMoney是聚合函数算出来的，所以这里需要分组
+            .groupBy(!tenantFlag, SysUserWalletDO::getId) // 备注：因为 totalMoney是聚合函数算出来的，所以这里需要分组
+            .groupBy(tenantFlag, SysUserWalletDO::getTenantId) // 备注：因为 totalMoney是聚合函数算出来的，所以这里需要分组
             .orderByDesc(SysUserWalletDO::getUpdateTime).page(dto.page(true));
 
     }
@@ -238,6 +239,8 @@ public class SysUserWalletServiceImpl extends ServiceImpl<SysUserWalletMapper, S
                 .in(tenantFlag, BaseEntityNoIdFather::getTenantId, idSet)
                 .select(SysUserWalletDO::getId, SysUserWalletDO::getWithdrawableMoney, BaseEntityNoId::getVersion,
                     BaseEntityNoIdFather::getTenantId, SysUserWalletDO::getTotalMoney, BaseEntityNoId::getEnableFlag)
+                .groupBy(!tenantFlag, SysUserWalletDO::getId) // 备注：因为 totalMoney是聚合函数算出来的，所以这里需要分组
+                .groupBy(tenantFlag, SysUserWalletDO::getTenantId) // 备注：因为 totalMoney是聚合函数算出来的，所以这里需要分组
                 .list();
 
             // 处理：sysUserWalletDOList

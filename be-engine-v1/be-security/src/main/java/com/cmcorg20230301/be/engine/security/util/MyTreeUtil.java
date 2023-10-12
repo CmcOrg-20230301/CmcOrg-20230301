@@ -5,6 +5,7 @@ import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.lang.func.VoidFunc1;
 import cn.hutool.core.map.MapUtil;
 import cn.hutool.core.util.ReflectUtil;
+import com.cmcorg20230301.be.engine.model.model.constant.BaseConstant;
 import com.cmcorg20230301.be.engine.redisson.util.IdGeneratorUtil;
 import com.cmcorg20230301.be.engine.security.model.entity.BaseEntity;
 import com.cmcorg20230301.be.engine.security.model.entity.BaseEntityTree;
@@ -23,7 +24,18 @@ public class MyTreeUtil {
     public static <T extends BaseEntityTree<T>> List<T> getFullTreeByDeepNode(Collection<T> deepNodeCollection,
         List<T> allCollection) {
 
-        return listToTree(getFullTreeList(deepNodeCollection, allCollection), false);
+        return getFullTreeByDeepNode(deepNodeCollection, allCollection, BaseConstant.TOP_PARENT_ID);
+
+    }
+
+    /**
+     * 根据底级节点 list，逆向生成整棵树
+     * 备注：有子节点时，children才是集合
+     */
+    public static <T extends BaseEntityTree<T>> List<T> getFullTreeByDeepNode(Collection<T> deepNodeCollection,
+        List<T> allCollection, long parentId) {
+
+        return listToTree(getFullTreeList(deepNodeCollection, allCollection), false, parentId);
 
     }
 
@@ -114,6 +126,20 @@ public class MyTreeUtil {
     @SneakyThrows
     public static <T extends BaseEntityTree<T>> List<T> listToTree(List<T> list, boolean childrenFlag) {
 
+        return listToTree(list, childrenFlag, BaseConstant.TOP_PARENT_ID);
+
+    }
+
+    /**
+     * 比原始的递归快
+     * 原理：运用了对象地址引用原理
+     *
+     * @param childrenFlag 【true】 children 一直为集合 【false】 有子节点时，children为集合，无子节点时，children 为 null
+     */
+    @SneakyThrows
+    public static <T extends BaseEntityTree<T>> List<T> listToTree(List<T> list, boolean childrenFlag,
+        long topParentId) {
+
         Map<Long, T> listMap = MapUtil.newHashMap(list.size()); // 把 list的所有元素转换为：id -> 元素，格式
 
         List<T> resultList = new LinkedList<>(); // 返回值
@@ -149,7 +175,7 @@ public class MyTreeUtil {
 
             }
 
-            if (mapDTO.getParentId() == 0) {
+            if (mapDTO.getParentId() == topParentId) {
 
                 resultList.add(mapDTO);
 

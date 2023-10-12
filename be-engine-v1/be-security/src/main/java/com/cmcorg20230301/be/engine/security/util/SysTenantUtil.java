@@ -52,7 +52,7 @@ public class SysTenantUtil {
 
         }
 
-        Map<Long, SysTenantDO> map = getSysTenantCacheMap();
+        Map<Long, SysTenantDO> map = getSysTenantCacheMap(false);
 
         SysTenantDO sysTenantDO = map.get(tenantId);
 
@@ -100,9 +100,11 @@ public class SysTenantUtil {
     /**
      * 获取：租户缓存数据：map
      * 备注：这里不包含：默认租户
+     *
+     * @param addDefaultFlag 是否添加：默认租户
      */
     @NotNull
-    public static Map<Long, SysTenantDO> getSysTenantCacheMap() {
+    public static Map<Long, SysTenantDO> getSysTenantCacheMap(boolean addDefaultFlag) {
 
         Map<Long, SysTenantDO> map = MyCacheUtil
             .getMap(BaseRedisKeyEnum.SYS_TENANT_CACHE, CacheHelper.getDefaultLongMap(new SysTenantDO()), () -> {
@@ -117,6 +119,18 @@ public class SysTenantUtil {
 
         // 移除：默认值
         map = CacheHelper.handleDefaultLongMap(map);
+
+        if (addDefaultFlag) {
+
+            SysTenantDO sysTenantDO = new SysTenantDO();
+
+            sysTenantDO.setId(BaseConstant.TENANT_ID);
+            sysTenantDO.setParentId(BaseConstant.NEGATIVE_ONE);
+            sysTenantDO.setName(BaseConstant.TENANT_NAME);
+
+            map.put(sysTenantDO.getId(), sysTenantDO);
+
+        }
 
         return map;
 
@@ -139,7 +153,7 @@ public class SysTenantUtil {
 
         if (UserUtil.getCurrentUserAdminFlag(currentUserId)) {
 
-            CollUtil.addAll(resultSet, getSysTenantCacheMap().keySet()); // 添加：所有的 租户 id
+            CollUtil.addAll(resultSet, getSysTenantCacheMap(false).keySet()); // 添加：所有的 租户 id
 
         } else {
 
@@ -179,7 +193,7 @@ public class SysTenantUtil {
         return MyCacheUtil.<Map<Long, Set<Long>>>getMap(BaseRedisKeyEnum.SYS_TENANT_DEEP_ID_SET_CACHE,
             CacheHelper.getDefaultLongSetMap(), () -> {
 
-                List<SysTenantDO> tenantDOList = new ArrayList<>(getSysTenantCacheMap().values());
+                List<SysTenantDO> tenantDOList = new ArrayList<>(getSysTenantCacheMap(false).values());
 
                 SysTenantDO sysTenantDO = new SysTenantDO();
 

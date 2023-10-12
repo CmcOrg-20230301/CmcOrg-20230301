@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
 import javax.validation.Valid;
+import java.util.List;
 
 @Tag(name = "租户钱包-管理")
 @RestController
@@ -46,6 +47,13 @@ public class SysTenantWalletController {
     @PreAuthorize("hasAuthority('sysTenantWallet:page')")
     public ApiResultVO<Page<SysUserWalletDO>> myPage(@RequestBody @Valid SysUserWalletPageDTO dto) {
         return ApiResultVO.okData(baseService.myPage(dto));
+    }
+
+    @Operation(summary = "查询：树结构")
+    @PostMapping("/tree")
+    @PreAuthorize("hasAuthority('sysTenantWallet:page')")
+    public ApiResultVO<List<SysUserWalletDO>> tree(@RequestBody @Valid SysUserWalletPageDTO dto) {
+        return ApiResultVO.okData(baseService.tree(dto));
     }
 
     @Operation(summary = "通过租户主键id，查看详情")

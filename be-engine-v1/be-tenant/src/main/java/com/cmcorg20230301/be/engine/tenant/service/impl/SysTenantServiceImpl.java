@@ -425,19 +425,12 @@ public class SysTenantServiceImpl extends ServiceImpl<SysTenantMapper, SysTenant
         // 获取：用户关联的租户
         Set<Long> tenantIdSet = SysTenantUtil.getUserRefTenantIdSet();
 
-        Map<Long, SysTenantDO> sysTenantCacheMap = SysTenantUtil.getSysTenantCacheMap();
+        Map<Long, SysTenantDO> sysTenantCacheMap = SysTenantUtil.getSysTenantCacheMap(true);
 
         List<DictTreeVO> dictTreeVOList =
             sysTenantCacheMap.entrySet().stream().filter(it -> tenantIdSet.contains(it.getKey()))
                 .map(it -> new DictTreeVO(it.getValue().getId(), it.getValue().getName(), it.getValue().getParentId()))
                 .collect(Collectors.toList());
-
-        if (tenantIdSet.contains(BaseConstant.TENANT_ID)) {
-
-            dictTreeVOList
-                .add(new DictTreeVO(BaseConstant.TENANT_ID, BaseConstant.TENANT_NAME, BaseConstant.NEGATIVE_ONE));
-
-        }
 
         return new Page<DictTreeVO>().setTotal(dictTreeVOList.size()).setRecords(dictTreeVOList);
 
@@ -641,7 +634,7 @@ public class SysTenantServiceImpl extends ServiceImpl<SysTenantMapper, SysTenant
 
         }
 
-        SysTenantDO sysTenantDO = SysTenantUtil.getSysTenantCacheMap().get(notNullLong.getValue());
+        SysTenantDO sysTenantDO = SysTenantUtil.getSysTenantCacheMap(false).get(notNullLong.getValue());
 
         if (sysTenantDO == null) {
 

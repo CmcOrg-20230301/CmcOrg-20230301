@@ -7,6 +7,8 @@ import com.cmcorg20230301.be.engine.model.model.dto.NotNullId;
 import com.cmcorg20230301.be.engine.wallet.model.dto.SysUserWalletPageDTO;
 import com.cmcorg20230301.be.engine.wallet.model.entity.SysUserWalletDO;
 
+import java.util.List;
+
 public interface SysTenantWalletService {
 
     String frozenByIdSet(NotEmptyIdSet notEmptyIdSet);
@@ -14,6 +16,8 @@ public interface SysTenantWalletService {
     String thawByIdSet(NotEmptyIdSet notEmptyIdSet);
 
     Page<SysUserWalletDO> myPage(SysUserWalletPageDTO dto);
+
+    List<SysUserWalletDO> tree(SysUserWalletPageDTO dto);
 
     SysUserWalletDO infoById(NotNullId notNullId);
 

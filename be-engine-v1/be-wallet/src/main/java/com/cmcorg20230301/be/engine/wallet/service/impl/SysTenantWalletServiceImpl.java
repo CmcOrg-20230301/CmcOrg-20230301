@@ -8,8 +8,12 @@ import com.cmcorg20230301.be.engine.model.model.dto.ChangeBigDecimalNumberDTO;
 import com.cmcorg20230301.be.engine.model.model.dto.NotEmptyIdSet;
 import com.cmcorg20230301.be.engine.model.model.dto.NotNullId;
 import com.cmcorg20230301.be.engine.security.model.entity.BaseEntityNoId;
+import com.cmcorg20230301.be.engine.security.model.entity.BaseEntityNoIdFather;
+import com.cmcorg20230301.be.engine.security.model.entity.SysTenantDO;
+import com.cmcorg20230301.be.engine.security.util.MyTreeUtil;
 import com.cmcorg20230301.be.engine.security.util.SysTenantUtil;
 import com.cmcorg20230301.be.engine.security.util.UserUtil;
+import com.cmcorg20230301.be.engine.tenant.service.SysTenantService;
 import com.cmcorg20230301.be.engine.wallet.model.dto.SysUserWalletPageDTO;
 import com.cmcorg20230301.be.engine.wallet.model.entity.SysUserWalletDO;
 import com.cmcorg20230301.be.engine.wallet.model.enums.SysUserWalletLogTypeEnum;
@@ -20,14 +24,17 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.math.BigDecimal;
-import java.util.Date;
-import java.util.Set;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class SysTenantWalletServiceImpl implements SysTenantWalletService {
 
     @Resource
     SysUserWalletService sysUserWalletService;
+
+    @Resource
+    SysTenantService sysTenantService;
 
     /**
      * 批量冻结
@@ -59,6 +66,75 @@ public class SysTenantWalletServiceImpl implements SysTenantWalletService {
 
         // 执行
         return sysUserWalletService.doMyPage(dto, true);
+
+    }
+
+    /**
+     * 查询：树结构
+     */
+    @Override
+    public List<SysUserWalletDO> tree(SysUserWalletPageDTO dto) {
+
+        dto.setPageSize(-1); // 不分页
+
+        // 执行
+        List<SysUserWalletDO> sysUserWalletDOList = myPage(dto).getRecords();
+
+        if (sysUserWalletDOList.size() == 0) {
+            return new ArrayList<>();
+        }
+
+        List<SysUserWalletDO> allList =
+            sysUserWalletService.lambdaQuery().in(BaseEntityNoIdFather::getTenantId, dto.getTenantIdSet())
+                .eq(SysUserWalletDO::getId, BaseConstant.TENANT_USER_ID) //
+                .groupBy(BaseEntityNoIdFather::getTenantId) // 备注：因为 totalMoney是聚合函数算出来的，所以这里需要分组
+                .list();
+
+        if (allList.size() == 0) {
+            return new ArrayList<>();
+        }
+
+        // 用于组装：树形结构
+        Map<Long, SysTenantDO> sysTenantCacheMap = SysTenantUtil.getSysTenantCacheMap(true);
+
+        Map<Long, SysTenantDO> allSysTenantDoMap =
+            sysTenantCacheMap.entrySet().stream().filter(it -> dto.getTenantIdSet().contains(it.getKey()))
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+
+        // 处理：集合
+        handleSysUserWalletDOIterator(allSysTenantDoMap, sysUserWalletDOList.iterator());
+
+        // 处理：集合
+        handleSysUserWalletDOIterator(allSysTenantDoMap, allList.iterator());
+
+        return MyTreeUtil.getFullTreeByDeepNode(sysUserWalletDOList, allList, BaseConstant.NEGATIVE_ONE);
+
+    }
+
+    /**
+     * 处理：SysUserWalletDO的迭代器
+     */
+    private void handleSysUserWalletDOIterator(Map<Long, SysTenantDO> allSysTenantDoMap,
+        Iterator<SysUserWalletDO> iterator) {
+
+        while (iterator.hasNext()) {
+
+            SysUserWalletDO sysUserWalletDO = iterator.next();
+
+            SysTenantDO sysTenantDO = allSysTenantDoMap.get(sysUserWalletDO.getTenantId());
+
+            if (sysTenantDO == null) {
+
+                iterator.remove();
+
+                continue;
+
+            }
+
+            sysUserWalletDO.setId(sysTenantDO.getId()); // 用于组装：树形结构
+            sysUserWalletDO.setParentId(sysTenantDO.getParentId()); // 用于组装：树形结构
+
+        }
 
     }
 
