@@ -4,8 +4,12 @@ import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.lang.func.Func1;
 import cn.hutool.core.util.BooleanUtil;
 import com.baomidou.dynamic.datasource.annotation.DSTransactional;
+import com.baomidou.mybatisplus.core.enums.SqlMethod;
+import com.baomidou.mybatisplus.core.toolkit.CollectionUtils;
+import com.baomidou.mybatisplus.core.toolkit.Constants;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.baomidou.mybatisplus.extension.toolkit.ChainWrappers;
 import com.cmcorg20230301.be.engine.model.model.constant.BaseConstant;
 import com.cmcorg20230301.be.engine.model.model.dto.ChangeBigDecimalNumberDTO;
 import com.cmcorg20230301.be.engine.model.model.dto.NotEmptyIdSet;
@@ -31,10 +35,7 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @Service
 public class SysUserWalletServiceImpl extends ServiceImpl<SysUserWalletMapper, SysUserWalletDO>
@@ -247,8 +248,31 @@ public class SysUserWalletServiceImpl extends ServiceImpl<SysUserWalletMapper, S
             handleSysUserWalletDOList(currentUserId, date, changeNumber, sysUserWalletLogTypeEnum, lowErrorFlag,
                 checkWalletEnableFlag, sysUserWalletLogDoList, sysUserWalletDOList);
 
-            // 操作数据库
-            updateBatchById(sysUserWalletDOList);
+            if (tenantFlag) {
+
+                // 操作数据库
+                String sqlStatement = getSqlStatement(SqlMethod.UPDATE);
+
+                executeBatch(sysUserWalletDOList, DEFAULT_BATCH_SIZE, (sqlSession, entity) -> {
+
+                    Map<String, Object> map = CollectionUtils.newHashMapWithExpectedSize(2);
+
+                    map.put(Constants.ENTITY, entity);
+
+                    map.put(Constants.WRAPPER,
+                        ChainWrappers.lambdaUpdateChain(baseMapper).eq(SysUserWalletDO::getId, entity.getId())
+                            .eq(BaseEntityNoIdFather::getTenantId, entity.getTenantId()).getWrapper());
+
+                    sqlSession.update(sqlStatement, map);
+
+                });
+
+            } else {
+
+                // 操作数据库
+                updateBatchById(sysUserWalletDOList);
+
+            }
 
         });
 
