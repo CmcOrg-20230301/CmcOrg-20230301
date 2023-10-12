@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 import java.math.BigDecimal;
+import java.util.Date;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
@@ -22,5 +23,11 @@ public class SysUserWalletPageDTO extends MyTenantPageDTO {
 
     @Schema(description = "提现金额：结束值")
     private BigDecimal endWithdrawableMoney;
+
+    @Schema(description = "起始时间：更新时间")
+    private Date utBeginTime;
+
+    @Schema(description = "结束时间：更新时间")
+    private Date utEndTime;
 
 }

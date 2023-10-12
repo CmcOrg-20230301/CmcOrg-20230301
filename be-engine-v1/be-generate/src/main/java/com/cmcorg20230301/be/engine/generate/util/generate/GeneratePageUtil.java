@@ -118,8 +118,8 @@ public class GeneratePageUtil {
     private String importYesNoDict = "import {YesNoDict} from \"@/util/DictUtil\";\n";
 
     private String adminTableJsonItemYesNoDictSelect =
-        "\n    {}{\n" + "        title: '{}',\n" + "        dataIndex: '{}',\n" + "        valueEnum: YesNoDict\n"
-            + "    },\n";
+        "\n    {}{\n" + "        title: '{}',\n" + "        dataIndex: '{}',\n" + "        valueEnum: YesNoDict,\n"
+            + "        width: 90,\n" + "    },\n";
 
     // YesNoDict 开关
     private String adminFormJsonItemYesNoDictSwitch =
@@ -146,8 +146,8 @@ public class GeneratePageUtil {
     // fieldProps：下拉选，多选
     private String adminJsonFieldPropsSelectMultiple =
         "            valueType: 'select',\n" + "            fieldProps: {\n" + "                showSearch: true,\n"
-            + "                mode: 'multiple',\n" + "                maxTagCount: 'responsive',\n"
-            + "            },\n{}\n";
+            + "                allowClear: true,\n" + "                mode: 'multiple',\n"
+            + "                maxTagCount: 'responsive',\n" + "            },\n{}\n";
 
     public String getSystemUserDir() {
 

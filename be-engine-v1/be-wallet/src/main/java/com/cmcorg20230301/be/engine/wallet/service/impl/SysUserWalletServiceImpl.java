@@ -139,7 +139,12 @@ public class SysUserWalletServiceImpl extends ServiceImpl<SysUserWalletMapper, S
             .ge(dto.getBeginWithdrawableMoney() != null, SysUserWalletDO::getWithdrawableMoney,
                 dto.getBeginWithdrawableMoney()) //
 
+            .le(dto.getUtEndTime() != null, SysUserWalletDO::getUpdateTime, dto.getUtEndTime()) //
+
+            .ge(dto.getUtBeginTime() != null, SysUserWalletDO::getUpdateTime, dto.getUtBeginTime()) //
+
             .in(BaseEntityNoId::getTenantId, dto.getTenantIdSet()) //
+            .groupBy(SysUserWalletDO::getId) // 备注：因为 totalMoney是聚合函数算出来的，所以这里需要分组
             .orderByDesc(SysUserWalletDO::getUpdateTime).page(dto.page(true));
 
     }
