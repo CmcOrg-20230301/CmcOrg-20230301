@@ -1,6 +1,5 @@
 package com.cmcorg20230301.be.engine.security.util;
 
-import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.convert.Convert;
 import cn.hutool.core.lang.func.Func1;
@@ -118,13 +117,18 @@ public class SysTenantUtil {
 
             });
 
-        // 需要深度拷贝
-        map = BeanUtil.copyProperties(map, Map.class);
-
         // 移除：默认值
         map = CacheHelper.handleDefaultLongMap(map);
 
         if (addDefaultFlag) {
+
+            Map<Long, SysTenantDO> mapTemp = new HashMap<>();
+
+            for (Map.Entry<Long, SysTenantDO> item : map.entrySet()) {
+
+                mapTemp.put(item.getKey(), item.getValue());
+
+            }
 
             SysTenantDO sysTenantDO = new SysTenantDO();
 
@@ -132,7 +136,9 @@ public class SysTenantUtil {
             sysTenantDO.setParentId(BaseConstant.NEGATIVE_ONE);
             sysTenantDO.setName(BaseConstant.TENANT_NAME);
 
-            map.put(sysTenantDO.getId(), sysTenantDO);
+            mapTemp.put(sysTenantDO.getId(), sysTenantDO);
+
+            map = mapTemp;
 
         }
 
