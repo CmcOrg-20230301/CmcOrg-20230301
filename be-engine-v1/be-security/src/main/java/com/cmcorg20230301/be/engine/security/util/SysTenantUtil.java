@@ -180,12 +180,16 @@ public class SysTenantUtil {
 
             if (refChildrenFlag) { // 如果：默认关联子级租户，则：获取下级租户
 
+                Set<Long> tempResultSet = new HashSet<>();
+
                 // 获取：下级租户
                 for (Long item : resultSet) {
 
-                    CollUtil.addAll(resultSet, getTenantDeepIdSet(item));
+                    CollUtil.addAll(tempResultSet, getTenantDeepIdSet(item));
 
                 }
+
+                resultSet.addAll(tempResultSet);
 
             }
 
