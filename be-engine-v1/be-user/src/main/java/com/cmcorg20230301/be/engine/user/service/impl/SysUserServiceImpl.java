@@ -166,15 +166,19 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserProMapper, SysUserDO>
             Map<Long, SysRequestDO> requestCreateIdMap =
                 sysRequestDOList.stream().collect(Collectors.toMap(BaseEntityNoId::getCreateId, it -> it));
 
+            Map<Long, Set<Long>> userRefRoleIdSetMap = UserUtil.getUserRefRoleIdSetMap();
+
+            Map<Long, Set<Long>> userIdRefTenantIdSetMap = SysTenantUtil.getUserIdRefTenantIdSetMap();
+
             page.getRecords().forEach(it -> {
 
-                it.setRoleIdSet(UserUtil.getUserRefRoleIdSetMap().get(it.getId()));
+                it.setRoleIdSet(userRefRoleIdSetMap.get(it.getId()));
 
                 it.setDeptIdSet(deptUserGroupMap.get(it.getId()));
 
                 it.setPostIdSet(postUserGroupMap.get(it.getId()));
 
-                it.setTenantIdSet(SysTenantUtil.getUserIdRefTenantIdSetMap().get(it.getId()));
+                it.setTenantIdSet(userIdRefTenantIdSetMap.get(it.getId()));
 
                 SysRequestDO sysRequestDO = requestCreateIdMap.get(it.getId());
 

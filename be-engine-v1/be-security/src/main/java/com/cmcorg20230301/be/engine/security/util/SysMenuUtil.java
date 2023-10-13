@@ -1,5 +1,6 @@
 package com.cmcorg20230301.be.engine.security.util;
 
+import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.map.MapUtil;
 import cn.hutool.core.util.BooleanUtil;
@@ -49,6 +50,9 @@ public class SysMenuUtil {
                 return sysMenuDOList.stream().collect(Collectors.toMap(BaseEntity::getId, it -> it));
 
             });
+
+        // 需要深度拷贝
+        map = BeanUtil.copyProperties(map, Map.class);
 
         // 移除：默认值
         map = CacheHelper.handleDefaultLongMap(map);

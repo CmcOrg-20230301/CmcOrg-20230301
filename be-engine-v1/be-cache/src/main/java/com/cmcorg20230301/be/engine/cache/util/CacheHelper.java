@@ -71,6 +71,7 @@ public class CacheHelper {
 
     /**
      * 处理：默认的 map，移除：默认值
+     * 注意：深度拷贝
      */
     public static <T> Map<Long, T> handleDefaultLongMap(Map<Long, T> map) {
 

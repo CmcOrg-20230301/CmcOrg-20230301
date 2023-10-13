@@ -51,7 +51,9 @@ public class DoPackageUtil {
 
     private String beJarName = "be-start-2023.3.1.jar";
 
-    private String beJarPath = "be-start/target/" + getBeJarName();
+    private String beStartFolderName = "be-start";
+
+    private String beJarPath = getBeStartFolderName() + "/target/" + getBeJarName();
 
     private String npmBuildCmd = "npm run build";
 
@@ -163,6 +165,9 @@ public class DoPackageUtil {
                 bePackagePreConsumer.accept(projectPath);
 
             }
+
+            // 这里需要先清除一下，不然不会重新打包
+            RuntimeUtil.execForStr("cmd", "/c", "cd " + projectPath + "/" + getBeStartFolderName() + " && mvn clean");
 
             RuntimeUtil.execForStr("cmd", "/c", "cd " + projectPath + " && mvn package");
 
