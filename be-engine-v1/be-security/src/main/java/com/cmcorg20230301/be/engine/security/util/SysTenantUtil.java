@@ -122,7 +122,7 @@ public class SysTenantUtil {
 
         if (addDefaultFlag) {
 
-            Map<Long, SysTenantDO> mapTemp = new HashMap<>();
+            Map<Long, SysTenantDO> mapTemp = new HashMap<>(map.size());
 
             for (Map.Entry<Long, SysTenantDO> item : map.entrySet()) {
 
