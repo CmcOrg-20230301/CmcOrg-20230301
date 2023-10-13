@@ -1,7 +1,7 @@
 package com.cmcorg20230301.be.engine.wallet.controller;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.cmcorg20230301.be.engine.model.model.dto.NotNullId;
+import com.cmcorg20230301.be.engine.model.model.dto.NotNullLong;
 import com.cmcorg20230301.be.engine.security.model.vo.ApiResultVO;
 import com.cmcorg20230301.be.engine.wallet.model.dto.SysUserBankCardInsertOrUpdateUserSelfDTO;
 import com.cmcorg20230301.be.engine.wallet.model.dto.SysUserBankCardPageDTO;
@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
 import javax.validation.Valid;
+import java.util.List;
 
 @Tag(name = "租户银行卡-管理")
 @RestController
@@ -40,11 +41,18 @@ public class SysTenantBankCardController {
         return ApiResultVO.okData(baseService.myPage(dto));
     }
 
+    @Operation(summary = "查询：树结构")
+    @PostMapping("/tree")
+    @PreAuthorize("hasAuthority('sysTenantBankCard:page')")
+    public ApiResultVO<List<SysUserBankCardDO>> tree(@RequestBody @Valid SysUserBankCardPageDTO dto) {
+        return ApiResultVO.okData(baseService.tree(dto));
+    }
+
     @Operation(summary = "通过租户主键id，查看详情")
     @PostMapping("/infoById")
     @PreAuthorize("hasAuthority('sysTenantBankCard:infoById')")
-    public ApiResultVO<SysUserBankCardDO> infoById(@RequestBody @Valid NotNullId notNullId) {
-        return ApiResultVO.okData(baseService.infoById(notNullId));
+    public ApiResultVO<SysUserBankCardDO> infoById(@RequestBody @Valid NotNullLong notNullLong) {
+        return ApiResultVO.okData(baseService.infoById(notNullLong));
     }
 
 }

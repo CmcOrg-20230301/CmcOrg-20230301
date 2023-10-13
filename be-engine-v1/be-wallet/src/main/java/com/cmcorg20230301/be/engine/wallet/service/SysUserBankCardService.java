@@ -2,7 +2,7 @@ package com.cmcorg20230301.be.engine.wallet.service;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.cmcorg20230301.be.engine.model.model.dto.NotNullId;
+import com.cmcorg20230301.be.engine.model.model.dto.NotNullLong;
 import com.cmcorg20230301.be.engine.model.model.vo.DictStringVO;
 import com.cmcorg20230301.be.engine.wallet.model.dto.SysUserBankCardInsertOrUpdateUserSelfDTO;
 import com.cmcorg20230301.be.engine.wallet.model.dto.SysUserBankCardPageDTO;
@@ -16,7 +16,7 @@ public interface SysUserBankCardService extends IService<SysUserBankCardDO> {
 
     Page<DictStringVO> openBankNameDictList();
 
-    SysUserBankCardDO infoById(NotNullId notNullId);
+    SysUserBankCardDO infoById(NotNullLong notNullLong);
 
     SysUserBankCardDO infoByIdUserSelf();
 

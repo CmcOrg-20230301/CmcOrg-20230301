@@ -5,7 +5,7 @@ import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.cmcorg20230301.be.engine.model.model.constant.BaseConstant;
-import com.cmcorg20230301.be.engine.model.model.dto.NotNullId;
+import com.cmcorg20230301.be.engine.model.model.dto.NotNullLong;
 import com.cmcorg20230301.be.engine.model.model.vo.DictStringVO;
 import com.cmcorg20230301.be.engine.security.exception.BaseBizCodeEnum;
 import com.cmcorg20230301.be.engine.security.model.entity.BaseEntityNoId;
@@ -65,7 +65,15 @@ public class SysUserBankCardServiceImpl extends ServiceImpl<SysUserBankCardMappe
         sysUserBankCardDO.setBankCardNo(dto.getBankCardNo());
         sysUserBankCardDO.setOpenBankName(dto.getOpenBankName());
         sysUserBankCardDO.setBranchBankName(dto.getBranchBankName());
-        sysUserBankCardDO.setPayeeName(dto.getPayeeName());
+
+        if (exists) {
+
+            if (!dto.getPayeeName().contains(BaseConstant.ASTERISK)) {
+                sysUserBankCardDO.setPayeeName(dto.getPayeeName()); // 防止脱敏数据，存入数据库
+            }
+
+        }
+
         sysUserBankCardDO.setEnableFlag(true);
         sysUserBankCardDO.setDelFlag(false);
         sysUserBankCardDO.setRemark("");
@@ -177,22 +185,17 @@ public class SysUserBankCardServiceImpl extends ServiceImpl<SysUserBankCardMappe
      * 通过主键id，查看详情
      */
     @Override
-    public SysUserBankCardDO infoById(NotNullId notNullId) {
+    public SysUserBankCardDO infoById(NotNullLong notNullLong) {
 
-        if (notNullId.getId().equals(BaseConstant.TENANT_USER_ID)) {
+        if (notNullLong.getValue().equals(BaseConstant.TENANT_USER_ID)) {
             return null;
         }
 
         // 获取：用户关联的租户
         Set<Long> queryTenantIdSet = SysTenantUtil.getUserRefTenantIdSet();
 
-        SysUserBankCardDO sysUserBankCardDO = lambdaQuery().eq(SysUserBankCardDO::getId, notNullId.getId())
+        return lambdaQuery().eq(SysUserBankCardDO::getId, notNullLong.getValue())
             .in(BaseEntityNoId::getTenantId, queryTenantIdSet).one();
-
-        // 脱敏：SysUserBankCardDO
-        desensitizedSysUserBankCardDO(sysUserBankCardDO);
-
-        return sysUserBankCardDO;
 
     }
 

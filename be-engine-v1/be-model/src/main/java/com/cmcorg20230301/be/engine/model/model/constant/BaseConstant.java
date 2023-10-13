@@ -9,6 +9,8 @@ public interface BaseConstant {
 
     String NEGATIVE_ONE_STR = "-1";
 
+    String ASTERISK = "*";
+
     // 过期时间相关 ↓
 
     long ZERO = 0; // 0

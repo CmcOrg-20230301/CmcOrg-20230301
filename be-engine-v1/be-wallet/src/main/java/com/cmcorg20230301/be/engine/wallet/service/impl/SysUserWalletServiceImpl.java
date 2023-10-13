@@ -13,7 +13,7 @@ import com.baomidou.mybatisplus.extension.toolkit.ChainWrappers;
 import com.cmcorg20230301.be.engine.model.model.constant.BaseConstant;
 import com.cmcorg20230301.be.engine.model.model.dto.ChangeBigDecimalNumberDTO;
 import com.cmcorg20230301.be.engine.model.model.dto.NotEmptyIdSet;
-import com.cmcorg20230301.be.engine.model.model.dto.NotNullId;
+import com.cmcorg20230301.be.engine.model.model.dto.NotNullLong;
 import com.cmcorg20230301.be.engine.redisson.model.enums.BaseRedisKeyEnum;
 import com.cmcorg20230301.be.engine.redisson.util.IdGeneratorUtil;
 import com.cmcorg20230301.be.engine.redisson.util.RedissonUtil;
@@ -155,16 +155,16 @@ public class SysUserWalletServiceImpl extends ServiceImpl<SysUserWalletMapper, S
      * 通过主键id，查看详情
      */
     @Override
-    public SysUserWalletDO infoById(NotNullId notNullId) {
+    public SysUserWalletDO infoById(NotNullLong notNullLong) {
 
-        if (notNullId.getId().equals(BaseConstant.TENANT_USER_ID)) {
+        if (notNullLong.getValue().equals(BaseConstant.TENANT_USER_ID)) {
             return null;
         }
 
         // 获取：用户关联的租户
         Set<Long> queryTenantIdSet = SysTenantUtil.getUserRefTenantIdSet();
 
-        return lambdaQuery().eq(SysUserWalletDO::getId, notNullId.getId())
+        return lambdaQuery().eq(SysUserWalletDO::getId, notNullLong.getValue())
             .in(BaseEntityNoId::getTenantId, queryTenantIdSet).one();
 
     }

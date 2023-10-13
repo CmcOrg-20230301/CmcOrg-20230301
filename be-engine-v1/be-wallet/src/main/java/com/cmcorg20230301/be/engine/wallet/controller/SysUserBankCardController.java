@@ -1,7 +1,7 @@
 package com.cmcorg20230301.be.engine.wallet.controller;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.cmcorg20230301.be.engine.model.model.dto.NotNullId;
+import com.cmcorg20230301.be.engine.model.model.dto.NotNullLong;
 import com.cmcorg20230301.be.engine.model.model.vo.DictStringVO;
 import com.cmcorg20230301.be.engine.security.model.vo.ApiResultVO;
 import com.cmcorg20230301.be.engine.wallet.model.dto.SysUserBankCardInsertOrUpdateUserSelfDTO;
@@ -50,8 +50,8 @@ public class SysUserBankCardController {
     @Operation(summary = "通过主键id，查看详情")
     @PostMapping("/infoById")
     @PreAuthorize("hasAuthority('sysUserBankCard:infoById')")
-    public ApiResultVO<SysUserBankCardDO> infoById(@RequestBody @Valid NotNullId notNullId) {
-        return ApiResultVO.okData(baseService.infoById(notNullId));
+    public ApiResultVO<SysUserBankCardDO> infoById(@RequestBody @Valid NotNullLong notNullLong) {
+        return ApiResultVO.okData(baseService.infoById(notNullLong));
     }
 
     @Operation(summary = "通过主键id，查看详情-用户")

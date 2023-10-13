@@ -3,7 +3,7 @@ package com.cmcorg20230301.be.engine.wallet.service;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.cmcorg20230301.be.engine.model.model.dto.ChangeBigDecimalNumberDTO;
 import com.cmcorg20230301.be.engine.model.model.dto.NotEmptyIdSet;
-import com.cmcorg20230301.be.engine.model.model.dto.NotNullId;
+import com.cmcorg20230301.be.engine.model.model.dto.NotNullLong;
 import com.cmcorg20230301.be.engine.wallet.model.dto.SysUserWalletPageDTO;
 import com.cmcorg20230301.be.engine.wallet.model.entity.SysUserWalletDO;
 
@@ -19,7 +19,7 @@ public interface SysTenantWalletService {
 
     List<SysUserWalletDO> tree(SysUserWalletPageDTO dto);
 
-    SysUserWalletDO infoById(NotNullId notNullId);
+    SysUserWalletDO infoById(NotNullLong notNullLong);
 
     String addWithdrawableMoneyBackground(ChangeBigDecimalNumberDTO dto);
 

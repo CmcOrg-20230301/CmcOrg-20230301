@@ -6,7 +6,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.cmcorg20230301.be.engine.model.model.constant.BaseConstant;
 import com.cmcorg20230301.be.engine.model.model.dto.ChangeBigDecimalNumberDTO;
 import com.cmcorg20230301.be.engine.model.model.dto.NotEmptyIdSet;
-import com.cmcorg20230301.be.engine.model.model.dto.NotNullId;
+import com.cmcorg20230301.be.engine.model.model.dto.NotNullLong;
 import com.cmcorg20230301.be.engine.security.model.entity.BaseEntityNoId;
 import com.cmcorg20230301.be.engine.security.model.entity.BaseEntityNoIdFather;
 import com.cmcorg20230301.be.engine.security.model.entity.SysTenantDO;
@@ -102,10 +102,10 @@ public class SysTenantWalletServiceImpl implements SysTenantWalletService {
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 
         // 处理：集合
-        handleSysUserWalletDOIterator(allSysTenantDoMap, sysUserWalletDOList.iterator());
+        handleSysUserWalletDoIterator(allSysTenantDoMap, sysUserWalletDOList.iterator());
 
         // 处理：集合
-        handleSysUserWalletDOIterator(allSysTenantDoMap, allList.iterator());
+        handleSysUserWalletDoIterator(allSysTenantDoMap, allList.iterator());
 
         return MyTreeUtil.getFullTreeByDeepNode(sysUserWalletDOList, allList, BaseConstant.NEGATIVE_ONE);
 
@@ -114,7 +114,7 @@ public class SysTenantWalletServiceImpl implements SysTenantWalletService {
     /**
      * 处理：SysUserWalletDO的迭代器
      */
-    private void handleSysUserWalletDOIterator(Map<Long, SysTenantDO> allSysTenantDoMap,
+    private void handleSysUserWalletDoIterator(Map<Long, SysTenantDO> allSysTenantDoMap,
         Iterator<SysUserWalletDO> iterator) {
 
         while (iterator.hasNext()) {
@@ -142,13 +142,14 @@ public class SysTenantWalletServiceImpl implements SysTenantWalletService {
      * 通过租户主键id，查看详情
      */
     @Override
-    public SysUserWalletDO infoById(NotNullId notNullId) {
+    public SysUserWalletDO infoById(NotNullLong notNullLong) {
 
         // 获取：用户关联的租户
         Set<Long> queryTenantIdSet = SysTenantUtil.getUserRefTenantIdSet();
 
-        return sysUserWalletService.lambdaQuery().eq(SysUserWalletDO::getTenantId, notNullId.getId())
-            .in(BaseEntityNoId::getTenantId, queryTenantIdSet).one();
+        return sysUserWalletService.lambdaQuery().eq(SysUserWalletDO::getTenantId, notNullLong.getValue())
+            .eq(SysUserWalletDO::getId, BaseConstant.TENANT_USER_ID).in(BaseEntityNoId::getTenantId, queryTenantIdSet)
+            .one();
 
     }
 
