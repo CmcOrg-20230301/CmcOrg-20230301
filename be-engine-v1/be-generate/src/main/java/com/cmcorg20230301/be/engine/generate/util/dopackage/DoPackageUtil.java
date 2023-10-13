@@ -64,6 +64,33 @@ public class DoPackageUtil {
         return null;
     }
 
+    //    /**
+    //     * 后端，打包之前的操作
+    //     */
+    //    @Override
+    //    public Consumer<String> getBePackagePreConsumer() {
+    //
+    //        return projectPath -> {
+    //
+    //            log.info("后端引擎打包 ↓");
+    //
+    //            long timeNumber = System.currentTimeMillis();
+    //
+    //            String beEngineProjectPath = System.getProperty("user.dir") + "/CmcOrg-20230301/be-engine-v1";
+    //
+    //            RuntimeUtil.execForStr("cmd", "/c", "cd " + beEngineProjectPath + " && mvn package");
+    //
+    //            RuntimeUtil.execForStr("cmd", "/c", "cd " + beEngineProjectPath + " && mvn install");
+    //
+    //            timeNumber = System.currentTimeMillis() - timeNumber;
+    //            String timeStr = DateUtil.formatBetween(timeNumber);
+    //
+    //            log.info("后端引擎打包 ↑ 耗时：" + timeStr);
+    //
+    //        };
+    //
+    //    }
+
     /**
      * 后端，重启之前的操作
      */
