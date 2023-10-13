@@ -52,6 +52,7 @@ const TableColumnList = (actionRef: React.RefObject<ActionType | undefined>): Pr
             return DoGetDictList(SysUserDictList({addAdminFlag: true}))
         },
         fieldProps: {
+            allowClear: true,
             showSearch: true,
         },
     },
@@ -62,7 +63,11 @@ const TableColumnList = (actionRef: React.RefObject<ActionType | undefined>): Pr
         title: '类型', dataIndex: 'type', ellipsis: true, width: 90, valueType: 'select',
         request: () => {
             return GetDictListByKey('sys_socket_type')
-        }
+        },
+        fieldProps: {
+            allowClear: true,
+            showSearch: true,
+        },
     },
 
     {title: '协议', dataIndex: 'scheme', ellipsis: true, width: 90,},
@@ -77,7 +82,11 @@ const TableColumnList = (actionRef: React.RefObject<ActionType | undefined>): Pr
         title: '在线状态', dataIndex: 'onlineType', ellipsis: true, width: 90, valueType: 'select',
         request: () => {
             return GetDictListByKey('sys_socket_online_type')
-        }
+        },
+        fieldProps: {
+            allowClear: true,
+            showSearch: true,
+        },
     },
 
     {
@@ -98,7 +107,11 @@ const TableColumnList = (actionRef: React.RefObject<ActionType | undefined>): Pr
         title: '请求类别', dataIndex: 'category', ellipsis: true, width: 90, valueType: 'select',
         request: () => {
             return GetDictListByKey('sys_request_category')
-        }
+        },
+        fieldProps: {
+            allowClear: true,
+            showSearch: true,
+        },
     },
 
     {

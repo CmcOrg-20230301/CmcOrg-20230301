@@ -18,7 +18,11 @@ const TableColumnList = (actionRef: React.RefObject<ActionType | undefined>): Pr
         title: '类型', dataIndex: 'type', ellipsis: true, width: 90, valueType: 'select',
         request: () => {
             return GetDictListByKey('sys_socket_type')
-        }
+        },
+        fieldProps: {
+            allowClear: true,
+            showSearch: true,
+        },
     },
 
     {title: '协议', dataIndex: 'scheme', ellipsis: true, width: 90,},

@@ -1,12 +1,13 @@
-import {GetDictList, GetDictListByKey, NoFormGetDictTreeList, YesNoDict} from "@/util/DictUtil";
+import {DoGetDictList, GetDictList, NoFormGetDictTreeList} from "@/util/DictUtil";
 import {ActionType, ProColumns} from "@ant-design/pro-components";
-import {SysOtherAppDeleteByIdSet, SysOtherAppDO, SysOtherAppInsertOrUpdateDTO} from "@/api/http/SysOtherApp";
-import {ExecConfirm, ToastSuccess} from "@/util/ToastUtil";
+import {SysUserWalletDO} from "@/api/http/SysUserWallet";
 import {SysTenantDictList} from "@/api/http/SysTenant";
 import {TreeSelect} from "antd";
 import {SearchTransform} from "@/util/CommonUtil";
+import {SysUserBankCardDictListOpenBankName, SysUserBankCardDO} from "@/api/http/SysUserBankCard";
+import React from "react";
 
-const TableColumnList = (currentForm: React.MutableRefObject<SysOtherAppInsertOrUpdateDTO>, setFormOpen: React.Dispatch<React.SetStateAction<boolean>>, actionRef: React.RefObject<ActionType | undefined>): ProColumns<SysOtherAppDO>[] => [
+const TableColumnList = (currentForm: React.MutableRefObject<SysUserWalletDO>, actionRef: React.RefObject<ActionType | undefined>, setFormOpen: React.Dispatch<React.SetStateAction<boolean>>): ProColumns<SysUserWalletDO>[] => [
 
     {
         title: '序号',
@@ -42,74 +43,64 @@ const TableColumnList = (currentForm: React.MutableRefObject<SysOtherAppInsertOr
         }
     },
 
+    {title: '卡号', dataIndex: 'bankCardNo', ellipsis: true, width: 90,},
+
     {
-        title: '类型', dataIndex: 'type', ellipsis: true, width: 90, valueType: 'select',
-        request: () => {
-            return GetDictListByKey('sys_other_app_type')
-        },
+        title: '开户行', dataIndex: 'openBankName', ellipsis: true, width: 90,
         fieldProps: {
             allowClear: true,
             showSearch: true,
         },
+        valueType: 'select',
+        request: () => {
+            return DoGetDictList(SysUserBankCardDictListOpenBankName())
+        },
     },
 
-    {title: '名称', dataIndex: 'name', ellipsis: true, width: 200,},
+    {title: '支行', dataIndex: 'branchBankName', ellipsis: true, width: 90,},
 
-    {title: 'appId', dataIndex: 'appId', ellipsis: true, width: 200,},
+    {title: '收款人姓名', dataIndex: 'payeeName', ellipsis: true, width: 90,},
 
     {
         title: '创建时间',
         dataIndex: 'createTime',
         hideInSearch: true,
         valueType: 'fromNow',
+        width: 90,
+        sorter: true,
     },
 
     {
-        title: '修改时间',
+        title: '更新时间',
         dataIndex: 'updateTime',
         hideInSearch: true,
         valueType: 'fromNow',
+        width: 90,
+        sorter: true,
+        defaultSortOrder: 'descend',
     },
-
-    {
-        title: '是否启用',
-        dataIndex: 'enableFlag',
-        valueEnum: YesNoDict
-    },
-
-    {title: '备注', dataIndex: 'remark', ellipsis: true, width: 200,},
 
     {
 
         title: '操作',
         dataIndex: 'option',
         valueType: 'option',
+        width: 90,
 
-        render: (dom, entity) => [
+        render: (dom, entity, index) => {
 
-            <a key="1" onClick={() => {
+            return [
 
-                currentForm.current = {id: entity.id} as SysOtherAppInsertOrUpdateDTO
-                setFormOpen(true)
+                <a key="1" onClick={() => {
 
-            }}>编辑</a>,
+                    currentForm.current = {id: entity.id} as SysUserBankCardDO
+                    setFormOpen(true)
 
-            <a key="2" className={"red3"} onClick={() => {
+                }}>查看</a>,
 
-                ExecConfirm(() => {
+            ]
 
-                    return SysOtherAppDeleteByIdSet({idSet: [entity.id!]}).then(res => {
-
-                        ToastSuccess(res.msg)
-                        actionRef.current?.reload()
-
-                    })
-
-                }, undefined, `确定删除【${entity.name}】吗？`)
-
-            }}>删除</a>,
-
-        ],
+        },
 
     },
 

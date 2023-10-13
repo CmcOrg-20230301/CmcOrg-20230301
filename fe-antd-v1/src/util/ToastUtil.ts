@@ -29,7 +29,9 @@ export function ToastError(msg: string, duration: number = 5) {
 export function ExecConfirm(
     confirmFun: () => Promise<void>,
     cancelFun?: () => Promise<void>,
-    msg?: React.ReactNode
+    msg?: React.ReactNode,
+    res?: (value?: (PromiseLike<any> | any)) => void,
+    rej?: (reason?: any) => void
 ) {
 
     getApp().modal.confirm({
@@ -46,12 +48,25 @@ export function ExecConfirm(
                 if (confirmFun) {
 
                     return await confirmFun()
-                        .then(() => resolve())
-                        .catch(() => resolve())
+                        .then(() => {
+                            resolve()
+                            if (res) {
+                                res()
+                            }
+                        })
+                        .catch(() => {
+                            resolve()
+                            if (res) {
+                                res()
+                            }
+                        })
 
                 }
 
-                return resolve() // 关闭 confirm弹窗
+                resolve() // 关闭 confirm弹窗
+                if (res) {
+                    res()
+                }
 
             })
 
@@ -64,16 +79,44 @@ export function ExecConfirm(
                 if (cancelFun) {
 
                     return await cancelFun()
-                        .then(() => resolve())
-                        .catch(() => resolve())
+                        .then(() => {
+                            resolve()
+                            if (rej) {
+                                rej()
+                            }
+                        })
+                        .catch(() => {
+                            resolve()
+                            if (rej) {
+                                rej()
+                            }
+                        })
 
                 }
 
-                return resolve() // 关闭 confirm弹窗
+                resolve() // 关闭 confirm弹窗
+                if (rej) {
+                    rej()
+                }
 
             })
 
         },
+
+    })
+
+}
+
+// 注意：【confirmFun】和【cancelFun】，如果是 http请求，则需要 return http 请求，如果不是 Promise，则在方法前面加 async，即可
+export function ExecConfirmPromise(
+    confirmFun: () => Promise<void>,
+    cancelFun?: () => Promise<void>,
+    msg?: React.ReactNode
+) {
+
+    return new Promise<any>((res, rej) => {
+
+        ExecConfirm(confirmFun, cancelFun, msg, res, rej)
 
     })
 

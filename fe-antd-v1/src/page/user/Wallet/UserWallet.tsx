@@ -1,9 +1,11 @@
 import {
     ActionType,
     BetaSchemaForm,
+    ColumnsState,
     FormInstance,
     ProCard,
     ProColumns,
+    ProFormColumnsType,
     ProSchemaValueEnumType,
     ProTable,
     RouteContext,
@@ -42,6 +44,7 @@ import {GetTextType} from "@/util/StrUtil";
 import {PresetStatusColorType} from "antd/es/_util/colors";
 import {Validate} from "@/util/ValidatorUtil";
 import {SysUserDictList} from "@/api/http/SysUser";
+import {InDev} from "@/util/CommonUtil";
 
 const UserWalletLogModalTitle = "钱包日志"
 const BindUserBankCardModalTitle = "绑定银行卡"
@@ -222,7 +225,9 @@ export default function () {
 
                                                 <div>钱包余额（元）</div>
 
-                                                <a>{UserWalletRechargeLogModalTitle}</a>
+                                                <a onClick={() => {
+                                                    InDev()
+                                                }}>{UserWalletRechargeLogModalTitle}</a>
 
                                             </div>
 
@@ -277,7 +282,7 @@ export default function () {
 
                                     icon={<MoneyCollectOutlined/>}
                                     onClick={() => {
-
+                                        InDev()
                                     }}
 
                                 >{UserWalletRechargeModalTitle}</Button>
@@ -305,6 +310,74 @@ export default function () {
     )
 
 }
+
+/**
+ * 用户银行卡基础 form字段集合
+ */
+export const UserBankCardFormBaseColumnArr: ProFormColumnsType<SysUserBankCardInsertOrUpdateUserSelfDTO>[] = [
+
+    {
+        title: '银行卡号',
+        dataIndex: 'bankCardNo',
+        formItemProps: {
+            rules: [
+                {
+                    required: true,
+                    whitespace: true,
+                    validator: Validate.bankDebitCard.validator
+                },
+            ],
+        },
+    },
+
+    {
+        title: '开户行',
+        dataIndex: 'openBankName',
+        fieldProps: {
+            allowClear: true,
+            showSearch: true,
+        },
+        formItemProps: {
+            rules: [
+                {
+                    required: true,
+                },
+            ],
+        },
+        valueType: 'select',
+        request: () => {
+            return DoGetDictList(SysUserBankCardDictListOpenBankName())
+        },
+    },
+
+    {
+        title: '支行',
+        dataIndex: 'branchBankName',
+        formItemProps: {
+            rules: [
+                {
+                    required: true,
+                    whitespace: true,
+                },
+            ],
+        },
+        tooltip: '请正确填写，填写错误将导致打款失败'
+    },
+
+    {
+        title: '收款人姓名',
+        dataIndex: 'payeeName',
+        formItemProps: {
+            rules: [
+                {
+                    required: true,
+                    whitespace: true,
+                },
+            ],
+        },
+    },
+
+]
 
 interface IUserBankCardModal {
 
@@ -401,78 +474,15 @@ function UserBankCardModal(props: IUserBankCardModal) {
 
             }}
 
-            columns={[
+            columns={
 
-                {
-                    title: '银行卡号',
-                    dataIndex: 'bankCardNo',
-                    formItemProps: {
-                        rules: [
-                            {
-                                required: true,
-                                whitespace: true,
-                                validator: Validate.bankDebitCard.validator
-                            },
-                        ],
-                    },
-                },
+                UserBankCardFormBaseColumnArr
 
-                {
-                    title: '开户行',
-                    dataIndex: 'openBankName',
-                    fieldProps: {
-                        allowClear: true,
-                        showSearch: true,
-                    },
-                    formItemProps: {
-                        rules: [
-                            {
-                                required: true,
-                            },
-                        ],
-                    },
-                    valueType: 'select',
-                    request: () => {
-                        return DoGetDictList(SysUserBankCardDictListOpenBankName())
-                    },
-                },
-
-                {
-                    title: '支行',
-                    dataIndex: 'branchBankName',
-                    formItemProps: {
-                        rules: [
-                            {
-                                required: true,
-                                whitespace: true,
-                            },
-                        ],
-                    },
-                    tooltip: '请正确填写，填写错误将导致打款失败'
-                },
-
-                {
-                    title: '收款人姓名',
-                    dataIndex: 'payeeName',
-                    formItemProps: {
-                        rules: [
-                            {
-                                required: true,
-                                whitespace: true,
-                            },
-                        ],
-                    },
-                },
-
-            ]}
+            }
 
             onFinish={async (form) => {
 
-                await SysUserBankCardInsertOrUpdateUserSelf({
-                    ...currentForm.current,
-                    ...form,
-                    id: undefined, // 不传递 id，目的：不然会进行校验
-                }).then(res => {
+                await SysUserBankCardInsertOrUpdateUserSelf({...currentForm.current, ...form}).then(res => {
 
                     ToastSuccess(res.msg)
 
@@ -492,6 +502,8 @@ function UserBankCardModal(props: IUserBankCardModal) {
 
 // 钱包日志
 function UserWalletLogModal() {
+
+    const [columnsStateMap, setColumnsStateMap] = useState<Record<string, ColumnsState>>();
 
     const [open, setOpen] = useState(false);
 
@@ -537,6 +549,11 @@ function UserWalletLogModal() {
                     }}
 
                     columnEmptyText={false}
+
+                    columnsState={{
+                        value: columnsStateMap,
+                        onChange: setColumnsStateMap,
+                    }}
 
                     revalidateOnFocus={false}
 
@@ -660,6 +677,7 @@ function UserWalletLogModal() {
                                 return DoGetDictList(SysUserDictList({addAdminFlag: true}))
                             },
                             fieldProps: {
+                                allowClear: true,
                                 showSearch: true,
                             },
                         },
@@ -732,6 +750,8 @@ interface IUserWalletWithdrawLogModal {
 // 提现记录
 function UserWalletWithdrawLogModal(props: IUserWalletWithdrawLogModal) {
 
+    const [columnsStateMap, setColumnsStateMap] = useState<Record<string, ColumnsState>>();
+
     const actionRef = useRef<ActionType>()
 
     const [open, setOpen] = useState(false);
@@ -779,6 +799,11 @@ function UserWalletWithdrawLogModal(props: IUserWalletWithdrawLogModal) {
                     }}
 
                     columnEmptyText={false}
+
+                    columnsState={{
+                        value: columnsStateMap,
+                        onChange: setColumnsStateMap,
+                    }}
 
                     revalidateOnFocus={false}
 

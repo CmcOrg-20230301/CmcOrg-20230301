@@ -50,7 +50,11 @@ const TableColumnList = (currentForm: React.MutableRefObject<SysPayConfiguration
         title: '类型', dataIndex: 'type', ellipsis: true, width: 90, valueType: 'select',
         request: () => {
             return GetDictListByKey('sys_pay_type')
-        }
+        },
+        fieldProps: {
+            allowClear: true,
+            showSearch: true,
+        },
     },
 
     {title: '名称', dataIndex: 'name', ellipsis: true, width: 90,},

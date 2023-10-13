@@ -14,6 +14,7 @@ const SchemaFormColumnList = (): ProFormColumnsType<SysPayConfigurationInsertOrU
             dataIndex: 'type',
             valueType: 'select',
             fieldProps: {
+                allowClear: true,
                 showSearch: true,
             },
             formItemProps: {

@@ -3,16 +3,6 @@ import MyOrderDTO from "@/model/dto/MyOrderDTO";
 import $http from "@/util/HttpUtil";
 import {AxiosRequestConfig} from "axios";
 
-export interface DictStringVO {
-    name?: string // 显示用
-    id?: string // 传值用
-}
-
-// 下拉列表-开户行名称
-export function SysUserBankCardDictListOpenBankName(config?: AxiosRequestConfig) {
-    return $http.myProPagePost<DictStringVO>('/sys/userBankCard/dictList/openBankName', undefined, config)
-}
-
 export interface NotNullLong {
     value?: string // 值，required：true，format：int64
 }
@@ -37,27 +27,9 @@ export interface SysUserBankCardDO {
     enableFlag?: boolean // 是否启用
 }
 
-// 通过主键id，查看详情
-export function SysUserBankCardInfoById(form: NotNullLong, config?: AxiosRequestConfig) {
-    return $http.myProPost<SysUserBankCardDO>('/sys/userBankCard/infoById', form, config)
-}
-
-// 通过主键id，查看详情-用户
-export function SysUserBankCardInfoByIdUserSelf(config?: AxiosRequestConfig) {
-    return $http.myProPost<SysUserBankCardDO>('/sys/userBankCard/infoById/userSelf', undefined, config)
-}
-
-export interface SysUserBankCardInsertOrUpdateUserSelfDTO {
-    payeeName?: string // 收款人姓名，required：true
-    bankCardNo?: string // 卡号，正则表达式：^(\d{16}|\d{19}|\d{17})$，required：true
-    tenantId?: string // 租户主键 id，format：int64
-    branchBankName?: string // 支行，required：true
-    openBankName?: string // 开户行，required：true
-}
-
-// 新增/修改-用户
-export function SysUserBankCardInsertOrUpdateUserSelf(form: SysUserBankCardInsertOrUpdateUserSelfDTO, config?: AxiosRequestConfig) {
-    return $http.myPost<string>('/sys/userBankCard/insertOrUpdate/userSelf', form, config)
+// 通过租户主键id，查看详情
+export function SysTenantBankCardInfoById(form: NotNullLong, config?: AxiosRequestConfig) {
+    return $http.myProPost<SysUserBankCardDO>('/sys/tenantBankCard/infoById', form, config)
 }
 
 export interface SysUserBankCardPageDTO {
@@ -73,7 +45,25 @@ export interface SysUserBankCardPageDTO {
     openBankName?: string // 开户行
 }
 
+// 查询：树结构
+export function SysTenantBankCardTree(form: SysUserBankCardPageDTO, config?: AxiosRequestConfig) {
+    return $http.myProTreePost<SysUserBankCardDO>('/sys/tenantBankCard/tree', form, config)
+}
+
 // 分页排序查询
-export function SysUserBankCardPage(form: SysUserBankCardPageDTO, config?: AxiosRequestConfig) {
-    return $http.myProPagePost<SysUserBankCardDO>('/sys/userBankCard/page', form, config)
+export function SysTenantBankCardPage(form: SysUserBankCardPageDTO, config?: AxiosRequestConfig) {
+    return $http.myProPagePost<SysUserBankCardDO>('/sys/tenantBankCard/page', form, config)
+}
+
+export interface SysUserBankCardInsertOrUpdateUserSelfDTO {
+    payeeName?: string // 收款人姓名，required：true
+    bankCardNo?: string // 卡号，正则表达式：^(\d{16}|\d{19}|\d{17})$，required：true
+    tenantId?: string // 租户主键 id，format：int64
+    branchBankName?: string // 支行，required：true
+    openBankName?: string // 开户行，required：true
+}
+
+// 新增/修改-租户
+export function SysTenantBankCardInsertOrUpdateTenant(form: SysUserBankCardInsertOrUpdateUserSelfDTO, config?: AxiosRequestConfig) {
+    return $http.myPost<string>('/sys/tenantBankCard/insertOrUpdate/tenant', form, config)
 }

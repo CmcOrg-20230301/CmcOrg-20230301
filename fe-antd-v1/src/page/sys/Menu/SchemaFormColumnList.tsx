@@ -164,6 +164,7 @@ const SchemaFormColumnList = (): ProFormColumnsType<SysMenuInsertOrUpdateDTO>[] 
             dataIndex: 'roleIdSet',
             valueType: 'select',
             fieldProps: {
+                allowClear: true,
                 showSearch: true,
                 mode: 'multiple',
                 maxTagCount: 'responsive',

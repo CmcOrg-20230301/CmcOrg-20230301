@@ -126,6 +126,7 @@ const TableColumnList = (): ProColumns<SysRequestDO>[] => [
             return DoGetDictList(SysUserDictList({addAdminFlag: true}))
         },
         fieldProps: {
+            allowClear: true,
             showSearch: true,
         },
     },
@@ -134,7 +135,11 @@ const TableColumnList = (): ProColumns<SysRequestDO>[] => [
         title: '请求类别', dataIndex: 'category', ellipsis: true, width: 90, valueType: 'select',
         request: () => {
             return GetDictListByKey('sys_request_category')
-        }
+        },
+        fieldProps: {
+            allowClear: true,
+            showSearch: true,
+        },
     },
 
     {title: 'ip', dataIndex: 'ip', ellipsis: true, width: 90,},

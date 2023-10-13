@@ -129,6 +129,7 @@ const SchemaFormColumnList = (formRef: React.MutableRefObject<FormInstance<SysUs
             dataIndex: 'roleIdSet',
             valueType: 'select',
             fieldProps: {
+                allowClear: true,
                 showSearch: true,
                 mode: 'multiple',
                 maxTagCount: 'responsive',

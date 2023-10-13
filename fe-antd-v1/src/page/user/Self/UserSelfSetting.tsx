@@ -17,7 +17,14 @@ import {useAppSelector} from "@/store";
 import {List, Modal} from "antd";
 import {Validate} from "@/util/ValidatorUtil";
 import {ExecConfirm, ToastSuccess} from "@/util/ToastUtil";
-import {ModalForm, ProFormCaptcha, ProFormInstance, ProFormText, ProTable} from "@ant-design/pro-components";
+import {
+    ColumnsState,
+    ModalForm,
+    ProFormCaptcha,
+    ProFormInstance,
+    ProFormText,
+    ProTable
+} from "@ant-design/pro-components";
 import CommonConstant from "@/model/constant/CommonConstant";
 import {SignOut} from "@/util/UserUtil";
 import {USER_CENTER_KEY_TWO} from "@/page/user/Self/Self";
@@ -656,6 +663,8 @@ export function UserSelfDeleteByCodeModalForm() {
 // 登录记录
 function RequestSelfLoginRecordModal() {
 
+    const [columnsStateMap, setColumnsStateMap] = useState<Record<string, ColumnsState>>();
+
     const [open, setOpen] = useState(false);
 
     const [fullScreenFlag, setFullScreenFlag] = useState<boolean>(false)
@@ -693,6 +702,11 @@ function RequestSelfLoginRecordModal() {
                     rowKey={"id"}
 
                     columnEmptyText={false}
+
+                    columnsState={{
+                        value: columnsStateMap,
+                        onChange: setColumnsStateMap,
+                    }}
 
                     revalidateOnFocus={false}
 
@@ -737,6 +751,7 @@ function RequestSelfLoginRecordModal() {
                             width: 120,
                             ellipsis: true,
                             fieldProps: {
+                                allowClear: true,
                                 showSearch: true,
                             },
                             request: () => {

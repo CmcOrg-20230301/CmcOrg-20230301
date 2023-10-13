@@ -47,6 +47,7 @@ const SchemaFormColumnList = (): ProFormColumnsType<SysRoleInsertOrUpdateDTO>[] 
             dataIndex: 'userIdSet',
             valueType: 'select',
             fieldProps: {
+                allowClear: true,
                 showSearch: true,
                 mode: 'multiple',
                 maxTagCount: 'responsive',
