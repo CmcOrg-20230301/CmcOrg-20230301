@@ -80,10 +80,6 @@
             </foreach>
         </if>
 
-        GROUP BY
-
-        a.id
-
     </select>
 
 </mapper>

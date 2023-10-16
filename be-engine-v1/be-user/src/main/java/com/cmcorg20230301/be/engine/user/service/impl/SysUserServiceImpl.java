@@ -197,33 +197,6 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserProMapper, SysUserDO>
 
         }
 
-        // 排序
-        if (dto.orderEmpty() == false) {
-
-            if ("lastActiveTime".equals(dto.getOrder().getName())) {
-
-                List<SysUserPageVO> sysUserPageVOList;
-
-                if ("descend".equals(dto.getOrder().getValue())) { // 降序
-
-                    sysUserPageVOList = page.getRecords().stream()
-                        .sorted(Comparator.comparing(SysUserPageVO::getLastActiveTime, Comparator.reverseOrder()))
-                        .collect(Collectors.toList());
-
-                } else { // 升序
-
-                    sysUserPageVOList =
-                        page.getRecords().stream().sorted(Comparator.comparing(SysUserPageVO::getLastActiveTime))
-                            .collect(Collectors.toList());
-
-                }
-
-                page.setRecords(sysUserPageVOList);
-
-            }
-
-        }
-
         return page;
 
     }
