@@ -1,0 +1,9 @@
+spring:
+  kafka:
+    bootstrap-servers: ${be.common.host}:9091
+    consumer:
+      enable-auto-commit: false # 为了：ack-mode: manual_immediate，设置为 true，则 ack-mode不会生效
+      auto-offset-reset: earliest # 当各分区下有已提交的offset时，从提交的offset开始消费；无提交的offset时，从头开始消费
+      fetch-max-wait: 500 # 消费者拉取消息的延迟（ms），默认 500
+    listener:
+      ack-mode: manual_immediate # 手动调用 Acknowledgment.acknowledge() 后立即提交

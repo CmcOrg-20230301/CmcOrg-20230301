@@ -1,0 +1,61 @@
+be:
+  mysql:
+    connect-param: characterEncoding=utf-8&useUnicode=true&useSSL=false&serverTimezone=Asia/Shanghai&allowMultiQueries=true&rewriteBatchedStatements=true&allowPublicKeyRetrieval=true
+
+    # mybatis-plus:
+    # configuration:
+    # log-impl: org.apache.ibatis.logging.stdout.StdOutImpl # 按环境进行修改：直接注释掉
+
+spring:
+
+  datasource:
+    dynamic:
+      primary: master # 默认数据源名称，备注：如果不指定值，则值为：master，并且这里会在代码里面注入 master的数据源：shardingJdbc
+        # datasource:
+        # be-doris-v1: # 备注：不要使用下划线，因为下划线会进行分组
+        # driver-class-name: com.mysql.cj.jdbc.Driver
+        # url: jdbc:mysql://${be.common.doris-host}:9031/be_doris_v1?${be.mysql.connect-param}
+        # username: ${be.common.username}
+      # password: ${be.common.doris-password}
+
+  shardingsphere:
+    # props:
+    # sql-show: true # 按环境进行修改：直接注释掉
+    mode:
+      type: Standalone
+      repository:
+        type: JDBC
+    datasource:
+      names: be-engine-v1
+      be-engine-v1:
+        type: com.zaxxer.hikari.HikariDataSource
+        driver-class-name: com.mysql.cj.jdbc.Driver
+        jdbc-url: jdbc:mysql://${be.common.host}:3001/be_engine_v1?${be.mysql.connect-param}
+        username: ${be.common.username}
+        password: ${be.common.password}
+    rules:
+      sharding:
+        binding-tables:
+          - sys_user,sys_user_info
+        sharding-algorithms:
+          sys-user-inline:
+            props:
+              algorithm-expression: sys_user_$->{id % 2}
+            type: INLINE
+          sys-user-info-inline:
+            props:
+              algorithm-expression: sys_user_info_$->{id % 2}
+            type: INLINE
+        tables:
+          sys_user:
+            actual-data-nodes: be-engine-v1.sys_user_$->{0..1}
+            table-strategy:
+              standard:
+                sharding-algorithm-name: sys-user-inline
+                sharding-column: id
+          sys_user_info:
+            actual-data-nodes: be-engine-v1.sys_user_info_$->{0..1}
+            table-strategy:
+              standard:
+                sharding-algorithm-name: sys-user-info-inline
+                sharding-column: id

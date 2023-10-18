@@ -1,0 +1,45 @@
+be:
+  common:
+    host: 43.154.37.130 # 按环境进行修改
+    username:  # 按环境进行修改
+    password:  # 按环境进行修改
+    domain: cmcopen.top # 按环境进行修改
+    doris-host: 81.69.58.190 # 按环境进行修改
+    doris-password:  # 按环境进行修改
+
+springdoc:
+  swagger-ui:
+    enabled: true # 按环境进行修改：false
+  api-docs:
+    enabled: true # 按环境进行修改：false
+
+spring:
+
+  cloud:
+    config: # 让本地配置覆盖 nacos的配置
+      override-none: true
+      allow-override: true
+      override-system-properties: false
+
+  profiles:
+    active: dev # 按环境进行修改：prod
+
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: GMT+8
+
+  servlet:
+    multipart: # 配置文件上传大小限制
+      max-file-size: 100MB
+      max-request-size: 100MB
+
+  mvc:
+    hiddenmethod:
+      filter:
+        enabled: true # 解决文件上传报错
+
+management:
+  server:
+    port: -1 # 关闭监控
+  endpoints:
+    enabled-by-default: false # 关闭监控

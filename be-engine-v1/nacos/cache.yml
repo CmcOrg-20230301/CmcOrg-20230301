@@ -1,0 +1,3 @@
+be:
+  cache:
+    database-name: be_engine_v1 # 需要缓存的数据库名

@@ -1,0 +1,17 @@
+be:
+  file: # 文件系统
+    avatar-storage-type: 201 # 头像存放位置：101 阿里云 201 minio
+    aliyun:
+      access-key:
+      secret-key:
+      upload-endpoint:
+      public-download-endpoint:
+      bucket-public-name: be-public-bucket
+      bucket-private-name: be-private-bucket
+    minio:
+      access-key:
+      secret-key:
+      upload-endpoint: http://${be.common.host}:9000
+      public-download-endpoint: https://${be.common.domain}
+      bucket-public-name: be-public-bucket
+      bucket-private-name: be-private-bucket

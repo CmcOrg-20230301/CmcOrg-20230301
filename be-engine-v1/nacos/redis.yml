@@ -1,0 +1,5 @@
+spring:
+  redis:
+    host: ${be.common.host}
+    password: ${be.common.password}
+    port: 6001

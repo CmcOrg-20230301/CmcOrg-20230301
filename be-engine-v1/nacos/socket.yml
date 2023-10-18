@@ -1,0 +1,6 @@
+be:
+  socket:
+    web-socket:
+      path: /ws # 备注：以 / 开头
+      scheme: wss://
+      host: cmcopen.top

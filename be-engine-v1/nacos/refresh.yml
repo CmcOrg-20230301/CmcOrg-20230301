@@ -1,0 +1,17 @@
+# 备注：不管怎么配置，都可以实时刷新
+be:
+  security:
+    admin-enable: true # 按环境进行修改：false
+    admin-nickname: 系统管理员 # admin
+    admin-password: 89750f4648ab240704529a1504ac8bbb4c85abd9b88522cef992eee8eb2304b2 # 明文：suancai
+  log:
+    log-topic-set:
+      - be.normal # 没有指定 loggerName 的日志
+      #- be.canal # canal相关
+      #- be.cache # 缓存相关
+      #- be.cache-redis-kafka-local # redis-kafka-local缓存相关
+      #- be.cache-local # 本地缓存相关
+      #- be.user # 用户相关
+      #- be.request # 请求相关
+      #- be.netty-web-socket # netty-web-socket相关
+      #- be.socket # socket相关

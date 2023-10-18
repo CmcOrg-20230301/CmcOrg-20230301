@@ -1,0 +1,6 @@
+be:
+  milvus:
+    host: ${be.common.host}
+    port: 19531
+    username: ${be.common.username}
+    password: ${be.common.password}
