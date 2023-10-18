@@ -1,5 +1,6 @@
 package com.cmcorg20230301.be.engine.wallet.configuration;
 
+import com.baomidou.mybatisplus.extension.toolkit.ChainWrappers;
 import com.cmcorg20230301.be.engine.security.model.configuration.IUserSignConfiguration;
 import com.cmcorg20230301.be.engine.wallet.mapper.SysUserWalletMapper;
 import com.cmcorg20230301.be.engine.wallet.model.entity.SysUserWalletDO;
@@ -39,7 +40,7 @@ public class SysUserWalletUserSignConfiguration implements IUserSignConfiguratio
     @Override
     public void delete(Set<Long> userIdSet) {
 
-        // nothing
+        ChainWrappers.lambdaUpdateChain(sysUserWalletMapper).in(SysUserWalletDO::getId, userIdSet).remove();
 
     }
 
