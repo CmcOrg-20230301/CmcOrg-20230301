@@ -2,12 +2,14 @@ package com.cmcorg20230301.be.engine.wallet.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.cmcorg20230301.be.engine.model.model.constant.LogTopicConstant;
 import com.cmcorg20230301.be.engine.security.model.entity.BaseEntityNoId;
 import com.cmcorg20230301.be.engine.security.model.entity.BaseEntityNoIdFather;
+import com.cmcorg20230301.be.engine.security.util.MyThreadUtil;
 import com.cmcorg20230301.be.engine.security.util.SysTenantUtil;
 import com.cmcorg20230301.be.engine.security.util.UserUtil;
 import com.cmcorg20230301.be.engine.wallet.mapper.SysUserWalletLogMapper;
@@ -20,6 +22,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PreDestroy;
+import java.util.Date;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 @Service
@@ -51,8 +54,13 @@ public class SysUserWalletLogServiceImpl extends ServiceImpl<SysUserWalletLogMap
 
         log.info("保存用户钱包操作日志，长度：{}", tempSysUserWalletLogDoList.size());
 
-        // 批量保存数据
-        saveBatch(tempSysUserWalletLogDoList);
+        // 目的：防止还有程序往：tempList，里面添加数据，所以这里等待一会
+        MyThreadUtil.schedule(() -> {
+
+            // 批量保存数据
+            saveBatch(tempSysUserWalletLogDoList);
+
+        }, DateUtil.offsetSecond(new Date(), 2));
 
     }
 

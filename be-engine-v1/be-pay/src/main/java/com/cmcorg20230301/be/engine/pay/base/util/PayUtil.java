@@ -25,6 +25,7 @@ import com.cmcorg20230301.be.engine.redisson.util.RedissonUtil;
 import com.cmcorg20230301.be.engine.security.model.entity.BaseEntityNoIdFather;
 import com.cmcorg20230301.be.engine.security.model.vo.ApiResultVO;
 import com.cmcorg20230301.be.engine.security.util.MyEntityUtil;
+import com.cmcorg20230301.be.engine.security.util.MyThreadUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -93,8 +94,13 @@ public class PayUtil {
 
         log.info("保存支付数据，长度：{}", tempSysPayDOList.size());
 
-        // 批量保存数据
-        sysPayService.updateBatchById(tempSysPayDOList);
+        // 目的：防止还有程序往：tempList，里面添加数据，所以这里等待一会
+        MyThreadUtil.schedule(() -> {
+
+            // 批量保存数据
+            sysPayService.updateBatchById(tempSysPayDOList);
+
+        }, DateUtil.offsetSecond(new Date(), 2));
 
     }
 

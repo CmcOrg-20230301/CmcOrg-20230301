@@ -2,6 +2,7 @@ package com.cmcorg20230301.be.engine.security.util;
 
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.convert.Convert;
+import cn.hutool.core.date.DateUtil;
 import com.cmcorg20230301.be.engine.model.model.constant.LogTopicConstant;
 import com.cmcorg20230301.be.engine.security.model.constant.SecurityConstant;
 import com.cmcorg20230301.be.engine.security.model.entity.SysRequestDO;
@@ -18,6 +19,7 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 import javax.annotation.PreDestroy;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import java.util.Date;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 @Component
@@ -64,8 +66,13 @@ public class RequestUtil {
 
         log.info("保存请求数据，长度：{}", tempSysRequestDOList.size());
 
-        // 批量保存数据
-        baseSysRequestService.saveBatch(tempSysRequestDOList);
+        // 目的：防止还有程序往：tempList，里面添加数据，所以这里等待一会
+        MyThreadUtil.schedule(() -> {
+
+            // 批量保存数据
+            baseSysRequestService.saveBatch(tempSysRequestDOList);
+
+        }, DateUtil.offsetSecond(new Date(), 2));
 
     }
 

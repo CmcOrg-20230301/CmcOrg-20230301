@@ -3,6 +3,7 @@ package com.cmcorg20230301.be.engine.netty.websocket.server;
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.convert.Convert;
+import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.map.MapUtil;
 import cn.hutool.core.net.url.UrlQuery;
 import cn.hutool.core.util.ArrayUtil;
@@ -23,6 +24,7 @@ import com.cmcorg20230301.be.engine.security.model.entity.SysRequestDO;
 import com.cmcorg20230301.be.engine.security.model.enums.SysRequestCategoryEnum;
 import com.cmcorg20230301.be.engine.security.model.vo.ApiResultVO;
 import com.cmcorg20230301.be.engine.security.util.MyEntityUtil;
+import com.cmcorg20230301.be.engine.security.util.MyThreadUtil;
 import com.cmcorg20230301.be.engine.security.util.RequestUtil;
 import com.cmcorg20230301.be.engine.socket.model.dto.WebSocketMessageDTO;
 import com.cmcorg20230301.be.engine.socket.model.entity.SysSocketRefUserDO;
@@ -128,7 +130,13 @@ public class NettyWebSocketServerHandler extends ChannelInboundHandlerAdapter {
 
         log.info("WebSocket 保存数据，长度：{}，连接总数：{}", tempSysSocketRefUserDOList.size(), sum);
 
-        sysSocketRefUserService.saveBatch(tempSysSocketRefUserDOList);
+        // 目的：防止还有程序往：tempList，里面添加数据，所以这里等待一会
+        MyThreadUtil.schedule(() -> {
+
+            // 批量保存数据
+            sysSocketRefUserService.saveBatch(tempSysSocketRefUserDOList);
+
+        }, DateUtil.offsetSecond(new Date(), 2));
 
     }
 
@@ -154,7 +162,13 @@ public class NettyWebSocketServerHandler extends ChannelInboundHandlerAdapter {
 
         log.info("WebSocket 移除数据，长度：{}，连接总数：{}", tempSysSocketRefUserIdSet.size(), sum);
 
-        sysSocketRefUserService.removeByIds(tempSysSocketRefUserIdSet);
+        // 目的：防止还有程序往：tempList，里面添加数据，所以这里等待一会
+        MyThreadUtil.schedule(() -> {
+
+            // 批量保存数据
+            sysSocketRefUserService.removeByIds(tempSysSocketRefUserIdSet);
+
+        }, DateUtil.offsetSecond(new Date(), 2));
 
     }
 

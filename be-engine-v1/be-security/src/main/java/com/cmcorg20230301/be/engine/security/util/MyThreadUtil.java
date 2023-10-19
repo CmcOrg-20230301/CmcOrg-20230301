@@ -5,6 +5,7 @@ import org.springframework.scheduling.TaskScheduler;
 import org.springframework.scheduling.Trigger;
 import org.springframework.stereotype.Component;
 
+import java.time.Instant;
 import java.util.Date;
 import java.util.concurrent.ScheduledFuture;
 
@@ -46,7 +47,20 @@ public class MyThreadUtil {
      * 提交任务调度请求
      * 注意任务只执行一次，使用 startTime指定其启动时间
      *
-     * @param runnable      待执行任务
+     * @param runnable  待执行任务
+     * @param startTime 任务启动时间
+     */
+    public static ScheduledFuture<?> schedule(Runnable runnable, Instant startTime) {
+
+        return taskScheduler.schedule(runnable, startTime);
+
+    }
+
+    /**
+     * 提交任务调度请求
+     * 注意任务只执行一次，使用 startTime指定其启动时间
+     *
+     * @param runnable  待执行任务
      * @param startTime 任务启动时间
      */
     public static ScheduledFuture<?> schedule(Runnable runnable, Date startTime) {
@@ -59,7 +73,7 @@ public class MyThreadUtil {
      * 使用 fixedRate的方式提交任务调度请求
      * 任务首次启动时间由传入参数指定
      *
-     * @param runnable      待执行的任务
+     * @param runnable  待执行的任务
      * @param startTime 任务启动时间
      * @param period    两次任务启动时间之间的间隔时间，默认单位是毫秒
      */
@@ -73,8 +87,8 @@ public class MyThreadUtil {
      * 使用 fixedRate的方式提交任务调度请求
      * 任务首次启动时间未设置，任务池将会尽可能早的启动任务
      *
-     * @param runnable   待执行任务
-     * @param period 两次任务启动时间之间的间隔时间，默认单位是毫秒
+     * @param runnable 待执行任务
+     * @param period   两次任务启动时间之间的间隔时间，默认单位是毫秒
      */
     public static ScheduledFuture<?> scheduleAtFixedRate(Runnable runnable, long period) {
 
@@ -86,7 +100,7 @@ public class MyThreadUtil {
      * 使用 fixedDelay的方式提交任务调度请求
      * 任务首次启动时间由传入参数指定
      *
-     * @param runnable      待执行的任务
+     * @param runnable  待执行的任务
      * @param startTime 任务启动时间
      * @param period    两次任务启动时间之间的间隔时间，默认单位是毫秒
      */
@@ -100,8 +114,8 @@ public class MyThreadUtil {
      * 使用 fixedDelay的方式提交任务调度请求
      * 任务首次启动时间未设置，任务池将会尽可能早的启动任务
      *
-     * @param runnable   待执行任务
-     * @param period 两次任务启动时间之间的间隔时间，默认单位是毫秒
+     * @param runnable 待执行任务
+     * @param period   两次任务启动时间之间的间隔时间，默认单位是毫秒
      */
     public static ScheduledFuture<?> scheduleWithFixedDelay(Runnable runnable, long period) {
 
