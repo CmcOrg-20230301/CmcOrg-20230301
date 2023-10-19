@@ -13,7 +13,6 @@ import com.cmcorg20230301.be.engine.security.model.entity.SysTenantDO;
 import com.cmcorg20230301.be.engine.security.util.MyTreeUtil;
 import com.cmcorg20230301.be.engine.security.util.SysTenantUtil;
 import com.cmcorg20230301.be.engine.security.util.UserUtil;
-import com.cmcorg20230301.be.engine.tenant.service.SysTenantService;
 import com.cmcorg20230301.be.engine.wallet.model.dto.SysUserWalletPageDTO;
 import com.cmcorg20230301.be.engine.wallet.model.entity.SysUserWalletDO;
 import com.cmcorg20230301.be.engine.wallet.model.enums.SysUserWalletLogTypeEnum;
@@ -32,9 +31,6 @@ public class SysTenantWalletServiceImpl implements SysTenantWalletService {
 
     @Resource
     SysUserWalletService sysUserWalletService;
-
-    @Resource
-    SysTenantService sysTenantService;
 
     /**
      * 批量冻结

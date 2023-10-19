@@ -20,6 +20,20 @@ public class SysUserWalletUserSignConfiguration implements IUserSignConfiguratio
     @Override
     public Object signUp(@NotNull Long userId, @NotNull Long tenantId) {
 
+        SysUserWalletDO sysUserWalletDO = getInitSysUserWalletDO(userId, tenantId);
+
+        sysUserWalletMapper.insert(sysUserWalletDO);
+
+        return sysUserWalletDO;
+
+    }
+
+    /**
+     * 获取：一个初始的 SysUserWalletDO对象
+     */
+    @NotNull
+    public static SysUserWalletDO getInitSysUserWalletDO(@NotNull Long userId, @NotNull Long tenantId) {
+
         SysUserWalletDO sysUserWalletDO = new SysUserWalletDO();
 
         sysUserWalletDO.setId(userId);
@@ -30,8 +44,6 @@ public class SysUserWalletUserSignConfiguration implements IUserSignConfiguratio
         sysUserWalletDO.setDelFlag(false);
         sysUserWalletDO.setRemark("");
         sysUserWalletDO.setTenantId(tenantId);
-
-        sysUserWalletMapper.insert(sysUserWalletDO);
 
         return sysUserWalletDO;
 

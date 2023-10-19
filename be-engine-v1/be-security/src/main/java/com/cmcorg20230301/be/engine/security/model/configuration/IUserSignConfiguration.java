@@ -12,6 +12,8 @@ public interface IUserSignConfiguration {
     /**
      * 用户新增时，额外的操作
      * 用于：添加额外的用户数据
+     *
+     * @return 可以返回 null
      */
     Object signUp(@NotNull Long userId, @NotNull Long tenantId);
 
