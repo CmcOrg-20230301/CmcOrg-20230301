@@ -1059,9 +1059,9 @@ public class SignUtil {
 
         TransactionUtil.exec(() -> {
 
-            sysUserMapper.deleteBatchIds(userIdSet); // 直接：删除用户
-
             doSignDeleteSub(userIdSet, true); // 删除子表数据
+
+            sysUserMapper.deleteBatchIds(userIdSet); // 直接：删除用户
 
             // 删除：用户的文件
             SysFileUtil.removeByFileIdSet(fileIdSet, false);
@@ -1088,9 +1088,6 @@ public class SignUtil {
 
             if (deleteFlag) {
 
-                // 直接：删除用户基本信息
-                ChainWrappers.lambdaUpdateChain(sysUserInfoMapper).in(SysUserInfoDO::getId, idSet).remove();
-
                 if (CollUtil.isNotEmpty(iUserSignConfigurationList) && CollUtil.isNotEmpty(idSet)) {
 
                     for (IUserSignConfiguration item : iUserSignConfigurationList) {
@@ -1100,6 +1097,9 @@ public class SignUtil {
                     }
 
                 }
+
+                // 直接：删除用户基本信息
+                ChainWrappers.lambdaUpdateChain(sysUserInfoMapper).in(SysUserInfoDO::getId, idSet).remove();
 
             }
 
