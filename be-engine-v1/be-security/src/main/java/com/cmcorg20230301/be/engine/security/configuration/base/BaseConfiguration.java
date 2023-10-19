@@ -69,9 +69,9 @@ public class BaseConfiguration {
 
         ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
         // 设置核心线程数
-        executor.setCorePoolSize(availableProcessors);
+        executor.setCorePoolSize(availableProcessors * 10);
         // 设置最大线程数
-        executor.setMaxPoolSize(availableProcessors * 10);
+        executor.setMaxPoolSize(availableProcessors * 100);
         // 设置队列容量
         executor.setQueueCapacity(availableProcessors * 100);
         // 设置核心线程之外的线程，在空闲多久之后会被销毁的时间
@@ -95,7 +95,7 @@ public class BaseConfiguration {
 
         ThreadPoolTaskScheduler scheduler = new ThreadPoolTaskScheduler();
         // 设置核心线程数
-        scheduler.setPoolSize(availableProcessors);
+        scheduler.setPoolSize(availableProcessors * 10);
         // 设置：线程名前缀
         scheduler.setThreadNamePrefix("taskScheduler-");
         // 设置：线程池通用属性
