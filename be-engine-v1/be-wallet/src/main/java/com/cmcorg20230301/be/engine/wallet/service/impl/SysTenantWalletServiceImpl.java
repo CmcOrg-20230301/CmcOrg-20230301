@@ -39,7 +39,7 @@ public class SysTenantWalletServiceImpl implements SysTenantWalletService {
     public String frozenByIdSet(NotEmptyIdSet notEmptyIdSet) {
 
         // 改变：钱包冻结状态
-        return sysUserWalletService.changeEnableFlag(notEmptyIdSet, false);
+        return sysUserWalletService.changeEnableFlag(notEmptyIdSet, false, true);
 
     }
 
@@ -50,7 +50,7 @@ public class SysTenantWalletServiceImpl implements SysTenantWalletService {
     public String thawByIdSet(NotEmptyIdSet notEmptyIdSet) {
 
         // 改变：钱包冻结状态
-        return sysUserWalletService.changeEnableFlag(notEmptyIdSet, true);
+        return sysUserWalletService.changeEnableFlag(notEmptyIdSet, true, true);
 
     }
 

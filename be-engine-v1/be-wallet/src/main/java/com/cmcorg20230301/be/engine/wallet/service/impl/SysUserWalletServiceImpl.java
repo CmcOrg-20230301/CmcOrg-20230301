@@ -53,7 +53,7 @@ public class SysUserWalletServiceImpl extends ServiceImpl<SysUserWalletMapper, S
         notEmptyIdSet.getIdSet().remove(BaseConstant.TENANT_USER_ID);
 
         // 改变：钱包冻结状态
-        return changeEnableFlag(notEmptyIdSet, false);
+        return changeEnableFlag(notEmptyIdSet, false, false);
 
     }
 
@@ -61,7 +61,7 @@ public class SysUserWalletServiceImpl extends ServiceImpl<SysUserWalletMapper, S
      * 改变：钱包冻结状态
      */
     @Override
-    public String changeEnableFlag(NotEmptyIdSet notEmptyIdSet, boolean enableFlag) {
+    public String changeEnableFlag(NotEmptyIdSet notEmptyIdSet, boolean enableFlag, boolean tenantFlag) {
 
         Set<Long> idSet = notEmptyIdSet.getIdSet();
 
@@ -69,13 +69,24 @@ public class SysUserWalletServiceImpl extends ServiceImpl<SysUserWalletMapper, S
             return BaseBizCodeEnum.OK;
         }
 
-        // 检查：是否非法操作
-        SysTenantUtil.checkIllegal(idSet, getCheckIllegalFunc1(idSet));
+        if (tenantFlag) {
+
+            // 检查：是否是属于自己的租户
+            SysTenantUtil.handleDtoTenantIdSet(false, idSet);
+
+        } else {
+
+            // 检查：是否非法操作
+            SysTenantUtil.checkIllegal(idSet, getCheckIllegalFunc1(idSet));
+
+        }
 
         return RedissonUtil.doMultiLock(BaseRedisKeyEnum.PRE_USER_WALLET.name(), idSet, () -> {
 
-            lambdaUpdate().in(SysUserWalletDO::getId, notEmptyIdSet.getIdSet())
-                .set(BaseEntityNoId::getEnableFlag, enableFlag).update();
+            lambdaUpdate().in(!tenantFlag, SysUserWalletDO::getId, notEmptyIdSet.getIdSet())
+                .eq(tenantFlag, SysUserWalletDO::getId, BaseConstant.TENANT_USER_ID)
+                .in(tenantFlag, SysUserWalletDO::getTenantId, idSet).set(BaseEntityNoId::getEnableFlag, enableFlag)
+                .update();
 
             return BaseBizCodeEnum.OK;
 
@@ -92,7 +103,7 @@ public class SysUserWalletServiceImpl extends ServiceImpl<SysUserWalletMapper, S
         notEmptyIdSet.getIdSet().remove(BaseConstant.TENANT_USER_ID);
 
         // 改变：钱包冻结状态
-        return changeEnableFlag(notEmptyIdSet, true);
+        return changeEnableFlag(notEmptyIdSet, true, false);
 
     }
 

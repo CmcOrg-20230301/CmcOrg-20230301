@@ -270,6 +270,7 @@ public class SysTenantUtil {
 
             if (onlySelfTenantIdFlag) {
 
+                // 设置为：当前用户的租户
                 tenantIdSet = CollUtil.newHashSet(UserUtil.getCurrentTenantIdDefault());
 
             } else {
