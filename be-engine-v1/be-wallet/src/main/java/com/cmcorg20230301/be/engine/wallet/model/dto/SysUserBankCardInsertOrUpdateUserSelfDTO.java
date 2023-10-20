@@ -13,11 +13,8 @@ import javax.validation.constraints.Pattern;
 @Data
 public class SysUserBankCardInsertOrUpdateUserSelfDTO {
 
-    /**
-     * 可以为 null
-     */
     @Min(0)
-    @Schema(description = "租户主键 id")
+    @Schema(description = "租户主键 id，可以为 null")
     private Long tenantId;
 
     @NotBlank

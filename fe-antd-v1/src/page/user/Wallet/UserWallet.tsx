@@ -37,12 +37,13 @@ import {DoGetDictList, IEnum} from "@/util/DictUtil";
 import {
     SysUserBankCardDictListOpenBankName,
     SysUserBankCardDO,
+    SysUserBankCardInfoById,
     SysUserBankCardInfoByIdUserSelf,
     SysUserBankCardInsertOrUpdateUserSelf,
     SysUserBankCardInsertOrUpdateUserSelfDTO
 } from "@/api/http/SysUserBankCard";
 import {ExecConfirm, ToastError, ToastSuccess} from "@/util/ToastUtil";
-import {SysUserWalletDO, SysUserWalletInfoByIdUserSelf} from "@/api/http/SysUserWallet";
+import {SysUserWalletDO, SysUserWalletInfoById, SysUserWalletInfoByIdUserSelf} from "@/api/http/SysUserWallet";
 import CommonConstant from "@/model/constant/CommonConstant";
 import {GetTextType} from "@/util/StrUtil";
 import {PresetStatusColorType} from "antd/es/_util/colors";
@@ -163,6 +164,14 @@ export default function (props: IUserWallet) {
 
             })
 
+        } else if (props.userId) {
+
+            SysUserBankCardInfoById({value: props.userId}).then(res => {
+
+                setSysUserBankCardDO(res || {})
+
+            })
+
         } else {
 
             SysUserBankCardInfoByIdUserSelf().then(res => {
@@ -180,6 +189,18 @@ export default function (props: IUserWallet) {
         if (props.tenantId) {
 
             SysTenantWalletInfoById({value: props.tenantId}).then(res => {
+
+                setSysUserWalletDO(res)
+
+                if (showMessage) {
+                    ToastSuccess(showMessage)
+                }
+
+            })
+
+        } else if (props.userId) {
+
+            SysUserWalletInfoById({value: props.userId}).then(res => {
 
                 setSysUserWalletDO(res)
 
@@ -242,7 +263,7 @@ export default function (props: IUserWallet) {
                                             className={"f-20 fw-600"}>钱包
                                         </div>
 
-                                        <UserWalletLogModal tenantId={props.tenantId}/>
+                                        <UserWalletLogModal tenantId={props.tenantId} userId={props.userId}/>
 
                                         <a className={"m-l-20 f-14"} onClick={() => {
 
@@ -261,6 +282,7 @@ export default function (props: IUserWallet) {
                                     sysUserBankCardDO={sysUserBankCardDO}
                                     UpdateSysUserBankCardDO={UpdateSysUserBankCardDO}
                                     tenantId={props.tenantId}
+                                    userId={props.userId}
 
                                 />}
 
@@ -309,6 +331,7 @@ export default function (props: IUserWallet) {
                                                     updateSysUserWalletDO={UpdateSysUserWalletDO}
                                                     withdrawStatusDict={withdrawStatusDict}
                                                     tenantId={props.tenantId}
+                                                    userId={props.userId}
 
                                                 />
 
@@ -332,24 +355,11 @@ export default function (props: IUserWallet) {
 
                                 {
 
-                                    props.tenantId && <Button
+                                    (props.tenantId || props.userId) && <Button
 
                                         icon={<RollbackOutlined/>}
                                         onClick={() => {
-                                            GoPage(PathConstant.SYS_TENANT_WALLET_PATH)
-                                        }}
-
-                                    >返回列表</Button>
-
-                                }
-
-                                {
-
-                                    props.userId && <Button
-
-                                        icon={<RollbackOutlined/>}
-                                        onClick={() => {
-                                            GoPage(PathConstant.SYS_USER_WALLET_PATH)
+                                            GoPage(props.tenantId ? PathConstant.SYS_TENANT_WALLET_PATH : PathConstant.SYS_USER_WALLET_PATH)
                                         }}
 
                                     >返回列表</Button>
@@ -372,6 +382,7 @@ export default function (props: IUserWallet) {
                                     sysUserWalletDO={sysUserWalletDO}
                                     UpdateSysUserWalletDO={UpdateSysUserWalletDO}
                                     tenantId={props.tenantId}
+                                    userId={props.userId}
 
                                 />
 
@@ -465,7 +476,9 @@ interface IUserBankCardModal {
 
     UpdateSysUserBankCardDO: () => void
 
-    tenantId?: string
+    tenantId?: string // 租户 id，备注：如果传递了，则表示是管理租户的钱包，备注：租户 id和用户 id只会传递一个
+
+    userId?: string // 用户 id，备注：如果传递了，则表示是管理用户的钱包，备注：租户 id和用户 id只会传递一个
 
 }
 
@@ -554,6 +567,16 @@ function UserBankCardModal(props: IUserBankCardModal) {
 
                     })
 
+                } else if (props.userId) {
+
+                    SysUserBankCardInfoById({value: props.userId}).then(res => {
+
+                        currentForm.current = res as SysUserBankCardInsertOrUpdateUserSelfDTO
+
+                        formRef.current?.setFieldsValue(currentForm.current)
+
+                    })
+
                 } else {
 
                     SysUserBankCardInfoByIdUserSelf().then(res => {
@@ -591,6 +614,19 @@ function UserBankCardModal(props: IUserBankCardModal) {
 
                     })
 
+                } else if (props.userId) {
+
+                    await SysUserBankCardInsertOrUpdate({
+                        ...currentForm.current, ...form,
+                        tenantId: props.tenantId
+                    }).then(res => {
+
+                        ToastSuccess(res.msg)
+
+                        props.UpdateSysUserBankCardDO() // 更新：银行卡信息
+
+                    })
+
                 } else {
 
                     await SysUserBankCardInsertOrUpdateUserSelf({...currentForm.current, ...form}).then(res => {
@@ -615,7 +651,9 @@ function UserBankCardModal(props: IUserBankCardModal) {
 
 interface IUserWalletLogModal {
 
-    tenantId?: string // 租户 id，备注：如果传递了，则表示是管理租户的钱包
+    tenantId?: string // 租户 id，备注：如果传递了，则表示是管理租户的钱包，备注：租户 id和用户 id只会传递一个
+
+    userId?: string // 用户 id，备注：如果传递了，则表示是管理用户的钱包，备注：租户 id和用户 id只会传递一个
 
 }
 
@@ -872,7 +910,9 @@ interface IUserWalletWithdrawLogModal {
 
     withdrawStatusDict?: Map<number, ProSchemaValueEnumType>
 
-    tenantId?: string
+    tenantId?: string // 租户 id，备注：如果传递了，则表示是管理租户的钱包，备注：租户 id和用户 id只会传递一个
+
+    userId?: string // 用户 id，备注：如果传递了，则表示是管理用户的钱包，备注：租户 id和用户 id只会传递一个
 
 }
 
@@ -1167,7 +1207,9 @@ interface IUserWalletWithdrawModal {
 
     UpdateSysUserWalletDO: () => void
 
-    tenantId?: string
+    tenantId?: string // 租户 id，备注：如果传递了，则表示是管理租户的钱包，备注：租户 id和用户 id只会传递一个
+
+    userId?: string // 用户 id，备注：如果传递了，则表示是管理用户的钱包，备注：租户 id和用户 id只会传递一个
 
 }
 

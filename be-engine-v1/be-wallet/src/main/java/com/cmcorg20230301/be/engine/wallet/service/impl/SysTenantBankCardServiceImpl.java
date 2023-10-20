@@ -34,7 +34,7 @@ public class SysTenantBankCardServiceImpl implements SysTenantBankCardService {
         SysTenantUtil.checkTenantId(dto.getTenantId());
 
         // 执行
-        return sysUserBankCardService.doInsertOrUpdate(dto, true);
+        return sysUserBankCardService.doInsertOrUpdate(dto, true, null);
 
     }
 

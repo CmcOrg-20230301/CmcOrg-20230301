@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.cmcorg20230301.be.engine.model.model.dto.NotNullLong;
 import com.cmcorg20230301.be.engine.model.model.vo.DictStringVO;
 import com.cmcorg20230301.be.engine.security.model.vo.ApiResultVO;
+import com.cmcorg20230301.be.engine.wallet.model.dto.SysUserBankCardInsertOrUpdateDTO;
 import com.cmcorg20230301.be.engine.wallet.model.dto.SysUserBankCardInsertOrUpdateUserSelfDTO;
 import com.cmcorg20230301.be.engine.wallet.model.dto.SysUserBankCardPageDTO;
 import com.cmcorg20230301.be.engine.wallet.model.entity.SysUserBankCardDO;
@@ -26,6 +27,13 @@ public class SysUserBankCardController {
 
     @Resource
     SysUserBankCardService baseService;
+
+    @Operation(summary = "新增/修改")
+    @PostMapping("/insertOrUpdate")
+    @PreAuthorize("hasAuthority('sysUserBankCard:insertOrUpdate')")
+    public ApiResultVO<String> insertOrUpdate(@RequestBody @Valid SysUserBankCardInsertOrUpdateDTO dto) {
+        return ApiResultVO.okMsg(baseService.insertOrUpdate(dto));
+    }
 
     @Operation(summary = "新增/修改-用户")
     @PostMapping("/insertOrUpdate/userSelf")

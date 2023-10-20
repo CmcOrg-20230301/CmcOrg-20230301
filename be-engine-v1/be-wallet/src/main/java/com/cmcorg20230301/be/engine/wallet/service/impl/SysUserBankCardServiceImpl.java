@@ -1,18 +1,23 @@
 package com.cmcorg20230301.be.engine.wallet.service.impl;
 
+import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.DesensitizedUtil;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.baomidou.mybatisplus.extension.toolkit.ChainWrappers;
 import com.cmcorg20230301.be.engine.model.model.constant.BaseConstant;
 import com.cmcorg20230301.be.engine.model.model.dto.NotNullLong;
 import com.cmcorg20230301.be.engine.model.model.vo.DictStringVO;
 import com.cmcorg20230301.be.engine.security.exception.BaseBizCodeEnum;
+import com.cmcorg20230301.be.engine.security.mapper.SysUserMapper;
+import com.cmcorg20230301.be.engine.security.model.entity.BaseEntity;
 import com.cmcorg20230301.be.engine.security.model.entity.BaseEntityNoId;
 import com.cmcorg20230301.be.engine.security.model.entity.BaseEntityNoIdFather;
 import com.cmcorg20230301.be.engine.security.util.SysTenantUtil;
 import com.cmcorg20230301.be.engine.security.util.UserUtil;
 import com.cmcorg20230301.be.engine.wallet.mapper.SysUserBankCardMapper;
+import com.cmcorg20230301.be.engine.wallet.model.dto.SysUserBankCardInsertOrUpdateDTO;
 import com.cmcorg20230301.be.engine.wallet.model.dto.SysUserBankCardInsertOrUpdateUserSelfDTO;
 import com.cmcorg20230301.be.engine.wallet.model.dto.SysUserBankCardPageDTO;
 import com.cmcorg20230301.be.engine.wallet.model.entity.SysUserBankCardDO;
@@ -21,11 +26,37 @@ import com.cmcorg20230301.be.engine.wallet.service.SysUserBankCardService;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.Resource;
 import java.util.Set;
 
 @Service
 public class SysUserBankCardServiceImpl extends ServiceImpl<SysUserBankCardMapper, SysUserBankCardDO>
     implements SysUserBankCardService {
+
+    @Resource
+    SysUserMapper sysUserMapper;
+
+    /**
+     * 新增/修改
+     */
+    @Override
+    public String insertOrUpdate(SysUserBankCardInsertOrUpdateDTO dto) {
+
+        Long userId = dto.getId();
+
+        Set<Long> userIdSet = CollUtil.newHashSet(userId);
+
+        Set<Long> userRefTenantIdSet = SysTenantUtil.getUserRefTenantIdSet();
+
+        // 检查：是否非法操作
+        SysTenantUtil.checkIllegal(userIdSet,
+            tenantIdSet -> ChainWrappers.lambdaQueryChain(sysUserMapper).eq(BaseEntity::getId, userId)
+                .in(BaseEntityNoId::getTenantId, tenantIdSet).count());
+
+        // 执行
+        return doInsertOrUpdate(dto, false, userId);
+
+    }
 
     /**
      * 新增/修改-用户
@@ -34,7 +65,7 @@ public class SysUserBankCardServiceImpl extends ServiceImpl<SysUserBankCardMappe
     public String insertOrUpdateUserSelf(SysUserBankCardInsertOrUpdateUserSelfDTO dto) {
 
         // 执行
-        return doInsertOrUpdate(dto, false);
+        return doInsertOrUpdate(dto, false, null);
 
     }
 
@@ -42,7 +73,7 @@ public class SysUserBankCardServiceImpl extends ServiceImpl<SysUserBankCardMappe
      * 执行：新增/修改
      */
     @Override
-    public String doInsertOrUpdate(SysUserBankCardInsertOrUpdateUserSelfDTO dto, boolean tenantFlag) {
+    public String doInsertOrUpdate(SysUserBankCardInsertOrUpdateUserSelfDTO dto, boolean tenantFlag, Long userId) {
 
         Long id;
 
@@ -52,7 +83,15 @@ public class SysUserBankCardServiceImpl extends ServiceImpl<SysUserBankCardMappe
 
         } else {
 
-            id = UserUtil.getCurrentUserId();
+            if (userId == null) {
+
+                id = UserUtil.getCurrentUserId();
+
+            } else {
+
+                id = userId;
+
+            }
 
         }
 
