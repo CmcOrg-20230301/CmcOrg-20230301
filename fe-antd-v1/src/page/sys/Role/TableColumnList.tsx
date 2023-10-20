@@ -47,7 +47,8 @@ const TableColumnList = (currentForm: React.MutableRefObject<SysRoleInsertOrUpda
     {
         title: '默认角色',
         dataIndex: 'defaultFlag',
-        valueEnum: YesNoDict
+        valueEnum: YesNoDict,
+        width: 90,
     },
 
     {
@@ -55,6 +56,7 @@ const TableColumnList = (currentForm: React.MutableRefObject<SysRoleInsertOrUpda
         dataIndex: 'createTime',
         hideInSearch: true,
         valueType: 'fromNow',
+        width: 90,
     },
 
     {
@@ -62,12 +64,14 @@ const TableColumnList = (currentForm: React.MutableRefObject<SysRoleInsertOrUpda
         dataIndex: 'updateTime',
         hideInSearch: true,
         valueType: 'fromNow',
+        width: 90,
     },
 
     {
         title: '是否启用',
         dataIndex: 'enableFlag',
-        valueEnum: YesNoDict
+        valueEnum: YesNoDict,
+        width: 90,
     },
 
     {title: '备注', dataIndex: 'remark', ellipsis: true, width: 90,},
@@ -77,6 +81,7 @@ const TableColumnList = (currentForm: React.MutableRefObject<SysRoleInsertOrUpda
         title: '操作',
         dataIndex: 'option',
         valueType: 'option',
+        width: 90,
 
         render: (dom, entity) => [
 

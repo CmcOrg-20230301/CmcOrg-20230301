@@ -129,7 +129,7 @@ public class GeneratePageUtil {
     // fromNow 并且 hideInSearch
     private String adminTableJsonItemFromNowAndHideInSearch =
         "\n    {}{\n" + "        title: '{}',\n" + "        dataIndex: '{}',\n" + "        hideInSearch: true,\n"
-            + "        valueType: 'fromNow',\n" + "    },\n";
+            + "        valueType: 'fromNow',\n" + "        width: 90,\n" + "    },\n";
 
     // 最大长度为 300的文字域输入框，remark
     private String remark = "remark";

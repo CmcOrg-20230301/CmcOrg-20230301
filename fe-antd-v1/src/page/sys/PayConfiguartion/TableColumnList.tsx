@@ -80,6 +80,7 @@ const TableColumnList = (currentForm: React.MutableRefObject<SysPayConfiguration
         dataIndex: 'createTime',
         hideInSearch: true,
         valueType: 'fromNow',
+        width: 90,
     },
 
     {
@@ -87,6 +88,7 @@ const TableColumnList = (currentForm: React.MutableRefObject<SysPayConfiguration
         dataIndex: 'updateTime',
         hideInSearch: true,
         valueType: 'fromNow',
+        width: 90,
     },
 
     {title: '备注', dataIndex: 'remark', ellipsis: true, width: 200,},
@@ -96,6 +98,7 @@ const TableColumnList = (currentForm: React.MutableRefObject<SysPayConfiguration
         title: '操作',
         dataIndex: 'option',
         valueType: 'option',
+        width: 90,
 
         render: (dom, entity) => [
 

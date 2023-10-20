@@ -57,8 +57,7 @@ function goFirstPage(menuList: SysMenuDO[]) {
 
         if (item.firstFlag && item.path) {
 
-            // getAppNav()(item.path)
-            GoPage(item.path)
+            getAppNav()(item.path)
             return true
 
         }
