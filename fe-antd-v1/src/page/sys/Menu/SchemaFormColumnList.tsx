@@ -153,6 +153,14 @@ const SchemaFormColumnList = (): ProFormColumnsType<SysMenuInsertOrUpdateDTO>[] 
                             tooltip: '优先级最高',
                         },
 
+                        {
+                            title: '是否隐藏：PageContainer',
+                            dataIndex: 'hiddenPageContainerFlag',
+                            valueEnum: YesNoDict,
+                            valueType: 'switch',
+                            tooltip: '开发人员配置，一般为：false',
+                        },
+
                     ];
 
             },

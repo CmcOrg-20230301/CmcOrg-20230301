@@ -26,9 +26,45 @@ import {
     UserWalletWithdrawLogTableBaseColumnArr
 } from "@/page/user/Wallet/UserWallet";
 import {ExecConfirm, ToastSuccess} from "@/util/ToastUtil";
-import {Button, Space, Typography} from "antd";
+import {Button, Space, TreeSelect, Typography} from "antd";
 import {FormatDateTime} from "@/util/DateUtil";
 import {LoadingOutlined, ReloadOutlined} from "@ant-design/icons";
+import {DoGetDictList, GetDictList, IEnum, NoFormGetDictTreeList} from "@/util/DictUtil";
+import {SysTenantDictList} from "@/api/http/SysTenant";
+import {SearchTransform} from "@/util/CommonUtil";
+import {SysUserDictList} from "@/api/http/SysUser";
+
+export interface ISysUserWalletWithdrawTypeEnum {
+
+    USER: IEnum,
+    TENANT: IEnum,
+
+}
+
+// 用户提现类型枚举类
+export const SysUserWalletWithdrawLogTypeEnum: ISysUserWalletWithdrawTypeEnum = {
+
+    USER: {
+        code: 1,
+        name: '用户',
+    },
+
+    TENANT: {
+        code: 2,
+        name: '租户',
+    },
+
+}
+
+export const SysUserWalletWithdrawLogTypeDict = new Map<number, ProSchemaValueEnumType>();
+
+Object.keys(SysUserWalletWithdrawLogTypeEnum).forEach(key => {
+
+    const item = SysUserWalletWithdrawLogTypeEnum[key];
+
+    SysUserWalletWithdrawLogTypeDict.set(item.code as number, {text: item.name})
+
+})
 
 // 提现管理
 export default function () {
@@ -123,7 +159,70 @@ export default function () {
 
                 columns={[
 
-                    ...UserWalletWithdrawLogTableBaseColumnArr(withdrawStatusDict),
+                    ...UserWalletWithdrawLogTableBaseColumnArr(withdrawStatusDict, [
+
+                            {
+                                title: '租户',
+                                dataIndex: 'tenantId',
+                                ellipsis: true,
+                                width: 90,
+                                hideInSearch: true,
+                                valueType: 'select',
+                                request: () => {
+                                    return GetDictList(SysTenantDictList)
+                                }
+                            },
+
+                            {
+                                title: '租户',
+                                dataIndex: 'tenantIdSet',
+                                ellipsis: true,
+                                width: 90,
+                                hideInTable: true,
+                                order: 2000,
+                                valueType: 'treeSelect',
+                                fieldProps: {
+                                    placeholder: '请选择',
+                                    allowClear: true,
+                                    treeNodeFilterProp: 'title',
+                                    maxTagCount: 'responsive',
+                                    treeCheckable: true,
+                                    showCheckedStrategy: TreeSelect.SHOW_ALL,
+                                    treeCheckStrictly: true,
+                                },
+                                request: () => {
+                                    return NoFormGetDictTreeList(SysTenantDictList, true, '-1')
+                                },
+                                search: {
+                                    transform: (valueArr: { label: string, value: string }[]) =>
+                                        SearchTransform(valueArr, 'tenantIdSet')
+                                }
+                            },
+
+                            {
+                                title: '提现用户', dataIndex: 'userId', ellipsis: true, width: 90, valueType: 'select',
+                                request: () => {
+                                    return DoGetDictList(SysUserDictList({addAdminFlag: true}))
+                                },
+                                renderText: (text, record) => {
+                                    return record.userId === CommonConstant.TENANT_USER_ID ? SysUserWalletWithdrawLogTypeEnum.TENANT.name : text
+                                },
+                                fieldProps: {
+                                    allowClear: true,
+                                    showSearch: true,
+                                },
+                            },
+
+                        ]
+                    ),
+
+                    {
+                        title: '类型',
+                        dataIndex: 'type',
+                        valueEnum: SysUserWalletWithdrawLogTypeDict,
+                        width: 90,
+                        hideInTable: true,
+                    },
 
                     {
 

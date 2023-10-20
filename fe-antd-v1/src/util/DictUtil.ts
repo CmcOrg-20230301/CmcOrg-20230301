@@ -68,7 +68,7 @@ YesNoBaseDict.set(false, {text: '否'})
 export function GetByValueFromDictList(
     dictList: DictLongListVO [],
     value: string,
-    defaultValue: string = '-'
+    defaultValue: string = ''
 ) {
 
     let res: string | undefined = defaultValue

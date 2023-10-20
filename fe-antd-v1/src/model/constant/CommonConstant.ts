@@ -10,6 +10,10 @@ export default {
 
     ADD_ORDER_NO: "累加排序号",
 
+    ADD_WITHDRAWABLE_MONEY: "累加可提现",
+
+    ADD_VALUE: "累加的值",
+
     NAV_TOP_HEIGHT: 55, // 顶部导航栏高度
 
     POLLING_TIME: 20 * 1000, // 轮询时间
@@ -21,5 +25,11 @@ export default {
     MOBILE_WIDTH: 768, // 小于这个数值，就是移动端
 
     SHORT_DELAY: 100, // 短的延迟
+
+    TOOLTIP_STR_LENGTH: 600, // tooltip字符串的长度
+
+    DEFAULT_TENANT_NAME: "默认", // 默认租户名
+
+    TENANT_USER_ID: "-2", // 租户的用户 id
 
 }

@@ -6,6 +6,9 @@ import {SysTenantDictList} from "@/api/http/SysTenant";
 import {TreeSelect} from "antd";
 import {SearchTransform} from "@/util/CommonUtil";
 import {SysTenantWalletFrozenByIdSet, SysTenantWalletThawByIdSet} from "@/api/http/SysTenantWallet";
+import PathConstant from "@/model/constant/PathConstant";
+import {GoPage} from "@/layout/AdminLayout/AdminLayout";
+import {SysUserWalletWithdrawLogTypeEnum} from "@/page/sys/UserWalletWithdrawLog/UserWalletWithdrawLog";
 
 const TableColumnList = (currentForm: React.MutableRefObject<SysUserWalletDO>, actionRef: React.RefObject<ActionType | undefined>): ProColumns<SysUserWalletDO>[] => [
 
@@ -122,11 +125,22 @@ const TableColumnList = (currentForm: React.MutableRefObject<SysUserWalletDO>, a
         valueType: 'option',
         width: 90,
 
-        render: (dom, entity, index) => {
+        render: (dom, entity) => {
 
             return [
 
-                <a key="1" className={entity.enableFlag ? 'red3' : 'green2'} onClick={() => {
+                <a key="1" onClick={() => {
+
+                    GoPage(PathConstant.SYS_WALLET_MANAGE_PATH, {
+                        state: {
+                            id: entity.id,
+                            type: SysUserWalletWithdrawLogTypeEnum.TENANT.code
+                        }
+                    })
+
+                }}>管理</a>,
+
+                <a key="2" className={entity.enableFlag ? 'red3' : 'green2'} onClick={() => {
 
                     ExecConfirm(() => {
 
@@ -142,7 +156,7 @@ const TableColumnList = (currentForm: React.MutableRefObject<SysUserWalletDO>, a
 
                         })
 
-                    }, undefined, `确定${entity.enableFlag ? '冻结' : '解冻'}序号为【${index + 1}】的租户吗？`)
+                    }, undefined, `确定${entity.enableFlag ? '冻结' : '解冻'}该租户吗？`)
 
                 }}>{entity.enableFlag ? '冻结' : '解冻'}</a>,
 

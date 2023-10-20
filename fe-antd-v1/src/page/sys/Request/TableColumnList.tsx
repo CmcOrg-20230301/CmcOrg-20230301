@@ -6,6 +6,7 @@ import {TreeSelect, Typography} from "antd";
 import {ProColumns} from "@ant-design/pro-components";
 import {SysTenantDictList} from "@/api/http/SysTenant";
 import {SearchTransform} from "@/util/CommonUtil";
+import CommonConstant from "@/model/constant/CommonConstant";
 
 const TableColumnList = (): ProColumns<SysRequestDO>[] => [
 
@@ -43,7 +44,11 @@ const TableColumnList = (): ProColumns<SysRequestDO>[] => [
         }
     },
 
-    {title: 'uri', dataIndex: 'uri', ellipsis: true, width: 90, copyable: true},
+    {
+        title: 'uri', dataIndex: 'uri', ellipsis: true, width: 90, copyable: true, render: (text) => {
+            return <Typography.Text ellipsis={{tooltip: true}} style={{width: 90}}>{text}</Typography.Text>
+        }
+    },
 
     {
         title: '接口名', dataIndex: 'name', width: 90, render: (text) => {
@@ -59,8 +64,12 @@ const TableColumnList = (): ProColumns<SysRequestDO>[] => [
     },
 
     {
-        title: '失败信息', dataIndex: 'errorMsg', hideInSearch: true, width: 100, render: (text) => {
-            return <Typography.Text ellipsis={{tooltip: true}} style={{width: 100}}>{text}</Typography.Text>
+        title: '失败信息', dataIndex: 'errorMsg', hideInSearch: true, width: 100, render: (text, entity) => {
+
+            const errorMsg = entity.errorMsg!.substring(0, CommonConstant.TOOLTIP_STR_LENGTH)
+
+            return <Typography.Text ellipsis={{tooltip: true}} style={{width: 100}}>{errorMsg}</Typography.Text>
+
         }
     },
 

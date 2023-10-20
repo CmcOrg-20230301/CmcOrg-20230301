@@ -57,7 +57,8 @@ function goFirstPage(menuList: SysMenuDO[]) {
 
         if (item.firstFlag && item.path) {
 
-            getAppNav()(item.path)
+            // getAppNav()(item.path)
+            GoPage(item.path)
             return true
 
         }
@@ -125,11 +126,28 @@ interface IAdminLayoutElement {
 
 }
 
+let setPathnameTemp: (value: (((prevState: string) => string) | string)) => void
+
+/**
+ * 前往页面，目的：可以设置 ProLayout组件的 pathname参数
+ *
+ * @param path 需要跳转的路径
+ * @param data 例如：{state: {tenantId: tenantId}}
+ */
+export function GoPage(path: string, data?: any) {
+
+    setPathnameTemp(path)
+    getAppNav()(path, data)
+
+}
+
 // Admin 页面布局元素
 function AdminLayoutElement(props: IAdminLayoutElement) {
 
     const [pathname, setPathname] = useState<string>('')
     const appDispatch = getAppDispatch();
+
+    setPathnameTemp = setPathname
 
     const userSelfInfo = useAppSelector((state) => state.user.userSelfInfo)
 
@@ -230,8 +248,7 @@ function AdminLayoutElement(props: IAdminLayoutElement) {
 
                         if (path && path === item.redirect) {
 
-                            setPathname(path)
-                            getAppNav()(path)
+                            GoPage(path)
                             return;
 
                         }
@@ -240,8 +257,7 @@ function AdminLayoutElement(props: IAdminLayoutElement) {
 
                             if (RouterMapKeyList.includes(item.router)) {
 
-                                setPathname(path)
-                                getAppNav()(path)
+                                GoPage(path)
                                 return;
 
                             }
@@ -280,8 +296,7 @@ function AdminLayoutElement(props: IAdminLayoutElement) {
                                             key: '1',
                                             label: <a onClick={() => {
 
-                                                setPathname(PathConstant.USER_SELF_PATH)
-                                                getAppNav()(PathConstant.USER_SELF_PATH)
+                                                GoPage(PathConstant.USER_SELF_PATH)
 
                                             }
                                             }>
@@ -295,8 +310,7 @@ function AdminLayoutElement(props: IAdminLayoutElement) {
                                             key: '2',
                                             label: <a onClick={() => {
 
-                                                setPathname(PathConstant.SYS_USER_WALLET_PATH)
-                                                getAppNav()(PathConstant.SYS_USER_WALLET_PATH)
+                                                GoPage(PathConstant.SYS_USER_SELF_WALLET_PATH)
 
                                             }
                                             }>
@@ -339,8 +353,7 @@ function AdminLayoutElement(props: IAdminLayoutElement) {
 
                                     if (!routeContextType.isMobile) {
 
-                                        setPathname(PathConstant.USER_SELF_PATH)
-                                        getAppNav()(PathConstant.USER_SELF_PATH)
+                                        GoPage(PathConstant.USER_SELF_PATH)
 
                                     }
 
@@ -372,6 +385,7 @@ function AdminLayoutElement(props: IAdminLayoutElement) {
                     }}
 
                 </RouteContext.Consumer>
+
             )}
 
             footerRender={() => (
@@ -381,13 +395,32 @@ function AdminLayoutElement(props: IAdminLayoutElement) {
                 />
 
             )}
+
         >
 
-            <PageContainer>
+            <RouteContext.Consumer>
 
-                <Outlet/>
+                {(routeContextType: RouteContextType) => {
 
-            </PageContainer>
+                    return (
+
+                        routeContextType.currentMenu?.hiddenPageContainerFlag ?
+
+                            <Outlet/>
+
+                            :
+
+                            <PageContainer>
+
+                                <Outlet/>
+
+                            </PageContainer>
+
+                    )
+
+                }}
+
+            </RouteContext.Consumer>
 
         </ProLayout>
 

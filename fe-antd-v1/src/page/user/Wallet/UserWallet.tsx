@@ -12,20 +12,24 @@ import {
     RouteContextType
 } from '@ant-design/pro-components';
 import {Button, Modal, Statistic, Typography} from 'antd';
-import {CheckCircleOutlined, MoneyCollectOutlined} from "@ant-design/icons";
+import {CheckCircleOutlined, MoneyCollectOutlined, RollbackOutlined} from "@ant-design/icons";
 import React, {useEffect, useRef, useState} from "react";
 import {
     SysUserWalletLogDO,
+    SysUserWalletLogPageTenant,
     SysUserWalletLogPageUserSelf,
     SysUserWalletLogUserSelfPageDTO
 } from "@/api/http/SysUserWalletLog";
 import {UseEffectFullScreenChange} from "@/util/DocumentUtil";
 import {
+    SysUserWalletWithdrawLogCancelTenant,
     SysUserWalletWithdrawLogCancelUserSelf,
     SysUserWalletWithdrawLogDictListWithdrawStatus,
     SysUserWalletWithdrawLogDO,
+    SysUserWalletWithdrawLogInsertOrUpdateTenant,
     SysUserWalletWithdrawLogInsertOrUpdateUserSelf,
     SysUserWalletWithdrawLogInsertOrUpdateUserSelfDTO,
+    SysUserWalletWithdrawLogPageTenant,
     SysUserWalletWithdrawLogPageUserSelf,
     SysUserWalletWithdrawLogPageUserSelfDTO
 } from "@/api/http/SysUserWalletWithdrawLog";
@@ -45,6 +49,10 @@ import {PresetStatusColorType} from "antd/es/_util/colors";
 import {Validate} from "@/util/ValidatorUtil";
 import {SysUserDictList} from "@/api/http/SysUser";
 import {InDev} from "@/util/CommonUtil";
+import {SysTenantBankCardInfoById, SysTenantBankCardInsertOrUpdateTenant} from "@/api/http/SysTenantBankCard";
+import {SysTenantWalletInfoById} from "@/api/http/SysTenantWallet";
+import PathConstant from "@/model/constant/PathConstant";
+import {GoPage} from "@/layout/AdminLayout/AdminLayout";
 
 const UserWalletLogModalTitle = "钱包日志"
 const BindUserBankCardModalTitle = "绑定银行卡"
@@ -128,8 +136,16 @@ export function UpdateWithdrawStatusDict(setWithdrawStatusDict: (value: (((prevS
 
 }
 
+interface IUserWallet {
+
+    tenantId?: string // 租户 id，备注：如果传递了，则表示是管理租户的钱包，备注：租户 id和用户 id只会传递一个
+
+    userId?: string // 用户 id，备注：如果传递了，则表示是管理用户的钱包，备注：租户 id和用户 id只会传递一个
+
+}
+
 // 用户钱包
-export default function () {
+export default function (props: IUserWallet) {
 
     const [sysUserWalletDO, setSysUserWalletDO] = useState<SysUserWalletDO>({} as SysUserWalletDO); // 用户钱包信息
 
@@ -139,25 +155,53 @@ export default function () {
 
     function UpdateSysUserBankCardDO() {
 
-        SysUserBankCardInfoByIdUserSelf().then(res => {
+        if (props.tenantId) {
 
-            setSysUserBankCardDO(res || {})
+            SysTenantBankCardInfoById({value: props.tenantId}).then(res => {
 
-        })
+                setSysUserBankCardDO(res || {})
+
+            })
+
+        } else {
+
+            SysUserBankCardInfoByIdUserSelf().then(res => {
+
+                setSysUserBankCardDO(res || {})
+
+            })
+
+        }
 
     }
 
     function UpdateSysUserWalletDO(showMessage?: string) {
 
-        SysUserWalletInfoByIdUserSelf().then(res => {
+        if (props.tenantId) {
 
-            setSysUserWalletDO(res)
+            SysTenantWalletInfoById({value: props.tenantId}).then(res => {
 
-            if (showMessage) {
-                ToastSuccess(showMessage)
-            }
+                setSysUserWalletDO(res)
 
-        })
+                if (showMessage) {
+                    ToastSuccess(showMessage)
+                }
+
+            })
+
+        } else {
+
+            SysUserWalletInfoByIdUserSelf().then(res => {
+
+                setSysUserWalletDO(res)
+
+                if (showMessage) {
+                    ToastSuccess(showMessage)
+                }
+
+            })
+
+        }
 
     }
 
@@ -190,19 +234,25 @@ export default function () {
 
                             <ProCard.Group
 
-                                title={<div className={"flex ai-c"}>
+                                title={
 
-                                    <div className={"f-20 fw-600"}>钱包</div>
+                                    <div className={"flex ai-c"}>
 
-                                    <UserWalletLogModal/>
+                                        <div
+                                            className={"f-20 fw-600"}>钱包
+                                        </div>
 
-                                    <a className={"m-l-20 f-14"} onClick={() => {
+                                        <UserWalletLogModal tenantId={props.tenantId}/>
 
-                                        Init('刷新成功')
+                                        <a className={"m-l-20 f-14"} onClick={() => {
 
-                                    }}>刷新</a>
+                                            Init('刷新成功')
 
-                                </div>}
+                                        }}>刷新</a>
+
+                                    </div>
+
+                                }
 
                                 direction={routeContextType.isMobile ? 'column' : 'row'}
 
@@ -210,6 +260,7 @@ export default function () {
 
                                     sysUserBankCardDO={sysUserBankCardDO}
                                     UpdateSysUserBankCardDO={UpdateSysUserBankCardDO}
+                                    tenantId={props.tenantId}
 
                                 />}
 
@@ -257,6 +308,7 @@ export default function () {
 
                                                     updateSysUserWalletDO={UpdateSysUserWalletDO}
                                                     withdrawStatusDict={withdrawStatusDict}
+                                                    tenantId={props.tenantId}
 
                                                 />
 
@@ -278,8 +330,35 @@ export default function () {
 
                             <div className={"flex-center m-t-20"}>
 
+                                {
+
+                                    props.tenantId && <Button
+
+                                        icon={<RollbackOutlined/>}
+                                        onClick={() => {
+                                            GoPage(PathConstant.SYS_TENANT_WALLET_PATH)
+                                        }}
+
+                                    >返回列表</Button>
+
+                                }
+
+                                {
+
+                                    props.userId && <Button
+
+                                        icon={<RollbackOutlined/>}
+                                        onClick={() => {
+                                            GoPage(PathConstant.SYS_USER_WALLET_PATH)
+                                        }}
+
+                                    >返回列表</Button>
+
+                                }
+
                                 <Button
 
+                                    className={"m-l-20"}
                                     icon={<MoneyCollectOutlined/>}
                                     onClick={() => {
                                         InDev()
@@ -292,6 +371,7 @@ export default function () {
                                     sysUserBankCardDO={sysUserBankCardDO}
                                     sysUserWalletDO={sysUserWalletDO}
                                     UpdateSysUserWalletDO={UpdateSysUserWalletDO}
+                                    tenantId={props.tenantId}
 
                                 />
 
@@ -385,6 +465,8 @@ interface IUserBankCardModal {
 
     UpdateSysUserBankCardDO: () => void
 
+    tenantId?: string
+
 }
 
 // 用户银行卡
@@ -462,13 +544,27 @@ function UserBankCardModal(props: IUserBankCardModal) {
 
                 formRef.current?.resetFields()
 
-                SysUserBankCardInfoByIdUserSelf().then(res => {
+                if (props.tenantId) {
 
-                    currentForm.current = res as SysUserBankCardInsertOrUpdateUserSelfDTO
+                    SysTenantBankCardInfoById({value: props.tenantId}).then(res => {
 
-                    formRef.current?.setFieldsValue(currentForm.current)
+                        currentForm.current = res as SysUserBankCardInsertOrUpdateUserSelfDTO
 
-                })
+                        formRef.current?.setFieldsValue(currentForm.current)
+
+                    })
+
+                } else {
+
+                    SysUserBankCardInfoByIdUserSelf().then(res => {
+
+                        currentForm.current = res as SysUserBankCardInsertOrUpdateUserSelfDTO
+
+                        formRef.current?.setFieldsValue(currentForm.current)
+
+                    })
+
+                }
 
                 return {}
 
@@ -482,13 +578,30 @@ function UserBankCardModal(props: IUserBankCardModal) {
 
             onFinish={async (form) => {
 
-                await SysUserBankCardInsertOrUpdateUserSelf({...currentForm.current, ...form}).then(res => {
+                if (props.tenantId) {
 
-                    ToastSuccess(res.msg)
+                    await SysTenantBankCardInsertOrUpdateTenant({
+                        ...currentForm.current, ...form,
+                        tenantId: props.tenantId
+                    }).then(res => {
 
-                    props.UpdateSysUserBankCardDO() // 更新：银行卡信息
+                        ToastSuccess(res.msg)
 
-                })
+                        props.UpdateSysUserBankCardDO() // 更新：银行卡信息
+
+                    })
+
+                } else {
+
+                    await SysUserBankCardInsertOrUpdateUserSelf({...currentForm.current, ...form}).then(res => {
+
+                        ToastSuccess(res.msg)
+
+                        props.UpdateSysUserBankCardDO() // 更新：银行卡信息
+
+                    })
+
+                }
 
                 return true
 
@@ -500,8 +613,14 @@ function UserBankCardModal(props: IUserBankCardModal) {
 
 }
 
+interface IUserWalletLogModal {
+
+    tenantId?: string // 租户 id，备注：如果传递了，则表示是管理租户的钱包
+
+}
+
 // 钱包日志
-function UserWalletLogModal() {
+function UserWalletLogModal(props: IUserWalletLogModal) {
 
     const [columnsStateMap, setColumnsStateMap] = useState<Record<string, ColumnsState>>();
 
@@ -723,7 +842,15 @@ function UserWalletLogModal() {
 
                     request={(params, sort, filter) => {
 
-                        return SysUserWalletLogPageUserSelf({...params, sort})
+                        if (props.tenantId) {
+
+                            return SysUserWalletLogPageTenant({...params, sort, tenantIdSet: [props.tenantId]})
+
+                        } else {
+
+                            return SysUserWalletLogPageUserSelf({...params, sort})
+
+                        }
 
                     }}
 
@@ -744,6 +871,8 @@ interface IUserWalletWithdrawLogModal {
     updateSysUserWalletDO: () => void
 
     withdrawStatusDict?: Map<number, ProSchemaValueEnumType>
+
+    tenantId?: string
 
 }
 
@@ -826,14 +955,29 @@ function UserWalletWithdrawLogModal(props: IUserWalletWithdrawLogModal) {
 
                                     ExecConfirm(() => {
 
-                                        return SysUserWalletWithdrawLogCancelUserSelf({id: entity.id!}).then(res => {
+                                        if (props.tenantId) {
 
-                                            ToastSuccess(res.msg)
-                                            actionRef.current?.reload()
+                                            return SysUserWalletWithdrawLogCancelTenant({id: entity.id!}).then(res => {
 
-                                            props.updateSysUserWalletDO() // 更新钱包的钱
+                                                ToastSuccess(res.msg)
+                                                actionRef.current?.reload()
 
-                                        })
+                                                props.updateSysUserWalletDO() // 更新钱包的钱
+
+                                            })
+
+                                        } else {
+
+                                            return SysUserWalletWithdrawLogCancelUserSelf({id: entity.id!}).then(res => {
+
+                                                ToastSuccess(res.msg)
+                                                actionRef.current?.reload()
+
+                                                props.updateSysUserWalletDO() // 更新钱包的钱
+
+                                            })
+
+                                        }
 
                                     }, undefined, `确定取消【${entity.id}】吗？`)
 
@@ -851,7 +995,15 @@ function UserWalletWithdrawLogModal(props: IUserWalletWithdrawLogModal) {
 
                     request={(params, sort, filter) => {
 
-                        return SysUserWalletWithdrawLogPageUserSelf({...params, sort})
+                        if (props.tenantId) {
+
+                            return SysUserWalletWithdrawLogPageTenant({...params, sort, tenantIdSet: [props.tenantId]})
+
+                        } else {
+
+                            return SysUserWalletWithdrawLogPageUserSelf({...params, sort})
+
+                        }
 
                     }}
 
@@ -870,7 +1022,7 @@ function UserWalletWithdrawLogModal(props: IUserWalletWithdrawLogModal) {
 /**
  * 获取：用户提现记录的 table基础字段集合
  */
-export const UserWalletWithdrawLogTableBaseColumnArr = (withdrawStatusDict?: Map<number, ProSchemaValueEnumType>): ProColumns<SysUserWalletWithdrawLogDO>[] => {
+export const UserWalletWithdrawLogTableBaseColumnArr = (withdrawStatusDict?: Map<number, ProSchemaValueEnumType>, otherProColumnArr: ProColumns<SysUserWalletWithdrawLogDO>[] = []): ProColumns<SysUserWalletWithdrawLogDO>[] => {
 
     return [
 
@@ -881,12 +1033,18 @@ export const UserWalletWithdrawLogTableBaseColumnArr = (withdrawStatusDict?: Map
             width: 90,
         },
 
+        ...otherProColumnArr,
+
         {
             title: '提现编号',
             dataIndex: 'id',
             ellipsis: true,
             width: 90,
             order: 1000,
+            copyable: true,
+            render: (text) => {
+                return <Typography.Text ellipsis={{tooltip: true}} style={{width: 90}}>{text}</Typography.Text>
+            }
         },
 
         {
@@ -1008,6 +1166,8 @@ interface IUserWalletWithdrawModal {
     sysUserWalletDO: SysUserWalletDO
 
     UpdateSysUserWalletDO: () => void
+
+    tenantId?: string
 
 }
 
@@ -1168,13 +1328,30 @@ function UserWalletWithdrawModal(props: IUserWalletWithdrawModal) {
 
                 onFinish={async (form) => {
 
-                    await SysUserWalletWithdrawLogInsertOrUpdateUserSelf({...currentForm.current, ...form,}).then(res => {
+                    if (props.tenantId) {
 
-                        ToastSuccess(res.msg)
+                        await SysUserWalletWithdrawLogInsertOrUpdateTenant({
+                            ...currentForm.current, ...form,
+                            tenantId: props.tenantId
+                        }).then(res => {
 
-                        props.UpdateSysUserWalletDO() // 更新钱包的钱
+                            ToastSuccess(res.msg)
 
-                    })
+                            props.UpdateSysUserWalletDO() // 更新钱包的钱
+
+                        })
+
+                    } else {
+
+                        await SysUserWalletWithdrawLogInsertOrUpdateUserSelf({...currentForm.current, ...form,}).then(res => {
+
+                            ToastSuccess(res.msg)
+
+                            props.UpdateSysUserWalletDO() // 更新钱包的钱
+
+                        })
+
+                    }
 
                     return true
 

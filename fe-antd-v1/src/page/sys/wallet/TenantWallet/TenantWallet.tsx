@@ -148,8 +148,8 @@ export default function () {
                             isKeyPressSubmit
 
                             width={CommonConstant.MODAL_FORM_WIDTH}
-                            title={"增加可提现"}
-                            trigger={<a className={"green3"}>{"增加可提现"}</a>}
+                            title={CommonConstant.ADD_WITHDRAWABLE_MONEY}
+                            trigger={<a className={"green3"}>{CommonConstant.ADD_WITHDRAWABLE_MONEY}</a>}
 
                             onFinish={async (form) => {
 
@@ -167,7 +167,7 @@ export default function () {
 
                                     })
 
-                                }, undefined, `确定要增加选中【${selectedRowKeys.length}】项的可提现吗？`).catch(() => {
+                                }, undefined, `确定要累加选中【${selectedRowKeys.length}】项的可提现吗？`).catch(() => {
 
                                     return true
 
@@ -179,7 +179,8 @@ export default function () {
 
                         >
 
-                            <ProFormDigit label="增加的值" name="number" min={Number.MIN_SAFE_INTEGER} className={"w100"}
+                            <ProFormDigit label={CommonConstant.ADD_VALUE} tooltip={"可以为负数"} name="number"
+                                          min={Number.MIN_SAFE_INTEGER} className={"w100"}
                                           rules={[{required: true}]} fieldProps={{precision: 2}}/>
 
                         </ModalForm>

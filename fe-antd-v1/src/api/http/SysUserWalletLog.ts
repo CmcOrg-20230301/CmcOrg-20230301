@@ -55,6 +55,11 @@ export interface SysUserWalletLogUserSelfPageDTO {
     sort?: Record<string, SortOrder> // 排序字段（只在前端使用，实际传值：order）
 }
 
+// 分页排序查询-租户
+export function SysUserWalletLogPageTenant(form: SysUserWalletLogUserSelfPageDTO, config?: AxiosRequestConfig) {
+    return $http.myProPagePost<SysUserWalletLogDO>('/sys/userWalletLog/page/tenant', form, config)
+}
+
 // 分页排序查询-用户
 export function SysUserWalletLogPageUserSelf(form: SysUserWalletLogUserSelfPageDTO, config?: AxiosRequestConfig) {
     return $http.myProPagePost<SysUserWalletLogDO>('/sys/userWalletLog/page/userSelf', form, config)
