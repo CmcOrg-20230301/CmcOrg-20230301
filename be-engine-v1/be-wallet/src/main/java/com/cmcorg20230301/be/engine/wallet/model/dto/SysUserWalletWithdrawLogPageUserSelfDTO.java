@@ -2,6 +2,7 @@ package com.cmcorg20230301.be.engine.wallet.model.dto;
 
 import com.cmcorg20230301.be.engine.security.model.dto.MyTenantPageDTO;
 import com.cmcorg20230301.be.engine.wallet.model.enums.SysUserWalletWithdrawStatusEnum;
+import com.cmcorg20230301.be.engine.wallet.model.enums.SysUserWalletWithdrawTypeEnum;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -45,5 +46,8 @@ public class SysUserWalletWithdrawLogPageUserSelfDTO extends MyTenantPageDTO {
 
     @Schema(description = "提现金额：结束值")
     private BigDecimal endWithdrawMoney;
+
+    @Schema(description = "提现类型")
+    private SysUserWalletWithdrawTypeEnum type;
 
 }

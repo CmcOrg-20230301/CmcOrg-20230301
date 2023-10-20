@@ -34,6 +34,7 @@ import com.cmcorg20230301.be.engine.wallet.model.entity.SysUserWalletDO;
 import com.cmcorg20230301.be.engine.wallet.model.entity.SysUserWalletWithdrawLogDO;
 import com.cmcorg20230301.be.engine.wallet.model.enums.SysUserWalletLogTypeEnum;
 import com.cmcorg20230301.be.engine.wallet.model.enums.SysUserWalletWithdrawStatusEnum;
+import com.cmcorg20230301.be.engine.wallet.model.enums.SysUserWalletWithdrawTypeEnum;
 import com.cmcorg20230301.be.engine.wallet.service.SysUserWalletService;
 import com.cmcorg20230301.be.engine.wallet.service.SysUserWalletWithdrawLogService;
 import org.jetbrains.annotations.NotNull;
@@ -104,6 +105,12 @@ public class SysUserWalletWithdrawLogServiceImpl
 
                 .eq(dto.getWithdrawStatus() != null, SysUserWalletWithdrawLogDO::getWithdrawStatus,
                     dto.getWithdrawStatus()) //
+
+                .ne(SysUserWalletWithdrawTypeEnum.USER.equals(dto.getType()), SysUserWalletWithdrawLogDO::getUserId,
+                    BaseConstant.TENANT_USER_ID) //
+
+                .eq(SysUserWalletWithdrawTypeEnum.TENANT.equals(dto.getType()), SysUserWalletWithdrawLogDO::getUserId,
+                    BaseConstant.TENANT_USER_ID) //
 
                 .le(dto.getCtEndTime() != null, SysUserWalletWithdrawLogDO::getCreateTime, dto.getCtEndTime())
                 .ge(dto.getCtBeginTime() != null, SysUserWalletWithdrawLogDO::getCreateTime, dto.getCtBeginTime())
@@ -284,6 +291,10 @@ public class SysUserWalletWithdrawLogServiceImpl
         sysUserWalletWithdrawLogDO.setEnableFlag(true);
         sysUserWalletWithdrawLogDO.setDelFlag(false);
         sysUserWalletWithdrawLogDO.setRemark("");
+
+        if (tenantFlag) {
+            sysUserWalletWithdrawLogDO.setTenantId(id);
+        }
 
         saveOrUpdate(sysUserWalletWithdrawLogDO); // 先操作数据库，原因：如果后面报错了，则会回滚该更新
 
