@@ -55,4 +55,7 @@ public class SysMenuInsertOrUpdateDTO extends BaseTenantInsertOrUpdateDTO {
     @Schema(description = "备注")
     private String remark;
 
+    @Schema(description = "是否隐藏：PageContainer")
+    private Boolean hiddenPageContainerFlag;
+
 }

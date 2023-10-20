@@ -47,5 +47,8 @@ public class SysMenuDO extends BaseEntityTree<SysMenuDO> {
     @Schema(description = "该菜单的 uuid，用于：同步租户菜单等操作，备注：不允许修改")
     private String uuid;
 
+    @Schema(description = "是否隐藏：PageContainer")
+    private Boolean hiddenPageContainerFlag;
+
 }
 

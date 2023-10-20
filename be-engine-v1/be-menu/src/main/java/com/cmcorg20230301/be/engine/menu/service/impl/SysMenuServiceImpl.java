@@ -210,6 +210,8 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenuDO> im
         sysMenuDO.setAuthFlag(BooleanUtil.isTrue(dto.getAuthFlag()));
         sysMenuDO.setOrderNo(MyEntityUtil.getNotNullOrderNo(dto.getOrderNo()));
 
+        sysMenuDO.setHiddenPageContainerFlag(BooleanUtil.isTrue(dto.getHiddenPageContainerFlag()));
+
         sysMenuDO.setDelFlag(false);
 
         if (sysMenuDO.getAuthFlag()) {
