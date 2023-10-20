@@ -72,6 +72,10 @@ public class SysUserBankCardServiceImpl extends ServiceImpl<SysUserBankCardMappe
                 sysUserBankCardDO.setPayeeName(dto.getPayeeName()); // 防止脱敏数据，存入数据库
             }
 
+        } else {
+
+            sysUserBankCardDO.setPayeeName(dto.getPayeeName());
+
         }
 
         sysUserBankCardDO.setEnableFlag(true);
@@ -156,7 +160,7 @@ public class SysUserBankCardServiceImpl extends ServiceImpl<SysUserBankCardMappe
     /**
      * 脱敏：SysUserBankCardDO
      */
-    private void desensitizedSysUserBankCardDO(SysUserBankCardDO sysUserBankCardDO) {
+    public static void desensitizedSysUserBankCardDO(SysUserBankCardDO sysUserBankCardDO) {
 
         if (sysUserBankCardDO == null) {
             return;
