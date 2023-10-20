@@ -31,6 +31,8 @@ public class SysTenantBankCardServiceImpl implements SysTenantBankCardService {
     @Override
     public String insertOrUpdateTenant(SysUserBankCardInsertOrUpdateUserSelfDTO dto) {
 
+        SysTenantUtil.checkTenantId(dto.getTenantId());
+
         // 执行
         return sysUserBankCardService.doInsertOrUpdate(dto, true);
 

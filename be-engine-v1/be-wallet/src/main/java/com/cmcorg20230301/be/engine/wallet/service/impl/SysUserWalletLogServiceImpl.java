@@ -6,6 +6,7 @@ import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.cmcorg20230301.be.engine.model.model.constant.BaseConstant;
 import com.cmcorg20230301.be.engine.model.model.constant.LogTopicConstant;
 import com.cmcorg20230301.be.engine.security.model.entity.BaseEntityNoId;
 import com.cmcorg20230301.be.engine.security.model.entity.BaseEntityNoIdFather;
@@ -89,6 +90,20 @@ public class SysUserWalletLogServiceImpl extends ServiceImpl<SysUserWalletLogMap
             .like(StrUtil.isNotBlank(dto.getRemark()), SysUserWalletLogDO::getRemark, dto.getRemark())
             .in(BaseEntityNoId::getTenantId, dto.getTenantIdSet()) //
             .orderByDesc(BaseEntityNoIdFather::getUpdateTime).page(dto.page(true));
+
+    }
+
+    /**
+     * 分页排序查询-租户
+     */
+    @Override
+    public Page<SysUserWalletLogDO> myPageTenant(SysUserWalletLogUserSelfPageDTO dto) {
+
+        SysUserWalletLogPageDTO sysUserWalletLogPageDTO = BeanUtil.copyProperties(dto, SysUserWalletLogPageDTO.class);
+
+        sysUserWalletLogPageDTO.setUserId(BaseConstant.TENANT_USER_ID);
+
+        return myPage(sysUserWalletLogPageDTO);
 
     }
 

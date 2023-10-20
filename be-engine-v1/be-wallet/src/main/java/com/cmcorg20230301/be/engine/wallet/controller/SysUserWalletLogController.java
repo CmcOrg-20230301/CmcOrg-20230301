@@ -32,6 +32,12 @@ public class SysUserWalletLogController {
         return ApiResultVO.okData(baseService.myPage(dto));
     }
 
+    @Operation(summary = "分页排序查询-租户")
+    @PostMapping("/page/tenant")
+    public ApiResultVO<Page<SysUserWalletLogDO>> myPageTenant(@RequestBody @Valid SysUserWalletLogUserSelfPageDTO dto) {
+        return ApiResultVO.okData(baseService.myPageTenant(dto));
+    }
+
     @Operation(summary = "分页排序查询-用户")
     @PostMapping("/page/userSelf")
     public ApiResultVO<Page<SysUserWalletLogDO>> myPageUserSelf(

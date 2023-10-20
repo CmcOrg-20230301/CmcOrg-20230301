@@ -10,6 +10,8 @@ public interface SysUserWalletLogService extends IService<SysUserWalletLogDO> {
 
     Page<SysUserWalletLogDO> myPage(SysUserWalletLogPageDTO dto);
 
+    Page<SysUserWalletLogDO> myPageTenant(SysUserWalletLogUserSelfPageDTO dto);
+
     Page<SysUserWalletLogDO> myPageUserSelf(SysUserWalletLogUserSelfPageDTO dto);
 
 }

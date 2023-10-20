@@ -9,6 +9,7 @@ import com.baomidou.dynamic.datasource.annotation.DSTransactional;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.baomidou.mybatisplus.extension.toolkit.ChainWrappers;
+import com.cmcorg20230301.be.engine.model.model.constant.BaseConstant;
 import com.cmcorg20230301.be.engine.model.model.dto.NotEmptyIdSet;
 import com.cmcorg20230301.be.engine.model.model.dto.NotNullId;
 import com.cmcorg20230301.be.engine.model.model.dto.NotNullIdAndStringValue;
@@ -24,6 +25,7 @@ import com.cmcorg20230301.be.engine.security.util.SysTenantUtil;
 import com.cmcorg20230301.be.engine.security.util.UserUtil;
 import com.cmcorg20230301.be.engine.wallet.mapper.SysUserBankCardMapper;
 import com.cmcorg20230301.be.engine.wallet.mapper.SysUserWalletWithdrawLogMapper;
+import com.cmcorg20230301.be.engine.wallet.model.dto.SysUserWalletWithdrawLogInsertOrUpdateTenantDTO;
 import com.cmcorg20230301.be.engine.wallet.model.dto.SysUserWalletWithdrawLogInsertOrUpdateUserSelfDTO;
 import com.cmcorg20230301.be.engine.wallet.model.dto.SysUserWalletWithdrawLogPageDTO;
 import com.cmcorg20230301.be.engine.wallet.model.dto.SysUserWalletWithdrawLogPageUserSelfDTO;
@@ -160,6 +162,51 @@ public class SysUserWalletWithdrawLogServiceImpl
     }
 
     /**
+     * 分页排序查询-租户
+     */
+    @Override
+    public Page<SysUserWalletWithdrawLogDO> myPageTenant(SysUserWalletWithdrawLogPageUserSelfDTO dto) {
+
+        SysUserWalletWithdrawLogPageDTO sysUserWalletWithdrawLogPageDTO =
+            BeanUtil.copyProperties(dto, SysUserWalletWithdrawLogPageDTO.class);
+
+        sysUserWalletWithdrawLogPageDTO.setUserId(BaseConstant.TENANT_USER_ID);
+
+        // 执行
+        return myPage(sysUserWalletWithdrawLogPageDTO);
+
+    }
+
+    /**
+     * 新增/修改-租户
+     */
+    @Override
+    public String insertOrUpdateTenant(SysUserWalletWithdrawLogInsertOrUpdateTenantDTO dto) {
+
+        SysTenantUtil.checkTenantId(dto.getTenantId());
+
+        // 执行
+        return doInsertOrUpdate(dto, dto.getTenantId(), true);
+
+    }
+
+    /**
+     * 取消-租户
+     */
+    @Override
+    public String cancelTenant(NotNullId notNullId) {
+
+        Set<Long> idSet = CollUtil.newHashSet(notNullId.getId());
+
+        // 检查：是否非法操作
+        SysTenantUtil.checkIllegal(idSet, getCheckIllegalFunc1(idSet));
+
+        // 执行
+        return doCancel(notNullId, true);
+
+    }
+
+    /**
      * 分页排序查询-用户
      */
     @Override
@@ -186,14 +233,41 @@ public class SysUserWalletWithdrawLogServiceImpl
 
         Long currentUserId = UserUtil.getCurrentUserId();
 
+        // 执行
+        return doInsertOrUpdate(dto, currentUserId, false);
+
+    }
+
+    /**
+     * 执行：新增/修改-用户
+     *
+     * @param id 用户 id 或者 租户主键 id
+     */
+    @NotNull
+    private String doInsertOrUpdate(SysUserWalletWithdrawLogInsertOrUpdateUserSelfDTO dto, Long id,
+        boolean tenantFlag) {
+
+        Long currentUserId = UserUtil.getCurrentUserId();
+
         SysUserWalletWithdrawLogDO sysUserWalletWithdrawLogDO = new SysUserWalletWithdrawLogDO();
 
-        sysUserWalletWithdrawLogDO.setUserId(currentUserId);
+        if (tenantFlag) {
+
+            sysUserWalletWithdrawLogDO.setUserId(BaseConstant.TENANT_USER_ID);
+
+        } else {
+
+            sysUserWalletWithdrawLogDO.setUserId(id);
+
+        }
+
         sysUserWalletWithdrawLogDO.setWithdrawMoney(dto.getWithdrawMoney());
 
         // 查询：用户银行卡信息
         SysUserBankCardDO sysUserBankCardDO =
-            ChainWrappers.lambdaQueryChain(sysUserBankCardMapper).eq(SysUserBankCardDO::getId, currentUserId).one();
+            ChainWrappers.lambdaQueryChain(sysUserBankCardMapper).eq(!tenantFlag, SysUserBankCardDO::getId, id)
+                .eq(tenantFlag, SysUserBankCardDO::getId, BaseConstant.TENANT_USER_ID)
+                .eq(tenantFlag, BaseEntityNoIdFather::getTenantId, id).one();
 
         if (sysUserBankCardDO == null) {
             ApiResultVO.errorMsg("操作失败：请先绑定银行卡");
@@ -214,9 +288,9 @@ public class SysUserWalletWithdrawLogServiceImpl
         saveOrUpdate(sysUserWalletWithdrawLogDO); // 先操作数据库，原因：如果后面报错了，则会回滚该更新
 
         // 检查和增加：用户钱包的可提现余额
-        sysUserWalletService.doAddWithdrawableMoney(currentUserId, new Date(), CollUtil.newHashSet(currentUserId),
+        sysUserWalletService.doAddWithdrawableMoney(currentUserId, new Date(), CollUtil.newHashSet(id),
             sysUserWalletWithdrawLogDO.getWithdrawMoney().negate(), SysUserWalletLogTypeEnum.REDUCE_WITHDRAW, true,
-            true, false);
+            true, tenantFlag);
 
         return BaseBizCodeEnum.OK;
 
@@ -229,15 +303,26 @@ public class SysUserWalletWithdrawLogServiceImpl
     @DSTransactional
     public String cancelUserSelf(NotNullId notNullId) {
 
+        // 执行
+        return doCancel(notNullId, false);
+
+    }
+
+    /**
+     * 执行：取消
+     */
+    private String doCancel(NotNullId notNullId, boolean tenantFlag) {
+
         Long currentUserId = UserUtil.getCurrentUserId();
 
         return RedissonUtil.doLock(BaseRedisKeyEnum.PRE_USER_WALLET_WITHDRAW_LOG.name() + notNullId.getId(), () -> {
 
             SysUserWalletWithdrawLogDO sysUserWalletWithdrawLogDO =
                 lambdaQuery().eq(BaseEntity::getId, notNullId.getId())
-                    .eq(SysUserWalletWithdrawLogDO::getUserId, currentUserId)
+                    .eq(!tenantFlag, SysUserWalletWithdrawLogDO::getUserId, currentUserId)
+                    .eq(tenantFlag, SysUserWalletWithdrawLogDO::getUserId, BaseConstant.TENANT_USER_ID)
                     .select(BaseEntity::getId, SysUserWalletWithdrawLogDO::getWithdrawMoney,
-                        SysUserWalletWithdrawLogDO::getWithdrawStatus).one();
+                        SysUserWalletWithdrawLogDO::getWithdrawStatus, BaseEntityNoIdFather::getTenantId).one();
 
             if (sysUserWalletWithdrawLogDO == null) {
                 ApiResultVO.error(BaseBizCodeEnum.ILLEGAL_REQUEST, notNullId.getId());
@@ -252,10 +337,23 @@ public class SysUserWalletWithdrawLogServiceImpl
 
             updateById(sysUserWalletWithdrawLogDO); // 先更新提现记录状态，原因：如果后面报错了，则会回滚该更新
 
-            // 检查和增加：用户钱包的可提现余额
-            sysUserWalletService.doAddWithdrawableMoney(currentUserId, new Date(), CollUtil.newHashSet(currentUserId),
-                sysUserWalletWithdrawLogDO.getWithdrawMoney(), SysUserWalletLogTypeEnum.REDUCE_WITHDRAW, true, true,
-                false);
+            if (tenantFlag) {
+
+                // 检查和增加：用户钱包的可提现余额
+                sysUserWalletService.doAddWithdrawableMoney(currentUserId, new Date(),
+                    CollUtil.newHashSet(sysUserWalletWithdrawLogDO.getTenantId()),
+                    sysUserWalletWithdrawLogDO.getWithdrawMoney(), SysUserWalletLogTypeEnum.REDUCE_WITHDRAW, true, true,
+                    true);
+
+            } else {
+
+                // 检查和增加：用户钱包的可提现余额
+                sysUserWalletService
+                    .doAddWithdrawableMoney(currentUserId, new Date(), CollUtil.newHashSet(currentUserId),
+                        sysUserWalletWithdrawLogDO.getWithdrawMoney(), SysUserWalletLogTypeEnum.REDUCE_WITHDRAW, true,
+                        true, false);
+
+            }
 
             return BaseBizCodeEnum.OK;
 

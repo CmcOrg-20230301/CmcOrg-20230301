@@ -6,6 +6,7 @@ import com.cmcorg20230301.be.engine.model.model.dto.NotNullId;
 import com.cmcorg20230301.be.engine.model.model.dto.NotNullIdAndStringValue;
 import com.cmcorg20230301.be.engine.model.model.vo.DictIntegerVO;
 import com.cmcorg20230301.be.engine.security.model.vo.ApiResultVO;
+import com.cmcorg20230301.be.engine.wallet.model.dto.SysUserWalletWithdrawLogInsertOrUpdateTenantDTO;
 import com.cmcorg20230301.be.engine.wallet.model.dto.SysUserWalletWithdrawLogInsertOrUpdateUserSelfDTO;
 import com.cmcorg20230301.be.engine.wallet.model.dto.SysUserWalletWithdrawLogPageDTO;
 import com.cmcorg20230301.be.engine.wallet.model.dto.SysUserWalletWithdrawLogPageUserSelfDTO;
@@ -49,6 +50,29 @@ public class SysUserWalletWithdrawLogController {
     @PreAuthorize("hasAuthority('sysUserWalletWithdrawLog:infoById')")
     public ApiResultVO<SysUserWalletWithdrawLogDO> infoById(@RequestBody @Valid NotNullId notNullId) {
         return ApiResultVO.okData(baseService.infoById(notNullId));
+    }
+
+    @Operation(summary = "分页排序查询-租户")
+    @PostMapping("/page/tenant")
+    @PreAuthorize("hasAuthority('sysUserWalletWithdrawLog:page')")
+    public ApiResultVO<Page<SysUserWalletWithdrawLogDO>> myPageTenant(
+        @RequestBody @Valid SysUserWalletWithdrawLogPageUserSelfDTO dto) {
+        return ApiResultVO.okData(baseService.myPageTenant(dto));
+    }
+
+    @Operation(summary = "新增/修改-租户")
+    @PostMapping("/insertOrUpdate/tenant")
+    @PreAuthorize("hasAuthority('sysUserWalletWithdrawLog:insertOrUpdate')")
+    public ApiResultVO<String> insertOrUpdateTenant(
+        @RequestBody @Valid SysUserWalletWithdrawLogInsertOrUpdateTenantDTO dto) {
+        return ApiResultVO.okMsg(baseService.insertOrUpdateTenant(dto));
+    }
+
+    @Operation(summary = "取消-租户")
+    @PostMapping("/cancel/tenant")
+    @PreAuthorize("hasAuthority('sysUserWalletWithdrawLog:cancel')")
+    public ApiResultVO<String> cancelTenant(@RequestBody @Valid NotNullId notNullId) {
+        return ApiResultVO.okMsg(baseService.cancelTenant(notNullId));
     }
 
     @Operation(summary = "分页排序查询-用户")
