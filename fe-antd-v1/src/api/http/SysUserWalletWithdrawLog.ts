@@ -16,6 +16,7 @@ export interface SysUserWalletWithdrawLogPageDTO {
     bankCardNo?: string // 卡号
     pageSize?: string // 每页显示条数，format：int64
     endWithdrawMoney?: number // 提现金额：结束值
+    type?: string // 提现类型
     withdrawStatus?: string // 提现状态
     userId?: string // 用户主键 id，format：int64
     openBankName?: string // 开户行
@@ -80,6 +81,7 @@ export interface SysUserWalletWithdrawLogPageUserSelfDTO {
     bankCardNo?: string // 卡号
     pageSize?: string // 每页显示条数，format：int64
     endWithdrawMoney?: number // 提现金额：结束值
+    type?: string // 提现类型
     withdrawStatus?: string // 提现状态
     openBankName?: string // 开户行
     payeeName?: string // 收款人姓名
