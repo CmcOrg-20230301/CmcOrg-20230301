@@ -26,7 +26,7 @@ export default {
 
     SHORT_DELAY: 100, // 短的延迟
 
-    TOOLTIP_STR_LENGTH: 600, // tooltip字符串的长度
+    TOOLTIP_STR_LENGTH: 500, // tooltip字符串的长度
 
     DEFAULT_TENANT_NAME: "默认", // 默认租户名
 

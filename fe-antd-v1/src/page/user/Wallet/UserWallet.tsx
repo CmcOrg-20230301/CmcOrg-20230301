@@ -16,19 +16,23 @@ import {CheckCircleOutlined, MoneyCollectOutlined, RollbackOutlined} from "@ant-
 import React, {useEffect, useRef, useState} from "react";
 import {
     SysUserWalletLogDO,
+    SysUserWalletLogPage,
     SysUserWalletLogPageTenant,
     SysUserWalletLogPageUserSelf,
     SysUserWalletLogUserSelfPageDTO
 } from "@/api/http/SysUserWalletLog";
 import {UseEffectFullScreenChange} from "@/util/DocumentUtil";
 import {
+    SysUserWalletWithdrawLogCancel,
     SysUserWalletWithdrawLogCancelTenant,
     SysUserWalletWithdrawLogCancelUserSelf,
     SysUserWalletWithdrawLogDictListWithdrawStatus,
     SysUserWalletWithdrawLogDO,
+    SysUserWalletWithdrawLogInsertOrUpdate,
     SysUserWalletWithdrawLogInsertOrUpdateTenant,
     SysUserWalletWithdrawLogInsertOrUpdateUserSelf,
     SysUserWalletWithdrawLogInsertOrUpdateUserSelfDTO,
+    SysUserWalletWithdrawLogPage,
     SysUserWalletWithdrawLogPageTenant,
     SysUserWalletWithdrawLogPageUserSelf,
     SysUserWalletWithdrawLogPageUserSelfDTO
@@ -39,6 +43,7 @@ import {
     SysUserBankCardDO,
     SysUserBankCardInfoById,
     SysUserBankCardInfoByIdUserSelf,
+    SysUserBankCardInsertOrUpdate,
     SysUserBankCardInsertOrUpdateUserSelf,
     SysUserBankCardInsertOrUpdateUserSelfDTO
 } from "@/api/http/SysUserBankCard";
@@ -618,7 +623,7 @@ function UserBankCardModal(props: IUserBankCardModal) {
 
                     await SysUserBankCardInsertOrUpdate({
                         ...currentForm.current, ...form,
-                        tenantId: props.tenantId
+                        id: props.userId
                     }).then(res => {
 
                         ToastSuccess(res.msg)
@@ -884,6 +889,10 @@ function UserWalletLogModal(props: IUserWalletLogModal) {
 
                             return SysUserWalletLogPageTenant({...params, sort, tenantIdSet: [props.tenantId]})
 
+                        } else if (props.userId) {
+
+                            return SysUserWalletLogPage({...params, sort, userId: props.userId})
+
                         } else {
 
                             return SysUserWalletLogPageUserSelf({...params, sort})
@@ -1006,6 +1015,17 @@ function UserWalletWithdrawLogModal(props: IUserWalletWithdrawLogModal) {
 
                                             })
 
+                                        } else if (props.userId) {
+
+                                            return SysUserWalletWithdrawLogCancel({id: entity.id!}).then(res => {
+
+                                                ToastSuccess(res.msg)
+                                                actionRef.current?.reload()
+
+                                                props.updateSysUserWalletDO() // 更新钱包的钱
+
+                                            })
+
                                         } else {
 
                                             return SysUserWalletWithdrawLogCancelUserSelf({id: entity.id!}).then(res => {
@@ -1038,6 +1058,10 @@ function UserWalletWithdrawLogModal(props: IUserWalletWithdrawLogModal) {
                         if (props.tenantId) {
 
                             return SysUserWalletWithdrawLogPageTenant({...params, sort, tenantIdSet: [props.tenantId]})
+
+                        } else if (props.userId) {
+
+                            return SysUserWalletWithdrawLogPage({...params, sort, userId: props.userId})
 
                         } else {
 
@@ -1375,6 +1399,19 @@ function UserWalletWithdrawModal(props: IUserWalletWithdrawModal) {
                         await SysUserWalletWithdrawLogInsertOrUpdateTenant({
                             ...currentForm.current, ...form,
                             tenantId: props.tenantId
+                        }).then(res => {
+
+                            ToastSuccess(res.msg)
+
+                            props.UpdateSysUserWalletDO() // 更新钱包的钱
+
+                        })
+
+                    } else if (props.userId) {
+
+                        await SysUserWalletWithdrawLogInsertOrUpdate({
+                            ...currentForm.current, ...form,
+                            userId: props.userId
                         }).then(res => {
 
                             ToastSuccess(res.msg)

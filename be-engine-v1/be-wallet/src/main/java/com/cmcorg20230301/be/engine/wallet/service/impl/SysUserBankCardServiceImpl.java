@@ -46,8 +46,6 @@ public class SysUserBankCardServiceImpl extends ServiceImpl<SysUserBankCardMappe
 
         Set<Long> userIdSet = CollUtil.newHashSet(userId);
 
-        Set<Long> userRefTenantIdSet = SysTenantUtil.getUserRefTenantIdSet();
-
         // 检查：是否非法操作
         SysTenantUtil.checkIllegal(userIdSet,
             tenantIdSet -> ChainWrappers.lambdaQueryChain(sysUserMapper).eq(BaseEntity::getId, userId)

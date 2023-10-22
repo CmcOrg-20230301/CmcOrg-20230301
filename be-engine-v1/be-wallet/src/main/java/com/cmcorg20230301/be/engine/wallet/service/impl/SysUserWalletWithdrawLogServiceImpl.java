@@ -17,6 +17,7 @@ import com.cmcorg20230301.be.engine.model.model.vo.DictIntegerVO;
 import com.cmcorg20230301.be.engine.redisson.model.enums.BaseRedisKeyEnum;
 import com.cmcorg20230301.be.engine.redisson.util.RedissonUtil;
 import com.cmcorg20230301.be.engine.security.exception.BaseBizCodeEnum;
+import com.cmcorg20230301.be.engine.security.mapper.SysUserMapper;
 import com.cmcorg20230301.be.engine.security.model.entity.BaseEntity;
 import com.cmcorg20230301.be.engine.security.model.entity.BaseEntityNoId;
 import com.cmcorg20230301.be.engine.security.model.entity.BaseEntityNoIdFather;
@@ -25,10 +26,7 @@ import com.cmcorg20230301.be.engine.security.util.SysTenantUtil;
 import com.cmcorg20230301.be.engine.security.util.UserUtil;
 import com.cmcorg20230301.be.engine.wallet.mapper.SysUserBankCardMapper;
 import com.cmcorg20230301.be.engine.wallet.mapper.SysUserWalletWithdrawLogMapper;
-import com.cmcorg20230301.be.engine.wallet.model.dto.SysUserWalletWithdrawLogInsertOrUpdateTenantDTO;
-import com.cmcorg20230301.be.engine.wallet.model.dto.SysUserWalletWithdrawLogInsertOrUpdateUserSelfDTO;
-import com.cmcorg20230301.be.engine.wallet.model.dto.SysUserWalletWithdrawLogPageDTO;
-import com.cmcorg20230301.be.engine.wallet.model.dto.SysUserWalletWithdrawLogPageUserSelfDTO;
+import com.cmcorg20230301.be.engine.wallet.model.dto.*;
 import com.cmcorg20230301.be.engine.wallet.model.entity.SysUserBankCardDO;
 import com.cmcorg20230301.be.engine.wallet.model.entity.SysUserWalletDO;
 import com.cmcorg20230301.be.engine.wallet.model.entity.SysUserWalletWithdrawLogDO;
@@ -56,6 +54,9 @@ public class SysUserWalletWithdrawLogServiceImpl
     @Resource
     SysUserBankCardMapper sysUserBankCardMapper;
 
+    @Resource
+    SysUserMapper sysUserMapper;
+
     /**
      * 下拉列表-提现状态
      */
@@ -71,6 +72,42 @@ public class SysUserWalletWithdrawLogServiceImpl
         }
 
         return new Page<DictIntegerVO>().setTotal(dictVOList.size()).setRecords(dictVOList);
+
+    }
+
+    /**
+     * 新增/修改
+     */
+    @Override
+    public String insertOrUpdate(SysUserWalletWithdrawLogInsertOrUpdateDTO dto) {
+
+        Long userId = dto.getUserId();
+
+        Set<Long> userIdSet = CollUtil.newHashSet(userId);
+
+        // 检查：是否非法操作
+        SysTenantUtil.checkIllegal(userIdSet,
+            tenantIdSet -> ChainWrappers.lambdaQueryChain(sysUserMapper).eq(BaseEntity::getId, userId)
+                .in(BaseEntityNoId::getTenantId, tenantIdSet).count());
+
+        // 执行
+        return doInsertOrUpdate(dto, userId, false);
+
+    }
+
+    /**
+     * 取消
+     */
+    @Override
+    public String cancel(NotNullId notNullId) {
+
+        Set<Long> idSet = CollUtil.newHashSet(notNullId.getId());
+
+        // 检查：idSet所在的租户，是否是当前用户所管理的租户
+        SysTenantUtil.checkIllegal(idSet, getCheckIllegalFunc1(idSet));
+
+        // 执行
+        return doCancel(notNullId, false, false);
 
     }
 
@@ -209,7 +246,7 @@ public class SysUserWalletWithdrawLogServiceImpl
         SysTenantUtil.checkIllegal(idSet, getCheckIllegalFunc1(idSet));
 
         // 执行
-        return doCancel(notNullId, true);
+        return doCancel(notNullId, true, false);
 
     }
 
@@ -315,14 +352,14 @@ public class SysUserWalletWithdrawLogServiceImpl
     public String cancelUserSelf(NotNullId notNullId) {
 
         // 执行
-        return doCancel(notNullId, false);
+        return doCancel(notNullId, false, true);
 
     }
 
     /**
      * 执行：取消
      */
-    private String doCancel(NotNullId notNullId, boolean tenantFlag) {
+    private String doCancel(NotNullId notNullId, boolean tenantFlag, boolean userSelfFlag) {
 
         Long currentUserId = UserUtil.getCurrentUserId();
 
@@ -330,10 +367,11 @@ public class SysUserWalletWithdrawLogServiceImpl
 
             SysUserWalletWithdrawLogDO sysUserWalletWithdrawLogDO =
                 lambdaQuery().eq(BaseEntity::getId, notNullId.getId())
-                    .eq(!tenantFlag, SysUserWalletWithdrawLogDO::getUserId, currentUserId)
-                    .eq(tenantFlag, SysUserWalletWithdrawLogDO::getUserId, BaseConstant.TENANT_USER_ID)
+                    .eq(!tenantFlag && userSelfFlag, SysUserWalletWithdrawLogDO::getUserId, currentUserId)
+                    .eq(tenantFlag && !userSelfFlag, SysUserWalletWithdrawLogDO::getUserId, BaseConstant.TENANT_USER_ID)
                     .select(BaseEntity::getId, SysUserWalletWithdrawLogDO::getWithdrawMoney,
-                        SysUserWalletWithdrawLogDO::getWithdrawStatus, BaseEntityNoIdFather::getTenantId).one();
+                        SysUserWalletWithdrawLogDO::getWithdrawStatus, BaseEntityNoIdFather::getTenantId,
+                        SysUserWalletWithdrawLogDO::getUserId).one();
 
             if (sysUserWalletWithdrawLogDO == null) {
                 ApiResultVO.error(BaseBizCodeEnum.ILLEGAL_REQUEST, notNullId.getId());
@@ -359,10 +397,10 @@ public class SysUserWalletWithdrawLogServiceImpl
             } else {
 
                 // 检查和增加：用户钱包的可提现余额
-                sysUserWalletService
-                    .doAddWithdrawableMoney(currentUserId, new Date(), CollUtil.newHashSet(currentUserId),
-                        sysUserWalletWithdrawLogDO.getWithdrawMoney(), SysUserWalletLogTypeEnum.REDUCE_WITHDRAW, true,
-                        true, false);
+                sysUserWalletService.doAddWithdrawableMoney(currentUserId, new Date(),
+                    CollUtil.newHashSet(sysUserWalletWithdrawLogDO.getUserId()),
+                    sysUserWalletWithdrawLogDO.getWithdrawMoney(), SysUserWalletLogTypeEnum.REDUCE_WITHDRAW, true, true,
+                    false);
 
             }
 

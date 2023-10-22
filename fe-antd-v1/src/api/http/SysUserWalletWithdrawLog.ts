@@ -12,6 +12,26 @@ export function SysUserWalletWithdrawLogInsertOrUpdateUserSelf(form: SysUserWall
     return $http.myPost<string>('/sys/userWalletWithdrawLog/insertOrUpdate/userSelf', form, config)
 }
 
+export interface SysUserWalletWithdrawLogInsertOrUpdateTenantDTO {
+    tenantId?: string // 租户主键 id，required：true，format：int64
+    withdrawMoney?: number // 提现金额，required：true
+}
+
+// 新增/修改-租户
+export function SysUserWalletWithdrawLogInsertOrUpdateTenant(form: SysUserWalletWithdrawLogInsertOrUpdateTenantDTO, config?: AxiosRequestConfig) {
+    return $http.myPost<string>('/sys/userWalletWithdrawLog/insertOrUpdate/tenant', form, config)
+}
+
+export interface NotNullIdAndStringValue {
+    id?: string // 主键id，required：true，format：int64
+    value?: string // 值，required：true
+}
+
+// 拒绝-用户的提现记录
+export function SysUserWalletWithdrawLogReject(form: NotNullIdAndStringValue, config?: AxiosRequestConfig) {
+    return $http.myPost<string>('/sys/userWalletWithdrawLog/reject', form, config)
+}
+
 export interface SysUserWalletWithdrawLogPageDTO {
     bankCardNo?: string // 卡号
     pageSize?: string // 每页显示条数，format：int64
@@ -102,16 +122,6 @@ export function SysUserWalletWithdrawLogPageTenant(form: SysUserWalletWithdrawLo
     return $http.myProPagePost<SysUserWalletWithdrawLogDO>('/sys/userWalletWithdrawLog/page/tenant', form, config)
 }
 
-export interface SysUserWalletWithdrawLogInsertOrUpdateTenantDTO {
-    tenantId?: string // 租户主键 id，required：true，format：int64
-    withdrawMoney?: number // 提现金额，required：true
-}
-
-// 新增/修改-租户
-export function SysUserWalletWithdrawLogInsertOrUpdateTenant(form: SysUserWalletWithdrawLogInsertOrUpdateTenantDTO, config?: AxiosRequestConfig) {
-    return $http.myPost<string>('/sys/userWalletWithdrawLog/insertOrUpdate/tenant', form, config)
-}
-
 // 成功-用户的提现记录
 export function SysUserWalletWithdrawLogSuccess(form: NotNullId, config?: AxiosRequestConfig) {
     return $http.myPost<string>('/sys/userWalletWithdrawLog/success', form, config)
@@ -127,24 +137,29 @@ export function SysUserWalletWithdrawLogDictListWithdrawStatus(config?: AxiosReq
     return $http.myProPagePost<DictIntegerVO>('/sys/userWalletWithdrawLog/dictList/withdrawStatus', undefined, config)
 }
 
+export interface SysUserWalletWithdrawLogInsertOrUpdateDTO {
+    withdrawMoney?: number // 提现金额，required：true
+    userId?: string // 用户主键 id，format：int64
+}
+
+// 新增/修改
+export function SysUserWalletWithdrawLogInsertOrUpdate(form: SysUserWalletWithdrawLogInsertOrUpdateDTO, config?: AxiosRequestConfig) {
+    return $http.myPost<string>('/sys/userWalletWithdrawLog/insertOrUpdate', form, config)
+}
+
 // 通过主键id，查看详情
 export function SysUserWalletWithdrawLogInfoById(form: NotNullId, config?: AxiosRequestConfig) {
     return $http.myProPost<SysUserWalletWithdrawLogDO>('/sys/userWalletWithdrawLog/infoById', form, config)
 }
 
+// 取消
+export function SysUserWalletWithdrawLogCancel(form: NotNullId, config?: AxiosRequestConfig) {
+    return $http.myPost<string>('/sys/userWalletWithdrawLog/cancel', form, config)
+}
+
 // 分页排序查询-用户
 export function SysUserWalletWithdrawLogPageUserSelf(form: SysUserWalletWithdrawLogPageUserSelfDTO, config?: AxiosRequestConfig) {
     return $http.myProPagePost<SysUserWalletWithdrawLogDO>('/sys/userWalletWithdrawLog/page/userSelf', form, config)
-}
-
-export interface NotNullIdAndStringValue {
-    id?: string // 主键id，required：true，format：int64
-    value?: string // 值，required：true
-}
-
-// 拒绝-用户的提现记录
-export function SysUserWalletWithdrawLogReject(form: NotNullIdAndStringValue, config?: AxiosRequestConfig) {
-    return $http.myPost<string>('/sys/userWalletWithdrawLog/reject', form, config)
 }
 
 // 取消-用户

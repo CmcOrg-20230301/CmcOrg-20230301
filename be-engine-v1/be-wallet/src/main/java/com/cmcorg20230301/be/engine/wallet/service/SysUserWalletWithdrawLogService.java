@@ -6,15 +6,16 @@ import com.cmcorg20230301.be.engine.model.model.dto.NotEmptyIdSet;
 import com.cmcorg20230301.be.engine.model.model.dto.NotNullId;
 import com.cmcorg20230301.be.engine.model.model.dto.NotNullIdAndStringValue;
 import com.cmcorg20230301.be.engine.model.model.vo.DictIntegerVO;
-import com.cmcorg20230301.be.engine.wallet.model.dto.SysUserWalletWithdrawLogInsertOrUpdateTenantDTO;
-import com.cmcorg20230301.be.engine.wallet.model.dto.SysUserWalletWithdrawLogInsertOrUpdateUserSelfDTO;
-import com.cmcorg20230301.be.engine.wallet.model.dto.SysUserWalletWithdrawLogPageDTO;
-import com.cmcorg20230301.be.engine.wallet.model.dto.SysUserWalletWithdrawLogPageUserSelfDTO;
+import com.cmcorg20230301.be.engine.wallet.model.dto.*;
 import com.cmcorg20230301.be.engine.wallet.model.entity.SysUserWalletWithdrawLogDO;
 
 public interface SysUserWalletWithdrawLogService extends IService<SysUserWalletWithdrawLogDO> {
 
     Page<DictIntegerVO> withdrawStatusDictList();
+
+    String insertOrUpdate(SysUserWalletWithdrawLogInsertOrUpdateDTO dto);
+
+    String cancel(NotNullId notNullId);
 
     Page<SysUserWalletWithdrawLogDO> myPage(SysUserWalletWithdrawLogPageDTO dto);
 

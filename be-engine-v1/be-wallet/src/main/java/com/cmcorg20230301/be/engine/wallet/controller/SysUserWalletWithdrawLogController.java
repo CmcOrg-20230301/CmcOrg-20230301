@@ -6,10 +6,7 @@ import com.cmcorg20230301.be.engine.model.model.dto.NotNullId;
 import com.cmcorg20230301.be.engine.model.model.dto.NotNullIdAndStringValue;
 import com.cmcorg20230301.be.engine.model.model.vo.DictIntegerVO;
 import com.cmcorg20230301.be.engine.security.model.vo.ApiResultVO;
-import com.cmcorg20230301.be.engine.wallet.model.dto.SysUserWalletWithdrawLogInsertOrUpdateTenantDTO;
-import com.cmcorg20230301.be.engine.wallet.model.dto.SysUserWalletWithdrawLogInsertOrUpdateUserSelfDTO;
-import com.cmcorg20230301.be.engine.wallet.model.dto.SysUserWalletWithdrawLogPageDTO;
-import com.cmcorg20230301.be.engine.wallet.model.dto.SysUserWalletWithdrawLogPageUserSelfDTO;
+import com.cmcorg20230301.be.engine.wallet.model.dto.*;
 import com.cmcorg20230301.be.engine.wallet.model.entity.SysUserWalletWithdrawLogDO;
 import com.cmcorg20230301.be.engine.wallet.service.SysUserWalletWithdrawLogService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -35,6 +32,20 @@ public class SysUserWalletWithdrawLogController {
     @PostMapping("/dictList/withdrawStatus")
     public ApiResultVO<Page<DictIntegerVO>> withdrawStatusDictList() {
         return ApiResultVO.okData(baseService.withdrawStatusDictList());
+    }
+
+    @Operation(summary = "新增/修改")
+    @PostMapping("/insertOrUpdate")
+    @PreAuthorize("hasAuthority('sysUserWalletWithdrawLog:insertOrUpdate')")
+    public ApiResultVO<String> insertOrUpdate(@RequestBody @Valid SysUserWalletWithdrawLogInsertOrUpdateDTO dto) {
+        return ApiResultVO.okMsg(baseService.insertOrUpdate(dto));
+    }
+
+    @Operation(summary = "取消")
+    @PostMapping("/cancel")
+    @PreAuthorize("hasAuthority('sysUserWalletWithdrawLog:cancel')")
+    public ApiResultVO<String> cancel(@RequestBody @Valid NotNullId notNullId) {
+        return ApiResultVO.okMsg(baseService.cancel(notNullId));
     }
 
     @Operation(summary = "分页排序查询")
