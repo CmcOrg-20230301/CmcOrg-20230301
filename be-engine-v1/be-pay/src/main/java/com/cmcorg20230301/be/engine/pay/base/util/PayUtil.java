@@ -92,10 +92,10 @@ public class PayUtil {
 
         }
 
-        log.info("保存支付数据，长度：{}", tempSysPayDOList.size());
-
         // 目的：防止还有程序往：tempList，里面添加数据，所以这里等待一会
         MyThreadUtil.schedule(() -> {
+
+            log.info("保存支付数据，长度：{}", tempSysPayDOList.size());
 
             // 批量保存数据
             sysPayService.updateBatchById(tempSysPayDOList);

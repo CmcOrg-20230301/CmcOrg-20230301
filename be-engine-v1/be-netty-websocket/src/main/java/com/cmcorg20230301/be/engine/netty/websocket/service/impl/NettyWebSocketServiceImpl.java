@@ -174,7 +174,7 @@ public class NettyWebSocketServiceImpl implements NettyWebSocketService {
         SysSocketRefUserDO sysSocketRefUserDO = new SysSocketRefUserDO();
 
         Long nextId = IdGeneratorUtil.nextId();
-        sysSocketRefUserDO.setId(nextId); // 备注：这里手动设置 id，目的：增加并发能力
+        sysSocketRefUserDO.setId(nextId); // 备注：这里手动设置 id
 
         sysSocketRefUserDO.setUserId(currentUserId);
         sysSocketRefUserDO.setSocketId(sysSocketDO.getId());

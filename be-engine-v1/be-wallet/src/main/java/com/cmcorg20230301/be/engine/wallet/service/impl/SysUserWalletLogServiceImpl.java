@@ -53,10 +53,10 @@ public class SysUserWalletLogServiceImpl extends ServiceImpl<SysUserWalletLogMap
 
         }
 
-        log.info("保存用户钱包操作日志，长度：{}", tempSysUserWalletLogDoList.size());
-
         // 目的：防止还有程序往：tempList，里面添加数据，所以这里等待一会
         MyThreadUtil.schedule(() -> {
+
+            log.info("保存用户钱包操作日志，长度：{}", tempSysUserWalletLogDoList.size());
 
             // 批量保存数据
             saveBatch(tempSysUserWalletLogDoList);

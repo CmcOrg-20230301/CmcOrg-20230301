@@ -126,12 +126,12 @@ public class NettyWebSocketServerHandler extends ChannelInboundHandlerAdapter {
 
         }
 
-        int sum = USER_ID_CHANNEL_MAP.values().stream().mapToInt(it -> it.values().size()).sum();
-
-        log.info("WebSocket 保存数据，长度：{}，连接总数：{}", tempSysSocketRefUserDOList.size(), sum);
-
         // 目的：防止还有程序往：tempList，里面添加数据，所以这里等待一会
         MyThreadUtil.schedule(() -> {
+
+            int sum = USER_ID_CHANNEL_MAP.values().stream().mapToInt(it -> it.values().size()).sum();
+
+            log.info("WebSocket 保存数据，长度：{}，连接总数：{}", tempSysSocketRefUserDOList.size(), sum);
 
             // 批量保存数据
             sysSocketRefUserService.saveBatch(tempSysSocketRefUserDOList);
@@ -158,12 +158,12 @@ public class NettyWebSocketServerHandler extends ChannelInboundHandlerAdapter {
 
         }
 
-        int sum = USER_ID_CHANNEL_MAP.values().stream().mapToInt(it -> it.values().size()).sum();
-
-        log.info("WebSocket 移除数据，长度：{}，连接总数：{}", tempSysSocketRefUserIdSet.size(), sum);
-
         // 目的：防止还有程序往：tempList，里面添加数据，所以这里等待一会
         MyThreadUtil.schedule(() -> {
+
+            int sum = USER_ID_CHANNEL_MAP.values().stream().mapToInt(it -> it.values().size()).sum();
+
+            log.info("WebSocket 移除数据，长度：{}，连接总数：{}", tempSysSocketRefUserIdSet.size(), sum);
 
             // 批量保存数据
             sysSocketRefUserService.removeByIds(tempSysSocketRefUserIdSet);
@@ -203,7 +203,7 @@ public class NettyWebSocketServerHandler extends ChannelInboundHandlerAdapter {
 
             channelMap.remove(sysSocketRefUserId);
 
-            log.info("WebSocket 断开，用户：{}，连接数：{}", userId, channelMap.size());
+            log.info("WebSocket 断开，用户：{}，连接数：{}，sysSocketRefUserId：{}", userId, channelMap.size(), sysSocketRefUserId);
 
             SYS_SOCKET_REF_USER_ID_SET.add(sysSocketRefUserId);
 
@@ -342,36 +342,49 @@ public class NettyWebSocketServerHandler extends ChannelInboundHandlerAdapter {
 
         } catch (Throwable e) {
 
-            if (e instanceof InvocationTargetException) {
-
-                e = ((InvocationTargetException)e).getTargetException();
-
-            }
-
-            e.printStackTrace();
-
-            WebSocketMessageDTO<Object> webSocketMessageDTO = new WebSocketMessageDTO<>();
-
-            if (e instanceof BaseException) {
-
-                ApiResultVO<?> apiResultVO = ((BaseException)e).getApiResultVO();
-
-                webSocketMessageDTO.setUri(uri);
-                webSocketMessageDTO.setCode(apiResultVO.getCode());
-                webSocketMessageDTO.setMsg(apiResultVO.getMsg());
-
-            } else {
-
-                webSocketMessageDTO.setUri(uri);
-                webSocketMessageDTO.setCode(BaseBizCodeEnum.API_RESULT_SYS_ERROR.getCode());
-                webSocketMessageDTO.setMsg(BaseBizCodeEnum.API_RESULT_SYS_ERROR.getMsg());
-
-            }
-
-            WebSocketUtil.send(channel, webSocketMessageDTO, text, costMs, mappingValue,
-                MyEntityUtil.getNotNullStr(e.getMessage()), false);
+            // 处理：错误
+            handleTextWebSocketFrameError(channel, costMs, text, uri, mappingValue, e);
 
         }
+
+    }
+
+    /**
+     * 处理：错误
+     */
+    private void handleTextWebSocketFrameError(Channel channel, long costMs, String text, String uri,
+        NettyWebSocketBeanPostProcessor.MappingValue mappingValue, Throwable e) {
+
+        if (e instanceof InvocationTargetException) {
+
+            e = ((InvocationTargetException)e).getTargetException();
+
+        }
+
+        e.printStackTrace();
+
+        WebSocketMessageDTO<Object> webSocketMessageDTO = new WebSocketMessageDTO<>();
+
+        if (e instanceof BaseException) {
+
+            ApiResultVO<?> apiResultVO = ((BaseException)e).getApiResultVO();
+
+            webSocketMessageDTO.setUri(uri);
+            webSocketMessageDTO.setCode(apiResultVO.getCode());
+            webSocketMessageDTO.setMsg(apiResultVO.getMsg());
+
+        } else {
+
+            webSocketMessageDTO.setUri(uri);
+            webSocketMessageDTO.setCode(BaseBizCodeEnum.API_RESULT_SYS_ERROR.getCode());
+            webSocketMessageDTO.setMsg(BaseBizCodeEnum.API_RESULT_SYS_ERROR.getMsg());
+
+        }
+
+        // 发送消息
+        WebSocketUtil
+            .send(channel, webSocketMessageDTO, text, costMs, mappingValue, MyEntityUtil.getNotNullStr(e.getMessage()),
+                false);
 
     }
 
@@ -455,7 +468,7 @@ public class NettyWebSocketServerHandler extends ChannelInboundHandlerAdapter {
 
         channelMap.put(sysSocketRefUserDoId, channel);
 
-        log.info("WebSocket 连接，用户：{}，连接数：{}", userId, channelMap.size());
+        log.info("WebSocket 连接，用户：{}，连接数：{}，sysSocketRefUserDoId：{}", userId, channelMap.size(), sysSocketRefUserDoId);
 
     }
 

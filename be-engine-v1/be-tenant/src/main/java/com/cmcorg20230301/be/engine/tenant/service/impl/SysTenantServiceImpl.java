@@ -357,6 +357,8 @@ public class SysTenantServiceImpl extends ServiceImpl<SysTenantMapper, SysTenant
             lambdaQuery().like(StrUtil.isNotBlank(dto.getName()), SysTenantDO::getName, dto.getName())
                 .like(StrUtil.isNotBlank(dto.getRemark()), BaseEntityTree::getRemark, dto.getRemark())
                 .eq(dto.getEnableFlag() != null, BaseEntityTree::getEnableFlag, dto.getEnableFlag())
+                .eq(dto.getIndependentPayFlag() != null, SysTenantDO::getIndependentPayFlag,
+                    dto.getIndependentPayFlag())
                 .eq(dto.getId() != null, BaseEntity::getId, dto.getId()) //
                 .eq(BaseEntityTree::getDelFlag, false) //
                 .in(BaseEntityNoId::getTenantId, dto.getTenantIdSet()) //

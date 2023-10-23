@@ -64,10 +64,10 @@ public class RequestUtil {
 
         }
 
-        log.info("保存请求数据，长度：{}", tempSysRequestDOList.size());
-
         // 目的：防止还有程序往：tempList，里面添加数据，所以这里等待一会
         MyThreadUtil.schedule(() -> {
+
+            log.info("保存请求数据，长度：{}", tempSysRequestDOList.size());
 
             // 批量保存数据
             baseSysRequestService.saveBatch(tempSysRequestDOList);
