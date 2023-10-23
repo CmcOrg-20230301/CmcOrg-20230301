@@ -58,7 +58,7 @@ public class PayWxServiceImpl implements PayWxService {
      */
     @Override
     @SneakyThrows
-    public void notifyCallBackNative(HttpServletRequest request, HttpServletResponse response, Long tenantId,
+    public void notifyCallBackNative(HttpServletRequest request, HttpServletResponse response, long tenantId,
         long sysPayConfigurationId) {
 
         SysPayConfigurationDO sysPayConfigurationDoTemp =
@@ -91,7 +91,7 @@ public class PayWxServiceImpl implements PayWxService {
      * 服务器异步通知-jsApi，备注：第三方应用调用
      */
     @Override
-    public void notifyCallBackJsApi(HttpServletRequest request, HttpServletResponse response, Long tenantId,
+    public void notifyCallBackJsApi(HttpServletRequest request, HttpServletResponse response, long tenantId,
         long sysPayConfigurationId) {
 
         SysPayConfigurationDO sysPayConfigurationDoTemp =

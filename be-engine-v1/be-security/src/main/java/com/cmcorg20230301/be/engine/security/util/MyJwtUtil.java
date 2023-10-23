@@ -44,11 +44,27 @@ public class MyJwtUtil {
 
     public static final String PAYLOAD_MAP_TENANT_ID_KEY = "tenantId";
 
+    public static final String PAYLOAD_MAP_WX_OPEN_ID_KEY = "wxOpenId";
+
     private static SecurityProperties securityProperties;
 
     public MyJwtUtil(SecurityProperties securityProperties) {
 
         MyJwtUtil.securityProperties = securityProperties;
+
+    }
+
+    /**
+     * 获取：jwt中的 wxOpenId值
+     */
+    @Nullable
+    public static String getPayloadMapWxOpenIdValue(@Nullable JSONObject claimsJson) {
+
+        if (claimsJson == null) {
+            return null;
+        }
+
+        return claimsJson.getStr(MyJwtUtil.PAYLOAD_MAP_WX_OPEN_ID_KEY);
 
     }
 

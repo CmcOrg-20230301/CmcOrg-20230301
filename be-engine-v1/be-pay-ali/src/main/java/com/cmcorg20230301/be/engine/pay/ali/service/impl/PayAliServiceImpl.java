@@ -28,7 +28,7 @@ public class PayAliServiceImpl implements PayAliService {
      */
     @SneakyThrows
     @Override
-    public String notifyCallBack(HttpServletRequest request, Long tenantId, long sysPayConfigurationId) {
+    public String notifyCallBack(HttpServletRequest request, long tenantId, long sysPayConfigurationId) {
 
         Map<String, String> paramsMap = new HashMap<>();
 

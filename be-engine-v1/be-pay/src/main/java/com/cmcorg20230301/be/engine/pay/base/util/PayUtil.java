@@ -4,6 +4,7 @@ import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.lang.Assert;
 import cn.hutool.core.map.MapUtil;
+import cn.hutool.core.util.StrUtil;
 import com.cmcorg20230301.be.engine.datasource.util.TransactionUtil;
 import com.cmcorg20230301.be.engine.kafka.util.KafkaUtil;
 import com.cmcorg20230301.be.engine.model.model.constant.BaseConstant;
@@ -26,6 +27,7 @@ import com.cmcorg20230301.be.engine.security.model.entity.BaseEntityNoIdFather;
 import com.cmcorg20230301.be.engine.security.model.vo.ApiResultVO;
 import com.cmcorg20230301.be.engine.security.util.MyEntityUtil;
 import com.cmcorg20230301.be.engine.security.util.MyThreadUtil;
+import com.cmcorg20230301.be.engine.security.util.UserUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -115,19 +117,8 @@ public class PayUtil {
             dto.setPayType(dto.getSysPayConfigurationDoTemp().getType()); // 保证一致性
         }
 
-        Assert.notNull(dto.getPayType());
-        Assert.notNull(dto.getTenantId());
-        Assert.notNull(dto.getUserId());
-
-        Assert.notBlank(dto.getOutTradeNo());
-        Assert.notNull(dto.getTotalAmount());
-        Assert.notBlank(dto.getSubject());
-
-        int compare = DateUtil.compare(dto.getTimeExpire(), new Date());
-
-        if (compare <= 0) {
-            ApiResultVO.errorMsg("操作失败：支付过期时间晚于当前时间");
-        }
+        // 检查：dto对象
+        checkPayDTO(dto);
 
         if (SysPayTypeEnum.DEFAULT.equals(dto.getPayType())) { // 如果是：默认支付
 
@@ -150,14 +141,16 @@ public class PayUtil {
             ApiResultVO.errorMsg("操作失败：支付方式未找到：{}", dto.getPayType().getCode());
         }
 
+        if (StrUtil.isBlank(dto.getOpenId())) {
+            setOpenId(dto); // 设置：openId
+        }
+
         Long payId = IdGeneratorUtil.nextId();
 
         dto.setOutTradeNo(payId.toString()); // 设置：支付的订单号
 
         // 调用：第三方支付
         SysPayReturnBO sysPayReturnBO = iSysPay.pay(dto);
-
-        Assert.notBlank(sysPayReturnBO.getPayAppId());
 
         // 获取：SysPayDO对象
         SysPayDO sysPayDO = getSysPayDO(dto, iSysPay, payId, sysPayReturnBO);
@@ -179,6 +172,48 @@ public class PayUtil {
     }
 
     /**
+     * 设置：openId
+     */
+    private static void setOpenId(PayDTO dto) {
+
+        String openId;
+
+        if (dto.getPayType().getCode() >= SysPayTypeEnum.WX_NATIVE.getCode()
+            && dto.getPayType().getCode() < SysPayTypeEnum.UNION.getCode()) {
+
+            openId = UserUtil.getCurrentUserWxOpenIdDefault();
+
+        } else {
+
+            openId = "";
+
+        }
+
+        dto.setOpenId(openId);
+
+    }
+
+    /**
+     * 检查：dto对象
+     */
+    private static void checkPayDTO(PayDTO dto) {
+
+        Assert.notNull(dto.getPayType());
+        Assert.notNull(dto.getTenantId());
+        Assert.notNull(dto.getUserId());
+
+        Assert.notNull(dto.getTotalAmount());
+        Assert.notBlank(dto.getSubject());
+
+        int compare = DateUtil.compare(dto.getExpireTime(), new Date());
+
+        if (compare <= 0) {
+            ApiResultVO.errorMsg("操作失败：支付过期时间晚于当前时间");
+        }
+
+    }
+
+    /**
      * 获取：SysPayDO对象
      */
     @NotNull
@@ -190,29 +225,29 @@ public class PayUtil {
 
         sysPayDO.setPayType(iSysPay.getSysPayType());
 
-        sysPayDO.setSysPayConfigurationId(dto.getSysPayConfigurationDoTemp().getId());
-
-        sysPayDO.setPayAppId(sysPayReturnBO.getPayAppId());
-
         sysPayDO.setTenantId(dto.getTenantId());
 
         sysPayDO.setUserId(dto.getUserId());
 
         sysPayDO.setSubject(dto.getSubject());
-        sysPayDO.setBody(dto.getBody());
+        sysPayDO.setBody(MyEntityUtil.getNotNullStr(dto.getBody()));
         sysPayDO.setOriginPrice(dto.getTotalAmount());
         sysPayDO.setPayPrice(BigDecimal.ZERO);
         sysPayDO.setPayCurrency("");
 
-        sysPayDO.setExpireTime(dto.getTimeExpire());
+        sysPayDO.setExpireTime(dto.getExpireTime());
+
+        sysPayDO.setSysPayConfigurationId(dto.getSysPayConfigurationDoTemp().getId());
 
         sysPayDO.setOpenId(MyEntityUtil.getNotNullAndTrimStr(dto.getOpenId()));
+
+        sysPayDO.setPayAppId(MyEntityUtil.getNotNullStr(sysPayReturnBO.getPayAppId()));
+
+        sysPayDO.setPayReturnValue(MyEntityUtil.getNotNullStr(sysPayReturnBO.getPayReturnValue()));
 
         sysPayDO.setStatus(SysPayTradeStatusEnum.WAIT_BUYER_PAY);
 
         sysPayDO.setTradeNo("");
-
-        sysPayDO.setPayReturnValue(MyEntityUtil.getNotNullStr(sysPayReturnBO.getPayReturnValue()));
 
         sysPayDO.setRefType(SysPayRefTypeEnum.NONE);
         sysPayDO.setRefId(-1L);

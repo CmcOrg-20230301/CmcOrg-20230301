@@ -107,7 +107,7 @@ public class PayWxUtil {
             + sysPayConfigurationDoCallBack.getValue().getId());
 
         request.setOutTradeNo(dto.getOutTradeNo());
-        request.setTimeExpire(DatePattern.UTC_WITH_XXX_OFFSET_FORMAT.format(dto.getTimeExpire()));
+        request.setTimeExpire(DatePattern.UTC_WITH_XXX_OFFSET_FORMAT.format(dto.getExpireTime()));
 
         // 调用接口
         com.wechat.pay.java.service.payments.nativepay.model.PrepayResponse prepayResponse =
@@ -195,7 +195,7 @@ public class PayWxUtil {
             + sysPayConfigurationDoCallBack.getValue().getId());
 
         request.setOutTradeNo(dto.getOutTradeNo());
-        request.setTimeExpire(DatePattern.UTC_WITH_XXX_OFFSET_FORMAT.format(dto.getTimeExpire()));
+        request.setTimeExpire(DatePattern.UTC_WITH_XXX_OFFSET_FORMAT.format(dto.getExpireTime()));
 
         com.wechat.pay.java.service.payments.jsapi.model.Payer payer =
             new com.wechat.pay.java.service.payments.jsapi.model.Payer();

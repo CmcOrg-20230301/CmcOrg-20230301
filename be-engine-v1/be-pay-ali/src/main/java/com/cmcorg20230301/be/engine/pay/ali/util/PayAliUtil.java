@@ -104,7 +104,7 @@ public class PayAliUtil {
         bizContent.set("subject", dto.getSubject());
         bizContent.set("body", dto.getBody());
         bizContent.set("product_code", "FAST_INSTANT_TRADE_PAY");
-        bizContent.set("time_expire", DateUtil.formatDateTime(dto.getTimeExpire()));
+        bizContent.set("time_expire", DateUtil.formatDateTime(dto.getExpireTime()));
 
         aliPayRequest.setBizContent(bizContent.toString());
 

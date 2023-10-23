@@ -156,6 +156,22 @@ public class UserUtil {
     }
 
     /**
+     * 这里只会返回实际的 wxOpenId 或者 空字符串
+     */
+    @NotNull
+    public static String getCurrentUserWxOpenIdDefault() {
+
+        String currentUserWxOpenIdWillNull = getCurrentUserWxOpenIdWillNull();
+
+        if (currentUserWxOpenIdWillNull == null) {
+            currentUserWxOpenIdWillNull = "";
+        }
+
+        return currentUserWxOpenIdWillNull;
+
+    }
+
+    /**
      * 用户是否是系统管理员
      */
     public static boolean getCurrentUserAdminFlag() {
@@ -186,6 +202,17 @@ public class UserUtil {
         }
 
         return userId;
+
+    }
+
+    /**
+     * 获取当前 wxOpenId，注意：这里获取 wxOpenId之后需要做 非空判断
+     * 这里只会返回实际的 wxOpenId或者 null
+     */
+    @Nullable
+    private static String getCurrentUserWxOpenIdWillNull() {
+
+        return MyJwtUtil.getPayloadMapWxOpenIdValue(getSecurityContextHolderContextAuthenticationPrincipalJsonObject());
 
     }
 

@@ -523,7 +523,11 @@ public class SignUtil {
         String jwtSecretSuf = UserUtil.getJwtSecretSuf(sysUserDO.getId());
 
         // 颁发，并返回 jwt
-        return MyJwtUtil.generateJwt(sysUserDO.getId(), jwtSecretSuf, null, sysUserDO.getTenantId());
+        return MyJwtUtil.generateJwt(sysUserDO.getId(), jwtSecretSuf, payloadMap -> {
+
+            payloadMap.set(MyJwtUtil.PAYLOAD_MAP_WX_OPEN_ID_KEY, sysUserDO.getWxOpenId());
+
+        }, sysUserDO.getTenantId());
 
     }
 
@@ -539,8 +543,8 @@ public class SignUtil {
         lambdaQueryChainWrapper.eq(BaseEntityNoId::getTenantId, tenantId);
 
         SysUserDO sysUserDO = lambdaQueryChainWrapper
-            .select(SysUserDO::getPassword, BaseEntity::getEnableFlag, BaseEntity::getId, BaseEntityNoId::getTenantId)
-            .one();
+            .select(SysUserDO::getPassword, BaseEntity::getEnableFlag, BaseEntity::getId, BaseEntityNoId::getTenantId,
+                SysUserDO::getWxOpenId).one();
 
         // 账户是否存在
         if (sysUserDO == null) {
