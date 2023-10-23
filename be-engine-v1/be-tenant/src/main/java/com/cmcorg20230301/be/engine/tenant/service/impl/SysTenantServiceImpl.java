@@ -74,6 +74,12 @@ public class SysTenantServiceImpl extends ServiceImpl<SysTenantMapper, SysTenant
     @DSTransactional
     public String insertOrUpdate(SysTenantInsertOrUpdateDTO dto) {
 
+        Long currentTenantIdDefault = UserUtil.getCurrentTenantIdDefault();
+
+        if (currentTenantIdDefault.equals(dto.getId())) {
+            ApiResultVO.error(BaseBizCodeEnum.ILLEGAL_REQUEST); // 不能修改自身租户的数据
+        }
+
         // 处理：BaseTenantInsertOrUpdateDTO
         SysTenantUtil.handleBaseTenantInsertOrUpdateDTO(dto, getCheckIllegalFunc1(CollUtil.newHashSet(dto.getId())),
             getTenantIdBaseEntityFunc1());
@@ -114,14 +120,8 @@ public class SysTenantServiceImpl extends ServiceImpl<SysTenantMapper, SysTenant
         sysTenantDO.setRemark(MyEntityUtil.getNotNullStr(dto.getRemark()));
         sysTenantDO.setDelFlag(false);
 
-        if (dto.getId() == null) {
-
-            // 租户 id，和上级租户 id，保持一致
-            sysTenantDO.setTenantId(parentId);
-
-            sysTenantDO.setParentId(parentId);
-
-        }
+        // 处理：SysTenantDO对象
+        handleSysTenantDO(dto, currentTenantIdDefault, parentId, sysTenantDO);
 
         saveOrUpdate(sysTenantDO);
 
@@ -142,6 +142,50 @@ public class SysTenantServiceImpl extends ServiceImpl<SysTenantMapper, SysTenant
         }
 
         return BaseBizCodeEnum.OK;
+
+    }
+
+    /**
+     * 处理：SysTenantDO对象
+     */
+    private void handleSysTenantDO(SysTenantInsertOrUpdateDTO dto, Long currentTenantIdDefault, Long parentId,
+        SysTenantDO sysTenantDO) {
+
+        if (dto.getId() == null) {
+
+            // 租户 id，和上级租户 id，保持一致
+            sysTenantDO.setTenantId(parentId);
+
+            sysTenantDO.setParentId(parentId);
+
+        }
+
+        if (BaseConstant.TENANT_ID.equals(currentTenantIdDefault)) { // 如果是：顶层租户
+
+            sysTenantDO.setIndependentPayFlag(BooleanUtil.isTrue(dto.getIndependentPayFlag()));
+
+        } else {
+
+            SysTenantDO checkSysTenantDO =
+                lambdaQuery().eq(BaseEntity::getId, currentTenantIdDefault).select(SysTenantDO::getIndependentPayFlag)
+                    .one();
+
+            if (checkSysTenantDO != null) {
+
+                // 当前租户，是否是：独立支付，备注：只有独立支付的租户，才可以修改，是否独立支付的字段
+                if (checkSysTenantDO.getIndependentPayFlag()) {
+                    sysTenantDO.setIndependentPayFlag(BooleanUtil.isTrue(dto.getIndependentPayFlag()));
+                }
+
+            } else {
+
+                if (dto.getId() == null) {
+                    sysTenantDO.setIndependentPayFlag(false);
+                }
+
+            }
+
+        }
 
     }
 
@@ -358,8 +402,7 @@ public class SysTenantServiceImpl extends ServiceImpl<SysTenantMapper, SysTenant
                 .like(StrUtil.isNotBlank(dto.getRemark()), BaseEntityTree::getRemark, dto.getRemark())
                 .eq(dto.getEnableFlag() != null, BaseEntityTree::getEnableFlag, dto.getEnableFlag())
                 .eq(dto.getIndependentPayFlag() != null, SysTenantDO::getIndependentPayFlag,
-                    dto.getIndependentPayFlag())
-                .eq(dto.getId() != null, BaseEntity::getId, dto.getId()) //
+                    dto.getIndependentPayFlag()).eq(dto.getId() != null, BaseEntity::getId, dto.getId()) //
                 .eq(BaseEntityTree::getDelFlag, false) //
                 .in(BaseEntityNoId::getTenantId, dto.getTenantIdSet()) //
                 .orderByDesc(BaseEntityTree::getOrderNo).page(dto.page(true));

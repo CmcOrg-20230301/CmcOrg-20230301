@@ -136,7 +136,7 @@ public class NettyWebSocketServerHandler extends ChannelInboundHandlerAdapter {
             // 批量保存数据
             sysSocketRefUserService.saveBatch(tempSysSocketRefUserDOList);
 
-        }, DateUtil.offsetSecond(new Date(), 2));
+        }, DateUtil.offsetMillisecond(new Date(), 1500));
 
     }
 
@@ -168,7 +168,7 @@ public class NettyWebSocketServerHandler extends ChannelInboundHandlerAdapter {
             // 批量保存数据
             sysSocketRefUserService.removeByIds(tempSysSocketRefUserIdSet);
 
-        }, DateUtil.offsetSecond(new Date(), 2));
+        }, DateUtil.offsetMillisecond(new Date(), 3000));
 
     }
 
