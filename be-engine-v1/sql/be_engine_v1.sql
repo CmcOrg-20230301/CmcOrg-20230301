@@ -262,6 +262,52 @@ INSERT INTO `sys_dict` (`id`, `tenant_id`, `create_id`, `create_time`, `update_i
                         `value`, `order_no`, `uuid`, `system_flag`)
 VALUES (230823165101154704, 0, 0, '2023-08-23 16:51:01', 0, '2023-08-23 16:51:01', 1, 0, 0, '',
         'sys_socket_online_type', 'ping_test', 2, 100001, 9800, 'bfdef308355649ccb87f075f3924b1f3', 1);
+INSERT INTO `be_engine_v1`.`sys_dict` (`id`, `tenant_id`, `create_id`, `create_time`, `update_id`, `update_time`,
+                                       `enable_flag`, `version`, `del_flag`, `remark`, `dict_key`, `name`, `type`,
+                                       `value`, `order_no`, `uuid`, `system_flag`)
+VALUES (231023100017080109, 0, 0, '2023-10-23 10:00:18', 0, '2023-10-23 10:00:18', 1, 0, 0, '', 'sys_pay_type', '支付方式',
+        1, -1, 9500, 'fa934b92b7e84d0d92543743ec6c369c', 1);
+INSERT INTO `be_engine_v1`.`sys_dict` (`id`, `tenant_id`, `create_id`, `create_time`, `update_id`, `update_time`,
+                                       `enable_flag`, `version`, `del_flag`, `remark`, `dict_key`, `name`, `type`,
+                                       `value`, `order_no`, `uuid`, `system_flag`)
+VALUES (231023100056080114, 0, 0, '2023-10-23 10:00:56', 0, '2023-10-23 10:00:56', 1, 0, 0, '', 'sys_pay_type', '支付宝',
+        2, 101, 10000, '5cd6ba1880314633a322b534410e212c', 1);
+INSERT INTO `be_engine_v1`.`sys_dict` (`id`, `tenant_id`, `create_id`, `create_time`, `update_id`, `update_time`,
+                                       `enable_flag`, `version`, `del_flag`, `remark`, `dict_key`, `name`, `type`,
+                                       `value`, `order_no`, `uuid`, `system_flag`)
+VALUES (231023100115080119, 0, 0, '2023-10-23 10:01:15', 0, '2023-10-23 10:01:15', 1, 0, 0, '', 'sys_pay_type', '微信', 2,
+        201, 9900, '376ffa1bf407420c858d0c0a802da9e7', 1);
+INSERT INTO `be_engine_v1`.`sys_dict` (`id`, `tenant_id`, `create_id`, `create_time`, `update_id`, `update_time`,
+                                       `enable_flag`, `version`, `del_flag`, `remark`, `dict_key`, `name`, `type`,
+                                       `value`, `order_no`, `uuid`, `system_flag`)
+VALUES (231023100126080124, 0, 0, '2023-10-23 10:01:26', 0, '2023-10-23 10:01:26', 1, 0, 0, '', 'sys_pay_type', '云闪付',
+        2, 301, 9800, '5fd4331fd7e14a41872a2b977d3ad56b', 1);
+INSERT INTO `be_engine_v1`.`sys_dict` (`id`, `tenant_id`, `create_id`, `create_time`, `update_id`, `update_time`,
+                                       `enable_flag`, `version`, `del_flag`, `remark`, `dict_key`, `name`, `type`,
+                                       `value`, `order_no`, `uuid`, `system_flag`)
+VALUES (231023100136080128, 0, 0, '2023-10-23 10:01:37', 0, '2023-10-23 10:01:37', 1, 0, 0, '', 'sys_pay_type', '谷歌', 2,
+        401, 9700, 'ae1954ff27a448c196170b2c20e1774f', 1);
+INSERT INTO `be_engine_v1`.`sys_dict` (`id`, `tenant_id`, `create_id`, `create_time`, `update_id`, `update_time`,
+                                       `enable_flag`, `version`, `del_flag`, `remark`, `dict_key`, `name`, `type`,
+                                       `value`, `order_no`, `uuid`, `system_flag`)
+VALUES (231023100245080135, 0, 0, '2023-10-23 10:02:46', 0, '2023-10-23 10:02:46', 1, 0, 0, '', 'sys_other_app_type',
+        '第三方应用类型', 1, -1, 9400, '73b703820ca94e50bde9b17886c26f44', 1);
+INSERT INTO `be_engine_v1`.`sys_dict` (`id`, `tenant_id`, `create_id`, `create_time`, `update_id`, `update_time`,
+                                       `enable_flag`, `version`, `del_flag`, `remark`, `dict_key`, `name`, `type`,
+                                       `value`, `order_no`, `uuid`, `system_flag`)
+VALUES (231023100257080139, 0, 0, '2023-10-23 10:02:58', 0, '2023-10-23 10:02:58', 1, 0, 0, '', 'sys_other_app_type',
+        '微信小程序', 2, 101, 10000, 'b64c2b9d483546c5ad9a1f8e36df7018', 1);
+INSERT INTO `be_engine_v1`.`sys_dict` (`id`, `tenant_id`, `create_id`, `create_time`, `update_id`, `update_time`,
+                                       `enable_flag`, `version`, `del_flag`, `remark`, `dict_key`, `name`, `type`,
+                                       `value`, `order_no`, `uuid`, `system_flag`)
+VALUES (231023100309080144, 0, 0, '2023-10-23 10:03:10', 0, '2023-10-23 10:03:10', 1, 0, 0, '', 'sys_other_app_type',
+        '微信公众号', 2, 102, 9900, '8903df79fa784e96a0fb60e3df879f6e', 1);
+INSERT INTO `be_engine_v1`.`sys_dict` (`id`, `tenant_id`, `create_id`, `create_time`, `update_id`, `update_time`,
+                                       `enable_flag`, `version`, `del_flag`, `remark`, `dict_key`, `name`, `type`,
+                                       `value`, `order_no`, `uuid`, `system_flag`)
+VALUES (231023100318080148, 0, 0, '2023-10-23 10:03:19', 0, '2023-10-23 10:03:19', 1, 0, 0, '', 'sys_other_app_type',
+        '支付宝小程序', 2, 201, 9800, '1d559f6e02484b608a69c16b255a0792', 1);
+
 
 -- ----------------------------
 -- Table structure for sys_file

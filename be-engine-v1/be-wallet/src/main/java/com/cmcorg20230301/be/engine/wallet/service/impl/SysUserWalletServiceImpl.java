@@ -381,14 +381,4 @@ public class SysUserWalletServiceImpl extends ServiceImpl<SysUserWalletMapper, S
 
     }
 
-    /**
-     * 获取：检查：是否非法操作的 getTenantIdBaseEntityFunc1
-     */
-    @NotNull
-    private Func1<Long, BaseEntityNoIdFather> getTenantIdBaseEntityFunc1() {
-
-        return id -> lambdaQuery().eq(SysUserWalletDO::getId, id).select(SysUserWalletDO::getTenantId).one();
-
-    }
-
 }

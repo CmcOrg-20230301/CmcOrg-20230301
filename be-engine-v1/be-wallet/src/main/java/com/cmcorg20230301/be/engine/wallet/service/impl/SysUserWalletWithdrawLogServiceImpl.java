@@ -79,6 +79,7 @@ public class SysUserWalletWithdrawLogServiceImpl
      * 新增/修改
      */
     @Override
+    @DSTransactional
     public String insertOrUpdate(SysUserWalletWithdrawLogInsertOrUpdateDTO dto) {
 
         Long userId = dto.getUserId();
@@ -99,6 +100,7 @@ public class SysUserWalletWithdrawLogServiceImpl
      * 取消
      */
     @Override
+    @DSTransactional
     public String cancel(NotNullId notNullId) {
 
         Set<Long> idSet = CollUtil.newHashSet(notNullId.getId());
@@ -225,6 +227,7 @@ public class SysUserWalletWithdrawLogServiceImpl
      * 新增/修改-租户
      */
     @Override
+    @DSTransactional
     public String insertOrUpdateTenant(SysUserWalletWithdrawLogInsertOrUpdateTenantDTO dto) {
 
         SysTenantUtil.checkTenantId(dto.getTenantId());
@@ -238,6 +241,7 @@ public class SysUserWalletWithdrawLogServiceImpl
      * 取消-租户
      */
     @Override
+    @DSTransactional
     public String cancelTenant(NotNullId notNullId) {
 
         Set<Long> idSet = CollUtil.newHashSet(notNullId.getId());
@@ -500,6 +504,7 @@ public class SysUserWalletWithdrawLogServiceImpl
      * 成功-用户的提现记录
      */
     @Override
+    @DSTransactional
     public String success(NotNullId notNullId) {
 
         Set<Long> idSet = CollUtil.newHashSet(notNullId.getId());
@@ -589,17 +594,6 @@ public class SysUserWalletWithdrawLogServiceImpl
 
         return tenantIdSet -> lambdaQuery().in(SysUserWalletWithdrawLogDO::getId, idSet)
             .in(BaseEntityNoId::getTenantId, tenantIdSet).count();
-
-    }
-
-    /**
-     * 获取：检查：是否非法操作的 getTenantIdBaseEntityFunc1
-     */
-    @NotNull
-    private Func1<Long, BaseEntityNoIdFather> getTenantIdBaseEntityFunc1() {
-
-        return id -> lambdaQuery().eq(SysUserWalletWithdrawLogDO::getId, id)
-            .select(SysUserWalletWithdrawLogDO::getTenantId).one();
 
     }
 
