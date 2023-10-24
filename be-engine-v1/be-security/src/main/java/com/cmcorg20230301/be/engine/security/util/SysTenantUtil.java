@@ -258,7 +258,7 @@ public class SysTenantUtil {
     }
 
     /**
-     * 处理：dto的tenantIdSet
+     * 处理或者检查：tenantIdSet
      */
     @NotNull
     public static Set<Long> handleDtoTenantIdSet(boolean onlySelfTenantIdFlag, Set<Long> tenantIdSet) {
