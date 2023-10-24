@@ -15,6 +15,7 @@ public interface BaseConstant {
 
     long ZERO = 0; // 0
     long NEGATIVE_ONE = -1L; // -1
+    Long NEGATIVE_ONE_LONG = NEGATIVE_ONE; // -1
     long NEGATIVE_TWO = -2L; // -2
 
     long DAY_1_EXPIRE_TIME = 60 * 60 * 1000 * 24; // 1天过期

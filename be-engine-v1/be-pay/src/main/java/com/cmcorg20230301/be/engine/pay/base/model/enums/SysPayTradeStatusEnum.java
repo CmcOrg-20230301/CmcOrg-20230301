@@ -42,9 +42,11 @@ public enum SysPayTradeStatusEnum {
     @NotNull
     public static SysPayTradeStatusEnum getByStatus(String status) {
 
+        String toUpperCase = status.toUpperCase();
+
         for (SysPayTradeStatusEnum item : SysPayTradeStatusEnum.values()) {
 
-            if (item.getStatusSet().contains(status)) {
+            if (item.getStatusSet().contains(toUpperCase)) {
                 return item;
             }
         }

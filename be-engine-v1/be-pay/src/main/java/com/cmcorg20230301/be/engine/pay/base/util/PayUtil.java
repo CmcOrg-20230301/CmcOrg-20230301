@@ -150,11 +150,13 @@ public class PayUtil {
 
         dto.setOutTradeNo(payId.toString()); // 设置：支付的订单号
 
+        Long tenantId = dto.getTenantId(); // 租户主键 id，备注：因为 pay方法会修改 dto的 tenantId的值
+
         // 调用：第三方支付
         SysPayReturnBO sysPayReturnBO = iSysPay.pay(dto);
 
         // 获取：SysPayDO对象
-        SysPayDO sysPayDO = getSysPayDO(dto, iSysPay, payId, sysPayReturnBO);
+        SysPayDO sysPayDO = getSysPayDO(dto, iSysPay, payId, sysPayReturnBO, tenantId);
 
         TransactionUtil.exec(() -> {
 
@@ -322,7 +324,8 @@ public class PayUtil {
      * 获取：SysPayDO对象
      */
     @NotNull
-    private static SysPayDO getSysPayDO(PayDTO dto, ISysPay iSysPay, Long payId, SysPayReturnBO sysPayReturnBO) {
+    private static SysPayDO getSysPayDO(PayDTO dto, ISysPay iSysPay, Long payId, SysPayReturnBO sysPayReturnBO,
+        Long tenantId) {
 
         SysPayDO sysPayDO = new SysPayDO();
 
@@ -330,7 +333,7 @@ public class PayUtil {
 
         sysPayDO.setPayType(iSysPay.getSysPayType());
 
-        sysPayDO.setTenantId(dto.getTenantId());
+        sysPayDO.setTenantId(tenantId);
 
         sysPayDO.setUserId(dto.getUserId());
 
@@ -401,7 +404,7 @@ public class PayUtil {
             return false;
         }
 
-        // 获取：订单状态
+        // 获取：支付状态
         SysPayTradeStatusEnum sysPayTradeStatusEnum =
             SysPayTradeStatusEnum.getByStatus(sysPayTradeNotifyBO.getTradeStatus());
 
@@ -411,7 +414,7 @@ public class PayUtil {
 
         return RedissonUtil.doLock(BaseRedisKeyEnum.PRE_PAY.name() + sysPayTradeNotifyBO.getOutTradeNo(), () -> {
 
-            // 查询：订单状态不同的数据
+            // 查询：支付状态不同的数据
             SysPayDO sysPayDO = sysPayService.lambdaQuery().eq(SysPayDO::getId, sysPayTradeNotifyBO.getOutTradeNo())
                 .ne(SysPayDO::getStatus, sysPayTradeStatusEnum).one();
 
@@ -432,8 +435,12 @@ public class PayUtil {
 
             SYS_PAY_DO_LIST.add(sysPayDO);
 
-            // 支付成功，处理业务
-            KafkaUtil.sendPayStatusChangeTopic(sysPayDO);
+            if (!SysPayRefTypeEnum.NONE.equals(sysPayDO.getRefType())) {
+
+                // 支付成功，处理业务
+                KafkaUtil.sendPayStatusChangeTopic(sysPayDO);
+
+            }
 
             return true;
 

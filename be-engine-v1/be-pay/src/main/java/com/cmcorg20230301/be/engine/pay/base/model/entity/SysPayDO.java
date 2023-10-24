@@ -36,31 +36,31 @@ public class SysPayDO extends BaseEntityNoId {
     @Schema(description = "用户主键 id")
     private Long userId;
 
-    @Schema(description = "订单名称")
+    @Schema(description = "支付名称")
     private String subject;
 
     @Schema(description = "商品描述")
     private String body;
 
-    @Schema(description = "订单原始的钱")
+    @Schema(description = "支付原始的钱")
     private BigDecimal originPrice;
 
-    @Schema(description = "订单支付的钱")
+    @Schema(description = "实际支付的钱")
     private BigDecimal payPrice;
 
-    @Schema(description = "订单支付的钱的单位，例如：人民币 CNY")
+    @Schema(description = "实际支付的钱的单位，例如：人民币 CNY")
     private String payCurrency;
 
-    @Schema(description = "订单过期时间")
+    @Schema(description = "支付过期时间")
     private Date expireTime;
 
     @Schema(description = "用户 openId")
     private String openId;
 
-    @Schema(description = "订单状态")
+    @Schema(description = "支付状态")
     private SysPayTradeStatusEnum status;
 
-    @Schema(description = "支付平台，订单号")
+    @Schema(description = "支付平台，支付号")
     private String tradeNo;
 
     @Schema(description = "支付返回的参数")
