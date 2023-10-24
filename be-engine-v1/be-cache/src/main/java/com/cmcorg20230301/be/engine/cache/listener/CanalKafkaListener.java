@@ -20,6 +20,7 @@ import java.util.Set;
 
 /**
  * canal的 kafka监听器
+ * 备注：如果收不到消息，可以把 canal的 logs文件夹删除了，然后重启 canal即可
  */
 @Component
 @KafkaListener(topics = "#{__listener.TOPIC_LIST}", groupId = "#{__listener.GROUP_ID}", batch = "true")
