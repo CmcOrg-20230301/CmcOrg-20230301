@@ -7,6 +7,7 @@ import com.cmcorg20230301.be.engine.security.exception.BaseBizCodeEnum;
 import com.cmcorg20230301.be.engine.security.exception.BaseException;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
+import org.jetbrains.annotations.Contract;
 
 @Data
 @Schema(description = "统一响应实体类")
@@ -44,6 +45,10 @@ public class ApiResultVO<T> {
         // 不允许修改 service的值
     }
 
+    /**
+     * Contract注解，目的：让 IDEA知道这里会抛出异常
+     */
+    @Contract(" -> fail")
     public ApiResultVO<T> error() {
         throw new BaseException(this);
     }
