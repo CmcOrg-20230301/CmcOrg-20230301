@@ -46,13 +46,14 @@ public class PayAliUtil {
     @NotNull
     public static AlipayConfig getAlipayConfig(@Nullable Long tenantId,
         @Nullable CallBack<SysPayConfigurationDO> sysPayConfigurationDoCallBack,
-        @Nullable SysPayConfigurationDO sysPayConfigurationDoTemp) {
+        @Nullable SysPayConfigurationDO sysPayConfigurationDoTemp, @Nullable Boolean useParentTenantPayFlag) {
 
         SysPayConfigurationDO sysPayConfigurationDO;
 
         if (sysPayConfigurationDoTemp == null) {
 
-            sysPayConfigurationDO = PayHelper.getSysPayConfigurationDO(tenantId, SysPayTypeEnum.ALI);
+            sysPayConfigurationDO =
+                PayHelper.getSysPayConfigurationDO(tenantId, SysPayTypeEnum.ALI, useParentTenantPayFlag);
 
         } else {
 
@@ -88,7 +89,8 @@ public class PayAliUtil {
         CallBack<SysPayConfigurationDO> sysPayConfigurationDoCallBack = new CallBack<>();
 
         AlipayClient alipayClient = new DefaultAlipayClient(
-            getAlipayConfig(dto.getTenantId(), sysPayConfigurationDoCallBack, dto.getSysPayConfigurationDoTemp()));
+            getAlipayConfig(dto.getTenantId(), sysPayConfigurationDoCallBack, dto.getSysPayConfigurationDoTemp(),
+                dto.getUseParentTenantPayFlag()));
 
         dto.setSysPayConfigurationDoTemp(sysPayConfigurationDoCallBack.getValue());
 
@@ -138,7 +140,8 @@ public class PayAliUtil {
 
         Assert.notBlank(outTradeNo);
 
-        AlipayClient alipayClient = new DefaultAlipayClient(getAlipayConfig(tenantId, null, sysPayConfigurationDoTemp));
+        AlipayClient alipayClient =
+            new DefaultAlipayClient(getAlipayConfig(tenantId, null, sysPayConfigurationDoTemp, null));
 
         AlipayTradeQueryRequest request = new AlipayTradeQueryRequest();
 

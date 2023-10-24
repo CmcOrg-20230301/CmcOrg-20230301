@@ -12,10 +12,13 @@ import java.util.function.Consumer;
 @Data
 public class PayDTO {
 
+    @Schema(description = "是否使用：上级租户的支付方式")
+    private Boolean useParentTenantPayFlag;
+
     @Schema(description = "支付方式，必填")
     private SysPayTypeEnum payType;
 
-    @Schema(description = "租户 id，必填")
+    @Schema(description = "租户 id，备注：只用于获取支付参数配置，无其他用处，必填")
     private Long tenantId;
 
     @Schema(description = "用户主键 id，必填")

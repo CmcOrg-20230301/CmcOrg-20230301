@@ -1,8 +1,10 @@
 package com.cmcorg20230301.be.engine.pay.base.util;
 
 import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.util.BooleanUtil;
 import cn.hutool.core.util.RandomUtil;
 import com.cmcorg20230301.be.engine.model.model.constant.BaseConstant;
+import com.cmcorg20230301.be.engine.pay.base.model.dto.PayDTO;
 import com.cmcorg20230301.be.engine.pay.base.model.entity.SysPayConfigurationDO;
 import com.cmcorg20230301.be.engine.pay.base.model.enums.SysPayTypeEnum;
 import com.cmcorg20230301.be.engine.pay.base.service.SysPayConfigurationService;
@@ -31,8 +33,8 @@ public class PayHelper {
      * 获取：SysPayConfigurationDO对象
      */
     @NotNull
-    public static SysPayConfigurationDO getSysPayConfigurationDO(@Nullable Long tenantId,
-        SysPayTypeEnum sysPayTypeEnum) {
+    public static SysPayConfigurationDO getSysPayConfigurationDO(@Nullable Long tenantId, SysPayTypeEnum sysPayTypeEnum,
+        @Nullable Boolean useParentTenantPayFlag) {
 
         if (tenantId == null) {
             tenantId = BaseConstant.TENANT_ID;
@@ -42,12 +44,40 @@ public class PayHelper {
             sysPayConfigurationService.lambdaQuery().eq(BaseEntityNoIdFather::getTenantId, tenantId)
                 .eq(BaseEntityNoId::getEnableFlag, true).eq(SysPayConfigurationDO::getType, sysPayTypeEnum).list();
 
+        SysPayConfigurationDO sysPayConfigurationDO;
+
         if (CollUtil.isEmpty(sysPayConfigurationDOList)) {
-            ApiResultVO.errorMsg("操作失败：暂未配置【{}】支付配置", sysPayTypeEnum.name());
+
+            if (BooleanUtil.isTrue(useParentTenantPayFlag)) {
+
+                PayDTO payDTO = new PayDTO();
+
+                payDTO.setTenantId(tenantId);
+
+                // 递归：获取上级租户的支付方式
+                sysPayConfigurationDO =
+                    PayUtil.handleUseParentTenantPayFlag(payDTO, tenantId, lambdaQueryChainWrapper -> {
+
+                        lambdaQueryChainWrapper.eq(SysPayConfigurationDO::getType, sysPayTypeEnum);
+
+                    });
+
+            } else {
+
+                ApiResultVO.errorMsg("操作失败：暂未配置【{}】支付", sysPayTypeEnum.name());
+
+                sysPayConfigurationDO = new SysPayConfigurationDO(); // 只是为了通过语法的检测，这里的代码不会执行
+
+            }
+
+        } else {
+
+            // 随机取一个
+            sysPayConfigurationDO = RandomUtil.randomEle(sysPayConfigurationDOList);
+
         }
 
-        // 随机取一个
-        return RandomUtil.randomEle(sysPayConfigurationDOList);
+        return sysPayConfigurationDO;
 
     }
 

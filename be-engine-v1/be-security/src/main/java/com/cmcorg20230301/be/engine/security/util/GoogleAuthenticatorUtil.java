@@ -70,7 +70,7 @@ public class GoogleAuthenticatorUtil {
      */
     private static String generateSecretKey() {
 
-        return Base32.encode(IdUtil.randomUUID());
+        return Base32.encode(IdUtil.randomUUID()).replaceAll("=", "");
 
     }
 

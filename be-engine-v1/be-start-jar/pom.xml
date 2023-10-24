@@ -63,6 +63,12 @@
             <artifactId>be-socket</artifactId>
         </dependency>
 
+        <!-- be-pay-google -->
+        <dependency>
+            <groupId>${cmcorg.groupId}</groupId>
+            <artifactId>be-pay-google</artifactId>
+        </dependency>
+
         <!-- be-pay-wx -->
         <dependency>
             <groupId>${cmcorg.groupId}</groupId>

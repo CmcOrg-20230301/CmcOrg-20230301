@@ -51,7 +51,8 @@ public class PayGoogleUtil {
 
         if (dto.getSysPayConfigurationDoTemp() == null) {
 
-            sysPayConfigurationDO = PayHelper.getSysPayConfigurationDO(dto.getTenantId(), SysPayTypeEnum.GOOGLE);
+            sysPayConfigurationDO = PayHelper
+                .getSysPayConfigurationDO(dto.getTenantId(), SysPayTypeEnum.GOOGLE, dto.getUseParentTenantPayFlag());
 
         } else {
 
@@ -148,7 +149,7 @@ public class PayGoogleUtil {
                 return accessToken;
             }
 
-            sysPayConfigurationDO = PayHelper.getSysPayConfigurationDO(tenantId, SysPayTypeEnum.GOOGLE);
+            sysPayConfigurationDO = PayHelper.getSysPayConfigurationDO(tenantId, SysPayTypeEnum.GOOGLE, null);
 
         } else {
 

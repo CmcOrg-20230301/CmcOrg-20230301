@@ -55,7 +55,7 @@ public class PayAliServiceImpl implements PayAliService {
         SysPayConfigurationDO sysPayConfigurationDoTemp =
             PayHelper.getSysPayConfigurationDO(tenantId, sysPayConfigurationId, SysPayTypeEnum.ALI);
 
-        AlipayConfig alipayConfig = PayAliUtil.getAlipayConfig(tenantId, null, sysPayConfigurationDoTemp);
+        AlipayConfig alipayConfig = PayAliUtil.getAlipayConfig(tenantId, null, sysPayConfigurationDoTemp, null);
 
         boolean signVerified = AlipaySignature
             .rsaCheckV1(paramsMap, alipayConfig.getAlipayPublicKey(), alipayConfig.getCharset(),

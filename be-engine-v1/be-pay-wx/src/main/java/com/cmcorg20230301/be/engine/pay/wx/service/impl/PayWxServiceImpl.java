@@ -64,8 +64,8 @@ public class PayWxServiceImpl implements PayWxService {
         SysPayConfigurationDO sysPayConfigurationDoTemp =
             PayHelper.getSysPayConfigurationDO(tenantId, sysPayConfigurationId, SysPayTypeEnum.WX_NATIVE);
 
-        NotificationParser notificationParser = new NotificationParser(
-            PayWxUtil.getRsaAutoCertificateConfig(tenantId, null, SysPayTypeEnum.WX_NATIVE, sysPayConfigurationDoTemp));
+        NotificationParser notificationParser = new NotificationParser(PayWxUtil
+            .getRsaAutoCertificateConfig(tenantId, null, SysPayTypeEnum.WX_NATIVE, sysPayConfigurationDoTemp, null));
 
         commonHandleNotifyCallBack(request, response, (requestParam) -> {
 
@@ -101,8 +101,8 @@ public class PayWxServiceImpl implements PayWxService {
             return;
         }
 
-        NotificationParser notificationParser = new NotificationParser(
-            PayWxUtil.getRsaAutoCertificateConfig(tenantId, null, SysPayTypeEnum.WX_JSAPI, sysPayConfigurationDoTemp));
+        NotificationParser notificationParser = new NotificationParser(PayWxUtil
+            .getRsaAutoCertificateConfig(tenantId, null, SysPayTypeEnum.WX_JSAPI, sysPayConfigurationDoTemp, null));
 
         commonHandleNotifyCallBack(request, response, (requestParam) -> {
 
