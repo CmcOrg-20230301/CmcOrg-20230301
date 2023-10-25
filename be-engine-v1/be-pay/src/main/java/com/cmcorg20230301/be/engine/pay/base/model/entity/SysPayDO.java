@@ -69,8 +69,11 @@ public class SysPayDO extends BaseEntityNoId {
     @Schema(description = "支付返回的参数")
     private String payReturnValue;
 
+    /**
+     * {@link ISysPayRefType}
+     */
     @Schema(description = "关联的类型，建议：修改")
-    private ISysPayRefType refType;
+    private Integer refType;
 
     @Schema(description = "关联的 id，建议：修改")
     private Long refId;

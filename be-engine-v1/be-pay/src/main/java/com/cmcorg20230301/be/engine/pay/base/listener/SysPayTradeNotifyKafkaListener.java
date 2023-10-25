@@ -51,7 +51,7 @@ public class SysPayTradeNotifyKafkaListener {
 
         SysPayDO sysPayDO = JSONUtil.toBean(recordStr, SysPayDO.class);
 
-        ISysPayRefHandler iSysPayRefHandler = SYS_PAY_REF_HANDLER_MAP.get(sysPayDO.getRefType().getCode());
+        ISysPayRefHandler iSysPayRefHandler = SYS_PAY_REF_HANDLER_MAP.get(sysPayDO.getRefType());
 
         if (iSysPayRefHandler != null) {
 

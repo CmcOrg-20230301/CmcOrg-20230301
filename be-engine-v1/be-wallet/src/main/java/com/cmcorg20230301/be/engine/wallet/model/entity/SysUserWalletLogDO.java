@@ -25,8 +25,11 @@ public class SysUserWalletLogDO extends BaseEntity {
     @Schema(description = "记录类型：1开头 增加 2开头 减少")
     private ISysUserWalletLogType type;
 
+    /**
+     * {@link ISysUserWalletLogRefType}
+     */
     @Schema(description = "关联的类型")
-    private ISysUserWalletLogRefType refType;
+    private Integer refType;
 
     @Schema(description = "关联的 id")
     private Long refId;

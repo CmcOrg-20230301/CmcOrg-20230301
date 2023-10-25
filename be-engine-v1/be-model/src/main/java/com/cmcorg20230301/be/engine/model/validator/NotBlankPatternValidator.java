@@ -1,6 +1,6 @@
 package com.cmcorg20230301.be.engine.model.validator;
 
-import com.cmcorg20230301.be.engine.model.model.annotation.NotBlankPattern;
+import com.cmcorg20230301.be.engine.model.model.annotation.NotCheckBlankPattern;
 import org.hibernate.validator.constraintvalidation.HibernateConstraintValidatorContext;
 import org.hibernate.validator.internal.engine.messageinterpolation.util.InterpolationHelper;
 import org.hibernate.validator.internal.util.logging.Log;
@@ -16,7 +16,7 @@ import java.util.regex.PatternSyntaxException;
 /**
  * 备注：参考 {@link org.hibernate.validator.internal.constraintvalidators.bv.PatternValidator}
  */
-public class NotBlankPatternValidator implements ConstraintValidator<NotBlankPattern, CharSequence> {
+public class NotBlankPatternValidator implements ConstraintValidator<NotCheckBlankPattern, CharSequence> {
 
     private static final Log LOG = LoggerFactory.make(MethodHandles.lookup());
 
@@ -24,7 +24,7 @@ public class NotBlankPatternValidator implements ConstraintValidator<NotBlankPat
     private String escapedRegexp;
 
     @Override
-    public void initialize(NotBlankPattern parameters) {
+    public void initialize(NotCheckBlankPattern parameters) {
 
         Pattern.Flag[] flags = parameters.flags();
 

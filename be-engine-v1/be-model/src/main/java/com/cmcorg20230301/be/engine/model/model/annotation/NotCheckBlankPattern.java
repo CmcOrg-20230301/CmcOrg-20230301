@@ -18,10 +18,10 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
  */
 @Target({METHOD, FIELD, ANNOTATION_TYPE, CONSTRUCTOR, PARAMETER, TYPE_USE})
 @Retention(RUNTIME)
-@Repeatable(NotBlankPattern.List.class)
+@Repeatable(NotCheckBlankPattern.List.class)
 @Documented
 @Constraint(validatedBy = {NotBlankPatternValidator.class})
-public @interface NotBlankPattern {
+public @interface NotCheckBlankPattern {
 
     String regexp();
 
@@ -38,7 +38,7 @@ public @interface NotBlankPattern {
     @Documented
     @interface List {
 
-        NotBlankPattern[] value();
+        NotCheckBlankPattern[] value();
 
     }
 

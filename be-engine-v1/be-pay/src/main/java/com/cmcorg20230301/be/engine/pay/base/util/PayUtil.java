@@ -351,7 +351,7 @@ public class PayUtil {
 
         sysPayDO.setTradeNo("");
 
-        sysPayDO.setRefType(SysPayRefTypeEnum.NONE);
+        sysPayDO.setRefType(SysPayRefTypeEnum.NONE.getCode());
         sysPayDO.setRefId(BaseConstant.NEGATIVE_ONE);
 
         sysPayDO.setPackageName(MyEntityUtil.getNotNullAndTrimStr(dto.getPackageName()));
@@ -429,7 +429,7 @@ public class PayUtil {
 
             SYS_PAY_DO_LIST.add(sysPayDO);
 
-            if (!SysPayRefTypeEnum.NONE.equals(sysPayDO.getRefType())) {
+            if (SysPayRefTypeEnum.NONE.getCode() != sysPayDO.getRefType()) {
 
                 // 支付成功，处理业务
                 KafkaUtil.sendPayStatusChangeTopic(sysPayDO);

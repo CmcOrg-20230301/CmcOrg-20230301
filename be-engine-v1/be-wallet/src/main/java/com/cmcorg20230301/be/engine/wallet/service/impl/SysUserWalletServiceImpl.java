@@ -338,7 +338,10 @@ public class SysUserWalletServiceImpl extends ServiceImpl<SysUserWalletMapper, S
             sysUserWalletLogDO.setName(iSysUserWalletLogType.getName());
             sysUserWalletLogDO.setType(iSysUserWalletLogType);
 
-            sysUserWalletLogDO.setRefType(MyEntityUtil.getNotNullObject(refType, SysUserWalletLogRefTypeEnum.NONE));
+            ISysUserWalletLogRefType iSysUserWalletLogRefType =
+                MyEntityUtil.getNotNullObject(refType, SysUserWalletLogRefTypeEnum.NONE);
+
+            sysUserWalletLogDO.setRefType(iSysUserWalletLogRefType.getCode());
 
             sysUserWalletLogDO.setRefId(MyEntityUtil.getNotNullLong(refId));
 
