@@ -30,6 +30,9 @@ public class SysPayDO extends BaseEntityNoId {
     @Schema(description = "支付配置主键 id")
     private Long sysPayConfigurationId;
 
+    @Schema(description = "冗余字段：支付配置的租户主键 id")
+    private Long sysPayConfigurationTenantId;
+
     @Schema(description = "支付平台，应用 id")
     private String payAppId;
 
@@ -43,7 +46,7 @@ public class SysPayDO extends BaseEntityNoId {
     private String body;
 
     @Schema(description = "支付原始的钱")
-    private BigDecimal originPrice;
+    private BigDecimal originalPrice;
 
     @Schema(description = "实际支付的钱")
     private BigDecimal payPrice;

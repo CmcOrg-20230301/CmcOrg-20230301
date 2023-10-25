@@ -150,7 +150,7 @@ public class PayUtil {
 
         dto.setOutTradeNo(payId.toString()); // 设置：支付的订单号
 
-        Long tenantId = dto.getTenantId(); // 租户主键 id，备注：因为 pay方法会修改 dto的 tenantId的值
+        Long tenantId = dto.getTenantId(); // 租户主键 id，备注：因为 iSysPay.pay方法会修改 dto的 tenantId的值
 
         // 调用：第三方支付
         SysPayReturnBO sysPayReturnBO = iSysPay.pay(dto);
@@ -339,13 +339,14 @@ public class PayUtil {
 
         sysPayDO.setSubject(dto.getSubject());
         sysPayDO.setBody(MyEntityUtil.getNotNullStr(dto.getBody()));
-        sysPayDO.setOriginPrice(dto.getTotalAmount());
+        sysPayDO.setOriginalPrice(dto.getTotalAmount());
         sysPayDO.setPayPrice(BigDecimal.ZERO);
         sysPayDO.setPayCurrency("");
 
         sysPayDO.setExpireTime(dto.getExpireTime());
 
         sysPayDO.setSysPayConfigurationId(dto.getSysPayConfigurationDoTemp().getId());
+        sysPayDO.setSysPayConfigurationTenantId(dto.getSysPayConfigurationDoTemp().getTenantId());
 
         sysPayDO.setOpenId(MyEntityUtil.getNotNullAndTrimStr(dto.getOpenId()));
 

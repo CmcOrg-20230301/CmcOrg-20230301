@@ -79,7 +79,7 @@ public class PayGoogleUtil {
         Assert.notBlank(outTradeNo);
 
         SysPayDO sysPayDO = sysPayService.lambdaQuery().eq(SysPayDO::getId, outTradeNo)
-            .select(SysPayDO::getPackageName, SysPayDO::getProductId, SysPayDO::getToken, SysPayDO::getOriginPrice)
+            .select(SysPayDO::getPackageName, SysPayDO::getProductId, SysPayDO::getToken, SysPayDO::getOriginalPrice)
             .one();
 
         if (sysPayDO == null) {
@@ -108,7 +108,7 @@ public class PayGoogleUtil {
         if (sysPayTradeNotifyBO != null) {
 
             sysPayTradeNotifyBO.setTradeNo(orderId);
-            sysPayTradeNotifyBO.setTotalAmount(sysPayDO.getOriginPrice().toPlainString()); // 备注：官方暂时没有返回实际支付金额的字段
+            sysPayTradeNotifyBO.setTotalAmount(sysPayDO.getOriginalPrice().toPlainString()); // 备注：官方暂时没有返回实际支付金额的字段
             sysPayTradeNotifyBO.setPayCurrency("");
 
         }
