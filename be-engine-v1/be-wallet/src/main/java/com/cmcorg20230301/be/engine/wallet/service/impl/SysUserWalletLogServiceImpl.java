@@ -99,6 +99,9 @@ public class SysUserWalletLogServiceImpl extends ServiceImpl<SysUserWalletLogMap
     @Override
     public Page<SysUserWalletLogDO> myPageTenant(SysUserWalletLogUserSelfPageDTO dto) {
 
+        // 检查：租户 id是否属于自己
+        SysTenantUtil.handleDtoTenantIdSet(true, dto.getTenantIdSet());
+
         SysUserWalletLogPageDTO sysUserWalletLogPageDTO = BeanUtil.copyProperties(dto, SysUserWalletLogPageDTO.class);
 
         sysUserWalletLogPageDTO.setUserId(BaseConstant.TENANT_USER_ID);

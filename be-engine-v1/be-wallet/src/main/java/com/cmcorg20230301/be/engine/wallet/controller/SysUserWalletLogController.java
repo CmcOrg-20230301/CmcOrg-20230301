@@ -34,6 +34,7 @@ public class SysUserWalletLogController {
 
     @Operation(summary = "分页排序查询-租户")
     @PostMapping("/page/tenant")
+    @PreAuthorize("hasAuthority('sysUserWalletLog:page')")
     public ApiResultVO<Page<SysUserWalletLogDO>> myPageTenant(@RequestBody @Valid SysUserWalletLogUserSelfPageDTO dto) {
         return ApiResultVO.okData(baseService.myPageTenant(dto));
     }
