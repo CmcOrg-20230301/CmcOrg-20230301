@@ -238,11 +238,11 @@ public class SysUserWalletServiceImpl extends ServiceImpl<SysUserWalletMapper, S
     @Override
     @NotNull
     @DSTransactional
-    public String doAddWithdrawableMoney(Long currentUserId, Date date, Set<Long> idSet, BigDecimal changeNumber,
+    public String doAddWithdrawableMoney(Long currentUserId, Date date, Set<Long> idSet, BigDecimal addNumber,
         ISysUserWalletLogType iSysUserWalletLogType, boolean lowErrorFlag, boolean checkWalletEnableFlag,
         boolean tenantFlag, @Nullable ISysUserWalletLogRefType refType, @Nullable Long refId) {
 
-        if (changeNumber.equals(BigDecimal.ZERO)) {
+        if (addNumber.equals(BigDecimal.ZERO)) {
             return BaseBizCodeEnum.OK;
         }
 
@@ -261,7 +261,7 @@ public class SysUserWalletServiceImpl extends ServiceImpl<SysUserWalletMapper, S
                 .list();
 
             // 处理：sysUserWalletDOList
-            handleSysUserWalletDOList(currentUserId, date, changeNumber, iSysUserWalletLogType, lowErrorFlag,
+            handleSysUserWalletDOList(currentUserId, date, addNumber, iSysUserWalletLogType, lowErrorFlag,
                 checkWalletEnableFlag, sysUserWalletLogDoList, sysUserWalletDOList, refType, refId);
 
             if (tenantFlag) {

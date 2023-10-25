@@ -29,7 +29,7 @@ public interface SysUserWalletService extends IService<SysUserWalletDO> {
 
     String addWithdrawableMoneyBackground(ChangeBigDecimalNumberDTO dto);
 
-    String doAddWithdrawableMoney(Long currentUserId, Date date, Set<Long> idSet, BigDecimal changeNumber,
+    String doAddWithdrawableMoney(Long currentUserId, Date date, Set<Long> idSet, BigDecimal addNumber,
         ISysUserWalletLogType iSysUserWalletLogType, boolean lowErrorFlag, boolean checkWalletEnableFlag,
         boolean tenantFlag, @Nullable ISysUserWalletLogRefType refType, @Nullable Long refId);
 

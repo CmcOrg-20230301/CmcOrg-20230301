@@ -132,12 +132,9 @@ public class SysTenantUtil {
 
             }
 
-            SysTenantDO sysTenantDO = new SysTenantDO();
+            SysTenantDO sysTenantDO = getDefaultSysTenantDO();
 
-            sysTenantDO.setId(BaseConstant.TENANT_ID);
-            sysTenantDO.setParentId(BaseConstant.NEGATIVE_ONE);
-            sysTenantDO.setName(BaseConstant.TENANT_NAME);
-
+            // 添加：顶层租户（平台）
             mapTemp.put(sysTenantDO.getId(), sysTenantDO);
 
             map = mapTemp;
@@ -145,6 +142,22 @@ public class SysTenantUtil {
         }
 
         return map;
+
+    }
+
+    /**
+     * 获取：顶层租户（平台）
+     */
+    @NotNull
+    public static SysTenantDO getDefaultSysTenantDO() {
+
+        SysTenantDO sysTenantDO = new SysTenantDO();
+
+        sysTenantDO.setId(BaseConstant.TENANT_ID);
+        sysTenantDO.setParentId(BaseConstant.NEGATIVE_ONE);
+        sysTenantDO.setName(BaseConstant.TENANT_NAME);
+
+        return sysTenantDO;
 
     }
 
@@ -212,13 +225,9 @@ public class SysTenantUtil {
 
                 List<SysTenantDO> tenantDOList = new ArrayList<>(getSysTenantCacheMap(false).values());
 
-                SysTenantDO sysTenantDO = new SysTenantDO();
+                SysTenantDO sysTenantDO = getDefaultSysTenantDO();
 
-                sysTenantDO.setId(BaseConstant.TENANT_ID);
-                sysTenantDO.setParentId(BaseConstant.NEGATIVE_ONE);
-                sysTenantDO.setName(BaseConstant.TENANT_NAME);
-
-                tenantDOList.add(sysTenantDO); // 添加：默认租户
+                tenantDOList.add(sysTenantDO); // 添加：顶层租户（平台）
 
                 return MyTreeUtil.getIdAndDeepIdSetMap(tenantDOList, null);
 
