@@ -34,7 +34,4 @@ public class SysTenantInsertOrUpdateDTO extends BaseTenantInsertOrUpdateDTO {
     @Schema(description = "菜单 idSet")
     private Set<Long> menuIdSet;
 
-    @Schema(description = "是否独立支付，备注：例如用户在充值钱包的钱时，如果为否，则会扣除租户的钱包余额，如果为是，则不会扣除租户的钱包余额")
-    private Boolean independentPayFlag;
-
 }
