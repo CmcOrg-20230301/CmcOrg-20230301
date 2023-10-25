@@ -21,6 +21,7 @@ import com.cmcorg20230301.be.engine.security.exception.BaseBizCodeEnum;
 import com.cmcorg20230301.be.engine.security.model.entity.BaseEntityNoId;
 import com.cmcorg20230301.be.engine.security.model.entity.BaseEntityNoIdFather;
 import com.cmcorg20230301.be.engine.security.model.vo.ApiResultVO;
+import com.cmcorg20230301.be.engine.security.util.MyEntityUtil;
 import com.cmcorg20230301.be.engine.security.util.SysTenantUtil;
 import com.cmcorg20230301.be.engine.security.util.UserUtil;
 import com.cmcorg20230301.be.engine.wallet.configuration.SysUserWalletUserSignConfiguration;
@@ -28,9 +29,13 @@ import com.cmcorg20230301.be.engine.wallet.mapper.SysUserWalletMapper;
 import com.cmcorg20230301.be.engine.wallet.model.dto.SysUserWalletPageDTO;
 import com.cmcorg20230301.be.engine.wallet.model.entity.SysUserWalletDO;
 import com.cmcorg20230301.be.engine.wallet.model.entity.SysUserWalletLogDO;
+import com.cmcorg20230301.be.engine.wallet.model.enums.SysUserWalletLogRefTypeEnum;
 import com.cmcorg20230301.be.engine.wallet.model.enums.SysUserWalletLogTypeEnum;
+import com.cmcorg20230301.be.engine.wallet.model.interfaces.ISysUserWalletLogRefType;
+import com.cmcorg20230301.be.engine.wallet.model.interfaces.ISysUserWalletLogType;
 import com.cmcorg20230301.be.engine.wallet.service.SysUserWalletService;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -223,7 +228,7 @@ public class SysUserWalletServiceImpl extends ServiceImpl<SysUserWalletMapper, S
 
         // 执行
         return doAddWithdrawableMoney(currentUserId, new Date(), dto.getIdSet(), changeNumber, sysUserWalletLogTypeEnum,
-            false, false, false);
+            false, false, false, null, null);
 
     }
 
@@ -234,8 +239,8 @@ public class SysUserWalletServiceImpl extends ServiceImpl<SysUserWalletMapper, S
     @NotNull
     @DSTransactional
     public String doAddWithdrawableMoney(Long currentUserId, Date date, Set<Long> idSet, BigDecimal changeNumber,
-        SysUserWalletLogTypeEnum sysUserWalletLogTypeEnum, boolean lowErrorFlag, boolean checkWalletEnableFlag,
-        boolean tenantFlag) {
+        ISysUserWalletLogType iSysUserWalletLogType, boolean lowErrorFlag, boolean checkWalletEnableFlag,
+        boolean tenantFlag, @Nullable ISysUserWalletLogRefType refType, @Nullable Long refId) {
 
         if (changeNumber.equals(BigDecimal.ZERO)) {
             return BaseBizCodeEnum.OK;
@@ -256,8 +261,8 @@ public class SysUserWalletServiceImpl extends ServiceImpl<SysUserWalletMapper, S
                 .list();
 
             // 处理：sysUserWalletDOList
-            handleSysUserWalletDOList(currentUserId, date, changeNumber, sysUserWalletLogTypeEnum, lowErrorFlag,
-                checkWalletEnableFlag, sysUserWalletLogDoList, sysUserWalletDOList);
+            handleSysUserWalletDOList(currentUserId, date, changeNumber, iSysUserWalletLogType, lowErrorFlag,
+                checkWalletEnableFlag, sysUserWalletLogDoList, sysUserWalletDOList, refType, refId);
 
             if (tenantFlag) {
 
@@ -301,8 +306,9 @@ public class SysUserWalletServiceImpl extends ServiceImpl<SysUserWalletMapper, S
      * 处理：sysUserWalletDOList
      */
     private void handleSysUserWalletDOList(Long currentUserId, Date date, BigDecimal changeNumber,
-        SysUserWalletLogTypeEnum sysUserWalletLogTypeEnum, boolean lowErrorFlag, boolean checkWalletEnableFlag,
-        List<SysUserWalletLogDO> sysUserWalletLogDoList, List<SysUserWalletDO> sysUserWalletDOList) {
+        ISysUserWalletLogType iSysUserWalletLogType, boolean lowErrorFlag, boolean checkWalletEnableFlag,
+        List<SysUserWalletLogDO> sysUserWalletLogDoList, List<SysUserWalletDO> sysUserWalletDOList,
+        @Nullable ISysUserWalletLogRefType refType, @Nullable Long refId) {
 
         for (SysUserWalletDO item : sysUserWalletDOList) {
 
@@ -329,8 +335,12 @@ public class SysUserWalletServiceImpl extends ServiceImpl<SysUserWalletMapper, S
             SysUserWalletLogDO sysUserWalletLogDO = new SysUserWalletLogDO();
 
             sysUserWalletLogDO.setUserId(item.getId());
-            sysUserWalletLogDO.setName(sysUserWalletLogTypeEnum.getName());
-            sysUserWalletLogDO.setType(sysUserWalletLogTypeEnum);
+            sysUserWalletLogDO.setName(iSysUserWalletLogType.getName());
+            sysUserWalletLogDO.setType(iSysUserWalletLogType);
+
+            sysUserWalletLogDO.setRefType(MyEntityUtil.getNotNullObject(refType, SysUserWalletLogRefTypeEnum.NONE));
+
+            sysUserWalletLogDO.setRefId(MyEntityUtil.getNotNullLong(refId));
 
             sysUserWalletLogDO.setTotalMoneyPre(preTotalMoney);
             sysUserWalletLogDO.setTotalMoneySuf(item.getTotalMoney());

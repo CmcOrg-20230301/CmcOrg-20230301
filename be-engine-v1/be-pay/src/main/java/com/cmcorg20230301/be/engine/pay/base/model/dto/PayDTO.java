@@ -54,7 +54,7 @@ public class PayDTO {
     @Schema(description = "支付配置，不必传，如果传递此字段，那么配置会从该字段里面取值，备注：调用支付之后，这个字段会被赋值")
     private SysPayConfigurationDO sysPayConfigurationDoTemp;
 
-    @Schema(description = "在设置 sysPayConfigurationDoTemp对象时，检查，可以为 null")
+    @Schema(description = "在设置 sysPayConfigurationDoTemp对象时进行检查，可以为 null")
     private Consumer<SysPayConfigurationDO> checkSysPayConfigurationDoConsumer;
 
     @Schema(description = "备注")

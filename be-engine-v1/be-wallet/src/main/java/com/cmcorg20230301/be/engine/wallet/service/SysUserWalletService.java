@@ -7,7 +7,9 @@ import com.cmcorg20230301.be.engine.model.model.dto.NotEmptyIdSet;
 import com.cmcorg20230301.be.engine.model.model.dto.NotNullLong;
 import com.cmcorg20230301.be.engine.wallet.model.dto.SysUserWalletPageDTO;
 import com.cmcorg20230301.be.engine.wallet.model.entity.SysUserWalletDO;
-import com.cmcorg20230301.be.engine.wallet.model.enums.SysUserWalletLogTypeEnum;
+import com.cmcorg20230301.be.engine.wallet.model.interfaces.ISysUserWalletLogRefType;
+import com.cmcorg20230301.be.engine.wallet.model.interfaces.ISysUserWalletLogType;
+import org.jetbrains.annotations.Nullable;
 
 import java.math.BigDecimal;
 import java.util.Date;
@@ -28,8 +30,8 @@ public interface SysUserWalletService extends IService<SysUserWalletDO> {
     String addWithdrawableMoneyBackground(ChangeBigDecimalNumberDTO dto);
 
     String doAddWithdrawableMoney(Long currentUserId, Date date, Set<Long> idSet, BigDecimal changeNumber,
-        SysUserWalletLogTypeEnum sysUserWalletLogTypeEnum, boolean lowErrorFlag, boolean checkWalletEnableFlag,
-        boolean tenantFlag);
+        ISysUserWalletLogType iSysUserWalletLogType, boolean lowErrorFlag, boolean checkWalletEnableFlag,
+        boolean tenantFlag, @Nullable ISysUserWalletLogRefType refType, @Nullable Long refId);
 
     // ================================ 分割线
 

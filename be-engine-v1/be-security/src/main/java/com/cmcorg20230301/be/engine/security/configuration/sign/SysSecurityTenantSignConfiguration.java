@@ -1,14 +1,12 @@
 package com.cmcorg20230301.be.engine.security.configuration.sign;
 
-import com.baomidou.mybatisplus.extension.toolkit.ChainWrappers;
 import com.cmcorg20230301.be.engine.model.model.constant.BaseConstant;
-import com.cmcorg20230301.be.engine.security.mapper.SysTenantMapper;
 import com.cmcorg20230301.be.engine.security.model.configuration.ITenantSignConfiguration;
-import com.cmcorg20230301.be.engine.security.model.entity.BaseEntity;
 import com.cmcorg20230301.be.engine.security.model.entity.SysTenantDO;
 import com.cmcorg20230301.be.engine.security.model.entity.SysUserDeleteLogDO;
 import com.cmcorg20230301.be.engine.security.service.SysUserDeleteLogService;
 import com.cmcorg20230301.be.engine.security.util.MyEntityUtil;
+import com.cmcorg20230301.be.engine.security.util.SysTenantUtil;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Component;
 
@@ -23,9 +21,6 @@ public class SysSecurityTenantSignConfiguration implements ITenantSignConfigurat
     @Resource
     SysUserDeleteLogService sysUserDeleteLogService;
 
-    @Resource
-    SysTenantMapper sysTenantMapper;
-
     @Override
     public void signUp(@NotNull Long tenantId) {
 
@@ -36,18 +31,21 @@ public class SysSecurityTenantSignConfiguration implements ITenantSignConfigurat
     @Override
     public void delete(Set<Long> tenantIdSet) {
 
-        List<SysTenantDO> sysTenantDOList =
-            ChainWrappers.lambdaQueryChain(sysTenantMapper).in(BaseEntity::getId, tenantIdSet).list();
-
         List<SysUserDeleteLogDO> sysUserDeleteLogDOList = new ArrayList<>(tenantIdSet.size());
 
-        for (SysTenantDO item : sysTenantDOList) {
+        for (Long item : tenantIdSet) {
+
+            SysTenantDO sysTenantDO = SysTenantUtil.getSysTenantCacheMap(false).get(item);
+
+            if (sysTenantDO == null) {
+                continue;
+            }
 
             SysUserDeleteLogDO sysUserDeleteLogDO = new SysUserDeleteLogDO();
 
             sysUserDeleteLogDO.setId(BaseConstant.TENANT_USER_ID);
-            sysUserDeleteLogDO.setTenantId(item.getId());
-            sysUserDeleteLogDO.setParentId(item.getParentId());
+            sysUserDeleteLogDO.setTenantId(sysTenantDO.getId());
+            sysUserDeleteLogDO.setParentId(sysTenantDO.getParentId());
             sysUserDeleteLogDO.setPassword(MyEntityUtil.getNotNullStr(null));
             sysUserDeleteLogDO.setEmail(MyEntityUtil.getNotNullStr(null));
             sysUserDeleteLogDO.setSignInName(MyEntityUtil.getNotNullStr(null));
@@ -55,7 +53,7 @@ public class SysSecurityTenantSignConfiguration implements ITenantSignConfigurat
             sysUserDeleteLogDO.setWxOpenId(MyEntityUtil.getNotNullStr(null));
             sysUserDeleteLogDO.setWxAppId(MyEntityUtil.getNotNullStr(null));
             sysUserDeleteLogDO.setUuid(MyEntityUtil.getNotNullStr(null));
-            sysUserDeleteLogDO.setNickname(item.getName());
+            sysUserDeleteLogDO.setNickname(sysTenantDO.getName());
             sysUserDeleteLogDO.setBio(MyEntityUtil.getNotNullStr(null));
             sysUserDeleteLogDO.setAvatarFileId(MyEntityUtil.getNotNullLong(null));
 

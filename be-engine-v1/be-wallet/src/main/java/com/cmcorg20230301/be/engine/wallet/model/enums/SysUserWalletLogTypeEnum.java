@@ -1,6 +1,7 @@
 package com.cmcorg20230301.be.engine.wallet.model.enums;
 
 import com.baomidou.mybatisplus.annotation.EnumValue;
+import com.cmcorg20230301.be.engine.wallet.model.interfaces.ISysUserWalletLogType;
 import com.fasterxml.jackson.annotation.JsonValue;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -10,7 +11,7 @@ import lombok.Getter;
  */
 @Getter
 @AllArgsConstructor
-public enum SysUserWalletLogTypeEnum {
+public enum SysUserWalletLogTypeEnum implements ISysUserWalletLogType {
 
     ADD_PAY(101, "支付充值"), //
 

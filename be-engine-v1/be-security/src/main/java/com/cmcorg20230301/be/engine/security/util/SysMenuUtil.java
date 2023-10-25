@@ -13,6 +13,7 @@ import com.cmcorg20230301.be.engine.security.mapper.SysRoleRefMenuMapper;
 import com.cmcorg20230301.be.engine.security.model.entity.*;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.Unmodifiable;
 import org.springframework.stereotype.Component;
 
 import java.util.*;
@@ -37,7 +38,7 @@ public class SysMenuUtil {
     /**
      * 获取：菜单缓存数据：map
      */
-    @NotNull
+    @NotNull @Unmodifiable // 不可对返回值进行修改
     public static Map<Long, SysMenuDO> getSysMenuCacheMap() {
 
         Map<Long, SysMenuDO> map =
@@ -60,7 +61,7 @@ public class SysMenuUtil {
     /**
      * 获取：所有菜单：security使用
      */
-    @Nullable
+    @Nullable @Unmodifiable // 不可对返回值进行修改
     private static List<SysMenuDO> getAllMenuIdAndAuthsList() {
 
         List<SysMenuDO> sysMenuDOList = MyCacheUtil
@@ -87,7 +88,7 @@ public class SysMenuUtil {
     /**
      * 获取：角色关联的菜单集合 map
      */
-    @NotNull
+    @NotNull @Unmodifiable // 不可对返回值进行修改
     public static Map<Long, Set<SysMenuDO>> getRoleRefMenuSetMap(BaseRedisKeyEnum baseRedisKeyEnum) {
 
         return MyCacheUtil.getMap(baseRedisKeyEnum, CacheHelper.getDefaultLongSetMap(), () -> {
@@ -126,7 +127,7 @@ public class SysMenuUtil {
     /**
      * 获取角色关联的菜单 idSet
      */
-    @Nullable
+    @Nullable @Unmodifiable // 不可对返回值进行修改
     private static Set<Long> getRoleRefMenuIdSet(Long roleId) {
 
         Map<Long, Set<Long>> roleRefMenuIdSetMap = MyCacheUtil

@@ -8,7 +8,6 @@ import cn.hutool.core.util.BooleanUtil;
 import cn.hutool.core.util.RandomUtil;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.extension.conditions.query.LambdaQueryChainWrapper;
-import com.baomidou.mybatisplus.extension.toolkit.ChainWrappers;
 import com.cmcorg20230301.be.engine.datasource.util.TransactionUtil;
 import com.cmcorg20230301.be.engine.kafka.util.KafkaUtil;
 import com.cmcorg20230301.be.engine.model.model.constant.BaseConstant;
@@ -28,13 +27,13 @@ import com.cmcorg20230301.be.engine.redisson.model.enums.BaseRedisKeyEnum;
 import com.cmcorg20230301.be.engine.redisson.util.IdGeneratorUtil;
 import com.cmcorg20230301.be.engine.redisson.util.RedissonUtil;
 import com.cmcorg20230301.be.engine.security.mapper.SysTenantMapper;
-import com.cmcorg20230301.be.engine.security.model.entity.BaseEntity;
 import com.cmcorg20230301.be.engine.security.model.entity.BaseEntityNoId;
 import com.cmcorg20230301.be.engine.security.model.entity.BaseEntityNoIdFather;
 import com.cmcorg20230301.be.engine.security.model.entity.SysTenantDO;
 import com.cmcorg20230301.be.engine.security.model.vo.ApiResultVO;
 import com.cmcorg20230301.be.engine.security.util.MyEntityUtil;
 import com.cmcorg20230301.be.engine.security.util.MyThreadUtil;
+import com.cmcorg20230301.be.engine.security.util.SysTenantUtil;
 import com.cmcorg20230301.be.engine.security.util.UserUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
@@ -61,8 +60,6 @@ public class PayUtil {
 
     private static SysPayConfigurationService sysPayConfigurationService;
 
-    private static SysTenantMapper sysTenantMapper;
-
     public PayUtil(@Autowired(required = false) @Nullable List<ISysPay> iSysPayList, SysPayService sysPayService,
         SysPayConfigurationService sysPayConfigurationService, SysTenantMapper sysTenantMapper) {
 
@@ -79,8 +76,6 @@ public class PayUtil {
         }
 
         PayUtil.sysPayConfigurationService = sysPayConfigurationService;
-
-        PayUtil.sysTenantMapper = sysTenantMapper;
 
     }
 
@@ -228,9 +223,7 @@ public class PayUtil {
 
         }
 
-        SysTenantDO sysTenantDO =
-            ChainWrappers.lambdaQueryChain(sysTenantMapper).eq(BaseEntity::getId, dto.getTenantId())
-                .select(SysTenantDO::getParentId, BaseEntityNoId::getEnableFlag).one();
+        SysTenantDO sysTenantDO = SysTenantUtil.getSysTenantCacheMap(false).get(dto.getTenantId());
 
         if (sysTenantDO == null) {
 
@@ -359,7 +352,7 @@ public class PayUtil {
         sysPayDO.setTradeNo("");
 
         sysPayDO.setRefType(SysPayRefTypeEnum.NONE);
-        sysPayDO.setRefId(-1L);
+        sysPayDO.setRefId(BaseConstant.NEGATIVE_ONE);
 
         sysPayDO.setPackageName(MyEntityUtil.getNotNullAndTrimStr(dto.getPackageName()));
         sysPayDO.setProductId(MyEntityUtil.getNotNullAndTrimStr(dto.getProductId()));

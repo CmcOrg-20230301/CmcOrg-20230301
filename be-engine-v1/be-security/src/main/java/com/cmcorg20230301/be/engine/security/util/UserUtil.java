@@ -20,6 +20,7 @@ import com.cmcorg20230301.be.engine.security.model.entity.*;
 import com.cmcorg20230301.be.engine.security.model.vo.ApiResultVO;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.Unmodifiable;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
@@ -348,6 +349,7 @@ public class UserUtil {
     /**
      * 获取：用户 id关联的 roleIdSet
      */
+    @Unmodifiable // 不可对返回值进行修改
     public static Map<Long, Set<Long>> getUserRefRoleIdSetMap() {
 
         return MyCacheUtil

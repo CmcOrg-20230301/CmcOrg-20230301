@@ -109,7 +109,7 @@ public class MyEntityUtil {
      */
     @NotNull
     public static Long getNotNullLong(Long aLong) {
-        return getNotNullLong(aLong, -1L);
+        return getNotNullLong(aLong, BaseConstant.NEGATIVE_ONE_LONG);
     }
 
     /**

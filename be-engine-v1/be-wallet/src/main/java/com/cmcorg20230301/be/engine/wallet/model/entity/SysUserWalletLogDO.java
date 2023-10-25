@@ -2,7 +2,8 @@ package com.cmcorg20230301.be.engine.wallet.model.entity;
 
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.cmcorg20230301.be.engine.security.model.entity.BaseEntity;
-import com.cmcorg20230301.be.engine.wallet.model.enums.SysUserWalletLogTypeEnum;
+import com.cmcorg20230301.be.engine.wallet.model.interfaces.ISysUserWalletLogRefType;
+import com.cmcorg20230301.be.engine.wallet.model.interfaces.ISysUserWalletLogType;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -21,8 +22,14 @@ public class SysUserWalletLogDO extends BaseEntity {
     @Schema(description = "记录名")
     private String name;
 
-    @Schema(description = "记录类型：101 增加 201 减少")
-    private SysUserWalletLogTypeEnum type;
+    @Schema(description = "记录类型：1开头 增加 2开头 减少")
+    private ISysUserWalletLogType type;
+
+    @Schema(description = "关联的类型")
+    private ISysUserWalletLogRefType refType;
+
+    @Schema(description = "关联的 id")
+    private Long refId;
 
     @Schema(description = "总金额，前")
     private BigDecimal totalMoneyPre;

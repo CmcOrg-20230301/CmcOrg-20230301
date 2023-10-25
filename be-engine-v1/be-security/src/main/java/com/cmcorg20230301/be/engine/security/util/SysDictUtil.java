@@ -11,6 +11,7 @@ import com.cmcorg20230301.be.engine.security.model.entity.SysDictDO;
 import com.cmcorg20230301.be.engine.security.model.enums.SysDictDictKeyEnum;
 import com.cmcorg20230301.be.engine.security.model.enums.SysDictTypeEnum;
 import lombok.extern.slf4j.Slf4j;
+import org.jetbrains.annotations.Unmodifiable;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
@@ -44,6 +45,7 @@ public class SysDictUtil {
     /**
      * 通过：dictKey获取字典项集合，备注：会进行缓存
      */
+    @Unmodifiable // 不可对返回值进行修改
     public static List<DictIntegerVO> listByDictKey(String dictKey) {
 
         Long currentTenantIdDefault = UserUtil.getCurrentTenantIdDefault();

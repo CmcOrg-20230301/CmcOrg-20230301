@@ -10,6 +10,7 @@ import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.Unmodifiable;
 import org.redisson.api.RBucket;
 import org.redisson.api.RedissonClient;
 import org.springframework.stereotype.Component;
@@ -236,7 +237,7 @@ public class MyCacheUtil {
      * 获取：map类型的缓存
      */
     @SneakyThrows
-    @NotNull
+    @NotNull @Unmodifiable // 不可对返回值进行修改
     public static <T extends Map<?, ?>> T getMap(@NotNull Enum<? extends IRedisKey> redisKeyEnum,
         @Nullable T defaultResult, @Nullable Func0<T> func0) {
 
@@ -248,7 +249,7 @@ public class MyCacheUtil {
      * 获取：map类型的缓存
      */
     @SneakyThrows
-    @NotNull
+    @NotNull @Unmodifiable // 不可对返回值进行修改
     public static <T extends Map<?, ?>> T getMap(@NotNull Enum<? extends IRedisKey> redisKeyEnum,
         @Nullable String sufKey, @Nullable T defaultResult, @Nullable Func0<T> func0) {
 
@@ -289,7 +290,7 @@ public class MyCacheUtil {
      * 只获取值：map
      */
     @SneakyThrows
-    @Nullable
+    @Nullable @Unmodifiable // 不可对返回值进行修改
     public static <T extends Map<?, ?>> T onlyGetMap(@NotNull String key) {
 
         T result = CacheLocalUtil.get(key);
@@ -320,7 +321,7 @@ public class MyCacheUtil {
      * 获取：collection类型的缓存
      */
     @SneakyThrows
-    @NotNull
+    @NotNull @Unmodifiable // 不可对返回值进行修改
     public static <T extends Collection<?>> T getCollection(@NotNull Enum<? extends IRedisKey> redisKeyEnum,
         @Nullable T defaultResult, @Nullable Func0<T> func0) {
 
@@ -332,7 +333,7 @@ public class MyCacheUtil {
      * 获取：collection类型的缓存
      */
     @SneakyThrows
-    @NotNull
+    @NotNull @Unmodifiable // 不可对返回值进行修改
     public static <T extends Collection<?>> T getCollection(@NotNull Enum<? extends IRedisKey> redisKeyEnum,
         @Nullable String sufKey, @Nullable T defaultResult, @Nullable Func0<T> func0) {
 
@@ -385,7 +386,7 @@ public class MyCacheUtil {
      * 只获取值：collection
      */
     @SneakyThrows
-    @Nullable
+    @Nullable @Unmodifiable // 不可对返回值进行修改
     public static <T extends Collection<?>> T onlyGetCollection(@NotNull String key, boolean setFlag) {
 
         T result = CacheLocalUtil.get(key);

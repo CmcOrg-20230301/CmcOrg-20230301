@@ -19,6 +19,7 @@ import com.cmcorg20230301.be.engine.security.model.vo.ApiResultVO;
 import lombok.SneakyThrows;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.Unmodifiable;
 import org.springframework.stereotype.Component;
 
 import java.util.*;
@@ -104,6 +105,7 @@ public class SysTenantUtil {
      * @param addDefaultFlag 是否添加：默认租户
      */
     @NotNull
+    @Unmodifiable
     public static Map<Long, SysTenantDO> getSysTenantCacheMap(boolean addDefaultFlag) {
 
         Map<Long, SysTenantDO> map = MyCacheUtil
@@ -111,7 +113,7 @@ public class SysTenantUtil {
 
                 List<SysTenantDO> sysTenantDOList = ChainWrappers.lambdaQueryChain(sysTenantMapper)
                     .select(BaseEntity::getId, SysTenantDO::getName, BaseEntityNoId::getEnableFlag,
-                        SysTenantDO::getParentId).orderByDesc(SysTenantDO::getOrderNo).list();
+                        SysTenantDO::getParentId, SysTenantDO::getIndependentPayFlag).list();
 
                 return sysTenantDOList.stream().collect(Collectors.toMap(BaseEntity::getId, it -> it));
 
@@ -202,6 +204,7 @@ public class SysTenantUtil {
     /**
      * 通过：租户 id，获取：关联的所有的 子租户（包含本租户）
      */
+    @Unmodifiable // 不可对返回值进行修改
     private static Set<Long> getTenantDeepIdSet(Long tenantId) {
 
         return MyCacheUtil.<Map<Long, Set<Long>>>getMap(BaseRedisKeyEnum.SYS_TENANT_DEEP_ID_SET_CACHE,
@@ -226,6 +229,7 @@ public class SysTenantUtil {
     /**
      * 获取：用户 id关联的 tenantIdSet，map
      */
+    @Unmodifiable // 不可对返回值进行修改
     public static Map<Long, Set<Long>> getUserIdRefTenantIdSetMap() {
 
         return MyCacheUtil
