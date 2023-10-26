@@ -218,7 +218,7 @@ public class SysTenantUtil {
      * 通过：租户 id，获取：关联的所有的 子租户（包含本租户）
      */
     @Unmodifiable // 不可对返回值进行修改
-    private static Set<Long> getTenantDeepIdSet(Long tenantId) {
+    public static Set<Long> getTenantDeepIdSet(Long tenantId) {
 
         return MyCacheUtil.<Map<Long, Set<Long>>>getMap(BaseRedisKeyEnum.SYS_TENANT_DEEP_ID_SET_CACHE,
             CacheHelper.getDefaultLongSetMap(), () -> {

@@ -288,9 +288,10 @@ public class MyTreeUtil {
 
     /**
      * 获取：包含本节点，以及所有下级节点的 idSet的 map
-     * key：id，value：包含本节点，以及所有下级节点的 idSet
      *
+     * @param collection 所有元素的集合
      * @param matchIdSet 需要匹配的 idSet，如果为 null，则表示需要匹配所有 id
+     * @return key：id，value：包含本节点，以及所有下级节点的 idSet
      */
     public static <T extends BaseEntityTree<T>> Map<Long, Set<Long>> getIdAndDeepIdSetMap(Collection<T> collection,
         @Nullable Set<Long> matchIdSet) {
