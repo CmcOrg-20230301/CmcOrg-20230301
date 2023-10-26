@@ -715,23 +715,6 @@ public class SysTenantServiceImpl extends ServiceImpl<SysTenantMapper, SysTenant
     }
 
     /**
-     * 组装为完整的路径名，返回给前端
-     */
-    private void getSyncMenuInfoNext(Long item, Map<Long, SysMenuDO> groupIdMap, List<String> list) {
-
-        SysMenuDO sysMenuDO = groupIdMap.get(item);
-
-        if (sysMenuDO == null) {
-            return;
-        }
-
-        list.add(0, sysMenuDO.getName()); // 添加到，最前面
-
-        getSyncMenuInfoNext(sysMenuDO.getParentId(), groupIdMap, list);
-
-    }
-
-    /**
      * 执行：同步最新的数据给租户
      */
     @Override
@@ -806,9 +789,7 @@ public class SysTenantServiceImpl extends ServiceImpl<SysTenantMapper, SysTenant
     public String doSyncDict() {
 
         // 查询出：所有租户
-        List<SysTenantDO> sysTenantDOList = lambdaQuery().select(BaseEntity::getId).list();
-
-        Set<Long> tenantIdSet = sysTenantDOList.stream().map(BaseEntity::getId).collect(Collectors.toSet());
+        Set<Long> tenantIdSet = SysTenantUtil.getSysTenantCacheMap(false).keySet();
 
         // 查询出：所有的字典
         List<SysDictDO> allSysDictDOList = sysDictService.lambdaQuery().list();
@@ -927,9 +908,7 @@ public class SysTenantServiceImpl extends ServiceImpl<SysTenantMapper, SysTenant
     public String doSyncParam() {
 
         // 查询出：所有租户
-        List<SysTenantDO> sysTenantDOList = lambdaQuery().select(BaseEntity::getId).list();
-
-        Set<Long> tenantIdSet = sysTenantDOList.stream().map(BaseEntity::getId).collect(Collectors.toSet());
+        Set<Long> tenantIdSet = SysTenantUtil.getSysTenantCacheMap(false).keySet();
 
         // 查询出：所有的参数
         List<SysParamDO> allSysParamDOList = sysParamService.lambdaQuery().list();
@@ -952,7 +931,7 @@ public class SysTenantServiceImpl extends ServiceImpl<SysTenantMapper, SysTenant
                 defaultTenantSysParamDOList.stream().map(it -> BeanUtil.copyProperties(it, SysParamDO.class))
                     .collect(Collectors.toList());
 
-            // 把租户自定义的一些值，覆盖：默认值
+            // 把租户自定义的一些值，用来覆盖：默认值，目的：不修改租户已经修改过的值
             List<SysParamDO> tenantSysParamDOList = tenantIdGroupMap.get(tenantId);
 
             if (CollUtil.isNotEmpty(tenantSysParamDOList)) {

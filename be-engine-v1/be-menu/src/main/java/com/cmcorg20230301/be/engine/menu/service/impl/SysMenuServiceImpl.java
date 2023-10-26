@@ -14,6 +14,7 @@ import com.cmcorg20230301.be.engine.menu.model.dto.SysMenuInsertOrUpdateDTO;
 import com.cmcorg20230301.be.engine.menu.model.dto.SysMenuPageDTO;
 import com.cmcorg20230301.be.engine.menu.model.vo.SysMenuInfoByIdVO;
 import com.cmcorg20230301.be.engine.menu.service.SysMenuService;
+import com.cmcorg20230301.be.engine.model.model.constant.BaseConstant;
 import com.cmcorg20230301.be.engine.model.model.dto.ChangeNumberDTO;
 import com.cmcorg20230301.be.engine.model.model.dto.NotEmptyIdSet;
 import com.cmcorg20230301.be.engine.model.model.dto.NotNullId;
@@ -97,11 +98,45 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenuDO> im
 
         SysMenuDO sysMenuDO = getEntityByDTO(dto);
 
+        // 如果：修改的是顶级租户的数据，则需要同步一些字段
+        syncUpdate(sysMenuDO);
+
         saveOrUpdate(sysMenuDO);
 
         insertOrUpdateSub(sysMenuDO, dto); // 新增 子表数据
 
         return BaseBizCodeEnum.OK;
+
+    }
+
+    /**
+     * 如果：修改的是顶级租户的数据，则需要同步一些字段
+     */
+    private void syncUpdate(SysMenuDO tempSysMenuDO) {
+
+        if (tempSysMenuDO.getId() == null) { // 如果是新增，则不进行处理
+            return;
+        }
+
+        // 如果不是顶级租户，则不进行处理
+        if (!BaseConstant.TOP_TENANT_ID.equals(tempSysMenuDO.getTenantId())) {
+            return;
+        }
+
+        SysMenuDO sysMenuDO =
+            lambdaQuery().eq(BaseEntity::getId, tempSysMenuDO.getId()).select(SysMenuDO::getUuid).one();
+
+        String uuid = sysMenuDO.getUuid();
+
+        // 备注：需要和 SysMenuServiceImpl#checkUpdate 一致
+        lambdaUpdate().eq(SysMenuDO::getUuid, uuid).ne(BaseEntity::getId, tempSysMenuDO.getId()) // 不同步自己
+            .set(SysMenuDO::getPath, tempSysMenuDO.getPath()) //
+            .set(SysMenuDO::getRouter, tempSysMenuDO.getRouter()) //
+            .set(SysMenuDO::getAuths, tempSysMenuDO.getAuths()) //
+            .set(SysMenuDO::getAuthFlag, tempSysMenuDO.getAuthFlag()) //
+            .set(SysMenuDO::getHiddenPageContainerFlag, tempSysMenuDO.getHiddenPageContainerFlag()) //
+            .set(SysMenuDO::getLinkFlag, tempSysMenuDO.getLinkFlag()) // 额外多一个参数
+            .update();
 
     }
 
@@ -119,14 +154,12 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenuDO> im
             return dto;
         }
 
-        SysMenuDO sysMenuDO = lambdaQuery().eq(BaseEntity::getId, id)
-            .select(SysMenuDO::getRouter, SysMenuDO::getAuths, SysMenuDO::getAuthFlag).one();
+        SysMenuDO sysMenuDO = lambdaQuery().eq(BaseEntity::getId, id).one();
 
         SysMenuInsertOrUpdateDTO sysMenuInsertOrUpdateDTO = new SysMenuInsertOrUpdateDTO();
 
         sysMenuInsertOrUpdateDTO.setParentId(dto.getParentId());
         sysMenuInsertOrUpdateDTO.setName(dto.getName());
-        sysMenuInsertOrUpdateDTO.setPath(dto.getPath());
         sysMenuInsertOrUpdateDTO.setIcon(dto.getIcon());
         sysMenuInsertOrUpdateDTO.setRoleIdSet(dto.getRoleIdSet());
         sysMenuInsertOrUpdateDTO.setEnableFlag(dto.getEnableFlag());
@@ -138,9 +171,13 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenuDO> im
         sysMenuInsertOrUpdateDTO.setTenantId(dto.getTenantId());
         sysMenuInsertOrUpdateDTO.setId(id);
 
-        sysMenuInsertOrUpdateDTO.setRouter(sysMenuDO.getRouter()); // 不能修改
-        sysMenuInsertOrUpdateDTO.setAuths(sysMenuDO.getAuths()); // 不能修改
-        sysMenuInsertOrUpdateDTO.setAuthFlag(sysMenuDO.getAuthFlag()); // 不能修改
+        // 不能修改 ↓ 备注：需要和 SysMenuServiceImpl#syncUpdate 一致
+        sysMenuInsertOrUpdateDTO.setPath(sysMenuDO.getPath());
+        sysMenuInsertOrUpdateDTO.setRouter(sysMenuDO.getRouter());
+        sysMenuInsertOrUpdateDTO.setAuths(sysMenuDO.getAuths());
+        sysMenuInsertOrUpdateDTO.setAuthFlag(sysMenuDO.getAuthFlag());
+        sysMenuInsertOrUpdateDTO.setHiddenPageContainerFlag(sysMenuDO.getHiddenPageContainerFlag());
+        // 不能修改 ↑
 
         return sysMenuInsertOrUpdateDTO;
 
@@ -340,6 +377,19 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenuDO> im
             if (exists) {
                 ApiResultVO.error(BaseBizCodeEnum.PLEASE_DELETE_THE_CHILD_NODE_FIRST);
             }
+
+        }
+
+        // 如果删除了顶级租户的菜单，则需要全局一起删除
+        List<SysMenuDO> sysMenuDOList =
+            lambdaQuery().in(BaseEntity::getId, idSet).eq(BaseEntityNoIdFather::getTenantId, BaseConstant.TOP_TENANT_ID)
+                .select(SysMenuDO::getUuid).list();
+
+        if (CollUtil.isNotEmpty(sysMenuDOList)) {
+
+            Set<String> uuidSet = sysMenuDOList.stream().map(SysMenuDO::getUuid).collect(Collectors.toSet());
+
+            lambdaUpdate().in(SysMenuDO::getUuid, uuidSet).remove(); // 根据 uuid，全局一起删除
 
         }
 
