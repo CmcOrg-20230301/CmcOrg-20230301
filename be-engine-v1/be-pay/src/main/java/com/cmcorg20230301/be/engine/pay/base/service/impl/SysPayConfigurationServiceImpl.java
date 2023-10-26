@@ -19,7 +19,6 @@ import com.cmcorg20230301.be.engine.security.exception.BaseBizCodeEnum;
 import com.cmcorg20230301.be.engine.security.model.entity.BaseEntity;
 import com.cmcorg20230301.be.engine.security.model.entity.BaseEntityNoId;
 import com.cmcorg20230301.be.engine.security.model.entity.BaseEntityNoIdFather;
-import com.cmcorg20230301.be.engine.security.model.vo.ApiResultVO;
 import com.cmcorg20230301.be.engine.security.util.MyEntityUtil;
 import com.cmcorg20230301.be.engine.security.util.SysTenantUtil;
 import org.jetbrains.annotations.NotNull;
@@ -46,15 +45,6 @@ public class SysPayConfigurationServiceImpl extends ServiceImpl<SysPayConfigurat
         // 处理：BaseTenantInsertOrUpdateDTO
         SysTenantUtil.handleBaseTenantInsertOrUpdateDTO(dto, getCheckIllegalFunc1(CollUtil.newHashSet(dto.getId())),
             getTenantIdBaseEntityFunc1());
-
-        // 支付名，不能重复
-        boolean exists = lambdaQuery().eq(SysPayConfigurationDO::getName, dto.getName())
-            .ne(dto.getId() != null, BaseEntity::getId, dto.getId()).eq(BaseEntityNoId::getTenantId, dto.getTenantId())
-            .exists();
-
-        if (exists) {
-            ApiResultVO.errorMsg("操作失败：支付名不能重复");
-        }
 
         // 如果是默认支付方式，则取消之前的默认支付方式
         if (BooleanUtil.isTrue(dto.getDefaultFlag())) {

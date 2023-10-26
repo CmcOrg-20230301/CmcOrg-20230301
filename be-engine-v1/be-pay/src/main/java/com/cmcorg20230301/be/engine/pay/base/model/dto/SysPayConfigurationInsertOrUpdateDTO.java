@@ -23,7 +23,7 @@ public class SysPayConfigurationInsertOrUpdateDTO extends BaseTenantInsertOrUpda
     private SysPayTypeEnum type;
 
     @NotBlank
-    @Schema(description = "支付名（不可重复）")
+    @Schema(description = "支付名")
     private String name;
 
     @NotCheckBlankPattern(regexp = RegexPool.URL)
