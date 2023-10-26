@@ -39,8 +39,8 @@ public class SysSocketRefUserServiceImpl extends ServiceImpl<SysSocketRefUserMap
             .eq(dto.getType() != null, SysSocketRefUserDO::getType, dto.getType())
             .eq(dto.getId() != null, BaseEntity::getId, dto.getId())
             .eq(dto.getOnlineType() != null, SysSocketRefUserDO::getOnlineType, dto.getOnlineType())
-            .eq(StrUtil.isNotBlank(dto.getIp()), SysSocketRefUserDO::getIp, dto.getIp())
-            .eq(StrUtil.isNotBlank(dto.getRegion()), SysSocketRefUserDO::getRegion, dto.getRegion())
+            .like(StrUtil.isNotBlank(dto.getIp()), SysSocketRefUserDO::getIp, dto.getIp())
+            .like(StrUtil.isNotBlank(dto.getRegion()), SysSocketRefUserDO::getRegion, dto.getRegion())
             .like(StrUtil.isNotBlank(dto.getRemark()), SysSocketRefUserDO::getRemark, dto.getRemark())
             .in(BaseEntityNoId::getTenantId, dto.getTenantIdSet()) //
             .page(dto.page(true));
