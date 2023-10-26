@@ -95,12 +95,20 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserProMapper, SysUserDO>
         // 过滤：request表的数据
         dto.setIdSet(new HashSet<>()); // 先清除：idSet的数据
 
-        if (dto.getBeginLastActiveTime() != null || dto.getEndLastActiveTime() != null) {
+        if (dto.getBeginLastActiveTime() != null || dto.getEndLastActiveTime() != null || StrUtil
+            .isNotBlank(dto.getIp()) || StrUtil.isNotBlank(dto.getRegion())) {
 
             List<SysRequestDO> sysRequestDOList = ChainWrappers.lambdaQueryChain(baseSysRequestMapper)
                 .le(dto.getEndLastActiveTime() != null, BaseEntityNoId::getCreateTime, dto.getEndLastActiveTime())
                 .ge(dto.getBeginLastActiveTime() != null, BaseEntityNoId::getCreateTime, dto.getBeginLastActiveTime())
+                .like(StrUtil.isNotBlank(dto.getIp()), SysRequestDO::getIp, dto.getIp())
+                .like(StrUtil.isNotBlank(dto.getRegion()), SysRequestDO::getRegion, dto.getRegion())
+                .ne(BaseEntityNoIdFather::getCreateId, BaseConstant.SYS_ID) //
                 .select(BaseEntityNoId::getCreateId).groupBy(BaseEntityNoId::getCreateId).list();
+
+            if (CollUtil.isEmpty(sysRequestDOList)) {
+                return new Page<>();
+            }
 
             Set<Long> idSet = sysRequestDOList.stream().map(BaseEntityNoId::getCreateId).collect(Collectors.toSet());
 
@@ -274,6 +282,16 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserProMapper, SysUserDO>
             redisKeyEnumSet.add(BaseRedisKeyEnum.PRE_PHONE);
         }
 
+        // 执行
+        return doInsertOrUpdate(dto, redisKeyEnumSet);
+
+    }
+
+    /**
+     * 执行：新增/修改
+     */
+    private String doInsertOrUpdate(SysUserInsertOrUpdateDTO dto, Set<Enum<? extends IRedisKey>> redisKeyEnumSet) {
+
         return RedissonUtil.doMultiLock(null, redisKeyEnumSet, () -> {
 
             Map<Enum<? extends IRedisKey>, String> accountMap = MapUtil.newHashMap();
@@ -296,8 +314,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserProMapper, SysUserDO>
                 sysUserInfoDO.setBio(dto.getBio());
 
                 SysUserDO sysUserDO = SignUtil
-                    .insertUser(dto.getPassword(), accountMap, false, sysUserInfoDO, dto.getEnableFlag(),
-                        dto.getTenantId());
+                    .insertUser(dto.getPassword(), accountMap, false, sysUserInfoDO, dto.getEnableFlag(), dto.getTenantId());
 
                 insertOrUpdateSub(sysUserDO, dto); // 新增数据到子表
 
@@ -320,8 +337,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserProMapper, SysUserDO>
 
                 SysUserInfoDO sysUserInfoDO = new SysUserInfoDO();
                 sysUserInfoDO.setId(dto.getId());
-                sysUserInfoDO
-                    .setNickname(MyEntityUtil.getNotNullStr(dto.getNickname(), NicknameUtil.getRandomNickname()));
+                sysUserInfoDO.setNickname(MyEntityUtil.getNotNullStr(dto.getNickname(), NicknameUtil.getRandomNickname()));
                 sysUserInfoDO.setBio(MyEntityUtil.getNotNullStr(dto.getBio()));
 
                 sysUserInfoMapper.updateById(sysUserInfoDO);

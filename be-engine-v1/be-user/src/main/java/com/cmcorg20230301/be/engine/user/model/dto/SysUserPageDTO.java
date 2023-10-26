@@ -30,11 +30,11 @@ public class SysUserPageDTO extends MyTenantPageDTO {
     @Schema(description = "手机号码")
     private String phone;
 
-    @Schema(description = "微信 openId")
-    private String wxOpenId;
-
     @Schema(description = "微信 appId")
     private String wxAppId;
+
+    @Schema(description = "微信 openId")
+    private String wxOpenId;
 
     @Schema(description = "是否正常")
     private Boolean enableFlag;
@@ -53,5 +53,11 @@ public class SysUserPageDTO extends MyTenantPageDTO {
 
     @Schema(description = "最近活跃结束时间")
     private Date endLastActiveTime;
+
+    @Schema(description = "ip")
+    private String ip;
+
+    @Schema(description = "Ip2RegionUtil.getRegion() 获取到的 ip所处区域")
+    private String region;
 
 }

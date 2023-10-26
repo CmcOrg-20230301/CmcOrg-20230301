@@ -30,11 +30,11 @@ public class SysUserPageVO {
     @Schema(description = "手机号码，会脱敏")
     private String phone;
 
-    @Schema(description = "微信 openId")
-    private String wxOpenId;
-
     @Schema(description = "微信 appId")
     private String wxAppId;
+
+    @Schema(description = "微信 openId")
+    private String wxOpenId;
 
     @Schema(description = "正常/冻结")
     private Boolean enableFlag;

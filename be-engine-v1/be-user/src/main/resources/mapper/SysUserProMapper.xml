@@ -49,12 +49,12 @@
             AND a.phone LIKE concat('%', #{dto.phone}, '%')
         </if>
 
-        <if test="dto.wxOpenId != null and dto.wxOpenId != ''">
-            AND a.wx_open_id LIKE concat('%', #{dto.wxOpenId}, '%')
-        </if>
-
         <if test="dto.wxAppId != null and dto.wxAppId != ''">
             AND a.wx_app_id LIKE concat('%', #{dto.wxAppId}, '%')
+        </if>
+
+        <if test="dto.wxOpenId != null and dto.wxOpenId != ''">
+            AND a.wx_open_id LIKE concat('%', #{dto.wxOpenId}, '%')
         </if>
 
         <if test="dto.enableFlag != null">
@@ -71,6 +71,13 @@
 
         <if test="dto.endCreateTime != null">
             AND a.create_time <![CDATA[<=]]> #{dto.endCreateTime}
+        </if>
+
+        <if test="dto.idSet != null and dto.idSet.size != 0">
+            AND a.id IN
+            <foreach collection="dto.idSet" separator="," open="(" close=")" item="item">
+                #{item}
+            </foreach>
         </if>
 
         <if test="dto.tenantIdSet != null and dto.tenantIdSet.size != 0">
