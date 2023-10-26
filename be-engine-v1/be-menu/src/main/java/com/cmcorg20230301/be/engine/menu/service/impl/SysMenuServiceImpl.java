@@ -99,7 +99,7 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenuDO> im
         SysMenuDO sysMenuDO = getEntityByDTO(dto);
 
         // 如果：修改的是顶级租户的数据，则需要同步一些字段
-        syncUpdate(sysMenuDO);
+        syncUpdate(sysMenuDO, dto);
 
         saveOrUpdate(sysMenuDO);
 
@@ -112,14 +112,14 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenuDO> im
     /**
      * 如果：修改的是顶级租户的数据，则需要同步一些字段
      */
-    private void syncUpdate(SysMenuDO tempSysMenuDO) {
+    private void syncUpdate(SysMenuDO tempSysMenuDO, SysMenuInsertOrUpdateDTO dto) {
 
         if (tempSysMenuDO.getId() == null) { // 如果是新增，则不进行处理
             return;
         }
 
         // 如果不是顶级租户，则不进行处理
-        if (!BaseConstant.TOP_TENANT_ID.equals(tempSysMenuDO.getTenantId())) {
+        if (!BaseConstant.TOP_TENANT_ID.equals(dto.getTenantId())) {
             return;
         }
 
