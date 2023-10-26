@@ -50,7 +50,7 @@ public class SysParamUtil {
 
         if (SYSTEM_PARAM_UUID_SET.contains(paramUuid)) { // 如果是：系统内置参数
 
-            currentTenantIdDefault = BaseConstant.TENANT_ID; // 则使用默认租户
+            currentTenantIdDefault = BaseConstant.TOP_TENANT_ID; // 则使用默认租户
 
         } else {
 
@@ -76,7 +76,7 @@ public class SysParamUtil {
 
         if (resultValue == null) { // 如果：不存在该参数，则从默认租户里面取
 
-            return map.get(BaseConstant.TENANT_ID).get(paramUuid);
+            return map.get(BaseConstant.TOP_TENANT_ID).get(paramUuid);
 
         } else {
 

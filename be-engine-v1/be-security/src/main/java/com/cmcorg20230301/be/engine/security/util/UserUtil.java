@@ -199,7 +199,7 @@ public class UserUtil {
         Long userId = getCurrentTenantIdWillNull();
 
         if (userId == null) {
-            userId = BaseConstant.TENANT_ID;
+            userId = BaseConstant.TOP_TENANT_ID;
         }
 
         return userId;

@@ -16,7 +16,6 @@ import com.cmcorg20230301.be.engine.menu.service.SysMenuService;
 import com.cmcorg20230301.be.engine.model.model.constant.BaseConstant;
 import com.cmcorg20230301.be.engine.model.model.dto.*;
 import com.cmcorg20230301.be.engine.model.model.vo.DictTreeVO;
-import com.cmcorg20230301.be.engine.model.model.vo.DictVO;
 import com.cmcorg20230301.be.engine.param.service.SysParamService;
 import com.cmcorg20230301.be.engine.security.exception.BaseBizCodeEnum;
 import com.cmcorg20230301.be.engine.security.mapper.SysTenantMapper;
@@ -191,7 +190,7 @@ public class SysTenantServiceImpl extends ServiceImpl<SysTenantMapper, SysTenant
             ApiResultVO.error(BaseBizCodeEnum.ILLEGAL_REQUEST);
         }
 
-        // 用户：拥有的菜单 idSet
+        // 当前用户：拥有的菜单 idSet
         Set<Long> menuIdSet = sysMenuDoSet.stream().map(BaseEntity::getId).collect(Collectors.toSet());
 
         if (!CollUtil.containsAll(menuIdSet, checkMenuIdSet)) {
@@ -261,7 +260,7 @@ public class SysTenantServiceImpl extends ServiceImpl<SysTenantMapper, SysTenant
 
         // 新增：字典
         List<SysDictDO> sysDictDOList =
-            sysDictService.lambdaQuery().eq(BaseEntityNoId::getTenantId, BaseConstant.TENANT_ID)
+            sysDictService.lambdaQuery().eq(BaseEntityNoId::getTenantId, BaseConstant.TOP_TENANT_ID)
                 .eq(SysDictDO::getSystemFlag, true).list();
 
         // 执行：新增字典
@@ -269,7 +268,7 @@ public class SysTenantServiceImpl extends ServiceImpl<SysTenantMapper, SysTenant
 
         // 新增：参数
         List<SysParamDO> sysParamDOList =
-            sysParamService.lambdaQuery().eq(BaseEntityNoId::getTenantId, BaseConstant.TENANT_ID)
+            sysParamService.lambdaQuery().eq(BaseEntityNoId::getTenantId, BaseConstant.TOP_TENANT_ID)
                 .eq(SysParamDO::getSystemFlag, false).list();
 
         // 执行：新增参数
@@ -358,7 +357,7 @@ public class SysTenantServiceImpl extends ServiceImpl<SysTenantMapper, SysTenant
 
         Long currentTenantIdDefault = UserUtil.getCurrentTenantIdDefault();
 
-        if (BaseConstant.TENANT_ID.equals(currentTenantIdDefault)) {
+        if (BaseConstant.TOP_TENANT_ID.equals(currentTenantIdDefault)) {
 
             // 处理：MyTenantPageDTO
             SysTenantUtil.handleMyTenantPageDTO(dto, false);
@@ -645,7 +644,7 @@ public class SysTenantServiceImpl extends ServiceImpl<SysTenantMapper, SysTenant
     @Override
     public String getNameById(NotNullLong notNullLong) {
 
-        if (notNullLong.getValue().equals(BaseConstant.TENANT_ID)) {
+        if (notNullLong.getValue().equals(BaseConstant.TOP_TENANT_ID)) {
 
             return "";
 
@@ -688,7 +687,7 @@ public class SysTenantServiceImpl extends ServiceImpl<SysTenantMapper, SysTenant
      * 获取：同步最新的数据给租户的数据
      */
     @Override
-    public List<DictVO> getSyncMenuInfo(NotNullId notNullId) {
+    public List<SysMenuDO> getSyncMenuInfo(NotNullId notNullId) {
 
         // 检查：租户 id
         SysTenantUtil.checkTenantId(notNullId.getId());
@@ -706,30 +705,12 @@ public class SysTenantServiceImpl extends ServiceImpl<SysTenantMapper, SysTenant
         // 当前租户菜单的 uuidSet
         Set<String> uuidSet = sysMenuDOList.stream().map(SysMenuDO::getUuid).collect(Collectors.toSet());
 
-        // 获取：需要增加的菜单 idSet
-        Set<Long> todoAddIdSet = allSysMenuDoCollection.stream()
-            .filter(it -> it.getTenantId().equals(BaseConstant.TENANT_ID) && !uuidSet.contains(it.getUuid()))
-            .map(BaseEntity::getId).collect(Collectors.toSet());
+        // 获取：需要增加的菜单集合
+        Set<SysMenuDO> needAddMenuSet = allSysMenuDoCollection.stream()
+            .filter(it -> it.getTenantId().equals(BaseConstant.TOP_TENANT_ID) && !uuidSet.contains(it.getUuid()))
+            .collect(Collectors.toSet());
 
-        // 组装为完整的路径名，返回给前端
-        Map<Long, SysMenuDO> groupIdMap =
-            allSysMenuDoCollection.stream().collect(Collectors.toMap(BaseEntityTree::getId, it -> it));
-
-        List<DictVO> resultList = new ArrayList<>();
-
-        for (Long item : todoAddIdSet) {
-
-            List<String> list = new ArrayList<>();
-
-            getSyncMenuInfoNext(item, groupIdMap, list);
-
-            String fullName = CollUtil.join(list, "/"); // 包含：本级名称
-
-            resultList.add(new DictVO(item, fullName));
-
-        }
-
-        return resultList;
+        return MyTreeUtil.getFullTreeList(needAddMenuSet, allSysMenuDoCollection);
 
     }
 
@@ -791,7 +772,7 @@ public class SysTenantServiceImpl extends ServiceImpl<SysTenantMapper, SysTenant
 
         for (SysMenuDO item : fullSysMenuDoSet) {
 
-            if (currentUuidAndSysMenuDoMap.containsKey(item.getUuid())) {
+            if (currentUuidAndSysMenuDoMap.containsKey(item.getUuid())) { // 如果：同步了一个重复的菜单
 
                 SysMenuDO sysMenuDO = currentUuidAndSysMenuDoMap.get(item.getUuid()); // 获取：该租户对应的菜单信息
 
@@ -834,7 +815,7 @@ public class SysTenantServiceImpl extends ServiceImpl<SysTenantMapper, SysTenant
 
         // 默认租户的，系统内置字典
         List<SysDictDO> systemSysDictDOList = allSysDictDOList.stream()
-            .filter(it -> it.getSystemFlag() && it.getTenantId().equals(BaseConstant.TENANT_ID))
+            .filter(it -> it.getSystemFlag() && it.getTenantId().equals(BaseConstant.TOP_TENANT_ID))
             .collect(Collectors.toList());
 
         // 根据：字典 key，进行分组
@@ -929,7 +910,7 @@ public class SysTenantServiceImpl extends ServiceImpl<SysTenantMapper, SysTenant
         }
 
         // 删除：租户的所有字典，然后再新增
-        sysDictService.lambdaUpdate().ne(BaseEntityNoId::getTenantId, BaseConstant.TENANT_ID).remove();
+        sysDictService.lambdaUpdate().ne(BaseEntityNoId::getTenantId, BaseConstant.TOP_TENANT_ID).remove();
 
         sysDictService.saveBatch(insertList);
 
@@ -955,7 +936,7 @@ public class SysTenantServiceImpl extends ServiceImpl<SysTenantMapper, SysTenant
 
         // 默认租户的，非系统内置字典
         List<SysParamDO> defaultTenantSysParamDOList = allSysParamDOList.stream()
-            .filter(it -> !it.getSystemFlag() && it.getTenantId().equals(BaseConstant.TENANT_ID))
+            .filter(it -> !it.getSystemFlag() && it.getTenantId().equals(BaseConstant.TOP_TENANT_ID))
             .collect(Collectors.toList());
 
         List<SysParamDO> insertList = new ArrayList<>();
@@ -1003,7 +984,7 @@ public class SysTenantServiceImpl extends ServiceImpl<SysTenantMapper, SysTenant
         }
 
         // 删除：租户的所有参数，然后再新增
-        sysParamService.lambdaUpdate().ne(BaseEntityNoId::getTenantId, BaseConstant.TENANT_ID).remove();
+        sysParamService.lambdaUpdate().ne(BaseEntityNoId::getTenantId, BaseConstant.TOP_TENANT_ID).remove();
 
         sysParamService.saveBatch(insertList);
 

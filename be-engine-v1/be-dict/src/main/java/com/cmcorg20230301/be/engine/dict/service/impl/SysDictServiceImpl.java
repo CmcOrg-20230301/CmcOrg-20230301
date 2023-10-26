@@ -119,7 +119,7 @@ public class SysDictServiceImpl extends ServiceImpl<SysDictMapper, SysDictDO> im
 
         Long currentTenantIdDefault = UserUtil.getCurrentTenantIdDefault();
 
-        if (BaseConstant.TENANT_ID.equals(currentTenantIdDefault)) { // 如果是：顶层租户
+        if (BaseConstant.TOP_TENANT_ID.equals(currentTenantIdDefault)) { // 如果是：顶层租户
 
             sysDictDO.setSystemFlag(BooleanUtil.isTrue(dto.getSystemFlag()));
 

@@ -37,7 +37,7 @@ public class PayHelper {
         @Nullable Boolean useParentTenantPayFlag) {
 
         if (tenantId == null) {
-            tenantId = BaseConstant.TENANT_ID;
+            tenantId = BaseConstant.TOP_TENANT_ID;
         }
 
         List<SysPayConfigurationDO> sysPayConfigurationDOList =

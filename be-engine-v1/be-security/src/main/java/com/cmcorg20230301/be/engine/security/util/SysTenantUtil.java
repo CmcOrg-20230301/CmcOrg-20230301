@@ -47,9 +47,9 @@ public class SysTenantUtil {
     @NotNull
     public static Long getTenantId(@Nullable Long tenantId) {
 
-        if (tenantId == null || tenantId.equals(BaseConstant.TENANT_ID)) {
+        if (tenantId == null || tenantId.equals(BaseConstant.TOP_TENANT_ID)) {
 
-            return BaseConstant.TENANT_ID;
+            return BaseConstant.TOP_TENANT_ID;
 
         }
 
@@ -153,9 +153,9 @@ public class SysTenantUtil {
 
         SysTenantDO sysTenantDO = new SysTenantDO();
 
-        sysTenantDO.setId(BaseConstant.TENANT_ID);
+        sysTenantDO.setId(BaseConstant.TOP_TENANT_ID);
         sysTenantDO.setParentId(BaseConstant.NEGATIVE_ONE);
-        sysTenantDO.setName(BaseConstant.TENANT_NAME);
+        sysTenantDO.setName(BaseConstant.TOP_TENANT_NAME);
 
         return sysTenantDO;
 
@@ -435,7 +435,7 @@ public class SysTenantUtil {
 
         Long currentTenantIdDefault = UserUtil.getCurrentTenantIdDefault();
 
-        if (BaseConstant.TENANT_ID.equals(currentTenantIdDefault)) {
+        if (BaseConstant.TOP_TENANT_ID.equals(currentTenantIdDefault)) {
             return true;
         }
 

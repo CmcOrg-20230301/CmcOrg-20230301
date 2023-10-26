@@ -3,7 +3,7 @@ package com.cmcorg20230301.be.engine.tenant.controller;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.cmcorg20230301.be.engine.model.model.dto.*;
 import com.cmcorg20230301.be.engine.model.model.vo.DictTreeVO;
-import com.cmcorg20230301.be.engine.model.model.vo.DictVO;
+import com.cmcorg20230301.be.engine.security.model.entity.SysMenuDO;
 import com.cmcorg20230301.be.engine.security.model.entity.SysTenantDO;
 import com.cmcorg20230301.be.engine.security.model.vo.ApiResultVO;
 import com.cmcorg20230301.be.engine.tenant.model.dto.SysTenantInsertOrUpdateDTO;
@@ -88,7 +88,7 @@ public class SysTenantController {
     @Operation(summary = "获取：需要同步给租户的菜单")
     @PostMapping("/getSyncMenuInfo")
     @PreAuthorize("hasAuthority('sysTenant:syncMenu')")
-    public ApiResultVO<List<DictVO>> getSyncMenuInfo(@RequestBody @Valid NotNullId notNullId) {
+    public ApiResultVO<List<SysMenuDO>> getSyncMenuInfo(@RequestBody @Valid NotNullId notNullId) {
         return ApiResultVO.okData(baseService.getSyncMenuInfo(notNullId));
     }
 

@@ -27,7 +27,7 @@ public class PayGoogleServiceImpl implements PayGoogleService {
     public boolean paySuccess(SysPayGooglePaySuccessDTO dto) {
 
         if (dto.getTenantId() == null) {
-            dto.setTenantId(BaseConstant.TENANT_ID);
+            dto.setTenantId(BaseConstant.TOP_TENANT_ID);
         }
 
         SysPayConfigurationDO sysPayConfigurationDoTemp = PayHelper
@@ -62,7 +62,7 @@ public class PayGoogleServiceImpl implements PayGoogleService {
     public boolean payConsume(SysPayGooglePayConsumeDTO dto) {
 
         if (dto.getTenantId() == null) {
-            dto.setTenantId(BaseConstant.TENANT_ID);
+            dto.setTenantId(BaseConstant.TOP_TENANT_ID);
         }
 
         SysPayConfigurationDO sysPayConfigurationDoTemp = PayHelper

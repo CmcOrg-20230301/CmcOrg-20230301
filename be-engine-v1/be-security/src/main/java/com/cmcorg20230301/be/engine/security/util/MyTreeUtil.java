@@ -22,7 +22,7 @@ public class MyTreeUtil {
      * 备注：有子节点时，children才是集合
      */
     public static <T extends BaseEntityTree<T>> List<T> getFullTreeByDeepNode(Collection<T> deepNodeCollection,
-        List<T> allCollection) {
+        Collection<T> allCollection) {
 
         return getFullTreeByDeepNode(deepNodeCollection, allCollection, BaseConstant.TOP_PARENT_ID);
 
@@ -33,7 +33,7 @@ public class MyTreeUtil {
      * 备注：有子节点时，children才是集合
      */
     public static <T extends BaseEntityTree<T>> List<T> getFullTreeByDeepNode(Collection<T> deepNodeCollection,
-        List<T> allCollection, long parentId) {
+        Collection<T> allCollection, long parentId) {
 
         return listToTree(getFullTreeList(deepNodeCollection, allCollection), false, parentId);
 
@@ -137,14 +137,14 @@ public class MyTreeUtil {
      * @param childrenFlag 【true】 children 一直为集合 【false】 有子节点时，children为集合，无子节点时，children 为 null
      */
     @SneakyThrows
-    public static <T extends BaseEntityTree<T>> List<T> listToTree(List<T> list, boolean childrenFlag,
+    public static <T extends BaseEntityTree<T>> List<T> listToTree(Collection<T> collection, boolean childrenFlag,
         long topParentId) {
 
-        Map<Long, T> listMap = MapUtil.newHashMap(list.size()); // 把 list的所有元素转换为：id -> 元素，格式
+        Map<Long, T> listMap = MapUtil.newHashMap(collection.size()); // 把 list的所有元素转换为：id -> 元素，格式
 
         List<T> resultList = new LinkedList<>(); // 返回值
 
-        for (T item : list) {
+        for (T item : collection) {
 
             T mapDTO = listMap.get(item.getId());
 

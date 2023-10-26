@@ -216,7 +216,7 @@ public class PayUtil {
     public static SysPayConfigurationDO handleUseParentTenantPayFlag(PayDTO dto, Long tenantIdOriginal,
         @Nullable Consumer<LambdaQueryChainWrapper<SysPayConfigurationDO>> lambdaQueryChainWrapperConsumer) {
 
-        if (BaseConstant.TENANT_ID.equals(dto.getTenantId())) {
+        if (BaseConstant.TOP_TENANT_ID.equals(dto.getTenantId())) {
 
             ApiResultVO.error("操作失败：未配置支付，请联系管理员",
                 StrUtil.format("tenantIdOriginal：{}，currentTenantId：{}", tenantIdOriginal, dto.getTenantId()));
@@ -381,7 +381,7 @@ public class PayUtil {
         }
 
         if (tenantId == null) {
-            tenantId = BaseConstant.TENANT_ID;
+            tenantId = BaseConstant.TOP_TENANT_ID;
         }
 
         return iSysPay.query(outTradeNo, tenantId, sysPayConfigurationDoTemp);
