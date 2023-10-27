@@ -4,7 +4,6 @@ import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.BooleanUtil;
 import cn.hutool.core.util.RandomUtil;
 import com.cmcorg20230301.be.engine.model.model.constant.BaseConstant;
-import com.cmcorg20230301.be.engine.pay.base.model.dto.PayDTO;
 import com.cmcorg20230301.be.engine.pay.base.model.entity.SysPayConfigurationDO;
 import com.cmcorg20230301.be.engine.pay.base.model.enums.SysPayTypeEnum;
 import com.cmcorg20230301.be.engine.pay.base.service.SysPayConfigurationService;
@@ -52,13 +51,9 @@ public class PayHelper {
 
             if (BooleanUtil.isTrue(useParentTenantPayFlag)) {
 
-                PayDTO payDTO = new PayDTO();
-
-                payDTO.setTenantId(tenantId);
-
                 // 递归：获取上级租户的支付方式
                 sysPayConfigurationDO =
-                    PayUtil.handleUseParentTenantPayFlag(payDTO, tenantId, lambdaQueryChainWrapper -> {
+                    PayUtil.handleUseParentTenantPayFlag(tenantId, tenantId, lambdaQueryChainWrapper -> {
 
                         lambdaQueryChainWrapper.eq(SysPayConfigurationDO::getType, sysPayTypeEnum);
 

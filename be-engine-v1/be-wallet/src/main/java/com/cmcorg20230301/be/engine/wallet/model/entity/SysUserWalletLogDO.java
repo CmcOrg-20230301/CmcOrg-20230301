@@ -22,8 +22,11 @@ public class SysUserWalletLogDO extends BaseEntity {
     @Schema(description = "记录名")
     private String name;
 
+    /**
+     * {@link ISysUserWalletLogType}
+     */
     @Schema(description = "记录类型：1开头 增加 2开头 减少")
-    private ISysUserWalletLogType type;
+    private Integer type;
 
     /**
      * {@link ISysUserWalletLogRefType}

@@ -48,7 +48,7 @@ public class SysPayDO extends BaseEntity {
     @Schema(description = "支付原始的钱")
     private BigDecimal originalPrice;
 
-    @Schema(description = "实际支付的钱")
+    @Schema(description = "冗余字段：实际支付的钱")
     private BigDecimal payPrice;
 
     @Schema(description = "实际支付的钱的单位，例如：人民币 CNY")

@@ -127,6 +127,8 @@ public class PayUtil {
         // 检查：dto对象
         checkPayDTO(dto);
 
+        Long tenantId = dto.getTenantId(); // 租户主键 id
+
         if (SysPayTypeEnum.DEFAULT.equals(dto.getPayType())) { // 如果是：默认支付
             handleDefaultPayType(dto); // 处理：默认支付
         }
@@ -144,8 +146,6 @@ public class PayUtil {
         Long payId = IdGeneratorUtil.nextId();
 
         dto.setOutTradeNo(payId.toString()); // 设置：支付的订单号
-
-        Long tenantId = dto.getTenantId(); // 租户主键 id，备注：因为 iSysPay.pay方法会修改 dto的 tenantId的值
 
         // 调用：第三方支付
         SysPayReturnBO sysPayReturnBO = iSysPay.pay(dto);
@@ -185,11 +185,12 @@ public class PayUtil {
             if (BooleanUtil.isTrue(dto.getUseParentTenantPayFlag())) {
 
                 // 递归：获取上级租户的支付方式
-                sysPayConfigurationDO = handleUseParentTenantPayFlag(dto, tenantIdOriginal, lambdaQueryChainWrapper -> {
+                sysPayConfigurationDO =
+                    handleUseParentTenantPayFlag(tenantIdOriginal, tenantIdOriginal, lambdaQueryChainWrapper -> {
 
-                    lambdaQueryChainWrapper.eq(SysPayConfigurationDO::getDefaultFlag, true);
+                        lambdaQueryChainWrapper.eq(SysPayConfigurationDO::getDefaultFlag, true);
 
-                });
+                    });
 
             }
 
@@ -197,8 +198,7 @@ public class PayUtil {
 
         if (sysPayConfigurationDO == null) {
 
-            ApiResultVO.error("操作失败：未配置默认支付方式，请联系管理员",
-                StrUtil.format("tenantIdOriginal：{}，currentTenantId：{}", tenantIdOriginal, dto.getTenantId()));
+            ApiResultVO.error("操作失败：未配置默认支付方式，请联系管理员", StrUtil.format("tenantIdOriginal：{} ", tenantIdOriginal));
 
         }
 
@@ -209,40 +209,38 @@ public class PayUtil {
 
     /**
      * 递归：获取上级租户的支付方式
-     *
-     * @param dto 备注：只使用 dto的 tenantId属性
      */
     @NotNull
-    public static SysPayConfigurationDO handleUseParentTenantPayFlag(PayDTO dto, Long tenantIdOriginal,
+    public static SysPayConfigurationDO handleUseParentTenantPayFlag(Long tenantIdOriginal, Long currentTenantId,
         @Nullable Consumer<LambdaQueryChainWrapper<SysPayConfigurationDO>> lambdaQueryChainWrapperConsumer) {
 
-        if (BaseConstant.TOP_TENANT_ID.equals(dto.getTenantId())) {
+        if (BaseConstant.TOP_TENANT_ID.equals(currentTenantId)) {
 
             ApiResultVO.error("操作失败：未配置支付，请联系管理员",
-                StrUtil.format("tenantIdOriginal：{}，currentTenantId：{}", tenantIdOriginal, dto.getTenantId()));
+                StrUtil.format("tenantIdOriginal：{}，currentTenantId：{}", tenantIdOriginal, currentTenantId));
 
         }
 
-        SysTenantDO sysTenantDO = SysTenantUtil.getSysTenantCacheMap(false).get(dto.getTenantId());
+        SysTenantDO sysTenantDO = SysTenantUtil.getSysTenantCacheMap(false).get(currentTenantId);
 
         if (sysTenantDO == null) {
 
             ApiResultVO.error("操作失败：租户不存在",
-                StrUtil.format("tenantIdOriginal：{}，currentTenantId：{}", tenantIdOriginal, dto.getTenantId()));
+                StrUtil.format("tenantIdOriginal：{}，currentTenantId：{}", tenantIdOriginal, currentTenantId));
 
         }
 
         if (!sysTenantDO.getEnableFlag()) {
 
             ApiResultVO.error("操作失败：租户已被禁用，无法调用支付",
-                StrUtil.format("tenantIdOriginal：{}，currentTenantId：{}", tenantIdOriginal, dto.getTenantId()));
+                StrUtil.format("tenantIdOriginal：{}，currentTenantId：{}", tenantIdOriginal, currentTenantId));
 
         }
 
-        dto.setTenantId(sysTenantDO.getParentId()); // 设置为：上级租户 id
+        currentTenantId = sysTenantDO.getParentId();  // 设置为：上级租户 id
 
         LambdaQueryChainWrapper<SysPayConfigurationDO> lambdaQueryChainWrapper =
-            sysPayConfigurationService.lambdaQuery().eq(BaseEntityNoIdFather::getTenantId, dto.getTenantId())
+            sysPayConfigurationService.lambdaQuery().eq(BaseEntityNoIdFather::getTenantId, currentTenantId)
                 .eq(BaseEntityNoId::getEnableFlag, true);
 
         if (lambdaQueryChainWrapperConsumer != null) {
@@ -263,7 +261,7 @@ public class PayUtil {
         if (sysPayConfigurationDO == null) {
 
             // 递归：获取上级租户的支付方式
-            return handleUseParentTenantPayFlag(dto, tenantIdOriginal, lambdaQueryChainWrapperConsumer);
+            return handleUseParentTenantPayFlag(tenantIdOriginal, currentTenantId, lambdaQueryChainWrapperConsumer);
 
         }
 
