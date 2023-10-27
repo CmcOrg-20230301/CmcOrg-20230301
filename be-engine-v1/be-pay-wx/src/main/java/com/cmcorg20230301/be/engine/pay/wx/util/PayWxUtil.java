@@ -105,8 +105,9 @@ public class PayWxUtil {
         request.setMchid(sysPayConfigurationDoCallBack.getValue().getMerchantId());
         request.setDescription(dto.getSubject());
 
-        request.setNotifyUrl(sysPayConfigurationDoCallBack.getValue().getNotifyUrl() + "/" + dto.getTenantId() + "/"
-            + sysPayConfigurationDoCallBack.getValue().getId());
+        request.setNotifyUrl(
+            sysPayConfigurationDoCallBack.getValue().getNotifyUrl() + "/" + sysPayConfigurationDoCallBack.getValue()
+                .getId());
 
         request.setOutTradeNo(dto.getOutTradeNo());
         request.setTimeExpire(DatePattern.UTC_WITH_XXX_OFFSET_FORMAT.format(dto.getExpireTime()));
@@ -123,17 +124,17 @@ public class PayWxUtil {
     /**
      * 查询订单状态-native
      *
-     * @param outTradeNo 商户订单号，商户网站订单系统中唯一订单号，必填
+     * @param outTradeNo 本系统的支付主键 id，必填
      */
     @SneakyThrows
     @NotNull
-    public static SysPayTradeStatusEnum queryNative(String outTradeNo, Long tenantId,
-        @Nullable SysPayConfigurationDO sysPayConfigurationDoTemp) {
+    public static SysPayTradeStatusEnum queryNative(String outTradeNo,
+        SysPayConfigurationDO sysPayConfigurationDoTemp) {
 
         CallBack<SysPayConfigurationDO> sysPayConfigurationDoCallBack = new CallBack<>();
 
         NativePayService nativePayService =
-            getNativePayService(tenantId, sysPayConfigurationDoCallBack, sysPayConfigurationDoTemp, null);
+            getNativePayService(null, sysPayConfigurationDoCallBack, sysPayConfigurationDoTemp, null);
 
         com.wechat.pay.java.service.payments.nativepay.model.QueryOrderByOutTradeNoRequest queryRequest =
             new com.wechat.pay.java.service.payments.nativepay.model.QueryOrderByOutTradeNoRequest();
@@ -194,8 +195,9 @@ public class PayWxUtil {
         request.setMchid(sysPayConfigurationDoCallBack.getValue().getMerchantId());
         request.setDescription(dto.getSubject());
 
-        request.setNotifyUrl(sysPayConfigurationDoCallBack.getValue().getNotifyUrl() + "/" + dto.getTenantId() + "/"
-            + sysPayConfigurationDoCallBack.getValue().getId());
+        request.setNotifyUrl(
+            sysPayConfigurationDoCallBack.getValue().getNotifyUrl() + "/" + sysPayConfigurationDoCallBack.getValue()
+                .getId());
 
         request.setOutTradeNo(dto.getOutTradeNo());
         request.setTimeExpire(DatePattern.UTC_WITH_XXX_OFFSET_FORMAT.format(dto.getExpireTime()));
@@ -220,17 +222,17 @@ public class PayWxUtil {
     /**
      * 查询订单状态-jsApi
      *
-     * @param outTradeNo 商户订单号，商户网站订单系统中唯一订单号，必填
+     * @param outTradeNo 本系统的支付主键 id，必填
      */
     @SneakyThrows
     @NotNull
-    public static SysPayTradeStatusEnum queryJsApi(String outTradeNo, Long tenantId,
+    public static SysPayTradeStatusEnum queryJsApi(String outTradeNo,
         @Nullable SysPayConfigurationDO sysPayConfigurationDoTemp) {
 
         CallBack<SysPayConfigurationDO> sysPayConfigurationDoCallBack = new CallBack<>();
 
         JsapiServiceExtension jsapiServiceExtension =
-            getJsapiServiceExtension(tenantId, sysPayConfigurationDoCallBack, sysPayConfigurationDoTemp, null);
+            getJsapiServiceExtension(null, sysPayConfigurationDoCallBack, sysPayConfigurationDoTemp, null);
 
         com.wechat.pay.java.service.payments.jsapi.model.QueryOrderByOutTradeNoRequest queryRequest =
             new com.wechat.pay.java.service.payments.jsapi.model.QueryOrderByOutTradeNoRequest();

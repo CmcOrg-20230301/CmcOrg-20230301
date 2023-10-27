@@ -69,12 +69,12 @@ public class PayGoogleUtil {
     /**
      * 查询订单状态
      *
-     * @param outTradeNo 商户订单号，商户网站订单系统中唯一订单号，必填
+     * @param outTradeNo 本系统的支付主键 id，必填
      */
     @SneakyThrows
     @NotNull
-    public static SysPayTradeStatusEnum query(String outTradeNo, SysPayTradeNotifyBO sysPayTradeNotifyBO, Long tenantId,
-        @Nullable SysPayConfigurationDO sysPayConfigurationDoTemp) {
+    public static SysPayTradeStatusEnum query(String outTradeNo, @Nullable SysPayTradeNotifyBO sysPayTradeNotifyBO,
+        SysPayConfigurationDO sysPayConfigurationDoTemp) {
 
         Assert.notBlank(outTradeNo);
 
@@ -87,7 +87,7 @@ public class PayGoogleUtil {
         }
 
         // 获取：accessToken
-        String accessToken = getAccessToken(tenantId, sysPayConfigurationDoTemp);
+        String accessToken = getAccessToken(sysPayConfigurationDoTemp);
 
         // 查询：谷歌那边的订单状态，文档地址：https://developers.google.com/android-publisher/api-ref/rest/v3/purchases.products/get?hl=zh-cn
         // https://androidpublisher.googleapis.com/androidpublisher/v3/applications/{packageName}/purchases/products/{productId}/tokens/{token}
@@ -133,38 +133,16 @@ public class PayGoogleUtil {
     /**
      * 获取：google接口调用凭据
      */
-    public static String getAccessToken(Long tenantId, @Nullable SysPayConfigurationDO sysPayConfigurationDoTemp) {
+    public static String getAccessToken(SysPayConfigurationDO sysPayConfigurationDO) {
 
-        SysPayConfigurationDO sysPayConfigurationDO;
+        long sysPayConfigurationId = sysPayConfigurationDO.getId();
 
-        String sufKey;
+        String sufKey = sysPayConfigurationDO.getTenantId() + ":" + sysPayConfigurationId;
 
-        if (sysPayConfigurationDoTemp == null) {
+        String accessToken = MyCacheUtil.onlyGet(BaseRedisKeyEnum.GOOGLE_ACCESS_TOKEN_CACHE, sufKey);
 
-            sufKey = tenantId.toString();
-
-            String accessToken = MyCacheUtil.onlyGet(BaseRedisKeyEnum.GOOGLE_ACCESS_TOKEN_CACHE, sufKey);
-
-            if (StrUtil.isNotBlank(accessToken)) {
-                return accessToken;
-            }
-
-            sysPayConfigurationDO = PayHelper.getSysPayConfigurationDO(tenantId, SysPayTypeEnum.GOOGLE, null);
-
-        } else {
-
-            long sysPayConfigurationId = sysPayConfigurationDoTemp.getId();
-
-            sufKey = tenantId + ":" + sysPayConfigurationId;
-
-            String accessToken = MyCacheUtil.onlyGet(BaseRedisKeyEnum.GOOGLE_ACCESS_TOKEN_CACHE, sufKey);
-
-            if (StrUtil.isNotBlank(accessToken)) {
-                return accessToken;
-            }
-
-            sysPayConfigurationDO = sysPayConfigurationDoTemp;
-
+        if (StrUtil.isNotBlank(accessToken)) {
+            return accessToken;
         }
 
         JSONObject formJson = JSONUtil.createObj();

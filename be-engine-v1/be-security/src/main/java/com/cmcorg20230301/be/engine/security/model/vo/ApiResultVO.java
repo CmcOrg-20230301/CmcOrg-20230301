@@ -63,18 +63,22 @@ public class ApiResultVO<T> {
     /**
      * 操作失败
      */
+    @Contract("_ -> fail")
     public static <T> ApiResultVO<T> error(IBizCode iBizCode) {
         return new ApiResultVO<T>(iBizCode.getCode(), iBizCode.getMsg(), null).error();
     }
 
+    @Contract("_,_ -> fail")
     public static <T> ApiResultVO<T> error(IBizCode iBizCode, T data) {
         return new ApiResultVO<>(iBizCode.getCode(), iBizCode.getMsg(), data).error();
     }
 
+    @Contract("_,_ -> fail")
     public static <T> ApiResultVO<T> error(String msg, T data) {
         return new ApiResultVO<T>(BaseBizCodeEnum.API_RESULT_SYS_ERROR.getCode(), msg, data).error();
     }
 
+    @Contract("_,_ -> fail")
     public static <T> ApiResultVO<T> errorMsg(String msgTemp, Object... paramArr) {
         return new ApiResultVO<T>(BaseBizCodeEnum.API_RESULT_SYS_ERROR.getCode(), StrUtil.format(msgTemp, paramArr),
             null).error();

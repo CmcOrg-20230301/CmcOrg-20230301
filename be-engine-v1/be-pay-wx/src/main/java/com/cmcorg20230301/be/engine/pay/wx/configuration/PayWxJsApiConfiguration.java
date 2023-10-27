@@ -8,7 +8,6 @@ import com.cmcorg20230301.be.engine.pay.base.model.enums.SysPayTradeStatusEnum;
 import com.cmcorg20230301.be.engine.pay.base.model.enums.SysPayTypeEnum;
 import com.cmcorg20230301.be.engine.pay.wx.util.PayWxUtil;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.springframework.context.annotation.Configuration;
 
 /**
@@ -40,9 +39,8 @@ public class PayWxJsApiConfiguration implements ISysPay {
      */
     @Override
     @NotNull
-    public SysPayTradeStatusEnum query(String outTradeNo, Long tenantId,
-        @Nullable SysPayConfigurationDO sysPayConfigurationDoTemp) {
-        return PayWxUtil.queryJsApi(outTradeNo, tenantId, sysPayConfigurationDoTemp);
+    public SysPayTradeStatusEnum query(String outTradeNo, SysPayConfigurationDO sysPayConfigurationDoTemp) {
+        return PayWxUtil.queryJsApi(outTradeNo, sysPayConfigurationDoTemp);
     }
 
 }

@@ -6,7 +6,7 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import com.cmcorg20230301.be.engine.pay.base.model.enums.SysPayTradeStatusEnum;
 import com.cmcorg20230301.be.engine.pay.base.model.enums.SysPayTypeEnum;
 import com.cmcorg20230301.be.engine.pay.base.model.interfaces.ISysPayRefType;
-import com.cmcorg20230301.be.engine.security.model.entity.BaseEntityNoId;
+import com.cmcorg20230301.be.engine.security.model.entity.BaseEntity;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -18,7 +18,7 @@ import java.util.Date;
 @TableName(value = "sys_pay")
 @Data
 @Schema(description = "主表：支付")
-public class SysPayDO extends BaseEntityNoId {
+public class SysPayDO extends BaseEntity {
 
     @TableId(type = IdType.INPUT)
     @Schema(description = "主键id")

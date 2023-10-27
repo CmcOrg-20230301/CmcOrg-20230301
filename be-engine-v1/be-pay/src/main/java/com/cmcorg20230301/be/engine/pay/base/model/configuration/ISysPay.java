@@ -6,7 +6,6 @@ import com.cmcorg20230301.be.engine.pay.base.model.entity.SysPayConfigurationDO;
 import com.cmcorg20230301.be.engine.pay.base.model.enums.SysPayTradeStatusEnum;
 import com.cmcorg20230301.be.engine.pay.base.model.enums.SysPayTypeEnum;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 public interface ISysPay {
 
@@ -23,7 +22,6 @@ public interface ISysPay {
     /**
      * 查询订单状态
      */
-    @NotNull SysPayTradeStatusEnum query(String outTradeNo, Long tenantId,
-        @Nullable SysPayConfigurationDO sysPayConfigurationDoTemp);
+    @NotNull SysPayTradeStatusEnum query(String outTradeNo, SysPayConfigurationDO sysPayConfigurationDoTemp);
 
 }

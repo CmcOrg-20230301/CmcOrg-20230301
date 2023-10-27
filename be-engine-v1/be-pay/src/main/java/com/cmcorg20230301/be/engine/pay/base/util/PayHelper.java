@@ -87,11 +87,9 @@ public class PayHelper {
      * 获取：SysPayConfigurationDO对象
      */
     @Nullable
-    public static SysPayConfigurationDO getSysPayConfigurationDO(Long tenantId, long sysPayConfigurationId,
-        SysPayTypeEnum sysPayTypeEnum) {
+    public static SysPayConfigurationDO getSysPayConfigurationDO(long sysPayConfigurationId) {
 
-        return sysPayConfigurationService.lambdaQuery().eq(BaseEntityNoIdFather::getTenantId, tenantId)
-            .eq(SysPayConfigurationDO::getType, sysPayTypeEnum).eq(BaseEntity::getId, sysPayConfigurationId).one();
+        return sysPayConfigurationService.lambdaQuery().eq(BaseEntity::getId, sysPayConfigurationId).one();
 
     }
 

@@ -1,5 +1,6 @@
 package com.cmcorg20230301.be.engine.security.model.entity;
 
+import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -12,7 +13,7 @@ import lombok.EqualsAndHashCode;
 @Schema(description = "子表：用户注销记录，主表：用户")
 public class SysUserDeleteLogDO extends BaseEntityNoIdFather {
 
-    @TableId
+    @TableId(type = IdType.INPUT)
     @Schema(description = "用户主键 id")
     private Long id;
 

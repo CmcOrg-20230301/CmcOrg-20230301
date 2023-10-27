@@ -8,7 +8,6 @@ import com.cmcorg20230301.be.engine.pay.base.model.enums.SysPayTradeStatusEnum;
 import com.cmcorg20230301.be.engine.pay.base.model.enums.SysPayTypeEnum;
 import com.cmcorg20230301.be.engine.pay.google.util.PayGoogleUtil;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.springframework.context.annotation.Configuration;
 
 /**
@@ -40,9 +39,8 @@ public class PayGoogleConfiguration implements ISysPay {
      */
     @Override
     @NotNull
-    public SysPayTradeStatusEnum query(String outTradeNo, Long tenantId,
-        @Nullable SysPayConfigurationDO sysPayConfigurationDoTemp) {
-        return PayGoogleUtil.query(outTradeNo, null, tenantId, sysPayConfigurationDoTemp);
+    public SysPayTradeStatusEnum query(String outTradeNo, SysPayConfigurationDO sysPayConfigurationDoTemp) {
+        return PayGoogleUtil.query(outTradeNo, null, sysPayConfigurationDoTemp);
     }
 
 }

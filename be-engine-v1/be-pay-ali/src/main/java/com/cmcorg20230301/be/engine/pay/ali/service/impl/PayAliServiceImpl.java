@@ -6,7 +6,6 @@ import com.cmcorg20230301.be.engine.pay.ali.service.PayAliService;
 import com.cmcorg20230301.be.engine.pay.ali.util.PayAliUtil;
 import com.cmcorg20230301.be.engine.pay.base.model.bo.SysPayTradeNotifyBO;
 import com.cmcorg20230301.be.engine.pay.base.model.entity.SysPayConfigurationDO;
-import com.cmcorg20230301.be.engine.pay.base.model.enums.SysPayTypeEnum;
 import com.cmcorg20230301.be.engine.pay.base.util.PayHelper;
 import com.cmcorg20230301.be.engine.pay.base.util.PayUtil;
 import lombok.SneakyThrows;
@@ -28,7 +27,7 @@ public class PayAliServiceImpl implements PayAliService {
      */
     @SneakyThrows
     @Override
-    public String notifyCallBack(HttpServletRequest request, long tenantId, long sysPayConfigurationId) {
+    public String notifyCallBack(HttpServletRequest request, long sysPayConfigurationId) {
 
         Map<String, String> paramsMap = new HashMap<>();
 
@@ -52,10 +51,10 @@ public class PayAliServiceImpl implements PayAliService {
 
         }
 
-        SysPayConfigurationDO sysPayConfigurationDoTemp =
-            PayHelper.getSysPayConfigurationDO(tenantId, sysPayConfigurationId, SysPayTypeEnum.ALI_QR_CODE);
+        // 获取：支付的参数配置对象
+        SysPayConfigurationDO sysPayConfigurationDoTemp = PayHelper.getSysPayConfigurationDO(sysPayConfigurationId);
 
-        AlipayConfig alipayConfig = PayAliUtil.getAlipayConfig(tenantId, null, sysPayConfigurationDoTemp, null);
+        AlipayConfig alipayConfig = PayAliUtil.getAlipayConfig(null, null, sysPayConfigurationDoTemp, null, null);
 
         boolean signVerified = AlipaySignature
             .rsaCheckV1(paramsMap, alipayConfig.getAlipayPublicKey(), alipayConfig.getCharset(),

@@ -26,7 +26,7 @@ import com.cmcorg20230301.be.engine.pay.base.service.SysPayService;
 import com.cmcorg20230301.be.engine.redisson.model.enums.BaseRedisKeyEnum;
 import com.cmcorg20230301.be.engine.redisson.util.IdGeneratorUtil;
 import com.cmcorg20230301.be.engine.redisson.util.RedissonUtil;
-import com.cmcorg20230301.be.engine.security.mapper.SysTenantMapper;
+import com.cmcorg20230301.be.engine.security.model.entity.BaseEntity;
 import com.cmcorg20230301.be.engine.security.model.entity.BaseEntityNoId;
 import com.cmcorg20230301.be.engine.security.model.entity.BaseEntityNoIdFather;
 import com.cmcorg20230301.be.engine.security.model.entity.SysTenantDO;
@@ -61,7 +61,7 @@ public class PayUtil {
     private static SysPayConfigurationService sysPayConfigurationService;
 
     public PayUtil(@Autowired(required = false) @Nullable List<ISysPay> iSysPayList, SysPayService sysPayService,
-        SysPayConfigurationService sysPayConfigurationService, SysTenantMapper sysTenantMapper) {
+        SysPayConfigurationService sysPayConfigurationService) {
 
         PayUtil.sysPayService = sysPayService;
 
@@ -369,22 +369,39 @@ public class PayUtil {
     /**
      * 查询订单状态
      *
-     * @param outTradeNo 商户订单号，商户网站订单系统中唯一订单号，必填
+     * @param outTradeNo 本系统的支付主键 id，必填
+     * @param checkFlag  是否需要检查：该支付主键 id，是否属于当前用户下的租户
      */
-    public static SysPayTradeStatusEnum query(SysPayTypeEnum sysPayTypeEnum, String outTradeNo, @Nullable Long tenantId,
-        @Nullable SysPayConfigurationDO sysPayConfigurationDoTemp) {
+    public static SysPayTradeStatusEnum query(String outTradeNo, boolean checkFlag) {
 
-        ISysPay iSysPay = SYS_PAY_MAP.get(sysPayTypeEnum);
+        SysPayDO sysPayDO = sysPayService.lambdaQuery().eq(SysPayDO::getId, outTradeNo).one();
+
+        if (sysPayDO == null) {
+            ApiResultVO.error("操作失败：支付不存在", outTradeNo);
+        }
+
+        if (checkFlag) {
+            // 检查：是否是用户关联的租户
+            SysTenantUtil.checkTenantId(sysPayDO.getTenantId());
+        }
+
+        ISysPay iSysPay = SYS_PAY_MAP.get(sysPayDO.getPayType());
 
         if (iSysPay == null) {
-            ApiResultVO.errorMsg("操作失败：支付方式未找到：{}", sysPayTypeEnum.getCode());
+            ApiResultVO.error("操作失败：支付方式未找到", sysPayDO.getPayType());
         }
 
-        if (tenantId == null) {
-            tenantId = BaseConstant.TOP_TENANT_ID;
+        Long sysPayConfigurationId = sysPayDO.getSysPayConfigurationId();
+
+        SysPayConfigurationDO sysPayConfigurationDO =
+            sysPayConfigurationService.lambdaQuery().eq(BaseEntity::getId, sysPayConfigurationId).one();
+
+        if (sysPayConfigurationDO == null) {
+            ApiResultVO.error("操作失败：支付配置未找到", sysPayConfigurationId);
         }
 
-        return iSysPay.query(outTradeNo, tenantId, sysPayConfigurationDoTemp);
+        // 执行查询
+        return iSysPay.query(outTradeNo, sysPayConfigurationDO);
 
     }
 

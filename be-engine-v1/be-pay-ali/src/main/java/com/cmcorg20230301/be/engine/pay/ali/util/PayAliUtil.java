@@ -38,14 +38,15 @@ public class PayAliUtil {
     @NotNull
     public static AlipayConfig getAlipayConfig(@Nullable Long tenantId,
         @Nullable CallBack<SysPayConfigurationDO> sysPayConfigurationDoCallBack,
-        @Nullable SysPayConfigurationDO sysPayConfigurationDoTemp, @Nullable Boolean useParentTenantPayFlag) {
+        @Nullable SysPayConfigurationDO sysPayConfigurationDoTemp, @Nullable Boolean useParentTenantPayFlag,
+        @Nullable SysPayTypeEnum sysPayTypeEnum) {
 
         SysPayConfigurationDO sysPayConfigurationDO;
 
         if (sysPayConfigurationDoTemp == null) {
 
             sysPayConfigurationDO =
-                PayHelper.getSysPayConfigurationDO(tenantId, SysPayTypeEnum.ALI_QR_CODE, useParentTenantPayFlag);
+                PayHelper.getSysPayConfigurationDO(tenantId, sysPayTypeEnum, useParentTenantPayFlag);
 
         } else {
 
@@ -84,19 +85,25 @@ public class PayAliUtil {
 
     }
 
+    /**
+     * 通用的，执行支付
+     */
     @SneakyThrows
     private static SysPayReturnBO doPay(PayDTO dto, Func1<DoPayBO, SysPayReturnBO> func1) {
 
         CallBack<SysPayConfigurationDO> sysPayConfigurationDoCallBack = new CallBack<>();
 
-        AlipayClient alipayClient = new DefaultAlipayClient(
+        AlipayConfig alipayConfig =
             getAlipayConfig(dto.getTenantId(), sysPayConfigurationDoCallBack, dto.getSysPayConfigurationDoTemp(),
-                dto.getUseParentTenantPayFlag()));
+                dto.getUseParentTenantPayFlag(), dto.getPayType());
+
+        AlipayClient alipayClient = new DefaultAlipayClient(alipayConfig);
 
         dto.setSysPayConfigurationDoTemp(sysPayConfigurationDoCallBack.getValue());
 
-        String notifyUrl = sysPayConfigurationDoCallBack.getValue().getNotifyUrl() + "/" + dto.getTenantId() + "/"
-            + sysPayConfigurationDoCallBack.getValue().getId();
+        String notifyUrl =
+            sysPayConfigurationDoCallBack.getValue().getNotifyUrl() + "/" + sysPayConfigurationDoCallBack.getValue()
+                .getId();
 
         // 执行支付
         return func1.call(new DoPayBO(sysPayConfigurationDoCallBack, alipayClient, notifyUrl));
@@ -269,17 +276,17 @@ public class PayAliUtil {
     /**
      * 通用的，查询订单状态
      *
-     * @param outTradeNo 商户订单号，商户网站订单系统中唯一订单号，必填
+     * @param outTradeNo 本系统的支付主键 id，必填
      */
     @SneakyThrows
     @NotNull
-    public static SysPayTradeStatusEnum query(String outTradeNo, Long tenantId,
-        @Nullable SysPayConfigurationDO sysPayConfigurationDoTemp) {
+    public static SysPayTradeStatusEnum query(String outTradeNo, SysPayConfigurationDO sysPayConfigurationDoTemp) {
 
         Assert.notBlank(outTradeNo);
 
-        AlipayClient alipayClient =
-            new DefaultAlipayClient(getAlipayConfig(tenantId, null, sysPayConfigurationDoTemp, null));
+        AlipayConfig alipayConfig = getAlipayConfig(null, null, sysPayConfigurationDoTemp, null, null);
+
+        AlipayClient alipayClient = new DefaultAlipayClient(alipayConfig);
 
         AlipayTradeQueryModel model = new AlipayTradeQueryModel();
 

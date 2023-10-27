@@ -23,17 +23,15 @@ public class PayWxController {
     @Operation(summary = "服务器异步通知-native，备注：第三方应用调用", hidden = true)
     @PostMapping(value = "/notifyCallBack/native/{tenantId}/{sysPayConfigurationId}")
     public void notifyCallBackNative(HttpServletRequest request, HttpServletResponse response,
-        @PathVariable(value = "tenantId") long tenantId,
         @PathVariable(value = "sysPayConfigurationId") long sysPayConfigurationId) {
-        baseService.notifyCallBackNative(request, response, tenantId, sysPayConfigurationId);
+        baseService.notifyCallBackNative(request, response, sysPayConfigurationId);
     }
 
     @Operation(summary = "服务器异步通知-jsApi，备注：第三方应用调用", hidden = true)
     @PostMapping(value = "/notifyCallBack/jsApi/{tenantId}/{sysPayConfigurationId}")
     public void notifyCallBackJsApi(HttpServletRequest request, HttpServletResponse response,
-        @PathVariable(value = "tenantId") long tenantId,
         @PathVariable(value = "sysPayConfigurationId") long sysPayConfigurationId) {
-        baseService.notifyCallBackJsApi(request, response, tenantId, sysPayConfigurationId);
+        baseService.notifyCallBackJsApi(request, response, sysPayConfigurationId);
     }
 
 }
