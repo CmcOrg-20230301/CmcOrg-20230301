@@ -4,8 +4,7 @@ import TableColumnList from "./TableColumnList";
 import CommonConstant from "@/model/constant/CommonConstant";
 import {UseEffectFullScreenChange} from "@/util/DocumentUtil";
 import {SysUserBankCardDO, SysUserBankCardPageDTO} from "@/api/http/SysUserBankCard";
-import SchemaFormColumnList from "@/page/sys/bankCard/UserBankCard/SchemaFormColumnList";
-import {IMyTree} from "@/util/DictUtil";
+import SchemaFormColumnList from "./SchemaFormColumnList";
 import {GetIdListForHasChildrenNode} from "@/util/TreeUtil";
 import {Button, Space} from "antd";
 import {ColumnHeightOutlined, VerticalAlignMiddleOutlined} from "@ant-design/icons";
@@ -29,8 +28,6 @@ export default function () {
     const [fullScreenFlag, setFullScreenFlag] = useState<boolean>(false)
 
     const hasChildrenIdList = useRef<string[]>([]); // 有子节点的 idList
-
-    const treeListRef = useRef<IMyTree[]>([]) // table的数据
 
     UseEffectFullScreenChange(setFullScreenFlag) // 监听是否：全屏
 
@@ -85,8 +82,6 @@ export default function () {
 
                 postData={(data: any) => {
 
-                    treeListRef.current = data
-
                     hasChildrenIdList.current = GetIdListForHasChildrenNode(data)
 
                     return data
@@ -135,9 +130,7 @@ export default function () {
 
                 }}
 
-            >
-
-            </ProTable>
+            />
 
             <BetaSchemaForm<SysUserBankCardDO>
 

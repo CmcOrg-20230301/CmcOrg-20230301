@@ -28,6 +28,7 @@ import CommonConstant from "@/model/constant/CommonConstant";
 import {IMyTree} from "@/util/DictUtil";
 import {UseEffectFullScreenChange} from "@/util/DocumentUtil";
 import {SysTenantDoSyncDict} from "@/api/http/SysTenant";
+import {GetTenantIdFromStorage} from "@/util/CommonUtil";
 
 // 字典-管理
 export default function () {
@@ -146,19 +147,25 @@ export default function () {
 
                             </Button>
 
-                            <Button type="primary" onClick={() => {
+                            {
 
-                                ExecConfirm(() => {
+                                GetTenantIdFromStorage() === CommonConstant.TOP_TENANT_ID_STR &&
 
-                                    return SysTenantDoSyncDict().then(res => {
+                                <Button type="primary" onClick={() => {
 
-                                        ToastSuccess(res.msg)
+                                    ExecConfirm(() => {
 
-                                    })
+                                        return SysTenantDoSyncDict().then(res => {
 
-                                }, undefined, `确定同步字典到租户吗？`)
+                                            ToastSuccess(res.msg)
 
-                            }}>同步租户</Button>
+                                        })
+
+                                    }, undefined, `确定同步字典到租户吗？`)
+
+                                }}>同步租户</Button>
+
+                            }
 
                         </Space>,
 
@@ -242,9 +249,7 @@ export default function () {
 
                 )}
 
-            >
-
-            </ProTable>
+            />
 
             <BetaSchemaForm<SysDictInsertOrUpdateDTO>
 

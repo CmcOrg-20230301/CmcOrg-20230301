@@ -21,50 +21,21 @@ import {UseEffectFullScreenChange} from "@/util/DocumentUtil";
 import CommonConstant from "@/model/constant/CommonConstant";
 import {
     GetUserWalletWithdrawFormColumnArr,
-    SYS_USER_WALLET_WITHDRAW_STATUS_ENUM,
-    UpdateWithdrawStatusDict,
     UserWalletWithdrawLogTableBaseColumnArr
 } from "@/page/user/Wallet/UserWallet";
 import {ExecConfirm, ToastSuccess} from "@/util/ToastUtil";
 import {Button, Space, TreeSelect, Typography} from "antd";
 import {FormatDateTime} from "@/util/DateUtil";
 import {LoadingOutlined, ReloadOutlined} from "@ant-design/icons";
-import {DoGetDictList, GetDictList, IEnum, NoFormGetDictTreeList} from "@/util/DictUtil";
+import {DoGetDictList, GetDictList, NoFormGetDictTreeList} from "@/util/DictUtil";
 import {SysTenantDictList} from "@/api/http/SysTenant";
 import {SearchTransform} from "@/util/CommonUtil";
 import {SysUserDictList} from "@/api/http/SysUser";
-
-export interface ISysUserWalletWithdrawTypeEnum {
-
-    USER: IEnum,
-    TENANT: IEnum,
-
-}
-
-// 用户提现类型枚举类
-export const SysUserWalletWithdrawLogTypeEnum: ISysUserWalletWithdrawTypeEnum = {
-
-    USER: {
-        code: 1,
-        name: '用户',
-    },
-
-    TENANT: {
-        code: 2,
-        name: '租户',
-    },
-
-}
-
-export const SysUserWalletWithdrawLogTypeDict = new Map<number, ProSchemaValueEnumType>();
-
-Object.keys(SysUserWalletWithdrawLogTypeEnum).forEach(key => {
-
-    const item = SysUserWalletWithdrawLogTypeEnum[key];
-
-    SysUserWalletWithdrawLogTypeDict.set(item.code as number, {text: item.name})
-
-})
+import {
+    SysUserWalletWithdrawLogTypeDict,
+    SysUserWalletWithdrawLogTypeEnum
+} from "@/model/enum/SysUserWalletWithdrawLogTypeEnum";
+import {SysUserWalletWithdrawStatusEnum, UpdateWithdrawStatusDict} from "@/model/enum/SysUserWalletWithdrawStatusEnum";
 
 // 提现管理
 export default function () {
@@ -75,7 +46,7 @@ export default function () {
 
     const [lastUpdateTime, setLastUpdateTime] = useState<Date>(new Date());
 
-    const [polling, setPolling] = useState<number | undefined>(CommonConstant.POLLING_TIME)
+    const [polling, setPolling] = useState<number | undefined>()
 
     const formRef = useRef<FormInstance<SysUserWalletWithdrawLogDO>>();
 
@@ -205,7 +176,7 @@ export default function () {
                                     return DoGetDictList(SysUserDictList({addAdminFlag: true}))
                                 },
                                 renderText: (text, record) => {
-                                    return record.userId === CommonConstant.TENANT_USER_ID ? SysUserWalletWithdrawLogTypeEnum.TENANT.name : text
+                                    return record.userId === CommonConstant.TENANT_USER_ID_STR ? SysUserWalletWithdrawLogTypeEnum.TENANT.name : text
                                 },
                                 fieldProps: {
                                     allowClear: true,
@@ -229,13 +200,13 @@ export default function () {
                         title: '操作',
                         dataIndex: 'option',
                         valueType: 'option',
-                        width: 90,
+                        width: 120,
 
                         render: (dom, entity: SysUserWalletWithdrawLogDO) => {
 
                             const optionArr: React.ReactNode[] = []
 
-                            if (entity.withdrawStatus as any === SYS_USER_WALLET_WITHDRAW_STATUS_ENUM.COMMIT.code) {
+                            if (entity.withdrawStatus as any === SysUserWalletWithdrawStatusEnum.COMMIT.code) {
 
                                 optionArr.push(<a key="1" className={"green2"} onClick={() => {
 
@@ -312,7 +283,7 @@ export default function () {
 
                     const someFlag = dataArr.some(item => {
 
-                        return item.withdrawStatus as any === SYS_USER_WALLET_WITHDRAW_STATUS_ENUM.COMMIT.code
+                        return item.withdrawStatus as any === SysUserWalletWithdrawStatusEnum.COMMIT.code
 
                     })
 
@@ -355,9 +326,7 @@ export default function () {
 
                 }}
 
-            >
-
-            </ProTable>
+            />
 
             <BetaSchemaForm<SysUserWalletWithdrawLogDO>
 
@@ -441,7 +410,7 @@ export default function () {
 
                         const resArr = [...dom]
 
-                        if (currentForm.current.withdrawStatus as any === SYS_USER_WALLET_WITHDRAW_STATUS_ENUM.ACCEPT.code) {
+                        if (currentForm.current.withdrawStatus as any === SysUserWalletWithdrawStatusEnum.ACCEPT.code) {
 
                             resArr.push(<Button key={"1"} type={"primary"} onClick={() => {
 

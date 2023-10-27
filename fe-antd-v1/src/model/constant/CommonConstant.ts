@@ -8,6 +8,8 @@ export default {
 
     MODAL_FORM_WIDTH: 450, // ModalForm 宽度
 
+    QR_CODE_WIDTH: 260, // 二维码的宽度
+
     ADD_ORDER_NO: "累加排序号",
 
     ADD_WITHDRAWABLE_MONEY: "累加可提现",
@@ -28,8 +30,10 @@ export default {
 
     TOOLTIP_STR_LENGTH: 500, // tooltip字符串的长度
 
+    TOP_TENANT_ID_STR: "0", // 默认租户 id
+
     DEFAULT_TENANT_NAME: "默认", // 默认租户名
 
-    TENANT_USER_ID: "-2", // 租户的用户 id
+    TENANT_USER_ID_STR: "-2", // 租户的用户 id
 
 }

@@ -96,7 +96,7 @@ const TableColumnList = (currentForm: React.MutableRefObject<SysDictInsertOrUpda
         title: '操作',
         dataIndex: 'option',
         valueType: 'option',
-        width: 90,
+        width: 120,
 
         render: (dom, entity) => [
 

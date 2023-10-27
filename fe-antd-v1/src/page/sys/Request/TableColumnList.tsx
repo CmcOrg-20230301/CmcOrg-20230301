@@ -66,9 +66,9 @@ const TableColumnList = (): ProColumns<SysRequestDO>[] => [
     {
         title: '失败信息', dataIndex: 'errorMsg', hideInSearch: true, width: 100, render: (text, entity) => {
 
-            const errorMsg = entity.errorMsg!.substring(0, CommonConstant.TOOLTIP_STR_LENGTH)
+            const subText = entity.errorMsg!.substring(0, CommonConstant.TOOLTIP_STR_LENGTH)
 
-            return <Typography.Text ellipsis={{tooltip: true}} style={{width: 100}}>{errorMsg}</Typography.Text>
+            return <Typography.Text ellipsis={{tooltip: true}} style={{width: 100}}>{subText}</Typography.Text>
 
         }
     },

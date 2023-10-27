@@ -18,10 +18,11 @@ export interface SysUserWalletLogPageDTO {
 
 export interface SysUserWalletLogDO {
     totalMoneyPre?: number // 总金额，前
+    refType?: number // 关联的类型，format：int32
     updateTime?: string // 修改时间，format：date-time
     remark?: string // 备注
     delFlag?: boolean // 是否逻辑删除
-    type?: string // 记录类型：101 增加 201 减少
+    type?: number // 记录类型：1开头 增加 2开头 减少，format：int32
     totalMoneyChange?: number // 总金额，变
     totalMoneySuf?: number // 总金额，后
     version?: number // 乐观锁，format：int32
@@ -35,6 +36,7 @@ export interface SysUserWalletLogDO {
     name?: string // 记录名
     withdrawableMoneyPre?: number // 可提现的钱，前
     id?: string // 主键id，format：int64
+    refId?: string // 关联的 id，format：int64
     enableFlag?: boolean // 是否启用
 }
 

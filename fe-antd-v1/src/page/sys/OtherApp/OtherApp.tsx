@@ -128,9 +128,7 @@ export default function () {
 
                 )}
 
-            >
-
-            </ProTable>
+            />
 
             <BetaSchemaForm<SysOtherAppInsertOrUpdateDTO>
 

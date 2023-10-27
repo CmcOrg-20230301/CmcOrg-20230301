@@ -55,20 +55,6 @@ const TableColumnList = (currentForm: React.MutableRefObject<SysMenuInsertOrUpda
     {title: '权限', dataIndex: 'auths', ellipsis: true, width: 90,},
 
     {
-        title: '权限菜单',
-        dataIndex: 'authFlag',
-        valueEnum: YesNoDict,
-        width: 90,
-    },
-
-    {
-        title: '是否外链',
-        dataIndex: 'linkFlag',
-        valueEnum: YesNoDict,
-        width: 90,
-    },
-
-    {
         title: '是否显示',
         dataIndex: 'showFlag',
         valueEnum: YesNoDict,
@@ -98,7 +84,7 @@ const TableColumnList = (currentForm: React.MutableRefObject<SysMenuInsertOrUpda
         title: '操作',
         dataIndex: 'option',
         valueType: 'option',
-        width: 90,
+        width: 120,
 
         render: (dom, entity) => [
 

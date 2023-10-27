@@ -227,9 +227,7 @@ export default function () {
 
                 )}
 
-            >
-
-            </ProTable>
+            />
 
             <BetaSchemaForm<SysMenuInsertOrUpdateDTO>
 

@@ -78,6 +78,10 @@ const TableColumnList = (currentForm: React.MutableRefObject<SysUserInsertOrUpda
 
     {title: '手机号', dataIndex: 'phone', ellipsis: true, width: 120,},
 
+    {title: '微信appId', dataIndex: 'wxAppId', ellipsis: true, width: 120, hideInTable: true},
+
+    {title: '微信openId', dataIndex: 'wxOpenId', ellipsis: true, width: 120, hideInTable: true},
+
     {
         title: '是否正常',
         dataIndex: 'enableFlag',
@@ -140,6 +144,8 @@ const TableColumnList = (currentForm: React.MutableRefObject<SysUserInsertOrUpda
         }
     },
 
+    {title: 'ip', dataIndex: 'ip', hideInTable: true},
+
     {
         title: 'ip位置', dataIndex: 'region', ellipsis: true, width: 90, renderText: (text) => {
             return HandlerRegion(text)
@@ -151,7 +157,7 @@ const TableColumnList = (currentForm: React.MutableRefObject<SysUserInsertOrUpda
         title: '操作',
         dataIndex: 'option',
         valueType: 'option',
-        width: 90,
+        width: 120,
 
         render: (dom, entity) => [
 

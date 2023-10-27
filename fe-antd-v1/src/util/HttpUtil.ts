@@ -5,6 +5,7 @@ import {SignOut} from "./UserUtil";
 import axios, {AxiosInstance, AxiosRequestConfig, AxiosResponse, CreateAxiosDefaults} from "axios";
 import {RequestData} from '@ant-design/pro-components';
 import {GetBrowserCategory} from "@/util/BrowserCategoryUtil";
+import PathConstant from "@/model/constant/PathConstant";
 
 const TIMEOUT_MSG = '请求超时，请重试'
 const BASE_ERROR_MSG = "请求错误："
@@ -52,6 +53,21 @@ $http.interceptors.request.use(
     }
 )
 
+// 请求出错的时候，自动刷新页面
+function RequestErrorAutoReload() {
+
+    if (location.pathname === PathConstant.ADMIN_PATH) {
+
+        setTimeout(() => {
+
+            location.reload(); // 自动刷新页面
+
+        }, 2000)
+
+    }
+
+}
+
 // 响应拦截器
 $http.interceptors.response.use(
     (response: AxiosResponse<ApiResultVO>) => {
@@ -88,6 +104,12 @@ $http.interceptors.response.use(
 
                     ToastError(res.msg || REQUEST_ERROR_MSG)
 
+                    if (!res.msg) {
+
+                        RequestErrorAutoReload() // 自动刷新页面
+
+                    }
+
                 }
 
             }
@@ -120,7 +142,15 @@ $http.interceptors.response.use(
 
         } else if (msg.includes('Request failed with status code')) {
 
-            msg = '接口【' + msg.substring(msg.length - 3) + '】异常，请联系管理员'
+            const substring = msg.substring(msg.length - 3);
+
+            msg = '接口【' + substring + '】异常，请联系管理员'
+
+            if (substring === '404') {
+
+                RequestErrorAutoReload() // 自动刷新页面
+
+            }
 
         }
 

@@ -29,7 +29,7 @@ export default function () {
 
     const [lastUpdateTime, setLastUpdateTime] = useState<Date>(new Date());
 
-    const [polling, setPolling] = useState<number | undefined>(CommonConstant.POLLING_TIME)
+    const [polling, setPolling] = useState<number | undefined>()
 
     const [sysRequestAllAvgVO, setSysRequestAllAvgVO] = useState<SysRequestAllAvgVO>({avgMs: 0, count: '0'})
 
@@ -164,9 +164,7 @@ export default function () {
 
                 }}
 
-            >
-
-            </ProTable>
+            />
 
         </>
 

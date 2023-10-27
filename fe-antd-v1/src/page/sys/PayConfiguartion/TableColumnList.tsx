@@ -1,4 +1,4 @@
-import {GetDictList, GetDictListByKey, NoFormGetDictTreeList, YesNoDict} from "@/util/DictUtil";
+import {GetDictList, NoFormGetDictTreeList, YesNoDict} from "@/util/DictUtil";
 import {ActionType, ProColumns} from "@ant-design/pro-components";
 import {
     SysPayConfigurationDeleteByIdSet,
@@ -9,6 +9,7 @@ import {ExecConfirm, ToastSuccess} from "@/util/ToastUtil";
 import {SysTenantDictList} from "@/api/http/SysTenant";
 import {TreeSelect} from "antd";
 import {SearchTransform} from "@/util/CommonUtil";
+import {SysPayTypeDict} from "@/model/enum/SysPayTypeEnum";
 
 const TableColumnList = (currentForm: React.MutableRefObject<SysPayConfigurationInsertOrUpdateDTO>, setFormOpen: React.Dispatch<React.SetStateAction<boolean>>, actionRef: React.RefObject<ActionType | undefined>): ProColumns<SysPayConfigurationDO>[] => [
 
@@ -48,9 +49,7 @@ const TableColumnList = (currentForm: React.MutableRefObject<SysPayConfiguration
 
     {
         title: '类型', dataIndex: 'type', ellipsis: true, width: 90, valueType: 'select',
-        request: () => {
-            return GetDictListByKey('sys_pay_type')
-        },
+        valueEnum: SysPayTypeDict,
         fieldProps: {
             allowClear: true,
             showSearch: true,
@@ -98,7 +97,7 @@ const TableColumnList = (currentForm: React.MutableRefObject<SysPayConfiguration
         title: '操作',
         dataIndex: 'option',
         valueType: 'option',
-        width: 90,
+        width: 120,
 
         render: (dom, entity) => [
 

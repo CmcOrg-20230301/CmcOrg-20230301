@@ -139,14 +139,37 @@ export function SysTenantDoSyncDict(config?: AxiosRequestConfig) {
     return $http.myPost<string>('/sys/tenant/doSyncDict', undefined, config)
 }
 
-export interface DictVO {
-    name?: string // 显示用
-    id?: string // 传值用，format：int64
+export interface SysMenuDO {
+    auths?: string // 权限，多个可用逗号拼接，例如：menu:insertOrUpdate,menu:page,menu:deleteByIdSet,menu:infoById
+    icon?: string // 图标
+    remark?: string // 备注
+    delFlag?: boolean // 是否逻辑删除
+    uuid?: string // 该菜单的 uuid，用于：同步租户菜单等操作，备注：不允许修改
+    showFlag?: boolean // 是否显示在 左侧的菜单栏里面，如果为 false，也可以通过 $router.push()访问到
+    updateId?: string // 修改人id，format：int64
+    path?: string // 页面的 path，备注：相同父菜单下，子菜单 path不能重复
+    router?: string // 路由
+    children?: SysMenuDO[] // 子节点
+    id?: string // 主键id，format：int64
+    firstFlag?: boolean // 是否是起始页面，备注：只能存在一个 firstFlag === true 的菜单
+    enableFlag?: boolean // 是否启用
+    redirect?: string // 重定向，优先级最高
+    linkFlag?: boolean // 是否外链，即，打开页面会在一个新的窗口打开
+    orderNo?: number // 排序号（值越大越前面，默认为 0），format：int32
+    hiddenPageContainerFlag?: boolean // 是否隐藏：PageContainer
+    updateTime?: string // 修改时间，format：date-time
+    authFlag?: boolean // 是否是权限菜单，权限菜单：不显示，只代表菜单权限
+    version?: number // 乐观锁，format：int32
+    parentId?: string // 父节点id（顶级则为0），format：int64
+    createTime?: string // 创建时间，format：date-time
+    createId?: string // 创建人id，format：int64
+    tenantId?: string // 租户 id，format：int64
+    name?: string // 菜单名
 }
 
 // 获取：需要同步给租户的菜单
 export function SysTenantGetSyncMenuInfo(form: NotNullId, config?: AxiosRequestConfig) {
-    return $http.myPost<DictVO[]>('/sys/tenant/getSyncMenuInfo', form, config)
+    return $http.myPost<SysMenuDO[]>('/sys/tenant/getSyncMenuInfo', form, config)
 }
 
 // 执行：同步参数给租户

@@ -1,7 +1,8 @@
-import {GetDictListByKey, YesNoDict} from "@/util/DictUtil";
+import {YesNoDict} from "@/util/DictUtil";
 import {SysPayConfigurationInsertOrUpdateDTO} from "@/api/http/SysPayConfiguration";
 import {ProFormColumnsType} from "@ant-design/pro-components";
 import {Validate} from "@/util/ValidatorUtil";
+import {SysPayTypeDict} from "@/model/enum/SysPayTypeEnum";
 
 export const InitForm: SysPayConfigurationInsertOrUpdateDTO = {} as SysPayConfigurationInsertOrUpdateDTO
 
@@ -24,9 +25,7 @@ const SchemaFormColumnList = (): ProFormColumnsType<SysPayConfigurationInsertOrU
                     },
                 ],
             },
-            request: () => {
-                return GetDictListByKey('sys_pay_type')
-            },
+            valueEnum: SysPayTypeDict,
         },
 
         {
@@ -40,7 +39,6 @@ const SchemaFormColumnList = (): ProFormColumnsType<SysPayConfigurationInsertOrU
                     },
                 ],
             },
-            tooltip: '不能重复',
         },
 
         {
@@ -49,9 +47,8 @@ const SchemaFormColumnList = (): ProFormColumnsType<SysPayConfigurationInsertOrU
             formItemProps: {
                 rules: [
                     {
-                        required: true,
                         whitespace: true,
-                        validator: Validate.url.validator
+                        validator: Validate.url.canNullValidator
                     },
                 ],
             },

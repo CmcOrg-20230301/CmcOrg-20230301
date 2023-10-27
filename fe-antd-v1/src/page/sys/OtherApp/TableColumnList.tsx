@@ -61,6 +61,7 @@ const TableColumnList = (currentForm: React.MutableRefObject<SysOtherAppInsertOr
         title: '创建时间',
         dataIndex: 'createTime',
         hideInSearch: true,
+        sorter: true,
         valueType: 'fromNow',
         width: 90,
     },
@@ -69,6 +70,7 @@ const TableColumnList = (currentForm: React.MutableRefObject<SysOtherAppInsertOr
         title: '修改时间',
         dataIndex: 'updateTime',
         hideInSearch: true,
+        sorter: true,
         valueType: 'fromNow',
         width: 90,
     },
@@ -87,7 +89,7 @@ const TableColumnList = (currentForm: React.MutableRefObject<SysOtherAppInsertOr
         title: '操作',
         dataIndex: 'option',
         valueType: 'option',
-        width: 90,
+        width: 120,
 
         render: (dom, entity) => [
 

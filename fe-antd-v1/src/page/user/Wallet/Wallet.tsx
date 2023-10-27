@@ -8,9 +8,9 @@ import PathConstant from "@/model/constant/PathConstant";
 import LocalStorageKey from "@/model/constant/LocalStorageKey";
 import {SysTenantGetNameById} from "@/api/http/SysTenant";
 import CommonConstant from "@/model/constant/CommonConstant";
-import {SysUserWalletWithdrawLogTypeEnum} from "@/page/sys/UserWalletWithdrawLog/UserWalletWithdrawLog";
 import {DoGetDictList, GetByValueFromDictList} from "@/util/DictUtil";
 import {SysUserDictList} from "@/api/http/SysUser";
+import {SysUserWalletWithdrawLogTypeEnum} from "@/model/enum/SysUserWalletWithdrawLogTypeEnum";
 
 export const USER_WALLET_KEY_ONE = "钱包"
 

@@ -691,7 +691,7 @@ function RequestSelfLoginRecordModal() {
 
                 maskClosable={false}
 
-                footer={false}
+                footer={null}
 
                 className={"noFooterModal"}
 
@@ -774,9 +774,7 @@ function RequestSelfLoginRecordModal() {
                         return SysRequestSelfLoginRecord({...params, sort})
                     }}
 
-                >
-
-                </ProTable>
+                />
 
             </Modal>
 

@@ -2,7 +2,7 @@ import {DoGetDictList, GetDictList, GetDictListByKey, NoFormGetDictTreeList} fro
 import {ActionType, ProColumns} from "@ant-design/pro-components";
 import {SysSocketRefUserDO, SysSocketRefUserOfflineByIdSet} from "@/api/http/SysSocketRefUser";
 import {HandlerRegion} from "@/util/StrUtil";
-import {TreeSelect, Typography} from "antd";
+import {TreeSelect} from "antd";
 import {ExecConfirm, ToastSuccess} from "@/util/ToastUtil";
 import {SysUserDictList} from "@/api/http/SysUser";
 import {SysTenantDictList} from "@/api/http/SysTenant";
@@ -89,12 +89,6 @@ const TableColumnList = (actionRef: React.RefObject<ActionType | undefined>): Pr
         },
     },
 
-    {
-        title: 'User-Agent', dataIndex: 'userAgentJsonStr', width: 90, hideInSearch: true, render: (text) => {
-            return <Typography.Text ellipsis={{tooltip: true}} style={{width: 90}}>{text}</Typography.Text>
-        }
-    },
-
     {title: 'ip', dataIndex: 'ip', ellipsis: true, width: 90,},
 
     {
@@ -131,7 +125,7 @@ const TableColumnList = (actionRef: React.RefObject<ActionType | undefined>): Pr
         title: '操作',
         dataIndex: 'option',
         valueType: 'option',
-        width: 90,
+        width: 120,
 
         render: (dom, entity) => [
 

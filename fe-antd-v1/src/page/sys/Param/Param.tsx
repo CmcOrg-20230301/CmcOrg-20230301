@@ -17,6 +17,7 @@ import SchemaFormColumnList, {InitForm} from "./SchemaFormColumnList";
 import CommonConstant from "@/model/constant/CommonConstant";
 import {UseEffectFullScreenChange} from "@/util/DocumentUtil";
 import {SysTenantDoSyncParam} from "@/api/http/SysTenant";
+import {GetTenantIdFromStorage} from "@/util/CommonUtil";
 
 // 系统参数-管理
 export default function () {
@@ -90,19 +91,23 @@ export default function () {
 
                 toolbar={{
 
-                    title: <Button type="primary" onClick={() => {
+                    title:
 
-                        ExecConfirm(() => {
+                        GetTenantIdFromStorage() === CommonConstant.TOP_TENANT_ID_STR &&
 
-                            return SysTenantDoSyncParam().then(res => {
+                        <Button type="primary" onClick={() => {
 
-                                ToastSuccess(res.msg)
+                            ExecConfirm(() => {
 
-                            })
+                                return SysTenantDoSyncParam().then(res => {
 
-                        }, undefined, `确定同步参数到租户吗？`)
+                                    ToastSuccess(res.msg)
 
-                    }}>同步租户</Button>,
+                                })
+
+                            }, undefined, `确定同步参数到租户吗？`)
+
+                        }}>同步租户</Button>,
 
                     actions: [
 
@@ -143,9 +148,7 @@ export default function () {
 
                 )}
 
-            >
-
-            </ProTable>
+            />
 
             <BetaSchemaForm<SysParamInsertOrUpdateDTO>
 

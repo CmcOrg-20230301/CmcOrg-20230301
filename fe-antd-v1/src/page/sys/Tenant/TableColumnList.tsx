@@ -1,5 +1,5 @@
-import {DoGetDictList, GetDictList, NoFormGetDictTreeList, YesNoDict} from "@/util/DictUtil";
-import {ActionType, ModalForm, ProColumns, ProFormSelect} from "@ant-design/pro-components";
+import {DoGetDictTreeList, GetDictList, NoFormGetDictTreeList, YesNoDict} from "@/util/DictUtil";
+import {ActionType, ModalForm, ProColumns, ProFormTreeSelect} from "@ant-design/pro-components";
 import {
     NotNullIdAndNotEmptyLongSet,
     SysTenantDeleteByIdSet,
@@ -14,7 +14,7 @@ import {CalcOrderNo} from "@/util/TreeUtil";
 import {EllipsisOutlined} from "@ant-design/icons";
 import {Dropdown, TreeSelect} from "antd";
 import React from "react";
-import {SearchTransform, SetTenantIdToStorage} from "@/util/CommonUtil";
+import {GetTenantIdFromStorage, SearchTransform, SetTenantIdToStorage} from "@/util/CommonUtil";
 import {SignOut} from "@/util/UserUtil";
 import CommonConstant from "@/model/constant/CommonConstant";
 
@@ -112,71 +112,82 @@ const TableColumnList = (currentForm: React.MutableRefObject<SysTenantInsertOrUp
         valueType: 'option',
         width: 120,
 
-        render: (dom, entity) => [
+        render: (dom, entity) => {
 
-            <a key="1" onClick={() => {
+            const dropdownMenuItemArr = [
 
-                currentForm.current = {id: entity.id} as SysTenantInsertOrUpdateDTO
-                setFormOpen(true)
+                {
+                    key: '1',
+                    label: <a onClick={() => {
 
-            }}>编辑</a>,
+                        currentForm.current = {parentId: entity.id}
 
-            <a key="2" className={"red3"} onClick={() => {
+                        CalcOrderNo(currentForm.current, entity)
 
-                ExecConfirm(() => {
+                        setFormOpen(true)
 
-                    return SysTenantDeleteByIdSet({idSet: [entity.id!]}).then(res => {
+                    }}>
+                        添加下级
+                    </a>
+                }
 
-                        ToastSuccess(res.msg)
-                        actionRef.current?.reload()
+            ]
 
-                    })
+            if (GetTenantIdFromStorage() === CommonConstant.TOP_TENANT_ID_STR) {
 
-                }, undefined, `确定删除【${entity.name}】吗？`)
+                dropdownMenuItemArr.push(
+                    {
+                        key: '2',
+                        label: <SysTenantSyncMenuModalForm id={entity.id!} actionRef={actionRef}
+                                                           titlePre={entity.name!}/>
+                    }
+                )
 
-            }}>删除</a>,
+            }
 
-            <Dropdown
+            return [
 
-                key="3"
+                <a key="1" onClick={() => {
 
-                menu={{
+                    currentForm.current = {id: entity.id} as SysTenantInsertOrUpdateDTO
+                    setFormOpen(true)
 
-                    items: [
+                }}>编辑</a>,
 
-                        {
-                            key: '1',
-                            label: <a onClick={() => {
+                <a key="2" className={"red3"} onClick={() => {
 
-                                currentForm.current = {parentId: entity.id}
+                    ExecConfirm(() => {
 
-                                CalcOrderNo(currentForm.current, entity)
+                        return SysTenantDeleteByIdSet({idSet: [entity.id!]}).then(res => {
 
-                                setFormOpen(true)
+                            ToastSuccess(res.msg)
+                            actionRef.current?.reload()
 
-                            }}>
-                                添加下级
-                            </a>,
-                        },
+                        })
 
+                    }, undefined, `确定删除【${entity.name}】吗？`)
 
-                        {
-                            key: '2',
-                            label: <SysTenantSyncMenuModalForm id={entity.id!} actionRef={actionRef}
-                                                               titlePre={entity.name!}/>
-                        },
+                }}>删除</a>,
 
-                    ]
+                <Dropdown
 
-                }}
+                    key="3"
 
-            >
+                    menu={{
 
-                <a><EllipsisOutlined/></a>
+                        items: dropdownMenuItemArr
 
-            </Dropdown>
+                    }}
 
-        ],
+                >
+
+                    <a><EllipsisOutlined/></a>
+
+                </Dropdown>
+
+            ]
+
+        },
 
     },
 
@@ -232,23 +243,23 @@ export function SysTenantSyncMenuModalForm(props: ISysTenantSyncMenuModalForm) {
         }}
     >
 
-        <ProFormSelect
+        <ProFormTreeSelect
 
             fieldProps={
                 {
-                    maxTagCount: 'responsive'
+                    treeNodeFilterProp: 'title',
+                    maxTagCount: 'responsive',
+                    treeCheckable: true,
+                    showCheckedStrategy: TreeSelect.SHOW_ALL,
                 }
             }
 
-            showSearch
-
             allowClear
 
-            mode="multiple"
             name="valueSet"
             label="新增菜单"
 
-            request={() => DoGetDictList(SysTenantGetSyncMenuInfo({id: props.id}))}
+            request={() => DoGetDictTreeList(SysTenantGetSyncMenuInfo({id: props.id}))}
 
             placeholder="选择需要新增的菜单"
 

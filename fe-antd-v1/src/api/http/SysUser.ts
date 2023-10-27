@@ -88,6 +88,7 @@ export function SysUserRefreshJwtSecretSuf(form: NotEmptyIdSet, config?: AxiosRe
 export interface SysUserPageDTO {
     passwordFlag?: boolean // 是否有密码
     wxOpenId?: string // 微信 openId
+    ip?: string // ip
     wxAppId?: string // 微信 appId
     pageSize?: string // 每页显示条数，format：int64
     endCreateTime?: string // 创建结束时间，format：date-time
@@ -99,6 +100,7 @@ export interface SysUserPageDTO {
     nickname?: string // 昵称
     tenantIdSet?: string[] // 租户 idSet，format：int64
     id?: string // 主键 id，format：int64
+    region?: string // Ip2RegionUtil.getRegion() 获取到的 ip所处区域
     enableFlag?: boolean // 是否正常
     endLastActiveTime?: string // 最近活跃结束时间，format：date-time
     email?: string // 邮箱

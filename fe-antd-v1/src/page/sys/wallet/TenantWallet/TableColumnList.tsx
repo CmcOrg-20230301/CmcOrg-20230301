@@ -8,7 +8,8 @@ import {SearchTransform} from "@/util/CommonUtil";
 import {SysTenantWalletFrozenByIdSet, SysTenantWalletThawByIdSet} from "@/api/http/SysTenantWallet";
 import PathConstant from "@/model/constant/PathConstant";
 import {GoPage} from "@/layout/AdminLayout/AdminLayout";
-import {SysUserWalletWithdrawLogTypeEnum} from "@/page/sys/UserWalletWithdrawLog/UserWalletWithdrawLog";
+import {SysUserWalletWithdrawLogTypeEnum} from "@/model/enum/SysUserWalletWithdrawLogTypeEnum";
+import {CurrentTenantFlag} from "@/util/TenantUtil";
 
 const TableColumnList = (currentForm: React.MutableRefObject<SysUserWalletDO>, actionRef: React.RefObject<ActionType | undefined>): ProColumns<SysUserWalletDO>[] => [
 
@@ -123,11 +124,11 @@ const TableColumnList = (currentForm: React.MutableRefObject<SysUserWalletDO>, a
         title: '操作',
         dataIndex: 'option',
         valueType: 'option',
-        width: 90,
+        width: 120,
 
         render: (dom, entity) => {
 
-            return [
+            const arr = [
 
                 <a key="1" onClick={() => {
 
@@ -138,29 +139,37 @@ const TableColumnList = (currentForm: React.MutableRefObject<SysUserWalletDO>, a
                         }
                     })
 
-                }}>管理</a>,
-
-                <a key="2" className={entity.enableFlag ? 'red3' : 'green2'} onClick={() => {
-
-                    ExecConfirm(() => {
-
-                        return entity.enableFlag ? SysTenantWalletFrozenByIdSet({idSet: [entity.id!]}).then(res => {
-
-                            ToastSuccess(res.msg)
-                            actionRef.current?.reload()
-
-                        }) : SysTenantWalletThawByIdSet({idSet: [entity.id!]}).then(res => {
-
-                            ToastSuccess(res.msg)
-                            actionRef.current?.reload()
-
-                        })
-
-                    }, undefined, `确定${entity.enableFlag ? '冻结' : '解冻'}该租户吗？`)
-
-                }}>{entity.enableFlag ? '冻结' : '解冻'}</a>,
+                }}>管理</a>
 
             ]
+
+            if (!CurrentTenantFlag(entity.id)) {
+
+                arr.push(
+                    <a key="2" className={entity.enableFlag ? 'red3' : 'green2'} onClick={() => {
+
+                        ExecConfirm(() => {
+
+                            return entity.enableFlag ? SysTenantWalletFrozenByIdSet({idSet: [entity.id!]}).then(res => {
+
+                                ToastSuccess(res.msg)
+                                actionRef.current?.reload()
+
+                            }) : SysTenantWalletThawByIdSet({idSet: [entity.id!]}).then(res => {
+
+                                ToastSuccess(res.msg)
+                                actionRef.current?.reload()
+
+                            })
+
+                        }, undefined, `确定${entity.enableFlag ? '冻结' : '解冻'}该租户吗？`)
+
+                    }}>{entity.enableFlag ? '冻结' : '解冻'}</a>
+                )
+
+            }
+
+            return arr
 
         },
 

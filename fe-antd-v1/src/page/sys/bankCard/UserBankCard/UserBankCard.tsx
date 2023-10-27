@@ -9,7 +9,7 @@ import {
     SysUserBankCardPage,
     SysUserBankCardPageDTO
 } from "@/api/http/SysUserBankCard";
-import SchemaFormColumnList from "@/page/sys/bankCard/UserBankCard/SchemaFormColumnList";
+import SchemaFormColumnList from "./SchemaFormColumnList";
 
 // 用户银行卡
 export default function () {
@@ -79,9 +79,7 @@ export default function () {
 
                 }}
 
-            >
-
-            </ProTable>
+            />
 
             <BetaSchemaForm<SysUserBankCardDO>
 

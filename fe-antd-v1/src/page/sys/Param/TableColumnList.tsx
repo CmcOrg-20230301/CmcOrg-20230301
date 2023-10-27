@@ -5,6 +5,7 @@ import {ExecConfirm, ToastSuccess} from "@/util/ToastUtil";
 import {TreeSelect, Typography} from "antd";
 import {SysTenantDictList} from "@/api/http/SysTenant";
 import {SearchTransform} from "@/util/CommonUtil";
+import CommonConstant from "@/model/constant/CommonConstant";
 
 const TableColumnList = (currentForm: React.MutableRefObject<SysParamInsertOrUpdateDTO>, setFormOpen: React.Dispatch<React.SetStateAction<boolean>>, actionRef: React.RefObject<ActionType | undefined>): ProColumns<SysParamDO>[] => [
 
@@ -45,8 +46,12 @@ const TableColumnList = (currentForm: React.MutableRefObject<SysParamInsertOrUpd
     {title: '配置名', dataIndex: 'name', ellipsis: true, width: 90,},
 
     {
-        title: '值', dataIndex: 'value', hideInSearch: true, width: 300, render: (text) => {
-            return <Typography.Text ellipsis={{tooltip: true}} style={{width: 300}}>{text}</Typography.Text>
+        title: '值', dataIndex: 'value', hideInSearch: true, width: 300, render: (text, entity) => {
+
+            const subText = entity.value!.substring(0, CommonConstant.TOOLTIP_STR_LENGTH)
+
+            return <Typography.Text ellipsis={{tooltip: true}} style={{width: 300}}>{subText}</Typography.Text>
+
         }
     },
 

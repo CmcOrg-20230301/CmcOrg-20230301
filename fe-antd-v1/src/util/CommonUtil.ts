@@ -1,6 +1,7 @@
 import {ToastWarning} from "./ToastUtil";
 import LocalStorageKey from "@/model/constant/LocalStorageKey";
 import SessionStorageKey from "@/model/constant/SessionStorageKey";
+import CommonConstant from "@/model/constant/CommonConstant";
 
 export const InDevMsg = "功能开发中，敬请期待~"
 
@@ -25,7 +26,7 @@ export function GetURLSearchParams() {
  */
 export function GetTenantId(): string {
 
-    const tenantId = GetURLSearchParams().get("tenantId") || '0';
+    const tenantId = GetURLSearchParams().get("tenantId") || CommonConstant.TOP_TENANT_ID_STR;
 
     SetTenantIdToStorage(tenantId);
 
@@ -56,7 +57,7 @@ export function GetTenantIdFromStorage() {
 
     }
 
-    return tenantId || '0'
+    return tenantId || CommonConstant.TOP_TENANT_ID_STR
 
 }
 

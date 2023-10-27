@@ -332,9 +332,7 @@ export default function () {
 
                 )}
 
-            >
-
-            </ProTable>
+            />
 
             <BetaSchemaForm<SysUserInsertOrUpdateDTO>
 

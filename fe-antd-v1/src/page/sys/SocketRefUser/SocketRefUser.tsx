@@ -102,9 +102,7 @@ export default function () {
 
                 )}
 
-            >
-
-            </ProTable>
+            />
 
         </>
 

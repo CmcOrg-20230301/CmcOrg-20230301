@@ -26,7 +26,6 @@ import {
     SysUserWalletWithdrawLogCancel,
     SysUserWalletWithdrawLogCancelTenant,
     SysUserWalletWithdrawLogCancelUserSelf,
-    SysUserWalletWithdrawLogDictListWithdrawStatus,
     SysUserWalletWithdrawLogDO,
     SysUserWalletWithdrawLogInsertOrUpdate,
     SysUserWalletWithdrawLogInsertOrUpdateTenant,
@@ -37,7 +36,7 @@ import {
     SysUserWalletWithdrawLogPageUserSelf,
     SysUserWalletWithdrawLogPageUserSelfDTO
 } from "@/api/http/SysUserWalletWithdrawLog";
-import {DoGetDictList, IEnum} from "@/util/DictUtil";
+import {DoGetDictList} from "@/util/DictUtil";
 import {
     SysUserBankCardDictListOpenBankName,
     SysUserBankCardDO,
@@ -51,7 +50,6 @@ import {ExecConfirm, ToastError, ToastSuccess} from "@/util/ToastUtil";
 import {SysUserWalletDO, SysUserWalletInfoById, SysUserWalletInfoByIdUserSelf} from "@/api/http/SysUserWallet";
 import CommonConstant from "@/model/constant/CommonConstant";
 import {GetTextType} from "@/util/StrUtil";
-import {PresetStatusColorType} from "antd/es/_util/colors";
 import {Validate} from "@/util/ValidatorUtil";
 import {SysUserDictList} from "@/api/http/SysUser";
 import {InDev} from "@/util/CommonUtil";
@@ -59,6 +57,7 @@ import {SysTenantBankCardInfoById, SysTenantBankCardInsertOrUpdateTenant} from "
 import {SysTenantWalletInfoById} from "@/api/http/SysTenantWallet";
 import PathConstant from "@/model/constant/PathConstant";
 import {GoPage} from "@/layout/AdminLayout/AdminLayout";
+import {SysUserWalletWithdrawStatusEnum, UpdateWithdrawStatusDict} from "@/model/enum/SysUserWalletWithdrawStatusEnum";
 
 const UserWalletLogModalTitle = "钱包日志"
 const BindUserBankCardModalTitle = "绑定银行卡"
@@ -67,80 +66,6 @@ const UserWalletWithdrawLogModalTitle = "提现记录"
 const UserWalletWithdrawModalTitle = "提现"
 const UserWalletRechargeLogModalTitle = "充值记录"
 const UserWalletRechargeModalTitle = "充值"
-
-export interface ISysUserWalletWithdrawStatusEnum {
-
-    COMMIT: IEnum,
-    ACCEPT: IEnum,
-    SUCCESS: IEnum,
-    REJECT: IEnum,
-    CANCEL: IEnum,
-
-}
-
-// 用户提现状态枚举类
-export const SYS_USER_WALLET_WITHDRAW_STATUS_ENUM: ISysUserWalletWithdrawStatusEnum = {
-
-    COMMIT: {
-        code: 101,
-        name: '待受理', // 待受理（可取消）
-        status: 'warning',
-    },
-
-    ACCEPT: {
-        code: 201,
-        name: '受理中', // 受理中（不可取消）
-        status: 'processing',
-    },
-
-    SUCCESS: {
-        code: 301,
-        name: '已成功', // 已成功
-        status: 'success',
-    },
-
-    REJECT: {
-        code: 401,
-        name: '已拒绝', // 已拒绝（需要填写拒绝理由）
-        status: 'error',
-    },
-
-    CANCEL: {
-        code: 501,
-        name: '已取消', // 已取消（用户在待受理的时候，可以取消）
-        status: 'default',
-    },
-
-}
-
-export const SYS_USER_WALLET_WITHDRAW_STATUS_MAP = new Map<number, PresetStatusColorType>();
-
-Object.keys(SYS_USER_WALLET_WITHDRAW_STATUS_ENUM).forEach(key => {
-
-    const item = SYS_USER_WALLET_WITHDRAW_STATUS_ENUM[key];
-
-    SYS_USER_WALLET_WITHDRAW_STATUS_MAP.set(item.code as number, item.status!)
-
-})
-
-// 设置：用户提现状态的字典
-export function UpdateWithdrawStatusDict(setWithdrawStatusDict: (value: (((prevState: (Map<number, ProSchemaValueEnumType> | undefined)) => (Map<number, ProSchemaValueEnumType> | undefined)) | Map<number, ProSchemaValueEnumType> | undefined)) => void) {
-
-    SysUserWalletWithdrawLogDictListWithdrawStatus().then(res => {
-
-        const dictMap = new Map<number, ProSchemaValueEnumType>();
-
-        res.data?.map((it) => {
-
-            dictMap.set(it.id!, {text: it.name, status: SYS_USER_WALLET_WITHDRAW_STATUS_MAP.get(it.id!)})
-
-        })
-
-        setWithdrawStatusDict(dictMap)
-
-    })
-
-}
 
 interface IUserWallet {
 
@@ -693,7 +618,7 @@ function UserWalletLogModal(props: IUserWalletLogModal) {
 
                 maskClosable={false}
 
-                footer={false}
+                footer={null}
 
                 className={"noFooterModal"}
 
@@ -901,9 +826,7 @@ function UserWalletLogModal(props: IUserWalletLogModal) {
 
                     }}
 
-                >
-
-                </ProTable>
+                />
 
             </Modal>
 
@@ -958,7 +881,7 @@ function UserWalletWithdrawLogModal(props: IUserWalletWithdrawLogModal) {
 
                 maskClosable={false}
 
-                footer={false}
+                footer={null}
 
                 className={"noFooterModal"}
 
@@ -996,9 +919,9 @@ function UserWalletWithdrawLogModal(props: IUserWalletWithdrawLogModal) {
                             title: '操作',
                             dataIndex: 'option',
                             valueType: 'option',
-                            width: 90,
+                            width: 120,
 
-                            render: (dom, entity: SysUserWalletWithdrawLogDO) => entity.withdrawStatus as any === SYS_USER_WALLET_WITHDRAW_STATUS_ENUM.COMMIT.code ? [
+                            render: (dom, entity: SysUserWalletWithdrawLogDO) => entity.withdrawStatus as any === SysUserWalletWithdrawStatusEnum.COMMIT.code ? [
 
                                 <a key="1" className={"red3"} onClick={() => {
 
@@ -1071,9 +994,7 @@ function UserWalletWithdrawLogModal(props: IUserWalletWithdrawLogModal) {
 
                     }}
 
-                >
-
-                </ProTable>
+                />
 
             </Modal>
 
