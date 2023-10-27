@@ -17,6 +17,8 @@ import org.jetbrains.annotations.Nullable;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.List;
 
 @Component
@@ -90,6 +92,16 @@ public class PayHelper {
 
         return sysPayConfigurationService.lambdaQuery().eq(BaseEntityNoIdFather::getTenantId, tenantId)
             .eq(SysPayConfigurationDO::getType, sysPayTypeEnum).eq(BaseEntity::getId, sysPayConfigurationId).one();
+
+    }
+
+    /**
+     * 获取：支付时的金额，字符串
+     */
+    public static String getPayTotalAmountStr(BigDecimal totalAmount) {
+
+        // 备注：这里会返回一个新的 BigDecimal对象
+        return totalAmount.setScale(2, RoundingMode.HALF_UP).toPlainString();
 
     }
 

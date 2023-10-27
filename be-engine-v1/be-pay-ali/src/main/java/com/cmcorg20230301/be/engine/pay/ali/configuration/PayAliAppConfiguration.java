@@ -15,7 +15,7 @@ import org.springframework.context.annotation.Configuration;
  * 支付宝支付相关配置类
  */
 @Configuration
-public class PayAliConfiguration implements ISysPay {
+public class PayAliAppConfiguration implements ISysPay {
 
     /**
      * 支付方式类型
@@ -23,7 +23,7 @@ public class PayAliConfiguration implements ISysPay {
     @Override
     @NotNull
     public SysPayTypeEnum getSysPayType() {
-        return SysPayTypeEnum.ALI;
+        return SysPayTypeEnum.ALI_APP;
     }
 
     /**
@@ -32,7 +32,7 @@ public class PayAliConfiguration implements ISysPay {
     @Override
     @NotNull
     public SysPayReturnBO pay(PayDTO dto) {
-        return PayAliUtil.pay(dto);
+        return PayAliUtil.payApp(dto);
     }
 
     /**

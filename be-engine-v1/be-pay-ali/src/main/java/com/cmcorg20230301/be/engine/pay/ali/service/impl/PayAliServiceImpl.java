@@ -53,7 +53,7 @@ public class PayAliServiceImpl implements PayAliService {
         }
 
         SysPayConfigurationDO sysPayConfigurationDoTemp =
-            PayHelper.getSysPayConfigurationDO(tenantId, sysPayConfigurationId, SysPayTypeEnum.ALI);
+            PayHelper.getSysPayConfigurationDO(tenantId, sysPayConfigurationId, SysPayTypeEnum.ALI_QR_CODE);
 
         AlipayConfig alipayConfig = PayAliUtil.getAlipayConfig(tenantId, null, sysPayConfigurationDoTemp, null);
 

@@ -115,6 +115,7 @@ public class PayWxUtil {
         com.wechat.pay.java.service.payments.nativepay.model.PrepayResponse prepayResponse =
             nativePayService.prepay(request);
 
+        // 返回：扫码的二维码地址
         return new SysPayReturnBO(prepayResponse.getCodeUrl(), sysPayConfigurationDoCallBack.getValue().getAppId());
 
     }

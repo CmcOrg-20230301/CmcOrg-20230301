@@ -2,25 +2,25 @@ package com.cmcorg20230301.be.engine.pay.ali.util;
 
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.lang.Assert;
+import cn.hutool.core.lang.func.Func1;
 import cn.hutool.core.util.BooleanUtil;
-import cn.hutool.json.JSONObject;
-import cn.hutool.json.JSONUtil;
 import com.alipay.api.AlipayClient;
 import com.alipay.api.AlipayConfig;
 import com.alipay.api.DefaultAlipayClient;
-import com.alipay.api.request.AlipayTradePagePayRequest;
-import com.alipay.api.request.AlipayTradeQueryRequest;
-import com.alipay.api.response.AlipayTradePagePayResponse;
-import com.alipay.api.response.AlipayTradeQueryResponse;
+import com.alipay.api.domain.*;
+import com.alipay.api.request.*;
+import com.alipay.api.response.*;
 import com.cmcorg20230301.be.engine.pay.base.model.bo.SysPayReturnBO;
 import com.cmcorg20230301.be.engine.pay.base.model.dto.PayDTO;
 import com.cmcorg20230301.be.engine.pay.base.model.entity.SysPayConfigurationDO;
 import com.cmcorg20230301.be.engine.pay.base.model.enums.SysPayTradeStatusEnum;
 import com.cmcorg20230301.be.engine.pay.base.model.enums.SysPayTypeEnum;
-import com.cmcorg20230301.be.engine.pay.base.service.SysPayConfigurationService;
 import com.cmcorg20230301.be.engine.pay.base.util.PayHelper;
 import com.cmcorg20230301.be.engine.security.model.vo.ApiResultVO;
 import com.cmcorg20230301.be.engine.util.util.CallBack;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.SneakyThrows;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -31,14 +31,6 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public class PayAliUtil {
-
-    private static SysPayConfigurationService sysPayConfigurationService;
-
-    public PayAliUtil(SysPayConfigurationService sysPayConfigurationService) {
-
-        PayAliUtil.sysPayConfigurationService = sysPayConfigurationService;
-
-    }
 
     /**
      * 获取：支付相关配置对象
@@ -53,7 +45,7 @@ public class PayAliUtil {
         if (sysPayConfigurationDoTemp == null) {
 
             sysPayConfigurationDO =
-                PayHelper.getSysPayConfigurationDO(tenantId, SysPayTypeEnum.ALI, useParentTenantPayFlag);
+                PayHelper.getSysPayConfigurationDO(tenantId, SysPayTypeEnum.ALI_QR_CODE, useParentTenantPayFlag);
 
         } else {
 
@@ -79,12 +71,21 @@ public class PayAliUtil {
 
     }
 
-    /**
-     * 支付
-     */
+    @Data
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class DoPayBO {
+
+        private CallBack<SysPayConfigurationDO> sysPayConfigurationDoCallBack;
+
+        private AlipayClient alipayClient;
+
+        private String notifyUrl;
+
+    }
+
     @SneakyThrows
-    @NotNull
-    public static SysPayReturnBO pay(PayDTO dto) {
+    private static SysPayReturnBO doPay(PayDTO dto, Func1<DoPayBO, SysPayReturnBO> func1) {
 
         CallBack<SysPayConfigurationDO> sysPayConfigurationDoCallBack = new CallBack<>();
 
@@ -94,42 +95,179 @@ public class PayAliUtil {
 
         dto.setSysPayConfigurationDoTemp(sysPayConfigurationDoCallBack.getValue());
 
-        AlipayTradePagePayRequest aliPayRequest = new AlipayTradePagePayRequest();
+        String notifyUrl = sysPayConfigurationDoCallBack.getValue().getNotifyUrl() + "/" + dto.getTenantId() + "/"
+            + sysPayConfigurationDoCallBack.getValue().getId();
 
-        aliPayRequest.setNotifyUrl(
-            sysPayConfigurationDoCallBack.getValue().getNotifyUrl() + "/" + dto.getTenantId() + "/"
-                + sysPayConfigurationDoCallBack.getValue().getId());
+        // 执行支付
+        return func1.call(new DoPayBO(sysPayConfigurationDoCallBack, alipayClient, notifyUrl));
 
-        JSONObject bizContent = JSONUtil.createObj();
-        bizContent.set("out_trade_no", dto.getOutTradeNo());
-        bizContent.set("total_amount", dto.getTotalAmount());
-        bizContent.set("subject", dto.getSubject());
-        bizContent.set("body", dto.getBody());
-        bizContent.set("product_code", "FAST_INSTANT_TRADE_PAY");
-        bizContent.set("time_expire", DateUtil.formatDateTime(dto.getExpireTime()));
+    }
 
-        aliPayRequest.setBizContent(bizContent.toString());
+    /**
+     * 当面付：二维码扫描付款
+     * 参考地址：https://open.alipay.com/api/apiDebug
+     */
+    @SneakyThrows
+    @NotNull
+    public static SysPayReturnBO payQrCode(PayDTO dto) {
 
-        // 备注：指定为 GET，那么 body就是 url，反之就是：html的 form表单格式
-        AlipayTradePagePayResponse response = alipayClient.pageExecute(aliPayRequest, "GET");
+        // 执行
+        return doPay(dto, doPayBO -> {
 
-        if (BooleanUtil.isFalse(response.isSuccess())) {
+            AlipayTradePrecreateModel model = new AlipayTradePrecreateModel();
+
+            model.setOutTradeNo(dto.getOutTradeNo());
+            model.setTotalAmount(PayHelper.getPayTotalAmountStr(dto.getTotalAmount()));
+            model.setSubject(dto.getSubject());
+            model.setBody(dto.getBody());
+            model.setTimeExpire(DateUtil.formatDateTime(dto.getExpireTime()));
+
+            AlipayTradePrecreateRequest request = new AlipayTradePrecreateRequest();
+
+            request.setNotifyUrl(doPayBO.getNotifyUrl()); // 设置：异步通知地址
+            request.setBizModel(model);
+
+            AlipayTradePrecreateResponse response = doPayBO.getAlipayClient().execute(request);
+
+            // 处理：支付宝的返回值
+            handleApiPayResponse(response.isSuccess(), "支付宝支付失败：", response.getSubMsg());
+
+            // 返回：扫码地址
+            return new SysPayReturnBO(response.getQrCode(),
+                doPayBO.getSysPayConfigurationDoCallBack().getValue().getAppId());
+
+        });
+
+    }
+
+    /**
+     * 支付宝-手机支付
+     */
+    @SneakyThrows
+    public static SysPayReturnBO payApp(PayDTO dto) {
+
+        // 执行
+        return doPay(dto, doPayBO -> {
+
+            AlipayTradeAppPayModel model = new AlipayTradeAppPayModel();
+
+            model.setOutTradeNo(dto.getOutTradeNo());
+            model.setTotalAmount(PayHelper.getPayTotalAmountStr(dto.getTotalAmount()));
+            model.setSubject(dto.getSubject());
+            model.setBody(dto.getBody());
+            model.setTimeExpire(DateUtil.formatDateTime(dto.getExpireTime()));
+
+            AlipayTradeAppPayRequest request = new AlipayTradeAppPayRequest();
+
+            request.setNotifyUrl(doPayBO.getNotifyUrl()); // 设置：异步通知地址
+            request.setBizModel(model);
+
+            AlipayTradeAppPayResponse response = doPayBO.getAlipayClient().execute(request);
+
+            // 处理：支付宝的返回值
+            handleApiPayResponse(response.isSuccess(), "支付宝支付失败：", response.getSubMsg());
+
+            // 返回：调用手机支付需要的参数
+            return new SysPayReturnBO(response.getBody(),
+                doPayBO.getSysPayConfigurationDoCallBack().getValue().getAppId());
+
+        });
+
+    }
+
+    /**
+     * 支付宝-电脑网站支付
+     */
+    @SneakyThrows
+    public static SysPayReturnBO payWebPc(PayDTO dto) {
+
+        // 执行
+        return doPay(dto, doPayBO -> {
+
+            AlipayTradePagePayModel model = new AlipayTradePagePayModel();
+
+            model.setOutTradeNo(dto.getOutTradeNo());
+            model.setTotalAmount(PayHelper.getPayTotalAmountStr(dto.getTotalAmount()));
+            model.setSubject(dto.getSubject());
+            model.setBody(dto.getBody());
+            model.setTimeExpire(DateUtil.formatDateTime(dto.getExpireTime()));
+
+            AlipayTradePagePayRequest request = new AlipayTradePagePayRequest();
+
+            request.setNotifyUrl(doPayBO.getNotifyUrl()); // 设置：异步通知地址
+            request.setBizModel(model);
+
+            // 备注：指定为 GET，那么 body就是 url，反之就是：html的 form表单格式
+            AlipayTradePagePayResponse response = doPayBO.getAlipayClient().pageExecute(request, "GET");
+
+            // 处理：支付宝的返回值
+            handleApiPayResponse(response.isSuccess(), "支付宝支付失败：", response.getSubMsg());
+
+            // 返回：支付的 url链接
+            return new SysPayReturnBO(response.getBody(),
+                doPayBO.getSysPayConfigurationDoCallBack().getValue().getAppId());
+
+        });
+
+    }
+
+    /**
+     * 支付宝-手机网站支付
+     */
+    @SneakyThrows
+    public static SysPayReturnBO payWebApp(PayDTO dto) {
+
+        // 执行
+        return doPay(dto, doPayBO -> {
+
+            AlipayTradeWapPayModel model = new AlipayTradeWapPayModel();
+
+            model.setOutTradeNo(dto.getOutTradeNo());
+            model.setTotalAmount(PayHelper.getPayTotalAmountStr(dto.getTotalAmount()));
+            model.setSubject(dto.getSubject());
+            model.setBody(dto.getBody());
+            model.setTimeExpire(DateUtil.formatDateTime(dto.getExpireTime()));
+
+            model.setProductCode("QUICK_WAP_WAY");
+
+            AlipayTradeWapPayRequest request = new AlipayTradeWapPayRequest();
+
+            request.setNotifyUrl(doPayBO.getNotifyUrl()); // 设置：异步通知地址
+            request.setBizModel(model);
+
+            // 备注：指定为 GET，那么 body就是 url，反之就是：html的 form表单格式
+            AlipayTradeWapPayResponse response = doPayBO.getAlipayClient().pageExecute(request, "GET");
+
+            // 处理：支付宝的返回值
+            handleApiPayResponse(response.isSuccess(), "支付宝支付失败：", response.getSubMsg());
+
+            // 返回：支付的 url链接
+            return new SysPayReturnBO(response.getBody(),
+                doPayBO.getSysPayConfigurationDoCallBack().getValue().getAppId());
+
+        });
+
+    }
+
+    /**
+     * 处理：支付宝的返回值
+     */
+    private static void handleApiPayResponse(boolean success, String preMsg, String subMsg) {
+
+        if (BooleanUtil.isFalse(success)) {
 
             // code，例如：40004
             // msg，例如：Business Failed
             // sub_code，例如：ACQ.TRADE_HAS_SUCCESS
             // sub_msg，例如：交易已被支付
-            ApiResultVO.errorMsg("支付宝支付失败：" + response.getSubMsg());
+            ApiResultVO.errorMsg(preMsg + subMsg);
 
         }
-
-        // 备注：response.getBody() 返回的是 url链接
-        return new SysPayReturnBO(response.getBody(), sysPayConfigurationDoCallBack.getValue().getAppId());
 
     }
 
     /**
-     * 查询订单状态
+     * 通用的，查询订单状态
      *
      * @param outTradeNo 商户订单号，商户网站订单系统中唯一订单号，必填
      */
@@ -143,20 +281,18 @@ public class PayAliUtil {
         AlipayClient alipayClient =
             new DefaultAlipayClient(getAlipayConfig(tenantId, null, sysPayConfigurationDoTemp, null));
 
+        AlipayTradeQueryModel model = new AlipayTradeQueryModel();
+
+        model.setTradeNo(outTradeNo);
+
         AlipayTradeQueryRequest request = new AlipayTradeQueryRequest();
 
-        JSONObject bizContent = new JSONObject();
-        bizContent.set("out_trade_no", outTradeNo);
-
-        request.setBizContent(bizContent.toString());
+        request.setBizModel(model);
 
         AlipayTradeQueryResponse response = alipayClient.execute(request);
 
-        if (BooleanUtil.isFalse(response.isSuccess())) {
-
-            ApiResultVO.errorMsg("支付宝查询失败：" + response.getSubMsg());
-
-        }
+        // 处理：支付宝的返回值
+        handleApiPayResponse(response.isSuccess(), "支付宝查询失败：", response.getSubMsg());
 
         return SysPayTradeStatusEnum.getByStatus(response.getTradeStatus());
 
