@@ -5,13 +5,13 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
+import javax.validation.constraints.NotNull;
+
 @EqualsAndHashCode(callSuper = true)
 @Data
 public class SysPayGooglePayConsumeDTO extends NotNullId {
 
-    @Schema(description = "租户主键 id")
-    private Long tenantId;
-
+    @NotNull
     @Schema(description = "支付配置主键 id")
     private Long sysPayConfigurationId;
 

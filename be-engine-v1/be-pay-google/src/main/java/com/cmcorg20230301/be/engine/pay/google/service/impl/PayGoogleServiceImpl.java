@@ -1,11 +1,9 @@
 package com.cmcorg20230301.be.engine.pay.google.service.impl;
 
 import cn.hutool.core.collection.CollUtil;
-import com.cmcorg20230301.be.engine.model.model.constant.BaseConstant;
 import com.cmcorg20230301.be.engine.pay.base.model.bo.SysPayTradeNotifyBO;
 import com.cmcorg20230301.be.engine.pay.base.model.entity.SysPayConfigurationDO;
 import com.cmcorg20230301.be.engine.pay.base.model.enums.SysPayTradeStatusEnum;
-import com.cmcorg20230301.be.engine.pay.base.model.enums.SysPayTypeEnum;
 import com.cmcorg20230301.be.engine.pay.base.util.PayHelper;
 import com.cmcorg20230301.be.engine.pay.base.util.PayUtil;
 import com.cmcorg20230301.be.engine.pay.google.model.dto.SysPayGooglePayConsumeDTO;
@@ -26,17 +24,13 @@ public class PayGoogleServiceImpl implements PayGoogleService {
     @Override
     public boolean paySuccess(SysPayGooglePaySuccessDTO dto) {
 
-        if (dto.getTenantId() == null) {
-            dto.setTenantId(BaseConstant.TOP_TENANT_ID);
-        }
-
-        SysPayConfigurationDO sysPayConfigurationDoTemp = PayHelper
-            .getSysPayConfigurationDO(dto.getTenantId(), dto.getSysPayConfigurationId(), SysPayTypeEnum.GOOGLE);
+        SysPayConfigurationDO sysPayConfigurationDoTemp =
+            PayHelper.getSysPayConfigurationDO(dto.getSysPayConfigurationId());
 
         SysPayTradeNotifyBO sysPayTradeNotifyBO = new SysPayTradeNotifyBO();
 
-        SysPayTradeStatusEnum sysPayTradeStatusEnum = PayGoogleUtil
-            .query(dto.getId().toString(), sysPayTradeNotifyBO, dto.getTenantId(), sysPayConfigurationDoTemp);
+        SysPayTradeStatusEnum sysPayTradeStatusEnum =
+            PayGoogleUtil.query(dto.getId().toString(), sysPayTradeNotifyBO, sysPayConfigurationDoTemp);
 
         if (SysPayTradeStatusEnum.WAIT_BUYER_CONSUME.equals(sysPayTradeStatusEnum) == false) {
             return false;
@@ -61,17 +55,13 @@ public class PayGoogleServiceImpl implements PayGoogleService {
     @SneakyThrows
     public boolean payConsume(SysPayGooglePayConsumeDTO dto) {
 
-        if (dto.getTenantId() == null) {
-            dto.setTenantId(BaseConstant.TOP_TENANT_ID);
-        }
-
-        SysPayConfigurationDO sysPayConfigurationDoTemp = PayHelper
-            .getSysPayConfigurationDO(dto.getTenantId(), dto.getSysPayConfigurationId(), SysPayTypeEnum.GOOGLE);
+        SysPayConfigurationDO sysPayConfigurationDoTemp =
+            PayHelper.getSysPayConfigurationDO(dto.getSysPayConfigurationId());
 
         SysPayTradeNotifyBO sysPayTradeNotifyBO = new SysPayTradeNotifyBO();
 
-        SysPayTradeStatusEnum sysPayTradeStatusEnum = PayGoogleUtil
-            .query(dto.getId().toString(), sysPayTradeNotifyBO, dto.getTenantId(), sysPayConfigurationDoTemp);
+        SysPayTradeStatusEnum sysPayTradeStatusEnum =
+            PayGoogleUtil.query(dto.getId().toString(), sysPayTradeNotifyBO, sysPayConfigurationDoTemp);
 
         if (SysPayTradeStatusEnum.TRADE_FINISHED.equals(sysPayTradeStatusEnum) == false) {
             return false;

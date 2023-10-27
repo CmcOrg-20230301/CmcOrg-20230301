@@ -20,4 +20,7 @@ public class BuyVO {
     @Schema(description = "本系统的支付订单号")
     private String outTradeNo;
 
+    @Schema(description = "支付配置主键 id")
+    private Long sysPayConfigurationId;
+
 }
