@@ -35,7 +35,7 @@ public interface SysUserWalletService extends IService<SysUserWalletDO> {
 
     // ================================ 分割线
 
-    String changeEnableFlag(NotEmptyIdSet notEmptyIdSet, boolean enableFlag, boolean b);
+    String changeEnableFlag(NotEmptyIdSet notEmptyIdSet, boolean enableFlag, boolean tenantFlag);
 
     Page<SysUserWalletDO> doMyPage(SysUserWalletPageDTO dto, boolean tenantFlag);
 

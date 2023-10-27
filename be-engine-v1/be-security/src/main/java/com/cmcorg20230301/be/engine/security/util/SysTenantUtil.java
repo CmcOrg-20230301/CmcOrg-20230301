@@ -3,6 +3,7 @@ package com.cmcorg20230301.be.engine.security.util;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.convert.Convert;
 import cn.hutool.core.lang.func.Func1;
+import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.extension.toolkit.ChainWrappers;
 import com.cmcorg20230301.be.engine.cache.util.CacheHelper;
 import com.cmcorg20230301.be.engine.cache.util.MyCacheUtil;
@@ -232,6 +233,37 @@ public class SysTenantUtil {
                 return MyTreeUtil.getIdAndDeepIdSetMap(tenantDOList, null);
 
             }).get(tenantId);
+
+    }
+
+    /**
+     * 检查：不能是自身租户，并且必须是自己租户
+     * 注意：请自行检查：checkTenantIdSet，是否是属于当前用户的所管理的租户
+     *
+     * @param checkTenantIdSet 需要检查的租户 idSet
+     */
+    public static void checkOnlyChildrenTenantIdSet(Set<Long> checkTenantIdSet) {
+
+        // 只能配置该账号的下级租户，并且不能配置本级租户
+        Long currentTenantIdDefault = UserUtil.getCurrentTenantIdDefault();
+
+        if (checkTenantIdSet.contains(currentTenantIdDefault)) {
+
+            ApiResultVO.error("操作失败：无法操作该租户", currentTenantIdDefault);
+
+        } else {
+
+            Set<Long> tenantDeepIdSet = SysTenantUtil.getTenantDeepIdSet(currentTenantIdDefault);
+
+            // 必须完全符合 tenantDeepIdSet
+            if (!CollUtil.containsAll(tenantDeepIdSet, checkTenantIdSet)) {
+
+                ApiResultVO.error("操作失败：无法操作该租户",
+                    StrUtil.format("tenantDeepIdSet：{}，checkTenantIdSet：{}", tenantDeepIdSet, checkTenantIdSet));
+
+            }
+
+        }
 
     }
 

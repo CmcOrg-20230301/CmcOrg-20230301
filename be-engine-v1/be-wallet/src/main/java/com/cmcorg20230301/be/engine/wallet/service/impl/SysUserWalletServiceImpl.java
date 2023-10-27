@@ -79,6 +79,14 @@ public class SysUserWalletServiceImpl extends ServiceImpl<SysUserWalletMapper, S
             // 检查：是否是属于自己的租户
             SysTenantUtil.handleDtoTenantIdSet(false, idSet);
 
+            // 并且不能操作自身租户
+            if (!SysTenantUtil.adminOrDefaultTenantFlag()) {
+
+                // 检查：不能是自身租户，并且必须是自己租户
+                SysTenantUtil.checkOnlyChildrenTenantIdSet(idSet);
+
+            }
+
         } else {
 
             // 检查：是否非法操作
