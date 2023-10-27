@@ -23,7 +23,7 @@ import java.util.Date;
 @Component
 public class WebSocketUtil {
 
-    // 目的：Long 转 String
+    // 目的：Long 转 String，Enum 转 code
     private static ObjectMapper objectMapper;
 
     @Resource

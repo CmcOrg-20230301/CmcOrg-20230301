@@ -1,8 +1,9 @@
 package com.cmcorg20230301.be.engine.kafka.util;
 
-import cn.hutool.json.JSONUtil;
 import com.cmcorg20230301.be.engine.kafka.model.enums.KafkaTopicEnum;
 import com.cmcorg20230301.be.engine.model.model.dto.NotEmptyKeyValueSet;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.SneakyThrows;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Component;
 
@@ -16,16 +17,22 @@ public class KafkaUtil {
 
     private static KafkaTemplate<String, String> kafkaTemplate;
 
-    public KafkaUtil(KafkaTemplate<String, String> kafkaTemplate) {
+    // 目的：Long 转 String，Enum 转 code
+    private static ObjectMapper objectMapper;
+
+    public KafkaUtil(KafkaTemplate<String, String> kafkaTemplate, ObjectMapper objectMapper) {
+
         KafkaUtil.kafkaTemplate = kafkaTemplate;
+        KafkaUtil.objectMapper = objectMapper;
     }
 
     /**
      * 发送消息，备注：建议封装一层
      */
+    @SneakyThrows
     public static void send(KafkaTopicEnum kafkaTopicEnum, Object data) {
 
-        kafkaTemplate.send(kafkaTopicEnum.name(), JSONUtil.toJsonStr(data));
+        kafkaTemplate.send(kafkaTopicEnum.name(), objectMapper.writeValueAsString(data));
 
     }
 

@@ -23,30 +23,35 @@ import java.util.Set;
 @Slf4j(topic = LogTopicConstant.CACHE_LOCAL)
 public class LocalCacheUpdateMapListener {
 
-    public static final List<String> TOPIC_LIST =
-        CollUtil.newArrayList(KafkaTopicEnum.LOCAL_CACHE_UPDATE_MAP_TOPIC.name());
+    public static final List<String> TOPIC_LIST = CollUtil.newArrayList(KafkaTopicEnum.LOCAL_CACHE_UPDATE_MAP_TOPIC.name());
 
     @KafkaHandler
     public void receive(List<String> recordList, Acknowledgment acknowledgment) {
 
-        for (String item : recordList) {
+        try {
 
-            NotEmptyKeyValueSet notEmptyKeyValueSet = JSONUtil.toBean(item, NotEmptyKeyValueSet.class);
+            for (String item : recordList) {
 
-            String key = notEmptyKeyValueSet.getKey();
+                NotEmptyKeyValueSet notEmptyKeyValueSet = JSONUtil.toBean(item, NotEmptyKeyValueSet.class);
 
-            Set<NotEmptyKeyValueSet.KeyValue> keyValueSet = notEmptyKeyValueSet.getKeyValueSet();
+                String key = notEmptyKeyValueSet.getKey();
 
-            for (NotEmptyKeyValueSet.KeyValue subItem : keyValueSet) {
+                Set<NotEmptyKeyValueSet.KeyValue> keyValueSet = notEmptyKeyValueSet.getKeyValueSet();
 
-                log.info("kafka：更新本地 map缓存：大 key：{}，小 key：{}", key, subItem.getKey());
-                CacheLocalUtil.putSecondMap(key, subItem.getKey(), subItem.getValue()); // 更新：本地缓存
+                for (NotEmptyKeyValueSet.KeyValue subItem : keyValueSet) {
+
+                    log.info("kafka：更新本地 map缓存：大 key：{}，小 key：{}", key, subItem.getKey());
+                    CacheLocalUtil.putSecondMap(key, subItem.getKey(), subItem.getValue()); // 更新：本地缓存
+
+                }
 
             }
 
-        }
+        } finally {
 
-        acknowledgment.acknowledge(); // ack消息
+            acknowledgment.acknowledge(); // ack消息
+
+        }
 
     }
 

@@ -39,23 +39,29 @@ public class SocketEnableKafkaListener {
     @KafkaHandler
     public void receive(List<String> recordList, Acknowledgment acknowledgment) {
 
-        Set<Long> socketIdSet = recordList.stream() //
-            .map(it -> JSONUtil.toList(it, Long.class)) //
-            .flatMap(Collection::stream)  //
-            .collect(Collectors.toSet());
+        try {
 
-        if (CollUtil.isNotEmpty(iSocketEnableList)) {
+            Set<Long> socketIdSet = recordList.stream() //
+                .map(it -> JSONUtil.toList(it, Long.class)) //
+                .flatMap(Collection::stream)  //
+                .collect(Collectors.toSet());
 
-            for (ISocketEnable item : iSocketEnableList) {
+            if (CollUtil.isNotEmpty(iSocketEnableList)) {
 
-                // 执行：处理
-                item.handle(socketIdSet);
+                for (ISocketEnable item : iSocketEnableList) {
+
+                    // 执行：处理
+                    item.handle(socketIdSet);
+
+                }
 
             }
 
-        }
+        } finally {
 
-        acknowledgment.acknowledge(); // ack消息
+            acknowledgment.acknowledge(); // ack消息
+
+        }
 
     }
 

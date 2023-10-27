@@ -283,7 +283,7 @@ public class PayAliUtil {
 
         AlipayTradeQueryModel model = new AlipayTradeQueryModel();
 
-        model.setTradeNo(outTradeNo);
+        model.setOutTradeNo(outTradeNo);
 
         AlipayTradeQueryRequest request = new AlipayTradeQueryRequest();
 

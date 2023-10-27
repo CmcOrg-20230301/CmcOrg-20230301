@@ -29,19 +29,25 @@ public class LocalCacheRemoveListener {
     @KafkaHandler
     public void receive(List<String> recordList, Acknowledgment acknowledgment) {
 
-        Set<String> keySet = recordList.stream() //
-            .map(it -> JSONUtil.toList(it, String.class)) //
-            .flatMap(Collection::stream)  //
-            .collect(Collectors.toSet());
+        try {
 
-        if (keySet.size() != 0) {
+            Set<String> keySet = recordList.stream() //
+                .map(it -> JSONUtil.toList(it, String.class)) //
+                .flatMap(Collection::stream)  //
+                .collect(Collectors.toSet());
 
-            log.info("kafka：清除 本地缓存：{}", keySet);
-            CacheLocalUtil.removeAll(keySet); // 清除本地缓存
+            if (keySet.size() != 0) {
+
+                log.info("kafka：清除 本地缓存：{}", keySet);
+                CacheLocalUtil.removeAll(keySet); // 清除本地缓存
+
+            }
+
+        } finally {
+
+            acknowledgment.acknowledge(); // ack消息
 
         }
-
-        acknowledgment.acknowledge(); // ack消息
 
     }
 

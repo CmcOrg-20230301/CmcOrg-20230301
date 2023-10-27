@@ -34,50 +34,56 @@ public class CanalKafkaListener {
     @KafkaHandler
     public void receive(List<String> recordList, Acknowledgment acknowledgment) {
 
-        CanalKafkaListenerHelper.CanalKafkaResult result = new CanalKafkaListenerHelper.CanalKafkaResult();
+        try {
 
-        RedissonUtil.batch((batch) -> {
+            CanalKafkaListenerHelper.CanalKafkaResult result = new CanalKafkaListenerHelper.CanalKafkaResult();
 
-            for (String item : recordList) {
+            RedissonUtil.batch((batch) -> {
 
-                CanalKafkaDTO dto = JSONUtil.toBean(item, CanalKafkaDTO.class);
+                for (String item : recordList) {
 
-                // 处理：表名
-                String tableName = CanalKafkaListenerHelper.handleTableName(dto.getTable());
+                    CanalKafkaDTO dto = JSONUtil.toBean(item, CanalKafkaDTO.class);
 
-                // 表的全路径名
-                String fullTableName = dto.getDatabase() + "." + tableName;
+                    // 处理：表名
+                    String tableName = CanalKafkaListenerHelper.handleTableName(dto.getTable());
 
-                List<CanalKafkaListenerHelper.ICanalKafkaHandler> iCanalKafkaHandlerList =
-                    CanalKafkaListenerHelper.get(fullTableName);
+                    // 表的全路径名
+                    String fullTableName = dto.getDatabase() + "." + tableName;
 
-                if (CollUtil.isNotEmpty(iCanalKafkaHandlerList)) {
+                    List<CanalKafkaListenerHelper.ICanalKafkaHandler> iCanalKafkaHandlerList =
+                        CanalKafkaListenerHelper.get(fullTableName);
 
-                    for (CanalKafkaListenerHelper.ICanalKafkaHandler subItem : iCanalKafkaHandlerList) {
+                    if (CollUtil.isNotEmpty(iCanalKafkaHandlerList)) {
 
-                        subItem.handler(dto, batch, result); // 进行处理
+                        for (CanalKafkaListenerHelper.ICanalKafkaHandler subItem : iCanalKafkaHandlerList) {
+
+                            subItem.handler(dto, batch, result); // 进行处理
+
+                        }
 
                     }
 
                 }
 
+            });
+
+            Set<String> removeLocalCacheKeySet = result.getRemoveLocalCacheKeySet();
+
+            if (CollUtil.isNotEmpty(removeLocalCacheKeySet)) {
+
+                log.info("canal：发送：本地缓存移除消息：removeLocalCacheKeySet：{}", removeLocalCacheKeySet);
+
+                // 发送：本地缓存移除的 topic
+                KafkaUtil.sendLocalCacheRemoveTopic(removeLocalCacheKeySet);
+                CacheLocalUtil.removeAll(removeLocalCacheKeySet); // 清除本地缓存
+
             }
 
-        });
+        } finally {
 
-        Set<String> removeLocalCacheKeySet = result.getRemoveLocalCacheKeySet();
-
-        if (CollUtil.isNotEmpty(removeLocalCacheKeySet)) {
-
-            log.info("canal：发送：本地缓存移除消息：removeLocalCacheKeySet：{}", removeLocalCacheKeySet);
-
-            // 发送：本地缓存移除的 topic
-            KafkaUtil.sendLocalCacheRemoveTopic(removeLocalCacheKeySet);
-            CacheLocalUtil.removeAll(removeLocalCacheKeySet); // 清除本地缓存
+            acknowledgment.acknowledge(); // ack消息
 
         }
-
-        acknowledgment.acknowledge(); // ack消息
 
     }
 

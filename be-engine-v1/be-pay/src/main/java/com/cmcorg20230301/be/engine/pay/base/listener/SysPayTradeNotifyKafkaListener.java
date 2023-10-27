@@ -2,11 +2,12 @@ package com.cmcorg20230301.be.engine.pay.base.listener;
 
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.map.MapUtil;
-import cn.hutool.json.JSONUtil;
 import com.cmcorg20230301.be.engine.kafka.model.enums.KafkaTopicEnum;
 import com.cmcorg20230301.be.engine.model.model.constant.LogTopicConstant;
 import com.cmcorg20230301.be.engine.pay.base.model.configuration.ISysPayRefHandler;
 import com.cmcorg20230301.be.engine.pay.base.model.entity.SysPayDO;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,8 +32,12 @@ public class SysPayTradeNotifyKafkaListener {
 
     private static final Map<Integer, ISysPayRefHandler> SYS_PAY_REF_HANDLER_MAP = MapUtil.newHashMap();
 
+    // 目的：Long 转 String，Enum 转 code
+    private static ObjectMapper objectMapper;
+
     public SysPayTradeNotifyKafkaListener(
-        @Autowired(required = false) @Nullable List<ISysPayRefHandler> iSysPayRefHandlerList) {
+        @Autowired(required = false) @Nullable List<ISysPayRefHandler> iSysPayRefHandlerList,
+        ObjectMapper objectMapper) {
 
         if (CollUtil.isNotEmpty(iSysPayRefHandlerList)) {
 
@@ -44,23 +49,32 @@ public class SysPayTradeNotifyKafkaListener {
 
         }
 
+        SysPayTradeNotifyKafkaListener.objectMapper = objectMapper;
+
     }
 
+    @SneakyThrows
     @KafkaHandler
     public void receive(String recordStr, Acknowledgment acknowledgment) {
 
-        SysPayDO sysPayDO = JSONUtil.toBean(recordStr, SysPayDO.class);
+        try {
 
-        ISysPayRefHandler iSysPayRefHandler = SYS_PAY_REF_HANDLER_MAP.get(sysPayDO.getRefType());
+            SysPayDO sysPayDO = objectMapper.readValue(recordStr, SysPayDO.class);
 
-        if (iSysPayRefHandler != null) {
+            ISysPayRefHandler iSysPayRefHandler = SYS_PAY_REF_HANDLER_MAP.get(sysPayDO.getRefType());
 
-            // 处理：具体的业务
-            iSysPayRefHandler.handle(sysPayDO);
+            if (iSysPayRefHandler != null) {
+
+                // 处理：具体的业务
+                iSysPayRefHandler.handle(sysPayDO);
+
+            }
+
+        } finally {
+
+            acknowledgment.acknowledge(); // ack消息
 
         }
-
-        acknowledgment.acknowledge(); // ack消息
 
     }
 

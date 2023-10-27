@@ -39,23 +39,29 @@ public class SocketDisableKafkaListener {
     @KafkaHandler
     public void receive(List<String> recordList, Acknowledgment acknowledgment) {
 
-        Set<Long> socketIdSet = recordList.stream() //
-            .map(it -> JSONUtil.toList(it, Long.class)) //
-            .flatMap(Collection::stream)  //
-            .collect(Collectors.toSet());
+        try {
 
-        if (CollUtil.isNotEmpty(iSocketDisableList)) {
+            Set<Long> socketIdSet = recordList.stream() //
+                .map(it -> JSONUtil.toList(it, Long.class)) //
+                .flatMap(Collection::stream)  //
+                .collect(Collectors.toSet());
 
-            for (ISocketDisable item : iSocketDisableList) {
+            if (CollUtil.isNotEmpty(iSocketDisableList)) {
 
-                // 执行：处理
-                item.handle(socketIdSet);
+                for (ISocketDisable item : iSocketDisableList) {
+
+                    // 执行：处理
+                    item.handle(socketIdSet);
+
+                }
 
             }
 
-        }
+        } finally {
 
-        acknowledgment.acknowledge(); // ack消息
+            acknowledgment.acknowledge(); // ack消息
+
+        }
 
     }
 

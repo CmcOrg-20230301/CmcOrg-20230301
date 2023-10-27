@@ -17,4 +17,7 @@ public class BuyVO {
     @Schema(description = "支付返回的参数")
     private String payReturnValue;
 
+    @Schema(description = "本系统的支付订单号")
+    private String outTradeNo;
+
 }
