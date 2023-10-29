@@ -96,6 +96,7 @@ public class WebSocketUtil {
         // 添加一个：请求数据
         RequestUtil.add(sysRequestDO);
 
+        // 发送数据
         channel.writeAndFlush(new TextWebSocketFrame(jsonStr));
 
     }

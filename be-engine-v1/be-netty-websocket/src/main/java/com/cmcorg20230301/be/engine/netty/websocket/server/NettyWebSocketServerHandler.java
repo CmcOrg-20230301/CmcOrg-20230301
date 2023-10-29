@@ -12,6 +12,7 @@ import cn.hutool.core.util.ReflectUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONUtil;
 import com.cmcorg20230301.be.engine.ip2region.util.Ip2RegionUtil;
+import com.cmcorg20230301.be.engine.model.model.constant.BaseConstant;
 import com.cmcorg20230301.be.engine.model.model.constant.LogTopicConstant;
 import com.cmcorg20230301.be.engine.model.model.constant.OperationDescriptionConstant;
 import com.cmcorg20230301.be.engine.netty.websocket.configuration.NettyWebSocketBeanPostProcessor;
@@ -49,7 +50,9 @@ import javax.annotation.PreDestroy;
 import javax.annotation.Resource;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Parameter;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.CopyOnWriteArraySet;
@@ -85,6 +88,9 @@ public class NettyWebSocketServerHandler extends ChannelInboundHandlerAdapter {
     // TenantId key
     public static final AttributeKey<Long> TENANT_ID_KEY = AttributeKey.valueOf("TENANT_ID_KEY");
 
+    // 最近活跃时间 key
+    public static final AttributeKey<Date> ACTIVITY_TIME_KEY = AttributeKey.valueOf("ACTIVITY_TIME_KEY");
+
     // 用户通道 map，大key：用户主键 id，小key：sysSocketRefUserId，value：通道
     public static final ConcurrentHashMap<Long, ConcurrentHashMap<Long, Channel>> USER_ID_CHANNEL_MAP =
         MapUtil.newConcurrentHashMap();
@@ -92,6 +98,39 @@ public class NettyWebSocketServerHandler extends ChannelInboundHandlerAdapter {
     private static CopyOnWriteArraySet<Long> SYS_SOCKET_REF_USER_ID_SET = new CopyOnWriteArraySet<>();
 
     private static CopyOnWriteArrayList<SysSocketRefUserDO> SYS_SOCKET_REF_USER_DO_LIST = new CopyOnWriteArrayList<>();
+
+    /**
+     * 定时任务，检查 webSocket活跃状态
+     */
+    @PreDestroy
+    @Scheduled(fixedDelay = BaseConstant.MINUTE_1_EXPIRE_TIME)
+    public void scheduledCheckActivityTime() {
+
+        long currentTimeMillis = System.currentTimeMillis();
+
+        // 再包一层的原因：防止遍历的时候，被修改了
+        List<ConcurrentHashMap<Long, Channel>> allChannelMapList = new ArrayList<>(USER_ID_CHANNEL_MAP.values());
+
+        for (ConcurrentHashMap<Long, Channel> item : allChannelMapList) {
+
+            List<Channel> channelList = new ArrayList<>(item.values());
+
+            for (Channel subItem : channelList) {
+
+                long time = subItem.attr(ACTIVITY_TIME_KEY).get().getTime();
+
+                // 如果：5分钟没有活跃，则关闭该 webSocket
+                if (time + BaseConstant.MINUTE_5_EXPIRE_TIME < currentTimeMillis) {
+
+                    subItem.close(); // 直接可以关闭该通道，不会影响遍历，因为已经包了一层新的集合
+
+                }
+
+            }
+
+        }
+
+    }
 
     /**
      * 定时任务，保存数据
@@ -302,6 +341,8 @@ public class NettyWebSocketServerHandler extends ChannelInboundHandlerAdapter {
 
         }
 
+        channel.attr(ACTIVITY_TIME_KEY).set(new Date()); // 设置：活跃时间，备注：404不设置活跃时间，目的：防止随便请求
+
         Parameter[] parameterArr = mappingValue.getMethod().getParameters();
 
         Object[] args = null;
@@ -462,6 +503,9 @@ public class NettyWebSocketServerHandler extends ChannelInboundHandlerAdapter {
 
         // 绑定 TenantId
         channel.attr(TENANT_ID_KEY).set(tenantId);
+
+        // 设置：最近活跃时间
+        channel.attr(ACTIVITY_TIME_KEY).set(new Date());
 
         ConcurrentHashMap<Long, Channel> channelMap =
             USER_ID_CHANNEL_MAP.computeIfAbsent(userId, k -> MapUtil.newConcurrentHashMap());

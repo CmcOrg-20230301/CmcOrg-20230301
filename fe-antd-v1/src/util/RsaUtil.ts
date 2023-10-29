@@ -1,5 +1,6 @@
 import {SHA256, SHA512} from 'crypto-js';
 import JsEncrypt from 'jsencrypt';
+import {GetServerTimestamp} from "@/util/DateUtil";
 
 const RSA_PUBLIC_KEY = "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDadmaCaffN63JC5QsMK/+le5voCB4DzOsV9xOBZgGJyqnizh9/UcFkIoRae5rebdWUtnPO4CTgdJbuSvu/TtIIPj9De5/wiJilFAWd1Ve7qGaxxTxqWwFNp7p/FLr0YpMeBjOylds9GyA1cnjIqruNdYv+qRZnseE0Sq2WEZus9QIDAQAB"
 
@@ -42,7 +43,7 @@ export function RSAEncryptPro(
     rsaPublicKey: string = RSA_PUBLIC_KEY,
 ) {
 
-    const timestamp = ';' + date.getTime() // 加入：时间戳
+    const timestamp = ';' + GetServerTimestamp(date) // 加入：时间戳
     return RSAEncrypt(word + timestamp, rsaPublicKey) // 加入时间戳，进行非对称加密
 
 }
