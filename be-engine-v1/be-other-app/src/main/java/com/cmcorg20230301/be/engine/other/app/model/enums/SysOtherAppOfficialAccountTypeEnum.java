@@ -6,17 +6,13 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 /**
- * 第三方应用类型，枚举类
+ * 第三方应用，公众号类型，枚举类
  */
 @AllArgsConstructor
 @Getter
-public enum SysOtherAppTypeEnum {
+public enum SysOtherAppOfficialAccountTypeEnum {
 
-    WX_MINI_PROGRAM(101), // 微信小程序
-
-    WX_OFFICIAL_ACCOUNT(102), // 微信公众号
-
-    ALI_PAY_PROGRAM(201), // 支付宝小程序
+    WX_OFFICIAL_ACCOUNT(101), // 微信公众号
 
     ;
 

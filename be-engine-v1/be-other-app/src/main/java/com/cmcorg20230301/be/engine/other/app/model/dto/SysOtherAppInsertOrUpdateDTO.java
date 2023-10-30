@@ -29,6 +29,9 @@ public class SysOtherAppInsertOrUpdateDTO extends BaseTenantInsertOrUpdateDTO {
     @Schema(description = "第三方应用的 secret")
     private String secret;
 
+    @Schema(description = "用户点击关注之后，回复的内容，备注：如果取关然后再关注，也会回复该内容")
+    private String subscribeReplyContent;
+
     @Schema(description = "是否启用")
     private Boolean enableFlag;
 
