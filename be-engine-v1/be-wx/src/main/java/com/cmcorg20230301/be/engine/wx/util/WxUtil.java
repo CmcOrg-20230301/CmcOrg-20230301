@@ -135,7 +135,7 @@ public class WxUtil {
      * 获取：微信小程序全局唯一后台接口调用凭据
      */
     @NotNull
-    private static String getAccessToken(@Nullable Long tenantId, String appId) {
+    public static String getAccessToken(@Nullable Long tenantId, String appId) {
 
         if (tenantId == null) {
             tenantId = BaseConstant.TOP_TENANT_ID;
@@ -176,15 +176,32 @@ public class WxUtil {
     /**
      * 检查：微信回调 vo对象
      */
-    private static void checkWxVO(WxBaseVO wxBaseVO, String msg, long tenantId, String appId) {
+    public static void checkWxVO(WxBaseVO wxBaseVO, String msg, long tenantId, String appId) {
 
-        if (wxBaseVO.getErrcode() != null && wxBaseVO.getErrcode() != 0) {
+        if (!checkWxVO(wxBaseVO)) {
 
             throw new RuntimeException(StrUtil
                 .format("微信：获取【{}】失败，errcode：【{}】，errmsg：【{}】，tenantId：【{}】，appId：【{}】", msg, wxBaseVO.getErrcode(),
                     wxBaseVO.getErrmsg(), tenantId, appId));
 
         }
+
+    }
+
+    /**
+     * 检查：微信回调 vo对象
+     *
+     * @return 没有报错则返回：true，报错了则返回：false
+     */
+    public static boolean checkWxVO(WxBaseVO wxBaseVO) {
+
+        if (wxBaseVO.getErrcode() != null && wxBaseVO.getErrcode() != 0) {
+
+            return false;
+
+        }
+
+        return true;
 
     }
 

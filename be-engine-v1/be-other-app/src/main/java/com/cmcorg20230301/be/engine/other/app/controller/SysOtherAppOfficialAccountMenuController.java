@@ -65,11 +65,4 @@ public class SysOtherAppOfficialAccountMenuController {
         return ApiResultVO.okMsg(baseService.deleteByIdSet(notEmptyIdSet));
     }
 
-    @Operation(summary = "更新到微信公众号")
-    @PostMapping("/updateToWxOfficialAccount")
-    @PreAuthorize("hasAuthority('sysOtherAppOfficialAccountMenu:updateToWxOfficialAccount')")
-    public ApiResultVO<String> updateToWxOfficialAccount(@RequestBody @Valid NotNullId notNullId) {
-        return ApiResultVO.okMsg(baseService.updateToWxOfficialAccount(notNullId));
-    }
-
 }

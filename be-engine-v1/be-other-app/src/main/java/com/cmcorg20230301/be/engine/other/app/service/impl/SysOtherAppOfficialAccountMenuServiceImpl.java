@@ -7,6 +7,7 @@ import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.baomidou.mybatisplus.extension.toolkit.ChainWrappers;
+import com.cmcorg20230301.be.engine.model.model.constant.LogTopicConstant;
 import com.cmcorg20230301.be.engine.model.model.dto.NotEmptyIdSet;
 import com.cmcorg20230301.be.engine.model.model.dto.NotNullId;
 import com.cmcorg20230301.be.engine.other.app.mapper.SysOtherAppMapper;
@@ -15,6 +16,8 @@ import com.cmcorg20230301.be.engine.other.app.model.dto.SysOtherAppOfficialAccou
 import com.cmcorg20230301.be.engine.other.app.model.dto.SysOtherAppOfficialAccountMenuPageDTO;
 import com.cmcorg20230301.be.engine.other.app.model.entity.SysOtherAppDO;
 import com.cmcorg20230301.be.engine.other.app.model.entity.SysOtherAppOfficialAccountMenuDO;
+import com.cmcorg20230301.be.engine.other.app.model.enums.SysOtherAppOfficialAccountMenuTypeEnum;
+import com.cmcorg20230301.be.engine.other.app.model.enums.SysOtherAppTypeEnum;
 import com.cmcorg20230301.be.engine.other.app.service.SysOtherAppOfficialAccountMenuService;
 import com.cmcorg20230301.be.engine.security.exception.BaseBizCodeEnum;
 import com.cmcorg20230301.be.engine.security.model.entity.BaseEntity;
@@ -24,6 +27,7 @@ import com.cmcorg20230301.be.engine.security.model.vo.ApiResultVO;
 import com.cmcorg20230301.be.engine.security.util.MyEntityUtil;
 import com.cmcorg20230301.be.engine.security.util.MyTreeUtil;
 import com.cmcorg20230301.be.engine.security.util.SysTenantUtil;
+import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Service;
 
@@ -33,6 +37,7 @@ import java.util.List;
 import java.util.Set;
 
 @Service
+@Slf4j(topic = LogTopicConstant.OTHER_APP_OFFICIAL_ACCOUNT_MENU)
 public class SysOtherAppOfficialAccountMenuServiceImpl
     extends ServiceImpl<SysOtherAppOfficialAccountMenuMapper, SysOtherAppOfficialAccountMenuDO>
     implements SysOtherAppOfficialAccountMenuService {
@@ -55,17 +60,30 @@ public class SysOtherAppOfficialAccountMenuServiceImpl
         Set<Long> userRefTenantIdSet = SysTenantUtil.getUserRefTenantIdSet();
 
         // 第三方应用，必须是在自己租户下
-        boolean exists = ChainWrappers.lambdaQueryChain(sysOtherAppMapper).eq(BaseEntity::getId, otherAppId)
-            .in(BaseEntityNoIdFather::getTenantId, userRefTenantIdSet).exists();
+        SysOtherAppDO sysOtherAppDO =
+            ChainWrappers.lambdaQueryChain(sysOtherAppMapper).eq(BaseEntity::getId, otherAppId)
+                .in(BaseEntityNoIdFather::getTenantId, userRefTenantIdSet).select(SysOtherAppDO::getType).one();
 
-        if (!exists) {
+        if (sysOtherAppDO == null) {
             ApiResultVO.error(BaseBizCodeEnum.ILLEGAL_REQUEST, otherAppId);
         }
 
         SysOtherAppOfficialAccountMenuDO sysOtherAppOfficialAccountMenuDO = new SysOtherAppOfficialAccountMenuDO();
 
         sysOtherAppOfficialAccountMenuDO.setOtherAppId(dto.getOtherAppId());
-        sysOtherAppOfficialAccountMenuDO.setType(dto.getType());
+
+        SysOtherAppTypeEnum sysOtherAppDoType = sysOtherAppDO.getType();
+
+        if (SysOtherAppTypeEnum.WX_OFFICIAL_ACCOUNT.equals(sysOtherAppDoType)) {
+
+            sysOtherAppOfficialAccountMenuDO.setType(SysOtherAppOfficialAccountMenuTypeEnum.WX_OFFICIAL_ACCOUNT);
+
+        } else {
+
+            ApiResultVO.error("操作失败：暂不支持配置该类型的第三方应用", dto.getOtherAppId());
+
+        }
+
         sysOtherAppOfficialAccountMenuDO.setName(dto.getName());
         sysOtherAppOfficialAccountMenuDO.setButtonType(dto.getButtonType());
 
@@ -167,26 +185,6 @@ public class SysOtherAppOfficialAccountMenuServiceImpl
         removeByIds(idSet); // 根据 idSet删除
 
         return BaseBizCodeEnum.OK;
-
-    }
-
-    /**
-     * 更新到微信公众号
-     */
-    @Override
-    public String updateToWxOfficialAccount(NotNullId notNullId) {
-
-        Set<Long> userRefTenantIdSet = SysTenantUtil.getUserRefTenantIdSet();
-
-        SysOtherAppDO sysOtherAppDO =
-            ChainWrappers.lambdaQueryChain(sysOtherAppMapper).in(BaseEntityNoIdFather::getTenantId, userRefTenantIdSet)
-                .eq(BaseEntity::getId, notNullId.getId()).one();
-
-        if (sysOtherAppDO == null) {
-            return BaseBizCodeEnum.OK;
-        }
-
-        return null;
 
     }
 

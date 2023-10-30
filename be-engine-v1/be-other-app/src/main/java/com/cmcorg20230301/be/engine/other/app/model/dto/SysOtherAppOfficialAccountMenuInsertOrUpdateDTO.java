@@ -2,7 +2,6 @@ package com.cmcorg20230301.be.engine.other.app.model.dto;
 
 import com.cmcorg20230301.be.engine.model.model.dto.BaseTenantInsertOrUpdateDTO;
 import com.cmcorg20230301.be.engine.other.app.model.enums.SysOtherAppOfficialAccountMenuButtonTypeEnum;
-import com.cmcorg20230301.be.engine.other.app.model.enums.SysOtherAppOfficialAccountMenuTypeEnum;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -21,10 +20,6 @@ public class SysOtherAppOfficialAccountMenuInsertOrUpdateDTO extends BaseTenantI
     @NotBlank
     @Schema(description = "菜单名，备注：一级菜单最多4个汉字，二级菜单最多8个汉字，多出来的部分将会以 ... 代替")
     private String name;
-
-    @NotNull
-    @Schema(description = "类型")
-    private SysOtherAppOfficialAccountMenuTypeEnum type;
 
     @NotNull
     @Schema(description = "按钮类型")

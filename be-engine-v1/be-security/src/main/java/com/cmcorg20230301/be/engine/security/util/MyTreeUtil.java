@@ -90,8 +90,7 @@ public class MyTreeUtil {
 
     }
 
-    private static <T extends BaseEntityTree<T>> void getFullTreeListHandle(Map<Long, T> allMap,
-        Collection<T> resultCollection, Long parentId, Set<Long> resultIdSet) {
+    private static <T extends BaseEntityTree<T>> void getFullTreeListHandle(Map<Long, T> allMap, Collection<T> resultCollection, Long parentId, Set<Long> resultIdSet) {
 
         if (parentId == 0) {
             return;
@@ -120,13 +119,24 @@ public class MyTreeUtil {
     /**
      * 比原始的递归快
      * 原理：运用了对象地址引用原理
+     */
+    @SneakyThrows
+    public static <T extends BaseEntityTree<T>> List<T> listToTree(Collection<T> collection) {
+
+        return listToTree(collection, false, BaseConstant.TOP_PARENT_ID);
+
+    }
+
+    /**
+     * 比原始的递归快
+     * 原理：运用了对象地址引用原理
      *
      * @param childrenFlag 【true】 children 一直为集合 【false】 有子节点时，children为集合，无子节点时，children 为 null
      */
     @SneakyThrows
-    public static <T extends BaseEntityTree<T>> List<T> listToTree(List<T> list, boolean childrenFlag) {
+    public static <T extends BaseEntityTree<T>> List<T> listToTree(Collection<T> collection, boolean childrenFlag) {
 
-        return listToTree(list, childrenFlag, BaseConstant.TOP_PARENT_ID);
+        return listToTree(collection, childrenFlag, BaseConstant.TOP_PARENT_ID);
 
     }
 
@@ -183,40 +193,8 @@ public class MyTreeUtil {
 
             }
 
-            // 把自己添加到：父节点的 children上
-            T parentDTO = listMap.get(mapDTO.getParentId());
-
-            if (parentDTO == null) {
-
-                parentDTO = (T)ReflectUtil.newInstance(item.getClass());
-
-                List<T> children = new LinkedList<>();
-
-                children.add(mapDTO);
-
-                parentDTO.setChildren(children); // 给父节点设置 children属性
-
-                listMap.put(mapDTO.getParentId(), parentDTO);
-
-            } else {
-
-                List<T> children = parentDTO.getChildren();
-
-                if (children == null) {
-
-                    children = new LinkedList<>();
-
-                    children.add(mapDTO);
-
-                    parentDTO.setChildren(children); // 给父节点设置 children属性
-
-                } else {
-
-                    children.add(mapDTO);
-
-                }
-
-            }
+            // 处理：把自己添加到：父节点的 children上
+            listToTreeHandleParentDTO(listMap, item, mapDTO);
 
         }
 
@@ -224,6 +202,49 @@ public class MyTreeUtil {
         listToTreeHandleResultList(resultList, listMap);
 
         return resultList;
+
+    }
+
+    /**
+     * 处理：把自己添加到：父节点的 children上
+     */
+    private static <T extends BaseEntityTree<T>> void listToTreeHandleParentDTO(Map<Long, T> listMap, T item,
+        T mapDTO) {
+
+        // 获取：父节点
+        T parentDTO = listMap.get(mapDTO.getParentId());
+
+        if (parentDTO == null) {
+
+            parentDTO = (T)ReflectUtil.newInstance(item.getClass());
+
+            List<T> children = new LinkedList<>();
+
+            children.add(mapDTO);
+
+            parentDTO.setChildren(children); // 给父节点设置 children属性
+
+            listMap.put(mapDTO.getParentId(), parentDTO);
+
+        } else {
+
+            List<T> children = parentDTO.getChildren();
+
+            if (children == null) {
+
+                children = new LinkedList<>();
+
+                children.add(mapDTO);
+
+                parentDTO.setChildren(children); // 给父节点设置 children属性
+
+            } else {
+
+                children.add(mapDTO);
+
+            }
+
+        }
 
     }
 
