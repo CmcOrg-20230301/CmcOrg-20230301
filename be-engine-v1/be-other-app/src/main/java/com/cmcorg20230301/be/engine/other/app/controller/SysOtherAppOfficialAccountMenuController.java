@@ -7,15 +7,16 @@ import com.cmcorg20230301.be.engine.other.app.model.dto.SysOtherAppOfficialAccou
 import com.cmcorg20230301.be.engine.other.app.model.dto.SysOtherAppOfficialAccountMenuPageDTO;
 import com.cmcorg20230301.be.engine.other.app.model.entity.SysOtherAppOfficialAccountMenuDO;
 import com.cmcorg20230301.be.engine.other.app.service.SysOtherAppOfficialAccountMenuService;
-import com.cmcorg20230301.be.engine.security.exception.BaseBizCodeEnum;
 import com.cmcorg20230301.be.engine.security.model.vo.ApiResultVO;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.util.List;
 
@@ -69,28 +70,6 @@ public class SysOtherAppOfficialAccountMenuController {
     @PreAuthorize("hasAuthority('sysOtherAppOfficialAccountMenu:updateToWxOfficialAccount')")
     public ApiResultVO<String> updateToWxOfficialAccount(@RequestBody @Valid NotNullId notNullId) {
         return ApiResultVO.okMsg(baseService.updateToWxOfficialAccount(notNullId));
-    }
-
-    /**
-     * 微信公众号 token验证
-     */
-    @GetMapping
-    public String verify(WxOffiaccountVerifyDTO dto) {
-        return baseService.verify(dto);
-    }
-
-    /**
-     * 微信公众号：推送的消息
-     */
-    @PostMapping
-    public String receiveMessage(HttpServletRequest request) {
-        return baseService.receiveMessage(request);
-    }
-
-    @Operation(summary = "使用微信跳转网页之后的 code，换取：本系统的jwt")
-    @PostMapping(value = "/getJwtByCode")
-    public ApiResultVO<String> getJwtByCode(@RequestBody @Valid WxOffiaccountGetJwtByCodeDTO dto) {
-        return ApiResultVO.ok(BaseBizCodeEnum.OK, baseService.getJwtByCode(dto));
     }
 
 }

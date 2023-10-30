@@ -15,12 +15,6 @@
 
     <dependencies>
 
-        <!-- be-wx -->
-        <dependency>
-            <groupId>${cmcorg.groupId}</groupId>
-            <artifactId>be-wx</artifactId>
-        </dependency>
-
         <!-- be-security -->
         <dependency>
             <groupId>${cmcorg.groupId}</groupId>
