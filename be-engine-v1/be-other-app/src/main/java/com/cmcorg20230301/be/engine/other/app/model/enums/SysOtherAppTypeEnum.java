@@ -1,4 +1,4 @@
-package com.cmcorg20230301.be.engine.sign.helper.model.enums;
+package com.cmcorg20230301.be.engine.other.app.model.enums;
 
 import com.baomidou.mybatisplus.annotation.EnumValue;
 import com.fasterxml.jackson.annotation.JsonValue;

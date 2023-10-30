@@ -1,13 +1,13 @@
-package com.cmcorg20230301.be.engine.sign.helper.controller;
+package com.cmcorg20230301.be.engine.other.app.controller;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.cmcorg20230301.be.engine.model.model.dto.NotEmptyIdSet;
 import com.cmcorg20230301.be.engine.model.model.dto.NotNullId;
+import com.cmcorg20230301.be.engine.other.app.model.dto.SysOtherAppInsertOrUpdateDTO;
+import com.cmcorg20230301.be.engine.other.app.model.dto.SysOtherAppPageDTO;
+import com.cmcorg20230301.be.engine.other.app.model.entity.SysOtherAppDO;
+import com.cmcorg20230301.be.engine.other.app.service.SysOtherAppService;
 import com.cmcorg20230301.be.engine.security.model.vo.ApiResultVO;
-import com.cmcorg20230301.be.engine.sign.helper.model.dto.SysOtherAppInsertOrUpdateDTO;
-import com.cmcorg20230301.be.engine.sign.helper.model.dto.SysOtherAppPageDTO;
-import com.cmcorg20230301.be.engine.sign.helper.model.entity.SysOtherAppDO;
-import com.cmcorg20230301.be.engine.sign.helper.service.SysOtherAppService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.security.access.prepost.PreAuthorize;

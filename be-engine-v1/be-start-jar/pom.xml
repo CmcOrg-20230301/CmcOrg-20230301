@@ -15,6 +15,12 @@
 
     <dependencies>
 
+        <!-- be-other-app -->
+        <dependency>
+            <groupId>${cmcorg.groupId}</groupId>
+            <artifactId>be-other-app</artifactId>
+        </dependency>
+
         <!-- be-profit-share -->
         <dependency>
             <groupId>${cmcorg.groupId}</groupId>

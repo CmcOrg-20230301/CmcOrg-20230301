@@ -1,7 +1,7 @@
-package com.cmcorg20230301.be.engine.sign.helper.model.dto;
+package com.cmcorg20230301.be.engine.other.app.model.dto;
 
 import com.cmcorg20230301.be.engine.model.model.dto.BaseTenantInsertOrUpdateDTO;
-import com.cmcorg20230301.be.engine.sign.helper.model.enums.SysOtherAppTypeEnum;
+import com.cmcorg20230301.be.engine.other.app.model.enums.SysOtherAppTypeEnum;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -18,7 +18,7 @@ public class SysOtherAppInsertOrUpdateDTO extends BaseTenantInsertOrUpdateDTO {
     private SysOtherAppTypeEnum type;
 
     @NotBlank
-    @Schema(description = "第三方应用名，备注：同一租户不能重复，不同租户可以重复")
+    @Schema(description = "第三方应用名")
     private String name;
 
     @NotBlank

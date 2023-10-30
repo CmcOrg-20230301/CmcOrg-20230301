@@ -78,10 +78,18 @@
         <module>be-start-jar</module>
         <module>be-wallet</module>
         <module>be-profit-share</module>
+        <module>be-other-app</module>
     </modules>
 
     <dependencyManagement>
         <dependencies>
+
+            <!-- be-other-app -->
+            <dependency>
+                <groupId>${cmcorg.groupId}</groupId>
+                <artifactId>be-other-app</artifactId>
+                <version>${cmcorg.version}</version>
+            </dependency>
 
             <!-- be-profit-share -->
             <dependency>

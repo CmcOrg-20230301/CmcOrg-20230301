@@ -1,4 +1,4 @@
-package com.cmcorg20230301.be.engine.sign.helper.service.impl;
+package com.cmcorg20230301.be.engine.other.app.service.impl;
 
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.lang.func.Func1;
@@ -8,6 +8,11 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.cmcorg20230301.be.engine.model.model.dto.NotEmptyIdSet;
 import com.cmcorg20230301.be.engine.model.model.dto.NotNullId;
+import com.cmcorg20230301.be.engine.other.app.mapper.SysOtherAppMapper;
+import com.cmcorg20230301.be.engine.other.app.model.dto.SysOtherAppInsertOrUpdateDTO;
+import com.cmcorg20230301.be.engine.other.app.model.dto.SysOtherAppPageDTO;
+import com.cmcorg20230301.be.engine.other.app.model.entity.SysOtherAppDO;
+import com.cmcorg20230301.be.engine.other.app.service.SysOtherAppService;
 import com.cmcorg20230301.be.engine.security.exception.BaseBizCodeEnum;
 import com.cmcorg20230301.be.engine.security.model.entity.BaseEntity;
 import com.cmcorg20230301.be.engine.security.model.entity.BaseEntityNoId;
@@ -15,11 +20,6 @@ import com.cmcorg20230301.be.engine.security.model.entity.BaseEntityNoIdFather;
 import com.cmcorg20230301.be.engine.security.model.vo.ApiResultVO;
 import com.cmcorg20230301.be.engine.security.util.MyEntityUtil;
 import com.cmcorg20230301.be.engine.security.util.SysTenantUtil;
-import com.cmcorg20230301.be.engine.sign.helper.mapper.SysOtherAppMapper;
-import com.cmcorg20230301.be.engine.sign.helper.model.dto.SysOtherAppInsertOrUpdateDTO;
-import com.cmcorg20230301.be.engine.sign.helper.model.dto.SysOtherAppPageDTO;
-import com.cmcorg20230301.be.engine.sign.helper.model.entity.SysOtherAppDO;
-import com.cmcorg20230301.be.engine.sign.helper.service.SysOtherAppService;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Service;
 
@@ -39,17 +39,8 @@ public class SysOtherAppServiceImpl extends ServiceImpl<SysOtherAppMapper, SysOt
         SysTenantUtil.handleBaseTenantInsertOrUpdateDTO(dto, getCheckIllegalFunc1(CollUtil.newHashSet(dto.getId())),
             getTenantIdBaseEntityFunc1());
 
-        // 第三方应用名，不能重复
-        boolean exists = lambdaQuery().eq(SysOtherAppDO::getName, dto.getName())
-            .ne(dto.getId() != null, BaseEntity::getId, dto.getId()).eq(BaseEntityNoId::getTenantId, dto.getTenantId())
-            .exists();
-
-        if (exists) {
-            ApiResultVO.errorMsg("操作失败：第三方应用名不能重复");
-        }
-
         // 第三方 appId，不能重复
-        exists = lambdaQuery().eq(SysOtherAppDO::getAppId, dto.getAppId())
+        boolean exists = lambdaQuery().eq(SysOtherAppDO::getAppId, dto.getAppId())
             .ne(dto.getId() != null, BaseEntity::getId, dto.getId()).eq(BaseEntityNoId::getTenantId, dto.getTenantId())
             .exists();
 

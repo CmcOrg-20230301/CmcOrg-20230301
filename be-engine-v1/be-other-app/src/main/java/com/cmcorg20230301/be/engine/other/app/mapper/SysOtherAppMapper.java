@@ -1,7 +1,7 @@
-package com.cmcorg20230301.be.engine.sign.helper.mapper;
+package com.cmcorg20230301.be.engine.other.app.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.cmcorg20230301.be.engine.sign.helper.model.entity.SysOtherAppDO;
+import com.cmcorg20230301.be.engine.other.app.model.entity.SysOtherAppDO;
 import org.apache.ibatis.annotations.Mapper;
 
 @Mapper
