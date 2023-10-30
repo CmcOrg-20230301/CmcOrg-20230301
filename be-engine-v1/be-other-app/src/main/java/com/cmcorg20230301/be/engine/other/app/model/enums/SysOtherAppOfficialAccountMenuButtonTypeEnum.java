@@ -10,7 +10,7 @@ import lombok.Getter;
  */
 @AllArgsConstructor
 @Getter
-public enum SysOtherAppOfficialAccountButtonTypeEnum {
+public enum SysOtherAppOfficialAccountMenuButtonTypeEnum {
 
     CLICK(101, "click"), // 点击
 

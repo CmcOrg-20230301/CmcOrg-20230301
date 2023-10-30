@@ -1,35 +1,52 @@
-package com.cmcorg20230301.be.engine.other.app.model.entity;
+package com.cmcorg20230301.be.engine.other.app.model.dto;
 
-import com.baomidou.mybatisplus.annotation.TableName;
+import com.cmcorg20230301.be.engine.model.model.dto.BaseTenantInsertOrUpdateDTO;
 import com.cmcorg20230301.be.engine.other.app.model.enums.SysOtherAppOfficialAccountMenuButtonTypeEnum;
 import com.cmcorg20230301.be.engine.other.app.model.enums.SysOtherAppOfficialAccountMenuTypeEnum;
-import com.cmcorg20230301.be.engine.security.model.entity.BaseEntityTree;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import org.jetbrains.annotations.NotNull;
+
+import javax.validation.constraints.NotBlank;
 
 @EqualsAndHashCode(callSuper = true)
-@TableName(value = "sys_other_app_official_account_menu")
 @Data
-@Schema(description = "子表：公众号的菜单等相关配置，主表：第三方应用相关配置（sys_other_app）")
-public class SysOtherAppOfficialAccountMenuDO extends BaseEntityTree<SysOtherAppOfficialAccountMenuDO> {
+public class SysOtherAppOfficialAccountMenuInsertOrUpdateDTO extends BaseTenantInsertOrUpdateDTO {
 
+    @NotNull
     @Schema(description = "所属的，第三方应用相关配置主键 id")
     private Long otherAppId;
 
+    @NotBlank
     @Schema(description = "菜单名，备注：一级菜单最多4个汉字，二级菜单最多8个汉字，多出来的部分将会以 ... 代替")
     private String name;
 
+    @NotNull
     @Schema(description = "类型")
     private SysOtherAppOfficialAccountMenuTypeEnum type;
 
+    @NotNull
     @Schema(description = "按钮类型")
     private SysOtherAppOfficialAccountMenuButtonTypeEnum buttonType;
 
+    @NotBlank
     @Schema(description = "如果是按钮，则表示按钮的 key（不能重复），如果是链接，则表示是 url")
     private String value;
 
     @Schema(description = "回复的内容，备注：一般是点击按钮之后，回复的内容")
     private String replyContent;
+
+    @Schema(description = "排序号（值越大越前面，默认为 0）")
+    private Integer orderNo;
+
+    @Schema(description = "父节点id（顶级则为0）")
+    private Long parentId;
+
+    @Schema(description = "是否启用")
+    private Boolean enableFlag;
+
+    @Schema(description = "备注")
+    private String remark;
 
 }

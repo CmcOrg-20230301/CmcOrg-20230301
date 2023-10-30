@@ -10,7 +10,7 @@ import lombok.Getter;
  */
 @AllArgsConstructor
 @Getter
-public enum SysOtherAppOfficialAccountTypeEnum {
+public enum SysOtherAppOfficialAccountMenuTypeEnum {
 
     WX_OFFICIAL_ACCOUNT(101), // 微信公众号
 
