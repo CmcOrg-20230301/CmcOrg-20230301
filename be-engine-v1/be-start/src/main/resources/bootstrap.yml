@@ -36,5 +36,8 @@ spring:
 
           - data-id: socket.yml
 
+          - data-id: other-app.yml
+            refresh: true
+
           - data-id: refresh.yml
             refresh: true

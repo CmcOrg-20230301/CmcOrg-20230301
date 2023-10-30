@@ -16,6 +16,9 @@ public class SeparatorUtil {
     // 分号分隔符
     public final static String SEMICOLON_SEPARATOR = ";";
 
+    // 数字分隔符，例如：微信公众号网页授权登录之后，传递 state参数时：重定向后会带上 state参数，开发者可以填写a-zA-Z0-9的参数值，最多128字节
+    public final static String NUMBER_STR_SEPARATOR = "000000";
+
     /**
      * 返回：被【竖线分隔符】，包裹的字符串
      */

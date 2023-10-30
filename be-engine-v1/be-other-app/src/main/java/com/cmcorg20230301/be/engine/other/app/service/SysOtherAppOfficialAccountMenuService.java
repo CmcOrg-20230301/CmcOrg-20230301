@@ -22,4 +22,6 @@ public interface SysOtherAppOfficialAccountMenuService extends IService<SysOther
 
     String deleteByIdSet(NotEmptyIdSet notEmptyIdSet);
 
+    String updateToWxOfficialAccount(NotNullId notNullId);
+
 }

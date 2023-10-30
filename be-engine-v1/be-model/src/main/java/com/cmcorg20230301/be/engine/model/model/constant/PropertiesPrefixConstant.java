@@ -35,4 +35,8 @@ public interface PropertiesPrefixConstant {
 
     String MILVUS = PRE_BE + "milvus"; // 向量数据库相关
 
+    String OTHER_APP = PRE_BE + "other-app"; // 第三方应用相关
+
+    String OFFICIAL_ACCOUNT = OTHER_APP + ".official-account"; // 第三方应用-公众号相关
+
 }

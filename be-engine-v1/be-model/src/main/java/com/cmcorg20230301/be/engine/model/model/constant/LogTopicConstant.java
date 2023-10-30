@@ -31,4 +31,6 @@ public interface LogTopicConstant {
 
     String USER_WALLET = PRE_BE + "user-wallet"; // 用户钱包相关
 
+    String OTHER_APP_OFFICIAL_ACCOUNT_WX = PRE_BE + "other-app-official-account-wx"; // 第三方应用-公众号-微信相关
+
 }

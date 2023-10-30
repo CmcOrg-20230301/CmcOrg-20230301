@@ -13,6 +13,7 @@ import com.cmcorg20230301.be.engine.other.app.mapper.SysOtherAppMapper;
 import com.cmcorg20230301.be.engine.other.app.mapper.SysOtherAppOfficialAccountMenuMapper;
 import com.cmcorg20230301.be.engine.other.app.model.dto.SysOtherAppOfficialAccountMenuInsertOrUpdateDTO;
 import com.cmcorg20230301.be.engine.other.app.model.dto.SysOtherAppOfficialAccountMenuPageDTO;
+import com.cmcorg20230301.be.engine.other.app.model.entity.SysOtherAppDO;
 import com.cmcorg20230301.be.engine.other.app.model.entity.SysOtherAppOfficialAccountMenuDO;
 import com.cmcorg20230301.be.engine.other.app.service.SysOtherAppOfficialAccountMenuService;
 import com.cmcorg20230301.be.engine.security.exception.BaseBizCodeEnum;
@@ -23,7 +24,6 @@ import com.cmcorg20230301.be.engine.security.model.vo.ApiResultVO;
 import com.cmcorg20230301.be.engine.security.util.MyEntityUtil;
 import com.cmcorg20230301.be.engine.security.util.MyTreeUtil;
 import com.cmcorg20230301.be.engine.security.util.SysTenantUtil;
-import com.cmcorg20230301.be.engine.security.util.UserUtil;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Service;
 
@@ -52,11 +52,11 @@ public class SysOtherAppOfficialAccountMenuServiceImpl
 
         Long otherAppId = dto.getOtherAppId();
 
-        Long currentTenantIdDefault = UserUtil.getCurrentTenantIdDefault();
+        Set<Long> userRefTenantIdSet = SysTenantUtil.getUserRefTenantIdSet();
 
-        // 只能指定当前租户的：第三方应用
+        // 第三方应用，必须是在自己租户下
         boolean exists = ChainWrappers.lambdaQueryChain(sysOtherAppMapper).eq(BaseEntity::getId, otherAppId)
-            .eq(BaseEntityNoIdFather::getTenantId, currentTenantIdDefault).exists();
+            .in(BaseEntityNoIdFather::getTenantId, userRefTenantIdSet).exists();
 
         if (!exists) {
             ApiResultVO.error(BaseBizCodeEnum.ILLEGAL_REQUEST, otherAppId);
@@ -167,6 +167,26 @@ public class SysOtherAppOfficialAccountMenuServiceImpl
         removeByIds(idSet); // 根据 idSet删除
 
         return BaseBizCodeEnum.OK;
+
+    }
+
+    /**
+     * 更新到微信公众号
+     */
+    @Override
+    public String updateToWxOfficialAccount(NotNullId notNullId) {
+
+        Set<Long> userRefTenantIdSet = SysTenantUtil.getUserRefTenantIdSet();
+
+        SysOtherAppDO sysOtherAppDO =
+            ChainWrappers.lambdaQueryChain(sysOtherAppMapper).in(BaseEntityNoIdFather::getTenantId, userRefTenantIdSet)
+                .eq(BaseEntity::getId, notNullId.getId()).one();
+
+        if (sysOtherAppDO == null) {
+            return BaseBizCodeEnum.OK;
+        }
+
+        return null;
 
     }
 
