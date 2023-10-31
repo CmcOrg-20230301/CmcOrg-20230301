@@ -55,4 +55,11 @@ public class SysOtherAppController {
         return ApiResultVO.okMsg(baseService.deleteByIdSet(notEmptyIdSet));
     }
 
+    @Operation(summary = "通过主键id，获取第三方应用名")
+    @PostMapping("/getNameById")
+    @PreAuthorize("hasAuthority('sysOtherApp:page')")
+    public ApiResultVO<String> getNameById(@RequestBody @Valid NotNullId notNullId) {
+        return ApiResultVO.okData(baseService.getNameById(notNullId));
+    }
+
 }

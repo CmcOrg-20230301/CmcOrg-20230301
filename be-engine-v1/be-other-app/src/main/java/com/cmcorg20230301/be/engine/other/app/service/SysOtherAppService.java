@@ -18,4 +18,6 @@ public interface SysOtherAppService extends IService<SysOtherAppDO> {
 
     String deleteByIdSet(NotEmptyIdSet notEmptyIdSet);
 
+    String getNameById(NotNullId notNullId);
+
 }

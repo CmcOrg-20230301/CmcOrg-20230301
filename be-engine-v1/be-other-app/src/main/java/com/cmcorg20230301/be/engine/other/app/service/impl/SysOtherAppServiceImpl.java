@@ -128,6 +128,27 @@ public class SysOtherAppServiceImpl extends ServiceImpl<SysOtherAppMapper, SysOt
     }
 
     /**
+     * 通过主键id，获取第三方应用名
+     */
+    @Override
+    public String getNameById(NotNullId notNullId) {
+
+        // 获取：用户关联的租户
+        Set<Long> queryTenantIdSet = SysTenantUtil.getUserRefTenantIdSet();
+
+        SysOtherAppDO sysOtherAppDO =
+            lambdaQuery().eq(BaseEntity::getId, notNullId.getId()).in(BaseEntityNoId::getTenantId, queryTenantIdSet)
+                .select(SysOtherAppDO::getName).one();
+
+        if (sysOtherAppDO == null) {
+            return "";
+        }
+
+        return sysOtherAppDO.getName();
+
+    }
+
+    /**
      * 获取：检查：是否非法操作的 getCheckIllegalFunc1
      */
     @NotNull
