@@ -2,6 +2,7 @@ package com.cmcorg20230301.be.engine.other.app.service;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.cmcorg20230301.be.engine.model.model.dto.ChangeNumberDTO;
 import com.cmcorg20230301.be.engine.model.model.dto.NotEmptyIdSet;
 import com.cmcorg20230301.be.engine.model.model.dto.NotNullId;
 import com.cmcorg20230301.be.engine.other.app.model.dto.SysOtherAppOfficialAccountMenuInsertOrUpdateDTO;
@@ -21,5 +22,7 @@ public interface SysOtherAppOfficialAccountMenuService extends IService<SysOther
     SysOtherAppOfficialAccountMenuDO infoById(NotNullId notNullId);
 
     String deleteByIdSet(NotEmptyIdSet notEmptyIdSet);
+
+    String addOrderNo(ChangeNumberDTO dto);
 
 }

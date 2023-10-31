@@ -79,7 +79,7 @@ public class SysOtherAppServiceImpl extends ServiceImpl<SysOtherAppMapper, SysOt
         return lambdaQuery().like(StrUtil.isNotBlank(dto.getName()), SysOtherAppDO::getName, dto.getName())
             .like(StrUtil.isNotBlank(dto.getAppId()), SysOtherAppDO::getAppId, dto.getAppId())
             .like(StrUtil.isNotBlank(dto.getSubscribeReplyContent()), SysOtherAppDO::getSubscribeReplyContent,
-                dto.getSubscribeReplyContent())
+                dto.getSubscribeReplyContent()) //
             .like(StrUtil.isNotBlank(dto.getRemark()), BaseEntity::getRemark, dto.getRemark())
             .eq(dto.getType() != null, SysOtherAppDO::getType, dto.getType())
             .eq(dto.getEnableFlag() != null, BaseEntity::getEnableFlag, dto.getEnableFlag())
@@ -87,8 +87,8 @@ public class SysOtherAppServiceImpl extends ServiceImpl<SysOtherAppMapper, SysOt
             .select(BaseEntity::getId, BaseEntityNoIdFather::getTenantId, BaseEntityNoId::getEnableFlag,
                 BaseEntityNoId::getRemark, BaseEntityNoIdFather::getCreateId, BaseEntityNoIdFather::getCreateTime,
                 BaseEntityNoIdFather::getUpdateId, BaseEntityNoIdFather::getUpdateTime, SysOtherAppDO::getAppId,
-                SysOtherAppDO::getName, SysOtherAppDO::getType).orderByDesc(BaseEntity::getUpdateTime)
-            .page(dto.page(true));
+                SysOtherAppDO::getName, SysOtherAppDO::getType, SysOtherAppDO::getSubscribeReplyContent)
+            .orderByDesc(BaseEntity::getUpdateTime).page(dto.page(true));
 
     }
 

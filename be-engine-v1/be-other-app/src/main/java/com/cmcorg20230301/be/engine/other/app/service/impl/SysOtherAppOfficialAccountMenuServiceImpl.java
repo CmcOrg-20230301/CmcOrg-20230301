@@ -8,6 +8,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.baomidou.mybatisplus.extension.toolkit.ChainWrappers;
 import com.cmcorg20230301.be.engine.model.model.constant.LogTopicConstant;
+import com.cmcorg20230301.be.engine.model.model.dto.ChangeNumberDTO;
 import com.cmcorg20230301.be.engine.model.model.dto.NotEmptyIdSet;
 import com.cmcorg20230301.be.engine.model.model.dto.NotNullId;
 import com.cmcorg20230301.be.engine.other.app.mapper.SysOtherAppMapper;
@@ -23,6 +24,7 @@ import com.cmcorg20230301.be.engine.security.exception.BaseBizCodeEnum;
 import com.cmcorg20230301.be.engine.security.model.entity.BaseEntity;
 import com.cmcorg20230301.be.engine.security.model.entity.BaseEntityNoId;
 import com.cmcorg20230301.be.engine.security.model.entity.BaseEntityNoIdFather;
+import com.cmcorg20230301.be.engine.security.model.entity.BaseEntityTree;
 import com.cmcorg20230301.be.engine.security.model.vo.ApiResultVO;
 import com.cmcorg20230301.be.engine.security.util.MyEntityUtil;
 import com.cmcorg20230301.be.engine.security.util.MyTreeUtil;
@@ -183,6 +185,33 @@ public class SysOtherAppOfficialAccountMenuServiceImpl
         SysTenantUtil.checkIllegal(idSet, getCheckIllegalFunc1(idSet));
 
         removeByIds(idSet); // 根据 idSet删除
+
+        return BaseBizCodeEnum.OK;
+
+    }
+
+    /**
+     * 通过主键 idSet，加减排序号
+     */
+    @Override
+    public String addOrderNo(ChangeNumberDTO dto) {
+
+        // 检查：是否非法操作
+        SysTenantUtil.checkIllegal(dto.getIdSet(), getCheckIllegalFunc1(dto.getIdSet()));
+
+        if (dto.getNumber() == 0) {
+            return BaseBizCodeEnum.OK;
+        }
+
+        List<SysOtherAppOfficialAccountMenuDO> sysOtherAppOfficialAccountMenuDOList =
+            lambdaQuery().in(BaseEntity::getId, dto.getIdSet()).select(BaseEntity::getId, BaseEntityTree::getOrderNo)
+                .list();
+
+        for (SysOtherAppOfficialAccountMenuDO item : sysOtherAppOfficialAccountMenuDOList) {
+            item.setOrderNo((int)(item.getOrderNo() + dto.getNumber()));
+        }
+
+        updateBatchById(sysOtherAppOfficialAccountMenuDOList);
 
         return BaseBizCodeEnum.OK;
 

@@ -1,6 +1,7 @@
 package com.cmcorg20230301.be.engine.other.app.controller;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.cmcorg20230301.be.engine.model.model.dto.ChangeNumberDTO;
 import com.cmcorg20230301.be.engine.model.model.dto.NotEmptyIdSet;
 import com.cmcorg20230301.be.engine.model.model.dto.NotNullId;
 import com.cmcorg20230301.be.engine.other.app.model.dto.SysOtherAppOfficialAccountMenuInsertOrUpdateDTO;
@@ -63,6 +64,13 @@ public class SysOtherAppOfficialAccountMenuController {
     @PreAuthorize("hasAuthority('sysOtherAppOfficialAccountMenu:deleteByIdSet')")
     public ApiResultVO<String> deleteByIdSet(@RequestBody @Valid NotEmptyIdSet notEmptyIdSet) {
         return ApiResultVO.okMsg(baseService.deleteByIdSet(notEmptyIdSet));
+    }
+
+    @Operation(summary = "通过主键 idSet，加减排序号")
+    @PostMapping("/addOrderNo")
+    @PreAuthorize("hasAuthority('sysOtherAppOfficialAccountMenu:insertOrUpdate')")
+    public ApiResultVO<String> addOrderNo(@RequestBody @Valid ChangeNumberDTO dto) {
+        return ApiResultVO.okMsg(baseService.addOrderNo(dto));
     }
 
 }
