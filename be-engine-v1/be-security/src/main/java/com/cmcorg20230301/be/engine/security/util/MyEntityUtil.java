@@ -58,7 +58,7 @@ public class MyEntityUtil {
      */
     public static void handleParentId(BaseEntityTree<?> baseEntityTree) {
 
-        if (BaseConstant.TOP_PARENT_ID.equals(baseEntityTree.getParentId())) {
+        if (baseEntityTree != null && BaseConstant.TOP_PARENT_ID.equals(baseEntityTree.getParentId())) {
             baseEntityTree.setParentId(null);
         }
 

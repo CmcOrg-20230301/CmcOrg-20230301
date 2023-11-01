@@ -15,6 +15,7 @@ import com.cmcorg20230301.be.engine.other.app.model.enums.SysOtherAppOfficialAcc
 import com.cmcorg20230301.be.engine.security.exception.BaseBizCodeEnum;
 import com.cmcorg20230301.be.engine.security.model.entity.BaseEntity;
 import com.cmcorg20230301.be.engine.security.model.entity.BaseEntityNoIdFather;
+import com.cmcorg20230301.be.engine.security.model.entity.BaseEntityTree;
 import com.cmcorg20230301.be.engine.security.model.vo.ApiResultVO;
 import com.cmcorg20230301.be.engine.security.util.MyTreeUtil;
 import com.cmcorg20230301.be.engine.security.util.SysTenantUtil;
@@ -61,7 +62,8 @@ public class SysWxServiceImpl implements SysWxService {
 
         List<SysOtherAppOfficialAccountMenuDO> sysOtherAppOfficialAccountMenuDOList =
             ChainWrappers.lambdaQueryChain(sysOtherAppOfficialAccountMenuMapper)
-                .eq(SysOtherAppOfficialAccountMenuDO::getOtherAppId, notNullId.getId()).list();
+                .eq(SysOtherAppOfficialAccountMenuDO::getOtherAppId, notNullId.getId())
+                .orderByDesc(BaseEntityTree::getOrderNo).list();
 
         // 组装成：树结构
         List<SysOtherAppOfficialAccountMenuDO> tree = MyTreeUtil.listToTree(sysOtherAppOfficialAccountMenuDOList);

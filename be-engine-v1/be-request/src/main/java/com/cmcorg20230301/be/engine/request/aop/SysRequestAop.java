@@ -110,13 +110,9 @@ public class SysRequestAop {
 
         JSONObject jsonObject = JSONUtil.createObj();
 
-        int index = 0;
-
         for (Object item : proceedingJoinPoint.getArgs()) {
 
             jsonObject.set(item.getClass().getSimpleName(), JSONUtil.toJsonStr(item));
-
-            index++;
 
         }
 

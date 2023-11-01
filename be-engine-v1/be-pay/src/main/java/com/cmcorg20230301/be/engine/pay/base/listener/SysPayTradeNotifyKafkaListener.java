@@ -7,7 +7,6 @@ import com.cmcorg20230301.be.engine.model.model.constant.LogTopicConstant;
 import com.cmcorg20230301.be.engine.pay.base.model.configuration.ISysPayRefHandler;
 import com.cmcorg20230301.be.engine.pay.base.model.entity.SysPayDO;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -53,7 +52,6 @@ public class SysPayTradeNotifyKafkaListener {
 
     }
 
-    @SneakyThrows
     @KafkaHandler
     public void receive(String recordStr, Acknowledgment acknowledgment) {
 
@@ -69,6 +67,8 @@ public class SysPayTradeNotifyKafkaListener {
                 iSysPayRefHandler.handle(sysPayDO);
 
             }
+
+        } catch (Exception ignored) {
 
         } finally {
 

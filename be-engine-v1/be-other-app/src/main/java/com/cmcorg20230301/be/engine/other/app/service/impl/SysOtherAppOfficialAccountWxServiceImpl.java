@@ -5,6 +5,8 @@ import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.core.util.XmlUtil;
 import cn.hutool.crypto.digest.DigestUtil;
+import cn.hutool.json.JSONUtil;
+import com.cmcorg20230301.be.engine.kafka.util.KafkaUtil;
 import com.cmcorg20230301.be.engine.model.model.constant.LogTopicConstant;
 import com.cmcorg20230301.be.engine.other.app.model.dto.SysOtherAppOfficialAccountWxReceiveMessageDTO;
 import com.cmcorg20230301.be.engine.other.app.model.dto.SysOtherAppOfficialAccountWxVerifyDTO;
@@ -71,12 +73,8 @@ public class SysOtherAppOfficialAccountWxServiceImpl implements SysOtherAppOffic
 
         Document document = XmlUtil.readXML(request.getInputStream());
 
-        log.info("收到消息：{}", XmlUtil.toStr(document));
-
         SysOtherAppOfficialAccountWxReceiveMessageDTO dto =
             XmlUtil.xmlToBean(document.getDocumentElement(), SysOtherAppOfficialAccountWxReceiveMessageDTO.class);
-
-        String fromUserName = dto.getFromUserName();
 
         String content = dto.getContent();
 
@@ -95,8 +93,10 @@ public class SysOtherAppOfficialAccountWxServiceImpl implements SysOtherAppOffic
 
         dto.setContent(content);
 
-        // 开始处理：接收的消息
-        handleDTO(dto);
+        log.info("收到消息：{}，dto：{}", XmlUtil.toStr(document), JSONUtil.toJsonStr(dto));
+
+        // 发送给：kafka进行处理
+        KafkaUtil.sendSysOtherAppOfficialAccountWxReceiveMessageDTO(dto);
 
         return "";
 
@@ -105,7 +105,9 @@ public class SysOtherAppOfficialAccountWxServiceImpl implements SysOtherAppOffic
     /**
      * 开始处理：接收的消息
      */
-    private void handleDTO(SysOtherAppOfficialAccountWxReceiveMessageDTO dto) {
+    @Override
+    public void handleMessageDTO(SysOtherAppOfficialAccountWxReceiveMessageDTO dto) {
+
     }
 
     /**

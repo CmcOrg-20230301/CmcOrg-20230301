@@ -1,5 +1,6 @@
 package com.cmcorg20230301.be.engine.kafka.model.enums;
 
+import com.cmcorg20230301.be.engine.kafka.model.interfaces.IKafkaTopic;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -8,7 +9,13 @@ import lombok.Getter;
  */
 @AllArgsConstructor
 @Getter
-public enum KafkaTopicEnum {
+public enum KafkaTopicEnum implements IKafkaTopic {
+
+    // 第三方应用相关 ↓
+
+    SYS_OTHER_APP_OFFICIAL_ACCOUNT_WX_RECEIVE_MESSAGE_TOPIC, // 微信公众号接收到消息之后，发送需要处理的对象 topic
+
+    // 第三方应用相关 ↑
 
     // 缓存相关 ↓
 

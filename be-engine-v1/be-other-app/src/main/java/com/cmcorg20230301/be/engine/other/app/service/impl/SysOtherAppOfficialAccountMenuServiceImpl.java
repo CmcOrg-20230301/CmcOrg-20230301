@@ -164,8 +164,13 @@ public class SysOtherAppOfficialAccountMenuServiceImpl
         // 获取：用户关联的租户
         Set<Long> queryTenantIdSet = SysTenantUtil.getUserRefTenantIdSet();
 
-        return lambdaQuery().eq(BaseEntity::getId, notNullId.getId()).in(BaseEntityNoId::getTenantId, queryTenantIdSet)
-            .one();
+        SysOtherAppOfficialAccountMenuDO sysOtherAppOfficialAccountMenuDO =
+            lambdaQuery().eq(BaseEntity::getId, notNullId.getId()).in(BaseEntityNoId::getTenantId, queryTenantIdSet)
+                .one();
+
+        MyEntityUtil.handleParentId(sysOtherAppOfficialAccountMenuDO);
+
+        return sysOtherAppOfficialAccountMenuDO;
 
     }
 

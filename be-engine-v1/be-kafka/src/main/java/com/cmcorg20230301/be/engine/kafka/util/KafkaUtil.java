@@ -1,6 +1,7 @@
 package com.cmcorg20230301.be.engine.kafka.util;
 
 import com.cmcorg20230301.be.engine.kafka.model.enums.KafkaTopicEnum;
+import com.cmcorg20230301.be.engine.kafka.model.interfaces.IKafkaTopic;
 import com.cmcorg20230301.be.engine.model.model.dto.NotEmptyKeyValueSet;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.SneakyThrows;
@@ -24,15 +25,35 @@ public class KafkaUtil {
 
         KafkaUtil.kafkaTemplate = kafkaTemplate;
         KafkaUtil.objectMapper = objectMapper;
+
     }
 
     /**
      * 发送消息，备注：建议封装一层
      */
     @SneakyThrows
-    public static void send(KafkaTopicEnum kafkaTopicEnum, Object data) {
+    public static void send(IKafkaTopic iKafkaTopic, Object data) {
 
-        kafkaTemplate.send(kafkaTopicEnum.name(), objectMapper.writeValueAsString(data));
+        if (data instanceof String) {
+
+            kafkaTemplate.send(iKafkaTopic.name(), (String)data);
+
+        } else {
+
+            kafkaTemplate.send(iKafkaTopic.name(), objectMapper.writeValueAsString(data));
+
+        }
+
+    }
+
+    /**
+     * 发送消息：socket启用的 topic
+     */
+    public static void sendSysOtherAppOfficialAccountWxReceiveMessageDTO(
+        Object sysOtherAppOfficialAccountWxReceiveMessageDTO) {
+
+        send(KafkaTopicEnum.SYS_OTHER_APP_OFFICIAL_ACCOUNT_WX_RECEIVE_MESSAGE_TOPIC,
+            sysOtherAppOfficialAccountWxReceiveMessageDTO);
 
     }
 
