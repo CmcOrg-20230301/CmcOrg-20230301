@@ -103,18 +103,10 @@ public class SysOtherAppOfficialAccountWxServiceImpl implements SysOtherAppOffic
     }
 
     /**
-     * 开始处理：接收的消息
-     */
-    @Override
-    public void handleMessageDTO(SysOtherAppOfficialAccountWxReceiveMessageDTO dto) {
-
-    }
-
-    /**
      * 处理：返回的消息为微信格式
      */
     @NotNull
-    private String handleReturnContent(SysOtherAppOfficialAccountWxReceiveMessageDTO dto, String fromUserName,
+    public static String handleReturnContent(SysOtherAppOfficialAccountWxReceiveMessageDTO dto, String fromUserName,
         String returnContent) {
 
         WxOffiaccountReceiveMessageVO wxOffiaccountReceiveMessageVO = new WxOffiaccountReceiveMessageVO();

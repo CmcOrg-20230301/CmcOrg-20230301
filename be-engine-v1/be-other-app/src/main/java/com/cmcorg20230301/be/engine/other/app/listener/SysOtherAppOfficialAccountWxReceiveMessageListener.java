@@ -4,11 +4,11 @@ import cn.hutool.core.collection.CollUtil;
 import com.cmcorg20230301.be.engine.kafka.model.enums.KafkaTopicEnum;
 import com.cmcorg20230301.be.engine.model.model.constant.LogTopicConstant;
 import com.cmcorg20230301.be.engine.other.app.model.dto.SysOtherAppOfficialAccountWxReceiveMessageDTO;
-import com.cmcorg20230301.be.engine.other.app.service.SysOtherAppOfficialAccountWxService;
+import com.cmcorg20230301.be.engine.other.app.model.interfaces.ISysOtherAppOfficialAccountWxReceiveMessageHandle;
 import com.cmcorg20230301.be.engine.security.util.MyThreadUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import org.jetbrains.annotations.Nullable;
 import org.springframework.kafka.annotation.KafkaHandler;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.support.Acknowledgment;
@@ -33,18 +33,19 @@ public class SysOtherAppOfficialAccountWxReceiveMessageListener {
     // 目的：Long 转 String，Enum 转 code
     private static ObjectMapper objectMapper;
 
-    private static SysOtherAppOfficialAccountWxService sysOtherAppOfficialAccountWxService;
+    @Nullable
+    private static List<ISysOtherAppOfficialAccountWxReceiveMessageHandle>
+        iSysOtherAppOfficialAccountWxReceiveMessageHandleList;
 
     public SysOtherAppOfficialAccountWxReceiveMessageListener(ObjectMapper objectMapper,
-        SysOtherAppOfficialAccountWxService sysOtherAppOfficialAccountWxService) {
+        @Nullable List<ISysOtherAppOfficialAccountWxReceiveMessageHandle> iSysOtherAppOfficialAccountWxReceiveMessageHandleList) {
 
         SysOtherAppOfficialAccountWxReceiveMessageListener.objectMapper = objectMapper;
-        SysOtherAppOfficialAccountWxReceiveMessageListener.sysOtherAppOfficialAccountWxService =
-            sysOtherAppOfficialAccountWxService;
+        SysOtherAppOfficialAccountWxReceiveMessageListener.iSysOtherAppOfficialAccountWxReceiveMessageHandleList =
+            iSysOtherAppOfficialAccountWxReceiveMessageHandleList;
 
     }
 
-    @SneakyThrows
     @KafkaHandler
     public void receive(List<String> recordList, Acknowledgment acknowledgment) {
 
@@ -66,7 +67,8 @@ public class SysOtherAppOfficialAccountWxReceiveMessageListener {
 
                 }).filter(Objects::nonNull).collect(Collectors.toList());
 
-            if (CollUtil.isNotEmpty(sysOtherAppOfficialAccountWxReceiveMessageDTOList)) {
+            if (CollUtil.isNotEmpty(sysOtherAppOfficialAccountWxReceiveMessageDTOList) && CollUtil
+                .isNotEmpty(iSysOtherAppOfficialAccountWxReceiveMessageHandleList)) {
 
                 MyThreadUtil.execute(() -> {
 
@@ -74,8 +76,12 @@ public class SysOtherAppOfficialAccountWxReceiveMessageListener {
 
                         try {
 
-                            // 处理消息
-                            sysOtherAppOfficialAccountWxService.handleMessageDTO(item);
+                            for (ISysOtherAppOfficialAccountWxReceiveMessageHandle subItem : iSysOtherAppOfficialAccountWxReceiveMessageHandleList) {
+
+                                // 处理消息
+                                subItem.handle(item);
+
+                            }
 
                         } catch (Exception ignored) {
 
