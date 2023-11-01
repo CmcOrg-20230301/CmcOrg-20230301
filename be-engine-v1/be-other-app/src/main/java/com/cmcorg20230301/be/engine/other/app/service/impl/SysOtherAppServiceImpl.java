@@ -54,6 +54,19 @@ public class SysOtherAppServiceImpl extends ServiceImpl<SysOtherAppMapper, SysOt
                     ApiResultVO.errorMsg("操作失败：第三方 appId不能重复");
                 }
 
+                if (StrUtil.isNotBlank(dto.getOpenId())) {
+
+                    // 同一个类型下，第三方 openId，不能重复
+                    exists = lambdaQuery().eq(SysOtherAppDO::getOpenId, dto.getOpenId())
+                        .ne(dto.getId() != null, BaseEntity::getId, dto.getId())
+                        .eq(SysOtherAppDO::getType, dto.getType()).exists();
+
+                    if (exists) {
+                        ApiResultVO.errorMsg("操作失败：第三方 openId不能重复");
+                    }
+
+                }
+
                 SysOtherAppDO sysOtherAppDO = new SysOtherAppDO();
 
                 sysOtherAppDO.setType(dto.getType());
@@ -63,6 +76,7 @@ public class SysOtherAppServiceImpl extends ServiceImpl<SysOtherAppMapper, SysOt
 
                 sysOtherAppDO.setSubscribeReplyContent(MyEntityUtil.getNotNullStr(dto.getSubscribeReplyContent()));
                 sysOtherAppDO.setQrCode(MyEntityUtil.getNotNullStr(dto.getQrCode()));
+                sysOtherAppDO.setOpenId(MyEntityUtil.getNotNullStr(dto.getOpenId()));
 
                 sysOtherAppDO.setId(dto.getId());
                 sysOtherAppDO.setEnableFlag(BooleanUtil.isTrue(dto.getEnableFlag()));
@@ -90,7 +104,8 @@ public class SysOtherAppServiceImpl extends ServiceImpl<SysOtherAppMapper, SysOt
             .like(StrUtil.isNotBlank(dto.getAppId()), SysOtherAppDO::getAppId, dto.getAppId())
             .like(StrUtil.isNotBlank(dto.getSubscribeReplyContent()), SysOtherAppDO::getSubscribeReplyContent,
                 dto.getSubscribeReplyContent()) //
-            .like(StrUtil.isNotBlank(dto.getQrCode()), SysOtherAppDO::getQrCode, dto.getQrCode()) //
+            .like(StrUtil.isNotBlank(dto.getQrCode()), SysOtherAppDO::getQrCode, dto.getQrCode())
+            .like(StrUtil.isNotBlank(dto.getOpenId()), SysOtherAppDO::getOpenId, dto.getOpenId())
             .like(StrUtil.isNotBlank(dto.getRemark()), BaseEntity::getRemark, dto.getRemark())
             .eq(dto.getType() != null, SysOtherAppDO::getType, dto.getType())
             .eq(dto.getEnableFlag() != null, BaseEntity::getEnableFlag, dto.getEnableFlag())
@@ -99,7 +114,8 @@ public class SysOtherAppServiceImpl extends ServiceImpl<SysOtherAppMapper, SysOt
                 BaseEntityNoId::getRemark, BaseEntityNoIdFather::getCreateId, BaseEntityNoIdFather::getCreateTime,
                 BaseEntityNoIdFather::getUpdateId, BaseEntityNoIdFather::getUpdateTime, SysOtherAppDO::getAppId,
                 SysOtherAppDO::getName, SysOtherAppDO::getType, SysOtherAppDO::getSubscribeReplyContent,
-                SysOtherAppDO::getQrCode).orderByDesc(BaseEntity::getUpdateTime).page(dto.page(true));
+                SysOtherAppDO::getQrCode, SysOtherAppDO::getOpenId).orderByDesc(BaseEntity::getUpdateTime)
+            .page(dto.page(true));
 
     }
 

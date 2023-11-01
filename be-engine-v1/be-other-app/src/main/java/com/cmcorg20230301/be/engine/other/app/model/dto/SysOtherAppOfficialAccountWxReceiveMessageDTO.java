@@ -5,8 +5,17 @@ import lombok.Data;
 @Data
 public class SysOtherAppOfficialAccountWxReceiveMessageDTO {
 
+    // 额外属性 ↓
+
     /**
-     * 开发者微信号
+     * 由程序赋值
+     */
+    private String wxAppId;
+
+    // 额外属性 ↑
+
+    /**
+     * 开发者微信号，备注：这个不是 wxAppId
      */
     private String ToUserName;
 

@@ -25,6 +25,9 @@ public class SysOtherAppPageDTO extends MyTenantPageDTO {
     @Schema(description = "二维码，备注：不是二维码图片的地址，而是二维码解码之后的值")
     private String qrCode;
 
+    @Schema(description = "第三方应用的 openId/微信号，例如：接收微信公众号消息时的 ToUserName")
+    private String openId;
+
     @Schema(description = "是否启用")
     private Boolean enableFlag;
 

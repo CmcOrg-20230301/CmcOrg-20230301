@@ -7,6 +7,7 @@ import cn.hutool.json.JSONUtil;
 import com.cmcorg20230301.be.engine.cache.util.CacheRedisKafkaLocalUtil;
 import com.cmcorg20230301.be.engine.cache.util.MyCacheUtil;
 import com.cmcorg20230301.be.engine.model.model.constant.BaseConstant;
+import com.cmcorg20230301.be.engine.model.model.constant.LogTopicConstant;
 import com.cmcorg20230301.be.engine.other.app.model.entity.SysOtherAppDO;
 import com.cmcorg20230301.be.engine.other.app.service.SysOtherAppService;
 import com.cmcorg20230301.be.engine.redisson.model.enums.BaseRedisKeyEnum;
@@ -14,11 +15,13 @@ import com.cmcorg20230301.be.engine.security.exception.BaseBizCodeEnum;
 import com.cmcorg20230301.be.engine.security.model.entity.BaseEntityNoIdFather;
 import com.cmcorg20230301.be.engine.security.model.vo.ApiResultVO;
 import com.cmcorg20230301.be.engine.wx.model.vo.*;
+import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.stereotype.Component;
 
 @Component
+@Slf4j(topic = LogTopicConstant.OTHER_APP_WX)
 public class WxUtil {
 
     private static SysOtherAppService sysOtherAppService;
@@ -199,6 +202,27 @@ public class WxUtil {
                 wxAccessTokenVO::getAccessToken);
 
         return wxAccessTokenVO.getAccessToken();
+
+    }
+
+    /**
+     * 执行：发送文字消息
+     * 注意：content的长度不要超过 600，这是微信官方那边的限制，不然会请求出错的
+     */
+    public static void doTextSend(String wxOpenId, String accessToken, String content) {
+
+        if (StrUtil.isBlank(content)) {
+            return;
+        }
+
+        // 回复消息
+        String bodyJsonStr = JSONUtil.createObj().set("touser", wxOpenId).set("msgtype", "text")
+            .set("text", JSONUtil.createObj().set("content", content)).toString();
+
+        String sendResultStr = HttpUtil
+            .post("https://api.weixin.qq.com/cgi-bin/message/custom/send?access_token=" + accessToken, bodyJsonStr);
+
+        log.info("wx-sendResultStr-text：{}，content：{}", sendResultStr, content);
 
     }
 
