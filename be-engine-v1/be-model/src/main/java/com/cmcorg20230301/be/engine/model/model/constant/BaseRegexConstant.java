@@ -15,9 +15,9 @@ public interface BaseRegexConstant {
 
     String PASSWORD_REGEXP = "^(?=.*\\d)(?=.*[a-z])(?=.*[A-Z]).{8,20}$"; // 密码限制：必须包含大小写字母和数字，可以使用特殊字符，长度8-20
 
-    String NICK_NAME_REGEXP = "^[\\u4E00-\\u9FA5A-Za-z0-9_-]{2,20}$"; // 用户昵称限制：只能包含中文，数字，字母，下划线，横杠，长度2-20
+    String NICK_NAME_REGEXP = "^[\\u4E00-\\u9FA5A-Za-z0-9_-]{1,20}$"; // 用户昵称限制：只能包含中文，数字，字母，下划线，横杠，长度1-20
 
-    String SIGN_IN_NAME_REGEXP = NICK_NAME_REGEXP; // 登录名限制：只能包含中文，数字，字母，下划线，横杠，长度2-20
+    String SIGN_IN_NAME_REGEXP = "^[\\u4E00-\\u9FA5A-Za-z0-9_-]{2,20}$"; // 登录名限制：只能包含中文，数字，字母，下划线，横杠，长度2-20
 
     String PHONE = "^(13[0-9]|14[01456879]|15[0-35-9]|16[2567]|17[0-8]|18[0-9]|19[0-35-9])\\d{8}$"; // 手机号码
 

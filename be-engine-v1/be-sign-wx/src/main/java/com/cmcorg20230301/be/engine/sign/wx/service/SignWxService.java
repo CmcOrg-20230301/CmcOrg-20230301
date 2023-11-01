@@ -12,4 +12,6 @@ public interface SignWxService {
 
     String signInBrowserCode(SignInBrowserCodeDTO dto);
 
+    String signInBrowserCodeUserInfo(SignInBrowserCodeDTO dto);
+
 }

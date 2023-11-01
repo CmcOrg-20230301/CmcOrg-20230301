@@ -13,6 +13,7 @@ import com.cmcorg20230301.be.engine.sign.wx.service.SignWxService;
 import com.cmcorg20230301.be.engine.util.util.NicknameUtil;
 import com.cmcorg20230301.be.engine.wx.model.vo.WxOpenIdVO;
 import com.cmcorg20230301.be.engine.wx.model.vo.WxPhoneByCodeVO;
+import com.cmcorg20230301.be.engine.wx.model.vo.WxUserInfoVO;
 import com.cmcorg20230301.be.engine.wx.util.WxUtil;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Service;
@@ -95,6 +96,34 @@ public class SignWxServiceImpl implements SignWxService {
             ChainWrappers.lambdaQueryChain(sysUserMapper).eq(SysUserDO::getWxOpenId, wxOpenIdVO.getOpenid())
                 .eq(SysUserDO::getWxAppId, dto.getAppId()), PRE_REDIS_KEY_ENUM, wxOpenIdVO.getOpenid(),
             getWxSysUserInfoDO(), dto.getTenantId(), accountMap -> {
+
+                accountMap.put(BaseRedisKeyEnum.PRE_WX_APP_ID, dto.getAppId());
+
+            });
+
+    }
+
+    /**
+     * 浏览器：微信 code登录，可以获取用户的基础信息
+     */
+    @Override
+    public String signInBrowserCodeUserInfo(SignInBrowserCodeDTO dto) {
+
+        WxOpenIdVO wxOpenIdVO = WxUtil.getWxBrowserOpenIdVoByCode(dto.getTenantId(), dto.getCode(), dto.getAppId());
+
+        WxUserInfoVO wxUserInfoVO = WxUtil
+            .getWxUserInfoByBrowserAccessToken(wxOpenIdVO.getAccessToken(), wxOpenIdVO.getOpenid(), dto.getTenantId(),
+                dto.getAppId());
+
+        SysUserInfoDO sysUserInfoDO = new SysUserInfoDO();
+
+        sysUserInfoDO.setNickname(wxUserInfoVO.getNickname());
+
+        // 直接通过：微信 openId登录
+        return SignUtil.signInAccount(
+            ChainWrappers.lambdaQueryChain(sysUserMapper).eq(SysUserDO::getWxOpenId, wxOpenIdVO.getOpenid())
+                .eq(SysUserDO::getWxAppId, dto.getAppId()), PRE_REDIS_KEY_ENUM, wxOpenIdVO.getOpenid(), sysUserInfoDO,
+            dto.getTenantId(), accountMap -> {
 
                 accountMap.put(BaseRedisKeyEnum.PRE_WX_APP_ID, dto.getAppId());
 

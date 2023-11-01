@@ -13,10 +13,7 @@ import com.cmcorg20230301.be.engine.redisson.model.enums.BaseRedisKeyEnum;
 import com.cmcorg20230301.be.engine.security.exception.BaseBizCodeEnum;
 import com.cmcorg20230301.be.engine.security.model.entity.BaseEntityNoIdFather;
 import com.cmcorg20230301.be.engine.security.model.vo.ApiResultVO;
-import com.cmcorg20230301.be.engine.wx.model.vo.WxAccessTokenVO;
-import com.cmcorg20230301.be.engine.wx.model.vo.WxBaseVO;
-import com.cmcorg20230301.be.engine.wx.model.vo.WxOpenIdVO;
-import com.cmcorg20230301.be.engine.wx.model.vo.WxPhoneByCodeVO;
+import com.cmcorg20230301.be.engine.wx.model.vo.*;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.stereotype.Component;
@@ -132,6 +129,38 @@ public class WxUtil {
     }
 
     /**
+     * 通过微信浏览器的 access_token，获取：微信里该用户信息
+     */
+    @NotNull
+    public static WxUserInfoVO getWxUserInfoByBrowserAccessToken(String accessToken, String openId, Long tenantId,
+        String appId) {
+
+        return getWxUserInfoByBrowserAccessToken(accessToken, openId, "zh_CN", tenantId, appId);
+
+    }
+
+    /**
+     * 通过微信浏览器的 access_token，获取：微信里该用户信息
+     *
+     * @param lang zh_CN 简体，zh_TW 繁体，en 英语
+     */
+    @NotNull
+    public static WxUserInfoVO getWxUserInfoByBrowserAccessToken(String accessToken, String openId, String lang,
+        Long tenantId, String appId) {
+
+        String jsonStr = HttpUtil.get(
+            "https://api.weixin.qq.com/sns/userinfo?access_token=" + accessToken + "&openid=" + openId + "&lang="
+                + lang);
+
+        WxUserInfoVO wxUserInfoVO = JSONUtil.toBean(jsonStr, WxUserInfoVO.class);
+
+        checkWxVO(wxUserInfoVO, "微信用户信息", tenantId, appId); // 检查：微信回调 vo对象
+
+        return wxUserInfoVO;
+
+    }
+
+    /**
      * 获取：微信小程序全局唯一后台接口调用凭据
      */
     @NotNull
@@ -166,10 +195,10 @@ public class WxUtil {
         checkWxVO(wxAccessTokenVO, errorMessageStr, tenantId, appId);
 
         CacheRedisKafkaLocalUtil
-            .put(BaseRedisKeyEnum.WX_ACCESS_TOKEN_CACHE, appId, null, wxAccessTokenVO.getExpires_in() * 1000,
-                wxAccessTokenVO::getAccess_token);
+            .put(BaseRedisKeyEnum.WX_ACCESS_TOKEN_CACHE, appId, null, wxAccessTokenVO.getExpiresIn() * 1000,
+                wxAccessTokenVO::getAccessToken);
 
-        return wxAccessTokenVO.getAccess_token();
+        return wxAccessTokenVO.getAccessToken();
 
     }
 

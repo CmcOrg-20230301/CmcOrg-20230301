@@ -43,4 +43,10 @@ public class SignWxController {
         return ApiResultVO.ok(BaseBizCodeEnum.OK, signWxService.signInBrowserCode(dto));
     }
 
+    @PostMapping(value = "/sign/in/browser/code/userInfo")
+    @Operation(summary = "浏览器：微信 code登录，可以获取用户的基础信息", description = OperationDescriptionConstant.SIGN_IN)
+    public ApiResultVO<String> signInBrowserCodeUserInfo(@RequestBody @Valid SignInBrowserCodeDTO dto) {
+        return ApiResultVO.ok(BaseBizCodeEnum.OK, signWxService.signInBrowserCodeUserInfo(dto));
+    }
+
 }
