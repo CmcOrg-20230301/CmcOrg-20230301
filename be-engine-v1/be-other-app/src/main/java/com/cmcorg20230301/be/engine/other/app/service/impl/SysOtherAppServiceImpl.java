@@ -114,8 +114,7 @@ public class SysOtherAppServiceImpl extends ServiceImpl<SysOtherAppMapper, SysOt
                 BaseEntityNoId::getRemark, BaseEntityNoIdFather::getCreateId, BaseEntityNoIdFather::getCreateTime,
                 BaseEntityNoIdFather::getUpdateId, BaseEntityNoIdFather::getUpdateTime, SysOtherAppDO::getAppId,
                 SysOtherAppDO::getName, SysOtherAppDO::getType, SysOtherAppDO::getSubscribeReplyContent,
-                SysOtherAppDO::getQrCode, SysOtherAppDO::getOpenId).orderByDesc(BaseEntity::getUpdateTime)
-            .page(dto.page(true));
+                SysOtherAppDO::getQrCode).orderByDesc(BaseEntity::getUpdateTime).page(dto.page(true));
 
     }
 
