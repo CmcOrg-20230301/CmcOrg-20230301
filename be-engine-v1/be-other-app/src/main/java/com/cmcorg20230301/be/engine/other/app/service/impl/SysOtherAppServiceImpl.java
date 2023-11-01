@@ -13,6 +13,8 @@ import com.cmcorg20230301.be.engine.other.app.model.dto.SysOtherAppInsertOrUpdat
 import com.cmcorg20230301.be.engine.other.app.model.dto.SysOtherAppPageDTO;
 import com.cmcorg20230301.be.engine.other.app.model.entity.SysOtherAppDO;
 import com.cmcorg20230301.be.engine.other.app.service.SysOtherAppService;
+import com.cmcorg20230301.be.engine.redisson.model.enums.BaseRedisKeyEnum;
+import com.cmcorg20230301.be.engine.redisson.util.RedissonUtil;
 import com.cmcorg20230301.be.engine.security.exception.BaseBizCodeEnum;
 import com.cmcorg20230301.be.engine.security.model.entity.BaseEntity;
 import com.cmcorg20230301.be.engine.security.model.entity.BaseEntityNoId;
@@ -39,33 +41,39 @@ public class SysOtherAppServiceImpl extends ServiceImpl<SysOtherAppMapper, SysOt
         SysTenantUtil.handleBaseTenantInsertOrUpdateDTO(dto, getCheckIllegalFunc1(CollUtil.newHashSet(dto.getId())),
             getTenantIdBaseEntityFunc1());
 
-        // 第三方 appId，不能重复
-        boolean exists = lambdaQuery().eq(SysOtherAppDO::getAppId, dto.getAppId())
-            .ne(dto.getId() != null, BaseEntity::getId, dto.getId()).eq(BaseEntityNoId::getTenantId, dto.getTenantId())
-            .exists();
+        return RedissonUtil.doLock(
+            BaseRedisKeyEnum.PRE_OTHER_APP_TYPE_AND_APP_ID.name() + ":" + dto.getType().getCode() + ":" + dto
+                .getAppId(), () -> {
 
-        if (exists) {
-            ApiResultVO.errorMsg("操作失败：第三方 appId不能重复");
-        }
+                // 同一个类型下，第三方 appId，不能重复
+                boolean exists = lambdaQuery().eq(SysOtherAppDO::getAppId, dto.getAppId())
+                    .ne(dto.getId() != null, BaseEntity::getId, dto.getId()).eq(SysOtherAppDO::getType, dto.getType())
+                    .exists();
 
-        SysOtherAppDO sysOtherAppDO = new SysOtherAppDO();
+                if (exists) {
+                    ApiResultVO.errorMsg("操作失败：第三方 appId不能重复");
+                }
 
-        sysOtherAppDO.setType(dto.getType());
-        sysOtherAppDO.setName(dto.getName());
-        sysOtherAppDO.setAppId(dto.getAppId());
-        sysOtherAppDO.setSecret(dto.getSecret());
+                SysOtherAppDO sysOtherAppDO = new SysOtherAppDO();
 
-        sysOtherAppDO.setSubscribeReplyContent(MyEntityUtil.getNotNullStr(dto.getSubscribeReplyContent()));
-        sysOtherAppDO.setQrCode(MyEntityUtil.getNotNullStr(dto.getQrCode()));
+                sysOtherAppDO.setType(dto.getType());
+                sysOtherAppDO.setName(dto.getName());
+                sysOtherAppDO.setAppId(dto.getAppId());
+                sysOtherAppDO.setSecret(dto.getSecret());
 
-        sysOtherAppDO.setId(dto.getId());
-        sysOtherAppDO.setEnableFlag(BooleanUtil.isTrue(dto.getEnableFlag()));
-        sysOtherAppDO.setDelFlag(false);
-        sysOtherAppDO.setRemark(MyEntityUtil.getNotNullStr(dto.getRemark()));
+                sysOtherAppDO.setSubscribeReplyContent(MyEntityUtil.getNotNullStr(dto.getSubscribeReplyContent()));
+                sysOtherAppDO.setQrCode(MyEntityUtil.getNotNullStr(dto.getQrCode()));
 
-        saveOrUpdate(sysOtherAppDO);
+                sysOtherAppDO.setId(dto.getId());
+                sysOtherAppDO.setEnableFlag(BooleanUtil.isTrue(dto.getEnableFlag()));
+                sysOtherAppDO.setDelFlag(false);
+                sysOtherAppDO.setRemark(MyEntityUtil.getNotNullStr(dto.getRemark()));
 
-        return BaseBizCodeEnum.OK;
+                saveOrUpdate(sysOtherAppDO);
+
+                return BaseBizCodeEnum.OK;
+
+            });
 
     }
 

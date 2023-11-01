@@ -19,7 +19,7 @@ public class SysOtherAppDO extends BaseEntity {
     @Schema(description = "第三方应用名")
     private String name;
 
-    @Schema(description = "第三方应用的 appId，备注：同一租户不能重复，不同租户可以重复")
+    @Schema(description = "第三方应用的 appId，备注：同一个类型下，所有租户不能重复，原因：比如接收公众号消息时，就无法找到具体是哪一个租户")
     private String appId;
 
     @Schema(description = "第三方应用的 secret")
