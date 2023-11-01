@@ -54,7 +54,9 @@ public class SysOtherAppServiceImpl extends ServiceImpl<SysOtherAppMapper, SysOt
         sysOtherAppDO.setName(dto.getName());
         sysOtherAppDO.setAppId(dto.getAppId());
         sysOtherAppDO.setSecret(dto.getSecret());
+
         sysOtherAppDO.setSubscribeReplyContent(MyEntityUtil.getNotNullStr(dto.getSubscribeReplyContent()));
+        sysOtherAppDO.setQrCode(MyEntityUtil.getNotNullStr(dto.getQrCode()));
 
         sysOtherAppDO.setId(dto.getId());
         sysOtherAppDO.setEnableFlag(BooleanUtil.isTrue(dto.getEnableFlag()));
@@ -80,6 +82,7 @@ public class SysOtherAppServiceImpl extends ServiceImpl<SysOtherAppMapper, SysOt
             .like(StrUtil.isNotBlank(dto.getAppId()), SysOtherAppDO::getAppId, dto.getAppId())
             .like(StrUtil.isNotBlank(dto.getSubscribeReplyContent()), SysOtherAppDO::getSubscribeReplyContent,
                 dto.getSubscribeReplyContent()) //
+            .like(StrUtil.isNotBlank(dto.getQrCode()), SysOtherAppDO::getQrCode, dto.getQrCode()) //
             .like(StrUtil.isNotBlank(dto.getRemark()), BaseEntity::getRemark, dto.getRemark())
             .eq(dto.getType() != null, SysOtherAppDO::getType, dto.getType())
             .eq(dto.getEnableFlag() != null, BaseEntity::getEnableFlag, dto.getEnableFlag())
