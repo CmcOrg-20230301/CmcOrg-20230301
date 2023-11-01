@@ -43,6 +43,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Consumer;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 @Component
@@ -240,7 +241,8 @@ public class SignUtil {
      * 新增：用户
      */
     public static SysUserDO insertUser(String password, Map<Enum<? extends IRedisKey>, String> accountMap,
-        boolean checkPasswordBlank, SysUserInfoDO tempSysUserInfoDO, Boolean enableFlag, @Nullable Long tenantId) {
+        boolean checkPasswordBlank, @Nullable SysUserInfoDO tempSysUserInfoDO, Boolean enableFlag,
+        @Nullable Long tenantId) {
 
         // 获取：SysUserDO对象
         SysUserDO sysUserDO = insertUserGetSysUserDO(password, accountMap, checkPasswordBlank, enableFlag, tenantId);
@@ -362,7 +364,7 @@ public class SignUtil {
      */
     @NotNull
     public static String signInAccount(LambdaQueryChainWrapper<SysUserDO> lambdaQueryChainWrapper,
-        Enum<? extends IRedisKey> redisKeyEnum, String account, SysUserInfoDO tempSysUserInfoDO,
+        Enum<? extends IRedisKey> redisKeyEnum, String account, Supplier<SysUserInfoDO> sysUserInfoDOSupplier,
         @Nullable Long tenantId, @Nullable Consumer<Map<Enum<? extends IRedisKey>, String>> consumer) {
 
         String key = redisKeyEnum + account;
@@ -381,6 +383,14 @@ public class SignUtil {
 
                 if (consumer != null) {
                     consumer.accept(accountMap);
+                }
+
+                SysUserInfoDO tempSysUserInfoDO = null;
+
+                if (sysUserInfoDOSupplier != null) {
+
+                    tempSysUserInfoDO = sysUserInfoDOSupplier.get();
+
                 }
 
                 sysUserDO = SignUtil.insertUser(null, accountMap, false, tempSysUserInfoDO, null, tenantId);
