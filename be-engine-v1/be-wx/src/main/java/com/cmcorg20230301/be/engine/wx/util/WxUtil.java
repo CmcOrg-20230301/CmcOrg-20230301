@@ -1,6 +1,7 @@
 package com.cmcorg20230301.be.engine.wx.util;
 
 import cn.hutool.core.util.StrUtil;
+import cn.hutool.http.HttpRequest;
 import cn.hutool.http.HttpUtil;
 import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
@@ -14,11 +15,16 @@ import com.cmcorg20230301.be.engine.redisson.model.enums.BaseRedisKeyEnum;
 import com.cmcorg20230301.be.engine.security.exception.BaseBizCodeEnum;
 import com.cmcorg20230301.be.engine.security.model.entity.BaseEntityNoIdFather;
 import com.cmcorg20230301.be.engine.security.model.vo.ApiResultVO;
+import com.cmcorg20230301.be.engine.util.util.MyStrUtil;
 import com.cmcorg20230301.be.engine.wx.model.vo.*;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.stereotype.Component;
+
+import java.io.InputStream;
+import java.net.URLEncoder;
 
 @Component
 @Slf4j(topic = LogTopicConstant.OTHER_APP_WX)
@@ -206,16 +212,74 @@ public class WxUtil {
     }
 
     /**
+     * 获取：可以点击的标签
+     */
+    public static String getMsgmenucontentA(String pre, String sendValue, String showValue) {
+
+        return getMsgmenucontentA(pre, sendValue, showValue, -1);
+
+    }
+
+    /**
+     * 获取：可以点击的标签
+     */
+    public static String getMsgmenucontentA(String pre, String sendValue, String showValue, int index) {
+
+        return pre + "<a href=\"weixin://bizmsgmenu?msgmenucontent=" + sendValue + "&msgmenuid=" + index + "\">"
+            + showValue + "</a>";
+
+    }
+
+    /**
+     * 获取：永久二维码的url地址
+     *
+     * @param sceneStr 场景值，字符串类型，长度限制为1到64，一般为；用户的 wxOpenId
+     */
+    @SneakyThrows
+    public static InputStream qrcodeCreate(String accessToken, String sceneStr) {
+
+        String bodyJsonStr = JSONUtil.createObj().set("action_name", "QR_LIMIT_STR_SCENE")
+            .set("action_info", JSONUtil.createObj().set("scene", JSONUtil.createObj().set("scene_str", sceneStr)))
+            .toString();
+
+        String result =
+            HttpUtil.post("https://api.weixin.qq.com/cgi-bin/qrcode/create?access_token=" + accessToken, bodyJsonStr);
+
+        log.info("wx-qrcodeCreate-result：{}", result);
+
+        String ticket = JSONUtil.parseObj(result).getStr("ticket");
+
+        return HttpRequest
+            .get("https://mp.weixin.qq.com/cgi-bin/showqrcode?ticket=" + URLEncoder.encode(ticket, "UTF-8")).execute()
+            .bodyStream();
+
+    }
+
+    /**
      * 执行：发送文字消息
-     * 注意：content的长度不要超过 600，这是微信官方那边的限制，不然会请求出错的
      */
     public static void doTextSend(String wxOpenId, String accessToken, String content) {
+
+        MyStrUtil.subWithMaxLengthAndConsumer(content, 600, subContent -> {
+
+            // 执行
+            execDoTextSend(wxOpenId, accessToken, subContent);
+
+        });
+
+    }
+
+    /**
+     * 执行：发送文字消息
+     * 注意：content的长度不要超过 600，这是微信官方那边的限制，不然会请求出错的
+     * 建议使用：doTextSend，方法，因为该方法会裁减
+     */
+    public static void execDoTextSend(String wxOpenId, String accessToken, String content) {
 
         if (StrUtil.isBlank(content)) {
             return;
         }
 
-        // 回复消息
         String bodyJsonStr = JSONUtil.createObj().set("touser", wxOpenId).set("msgtype", "text")
             .set("text", JSONUtil.createObj().set("content", content)).toString();
 
@@ -223,6 +287,79 @@ public class WxUtil {
             .post("https://api.weixin.qq.com/cgi-bin/message/custom/send?access_token=" + accessToken, bodyJsonStr);
 
         log.info("wx-sendResultStr-text：{}，content：{}", sendResultStr, content);
+
+    }
+
+    /**
+     * 执行：发送图像消息
+     */
+    public static void doImageSend(String fromUserName, String accessToken, String mediaId) {
+
+        if (StrUtil.isBlank(mediaId)) {
+            return;
+        }
+
+        String bodyJsonStr = JSONUtil.createObj().set("touser", fromUserName).set("msgtype", "image")
+            .set("image", JSONUtil.createObj().set("media_id", mediaId)).toString();
+
+        String sendResultStr = HttpUtil
+            .post("https://api.weixin.qq.com/cgi-bin/message/custom/send?access_token=" + accessToken, bodyJsonStr);
+
+        log.info("wx-sendResultStr-image：{}", sendResultStr);
+
+    }
+
+    /**
+     * 执行：发送语音消息
+     */
+    public static void doVoiceSend(String fromUserName, String accessToken, String mediaId) {
+
+        if (StrUtil.isBlank(mediaId)) {
+            return;
+        }
+
+        String bodyJsonStr = JSONUtil.createObj().set("touser", fromUserName).set("msgtype", "voice")
+            .set("voice", JSONUtil.createObj().set("media_id", mediaId)).toString();
+
+        String sendResultStr = HttpUtil
+            .post("https://api.weixin.qq.com/cgi-bin/message/custom/send?access_token=" + accessToken, bodyJsonStr);
+
+        log.info("wx-sendResultStr-voice：{}", sendResultStr);
+
+    }
+
+    /**
+     * 执行：发送模板消息
+     */
+    public static void doTemplateMessageSend(String wxOpenId, String accessToken, String templateId, JSONObject data,
+        String url) {
+
+        if (StrUtil.isBlank(templateId)) {
+            return;
+        }
+
+        JSONObject jsonObject =
+            JSONUtil.createObj().set("touser", wxOpenId).set("template_id", templateId).set("data", data);
+
+        if (StrUtil.isNotBlank(url)) {
+            jsonObject.set("url", url);
+        }
+
+        String bodyJsonStr = jsonObject.toString();
+
+        String sendResultStr = HttpUtil
+            .post("https://api.weixin.qq.com/cgi-bin/message/template/send?access_token=" + accessToken, bodyJsonStr);
+
+        log.info("wx-sendResultStr-templateMessage：{}", sendResultStr);
+
+    }
+
+    /**
+     * 发送模板消息时，需要用 value来包装
+     */
+    public static JSONObject getDoTemplateMessageSendValue(String value) {
+
+        return JSONUtil.createObj().set("value", value);
 
     }
 

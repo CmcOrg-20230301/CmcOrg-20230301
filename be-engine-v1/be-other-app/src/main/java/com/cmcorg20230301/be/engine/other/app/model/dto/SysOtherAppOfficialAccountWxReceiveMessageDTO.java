@@ -1,18 +1,19 @@
 package com.cmcorg20230301.be.engine.other.app.model.dto;
 
+import com.cmcorg20230301.be.engine.other.app.model.entity.SysOtherAppDO;
+import com.cmcorg20230301.be.engine.security.model.entity.SysUserDO;
 import lombok.Data;
 
 @Data
 public class SysOtherAppOfficialAccountWxReceiveMessageDTO {
 
-    // 额外属性 ↓
+    // 由程序赋值的额外属性 ↓
 
-    /**
-     * 由程序赋值
-     */
-    private String wxAppId;
+    private SysUserDO sysUserDO;
 
-    // 额外属性 ↑
+    private SysOtherAppDO sysOtherAppDO;
+
+    // 由程序赋值的额外属性 ↑
 
     /**
      * 开发者微信号，备注：这个不是 wxAppId
