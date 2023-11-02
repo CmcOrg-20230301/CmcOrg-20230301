@@ -22,7 +22,7 @@ public class SysWxController {
     @Resource
     SysWxService baseService;
 
-    @Operation(summary = "微信公众号：更新菜单")
+    @Operation(summary = "微信公众号：同步菜单")
     @PostMapping("/officialAccount/updateMenu")
     @PreAuthorize("hasAuthority('sysWx:officialAccountUpdateMenu')")
     public ApiResultVO<String> officialAccountUpdateMenu(@RequestBody @Valid NotNullId notNullId) {

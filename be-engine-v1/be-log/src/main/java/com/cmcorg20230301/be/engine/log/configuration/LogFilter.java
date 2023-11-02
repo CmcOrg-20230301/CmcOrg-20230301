@@ -7,7 +7,6 @@ import com.alibaba.nacos.common.utils.CollectionUtils;
 import com.cmcorg20230301.be.engine.log.properties.LogProperties;
 import com.cmcorg20230301.be.engine.log.util.LogToFlowChartUtil;
 import com.cmcorg20230301.be.engine.model.model.constant.LogTopicConstant;
-import org.apache.commons.lang3.BooleanUtils;
 
 public class LogFilter extends Filter<ILoggingEvent> {
 
@@ -30,9 +29,17 @@ public class LogFilter extends Filter<ILoggingEvent> {
 
             }
 
-            if (logProperties.getLogTopicSet().contains(LogTopicConstant.NORMAL) && BooleanUtils
-                .isFalse(iLoggingEvent.getLoggerName().startsWith(LogTopicConstant.PRE_BE))) {
+            if (logProperties.getLogTopicSet().contains(LogTopicConstant.NORMAL) && !iLoggingEvent.getLoggerName()
+                .startsWith(LogTopicConstant.PRE_BE)) {
+
+                if (logProperties.getNotLogTopicSet().contains(iLoggingEvent.getLoggerName())) {
+
+                    return FilterReply.DENY; // 不打印
+
+                }
+
                 return FilterReply.NEUTRAL; // 打印
+
             }
 
             return FilterReply.DENY; // 不打印
@@ -40,10 +47,12 @@ public class LogFilter extends Filter<ILoggingEvent> {
         }
 
         if (iLoggingEvent.getLoggerName().startsWith(LogTopicConstant.PRE_BE)) {
+
             return FilterReply.DENY; // 不打印
+
         }
 
-        return FilterReply.NEUTRAL; // 中立
+        return FilterReply.NEUTRAL; // 中立（一般都会打印）
 
     }
 

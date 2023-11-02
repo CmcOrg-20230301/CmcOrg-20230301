@@ -15,9 +15,14 @@ import java.util.Set;
 public class LogProperties {
 
     /**
-     * 为空时，则是正常的日志状态，不为空时，则只打印集合里面日志
+     * 为空时，则是正常的日志状态，并且不会打印 be开头的日志，不为空时，则只打印集合里面日志
      */
     private Set<String> logTopicSet;
+
+    /**
+     * 不打印的正常日志
+     */
+    private Set<String> notLogTopicSet;
 
     /**
      * 是否开启：日志变成流程图，备注：只针对有 topic的日志

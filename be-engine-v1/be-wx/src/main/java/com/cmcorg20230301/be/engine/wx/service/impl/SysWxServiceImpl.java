@@ -43,7 +43,7 @@ public class SysWxServiceImpl implements SysWxService {
     SysOtherAppOfficialAccountMenuMapper sysOtherAppOfficialAccountMenuMapper;
 
     /**
-     * 微信公众号：更新菜单
+     * 微信公众号：同步菜单
      */
     @Override
     public String officialAccountUpdateMenu(NotNullId notNullId) {

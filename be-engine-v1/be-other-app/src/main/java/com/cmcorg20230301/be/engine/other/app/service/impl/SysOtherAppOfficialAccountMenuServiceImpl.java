@@ -17,6 +17,7 @@ import com.cmcorg20230301.be.engine.other.app.model.dto.SysOtherAppOfficialAccou
 import com.cmcorg20230301.be.engine.other.app.model.dto.SysOtherAppOfficialAccountMenuPageDTO;
 import com.cmcorg20230301.be.engine.other.app.model.entity.SysOtherAppDO;
 import com.cmcorg20230301.be.engine.other.app.model.entity.SysOtherAppOfficialAccountMenuDO;
+import com.cmcorg20230301.be.engine.other.app.model.enums.SysOtherAppOfficialAccountMenuButtonTypeEnum;
 import com.cmcorg20230301.be.engine.other.app.model.enums.SysOtherAppOfficialAccountMenuTypeEnum;
 import com.cmcorg20230301.be.engine.other.app.model.enums.SysOtherAppTypeEnum;
 import com.cmcorg20230301.be.engine.other.app.service.SysOtherAppOfficialAccountMenuService;
@@ -74,9 +75,10 @@ public class SysOtherAppOfficialAccountMenuServiceImpl
 
         sysOtherAppOfficialAccountMenuDO.setOtherAppId(dto.getOtherAppId());
 
-        SysOtherAppTypeEnum sysOtherAppDoType = sysOtherAppDO.getType();
+        SysOtherAppTypeEnum sysOtherAppTypeEnum = sysOtherAppDO.getType();
 
-        if (SysOtherAppTypeEnum.WX_OFFICIAL_ACCOUNT.equals(sysOtherAppDoType)) {
+        // 暂时：只能配置：微信公众号类型的第三方应用
+        if (SysOtherAppTypeEnum.WX_OFFICIAL_ACCOUNT.equals(sysOtherAppTypeEnum)) {
 
             sysOtherAppOfficialAccountMenuDO.setType(SysOtherAppOfficialAccountMenuTypeEnum.WX_OFFICIAL_ACCOUNT);
 
@@ -84,6 +86,17 @@ public class SysOtherAppOfficialAccountMenuServiceImpl
 
             ApiResultVO.error("操作失败：暂不支持配置该类型的第三方应用", dto.getOtherAppId());
 
+        }
+
+        // 同一个类型和同一个第三方 appId下，并且是按钮类型时，value 不能重复
+        boolean exists = lambdaQuery().eq(SysOtherAppOfficialAccountMenuDO::getOtherAppId, dto.getOtherAppId())
+            .ne(dto.getId() != null, BaseEntity::getId, dto.getId())
+            .eq(SysOtherAppOfficialAccountMenuDO::getType, sysOtherAppOfficialAccountMenuDO.getType())
+            .eq(SysOtherAppOfficialAccountMenuDO::getButtonType, SysOtherAppOfficialAccountMenuButtonTypeEnum.CLICK)
+            .eq(SysOtherAppOfficialAccountMenuDO::getValue, dto.getValue()).exists();
+
+        if (exists) {
+            ApiResultVO.errorMsg("操作失败：同一个公众号下，按钮类型的菜单，值不能重复");
         }
 
         sysOtherAppOfficialAccountMenuDO.setName(dto.getName());
