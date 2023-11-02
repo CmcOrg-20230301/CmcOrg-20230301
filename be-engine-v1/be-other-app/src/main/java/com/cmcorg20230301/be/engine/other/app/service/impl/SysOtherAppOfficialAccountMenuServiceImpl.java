@@ -139,7 +139,7 @@ public class SysOtherAppOfficialAccountMenuServiceImpl
             .eq(dto.getButtonType() != null, SysOtherAppOfficialAccountMenuDO::getButtonType, dto.getButtonType())
             .eq(dto.getEnableFlag() != null, BaseEntity::getEnableFlag, dto.getEnableFlag())
             .in(BaseEntityNoId::getTenantId, dto.getTenantIdSet()) //
-            .orderByDesc(BaseEntity::getUpdateTime).page(dto.page(true));
+            .orderByDesc(BaseEntityTree::getOrderNo).page(dto.page(true));
 
     }
 

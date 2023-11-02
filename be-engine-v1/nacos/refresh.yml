@@ -6,7 +6,7 @@ be:
     admin-password: 89750f4648ab240704529a1504ac8bbb4c85abd9b88522cef992eee8eb2304b2 # 明文：suancai
   log:
     log-topic-set:
-      - be.normal # 没有指定 loggerName 的日志
+      - be.normal # 没有指定 loggerName的日志，即：不以 be开头的 loggerName
       #- be.canal # canal相关
       #- be.cache # 缓存相关
       #- be.cache-redis-kafka-local # redis-kafka-local缓存相关
