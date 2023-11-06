@@ -7,6 +7,7 @@ import cn.hutool.core.util.StrUtil;
 import cn.hutool.extra.qrcode.QrCodeUtil;
 import cn.hutool.extra.qrcode.QrConfig;
 import com.cmcorg20230301.be.engine.security.properties.CommonProperties;
+import com.cmcorg20230301.be.engine.util.util.MyExceptionUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
@@ -99,7 +100,7 @@ public class GoogleAuthenticatorUtil {
 
                 // Yes, this is bad form - but
                 // the exceptions thrown would be rare and a static configuration problem
-                e.printStackTrace();
+                MyExceptionUtil.printError(e);
                 throw new RuntimeException(e.getMessage());
                 //return false;
 

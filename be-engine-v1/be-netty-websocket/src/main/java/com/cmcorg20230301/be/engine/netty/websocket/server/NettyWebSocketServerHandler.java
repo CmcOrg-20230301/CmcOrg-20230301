@@ -31,6 +31,7 @@ import com.cmcorg20230301.be.engine.socket.model.dto.WebSocketMessageDTO;
 import com.cmcorg20230301.be.engine.socket.model.entity.SysSocketRefUserDO;
 import com.cmcorg20230301.be.engine.socket.service.SysSocketRefUserService;
 import com.cmcorg20230301.be.engine.socket.util.SocketUtil;
+import com.cmcorg20230301.be.engine.util.util.MyExceptionUtil;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
@@ -402,7 +403,7 @@ public class NettyWebSocketServerHandler extends ChannelInboundHandlerAdapter {
 
         }
 
-        e.printStackTrace();
+        MyExceptionUtil.printError(e);
 
         WebSocketMessageDTO<Object> webSocketMessageDTO = new WebSocketMessageDTO<>();
 

@@ -20,6 +20,7 @@ import com.cmcorg20230301.be.engine.security.util.MyJwtUtil;
 import com.cmcorg20230301.be.engine.security.util.RequestUtil;
 import com.cmcorg20230301.be.engine.security.util.ResponseUtil;
 import com.cmcorg20230301.be.engine.security.util.UserUtil;
+import com.cmcorg20230301.be.engine.util.util.MyExceptionUtil;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
@@ -85,11 +86,17 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
         jwtStr = handleJwtStr(jwtStr); // 处理：jwtStr
 
         JWT jwt;
+
         try {
+
             jwt = JWT.of(jwtStr);
+
         } catch (Exception e) {
-            e.printStackTrace();
+
+            MyExceptionUtil.printError(e);
+
             return null;
+
         }
 
         // 获取：userId的值

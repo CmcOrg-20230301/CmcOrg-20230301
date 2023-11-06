@@ -49,7 +49,6 @@ public class Ip2RegionUtil {
 
         } catch (Exception e) {
 
-            e.printStackTrace();
             return "errorIp#" + ip;
 
         }

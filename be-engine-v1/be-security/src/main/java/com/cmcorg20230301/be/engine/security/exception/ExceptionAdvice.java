@@ -9,6 +9,7 @@ import com.cmcorg20230301.be.engine.security.model.vo.ApiResultVO;
 import com.cmcorg20230301.be.engine.security.util.MyEntityUtil;
 import com.cmcorg20230301.be.engine.security.util.RequestUtil;
 import com.cmcorg20230301.be.engine.security.util.UserUtil;
+import com.cmcorg20230301.be.engine.util.util.MyExceptionUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.Nullable;
@@ -39,7 +40,7 @@ public class ExceptionAdvice {
     @ExceptionHandler(value = MethodArgumentNotValidException.class)
     public ApiResultVO<?> handleValidException(MethodArgumentNotValidException e) {
 
-        e.printStackTrace();
+        MyExceptionUtil.printError(e);
 
         // 返回详细的参数校验错误信息
         Map<String, String> map = MapUtil.newHashMap(e.getBindingResult().getFieldErrors().size());
@@ -130,7 +131,7 @@ public class ExceptionAdvice {
     @ExceptionHandler(value = IllegalArgumentException.class)
     public ApiResultVO<?> handleIllegalArgumentException(IllegalArgumentException e) {
 
-        e.printStackTrace();
+        MyExceptionUtil.printError(e);
 
         try {
 
@@ -152,7 +153,7 @@ public class ExceptionAdvice {
     @ExceptionHandler(value = HttpMessageNotReadableException.class)
     public ApiResultVO<?> handleHttpMessageNotReadableException(HttpMessageNotReadableException e) {
 
-        e.printStackTrace();
+        MyExceptionUtil.printError(e);
 
         try {
 
@@ -177,7 +178,7 @@ public class ExceptionAdvice {
     @ExceptionHandler(value = BaseException.class)
     public ApiResultVO<?> handleBaseException(BaseException e) {
 
-        e.printStackTrace();
+        MyExceptionUtil.printError(e);
 
         return getBaseExceptionApiResult(e);
 
@@ -236,7 +237,7 @@ public class ExceptionAdvice {
     @ExceptionHandler(value = Throwable.class)
     public ApiResultVO<?> handleThrowable(Throwable e) {
 
-        e.printStackTrace();
+        MyExceptionUtil.printError(e);
 
         try {
 

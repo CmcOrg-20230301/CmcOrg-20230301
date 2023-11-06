@@ -19,6 +19,7 @@ import com.cmcorg20230301.be.engine.security.util.MyEntityUtil;
 import com.cmcorg20230301.be.engine.security.util.MyJwtUtil;
 import com.cmcorg20230301.be.engine.security.util.RequestUtil;
 import com.cmcorg20230301.be.engine.security.util.UserUtil;
+import com.cmcorg20230301.be.engine.util.util.MyExceptionUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -144,7 +145,7 @@ public class SysRequestAop {
 
             }
 
-            e.printStackTrace(); // 打印日志
+            MyExceptionUtil.printError(e);
 
             throw new NoLogException();
 
