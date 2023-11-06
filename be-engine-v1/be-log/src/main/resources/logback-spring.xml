@@ -12,7 +12,7 @@
         </encoder>
     </appender>
 
-    <property name="log.path" value="logs"/>
+    <property name="log.path" value="/home/logs"/>
     <property name="log.maxHistory" value="15"/>
     <property name="log.maxFileSize" value="20MB"/>
     <property name="log.timeFormat" value="yyyy-MM-dd"/>
