@@ -28,6 +28,12 @@ public class SysOtherAppDO extends BaseEntity {
     @Schema(description = "用户点击关注之后，回复的内容，备注：如果取关然后再关注，也会回复该内容")
     private String subscribeReplyContent;
 
+    @Schema(description = "用户发送文字之后，回复的内容")
+    private String textReplyContent;
+
+    @Schema(description = "用户发送图片之后，回复的内容")
+    private String imageReplyContent;
+
     @Schema(description = "二维码，备注：不是二维码图片的地址，而是二维码解码之后的值")
     private String qrCode;
 

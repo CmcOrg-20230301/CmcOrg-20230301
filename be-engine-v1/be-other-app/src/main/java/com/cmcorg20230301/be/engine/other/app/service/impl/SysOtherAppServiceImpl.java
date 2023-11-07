@@ -75,6 +75,9 @@ public class SysOtherAppServiceImpl extends ServiceImpl<SysOtherAppMapper, SysOt
                 sysOtherAppDO.setSecret(dto.getSecret());
 
                 sysOtherAppDO.setSubscribeReplyContent(MyEntityUtil.getNotNullStr(dto.getSubscribeReplyContent()));
+                sysOtherAppDO.setTextReplyContent(MyEntityUtil.getNotNullStr(dto.getTextReplyContent()));
+                sysOtherAppDO.setImageReplyContent(MyEntityUtil.getNotNullStr(dto.getImageReplyContent()));
+
                 sysOtherAppDO.setQrCode(MyEntityUtil.getNotNullStr(dto.getQrCode()));
                 sysOtherAppDO.setOpenId(MyEntityUtil.getNotNullStr(dto.getOpenId()));
 
@@ -104,6 +107,10 @@ public class SysOtherAppServiceImpl extends ServiceImpl<SysOtherAppMapper, SysOt
             .like(StrUtil.isNotBlank(dto.getAppId()), SysOtherAppDO::getAppId, dto.getAppId())
             .like(StrUtil.isNotBlank(dto.getSubscribeReplyContent()), SysOtherAppDO::getSubscribeReplyContent,
                 dto.getSubscribeReplyContent()) //
+            .like(StrUtil.isNotBlank(dto.getTextReplyContent()), SysOtherAppDO::getTextReplyContent,
+                dto.getTextReplyContent()) //
+            .like(StrUtil.isNotBlank(dto.getImageReplyContent()), SysOtherAppDO::getImageReplyContent,
+                dto.getImageReplyContent()) //
             .like(StrUtil.isNotBlank(dto.getQrCode()), SysOtherAppDO::getQrCode, dto.getQrCode())
             .like(StrUtil.isNotBlank(dto.getOpenId()), SysOtherAppDO::getOpenId, dto.getOpenId())
             .like(StrUtil.isNotBlank(dto.getRemark()), BaseEntity::getRemark, dto.getRemark())

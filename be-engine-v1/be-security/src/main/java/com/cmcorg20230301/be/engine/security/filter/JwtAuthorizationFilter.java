@@ -2,7 +2,6 @@ package com.cmcorg20230301.be.engine.security.filter;
 
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.convert.Convert;
-import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.exceptions.ValidateException;
 import cn.hutool.core.util.BooleanUtil;
 import cn.hutool.core.util.NumberUtil;
@@ -10,17 +9,12 @@ import cn.hutool.core.util.StrUtil;
 import cn.hutool.jwt.JWT;
 import cn.hutool.jwt.JWTValidator;
 import com.cmcorg20230301.be.engine.cache.util.MyCacheUtil;
-import com.cmcorg20230301.be.engine.model.model.constant.LogTopicConstant;
 import com.cmcorg20230301.be.engine.security.configuration.base.BaseConfiguration;
 import com.cmcorg20230301.be.engine.security.exception.BaseBizCodeEnum;
 import com.cmcorg20230301.be.engine.security.model.configuration.IJwtValidatorConfiguration;
 import com.cmcorg20230301.be.engine.security.model.vo.ApiResultVO;
 import com.cmcorg20230301.be.engine.security.properties.SecurityProperties;
-import com.cmcorg20230301.be.engine.security.util.MyJwtUtil;
-import com.cmcorg20230301.be.engine.security.util.RequestUtil;
-import com.cmcorg20230301.be.engine.security.util.ResponseUtil;
-import com.cmcorg20230301.be.engine.security.util.UserUtil;
-import com.cmcorg20230301.be.engine.util.util.MyExceptionUtil;
+import com.cmcorg20230301.be.engine.security.util.*;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
@@ -38,7 +32,7 @@ import java.util.List;
 /**
  * 自定义 jwt过滤器，备注：后续接口方法，无需判断账号是否封禁或者不存在
  */
-@Slf4j(topic = LogTopicConstant.REQUEST)
+@Slf4j
 public class JwtAuthorizationFilter extends OncePerRequestFilter {
 
     private static SecurityProperties securityProperties;
@@ -57,7 +51,7 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
     protected void doFilterInternal(@NotNull HttpServletRequest request, @NotNull HttpServletResponse response,
         @NotNull FilterChain filterChain) {
 
-        long beginTime = System.currentTimeMillis();
+        //        long beginTime = System.currentTimeMillis();
 
         UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = getAuthentication(request, response);
 
@@ -65,7 +59,7 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
             SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
         }
 
-        log.info("鉴权耗时：{}", DateUtil.formatBetween(System.currentTimeMillis() - beginTime));
+        //        log.info("鉴权耗时：{}", DateUtil.formatBetween(System.currentTimeMillis() - beginTime));
 
         filterChain.doFilter(request, response);
 
