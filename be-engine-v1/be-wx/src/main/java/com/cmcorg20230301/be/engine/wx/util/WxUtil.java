@@ -1,6 +1,7 @@
 package com.cmcorg20230301.be.engine.wx.util;
 
 import cn.hutool.core.codec.Base64;
+import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.util.IdUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.http.HttpRequest;
@@ -25,6 +26,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.stereotype.Component;
 
+import java.io.File;
 import java.io.InputStream;
 import java.net.URLEncoder;
 
@@ -323,13 +325,27 @@ public class WxUtil {
      */
     public static JSONObject upload(String accessToken, String type, byte[] fileByteArr, String fileName) {
 
-        String resultStr = HttpRequest
-            .post("https://api.weixin.qq.com/cgi-bin/media/upload?access_token=" + accessToken + "&type=" + type)
-            .form("media", fileByteArr, fileName).execute().body();
+        File file = null;
 
-        log.info("WxMediaUpload，result：{}", resultStr);
+        try {
 
-        return JSONUtil.parseObj(resultStr);
+            file = FileUtil.touch("/WxMediaUpload/" + fileName);
+
+            FileUtil.writeBytes(fileByteArr, file);
+
+            String resultStr = HttpRequest
+                .post("https://api.weixin.qq.com/cgi-bin/media/upload?access_token=" + accessToken + "&type=" + type)
+                .form("media", file).execute().body();
+
+            log.info("WxMediaUpload，result：{}", resultStr);
+
+            return JSONUtil.parseObj(resultStr);
+
+        } finally {
+
+            FileUtil.del(file); // 删除：文件
+
+        }
 
     }
 

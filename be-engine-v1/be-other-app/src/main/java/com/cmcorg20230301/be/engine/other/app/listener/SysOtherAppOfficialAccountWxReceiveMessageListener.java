@@ -5,6 +5,7 @@ import com.cmcorg20230301.be.engine.kafka.model.enums.KafkaTopicEnum;
 import com.cmcorg20230301.be.engine.model.model.constant.LogTopicConstant;
 import com.cmcorg20230301.be.engine.other.app.model.dto.SysOtherAppOfficialAccountWxReceiveMessageDTO;
 import com.cmcorg20230301.be.engine.other.app.model.interfaces.ISysOtherAppOfficialAccountWxReceiveMessageHandle;
+import com.cmcorg20230301.be.engine.security.util.MyExceptionUtil;
 import com.cmcorg20230301.be.engine.security.util.MyThreadUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
@@ -84,7 +85,9 @@ public class SysOtherAppOfficialAccountWxReceiveMessageListener {
 
                             }
 
-                        } catch (Exception ignored) {
+                        } catch (Exception e) {
+
+                            MyExceptionUtil.printError(e);
 
                         }
 
