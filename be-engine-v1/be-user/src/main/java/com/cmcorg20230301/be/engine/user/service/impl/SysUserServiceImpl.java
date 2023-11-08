@@ -273,6 +273,10 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserProMapper, SysUserDO>
             ApiResultVO.error(BizCodeEnum.ACCOUNT_CANNOT_BE_EMPTY);
         }
 
+        if ((!wxAppIdBlank && wxOpenIdBlank) || (wxAppIdBlank && !wxOpenIdBlank)) {
+            ApiResultVO.errorMsg("操作失败：微信appId和微信openId，必须都有值");
+        }
+
         boolean passwordFlag = StrUtil.isNotBlank(dto.getPassword()) && StrUtil.isNotBlank(dto.getOriginPassword());
 
         if (dto.getId() == null && passwordFlag) { // 只有新增时，才可以设置密码
@@ -352,6 +356,8 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserProMapper, SysUserDO>
                 sysUserDO.setEnableFlag(BooleanUtil.isTrue(dto.getEnableFlag()));
                 sysUserDO.setEmail(MyEntityUtil.getNotNullStr(dto.getEmail()));
                 sysUserDO.setSignInName(MyEntityUtil.getNotNullStr(dto.getSignInName()));
+                sysUserDO.setWxAppId(MyEntityUtil.getNotNullStr(dto.getWxAppId()));
+                sysUserDO.setWxOpenId(MyEntityUtil.getNotNullStr(dto.getWxOpenId()));
 
                 sysUserMapper.updateById(sysUserDO);
 

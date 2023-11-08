@@ -917,7 +917,7 @@ public class SignUtil {
 
         LambdaQueryChainWrapper<SysUserDO> lambdaQueryChainWrapper =
             ChainWrappers.lambdaQueryChain(sysUserMapper).ne(id != null, BaseEntity::getId, id)
-                .eq(StrUtil.isBlank(wxAppId), // 当检查微信账号时，要求：全部租户的微信账号，不能重复
+                .eq(!BaseRedisKeyEnum.PRE_WX_OPEN_ID.equals(redisKeyEnum), // 当检查微信账号时，要求：全部租户的微信账号，不能重复
                     BaseEntityNoId::getTenantId, tenantId);
 
         if (BaseRedisKeyEnum.PRE_EMAIL.equals(redisKeyEnum)) {
