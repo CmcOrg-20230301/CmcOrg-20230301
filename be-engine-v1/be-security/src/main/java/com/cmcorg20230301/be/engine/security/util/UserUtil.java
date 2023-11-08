@@ -476,6 +476,7 @@ public class UserUtil {
      */
     public static void securityContextHolderSetAuthenticationAndExecFun(VoidFunc0 voidFunc0, SysUserDO sysUserDO) {
 
+        // 执行
         securityContextHolderSetAuthenticationAndExecFun(voidFunc0, sysUserDO.getId(), sysUserDO.getTenantId(),
             sysUserDO.getWxAppId(), sysUserDO.getWxOpenId());
 
@@ -503,6 +504,7 @@ public class UserUtil {
 
         try {
 
+            // 执行方法
             voidFunc0.call();
 
         } catch (Exception e) {

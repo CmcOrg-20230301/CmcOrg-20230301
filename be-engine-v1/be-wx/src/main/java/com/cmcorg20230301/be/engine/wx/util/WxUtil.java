@@ -1,5 +1,7 @@
 package com.cmcorg20230301.be.engine.wx.util;
 
+import cn.hutool.core.codec.Base64;
+import cn.hutool.core.util.IdUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.http.HttpRequest;
 import cn.hutool.http.HttpUtil;
@@ -286,7 +288,48 @@ public class WxUtil {
         String sendResultStr = HttpUtil
             .post("https://api.weixin.qq.com/cgi-bin/message/custom/send?access_token=" + accessToken, bodyJsonStr);
 
-        log.info("wx-sendResultStr-text：{}，content：{}", sendResultStr, content);
+        log.info("wx-sendResult-text：{}，content：{}", sendResultStr, content);
+
+    }
+
+    /**
+     * 执行：上传图片
+     */
+    public static JSONObject uploadImage(String accessToken, String base64) {
+
+        byte[] decode = Base64.decode(base64);
+
+        // 执行
+        return uploadImage(accessToken, decode);
+
+    }
+
+    /**
+     * 执行：上传图片
+     */
+    public static JSONObject uploadImage(String accessToken, byte[] fileByteArr) {
+
+        // 执行
+        return upload(accessToken, "image", fileByteArr, IdUtil.simpleUUID() + ".jpg");
+
+    }
+
+    /**
+     * 执行：上传
+     *
+     * @param type     image voice
+     * @param fileName 备注：要包含文件类型
+     * @return {"media_id": ""}
+     */
+    public static JSONObject upload(String accessToken, String type, byte[] fileByteArr, String fileName) {
+
+        String resultStr = HttpRequest
+            .post("https://api.weixin.qq.com/cgi-bin/media/upload?access_token=" + accessToken + "&type=" + type)
+            .form("media", fileByteArr, fileName).execute().body();
+
+        log.info("WxMediaUpload，result：{}", resultStr);
+
+        return JSONUtil.parseObj(resultStr);
 
     }
 
@@ -305,7 +348,7 @@ public class WxUtil {
         String sendResultStr = HttpUtil
             .post("https://api.weixin.qq.com/cgi-bin/message/custom/send?access_token=" + accessToken, bodyJsonStr);
 
-        log.info("wx-sendResultStr-image：{}", sendResultStr);
+        log.info("wx-sendResult-image：{}", sendResultStr);
 
     }
 
@@ -324,7 +367,7 @@ public class WxUtil {
         String sendResultStr = HttpUtil
             .post("https://api.weixin.qq.com/cgi-bin/message/custom/send?access_token=" + accessToken, bodyJsonStr);
 
-        log.info("wx-sendResultStr-voice：{}", sendResultStr);
+        log.info("wx-sendResult-voice：{}", sendResultStr);
 
     }
 
@@ -350,7 +393,7 @@ public class WxUtil {
         String sendResultStr = HttpUtil
             .post("https://api.weixin.qq.com/cgi-bin/message/template/send?access_token=" + accessToken, bodyJsonStr);
 
-        log.info("wx-sendResultStr-templateMessage：{}", sendResultStr);
+        log.info("wx-sendResult-templateMessage：{}", sendResultStr);
 
     }
 
