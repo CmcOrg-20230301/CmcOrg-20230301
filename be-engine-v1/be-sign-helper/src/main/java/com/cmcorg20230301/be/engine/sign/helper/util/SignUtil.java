@@ -207,7 +207,7 @@ public class SignUtil {
             }
 
             // 检查：注册的登录账号是否存在
-            boolean exist = accountIsExists(redisKeyEnum, account, null, tenantId);
+            boolean exist = accountIsExists(redisKeyEnum, account, null, tenantId, null);
 
             if (exist) {
 
@@ -334,13 +334,13 @@ public class SignUtil {
 
                 sysUserDO.setPhone(item.getValue());
 
-            } else if (BaseRedisKeyEnum.PRE_WX_OPEN_ID.equals(item.getKey())) {
-
-                sysUserDO.setWxOpenId(item.getValue());
-
             } else if (BaseRedisKeyEnum.PRE_WX_APP_ID.equals(item.getKey())) {
 
                 sysUserDO.setWxAppId(item.getValue());
+
+            } else if (BaseRedisKeyEnum.PRE_WX_OPEN_ID.equals(item.getKey())) {
+
+                sysUserDO.setWxOpenId(item.getValue());
 
             }
 
@@ -535,6 +535,8 @@ public class SignUtil {
         // 颁发，并返回 jwt
         return MyJwtUtil.generateJwt(sysUserDO.getId(), jwtSecretSuf, payloadMap -> {
 
+            payloadMap.set(MyJwtUtil.PAYLOAD_MAP_WX_APP_ID_KEY, sysUserDO.getWxAppId());
+
             payloadMap.set(MyJwtUtil.PAYLOAD_MAP_WX_OPEN_ID_KEY, sysUserDO.getWxOpenId());
 
         }, sysUserDO.getTenantId());
@@ -552,9 +554,7 @@ public class SignUtil {
 
         lambdaQueryChainWrapper.eq(BaseEntityNoId::getTenantId, tenantId);
 
-        SysUserDO sysUserDO = lambdaQueryChainWrapper
-            .select(SysUserDO::getPassword, BaseEntity::getEnableFlag, BaseEntity::getId, BaseEntityNoId::getTenantId,
-                SysUserDO::getWxOpenId).one();
+        SysUserDO sysUserDO = lambdaQueryChainWrapper.one();
 
         // 账户是否存在
         if (sysUserDO == null) {
@@ -836,7 +836,7 @@ public class SignUtil {
             }
 
             // 检查：新的登录账号是否存在
-            boolean exist = accountIsExists(redisKeyEnum, newAccount, null, currentTenantIdDefault);
+            boolean exist = accountIsExists(redisKeyEnum, newAccount, null, currentTenantIdDefault, null);
 
             // 是否删除：redis中的验证码
             boolean deleteRedisFlag =
@@ -911,13 +911,14 @@ public class SignUtil {
      * 检查登录账号是否存在
      */
     public static boolean accountIsExists(Enum<? extends IRedisKey> redisKeyEnum, String newAccount, @Nullable Long id,
-        @Nullable Long tenantId) {
+        @Nullable Long tenantId, String wxAppId) {
 
         tenantId = SysTenantUtil.getTenantId(tenantId);
 
         LambdaQueryChainWrapper<SysUserDO> lambdaQueryChainWrapper =
             ChainWrappers.lambdaQueryChain(sysUserMapper).ne(id != null, BaseEntity::getId, id)
-                .eq(BaseEntityNoId::getTenantId, tenantId);
+                .eq(StrUtil.isBlank(wxAppId), // 当检查微信账号时，要求：全部租户的微信账号，不能重复
+                    BaseEntityNoId::getTenantId, tenantId);
 
         if (BaseRedisKeyEnum.PRE_EMAIL.equals(redisKeyEnum)) {
 
@@ -930,6 +931,10 @@ public class SignUtil {
         } else if (BaseRedisKeyEnum.PRE_PHONE.equals(redisKeyEnum)) {
 
             lambdaQueryChainWrapper.eq(SysUserDO::getPhone, newAccount);
+
+        } else if (BaseRedisKeyEnum.PRE_WX_OPEN_ID.equals(redisKeyEnum)) {
+
+            lambdaQueryChainWrapper.eq(SysUserDO::getWxAppId, wxAppId).eq(SysUserDO::getWxOpenId, newAccount);
 
         } else {
 
@@ -1149,7 +1154,7 @@ public class SignUtil {
             RBucket<String> bucket = redissonClient.getBucket(key);
 
             // 检查：绑定的登录账号是否存在
-            boolean exist = accountIsExists(redisKeyEnum, account, null, currentTenantIdDefault);
+            boolean exist = accountIsExists(redisKeyEnum, account, null, currentTenantIdDefault, null);
 
             if (exist) {
 

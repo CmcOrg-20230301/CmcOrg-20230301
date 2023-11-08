@@ -1,10 +1,13 @@
 package com.cmcorg20230301.be.engine.security.util;
 
 import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.convert.NumberWithFormat;
+import cn.hutool.core.lang.func.VoidFunc0;
 import cn.hutool.core.util.BooleanUtil;
 import cn.hutool.core.util.IdUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONObject;
+import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.extension.toolkit.ChainWrappers;
 import com.cmcorg20230301.be.engine.cache.util.CacheHelper;
 import com.cmcorg20230301.be.engine.cache.util.CacheRedisKafkaLocalUtil;
@@ -21,6 +24,7 @@ import com.cmcorg20230301.be.engine.security.model.vo.ApiResultVO;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Unmodifiable;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
@@ -203,6 +207,17 @@ public class UserUtil {
         }
 
         return userId;
+
+    }
+
+    /**
+     * 获取当前 wxAppId，注意：这里获取 wxAppId之后需要做 非空判断
+     * 这里只会返回实际的 wxAppId或者 null
+     */
+    @Nullable
+    private static String getCurrentUserWxAppIdWillNull() {
+
+        return MyJwtUtil.getPayloadMapWxAppIdValue(getSecurityContextHolderContextAuthenticationPrincipalJsonObject());
 
     }
 
@@ -453,6 +468,52 @@ public class UserUtil {
     public static void removeDisable(long userId) {
 
         CacheRedisKafkaLocalUtil.removeSecondMap(BaseRedisKeyEnum.SYS_USER_DISABLE_CACHE, null, String.valueOf(userId));
+
+    }
+
+    /**
+     * 给 security设置用户信息，并执行方法
+     */
+    public static void securityContextHolderSetAuthenticationAndExecFun(VoidFunc0 voidFunc0, SysUserDO sysUserDO) {
+
+        securityContextHolderSetAuthenticationAndExecFun(voidFunc0, sysUserDO.getId(), sysUserDO.getTenantId(),
+            sysUserDO.getWxAppId(), sysUserDO.getWxOpenId());
+
+    }
+
+    /**
+     * 给 security设置用户信息，并执行方法
+     */
+    public static void securityContextHolderSetAuthenticationAndExecFun(VoidFunc0 voidFunc0, Long userId, Long tenantId,
+        String wxAppId, String wxOpenId) {
+
+        JSONObject principalJson = JSONUtil.createObj();
+
+        principalJson.set(MyJwtUtil.PAYLOAD_MAP_USER_ID_KEY, new NumberWithFormat(userId, null));
+
+        principalJson.set(MyJwtUtil.PAYLOAD_MAP_TENANT_ID_KEY, new NumberWithFormat(tenantId, null));
+
+        principalJson.set(MyJwtUtil.PAYLOAD_MAP_WX_APP_ID_KEY, wxAppId);
+
+        principalJson.set(MyJwtUtil.PAYLOAD_MAP_WX_OPEN_ID_KEY, wxOpenId);
+
+        // 把 principalJson 设置到：security的上下文里面
+        SecurityContextHolder.getContext()
+            .setAuthentication(new UsernamePasswordAuthenticationToken(principalJson, null, null));
+
+        try {
+
+            voidFunc0.call();
+
+        } catch (Exception e) {
+
+            MyExceptionUtil.printError(e);
+
+        } finally {
+
+            SecurityContextHolder.clearContext(); // 清除：当前线程存储的值
+
+        }
 
     }
 

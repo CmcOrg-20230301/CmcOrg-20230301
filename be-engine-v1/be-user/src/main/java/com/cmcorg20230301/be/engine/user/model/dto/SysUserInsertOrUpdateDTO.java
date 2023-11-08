@@ -30,6 +30,12 @@ public class SysUserInsertOrUpdateDTO extends BaseTenantInsertOrUpdateDTO {
     @Schema(description = "手机号码")
     private String phone;
 
+    @Schema(description = "微信 appId")
+    private String wxAppId;
+
+    @Schema(description = "微信 openId")
+    private String wxOpenId;
+
     @Schema(description = "前端加密之后的密码")
     private String password;
 

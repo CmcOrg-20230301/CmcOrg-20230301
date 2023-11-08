@@ -152,60 +152,70 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserProMapper, SysUserDO>
 
         if (userIdSet.size() != 0) {
 
-            List<SysDeptRefUserDO> sysDeptRefUserDOList =
-                sysDeptRefUserService.lambdaQuery().in(SysDeptRefUserDO::getUserId, userIdSet)
-                    .select(SysDeptRefUserDO::getUserId, SysDeptRefUserDO::getDeptId).list();
-
-            List<SysPostRefUserDO> sysPostRefUserDOList =
-                sysPostRefUserService.lambdaQuery().in(SysPostRefUserDO::getUserId, userIdSet)
-                    .select(SysPostRefUserDO::getUserId, SysPostRefUserDO::getPostId).list();
-
-            // 备注：mysql 是先 group by 再 order by
-            List<SysRequestDO> sysRequestDOList = baseSysRequestMapper.selectLastActiveTime(userIdSet);
-
-            Map<Long, Set<Long>> deptUserGroupMap = sysDeptRefUserDOList.stream().collect(Collectors
-                .groupingBy(SysDeptRefUserDO::getUserId,
-                    Collectors.mapping(SysDeptRefUserDO::getDeptId, Collectors.toSet())));
-
-            Map<Long, Set<Long>> postUserGroupMap = sysPostRefUserDOList.stream().collect(Collectors
-                .groupingBy(SysPostRefUserDO::getUserId,
-                    Collectors.mapping(SysPostRefUserDO::getPostId, Collectors.toSet())));
-
-            Map<Long, SysRequestDO> requestCreateIdMap =
-                sysRequestDOList.stream().collect(Collectors.toMap(BaseEntityNoId::getCreateId, it -> it));
-
-            Map<Long, Set<Long>> userRefRoleIdSetMap = UserUtil.getUserRefRoleIdSetMap();
-
-            Map<Long, Set<Long>> userIdRefTenantIdSetMap = SysTenantUtil.getUserIdRefTenantIdSetMap();
-
-            page.getRecords().forEach(it -> {
-
-                it.setRoleIdSet(userRefRoleIdSetMap.get(it.getId()));
-
-                it.setDeptIdSet(deptUserGroupMap.get(it.getId()));
-
-                it.setPostIdSet(postUserGroupMap.get(it.getId()));
-
-                it.setTenantIdSet(userIdRefTenantIdSetMap.get(it.getId()));
-
-                SysRequestDO sysRequestDO = requestCreateIdMap.get(it.getId());
-
-                if (sysRequestDO == null) {
-
-                    it.setLastActiveTime(it.getCreateTime());
-
-                } else {
-
-                    it.setLastActiveTime(sysRequestDO.getCreateTime());
-                    it.setRegion(sysRequestDO.getRegion());
-
-                }
-
-            });
+            // 处理：关联的数据
+            handleRefData(page, userIdSet);
 
         }
 
         return page;
+
+    }
+
+    /**
+     * 处理：关联的数据
+     */
+    private void handleRefData(Page<SysUserPageVO> page, Set<Long> userIdSet) {
+
+        List<SysDeptRefUserDO> sysDeptRefUserDOList =
+            sysDeptRefUserService.lambdaQuery().in(SysDeptRefUserDO::getUserId, userIdSet)
+                .select(SysDeptRefUserDO::getUserId, SysDeptRefUserDO::getDeptId).list();
+
+        List<SysPostRefUserDO> sysPostRefUserDOList =
+            sysPostRefUserService.lambdaQuery().in(SysPostRefUserDO::getUserId, userIdSet)
+                .select(SysPostRefUserDO::getUserId, SysPostRefUserDO::getPostId).list();
+
+        // 备注：mysql 是先 group by 再 order by
+        List<SysRequestDO> sysRequestDOList = baseSysRequestMapper.selectLastActiveTime(userIdSet);
+
+        Map<Long, Set<Long>> deptUserGroupMap = sysDeptRefUserDOList.stream().collect(Collectors
+            .groupingBy(SysDeptRefUserDO::getUserId,
+                Collectors.mapping(SysDeptRefUserDO::getDeptId, Collectors.toSet())));
+
+        Map<Long, Set<Long>> postUserGroupMap = sysPostRefUserDOList.stream().collect(Collectors
+            .groupingBy(SysPostRefUserDO::getUserId,
+                Collectors.mapping(SysPostRefUserDO::getPostId, Collectors.toSet())));
+
+        Map<Long, SysRequestDO> requestCreateIdMap =
+            sysRequestDOList.stream().collect(Collectors.toMap(BaseEntityNoId::getCreateId, it -> it));
+
+        Map<Long, Set<Long>> userRefRoleIdSetMap = UserUtil.getUserRefRoleIdSetMap();
+
+        Map<Long, Set<Long>> userIdRefTenantIdSetMap = SysTenantUtil.getUserIdRefTenantIdSetMap();
+
+        page.getRecords().forEach(it -> {
+
+            it.setRoleIdSet(userRefRoleIdSetMap.get(it.getId()));
+
+            it.setDeptIdSet(deptUserGroupMap.get(it.getId()));
+
+            it.setPostIdSet(postUserGroupMap.get(it.getId()));
+
+            it.setTenantIdSet(userIdRefTenantIdSetMap.get(it.getId()));
+
+            SysRequestDO sysRequestDO = requestCreateIdMap.get(it.getId());
+
+            if (sysRequestDO == null) {
+
+                it.setLastActiveTime(it.getCreateTime());
+
+            } else {
+
+                it.setLastActiveTime(sysRequestDO.getCreateTime());
+                it.setRegion(sysRequestDO.getRegion());
+
+            }
+
+        });
 
     }
 
@@ -256,8 +266,10 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserProMapper, SysUserDO>
         boolean emailBlank = StrUtil.isBlank(dto.getEmail());
         boolean signInNameBlank = StrUtil.isBlank(dto.getSignInName());
         boolean phoneBlank = StrUtil.isBlank(dto.getPhone());
+        boolean wxAppIdBlank = StrUtil.isBlank(dto.getWxAppId());
+        boolean wxOpenIdBlank = StrUtil.isBlank(dto.getWxOpenId());
 
-        if (emailBlank && signInNameBlank && phoneBlank) {
+        if (emailBlank && signInNameBlank && phoneBlank && wxAppIdBlank && wxOpenIdBlank) {
             ApiResultVO.error(BizCodeEnum.ACCOUNT_CANNOT_BE_EMPTY);
         }
 
@@ -275,11 +287,21 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserProMapper, SysUserDO>
         if (!emailBlank) {
             redisKeyEnumSet.add(BaseRedisKeyEnum.PRE_EMAIL);
         }
+
         if (!signInNameBlank) {
             redisKeyEnumSet.add(BaseRedisKeyEnum.PRE_SIGN_IN_NAME);
         }
+
         if (!phoneBlank) {
             redisKeyEnumSet.add(BaseRedisKeyEnum.PRE_PHONE);
+        }
+
+        if (!wxAppIdBlank) {
+            redisKeyEnumSet.add(BaseRedisKeyEnum.PRE_WX_APP_ID);
+        }
+
+        if (!wxOpenIdBlank) {
+            redisKeyEnumSet.add(BaseRedisKeyEnum.PRE_WX_OPEN_ID);
         }
 
         // 执行
@@ -296,9 +318,9 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserProMapper, SysUserDO>
 
             Map<Enum<? extends IRedisKey>, String> accountMap = MapUtil.newHashMap();
 
-            // 检查：账号是否存在
             for (Enum<? extends IRedisKey> item : redisKeyEnumSet) {
 
+                // 检查：账号是否存在
                 if (accountIsExist(dto, item, accountMap, dto.getTenantId())) {
 
                     SignUtil.accountIsExistError();
@@ -314,7 +336,8 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserProMapper, SysUserDO>
                 sysUserInfoDO.setBio(dto.getBio());
 
                 SysUserDO sysUserDO = SignUtil
-                    .insertUser(dto.getPassword(), accountMap, false, sysUserInfoDO, dto.getEnableFlag(), dto.getTenantId());
+                    .insertUser(dto.getPassword(), accountMap, false, sysUserInfoDO, dto.getEnableFlag(),
+                        dto.getTenantId());
 
                 insertOrUpdateSub(sysUserDO, dto); // 新增数据到子表
 
@@ -337,7 +360,8 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserProMapper, SysUserDO>
 
                 SysUserInfoDO sysUserInfoDO = new SysUserInfoDO();
                 sysUserInfoDO.setId(dto.getId());
-                sysUserInfoDO.setNickname(MyEntityUtil.getNotNullStr(dto.getNickname(), NicknameUtil.getRandomNickname()));
+                sysUserInfoDO
+                    .setNickname(MyEntityUtil.getNotNullStr(dto.getNickname(), NicknameUtil.getRandomNickname()));
                 sysUserInfoDO.setBio(MyEntityUtil.getNotNullStr(dto.getBio()));
 
                 sysUserInfoMapper.updateById(sysUserInfoDO);
@@ -378,18 +402,24 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserProMapper, SysUserDO>
 
         if (BaseRedisKeyEnum.PRE_EMAIL.equals(item)) {
 
-            exist = SignUtil.accountIsExists(item, dto.getEmail(), dto.getId(), tenantId);
+            exist = SignUtil.accountIsExists(item, dto.getEmail(), dto.getId(), tenantId, null);
             map.put(item, dto.getEmail());
 
         } else if (BaseRedisKeyEnum.PRE_SIGN_IN_NAME.equals(item)) {
 
-            exist = SignUtil.accountIsExists(item, dto.getSignInName(), dto.getId(), tenantId);
+            exist = SignUtil.accountIsExists(item, dto.getSignInName(), dto.getId(), tenantId, null);
             map.put(item, dto.getSignInName());
 
         } else if (BaseRedisKeyEnum.PRE_PHONE.equals(item)) {
 
-            exist = SignUtil.accountIsExists(item, dto.getPhone(), dto.getId(), tenantId);
+            exist = SignUtil.accountIsExists(item, dto.getPhone(), dto.getId(), tenantId, null);
             map.put(item, dto.getPhone());
+
+        } else if (BaseRedisKeyEnum.PRE_WX_OPEN_ID.equals(item)) {
+
+            exist = SignUtil.accountIsExists(item, dto.getWxOpenId(), dto.getId(), tenantId, dto.getWxAppId());
+            map.put(BaseRedisKeyEnum.PRE_WX_APP_ID, dto.getWxAppId());
+            map.put(item, dto.getWxOpenId());
 
         }
 
