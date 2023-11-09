@@ -464,6 +464,13 @@
                 <version>2021.0.5.0</version>
             </dependency>
 
+            <!-- 火山引擎 -->
+            <dependency>
+                <groupId>com.volcengine</groupId>
+                <artifactId>volc-sdk-java</artifactId>
+                <version>1.0.127</version>
+            </dependency>
+
             <!-- webp格式图片转换 -->
             <dependency>
                 <groupId>org.sejda.imageio</groupId>
