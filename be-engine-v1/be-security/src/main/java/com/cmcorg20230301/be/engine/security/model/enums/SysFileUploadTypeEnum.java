@@ -31,6 +31,9 @@ public enum SysFileUploadTypeEnum implements ISysFileUploadType {
     // excel
     EXCEL(201, "excel", CollUtil.newHashSet("xlsx"), 1024 * 1024 * 2, false), //
 
+    // text
+    TEXT(301, "text", CollUtil.newHashSet("txt"), 1024 * 1024 * 2, false), //
+
     ;
 
     @EnumValue

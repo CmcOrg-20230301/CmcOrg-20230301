@@ -14,6 +14,7 @@ import com.cmcorg20230301.be.engine.redisson.model.enums.BaseRedisKeyEnum;
 import com.cmcorg20230301.be.engine.security.exception.BaseBizCodeEnum;
 import com.cmcorg20230301.be.engine.security.mapper.SysTenantMapper;
 import com.cmcorg20230301.be.engine.security.mapper.SysTenantRefUserMapper;
+import com.cmcorg20230301.be.engine.security.mapper.SysUserMapper;
 import com.cmcorg20230301.be.engine.security.model.dto.MyTenantPageDTO;
 import com.cmcorg20230301.be.engine.security.model.entity.*;
 import com.cmcorg20230301.be.engine.security.model.vo.ApiResultVO;
@@ -34,11 +35,14 @@ public class SysTenantUtil {
 
     private static SysTenantMapper sysTenantMapper;
     private static SysTenantRefUserMapper sysTenantRefUserMapper;
+    private static SysUserMapper sysUserMapper;
 
-    public SysTenantUtil(SysTenantMapper sysTenantMapper, SysTenantRefUserMapper sysTenantRefUserMapper) {
+    public SysTenantUtil(SysTenantMapper sysTenantMapper, SysTenantRefUserMapper sysTenantRefUserMapper,
+        SysUserMapper sysUserMapper) {
 
         SysTenantUtil.sysTenantMapper = sysTenantMapper;
         SysTenantUtil.sysTenantRefUserMapper = sysTenantRefUserMapper;
+        SysTenantUtil.sysUserMapper = sysUserMapper;
 
     }
 
@@ -472,6 +476,27 @@ public class SysTenantUtil {
         }
 
         return false;
+
+    }
+
+    /**
+     * 检查：userId，是否属于当前用户的租户
+     */
+    public static void checkUserId(Long userId) {
+
+        if (userId == null) {
+            return;
+        }
+
+        Set<Long> userRefTenantIdSet = SysTenantUtil.getUserRefTenantIdSet();
+
+        // 检查：userId，是否合法
+        boolean exists = ChainWrappers.lambdaQueryChain(sysUserMapper).eq(BaseEntity::getId, userId)
+            .in(BaseEntityNoIdFather::getTenantId, userRefTenantIdSet).exists();
+
+        if (exists) {
+            ApiResultVO.error(BaseBizCodeEnum.ILLEGAL_REQUEST, userId);
+        }
 
     }
 

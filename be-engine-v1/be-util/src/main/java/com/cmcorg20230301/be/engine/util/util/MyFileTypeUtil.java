@@ -65,6 +65,15 @@ public class MyFileTypeUtil {
                 typeName = "docx";
             }
 
+        } else if (StrUtil.isBlank(typeName)) {
+
+            // 使用扩展名
+            final String extName = FileUtil.extName(fileName);
+
+            if ("txt".equals(extName)) {
+                typeName = "txt";
+            }
+
         }
 
         return typeName;
