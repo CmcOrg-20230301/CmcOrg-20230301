@@ -1,6 +1,6 @@
 package com.cmcorg20230301.be.engine.wx.util;
 
-import cn.hutool.core.codec.Base64;
+import cn.hutool.core.img.ImgUtil;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.util.IdUtil;
 import cn.hutool.core.util.StrUtil;
@@ -11,6 +11,7 @@ import cn.hutool.json.JSONUtil;
 import com.cmcorg20230301.be.engine.cache.util.CacheRedisKafkaLocalUtil;
 import com.cmcorg20230301.be.engine.cache.util.MyCacheUtil;
 import com.cmcorg20230301.be.engine.model.model.constant.BaseConstant;
+import com.cmcorg20230301.be.engine.model.model.constant.FileTempPathConstant;
 import com.cmcorg20230301.be.engine.model.model.constant.LogTopicConstant;
 import com.cmcorg20230301.be.engine.other.app.model.entity.SysOtherAppDO;
 import com.cmcorg20230301.be.engine.other.app.service.SysOtherAppService;
@@ -19,6 +20,8 @@ import com.cmcorg20230301.be.engine.security.exception.BaseBizCodeEnum;
 import com.cmcorg20230301.be.engine.security.model.entity.BaseEntityNoIdFather;
 import com.cmcorg20230301.be.engine.security.model.vo.ApiResultVO;
 import com.cmcorg20230301.be.engine.util.util.MyStrUtil;
+import com.cmcorg20230301.be.engine.util.util.RetryUtil;
+import com.cmcorg20230301.be.engine.wx.model.WxMediaUploadTypeEnum;
 import com.cmcorg20230301.be.engine.wx.model.vo.*;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -290,56 +293,29 @@ public class WxUtil {
         String sendResultStr = HttpUtil
             .post("https://api.weixin.qq.com/cgi-bin/message/custom/send?access_token=" + accessToken, bodyJsonStr);
 
-        log.info("wx-sendResult-text：{}，content：{}", sendResultStr, content);
+        log.info("wx-sendResult-text：{}，touser：{}，content：{}", sendResultStr, wxOpenId, content);
 
     }
 
     /**
      * 执行：上传图片
      */
-    public static JSONObject uploadImage(String accessToken, String base64) {
-
-        byte[] decode = Base64.decode(base64);
-
-        // 执行
-        return uploadImage(accessToken, decode);
-
-    }
-
-    /**
-     * 执行：上传图片
-     */
-    public static JSONObject uploadImage(String accessToken, byte[] fileByteArr) {
-
-        // 执行
-        return upload(accessToken, "image", fileByteArr, IdUtil.simpleUUID() + ".jpg");
-
-    }
-
-    /**
-     * 执行：上传
-     *
-     * @param type     image voice
-     * @param fileName 备注：要包含文件类型
-     * @return {"media_id": ""}
-     */
-    public static JSONObject upload(String accessToken, String type, byte[] fileByteArr, String fileName) {
+    public static JSONObject uploadImageUrl(String accessToken, String url) {
 
         File file = null;
 
         try {
 
-            file = FileUtil.touch("/WxMediaUpload/" + fileName);
+            // 获取：流
+            InputStream inputStream = RetryUtil.execHttpRequestInputStream(HttpRequest.get(url));
 
-            FileUtil.writeBytes(fileByteArr, file);
+            file = FileUtil.touch(FileTempPathConstant.WX_MEDIA_UPLOAD_TEMP_PATH + IdUtil.simpleUUID() + ".jpg");
 
-            String resultStr = HttpRequest
-                .post("https://api.weixin.qq.com/cgi-bin/media/upload?access_token=" + accessToken + "&type=" + type)
-                .form("media", file).execute().body();
+            // 图片格式转换为：jpg格式
+            ImgUtil.convert(inputStream, "JPG", FileUtil.getOutputStream(file));
 
-            log.info("WxMediaUpload，result：{}", resultStr);
-
-            return JSONUtil.parseObj(resultStr);
+            // 执行上传
+            return upload(accessToken, file, WxMediaUploadTypeEnum.IMAGE);
 
         } finally {
 
@@ -350,40 +326,57 @@ public class WxUtil {
     }
 
     /**
+     * 执行：上传
+     *
+     * @return {"media_id": ""}
+     */
+    public static JSONObject upload(String accessToken, File file, WxMediaUploadTypeEnum wxMediaUploadTypeEnum) {
+
+        String resultStr = HttpRequest.post(
+            "https://api.weixin.qq.com/cgi-bin/media/upload?access_token=" + accessToken + "&type="
+                + wxMediaUploadTypeEnum.getName()).form("media", file).execute().body();
+
+        log.info("WxMediaUpload，result：{}", resultStr);
+
+        return JSONUtil.parseObj(resultStr);
+
+    }
+
+    /**
      * 执行：发送图像消息
      */
-    public static void doImageSend(String fromUserName, String accessToken, String mediaId) {
+    public static void doImageSend(String wxOpenId, String accessToken, String mediaId) {
 
         if (StrUtil.isBlank(mediaId)) {
             return;
         }
 
-        String bodyJsonStr = JSONUtil.createObj().set("touser", fromUserName).set("msgtype", "image")
+        String bodyJsonStr = JSONUtil.createObj().set("touser", wxOpenId).set("msgtype", "image")
             .set("image", JSONUtil.createObj().set("media_id", mediaId)).toString();
 
         String sendResultStr = HttpUtil
             .post("https://api.weixin.qq.com/cgi-bin/message/custom/send?access_token=" + accessToken, bodyJsonStr);
 
-        log.info("wx-sendResult-image：{}", sendResultStr);
+        log.info("wx-sendResult-image：{}，touser：{}", sendResultStr, wxOpenId);
 
     }
 
     /**
      * 执行：发送语音消息
      */
-    public static void doVoiceSend(String fromUserName, String accessToken, String mediaId) {
+    public static void doVoiceSend(String wxOpenId, String accessToken, String mediaId) {
 
         if (StrUtil.isBlank(mediaId)) {
             return;
         }
 
-        String bodyJsonStr = JSONUtil.createObj().set("touser", fromUserName).set("msgtype", "voice")
+        String bodyJsonStr = JSONUtil.createObj().set("touser", wxOpenId).set("msgtype", "voice")
             .set("voice", JSONUtil.createObj().set("media_id", mediaId)).toString();
 
         String sendResultStr = HttpUtil
             .post("https://api.weixin.qq.com/cgi-bin/message/custom/send?access_token=" + accessToken, bodyJsonStr);
 
-        log.info("wx-sendResult-voice：{}", sendResultStr);
+        log.info("wx-sendResult-voice：{}，touser：{}", sendResultStr, wxOpenId);
 
     }
 
@@ -409,7 +402,7 @@ public class WxUtil {
         String sendResultStr = HttpUtil
             .post("https://api.weixin.qq.com/cgi-bin/message/template/send?access_token=" + accessToken, bodyJsonStr);
 
-        log.info("wx-sendResult-templateMessage：{}", sendResultStr);
+        log.info("wx-sendResult-templateMessage：{}，touser：{}", sendResultStr, wxOpenId);
 
     }
 

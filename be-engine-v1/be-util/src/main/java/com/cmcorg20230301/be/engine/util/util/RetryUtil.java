@@ -6,6 +6,7 @@ import cn.hutool.http.HttpRequest;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 
+import java.io.InputStream;
 import java.util.function.Supplier;
 
 /**
@@ -13,6 +14,28 @@ import java.util.function.Supplier;
  */
 @Slf4j
 public class RetryUtil {
+
+    /**
+     * 执行：http请求
+     */
+    public static InputStream execHttpRequestInputStream(HttpRequest httpRequest) {
+
+        // 重试 10次
+        return execHttpRequestInputStream(httpRequest, 10);
+
+    }
+
+    /**
+     * 执行：http请求
+     *
+     * @param execNumber 传值多少，则方法会执行多少次
+     */
+    public static InputStream execHttpRequestInputStream(HttpRequest httpRequest, int execNumber) {
+
+        // 执行
+        return execSupplier(() -> httpRequest.execute().bodyStream(), execNumber);
+
+    }
 
     /**
      * 执行：http请求

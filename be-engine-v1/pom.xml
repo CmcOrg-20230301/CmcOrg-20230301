@@ -464,6 +464,13 @@
                 <version>2021.0.5.0</version>
             </dependency>
 
+            <!-- webp格式图片转换 -->
+            <dependency>
+                <groupId>org.sejda.imageio</groupId>
+                <artifactId>webp-imageio</artifactId>
+                <version>0.1.6</version>
+            </dependency>
+
             <!-- Java Discord API，项目地址：https://github.com/discord-jda/JDA -->
             <dependency>
                 <groupId>net.dv8tion</groupId>
@@ -635,7 +642,7 @@
             <dependency>
                 <groupId>cn.hutool</groupId>
                 <artifactId>hutool-all</artifactId>
-                <version>5.8.21</version>
+                <version>5.8.22</version>
             </dependency>
 
             <!-- mybatis-plus -->
