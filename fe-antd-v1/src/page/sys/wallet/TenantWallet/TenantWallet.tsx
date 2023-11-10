@@ -5,7 +5,7 @@ import {ChangeBigDecimalNumberDTO, SysUserWalletDO, SysUserWalletPageDTO,} from 
 import TableColumnList from "./TableColumnList";
 import {ExecConfirm, ExecConfirmPromise, ToastSuccess} from "@/util/ToastUtil";
 import CommonConstant from "@/model/constant/CommonConstant";
-import {UseEffectFullScreenChange} from "@/util/DocumentUtil";
+import {UseEffectFullScreenChange} from "@/util/UseEffectUtil";
 import {
     SysTenantWalletAddWithdrawableMoneyBackground,
     SysTenantWalletFrozenByIdSet,

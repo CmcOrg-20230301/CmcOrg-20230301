@@ -22,7 +22,7 @@ import {DictLongListVO, GetByValueFromDictListPro, GetDictList} from "@/util/Dic
 import {SysDeptPage} from "@/api/http/SysDept";
 import {SysPostPage} from "@/api/http/SysPost";
 import {SysRolePage} from "@/api/http/SysRole";
-import {UseEffectFullScreenChange} from "@/util/DocumentUtil";
+import {UseEffectFullScreenChange} from "@/util/UseEffectUtil";
 import {SysTenantPage} from "@/api/http/SysTenant";
 
 // 用户-管理

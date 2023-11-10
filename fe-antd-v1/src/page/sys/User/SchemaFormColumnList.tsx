@@ -61,6 +61,32 @@ const SchemaFormColumnList = (formRef: React.MutableRefObject<FormInstance<SysUs
         },
 
         {
+            title: '微信appId',
+            dataIndex: 'wxAppId',
+            formItemProps: {
+                rules: [
+                    {
+                        min: 0,
+                        max: 100,
+                    },
+                ],
+            },
+        },
+
+        {
+            title: '微信openId',
+            dataIndex: 'wxOpenId',
+            formItemProps: {
+                rules: [
+                    {
+                        min: 0,
+                        max: 100,
+                    },
+                ],
+            },
+        },
+
+        {
 
             valueType: 'dependency',
 

@@ -1,5 +1,37 @@
 import AdminLayout from "@/layout/AdminLayout/AdminLayout";
-import NotFound from "@/componse/NotFound/NotFound";
+import NotFound from "@/component/NotFound/NotFound";
+import Blank from "@/component/Blank/Blank";
+import BlankLayout from "@/layout/BlankLayout/BlankLayout";
+import PathConstant from "@/model/constant/PathConstant";
+
+export interface IManualRouterItem extends IRouterMapItem {
+
+    name: string
+    path?: string
+
+}
+
+export interface IManualRouter {
+
+    NotFound: IManualRouterItem
+    AdminLayout: IManualRouterItem
+    BlankLayout: IManualRouterItem
+    Blank: IManualRouterItem
+
+}
+
+// 手动添加的路由组件
+export const ManualRouterName: IManualRouter = {
+
+    NotFound: {name: "NotFound", element: NotFound},
+
+    AdminLayout: {name: "AdminLayout", element: AdminLayout, path: PathConstant.ADMIN_PATH},
+
+    BlankLayout: {name: "BlankLayout", element: BlankLayout, path: PathConstant.BLANK_LAYOUT_PATH},
+
+    Blank: {name: "Blank", element: Blank},
+
+}
 
 // 正则表达式转驼峰，默认：下划线转驼峰
 export function toHump(name: string, searchValue: string | RegExp = /_(\w)/g) {
@@ -12,7 +44,7 @@ export function toHump(name: string, searchValue: string | RegExp = /_(\w)/g) {
 
 }
 
-interface IRouterMapItem {
+export interface IRouterMapItem {
 
     element: any
 
@@ -20,14 +52,14 @@ interface IRouterMapItem {
 
 const RouterMap: Record<string, IRouterMapItem> = {} // 路由 map
 
-// 手动添加路由
-RouterMap['NotFound'] = {
-    element: NotFound
-}
+// 手动添加路由组件
+Object.keys(ManualRouterName).forEach(key => {
 
-RouterMap['AdminLayout'] = {
-    element: AdminLayout
-}
+    const item = ManualRouterName[key];
+
+    RouterMap[item.name] = {element: item.element}
+
+})
 
 // 自动获取路由
 const fileObj: Record<string, { [key: string]: any }> = import.meta.glob(

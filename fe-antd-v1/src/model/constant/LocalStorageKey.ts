@@ -10,6 +10,8 @@ const LocalStorageKey = {
 
     USER_WALLET_OWNER_INFO: "USER_WALLET_OWNER_INFO", // 用户钱包：归属者信息：租户或者用户
 
+    SYS_OTHER_APP_OFFICIAL_ACCOUNT_MENU_OTHER_APP_ID: "SYS_OTHER_APP_OFFICIAL_ACCOUNT_MENU_OTHER_APP_ID", // 第三方应用-公众号-菜单-管理：otherApp主键 id
+
 }
 
 export default LocalStorageKey

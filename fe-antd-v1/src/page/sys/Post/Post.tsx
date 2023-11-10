@@ -26,7 +26,7 @@ import SchemaFormColumnList, {InitForm} from "./SchemaFormColumnList";
 import {CalcOrderNo, GetIdListForHasChildrenNode} from "@/util/TreeUtil";
 import CommonConstant from "@/model/constant/CommonConstant";
 import {IMyTree} from "@/util/DictUtil";
-import {UseEffectFullScreenChange} from "@/util/DocumentUtil";
+import {UseEffectFullScreenChange} from "@/util/UseEffectUtil";
 
 // 岗位-管理
 export default function () {

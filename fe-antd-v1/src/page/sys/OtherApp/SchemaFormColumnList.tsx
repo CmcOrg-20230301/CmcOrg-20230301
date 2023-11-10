@@ -39,7 +39,6 @@ const SchemaFormColumnList = (): ProFormColumnsType<SysOtherAppInsertOrUpdateDTO
                     },
                 ],
             },
-            tooltip: '不能重复',
         },
 
         {
@@ -67,6 +66,99 @@ const SchemaFormColumnList = (): ProFormColumnsType<SysOtherAppInsertOrUpdateDTO
                     },
                 ],
             },
+        },
+
+        {
+            title: '关注回复',
+            dataIndex: 'subscribeReplyContent',
+            valueType: 'textarea',
+            formItemProps: {
+                rules: [
+                    {
+                        whitespace: true,
+                        max: 500,
+                    },
+                ],
+            },
+            fieldProps: {
+                showCount: true,
+                maxLength: 500,
+                allowClear: true,
+            },
+            tooltip: "用户点击关注之后，回复的内容，备注：如果取关然后再关注，也会回复该内容",
+        },
+
+        {
+            title: '文字回复',
+            dataIndex: 'textReplyContent',
+            valueType: 'textarea',
+            formItemProps: {
+                rules: [
+                    {
+                        whitespace: true,
+                        max: 500,
+                    },
+                ],
+            },
+            fieldProps: {
+                showCount: true,
+                maxLength: 500,
+                allowClear: true,
+            },
+            tooltip: "用户发送文字之后，回复的内容",
+        },
+
+        {
+            title: '图片回复',
+            dataIndex: 'imageReplyContent',
+            valueType: 'textarea',
+            formItemProps: {
+                rules: [
+                    {
+                        whitespace: true,
+                        max: 500,
+                    },
+                ],
+            },
+            fieldProps: {
+                showCount: true,
+                maxLength: 500,
+                allowClear: true,
+            },
+            tooltip: "用户发送图片之后，回复的内容",
+        },
+
+        {
+            title: '二维码',
+            dataIndex: 'qrCode',
+            valueType: 'textarea',
+            formItemProps: {
+                rules: [
+                    {
+                        whitespace: true,
+                        max: 500,
+                    },
+                ],
+            },
+            fieldProps: {
+                showCount: true,
+                maxLength: 500,
+                allowClear: true,
+            },
+            tooltip: "备注：不是二维码图片的地址，而是二维码解码之后的值",
+        },
+
+        {
+            title: 'openId',
+            dataIndex: 'openId',
+            formItemProps: {
+                rules: [
+                    {
+                        whitespace: true,
+                    },
+                ],
+            },
+            tooltip: '例如：接收微信公众号消息时的 ToUserName，不能重复',
         },
 
         {

@@ -1,23 +1,39 @@
 import {IEnum} from "@/model/enum/CommonEnum";
 import {ProSchemaValueEnumType} from "@ant-design/pro-components";
+import {ToastInfo, ToastSuccess} from "@/util/ToastUtil";
+import {GetBrowserCategory} from "@/util/BrowserCategoryUtil";
+import {BrowserCategoryEnum} from "@/model/enum/BrowserCategoryEnum";
 
-export interface ISysUserWalletWithdrawTypeEnum {
+export interface BuyVO {
+    sysPayTypeEnum?: string // 实际的支付方式
+    sysPayConfigurationId?: string // 支付配置主键 id，format：int64
+    outTradeNo?: string // 本系统的支付订单号
+    payReturnValue?: string // 支付返回的参数
+}
 
-    ALI_QR_CODE: IEnum,
-    ALI_APP: IEnum,
-    ALI_WEB_PC: IEnum,
-    ALI_WEB_APP: IEnum,
+export interface ISysUserWalletWithdrawTypeEnumItem extends IEnum {
 
-    WX_NATIVE: IEnum,
-    WX_JSAPI: IEnum,
+    openPay?: (buyVO: BuyVO, ScanTheCodeToPay: () => void, callBack?: () => void, hiddenMsg?: boolean) => void | true // 打开支付，备注：默认是扫码付款
 
-    UNION: IEnum,
-    GOOGLE: IEnum,
+}
+
+export interface ISysPayTypeEnum {
+
+    ALI_QR_CODE: ISysUserWalletWithdrawTypeEnumItem,
+    ALI_APP: ISysUserWalletWithdrawTypeEnumItem,
+    ALI_WEB_PC: ISysUserWalletWithdrawTypeEnumItem,
+    ALI_WEB_APP: ISysUserWalletWithdrawTypeEnumItem,
+
+    WX_NATIVE: ISysUserWalletWithdrawTypeEnumItem,
+    WX_JSAPI: ISysUserWalletWithdrawTypeEnumItem,
+
+    UNION: ISysUserWalletWithdrawTypeEnumItem,
+    GOOGLE: ISysUserWalletWithdrawTypeEnumItem,
 
 }
 
 // 支付方式类型枚举类
-export const SysPayTypeEnum: ISysUserWalletWithdrawTypeEnum = {
+export const SysPayTypeEnum: ISysPayTypeEnum = {
 
     ALI_QR_CODE: {
         code: 101,
@@ -40,13 +56,68 @@ export const SysPayTypeEnum: ISysUserWalletWithdrawTypeEnum = {
     },
 
     WX_NATIVE: {
+
         code: 201,
         name: '微信-native',
+
+        openPay: (buyVO, ScanTheCodeToPay, callBack, hiddenMsg) => {
+
+            if (window.WeixinJSBridge) {
+
+                const browserCategory = GetBrowserCategory();
+
+                if (browserCategory === BrowserCategoryEnum.ANDROID_BROWSER_WX.code || browserCategory === BrowserCategoryEnum.APPLE_BROWSER_WX.code) {
+
+                    ToastInfo(buyVO.payReturnValue!, 10)
+
+                } else {
+
+                    ScanTheCodeToPay() // 扫码付款
+
+                }
+
+            } else {
+
+                ScanTheCodeToPay() // 扫码付款
+
+            }
+
+        }
+
     },
 
     WX_JSAPI: {
+
         code: 202,
         name: '微信-jsApi',
+
+        openPay: (buyVO, ScanTheCodeToPay, callBack, hiddenMsg) => {
+
+            window.WeixinJSBridge.invoke('getBrandWCPayRequest', JSON.parse(buyVO.payReturnValue!),
+
+                function (res: { err_msg: string }) {
+
+                    if (res.err_msg === "get_brand_wcpay_request:ok") {
+
+                        if (!hiddenMsg) {
+
+                            ToastSuccess('购买成功')
+
+                        }
+
+                        if (callBack) {
+
+                            callBack()
+
+                        }
+
+                    }
+
+                }
+            );
+
+        }
+
     },
 
     UNION: {
@@ -60,6 +131,16 @@ export const SysPayTypeEnum: ISysUserWalletWithdrawTypeEnum = {
     },
 
 }
+
+export const SysPayTypeEnumMap = new Map<number, ISysUserWalletWithdrawTypeEnumItem>();
+
+Object.keys(SysPayTypeEnum).forEach(key => {
+
+    const item = SysPayTypeEnum[key];
+
+    SysPayTypeEnumMap.set(item.code as number, item)
+
+})
 
 export const SysPayTypeDict = new Map<number, ProSchemaValueEnumType>();
 

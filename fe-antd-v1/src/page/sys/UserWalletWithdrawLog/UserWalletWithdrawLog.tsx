@@ -17,7 +17,7 @@ import {
     SysUserWalletWithdrawLogReject,
     SysUserWalletWithdrawLogSuccess
 } from "@/api/http/SysUserWalletWithdrawLog";
-import {UseEffectFullScreenChange} from "@/util/DocumentUtil";
+import {UseEffectFullScreenChange} from "@/util/UseEffectUtil";
 import CommonConstant from "@/model/constant/CommonConstant";
 import {
     GetUserWalletWithdrawFormColumnArr,

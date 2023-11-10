@@ -15,7 +15,7 @@ import TableColumnList from "./TableColumnList";
 import {ExecConfirm, ToastSuccess} from "@/util/ToastUtil";
 import SchemaFormColumnList, {InitForm} from "./SchemaFormColumnList";
 import CommonConstant from "@/model/constant/CommonConstant";
-import {UseEffectFullScreenChange} from "@/util/DocumentUtil";
+import {UseEffectFullScreenChange} from "@/util/UseEffectUtil";
 import {SysTenantDoSyncParam} from "@/api/http/SysTenant";
 import {GetTenantIdFromStorage} from "@/util/CommonUtil";
 

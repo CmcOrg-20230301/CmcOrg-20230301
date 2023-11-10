@@ -15,7 +15,7 @@ import {Validate} from "@/util/ValidatorUtil";
 import {Avatar, Image, Space, Upload, UploadFile} from "antd";
 import {DeleteOutlined, EyeOutlined} from "@ant-design/icons";
 import CommonConstant from "@/model/constant/CommonConstant";
-import MyIcon from "@/componse/MyIcon/MyIcon";
+import MyIcon from "@/component/MyIcon/MyIcon";
 import {CheckAvatarFileType, CheckFileSize, SysFileUpload} from "@/util/FileUtil";
 import {SysFileGetPublicUrl} from "@/api/http/SysFile";
 import {useAppSelector} from "@/store";

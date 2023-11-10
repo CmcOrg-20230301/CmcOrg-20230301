@@ -15,6 +15,8 @@
  * 402 苹果-浏览器
  * 403 苹果-浏览器-微信
  */
+import {BrowserCategoryEnum} from "@/model/enum/BrowserCategoryEnum";
+
 export function GetBrowserCategory(): number {
 
     // 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36 Edg/115.0.1901.200'
@@ -25,44 +27,48 @@ export function GetBrowserCategory(): number {
 
     if (/(MicroMessenger)/i.test(userAgent)) {
 
-        if (/(iPhone|iPad|iPod|iOS)/i.test(userAgent)) {
+        if (/(Android)/i.test(userAgent)) {
 
-            return 403 // 苹果-浏览器-微信
+            return BrowserCategoryEnum.ANDROID_BROWSER_WX.code! // 安卓-浏览器-微信
+
+        } else if (/(iPhone|iPad|iPod|iOS)/i.test(userAgent)) {
+
+            return BrowserCategoryEnum.APPLE_BROWSER_WX.code! // 苹果-浏览器-微信
 
         } else if (/(Mac)/i.test(userAgent)) {
 
-            return 105 // mac-浏览器-微信
+            return BrowserCategoryEnum.MAC_BROWSER_WX.code! // mac-浏览器-微信
 
         } else if (/(Linux)/i.test(userAgent)) {
 
-            return 106 // linux-浏览器-微信
+            return BrowserCategoryEnum.LINUX_BROWSER_WX.code! // linux-浏览器-微信
 
         } else if (/(Windows)/i.test(userAgent)) {
 
-            return 104 // windows-浏览器-微信
+            return BrowserCategoryEnum.WINDOWS_BROWSER_WX.code! // windows-浏览器-微信
 
         }
 
-        return 303 // 安卓-浏览器-微信
+        return BrowserCategoryEnum.ANDROID_BROWSER_WX.code! // 安卓-浏览器-微信
 
     } else if (/(Android)/i.test(userAgent)) {
 
-        return 302 // 安卓-浏览器
+        return BrowserCategoryEnum.ANDROID_BROWSER.code! // 安卓-浏览器
 
     } else if (/(iPhone|iPad|iPod|iOS)/i.test(userAgent)) {
 
-        return 402 // 苹果-浏览器
+        return BrowserCategoryEnum.APPLE_BROWSER.code! // 苹果-浏览器
 
     } else if (/(Mac)/i.test(userAgent)) {
 
-        return 102 // mac-浏览器
+        return BrowserCategoryEnum.MAC_BROWSER.code! // mac-浏览器
 
     } else if (/(Linux)/i.test(userAgent)) {
 
-        return 103 // linux-浏览器
+        return BrowserCategoryEnum.LINUX_BROWSER.code! // linux-浏览器
 
     }
 
-    return 101
+    return BrowserCategoryEnum.WINDOWS_BROWSER.code! // windows-浏览器
 
 }

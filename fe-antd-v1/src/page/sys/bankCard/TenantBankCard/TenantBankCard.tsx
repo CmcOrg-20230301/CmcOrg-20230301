@@ -2,7 +2,7 @@ import React, {useRef, useState} from "react";
 import {ActionType, BetaSchemaForm, ColumnsState, FormInstance, ProTable} from "@ant-design/pro-components";
 import TableColumnList from "./TableColumnList";
 import CommonConstant from "@/model/constant/CommonConstant";
-import {UseEffectFullScreenChange} from "@/util/DocumentUtil";
+import {UseEffectFullScreenChange} from "@/util/UseEffectUtil";
 import {SysUserBankCardDO, SysUserBankCardPageDTO} from "@/api/http/SysUserBankCard";
 import SchemaFormColumnList from "./SchemaFormColumnList";
 import {GetIdListForHasChildrenNode} from "@/util/TreeUtil";

@@ -10,7 +10,13 @@ export default function () {
     console.log("NotFound")
 
     if (!sessionStorage.getItem(SessionStorageKey.ADMIN_REDIRECT_PATH)) {
+
         sessionStorage.setItem(SessionStorageKey.ADMIN_REDIRECT_PATH, window.location.pathname)
+
+    } else {
+
+        sessionStorage.removeItem(SessionStorageKey.ADMIN_REDIRECT_PATH)
+
     }
 
     const jwt = localStorage.getItem(LocalStorageKey.JWT);

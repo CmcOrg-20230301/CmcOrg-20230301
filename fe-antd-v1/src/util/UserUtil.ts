@@ -5,13 +5,20 @@ import {signOut} from "@/store/userSlice";
 import {RandomStr} from "@/util/StrUtil";
 import {GetTenantIdFromStorage, SetTenantIdToStorage} from "@/util/CommonUtil";
 
+// 清除数据
+export function ClearStorage() {
+
+    localStorage.clear()
+    sessionStorage.clear()
+
+}
+
 // 退出登录
 export function SignOut(msg ?: string) {
 
     const tenantId = GetTenantIdFromStorage();
 
-    localStorage.clear()
-    sessionStorage.clear()
+    ClearStorage()
 
     SetTenantIdToStorage(tenantId);
 

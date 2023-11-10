@@ -99,6 +99,13 @@ export function CheckExcelFileType(excelFileType: string) {
     return ExcelFileTypeList.includes(excelFileType)
 }
 
+export const TxtFileTypeList = ["text/plain"]
+
+// 检查：txt文件类型
+export function CheckTxtFileType(excelFileType: string) {
+    return TxtFileTypeList.includes(excelFileType)
+}
+
 // 检查：文件的文件类型，2097152（字节）= 2MB
 export function CheckFileSize(fileSize: number, maxSize: number = 2097152) {
     return fileSize <= maxSize

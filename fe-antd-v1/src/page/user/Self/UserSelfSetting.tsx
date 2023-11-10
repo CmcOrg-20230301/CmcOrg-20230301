@@ -42,7 +42,7 @@ import {SysRequestDO, SysRequestPageDTO, SysRequestSelfLoginRecord} from "@/api/
 import {HandlerRegion} from "@/util/StrUtil";
 import {GetDictListByKey} from "@/util/DictUtil";
 import {UserSelfRefreshJwtSecretSuf} from "@/api/http/UserSelf";
-import {UseEffectFullScreenChange} from "@/util/DocumentUtil";
+import {UseEffectFullScreenChange} from "@/util/UseEffectUtil";
 
 interface IUserSelfSetting {
 
