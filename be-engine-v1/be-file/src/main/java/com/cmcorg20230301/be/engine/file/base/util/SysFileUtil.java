@@ -286,7 +286,7 @@ public class SysFileUtil {
 
         }
 
-        return iSysFile.download(sysFileDO.getBucketName(), sysFileDO.getNewFileName());
+        return iSysFile.download(sysFileDO.getBucketName(), sysFileDO.getUri());
 
     }
 
@@ -354,13 +354,13 @@ public class SysFileUtil {
 
         for (SysFileDO item : sysFileDOList) {
 
-            if (BooleanUtil.isTrue(item.getPublicFlag())) { // 如果：是公开下载
+            if (item.getPublicFlag()) { // 如果：是公开下载
 
                 ISysFile iSysFile = SYS_FILE_MAP.get(item.getStorageType());
 
                 if (iSysFile != null) {
 
-                    result.put(item.getId(), iSysFile.getUrl(item.getUri()));
+                    result.put(item.getId(), iSysFile.getUrl(item.getUri(), item.getBucketName()));
 
                 }
 

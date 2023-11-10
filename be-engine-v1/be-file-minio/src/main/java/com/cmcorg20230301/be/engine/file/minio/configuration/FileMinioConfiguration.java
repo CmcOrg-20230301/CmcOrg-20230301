@@ -42,9 +42,8 @@ public class FileMinioConfiguration implements ISysFile {
     }
 
     @Override
-    public String getUrl(String uri) {
-        return fileMinioProperties.getPublicDownloadEndpoint() + "/" + fileMinioProperties.getBucketPublicName() + "/"
-            + uri;
+    public String getUrl(String uri, String bucketName) {
+        return fileMinioProperties.getPublicDownloadEndpoint() + "/" + bucketName + "/" + uri;
     }
 
     @Override

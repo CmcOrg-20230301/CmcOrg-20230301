@@ -42,7 +42,7 @@ public class FileAliConfiguration implements ISysFile {
     }
 
     @Override
-    public String getUrl(String uri) {
+    public String getUrl(String uri, String bucketName) {
         return fileAliYunProperties.getPublicDownloadEndpoint() + "/" + uri;
     }
 

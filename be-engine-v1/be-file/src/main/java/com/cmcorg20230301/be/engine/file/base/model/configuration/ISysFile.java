@@ -33,9 +33,10 @@ public interface ISysFile {
     /**
      * 获取：文件预览地址
      *
-     * @param uri 例如：avatar/uuid.xxx
+     * @param uri        例如：avatar/uuid.xxx，备注：不要在最前面加 /
+     * @param bucketName 桶名，例如：be-public-bucket，备注：不要在最前面加 /
      */
-    String getUrl(String uri);
+    String getUrl(String uri, String bucketName);
 
     /**
      * 获取：配置的数据
