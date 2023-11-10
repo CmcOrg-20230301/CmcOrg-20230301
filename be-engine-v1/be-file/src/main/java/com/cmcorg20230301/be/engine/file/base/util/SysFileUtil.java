@@ -10,7 +10,6 @@ import com.baomidou.mybatisplus.extension.toolkit.ChainWrappers;
 import com.cmcorg20230301.be.engine.datasource.util.TransactionUtil;
 import com.cmcorg20230301.be.engine.file.base.model.bo.SysFileUploadBO;
 import com.cmcorg20230301.be.engine.file.base.model.configuration.ISysFile;
-import com.cmcorg20230301.be.engine.file.base.model.dto.SysFileUploadDTO;
 import com.cmcorg20230301.be.engine.file.base.model.entity.SysFileAuthDO;
 import com.cmcorg20230301.be.engine.file.base.model.entity.SysFileDO;
 import com.cmcorg20230301.be.engine.file.base.model.enums.SysFileTypeEnum;
@@ -89,39 +88,29 @@ public class SysFileUtil {
      */
     @SneakyThrows
     @Nullable
-    public static Long upload(SysFileUploadDTO dto) {
-
-        Long currentUserIdNotAdmin = UserUtil.getCurrentUserIdNotAdmin();
+    public static Long upload(SysFileUploadBO bo) {
 
         // 上传文件时的检查
-        String fileType = SysFileUploadTypeEnum.uploadCheckWillError(dto.getFile(), dto.getUploadType());
+        String fileType = SysFileUploadTypeEnum.uploadCheckWillError(bo.getFile(), bo.getUploadType());
 
-        Long sysFileId = null;
-
-        SysFileUploadBO sysFileUploadBO = new SysFileUploadBO();
-
-        sysFileUploadBO.setFile(dto.getFile());
-        sysFileUploadBO.setUploadType(dto.getUploadType());
-        sysFileUploadBO.setRemark(dto.getRemark());
-        sysFileUploadBO.setExtraJson(dto.getExtraJson());
+        Long resultSysFileId = null;
 
         // 如果是：头像
-        if (SysFileUploadTypeEnum.AVATAR.equals(dto.getUploadType())) {
+        if (SysFileUploadTypeEnum.AVATAR.equals(bo.getUploadType())) {
 
             // 通用：上传处理
-            sysFileId = uploadCommonHandle(sysFileUploadBO, fileType, currentUserIdNotAdmin,
-                sysFileProperties.getAvatarStorageType(),
+            resultSysFileId = uploadCommonHandle(bo, fileType, sysFileProperties.getAvatarStorageType(),
 
-                (sysFileIdTemp) -> {
+                (sysFileId) -> {
 
-                    ChainWrappers.lambdaUpdateChain(sysUserInfoMapper).eq(SysUserInfoDO::getId, currentUserIdNotAdmin)
-                        .set(SysUserInfoDO::getAvatarFileId, sysFileIdTemp).update();
+                    ChainWrappers.lambdaUpdateChain(sysUserInfoMapper).eq(SysUserInfoDO::getId, bo.getUserId())
+                        .set(SysUserInfoDO::getAvatarFileId, sysFileId).update();
 
                 });
 
         }
 
-        return sysFileId;
+        return resultSysFileId;
 
     }
 
@@ -129,7 +118,7 @@ public class SysFileUtil {
      * 通用：上传处理
      */
     @NotNull
-    private static Long uploadCommonHandle(SysFileUploadBO bo, String fileType, Long currentUserId, Integer storageType,
+    public static Long uploadCommonHandle(SysFileUploadBO bo, String fileType, Integer storageType,
         @Nullable Consumer<Long> consumer) {
 
         ISysFile iSysFile = SYS_FILE_MAP.get(storageType);
@@ -176,8 +165,8 @@ public class SysFileUtil {
         return TransactionUtil.exec(() -> {
 
             // 通用保存：文件信息到数据库
-            Long sysFileId = saveCommonSysFile(bo, fileType, currentUserId, originalFilename, newFileName, objectName,
-                finalBucketName, iSysFileStorageType);
+            Long sysFileId = saveCommonSysFile(bo, fileType, originalFilename, newFileName, objectName, finalBucketName,
+                iSysFileStorageType);
 
             if (consumer != null) {
 
@@ -195,13 +184,14 @@ public class SysFileUtil {
      * 通用保存：文件信息到数据库
      */
     @NotNull
-    private static Long saveCommonSysFile(SysFileUploadBO bo, String fileType, Long currentUserId,
-        String originalFilename, String newFileName, String objectName, String bucketName,
-        ISysFileStorageType iSysFileStorageType) {
+    public static Long saveCommonSysFile(SysFileUploadBO bo, String fileType, String originalFilename,
+        String newFileName, String objectName, String bucketName, ISysFileStorageType iSysFileStorageType) {
 
         SysFileDO sysFileDO = new SysFileDO();
 
-        sysFileDO.setBelongId(currentUserId);
+        sysFileDO.setTenantId(bo.getTenantId());
+
+        sysFileDO.setBelongId(bo.getUserId());
 
         sysFileDO.setBucketName(bucketName);
 

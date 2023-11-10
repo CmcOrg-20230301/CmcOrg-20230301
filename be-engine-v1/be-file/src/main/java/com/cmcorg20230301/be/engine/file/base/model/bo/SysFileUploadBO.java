@@ -20,4 +20,10 @@ public class SysFileUploadBO {
     @Schema(description = "额外信息（json格式）")
     private String extraJson;
 
+    @Schema(description = "用户主键 id")
+    private Long userId;
+
+    @Schema(description = "租户主键 id")
+    private Long tenantId;
+
 }

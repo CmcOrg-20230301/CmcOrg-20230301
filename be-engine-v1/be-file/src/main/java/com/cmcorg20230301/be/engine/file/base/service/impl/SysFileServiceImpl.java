@@ -3,6 +3,7 @@ package com.cmcorg20230301.be.engine.file.base.service.impl;
 import cn.hutool.core.collection.CollUtil;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.cmcorg20230301.be.engine.file.base.mapper.SysFileMapper;
+import com.cmcorg20230301.be.engine.file.base.model.bo.SysFileUploadBO;
 import com.cmcorg20230301.be.engine.file.base.model.dto.SysFileUploadDTO;
 import com.cmcorg20230301.be.engine.file.base.model.entity.SysFileDO;
 import com.cmcorg20230301.be.engine.file.base.service.SysFileService;
@@ -13,6 +14,7 @@ import com.cmcorg20230301.be.engine.model.model.vo.LongObjectMapVO;
 import com.cmcorg20230301.be.engine.security.exception.BaseBizCodeEnum;
 import com.cmcorg20230301.be.engine.security.model.vo.ApiResultVO;
 import com.cmcorg20230301.be.engine.security.util.ResponseUtil;
+import com.cmcorg20230301.be.engine.security.util.UserUtil;
 import lombok.SneakyThrows;
 import org.springframework.stereotype.Service;
 
@@ -28,7 +30,22 @@ public class SysFileServiceImpl extends ServiceImpl<SysFileMapper, SysFileDO> im
     @Override
     public Long upload(SysFileUploadDTO dto) {
 
-        return SysFileUtil.upload(dto);
+        Long currentUserId = UserUtil.getCurrentUserId();
+
+        Long currentTenantIdDefault = UserUtil.getCurrentTenantIdDefault();
+
+        SysFileUploadBO sysFileUploadBO = new SysFileUploadBO();
+
+        sysFileUploadBO.setFile(dto.getFile());
+        sysFileUploadBO.setUploadType(dto.getUploadType());
+        sysFileUploadBO.setRemark(dto.getRemark());
+        sysFileUploadBO.setExtraJson(dto.getExtraJson());
+
+        sysFileUploadBO.setUserId(currentUserId);
+        sysFileUploadBO.setTenantId(currentTenantIdDefault);
+
+        // 执行：上传
+        return SysFileUtil.upload(sysFileUploadBO);
 
     }
 
