@@ -6,7 +6,7 @@ import {AxiosRequestConfig} from "axios";
 export interface SysOtherAppPageDTO {
     current?: string // 第几页，format：int64
     appId?: string // 第三方应用的 appId，备注：同一租户不能重复，不同租户可以重复
-    name?: string // 第三方应用名，备注：同一租户不能重复，不同租户可以重复
+    name?: string // 第三方应用名
     pageSize?: string // 每页显示条数，format：int64
     tenantIdSet?: string[] // 租户 idSet，format：int64
     remark?: string // 备注
@@ -28,7 +28,7 @@ export interface SysOtherAppDO {
     createId?: string // 创建人id，format：int64
     appId?: string // 第三方应用的 appId，备注：同一租户不能重复，不同租户可以重复
     tenantId?: string // 租户 id，format：int64
-    name?: string // 第三方应用名，备注：同一租户不能重复，不同租户可以重复
+    name?: string // 第三方应用名
     id?: string // 主键id，format：int64
     enableFlag?: boolean // 是否启用
 }
@@ -50,7 +50,7 @@ export function SysOtherAppInfoById(form: NotNullId, config?: AxiosRequestConfig
 export interface SysOtherAppInsertOrUpdateDTO {
     appId?: string // 第三方应用的 appId，备注：同一租户不能重复，不同租户可以重复，required：true
     tenantId?: string // 租户 id，可以为空，为空则表示：默认租户：0，format：int64
-    name?: string // 第三方应用名，备注：同一租户不能重复，不同租户可以重复，required：true
+    name?: string // 第三方应用名，required：true
     remark?: string // 备注
     id?: string // 主键 id，format：int64
     secret?: string // 第三方应用的 secret，required：true
