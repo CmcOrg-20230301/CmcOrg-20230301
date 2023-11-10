@@ -13,7 +13,7 @@ import {
 import TableColumnList from "./TableColumnList";
 import {ExecConfirm, ExecConfirmPromise, ToastSuccess} from "@/util/ToastUtil";
 import CommonConstant from "@/model/constant/CommonConstant";
-import {UseEffectFullScreenChange} from "@/util/DocumentUtil";
+import {UseEffectFullScreenChange} from "@/util/UseEffectUtil";
 
 // 用户钱包-管理
 export default function () {

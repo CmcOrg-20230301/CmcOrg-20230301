@@ -1,9 +1,8 @@
 import {BrowserRouter, NavigateFunction, Route, Routes, useNavigate} from "react-router-dom";
-import React from "react";
+import React, {useMemo} from "react";
 import NoLoginRouterList from "@/router/NoLoginRouterList";
-import RouterMap, {RouterMapKeyList} from "@/router/RouterMap";
+import RouterMap, {IManualRouterItem, ManualRouterName, RouterMapKeyList} from "@/router/RouterMap";
 import {AppDispatch, useAppDispatch, useAppSelector} from "@/store";
-import PathConstant from "@/model/constant/PathConstant";
 import {App} from "antd";
 import {useAppProps} from "antd/es/app/context";
 import {UserSelfInfoVO} from "@/api/http/UserSelf";
@@ -14,6 +13,12 @@ export default function () {
     const userSelfMenuList = useAppSelector(
         (state) => state.user.userSelfMenuList
     ).filter((item) => item.router)
+
+    const layoutRouterArr = useMemo<IManualRouterItem[]>(() => {
+
+        return [ManualRouterName.AdminLayout, ManualRouterName.BlankLayout]
+
+    }, []);
 
     return (
 
@@ -33,35 +38,51 @@ export default function () {
 
                 ))}
 
-                <Route
-                    path={PathConstant.ADMIN_PATH}
-                    element={<LoadElement elementStr="AdminLayout"/>}
-                >
+                {
 
-                    {userSelfMenuList.filter(it => it.path?.startsWith(PathConstant.ADMIN_PATH)).map((item, index) => (
+                    layoutRouterArr.map((item, index) => {
 
-                        <Route
+                        return item.path &&
 
-                            key={index}
-                            path={item.path}
+                            <Route
 
-                            element={
+                                key={index}
+                                path={item.path}
 
-                                <LoadElement elementStr={item.router}/>
+                                element={<LoadElement elementStr={item.name}/>}
 
-                            }
+                            >
 
-                        />
+                                {userSelfMenuList.map((subItem, subIndex) => (
 
-                    ))}
+                                    subItem.path?.startsWith(item.path! + "/") &&
 
-                </Route>
+                                    <Route
+
+                                        key={subIndex}
+                                        path={subItem.path}
+
+                                        element={
+
+                                            <LoadElement elementStr={subItem.router}/>
+
+                                        }
+
+                                    />
+
+                                ))}
+
+                            </Route>
+
+                    })
+
+                }
 
                 <Route
 
                     path="*"
 
-                    element={<LoadElement elementStr="NotFound"/>}
+                    element={<LoadElement elementStr={ManualRouterName.NotFound.name}/>}
 
                 />
 

@@ -21,7 +21,7 @@ import {
     SysUserWalletLogPageUserSelf,
     SysUserWalletLogUserSelfPageDTO
 } from "@/api/http/SysUserWalletLog";
-import {UseEffectFullScreenChange} from "@/util/DocumentUtil";
+import {UseEffectFullScreenChange} from "@/util/UseEffectUtil";
 import {
     SysUserWalletWithdrawLogCancel,
     SysUserWalletWithdrawLogCancelTenant,

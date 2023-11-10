@@ -8,6 +8,8 @@ export default {
 
     MODAL_FORM_WIDTH: 450, // ModalForm 宽度
 
+    TABLE_QR_CODE_WIDTH: 64, // 在 table里面，二维码的宽度
+
     QR_CODE_WIDTH: 260, // 二维码的宽度
 
     ADD_ORDER_NO: "累加排序号",
@@ -24,11 +26,15 @@ export default {
 
     EXCEL_FILE_ACCEPT_TYPE: ".xlsx", // excel文件的类型
 
+    TXT_FILE_ACCEPT_TYPE: ".txt", // txt文件的类型
+
     MOBILE_WIDTH: 768, // 小于这个数值，就是移动端
 
     SHORT_DELAY: 100, // 短的延迟
 
     TOOLTIP_STR_LENGTH: 500, // tooltip字符串的长度
+
+    TOP_PARENT_ID_STR: "0", // 顶层 parentId
 
     TOP_TENANT_ID_STR: "0", // 默认租户 id
 

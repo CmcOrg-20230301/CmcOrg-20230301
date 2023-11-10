@@ -3,7 +3,7 @@ import {GetDictList, GetDictTreeList, YesNoDict} from "@/util/DictUtil";
 import {SysMenuInsertOrUpdateDTO, SysMenuPage} from "@/api/http/SysMenu";
 import {SysRolePage} from "@/api/http/SysRole";
 import {ProFormColumnsType} from "@ant-design/pro-components";
-import MyIcon, {IconList} from "@/componse/MyIcon/MyIcon";
+import MyIcon, {IconList} from "@/component/MyIcon/MyIcon";
 import {Space} from "antd";
 import {OptionProps} from "antd/es/mentions";
 

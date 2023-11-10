@@ -3,8 +3,13 @@ import {ActionType, ProColumns} from "@ant-design/pro-components";
 import {SysOtherAppDeleteByIdSet, SysOtherAppDO, SysOtherAppInsertOrUpdateDTO} from "@/api/http/SysOtherApp";
 import {ExecConfirm, ToastSuccess} from "@/util/ToastUtil";
 import {SysTenantDictList} from "@/api/http/SysTenant";
-import {TreeSelect} from "antd";
+import {Dropdown, QRCode, TreeSelect, Typography} from "antd";
 import {SearchTransform} from "@/util/CommonUtil";
+import CommonConstant from "@/model/constant/CommonConstant";
+import {EllipsisOutlined} from "@ant-design/icons";
+import React from "react";
+import PathConstant from "@/model/constant/PathConstant";
+import {GoPage} from "@/layout/AdminLayout/AdminLayout";
 
 const TableColumnList = (currentForm: React.MutableRefObject<SysOtherAppInsertOrUpdateDTO>, setFormOpen: React.Dispatch<React.SetStateAction<boolean>>, actionRef: React.RefObject<ActionType | undefined>): ProColumns<SysOtherAppDO>[] => [
 
@@ -53,9 +58,9 @@ const TableColumnList = (currentForm: React.MutableRefObject<SysOtherAppInsertOr
         },
     },
 
-    {title: '名称', dataIndex: 'name', ellipsis: true, width: 200,},
+    {title: '名称', dataIndex: 'name', ellipsis: true, width: 150,},
 
-    {title: 'appId', dataIndex: 'appId', ellipsis: true, width: 200,},
+    {title: 'appId', dataIndex: 'appId', ellipsis: true, width: 150,},
 
     {
         title: '创建时间',
@@ -82,7 +87,26 @@ const TableColumnList = (currentForm: React.MutableRefObject<SysOtherAppInsertOr
         width: 90,
     },
 
-    {title: '备注', dataIndex: 'remark', ellipsis: true, width: 200,},
+    {
+        title: '关注回复', dataIndex: 'subscribeReplyContent', ellipsis: true, width: 200, render: (text, entity) => {
+
+            const subText = entity.subscribeReplyContent!.substring(0, CommonConstant.TOOLTIP_STR_LENGTH)
+
+            return <Typography.Text ellipsis={{tooltip: true}} style={{width: 200}}>{subText}</Typography.Text>
+
+        }
+    },
+
+    {
+        title: '二维码', dataIndex: 'qrCode', width: CommonConstant.TABLE_QR_CODE_WIDTH, render: (text, entity) => {
+
+            return entity.qrCode &&
+                <QRCode value={entity.qrCode} size={CommonConstant.TABLE_QR_CODE_WIDTH} bordered={false}/>
+
+        }
+    },
+
+    {title: '备注', dataIndex: 'remark', ellipsis: true, width: 120,},
 
     {
 
@@ -114,6 +138,39 @@ const TableColumnList = (currentForm: React.MutableRefObject<SysOtherAppInsertOr
                 }, undefined, `确定删除【${entity.name}】吗？`)
 
             }}>删除</a>,
+
+            <Dropdown
+
+                key="3"
+
+                menu={{
+
+                    items: [
+
+                        {
+                            key: '1',
+                            label: <a onClick={() => {
+
+                                GoPage(PathConstant.SYS_OTHER_APP_OFFICIAL_ACCOUNT_MENU_PATH, {
+                                    state: {
+                                        otherAppId: entity.id
+                                    }
+                                })
+
+                            }}>
+                                公众号菜单配置
+                            </a>,
+                        },
+
+                    ]
+
+                }}
+
+            >
+
+                <a><EllipsisOutlined/></a>
+
+            </Dropdown>
 
         ],
 

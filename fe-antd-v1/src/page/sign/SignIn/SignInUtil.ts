@@ -10,6 +10,7 @@ import {SignEmailSignInPassword} from "@/api/http/SignEmail";
 import {SignSignInNameSignInPassword} from "@/api/http/SignSignInName";
 import {signOut} from "@/store/userSlice";
 import {SetTenantIdToStorage} from "@/util/CommonUtil";
+import {ClearStorage} from "@/util/UserUtil";
 
 /**
  * 处理表单
@@ -37,19 +38,22 @@ export async function SignInFormHandler(form: ISignInForm) {
 /**
  * 登录成功之后的处理
  */
-function SignInSuccess(apiResultVO: ApiResultVO, tenantId: string) {
+export function SignInSuccess(apiResultVO: ApiResultVO, tenantId: string, path: string = PathConstant.ADMIN_PATH, showMsg: boolean = true, redirectFlag: boolean = true) {
 
-    localStorage.clear()
-    sessionStorage.clear()
+    ClearStorage()
 
     getAppDispatch()(signOut()) // store 退出登录
 
-    ToastSuccess('欢迎回来~')
+    if (showMsg) {
+        ToastSuccess('欢迎回来~')
+    }
 
     localStorage.setItem(LocalStorageKey.JWT, apiResultVO.data)
 
     SetTenantIdToStorage(tenantId);
 
-    getAppNav()(PathConstant.ADMIN_PATH)
+    if (redirectFlag) {
+        getAppNav()(path)
+    }
 
 }

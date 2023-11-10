@@ -122,9 +122,9 @@ export const Validate: IValidate = {
     },
 
     nickname: {
-        regex: /^[\u4E00-\u9FA5A-Za-z0-9_-]{2,20}$/,
+        regex: /^[\u4E00-\u9FA5A-Za-z0-9_-]{1,20}$/,
         emptyErrorMsg: '请输入昵称',
-        errorMsg: '昵称格式错误：只能包含中文，数字，字母，下划线，横杠，长度2-20',
+        errorMsg: '昵称格式错误：只能包含中文，数字，字母，下划线，横杠，长度1-20',
         validate(value: string) {
             return this.regex.test(value)
         },

@@ -1,10 +1,11 @@
-import {PropsWithChildren} from "react";
+import {PropsWithChildren, useEffect} from "react";
 import LocalStorageKey from "@/model/constant/LocalStorageKey";
 import {Navigate} from "react-router-dom";
 import {CopyrightOutlined} from "@ant-design/icons/lib";
 import {ConfigProvider} from "antd";
 import {AliasToken} from "antd/es/theme/interface/alias";
 import {RemoveTenantNameSuf} from "@/page/sign/SignUp/SignUpUtil";
+import CommonConstant from "@/model/constant/CommonConstant";
 
 interface ISignLayout extends PropsWithChildren {
 
@@ -26,6 +27,12 @@ export default function (props: ISignLayout) {
     if (localStorage.getItem(LocalStorageKey.JWT)) {
         return <Navigate to={"/"}/>
     }
+
+    useEffect(() => {
+
+        document.title = CommonConstant.SYS_NAME;
+
+    }, [])
 
     return (
 

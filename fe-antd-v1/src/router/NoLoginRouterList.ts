@@ -19,6 +19,16 @@ const NoLoginRouterList: INoLoginRouterList[] = [
         elementStr: 'signSignUpSignUp'
     },
 
+    {
+        path: PathConstant.BLANK_PATH,
+        elementStr: 'Blank'
+    },
+
+    {
+        path: PathConstant.OAUTH2_WX_PATH,
+        elementStr: 'oauth2Oauth2WxOauth2Wx'
+    },
+
 ]
 
 export default NoLoginRouterList

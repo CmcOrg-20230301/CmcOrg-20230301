@@ -21,7 +21,7 @@ import {ExecConfirm, ToastError, ToastSuccess} from "@/util/ToastUtil";
 import {SignOut} from "@/util/UserUtil";
 import {useAppSelector} from "@/store";
 import {UserSelfInfo} from "@/api/http/UserSelf";
-import MyIcon from "@/componse/MyIcon/MyIcon";
+import MyIcon from "@/component/MyIcon/MyIcon";
 import {ListToTree} from "@/util/TreeUtil";
 import {InDev} from "@/util/CommonUtil";
 import {SignOutSelf} from "@/api/http/SignOut";
