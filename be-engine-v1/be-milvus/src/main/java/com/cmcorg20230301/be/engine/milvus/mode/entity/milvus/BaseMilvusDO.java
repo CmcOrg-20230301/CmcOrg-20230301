@@ -23,7 +23,7 @@ public class BaseMilvusDO {
     @Schema(description = "返回值")
     private String result;
 
-    @Schema(description = "向量转换前的文字")
+    @Schema(description = "向量转换前的文字，备注：不能存在一样的文字")
     private String vectorText;
 
     @Schema(description = "向量集合")

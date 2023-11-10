@@ -344,7 +344,13 @@ public class MilvusUtil {
 
         R<QueryResults> queryResultsR = milvusServiceClient.query(queryParam);
 
-        return queryResultsR.getData().getFieldsData(0).getScalars().getLongData().getData(0);
+        QueryResults queryResults = queryResultsR.getData();
+
+        if (queryResults == null) {
+            return 0L;
+        }
+
+        return queryResults.getFieldsData(0).getScalars().getLongData().getData(0);
 
     }
 
