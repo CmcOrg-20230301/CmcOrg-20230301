@@ -1,6 +1,7 @@
 package com.cmcorg20230301.be.engine.file.base.model.enums;
 
 import com.baomidou.mybatisplus.annotation.EnumValue;
+import com.cmcorg20230301.be.engine.security.model.interfaces.ISysFileStorageType;
 import com.fasterxml.jackson.annotation.JsonValue;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -10,7 +11,7 @@ import lombok.Getter;
  */
 @AllArgsConstructor
 @Getter
-public enum SysFileStorageTypeEnum {
+public enum SysFileStorageTypeEnum implements ISysFileStorageType {
 
     EMPTY(0), // 无，一般用于引用类型的文件
 

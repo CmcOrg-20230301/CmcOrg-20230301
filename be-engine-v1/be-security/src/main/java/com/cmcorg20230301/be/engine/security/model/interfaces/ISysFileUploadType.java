@@ -6,7 +6,7 @@ import java.util.Set;
 
 public interface ISysFileUploadType {
 
-    int getCode();
+    int getCode(); // 建议从：10001（包含）开始
 
     String getFolderName();
 

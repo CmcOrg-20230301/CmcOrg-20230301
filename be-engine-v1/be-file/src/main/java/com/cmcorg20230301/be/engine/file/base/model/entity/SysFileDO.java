@@ -1,10 +1,10 @@
 package com.cmcorg20230301.be.engine.file.base.model.entity;
 
 import com.baomidou.mybatisplus.annotation.TableName;
-import com.cmcorg20230301.be.engine.file.base.model.enums.SysFileStorageTypeEnum;
 import com.cmcorg20230301.be.engine.file.base.model.enums.SysFileTypeEnum;
 import com.cmcorg20230301.be.engine.security.model.entity.BaseEntity;
-import com.cmcorg20230301.be.engine.security.model.enums.SysFileUploadTypeEnum;
+import com.cmcorg20230301.be.engine.security.model.interfaces.ISysFileStorageType;
+import com.cmcorg20230301.be.engine.security.model.interfaces.ISysFileUploadType;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -36,11 +36,17 @@ public class SysFileDO extends BaseEntity {
     @Schema(description = "额外信息（json格式）")
     private String extraJson;
 
+    /**
+     * {@link ISysFileUploadType}
+     */
     @Schema(description = "文件上传类型")
-    private SysFileUploadTypeEnum uploadType;
+    private Integer uploadType;
 
+    /**
+     * {@link ISysFileStorageType}
+     */
     @Schema(description = "存放文件的服务器类型")
-    private SysFileStorageTypeEnum storageType;
+    private Integer storageType;
 
     @Schema(description = "上级文件夹的文件主键 id，默认为 0")
     private Long parentId;

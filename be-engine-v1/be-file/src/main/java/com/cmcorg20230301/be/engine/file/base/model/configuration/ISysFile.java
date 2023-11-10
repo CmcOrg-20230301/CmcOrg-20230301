@@ -1,7 +1,7 @@
 package com.cmcorg20230301.be.engine.file.base.model.configuration;
 
-import com.cmcorg20230301.be.engine.file.base.model.enums.SysFileStorageTypeEnum;
 import com.cmcorg20230301.be.engine.model.properties.SysFileBaseProperties;
+import com.cmcorg20230301.be.engine.security.model.interfaces.ISysFileStorageType;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.InputStream;
@@ -12,7 +12,7 @@ public interface ISysFile {
     /**
      * 存放文件的服务器类型
      */
-    SysFileStorageTypeEnum getSysFileStorageType();
+    ISysFileStorageType getSysFileStorageType();
 
     /**
      * 上传文件

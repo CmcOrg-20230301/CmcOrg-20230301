@@ -26,6 +26,7 @@ import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.stereotype.Component;
 
 import javax.servlet.http.HttpServletRequest;
+import java.lang.reflect.UndeclaredThrowableException;
 import java.util.Date;
 
 @Aspect
@@ -138,6 +139,12 @@ public class SysRequestAop {
             if (e instanceof BaseException || e instanceof IllegalArgumentException) {
 
                 throw e;
+
+            }
+
+            if (e instanceof UndeclaredThrowableException) {
+
+                e = ((UndeclaredThrowableException)e).getUndeclaredThrowable();
 
             }
 

@@ -68,18 +68,27 @@ public class BaseConfiguration {
         int availableProcessors = Runtime.getRuntime().availableProcessors();
 
         ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
-        // 设置核心线程数
+
+        // 设置：核心线程数
         executor.setCorePoolSize(availableProcessors * 10);
-        // 设置最大线程数
+
+        // 设置：最大线程数
         executor.setMaxPoolSize(availableProcessors * 100);
-        // 设置队列容量
+
+        // 设置：队列容量
         executor.setQueueCapacity(availableProcessors * 100);
-        // 设置核心线程之外的线程，在空闲多久之后会被销毁的时间
+
+        // 设置：核心线程之外的线程，在空闲多久之后会被销毁的时间
         executor.setKeepAliveSeconds(60);
+
         // 设置：线程名前缀
         executor.setThreadNamePrefix("taskExecutor-");
+
         // 设置：线程池通用属性
         setCommonExecutor(executor);
+
+        // 设置：异常处理机制
+        executor.getThreadPoolExecutor().setThreadFactory(new MyThreadFactory(executor));
 
         return executor;
 
@@ -94,10 +103,13 @@ public class BaseConfiguration {
         int availableProcessors = Runtime.getRuntime().availableProcessors();
 
         ThreadPoolTaskScheduler scheduler = new ThreadPoolTaskScheduler();
-        // 设置核心线程数
+
+        // 设置：核心线程数
         scheduler.setPoolSize(availableProcessors * 10);
+
         // 设置：线程名前缀
         scheduler.setThreadNamePrefix("taskScheduler-");
+
         // 设置：线程池通用属性
         setCommonExecutor(scheduler);
 
@@ -108,16 +120,19 @@ public class BaseConfiguration {
     /**
      * 设置：线程池通用属性
      */
-    public void setCommonExecutor(ExecutorConfigurationSupport executorConfigurationSupport) {
+    public void setCommonExecutor(ExecutorConfigurationSupport support) {
 
-        // 设置拒绝策略：由调用线程处理该任务
-        executorConfigurationSupport.setRejectedExecutionHandler(new ThreadPoolExecutor.CallerRunsPolicy());
-        // 等待所有任务结束后再关闭线程池
-        executorConfigurationSupport.setWaitForTasksToCompleteOnShutdown(true);
-        // 最多等待多少秒
-        executorConfigurationSupport.setAwaitTerminationSeconds(60);
+        // 设置：拒绝策略：由调用线程处理该任务
+        support.setRejectedExecutionHandler(new ThreadPoolExecutor.CallerRunsPolicy());
+
+        // 设置：等待所有任务结束后再关闭线程池
+        support.setWaitForTasksToCompleteOnShutdown(true);
+
+        // 设置：最多等待多少秒
+        support.setAwaitTerminationSeconds(60);
+
         // 执行初始化
-        executorConfigurationSupport.initialize();
+        support.initialize();
 
     }
 

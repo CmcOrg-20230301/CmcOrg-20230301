@@ -8,11 +8,11 @@ import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.extension.conditions.query.LambdaQueryChainWrapper;
 import com.baomidou.mybatisplus.extension.toolkit.ChainWrappers;
 import com.cmcorg20230301.be.engine.datasource.util.TransactionUtil;
+import com.cmcorg20230301.be.engine.file.base.model.bo.SysFileUploadBO;
 import com.cmcorg20230301.be.engine.file.base.model.configuration.ISysFile;
 import com.cmcorg20230301.be.engine.file.base.model.dto.SysFileUploadDTO;
 import com.cmcorg20230301.be.engine.file.base.model.entity.SysFileAuthDO;
 import com.cmcorg20230301.be.engine.file.base.model.entity.SysFileDO;
-import com.cmcorg20230301.be.engine.file.base.model.enums.SysFileStorageTypeEnum;
 import com.cmcorg20230301.be.engine.file.base.model.enums.SysFileTypeEnum;
 import com.cmcorg20230301.be.engine.file.base.properties.SysFileProperties;
 import com.cmcorg20230301.be.engine.file.base.service.SysFileAuthService;
@@ -24,6 +24,7 @@ import com.cmcorg20230301.be.engine.security.model.entity.BaseEntity;
 import com.cmcorg20230301.be.engine.security.model.entity.BaseEntityNoId;
 import com.cmcorg20230301.be.engine.security.model.entity.SysUserInfoDO;
 import com.cmcorg20230301.be.engine.security.model.enums.SysFileUploadTypeEnum;
+import com.cmcorg20230301.be.engine.security.model.interfaces.ISysFileStorageType;
 import com.cmcorg20230301.be.engine.security.model.vo.ApiResultVO;
 import com.cmcorg20230301.be.engine.security.util.MyEntityUtil;
 import com.cmcorg20230301.be.engine.security.util.SysTenantUtil;
@@ -97,20 +98,26 @@ public class SysFileUtil {
 
         Long sysFileId = null;
 
+        SysFileUploadBO sysFileUploadBO = new SysFileUploadBO();
+
+        sysFileUploadBO.setFile(dto.getFile());
+        sysFileUploadBO.setUploadType(dto.getUploadType());
+        sysFileUploadBO.setRemark(dto.getRemark());
+        sysFileUploadBO.setExtraJson(dto.getExtraJson());
+
         // 如果是：头像
         if (SysFileUploadTypeEnum.AVATAR.equals(dto.getUploadType())) {
 
             // 通用：上传处理
-            sysFileId =
-                uploadCommonHandle(dto, fileType, currentUserIdNotAdmin, sysFileProperties.getAvatarStorageType(),
+            sysFileId = uploadCommonHandle(sysFileUploadBO, fileType, currentUserIdNotAdmin,
+                sysFileProperties.getAvatarStorageType(),
 
-                    (sysFileIdTemp) -> {
+                (sysFileIdTemp) -> {
 
-                        ChainWrappers.lambdaUpdateChain(sysUserInfoMapper)
-                            .eq(SysUserInfoDO::getId, currentUserIdNotAdmin)
-                            .set(SysUserInfoDO::getAvatarFileId, sysFileIdTemp).update();
+                    ChainWrappers.lambdaUpdateChain(sysUserInfoMapper).eq(SysUserInfoDO::getId, currentUserIdNotAdmin)
+                        .set(SysUserInfoDO::getAvatarFileId, sysFileIdTemp).update();
 
-                    });
+                });
 
         }
 
@@ -122,8 +129,8 @@ public class SysFileUtil {
      * 通用：上传处理
      */
     @NotNull
-    private static Long uploadCommonHandle(SysFileUploadDTO dto, String fileType, Long currentUserId,
-        Integer storageType, @Nullable Consumer<Long> consumer) {
+    private static Long uploadCommonHandle(SysFileUploadBO bo, String fileType, Long currentUserId, Integer storageType,
+        @Nullable Consumer<Long> consumer) {
 
         ISysFile iSysFile = SYS_FILE_MAP.get(storageType);
 
@@ -133,11 +140,11 @@ public class SysFileUtil {
 
         }
 
-        SysFileStorageTypeEnum sysFileStorageTypeEnum = iSysFile.getSysFileStorageType();
+        ISysFileStorageType iSysFileStorageType = iSysFile.getSysFileStorageType();
 
-        String folderName = dto.getUploadType().getFolderName();
+        String folderName = bo.getUploadType().getFolderName();
 
-        String originalFilename = dto.getFile().getOriginalFilename(); // 旧的文件名
+        String originalFilename = bo.getFile().getOriginalFilename(); // 旧的文件名
 
         String newFileName = IdUtil.simpleUUID() + "." + fileType; // 新的文件名
 
@@ -145,7 +152,7 @@ public class SysFileUtil {
 
         String bucketName;
 
-        if (dto.getUploadType().isPublicFlag()) {
+        if (bo.getUploadType().isPublicFlag()) {
 
             bucketName = iSysFile.getSysFileBaseProperties().getBucketPublicName();
 
@@ -162,15 +169,15 @@ public class SysFileUtil {
         }
 
         // 执行：文件上传
-        iSysFile.upload(bucketName, objectName, dto.getFile());
+        iSysFile.upload(bucketName, objectName, bo.getFile());
 
         String finalBucketName = bucketName;
 
         return TransactionUtil.exec(() -> {
 
             // 通用保存：文件信息到数据库
-            Long sysFileId = saveCommonSysFile(dto, fileType, currentUserId, originalFilename, newFileName, objectName,
-                finalBucketName, sysFileStorageTypeEnum);
+            Long sysFileId = saveCommonSysFile(bo, fileType, currentUserId, originalFilename, newFileName, objectName,
+                finalBucketName, iSysFileStorageType);
 
             if (consumer != null) {
 
@@ -188,31 +195,45 @@ public class SysFileUtil {
      * 通用保存：文件信息到数据库
      */
     @NotNull
-    private static Long saveCommonSysFile(SysFileUploadDTO dto, String fileType, Long currentUserId,
+    private static Long saveCommonSysFile(SysFileUploadBO bo, String fileType, Long currentUserId,
         String originalFilename, String newFileName, String objectName, String bucketName,
-        SysFileStorageTypeEnum storageType) {
+        ISysFileStorageType iSysFileStorageType) {
 
         SysFileDO sysFileDO = new SysFileDO();
 
         sysFileDO.setBelongId(currentUserId);
-        sysFileDO.setBucketName(bucketName);
-        sysFileDO.setUri(objectName);
-        sysFileDO.setOriginFileName(originalFilename);
-        sysFileDO.setNewFileName(newFileName);
-        sysFileDO.setFileExtName(fileType);
-        sysFileDO.setExtraJson(MyEntityUtil.getNotNullStr(dto.getExtraJson()));
 
-        sysFileDO.setUploadType(dto.getUploadType());
-        sysFileDO.setStorageType(storageType);
+        sysFileDO.setBucketName(bucketName);
+
+        sysFileDO.setUri(objectName);
+
+        sysFileDO.setOriginFileName(originalFilename);
+
+        sysFileDO.setNewFileName(newFileName);
+
+        sysFileDO.setFileExtName(fileType);
+
+        sysFileDO.setExtraJson(MyEntityUtil.getNotNullStr(bo.getExtraJson()));
+
+        sysFileDO.setUploadType(bo.getUploadType().getCode());
+
+        sysFileDO.setStorageType(iSysFileStorageType.getCode());
+
         sysFileDO.setParentId(MyEntityUtil.getNotNullParentId(null));
+
         sysFileDO.setType(SysFileTypeEnum.FILE);
+
         sysFileDO.setShowFileName(originalFilename);
+
         sysFileDO.setRefFileId(BaseConstant.NEGATIVE_ONE);
-        sysFileDO.setPublicFlag(dto.getUploadType().isPublicFlag());
+
+        sysFileDO.setPublicFlag(bo.getUploadType().isPublicFlag());
 
         sysFileDO.setEnableFlag(true);
+
         sysFileDO.setDelFlag(false);
-        sysFileDO.setRemark(MyEntityUtil.getNotNullStr(dto.getRemark()));
+
+        sysFileDO.setRemark(MyEntityUtil.getNotNullStr(bo.getRemark()));
 
         sysFileService.save(sysFileDO);
 
@@ -257,11 +278,11 @@ public class SysFileUtil {
         // 如果有关联的文件，则使用关联文件的信息，备注：这里是递归获取，要注意层级问题
         sysFileDO = getDeepPrivateDownloadSysFile(sysFileDO);
 
-        ISysFile iSysFile = SYS_FILE_MAP.get(sysFileDO.getStorageType().getCode());
+        ISysFile iSysFile = SYS_FILE_MAP.get(sysFileDO.getStorageType());
 
         if (iSysFile == null) {
 
-            ApiResultVO.errorMsg("操作失败：文件存储位置不存在：{}", sysFileDO.getStorageType().getCode());
+            ApiResultVO.errorMsg("操作失败：文件存储位置不存在：{}", sysFileDO.getStorageType());
 
         }
 
@@ -335,7 +356,7 @@ public class SysFileUtil {
 
             if (BooleanUtil.isTrue(item.getPublicFlag())) { // 如果：是公开下载
 
-                ISysFile iSysFile = SYS_FILE_MAP.get(item.getStorageType().getCode());
+                ISysFile iSysFile = SYS_FILE_MAP.get(item.getStorageType());
 
                 if (iSysFile != null) {
 
@@ -399,12 +420,12 @@ public class SysFileUtil {
         }
 
         // 根据：存储类型分类
-        Map<SysFileStorageTypeEnum, List<SysFileDO>> storageTypeGroupMap =
+        Map<Integer, List<SysFileDO>> storageTypeGroupMap =
             sysFileDOList.stream().collect(Collectors.groupingBy(SysFileDO::getStorageType));
 
-        for (Map.Entry<SysFileStorageTypeEnum, List<SysFileDO>> item : storageTypeGroupMap.entrySet()) {
+        for (Map.Entry<Integer, List<SysFileDO>> item : storageTypeGroupMap.entrySet()) {
 
-            ISysFile iSysFile = SYS_FILE_MAP.get(item.getKey().getCode());
+            ISysFile iSysFile = SYS_FILE_MAP.get(item.getKey());
 
             if (iSysFile == null) {
                 continue;
