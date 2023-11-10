@@ -87,9 +87,6 @@ public class BaseConfiguration {
         // 设置：线程池通用属性
         setCommonExecutor(executor);
 
-        // 设置：异常处理机制
-        executor.getThreadPoolExecutor().setThreadFactory(new MyThreadFactory(executor));
-
         return executor;
 
     }
