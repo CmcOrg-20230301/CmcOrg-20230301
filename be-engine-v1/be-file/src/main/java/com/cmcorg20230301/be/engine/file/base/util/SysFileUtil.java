@@ -10,6 +10,7 @@ import com.baomidou.mybatisplus.extension.toolkit.ChainWrappers;
 import com.cmcorg20230301.be.engine.datasource.util.TransactionUtil;
 import com.cmcorg20230301.be.engine.file.base.model.bo.SysFileUploadBO;
 import com.cmcorg20230301.be.engine.file.base.model.configuration.ISysFile;
+import com.cmcorg20230301.be.engine.file.base.model.configuration.ISysFileRemove;
 import com.cmcorg20230301.be.engine.file.base.model.entity.SysFileAuthDO;
 import com.cmcorg20230301.be.engine.file.base.model.entity.SysFileDO;
 import com.cmcorg20230301.be.engine.file.base.model.enums.SysFileTypeEnum;
@@ -57,9 +58,12 @@ public class SysFileUtil {
 
     private static final Map<Integer, ISysFile> SYS_FILE_MAP = MapUtil.newHashMap();
 
+    private static List<ISysFileRemove> iSysFileRemoveList;
+
     public SysFileUtil(SysFileProperties sysFileProperties, SysFileService sysFileService,
         SysFileAuthService sysFileAuthService, SysUserInfoMapper sysUserInfoMapper,
-        @Autowired(required = false) @Nullable List<ISysFile> iSysFileList) {
+        @Autowired(required = false) @Nullable List<ISysFile> iSysFileList,
+        @Autowired(required = false) @Nullable List<ISysFileRemove> iSysFileRemoveList) {
 
         SysFileUtil.sysFileProperties = sysFileProperties;
 
@@ -77,6 +81,8 @@ public class SysFileUtil {
             }
 
         }
+
+        SysFileUtil.iSysFileRemoveList = iSysFileRemoveList;
 
     }
 
@@ -442,6 +448,16 @@ public class SysFileUtil {
             sysFileService.removeBatchByIds(finalFileIdSet);
 
             sysFileAuthService.lambdaUpdate().in(SysFileAuthDO::getFileId, finalFileIdSet).remove();
+
+            if (CollUtil.isNotEmpty(iSysFileRemoveList) && CollUtil.isNotEmpty(finalFileIdSet)) {
+
+                for (ISysFileRemove item : iSysFileRemoveList) {
+
+                    item.handle(finalFileIdSet); // 额外处理：当文件进行移除时
+
+                }
+
+            }
 
         });
 
