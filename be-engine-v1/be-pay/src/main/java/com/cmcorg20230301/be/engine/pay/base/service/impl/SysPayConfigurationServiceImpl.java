@@ -40,7 +40,7 @@ public class SysPayConfigurationServiceImpl extends ServiceImpl<SysPayConfigurat
     public String insertOrUpdate(SysPayConfigurationInsertOrUpdateDTO dto) {
 
         // 每个支付方式，需要单独检查 dto
-        dto.getType().getCheckSysPayConfigurationInsertOrUpdateDTOConsumer().accept(dto);
+        dto.getType().getCheckSysPayConfigurationInsertOrUpdateDtoConsumer().accept(dto);
 
         // 处理：BaseTenantInsertOrUpdateDTO
         SysTenantUtil.handleBaseTenantInsertOrUpdateDTO(dto, getCheckIllegalFunc1(CollUtil.newHashSet(dto.getId())),

@@ -4,25 +4,25 @@ import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.map.MapUtil;
 import cn.hutool.core.util.BooleanUtil;
 import cn.hutool.core.util.IdUtil;
+import cn.hutool.core.util.RandomUtil;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.extension.conditions.query.LambdaQueryChainWrapper;
 import com.baomidou.mybatisplus.extension.toolkit.ChainWrappers;
 import com.cmcorg20230301.be.engine.datasource.util.TransactionUtil;
+import com.cmcorg20230301.be.engine.file.base.mapper.SysFileStorageConfigurationMapper;
 import com.cmcorg20230301.be.engine.file.base.model.bo.SysFileUploadBO;
-import com.cmcorg20230301.be.engine.file.base.model.configuration.ISysFile;
 import com.cmcorg20230301.be.engine.file.base.model.configuration.ISysFileRemove;
+import com.cmcorg20230301.be.engine.file.base.model.configuration.ISysFileStorage;
 import com.cmcorg20230301.be.engine.file.base.model.entity.SysFileAuthDO;
 import com.cmcorg20230301.be.engine.file.base.model.entity.SysFileDO;
+import com.cmcorg20230301.be.engine.file.base.model.entity.SysFileStorageConfigurationDO;
 import com.cmcorg20230301.be.engine.file.base.model.enums.SysFileTypeEnum;
-import com.cmcorg20230301.be.engine.file.base.properties.SysFileProperties;
 import com.cmcorg20230301.be.engine.file.base.service.SysFileAuthService;
 import com.cmcorg20230301.be.engine.file.base.service.SysFileService;
 import com.cmcorg20230301.be.engine.model.model.constant.BaseConstant;
 import com.cmcorg20230301.be.engine.security.exception.BaseBizCodeEnum;
 import com.cmcorg20230301.be.engine.security.mapper.SysUserInfoMapper;
-import com.cmcorg20230301.be.engine.security.model.entity.BaseEntity;
-import com.cmcorg20230301.be.engine.security.model.entity.BaseEntityNoId;
-import com.cmcorg20230301.be.engine.security.model.entity.SysUserInfoDO;
+import com.cmcorg20230301.be.engine.security.model.entity.*;
 import com.cmcorg20230301.be.engine.security.model.enums.SysFileUploadTypeEnum;
 import com.cmcorg20230301.be.engine.security.model.interfaces.ISysFileStorageType;
 import com.cmcorg20230301.be.engine.security.model.vo.ApiResultVO;
@@ -49,40 +49,40 @@ import java.util.stream.Collectors;
 @Component
 public class SysFileUtil {
 
-    private static SysFileProperties sysFileProperties;
-
     private static SysFileService sysFileService;
     private static SysFileAuthService sysFileAuthService;
 
     private static SysUserInfoMapper sysUserInfoMapper;
 
-    private static final Map<Integer, ISysFile> SYS_FILE_MAP = MapUtil.newHashMap();
+    private static final Map<Integer, ISysFileStorage> SYS_FILE_STORAGE_MAP = MapUtil.newHashMap();
 
     private static List<ISysFileRemove> iSysFileRemoveList;
 
-    public SysFileUtil(SysFileProperties sysFileProperties, SysFileService sysFileService,
-        SysFileAuthService sysFileAuthService, SysUserInfoMapper sysUserInfoMapper,
-        @Autowired(required = false) @Nullable List<ISysFile> iSysFileList,
-        @Autowired(required = false) @Nullable List<ISysFileRemove> iSysFileRemoveList) {
+    private static SysFileStorageConfigurationMapper sysFileStorageConfigurationMapper;
 
-        SysFileUtil.sysFileProperties = sysFileProperties;
+    public SysFileUtil(SysFileService sysFileService, SysFileAuthService sysFileAuthService,
+        SysUserInfoMapper sysUserInfoMapper,
+        @Autowired(required = false) @Nullable List<ISysFileStorage> iSysFileStorageList,
+        @Autowired(required = false) @Nullable List<ISysFileRemove> iSysFileRemoveList,
+        SysFileStorageConfigurationMapper sysFileStorageConfigurationMapper) {
 
         SysFileUtil.sysFileService = sysFileService;
         SysFileUtil.sysFileAuthService = sysFileAuthService;
 
         SysFileUtil.sysUserInfoMapper = sysUserInfoMapper;
 
-        if (CollUtil.isNotEmpty(iSysFileList)) {
+        if (CollUtil.isNotEmpty(iSysFileStorageList)) {
 
-            for (ISysFile item : iSysFileList) {
+            for (ISysFileStorage item : iSysFileStorageList) {
 
-                SYS_FILE_MAP.put(item.getSysFileStorageType().getCode(), item);
+                SYS_FILE_STORAGE_MAP.put(item.getSysFileStorageType().getCode(), item);
 
             }
 
         }
 
         SysFileUtil.iSysFileRemoveList = iSysFileRemoveList;
+        SysFileUtil.sysFileStorageConfigurationMapper = sysFileStorageConfigurationMapper;
 
     }
 
@@ -105,14 +105,14 @@ public class SysFileUtil {
         if (SysFileUploadTypeEnum.AVATAR.equals(bo.getUploadType())) {
 
             // 通用：上传处理
-            resultSysFileId = uploadCommonHandle(bo, fileType, sysFileProperties.getAvatarStorageType(),
+            resultSysFileId = uploadCommonHandle(bo, fileType, null,
 
                 (sysFileId) -> {
 
                     ChainWrappers.lambdaUpdateChain(sysUserInfoMapper).eq(SysUserInfoDO::getId, bo.getUserId())
                         .set(SysUserInfoDO::getAvatarFileId, sysFileId).update();
 
-                });
+                }, null);
 
         }
 
@@ -124,18 +124,23 @@ public class SysFileUtil {
      * 通用：上传处理
      */
     @NotNull
-    public static Long uploadCommonHandle(SysFileUploadBO bo, String fileType, Integer storageType,
-        @Nullable Consumer<Long> consumer) {
+    public static Long uploadCommonHandle(SysFileUploadBO bo, String fileType,
+        @Nullable ISysFileStorageType iSysFileStorageType, @Nullable Consumer<Long> consumer,
+        @Nullable SysFileStorageConfigurationDO sysFileStorageConfigurationDO) {
 
-        ISysFile iSysFile = SYS_FILE_MAP.get(storageType);
+        // 获取：存储方式的配置
+        sysFileStorageConfigurationDO =
+            getSysFileStorageConfigurationDO(bo.getTenantId(), iSysFileStorageType, sysFileStorageConfigurationDO);
 
-        if (iSysFile == null) {
+        Integer storageType = sysFileStorageConfigurationDO.getType();
 
-            ApiResultVO.errorMsg("操作失败：文件存储方式未找到：{}", storageType);
+        ISysFileStorage iSysFileStorage = SYS_FILE_STORAGE_MAP.get(storageType);
+
+        if (iSysFileStorage == null) {
+
+            ApiResultVO.error("操作失败：文件存储方式未找到", storageType);
 
         }
-
-        ISysFileStorageType iSysFileStorageType = iSysFile.getSysFileStorageType();
 
         String folderName = bo.getUploadType().getFolderName();
 
@@ -149,11 +154,11 @@ public class SysFileUtil {
 
         if (bo.getUploadType().isPublicFlag()) {
 
-            bucketName = iSysFile.getSysFileBaseProperties().getBucketPublicName();
+            bucketName = sysFileStorageConfigurationDO.getBucketPublicName();
 
         } else {
 
-            bucketName = iSysFile.getSysFileBaseProperties().getBucketPrivateName();
+            bucketName = sysFileStorageConfigurationDO.getBucketPrivateName();
 
         }
 
@@ -164,15 +169,17 @@ public class SysFileUtil {
         }
 
         // 执行：文件上传
-        iSysFile.upload(bucketName, objectName, bo.getFile());
+        iSysFileStorage.upload(bucketName, objectName, bo.getFile(), sysFileStorageConfigurationDO);
 
         String finalBucketName = bucketName;
+
+        SysFileStorageConfigurationDO finalSysFileStorageConfigurationDO = sysFileStorageConfigurationDO;
 
         return TransactionUtil.exec(() -> {
 
             // 通用保存：文件信息到数据库
             Long sysFileId = saveCommonSysFile(bo, fileType, originalFilename, newFileName, objectName, finalBucketName,
-                iSysFileStorageType);
+                finalSysFileStorageConfigurationDO);
 
             if (consumer != null) {
 
@@ -187,11 +194,90 @@ public class SysFileUtil {
     }
 
     /**
+     * 获取：存储方式的配置
+     */
+    @NotNull
+    private static SysFileStorageConfigurationDO getSysFileStorageConfigurationDO(Long tenantId,
+        @Nullable ISysFileStorageType iSysFileStorageType,
+        @Nullable SysFileStorageConfigurationDO sysFileStorageConfigurationDO) {
+
+        if (sysFileStorageConfigurationDO != null) {
+
+            return sysFileStorageConfigurationDO;
+
+        }
+
+        // 执行获取
+        sysFileStorageConfigurationDO = execGetFileStorageConfigurationDO(tenantId, iSysFileStorageType);
+
+        if (sysFileStorageConfigurationDO == null) {
+
+            ApiResultVO.errorMsg("操作失败：暂未配置文件存储方式，请联系管理员");
+
+        }
+
+        return sysFileStorageConfigurationDO;
+
+    }
+
+    /**
+     * 执行获取
+     */
+    private static SysFileStorageConfigurationDO execGetFileStorageConfigurationDO(Long tenantId,
+        @Nullable ISysFileStorageType iSysFileStorageType) {
+
+        SysFileStorageConfigurationDO sysFileStorageConfigurationDO = null;
+
+        if (iSysFileStorageType == null) {
+
+            // 获取：默认的存储方式
+            sysFileStorageConfigurationDO = ChainWrappers.lambdaQueryChain(sysFileStorageConfigurationMapper)
+                .eq(BaseEntityNoIdFather::getTenantId, tenantId).eq(BaseEntityNoId::getEnableFlag, true)
+                .eq(SysFileStorageConfigurationDO::getDefaultFlag, true).one();
+
+        } else {
+
+            // 根据传入的类型，选择一个存储方式
+            List<SysFileStorageConfigurationDO> sysFileStorageConfigurationDOList =
+                ChainWrappers.lambdaQueryChain(sysFileStorageConfigurationMapper)
+                    .eq(BaseEntityNoIdFather::getTenantId, tenantId).eq(BaseEntityNoId::getEnableFlag, true)
+                    .eq(SysFileStorageConfigurationDO::getType, iSysFileStorageType.getCode()).list();
+
+            if (CollUtil.isNotEmpty(sysFileStorageConfigurationDOList)) {
+
+                // 随机选择一个存储方式
+                sysFileStorageConfigurationDO = RandomUtil.randomEle(sysFileStorageConfigurationDOList);
+
+            }
+
+        }
+
+        if (sysFileStorageConfigurationDO == null && !BaseConstant.TOP_TENANT_ID.equals(tenantId)) {
+
+            SysTenantDO sysTenantDO = SysTenantUtil.getSysTenantCacheMap(false).get(tenantId);
+
+            if (sysTenantDO != null) {
+
+                Long parentTenantId = sysTenantDO.getParentId();
+
+                // 获取：上一级租户的文件存储配置
+                return execGetFileStorageConfigurationDO(parentTenantId, iSysFileStorageType);
+
+            }
+
+        }
+
+        return sysFileStorageConfigurationDO;
+
+    }
+
+    /**
      * 通用保存：文件信息到数据库
      */
     @NotNull
     public static Long saveCommonSysFile(SysFileUploadBO bo, String fileType, String originalFilename,
-        String newFileName, String objectName, String bucketName, ISysFileStorageType iSysFileStorageType) {
+        String newFileName, String objectName, String bucketName,
+        SysFileStorageConfigurationDO sysFileStorageConfigurationDO) {
 
         SysFileDO sysFileDO = new SysFileDO();
 
@@ -213,7 +299,9 @@ public class SysFileUtil {
 
         sysFileDO.setUploadType(bo.getUploadType().getCode());
 
-        sysFileDO.setStorageType(iSysFileStorageType.getCode());
+        sysFileDO.setStorageConfigurationId(sysFileStorageConfigurationDO.getId());
+
+        sysFileDO.setStorageType(sysFileStorageConfigurationDO.getType());
 
         sysFileDO.setParentId(MyEntityUtil.getNotNullParentId(null));
 
@@ -274,15 +362,27 @@ public class SysFileUtil {
         // 如果有关联的文件，则使用关联文件的信息，备注：这里是递归获取，要注意层级问题
         sysFileDO = getDeepPrivateDownloadSysFile(sysFileDO);
 
-        ISysFile iSysFile = SYS_FILE_MAP.get(sysFileDO.getStorageType());
+        ISysFileStorage iSysFileStorage = SYS_FILE_STORAGE_MAP.get(sysFileDO.getStorageType());
 
-        if (iSysFile == null) {
+        if (iSysFileStorage == null) {
 
-            ApiResultVO.errorMsg("操作失败：文件存储位置不存在：{}", sysFileDO.getStorageType());
+            ApiResultVO.error("操作失败：文件存储位置不存在", sysFileDO.getStorageType());
 
         }
 
-        return iSysFile.download(sysFileDO.getBucketName(), sysFileDO.getUri());
+        Long storageConfigurationId = sysFileDO.getStorageConfigurationId();
+
+        SysFileStorageConfigurationDO sysFileStorageConfigurationDO =
+            ChainWrappers.lambdaQueryChain(sysFileStorageConfigurationMapper)
+                .eq(BaseEntity::getId, storageConfigurationId).one();
+
+        if (sysFileStorageConfigurationDO == null) {
+
+            ApiResultVO.error("操作失败：文件存储配置不存在", storageConfigurationId);
+
+        }
+
+        return iSysFileStorage.download(sysFileDO.getBucketName(), sysFileDO.getUri(), sysFileStorageConfigurationDO);
 
     }
 
@@ -322,7 +422,7 @@ public class SysFileUtil {
         return sysFileService.lambdaQuery()
             .select(SysFileDO::getBucketName, SysFileDO::getNewFileName, SysFileDO::getPublicFlag,
                 SysFileDO::getRefFileId, SysFileDO::getStorageType, SysFileDO::getType, BaseEntity::getId,
-                SysFileDO::getUri).eq(BaseEntityNoId::getEnableFlag, true);
+                SysFileDO::getUri, SysFileDO::getStorageConfigurationId).eq(BaseEntityNoId::getEnableFlag, true);
 
     }
 
@@ -344,21 +444,41 @@ public class SysFileUtil {
             tenantIdSet -> sysFileService.lambdaQuery().in(BaseEntity::getId, fileIdSet)
                 .in(BaseEntityNoId::getTenantId, tenantIdSet).count());
 
-        List<SysFileDO> sysFileDOList = getSysFileBaseLambdaQuery().in(BaseEntity::getId, fileIdSet).list();
+        List<SysFileDO> sysFileDOList =
+            getSysFileBaseLambdaQuery().in(BaseEntity::getId, fileIdSet).eq(SysFileDO::getPublicFlag, true).list();
 
         Map<Long, String> result = new HashMap<>(sysFileDOList.size());
 
+        Set<Long> sysFileStorageConfigurationIdSet =
+            sysFileDOList.stream().map(SysFileDO::getStorageConfigurationId).collect(Collectors.toSet());
+
+        if (CollUtil.isEmpty(sysFileStorageConfigurationIdSet)) {
+            return MapUtil.newHashMap();
+        }
+
+        List<SysFileStorageConfigurationDO> sysFileStorageConfigurationDOList =
+            ChainWrappers.lambdaQueryChain(sysFileStorageConfigurationMapper)
+                .eq(BaseEntity::getId, sysFileStorageConfigurationIdSet).list();
+
+        if (CollUtil.isEmpty(sysFileStorageConfigurationDOList)) {
+            return MapUtil.newHashMap();
+        }
+
+        // 通过：id进行分组
+        Map<Long, SysFileStorageConfigurationDO> sysFileStorageConfigurationIdMap =
+            sysFileStorageConfigurationDOList.stream().collect(Collectors.toMap(BaseEntity::getId, it -> it));
+
         for (SysFileDO item : sysFileDOList) {
 
-            if (item.getPublicFlag()) { // 如果：是公开下载
+            SysFileStorageConfigurationDO sysFileStorageConfigurationDO =
+                sysFileStorageConfigurationIdMap.get(item.getStorageConfigurationId());
 
-                ISysFile iSysFile = SYS_FILE_MAP.get(item.getStorageType());
+            ISysFileStorage iSysFileStorage = SYS_FILE_STORAGE_MAP.get(sysFileStorageConfigurationDO.getType());
 
-                if (iSysFile != null) {
+            if (iSysFileStorage != null) {
 
-                    result.put(item.getId(), iSysFile.getUrl(item.getUri(), item.getBucketName()));
-
-                }
+                result.put(item.getId(),
+                    iSysFileStorage.getUrl(item.getUri(), item.getBucketName(), sysFileStorageConfigurationDO));
 
             }
 
@@ -388,8 +508,8 @@ public class SysFileUtil {
         List<SysFileDO> sysFileDOList;
 
         LambdaQueryChainWrapper<SysFileDO> lambdaQueryChainWrapper = sysFileService.lambdaQuery()
-            .select(SysFileDO::getBucketName, SysFileDO::getUri, SysFileDO::getStorageType, SysFileDO::getType,
-                BaseEntity::getId).in(BaseEntity::getId, fileIdSet);
+            .select(SysFileDO::getBucketName, SysFileDO::getUri, SysFileDO::getType, BaseEntity::getId,
+                SysFileDO::getStorageConfigurationId).in(BaseEntity::getId, fileIdSet);
 
         if (checkBelongFlag) {
 
@@ -415,30 +535,8 @@ public class SysFileUtil {
             ApiResultVO.errorMsg("操作失败：暂不支持删除文件夹");
         }
 
-        // 根据：存储类型分类
-        Map<Integer, List<SysFileDO>> storageTypeGroupMap =
-            sysFileDOList.stream().collect(Collectors.groupingBy(SysFileDO::getStorageType));
-
-        for (Map.Entry<Integer, List<SysFileDO>> item : storageTypeGroupMap.entrySet()) {
-
-            ISysFile iSysFile = SYS_FILE_MAP.get(item.getKey());
-
-            if (iSysFile == null) {
-                continue;
-            }
-
-            // 根据：桶名，进行分类
-            Map<String, Set<String>> bucketGroupMap = item.getValue().stream().collect(Collectors
-                .groupingBy(SysFileDO::getBucketName, Collectors.mapping(SysFileDO::getUri, Collectors.toSet())));
-
-            for (Map.Entry<String, Set<String>> subItem : bucketGroupMap.entrySet()) {
-
-                // 移除：文件存储系统里面的文件
-                iSysFile.remove(subItem.getKey(), subItem.getValue());
-
-            }
-
-        }
+        // 移除：文件存储服务器里面的文件
+        removeSysFileStorage(sysFileDOList);
 
         Set<Long> finalFileIdSet = sysFileDOList.stream().map(BaseEntity::getId).collect(Collectors.toSet());
 
@@ -460,6 +558,57 @@ public class SysFileUtil {
             }
 
         });
+
+    }
+
+    /**
+     * 移除：文件存储服务器里面的文件
+     */
+    private static void removeSysFileStorage(List<SysFileDO> sysFileDOList) {
+
+        if (CollUtil.isEmpty(sysFileDOList)) {
+            return;
+        }
+
+        // 根据：存储类型 id分类
+        Map<Long, List<SysFileDO>> storageTypeGroupMap =
+            sysFileDOList.stream().collect(Collectors.groupingBy(SysFileDO::getStorageConfigurationId));
+
+        List<SysFileStorageConfigurationDO> sysFileStorageConfigurationDOList =
+            ChainWrappers.lambdaQueryChain(sysFileStorageConfigurationMapper).in(BaseEntity::getId, storageTypeGroupMap)
+                .list();
+
+        if (CollUtil.isEmpty(sysFileStorageConfigurationDOList)) {
+            return;
+        }
+
+        // 通过：id进行分组
+        Map<Long, SysFileStorageConfigurationDO> sysFileStorageConfigurationIdMap =
+            sysFileStorageConfigurationDOList.stream().collect(Collectors.toMap(BaseEntity::getId, it -> it));
+
+        for (Map.Entry<Long, List<SysFileDO>> item : storageTypeGroupMap.entrySet()) {
+
+            SysFileStorageConfigurationDO sysFileStorageConfigurationDO =
+                sysFileStorageConfigurationIdMap.get(item.getKey());
+
+            ISysFileStorage iSysFileStorage = SYS_FILE_STORAGE_MAP.get(sysFileStorageConfigurationDO.getType());
+
+            if (iSysFileStorage == null) {
+                continue;
+            }
+
+            // 根据：桶名，进行分类
+            Map<String, Set<String>> bucketGroupMap = item.getValue().stream().collect(Collectors
+                .groupingBy(SysFileDO::getBucketName, Collectors.mapping(SysFileDO::getUri, Collectors.toSet())));
+
+            for (Map.Entry<String, Set<String>> subItem : bucketGroupMap.entrySet()) {
+
+                // 移除：文件存储系统里面的文件
+                iSysFileStorage.remove(subItem.getKey(), subItem.getValue(), sysFileStorageConfigurationDO);
+
+            }
+
+        }
 
     }
 

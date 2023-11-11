@@ -3,6 +3,7 @@ package com.cmcorg20230301.be.engine.pay.base.model.enums;
 import cn.hutool.core.lang.Assert;
 import com.baomidou.mybatisplus.annotation.EnumValue;
 import com.cmcorg20230301.be.engine.pay.base.model.dto.SysPayConfigurationInsertOrUpdateDTO;
+import com.cmcorg20230301.be.engine.pay.base.model.interfaces.ISysPayType;
 import com.fasterxml.jackson.annotation.JsonValue;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -14,7 +15,7 @@ import java.util.function.Consumer;
  */
 @AllArgsConstructor
 @Getter
-public enum SysPayTypeEnum {
+public enum SysPayTypeEnum implements ISysPayType {
 
     DEFAULT(1, null), // 默认，注意：这个类型不要存储到数据库里，这里是代码调用支付时使用，用于表示使用默认支付
 
@@ -45,7 +46,7 @@ public enum SysPayTypeEnum {
     private final int code; // 类型编码
 
     // 检查：SysPayConfigurationInsertOrUpdateDTO
-    private final Consumer<SysPayConfigurationInsertOrUpdateDTO> checkSysPayConfigurationInsertOrUpdateDTOConsumer;
+    private final Consumer<SysPayConfigurationInsertOrUpdateDTO> checkSysPayConfigurationInsertOrUpdateDtoConsumer;
 
     /**
      * 获取：云闪付的，检查 SysPayConfigurationInsertOrUpdateDTO对象的 Consumer

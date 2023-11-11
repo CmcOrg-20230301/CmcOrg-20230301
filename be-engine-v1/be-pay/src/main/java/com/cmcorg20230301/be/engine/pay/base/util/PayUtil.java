@@ -54,7 +54,7 @@ import java.util.function.Consumer;
 @Slf4j(topic = LogTopicConstant.PAY)
 public class PayUtil {
 
-    private static final Map<SysPayTypeEnum, ISysPay> SYS_PAY_MAP = MapUtil.newHashMap();
+    private static final Map<Integer, ISysPay> SYS_PAY_MAP = MapUtil.newHashMap();
 
     private static SysPayService sysPayService;
 
@@ -69,7 +69,7 @@ public class PayUtil {
 
             for (ISysPay item : iSysPayList) {
 
-                SYS_PAY_MAP.put(item.getSysPayType(), item);
+                SYS_PAY_MAP.put(item.getSysPayType().getCode(), item);
 
             }
 
@@ -322,7 +322,7 @@ public class PayUtil {
 
         sysPayDO.setId(payId);
 
-        sysPayDO.setPayType(iSysPay.getSysPayType());
+        sysPayDO.setPayType(iSysPay.getSysPayType().getCode());
 
         sysPayDO.setTenantId(tenantId);
 

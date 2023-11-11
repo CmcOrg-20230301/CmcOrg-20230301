@@ -5,12 +5,16 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.validation.constraints.NotNull;
+
 @Data
 public class SysFileUploadBO {
 
+    @NotNull
     @Schema(description = "文件")
     private MultipartFile file;
 
+    @NotNull
     @Schema(description = "文件上传的类型")
     private ISysFileUploadType uploadType;
 
@@ -20,9 +24,11 @@ public class SysFileUploadBO {
     @Schema(description = "额外信息（json格式）")
     private String extraJson;
 
+    @NotNull
     @Schema(description = "用户主键 id")
     private Long userId;
 
+    @NotNull
     @Schema(description = "租户主键 id")
     private Long tenantId;
 
