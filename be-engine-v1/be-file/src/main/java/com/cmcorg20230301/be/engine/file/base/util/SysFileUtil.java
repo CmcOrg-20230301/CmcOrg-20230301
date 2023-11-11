@@ -374,7 +374,7 @@ public class SysFileUtil {
 
         SysFileStorageConfigurationDO sysFileStorageConfigurationDO =
             ChainWrappers.lambdaQueryChain(sysFileStorageConfigurationMapper)
-                .eq(BaseEntity::getId, storageConfigurationId).one();
+                .eq(BaseEntity::getId, storageConfigurationId).eq(BaseEntityNoId::getEnableFlag, true).one();
 
         if (sysFileStorageConfigurationDO == null) {
 
@@ -458,7 +458,7 @@ public class SysFileUtil {
 
         List<SysFileStorageConfigurationDO> sysFileStorageConfigurationDOList =
             ChainWrappers.lambdaQueryChain(sysFileStorageConfigurationMapper)
-                .eq(BaseEntity::getId, sysFileStorageConfigurationIdSet).list();
+                .eq(BaseEntity::getId, sysFileStorageConfigurationIdSet).eq(BaseEntityNoId::getEnableFlag, true).list();
 
         if (CollUtil.isEmpty(sysFileStorageConfigurationDOList)) {
             return MapUtil.newHashMap();
