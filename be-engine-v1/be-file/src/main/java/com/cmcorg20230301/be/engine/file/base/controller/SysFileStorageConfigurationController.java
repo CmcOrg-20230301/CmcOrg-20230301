@@ -20,7 +20,7 @@ import javax.annotation.Resource;
 import javax.validation.Valid;
 
 @RestController
-@RequestMapping(value = "/sys/fileStorage/configuration")
+@RequestMapping(value = "/sys/fileStorageConfiguration")
 @Tag(name = "文件-存储配置-管理")
 public class SysFileStorageConfigurationController {
 

@@ -45,7 +45,25 @@ export interface SysFileStorageConfigurationDO {
 
 // 分页排序查询
 export function SysFileStorageConfigurationPage(form: SysFileStorageConfigurationPageDTO, config?: AxiosRequestConfig) {
-    return $http.myProPagePost<SysFileStorageConfigurationDO>('/sys/fileStorage/configuration/page', form, config)
+    return $http.myProPagePost<SysFileStorageConfigurationDO>('/sys/fileStorageConfiguration/page', form, config)
+}
+
+export interface NotEmptyIdSet {
+    idSet?: string[] // 主键 idSet，required：true，format：int64
+}
+
+// 批量删除
+export function SysFileStorageConfigurationDeleteByIdSet(form: NotEmptyIdSet, config?: AxiosRequestConfig) {
+    return $http.myPost<string>('/sys/fileStorageConfiguration/deleteByIdSet', form, config)
+}
+
+export interface NotNullId {
+    id?: string // 主键id，required：true，format：int64
+}
+
+// 通过主键id，查看详情
+export function SysFileStorageConfigurationInfoById(form: NotNullId, config?: AxiosRequestConfig) {
+    return $http.myProPost<SysFileStorageConfigurationDO>('/sys/fileStorageConfiguration/infoById', form, config)
 }
 
 export interface SysFileStorageConfigurationInsertOrUpdateDTO {
@@ -66,23 +84,5 @@ export interface SysFileStorageConfigurationInsertOrUpdateDTO {
 
 // 新增/修改
 export function SysFileStorageConfigurationInsertOrUpdate(form: SysFileStorageConfigurationInsertOrUpdateDTO, config?: AxiosRequestConfig) {
-    return $http.myPost<string>('/sys/fileStorage/configuration/insertOrUpdate', form, config)
-}
-
-export interface NotEmptyIdSet {
-    idSet?: string[] // 主键 idSet，required：true，format：int64
-}
-
-// 批量删除
-export function SysFileStorageConfigurationDeleteByIdSet(form: NotEmptyIdSet, config?: AxiosRequestConfig) {
-    return $http.myPost<string>('/sys/fileStorage/configuration/deleteByIdSet', form, config)
-}
-
-export interface NotNullId {
-    id?: string // 主键id，required：true，format：int64
-}
-
-// 通过主键id，查看详情
-export function SysFileStorageConfigurationInfoById(form: NotNullId, config?: AxiosRequestConfig) {
-    return $http.myProPost<SysFileStorageConfigurationDO>('/sys/fileStorage/configuration/infoById', form, config)
+    return $http.myPost<string>('/sys/fileStorageConfiguration/insertOrUpdate', form, config)
 }
