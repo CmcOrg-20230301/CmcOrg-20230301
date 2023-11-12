@@ -8,8 +8,8 @@ export interface NotNullId {
 }
 
 export interface SysUserDO {
-    wxOpenId?: string // 微信 openId，可以为空
-    wxAppId?: string // 微信 appId，可以为空
+    wxOpenId?: string // 微信 openId，可以为空，wxOpenId + wxAppId 全租户唯一
+    wxAppId?: string // 微信 appId，可以为空，wxOpenId + wxAppId 全租户唯一
     updateTime?: string // 修改时间，format：date-time
     remark?: string // 备注
     delFlag?: boolean // 是否注销，未使用，而是采取直接删除的方式，目的：防止数据量越来越大
@@ -28,7 +28,7 @@ export interface SysUserDO {
 }
 
 export interface SysUserInfoByIdVO {
-    wxOpenId?: string // 微信 openId，可以为空
+    wxOpenId?: string // 微信 openId，可以为空，wxOpenId + wxAppId 全租户唯一
     bio?: string // 个人简介
     remark?: string // 备注
     delFlag?: boolean // 是否注销，未使用，而是采取直接删除的方式，目的：防止数据量越来越大
@@ -42,7 +42,7 @@ export interface SysUserInfoByIdVO {
     email?: string // 邮箱，可以为空
     postIdSet?: string[] // 岗位 idSet，format：int64
     avatarFileId?: string // 头像 fileId（文件主键 id），format：int64
-    wxAppId?: string // 微信 appId，可以为空
+    wxAppId?: string // 微信 appId，可以为空，wxOpenId + wxAppId 全租户唯一
     updateTime?: string // 修改时间，format：date-time
     version?: number // 乐观锁，format：int32
     parentId?: string // 父节点id（顶级则为0），format：int64
@@ -156,6 +156,8 @@ export function SysUserResetAvatar(form: NotEmptyIdSet, config?: AxiosRequestCon
 
 export interface SysUserInsertOrUpdateDTO {
     postIdSet?: string[] // 岗位 idSet，format：int64
+    wxOpenId?: string // 微信 openId
+    wxAppId?: string // 微信 appId
     bio?: string // 个人简介
     originPassword?: string // 前端加密之后的原始密码
     password?: string // 前端加密之后的密码

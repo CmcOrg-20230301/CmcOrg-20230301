@@ -4,22 +4,25 @@ import $http from "@/util/HttpUtil";
 import {AxiosRequestConfig} from "axios";
 
 export interface SysOtherAppPageDTO {
-    current?: string // 第几页，format：int64
-    qrCode?: string // 二维码，备注：不是二维码图片的地址，而是二维码解码之后的值
-    subscribeReplyContent?: string // 用户点击关注之后，回复的内容，备注：如果取关然后再关注，也会回复该内容
+    textReplyContent?: string // 用户发送文字之后，回复的内容
     openId?: string // 第三方应用的 openId/微信号，例如：接收微信公众号消息时的 ToUserName
-    appId?: string // 第三方应用的 appId，备注：同一个类型下，所有租户不能重复，原因：比如接收公众号消息时，就无法找到具体是哪一个租户
-    name?: string // 第三方应用名
     pageSize?: string // 每页显示条数，format：int64
-    tenantIdSet?: string[] // 租户 idSet，format：int64
     remark?: string // 备注
     type?: string // 第三方应用类型
+    current?: string // 第几页，format：int64
+    imageReplyContent?: string // 用户发送图片之后，回复的内容
+    qrCode?: string // 二维码，备注：不是二维码图片的地址，而是二维码解码之后的值
+    subscribeReplyContent?: string // 用户点击关注之后，回复的内容，备注：如果取关然后再关注，也会回复该内容
+    appId?: string // 第三方应用的 appId，备注：同一个类型下，所有租户不能重复，原因：比如接收公众号消息时，就无法找到具体是哪一个租户
+    name?: string // 第三方应用名
+    tenantIdSet?: string[] // 租户 idSet，format：int64
     enableFlag?: boolean // 是否启用
     order?: MyOrderDTO // 排序字段
     sort?: Record<string, SortOrder> // 排序字段（只在前端使用，实际传值：order）
 }
 
 export interface SysOtherAppDO {
+    textReplyContent?: string // 用户发送文字之后，回复的内容
     openId?: string // 第三方应用的 openId/微信号，例如：接收微信公众号消息时的 ToUserName
     updateTime?: string // 修改时间，format：date-time
     remark?: string // 备注
@@ -28,6 +31,7 @@ export interface SysOtherAppDO {
     type?: string // 第三方应用类型
     version?: number // 乐观锁，format：int32
     updateId?: string // 修改人id，format：int64
+    imageReplyContent?: string // 用户发送图片之后，回复的内容
     qrCode?: string // 二维码，备注：不是二维码图片的地址，而是二维码解码之后的值
     createTime?: string // 创建时间，format：date-time
     subscribeReplyContent?: string // 用户点击关注之后，回复的内容，备注：如果取关然后再关注，也会回复该内容
@@ -110,16 +114,18 @@ export function SysOtherAppInfoById(form: NotNullId, config?: AxiosRequestConfig
 }
 
 export interface SysOtherAppInsertOrUpdateDTO {
+    textReplyContent?: string // 用户发送文字之后，回复的内容
+    openId?: string // 第三方应用的 openId/微信号，例如：接收微信公众号消息时的 ToUserName
+    remark?: string // 备注
+    secret?: string // 第三方应用的 secret，required：true
+    type?: string // 第三方应用类型，required：true
+    imageReplyContent?: string // 用户发送图片之后，回复的内容
     qrCode?: string // 二维码，备注：不是二维码图片的地址，而是二维码解码之后的值
     subscribeReplyContent?: string // 用户点击关注之后，回复的内容，备注：如果取关然后再关注，也会回复该内容
-    openId?: string // 第三方应用的 openId/微信号，例如：接收微信公众号消息时的 ToUserName
     appId?: string // 第三方应用的 appId，备注：同一个类型下，所有租户不能重复，原因：比如接收公众号消息时，就无法找到具体是哪一个租户，required：true
     tenantId?: string // 租户 id，可以为空，为空则表示：默认租户：0，format：int64
     name?: string // 第三方应用名，required：true
-    remark?: string // 备注
     id?: string // 主键 id，format：int64
-    secret?: string // 第三方应用的 secret，required：true
-    type?: string // 第三方应用类型，required：true
     enableFlag?: boolean // 是否启用
 }
 
