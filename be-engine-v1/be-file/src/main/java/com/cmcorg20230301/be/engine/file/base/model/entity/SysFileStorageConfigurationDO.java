@@ -8,7 +8,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 @EqualsAndHashCode(callSuper = true)
-@TableName(value = "sys_file_configuration")
+@TableName(value = "sys_file_storage_configuration")
 @Data
 @Schema(description = "主表：文件存储配置")
 public class SysFileStorageConfigurationDO extends BaseEntity {

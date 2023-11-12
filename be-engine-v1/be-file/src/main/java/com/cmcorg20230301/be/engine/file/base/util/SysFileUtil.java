@@ -458,7 +458,7 @@ public class SysFileUtil {
 
         List<SysFileStorageConfigurationDO> sysFileStorageConfigurationDOList =
             ChainWrappers.lambdaQueryChain(sysFileStorageConfigurationMapper)
-                .eq(BaseEntity::getId, sysFileStorageConfigurationIdSet).eq(BaseEntityNoId::getEnableFlag, true).list();
+                .in(BaseEntity::getId, sysFileStorageConfigurationIdSet).eq(BaseEntityNoId::getEnableFlag, true).list();
 
         if (CollUtil.isEmpty(sysFileStorageConfigurationDOList)) {
             return MapUtil.newHashMap();
@@ -472,6 +472,10 @@ public class SysFileUtil {
 
             SysFileStorageConfigurationDO sysFileStorageConfigurationDO =
                 sysFileStorageConfigurationIdMap.get(item.getStorageConfigurationId());
+
+            if (sysFileStorageConfigurationDO == null) {
+                continue;
+            }
 
             ISysFileStorage iSysFileStorage = SYS_FILE_STORAGE_MAP.get(sysFileStorageConfigurationDO.getType());
 
@@ -575,8 +579,8 @@ public class SysFileUtil {
             sysFileDOList.stream().collect(Collectors.groupingBy(SysFileDO::getStorageConfigurationId));
 
         List<SysFileStorageConfigurationDO> sysFileStorageConfigurationDOList =
-            ChainWrappers.lambdaQueryChain(sysFileStorageConfigurationMapper).in(BaseEntity::getId, storageTypeGroupMap)
-                .list();
+            ChainWrappers.lambdaQueryChain(sysFileStorageConfigurationMapper)
+                .in(BaseEntity::getId, storageTypeGroupMap.keySet()).list();
 
         if (CollUtil.isEmpty(sysFileStorageConfigurationDOList)) {
             return;
@@ -590,6 +594,10 @@ public class SysFileUtil {
 
             SysFileStorageConfigurationDO sysFileStorageConfigurationDO =
                 sysFileStorageConfigurationIdMap.get(item.getKey());
+
+            if (sysFileStorageConfigurationDO == null) {
+                continue;
+            }
 
             ISysFileStorage iSysFileStorage = SYS_FILE_STORAGE_MAP.get(sysFileStorageConfigurationDO.getType());
 

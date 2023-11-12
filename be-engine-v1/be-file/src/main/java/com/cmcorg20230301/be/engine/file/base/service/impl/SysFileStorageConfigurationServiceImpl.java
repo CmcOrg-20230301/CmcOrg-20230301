@@ -103,8 +103,9 @@ public class SysFileStorageConfigurationServiceImpl
             .select(BaseEntity::getId, BaseEntityNoIdFather::getTenantId, BaseEntityNoId::getEnableFlag,
                 BaseEntityNoId::getRemark, BaseEntityNoIdFather::getCreateId, BaseEntityNoIdFather::getCreateTime,
                 BaseEntityNoIdFather::getUpdateId, BaseEntityNoIdFather::getUpdateTime,
-                SysFileStorageConfigurationDO::getName, SysFileStorageConfigurationDO::getType)
-            .orderByDesc(BaseEntity::getUpdateTime).page(dto.page(true));
+                SysFileStorageConfigurationDO::getName, SysFileStorageConfigurationDO::getType,
+                SysFileStorageConfigurationDO::getDefaultFlag).orderByDesc(BaseEntity::getUpdateTime)
+            .page(dto.page(true));
 
     }
 
