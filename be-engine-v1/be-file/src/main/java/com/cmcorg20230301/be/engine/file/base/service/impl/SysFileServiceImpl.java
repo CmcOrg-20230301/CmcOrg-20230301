@@ -1,19 +1,30 @@
 package com.cmcorg20230301.be.engine.file.base.service.impl;
 
+import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.util.StrUtil;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.cmcorg20230301.be.engine.file.base.mapper.SysFileMapper;
 import com.cmcorg20230301.be.engine.file.base.model.bo.SysFileUploadBO;
+import com.cmcorg20230301.be.engine.file.base.model.dto.SysFilePageDTO;
+import com.cmcorg20230301.be.engine.file.base.model.dto.SysFilePageSelfDTO;
 import com.cmcorg20230301.be.engine.file.base.model.dto.SysFileUploadDTO;
 import com.cmcorg20230301.be.engine.file.base.model.entity.SysFileDO;
 import com.cmcorg20230301.be.engine.file.base.service.SysFileService;
 import com.cmcorg20230301.be.engine.file.base.util.SysFileUtil;
+import com.cmcorg20230301.be.engine.model.model.constant.BaseConstant;
 import com.cmcorg20230301.be.engine.model.model.dto.NotEmptyIdSet;
 import com.cmcorg20230301.be.engine.model.model.dto.NotNullId;
 import com.cmcorg20230301.be.engine.model.model.vo.LongObjectMapVO;
 import com.cmcorg20230301.be.engine.security.exception.BaseBizCodeEnum;
+import com.cmcorg20230301.be.engine.security.model.entity.BaseEntity;
+import com.cmcorg20230301.be.engine.security.model.entity.BaseEntityNoId;
+import com.cmcorg20230301.be.engine.security.model.entity.BaseEntityNoIdFather;
+import com.cmcorg20230301.be.engine.security.model.enums.SysUserTenantEnum;
 import com.cmcorg20230301.be.engine.security.model.vo.ApiResultVO;
 import com.cmcorg20230301.be.engine.security.util.ResponseUtil;
+import com.cmcorg20230301.be.engine.security.util.SysTenantUtil;
 import com.cmcorg20230301.be.engine.security.util.UserUtil;
 import lombok.SneakyThrows;
 import org.springframework.stereotype.Service;
@@ -90,6 +101,73 @@ public class SysFileServiceImpl extends ServiceImpl<SysFileMapper, SysFileDO> im
     public LongObjectMapVO<String> getPublicUrl(NotEmptyIdSet notEmptyIdSet) {
 
         return new LongObjectMapVO<>(SysFileUtil.getPublicUrl(notEmptyIdSet.getIdSet()));
+
+    }
+
+    /**
+     * 分页排序查询
+     */
+    @Override
+    public Page<SysFileDO> myPage(SysFilePageDTO dto) {
+
+        // 处理：MyTenantPageDTO
+        SysTenantUtil.handleMyTenantPageDTO(dto, true);
+
+        return lambdaQuery()
+            .like(StrUtil.isNotBlank(dto.getOriginFileName()), SysFileDO::getOriginFileName, dto.getOriginFileName())
+            .like(StrUtil.isNotBlank(dto.getRemark()), BaseEntity::getRemark, dto.getRemark())
+            .eq(dto.getBelongId() != null, SysFileDO::getBelongId, dto.getBelongId())
+            .eq(dto.getUploadType() != null, SysFileDO::getUploadType, dto.getUploadType())
+            .eq(dto.getStorageType() != null, SysFileDO::getStorageType, dto.getStorageType())
+            .eq(dto.getPublicFlag() != null, SysFileDO::getPublicFlag, dto.getPublicFlag())
+            .eq(dto.getEnableFlag() != null, BaseEntity::getEnableFlag, dto.getEnableFlag())
+
+            .ne(SysUserTenantEnum.USER.equals(dto.getSysUserTenantEnum()), SysFileDO::getBelongId,
+                BaseConstant.TENANT_USER_ID) //
+
+            .eq(SysUserTenantEnum.TENANT.equals(dto.getSysUserTenantEnum()), SysFileDO::getBelongId,
+                BaseConstant.TENANT_USER_ID) //
+
+            .in(BaseEntityNoId::getTenantId, dto.getTenantIdSet()) //
+            .select(BaseEntity::getId, BaseEntityNoIdFather::getTenantId, BaseEntityNoId::getEnableFlag,
+                BaseEntityNoId::getRemark, BaseEntityNoIdFather::getCreateId, BaseEntityNoIdFather::getCreateTime,
+                BaseEntityNoIdFather::getUpdateId, BaseEntityNoIdFather::getUpdateTime, SysFileDO::getOriginFileName,
+                SysFileDO::getBelongId, SysFileDO::getUploadType, SysFileDO::getStorageType, SysFileDO::getPublicFlag)
+            .orderByDesc(BaseEntity::getUpdateTime).page(dto.page(true));
+
+    }
+
+    /**
+     * 分页排序查询-自我
+     */
+    @Override
+    public Page<SysFileDO> myPageSelf(SysFilePageSelfDTO dto) {
+
+        SysFilePageDTO sysFilePageDTO = BeanUtil.copyProperties(dto, SysFilePageDTO.class);
+
+        Long currentUserId = UserUtil.getCurrentUserId();
+
+        sysFilePageDTO.setBelongId(currentUserId); // 设置为：当前用户
+
+        return myPage(sysFilePageDTO);
+
+    }
+
+    /**
+     * 分页排序查询-租户
+     */
+    @Override
+    public Page<SysFileDO> myPageTenant(SysFilePageSelfDTO dto) {
+
+        SysFilePageDTO sysFilePageDTO = BeanUtil.copyProperties(dto, SysFilePageDTO.class);
+
+        sysFilePageDTO.setBelongId(BaseConstant.TENANT_USER_ID); // 设置为：租户用户 id
+
+        Long currentTenantIdDefault = UserUtil.getCurrentTenantIdDefault();
+
+        sysFilePageDTO.setTenantIdSet(CollUtil.newHashSet(currentTenantIdDefault)); // 设置为：当前租户
+
+        return myPage(sysFilePageDTO);
 
     }
 

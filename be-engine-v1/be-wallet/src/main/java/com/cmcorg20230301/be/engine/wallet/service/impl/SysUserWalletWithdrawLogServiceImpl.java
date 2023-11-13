@@ -21,6 +21,7 @@ import com.cmcorg20230301.be.engine.security.mapper.SysUserMapper;
 import com.cmcorg20230301.be.engine.security.model.entity.BaseEntity;
 import com.cmcorg20230301.be.engine.security.model.entity.BaseEntityNoId;
 import com.cmcorg20230301.be.engine.security.model.entity.BaseEntityNoIdFather;
+import com.cmcorg20230301.be.engine.security.model.enums.SysUserTenantEnum;
 import com.cmcorg20230301.be.engine.security.model.vo.ApiResultVO;
 import com.cmcorg20230301.be.engine.security.util.SysTenantUtil;
 import com.cmcorg20230301.be.engine.security.util.UserUtil;
@@ -32,7 +33,6 @@ import com.cmcorg20230301.be.engine.wallet.model.entity.SysUserWalletDO;
 import com.cmcorg20230301.be.engine.wallet.model.entity.SysUserWalletWithdrawLogDO;
 import com.cmcorg20230301.be.engine.wallet.model.enums.SysUserWalletLogTypeEnum;
 import com.cmcorg20230301.be.engine.wallet.model.enums.SysUserWalletWithdrawStatusEnum;
-import com.cmcorg20230301.be.engine.wallet.model.enums.SysUserWalletWithdrawTypeEnum;
 import com.cmcorg20230301.be.engine.wallet.service.SysUserWalletService;
 import com.cmcorg20230301.be.engine.wallet.service.SysUserWalletWithdrawLogService;
 import org.jetbrains.annotations.NotNull;
@@ -145,10 +145,10 @@ public class SysUserWalletWithdrawLogServiceImpl
                 .eq(dto.getWithdrawStatus() != null, SysUserWalletWithdrawLogDO::getWithdrawStatus,
                     dto.getWithdrawStatus()) //
 
-                .ne(SysUserWalletWithdrawTypeEnum.USER.equals(dto.getType()), SysUserWalletWithdrawLogDO::getUserId,
+                .ne(SysUserTenantEnum.USER.equals(dto.getSysUserTenantEnum()), SysUserWalletWithdrawLogDO::getUserId,
                     BaseConstant.TENANT_USER_ID) //
 
-                .eq(SysUserWalletWithdrawTypeEnum.TENANT.equals(dto.getType()), SysUserWalletWithdrawLogDO::getUserId,
+                .eq(SysUserTenantEnum.TENANT.equals(dto.getSysUserTenantEnum()), SysUserWalletWithdrawLogDO::getUserId,
                     BaseConstant.TENANT_USER_ID) //
 
                 .le(dto.getCtEndTime() != null, SysUserWalletWithdrawLogDO::getCreateTime, dto.getCtEndTime())

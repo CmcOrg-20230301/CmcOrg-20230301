@@ -1,6 +1,10 @@
 package com.cmcorg20230301.be.engine.file.base.controller;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.cmcorg20230301.be.engine.file.base.model.dto.SysFilePageDTO;
+import com.cmcorg20230301.be.engine.file.base.model.dto.SysFilePageSelfDTO;
 import com.cmcorg20230301.be.engine.file.base.model.dto.SysFileUploadDTO;
+import com.cmcorg20230301.be.engine.file.base.model.entity.SysFileDO;
 import com.cmcorg20230301.be.engine.file.base.service.SysFileService;
 import com.cmcorg20230301.be.engine.model.model.dto.NotEmptyIdSet;
 import com.cmcorg20230301.be.engine.model.model.dto.NotNullId;
@@ -9,6 +13,7 @@ import com.cmcorg20230301.be.engine.security.exception.BaseBizCodeEnum;
 import com.cmcorg20230301.be.engine.security.model.vo.ApiResultVO;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -48,6 +53,26 @@ public class SysFileController {
     @PostMapping("/getPublicUrl")
     public ApiResultVO<LongObjectMapVO<String>> getPublicUrl(@RequestBody @Valid NotEmptyIdSet notEmptyIdSet) {
         return ApiResultVO.okData(baseService.getPublicUrl(notEmptyIdSet));
+    }
+
+    @Operation(summary = "分页排序查询")
+    @PostMapping("/page")
+    @PreAuthorize("hasAuthority('sysFile:page')")
+    public ApiResultVO<Page<SysFileDO>> myPage(@RequestBody @Valid SysFilePageDTO dto) {
+        return ApiResultVO.okData(baseService.myPage(dto));
+    }
+
+    @Operation(summary = "分页排序查询-自我")
+    @PostMapping("/page/self")
+    public ApiResultVO<Page<SysFileDO>> myPageSelf(@RequestBody @Valid SysFilePageSelfDTO dto) {
+        return ApiResultVO.okData(baseService.myPageSelf(dto));
+    }
+
+    @Operation(summary = "分页排序查询-租户")
+    @PostMapping("/page/tenant")
+    @PreAuthorize("hasAuthority('sysFile:pageTenant')")
+    public ApiResultVO<Page<SysFileDO>> myPageTenant(@RequestBody @Valid SysFilePageSelfDTO dto) {
+        return ApiResultVO.okData(baseService.myPageTenant(dto));
     }
 
 }

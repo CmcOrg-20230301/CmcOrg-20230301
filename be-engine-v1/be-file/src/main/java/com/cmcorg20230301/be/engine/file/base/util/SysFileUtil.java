@@ -313,6 +313,8 @@ public class SysFileUtil {
 
         sysFileDO.setPublicFlag(bo.getUploadType().isPublicFlag());
 
+        sysFileDO.setFileSize(bo.getFile().getSize());
+
         sysFileDO.setEnableFlag(true);
 
         sysFileDO.setDelFlag(false);
