@@ -26,6 +26,7 @@ import com.cmcorg20230301.be.engine.security.model.vo.ApiResultVO;
 import com.cmcorg20230301.be.engine.security.util.ResponseUtil;
 import com.cmcorg20230301.be.engine.security.util.SysTenantUtil;
 import com.cmcorg20230301.be.engine.security.util.UserUtil;
+import com.cmcorg20230301.be.engine.util.util.CallBack;
 import lombok.SneakyThrows;
 import org.springframework.stereotype.Service;
 
@@ -67,11 +68,15 @@ public class SysFileServiceImpl extends ServiceImpl<SysFileMapper, SysFileDO> im
     @Override
     public void privateDownload(NotNullId notNullId, HttpServletResponse response) {
 
-        InputStream inputStream = SysFileUtil.privateDownload(notNullId.getId());
+        CallBack<String> fileNameCallBack = new CallBack<>();
+
+        InputStream inputStream = SysFileUtil.privateDownload(notNullId.getId(), fileNameCallBack);
 
         if (inputStream == null) {
             ApiResultVO.errorMsg("操作失败：文件流获取失败");
         }
+
+        ResponseUtil.getOutputStream(response, fileNameCallBack.getValue());
 
         // 推送
         ResponseUtil.flush(response, inputStream);

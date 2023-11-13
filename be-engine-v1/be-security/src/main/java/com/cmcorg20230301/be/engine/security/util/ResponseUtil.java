@@ -94,6 +94,18 @@ public class ResponseUtil {
     }
 
     /**
+     * 获取 文件下载的 OutputStream
+     */
+    @SneakyThrows
+    public static OutputStream getOutputStream(HttpServletResponse response, String fileName) {
+
+        response.setHeader("Content-Disposition", "attachment;filename=" + URLEncoder.encode(fileName, "UTF-8"));
+
+        return response.getOutputStream();
+
+    }
+
+    /**
      * 把流复制给 response，然后返回给调用者
      */
     @SneakyThrows

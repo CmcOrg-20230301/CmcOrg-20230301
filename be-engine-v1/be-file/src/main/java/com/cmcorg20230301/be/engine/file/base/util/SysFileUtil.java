@@ -29,6 +29,7 @@ import com.cmcorg20230301.be.engine.security.model.vo.ApiResultVO;
 import com.cmcorg20230301.be.engine.security.util.MyEntityUtil;
 import com.cmcorg20230301.be.engine.security.util.SysTenantUtil;
 import com.cmcorg20230301.be.engine.security.util.UserUtil;
+import com.cmcorg20230301.be.engine.util.util.CallBack;
 import lombok.SneakyThrows;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -332,7 +333,7 @@ public class SysFileUtil {
      */
     @SneakyThrows
     @Nullable
-    public static InputStream privateDownload(long fileId) {
+    public static InputStream privateDownload(long fileId, @Nullable CallBack<String> fileNameCallBack) {
 
         Set<Long> idSet = CollUtil.newHashSet(fileId);
 
@@ -350,13 +351,18 @@ public class SysFileUtil {
 
             Long currentUserId = UserUtil.getCurrentUserId();
 
-            // 检查：是否有可读权限
-            boolean exists = sysFileAuthService.lambdaQuery().eq(SysFileAuthDO::getFileId, fileId)
-                .eq(SysFileAuthDO::getUserId, currentUserId).eq(SysFileAuthDO::getReadFlag, true)
-                .eq(BaseEntityNoId::getEnableFlag, true).exists();
+            // 检查：是否是该文件的拥有者
+            if (!currentUserId.equals(sysFileDO.getBelongId())) {
 
-            if (BooleanUtil.isFalse(exists)) {
-                ApiResultVO.error(BaseBizCodeEnum.INSUFFICIENT_PERMISSIONS);
+                // 检查：是否有可读权限
+                boolean exists = sysFileAuthService.lambdaQuery().eq(SysFileAuthDO::getFileId, fileId)
+                    .eq(SysFileAuthDO::getUserId, currentUserId).eq(SysFileAuthDO::getReadFlag, true)
+                    .eq(BaseEntityNoId::getEnableFlag, true).exists();
+
+                if (BooleanUtil.isFalse(exists)) {
+                    ApiResultVO.error(BaseBizCodeEnum.INSUFFICIENT_PERMISSIONS);
+                }
+
             }
 
         }
@@ -381,6 +387,12 @@ public class SysFileUtil {
         if (sysFileStorageConfigurationDO == null) {
 
             ApiResultVO.error("操作失败：文件存储配置不存在", storageConfigurationId);
+
+        }
+
+        if (fileNameCallBack != null) {
+
+            fileNameCallBack.setValue(sysFileDO.getOriginFileName());
 
         }
 
@@ -424,7 +436,8 @@ public class SysFileUtil {
         return sysFileService.lambdaQuery()
             .select(SysFileDO::getBucketName, SysFileDO::getNewFileName, SysFileDO::getPublicFlag,
                 SysFileDO::getRefFileId, SysFileDO::getStorageType, SysFileDO::getType, BaseEntity::getId,
-                SysFileDO::getUri, SysFileDO::getStorageConfigurationId).eq(BaseEntityNoId::getEnableFlag, true);
+                SysFileDO::getUri, SysFileDO::getStorageConfigurationId, SysFileDO::getBelongId,
+                SysFileDO::getOriginFileName).eq(BaseEntityNoId::getEnableFlag, true);
 
     }
 
