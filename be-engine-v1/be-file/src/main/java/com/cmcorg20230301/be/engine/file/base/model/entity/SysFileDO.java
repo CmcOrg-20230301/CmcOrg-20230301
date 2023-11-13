@@ -42,6 +42,9 @@ public class SysFileDO extends BaseEntity {
     @Schema(description = "文件上传类型")
     private Integer uploadType;
 
+    @Schema(description = "存储文件配置主键 id")
+    private Long storageConfigurationId;
+
     /**
      * {@link ISysFileStorageType}
      */

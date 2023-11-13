@@ -2,8 +2,10 @@ package com.cmcorg20230301.be.engine.file.minio.util;
 
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.io.IoUtil;
+import com.cmcorg20230301.be.engine.file.base.model.entity.SysFileStorageConfigurationDO;
 import io.minio.*;
 import lombok.SneakyThrows;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
@@ -17,22 +19,19 @@ import java.util.Set;
 @Component
 public class FileMinioUtil {
 
-    private static MinioClient minioClient;
-
-    public FileMinioUtil(MinioClient minioClient) {
-
-        FileMinioUtil.minioClient = minioClient;
-
-    }
-
     /**
      * 上传文件
      * 备注：objectName 相同会被覆盖掉
      */
     @SneakyThrows
-    public static void upload(String bucketName, String objectName, MultipartFile file) {
+    public static void upload(String bucketName, String objectName, MultipartFile file,
+        @NotNull SysFileStorageConfigurationDO sysFileStorageConfigurationDO) {
 
         InputStream inputStream = file.getInputStream();
+
+        MinioClient minioClient = MinioClient.builder().endpoint(sysFileStorageConfigurationDO.getUploadEndpoint())
+            .credentials(sysFileStorageConfigurationDO.getAccessKey(), sysFileStorageConfigurationDO.getSecretKey())
+            .build();
 
         minioClient.putObject(PutObjectArgs.builder().bucket(bucketName).object(objectName)
             .stream(inputStream, -1, ObjectWriteArgs.MAX_PART_SIZE).build());
@@ -46,7 +45,12 @@ public class FileMinioUtil {
      */
     @SneakyThrows
     @Nullable
-    public static InputStream download(String bucketName, String objectName) {
+    public static InputStream download(String bucketName, String objectName,
+        SysFileStorageConfigurationDO sysFileStorageConfigurationDO) {
+
+        MinioClient minioClient = MinioClient.builder().endpoint(sysFileStorageConfigurationDO.getUploadEndpoint())
+            .credentials(sysFileStorageConfigurationDO.getAccessKey(), sysFileStorageConfigurationDO.getSecretKey())
+            .build();
 
         return minioClient.getObject(GetObjectArgs.builder().bucket(bucketName).object(objectName).build());
 
@@ -56,11 +60,16 @@ public class FileMinioUtil {
      * 批量删除文件
      */
     @SneakyThrows
-    public static void remove(String bucketName, Set<String> objectNameSet) {
+    public static void remove(String bucketName, Set<String> objectNameSet,
+        SysFileStorageConfigurationDO sysFileStorageConfigurationDO) {
 
         if (CollUtil.isEmpty(objectNameSet)) {
             return;
         }
+
+        MinioClient minioClient = MinioClient.builder().endpoint(sysFileStorageConfigurationDO.getUploadEndpoint())
+            .credentials(sysFileStorageConfigurationDO.getAccessKey(), sysFileStorageConfigurationDO.getSecretKey())
+            .build();
 
         for (String item : objectNameSet) {
 

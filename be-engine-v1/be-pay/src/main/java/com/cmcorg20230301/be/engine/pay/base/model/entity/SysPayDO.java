@@ -4,8 +4,8 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.cmcorg20230301.be.engine.pay.base.model.enums.SysPayTradeStatusEnum;
-import com.cmcorg20230301.be.engine.pay.base.model.enums.SysPayTypeEnum;
 import com.cmcorg20230301.be.engine.pay.base.model.interfaces.ISysPayRefType;
+import com.cmcorg20230301.be.engine.pay.base.model.interfaces.ISysPayType;
 import com.cmcorg20230301.be.engine.security.model.entity.BaseEntity;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
@@ -24,8 +24,11 @@ public class SysPayDO extends BaseEntity {
     @Schema(description = "主键id")
     private Long id;
 
+    /**
+     * {@link ISysPayType}
+     */
     @Schema(description = "支付方式")
-    private SysPayTypeEnum payType;
+    private Integer payType;
 
     @Schema(description = "支付配置主键 id")
     private Long sysPayConfigurationId;

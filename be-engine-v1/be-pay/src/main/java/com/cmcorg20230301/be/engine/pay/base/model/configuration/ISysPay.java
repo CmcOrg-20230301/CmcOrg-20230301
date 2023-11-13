@@ -4,7 +4,7 @@ import com.cmcorg20230301.be.engine.pay.base.model.bo.SysPayReturnBO;
 import com.cmcorg20230301.be.engine.pay.base.model.dto.PayDTO;
 import com.cmcorg20230301.be.engine.pay.base.model.entity.SysPayConfigurationDO;
 import com.cmcorg20230301.be.engine.pay.base.model.enums.SysPayTradeStatusEnum;
-import com.cmcorg20230301.be.engine.pay.base.model.enums.SysPayTypeEnum;
+import com.cmcorg20230301.be.engine.pay.base.model.interfaces.ISysPayType;
 import org.jetbrains.annotations.NotNull;
 
 public interface ISysPay {
@@ -12,7 +12,7 @@ public interface ISysPay {
     /**
      * 支付方式类型
      */
-    @NotNull SysPayTypeEnum getSysPayType();
+    @NotNull ISysPayType getSysPayType();
 
     /**
      * 支付返回值，备注：一般返回 url

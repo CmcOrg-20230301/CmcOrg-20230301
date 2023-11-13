@@ -7,6 +7,7 @@ import com.cmcorg20230301.be.engine.pay.base.model.dto.PayDTO;
 import com.cmcorg20230301.be.engine.pay.base.model.entity.SysPayConfigurationDO;
 import com.cmcorg20230301.be.engine.pay.base.model.enums.SysPayTradeStatusEnum;
 import com.cmcorg20230301.be.engine.pay.base.model.enums.SysPayTypeEnum;
+import com.cmcorg20230301.be.engine.pay.base.model.interfaces.ISysPayType;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.context.annotation.Configuration;
 
@@ -21,7 +22,7 @@ public class PayAliWebAppConfiguration implements ISysPay {
      */
     @Override
     @NotNull
-    public SysPayTypeEnum getSysPayType() {
+    public ISysPayType getSysPayType() {
         return SysPayTypeEnum.ALI_WEB_APP;
     }
 

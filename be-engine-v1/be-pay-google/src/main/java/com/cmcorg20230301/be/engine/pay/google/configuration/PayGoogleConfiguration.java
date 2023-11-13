@@ -6,6 +6,7 @@ import com.cmcorg20230301.be.engine.pay.base.model.dto.PayDTO;
 import com.cmcorg20230301.be.engine.pay.base.model.entity.SysPayConfigurationDO;
 import com.cmcorg20230301.be.engine.pay.base.model.enums.SysPayTradeStatusEnum;
 import com.cmcorg20230301.be.engine.pay.base.model.enums.SysPayTypeEnum;
+import com.cmcorg20230301.be.engine.pay.base.model.interfaces.ISysPayType;
 import com.cmcorg20230301.be.engine.pay.google.util.PayGoogleUtil;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.context.annotation.Configuration;
@@ -21,7 +22,7 @@ public class PayGoogleConfiguration implements ISysPay {
      */
     @Override
     @NotNull
-    public SysPayTypeEnum getSysPayType() {
+    public ISysPayType getSysPayType() {
         return SysPayTypeEnum.GOOGLE;
     }
 
