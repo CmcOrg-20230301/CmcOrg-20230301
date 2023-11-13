@@ -1,7 +1,7 @@
 package com.cmcorg20230301.be.engine.pay.base.model.dto;
 
 import com.cmcorg20230301.be.engine.pay.base.model.entity.SysPayConfigurationDO;
-import com.cmcorg20230301.be.engine.pay.base.model.enums.SysPayTypeEnum;
+import com.cmcorg20230301.be.engine.pay.base.model.interfaces.ISysPayType;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
@@ -15,8 +15,11 @@ public class PayDTO {
     @Schema(description = "是否使用：上级租户的支付方式")
     private Boolean useParentTenantPayFlag;
 
+    /**
+     * {@link ISysPayType}
+     */
     @Schema(description = "支付方式，必填")
-    private SysPayTypeEnum payType;
+    private Integer payType;
 
     @Schema(description = "租户 id，备注：只用于获取支付参数配置，无其他用处，必填")
     private Long tenantId;

@@ -5,7 +5,6 @@ import cn.hutool.core.util.BooleanUtil;
 import cn.hutool.core.util.RandomUtil;
 import com.cmcorg20230301.be.engine.model.model.constant.BaseConstant;
 import com.cmcorg20230301.be.engine.pay.base.model.entity.SysPayConfigurationDO;
-import com.cmcorg20230301.be.engine.pay.base.model.enums.SysPayTypeEnum;
 import com.cmcorg20230301.be.engine.pay.base.service.SysPayConfigurationService;
 import com.cmcorg20230301.be.engine.security.model.entity.BaseEntity;
 import com.cmcorg20230301.be.engine.security.model.entity.BaseEntityNoId;
@@ -34,7 +33,7 @@ public class PayHelper {
      * 获取：SysPayConfigurationDO对象
      */
     @NotNull
-    public static SysPayConfigurationDO getSysPayConfigurationDO(@Nullable Long tenantId, SysPayTypeEnum sysPayTypeEnum,
+    public static SysPayConfigurationDO getSysPayConfigurationDO(@Nullable Long tenantId, Integer sysPayType,
         @Nullable Boolean useParentTenantPayFlag) {
 
         if (tenantId == null) {
@@ -43,7 +42,7 @@ public class PayHelper {
 
         List<SysPayConfigurationDO> sysPayConfigurationDOList =
             sysPayConfigurationService.lambdaQuery().eq(BaseEntityNoIdFather::getTenantId, tenantId)
-                .eq(BaseEntityNoId::getEnableFlag, true).eq(SysPayConfigurationDO::getType, sysPayTypeEnum).list();
+                .eq(BaseEntityNoId::getEnableFlag, true).eq(SysPayConfigurationDO::getType, sysPayType).list();
 
         SysPayConfigurationDO sysPayConfigurationDO;
 
@@ -55,13 +54,13 @@ public class PayHelper {
                 sysPayConfigurationDO =
                     PayUtil.handleUseParentTenantPayFlag(tenantId, tenantId, lambdaQueryChainWrapper -> {
 
-                        lambdaQueryChainWrapper.eq(SysPayConfigurationDO::getType, sysPayTypeEnum);
+                        lambdaQueryChainWrapper.eq(SysPayConfigurationDO::getType, sysPayType);
 
                     });
 
             } else {
 
-                ApiResultVO.errorMsg("操作失败：暂未配置【{}】支付", sysPayTypeEnum.name());
+                ApiResultVO.errorMsg("操作失败：暂未配置【{}】支付", sysPayType);
 
                 sysPayConfigurationDO = new SysPayConfigurationDO(); // 只是为了通过语法的检测，这里的代码不会执行
 

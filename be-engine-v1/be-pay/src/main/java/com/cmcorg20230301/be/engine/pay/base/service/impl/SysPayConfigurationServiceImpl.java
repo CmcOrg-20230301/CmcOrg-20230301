@@ -59,7 +59,7 @@ public class SysPayConfigurationServiceImpl extends ServiceImpl<SysPayConfigurat
 
         sysPayConfigurationDO.setDefaultFlag(BooleanUtil.isTrue(dto.getDefaultFlag()));
 
-        sysPayConfigurationDO.setType(dto.getType());
+        sysPayConfigurationDO.setType(dto.getType().getCode());
         sysPayConfigurationDO.setName(dto.getName());
         sysPayConfigurationDO.setServerUrl(MyEntityUtil.getNotNullStr(dto.getServerUrl()));
         sysPayConfigurationDO.setAppId(dto.getAppId());

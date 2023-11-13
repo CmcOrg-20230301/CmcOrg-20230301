@@ -129,14 +129,14 @@ public class PayUtil {
 
         Long tenantId = dto.getTenantId(); // 租户主键 id
 
-        if (SysPayTypeEnum.DEFAULT.equals(dto.getPayType())) { // 如果是：默认支付
+        if (SysPayTypeEnum.DEFAULT.getCode() == dto.getPayType()) { // 如果是：默认支付
             handleDefaultPayType(dto); // 处理：默认支付
         }
 
         ISysPay iSysPay = SYS_PAY_MAP.get(dto.getPayType());
 
         if (iSysPay == null) {
-            ApiResultVO.errorMsg("操作失败：支付方式未找到：{}", dto.getPayType().getCode());
+            ApiResultVO.errorMsg("操作失败：支付方式未找到：{}", dto.getPayType());
         }
 
         if (StrUtil.isBlank(dto.getOpenId())) {
@@ -276,8 +276,8 @@ public class PayUtil {
 
         String openId;
 
-        if (dto.getPayType().getCode() >= SysPayTypeEnum.WX_NATIVE.getCode()
-            && dto.getPayType().getCode() < SysPayTypeEnum.UNION.getCode()) {
+        if (dto.getPayType() >= SysPayTypeEnum.WX_NATIVE.getCode() && dto.getPayType() < SysPayTypeEnum.UNION
+            .getCode()) {
 
             openId = UserUtil.getCurrentUserWxOpenIdDefault();
 

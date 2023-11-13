@@ -1,7 +1,7 @@
 package com.cmcorg20230301.be.engine.pay.base.model.entity;
 
 import com.baomidou.mybatisplus.annotation.TableName;
-import com.cmcorg20230301.be.engine.pay.base.model.enums.SysPayTypeEnum;
+import com.cmcorg20230301.be.engine.pay.base.model.interfaces.ISysPayType;
 import com.cmcorg20230301.be.engine.security.model.entity.BaseEntity;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
@@ -16,8 +16,11 @@ public class SysPayConfigurationDO extends BaseEntity {
     @Schema(description = "是否是默认支付方式，备注：只会有一个默认支付方式")
     private Boolean defaultFlag;
 
+    /**
+     * {@link ISysPayType}
+     */
     @Schema(description = "支付类型：101 支付宝 201 微信 301 云闪付 401 谷歌")
-    private SysPayTypeEnum type;
+    private Integer type;
 
     @Schema(description = "支付名（不可重复）")
     private String name;

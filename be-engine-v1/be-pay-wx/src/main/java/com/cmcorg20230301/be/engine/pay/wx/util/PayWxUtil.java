@@ -8,6 +8,7 @@ import com.cmcorg20230301.be.engine.pay.base.model.dto.PayDTO;
 import com.cmcorg20230301.be.engine.pay.base.model.entity.SysPayConfigurationDO;
 import com.cmcorg20230301.be.engine.pay.base.model.enums.SysPayTradeStatusEnum;
 import com.cmcorg20230301.be.engine.pay.base.model.enums.SysPayTypeEnum;
+import com.cmcorg20230301.be.engine.pay.base.model.interfaces.ISysPayType;
 import com.cmcorg20230301.be.engine.pay.base.util.PayHelper;
 import com.cmcorg20230301.be.engine.util.util.CallBack;
 import com.wechat.pay.java.core.RSAAutoCertificateConfig;
@@ -31,7 +32,7 @@ public class PayWxUtil {
      * 获取：RSAAutoCertificateConfig 对象
      */
     public static RSAAutoCertificateConfig getRsaAutoCertificateConfig(@Nullable Long tenantId,
-        @Nullable CallBack<SysPayConfigurationDO> sysPayConfigurationDoCallBack, SysPayTypeEnum sysPayTypeEnum,
+        @Nullable CallBack<SysPayConfigurationDO> sysPayConfigurationDoCallBack, ISysPayType iSysPayType,
         @Nullable SysPayConfigurationDO sysPayConfigurationDoTemp, @Nullable Boolean useParentTenantPayFlag) {
 
         SysPayConfigurationDO sysPayConfigurationDO;
@@ -39,7 +40,7 @@ public class PayWxUtil {
         if (sysPayConfigurationDoTemp == null) {
 
             sysPayConfigurationDO =
-                PayHelper.getSysPayConfigurationDO(tenantId, sysPayTypeEnum, useParentTenantPayFlag);
+                PayHelper.getSysPayConfigurationDO(tenantId, iSysPayType.getCode(), useParentTenantPayFlag);
 
         } else {
 

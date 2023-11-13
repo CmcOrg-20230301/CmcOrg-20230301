@@ -14,7 +14,6 @@ import com.cmcorg20230301.be.engine.pay.base.model.bo.SysPayReturnBO;
 import com.cmcorg20230301.be.engine.pay.base.model.dto.PayDTO;
 import com.cmcorg20230301.be.engine.pay.base.model.entity.SysPayConfigurationDO;
 import com.cmcorg20230301.be.engine.pay.base.model.enums.SysPayTradeStatusEnum;
-import com.cmcorg20230301.be.engine.pay.base.model.enums.SysPayTypeEnum;
 import com.cmcorg20230301.be.engine.pay.base.util.PayHelper;
 import com.cmcorg20230301.be.engine.security.model.vo.ApiResultVO;
 import com.cmcorg20230301.be.engine.util.util.CallBack;
@@ -39,14 +38,13 @@ public class PayAliUtil {
     public static AlipayConfig getAlipayConfig(@Nullable Long tenantId,
         @Nullable CallBack<SysPayConfigurationDO> sysPayConfigurationDoCallBack,
         @Nullable SysPayConfigurationDO sysPayConfigurationDoTemp, @Nullable Boolean useParentTenantPayFlag,
-        @Nullable SysPayTypeEnum sysPayTypeEnum) {
+        @Nullable Integer sysPayType) {
 
         SysPayConfigurationDO sysPayConfigurationDO;
 
         if (sysPayConfigurationDoTemp == null) {
 
-            sysPayConfigurationDO =
-                PayHelper.getSysPayConfigurationDO(tenantId, sysPayTypeEnum, useParentTenantPayFlag);
+            sysPayConfigurationDO = PayHelper.getSysPayConfigurationDO(tenantId, sysPayType, useParentTenantPayFlag);
 
         } else {
 
