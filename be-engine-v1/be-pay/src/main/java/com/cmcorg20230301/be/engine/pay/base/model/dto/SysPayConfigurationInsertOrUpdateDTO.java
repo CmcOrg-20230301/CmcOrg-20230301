@@ -30,11 +30,9 @@ public class SysPayConfigurationInsertOrUpdateDTO extends BaseTenantInsertOrUpda
     @Schema(description = "支付平台，网关地址，例如：https://openapi.alipay.com/gateway.do")
     private String serverUrl;
 
-    @NotBlank
     @Schema(description = "支付平台，应用 id")
     private String appId;
 
-    @NotBlank
     @Schema(description = "支付平台，私钥")
     private String privateKey;
 

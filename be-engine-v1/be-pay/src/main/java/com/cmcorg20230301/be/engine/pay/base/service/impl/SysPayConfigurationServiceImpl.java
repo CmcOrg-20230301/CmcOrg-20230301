@@ -26,6 +26,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Set;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 @Service
@@ -40,7 +41,12 @@ public class SysPayConfigurationServiceImpl extends ServiceImpl<SysPayConfigurat
     public String insertOrUpdate(SysPayConfigurationInsertOrUpdateDTO dto) {
 
         // 每个支付方式，需要单独检查 dto
-        dto.getType().getCheckSysPayConfigurationInsertOrUpdateDtoConsumer().accept(dto);
+        Consumer<SysPayConfigurationInsertOrUpdateDTO> checkSysPayConfigurationInsertOrUpdateDtoConsumer =
+            dto.getType().getCheckSysPayConfigurationInsertOrUpdateDtoConsumer();
+
+        if (checkSysPayConfigurationInsertOrUpdateDtoConsumer != null) {
+            checkSysPayConfigurationInsertOrUpdateDtoConsumer.accept(dto);
+        }
 
         // 处理：BaseTenantInsertOrUpdateDTO
         SysTenantUtil.handleBaseTenantInsertOrUpdateDTO(dto, getCheckIllegalFunc1(CollUtil.newHashSet(dto.getId())),
@@ -62,8 +68,8 @@ public class SysPayConfigurationServiceImpl extends ServiceImpl<SysPayConfigurat
         sysPayConfigurationDO.setType(dto.getType().getCode());
         sysPayConfigurationDO.setName(dto.getName());
         sysPayConfigurationDO.setServerUrl(MyEntityUtil.getNotNullStr(dto.getServerUrl()));
-        sysPayConfigurationDO.setAppId(dto.getAppId());
-        sysPayConfigurationDO.setPrivateKey(dto.getPrivateKey());
+        sysPayConfigurationDO.setAppId(MyEntityUtil.getNotNullStr(dto.getAppId()));
+        sysPayConfigurationDO.setPrivateKey(MyEntityUtil.getNotNullStr(dto.getPrivateKey()));
 
         sysPayConfigurationDO.setPlatformPublicKey(MyEntityUtil.getNotNullStr(dto.getPlatformPublicKey()));
         sysPayConfigurationDO.setNotifyUrl(MyEntityUtil.getNotNullStr(dto.getNotifyUrl()));

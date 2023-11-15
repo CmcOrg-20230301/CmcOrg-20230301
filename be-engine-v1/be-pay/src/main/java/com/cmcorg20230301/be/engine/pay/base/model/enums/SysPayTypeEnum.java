@@ -35,9 +35,13 @@ public enum SysPayTypeEnum implements ISysPayType {
 
     GOOGLE(401, dto -> {
 
+        Assert.notBlank(dto.getAppId(), "应用id不能为空");
+        Assert.notBlank(dto.getPrivateKey(), "私钥不能为空");
         Assert.notBlank(dto.getPlatformPublicKey(), "平台公钥不能为空");
 
     }), // 谷歌
+
+    APPLY(501, null), // 苹果
 
     ;
 
@@ -55,6 +59,8 @@ public enum SysPayTypeEnum implements ISysPayType {
 
         return dto -> {
 
+            Assert.notBlank(dto.getAppId(), "应用id不能为空");
+            Assert.notBlank(dto.getPrivateKey(), "私钥不能为空");
             Assert.notBlank(dto.getPlatformPublicKey(), "平台公钥不能为空");
             Assert.notBlank(dto.getNotifyUrl(), "异步接收地址不能为空");
 
@@ -69,6 +75,8 @@ public enum SysPayTypeEnum implements ISysPayType {
 
         return dto -> {
 
+            Assert.notBlank(dto.getAppId(), "应用id不能为空");
+            Assert.notBlank(dto.getPrivateKey(), "私钥不能为空");
             Assert.notBlank(dto.getServerUrl(), "网关地址不能为空");
             Assert.notBlank(dto.getPlatformPublicKey(), "平台公钥不能为空");
             Assert.notBlank(dto.getNotifyUrl(), "异步接收地址不能为空");
@@ -84,6 +92,8 @@ public enum SysPayTypeEnum implements ISysPayType {
 
         return dto -> {
 
+            Assert.notBlank(dto.getAppId(), "应用id不能为空");
+            Assert.notBlank(dto.getPrivateKey(), "私钥不能为空");
             Assert.notBlank(dto.getNotifyUrl(), "异步接收地址不能为空");
             Assert.notBlank(dto.getMerchantId(), "商户号不能为空");
             Assert.notBlank(dto.getMerchantSerialNumber(), "商户证书序列号不能为空");

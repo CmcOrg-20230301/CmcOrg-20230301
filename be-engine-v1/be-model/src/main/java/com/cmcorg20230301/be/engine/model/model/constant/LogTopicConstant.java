@@ -29,6 +29,8 @@ public interface LogTopicConstant {
 
     String PAY = PRE_BE + "pay"; // 支付相关
 
+    String PAY_APPLY = PAY + ".apply"; // 苹果支付相关
+
     String USER_WALLET = PRE_BE + "user-wallet"; // 用户钱包相关
 
     String OTHER_APP_WX = PRE_BE + "other-app-wx"; // 第三方应用-微信相关

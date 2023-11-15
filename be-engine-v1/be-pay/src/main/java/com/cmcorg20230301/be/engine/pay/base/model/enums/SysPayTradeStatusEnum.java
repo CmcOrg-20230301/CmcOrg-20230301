@@ -19,6 +19,8 @@ public enum SysPayTradeStatusEnum {
 
     NOT_EXIST(-1, new HashSet<>()), // 订单不存在
 
+    UNKNOWN(0, new HashSet<>()), // 未知状态
+
     WAIT_BUYER_PAY(101, CollUtil.newHashSet("WAIT_BUYER_PAY", "NOTPAY")), // 交易创建，等待买家付款
 
     WAIT_BUYER_CONSUME(201, CollUtil.newHashSet("WAIT_BUYER_CONSUME")), // 支付完成，等待核销，例如：谷歌支付

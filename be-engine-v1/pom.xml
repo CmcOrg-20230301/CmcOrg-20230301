@@ -67,6 +67,7 @@
         <module>be-pay-ali</module>
         <module>be-pay-wx</module>
         <module>be-pay-google</module>
+        <module>be-pay-apply</module>
         <module>be-socket</module>
         <module>be-netty-websocket</module>
         <module>be-netty-tcp-protobuf</module>
@@ -165,6 +166,13 @@
             <dependency>
                 <groupId>${cmcorg.groupId}</groupId>
                 <artifactId>be-socket</artifactId>
+                <version>${cmcorg.version}</version>
+            </dependency>
+
+            <!-- be-pay-apply -->
+            <dependency>
+                <groupId>${cmcorg.groupId}</groupId>
+                <artifactId>be-pay-apply</artifactId>
                 <version>${cmcorg.version}</version>
             </dependency>
 
