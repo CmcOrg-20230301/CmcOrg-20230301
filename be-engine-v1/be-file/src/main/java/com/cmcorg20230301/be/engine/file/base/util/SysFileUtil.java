@@ -290,7 +290,7 @@ public class SysFileUtil {
 
         sysFileDO.setUri(objectName);
 
-        sysFileDO.setOriginFileName(originalFilename);
+        sysFileDO.setOriginFileName(MyEntityUtil.getNotNullStr(originalFilename));
 
         sysFileDO.setNewFileName(newFileName);
 
@@ -308,7 +308,7 @@ public class SysFileUtil {
 
         sysFileDO.setType(SysFileTypeEnum.FILE);
 
-        sysFileDO.setShowFileName(originalFilename);
+        sysFileDO.setShowFileName(MyEntityUtil.getNotNullStr(originalFilename));
 
         sysFileDO.setRefFileId(BaseConstant.NEGATIVE_ONE);
 
