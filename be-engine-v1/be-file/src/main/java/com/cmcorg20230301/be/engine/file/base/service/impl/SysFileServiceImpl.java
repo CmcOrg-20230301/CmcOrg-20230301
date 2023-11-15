@@ -138,7 +138,8 @@ public class SysFileServiceImpl extends ServiceImpl<SysFileMapper, SysFileDO> im
                 BaseEntityNoId::getRemark, BaseEntityNoIdFather::getCreateId, BaseEntityNoIdFather::getCreateTime,
                 BaseEntityNoIdFather::getUpdateId, BaseEntityNoIdFather::getUpdateTime, SysFileDO::getOriginFileName,
                 SysFileDO::getBelongId, SysFileDO::getUploadType, SysFileDO::getStorageType, SysFileDO::getPublicFlag,
-                SysFileDO::getFileSize).orderByDesc(BaseEntity::getUpdateTime).page(dto.page(true));
+                SysFileDO::getFileSize, SysFileDO::getExtraJson).orderByDesc(BaseEntity::getUpdateTime)
+            .page(dto.page(true));
 
     }
 
