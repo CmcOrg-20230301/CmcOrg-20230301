@@ -14,6 +14,7 @@ import com.cmcorg20230301.be.engine.other.app.model.entity.SysOtherAppOfficialAc
 import com.cmcorg20230301.be.engine.other.app.model.enums.SysOtherAppOfficialAccountMenuButtonTypeEnum;
 import com.cmcorg20230301.be.engine.security.exception.BaseBizCodeEnum;
 import com.cmcorg20230301.be.engine.security.model.entity.BaseEntity;
+import com.cmcorg20230301.be.engine.security.model.entity.BaseEntityNoId;
 import com.cmcorg20230301.be.engine.security.model.entity.BaseEntityNoIdFather;
 import com.cmcorg20230301.be.engine.security.model.entity.BaseEntityTree;
 import com.cmcorg20230301.be.engine.security.model.vo.ApiResultVO;
@@ -52,7 +53,8 @@ public class SysWxServiceImpl implements SysWxService {
 
         SysOtherAppDO sysOtherAppDO =
             ChainWrappers.lambdaQueryChain(sysOtherAppMapper).in(BaseEntityNoIdFather::getTenantId, userRefTenantIdSet)
-                .eq(BaseEntity::getId, notNullId.getId()).one();
+                .eq(BaseEntity::getId, notNullId.getId())
+                .select(BaseEntityNoIdFather::getTenantId, SysOtherAppDO::getAppId).one();
 
         if (sysOtherAppDO == null) {
             return BaseBizCodeEnum.OK;
@@ -63,7 +65,7 @@ public class SysWxServiceImpl implements SysWxService {
         List<SysOtherAppOfficialAccountMenuDO> sysOtherAppOfficialAccountMenuDOList =
             ChainWrappers.lambdaQueryChain(sysOtherAppOfficialAccountMenuMapper)
                 .eq(SysOtherAppOfficialAccountMenuDO::getOtherAppId, notNullId.getId())
-                .orderByDesc(BaseEntityTree::getOrderNo).list();
+                .eq(BaseEntityNoId::getEnableFlag, true).orderByDesc(BaseEntityTree::getOrderNo).list();
 
         // 组装成：树结构
         List<SysOtherAppOfficialAccountMenuDO> tree = MyTreeUtil.listToTree(sysOtherAppOfficialAccountMenuDOList);
