@@ -1,19 +1,74 @@
 import $http from "./HttpUtil";
 import {RcFile} from "antd/es/upload";
 import {NotNullId} from "@/api/http/SysFile";
+import {ToastError} from "@/util/ToastUtil";
+
+/**
+ * 获取：文件大小字符串
+ */
+export function GetFileSizeStr(size: number | string): string {
+
+    if (!size && size !== 0 && size !== '0') {
+        return ''
+    }
+
+    const numberSize = Number(size);
+
+    const toFixed = (numberSize / 1024 / 1024).toFixed(2);
+
+    if (Number(toFixed) === 0) {
+
+        return numberSize + 'Byte'
+
+    }
+
+    return toFixed + 'Mb'
+
+}
+
+/**
+ * 检查：blob的类型
+ * @return true 检查通过 false 检查不通过
+ */
+export function CheckBlobType(blob: Blob) {
+
+    if (blob.type === 'application/json') {
+
+        // 将Blob 对象转换成字符串
+        const fileReader = new FileReader();
+
+        fileReader.readAsText(blob, 'utf-8');
+
+        fileReader.onload = (e) => {
+
+            const parse = JSON.parse(fileReader.result as any);
+
+            ToastError(parse.msg || '文件下载错误')
+
+        }
+
+        return false
+
+    }
+
+    return true
+
+}
 
 // 下载文件：需要这样请求 $http({responseType: 'blob'})
 // 使用：download(res.data, res.headers['content-disposition'])
-export function download(
-    res: any,
+export function Download(
+    blob: Blob,
     fileName: string = new Date().getTime() + '.xlsx'
 ) {
 
-    if (!res) {
-        throw new Error('download 方法的res参数不能为空')
+    if (!blob) {
+        throw new Error('Download 方法的res参数不能为空')
     }
 
-    const blob = new Blob([res])
+    if (!CheckBlobType(blob)) {
+        return
+    }
 
     fileName = fileName.includes('filename=')
         ? decodeURIComponent(fileName.split('filename=')[1])
@@ -38,7 +93,7 @@ export function download(
 }
 
 // 文件下载
-export function FileDownload<T>(url: string, form?: T) {
+export function FileDownload<T>(url: string, callBack: (blob: Blob, fileName?: string) => void, form?: T) {
 
     $http.request({
 
@@ -49,16 +104,25 @@ export function FileDownload<T>(url: string, form?: T) {
 
     }).then(res => {
 
-        download(res.data, res.headers['content-disposition'])
+        callBack(res.data as any, res.headers['content-disposition'])
 
     })
 
 }
 
+// 文件下载
+export function ExecFileDownload<T>(url: string, form?: T) {
+
+    FileDownload(url, Download, form)
+
+}
+
+export const SysFilePrivateDownloadUrl = '/sys/file/privateDownload'
+
 // 文件-管理 文件下载
 export function SysFilePrivateDownload(form: NotNullId) {
 
-    FileDownload('/sys/file/privateDownload', form)
+    ExecFileDownload(SysFilePrivateDownloadUrl, form)
 
 }
 

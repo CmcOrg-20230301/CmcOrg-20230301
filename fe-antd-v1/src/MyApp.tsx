@@ -6,9 +6,14 @@ import {AppDispatch, useAppDispatch, useAppSelector} from "@/store";
 import {App} from "antd";
 import {useAppProps} from "antd/es/app/context";
 import {UserSelfInfoVO} from "@/api/http/UserSelf";
+import {SysMenuDO} from "@/api/http/SysMenu";
+import {UseEffectConsoleOpenKeydownListener} from "@/util/UseEffectUtil";
 
 // MyApp
 export default function () {
+
+    // 是否打开控制台的按键监听
+    UseEffectConsoleOpenKeydownListener()
 
     const userSelfMenuList = useAppSelector(
         (state) => state.user.userSelfMenuList
@@ -133,6 +138,15 @@ export function getUserSelfInfo() {
 
 }
 
+let userSelfMenuList: SysMenuDO[]
+
+// 获取：菜单信息
+export function getUserSelfMenuList() {
+
+    return userSelfMenuList
+
+}
+
 // 加载 element
 function LoadElement(props: ILoadElement) {
 
@@ -143,6 +157,8 @@ function LoadElement(props: ILoadElement) {
     myApp = App.useApp();
 
     userSelfInfo = useAppSelector((state) => state.user.userSelfInfo)
+
+    userSelfMenuList = useAppSelector((state) => state.user.userSelfMenuList)
 
     if (props.elementStr && RouterMapKeyList.includes(props.elementStr)) {
 

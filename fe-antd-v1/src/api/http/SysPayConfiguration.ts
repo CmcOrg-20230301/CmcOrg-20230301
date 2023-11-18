@@ -25,7 +25,7 @@ export interface SysPayConfigurationDO {
     updateTime?: string // 修改时间，format：date-time
     remark?: string // 备注
     delFlag?: boolean // 是否逻辑删除
-    type?: string // 支付类型：101 支付宝 201 微信 301 云闪付 401 谷歌
+    type?: number // 支付类型：101 支付宝 201 微信 301 云闪付 401 谷歌，format：int32
     version?: number // 乐观锁，format：int32
     updateId?: string // 修改人id，format：int64
     privateKey?: string // 支付平台，私钥
@@ -72,10 +72,10 @@ export interface SysPayConfigurationInsertOrUpdateDTO {
     merchantSerialNumber?: string // 支付平台，商户证书序列号
     remark?: string // 备注
     type?: string // 支付类型：101 支付宝 201 微信 301 云闪付 401 谷歌，required：true
-    privateKey?: string // 支付平台，私钥，required：true
+    privateKey?: string // 支付平台，私钥
     merchantId?: string // 支付平台，商户号
     serverUrl?: string // 支付平台，网关地址，例如：https://openapi.alipay.com/gateway.do
-    appId?: string // 支付平台，应用 id，required：true
+    appId?: string // 支付平台，应用 id
     tenantId?: string // 租户 id，可以为空，为空则表示：默认租户：0，format：int64
     name?: string // 支付名，required：true
     notifyUrl?: string // 支付平台，异步接收地址

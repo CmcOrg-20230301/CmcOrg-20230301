@@ -4,7 +4,36 @@ import {SysPayTradeStatusEnum} from "@/model/enum/SysPayTradeStatusEnum";
 import {ToastSuccess} from "@/util/ToastUtil";
 import {Modal, QRCode} from "antd";
 import CommonConstant from "@/model/constant/CommonConstant";
-import {GetSysPayTypeNamePre, SysPayTypeEnumMap} from "@/model/enum/SysPayTypeEnum";
+import {GetSysPayTypeNamePre, SysPayTypeEnum, SysPayTypeEnumMap} from "@/model/enum/SysPayTypeEnum";
+import {GetBrowserCategory} from "@/util/BrowserCategoryUtil";
+import {BrowserCategoryEnum} from "@/model/enum/BrowserCategoryEnum";
+
+/**
+ * 获取：支付类型
+ */
+export function GetSysPayType(): undefined | number {
+
+    if (window.WeixinJSBridge) {
+
+        const browserCategory = GetBrowserCategory();
+
+        if (browserCategory === BrowserCategoryEnum.ANDROID_BROWSER_WX.code || browserCategory === BrowserCategoryEnum.APPLE_BROWSER_WX.code) {
+
+            return SysPayTypeEnum.WX_JSAPI.code // 微信-jsApi
+
+        } else {
+
+            return undefined // 默认支付
+
+        }
+
+    } else {
+
+        return undefined // 默认支付
+
+    }
+
+}
 
 /**
  * 处理：是否购买成功
@@ -39,7 +68,7 @@ export function UseEffectSysPayPayTradeStatusById(outTradeNoRef: React.MutableRe
 
             }
 
-        }, 2000);
+        }, 1300);
 
         return () => {
 
@@ -54,8 +83,16 @@ export function UseEffectSysPayPayTradeStatusById(outTradeNoRef: React.MutableRe
 export interface IPayComponent {
 
     callBack?: () => void
-
     hiddenMsg?: boolean
+
+}
+
+export interface BuyVO {
+
+    sysPayType?: number // 实际的支付方式，format：int32
+    sysPayConfigurationId?: string // 支付配置主键 id，format：int64
+    outTradeNo?: string // 本系统的支付订单号
+    payReturnValue?: string // 支付返回的参数
 
 }
 
@@ -92,7 +129,7 @@ const PayComponent = forwardRef<IPayComponentRef, IPayComponent>((props, ref) =>
     // 处理：购买返回值
     function HandleBuyVO(buyVO: BuyVO) {
 
-        const sysPayTypeEnum = SysPayTypeEnumMap.get(buyVO.sysPayTypeEnum as any);
+        const sysPayTypeEnum = SysPayTypeEnumMap.get(buyVO.sysPayType as any);
 
         // 扫码付款
         function ScanTheCodeToPay() {

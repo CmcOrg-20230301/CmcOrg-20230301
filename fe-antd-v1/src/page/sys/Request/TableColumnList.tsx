@@ -45,14 +45,14 @@ const TableColumnList = (): ProColumns<SysRequestDO>[] => [
     },
 
     {
-        title: 'uri', dataIndex: 'uri', ellipsis: true, width: 90, copyable: true, render: (text) => {
-            return <Typography.Text ellipsis={{tooltip: true}} style={{width: 90}}>{text}</Typography.Text>
+        title: 'uri', dataIndex: 'uri', ellipsis: true, width: 90, copyable: true, render: (dom) => {
+            return <Typography.Text ellipsis={{tooltip: true}} style={{width: 90}}>{dom}</Typography.Text>
         }
     },
 
     {
-        title: '接口名', dataIndex: 'name', width: 90, render: (text) => {
-            return <Typography.Text ellipsis={{tooltip: true}} style={{width: 90}}>{text}</Typography.Text>
+        title: '接口名', dataIndex: 'name', width: 90, render: (dom) => {
+            return <Typography.Text ellipsis={{tooltip: true}} style={{width: 90}}>{dom}</Typography.Text>
         }
     },
 
@@ -64,7 +64,7 @@ const TableColumnList = (): ProColumns<SysRequestDO>[] => [
     },
 
     {
-        title: '失败信息', dataIndex: 'errorMsg', hideInSearch: true, width: 100, render: (text, entity) => {
+        title: '失败信息', dataIndex: 'errorMsg', hideInSearch: true, width: 100, render: (dom, entity) => {
 
             const subText = entity.errorMsg!.substring(0, CommonConstant.TOOLTIP_STR_LENGTH)
 
@@ -80,7 +80,7 @@ const TableColumnList = (): ProColumns<SysRequestDO>[] => [
         width: 90,
         sorter: true,
         hideInSearch: true,
-        render: (text, entity) => {
+        render: (dom, entity) => {
             return entity.costMsStr
         }
     },

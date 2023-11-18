@@ -31,10 +31,7 @@ import {DoGetDictList, GetDictList, NoFormGetDictTreeList} from "@/util/DictUtil
 import {SysTenantDictList} from "@/api/http/SysTenant";
 import {SearchTransform} from "@/util/CommonUtil";
 import {SysUserDictList} from "@/api/http/SysUser";
-import {
-    SysUserWalletWithdrawLogTypeDict,
-    SysUserWalletWithdrawLogTypeEnum
-} from "@/model/enum/SysUserWalletWithdrawLogTypeEnum";
+import {SysUserTenantEnum, SysUserTenantEnumDict} from "@/model/enum/SysUserTenantEnum";
 import {SysUserWalletWithdrawStatusEnum, UpdateWithdrawStatusDict} from "@/model/enum/SysUserWalletWithdrawStatusEnum";
 
 // 提现管理
@@ -176,7 +173,7 @@ export default function () {
                                     return DoGetDictList(SysUserDictList({addAdminFlag: true}))
                                 },
                                 renderText: (text, record) => {
-                                    return record.userId === CommonConstant.TENANT_USER_ID_STR ? SysUserWalletWithdrawLogTypeEnum.TENANT.name : text
+                                    return record.userId === CommonConstant.TENANT_USER_ID_STR ? SysUserTenantEnum.TENANT.name : text
                                 },
                                 fieldProps: {
                                     allowClear: true,
@@ -188,9 +185,9 @@ export default function () {
                     ),
 
                     {
-                        title: '类型',
-                        dataIndex: 'type',
-                        valueEnum: SysUserWalletWithdrawLogTypeDict,
+                        title: '用户/租户',
+                        dataIndex: 'sysUserTenantEnum',
+                        valueEnum: SysUserTenantEnumDict,
                         width: 90,
                         hideInTable: true,
                     },

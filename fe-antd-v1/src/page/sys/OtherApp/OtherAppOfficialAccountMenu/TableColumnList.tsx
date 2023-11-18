@@ -14,7 +14,7 @@ import {
     SysOtherAppOfficialAccountMenuInsertOrUpdateDTO
 } from "@/api/http/SysOtherApp";
 import CommonConstant from "@/model/constant/CommonConstant";
-import {SysOtherAppOfficialAccountMenuButtonTypeDict} from "@/model/enum/SysOtherAppOfficialAccountMenuButtonTypeEnum";
+import {SysOtherAppOfficialAccountMenuButtonTypeEnumDict} from "@/model/enum/SysOtherAppOfficialAccountMenuButtonTypeEnum";
 
 const TableColumnList = (currentForm: React.MutableRefObject<SysOtherAppOfficialAccountMenuInsertOrUpdateDTO>, setFormOpen: React.Dispatch<React.SetStateAction<boolean>>, actionRef: React.RefObject<ActionType | undefined>): ProColumns<SysOtherAppOfficialAccountMenuDO>[] => [
 
@@ -57,12 +57,12 @@ const TableColumnList = (currentForm: React.MutableRefObject<SysOtherAppOfficial
     {
         title: '菜单类型',
         dataIndex: 'buttonType',
-        valueEnum: SysOtherAppOfficialAccountMenuButtonTypeDict,
+        valueEnum: SysOtherAppOfficialAccountMenuButtonTypeEnumDict,
         width: 90,
     },
 
     {
-        title: '值', dataIndex: 'value', ellipsis: true, width: 200, render: (text, entity) => {
+        title: '值', dataIndex: 'value', ellipsis: true, width: 200, render: (dom, entity) => {
 
             const subText = entity.value!.substring(0, CommonConstant.TOOLTIP_STR_LENGTH)
 
@@ -72,7 +72,7 @@ const TableColumnList = (currentForm: React.MutableRefObject<SysOtherAppOfficial
     },
 
     {
-        title: '回复内容', dataIndex: 'replyContent', ellipsis: true, width: 200, render: (text, entity) => {
+        title: '回复内容', dataIndex: 'replyContent', ellipsis: true, width: 200, render: (dom, entity) => {
 
             const subText = entity.replyContent!.substring(0, CommonConstant.TOOLTIP_STR_LENGTH)
 

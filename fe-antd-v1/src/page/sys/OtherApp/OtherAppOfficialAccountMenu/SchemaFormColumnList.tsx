@@ -4,7 +4,7 @@ import {
     SysOtherAppOfficialAccountMenuInsertOrUpdateDTO,
     SysOtherAppOfficialAccountMenuPage
 } from "@/api/http/SysOtherApp";
-import {SysOtherAppOfficialAccountMenuButtonTypeDict} from "@/model/enum/SysOtherAppOfficialAccountMenuButtonTypeEnum";
+import {SysOtherAppOfficialAccountMenuButtonTypeEnumDict} from "@/model/enum/SysOtherAppOfficialAccountMenuButtonTypeEnum";
 
 export const InitForm: SysOtherAppOfficialAccountMenuInsertOrUpdateDTO = {} as SysOtherAppOfficialAccountMenuInsertOrUpdateDTO
 
@@ -50,7 +50,7 @@ const SchemaFormColumnList = (otherAppId: string | undefined): ProFormColumnsTyp
                     },
                 ],
             },
-            valueEnum: SysOtherAppOfficialAccountMenuButtonTypeDict,
+            valueEnum: SysOtherAppOfficialAccountMenuButtonTypeEnumDict,
         },
 
         {
@@ -62,13 +62,11 @@ const SchemaFormColumnList = (otherAppId: string | undefined): ProFormColumnsTyp
                     {
                         required: true,
                         whitespace: true,
-                        max: 300,
                     },
                 ],
             },
             fieldProps: {
                 showCount: true,
-                maxLength: 300,
                 allowClear: true,
             },
             tooltip: '如果是按钮，则表示按钮的 key，如果是链接，则表示是 url'

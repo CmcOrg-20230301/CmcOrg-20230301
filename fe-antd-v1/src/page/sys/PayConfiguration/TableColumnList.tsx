@@ -9,7 +9,7 @@ import {ExecConfirm, ToastSuccess} from "@/util/ToastUtil";
 import {SysTenantDictList} from "@/api/http/SysTenant";
 import {TreeSelect} from "antd";
 import {SearchTransform} from "@/util/CommonUtil";
-import {SysPayTypeDict} from "@/model/enum/SysPayTypeEnum";
+import {SysPayTypeEnumDict} from "@/model/enum/SysPayTypeEnum";
 
 const TableColumnList = (currentForm: React.MutableRefObject<SysPayConfigurationInsertOrUpdateDTO>, setFormOpen: React.Dispatch<React.SetStateAction<boolean>>, actionRef: React.RefObject<ActionType | undefined>): ProColumns<SysPayConfigurationDO>[] => [
 
@@ -49,7 +49,7 @@ const TableColumnList = (currentForm: React.MutableRefObject<SysPayConfiguration
 
     {
         title: '类型', dataIndex: 'type', ellipsis: true, width: 90, valueType: 'select',
-        valueEnum: SysPayTypeDict,
+        valueEnum: SysPayTypeEnumDict,
         fieldProps: {
             allowClear: true,
             showSearch: true,

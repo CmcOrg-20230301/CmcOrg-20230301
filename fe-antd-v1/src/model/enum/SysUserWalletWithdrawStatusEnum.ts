@@ -48,13 +48,13 @@ export const SysUserWalletWithdrawStatusEnum: ISysUserWalletWithdrawStatusEnum =
 
 }
 
-export const SYS_USER_WALLET_WITHDRAW_STATUS_MAP = new Map<number, PresetStatusColorType>();
+export const SysUserWalletWithdrawStatusEnumMap = new Map<number, PresetStatusColorType>();
 
 Object.keys(SysUserWalletWithdrawStatusEnum).forEach(key => {
 
     const item = SysUserWalletWithdrawStatusEnum[key];
 
-    SYS_USER_WALLET_WITHDRAW_STATUS_MAP.set(item.code as number, item.status!)
+    SysUserWalletWithdrawStatusEnumMap.set(item.code as number, item.status!)
 
 })
 
@@ -67,7 +67,7 @@ export function UpdateWithdrawStatusDict(setWithdrawStatusDict: (value: (((prevS
 
         res.data?.map((it) => {
 
-            dictMap.set(it.id!, {text: it.name, status: SYS_USER_WALLET_WITHDRAW_STATUS_MAP.get(it.id!)})
+            dictMap.set(it.id!, {text: it.name, status: SysUserWalletWithdrawStatusEnumMap.get(it.id!)})
 
         })
 

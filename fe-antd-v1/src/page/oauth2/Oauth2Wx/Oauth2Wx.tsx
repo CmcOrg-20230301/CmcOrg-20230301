@@ -4,7 +4,9 @@ import {SignInSuccess} from "@/page/sign/SignIn/SignInUtil";
 import {SignWxSignInBrowserCode, SignWxSignInBrowserCodeUserInfo} from "@/api/http/SignWx";
 import {getAppNav} from "@/MyApp";
 import CommonConstant from "@/model/constant/CommonConstant";
-import {ClearStorage} from "@/util/UserUtil";
+import LocalStorageKey from "@/model/constant/LocalStorageKey";
+import {ApiResultVO} from "@/util/HttpUtil";
+import SessionStorageKey from "@/model/constant/SessionStorageKey";
 
 export interface IOauth2WxForm {
 
@@ -12,11 +14,40 @@ export interface IOauth2WxForm {
     tenantId?: string
     appId?: string
     type?: '1' | '2' | '3'
+    redirect?: string // 重定向地址
 
 }
 
 function GoBlank() {
     getAppNav()(PathConstant.BLANK_PATH, {state: {showText: '微信跳转失败，请重新打开'}})
+}
+
+// 处理登录返回值
+function HandleWxSign(res: ApiResultVO, form: IOauth2WxForm) {
+
+    const noJwtUri = localStorage.getItem(LocalStorageKey.NO_JWT_URI);
+
+    SignInSuccess(res, form.tenantId!, undefined, false, false)
+
+    localStorage.setItem(LocalStorageKey.MAIN_URI, PathConstant.BLANK_LAYOUT_PATH)
+    localStorage.setItem(LocalStorageKey.MAIN_REDIRECT_URI, "")
+
+    if (noJwtUri) {
+
+        localStorage.setItem(LocalStorageKey.NO_JWT_URI, noJwtUri)
+
+    } else {
+
+        localStorage.setItem(LocalStorageKey.NO_JWT_URI, PathConstant.BLANK_PATH + "?showText=登录过期，请重新打开页面")
+
+    }
+
+    if (form.redirect) {
+        sessionStorage.setItem(SessionStorageKey.OAUTH2_REDIRECT_URI, form.redirect)
+    }
+
+    getAppNav()(PathConstant.BLANK_LAYOUT_PATH)
+
 }
 
 // Oauth2Wx
@@ -67,13 +98,15 @@ export default function () {
             form.tenantId = CommonConstant.TOP_TENANT_ID_STR
         }
 
-        ClearStorage()
+        if (!form.redirect) {
+            form.redirect = ''
+        }
 
-        if (form.type === '2') { // 需要跳转一次
+        if (form.type === '2') { // 需要再跳转一次
 
             let url = window.location.origin + window.location.pathname;
 
-            url = url + `?tenantId=${form.tenantId}&appId=${form.appId}&type=3`
+            url = url + `?tenantId=${form.tenantId}&appId=${form.appId}&type=3&redirect=${form.redirect}`
 
             const urlEncode = encodeURIComponent(url);
 
@@ -84,7 +117,7 @@ export default function () {
             // 登录，获取：jwt
             SignWxSignInBrowserCodeUserInfo(form).then(res => {
 
-                SignInSuccess(res, form.tenantId!, PathConstant.ADMIN_PATH, false)
+                HandleWxSign(res, form); // 处理登录返回值
 
             })
 
@@ -93,7 +126,7 @@ export default function () {
             // 登录，获取：jwt
             SignWxSignInBrowserCode(form).then(res => {
 
-                SignInSuccess(res, form.tenantId!, PathConstant.ADMIN_PATH, false)
+                HandleWxSign(res, form); // 处理登录返回值
 
             })
 

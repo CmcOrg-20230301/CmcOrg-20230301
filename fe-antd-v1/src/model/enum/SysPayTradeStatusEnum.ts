@@ -52,12 +52,12 @@ export const SysPayTradeStatusEnum: ISysPayTradeStatusEnum = {
 
 }
 
-export const SysPayTradeStatusDict = new Map<number, ProSchemaValueEnumType>();
+export const SysPayTradeStatusEnumDict = new Map<number, ProSchemaValueEnumType>();
 
 Object.keys(SysPayTradeStatusEnum).forEach(key => {
 
     const item = SysPayTradeStatusEnum[key];
 
-    SysPayTradeStatusDict.set(item.code as number, {text: item.name})
+    SysPayTradeStatusEnumDict.set(item.code as number, {text: item.name})
 
 })

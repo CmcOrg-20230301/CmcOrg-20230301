@@ -24,12 +24,12 @@ export const SysOtherAppOfficialAccountMenuButtonTypeEnum: ISysOtherAppOfficialA
 
 }
 
-export const SysOtherAppOfficialAccountMenuButtonTypeDict = new Map<number, ProSchemaValueEnumType>();
+export const SysOtherAppOfficialAccountMenuButtonTypeEnumDict = new Map<number, ProSchemaValueEnumType>();
 
 Object.keys(SysOtherAppOfficialAccountMenuButtonTypeEnum).forEach(key => {
 
     const item = SysOtherAppOfficialAccountMenuButtonTypeEnum[key];
 
-    SysOtherAppOfficialAccountMenuButtonTypeDict.set(item.code as number, {text: item.name})
+    SysOtherAppOfficialAccountMenuButtonTypeEnumDict.set(item.code as number, {text: item.name})
 
 })

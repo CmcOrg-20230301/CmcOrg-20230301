@@ -29,6 +29,11 @@ const NoLoginRouterList: INoLoginRouterList[] = [
         elementStr: 'oauth2Oauth2WxOauth2Wx'
     },
 
+    {
+        path: PathConstant.OAUTH2_CHECK_JWT_PATH,
+        elementStr: 'oauth2CheckJwtCheckJwt'
+    },
+
 ]
 
 export default NoLoginRouterList

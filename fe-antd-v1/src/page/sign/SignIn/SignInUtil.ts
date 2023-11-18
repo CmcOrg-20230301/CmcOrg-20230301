@@ -11,6 +11,7 @@ import {SignSignInNameSignInPassword} from "@/api/http/SignSignInName";
 import {signOut} from "@/store/userSlice";
 import {SetTenantIdToStorage} from "@/util/CommonUtil";
 import {ClearStorage} from "@/util/UserUtil";
+import CommonConstant from "@/model/constant/CommonConstant";
 
 /**
  * 处理表单
@@ -49,6 +50,7 @@ export function SignInSuccess(apiResultVO: ApiResultVO, tenantId: string, path: 
     }
 
     localStorage.setItem(LocalStorageKey.JWT, apiResultVO.data)
+    localStorage.setItem(LocalStorageKey.JWT_EXPIRE_TIME, String(new Date().getTime() + CommonConstant.JWT_EXPIRE_TIME))
 
     SetTenantIdToStorage(tenantId);
 

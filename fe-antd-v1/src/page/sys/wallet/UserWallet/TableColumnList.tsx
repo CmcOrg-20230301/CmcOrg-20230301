@@ -13,7 +13,7 @@ import {SearchTransform} from "@/util/CommonUtil";
 import {SysUserDictList} from "@/api/http/SysUser";
 import {GoPage} from "@/layout/AdminLayout/AdminLayout";
 import PathConstant from "@/model/constant/PathConstant";
-import {SysUserWalletWithdrawLogTypeEnum} from "@/model/enum/SysUserWalletWithdrawLogTypeEnum";
+import {SysUserTenantEnum} from "@/model/enum/SysUserTenantEnum";
 
 const TableColumnList = (currentForm: React.MutableRefObject<SysUserWalletDO>, actionRef: React.RefObject<ActionType | undefined>): ProColumns<SysUserWalletDO>[] => [
 
@@ -150,7 +150,7 @@ const TableColumnList = (currentForm: React.MutableRefObject<SysUserWalletDO>, a
                     GoPage(PathConstant.SYS_WALLET_MANAGE_PATH, {
                         state: {
                             id: entity.id,
-                            type: SysUserWalletWithdrawLogTypeEnum.USER.code
+                            type: SysUserTenantEnum.USER.code
                         }
                     })
 

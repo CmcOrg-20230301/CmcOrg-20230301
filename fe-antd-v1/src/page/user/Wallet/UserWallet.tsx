@@ -678,7 +678,7 @@ function UserWalletLogModal(props: IUserWalletLogModal) {
                             fieldProps: {
                                 precision: 2, // 小数点精度
                             },
-                            render: (text, entity: SysUserWalletLogDO) => {
+                            render: (dom, entity: SysUserWalletLogDO) => {
 
                                 const type = GetTextType(entity.totalMoneyChange)
 
@@ -689,7 +689,7 @@ function UserWalletLogModal(props: IUserWalletLogModal) {
                                     style={{width: 120}}
 
                                 >
-                                    {text}
+                                    {dom}
                                 </Typography.Text>
 
                             }
@@ -728,7 +728,7 @@ function UserWalletLogModal(props: IUserWalletLogModal) {
                             fieldProps: {
                                 precision: 2, // 小数点精度
                             },
-                            render: (text, entity: SysUserWalletLogDO) => {
+                            render: (dom, entity: SysUserWalletLogDO) => {
 
                                 const type = GetTextType(entity.withdrawableMoneyChange)
 
@@ -739,7 +739,7 @@ function UserWalletLogModal(props: IUserWalletLogModal) {
                                     style={{width: 120}}
 
                                 >
-                                    {text}
+                                    {dom}
                                 </Typography.Text>
 
                             }
@@ -1027,8 +1027,8 @@ export const UserWalletWithdrawLogTableBaseColumnArr = (withdrawStatusDict?: Map
             width: 90,
             order: 1000,
             copyable: true,
-            render: (text) => {
-                return <Typography.Text ellipsis={{tooltip: true}} style={{width: 90}}>{text}</Typography.Text>
+            render: (dom) => {
+                return <Typography.Text ellipsis={{tooltip: true}} style={{width: 90}}>{dom}</Typography.Text>
             }
         },
 
@@ -1135,8 +1135,8 @@ export const UserWalletWithdrawLogTableBaseColumnArr = (withdrawStatusDict?: Map
         },
 
         {
-            title: '拒绝理由', dataIndex: 'rejectReason', ellipsis: true, width: 120, render: (text) => {
-                return <Typography.Text ellipsis={{tooltip: true}} style={{width: 120}}>{text}</Typography.Text>
+            title: '拒绝理由', dataIndex: 'rejectReason', ellipsis: true, width: 120, render: (dom) => {
+                return <Typography.Text ellipsis={{tooltip: true}} style={{width: 120}}>{dom}</Typography.Text>
             }
         },
 

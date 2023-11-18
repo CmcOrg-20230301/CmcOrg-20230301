@@ -42,4 +42,6 @@ export default {
 
     TENANT_USER_ID_STR: "-2", // 租户的用户 id
 
+    JWT_EXPIRE_TIME: (60 * 60 * 1000 * 24) - (60 * 60 * 1000 * 2), // jwt 过期时间，并减少：2个小时
+
 }

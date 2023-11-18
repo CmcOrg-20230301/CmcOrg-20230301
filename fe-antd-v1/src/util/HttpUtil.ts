@@ -53,10 +53,15 @@ $http.interceptors.request.use(
     }
 )
 
+export const RequestErrorAutoReloadPathSet = new Set<string>()
+
+RequestErrorAutoReloadPathSet.add(PathConstant.ADMIN_PATH)
+RequestErrorAutoReloadPathSet.add(PathConstant.BLANK_LAYOUT_PATH)
+
 // 请求出错的时候，自动刷新页面
 function RequestErrorAutoReload() {
 
-    if (location.pathname === PathConstant.ADMIN_PATH) {
+    if (RequestErrorAutoReloadPathSet.has(location.pathname)) {
 
         setTimeout(() => {
 

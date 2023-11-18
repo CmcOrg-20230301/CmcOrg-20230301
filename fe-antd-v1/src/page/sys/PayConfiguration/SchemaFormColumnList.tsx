@@ -2,7 +2,7 @@ import {YesNoDict} from "@/util/DictUtil";
 import {SysPayConfigurationInsertOrUpdateDTO} from "@/api/http/SysPayConfiguration";
 import {ProFormColumnsType} from "@ant-design/pro-components";
 import {Validate} from "@/util/ValidatorUtil";
-import {SysPayTypeDict} from "@/model/enum/SysPayTypeEnum";
+import {SysPayTypeEnumDict} from "@/model/enum/SysPayTypeEnum";
 
 export const InitForm: SysPayConfigurationInsertOrUpdateDTO = {} as SysPayConfigurationInsertOrUpdateDTO
 
@@ -25,7 +25,7 @@ const SchemaFormColumnList = (): ProFormColumnsType<SysPayConfigurationInsertOrU
                     },
                 ],
             },
-            valueEnum: SysPayTypeDict,
+            valueEnum: SysPayTypeEnumDict,
         },
 
         {

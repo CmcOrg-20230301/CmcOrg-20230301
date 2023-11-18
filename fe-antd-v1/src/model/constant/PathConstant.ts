@@ -20,6 +20,8 @@ export default {
 
     OAUTH2_WX_PATH: '/oauth2/wx',
 
+    OAUTH2_CHECK_JWT_PATH: '/oauth2/checkJwt',
+
     BLANK_PATH: '/blank',
 
     SYS_OTHER_APP_PATH: '/admin/sys/other/app', // 第三方应用管理

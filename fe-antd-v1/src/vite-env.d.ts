@@ -16,6 +16,8 @@ interface Window {
 
     apiUrl: string // api的请求地址，例如：https://cmcopen.top/prod-api/be
 
+    VConsole: any // 控制台
+
     WeixinJSBridge: any // WeixinJSBridge
 
     WebSocket: WebSocket

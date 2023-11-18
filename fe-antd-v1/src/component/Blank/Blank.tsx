@@ -1,4 +1,5 @@
 import {useLocation} from "react-router-dom";
+import {GetURLSearchParams} from "@/util/CommonUtil";
 
 // 空白页
 export default function () {
@@ -9,7 +10,7 @@ export default function () {
 
         {
 
-            location.state?.showText || null
+            location.state?.showText || GetURLSearchParams().get("showText") || null
 
         }
 

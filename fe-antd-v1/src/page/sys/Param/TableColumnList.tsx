@@ -46,7 +46,7 @@ const TableColumnList = (currentForm: React.MutableRefObject<SysParamInsertOrUpd
     {title: '配置名', dataIndex: 'name', ellipsis: true, width: 90,},
 
     {
-        title: '值', dataIndex: 'value', hideInSearch: true, width: 300, render: (text, entity) => {
+        title: '值', dataIndex: 'value', hideInSearch: true, width: 300, render: (dom, entity) => {
 
             const subText = entity.value!.substring(0, CommonConstant.TOOLTIP_STR_LENGTH)
 
@@ -86,8 +86,8 @@ const TableColumnList = (currentForm: React.MutableRefObject<SysParamInsertOrUpd
     },
 
     {
-        title: '备注', dataIndex: 'remark', width: 300, render: (text) => {
-            return <Typography.Text ellipsis={{tooltip: true}} style={{width: 300}}>{text}</Typography.Text>
+        title: '备注', dataIndex: 'remark', width: 300, render: (dom) => {
+            return <Typography.Text ellipsis={{tooltip: true}} style={{width: 300}}>{dom}</Typography.Text>
         }
     },
 

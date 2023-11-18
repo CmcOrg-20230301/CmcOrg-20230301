@@ -10,7 +10,7 @@ import {SysTenantGetNameById} from "@/api/http/SysTenant";
 import CommonConstant from "@/model/constant/CommonConstant";
 import {DoGetDictList, GetByValueFromDictList} from "@/util/DictUtil";
 import {SysUserDictList} from "@/api/http/SysUser";
-import {SysUserWalletWithdrawLogTypeEnum} from "@/model/enum/SysUserWalletWithdrawLogTypeEnum";
+import {SysUserTenantEnum} from "@/model/enum/SysUserTenantEnum";
 
 export const USER_WALLET_KEY_ONE = "钱包"
 
@@ -56,7 +56,7 @@ export default function () {
 
             localStorage.setItem(LocalStorageKey.USER_WALLET_OWNER_INFO, JSON.stringify(location.state)) // 存储起来下次使用
 
-            if (location.state.type === SysUserWalletWithdrawLogTypeEnum.TENANT.code) {
+            if (location.state.type === SysUserTenantEnum.TENANT.code) {
 
                 SysTenantGetNameById({value: location.state.id}).then(res => {
 
@@ -99,7 +99,7 @@ export default function () {
 
                     if (location.state?.id) {
 
-                        if (location.state?.type === SysUserWalletWithdrawLogTypeEnum.TENANT.code) {
+                        if (location.state?.type === SysUserTenantEnum.TENANT.code) {
 
                             tenantId = location.state?.id
 
@@ -143,7 +143,7 @@ export default function () {
 
                 if (location.state?.id) {
 
-                    preName = location.state?.type === SysUserWalletWithdrawLogTypeEnum.TENANT.code ? SysUserWalletWithdrawLogTypeEnum.TENANT.name : SysUserWalletWithdrawLogTypeEnum.USER.name;
+                    preName = location.state?.type === SysUserTenantEnum.TENANT.code ? SysUserTenantEnum.TENANT.name : SysUserTenantEnum.USER.name;
 
                 }
 

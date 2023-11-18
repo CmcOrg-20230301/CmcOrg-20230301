@@ -10,14 +10,14 @@ import CommonConstant from "@/model/constant/CommonConstant";
 import {Outlet} from "react-router-dom";
 import {getAppDispatch, getAppNav} from "@/MyApp";
 import React, {useEffect, useState} from "react";
-import {SysMenuDO, SysMenuUserSelfMenuList} from "@/api/http/SysMenu";
+import {SysMenuDO} from "@/api/http/SysMenu";
 import PathConstant from "@/model/constant/PathConstant";
-import {setUserSelfAvatarUrl, setUserSelfInfo, setUserSelfMenuList} from "@/store/userSlice";
+import {setUserSelfAvatarUrl, setUserSelfInfo} from "@/store/userSlice";
 import {LogoutOutlined, UserOutlined, WalletOutlined} from "@ant-design/icons/lib";
 import {GetCopyright} from "@/layout/SignLayout/SignLayout";
 import {Avatar, Button, Dropdown, Space, Typography} from "antd";
 import SessionStorageKey from "@/model/constant/SessionStorageKey";
-import {ExecConfirm, ToastError, ToastSuccess} from "@/util/ToastUtil";
+import {ExecConfirm, ToastSuccess} from "@/util/ToastUtil";
 import {SignOut} from "@/util/UserUtil";
 import {useAppSelector} from "@/store";
 import {UserSelfInfo} from "@/api/http/UserSelf";
@@ -27,10 +27,9 @@ import {InDev} from "@/util/CommonUtil";
 import {SignOutSelf} from "@/api/http/SignOut";
 import {RouterMapKeyList} from "@/router/RouterMap";
 import {SysFileGetPublicUrl} from "@/api/http/SysFile";
-import {ConnectWebSocket} from "@/util/webSocket/WebSocketUtil";
 import {SysTenantGetNameById} from "@/api/http/SysTenant";
-import LocalStorageKey from "@/model/constant/LocalStorageKey";
 import {TENANT_NAME_SUF} from "@/page/sign/SignUp/SignUpUtil";
+import {UseEffectLoadSysMenuUserSelfMenuList} from "@/util/UseEffectUtil";
 
 // 前往：第一个页面
 function goFirstPage(menuList: SysMenuDO[]) {
@@ -71,7 +70,6 @@ function goFirstPage(menuList: SysMenuDO[]) {
 // Admin 页面布局
 export default function () {
 
-    const appDispatch = getAppDispatch()
     const [element, setElement] = useState<React.ReactNode>(null);
 
     // 设置 element
@@ -83,37 +81,13 @@ export default function () {
 
     }
 
-    useEffect(() => {
+    // 加载菜单
+    UseEffectLoadSysMenuUserSelfMenuList(data => {
 
-        const jwt = localStorage.getItem(LocalStorageKey.JWT);
+        doSetElement(data)
+        goFirstPage(data)
 
-        if (!jwt) {
-
-            SignOut()
-            return
-
-        }
-
-        // 加载菜单
-        SysMenuUserSelfMenuList().then(res => {
-
-            if (!res.data || !res.data.length) {
-
-                ToastError('暂未配置菜单，请联系管理员')
-                SignOut()
-                return
-
-            }
-
-            appDispatch(setUserSelfMenuList(res.data))
-            doSetElement(res.data)
-            goFirstPage(res.data)
-
-            ConnectWebSocket() // 连接 webSocket
-
-        })
-
-    }, [])
+    });
 
     return element
 

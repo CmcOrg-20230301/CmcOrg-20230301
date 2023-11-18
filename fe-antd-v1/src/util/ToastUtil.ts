@@ -1,25 +1,25 @@
 import {getApp} from "@/MyApp";
 import React from "react";
 
-export function ToastSuccess(msg: string, duration: number = 5) {
+export function ToastSuccess(msg: React.ReactNode, duration: number = 5) {
 
     getApp().message.success(msg, duration);
 
 }
 
-export function ToastInfo(msg: string, duration: number = 5) {
+export function ToastInfo(msg: React.ReactNode, duration: number = 5) {
 
     getApp().message.info(msg, duration);
 
 }
 
-export function ToastWarning(msg: string, duration: number = 5) {
+export function ToastWarning(msg: React.ReactNode, duration: number = 5) {
 
     getApp().message.warning(msg, duration);
 
 }
 
-export function ToastError(msg: string, duration: number = 5) {
+export function ToastError(msg: React.ReactNode, duration: number = 5) {
 
     getApp().message.error(msg, duration);
 

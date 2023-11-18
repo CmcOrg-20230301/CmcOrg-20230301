@@ -3,15 +3,18 @@ import {ProSchemaValueEnumType} from "@ant-design/pro-components";
 import {ToastInfo, ToastSuccess} from "@/util/ToastUtil";
 import {GetBrowserCategory} from "@/util/BrowserCategoryUtil";
 import {BrowserCategoryEnum} from "@/model/enum/BrowserCategoryEnum";
+import {Typography} from "antd";
+import React from "react";
+import {getApp} from "@/MyApp";
 
 export interface BuyVO {
-    sysPayTypeEnum?: string // 实际的支付方式
+    sysPayType?: number // 实际的支付方式，format：int32
     sysPayConfigurationId?: string // 支付配置主键 id，format：int64
     outTradeNo?: string // 本系统的支付订单号
     payReturnValue?: string // 支付返回的参数
 }
 
-export interface ISysUserWalletWithdrawTypeEnumItem extends IEnum {
+export interface ISysUserWalletWithdrawTypeEnumItem extends IEnum<number> {
 
     openPay?: (buyVO: BuyVO, ScanTheCodeToPay: () => void, callBack?: () => void, hiddenMsg?: boolean) => void | true // 打开支付，备注：默认是扫码付款
 
@@ -68,7 +71,26 @@ export const SysPayTypeEnum: ISysPayTypeEnum = {
 
                 if (browserCategory === BrowserCategoryEnum.ANDROID_BROWSER_WX.code || browserCategory === BrowserCategoryEnum.APPLE_BROWSER_WX.code) {
 
-                    ToastInfo(buyVO.payReturnValue!, 10)
+                    ToastInfo(
+                        <div className={"flex-c"}>
+
+                            <Typography.Text className={"m-b-10"}
+                                             type="secondary">请复制下面的链接，然后发送给任意联系人，然后点击发送之后的消息，即可打开微信支付</Typography.Text>
+
+                            <Typography.Text copyable={{
+
+                                text: buyVO.payReturnValue,
+
+                                onCopy: () => {
+
+                                    getApp().message.destroy() // 关闭弹窗
+
+                                }
+
+                            }}>{buyVO.payReturnValue}</Typography.Text>
+
+                        </div>
+                        , 60 * 60 * 24)
 
                 } else {
 
@@ -142,13 +164,13 @@ Object.keys(SysPayTypeEnum).forEach(key => {
 
 })
 
-export const SysPayTypeDict = new Map<number, ProSchemaValueEnumType>();
+export const SysPayTypeEnumDict = new Map<number, ProSchemaValueEnumType>();
 
 Object.keys(SysPayTypeEnum).forEach(key => {
 
     const item = SysPayTypeEnum[key];
 
-    SysPayTypeDict.set(item.code as number, {text: item.name})
+    SysPayTypeEnumDict.set(item.code as number, {text: item.name})
 
 })
 

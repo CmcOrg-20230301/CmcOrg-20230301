@@ -8,7 +8,7 @@ import {SearchTransform} from "@/util/CommonUtil";
 import {SysTenantWalletFrozenByIdSet, SysTenantWalletThawByIdSet} from "@/api/http/SysTenantWallet";
 import PathConstant from "@/model/constant/PathConstant";
 import {GoPage} from "@/layout/AdminLayout/AdminLayout";
-import {SysUserWalletWithdrawLogTypeEnum} from "@/model/enum/SysUserWalletWithdrawLogTypeEnum";
+import {SysUserTenantEnum} from "@/model/enum/SysUserTenantEnum";
 import {CurrentTenantFlag} from "@/util/TenantUtil";
 
 const TableColumnList = (currentForm: React.MutableRefObject<SysUserWalletDO>, actionRef: React.RefObject<ActionType | undefined>): ProColumns<SysUserWalletDO>[] => [
@@ -135,7 +135,7 @@ const TableColumnList = (currentForm: React.MutableRefObject<SysUserWalletDO>, a
                     GoPage(PathConstant.SYS_WALLET_MANAGE_PATH, {
                         state: {
                             id: entity.id,
-                            type: SysUserWalletWithdrawLogTypeEnum.TENANT.code
+                            type: SysUserTenantEnum.TENANT.code
                         }
                     })
 
