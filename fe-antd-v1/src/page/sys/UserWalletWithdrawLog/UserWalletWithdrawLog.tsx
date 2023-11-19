@@ -19,10 +19,6 @@ import {
 } from "@/api/http/SysUserWalletWithdrawLog";
 import {UseEffectFullScreenChange} from "@/util/UseEffectUtil";
 import CommonConstant from "@/model/constant/CommonConstant";
-import {
-    GetUserWalletWithdrawFormColumnArr,
-    UserWalletWithdrawLogTableBaseColumnArr
-} from "@/page/user/Wallet/UserWallet";
 import {ExecConfirm, ToastSuccess} from "@/util/ToastUtil";
 import {Button, Space, TreeSelect, Typography} from "antd";
 import {FormatDateTime} from "@/util/DateUtil";
@@ -33,6 +29,8 @@ import {SearchTransform} from "@/util/CommonUtil";
 import {SysUserDictList} from "@/api/http/SysUser";
 import {SysUserTenantEnum, SysUserTenantEnumDict} from "@/model/enum/SysUserTenantEnum";
 import {SysUserWalletWithdrawStatusEnum, UpdateWithdrawStatusDict} from "@/model/enum/SysUserWalletWithdrawStatusEnum";
+import {UserWalletWithdrawLogTableBaseColumnArr} from "@/page/user/Wallet/UserWalletWithdrawLogModal";
+import {GetUserWalletWithdrawFormColumnArr} from "@/page/user/Wallet/UserWalletWithdrawModal";
 
 // 提现管理
 export default function () {
