@@ -1,6 +1,7 @@
 package com.cmcorg20230301.be.engine.wallet.service.impl;
 
 import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.lang.func.Func1;
 import cn.hutool.core.util.BooleanUtil;
 import com.baomidou.dynamic.datasource.annotation.DSTransactional;
@@ -14,12 +15,18 @@ import com.cmcorg20230301.be.engine.model.model.constant.BaseConstant;
 import com.cmcorg20230301.be.engine.model.model.dto.ChangeBigDecimalNumberDTO;
 import com.cmcorg20230301.be.engine.model.model.dto.NotEmptyIdSet;
 import com.cmcorg20230301.be.engine.model.model.dto.NotNullLong;
+import com.cmcorg20230301.be.engine.pay.base.model.dto.PayDTO;
+import com.cmcorg20230301.be.engine.pay.base.model.entity.SysPayDO;
+import com.cmcorg20230301.be.engine.pay.base.model.enums.SysPayRefTypeEnum;
+import com.cmcorg20230301.be.engine.pay.base.model.vo.BuyVO;
+import com.cmcorg20230301.be.engine.pay.base.util.PayUtil;
 import com.cmcorg20230301.be.engine.redisson.model.enums.BaseRedisKeyEnum;
 import com.cmcorg20230301.be.engine.redisson.util.IdGeneratorUtil;
 import com.cmcorg20230301.be.engine.redisson.util.RedissonUtil;
 import com.cmcorg20230301.be.engine.security.exception.BaseBizCodeEnum;
 import com.cmcorg20230301.be.engine.security.model.entity.BaseEntityNoId;
 import com.cmcorg20230301.be.engine.security.model.entity.BaseEntityNoIdFather;
+import com.cmcorg20230301.be.engine.security.model.entity.SysTenantDO;
 import com.cmcorg20230301.be.engine.security.model.vo.ApiResultVO;
 import com.cmcorg20230301.be.engine.security.util.MyEntityUtil;
 import com.cmcorg20230301.be.engine.security.util.SysTenantUtil;
@@ -27,6 +34,8 @@ import com.cmcorg20230301.be.engine.security.util.UserUtil;
 import com.cmcorg20230301.be.engine.wallet.configuration.SysUserWalletUserSignConfiguration;
 import com.cmcorg20230301.be.engine.wallet.mapper.SysUserWalletMapper;
 import com.cmcorg20230301.be.engine.wallet.model.dto.SysUserWalletPageDTO;
+import com.cmcorg20230301.be.engine.wallet.model.dto.SysUserWalletRechargeTenantDTO;
+import com.cmcorg20230301.be.engine.wallet.model.dto.SysUserWalletRechargeUserSelfDTO;
 import com.cmcorg20230301.be.engine.wallet.model.entity.SysUserWalletDO;
 import com.cmcorg20230301.be.engine.wallet.model.entity.SysUserWalletLogDO;
 import com.cmcorg20230301.be.engine.wallet.model.enums.SysUserWalletLogRefTypeEnum;
@@ -242,6 +251,8 @@ public class SysUserWalletServiceImpl extends ServiceImpl<SysUserWalletMapper, S
 
     /**
      * 执行：通过主键 idSet，加减可提现的钱
+     *
+     * @param idSet 用户主键 idSet，或者：租户主键 idSet
      */
     @Override
     @NotNull
@@ -307,6 +318,122 @@ public class SysUserWalletServiceImpl extends ServiceImpl<SysUserWalletMapper, S
         }
 
         return BaseBizCodeEnum.OK;
+
+    }
+
+    /**
+     * 充值-用户自我
+     */
+    @Override
+    @DSTransactional
+    public BuyVO rechargeUserSelf(SysUserWalletRechargeUserSelfDTO dto) {
+
+        if (dto.getValue().compareTo(BigDecimal.ZERO) <= 0) {
+            ApiResultVO.errorMsg("操作失败：充值金额必须大于 0");
+        }
+
+        Long currentUserId = UserUtil.getCurrentUserId();
+        Long currentTenantIdDefault = UserUtil.getCurrentTenantIdDefault();
+
+        // 获取：支付对象
+        PayDTO payDTO = getPayDTO(dto, currentUserId, currentTenantIdDefault, "钱包充值", false);
+
+        // 调用支付
+        SysPayDO sysPayDO = PayUtil.pay(payDTO, tempSysPayDO -> {
+
+            tempSysPayDO.setRefType(SysPayRefTypeEnum.WALLET_RECHARGE_USER.getCode());
+            tempSysPayDO.setRefId(currentUserId);
+
+        });
+
+        // 返回：调用支付之后，返回的参数
+        return new BuyVO(sysPayDO.getPayType(), sysPayDO.getPayReturnValue(), sysPayDO.getId().toString(),
+            sysPayDO.getSysPayConfigurationId());
+
+    }
+
+    @NotNull
+    private PayDTO getPayDTO(SysUserWalletRechargeUserSelfDTO dto, Long currentUserId, Long currentTenantIdDefault,
+        String subject, boolean tenantFlag) {
+
+        PayDTO payDTO = new PayDTO();
+
+        payDTO.setUseParentTenantPayFlag(true);
+
+        payDTO.setPayType(dto.getSysPayType());
+        payDTO.setTenantId(currentTenantIdDefault);
+        payDTO.setUserId(currentUserId);
+
+        payDTO.setTotalAmount(dto.getValue());
+        payDTO.setSubject(subject);
+        payDTO.setExpireTime(DateUtil.offsetMinute(new Date(), 30));
+
+        payDTO.setCheckSysPayConfigurationDoConsumer(sysPayConfigurationDO -> {
+
+            Long tenantId = currentTenantIdDefault;
+
+            if (tenantFlag) { // 如果是：租户进行充值
+
+                if (BaseConstant.TOP_TENANT_ID.equals(tenantId)) {
+                    return;
+                }
+
+                SysTenantDO sysTenantDO = SysTenantUtil.getSysTenantCacheMap(false).get(tenantId);
+
+                if (sysTenantDO == null) {
+                    ApiResultVO.errorMsg("操作失败：租户不存在");
+                }
+
+                if (sysTenantDO.getEnableFlag().equals(false)) {
+                    ApiResultVO.errorMsg("操作失败：租户已被禁用");
+                }
+
+                tenantId = sysTenantDO.getParentId(); // 设置：租户 id为：上级租户 id
+
+            }
+
+            // 如果：商品归属租户，配置了支付，则不进行任何操作
+            if (sysPayConfigurationDO.getTenantId().equals(tenantId)) {
+                return;
+            }
+
+            // 检查和增加：租户钱包的可提现余额
+            doAddWithdrawableMoney(currentUserId, new Date(), CollUtil.newHashSet(tenantId), dto.getValue().negate(),
+                SysUserWalletLogTypeEnum.ADD_PAY, true, true, true, null, null);
+
+        });
+
+        return payDTO;
+
+    }
+
+    /**
+     * 充值-租户
+     */
+    @Override
+    public BuyVO rechargeTenant(SysUserWalletRechargeTenantDTO dto) {
+
+        if (dto.getValue().compareTo(BigDecimal.ZERO) <= 0) {
+            ApiResultVO.errorMsg("操作失败：充值金额必须大于 0");
+        }
+
+        Long currentUserId = UserUtil.getCurrentUserId();
+        Long currentTenantIdDefault = UserUtil.getCurrentTenantIdDefault();
+
+        // 获取：支付对象
+        PayDTO payDTO = getPayDTO(dto, currentUserId, currentTenantIdDefault, "钱包充值", false);
+
+        // 调用支付
+        SysPayDO sysPayDO = PayUtil.pay(payDTO, tempSysPayDO -> {
+
+            tempSysPayDO.setRefType(SysPayRefTypeEnum.WALLET_RECHARGE_TENANT.getCode());
+            tempSysPayDO.setRefId(currentTenantIdDefault);
+
+        });
+
+        // 返回：调用支付之后，返回的参数
+        return new BuyVO(sysPayDO.getPayType(), sysPayDO.getPayReturnValue(), sysPayDO.getId().toString(),
+            sysPayDO.getSysPayConfigurationId());
 
     }
 

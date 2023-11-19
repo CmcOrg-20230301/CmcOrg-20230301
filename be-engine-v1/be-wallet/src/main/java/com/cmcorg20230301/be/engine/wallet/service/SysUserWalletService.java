@@ -5,7 +5,10 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.cmcorg20230301.be.engine.model.model.dto.ChangeBigDecimalNumberDTO;
 import com.cmcorg20230301.be.engine.model.model.dto.NotEmptyIdSet;
 import com.cmcorg20230301.be.engine.model.model.dto.NotNullLong;
+import com.cmcorg20230301.be.engine.pay.base.model.vo.BuyVO;
 import com.cmcorg20230301.be.engine.wallet.model.dto.SysUserWalletPageDTO;
+import com.cmcorg20230301.be.engine.wallet.model.dto.SysUserWalletRechargeTenantDTO;
+import com.cmcorg20230301.be.engine.wallet.model.dto.SysUserWalletRechargeUserSelfDTO;
 import com.cmcorg20230301.be.engine.wallet.model.entity.SysUserWalletDO;
 import com.cmcorg20230301.be.engine.wallet.model.interfaces.ISysUserWalletLogRefType;
 import com.cmcorg20230301.be.engine.wallet.model.interfaces.ISysUserWalletLogType;
@@ -32,6 +35,10 @@ public interface SysUserWalletService extends IService<SysUserWalletDO> {
     String doAddWithdrawableMoney(Long currentUserId, Date date, Set<Long> idSet, BigDecimal addNumber,
         ISysUserWalletLogType iSysUserWalletLogType, boolean lowErrorFlag, boolean checkWalletEnableFlag,
         boolean tenantFlag, @Nullable ISysUserWalletLogRefType refType, @Nullable Long refId);
+
+    BuyVO rechargeUserSelf(SysUserWalletRechargeUserSelfDTO dto);
+
+    BuyVO rechargeTenant(SysUserWalletRechargeTenantDTO dto);
 
     // ================================ 分割线
 

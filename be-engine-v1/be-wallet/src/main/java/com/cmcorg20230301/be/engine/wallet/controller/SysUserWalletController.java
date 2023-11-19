@@ -4,8 +4,11 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.cmcorg20230301.be.engine.model.model.dto.ChangeBigDecimalNumberDTO;
 import com.cmcorg20230301.be.engine.model.model.dto.NotEmptyIdSet;
 import com.cmcorg20230301.be.engine.model.model.dto.NotNullLong;
+import com.cmcorg20230301.be.engine.pay.base.model.vo.BuyVO;
 import com.cmcorg20230301.be.engine.security.model.vo.ApiResultVO;
 import com.cmcorg20230301.be.engine.wallet.model.dto.SysUserWalletPageDTO;
+import com.cmcorg20230301.be.engine.wallet.model.dto.SysUserWalletRechargeTenantDTO;
+import com.cmcorg20230301.be.engine.wallet.model.dto.SysUserWalletRechargeUserSelfDTO;
 import com.cmcorg20230301.be.engine.wallet.model.entity.SysUserWalletDO;
 import com.cmcorg20230301.be.engine.wallet.service.SysUserWalletService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -66,6 +69,20 @@ public class SysUserWalletController {
     @PostMapping("/infoById/userSelf")
     public ApiResultVO<SysUserWalletDO> infoByIdUserSelf() {
         return ApiResultVO.okData(baseService.infoByIdUserSelf());
+    }
+
+    @Operation(summary = "充值-用户自我")
+    @PostMapping("/recharge/userSelf")
+    @PreAuthorize("hasAuthority('sysUserWallet:rechargeUserSelf')")
+    public ApiResultVO<BuyVO> rechargeUserSelf(@RequestBody @Valid SysUserWalletRechargeUserSelfDTO dto) {
+        return ApiResultVO.okData(baseService.rechargeUserSelf(dto));
+    }
+
+    @Operation(summary = "充值-租户")
+    @PostMapping("/recharge/tenant")
+    @PreAuthorize("hasAuthority('sysUserWallet:rechargeTenant')")
+    public ApiResultVO<BuyVO> rechargeTenant(@RequestBody @Valid SysUserWalletRechargeTenantDTO dto) {
+        return ApiResultVO.okData(baseService.rechargeTenant(dto));
     }
 
 }
