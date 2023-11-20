@@ -24,7 +24,7 @@ export function SignOut(msg ?: string) {
 
     getAppDispatch()(signOut()) // store 退出登录
 
-    getAppNav()(`${PathConstant.SIGN_IN_PATH}?tenantId=${tenantId}`)
+    getAppNav()(PathConstant.NOT_FOUND_PATH)
 
     if (msg) {
 

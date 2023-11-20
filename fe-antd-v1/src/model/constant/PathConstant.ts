@@ -24,6 +24,8 @@ export default {
 
     BLANK_PATH: '/blank',
 
+    NOT_FOUND_PATH: '/notFound',
+
     SYS_OTHER_APP_PATH: '/admin/sys/other/app', // 第三方应用管理
 
     SYS_OTHER_APP_OFFICIAL_ACCOUNT_MENU_PATH: '/admin/sys/otherApp/officialAccount/menu', // 第三方应用-公众号-菜单管理
