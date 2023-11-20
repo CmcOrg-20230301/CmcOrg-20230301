@@ -4,6 +4,7 @@ import PathConstant from "@/model/constant/PathConstant";
 import {signOut} from "@/store/userSlice";
 import {RandomStr} from "@/util/StrUtil";
 import {GetTenantIdFromStorage, SetTenantIdToStorage} from "@/util/CommonUtil";
+import LocalStorageKey from "@/model/constant/LocalStorageKey";
 
 // 清除数据
 export function ClearStorage() {
@@ -18,9 +19,25 @@ export function SignOut(msg ?: string) {
 
     const tenantId = GetTenantIdFromStorage();
 
+    const mainUri = localStorage.getItem(LocalStorageKey.MAIN_URI);
+
+    const noJwtUri = localStorage.getItem(LocalStorageKey.NO_JWT_URI);
+
     ClearStorage()
 
     SetTenantIdToStorage(tenantId);
+
+    if (mainUri) {
+
+        localStorage.setItem(LocalStorageKey.MAIN_URI, mainUri)
+
+    }
+
+    if (noJwtUri) {
+
+        localStorage.setItem(LocalStorageKey.NO_JWT_URI, noJwtUri)
+
+    }
 
     getAppDispatch()(signOut()) // store 退出登录
 
