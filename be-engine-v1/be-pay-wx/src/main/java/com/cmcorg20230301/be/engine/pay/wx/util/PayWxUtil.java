@@ -90,7 +90,7 @@ public class PayWxUtil {
             getNativePayService(dto.getTenantId(), sysPayConfigurationDoCallBack, dto.getSysPayConfigurationDoTemp(),
                 dto.getUseParentTenantPayFlag());
 
-        dto.setSysPayConfigurationDoTemp(sysPayConfigurationDoCallBack.getValue());
+        dto.setSysPayConfigurationDoTemp(sysPayConfigurationDoCallBack.getValue(), false);
 
         com.wechat.pay.java.service.payments.nativepay.model.PrepayRequest request =
             new com.wechat.pay.java.service.payments.nativepay.model.PrepayRequest();
@@ -180,7 +180,7 @@ public class PayWxUtil {
             getJsapiServiceExtension(dto.getTenantId(), sysPayConfigurationDoCallBack,
                 dto.getSysPayConfigurationDoTemp(), dto.getUseParentTenantPayFlag());
 
-        dto.setSysPayConfigurationDoTemp(sysPayConfigurationDoCallBack.getValue());
+        dto.setSysPayConfigurationDoTemp(sysPayConfigurationDoCallBack.getValue(), false);
 
         com.wechat.pay.java.service.payments.jsapi.model.PrepayRequest request =
             new com.wechat.pay.java.service.payments.jsapi.model.PrepayRequest();

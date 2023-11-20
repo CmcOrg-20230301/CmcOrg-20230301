@@ -61,7 +61,7 @@ public class PayGoogleUtil {
 
         }
 
-        dto.setSysPayConfigurationDoTemp(sysPayConfigurationDO);
+        dto.setSysPayConfigurationDoTemp(sysPayConfigurationDO, false);
 
         return new SysPayReturnBO(sysPayConfigurationDO.getId().toString(), sysPayConfigurationDO.getAppId());
 

@@ -8,6 +8,8 @@ import com.cmcorg20230301.be.engine.pay.base.model.bo.SysPayTradeNotifyBO;
 import com.cmcorg20230301.be.engine.pay.base.model.dto.PayDTO;
 import com.cmcorg20230301.be.engine.pay.base.model.entity.SysPayConfigurationDO;
 import com.cmcorg20230301.be.engine.pay.base.model.enums.SysPayTradeStatusEnum;
+import com.cmcorg20230301.be.engine.pay.base.model.enums.SysPayTypeEnum;
+import com.cmcorg20230301.be.engine.pay.base.util.PayHelper;
 import lombok.SneakyThrows;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -27,6 +29,22 @@ public class PayApplyUtil {
     @SneakyThrows
     @NotNull
     public static SysPayReturnBO pay(PayDTO dto) {
+
+        SysPayConfigurationDO sysPayConfigurationDO;
+
+        if (dto.getSysPayConfigurationDoTemp() == null) {
+
+            sysPayConfigurationDO = PayHelper
+                .getSysPayConfigurationDO(dto.getTenantId(), SysPayTypeEnum.APPLY.getCode(),
+                    dto.getUseParentTenantPayFlag());
+
+        } else {
+
+            sysPayConfigurationDO = dto.getSysPayConfigurationDoTemp();
+
+        }
+
+        dto.setSysPayConfigurationDoTemp(sysPayConfigurationDO, false);
 
         JSONObject jsonObject = JSONUtil.createObj().set(OUT_TRADE_NO, dto.getOutTradeNo());
 

@@ -97,7 +97,7 @@ public class PayAliUtil {
 
         AlipayClient alipayClient = new DefaultAlipayClient(alipayConfig);
 
-        dto.setSysPayConfigurationDoTemp(sysPayConfigurationDoCallBack.getValue());
+        dto.setSysPayConfigurationDoTemp(sysPayConfigurationDoCallBack.getValue(), false);
 
         String notifyUrl =
             sysPayConfigurationDoCallBack.getValue().getNotifyUrl() + "/" + sysPayConfigurationDoCallBack.getValue()

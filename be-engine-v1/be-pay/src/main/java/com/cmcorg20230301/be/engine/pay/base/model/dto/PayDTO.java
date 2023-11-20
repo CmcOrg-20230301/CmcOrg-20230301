@@ -63,11 +63,16 @@ public class PayDTO {
     @Schema(description = "备注")
     private String remark;
 
-    public void setSysPayConfigurationDoTemp(SysPayConfigurationDO sysPayConfigurationDoTemp) {
+    /**
+     * 备注：需要每个支付，在调用支付前，先调用本方法，目的：可以让调用方，在支付前，进行一些检查操作
+     */
+    public void setSysPayConfigurationDoTemp(SysPayConfigurationDO sysPayConfigurationDoTemp,
+        boolean handleDefaultPayTypeFlag) {
 
         Consumer<SysPayConfigurationDO> checkSysPayConfigurationDoConsumer = getCheckSysPayConfigurationDoConsumer();
 
-        if (checkSysPayConfigurationDoConsumer != null) {
+        // 不处理：设置默认支付方式
+        if (checkSysPayConfigurationDoConsumer != null && !handleDefaultPayTypeFlag) {
             checkSysPayConfigurationDoConsumer.accept(sysPayConfigurationDoTemp); // 执行：检查
         }
 

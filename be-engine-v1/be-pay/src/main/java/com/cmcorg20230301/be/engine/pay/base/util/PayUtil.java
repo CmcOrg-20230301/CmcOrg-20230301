@@ -203,7 +203,7 @@ public class PayUtil {
         }
 
         dto.setPayType(sysPayConfigurationDO.getType());
-        dto.setSysPayConfigurationDoTemp(sysPayConfigurationDO);
+        dto.setSysPayConfigurationDoTemp(sysPayConfigurationDO, true);
 
     }
 
