@@ -170,7 +170,7 @@ public class SysTenantWalletServiceImpl implements SysTenantWalletService {
         // 执行
         return sysUserWalletService
             .doAddWithdrawableMoney(currentUserId, new Date(), dto.getIdSet(), changeNumber, sysUserWalletLogTypeEnum,
-                false, false, true, null, null);
+                false, false, true, null, null, true);
 
     }
 

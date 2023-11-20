@@ -18,12 +18,15 @@ public class SysUserWalletDO extends BaseEntityTree<SysUserWalletDO> {
     @Schema(description = "用户主键 id")
     private Long id;
 
-    @TableField(value = "SUM( withdrawable_money )", insertStrategy = FieldStrategy.NEVER, updateStrategy = FieldStrategy.NEVER)
+    @TableField(value = "SUM( withdrawable_money + frozenMoney )", insertStrategy = FieldStrategy.NEVER, updateStrategy = FieldStrategy.NEVER)
     @Schema(description = "总金额")
     private BigDecimal totalMoney;
 
     @Schema(description = "可提现的钱")
     private BigDecimal withdrawableMoney;
+
+    @Schema(description = "冻结的钱")
+    private BigDecimal frozenMoney;
 
     @TableField(exist = false)
     @Schema(description = "上级 id，用于：租户钱包列表的树形结构展示，没有其他用途")
