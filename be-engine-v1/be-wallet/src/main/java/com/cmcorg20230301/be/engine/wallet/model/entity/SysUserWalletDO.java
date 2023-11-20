@@ -18,7 +18,7 @@ public class SysUserWalletDO extends BaseEntityTree<SysUserWalletDO> {
     @Schema(description = "用户主键 id")
     private Long id;
 
-    @TableField(value = "SUM( withdrawable_money + frozenMoney )", insertStrategy = FieldStrategy.NEVER, updateStrategy = FieldStrategy.NEVER)
+    @TableField(value = "SUM( withdrawable_money + frozen_money )", insertStrategy = FieldStrategy.NEVER, updateStrategy = FieldStrategy.NEVER)
     @Schema(description = "总金额")
     private BigDecimal totalMoney;
 
