@@ -56,6 +56,8 @@ public class BaiDuUtil {
             .post("https://aip.baidubce.com/rest/2.0/image-classify/v2/advanced_general?access_token=" + accessToken)
             .form(formJson).execute().body();
 
+        log.info("advancedGeneral-result：{}", JSONUtil.toJsonStr(result));
+
         return JSONUtil.parseObj(result);
 
     }
