@@ -20,10 +20,12 @@ import com.cmcorg20230301.be.engine.security.model.vo.ApiResultVO;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
 
 @Slf4j(topic = LogTopicConstant.BAI_DU)
+@Component
 public class BaiDuUtil {
 
     private static SysOtherAppService sysOtherAppService;
