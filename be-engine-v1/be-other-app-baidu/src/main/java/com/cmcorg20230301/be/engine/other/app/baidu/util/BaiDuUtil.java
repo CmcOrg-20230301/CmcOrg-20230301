@@ -110,6 +110,8 @@ public class BaiDuUtil {
             "https://aip.baidubce.com/oauth/2.0/token?client_id=" + appId + "&client_secret=" + sysOtherAppDO
                 .getSecret() + "&grant_type=client_credentials").execute().body();
 
+        log.info("getAccessToken，jsonStr：{}", jsonStr);
+
         JSONObject jsonObject = JSONUtil.parseObj(jsonStr);
 
         String accessTokenResult = jsonObject.getStr("access_token");
@@ -123,7 +125,7 @@ public class BaiDuUtil {
         Integer expiresIn = jsonObject.getInt("expires_in"); // 这里的单位是：秒
 
         CacheRedisKafkaLocalUtil
-            .put(BaseRedisKeyEnum.GOOGLE_ACCESS_TOKEN_CACHE, sufKey, null, expiresIn * 1000, () -> accessTokenResult);
+            .put(BaseRedisKeyEnum.BAI_DU_ACCESS_TOKEN_CACHE, sufKey, null, expiresIn * 1000, () -> accessTokenResult);
 
         return accessTokenResult;
 
