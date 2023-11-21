@@ -211,7 +211,8 @@ public class SysUserWalletServiceImpl extends ServiceImpl<SysUserWalletMapper, S
 
         Long currentTenantIdDefault = UserUtil.getCurrentTenantIdDefault();
 
-        SysUserWalletDO sysUserWalletDO = lambdaQuery().eq(SysUserWalletDO::getId, currentUserId).one();
+        SysUserWalletDO sysUserWalletDO = lambdaQuery().eq(SysUserWalletDO::getId, currentUserId)
+            .eq(BaseEntityNoIdFather::getTenantId, currentTenantIdDefault).one();
 
         if (sysUserWalletDO == null) {
 
@@ -545,17 +546,17 @@ public class SysUserWalletServiceImpl extends ServiceImpl<SysUserWalletMapper, S
                 if (reduceFrozenMoneyType == null) { // 1 （默认）扣除冻结的钱，并减少总的钱
 
                     item.setTotalMoney(item.getTotalMoney().add(addNumber)); // 修改：数字
-                    item.setFrozenMoney(item.getWithdrawableMoney().add(addNumber)); // 修改：数字
+                    item.setFrozenMoney(item.getFrozenMoney().add(addNumber)); // 修改：数字
 
                 } else if (reduceFrozenMoneyType == 2) { // 2 扣除冻结的钱，并增加可提现的钱
 
                     item.setWithdrawableMoney(item.getWithdrawableMoney().add(addNumber.negate())); // 修改：数字
-                    item.setFrozenMoney(item.getWithdrawableMoney().add(addNumber)); // 修改：数字
+                    item.setFrozenMoney(item.getFrozenMoney().add(addNumber)); // 修改：数字
 
                 } else { // 1 （默认）扣除冻结的钱，并减少总的钱
 
                     item.setTotalMoney(item.getTotalMoney().add(addNumber)); // 修改：数字
-                    item.setFrozenMoney(item.getWithdrawableMoney().add(addNumber)); // 修改：数字
+                    item.setFrozenMoney(item.getFrozenMoney().add(addNumber)); // 修改：数字
 
                 }
 
