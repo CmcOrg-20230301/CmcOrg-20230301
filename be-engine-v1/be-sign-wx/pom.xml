@@ -14,10 +14,10 @@
 
     <dependencies>
 
-        <!-- be-wx -->
+        <!-- be-other-app-wx -->
         <dependency>
             <groupId>${cmcorg.groupId}</groupId>
-            <artifactId>be-wx</artifactId>
+            <artifactId>be-other-app-wx</artifactId>
         </dependency>
 
         <!-- be-sign-helper -->

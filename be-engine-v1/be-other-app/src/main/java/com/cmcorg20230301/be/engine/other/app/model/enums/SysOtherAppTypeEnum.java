@@ -18,6 +18,8 @@ public enum SysOtherAppTypeEnum {
 
     ALI_PAY_PROGRAM(201), // 支付宝小程序
 
+    BAI_DU(301), // 百度
+
     ;
 
     @EnumValue

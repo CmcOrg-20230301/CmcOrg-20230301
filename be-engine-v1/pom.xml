@@ -41,7 +41,6 @@
         <module>be-kafka</module>
         <module>be-log</module>
         <module>be-model</module>
-        <module>be-wx</module>
         <module>be-xxl-job</module>
         <module>be-gateway</module>
         <module>be-user</module>
@@ -80,10 +79,26 @@
         <module>be-wallet</module>
         <module>be-profit-share</module>
         <module>be-other-app</module>
+        <module>be-other-app-wx</module>
+        <module>be-other-app-baidu</module>
     </modules>
 
     <dependencyManagement>
         <dependencies>
+
+            <!-- be-other-app-baidu -->
+            <dependency>
+                <groupId>${cmcorg.groupId}</groupId>
+                <artifactId>be-other-app-baidu</artifactId>
+                <version>${cmcorg.version}</version>
+            </dependency>
+
+            <!-- be-other-app-wx -->
+            <dependency>
+                <groupId>${cmcorg.groupId}</groupId>
+                <artifactId>be-other-app-wx</artifactId>
+                <version>${cmcorg.version}</version>
+            </dependency>
 
             <!-- be-other-app -->
             <dependency>
@@ -348,13 +363,6 @@
             <dependency>
                 <groupId>${cmcorg.groupId}</groupId>
                 <artifactId>be-gateway</artifactId>
-                <version>${cmcorg.version}</version>
-            </dependency>
-
-            <!-- be-wx -->
-            <dependency>
-                <groupId>${cmcorg.groupId}</groupId>
-                <artifactId>be-wx</artifactId>
                 <version>${cmcorg.version}</version>
             </dependency>
 

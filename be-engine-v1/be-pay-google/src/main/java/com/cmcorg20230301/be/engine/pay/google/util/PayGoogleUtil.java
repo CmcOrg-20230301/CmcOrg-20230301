@@ -136,9 +136,9 @@ public class PayGoogleUtil {
      */
     public static String getAccessToken(SysPayConfigurationDO sysPayConfigurationDO) {
 
-        long sysPayConfigurationId = sysPayConfigurationDO.getId();
+        String appId = sysPayConfigurationDO.getAppId();
 
-        String sufKey = sysPayConfigurationDO.getTenantId() + ":" + sysPayConfigurationId;
+        String sufKey = sysPayConfigurationDO.getTenantId() + ":" + appId;
 
         String accessToken = MyCacheUtil.onlyGet(BaseRedisKeyEnum.GOOGLE_ACCESS_TOKEN_CACHE, sufKey);
 
@@ -149,7 +149,7 @@ public class PayGoogleUtil {
         JSONObject formJson = JSONUtil.createObj();
 
         formJson.set("grant_type", "refresh_token");
-        formJson.set("client_id", sysPayConfigurationDO.getAppId());
+        formJson.set("client_id", appId);
         formJson.set("client_secret", sysPayConfigurationDO.getPrivateKey());
         formJson.set("refresh_token", sysPayConfigurationDO.getPlatformPublicKey());
 

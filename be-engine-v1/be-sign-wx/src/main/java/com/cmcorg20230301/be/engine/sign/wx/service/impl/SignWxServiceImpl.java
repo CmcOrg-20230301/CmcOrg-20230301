@@ -1,6 +1,10 @@
 package com.cmcorg20230301.be.engine.sign.wx.service.impl;
 
 import com.baomidou.mybatisplus.extension.toolkit.ChainWrappers;
+import com.cmcorg20230301.be.engine.other.app.wx.model.vo.WxOpenIdVO;
+import com.cmcorg20230301.be.engine.other.app.wx.model.vo.WxPhoneByCodeVO;
+import com.cmcorg20230301.be.engine.other.app.wx.model.vo.WxUserInfoVO;
+import com.cmcorg20230301.be.engine.other.app.wx.util.WxUtil;
 import com.cmcorg20230301.be.engine.redisson.model.enums.BaseRedisKeyEnum;
 import com.cmcorg20230301.be.engine.security.mapper.SysUserMapper;
 import com.cmcorg20230301.be.engine.security.model.entity.SysUserDO;
@@ -11,10 +15,6 @@ import com.cmcorg20230301.be.engine.sign.wx.model.dto.SignInMiniProgramCodeDTO;
 import com.cmcorg20230301.be.engine.sign.wx.model.dto.SignInMiniProgramPhoneCodeDTO;
 import com.cmcorg20230301.be.engine.sign.wx.service.SignWxService;
 import com.cmcorg20230301.be.engine.util.util.NicknameUtil;
-import com.cmcorg20230301.be.engine.wx.model.vo.WxOpenIdVO;
-import com.cmcorg20230301.be.engine.wx.model.vo.WxPhoneByCodeVO;
-import com.cmcorg20230301.be.engine.wx.model.vo.WxUserInfoVO;
-import com.cmcorg20230301.be.engine.wx.util.WxUtil;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Service;
 
@@ -41,8 +41,8 @@ public class SignWxServiceImpl implements SignWxService {
         // 直接通过：手机号登录
         return SignUtil.signInAccount(
             ChainWrappers.lambdaQueryChain(sysUserMapper).eq(SysUserDO::getPhone, wxPhoneInfoVO.getPhoneNumber()),
-            BaseRedisKeyEnum.PRE_PHONE, wxPhoneInfoVO.getPhoneNumber(), this::getWxSysUserInfoDO, dto.getTenantId(),
-            accountMap -> {
+            BaseRedisKeyEnum.PRE_PHONE, wxPhoneInfoVO.getPhoneNumber(), SignWxServiceImpl::getWxSysUserInfoDO,
+            dto.getTenantId(), accountMap -> {
 
                 accountMap.put(BaseRedisKeyEnum.PRE_WX_APP_ID, dto.getAppId());
 
@@ -62,7 +62,7 @@ public class SignWxServiceImpl implements SignWxService {
         return SignUtil.signInAccount(
             ChainWrappers.lambdaQueryChain(sysUserMapper).eq(SysUserDO::getWxOpenId, wxOpenIdVO.getOpenid())
                 .eq(SysUserDO::getWxAppId, dto.getAppId()), PRE_REDIS_KEY_ENUM, wxOpenIdVO.getOpenid(),
-            this::getWxSysUserInfoDO, dto.getTenantId(), accountMap -> {
+            SignWxServiceImpl::getWxSysUserInfoDO, dto.getTenantId(), accountMap -> {
 
                 accountMap.put(BaseRedisKeyEnum.PRE_WX_APP_ID, dto.getAppId());
 
@@ -74,7 +74,7 @@ public class SignWxServiceImpl implements SignWxService {
      * 获取：带有昵称的 用户对象
      */
     @NotNull
-    private SysUserInfoDO getWxSysUserInfoDO() {
+    public static SysUserInfoDO getWxSysUserInfoDO() {
 
         SysUserInfoDO sysUserInfoDO = new SysUserInfoDO();
         sysUserInfoDO.setNickname(NicknameUtil.getRandomNickname("微信用户"));
@@ -95,7 +95,7 @@ public class SignWxServiceImpl implements SignWxService {
         return SignUtil.signInAccount(
             ChainWrappers.lambdaQueryChain(sysUserMapper).eq(SysUserDO::getWxOpenId, wxOpenIdVO.getOpenid())
                 .eq(SysUserDO::getWxAppId, dto.getAppId()), PRE_REDIS_KEY_ENUM, wxOpenIdVO.getOpenid(),
-            this::getWxSysUserInfoDO, dto.getTenantId(), accountMap -> {
+            SignWxServiceImpl::getWxSysUserInfoDO, dto.getTenantId(), accountMap -> {
 
                 accountMap.put(BaseRedisKeyEnum.PRE_WX_APP_ID, dto.getAppId());
 

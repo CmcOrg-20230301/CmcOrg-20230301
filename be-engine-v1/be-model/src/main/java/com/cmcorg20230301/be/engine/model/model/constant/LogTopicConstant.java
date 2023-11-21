@@ -39,4 +39,6 @@ public interface LogTopicConstant {
 
     String OTHER_APP_OFFICIAL_ACCOUNT_WX = PRE_BE + "other-app-official-account-wx"; // 第三方应用-公众号-微信相关
 
+    String BAI_DU = PRE_BE + "baidu"; // 百度相关
+
 }
