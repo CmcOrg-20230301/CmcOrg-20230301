@@ -122,7 +122,7 @@ public class BaiDuUtil {
 
         }
 
-        Integer expiresIn = jsonObject.getInt("expires_in"); // 这里的单位是：秒
+        Long expiresIn = jsonObject.getLong("expires_in"); // 这里的单位是：秒
 
         CacheRedisKafkaLocalUtil
             .put(BaseRedisKeyEnum.BAI_DU_ACCESS_TOKEN_CACHE, sufKey, null, expiresIn * 1000, () -> accessTokenResult);

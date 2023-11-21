@@ -21,6 +21,6 @@ public class WxOpenIdVO extends WxBaseVO {
 
     @Alias(value = "expires_in")
     @Schema(description = "access_token接口调用凭证超时时间，单位（秒）")
-    private Integer expiresIn;
+    private Long expiresIn;
 
 }

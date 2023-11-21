@@ -15,6 +15,6 @@ public class WxAccessTokenVO extends WxBaseVO {
 
     @Alias(value = "expires_in")
     @Schema(description = "凭证有效时间，单位：秒。目前是7200秒之内的值。")
-    private Integer expiresIn;
+    private Long expiresIn;
 
 }
