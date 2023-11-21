@@ -10,7 +10,6 @@ import com.cmcorg20230301.be.engine.wallet.model.dto.SysUserWalletPageDTO;
 import com.cmcorg20230301.be.engine.wallet.model.dto.SysUserWalletRechargeTenantDTO;
 import com.cmcorg20230301.be.engine.wallet.model.dto.SysUserWalletRechargeUserSelfDTO;
 import com.cmcorg20230301.be.engine.wallet.model.entity.SysUserWalletDO;
-import com.cmcorg20230301.be.engine.wallet.model.interfaces.ISysUserWalletLogRefType;
 import com.cmcorg20230301.be.engine.wallet.model.interfaces.ISysUserWalletLogType;
 import org.jetbrains.annotations.Nullable;
 
@@ -34,7 +33,8 @@ public interface SysUserWalletService extends IService<SysUserWalletDO> {
 
     String doAddWithdrawableMoney(Long currentUserId, Date date, Set<Long> idSet, BigDecimal addNumber,
         ISysUserWalletLogType iSysUserWalletLogType, boolean lowErrorFlag, boolean checkWalletEnableFlag,
-        boolean tenantFlag, @Nullable ISysUserWalletLogRefType refType, @Nullable Long refId, boolean b);
+        boolean tenantFlag, @Nullable Long refId, @Nullable String refData, boolean withdrawableMoneyFlag,
+        Integer reduceFrozenMoneyType);
 
     BuyVO rechargeUserSelf(SysUserWalletRechargeUserSelfDTO dto);
 

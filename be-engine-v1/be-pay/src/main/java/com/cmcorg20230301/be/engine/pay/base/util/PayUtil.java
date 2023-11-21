@@ -296,7 +296,10 @@ public class PayUtil {
      */
     private static void checkPayDTO(PayDTO dto) {
 
-        Assert.notNull(dto.getPayType());
+        if (dto.getPayType() == null) {
+            dto.setPayType(SysPayTypeEnum.DEFAULT.getCode());
+        }
+
         Assert.notNull(dto.getTenantId());
         Assert.notNull(dto.getUserId());
 
@@ -351,6 +354,7 @@ public class PayUtil {
 
         sysPayDO.setRefType(SysPayRefTypeEnum.NONE.getCode());
         sysPayDO.setRefId(BaseConstant.NEGATIVE_ONE);
+        sysPayDO.setRefData("");
 
         sysPayDO.setPackageName(MyEntityUtil.getNotNullAndTrimStr(dto.getPackageName()));
         sysPayDO.setProductId(MyEntityUtil.getNotNullAndTrimStr(dto.getProductId()));

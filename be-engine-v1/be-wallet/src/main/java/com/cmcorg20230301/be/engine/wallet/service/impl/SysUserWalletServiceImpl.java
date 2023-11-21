@@ -31,6 +31,7 @@ import com.cmcorg20230301.be.engine.security.model.vo.ApiResultVO;
 import com.cmcorg20230301.be.engine.security.util.MyEntityUtil;
 import com.cmcorg20230301.be.engine.security.util.SysTenantUtil;
 import com.cmcorg20230301.be.engine.security.util.UserUtil;
+import com.cmcorg20230301.be.engine.util.util.CallBack;
 import com.cmcorg20230301.be.engine.wallet.configuration.SysUserWalletUserSignConfiguration;
 import com.cmcorg20230301.be.engine.wallet.mapper.SysUserWalletMapper;
 import com.cmcorg20230301.be.engine.wallet.model.dto.SysUserWalletPageDTO;
@@ -38,9 +39,7 @@ import com.cmcorg20230301.be.engine.wallet.model.dto.SysUserWalletRechargeTenant
 import com.cmcorg20230301.be.engine.wallet.model.dto.SysUserWalletRechargeUserSelfDTO;
 import com.cmcorg20230301.be.engine.wallet.model.entity.SysUserWalletDO;
 import com.cmcorg20230301.be.engine.wallet.model.entity.SysUserWalletLogDO;
-import com.cmcorg20230301.be.engine.wallet.model.enums.SysUserWalletLogRefTypeEnum;
 import com.cmcorg20230301.be.engine.wallet.model.enums.SysUserWalletLogTypeEnum;
-import com.cmcorg20230301.be.engine.wallet.model.interfaces.ISysUserWalletLogRefType;
 import com.cmcorg20230301.be.engine.wallet.model.interfaces.ISysUserWalletLogType;
 import com.cmcorg20230301.be.engine.wallet.service.SysUserWalletService;
 import org.jetbrains.annotations.NotNull;
@@ -245,7 +244,7 @@ public class SysUserWalletServiceImpl extends ServiceImpl<SysUserWalletMapper, S
 
         // 执行
         return doAddWithdrawableMoney(currentUserId, new Date(), dto.getIdSet(), changeNumber, sysUserWalletLogTypeEnum,
-            false, false, false, null, null, true);
+            false, false, false, null, null, true, null);
 
     }
 
@@ -254,14 +253,15 @@ public class SysUserWalletServiceImpl extends ServiceImpl<SysUserWalletMapper, S
      *
      * @param idSet                 用户主键 idSet，或者：租户主键 idSet
      * @param withdrawableMoneyFlag true 操作可提现的钱 false 操作冻结的钱
+     * @param reduceFrozenMoneyType 如果是操作冻结的钱时，并且是减少时：1 （默认）扣除冻结的钱，并减少总的钱 2 扣除冻结的钱，并增加可提现的钱
      */
     @Override
     @NotNull
     @DSTransactional
     public String doAddWithdrawableMoney(Long currentUserId, Date date, Set<Long> idSet, BigDecimal addNumber,
         ISysUserWalletLogType iSysUserWalletLogType, boolean lowErrorFlag, boolean checkWalletEnableFlag,
-        boolean tenantFlag, @Nullable ISysUserWalletLogRefType refType, @Nullable Long refId,
-        boolean withdrawableMoneyFlag) {
+        boolean tenantFlag, @Nullable Long refId, @Nullable String refData, boolean withdrawableMoneyFlag,
+        @Nullable Integer reduceFrozenMoneyType) {
 
         if (addNumber.equals(BigDecimal.ZERO)) {
             return BaseBizCodeEnum.OK;
@@ -284,8 +284,8 @@ public class SysUserWalletServiceImpl extends ServiceImpl<SysUserWalletMapper, S
 
             // 处理：sysUserWalletDOList
             handleSysUserWalletDOList(currentUserId, date, addNumber, iSysUserWalletLogType, lowErrorFlag,
-                checkWalletEnableFlag, sysUserWalletLogDoList, sysUserWalletDOList, refType, refId,
-                withdrawableMoneyFlag);
+                checkWalletEnableFlag, sysUserWalletLogDoList, sysUserWalletDOList, refId, refData,
+                withdrawableMoneyFlag, reduceFrozenMoneyType);
 
             if (tenantFlag) {
 
@@ -339,14 +339,19 @@ public class SysUserWalletServiceImpl extends ServiceImpl<SysUserWalletMapper, S
         Long currentUserId = UserUtil.getCurrentUserId();
         Long currentTenantIdDefault = UserUtil.getCurrentTenantIdDefault();
 
+        // 扣除可提现余额的，上级租户的主键 id，如果扣除了，则不为 -1，如果没有扣除，则为 -1，目的：支付成功之后，扣除总的钱
+        CallBack<Long> deductTenantIdCallBack = new CallBack<>(BaseConstant.NEGATIVE_ONE);
+
         // 获取：支付对象
-        PayDTO payDTO = getPayDTO(dto, currentUserId, currentTenantIdDefault, "钱包充值", false);
+        PayDTO payDTO = getPayDTO(dto, currentUserId, currentTenantIdDefault, "钱包充值", false, deductTenantIdCallBack);
 
         // 调用支付
         SysPayDO sysPayDO = PayUtil.pay(payDTO, tempSysPayDO -> {
 
             tempSysPayDO.setRefType(SysPayRefTypeEnum.WALLET_RECHARGE_USER.getCode());
             tempSysPayDO.setRefId(currentUserId);
+
+            tempSysPayDO.setRefData(deductTenantIdCallBack.getValue().toString());
 
         });
 
@@ -358,7 +363,7 @@ public class SysUserWalletServiceImpl extends ServiceImpl<SysUserWalletMapper, S
 
     @NotNull
     private PayDTO getPayDTO(SysUserWalletRechargeUserSelfDTO dto, Long currentUserId, Long currentTenantIdDefault,
-        String subject, boolean tenantFlag) {
+        String subject, boolean tenantFlag, CallBack<Long> deductTenantIdCallBack) {
 
         PayDTO payDTO = new PayDTO();
 
@@ -403,7 +408,9 @@ public class SysUserWalletServiceImpl extends ServiceImpl<SysUserWalletMapper, S
 
             // 检查：租户钱包的可提现余额，增加租户的：冻结的钱
             doAddWithdrawableMoney(currentUserId, new Date(), CollUtil.newHashSet(tenantId), dto.getValue().negate(),
-                SysUserWalletLogTypeEnum.ADD_PAY, true, true, true, null, null, false);
+                SysUserWalletLogTypeEnum.REDUCE_USER_BUY, true, true, true, null, null, false, null);
+
+            deductTenantIdCallBack.setValue(tenantId); // 设置：扣除可提现余额的租户 id
 
         });
 
@@ -424,14 +431,19 @@ public class SysUserWalletServiceImpl extends ServiceImpl<SysUserWalletMapper, S
         Long currentUserId = UserUtil.getCurrentUserId();
         Long currentTenantIdDefault = UserUtil.getCurrentTenantIdDefault();
 
+        // 扣除可提现余额的，上级租户的主键 id，如果扣除了，则不为 -1，如果没有扣除，则为 -1，目的：支付成功之后，扣除总的钱
+        CallBack<Long> deductTenantIdCallBack = new CallBack<>(BaseConstant.NEGATIVE_ONE);
+
         // 获取：支付对象
-        PayDTO payDTO = getPayDTO(dto, currentUserId, currentTenantIdDefault, "钱包充值", false);
+        PayDTO payDTO = getPayDTO(dto, currentUserId, currentTenantIdDefault, "钱包充值", false, deductTenantIdCallBack);
 
         // 调用支付
         SysPayDO sysPayDO = PayUtil.pay(payDTO, tempSysPayDO -> {
 
             tempSysPayDO.setRefType(SysPayRefTypeEnum.WALLET_RECHARGE_TENANT.getCode());
             tempSysPayDO.setRefId(currentTenantIdDefault);
+
+            tempSysPayDO.setRefData(deductTenantIdCallBack.getValue().toString());
 
         });
 
@@ -445,11 +457,13 @@ public class SysUserWalletServiceImpl extends ServiceImpl<SysUserWalletMapper, S
      * 处理：sysUserWalletDOList
      *
      * @param withdrawableMoneyFlag true 操作可提现的钱 false 操作冻结的钱
+     * @param reduceFrozenMoneyType 如果是操作冻结的钱时，并且是减少时：1 （默认）扣除冻结的钱，并减少总的钱 2 扣除冻结的钱，并增加可提现的钱
      */
-    private void handleSysUserWalletDOList(Long currentUserId, Date date, BigDecimal changeNumber,
+    private void handleSysUserWalletDOList(Long currentUserId, Date date, BigDecimal addNumber,
         ISysUserWalletLogType iSysUserWalletLogType, boolean lowErrorFlag, boolean checkWalletEnableFlag,
         List<SysUserWalletLogDO> sysUserWalletLogDoList, List<SysUserWalletDO> sysUserWalletDOList,
-        @Nullable ISysUserWalletLogRefType refType, @Nullable Long refId, boolean withdrawableMoneyFlag) {
+        @Nullable Long refId, @Nullable String refData, boolean withdrawableMoneyFlag,
+        @Nullable Integer reduceFrozenMoneyType) {
 
         for (SysUserWalletDO item : sysUserWalletDOList) {
 
@@ -463,17 +477,8 @@ public class SysUserWalletServiceImpl extends ServiceImpl<SysUserWalletMapper, S
             BigDecimal preWithdrawableMoney = item.getWithdrawableMoney();
             BigDecimal preFrozenMoney = item.getFrozenMoney();
 
-            if (withdrawableMoneyFlag) {
-
-                item.setTotalMoney(item.getTotalMoney().add(changeNumber)); // 修改：数字
-                item.setWithdrawableMoney(item.getWithdrawableMoney().add(changeNumber)); // 修改：数字
-
-            } else {
-
-                item.setWithdrawableMoney(item.getWithdrawableMoney().add(changeNumber.negate())); // 修改：数字
-                item.setFrozenMoney(item.getWithdrawableMoney().add(changeNumber)); // 修改：数字
-
-            }
+            // 处理：需要增加的钱
+            handleAddNumber(addNumber, withdrawableMoneyFlag, reduceFrozenMoneyType, item);
 
             if (item.getWithdrawableMoney().compareTo(BigDecimal.ZERO) < 0) {
                 if (lowErrorFlag) {
@@ -487,14 +492,12 @@ public class SysUserWalletServiceImpl extends ServiceImpl<SysUserWalletMapper, S
 
             sysUserWalletLogDO.setUserId(item.getId());
             sysUserWalletLogDO.setName(iSysUserWalletLogType.getName());
+
             sysUserWalletLogDO.setType(iSysUserWalletLogType.getCode());
 
-            ISysUserWalletLogRefType iSysUserWalletLogRefType =
-                MyEntityUtil.getNotNullObject(refType, SysUserWalletLogRefTypeEnum.NONE);
-
-            sysUserWalletLogDO.setRefType(iSysUserWalletLogRefType.getCode());
-
             sysUserWalletLogDO.setRefId(MyEntityUtil.getNotNullLong(refId));
+
+            sysUserWalletLogDO.setRefData(MyEntityUtil.getNotNullStr(refData));
 
             sysUserWalletLogDO.setTotalMoneyPre(preTotalMoney);
             sysUserWalletLogDO.setTotalMoneySuf(item.getTotalMoney());
@@ -519,6 +522,49 @@ public class SysUserWalletServiceImpl extends ServiceImpl<SysUserWalletMapper, S
             commonHandleSysUserWalletLogDO(sysUserWalletLogDO);
 
             sysUserWalletLogDoList.add(sysUserWalletLogDO);
+
+        }
+
+    }
+
+    /**
+     * 处理：需要增加的钱
+     */
+    private void handleAddNumber(BigDecimal addNumber, boolean withdrawableMoneyFlag,
+        @Nullable Integer reduceFrozenMoneyType, SysUserWalletDO item) {
+
+        if (withdrawableMoneyFlag) {
+
+            item.setTotalMoney(item.getTotalMoney().add(addNumber)); // 修改：数字
+            item.setWithdrawableMoney(item.getWithdrawableMoney().add(addNumber)); // 修改：数字
+
+        } else {
+
+            if (addNumber.compareTo(BigDecimal.ZERO) < 0) {
+
+                if (reduceFrozenMoneyType == null) { // 1 （默认）扣除冻结的钱，并减少总的钱
+
+                    item.setTotalMoney(item.getTotalMoney().add(addNumber)); // 修改：数字
+                    item.setFrozenMoney(item.getWithdrawableMoney().add(addNumber)); // 修改：数字
+
+                } else if (reduceFrozenMoneyType == 2) { // 2 扣除冻结的钱，并增加可提现的钱
+
+                    item.setWithdrawableMoney(item.getWithdrawableMoney().add(addNumber.negate())); // 修改：数字
+                    item.setFrozenMoney(item.getWithdrawableMoney().add(addNumber)); // 修改：数字
+
+                } else { // 1 （默认）扣除冻结的钱，并减少总的钱
+
+                    item.setTotalMoney(item.getTotalMoney().add(addNumber)); // 修改：数字
+                    item.setFrozenMoney(item.getWithdrawableMoney().add(addNumber)); // 修改：数字
+
+                }
+
+            } else {
+
+                item.setWithdrawableMoney(item.getWithdrawableMoney().add(addNumber.negate())); // 修改：数字
+                item.setFrozenMoney(item.getWithdrawableMoney().add(addNumber)); // 修改：数字
+
+            }
 
         }
 

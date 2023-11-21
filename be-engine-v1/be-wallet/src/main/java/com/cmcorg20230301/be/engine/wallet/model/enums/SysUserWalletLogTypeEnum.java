@@ -21,6 +21,8 @@ public enum SysUserWalletLogTypeEnum implements ISysUserWalletLogType {
 
     REDUCE_BACKGROUND(202, "后台扣除"), //
 
+    REDUCE_USER_BUY(203, "用户购买"), // 这个购买的意思是：用户购买租户的钱包余额，租户扣除时的变化
+
     ;
 
     @EnumValue
