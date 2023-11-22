@@ -355,6 +355,7 @@ public class PayUtil {
         sysPayDO.setRefType(SysPayRefTypeEnum.NONE.getCode());
         sysPayDO.setRefId(BaseConstant.NEGATIVE_ONE);
         sysPayDO.setRefData("");
+        sysPayDO.setRefStatus("");
 
         sysPayDO.setPackageName(MyEntityUtil.getNotNullAndTrimStr(dto.getPackageName()));
         sysPayDO.setProductId(MyEntityUtil.getNotNullAndTrimStr(dto.getProductId()));

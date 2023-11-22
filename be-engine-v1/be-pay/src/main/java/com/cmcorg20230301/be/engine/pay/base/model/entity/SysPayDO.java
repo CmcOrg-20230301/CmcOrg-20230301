@@ -84,6 +84,9 @@ public class SysPayDO extends BaseEntity {
     @Schema(description = "关联的数据，建议：修改")
     private String refData;
 
+    @Schema(description = "关联的状态，建议：修改")
+    private String refStatus;
+
     @Schema(description = "app包名，必须是创建登录 api项目时，创建 android客户端 id使用包名，例如：谷歌支付")
     private String packageName;
 
