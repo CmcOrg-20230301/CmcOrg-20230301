@@ -83,7 +83,6 @@ public class SysTenantWalletServiceImpl implements SysTenantWalletService {
         List<SysUserWalletDO> allList =
             sysUserWalletService.lambdaQuery().in(BaseEntityNoIdFather::getTenantId, dto.getTenantIdSet())
                 .eq(SysUserWalletDO::getId, BaseConstant.TENANT_USER_ID) //
-                .groupBy(BaseEntityNoIdFather::getTenantId) // 备注：因为 totalMoney是聚合函数算出来的，所以这里需要分组
                 .list();
 
         if (allList.size() == 0) {
@@ -170,7 +169,7 @@ public class SysTenantWalletServiceImpl implements SysTenantWalletService {
         // 执行
         return sysUserWalletService
             .doAddWithdrawableMoney(currentUserId, new Date(), dto.getIdSet(), addNumber, sysUserWalletLogTypeEnum,
-                false, false, true, null, null, true, null);
+                false, false, true, null, null, true, null, null);
 
     }
 

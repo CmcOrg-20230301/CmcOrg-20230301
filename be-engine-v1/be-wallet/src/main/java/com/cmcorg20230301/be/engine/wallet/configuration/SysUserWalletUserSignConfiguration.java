@@ -39,7 +39,7 @@ public class SysUserWalletUserSignConfiguration implements IUserSignConfiguratio
         sysUserWalletDO.setId(userId);
 
         sysUserWalletDO.setWithdrawableMoney(BigDecimal.ZERO);
-        sysUserWalletDO.setFrozenMoney(BigDecimal.ZERO);
+        sysUserWalletDO.setWithdrawablePreUseMoney(BigDecimal.ZERO);
 
         sysUserWalletDO.setEnableFlag(true);
         sysUserWalletDO.setDelFlag(false);

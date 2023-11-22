@@ -64,7 +64,7 @@ public class SysWalletTenantSysPayRefHandlerConfiguration implements ISysPayRefH
             // 增加租户的：可提现余额
             sysUserWalletService.doAddWithdrawableMoney(sysPayDO.getUserId(), date, CollUtil.newHashSet(refId),
                 sysPayDO.getOriginalPrice(), SysUserWalletLogTypeEnum.ADD_PAY, false, false, true, sysPayDO.getRefId(),
-                refData, true, null);
+                refData, true, null, null);
 
             if (StrUtil.isNotBlank(refData)) {
 
@@ -72,7 +72,7 @@ public class SysWalletTenantSysPayRefHandlerConfiguration implements ISysPayRefH
                 sysUserWalletService
                     .doAddWithdrawableMoney(sysPayDO.getUserId(), date, CollUtil.newHashSet(Convert.toLong(refData)),
                         sysPayDO.getOriginalPrice().negate(), SysUserWalletLogTypeEnum.REDUCE_USER_BUY, false, false,
-                        true, sysPayDO.getRefId(), refData, false, null);
+                        true, sysPayDO.getRefId(), refData, false, null, null);
 
             }
 

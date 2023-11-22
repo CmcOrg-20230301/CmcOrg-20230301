@@ -342,7 +342,7 @@ public class SysUserWalletWithdrawLogServiceImpl
         // 检查和增加：用户钱包的可提现余额
         sysUserWalletService.doAddWithdrawableMoney(currentUserId, new Date(), CollUtil.newHashSet(id),
             sysUserWalletWithdrawLogDO.getWithdrawMoney().negate(), SysUserWalletLogTypeEnum.REDUCE_WITHDRAW, true,
-            true, tenantFlag, null, null, true, null);
+            true, tenantFlag, null, null, true, null, null);
 
         return BaseBizCodeEnum.OK;
 
@@ -396,7 +396,7 @@ public class SysUserWalletWithdrawLogServiceImpl
                 sysUserWalletService.doAddWithdrawableMoney(currentUserId, new Date(),
                     CollUtil.newHashSet(sysUserWalletWithdrawLogDO.getTenantId()),
                     sysUserWalletWithdrawLogDO.getWithdrawMoney(), SysUserWalletLogTypeEnum.REDUCE_WITHDRAW, true, true,
-                    true, null, null, true, null);
+                    true, null, null, true, null, null);
 
             } else {
 
@@ -404,7 +404,7 @@ public class SysUserWalletWithdrawLogServiceImpl
                 sysUserWalletService.doAddWithdrawableMoney(currentUserId, new Date(),
                     CollUtil.newHashSet(sysUserWalletWithdrawLogDO.getUserId()),
                     sysUserWalletWithdrawLogDO.getWithdrawMoney(), SysUserWalletLogTypeEnum.REDUCE_WITHDRAW, true, true,
-                    false, null, null, true, null);
+                    false, null, null, true, null, null);
 
             }
 
@@ -578,7 +578,7 @@ public class SysUserWalletWithdrawLogServiceImpl
                 sysUserWalletService.doAddWithdrawableMoney(currentUserId, new Date(),
                     CollUtil.newHashSet(sysUserWalletWithdrawLogDO.getUserId()),
                     sysUserWalletWithdrawLogDO.getWithdrawMoney(), SysUserWalletLogTypeEnum.REDUCE_WITHDRAW, true, true,
-                    false, null, null, true, null);
+                    false, null, null, true, null, null);
 
                 return BaseBizCodeEnum.OK;
 

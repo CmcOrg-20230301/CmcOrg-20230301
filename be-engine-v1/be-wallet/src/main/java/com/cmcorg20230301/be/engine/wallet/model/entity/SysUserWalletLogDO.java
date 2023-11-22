@@ -33,15 +33,6 @@ public class SysUserWalletLogDO extends BaseEntity {
     @Schema(description = "关联的数据")
     private String refData;
 
-    @Schema(description = "总金额，前")
-    private BigDecimal totalMoneyPre;
-
-    @Schema(description = "总金额，变")
-    private BigDecimal totalMoneyChange;
-
-    @Schema(description = "总金额，后")
-    private BigDecimal totalMoneySuf;
-
     @Schema(description = "可提现的钱，前")
     private BigDecimal withdrawableMoneyPre;
 
@@ -51,13 +42,13 @@ public class SysUserWalletLogDO extends BaseEntity {
     @Schema(description = "可提现的钱，后")
     private BigDecimal withdrawableMoneySuf;
 
-    @Schema(description = "冻结的钱，前")
-    private BigDecimal frozenMoneyPre;
+    @Schema(description = "可提现的钱，预使用，前")
+    private BigDecimal withdrawablePreUseMoneyPre;
 
-    @Schema(description = "冻结的钱，变")
-    private BigDecimal frozenMoneyChange;
+    @Schema(description = "可提现的钱，预使用，变")
+    private BigDecimal withdrawablePreUseMoneyChange;
 
-    @Schema(description = "冻结的钱，后")
-    private BigDecimal frozenMoneySuf;
+    @Schema(description = "可提现的钱，预使用，后")
+    private BigDecimal withdrawablePreUseMoneySuf;
 
 }

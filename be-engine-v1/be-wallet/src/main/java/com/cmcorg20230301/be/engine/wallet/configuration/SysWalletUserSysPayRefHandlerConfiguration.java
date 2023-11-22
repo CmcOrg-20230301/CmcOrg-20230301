@@ -64,15 +64,15 @@ public class SysWalletUserSysPayRefHandlerConfiguration implements ISysPayRefHan
             // 增加用户的：可提现余额
             sysUserWalletService.doAddWithdrawableMoney(sysPayDO.getUserId(), date, CollUtil.newHashSet(refId),
                 sysPayDO.getOriginalPrice(), SysUserWalletLogTypeEnum.ADD_PAY, false, false, false, sysPayDO.getRefId(),
-                refData, true, null);
+                refData, true, null, sysPayDO.getTenantId());
 
             if (StrUtil.isNotBlank(refData)) {
 
-                // 减少租户的：可提现余额和冻结余额
+                // 减少租户的：可提现余额和可提现预使用余额
                 sysUserWalletService
                     .doAddWithdrawableMoney(sysPayDO.getUserId(), date, CollUtil.newHashSet(Convert.toLong(refData)),
                         sysPayDO.getOriginalPrice().negate(), SysUserWalletLogTypeEnum.REDUCE_USER_BUY, false, false,
-                        true, sysPayDO.getRefId(), refData, false, null);
+                        true, sysPayDO.getRefId(), refData, false, null, null);
 
             }
 
