@@ -84,6 +84,7 @@ public class SysUserWalletLogServiceImpl extends ServiceImpl<SysUserWalletLogMap
         SysTenantUtil.handleMyTenantPageDTO(dto, true);
 
         return lambdaQuery().eq(dto.getUserId() != null, SysUserWalletLogDO::getUserId, dto.getUserId())
+            .eq(dto.getType() != null, SysUserWalletLogDO::getType, dto.getType())
             .like(StrUtil.isNotBlank(dto.getName()), SysUserWalletLogDO::getName, dto.getName())
             .le(dto.getCtEndTime() != null, SysUserWalletLogDO::getCreateTime, dto.getCtEndTime())
             .ge(dto.getCtBeginTime() != null, SysUserWalletLogDO::getCreateTime, dto.getCtBeginTime())

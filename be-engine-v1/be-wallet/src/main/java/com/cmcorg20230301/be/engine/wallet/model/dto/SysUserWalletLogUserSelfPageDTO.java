@@ -1,6 +1,7 @@
 package com.cmcorg20230301.be.engine.wallet.model.dto;
 
 import com.cmcorg20230301.be.engine.security.model.dto.MyTenantPageDTO;
+import com.cmcorg20230301.be.engine.wallet.model.interfaces.ISysUserWalletLogType;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -22,5 +23,11 @@ public class SysUserWalletLogUserSelfPageDTO extends MyTenantPageDTO {
 
     @Schema(description = "备注")
     private String remark;
+
+    /**
+     * {@link ISysUserWalletLogType}
+     */
+    @Schema(description = "记录类型：1开头 增加 2开头 减少")
+    private Integer type;
 
 }

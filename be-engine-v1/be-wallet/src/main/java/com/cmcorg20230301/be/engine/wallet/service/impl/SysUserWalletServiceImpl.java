@@ -5,6 +5,7 @@ import cn.hutool.core.date.DateTime;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.lang.func.Func1;
 import cn.hutool.core.util.BooleanUtil;
+import cn.hutool.core.util.StrUtil;
 import com.baomidou.dynamic.datasource.annotation.DSTransactional;
 import com.baomidou.mybatisplus.core.enums.SqlMethod;
 import com.baomidou.mybatisplus.core.toolkit.CollectionUtils;
@@ -449,16 +450,16 @@ public class SysUserWalletServiceImpl extends ServiceImpl<SysUserWalletMapper, S
      * 获取：PayDTO对象
      */
     @NotNull
-    private PayDTO getPayDTO(SysUserWalletRechargeUserSelfDTO dto, Long currentUserId, Long currentTenantIdDefault,
-        boolean tenantFlag, CallBack<Long> deductTenantIdCallBack) {
+    private PayDTO getPayDTO(SysUserWalletRechargeUserSelfDTO dto, Long userId, Long tenantId, boolean tenantFlag,
+        CallBack<Long> deductTenantIdCallBack) {
 
         PayDTO payDTO = new PayDTO();
 
         payDTO.setUseParentTenantPayFlag(true);
 
         payDTO.setPayType(dto.getSysPayType());
-        payDTO.setTenantId(currentTenantIdDefault);
-        payDTO.setUserId(currentUserId);
+        payDTO.setTenantId(tenantId);
+        payDTO.setUserId(userId);
 
         payDTO.setTotalAmount(dto.getValue());
         payDTO.setSubject("钱包充值");
@@ -466,15 +467,15 @@ public class SysUserWalletServiceImpl extends ServiceImpl<SysUserWalletMapper, S
 
         payDTO.setCheckSysPayConfigurationDoConsumer(sysPayConfigurationDO -> {
 
-            Long tenantId = currentTenantIdDefault;
+            Long tenantIdTemp = tenantId;
 
             if (tenantFlag) { // 如果是：租户进行充值
 
-                if (BaseConstant.TOP_TENANT_ID.equals(tenantId)) {
+                if (BaseConstant.TOP_TENANT_ID.equals(tenantIdTemp)) {
                     return;
                 }
 
-                SysTenantDO sysTenantDO = SysTenantUtil.getSysTenantCacheMap(false).get(tenantId);
+                SysTenantDO sysTenantDO = SysTenantUtil.getSysTenantCacheMap(false).get(tenantIdTemp);
 
                 if (sysTenantDO == null) {
                     ApiResultVO.errorMsg("操作失败：租户不存在");
@@ -484,21 +485,21 @@ public class SysUserWalletServiceImpl extends ServiceImpl<SysUserWalletMapper, S
                     ApiResultVO.errorMsg("操作失败：租户已被禁用");
                 }
 
-                tenantId = sysTenantDO.getParentId(); // 设置：租户 id为：上级租户 id
+                tenantIdTemp = sysTenantDO.getParentId(); // 设置：租户 id为：上级租户 id
 
             }
 
             // 如果：商品归属租户，配置了支付，则不进行任何操作
-            if (sysPayConfigurationDO.getTenantId().equals(tenantId)) {
+            if (sysPayConfigurationDO.getTenantId().equals(tenantIdTemp)) {
                 return;
             }
 
             // 检查：租户钱包的可用可提现余额，然后增加租户的：预使用可提现的钱
-            doAddWithdrawableMoney(currentUserId, new Date(), CollUtil.newHashSet(tenantId), dto.getValue().negate(),
+            doAddWithdrawableMoney(userId, new Date(), CollUtil.newHashSet(tenantIdTemp), dto.getValue(),
                 tenantFlag ? SysUserWalletLogTypeEnum.REDUCE_TENANT_BUY : SysUserWalletLogTypeEnum.REDUCE_USER_BUY,
                 true, true, true, null, null, false, null, null);
 
-            deductTenantIdCallBack.setValue(tenantId); // 设置：扣除可提现余额的租户 id
+            deductTenantIdCallBack.setValue(tenantIdTemp); // 设置：扣除可提现余额的租户 id
 
         });
 
@@ -512,24 +513,27 @@ public class SysUserWalletServiceImpl extends ServiceImpl<SysUserWalletMapper, S
     @Override
     public BuyVO rechargeTenant(SysUserWalletRechargeTenantDTO dto) {
 
+        Long tenantId = dto.getTenantId();
+
+        SysTenantUtil.checkTenantId(tenantId);
+
         if (dto.getValue().compareTo(BigDecimal.ZERO) <= 0) {
             ApiResultVO.errorMsg("操作失败：充值金额必须大于 0");
         }
 
         Long currentUserId = UserUtil.getCurrentUserId();
-        Long currentTenantIdDefault = UserUtil.getCurrentTenantIdDefault();
 
         // 扣除可提现余额的，上级租户的主键 id，如果扣除了，则不为 -1，如果没有扣除，则为 -1，目的：支付成功之后，扣除总的钱
         CallBack<Long> deductTenantIdCallBack = new CallBack<>(BaseConstant.NEGATIVE_ONE);
 
         // 获取：支付对象
-        PayDTO payDTO = getPayDTO(dto, currentUserId, currentTenantIdDefault, true, deductTenantIdCallBack);
+        PayDTO payDTO = getPayDTO(dto, currentUserId, tenantId, true, deductTenantIdCallBack);
 
         // 调用支付
         SysPayDO sysPayDO = PayUtil.pay(payDTO, tempSysPayDO -> {
 
             tempSysPayDO.setRefType(SysPayRefTypeEnum.WALLET_RECHARGE_TENANT.getCode());
-            tempSysPayDO.setRefId(currentTenantIdDefault);
+            tempSysPayDO.setRefId(tenantId);
 
             tempSysPayDO.setRefData(deductTenantIdCallBack.getValue().toString());
 
@@ -571,11 +575,19 @@ public class SysUserWalletServiceImpl extends ServiceImpl<SysUserWalletMapper, S
             item.setUpdateTime(null);
 
             if (item.getTotalMoney().compareTo(BigDecimal.ZERO) < 0) {
+
                 if (lowErrorFlag) {
-                    ApiResultVO.error("操作失败：可提现余额不足", item.getId());
+
+                    ApiResultVO.error("操作失败：可提现余额不足", StrUtil
+                        .format("id：{}，tenantId：{}，totalMoney：{}", item.getId(), item.getTenantId(),
+                            item.getTotalMoney()));
+
                 } else {
+
                     item.setWithdrawableMoney(BigDecimal.ZERO);
+
                 }
+
             }
 
             // 新增日志
