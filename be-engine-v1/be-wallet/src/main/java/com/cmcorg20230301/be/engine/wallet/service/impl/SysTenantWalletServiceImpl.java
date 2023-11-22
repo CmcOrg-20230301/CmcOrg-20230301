@@ -158,18 +158,18 @@ public class SysTenantWalletServiceImpl implements SysTenantWalletService {
 
         Long currentUserId = UserUtil.getCurrentUserId();
 
-        BigDecimal changeNumber = dto.getNumber();
+        BigDecimal addNumber = dto.getNumber();
 
         // 检查：是否非法操作
         SysTenantUtil.checkIllegal(dto.getIdSet(), getCheckIllegalFunc1(dto.getIdSet()));
 
         SysUserWalletLogTypeEnum sysUserWalletLogTypeEnum =
-            changeNumber.compareTo(BigDecimal.ZERO) > 0 ? SysUserWalletLogTypeEnum.ADD_BACKGROUND :
+            addNumber.compareTo(BigDecimal.ZERO) > 0 ? SysUserWalletLogTypeEnum.ADD_BACKGROUND :
                 SysUserWalletLogTypeEnum.REDUCE_BACKGROUND;
 
         // 执行
         return sysUserWalletService
-            .doAddWithdrawableMoney(currentUserId, new Date(), dto.getIdSet(), changeNumber, sysUserWalletLogTypeEnum,
+            .doAddWithdrawableMoney(currentUserId, new Date(), dto.getIdSet(), addNumber, sysUserWalletLogTypeEnum,
                 false, false, true, null, null, true, null);
 
     }
