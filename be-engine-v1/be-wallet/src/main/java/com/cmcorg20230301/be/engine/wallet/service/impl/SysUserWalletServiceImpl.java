@@ -1,6 +1,7 @@
 package com.cmcorg20230301.be.engine.wallet.service.impl;
 
 import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.date.DateTime;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.lang.func.Func1;
 import cn.hutool.core.util.BooleanUtil;
@@ -29,6 +30,7 @@ import com.cmcorg20230301.be.engine.security.model.entity.BaseEntityNoIdFather;
 import com.cmcorg20230301.be.engine.security.model.entity.SysTenantDO;
 import com.cmcorg20230301.be.engine.security.model.vo.ApiResultVO;
 import com.cmcorg20230301.be.engine.security.util.MyEntityUtil;
+import com.cmcorg20230301.be.engine.security.util.MyExceptionUtil;
 import com.cmcorg20230301.be.engine.security.util.SysTenantUtil;
 import com.cmcorg20230301.be.engine.security.util.UserUtil;
 import com.cmcorg20230301.be.engine.util.util.CallBack;
@@ -44,8 +46,10 @@ import com.cmcorg20230301.be.engine.wallet.model.interfaces.ISysUserWalletLogTyp
 import com.cmcorg20230301.be.engine.wallet.service.SysUserWalletService;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.PreDestroy;
 import javax.annotation.Resource;
 import java.math.BigDecimal;
 import java.util.*;
@@ -56,6 +60,88 @@ public class SysUserWalletServiceImpl extends ServiceImpl<SysUserWalletMapper, S
 
     @Resource
     SysUserWalletUserSignConfiguration sysUserWalletUserSignConfiguration;
+
+    /**
+     * 定时任务，可提现余额，预使用，检查
+     */
+    @PreDestroy
+    @Scheduled(fixedDelay = BaseConstant.MINUTE_5_EXPIRE_TIME)
+    public void scheduledCheckWithdrawablePreUseMoney() {
+
+        Date date = new Date();
+
+        DateTime checkDateTime = DateUtil.offsetMinute(date, -30);
+
+        List<SysUserWalletDO> sysUserWalletDOList = lambdaQuery().gt(SysUserWalletDO::getWithdrawablePreUseMoney, 0)
+            .le(BaseEntityNoIdFather::getUpdateTime, checkDateTime)
+            .select(SysUserWalletDO::getId, SysUserWalletDO::getTenantId).list();
+
+        if (CollUtil.isEmpty(sysUserWalletDOList)) {
+            return;
+        }
+
+        for (SysUserWalletDO item : sysUserWalletDOList) {
+
+            try {
+
+                Long id = item.getId();
+
+                boolean tenantFlag = id.equals(BaseConstant.TENANT_USER_ID); // 是否是：租户
+
+                if (tenantFlag) {
+
+                    id = item.getTenantId();
+
+                }
+
+                Long finalId = id;
+
+                RedissonUtil.doLock(BaseRedisKeyEnum.PRE_USER_WALLET.name() + id, () -> {
+
+                    // 再次查询，目的：防止出现并发问题
+                    SysUserWalletDO sysUserWalletDO = lambdaQuery().eq(!tenantFlag, SysUserWalletDO::getId, finalId)
+                        .eq(tenantFlag, SysUserWalletDO::getId, BaseConstant.TENANT_USER_ID)
+                        .eq(SysUserWalletDO::getTenantId, item.getTenantId()).one();
+
+                    // 如果：预使用可提现的钱，已经小于等于 0了，则不进行处理
+                    if (sysUserWalletDO.getWithdrawablePreUseMoney().compareTo(BigDecimal.ZERO) <= 0) {
+                        return;
+                    }
+
+                    // 如果：已经被更新了，则不进行处理
+                    if (sysUserWalletDO.getUpdateTime().compareTo(checkDateTime) > 0) {
+                        return;
+                    }
+
+                    BigDecimal preWithdrawableMoney = sysUserWalletDO.getWithdrawableMoney();
+                    BigDecimal preWithdrawablePreUseMoney = sysUserWalletDO.getWithdrawablePreUseMoney();
+
+                    sysUserWalletDO
+                        .setWithdrawableMoney(sysUserWalletDO.getWithdrawableMoney().add(preWithdrawablePreUseMoney));
+
+                    sysUserWalletDO.setWithdrawablePreUseMoney(BigDecimal.ZERO);
+
+                    sysUserWalletDO.setUpdateId(null);
+                    sysUserWalletDO.setUpdateTime(null);
+
+                    updateById(sysUserWalletDO); // 操作数据库
+
+                    // 新增日志
+                    SysUserWalletLogServiceImpl.add(
+                        addSysUserWalletLogDO(item.getId(), date, SysUserWalletLogTypeEnum.ADD_TIME_CHECK, null, null,
+                            sysUserWalletDO, preWithdrawableMoney, preWithdrawablePreUseMoney));
+
+                });
+
+            } catch (Exception e) {
+
+                MyExceptionUtil.printError(e);
+
+            }
+
+        }
+
+    }
 
     /**
      * 批量冻结
@@ -341,7 +427,7 @@ public class SysUserWalletServiceImpl extends ServiceImpl<SysUserWalletMapper, S
         CallBack<Long> deductTenantIdCallBack = new CallBack<>(BaseConstant.NEGATIVE_ONE);
 
         // 获取：支付对象
-        PayDTO payDTO = getPayDTO(dto, currentUserId, currentTenantIdDefault, "钱包充值", false, deductTenantIdCallBack);
+        PayDTO payDTO = getPayDTO(dto, currentUserId, currentTenantIdDefault, false, deductTenantIdCallBack);
 
         // 调用支付
         SysPayDO sysPayDO = PayUtil.pay(payDTO, tempSysPayDO -> {
@@ -364,7 +450,7 @@ public class SysUserWalletServiceImpl extends ServiceImpl<SysUserWalletMapper, S
      */
     @NotNull
     private PayDTO getPayDTO(SysUserWalletRechargeUserSelfDTO dto, Long currentUserId, Long currentTenantIdDefault,
-        String subject, boolean tenantFlag, CallBack<Long> deductTenantIdCallBack) {
+        boolean tenantFlag, CallBack<Long> deductTenantIdCallBack) {
 
         PayDTO payDTO = new PayDTO();
 
@@ -375,7 +461,7 @@ public class SysUserWalletServiceImpl extends ServiceImpl<SysUserWalletMapper, S
         payDTO.setUserId(currentUserId);
 
         payDTO.setTotalAmount(dto.getValue());
-        payDTO.setSubject(subject);
+        payDTO.setSubject("钱包充值");
         payDTO.setExpireTime(DateUtil.offsetMinute(new Date(), 30));
 
         payDTO.setCheckSysPayConfigurationDoConsumer(sysPayConfigurationDO -> {
@@ -409,7 +495,8 @@ public class SysUserWalletServiceImpl extends ServiceImpl<SysUserWalletMapper, S
 
             // 检查：租户钱包的可用可提现余额，然后增加租户的：预使用可提现的钱
             doAddWithdrawableMoney(currentUserId, new Date(), CollUtil.newHashSet(tenantId), dto.getValue().negate(),
-                SysUserWalletLogTypeEnum.REDUCE_USER_BUY, true, true, true, null, null, false, null, null);
+                tenantFlag ? SysUserWalletLogTypeEnum.REDUCE_TENANT_BUY : SysUserWalletLogTypeEnum.REDUCE_USER_BUY,
+                true, true, true, null, null, false, null, null);
 
             deductTenantIdCallBack.setValue(tenantId); // 设置：扣除可提现余额的租户 id
 
@@ -436,7 +523,7 @@ public class SysUserWalletServiceImpl extends ServiceImpl<SysUserWalletMapper, S
         CallBack<Long> deductTenantIdCallBack = new CallBack<>(BaseConstant.NEGATIVE_ONE);
 
         // 获取：支付对象
-        PayDTO payDTO = getPayDTO(dto, currentUserId, currentTenantIdDefault, "钱包充值", false, deductTenantIdCallBack);
+        PayDTO payDTO = getPayDTO(dto, currentUserId, currentTenantIdDefault, true, deductTenantIdCallBack);
 
         // 调用支付
         SysPayDO sysPayDO = PayUtil.pay(payDTO, tempSysPayDO -> {
@@ -475,7 +562,7 @@ public class SysUserWalletServiceImpl extends ServiceImpl<SysUserWalletMapper, S
             }
 
             BigDecimal preWithdrawableMoney = item.getWithdrawableMoney();
-            BigDecimal withdrawablePreUseMoney = item.getWithdrawablePreUseMoney();
+            BigDecimal preWithdrawablePreUseMoney = item.getWithdrawablePreUseMoney();
 
             // 处理：需要增加的钱
             handleAddNumber(addNumber, withdrawableMoneyFlag, reduceFrozenMoneyType, item);
@@ -492,8 +579,9 @@ public class SysUserWalletServiceImpl extends ServiceImpl<SysUserWalletMapper, S
             }
 
             // 新增日志
-            addSysUserWalletLogDO(currentUserId, date, iSysUserWalletLogType, sysUserWalletLogDoList, refId, refData,
-                item, preWithdrawableMoney, withdrawablePreUseMoney);
+            sysUserWalletLogDoList.add(
+                addSysUserWalletLogDO(currentUserId, date, iSysUserWalletLogType, refId, refData, item,
+                    preWithdrawableMoney, preWithdrawablePreUseMoney));
 
         }
 
@@ -502,9 +590,9 @@ public class SysUserWalletServiceImpl extends ServiceImpl<SysUserWalletMapper, S
     /**
      * 新增日志
      */
-    private void addSysUserWalletLogDO(Long currentUserId, Date date, ISysUserWalletLogType iSysUserWalletLogType,
-        List<SysUserWalletLogDO> sysUserWalletLogDoList, @Nullable Long refId, @Nullable String refData,
-        SysUserWalletDO item, BigDecimal preWithdrawableMoney, BigDecimal withdrawablePreUseMoney) {
+    public static SysUserWalletLogDO addSysUserWalletLogDO(Long currentUserId, Date date,
+        ISysUserWalletLogType iSysUserWalletLogType, @Nullable Long refId, @Nullable String refData,
+        SysUserWalletDO item, BigDecimal preWithdrawableMoney, BigDecimal preWithdrawablePreUseMoney) {
 
         SysUserWalletLogDO sysUserWalletLogDO = new SysUserWalletLogDO();
 
@@ -520,7 +608,7 @@ public class SysUserWalletServiceImpl extends ServiceImpl<SysUserWalletMapper, S
         sysUserWalletLogDO.setWithdrawableMoneyPre(preWithdrawableMoney);
         sysUserWalletLogDO.setWithdrawableMoneySuf(item.getWithdrawableMoney());
 
-        sysUserWalletLogDO.setWithdrawablePreUseMoneyPre(withdrawablePreUseMoney);
+        sysUserWalletLogDO.setWithdrawablePreUseMoneyPre(preWithdrawablePreUseMoney);
         sysUserWalletLogDO.setWithdrawablePreUseMoneySuf(item.getWithdrawablePreUseMoney());
 
         sysUserWalletLogDO.setId(IdGeneratorUtil.nextId());
@@ -536,7 +624,7 @@ public class SysUserWalletServiceImpl extends ServiceImpl<SysUserWalletMapper, S
         // 通用：处理：SysUserWalletLogDO
         commonHandleSysUserWalletLogDO(sysUserWalletLogDO);
 
-        sysUserWalletLogDoList.add(sysUserWalletLogDO);
+        return sysUserWalletLogDO;
 
     }
 
@@ -578,7 +666,7 @@ public class SysUserWalletServiceImpl extends ServiceImpl<SysUserWalletMapper, S
     /**
      * 通用：处理：SysUserWalletLogDO
      */
-    private void commonHandleSysUserWalletLogDO(SysUserWalletLogDO sysUserWalletLogDO) {
+    public static void commonHandleSysUserWalletLogDO(SysUserWalletLogDO sysUserWalletLogDO) {
 
         sysUserWalletLogDO.setWithdrawableMoneyChange(
             sysUserWalletLogDO.getWithdrawableMoneySuf().subtract(sysUserWalletLogDO.getWithdrawableMoneyPre()));
