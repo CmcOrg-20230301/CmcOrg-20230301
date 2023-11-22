@@ -18,6 +18,7 @@ import com.cmcorg20230301.be.engine.pay.base.model.configuration.ISysPay;
 import com.cmcorg20230301.be.engine.pay.base.model.dto.PayDTO;
 import com.cmcorg20230301.be.engine.pay.base.model.entity.SysPayConfigurationDO;
 import com.cmcorg20230301.be.engine.pay.base.model.entity.SysPayDO;
+import com.cmcorg20230301.be.engine.pay.base.model.enums.SysPayRefStatusEnum;
 import com.cmcorg20230301.be.engine.pay.base.model.enums.SysPayRefTypeEnum;
 import com.cmcorg20230301.be.engine.pay.base.model.enums.SysPayTradeStatusEnum;
 import com.cmcorg20230301.be.engine.pay.base.model.enums.SysPayTypeEnum;
@@ -355,7 +356,7 @@ public class PayUtil {
         sysPayDO.setRefType(SysPayRefTypeEnum.NONE.getCode());
         sysPayDO.setRefId(BaseConstant.NEGATIVE_ONE);
         sysPayDO.setRefData("");
-        sysPayDO.setRefStatus("");
+        sysPayDO.setRefStatus(SysPayRefStatusEnum.NONE.getCode());
 
         sysPayDO.setPackageName(MyEntityUtil.getNotNullAndTrimStr(dto.getPackageName()));
         sysPayDO.setProductId(MyEntityUtil.getNotNullAndTrimStr(dto.getProductId()));

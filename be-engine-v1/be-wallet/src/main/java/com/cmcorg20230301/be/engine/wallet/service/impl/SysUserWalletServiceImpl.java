@@ -19,6 +19,7 @@ import com.cmcorg20230301.be.engine.model.model.dto.NotEmptyIdSet;
 import com.cmcorg20230301.be.engine.model.model.dto.NotNullLong;
 import com.cmcorg20230301.be.engine.pay.base.model.dto.PayDTO;
 import com.cmcorg20230301.be.engine.pay.base.model.entity.SysPayDO;
+import com.cmcorg20230301.be.engine.pay.base.model.enums.SysPayRefStatusEnum;
 import com.cmcorg20230301.be.engine.pay.base.model.enums.SysPayRefTypeEnum;
 import com.cmcorg20230301.be.engine.pay.base.model.vo.BuyVO;
 import com.cmcorg20230301.be.engine.pay.base.util.PayUtil;
@@ -438,6 +439,8 @@ public class SysUserWalletServiceImpl extends ServiceImpl<SysUserWalletMapper, S
 
             tempSysPayDO.setRefData(deductTenantIdCallBack.getValue().toString());
 
+            tempSysPayDO.setRefStatus(SysPayRefStatusEnum.WAIT_PAY.getCode());
+
         });
 
         // 返回：调用支付之后，返回的参数
@@ -536,6 +539,8 @@ public class SysUserWalletServiceImpl extends ServiceImpl<SysUserWalletMapper, S
             tempSysPayDO.setRefId(tenantId);
 
             tempSysPayDO.setRefData(deductTenantIdCallBack.getValue().toString());
+
+            tempSysPayDO.setRefStatus(SysPayRefStatusEnum.WAIT_PAY.getCode());
 
         });
 

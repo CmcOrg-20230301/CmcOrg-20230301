@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.cmcorg20230301.be.engine.pay.base.model.enums.SysPayTradeStatusEnum;
+import com.cmcorg20230301.be.engine.pay.base.model.interfaces.ISysPayRefStatus;
 import com.cmcorg20230301.be.engine.pay.base.model.interfaces.ISysPayRefType;
 import com.cmcorg20230301.be.engine.pay.base.model.interfaces.ISysPayType;
 import com.cmcorg20230301.be.engine.security.model.entity.BaseEntity;
@@ -84,8 +85,11 @@ public class SysPayDO extends BaseEntity {
     @Schema(description = "关联的数据，建议：修改")
     private String refData;
 
+    /**
+     * {@link ISysPayRefStatus}
+     */
     @Schema(description = "关联的状态，建议：修改")
-    private String refStatus;
+    private Integer refStatus;
 
     @Schema(description = "app包名，必须是创建登录 api项目时，创建 android客户端 id使用包名，例如：谷歌支付")
     private String packageName;
