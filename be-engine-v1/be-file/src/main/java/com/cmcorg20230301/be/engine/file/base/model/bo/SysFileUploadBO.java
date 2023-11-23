@@ -32,4 +32,7 @@ public class SysFileUploadBO {
     @Schema(description = "租户主键 id")
     private Long tenantId;
 
+    @Schema(description = "关联的 id")
+    private Long refId;
+
 }

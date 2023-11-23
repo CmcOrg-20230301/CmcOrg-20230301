@@ -20,4 +20,7 @@ public class SysFileUploadDTO {
     @Schema(description = "额外信息（json格式）")
     private String extraJson;
 
+    @Schema(description = "关联的 id")
+    private Long refId;
+
 }

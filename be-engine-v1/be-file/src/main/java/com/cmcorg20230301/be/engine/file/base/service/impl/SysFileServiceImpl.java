@@ -53,6 +53,8 @@ public class SysFileServiceImpl extends ServiceImpl<SysFileMapper, SysFileDO> im
         sysFileUploadBO.setRemark(dto.getRemark());
         sysFileUploadBO.setExtraJson(dto.getExtraJson());
 
+        sysFileUploadBO.setRefId(dto.getRefId());
+
         sysFileUploadBO.setUserId(currentUserId);
         sysFileUploadBO.setTenantId(currentTenantIdDefault);
 
@@ -120,12 +122,20 @@ public class SysFileServiceImpl extends ServiceImpl<SysFileMapper, SysFileDO> im
 
         return lambdaQuery()
             .like(StrUtil.isNotBlank(dto.getOriginFileName()), SysFileDO::getOriginFileName, dto.getOriginFileName())
+
             .like(StrUtil.isNotBlank(dto.getRemark()), BaseEntity::getRemark, dto.getRemark())
+
             .eq(dto.getBelongId() != null, SysFileDO::getBelongId, dto.getBelongId())
+
             .eq(dto.getUploadType() != null, SysFileDO::getUploadType, dto.getUploadType())
+
             .eq(dto.getStorageType() != null, SysFileDO::getStorageType, dto.getStorageType())
+
             .eq(dto.getPublicFlag() != null, SysFileDO::getPublicFlag, dto.getPublicFlag())
+
             .eq(dto.getEnableFlag() != null, BaseEntity::getEnableFlag, dto.getEnableFlag())
+
+            .eq(dto.getRefId() != null, SysFileDO::getRefId, dto.getRefId())
 
             .ne(SysUserTenantEnum.USER.equals(dto.getSysUserTenantEnum()), SysFileDO::getBelongId,
                 BaseConstant.TENANT_USER_ID) //
@@ -134,11 +144,13 @@ public class SysFileServiceImpl extends ServiceImpl<SysFileMapper, SysFileDO> im
                 BaseConstant.TENANT_USER_ID) //
 
             .in(BaseEntityNoId::getTenantId, dto.getTenantIdSet()) //
+
             .select(BaseEntity::getId, BaseEntityNoIdFather::getTenantId, BaseEntityNoId::getEnableFlag,
                 BaseEntityNoId::getRemark, BaseEntityNoIdFather::getCreateId, BaseEntityNoIdFather::getCreateTime,
                 BaseEntityNoIdFather::getUpdateId, BaseEntityNoIdFather::getUpdateTime, SysFileDO::getOriginFileName,
                 SysFileDO::getBelongId, SysFileDO::getUploadType, SysFileDO::getStorageType, SysFileDO::getPublicFlag,
                 SysFileDO::getFileSize, SysFileDO::getExtraJson).orderByDesc(BaseEntity::getUpdateTime)
+
             .page(dto.page(true));
 
     }
@@ -155,6 +167,7 @@ public class SysFileServiceImpl extends ServiceImpl<SysFileMapper, SysFileDO> im
 
         sysFilePageDTO.setBelongId(currentUserId); // 设置为：当前用户
 
+        // 执行
         return myPage(sysFilePageDTO);
 
     }
@@ -173,6 +186,7 @@ public class SysFileServiceImpl extends ServiceImpl<SysFileMapper, SysFileDO> im
 
         sysFilePageDTO.setTenantIdSet(CollUtil.newHashSet(currentTenantIdDefault)); // 设置为：当前租户
 
+        // 执行
         return myPage(sysFilePageDTO);
 
     }

@@ -316,6 +316,8 @@ public class SysFileUtil {
 
         sysFileDO.setFileSize(bo.getFile().getSize());
 
+        sysFileDO.setRefId(MyEntityUtil.getNotNullLong(bo.getRefId()));
+
         sysFileDO.setEnableFlag(true);
 
         sysFileDO.setDelFlag(false);

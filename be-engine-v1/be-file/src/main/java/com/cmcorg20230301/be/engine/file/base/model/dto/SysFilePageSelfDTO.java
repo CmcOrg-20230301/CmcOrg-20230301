@@ -39,4 +39,7 @@ public class SysFilePageSelfDTO extends MyTenantPageDTO {
     @Schema(description = "用户/租户")
     private SysUserTenantEnum sysUserTenantEnum;
 
+    @Schema(description = "关联的 id")
+    private Long refId;
+
 }

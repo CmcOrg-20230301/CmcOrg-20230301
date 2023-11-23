@@ -69,4 +69,7 @@ public class SysFileDO extends BaseEntity {
     @Schema(description = "文件大小")
     private Long fileSize;
 
+    @Schema(description = "关联的 id")
+    private Long refId;
+
 }
