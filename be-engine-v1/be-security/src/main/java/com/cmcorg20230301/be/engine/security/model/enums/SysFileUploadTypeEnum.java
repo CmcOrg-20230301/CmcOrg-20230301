@@ -7,7 +7,7 @@ import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.annotation.EnumValue;
 import com.cmcorg20230301.be.engine.security.model.interfaces.ISysFileUploadType;
 import com.cmcorg20230301.be.engine.security.model.vo.ApiResultVO;
-import com.cmcorg20230301.be.engine.util.util.MyFileTypeUtil;
+import com.cmcorg20230301.be.engine.security.util.MyFileTypeUtil;
 import com.fasterxml.jackson.annotation.JsonValue;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -33,6 +33,9 @@ public enum SysFileUploadTypeEnum implements ISysFileUploadType {
 
     // text
     TEXT(301, "text", CollUtil.newHashSet("txt"), 1024 * 1024 * 2, false), //
+
+    // pdf
+    PDF(302, "pdf", CollUtil.newHashSet("pdf"), 1024 * 1024 * 2, false), //
 
     ;
 

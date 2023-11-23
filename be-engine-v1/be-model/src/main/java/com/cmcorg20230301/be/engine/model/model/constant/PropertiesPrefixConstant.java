@@ -23,9 +23,7 @@ public interface PropertiesPrefixConstant {
 
     String FILE = PRE_BE + "file"; // 文件相关
 
-    String FILE_ALI_YUN = FILE + ".aliyun"; // 阿里云文件相关
-
-    String FILE_MINIO = FILE + ".minio"; // minio文件相关
+    String FILE_TYPE = FILE + ".type"; // 文件类型相关
 
     String SOCKET = PRE_BE + "socket"; // socket相关
 

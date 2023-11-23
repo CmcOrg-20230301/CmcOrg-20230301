@@ -1,14 +1,25 @@
-package com.cmcorg20230301.be.engine.util.util;
+package com.cmcorg20230301.be.engine.security.util;
 
 import cn.hutool.core.io.FileTypeUtil;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.io.IoUtil;
 import cn.hutool.core.util.StrUtil;
+import com.cmcorg20230301.be.engine.security.properties.FileTypeProperties;
 import org.jetbrains.annotations.Nullable;
+import org.springframework.stereotype.Component;
 
+import javax.annotation.Resource;
 import java.io.InputStream;
 
+@Component
 public class MyFileTypeUtil {
+
+    private static FileTypeProperties fileTypeProperties;
+
+    @Resource
+    public void setFileTypeProperties(FileTypeProperties fileTypeProperties) {
+        MyFileTypeUtil.fileTypeProperties = fileTypeProperties;
+    }
 
     /**
      * 获取文件类型（不含点）：读取文件头部字节，获取文件类型，如果没有匹配上，则返回 null
@@ -70,8 +81,8 @@ public class MyFileTypeUtil {
             // 使用扩展名
             final String extName = FileUtil.extName(fileName);
 
-            if ("txt".equals(extName)) {
-                typeName = "txt";
+            if (fileTypeProperties.getAllowSet().contains(extName)) {
+                return extName;
             }
 
         }
