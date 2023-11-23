@@ -92,7 +92,7 @@ public class SysUserWalletWithdrawLogServiceImpl
                 .in(BaseEntityNoId::getTenantId, tenantIdSet).count());
 
         // 执行
-        return doInsertOrUpdate(dto, userId, false);
+        return doInsertOrUpdate(dto, userId, false, null);
 
     }
 
@@ -233,7 +233,7 @@ public class SysUserWalletWithdrawLogServiceImpl
         SysTenantUtil.checkTenantId(dto.getTenantId());
 
         // 执行
-        return doInsertOrUpdate(dto, dto.getTenantId(), true);
+        return doInsertOrUpdate(dto, dto.getTenantId(), true, null);
 
     }
 
@@ -281,8 +281,10 @@ public class SysUserWalletWithdrawLogServiceImpl
 
         Long currentUserId = UserUtil.getCurrentUserId();
 
+        Long currentTenantIdDefault = UserUtil.getCurrentTenantIdDefault();
+
         // 执行
-        return doInsertOrUpdate(dto, currentUserId, false);
+        return doInsertOrUpdate(dto, currentUserId, false, currentTenantIdDefault);
 
     }
 
@@ -292,8 +294,8 @@ public class SysUserWalletWithdrawLogServiceImpl
      * @param id 用户 id 或者 租户主键 id
      */
     @NotNull
-    private String doInsertOrUpdate(SysUserWalletWithdrawLogInsertOrUpdateUserSelfDTO dto, Long id,
-        boolean tenantFlag) {
+    private String doInsertOrUpdate(SysUserWalletWithdrawLogInsertOrUpdateUserSelfDTO dto, Long id, boolean tenantFlag,
+        @Nullable Long tenantId) {
 
         Long currentUserId = UserUtil.getCurrentUserId();
 
@@ -314,6 +316,7 @@ public class SysUserWalletWithdrawLogServiceImpl
         // 查询：用户银行卡信息
         SysUserBankCardDO sysUserBankCardDO =
             ChainWrappers.lambdaQueryChain(sysUserBankCardMapper).eq(!tenantFlag, SysUserBankCardDO::getId, id)
+                .eq(!tenantFlag && tenantId != null, SysUserBankCardDO::getTenantId, tenantId)
                 .eq(tenantFlag, SysUserBankCardDO::getId, BaseConstant.TENANT_USER_ID)
                 .eq(tenantFlag, BaseEntityNoIdFather::getTenantId, id).one();
 

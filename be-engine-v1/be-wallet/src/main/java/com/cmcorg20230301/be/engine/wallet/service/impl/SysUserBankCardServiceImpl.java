@@ -62,6 +62,10 @@ public class SysUserBankCardServiceImpl extends ServiceImpl<SysUserBankCardMappe
     @Override
     public String insertOrUpdateUserSelf(SysUserBankCardInsertOrUpdateUserSelfDTO dto) {
 
+        Long currentTenantIdDefault = UserUtil.getCurrentTenantIdDefault();
+
+        dto.setTenantId(currentTenantIdDefault);
+
         // 执行
         return doInsertOrUpdate(dto, false, null);
 
@@ -93,8 +97,9 @@ public class SysUserBankCardServiceImpl extends ServiceImpl<SysUserBankCardMappe
 
         }
 
-        boolean exists = lambdaQuery().eq(SysUserBankCardDO::getId, id)
-            .eq(tenantFlag, BaseEntityNoIdFather::getTenantId, dto.getTenantId()).exists();
+        boolean exists =
+            lambdaQuery().eq(SysUserBankCardDO::getId, id).eq(BaseEntityNoIdFather::getTenantId, dto.getTenantId())
+                .exists();
 
         SysUserBankCardDO sysUserBankCardDO = new SysUserBankCardDO();
 
@@ -174,13 +179,20 @@ public class SysUserBankCardServiceImpl extends ServiceImpl<SysUserBankCardMappe
         }
 
         Page<SysUserBankCardDO> page = lambdaQuery().eq(dto.getId() != null, SysUserBankCardDO::getId, dto.getId())
+
             .like(StrUtil.isNotBlank(dto.getBankCardNo()), SysUserBankCardDO::getBankCardNo, dto.getBankCardNo())
+
             .eq(dto.getOpenBankName() != null, SysUserBankCardDO::getOpenBankName, dto.getOpenBankName())
+
             .like(StrUtil.isNotBlank(dto.getBranchBankName()), SysUserBankCardDO::getBranchBankName,
                 dto.getBranchBankName()) //
+
             .like(StrUtil.isNotBlank(dto.getPayeeName()), SysUserBankCardDO::getPayeeName, dto.getPayeeName()) //
+
             .ne(!tenantFlag, SysUserBankCardDO::getId, BaseConstant.TENANT_USER_ID) //
+
             .in(BaseEntityNoId::getTenantId, dto.getTenantIdSet()) //
+
             .orderByDesc(BaseEntityNoIdFather::getUpdateTime).page(dto.page(true));
 
         for (SysUserBankCardDO item : page.getRecords()) {
@@ -248,7 +260,10 @@ public class SysUserBankCardServiceImpl extends ServiceImpl<SysUserBankCardMappe
 
         Long currentUserId = UserUtil.getCurrentUserId();
 
-        SysUserBankCardDO sysUserBankCardDO = lambdaQuery().eq(SysUserBankCardDO::getId, currentUserId).one();
+        Long currentTenantIdDefault = UserUtil.getCurrentTenantIdDefault();
+
+        SysUserBankCardDO sysUserBankCardDO = lambdaQuery().eq(SysUserBankCardDO::getId, currentUserId)
+            .eq(BaseEntityNoIdFather::getTenantId, currentTenantIdDefault).one();
 
         // 脱敏：SysUserBankCardDO
         desensitizedSysUserBankCardDO(sysUserBankCardDO);
