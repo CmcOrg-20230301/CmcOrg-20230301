@@ -579,13 +579,13 @@ public class SysUserWalletServiceImpl extends ServiceImpl<SysUserWalletMapper, S
             item.setUpdateId(null);
             item.setUpdateTime(null);
 
-            if (item.getTotalMoney().compareTo(BigDecimal.ZERO) < 0) {
+            if (item.getWithdrawableRealMoney().compareTo(BigDecimal.ZERO) < 0) {
 
                 if (lowErrorFlag) {
 
                     ApiResultVO.error("操作失败：可提现余额不足", StrUtil
-                        .format("id：{}，tenantId：{}，totalMoney：{}", item.getId(), item.getTenantId(),
-                            item.getTotalMoney()));
+                        .format("id：{}，tenantId：{}，withdrawableRealMoney：{}", item.getId(), item.getTenantId(),
+                            item.getWithdrawableRealMoney()));
 
                 } else {
 

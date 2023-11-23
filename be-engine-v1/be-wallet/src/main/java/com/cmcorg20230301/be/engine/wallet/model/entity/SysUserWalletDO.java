@@ -40,7 +40,14 @@ public class SysUserWalletDO extends BaseEntityTree<SysUserWalletDO> {
     private BigDecimal totalMoney;
 
     public BigDecimal getTotalMoney() {
-        return withdrawableMoney.subtract(withdrawablePreUseMoney);
+        return withdrawableMoney;
     }
 
+    @TableField(exist = false)
+    @Schema(description = "实际可提现的钱")
+    private BigDecimal withdrawableRealMoney;
+
+    public BigDecimal getWithdrawableRealMoney() {
+        return withdrawableMoney.subtract(withdrawablePreUseMoney);
+    }
 }
