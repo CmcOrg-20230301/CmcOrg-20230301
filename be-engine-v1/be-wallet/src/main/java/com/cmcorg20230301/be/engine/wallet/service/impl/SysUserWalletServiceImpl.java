@@ -130,8 +130,8 @@ public class SysUserWalletServiceImpl extends ServiceImpl<SysUserWalletMapper, S
 
                     // 新增日志
                     SysUserWalletLogServiceImpl.add(
-                        addSysUserWalletLogDO(item.getId(), date, SysUserWalletLogTypeEnum.ADD_TIME_CHECK, null, null,
-                            sysUserWalletDO, preWithdrawableMoney, preWithdrawablePreUseMoney));
+                        addSysUserWalletLogDO(BaseConstant.SYS_ID, date, SysUserWalletLogTypeEnum.ADD_TIME_CHECK, null,
+                            null, sysUserWalletDO, preWithdrawableMoney, preWithdrawablePreUseMoney));
 
                 });
 

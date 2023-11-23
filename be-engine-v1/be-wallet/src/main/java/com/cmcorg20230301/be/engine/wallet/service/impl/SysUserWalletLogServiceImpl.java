@@ -23,6 +23,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PreDestroy;
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -85,11 +86,19 @@ public class SysUserWalletLogServiceImpl extends ServiceImpl<SysUserWalletLogMap
 
         return lambdaQuery().eq(dto.getUserId() != null, SysUserWalletLogDO::getUserId, dto.getUserId())
             .eq(dto.getType() != null, SysUserWalletLogDO::getType, dto.getType())
+
+            .ne(SysUserWalletLogDO::getWithdrawableMoneyChange, BigDecimal.ZERO)
+
             .like(StrUtil.isNotBlank(dto.getName()), SysUserWalletLogDO::getName, dto.getName())
+
             .le(dto.getCtEndTime() != null, SysUserWalletLogDO::getCreateTime, dto.getCtEndTime())
+
             .ge(dto.getCtBeginTime() != null, SysUserWalletLogDO::getCreateTime, dto.getCtBeginTime())
+
             .like(StrUtil.isNotBlank(dto.getRemark()), SysUserWalletLogDO::getRemark, dto.getRemark())
+
             .in(BaseEntityNoId::getTenantId, dto.getTenantIdSet()) //
+
             .orderByDesc(BaseEntityNoIdFather::getUpdateTime).page(dto.page(true));
 
     }
