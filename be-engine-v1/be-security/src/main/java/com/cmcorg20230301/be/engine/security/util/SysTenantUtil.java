@@ -151,6 +151,30 @@ public class SysTenantUtil {
     }
 
     /**
+     * 获取：租户对象
+     */
+    @NotNull
+    public static SysTenantDO getSysTenantDO(Long tenantId) {
+
+        if (BaseConstant.TOP_TENANT_ID.equals(tenantId)) {
+            return SysTenantUtil.getDefaultSysTenantDO();
+        }
+
+        SysTenantDO sysTenantDO = SysTenantUtil.getSysTenantCacheMap(false).get(tenantId);
+
+        if (sysTenantDO == null) {
+            ApiResultVO.error("操作失败：租户不存在", tenantId);
+        }
+
+        if (!sysTenantDO.getEnableFlag()) {
+            ApiResultVO.error("操作失败：租户已被禁用，无法进行操作", tenantId);
+        }
+
+        return sysTenantDO;
+
+    }
+
+    /**
      * 获取：顶层租户（平台）
      */
     @NotNull

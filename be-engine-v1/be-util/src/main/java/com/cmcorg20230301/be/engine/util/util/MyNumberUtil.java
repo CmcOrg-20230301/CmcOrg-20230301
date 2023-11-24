@@ -1,5 +1,8 @@
 package com.cmcorg20230301.be.engine.util.util;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+
 public class MyNumberUtil {
 
     /**
@@ -7,6 +10,15 @@ public class MyNumberUtil {
      */
     public static long getLessThanZeroDefaultValue(long value, long defaultValue) {
         return value < 0 ? defaultValue : value;
+    }
+
+    /**
+     * 获取：单价
+     */
+    public static BigDecimal getUnitPrice(BigDecimal price, BigDecimal number) {
+
+        return price.divide(number, 3, RoundingMode.HALF_UP);
+
     }
 
 }
