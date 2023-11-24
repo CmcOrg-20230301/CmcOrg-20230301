@@ -4,7 +4,9 @@ import cn.hutool.core.io.FileTypeUtil;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.io.IoUtil;
 import cn.hutool.core.util.StrUtil;
+import com.cmcorg20230301.be.engine.model.model.constant.LogTopicConstant;
 import com.cmcorg20230301.be.engine.security.properties.FileTypeProperties;
+import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.stereotype.Component;
 
@@ -12,6 +14,7 @@ import javax.annotation.Resource;
 import java.io.InputStream;
 
 @Component
+@Slf4j(topic = LogTopicConstant.FILE_TYPE)
 public class MyFileTypeUtil {
 
     private static FileTypeProperties fileTypeProperties;
@@ -84,6 +87,8 @@ public class MyFileTypeUtil {
             if (fileTypeProperties.getAllowSet().contains(extName)) {
                 return extName;
             }
+
+            log.info("不允许的扩展名：{}", extName);
 
         }
 
