@@ -24,6 +24,7 @@ import {SysPostPage} from "@/api/http/SysPost";
 import {SysRolePage} from "@/api/http/SysRole";
 import {UseEffectFullScreenChange} from "@/util/UseEffectUtil";
 import {SysTenantPage} from "@/api/http/SysTenant";
+import {PasswordRSAEncrypt, RSAEncryptPro} from "@/util/RsaUtil";
 
 // 用户-管理
 export default function () {
@@ -451,6 +452,14 @@ export default function () {
                 columns={SchemaFormColumnList(formRef)}
 
                 onFinish={async (form) => {
+
+                    if (!form.id && form.password) {
+
+                        const date = new Date()
+                        form.originPassword = RSAEncryptPro(form.password, date)
+                        form.password = PasswordRSAEncrypt(form.password, date)
+
+                    }
 
                     await SysUserInsertOrUpdate({...currentForm.current, ...form}).then(res => {
 

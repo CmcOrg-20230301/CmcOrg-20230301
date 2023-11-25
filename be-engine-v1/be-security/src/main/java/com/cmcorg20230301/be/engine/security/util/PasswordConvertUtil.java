@@ -20,11 +20,17 @@ public class PasswordConvertUtil {
     public static String convert(String password, boolean checkPasswordBlank) {
 
         if (StrUtil.isBlank(password)) {
+
             if (checkPasswordBlank) {
+
                 ApiResultVO.errorMsg("密码不能为空");
+
             } else {
+
                 return "";
+
             }
+
         }
 
         String salt = IdUtil.simpleUUID(); // 取盐
@@ -34,6 +40,7 @@ public class PasswordConvertUtil {
         String newPassword = cycle(saltPro + password); // 循环
 
         StrBuilder strBuilder = new StrBuilder(salt); // 把盐放到最前面
+
         strBuilder.append(REGEX).append(newPassword);
 
         return strBuilder.toString();
