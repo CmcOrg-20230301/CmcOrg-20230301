@@ -3,6 +3,8 @@ import NotFound from "@/component/NotFound/NotFound";
 import Blank from "@/component/Blank/Blank";
 import BlankLayout from "@/layout/BlankLayout/BlankLayout";
 import PathConstant from "@/model/constant/PathConstant";
+import InitBlank from "@/component/InitBlank/InitBlank";
+import FileDownload from "@/component/FileDownload/FileDownload";
 
 export interface IManualRouterItem extends IRouterMapItem {
 
@@ -17,6 +19,8 @@ export interface IManualRouter {
     AdminLayout: IManualRouterItem
     BlankLayout: IManualRouterItem
     Blank: IManualRouterItem
+    InitBlank: IManualRouterItem
+    FileDownload: IManualRouterItem
 
 }
 
@@ -30,6 +34,10 @@ export const ManualRouterName: IManualRouter = {
     BlankLayout: {name: "BlankLayout", element: BlankLayout, path: PathConstant.BLANK_LAYOUT_PATH},
 
     Blank: {name: "Blank", element: Blank},
+
+    InitBlank: {name: "InitBlank", element: InitBlank},
+
+    FileDownload: {name: "FileDownload", element: FileDownload},
 
 }
 

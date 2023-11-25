@@ -17,17 +17,18 @@ export function SysFileGetPublicUrl(form: NotEmptyIdSet, config?: AxiosRequestCo
 }
 
 export interface SysFilePageDTO {
-    current?: string // 第几页，format：int64
     originFileName?: string // 文件原始名（包含文件类型）
-    uploadType?: number // 文件上传类型，format：int32
     publicFlag?: boolean // 是否公开访问
     pageSize?: string // 每页显示条数，format：int64
+    remark?: string // 备注
+    sysUserTenantEnum?: string // 用户/租户
+    current?: string // 第几页，format：int64
+    uploadType?: number // 文件上传类型，format：int32
     storageType?: number // 存放文件的服务器类型，format：int32
     belongId?: string // 归属者用户主键 id（拥有全部权限），format：int64
     tenantIdSet?: string[] // 租户 idSet，format：int64
-    remark?: string // 备注
+    refId?: string // 关联的 id，format：int64
     enableFlag?: boolean // 是否启用
-    sysUserTenantEnum?: string // 用户/租户
     order?: MyOrderDTO // 排序字段
     sort?: Record<string, SortOrder> // 排序字段（只在前端使用，实际传值：order）
 }
@@ -58,6 +59,7 @@ export interface SysFileDO {
     tenantId?: string // 租户 id，format：int64
     storageType?: number // 存放文件的服务器类型，format：int32
     extraJson?: string // 额外信息（json格式）
+    refId?: string // 关联的 id，format：int64
     fileExtName?: string // 文件类型（不含点），备注：这个是读取文件流的头部信息获得文件类型
 }
 
@@ -75,6 +77,7 @@ export interface SysFilePageSelfDTO {
     storageType?: number // 存放文件的服务器类型，format：int32
     tenantIdSet?: string[] // 租户 idSet，format：int64
     remark?: string // 备注
+    refId?: string // 关联的 id，format：int64
     enableFlag?: boolean // 是否启用
     sysUserTenantEnum?: string // 用户/租户
     order?: MyOrderDTO // 排序字段

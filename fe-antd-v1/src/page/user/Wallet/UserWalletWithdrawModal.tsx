@@ -48,7 +48,7 @@ export default function (props: IUserWalletWithdrawModal) {
                 className={"m-l-20"}
                 onClick={() => {
 
-                    if (!props.sysUserWalletDO.withdrawableMoney) {
+                    if (!props.sysUserWalletDO.withdrawableRealMoney) {
 
                         ToastError('操作失败：可提现余额不足')
                         return
@@ -164,7 +164,7 @@ export default function (props: IUserWalletWithdrawModal) {
                         fieldProps: {
                             precision: 2, // 小数点精度
                             className: "w100",
-                            addonAfter: <div>{props.sysUserWalletDO.withdrawableMoney}</div>,
+                            addonAfter: <div>{props.sysUserWalletDO.withdrawableRealMoney}</div>,
                             autoFocus: true,
                         },
 
@@ -173,7 +173,7 @@ export default function (props: IUserWalletWithdrawModal) {
                                 {
                                     required: true,
                                     min: 1,
-                                    max: props.sysUserWalletDO.withdrawableMoney,
+                                    max: props.sysUserWalletDO.withdrawableRealMoney,
                                     type: "number",
                                 }
                             ]

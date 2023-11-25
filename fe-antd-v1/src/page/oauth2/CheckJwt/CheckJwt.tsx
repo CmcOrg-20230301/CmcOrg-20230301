@@ -3,6 +3,7 @@ import {getAppNav} from "@/MyApp";
 import PathConstant from "@/model/constant/PathConstant";
 import LocalStorageKey from "@/model/constant/LocalStorageKey";
 import SessionStorageKey from "@/model/constant/SessionStorageKey";
+import {GetTenantIdFromStorage} from "@/util/CommonUtil";
 
 function GoBlank() {
     getAppNav()(PathConstant.BLANK_PATH, {state: {showText: '跳转失败：参数不存在'}})
@@ -17,6 +18,8 @@ export interface ICheckJwt {
     mainUri: string, // 主页地址，例如：/admin
 
     mainRedirectUri: string // 主页跳转地址，例如：/admin/sys/dict，主要用在：BlankLayout里
+
+    tenantId: string // 租户主键 id，用于：判断 jwt存在时，存储的 tenantId是否和 本次的 tenantId一致，如果不一致
 
 }
 
@@ -65,6 +68,22 @@ export default function () {
         } else {
 
             jwt = null
+
+        }
+
+        if (jwt) {
+
+            if (form.tenantId) {
+
+                const storageTenantId = GetTenantIdFromStorage();
+
+                if (storageTenantId !== form.tenantId) {
+
+                    jwt = null
+
+                }
+
+            }
 
         }
 

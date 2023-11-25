@@ -31,7 +31,9 @@ export interface SysUserWalletDO {
     totalMoney?: number // 总金额
     updateTime?: string // 修改时间，format：date-time
     remark?: string // 备注
+    withdrawableRealMoney?: number // 实际可提现的钱
     delFlag?: boolean // 是否逻辑删除
+    withdrawablePreUseMoney?: number // 可提现的钱：预使用，例如用于：用户充值时，需要扣除租户的可提现的钱时
     version?: number // 乐观锁，format：int32
     parentId?: string // 上级 id，用于：租户钱包列表的树形结构展示，没有其他用途，format：int64
     withdrawableMoney?: number // 可提现的钱

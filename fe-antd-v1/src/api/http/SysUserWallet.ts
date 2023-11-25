@@ -12,7 +12,9 @@ export interface SysUserWalletDO {
     totalMoney?: number // 总金额
     updateTime?: string // 修改时间，format：date-time
     remark?: string // 备注
+    withdrawableRealMoney?: number // 实际可提现的钱
     delFlag?: boolean // 是否逻辑删除
+    withdrawablePreUseMoney?: number // 可提现的钱：预使用，例如用于：用户充值时，需要扣除租户的可提现的钱时
     version?: number // 乐观锁，format：int32
     parentId?: string // 上级 id，用于：租户钱包列表的树形结构展示，没有其他用途，format：int64
     withdrawableMoney?: number // 可提现的钱
@@ -68,6 +70,24 @@ export function SysUserWalletThawByIdSet(form: NotEmptyIdSet, config?: AxiosRequ
     return $http.myPost<string>('/sys/userWallet/thawByIdSet', form, config)
 }
 
+export interface SysUserWalletRechargeTenantDTO {
+    sysPayType?: number // 支付方式，备注：如果为 null，则表示用默认支付方式，format：int32
+    tenantId?: string // 租户主键 id，format：int64
+    value?: number // 值，required：true
+}
+
+export interface BuyVO {
+    sysPayType?: number // 实际的支付方式，format：int32
+    sysPayConfigurationId?: string // 支付配置主键 id，format：int64
+    outTradeNo?: string // 本系统的支付订单号
+    payReturnValue?: string // 支付返回的参数
+}
+
+// 充值-租户
+export function SysUserWalletRechargeTenant(form: SysUserWalletRechargeTenantDTO, config?: AxiosRequestConfig) {
+    return $http.myPost<BuyVO>('/sys/userWallet/recharge/tenant', form, config)
+}
+
 export interface ChangeBigDecimalNumberDTO {
     idSet?: string[] // 主键 idSet，required：true，format：int64
     number?: number // 需要改变的数值，required：true
@@ -76,4 +96,14 @@ export interface ChangeBigDecimalNumberDTO {
 // 通过主键 idSet，加减可提现的钱
 export function SysUserWalletAddWithdrawableMoneyBackground(form: ChangeBigDecimalNumberDTO, config?: AxiosRequestConfig) {
     return $http.myPost<string>('/sys/userWallet/addWithdrawableMoney/background', form, config)
+}
+
+export interface SysUserWalletRechargeUserSelfDTO {
+    sysPayType?: number // 支付方式，备注：如果为 null，则表示用默认支付方式，format：int32
+    value?: number // 值，required：true
+}
+
+// 充值-用户自我
+export function SysUserWalletRechargeUserSelf(form: SysUserWalletRechargeUserSelfDTO, config?: AxiosRequestConfig) {
+    return $http.myPost<BuyVO>('/sys/userWallet/recharge/userSelf', form, config)
 }

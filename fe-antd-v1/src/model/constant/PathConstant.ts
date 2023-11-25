@@ -24,6 +24,10 @@ export default {
 
     BLANK_PATH: '/blank',
 
+    INIT_BLANK_PATH: '/initBlank',
+
+    FILE_DOWNLOAD_PATH: '/fileDownload',
+
     NOT_FOUND_PATH: '/notFound',
 
     SYS_OTHER_APP_PATH: '/admin/sys/other/app', // 第三方应用管理

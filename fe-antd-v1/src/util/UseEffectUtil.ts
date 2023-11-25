@@ -1,11 +1,98 @@
 import {useEffect} from "react";
-import LocalStorageKey from "@/model/constant/LocalStorageKey";
-import {SignOut} from "@/util/UserUtil";
+import LocalStorageKey, {LocalStorageKeyList} from "@/model/constant/LocalStorageKey";
+import {ClearStorage, SignOut} from "@/util/UserUtil";
 import {SysMenuDO, SysMenuUserSelfMenuList} from "@/api/http/SysMenu";
 import {ToastError} from "@/util/ToastUtil";
 import {setUserSelfMenuList} from "@/store/userSlice";
 import {ConnectWebSocket} from "@/util/webSocket/WebSocketUtil";
-import {getAppDispatch, getUserSelfMenuList} from "@/MyApp";
+import {getAppDispatch, getAppNav, getUserSelfMenuList} from "@/MyApp";
+import {GetURLSearchParams} from "@/util/CommonUtil";
+import {SessionStorageKeyList} from "@/model/constant/SessionStorageKey";
+
+export interface IInit {
+
+    localStorageData?: Record<string, string>
+
+    sessionStorageData?: Record<string, string>
+
+    redirect?: string
+
+}
+
+// 通过：url的参数，来初始化
+export function UseEffectInit() {
+
+    useEffect(() => {
+
+        const dataStr = GetURLSearchParams().get("data");
+
+        if (!dataStr) {
+            return
+        }
+
+        ClearStorage()
+
+        const data: IInit = JSON.parse(decodeURIComponent(dataStr));
+
+        if (data.localStorageData) {
+
+            Object.keys(data.localStorageData).forEach((key) => {
+
+                if (LocalStorageKeyList.includes(key)) {
+
+                    const value = data.localStorageData![key];
+
+                    if (value) {
+
+                        localStorage.setItem(key, value)
+
+                    }
+
+                }
+
+            })
+
+        }
+
+        if (data.sessionStorageData) {
+
+            Object.keys(data.sessionStorageData).forEach((key) => {
+
+                if (SessionStorageKeyList.includes(key)) {
+
+                    const value = data.sessionStorageData![key];
+
+                    if (value) {
+
+                        sessionStorage.setItem(key, value)
+
+                    }
+
+                }
+
+            })
+
+        }
+
+        if (data.redirect) {
+
+            const redirect = decodeURIComponent(data.redirect)
+
+            if (redirect?.startsWith('http')) {
+
+                window.location.href = redirect!
+
+            } else {
+
+                getAppNav()(redirect)
+
+            }
+
+        }
+
+    }, [])
+
+}
 
 // 监听是否：全屏
 export function UseEffectFullScreenChange(setFullScreenFlag: (value: (((prevState: boolean) => boolean) | boolean)) => void) {

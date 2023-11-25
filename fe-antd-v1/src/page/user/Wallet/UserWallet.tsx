@@ -1,11 +1,24 @@
-import {ProCard, ProSchemaValueEnumType, RouteContext, RouteContextType} from '@ant-design/pro-components';
+import {
+    ModalForm,
+    ProCard,
+    ProFormDigit,
+    ProSchemaValueEnumType,
+    RouteContext,
+    RouteContextType
+} from '@ant-design/pro-components';
 import {Button, Statistic} from 'antd';
 import {MoneyCollectOutlined, RollbackOutlined} from "@ant-design/icons";
-import React, {useEffect, useState} from "react";
+import React, {useEffect, useRef, useState} from "react";
 import {SysUserBankCardDO, SysUserBankCardInfoById, SysUserBankCardInfoByIdUserSelf} from "@/api/http/SysUserBankCard";
 import {ToastSuccess} from "@/util/ToastUtil";
-import {SysUserWalletDO, SysUserWalletInfoById, SysUserWalletInfoByIdUserSelf} from "@/api/http/SysUserWallet";
-import {InDev} from "@/util/CommonUtil";
+import {
+    SysUserWalletDO,
+    SysUserWalletInfoById,
+    SysUserWalletInfoByIdUserSelf,
+    SysUserWalletRechargeTenant,
+    SysUserWalletRechargeUserSelf,
+    SysUserWalletRechargeUserSelfDTO
+} from "@/api/http/SysUserWallet";
 import {SysTenantBankCardInfoById} from "@/api/http/SysTenantBankCard";
 import {SysTenantWalletInfoById} from "@/api/http/SysTenantWallet";
 import PathConstant from "@/model/constant/PathConstant";
@@ -15,6 +28,9 @@ import UserBankCardModal from "@/page/user/Wallet/UserBankCardModal";
 import UserWalletLogModal from "@/page/user/Wallet/UserWalletLogModal";
 import UserWalletWithdrawLogModal from "@/page/user/Wallet/UserWalletWithdrawLogModal";
 import UserWalletWithdrawModal from "@/page/user/Wallet/UserWalletWithdrawModal";
+import PayComponent, {IPayComponentRef} from "@/component/PayComponent/PayComponent";
+import CommonConstant from "@/model/constant/CommonConstant";
+import {SysUserWalletLogTypeEnum} from "@/model/enum/SysUserWalletLogTypeEnum";
 
 export const UserWalletLogModalTitle = "钱包日志"
 export const BindUserBankCardModalTitle = "绑定银行卡"
@@ -40,6 +56,8 @@ export default function (props: IUserWallet) {
     const [sysUserBankCardDO, setSysUserBankCardDO] = useState<SysUserBankCardDO>({} as SysUserBankCardDO); // 用户银行卡信息
 
     const [withdrawStatusDict, setWithdrawStatusDict] = useState<Map<number, ProSchemaValueEnumType>>() // 提现状态
+
+    const payComponentRef = useRef<IPayComponentRef | null>(null);
 
     function UpdateSysUserBankCardDO() {
 
@@ -134,6 +152,12 @@ export default function (props: IUserWallet) {
 
         <>
 
+            <PayComponent ref={payComponentRef} callBack={() => {
+
+                UpdateSysUserWalletDO()
+
+            }}/>
+
             <RouteContext.Consumer>
 
                 {(routeContextType: RouteContextType) => {
@@ -185,9 +209,9 @@ export default function (props: IUserWallet) {
 
                                                 <div>钱包余额（元）</div>
 
-                                                <a onClick={() => {
-                                                    InDev()
-                                                }}>{UserWalletRechargeLogModalTitle}</a>
+                                                <UserWalletLogModal tenantId={props.tenantId} userId={props.userId}
+                                                                    title={UserWalletRechargeLogModalTitle}
+                                                                    type={SysUserWalletLogTypeEnum.ADD_PAY.code}/>
 
                                             </div>
 
@@ -226,7 +250,7 @@ export default function (props: IUserWallet) {
 
                                         }
 
-                                        value={sysUserWalletDO.withdrawableMoney}
+                                        value={sysUserWalletDO.withdrawableRealMoney}
 
                                         precision={2}
 
@@ -253,15 +277,67 @@ export default function (props: IUserWallet) {
 
                                 }
 
-                                <Button
+                                <ModalForm<SysUserWalletRechargeUserSelfDTO>
 
-                                    className={"m-l-20"}
-                                    icon={<MoneyCollectOutlined/>}
-                                    onClick={() => {
-                                        InDev()
+                                    modalProps={{
+                                        maskClosable: false
                                     }}
 
-                                >{UserWalletRechargeModalTitle}</Button>
+                                    isKeyPressSubmit
+
+                                    width={CommonConstant.MODAL_FORM_WIDTH}
+                                    title={"请输入要充值的金额"}
+                                    trigger={
+
+                                        <Button
+
+                                            className={(props.tenantId || props.userId) ? "m-l-20" : ""}
+                                            icon={<MoneyCollectOutlined/>}
+
+                                        >
+
+                                            {UserWalletRechargeModalTitle}
+
+                                        </Button>
+
+                                    }
+
+                                    onFinish={async (form) => {
+
+                                        if (props.tenantId) {
+
+                                            SysUserWalletRechargeTenant({
+                                                value: form.value,
+                                                tenantId: props.tenantId
+                                            }).then(res => {
+
+                                                payComponentRef.current?.HandleBuyVO(res.data!)
+
+                                            })
+
+                                        } else if (props.userId) {
+
+
+                                        } else {
+
+                                            SysUserWalletRechargeUserSelf({value: form.value}).then(res => {
+
+                                                payComponentRef.current?.HandleBuyVO(res.data!)
+
+                                            })
+
+                                        }
+
+                                        return true
+
+                                    }}
+
+                                >
+
+                                    <ProFormDigit label={"充值金额"} name="value" min={0.01} className={"w100"}
+                                                  rules={[{required: true}]} fieldProps={{precision: 2}}/>
+
+                                </ModalForm>
 
                                 <UserWalletWithdrawModal
 

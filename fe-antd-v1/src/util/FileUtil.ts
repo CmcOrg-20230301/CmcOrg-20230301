@@ -2,6 +2,57 @@ import $http from "./HttpUtil";
 import {RcFile} from "antd/es/upload";
 import {NotNullId} from "@/api/http/SysFile";
 import {ToastError} from "@/util/ToastUtil";
+import {GetBrowserCategory} from "@/util/BrowserCategoryUtil";
+import {BrowserCategoryEnum} from "@/model/enum/BrowserCategoryEnum";
+import {LocalStorageKeyList} from "@/model/constant/LocalStorageKey";
+import {IInit} from "@/util/UseEffectUtil";
+import {SessionStorageKeyList} from "@/model/constant/SessionStorageKey";
+import {getAppNav} from "@/MyApp";
+import PathConstant from "@/model/constant/PathConstant";
+
+// 获取：文件是否可以预览
+export function GetFileCanPreviewFlag(fileName: string) {
+
+    return fileName.endsWith(".txt")
+
+}
+
+// 前往：下载页面
+export function GoFileDownloadPage(id: string) {
+
+    const data: IInit = {localStorageData: {}, sessionStorageData: {}}
+
+    LocalStorageKeyList.forEach((key) => {
+
+        data.localStorageData![key] = localStorage.getItem(key)!
+
+    })
+
+    SessionStorageKeyList.forEach((key) => {
+
+        data.sessionStorageData![key] = sessionStorage.getItem(key)!
+
+    })
+
+    getAppNav()(PathConstant.FILE_DOWNLOAD_PATH + "?data=" + encodeURIComponent(JSON.stringify(data)) + "&id=" + id)
+
+}
+
+// 是否需要打开：下载页面进行下载
+export function OpenFileDownloadPageFlag(): boolean {
+
+    const browserCategory = GetBrowserCategory();
+
+    // 如果是：微信浏览器，则需要打开下载页面
+    if (browserCategory === BrowserCategoryEnum.ANDROID_BROWSER_WX.code || browserCategory === BrowserCategoryEnum.APPLE_BROWSER_WX.code || browserCategory === BrowserCategoryEnum.WINDOWS_BROWSER_WX.code || browserCategory === BrowserCategoryEnum.MAC_BROWSER_WX.code || browserCategory === BrowserCategoryEnum.LINUX_BROWSER_WX.code) {
+
+        return true;
+
+    }
+
+    return false;
+
+}
 
 /**
  * 获取：文件大小字符串
@@ -152,22 +203,29 @@ export function FileUpload(formData: FormData, url: string) {
 export const AvatarFileTypeList = ["image/jpeg", "image/png", "image/jpg"]
 
 // 检查：头像的文件类型
-export function CheckAvatarFileType(avatarFileType: string) {
-    return AvatarFileTypeList.includes(avatarFileType)
+export function CheckAvatarFileType(fileType: string) {
+    return AvatarFileTypeList.includes(fileType)
 }
 
 export const ExcelFileTypeList = ["application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"]
 
 // 检查：excel文件类型
-export function CheckExcelFileType(excelFileType: string) {
-    return ExcelFileTypeList.includes(excelFileType)
+export function CheckExcelFileType(fileType: string) {
+    return ExcelFileTypeList.includes(fileType)
 }
 
 export const TxtFileTypeList = ["text/plain"]
 
 // 检查：txt文件类型
-export function CheckTxtFileType(excelFileType: string) {
-    return TxtFileTypeList.includes(excelFileType)
+export function CheckTxtFileType(fileType: string) {
+    return TxtFileTypeList.includes(fileType)
+}
+
+export const DocumentFileTypeList = ["text/plain", "application/pdf", "application/msword", "application/vnd.openxmlformats-officedocument.wordprocessingml.document", "", "text/html"]
+
+// 检查：文档文件类型
+export function CheckDocumentFileType(fileType: string) {
+    return DocumentFileTypeList.includes(fileType)
 }
 
 // 检查：文件的文件类型，2097152（字节）= 2MB

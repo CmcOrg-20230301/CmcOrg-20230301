@@ -1,4 +1,4 @@
-export default {
+const SessionStorageKey = {
 
     ADMIN_REDIRECT_PATH: 'ADMIN_REDIRECT_PATH', // 页面打开时，进行路由跳转的地址，为空则不跳转
 
@@ -9,3 +9,7 @@ export default {
     OAUTH2_REDIRECT_URI: 'OAUTH2_REDIRECT_URI', // oauth2-需要跳转的地址
 
 }
+
+export default SessionStorageKey
+
+export const SessionStorageKeyList = Object.keys(SessionStorageKey)

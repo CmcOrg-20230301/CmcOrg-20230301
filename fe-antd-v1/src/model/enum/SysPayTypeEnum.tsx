@@ -6,13 +6,7 @@ import {BrowserCategoryEnum} from "@/model/enum/BrowserCategoryEnum";
 import {Typography} from "antd";
 import React from "react";
 import {getApp} from "@/MyApp";
-
-export interface BuyVO {
-    sysPayType?: number // 实际的支付方式，format：int32
-    sysPayConfigurationId?: string // 支付配置主键 id，format：int64
-    outTradeNo?: string // 本系统的支付订单号
-    payReturnValue?: string // 支付返回的参数
-}
+import {BuyVO} from "@/component/PayComponent/PayComponent";
 
 export interface ISysUserWalletWithdrawTypeEnumItem extends IEnum<number> {
 

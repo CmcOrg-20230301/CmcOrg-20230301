@@ -28,6 +28,12 @@ export default {
 
     TXT_FILE_ACCEPT_TYPE: ".txt", // txt文件的类型
 
+    PDF_FILE_ACCEPT_TYPE: ".pdf", // pdf文件的类型
+
+    DOCX_FILE_ACCEPT_TYPE: ".docx", // docx文件的类型
+
+    DOCUMENT_FILE_ACCEPT_TYPE: ".txt,.pdf,.doc,.docx,.java,.python,.sql,.cs,.html", // 文档文件的类型
+
     MOBILE_WIDTH: 768, // 小于这个数值，就是移动端
 
     SHORT_DELAY: 100, // 短的延迟

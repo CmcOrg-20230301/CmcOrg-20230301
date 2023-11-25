@@ -10,6 +10,7 @@ export interface SysUserWalletLogPageDTO {
     tenantIdSet?: string[] // 租户 idSet，format：int64
     remark?: string // 备注
     ctEndTime?: string // 结束时间：创建时间，format：date-time
+    type?: number // 记录类型：1开头 增加 2开头 减少，format：int32
     ctBeginTime?: string // 起始时间：创建时间，format：date-time
     userId?: string // 用户主键 id，format：int64
     order?: MyOrderDTO // 排序字段
@@ -17,14 +18,14 @@ export interface SysUserWalletLogPageDTO {
 }
 
 export interface SysUserWalletLogDO {
-    totalMoneyPre?: number // 总金额，前
-    refType?: number // 关联的类型，format：int32
+    refData?: string // 关联的数据
+    withdrawablePreUseMoneySuf?: number // 可提现的钱，预使用，后
+    withdrawablePreUseMoneyPre?: number // 可提现的钱，预使用，前
+    withdrawablePreUseMoneyChange?: number // 可提现的钱，预使用，变
     updateTime?: string // 修改时间，format：date-time
     remark?: string // 备注
     delFlag?: boolean // 是否逻辑删除
     type?: number // 记录类型：1开头 增加 2开头 减少，format：int32
-    totalMoneyChange?: number // 总金额，变
-    totalMoneySuf?: number // 总金额，后
     version?: number // 乐观锁，format：int32
     userId?: string // 用户主键 id，format：int64
     updateId?: string // 修改人id，format：int64
@@ -52,6 +53,7 @@ export interface SysUserWalletLogUserSelfPageDTO {
     tenantIdSet?: string[] // 租户 idSet，format：int64
     remark?: string // 备注
     ctEndTime?: string // 结束时间：创建时间，format：date-time
+    type?: number // 记录类型：1开头 增加 2开头 减少，format：int32
     ctBeginTime?: string // 起始时间：创建时间，format：date-time
     order?: MyOrderDTO // 排序字段
     sort?: Record<string, SortOrder> // 排序字段（只在前端使用，实际传值：order）

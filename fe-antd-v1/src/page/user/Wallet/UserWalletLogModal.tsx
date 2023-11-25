@@ -13,12 +13,17 @@ import {GetTextType} from "@/util/StrUtil";
 import {DoGetDictList} from "@/util/DictUtil";
 import {SysUserDictList} from "@/api/http/SysUser";
 import {UserWalletLogModalTitle} from "@/page/user/Wallet/UserWallet";
+import {SysUserWalletLogTypeEnumDict} from "@/model/enum/SysUserWalletLogTypeEnum";
 
 interface IUserWalletLogModal {
 
     tenantId?: string // 租户 id，备注：如果传递了，则表示是管理租户的钱包，备注：租户 id和用户 id只会传递一个
 
     userId?: string // 用户 id，备注：如果传递了，则表示是管理用户的钱包，备注：租户 id和用户 id只会传递一个
+
+    type?: number // 记录类型：1开头 增加 2开头 减少
+
+    title?: string
 
 }
 
@@ -39,13 +44,13 @@ export default function (props: IUserWalletLogModal) {
 
             <a className={"m-l-20 f-14"} onClick={() => {
                 setOpen(true)
-            }}>{UserWalletLogModalTitle}</a>
+            }}>{props.title || UserWalletLogModalTitle}</a>
 
             <Modal
 
                 width={1300}
 
-                title={UserWalletLogModalTitle}
+                title={props.title || UserWalletLogModalTitle}
 
                 onCancel={() => setOpen(false)}
 
@@ -90,56 +95,15 @@ export default function (props: IUserWalletLogModal) {
                             width: 90,
                         },
 
-                        {title: '日志名称', dataIndex: 'name', ellipsis: true, width: 90,},
-
                         {
-                            title: '钱包余额（前）',
-                            dataIndex: 'totalMoneyPre',
-                            ellipsis: true,
-                            width: 120,
-                            hideInSearch: true,
-                            valueType: 'money',
+                            title: '类型', dataIndex: 'type', ellipsis: true, width: 90, valueType: 'select',
+                            valueEnum: SysUserWalletLogTypeEnumDict,
                             fieldProps: {
-                                precision: 2, // 小数点精度
+                                allowClear: true,
+                                showSearch: true,
                             },
-                        },
-
-                        {
-                            title: '钱包余额（变）',
-                            dataIndex: 'totalMoneyChange',
-                            width: 120,
-                            hideInSearch: true,
-                            valueType: 'money',
-                            fieldProps: {
-                                precision: 2, // 小数点精度
-                            },
-                            render: (dom, entity: SysUserWalletLogDO) => {
-
-                                const type = GetTextType(entity.totalMoneyChange)
-
-                                return <Typography.Text
-
-                                    ellipsis={{tooltip: true}}
-                                    type={type}
-                                    style={{width: 120}}
-
-                                >
-                                    {dom}
-                                </Typography.Text>
-
-                            }
-                        },
-
-                        {
-                            title: '钱包余额（后）',
-                            dataIndex: 'totalMoneySuf',
-                            ellipsis: true,
-                            width: 120,
-                            hideInSearch: true,
-                            valueType: 'money',
-                            fieldProps: {
-                                precision: 2, // 小数点精度
-                            },
+                            hideInSearch: Boolean(props.type),
+                            hideInTable: Boolean(props.type)
                         },
 
                         {
@@ -247,15 +211,20 @@ export default function (props: IUserWalletLogModal) {
 
                         if (props.tenantId) {
 
-                            return SysUserWalletLogPageTenant({...params, sort, tenantIdSet: [props.tenantId]})
+                            return SysUserWalletLogPageTenant({
+                                type: props.type,
+                                ...params,
+                                sort,
+                                tenantIdSet: [props.tenantId]
+                            })
 
                         } else if (props.userId) {
 
-                            return SysUserWalletLogPage({...params, sort, userId: props.userId})
+                            return SysUserWalletLogPage({type: props.type, ...params, sort, userId: props.userId})
 
                         } else {
 
-                            return SysUserWalletLogPageUserSelf({...params, sort})
+                            return SysUserWalletLogPageUserSelf({type: props.type, ...params, sort})
 
                         }
 

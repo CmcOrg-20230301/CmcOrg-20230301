@@ -181,6 +181,8 @@ const PayComponent = forwardRef<IPayComponentRef, IPayComponent>((props, ref) =>
 
             onCancel={() => {
 
+                outTradeNoRef.current = ""
+
                 setQrCodeModalOpen(false)
 
             }}

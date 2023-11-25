@@ -25,6 +25,16 @@ const NoLoginRouterList: INoLoginRouterList[] = [
     },
 
     {
+        path: PathConstant.INIT_BLANK_PATH,
+        elementStr: 'InitBlank'
+    },
+
+    {
+        path: PathConstant.FILE_DOWNLOAD_PATH,
+        elementStr: 'FileDownload'
+    },
+
+    {
         path: PathConstant.OAUTH2_WX_PATH,
         elementStr: 'oauth2Oauth2WxOauth2Wx'
     },

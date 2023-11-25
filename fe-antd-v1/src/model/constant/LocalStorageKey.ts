@@ -25,3 +25,5 @@ const LocalStorageKey = {
 }
 
 export default LocalStorageKey
+
+export const LocalStorageKeyList = Object.keys(LocalStorageKey)
