@@ -9,4 +9,7 @@ public class SysUserDictListDTO {
     @Schema(description = "是否追加 admin账号")
     private Boolean addAdminFlag;
 
+    @Schema(description = "是否是所有租户下的用户：默认：false")
+    private Boolean allTenantUserFlag;
+
 }

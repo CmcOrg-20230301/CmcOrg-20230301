@@ -478,23 +478,10 @@ public class SysUserWalletServiceImpl extends ServiceImpl<SysUserWalletMapper, S
                     return;
                 }
 
-                SysTenantDO sysTenantDO = SysTenantUtil.getSysTenantCacheMap(false).get(tenantIdTemp);
-
-                if (sysTenantDO == null) {
-                    ApiResultVO.errorMsg("操作失败：租户不存在");
-                }
-
-                if (sysTenantDO.getEnableFlag().equals(false)) {
-                    ApiResultVO.errorMsg("操作失败：租户已被禁用");
-                }
+                SysTenantDO sysTenantDO = SysTenantUtil.getSysTenantDO(tenantIdTemp);
 
                 tenantIdTemp = sysTenantDO.getParentId(); // 设置：租户 id为：上级租户 id
 
-            }
-
-            // 如果：商品归属租户，配置了支付，则不进行任何操作
-            if (sysPayConfigurationDO.getTenantId().equals(tenantIdTemp)) {
-                return;
             }
 
             // 检查：租户钱包的可用可提现余额，然后增加租户的：预使用可提现的钱

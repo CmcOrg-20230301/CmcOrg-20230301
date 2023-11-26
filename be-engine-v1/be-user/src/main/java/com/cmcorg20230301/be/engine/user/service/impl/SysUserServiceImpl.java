@@ -226,7 +226,19 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserProMapper, SysUserDO>
     public Page<DictVO> dictList(SysUserDictListDTO dto) {
 
         // 获取：用户关联的租户
-        Set<Long> tenantIdSet = SysTenantUtil.getUserRefTenantIdSet();
+        Set<Long> tenantIdSet;
+
+        if (BooleanUtil.isTrue(dto.getAllTenantUserFlag())) {
+
+            tenantIdSet = SysTenantUtil.getUserRefTenantIdSet();
+
+        } else {
+
+            Long currentTenantIdDefault = UserUtil.getCurrentTenantIdDefault();
+
+            tenantIdSet = CollUtil.newHashSet(currentTenantIdDefault);
+
+        }
 
         // 获取所有：用户信息
         List<SysUserInfoDO> sysUserInfoDOList =
