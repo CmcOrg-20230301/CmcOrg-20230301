@@ -121,7 +121,7 @@ public class PayUtil {
 
         checkPayDTO(dto); // 检查：dto对象
 
-        handleSysPayConfigurationDO(dto); // 处理：支付方式
+        handleSysPayConfigurationDO(dto, dto.getTenantId()); // 处理：支付方式
 
         PayHelper.execPreDoPayConsumer(dto); // 执行：在调用支付前，进行的操作，备注：可以更换支付配置
 
@@ -164,7 +164,7 @@ public class PayUtil {
     /**
      * 处理：支付方式
      */
-    public static void handleSysPayConfigurationDO(PayDTO dto) {
+    public static void handleSysPayConfigurationDO(PayDTO dto, Long tenantId) {
 
         SysPayConfigurationDO sysPayConfigurationDO = dto.getSysPayConfigurationDO();
 
@@ -173,12 +173,12 @@ public class PayUtil {
             if (dto.getPayType() == null) { // 如果是：默认支付
 
                 sysPayConfigurationDO =
-                    PayHelper.getDefaultSysPayConfigurationDO(dto.getTenantId(), dto.getUseParentTenantPayFlag());
+                    PayHelper.getDefaultSysPayConfigurationDO(tenantId, dto.getUseParentTenantPayFlag());
 
             } else {
 
-                sysPayConfigurationDO = PayHelper
-                    .getSysPayConfigurationDO(dto.getTenantId(), dto.getPayType(), dto.getUseParentTenantPayFlag());
+                sysPayConfigurationDO =
+                    PayHelper.getSysPayConfigurationDO(tenantId, dto.getPayType(), dto.getUseParentTenantPayFlag());
 
             }
 
