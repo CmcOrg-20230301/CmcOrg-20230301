@@ -40,8 +40,8 @@ public class PayAliWebAppConfiguration implements ISysPay {
      */
     @Override
     @NotNull
-    public SysPayTradeStatusEnum query(String outTradeNo, SysPayConfigurationDO sysPayConfigurationDoTemp) {
-        return PayAliUtil.query(outTradeNo, sysPayConfigurationDoTemp);
+    public SysPayTradeStatusEnum query(String outTradeNo, SysPayConfigurationDO sysPayConfigurationDO) {
+        return PayAliUtil.query(outTradeNo, sysPayConfigurationDO);
     }
 
 }

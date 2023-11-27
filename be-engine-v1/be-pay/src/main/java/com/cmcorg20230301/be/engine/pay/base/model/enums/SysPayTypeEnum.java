@@ -17,8 +17,6 @@ import java.util.function.Consumer;
 @Getter
 public enum SysPayTypeEnum implements ISysPayType {
 
-    DEFAULT(1, null), // 默认，注意：这个类型不要存储到数据库里，这里是代码调用支付时使用，用于表示使用默认支付
-
     ALI_QR_CODE(101, getAliCheckSysPayConfigurationInsertOrUpdateDtoConsumer()), // 支付宝-扫码付款
 
     ALI_APP(102, getAliCheckSysPayConfigurationInsertOrUpdateDtoConsumer()), // 支付宝-手机支付

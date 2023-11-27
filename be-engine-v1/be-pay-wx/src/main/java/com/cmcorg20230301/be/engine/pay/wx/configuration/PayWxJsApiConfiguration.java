@@ -40,8 +40,8 @@ public class PayWxJsApiConfiguration implements ISysPay {
      */
     @Override
     @NotNull
-    public SysPayTradeStatusEnum query(String outTradeNo, SysPayConfigurationDO sysPayConfigurationDoTemp) {
-        return PayWxUtil.queryJsApi(outTradeNo, sysPayConfigurationDoTemp);
+    public SysPayTradeStatusEnum query(String outTradeNo, SysPayConfigurationDO sysPayConfigurationDO) {
+        return PayWxUtil.queryJsApi(outTradeNo, sysPayConfigurationDO);
     }
 
 }

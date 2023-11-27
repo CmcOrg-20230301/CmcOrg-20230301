@@ -14,9 +14,7 @@ import com.cmcorg20230301.be.engine.pay.base.model.dto.PayDTO;
 import com.cmcorg20230301.be.engine.pay.base.model.entity.SysPayConfigurationDO;
 import com.cmcorg20230301.be.engine.pay.base.model.entity.SysPayDO;
 import com.cmcorg20230301.be.engine.pay.base.model.enums.SysPayTradeStatusEnum;
-import com.cmcorg20230301.be.engine.pay.base.model.enums.SysPayTypeEnum;
 import com.cmcorg20230301.be.engine.pay.base.service.SysPayService;
-import com.cmcorg20230301.be.engine.pay.base.util.PayHelper;
 import com.cmcorg20230301.be.engine.pay.google.model.bo.SysPayGooglePurchasesBO;
 import com.cmcorg20230301.be.engine.redisson.model.enums.BaseRedisKeyEnum;
 import com.cmcorg20230301.be.engine.security.model.vo.ApiResultVO;
@@ -47,21 +45,7 @@ public class PayGoogleUtil {
     @NotNull
     public static SysPayReturnBO pay(PayDTO dto) {
 
-        SysPayConfigurationDO sysPayConfigurationDO;
-
-        if (dto.getSysPayConfigurationDoTemp() == null) {
-
-            sysPayConfigurationDO = PayHelper
-                .getSysPayConfigurationDO(dto.getTenantId(), SysPayTypeEnum.GOOGLE.getCode(),
-                    dto.getUseParentTenantPayFlag());
-
-        } else {
-
-            sysPayConfigurationDO = dto.getSysPayConfigurationDoTemp();
-
-        }
-
-        dto.setSysPayConfigurationDoTemp(sysPayConfigurationDO, false);
+        SysPayConfigurationDO sysPayConfigurationDO = dto.getSysPayConfigurationDO();
 
         return new SysPayReturnBO(sysPayConfigurationDO.getId().toString(), sysPayConfigurationDO.getAppId());
 
@@ -75,7 +59,7 @@ public class PayGoogleUtil {
     @SneakyThrows
     @NotNull
     public static SysPayTradeStatusEnum query(String outTradeNo, @Nullable SysPayTradeNotifyBO sysPayTradeNotifyBO,
-        SysPayConfigurationDO sysPayConfigurationDoTemp) {
+        SysPayConfigurationDO sysPayConfigurationDO) {
 
         Assert.notBlank(outTradeNo);
 
@@ -88,7 +72,7 @@ public class PayGoogleUtil {
         }
 
         // 获取：accessToken
-        String accessToken = getAccessToken(sysPayConfigurationDoTemp);
+        String accessToken = getAccessToken(sysPayConfigurationDO);
 
         // 查询：谷歌那边的订单状态，文档地址：https://developers.google.com/android-publisher/api-ref/rest/v3/purchases.products/get?hl=zh-cn
         // https://androidpublisher.googleapis.com/androidpublisher/v3/applications/{packageName}/purchases/products/{productId}/tokens/{token}

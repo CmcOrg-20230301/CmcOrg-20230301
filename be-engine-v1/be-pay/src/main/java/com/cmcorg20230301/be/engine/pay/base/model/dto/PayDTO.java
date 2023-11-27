@@ -18,10 +18,10 @@ public class PayDTO {
     /**
      * {@link ISysPayType}
      */
-    @Schema(description = "支付方式，必填")
+    @Schema(description = "支付方式，可以为 null，为 null则表示是：默认支付")
     private Integer payType;
 
-    @Schema(description = "租户 id，备注：只用于获取支付参数配置，无其他用处，必填")
+    @Schema(description = "租户 id，备注：只用于获取支付参数配置，无其他用处，必填，并且不会修改该值")
     private Long tenantId;
 
     @Schema(description = "用户主键 id，必填")
@@ -54,30 +54,13 @@ public class PayDTO {
     @Schema(description = "购买成功后 Purchase对象的 getPurchaseToken()，例如：谷歌支付")
     private String token;
 
-    @Schema(description = "支付配置，不必传，如果传递此字段，那么配置会从该字段里面取值，备注：调用支付之后，这个字段会被赋值")
-    private SysPayConfigurationDO sysPayConfigurationDoTemp;
+    @Schema(description = "支付配置，不必传，如果传递此字段，那么配置会从该字段里面取值，备注：调用支付之前，这个字段会被赋值")
+    private SysPayConfigurationDO sysPayConfigurationDO;
 
-    @Schema(description = "在设置 sysPayConfigurationDoTemp对象时进行检查，可以为 null")
-    private Consumer<SysPayConfigurationDO> checkSysPayConfigurationDoConsumer;
+    @Schema(description = "在调用支付前，进行的操作，备注：可以更换支付配置")
+    private Consumer<PayDTO> preDoPayConsumer;
 
     @Schema(description = "备注")
     private String remark;
-
-    /**
-     * 备注：需要每个支付，在调用支付前，先调用本方法，目的：可以让调用方，在支付前，进行一些检查操作
-     */
-    public void setSysPayConfigurationDoTemp(SysPayConfigurationDO sysPayConfigurationDoTemp,
-        boolean handleDefaultPayTypeFlag) {
-
-        Consumer<SysPayConfigurationDO> checkSysPayConfigurationDoConsumer = getCheckSysPayConfigurationDoConsumer();
-
-        // 不处理：设置默认支付方式
-        if (checkSysPayConfigurationDoConsumer != null && !handleDefaultPayTypeFlag) {
-            checkSysPayConfigurationDoConsumer.accept(sysPayConfigurationDoTemp); // 执行：检查
-        }
-
-        this.sysPayConfigurationDoTemp = sysPayConfigurationDoTemp;
-
-    }
 
 }

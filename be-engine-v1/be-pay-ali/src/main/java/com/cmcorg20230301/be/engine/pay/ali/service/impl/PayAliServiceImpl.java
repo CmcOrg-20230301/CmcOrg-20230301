@@ -29,6 +29,13 @@ public class PayAliServiceImpl implements PayAliService {
     @Override
     public String notifyCallBack(HttpServletRequest request, long sysPayConfigurationId) {
 
+        // 获取：支付的参数配置对象
+        SysPayConfigurationDO sysPayConfigurationDO = PayHelper.getSysPayConfigurationDO(sysPayConfigurationId);
+
+        if (sysPayConfigurationDO == null) {
+            return "success";
+        }
+
         Map<String, String> paramsMap = new HashMap<>();
 
         Map<String, String[]> requestParamMap = request.getParameterMap();
@@ -51,10 +58,7 @@ public class PayAliServiceImpl implements PayAliService {
 
         }
 
-        // 获取：支付的参数配置对象
-        SysPayConfigurationDO sysPayConfigurationDoTemp = PayHelper.getSysPayConfigurationDO(sysPayConfigurationId);
-
-        AlipayConfig alipayConfig = PayAliUtil.getAlipayConfig(null, null, sysPayConfigurationDoTemp, null, null);
+        AlipayConfig alipayConfig = PayAliUtil.getAlipayConfig(sysPayConfigurationDO);
 
         boolean signVerified = AlipaySignature
             .rsaCheckV1(paramsMap, alipayConfig.getAlipayPublicKey(), alipayConfig.getCharset(),

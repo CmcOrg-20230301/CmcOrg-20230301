@@ -40,8 +40,8 @@ public class PayGoogleConfiguration implements ISysPay {
      */
     @Override
     @NotNull
-    public SysPayTradeStatusEnum query(String outTradeNo, SysPayConfigurationDO sysPayConfigurationDoTemp) {
-        return PayGoogleUtil.query(outTradeNo, null, sysPayConfigurationDoTemp);
+    public SysPayTradeStatusEnum query(String outTradeNo, SysPayConfigurationDO sysPayConfigurationDO) {
+        return PayGoogleUtil.query(outTradeNo, null, sysPayConfigurationDO);
     }
 
 }

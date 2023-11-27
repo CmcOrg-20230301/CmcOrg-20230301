@@ -40,8 +40,8 @@ public class PayWxNativeConfiguration implements ISysPay {
      */
     @Override
     @NotNull
-    public SysPayTradeStatusEnum query(String outTradeNo, SysPayConfigurationDO sysPayConfigurationDoTemp) {
-        return PayWxUtil.queryNative(outTradeNo, sysPayConfigurationDoTemp);
+    public SysPayTradeStatusEnum query(String outTradeNo, SysPayConfigurationDO sysPayConfigurationDO) {
+        return PayWxUtil.queryNative(outTradeNo, sysPayConfigurationDO);
     }
 
 }

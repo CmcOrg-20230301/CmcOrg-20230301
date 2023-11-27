@@ -15,9 +15,9 @@ public class MyNumberUtil {
     /**
      * 获取：单价
      */
-    public static BigDecimal getUnitPrice(BigDecimal price, BigDecimal number) {
+    public static BigDecimal getUnitPrice(BigDecimal totalPrice, BigDecimal number) {
 
-        return price.divide(number, 3, RoundingMode.HALF_UP);
+        return totalPrice.divide(number, 3, RoundingMode.HALF_UP);
 
     }
 

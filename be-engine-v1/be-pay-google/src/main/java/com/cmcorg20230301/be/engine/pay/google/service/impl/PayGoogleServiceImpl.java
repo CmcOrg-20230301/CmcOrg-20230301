@@ -24,13 +24,17 @@ public class PayGoogleServiceImpl implements PayGoogleService {
     @Override
     public boolean paySuccess(SysPayGooglePaySuccessDTO dto) {
 
-        SysPayConfigurationDO sysPayConfigurationDoTemp =
+        SysPayConfigurationDO sysPayConfigurationDO =
             PayHelper.getSysPayConfigurationDO(dto.getSysPayConfigurationId());
+
+        if (sysPayConfigurationDO == null) {
+            return false;
+        }
 
         SysPayTradeNotifyBO sysPayTradeNotifyBO = new SysPayTradeNotifyBO();
 
         SysPayTradeStatusEnum sysPayTradeStatusEnum =
-            PayGoogleUtil.query(dto.getId().toString(), sysPayTradeNotifyBO, sysPayConfigurationDoTemp);
+            PayGoogleUtil.query(dto.getId().toString(), sysPayTradeNotifyBO, sysPayConfigurationDO);
 
         if (SysPayTradeStatusEnum.WAIT_BUYER_CONSUME.equals(sysPayTradeStatusEnum) == false) {
             return false;
@@ -55,13 +59,17 @@ public class PayGoogleServiceImpl implements PayGoogleService {
     @SneakyThrows
     public boolean payConsume(SysPayGooglePayConsumeDTO dto) {
 
-        SysPayConfigurationDO sysPayConfigurationDoTemp =
+        SysPayConfigurationDO sysPayConfigurationDO =
             PayHelper.getSysPayConfigurationDO(dto.getSysPayConfigurationId());
+
+        if (sysPayConfigurationDO == null) {
+            return false;
+        }
 
         SysPayTradeNotifyBO sysPayTradeNotifyBO = new SysPayTradeNotifyBO();
 
         SysPayTradeStatusEnum sysPayTradeStatusEnum =
-            PayGoogleUtil.query(dto.getId().toString(), sysPayTradeNotifyBO, sysPayConfigurationDoTemp);
+            PayGoogleUtil.query(dto.getId().toString(), sysPayTradeNotifyBO, sysPayConfigurationDO);
 
         if (SysPayTradeStatusEnum.TRADE_FINISHED.equals(sysPayTradeStatusEnum) == false) {
             return false;

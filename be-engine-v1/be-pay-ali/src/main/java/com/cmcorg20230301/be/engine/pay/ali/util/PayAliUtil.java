@@ -22,7 +22,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.SneakyThrows;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.springframework.stereotype.Component;
 
 /**
@@ -35,29 +34,7 @@ public class PayAliUtil {
      * 获取：支付相关配置对象
      */
     @NotNull
-    public static AlipayConfig getAlipayConfig(@Nullable Long tenantId,
-        @Nullable CallBack<SysPayConfigurationDO> sysPayConfigurationDoCallBack,
-        @Nullable SysPayConfigurationDO sysPayConfigurationDoTemp, @Nullable Boolean useParentTenantPayFlag,
-        @Nullable Integer sysPayType) {
-
-        SysPayConfigurationDO sysPayConfigurationDO;
-
-        if (sysPayConfigurationDoTemp == null) {
-
-            sysPayConfigurationDO = PayHelper.getSysPayConfigurationDO(tenantId, sysPayType, useParentTenantPayFlag);
-
-        } else {
-
-            sysPayConfigurationDO = sysPayConfigurationDoTemp;
-
-        }
-
-        if (sysPayConfigurationDoCallBack != null) {
-
-            // 设置：回调值
-            sysPayConfigurationDoCallBack.setValue(sysPayConfigurationDO);
-
-        }
+    public static AlipayConfig getAlipayConfig(SysPayConfigurationDO sysPayConfigurationDO) {
 
         AlipayConfig alipayConfig = new AlipayConfig();
 
@@ -91,13 +68,9 @@ public class PayAliUtil {
 
         CallBack<SysPayConfigurationDO> sysPayConfigurationDoCallBack = new CallBack<>();
 
-        AlipayConfig alipayConfig =
-            getAlipayConfig(dto.getTenantId(), sysPayConfigurationDoCallBack, dto.getSysPayConfigurationDoTemp(),
-                dto.getUseParentTenantPayFlag(), dto.getPayType());
+        AlipayConfig alipayConfig = getAlipayConfig(dto.getSysPayConfigurationDO());
 
         AlipayClient alipayClient = new DefaultAlipayClient(alipayConfig);
-
-        dto.setSysPayConfigurationDoTemp(sysPayConfigurationDoCallBack.getValue(), false);
 
         String notifyUrl =
             sysPayConfigurationDoCallBack.getValue().getNotifyUrl() + "/" + sysPayConfigurationDoCallBack.getValue()
@@ -278,11 +251,11 @@ public class PayAliUtil {
      */
     @SneakyThrows
     @NotNull
-    public static SysPayTradeStatusEnum query(String outTradeNo, SysPayConfigurationDO sysPayConfigurationDoTemp) {
+    public static SysPayTradeStatusEnum query(String outTradeNo, SysPayConfigurationDO sysPayConfigurationDO) {
 
         Assert.notBlank(outTradeNo);
 
-        AlipayConfig alipayConfig = getAlipayConfig(null, null, sysPayConfigurationDoTemp, null, null);
+        AlipayConfig alipayConfig = getAlipayConfig(sysPayConfigurationDO);
 
         AlipayClient alipayClient = new DefaultAlipayClient(alipayConfig);
 

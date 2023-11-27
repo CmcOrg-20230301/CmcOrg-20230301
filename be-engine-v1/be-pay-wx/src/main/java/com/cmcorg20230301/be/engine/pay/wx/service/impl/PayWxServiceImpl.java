@@ -61,10 +61,14 @@ public class PayWxServiceImpl implements PayWxService {
     public void notifyCallBackNative(HttpServletRequest request, HttpServletResponse response,
         long sysPayConfigurationId) {
 
-        SysPayConfigurationDO sysPayConfigurationDoTemp = PayHelper.getSysPayConfigurationDO(sysPayConfigurationId);
+        SysPayConfigurationDO sysPayConfigurationDO = PayHelper.getSysPayConfigurationDO(sysPayConfigurationId);
+
+        if (sysPayConfigurationDO == null) {
+            return;
+        }
 
         RSAAutoCertificateConfig rsaAutoCertificateConfig =
-            PayWxUtil.getRsaAutoCertificateConfig(null, null, null, sysPayConfigurationDoTemp, null);
+            PayWxUtil.getRsaAutoCertificateConfig(sysPayConfigurationDO);
 
         NotificationParser notificationParser = new NotificationParser(rsaAutoCertificateConfig);
 
@@ -95,14 +99,14 @@ public class PayWxServiceImpl implements PayWxService {
     public void notifyCallBackJsApi(HttpServletRequest request, HttpServletResponse response,
         long sysPayConfigurationId) {
 
-        SysPayConfigurationDO sysPayConfigurationDoTemp = PayHelper.getSysPayConfigurationDO(sysPayConfigurationId);
+        SysPayConfigurationDO sysPayConfigurationDO = PayHelper.getSysPayConfigurationDO(sysPayConfigurationId);
 
-        if (sysPayConfigurationDoTemp == null) {
+        if (sysPayConfigurationDO == null) {
             return;
         }
 
         RSAAutoCertificateConfig rsaAutoCertificateConfig =
-            PayWxUtil.getRsaAutoCertificateConfig(null, null, null, sysPayConfigurationDoTemp, null);
+            PayWxUtil.getRsaAutoCertificateConfig(sysPayConfigurationDO);
 
         NotificationParser notificationParser = new NotificationParser(rsaAutoCertificateConfig);
 

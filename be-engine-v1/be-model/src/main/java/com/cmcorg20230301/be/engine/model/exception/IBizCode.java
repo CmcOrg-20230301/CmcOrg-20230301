@@ -5,7 +5,7 @@ package com.cmcorg20230301.be.engine.model.exception;
  */
 public interface IBizCode {
 
-    int getCode();
+    int getCode(); // 建议从：300011开始
 
     String getMsg();
 

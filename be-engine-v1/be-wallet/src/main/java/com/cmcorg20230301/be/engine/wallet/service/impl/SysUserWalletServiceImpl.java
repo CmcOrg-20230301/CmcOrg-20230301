@@ -468,15 +468,15 @@ public class SysUserWalletServiceImpl extends ServiceImpl<SysUserWalletMapper, S
         payDTO.setSubject("钱包充值");
         payDTO.setExpireTime(DateUtil.offsetMinute(new Date(), 30));
 
-        payDTO.setCheckSysPayConfigurationDoConsumer(sysPayConfigurationDO -> {
+        payDTO.setPreDoPayConsumer(tempPayDTO -> {
+
+            if (BaseConstant.TOP_TENANT_ID.equals(tenantId)) {
+                return;
+            }
 
             Long tenantIdTemp = tenantId;
 
             if (tenantFlag) { // 如果是：租户进行充值
-
-                if (BaseConstant.TOP_TENANT_ID.equals(tenantIdTemp)) {
-                    return;
-                }
 
                 SysTenantDO sysTenantDO = SysTenantUtil.getSysTenantDO(tenantIdTemp);
 
