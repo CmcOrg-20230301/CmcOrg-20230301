@@ -7,7 +7,6 @@ import com.cmcorg20230301.be.engine.pay.base.model.bo.SysPayReturnBO;
 import com.cmcorg20230301.be.engine.pay.base.model.dto.PayDTO;
 import com.cmcorg20230301.be.engine.pay.base.model.entity.SysPayConfigurationDO;
 import com.cmcorg20230301.be.engine.pay.base.model.enums.SysPayTradeStatusEnum;
-import com.cmcorg20230301.be.engine.util.util.CallBack;
 import com.wechat.pay.java.core.RSAAutoCertificateConfig;
 import com.wechat.pay.java.core.util.GsonUtil;
 import com.wechat.pay.java.service.payments.jsapi.JsapiServiceExtension;
@@ -54,9 +53,9 @@ public class PayWxUtil {
     @NotNull
     public static SysPayReturnBO payNative(PayDTO dto) {
 
-        CallBack<SysPayConfigurationDO> sysPayConfigurationDoCallBack = new CallBack<>();
+        SysPayConfigurationDO sysPayConfigurationDO = dto.getSysPayConfigurationDO();
 
-        NativePayService nativePayService = getNativePayService(dto.getSysPayConfigurationDO());
+        NativePayService nativePayService = getNativePayService(sysPayConfigurationDO);
 
         com.wechat.pay.java.service.payments.nativepay.model.PrepayRequest request =
             new com.wechat.pay.java.service.payments.nativepay.model.PrepayRequest();
@@ -68,13 +67,11 @@ public class PayWxUtil {
 
         request.setAmount(amount);
 
-        request.setAppid(sysPayConfigurationDoCallBack.getValue().getAppId());
-        request.setMchid(sysPayConfigurationDoCallBack.getValue().getMerchantId());
+        request.setAppid(sysPayConfigurationDO.getAppId());
+        request.setMchid(sysPayConfigurationDO.getMerchantId());
         request.setDescription(dto.getSubject());
 
-        request.setNotifyUrl(
-            sysPayConfigurationDoCallBack.getValue().getNotifyUrl() + "/" + sysPayConfigurationDoCallBack.getValue()
-                .getId());
+        request.setNotifyUrl(sysPayConfigurationDO.getNotifyUrl() + "/" + sysPayConfigurationDO.getId());
 
         request.setOutTradeNo(dto.getOutTradeNo());
         request.setTimeExpire(DatePattern.UTC_WITH_XXX_OFFSET_FORMAT.format(dto.getExpireTime()));
@@ -84,7 +81,7 @@ public class PayWxUtil {
             nativePayService.prepay(request);
 
         // 返回：扫码的二维码地址
-        return new SysPayReturnBO(prepayResponse.getCodeUrl(), sysPayConfigurationDoCallBack.getValue().getAppId());
+        return new SysPayReturnBO(prepayResponse.getCodeUrl(), sysPayConfigurationDO.getAppId());
 
     }
 

@@ -16,7 +16,6 @@ import com.cmcorg20230301.be.engine.pay.base.model.entity.SysPayConfigurationDO;
 import com.cmcorg20230301.be.engine.pay.base.model.enums.SysPayTradeStatusEnum;
 import com.cmcorg20230301.be.engine.pay.base.util.PayHelper;
 import com.cmcorg20230301.be.engine.security.model.vo.ApiResultVO;
-import com.cmcorg20230301.be.engine.util.util.CallBack;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -52,7 +51,7 @@ public class PayAliUtil {
     @AllArgsConstructor
     public static class DoPayBO {
 
-        private CallBack<SysPayConfigurationDO> sysPayConfigurationDoCallBack;
+        private SysPayConfigurationDO sysPayConfigurationDO;
 
         private AlipayClient alipayClient;
 
@@ -66,18 +65,16 @@ public class PayAliUtil {
     @SneakyThrows
     private static SysPayReturnBO doPay(PayDTO dto, Func1<DoPayBO, SysPayReturnBO> func1) {
 
-        CallBack<SysPayConfigurationDO> sysPayConfigurationDoCallBack = new CallBack<>();
+        SysPayConfigurationDO sysPayConfigurationDO = dto.getSysPayConfigurationDO();
 
-        AlipayConfig alipayConfig = getAlipayConfig(dto.getSysPayConfigurationDO());
+        AlipayConfig alipayConfig = getAlipayConfig(sysPayConfigurationDO);
 
         AlipayClient alipayClient = new DefaultAlipayClient(alipayConfig);
 
-        String notifyUrl =
-            sysPayConfigurationDoCallBack.getValue().getNotifyUrl() + "/" + sysPayConfigurationDoCallBack.getValue()
-                .getId();
+        String notifyUrl = sysPayConfigurationDO.getNotifyUrl() + "/" + sysPayConfigurationDO.getId();
 
         // 执行支付
-        return func1.call(new DoPayBO(sysPayConfigurationDoCallBack, alipayClient, notifyUrl));
+        return func1.call(new DoPayBO(sysPayConfigurationDO, alipayClient, notifyUrl));
 
     }
 
@@ -111,8 +108,7 @@ public class PayAliUtil {
             handleApiPayResponse(response.isSuccess(), "支付宝支付失败：", response.getSubMsg());
 
             // 返回：扫码地址
-            return new SysPayReturnBO(response.getQrCode(),
-                doPayBO.getSysPayConfigurationDoCallBack().getValue().getAppId());
+            return new SysPayReturnBO(response.getQrCode(), doPayBO.getSysPayConfigurationDO().getAppId());
 
         });
 
@@ -146,8 +142,7 @@ public class PayAliUtil {
             handleApiPayResponse(response.isSuccess(), "支付宝支付失败：", response.getSubMsg());
 
             // 返回：调用手机支付需要的参数
-            return new SysPayReturnBO(response.getBody(),
-                doPayBO.getSysPayConfigurationDoCallBack().getValue().getAppId());
+            return new SysPayReturnBO(response.getBody(), doPayBO.getSysPayConfigurationDO().getAppId());
 
         });
 
@@ -182,8 +177,7 @@ public class PayAliUtil {
             handleApiPayResponse(response.isSuccess(), "支付宝支付失败：", response.getSubMsg());
 
             // 返回：支付的 url链接
-            return new SysPayReturnBO(response.getBody(),
-                doPayBO.getSysPayConfigurationDoCallBack().getValue().getAppId());
+            return new SysPayReturnBO(response.getBody(), doPayBO.getSysPayConfigurationDO().getAppId());
 
         });
 
@@ -220,8 +214,7 @@ public class PayAliUtil {
             handleApiPayResponse(response.isSuccess(), "支付宝支付失败：", response.getSubMsg());
 
             // 返回：支付的 url链接
-            return new SysPayReturnBO(response.getBody(),
-                doPayBO.getSysPayConfigurationDoCallBack().getValue().getAppId());
+            return new SysPayReturnBO(response.getBody(), doPayBO.getSysPayConfigurationDO().getAppId());
 
         });
 
