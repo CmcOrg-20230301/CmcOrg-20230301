@@ -7,7 +7,7 @@ import MyIcon, {IconList} from "@/component/MyIcon/MyIcon";
 import {Space} from "antd";
 import {OptionProps} from "antd/es/mentions";
 
-export const InitForm: SysMenuInsertOrUpdateDTO = {} as SysMenuInsertOrUpdateDTO
+export const InitForm: SysMenuInsertOrUpdateDTO = {enableFlag: true, showFlag: true} as SysMenuInsertOrUpdateDTO
 
 const SchemaFormColumnList = (): ProFormColumnsType<SysMenuInsertOrUpdateDTO>[] => {
 
