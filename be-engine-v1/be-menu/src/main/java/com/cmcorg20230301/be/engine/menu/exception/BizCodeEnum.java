@@ -8,7 +8,7 @@ import lombok.Getter;
 @Getter
 public enum BizCodeEnum implements IBizCode {
 
-    MENU_URI_IS_EXIST(300011, "操作失败：path 重复"), //
+    MENU_URI_IS_EXIST(300011, "操作失败：路径重复"), //
 
     ;
 
