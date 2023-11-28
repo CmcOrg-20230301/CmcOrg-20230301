@@ -159,7 +159,7 @@ export default function () {
 
                                 })
 
-                            }, undefined, `确定解冻选中的【${selectedRowKeys.length}】项吗？`)
+                            }, undefined, `确定冻结选中的【${selectedRowKeys.length}】项吗？`)
 
                         }}>批量冻结</a>
 
