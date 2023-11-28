@@ -1,6 +1,7 @@
 package com.cmcorg20230301.be.engine.security.model.entity;
 
 import com.baomidou.mybatisplus.annotation.*;
+import com.cmcorg20230301.be.engine.security.model.enums.SysRequestCategoryEnum;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
@@ -29,5 +30,8 @@ public class SysUserInfoDO {
 
     @Schema(description = "头像 fileId（文件主键 id），备注：没有时则为 -1")
     private Long avatarFileId;
+
+    @Schema(description = "注册终端")
+    private SysRequestCategoryEnum signUpType;
 
 }

@@ -51,9 +51,13 @@ public enum SysRequestCategoryEnum {
         }
 
         for (SysRequestCategoryEnum item : SysRequestCategoryEnum.values()) {
+
             if (item.getCode() == code) {
+
                 return item;
+
             }
+
         }
 
         return PC_BROWSER_WINDOWS;

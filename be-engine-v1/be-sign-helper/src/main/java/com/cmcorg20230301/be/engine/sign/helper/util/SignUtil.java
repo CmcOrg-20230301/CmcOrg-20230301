@@ -263,6 +263,8 @@ public class SignUtil {
 
                 sysUserInfoDO.setAvatarFileId(-1L);
 
+                sysUserInfoDO.setSignUpType(RequestUtil.getRequestCategoryEnum());
+
             } else {
 
                 sysUserInfoDO.setNickname(
@@ -271,6 +273,9 @@ public class SignUtil {
                 sysUserInfoDO.setBio(MyEntityUtil.getNotNullStr(tempSysUserInfoDO.getBio()));
 
                 sysUserInfoDO.setAvatarFileId(MyEntityUtil.getNotNullLong(tempSysUserInfoDO.getAvatarFileId()));
+
+                sysUserInfoDO.setSignUpType(MyEntityUtil
+                    .getNotNullObject(tempSysUserInfoDO.getSignUpType(), RequestUtil.getRequestCategoryEnum()));
 
             }
 

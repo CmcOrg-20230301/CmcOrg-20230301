@@ -348,6 +348,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserProMapper, SysUserDO>
             if (dto.getId() == null) { // 新增：用户
 
                 SysUserInfoDO sysUserInfoDO = new SysUserInfoDO();
+
                 sysUserInfoDO.setNickname(dto.getNickname());
                 sysUserInfoDO.setBio(dto.getBio());
 
@@ -377,6 +378,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserProMapper, SysUserDO>
                 insertOrUpdateSub(sysUserDO, dto);
 
                 SysUserInfoDO sysUserInfoDO = new SysUserInfoDO();
+
                 sysUserInfoDO.setId(dto.getId());
                 sysUserInfoDO
                     .setNickname(MyEntityUtil.getNotNullStr(dto.getNickname(), NicknameUtil.getRandomNickname()));
