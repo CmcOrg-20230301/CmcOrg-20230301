@@ -1,12 +1,16 @@
 package com.cmcorg20230301.be.engine.security.util;
 
+import cn.hutool.core.lang.func.VoidFunc0;
+import lombok.SneakyThrows;
 import org.springframework.core.task.TaskExecutor;
 import org.springframework.scheduling.TaskScheduler;
 import org.springframework.scheduling.Trigger;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.Nullable;
 import java.time.Instant;
 import java.util.Date;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ScheduledFuture;
 
 @Component
@@ -28,6 +32,55 @@ public class MyThreadUtil {
     public static void execute(Runnable runnable) {
 
         taskExecutor.execute(runnable);
+
+    }
+
+    /**
+     * 异步执行
+     */
+    public static void execute(Runnable runnable, @Nullable CountDownLatch countDownLatch) {
+
+        execute(runnable, countDownLatch, null, null);
+
+    }
+
+    /**
+     * 异步执行
+     */
+    @SneakyThrows
+    public static void execute(Runnable runnable, @Nullable CountDownLatch countDownLatch,
+        @Nullable VoidFunc0 exceptionVoidFunc0, @Nullable VoidFunc0 finallyVoidFunc0) {
+
+        try {
+
+            // 执行
+            taskExecutor.execute(runnable);
+
+        } catch (Exception e) {
+
+            MyExceptionUtil.printError(e);
+
+            if (exceptionVoidFunc0 != null) {
+
+                exceptionVoidFunc0.call();
+
+            }
+
+        } finally {
+
+            if (countDownLatch != null) {
+
+                countDownLatch.countDown();
+
+            }
+
+            if (finallyVoidFunc0 != null) {
+
+                finallyVoidFunc0.call();
+
+            }
+
+        }
 
     }
 

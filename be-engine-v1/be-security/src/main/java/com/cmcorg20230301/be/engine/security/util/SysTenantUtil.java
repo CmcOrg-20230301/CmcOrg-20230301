@@ -431,7 +431,7 @@ public class SysTenantUtil {
 
         Long count = func1.call(tenantIdSet);
 
-        if (count != 0 && idSet.size() != count) {
+        if (idSet.size() != count) {
 
             ApiResultVO.error(BaseBizCodeEnum.ILLEGAL_REQUEST);
 
