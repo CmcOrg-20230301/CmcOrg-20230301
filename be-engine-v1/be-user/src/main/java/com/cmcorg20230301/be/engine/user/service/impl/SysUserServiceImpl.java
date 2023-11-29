@@ -27,10 +27,8 @@ import com.cmcorg20230301.be.engine.redisson.model.enums.BaseRedisKeyEnum;
 import com.cmcorg20230301.be.engine.redisson.util.RedissonUtil;
 import com.cmcorg20230301.be.engine.role.service.SysRoleRefUserService;
 import com.cmcorg20230301.be.engine.security.exception.BaseBizCodeEnum;
-import com.cmcorg20230301.be.engine.security.mapper.BaseSysRequestMapper;
 import com.cmcorg20230301.be.engine.security.mapper.SysUserInfoMapper;
 import com.cmcorg20230301.be.engine.security.mapper.SysUserMapper;
-import com.cmcorg20230301.be.engine.security.model.dto.MyPageDTO;
 import com.cmcorg20230301.be.engine.security.model.entity.*;
 import com.cmcorg20230301.be.engine.security.model.vo.ApiResultVO;
 import com.cmcorg20230301.be.engine.security.properties.SecurityProperties;
@@ -80,9 +78,6 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserProMapper, SysUserDO>
     @Resource
     SysTenantRefUserService sysTenantRefUserService;
 
-    @Resource
-    BaseSysRequestMapper baseSysRequestMapper;
-
     /**
      * 分页排序查询
      */
@@ -92,47 +87,9 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserProMapper, SysUserDO>
         // 处理：MyTenantPageDTO
         SysTenantUtil.handleMyTenantPageDTO(dto, false);
 
-        // 过滤：request表的数据
-        dto.setIdSet(new HashSet<>()); // 先清除：idSet的数据
+        Page<SysUserPageVO> dtoPage = dto.page(false);
 
-        if (dto.getBeginLastActiveTime() != null || dto.getEndLastActiveTime() != null || StrUtil
-            .isNotBlank(dto.getIp()) || StrUtil.isNotBlank(dto.getRegion())) {
-
-            List<SysRequestDO> sysRequestDOList = ChainWrappers.lambdaQueryChain(baseSysRequestMapper)
-                .le(dto.getEndLastActiveTime() != null, BaseEntityNoId::getCreateTime, dto.getEndLastActiveTime())
-                .ge(dto.getBeginLastActiveTime() != null, BaseEntityNoId::getCreateTime, dto.getBeginLastActiveTime())
-                .like(StrUtil.isNotBlank(dto.getIp()), SysRequestDO::getIp, dto.getIp())
-                .like(StrUtil.isNotBlank(dto.getRegion()), SysRequestDO::getRegion, dto.getRegion())
-                .ne(BaseEntityNoIdFather::getCreateId, BaseConstant.SYS_ID) //
-                .select(BaseEntityNoId::getCreateId).groupBy(BaseEntityNoId::getCreateId).list();
-
-            if (CollUtil.isEmpty(sysRequestDOList)) {
-                return new Page<>();
-            }
-
-            Set<Long> idSet = sysRequestDOList.stream().map(BaseEntityNoId::getCreateId).collect(Collectors.toSet());
-
-            dto.setIdSet(idSet);
-
-        }
-
-        Page<SysUserPageVO> dtoPage = dto.page();
-
-        if (dto.orderEmpty()) {
-
-            dtoPage.orders().add(MyPageDTO.createTimeOrderItem()); // 如果不存在排序，则默认根据：创建时间排序
-
-        } else {
-
-            if ("createTime".equals(dto.getOrder().getName())) {
-
-                // 添加 orderList里面的排序规则
-                dtoPage.orders().add(MyPageDTO.orderToOrderItem(dto.getOrder(), false));
-
-            }
-
-        }
-
+        // 备注：mysql 是先 group by 再 order by
         Page<SysUserPageVO> page = baseMapper.myPage(dtoPage, dto);
 
         Set<Long> userIdSet = new HashSet<>(MyMapUtil.getInitialCapacity(page.getRecords().size()));
@@ -174,9 +131,6 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserProMapper, SysUserDO>
             sysPostRefUserService.lambdaQuery().in(SysPostRefUserDO::getUserId, userIdSet)
                 .select(SysPostRefUserDO::getUserId, SysPostRefUserDO::getPostId).list();
 
-        // 备注：mysql 是先 group by 再 order by
-        List<SysRequestDO> sysRequestDOList = baseSysRequestMapper.selectLastActiveTime(userIdSet);
-
         Map<Long, Set<Long>> deptUserGroupMap = sysDeptRefUserDOList.stream().collect(Collectors
             .groupingBy(SysDeptRefUserDO::getUserId,
                 Collectors.mapping(SysDeptRefUserDO::getDeptId, Collectors.toSet())));
@@ -184,9 +138,6 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserProMapper, SysUserDO>
         Map<Long, Set<Long>> postUserGroupMap = sysPostRefUserDOList.stream().collect(Collectors
             .groupingBy(SysPostRefUserDO::getUserId,
                 Collectors.mapping(SysPostRefUserDO::getPostId, Collectors.toSet())));
-
-        Map<Long, SysRequestDO> requestCreateIdMap =
-            sysRequestDOList.stream().collect(Collectors.toMap(BaseEntityNoId::getCreateId, it -> it));
 
         Map<Long, Set<Long>> userRefRoleIdSetMap = UserUtil.getUserRefRoleIdSetMap();
 
@@ -201,19 +152,6 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserProMapper, SysUserDO>
             it.setPostIdSet(postUserGroupMap.get(it.getId()));
 
             it.setTenantIdSet(userIdRefTenantIdSetMap.get(it.getId()));
-
-            SysRequestDO sysRequestDO = requestCreateIdMap.get(it.getId());
-
-            if (sysRequestDO == null) {
-
-                it.setLastActiveTime(it.getCreateTime());
-
-            } else {
-
-                it.setLastActiveTime(sysRequestDO.getCreateTime());
-                it.setRegion(sysRequestDO.getRegion());
-
-            }
 
         });
 
@@ -380,9 +318,13 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserProMapper, SysUserDO>
                 SysUserInfoDO sysUserInfoDO = new SysUserInfoDO();
 
                 sysUserInfoDO.setId(dto.getId());
+
                 sysUserInfoDO
                     .setNickname(MyEntityUtil.getNotNullStr(dto.getNickname(), NicknameUtil.getRandomNickname()));
+
                 sysUserInfoDO.setBio(MyEntityUtil.getNotNullStr(dto.getBio()));
+
+                sysUserInfoDO.setEnableFlag(sysUserDO.getEnableFlag());
 
                 sysUserInfoMapper.updateById(sysUserInfoDO);
 

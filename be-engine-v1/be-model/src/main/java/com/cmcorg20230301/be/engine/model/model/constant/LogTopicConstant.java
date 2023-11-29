@@ -21,6 +21,8 @@ public interface LogTopicConstant {
 
     String USER = PRE_BE + "user"; // 用户相关
 
+    String USER_INFO = PRE_BE + "user-info"; // 用户信息相关
+
     String REQUEST = PRE_BE + "request"; // 请求相关
 
     String SOCKET = PRE_BE + "socket"; // socket相关

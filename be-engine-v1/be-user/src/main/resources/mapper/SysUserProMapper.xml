@@ -19,7 +19,10 @@
         a.enable_flag AS enableFlag,
         IF ( a.`password` = '', 0, 1 ) AS passwordFlag,
         b.nickname AS nickname,
-        b.avatar_file_id AS avatarFileId
+        b.avatar_file_id AS avatarFileId,
+        b.last_active_time AS lastActiveTime,
+        b.last_ip AS ip,
+        b.last_region AS region
 
         FROM
 
@@ -71,6 +74,22 @@
 
         <if test="dto.endCreateTime != null">
             AND a.create_time <![CDATA[<=]]> #{dto.endCreateTime}
+        </if>
+
+        <if test="dto.beginLastActiveTime != null">
+            AND b.last_active_time <![CDATA[>=]]> #{beginLastActiveTime}
+        </if>
+
+        <if test="dto.endLastActiveTime != null">
+            AND b.last_active_time <![CDATA[<=]]> #{endLastActiveTime}
+        </if>
+
+        <if test="dto.ip != null and dto.ip != ''">
+            AND b.last_ip LIKE CONCAT('%', #{ip}, '%')
+        </if>
+
+        <if test="dto.region != null and dto.region != ''">
+            AND b.last_region LIKE CONCAT('%', #{region}, '%')
         </if>
 
         <if test="dto.idSet != null and dto.idSet.size != 0">

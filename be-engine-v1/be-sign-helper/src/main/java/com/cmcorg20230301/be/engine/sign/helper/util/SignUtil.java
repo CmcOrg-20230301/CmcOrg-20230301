@@ -11,6 +11,7 @@ import com.cmcorg20230301.be.engine.datasource.util.TransactionUtil;
 import com.cmcorg20230301.be.engine.file.base.model.entity.SysFileDO;
 import com.cmcorg20230301.be.engine.file.base.service.SysFileService;
 import com.cmcorg20230301.be.engine.file.base.util.SysFileUtil;
+import com.cmcorg20230301.be.engine.ip2region.util.Ip2RegionUtil;
 import com.cmcorg20230301.be.engine.model.exception.IBizCode;
 import com.cmcorg20230301.be.engine.model.model.constant.BaseConstant;
 import com.cmcorg20230301.be.engine.model.model.constant.BaseRegexConstant;
@@ -254,7 +255,16 @@ public class SignUtil {
             SysUserInfoDO sysUserInfoDO = new SysUserInfoDO();
 
             sysUserInfoDO.setId(sysUserDO.getId());
+
             sysUserInfoDO.setTenantId(sysUserDO.getTenantId()); // 设置：租户 id
+
+            sysUserInfoDO.setCreateTime(sysUserDO.getCreateTime()); // 设置：创建时间
+
+            sysUserInfoDO.setDelFlag(sysUserDO.getDelFlag());
+
+            sysUserInfoDO.setEnableFlag(sysUserDO.getEnableFlag());
+
+            sysUserInfoDO.setLastActiveTime(sysUserDO.getCreateTime());
 
             if (tempSysUserInfoDO == null) {
 
@@ -264,6 +274,8 @@ public class SignUtil {
                 sysUserInfoDO.setAvatarFileId(-1L);
 
                 sysUserInfoDO.setSignUpType(RequestUtil.getRequestCategoryEnum());
+
+                sysUserInfoDO.setLastIp(RequestUtil.getIp());
 
             } else {
 
@@ -277,7 +289,11 @@ public class SignUtil {
                 sysUserInfoDO.setSignUpType(MyEntityUtil
                     .getNotNullObject(tempSysUserInfoDO.getSignUpType(), RequestUtil.getRequestCategoryEnum()));
 
+                sysUserInfoDO.setLastIp(MyEntityUtil.getNotNullStr(tempSysUserInfoDO.getLastIp(), RequestUtil.getIp()));
+
             }
+
+            sysUserInfoDO.setLastRegion(Ip2RegionUtil.getRegion(sysUserInfoDO.getLastIp()));
 
             sysUserInfoMapper.insert(sysUserInfoDO); // 保存：用户基本信息
 

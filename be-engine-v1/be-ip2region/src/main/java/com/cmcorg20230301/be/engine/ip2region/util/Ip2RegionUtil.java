@@ -5,6 +5,7 @@ import cn.hutool.core.io.resource.ClassPathResource;
 import cn.hutool.core.lang.Validator;
 import cn.hutool.core.util.BooleanUtil;
 import cn.hutool.core.util.StrUtil;
+import org.jetbrains.annotations.NotNull;
 import org.lionsoul.ip2region.xdb.Searcher;
 
 public class Ip2RegionUtil {
@@ -14,9 +15,13 @@ public class Ip2RegionUtil {
     static {
 
         try {
+
             searcher = Searcher.newWithBuffer(IoUtil.readBytes(new ClassPathResource("ip2region.xdb").getStream()));
+
         } catch (Exception e) {
+
             e.printStackTrace();
+
         }
 
     }
@@ -33,6 +38,7 @@ public class Ip2RegionUtil {
      * 美国|0|0|0|亚马逊
      * 备注：默认的 region 信息都固定了格式：国家|区域|省份|城市|ISP，缺省的地域信息默认是 0
      */
+    @NotNull
     public static String getRegion(String ip) {
 
         if (StrUtil.isBlank(ip)) {
@@ -40,7 +46,7 @@ public class Ip2RegionUtil {
         }
 
         if (BooleanUtil.isFalse(Validator.isIpv4(ip))) {
-            return "isNotIpv4#" + ip;
+            return "notIpv4#" + ip;
         }
 
         try {

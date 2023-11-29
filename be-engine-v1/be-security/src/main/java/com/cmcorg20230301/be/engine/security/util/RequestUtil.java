@@ -3,6 +3,8 @@ package com.cmcorg20230301.be.engine.security.util;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.convert.Convert;
 import cn.hutool.core.date.DateUtil;
+import cn.hutool.extra.servlet.ServletUtil;
+import com.cmcorg20230301.be.engine.ip2region.util.Ip2RegionUtil;
 import com.cmcorg20230301.be.engine.model.model.constant.LogTopicConstant;
 import com.cmcorg20230301.be.engine.security.model.constant.SecurityConstant;
 import com.cmcorg20230301.be.engine.security.model.entity.SysRequestDO;
@@ -115,6 +117,32 @@ public class RequestUtil {
 
         return SysRequestCategoryEnum
             .getByCode(Convert.toInt(httpServletRequest.getHeader(SecurityConstant.REQUEST_HEADER_CATEGORY)));
+
+    }
+
+    /**
+     * 获取：ip
+     */
+    @NotNull
+    public static String getIp() {
+
+        HttpServletRequest httpServletRequest = getRequest();
+
+        if (httpServletRequest == null) {
+            return "";
+        }
+
+        return ServletUtil.getClientIP(httpServletRequest);
+
+    }
+
+    /**
+     * 获取：ip所处区域
+     */
+    @NotNull
+    public static String getRegion() {
+
+        return Ip2RegionUtil.getRegion(getIp());
 
     }
 

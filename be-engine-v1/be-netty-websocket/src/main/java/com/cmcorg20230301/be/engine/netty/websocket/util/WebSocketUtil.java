@@ -8,6 +8,7 @@ import com.cmcorg20230301.be.engine.netty.websocket.configuration.NettyWebSocket
 import com.cmcorg20230301.be.engine.netty.websocket.server.NettyWebSocketServerHandler;
 import com.cmcorg20230301.be.engine.security.model.entity.SysRequestDO;
 import com.cmcorg20230301.be.engine.security.util.RequestUtil;
+import com.cmcorg20230301.be.engine.security.util.SysUserInfoUtil;
 import com.cmcorg20230301.be.engine.socket.model.dto.WebSocketMessageDTO;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.netty.channel.Channel;
@@ -75,6 +76,9 @@ public class WebSocketUtil {
 
         sysRequestDO.setIp(ip);
         sysRequestDO.setRegion(Ip2RegionUtil.getRegion(sysRequestDO.getIp()));
+
+        // 更新：用户信息
+        SysUserInfoUtil.add(userId, date, sysRequestDO.getIp(), sysRequestDO.getRegion());
 
         sysRequestDO.setSuccessFlag(successFlag);
         sysRequestDO.setErrorMsg(errorMsg);

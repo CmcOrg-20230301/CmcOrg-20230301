@@ -101,6 +101,9 @@ public class SysRequestAop {
 
         sysRequestDO.setRegion(Ip2RegionUtil.getRegion(sysRequestDO.getIp()));
 
+        // 更新：用户信息
+        SysUserInfoUtil.add(currentUserIdDefault, date, sysRequestDO.getIp(), sysRequestDO.getRegion());
+
         sysRequestDO.setSuccessFlag(true);
         sysRequestDO.setErrorMsg("");
 

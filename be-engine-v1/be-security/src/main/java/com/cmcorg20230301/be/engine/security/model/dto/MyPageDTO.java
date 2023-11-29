@@ -65,12 +65,13 @@ public class MyPageDTO {
 
     /**
      * 自定义的排序规则，转换为 mybatis plus 的排序规则
-     * underscoreFlag：是否：驼峰转下划线
+     *
+     * @param toUnderlineCaseFlag 是否：驼峰转下划线
      */
-    public static OrderItem orderToOrderItem(MyOrderDTO order, boolean toUnderlineFlag) {
+    public static OrderItem orderToOrderItem(MyOrderDTO order, boolean toUnderlineCaseFlag) {
 
         OrderItem orderItem = new OrderItem();
-        orderItem.setColumn(toUnderlineFlag ? StrUtil.toUnderlineCase(order.getName()) : order.getName());
+        orderItem.setColumn(toUnderlineCaseFlag ? StrUtil.toUnderlineCase(order.getName()) : order.getName());
 
         if (StrUtil.isNotBlank(order.getValue())) {
             orderItem.setAsc(!"descend".equals(order.getValue()));
