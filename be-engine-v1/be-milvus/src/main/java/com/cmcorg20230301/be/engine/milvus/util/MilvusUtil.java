@@ -374,6 +374,8 @@ public class MilvusUtil {
     /**
      * 查询
      * 注意：like只支持：like ab%，不支持 %ab%，不然会报错
+     *
+     * @param limit 不能小于：0，并且不能大于：16384
      */
     @NotNull
     public static <T> List<T> query(String collectionName, @Nullable String exprStr, List<String> outFieldList,
@@ -394,7 +396,7 @@ public class MilvusUtil {
             builder.withOffset(offset);
         }
 
-        if (limit > 0) { // 不能小于：0，并且不能大于：16384
+        if (limit > 0) {
             builder.withLimit(limit);
         }
 

@@ -1,7 +1,6 @@
 package com.cmcorg20230301.be.engine.security.util;
 
 import cn.hutool.core.lang.func.VoidFunc0;
-import lombok.SneakyThrows;
 import org.springframework.core.task.TaskExecutor;
 import org.springframework.scheduling.TaskScheduler;
 import org.springframework.scheduling.Trigger;
@@ -38,49 +37,68 @@ public class MyThreadUtil {
     /**
      * 异步执行
      */
-    public static void execute(Runnable runnable, @Nullable CountDownLatch countDownLatch) {
+    public static void execute(VoidFunc0 voidFunc0, @Nullable CountDownLatch countDownLatch) {
 
-        execute(runnable, countDownLatch, null, null);
+        execute(voidFunc0, countDownLatch, null, null);
 
     }
 
     /**
      * 异步执行
      */
-    @SneakyThrows
-    public static void execute(Runnable runnable, @Nullable CountDownLatch countDownLatch,
+    public static void execute(VoidFunc0 voidFunc0, @Nullable CountDownLatch countDownLatch,
         @Nullable VoidFunc0 exceptionVoidFunc0, @Nullable VoidFunc0 finallyVoidFunc0) {
 
-        try {
+        execute(() -> {
 
-            // 执行
-            taskExecutor.execute(runnable);
+            try {
 
-        } catch (Exception e) {
+                // 执行
+                voidFunc0.call();
 
-            MyExceptionUtil.printError(e);
+            } catch (Exception e) {
 
-            if (exceptionVoidFunc0 != null) {
+                MyExceptionUtil.printError(e);
 
-                exceptionVoidFunc0.call();
+                if (exceptionVoidFunc0 != null) {
+
+                    try {
+
+                        exceptionVoidFunc0.call();
+
+                    } catch (Exception exception) {
+
+                        MyExceptionUtil.printError(exception);
+
+                    }
+
+                }
+
+            } finally {
+
+                if (countDownLatch != null) {
+
+                    countDownLatch.countDown();
+
+                }
+
+                if (finallyVoidFunc0 != null) {
+
+                    try {
+
+                        finallyVoidFunc0.call();
+
+                    } catch (Exception e) {
+
+                        MyExceptionUtil.printError(e);
+
+                    }
+
+                }
 
             }
 
-        } finally {
-
-            if (countDownLatch != null) {
-
-                countDownLatch.countDown();
-
-            }
-
-            if (finallyVoidFunc0 != null) {
-
-                finallyVoidFunc0.call();
-
-            }
-
-        }
+        });
 
     }
 
