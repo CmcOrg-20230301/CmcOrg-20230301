@@ -159,7 +159,7 @@ public class SignWxServiceImpl implements SignWxService {
             Long userId = MyJwtUtil.getPayloadMapUserIdValue(jwt.getPayload().getClaimsJson());
 
             boolean exists = ChainWrappers.lambdaQueryChain(sysUserInfoMapper).eq(SysUserInfoDO::getId, userId)
-                .likeLeft(SysUserInfoDO::getNickname, WX_SYS_USER_INFO_NICKNAME_PRE).exists();
+                .likeRight(SysUserInfoDO::getNickname, WX_SYS_USER_INFO_NICKNAME_PRE).exists();
 
             if (exists) {
 

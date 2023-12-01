@@ -48,7 +48,7 @@ public class SysUserInfoUtil {
             return;
         }
 
-        if (lastActiveTime == null || lastIp == null || lastRegion == null) {
+        if (lastActiveTime == null && lastIp == null && lastRegion == null) {
             return;
         }
 
