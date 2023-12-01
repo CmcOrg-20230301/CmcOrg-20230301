@@ -324,7 +324,7 @@ public class SysTenantUtil {
         Set<Long> tenantIdSet = dto.getTenantIdSet();
 
         // 处理：dto的tenantIdSet
-        tenantIdSet = handleDtoTenantIdSet(onlySelfTenantIdFlag, tenantIdSet);
+        tenantIdSet = checkAndGetTenantIdSet(onlySelfTenantIdFlag, tenantIdSet);
 
         dto.setTenantIdSet(tenantIdSet);
 
@@ -334,7 +334,7 @@ public class SysTenantUtil {
      * 处理或者检查：tenantIdSet
      */
     @NotNull
-    public static Set<Long> handleDtoTenantIdSet(boolean onlySelfTenantIdFlag, Set<Long> tenantIdSet) {
+    public static Set<Long> checkAndGetTenantIdSet(boolean onlySelfTenantIdFlag, Set<Long> tenantIdSet) {
 
         // 获取：用户关联的租户
         Set<Long> userRefTenantIdSet = SysTenantUtil.getUserRefTenantIdSet();
