@@ -2,6 +2,7 @@ package com.cmcorg20230301.be.engine.security.util;
 
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.date.DateUtil;
+import com.cmcorg20230301.be.engine.model.model.constant.BaseConstant;
 import com.cmcorg20230301.be.engine.model.model.constant.LogTopicConstant;
 import com.cmcorg20230301.be.engine.security.model.entity.SysUserInfoDO;
 import com.cmcorg20230301.be.engine.security.service.BaseSysUserInfoService;
@@ -36,6 +37,10 @@ public class SysUserInfoUtil {
         @Nullable String lastRegion) {
 
         if (id == null) {
+            return;
+        }
+
+        if (BaseConstant.NEGATIVE_ONE_LONG.equals(id)) {
             return;
         }
 
