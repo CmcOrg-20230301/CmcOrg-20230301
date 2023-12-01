@@ -178,7 +178,7 @@ public class SysUserWalletServiceImpl extends ServiceImpl<SysUserWalletMapper, S
             // 并且不能操作自身租户
             if (!SysTenantUtil.adminOrDefaultTenantFlag()) {
 
-                // 检查：不能是自身租户，并且必须是自己租户
+                // 检查：不能是自身租户，并且必须是子级租户
                 SysTenantUtil.checkOnlyChildrenTenantIdSet(idSet);
 
             }

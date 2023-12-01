@@ -280,7 +280,7 @@ public class SysDictServiceImpl extends ServiceImpl<SysDictMapper, SysDictDO> im
      */
     @Override
     @DSTransactional
-    public String deleteByIdSet(NotEmptyIdSet notEmptyIdSet) {
+    public String deleteByIdSet(NotEmptyIdSet notEmptyIdSet, boolean checkDeleteFlag) {
 
         Set<Long> idSet = notEmptyIdSet.getIdSet();
 
@@ -288,17 +288,21 @@ public class SysDictServiceImpl extends ServiceImpl<SysDictMapper, SysDictDO> im
             return BaseBizCodeEnum.OK;
         }
 
-        // 检查：是否非法操作
-        SysTenantUtil.checkIllegal(idSet, getCheckIllegalFunc1(idSet));
+        if (checkDeleteFlag) {
 
-        if (!SysTenantUtil.adminOrDefaultTenantFlag()) {
+            // 检查：是否非法操作
+            SysTenantUtil.checkIllegal(idSet, getCheckIllegalFunc1(idSet));
 
-            boolean exists =
-                lambdaQuery().in(BaseEntity::getId, notEmptyIdSet.getIdSet()).eq(SysDictDO::getSystemFlag, true)
-                    .exists();
+            if (!SysTenantUtil.adminOrDefaultTenantFlag()) {
 
-            if (exists) {
-                ApiResultVO.errorMsg("操作失败：租户不能删除系统内置");
+                boolean exists =
+                    lambdaQuery().in(BaseEntity::getId, notEmptyIdSet.getIdSet()).eq(SysDictDO::getSystemFlag, true)
+                        .exists();
+
+                if (exists) {
+                    ApiResultVO.errorMsg("操作失败：租户不能删除系统内置");
+                }
+
             }
 
         }

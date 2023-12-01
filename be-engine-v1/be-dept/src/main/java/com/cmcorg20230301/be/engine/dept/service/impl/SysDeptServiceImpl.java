@@ -81,7 +81,7 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptMapper, SysDeptDO> im
 
         sysDeptDO.setEnableFlag(BooleanUtil.isTrue(dto.getEnableFlag()));
         sysDeptDO.setName(dto.getName());
-        sysDeptDO.setOrderNo(dto.getOrderNo());
+        sysDeptDO.setOrderNo(MyEntityUtil.getNotNullOrderNo(dto.getOrderNo()));
         sysDeptDO.setParentId(MyEntityUtil.getNotNullParentId(dto.getParentId()));
         sysDeptDO.setRemark(MyEntityUtil.getNotNullStr(dto.getRemark()));
         sysDeptDO.setId(dto.getId());

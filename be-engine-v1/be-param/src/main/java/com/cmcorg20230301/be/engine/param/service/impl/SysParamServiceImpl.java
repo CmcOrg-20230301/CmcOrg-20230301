@@ -138,7 +138,7 @@ public class SysParamServiceImpl extends ServiceImpl<SysParamMapper, SysParamDO>
      * 批量删除
      */
     @Override
-    public String deleteByIdSet(NotEmptyIdSet notEmptyIdSet) {
+    public String deleteByIdSet(NotEmptyIdSet notEmptyIdSet, boolean checkDeleteFlag) {
 
         Set<Long> idSet = notEmptyIdSet.getIdSet();
 
@@ -146,11 +146,15 @@ public class SysParamServiceImpl extends ServiceImpl<SysParamMapper, SysParamDO>
             return BaseBizCodeEnum.OK;
         }
 
-        // 检查：是否非法操作
-        SysTenantUtil.checkIllegal(idSet, getCheckIllegalFunc1(idSet));
+        if (checkDeleteFlag) {
 
-        // 检查：是否可以删除
-        SysTenantUtil.checkDelete();
+            // 检查：是否非法操作
+            SysTenantUtil.checkIllegal(idSet, getCheckIllegalFunc1(idSet));
+
+            // 检查：是否可以删除
+            SysTenantUtil.checkDelete();
+
+        }
 
         for (String item : SysParamUtil.SYSTEM_PARAM_UUID_SET) {
 

@@ -13,7 +13,6 @@ import org.jetbrains.annotations.Nullable;
 import org.springframework.kafka.annotation.KafkaHandler;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.support.Acknowledgment;
-import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.Objects;
@@ -22,7 +21,7 @@ import java.util.stream.Collectors;
 /**
  * 处理微信公众号消息的 监听器
  */
-@Component
+//@Component
 @KafkaListener(topics = "#{__listener.TOPIC_LIST}", groupId = "#{__listener.GROUP_ID}", batch = "true")
 @Slf4j(topic = LogTopicConstant.OTHER_APP_OFFICIAL_ACCOUNT_WX)
 public class SysOtherAppOfficialAccountWxReceiveMessageListener {

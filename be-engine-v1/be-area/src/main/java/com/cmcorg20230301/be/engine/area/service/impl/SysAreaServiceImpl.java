@@ -75,7 +75,7 @@ public class SysAreaServiceImpl extends ServiceImpl<SysAreaMapper, SysAreaDO> im
         sysAreaDO.setParentId(MyEntityUtil.getNotNullParentId(dto.getParentId()));
         sysAreaDO.setEnableFlag(BooleanUtil.isTrue(dto.getEnableFlag()));
         sysAreaDO.setId(dto.getId());
-        sysAreaDO.setOrderNo(dto.getOrderNo());
+        sysAreaDO.setOrderNo(MyEntityUtil.getNotNullOrderNo(dto.getOrderNo()));
         sysAreaDO.setRemark(MyEntityUtil.getNotNullStr(dto.getRemark()));
         sysAreaDO.setDelFlag(false);
 

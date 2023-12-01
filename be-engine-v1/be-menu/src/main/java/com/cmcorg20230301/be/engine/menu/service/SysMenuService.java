@@ -22,7 +22,7 @@ public interface SysMenuService extends IService<SysMenuDO> {
 
     SysMenuInfoByIdVO infoById(NotNullId notNullId);
 
-    String deleteByIdSet(NotEmptyIdSet notEmptyIdSet, boolean checkChildrenFlag);
+    String deleteByIdSet(NotEmptyIdSet notEmptyIdSet, boolean checkChildrenFlag, boolean checkDeleteFlag);
 
     List<SysMenuDO> userSelfMenuList();
 

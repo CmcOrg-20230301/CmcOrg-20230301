@@ -52,7 +52,7 @@ public class SysParamController {
     @PostMapping("/deleteByIdSet")
     @PreAuthorize("hasAuthority('sysParam:deleteByIdSet')")
     public ApiResultVO<String> deleteByIdSet(@RequestBody @Valid NotEmptyIdSet notEmptyIdSet) {
-        return ApiResultVO.okMsg(baseService.deleteByIdSet(notEmptyIdSet));
+        return ApiResultVO.okMsg(baseService.deleteByIdSet(notEmptyIdSet, true));
     }
 
 }

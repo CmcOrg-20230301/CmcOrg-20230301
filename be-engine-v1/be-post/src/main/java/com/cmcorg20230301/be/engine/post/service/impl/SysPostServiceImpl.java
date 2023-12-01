@@ -77,7 +77,7 @@ public class SysPostServiceImpl extends ServiceImpl<SysPostMapper, SysPostDO> im
 
         sysPostDO.setEnableFlag(BooleanUtil.isTrue(dto.getEnableFlag()));
         sysPostDO.setName(dto.getName());
-        sysPostDO.setOrderNo(dto.getOrderNo());
+        sysPostDO.setOrderNo(MyEntityUtil.getNotNullOrderNo(dto.getOrderNo()));
         sysPostDO.setParentId(MyEntityUtil.getNotNullParentId(dto.getParentId()));
         sysPostDO.setId(dto.getId());
         sysPostDO.setRemark(MyEntityUtil.getNotNullStr(dto.getRemark()));

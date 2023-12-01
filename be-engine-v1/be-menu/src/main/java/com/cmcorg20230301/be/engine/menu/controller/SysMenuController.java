@@ -62,7 +62,7 @@ public class SysMenuController {
     @PostMapping("/deleteByIdSet")
     @PreAuthorize("hasAuthority('sysMenu:deleteByIdSet')")
     public ApiResultVO<String> deleteByIdSet(@RequestBody @Valid NotEmptyIdSet notEmptyIdSet) {
-        return ApiResultVO.okMsg(baseService.deleteByIdSet(notEmptyIdSet, true));
+        return ApiResultVO.okMsg(baseService.deleteByIdSet(notEmptyIdSet, true, true));
     }
 
     @PostMapping("/userSelfMenuList")

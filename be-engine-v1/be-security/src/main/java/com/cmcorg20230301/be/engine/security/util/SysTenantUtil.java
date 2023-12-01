@@ -265,7 +265,7 @@ public class SysTenantUtil {
     }
 
     /**
-     * 检查：不能是自身租户，并且必须是自己租户
+     * 检查：不能是自身租户，并且必须是子级租户
      * 注意：请自行检查：checkTenantIdSet，是否是属于当前用户的所管理的租户
      *
      * @param checkTenantIdSet 需要检查的租户 idSet

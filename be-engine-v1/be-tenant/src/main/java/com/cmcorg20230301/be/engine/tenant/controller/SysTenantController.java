@@ -113,4 +113,18 @@ public class SysTenantController {
         return ApiResultVO.okMsg(baseService.doSyncParam());
     }
 
+    @Operation(summary = "批量：解冻")
+    @PostMapping("/thaw")
+    @PreAuthorize("hasAuthority('sysTenant:insertOrUpdate')")
+    public ApiResultVO<String> thaw(@RequestBody @Valid NotEmptyIdSet notEmptyIdSet) {
+        return ApiResultVO.okMsg(baseService.thaw(notEmptyIdSet));
+    }
+
+    @Operation(summary = "批量：冻结")
+    @PostMapping("/freeze")
+    @PreAuthorize("hasAuthority('sysTenant:insertOrUpdate')")
+    public ApiResultVO<String> freeze(@RequestBody @Valid NotEmptyIdSet notEmptyIdSet) {
+        return ApiResultVO.okMsg(baseService.freeze(notEmptyIdSet));
+    }
+
 }

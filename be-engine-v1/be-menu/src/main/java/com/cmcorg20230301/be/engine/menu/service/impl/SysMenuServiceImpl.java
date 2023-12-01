@@ -164,7 +164,7 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenuDO> im
         sysMenuInsertOrUpdateDTO.setRoleIdSet(dto.getRoleIdSet());
         sysMenuInsertOrUpdateDTO.setEnableFlag(dto.getEnableFlag());
         sysMenuInsertOrUpdateDTO.setFirstFlag(dto.getFirstFlag());
-        sysMenuInsertOrUpdateDTO.setOrderNo(dto.getOrderNo());
+        sysMenuInsertOrUpdateDTO.setOrderNo(MyEntityUtil.getNotNullOrderNo(dto.getOrderNo()));
         sysMenuInsertOrUpdateDTO.setShowFlag(dto.getShowFlag());
         sysMenuInsertOrUpdateDTO.setRedirect(dto.getRedirect());
         sysMenuInsertOrUpdateDTO.setRemark(dto.getRemark());
@@ -355,7 +355,7 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenuDO> im
      */
     @Override
     @DSTransactional
-    public String deleteByIdSet(NotEmptyIdSet notEmptyIdSet, boolean checkChildrenFlag) {
+    public String deleteByIdSet(NotEmptyIdSet notEmptyIdSet, boolean checkChildrenFlag, boolean checkDeleteFlag) {
 
         Set<Long> idSet = notEmptyIdSet.getIdSet();
 
@@ -363,11 +363,15 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenuDO> im
             return BaseBizCodeEnum.OK;
         }
 
-        // 检查：是否非法操作
-        SysTenantUtil.checkIllegal(idSet, getCheckIllegalFunc1(idSet));
+        if (checkDeleteFlag) {
 
-        // 检查：是否可以删除
-        SysTenantUtil.checkDelete();
+            // 检查：是否非法操作
+            SysTenantUtil.checkIllegal(idSet, getCheckIllegalFunc1(idSet));
+
+            // 检查：是否可以删除
+            SysTenantUtil.checkDelete();
+
+        }
 
         if (checkChildrenFlag) {
 

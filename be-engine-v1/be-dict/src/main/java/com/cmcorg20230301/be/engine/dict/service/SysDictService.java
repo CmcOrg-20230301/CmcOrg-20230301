@@ -25,7 +25,7 @@ public interface SysDictService extends IService<SysDictDO> {
 
     SysDictDO infoById(NotNullId notNullId);
 
-    String deleteByIdSet(NotEmptyIdSet notEmptyIdSet);
+    String deleteByIdSet(NotEmptyIdSet notEmptyIdSet, boolean checkDeleteFlag);
 
     String addOrderNo(ChangeNumberDTO dto);
 

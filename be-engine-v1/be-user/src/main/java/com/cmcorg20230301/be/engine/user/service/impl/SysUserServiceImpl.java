@@ -629,8 +629,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserProMapper, SysUserDO>
         // 检查：是否非法操作
         SysTenantUtil.checkIllegal(dto.getIdSet(), getCheckIllegalFunc1(dto.getIdSet()));
 
-        boolean passwordFlag =
-            StrUtil.isNotBlank(dto.getNewPassword()) && StrUtil.isNotBlank(dto.getNewOriginPassword());
+        boolean passwordFlag = StrUtil.isNotBlank(dto.getNewPassword()) && StrUtil.isNotBlank(dto.getNewOriginPassword());
 
         String password = "";
 
@@ -642,8 +641,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserProMapper, SysUserDO>
 
             if (BooleanUtil.isFalse(ReUtil.isMatch(BaseRegexConstant.PASSWORD_REGEXP, dto.getNewOriginPassword()))) {
 
-                ApiResultVO.error(
-                    com.cmcorg20230301.be.engine.sign.helper.exception.BizCodeEnum.PASSWORD_RESTRICTIONS); // 不合法直接抛出异常
+                ApiResultVO.error(com.cmcorg20230301.be.engine.sign.helper.exception.BizCodeEnum.PASSWORD_RESTRICTIONS); // 不合法直接抛出异常
 
             }
 
@@ -654,6 +652,52 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserProMapper, SysUserDO>
         lambdaUpdate().in(BaseEntity::getId, dto.getIdSet()).set(SysUserDO::getPassword, password).update();
 
         refreshJwtSecretSuf(new NotEmptyIdSet(dto.getIdSet())); // 刷新：jwt私钥后缀
+
+        return BaseBizCodeEnum.OK;
+
+    }
+
+    /**
+     * 批量：解冻
+     */
+    @DSTransactional
+    @Override
+    public String thaw(NotEmptyIdSet notEmptyIdSet) {
+
+        if (CollUtil.isEmpty(notEmptyIdSet.getIdSet())) {
+            return BaseBizCodeEnum.OK;
+        }
+
+        // 检查：是否非法操作
+        SysTenantUtil.checkIllegal(notEmptyIdSet.getIdSet(), getCheckIllegalFunc1(notEmptyIdSet.getIdSet()));
+
+        lambdaUpdate().in(BaseEntity::getId, notEmptyIdSet.getIdSet()).set(SysUserDO::getEnableFlag, true).update();
+
+        ChainWrappers.lambdaUpdateChain(sysUserInfoMapper).in(SysUserInfoDO::getId, notEmptyIdSet.getIdSet())
+            .set(SysUserInfoDO::getEnableFlag, true).update();
+
+        return BaseBizCodeEnum.OK;
+
+    }
+
+    /**
+     * 批量：冻结
+     */
+    @DSTransactional
+    @Override
+    public String freeze(NotEmptyIdSet notEmptyIdSet) {
+
+        if (CollUtil.isEmpty(notEmptyIdSet.getIdSet())) {
+            return BaseBizCodeEnum.OK;
+        }
+
+        // 检查：是否非法操作
+        SysTenantUtil.checkIllegal(notEmptyIdSet.getIdSet(), getCheckIllegalFunc1(notEmptyIdSet.getIdSet()));
+
+        lambdaUpdate().in(BaseEntity::getId, notEmptyIdSet.getIdSet()).set(SysUserDO::getEnableFlag, false).update();
+
+        ChainWrappers.lambdaUpdateChain(sysUserInfoMapper).in(SysUserInfoDO::getId, notEmptyIdSet.getIdSet())
+            .set(SysUserInfoDO::getEnableFlag, false).update();
 
         return BaseBizCodeEnum.OK;
 

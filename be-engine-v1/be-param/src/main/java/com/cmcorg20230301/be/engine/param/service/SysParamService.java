@@ -16,6 +16,6 @@ public interface SysParamService extends IService<SysParamDO> {
 
     SysParamDO infoById(NotNullId notNullId);
 
-    String deleteByIdSet(NotEmptyIdSet notEmptyIdSet);
+    String deleteByIdSet(NotEmptyIdSet notEmptyIdSet, boolean checkDeleteFlag);
 
 }

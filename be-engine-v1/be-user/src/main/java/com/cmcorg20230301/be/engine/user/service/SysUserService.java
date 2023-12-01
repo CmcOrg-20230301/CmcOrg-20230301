@@ -31,4 +31,8 @@ public interface SysUserService extends IService<SysUserDO> {
 
     String updatePassword(SysUserUpdatePasswordDTO dto);
 
+    String thaw(NotEmptyIdSet notEmptyIdSet);
+
+    String freeze(NotEmptyIdSet notEmptyIdSet);
+
 }

@@ -38,4 +38,8 @@ public interface SysTenantService extends IService<SysTenantDO> {
 
     String doSyncParam();
 
+    String thaw(NotEmptyIdSet notEmptyIdSet);
+
+    String freeze(NotEmptyIdSet notEmptyIdSet);
+
 }

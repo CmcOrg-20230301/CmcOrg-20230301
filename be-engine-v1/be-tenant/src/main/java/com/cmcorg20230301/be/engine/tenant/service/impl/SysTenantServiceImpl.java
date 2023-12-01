@@ -114,7 +114,7 @@ public class SysTenantServiceImpl extends ServiceImpl<SysTenantMapper, SysTenant
 
         sysTenantDO.setEnableFlag(BooleanUtil.isTrue(dto.getEnableFlag()));
         sysTenantDO.setName(dto.getName());
-        sysTenantDO.setOrderNo(dto.getOrderNo());
+        sysTenantDO.setOrderNo(MyEntityUtil.getNotNullOrderNo(dto.getOrderNo()));
         sysTenantDO.setId(dto.getId());
         sysTenantDO.setRemark(MyEntityUtil.getNotNullStr(dto.getRemark()));
         sysTenantDO.setDelFlag(false);
@@ -568,7 +568,7 @@ public class SysTenantServiceImpl extends ServiceImpl<SysTenantMapper, SysTenant
 
             Set<Long> paramIdSet = sysParamDOList.stream().map(BaseEntity::getId).collect(Collectors.toSet());
 
-            sysParamService.deleteByIdSet(new NotEmptyIdSet(paramIdSet));
+            sysParamService.deleteByIdSet(new NotEmptyIdSet(paramIdSet), false);
 
         }
 
@@ -580,7 +580,7 @@ public class SysTenantServiceImpl extends ServiceImpl<SysTenantMapper, SysTenant
 
             Set<Long> dictIdSet = sysDictDOList.stream().map(BaseEntity::getId).collect(Collectors.toSet());
 
-            sysDictService.deleteByIdSet(new NotEmptyIdSet(dictIdSet));
+            sysDictService.deleteByIdSet(new NotEmptyIdSet(dictIdSet), false);
 
         }
 
@@ -593,7 +593,7 @@ public class SysTenantServiceImpl extends ServiceImpl<SysTenantMapper, SysTenant
 
                 Set<Long> menuIdSet = sysMenuDOList.stream().map(BaseEntity::getId).collect(Collectors.toSet());
 
-                sysMenuService.deleteByIdSet(new NotEmptyIdSet(menuIdSet), false);
+                sysMenuService.deleteByIdSet(new NotEmptyIdSet(menuIdSet), false, false);
 
             }
 
@@ -659,27 +659,6 @@ public class SysTenantServiceImpl extends ServiceImpl<SysTenantMapper, SysTenant
         }
 
         return sysTenantDO.getName();
-
-    }
-
-    /**
-     * 获取：检查：是否非法操作的 getCheckIllegalFunc1
-     */
-    @NotNull
-    private Func1<Set<Long>, Long> getCheckIllegalFunc1(Set<Long> idSet) {
-
-        return tenantIdSet -> lambdaQuery().in(BaseEntity::getId, idSet).in(BaseEntityNoId::getTenantId, tenantIdSet)
-            .count();
-
-    }
-
-    /**
-     * 获取：检查：是否非法操作的 getTenantIdBaseEntityFunc1
-     */
-    @NotNull
-    private Func1<Long, BaseEntity> getTenantIdBaseEntityFunc1() {
-
-        return id -> lambdaQuery().eq(BaseEntity::getId, id).select(BaseEntity::getTenantId).one();
 
     }
 
@@ -914,8 +893,7 @@ public class SysTenantServiceImpl extends ServiceImpl<SysTenantMapper, SysTenant
         List<SysParamDO> allSysParamDOList = sysParamService.lambdaQuery().list();
 
         // 默认租户的，非系统内置字典
-        List<SysParamDO> defaultTenantSysParamDOList = allSysParamDOList.stream()
-            .filter(it -> !it.getSystemFlag() && it.getTenantId().equals(BaseConstant.TOP_TENANT_ID))
+        List<SysParamDO> defaultTenantSysParamDOList = allSysParamDOList.stream().filter(it -> !it.getSystemFlag() && it.getTenantId().equals(BaseConstant.TOP_TENANT_ID))
             .collect(Collectors.toList());
 
         List<SysParamDO> insertList = new ArrayList<>();
@@ -928,8 +906,7 @@ public class SysTenantServiceImpl extends ServiceImpl<SysTenantMapper, SysTenant
 
             // 复制一份新的集合
             List<SysParamDO> newDefaultTenantSysParamDOList =
-                defaultTenantSysParamDOList.stream().map(it -> BeanUtil.copyProperties(it, SysParamDO.class))
-                    .collect(Collectors.toList());
+                defaultTenantSysParamDOList.stream().map(it -> BeanUtil.copyProperties(it, SysParamDO.class)).collect(Collectors.toList());
 
             // 把租户自定义的一些值，用来覆盖：默认值，目的：不修改租户已经修改过的值
             List<SysParamDO> tenantSysParamDOList = tenantIdGroupMap.get(tenantId);
@@ -968,6 +945,88 @@ public class SysTenantServiceImpl extends ServiceImpl<SysTenantMapper, SysTenant
         sysParamService.saveBatch(insertList);
 
         return BaseBizCodeEnum.OK;
+
+    }
+
+    /**
+     * 批量：解冻
+     */
+    @Override
+    public String thaw(NotEmptyIdSet notEmptyIdSet) {
+
+        if (CollUtil.isEmpty(notEmptyIdSet.getIdSet())) {
+            return BaseBizCodeEnum.OK;
+        }
+
+        Set<Long> idSet = notEmptyIdSet.getIdSet();
+
+        // 检查：是否是属于自己的租户
+        SysTenantUtil.checkAndGetTenantIdSet(false, idSet);
+
+        // 并且不能操作自身租户
+        if (!SysTenantUtil.adminOrDefaultTenantFlag()) {
+
+            // 检查：不能是自身租户，并且必须是子级租户
+            SysTenantUtil.checkOnlyChildrenTenantIdSet(idSet);
+
+        }
+
+        // 检查：是否非法操作
+        SysTenantUtil.checkIllegal(notEmptyIdSet.getIdSet(), getCheckIllegalFunc1(notEmptyIdSet.getIdSet()));
+
+        lambdaUpdate().in(BaseEntity::getId, notEmptyIdSet.getIdSet()).set(SysTenantDO::getEnableFlag, true).update();
+
+        return BaseBizCodeEnum.OK;
+
+    }
+
+    /**
+     * 批量：冻结
+     */
+    @Override
+    public String freeze(NotEmptyIdSet notEmptyIdSet) {
+
+        if (CollUtil.isEmpty(notEmptyIdSet.getIdSet())) {
+            return BaseBizCodeEnum.OK;
+        }
+
+        Set<Long> idSet = notEmptyIdSet.getIdSet();
+
+        // 检查：是否是属于自己的租户
+        SysTenantUtil.checkAndGetTenantIdSet(false, idSet);
+
+        // 并且不能操作自身租户
+        if (!SysTenantUtil.adminOrDefaultTenantFlag()) {
+
+            // 检查：不能是自身租户，并且必须是子级租户
+            SysTenantUtil.checkOnlyChildrenTenantIdSet(idSet);
+
+        }
+
+        lambdaUpdate().in(BaseEntity::getId, notEmptyIdSet.getIdSet()).set(SysTenantDO::getEnableFlag, false).update();
+
+        return BaseBizCodeEnum.OK;
+
+    }
+
+    /**
+     * 获取：检查：是否非法操作的 getCheckIllegalFunc1
+     */
+    @NotNull
+    private Func1<Set<Long>, Long> getCheckIllegalFunc1(Set<Long> idSet) {
+
+        return tenantIdSet -> lambdaQuery().in(BaseEntity::getId, idSet).in(BaseEntityNoId::getTenantId, tenantIdSet)
+            .count();
+
+    }
+
+    /**
+     * 获取：检查：是否非法操作的 getTenantIdBaseEntityFunc1
+     */
+    @NotNull
+    private Func1<Long, BaseEntity> getTenantIdBaseEntityFunc1() {
+
+        return id -> lambdaQuery().eq(BaseEntity::getId, id).select(BaseEntity::getTenantId).one();
 
     }
 

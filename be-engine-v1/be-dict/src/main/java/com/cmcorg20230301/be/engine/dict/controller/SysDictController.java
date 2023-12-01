@@ -69,7 +69,7 @@ public class SysDictController {
     @PostMapping("/deleteByIdSet")
     @PreAuthorize("hasAuthority('sysDict:deleteByIdSet')")
     public ApiResultVO<String> deleteByIdSet(@RequestBody @Valid NotEmptyIdSet notEmptyIdSet) {
-        return ApiResultVO.okMsg(baseService.deleteByIdSet(notEmptyIdSet));
+        return ApiResultVO.okMsg(baseService.deleteByIdSet(notEmptyIdSet, true));
     }
 
     @Operation(summary = "通过主键 idSet，加减排序号")
