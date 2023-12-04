@@ -191,7 +191,23 @@ public class MilvusUtil {
     @Nullable
     public static String match(List<Float> floatList, String collectionName, @Nullable String exprStr) {
 
+        // 执行
         return match(floatList, collectionName, RESULT_FIELD_NAME, VECTOR_LIST_FIELD_NAME, exprStr);
+
+    }
+
+    /**
+     * 向量匹配
+     *
+     * @param exprStr 建议添加：and enableFlag == true
+     * @return null 则表示没有匹配上
+     */
+    @Nullable
+    public static SearchResultsWrapper doMatch(List<Float> floatList, String collectionName, List<String> outFieldList,
+        @Nullable String exprStr) {
+
+        // 执行
+        return doMatch(floatList, collectionName, outFieldList, VECTOR_LIST_FIELD_NAME, exprStr);
 
     }
 
@@ -213,11 +229,49 @@ public class MilvusUtil {
     /**
      * 向量匹配
      *
+     * @param exprStr 建议添加：and enableFlag == true
+     * @return null 则表示没有匹配上
+     */
+    @Nullable
+    public static SearchResultsWrapper doMatch(List<Float> floatList, String collectionName, List<String> outFieldList,
+        String vectorFieldName, @Nullable String exprStr) {
+
+        // 得分在 0.2以下，则算匹配上了向量数据库
+        return doMatch(floatList, collectionName, outFieldList, vectorFieldName, 0.2f, exprStr);
+
+    }
+
+    /**
+     * 向量匹配
+     *
      * @param exprStr 额外的查询条件，建议添加：and enableFlag == true
      * @return null 则表示没有匹配上
      */
     @Nullable
     public static String match(List<Float> floatList, String collectionName, String resultFieldName,
+        String vectorFieldName, float score, @Nullable String exprStr) {
+
+        SearchResultsWrapper searchResultsWrapper =
+            doMatch(floatList, collectionName, Collections.singletonList(resultFieldName), vectorFieldName, score,
+                exprStr);
+
+        if (searchResultsWrapper == null) {
+            return null;
+        }
+
+        // 获取：查询字段的值
+        return (String)searchResultsWrapper.getFieldData(resultFieldName, 0).get(0);
+
+    }
+
+    /**
+     * 向量匹配
+     *
+     * @param exprStr 额外的查询条件，建议添加：and enableFlag == true
+     * @return null 则表示没有匹配上
+     */
+    @Nullable
+    private static SearchResultsWrapper doMatch(List<Float> floatList, String collectionName, List<String> outFieldList,
         String vectorFieldName, float score, @Nullable String exprStr) {
 
         if (milvusServiceClient == null) {
@@ -231,11 +285,9 @@ public class MilvusUtil {
         Integer topK = 1; // TopK，返回多少条数据
         String param = "{\"nprobe\":10}"; // Params，精确度，值越大越精确，但是越慢，默认值为：10
 
-        List<String> outFieldList = Collections.singletonList(resultFieldName);
         List<List<Float>> vectorList = Collections.singletonList(floatList);
 
-        SearchParam.Builder builder = SearchParam.newBuilder().withCollectionName(collectionName)
-            .withConsistencyLevel(ConsistencyLevelEnum.STRONG).withMetricType(MetricType.L2).withOutFields(outFieldList)
+        SearchParam.Builder builder = SearchParam.newBuilder().withCollectionName(collectionName).withConsistencyLevel(ConsistencyLevelEnum.STRONG).withMetricType(MetricType.L2).withOutFields(outFieldList)
             .withTopK(topK).withVectors(vectorList).withVectorFieldName(vectorFieldName).withParams(param);
 
         if (StrUtil.isNotBlank(exprStr)) {
@@ -256,8 +308,7 @@ public class MilvusUtil {
             return null;
         }
 
-        // 获取：查询字段的值
-        return (String)searchResultsWrapper.getFieldData(resultFieldName, 0).get(0);
+        return searchResultsWrapper;
 
     }
 
