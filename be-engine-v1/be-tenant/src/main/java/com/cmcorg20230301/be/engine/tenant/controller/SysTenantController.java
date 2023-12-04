@@ -99,6 +99,13 @@ public class SysTenantController {
         return ApiResultVO.okMsg(baseService.doSyncMenu(notNullIdAndNotEmptyLongSet));
     }
 
+    @Operation(summary = "删除租户所有菜单")
+    @PostMapping("/deleteTenantAllMenu")
+    @PreAuthorize("hasAuthority('sysTenant:syncMenu')")
+    public ApiResultVO<String> deleteTenantAllMenu(@RequestBody @Valid NotEmptyIdSet notEmptyIdSet) {
+        return ApiResultVO.okMsg(baseService.deleteTenantAllMenu(notEmptyIdSet));
+    }
+
     @Operation(summary = "执行：同步字典给租户")
     @PostMapping("/doSyncDict")
     @PreAuthorize("hasAuthority('sysTenant:syncDict')")

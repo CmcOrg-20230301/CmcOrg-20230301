@@ -34,6 +34,8 @@ public interface SysTenantService extends IService<SysTenantDO> {
 
     String doSyncMenu(NotNullIdAndNotEmptyLongSet notNullIdAndNotEmptyLongSet);
 
+    String deleteTenantAllMenu(NotEmptyIdSet notEmptyIdSet);
+
     String doSyncDict();
 
     String doSyncParam();

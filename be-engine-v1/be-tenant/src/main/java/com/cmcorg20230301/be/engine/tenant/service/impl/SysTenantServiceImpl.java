@@ -760,6 +760,29 @@ public class SysTenantServiceImpl extends ServiceImpl<SysTenantMapper, SysTenant
     }
 
     /**
+     * 删除租户所有菜单
+     */
+    @Override
+    public String deleteTenantAllMenu(NotEmptyIdSet notEmptyIdSet) {
+
+        List<SysMenuDO> sysMenuDOList =
+            sysMenuService.lambdaQuery().in(BaseEntityNoIdFather::getTenantId, notEmptyIdSet.getIdSet())
+                .select(BaseEntity::getId).list();
+
+        if (CollUtil.isEmpty(sysMenuDOList)) {
+            return BaseBizCodeEnum.OK;
+        }
+
+        Set<Long> menuIdSet = sysMenuDOList.stream().map(BaseEntity::getId).collect(Collectors.toSet());
+
+        // 执行：删除
+        sysMenuService.deleteByIdSet(new NotEmptyIdSet(menuIdSet), false, true);
+
+        return BaseBizCodeEnum.OK;
+
+    }
+
+    /**
      * 执行：同步字典给租户
      * 备注：租户只能，新增修改删除字典项，并且不能是系统内置的字典项
      */
@@ -893,7 +916,8 @@ public class SysTenantServiceImpl extends ServiceImpl<SysTenantMapper, SysTenant
         List<SysParamDO> allSysParamDOList = sysParamService.lambdaQuery().list();
 
         // 默认租户的，非系统内置字典
-        List<SysParamDO> defaultTenantSysParamDOList = allSysParamDOList.stream().filter(it -> !it.getSystemFlag() && it.getTenantId().equals(BaseConstant.TOP_TENANT_ID))
+        List<SysParamDO> defaultTenantSysParamDOList = allSysParamDOList.stream()
+            .filter(it -> !it.getSystemFlag() && it.getTenantId().equals(BaseConstant.TOP_TENANT_ID))
             .collect(Collectors.toList());
 
         List<SysParamDO> insertList = new ArrayList<>();
@@ -906,7 +930,8 @@ public class SysTenantServiceImpl extends ServiceImpl<SysTenantMapper, SysTenant
 
             // 复制一份新的集合
             List<SysParamDO> newDefaultTenantSysParamDOList =
-                defaultTenantSysParamDOList.stream().map(it -> BeanUtil.copyProperties(it, SysParamDO.class)).collect(Collectors.toList());
+                defaultTenantSysParamDOList.stream().map(it -> BeanUtil.copyProperties(it, SysParamDO.class))
+                    .collect(Collectors.toList());
 
             // 把租户自定义的一些值，用来覆盖：默认值，目的：不修改租户已经修改过的值
             List<SysParamDO> tenantSysParamDOList = tenantIdGroupMap.get(tenantId);
