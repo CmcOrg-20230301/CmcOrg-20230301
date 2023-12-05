@@ -3,6 +3,7 @@ package com.cmcorg20230301.be.engine.file.base.service.impl;
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.StrUtil;
+import com.baomidou.dynamic.datasource.annotation.DSTransactional;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.cmcorg20230301.be.engine.file.base.mapper.SysFileMapper;
@@ -89,13 +90,15 @@ public class SysFileServiceImpl extends ServiceImpl<SysFileMapper, SysFileDO> im
      * 批量删除文件：公有和私有
      */
     @Override
-    public String removeByFileIdSet(NotEmptyIdSet notEmptyIdSet) {
+    @DSTransactional
+    public String removeByFileIdSet(NotEmptyIdSet notEmptyIdSet, boolean checkBelongFlag) {
 
         if (CollUtil.isEmpty(notEmptyIdSet.getIdSet())) {
             return BaseBizCodeEnum.OK;
         }
 
-        SysFileUtil.removeByFileIdSet(notEmptyIdSet.getIdSet(), true);
+        // 执行
+        SysFileUtil.removeByFileIdSet(notEmptyIdSet.getIdSet(), checkBelongFlag);
 
         return BaseBizCodeEnum.OK;
 
