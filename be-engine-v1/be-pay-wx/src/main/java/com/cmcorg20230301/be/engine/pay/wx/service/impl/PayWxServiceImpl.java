@@ -80,10 +80,14 @@ public class PayWxServiceImpl implements PayWxService {
 
             SysPayTradeNotifyBO sysPayTradeNotifyBO = new SysPayTradeNotifyBO();
 
+            Integer payerTotal = transaction.getAmount().getPayerTotal(); // 微信这里的单位是：分
+
+            String totalAmount = String.valueOf(payerTotal / 100);
+
             sysPayTradeNotifyBO.setTradeStatus(transaction.getTradeState().name());
             sysPayTradeNotifyBO.setOutTradeNo(transaction.getOutTradeNo());
             sysPayTradeNotifyBO.setTradeNo(transaction.getTransactionId());
-            sysPayTradeNotifyBO.setTotalAmount(transaction.getAmount().getPayerTotal().toString());
+            sysPayTradeNotifyBO.setTotalAmount(totalAmount);
             sysPayTradeNotifyBO.setPayCurrency(transaction.getAmount().getPayerCurrency());
 
             return sysPayTradeNotifyBO;
@@ -118,10 +122,14 @@ public class PayWxServiceImpl implements PayWxService {
 
             SysPayTradeNotifyBO sysPayTradeNotifyBO = new SysPayTradeNotifyBO();
 
+            Integer payerTotal = transaction.getAmount().getPayerTotal(); // 微信这里的单位是：分
+
+            String totalAmount = String.valueOf(payerTotal / 100);
+
             sysPayTradeNotifyBO.setTradeStatus(transaction.getTradeState().name());
             sysPayTradeNotifyBO.setOutTradeNo(transaction.getOutTradeNo());
             sysPayTradeNotifyBO.setTradeNo(transaction.getTransactionId());
-            sysPayTradeNotifyBO.setTotalAmount(transaction.getAmount().getPayerTotal().toString());
+            sysPayTradeNotifyBO.setTotalAmount(totalAmount);
             sysPayTradeNotifyBO.setPayCurrency(transaction.getAmount().getPayerCurrency());
 
             return sysPayTradeNotifyBO;
