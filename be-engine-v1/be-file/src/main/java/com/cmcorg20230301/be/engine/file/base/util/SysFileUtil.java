@@ -547,7 +547,7 @@ public class SysFileUtil {
         }
 
         if (sysFileDOList.size() == 0) {
-            return;
+            ApiResultVO.errorMsg("操作失败：文件拥有者才可以删除");
         }
 
         boolean anyMatch = sysFileDOList.stream().anyMatch(it -> SysFileTypeEnum.FOLDER.equals(it.getType()));

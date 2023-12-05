@@ -118,7 +118,7 @@ public class SysFileServiceImpl extends ServiceImpl<SysFileMapper, SysFileDO> im
     public Page<SysFileDO> myPage(SysFilePageDTO dto) {
 
         // 处理：MyTenantPageDTO
-        SysTenantUtil.handleMyTenantPageDTO(dto, true);
+        SysTenantUtil.handleMyTenantPageDTO(dto, false);
 
         return lambdaQuery()
             .like(StrUtil.isNotBlank(dto.getOriginFileName()), SysFileDO::getOriginFileName, dto.getOriginFileName())

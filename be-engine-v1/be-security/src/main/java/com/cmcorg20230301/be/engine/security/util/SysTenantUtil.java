@@ -512,6 +512,10 @@ public class SysTenantUtil {
             return;
         }
 
+        if (userId.equals(UserUtil.getCurrentUserId())) {
+            return;
+        }
+
         Set<Long> userRefTenantIdSet = SysTenantUtil.getUserRefTenantIdSet();
 
         // 检查：userId，是否合法
