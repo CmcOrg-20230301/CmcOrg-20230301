@@ -66,7 +66,7 @@ public class SysFileDO extends BaseEntity {
     @Schema(description = "是否公开访问")
     private Boolean publicFlag;
 
-    @Schema(description = "文件大小")
+    @Schema(description = "文件大小，单位：byte")
     private Long fileSize;
 
     @Schema(description = "关联的 id")

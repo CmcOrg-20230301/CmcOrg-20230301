@@ -518,7 +518,7 @@ public class SysTenantUtil {
         boolean exists = ChainWrappers.lambdaQueryChain(sysUserMapper).eq(BaseEntity::getId, userId)
             .in(BaseEntityNoIdFather::getTenantId, userRefTenantIdSet).exists();
 
-        if (exists) {
+        if (!exists) {
             ApiResultVO.error(BaseBizCodeEnum.ILLEGAL_REQUEST, userId);
         }
 
