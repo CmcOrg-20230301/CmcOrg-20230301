@@ -10,6 +10,7 @@ import com.cmcorg20230301.be.engine.generate.util.apitest.ApiTestHelper;
 import com.cmcorg20230301.be.engine.generate.util.apitest.sign.ApiTestSignSignInNameUtil;
 import com.cmcorg20230301.be.engine.model.model.dto.NotEmptyIdSet;
 import com.cmcorg20230301.be.engine.model.model.dto.NotNullId;
+import com.cmcorg20230301.be.engine.model.model.vo.SignInVO;
 import com.cmcorg20230301.be.engine.param.model.dto.SysParamInsertOrUpdateDTO;
 import com.cmcorg20230301.be.engine.param.model.dto.SysParamPageDTO;
 import com.cmcorg20230301.be.engine.security.model.entity.SysParamDO;
@@ -43,8 +44,10 @@ public class ApiTestSysParamUtil {
         String sysParamName) {
 
         // 登录名-用户名账号密码登录
-        String jwt =
+        SignInVO signInVO =
             ApiTestSignSignInNameUtil.signInNameSignIn(apiEndpoint, adminSignInName, adminPassword, rsaPublicKey);
+
+        String jwt = signInVO.getJwt();
 
         // 系统参数-新增/修改
         SysParamInsertOrUpdateDTO dto = sysParamInsertOrUpdate(apiEndpoint, jwt, sysParamName);

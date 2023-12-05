@@ -1,6 +1,7 @@
 package com.cmcorg20230301.be.engine.sign.phone.service;
 
 import com.cmcorg20230301.be.engine.model.model.dto.NotBlankCodeDTO;
+import com.cmcorg20230301.be.engine.model.model.vo.SignInVO;
 import com.cmcorg20230301.be.engine.sign.phone.model.dto.*;
 
 public interface SignPhoneService {
@@ -9,7 +10,7 @@ public interface SignPhoneService {
 
     String signUp(SignPhoneSignUpDTO dto);
 
-    String signInPassword(SignPhoneSignInPasswordDTO dto);
+    SignInVO signInPassword(SignPhoneSignInPasswordDTO dto);
 
     String updatePasswordSendCode();
 
@@ -33,6 +34,6 @@ public interface SignPhoneService {
 
     String signInSendCode(PhoneNotBlankDTO dto);
 
-    String signInCode(SignPhoneSignInCodeDTO dto);
+    SignInVO signInCode(SignPhoneSignInCodeDTO dto);
 
 }

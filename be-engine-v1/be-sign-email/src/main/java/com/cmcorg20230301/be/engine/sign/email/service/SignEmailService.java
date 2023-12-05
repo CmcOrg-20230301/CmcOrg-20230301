@@ -1,6 +1,7 @@
 package com.cmcorg20230301.be.engine.sign.email.service;
 
 import com.cmcorg20230301.be.engine.model.model.dto.NotBlankCodeDTO;
+import com.cmcorg20230301.be.engine.model.model.vo.SignInVO;
 import com.cmcorg20230301.be.engine.sign.email.model.dto.*;
 
 public interface SignEmailService {
@@ -9,7 +10,7 @@ public interface SignEmailService {
 
     String signUp(SignEmailSignUpDTO dto);
 
-    String signInPassword(SignEmailSignInPasswordDTO dto);
+    SignInVO signInPassword(SignEmailSignInPasswordDTO dto);
 
     String updatePasswordSendCode();
 

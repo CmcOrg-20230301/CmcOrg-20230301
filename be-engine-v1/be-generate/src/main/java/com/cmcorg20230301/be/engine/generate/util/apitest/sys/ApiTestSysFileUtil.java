@@ -10,6 +10,7 @@ import com.cmcorg20230301.be.engine.generate.util.apitest.ApiTestHelper;
 import com.cmcorg20230301.be.engine.generate.util.apitest.sign.ApiTestSignSignInNameUtil;
 import com.cmcorg20230301.be.engine.model.model.dto.NotEmptyIdSet;
 import com.cmcorg20230301.be.engine.model.model.dto.NotNullId;
+import com.cmcorg20230301.be.engine.model.model.vo.SignInVO;
 import com.cmcorg20230301.be.engine.security.model.enums.SysFileUploadTypeEnum;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -44,20 +45,20 @@ public class ApiTestSysFileUtil {
     private static void exec(String apiEndpoint, String adminSignInName, String adminPassword, String rsaPublicKey) {
 
         // 登录名-用户名账号密码登录
-        String jwt =
+        SignInVO signInVO =
             ApiTestSignSignInNameUtil.signInNameSignIn(apiEndpoint, adminSignInName, adminPassword, rsaPublicKey);
 
         // 请求-上传文件：公有和私有
-        Long fileId = sysFileUpload(apiEndpoint, jwt);
+        Long fileId = sysFileUpload(apiEndpoint, signInVO.getJwt());
 
         // 请求-下载文件：私有
-        sysFilePrivateDownload(apiEndpoint, jwt, fileId);
+        sysFilePrivateDownload(apiEndpoint, signInVO.getJwt(), fileId);
 
         // 请求-批量获取：公开文件的 url
-        sysFileGetPublicUrl(apiEndpoint, jwt, fileId);
+        sysFileGetPublicUrl(apiEndpoint, signInVO.getJwt(), fileId);
 
         // 请求-批量删除文件：公有和私有
-        sysFileRemoveByFileIdSet(apiEndpoint, jwt, fileId);
+        sysFileRemoveByFileIdSet(apiEndpoint, signInVO.getJwt(), fileId);
 
     }
 

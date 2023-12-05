@@ -3,6 +3,7 @@ package com.cmcorg20230301.be.engine.sign.phone.service.impl;
 import cn.hutool.core.util.BooleanUtil;
 import com.baomidou.mybatisplus.extension.toolkit.ChainWrappers;
 import com.cmcorg20230301.be.engine.model.model.dto.NotBlankCodeDTO;
+import com.cmcorg20230301.be.engine.model.model.vo.SignInVO;
 import com.cmcorg20230301.be.engine.redisson.model.enums.BaseRedisKeyEnum;
 import com.cmcorg20230301.be.engine.security.mapper.SysUserMapper;
 import com.cmcorg20230301.be.engine.security.model.entity.SysUserConfigurationDO;
@@ -78,7 +79,7 @@ public class SignPhoneServiceImpl implements SignPhoneService {
      * 手机账号密码登录
      */
     @Override
-    public String signInPassword(SignPhoneSignInPasswordDTO dto) {
+    public SignInVO signInPassword(SignPhoneSignInPasswordDTO dto) {
 
         return SignUtil
             .signInPassword(ChainWrappers.lambdaQueryChain(sysUserMapper).eq(SysUserDO::getPhone, dto.getPhone()),
@@ -247,7 +248,7 @@ public class SignPhoneServiceImpl implements SignPhoneService {
      * 手机验证码登录
      */
     @Override
-    public String signInCode(SignPhoneSignInCodeDTO dto) {
+    public SignInVO signInCode(SignPhoneSignInCodeDTO dto) {
 
         SignUtil.checkWillError(PRE_REDIS_KEY_ENUM, null, false, UserUtil.getCurrentTenantIdDefault()); // 检查：是否可以进行操作
 

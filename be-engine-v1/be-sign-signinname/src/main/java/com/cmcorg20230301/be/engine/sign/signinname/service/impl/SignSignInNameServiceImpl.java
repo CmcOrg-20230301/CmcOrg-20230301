@@ -2,6 +2,7 @@ package com.cmcorg20230301.be.engine.sign.signinname.service.impl;
 
 import cn.hutool.core.util.BooleanUtil;
 import com.baomidou.mybatisplus.extension.toolkit.ChainWrappers;
+import com.cmcorg20230301.be.engine.model.model.vo.SignInVO;
 import com.cmcorg20230301.be.engine.redisson.model.enums.BaseRedisKeyEnum;
 import com.cmcorg20230301.be.engine.security.mapper.SysUserMapper;
 import com.cmcorg20230301.be.engine.security.model.entity.SysUserConfigurationDO;
@@ -50,7 +51,7 @@ public class SignSignInNameServiceImpl implements SignSignInNameService {
      * 账号密码登录
      */
     @Override
-    public String signInPassword(SignSignInNameSignInPasswordDTO dto) {
+    public SignInVO signInPassword(SignSignInNameSignInPasswordDTO dto) {
 
         return SignUtil.signInPassword(
             ChainWrappers.lambdaQueryChain(sysUserMapper).eq(SysUserDO::getSignInName, dto.getSignInName()),

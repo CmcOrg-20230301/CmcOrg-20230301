@@ -11,6 +11,7 @@ import cn.hutool.jwt.JWT;
 import com.cmcorg20230301.be.engine.ip2region.util.Ip2RegionUtil;
 import com.cmcorg20230301.be.engine.model.model.constant.LogTopicConstant;
 import com.cmcorg20230301.be.engine.model.model.constant.OperationDescriptionConstant;
+import com.cmcorg20230301.be.engine.model.model.vo.SignInVO;
 import com.cmcorg20230301.be.engine.security.exception.BaseException;
 import com.cmcorg20230301.be.engine.security.exception.NoLogException;
 import com.cmcorg20230301.be.engine.security.model.entity.SysRequestDO;
@@ -215,9 +216,9 @@ public class SysRequestAop {
         }
 
         // 登录时需要额外处理来获取 用户id
-        ApiResultVO<String> apiResultVO = (ApiResultVO)object;
+        ApiResultVO<SignInVO> apiResultVO = (ApiResultVO)object;
 
-        JWT jwt = JWT.of(MyJwtUtil.getJwtStrByHeadAuthorization(apiResultVO.getData()));
+        JWT jwt = JWT.of(MyJwtUtil.getJwtStrByHeadAuthorization(apiResultVO.getData().getJwt()));
 
         // 获取：userId的值
         Long userId = MyJwtUtil.getPayloadMapUserIdValue(jwt.getPayload().getClaimsJson());

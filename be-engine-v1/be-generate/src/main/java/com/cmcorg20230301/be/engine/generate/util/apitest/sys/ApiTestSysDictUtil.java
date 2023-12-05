@@ -17,6 +17,7 @@ import com.cmcorg20230301.be.engine.generate.util.apitest.sign.ApiTestSignSignIn
 import com.cmcorg20230301.be.engine.model.model.dto.ChangeNumberDTO;
 import com.cmcorg20230301.be.engine.model.model.dto.NotEmptyIdSet;
 import com.cmcorg20230301.be.engine.model.model.dto.NotNullId;
+import com.cmcorg20230301.be.engine.model.model.vo.SignInVO;
 import com.cmcorg20230301.be.engine.security.model.entity.SysDictDO;
 import com.cmcorg20230301.be.engine.security.model.enums.SysDictTypeEnum;
 import com.cmcorg20230301.be.engine.security.model.vo.ApiResultVO;
@@ -59,20 +60,20 @@ public class ApiTestSysDictUtil {
         String sysDictName, String sysDictKey) {
 
         // 登录名-用户名账号密码登录
-        String jwt =
+        SignInVO signInVO =
             ApiTestSignSignInNameUtil.signInNameSignIn(apiEndpoint, adminSignInName, adminPassword, rsaPublicKey);
 
         // 字典-新增/修改
-        SysDictInsertOrUpdateDTO dictDTO = sysDictInsertOrUpdate(apiEndpoint, jwt,
+        SysDictInsertOrUpdateDTO dictDTO = sysDictInsertOrUpdate(apiEndpoint, signInVO.getJwt(),
             getSysDictInsertOrUpdateDTO(sysDictName, sysDictKey, SysDictTypeEnum.DICT,
                 RandomUtil.randomInt(1, 50000000)));
 
-        SysDictInsertOrUpdateDTO dictItemDTO = sysDictInsertOrUpdate(apiEndpoint, jwt,
+        SysDictInsertOrUpdateDTO dictItemDTO = sysDictInsertOrUpdate(apiEndpoint, signInVO.getJwt(),
             getSysDictInsertOrUpdateDTO(IdUtil.simpleUUID(), sysDictKey, SysDictTypeEnum.DICT_ITEM,
                 RandomUtil.randomInt(1, 50000000)));
 
         // 字典-分页排序查询
-        Page<SysDictDO> sysDictDOPage = sysDictPage(apiEndpoint, jwt, dictDTO);
+        Page<SysDictDO> sysDictDOPage = sysDictPage(apiEndpoint, signInVO.getJwt(), dictDTO);
 
         SysDictDO sysDictDOByPage = null;
 
@@ -93,7 +94,7 @@ public class ApiTestSysDictUtil {
         }
 
         // 字典-分页排序查询
-        sysDictDOPage = sysDictPage(apiEndpoint, jwt, dictItemDTO);
+        sysDictDOPage = sysDictPage(apiEndpoint, signInVO.getJwt(), dictItemDTO);
 
         SysDictDO sysDictDOItemByPage = null;
 
@@ -114,12 +115,12 @@ public class ApiTestSysDictUtil {
         }
 
         // 查询：树结构
-        sysDictTree(apiEndpoint, jwt, dictItemDTO);
+        sysDictTree(apiEndpoint, signInVO.getJwt(), dictItemDTO);
 
         Long id = sysDictDOByPage.getId();
 
         // 字典-通过主键id，查看详情
-        SysDictDO sysDictDOById = sysDictInfoById(apiEndpoint, jwt, id);
+        SysDictDO sysDictDOById = sysDictInfoById(apiEndpoint, signInVO.getJwt(), id);
 
         if (sysDictDOById == null) {
             log.info("sysDictDOById 等于null，结束");
@@ -129,7 +130,7 @@ public class ApiTestSysDictUtil {
         Long itemId = sysDictDOItemByPage.getId();
 
         // 字典-通过主键id，查看详情
-        SysDictDO sysDictDOItemById = sysDictInfoById(apiEndpoint, jwt, itemId);
+        SysDictDO sysDictDOItemById = sysDictInfoById(apiEndpoint, signInVO.getJwt(), itemId);
 
         if (sysDictDOItemById == null) {
             log.info("sysDictDOItemById 等于null，结束");
@@ -137,21 +138,21 @@ public class ApiTestSysDictUtil {
         }
 
         // 通过主键 idSet，加减排序号
-        sysDictAddOrderNo(apiEndpoint, jwt, CollUtil.newHashSet(id, itemId));
+        sysDictAddOrderNo(apiEndpoint, signInVO.getJwt(), CollUtil.newHashSet(id, itemId));
 
         // 字典-通过主键id，查看详情
-        sysDictInfoById(apiEndpoint, jwt, id);
+        sysDictInfoById(apiEndpoint, signInVO.getJwt(), id);
 
         // 字典-通过主键id，查看详情
-        sysDictInfoById(apiEndpoint, jwt, itemId);
+        sysDictInfoById(apiEndpoint, signInVO.getJwt(), itemId);
 
         // 通过：dictKey获取字典项集合，备注：会进行缓存
         for (int i = 0; i < 3; i++) {
-            sysDictListByDictKey(apiEndpoint, jwt, sysDictKey);
+            sysDictListByDictKey(apiEndpoint, signInVO.getJwt(), sysDictKey);
         }
 
         // 字典-批量删除
-        sysDictDeleteByIdSet(apiEndpoint, jwt, CollUtil.newHashSet(id, itemId));
+        sysDictDeleteByIdSet(apiEndpoint, signInVO.getJwt(), CollUtil.newHashSet(id, itemId));
 
     }
 

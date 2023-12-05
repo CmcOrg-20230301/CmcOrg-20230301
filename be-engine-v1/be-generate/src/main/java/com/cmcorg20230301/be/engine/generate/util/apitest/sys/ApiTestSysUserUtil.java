@@ -12,6 +12,7 @@ import com.cmcorg20230301.be.engine.generate.util.apitest.ApiTestHelper;
 import com.cmcorg20230301.be.engine.generate.util.apitest.sign.ApiTestSignSignInNameUtil;
 import com.cmcorg20230301.be.engine.model.model.dto.NotEmptyIdSet;
 import com.cmcorg20230301.be.engine.model.model.dto.NotNullId;
+import com.cmcorg20230301.be.engine.model.model.vo.SignInVO;
 import com.cmcorg20230301.be.engine.role.model.dto.SysRoleInsertOrUpdateDTO;
 import com.cmcorg20230301.be.engine.security.model.entity.BaseEntity;
 import com.cmcorg20230301.be.engine.security.model.entity.SysRoleDO;
@@ -63,8 +64,10 @@ public class ApiTestSysUserUtil {
         String sysUserName, String password, String newPassword) {
 
         // 登录名-用户名账号密码登录
-        String jwt =
+        SignInVO signInVO =
             ApiTestSignSignInNameUtil.signInNameSignIn(apiEndpoint, adminSignInName, adminPassword, rsaPublicKey);
+
+        String jwt = signInVO.getJwt();
 
         // 用户-新增/修改
         SysUserInsertOrUpdateDTO dto = sysUserInsertOrUpdate(apiEndpoint, jwt, sysUserName, password, rsaPublicKey);

@@ -6,6 +6,7 @@ import cn.hutool.json.JSONUtil;
 import cn.hutool.setting.Setting;
 import com.cmcorg20230301.be.engine.generate.util.apitest.ApiTestHelper;
 import com.cmcorg20230301.be.engine.model.model.dto.NotBlankCodeDTO;
+import com.cmcorg20230301.be.engine.model.model.vo.SignInVO;
 import com.cmcorg20230301.be.engine.security.util.MyRsaUtil;
 import com.cmcorg20230301.be.engine.sign.phone.model.dto.*;
 import lombok.extern.slf4j.Slf4j;
@@ -61,21 +62,21 @@ public class ApiTestSignPhoneUtil {
         phoneSignUp(apiEndpoint, phone, passwordTemp, rsaPublicKey, code);
 
         // 手机号-账号密码登录
-        String jwt = phoneSignInPassword(apiEndpoint, phone, passwordTemp, rsaPublicKey);
+        SignInVO signInVO = phoneSignInPassword(apiEndpoint, phone, passwordTemp, rsaPublicKey);
 
         // 手机号-修改密码-发送验证码
-        phoneUpdatePasswordSendCode(apiEndpoint, jwt);
+        phoneUpdatePasswordSendCode(apiEndpoint, signInVO.getJwt());
 
         code = ApiTestHelper.getStrFromScanner("请输入验证码");
 
         // 手机号-修改密码
-        phoneUpdatePassword(apiEndpoint, jwt, code, newPasswordTemp, rsaPublicKey);
+        phoneUpdatePassword(apiEndpoint, signInVO.getJwt(), code, newPasswordTemp, rsaPublicKey);
 
         // 手机号-账号密码登录
-        jwt = phoneSignInPassword(apiEndpoint, phone, newPasswordTemp, rsaPublicKey);
+        signInVO = phoneSignInPassword(apiEndpoint, phone, newPasswordTemp, rsaPublicKey);
 
         // 手机号-修改手机-发送验证码
-        phoneUpdateAccountSendCode(apiEndpoint, jwt);
+        phoneUpdateAccountSendCode(apiEndpoint, signInVO.getJwt());
 
         // 手机号-注册-发送验证码
         phoneSignUpSendCode(apiEndpoint, newPhone);
@@ -85,7 +86,7 @@ public class ApiTestSignPhoneUtil {
         String newCode = ApiTestHelper.getStrFromScanner("请输入新手机验证码");
 
         // 手机号-修改手机
-        phoneUpdateAccount(apiEndpoint, jwt, newPhone, code, newCode);
+        phoneUpdateAccount(apiEndpoint, signInVO.getJwt(), newPhone, code, newCode);
 
         // 手机号-忘记密码-发送验证码
         phoneForgetPasswordSendCode(apiEndpoint, newPhone);
@@ -96,7 +97,7 @@ public class ApiTestSignPhoneUtil {
         phoneForgetPassword(apiEndpoint, newPhone, code, newPassword2Temp, rsaPublicKey);
 
         //        // 手机号-账号密码登录
-        //        jwt = phoneSignInPassword(apiEndpoint, newPhone, newPassword2Temp, rsaPublicKey);
+        //        signInVO = phoneSignInPassword(apiEndpoint, newPhone, newPassword2Temp, rsaPublicKey);
 
         // 手机号-手机验证码登录-发送验证码
         phoneSignInSendCode(apiEndpoint, newPhone);
@@ -104,22 +105,22 @@ public class ApiTestSignPhoneUtil {
         code = ApiTestHelper.getStrFromScanner("请输入验证码");
 
         // 手机号-手机验证码登录
-        jwt = phoneSignInCode(apiEndpoint, newPhone, code);
+        signInVO = phoneSignInCode(apiEndpoint, newPhone, code);
 
         // 手机号-账号注销-发送验证码
-        phoneSignDeleteSendCode(apiEndpoint, jwt);
+        phoneSignDeleteSendCode(apiEndpoint, signInVO.getJwt());
 
         code = ApiTestHelper.getStrFromScanner("请输入验证码");
 
         // 手机号-账号注销
-        phoneSignDelete(apiEndpoint, jwt, code);
+        phoneSignDelete(apiEndpoint, signInVO.getJwt(), code);
 
     }
 
     /**
      * 手机号-手机验证码登录
      */
-    private static String phoneSignInCode(String apiEndpoint, String newPhone, String code) {
+    private static SignInVO phoneSignInCode(String apiEndpoint, String newPhone, String code) {
 
         long currentTs = System.currentTimeMillis();
 
@@ -132,7 +133,7 @@ public class ApiTestSignPhoneUtil {
 
         log.info("手机号-手机验证码登录：耗时：{}，bodyStr：{}", ApiTestHelper.calcCostMs(currentTs), bodyStr);
 
-        return JSONUtil.parseObj(bodyStr).getStr("data");
+        return JSONUtil.parseObj(bodyStr).get("data", SignInVO.class);
 
     }
 
@@ -310,7 +311,7 @@ public class ApiTestSignPhoneUtil {
     /**
      * 手机号-账号密码登录
      */
-    private static String phoneSignInPassword(String apiEndpoint, String phone, String passwordTemp,
+    private static SignInVO phoneSignInPassword(String apiEndpoint, String phone, String passwordTemp,
         String rsaPublicKey) {
 
         long currentTs = System.currentTimeMillis();
@@ -329,7 +330,7 @@ public class ApiTestSignPhoneUtil {
 
         log.info("手机号-账号密码登录：耗时：{}，bodyStr：{}", ApiTestHelper.calcCostMs(currentTs), bodyStr);
 
-        return JSONUtil.parseObj(bodyStr).getStr("data");
+        return JSONUtil.parseObj(bodyStr).get("data", SignInVO.class);
 
     }
 

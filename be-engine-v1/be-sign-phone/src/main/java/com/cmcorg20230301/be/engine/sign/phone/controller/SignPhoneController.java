@@ -2,6 +2,7 @@ package com.cmcorg20230301.be.engine.sign.phone.controller;
 
 import com.cmcorg20230301.be.engine.model.model.constant.OperationDescriptionConstant;
 import com.cmcorg20230301.be.engine.model.model.dto.NotBlankCodeDTO;
+import com.cmcorg20230301.be.engine.model.model.vo.SignInVO;
 import com.cmcorg20230301.be.engine.security.exception.BaseBizCodeEnum;
 import com.cmcorg20230301.be.engine.security.model.vo.ApiResultVO;
 import com.cmcorg20230301.be.engine.sign.phone.model.dto.*;
@@ -38,7 +39,7 @@ public class SignPhoneController {
 
     @PostMapping(value = "/sign/in/password")
     @Operation(summary = "手机账号密码登录", description = OperationDescriptionConstant.SIGN_IN)
-    public ApiResultVO<String> signInPassword(@RequestBody @Valid SignPhoneSignInPasswordDTO dto) {
+    public ApiResultVO<SignInVO> signInPassword(@RequestBody @Valid SignPhoneSignInPasswordDTO dto) {
         return ApiResultVO.ok(BaseBizCodeEnum.OK, baseService.signInPassword(dto));
     }
 
@@ -110,7 +111,7 @@ public class SignPhoneController {
 
     @PostMapping(value = "/sign/in/code")
     @Operation(summary = "手机验证码登录", description = OperationDescriptionConstant.SIGN_IN)
-    public ApiResultVO<String> signInCode(@RequestBody @Valid SignPhoneSignInCodeDTO dto) {
+    public ApiResultVO<SignInVO> signInCode(@RequestBody @Valid SignPhoneSignInCodeDTO dto) {
         return ApiResultVO.ok(BaseBizCodeEnum.OK, baseService.signInCode(dto));
     }
 

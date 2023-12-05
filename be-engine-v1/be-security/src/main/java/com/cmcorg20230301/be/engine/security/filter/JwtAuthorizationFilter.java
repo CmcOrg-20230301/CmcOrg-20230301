@@ -9,6 +9,7 @@ import cn.hutool.core.util.StrUtil;
 import cn.hutool.jwt.JWT;
 import cn.hutool.jwt.JWTValidator;
 import com.cmcorg20230301.be.engine.cache.util.MyCacheUtil;
+import com.cmcorg20230301.be.engine.model.model.vo.SignInVO;
 import com.cmcorg20230301.be.engine.security.configuration.base.BaseConfiguration;
 import com.cmcorg20230301.be.engine.security.exception.BaseBizCodeEnum;
 import com.cmcorg20230301.be.engine.security.model.configuration.IJwtValidatorConfiguration;
@@ -167,7 +168,9 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
 
             if (NumberUtil.isNumber(jwtStr)) {
 
-                String jwtStrTmp = MyJwtUtil.generateJwt(Convert.toLong(jwtStr), null, null, null);
+                SignInVO signInVO = MyJwtUtil.generateJwt(Convert.toLong(jwtStr), null, null, null);
+
+                String jwtStrTmp = signInVO.getJwt();
 
                 log.info("jwtStrTmp：{}", jwtStrTmp);
 

@@ -6,6 +6,7 @@ import cn.hutool.json.JSONUtil;
 import cn.hutool.setting.Setting;
 import com.cmcorg20230301.be.engine.generate.util.apitest.ApiTestHelper;
 import com.cmcorg20230301.be.engine.generate.util.apitest.sys.ApiTestSysMenuUtil;
+import com.cmcorg20230301.be.engine.model.model.vo.SignInVO;
 import com.cmcorg20230301.be.engine.security.util.MyRsaUtil;
 import com.cmcorg20230301.be.engine.sign.email.model.dto.EmailNotBlankDTO;
 import com.cmcorg20230301.be.engine.sign.email.model.dto.SignEmailBindAccountDTO;
@@ -63,47 +64,47 @@ public class ApiTestSignSignInNameUtil {
         signInNameSignUp(apiEndpoint, signInName, passwordTemp, rsaPublicKey);
 
         // 登录名-用户名账号密码登录
-        String jwt = signInNameSignIn(apiEndpoint, signInName, passwordTemp, rsaPublicKey);
+        SignInVO signInVO = signInNameSignIn(apiEndpoint, signInName, passwordTemp, rsaPublicKey);
 
         // 登录名-修改密码
-        signInNameUpdatePassword(apiEndpoint, jwt, passwordTemp, newPasswordTemp, rsaPublicKey);
+        signInNameUpdatePassword(apiEndpoint, signInVO.getJwt(), passwordTemp, newPasswordTemp, rsaPublicKey);
 
         // 登录名-用户名账号密码登录
-        jwt = signInNameSignIn(apiEndpoint, signInName, newPasswordTemp, rsaPublicKey);
+        signInVO = signInNameSignIn(apiEndpoint, signInName, newPasswordTemp, rsaPublicKey);
 
         // 登录名-修改账号
-        signInNameUpdateAccount(apiEndpoint, jwt, newSignInName, newPasswordTemp, rsaPublicKey);
+        signInNameUpdateAccount(apiEndpoint, signInVO.getJwt(), newSignInName, newPasswordTemp, rsaPublicKey);
 
         // 登录名-用户名账号密码登录
-        jwt = signInNameSignIn(apiEndpoint, newSignInName, newPasswordTemp, rsaPublicKey);
+        signInVO = signInNameSignIn(apiEndpoint, newSignInName, newPasswordTemp, rsaPublicKey);
 
         // 绑定邮箱-发送验证码
-        emailBindAccountSendCode(apiEndpoint, jwt, email);
+        emailBindAccountSendCode(apiEndpoint, signInVO.getJwt(), email);
 
         String code = ApiTestHelper.getStrFromScanner("请输入验证码");
 
         // 绑定邮箱
-        emailBindAccount(apiEndpoint, jwt, email, code);
+        emailBindAccount(apiEndpoint, signInVO.getJwt(), email, code);
 
         // 登录名-用户名账号密码登录
-        jwt = signInNameSignIn(apiEndpoint, newSignInName, newPasswordTemp, rsaPublicKey);
+        signInVO = signInNameSignIn(apiEndpoint, newSignInName, newPasswordTemp, rsaPublicKey);
 
         // 绑定手机号-发送验证码
-        phoneBindAccountSendCode(apiEndpoint, jwt, phone);
+        phoneBindAccountSendCode(apiEndpoint, signInVO.getJwt(), phone);
 
         code = ApiTestHelper.getStrFromScanner("请输入验证码");
 
         // 绑定手机号
-        phoneBindAccount(apiEndpoint, jwt, phone, code);
+        phoneBindAccount(apiEndpoint, signInVO.getJwt(), phone, code);
 
         // 登录名-用户名账号密码登录
-        jwt = signInNameSignIn(apiEndpoint, newSignInName, newPasswordTemp, rsaPublicKey);
+        signInVO = signInNameSignIn(apiEndpoint, newSignInName, newPasswordTemp, rsaPublicKey);
 
         // 菜单-获取：当前用户绑定的菜单
-        ApiTestSysMenuUtil.sysMenuUserSelfMenuList(apiEndpoint, jwt);
+        ApiTestSysMenuUtil.sysMenuUserSelfMenuList(apiEndpoint, signInVO.getJwt());
 
         // 登录名-账号注销
-        signInNameSignDelete(apiEndpoint, newPasswordTemp, jwt, rsaPublicKey);
+        signInNameSignDelete(apiEndpoint, newPasswordTemp, signInVO.getJwt(), rsaPublicKey);
 
     }
 
@@ -255,7 +256,7 @@ public class ApiTestSignSignInNameUtil {
     /**
      * 登录名-用户名账号密码登录
      */
-    public static String signInNameSignIn(String apiEndpoint, String signInName, String passwordTemp,
+    public static SignInVO signInNameSignIn(String apiEndpoint, String signInName, String passwordTemp,
         String rsaPublicKey) {
 
         long currentTs = System.currentTimeMillis();
@@ -274,7 +275,7 @@ public class ApiTestSignSignInNameUtil {
 
         log.info("登录名-用户名账号密码登录：耗时：{}，bodyStr：{}", ApiTestHelper.calcCostMs(currentTs), bodyStr);
 
-        return JSONUtil.parseObj(bodyStr).getStr("data");
+        return JSONUtil.parseObj(bodyStr).get("data", SignInVO.class);
 
     }
 

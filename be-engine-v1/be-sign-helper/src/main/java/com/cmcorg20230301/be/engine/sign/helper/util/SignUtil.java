@@ -18,6 +18,7 @@ import com.cmcorg20230301.be.engine.model.model.constant.BaseRegexConstant;
 import com.cmcorg20230301.be.engine.model.model.constant.LogTopicConstant;
 import com.cmcorg20230301.be.engine.model.model.constant.ParamConstant;
 import com.cmcorg20230301.be.engine.model.model.interfaces.IRedisKey;
+import com.cmcorg20230301.be.engine.model.model.vo.SignInVO;
 import com.cmcorg20230301.be.engine.redisson.model.enums.BaseRedisKeyEnum;
 import com.cmcorg20230301.be.engine.redisson.util.RedissonUtil;
 import com.cmcorg20230301.be.engine.security.exception.BaseBizCodeEnum;
@@ -384,7 +385,7 @@ public class SignUtil {
      * @param consumer 可以给 userDO对象，额外增加一些属性
      */
     @NotNull
-    public static String signInAccount(LambdaQueryChainWrapper<SysUserDO> lambdaQueryChainWrapper,
+    public static SignInVO signInAccount(LambdaQueryChainWrapper<SysUserDO> lambdaQueryChainWrapper,
         Enum<? extends IRedisKey> redisKeyEnum, String account, Supplier<SysUserInfoDO> sysUserInfoDOSupplier,
         @Nullable Long tenantId, @Nullable Consumer<Map<Enum<? extends IRedisKey>, String>> consumer) {
 
@@ -429,7 +430,7 @@ public class SignUtil {
      * 验证码登录
      */
     @NotNull
-    public static String signInCode(LambdaQueryChainWrapper<SysUserDO> lambdaQueryChainWrapper, String code,
+    public static SignInVO signInCode(LambdaQueryChainWrapper<SysUserDO> lambdaQueryChainWrapper, String code,
         Enum<? extends IRedisKey> redisKeyEnum, String account, @Nullable Long tenantId) {
 
         // 登录时，获取账号信息
@@ -467,7 +468,7 @@ public class SignUtil {
     /**
      * 账号密码登录
      */
-    public static String signInPassword(LambdaQueryChainWrapper<SysUserDO> lambdaQueryChainWrapper, String password,
+    public static SignInVO signInPassword(LambdaQueryChainWrapper<SysUserDO> lambdaQueryChainWrapper, String password,
         String account, @Nullable Long tenantId) {
 
         // 密码解密
@@ -542,7 +543,7 @@ public class SignUtil {
      * 登录时，获取：jwt
      */
     @Nullable
-    private static String signInGetJwt(SysUserDO sysUserDO) {
+    private static SignInVO signInGetJwt(SysUserDO sysUserDO) {
 
         // 校验密码，成功之后，再判断是否被冻结，免得透露用户被封号的信息
         if (BooleanUtil.isFalse(sysUserDO.getEnableFlag())) {

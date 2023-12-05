@@ -11,6 +11,7 @@ import cn.hutool.json.JSONUtil;
 import cn.hutool.jwt.JWT;
 import cn.hutool.jwt.RegisteredPayload;
 import com.cmcorg20230301.be.engine.model.model.constant.BaseConstant;
+import com.cmcorg20230301.be.engine.model.model.vo.SignInVO;
 import com.cmcorg20230301.be.engine.redisson.model.enums.BaseRedisKeyEnum;
 import com.cmcorg20230301.be.engine.redisson.util.RedissonUtil;
 import com.cmcorg20230301.be.engine.security.exception.BaseBizCodeEnum;
@@ -128,7 +129,7 @@ public class MyJwtUtil {
      * 统一生成 jwt
      */
     @Nullable
-    public static String generateJwt(Long userId, String jwtSecretSuf, Consumer<JSONObject> consumer,
+    public static SignInVO generateJwt(Long userId, String jwtSecretSuf, Consumer<JSONObject> consumer,
         @Nullable Long tenantId) {
 
         if (userId == null) {
@@ -168,7 +169,7 @@ public class MyJwtUtil {
      * 生成 jwt
      */
     @NotNull
-    private static String sign(Long userId, String jwtSecretSuf, Consumer<JSONObject> consumer,
+    private static SignInVO sign(Long userId, String jwtSecretSuf, Consumer<JSONObject> consumer,
         @Nullable Long tenantId) {
 
         JSONObject payloadMap = JSONUtil.createObj();
@@ -184,13 +185,15 @@ public class MyJwtUtil {
             consumer.accept(payloadMap);
         }
 
+        long jwtExpireTime = BaseConstant.JWT_EXPIRE_TIME;
+
         String jwt = JWT.create() //
-            .setExpiresAt(new Date(System.currentTimeMillis() + BaseConstant.JWT_EXPIRE_TIME)) // 设置过期时间
+            .setExpiresAt(new Date(System.currentTimeMillis() + jwtExpireTime)) // 设置过期时间
             .addPayloads(payloadMap) // 增加JWT载荷信息
             .setKey(MyJwtUtil.getJwtSecret(jwtSecretSuf).getBytes()) // 设置密钥
             .sign();
 
-        return SecurityConstant.JWT_PREFIX + jwt;
+        return new SignInVO(SecurityConstant.JWT_PREFIX + jwt, jwtExpireTime - (10 * 60 * 1000));
 
     }
 

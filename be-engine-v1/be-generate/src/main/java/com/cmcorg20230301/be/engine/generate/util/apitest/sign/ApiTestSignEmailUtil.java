@@ -6,6 +6,7 @@ import cn.hutool.json.JSONUtil;
 import cn.hutool.setting.Setting;
 import com.cmcorg20230301.be.engine.generate.util.apitest.ApiTestHelper;
 import com.cmcorg20230301.be.engine.model.model.dto.NotBlankCodeDTO;
+import com.cmcorg20230301.be.engine.model.model.vo.SignInVO;
 import com.cmcorg20230301.be.engine.security.util.MyRsaUtil;
 import com.cmcorg20230301.be.engine.sign.email.model.dto.*;
 import lombok.extern.slf4j.Slf4j;
@@ -61,21 +62,21 @@ public class ApiTestSignEmailUtil {
         emailSignUp(apiEndpoint, email, passwordTemp, rsaPublicKey, code);
 
         // 邮箱-账号密码登录
-        String jwt = emailSignIn(apiEndpoint, email, passwordTemp, rsaPublicKey);
+        SignInVO signInVO = emailSignIn(apiEndpoint, email, passwordTemp, rsaPublicKey);
 
         // 邮箱-修改密码-发送验证码
-        emailUpdatePasswordSendCode(apiEndpoint, jwt);
+        emailUpdatePasswordSendCode(apiEndpoint, signInVO.getJwt());
 
         code = ApiTestHelper.getStrFromScanner("请输入验证码");
 
         // 邮箱-修改密码
-        emailUpdatePassword(apiEndpoint, jwt, newPasswordTemp, rsaPublicKey, code);
+        emailUpdatePassword(apiEndpoint, signInVO.getJwt(), newPasswordTemp, rsaPublicKey, code);
 
         // 邮箱-账号密码登录
-        jwt = emailSignIn(apiEndpoint, email, newPasswordTemp, rsaPublicKey);
+        signInVO = emailSignIn(apiEndpoint, email, newPasswordTemp, rsaPublicKey);
 
         // 邮箱-修改邮箱-发送验证码
-        emailUpdateAccountSendCode(apiEndpoint, jwt);
+        emailUpdateAccountSendCode(apiEndpoint, signInVO.getJwt());
 
         // 邮箱-注册-发送验证码
         emailSignUpSendCode(apiEndpoint, newEmail);
@@ -85,7 +86,7 @@ public class ApiTestSignEmailUtil {
         String newCode = ApiTestHelper.getStrFromScanner("请输入新邮箱验证码");
 
         // 邮箱-修改邮箱
-        emailUpdateAccount(apiEndpoint, jwt, newEmail, code, newCode);
+        emailUpdateAccount(apiEndpoint, signInVO.getJwt(), newEmail, code, newCode);
 
         // 邮箱-忘记密码-发送验证码
         emailForgetPasswordSendCode(apiEndpoint, newEmail);
@@ -96,15 +97,15 @@ public class ApiTestSignEmailUtil {
         emailForgetPassword(apiEndpoint, newEmail, code, newPassword2Temp, rsaPublicKey);
 
         // 邮箱-账号密码登录
-        jwt = emailSignIn(apiEndpoint, newEmail, newPassword2Temp, rsaPublicKey);
+        signInVO = emailSignIn(apiEndpoint, newEmail, newPassword2Temp, rsaPublicKey);
 
         // 邮箱-账号注销-发送验证码
-        emailSignDeleteSendCode(apiEndpoint, jwt);
+        emailSignDeleteSendCode(apiEndpoint, signInVO.getJwt());
 
         code = ApiTestHelper.getStrFromScanner("请输入验证码");
 
         // 邮箱-账号注销
-        emailSignDelete(apiEndpoint, jwt, code);
+        emailSignDelete(apiEndpoint, signInVO.getJwt(), code);
 
     }
 
@@ -264,7 +265,7 @@ public class ApiTestSignEmailUtil {
     /**
      * 邮箱-账号密码登录
      */
-    private static String emailSignIn(String apiEndpoint, String email, String passwordTemp, String rsaPublicKey) {
+    private static SignInVO emailSignIn(String apiEndpoint, String email, String passwordTemp, String rsaPublicKey) {
 
         long currentTs = System.currentTimeMillis();
 
@@ -282,7 +283,7 @@ public class ApiTestSignEmailUtil {
 
         log.info("邮箱-账号密码登录：耗时：{}，bodyStr：{}", ApiTestHelper.calcCostMs(currentTs), bodyStr);
 
-        return JSONUtil.parseObj(bodyStr).getStr("data");
+        return JSONUtil.parseObj(bodyStr).get("data", SignInVO.class);
 
     }
 

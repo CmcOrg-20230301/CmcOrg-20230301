@@ -1,6 +1,7 @@
 package com.cmcorg20230301.be.engine.sign.signinname.controller;
 
 import com.cmcorg20230301.be.engine.model.model.constant.OperationDescriptionConstant;
+import com.cmcorg20230301.be.engine.model.model.vo.SignInVO;
 import com.cmcorg20230301.be.engine.security.exception.BaseBizCodeEnum;
 import com.cmcorg20230301.be.engine.security.model.vo.ApiResultVO;
 import com.cmcorg20230301.be.engine.sign.signinname.model.dto.*;
@@ -31,7 +32,7 @@ public class SignSignInNameController {
 
     @PostMapping(value = "/sign/in/password")
     @Operation(summary = "账号密码登录", description = OperationDescriptionConstant.SIGN_IN)
-    public ApiResultVO<String> signInPassword(@RequestBody @Valid SignSignInNameSignInPasswordDTO dto) {
+    public ApiResultVO<SignInVO> signInPassword(@RequestBody @Valid SignSignInNameSignInPasswordDTO dto) {
         return ApiResultVO.ok(BaseBizCodeEnum.OK, baseService.signInPassword(dto));
     }
 

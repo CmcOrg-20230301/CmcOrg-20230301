@@ -14,6 +14,7 @@ import com.cmcorg20230301.be.engine.menu.model.dto.SysMenuPageDTO;
 import com.cmcorg20230301.be.engine.model.model.dto.ChangeNumberDTO;
 import com.cmcorg20230301.be.engine.model.model.dto.NotEmptyIdSet;
 import com.cmcorg20230301.be.engine.model.model.dto.NotNullId;
+import com.cmcorg20230301.be.engine.model.model.vo.SignInVO;
 import com.cmcorg20230301.be.engine.role.model.dto.SysRoleInsertOrUpdateDTO;
 import com.cmcorg20230301.be.engine.security.model.entity.BaseEntity;
 import com.cmcorg20230301.be.engine.security.model.entity.SysMenuDO;
@@ -50,8 +51,10 @@ public class ApiTestSysMenuUtil {
         String sysMenuName) {
 
         // 登录名-用户名账号密码登录
-        String jwt =
+        SignInVO signInVO =
             ApiTestSignSignInNameUtil.signInNameSignIn(apiEndpoint, adminSignInName, adminPassword, rsaPublicKey);
+
+        String jwt = signInVO.getJwt();
 
         // 菜单-新增/修改
         SysMenuInsertOrUpdateDTO parentDTO =

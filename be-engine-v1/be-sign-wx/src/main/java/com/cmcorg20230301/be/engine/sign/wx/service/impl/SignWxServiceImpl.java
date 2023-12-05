@@ -3,6 +3,7 @@ package com.cmcorg20230301.be.engine.sign.wx.service.impl;
 import cn.hutool.core.util.BooleanUtil;
 import cn.hutool.jwt.JWT;
 import com.baomidou.mybatisplus.extension.toolkit.ChainWrappers;
+import com.cmcorg20230301.be.engine.model.model.vo.SignInVO;
 import com.cmcorg20230301.be.engine.other.app.wx.model.vo.WxOpenIdVO;
 import com.cmcorg20230301.be.engine.other.app.wx.model.vo.WxPhoneByCodeVO;
 import com.cmcorg20230301.be.engine.other.app.wx.model.vo.WxUserInfoVO;
@@ -41,7 +42,7 @@ public class SignWxServiceImpl implements SignWxService {
      * 小程序：手机号 code登录
      */
     @Override
-    public String signInMiniProgramPhoneCode(SignInMiniProgramPhoneCodeDTO dto) {
+    public SignInVO signInMiniProgramPhoneCode(SignInMiniProgramPhoneCodeDTO dto) {
 
         // 获取：用户手机号
         WxPhoneByCodeVO.WxPhoneInfoVO wxPhoneInfoVO =
@@ -63,7 +64,7 @@ public class SignWxServiceImpl implements SignWxService {
      * 小程序：微信 code登录
      */
     @Override
-    public String signInMiniProgramCode(SignInMiniProgramCodeDTO dto) {
+    public SignInVO signInMiniProgramCode(SignInMiniProgramCodeDTO dto) {
 
         WxOpenIdVO wxOpenIdVO = WxUtil.getWxMiniProgramOpenIdVoByCode(dto.getTenantId(), dto.getCode(), dto.getAppId());
 
@@ -99,7 +100,7 @@ public class SignWxServiceImpl implements SignWxService {
      * 浏览器：微信 code登录
      */
     @Override
-    public String signInBrowserCode(SignInBrowserCodeDTO dto) {
+    public SignInVO signInBrowserCode(SignInBrowserCodeDTO dto) {
 
         WxOpenIdVO wxOpenIdVO = WxUtil.getWxBrowserOpenIdVoByCode(dto.getTenantId(), dto.getCode(), dto.getAppId());
 
@@ -119,7 +120,7 @@ public class SignWxServiceImpl implements SignWxService {
      * 浏览器：微信 code登录，可以获取用户的基础信息
      */
     @Override
-    public String signInBrowserCodeUserInfo(SignInBrowserCodeDTO dto) {
+    public SignInVO signInBrowserCodeUserInfo(SignInBrowserCodeDTO dto) {
 
         WxOpenIdVO wxOpenIdVO = WxUtil.getWxBrowserOpenIdVoByCode(dto.getTenantId(), dto.getCode(), dto.getAppId());
 
@@ -129,7 +130,7 @@ public class SignWxServiceImpl implements SignWxService {
         Long tenantId = SysTenantUtil.getTenantId(dto.getTenantId());
 
         // 直接通过：微信 openId登录
-        String jwtStr = SignUtil.signInAccount(
+        SignInVO signInVO = SignUtil.signInAccount(
             ChainWrappers.lambdaQueryChain(sysUserMapper).eq(SysUserDO::getWxOpenId, wxOpenIdVO.getOpenid())
                 .eq(SysUserDO::getWxAppId, dto.getAppId()), PRE_REDIS_KEY_ENUM, wxOpenIdVO.getOpenid(), () -> {
 
@@ -153,7 +154,7 @@ public class SignWxServiceImpl implements SignWxService {
 
         if (BooleanUtil.isFalse(signUpFlagCallBack.getValue())) {
 
-            JWT jwt = JWT.of(MyJwtUtil.getJwtStrByHeadAuthorization(jwtStr));
+            JWT jwt = JWT.of(MyJwtUtil.getJwtStrByHeadAuthorization(signInVO.getJwt()));
 
             // 获取：userId的值
             Long userId = MyJwtUtil.getPayloadMapUserIdValue(jwt.getPayload().getClaimsJson());
@@ -175,7 +176,7 @@ public class SignWxServiceImpl implements SignWxService {
 
         }
 
-        return jwtStr;
+        return signInVO;
 
     }
 

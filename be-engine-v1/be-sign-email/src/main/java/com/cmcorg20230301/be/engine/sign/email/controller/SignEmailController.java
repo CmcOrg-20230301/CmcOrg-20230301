@@ -2,6 +2,7 @@ package com.cmcorg20230301.be.engine.sign.email.controller;
 
 import com.cmcorg20230301.be.engine.model.model.constant.OperationDescriptionConstant;
 import com.cmcorg20230301.be.engine.model.model.dto.NotBlankCodeDTO;
+import com.cmcorg20230301.be.engine.model.model.vo.SignInVO;
 import com.cmcorg20230301.be.engine.security.exception.BaseBizCodeEnum;
 import com.cmcorg20230301.be.engine.security.model.vo.ApiResultVO;
 import com.cmcorg20230301.be.engine.sign.email.model.dto.*;
@@ -38,7 +39,7 @@ public class SignEmailController {
 
     @PostMapping(value = "/sign/in/password")
     @Operation(summary = "邮箱账号密码登录", description = OperationDescriptionConstant.SIGN_IN)
-    public ApiResultVO<String> signInPassword(@RequestBody @Valid SignEmailSignInPasswordDTO dto) {
+    public ApiResultVO<SignInVO> signInPassword(@RequestBody @Valid SignEmailSignInPasswordDTO dto) {
         return ApiResultVO.ok(BaseBizCodeEnum.OK, baseService.signInPassword(dto));
     }
 

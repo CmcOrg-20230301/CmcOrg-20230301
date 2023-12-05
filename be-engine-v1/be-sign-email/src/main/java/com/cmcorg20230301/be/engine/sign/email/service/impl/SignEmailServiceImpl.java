@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.extension.toolkit.ChainWrappers;
 import com.cmcorg20230301.be.engine.email.enums.EmailMessageEnum;
 import com.cmcorg20230301.be.engine.email.util.MyEmailUtil;
 import com.cmcorg20230301.be.engine.model.model.dto.NotBlankCodeDTO;
+import com.cmcorg20230301.be.engine.model.model.vo.SignInVO;
 import com.cmcorg20230301.be.engine.redisson.model.enums.BaseRedisKeyEnum;
 import com.cmcorg20230301.be.engine.security.mapper.SysUserMapper;
 import com.cmcorg20230301.be.engine.security.model.entity.SysUserConfigurationDO;
@@ -80,7 +81,7 @@ public class SignEmailServiceImpl implements SignEmailService {
      * 邮箱账号密码登录
      */
     @Override
-    public String signInPassword(SignEmailSignInPasswordDTO dto) {
+    public SignInVO signInPassword(SignEmailSignInPasswordDTO dto) {
 
         return SignUtil
             .signInPassword(ChainWrappers.lambdaQueryChain(sysUserMapper).eq(SysUserDO::getEmail, dto.getEmail()),

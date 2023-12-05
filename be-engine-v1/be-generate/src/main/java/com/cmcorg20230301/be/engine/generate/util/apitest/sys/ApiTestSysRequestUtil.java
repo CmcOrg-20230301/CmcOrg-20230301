@@ -4,6 +4,7 @@ import cn.hutool.http.HttpRequest;
 import cn.hutool.json.JSONUtil;
 import com.cmcorg20230301.be.engine.generate.util.apitest.ApiTestHelper;
 import com.cmcorg20230301.be.engine.generate.util.apitest.sign.ApiTestSignSignInNameUtil;
+import com.cmcorg20230301.be.engine.model.model.vo.SignInVO;
 import com.cmcorg20230301.be.engine.request.model.dto.SysRequestPageDTO;
 import com.cmcorg20230301.be.engine.request.model.dto.SysRequestSelfLoginRecordPageDTO;
 import lombok.extern.slf4j.Slf4j;
@@ -32,8 +33,10 @@ public class ApiTestSysRequestUtil {
     private static void exec(String apiEndpoint, String adminSignInName, String adminPassword, String rsaPublicKey) {
 
         // 登录名-用户名账号密码登录
-        String jwt =
+        SignInVO signInVO =
             ApiTestSignSignInNameUtil.signInNameSignIn(apiEndpoint, adminSignInName, adminPassword, rsaPublicKey);
+
+        String jwt = signInVO.getJwt();
 
         // 请求-分页排序查询
         sysRequestPage(apiEndpoint, jwt);
