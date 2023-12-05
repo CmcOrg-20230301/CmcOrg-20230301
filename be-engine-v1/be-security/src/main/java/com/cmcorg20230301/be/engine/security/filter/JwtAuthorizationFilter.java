@@ -109,7 +109,7 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
 
         // 判断 jwtHash是否存在于 redis中，如果存在，则表示不能使用
         if (StrUtil.isNotBlank(jwtHashRedis)) {
-            return loginExpired(response, userId); // 提示登录过期，请重新登录
+            return loginExpired(response, userId, request); // 提示登录过期，请重新登录
         }
 
         // 设置：jwt的密钥
@@ -119,7 +119,7 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
 
         // 验证算法
         if (jwt.verify() == false) {
-            return loginExpired(response, userId); // 提示登录过期，请重新登录，目的：为了可以随时修改配置的 jwt前缀，或者用户 jwt后缀修改
+            return loginExpired(response, userId, request); // 提示登录过期，请重新登录，目的：为了可以随时修改配置的 jwt前缀，或者用户 jwt后缀修改
         }
 
         try {
@@ -129,7 +129,7 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
 
         } catch (ValidateException e) {
 
-            return loginExpired(response, userId); // 提示登录过期，请重新登录
+            return loginExpired(response, userId, request); // 提示登录过期，请重新登录
 
         }
 
@@ -215,8 +215,10 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
      * 提示登录过期，请重新登录
      * 备注：这里抛出异常不会进入：ExceptionAdvice
      */
-    @Nullable
-    public static UsernamePasswordAuthenticationToken loginExpired(HttpServletResponse response, Long userId) {
+    public static UsernamePasswordAuthenticationToken loginExpired(HttpServletResponse response, Long userId,
+        HttpServletRequest request) {
+
+        log.info("登录过期，uri：{}", request.getRequestURI());
 
         ResponseUtil.out(response, BaseBizCodeEnum.LOGIN_EXPIRED);
 
