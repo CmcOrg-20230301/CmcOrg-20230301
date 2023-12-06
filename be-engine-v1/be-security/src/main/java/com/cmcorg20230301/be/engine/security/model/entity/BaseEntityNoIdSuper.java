@@ -9,7 +9,7 @@ import java.util.Date;
 
 @Data
 @Schema(description = "实体类基类-没有主键 id-父类")
-public class BaseEntityNoIdFather {
+public class BaseEntityNoIdSuper {
 
     @TableField(fill = FieldFill.INSERT)
     @Schema(description = "租户 id")

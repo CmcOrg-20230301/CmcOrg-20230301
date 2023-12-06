@@ -11,7 +11,7 @@ import lombok.EqualsAndHashCode;
 @TableName(value = "sys_user_delete_log")
 @Data
 @Schema(description = "子表：用户注销记录，主表：用户")
-public class SysUserDeleteLogDO extends BaseEntityNoIdFather {
+public class SysUserDeleteLogDO extends BaseEntityNoIdSuper {
 
     @TableId(type = IdType.INPUT)
     @Schema(description = "用户主键 id")

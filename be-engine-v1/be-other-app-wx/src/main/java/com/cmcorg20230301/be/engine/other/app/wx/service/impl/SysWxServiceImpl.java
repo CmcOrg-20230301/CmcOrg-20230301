@@ -19,7 +19,7 @@ import com.cmcorg20230301.be.engine.other.app.wx.util.WxUtil;
 import com.cmcorg20230301.be.engine.security.exception.BaseBizCodeEnum;
 import com.cmcorg20230301.be.engine.security.model.entity.BaseEntity;
 import com.cmcorg20230301.be.engine.security.model.entity.BaseEntityNoId;
-import com.cmcorg20230301.be.engine.security.model.entity.BaseEntityNoIdFather;
+import com.cmcorg20230301.be.engine.security.model.entity.BaseEntityNoIdSuper;
 import com.cmcorg20230301.be.engine.security.model.entity.BaseEntityTree;
 import com.cmcorg20230301.be.engine.security.model.vo.ApiResultVO;
 import com.cmcorg20230301.be.engine.security.util.MyTreeUtil;
@@ -52,9 +52,9 @@ public class SysWxServiceImpl implements SysWxService {
         Set<Long> userRefTenantIdSet = SysTenantUtil.getUserRefTenantIdSet();
 
         SysOtherAppDO sysOtherAppDO =
-            ChainWrappers.lambdaQueryChain(sysOtherAppMapper).in(BaseEntityNoIdFather::getTenantId, userRefTenantIdSet)
+            ChainWrappers.lambdaQueryChain(sysOtherAppMapper).in(BaseEntityNoIdSuper::getTenantId, userRefTenantIdSet)
                 .eq(BaseEntity::getId, notNullId.getId())
-                .select(BaseEntityNoIdFather::getTenantId, SysOtherAppDO::getAppId).one();
+                .select(BaseEntityNoIdSuper::getTenantId, SysOtherAppDO::getAppId).one();
 
         if (sysOtherAppDO == null) {
             return BaseBizCodeEnum.OK;

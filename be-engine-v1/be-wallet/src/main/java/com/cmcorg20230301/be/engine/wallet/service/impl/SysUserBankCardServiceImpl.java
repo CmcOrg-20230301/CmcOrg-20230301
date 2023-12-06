@@ -13,7 +13,7 @@ import com.cmcorg20230301.be.engine.security.exception.BaseBizCodeEnum;
 import com.cmcorg20230301.be.engine.security.mapper.SysUserMapper;
 import com.cmcorg20230301.be.engine.security.model.entity.BaseEntity;
 import com.cmcorg20230301.be.engine.security.model.entity.BaseEntityNoId;
-import com.cmcorg20230301.be.engine.security.model.entity.BaseEntityNoIdFather;
+import com.cmcorg20230301.be.engine.security.model.entity.BaseEntityNoIdSuper;
 import com.cmcorg20230301.be.engine.security.util.SysTenantUtil;
 import com.cmcorg20230301.be.engine.security.util.UserUtil;
 import com.cmcorg20230301.be.engine.wallet.mapper.SysUserBankCardMapper;
@@ -98,7 +98,7 @@ public class SysUserBankCardServiceImpl extends ServiceImpl<SysUserBankCardMappe
         }
 
         boolean exists =
-            lambdaQuery().eq(SysUserBankCardDO::getId, id).eq(BaseEntityNoIdFather::getTenantId, dto.getTenantId())
+            lambdaQuery().eq(SysUserBankCardDO::getId, id).eq(BaseEntityNoIdSuper::getTenantId, dto.getTenantId())
                 .exists();
 
         SysUserBankCardDO sysUserBankCardDO = new SysUserBankCardDO();
@@ -193,7 +193,7 @@ public class SysUserBankCardServiceImpl extends ServiceImpl<SysUserBankCardMappe
 
             .in(BaseEntityNoId::getTenantId, dto.getTenantIdSet()) //
 
-            .orderByDesc(BaseEntityNoIdFather::getUpdateTime).page(dto.page(true));
+            .orderByDesc(BaseEntityNoIdSuper::getUpdateTime).page(dto.page(true));
 
         for (SysUserBankCardDO item : page.getRecords()) {
 
@@ -263,7 +263,7 @@ public class SysUserBankCardServiceImpl extends ServiceImpl<SysUserBankCardMappe
         Long currentTenantIdDefault = UserUtil.getCurrentTenantIdDefault();
 
         SysUserBankCardDO sysUserBankCardDO = lambdaQuery().eq(SysUserBankCardDO::getId, currentUserId)
-            .eq(BaseEntityNoIdFather::getTenantId, currentTenantIdDefault).one();
+            .eq(BaseEntityNoIdSuper::getTenantId, currentTenantIdDefault).one();
 
         // 脱敏：SysUserBankCardDO
         desensitizedSysUserBankCardDO(sysUserBankCardDO);

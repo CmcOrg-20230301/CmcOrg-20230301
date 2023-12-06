@@ -4,7 +4,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.cmcorg20230301.be.engine.model.model.constant.BaseConstant;
 import com.cmcorg20230301.be.engine.model.model.dto.NotNullLong;
 import com.cmcorg20230301.be.engine.security.model.entity.BaseEntityNoId;
-import com.cmcorg20230301.be.engine.security.model.entity.BaseEntityNoIdFather;
+import com.cmcorg20230301.be.engine.security.model.entity.BaseEntityNoIdSuper;
 import com.cmcorg20230301.be.engine.security.model.entity.SysTenantDO;
 import com.cmcorg20230301.be.engine.security.util.MyTreeUtil;
 import com.cmcorg20230301.be.engine.security.util.SysTenantUtil;
@@ -65,7 +65,7 @@ public class SysTenantBankCardServiceImpl implements SysTenantBankCardService {
         }
 
         List<SysUserBankCardDO> allList =
-            sysUserBankCardService.lambdaQuery().in(BaseEntityNoIdFather::getTenantId, dto.getTenantIdSet())
+            sysUserBankCardService.lambdaQuery().in(BaseEntityNoIdSuper::getTenantId, dto.getTenantIdSet())
                 .eq(SysUserBankCardDO::getId, BaseConstant.TENANT_USER_ID) //
                 .list();
 
@@ -126,7 +126,7 @@ public class SysTenantBankCardServiceImpl implements SysTenantBankCardService {
         // 获取：用户关联的租户
         Set<Long> queryTenantIdSet = SysTenantUtil.getUserRefTenantIdSet();
 
-        return sysUserBankCardService.lambdaQuery().eq(BaseEntityNoIdFather::getTenantId, notNullLong.getValue())
+        return sysUserBankCardService.lambdaQuery().eq(BaseEntityNoIdSuper::getTenantId, notNullLong.getValue())
             .eq(SysUserBankCardDO::getId, BaseConstant.TENANT_USER_ID).in(BaseEntityNoId::getTenantId, queryTenantIdSet)
             .one();
 

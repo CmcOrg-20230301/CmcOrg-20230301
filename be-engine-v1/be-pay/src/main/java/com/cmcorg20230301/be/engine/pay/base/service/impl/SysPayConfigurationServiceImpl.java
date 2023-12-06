@@ -18,7 +18,7 @@ import com.cmcorg20230301.be.engine.pay.base.service.SysPayConfigurationService;
 import com.cmcorg20230301.be.engine.security.exception.BaseBizCodeEnum;
 import com.cmcorg20230301.be.engine.security.model.entity.BaseEntity;
 import com.cmcorg20230301.be.engine.security.model.entity.BaseEntityNoId;
-import com.cmcorg20230301.be.engine.security.model.entity.BaseEntityNoIdFather;
+import com.cmcorg20230301.be.engine.security.model.entity.BaseEntityNoIdSuper;
 import com.cmcorg20230301.be.engine.security.util.MyEntityUtil;
 import com.cmcorg20230301.be.engine.security.util.SysTenantUtil;
 import org.jetbrains.annotations.NotNull;
@@ -104,10 +104,10 @@ public class SysPayConfigurationServiceImpl extends ServiceImpl<SysPayConfigurat
             .eq(dto.getDefaultFlag() != null, SysPayConfigurationDO::getDefaultFlag, dto.getDefaultFlag())
             .eq(dto.getEnableFlag() != null, BaseEntity::getEnableFlag, dto.getEnableFlag())
             .in(BaseEntityNoId::getTenantId, dto.getTenantIdSet()) //
-            .select(BaseEntity::getId, BaseEntityNoIdFather::getTenantId, SysPayConfigurationDO::getAppId,
-                SysPayConfigurationDO::getType, SysPayConfigurationDO::getName, BaseEntityNoIdFather::getCreateId,
-                BaseEntityNoIdFather::getCreateTime, BaseEntityNoIdFather::getUpdateId,
-                BaseEntityNoIdFather::getUpdateTime, BaseEntityNoId::getEnableFlag, BaseEntityNoId::getRemark,
+            .select(BaseEntity::getId, BaseEntityNoIdSuper::getTenantId, SysPayConfigurationDO::getAppId,
+                SysPayConfigurationDO::getType, SysPayConfigurationDO::getName, BaseEntityNoIdSuper::getCreateId,
+                BaseEntityNoIdSuper::getCreateTime, BaseEntityNoIdSuper::getUpdateId,
+                BaseEntityNoIdSuper::getUpdateTime, BaseEntityNoId::getEnableFlag, BaseEntityNoId::getRemark,
                 SysPayConfigurationDO::getDefaultFlag).orderByDesc(BaseEntity::getUpdateTime).page(dto.page(true));
 
     }
@@ -123,7 +123,7 @@ public class SysPayConfigurationServiceImpl extends ServiceImpl<SysPayConfigurat
 
         List<SysPayConfigurationDO> sysPayConfigurationDOList =
             lambdaQuery().select(BaseEntity::getId, SysPayConfigurationDO::getName)
-                .in(BaseEntityNoIdFather::getTenantId, tenantIdSet).orderByDesc(BaseEntity::getUpdateTime).list();
+                .in(BaseEntityNoIdSuper::getTenantId, tenantIdSet).orderByDesc(BaseEntity::getUpdateTime).list();
 
         List<DictVO> dictVOList = sysPayConfigurationDOList.stream().map(it -> new DictVO(it.getId(), it.getName()))
             .collect(Collectors.toList());

@@ -114,7 +114,7 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptMapper, SysDeptDO> im
 
             // 检查：区域 idSet，是否合法
             Long count = ChainWrappers.lambdaQueryChain(sysAreaMapper).in(BaseEntity::getId, dto.getAreaIdSet())
-                .eq(BaseEntityNoIdFather::getTenantId, dto.getTenantId()).count();
+                .eq(BaseEntityNoIdSuper::getTenantId, dto.getTenantId()).count();
 
             if (count != dto.getAreaIdSet().size()) {
                 ApiResultVO.errorMsg("操作失败：关联的区域数据非法");
@@ -143,7 +143,7 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptMapper, SysDeptDO> im
 
             // 检查：用户 idSet，是否合法
             Long count = ChainWrappers.lambdaQueryChain(sysUserMapper).in(BaseEntity::getId, dto.getUserIdSet())
-                .eq(BaseEntityNoIdFather::getTenantId, dto.getTenantId()).count();
+                .eq(BaseEntityNoIdSuper::getTenantId, dto.getTenantId()).count();
 
             if (count != dto.getUserIdSet().size()) {
                 ApiResultVO.errorMsg("操作失败：关联的用户数据非法");

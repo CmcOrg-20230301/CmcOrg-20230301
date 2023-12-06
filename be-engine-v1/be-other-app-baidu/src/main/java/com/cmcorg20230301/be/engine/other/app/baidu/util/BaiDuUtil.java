@@ -15,7 +15,7 @@ import com.cmcorg20230301.be.engine.other.app.service.SysOtherAppService;
 import com.cmcorg20230301.be.engine.redisson.model.enums.BaseRedisKeyEnum;
 import com.cmcorg20230301.be.engine.security.exception.BaseBizCodeEnum;
 import com.cmcorg20230301.be.engine.security.model.entity.BaseEntityNoId;
-import com.cmcorg20230301.be.engine.security.model.entity.BaseEntityNoIdFather;
+import com.cmcorg20230301.be.engine.security.model.entity.BaseEntityNoIdSuper;
 import com.cmcorg20230301.be.engine.security.model.vo.ApiResultVO;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
@@ -75,7 +75,7 @@ public class BaiDuUtil {
         if (StrUtil.isBlank(appId)) {
 
             List<SysOtherAppDO> sysOtherAppDOList =
-                sysOtherAppService.lambdaQuery().eq(BaseEntityNoIdFather::getTenantId, tenantId)
+                sysOtherAppService.lambdaQuery().eq(BaseEntityNoIdSuper::getTenantId, tenantId)
                     .select(SysOtherAppDO::getAppId).eq(SysOtherAppDO::getType, SysOtherAppTypeEnum.BAI_DU)
                     .eq(BaseEntityNoId::getEnableFlag, true).list();
 
@@ -96,7 +96,7 @@ public class BaiDuUtil {
             return accessToken;
         }
 
-        SysOtherAppDO sysOtherAppDO = sysOtherAppService.lambdaQuery().eq(BaseEntityNoIdFather::getTenantId, tenantId)
+        SysOtherAppDO sysOtherAppDO = sysOtherAppService.lambdaQuery().eq(BaseEntityNoIdSuper::getTenantId, tenantId)
             .eq(SysOtherAppDO::getAppId, appId).select(SysOtherAppDO::getSecret)
             .eq(SysOtherAppDO::getType, SysOtherAppTypeEnum.BAI_DU).eq(BaseEntityNoId::getEnableFlag, true).one();
 

@@ -377,7 +377,7 @@ public class SysTenantUtil {
     @SneakyThrows
     public static void handleBaseTenantInsertOrUpdateDTO(@NotNull BaseTenantInsertOrUpdateDTO dto,
         @NotNull Func1<Set<Long>, Long> getCheckIllegalFunc1,
-        @NotNull Func1<Long, ? extends BaseEntityNoIdFather> getTenantIdBaseEntityFunc1) {
+        @NotNull Func1<Long, ? extends BaseEntityNoIdSuper> getTenantIdBaseEntityFunc1) {
 
         Long id = dto.getId();
 
@@ -392,21 +392,21 @@ public class SysTenantUtil {
 
         if (tenantId == null) {
 
-            BaseEntityNoIdFather baseEntityNoIdFather = getTenantIdBaseEntityFunc1.call(id);
+            BaseEntityNoIdSuper baseEntityNoIdSuper = getTenantIdBaseEntityFunc1.call(id);
 
-            if (baseEntityNoIdFather == null) {
+            if (baseEntityNoIdSuper == null) {
 
                 ApiResultVO.error("操作失败：id不存在", id);
 
             }
 
-            if (baseEntityNoIdFather.getTenantId() == null) {
+            if (baseEntityNoIdSuper.getTenantId() == null) {
 
                 ApiResultVO.errorMsg("操作失败：tenantId为空，请联系管理员");
 
             }
 
-            dto.setTenantId(baseEntityNoIdFather.getTenantId());
+            dto.setTenantId(baseEntityNoIdSuper.getTenantId());
 
         }
 
@@ -520,7 +520,7 @@ public class SysTenantUtil {
 
         // 检查：userId，是否合法
         boolean exists = ChainWrappers.lambdaQueryChain(sysUserMapper).eq(BaseEntity::getId, userId)
-            .in(BaseEntityNoIdFather::getTenantId, userRefTenantIdSet).exists();
+            .in(BaseEntityNoIdSuper::getTenantId, userRefTenantIdSet).exists();
 
         if (!exists) {
             ApiResultVO.error(BaseBizCodeEnum.ILLEGAL_REQUEST, userId);

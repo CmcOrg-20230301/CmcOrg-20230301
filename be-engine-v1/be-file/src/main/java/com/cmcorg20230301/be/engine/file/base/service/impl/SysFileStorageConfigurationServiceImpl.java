@@ -17,7 +17,7 @@ import com.cmcorg20230301.be.engine.model.model.dto.NotNullId;
 import com.cmcorg20230301.be.engine.security.exception.BaseBizCodeEnum;
 import com.cmcorg20230301.be.engine.security.model.entity.BaseEntity;
 import com.cmcorg20230301.be.engine.security.model.entity.BaseEntityNoId;
-import com.cmcorg20230301.be.engine.security.model.entity.BaseEntityNoIdFather;
+import com.cmcorg20230301.be.engine.security.model.entity.BaseEntityNoIdSuper;
 import com.cmcorg20230301.be.engine.security.util.MyEntityUtil;
 import com.cmcorg20230301.be.engine.security.util.SysTenantUtil;
 import org.jetbrains.annotations.NotNull;
@@ -100,9 +100,9 @@ public class SysFileStorageConfigurationServiceImpl
             .eq(dto.getDefaultFlag() != null, SysFileStorageConfigurationDO::getDefaultFlag, dto.getDefaultFlag())
             .eq(dto.getEnableFlag() != null, BaseEntity::getEnableFlag, dto.getEnableFlag())
             .in(BaseEntityNoId::getTenantId, dto.getTenantIdSet()) //
-            .select(BaseEntity::getId, BaseEntityNoIdFather::getTenantId, BaseEntityNoId::getEnableFlag,
-                BaseEntityNoId::getRemark, BaseEntityNoIdFather::getCreateId, BaseEntityNoIdFather::getCreateTime,
-                BaseEntityNoIdFather::getUpdateId, BaseEntityNoIdFather::getUpdateTime,
+            .select(BaseEntity::getId, BaseEntityNoIdSuper::getTenantId, BaseEntityNoId::getEnableFlag,
+                BaseEntityNoId::getRemark, BaseEntityNoIdSuper::getCreateId, BaseEntityNoIdSuper::getCreateTime,
+                BaseEntityNoIdSuper::getUpdateId, BaseEntityNoIdSuper::getUpdateTime,
                 SysFileStorageConfigurationDO::getName, SysFileStorageConfigurationDO::getType,
                 SysFileStorageConfigurationDO::getDefaultFlag).orderByDesc(BaseEntity::getUpdateTime)
             .page(dto.page(true));

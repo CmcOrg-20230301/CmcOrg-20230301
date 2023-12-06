@@ -28,7 +28,7 @@ import com.cmcorg20230301.be.engine.redisson.util.IdGeneratorUtil;
 import com.cmcorg20230301.be.engine.redisson.util.RedissonUtil;
 import com.cmcorg20230301.be.engine.security.exception.BaseBizCodeEnum;
 import com.cmcorg20230301.be.engine.security.model.entity.BaseEntityNoId;
-import com.cmcorg20230301.be.engine.security.model.entity.BaseEntityNoIdFather;
+import com.cmcorg20230301.be.engine.security.model.entity.BaseEntityNoIdSuper;
 import com.cmcorg20230301.be.engine.security.model.entity.SysTenantDO;
 import com.cmcorg20230301.be.engine.security.model.vo.ApiResultVO;
 import com.cmcorg20230301.be.engine.security.util.MyEntityUtil;
@@ -75,7 +75,7 @@ public class SysUserWalletServiceImpl extends ServiceImpl<SysUserWalletMapper, S
         DateTime checkDateTime = DateUtil.offsetMinute(date, -30);
 
         List<SysUserWalletDO> sysUserWalletDOList = lambdaQuery().gt(SysUserWalletDO::getWithdrawablePreUseMoney, 0)
-            .le(BaseEntityNoIdFather::getUpdateTime, checkDateTime)
+            .le(BaseEntityNoIdSuper::getUpdateTime, checkDateTime)
             .select(SysUserWalletDO::getId, SysUserWalletDO::getTenantId).list();
 
         if (CollUtil.isEmpty(sysUserWalletDOList)) {
@@ -298,7 +298,7 @@ public class SysUserWalletServiceImpl extends ServiceImpl<SysUserWalletMapper, S
         Long currentTenantIdDefault = UserUtil.getCurrentTenantIdDefault();
 
         SysUserWalletDO sysUserWalletDO = lambdaQuery().eq(SysUserWalletDO::getId, currentUserId)
-            .eq(BaseEntityNoIdFather::getTenantId, currentTenantIdDefault).one();
+            .eq(BaseEntityNoIdSuper::getTenantId, currentTenantIdDefault).one();
 
         if (sysUserWalletDO == null) {
 
@@ -361,12 +361,12 @@ public class SysUserWalletServiceImpl extends ServiceImpl<SysUserWalletMapper, S
         RedissonUtil.doMultiLock(BaseRedisKeyEnum.PRE_USER_WALLET.name(), idSet, () -> {
 
             List<SysUserWalletDO> sysUserWalletDOList = lambdaQuery().in(!tenantFlag, SysUserWalletDO::getId, idSet)
-                .eq(!tenantFlag && tenantId != null, BaseEntityNoIdFather::getTenantId, tenantId)
+                .eq(!tenantFlag && tenantId != null, BaseEntityNoIdSuper::getTenantId, tenantId)
                 .eq(tenantFlag, SysUserWalletDO::getId, BaseConstant.TENANT_USER_ID)
-                .in(tenantFlag, BaseEntityNoIdFather::getTenantId, idSet)
+                .in(tenantFlag, BaseEntityNoIdSuper::getTenantId, idSet)
                 .select(SysUserWalletDO::getId, SysUserWalletDO::getWithdrawableMoney,
                     SysUserWalletDO::getWithdrawablePreUseMoney, BaseEntityNoId::getVersion,
-                    BaseEntityNoIdFather::getTenantId, BaseEntityNoId::getEnableFlag).list();
+                    BaseEntityNoIdSuper::getTenantId, BaseEntityNoId::getEnableFlag).list();
 
             // 处理：sysUserWalletDOList
             handleSysUserWalletDOList(currentUserId, date, addNumber, iSysUserWalletLogType, lowErrorFlag,
@@ -386,7 +386,7 @@ public class SysUserWalletServiceImpl extends ServiceImpl<SysUserWalletMapper, S
 
                     map.put(Constants.WRAPPER,
                         ChainWrappers.lambdaUpdateChain(baseMapper).eq(SysUserWalletDO::getId, entity.getId())
-                            .eq(BaseEntityNoIdFather::getTenantId, entity.getTenantId()).getWrapper());
+                            .eq(BaseEntityNoIdSuper::getTenantId, entity.getTenantId()).getWrapper());
 
                     sqlSession.update(sqlStatement, map);
 

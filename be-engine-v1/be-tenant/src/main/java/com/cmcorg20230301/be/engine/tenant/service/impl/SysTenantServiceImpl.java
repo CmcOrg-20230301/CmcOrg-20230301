@@ -766,7 +766,7 @@ public class SysTenantServiceImpl extends ServiceImpl<SysTenantMapper, SysTenant
     public String deleteTenantAllMenu(NotEmptyIdSet notEmptyIdSet) {
 
         List<SysMenuDO> sysMenuDOList =
-            sysMenuService.lambdaQuery().in(BaseEntityNoIdFather::getTenantId, notEmptyIdSet.getIdSet())
+            sysMenuService.lambdaQuery().in(BaseEntityNoIdSuper::getTenantId, notEmptyIdSet.getIdSet())
                 .select(BaseEntity::getId).list();
 
         if (CollUtil.isEmpty(sysMenuDOList)) {

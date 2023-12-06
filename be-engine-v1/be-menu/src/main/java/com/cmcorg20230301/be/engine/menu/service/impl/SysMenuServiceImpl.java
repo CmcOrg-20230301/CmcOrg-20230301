@@ -198,7 +198,7 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenuDO> im
 
             // 检查：角色 idSet，是否合法
             Long count = ChainWrappers.lambdaQueryChain(sysRoleMapper).in(BaseEntity::getId, dto.getRoleIdSet())
-                .eq(BaseEntityNoIdFather::getTenantId, dto.getTenantId()).count();
+                .eq(BaseEntityNoIdSuper::getTenantId, dto.getTenantId()).count();
 
             if (count != dto.getRoleIdSet().size()) {
                 ApiResultVO.errorMsg("操作失败：关联的角色数据非法");
@@ -386,7 +386,7 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenuDO> im
 
         // 如果删除了顶级租户的菜单，则需要全局一起删除
         List<SysMenuDO> sysMenuDOList =
-            lambdaQuery().in(BaseEntity::getId, idSet).eq(BaseEntityNoIdFather::getTenantId, BaseConstant.TOP_TENANT_ID)
+            lambdaQuery().in(BaseEntity::getId, idSet).eq(BaseEntityNoIdSuper::getTenantId, BaseConstant.TOP_TENANT_ID)
                 .select(SysMenuDO::getUuid).list();
 
         if (CollUtil.isNotEmpty(sysMenuDOList)) {

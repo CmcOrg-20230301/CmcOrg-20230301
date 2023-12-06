@@ -9,7 +9,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.cmcorg20230301.be.engine.model.model.constant.BaseConstant;
 import com.cmcorg20230301.be.engine.model.model.constant.LogTopicConstant;
 import com.cmcorg20230301.be.engine.security.model.entity.BaseEntityNoId;
-import com.cmcorg20230301.be.engine.security.model.entity.BaseEntityNoIdFather;
+import com.cmcorg20230301.be.engine.security.model.entity.BaseEntityNoIdSuper;
 import com.cmcorg20230301.be.engine.security.util.MyThreadUtil;
 import com.cmcorg20230301.be.engine.security.util.SysTenantUtil;
 import com.cmcorg20230301.be.engine.security.util.UserUtil;
@@ -99,7 +99,7 @@ public class SysUserWalletLogServiceImpl extends ServiceImpl<SysUserWalletLogMap
 
             .in(BaseEntityNoId::getTenantId, dto.getTenantIdSet()) //
 
-            .orderByDesc(BaseEntityNoIdFather::getUpdateTime).page(dto.page(true));
+            .orderByDesc(BaseEntityNoIdSuper::getUpdateTime).page(dto.page(true));
 
     }
 

@@ -20,7 +20,7 @@ import com.cmcorg20230301.be.engine.other.app.wx.model.vo.*;
 import com.cmcorg20230301.be.engine.redisson.model.enums.BaseRedisKeyEnum;
 import com.cmcorg20230301.be.engine.security.exception.BaseBizCodeEnum;
 import com.cmcorg20230301.be.engine.security.model.entity.BaseEntityNoId;
-import com.cmcorg20230301.be.engine.security.model.entity.BaseEntityNoIdFather;
+import com.cmcorg20230301.be.engine.security.model.entity.BaseEntityNoIdSuper;
 import com.cmcorg20230301.be.engine.security.model.vo.ApiResultVO;
 import com.cmcorg20230301.be.engine.util.util.MyStrUtil;
 import com.cmcorg20230301.be.engine.util.util.RetryUtil;
@@ -56,7 +56,7 @@ public class WxUtil {
             tenantId = BaseConstant.TOP_TENANT_ID;
         }
 
-        SysOtherAppDO sysOtherAppDO = sysOtherAppService.lambdaQuery().eq(BaseEntityNoIdFather::getTenantId, tenantId)
+        SysOtherAppDO sysOtherAppDO = sysOtherAppService.lambdaQuery().eq(BaseEntityNoIdSuper::getTenantId, tenantId)
             .eq(SysOtherAppDO::getAppId, appId).eq(BaseEntityNoId::getEnableFlag, true).select(SysOtherAppDO::getSecret)
             .one();
 
@@ -89,7 +89,7 @@ public class WxUtil {
             tenantId = BaseConstant.TOP_TENANT_ID;
         }
 
-        SysOtherAppDO sysOtherAppDO = sysOtherAppService.lambdaQuery().eq(BaseEntityNoIdFather::getTenantId, tenantId)
+        SysOtherAppDO sysOtherAppDO = sysOtherAppService.lambdaQuery().eq(BaseEntityNoIdSuper::getTenantId, tenantId)
             .eq(SysOtherAppDO::getAppId, appId).eq(BaseEntityNoId::getEnableFlag, true).select(SysOtherAppDO::getSecret)
             .one();
 
@@ -126,7 +126,7 @@ public class WxUtil {
             tenantId = BaseConstant.TOP_TENANT_ID;
         }
 
-        SysOtherAppDO sysOtherAppDO = sysOtherAppService.lambdaQuery().eq(BaseEntityNoIdFather::getTenantId, tenantId)
+        SysOtherAppDO sysOtherAppDO = sysOtherAppService.lambdaQuery().eq(BaseEntityNoIdSuper::getTenantId, tenantId)
             .eq(SysOtherAppDO::getAppId, appId).eq(BaseEntityNoId::getEnableFlag, true).select(SysOtherAppDO::getSecret)
             .one();
 
@@ -198,7 +198,7 @@ public class WxUtil {
             return accessToken;
         }
 
-        SysOtherAppDO sysOtherAppDO = sysOtherAppService.lambdaQuery().eq(BaseEntityNoIdFather::getTenantId, tenantId)
+        SysOtherAppDO sysOtherAppDO = sysOtherAppService.lambdaQuery().eq(BaseEntityNoIdSuper::getTenantId, tenantId)
             .eq(SysOtherAppDO::getAppId, appId).eq(BaseEntityNoId::getEnableFlag, true).select(SysOtherAppDO::getSecret)
             .one();
 

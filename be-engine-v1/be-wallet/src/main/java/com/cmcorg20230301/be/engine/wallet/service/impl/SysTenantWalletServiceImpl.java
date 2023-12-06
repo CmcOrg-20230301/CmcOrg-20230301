@@ -8,7 +8,7 @@ import com.cmcorg20230301.be.engine.model.model.dto.ChangeBigDecimalNumberDTO;
 import com.cmcorg20230301.be.engine.model.model.dto.NotEmptyIdSet;
 import com.cmcorg20230301.be.engine.model.model.dto.NotNullLong;
 import com.cmcorg20230301.be.engine.security.model.entity.BaseEntityNoId;
-import com.cmcorg20230301.be.engine.security.model.entity.BaseEntityNoIdFather;
+import com.cmcorg20230301.be.engine.security.model.entity.BaseEntityNoIdSuper;
 import com.cmcorg20230301.be.engine.security.model.entity.SysTenantDO;
 import com.cmcorg20230301.be.engine.security.util.MyTreeUtil;
 import com.cmcorg20230301.be.engine.security.util.SysTenantUtil;
@@ -81,7 +81,7 @@ public class SysTenantWalletServiceImpl implements SysTenantWalletService {
         }
 
         List<SysUserWalletDO> allList =
-            sysUserWalletService.lambdaQuery().in(BaseEntityNoIdFather::getTenantId, dto.getTenantIdSet())
+            sysUserWalletService.lambdaQuery().in(BaseEntityNoIdSuper::getTenantId, dto.getTenantIdSet())
                 .eq(SysUserWalletDO::getId, BaseConstant.TENANT_USER_ID) //
                 .list();
 

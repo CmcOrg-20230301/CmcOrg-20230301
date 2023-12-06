@@ -21,7 +21,7 @@ import com.cmcorg20230301.be.engine.security.exception.BaseBizCodeEnum;
 import com.cmcorg20230301.be.engine.security.mapper.SysDictMapper;
 import com.cmcorg20230301.be.engine.security.model.entity.BaseEntity;
 import com.cmcorg20230301.be.engine.security.model.entity.BaseEntityNoId;
-import com.cmcorg20230301.be.engine.security.model.entity.BaseEntityNoIdFather;
+import com.cmcorg20230301.be.engine.security.model.entity.BaseEntityNoIdSuper;
 import com.cmcorg20230301.be.engine.security.model.entity.SysDictDO;
 import com.cmcorg20230301.be.engine.security.model.enums.SysDictTypeEnum;
 import com.cmcorg20230301.be.engine.security.model.vo.ApiResultVO;
@@ -309,7 +309,7 @@ public class SysDictServiceImpl extends ServiceImpl<SysDictMapper, SysDictDO> im
 
         List<SysDictDO> sysDictDOList =
             lambdaQuery().in(BaseEntity::getId, idSet).eq(SysDictDO::getType, SysDictTypeEnum.DICT)
-                .select(SysDictDO::getDictKey, BaseEntityNoIdFather::getTenantId).list();
+                .select(SysDictDO::getDictKey, BaseEntityNoIdSuper::getTenantId).list();
 
         removeByIds(idSet); // 根据 idSet删除
 
@@ -319,13 +319,13 @@ public class SysDictServiceImpl extends ServiceImpl<SysDictMapper, SysDictDO> im
 
         // 如果删除是字典项的父级，则把其下的字典项也跟着删除了
         Map<Long, List<SysDictDO>> groupMap =
-            sysDictDOList.stream().collect(Collectors.groupingBy(BaseEntityNoIdFather::getTenantId));
+            sysDictDOList.stream().collect(Collectors.groupingBy(BaseEntityNoIdSuper::getTenantId));
 
         for (Map.Entry<Long, List<SysDictDO>> item : groupMap.entrySet()) {
 
             Set<String> dictKeySet = item.getValue().stream().map(SysDictDO::getDictKey).collect(Collectors.toSet());
 
-            lambdaUpdate().in(SysDictDO::getDictKey, dictKeySet).eq(BaseEntityNoIdFather::getTenantId, item.getKey())
+            lambdaUpdate().in(SysDictDO::getDictKey, dictKeySet).eq(BaseEntityNoIdSuper::getTenantId, item.getKey())
                 .remove();
 
         }

@@ -10,7 +10,7 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = true)
 @Data
 @Schema(description = "实体类基类-没有主键 id")
-public class BaseEntityNoId extends BaseEntityNoIdFather {
+public class BaseEntityNoId extends BaseEntityNoIdSuper {
 
     @Version
     @TableField(fill = FieldFill.INSERT)

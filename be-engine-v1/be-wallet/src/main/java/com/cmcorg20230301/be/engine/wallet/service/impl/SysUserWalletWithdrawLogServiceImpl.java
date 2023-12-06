@@ -20,7 +20,7 @@ import com.cmcorg20230301.be.engine.security.exception.BaseBizCodeEnum;
 import com.cmcorg20230301.be.engine.security.mapper.SysUserMapper;
 import com.cmcorg20230301.be.engine.security.model.entity.BaseEntity;
 import com.cmcorg20230301.be.engine.security.model.entity.BaseEntityNoId;
-import com.cmcorg20230301.be.engine.security.model.entity.BaseEntityNoIdFather;
+import com.cmcorg20230301.be.engine.security.model.entity.BaseEntityNoIdSuper;
 import com.cmcorg20230301.be.engine.security.model.enums.SysUserTenantEnum;
 import com.cmcorg20230301.be.engine.security.model.vo.ApiResultVO;
 import com.cmcorg20230301.be.engine.security.util.SysTenantUtil;
@@ -318,7 +318,7 @@ public class SysUserWalletWithdrawLogServiceImpl
             ChainWrappers.lambdaQueryChain(sysUserBankCardMapper).eq(!tenantFlag, SysUserBankCardDO::getId, id)
                 .eq(!tenantFlag && tenantId != null, SysUserBankCardDO::getTenantId, tenantId)
                 .eq(tenantFlag, SysUserBankCardDO::getId, BaseConstant.TENANT_USER_ID)
-                .eq(tenantFlag, BaseEntityNoIdFather::getTenantId, id).one();
+                .eq(tenantFlag, BaseEntityNoIdSuper::getTenantId, id).one();
 
         if (sysUserBankCardDO == null) {
             ApiResultVO.errorMsg("操作失败：请先绑定银行卡");
@@ -377,7 +377,7 @@ public class SysUserWalletWithdrawLogServiceImpl
                     .eq(!tenantFlag && userSelfFlag, SysUserWalletWithdrawLogDO::getUserId, currentUserId)
                     .eq(tenantFlag && !userSelfFlag, SysUserWalletWithdrawLogDO::getUserId, BaseConstant.TENANT_USER_ID)
                     .select(BaseEntity::getId, SysUserWalletWithdrawLogDO::getWithdrawMoney,
-                        SysUserWalletWithdrawLogDO::getWithdrawStatus, BaseEntityNoIdFather::getTenantId,
+                        SysUserWalletWithdrawLogDO::getWithdrawStatus, BaseEntityNoIdSuper::getTenantId,
                         SysUserWalletWithdrawLogDO::getUserId).one();
 
             if (sysUserWalletWithdrawLogDO == null) {

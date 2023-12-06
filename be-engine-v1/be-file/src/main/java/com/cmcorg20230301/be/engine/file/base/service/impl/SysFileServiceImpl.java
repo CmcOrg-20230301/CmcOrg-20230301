@@ -21,7 +21,7 @@ import com.cmcorg20230301.be.engine.model.model.vo.LongObjectMapVO;
 import com.cmcorg20230301.be.engine.security.exception.BaseBizCodeEnum;
 import com.cmcorg20230301.be.engine.security.model.entity.BaseEntity;
 import com.cmcorg20230301.be.engine.security.model.entity.BaseEntityNoId;
-import com.cmcorg20230301.be.engine.security.model.entity.BaseEntityNoIdFather;
+import com.cmcorg20230301.be.engine.security.model.entity.BaseEntityNoIdSuper;
 import com.cmcorg20230301.be.engine.security.model.enums.SysUserTenantEnum;
 import com.cmcorg20230301.be.engine.security.model.vo.ApiResultVO;
 import com.cmcorg20230301.be.engine.security.util.ResponseUtil;
@@ -148,9 +148,9 @@ public class SysFileServiceImpl extends ServiceImpl<SysFileMapper, SysFileDO> im
 
             .in(BaseEntityNoId::getTenantId, dto.getTenantIdSet()) //
 
-            .select(BaseEntity::getId, BaseEntityNoIdFather::getTenantId, BaseEntityNoId::getEnableFlag,
-                BaseEntityNoId::getRemark, BaseEntityNoIdFather::getCreateId, BaseEntityNoIdFather::getCreateTime,
-                BaseEntityNoIdFather::getUpdateId, BaseEntityNoIdFather::getUpdateTime, SysFileDO::getOriginFileName,
+            .select(BaseEntity::getId, BaseEntityNoIdSuper::getTenantId, BaseEntityNoId::getEnableFlag,
+                BaseEntityNoId::getRemark, BaseEntityNoIdSuper::getCreateId, BaseEntityNoIdSuper::getCreateTime,
+                BaseEntityNoIdSuper::getUpdateId, BaseEntityNoIdSuper::getUpdateTime, SysFileDO::getOriginFileName,
                 SysFileDO::getBelongId, SysFileDO::getUploadType, SysFileDO::getStorageType, SysFileDO::getPublicFlag,
                 SysFileDO::getFileSize, SysFileDO::getExtraJson).orderByDesc(BaseEntity::getUpdateTime)
 

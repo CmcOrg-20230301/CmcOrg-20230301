@@ -106,7 +106,7 @@ public class SysAreaServiceImpl extends ServiceImpl<SysAreaMapper, SysAreaDO> im
 
             // 检查：部门 idSet，是否合法
             Long count = ChainWrappers.lambdaQueryChain(sysDeptMapper).in(BaseEntity::getId, dto.getDeptIdSet())
-                .eq(BaseEntityNoIdFather::getTenantId, dto.getTenantId()).count();
+                .eq(BaseEntityNoIdSuper::getTenantId, dto.getTenantId()).count();
 
             if (count != dto.getDeptIdSet().size()) {
                 ApiResultVO.errorMsg("操作失败：关联的部门数据非法");

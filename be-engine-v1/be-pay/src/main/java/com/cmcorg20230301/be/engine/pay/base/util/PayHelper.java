@@ -11,7 +11,7 @@ import com.cmcorg20230301.be.engine.pay.base.model.entity.SysPayConfigurationDO;
 import com.cmcorg20230301.be.engine.pay.base.service.SysPayConfigurationService;
 import com.cmcorg20230301.be.engine.security.model.entity.BaseEntity;
 import com.cmcorg20230301.be.engine.security.model.entity.BaseEntityNoId;
-import com.cmcorg20230301.be.engine.security.model.entity.BaseEntityNoIdFather;
+import com.cmcorg20230301.be.engine.security.model.entity.BaseEntityNoIdSuper;
 import com.cmcorg20230301.be.engine.security.model.entity.SysTenantDO;
 import com.cmcorg20230301.be.engine.security.model.vo.ApiResultVO;
 import com.cmcorg20230301.be.engine.security.util.SysTenantUtil;
@@ -46,7 +46,8 @@ public class PayHelper {
         }
 
         List<SysPayConfigurationDO> sysPayConfigurationDOList =
-            sysPayConfigurationService.lambdaQuery().eq(BaseEntityNoIdFather::getTenantId, tenantId).eq(BaseEntityNoId::getEnableFlag, true).eq(SysPayConfigurationDO::getType, sysPayType).list();
+            sysPayConfigurationService.lambdaQuery().eq(BaseEntityNoIdSuper::getTenantId, tenantId)
+                .eq(BaseEntityNoId::getEnableFlag, true).eq(SysPayConfigurationDO::getType, sysPayType).list();
 
         SysPayConfigurationDO sysPayConfigurationDO = null;
 
@@ -89,7 +90,7 @@ public class PayHelper {
         }
 
         SysPayConfigurationDO sysPayConfigurationDO =
-            sysPayConfigurationService.lambdaQuery().eq(BaseEntityNoIdFather::getTenantId, tenantId)
+            sysPayConfigurationService.lambdaQuery().eq(BaseEntityNoIdSuper::getTenantId, tenantId)
                 .eq(SysPayConfigurationDO::getDefaultFlag, true).eq(BaseEntityNoId::getEnableFlag, true).one();
 
         if (sysPayConfigurationDO == null) {
@@ -150,7 +151,7 @@ public class PayHelper {
         currentTenantId = sysTenantDO.getParentId();  // 设置为：上级租户 id
 
         LambdaQueryChainWrapper<SysPayConfigurationDO> lambdaQueryChainWrapper =
-            sysPayConfigurationService.lambdaQuery().eq(BaseEntityNoIdFather::getTenantId, currentTenantId)
+            sysPayConfigurationService.lambdaQuery().eq(BaseEntityNoIdSuper::getTenantId, currentTenantId)
                 .eq(BaseEntityNoId::getEnableFlag, true);
 
         if (lambdaQueryChainWrapperConsumer != null) {

@@ -149,7 +149,7 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRoleDO> im
             // 获取：没有被禁用的用户 idSet
             List<SysUserDO> sysUserDOList =
                 ChainWrappers.lambdaQueryChain(sysUserMapper).in(BaseEntity::getId, dto.getUserIdSet())
-                    .eq(BaseEntity::getEnableFlag, true).eq(BaseEntityNoIdFather::getTenantId, dto.getTenantId())
+                    .eq(BaseEntity::getEnableFlag, true).eq(BaseEntityNoIdSuper::getTenantId, dto.getTenantId())
                     .select(BaseEntity::getId).list();
 
             if (CollUtil.isNotEmpty(sysUserDOList)) {

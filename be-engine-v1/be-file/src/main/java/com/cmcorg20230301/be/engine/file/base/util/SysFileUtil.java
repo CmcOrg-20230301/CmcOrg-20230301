@@ -233,7 +233,7 @@ public class SysFileUtil {
 
             // 获取：默认的存储方式
             sysFileStorageConfigurationDO = ChainWrappers.lambdaQueryChain(sysFileStorageConfigurationMapper)
-                .eq(BaseEntityNoIdFather::getTenantId, tenantId).eq(BaseEntityNoId::getEnableFlag, true)
+                .eq(BaseEntityNoIdSuper::getTenantId, tenantId).eq(BaseEntityNoId::getEnableFlag, true)
                 .eq(SysFileStorageConfigurationDO::getDefaultFlag, true).one();
 
         } else {
@@ -241,7 +241,7 @@ public class SysFileUtil {
             // 根据传入的类型，选择一个存储方式
             List<SysFileStorageConfigurationDO> sysFileStorageConfigurationDOList =
                 ChainWrappers.lambdaQueryChain(sysFileStorageConfigurationMapper)
-                    .eq(BaseEntityNoIdFather::getTenantId, tenantId).eq(BaseEntityNoId::getEnableFlag, true)
+                    .eq(BaseEntityNoIdSuper::getTenantId, tenantId).eq(BaseEntityNoId::getEnableFlag, true)
                     .eq(SysFileStorageConfigurationDO::getType, iSysFileStorageType.getCode()).list();
 
             if (CollUtil.isNotEmpty(sysFileStorageConfigurationDOList)) {
