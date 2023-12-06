@@ -1,5 +1,6 @@
 package com.cmcorg20230301.be.engine.user.model.vo;
 
+import com.cmcorg20230301.be.engine.security.model.enums.SysRequestCategoryEnum;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
@@ -50,6 +51,9 @@ public class SysUserPageVO {
 
     @Schema(description = "Ip2RegionUtil.getRegion() 获取到的 ip所处区域")
     private String region;
+
+    @Schema(description = "注册终端")
+    private SysRequestCategoryEnum signUpType;
 
     @Schema(description = "角色 idSet")
     private Set<Long> roleIdSet;

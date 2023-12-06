@@ -22,7 +22,8 @@
         b.avatar_file_id AS avatarFileId,
         b.last_active_time AS lastActiveTime,
         b.last_ip AS ip,
-        b.last_region AS region
+        b.last_region AS region,
+        b.sign_up_type AS signUpType
 
         FROM
 
@@ -77,26 +78,23 @@
         </if>
 
         <if test="dto.beginLastActiveTime != null">
-            AND b.last_active_time <![CDATA[>=]]> #{beginLastActiveTime}
+            AND b.last_active_time <![CDATA[>=]]> #{dto.beginLastActiveTime}
         </if>
 
         <if test="dto.endLastActiveTime != null">
-            AND b.last_active_time <![CDATA[<=]]> #{endLastActiveTime}
+            AND b.last_active_time <![CDATA[<=]]> #{dto.endLastActiveTime}
         </if>
 
         <if test="dto.ip != null and dto.ip != ''">
-            AND b.last_ip LIKE CONCAT('%', #{ip}, '%')
+            AND b.last_ip LIKE CONCAT('%', #{dto.ip}, '%')
         </if>
 
         <if test="dto.region != null and dto.region != ''">
-            AND b.last_region LIKE CONCAT('%', #{region}, '%')
+            AND b.last_region LIKE CONCAT('%', #{dto.region}, '%')
         </if>
 
-        <if test="dto.idSet != null and dto.idSet.size != 0">
-            AND a.id IN
-            <foreach collection="dto.idSet" separator="," open="(" close=")" item="item">
-                #{item}
-            </foreach>
+        <if test="dto.signUpType != null">
+            AND b.sign_up_type = #{dto.signUpType}
         </if>
 
         <if test="dto.tenantIdSet != null and dto.tenantIdSet.size != 0">

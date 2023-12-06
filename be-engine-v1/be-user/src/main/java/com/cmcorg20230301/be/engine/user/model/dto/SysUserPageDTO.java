@@ -1,6 +1,7 @@
 package com.cmcorg20230301.be.engine.user.model.dto;
 
 import com.cmcorg20230301.be.engine.security.model.dto.MyTenantPageDTO;
+import com.cmcorg20230301.be.engine.security.model.enums.SysRequestCategoryEnum;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -55,5 +56,8 @@ public class SysUserPageDTO extends MyTenantPageDTO {
 
     @Schema(description = "Ip2RegionUtil.getRegion() 获取到的 ip所处区域")
     private String region;
+
+    @Schema(description = "注册终端")
+    private SysRequestCategoryEnum signUpType;
 
 }
