@@ -4,9 +4,11 @@ import {SignInSuccess} from "@/page/sign/SignIn/SignInUtil";
 import {SignWxSignInBrowserCode, SignWxSignInBrowserCodeUserInfo} from "@/api/http/SignWx";
 import {getAppNav} from "@/MyApp";
 import CommonConstant from "@/model/constant/CommonConstant";
+import LxSaasPathConstant from "@/model/constant/LxSaasAssistant/LxSaasAssistantPathConstant";
 import LocalStorageKey from "@/model/constant/LocalStorageKey";
 import {ApiResultVO} from "@/util/HttpUtil";
 import SessionStorageKey from "@/model/constant/SessionStorageKey";
+import {SignInVO} from "@/api/http/SignSignInName";
 
 export interface IOauth2WxForm {
 
@@ -23,14 +25,14 @@ function GoBlank() {
 }
 
 // 处理登录返回值
-function HandleWxSign(res: ApiResultVO, form: IOauth2WxForm) {
+function HandleWxSign(res: ApiResultVO<SignInVO>, form: IOauth2WxForm) {
 
     const noJwtUri = localStorage.getItem(LocalStorageKey.NO_JWT_URI);
 
     SignInSuccess(res, form.tenantId!, undefined, false, false)
 
     localStorage.setItem(LocalStorageKey.MAIN_URI, PathConstant.BLANK_LAYOUT_PATH)
-    localStorage.setItem(LocalStorageKey.MAIN_REDIRECT_URI, "")
+    localStorage.setItem(LocalStorageKey.MAIN_REDIRECT_URI, LxSaasPathConstant.LX_SAAS_ASSISTANT_OTHER_APP_OFFICIAL_ACCOUNT_WX_USER_INDEX_PATH)
 
     if (noJwtUri) {
 
@@ -101,6 +103,8 @@ export default function () {
         if (!form.redirect) {
             form.redirect = ''
         }
+
+        localStorage.removeItem(LocalStorageKey.JWT) // 移除：jwt
 
         if (form.type === '2') { // 需要再跳转一次
 

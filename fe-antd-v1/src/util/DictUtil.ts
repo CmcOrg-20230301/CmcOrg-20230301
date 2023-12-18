@@ -48,6 +48,14 @@ export const YesNoBaseDict = new Map<boolean, ProSchemaValueEnumType>();
 YesNoBaseDict.set(true, {text: '是'})
 YesNoBaseDict.set(false, {text: '否'})
 
+export const FreezeDict = new Map<boolean, ProSchemaValueEnumType>();
+FreezeDict.set(true, {text: '正常', status: 'success'})
+FreezeDict.set(false, {text: '冻结', status: 'error'})
+
+export const EnableDict = new Map<boolean, ProSchemaValueEnumType>();
+EnableDict.set(true, {text: '启用', status: 'success'})
+EnableDict.set(false, {text: '禁用', status: 'error'})
+
 // 根据 list和 value，获取字典的 label值
 export function GetByValueFromDictList(
     dictList: DictLongListVO [],

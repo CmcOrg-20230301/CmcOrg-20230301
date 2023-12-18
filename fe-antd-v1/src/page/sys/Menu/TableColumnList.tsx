@@ -68,6 +68,7 @@ const TableColumnList = (currentForm: React.MutableRefObject<SysMenuInsertOrUpda
         dataIndex: 'firstFlag',
         valueEnum: YesNoDict,
         width: 90,
+        hideInTable: true,
     },
 
     {title: '排序号', dataIndex: 'orderNo', ellipsis: true, hideInSearch: true, width: 90,},

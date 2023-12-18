@@ -1,12 +1,12 @@
 import {IEnum} from "@/model/enum/CommonEnum";
 import {ProSchemaValueEnumType} from "@ant-design/pro-components";
+import {BuyVO} from "@/api/http/LxSaasAssistant";
 import {ToastInfo, ToastSuccess} from "@/util/ToastUtil";
 import {GetBrowserCategory} from "@/util/BrowserCategoryUtil";
 import {BrowserCategoryEnum} from "@/model/enum/BrowserCategoryEnum";
 import {Typography} from "antd";
 import React from "react";
 import {getApp} from "@/MyApp";
-import {BuyVO} from "@/component/PayComponent/PayComponent";
 
 export interface ISysUserWalletWithdrawTypeEnumItem extends IEnum<number> {
 

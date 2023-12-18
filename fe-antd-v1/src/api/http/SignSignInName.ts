@@ -49,7 +49,12 @@ export interface SignSignInNameSignInPasswordDTO {
     tenantId?: string // 租户 id，可以为空，为空则表示：默认租户：0，format：int64
 }
 
+export interface SignInVO {
+    jwtExpireTime?: string // jwt过期时间，format：int64
+    jwt?: string // jwt
+}
+
 // 账号密码登录
 export function SignSignInNameSignInPassword(form: SignSignInNameSignInPasswordDTO, config?: AxiosRequestConfig) {
-    return $http.myPost<string>('/sign/signInName/sign/in/password', form, config)
+    return $http.myPost<SignInVO>('/sign/signInName/sign/in/password', form, config)
 }

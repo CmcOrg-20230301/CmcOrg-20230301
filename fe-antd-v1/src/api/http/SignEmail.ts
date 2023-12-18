@@ -109,7 +109,12 @@ export interface SignEmailSignInPasswordDTO {
     email?: string // 邮箱，正则表达式：^\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$，maxLength：200，minLength：0，required：true
 }
 
+export interface SignInVO {
+    jwtExpireTime?: string // jwt过期时间，format：int64
+    jwt?: string // jwt
+}
+
 // 邮箱账号密码登录
 export function SignEmailSignInPassword(form: SignEmailSignInPasswordDTO, config?: AxiosRequestConfig) {
-    return $http.myPost<string>('/sign/email/sign/in/password', form, config)
+    return $http.myPost<SignInVO>('/sign/email/sign/in/password', form, config)
 }

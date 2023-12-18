@@ -61,29 +61,47 @@ const SchemaFormColumnList = (formRef: React.MutableRefObject<FormInstance<SysUs
         },
 
         {
-            title: '微信appId',
-            dataIndex: 'wxAppId',
-            formItemProps: {
-                rules: [
-                    {
-                        min: 0,
-                        max: 100,
-                    },
-                ],
-            },
-        },
 
-        {
-            title: '微信openId',
-            dataIndex: 'wxOpenId',
-            formItemProps: {
-                rules: [
+            valueType: 'dependency',
+
+            name: ['id'],
+
+            columns: ({id}: SysUserInsertOrUpdateDTO): ProFormColumnsType<SysUserInsertOrUpdateDTO>[] => {
+
+                return [
+
                     {
-                        min: 0,
-                        max: 100,
+                        title: '微信appId',
+                        dataIndex: 'wxAppId',
+                        formItemProps: {
+                            rules: [
+                                {
+                                    min: 0,
+                                    max: 100,
+                                },
+                            ],
+                        },
+                        readonly: Boolean(id)
                     },
-                ],
-            },
+
+                    {
+                        title: '微信openId',
+                        dataIndex: 'wxOpenId',
+                        formItemProps: {
+                            rules: [
+                                {
+                                    min: 0,
+                                    max: 100,
+                                },
+                            ],
+                        },
+                        readonly: Boolean(id)
+                    },
+
+                ]
+
+            }
+
         },
 
         {

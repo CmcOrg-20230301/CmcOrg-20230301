@@ -1,7 +1,7 @@
 /**
  * 处理后台返回的 ip所处区域
  */
-export function HandlerRegion(region: string) {
+export function HandlerRegion(region: string | undefined) {
 
     if (!region) return region
 
@@ -12,12 +12,12 @@ export function HandlerRegion(region: string) {
 
 }
 
+export const BASE_CHAR_NUMBER = 'abcdefghijklmnopqrstuvwxyz0123456789'
+
 /**
  * 获取随机字符串
  */
 export function RandomStr(length: number = 6) {
-
-    const BASE_CHAR_NUMBER = 'abcdefghijklmnopqrstuvwxyz0123456789'
 
     let resStr = ''
 

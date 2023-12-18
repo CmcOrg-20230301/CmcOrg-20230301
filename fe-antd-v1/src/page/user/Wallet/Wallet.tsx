@@ -20,6 +20,8 @@ export interface IUserWalletOwnerInfo {
 
     type?: 1 | 2 // 1 用户 2 租户，请使用：SysUserWalletWithdrawLogTypeEnum 里面的 code属性
 
+    goBackUri?: string // 返回列表时，需要返回的 uri
+
 }
 
 // 用户钱包
@@ -42,7 +44,7 @@ export default function () {
 
             } else {
 
-                return <Navigate to={PathConstant.SYS_TENANT_WALLET_PATH}/>
+                return <Navigate to={PathConstant.SYS_USER_WALLET_PATH}/>
 
             }
 
@@ -126,6 +128,7 @@ export default function () {
 
                                             tenantId={tenantId}
                                             userId={userId}
+                                            goBackUri={location.state?.goBackUri}
 
                                         />
 

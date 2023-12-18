@@ -8,6 +8,7 @@ import {ConnectWebSocket} from "@/util/webSocket/WebSocketUtil";
 import {getAppDispatch, getAppNav, getUserSelfMenuList} from "@/MyApp";
 import {GetURLSearchParams} from "@/util/CommonUtil";
 import {SessionStorageKeyList} from "@/model/constant/SessionStorageKey";
+import VConsole from 'vconsole';
 
 export interface IInit {
 
@@ -188,8 +189,7 @@ export function UseEffectConsoleOpenKeydownListener() {
 
         if (consoleOpenFlag === '1') {
 
-            const vConsole = new window.VConsole(); // 打开控制台
-
+            new VConsole(); // 打开控制台
             return
 
         }
@@ -213,9 +213,7 @@ export function UseEffectConsoleOpenKeydownListener() {
                 }
 
                 if (keydownArr.length < consoleOpenKeydownArr.length) {
-
                     return
-
                 }
 
                 if (keydownArr.length === consoleOpenKeydownArr.length) {
@@ -235,7 +233,7 @@ export function UseEffectConsoleOpenKeydownListener() {
 
                     localStorage.setItem(LocalStorageKey.CONSOLE_OPEN_FLAG, '1');
 
-                    const vConsole = new window.VConsole(); // 打开控制台
+                    new VConsole(); // 打开控制台
 
                 }
 

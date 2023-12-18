@@ -3,6 +3,7 @@ import {ActionType, ModalForm, ProColumns, ProFormTreeSelect} from "@ant-design/
 import {
     NotNullIdAndNotEmptyLongSet,
     SysTenantDeleteByIdSet,
+    SysTenantDeleteTenantAllMenu,
     SysTenantDictList,
     SysTenantDO,
     SysTenantDoSyncMenu,
@@ -17,6 +18,7 @@ import React from "react";
 import {GetTenantIdFromStorage, SearchTransform, SetTenantIdToStorage} from "@/util/CommonUtil";
 import {SignOut} from "@/util/UserUtil";
 import CommonConstant from "@/model/constant/CommonConstant";
+import {ItemType} from "antd/es/menu/hooks/useItems";
 
 const TableColumnList = (currentForm: React.MutableRefObject<SysTenantInsertOrUpdateDTO>, setFormOpen: React.Dispatch<React.SetStateAction<boolean>>, actionRef: React.RefObject<ActionType | undefined>): ProColumns<SysTenantDO>[] => [
 
@@ -114,7 +116,7 @@ const TableColumnList = (currentForm: React.MutableRefObject<SysTenantInsertOrUp
 
         render: (dom, entity) => {
 
-            const dropdownMenuItemArr = [
+            const dropdownMenuItemArr: ItemType[] = [
 
                 {
                     key: '1',
@@ -144,6 +146,29 @@ const TableColumnList = (currentForm: React.MutableRefObject<SysTenantInsertOrUp
                 )
 
             }
+
+            dropdownMenuItemArr.push(
+                {
+                    key: '3',
+                    danger: true,
+                    label: <a onClick={() => {
+
+                        ExecConfirm(() => {
+
+                            return SysTenantDeleteTenantAllMenu({idSet: [entity.id!]}).then(res => {
+
+                                ToastSuccess(res.msg)
+                                actionRef.current?.reload()
+
+                            })
+
+                        }, undefined, '确定删除该租户所有菜单吗？')
+
+                    }}>
+                        删除所有菜单
+                    </a>
+                }
+            )
 
             return [
 

@@ -54,7 +54,7 @@ export interface SysFileDO {
     uri?: string // 文件完整路径（包含文件类型，不包含请求端点），例如：avatar/uuid.xxx
     parentId?: string // 上级文件夹的文件主键 id，默认为 0，format：int64
     createTime?: string // 创建时间，format：date-time
-    fileSize?: string // 文件大小，format：int64
+    fileSize?: string // 文件大小，单位：byte，format：int64
     createId?: string // 创建人id，format：int64
     tenantId?: string // 租户 id，format：int64
     storageType?: number // 存放文件的服务器类型，format：int32

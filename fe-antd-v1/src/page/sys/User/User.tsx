@@ -200,7 +200,7 @@ export default function () {
 
                 postData={(data: SysUserPageVO[]) => {
 
-                    let avatarFileIdList = data.map(it => it.avatarFileId!); // 用户头像文件 id集合
+                    const avatarFileIdList = data.map(it => it.avatarFileId!); // 用户头像文件 id集合
 
                     if (avatarFileIdList.length) {
 

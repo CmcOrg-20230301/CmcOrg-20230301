@@ -46,6 +46,8 @@ interface IUserWallet {
 
     userId?: string // 用户 id，备注：如果传递了，则表示是管理用户的钱包，备注：租户 id和用户 id只会传递一个
 
+    goBackUri?: string // 返回列表时，需要返回的 uri
+
 }
 
 // 用户钱包
@@ -270,7 +272,17 @@ export default function (props: IUserWallet) {
 
                                         icon={<RollbackOutlined/>}
                                         onClick={() => {
-                                            GoPage(props.tenantId ? PathConstant.SYS_TENANT_WALLET_PATH : PathConstant.SYS_USER_WALLET_PATH)
+
+                                            if (props.goBackUri) {
+
+                                                GoPage(props.goBackUri)
+
+                                            } else {
+
+                                                GoPage(props.tenantId ? PathConstant.SYS_TENANT_WALLET_PATH : PathConstant.SYS_USER_WALLET_PATH)
+
+                                            }
+
                                         }}
 
                                     >返回列表</Button>

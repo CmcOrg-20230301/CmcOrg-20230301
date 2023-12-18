@@ -407,21 +407,23 @@ export default function () {
 
                         if (currentForm.current.withdrawStatus as any === SysUserWalletWithdrawStatusEnum.ACCEPT.code) {
 
-                            resArr.push(<Button key={"1"} type={"primary"} onClick={() => {
+                            resArr.push(
+                                <Button key={"1"} type={"primary"} onClick={() => {
 
-                                ExecConfirm(() => {
+                                    ExecConfirm(() => {
 
-                                    return SysUserWalletWithdrawLogSuccess({id: currentForm.current.id!}).then(res => {
+                                        return SysUserWalletWithdrawLogSuccess({id: currentForm.current.id!}).then(res => {
 
-                                        ToastSuccess(res.msg)
-                                        actionRef.current?.reload()
-                                        setFormOpen(false)
+                                            ToastSuccess(res.msg)
+                                            actionRef.current?.reload()
+                                            setFormOpen(false)
 
-                                    })
+                                        })
 
-                                }, undefined, `确定成功【${currentForm.current.id}】吗？`)
+                                    }, undefined, `确定成功【${currentForm.current.id}】吗？`)
 
-                            }}>成功</Button>)
+                                }}>成功</Button>
+                            )
 
                             resArr.push(
                                 <UserWalletWithdrawLogRejectModal
@@ -432,6 +434,26 @@ export default function () {
                                     actionRef={actionRef}
 
                                 />
+                            )
+
+                        } else if (currentForm.current.withdrawStatus as any === SysUserWalletWithdrawStatusEnum.COMMIT.code) {
+
+                            resArr.push(
+                                <Button key={"1"} type={"primary"} onClick={() => {
+
+                                    ExecConfirm(() => {
+
+                                        return SysUserWalletWithdrawLogAccept({idSet: [currentForm.current.id!]}).then(res => {
+
+                                            ToastSuccess(res.msg)
+                                            actionRef.current?.reload()
+                                            setFormOpen(false)
+
+                                        })
+
+                                    }, undefined, `确定受理【${currentForm.current.id}】吗？`)
+
+                                }}>受理</Button>
                             )
 
                         }

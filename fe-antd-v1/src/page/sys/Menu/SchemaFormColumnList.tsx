@@ -89,6 +89,19 @@ const SchemaFormColumnList = (): ProFormColumnsType<SysMenuInsertOrUpdateDTO>[] 
                             title: '路径',
                             dataIndex: 'path',
                             tooltip: '示例：/admin/welcome，注意：相同父菜单下，子菜单路径不能重复',
+                            formItemProps: {
+                                rules: [
+                                    {
+                                        whitespace: true,
+                                    },
+                                ],
+                            },
+                            valueType: 'textarea',
+                            fieldProps: {
+                                showCount: true,
+                                maxLength: 255,
+                                allowClear: true,
+                            },
                         },
 
                         {
@@ -105,6 +118,7 @@ const SchemaFormColumnList = (): ProFormColumnsType<SysMenuInsertOrUpdateDTO>[] 
                             title: '图标',
                             dataIndex: 'icon',
                             valueType: 'select',
+                            tooltip: '链接：https://ant-design.antgroup.com/components/icon-cn',
                             fieldProps: {
 
                                 showSearch: true,

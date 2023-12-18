@@ -1,4 +1,4 @@
-import {GetDictList, NoFormGetDictTreeList, YesNoDict} from "@/util/DictUtil";
+import {GetDictList, GetDictListByKey, NoFormGetDictTreeList, YesNoDict} from "@/util/DictUtil";
 import {ActionType, ModalForm, ProColumns, ProFormText} from "@ant-design/pro-components";
 import {
     SysUserDeleteByIdSet,
@@ -15,7 +15,7 @@ import CommonConstant from "@/model/constant/CommonConstant";
 import {EllipsisOutlined, EyeOutlined} from "@ant-design/icons";
 import {Validate} from "@/util/ValidatorUtil";
 import {PasswordRSAEncrypt, RSAEncryptPro} from "@/util/RsaUtil";
-import {Dropdown, TreeSelect} from "antd";
+import {Dropdown, TreeSelect, Typography} from "antd";
 import {SysTenantDictList} from "@/api/http/SysTenant";
 import {SearchTransform} from "@/util/CommonUtil";
 import {HandlerRegion} from "@/util/StrUtil";
@@ -57,7 +57,7 @@ const TableColumnList = (currentForm: React.MutableRefObject<SysUserInsertOrUpda
     },
 
     {
-        title: '头像', dataIndex: 'avatarFileId', valueType: 'image',
+        title: '头像', dataIndex: 'avatarFileId', valueType: 'image', width: 90,
         fieldProps: {
             preview: {
                 mask: <EyeOutlined title={"预览"}/>,
@@ -70,17 +70,52 @@ const TableColumnList = (currentForm: React.MutableRefObject<SysUserInsertOrUpda
         }
     },
 
-    {title: '昵称', dataIndex: 'nickname', ellipsis: true, width: 120,},
+    {
+        title: '昵称', dataIndex: 'nickname', ellipsis: true, width: 60, render: (dom, entity) => {
+            return <Typography.Text ellipsis={{tooltip: true}}
+                                    style={{width: 60}}>{dom}</Typography.Text>
+        }
+    },
 
-    {title: '登录名', dataIndex: 'signInName', ellipsis: true, width: 120,},
+    {
+        title: '登录名', dataIndex: 'signInName', ellipsis: true, width: 60, render: (dom, entity) => {
+            return <Typography.Text ellipsis={{tooltip: true}}
+                                    style={{width: 60}}>{dom}</Typography.Text>
+        }
+    },
 
-    {title: '邮箱', dataIndex: 'email', ellipsis: true, width: 120,},
+    {
+        title: '邮箱', dataIndex: 'email', ellipsis: true, width: 60, render: (dom, entity) => {
+            return <Typography.Text ellipsis={{tooltip: true}}
+                                    style={{width: 60}}>{dom}</Typography.Text>
+        }
+    },
 
-    {title: '手机号', dataIndex: 'phone', ellipsis: true, width: 120,},
+    {
+        title: '手机号', dataIndex: 'phone', ellipsis: true, width: 60, render: (dom, entity) => {
+            return <Typography.Text ellipsis={{tooltip: true}}
+                                    style={{width: 60}}>{dom}</Typography.Text>
+        }
+    },
 
     {title: '微信appId', dataIndex: 'wxAppId', ellipsis: true, width: 120, hideInTable: true},
 
     {title: '微信openId', dataIndex: 'wxOpenId', ellipsis: true, width: 120, hideInTable: true},
+
+    {
+        title: '注册终端', dataIndex: 'signUpType', ellipsis: true, width: 60, valueType: 'select',
+        request: () => {
+            return GetDictListByKey('sys_request_category')
+        },
+        fieldProps: {
+            allowClear: true,
+            showSearch: true,
+        },
+        render: (dom, entity) => {
+            return <Typography.Text ellipsis={{tooltip: true}}
+                                    style={{width: 60}}>{dom}</Typography.Text>
+        }
+    },
 
     {
         title: '是否正常',
@@ -102,7 +137,6 @@ const TableColumnList = (currentForm: React.MutableRefObject<SysUserInsertOrUpda
         hideInSearch: true,
         valueType: 'fromNow',
         sorter: true,
-        defaultSortOrder: 'descend',
         width: 90,
     },
 
@@ -126,6 +160,8 @@ const TableColumnList = (currentForm: React.MutableRefObject<SysUserInsertOrUpda
         dataIndex: 'lastActiveTime',
         hideInSearch: true,
         valueType: 'fromNow',
+        sorter: true,
+        defaultSortOrder: 'descend',
         width: 90,
     },
 

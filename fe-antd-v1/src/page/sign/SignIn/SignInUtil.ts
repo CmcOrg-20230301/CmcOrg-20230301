@@ -7,11 +7,11 @@ import {getAppDispatch, getAppNav} from "@/MyApp";
 import PathConstant from "@/model/constant/PathConstant";
 import {Validate} from "@/util/ValidatorUtil";
 import {SignEmailSignInPassword} from "@/api/http/SignEmail";
-import {SignSignInNameSignInPassword} from "@/api/http/SignSignInName";
+import {SignInVO, SignSignInNameSignInPassword} from "@/api/http/SignSignInName";
 import {signOut} from "@/store/userSlice";
 import {SetTenantIdToStorage} from "@/util/CommonUtil";
 import {ClearStorage} from "@/util/UserUtil";
-import CommonConstant from "@/model/constant/CommonConstant";
+import {GetServerTimestamp} from "@/util/DateUtil";
 
 /**
  * 处理表单
@@ -39,7 +39,7 @@ export async function SignInFormHandler(form: ISignInForm) {
 /**
  * 登录成功之后的处理
  */
-export function SignInSuccess(apiResultVO: ApiResultVO, tenantId: string, path: string = PathConstant.ADMIN_PATH, showMsg: boolean = true, redirectFlag: boolean = true) {
+export function SignInSuccess(apiResultVO: ApiResultVO<SignInVO>, tenantId: string, path: string = PathConstant.ADMIN_PATH, showMsg: boolean = true, redirectFlag: boolean = true) {
 
     ClearStorage()
 
@@ -49,8 +49,9 @@ export function SignInSuccess(apiResultVO: ApiResultVO, tenantId: string, path: 
         ToastSuccess('欢迎回来~')
     }
 
-    localStorage.setItem(LocalStorageKey.JWT, apiResultVO.data)
-    localStorage.setItem(LocalStorageKey.JWT_EXPIRE_TIME, String(new Date().getTime() + CommonConstant.JWT_EXPIRE_TIME))
+    localStorage.setItem(LocalStorageKey.JWT, apiResultVO.data.jwt!)
+
+    localStorage.setItem(LocalStorageKey.JWT_EXPIRE_TIME, String(GetServerTimestamp() + Number(apiResultVO.data.jwtExpireTime)))
 
     SetTenantIdToStorage(tenantId);
 

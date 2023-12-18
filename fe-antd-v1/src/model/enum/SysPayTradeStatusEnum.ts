@@ -28,6 +28,7 @@ export const SysPayTradeStatusEnum: ISysPayTradeStatusEnum = {
     WAIT_BUYER_PAY: {
         code: 101,
         name: '等待付款',
+        status: 'processing'
     },
 
     WAIT_BUYER_CONSUME: {
@@ -43,6 +44,7 @@ export const SysPayTradeStatusEnum: ISysPayTradeStatusEnum = {
     TRADE_SUCCESS: {
         code: 401,
         name: '支付成功', //
+        status: 'success'
     },
 
     TRADE_FINISHED: {
@@ -59,5 +61,15 @@ Object.keys(SysPayTradeStatusEnum).forEach(key => {
     const item = SysPayTradeStatusEnum[key];
 
     SysPayTradeStatusEnumDict.set(item.code as number, {text: item.name})
+
+})
+
+export const SysPayTradeStatusEnumStatusDict = new Map<number, ProSchemaValueEnumType>();
+
+Object.keys(SysPayTradeStatusEnum).forEach(key => {
+
+    const item = SysPayTradeStatusEnum[key];
+
+    SysPayTradeStatusEnumStatusDict.set(item.code as number, {text: item.name, status: item.status})
 
 })

@@ -73,6 +73,30 @@ export interface SysTenantDO {
     enableFlag?: boolean // 是否启用
 }
 
+// 分页排序查询
+export function SysTenantPage(form: SysTenantPageDTO, config?: AxiosRequestConfig) {
+    return $http.myProPagePost<SysTenantDO>('/sys/tenant/page', form, config)
+}
+
+export interface NotNullLong {
+    value?: string // 值，required：true，format：int64
+}
+
+// 通过主键id，获取租户名
+export function SysTenantGetNameById(form: NotNullLong, config?: AxiosRequestConfig) {
+    return $http.myPost<string>('/sys/tenant/getNameById', form, config)
+}
+
+// 删除租户所有菜单
+export function SysTenantDeleteTenantAllMenu(form: NotEmptyIdSet, config?: AxiosRequestConfig) {
+    return $http.myPost<string>('/sys/tenant/deleteTenantAllMenu', form, config)
+}
+
+// 批量：冻结
+export function SysTenantFreeze(form: NotEmptyIdSet, config?: AxiosRequestConfig) {
+    return $http.myPost<string>('/sys/tenant/freeze', form, config)
+}
+
 // 查询：树结构
 export function SysTenantTree(form: SysTenantPageDTO, config?: AxiosRequestConfig) {
     return $http.myProTreePost<SysTenantDO>('/sys/tenant/tree', form, config)
@@ -86,11 +110,6 @@ export interface NotNullIdAndNotEmptyLongSet {
 // 执行：同步菜单给租户
 export function SysTenantDoSyncMenu(form: NotNullIdAndNotEmptyLongSet, config?: AxiosRequestConfig) {
     return $http.myPost<string>('/sys/tenant/doSyncMenu', form, config)
-}
-
-// 分页排序查询
-export function SysTenantPage(form: SysTenantPageDTO, config?: AxiosRequestConfig) {
-    return $http.myProPagePost<SysTenantDO>('/sys/tenant/page', form, config)
 }
 
 export interface NotNullId {
@@ -125,13 +144,9 @@ export function SysTenantInfoById(form: NotNullId, config?: AxiosRequestConfig) 
     return $http.myProPost<SysTenantInfoByIdVO>('/sys/tenant/infoById', form, config)
 }
 
-export interface NotNullLong {
-    value?: string // 值，required：true，format：int64
-}
-
-// 通过主键id，获取租户名
-export function SysTenantGetNameById(form: NotNullLong, config?: AxiosRequestConfig) {
-    return $http.myPost<string>('/sys/tenant/getNameById', form, config)
+// 批量：解冻
+export function SysTenantThaw(form: NotEmptyIdSet, config?: AxiosRequestConfig) {
+    return $http.myPost<string>('/sys/tenant/thaw', form, config)
 }
 
 // 执行：同步字典给租户

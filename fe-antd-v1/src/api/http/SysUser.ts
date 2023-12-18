@@ -60,6 +60,15 @@ export function SysUserInfoById(form: NotNullId, config?: AxiosRequestConfig) {
     return $http.myProPost<SysUserInfoByIdVO>('/sys/user/infoById', form, config)
 }
 
+export interface NotEmptyIdSet {
+    idSet?: string[] // 主键 idSet，required：true，format：int64
+}
+
+// 批量：冻结
+export function SysUserFreeze(form: NotEmptyIdSet, config?: AxiosRequestConfig) {
+    return $http.myPost<string>('/sys/user/freeze', form, config)
+}
+
 export interface SysUserUpdatePasswordDTO {
     idSet?: string[] // 主键 idSet，required：true，format：int64
     newPassword?: string // 前端加密之后的，新密码
@@ -69,10 +78,6 @@ export interface SysUserUpdatePasswordDTO {
 // 批量：修改密码
 export function SysUserUpdatePassword(form: SysUserUpdatePasswordDTO, config?: AxiosRequestConfig) {
     return $http.myPost<string>('/sys/user/updatePassword', form, config)
-}
-
-export interface NotEmptyIdSet {
-    idSet?: string[] // 主键 idSet，required：true，format：int64
 }
 
 // 批量：注销用户
@@ -85,14 +90,19 @@ export function SysUserRefreshJwtSecretSuf(form: NotEmptyIdSet, config?: AxiosRe
     return $http.myPost<string>('/sys/user/refreshJwtSecretSuf', form, config)
 }
 
+// 批量：解冻
+export function SysUserThaw(form: NotEmptyIdSet, config?: AxiosRequestConfig) {
+    return $http.myPost<string>('/sys/user/thaw', form, config)
+}
+
 export interface SysUserPageDTO {
     passwordFlag?: boolean // 是否有密码
     wxOpenId?: string // 微信 openId
+    signUpType?: string // 请求类别
     ip?: string // ip
     wxAppId?: string // 微信 appId
     pageSize?: string // 每页显示条数，format：int64
     endCreateTime?: string // 创建结束时间，format：date-time
-    idSet?: string[] // 主键 idSet，备注：后端使用，前端不使用，format：int64
     current?: string // 第几页，format：int64
     beginCreateTime?: string // 创建开始时间，format：date-time
     phone?: string // 手机号码
@@ -115,6 +125,7 @@ export interface SysUserPageVO {
     lastActiveTime?: string // 最近活跃时间，format：date-time
     avatarFileId?: string // 头像 fileId（文件主键 id），备注：没有时则为 -1，format：int64
     wxOpenId?: string // 微信 openId
+    signUpType?: string // 请求类别
     wxAppId?: string // 微信 appId
     deptIdSet?: string[] // 部门 idSet，format：int64
     phone?: string // 手机号码，会脱敏
@@ -137,6 +148,7 @@ export function SysUserPage(form: SysUserPageDTO, config?: AxiosRequestConfig) {
 
 export interface SysUserDictListDTO {
     addAdminFlag?: boolean // 是否追加 admin账号
+    allTenantUserFlag?: boolean // 是否是所有租户下的用户：默认：false
 }
 
 export interface DictVO {

@@ -47,9 +47,14 @@ export interface SignPhoneSignInCodeDTO {
     tenantId?: string // 租户 id，可以为空，为空则表示：默认租户：0，format：int64
 }
 
+export interface SignInVO {
+    jwtExpireTime?: string // jwt过期时间，format：int64
+    jwt?: string // jwt
+}
+
 // 手机验证码登录
 export function SignPhoneSignInCode(form: SignPhoneSignInCodeDTO, config?: AxiosRequestConfig) {
-    return $http.myPost<string>('/sign/phone/sign/in/code', form, config)
+    return $http.myPost<SignInVO>('/sign/phone/sign/in/code', form, config)
 }
 
 // 修改密码-发送验证码
@@ -127,5 +132,5 @@ export interface SignPhoneSignInPasswordDTO {
 
 // 手机账号密码登录
 export function SignPhoneSignInPassword(form: SignPhoneSignInPasswordDTO, config?: AxiosRequestConfig) {
-    return $http.myPost<string>('/sign/phone/sign/in/password', form, config)
+    return $http.myPost<SignInVO>('/sign/phone/sign/in/password', form, config)
 }
