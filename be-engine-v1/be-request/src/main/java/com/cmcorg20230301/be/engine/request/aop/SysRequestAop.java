@@ -223,8 +223,13 @@ public class SysRequestAop {
         // 获取：userId的值
         Long userId = MyJwtUtil.getPayloadMapUserIdValue(jwt.getPayload().getClaimsJson());
 
+        // 获取：tenantId的值
+        Long tenantId = MyJwtUtil.getPayloadMapTenantIdValue(jwt.getPayload().getClaimsJson());
+
         sysRequestDO.setCreateId(userId);
         sysRequestDO.setUpdateId(userId);
+
+        sysRequestDO.setTenantId(tenantId);
 
     }
 
