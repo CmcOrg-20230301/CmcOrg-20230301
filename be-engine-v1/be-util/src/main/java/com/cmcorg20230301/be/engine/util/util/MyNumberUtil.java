@@ -21,4 +21,13 @@ public class MyNumberUtil {
 
     }
 
+    /**
+     * 获取：字符串
+     */
+    public static String getStr(BigDecimal number) {
+
+        return number.setScale(2, RoundingMode.HALF_UP).toPlainString();
+
+    }
+
 }
