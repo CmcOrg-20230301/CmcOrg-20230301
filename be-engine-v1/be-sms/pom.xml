@@ -14,16 +14,10 @@
 
     <dependencies>
 
-        <!-- be-sms-tencent -->
+        <!-- be-security -->
         <dependency>
             <groupId>${cmcorg.groupId}</groupId>
-            <artifactId>be-sms-tencent</artifactId>
-        </dependency>
-
-        <!-- be-sms-aliyun -->
-        <dependency>
-            <groupId>${cmcorg.groupId}</groupId>
-            <artifactId>be-sms-aliyun</artifactId>
+            <artifactId>be-security</artifactId>
         </dependency>
 
     </dependencies>

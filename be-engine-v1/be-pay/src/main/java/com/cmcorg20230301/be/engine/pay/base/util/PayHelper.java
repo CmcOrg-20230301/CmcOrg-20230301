@@ -39,7 +39,8 @@ public class PayHelper {
      * 获取：SysPayConfigurationDO对象
      */
     @NotNull
-    public static SysPayConfigurationDO getSysPayConfigurationDO(@Nullable Long tenantId, Integer sysPayType, @Nullable Boolean useParentTenantPayFlag) {
+    public static SysPayConfigurationDO getSysPayConfigurationDO(@Nullable Long tenantId, Integer sysPayType,
+        @Nullable Boolean useParentTenantPayFlag) {
 
         if (tenantId == null) {
             tenantId = BaseConstant.TOP_TENANT_ID;
@@ -80,7 +81,7 @@ public class PayHelper {
     }
 
     /**
-     * 处理：默认支付
+     * 获取：默认支付
      */
     public static SysPayConfigurationDO getDefaultSysPayConfigurationDO(@Nullable Long tenantId,
         @Nullable Boolean useParentTenantPayFlag) {

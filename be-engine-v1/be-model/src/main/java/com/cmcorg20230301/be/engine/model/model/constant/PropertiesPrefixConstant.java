@@ -15,12 +15,6 @@ public interface PropertiesPrefixConstant {
 
     String CACHE = PRE_BE + "cache"; // 缓存相关
 
-    String SMS = PRE_BE + "sms"; // 短信服务相关
-
-    String SMS_TENCENT = SMS + ".tencent"; // 腾讯短信相关
-
-    String SMS_ALI_YUN = SMS + ".aliyun"; // 阿里云短信相关
-
     String FILE = PRE_BE + "file"; // 文件相关
 
     String FILE_TYPE = FILE + ".type"; // 文件类型相关
