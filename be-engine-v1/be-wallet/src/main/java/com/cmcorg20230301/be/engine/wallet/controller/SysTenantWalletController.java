@@ -1,7 +1,7 @@
 package com.cmcorg20230301.be.engine.wallet.controller;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.cmcorg20230301.be.engine.model.model.dto.ChangeBigDecimalNumberDTO;
+import com.cmcorg20230301.be.engine.model.model.dto.ChangeBigDecimalNumberIdSetDTO;
 import com.cmcorg20230301.be.engine.model.model.dto.NotEmptyIdSet;
 import com.cmcorg20230301.be.engine.model.model.dto.NotNullLong;
 import com.cmcorg20230301.be.engine.security.model.vo.ApiResultVO;
@@ -66,7 +66,7 @@ public class SysTenantWalletController {
     @Operation(summary = "通过租户主键 idSet，加减可提现的钱")
     @PostMapping("/addWithdrawableMoney/background")
     @PreAuthorize("hasAuthority('sysTenantWallet:addWithdrawableMoney:background')")
-    public ApiResultVO<String> addWithdrawableMoneyBackground(@RequestBody @Valid ChangeBigDecimalNumberDTO dto) {
+    public ApiResultVO<String> addWithdrawableMoneyBackground(@RequestBody @Valid ChangeBigDecimalNumberIdSetDTO dto) {
         return ApiResultVO.okMsg(baseService.addWithdrawableMoneyBackground(dto));
     }
 

@@ -14,7 +14,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.baomidou.mybatisplus.extension.toolkit.ChainWrappers;
 import com.cmcorg20230301.be.engine.model.model.constant.BaseConstant;
-import com.cmcorg20230301.be.engine.model.model.dto.ChangeBigDecimalNumberDTO;
+import com.cmcorg20230301.be.engine.model.model.dto.ChangeBigDecimalNumberIdSetDTO;
 import com.cmcorg20230301.be.engine.model.model.dto.NotEmptyIdSet;
 import com.cmcorg20230301.be.engine.model.model.dto.NotNullLong;
 import com.cmcorg20230301.be.engine.pay.base.model.dto.PayDTO;
@@ -316,7 +316,7 @@ public class SysUserWalletServiceImpl extends ServiceImpl<SysUserWalletMapper, S
      */
     @Override
     @DSTransactional
-    public String addWithdrawableMoneyBackground(ChangeBigDecimalNumberDTO dto) {
+    public String addWithdrawableMoneyBackground(ChangeBigDecimalNumberIdSetDTO dto) {
 
         Long currentUserId = UserUtil.getCurrentUserId();
 

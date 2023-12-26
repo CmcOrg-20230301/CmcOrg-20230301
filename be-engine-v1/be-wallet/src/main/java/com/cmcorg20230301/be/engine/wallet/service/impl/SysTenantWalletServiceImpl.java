@@ -4,7 +4,7 @@ import cn.hutool.core.lang.func.Func1;
 import com.baomidou.dynamic.datasource.annotation.DSTransactional;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.cmcorg20230301.be.engine.model.model.constant.BaseConstant;
-import com.cmcorg20230301.be.engine.model.model.dto.ChangeBigDecimalNumberDTO;
+import com.cmcorg20230301.be.engine.model.model.dto.ChangeBigDecimalNumberIdSetDTO;
 import com.cmcorg20230301.be.engine.model.model.dto.NotEmptyIdSet;
 import com.cmcorg20230301.be.engine.model.model.dto.NotNullLong;
 import com.cmcorg20230301.be.engine.security.model.entity.BaseEntityNoId;
@@ -153,7 +153,7 @@ public class SysTenantWalletServiceImpl implements SysTenantWalletService {
      */
     @Override
     @DSTransactional
-    public String addWithdrawableMoneyBackground(ChangeBigDecimalNumberDTO dto) {
+    public String addWithdrawableMoneyBackground(ChangeBigDecimalNumberIdSetDTO dto) {
 
         Long currentUserId = UserUtil.getCurrentUserId();
 

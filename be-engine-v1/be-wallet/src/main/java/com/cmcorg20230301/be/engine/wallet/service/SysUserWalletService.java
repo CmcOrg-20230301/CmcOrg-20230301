@@ -2,7 +2,7 @@ package com.cmcorg20230301.be.engine.wallet.service;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.cmcorg20230301.be.engine.model.model.dto.ChangeBigDecimalNumberDTO;
+import com.cmcorg20230301.be.engine.model.model.dto.ChangeBigDecimalNumberIdSetDTO;
 import com.cmcorg20230301.be.engine.model.model.dto.NotEmptyIdSet;
 import com.cmcorg20230301.be.engine.model.model.dto.NotNullLong;
 import com.cmcorg20230301.be.engine.pay.base.model.vo.BuyVO;
@@ -29,7 +29,7 @@ public interface SysUserWalletService extends IService<SysUserWalletDO> {
 
     SysUserWalletDO infoByIdUserSelf();
 
-    String addWithdrawableMoneyBackground(ChangeBigDecimalNumberDTO dto);
+    String addWithdrawableMoneyBackground(ChangeBigDecimalNumberIdSetDTO dto);
 
     String doAddWithdrawableMoney(Long currentUserId, Date date, Set<Long> idSet, BigDecimal addNumber,
         ISysUserWalletLogType iSysUserWalletLogType, boolean lowErrorFlag, boolean checkWalletEnableFlag,

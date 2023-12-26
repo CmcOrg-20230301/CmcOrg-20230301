@@ -9,7 +9,7 @@ import java.math.BigDecimal;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
-public class ChangeBigDecimalNumberDTO extends NotEmptyIdSet {
+public class ChangeBigDecimalNumberDTO extends NotNullId {
 
     @NotNull
     @Schema(description = "需要改变的数值")

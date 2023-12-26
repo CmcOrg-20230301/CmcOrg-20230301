@@ -265,6 +265,16 @@ public class SysTenantUtil {
     }
 
     /**
+     * 通过：租户 id，获取：下一级租户的主键 idSet，备注：只获取一级
+     */
+    public static Set<Long> getFirstChildrenTenantIdSet(Long tenantId) {
+
+        return getSysTenantCacheMap(false).values().stream().filter(it -> it.getParentId().equals(tenantId))
+            .map(BaseEntity::getId).collect(Collectors.toSet());
+
+    }
+
+    /**
      * 检查：不能是自身租户，并且必须是子级租户
      * 注意：请自行检查：checkTenantIdSet，是否是属于当前用户的所管理的租户
      *
