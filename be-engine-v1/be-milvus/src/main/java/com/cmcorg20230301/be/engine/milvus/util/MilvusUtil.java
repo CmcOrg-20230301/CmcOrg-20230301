@@ -298,7 +298,7 @@ public class MilvusUtil {
 
         SearchResultsWrapper searchResultsWrapper = new SearchResultsWrapper(searchResults.getData().getResults());
 
-        if (searchResultsWrapper.getRowRecords().size() == 0) { // 防止：没有匹配数据
+        if (searchResultsWrapper.getRowRecords(0).size() == 0) { // 防止：没有匹配数据
             return null;
         }
 

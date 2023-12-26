@@ -107,7 +107,7 @@ public class MyPageDTO {
     @NotNull
     public static OrderItem createTimeOrderItem() {
 
-        return new OrderItem("createTime", false);
+        return OrderItem.desc("createTime");
 
     }
 
