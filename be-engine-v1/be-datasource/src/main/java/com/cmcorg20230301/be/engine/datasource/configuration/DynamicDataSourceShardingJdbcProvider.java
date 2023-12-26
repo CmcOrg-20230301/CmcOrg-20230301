@@ -1,5 +1,6 @@
 package com.cmcorg20230301.be.engine.datasource.configuration;
 
+import cn.hutool.core.map.MapUtil;
 import com.baomidou.dynamic.datasource.DynamicRoutingDataSource;
 import com.baomidou.dynamic.datasource.creator.DefaultDataSourceCreator;
 import com.baomidou.dynamic.datasource.provider.AbstractDataSourceProvider;
@@ -14,7 +15,6 @@ import org.springframework.context.annotation.Primary;
 
 import javax.annotation.Resource;
 import javax.sql.DataSource;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -46,7 +46,7 @@ public class DynamicDataSourceShardingJdbcProvider {
             @Override
             public Map<String, DataSource> loadDataSources() {
 
-                Map<String, DataSource> dataSourceMap = new HashMap<>();
+                Map<String, DataSource> dataSourceMap = MapUtil.newHashMap();
 
                 // 将 shardingJdbc 管理的数据源也交给动态数据源管理，并替换：默认数据源
                 dataSourceMap.put(dynamicDataSourceProperties.getPrimary(), shardingSphereDataSource);
