@@ -354,7 +354,7 @@ public class SysFileUtil {
             Long currentUserId = UserUtil.getCurrentUserId();
 
             // 检查：是否是该文件的拥有者
-            if (!currentUserId.equals(sysFileDO.getBelongId())) {
+            if (!currentUserId.equals(sysFileDO.getBelongId()) && !UserUtil.getCurrentUserAdminFlag(currentUserId)) {
 
                 // 检查：是否有可读权限
                 boolean exists = sysFileAuthService.lambdaQuery().eq(SysFileAuthDO::getFileId, fileId)
