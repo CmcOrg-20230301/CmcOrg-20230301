@@ -197,8 +197,8 @@ public class SysAreaServiceImpl extends ServiceImpl<SysAreaMapper, SysAreaDO> im
             areaRefDeptService.lambdaQuery().eq(SysAreaRefDeptDO::getAreaId, notNullId.getId())
                 .select(SysAreaRefDeptDO::getDeptId).list();
 
-        sysAreaInfoByIdVO
-            .setDeptIdSet(areaRefDeptDOList.stream().map(SysAreaRefDeptDO::getDeptId).collect(Collectors.toSet()));
+        sysAreaInfoByIdVO.setDeptIdSet(
+            areaRefDeptDOList.stream().map(SysAreaRefDeptDO::getDeptId).collect(Collectors.toSet()));
 
         // 处理：父级 id
         MyEntityUtil.handleParentId(sysAreaInfoByIdVO);
