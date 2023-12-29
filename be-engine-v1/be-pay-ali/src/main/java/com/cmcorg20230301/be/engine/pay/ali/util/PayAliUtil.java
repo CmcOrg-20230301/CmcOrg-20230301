@@ -14,8 +14,8 @@ import com.cmcorg20230301.be.engine.pay.base.model.bo.SysPayReturnBO;
 import com.cmcorg20230301.be.engine.pay.base.model.dto.PayDTO;
 import com.cmcorg20230301.be.engine.pay.base.model.entity.SysPayConfigurationDO;
 import com.cmcorg20230301.be.engine.pay.base.model.enums.SysPayTradeStatusEnum;
-import com.cmcorg20230301.be.engine.pay.base.util.PayHelper;
 import com.cmcorg20230301.be.engine.security.model.vo.ApiResultVO;
+import com.cmcorg20230301.be.engine.util.util.MyNumberUtil;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -92,7 +92,7 @@ public class PayAliUtil {
             AlipayTradePrecreateModel model = new AlipayTradePrecreateModel();
 
             model.setOutTradeNo(dto.getOutTradeNo());
-            model.setTotalAmount(PayHelper.getPayTotalAmountStr(dto.getTotalAmount()));
+            model.setTotalAmount(MyNumberUtil.getStr(dto.getTotalAmount()));
             model.setSubject(dto.getSubject());
             model.setBody(dto.getBody());
             model.setTimeExpire(DateUtil.formatDateTime(dto.getExpireTime()));
@@ -126,7 +126,7 @@ public class PayAliUtil {
             AlipayTradeAppPayModel model = new AlipayTradeAppPayModel();
 
             model.setOutTradeNo(dto.getOutTradeNo());
-            model.setTotalAmount(PayHelper.getPayTotalAmountStr(dto.getTotalAmount()));
+            model.setTotalAmount(MyNumberUtil.getStr(dto.getTotalAmount()));
             model.setSubject(dto.getSubject());
             model.setBody(dto.getBody());
             model.setTimeExpire(DateUtil.formatDateTime(dto.getExpireTime()));
@@ -160,7 +160,7 @@ public class PayAliUtil {
             AlipayTradePagePayModel model = new AlipayTradePagePayModel();
 
             model.setOutTradeNo(dto.getOutTradeNo());
-            model.setTotalAmount(PayHelper.getPayTotalAmountStr(dto.getTotalAmount()));
+            model.setTotalAmount(MyNumberUtil.getStr(dto.getTotalAmount()));
             model.setSubject(dto.getSubject());
             model.setBody(dto.getBody());
             model.setTimeExpire(DateUtil.formatDateTime(dto.getExpireTime()));
@@ -195,7 +195,7 @@ public class PayAliUtil {
             AlipayTradeWapPayModel model = new AlipayTradeWapPayModel();
 
             model.setOutTradeNo(dto.getOutTradeNo());
-            model.setTotalAmount(PayHelper.getPayTotalAmountStr(dto.getTotalAmount()));
+            model.setTotalAmount(MyNumberUtil.getStr(dto.getTotalAmount()));
             model.setSubject(dto.getSubject());
             model.setBody(dto.getBody());
             model.setTimeExpire(DateUtil.formatDateTime(dto.getExpireTime()));
