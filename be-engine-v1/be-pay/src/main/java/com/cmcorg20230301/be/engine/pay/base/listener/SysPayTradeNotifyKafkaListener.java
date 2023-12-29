@@ -6,8 +6,7 @@ import com.cmcorg20230301.be.engine.kafka.model.enums.KafkaTopicEnum;
 import com.cmcorg20230301.be.engine.model.model.constant.LogTopicConstant;
 import com.cmcorg20230301.be.engine.pay.base.model.configuration.ISysPayRefHandler;
 import com.cmcorg20230301.be.engine.pay.base.model.entity.SysPayDO;
-import com.cmcorg20230301.be.engine.security.configuration.base.BaseConfiguration;
-import com.cmcorg20230301.be.engine.security.properties.CommonProperties;
+import com.cmcorg20230301.be.engine.security.util.KafkaHelper;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.Nullable;
@@ -36,11 +35,9 @@ public class SysPayTradeNotifyKafkaListener {
     // 目的：Long 转 String，Enum 转 code
     private static ObjectMapper objectMapper;
 
-    private static CommonProperties commonProperties;
-
     public SysPayTradeNotifyKafkaListener(
-        @Autowired(required = false) @Nullable List<ISysPayRefHandler> iSysPayRefHandlerList, ObjectMapper objectMapper,
-        CommonProperties commonProperties, BaseConfiguration baseConfiguration) {
+        @Autowired(required = false) @Nullable List<ISysPayRefHandler> iSysPayRefHandlerList,
+        ObjectMapper objectMapper) {
 
         if (CollUtil.isNotEmpty(iSysPayRefHandlerList)) {
 
@@ -54,8 +51,6 @@ public class SysPayTradeNotifyKafkaListener {
 
         SysPayTradeNotifyKafkaListener.objectMapper = objectMapper;
 
-        SysPayTradeNotifyKafkaListener.commonProperties = commonProperties;
-
     }
 
     @KafkaHandler
@@ -63,22 +58,8 @@ public class SysPayTradeNotifyKafkaListener {
 
         try {
 
-            if (BaseConfiguration.prodFlag()) {
-
-                if (CollUtil.containsAny(commonProperties.getProdNotHandleKafkaTopSet(), TOPIC_LIST)) {
-
-                    return;
-
-                }
-
-            } else {
-
-                if (CollUtil.containsAny(commonProperties.getDevNotHandleKafkaTopSet(), TOPIC_LIST)) {
-
-                    return;
-
-                }
-
+            if (KafkaHelper.notHandleKafkaTopCheck(TOPIC_LIST)) {
+                return;
             }
 
             SysPayDO sysPayDO = objectMapper.readValue(recordStr, SysPayDO.class);

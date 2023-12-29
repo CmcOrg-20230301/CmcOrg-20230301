@@ -5,6 +5,7 @@ import com.cmcorg20230301.be.engine.kafka.model.enums.KafkaTopicEnum;
 import com.cmcorg20230301.be.engine.model.model.constant.LogTopicConstant;
 import com.cmcorg20230301.be.engine.other.app.model.dto.SysOtherAppOfficialAccountWxReceiveMessageDTO;
 import com.cmcorg20230301.be.engine.other.app.model.interfaces.ISysOtherAppOfficialAccountWxReceiveMessageHandle;
+import com.cmcorg20230301.be.engine.security.util.KafkaHelper;
 import com.cmcorg20230301.be.engine.security.util.MyExceptionUtil;
 import com.cmcorg20230301.be.engine.security.util.MyThreadUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -53,6 +54,10 @@ public class SysOtherAppOfficialAccountWxReceiveMessageListener {
 
         try {
 
+            if (KafkaHelper.notHandleKafkaTopCheck(TOPIC_LIST)) {
+                return;
+            }
+
             List<SysOtherAppOfficialAccountWxReceiveMessageDTO> sysOtherAppOfficialAccountWxReceiveMessageDTOList =
 
                 recordList.stream().map(it -> {
@@ -69,8 +74,8 @@ public class SysOtherAppOfficialAccountWxReceiveMessageListener {
 
                 }).filter(Objects::nonNull).collect(Collectors.toList());
 
-            if (CollUtil.isNotEmpty(sysOtherAppOfficialAccountWxReceiveMessageDTOList) && CollUtil
-                .isNotEmpty(iSysOtherAppOfficialAccountWxReceiveMessageHandleList)) {
+            if (CollUtil.isNotEmpty(sysOtherAppOfficialAccountWxReceiveMessageDTOList) && CollUtil.isNotEmpty(
+                iSysOtherAppOfficialAccountWxReceiveMessageHandleList)) {
 
                 MyThreadUtil.execute(() -> {
 
