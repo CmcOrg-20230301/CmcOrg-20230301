@@ -40,14 +40,14 @@ public class GeneratePageUtil {
     private String tabIndent = "    "; // 缩进
 
     // Admin Table Page 页面模板
-    private String adminPageTemp = FileUtil.readUtf8String("template/admin/AdminPageTableTemp.tsx");
+    private String adminPageTemp = FileUtil.readUtf8String("template/admin/AdminPageTableTemp.txt");
 
     // Admin Tree Page 页面模板
-    private String adminTreeTemp = FileUtil.readUtf8String("template/admin/AdminPageTreeTemp.tsx");
+    private String adminTreeTemp = FileUtil.readUtf8String("template/admin/AdminPageTreeTemp.txt");
 
     // Admin 表单 页面模板
     private String adminFormFileName = "SchemaFormColumnList" + tsx;
-    private String adminFormTemp = FileUtil.readUtf8String("template/admin/SchemaFormColumnList.tsx");
+    private String adminFormTemp = FileUtil.readUtf8String("template/admin/SchemaFormColumnList.txt");
 
     // Admin Table 页面模板
     private String adminTableFileName = "TableColumnList" + tsx;
