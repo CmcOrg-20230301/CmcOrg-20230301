@@ -2,7 +2,7 @@ import {useRef, useState} from "react";
 import {ActionType, ColumnsState, ModalForm, ProFormDigit, ProTable} from "@ant-design/pro-components";
 import {Space} from "antd";
 import {
-    ChangeBigDecimalNumberDTO,
+    ChangeBigDecimalNumberIdSetDTO,
     SysUserWalletAddWithdrawableMoneyBackground,
     SysUserWalletDO,
     SysUserWalletFrozenByIdSet,
@@ -93,7 +93,7 @@ export default function (props: IWalletUser) {
 
                     <Space size={16}>
 
-                        <ModalForm<ChangeBigDecimalNumberDTO>
+                        <ModalForm<ChangeBigDecimalNumberIdSetDTO>
 
                             modalProps={{
                                 maskClosable: false
@@ -107,9 +107,9 @@ export default function (props: IWalletUser) {
 
                             onFinish={async (form) => {
 
-                                await ExecConfirmPromise(() => {
+                                await ExecConfirmPromise(async () => {
 
-                                    return SysUserWalletAddWithdrawableMoneyBackground({
+                                    await SysUserWalletAddWithdrawableMoneyBackground({
 
                                         idSet: selectedRowKeys as string[],
                                         number: form.number
@@ -141,9 +141,9 @@ export default function (props: IWalletUser) {
 
                         <a className={"green2"} onClick={() => {
 
-                            ExecConfirm(() => {
+                            ExecConfirm(async () => {
 
-                                return SysUserWalletThawByIdSet({idSet: selectedRowKeys as string[]}).then(res => {
+                                await SysUserWalletThawByIdSet({idSet: selectedRowKeys as string[]}).then(res => {
 
                                     ToastSuccess(res.msg)
                                     actionRef.current?.reload()
@@ -157,9 +157,9 @@ export default function (props: IWalletUser) {
 
                         <a className={"red3"} onClick={() => {
 
-                            ExecConfirm(() => {
+                            ExecConfirm(async () => {
 
-                                return SysUserWalletFrozenByIdSet({idSet: selectedRowKeys as string[]}).then(res => {
+                                await SysUserWalletFrozenByIdSet({idSet: selectedRowKeys as string[]}).then(res => {
 
                                     ToastSuccess(res.msg)
                                     actionRef.current?.reload()

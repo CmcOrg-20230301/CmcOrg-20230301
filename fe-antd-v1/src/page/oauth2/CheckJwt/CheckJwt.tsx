@@ -1,12 +1,12 @@
 import {useEffect} from "react";
-import {getAppNav} from "@/MyApp";
+import {GetAppNav} from "@/MyApp";
 import PathConstant from "@/model/constant/PathConstant";
 import LocalStorageKey from "@/model/constant/LocalStorageKey";
 import SessionStorageKey from "@/model/constant/SessionStorageKey";
 import {GetTenantIdFromStorage} from "@/util/CommonUtil";
 
 function GoBlank() {
-    getAppNav()(PathConstant.BLANK_PATH, {state: {showText: '跳转失败：参数不存在'}})
+    GetAppNav()(PathConstant.BLANK_PATH, {state: {showText: '跳转失败：参数不存在'}})
 }
 
 export interface ICheckJwt {
@@ -120,7 +120,7 @@ export default function () {
                     sessionStorage.setItem(SessionStorageKey.OAUTH2_REDIRECT_URI, hasJwtUrl)
                 }
 
-                getAppNav()(form.mainUri)
+                GetAppNav()(form.mainUri)
 
             }
 
@@ -132,7 +132,7 @@ export default function () {
 
             } else {
 
-                getAppNav()(noJwtUrl)
+                GetAppNav()(noJwtUrl)
 
             }
 

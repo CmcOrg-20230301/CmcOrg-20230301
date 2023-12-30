@@ -3,7 +3,7 @@ package com.cmcorg20230301.be.engine.sms.tencent.configuration;
 import cn.hutool.core.util.BooleanUtil;
 import cn.hutool.core.util.StrUtil;
 import com.cmcorg20230301.be.engine.model.model.constant.BaseConstant;
-import com.cmcorg20230301.be.engine.sms.base.model.SysSmsSendBO;
+import com.cmcorg20230301.be.engine.sms.base.model.bo.SysSmsSendBO;
 import com.cmcorg20230301.be.engine.sms.base.model.configuration.ISysSms;
 import com.cmcorg20230301.be.engine.sms.base.model.entity.SysSmsConfigurationDO;
 import com.cmcorg20230301.be.engine.sms.base.model.enums.SysSmsTypeEnum;

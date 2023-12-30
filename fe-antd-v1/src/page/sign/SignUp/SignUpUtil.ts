@@ -2,13 +2,13 @@ import {PasswordRSAEncrypt, RSAEncryptPro} from "@/util/RsaUtil";
 import {ApiResultVO} from "@/util/HttpUtil";
 import PathConstant from "@/model/constant/PathConstant";
 import {ToastSuccess} from "@/util/ToastUtil";
-import {getAppNav} from "@/MyApp";
+import {GetAppNav} from "@/MyApp";
 import {SignEmailSignUp, SignEmailSignUpSendCode} from "@/api/http/SignEmail";
 import {ISignUpForm} from "@/page/sign/SignUp/SignUp";
 
 import {SignSignInNameSignUp} from "@/api/http/SignSignInName";
 import {useEffect} from "react";
-import {CloseWebSocket} from "@/util/webSocket/WebSocketUtil";
+import {CloseWebSocket} from "@/util/WebSocket/WebSocketUtil";
 import {SysTenantGetNameById} from "@/api/http/SysTenant";
 import {GetTenantId} from "@/util/CommonUtil";
 
@@ -106,7 +106,7 @@ function SignUpSuccess(res: ApiResultVO, tenantId: string) {
 
     ToastSuccess(res.msg)
 
-    getAppNav()(`${PathConstant.SIGN_IN_PATH}?tenantId=${tenantId}`)
+    GetAppNav()(`${PathConstant.SIGN_IN_PATH}?tenantId=${tenantId}`)
 
 }
 

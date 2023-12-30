@@ -8,7 +8,7 @@ import {
 } from "@ant-design/pro-components";
 import CommonConstant from "@/model/constant/CommonConstant";
 import {Outlet} from "react-router-dom";
-import {getAppDispatch, getAppNav} from "@/MyApp";
+import {GetAppDispatch, GetAppNav} from "@/MyApp";
 import React, {useEffect, useState} from "react";
 import {SysMenuDO} from "@/api/http/SysMenu";
 import PathConstant from "@/model/constant/PathConstant";
@@ -46,7 +46,7 @@ function goFirstPage(menuList: SysMenuDO[]) {
 
         if (menuList.some(item => item.path === adminRedirectPath)) {
 
-            return getAppNav()(adminRedirectPath)
+            return GetAppNav()(adminRedirectPath)
 
         }
 
@@ -56,7 +56,7 @@ function goFirstPage(menuList: SysMenuDO[]) {
 
         if (item.firstFlag && item.path) {
 
-            getAppNav()(item.path)
+            GetAppNav()(item.path)
             return true
 
         }
@@ -110,7 +110,7 @@ let setPathnameTemp: (value: (((prevState: string) => string) | string)) => void
 export function GoPage(path: string, data?: any) {
 
     setPathnameTemp(path)
-    getAppNav()(path, data)
+    GetAppNav()(path, data)
 
 }
 
@@ -118,7 +118,7 @@ export function GoPage(path: string, data?: any) {
 function AdminLayoutElement(props: IAdminLayoutElement) {
 
     const [pathname, setPathname] = useState<string>('')
-    const appDispatch = getAppDispatch();
+    const appDispatch = GetAppDispatch();
 
     setPathnameTemp = setPathname
 
@@ -299,9 +299,9 @@ function AdminLayoutElement(props: IAdminLayoutElement) {
                                             label: <a
                                                 onClick={() => {
 
-                                                    ExecConfirm(() => {
+                                                    ExecConfirm(async () => {
 
-                                                        return SignOutSelf().then((res) => {
+                                                        await SignOutSelf().then((res) => {
 
                                                             ToastSuccess(res.msg)
                                                             SignOut()

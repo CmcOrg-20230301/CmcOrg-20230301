@@ -1,4 +1,4 @@
-import React, {MutableRefObject, useEffect, useRef, useState} from "react";
+import React, {useEffect, useRef, useState} from "react";
 import {
     ActionType,
     BetaSchemaForm,
@@ -8,7 +8,6 @@ import {
     ProTable
 } from "@ant-design/pro-components";
 import {
-    NotNullIdAndStringValue,
     SysUserWalletWithdrawLogAccept,
     SysUserWalletWithdrawLogDO,
     SysUserWalletWithdrawLogInfoById,
@@ -22,7 +21,7 @@ import CommonConstant from "@/model/constant/CommonConstant";
 import {ExecConfirm, ToastSuccess} from "@/util/ToastUtil";
 import {Button, Space, TreeSelect, Typography} from "antd";
 import {FormatDateTime} from "@/util/DateUtil";
-import {LoadingOutlined, ReloadOutlined} from "@ant-design/icons";
+import {LoadingOutlined, ReloadOutlined} from "@ant-design/icons/lib";
 import {DoGetDictList, GetDictList, NoFormGetDictTreeList} from "@/util/DictUtil";
 import {SysTenantDictList} from "@/api/http/SysTenant";
 import {SearchTransform} from "@/util/CommonUtil";
@@ -31,6 +30,7 @@ import {SysUserTenantEnum, SysUserTenantEnumDict} from "@/model/enum/SysUserTena
 import {SysUserWalletWithdrawStatusEnum, UpdateWithdrawStatusDict} from "@/model/enum/SysUserWalletWithdrawStatusEnum";
 import {UserWalletWithdrawLogTableBaseColumnArr} from "@/page/user/Wallet/UserWalletWithdrawLogModal";
 import {GetUserWalletWithdrawFormColumnArr} from "@/page/user/Wallet/UserWalletWithdrawModal";
+import RejectModal from "@/component/RejectModal/RejectModal.tsx";
 
 // 提现管理
 export default function () {
@@ -205,9 +205,9 @@ export default function () {
 
                                 optionArr.push(<a key="1" className={"green2"} onClick={() => {
 
-                                    ExecConfirm(() => {
+                                    ExecConfirm(async () => {
 
-                                        return SysUserWalletWithdrawLogAccept({idSet: [entity.id!]}).then(res => {
+                                        await SysUserWalletWithdrawLogAccept({idSet: [entity.id!]}).then(res => {
 
                                             ToastSuccess(res.msg)
                                             actionRef.current?.reload()
@@ -226,7 +226,7 @@ export default function () {
                                 ChangePolling(false, true) // 停止：轮询
                                 setFormOpen(true)
 
-                            }}>查看</a>,)
+                            }}>查看</a>)
 
                             return optionArr
 
@@ -290,9 +290,9 @@ export default function () {
 
                                 someFlag && <a className={"green2"} onClick={() => {
 
-                                    ExecConfirm(() => {
+                                    ExecConfirm(async () => {
 
-                                        return SysUserWalletWithdrawLogAccept({idSet: selectedRowKeys as string[]}).then(res => {
+                                        await SysUserWalletWithdrawLogAccept({idSet: selectedRowKeys as string[]}).then(res => {
 
                                             ToastSuccess(res.msg)
                                             actionRef.current?.reload()
@@ -410,9 +410,9 @@ export default function () {
                             resArr.push(
                                 <Button key={"1"} type={"primary"} onClick={() => {
 
-                                    ExecConfirm(() => {
+                                    ExecConfirm(async () => {
 
-                                        return SysUserWalletWithdrawLogSuccess({id: currentForm.current.id!}).then(res => {
+                                        await SysUserWalletWithdrawLogSuccess({id: currentForm.current.id!}).then(res => {
 
                                             ToastSuccess(res.msg)
                                             actionRef.current?.reload()
@@ -426,14 +426,21 @@ export default function () {
                             )
 
                             resArr.push(
-                                <UserWalletWithdrawLogRejectModal
+                                <RejectModal key={"2"} trigger={<Button type={"primary"} danger={true}>拒绝</Button>}
+                                             onFinish={async form => {
 
-                                    key={"2"}
-                                    setFormOpen={setFormOpen}
-                                    currentForm={currentForm}
-                                    actionRef={actionRef}
+                                                 await SysUserWalletWithdrawLogReject({
+                                                     id: currentForm.current.id,
+                                                     value: form.value
+                                                 }).then(res => {
 
-                                />
+                                                     ToastSuccess(res.msg)
+                                                     actionRef.current?.reload()
+                                                     setFormOpen(false)
+
+                                                 })
+
+                                             }}/>
                             )
 
                         } else if (currentForm.current.withdrawStatus as any === SysUserWalletWithdrawStatusEnum.COMMIT.code) {
@@ -441,9 +448,9 @@ export default function () {
                             resArr.push(
                                 <Button key={"1"} type={"primary"} onClick={() => {
 
-                                    ExecConfirm(() => {
+                                    ExecConfirm(async () => {
 
-                                        return SysUserWalletWithdrawLogAccept({idSet: [currentForm.current.id!]}).then(res => {
+                                        await SysUserWalletWithdrawLogAccept({idSet: [currentForm.current.id!]}).then(res => {
 
                                             ToastSuccess(res.msg)
                                             actionRef.current?.reload()
@@ -467,130 +474,6 @@ export default function () {
             />
 
         </>
-
-    )
-
-}
-
-interface IUserWalletWithdrawLogRejectModal {
-
-    setFormOpen: (value: (((prevState: boolean) => boolean) | boolean)) => void
-
-    currentForm: MutableRefObject<SysUserWalletWithdrawLogDO>
-
-    actionRef: MutableRefObject<ActionType | undefined>
-
-}
-
-// 拒绝用户提现
-function UserWalletWithdrawLogRejectModal(props: IUserWalletWithdrawLogRejectModal) {
-
-    const formRef = useRef<FormInstance<NotNullIdAndStringValue>>();
-
-    return (
-
-        <BetaSchemaForm<NotNullIdAndStringValue>
-
-            trigger={<Button type={"primary"} danger={true}>拒绝</Button>}
-
-            title={'拒绝原因'}
-            layoutType={"ModalForm"}
-
-            modalProps={{
-                maskClosable: false,
-                destroyOnClose: true,
-            }}
-
-            formRef={formRef}
-
-            isKeyPressSubmit
-
-            width={CommonConstant.MODAL_FORM_WIDTH}
-
-            submitter={{
-
-                render: (props, dom) => {
-
-                    return [
-
-                        ...dom,
-
-                        <Button
-
-                            key="1"
-
-                            onClick={() => {
-
-                                ExecConfirm(async () => {
-
-                                    props.reset();
-
-                                }, undefined, "确定重置表单吗？")
-
-                            }}
-
-                        >
-
-                            重置
-
-                        </Button>,
-
-                    ]
-
-                },
-
-            }}
-
-            params={new Date()} // 目的：为了打开页面时，执行 request方法
-
-            request={async () => {
-
-                return {}
-
-            }}
-
-            columns={[
-
-                {
-                    title: '拒绝原因',
-                    dataIndex: 'value',
-                    valueType: 'textarea',
-                    formItemProps: {
-                        rules: [
-                            {
-                                whitespace: true,
-                                max: 300,
-                                required: true,
-                            },
-                        ],
-                    },
-                    fieldProps: {
-                        showCount: true,
-                        maxLength: 300,
-                        allowClear: true,
-                    }
-                },
-
-            ]}
-
-            onFinish={async (form) => {
-
-                await SysUserWalletWithdrawLogReject({
-                    id: props.currentForm.current.id,
-                    value: form.value
-                }).then(res => {
-
-                    ToastSuccess(res.msg)
-                    props.actionRef.current?.reload()
-                    props.setFormOpen(false)
-
-                })
-
-                return true
-
-            }}
-
-        />
 
     )
 

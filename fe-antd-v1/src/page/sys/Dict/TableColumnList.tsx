@@ -50,7 +50,8 @@ const TableColumnList = (currentForm: React.MutableRefObject<SysDictInsertOrUpda
     {
         title: '类别', dataIndex: "type", valueEnum: DictTypeDict,
         render: (dom, entity) =>
-            <Tag color={entity.type as any === 1 ? 'purple' : 'green'}>{entity.type as any === 1 ? '字典' : '字典项'}</Tag>
+            <Tag
+                color={entity.type as any === 1 ? 'purple' : 'green'}>{entity.type as any === 1 ? '字典' : '字典项'}</Tag>
     },
 
     {title: '名称', dataIndex: 'name', ellipsis: true,},
@@ -109,9 +110,9 @@ const TableColumnList = (currentForm: React.MutableRefObject<SysDictInsertOrUpda
 
             <a key="2" className={"red3"} onClick={() => {
 
-                ExecConfirm(() => {
+                ExecConfirm(async () => {
 
-                    return SysDictDeleteByIdSet({idSet: [entity.id!]}).then(res => {
+                    await SysDictDeleteByIdSet({idSet: [entity.id!]}).then(res => {
 
                         ToastSuccess(res.msg)
                         actionRef.current?.reload()

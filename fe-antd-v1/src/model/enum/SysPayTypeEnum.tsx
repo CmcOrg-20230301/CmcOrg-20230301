@@ -4,8 +4,7 @@ import {ToastInfo, ToastSuccess} from "@/util/ToastUtil";
 import {GetBrowserCategory} from "@/util/BrowserCategoryUtil";
 import {BrowserCategoryEnum} from "@/model/enum/BrowserCategoryEnum";
 import {Typography} from "antd";
-import React from "react";
-import {getApp} from "@/MyApp";
+import {GetApp} from "@/MyApp";
 import {BuyVO} from "@/component/PayComponent/PayComponent";
 
 export interface ISysUserWalletWithdrawTypeEnumItem extends IEnum<number> {
@@ -77,7 +76,7 @@ export const SysPayTypeEnum: ISysPayTypeEnum = {
 
                                 onCopy: () => {
 
-                                    getApp().message.destroy() // 关闭弹窗
+                                    GetApp().message.destroy() // 关闭弹窗
 
                                 }
 

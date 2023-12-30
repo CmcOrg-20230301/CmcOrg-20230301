@@ -207,9 +207,9 @@ export default function () {
 
                         <a className={"red3"} onClick={() => {
 
-                            ExecConfirm(() => {
+                            ExecConfirm(async () => {
 
-                                return SysMenuDeleteByIdSet({idSet: selectedRowKeys as string[]}).then(res => {
+                                await SysMenuDeleteByIdSet({idSet: selectedRowKeys as string[]}).then(res => {
 
                                     ToastSuccess(res.msg)
                                     actionRef.current?.reload()

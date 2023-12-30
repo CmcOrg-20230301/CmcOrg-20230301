@@ -148,19 +148,27 @@ const TableColumnList = (currentForm: React.MutableRefObject<SysUserWalletDO>, a
                 arr.push(
                     <a key="2" className={entity.enableFlag ? 'red3' : 'green2'} onClick={() => {
 
-                        ExecConfirm(() => {
+                        ExecConfirm(async () => {
 
-                            return entity.enableFlag ? SysTenantWalletFrozenByIdSet({idSet: [entity.id!]}).then(res => {
+                            if (entity.enableFlag) {
 
-                                ToastSuccess(res.msg)
-                                actionRef.current?.reload()
+                                await SysTenantWalletFrozenByIdSet({idSet: [entity.id!]}).then(res => {
 
-                            }) : SysTenantWalletThawByIdSet({idSet: [entity.id!]}).then(res => {
+                                    ToastSuccess(res.msg)
+                                    actionRef.current?.reload()
 
-                                ToastSuccess(res.msg)
-                                actionRef.current?.reload()
+                                })
 
-                            })
+                            } else {
+
+                                await SysTenantWalletThawByIdSet({idSet: [entity.id!]}).then(res => {
+
+                                    ToastSuccess(res.msg)
+                                    actionRef.current?.reload()
+
+                                })
+
+                            }
 
                         }, undefined, `确定${entity.enableFlag ? '冻结' : '解冻'}该租户吗？`)
 

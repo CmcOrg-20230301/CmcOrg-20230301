@@ -3,7 +3,7 @@ import {PasswordRSAEncrypt} from "@/util/RsaUtil";
 import {ToastSuccess} from "@/util/ToastUtil";
 import LocalStorageKey from "@/model/constant/LocalStorageKey";
 import {ApiResultVO} from "@/util/HttpUtil";
-import {getAppDispatch, getAppNav} from "@/MyApp";
+import {GetAppDispatch, GetAppNav} from "@/MyApp";
 import PathConstant from "@/model/constant/PathConstant";
 import {Validate} from "@/util/ValidatorUtil";
 import {SignEmailSignInPassword} from "@/api/http/SignEmail";
@@ -43,7 +43,7 @@ export function SignInSuccess(apiResultVO: ApiResultVO<SignInVO>, tenantId: stri
 
     ClearStorage()
 
-    getAppDispatch()(signOut()) // store 退出登录
+    GetAppDispatch()(signOut()) // store 退出登录
 
     if (showMsg) {
         ToastSuccess('欢迎回来~')
@@ -56,7 +56,7 @@ export function SignInSuccess(apiResultVO: ApiResultVO<SignInVO>, tenantId: stri
     SetTenantIdToStorage(tenantId);
 
     if (redirectFlag) {
-        getAppNav()(path)
+        GetAppNav()(path)
     }
 
 }

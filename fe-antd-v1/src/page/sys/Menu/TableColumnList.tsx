@@ -98,9 +98,9 @@ const TableColumnList = (currentForm: React.MutableRefObject<SysMenuInsertOrUpda
 
             <a key="2" className={"red3"} onClick={() => {
 
-                ExecConfirm(() => {
+                ExecConfirm(async () => {
 
-                    return SysMenuDeleteByIdSet({idSet: [entity.id!]}).then(res => {
+                    await SysMenuDeleteByIdSet({idSet: [entity.id!]}).then(res => {
 
                         ToastSuccess(res.msg)
                         actionRef.current?.reload()

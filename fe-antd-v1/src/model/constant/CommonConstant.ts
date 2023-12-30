@@ -48,4 +48,6 @@ export default {
 
     TENANT_USER_ID_STR: "-2", // 租户的用户 id
 
+    SHOW_TENANT_INFO: true, // 是否展示租户相关的信息，false 不展示，一般用于：单租户的时候 true 展示，一般用于多租户的时候
+
 }

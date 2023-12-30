@@ -12,7 +12,7 @@ import {
 } from "@/api/http/SysTenant";
 import {ExecConfirm, ToastSuccess} from "@/util/ToastUtil";
 import {CalcOrderNo} from "@/util/TreeUtil";
-import {EllipsisOutlined} from "@ant-design/icons";
+import {EllipsisOutlined} from "@ant-design/icons/lib";
 import {Dropdown, TreeSelect} from "antd";
 import React from "react";
 import {GetTenantIdFromStorage, SearchTransform, SetTenantIdToStorage} from "@/util/CommonUtil";
@@ -153,9 +153,9 @@ const TableColumnList = (currentForm: React.MutableRefObject<SysTenantInsertOrUp
                     danger: true,
                     label: <a onClick={() => {
 
-                        ExecConfirm(() => {
+                        ExecConfirm(async () => {
 
-                            return SysTenantDeleteTenantAllMenu({idSet: [entity.id!]}).then(res => {
+                            await SysTenantDeleteTenantAllMenu({idSet: [entity.id!]}).then(res => {
 
                                 ToastSuccess(res.msg)
                                 actionRef.current?.reload()
@@ -181,9 +181,9 @@ const TableColumnList = (currentForm: React.MutableRefObject<SysTenantInsertOrUp
 
                 <a key="2" className={"red3"} onClick={() => {
 
-                    ExecConfirm(() => {
+                    ExecConfirm(async () => {
 
-                        return SysTenantDeleteByIdSet({idSet: [entity.id!]}).then(res => {
+                        await SysTenantDeleteByIdSet({idSet: [entity.id!]}).then(res => {
 
                             ToastSuccess(res.msg)
                             actionRef.current?.reload()

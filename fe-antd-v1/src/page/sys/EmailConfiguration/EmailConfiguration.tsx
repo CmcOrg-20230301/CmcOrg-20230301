@@ -46,9 +46,9 @@ export default function () {
 
                     return new Promise<boolean>(resolve => {
 
-                        ExecConfirm(() => {
+                        ExecConfirm(async () => {
 
-                            return SysEmailConfigurationInsertOrUpdate(
+                            await SysEmailConfigurationInsertOrUpdate(
                                 form).then(res => {
 
                                 ToastSuccess(res.msg)

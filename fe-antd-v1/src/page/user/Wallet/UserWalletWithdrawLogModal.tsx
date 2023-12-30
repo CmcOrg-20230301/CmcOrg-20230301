@@ -107,11 +107,11 @@ export default function (props: IUserWalletWithdrawLogModal) {
 
                                 <a key="1" className={"red3"} onClick={() => {
 
-                                    ExecConfirm(() => {
+                                    ExecConfirm(async () => {
 
                                         if (props.tenantId) {
 
-                                            return SysUserWalletWithdrawLogCancelTenant({id: entity.id!}).then(res => {
+                                            await SysUserWalletWithdrawLogCancelTenant({id: entity.id!}).then(res => {
 
                                                 ToastSuccess(res.msg)
                                                 actionRef.current?.reload()
@@ -122,7 +122,7 @@ export default function (props: IUserWalletWithdrawLogModal) {
 
                                         } else if (props.userId) {
 
-                                            return SysUserWalletWithdrawLogCancel({id: entity.id!}).then(res => {
+                                            await SysUserWalletWithdrawLogCancel({id: entity.id!}).then(res => {
 
                                                 ToastSuccess(res.msg)
                                                 actionRef.current?.reload()
@@ -133,7 +133,7 @@ export default function (props: IUserWalletWithdrawLogModal) {
 
                                         } else {
 
-                                            return SysUserWalletWithdrawLogCancelUserSelf({id: entity.id!}).then(res => {
+                                            await SysUserWalletWithdrawLogCancelUserSelf({id: entity.id!}).then(res => {
 
                                                 ToastSuccess(res.msg)
                                                 actionRef.current?.reload()

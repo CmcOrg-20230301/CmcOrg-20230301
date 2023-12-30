@@ -94,9 +94,9 @@ const TableColumnList = (currentForm: React.MutableRefObject<SysRoleInsertOrUpda
 
             <a key="2" className={"red3"} onClick={() => {
 
-                ExecConfirm(() => {
+                ExecConfirm(async () => {
 
-                    return SysRoleDeleteByIdSet({idSet: [entity.id!]}).then(res => {
+                    await SysRoleDeleteByIdSet({idSet: [entity.id!]}).then(res => {
 
                         ToastSuccess(res.msg)
                         actionRef.current?.reload()

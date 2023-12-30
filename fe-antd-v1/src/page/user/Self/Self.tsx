@@ -4,6 +4,7 @@ import React from "react";
 import {SettingOutlined, UserOutlined} from "@ant-design/icons/lib";
 import UserSelfInfo from "@/page/user/Self/UserSelfInfo";
 import UserSelfSetting from "@/page/user/Self/UserSelfSetting";
+import {Tab} from "rc-tabs/lib/interface";
 
 export const USER_CENTER_KEY_ONE = "个人资料"
 export const USER_CENTER_KEY_TWO = "账号设置"
@@ -11,10 +12,10 @@ export const USER_CENTER_KEY_TWO = "账号设置"
 // 个人中心
 export default function () {
 
-    const itemArr = [
+    const itemArr: Tab[] = [
 
-        {key: '2', label: <span><SettingOutlined/>{USER_CENTER_KEY_TWO}</span>, children: <UserSelfSetting/>},
-        {key: '1', label: <span><UserOutlined/>{USER_CENTER_KEY_ONE}</span>, children: <UserSelfInfo/>},
+        {key: '2', icon: <SettingOutlined/>, label: USER_CENTER_KEY_TWO, children: <UserSelfSetting/>},
+        {key: '1', icon: <UserOutlined/>, label: USER_CENTER_KEY_ONE, children: <UserSelfInfo/>},
 
     ];
 

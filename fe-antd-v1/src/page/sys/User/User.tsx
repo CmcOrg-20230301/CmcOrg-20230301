@@ -281,9 +281,9 @@ export default function () {
 
                         <a onClick={() => {
 
-                            ExecConfirm(() => {
+                            ExecConfirm(async () => {
 
-                                return SysUserResetAvatar({idSet: selectedRowKeys as string[]}).then(res => {
+                                await SysUserResetAvatar({idSet: selectedRowKeys as string[]}).then(res => {
 
                                     ToastSuccess(res.msg)
                                     actionRef.current?.reload()
@@ -298,9 +298,9 @@ export default function () {
 
                         <a onClick={() => {
 
-                            ExecConfirm(() => {
+                            ExecConfirm(async () => {
 
-                                return SysUserRefreshJwtSecretSuf({idSet: selectedRowKeys as string[]}).then(res => {
+                                await SysUserRefreshJwtSecretSuf({idSet: selectedRowKeys as string[]}).then(res => {
 
                                     ToastSuccess(res.msg)
                                     actionRef.current?.reload()
@@ -313,9 +313,9 @@ export default function () {
 
                         <a className={"red3"} onClick={() => {
 
-                            ExecConfirm(() => {
+                            ExecConfirm(async () => {
 
-                                return SysUserDeleteByIdSet({idSet: selectedRowKeys as string[]}).then(res => {
+                                await SysUserDeleteByIdSet({idSet: selectedRowKeys as string[]}).then(res => {
 
                                     ToastSuccess(res.msg)
                                     actionRef.current?.reload()

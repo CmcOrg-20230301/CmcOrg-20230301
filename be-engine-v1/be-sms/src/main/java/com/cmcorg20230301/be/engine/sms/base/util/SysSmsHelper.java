@@ -11,7 +11,7 @@ import com.cmcorg20230301.be.engine.security.model.entity.BaseEntityNoIdSuper;
 import com.cmcorg20230301.be.engine.security.model.entity.SysTenantDO;
 import com.cmcorg20230301.be.engine.security.model.vo.ApiResultVO;
 import com.cmcorg20230301.be.engine.security.util.SysTenantUtil;
-import com.cmcorg20230301.be.engine.sms.base.model.SysSmsSendBO;
+import com.cmcorg20230301.be.engine.sms.base.model.bo.SysSmsSendBO;
 import com.cmcorg20230301.be.engine.sms.base.model.entity.SysSmsConfigurationDO;
 import com.cmcorg20230301.be.engine.sms.base.service.SysSmsConfigurationService;
 import org.jetbrains.annotations.NotNull;

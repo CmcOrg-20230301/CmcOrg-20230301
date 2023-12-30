@@ -7,7 +7,7 @@ import {SysUserBankCardDO, SysUserBankCardPageDTO} from "@/api/http/SysUserBankC
 import SchemaFormColumnList from "./SchemaFormColumnList";
 import {GetIdListForHasChildrenNode} from "@/util/TreeUtil";
 import {Button, Space} from "antd";
-import {ColumnHeightOutlined, VerticalAlignMiddleOutlined} from "@ant-design/icons";
+import {ColumnHeightOutlined, VerticalAlignMiddleOutlined} from "@ant-design/icons/lib";
 import {SysTenantBankCardInfoById, SysTenantBankCardTree} from "@/api/http/SysTenantBankCard";
 
 // 用户银行卡

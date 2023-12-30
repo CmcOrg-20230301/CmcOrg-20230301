@@ -4,8 +4,8 @@ import {ClearStorage, SignOut} from "@/util/UserUtil";
 import {SysMenuDO, SysMenuUserSelfMenuList} from "@/api/http/SysMenu";
 import {ToastError} from "@/util/ToastUtil";
 import {setUserSelfMenuList} from "@/store/userSlice";
-import {ConnectWebSocket} from "@/util/webSocket/WebSocketUtil";
-import {getAppDispatch, getAppNav, getUserSelfMenuList} from "@/MyApp";
+import {ConnectWebSocket} from "@/util/WebSocket/WebSocketUtil";
+import {GetAppDispatch, GetAppNav, GetUserSelfMenuList} from "@/MyApp";
 import {GetURLSearchParams} from "@/util/CommonUtil";
 import {SessionStorageKeyList} from "@/model/constant/SessionStorageKey";
 import VConsole from 'vconsole';
@@ -85,7 +85,7 @@ export function UseEffectInit() {
 
             } else {
 
-                getAppNav()(redirect)
+                GetAppNav()(redirect)
 
             }
 
@@ -129,7 +129,7 @@ function handleUserSelfMenuList(userSelfMenuList: SysMenuDO[], callBack: ((data:
 
     if (firstFlag) {
 
-        getAppDispatch()(setUserSelfMenuList(userSelfMenuList))
+        GetAppDispatch()(setUserSelfMenuList(userSelfMenuList))
 
     }
 
@@ -157,7 +157,7 @@ export function UseEffectLoadSysMenuUserSelfMenuList(callBack?: (data: SysMenuDO
 
         }
 
-        const userSelfMenuList = getUserSelfMenuList();
+        const userSelfMenuList = GetUserSelfMenuList();
 
         if (userSelfMenuList && userSelfMenuList.length) {  // 如果：已经加载过了菜单
 

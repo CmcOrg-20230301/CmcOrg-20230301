@@ -7,13 +7,13 @@ import {
     UserSelfUpdateInfoDTO
 } from "@/api/http/UserSelf";
 import {setUserSelfAvatarUrl, setUserSelfInfo} from "@/store/userSlice";
-import {getAppDispatch} from "@/MyApp";
+import {GetAppDispatch} from "@/MyApp";
 import {ActionType, ProDescriptions} from "@ant-design/pro-components";
 import {ExecConfirm, ToastError, ToastSuccess} from "@/util/ToastUtil";
 import {USER_CENTER_KEY_ONE} from "@/page/user/Self/Self";
 import {Validate} from "@/util/ValidatorUtil";
 import {Avatar, Image, Space, Upload, UploadFile} from "antd";
-import {DeleteOutlined, EyeOutlined} from "@ant-design/icons";
+import {DeleteOutlined, EyeOutlined} from "@ant-design/icons/lib";
 import CommonConstant from "@/model/constant/CommonConstant";
 import MyIcon from "@/component/MyIcon/MyIcon";
 import {CheckAvatarFileType, CheckFileSize, SysFileUpload} from "@/util/FileUtil";
@@ -23,7 +23,7 @@ import {useAppSelector} from "@/store";
 // 个人资料
 export default function () {
 
-    const appDispatch = getAppDispatch();
+    const appDispatch = GetAppDispatch();
 
     const userSelfInfo = useAppSelector((state) => state.user.userSelfInfo)
 
@@ -227,9 +227,9 @@ export default function () {
                                         return
                                     }
 
-                                    ExecConfirm(() => {
+                                    ExecConfirm(async () => {
 
-                                        return UserSelfResetAvatar().then(res => {
+                                        await UserSelfResetAvatar().then(res => {
 
                                             actionRef.current?.reload()
                                             ToastSuccess(res.msg)

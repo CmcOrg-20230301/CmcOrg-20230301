@@ -1,6 +1,6 @@
 package com.cmcorg20230301.be.engine.sms.base.model.configuration;
 
-import com.cmcorg20230301.be.engine.sms.base.model.SysSmsSendBO;
+import com.cmcorg20230301.be.engine.sms.base.model.bo.SysSmsSendBO;
 import com.cmcorg20230301.be.engine.sms.base.model.interfaces.ISysSmsType;
 
 public interface ISysSms {

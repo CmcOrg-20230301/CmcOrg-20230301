@@ -3,7 +3,7 @@ import {ActionType, ProColumns} from "@ant-design/pro-components";
 import {SysAreaDeleteByIdSet, SysAreaDO, SysAreaInsertOrUpdateDTO} from "@/api/http/SysArea";
 import {ExecConfirm, ToastSuccess} from "@/util/ToastUtil";
 import {CalcOrderNo} from "@/util/TreeUtil";
-import {EllipsisOutlined} from "@ant-design/icons";
+import {EllipsisOutlined} from "@ant-design/icons/lib";
 import {Dropdown, TreeSelect} from "antd";
 import React from "react";
 import {SysTenantDictList} from "@/api/http/SysTenant";
@@ -92,9 +92,9 @@ const TableColumnList = (currentForm: React.MutableRefObject<SysAreaInsertOrUpda
 
             <a key="2" className={"red3"} onClick={() => {
 
-                ExecConfirm(() => {
+                ExecConfirm(async () => {
 
-                    return SysAreaDeleteByIdSet({idSet: [entity.id!]}).then(res => {
+                    await SysAreaDeleteByIdSet({idSet: [entity.id!]}).then(res => {
 
                         ToastSuccess(res.msg)
                         actionRef.current?.reload()

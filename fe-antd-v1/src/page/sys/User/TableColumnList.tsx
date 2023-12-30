@@ -12,7 +12,7 @@ import {
 } from "@/api/http/SysUser";
 import {ExecConfirm, ToastSuccess} from "@/util/ToastUtil";
 import CommonConstant from "@/model/constant/CommonConstant";
-import {EllipsisOutlined, EyeOutlined} from "@ant-design/icons";
+import {EllipsisOutlined, EyeOutlined} from "@ant-design/icons/lib";
 import {Validate} from "@/util/ValidatorUtil";
 import {PasswordRSAEncrypt, RSAEncryptPro} from "@/util/RsaUtil";
 import {Dropdown, TreeSelect, Typography} from "antd";
@@ -206,9 +206,9 @@ const TableColumnList = (currentForm: React.MutableRefObject<SysUserInsertOrUpda
 
             <a key="2" className={"red3"} onClick={() => {
 
-                ExecConfirm(() => {
+                ExecConfirm(async () => {
 
-                    return SysUserDeleteByIdSet({idSet: [entity.id!]}).then(res => {
+                    await SysUserDeleteByIdSet({idSet: [entity.id!]}).then(res => {
 
                         ToastSuccess(res.msg)
                         actionRef.current?.reload()
@@ -231,9 +231,9 @@ const TableColumnList = (currentForm: React.MutableRefObject<SysUserInsertOrUpda
                             key: '1',
                             label: <a onClick={() => {
 
-                                ExecConfirm(() => {
+                                ExecConfirm(async () => {
 
-                                    return SysUserResetAvatar({idSet: [entity.id!]}).then(res => {
+                                    await SysUserResetAvatar({idSet: [entity.id!]}).then(res => {
 
                                         ToastSuccess(res.msg)
                                         actionRef.current?.reload()
@@ -254,9 +254,9 @@ const TableColumnList = (currentForm: React.MutableRefObject<SysUserInsertOrUpda
                             key: '3',
                             label: <a onClick={() => {
 
-                                ExecConfirm(() => {
+                                ExecConfirm(async () => {
 
-                                    return SysUserRefreshJwtSecretSuf({idSet: [entity.id!]}).then(res => {
+                                    await SysUserRefreshJwtSecretSuf({idSet: [entity.id!]}).then(res => {
 
                                         ToastSuccess(res.msg)
                                         actionRef.current?.reload()

@@ -1,7 +1,7 @@
 import LocalStorageKey from "@/model/constant/LocalStorageKey";
-import {getAppDispatch} from "@/MyApp";
+import {GetAppDispatch} from "@/MyApp";
 import {setWebSocketMessage, setWebSocketStatus} from "@/store/commonSlice";
-import {GetWebSocketId, IWebSocketMessage, WebSocketSend} from "@/util/webSocket/WebSocketHelper";
+import {GetWebSocketId, IWebSocketMessage, WebSocketSend} from "@/util/WebSocket/WebSocketHelper";
 import {NettyWebSocketGetWebSocketUrlById} from "@/api/http/NettyWebSocket";
 import {HeartBeatRequest} from "@/api/socket/WebSocket";
 
@@ -99,7 +99,7 @@ export function ConnectWebSocket() {
 
             console.log(`WebSocket 连接 >> ${webSocketUrl?.substring(0, webSocketUrl!.indexOf("?"))}`)
 
-            getAppDispatch()(setWebSocketStatus(true))
+            GetAppDispatch()(setWebSocketStatus(true))
 
             if (heartBeatInterval) {
                 clearInterval(heartBeatInterval)
@@ -118,10 +118,10 @@ export function ConnectWebSocket() {
             const webSocketMessage: IWebSocketMessage<any> = JSON.parse(message.data)
 
             // 更新 redux里面 webSocket的值
-            getAppDispatch()(setWebSocketMessage({} as IWebSocketMessage<any>)) // 先重置，再设置值
+            GetAppDispatch()(setWebSocketMessage({} as IWebSocketMessage<any>)) // 先重置，再设置值
 
             setTimeout(() => {
-                getAppDispatch()(setWebSocketMessage(webSocketMessage))
+                GetAppDispatch()(setWebSocketMessage(webSocketMessage))
             }, 200)
 
         }
@@ -130,7 +130,7 @@ export function ConnectWebSocket() {
 
             console.log('WebSocket 关闭')
 
-            getAppDispatch()(setWebSocketStatus(false))
+            GetAppDispatch()(setWebSocketStatus(false))
 
             if (heartBeatInterval) {
                 clearInterval(heartBeatInterval)

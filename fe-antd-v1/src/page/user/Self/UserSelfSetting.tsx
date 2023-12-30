@@ -107,9 +107,9 @@ export default function () {
 
                         <a key="1" onClick={() => {
 
-                            ExecConfirm(() => {
+                            ExecConfirm(async () => {
 
-                                return UserSelfRefreshJwtSecretSuf().then(res => {
+                                await UserSelfRefreshJwtSecretSuf().then(res => {
 
                                     ToastSuccess(res.msg)
 

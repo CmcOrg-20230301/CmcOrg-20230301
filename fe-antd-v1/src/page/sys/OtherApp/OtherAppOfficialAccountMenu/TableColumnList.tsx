@@ -3,7 +3,7 @@ import {ActionType, ProColumns} from "@ant-design/pro-components";
 
 import {ExecConfirm, ToastSuccess} from "@/util/ToastUtil";
 import {CalcOrderNo} from "@/util/TreeUtil";
-import {EllipsisOutlined} from "@ant-design/icons";
+import {EllipsisOutlined} from "@ant-design/icons/lib";
 import {Dropdown, TreeSelect, Typography} from "antd";
 import React from "react";
 import {SysTenantDictList} from "@/api/http/SysTenant";
@@ -14,7 +14,9 @@ import {
     SysOtherAppOfficialAccountMenuInsertOrUpdateDTO
 } from "@/api/http/SysOtherApp";
 import CommonConstant from "@/model/constant/CommonConstant";
-import {SysOtherAppOfficialAccountMenuButtonTypeEnumDict} from "@/model/enum/SysOtherAppOfficialAccountMenuButtonTypeEnum";
+import {
+    SysOtherAppOfficialAccountMenuButtonTypeEnumDict
+} from "@/model/enum/SysOtherAppOfficialAccountMenuButtonTypeEnum";
 
 const TableColumnList = (currentForm: React.MutableRefObject<SysOtherAppOfficialAccountMenuInsertOrUpdateDTO>, setFormOpen: React.Dispatch<React.SetStateAction<boolean>>, actionRef: React.RefObject<ActionType | undefined>): ProColumns<SysOtherAppOfficialAccountMenuDO>[] => [
 
@@ -126,9 +128,9 @@ const TableColumnList = (currentForm: React.MutableRefObject<SysOtherAppOfficial
 
             <a key="2" className={"red3"} onClick={() => {
 
-                ExecConfirm(() => {
+                ExecConfirm(async () => {
 
-                    return SysOtherAppOfficialAccountMenuDeleteByIdSet({idSet: [entity.id!]}).then(res => {
+                    await SysOtherAppOfficialAccountMenuDeleteByIdSet({idSet: [entity.id!]}).then(res => {
 
                         ToastSuccess(res.msg)
                         actionRef.current?.reload()

@@ -83,9 +83,9 @@ export default function () {
 
                         <a className={"red3"} onClick={() => {
 
-                            ExecConfirm(() => {
+                            ExecConfirm(async () => {
 
-                                return SysSocketDisableByIdSet({idSet: selectedRowKeys as string[]}).then(res => {
+                                await SysSocketDisableByIdSet({idSet: selectedRowKeys as string[]}).then(res => {
 
                                     ToastSuccess(res.msg)
                                     actionRef.current?.reload()
@@ -99,9 +99,9 @@ export default function () {
 
                         <a className={"green2"} onClick={() => {
 
-                            ExecConfirm(() => {
+                            ExecConfirm(async () => {
 
-                                return SysSocketEnableByIdSet({idSet: selectedRowKeys as string[]}).then(res => {
+                                await SysSocketEnableByIdSet({idSet: selectedRowKeys as string[]}).then(res => {
 
                                     ToastSuccess(res.msg)
                                     actionRef.current?.reload()

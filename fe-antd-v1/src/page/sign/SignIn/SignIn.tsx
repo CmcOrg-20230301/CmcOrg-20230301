@@ -6,7 +6,7 @@ import IconSvg from '../../../../public/icon.svg'
 import SignLayout from "@/layout/SignLayout/SignLayout";
 import CommonConstant from "@/model/constant/CommonConstant";
 import {SignInFormHandler} from "@/page/sign/SignIn/SignInUtil";
-import {getAppNav} from "@/MyApp";
+import {GetAppNav} from "@/MyApp";
 import PathConstant from "@/model/constant/PathConstant";
 import Link from 'antd/es/typography/Link';
 import {PasswordRSAEncrypt, RSAEncryptPro} from "@/util/RsaUtil";
@@ -60,7 +60,7 @@ export default function () {
                         或者
 
                         <Link title={"注册"}
-                              onClick={() => getAppNav()(`${PathConstant.SIGN_UP_PATH}?tenantId=${tenantIdRef.current}`)}>注册</Link>
+                              onClick={() => GetAppNav()(`${PathConstant.SIGN_UP_PATH}?tenantId=${tenantIdRef.current}`)}>注册</Link>
 
                     </div>
 

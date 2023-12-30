@@ -214,9 +214,9 @@ export default function () {
 
                                             <Button type="primary" onClick={() => {
 
-                                                ExecConfirm(() => {
+                                                ExecConfirm(async () => {
 
-                                                    return SysWxOfficialAccountUpdateMenu({id: location.state?.otherAppId}).then(res => {
+                                                    await SysWxOfficialAccountUpdateMenu({id: location.state?.otherAppId}).then(res => {
 
                                                         ToastSuccess(res.msg)
 
@@ -289,9 +289,9 @@ export default function () {
 
                                         <a className={"red3"} onClick={() => {
 
-                                            ExecConfirm(() => {
+                                            ExecConfirm(async () => {
 
-                                                return SysOtherAppOfficialAccountMenuDeleteByIdSet({idSet: selectedRowKeys as string[]}).then(res => {
+                                                await SysOtherAppOfficialAccountMenuDeleteByIdSet({idSet: selectedRowKeys as string[]}).then(res => {
 
                                                     ToastSuccess(res.msg)
                                                     actionRef.current?.reload()

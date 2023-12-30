@@ -5,7 +5,7 @@ import CommonConstant from "@/model/constant/CommonConstant";
 import IconSvg from '../../../../public/icon.svg'
 import {Tabs} from "antd";
 import {LockOutlined, SafetyCertificateOutlined, UserOutlined} from "@ant-design/icons/lib";
-import {getAppNav} from "@/MyApp";
+import {GetAppNav} from "@/MyApp";
 import PathConstant from "@/model/constant/PathConstant";
 import {SendCode, SignUpFormHandler, UseEffectSign} from "@/page/sign/SignUp/SignUpUtil";
 import {Validate} from "@/util/ValidatorUtil";
@@ -57,7 +57,7 @@ export default function () {
                 actions={
 
                     <Link title={"登录已有账号"}
-                          onClick={() => getAppNav()(`${PathConstant.SIGN_IN_PATH}?tenantId=${tenantIdRef.current}`)}>登录已有账号</Link>
+                          onClick={() => GetAppNav()(`${PathConstant.SIGN_IN_PATH}?tenantId=${tenantIdRef.current}`)}>登录已有账号</Link>
 
                 }
 

@@ -10,7 +10,7 @@ import com.aliyun.sdk.service.dysmsapi20170525.models.SendSmsRequest;
 import com.aliyun.sdk.service.dysmsapi20170525.models.SendSmsResponse;
 import com.aliyun.sdk.service.dysmsapi20170525.models.SendSmsResponseBody;
 import com.cmcorg20230301.be.engine.model.model.constant.BaseConstant;
-import com.cmcorg20230301.be.engine.sms.base.model.SysSmsSendBO;
+import com.cmcorg20230301.be.engine.sms.base.model.bo.SysSmsSendBO;
 import com.cmcorg20230301.be.engine.sms.base.model.configuration.ISysSms;
 import com.cmcorg20230301.be.engine.sms.base.model.entity.SysSmsConfigurationDO;
 import com.cmcorg20230301.be.engine.sms.base.model.enums.SysSmsTypeEnum;

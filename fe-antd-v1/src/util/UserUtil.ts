@@ -1,4 +1,4 @@
-import {getAppDispatch, getAppNav} from "@/MyApp";
+import {GetAppDispatch, GetAppNav} from "@/MyApp";
 import {ToastSuccess} from "./ToastUtil";
 import PathConstant from "@/model/constant/PathConstant";
 import {signOut} from "@/store/userSlice";
@@ -39,9 +39,9 @@ export function SignOut(msg ?: string) {
 
     }
 
-    getAppDispatch()(signOut()) // store 退出登录
+    GetAppDispatch()(signOut()) // store 退出登录
 
-    getAppNav()(PathConstant.NOT_FOUND_PATH)
+    GetAppNav()(PathConstant.NOT_FOUND_PATH)
 
     if (msg) {
 

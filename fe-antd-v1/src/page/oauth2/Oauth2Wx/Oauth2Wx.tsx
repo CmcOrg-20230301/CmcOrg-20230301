@@ -2,7 +2,7 @@ import PathConstant from "@/model/constant/PathConstant";
 import {useEffect} from "react";
 import {SignInSuccess} from "@/page/sign/SignIn/SignInUtil";
 import {SignWxSignInBrowserCode, SignWxSignInBrowserCodeUserInfo} from "@/api/http/SignWx";
-import {getAppNav} from "@/MyApp";
+import {GetAppNav} from "@/MyApp";
 import CommonConstant from "@/model/constant/CommonConstant";
 import LocalStorageKey from "@/model/constant/LocalStorageKey";
 import {ApiResultVO} from "@/util/HttpUtil";
@@ -20,7 +20,7 @@ export interface IOauth2WxForm {
 }
 
 function GoBlank() {
-    getAppNav()(PathConstant.BLANK_PATH, {state: {showText: '微信跳转失败，请重新打开'}})
+    GetAppNav()(PathConstant.BLANK_PATH, {state: {showText: '微信跳转失败，请重新打开'}})
 }
 
 // 处理登录返回值
@@ -30,8 +30,8 @@ function HandleWxSign(res: ApiResultVO<SignInVO>, form: IOauth2WxForm) {
 
     SignInSuccess(res, form.tenantId!, undefined, false, false)
 
-    localStorage.setItem(LocalStorageKey.MAIN_URI, PathConstant.BLANK_LAYOUT_PATH)
-    localStorage.setItem(LocalStorageKey.MAIN_REDIRECT_URI, "")
+    localStorage.setItem(LocalStorageKey.MAIN_URI, PathConstant.MAIN_PATH)
+    localStorage.setItem(LocalStorageKey.MAIN_REDIRECT_URI, PathConstant.MAIN_REDIRECT_PATH)
 
     if (noJwtUri) {
 
@@ -47,7 +47,7 @@ function HandleWxSign(res: ApiResultVO<SignInVO>, form: IOauth2WxForm) {
         sessionStorage.setItem(SessionStorageKey.OAUTH2_REDIRECT_URI, form.redirect)
     }
 
-    getAppNav()(PathConstant.BLANK_LAYOUT_PATH)
+    GetAppNav()(PathConstant.BLANK_LAYOUT_PATH)
 
 }
 

@@ -88,13 +88,13 @@ export function SysUserWalletRechargeTenant(form: SysUserWalletRechargeTenantDTO
     return $http.myPost<BuyVO>('/sys/userWallet/recharge/tenant', form, config)
 }
 
-export interface ChangeBigDecimalNumberDTO {
+export interface ChangeBigDecimalNumberIdSetDTO {
     idSet?: string[] // 主键 idSet，required：true，format：int64
     number?: number // 需要改变的数值，required：true
 }
 
 // 通过主键 idSet，加减可提现的钱
-export function SysUserWalletAddWithdrawableMoneyBackground(form: ChangeBigDecimalNumberDTO, config?: AxiosRequestConfig) {
+export function SysUserWalletAddWithdrawableMoneyBackground(form: ChangeBigDecimalNumberIdSetDTO, config?: AxiosRequestConfig) {
     return $http.myPost<string>('/sys/userWallet/addWithdrawableMoney/background', form, config)
 }
 

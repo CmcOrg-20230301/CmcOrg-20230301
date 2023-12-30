@@ -1,4 +1,4 @@
-package com.cmcorg20230301.be.engine.sms.base.model;
+package com.cmcorg20230301.be.engine.sms.base.model.bo;
 
 import com.cmcorg20230301.be.engine.sms.base.model.entity.SysSmsConfigurationDO;
 import com.cmcorg20230301.be.engine.sms.base.model.interfaces.ISysSmsType;

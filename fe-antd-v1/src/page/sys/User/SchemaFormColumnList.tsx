@@ -8,6 +8,7 @@ import {TreeSelect} from "antd";
 import {SysDeptPage} from "@/api/http/SysDept";
 import {SysPostPage} from "@/api/http/SysPost";
 import {SysTenantPage} from "@/api/http/SysTenant";
+import React from "react";
 
 export const InitForm: SysUserInsertOrUpdateDTO = {} as SysUserInsertOrUpdateDTO
 

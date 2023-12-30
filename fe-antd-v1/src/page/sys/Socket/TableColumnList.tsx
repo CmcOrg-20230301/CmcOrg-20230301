@@ -67,19 +67,27 @@ const TableColumnList = (actionRef: React.RefObject<ActionType | undefined>): Pr
 
                 <a key="1" className={entity.enableFlag ? "red3" : "green2"} onClick={() => {
 
-                    ExecConfirm(() => {
+                    ExecConfirm(async () => {
 
-                        return entity.enableFlag ? SysSocketDisableByIdSet({idSet: [entity.id!]}).then(res => {
+                        if (entity.enableFlag) {
 
-                            ToastSuccess(res.msg)
-                            actionRef.current?.reload()
+                            await SysSocketDisableByIdSet({idSet: [entity.id!]}).then(res => {
 
-                        }) : SysSocketEnableByIdSet({idSet: [entity.id!]}).then(res => {
+                                ToastSuccess(res.msg)
+                                actionRef.current?.reload()
 
-                            ToastSuccess(res.msg)
-                            actionRef.current?.reload()
+                            })
 
-                        })
+                        } else {
+
+                            await SysSocketEnableByIdSet({idSet: [entity.id!]}).then(res => {
+
+                                ToastSuccess(res.msg)
+                                actionRef.current?.reload()
+
+                            })
+
+                        }
 
                     }, undefined, `确定${txt}【${entity.id}】吗？`)
 

@@ -1,4 +1,3 @@
-import React from 'react'
 import ReactDOM from 'react-dom/client'
 import MyApp from './MyApp'
 import {Provider} from "react-redux";
@@ -19,7 +18,7 @@ import './style/theme.less'
 dayjs.extend(relativeTime)
 dayjs.locale('zh-cn');
 
-ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
+ReactDOM.createRoot(document.getElementById('root')!).render(
     // <React.StrictMode>
 
     <Provider store={store}>

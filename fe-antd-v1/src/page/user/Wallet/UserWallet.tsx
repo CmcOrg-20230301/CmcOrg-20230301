@@ -7,7 +7,7 @@ import {
     RouteContextType
 } from '@ant-design/pro-components';
 import {Button, Statistic} from 'antd';
-import {MoneyCollectOutlined, RollbackOutlined} from "@ant-design/icons";
+import {MoneyCollectOutlined, RollbackOutlined} from "@ant-design/icons/lib";
 import React, {useEffect, useRef, useState} from "react";
 import {SysUserBankCardDO, SysUserBankCardInfoById, SysUserBankCardInfoByIdUserSelf} from "@/api/http/SysUserBankCard";
 import {ToastSuccess} from "@/util/ToastUtil";
@@ -318,7 +318,7 @@ export default function (props: IUserWallet) {
 
                                         if (props.tenantId) {
 
-                                            SysUserWalletRechargeTenant({
+                                            await SysUserWalletRechargeTenant({
                                                 value: form.value,
                                                 tenantId: props.tenantId
                                             }).then(res => {
@@ -332,7 +332,7 @@ export default function (props: IUserWallet) {
 
                                         } else {
 
-                                            SysUserWalletRechargeUserSelf({value: form.value}).then(res => {
+                                            await SysUserWalletRechargeUserSelf({value: form.value}).then(res => {
 
                                                 payComponentRef.current?.HandleBuyVO(res.data!)
 

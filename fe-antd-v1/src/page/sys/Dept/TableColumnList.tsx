@@ -4,7 +4,7 @@ import {SysDeptDeleteByIdSet, SysDeptDO, SysDeptInsertOrUpdateDTO} from "@/api/h
 import {ExecConfirm, ToastSuccess} from "@/util/ToastUtil";
 import {Dropdown, TreeSelect} from "antd";
 import {CalcOrderNo} from "@/util/TreeUtil";
-import {EllipsisOutlined} from "@ant-design/icons";
+import {EllipsisOutlined} from "@ant-design/icons/lib";
 import React from "react";
 import {SysTenantDictList} from "@/api/http/SysTenant";
 import {SearchTransform} from "@/util/CommonUtil";
@@ -92,9 +92,9 @@ const TableColumnList = (currentForm: React.MutableRefObject<SysDeptInsertOrUpda
 
             <a key="2" className={"red3"} onClick={() => {
 
-                ExecConfirm(() => {
+                ExecConfirm(async () => {
 
-                    return SysDeptDeleteByIdSet({idSet: [entity.id!]}).then(res => {
+                    await SysDeptDeleteByIdSet({idSet: [entity.id!]}).then(res => {
 
                         ToastSuccess(res.msg)
                         actionRef.current?.reload()

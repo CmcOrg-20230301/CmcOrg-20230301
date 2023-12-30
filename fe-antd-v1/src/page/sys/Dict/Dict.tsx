@@ -153,9 +153,9 @@ export default function () {
 
                                 <Button type="primary" onClick={() => {
 
-                                    ExecConfirm(() => {
+                                    ExecConfirm(async () => {
 
-                                        return SysTenantDoSyncDict().then(res => {
+                                        await SysTenantDoSyncDict().then(res => {
 
                                             ToastSuccess(res.msg)
 
@@ -229,9 +229,9 @@ export default function () {
 
                         <a className={"red3"} onClick={() => {
 
-                            ExecConfirm(() => {
+                            ExecConfirm(async () => {
 
-                                return SysDictDeleteByIdSet({idSet: selectedRowKeys as string[]}).then(res => {
+                                await SysDictDeleteByIdSet({idSet: selectedRowKeys as string[]}).then(res => {
 
                                     ToastSuccess(res.msg)
                                     actionRef.current?.reload()

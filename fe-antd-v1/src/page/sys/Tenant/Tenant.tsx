@@ -208,9 +208,9 @@ export default function () {
 
                         <a className={"red3"} onClick={() => {
 
-                            ExecConfirm(() => {
+                            ExecConfirm(async () => {
 
-                                return SysTenantDeleteByIdSet({idSet: selectedRowKeys as string[]}).then(res => {
+                                await SysTenantDeleteByIdSet({idSet: selectedRowKeys as string[]}).then(res => {
 
                                     ToastSuccess(res.msg)
                                     actionRef.current?.reload()

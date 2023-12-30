@@ -8,6 +8,10 @@ export default {
 
     BLANK_LAYOUT_PATH: '/b',
 
+    MAIN_PATH: '/b',
+
+    MAIN_REDIRECT_PATH: '',
+
     USER_SELF_PATH: '/admin/user/self', // 个人中心
 
     SYS_USER_SELF_WALLET_PATH: '/admin/user/walletSelf', // 我的钱包

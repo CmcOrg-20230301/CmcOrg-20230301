@@ -7,7 +7,7 @@ import {BrowserCategoryEnum} from "@/model/enum/BrowserCategoryEnum";
 import {LocalStorageKeyList} from "@/model/constant/LocalStorageKey";
 import {IInit} from "@/util/UseEffectUtil";
 import {SessionStorageKeyList} from "@/model/constant/SessionStorageKey";
-import {getAppNav} from "@/MyApp";
+import {GetAppNav} from "@/MyApp";
 import PathConstant from "@/model/constant/PathConstant";
 
 // 获取：文件是否可以预览
@@ -34,7 +34,7 @@ export function GoFileDownloadPage(id: string) {
 
     })
 
-    getAppNav()(PathConstant.FILE_DOWNLOAD_PATH + "?data=" + encodeURIComponent(JSON.stringify(data)) + "&id=" + id)
+    GetAppNav()(PathConstant.FILE_DOWNLOAD_PATH + "?data=" + encodeURIComponent(JSON.stringify(data)) + "&id=" + id)
 
 }
 

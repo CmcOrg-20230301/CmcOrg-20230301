@@ -12,13 +12,13 @@ export function SysTenantWalletFrozenByIdSet(form: NotEmptyIdSet, config?: Axios
     return $http.myPost<string>('/sys/tenantWallet/frozenByIdSet', form, config)
 }
 
-export interface ChangeBigDecimalNumberDTO {
+export interface ChangeBigDecimalNumberIdSetDTO {
     idSet?: string[] // 主键 idSet，required：true，format：int64
     number?: number // 需要改变的数值，required：true
 }
 
 // 通过租户主键 idSet，加减可提现的钱
-export function SysTenantWalletAddWithdrawableMoneyBackground(form: ChangeBigDecimalNumberDTO, config?: AxiosRequestConfig) {
+export function SysTenantWalletAddWithdrawableMoneyBackground(form: ChangeBigDecimalNumberIdSetDTO, config?: AxiosRequestConfig) {
     return $http.myPost<string>('/sys/tenantWallet/addWithdrawableMoney/background', form, config)
 }
 

@@ -109,9 +109,9 @@ const TableColumnList = (currentForm: React.MutableRefObject<SysParamInsertOrUpd
 
             <a key="2" className={"red3"} onClick={() => {
 
-                ExecConfirm(() => {
+                ExecConfirm(async () => {
 
-                    return SysParamDeleteByIdSet({idSet: [entity.id!]}).then(res => {
+                    await SysParamDeleteByIdSet({idSet: [entity.id!]}).then(res => {
 
                         ToastSuccess(res.msg)
                         actionRef.current?.reload()

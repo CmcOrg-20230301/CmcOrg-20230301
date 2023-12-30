@@ -1,7 +1,7 @@
 import {PageContainer, RouteContext, RouteContextType} from "@ant-design/pro-components"
 import {Card, Tabs} from "antd";
 import React, {useEffect, useState} from "react";
-import {WalletOutlined} from "@ant-design/icons";
+import {WalletOutlined} from "@ant-design/icons/lib";
 import UserWallet from "@/page/user/Wallet/UserWallet";
 import {Navigate, useLocation} from "react-router-dom";
 import PathConstant from "@/model/constant/PathConstant";
@@ -121,7 +121,8 @@ export default function () {
 
                                 {
                                     key: '1',
-                                    label: <span><WalletOutlined/>{USER_WALLET_KEY_ONE}</span>,
+                                    icon: <WalletOutlined/>,
+                                    label: USER_WALLET_KEY_ONE,
                                     children:
 
                                         <UserWallet

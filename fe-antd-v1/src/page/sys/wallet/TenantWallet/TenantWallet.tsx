@@ -1,7 +1,7 @@
 import {useRef, useState} from "react";
 import {ActionType, ColumnsState, ModalForm, ProFormDigit, ProTable} from "@ant-design/pro-components";
 import {Button, Space} from "antd";
-import {ChangeBigDecimalNumberDTO, SysUserWalletDO, SysUserWalletPageDTO,} from "@/api/http/SysUserWallet";
+import {ChangeBigDecimalNumberIdSetDTO, SysUserWalletDO, SysUserWalletPageDTO,} from "@/api/http/SysUserWallet";
 import TableColumnList from "./TableColumnList";
 import {ExecConfirm, ExecConfirmPromise, ToastSuccess} from "@/util/ToastUtil";
 import CommonConstant from "@/model/constant/CommonConstant";
@@ -139,7 +139,7 @@ export default function () {
 
                     <Space size={16}>
 
-                        <ModalForm<ChangeBigDecimalNumberDTO>
+                        <ModalForm<ChangeBigDecimalNumberIdSetDTO>
 
                             modalProps={{
                                 maskClosable: false
@@ -153,9 +153,9 @@ export default function () {
 
                             onFinish={async (form) => {
 
-                                await ExecConfirmPromise(() => {
+                                await ExecConfirmPromise(async () => {
 
-                                    return SysTenantWalletAddWithdrawableMoneyBackground({
+                                    await SysTenantWalletAddWithdrawableMoneyBackground({
 
                                         idSet: selectedRowKeys as string[],
                                         number: form.number
@@ -187,9 +187,9 @@ export default function () {
 
                         <a className={"green2"} onClick={() => {
 
-                            ExecConfirm(() => {
+                            ExecConfirm(async () => {
 
-                                return SysTenantWalletThawByIdSet({idSet: selectedRowKeys as string[]}).then(res => {
+                                await SysTenantWalletThawByIdSet({idSet: selectedRowKeys as string[]}).then(res => {
 
                                     ToastSuccess(res.msg)
                                     actionRef.current?.reload()
@@ -203,9 +203,9 @@ export default function () {
 
                         <a className={"red3"} onClick={() => {
 
-                            ExecConfirm(() => {
+                            ExecConfirm(async () => {
 
-                                return SysTenantWalletFrozenByIdSet({idSet: selectedRowKeys as string[]}).then(res => {
+                                await SysTenantWalletFrozenByIdSet({idSet: selectedRowKeys as string[]}).then(res => {
 
                                     ToastSuccess(res.msg)
                                     actionRef.current?.reload()

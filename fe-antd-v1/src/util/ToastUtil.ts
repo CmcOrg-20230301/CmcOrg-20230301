@@ -1,40 +1,40 @@
-import {getApp} from "@/MyApp";
+import {GetApp} from "@/MyApp";
 import React from "react";
 
 export function ToastSuccess(msg: React.ReactNode, duration: number = 5) {
 
-    getApp().message.success(msg, duration);
+    GetApp().message.success(msg, duration);
 
 }
 
 export function ToastInfo(msg: React.ReactNode, duration: number = 5) {
 
-    getApp().message.info(msg, duration);
+    GetApp().message.info(msg, duration);
 
 }
 
 export function ToastWarning(msg: React.ReactNode, duration: number = 5) {
 
-    getApp().message.warning(msg, duration);
+    GetApp().message.warning(msg, duration);
 
 }
 
 export function ToastError(msg: React.ReactNode, duration: number = 5) {
 
-    getApp().message.error(msg, duration);
+    GetApp().message.error(msg, duration);
 
 }
 
 // 注意：【confirmFun】和【cancelFun】，如果是 http请求，则需要 return http 请求，如果不是 Promise，则在方法前面加 async，即可
 export function ExecConfirm(
-    confirmFun: () => Promise<void>,
-    cancelFun?: () => Promise<void>,
+    confirmFun: () => Promise<any>,
+    cancelFun?: () => Promise<any>,
     msg?: React.ReactNode,
     res?: (value?: (PromiseLike<any> | any)) => void,
     rej?: (reason?: any) => void
 ) {
 
-    getApp().modal.confirm({
+    GetApp().modal.confirm({
 
         title: '提示',
         content: msg || '确定执行操作？',
@@ -49,13 +49,13 @@ export function ExecConfirm(
 
                     return await confirmFun()
                         .then(() => {
-                            resolve()
+                            resolve() // 关闭
                             if (res) {
                                 res()
                             }
                         })
                         .catch(() => {
-                            resolve()
+                            resolve() // 关闭
                             if (res) {
                                 res()
                             }
@@ -63,7 +63,7 @@ export function ExecConfirm(
 
                 }
 
-                resolve() // 关闭 confirm弹窗
+                resolve() // 关闭
                 if (res) {
                     res()
                 }
@@ -80,13 +80,13 @@ export function ExecConfirm(
 
                     return await cancelFun()
                         .then(() => {
-                            resolve()
+                            resolve() // 关闭
                             if (rej) {
                                 rej()
                             }
                         })
                         .catch(() => {
-                            resolve()
+                            resolve() // 关闭
                             if (rej) {
                                 rej()
                             }
@@ -94,7 +94,7 @@ export function ExecConfirm(
 
                 }
 
-                resolve() // 关闭 confirm弹窗
+                resolve() // 关闭
                 if (rej) {
                     rej()
                 }

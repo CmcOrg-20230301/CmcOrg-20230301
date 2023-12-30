@@ -131,9 +131,9 @@ const TableColumnList = (actionRef: React.RefObject<ActionType | undefined>): Pr
 
             <a key="1" className={"red3"} onClick={() => {
 
-                ExecConfirm(() => {
+                ExecConfirm(async () => {
 
-                    return SysSocketRefUserOfflineByIdSet({idSet: [entity.id!]}).then(res => {
+                    await SysSocketRefUserOfflineByIdSet({idSet: [entity.id!]}).then(res => {
 
                         ToastSuccess(res.msg)
                         actionRef.current?.reload()

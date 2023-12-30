@@ -1,7 +1,6 @@
-import React from "react";
 import {Outlet} from "react-router-dom";
 import {UseEffectLoadSysMenuUserSelfMenuList} from "@/util/UseEffectUtil";
-import {getAppNav} from "@/MyApp";
+import {GetAppNav} from "@/MyApp";
 import LocalStorageKey from "@/model/constant/LocalStorageKey";
 
 // 空白布局
@@ -14,7 +13,7 @@ export default function () {
 
         if (mainRedirectUri) {
 
-            getAppNav()(mainRedirectUri)
+            GetAppNav()(mainRedirectUri)
 
         }
 

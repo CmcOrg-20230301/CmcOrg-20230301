@@ -1,5 +1,5 @@
-import {WebSocketSend} from "@/util/webSocket/WebSocketHelper";
-import {GetMyWebSocket} from "@/util/webSocket/WebSocketUtil";
+import {WebSocketSend} from "@/util/WebSocket/WebSocketHelper";
+import {GetMyWebSocket} from "@/util/WebSocket/WebSocketUtil";
 
 // 心跳检测
 export const NETTY_WEB_SOCKET_HEART_BEAT = "/netty/webSocket/heartBeat"

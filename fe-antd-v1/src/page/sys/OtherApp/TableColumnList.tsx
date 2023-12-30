@@ -6,7 +6,7 @@ import {SysTenantDictList} from "@/api/http/SysTenant";
 import {Dropdown, QRCode, TreeSelect, Typography} from "antd";
 import {SearchTransform} from "@/util/CommonUtil";
 import CommonConstant from "@/model/constant/CommonConstant";
-import {EllipsisOutlined} from "@ant-design/icons";
+import {EllipsisOutlined} from "@ant-design/icons/lib";
 import React from "react";
 import PathConstant from "@/model/constant/PathConstant";
 import {GoPage} from "@/layout/AdminLayout/AdminLayout";
@@ -126,9 +126,9 @@ const TableColumnList = (currentForm: React.MutableRefObject<SysOtherAppInsertOr
 
             <a key="2" className={"red3"} onClick={() => {
 
-                ExecConfirm(() => {
+                ExecConfirm(async () => {
 
-                    return SysOtherAppDeleteByIdSet({idSet: [entity.id!]}).then(res => {
+                    await SysOtherAppDeleteByIdSet({idSet: [entity.id!]}).then(res => {
 
                         ToastSuccess(res.msg)
                         actionRef.current?.reload()

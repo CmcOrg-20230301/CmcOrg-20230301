@@ -107,7 +107,7 @@ interface ILoadElement {
 
 let appNav: NavigateFunction
 
-export function getAppNav(): Function {
+export function GetAppNav(): Function {
 
     return appNav as Function
 
@@ -115,7 +115,7 @@ export function getAppNav(): Function {
 
 let appDispatch: AppDispatch
 
-export function getAppDispatch() {
+export function GetAppDispatch() {
 
     return appDispatch
 
@@ -123,7 +123,7 @@ export function getAppDispatch() {
 
 let myApp: useAppProps
 
-export function getApp() {
+export function GetApp() {
 
     return myApp
 
@@ -132,7 +132,7 @@ export function getApp() {
 let userSelfInfo: UserSelfInfoVO
 
 // 获取：用户信息
-export function getUserSelfInfo() {
+export function GetUserSelfInfo() {
 
     return userSelfInfo
 
@@ -141,7 +141,7 @@ export function getUserSelfInfo() {
 let userSelfMenuList: SysMenuDO[]
 
 // 获取：菜单信息
-export function getUserSelfMenuList() {
+export function GetUserSelfMenuList() {
 
     return userSelfMenuList
 
