@@ -56,7 +56,7 @@ public class SysWalletUserSysPayRefHandlerConfiguration implements ISysPayRefHan
             return;
         }
 
-        // 获取：订单 id
+        // 获取：订单关联的 id
         Long refId = sysPayDO.getRefId();
 
         if (refId == null) {
@@ -82,22 +82,24 @@ public class SysWalletUserSysPayRefHandlerConfiguration implements ISysPayRefHan
 
                 String refData = sysPayDO.getRefData();
 
+                Long userId = sysPayDO.getUserId();
+
                 Date date = new Date();
 
                 TransactionUtil.exec(() -> {
 
                     // 增加用户的：可提现余额
-                    sysUserWalletService.doAddWithdrawableMoney(sysPayDO.getUserId(), date, CollUtil.newHashSet(refId),
-                        sysPayDO.getOriginalPrice(), SysUserWalletLogTypeEnum.ADD_PAY, false, false, false,
-                        sysPayDO.getRefId(), refData, true, null, sysPayDO.getTenantId());
+                    sysUserWalletService.doAddWithdrawableMoney(userId, date, CollUtil.newHashSet(refId),
+                        sysPayDO.getOriginalPrice(), SysUserWalletLogTypeEnum.ADD_PAY, false, false, false, refId,
+                        refData, true, null, sysPayDO.getTenantId());
 
                     if (StrUtil.isNotBlank(refData)) {
 
                         // 减少租户的：可提现余额和可提现预使用余额
-                        sysUserWalletService.doAddWithdrawableMoney(sysPayDO.getUserId(), date,
+                        sysUserWalletService.doAddWithdrawableMoney(userId, date,
                             CollUtil.newHashSet(Convert.toLong(refData)), sysPayDO.getOriginalPrice().negate(),
-                            SysUserWalletLogTypeEnum.REDUCE_USER_BUY, false, false, true, sysPayDO.getRefId(), refData,
-                            false, null, null);
+                            SysUserWalletLogTypeEnum.REDUCE_USER_BUY, false, false, true, refId, refData, false, null,
+                            null);
 
                     }
 
@@ -106,6 +108,8 @@ public class SysWalletUserSysPayRefHandlerConfiguration implements ISysPayRefHan
                     sysPayMapper.updateById(sysPayDO); // 更新：支付的关联状态
 
                 });
+
+                // 关闭支付弹窗：userId
 
             });
 

@@ -56,7 +56,7 @@ public class SysWalletTenantSysPayRefHandlerConfiguration implements ISysPayRefH
             return;
         }
 
-        // 获取：订单 id
+        // 获取：订单关联的 id
         Long refId = sysPayDO.getRefId();
 
         if (refId == null) {
@@ -82,22 +82,24 @@ public class SysWalletTenantSysPayRefHandlerConfiguration implements ISysPayRefH
 
                 String refData = sysPayDO.getRefData();
 
+                Long userId = sysPayDO.getUserId();
+
                 Date date = new Date();
 
                 TransactionUtil.exec(() -> {
 
                     // 增加租户的：可提现余额
-                    sysUserWalletService.doAddWithdrawableMoney(sysPayDO.getUserId(), date, CollUtil.newHashSet(refId),
-                        sysPayDO.getOriginalPrice(), SysUserWalletLogTypeEnum.ADD_PAY, false, false, true,
-                        sysPayDO.getRefId(), refData, true, null, null);
+                    sysUserWalletService.doAddWithdrawableMoney(userId, date, CollUtil.newHashSet(refId),
+                        sysPayDO.getOriginalPrice(), SysUserWalletLogTypeEnum.ADD_PAY, false, false, true, refId,
+                        refData, true, null, null);
 
                     if (StrUtil.isNotBlank(refData)) {
 
                         // 减少租户的：可提现余额和可提现预使用余额
-                        sysUserWalletService.doAddWithdrawableMoney(sysPayDO.getUserId(), date,
+                        sysUserWalletService.doAddWithdrawableMoney(userId, date,
                             CollUtil.newHashSet(Convert.toLong(refData)), sysPayDO.getOriginalPrice().negate(),
-                            SysUserWalletLogTypeEnum.REDUCE_TENANT_BUY, false, false, true, sysPayDO.getRefId(),
-                            refData, false, null, null);
+                            SysUserWalletLogTypeEnum.REDUCE_TENANT_BUY, false, false, true, refId, refData, false, null,
+                            null);
 
                     }
 
