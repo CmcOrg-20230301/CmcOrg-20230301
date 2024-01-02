@@ -371,7 +371,7 @@ export default function () {
 
                                                     ExecConfirm(async () => {
 
-                                                        return SysOtherAppOfficialAccountMenuDeleteByIdSet({idSet: [currentForm.current.id!]}).then(res => {
+                                                        await SysOtherAppOfficialAccountMenuDeleteByIdSet({idSet: [currentForm.current.id!]}).then(res => {
 
                                                             setFormOpen(false)
                                                             ToastSuccess(res.msg)

@@ -1,53 +1,38 @@
 import {useRef, useState} from "react";
-import {
-    ActionType,
-    BetaSchemaForm,
-    ColumnsState,
-    FormInstance,
-    ModalForm,
-    ProFormDigit,
-    ProTable
-} from "@ant-design/pro-components";
+import {ActionType, BetaSchemaForm, ColumnsState, FormInstance, ProTable} from "@ant-design/pro-components";
 import {Button, Space} from "antd";
-import {ColumnHeightOutlined, PlusOutlined, VerticalAlignMiddleOutlined} from "@ant-design/icons/lib";
+import {PlusOutlined} from "@ant-design/icons/lib";
 import {
-    SysPostAddOrderNo,
-    SysPostDeleteByIdSet,
-    SysPostDO,
-    SysPostInfoById,
-    SysPostInsertOrUpdate,
-    SysPostInsertOrUpdateDTO,
-    SysPostPageDTO,
-    SysPostTree
-} from "@/api/http/SysPost";
+    SysSmsConfigurationDeleteByIdSet,
+    SysSmsConfigurationDO,
+    SysSmsConfigurationInfoById,
+    SysSmsConfigurationInsertOrUpdate,
+    SysSmsConfigurationInsertOrUpdateDTO,
+    SysSmsConfigurationPage,
+    SysSmsConfigurationPageDTO
+} from "@/api/http/SysSmsConfiguration";
 import TableColumnList from "./TableColumnList";
 import {ExecConfirm, ToastSuccess} from "@/util/ToastUtil";
 import SchemaFormColumnList, {InitForm} from "./SchemaFormColumnList";
-import {CalcOrderNo, GetIdListForHasChildrenNode} from "@/util/TreeUtil";
 import CommonConstant from "@/model/constant/CommonConstant";
-import {IMyTree} from "@/util/DictUtil";
 import {UseEffectFullScreenChange} from "@/util/UseEffectUtil";
 
-// 岗位-管理
+// 短信配置-管理
 export default function () {
 
     const [columnsStateMap, setColumnsStateMap] = useState<Record<string, ColumnsState>>();
 
     const [expandedRowKeys, setExpandedRowKeys] = useState<string[]>([]);
 
-    const hasChildrenIdList = useRef<string[]>([]); // 有子节点的 idList
-
     const actionRef = useRef<ActionType>()
 
-    const formRef = useRef<FormInstance<SysPostInsertOrUpdateDTO>>();
+    const formRef = useRef<FormInstance<SysSmsConfigurationInsertOrUpdateDTO>>();
 
     const [formOpen, setFormOpen] = useState<boolean>(false);
 
-    const currentForm = useRef<SysPostInsertOrUpdateDTO>({} as SysPostInsertOrUpdateDTO)
+    const currentForm = useRef<SysSmsConfigurationInsertOrUpdateDTO>({} as SysSmsConfigurationInsertOrUpdateDTO)
 
     const [fullScreenFlag, setFullScreenFlag] = useState<boolean>(false)
-
-    const treeListRef = useRef<IMyTree[]>([]) // table的数据
 
     UseEffectFullScreenChange(setFullScreenFlag) // 监听是否：全屏
 
@@ -55,14 +40,18 @@ export default function () {
 
         <>
 
-            <ProTable<SysPostDO, SysPostPageDTO>
+            <ProTable<SysSmsConfigurationDO, SysSmsConfigurationPageDTO>
 
                 scroll={{x: 'max-content'}}
                 sticky={{offsetHeader: fullScreenFlag ? 0 : CommonConstant.NAV_TOP_HEIGHT}}
-
                 actionRef={actionRef}
                 rowKey={"id"}
-                pagination={false}
+
+                pagination={{
+                    showQuickJumper: true,
+                    showSizeChanger: true,
+                }}
+
                 columnEmptyText={false}
 
                 columnsState={{
@@ -71,6 +60,7 @@ export default function () {
                 }}
 
                 rowSelection={{}}
+
                 expandable={{
 
                     expandedRowKeys,
@@ -93,68 +83,17 @@ export default function () {
 
                 request={(params, sort, filter) => {
 
-                    return SysPostTree({...params, sort})
-
-                }}
-
-                postData={(data: any) => {
-
-                    treeListRef.current = data
-
-                    hasChildrenIdList.current = GetIdListForHasChildrenNode(data)
-
-                    return data
+                    return SysSmsConfigurationPage({...params, sort})
 
                 }}
 
                 toolbar={{
 
-                    title:
-
-                        <Space size={16}>
-
-                            <Button
-
-                                onClick={() => {
-
-                                    setExpandedRowKeys(hasChildrenIdList.current)
-
-                                }}
-
-                                icon={<ColumnHeightOutlined/>}
-
-                            >
-
-                                展开
-
-                            </Button>
-
-                            <Button
-
-                                onClick={() => {
-
-                                    setExpandedRowKeys([])
-
-                                }}
-
-                                icon={<VerticalAlignMiddleOutlined/>}
-
-                            >
-
-                                收起
-
-                            </Button>
-
-                        </Space>,
-
                     actions: [
 
                         <Button key={"1"} icon={<PlusOutlined/>} type="primary" onClick={() => {
 
-                            currentForm.current = {} as SysPostInsertOrUpdateDTO
-
-                            CalcOrderNo(currentForm.current, {children: treeListRef.current});
-
+                            currentForm.current = {} as SysSmsConfigurationInsertOrUpdateDTO
                             setFormOpen(true)
 
                         }}>新建</Button>
@@ -167,49 +106,11 @@ export default function () {
 
                     <Space size={16}>
 
-                        <ModalForm<SysPostInsertOrUpdateDTO>
-
-                            modalProps={{
-                                maskClosable: false
-                            }}
-
-                            isKeyPressSubmit
-
-                            width={CommonConstant.MODAL_FORM_WIDTH}
-                            title={CommonConstant.ADD_ORDER_NO}
-                            trigger={<a>{CommonConstant.ADD_ORDER_NO}</a>}
-
-                            onFinish={async (form) => {
-
-                                await SysPostAddOrderNo({
-
-                                    idSet: selectedRowKeys as string[],
-                                    number: String(form.orderNo)
-
-                                }).then(res => {
-
-                                    ToastSuccess(res.msg)
-                                    actionRef.current?.reload()
-
-                                })
-
-                                return true
-
-                            }}
-
-                        >
-
-                            <ProFormDigit label={CommonConstant.ADD_VALUE} name="orderNo" tooltip={"可以为负数"}
-                                          min={Number.MIN_SAFE_INTEGER} className={"w100"}
-                                          rules={[{required: true}]}/>
-
-                        </ModalForm>
-
                         <a className={"red3"} onClick={() => {
 
                             ExecConfirm(async () => {
 
-                                await SysPostDeleteByIdSet({idSet: selectedRowKeys as string[]}).then(res => {
+                                await SysSmsConfigurationDeleteByIdSet({idSet: selectedRowKeys as string[]}).then(res => {
 
                                     ToastSuccess(res.msg)
                                     actionRef.current?.reload()
@@ -229,9 +130,9 @@ export default function () {
 
             />
 
-            <BetaSchemaForm<SysPostInsertOrUpdateDTO>
+            <BetaSchemaForm<SysSmsConfigurationInsertOrUpdateDTO>
 
-                title={currentForm.current.id ? "编辑岗位" : "新建岗位"}
+                title={currentForm.current.id ? "编辑短信配置" : "新建短信配置"}
                 layoutType={"ModalForm"}
                 grid
 
@@ -289,7 +190,7 @@ export default function () {
 
                                     ExecConfirm(async () => {
 
-                                        await SysPostDeleteByIdSet({idSet: [currentForm.current.id!]}).then(res => {
+                                        await SysSmsConfigurationDeleteByIdSet({idSet: [currentForm.current.id!]}).then(res => {
 
                                             setFormOpen(false)
                                             ToastSuccess(res.msg)
@@ -319,9 +220,9 @@ export default function () {
 
                     if (currentForm.current.id) {
 
-                        SysPostInfoById({id: currentForm.current.id}).then(res => {
+                        SysSmsConfigurationInfoById({id: currentForm.current.id}).then(res => {
 
-                            currentForm.current = res as SysPostInsertOrUpdateDTO
+                            currentForm.current = res as SysSmsConfigurationInsertOrUpdateDTO
 
                             formRef.current?.setFieldsValue(currentForm.current)
 
@@ -347,7 +248,7 @@ export default function () {
 
                 onFinish={async (form) => {
 
-                    await SysPostInsertOrUpdate({...currentForm.current, ...form}).then(res => {
+                    await SysSmsConfigurationInsertOrUpdate({...currentForm.current, ...form}).then(res => {
 
                         ToastSuccess(res.msg)
                         actionRef.current?.reload()

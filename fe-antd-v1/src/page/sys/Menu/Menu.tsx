@@ -289,7 +289,7 @@ export default function () {
 
                                     ExecConfirm(async () => {
 
-                                        return SysMenuDeleteByIdSet({idSet: [currentForm.current.id!]}).then(res => {
+                                        await SysMenuDeleteByIdSet({idSet: [currentForm.current.id!]}).then(res => {
 
                                             setFormOpen(false)
                                             ToastSuccess(res.msg)

@@ -395,7 +395,7 @@ export default function () {
 
                                     ExecConfirm(async () => {
 
-                                        return SysUserDeleteByIdSet({idSet: [currentForm.current.id!]}).then(res => {
+                                        await SysUserDeleteByIdSet({idSet: [currentForm.current.id!]}).then(res => {
 
                                             setFormOpen(false)
                                             ToastSuccess(res.msg)

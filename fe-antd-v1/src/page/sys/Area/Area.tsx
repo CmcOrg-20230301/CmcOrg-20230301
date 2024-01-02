@@ -289,7 +289,7 @@ export default function () {
 
                                     ExecConfirm(async () => {
 
-                                        return SysAreaDeleteByIdSet({idSet: [currentForm.current.id!]}).then(res => {
+                                        await SysAreaDeleteByIdSet({idSet: [currentForm.current.id!]}).then(res => {
 
                                             setFormOpen(false)
                                             ToastSuccess(res.msg)

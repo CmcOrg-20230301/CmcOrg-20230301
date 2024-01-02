@@ -190,7 +190,7 @@ export default function () {
 
                                     ExecConfirm(async () => {
 
-                                        return SysFileStorageConfigurationDeleteByIdSet({idSet: [currentForm.current.id!]}).then(res => {
+                                        await SysFileStorageConfigurationDeleteByIdSet({idSet: [currentForm.current.id!]}).then(res => {
 
                                             setFormOpen(false)
                                             ToastSuccess(res.msg)

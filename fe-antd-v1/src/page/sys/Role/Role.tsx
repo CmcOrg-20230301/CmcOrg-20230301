@@ -190,7 +190,7 @@ export default function () {
 
                                     ExecConfirm(async () => {
 
-                                        return SysRoleDeleteByIdSet({idSet: [currentForm.current.id!]}).then(res => {
+                                        await SysRoleDeleteByIdSet({idSet: [currentForm.current.id!]}).then(res => {
 
                                             setFormOpen(false)
                                             ToastSuccess(res.msg)

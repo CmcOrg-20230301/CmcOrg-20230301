@@ -190,7 +190,7 @@ export default function () {
 
                                     ExecConfirm(async () => {
 
-                                        return SysPayConfigurationDeleteByIdSet({idSet: [currentForm.current.id!]}).then(res => {
+                                        await SysPayConfigurationDeleteByIdSet({idSet: [currentForm.current.id!]}).then(res => {
 
                                             setFormOpen(false)
                                             ToastSuccess(res.msg)

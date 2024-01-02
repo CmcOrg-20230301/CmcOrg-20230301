@@ -4,7 +4,9 @@ import {
     SysOtherAppOfficialAccountMenuInsertOrUpdateDTO,
     SysOtherAppOfficialAccountMenuPage
 } from "@/api/http/SysOtherApp";
-import {SysOtherAppOfficialAccountMenuButtonTypeEnumDict} from "@/model/enum/SysOtherAppOfficialAccountMenuButtonTypeEnum";
+import {
+    SysOtherAppOfficialAccountMenuButtonTypeEnumDict
+} from "@/model/enum/SysOtherAppOfficialAccountMenuButtonTypeEnum";
 
 export const InitForm: SysOtherAppOfficialAccountMenuInsertOrUpdateDTO = {} as SysOtherAppOfficialAccountMenuInsertOrUpdateDTO
 

@@ -210,7 +210,7 @@ export default function () {
 
                                     ExecConfirm(async () => {
 
-                                        return SysParamDeleteByIdSet({idSet: [currentForm.current.id!]}).then(res => {
+                                        await SysParamDeleteByIdSet({idSet: [currentForm.current.id!]}).then(res => {
 
                                             setFormOpen(false)
                                             ToastSuccess(res.msg)
