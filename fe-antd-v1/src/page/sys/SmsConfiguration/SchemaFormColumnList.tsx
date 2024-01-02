@@ -96,7 +96,7 @@ const SchemaFormColumnList = (): ProFormColumnsType<SysSmsConfigurationInsertOrU
         },
 
         {
-            title: '是否是默认短信发送',
+            title: '默认发送',
             dataIndex: 'defaultFlag',
             valueEnum: YesNoDict,
             valueType: 'switch',

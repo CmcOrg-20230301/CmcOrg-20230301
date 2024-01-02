@@ -76,7 +76,7 @@ const TableColumnList = (currentForm: React.MutableRefObject<SysSmsConfiguration
     {title: '通用短信', dataIndex: 'sendCommon', ellipsis: true, width: 90,},
 
     {
-        title: '是否是默认短信发送',
+        title: '默认发送',
         dataIndex: 'defaultFlag',
         valueEnum: YesNoDict,
         width: 90,
