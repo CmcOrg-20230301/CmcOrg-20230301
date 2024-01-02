@@ -60,6 +60,9 @@ public class SysSmsConfigurationInsertOrUpdateDTO extends BaseTenantInsertOrUpda
     @Schema(description = "发送：注册短信")
     private String sendSignUp;
 
+    @Schema(description = "发送：通用短信")
+    private String sendCommon;
+
     @Schema(description = "是否启用")
     private Boolean enableFlag;
 

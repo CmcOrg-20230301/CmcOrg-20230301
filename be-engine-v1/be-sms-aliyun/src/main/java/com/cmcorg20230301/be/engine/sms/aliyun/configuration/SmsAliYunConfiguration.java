@@ -139,6 +139,12 @@ public class SmsAliYunConfiguration implements ISysSms {
      */
     public static void sendForCode(SysSmsSendBO sysSmsSendBO) {
 
+        if (StrUtil.isBlank(sysSmsSendBO.getTemplateId())) {
+
+            sysSmsSendBO.setTemplateId(sysSmsSendBO.getSysSmsConfigurationDO().getSendCommon());
+
+        }
+
         // 备注：第二个元素，表示是：验证码多久过期（分钟）
         String templateParam = JSONUtil.createObj().set("code", sysSmsSendBO.getSendContent())
             .set("expire", BaseConstant.LONG_CODE_EXPIRE_MINUTE).toString();
@@ -187,7 +193,8 @@ public class SmsAliYunConfiguration implements ISysSms {
         String code = body.getCode();
 
         if (BooleanUtil.isFalse("OK".equalsIgnoreCase(code))) {
-            throw new RuntimeException(StrUtil.format("阿里云短信发送失败，code：【{}】，message：【{}】", code, body.getMessage()));
+            throw new RuntimeException(
+                StrUtil.format("阿里云短信发送失败，code：【{}】，message：【{}】", code, body.getMessage()));
         }
 
     }

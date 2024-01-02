@@ -68,6 +68,8 @@ public class SysSmsConfigurationServiceImpl extends ServiceImpl<SysSmsConfigurat
         sysSmsConfigurationDO.setSendSignIn(MyEntityUtil.getNotNullStr(dto.getSendSignIn()));
         sysSmsConfigurationDO.setSendSignUp(MyEntityUtil.getNotNullStr(dto.getSendSignUp()));
 
+        sysSmsConfigurationDO.setSendCommon(MyEntityUtil.getNotNullStr(dto.getSendCommon()));
+
         sysSmsConfigurationDO.setId(dto.getId());
         sysSmsConfigurationDO.setEnableFlag(BooleanUtil.isTrue(dto.getEnableFlag()));
         sysSmsConfigurationDO.setDelFlag(false);

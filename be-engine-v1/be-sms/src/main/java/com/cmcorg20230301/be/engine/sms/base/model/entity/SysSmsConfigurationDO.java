@@ -58,4 +58,7 @@ public class SysSmsConfigurationDO extends BaseEntity {
     @Schema(description = "发送：注册短信")
     private String sendSignUp;
 
+    @Schema(description = "发送：通用短信")
+    private String sendCommon;
+
 }

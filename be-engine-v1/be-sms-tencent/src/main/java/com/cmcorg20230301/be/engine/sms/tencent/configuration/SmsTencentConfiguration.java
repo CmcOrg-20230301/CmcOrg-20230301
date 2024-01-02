@@ -136,6 +136,12 @@ public class SmsTencentConfiguration implements ISysSms {
      */
     public static void sendForCode(SysSmsSendBO sysSmsSendBO) {
 
+        if (StrUtil.isBlank(sysSmsSendBO.getTemplateId())) {
+
+            sysSmsSendBO.setTemplateId(sysSmsSendBO.getSysSmsConfigurationDO().getSendCommon());
+
+        }
+
         String[] templateParamSet = {sysSmsSendBO.getSendContent(),
             String.valueOf(BaseConstant.LONG_CODE_EXPIRE_MINUTE)}; // 备注：第二个元素，表示是：验证码多久过期（分钟）
 
