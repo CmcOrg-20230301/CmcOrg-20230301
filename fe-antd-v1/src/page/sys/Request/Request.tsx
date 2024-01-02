@@ -10,7 +10,7 @@ import {
 import TableColumnList from "./TableColumnList";
 import CommonConstant from "@/model/constant/CommonConstant";
 import {Badge, Button, Space, Tooltip, Typography} from "antd";
-import {LoadingOutlined, ReloadOutlined} from "@ant-design/icons/lib";
+import {LoadingOutlined, ReloadOutlined} from "@ant-design/icons";
 import {FormatDateTime} from "@/util/DateUtil";
 import {UseEffectFullScreenChange} from "@/util/UseEffectUtil";
 

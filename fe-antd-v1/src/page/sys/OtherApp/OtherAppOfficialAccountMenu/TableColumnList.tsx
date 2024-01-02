@@ -3,7 +3,7 @@ import {ActionType, ProColumns} from "@ant-design/pro-components";
 
 import {ExecConfirm, ToastSuccess} from "@/util/ToastUtil";
 import {CalcOrderNo} from "@/util/TreeUtil";
-import {EllipsisOutlined} from "@ant-design/icons/lib";
+import {EllipsisOutlined} from "@ant-design/icons";
 import {Dropdown, TreeSelect, Typography} from "antd";
 import React from "react";
 import {SysTenantDictList} from "@/api/http/SysTenant";

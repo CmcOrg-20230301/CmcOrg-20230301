@@ -9,7 +9,7 @@ import {
     ProTable
 } from "@ant-design/pro-components";
 import {Button, Space} from "antd";
-import {ColumnHeightOutlined, PlusOutlined, VerticalAlignMiddleOutlined} from "@ant-design/icons/lib";
+import {ColumnHeightOutlined, PlusOutlined, VerticalAlignMiddleOutlined} from "@ant-design/icons";
 import {
     SysPostAddOrderNo,
     SysPostDeleteByIdSet,

@@ -6,7 +6,7 @@ import {SysTenantDictList} from "@/api/http/SysTenant";
 import {Dropdown, QRCode, TreeSelect, Typography} from "antd";
 import {SearchTransform} from "@/util/CommonUtil";
 import CommonConstant from "@/model/constant/CommonConstant";
-import {EllipsisOutlined} from "@ant-design/icons/lib";
+import {EllipsisOutlined} from "@ant-design/icons";
 import React from "react";
 import PathConstant from "@/model/constant/PathConstant";
 import {GoPage} from "@/layout/AdminLayout/AdminLayout";

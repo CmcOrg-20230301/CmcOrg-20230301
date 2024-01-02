@@ -1,4 +1,4 @@
-import * as Icon from "@ant-design/icons/lib";
+import * as Icon from "@ant-design/icons";
 import {IconBaseProps} from "@ant-design/icons/lib/components/Icon";
 
 export const IconList = Object.keys(Icon).filter(item => item !== 'default' && item !== 'IconProvider' && item !== 'getTwoToneColor' && item !== 'setTwoToneColor' && item !== 'createFromIconfontCN')

@@ -9,7 +9,7 @@ import {
     SysUserWalletWithdrawLogInsertOrUpdateUserSelfDTO
 } from "@/api/http/SysUserWalletWithdrawLog";
 import {Button} from "antd";
-import {CheckCircleOutlined} from "@ant-design/icons/lib";
+import {CheckCircleOutlined} from "@ant-design/icons";
 import {ExecConfirm, ToastError, ToastSuccess} from "@/util/ToastUtil";
 import CommonConstant from "@/model/constant/CommonConstant";
 import {UserWalletWithdrawModalTitle} from "@/page/user/Wallet/UserWallet";

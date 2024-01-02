@@ -14,7 +14,7 @@ import {
 } from "@/api/http/SysTenantWallet";
 import {GetIdListForHasChildrenNode} from "@/util/TreeUtil";
 import {IMyTree} from "@/util/DictUtil";
-import {ColumnHeightOutlined, VerticalAlignMiddleOutlined} from "@ant-design/icons/lib";
+import {ColumnHeightOutlined, VerticalAlignMiddleOutlined} from "@ant-design/icons";
 import {IWalletUser} from "@/page/sys/wallet/WalletUser/WalletUser";
 
 // 租户钱包-管理

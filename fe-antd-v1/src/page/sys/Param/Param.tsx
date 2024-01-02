@@ -1,7 +1,7 @@
 import {useRef, useState} from "react";
 import {ActionType, BetaSchemaForm, ColumnsState, FormInstance, ProTable} from "@ant-design/pro-components";
 import {Button, Space} from "antd";
-import {PlusOutlined} from "@ant-design/icons/lib";
+import {PlusOutlined} from "@ant-design/icons";
 import {
     SysParamDeleteByIdSet,
     SysParamDO,

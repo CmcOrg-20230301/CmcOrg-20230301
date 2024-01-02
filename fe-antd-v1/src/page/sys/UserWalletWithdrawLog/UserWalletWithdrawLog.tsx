@@ -21,7 +21,7 @@ import CommonConstant from "@/model/constant/CommonConstant";
 import {ExecConfirm, ToastSuccess} from "@/util/ToastUtil";
 import {Button, Space, TreeSelect, Typography} from "antd";
 import {FormatDateTime} from "@/util/DateUtil";
-import {LoadingOutlined, ReloadOutlined} from "@ant-design/icons/lib";
+import {LoadingOutlined, ReloadOutlined} from "@ant-design/icons";
 import {DoGetDictList, GetDictList, NoFormGetDictTreeList} from "@/util/DictUtil";
 import {SysTenantDictList} from "@/api/http/SysTenant";
 import {SearchTransform} from "@/util/CommonUtil";

@@ -12,7 +12,7 @@ import {
 } from "@/api/http/SysTenant";
 import {ExecConfirm, ToastSuccess} from "@/util/ToastUtil";
 import {CalcOrderNo} from "@/util/TreeUtil";
-import {EllipsisOutlined} from "@ant-design/icons/lib";
+import {EllipsisOutlined} from "@ant-design/icons";
 import {Dropdown, TreeSelect} from "antd";
 import React from "react";
 import {GetTenantIdFromStorage, SearchTransform, SetTenantIdToStorage} from "@/util/CommonUtil";

@@ -1,7 +1,7 @@
 import {PageContainer, RouteContext, RouteContextType} from "@ant-design/pro-components"
 import {Card, Tabs} from "antd";
 import React, {useEffect, useState} from "react";
-import {WalletOutlined} from "@ant-design/icons/lib";
+import {WalletOutlined} from "@ant-design/icons";
 import UserWallet from "@/page/user/Wallet/UserWallet";
 import {Navigate, useLocation} from "react-router-dom";
 import PathConstant from "@/model/constant/PathConstant";

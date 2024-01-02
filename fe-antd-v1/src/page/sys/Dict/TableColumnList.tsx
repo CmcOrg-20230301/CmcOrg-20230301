@@ -1,6 +1,6 @@
 import {GetDictList, NoFormGetDictTreeList, YesNoDict} from "@/util/DictUtil";
 import {Dropdown, Tag, TreeSelect} from "antd";
-import {EllipsisOutlined} from "@ant-design/icons/lib";
+import {EllipsisOutlined} from "@ant-design/icons";
 import {ActionType, ProColumns} from "@ant-design/pro-components";
 import {SysDictDeleteByIdSet, SysDictDO, SysDictInsertOrUpdateDTO} from "@/api/http/SysDict";
 import {ExecConfirm, ToastSuccess} from "@/util/ToastUtil";

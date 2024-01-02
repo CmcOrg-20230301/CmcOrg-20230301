@@ -4,7 +4,7 @@ import {LoginForm, ProFormCaptcha, ProFormInstance, ProFormText} from "@ant-desi
 import CommonConstant from "@/model/constant/CommonConstant";
 import IconSvg from '../../../../public/icon.svg'
 import {Tabs} from "antd";
-import {LockOutlined, SafetyCertificateOutlined, UserOutlined} from "@ant-design/icons/lib";
+import {LockOutlined, SafetyCertificateOutlined, UserOutlined} from "@ant-design/icons";
 import {GetAppNav} from "@/MyApp";
 import PathConstant from "@/model/constant/PathConstant";
 import {SendCode, SignUpFormHandler, UseEffectSign} from "@/page/sign/SignUp/SignUpUtil";

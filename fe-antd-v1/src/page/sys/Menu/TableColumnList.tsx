@@ -6,7 +6,7 @@ import React from "react";
 import {CalcOrderNo, DefaultOrderNo} from "@/util/TreeUtil";
 import CommonConstant from "@/model/constant/CommonConstant";
 import {Dropdown, TreeSelect} from "antd";
-import {EllipsisOutlined} from "@ant-design/icons/lib";
+import {EllipsisOutlined} from "@ant-design/icons";
 import {SysTenantDictList} from "@/api/http/SysTenant";
 import {SearchTransform} from "@/util/CommonUtil";
 

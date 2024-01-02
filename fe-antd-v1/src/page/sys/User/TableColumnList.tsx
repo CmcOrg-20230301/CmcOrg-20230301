@@ -12,7 +12,7 @@ import {
 } from "@/api/http/SysUser";
 import {ExecConfirm, ToastSuccess} from "@/util/ToastUtil";
 import CommonConstant from "@/model/constant/CommonConstant";
-import {EllipsisOutlined, EyeOutlined} from "@ant-design/icons/lib";
+import {EllipsisOutlined, EyeOutlined} from "@ant-design/icons";
 import {Validate} from "@/util/ValidatorUtil";
 import {PasswordRSAEncrypt, RSAEncryptPro} from "@/util/RsaUtil";
 import {Dropdown, TreeSelect, Typography} from "antd";

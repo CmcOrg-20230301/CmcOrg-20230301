@@ -12,7 +12,7 @@ import {
     RouteContextType
 } from "@ant-design/pro-components";
 import {Button, Space} from "antd";
-import {ColumnHeightOutlined, PlusOutlined, RollbackOutlined, VerticalAlignMiddleOutlined} from "@ant-design/icons/lib";
+import {ColumnHeightOutlined, PlusOutlined, RollbackOutlined, VerticalAlignMiddleOutlined} from "@ant-design/icons";
 import TableColumnList from "./TableColumnList";
 import {ExecConfirm, ToastSuccess} from "@/util/ToastUtil";
 import SchemaFormColumnList, {InitForm} from "./SchemaFormColumnList";

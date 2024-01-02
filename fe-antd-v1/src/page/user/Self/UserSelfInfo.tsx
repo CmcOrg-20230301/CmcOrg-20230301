@@ -13,7 +13,7 @@ import {ExecConfirm, ToastError, ToastSuccess} from "@/util/ToastUtil";
 import {USER_CENTER_KEY_ONE} from "@/page/user/Self/Self";
 import {Validate} from "@/util/ValidatorUtil";
 import {Avatar, Image, Space, Upload, UploadFile} from "antd";
-import {DeleteOutlined, EyeOutlined} from "@ant-design/icons/lib";
+import {DeleteOutlined, EyeOutlined} from "@ant-design/icons";
 import CommonConstant from "@/model/constant/CommonConstant";
 import MyIcon from "@/component/MyIcon/MyIcon";
 import {CheckAvatarFileType, CheckFileSize, SysFileUpload} from "@/util/FileUtil";

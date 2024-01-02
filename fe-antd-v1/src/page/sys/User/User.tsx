@@ -1,7 +1,7 @@
 import {useRef, useState} from "react";
 import {ActionType, BetaSchemaForm, ColumnsState, FormInstance, ProTable} from "@ant-design/pro-components";
 import {Button, Space, Typography} from "antd";
-import {ColumnHeightOutlined, PlusOutlined, VerticalAlignMiddleOutlined} from "@ant-design/icons/lib";
+import {ColumnHeightOutlined, PlusOutlined, VerticalAlignMiddleOutlined} from "@ant-design/icons";
 import {
     SysUserDeleteByIdSet,
     SysUserInfoById,

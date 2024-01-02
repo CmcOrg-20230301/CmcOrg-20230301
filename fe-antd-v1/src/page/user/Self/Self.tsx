@@ -1,7 +1,7 @@
 import {RouteContext, RouteContextType} from "@ant-design/pro-components"
 import {Card, Tabs} from "antd";
 import React from "react";
-import {SettingOutlined, UserOutlined} from "@ant-design/icons/lib";
+import {SettingOutlined, UserOutlined} from "@ant-design/icons";
 import UserSelfInfo from "@/page/user/Self/UserSelfInfo";
 import UserSelfSetting from "@/page/user/Self/UserSelfSetting";
 import {Tab} from "rc-tabs/lib/interface";

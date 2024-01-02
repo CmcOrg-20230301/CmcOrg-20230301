@@ -4,7 +4,7 @@ import {SysDeptDeleteByIdSet, SysDeptDO, SysDeptInsertOrUpdateDTO} from "@/api/h
 import {ExecConfirm, ToastSuccess} from "@/util/ToastUtil";
 import {Dropdown, TreeSelect} from "antd";
 import {CalcOrderNo} from "@/util/TreeUtil";
-import {EllipsisOutlined} from "@ant-design/icons/lib";
+import {EllipsisOutlined} from "@ant-design/icons";
 import React from "react";
 import {SysTenantDictList} from "@/api/http/SysTenant";
 import {SearchTransform} from "@/util/CommonUtil";

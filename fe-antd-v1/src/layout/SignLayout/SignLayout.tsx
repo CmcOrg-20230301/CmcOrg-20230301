@@ -1,7 +1,7 @@
 import {PropsWithChildren, useEffect} from "react";
 import LocalStorageKey from "@/model/constant/LocalStorageKey";
 import {Navigate} from "react-router-dom";
-import {CopyrightOutlined} from "@ant-design/icons/lib";
+import {CopyrightOutlined} from "@ant-design/icons";
 import {ConfigProvider} from "antd";
 import {AliasToken} from "antd/es/theme/interface/alias";
 import {RemoveTenantNameSuf} from "@/page/sign/SignUp/SignUpUtil";

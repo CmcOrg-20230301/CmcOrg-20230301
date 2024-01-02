@@ -7,7 +7,7 @@ import {
     RouteContextType
 } from '@ant-design/pro-components';
 import {Button, Statistic} from 'antd';
-import {MoneyCollectOutlined, RollbackOutlined} from "@ant-design/icons/lib";
+import {MoneyCollectOutlined, RollbackOutlined} from "@ant-design/icons";
 import React, {useEffect, useRef, useState} from "react";
 import {SysUserBankCardDO, SysUserBankCardInfoById, SysUserBankCardInfoByIdUserSelf} from "@/api/http/SysUserBankCard";
 import {ToastSuccess} from "@/util/ToastUtil";

@@ -13,7 +13,7 @@ import React, {useEffect, useState} from "react";
 import {SysMenuDO} from "@/api/http/SysMenu";
 import PathConstant from "@/model/constant/PathConstant";
 import {setUserSelfAvatarUrl, setUserSelfInfo} from "@/store/userSlice";
-import {LogoutOutlined, UserOutlined, WalletOutlined} from "@ant-design/icons/lib";
+import {LogoutOutlined, UserOutlined, WalletOutlined} from "@ant-design/icons";
 import {GetCopyright} from "@/layout/SignLayout/SignLayout";
 import {Avatar, Button, Dropdown, Space, Typography} from "antd";
 import SessionStorageKey from "@/model/constant/SessionStorageKey";
