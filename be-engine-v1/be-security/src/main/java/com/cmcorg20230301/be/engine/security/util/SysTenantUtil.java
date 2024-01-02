@@ -10,6 +10,7 @@ import com.cmcorg20230301.be.engine.cache.util.MyCacheUtil;
 import com.cmcorg20230301.be.engine.model.model.constant.BaseConstant;
 import com.cmcorg20230301.be.engine.model.model.constant.ParamConstant;
 import com.cmcorg20230301.be.engine.model.model.dto.BaseTenantInsertOrUpdateDTO;
+import com.cmcorg20230301.be.engine.model.model.dto.UserIdAndTenantIdDTO;
 import com.cmcorg20230301.be.engine.redisson.model.enums.BaseRedisKeyEnum;
 import com.cmcorg20230301.be.engine.security.exception.BaseBizCodeEnum;
 import com.cmcorg20230301.be.engine.security.mapper.SysTenantMapper;
@@ -104,8 +105,7 @@ public class SysTenantUtil {
     }
 
     /**
-     * 获取：租户缓存数据：map
-     * 备注：这里不包含：默认租户
+     * 获取：租户缓存数据：map，备注：这里不包含：默认租户
      *
      * @param addDefaultFlag 是否添加：默认租户
      */
@@ -113,16 +113,17 @@ public class SysTenantUtil {
     @Unmodifiable
     public static Map<Long, SysTenantDO> getSysTenantCacheMap(boolean addDefaultFlag) {
 
-        Map<Long, SysTenantDO> map = MyCacheUtil
-            .getMap(BaseRedisKeyEnum.SYS_TENANT_CACHE, CacheHelper.getDefaultLongMap(new SysTenantDO()), () -> {
+        Map<Long, SysTenantDO> map =
+            MyCacheUtil.getMap(BaseRedisKeyEnum.SYS_TENANT_CACHE, CacheHelper.getDefaultLongMap(new SysTenantDO()),
+                () -> {
 
-                List<SysTenantDO> sysTenantDOList = ChainWrappers.lambdaQueryChain(sysTenantMapper)
-                    .select(BaseEntity::getId, SysTenantDO::getName, BaseEntityNoId::getEnableFlag,
-                        SysTenantDO::getParentId).list();
+                    List<SysTenantDO> sysTenantDOList = ChainWrappers.lambdaQueryChain(sysTenantMapper)
+                        .select(BaseEntity::getId, SysTenantDO::getName, BaseEntityNoId::getEnableFlag,
+                            SysTenantDO::getParentId).list();
 
-                return sysTenantDOList.stream().collect(Collectors.toMap(BaseEntity::getId, it -> it));
+                    return sysTenantDOList.stream().collect(Collectors.toMap(BaseEntity::getId, it -> it));
 
-            });
+                });
 
         // 移除：默认值
         map = CacheHelper.handleDefaultLongMap(map);
@@ -191,8 +192,7 @@ public class SysTenantUtil {
     }
 
     /**
-     * 获取：用户关联的租户，包含自身的租户
-     * 备注：即表示：用户可以查看关联租户的信息
+     * 获取：用户关联的租户，包含自身的租户，备注：即表示：用户可以查看关联租户的信息
      */
     @NotNull
     public static Set<Long> getUserRefTenantIdSet() {
@@ -275,8 +275,7 @@ public class SysTenantUtil {
     }
 
     /**
-     * 检查：不能是自身租户，并且必须是子级租户
-     * 注意：请自行检查：checkTenantIdSet，是否是属于当前用户的所管理的租户
+     * 检查：不能是自身租户，并且必须是子级租户，注意：请自行检查：checkTenantIdSet，是否是属于当前用户的所管理的租户
      *
      * @param checkTenantIdSet 需要检查的租户 idSet
      */
@@ -311,8 +310,8 @@ public class SysTenantUtil {
     @Unmodifiable // 不可对返回值进行修改
     public static Map<Long, Set<Long>> getUserIdRefTenantIdSetMap() {
 
-        return MyCacheUtil
-            .getMap(BaseRedisKeyEnum.USER_ID_REF_TENANT_ID_SET_CACHE, CacheHelper.getDefaultLongSetMap(), () -> {
+        return MyCacheUtil.getMap(BaseRedisKeyEnum.USER_ID_REF_TENANT_ID_SET_CACHE, CacheHelper.getDefaultLongSetMap(),
+            () -> {
 
                 List<SysTenantRefUserDO> sysTenantRefUserDOList = ChainWrappers.lambdaQueryChain(sysTenantRefUserMapper)
                     .select(SysTenantRefUserDO::getTenantId, SysTenantRefUserDO::getUserId).list();
@@ -378,8 +377,7 @@ public class SysTenantUtil {
     }
 
     /**
-     * 处理：BaseTenantInsertOrUpdateDTO
-     * 备注：如果不存在 id，则强制设置 tenantId为当前用户的租户 id，如果存在 id，则获取数据库里，实际的 tenantId，然后也是强制设置
+     * 处理：BaseTenantInsertOrUpdateDTO，备注：如果不存在 id，则强制设置 tenantId为当前用户的租户 id，如果存在 id，则获取数据库里，实际的 tenantId，然后也是强制设置
      * 并且会检查：该 id所在的租户，是否是当前用户所管理的租户
      *
      * @param getTenantIdBaseEntityFunc1 备注：只会使用 BaseEntityNoIdFather的 tenantId属性
@@ -426,8 +424,7 @@ public class SysTenantUtil {
     }
 
     /**
-     * 检查：是否非法操作
-     * 检查：idSet所在的租户，是否是当前用户所管理的租户
+     * 检查：是否非法操作，检查：idSet所在的租户，是否是当前用户所管理的租户
      */
     @SneakyThrows
     public static void checkIllegal(Set<Long> idSet, @NotNull Func1<Set<Long>, Long> func1) {
@@ -535,6 +532,17 @@ public class SysTenantUtil {
         if (!exists) {
             ApiResultVO.error(BaseBizCodeEnum.ILLEGAL_REQUEST, userId);
         }
+
+    }
+
+    /**
+     * 检查：UserIdAndTenantIdDTO对象
+     */
+    public static void checkUserIdAndTenantIdDTO(UserIdAndTenantIdDTO userIdAndTenantIdDTO) {
+
+        SysTenantUtil.checkUserId(userIdAndTenantIdDTO.getUserId());
+
+        SysTenantUtil.checkTenantId(userIdAndTenantIdDTO.getTenantId());
 
     }
 
