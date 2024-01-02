@@ -78,7 +78,7 @@ public class BaseConfiguration {
         // 设置：队列容量
         executor.setQueueCapacity(availableProcessors * 100);
 
-        // 设置：核心线程之外的线程，在空闲多久之后会被销毁的时间
+        // 设置：核心线程之外的线程，在空闲多久之后会被销毁的时间，备注：默认情况下，核心线程不会被销毁
         executor.setKeepAliveSeconds(60);
 
         // 设置：线程名前缀
@@ -101,7 +101,7 @@ public class BaseConfiguration {
 
         ThreadPoolTaskScheduler scheduler = new ThreadPoolTaskScheduler();
 
-        // 设置：核心线程数
+        // 设置：核心线程数，备注：默认情况下，核心线程不会被销毁
         scheduler.setPoolSize(availableProcessors * 10);
 
         // 设置：线程名前缀
