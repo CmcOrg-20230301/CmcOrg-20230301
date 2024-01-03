@@ -34,24 +34,24 @@ import java.util.stream.Collectors;
 public class SysOtherAppOfficialAccountWxReceiveMessageListener {
 
     public static final List<String> TOPIC_LIST =
-        CollUtil.newArrayList(KafkaTopicEnum.SYS_OTHER_APP_OFFICIAL_ACCOUNT_WX_RECEIVE_MESSAGE_TOPIC.name());
+            CollUtil.newArrayList(KafkaTopicEnum.SYS_OTHER_APP_OFFICIAL_ACCOUNT_WX_RECEIVE_MESSAGE_TOPIC.name());
 
     // 目的：Long 转 String，Enum 转 code
     private static ObjectMapper objectMapper;
 
     @Nullable
     private static List<ISysOtherAppOfficialAccountWxReceiveMessageHandle>
-        iSysOtherAppOfficialAccountWxReceiveMessageHandleList;
+            iSysOtherAppOfficialAccountWxReceiveMessageHandleList;
 
     @Resource
     RedissonClient redissonClient;
 
     public SysOtherAppOfficialAccountWxReceiveMessageListener(ObjectMapper objectMapper,
-        @Nullable List<ISysOtherAppOfficialAccountWxReceiveMessageHandle> iSysOtherAppOfficialAccountWxReceiveMessageHandleList) {
+                                                              @Nullable List<ISysOtherAppOfficialAccountWxReceiveMessageHandle> iSysOtherAppOfficialAccountWxReceiveMessageHandleList) {
 
         SysOtherAppOfficialAccountWxReceiveMessageListener.objectMapper = objectMapper;
         SysOtherAppOfficialAccountWxReceiveMessageListener.iSysOtherAppOfficialAccountWxReceiveMessageHandleList =
-            iSysOtherAppOfficialAccountWxReceiveMessageHandleList;
+                iSysOtherAppOfficialAccountWxReceiveMessageHandleList;
 
     }
 
@@ -66,22 +66,22 @@ public class SysOtherAppOfficialAccountWxReceiveMessageListener {
 
             List<SysOtherAppOfficialAccountWxReceiveMessageDTO> sysOtherAppOfficialAccountWxReceiveMessageDTOList =
 
-                recordList.stream().map(it -> {
+                    recordList.stream().map(it -> {
 
-                    try {
+                        try {
 
-                        return objectMapper.readValue(it, SysOtherAppOfficialAccountWxReceiveMessageDTO.class);
+                            return objectMapper.readValue(it, SysOtherAppOfficialAccountWxReceiveMessageDTO.class);
 
-                    } catch (Exception ignored) {
+                        } catch (Exception ignored) {
 
-                    }
+                        }
 
-                    return null;
+                        return null;
 
-                }).filter(Objects::nonNull).collect(Collectors.toList());
+                    }).filter(Objects::nonNull).collect(Collectors.toList());
 
             if (CollUtil.isNotEmpty(sysOtherAppOfficialAccountWxReceiveMessageDTOList) && CollUtil.isNotEmpty(
-                iSysOtherAppOfficialAccountWxReceiveMessageHandleList)) {
+                    iSysOtherAppOfficialAccountWxReceiveMessageHandleList)) {
 
                 MyThreadUtil.execute(() -> {
 
@@ -89,7 +89,7 @@ public class SysOtherAppOfficialAccountWxReceiveMessageListener {
 
                         String redisKey =
                                 BaseRedisKeyEnum.PRE_SYS_OTHER_APP_OFFICIAL_ACCOUNT_WX_RECEIVE_MESSAGE_ID.name()
-                                        + item.getMsgDataId();
+                                        + item.getMsgId();
 
                         RedissonUtil.doLock(redisKey, () -> {
 
