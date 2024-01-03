@@ -18,9 +18,13 @@ public class KafkaDynamicGroupIdConfiguration {
         String groupId; // 设置：groupId 为 本机 MAC地址 + port，或者 uuid
 
         try {
+
             groupId = NetUtil.getLocalMacAddress() + ":" + port;
+
         } catch (Exception e) {
+
             groupId = IdUtil.simpleUUID();
+
         }
 
         log.info("kafka 动态 groupId：{}", groupId);

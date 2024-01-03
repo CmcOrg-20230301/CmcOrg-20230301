@@ -20,7 +20,8 @@ import java.util.stream.Collectors;
  * 移除本地缓存的 kafka监听器
  */
 @Component
-@KafkaListener(topics = "#{__listener.TOPIC_LIST}", groupId = "#{kafkaDynamicGroupIdConfiguration.getGroupId()}", batch = "true")
+@KafkaListener(topics = "#{__listener.TOPIC_LIST}", groupId = "#{kafkaDynamicGroupIdConfiguration.getGroupId()}",
+        batch = "true")
 @Slf4j(topic = LogTopicConstant.CACHE_LOCAL)
 public class LocalCacheRemoveListener {
 

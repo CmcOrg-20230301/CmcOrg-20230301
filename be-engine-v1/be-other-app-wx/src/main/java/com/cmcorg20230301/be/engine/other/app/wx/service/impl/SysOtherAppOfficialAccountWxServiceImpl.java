@@ -7,20 +7,24 @@ import cn.hutool.core.util.XmlUtil;
 import cn.hutool.crypto.digest.DigestUtil;
 import cn.hutool.json.JSONUtil;
 import com.cmcorg20230301.be.engine.kafka.util.KafkaUtil;
+import com.cmcorg20230301.be.engine.model.model.constant.BaseConstant;
 import com.cmcorg20230301.be.engine.model.model.constant.LogTopicConstant;
 import com.cmcorg20230301.be.engine.other.app.model.dto.SysOtherAppOfficialAccountWxReceiveMessageDTO;
 import com.cmcorg20230301.be.engine.other.app.model.dto.SysOtherAppOfficialAccountWxVerifyDTO;
 import com.cmcorg20230301.be.engine.other.app.model.vo.WxOffiaccountReceiveMessageVO;
 import com.cmcorg20230301.be.engine.other.app.properties.SysOtherAppOfficialAccountProperties;
 import com.cmcorg20230301.be.engine.other.app.wx.service.SysOtherAppOfficialAccountWxService;
+import com.cmcorg20230301.be.engine.redisson.model.enums.BaseRedisKeyEnum;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
+import org.redisson.api.RedissonClient;
 import org.springframework.stereotype.Service;
 import org.w3c.dom.Document;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -31,6 +35,9 @@ public class SysOtherAppOfficialAccountWxServiceImpl implements SysOtherAppOffic
 
     @Resource
     SysOtherAppOfficialAccountProperties sysOtherAppOfficialAccountProperties;
+
+    @Resource
+    RedissonClient redissonClient;
 
     /**
      * 微信公众号 token验证
@@ -94,6 +101,12 @@ public class SysOtherAppOfficialAccountWxServiceImpl implements SysOtherAppOffic
         dto.setContent(content);
 
         log.info("收到消息：{}，dto：{}", XmlUtil.toStr(document), JSONUtil.toJsonStr(dto));
+
+        String redisKey =
+                BaseRedisKeyEnum.PRE_SYS_OTHER_APP_OFFICIAL_ACCOUNT_WX_RECEIVE_MESSAGE_ID.name() + dto.getMsgId();
+
+        redissonClient.<Long>getBucket(redisKey)
+                .set(dto.getMsgId(), Duration.ofMillis(BaseConstant.SHORT_CODE_EXPIRE_TIME));
 
         // 发送给：kafka进行处理
         KafkaUtil.sendSysOtherAppOfficialAccountWxReceiveMessageDTO(dto);

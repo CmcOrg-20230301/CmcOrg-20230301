@@ -19,11 +19,13 @@ import java.util.Set;
  * 本地缓存更新的 kafka监听器，针对往 map里面设置值
  */
 @Component
-@KafkaListener(topics = "#{__listener.TOPIC_LIST}", groupId = "#{kafkaDynamicGroupIdConfiguration.getGroupId()}", batch = "true")
+@KafkaListener(topics = "#{__listener.TOPIC_LIST}", groupId = "#{kafkaDynamicGroupIdConfiguration.getGroupId()}",
+        batch = "true")
 @Slf4j(topic = LogTopicConstant.CACHE_LOCAL)
 public class LocalCacheUpdateMapListener {
 
-    public static final List<String> TOPIC_LIST = CollUtil.newArrayList(KafkaTopicEnum.LOCAL_CACHE_UPDATE_MAP_TOPIC.name());
+    public static final List<String> TOPIC_LIST =
+            CollUtil.newArrayList(KafkaTopicEnum.LOCAL_CACHE_UPDATE_MAP_TOPIC.name());
 
     @KafkaHandler
     public void receive(List<String> recordList, Acknowledgment acknowledgment) {

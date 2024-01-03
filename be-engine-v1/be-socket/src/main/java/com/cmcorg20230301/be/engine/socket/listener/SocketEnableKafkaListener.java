@@ -22,7 +22,8 @@ import java.util.stream.Collectors;
  * socket禁用的 kafka监听器
  */
 @Component
-@KafkaListener(topics = "#{__listener.TOPIC_LIST}", groupId = "#{kafkaDynamicGroupIdConfiguration.getGroupId()}", batch = "true")
+@KafkaListener(topics = "#{__listener.TOPIC_LIST}", groupId = "#{kafkaDynamicGroupIdConfiguration.getGroupId()}",
+        batch = "true")
 @Slf4j(topic = LogTopicConstant.SOCKET)
 public class SocketEnableKafkaListener {
 
