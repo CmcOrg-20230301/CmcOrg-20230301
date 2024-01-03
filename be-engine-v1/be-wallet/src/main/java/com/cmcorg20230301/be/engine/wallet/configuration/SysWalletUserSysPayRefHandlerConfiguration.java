@@ -12,6 +12,7 @@ import com.cmcorg20230301.be.engine.pay.base.model.enums.SysPayRefStatusEnum;
 import com.cmcorg20230301.be.engine.pay.base.model.enums.SysPayRefTypeEnum;
 import com.cmcorg20230301.be.engine.pay.base.model.enums.SysPayTradeStatusEnum;
 import com.cmcorg20230301.be.engine.pay.base.model.interfaces.ISysPayRefType;
+import com.cmcorg20230301.be.engine.pay.base.util.PayHelper;
 import com.cmcorg20230301.be.engine.redisson.model.enums.BaseRedisKeyEnum;
 import com.cmcorg20230301.be.engine.redisson.util.RedissonUtil;
 import com.cmcorg20230301.be.engine.security.util.MyThreadUtil;
@@ -109,7 +110,8 @@ public class SysWalletUserSysPayRefHandlerConfiguration implements ISysPayRefHan
 
                 });
 
-                // 关闭支付弹窗：userId
+                // 关闭：前端支付弹窗
+                PayHelper.sendSysPayCloseModalTopic(sysPayDO);
 
             });
 

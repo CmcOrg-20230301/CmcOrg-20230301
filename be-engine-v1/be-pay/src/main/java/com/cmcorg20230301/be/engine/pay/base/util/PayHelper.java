@@ -5,10 +5,14 @@ import cn.hutool.core.util.BooleanUtil;
 import cn.hutool.core.util.RandomUtil;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.extension.conditions.query.LambdaQueryChainWrapper;
+import com.cmcorg20230301.be.engine.kafka.util.KafkaUtil;
 import com.cmcorg20230301.be.engine.model.model.constant.BaseConstant;
 import com.cmcorg20230301.be.engine.pay.base.model.dto.PayDTO;
 import com.cmcorg20230301.be.engine.pay.base.model.entity.SysPayConfigurationDO;
+import com.cmcorg20230301.be.engine.pay.base.model.entity.SysPayDO;
 import com.cmcorg20230301.be.engine.pay.base.service.SysPayConfigurationService;
+import com.cmcorg20230301.be.engine.security.model.bo.SysWebSocketEventBO;
+import com.cmcorg20230301.be.engine.security.model.dto.WebSocketMessageDTO;
 import com.cmcorg20230301.be.engine.security.model.entity.BaseEntity;
 import com.cmcorg20230301.be.engine.security.model.entity.BaseEntityNoId;
 import com.cmcorg20230301.be.engine.security.model.entity.BaseEntityNoIdSuper;
@@ -31,6 +35,24 @@ public class PayHelper {
     @Resource
     public void setSysPayConfigurationService(SysPayConfigurationService sysPayConfigurationService) {
         PayHelper.sysPayConfigurationService = sysPayConfigurationService;
+    }
+
+    /**
+     * 发送消息：关闭前端支付弹窗
+     */
+    public static void sendSysPayCloseModalTopic(SysPayDO sysPayDO) {
+
+        SysWebSocketEventBO sysWebSocketEventBO = new SysWebSocketEventBO();
+
+        sysWebSocketEventBO.setUserIdSet(CollUtil.newHashSet(sysPayDO.getUserId()));
+
+        WebSocketMessageDTO<Object> dto = WebSocketMessageDTO.okData("/sys/pay/closeModal", sysPayDO.getId());
+
+        sysWebSocketEventBO.setDto(dto);
+
+        // 通知：webSocket事件的 kafka监听器
+        KafkaUtil.sendSysWebSocketEventTopic(sysWebSocketEventBO);
+
     }
 
     /**
@@ -109,7 +131,8 @@ public class PayHelper {
 
         if (sysPayConfigurationDO == null) {
 
-            ApiResultVO.error("操作失败：未配置默认支付方式，请联系管理员", StrUtil.format("tenantIdOriginal：{} ", tenantId));
+            ApiResultVO.error("操作失败：未配置默认支付方式，请联系管理员",
+                StrUtil.format("tenantIdOriginal：{} ", tenantId));
 
         }
 

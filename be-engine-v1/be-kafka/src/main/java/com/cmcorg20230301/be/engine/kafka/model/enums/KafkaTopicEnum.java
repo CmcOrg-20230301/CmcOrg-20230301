@@ -33,6 +33,8 @@ public enum KafkaTopicEnum implements IKafkaTopic {
 
     SYS_PAY_TRADE_NOTIFY_TOPIC, // 支付订单回调通知时的 topic
 
+    SYS_PAY_CLOSE_MODAL_TOPIC, // 关闭前端支付弹窗的 topic
+
     // 支付相关 ↑
 
     // socket相关 ↓
@@ -40,6 +42,8 @@ public enum KafkaTopicEnum implements IKafkaTopic {
     SOCKET_DISABLE_TOPIC, // socket禁用的 topic，即：会断开所有的 socket连接
 
     SOCKET_ENABLE_TOPIC, // socket启用的 topic
+
+    SYS_WEB_SOCKET_EVENT_TOPIC, // webSocket事件的 topic
 
     // socket相关 ↑
 

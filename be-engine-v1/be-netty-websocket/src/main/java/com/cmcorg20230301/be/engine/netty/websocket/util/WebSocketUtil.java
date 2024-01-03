@@ -1,15 +1,17 @@
 package com.cmcorg20230301.be.engine.netty.websocket.util;
 
+import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.date.BetweenFormatter;
 import cn.hutool.core.date.DateUtil;
 import com.cmcorg20230301.be.engine.ip2region.util.Ip2RegionUtil;
 import com.cmcorg20230301.be.engine.model.model.constant.OperationDescriptionConstant;
 import com.cmcorg20230301.be.engine.netty.websocket.configuration.NettyWebSocketBeanPostProcessor;
 import com.cmcorg20230301.be.engine.netty.websocket.server.NettyWebSocketServerHandler;
+import com.cmcorg20230301.be.engine.security.model.bo.SysWebSocketEventBO;
+import com.cmcorg20230301.be.engine.security.model.dto.WebSocketMessageDTO;
 import com.cmcorg20230301.be.engine.security.model.entity.SysRequestDO;
 import com.cmcorg20230301.be.engine.security.util.RequestUtil;
 import com.cmcorg20230301.be.engine.security.util.SysUserInfoUtil;
-import com.cmcorg20230301.be.engine.socket.model.dto.WebSocketMessageDTO;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.netty.channel.Channel;
 import io.netty.handler.codec.http.websocketx.TextWebSocketFrame;
@@ -19,7 +21,10 @@ import org.jetbrains.annotations.Nullable;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
 
 @Component
 public class WebSocketUtil {
@@ -30,6 +35,41 @@ public class WebSocketUtil {
     @Resource
     public void setObjectMapper(ObjectMapper objectMapper) {
         WebSocketUtil.objectMapper = objectMapper;
+    }
+
+    /**
+     * 发送消息
+     */
+    @SneakyThrows
+    public static void send(@Nullable SysWebSocketEventBO sysWebSocketEventBO) {
+
+        if (sysWebSocketEventBO == null || CollUtil.isEmpty(sysWebSocketEventBO.getUserIdSet())
+            || sysWebSocketEventBO.getDto() == null) {
+            return;
+        }
+
+        String jsonStr = objectMapper.writeValueAsString(sysWebSocketEventBO.getDto());
+
+        for (Long item : sysWebSocketEventBO.getUserIdSet()) {
+
+            ConcurrentHashMap<Long, Channel> channelMap = NettyWebSocketServerHandler.USER_ID_CHANNEL_MAP.get(item);
+
+            if (CollUtil.isEmpty(channelMap)) {
+                continue;
+            }
+
+            // 再包一层：防止遍历的时候，集合被修改
+            List<Channel> channelList = new ArrayList<>(channelMap.values());
+
+            for (Channel subItem : channelList) {
+
+                // 发送数据
+                subItem.writeAndFlush(new TextWebSocketFrame(jsonStr));
+
+            }
+
+        }
+
     }
 
     /**

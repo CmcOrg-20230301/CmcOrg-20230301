@@ -75,7 +75,7 @@ public class ApiResultVO<T> {
 
     @Contract("_,_ -> fail")
     public static <T> ApiResultVO<T> error(String msg, T data) {
-        return new ApiResultVO<T>(BaseBizCodeEnum.API_RESULT_SYS_ERROR.getCode(), msg, data).error();
+        return new ApiResultVO<>(BaseBizCodeEnum.API_RESULT_SYS_ERROR.getCode(), msg, data).error();
     }
 
     @Contract("_,_ -> fail")

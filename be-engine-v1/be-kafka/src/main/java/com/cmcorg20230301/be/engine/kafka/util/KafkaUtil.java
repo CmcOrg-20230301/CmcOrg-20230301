@@ -85,6 +85,15 @@ public class KafkaUtil {
     }
 
     /**
+     * 发送消息：webSocket事件的 topic
+     */
+    public static void sendSysWebSocketEventTopic(Object sysWebSocketEventBO) {
+
+        send(KafkaTopicEnum.SYS_WEB_SOCKET_EVENT_TOPIC, sysWebSocketEventBO);
+
+    }
+
+    /**
      * 发送消息：本地缓存移除的 topic
      */
     public static void sendLocalCacheRemoveTopic(Set<String> removeLocalCacheKeySet) {
