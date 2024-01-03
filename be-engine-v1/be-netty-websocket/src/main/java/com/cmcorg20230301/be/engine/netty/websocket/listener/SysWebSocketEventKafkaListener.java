@@ -21,7 +21,7 @@ import java.util.List;
 public class SysWebSocketEventKafkaListener {
 
     public static final List<String> TOPIC_LIST =
-        CollUtil.newArrayList(KafkaTopicEnum.SYS_PAY_TRADE_NOTIFY_TOPIC.name());
+        CollUtil.newArrayList(KafkaTopicEnum.SYS_WEB_SOCKET_EVENT_TOPIC.name());
 
     // 目的：Long 转 String，Enum 转 code
     private static ObjectMapper objectMapper;
