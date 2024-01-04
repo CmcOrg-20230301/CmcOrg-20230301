@@ -45,7 +45,7 @@ public class ApiTestSysDictUtil {
 
                 // 执行
                 exec(API_ENDPOINT, ApiTestHelper.ADMIN_SIGN_IN_NAME, ApiTestHelper.ADMIN_PASSWORD,
-                    ApiTestHelper.RSA_PUBLIC_KEY, IdUtil.simpleUUID(), IdUtil.simpleUUID());
+                        ApiTestHelper.RSA_PUBLIC_KEY, IdUtil.simpleUUID(), IdUtil.simpleUUID());
 
             });
 
@@ -57,20 +57,20 @@ public class ApiTestSysDictUtil {
      * 执行
      */
     private static void exec(String apiEndpoint, String adminSignInName, String adminPassword, String rsaPublicKey,
-        String sysDictName, String sysDictKey) {
+                             String sysDictName, String sysDictKey) {
 
         // 登录名-用户名账号密码登录
         SignInVO signInVO =
-            ApiTestSignSignInNameUtil.signInNameSignIn(apiEndpoint, adminSignInName, adminPassword, rsaPublicKey);
+                ApiTestSignSignInNameUtil.signInNameSignIn(apiEndpoint, adminSignInName, adminPassword, rsaPublicKey);
 
         // 字典-新增/修改
         SysDictInsertOrUpdateDTO dictDTO = sysDictInsertOrUpdate(apiEndpoint, signInVO.getJwt(),
-            getSysDictInsertOrUpdateDTO(sysDictName, sysDictKey, SysDictTypeEnum.DICT,
-                RandomUtil.randomInt(1, 50000000)));
+                getSysDictInsertOrUpdateDTO(sysDictName, sysDictKey, SysDictTypeEnum.DICT,
+                        RandomUtil.randomInt(1, 50000000)));
 
         SysDictInsertOrUpdateDTO dictItemDTO = sysDictInsertOrUpdate(apiEndpoint, signInVO.getJwt(),
-            getSysDictInsertOrUpdateDTO(IdUtil.simpleUUID(), sysDictKey, SysDictTypeEnum.DICT_ITEM,
-                RandomUtil.randomInt(1, 50000000)));
+                getSysDictInsertOrUpdateDTO(IdUtil.simpleUUID(), sysDictKey, SysDictTypeEnum.DICT_ITEM,
+                        RandomUtil.randomInt(1, 50000000)));
 
         // 字典-分页排序查询
         Page<SysDictDO> sysDictDOPage = sysDictPage(apiEndpoint, signInVO.getJwt(), dictDTO);
@@ -167,7 +167,7 @@ public class ApiTestSysDictUtil {
         dto.setDictKey(sysDictKey);
 
         String bodyStr = HttpRequest.post(apiEndpoint + "/sys/dict/listByDictKey").body(JSONUtil.toJsonStr(dto))
-            .header("Authorization", jwt).execute().body();
+                .header("Authorization", jwt).execute().body();
 
         log.info("通过：dictKey获取字典项集合，备注：会进行缓存：耗时：{}，bodyStr：{}", ApiTestHelper.calcCostMs(currentTs), bodyStr);
 
@@ -185,8 +185,8 @@ public class ApiTestSysDictUtil {
         changeNumberDTO.setIdSet(idSet);
 
         String bodyStr =
-            HttpRequest.post(apiEndpoint + "/sys/dict/addOrderNo").body(JSONUtil.toJsonStr(changeNumberDTO))
-                .header("Authorization", jwt).execute().body();
+                HttpRequest.post(apiEndpoint + "/sys/dict/addOrderNo").body(JSONUtil.toJsonStr(changeNumberDTO))
+                        .header("Authorization", jwt).execute().body();
 
         log.info("字典-通过主键 idSet，加减排序号：耗时：{}，bodyStr：{}", ApiTestHelper.calcCostMs(currentTs), bodyStr);
 
@@ -203,13 +203,13 @@ public class ApiTestSysDictUtil {
         pageDTO.setName(dto.getName());
 
         String bodyStr = HttpRequest.post(apiEndpoint + "/sys/dict/tree").body(JSONUtil.toJsonStr(pageDTO))
-            .header("Authorization", jwt).execute().body();
+                .header("Authorization", jwt).execute().body();
 
         log.info("字典-查询：树结构：耗时：{}，bodyStr：{}", ApiTestHelper.calcCostMs(currentTs), bodyStr);
 
         ApiResultVO<Set<SysDictDO>> apiResultVO =
-            JSONUtil.toBean(bodyStr, new TypeReference<ApiResultVO<Set<SysDictDO>>>() {
-            }, false);
+                JSONUtil.toBean(bodyStr, new TypeReference<ApiResultVO<Set<SysDictDO>>>() {
+                }, false);
 
         return apiResultVO.getData();
 
@@ -226,8 +226,8 @@ public class ApiTestSysDictUtil {
         notEmptyIdSet.setIdSet(idSet);
 
         String bodyStr =
-            HttpRequest.post(apiEndpoint + "/sys/dict/deleteByIdSet").body(JSONUtil.toJsonStr(notEmptyIdSet))
-                .header("Authorization", jwt).execute().body();
+                HttpRequest.post(apiEndpoint + "/sys/dict/deleteByIdSet").body(JSONUtil.toJsonStr(notEmptyIdSet))
+                        .header("Authorization", jwt).execute().body();
 
         log.info("字典-批量删除：耗时：{}，bodyStr：{}", ApiTestHelper.calcCostMs(currentTs), bodyStr);
 
@@ -244,7 +244,7 @@ public class ApiTestSysDictUtil {
         notNullId.setId(id);
 
         String bodyStr = HttpRequest.post(apiEndpoint + "/sys/dict/infoById").body(JSONUtil.toJsonStr(notNullId))
-            .header("Authorization", jwt).execute().body();
+                .header("Authorization", jwt).execute().body();
 
         log.info("字典-通过主键id，查看详情：耗时：{}，bodyStr：{}", ApiTestHelper.calcCostMs(currentTs), bodyStr);
 
@@ -266,13 +266,13 @@ public class ApiTestSysDictUtil {
         pageDTO.setName(dto.getName());
 
         String bodyStr = HttpRequest.post(apiEndpoint + "/sys/dict/page").body(JSONUtil.toJsonStr(pageDTO))
-            .header("Authorization", jwt).execute().body();
+                .header("Authorization", jwt).execute().body();
 
         log.info("字典-分页排序查询：耗时：{}，bodyStr：{}", ApiTestHelper.calcCostMs(currentTs), bodyStr);
 
         ApiResultVO<Page<SysDictDO>> apiResultVO =
-            JSONUtil.toBean(bodyStr, new TypeReference<ApiResultVO<Page<SysDictDO>>>() {
-            }, false);
+                JSONUtil.toBean(bodyStr, new TypeReference<ApiResultVO<Page<SysDictDO>>>() {
+                }, false);
 
         return apiResultVO.getData();
 
@@ -282,7 +282,7 @@ public class ApiTestSysDictUtil {
      * 字典-新增/修改
      */
     private static SysDictInsertOrUpdateDTO sysDictInsertOrUpdate(String apiEndpoint, String jwt,
-        SysDictInsertOrUpdateDTO dto) {
+                                                                  SysDictInsertOrUpdateDTO dto) {
 
         long currentTs = System.currentTimeMillis();
 
@@ -291,7 +291,7 @@ public class ApiTestSysDictUtil {
         map.put("type", dto.getType().getCode());
 
         String bodyStr = HttpRequest.post(apiEndpoint + "/sys/dict/insertOrUpdate").body(JSONUtil.toJsonStr(map))
-            .header("Authorization", jwt).execute().body();
+                .header("Authorization", jwt).execute().body();
 
         log.info("字典-新增/修改：耗时：{}，bodyStr：{}", ApiTestHelper.calcCostMs(currentTs), bodyStr);
 
@@ -304,7 +304,7 @@ public class ApiTestSysDictUtil {
      */
     @NotNull
     private static SysDictInsertOrUpdateDTO getSysDictInsertOrUpdateDTO(String sysDictName, String sysDictKey,
-        SysDictTypeEnum type, int value) {
+                                                                        SysDictTypeEnum type, int value) {
 
         SysDictInsertOrUpdateDTO dto = new SysDictInsertOrUpdateDTO();
         dto.setDictKey(sysDictKey);

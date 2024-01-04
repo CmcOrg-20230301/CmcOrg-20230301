@@ -52,9 +52,9 @@ public class SysWxServiceImpl implements SysWxService {
         Set<Long> userRefTenantIdSet = SysTenantUtil.getUserRefTenantIdSet();
 
         SysOtherAppDO sysOtherAppDO =
-            ChainWrappers.lambdaQueryChain(sysOtherAppMapper).in(BaseEntityNoIdSuper::getTenantId, userRefTenantIdSet)
-                .eq(BaseEntity::getId, notNullId.getId())
-                .select(BaseEntityNoIdSuper::getTenantId, SysOtherAppDO::getAppId).one();
+                ChainWrappers.lambdaQueryChain(sysOtherAppMapper).in(BaseEntityNoIdSuper::getTenantId, userRefTenantIdSet)
+                        .eq(BaseEntity::getId, notNullId.getId())
+                        .select(BaseEntityNoIdSuper::getTenantId, SysOtherAppDO::getAppId).one();
 
         if (sysOtherAppDO == null) {
             return BaseBizCodeEnum.OK;
@@ -63,9 +63,9 @@ public class SysWxServiceImpl implements SysWxService {
         String accessToken = WxUtil.getAccessToken(sysOtherAppDO.getTenantId(), sysOtherAppDO.getAppId());
 
         List<SysOtherAppOfficialAccountMenuDO> sysOtherAppOfficialAccountMenuDOList =
-            ChainWrappers.lambdaQueryChain(sysOtherAppOfficialAccountMenuMapper)
-                .eq(SysOtherAppOfficialAccountMenuDO::getOtherAppId, notNullId.getId())
-                .eq(BaseEntityNoId::getEnableFlag, true).orderByDesc(BaseEntityTree::getOrderNo).list();
+                ChainWrappers.lambdaQueryChain(sysOtherAppOfficialAccountMenuMapper)
+                        .eq(SysOtherAppOfficialAccountMenuDO::getOtherAppId, notNullId.getId())
+                        .eq(BaseEntityNoId::getEnableFlag, true).orderByDesc(BaseEntityTree::getOrderNo).list();
 
         // 组装成：树结构
         List<SysOtherAppOfficialAccountMenuDO> tree = MyTreeUtil.listToTree(sysOtherAppOfficialAccountMenuDOList);
@@ -75,7 +75,7 @@ public class SysWxServiceImpl implements SysWxService {
         for (SysOtherAppOfficialAccountMenuDO item : tree) {
 
             SysOtherAppOfficialAccountMenuWxBO sysOtherAppOfficialAccountMenuWxBO =
-                getSysOtherAppOfficialAccountMenuWxBO(item);
+                    getSysOtherAppOfficialAccountMenuWxBO(item);
 
             if (CollUtil.isNotEmpty(item.getChildren())) {
 
@@ -85,7 +85,7 @@ public class SysWxServiceImpl implements SysWxService {
 
                     // 添加：子级菜单
                     sysOtherAppOfficialAccountMenuWxBO.getSubButton()
-                        .add(getSysOtherAppOfficialAccountMenuWxBO(subItem));
+                            .add(getSysOtherAppOfficialAccountMenuWxBO(subItem));
 
                 }
 
@@ -101,7 +101,7 @@ public class SysWxServiceImpl implements SysWxService {
 
         // 组装成：微信菜单结构
         String result = HttpRequest.post("https://api.weixin.qq.com/cgi-bin/menu/create?access_token=" + accessToken)
-            .body(JSONUtil.toJsonStr(body)).execute().body();
+                .body(JSONUtil.toJsonStr(body)).execute().body();
 
         WxBaseVO wxBaseVO = JSONUtil.toBean(result, WxBaseVO.class);
 
@@ -118,24 +118,24 @@ public class SysWxServiceImpl implements SysWxService {
 
     @NotNull
     private SysOtherAppOfficialAccountMenuWxBO getSysOtherAppOfficialAccountMenuWxBO(
-        SysOtherAppOfficialAccountMenuDO item) {
+            SysOtherAppOfficialAccountMenuDO item) {
 
         SysOtherAppOfficialAccountMenuWxBO sysOtherAppOfficialAccountMenuWxBO =
-            new SysOtherAppOfficialAccountMenuWxBO();
+                new SysOtherAppOfficialAccountMenuWxBO();
 
         sysOtherAppOfficialAccountMenuWxBO.setName(item.getName());
 
         if (item.getButtonType().equals(SysOtherAppOfficialAccountMenuButtonTypeEnum.VIEW)) {
 
             sysOtherAppOfficialAccountMenuWxBO
-                .setType(SysOtherAppOfficialAccountMenuWxBO.SysOtherAppOfficialAccountMenuWxType.view);
+                    .setType(SysOtherAppOfficialAccountMenuWxBO.SysOtherAppOfficialAccountMenuWxType.view);
 
             sysOtherAppOfficialAccountMenuWxBO.setUrl(item.getValue());
 
         } else {
 
             sysOtherAppOfficialAccountMenuWxBO
-                .setType(SysOtherAppOfficialAccountMenuWxBO.SysOtherAppOfficialAccountMenuWxType.click);
+                    .setType(SysOtherAppOfficialAccountMenuWxBO.SysOtherAppOfficialAccountMenuWxType.click);
 
             sysOtherAppOfficialAccountMenuWxBO.setKey(item.getValue());
 

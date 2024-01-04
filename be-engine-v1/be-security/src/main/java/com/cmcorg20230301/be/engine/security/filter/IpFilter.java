@@ -71,7 +71,7 @@ public class IpFilter implements Filter {
             return;
         }
 
-        String ip = ServletUtil.getClientIP((HttpServletRequest)request);
+        String ip = ServletUtil.getClientIP((HttpServletRequest) request);
 
         // ip 请求速率处理
         String timeStr = ipCheckHandler(ip);
@@ -79,7 +79,7 @@ public class IpFilter implements Filter {
         if (timeStr == null) {
             chain.doFilter(request, response);
         } else {
-            ResponseUtil.out((HttpServletResponse)response, "操作次数过多，请在 " + timeStr + "后，再进行操作", true);
+            ResponseUtil.out((HttpServletResponse) response, "操作次数过多，请在 " + timeStr + "后，再进行操作", true);
         }
 
     }
@@ -143,7 +143,7 @@ public class IpFilter implements Filter {
             IP_SPEED_MAP.remove(ip); // 移除：ip计数
 
             CacheRedisKafkaLocalUtil
-                .put(BaseRedisKeyEnum.PRE_IP_BLACK, ip, "黑名单 ip", BaseConstant.DAY_1_EXPIRE_TIME, null);
+                    .put(BaseRedisKeyEnum.PRE_IP_BLACK, ip, "黑名单 ip", BaseConstant.DAY_1_EXPIRE_TIME, null);
 
             return "24小时";
 

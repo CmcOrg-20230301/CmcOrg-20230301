@@ -44,7 +44,7 @@ public class WebSocketUtil {
     public static void send(@Nullable SysWebSocketEventBO sysWebSocketEventBO) {
 
         if (sysWebSocketEventBO == null || CollUtil.isEmpty(sysWebSocketEventBO.getUserIdSet())
-            || sysWebSocketEventBO.getDto() == null) {
+                || sysWebSocketEventBO.getDto() == null) {
             return;
         }
 
@@ -77,7 +77,7 @@ public class WebSocketUtil {
      */
     @SneakyThrows
     public static <T> void send(Channel channel, WebSocketMessageDTO<T> dto, String text, long costMs,
-        @Nullable NettyWebSocketBeanPostProcessor.MappingValue mappingValue, String errorMsg, boolean successFlag) {
+                                @Nullable NettyWebSocketBeanPostProcessor.MappingValue mappingValue, String errorMsg, boolean successFlag) {
 
         Long userId = channel.attr(NettyWebSocketServerHandler.USER_ID_KEY).get();
 

@@ -68,7 +68,7 @@ public class NettyWebSocketServiceImpl implements NettyWebSocketService {
      */
     @NotNull
     private HashSet<String> handleGetAllWebSocketUrl(@Nullable List<SysSocketDO> sysSocketDOList,
-        @NotNull SysSocketOnlineTypeEnum sysSocketOnlineTypeEnum) {
+                                                     @NotNull SysSocketOnlineTypeEnum sysSocketOnlineTypeEnum) {
 
         CallBack<Long> expireTsCallBack = new CallBack<>();
 
@@ -83,7 +83,7 @@ public class NettyWebSocketServiceImpl implements NettyWebSocketService {
         if (sysSocketDOList == null) {
 
             sysSocketDOList = sysSocketService.lambdaQuery().eq(SysSocketDO::getType, SysSocketTypeEnum.WEB_SOCKET)
-                .eq(BaseEntityNoId::getEnableFlag, true).list();
+                    .eq(BaseEntityNoId::getEnableFlag, true).list();
 
         }
 
@@ -115,8 +115,8 @@ public class NettyWebSocketServiceImpl implements NettyWebSocketService {
 
             // 处理：获取：所有 webSocket连接地址
             doHandleGetAllWebSocketUrl(expireTsCallBack, jwtHash, currentUserNickName, currentUserId, ip, region,
-                sysRequestCategoryEnum, userAgentJsonStr, resSet, item, sysSocketOnlineTypeEnum,
-                currentTenantIdDefault);
+                    sysRequestCategoryEnum, userAgentJsonStr, resSet, item, sysSocketOnlineTypeEnum,
+                    currentTenantIdDefault);
 
         }
 
@@ -131,7 +131,7 @@ public class NettyWebSocketServiceImpl implements NettyWebSocketService {
     public String getWebSocketUrlById(NotNullIdAndIntegerValue notNullIdAndIntegerValue) {
 
         SysSocketDO sysSocketDO = sysSocketService.lambdaQuery().eq(BaseEntity::getId, notNullIdAndIntegerValue.getId())
-            .eq(SysSocketDO::getType, SysSocketTypeEnum.WEB_SOCKET).eq(BaseEntityNoId::getEnableFlag, true).one();
+                .eq(SysSocketDO::getType, SysSocketTypeEnum.WEB_SOCKET).eq(BaseEntityNoId::getEnableFlag, true).one();
 
         Integer value = notNullIdAndIntegerValue.getValue();
 
@@ -139,7 +139,7 @@ public class NettyWebSocketServiceImpl implements NettyWebSocketService {
 
         // 获取：webSocket连接地址
         Set<String> webSocketUrlSet =
-            handleGetAllWebSocketUrl(CollUtil.newArrayList(sysSocketDO), sysSocketOnlineTypeEnum);
+                handleGetAllWebSocketUrl(CollUtil.newArrayList(sysSocketDO), sysSocketOnlineTypeEnum);
 
         return CollUtil.getFirst(webSocketUrlSet);
 
@@ -149,9 +149,9 @@ public class NettyWebSocketServiceImpl implements NettyWebSocketService {
      * 处理：获取：所有 webSocket连接地址
      */
     private void doHandleGetAllWebSocketUrl(CallBack<Long> expireTsCallBack, String jwtHash, String currentUserNickName,
-        Long currentUserId, String ip, String region, SysRequestCategoryEnum sysRequestCategoryEnum,
-        String userAgentJsonStr, HashSet<String> resSet, SysSocketDO sysSocketDO,
-        SysSocketOnlineTypeEnum sysSocketOnlineTypeEnum, Long currentTenantIdDefault) {
+                                            Long currentUserId, String ip, String region, SysRequestCategoryEnum sysRequestCategoryEnum,
+                                            String userAgentJsonStr, HashSet<String> resSet, SysSocketDO sysSocketDO,
+                                            SysSocketOnlineTypeEnum sysSocketOnlineTypeEnum, Long currentTenantIdDefault) {
 
         String code = IdUtil.simpleUUID();
 
@@ -208,7 +208,7 @@ public class NettyWebSocketServiceImpl implements NettyWebSocketService {
 
         // 设置到：redis里面，用于连接的时候用
         redissonClient.<SysSocketRefUserDO>getBucket(key)
-            .set(sysSocketRefUserDO, Duration.ofMillis(BaseConstant.SHORT_CODE_EXPIRE_TIME));
+                .set(sysSocketRefUserDO, Duration.ofMillis(BaseConstant.SHORT_CODE_EXPIRE_TIME));
 
     }
 

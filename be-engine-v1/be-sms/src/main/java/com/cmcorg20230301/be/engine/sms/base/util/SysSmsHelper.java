@@ -57,15 +57,15 @@ public class SysSmsHelper {
      */
     @NotNull
     public static SysSmsConfigurationDO getSysSmsConfigurationDO(@Nullable Long tenantId, Integer sysSmsType,
-        @Nullable Boolean useParentTenantSmsFlag) {
+                                                                 @Nullable Boolean useParentTenantSmsFlag) {
 
         if (tenantId == null) {
             tenantId = BaseConstant.TOP_TENANT_ID;
         }
 
         List<SysSmsConfigurationDO> sysSmsConfigurationDOList =
-            sysSmsConfigurationService.lambdaQuery().eq(BaseEntityNoIdSuper::getTenantId, tenantId)
-                .eq(BaseEntityNoId::getEnableFlag, true).eq(SysSmsConfigurationDO::getType, sysSmsType).list();
+                sysSmsConfigurationService.lambdaQuery().eq(BaseEntityNoIdSuper::getTenantId, tenantId)
+                        .eq(BaseEntityNoId::getEnableFlag, true).eq(SysSmsConfigurationDO::getType, sysSmsType).list();
 
         SysSmsConfigurationDO sysSmsConfigurationDO = null;
 
@@ -101,15 +101,15 @@ public class SysSmsHelper {
      * 获取：默认短信
      */
     public static SysSmsConfigurationDO getDefaultSysSmsConfigurationDO(@Nullable Long tenantId,
-        @Nullable Boolean useParentTenantPayFlag) {
+                                                                        @Nullable Boolean useParentTenantPayFlag) {
 
         if (tenantId == null) {
             tenantId = BaseConstant.TOP_TENANT_ID;
         }
 
         SysSmsConfigurationDO sysSmsConfigurationDO =
-            sysSmsConfigurationService.lambdaQuery().eq(BaseEntityNoIdSuper::getTenantId, tenantId)
-                .eq(SysSmsConfigurationDO::getDefaultFlag, true).eq(BaseEntityNoId::getEnableFlag, true).one();
+                sysSmsConfigurationService.lambdaQuery().eq(BaseEntityNoIdSuper::getTenantId, tenantId)
+                        .eq(SysSmsConfigurationDO::getDefaultFlag, true).eq(BaseEntityNoId::getEnableFlag, true).one();
 
         if (sysSmsConfigurationDO == null) {
 
@@ -148,12 +148,12 @@ public class SysSmsHelper {
             if (sysSmsSendBO.getSmsType() == null) { // 如果是：默认短信
 
                 sysSmsConfigurationDO = getDefaultSysSmsConfigurationDO(sysSmsSendBO.getTenantId(),
-                    sysSmsSendBO.getUseParentTenantSmsFlag());
+                        sysSmsSendBO.getUseParentTenantSmsFlag());
 
             } else {
 
                 sysSmsConfigurationDO = getSysSmsConfigurationDO(sysSmsSendBO.getTenantId(), sysSmsSendBO.getSmsType(),
-                    sysSmsSendBO.getUseParentTenantSmsFlag());
+                        sysSmsSendBO.getUseParentTenantSmsFlag());
 
             }
 
@@ -169,12 +169,12 @@ public class SysSmsHelper {
      */
     @NotNull
     public static SysSmsConfigurationDO handleUseParentTenantSmsFlag(Long tenantIdOriginal, Long currentTenantId,
-        @Nullable Consumer<LambdaQueryChainWrapper<SysSmsConfigurationDO>> lambdaQueryChainWrapperConsumer) {
+                                                                     @Nullable Consumer<LambdaQueryChainWrapper<SysSmsConfigurationDO>> lambdaQueryChainWrapperConsumer) {
 
         if (BaseConstant.TOP_TENANT_ID.equals(currentTenantId)) {
 
             ApiResultVO.error("操作失败：未配置短信，请联系管理员",
-                StrUtil.format("tenantIdOriginal：{}，currentTenantId：{}", tenantIdOriginal, currentTenantId));
+                    StrUtil.format("tenantIdOriginal：{}，currentTenantId：{}", tenantIdOriginal, currentTenantId));
 
         }
 
@@ -183,22 +183,22 @@ public class SysSmsHelper {
         if (sysTenantDO == null) {
 
             ApiResultVO.error("操作失败：租户不存在",
-                StrUtil.format("tenantIdOriginal：{}，currentTenantId：{}", tenantIdOriginal, currentTenantId));
+                    StrUtil.format("tenantIdOriginal：{}，currentTenantId：{}", tenantIdOriginal, currentTenantId));
 
         }
 
         if (!sysTenantDO.getEnableFlag()) {
 
             ApiResultVO.error("操作失败：租户已被禁用，无法调用短信",
-                StrUtil.format("tenantIdOriginal：{}，currentTenantId：{}", tenantIdOriginal, currentTenantId));
+                    StrUtil.format("tenantIdOriginal：{}，currentTenantId：{}", tenantIdOriginal, currentTenantId));
 
         }
 
         currentTenantId = sysTenantDO.getParentId();  // 设置为：上级租户 id
 
         LambdaQueryChainWrapper<SysSmsConfigurationDO> lambdaQueryChainWrapper =
-            sysSmsConfigurationService.lambdaQuery().eq(BaseEntityNoIdSuper::getTenantId, currentTenantId)
-                .eq(BaseEntityNoId::getEnableFlag, true);
+                sysSmsConfigurationService.lambdaQuery().eq(BaseEntityNoIdSuper::getTenantId, currentTenantId)
+                        .eq(BaseEntityNoId::getEnableFlag, true);
 
         if (lambdaQueryChainWrapperConsumer != null) {
             lambdaQueryChainWrapperConsumer.accept(lambdaQueryChainWrapper);

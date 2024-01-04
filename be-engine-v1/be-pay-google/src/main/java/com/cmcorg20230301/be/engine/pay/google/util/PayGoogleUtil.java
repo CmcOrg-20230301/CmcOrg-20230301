@@ -59,13 +59,13 @@ public class PayGoogleUtil {
     @SneakyThrows
     @NotNull
     public static SysPayTradeStatusEnum query(String outTradeNo, @Nullable SysPayTradeNotifyBO sysPayTradeNotifyBO,
-        SysPayConfigurationDO sysPayConfigurationDO) {
+                                              SysPayConfigurationDO sysPayConfigurationDO) {
 
         Assert.notBlank(outTradeNo);
 
         SysPayDO sysPayDO = sysPayService.lambdaQuery().eq(SysPayDO::getId, outTradeNo)
-            .select(SysPayDO::getPackageName, SysPayDO::getProductId, SysPayDO::getToken, SysPayDO::getOriginalPrice)
-            .one();
+                .select(SysPayDO::getPackageName, SysPayDO::getProductId, SysPayDO::getToken, SysPayDO::getOriginalPrice)
+                .one();
 
         if (sysPayDO == null) {
             ApiResultVO.error("谷歌支付查询失败：本系统不存在该支付", outTradeNo);
@@ -77,8 +77,8 @@ public class PayGoogleUtil {
         // 查询：谷歌那边的订单状态，文档地址：https://developers.google.com/android-publisher/api-ref/rest/v3/purchases.products/get?hl=zh-cn
         // https://androidpublisher.googleapis.com/androidpublisher/v3/applications/{packageName}/purchases/products/{productId}/tokens/{token}
         String url = StrUtil.format(
-            "https://androidpublisher.googleapis.com/androidpublisher/v3/applications/{}/purchases/products/{}/tokens/{}",
-            sysPayDO.getPackageName(), sysPayDO.getProductId(), sysPayDO.getToken());
+                "https://androidpublisher.googleapis.com/androidpublisher/v3/applications/{}/purchases/products/{}/tokens/{}",
+                sysPayDO.getPackageName(), sysPayDO.getProductId(), sysPayDO.getToken());
 
         String body = HttpRequest.get(url).header("Authorization", "Bearer " + accessToken).execute().body();
 
@@ -99,7 +99,7 @@ public class PayGoogleUtil {
         }
 
         if (sysPayGooglePurchasesBO.getConsumptionState() != null
-            && sysPayGooglePurchasesBO.getConsumptionState() == 1) {
+                && sysPayGooglePurchasesBO.getConsumptionState() == 1) {
 
             return SysPayTradeStatusEnum.TRADE_FINISHED;
 
@@ -152,7 +152,7 @@ public class PayGoogleUtil {
         Long expiresIn = jsonObject.getLong("expires_in"); // 这里的单位是：秒
 
         CacheRedisKafkaLocalUtil
-            .put(BaseRedisKeyEnum.GOOGLE_ACCESS_TOKEN_CACHE, sufKey, null, expiresIn * 1000, () -> accessTokenResult);
+                .put(BaseRedisKeyEnum.GOOGLE_ACCESS_TOKEN_CACHE, sufKey, null, expiresIn * 1000, () -> accessTokenResult);
 
         return accessTokenResult;
 

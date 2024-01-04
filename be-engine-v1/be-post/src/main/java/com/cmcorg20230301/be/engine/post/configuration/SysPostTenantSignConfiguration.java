@@ -31,7 +31,7 @@ public class SysPostTenantSignConfiguration implements ITenantSignConfiguration 
     public void delete(Set<Long> tenantIdSet) {
 
         List<SysPostDO> sysPostDOList =
-            sysPostService.lambdaQuery().in(BaseEntityNoId::getTenantId, tenantIdSet).select(BaseEntity::getId).list();
+                sysPostService.lambdaQuery().in(BaseEntityNoId::getTenantId, tenantIdSet).select(BaseEntity::getId).list();
 
         Set<Long> postIdSet = sysPostDOList.stream().map(BaseEntity::getId).collect(Collectors.toSet());
 

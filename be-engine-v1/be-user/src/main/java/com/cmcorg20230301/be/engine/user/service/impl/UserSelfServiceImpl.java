@@ -58,12 +58,12 @@ public class UserSelfServiceImpl extends ServiceImpl<SysUserMapper, SysUserDO> i
         }
 
         SysUserInfoDO sysUserInfoDO =
-            ChainWrappers.lambdaQueryChain(sysUserInfoMapper).eq(SysUserInfoDO::getId, currentUserId)
-                .select(SysUserInfoDO::getAvatarFileId, SysUserInfoDO::getNickname, SysUserInfoDO::getBio).one();
+                ChainWrappers.lambdaQueryChain(sysUserInfoMapper).eq(SysUserInfoDO::getId, currentUserId)
+                        .select(SysUserInfoDO::getAvatarFileId, SysUserInfoDO::getNickname, SysUserInfoDO::getBio).one();
 
         SysUserDO sysUserDO = lambdaQuery().eq(BaseEntity::getId, currentUserId)
-            .select(SysUserDO::getEmail, SysUserDO::getPassword, SysUserDO::getSignInName, SysUserDO::getPhone,
-                SysUserDO::getWxOpenId, BaseEntity::getCreateTime, SysUserDO::getWxAppId).one();
+                .select(SysUserDO::getEmail, SysUserDO::getPassword, SysUserDO::getSignInName, SysUserDO::getPhone,
+                        SysUserDO::getWxOpenId, BaseEntity::getCreateTime, SysUserDO::getWxAppId).one();
 
         if (sysUserInfoDO != null && sysUserDO != null) {
 
@@ -76,9 +76,9 @@ public class UserSelfServiceImpl extends ServiceImpl<SysUserMapper, SysUserDO> i
             sysUserSelfInfoVO.setSignInName(DesensitizedUtil.chineseName(sysUserDO.getSignInName())); // 脱敏
             sysUserSelfInfoVO.setPhone(DesensitizedUtil.mobilePhone(sysUserDO.getPhone())); // 脱敏
             sysUserSelfInfoVO.setWxOpenId(
-                StrUtil.hide(sysUserDO.getWxOpenId(), 3, sysUserDO.getWxOpenId().length() - 4)); // 脱敏：只显示前 3位，后 4位
+                    StrUtil.hide(sysUserDO.getWxOpenId(), 3, sysUserDO.getWxOpenId().length() - 4)); // 脱敏：只显示前 3位，后 4位
             sysUserSelfInfoVO.setWxAppId(
-                StrUtil.hide(sysUserDO.getWxAppId(), 3, sysUserDO.getWxAppId().length() - 4)); // 脱敏：只显示前 3位，后 4位
+                    StrUtil.hide(sysUserDO.getWxAppId(), 3, sysUserDO.getWxAppId().length() - 4)); // 脱敏：只显示前 3位，后 4位
 
             sysUserSelfInfoVO.setPasswordFlag(StrUtil.isNotBlank(sysUserDO.getPassword()));
             sysUserSelfInfoVO.setCreateTime(sysUserDO.getCreateTime());
@@ -131,7 +131,7 @@ public class UserSelfServiceImpl extends ServiceImpl<SysUserMapper, SysUserDO> i
         Long currentUserIdNotAdmin = UserUtil.getCurrentUserIdNotAdmin();
 
         ChainWrappers.lambdaUpdateChain(sysUserInfoMapper).eq(SysUserInfoDO::getId, currentUserIdNotAdmin)
-            .set(SysUserInfoDO::getAvatarFileId, -1).update();
+                .set(SysUserInfoDO::getAvatarFileId, -1).update();
 
         return BaseBizCodeEnum.OK;
 

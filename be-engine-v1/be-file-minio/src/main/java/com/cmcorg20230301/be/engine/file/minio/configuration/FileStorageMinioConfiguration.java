@@ -24,19 +24,19 @@ public class FileStorageMinioConfiguration implements ISysFileStorage {
 
     @Override
     public void upload(String bucketName, String objectName, MultipartFile file,
-        @NotNull SysFileStorageConfigurationDO sysFileStorageConfigurationDO) {
+                       @NotNull SysFileStorageConfigurationDO sysFileStorageConfigurationDO) {
         FileMinioUtil.upload(bucketName, objectName, file, sysFileStorageConfigurationDO);
     }
 
     @Override
     public InputStream download(String bucketName, String objectName,
-        SysFileStorageConfigurationDO sysFileStorageConfigurationDO) {
+                                SysFileStorageConfigurationDO sysFileStorageConfigurationDO) {
         return FileMinioUtil.download(bucketName, objectName, sysFileStorageConfigurationDO);
     }
 
     @Override
     public void remove(String bucketName, Set<String> objectNameSet,
-        SysFileStorageConfigurationDO sysFileStorageConfigurationDO) {
+                       SysFileStorageConfigurationDO sysFileStorageConfigurationDO) {
         FileMinioUtil.remove(bucketName, objectNameSet, sysFileStorageConfigurationDO);
     }
 

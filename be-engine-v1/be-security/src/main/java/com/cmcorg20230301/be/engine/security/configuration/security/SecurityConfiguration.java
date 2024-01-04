@@ -39,7 +39,7 @@ public class SecurityConfiguration {
         if (methodSecurityInterceptor instanceof MethodSecurityInterceptor) {
 
             AffirmativeBased accessDecisionManager =
-                (AffirmativeBased)((MethodSecurityInterceptor)methodSecurityInterceptor).getAccessDecisionManager();
+                    (AffirmativeBased) ((MethodSecurityInterceptor) methodSecurityInterceptor).getAccessDecisionManager();
 
             accessDecisionManager.getDecisionVoters().add(0, new MyAccessDecisionVoter()); // 添加：自定义投票者
 
@@ -53,8 +53,8 @@ public class SecurityConfiguration {
     @SneakyThrows
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity, BaseConfiguration baseConfiguration,
-        List<ISecurityPermitConfiguration> iSecurityPermitConfigurationList, SecurityProperties securityProperties,
-        List<IJwtValidatorConfiguration> iJwtValidatorConfigurationList) {
+                                            List<ISecurityPermitConfiguration> iSecurityPermitConfigurationList, SecurityProperties securityProperties,
+                                            List<IJwtValidatorConfiguration> iJwtValidatorConfigurationList) {
 
         boolean prodFlag = BaseConfiguration.prodFlag();
 
@@ -83,11 +83,11 @@ public class SecurityConfiguration {
         log.info("permitAllSet：{}", permitAllSet);
 
         httpSecurity.authorizeRequests().antMatchers(ArrayUtil.toArray(permitAllSet, String.class))
-            .permitAll() // 可以匿名访问的请求
-            .anyRequest().authenticated(); // 拦截所有请求
+                .permitAll() // 可以匿名访问的请求
+                .anyRequest().authenticated(); // 拦截所有请求
 
         httpSecurity.addFilterBefore(new JwtAuthorizationFilter(securityProperties, iJwtValidatorConfigurationList),
-            UsernamePasswordAuthenticationFilter.class);
+                UsernamePasswordAuthenticationFilter.class);
 
         httpSecurity.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS); // 不需要session
 

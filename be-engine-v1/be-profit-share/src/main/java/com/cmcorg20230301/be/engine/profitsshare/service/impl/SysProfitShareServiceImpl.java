@@ -8,6 +8,6 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class SysProfitShareServiceImpl extends ServiceImpl<SysProfitShareMapper, SysProfitShareDO>
-    implements SysProfitShareService {
+        implements SysProfitShareService {
 
 }

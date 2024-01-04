@@ -31,7 +31,7 @@ public class SysAreaTenantSignConfiguration implements ITenantSignConfiguration 
     public void delete(Set<Long> tenantIdSet) {
 
         List<SysAreaDO> sysAreaDOList =
-            sysAreaService.lambdaQuery().in(BaseEntityNoId::getTenantId, tenantIdSet).select(BaseEntity::getId).list();
+                sysAreaService.lambdaQuery().in(BaseEntityNoId::getTenantId, tenantIdSet).select(BaseEntity::getId).list();
 
         Set<Long> areaIdSet = sysAreaDOList.stream().map(BaseEntity::getId).collect(Collectors.toSet());
 

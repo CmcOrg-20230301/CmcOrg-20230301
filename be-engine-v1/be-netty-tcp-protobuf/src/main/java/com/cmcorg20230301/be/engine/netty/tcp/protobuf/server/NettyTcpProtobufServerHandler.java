@@ -31,11 +31,11 @@ public class NettyTcpProtobufServerHandler extends ChannelInboundHandlerAdapter 
 
     // sysSocketRefUserId key
     private static final AttributeKey<Long> SYS_SOCKET_REF_USER_ID_KEY =
-        AttributeKey.valueOf("SYS_SOCKET_REF_USER_ID_KEY");
+            AttributeKey.valueOf("SYS_SOCKET_REF_USER_ID_KEY");
 
     // 用户通道 map，大key：用户主键 id，小key：sysSocketRefUserId，value：通道
     public static final ConcurrentHashMap<Long, ConcurrentHashMap<Long, Channel>> USER_ID_CHANNEL_MAP =
-        MapUtil.newConcurrentHashMap();
+            MapUtil.newConcurrentHashMap();
 
     /**
      * 连接成功时
@@ -83,7 +83,7 @@ public class NettyTcpProtobufServerHandler extends ChannelInboundHandlerAdapter 
             if (msg instanceof BaseProto.BaseRequest) {
 
                 // 处理：BaseRequest
-                handleBaseRequest((BaseProto.BaseRequest)msg);
+                handleBaseRequest((BaseProto.BaseRequest) msg);
 
             }
 

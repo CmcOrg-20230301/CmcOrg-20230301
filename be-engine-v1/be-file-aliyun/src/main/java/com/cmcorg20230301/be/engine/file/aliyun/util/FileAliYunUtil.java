@@ -28,13 +28,13 @@ public class FileAliYunUtil {
      */
     @SneakyThrows
     public static void upload(String bucketName, String objectName, MultipartFile file,
-        @NotNull SysFileStorageConfigurationDO sysFileStorageConfigurationDO) {
+                              @NotNull SysFileStorageConfigurationDO sysFileStorageConfigurationDO) {
 
         InputStream inputStream = file.getInputStream();
 
         OSS oss = new OSSClientBuilder()
-            .build(sysFileStorageConfigurationDO.getUploadEndpoint(), sysFileStorageConfigurationDO.getAccessKey(),
-                sysFileStorageConfigurationDO.getSecretKey());
+                .build(sysFileStorageConfigurationDO.getUploadEndpoint(), sysFileStorageConfigurationDO.getAccessKey(),
+                        sysFileStorageConfigurationDO.getSecretKey());
 
         oss.putObject(bucketName, objectName, inputStream);
 
@@ -48,11 +48,11 @@ public class FileAliYunUtil {
     @SneakyThrows
     @Nullable
     public static InputStream download(String bucketName, String objectName,
-        SysFileStorageConfigurationDO sysFileStorageConfigurationDO) {
+                                       SysFileStorageConfigurationDO sysFileStorageConfigurationDO) {
 
         OSS oss = new OSSClientBuilder()
-            .build(sysFileStorageConfigurationDO.getUploadEndpoint(), sysFileStorageConfigurationDO.getAccessKey(),
-                sysFileStorageConfigurationDO.getSecretKey());
+                .build(sysFileStorageConfigurationDO.getUploadEndpoint(), sysFileStorageConfigurationDO.getAccessKey(),
+                        sysFileStorageConfigurationDO.getSecretKey());
 
         return oss.getObject(bucketName, objectName).getObjectContent();
 
@@ -63,7 +63,7 @@ public class FileAliYunUtil {
      */
     @SneakyThrows
     public static void remove(String bucketName, Set<String> objectNameSet,
-        SysFileStorageConfigurationDO sysFileStorageConfigurationDO) {
+                              SysFileStorageConfigurationDO sysFileStorageConfigurationDO) {
 
         if (CollUtil.isEmpty(objectNameSet)) {
             return;
@@ -74,8 +74,8 @@ public class FileAliYunUtil {
         deleteObjectsRequest.setKeys(new ArrayList<>(objectNameSet));
 
         OSS oss = new OSSClientBuilder()
-            .build(sysFileStorageConfigurationDO.getUploadEndpoint(), sysFileStorageConfigurationDO.getAccessKey(),
-                sysFileStorageConfigurationDO.getSecretKey());
+                .build(sysFileStorageConfigurationDO.getUploadEndpoint(), sysFileStorageConfigurationDO.getAccessKey(),
+                        sysFileStorageConfigurationDO.getSecretKey());
 
         oss.deleteObject(deleteObjectsRequest);
 

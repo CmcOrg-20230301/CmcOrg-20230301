@@ -50,7 +50,7 @@ public class NettyTcpProtobufBeanPostProcessor implements BeanPostProcessor {
         Class<?> beanClass = bean.getClass();
 
         NettyTcpProtobufController nettyTcpProtobufController =
-            beanClass.getAnnotation(NettyTcpProtobufController.class);
+                beanClass.getAnnotation(NettyTcpProtobufController.class);
 
         if (nettyTcpProtobufController == null) {
             return bean;
@@ -80,8 +80,8 @@ public class NettyTcpProtobufBeanPostProcessor implements BeanPostProcessor {
 
             // 组装并处理路径
             List<String> splitTrimList = StrUtil.splitTrim(
-                strBuilder.append(classRequestMappingValue).append("/").append(methodRequestMappingValue)
-                    .toStringAndReset(), "/");
+                    strBuilder.append(classRequestMappingValue).append("/").append(methodRequestMappingValue)
+                            .toStringAndReset(), "/");
 
             String key = "/" + CollUtil.join(splitTrimList, "/");
 

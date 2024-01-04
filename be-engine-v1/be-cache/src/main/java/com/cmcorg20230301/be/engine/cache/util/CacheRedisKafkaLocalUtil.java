@@ -88,7 +88,7 @@ public class CacheRedisKafkaLocalUtil {
         notEmptyKeyValueSet.setKey(key);
 
         notEmptyKeyValueSet
-            .setKeyValueSet(CollUtil.newHashSet(new NotEmptyKeyValueSet.KeyValue(secondKey, callObject)));
+                .setKeyValueSet(CollUtil.newHashSet(new NotEmptyKeyValueSet.KeyValue(secondKey, callObject)));
 
         // 发送：本地缓存更新的 topic，针对往 map里面设置值
         KafkaUtil.sendLocalCacheUpdateMapTopic(notEmptyKeyValueSet);
@@ -99,7 +99,7 @@ public class CacheRedisKafkaLocalUtil {
      * 添加：一般类型的缓存
      */
     public static <T> void put(@NotNull Enum<? extends IRedisKey> redisKeyEnum, @Nullable T defaultResult,
-        @Nullable Func0<T> func0) {
+                               @Nullable Func0<T> func0) {
 
         put(redisKeyEnum, null, defaultResult, -1, func0);
 
@@ -111,7 +111,7 @@ public class CacheRedisKafkaLocalUtil {
      * @param timeToLive 存活时间，单位毫秒：-1 永久
      */
     public static <T> void put(@NotNull Enum<? extends IRedisKey> redisKeyEnum, @Nullable String sufKey,
-        @Nullable T defaultResult, long timeToLive, @Nullable Func0<T> func0) {
+                               @Nullable T defaultResult, long timeToLive, @Nullable Func0<T> func0) {
 
         String key = CacheHelper.getKey(redisKeyEnum, sufKey);
 
@@ -136,7 +136,7 @@ public class CacheRedisKafkaLocalUtil {
      * @param timeToLive 存活时间，单位毫秒：-1 永久
      */
     public static <T> void put(@NotNull String key, @Nullable T defaultResult, long timeToLive,
-        @Nullable Func0<T> func0) {
+                               @Nullable Func0<T> func0) {
 
         if (StrUtil.isBlank(key)) {
             return;
@@ -165,7 +165,7 @@ public class CacheRedisKafkaLocalUtil {
      */
     @SneakyThrows
     public static <T> void putSecondMap(@NotNull Enum<? extends IRedisKey> redisKeyEnum, @Nullable String sufKey,
-        @NotNull String secondKey, @Nullable T defaultResult, @Nullable Func0<T> func0) {
+                                        @NotNull String secondKey, @Nullable T defaultResult, @Nullable Func0<T> func0) {
 
         String key = CacheHelper.getKey(redisKeyEnum, sufKey);
 
@@ -178,7 +178,7 @@ public class CacheRedisKafkaLocalUtil {
      */
     @SneakyThrows
     public static <T> void putSecondMap(@NotNull String key, @NotNull String secondKey, @Nullable T defaultResult,
-        @Nullable Func0<T> func0) {
+                                        @Nullable Func0<T> func0) {
 
         updateSecondMap(key, secondKey, () -> {
 
@@ -205,7 +205,7 @@ public class CacheRedisKafkaLocalUtil {
      */
     @SneakyThrows
     public static <T extends Map<?, ?>> void putMap(@NotNull Enum<? extends IRedisKey> redisKeyEnum,
-        @Nullable T defaultResult, @Nullable Func0<T> func0) {
+                                                    @Nullable T defaultResult, @Nullable Func0<T> func0) {
 
         putMap(redisKeyEnum, null, defaultResult, func0);
 
@@ -216,7 +216,7 @@ public class CacheRedisKafkaLocalUtil {
      */
     @SneakyThrows
     public static <T extends Map<?, ?>> void putMap(@NotNull Enum<? extends IRedisKey> redisKeyEnum,
-        @Nullable String sufKey, @Nullable T defaultResult, @Nullable Func0<T> func0) {
+                                                    @Nullable String sufKey, @Nullable T defaultResult, @Nullable Func0<T> func0) {
 
         String key = CacheHelper.getKey(redisKeyEnum, sufKey);
 
@@ -249,7 +249,7 @@ public class CacheRedisKafkaLocalUtil {
      */
     @SneakyThrows
     public static <T extends Collection<?>> void putCollection(@NotNull Enum<? extends IRedisKey> redisKeyEnum,
-        @Nullable T defaultResult, @Nullable Func0<T> func0) {
+                                                               @Nullable T defaultResult, @Nullable Func0<T> func0) {
 
         putCollection(redisKeyEnum, null, defaultResult, func0);
 
@@ -260,7 +260,7 @@ public class CacheRedisKafkaLocalUtil {
      */
     @SneakyThrows
     public static <T extends Collection<?>> void putCollection(@NotNull Enum<? extends IRedisKey> redisKeyEnum,
-        @Nullable String sufKey, @Nullable T defaultResult, @Nullable Func0<T> func0) {
+                                                               @Nullable String sufKey, @Nullable T defaultResult, @Nullable Func0<T> func0) {
 
         String key = CacheHelper.getKey(redisKeyEnum, sufKey);
 
@@ -309,7 +309,7 @@ public class CacheRedisKafkaLocalUtil {
      * 移除缓存，从 map里
      */
     public static void removeSecondMap(@NotNull Enum<? extends IRedisKey> redisKeyEnum, @Nullable String sufKey,
-        @NotNull String secondKey) {
+                                       @NotNull String secondKey) {
 
         String key = CacheHelper.getKey(redisKeyEnum, sufKey);
 

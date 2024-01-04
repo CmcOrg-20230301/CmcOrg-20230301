@@ -22,7 +22,7 @@ public class PayAliController {
     @Operation(summary = "服务器异步通知，备注：第三方应用调用", hidden = true)
     @PostMapping(value = "/notifyCallBack/{sysPayConfigurationId}")
     public String notifyCallBack(HttpServletRequest request,
-        @PathVariable(value = "sysPayConfigurationId") long sysPayConfigurationId) {
+                                 @PathVariable(value = "sysPayConfigurationId") long sysPayConfigurationId) {
         return baseService.notifyCallBack(request, sysPayConfigurationId);
     }
 

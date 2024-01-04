@@ -32,9 +32,9 @@ public interface SysUserWalletService extends IService<SysUserWalletDO> {
     String addWithdrawableMoneyBackground(ChangeBigDecimalNumberIdSetDTO dto);
 
     String doAddWithdrawableMoney(Long currentUserId, Date date, Set<Long> idSet, BigDecimal addNumber,
-        ISysUserWalletLogType iSysUserWalletLogType, boolean lowErrorFlag, boolean checkWalletEnableFlag,
-        boolean tenantFlag, @Nullable Long refId, @Nullable String refData, boolean withdrawableMoneyFlag,
-        Integer reduceFrozenMoneyType, Long tenantId);
+                                  ISysUserWalletLogType iSysUserWalletLogType, boolean lowErrorFlag, boolean checkWalletEnableFlag,
+                                  boolean tenantFlag, @Nullable Long refId, @Nullable String refData, boolean withdrawableMoneyFlag,
+                                  Integer reduceFrozenMoneyType, Long tenantId);
 
     BuyVO rechargeUserSelf(SysUserWalletRechargeUserSelfDTO dto);
 

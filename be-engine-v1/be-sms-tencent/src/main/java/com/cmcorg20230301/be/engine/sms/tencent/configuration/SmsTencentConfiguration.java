@@ -143,7 +143,7 @@ public class SmsTencentConfiguration implements ISysSms {
         }
 
         String[] templateParamSet = {sysSmsSendBO.getSendContent(),
-            String.valueOf(BaseConstant.LONG_CODE_EXPIRE_MINUTE)}; // 备注：第二个元素，表示是：验证码多久过期（分钟）
+                String.valueOf(BaseConstant.LONG_CODE_EXPIRE_MINUTE)}; // 备注：第二个元素，表示是：验证码多久过期（分钟）
 
         sysSmsSendBO.setTemplateParamSet(templateParamSet);
 
@@ -194,7 +194,7 @@ public class SmsTencentConfiguration implements ISysSms {
 
         /* 下发手机号码，采用 E.164 标准，+[国家或地区码][手机号]
          * 示例如：+8613711112222， 其中前面有一个+号 ，86为国家码，13711112222为手机号，最多不要超过200个手机号 */
-        req.setPhoneNumberSet(new String[] {sysSmsSendBO.getPhoneNumber()});
+        req.setPhoneNumberSet(new String[]{sysSmsSendBO.getPhoneNumber()});
 
         // 返回的resp是一个SendSmsResponse的实例，与请求对象对应
         SendSmsResponse resp = client.SendSms(req);
@@ -209,7 +209,7 @@ public class SmsTencentConfiguration implements ISysSms {
 
         if (BooleanUtil.isFalse("Ok".equalsIgnoreCase(code))) {
             throw new RuntimeException(
-                StrUtil.format("腾讯云短信发送失败，code：【{}】，message：【{}】", code, sendStatus.getMessage()));
+                    StrUtil.format("腾讯云短信发送失败，code：【{}】，message：【{}】", code, sendStatus.getMessage()));
         }
 
     }

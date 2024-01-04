@@ -61,7 +61,7 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptMapper, SysDeptDO> im
 
         // 处理：BaseTenantInsertOrUpdateDTO
         SysTenantUtil.handleBaseTenantInsertOrUpdateDTO(dto, getCheckIllegalFunc1(CollUtil.newHashSet(dto.getId())),
-            getTenantIdBaseEntityFunc1());
+                getTenantIdBaseEntityFunc1());
 
         if (dto.getId() != null && dto.getId().equals(dto.getParentId())) {
             ApiResultVO.error(BaseBizCodeEnum.PARENT_ID_CANNOT_BE_EQUAL_TO_ID);
@@ -69,9 +69,9 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptMapper, SysDeptDO> im
 
         // 相同父节点下：部门名（不能重复）
         boolean exists = lambdaQuery().eq(SysDeptDO::getName, dto.getName())
-            .eq(BaseEntityTree::getParentId, MyEntityUtil.getNotNullParentId(dto.getParentId()))
-            .ne(dto.getId() != null, BaseEntity::getId, dto.getId()).eq(BaseEntityNoId::getTenantId, dto.getTenantId())
-            .exists();
+                .eq(BaseEntityTree::getParentId, MyEntityUtil.getNotNullParentId(dto.getParentId()))
+                .ne(dto.getId() != null, BaseEntity::getId, dto.getId()).eq(BaseEntityNoId::getTenantId, dto.getTenantId())
+                .exists();
 
         if (exists) {
             ApiResultVO.errorMsg("操作失败：相同父节点下，部门名不能重复");
@@ -114,14 +114,14 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptMapper, SysDeptDO> im
 
             // 检查：区域 idSet，是否合法
             Long count = ChainWrappers.lambdaQueryChain(sysAreaMapper).in(BaseEntity::getId, dto.getAreaIdSet())
-                .eq(BaseEntityNoIdSuper::getTenantId, dto.getTenantId()).count();
+                    .eq(BaseEntityNoIdSuper::getTenantId, dto.getTenantId()).count();
 
             if (count != dto.getAreaIdSet().size()) {
                 ApiResultVO.errorMsg("操作失败：关联的区域数据非法");
             }
 
             List<SysAreaRefDeptDO> insertList =
-                new ArrayList<>(MyMapUtil.getInitialCapacity(dto.getAreaIdSet().size()));
+                    new ArrayList<>(MyMapUtil.getInitialCapacity(dto.getAreaIdSet().size()));
 
             for (Long item : dto.getAreaIdSet()) {
 
@@ -143,14 +143,14 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptMapper, SysDeptDO> im
 
             // 检查：用户 idSet，是否合法
             Long count = ChainWrappers.lambdaQueryChain(sysUserMapper).in(BaseEntity::getId, dto.getUserIdSet())
-                .eq(BaseEntityNoIdSuper::getTenantId, dto.getTenantId()).count();
+                    .eq(BaseEntityNoIdSuper::getTenantId, dto.getTenantId()).count();
 
             if (count != dto.getUserIdSet().size()) {
                 ApiResultVO.errorMsg("操作失败：关联的用户数据非法");
             }
 
             List<SysDeptRefUserDO> insertList =
-                new ArrayList<>(MyMapUtil.getInitialCapacity(dto.getUserIdSet().size()));
+                    new ArrayList<>(MyMapUtil.getInitialCapacity(dto.getUserIdSet().size()));
 
             for (Long item : dto.getUserIdSet()) {
 
@@ -179,10 +179,10 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptMapper, SysDeptDO> im
         SysTenantUtil.handleMyTenantPageDTO(dto, true);
 
         return lambdaQuery().like(StrUtil.isNotBlank(dto.getName()), SysDeptDO::getName, dto.getName())
-            .like(StrUtil.isNotBlank(dto.getRemark()), BaseEntityTree::getRemark, dto.getRemark())
-            .eq(dto.getEnableFlag() != null, BaseEntityTree::getEnableFlag, dto.getEnableFlag())
-            .in(BaseEntityNoId::getTenantId, dto.getTenantIdSet()) //
-            .eq(BaseEntityTree::getDelFlag, false).orderByDesc(BaseEntityTree::getOrderNo).page(dto.page(true));
+                .like(StrUtil.isNotBlank(dto.getRemark()), BaseEntityTree::getRemark, dto.getRemark())
+                .eq(dto.getEnableFlag() != null, BaseEntityTree::getEnableFlag, dto.getEnableFlag())
+                .in(BaseEntityNoId::getTenantId, dto.getTenantIdSet()) //
+                .eq(BaseEntityTree::getDelFlag, false).orderByDesc(BaseEntityTree::getOrderNo).page(dto.page(true));
 
     }
 
@@ -220,8 +220,8 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptMapper, SysDeptDO> im
         Set<Long> queryTenantIdSet = SysTenantUtil.getUserRefTenantIdSet();
 
         SysDeptDO sysDeptDO =
-            lambdaQuery().eq(BaseEntity::getId, notNullId.getId()).in(BaseEntityNoId::getTenantId, queryTenantIdSet)
-                .one();
+                lambdaQuery().eq(BaseEntity::getId, notNullId.getId()).in(BaseEntityNoId::getTenantId, queryTenantIdSet)
+                        .one();
 
         if (sysDeptDO == null) {
             return null;
@@ -231,19 +231,19 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptMapper, SysDeptDO> im
 
         // 获取：绑定的区域 idSet
         List<SysAreaRefDeptDO> sysAreaRefDeptDOList =
-            sysAreaRefDeptService.lambdaQuery().eq(SysAreaRefDeptDO::getDeptId, notNullId.getId())
-                .select(SysAreaRefDeptDO::getAreaId).list();
+                sysAreaRefDeptService.lambdaQuery().eq(SysAreaRefDeptDO::getDeptId, notNullId.getId())
+                        .select(SysAreaRefDeptDO::getAreaId).list();
 
         Set<Long> areaIdSet =
-            sysAreaRefDeptDOList.stream().map(SysAreaRefDeptDO::getAreaId).collect(Collectors.toSet());
+                sysAreaRefDeptDOList.stream().map(SysAreaRefDeptDO::getAreaId).collect(Collectors.toSet());
 
         // 获取：绑定的用户 idSet
         List<SysDeptRefUserDO> sysDeptRefUserDOList =
-            sysDeptRefUserService.lambdaQuery().eq(SysDeptRefUserDO::getDeptId, notNullId.getId())
-                .select(SysDeptRefUserDO::getUserId).list();
+                sysDeptRefUserService.lambdaQuery().eq(SysDeptRefUserDO::getDeptId, notNullId.getId())
+                        .select(SysDeptRefUserDO::getUserId).list();
 
         Set<Long> userIdSet =
-            sysDeptRefUserDOList.stream().map(SysDeptRefUserDO::getUserId).collect(Collectors.toSet());
+                sysDeptRefUserDOList.stream().map(SysDeptRefUserDO::getUserId).collect(Collectors.toSet());
 
         sysDeptInfoByIdVO.setAreaIdSet(areaIdSet);
         sysDeptInfoByIdVO.setUserIdSet(userIdSet);
@@ -316,11 +316,11 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptMapper, SysDeptDO> im
         }
 
         List<SysDeptDO> sysDeptDOList =
-            lambdaQuery().in(BaseEntity::getId, dto.getIdSet()).select(BaseEntity::getId, BaseEntityTree::getOrderNo)
-                .list();
+                lambdaQuery().in(BaseEntity::getId, dto.getIdSet()).select(BaseEntity::getId, BaseEntityTree::getOrderNo)
+                        .list();
 
         for (SysDeptDO item : sysDeptDOList) {
-            item.setOrderNo((int)(item.getOrderNo() + dto.getNumber()));
+            item.setOrderNo((int) (item.getOrderNo() + dto.getNumber()));
         }
 
         updateBatchById(sysDeptDOList);
@@ -336,7 +336,7 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptMapper, SysDeptDO> im
     private Func1<Set<Long>, Long> getCheckIllegalFunc1(Set<Long> idSet) {
 
         return tenantIdSet -> lambdaQuery().in(BaseEntity::getId, idSet).in(BaseEntityNoId::getTenantId, tenantIdSet)
-            .count();
+                .count();
 
     }
 

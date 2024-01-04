@@ -61,26 +61,26 @@ public class PayAliServiceImpl implements PayAliService {
         AlipayConfig alipayConfig = PayAliUtil.getAlipayConfig(sysPayConfigurationDO);
 
         boolean signVerified = AlipaySignature
-            .rsaCheckV1(paramsMap, alipayConfig.getAlipayPublicKey(), alipayConfig.getCharset(),
-                alipayConfig.getSignType()); // 调用SDK验证签名
+                .rsaCheckV1(paramsMap, alipayConfig.getAlipayPublicKey(), alipayConfig.getCharset(),
+                        alipayConfig.getSignType()); // 调用SDK验证签名
 
         if (signVerified) {
 
             // 商户订单号
             String outTradeNo = new String(request.getParameter("out_trade_no").getBytes(StandardCharsets.ISO_8859_1),
-                StandardCharsets.UTF_8);
+                    StandardCharsets.UTF_8);
 
             // 支付宝交易号
             String tradeNo = new String(request.getParameter("trade_no").getBytes(StandardCharsets.ISO_8859_1),
-                StandardCharsets.UTF_8);
+                    StandardCharsets.UTF_8);
 
             // 付款金额
             String totalAmount = new String(request.getParameter("total_amount").getBytes(StandardCharsets.ISO_8859_1),
-                StandardCharsets.UTF_8);
+                    StandardCharsets.UTF_8);
 
             // 交易状态
             String tradeStatus = new String(request.getParameter("trade_status").getBytes(StandardCharsets.ISO_8859_1),
-                StandardCharsets.UTF_8);
+                    StandardCharsets.UTF_8);
 
             SysPayTradeNotifyBO sysPayTradeNotifyBO = new SysPayTradeNotifyBO();
 

@@ -25,12 +25,12 @@ public class SysSocketServiceImpl extends ServiceImpl<SysSocketMapper, SysSocket
     public Page<SysSocketDO> myPage(SysSocketPageDTO dto) {
 
         return lambdaQuery().like(StrUtil.isNotBlank(dto.getScheme()), SysSocketDO::getScheme, dto.getScheme())
-            .like(StrUtil.isNotBlank(dto.getHost()), SysSocketDO::getHost, dto.getHost())
-            .eq(dto.getPort() != null, SysSocketDO::getPort, dto.getPort())
-            .eq(dto.getType() != null, SysSocketDO::getType, dto.getType())
-            .eq(dto.getEnableFlag() != null, BaseEntity::getEnableFlag, dto.getEnableFlag())
-            .eq(dto.getId() != null, BaseEntity::getId, dto.getId())
-            .like(StrUtil.isNotBlank(dto.getRemark()), SysSocketDO::getRemark, dto.getRemark()).page(dto.page(true));
+                .like(StrUtil.isNotBlank(dto.getHost()), SysSocketDO::getHost, dto.getHost())
+                .eq(dto.getPort() != null, SysSocketDO::getPort, dto.getPort())
+                .eq(dto.getType() != null, SysSocketDO::getType, dto.getType())
+                .eq(dto.getEnableFlag() != null, BaseEntity::getEnableFlag, dto.getEnableFlag())
+                .eq(dto.getId() != null, BaseEntity::getId, dto.getId())
+                .like(StrUtil.isNotBlank(dto.getRemark()), SysSocketDO::getRemark, dto.getRemark()).page(dto.page(true));
 
     }
 
@@ -45,7 +45,7 @@ public class SysSocketServiceImpl extends ServiceImpl<SysSocketMapper, SysSocket
         }
 
         lambdaUpdate().in(BaseEntity::getId, notEmptyIdSet.getIdSet()).set(BaseEntityNoId::getEnableFlag, false)
-            .update();
+                .update();
 
         // 发送消息：socket禁用的 topic
         KafkaUtil.sendSocketDisableTopic(notEmptyIdSet.getIdSet());
@@ -65,7 +65,7 @@ public class SysSocketServiceImpl extends ServiceImpl<SysSocketMapper, SysSocket
         }
 
         lambdaUpdate().in(BaseEntity::getId, notEmptyIdSet.getIdSet()).set(BaseEntityNoId::getEnableFlag, true)
-            .update();
+                .update();
 
         // 发送消息：socket启用的 topic
         KafkaUtil.sendSocketEnableTopic(notEmptyIdSet.getIdSet());

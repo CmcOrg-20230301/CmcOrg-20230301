@@ -39,8 +39,8 @@ public class SysPayServiceImpl extends ServiceImpl<SysPayMapper, SysPayDO> imple
         }
 
         SysPayDO sysPayDO =
-            lambdaQuery().eq(SysPayDO::getId, notNullId.getId()).in(BaseEntityNoId::getTenantId, queryTenantIdSet)
-                .select(SysPayDO::getStatus).one();
+                lambdaQuery().eq(SysPayDO::getId, notNullId.getId()).in(BaseEntityNoId::getTenantId, queryTenantIdSet)
+                        .select(SysPayDO::getStatus).one();
 
         if (sysPayDO == null) {
             return null;

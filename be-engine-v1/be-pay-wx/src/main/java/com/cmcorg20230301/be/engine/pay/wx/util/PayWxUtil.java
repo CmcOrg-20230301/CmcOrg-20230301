@@ -29,9 +29,9 @@ public class PayWxUtil {
     public static RSAAutoCertificateConfig getRsaAutoCertificateConfig(SysPayConfigurationDO sysPayConfigurationDO) {
 
         return new RSAAutoCertificateConfig.Builder().merchantId(sysPayConfigurationDO.getMerchantId())
-            .privateKey(sysPayConfigurationDO.getPrivateKey())
-            .merchantSerialNumber(sysPayConfigurationDO.getMerchantSerialNumber())
-            .apiV3Key(sysPayConfigurationDO.getApiV3Key()).build();
+                .privateKey(sysPayConfigurationDO.getPrivateKey())
+                .merchantSerialNumber(sysPayConfigurationDO.getMerchantSerialNumber())
+                .apiV3Key(sysPayConfigurationDO.getApiV3Key()).build();
 
     }
 
@@ -58,10 +58,10 @@ public class PayWxUtil {
         NativePayService nativePayService = getNativePayService(sysPayConfigurationDO);
 
         com.wechat.pay.java.service.payments.nativepay.model.PrepayRequest request =
-            new com.wechat.pay.java.service.payments.nativepay.model.PrepayRequest();
+                new com.wechat.pay.java.service.payments.nativepay.model.PrepayRequest();
 
         com.wechat.pay.java.service.payments.nativepay.model.Amount amount =
-            new com.wechat.pay.java.service.payments.nativepay.model.Amount();
+                new com.wechat.pay.java.service.payments.nativepay.model.Amount();
 
         amount.setTotal(dto.getTotalAmount().multiply(BaseConstant.BIG_DECIMAL_ONE_HUNDRED).intValue());
 
@@ -78,7 +78,7 @@ public class PayWxUtil {
 
         // 调用接口
         com.wechat.pay.java.service.payments.nativepay.model.PrepayResponse prepayResponse =
-            nativePayService.prepay(request);
+                nativePayService.prepay(request);
 
         // 返回：扫码的二维码地址
         return new SysPayReturnBO(prepayResponse.getCodeUrl(), sysPayConfigurationDO.getAppId());
@@ -97,7 +97,7 @@ public class PayWxUtil {
         NativePayService nativePayService = getNativePayService(sysPayConfigurationDO);
 
         com.wechat.pay.java.service.payments.nativepay.model.QueryOrderByOutTradeNoRequest queryRequest =
-            new com.wechat.pay.java.service.payments.nativepay.model.QueryOrderByOutTradeNoRequest();
+                new com.wechat.pay.java.service.payments.nativepay.model.QueryOrderByOutTradeNoRequest();
 
         queryRequest.setMchid(sysPayConfigurationDO.getMerchantId());
         queryRequest.setOutTradeNo(outTradeNo);
@@ -134,10 +134,10 @@ public class PayWxUtil {
         JsapiServiceExtension jsapiServiceExtension = getJsapiServiceExtension(sysPayConfigurationDO);
 
         com.wechat.pay.java.service.payments.jsapi.model.PrepayRequest request =
-            new com.wechat.pay.java.service.payments.jsapi.model.PrepayRequest();
+                new com.wechat.pay.java.service.payments.jsapi.model.PrepayRequest();
 
         com.wechat.pay.java.service.payments.jsapi.model.Amount amount =
-            new com.wechat.pay.java.service.payments.jsapi.model.Amount();
+                new com.wechat.pay.java.service.payments.jsapi.model.Amount();
 
         amount.setTotal(dto.getTotalAmount().multiply(BaseConstant.BIG_DECIMAL_ONE_HUNDRED).intValue());
 
@@ -153,7 +153,7 @@ public class PayWxUtil {
         request.setTimeExpire(DatePattern.UTC_WITH_XXX_OFFSET_FORMAT.format(dto.getExpireTime()));
 
         com.wechat.pay.java.service.payments.jsapi.model.Payer payer =
-            new com.wechat.pay.java.service.payments.jsapi.model.Payer();
+                new com.wechat.pay.java.service.payments.jsapi.model.Payer();
 
         payer.setOpenid(dto.getOpenId());
 
@@ -161,7 +161,7 @@ public class PayWxUtil {
 
         // 执行
         PrepayWithRequestPaymentResponse prepayWithRequestPaymentResponse =
-            jsapiServiceExtension.prepayWithRequestPayment(request);
+                jsapiServiceExtension.prepayWithRequestPayment(request);
 
         String jsonStr = GsonUtil.toJson(prepayWithRequestPaymentResponse);
 
@@ -181,7 +181,7 @@ public class PayWxUtil {
         JsapiServiceExtension jsapiServiceExtension = getJsapiServiceExtension(sysPayConfigurationDO);
 
         com.wechat.pay.java.service.payments.jsapi.model.QueryOrderByOutTradeNoRequest queryRequest =
-            new com.wechat.pay.java.service.payments.jsapi.model.QueryOrderByOutTradeNoRequest();
+                new com.wechat.pay.java.service.payments.jsapi.model.QueryOrderByOutTradeNoRequest();
 
         queryRequest.setMchid(sysPayConfigurationDO.getMerchantId());
         queryRequest.setOutTradeNo(outTradeNo);

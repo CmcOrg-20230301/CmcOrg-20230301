@@ -63,8 +63,8 @@ public class ExceptionAdvice {
 
                 // 处理：请求
                 handleRequest(httpServletRequest, method.getAnnotation(Operation.class),
-                    MyEntityUtil.getNotNullStr(baseException.getMessage()), //
-                    MyEntityUtil.getNotNullStr(JSONUtil.toJsonStr(e.getBindingResult().getTarget())));
+                        MyEntityUtil.getNotNullStr(baseException.getMessage()), //
+                        MyEntityUtil.getNotNullStr(JSONUtil.toJsonStr(e.getBindingResult().getTarget())));
 
             }
 
@@ -80,7 +80,7 @@ public class ExceptionAdvice {
      * 处理：请求
      */
     public static void handleRequest(HttpServletRequest httpServletRequest, @Nullable Operation operation,
-        String errorMsg, String requestParam) {
+                                     String errorMsg, String requestParam) {
 
         Date date = new Date();
 

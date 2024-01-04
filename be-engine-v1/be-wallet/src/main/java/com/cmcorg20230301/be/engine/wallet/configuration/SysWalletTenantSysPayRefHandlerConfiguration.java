@@ -75,7 +75,7 @@ public class SysWalletTenantSysPayRefHandlerConfiguration implements ISysPayRefH
 
                 // 再查询一次：是否已经处理过该支付
                 boolean exists = ChainWrappers.lambdaQueryChain(sysPayMapper).eq(SysPayDO::getId, sysPayDO.getId())
-                    .eq(SysPayDO::getRefStatus, SysPayRefStatusEnum.WAIT_PAY.getCode()).exists();
+                        .eq(SysPayDO::getRefStatus, SysPayRefStatusEnum.WAIT_PAY.getCode()).exists();
 
                 if (!exists) { // 如果：已经处理过了，则不再处理
                     return;
@@ -91,16 +91,16 @@ public class SysWalletTenantSysPayRefHandlerConfiguration implements ISysPayRefH
 
                     // 增加租户的：可提现余额
                     sysUserWalletService.doAddWithdrawableMoney(userId, date, CollUtil.newHashSet(refId),
-                        sysPayDO.getOriginalPrice(), SysUserWalletLogTypeEnum.ADD_PAY, false, false, true, refId,
-                        refData, true, null, null);
+                            sysPayDO.getOriginalPrice(), SysUserWalletLogTypeEnum.ADD_PAY, false, false, true, refId,
+                            refData, true, null, null);
 
                     if (StrUtil.isNotBlank(refData)) {
 
                         // 减少租户的：可提现余额和可提现预使用余额
                         sysUserWalletService.doAddWithdrawableMoney(userId, date,
-                            CollUtil.newHashSet(Convert.toLong(refData)), sysPayDO.getOriginalPrice().negate(),
-                            SysUserWalletLogTypeEnum.REDUCE_TENANT_BUY, false, false, true, refId, refData, false, null,
-                            null);
+                                CollUtil.newHashSet(Convert.toLong(refData)), sysPayDO.getOriginalPrice().negate(),
+                                SysUserWalletLogTypeEnum.REDUCE_TENANT_BUY, false, false, true, refId, refData, false, null,
+                                null);
 
                     }
 

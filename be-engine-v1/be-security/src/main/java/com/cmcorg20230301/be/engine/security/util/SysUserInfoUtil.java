@@ -34,7 +34,7 @@ public class SysUserInfoUtil {
      * 备注：如果为 null，则不会更新该字段
      */
     public static void add(Long id, @Nullable Date lastActiveTime, @Nullable String lastIp,
-        @Nullable String lastRegion) {
+                           @Nullable String lastRegion) {
 
         if (id == null) {
             return;

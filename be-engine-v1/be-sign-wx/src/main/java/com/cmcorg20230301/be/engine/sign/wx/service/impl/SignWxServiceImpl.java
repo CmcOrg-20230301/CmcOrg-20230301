@@ -46,17 +46,17 @@ public class SignWxServiceImpl implements SignWxService {
 
         // 获取：用户手机号
         WxPhoneByCodeVO.WxPhoneInfoVO wxPhoneInfoVO =
-            WxUtil.getWxMiniProgramPhoneInfoVoByCode(dto.getTenantId(), dto.getPhoneCode(), dto.getAppId());
+                WxUtil.getWxMiniProgramPhoneInfoVoByCode(dto.getTenantId(), dto.getPhoneCode(), dto.getAppId());
 
         // 直接通过：手机号登录
         return SignUtil.signInAccount(
-            ChainWrappers.lambdaQueryChain(sysUserMapper).eq(SysUserDO::getPhone, wxPhoneInfoVO.getPhoneNumber()),
-            BaseRedisKeyEnum.PRE_PHONE, wxPhoneInfoVO.getPhoneNumber(), SignWxServiceImpl::getWxSysUserInfoDO,
-            dto.getTenantId(), accountMap -> {
+                ChainWrappers.lambdaQueryChain(sysUserMapper).eq(SysUserDO::getPhone, wxPhoneInfoVO.getPhoneNumber()),
+                BaseRedisKeyEnum.PRE_PHONE, wxPhoneInfoVO.getPhoneNumber(), SignWxServiceImpl::getWxSysUserInfoDO,
+                dto.getTenantId(), accountMap -> {
 
-                accountMap.put(BaseRedisKeyEnum.PRE_WX_APP_ID, dto.getAppId());
+                    accountMap.put(BaseRedisKeyEnum.PRE_WX_APP_ID, dto.getAppId());
 
-            });
+                });
 
     }
 
@@ -70,13 +70,13 @@ public class SignWxServiceImpl implements SignWxService {
 
         // 直接通过：微信 openId登录
         return SignUtil.signInAccount(
-            ChainWrappers.lambdaQueryChain(sysUserMapper).eq(SysUserDO::getWxOpenId, wxOpenIdVO.getOpenid())
-                .eq(SysUserDO::getWxAppId, dto.getAppId()), PRE_REDIS_KEY_ENUM, wxOpenIdVO.getOpenid(),
-            SignWxServiceImpl::getWxSysUserInfoDO, dto.getTenantId(), accountMap -> {
+                ChainWrappers.lambdaQueryChain(sysUserMapper).eq(SysUserDO::getWxOpenId, wxOpenIdVO.getOpenid())
+                        .eq(SysUserDO::getWxAppId, dto.getAppId()), PRE_REDIS_KEY_ENUM, wxOpenIdVO.getOpenid(),
+                SignWxServiceImpl::getWxSysUserInfoDO, dto.getTenantId(), accountMap -> {
 
-                accountMap.put(BaseRedisKeyEnum.PRE_WX_APP_ID, dto.getAppId());
+                    accountMap.put(BaseRedisKeyEnum.PRE_WX_APP_ID, dto.getAppId());
 
-            });
+                });
 
     }
 
@@ -106,13 +106,13 @@ public class SignWxServiceImpl implements SignWxService {
 
         // 直接通过：微信 openId登录
         return SignUtil.signInAccount(
-            ChainWrappers.lambdaQueryChain(sysUserMapper).eq(SysUserDO::getWxOpenId, wxOpenIdVO.getOpenid())
-                .eq(SysUserDO::getWxAppId, dto.getAppId()), PRE_REDIS_KEY_ENUM, wxOpenIdVO.getOpenid(),
-            SignWxServiceImpl::getWxSysUserInfoDO, dto.getTenantId(), accountMap -> {
+                ChainWrappers.lambdaQueryChain(sysUserMapper).eq(SysUserDO::getWxOpenId, wxOpenIdVO.getOpenid())
+                        .eq(SysUserDO::getWxAppId, dto.getAppId()), PRE_REDIS_KEY_ENUM, wxOpenIdVO.getOpenid(),
+                SignWxServiceImpl::getWxSysUserInfoDO, dto.getTenantId(), accountMap -> {
 
-                accountMap.put(BaseRedisKeyEnum.PRE_WX_APP_ID, dto.getAppId());
+                    accountMap.put(BaseRedisKeyEnum.PRE_WX_APP_ID, dto.getAppId());
 
-            });
+                });
 
     }
 
@@ -131,26 +131,26 @@ public class SignWxServiceImpl implements SignWxService {
 
         // 直接通过：微信 openId登录
         SignInVO signInVO = SignUtil.signInAccount(
-            ChainWrappers.lambdaQueryChain(sysUserMapper).eq(SysUserDO::getWxOpenId, wxOpenIdVO.getOpenid())
-                .eq(SysUserDO::getWxAppId, dto.getAppId()), PRE_REDIS_KEY_ENUM, wxOpenIdVO.getOpenid(), () -> {
+                ChainWrappers.lambdaQueryChain(sysUserMapper).eq(SysUserDO::getWxOpenId, wxOpenIdVO.getOpenid())
+                        .eq(SysUserDO::getWxAppId, dto.getAppId()), PRE_REDIS_KEY_ENUM, wxOpenIdVO.getOpenid(), () -> {
 
-                WxUserInfoVO wxUserInfoVO = WxUtil
-                    .getWxUserInfoByBrowserAccessToken(wxOpenIdVO.getAccessToken(), wxOpenIdVO.getOpenid(), tenantId,
-                        dto.getAppId());
+                    WxUserInfoVO wxUserInfoVO = WxUtil
+                            .getWxUserInfoByBrowserAccessToken(wxOpenIdVO.getAccessToken(), wxOpenIdVO.getOpenid(), tenantId,
+                                    dto.getAppId());
 
-                SysUserInfoDO sysUserInfoDO = new SysUserInfoDO();
+                    SysUserInfoDO sysUserInfoDO = new SysUserInfoDO();
 
-                sysUserInfoDO.setNickname(wxUserInfoVO.getNickname());
+                    sysUserInfoDO.setNickname(wxUserInfoVO.getNickname());
 
-                signUpFlagCallBack.setValue(true);
+                    signUpFlagCallBack.setValue(true);
 
-                return sysUserInfoDO;
+                    return sysUserInfoDO;
 
-            }, dto.getTenantId(), accountMap -> {
+                }, dto.getTenantId(), accountMap -> {
 
-                accountMap.put(BaseRedisKeyEnum.PRE_WX_APP_ID, dto.getAppId());
+                    accountMap.put(BaseRedisKeyEnum.PRE_WX_APP_ID, dto.getAppId());
 
-            });
+                });
 
         if (BooleanUtil.isFalse(signUpFlagCallBack.getValue())) {
 
@@ -160,17 +160,17 @@ public class SignWxServiceImpl implements SignWxService {
             Long userId = MyJwtUtil.getPayloadMapUserIdValue(jwt.getPayload().getClaimsJson());
 
             boolean exists = ChainWrappers.lambdaQueryChain(sysUserInfoMapper).eq(SysUserInfoDO::getId, userId)
-                .likeRight(SysUserInfoDO::getNickname, WX_SYS_USER_INFO_NICKNAME_PRE).exists();
+                    .likeRight(SysUserInfoDO::getNickname, WX_SYS_USER_INFO_NICKNAME_PRE).exists();
 
             if (exists) {
 
                 WxUserInfoVO wxUserInfoVO = WxUtil
-                    .getWxUserInfoByBrowserAccessToken(wxOpenIdVO.getAccessToken(), wxOpenIdVO.getOpenid(), tenantId,
-                        dto.getAppId());
+                        .getWxUserInfoByBrowserAccessToken(wxOpenIdVO.getAccessToken(), wxOpenIdVO.getOpenid(), tenantId,
+                                dto.getAppId());
 
                 // 更新：用户的昵称
                 ChainWrappers.lambdaUpdateChain(sysUserInfoMapper).eq(SysUserInfoDO::getId, userId)
-                    .set(SysUserInfoDO::getNickname, wxUserInfoVO.getNickname()).update();
+                        .set(SysUserInfoDO::getNickname, wxUserInfoVO.getNickname()).update();
 
             }
 

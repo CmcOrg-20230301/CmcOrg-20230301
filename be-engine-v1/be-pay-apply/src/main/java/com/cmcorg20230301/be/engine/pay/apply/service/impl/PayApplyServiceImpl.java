@@ -75,7 +75,7 @@ public class PayApplyServiceImpl implements PayApplyService {
         }
 
         SysPayDO sysPayDO =
-            sysPayService.lambdaQuery().eq(SysPayDO::getId, outTradeNo).select(SysPayDO::getOriginalPrice).one();
+                sysPayService.lambdaQuery().eq(SysPayDO::getId, outTradeNo).select(SysPayDO::getOriginalPrice).one();
 
         if (sysPayDO == null) {
 
@@ -104,7 +104,7 @@ public class PayApplyServiceImpl implements PayApplyService {
 
         JWT jwt = JWT.of(signedPayload);
 
-        String x5cListStr = (String)jwt.getHeader("x5c");
+        String x5cListStr = (String) jwt.getHeader("x5c");
 
         String x5c0 = JSONUtil.toList(x5cListStr, String.class).get(0);
 
@@ -112,7 +112,7 @@ public class PayApplyServiceImpl implements PayApplyService {
 
         CertificateFactory fact = CertificateFactory.getInstance("X.509");
 
-        X509Certificate cer = (X509Certificate)fact.generateCertificate(new ByteArrayInputStream(x5c0Bytes));
+        X509Certificate cer = (X509Certificate) fact.generateCertificate(new ByteArrayInputStream(x5c0Bytes));
 
         PublicKey publicKey = cer.getPublicKey();
 

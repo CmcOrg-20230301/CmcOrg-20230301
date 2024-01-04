@@ -57,7 +57,7 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenuDO> im
 
         // 处理：BaseTenantInsertOrUpdateDTO
         SysTenantUtil.handleBaseTenantInsertOrUpdateDTO(dto, getCheckIllegalFunc1(CollUtil.newHashSet(dto.getId())),
-            getTenantIdBaseEntityFunc1());
+                getTenantIdBaseEntityFunc1());
 
         // 检查：是否可以修改一些属性
         dto = checkUpdate(dto, dto.getId());
@@ -74,8 +74,8 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenuDO> im
         if (StrUtil.isNotBlank(dto.getPath())) {
 
             boolean exists =
-                lambdaQuery().eq(SysMenuDO::getPath, dto.getPath()).eq(BaseEntityNoId::getTenantId, dto.getTenantId())
-                    .ne(dto.getId() != null, BaseEntity::getId, dto.getId()).exists();
+                    lambdaQuery().eq(SysMenuDO::getPath, dto.getPath()).eq(BaseEntityNoId::getTenantId, dto.getTenantId())
+                            .ne(dto.getId() != null, BaseEntity::getId, dto.getId()).exists();
 
             if (exists) {
                 ApiResultVO.error(BizCodeEnum.MENU_URI_IS_EXIST);
@@ -87,8 +87,8 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenuDO> im
         if (BooleanUtil.isTrue(dto.getFirstFlag())) {
 
             lambdaUpdate().set(SysMenuDO::getFirstFlag, false).eq(SysMenuDO::getFirstFlag, true)
-                .eq(BaseEntityNoId::getTenantId, dto.getTenantId())
-                .ne(dto.getId() != null, BaseEntity::getId, dto.getId()).update();
+                    .eq(BaseEntityNoId::getTenantId, dto.getTenantId())
+                    .ne(dto.getId() != null, BaseEntity::getId, dto.getId()).update();
 
         }
 
@@ -124,19 +124,19 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenuDO> im
         }
 
         SysMenuDO sysMenuDO =
-            lambdaQuery().eq(BaseEntity::getId, tempSysMenuDO.getId()).select(SysMenuDO::getUuid).one();
+                lambdaQuery().eq(BaseEntity::getId, tempSysMenuDO.getId()).select(SysMenuDO::getUuid).one();
 
         String uuid = sysMenuDO.getUuid();
 
         // 备注：需要和 SysMenuServiceImpl#checkUpdate 一致
         lambdaUpdate().eq(SysMenuDO::getUuid, uuid).ne(BaseEntity::getId, tempSysMenuDO.getId()) // 不同步自己
-            .set(SysMenuDO::getPath, tempSysMenuDO.getPath()) //
-            .set(SysMenuDO::getRouter, tempSysMenuDO.getRouter()) //
-            .set(SysMenuDO::getAuths, tempSysMenuDO.getAuths()) //
-            .set(SysMenuDO::getAuthFlag, tempSysMenuDO.getAuthFlag()) //
-            .set(SysMenuDO::getHiddenPageContainerFlag, tempSysMenuDO.getHiddenPageContainerFlag()) //
-            .set(SysMenuDO::getLinkFlag, tempSysMenuDO.getLinkFlag()) // 额外多一个参数
-            .update();
+                .set(SysMenuDO::getPath, tempSysMenuDO.getPath()) //
+                .set(SysMenuDO::getRouter, tempSysMenuDO.getRouter()) //
+                .set(SysMenuDO::getAuths, tempSysMenuDO.getAuths()) //
+                .set(SysMenuDO::getAuthFlag, tempSysMenuDO.getAuthFlag()) //
+                .set(SysMenuDO::getHiddenPageContainerFlag, tempSysMenuDO.getHiddenPageContainerFlag()) //
+                .set(SysMenuDO::getLinkFlag, tempSysMenuDO.getLinkFlag()) // 额外多一个参数
+                .update();
 
     }
 
@@ -198,14 +198,14 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenuDO> im
 
             // 检查：角色 idSet，是否合法
             Long count = ChainWrappers.lambdaQueryChain(sysRoleMapper).in(BaseEntity::getId, dto.getRoleIdSet())
-                .eq(BaseEntityNoIdSuper::getTenantId, dto.getTenantId()).count();
+                    .eq(BaseEntityNoIdSuper::getTenantId, dto.getTenantId()).count();
 
             if (count != dto.getRoleIdSet().size()) {
                 ApiResultVO.errorMsg("操作失败：关联的角色数据非法");
             }
 
             List<SysRoleRefMenuDO> insertList =
-                new ArrayList<>(MyMapUtil.getInitialCapacity(dto.getRoleIdSet().size()));
+                    new ArrayList<>(MyMapUtil.getInitialCapacity(dto.getRoleIdSet().size()));
 
             for (Long item : dto.getRoleIdSet()) {
 
@@ -277,18 +277,18 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenuDO> im
         SysTenantUtil.handleMyTenantPageDTO(dto, true);
 
         return lambdaQuery().like(StrUtil.isNotBlank(dto.getName()), SysMenuDO::getName, dto.getName())
-            .like(StrUtil.isNotBlank(dto.getPath()), SysMenuDO::getPath, dto.getPath())
-            .like(StrUtil.isNotBlank(dto.getAuths()), SysMenuDO::getAuths, dto.getAuths())
-            .like(StrUtil.isNotBlank(dto.getRedirect()), SysMenuDO::getRedirect, dto.getRedirect())
-            .eq(StrUtil.isNotBlank(dto.getRouter()), SysMenuDO::getRouter, dto.getRouter())
-            .eq(dto.getParentId() != null, SysMenuDO::getParentId, dto.getParentId())
-            .eq(dto.getEnableFlag() != null, BaseEntity::getEnableFlag, dto.getEnableFlag())
-            .eq(dto.getLinkFlag() != null, SysMenuDO::getLinkFlag, dto.getLinkFlag())
-            .eq(dto.getFirstFlag() != null, SysMenuDO::getFirstFlag, dto.getFirstFlag())
-            .eq(dto.getAuthFlag() != null, SysMenuDO::getAuthFlag, dto.getAuthFlag())
-            .eq(dto.getShowFlag() != null, SysMenuDO::getShowFlag, dto.getShowFlag())
-            .in(BaseEntityNoId::getTenantId, dto.getTenantIdSet()) //
-            .orderByDesc(BaseEntityTree::getOrderNo).page(dto.page(true));
+                .like(StrUtil.isNotBlank(dto.getPath()), SysMenuDO::getPath, dto.getPath())
+                .like(StrUtil.isNotBlank(dto.getAuths()), SysMenuDO::getAuths, dto.getAuths())
+                .like(StrUtil.isNotBlank(dto.getRedirect()), SysMenuDO::getRedirect, dto.getRedirect())
+                .eq(StrUtil.isNotBlank(dto.getRouter()), SysMenuDO::getRouter, dto.getRouter())
+                .eq(dto.getParentId() != null, SysMenuDO::getParentId, dto.getParentId())
+                .eq(dto.getEnableFlag() != null, BaseEntity::getEnableFlag, dto.getEnableFlag())
+                .eq(dto.getLinkFlag() != null, SysMenuDO::getLinkFlag, dto.getLinkFlag())
+                .eq(dto.getFirstFlag() != null, SysMenuDO::getFirstFlag, dto.getFirstFlag())
+                .eq(dto.getAuthFlag() != null, SysMenuDO::getAuthFlag, dto.getAuthFlag())
+                .eq(dto.getShowFlag() != null, SysMenuDO::getShowFlag, dto.getShowFlag())
+                .in(BaseEntityNoId::getTenantId, dto.getTenantIdSet()) //
+                .orderByDesc(BaseEntityTree::getOrderNo).page(dto.page(true));
 
     }
 
@@ -326,8 +326,8 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenuDO> im
         Set<Long> queryTenantIdSet = SysTenantUtil.getUserRefTenantIdSet();
 
         SysMenuDO sysMenuDO =
-            lambdaQuery().eq(BaseEntity::getId, notNullId.getId()).in(BaseEntityNoId::getTenantId, queryTenantIdSet)
-                .one();
+                lambdaQuery().eq(BaseEntity::getId, notNullId.getId()).in(BaseEntityNoId::getTenantId, queryTenantIdSet)
+                        .one();
 
         if (sysMenuDO == null) {
             return null;
@@ -337,11 +337,11 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenuDO> im
 
         // 设置：角色 idSet
         List<SysRoleRefMenuDO> sysRoleRefMenuDOList =
-            sysRoleRefMenuService.lambdaQuery().eq(SysRoleRefMenuDO::getMenuId, notNullId.getId())
-                .select(SysRoleRefMenuDO::getRoleId).list();
+                sysRoleRefMenuService.lambdaQuery().eq(SysRoleRefMenuDO::getMenuId, notNullId.getId())
+                        .select(SysRoleRefMenuDO::getRoleId).list();
 
         sysMenuInfoByIdVO
-            .setRoleIdSet(sysRoleRefMenuDOList.stream().map(SysRoleRefMenuDO::getRoleId).collect(Collectors.toSet()));
+                .setRoleIdSet(sysRoleRefMenuDOList.stream().map(SysRoleRefMenuDO::getRoleId).collect(Collectors.toSet()));
 
         // 处理：父级 id
         MyEntityUtil.handleParentId(sysMenuInfoByIdVO);
@@ -386,8 +386,8 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenuDO> im
 
         // 如果删除了顶级租户的菜单，则需要全局一起删除
         List<SysMenuDO> sysMenuDOList =
-            lambdaQuery().in(BaseEntity::getId, idSet).eq(BaseEntityNoIdSuper::getTenantId, BaseConstant.TOP_TENANT_ID)
-                .select(SysMenuDO::getUuid).list();
+                lambdaQuery().in(BaseEntity::getId, idSet).eq(BaseEntityNoIdSuper::getTenantId, BaseConstant.TOP_TENANT_ID)
+                        .select(SysMenuDO::getUuid).list();
 
         if (CollUtil.isNotEmpty(sysMenuDOList)) {
 
@@ -430,9 +430,9 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenuDO> im
 
             // 如果是 admin账号，则查询所有【不是被禁用了的】菜单
             return SysMenuUtil.getSysMenuCacheMap().values().stream()
-                .filter(it -> currentTenantIdDefault.equals(it.getTenantId()))
-                .sorted(Comparator.comparing(BaseEntityTree::getOrderNo, Comparator.reverseOrder()))
-                .collect(Collectors.toList());
+                    .filter(it -> currentTenantIdDefault.equals(it.getTenantId()))
+                    .sorted(Comparator.comparing(BaseEntityTree::getOrderNo, Comparator.reverseOrder()))
+                    .collect(Collectors.toList());
 
         }
 
@@ -444,7 +444,7 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenuDO> im
         }
 
         return sysMenuDoSet.stream().sorted(Comparator.comparing(BaseEntityTree::getOrderNo, Comparator.reverseOrder()))
-            .collect(Collectors.toList());
+                .collect(Collectors.toList());
 
     }
 
@@ -462,11 +462,11 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenuDO> im
         }
 
         List<SysMenuDO> sysMenuDOList =
-            lambdaQuery().in(BaseEntity::getId, dto.getIdSet()).select(BaseEntity::getId, BaseEntityTree::getOrderNo)
-                .list();
+                lambdaQuery().in(BaseEntity::getId, dto.getIdSet()).select(BaseEntity::getId, BaseEntityTree::getOrderNo)
+                        .list();
 
         for (SysMenuDO item : sysMenuDOList) {
-            item.setOrderNo((int)(item.getOrderNo() + dto.getNumber()));
+            item.setOrderNo((int) (item.getOrderNo() + dto.getNumber()));
         }
 
         updateBatchById(sysMenuDOList);
@@ -482,7 +482,7 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenuDO> im
     private Func1<Set<Long>, Long> getCheckIllegalFunc1(Set<Long> idSet) {
 
         return tenantIdSet -> lambdaQuery().in(BaseEntity::getId, idSet).in(BaseEntityNoId::getTenantId, tenantIdSet)
-            .count();
+                .count();
 
     }
 

@@ -29,7 +29,7 @@ import java.util.Set;
 
 @Service
 public class SysOtherAppServiceImpl extends ServiceImpl<SysOtherAppMapper, SysOtherAppDO>
-    implements SysOtherAppService {
+        implements SysOtherAppService {
 
     /**
      * 新增/修改
@@ -39,58 +39,58 @@ public class SysOtherAppServiceImpl extends ServiceImpl<SysOtherAppMapper, SysOt
 
         // 处理：BaseTenantInsertOrUpdateDTO
         SysTenantUtil.handleBaseTenantInsertOrUpdateDTO(dto, getCheckIllegalFunc1(CollUtil.newHashSet(dto.getId())),
-            getTenantIdBaseEntityFunc1());
+                getTenantIdBaseEntityFunc1());
 
         return RedissonUtil.doLock(
-            BaseRedisKeyEnum.PRE_OTHER_APP_TYPE_AND_APP_ID.name() + ":" + dto.getType().getCode() + ":" + dto
-                .getAppId(), () -> {
+                BaseRedisKeyEnum.PRE_OTHER_APP_TYPE_AND_APP_ID.name() + ":" + dto.getType().getCode() + ":" + dto
+                        .getAppId(), () -> {
 
-                // 同一个类型下，第三方 appId，不能重复
-                boolean exists = lambdaQuery().eq(SysOtherAppDO::getAppId, dto.getAppId())
-                    .ne(dto.getId() != null, BaseEntity::getId, dto.getId()).eq(SysOtherAppDO::getType, dto.getType())
-                    .exists();
-
-                if (exists) {
-                    ApiResultVO.errorMsg("操作失败：第三方 appId不能重复");
-                }
-
-                if (StrUtil.isNotBlank(dto.getOpenId())) {
-
-                    // 同一个类型下，第三方 openId，不能重复
-                    exists = lambdaQuery().eq(SysOtherAppDO::getOpenId, dto.getOpenId())
-                        .ne(dto.getId() != null, BaseEntity::getId, dto.getId())
-                        .eq(SysOtherAppDO::getType, dto.getType()).exists();
+                    // 同一个类型下，第三方 appId，不能重复
+                    boolean exists = lambdaQuery().eq(SysOtherAppDO::getAppId, dto.getAppId())
+                            .ne(dto.getId() != null, BaseEntity::getId, dto.getId()).eq(SysOtherAppDO::getType, dto.getType())
+                            .exists();
 
                     if (exists) {
-                        ApiResultVO.errorMsg("操作失败：第三方 openId不能重复");
+                        ApiResultVO.errorMsg("操作失败：第三方 appId不能重复");
                     }
 
-                }
+                    if (StrUtil.isNotBlank(dto.getOpenId())) {
 
-                SysOtherAppDO sysOtherAppDO = new SysOtherAppDO();
+                        // 同一个类型下，第三方 openId，不能重复
+                        exists = lambdaQuery().eq(SysOtherAppDO::getOpenId, dto.getOpenId())
+                                .ne(dto.getId() != null, BaseEntity::getId, dto.getId())
+                                .eq(SysOtherAppDO::getType, dto.getType()).exists();
 
-                sysOtherAppDO.setType(dto.getType());
-                sysOtherAppDO.setName(dto.getName());
-                sysOtherAppDO.setAppId(dto.getAppId());
-                sysOtherAppDO.setSecret(dto.getSecret());
+                        if (exists) {
+                            ApiResultVO.errorMsg("操作失败：第三方 openId不能重复");
+                        }
 
-                sysOtherAppDO.setSubscribeReplyContent(MyEntityUtil.getNotNullStr(dto.getSubscribeReplyContent()));
-                sysOtherAppDO.setTextReplyContent(MyEntityUtil.getNotNullStr(dto.getTextReplyContent()));
-                sysOtherAppDO.setImageReplyContent(MyEntityUtil.getNotNullStr(dto.getImageReplyContent()));
+                    }
 
-                sysOtherAppDO.setQrCode(MyEntityUtil.getNotNullStr(dto.getQrCode()));
-                sysOtherAppDO.setOpenId(MyEntityUtil.getNotNullStr(dto.getOpenId()));
+                    SysOtherAppDO sysOtherAppDO = new SysOtherAppDO();
 
-                sysOtherAppDO.setId(dto.getId());
-                sysOtherAppDO.setEnableFlag(BooleanUtil.isTrue(dto.getEnableFlag()));
-                sysOtherAppDO.setDelFlag(false);
-                sysOtherAppDO.setRemark(MyEntityUtil.getNotNullStr(dto.getRemark()));
+                    sysOtherAppDO.setType(dto.getType());
+                    sysOtherAppDO.setName(dto.getName());
+                    sysOtherAppDO.setAppId(dto.getAppId());
+                    sysOtherAppDO.setSecret(dto.getSecret());
 
-                saveOrUpdate(sysOtherAppDO);
+                    sysOtherAppDO.setSubscribeReplyContent(MyEntityUtil.getNotNullStr(dto.getSubscribeReplyContent()));
+                    sysOtherAppDO.setTextReplyContent(MyEntityUtil.getNotNullStr(dto.getTextReplyContent()));
+                    sysOtherAppDO.setImageReplyContent(MyEntityUtil.getNotNullStr(dto.getImageReplyContent()));
 
-                return BaseBizCodeEnum.OK;
+                    sysOtherAppDO.setQrCode(MyEntityUtil.getNotNullStr(dto.getQrCode()));
+                    sysOtherAppDO.setOpenId(MyEntityUtil.getNotNullStr(dto.getOpenId()));
 
-            });
+                    sysOtherAppDO.setId(dto.getId());
+                    sysOtherAppDO.setEnableFlag(BooleanUtil.isTrue(dto.getEnableFlag()));
+                    sysOtherAppDO.setDelFlag(false);
+                    sysOtherAppDO.setRemark(MyEntityUtil.getNotNullStr(dto.getRemark()));
+
+                    saveOrUpdate(sysOtherAppDO);
+
+                    return BaseBizCodeEnum.OK;
+
+                });
 
     }
 
@@ -104,24 +104,24 @@ public class SysOtherAppServiceImpl extends ServiceImpl<SysOtherAppMapper, SysOt
         SysTenantUtil.handleMyTenantPageDTO(dto, true);
 
         return lambdaQuery().like(StrUtil.isNotBlank(dto.getName()), SysOtherAppDO::getName, dto.getName())
-            .like(StrUtil.isNotBlank(dto.getAppId()), SysOtherAppDO::getAppId, dto.getAppId())
-            .like(StrUtil.isNotBlank(dto.getSubscribeReplyContent()), SysOtherAppDO::getSubscribeReplyContent,
-                dto.getSubscribeReplyContent()) //
-            .like(StrUtil.isNotBlank(dto.getTextReplyContent()), SysOtherAppDO::getTextReplyContent,
-                dto.getTextReplyContent()) //
-            .like(StrUtil.isNotBlank(dto.getImageReplyContent()), SysOtherAppDO::getImageReplyContent,
-                dto.getImageReplyContent()) //
-            .like(StrUtil.isNotBlank(dto.getQrCode()), SysOtherAppDO::getQrCode, dto.getQrCode())
-            .like(StrUtil.isNotBlank(dto.getOpenId()), SysOtherAppDO::getOpenId, dto.getOpenId())
-            .like(StrUtil.isNotBlank(dto.getRemark()), BaseEntity::getRemark, dto.getRemark())
-            .eq(dto.getType() != null, SysOtherAppDO::getType, dto.getType())
-            .eq(dto.getEnableFlag() != null, BaseEntity::getEnableFlag, dto.getEnableFlag())
-            .in(BaseEntityNoId::getTenantId, dto.getTenantIdSet()) //
-            .select(BaseEntity::getId, BaseEntityNoIdSuper::getTenantId, BaseEntityNoId::getEnableFlag,
-                BaseEntityNoId::getRemark, BaseEntityNoIdSuper::getCreateId, BaseEntityNoIdSuper::getCreateTime,
-                BaseEntityNoIdSuper::getUpdateId, BaseEntityNoIdSuper::getUpdateTime, SysOtherAppDO::getAppId,
-                SysOtherAppDO::getName, SysOtherAppDO::getType, SysOtherAppDO::getSubscribeReplyContent,
-                SysOtherAppDO::getQrCode).orderByDesc(BaseEntity::getUpdateTime).page(dto.page(true));
+                .like(StrUtil.isNotBlank(dto.getAppId()), SysOtherAppDO::getAppId, dto.getAppId())
+                .like(StrUtil.isNotBlank(dto.getSubscribeReplyContent()), SysOtherAppDO::getSubscribeReplyContent,
+                        dto.getSubscribeReplyContent()) //
+                .like(StrUtil.isNotBlank(dto.getTextReplyContent()), SysOtherAppDO::getTextReplyContent,
+                        dto.getTextReplyContent()) //
+                .like(StrUtil.isNotBlank(dto.getImageReplyContent()), SysOtherAppDO::getImageReplyContent,
+                        dto.getImageReplyContent()) //
+                .like(StrUtil.isNotBlank(dto.getQrCode()), SysOtherAppDO::getQrCode, dto.getQrCode())
+                .like(StrUtil.isNotBlank(dto.getOpenId()), SysOtherAppDO::getOpenId, dto.getOpenId())
+                .like(StrUtil.isNotBlank(dto.getRemark()), BaseEntity::getRemark, dto.getRemark())
+                .eq(dto.getType() != null, SysOtherAppDO::getType, dto.getType())
+                .eq(dto.getEnableFlag() != null, BaseEntity::getEnableFlag, dto.getEnableFlag())
+                .in(BaseEntityNoId::getTenantId, dto.getTenantIdSet()) //
+                .select(BaseEntity::getId, BaseEntityNoIdSuper::getTenantId, BaseEntityNoId::getEnableFlag,
+                        BaseEntityNoId::getRemark, BaseEntityNoIdSuper::getCreateId, BaseEntityNoIdSuper::getCreateTime,
+                        BaseEntityNoIdSuper::getUpdateId, BaseEntityNoIdSuper::getUpdateTime, SysOtherAppDO::getAppId,
+                        SysOtherAppDO::getName, SysOtherAppDO::getType, SysOtherAppDO::getSubscribeReplyContent,
+                        SysOtherAppDO::getQrCode).orderByDesc(BaseEntity::getUpdateTime).page(dto.page(true));
 
     }
 
@@ -135,7 +135,7 @@ public class SysOtherAppServiceImpl extends ServiceImpl<SysOtherAppMapper, SysOt
         Set<Long> queryTenantIdSet = SysTenantUtil.getUserRefTenantIdSet();
 
         return lambdaQuery().eq(BaseEntity::getId, notNullId.getId()).in(BaseEntityNoId::getTenantId, queryTenantIdSet)
-            .one();
+                .one();
 
     }
 
@@ -170,8 +170,8 @@ public class SysOtherAppServiceImpl extends ServiceImpl<SysOtherAppMapper, SysOt
         Set<Long> queryTenantIdSet = SysTenantUtil.getUserRefTenantIdSet();
 
         SysOtherAppDO sysOtherAppDO =
-            lambdaQuery().eq(BaseEntity::getId, notNullId.getId()).in(BaseEntityNoId::getTenantId, queryTenantIdSet)
-                .select(SysOtherAppDO::getName).one();
+                lambdaQuery().eq(BaseEntity::getId, notNullId.getId()).in(BaseEntityNoId::getTenantId, queryTenantIdSet)
+                        .select(SysOtherAppDO::getName).one();
 
         if (sysOtherAppDO == null) {
             return "";
@@ -188,7 +188,7 @@ public class SysOtherAppServiceImpl extends ServiceImpl<SysOtherAppMapper, SysOt
     private Func1<Set<Long>, Long> getCheckIllegalFunc1(Set<Long> idSet) {
 
         return tenantIdSet -> lambdaQuery().in(BaseEntity::getId, idSet).in(BaseEntityNoId::getTenantId, tenantIdSet)
-            .count();
+                .count();
 
     }
 

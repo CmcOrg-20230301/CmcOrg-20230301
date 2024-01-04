@@ -43,7 +43,7 @@ public class SysParamServiceImpl extends ServiceImpl<SysParamMapper, SysParamDO>
 
         // 处理：BaseTenantInsertOrUpdateDTO
         SysTenantUtil.handleBaseTenantInsertOrUpdateDTO(dto, getCheckIllegalFunc1(CollUtil.newHashSet(dto.getId())),
-            getTenantIdBaseEntityFunc1());
+                getTenantIdBaseEntityFunc1());
 
         // 检查：是否可以修改一些属性
         dto = checkUpdate(dto, dto.getId());
@@ -113,10 +113,10 @@ public class SysParamServiceImpl extends ServiceImpl<SysParamMapper, SysParamDO>
         SysTenantUtil.handleMyTenantPageDTO(dto, true);
 
         return lambdaQuery().like(StrUtil.isNotBlank(dto.getName()), SysParamDO::getName, dto.getName())
-            .like(StrUtil.isNotBlank(dto.getRemark()), BaseEntity::getRemark, dto.getRemark())
-            .eq(dto.getEnableFlag() != null, BaseEntity::getEnableFlag, dto.getEnableFlag())
-            .in(BaseEntityNoId::getTenantId, dto.getTenantIdSet()) //
-            .orderByDesc(BaseEntity::getUpdateTime).page(dto.page(true));
+                .like(StrUtil.isNotBlank(dto.getRemark()), BaseEntity::getRemark, dto.getRemark())
+                .eq(dto.getEnableFlag() != null, BaseEntity::getEnableFlag, dto.getEnableFlag())
+                .in(BaseEntityNoId::getTenantId, dto.getTenantIdSet()) //
+                .orderByDesc(BaseEntity::getUpdateTime).page(dto.page(true));
 
     }
 
@@ -130,7 +130,7 @@ public class SysParamServiceImpl extends ServiceImpl<SysParamMapper, SysParamDO>
         Set<Long> queryTenantIdSet = SysTenantUtil.getUserRefTenantIdSet();
 
         return lambdaQuery().eq(BaseEntity::getId, notNullId.getId()).in(BaseEntityNoId::getTenantId, queryTenantIdSet)
-            .one();
+                .one();
 
     }
 
@@ -179,7 +179,7 @@ public class SysParamServiceImpl extends ServiceImpl<SysParamMapper, SysParamDO>
     private Func1<Set<Long>, Long> getCheckIllegalFunc1(Set<Long> idSet) {
 
         return tenantIdSet -> lambdaQuery().in(BaseEntity::getId, idSet).in(BaseEntityNoId::getTenantId, tenantIdSet)
-            .count();
+                .count();
 
     }
 

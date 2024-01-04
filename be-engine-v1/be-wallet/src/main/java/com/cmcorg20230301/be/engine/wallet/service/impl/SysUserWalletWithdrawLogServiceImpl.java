@@ -45,8 +45,8 @@ import java.util.stream.Collectors;
 
 @Service
 public class SysUserWalletWithdrawLogServiceImpl
-    extends ServiceImpl<SysUserWalletWithdrawLogMapper, SysUserWalletWithdrawLogDO>
-    implements SysUserWalletWithdrawLogService {
+        extends ServiceImpl<SysUserWalletWithdrawLogMapper, SysUserWalletWithdrawLogDO>
+        implements SysUserWalletWithdrawLogService {
 
     @Resource
     SysUserWalletService sysUserWalletService;
@@ -88,8 +88,8 @@ public class SysUserWalletWithdrawLogServiceImpl
 
         // 检查：是否非法操作
         SysTenantUtil.checkIllegal(userIdSet,
-            tenantIdSet -> ChainWrappers.lambdaQueryChain(sysUserMapper).eq(BaseEntity::getId, userId)
-                .in(BaseEntityNoId::getTenantId, tenantIdSet).count());
+                tenantIdSet -> ChainWrappers.lambdaQueryChain(sysUserMapper).eq(BaseEntity::getId, userId)
+                        .in(BaseEntityNoId::getTenantId, tenantIdSet).count());
 
         // 执行
         return doInsertOrUpdate(dto, userId, false, null);
@@ -123,46 +123,46 @@ public class SysUserWalletWithdrawLogServiceImpl
         SysTenantUtil.handleMyTenantPageDTO(dto, true);
 
         Page<SysUserWalletWithdrawLogDO> page =
-            lambdaQuery().eq(dto.getUserId() != null, SysUserWalletWithdrawLogDO::getUserId, dto.getUserId())
+                lambdaQuery().eq(dto.getUserId() != null, SysUserWalletWithdrawLogDO::getUserId, dto.getUserId())
 
-                .eq(dto.getId() != null, SysUserWalletWithdrawLogDO::getId, dto.getId())
+                        .eq(dto.getId() != null, SysUserWalletWithdrawLogDO::getId, dto.getId())
 
-                .like(StrUtil.isNotBlank(dto.getBankCardNo()), SysUserWalletWithdrawLogDO::getBankCardNo,
-                    dto.getBankCardNo()) //
+                        .like(StrUtil.isNotBlank(dto.getBankCardNo()), SysUserWalletWithdrawLogDO::getBankCardNo,
+                                dto.getBankCardNo()) //
 
-                .like(StrUtil.isNotBlank(dto.getOpenBankName()), SysUserWalletWithdrawLogDO::getOpenBankName,
-                    dto.getOpenBankName()) //
+                        .like(StrUtil.isNotBlank(dto.getOpenBankName()), SysUserWalletWithdrawLogDO::getOpenBankName,
+                                dto.getOpenBankName()) //
 
-                .like(StrUtil.isNotBlank(dto.getBranchBankName()), SysUserWalletWithdrawLogDO::getOpenBankName,
-                    dto.getBranchBankName()) //
+                        .like(StrUtil.isNotBlank(dto.getBranchBankName()), SysUserWalletWithdrawLogDO::getOpenBankName,
+                                dto.getBranchBankName()) //
 
-                .like(StrUtil.isNotBlank(dto.getPayeeName()), SysUserWalletWithdrawLogDO::getPayeeName,
-                    dto.getPayeeName()) //
+                        .like(StrUtil.isNotBlank(dto.getPayeeName()), SysUserWalletWithdrawLogDO::getPayeeName,
+                                dto.getPayeeName()) //
 
-                .like(StrUtil.isNotBlank(dto.getRejectReason()), SysUserWalletWithdrawLogDO::getRejectReason,
-                    dto.getRejectReason()) //
+                        .like(StrUtil.isNotBlank(dto.getRejectReason()), SysUserWalletWithdrawLogDO::getRejectReason,
+                                dto.getRejectReason()) //
 
-                .eq(dto.getWithdrawStatus() != null, SysUserWalletWithdrawLogDO::getWithdrawStatus,
-                    dto.getWithdrawStatus()) //
+                        .eq(dto.getWithdrawStatus() != null, SysUserWalletWithdrawLogDO::getWithdrawStatus,
+                                dto.getWithdrawStatus()) //
 
-                .ne(SysUserTenantEnum.USER.equals(dto.getSysUserTenantEnum()), SysUserWalletWithdrawLogDO::getUserId,
-                    BaseConstant.TENANT_USER_ID) //
+                        .ne(SysUserTenantEnum.USER.equals(dto.getSysUserTenantEnum()), SysUserWalletWithdrawLogDO::getUserId,
+                                BaseConstant.TENANT_USER_ID) //
 
-                .eq(SysUserTenantEnum.TENANT.equals(dto.getSysUserTenantEnum()), SysUserWalletWithdrawLogDO::getUserId,
-                    BaseConstant.TENANT_USER_ID) //
+                        .eq(SysUserTenantEnum.TENANT.equals(dto.getSysUserTenantEnum()), SysUserWalletWithdrawLogDO::getUserId,
+                                BaseConstant.TENANT_USER_ID) //
 
-                .le(dto.getCtEndTime() != null, SysUserWalletWithdrawLogDO::getCreateTime, dto.getCtEndTime())
-                .ge(dto.getCtBeginTime() != null, SysUserWalletWithdrawLogDO::getCreateTime, dto.getCtBeginTime())
+                        .le(dto.getCtEndTime() != null, SysUserWalletWithdrawLogDO::getCreateTime, dto.getCtEndTime())
+                        .ge(dto.getCtBeginTime() != null, SysUserWalletWithdrawLogDO::getCreateTime, dto.getCtBeginTime())
 
-                .le(dto.getEndWithdrawMoney() != null, SysUserWalletWithdrawLogDO::getWithdrawMoney,
-                    dto.getEndWithdrawMoney()) //
+                        .le(dto.getEndWithdrawMoney() != null, SysUserWalletWithdrawLogDO::getWithdrawMoney,
+                                dto.getEndWithdrawMoney()) //
 
-                .ge(dto.getBeginWithdrawMoney() != null, SysUserWalletWithdrawLogDO::getWithdrawMoney,
-                    dto.getBeginWithdrawMoney()) //
+                        .ge(dto.getBeginWithdrawMoney() != null, SysUserWalletWithdrawLogDO::getWithdrawMoney,
+                                dto.getBeginWithdrawMoney()) //
 
-                .in(BaseEntityNoId::getTenantId, dto.getTenantIdSet()) //
+                        .in(BaseEntityNoId::getTenantId, dto.getTenantIdSet()) //
 
-                .orderByDesc(SysUserWalletWithdrawLogDO::getUpdateTime).page(dto.page(true));
+                        .orderByDesc(SysUserWalletWithdrawLogDO::getUpdateTime).page(dto.page(true));
 
         for (SysUserWalletWithdrawLogDO item : page.getRecords()) {
 
@@ -186,10 +186,10 @@ public class SysUserWalletWithdrawLogServiceImpl
 
         // 备注：需要和：银行卡的脱敏一致
         sysUserWalletWithdrawLogDO.setBankCardNo(
-            StrUtil.cleanBlank(DesensitizedUtil.bankCard(sysUserWalletWithdrawLogDO.getBankCardNo()))); // 脱敏
+                StrUtil.cleanBlank(DesensitizedUtil.bankCard(sysUserWalletWithdrawLogDO.getBankCardNo()))); // 脱敏
 
         sysUserWalletWithdrawLogDO
-            .setPayeeName(DesensitizedUtil.chineseName(sysUserWalletWithdrawLogDO.getPayeeName())); // 脱敏
+                .setPayeeName(DesensitizedUtil.chineseName(sysUserWalletWithdrawLogDO.getPayeeName())); // 脱敏
 
     }
 
@@ -203,7 +203,7 @@ public class SysUserWalletWithdrawLogServiceImpl
         Set<Long> queryTenantIdSet = SysTenantUtil.getUserRefTenantIdSet();
 
         return lambdaQuery().eq(SysUserWalletWithdrawLogDO::getId, notNullId.getId())
-            .in(BaseEntityNoId::getTenantId, queryTenantIdSet).one();
+                .in(BaseEntityNoId::getTenantId, queryTenantIdSet).one();
 
     }
 
@@ -214,7 +214,7 @@ public class SysUserWalletWithdrawLogServiceImpl
     public Page<SysUserWalletWithdrawLogDO> myPageTenant(SysUserWalletWithdrawLogPageUserSelfDTO dto) {
 
         SysUserWalletWithdrawLogPageDTO sysUserWalletWithdrawLogPageDTO =
-            BeanUtil.copyProperties(dto, SysUserWalletWithdrawLogPageDTO.class);
+                BeanUtil.copyProperties(dto, SysUserWalletWithdrawLogPageDTO.class);
 
         sysUserWalletWithdrawLogPageDTO.setUserId(BaseConstant.TENANT_USER_ID);
 
@@ -263,7 +263,7 @@ public class SysUserWalletWithdrawLogServiceImpl
         Long currentUserId = UserUtil.getCurrentUserId();
 
         SysUserWalletWithdrawLogPageDTO sysUserWalletWithdrawLogPageDTO =
-            BeanUtil.copyProperties(dto, SysUserWalletWithdrawLogPageDTO.class);
+                BeanUtil.copyProperties(dto, SysUserWalletWithdrawLogPageDTO.class);
 
         sysUserWalletWithdrawLogPageDTO.setUserId(currentUserId);
 
@@ -295,7 +295,7 @@ public class SysUserWalletWithdrawLogServiceImpl
      */
     @NotNull
     private String doInsertOrUpdate(SysUserWalletWithdrawLogInsertOrUpdateUserSelfDTO dto, Long id, boolean tenantFlag,
-        @Nullable Long tenantId) {
+                                    @Nullable Long tenantId) {
 
         Long currentUserId = UserUtil.getCurrentUserId();
 
@@ -315,10 +315,10 @@ public class SysUserWalletWithdrawLogServiceImpl
 
         // 查询：用户银行卡信息
         SysUserBankCardDO sysUserBankCardDO =
-            ChainWrappers.lambdaQueryChain(sysUserBankCardMapper).eq(!tenantFlag, SysUserBankCardDO::getId, id)
-                .eq(!tenantFlag && tenantId != null, SysUserBankCardDO::getTenantId, tenantId)
-                .eq(tenantFlag, SysUserBankCardDO::getId, BaseConstant.TENANT_USER_ID)
-                .eq(tenantFlag, BaseEntityNoIdSuper::getTenantId, id).one();
+                ChainWrappers.lambdaQueryChain(sysUserBankCardMapper).eq(!tenantFlag, SysUserBankCardDO::getId, id)
+                        .eq(!tenantFlag && tenantId != null, SysUserBankCardDO::getTenantId, tenantId)
+                        .eq(tenantFlag, SysUserBankCardDO::getId, BaseConstant.TENANT_USER_ID)
+                        .eq(tenantFlag, BaseEntityNoIdSuper::getTenantId, id).one();
 
         if (sysUserBankCardDO == null) {
             ApiResultVO.errorMsg("操作失败：请先绑定银行卡");
@@ -344,8 +344,8 @@ public class SysUserWalletWithdrawLogServiceImpl
 
         // 检查和增加：用户钱包的可提现余额
         sysUserWalletService.doAddWithdrawableMoney(currentUserId, new Date(), CollUtil.newHashSet(id),
-            sysUserWalletWithdrawLogDO.getWithdrawMoney().negate(), SysUserWalletLogTypeEnum.REDUCE_WITHDRAW, true,
-            true, tenantFlag, null, null, true, null, null);
+                sysUserWalletWithdrawLogDO.getWithdrawMoney().negate(), SysUserWalletLogTypeEnum.REDUCE_WITHDRAW, true,
+                true, tenantFlag, null, null, true, null, null);
 
         return BaseBizCodeEnum.OK;
 
@@ -373,12 +373,12 @@ public class SysUserWalletWithdrawLogServiceImpl
         return RedissonUtil.doLock(BaseRedisKeyEnum.PRE_USER_WALLET_WITHDRAW_LOG.name() + notNullId.getId(), () -> {
 
             SysUserWalletWithdrawLogDO sysUserWalletWithdrawLogDO =
-                lambdaQuery().eq(BaseEntity::getId, notNullId.getId())
-                    .eq(!tenantFlag && userSelfFlag, SysUserWalletWithdrawLogDO::getUserId, currentUserId)
-                    .eq(tenantFlag && !userSelfFlag, SysUserWalletWithdrawLogDO::getUserId, BaseConstant.TENANT_USER_ID)
-                    .select(BaseEntity::getId, SysUserWalletWithdrawLogDO::getWithdrawMoney,
-                        SysUserWalletWithdrawLogDO::getWithdrawStatus, BaseEntityNoIdSuper::getTenantId,
-                        SysUserWalletWithdrawLogDO::getUserId).one();
+                    lambdaQuery().eq(BaseEntity::getId, notNullId.getId())
+                            .eq(!tenantFlag && userSelfFlag, SysUserWalletWithdrawLogDO::getUserId, currentUserId)
+                            .eq(tenantFlag && !userSelfFlag, SysUserWalletWithdrawLogDO::getUserId, BaseConstant.TENANT_USER_ID)
+                            .select(BaseEntity::getId, SysUserWalletWithdrawLogDO::getWithdrawMoney,
+                                    SysUserWalletWithdrawLogDO::getWithdrawStatus, BaseEntityNoIdSuper::getTenantId,
+                                    SysUserWalletWithdrawLogDO::getUserId).one();
 
             if (sysUserWalletWithdrawLogDO == null) {
                 ApiResultVO.error(BaseBizCodeEnum.ILLEGAL_REQUEST, notNullId.getId());
@@ -397,17 +397,17 @@ public class SysUserWalletWithdrawLogServiceImpl
 
                 // 检查和增加：用户钱包的可提现余额
                 sysUserWalletService.doAddWithdrawableMoney(currentUserId, new Date(),
-                    CollUtil.newHashSet(sysUserWalletWithdrawLogDO.getTenantId()),
-                    sysUserWalletWithdrawLogDO.getWithdrawMoney(), SysUserWalletLogTypeEnum.REDUCE_WITHDRAW, true, true,
-                    true, null, null, true, null, null);
+                        CollUtil.newHashSet(sysUserWalletWithdrawLogDO.getTenantId()),
+                        sysUserWalletWithdrawLogDO.getWithdrawMoney(), SysUserWalletLogTypeEnum.REDUCE_WITHDRAW, true, true,
+                        true, null, null, true, null, null);
 
             } else {
 
                 // 检查和增加：用户钱包的可提现余额
                 sysUserWalletService.doAddWithdrawableMoney(currentUserId, new Date(),
-                    CollUtil.newHashSet(sysUserWalletWithdrawLogDO.getUserId()),
-                    sysUserWalletWithdrawLogDO.getWithdrawMoney(), SysUserWalletLogTypeEnum.REDUCE_WITHDRAW, true, true,
-                    false, null, null, true, null, null);
+                        CollUtil.newHashSet(sysUserWalletWithdrawLogDO.getUserId()),
+                        sysUserWalletWithdrawLogDO.getWithdrawMoney(), SysUserWalletLogTypeEnum.REDUCE_WITHDRAW, true, true,
+                        false, null, null, true, null, null);
 
             }
 
@@ -427,41 +427,41 @@ public class SysUserWalletWithdrawLogServiceImpl
         SysTenantUtil.checkIllegal(notEmptyIdSet.getIdSet(), getCheckIllegalFunc1(notEmptyIdSet.getIdSet()));
 
         return RedissonUtil
-            .doMultiLock(BaseRedisKeyEnum.PRE_USER_WALLET_WITHDRAW_LOG.name(), notEmptyIdSet.getIdSet(), () -> {
+                .doMultiLock(BaseRedisKeyEnum.PRE_USER_WALLET_WITHDRAW_LOG.name(), notEmptyIdSet.getIdSet(), () -> {
 
-                List<SysUserWalletWithdrawLogDO> sysUserWalletWithdrawLogDOList =
-                    lambdaQuery().in(BaseEntity::getId, notEmptyIdSet.getIdSet())
-                        .eq(SysUserWalletWithdrawLogDO::getWithdrawStatus, SysUserWalletWithdrawStatusEnum.COMMIT)
-                        .list();
+                    List<SysUserWalletWithdrawLogDO> sysUserWalletWithdrawLogDOList =
+                            lambdaQuery().in(BaseEntity::getId, notEmptyIdSet.getIdSet())
+                                    .eq(SysUserWalletWithdrawLogDO::getWithdrawStatus, SysUserWalletWithdrawStatusEnum.COMMIT)
+                                    .list();
 
-                if (CollUtil.isEmpty(sysUserWalletWithdrawLogDOList)) {
+                    if (CollUtil.isEmpty(sysUserWalletWithdrawLogDOList)) {
+                        return BaseBizCodeEnum.OK;
+                    }
+
+                    Map<Long, List<SysUserWalletWithdrawLogDO>> groupMap = sysUserWalletWithdrawLogDOList.stream()
+                            .collect(Collectors.groupingBy(SysUserWalletWithdrawLogDO::getUserId));
+
+                    // 检查：用户钱包是否被冻结
+                    String resStr =
+                            checkUserWallet(sysUserWalletWithdrawLogDOList, groupMap, notEmptyIdSet.getIdSet().size() == 1);
+
+                    if (StrUtil.isNotBlank(resStr)) {
+                        return resStr;
+                    }
+
+                    if (CollUtil.isEmpty(sysUserWalletWithdrawLogDOList)) {
+                        return BaseBizCodeEnum.OK;
+                    }
+
+                    for (SysUserWalletWithdrawLogDO item : sysUserWalletWithdrawLogDOList) {
+                        item.setWithdrawStatus(SysUserWalletWithdrawStatusEnum.ACCEPT);
+                    }
+
+                    updateBatchById(sysUserWalletWithdrawLogDOList);
+
                     return BaseBizCodeEnum.OK;
-                }
 
-                Map<Long, List<SysUserWalletWithdrawLogDO>> groupMap = sysUserWalletWithdrawLogDOList.stream()
-                    .collect(Collectors.groupingBy(SysUserWalletWithdrawLogDO::getUserId));
-
-                // 检查：用户钱包是否被冻结
-                String resStr =
-                    checkUserWallet(sysUserWalletWithdrawLogDOList, groupMap, notEmptyIdSet.getIdSet().size() == 1);
-
-                if (StrUtil.isNotBlank(resStr)) {
-                    return resStr;
-                }
-
-                if (CollUtil.isEmpty(sysUserWalletWithdrawLogDOList)) {
-                    return BaseBizCodeEnum.OK;
-                }
-
-                for (SysUserWalletWithdrawLogDO item : sysUserWalletWithdrawLogDOList) {
-                    item.setWithdrawStatus(SysUserWalletWithdrawStatusEnum.ACCEPT);
-                }
-
-                updateBatchById(sysUserWalletWithdrawLogDOList);
-
-                return BaseBizCodeEnum.OK;
-
-            });
+                });
 
     }
 
@@ -470,14 +470,14 @@ public class SysUserWalletWithdrawLogServiceImpl
      */
     @Nullable
     private String checkUserWallet(List<SysUserWalletWithdrawLogDO> sysUserWalletWithdrawLogDOList,
-        Map<Long, List<SysUserWalletWithdrawLogDO>> groupMap, boolean errorFlag) {
+                                   Map<Long, List<SysUserWalletWithdrawLogDO>> groupMap, boolean errorFlag) {
 
         return RedissonUtil.doMultiLock(BaseRedisKeyEnum.PRE_USER_WALLET.name(), groupMap.keySet(), () -> {
 
             // 只要：没有被冻结的钱包
             List<SysUserWalletDO> sysUserWalletDOList =
-                sysUserWalletService.lambdaQuery().in(SysUserWalletDO::getId, groupMap.keySet())
-                    .eq(BaseEntityNoId::getEnableFlag, true).select(SysUserWalletDO::getId).list();
+                    sysUserWalletService.lambdaQuery().in(SysUserWalletDO::getId, groupMap.keySet())
+                            .eq(BaseEntityNoId::getEnableFlag, true).select(SysUserWalletDO::getId).list();
 
             if (CollUtil.isEmpty(sysUserWalletDOList)) {
 
@@ -518,9 +518,9 @@ public class SysUserWalletWithdrawLogServiceImpl
         return RedissonUtil.doLock(BaseRedisKeyEnum.PRE_USER_WALLET_WITHDRAW_LOG.name() + notNullId.getId(), () -> {
 
             SysUserWalletWithdrawLogDO sysUserWalletWithdrawLogDO =
-                lambdaQuery().eq(BaseEntity::getId, notNullId.getId())
-                    .eq(SysUserWalletWithdrawLogDO::getWithdrawStatus, SysUserWalletWithdrawStatusEnum.ACCEPT)
-                    .select(BaseEntity::getId, SysUserWalletWithdrawLogDO::getUserId).one();
+                    lambdaQuery().eq(BaseEntity::getId, notNullId.getId())
+                            .eq(SysUserWalletWithdrawLogDO::getWithdrawStatus, SysUserWalletWithdrawStatusEnum.ACCEPT)
+                            .select(BaseEntity::getId, SysUserWalletWithdrawLogDO::getUserId).one();
 
             if (sysUserWalletWithdrawLogDO == null) {
                 ApiResultVO.error("操作失败：只能成功受理中状态的提现记录", notNullId.getId());
@@ -528,8 +528,8 @@ public class SysUserWalletWithdrawLogServiceImpl
 
             // 只要：没有被冻结的钱包
             boolean userWalletEnableFlag =
-                sysUserWalletService.lambdaQuery().eq(SysUserWalletDO::getId, sysUserWalletWithdrawLogDO.getUserId())
-                    .eq(BaseEntityNoId::getEnableFlag, true).exists();
+                    sysUserWalletService.lambdaQuery().eq(SysUserWalletDO::getId, sysUserWalletWithdrawLogDO.getUserId())
+                            .eq(BaseEntityNoId::getEnableFlag, true).exists();
 
             if (!userWalletEnableFlag) {
                 ApiResultVO.error("操作失败：钱包已被冻结，请联系管理员", sysUserWalletWithdrawLogDO.getUserId());
@@ -560,32 +560,32 @@ public class SysUserWalletWithdrawLogServiceImpl
         SysTenantUtil.checkIllegal(idSet, getCheckIllegalFunc1(idSet));
 
         return RedissonUtil
-            .doLock(BaseRedisKeyEnum.PRE_USER_WALLET_WITHDRAW_LOG.name() + notNullIdAndStringValue.getId(), () -> {
+                .doLock(BaseRedisKeyEnum.PRE_USER_WALLET_WITHDRAW_LOG.name() + notNullIdAndStringValue.getId(), () -> {
 
-                SysUserWalletWithdrawLogDO sysUserWalletWithdrawLogDO =
-                    lambdaQuery().eq(BaseEntity::getId, notNullIdAndStringValue.getId())
-                        .eq(SysUserWalletWithdrawLogDO::getWithdrawStatus, SysUserWalletWithdrawStatusEnum.ACCEPT)
-                        .select(BaseEntity::getId, SysUserWalletWithdrawLogDO::getWithdrawMoney,
-                            SysUserWalletWithdrawLogDO::getUserId).one();
+                    SysUserWalletWithdrawLogDO sysUserWalletWithdrawLogDO =
+                            lambdaQuery().eq(BaseEntity::getId, notNullIdAndStringValue.getId())
+                                    .eq(SysUserWalletWithdrawLogDO::getWithdrawStatus, SysUserWalletWithdrawStatusEnum.ACCEPT)
+                                    .select(BaseEntity::getId, SysUserWalletWithdrawLogDO::getWithdrawMoney,
+                                            SysUserWalletWithdrawLogDO::getUserId).one();
 
-                if (sysUserWalletWithdrawLogDO == null) {
-                    ApiResultVO.error("操作失败：只能拒绝受理中状态的提现记录", notNullIdAndStringValue.getId());
-                }
+                    if (sysUserWalletWithdrawLogDO == null) {
+                        ApiResultVO.error("操作失败：只能拒绝受理中状态的提现记录", notNullIdAndStringValue.getId());
+                    }
 
-                sysUserWalletWithdrawLogDO.setWithdrawStatus(SysUserWalletWithdrawStatusEnum.REJECT);
-                sysUserWalletWithdrawLogDO.setRejectReason(notNullIdAndStringValue.getValue());
+                    sysUserWalletWithdrawLogDO.setWithdrawStatus(SysUserWalletWithdrawStatusEnum.REJECT);
+                    sysUserWalletWithdrawLogDO.setRejectReason(notNullIdAndStringValue.getValue());
 
-                updateById(sysUserWalletWithdrawLogDO); // 先更新提现记录状态，原因：如果后面报错了，则会回滚该更新
+                    updateById(sysUserWalletWithdrawLogDO); // 先更新提现记录状态，原因：如果后面报错了，则会回滚该更新
 
-                // 检查和增加：用户钱包的可提现余额
-                sysUserWalletService.doAddWithdrawableMoney(currentUserId, new Date(),
-                    CollUtil.newHashSet(sysUserWalletWithdrawLogDO.getUserId()),
-                    sysUserWalletWithdrawLogDO.getWithdrawMoney(), SysUserWalletLogTypeEnum.REDUCE_WITHDRAW, true, true,
-                    false, null, null, true, null, null);
+                    // 检查和增加：用户钱包的可提现余额
+                    sysUserWalletService.doAddWithdrawableMoney(currentUserId, new Date(),
+                            CollUtil.newHashSet(sysUserWalletWithdrawLogDO.getUserId()),
+                            sysUserWalletWithdrawLogDO.getWithdrawMoney(), SysUserWalletLogTypeEnum.REDUCE_WITHDRAW, true, true,
+                            false, null, null, true, null, null);
 
-                return BaseBizCodeEnum.OK;
+                    return BaseBizCodeEnum.OK;
 
-            });
+                });
 
     }
 
@@ -596,7 +596,7 @@ public class SysUserWalletWithdrawLogServiceImpl
     private Func1<Set<Long>, Long> getCheckIllegalFunc1(Set<Long> idSet) {
 
         return tenantIdSet -> lambdaQuery().in(SysUserWalletWithdrawLogDO::getId, idSet)
-            .in(BaseEntityNoId::getTenantId, tenantIdSet).count();
+                .in(BaseEntityNoId::getTenantId, tenantIdSet).count();
 
     }
 

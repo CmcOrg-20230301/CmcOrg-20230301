@@ -57,8 +57,8 @@ public class WxUtil {
         }
 
         SysOtherAppDO sysOtherAppDO = sysOtherAppService.lambdaQuery().eq(BaseEntityNoIdSuper::getTenantId, tenantId)
-            .eq(SysOtherAppDO::getAppId, appId).eq(BaseEntityNoId::getEnableFlag, true).select(SysOtherAppDO::getSecret)
-            .one();
+                .eq(SysOtherAppDO::getAppId, appId).eq(BaseEntityNoId::getEnableFlag, true).select(SysOtherAppDO::getSecret)
+                .one();
 
         String errorMessageStr = "miniProgramOpenId";
 
@@ -67,8 +67,8 @@ public class WxUtil {
         }
 
         String jsonStr = HttpUtil.get(
-            "https://api.weixin.qq.com/sns/jscode2session?appid=" + appId + "&secret=" + sysOtherAppDO.getSecret()
-                + "&js_code=" + code + "&grant_type=authorization_code");
+                "https://api.weixin.qq.com/sns/jscode2session?appid=" + appId + "&secret=" + sysOtherAppDO.getSecret()
+                        + "&js_code=" + code + "&grant_type=authorization_code");
 
         WxOpenIdVO wxOpenIdVO = JSONUtil.toBean(jsonStr, WxOpenIdVO.class);
 
@@ -83,15 +83,15 @@ public class WxUtil {
      */
     @NotNull
     public static WxPhoneByCodeVO.WxPhoneInfoVO getWxMiniProgramPhoneInfoVoByCode(@Nullable Long tenantId, String code,
-        String appId) {
+                                                                                  String appId) {
 
         if (tenantId == null) {
             tenantId = BaseConstant.TOP_TENANT_ID;
         }
 
         SysOtherAppDO sysOtherAppDO = sysOtherAppService.lambdaQuery().eq(BaseEntityNoIdSuper::getTenantId, tenantId)
-            .eq(SysOtherAppDO::getAppId, appId).eq(BaseEntityNoId::getEnableFlag, true).select(SysOtherAppDO::getSecret)
-            .one();
+                .eq(SysOtherAppDO::getAppId, appId).eq(BaseEntityNoId::getEnableFlag, true).select(SysOtherAppDO::getSecret)
+                .one();
 
         String errorMessageStr = "用户手机号";
 
@@ -105,8 +105,8 @@ public class WxUtil {
         JSONObject formJson = JSONUtil.createObj().set("code", code);
 
         String postStr = HttpUtil
-            .post("https://api.weixin.qq.com/wxa/business/getuserphonenumber?access_token=" + accessToken,
-                formJson.toString());
+                .post("https://api.weixin.qq.com/wxa/business/getuserphonenumber?access_token=" + accessToken,
+                        formJson.toString());
 
         WxPhoneByCodeVO wxPhoneByCodeVO = JSONUtil.toBean(postStr, WxPhoneByCodeVO.class);
 
@@ -127,8 +127,8 @@ public class WxUtil {
         }
 
         SysOtherAppDO sysOtherAppDO = sysOtherAppService.lambdaQuery().eq(BaseEntityNoIdSuper::getTenantId, tenantId)
-            .eq(SysOtherAppDO::getAppId, appId).eq(BaseEntityNoId::getEnableFlag, true).select(SysOtherAppDO::getSecret)
-            .one();
+                .eq(SysOtherAppDO::getAppId, appId).eq(BaseEntityNoId::getEnableFlag, true).select(SysOtherAppDO::getSecret)
+                .one();
 
         String errorMessageStr = "browserOpenId";
 
@@ -137,8 +137,8 @@ public class WxUtil {
         }
 
         String jsonStr = HttpUtil.get(
-            "https://api.weixin.qq.com/sns/oauth2/access_token?appid=" + appId + "&secret=" + sysOtherAppDO.getSecret()
-                + "&code=" + code + "&grant_type=authorization_code");
+                "https://api.weixin.qq.com/sns/oauth2/access_token?appid=" + appId + "&secret=" + sysOtherAppDO.getSecret()
+                        + "&code=" + code + "&grant_type=authorization_code");
 
         WxOpenIdVO wxOpenIdVO = JSONUtil.toBean(jsonStr, WxOpenIdVO.class);
 
@@ -153,7 +153,7 @@ public class WxUtil {
      */
     @NotNull
     public static WxUserInfoVO getWxUserInfoByBrowserAccessToken(String accessToken, String openId, Long tenantId,
-        String appId) {
+                                                                 String appId) {
 
         return getWxUserInfoByBrowserAccessToken(accessToken, openId, "zh_CN", tenantId, appId);
 
@@ -166,11 +166,11 @@ public class WxUtil {
      */
     @NotNull
     public static WxUserInfoVO getWxUserInfoByBrowserAccessToken(String accessToken, String openId, String lang,
-        Long tenantId, String appId) {
+                                                                 Long tenantId, String appId) {
 
         String jsonStr = HttpUtil.get(
-            "https://api.weixin.qq.com/sns/userinfo?access_token=" + accessToken + "&openid=" + openId + "&lang="
-                + lang);
+                "https://api.weixin.qq.com/sns/userinfo?access_token=" + accessToken + "&openid=" + openId + "&lang="
+                        + lang);
 
         WxUserInfoVO wxUserInfoVO = JSONUtil.toBean(jsonStr, WxUserInfoVO.class);
 
@@ -199,8 +199,8 @@ public class WxUtil {
         }
 
         SysOtherAppDO sysOtherAppDO = sysOtherAppService.lambdaQuery().eq(BaseEntityNoIdSuper::getTenantId, tenantId)
-            .eq(SysOtherAppDO::getAppId, appId).eq(BaseEntityNoId::getEnableFlag, true).select(SysOtherAppDO::getSecret)
-            .one();
+                .eq(SysOtherAppDO::getAppId, appId).eq(BaseEntityNoId::getEnableFlag, true).select(SysOtherAppDO::getSecret)
+                .one();
 
         String errorMessageStr = "accessToken";
 
@@ -209,8 +209,8 @@ public class WxUtil {
         }
 
         String jsonStr = HttpUtil.get(
-            "https://api.weixin.qq.com/cgi-bin/token?appid=" + appId + "&secret=" + sysOtherAppDO.getSecret()
-                + "&grant_type=client_credential");
+                "https://api.weixin.qq.com/cgi-bin/token?appid=" + appId + "&secret=" + sysOtherAppDO.getSecret()
+                        + "&grant_type=client_credential");
 
         WxAccessTokenVO wxAccessTokenVO = JSONUtil.toBean(jsonStr, WxAccessTokenVO.class);
 
@@ -218,8 +218,8 @@ public class WxUtil {
         checkWxVO(wxAccessTokenVO, errorMessageStr, tenantId, appId);
 
         CacheRedisKafkaLocalUtil
-            .put(BaseRedisKeyEnum.WX_ACCESS_TOKEN_CACHE, sufKey, null, wxAccessTokenVO.getExpiresIn() * 1000,
-                wxAccessTokenVO::getAccessToken);
+                .put(BaseRedisKeyEnum.WX_ACCESS_TOKEN_CACHE, sufKey, null, wxAccessTokenVO.getExpiresIn() * 1000,
+                        wxAccessTokenVO::getAccessToken);
 
         return wxAccessTokenVO.getAccessToken();
 
@@ -240,7 +240,7 @@ public class WxUtil {
     public static String getMsgmenucontentA(String pre, String sendValue, String showValue, int index) {
 
         return pre + "<a href=\"weixin://bizmsgmenu?msgmenucontent=" + sendValue + "&msgmenuid=" + index + "\">"
-            + showValue + "</a>";
+                + showValue + "</a>";
 
     }
 
@@ -253,19 +253,19 @@ public class WxUtil {
     public static InputStream qrcodeCreate(String accessToken, String sceneStr) {
 
         String bodyJsonStr = JSONUtil.createObj().set("action_name", "QR_LIMIT_STR_SCENE")
-            .set("action_info", JSONUtil.createObj().set("scene", JSONUtil.createObj().set("scene_str", sceneStr)))
-            .toString();
+                .set("action_info", JSONUtil.createObj().set("scene", JSONUtil.createObj().set("scene_str", sceneStr)))
+                .toString();
 
         String result =
-            HttpUtil.post("https://api.weixin.qq.com/cgi-bin/qrcode/create?access_token=" + accessToken, bodyJsonStr);
+                HttpUtil.post("https://api.weixin.qq.com/cgi-bin/qrcode/create?access_token=" + accessToken, bodyJsonStr);
 
         log.info("wx-qrcodeCreate-result：{}", result);
 
         String ticket = JSONUtil.parseObj(result).getStr("ticket");
 
         return HttpRequest
-            .get("https://mp.weixin.qq.com/cgi-bin/showqrcode?ticket=" + URLEncoder.encode(ticket, "UTF-8")).execute()
-            .bodyStream();
+                .get("https://mp.weixin.qq.com/cgi-bin/showqrcode?ticket=" + URLEncoder.encode(ticket, "UTF-8")).execute()
+                .bodyStream();
 
     }
 
@@ -295,10 +295,10 @@ public class WxUtil {
         }
 
         String bodyJsonStr = JSONUtil.createObj().set("touser", wxOpenId).set("msgtype", "text")
-            .set("text", JSONUtil.createObj().set("content", content)).toString();
+                .set("text", JSONUtil.createObj().set("content", content)).toString();
 
         String sendResultStr = HttpUtil
-            .post("https://api.weixin.qq.com/cgi-bin/message/custom/send?access_token=" + accessToken, bodyJsonStr);
+                .post("https://api.weixin.qq.com/cgi-bin/message/custom/send?access_token=" + accessToken, bodyJsonStr);
 
         log.info("wx-sendResult-text：{}，touser：{}，content：{}", sendResultStr, wxOpenId, content);
 
@@ -340,8 +340,8 @@ public class WxUtil {
     public static JSONObject upload(String accessToken, File file, WxMediaUploadTypeEnum wxMediaUploadTypeEnum) {
 
         String resultStr = HttpRequest.post(
-            "https://api.weixin.qq.com/cgi-bin/media/upload?access_token=" + accessToken + "&type="
-                + wxMediaUploadTypeEnum.getName()).form("media", file).execute().body();
+                "https://api.weixin.qq.com/cgi-bin/media/upload?access_token=" + accessToken + "&type="
+                        + wxMediaUploadTypeEnum.getName()).form("media", file).execute().body();
 
         log.info("WxMediaUpload，result：{}", resultStr);
 
@@ -359,10 +359,10 @@ public class WxUtil {
         }
 
         String bodyJsonStr = JSONUtil.createObj().set("touser", wxOpenId).set("msgtype", "image")
-            .set("image", JSONUtil.createObj().set("media_id", mediaId)).toString();
+                .set("image", JSONUtil.createObj().set("media_id", mediaId)).toString();
 
         String sendResultStr = HttpUtil
-            .post("https://api.weixin.qq.com/cgi-bin/message/custom/send?access_token=" + accessToken, bodyJsonStr);
+                .post("https://api.weixin.qq.com/cgi-bin/message/custom/send?access_token=" + accessToken, bodyJsonStr);
 
         log.info("wx-sendResult-image：{}，touser：{}", sendResultStr, wxOpenId);
 
@@ -378,10 +378,10 @@ public class WxUtil {
         }
 
         String bodyJsonStr = JSONUtil.createObj().set("touser", wxOpenId).set("msgtype", "voice")
-            .set("voice", JSONUtil.createObj().set("media_id", mediaId)).toString();
+                .set("voice", JSONUtil.createObj().set("media_id", mediaId)).toString();
 
         String sendResultStr = HttpUtil
-            .post("https://api.weixin.qq.com/cgi-bin/message/custom/send?access_token=" + accessToken, bodyJsonStr);
+                .post("https://api.weixin.qq.com/cgi-bin/message/custom/send?access_token=" + accessToken, bodyJsonStr);
 
         log.info("wx-sendResult-voice：{}，touser：{}", sendResultStr, wxOpenId);
 
@@ -391,14 +391,14 @@ public class WxUtil {
      * 执行：发送模板消息
      */
     public static void doTemplateMessageSend(String wxOpenId, String accessToken, String templateId, JSONObject data,
-        String url) {
+                                             String url) {
 
         if (StrUtil.isBlank(templateId)) {
             return;
         }
 
         JSONObject jsonObject =
-            JSONUtil.createObj().set("touser", wxOpenId).set("template_id", templateId).set("data", data);
+                JSONUtil.createObj().set("touser", wxOpenId).set("template_id", templateId).set("data", data);
 
         if (StrUtil.isNotBlank(url)) {
             jsonObject.set("url", url);
@@ -407,7 +407,7 @@ public class WxUtil {
         String bodyJsonStr = jsonObject.toString();
 
         String sendResultStr = HttpUtil
-            .post("https://api.weixin.qq.com/cgi-bin/message/template/send?access_token=" + accessToken, bodyJsonStr);
+                .post("https://api.weixin.qq.com/cgi-bin/message/template/send?access_token=" + accessToken, bodyJsonStr);
 
         log.info("wx-sendResult-templateMessage：{}，touser：{}", sendResultStr, wxOpenId);
 
@@ -430,8 +430,8 @@ public class WxUtil {
         if (!checkWxVO(wxBaseVO)) {
 
             throw new RuntimeException(StrUtil
-                .format("微信：获取【{}】失败，errcode：【{}】，errmsg：【{}】，tenantId：【{}】，appId：【{}】", msg, wxBaseVO.getErrcode(),
-                    wxBaseVO.getErrmsg(), tenantId, appId));
+                    .format("微信：获取【{}】失败，errcode：【{}】，errmsg：【{}】，tenantId：【{}】，appId：【{}】", msg, wxBaseVO.getErrcode(),
+                            wxBaseVO.getErrmsg(), tenantId, appId));
 
         }
 

@@ -81,7 +81,7 @@ public class SysOtherAppOfficialAccountWxServiceImpl implements SysOtherAppOffic
         Document document = XmlUtil.readXML(request.getInputStream());
 
         SysOtherAppOfficialAccountWxReceiveMessageDTO dto =
-            XmlUtil.xmlToBean(document.getDocumentElement(), SysOtherAppOfficialAccountWxReceiveMessageDTO.class);
+                XmlUtil.xmlToBean(document.getDocumentElement(), SysOtherAppOfficialAccountWxReceiveMessageDTO.class);
 
         String content = dto.getContent();
 
@@ -120,7 +120,7 @@ public class SysOtherAppOfficialAccountWxServiceImpl implements SysOtherAppOffic
      */
     @NotNull
     public static String handleReturnContent(SysOtherAppOfficialAccountWxReceiveMessageDTO dto, String fromUserName,
-        String returnContent) {
+                                             String returnContent) {
 
         WxOffiaccountReceiveMessageVO wxOffiaccountReceiveMessageVO = new WxOffiaccountReceiveMessageVO();
 

@@ -16,7 +16,7 @@ public class SecurityProperties {
 
     @Schema(description = "jwt 密钥前缀")
     private String jwtSecretPre =
-        "202e5c4e94c60b8e96cc6c8c2471309c11123a39ef996dd5ab3b180ba9a0ddcefe99123edeff516e1d3d264f8dde85eaf6ace1ea236d826fda32080d00f64b47ad0111";
+            "202e5c4e94c60b8e96cc6c8c2471309c11123a39ef996dd5ab3b180ba9a0ddcefe99123edeff516e1d3d264f8dde85eaf6ace1ea236d826fda32080d00f64b47ad0111";
 
     @Schema(description = "是否允许：admin登录")
     private Boolean adminEnable = true;

@@ -43,9 +43,9 @@ public class SignEmailServiceImpl implements SignEmailService {
         String key = PRE_REDIS_KEY_ENUM + dto.getEmail();
 
         return SignUtil
-            .sendCode(key, ChainWrappers.lambdaQueryChain(sysUserMapper).eq(SysUserDO::getEmail, dto.getEmail()), false,
-                BizCodeEnum.EMAIL_HAS_BEEN_REGISTERED,
-                (code) -> MyEmailUtil.send(dto.getEmail(), EmailMessageEnum.SIGN_UP, code, false, dto.getTenantId()));
+                .sendCode(key, ChainWrappers.lambdaQueryChain(sysUserMapper).eq(SysUserDO::getEmail, dto.getEmail()), false,
+                        BizCodeEnum.EMAIL_HAS_BEEN_REGISTERED,
+                        (code) -> MyEmailUtil.send(dto.getEmail(), EmailMessageEnum.SIGN_UP, code, false, dto.getTenantId()));
 
     }
 
@@ -55,7 +55,7 @@ public class SignEmailServiceImpl implements SignEmailService {
     private void checkSignUpEnable(Long tenantId) {
 
         SysUserConfigurationDO sysUserConfigurationDO =
-            sysUserConfigurationService.getSysUserConfigurationDoByTenantId(tenantId);
+                sysUserConfigurationService.getSysUserConfigurationDoByTenantId(tenantId);
 
         if (BooleanUtil.isFalse(sysUserConfigurationDO.getEmailSignUpEnable())) {
             ApiResultVO.errorMsg("操作失败：不允许邮箱注册，请联系管理员");
@@ -72,8 +72,8 @@ public class SignEmailServiceImpl implements SignEmailService {
         checkSignUpEnable(dto.getTenantId()); // 检查：是否允许注册
 
         return SignUtil
-            .signUp(dto.getPassword(), dto.getOriginPassword(), dto.getCode(), PRE_REDIS_KEY_ENUM, dto.getEmail(),
-                dto.getTenantId());
+                .signUp(dto.getPassword(), dto.getOriginPassword(), dto.getCode(), PRE_REDIS_KEY_ENUM, dto.getEmail(),
+                        dto.getTenantId());
 
     }
 
@@ -84,8 +84,8 @@ public class SignEmailServiceImpl implements SignEmailService {
     public SignInVO signInPassword(SignEmailSignInPasswordDTO dto) {
 
         return SignUtil
-            .signInPassword(ChainWrappers.lambdaQueryChain(sysUserMapper).eq(SysUserDO::getEmail, dto.getEmail()),
-                dto.getPassword(), dto.getEmail(), dto.getTenantId());
+                .signInPassword(ChainWrappers.lambdaQueryChain(sysUserMapper).eq(SysUserDO::getEmail, dto.getEmail()),
+                        dto.getPassword(), dto.getEmail(), dto.getTenantId());
 
     }
 
@@ -100,7 +100,7 @@ public class SignEmailServiceImpl implements SignEmailService {
         SignUtil.checkWillError(PRE_REDIS_KEY_ENUM, null, false, currentTenantIdDefault); // 检查：是否可以进行操作
 
         return SignUtil.getAccountAndSendCode(PRE_REDIS_KEY_ENUM, (code, account) -> MyEmailUtil
-            .send(account, EmailMessageEnum.UPDATE_PASSWORD, code, false, currentTenantIdDefault));
+                .send(account, EmailMessageEnum.UPDATE_PASSWORD, code, false, currentTenantIdDefault));
 
     }
 
@@ -113,7 +113,7 @@ public class SignEmailServiceImpl implements SignEmailService {
         SignUtil.checkWillError(PRE_REDIS_KEY_ENUM, null, false, UserUtil.getCurrentTenantIdDefault()); // 检查：是否可以进行操作
 
         return SignUtil
-            .updatePassword(dto.getNewPassword(), dto.getOriginNewPassword(), PRE_REDIS_KEY_ENUM, dto.getCode(), null);
+                .updatePassword(dto.getNewPassword(), dto.getOriginNewPassword(), PRE_REDIS_KEY_ENUM, dto.getCode(), null);
 
     }
 
@@ -132,9 +132,9 @@ public class SignEmailServiceImpl implements SignEmailService {
         String key = PRE_REDIS_KEY_ENUM + currentUserEmailNotAdmin;
 
         return SignUtil.sendCode(key, null, true,
-            com.cmcorg20230301.be.engine.email.exception.BizCodeEnum.EMAIL_DOES_NOT_EXIST_PLEASE_RE_ENTER,
-            (code) -> MyEmailUtil
-                .send(currentUserEmailNotAdmin, EmailMessageEnum.UPDATE_EMAIL, code, false, currentTenantIdDefault));
+                com.cmcorg20230301.be.engine.email.exception.BizCodeEnum.EMAIL_DOES_NOT_EXIST_PLEASE_RE_ENTER,
+                (code) -> MyEmailUtil
+                        .send(currentUserEmailNotAdmin, EmailMessageEnum.UPDATE_EMAIL, code, false, currentTenantIdDefault));
 
     }
 
@@ -147,7 +147,7 @@ public class SignEmailServiceImpl implements SignEmailService {
         SignUtil.checkWillError(PRE_REDIS_KEY_ENUM, null, true, UserUtil.getCurrentTenantIdDefault()); // 检查：是否可以进行操作
 
         return SignUtil
-            .updateAccount(dto.getOldEmailCode(), dto.getNewEmailCode(), PRE_REDIS_KEY_ENUM, dto.getNewEmail(), null);
+                .updateAccount(dto.getOldEmailCode(), dto.getNewEmailCode(), PRE_REDIS_KEY_ENUM, dto.getNewEmail(), null);
 
     }
 
@@ -162,9 +162,9 @@ public class SignEmailServiceImpl implements SignEmailService {
         String key = PRE_REDIS_KEY_ENUM + dto.getEmail();
 
         return SignUtil
-            .sendCode(key, ChainWrappers.lambdaQueryChain(sysUserMapper).eq(SysUserDO::getEmail, dto.getEmail()), true,
-                com.cmcorg20230301.be.engine.email.exception.BizCodeEnum.EMAIL_NOT_REGISTERED, (code) -> MyEmailUtil
-                    .send(dto.getEmail(), EmailMessageEnum.FORGET_PASSWORD, code, false, dto.getTenantId()));
+                .sendCode(key, ChainWrappers.lambdaQueryChain(sysUserMapper).eq(SysUserDO::getEmail, dto.getEmail()), true,
+                        com.cmcorg20230301.be.engine.email.exception.BizCodeEnum.EMAIL_NOT_REGISTERED, (code) -> MyEmailUtil
+                                .send(dto.getEmail(), EmailMessageEnum.FORGET_PASSWORD, code, false, dto.getTenantId()));
 
     }
 
@@ -177,8 +177,8 @@ public class SignEmailServiceImpl implements SignEmailService {
         SignUtil.checkWillError(PRE_REDIS_KEY_ENUM, dto.getEmail(), false, dto.getTenantId()); // 检查：是否可以进行操作
 
         return SignUtil
-            .forgetPassword(dto.getNewPassword(), dto.getOriginNewPassword(), dto.getCode(), PRE_REDIS_KEY_ENUM,
-                dto.getEmail(), ChainWrappers.lambdaQueryChain(sysUserMapper).eq(SysUserDO::getEmail, dto.getEmail()));
+                .forgetPassword(dto.getNewPassword(), dto.getOriginNewPassword(), dto.getCode(), PRE_REDIS_KEY_ENUM,
+                        dto.getEmail(), ChainWrappers.lambdaQueryChain(sysUserMapper).eq(SysUserDO::getEmail, dto.getEmail()));
 
     }
 
@@ -193,7 +193,7 @@ public class SignEmailServiceImpl implements SignEmailService {
         SignUtil.checkWillError(PRE_REDIS_KEY_ENUM, null, false, currentTenantIdDefault); // 检查：是否可以进行操作
 
         return SignUtil.getAccountAndSendCode(PRE_REDIS_KEY_ENUM, (code, account) -> MyEmailUtil
-            .send(account, EmailMessageEnum.SIGN_DELETE, code, false, currentTenantIdDefault));
+                .send(account, EmailMessageEnum.SIGN_DELETE, code, false, currentTenantIdDefault));
 
     }
 
@@ -222,9 +222,9 @@ public class SignEmailServiceImpl implements SignEmailService {
         String key = PRE_REDIS_KEY_ENUM + dto.getEmail();
 
         return SignUtil
-            .sendCode(key, ChainWrappers.lambdaQueryChain(sysUserMapper).eq(SysUserDO::getEmail, dto.getEmail()), false,
-                BizCodeEnum.EMAIL_HAS_BEEN_REGISTERED, (code) -> MyEmailUtil
-                    .send(dto.getEmail(), EmailMessageEnum.BIND_EMAIL, code, false, currentTenantIdDefault));
+                .sendCode(key, ChainWrappers.lambdaQueryChain(sysUserMapper).eq(SysUserDO::getEmail, dto.getEmail()), false,
+                        BizCodeEnum.EMAIL_HAS_BEEN_REGISTERED, (code) -> MyEmailUtil
+                                .send(dto.getEmail(), EmailMessageEnum.BIND_EMAIL, code, false, currentTenantIdDefault));
 
     }
 

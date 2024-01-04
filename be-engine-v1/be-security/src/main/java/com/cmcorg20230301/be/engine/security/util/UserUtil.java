@@ -43,7 +43,7 @@ public class UserUtil {
     private static SysUserInfoMapper sysUserInfoMapper;
 
     public UserUtil(SysRoleMapper sysRoleMapper, SysRoleRefUserMapper sysRoleRefUserMapper, SysUserMapper sysUserMapper,
-        SysUserInfoMapper sysUserInfoMapper) {
+                    SysUserInfoMapper sysUserInfoMapper) {
 
         UserUtil.sysRoleMapper = sysRoleMapper;
         UserUtil.sysRoleRefUserMapper = sysRoleRefUserMapper;
@@ -79,7 +79,7 @@ public class UserUtil {
         Long userId = getCurrentUserId();
 
         SysUserInfoDO sysUserInfoDO = ChainWrappers.lambdaQueryChain(sysUserInfoMapper).eq(SysUserInfoDO::getId, userId)
-            .select(SysUserInfoDO::getNickname).one();
+                .select(SysUserInfoDO::getNickname).one();
 
         if (sysUserInfoDO == null) {
             return "";
@@ -98,7 +98,7 @@ public class UserUtil {
         Long currentUserIdNotAdmin = getCurrentUserIdNotAdmin();
 
         SysUserDO sysUserDO = ChainWrappers.lambdaQueryChain(sysUserMapper).eq(BaseEntity::getId, currentUserIdNotAdmin)
-            .select(SysUserDO::getEmail).one();
+                .select(SysUserDO::getEmail).one();
 
         if (sysUserDO == null || StrUtil.isBlank(sysUserDO.getEmail())) {
             ApiResultVO.error(BaseBizCodeEnum.UNABLE_TO_SEND_VERIFICATION_CODE_BECAUSE_THE_EMAIL_ADDRESS_IS_NOT_BOUND);
@@ -117,7 +117,7 @@ public class UserUtil {
         Long currentUserIdNotAdmin = getCurrentUserIdNotAdmin();
 
         SysUserDO sysUserDO = ChainWrappers.lambdaQueryChain(sysUserMapper).eq(BaseEntity::getId, currentUserIdNotAdmin)
-            .select(SysUserDO::getPhone).one();
+                .select(SysUserDO::getPhone).one();
 
         if (sysUserDO == null || StrUtil.isBlank(sysUserDO.getPhone())) {
             ApiResultVO.error(BaseBizCodeEnum.UNABLE_TO_SEND_VERIFICATION_CODE_BECAUSE_THE_PHONE_IS_NOT_BOUND);
@@ -267,7 +267,7 @@ public class UserUtil {
             Object principalObject = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
             if (principalObject instanceof JSONObject) {
-                result = (JSONObject)principalObject;
+                result = (JSONObject) principalObject;
             }
 
         }
@@ -288,7 +288,7 @@ public class UserUtil {
             return null;
         }
 
-        return (T)principalJSONObject.get(key);
+        return (T) principalJSONObject.get(key);
 
     }
 
@@ -368,15 +368,15 @@ public class UserUtil {
     public static Map<Long, Set<Long>> getUserRefRoleIdSetMap() {
 
         return MyCacheUtil
-            .getMap(BaseRedisKeyEnum.USER_ID_REF_ROLE_ID_SET_CACHE, CacheHelper.getDefaultLongSetMap(), () -> {
+                .getMap(BaseRedisKeyEnum.USER_ID_REF_ROLE_ID_SET_CACHE, CacheHelper.getDefaultLongSetMap(), () -> {
 
-                List<SysRoleRefUserDO> sysRoleRefUserDOList = ChainWrappers.lambdaQueryChain(sysRoleRefUserMapper)
-                    .select(SysRoleRefUserDO::getRoleId, SysRoleRefUserDO::getUserId).list();
+                    List<SysRoleRefUserDO> sysRoleRefUserDOList = ChainWrappers.lambdaQueryChain(sysRoleRefUserMapper)
+                            .select(SysRoleRefUserDO::getRoleId, SysRoleRefUserDO::getUserId).list();
 
-                return sysRoleRefUserDOList.stream().collect(Collectors.groupingBy(SysRoleRefUserDO::getUserId,
-                    Collectors.mapping(SysRoleRefUserDO::getRoleId, Collectors.toSet())));
+                    return sysRoleRefUserDOList.stream().collect(Collectors.groupingBy(SysRoleRefUserDO::getUserId,
+                            Collectors.mapping(SysRoleRefUserDO::getRoleId, Collectors.toSet())));
 
-            });
+                });
 
     }
 
@@ -386,17 +386,17 @@ public class UserUtil {
     private static void getDefaultRoleId(Set<Long> roleIdSet, @NotNull Long tenantId) {
 
         Map<Long, Long> map = MyCacheUtil
-            .getMap(BaseRedisKeyEnum.TENANT_DEFAULT_ROLE_ID_CACHE, CacheHelper.getDefaultLongMap(BaseConstant.SYS_ID),
-                () -> {
+                .getMap(BaseRedisKeyEnum.TENANT_DEFAULT_ROLE_ID_CACHE, CacheHelper.getDefaultLongMap(BaseConstant.SYS_ID),
+                        () -> {
 
-                    List<SysRoleDO> sysRoleDOList = ChainWrappers.lambdaQueryChain(sysRoleMapper)
-                        .select(BaseEntity::getId, BaseEntityNoId::getTenantId).eq(BaseEntity::getEnableFlag, true)
-                        .eq(SysRoleDO::getDefaultFlag, true).list();
+                            List<SysRoleDO> sysRoleDOList = ChainWrappers.lambdaQueryChain(sysRoleMapper)
+                                    .select(BaseEntity::getId, BaseEntityNoId::getTenantId).eq(BaseEntity::getEnableFlag, true)
+                                    .eq(SysRoleDO::getDefaultFlag, true).list();
 
-                    return sysRoleDOList.stream()
-                        .collect(Collectors.toMap(BaseEntityNoId::getTenantId, BaseEntity::getId));
+                            return sysRoleDOList.stream()
+                                    .collect(Collectors.toMap(BaseEntityNoId::getTenantId, BaseEntity::getId));
 
-                });
+                        });
 
         Long defaultRoleId = map.get(tenantId);
 
@@ -414,8 +414,8 @@ public class UserUtil {
     public static void setJwtSecretSuf(long userId) {
 
         CacheRedisKafkaLocalUtil
-            .putSecondMap(BaseRedisKeyEnum.USER_ID_AND_JWT_SECRET_SUF_CACHE, null, String.valueOf(userId),
-                IdUtil.simpleUUID(), null);
+                .putSecondMap(BaseRedisKeyEnum.USER_ID_AND_JWT_SECRET_SUF_CACHE, null, String.valueOf(userId),
+                        IdUtil.simpleUUID(), null);
 
     }
 
@@ -426,7 +426,7 @@ public class UserUtil {
     public static String getJwtSecretSuf(long userId) {
 
         return MyCacheUtil.getSecondMap(BaseRedisKeyEnum.USER_ID_AND_JWT_SECRET_SUF_CACHE, null, String.valueOf(userId),
-            IdUtil.simpleUUID(), null);
+                IdUtil.simpleUUID(), null);
 
     }
 
@@ -436,7 +436,7 @@ public class UserUtil {
     public static void removeJwtSecretSuf(long userId) {
 
         CacheRedisKafkaLocalUtil
-            .removeSecondMap(BaseRedisKeyEnum.USER_ID_AND_JWT_SECRET_SUF_CACHE, null, String.valueOf(userId));
+                .removeSecondMap(BaseRedisKeyEnum.USER_ID_AND_JWT_SECRET_SUF_CACHE, null, String.valueOf(userId));
 
     }
 
@@ -446,7 +446,7 @@ public class UserUtil {
     public static void setDisable(long userId) {
 
         CacheRedisKafkaLocalUtil
-            .putSecondMap(BaseRedisKeyEnum.SYS_USER_DISABLE_CACHE, null, String.valueOf(userId), true, null);
+                .putSecondMap(BaseRedisKeyEnum.SYS_USER_DISABLE_CACHE, null, String.valueOf(userId), true, null);
 
     }
 
@@ -456,7 +456,7 @@ public class UserUtil {
     public static boolean getDisable(long userId) {
 
         Boolean disableFlag =
-            MyCacheUtil.onlyGetSecondMap(BaseRedisKeyEnum.SYS_USER_DISABLE_CACHE, null, String.valueOf(userId));
+                MyCacheUtil.onlyGetSecondMap(BaseRedisKeyEnum.SYS_USER_DISABLE_CACHE, null, String.valueOf(userId));
 
         return BooleanUtil.isTrue(disableFlag);
 
@@ -478,7 +478,7 @@ public class UserUtil {
 
         // 执行
         securityContextHolderSetAuthenticationAndExecFun(voidFunc0, sysUserDO.getId(), sysUserDO.getTenantId(),
-            sysUserDO.getWxAppId(), sysUserDO.getWxOpenId());
+                sysUserDO.getWxAppId(), sysUserDO.getWxOpenId());
 
     }
 
@@ -486,7 +486,7 @@ public class UserUtil {
      * 给 security设置用户信息，并执行方法
      */
     public static void securityContextHolderSetAuthenticationAndExecFun(VoidFunc0 voidFunc0, Long userId, Long tenantId,
-        String wxAppId, String wxOpenId) {
+                                                                        String wxAppId, String wxOpenId) {
 
         JSONObject principalJson = JSONUtil.createObj();
 
@@ -500,7 +500,7 @@ public class UserUtil {
 
         // 把 principalJson 设置到：security的上下文里面
         SecurityContextHolder.getContext()
-            .setAuthentication(new UsernamePasswordAuthenticationToken(principalJson, null, null));
+                .setAuthentication(new UsernamePasswordAuthenticationToken(principalJson, null, null));
 
         try {
 

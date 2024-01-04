@@ -27,7 +27,7 @@ public class SysMenuUtil {
     private static SysRoleRefMenuMapper sysRoleRefMenuMapper;
 
     public SysMenuUtil(SysMenuMapper sysMenuMapper, SysRoleMapper sysRoleMapper,
-        SysRoleRefMenuMapper sysRoleRefMenuMapper) {
+                       SysRoleRefMenuMapper sysRoleRefMenuMapper) {
 
         SysMenuUtil.sysMenuMapper = sysMenuMapper;
         SysMenuUtil.sysRoleMapper = sysRoleMapper;
@@ -42,14 +42,14 @@ public class SysMenuUtil {
     public static Map<Long, SysMenuDO> getSysMenuCacheMap() {
 
         Map<Long, SysMenuDO> map =
-            MyCacheUtil.getMap(BaseRedisKeyEnum.SYS_MENU_CACHE, CacheHelper.getDefaultLongMap(new SysMenuDO()), () -> {
+                MyCacheUtil.getMap(BaseRedisKeyEnum.SYS_MENU_CACHE, CacheHelper.getDefaultLongMap(new SysMenuDO()), () -> {
 
-                List<SysMenuDO> sysMenuDOList =
-                    ChainWrappers.lambdaQueryChain(sysMenuMapper).eq(BaseEntityNoId::getEnableFlag, true).list();
+                    List<SysMenuDO> sysMenuDOList =
+                            ChainWrappers.lambdaQueryChain(sysMenuMapper).eq(BaseEntityNoId::getEnableFlag, true).list();
 
-                return sysMenuDOList.stream().collect(Collectors.toMap(BaseEntity::getId, it -> it));
+                    return sysMenuDOList.stream().collect(Collectors.toMap(BaseEntity::getId, it -> it));
 
-            });
+                });
 
         // 移除：默认值
         map = CacheHelper.handleDefaultLongMap(map);
@@ -65,13 +65,13 @@ public class SysMenuUtil {
     private static List<SysMenuDO> getAllMenuIdAndAuthsList() {
 
         List<SysMenuDO> sysMenuDOList = MyCacheUtil
-            .getCollection(BaseRedisKeyEnum.ALL_MENU_ID_AND_AUTHS_LIST_CACHE, CacheHelper.getDefaultList(), () -> {
+                .getCollection(BaseRedisKeyEnum.ALL_MENU_ID_AND_AUTHS_LIST_CACHE, CacheHelper.getDefaultList(), () -> {
 
-                return ChainWrappers.lambdaQueryChain(sysMenuMapper)
-                    .select(BaseEntity::getId, BaseEntityTree::getParentId, SysMenuDO::getAuths)
-                    .eq(BaseEntity::getEnableFlag, true).list();
+                    return ChainWrappers.lambdaQueryChain(sysMenuMapper)
+                            .select(BaseEntity::getId, BaseEntityTree::getParentId, SysMenuDO::getAuths)
+                            .eq(BaseEntity::getEnableFlag, true).list();
 
-            });
+                });
 
         if (CacheHelper.defaultCollectionFlag(sysMenuDOList)) {
 
@@ -95,13 +95,13 @@ public class SysMenuUtil {
 
             // 获取所有：roleIdSet
             Set<Long> allRoleIdSet =
-                MyCacheUtil.getCollection(BaseRedisKeyEnum.ROLE_ID_SET_CACHE, CacheHelper.getDefaultSet(), () -> {
+                    MyCacheUtil.getCollection(BaseRedisKeyEnum.ROLE_ID_SET_CACHE, CacheHelper.getDefaultSet(), () -> {
 
-                    return ChainWrappers.lambdaQueryChain(sysRoleMapper).select(BaseEntity::getId)
-                        .eq(BaseEntityNoId::getEnableFlag, true).list().stream().map(BaseEntity::getId)
-                        .collect(Collectors.toSet());
+                        return ChainWrappers.lambdaQueryChain(sysRoleMapper).select(BaseEntity::getId)
+                                .eq(BaseEntityNoId::getEnableFlag, true).list().stream().map(BaseEntity::getId)
+                                .collect(Collectors.toSet());
 
-                });
+                    });
 
             if (CacheHelper.defaultCollectionFlag(allRoleIdSet)) {
                 return null; // 如果：没有角色
@@ -131,15 +131,15 @@ public class SysMenuUtil {
     private static Set<Long> getRoleRefMenuIdSet(Long roleId) {
 
         Map<Long, Set<Long>> roleRefMenuIdSetMap = MyCacheUtil
-            .getMap(BaseRedisKeyEnum.ROLE_ID_REF_MENU_ID_SET_CACHE, CacheHelper.getDefaultLongSetMap(), () -> {
+                .getMap(BaseRedisKeyEnum.ROLE_ID_REF_MENU_ID_SET_CACHE, CacheHelper.getDefaultLongSetMap(), () -> {
 
-                List<SysRoleRefMenuDO> sysRoleRefMenuDOList = ChainWrappers.lambdaQueryChain(sysRoleRefMenuMapper)
-                    .select(SysRoleRefMenuDO::getRoleId, SysRoleRefMenuDO::getMenuId).list();
+                    List<SysRoleRefMenuDO> sysRoleRefMenuDOList = ChainWrappers.lambdaQueryChain(sysRoleRefMenuMapper)
+                            .select(SysRoleRefMenuDO::getRoleId, SysRoleRefMenuDO::getMenuId).list();
 
-                return sysRoleRefMenuDOList.stream().collect(Collectors.groupingBy(SysRoleRefMenuDO::getRoleId,
-                    Collectors.mapping(SysRoleRefMenuDO::getMenuId, Collectors.toSet())));
+                    return sysRoleRefMenuDOList.stream().collect(Collectors.groupingBy(SysRoleRefMenuDO::getRoleId,
+                            Collectors.mapping(SysRoleRefMenuDO::getMenuId, Collectors.toSet())));
 
-            });
+                });
 
         return roleRefMenuIdSetMap.get(roleId);
 
@@ -164,8 +164,8 @@ public class SysMenuUtil {
         if (BaseRedisKeyEnum.ROLE_ID_REF_FULL_MENU_SET_CACHE.equals(baseRedisKeyEnum)) {
 
             allSysMenuDOList = SysMenuUtil.getSysMenuCacheMap().values().stream()
-                .sorted(Comparator.comparing(BaseEntityTree::getOrderNo, Comparator.reverseOrder()))
-                .collect(Collectors.toList());
+                    .sorted(Comparator.comparing(BaseEntityTree::getOrderNo, Comparator.reverseOrder()))
+                    .collect(Collectors.toList());
 
         } else {
 
@@ -189,11 +189,11 @@ public class SysMenuUtil {
      */
     @NotNull
     public static Set<SysMenuDO> getFullSysMenuDoSet(Set<Long> menuIdSet,
-        Collection<SysMenuDO> allSysMenuDoCollection) {
+                                                     Collection<SysMenuDO> allSysMenuDoCollection) {
 
         // 开始进行匹配，组装返回值
         Set<SysMenuDO> resultSet =
-            allSysMenuDoCollection.stream().filter(it -> menuIdSet.contains(it.getId())).collect(Collectors.toSet());
+                allSysMenuDoCollection.stream().filter(it -> menuIdSet.contains(it.getId())).collect(Collectors.toSet());
 
         if (resultSet.size() == 0) {
             return new HashSet<>();
@@ -204,7 +204,7 @@ public class SysMenuUtil {
 
         // 通过：parentId分组的 map
         Map<Long, Set<SysMenuDO>> groupMenuParentIdMap = allSysMenuDoCollection.stream().collect(
-            Collectors.groupingBy(BaseEntityTree::getParentId, Collectors.mapping(it -> it, Collectors.toSet())));
+                Collectors.groupingBy(BaseEntityTree::getParentId, Collectors.mapping(it -> it, Collectors.toSet())));
 
         // 再添加 menuIdSet下的所有子级菜单
         for (Long item : menuIdSet) {
@@ -224,7 +224,7 @@ public class SysMenuUtil {
      * 再添加 menuIdSet的所有子级菜单
      */
     private static void getMenuListByUserIdNext(Set<SysMenuDO> resultSysMenuDoSet, Long parentId,
-        Set<Long> resultMenuIdSet, Map<Long, Set<SysMenuDO>> groupMenuParentIdMap) {
+                                                Set<Long> resultMenuIdSet, Map<Long, Set<SysMenuDO>> groupMenuParentIdMap) {
 
         // 获取：自己下面的子级
         Set<SysMenuDO> sysMenuDoSet = groupMenuParentIdMap.get(parentId);

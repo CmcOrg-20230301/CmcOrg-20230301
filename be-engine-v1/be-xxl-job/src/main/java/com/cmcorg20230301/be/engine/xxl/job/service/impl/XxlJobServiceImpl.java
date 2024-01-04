@@ -82,7 +82,7 @@ public class XxlJobServiceImpl implements XxlJobService {
 
             // 新增任务
             HttpResponse response = HttpRequest.post(adminAddresses + "/jobinfo/add").form(formJson).cookie(cookie)
-                .timeout(BaseConstant.MINUTE_1_EXPIRE_TIME).execute();
+                    .timeout(BaseConstant.MINUTE_1_EXPIRE_TIME).execute();
 
             JSONObject bodyJson = JSONUtil.parseObj(response.body());
 
@@ -98,7 +98,7 @@ public class XxlJobServiceImpl implements XxlJobService {
             // 启动任务，备注：因为新增的时候，不支持启动，所以只有再调用启动接口
             formJson = JSONUtil.createObj().set("id", id);
             response = HttpRequest.post(adminAddresses + "/jobinfo/start").form(formJson).cookie(cookie)
-                .timeout(BaseConstant.MINUTE_1_EXPIRE_TIME).execute();
+                    .timeout(BaseConstant.MINUTE_1_EXPIRE_TIME).execute();
 
             bodyJson = JSONUtil.parseObj(response.body());
             if (!response.isOk()) {
@@ -132,8 +132,8 @@ public class XxlJobServiceImpl implements XxlJobService {
 
             // 获取执行器
             HttpResponse response =
-                HttpRequest.post(adminAddresses + "/jobgroup/pageList").form(formJson).cookie(cookie)
-                    .timeout(BaseConstant.MINUTE_1_EXPIRE_TIME).execute();
+                    HttpRequest.post(adminAddresses + "/jobgroup/pageList").form(formJson).cookie(cookie)
+                            .timeout(BaseConstant.MINUTE_1_EXPIRE_TIME).execute();
 
             JSONObject bodyJson = JSONUtil.parseObj(response.body());
 
@@ -146,10 +146,10 @@ public class XxlJobServiceImpl implements XxlJobService {
             if (CollUtil.isEmpty(data)) { // 如果执行器列表为空，则进行创建
 
                 formJson = JSONUtil.createObj().set("appname", "xxl-job-executor-main").set("title", "主执行器")
-                    .set("addressType", 0); // addressType：0 自动注册
+                        .set("addressType", 0); // addressType：0 自动注册
 
                 response = HttpRequest.post(adminAddresses + "/jobgroup/save").form(formJson).cookie(cookie)
-                    .timeout(BaseConstant.MINUTE_1_EXPIRE_TIME).execute();
+                        .timeout(BaseConstant.MINUTE_1_EXPIRE_TIME).execute();
 
                 bodyJson = JSONUtil.parseObj(response.body());
 
@@ -162,7 +162,7 @@ public class XxlJobServiceImpl implements XxlJobService {
 
             }
 
-            JSONObject jsonObject = (JSONObject)data.get(0); // 获取第一个【执行器】
+            JSONObject jsonObject = (JSONObject) data.get(0); // 获取第一个【执行器】
             dto.setJobGroup(jsonObject.getStr("id")); // 设置 jobGroup
 
         } catch (Exception e) {
@@ -183,11 +183,11 @@ public class XxlJobServiceImpl implements XxlJobService {
         JSONObject jsonObject = MyCacheUtil.getMap(BaseRedisKeyEnum.XXL_JOB_COOKIE_CACHE, null, () -> {
 
             JSONObject formJson =
-                JSONUtil.createObj().set("userName", userName).set("password", password).set("ifRemember", "on");
+                    JSONUtil.createObj().set("userName", userName).set("password", password).set("ifRemember", "on");
 
             HttpResponse response =
-                HttpRequest.post(adminAddresses + "/login").form(formJson).timeout(BaseConstant.MINUTE_1_EXPIRE_TIME)
-                    .execute();
+                    HttpRequest.post(adminAddresses + "/login").form(formJson).timeout(BaseConstant.MINUTE_1_EXPIRE_TIME)
+                            .execute();
 
             if (BooleanUtil.isFalse(response.isOk())) {
                 ApiResultVO.errorMsg("操作失败：登录 xxl-job失败：" + JSONUtil.parseObj(response.body()));
@@ -226,7 +226,7 @@ public class XxlJobServiceImpl implements XxlJobService {
             JSONObject formJson = JSONUtil.createObj().set("id", notNullId.getId());
 
             HttpResponse response = HttpRequest.post(adminAddresses + "/jobinfo/remove").form(formJson).cookie(cookie)
-                .timeout(BaseConstant.MINUTE_1_EXPIRE_TIME).execute();
+                    .timeout(BaseConstant.MINUTE_1_EXPIRE_TIME).execute();
 
             JSONObject bodyJson = JSONUtil.parseObj(response.body());
 

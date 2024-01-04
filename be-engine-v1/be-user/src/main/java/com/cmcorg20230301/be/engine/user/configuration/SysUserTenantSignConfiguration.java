@@ -31,7 +31,7 @@ public class SysUserTenantSignConfiguration implements ITenantSignConfiguration 
     public void delete(Set<Long> tenantIdSet) {
 
         List<SysUserDO> sysUserDOList =
-            sysUserService.lambdaQuery().in(BaseEntityNoId::getTenantId, tenantIdSet).select(BaseEntity::getId).list();
+                sysUserService.lambdaQuery().in(BaseEntityNoId::getTenantId, tenantIdSet).select(BaseEntity::getId).list();
 
         Set<Long> userIdSet = sysUserDOList.stream().map(BaseEntity::getId).collect(Collectors.toSet());
 

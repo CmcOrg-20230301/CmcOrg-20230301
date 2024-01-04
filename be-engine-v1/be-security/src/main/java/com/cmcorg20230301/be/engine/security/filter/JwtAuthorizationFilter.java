@@ -40,7 +40,7 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
     private static List<IJwtValidatorConfiguration> iJwtValidatorConfigurationList;
 
     public JwtAuthorizationFilter(SecurityProperties securityProperties,
-        List<IJwtValidatorConfiguration> iJwtValidatorConfigurationList) {
+                                  List<IJwtValidatorConfiguration> iJwtValidatorConfigurationList) {
 
         JwtAuthorizationFilter.securityProperties = securityProperties;
         JwtAuthorizationFilter.iJwtValidatorConfigurationList = iJwtValidatorConfigurationList;
@@ -50,7 +50,7 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
     @SneakyThrows
     @Override
     protected void doFilterInternal(@NotNull HttpServletRequest request, @NotNull HttpServletResponse response,
-        @NotNull FilterChain filterChain) {
+                                    @NotNull FilterChain filterChain) {
 
         //        long beginTime = System.currentTimeMillis();
 
@@ -69,7 +69,7 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
     @SneakyThrows
     @Nullable
     private UsernamePasswordAuthenticationToken getAuthentication(HttpServletRequest request,
-        HttpServletResponse response) {
+                                                                  HttpServletResponse response) {
 
         // 从请求头里，获取：jwt字符串
         String jwtStr = MyJwtUtil.getJwtStrByRequest(request);
@@ -153,7 +153,7 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
 
         // 通过 userId 获取用户具有的权限
         return new UsernamePasswordAuthenticationToken(jwt.getPayload().getClaimsJson(), null,
-            MyJwtUtil.getSimpleGrantedAuthorityListByUserId(userId, tenantId));
+                MyJwtUtil.getSimpleGrantedAuthorityListByUserId(userId, tenantId));
 
     }
 
@@ -219,7 +219,7 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
      * 备注：这里抛出异常不会进入：ExceptionAdvice
      */
     public static UsernamePasswordAuthenticationToken loginExpired(HttpServletResponse response, Long userId,
-        HttpServletRequest request) {
+                                                                   HttpServletRequest request) {
 
         log.info("登录过期，uri：{}", request.getRequestURI());
 

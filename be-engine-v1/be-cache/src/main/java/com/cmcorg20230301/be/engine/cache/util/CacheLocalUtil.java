@@ -85,7 +85,7 @@ public class CacheLocalUtil {
      * 添加：本地缓存
      */
     public static void put(@NotNull Enum<? extends IRedisKey> redisKeyEnum, @Nullable String sufKey,
-        @NotNull Object value) {
+                           @NotNull Object value) {
 
         String key = CacheHelper.getKey(redisKeyEnum, sufKey);
 
@@ -142,7 +142,7 @@ public class CacheLocalUtil {
     @Nullable
     public static <T> T get(@NotNull String key) {
 
-        return (T)LOCAL_CACHE.get(key, false);
+        return (T) LOCAL_CACHE.get(key, false);
 
     }
 
@@ -164,7 +164,7 @@ public class CacheLocalUtil {
     @NotNull
     private static <T> Cache<String, T> getSecondMap(@NotNull String key) {
 
-        return (Cache<String, T>)LOCAL_CACHE.get(key, false, () -> {
+        return (Cache<String, T>) LOCAL_CACHE.get(key, false, () -> {
             return CacheUtil.newLFUCache(200 * 1000);
         });
 

@@ -8,6 +8,6 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class SysUserDeleteLogServiceImpl extends ServiceImpl<SysUserDeleteLogMapper, SysUserDeleteLogDO>
-    implements SysUserDeleteLogService {
+        implements SysUserDeleteLogService {
 
 }

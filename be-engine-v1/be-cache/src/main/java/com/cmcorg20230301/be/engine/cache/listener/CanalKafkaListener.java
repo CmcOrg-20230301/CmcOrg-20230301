@@ -51,7 +51,7 @@ public class CanalKafkaListener {
                     String fullTableName = dto.getDatabase() + "." + tableName;
 
                     List<CanalKafkaListenerHelper.ICanalKafkaHandler> iCanalKafkaHandlerList =
-                        CanalKafkaListenerHelper.get(fullTableName);
+                            CanalKafkaListenerHelper.get(fullTableName);
 
                     if (CollUtil.isNotEmpty(iCanalKafkaHandlerList)) {
 

@@ -35,15 +35,15 @@ public class SignSignInNameServiceImpl implements SignSignInNameService {
     public String signUp(SignSignInNameSignUpDTO dto) {
 
         SysUserConfigurationDO sysUserConfigurationDO =
-            sysUserConfigurationService.getSysUserConfigurationDoByTenantId(dto.getTenantId());
+                sysUserConfigurationService.getSysUserConfigurationDoByTenantId(dto.getTenantId());
 
         if (BooleanUtil.isFalse(sysUserConfigurationDO.getSignInNameSignUpEnable())) {
             ApiResultVO.errorMsg("操作失败：不允许用户名注册，请联系管理员");
         }
 
         return SignUtil
-            .signUp(dto.getPassword(), dto.getOriginPassword(), null, PRE_REDIS_KEY_ENUM, dto.getSignInName(),
-                dto.getTenantId());
+                .signUp(dto.getPassword(), dto.getOriginPassword(), null, PRE_REDIS_KEY_ENUM, dto.getSignInName(),
+                        dto.getTenantId());
 
     }
 
@@ -54,8 +54,8 @@ public class SignSignInNameServiceImpl implements SignSignInNameService {
     public SignInVO signInPassword(SignSignInNameSignInPasswordDTO dto) {
 
         return SignUtil.signInPassword(
-            ChainWrappers.lambdaQueryChain(sysUserMapper).eq(SysUserDO::getSignInName, dto.getSignInName()),
-            dto.getPassword(), dto.getSignInName(), dto.getTenantId());
+                ChainWrappers.lambdaQueryChain(sysUserMapper).eq(SysUserDO::getSignInName, dto.getSignInName()),
+                dto.getPassword(), dto.getSignInName(), dto.getTenantId());
 
     }
 
@@ -68,7 +68,7 @@ public class SignSignInNameServiceImpl implements SignSignInNameService {
         SignUtil.checkWillError(PRE_REDIS_KEY_ENUM, null, false, UserUtil.getCurrentTenantIdDefault()); // 检查：是否可以进行操作
 
         return SignUtil.updatePassword(dto.getNewPassword(), dto.getOriginNewPassword(), PRE_REDIS_KEY_ENUM, null,
-            dto.getOldPassword());
+                dto.getOldPassword());
 
     }
 

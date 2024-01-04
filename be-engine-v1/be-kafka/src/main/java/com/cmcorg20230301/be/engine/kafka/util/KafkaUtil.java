@@ -36,7 +36,7 @@ public class KafkaUtil {
 
         if (data instanceof String) {
 
-            kafkaTemplate.send(iKafkaTopic.name(), (String)data);
+            kafkaTemplate.send(iKafkaTopic.name(), (String) data);
 
         } else {
 
@@ -50,10 +50,10 @@ public class KafkaUtil {
      * 发送消息：socket启用的 topic
      */
     public static void sendSysOtherAppOfficialAccountWxReceiveMessageDTO(
-        Object sysOtherAppOfficialAccountWxReceiveMessageDTO) {
+            Object sysOtherAppOfficialAccountWxReceiveMessageDTO) {
 
         send(KafkaTopicEnum.SYS_OTHER_APP_OFFICIAL_ACCOUNT_WX_RECEIVE_MESSAGE_TOPIC,
-            sysOtherAppOfficialAccountWxReceiveMessageDTO);
+                sysOtherAppOfficialAccountWxReceiveMessageDTO);
 
     }
 

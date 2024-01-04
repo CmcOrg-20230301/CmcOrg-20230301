@@ -27,7 +27,7 @@ import java.util.Set;
 
 @Service
 public class SysSmsConfigurationServiceImpl extends ServiceImpl<SysSmsConfigurationMapper, SysSmsConfigurationDO>
-    implements SysSmsConfigurationService {
+        implements SysSmsConfigurationService {
 
     /**
      * 新增/修改
@@ -38,14 +38,14 @@ public class SysSmsConfigurationServiceImpl extends ServiceImpl<SysSmsConfigurat
 
         // 处理：BaseTenantInsertOrUpdateDTO
         SysTenantUtil.handleBaseTenantInsertOrUpdateDTO(dto, getCheckIllegalFunc1(CollUtil.newHashSet(dto.getId())),
-            getTenantIdBaseEntityFunc1());
+                getTenantIdBaseEntityFunc1());
 
         // 如果是默认支付方式，则取消之前的默认支付方式
         if (BooleanUtil.isTrue(dto.getDefaultFlag())) {
 
             lambdaUpdate().set(SysSmsConfigurationDO::getDefaultFlag, false)
-                .eq(SysSmsConfigurationDO::getDefaultFlag, true).eq(BaseEntityNoId::getTenantId, dto.getTenantId())
-                .ne(dto.getId() != null, BaseEntity::getId, dto.getId()).update();
+                    .eq(SysSmsConfigurationDO::getDefaultFlag, true).eq(BaseEntityNoId::getTenantId, dto.getTenantId())
+                    .ne(dto.getId() != null, BaseEntity::getId, dto.getId()).update();
 
         }
 
@@ -91,16 +91,16 @@ public class SysSmsConfigurationServiceImpl extends ServiceImpl<SysSmsConfigurat
         SysTenantUtil.handleMyTenantPageDTO(dto, true);
 
         return lambdaQuery().like(StrUtil.isNotBlank(dto.getName()), SysSmsConfigurationDO::getName, dto.getName())
-            .like(StrUtil.isNotBlank(dto.getRemark()), BaseEntity::getRemark, dto.getRemark())
-            .eq(dto.getType() != null, SysSmsConfigurationDO::getType, dto.getType())
-            .eq(dto.getDefaultFlag() != null, SysSmsConfigurationDO::getDefaultFlag, dto.getDefaultFlag())
-            .eq(dto.getEnableFlag() != null, BaseEntity::getEnableFlag, dto.getEnableFlag())
-            .in(BaseEntityNoId::getTenantId, dto.getTenantIdSet()) //
-            .select(BaseEntity::getId, BaseEntityNoIdSuper::getTenantId, SysSmsConfigurationDO::getType,
-                SysSmsConfigurationDO::getName, BaseEntityNoIdSuper::getCreateId, BaseEntityNoIdSuper::getCreateTime,
-                BaseEntityNoIdSuper::getUpdateId, BaseEntityNoIdSuper::getUpdateTime, BaseEntityNoId::getEnableFlag,
-                BaseEntityNoId::getRemark, SysSmsConfigurationDO::getDefaultFlag).orderByDesc(BaseEntity::getUpdateTime)
-            .page(dto.page(true));
+                .like(StrUtil.isNotBlank(dto.getRemark()), BaseEntity::getRemark, dto.getRemark())
+                .eq(dto.getType() != null, SysSmsConfigurationDO::getType, dto.getType())
+                .eq(dto.getDefaultFlag() != null, SysSmsConfigurationDO::getDefaultFlag, dto.getDefaultFlag())
+                .eq(dto.getEnableFlag() != null, BaseEntity::getEnableFlag, dto.getEnableFlag())
+                .in(BaseEntityNoId::getTenantId, dto.getTenantIdSet()) //
+                .select(BaseEntity::getId, BaseEntityNoIdSuper::getTenantId, SysSmsConfigurationDO::getType,
+                        SysSmsConfigurationDO::getName, BaseEntityNoIdSuper::getCreateId, BaseEntityNoIdSuper::getCreateTime,
+                        BaseEntityNoIdSuper::getUpdateId, BaseEntityNoIdSuper::getUpdateTime, BaseEntityNoId::getEnableFlag,
+                        BaseEntityNoId::getRemark, SysSmsConfigurationDO::getDefaultFlag).orderByDesc(BaseEntity::getUpdateTime)
+                .page(dto.page(true));
 
     }
 
@@ -114,7 +114,7 @@ public class SysSmsConfigurationServiceImpl extends ServiceImpl<SysSmsConfigurat
         Set<Long> queryTenantIdSet = SysTenantUtil.getUserRefTenantIdSet();
 
         return lambdaQuery().eq(BaseEntity::getId, notNullId.getId()).in(BaseEntityNoId::getTenantId, queryTenantIdSet)
-            .one();
+                .one();
 
     }
 
@@ -146,7 +146,7 @@ public class SysSmsConfigurationServiceImpl extends ServiceImpl<SysSmsConfigurat
     private Func1<Set<Long>, Long> getCheckIllegalFunc1(Set<Long> idSet) {
 
         return tenantIdSet -> lambdaQuery().in(BaseEntity::getId, idSet).in(BaseEntityNoId::getTenantId, tenantIdSet)
-            .count();
+                .count();
 
     }
 

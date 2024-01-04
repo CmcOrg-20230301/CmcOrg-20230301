@@ -16,7 +16,7 @@ public class MyAuthenticationEntryPoint implements AuthenticationEntryPoint {
 
     @Override
     public void commence(HttpServletRequest request, HttpServletResponse response,
-        AuthenticationException authException) {
+                         AuthenticationException authException) {
 
         // 尚未登录，请先登录
         ResponseUtil.out(response, BaseBizCodeEnum.NOT_LOGGED_IN_YET);

@@ -42,7 +42,7 @@ public class PayApplyUtil {
     @SneakyThrows
     @NotNull
     public static SysPayTradeStatusEnum query(String outTradeNo, @Nullable SysPayTradeNotifyBO sysPayTradeNotifyBO,
-        SysPayConfigurationDO sysPayConfigurationDO) {
+                                              SysPayConfigurationDO sysPayConfigurationDO) {
 
         Assert.notBlank(outTradeNo);
 

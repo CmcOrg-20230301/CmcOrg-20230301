@@ -1,8 +1,11 @@
 SET NAMES utf8mb4;
-SET FOREIGN_KEY_CHECKS = 0;
+SET
+FOREIGN_KEY_CHECKS = 0;
 
-CREATE DATABASE IF NOT EXISTS `be_engine_v1` CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_ci';
-USE `be_engine_v1`;
+CREATE
+DATABASE IF NOT EXISTS `be_engine_v1` CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_ci';
+USE
+`be_engine_v1`;
 
 -- ----------------------------
 -- Table structure for sys_area
@@ -16,9 +19,9 @@ CREATE TABLE `sys_area`
     `create_time` datetime                                                      NOT NULL,
     `update_id`   bigint                                                        NOT NULL,
     `update_time` datetime                                                      NOT NULL,
-    `enable_flag` tinyint(1)                                                    NOT NULL COMMENT '是否启用',
+    `enable_flag` tinyint(1) NOT NULL COMMENT '是否启用',
     `version`     int                                                           NOT NULL COMMENT '乐观锁',
-    `del_flag`    tinyint(1)                                                    NOT NULL COMMENT '是否逻辑删除',
+    `del_flag`    tinyint(1) NOT NULL COMMENT '是否逻辑删除',
     `remark`      varchar(300) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '备注',
     `name`        varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '区域名',
     `parent_id`   bigint                                                        NOT NULL COMMENT '父节点id（顶级则为0）',
@@ -64,9 +67,9 @@ CREATE TABLE `sys_dept`
     `create_time` datetime                                                      NOT NULL,
     `update_id`   bigint                                                        NOT NULL,
     `update_time` datetime                                                      NOT NULL,
-    `enable_flag` tinyint(1)                                                    NOT NULL COMMENT '是否启用',
+    `enable_flag` tinyint(1) NOT NULL COMMENT '是否启用',
     `version`     int                                                           NOT NULL COMMENT '乐观锁',
-    `del_flag`    tinyint(1)                                                    NOT NULL COMMENT '是否逻辑删除',
+    `del_flag`    tinyint(1) NOT NULL COMMENT '是否逻辑删除',
     `remark`      varchar(300) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '备注',
     `name`        varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '部门名',
     `parent_id`   bigint                                                        NOT NULL COMMENT '父节点id（顶级则为0）',
@@ -112,9 +115,9 @@ CREATE TABLE `sys_dict`
     `create_time` datetime                                                      NOT NULL,
     `update_id`   bigint                                                        NOT NULL,
     `update_time` datetime                                                      NOT NULL,
-    `enable_flag` tinyint(1)                                                    NOT NULL COMMENT '是否启用',
+    `enable_flag` tinyint(1) NOT NULL COMMENT '是否启用',
     `version`     int                                                           NOT NULL COMMENT '乐观锁',
-    `del_flag`    tinyint(1)                                                    NOT NULL COMMENT '是否逻辑删除',
+    `del_flag`    tinyint(1) NOT NULL COMMENT '是否逻辑删除',
     `remark`      varchar(300) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '备注',
     `dict_key`    varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci  NOT NULL COMMENT '字典 key（不能重复），字典项要冗余这个 key，目的：方便操作',
     `name`        varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci  NOT NULL COMMENT '字典/字典项 名',
@@ -122,7 +125,7 @@ CREATE TABLE `sys_dict`
     `value`       int                                                           NOT NULL COMMENT '字典项 value（数字 123...）备注：字典为 -1',
     `order_no`    int                                                           NOT NULL COMMENT '排序号（值越大越前面，默认为 0）',
     `uuid`        varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci  NOT NULL COMMENT '该参数的 uuid，用于：同步租户参数等操作，备注：不允许修改',
-    `system_flag` tinyint(1)                                                    NOT NULL COMMENT '系统内置：是 强制同步给租户 否 不同步给租户',
+    `system_flag` tinyint(1) NOT NULL COMMENT '系统内置：是 强制同步给租户 否 不同步给租户',
     PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB
   CHARACTER SET = utf8mb4
@@ -265,27 +268,32 @@ VALUES (230823165101154704, 0, 0, '2023-08-23 16:51:01', 0, '2023-08-23 16:51:01
 INSERT INTO `be_engine_v1`.`sys_dict` (`id`, `tenant_id`, `create_id`, `create_time`, `update_id`, `update_time`,
                                        `enable_flag`, `version`, `del_flag`, `remark`, `dict_key`, `name`, `type`,
                                        `value`, `order_no`, `uuid`, `system_flag`)
-VALUES (231023100017080109, 0, 0, '2023-10-23 10:00:18', 0, '2023-10-23 10:00:18', 1, 0, 0, '', 'sys_pay_type', '支付方式',
+VALUES (231023100017080109, 0, 0, '2023-10-23 10:00:18', 0, '2023-10-23 10:00:18', 1, 0, 0, '', 'sys_pay_type',
+        '支付方式',
         1, -1, 9500, 'fa934b92b7e84d0d92543743ec6c369c', 1);
 INSERT INTO `be_engine_v1`.`sys_dict` (`id`, `tenant_id`, `create_id`, `create_time`, `update_id`, `update_time`,
                                        `enable_flag`, `version`, `del_flag`, `remark`, `dict_key`, `name`, `type`,
                                        `value`, `order_no`, `uuid`, `system_flag`)
-VALUES (231023100056080114, 0, 0, '2023-10-23 10:00:56', 0, '2023-10-23 10:00:56', 1, 0, 0, '', 'sys_pay_type', '支付宝',
+VALUES (231023100056080114, 0, 0, '2023-10-23 10:00:56', 0, '2023-10-23 10:00:56', 1, 0, 0, '', 'sys_pay_type',
+        '支付宝',
         2, 101, 10000, '5cd6ba1880314633a322b534410e212c', 1);
 INSERT INTO `be_engine_v1`.`sys_dict` (`id`, `tenant_id`, `create_id`, `create_time`, `update_id`, `update_time`,
                                        `enable_flag`, `version`, `del_flag`, `remark`, `dict_key`, `name`, `type`,
                                        `value`, `order_no`, `uuid`, `system_flag`)
-VALUES (231023100115080119, 0, 0, '2023-10-23 10:01:15', 0, '2023-10-23 10:01:15', 1, 0, 0, '', 'sys_pay_type', '微信', 2,
+VALUES (231023100115080119, 0, 0, '2023-10-23 10:01:15', 0, '2023-10-23 10:01:15', 1, 0, 0, '', 'sys_pay_type', '微信',
+        2,
         201, 9900, '376ffa1bf407420c858d0c0a802da9e7', 1);
 INSERT INTO `be_engine_v1`.`sys_dict` (`id`, `tenant_id`, `create_id`, `create_time`, `update_id`, `update_time`,
                                        `enable_flag`, `version`, `del_flag`, `remark`, `dict_key`, `name`, `type`,
                                        `value`, `order_no`, `uuid`, `system_flag`)
-VALUES (231023100126080124, 0, 0, '2023-10-23 10:01:26', 0, '2023-10-23 10:01:26', 1, 0, 0, '', 'sys_pay_type', '云闪付',
+VALUES (231023100126080124, 0, 0, '2023-10-23 10:01:26', 0, '2023-10-23 10:01:26', 1, 0, 0, '', 'sys_pay_type',
+        '云闪付',
         2, 301, 9800, '5fd4331fd7e14a41872a2b977d3ad56b', 1);
 INSERT INTO `be_engine_v1`.`sys_dict` (`id`, `tenant_id`, `create_id`, `create_time`, `update_id`, `update_time`,
                                        `enable_flag`, `version`, `del_flag`, `remark`, `dict_key`, `name`, `type`,
                                        `value`, `order_no`, `uuid`, `system_flag`)
-VALUES (231023100136080128, 0, 0, '2023-10-23 10:01:37', 0, '2023-10-23 10:01:37', 1, 0, 0, '', 'sys_pay_type', '谷歌', 2,
+VALUES (231023100136080128, 0, 0, '2023-10-23 10:01:37', 0, '2023-10-23 10:01:37', 1, 0, 0, '', 'sys_pay_type', '谷歌',
+        2,
         401, 9700, 'ae1954ff27a448c196170b2c20e1774f', 1);
 INSERT INTO `be_engine_v1`.`sys_dict` (`id`, `tenant_id`, `create_id`, `create_time`, `update_id`, `update_time`,
                                        `enable_flag`, `version`, `del_flag`, `remark`, `dict_key`, `name`, `type`,
@@ -321,9 +329,9 @@ CREATE TABLE `sys_file`
     `create_time`      datetime                                                      NOT NULL,
     `update_id`        bigint                                                        NOT NULL,
     `update_time`      datetime                                                      NOT NULL,
-    `enable_flag`      tinyint(1)                                                    NOT NULL COMMENT '是否启用',
+    `enable_flag` tinyint(1) NOT NULL COMMENT '是否启用',
     `version`          int                                                           NOT NULL COMMENT '乐观锁',
-    `del_flag`         tinyint(1)                                                    NOT NULL COMMENT '是否逻辑删除',
+    `del_flag`    tinyint(1) NOT NULL COMMENT '是否逻辑删除',
     `remark`           varchar(300) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '备注',
     `belong_id`        bigint                                                        NOT NULL COMMENT '归属者用户主键 id（拥有全部权限）',
     `bucket_name`      varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci  NOT NULL COMMENT '桶名，例如：be-bucket',
@@ -338,7 +346,7 @@ CREATE TABLE `sys_file`
     `type`             int                                                           NOT NULL COMMENT '类型：1 文件夹 2 文件',
     `show_file_name`   varchar(300) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '展示用的文件名，默认为：原始文件名（包含文件类型）',
     `ref_file_id`      bigint                                                        NOT NULL COMMENT '引用的文件主键 id，没有则为 -1，如果有值，则文件地址从引用的文件里面获取，但是权限等信息，从本条数据获取',
-    `public_flag`      tinyint(1)                                                    NOT NULL COMMENT '是否公开访问：0 否 1 是',
+    `public_flag` tinyint(1) NOT NULL COMMENT '是否公开访问：0 否 1 是',
     PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB
   CHARACTER SET = utf8mb4
@@ -361,14 +369,14 @@ CREATE TABLE `sys_file_auth`
     `create_time` datetime                                                      NOT NULL,
     `update_id`   bigint                                                        NOT NULL,
     `update_time` datetime                                                      NOT NULL,
-    `enable_flag` tinyint(1)                                                    NOT NULL COMMENT '是否启用',
+    `enable_flag` tinyint(1) NOT NULL COMMENT '是否启用',
     `version`     int                                                           NOT NULL COMMENT '乐观锁',
-    `del_flag`    tinyint(1)                                                    NOT NULL COMMENT '是否逻辑删除',
+    `del_flag`    tinyint(1) NOT NULL COMMENT '是否逻辑删除',
     `remark`      varchar(300) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '备注',
     `file_id`     bigint                                                        NOT NULL COMMENT '文件主键 id',
     `user_id`     bigint                                                        NOT NULL COMMENT '此权限拥有者的 userId',
-    `read_flag`   tinyint(1)                                                    NOT NULL COMMENT '是否可读：0 否 1 是',
-    `write_flag`  tinyint(1)                                                    NOT NULL COMMENT '是否可写：0 否 1 是',
+    `read_flag`   tinyint(1) NOT NULL COMMENT '是否可读：0 否 1 是',
+    `write_flag`  tinyint(1) NOT NULL COMMENT '是否可写：0 否 1 是',
     PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB
   CHARACTER SET = utf8mb4
@@ -391,22 +399,22 @@ CREATE TABLE `sys_menu`
     `create_time` datetime                                                      NOT NULL,
     `update_id`   bigint                                                        NOT NULL,
     `update_time` datetime                                                      NOT NULL,
-    `enable_flag` tinyint(1)                                                    NOT NULL COMMENT '是否启用',
+    `enable_flag` tinyint(1) NOT NULL COMMENT '是否启用',
     `version`     int                                                           NOT NULL COMMENT '乐观锁',
-    `del_flag`    tinyint(1)                                                    NOT NULL COMMENT '是否逻辑删除',
+    `del_flag`    tinyint(1) NOT NULL COMMENT '是否逻辑删除',
     `remark`      varchar(300) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '备注',
     `name`        varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '菜单名',
     `path`        varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '页面的 path，备注：相同父菜单下，子菜单 path不能重复',
     `icon`        varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '图标',
     `parent_id`   bigint                                                        NOT NULL COMMENT '父节点id（顶级则为0）',
     `auths`       varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '权限，多个可用逗号拼接，例如：menu:insertOrUpdate,menu:page,menu:deleteByIdSet,menu:infoById',
-    `show_flag`   tinyint(1)                                                    NOT NULL COMMENT '是否显示在 左侧的菜单栏里面，如果为 false，也可以通过 $router.push()访问到',
-    `link_flag`   tinyint(1)                                                    NOT NULL COMMENT '是否外链，即，打开页面会在一个新的窗口打开，可以配合 router',
+    `show_flag`   tinyint(1) NOT NULL COMMENT '是否显示在 左侧的菜单栏里面，如果为 false，也可以通过 $router.push()访问到',
+    `link_flag`   tinyint(1) NOT NULL COMMENT '是否外链，即，打开页面会在一个新的窗口打开，可以配合 router',
     `router`      varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '路由',
     `redirect`    varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '重定向，优先级最高',
     `order_no`    int                                                           NOT NULL COMMENT '排序号（值越大越前面，默认为 0）',
-    `first_flag`  tinyint(1)                                                    NOT NULL COMMENT '是否是起始页面，备注：只能存在一个 firstFlag === true 的菜单',
-    `auth_flag`   tinyint(1)                                                    NOT NULL COMMENT '是否是权限菜单，权限菜单：不显示，只代表菜单权限',
+    `first_flag`  tinyint(1) NOT NULL COMMENT '是否是起始页面，备注：只能存在一个 firstFlag === true 的菜单',
+    `auth_flag`   tinyint(1) NOT NULL COMMENT '是否是权限菜单，权限菜单：不显示，只代表菜单权限',
     `uuid`        varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci  NOT NULL COMMENT '该菜单的 uuid，用于：同步租户菜单等操作，备注：不允许修改',
     PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB
@@ -425,7 +433,8 @@ VALUES (3, 0, 1, '2021-12-22 10:53:32', 0, '2023-05-23 22:18:42', 1, 2, 0, '', '
 INSERT INTO `sys_menu` (`id`, `tenant_id`, `create_id`, `create_time`, `update_id`, `update_time`, `enable_flag`,
                         `version`, `del_flag`, `remark`, `name`, `path`, `icon`, `parent_id`, `auths`, `show_flag`,
                         `link_flag`, `router`, `redirect`, `order_no`, `first_flag`, `auth_flag`, `uuid`)
-VALUES (4, 0, 1, '2021-12-20 11:10:15', 0, '2023-06-01 14:07:47', 1, 2, 0, '', '菜单管理', '/admin/sys/menu', '', 3, '', 1,
+VALUES (4, 0, 1, '2021-12-20 11:10:15', 0, '2023-06-01 14:07:47', 1, 2, 0, '', '菜单管理', '/admin/sys/menu', '', 3, '',
+        1,
         0, 'sysMenuMenu', '', 10000, 0, 0, '7c881482370d49b182e50909b248ca74');
 INSERT INTO `sys_menu` (`id`, `tenant_id`, `create_id`, `create_time`, `update_id`, `update_time`, `enable_flag`,
                         `version`, `del_flag`, `remark`, `name`, `path`, `icon`, `parent_id`, `auths`, `show_flag`,
@@ -435,22 +444,26 @@ VALUES (5, 0, 1, '2022-05-21 01:00:18', 1, '2022-05-21 01:00:18', 1, 2, 0, '', '
 INSERT INTO `sys_menu` (`id`, `tenant_id`, `create_id`, `create_time`, `update_id`, `update_time`, `enable_flag`,
                         `version`, `del_flag`, `remark`, `name`, `path`, `icon`, `parent_id`, `auths`, `show_flag`,
                         `link_flag`, `router`, `redirect`, `order_no`, `first_flag`, `auth_flag`, `uuid`)
-VALUES (6, 0, 1, '2022-05-21 01:00:18', 1, '2022-05-21 01:00:18', 1, 2, 0, '', '列表查询', '', '', 4, 'sysMenu:page', 0, 0,
+VALUES (6, 0, 1, '2022-05-21 01:00:18', 1, '2022-05-21 01:00:18', 1, 2, 0, '', '列表查询', '', '', 4, 'sysMenu:page', 0,
+        0,
         '', '', 9990, 0, 1, 'dc7021d578894376bd2d4aa0fca7f969');
 INSERT INTO `sys_menu` (`id`, `tenant_id`, `create_id`, `create_time`, `update_id`, `update_time`, `enable_flag`,
                         `version`, `del_flag`, `remark`, `name`, `path`, `icon`, `parent_id`, `auths`, `show_flag`,
                         `link_flag`, `router`, `redirect`, `order_no`, `first_flag`, `auth_flag`, `uuid`)
-VALUES (7, 0, 1, '2022-05-21 01:00:19', 1, '2022-05-21 01:00:19', 1, 2, 0, '', '删除', '', '', 4, 'sysMenu:deleteByIdSet',
+VALUES (7, 0, 1, '2022-05-21 01:00:19', 1, '2022-05-21 01:00:19', 1, 2, 0, '', '删除', '', '', 4,
+        'sysMenu:deleteByIdSet',
         0, 0, '', '', 9980, 0, 1, '9116fbdc0c164ef3a443003814bb95fe');
 INSERT INTO `sys_menu` (`id`, `tenant_id`, `create_id`, `create_time`, `update_id`, `update_time`, `enable_flag`,
                         `version`, `del_flag`, `remark`, `name`, `path`, `icon`, `parent_id`, `auths`, `show_flag`,
                         `link_flag`, `router`, `redirect`, `order_no`, `first_flag`, `auth_flag`, `uuid`)
-VALUES (8, 0, 1, '2022-05-21 01:00:19', 1, '2022-05-21 01:00:19', 1, 2, 0, '', '查看详情', '', '', 4, 'sysMenu:infoById', 0,
+VALUES (8, 0, 1, '2022-05-21 01:00:19', 1, '2022-05-21 01:00:19', 1, 2, 0, '', '查看详情', '', '', 4,
+        'sysMenu:infoById', 0,
         0, '', '', 9970, 0, 1, 'd00e87e7090b45f1abac8a3afa2bc941');
 INSERT INTO `sys_menu` (`id`, `tenant_id`, `create_id`, `create_time`, `update_id`, `update_time`, `enable_flag`,
                         `version`, `del_flag`, `remark`, `name`, `path`, `icon`, `parent_id`, `auths`, `show_flag`,
                         `link_flag`, `router`, `redirect`, `order_no`, `first_flag`, `auth_flag`, `uuid`)
-VALUES (9, 0, 1, '2021-12-22 11:09:35', 0, '2022-07-18 02:56:28', 1, 2, 0, '', '角色管理', '/admin/sys/role', '', 3, '', 1,
+VALUES (9, 0, 1, '2021-12-22 11:09:35', 0, '2022-07-18 02:56:28', 1, 2, 0, '', '角色管理', '/admin/sys/role', '', 3, '',
+        1,
         0, 'sysRoleRole', '', 9990, 0, 0, 'a17458ccd5374a0baf5dacfb66dee6b8');
 INSERT INTO `sys_menu` (`id`, `tenant_id`, `create_id`, `create_time`, `update_id`, `update_time`, `enable_flag`,
                         `version`, `del_flag`, `remark`, `name`, `path`, `icon`, `parent_id`, `auths`, `show_flag`,
@@ -460,7 +473,8 @@ VALUES (10, 0, 1, '2022-05-21 01:03:25', 1, '2022-05-21 01:03:25', 1, 2, 0, '', 
 INSERT INTO `sys_menu` (`id`, `tenant_id`, `create_id`, `create_time`, `update_id`, `update_time`, `enable_flag`,
                         `version`, `del_flag`, `remark`, `name`, `path`, `icon`, `parent_id`, `auths`, `show_flag`,
                         `link_flag`, `router`, `redirect`, `order_no`, `first_flag`, `auth_flag`, `uuid`)
-VALUES (11, 0, 1, '2022-05-21 01:03:26', 1, '2022-05-21 01:03:26', 1, 2, 0, '', '列表查询', '', '', 9, 'sysRole:page', 0, 0,
+VALUES (11, 0, 1, '2022-05-21 01:03:26', 1, '2022-05-21 01:03:26', 1, 2, 0, '', '列表查询', '', '', 9, 'sysRole:page',
+        0, 0,
         '', '', 9990, 0, 1, '01fade35763c4ed0827a9b52e1540e8c');
 INSERT INTO `sys_menu` (`id`, `tenant_id`, `create_id`, `create_time`, `update_id`, `update_time`, `enable_flag`,
                         `version`, `del_flag`, `remark`, `name`, `path`, `icon`, `parent_id`, `auths`, `show_flag`,
@@ -470,12 +484,14 @@ VALUES (12, 0, 1, '2022-05-21 01:03:26', 1, '2022-05-21 01:03:26', 1, 2, 0, '', 
 INSERT INTO `sys_menu` (`id`, `tenant_id`, `create_id`, `create_time`, `update_id`, `update_time`, `enable_flag`,
                         `version`, `del_flag`, `remark`, `name`, `path`, `icon`, `parent_id`, `auths`, `show_flag`,
                         `link_flag`, `router`, `redirect`, `order_no`, `first_flag`, `auth_flag`, `uuid`)
-VALUES (13, 0, 1, '2022-05-21 01:03:26', 1, '2022-05-21 01:03:26', 1, 2, 0, '', '查看详情', '', '', 9, 'sysRole:infoById',
+VALUES (13, 0, 1, '2022-05-21 01:03:26', 1, '2022-05-21 01:03:26', 1, 2, 0, '', '查看详情', '', '', 9,
+        'sysRole:infoById',
         0, 0, '', '', 9970, 0, 1, 'a17e3709381346ffbb6c6d614a1d36d2');
 INSERT INTO `sys_menu` (`id`, `tenant_id`, `create_id`, `create_time`, `update_id`, `update_time`, `enable_flag`,
                         `version`, `del_flag`, `remark`, `name`, `path`, `icon`, `parent_id`, `auths`, `show_flag`,
                         `link_flag`, `router`, `redirect`, `order_no`, `first_flag`, `auth_flag`, `uuid`)
-VALUES (14, 0, 1, '2021-12-22 11:09:16', 0, '2023-06-27 15:41:02', 1, 2, 0, '', '用户管理', '/admin/sys/user', '', 3, '', 1,
+VALUES (14, 0, 1, '2021-12-22 11:09:16', 0, '2023-06-27 15:41:02', 1, 2, 0, '', '用户管理', '/admin/sys/user', '', 3,
+        '', 1,
         0, 'sysUserUser', '', 9980, 1, 0, 'e00a139651a44fa4a4ae5235a8918fff');
 INSERT INTO `sys_menu` (`id`, `tenant_id`, `create_id`, `create_time`, `update_id`, `update_time`, `enable_flag`,
                         `version`, `del_flag`, `remark`, `name`, `path`, `icon`, `parent_id`, `auths`, `show_flag`,
@@ -485,7 +501,8 @@ VALUES (15, 0, 1, '2022-05-21 01:03:16', 1, '2022-05-21 01:03:16', 1, 2, 0, '', 
 INSERT INTO `sys_menu` (`id`, `tenant_id`, `create_id`, `create_time`, `update_id`, `update_time`, `enable_flag`,
                         `version`, `del_flag`, `remark`, `name`, `path`, `icon`, `parent_id`, `auths`, `show_flag`,
                         `link_flag`, `router`, `redirect`, `order_no`, `first_flag`, `auth_flag`, `uuid`)
-VALUES (16, 0, 1, '2022-05-21 01:03:17', 1, '2022-05-21 01:03:17', 1, 2, 0, '', '列表查询', '', '', 14, 'sysUser:page', 0,
+VALUES (16, 0, 1, '2022-05-21 01:03:17', 1, '2022-05-21 01:03:17', 1, 2, 0, '', '列表查询', '', '', 14, 'sysUser:page',
+        0,
         0, '', '', 9990, 0, 1, '0d93bb8ebf564b6d907e520fad121990');
 INSERT INTO `sys_menu` (`id`, `tenant_id`, `create_id`, `create_time`, `update_id`, `update_time`, `enable_flag`,
                         `version`, `del_flag`, `remark`, `name`, `path`, `icon`, `parent_id`, `auths`, `show_flag`,
@@ -495,12 +512,14 @@ VALUES (17, 0, 1, '2022-05-21 01:03:17', 1, '2022-05-21 01:03:17', 1, 2, 0, '', 
 INSERT INTO `sys_menu` (`id`, `tenant_id`, `create_id`, `create_time`, `update_id`, `update_time`, `enable_flag`,
                         `version`, `del_flag`, `remark`, `name`, `path`, `icon`, `parent_id`, `auths`, `show_flag`,
                         `link_flag`, `router`, `redirect`, `order_no`, `first_flag`, `auth_flag`, `uuid`)
-VALUES (18, 0, 1, '2022-05-21 01:03:17', 1, '2022-05-21 01:03:17', 1, 2, 0, '', '查看详情', '', '', 14, 'sysUser:infoById',
+VALUES (18, 0, 1, '2022-05-21 01:03:17', 1, '2022-05-21 01:03:17', 1, 2, 0, '', '查看详情', '', '', 14,
+        'sysUser:infoById',
         0, 0, '', '', 9970, 0, 1, '977681cc18844823bd9e1ba0730b8ebe');
 INSERT INTO `sys_menu` (`id`, `tenant_id`, `create_id`, `create_time`, `update_id`, `update_time`, `enable_flag`,
                         `version`, `del_flag`, `remark`, `name`, `path`, `icon`, `parent_id`, `auths`, `show_flag`,
                         `link_flag`, `router`, `redirect`, `order_no`, `first_flag`, `auth_flag`, `uuid`)
-VALUES (19, 0, 1, '2021-12-22 11:09:53', 1, '2022-07-03 14:12:10', 1, 2, 0, '', '字典管理', '/admin/sys/dict', '', 3, '', 1,
+VALUES (19, 0, 1, '2021-12-22 11:09:53', 1, '2022-07-03 14:12:10', 1, 2, 0, '', '字典管理', '/admin/sys/dict', '', 3,
+        '', 1,
         0, 'sysDictDict', '', 9970, 0, 0, '29362e6a7c244927b14b90d9773a9da9');
 INSERT INTO `sys_menu` (`id`, `tenant_id`, `create_id`, `create_time`, `update_id`, `update_time`, `enable_flag`,
                         `version`, `del_flag`, `remark`, `name`, `path`, `icon`, `parent_id`, `auths`, `show_flag`,
@@ -510,7 +529,8 @@ VALUES (20, 0, 1, '2022-05-21 01:03:32', 1, '2022-05-21 01:03:32', 1, 2, 0, '', 
 INSERT INTO `sys_menu` (`id`, `tenant_id`, `create_id`, `create_time`, `update_id`, `update_time`, `enable_flag`,
                         `version`, `del_flag`, `remark`, `name`, `path`, `icon`, `parent_id`, `auths`, `show_flag`,
                         `link_flag`, `router`, `redirect`, `order_no`, `first_flag`, `auth_flag`, `uuid`)
-VALUES (21, 0, 1, '2022-05-21 01:03:32', 1, '2022-05-21 01:03:32', 1, 2, 0, '', '列表查询', '', '', 19, 'sysDict:page', 0,
+VALUES (21, 0, 1, '2022-05-21 01:03:32', 1, '2022-05-21 01:03:32', 1, 2, 0, '', '列表查询', '', '', 19, 'sysDict:page',
+        0,
         0, '', '', 9990, 0, 1, '2b7badefb6904f6db2eebea40385bf45');
 INSERT INTO `sys_menu` (`id`, `tenant_id`, `create_id`, `create_time`, `update_id`, `update_time`, `enable_flag`,
                         `version`, `del_flag`, `remark`, `name`, `path`, `icon`, `parent_id`, `auths`, `show_flag`,
@@ -520,12 +540,14 @@ VALUES (22, 0, 1, '2022-05-21 01:03:32', 1, '2022-05-21 01:03:32', 1, 2, 0, '', 
 INSERT INTO `sys_menu` (`id`, `tenant_id`, `create_id`, `create_time`, `update_id`, `update_time`, `enable_flag`,
                         `version`, `del_flag`, `remark`, `name`, `path`, `icon`, `parent_id`, `auths`, `show_flag`,
                         `link_flag`, `router`, `redirect`, `order_no`, `first_flag`, `auth_flag`, `uuid`)
-VALUES (23, 0, 1, '2022-05-21 01:03:32', 1, '2022-05-21 01:03:32', 1, 2, 0, '', '查看详情', '', '', 19, 'sysDict:infoById',
+VALUES (23, 0, 1, '2022-05-21 01:03:32', 1, '2022-05-21 01:03:32', 1, 2, 0, '', '查看详情', '', '', 19,
+        'sysDict:infoById',
         0, 0, '', '', 9970, 0, 1, '92191c72bee6497aaf77502fbcf051a1');
 INSERT INTO `sys_menu` (`id`, `tenant_id`, `create_id`, `create_time`, `update_id`, `update_time`, `enable_flag`,
                         `version`, `del_flag`, `remark`, `name`, `path`, `icon`, `parent_id`, `auths`, `show_flag`,
                         `link_flag`, `router`, `redirect`, `order_no`, `first_flag`, `auth_flag`, `uuid`)
-VALUES (24, 0, 1, '2021-12-22 11:10:31', 0, '2023-09-01 11:33:42', 1, 2, 0, '', '参数管理', '/admin/sys/param', '', 3, '',
+VALUES (24, 0, 1, '2021-12-22 11:10:31', 0, '2023-09-01 11:33:42', 1, 2, 0, '', '参数管理', '/admin/sys/param', '', 3,
+        '',
         1, 0, 'sysParamParam', '', 9960, 0, 0, 'e802321ab4804f749b69705d60af19f2');
 INSERT INTO `sys_menu` (`id`, `tenant_id`, `create_id`, `create_time`, `update_id`, `update_time`, `enable_flag`,
                         `version`, `del_flag`, `remark`, `name`, `path`, `icon`, `parent_id`, `auths`, `show_flag`,
@@ -535,7 +557,8 @@ VALUES (25, 0, 1, '2022-05-21 01:03:57', 1, '2022-05-21 01:03:57', 1, 2, 0, '', 
 INSERT INTO `sys_menu` (`id`, `tenant_id`, `create_id`, `create_time`, `update_id`, `update_time`, `enable_flag`,
                         `version`, `del_flag`, `remark`, `name`, `path`, `icon`, `parent_id`, `auths`, `show_flag`,
                         `link_flag`, `router`, `redirect`, `order_no`, `first_flag`, `auth_flag`, `uuid`)
-VALUES (26, 0, 1, '2022-05-21 01:03:57', 1, '2022-05-21 01:03:57', 1, 2, 0, '', '列表查询', '', '', 24, 'sysParam:page', 0,
+VALUES (26, 0, 1, '2022-05-21 01:03:57', 1, '2022-05-21 01:03:57', 1, 2, 0, '', '列表查询', '', '', 24, 'sysParam:page',
+        0,
         0, '', '', 9990, 0, 1, 'b3990737b39147d9b56436a11b078f8d');
 INSERT INTO `sys_menu` (`id`, `tenant_id`, `create_id`, `create_time`, `update_id`, `update_time`, `enable_flag`,
                         `version`, `del_flag`, `remark`, `name`, `path`, `icon`, `parent_id`, `auths`, `show_flag`,
@@ -545,17 +568,20 @@ VALUES (27, 0, 1, '2022-05-21 01:03:57', 1, '2022-05-21 01:03:57', 1, 2, 0, '', 
 INSERT INTO `sys_menu` (`id`, `tenant_id`, `create_id`, `create_time`, `update_id`, `update_time`, `enable_flag`,
                         `version`, `del_flag`, `remark`, `name`, `path`, `icon`, `parent_id`, `auths`, `show_flag`,
                         `link_flag`, `router`, `redirect`, `order_no`, `first_flag`, `auth_flag`, `uuid`)
-VALUES (28, 0, 1, '2022-05-21 01:03:57', 1, '2022-05-21 01:03:57', 1, 2, 0, '', '查看详情', '', '', 24, 'sysParam:infoById',
+VALUES (28, 0, 1, '2022-05-21 01:03:57', 1, '2022-05-21 01:03:57', 1, 2, 0, '', '查看详情', '', '', 24,
+        'sysParam:infoById',
         0, 0, '', '', 9970, 0, 1, 'ba76e238e98a4b7ab1dcaba0c70b8172');
 INSERT INTO `sys_menu` (`id`, `tenant_id`, `create_id`, `create_time`, `update_id`, `update_time`, `enable_flag`,
                         `version`, `del_flag`, `remark`, `name`, `path`, `icon`, `parent_id`, `auths`, `show_flag`,
                         `link_flag`, `router`, `redirect`, `order_no`, `first_flag`, `auth_flag`, `uuid`)
-VALUES (55, 0, 1, '2021-12-24 11:37:27', 0, '2022-10-05 13:23:04', 1, 2, 0, '', '个人管理', '', '', 0, '', 0, 0, '', '', 0,
+VALUES (55, 0, 1, '2021-12-24 11:37:27', 0, '2022-10-05 13:23:04', 1, 2, 0, '', '个人管理', '', '', 0, '', 0, 0, '', '',
+        0,
         0, 0, '05ba09064c9047a5b1f13e4b4fb92d37');
 INSERT INTO `sys_menu` (`id`, `tenant_id`, `create_id`, `create_time`, `update_id`, `update_time`, `enable_flag`,
                         `version`, `del_flag`, `remark`, `name`, `path`, `icon`, `parent_id`, `auths`, `show_flag`,
                         `link_flag`, `router`, `redirect`, `order_no`, `first_flag`, `auth_flag`, `uuid`)
-VALUES (56, 0, 1, '2021-12-24 11:37:42', 0, '2022-10-05 13:24:13', 1, 2, 0, '', '个人中心', '/admin/user/self', '', 55, '',
+VALUES (56, 0, 1, '2021-12-24 11:37:42', 0, '2022-10-05 13:24:13', 1, 2, 0, '', '个人中心', '/admin/user/self', '', 55,
+        '',
         0, 0, 'userSelfSelf', '', 10000, 0, 0, '4f12c3aedbd54e18a17e3c1d38e7ef15');
 INSERT INTO `sys_menu` (`id`, `tenant_id`, `create_id`, `create_time`, `update_id`, `update_time`, `enable_flag`,
                         `version`, `del_flag`, `remark`, `name`, `path`, `icon`, `parent_id`, `auths`, `show_flag`,
@@ -570,7 +596,8 @@ VALUES (221004205817000054, 0, 0, '2022-10-04 12:58:17', 0, '2023-06-27 15:40:23
 INSERT INTO `sys_menu` (`id`, `tenant_id`, `create_id`, `create_time`, `update_id`, `update_time`, `enable_flag`,
                         `version`, `del_flag`, `remark`, `name`, `path`, `icon`, `parent_id`, `auths`, `show_flag`,
                         `link_flag`, `router`, `redirect`, `order_no`, `first_flag`, `auth_flag`, `uuid`)
-VALUES (221005155605000086, 0, 0, '2022-10-05 07:56:05', 0, '2023-07-11 12:04:49', 1, 2, 0, '', '欢迎', '/admin/welcome',
+VALUES (221005155605000086, 0, 0, '2022-10-05 07:56:05', 0, '2023-07-11 12:04:49', 1, 2, 0, '', '欢迎',
+        '/admin/welcome',
         'SmileOutlined', 0, '', 1, 0, 'WelcomeWelcome', '', 11000, 0, 0, '06e78e05c2494fa180f3d0780a75e60f');
 INSERT INTO `sys_menu` (`id`, `tenant_id`, `create_id`, `create_time`, `update_id`, `update_time`, `enable_flag`,
                         `version`, `del_flag`, `remark`, `name`, `path`, `icon`, `parent_id`, `auths`, `show_flag`,
@@ -795,14 +822,14 @@ CREATE TABLE `sys_param`
     `create_time` datetime                                                      NOT NULL,
     `update_id`   bigint                                                        NOT NULL,
     `update_time` datetime                                                      NOT NULL,
-    `enable_flag` tinyint(1)                                                    NOT NULL COMMENT '是否启用',
+    `enable_flag` tinyint(1) NOT NULL COMMENT '是否启用',
     `version`     int                                                           NOT NULL COMMENT '乐观锁',
-    `del_flag`    tinyint(1)                                                    NOT NULL COMMENT '是否逻辑删除',
+    `del_flag`    tinyint(1) NOT NULL COMMENT '是否逻辑删除',
     `remark`      varchar(300) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '备注',
     `name`        varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '配置名，以 uuid为不变值进行使用，不要用此属性',
-    `value`       text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci         NOT NULL COMMENT '值',
+    `value`       text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '值',
     `uuid`        varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci  NOT NULL COMMENT '该参数的 uuid，用于：同步租户参数等操作，备注：不允许修改，并且系统内置参数的 uuid等于 id',
-    `system_flag` tinyint(1)                                                    NOT NULL COMMENT '系统内置：是 强制同步给租户 否 不同步给租户',
+    `system_flag` tinyint(1) NOT NULL COMMENT '系统内置：是 强制同步给租户 否 不同步给租户',
     PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB
   CHARACTER SET = utf8mb4
@@ -814,15 +841,18 @@ CREATE TABLE `sys_param`
 -- ----------------------------
 INSERT INTO `sys_param`
 VALUES (1, 0, 1, '2021-12-26 11:32:38', 1, '2022-01-11 21:03:30', 1, 0, 0,
-        '获取私钥方法：new RSA().getPrivateKeyBase64()，备注：获取公钥同理，但是必须使用同一个对象，因为必须成对', '非对称加密，私钥',
+        '获取私钥方法：new RSA().getPrivateKeyBase64()，备注：获取公钥同理，但是必须使用同一个对象，因为必须成对',
+        '非对称加密，私钥',
         'MIICdgIBADANBgkqhkiG9w0BAQEFAASCAmAwggJcAgEAAoGBANp2ZoJp983rckLlCwwr/6V7m+gIHgPM6xX3E4FmAYnKqeLOH39RwWQihFp7mt5t1ZS2c87gJOB0lu5K+79O0gg+P0N7n/CImKUUBZ3VV7uoZrHFPGpbAU2nun8UuvRikx4GM7KV2z0bIDVyeMiqu411i/6pFmex4TRKrZYRm6z1AgMBAAECgYAMjU//f0IvMS97+3gCh4alRfBjyQ+cbUo2lV8oCKne9meDcg9qO9LOQ5NyNXbk/8+NP1xxDvzfbqN7ZpCHYep8VoxJYMqr15czK9Sk34A5AdpOb5kQhUAgfyaQlIu+2s3NSjyJUXcNqLRRb0xiGhoJmH1V9zGSVFaJnGsUJuZAkwJBAPl/4VNtvcWTyoGBHFlJjto4V1lYkD63qKh66evXiI7PEQhGB4b8ubBFnEJephWQO/tWo6AYFipMrtjJ1z+KqWsCQQDgJ4IsRZleS5vr5bYhL5+YE8BN8TyzyJ/7MvSjV6ZB7Qoq+w7CSsWm4wTnO9zdSuJaXJ7QmMfDR9Y/tAx2MLsfAkBkdJOxtqbI7VeEywox/QbyX+rzg1AYoHPc2hhjJ9XIwiB2d1PCivDswypGIru2ROuRp/GbnPcXsuZXTPVIlTjfAkEAkhtukCj1pS8nfQYIR21hW6FUMfnSlWVqUjSOnYHeTw6RGB75Kc/PMc68PXUZq+zJyhihNFrBqxpCHtffX5K4BQJAIIs70dCXBmZ1AjWUTgRY1piEGtwoxPO229guHvF6P8IOyxCuFWrCgY/1UnZt3Yc/XubImBb/xQx5CcdFWYcgjw==',
         '1', 1);
 INSERT INTO `sys_param`
 VALUES (2, 0, 1, '2021-12-26 11:32:38', 0, '2023-09-01 18:08:56', 1, 0, 0,
-        '多少秒钟，一个 ip可以请求多少次，用冒号隔开的，任意值小于等于 0，则不会进行检查，如果超过了请求次数，则一天无法访问任何接口', 'ip请求速率', '10:75', '2', 1);
+        '多少秒钟，一个 ip可以请求多少次，用冒号隔开的，任意值小于等于 0，则不会进行检查，如果超过了请求次数，则一天无法访问任何接口',
+        'ip请求速率', '10:75', '2', 1);
 INSERT INTO `sys_param`
 VALUES (3, 0, 0, '2023-09-06 16:51:08', 0, '2023-09-06 17:37:53', 1, 0, 0,
-        '1：用户会自动关联子级租户\n0（默认）：用户不会自动关联子级租户，如果需要关联租户，则只能手动关联租户', '是否关联子级租户', '1', '3', 0);
+        '1：用户会自动关联子级租户\n0（默认）：用户不会自动关联子级租户，如果需要关联租户，则只能手动关联租户',
+        '是否关联子级租户', '1', '3', 0);
 
 -- ----------------------------
 -- Table structure for sys_pay
@@ -836,9 +866,9 @@ CREATE TABLE `sys_pay`
     `create_time`      datetime                                                      NOT NULL,
     `update_id`        bigint                                                        NOT NULL,
     `update_time`      datetime                                                      NOT NULL,
-    `enable_flag`      tinyint(1)                                                    NOT NULL COMMENT '是否启用',
+    `enable_flag` tinyint(1) NOT NULL COMMENT '是否启用',
     `version`          int                                                           NOT NULL COMMENT '乐观锁',
-    `del_flag`         tinyint(1)                                                    NOT NULL COMMENT '是否逻辑删除',
+    `del_flag`    tinyint(1) NOT NULL COMMENT '是否逻辑删除',
     `remark`           varchar(300) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '描述/备注',
     `pay_type`         int                                                           NOT NULL COMMENT '支付方式',
     `user_id`          bigint                                                        NOT NULL COMMENT '用户主键 id',
@@ -879,9 +909,9 @@ CREATE TABLE `sys_post`
     `create_time` datetime                                                      NOT NULL,
     `update_id`   bigint                                                        NOT NULL,
     `update_time` datetime                                                      NOT NULL,
-    `enable_flag` tinyint(1)                                                    NOT NULL COMMENT '是否启用',
+    `enable_flag` tinyint(1) NOT NULL COMMENT '是否启用',
     `version`     int                                                           NOT NULL COMMENT '乐观锁',
-    `del_flag`    tinyint(1)                                                    NOT NULL COMMENT '是否逻辑删除',
+    `del_flag`    tinyint(1) NOT NULL COMMENT '是否逻辑删除',
     `remark`      varchar(300) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '备注',
     `name`        varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '岗位名',
     `parent_id`   bigint                                                        NOT NULL COMMENT '父节点id（顶级则为0）',
@@ -927,9 +957,9 @@ CREATE TABLE `sys_request`
     `create_time`    datetime                                                       NOT NULL,
     `update_id`      bigint                                                         NOT NULL,
     `update_time`    datetime                                                       NOT NULL,
-    `enable_flag`    tinyint(1)                                                     NOT NULL COMMENT '是否启用',
+    `enable_flag`  tinyint(1) NOT NULL COMMENT '是否启用',
     `version`        int                                                            NOT NULL COMMENT '乐观锁',
-    `del_flag`       tinyint(1)                                                     NOT NULL COMMENT '是否逻辑删除',
+    `del_flag`     tinyint(1) NOT NULL COMMENT '是否逻辑删除',
     `remark`         varchar(300) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci  NOT NULL COMMENT '备注',
     `uri`            varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci  NOT NULL COMMENT '请求的uri',
     `name`           varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci  NOT NULL COMMENT '接口名（备用）',
@@ -938,7 +968,7 @@ CREATE TABLE `sys_request`
     `category`       int                                                            NOT NULL COMMENT '请求类别',
     `ip`             varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci  NOT NULL COMMENT 'ip',
     `region`         varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci  NOT NULL COMMENT 'Ip2RegionUtil.getRegion() 获取到的 ip所处区域',
-    `success_flag`   tinyint(1)                                                     NOT NULL COMMENT '请求是否成功',
+    `success_flag` tinyint(1) NOT NULL COMMENT '请求是否成功',
     `error_msg`      varchar(1000) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '失败信息',
     `request_param`  varchar(1000) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '请求的参数',
     `type`           varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci   NOT NULL COMMENT '请求类型',
@@ -965,12 +995,12 @@ CREATE TABLE `sys_role`
     `create_time`  datetime                                                      NOT NULL,
     `update_id`    bigint                                                        NOT NULL,
     `update_time`  datetime                                                      NOT NULL,
-    `enable_flag`  tinyint(1)                                                    NOT NULL COMMENT '是否启用',
+    `enable_flag`  tinyint(1) NOT NULL COMMENT '是否启用',
     `version`      int                                                           NOT NULL COMMENT '乐观锁',
-    `del_flag`     tinyint(1)                                                    NOT NULL COMMENT '是否逻辑删除',
+    `del_flag`     tinyint(1) NOT NULL COMMENT '是否逻辑删除',
     `remark`       varchar(300) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '备注',
     `name`         varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '角色名（不能重复）',
-    `default_flag` tinyint(1)                                                    NOT NULL COMMENT '是否是默认角色，备注：只会有一个默认角色',
+    `default_flag` tinyint(1) NOT NULL COMMENT '是否是默认角色，备注：只会有一个默认角色',
     PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB
   CHARACTER SET = utf8mb4
@@ -1031,9 +1061,9 @@ CREATE TABLE `sys_socket`
     `create_time` datetime                                                      NOT NULL,
     `update_id`   bigint                                                        NOT NULL,
     `update_time` datetime                                                      NOT NULL,
-    `enable_flag` tinyint(1)                                                    NOT NULL COMMENT '是否启用',
+    `enable_flag` tinyint(1) NOT NULL COMMENT '是否启用',
     `version`     int                                                           NOT NULL COMMENT '乐观锁',
-    `del_flag`    tinyint(1)                                                    NOT NULL COMMENT '是否逻辑删除',
+    `del_flag`    tinyint(1) NOT NULL COMMENT '是否逻辑删除',
     `remark`      varchar(300) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '备注',
     `scheme`      varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci  NOT NULL COMMENT '协议',
     `host`        varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci  NOT NULL COMMENT '主机',
@@ -1063,9 +1093,9 @@ CREATE TABLE `sys_socket_ref_user`
     `create_time`         datetime                                                      NOT NULL,
     `update_id`           bigint                                                        NOT NULL,
     `update_time`         datetime                                                      NOT NULL,
-    `enable_flag`         tinyint(1)                                                    NOT NULL COMMENT '是否启用',
+    `enable_flag` tinyint(1) NOT NULL COMMENT '是否启用',
     `version`             int                                                           NOT NULL COMMENT '乐观锁',
-    `del_flag`            tinyint(1)                                                    NOT NULL COMMENT '是否逻辑删除',
+    `del_flag`    tinyint(1) NOT NULL COMMENT '是否逻辑删除',
     `remark`              varchar(300) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '备注',
     `user_id`             bigint                                                        NOT NULL COMMENT '用户主键 id',
     `socket_id`           bigint                                                        NOT NULL COMMENT 'socket主键 id',
@@ -1104,9 +1134,9 @@ CREATE TABLE `sys_tenant`
     `create_time` datetime                                                      NOT NULL,
     `update_id`   bigint                                                        NOT NULL,
     `update_time` datetime                                                      NOT NULL,
-    `enable_flag` tinyint(1)                                                    NOT NULL COMMENT '是否启用',
+    `enable_flag` tinyint(1) NOT NULL COMMENT '是否启用',
     `version`     int                                                           NOT NULL COMMENT '乐观锁',
-    `del_flag`    tinyint(1)                                                    NOT NULL COMMENT '是否逻辑删除',
+    `del_flag`    tinyint(1) NOT NULL COMMENT '是否逻辑删除',
     `remark`      varchar(300) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '备注',
     `name`        varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '租户名',
     `parent_id`   bigint                                                        NOT NULL COMMENT '父节点id（顶级则为0）',
@@ -1151,9 +1181,9 @@ CREATE TABLE `sys_user`
     `create_time`  datetime                                                      NOT NULL,
     `update_id`    bigint                                                        NOT NULL,
     `update_time`  datetime                                                      NOT NULL,
-    `enable_flag`  tinyint(1)                                                    NOT NULL COMMENT '正常/冻结',
+    `enable_flag` tinyint(1) NOT NULL COMMENT '正常/冻结',
     `version`      int                                                           NOT NULL COMMENT '乐观锁',
-    `del_flag`     tinyint(1)                                                    NOT NULL COMMENT '是否注销',
+    `del_flag`    tinyint(1) NOT NULL COMMENT '是否注销',
     `remark`       varchar(300) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '备注（暂时未使用）',
     `password`     varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '密码，可为空，如果为空，则登录时需要提示【进行忘记密码操作】',
     `email`        varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '邮箱，可以为空',
@@ -1182,9 +1212,9 @@ CREATE TABLE `sys_user_0`
     `create_time`  datetime                                                      NOT NULL,
     `update_id`    bigint                                                        NOT NULL,
     `update_time`  datetime                                                      NOT NULL,
-    `enable_flag`  tinyint(1)                                                    NOT NULL COMMENT '正常/冻结',
+    `enable_flag` tinyint(1) NOT NULL COMMENT '正常/冻结',
     `version`      int                                                           NOT NULL COMMENT '乐观锁',
-    `del_flag`     tinyint(1)                                                    NOT NULL COMMENT '是否注销',
+    `del_flag`    tinyint(1) NOT NULL COMMENT '是否注销',
     `remark`       varchar(300) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '备注（暂时未使用）',
     `password`     varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '密码，可为空，如果为空，则登录时需要提示【进行忘记密码操作】',
     `email`        varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '邮箱，可以为空',
@@ -1213,9 +1243,9 @@ CREATE TABLE `sys_user_1`
     `create_time`  datetime                                                      NOT NULL,
     `update_id`    bigint                                                        NOT NULL,
     `update_time`  datetime                                                      NOT NULL,
-    `enable_flag`  tinyint(1)                                                    NOT NULL COMMENT '正常/冻结',
+    `enable_flag` tinyint(1) NOT NULL COMMENT '正常/冻结',
     `version`      int                                                           NOT NULL COMMENT '乐观锁',
-    `del_flag`     tinyint(1)                                                    NOT NULL COMMENT '是否注销',
+    `del_flag`    tinyint(1) NOT NULL COMMENT '是否注销',
     `remark`       varchar(300) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '备注（暂时未使用）',
     `password`     varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '密码，可为空，如果为空，则登录时需要提示【进行忘记密码操作】',
     `email`        varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '邮箱，可以为空',
@@ -1298,4 +1328,5 @@ CREATE TABLE `sys_user_info_1`
 -- Records of sys_user_info_1
 -- ----------------------------
 
-SET FOREIGN_KEY_CHECKS = 1;
+SET
+FOREIGN_KEY_CHECKS = 1;

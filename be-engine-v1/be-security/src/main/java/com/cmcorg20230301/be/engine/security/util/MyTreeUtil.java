@@ -22,7 +22,7 @@ public class MyTreeUtil {
      * 备注：有子节点时，children才是集合
      */
     public static <T extends BaseEntityTree<T>> List<T> getFullTreeByDeepNode(Collection<T> deepNodeCollection,
-        Collection<T> allCollection) {
+                                                                              Collection<T> allCollection) {
 
         return getFullTreeByDeepNode(deepNodeCollection, allCollection, BaseConstant.TOP_PARENT_ID);
 
@@ -33,7 +33,7 @@ public class MyTreeUtil {
      * 备注：有子节点时，children才是集合
      */
     public static <T extends BaseEntityTree<T>> List<T> getFullTreeByDeepNode(Collection<T> deepNodeCollection,
-        Collection<T> allCollection, long parentId) {
+                                                                              Collection<T> allCollection, long parentId) {
 
         return listToTree(getFullTreeList(deepNodeCollection, allCollection), false, parentId);
 
@@ -46,7 +46,7 @@ public class MyTreeUtil {
      * @param deepNodeCollection 底级节点集合
      */
     public static <T extends BaseEntityTree<T>> List<T> getFullTreeList(Collection<T> deepNodeCollection,
-        Collection<T> allCollection) {
+                                                                        Collection<T> allCollection) {
 
         List<T> resultList = new ArrayList<>(deepNodeCollection); // 先添加底级节点
 
@@ -63,7 +63,7 @@ public class MyTreeUtil {
      * @param deepNodeCollection 底级节点
      */
     public static <T extends BaseEntityTree<T>> Set<T> getFullTreeSet(Set<T> deepNodeCollection,
-        Collection<T> allCollection) {
+                                                                      Collection<T> allCollection) {
 
         Set<T> resultSet = new HashSet<>(deepNodeCollection); // 先添加底级节点
 
@@ -74,10 +74,10 @@ public class MyTreeUtil {
     }
 
     private static <T extends BaseEntityTree<T>> void doGetFullTree(Collection<T> deepNodeCollection,
-        Collection<T> allCollection, Collection<T> resultCollection) {
+                                                                    Collection<T> allCollection, Collection<T> resultCollection) {
 
         Set<Long> parentIdSet =
-            deepNodeCollection.stream().map(BaseEntityTree::getParentId).collect(Collectors.toSet());
+                deepNodeCollection.stream().map(BaseEntityTree::getParentId).collect(Collectors.toSet());
 
         Map<Long, T> allMap = allCollection.stream().collect(Collectors.toMap(BaseEntityTree::getId, it -> it));
 
@@ -148,7 +148,7 @@ public class MyTreeUtil {
      */
     @SneakyThrows
     public static <T extends BaseEntityTree<T>> List<T> listToTree(Collection<T> collection, boolean childrenFlag,
-        long topParentId) {
+                                                                   long topParentId) {
 
         Map<Long, T> listMap = MapUtil.newHashMap(collection.size()); // 把 list的所有元素转换为：id -> 元素，格式
 
@@ -209,14 +209,14 @@ public class MyTreeUtil {
      * 处理：把自己添加到：父节点的 children上
      */
     private static <T extends BaseEntityTree<T>> void listToTreeHandleParentDTO(Map<Long, T> listMap, T item,
-        T mapDTO) {
+                                                                                T mapDTO) {
 
         // 获取：父节点
         T parentDTO = listMap.get(mapDTO.getParentId());
 
         if (parentDTO == null) {
 
-            parentDTO = (T)ReflectUtil.newInstance(item.getClass());
+            parentDTO = (T) ReflectUtil.newInstance(item.getClass());
 
             List<T> children = new LinkedList<>();
 
@@ -252,7 +252,7 @@ public class MyTreeUtil {
      * 如果，顶层的节点不是 0，则需要找到顶层节点的 id
      */
     private static <T extends BaseEntityTree<T>> void listToTreeHandleResultList(List<T> resultList,
-        Map<Long, T> listMap) {
+                                                                                 Map<Long, T> listMap) {
 
         if (listMap.size() == 0 || resultList.size() != 0) {
             return;
@@ -281,11 +281,11 @@ public class MyTreeUtil {
      */
     @SneakyThrows
     public static <T extends BaseEntityTree<T>> void treeListSetNewIdAndParentId(Collection<T> flatCollection,
-        @Nullable VoidFunc1<Map<Long, Long>> voidFunc1) {
+                                                                                 @Nullable VoidFunc1<Map<Long, Long>> voidFunc1) {
 
         // 旧 id，新 id，map
         Map<Long, Long> idMap =
-            flatCollection.stream().collect(Collectors.toMap(BaseEntity::getId, it -> IdGeneratorUtil.nextId()));
+                flatCollection.stream().collect(Collectors.toMap(BaseEntity::getId, it -> IdGeneratorUtil.nextId()));
 
         if (voidFunc1 != null) {
 
@@ -315,11 +315,11 @@ public class MyTreeUtil {
      * @return key：id，value：包含本节点，以及所有下级节点的 idSet
      */
     public static <T extends BaseEntityTree<T>> Map<Long, Set<Long>> getIdAndDeepIdSetMap(Collection<T> collection,
-        @Nullable Set<Long> matchIdSet) {
+                                                                                          @Nullable Set<Long> matchIdSet) {
 
         // 通过：父级 id分组，value：子级 idSet
         Map<Long, Set<Long>> groupParentIdMap = collection.stream().collect(Collectors
-            .groupingBy(BaseEntityTree::getParentId, Collectors.mapping(BaseEntity::getId, Collectors.toSet())));
+                .groupingBy(BaseEntityTree::getParentId, Collectors.mapping(BaseEntity::getId, Collectors.toSet())));
 
         Map<Long, Set<Long>> resultMap;
 
@@ -355,7 +355,7 @@ public class MyTreeUtil {
      * 处理
      */
     private static void getIdAndDeepIdSetMapHandle(Map<Long, Set<Long>> groupParentIdMap,
-        Map<Long, Set<Long>> resultMap, Long id) {
+                                                   Map<Long, Set<Long>> resultMap, Long id) {
 
         Set<Long> resultSet = new HashSet<>();
 
@@ -372,7 +372,7 @@ public class MyTreeUtil {
      * 获取：下级节点
      */
     private static void getIdAndDeepIdSetMapNext(Set<Long> resultSet, Long parentId,
-        Map<Long, Set<Long>> groupParentIdMap) {
+                                                 Map<Long, Set<Long>> groupParentIdMap) {
 
         // 获取：自己下面的子级
         Set<Long> childrenIdSet = groupParentIdMap.get(parentId);

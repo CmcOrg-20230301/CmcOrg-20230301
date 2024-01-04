@@ -39,7 +39,7 @@ public class MyJwtUtil {
 
     // 系统里的 jwt密钥
     private static final String JWT_SECRET_SYS =
-        "4282dde8cb54c0c68082ada1b1d9ce048195cd309jqk0e07d1ed3e1871b462a8b75fee46467b96f33dea65a11862f1ea4867aed76243dfe7e1efb89638d3da6570d1";
+            "4282dde8cb54c0c68082ada1b1d9ce048195cd309jqk0e07d1ed3e1871b462a8b75fee46467b96f33dea65a11862f1ea4867aed76243dfe7e1efb89638d3da6570d1";
 
     public static final String PAYLOAD_MAP_USER_ID_KEY = "userId";
 
@@ -95,7 +95,7 @@ public class MyJwtUtil {
             return null;
         }
 
-        NumberWithFormat numberWithFormat = (NumberWithFormat)claimsJson.get(MyJwtUtil.PAYLOAD_MAP_USER_ID_KEY);
+        NumberWithFormat numberWithFormat = (NumberWithFormat) claimsJson.get(MyJwtUtil.PAYLOAD_MAP_USER_ID_KEY);
 
         if (numberWithFormat == null) {
             return null;
@@ -115,7 +115,7 @@ public class MyJwtUtil {
             return null;
         }
 
-        NumberWithFormat numberWithFormat = (NumberWithFormat)claimsJson.get(MyJwtUtil.PAYLOAD_MAP_TENANT_ID_KEY);
+        NumberWithFormat numberWithFormat = (NumberWithFormat) claimsJson.get(MyJwtUtil.PAYLOAD_MAP_TENANT_ID_KEY);
 
         if (numberWithFormat == null) {
             return null;
@@ -130,14 +130,14 @@ public class MyJwtUtil {
      */
     @Nullable
     public static SignInVO generateJwt(Long userId, String jwtSecretSuf, Consumer<JSONObject> consumer,
-        @Nullable Long tenantId) {
+                                       @Nullable Long tenantId) {
 
         if (userId == null) {
             return null;
         }
 
         if (UserUtil.getCurrentUserAdminFlag(userId) && BooleanUtil
-            .isFalse(MyJwtUtil.securityProperties.getAdminEnable())) {
+                .isFalse(MyJwtUtil.securityProperties.getAdminEnable())) {
             return null;
         }
 
@@ -170,7 +170,7 @@ public class MyJwtUtil {
      */
     @NotNull
     private static SignInVO sign(Long userId, String jwtSecretSuf, Consumer<JSONObject> consumer,
-        @Nullable Long tenantId) {
+                                 @Nullable Long tenantId) {
 
         JSONObject payloadMap = JSONUtil.createObj();
 
@@ -188,10 +188,10 @@ public class MyJwtUtil {
         long jwtExpireTime = BaseConstant.JWT_EXPIRE_TIME;
 
         String jwt = JWT.create() //
-            .setExpiresAt(new Date(System.currentTimeMillis() + jwtExpireTime)) // 设置过期时间
-            .addPayloads(payloadMap) // 增加JWT载荷信息
-            .setKey(MyJwtUtil.getJwtSecret(jwtSecretSuf).getBytes()) // 设置密钥
-            .sign();
+                .setExpiresAt(new Date(System.currentTimeMillis() + jwtExpireTime)) // 设置过期时间
+                .addPayloads(payloadMap) // 增加JWT载荷信息
+                .setKey(MyJwtUtil.getJwtSecret(jwtSecretSuf).getBytes()) // 设置密钥
+                .sign();
 
         return new SignInVO(SecurityConstant.JWT_PREFIX + jwt, jwtExpireTime - (10 * 60 * 1000));
 
@@ -202,12 +202,12 @@ public class MyJwtUtil {
      */
     @NotNull
     public static String generateRedisJwtHash(String jwtStr, Long userId,
-        SysRequestCategoryEnum sysRequestCategoryEnum) {
+                                              SysRequestCategoryEnum sysRequestCategoryEnum) {
 
         StrBuilder strBuilder = StrBuilder.create();
 
         strBuilder.append(BaseRedisKeyEnum.PRE_JWT_HASH.name()).append(":").append(userId).append(":")
-            .append(sysRequestCategoryEnum.getCode()).append(":").append(DigestUtil.sha512Hex(jwtStr));
+                .append(sysRequestCategoryEnum.getCode()).append(":").append(DigestUtil.sha512Hex(jwtStr));
 
         return strBuilder.toString();
 
@@ -323,7 +323,7 @@ public class MyJwtUtil {
      * 获取：请求里面的 jwtHash值
      */
     public static String getJwtHashByRequest(HttpServletRequest httpServletRequest,
-        @Nullable CallBack<Long> jwtHashRemainMsCallBack, @Nullable CallBack<Long> expireTsCallBack) {
+                                             @Nullable CallBack<Long> jwtHashRemainMsCallBack, @Nullable CallBack<Long> expireTsCallBack) {
 
         // 从请求头里，获取：jwt字符串
         String jwtStr = MyJwtUtil.getJwtStrByRequest(httpServletRequest);
@@ -345,7 +345,7 @@ public class MyJwtUtil {
         Long currentUserId = UserUtil.getCurrentUserId();
 
         String jwtHash = MyJwtUtil
-            .generateRedisJwtHash(jwtStr, currentUserId, RequestUtil.getRequestCategoryEnum(httpServletRequest));
+                .generateRedisJwtHash(jwtStr, currentUserId, RequestUtil.getRequestCategoryEnum(httpServletRequest));
 
         // jwt剩余时间
         long remainMs = expiresDate.getTime() - System.currentTimeMillis();

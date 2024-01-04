@@ -20,19 +20,19 @@ public interface ISysFileStorage {
      * 备注：objectName 相同会被覆盖掉
      */
     void upload(String bucketName, String objectName, MultipartFile file,
-        @NotNull SysFileStorageConfigurationDO sysFileStorageConfigurationDO);
+                @NotNull SysFileStorageConfigurationDO sysFileStorageConfigurationDO);
 
     /**
      * 下载文件
      */
     InputStream download(String bucketName, String objectName,
-        SysFileStorageConfigurationDO sysFileStorageConfigurationDO);
+                         SysFileStorageConfigurationDO sysFileStorageConfigurationDO);
 
     /**
      * 批量删除文件
      */
     void remove(String bucketName, Set<String> objectNameSet,
-        SysFileStorageConfigurationDO sysFileStorageConfigurationDO);
+                SysFileStorageConfigurationDO sysFileStorageConfigurationDO);
 
     /**
      * 获取：文件预览地址

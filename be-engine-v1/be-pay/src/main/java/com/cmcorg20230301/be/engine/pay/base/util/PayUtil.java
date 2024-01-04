@@ -56,7 +56,7 @@ public class PayUtil {
     private static SysPayConfigurationService sysPayConfigurationService;
 
     public PayUtil(@Autowired(required = false) @Nullable List<ISysPay> iSysPayList, SysPayService sysPayService,
-        SysPayConfigurationService sysPayConfigurationService) {
+                   SysPayConfigurationService sysPayConfigurationService) {
 
         PayUtil.sysPayService = sysPayService;
 
@@ -173,12 +173,12 @@ public class PayUtil {
             if (dto.getPayType() == null) { // 如果是：默认支付
 
                 sysPayConfigurationDO =
-                    PayHelper.getDefaultSysPayConfigurationDO(tenantId, dto.getUseParentTenantPayFlag());
+                        PayHelper.getDefaultSysPayConfigurationDO(tenantId, dto.getUseParentTenantPayFlag());
 
             } else {
 
                 sysPayConfigurationDO =
-                    PayHelper.getSysPayConfigurationDO(tenantId, dto.getPayType(), dto.getUseParentTenantPayFlag());
+                        PayHelper.getSysPayConfigurationDO(tenantId, dto.getPayType(), dto.getUseParentTenantPayFlag());
 
             }
 
@@ -197,7 +197,7 @@ public class PayUtil {
         String openId;
 
         if (dto.getPayType() >= SysPayTypeEnum.WX_NATIVE.getCode() && dto.getPayType() < SysPayTypeEnum.UNION
-            .getCode()) {
+                .getCode()) {
 
             openId = UserUtil.getCurrentUserWxOpenIdDefault();
 
@@ -314,7 +314,7 @@ public class PayUtil {
         Long sysPayConfigurationId = sysPayDO.getSysPayConfigurationId();
 
         SysPayConfigurationDO sysPayConfigurationDO =
-            sysPayConfigurationService.lambdaQuery().eq(BaseEntity::getId, sysPayConfigurationId).one();
+                sysPayConfigurationService.lambdaQuery().eq(BaseEntity::getId, sysPayConfigurationId).one();
 
         if (sysPayConfigurationDO == null) {
             ApiResultVO.error("操作失败：支付配置未找到", sysPayConfigurationId);
@@ -329,7 +329,7 @@ public class PayUtil {
      * 处理：订单回调
      */
     public static boolean handleTradeNotify(@Nullable SysPayTradeNotifyBO sysPayTradeNotifyBO,
-        @Nullable Consumer<SysPayDO> consumer) {
+                                            @Nullable Consumer<SysPayDO> consumer) {
 
         if (sysPayTradeNotifyBO == null) {
             return false;
@@ -337,7 +337,7 @@ public class PayUtil {
 
         // 获取：支付状态
         SysPayTradeStatusEnum sysPayTradeStatusEnum =
-            SysPayTradeStatusEnum.getByStatus(sysPayTradeNotifyBO.getTradeStatus());
+                SysPayTradeStatusEnum.getByStatus(sysPayTradeNotifyBO.getTradeStatus());
 
         if (SysPayTradeStatusEnum.NOT_EXIST.equals(sysPayTradeStatusEnum)) {
             return false;
@@ -347,7 +347,7 @@ public class PayUtil {
 
             // 查询：支付状态不同的数据
             SysPayDO sysPayDO = sysPayService.lambdaQuery().eq(SysPayDO::getId, sysPayTradeNotifyBO.getOutTradeNo())
-                .ne(SysPayDO::getStatus, sysPayTradeStatusEnum).one();
+                    .ne(SysPayDO::getStatus, sysPayTradeStatusEnum).one();
 
             if (sysPayDO == null) {
                 return false;

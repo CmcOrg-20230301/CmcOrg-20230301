@@ -38,7 +38,7 @@ public class SysFileStorageConfigurationController {
     @PostMapping("/page")
     @PreAuthorize("hasAuthority('sysFileStorageConfiguration:page')")
     public ApiResultVO<Page<SysFileStorageConfigurationDO>> myPage(
-        @RequestBody @Valid SysFileStorageConfigurationPageDTO dto) {
+            @RequestBody @Valid SysFileStorageConfigurationPageDTO dto) {
         return ApiResultVO.okData(baseService.myPage(dto));
     }
 

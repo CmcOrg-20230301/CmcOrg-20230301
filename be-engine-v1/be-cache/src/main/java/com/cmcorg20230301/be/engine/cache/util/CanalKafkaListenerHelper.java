@@ -49,7 +49,7 @@ public class CanalKafkaListenerHelper {
     }
 
     public CanalKafkaListenerHelper(
-        @Autowired(required = false) @Nullable List<ICanalKafkaHandler> iCanalKafkaHandlerList) {
+            @Autowired(required = false) @Nullable List<ICanalKafkaHandler> iCanalKafkaHandlerList) {
 
         if (CollUtil.isNotEmpty(iCanalKafkaHandlerList)) {
 
@@ -58,7 +58,7 @@ public class CanalKafkaListenerHelper {
                 put(item); // 添加到：map里面
 
                 log.info("CANAL_KAFKA_HANDLER_MAP，长度：{}，className：{}", CANAL_KAFKA_HANDLER_MAP.size(),
-                    item.getClass().getSimpleName());
+                        item.getClass().getSimpleName());
 
             }
 
@@ -78,7 +78,7 @@ public class CanalKafkaListenerHelper {
         for (String item : iCanalKafkaHandler.getFullTableNameSet()) {
 
             List<ICanalKafkaHandler> iCanalKafkaHandlerList =
-                CANAL_KAFKA_HANDLER_MAP.computeIfAbsent(item, k -> new ArrayList<>());
+                    CANAL_KAFKA_HANDLER_MAP.computeIfAbsent(item, k -> new ArrayList<>());
 
             iCanalKafkaHandlerList.add(iCanalKafkaHandler); // 添加到：集合里
 

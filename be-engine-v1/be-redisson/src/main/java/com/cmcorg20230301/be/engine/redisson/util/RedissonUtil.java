@@ -86,7 +86,7 @@ public class RedissonUtil {
      */
     @SneakyThrows
     public static void doMultiLock(@Nullable String preName, Set<?> nameSet, @NotNull VoidFunc0 voidFunc0,
-        RLock... lockArr) {
+                                   RLock... lockArr) {
 
         RLock lock = getMultiLock(preName, nameSet, lockArr);
 
@@ -108,7 +108,7 @@ public class RedissonUtil {
      * 获取连锁，并执行方法
      */
     public static <T> T doMultiLock(@Nullable String preName, Set<?> nameSet, @NotNull Supplier<T> supplier,
-        RLock... lockArr) {
+                                    RLock... lockArr) {
 
         RLock lock = getMultiLock(preName, nameSet, lockArr);
 

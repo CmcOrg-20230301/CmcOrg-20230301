@@ -35,7 +35,7 @@ public class ApiTestSysFileUtil {
 
         // 执行
         exec(API_ENDPOINT, ApiTestHelper.ADMIN_SIGN_IN_NAME, ApiTestHelper.ADMIN_PASSWORD,
-            ApiTestHelper.RSA_PUBLIC_KEY);
+                ApiTestHelper.RSA_PUBLIC_KEY);
 
     }
 
@@ -46,7 +46,7 @@ public class ApiTestSysFileUtil {
 
         // 登录名-用户名账号密码登录
         SignInVO signInVO =
-            ApiTestSignSignInNameUtil.signInNameSignIn(apiEndpoint, adminSignInName, adminPassword, rsaPublicKey);
+                ApiTestSignSignInNameUtil.signInNameSignIn(apiEndpoint, adminSignInName, adminPassword, rsaPublicKey);
 
         // 请求-上传文件：公有和私有
         Long fileId = sysFileUpload(apiEndpoint, signInVO.getJwt());
@@ -72,7 +72,7 @@ public class ApiTestSysFileUtil {
         NotEmptyIdSet notEmptyIdSet = new NotEmptyIdSet(CollUtil.newHashSet(fileId));
 
         String bodyStr = HttpRequest.post(apiEndpoint + "/sys/file/removeByFileIdSet").header("Authorization", jwt)
-            .body(JSONUtil.toJsonStr(notEmptyIdSet)).execute().body();
+                .body(JSONUtil.toJsonStr(notEmptyIdSet)).execute().body();
 
         log.info("请求-批量删除文件：公有和私有：耗时：{}，bodyByte长度：{}", ApiTestHelper.calcCostMs(currentTs), bodyStr);
 
@@ -89,7 +89,7 @@ public class ApiTestSysFileUtil {
         NotEmptyIdSet notEmptyIdSet = new NotEmptyIdSet(CollUtil.newHashSet(fileId));
 
         String bodyStr = HttpRequest.post(apiEndpoint + "/sys/file/getPublicUrl").header("Authorization", jwt)
-            .body(JSONUtil.toJsonStr(notEmptyIdSet)).execute().body();
+                .body(JSONUtil.toJsonStr(notEmptyIdSet)).execute().body();
 
         log.info("请求-批量获取：公开文件的 url：耗时：{}，bodyByte长度：{}", ApiTestHelper.calcCostMs(currentTs), bodyStr);
 
@@ -106,7 +106,7 @@ public class ApiTestSysFileUtil {
         NotNullId notNullId = new NotNullId(fileId);
 
         byte[] bodyByteArr = HttpRequest.post(apiEndpoint + "/sys/file/privateDownload").header("Authorization", jwt)
-            .body(JSONUtil.toJsonStr(notNullId)).execute().bodyBytes();
+                .body(JSONUtil.toJsonStr(notNullId)).execute().bodyBytes();
 
         log.info("请求-下载文件：私有：耗时：{}，bodyByte长度：{}", ApiTestHelper.calcCostMs(currentTs), bodyByteArr.length);
 
@@ -128,8 +128,8 @@ public class ApiTestSysFileUtil {
         Map<String, Object> map = BeanUtil.beanToMap(dto);
 
         String bodyStr =
-            HttpRequest.post(apiEndpoint + "/sys/file/upload").form(map).form("file", file).header("Authorization", jwt)
-                .execute().body();
+                HttpRequest.post(apiEndpoint + "/sys/file/upload").form(map).form("file", file).header("Authorization", jwt)
+                        .execute().body();
 
         log.info("请求-上传文件：公有和私有：耗时：{}，bodyStr：{}", ApiTestHelper.calcCostMs(currentTs), bodyStr);
 

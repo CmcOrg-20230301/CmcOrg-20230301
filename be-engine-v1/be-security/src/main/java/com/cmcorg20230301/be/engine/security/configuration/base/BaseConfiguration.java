@@ -30,7 +30,7 @@ public class BaseConfiguration {
     public static String profilesActive; // 启动的环境
 
     public BaseConfiguration(@Value("${spring.application.name:applicationName}") String applicationName,
-        @Value("${server.port:8080}") int port, @Value("${spring.profiles.active:prod}") String profilesActive) {
+                             @Value("${server.port:8080}") int port, @Value("${spring.profiles.active:prod}") String profilesActive) {
 
         BaseConfiguration.applicationName = applicationName;
         BaseConfiguration.port = port;

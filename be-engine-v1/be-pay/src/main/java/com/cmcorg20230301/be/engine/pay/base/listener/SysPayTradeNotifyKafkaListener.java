@@ -28,7 +28,7 @@ import java.util.Map;
 public class SysPayTradeNotifyKafkaListener {
 
     public static final List<String> TOPIC_LIST =
-        CollUtil.newArrayList(KafkaTopicEnum.SYS_PAY_TRADE_NOTIFY_TOPIC.name());
+            CollUtil.newArrayList(KafkaTopicEnum.SYS_PAY_TRADE_NOTIFY_TOPIC.name());
 
     private static final Map<Integer, ISysPayRefHandler> SYS_PAY_REF_HANDLER_MAP = MapUtil.newHashMap();
 
@@ -36,8 +36,8 @@ public class SysPayTradeNotifyKafkaListener {
     private static ObjectMapper objectMapper;
 
     public SysPayTradeNotifyKafkaListener(
-        @Autowired(required = false) @Nullable List<ISysPayRefHandler> iSysPayRefHandlerList,
-        ObjectMapper objectMapper) {
+            @Autowired(required = false) @Nullable List<ISysPayRefHandler> iSysPayRefHandlerList,
+            ObjectMapper objectMapper) {
 
         if (CollUtil.isNotEmpty(iSysPayRefHandlerList)) {
 

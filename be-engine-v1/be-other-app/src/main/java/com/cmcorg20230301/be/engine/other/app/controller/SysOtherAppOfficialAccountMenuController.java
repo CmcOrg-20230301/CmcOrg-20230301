@@ -40,7 +40,7 @@ public class SysOtherAppOfficialAccountMenuController {
     @PostMapping("/page")
     @PreAuthorize("hasAuthority('sysOtherAppOfficialAccountMenu:page')")
     public ApiResultVO<Page<SysOtherAppOfficialAccountMenuDO>> myPage(
-        @RequestBody @Valid SysOtherAppOfficialAccountMenuPageDTO dto) {
+            @RequestBody @Valid SysOtherAppOfficialAccountMenuPageDTO dto) {
         return ApiResultVO.okData(baseService.myPage(dto));
     }
 
@@ -48,7 +48,7 @@ public class SysOtherAppOfficialAccountMenuController {
     @PostMapping("/tree")
     @PreAuthorize("hasAuthority('sysOtherAppOfficialAccountMenu:page')")
     public ApiResultVO<List<SysOtherAppOfficialAccountMenuDO>> tree(
-        @RequestBody @Valid SysOtherAppOfficialAccountMenuPageDTO dto) {
+            @RequestBody @Valid SysOtherAppOfficialAccountMenuPageDTO dto) {
         return ApiResultVO.okData(baseService.tree(dto));
     }
 

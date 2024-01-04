@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class SysEmailConfigurationServiceImpl extends ServiceImpl<SysEmailConfigurationMapper, SysEmailConfigurationDO>
-    implements SysEmailConfigurationService {
+        implements SysEmailConfigurationService {
 
     /**
      * 新增/修改
@@ -24,7 +24,7 @@ public class SysEmailConfigurationServiceImpl extends ServiceImpl<SysEmailConfig
         Long currentTenantIdDefault = UserUtil.getCurrentTenantIdDefault();
 
         SysEmailConfigurationDO sysEmailConfigurationDO =
-            lambdaQuery().eq(SysEmailConfigurationDO::getId, currentTenantIdDefault).one();
+                lambdaQuery().eq(SysEmailConfigurationDO::getId, currentTenantIdDefault).one();
 
         boolean insertFlag = sysEmailConfigurationDO == null;
 
@@ -67,7 +67,7 @@ public class SysEmailConfigurationServiceImpl extends ServiceImpl<SysEmailConfig
         Long currentTenantIdDefault = UserUtil.getCurrentTenantIdDefault();
 
         SysEmailConfigurationDO sysEmailConfigurationDO =
-            lambdaQuery().eq(SysEmailConfigurationDO::getId, currentTenantIdDefault).one();
+                lambdaQuery().eq(SysEmailConfigurationDO::getId, currentTenantIdDefault).one();
 
         if (sysEmailConfigurationDO != null) {
             sysEmailConfigurationDO.setPass(null); // 不返回密码

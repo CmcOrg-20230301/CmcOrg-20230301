@@ -25,16 +25,16 @@ public class FileMinioUtil {
      */
     @SneakyThrows
     public static void upload(String bucketName, String objectName, MultipartFile file,
-        @NotNull SysFileStorageConfigurationDO sysFileStorageConfigurationDO) {
+                              @NotNull SysFileStorageConfigurationDO sysFileStorageConfigurationDO) {
 
         InputStream inputStream = file.getInputStream();
 
         MinioClient minioClient = MinioClient.builder().endpoint(sysFileStorageConfigurationDO.getUploadEndpoint())
-            .credentials(sysFileStorageConfigurationDO.getAccessKey(), sysFileStorageConfigurationDO.getSecretKey())
-            .build();
+                .credentials(sysFileStorageConfigurationDO.getAccessKey(), sysFileStorageConfigurationDO.getSecretKey())
+                .build();
 
         minioClient.putObject(PutObjectArgs.builder().bucket(bucketName).object(objectName)
-            .stream(inputStream, -1, ObjectWriteArgs.MAX_PART_SIZE).build());
+                .stream(inputStream, -1, ObjectWriteArgs.MAX_PART_SIZE).build());
 
         IoUtil.close(inputStream);
 
@@ -46,11 +46,11 @@ public class FileMinioUtil {
     @SneakyThrows
     @Nullable
     public static InputStream download(String bucketName, String objectName,
-        SysFileStorageConfigurationDO sysFileStorageConfigurationDO) {
+                                       SysFileStorageConfigurationDO sysFileStorageConfigurationDO) {
 
         MinioClient minioClient = MinioClient.builder().endpoint(sysFileStorageConfigurationDO.getUploadEndpoint())
-            .credentials(sysFileStorageConfigurationDO.getAccessKey(), sysFileStorageConfigurationDO.getSecretKey())
-            .build();
+                .credentials(sysFileStorageConfigurationDO.getAccessKey(), sysFileStorageConfigurationDO.getSecretKey())
+                .build();
 
         return minioClient.getObject(GetObjectArgs.builder().bucket(bucketName).object(objectName).build());
 
@@ -61,15 +61,15 @@ public class FileMinioUtil {
      */
     @SneakyThrows
     public static void remove(String bucketName, Set<String> objectNameSet,
-        SysFileStorageConfigurationDO sysFileStorageConfigurationDO) {
+                              SysFileStorageConfigurationDO sysFileStorageConfigurationDO) {
 
         if (CollUtil.isEmpty(objectNameSet)) {
             return;
         }
 
         MinioClient minioClient = MinioClient.builder().endpoint(sysFileStorageConfigurationDO.getUploadEndpoint())
-            .credentials(sysFileStorageConfigurationDO.getAccessKey(), sysFileStorageConfigurationDO.getSecretKey())
-            .build();
+                .credentials(sysFileStorageConfigurationDO.getAccessKey(), sysFileStorageConfigurationDO.getSecretKey())
+                .build();
 
         for (String item : objectNameSet) {
 

@@ -8,6 +8,6 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class BaseSysRequestServiceImpl extends ServiceImpl<BaseSysRequestMapper, SysRequestDO>
-    implements BaseSysRequestService {
+        implements BaseSysRequestService {
 
 }

@@ -50,7 +50,7 @@ public class SysRequestAop {
         // 目的：因为 socket也会走这里，但是 socket没有 httpServletRequest对象
         if (httpServletRequest == null) {
 
-            if (((MethodSignature)proceedingJoinPoint.getSignature()).getReturnType() == void.class) {
+            if (((MethodSignature) proceedingJoinPoint.getSignature()).getReturnType() == void.class) {
 
                 proceedingJoinPoint.proceed();
 
@@ -124,7 +124,7 @@ public class SysRequestAop {
 
         try {
 
-            if (((MethodSignature)proceedingJoinPoint.getSignature()).getReturnType() == void.class) {
+            if (((MethodSignature) proceedingJoinPoint.getSignature()).getReturnType() == void.class) {
 
                 proceedingJoinPoint.proceed(); // 执行方法，备注：如果执行方法时抛出了异常，catch可以捕获到
 
@@ -148,7 +148,7 @@ public class SysRequestAop {
 
             if (e instanceof UndeclaredThrowableException) {
 
-                e = ((UndeclaredThrowableException)e).getUndeclaredThrowable();
+                e = ((UndeclaredThrowableException) e).getUndeclaredThrowable();
 
             }
 
@@ -165,7 +165,7 @@ public class SysRequestAop {
         handleCostMs(costMs, sysRequestDO);
 
         log.info("uri：{}，耗时：{}，成功：{}", sysRequestDO.getUri(), sysRequestDO.getCostMsStr(),
-            sysRequestDO.getSuccessFlag());
+                sysRequestDO.getSuccessFlag());
 
         // 添加一个：请求数据
         RequestUtil.add(sysRequestDO);
@@ -216,7 +216,7 @@ public class SysRequestAop {
         }
 
         // 登录时需要额外处理来获取 用户id
-        ApiResultVO<SignInVO> apiResultVO = (ApiResultVO)object;
+        ApiResultVO<SignInVO> apiResultVO = (ApiResultVO) object;
 
         JWT jwt = JWT.of(MyJwtUtil.getJwtStrByHeadAuthorization(apiResultVO.getData().getJwt()));
 

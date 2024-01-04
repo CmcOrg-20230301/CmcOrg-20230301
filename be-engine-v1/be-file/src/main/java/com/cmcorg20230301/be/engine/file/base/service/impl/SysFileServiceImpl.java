@@ -124,37 +124,37 @@ public class SysFileServiceImpl extends ServiceImpl<SysFileMapper, SysFileDO> im
         SysTenantUtil.handleMyTenantPageDTO(dto, false);
 
         return lambdaQuery()
-            .like(StrUtil.isNotBlank(dto.getOriginFileName()), SysFileDO::getOriginFileName, dto.getOriginFileName())
+                .like(StrUtil.isNotBlank(dto.getOriginFileName()), SysFileDO::getOriginFileName, dto.getOriginFileName())
 
-            .like(StrUtil.isNotBlank(dto.getRemark()), BaseEntity::getRemark, dto.getRemark())
+                .like(StrUtil.isNotBlank(dto.getRemark()), BaseEntity::getRemark, dto.getRemark())
 
-            .eq(dto.getBelongId() != null, SysFileDO::getBelongId, dto.getBelongId())
+                .eq(dto.getBelongId() != null, SysFileDO::getBelongId, dto.getBelongId())
 
-            .eq(dto.getUploadType() != null, SysFileDO::getUploadType, dto.getUploadType())
+                .eq(dto.getUploadType() != null, SysFileDO::getUploadType, dto.getUploadType())
 
-            .eq(dto.getStorageType() != null, SysFileDO::getStorageType, dto.getStorageType())
+                .eq(dto.getStorageType() != null, SysFileDO::getStorageType, dto.getStorageType())
 
-            .eq(dto.getPublicFlag() != null, SysFileDO::getPublicFlag, dto.getPublicFlag())
+                .eq(dto.getPublicFlag() != null, SysFileDO::getPublicFlag, dto.getPublicFlag())
 
-            .eq(dto.getEnableFlag() != null, BaseEntity::getEnableFlag, dto.getEnableFlag())
+                .eq(dto.getEnableFlag() != null, BaseEntity::getEnableFlag, dto.getEnableFlag())
 
-            .eq(dto.getRefId() != null, SysFileDO::getRefId, dto.getRefId())
+                .eq(dto.getRefId() != null, SysFileDO::getRefId, dto.getRefId())
 
-            .ne(SysUserTenantEnum.USER.equals(dto.getSysUserTenantEnum()), SysFileDO::getBelongId,
-                BaseConstant.TENANT_USER_ID) //
+                .ne(SysUserTenantEnum.USER.equals(dto.getSysUserTenantEnum()), SysFileDO::getBelongId,
+                        BaseConstant.TENANT_USER_ID) //
 
-            .eq(SysUserTenantEnum.TENANT.equals(dto.getSysUserTenantEnum()), SysFileDO::getBelongId,
-                BaseConstant.TENANT_USER_ID) //
+                .eq(SysUserTenantEnum.TENANT.equals(dto.getSysUserTenantEnum()), SysFileDO::getBelongId,
+                        BaseConstant.TENANT_USER_ID) //
 
-            .in(BaseEntityNoId::getTenantId, dto.getTenantIdSet()) //
+                .in(BaseEntityNoId::getTenantId, dto.getTenantIdSet()) //
 
-            .select(BaseEntity::getId, BaseEntityNoIdSuper::getTenantId, BaseEntityNoId::getEnableFlag,
-                BaseEntityNoId::getRemark, BaseEntityNoIdSuper::getCreateId, BaseEntityNoIdSuper::getCreateTime,
-                BaseEntityNoIdSuper::getUpdateId, BaseEntityNoIdSuper::getUpdateTime, SysFileDO::getOriginFileName,
-                SysFileDO::getBelongId, SysFileDO::getUploadType, SysFileDO::getStorageType, SysFileDO::getPublicFlag,
-                SysFileDO::getFileSize, SysFileDO::getExtraJson).orderByDesc(BaseEntity::getUpdateTime)
+                .select(BaseEntity::getId, BaseEntityNoIdSuper::getTenantId, BaseEntityNoId::getEnableFlag,
+                        BaseEntityNoId::getRemark, BaseEntityNoIdSuper::getCreateId, BaseEntityNoIdSuper::getCreateTime,
+                        BaseEntityNoIdSuper::getUpdateId, BaseEntityNoIdSuper::getUpdateTime, SysFileDO::getOriginFileName,
+                        SysFileDO::getBelongId, SysFileDO::getUploadType, SysFileDO::getStorageType, SysFileDO::getPublicFlag,
+                        SysFileDO::getFileSize, SysFileDO::getExtraJson).orderByDesc(BaseEntity::getUpdateTime)
 
-            .page(dto.page(true));
+                .page(dto.page(true));
 
     }
 

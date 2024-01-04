@@ -8,6 +8,6 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class BaseSysUserInfoServiceImpl extends ServiceImpl<SysUserInfoMapper, SysUserInfoDO>
-    implements BaseSysUserInfoService {
+        implements BaseSysUserInfoService {
 
 }

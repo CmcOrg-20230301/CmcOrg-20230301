@@ -127,7 +127,7 @@ public class GoogleAuthenticatorUtil {
         long value = t;
 
         for (int i = 8; i-- > 0; value >>>= 8) {
-            data[i] = (byte)value;
+            data[i] = (byte) value;
         }
 
         SecretKeySpec signKey = new SecretKeySpec(key, "HmacSHA1");
@@ -152,7 +152,7 @@ public class GoogleAuthenticatorUtil {
         truncatedHash &= 0x7FFFFFFF;
         truncatedHash %= 1000000;
 
-        return (int)truncatedHash;
+        return (int) truncatedHash;
 
     }
 

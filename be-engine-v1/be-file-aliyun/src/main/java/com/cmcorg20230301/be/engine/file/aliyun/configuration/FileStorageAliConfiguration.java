@@ -24,19 +24,19 @@ public class FileStorageAliConfiguration implements ISysFileStorage {
 
     @Override
     public void upload(String bucketName, String objectName, MultipartFile file,
-        @NotNull SysFileStorageConfigurationDO sysFileStorageConfigurationDO) {
+                       @NotNull SysFileStorageConfigurationDO sysFileStorageConfigurationDO) {
         FileAliYunUtil.upload(bucketName, objectName, file, sysFileStorageConfigurationDO);
     }
 
     @Override
     public InputStream download(String bucketName, String objectName,
-        SysFileStorageConfigurationDO sysFileStorageConfigurationDO) {
+                                SysFileStorageConfigurationDO sysFileStorageConfigurationDO) {
         return FileAliYunUtil.download(bucketName, objectName, sysFileStorageConfigurationDO);
     }
 
     @Override
     public void remove(String bucketName, Set<String> objectNameSet,
-        SysFileStorageConfigurationDO sysFileStorageConfigurationDO) {
+                       SysFileStorageConfigurationDO sysFileStorageConfigurationDO) {
         FileAliYunUtil.remove(bucketName, objectNameSet, sysFileStorageConfigurationDO);
     }
 

@@ -77,11 +77,11 @@ public class NettyWebSocketServerHandler extends ChannelInboundHandlerAdapter {
 
     // SysSocketRefUserId key
     public static final AttributeKey<Long> SYS_SOCKET_REF_USER_ID_KEY =
-        AttributeKey.valueOf("SYS_SOCKET_REF_USER_ID_KEY");
+            AttributeKey.valueOf("SYS_SOCKET_REF_USER_ID_KEY");
 
     // SysRequestCategoryEnum key
     public static final AttributeKey<SysRequestCategoryEnum> SYS_REQUEST_CATEGORY_ENUM_KEY =
-        AttributeKey.valueOf("SYS_REQUEST_CATEGORY_ENUM_KEY");
+            AttributeKey.valueOf("SYS_REQUEST_CATEGORY_ENUM_KEY");
 
     // Ip key
     public static final AttributeKey<String> IP_KEY = AttributeKey.valueOf("IP_KEY");
@@ -94,12 +94,12 @@ public class NettyWebSocketServerHandler extends ChannelInboundHandlerAdapter {
 
     // 用户通道 map，大key：用户主键 id，小key：sysSocketRefUserId，value：通道
     public static final ConcurrentHashMap<Long, ConcurrentHashMap<Long, Channel>> USER_ID_CHANNEL_MAP =
-        MapUtil.newConcurrentHashMap();
+            MapUtil.newConcurrentHashMap();
 
     private static CopyOnWriteArraySet<Long> SYS_SOCKET_REMOVE_REF_USER_ID_SET = new CopyOnWriteArraySet<>();
 
     private static CopyOnWriteArrayList<SysSocketRefUserDO> SYS_SOCKET_REF_USER_DO_INSERT_LIST =
-        new CopyOnWriteArrayList<>();
+            new CopyOnWriteArrayList<>();
 
     /**
      * 定时任务，检查 webSocket活跃状态
@@ -240,12 +240,12 @@ public class NettyWebSocketServerHandler extends ChannelInboundHandlerAdapter {
             Long sysSocketRefUserId = channel.attr(SYS_SOCKET_REF_USER_ID_KEY).get();
 
             ConcurrentHashMap<Long, Channel> channelMap =
-                USER_ID_CHANNEL_MAP.computeIfAbsent(userId, k -> MapUtil.newConcurrentHashMap());
+                    USER_ID_CHANNEL_MAP.computeIfAbsent(userId, k -> MapUtil.newConcurrentHashMap());
 
             channelMap.remove(sysSocketRefUserId);
 
             log.info("WebSocket 断开，用户：{}，连接数：{}，sysSocketRefUserId：{}", userId, channelMap.size(),
-                sysSocketRefUserId);
+                    sysSocketRefUserId);
 
             SYS_SOCKET_REMOVE_REF_USER_ID_SET.add(sysSocketRefUserId);
 
@@ -280,7 +280,7 @@ public class NettyWebSocketServerHandler extends ChannelInboundHandlerAdapter {
             try {
 
                 // 处理：FullHttpRequest
-                handleFullHttpRequest(ctx, (FullHttpRequest)msg);
+                handleFullHttpRequest(ctx, (FullHttpRequest) msg);
 
                 // 传递给下一个 handler，备注：这里不需要释放资源
                 ctx.fireChannelRead(msg);
@@ -298,7 +298,7 @@ public class NettyWebSocketServerHandler extends ChannelInboundHandlerAdapter {
             try {
 
                 // 处理：TextWebSocketFrame
-                handleTextWebSocketFrame((TextWebSocketFrame)msg, ctx.channel());
+                handleTextWebSocketFrame((TextWebSocketFrame) msg, ctx.channel());
 
             } finally {
 
@@ -329,7 +329,7 @@ public class NettyWebSocketServerHandler extends ChannelInboundHandlerAdapter {
         String uri = dto.getUri();
 
         NettyWebSocketBeanPostProcessor.MappingValue mappingValue =
-            NettyWebSocketBeanPostProcessor.getMappingValueByKey(uri);
+                NettyWebSocketBeanPostProcessor.getMappingValueByKey(uri);
 
         if (mappingValue == null) {
 
@@ -353,7 +353,7 @@ public class NettyWebSocketServerHandler extends ChannelInboundHandlerAdapter {
 
             Object object = BeanUtil.toBean(dto.getData(), parameter.getType());
 
-            args = new Object[] {object};
+            args = new Object[]{object};
 
         }
 
@@ -365,7 +365,7 @@ public class NettyWebSocketServerHandler extends ChannelInboundHandlerAdapter {
 
             if (invoke instanceof ApiResultVO) {
 
-                ApiResultVO<?> apiResultVO = (ApiResultVO<?>)invoke;
+                ApiResultVO<?> apiResultVO = (ApiResultVO<?>) invoke;
 
                 webSocketMessageDTO.setCode(apiResultVO.getCode());
                 webSocketMessageDTO.setData(apiResultVO.getData());
@@ -392,11 +392,11 @@ public class NettyWebSocketServerHandler extends ChannelInboundHandlerAdapter {
      * 处理：错误
      */
     private void handleTextWebSocketFrameError(Channel channel, long costMs, String text, String uri,
-        NettyWebSocketBeanPostProcessor.MappingValue mappingValue, Throwable e) {
+                                               NettyWebSocketBeanPostProcessor.MappingValue mappingValue, Throwable e) {
 
         if (e instanceof InvocationTargetException) {
 
-            e = ((InvocationTargetException)e).getTargetException();
+            e = ((InvocationTargetException) e).getTargetException();
 
         }
 
@@ -406,7 +406,7 @@ public class NettyWebSocketServerHandler extends ChannelInboundHandlerAdapter {
 
         if (e instanceof BaseException) {
 
-            ApiResultVO<?> apiResultVO = ((BaseException)e).getApiResultVO();
+            ApiResultVO<?> apiResultVO = ((BaseException) e).getApiResultVO();
 
             webSocketMessageDTO.setCode(apiResultVO.getCode());
             webSocketMessageDTO.setMsg(apiResultVO.getMsg());
@@ -420,7 +420,7 @@ public class NettyWebSocketServerHandler extends ChannelInboundHandlerAdapter {
 
         // 发送消息
         WebSocketUtil.send(channel, webSocketMessageDTO, text, costMs, mappingValue,
-            MyEntityUtil.getNotNullStr(e.getMessage()), false);
+                MyEntityUtil.getNotNullStr(e.getMessage()), false);
 
     }
 
@@ -448,7 +448,7 @@ public class NettyWebSocketServerHandler extends ChannelInboundHandlerAdapter {
         if (sysSocketRefUserDO == null) {
 
             handleFullHttpRequestError(ctx, fullHttpRequest.uri(), "SysSocketRefUserDO为null",
-                fullHttpRequest); // 处理：非法连接
+                    fullHttpRequest); // 处理：非法连接
 
             return;
 
@@ -474,7 +474,7 @@ public class NettyWebSocketServerHandler extends ChannelInboundHandlerAdapter {
      * 处理：上线操作
      */
     private void onlineHandle(Channel channel, SysSocketRefUserDO sysSocketRefUserDO,
-        @NotNull FullHttpRequest fullHttpRequest) {
+                              @NotNull FullHttpRequest fullHttpRequest) {
 
         SYS_SOCKET_REF_USER_DO_INSERT_LIST.add(sysSocketRefUserDO);
 
@@ -503,12 +503,12 @@ public class NettyWebSocketServerHandler extends ChannelInboundHandlerAdapter {
         channel.attr(ACTIVITY_TIME_KEY).set(new Date());
 
         ConcurrentHashMap<Long, Channel> channelMap =
-            USER_ID_CHANNEL_MAP.computeIfAbsent(userId, k -> MapUtil.newConcurrentHashMap());
+                USER_ID_CHANNEL_MAP.computeIfAbsent(userId, k -> MapUtil.newConcurrentHashMap());
 
         channelMap.put(sysSocketRefUserDoId, channel);
 
         log.info("WebSocket 连接，用户：{}，连接数：{}，sysSocketRefUserDoId：{}", userId, channelMap.size(),
-            sysSocketRefUserDoId);
+                sysSocketRefUserDoId);
 
     }
 
@@ -516,7 +516,7 @@ public class NettyWebSocketServerHandler extends ChannelInboundHandlerAdapter {
      * 处理：非法连接
      */
     private void handleFullHttpRequestError(@NotNull ChannelHandlerContext ctx, String requestParam, String errorMsg,
-        @NotNull FullHttpRequest fullHttpRequest) {
+                                            @NotNull FullHttpRequest fullHttpRequest) {
 
         ctx.close(); // 关闭连接
 

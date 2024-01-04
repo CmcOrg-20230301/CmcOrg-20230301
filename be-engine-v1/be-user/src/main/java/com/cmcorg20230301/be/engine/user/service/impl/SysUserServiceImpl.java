@@ -124,20 +124,20 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserProMapper, SysUserDO>
     private void handleRefData(Page<SysUserPageVO> page, Set<Long> userIdSet) {
 
         List<SysDeptRefUserDO> sysDeptRefUserDOList =
-            sysDeptRefUserService.lambdaQuery().in(SysDeptRefUserDO::getUserId, userIdSet)
-                .select(SysDeptRefUserDO::getUserId, SysDeptRefUserDO::getDeptId).list();
+                sysDeptRefUserService.lambdaQuery().in(SysDeptRefUserDO::getUserId, userIdSet)
+                        .select(SysDeptRefUserDO::getUserId, SysDeptRefUserDO::getDeptId).list();
 
         List<SysPostRefUserDO> sysPostRefUserDOList =
-            sysPostRefUserService.lambdaQuery().in(SysPostRefUserDO::getUserId, userIdSet)
-                .select(SysPostRefUserDO::getUserId, SysPostRefUserDO::getPostId).list();
+                sysPostRefUserService.lambdaQuery().in(SysPostRefUserDO::getUserId, userIdSet)
+                        .select(SysPostRefUserDO::getUserId, SysPostRefUserDO::getPostId).list();
 
         Map<Long, Set<Long>> deptUserGroupMap = sysDeptRefUserDOList.stream().collect(Collectors
-            .groupingBy(SysDeptRefUserDO::getUserId,
-                Collectors.mapping(SysDeptRefUserDO::getDeptId, Collectors.toSet())));
+                .groupingBy(SysDeptRefUserDO::getUserId,
+                        Collectors.mapping(SysDeptRefUserDO::getDeptId, Collectors.toSet())));
 
         Map<Long, Set<Long>> postUserGroupMap = sysPostRefUserDOList.stream().collect(Collectors
-            .groupingBy(SysPostRefUserDO::getUserId,
-                Collectors.mapping(SysPostRefUserDO::getPostId, Collectors.toSet())));
+                .groupingBy(SysPostRefUserDO::getUserId,
+                        Collectors.mapping(SysPostRefUserDO::getPostId, Collectors.toSet())));
 
         Map<Long, Set<Long>> userRefRoleIdSetMap = UserUtil.getUserRefRoleIdSetMap();
 
@@ -180,16 +180,16 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserProMapper, SysUserDO>
 
         // 获取所有：用户信息
         List<SysUserInfoDO> sysUserInfoDOList =
-            MyCacheUtil.getCollection(BaseRedisKeyEnum.SYS_USER_INFO_CACHE, CacheHelper.getDefaultList(), () -> {
+                MyCacheUtil.getCollection(BaseRedisKeyEnum.SYS_USER_INFO_CACHE, CacheHelper.getDefaultList(), () -> {
 
-                return ChainWrappers.lambdaQueryChain(sysUserInfoMapper)
-                    .select(SysUserInfoDO::getId, SysUserInfoDO::getNickname, SysUserInfoDO::getTenantId)
-                    .orderByDesc(SysUserInfoDO::getId).list();
+                    return ChainWrappers.lambdaQueryChain(sysUserInfoMapper)
+                            .select(SysUserInfoDO::getId, SysUserInfoDO::getNickname, SysUserInfoDO::getTenantId)
+                            .orderByDesc(SysUserInfoDO::getId).list();
 
-            });
+                });
 
         List<DictVO> dictVOList = sysUserInfoDOList.stream().filter(it -> tenantIdSet.contains(it.getTenantId()))
-            .map(it -> new DictVO(it.getId(), it.getNickname())).collect(Collectors.toList());
+                .map(it -> new DictVO(it.getId(), it.getNickname())).collect(Collectors.toList());
 
         // 增加 admin账号
         if (BooleanUtil.isTrue(dto.getAddAdminFlag())) {
@@ -211,7 +211,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserProMapper, SysUserDO>
 
         // 处理：BaseTenantInsertOrUpdateDTO
         SysTenantUtil.handleBaseTenantInsertOrUpdateDTO(dto, getCheckIllegalFunc1(CollUtil.newHashSet(dto.getId())),
-            getTenantIdBaseEntityFunc1());
+                getTenantIdBaseEntityFunc1());
 
         boolean emailBlank = StrUtil.isBlank(dto.getEmail());
         boolean signInNameBlank = StrUtil.isBlank(dto.getSignInName());
@@ -291,8 +291,8 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserProMapper, SysUserDO>
                 sysUserInfoDO.setBio(dto.getBio());
 
                 SysUserDO sysUserDO = SignUtil
-                    .insertUser(dto.getPassword(), accountMap, false, sysUserInfoDO, dto.getEnableFlag(),
-                        dto.getTenantId());
+                        .insertUser(dto.getPassword(), accountMap, false, sysUserInfoDO, dto.getEnableFlag(),
+                                dto.getTenantId());
 
                 insertOrUpdateSub(sysUserDO, dto); // 新增数据到子表
 
@@ -320,7 +320,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserProMapper, SysUserDO>
                 sysUserInfoDO.setId(dto.getId());
 
                 sysUserInfoDO
-                    .setNickname(MyEntityUtil.getNotNullStr(dto.getNickname(), NicknameUtil.getRandomNickname()));
+                        .setNickname(MyEntityUtil.getNotNullStr(dto.getNickname(), NicknameUtil.getRandomNickname()));
 
                 sysUserInfoDO.setBio(MyEntityUtil.getNotNullStr(dto.getBio()));
 
@@ -348,7 +348,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserProMapper, SysUserDO>
         if (BooleanUtil.isFalse(ReUtil.isMatch(BaseRegexConstant.PASSWORD_REGEXP, dto.getOriginPassword()))) {
 
             ApiResultVO.error(
-                com.cmcorg20230301.be.engine.sign.helper.exception.BizCodeEnum.PASSWORD_RESTRICTIONS); // 不合法直接抛出异常
+                    com.cmcorg20230301.be.engine.sign.helper.exception.BizCodeEnum.PASSWORD_RESTRICTIONS); // 不合法直接抛出异常
 
         }
 
@@ -358,7 +358,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserProMapper, SysUserDO>
      * 判断：账号是否重复
      */
     private boolean accountIsExist(SysUserInsertOrUpdateDTO dto, Enum<? extends IRedisKey> item,
-        Map<Enum<? extends IRedisKey>, String> map, @Nullable Long tenantId) {
+                                   Map<Enum<? extends IRedisKey>, String> map, @Nullable Long tenantId) {
 
         boolean exist = false;
 
@@ -411,7 +411,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserProMapper, SysUserDO>
         if (CollUtil.isNotEmpty(dto.getRoleIdSet())) {
 
             List<SysRoleRefUserDO> insertList =
-                new ArrayList<>(MyMapUtil.getInitialCapacity(dto.getRoleIdSet().size()));
+                    new ArrayList<>(MyMapUtil.getInitialCapacity(dto.getRoleIdSet().size()));
 
             for (Long item : dto.getRoleIdSet()) {
 
@@ -432,7 +432,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserProMapper, SysUserDO>
         if (CollUtil.isNotEmpty(dto.getDeptIdSet())) {
 
             List<SysDeptRefUserDO> insertList =
-                new ArrayList<>(MyMapUtil.getInitialCapacity(dto.getDeptIdSet().size()));
+                    new ArrayList<>(MyMapUtil.getInitialCapacity(dto.getDeptIdSet().size()));
 
             for (Long item : dto.getDeptIdSet()) {
 
@@ -453,7 +453,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserProMapper, SysUserDO>
         if (CollUtil.isNotEmpty(dto.getPostIdSet())) {
 
             List<SysPostRefUserDO> insertList =
-                new ArrayList<>(MyMapUtil.getInitialCapacity(dto.getPostIdSet().size()));
+                    new ArrayList<>(MyMapUtil.getInitialCapacity(dto.getPostIdSet().size()));
 
             for (Long item : dto.getPostIdSet()) {
 
@@ -474,7 +474,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserProMapper, SysUserDO>
         if (CollUtil.isNotEmpty(dto.getTenantIdSet())) {
 
             List<SysTenantRefUserDO> insertList =
-                new ArrayList<>(MyMapUtil.getInitialCapacity(dto.getTenantIdSet().size()));
+                    new ArrayList<>(MyMapUtil.getInitialCapacity(dto.getTenantIdSet().size()));
 
             for (Long item : dto.getTenantIdSet()) {
 
@@ -503,8 +503,8 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserProMapper, SysUserDO>
         Set<Long> queryTenantIdSet = SysTenantUtil.getUserRefTenantIdSet();
 
         SysUserDO sysUserDO =
-            lambdaQuery().eq(BaseEntity::getId, notNullId.getId()).in(BaseEntityNoId::getTenantId, queryTenantIdSet)
-                .one();
+                lambdaQuery().eq(BaseEntity::getId, notNullId.getId()).in(BaseEntityNoId::getTenantId, queryTenantIdSet)
+                        .one();
 
         if (sysUserDO == null) {
             return null;
@@ -513,8 +513,8 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserProMapper, SysUserDO>
         SysUserInfoByIdVO sysUserInfoByIdVO = BeanUtil.copyProperties(sysUserDO, SysUserInfoByIdVO.class);
 
         SysUserInfoDO sysUserInfoDO =
-            ChainWrappers.lambdaQueryChain(sysUserInfoMapper).eq(SysUserInfoDO::getId, notNullId.getId())
-                .select(SysUserInfoDO::getNickname, SysUserInfoDO::getAvatarFileId, SysUserInfoDO::getBio).one();
+                ChainWrappers.lambdaQueryChain(sysUserInfoMapper).eq(SysUserInfoDO::getId, notNullId.getId())
+                        .select(SysUserInfoDO::getNickname, SysUserInfoDO::getAvatarFileId, SysUserInfoDO::getBio).one();
 
         sysUserInfoByIdVO.setNickname(sysUserInfoDO.getNickname());
         sysUserInfoByIdVO.setAvatarFileId(sysUserInfoDO.getAvatarFileId());
@@ -522,32 +522,32 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserProMapper, SysUserDO>
 
         // 获取：用户绑定的角色 idSet
         List<SysRoleRefUserDO> refUserDOList =
-            sysRoleRefUserService.lambdaQuery().eq(SysRoleRefUserDO::getUserId, notNullId.getId())
-                .select(SysRoleRefUserDO::getRoleId).list();
+                sysRoleRefUserService.lambdaQuery().eq(SysRoleRefUserDO::getUserId, notNullId.getId())
+                        .select(SysRoleRefUserDO::getRoleId).list();
 
         Set<Long> roleIdSet = refUserDOList.stream().map(SysRoleRefUserDO::getRoleId).collect(Collectors.toSet());
 
         // 获取：用户绑定的部门 idSet
         List<SysDeptRefUserDO> deptRefUserDOList =
-            sysDeptRefUserService.lambdaQuery().eq(SysDeptRefUserDO::getUserId, notNullId.getId())
-                .select(SysDeptRefUserDO::getDeptId).list();
+                sysDeptRefUserService.lambdaQuery().eq(SysDeptRefUserDO::getUserId, notNullId.getId())
+                        .select(SysDeptRefUserDO::getDeptId).list();
 
         Set<Long> deptIdSet = deptRefUserDOList.stream().map(SysDeptRefUserDO::getDeptId).collect(Collectors.toSet());
 
         // 获取：用户绑定的岗位 idSet
         List<SysPostRefUserDO> jobRefUserDOList =
-            sysPostRefUserService.lambdaQuery().eq(SysPostRefUserDO::getUserId, notNullId.getId())
-                .select(SysPostRefUserDO::getPostId).list();
+                sysPostRefUserService.lambdaQuery().eq(SysPostRefUserDO::getUserId, notNullId.getId())
+                        .select(SysPostRefUserDO::getPostId).list();
 
         Set<Long> postIdSet = jobRefUserDOList.stream().map(SysPostRefUserDO::getPostId).collect(Collectors.toSet());
 
         // 获取：用户绑定的租户 idSet
         List<SysTenantRefUserDO> tenantRefUserDOList =
-            sysTenantRefUserService.lambdaQuery().eq(SysTenantRefUserDO::getUserId, notNullId.getId())
-                .select(SysTenantRefUserDO::getTenantId).list();
+                sysTenantRefUserService.lambdaQuery().eq(SysTenantRefUserDO::getUserId, notNullId.getId())
+                        .select(SysTenantRefUserDO::getTenantId).list();
 
         Set<Long> tenantIdSet =
-            tenantRefUserDOList.stream().map(SysTenantRefUserDO::getTenantId).collect(Collectors.toSet());
+                tenantRefUserDOList.stream().map(SysTenantRefUserDO::getTenantId).collect(Collectors.toSet());
 
         sysUserInfoByIdVO.setRoleIdSet(roleIdSet);
         sysUserInfoByIdVO.setDeptIdSet(deptIdSet);
@@ -613,7 +613,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserProMapper, SysUserDO>
         SysTenantUtil.checkIllegal(notEmptyIdSet.getIdSet(), getCheckIllegalFunc1(notEmptyIdSet.getIdSet()));
 
         ChainWrappers.lambdaUpdateChain(sysUserInfoMapper).in(SysUserInfoDO::getId, notEmptyIdSet.getIdSet())
-            .set(SysUserInfoDO::getAvatarFileId, -1).update();
+                .set(SysUserInfoDO::getAvatarFileId, -1).update();
 
         return BaseBizCodeEnum.OK;
 
@@ -674,7 +674,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserProMapper, SysUserDO>
         lambdaUpdate().in(BaseEntity::getId, notEmptyIdSet.getIdSet()).set(SysUserDO::getEnableFlag, true).update();
 
         ChainWrappers.lambdaUpdateChain(sysUserInfoMapper).in(SysUserInfoDO::getId, notEmptyIdSet.getIdSet())
-            .set(SysUserInfoDO::getEnableFlag, true).update();
+                .set(SysUserInfoDO::getEnableFlag, true).update();
 
         return BaseBizCodeEnum.OK;
 
@@ -697,7 +697,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserProMapper, SysUserDO>
         lambdaUpdate().in(BaseEntity::getId, notEmptyIdSet.getIdSet()).set(SysUserDO::getEnableFlag, false).update();
 
         ChainWrappers.lambdaUpdateChain(sysUserInfoMapper).in(SysUserInfoDO::getId, notEmptyIdSet.getIdSet())
-            .set(SysUserInfoDO::getEnableFlag, false).update();
+                .set(SysUserInfoDO::getEnableFlag, false).update();
 
         return BaseBizCodeEnum.OK;
 
@@ -710,7 +710,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserProMapper, SysUserDO>
     private Func1<Set<Long>, Long> getCheckIllegalFunc1(Set<Long> idSet) {
 
         return tenantIdSet -> lambdaQuery().in(BaseEntity::getId, idSet).in(BaseEntityNoId::getTenantId, tenantIdSet)
-            .count();
+                .count();
 
     }
 

@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class SysRoleRefMenuServiceImpl extends ServiceImpl<SysRoleRefMenuMapper, SysRoleRefMenuDO>
-    implements SysRoleRefMenuService {
+        implements SysRoleRefMenuService {
 
 }
 

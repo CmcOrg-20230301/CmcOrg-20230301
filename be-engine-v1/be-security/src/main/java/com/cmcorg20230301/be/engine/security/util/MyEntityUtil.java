@@ -137,15 +137,15 @@ public class MyEntityUtil {
             if (item.getValue() == null) {
                 continue;
             }
-            if ((item.getValue() instanceof Integer) && ((int)item.getValue() == -1)) {
+            if ((item.getValue() instanceof Integer) && ((int) item.getValue() == -1)) {
                 item.setValue(null);
                 continue;
             }
-            if ((item.getValue() instanceof Byte) && ((byte)item.getValue() == -1)) {
+            if ((item.getValue() instanceof Byte) && ((byte) item.getValue() == -1)) {
                 item.setValue(null);
                 continue;
             }
-            if ((item.getValue() instanceof Long) && ((long)item.getValue() == -1)) {
+            if ((item.getValue() instanceof Long) && ((long) item.getValue() == -1)) {
                 item.setValue(null);
             }
 

@@ -52,7 +52,7 @@ public class SysUserWalletWithdrawLogController {
     @PostMapping("/page")
     @PreAuthorize("hasAuthority('sysUserWalletWithdrawLog:page')")
     public ApiResultVO<Page<SysUserWalletWithdrawLogDO>> myPage(
-        @RequestBody @Valid SysUserWalletWithdrawLogPageDTO dto) {
+            @RequestBody @Valid SysUserWalletWithdrawLogPageDTO dto) {
         return ApiResultVO.okData(baseService.myPage(dto));
     }
 
@@ -67,7 +67,7 @@ public class SysUserWalletWithdrawLogController {
     @PostMapping("/page/tenant")
     @PreAuthorize("hasAuthority('sysUserWalletWithdrawLog:page')")
     public ApiResultVO<Page<SysUserWalletWithdrawLogDO>> myPageTenant(
-        @RequestBody @Valid SysUserWalletWithdrawLogPageUserSelfDTO dto) {
+            @RequestBody @Valid SysUserWalletWithdrawLogPageUserSelfDTO dto) {
         return ApiResultVO.okData(baseService.myPageTenant(dto));
     }
 
@@ -75,7 +75,7 @@ public class SysUserWalletWithdrawLogController {
     @PostMapping("/insertOrUpdate/tenant")
     @PreAuthorize("hasAuthority('sysUserWalletWithdrawLog:insertOrUpdate')")
     public ApiResultVO<String> insertOrUpdateTenant(
-        @RequestBody @Valid SysUserWalletWithdrawLogInsertOrUpdateTenantDTO dto) {
+            @RequestBody @Valid SysUserWalletWithdrawLogInsertOrUpdateTenantDTO dto) {
         return ApiResultVO.okMsg(baseService.insertOrUpdateTenant(dto));
     }
 
@@ -89,14 +89,14 @@ public class SysUserWalletWithdrawLogController {
     @Operation(summary = "分页排序查询-用户")
     @PostMapping("/page/userSelf")
     public ApiResultVO<Page<SysUserWalletWithdrawLogDO>> myPageUserSelf(
-        @RequestBody @Valid SysUserWalletWithdrawLogPageUserSelfDTO dto) {
+            @RequestBody @Valid SysUserWalletWithdrawLogPageUserSelfDTO dto) {
         return ApiResultVO.okData(baseService.myPageUserSelf(dto));
     }
 
     @Operation(summary = "新增/修改-用户")
     @PostMapping("/insertOrUpdate/userSelf")
     public ApiResultVO<String> insertOrUpdateUserSelf(
-        @RequestBody @Valid SysUserWalletWithdrawLogInsertOrUpdateUserSelfDTO dto) {
+            @RequestBody @Valid SysUserWalletWithdrawLogInsertOrUpdateUserSelfDTO dto) {
         return ApiResultVO.okMsg(baseService.insertOrUpdateUserSelf(dto));
     }
 

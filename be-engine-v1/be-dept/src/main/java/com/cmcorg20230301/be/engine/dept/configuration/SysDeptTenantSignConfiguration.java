@@ -31,7 +31,7 @@ public class SysDeptTenantSignConfiguration implements ITenantSignConfiguration 
     public void delete(Set<Long> tenantIdSet) {
 
         List<SysDeptDO> sysDeptDOList =
-            sysDeptService.lambdaQuery().in(BaseEntityNoId::getTenantId, tenantIdSet).select(BaseEntity::getId).list();
+                sysDeptService.lambdaQuery().in(BaseEntityNoId::getTenantId, tenantIdSet).select(BaseEntity::getId).list();
 
         Set<Long> deptIdSet = sysDeptDOList.stream().map(BaseEntity::getId).collect(Collectors.toSet());
 

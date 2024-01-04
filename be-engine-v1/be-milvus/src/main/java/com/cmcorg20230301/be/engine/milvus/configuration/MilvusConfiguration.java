@@ -27,7 +27,7 @@ public class MilvusConfiguration {
         }
 
         ConnectParam.Builder builder =
-            ConnectParam.newBuilder().withHost(milvusProperties.getHost()).withPort(milvusProperties.getPort());
+                ConnectParam.newBuilder().withHost(milvusProperties.getHost()).withPort(milvusProperties.getPort());
 
         if (StrUtil.isNotBlank(milvusProperties.getUsername())) {
 

@@ -1,25 +1,32 @@
 # CmcOrg-20230301
+
 后台管理平台一站式框架
 
 ## 介绍
+
 `【MIT】开源协议，永久免费商用`
 
 ## 预览地址：[https://cmcopen.top/](https://cmcopen.top/)
 
 #### 便捷工具
+
 - [Helper-App](https://cmc0.github.io/)：致力于帮助开发者减少一些繁琐的开发语言转换
 
 ### 前端框架
+
 `【vite】【react】【ant.design】【procomponents.ant.design】`
 
 ### 后端框架
+
 `springboot，nacos，spring-security，minio，ip2region，knife4j，redisson，hutool，mybatis-plus，xxl-job，netty，kafka，sharding-jdbc`
 
 ### 便捷功能
+
 - 前端：自动同步 openApi，并生成 ts页面以及 api接口文件
 - 前后端自动打包及上传部署
 
 ### 功能简介
+
 1. 权限管理（security）
 2. 菜单管理
 3. 用户管理

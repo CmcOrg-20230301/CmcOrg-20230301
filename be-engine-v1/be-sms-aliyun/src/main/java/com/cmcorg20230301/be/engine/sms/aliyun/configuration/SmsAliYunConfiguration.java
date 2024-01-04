@@ -147,9 +147,9 @@ public class SmsAliYunConfiguration implements ISysSms {
 
         // 备注：第二个元素，表示是：验证码多久过期（分钟）
         String templateParam = JSONUtil.createObj().set("code", sysSmsSendBO.getSendContent())
-            .set("expire", BaseConstant.LONG_CODE_EXPIRE_MINUTE).toString();
+                .set("expire", BaseConstant.LONG_CODE_EXPIRE_MINUTE).toString();
 
-        sysSmsSendBO.setTemplateParamSet(new String[] {templateParam});
+        sysSmsSendBO.setTemplateParamSet(new String[]{templateParam});
 
         // 执行：发送短信
         doSend(sysSmsSendBO);
@@ -165,19 +165,19 @@ public class SmsAliYunConfiguration implements ISysSms {
         SysSmsConfigurationDO sysSmsConfigurationDO = sysSmsSendBO.getSysSmsConfigurationDO();
 
         SendSmsRequest sendSmsRequest = SendSmsRequest.builder().phoneNumbers(sysSmsSendBO.getPhoneNumber())
-            .signName(sysSmsConfigurationDO.getSignName()).templateCode(sysSmsSendBO.getTemplateId())
-            .templateParam(sysSmsSendBO.getTemplateParamSet()[0]).build();
+                .signName(sysSmsConfigurationDO.getSignName()).templateCode(sysSmsSendBO.getTemplateId())
+                .templateParam(sysSmsSendBO.getTemplateParamSet()[0]).build();
 
         // Configure Credentials authentication information, including ak, secret, token
         StaticCredentialProvider provider = StaticCredentialProvider.create(
-            Credential.builder().accessKeyId(sysSmsConfigurationDO.getSecretId())
-                .accessKeySecret(sysSmsConfigurationDO.getSecretKey()).build());
+                Credential.builder().accessKeyId(sysSmsConfigurationDO.getSecretId())
+                        .accessKeySecret(sysSmsConfigurationDO.getSecretKey()).build());
 
         // Configure the Client
         AsyncClient client = AsyncClient.builder().region("cn-hangzhou") // Region ID
-            .credentialsProvider(provider)
-            .overrideConfiguration(ClientOverrideConfiguration.create().setEndpointOverride("dysmsapi.aliyuncs.com"))
-            .build();
+                .credentialsProvider(provider)
+                .overrideConfiguration(ClientOverrideConfiguration.create().setEndpointOverride("dysmsapi.aliyuncs.com"))
+                .build();
 
         // Asynchronously get the return value of the API request
         CompletableFuture<SendSmsResponse> response = client.sendSms(sendSmsRequest);
@@ -194,7 +194,7 @@ public class SmsAliYunConfiguration implements ISysSms {
 
         if (BooleanUtil.isFalse("OK".equalsIgnoreCase(code))) {
             throw new RuntimeException(
-                StrUtil.format("阿里云短信发送失败，code：【{}】，message：【{}】", code, body.getMessage()));
+                    StrUtil.format("阿里云短信发送失败，code：【{}】，message：【{}】", code, body.getMessage()));
         }
 
     }

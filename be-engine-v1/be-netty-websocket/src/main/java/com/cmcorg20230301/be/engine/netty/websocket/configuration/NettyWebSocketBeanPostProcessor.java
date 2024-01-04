@@ -54,7 +54,7 @@ public class NettyWebSocketBeanPostProcessor implements BeanPostProcessor {
         Class<?> beanClass = bean.getClass();
 
         NettyWebSocketController nettyWebSocketControllerAnnotation =
-            beanClass.getAnnotation(NettyWebSocketController.class);
+                beanClass.getAnnotation(NettyWebSocketController.class);
 
         if (nettyWebSocketControllerAnnotation == null) {
             return bean;
@@ -106,8 +106,8 @@ public class NettyWebSocketBeanPostProcessor implements BeanPostProcessor {
 
             // 组装并处理路径
             List<String> splitTrimList = StrUtil.splitTrim(
-                strBuilder.append(classRequestMappingValue).append("/").append(methodRequestMappingValue)
-                    .toStringAndReset(), "/");
+                    strBuilder.append(classRequestMappingValue).append("/").append(methodRequestMappingValue)
+                            .toStringAndReset(), "/");
 
             String key = "/" + CollUtil.join(splitTrimList, "/");
 

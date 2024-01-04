@@ -42,13 +42,13 @@ public class SysSecurityUserSignConfiguration implements IUserSignConfiguration 
     public void delete(Set<Long> userIdSet) {
 
         List<SysUserDO> sysUserDOList =
-            ChainWrappers.lambdaQueryChain(sysUserMapper).in(BaseEntity::getId, userIdSet).list();
+                ChainWrappers.lambdaQueryChain(sysUserMapper).in(BaseEntity::getId, userIdSet).list();
 
         List<SysUserInfoDO> sysUserInfoDOList =
-            ChainWrappers.lambdaQueryChain(sysUserInfoMapper).in(SysUserInfoDO::getId, userIdSet).list();
+                ChainWrappers.lambdaQueryChain(sysUserInfoMapper).in(SysUserInfoDO::getId, userIdSet).list();
 
         Map<Long, SysUserInfoDO> sysUserInfoDoMap =
-            sysUserInfoDOList.stream().collect(Collectors.toMap(SysUserInfoDO::getId, it -> it));
+                sysUserInfoDOList.stream().collect(Collectors.toMap(SysUserInfoDO::getId, it -> it));
 
         List<SysUserDeleteLogDO> sysUserDeleteLogDOList = new ArrayList<>(userIdSet.size());
 

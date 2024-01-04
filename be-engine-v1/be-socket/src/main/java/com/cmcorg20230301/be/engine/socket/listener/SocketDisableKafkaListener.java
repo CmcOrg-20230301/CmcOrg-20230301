@@ -43,9 +43,9 @@ public class SocketDisableKafkaListener {
         try {
 
             Set<Long> socketIdSet = recordList.stream() //
-                .map(it -> JSONUtil.toList(it, Long.class)) //
-                .flatMap(Collection::stream)  //
-                .collect(Collectors.toSet());
+                    .map(it -> JSONUtil.toList(it, Long.class)) //
+                    .flatMap(Collection::stream)  //
+                    .collect(Collectors.toSet());
 
             if (CollUtil.isNotEmpty(iSocketDisableList)) {
 

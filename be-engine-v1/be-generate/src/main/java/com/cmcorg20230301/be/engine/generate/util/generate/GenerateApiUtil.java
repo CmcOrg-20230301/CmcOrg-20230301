@@ -41,14 +41,14 @@ public class GenerateApiUtil {
     private String apiInterfaceFieldTemp = "    {}{}: {}{} // {}";
 
     private String apiRequestTemp = "\n" + "// {}\n" + "export function {}({}config?: AxiosRequestConfig) {\n"
-        + "    return $http.{}<{}>('{}', {}, config)\n" + "}\n";
+            + "    return $http.{}<{}>('{}', {}, config)\n" + "}\n";
 
     private String apiRequestFormName = "form";
 
     private String apiRequestFormTemp = apiRequestFormName + ": {}, ";
 
     private String apiImportBase =
-        "import $http from \"@/util/HttpUtil\";\nimport {AxiosRequestConfig} from \"axios\";\n";
+            "import $http from \"@/util/HttpUtil\";\nimport {AxiosRequestConfig} from \"axios\";\n";
 
     private String apiImportBaseMyOrderDTO = "import MyOrderDTO from \"@/model/dto/MyOrderDTO\";\n";
 
@@ -150,7 +150,7 @@ public class GenerateApiUtil {
      * 生成 api
      */
     public void generateApi(BeApi beApi, StrBuilder strBuilder, Set<String> classNameSet,
-        CallBack<Boolean> myProPagePostCallBack) {
+                            CallBack<Boolean> myProPagePostCallBack) {
 
         // api的方法名
         String apiName = getApiName(beApi.getPath());
@@ -173,7 +173,7 @@ public class GenerateApiUtil {
             // 如果是：对象类型
             if (beApiField instanceof BeApi.BeApiSchema) {
 
-                BeApi.BeApiSchema parameterBeApiSchema = (BeApi.BeApiSchema)beApiField;
+                BeApi.BeApiSchema parameterBeApiSchema = (BeApi.BeApiSchema) beApiField;
 
                 formStr = StrUtil.format(getApiRequestFormTemp(), parameterBeApiSchema.getClassName());
                 formValueStr = getApiRequestFormName();
@@ -213,8 +213,8 @@ public class GenerateApiUtil {
         }
 
         strBuilder.append(StrUtil
-            .format(getApiRequestTemp(), beApi.getSummary(), apiName, formStr, httpStr, returnTypeStr, beApi.getPath(),
-                formValueStr));
+                .format(getApiRequestTemp(), beApi.getSummary(), apiName, formStr, httpStr, returnTypeStr, beApi.getPath(),
+                        formValueStr));
 
     }
 
@@ -234,9 +234,9 @@ public class GenerateApiUtil {
      * 生成 vo
      */
     public void generateVO(BeApi beApi, StrBuilder strBuilder, Set<String> classNameSet,
-        CallBack<Boolean> myProPagePostCallBack) {
+                           CallBack<Boolean> myProPagePostCallBack) {
 
-        BeApi.BeApiSchema response = (BeApi.BeApiSchema)beApi.getResponse();
+        BeApi.BeApiSchema response = (BeApi.BeApiSchema) beApi.getResponse();
 
         if (response == null) {
             return;
@@ -246,26 +246,26 @@ public class GenerateApiUtil {
 
         if (apiResultVoFlag) {
 
-            BeApi.BeApiSchema beApiSchema = (BeApi.BeApiSchema)response.getFieldMap().get(response.getClassName());
+            BeApi.BeApiSchema beApiSchema = (BeApi.BeApiSchema) response.getFieldMap().get(response.getClassName());
 
             BeApi.BeApiField data = beApiSchema.getFieldMap().get("data");
 
             if (data instanceof BeApi.BeApiSchema) {
 
-                BeApi.BeApiSchema dataBeApiSchema = (BeApi.BeApiSchema)data;
+                BeApi.BeApiSchema dataBeApiSchema = (BeApi.BeApiSchema) data;
 
                 beApi.setReturnTypeArrFlag(dataBeApiSchema.getArrFlag());
 
                 BeApi.BeApiSchema dataRealBeApiSchema =
-                    (BeApi.BeApiSchema)dataBeApiSchema.getFieldMap().get(dataBeApiSchema.getClassName());
+                        (BeApi.BeApiSchema) dataBeApiSchema.getFieldMap().get(dataBeApiSchema.getClassName());
 
                 // 如果是：分页排序查询相关
                 if (dataRealBeApiSchema.getClassName().startsWith(Page.class.getSimpleName())) {
 
-                    BeApi.BeApiSchema records = (BeApi.BeApiSchema)dataRealBeApiSchema.getFieldMap().get("records");
+                    BeApi.BeApiSchema records = (BeApi.BeApiSchema) dataRealBeApiSchema.getFieldMap().get("records");
 
                     BeApi.BeApiSchema recordsBeApiSchema =
-                        (BeApi.BeApiSchema)records.getFieldMap().get(records.getClassName());
+                            (BeApi.BeApiSchema) records.getFieldMap().get(records.getClassName());
 
                     beApi.setReturnTypeStr(recordsBeApiSchema.getClassName());
 
@@ -285,7 +285,7 @@ public class GenerateApiUtil {
 
             } else if (data instanceof BeApi.BeApiParameter) {
 
-                BeApi.BeApiParameter dataBeApiParameter = (BeApi.BeApiParameter)data;
+                BeApi.BeApiParameter dataBeApiParameter = (BeApi.BeApiParameter) data;
 
                 String type = dataBeApiParameter.getType();
 
@@ -323,10 +323,10 @@ public class GenerateApiUtil {
             // 如果是：对象类型
             if (beApiField instanceof BeApi.BeApiSchema) {
 
-                BeApi.BeApiSchema parameterBeApiSchema = (BeApi.BeApiSchema)beApiField;
+                BeApi.BeApiSchema parameterBeApiSchema = (BeApi.BeApiSchema) beApiField;
 
                 requestBody =
-                    (BeApi.BeApiSchema)parameterBeApiSchema.getFieldMap().get(parameterBeApiSchema.getClassName());
+                        (BeApi.BeApiSchema) parameterBeApiSchema.getFieldMap().get(parameterBeApiSchema.getClassName());
 
             }
 
@@ -361,7 +361,7 @@ public class GenerateApiUtil {
      * 生成：interface
      */
     public void generateInterface(StrBuilder strBuilder, Set<String> classNameSet, BeApi.BeApiSchema beApiSchema,
-        String preMsg) {
+                                  String preMsg) {
 
         String className = beApiSchema.getClassName();
 
@@ -391,12 +391,12 @@ public class GenerateApiUtil {
             if (beApiField instanceof BeApi.BeApiParameter) {
 
                 // 生成 interface，BeApiParameter类型
-                generateInterfaceParameter(interfaceBuilder, item.getKey(), (BeApi.BeApiParameter)beApiField);
+                generateInterfaceParameter(interfaceBuilder, item.getKey(), (BeApi.BeApiParameter) beApiField);
 
             } else if (beApiField instanceof BeApi.BeApiSchema) {
 
                 // 生成 interface，BeApiSchema类型
-                generateInterfaceSchema(strBuilder, classNameSet, interfaceBuilder, (BeApi.BeApiSchema)beApiField);
+                generateInterfaceSchema(strBuilder, classNameSet, interfaceBuilder, (BeApi.BeApiSchema) beApiField);
 
             }
 
@@ -418,7 +418,7 @@ public class GenerateApiUtil {
      * 生成 interface，BeApiSchema类型
      */
     public void generateInterfaceSchema(StrBuilder strBuilder, Set<String> classNameSet, StrBuilder interfaceBuilder,
-        BeApi.BeApiSchema beApiSchema) {
+                                        BeApi.BeApiSchema beApiSchema) {
 
         // 如果是：排序字段
         if (beApiSchema.getClassName().equals(MyOrderDTO.class.getSimpleName())) {
@@ -436,8 +436,8 @@ public class GenerateApiUtil {
             }
 
             interfaceBuilder.append(StrUtil
-                .format(getApiInterfaceFieldTemp(), beApiSchema.getName(), "?", beApiSchema.getClassName(), "",
-                    "排序字段"));
+                    .format(getApiInterfaceFieldTemp(), beApiSchema.getName(), "?", beApiSchema.getClassName(), "",
+                            "排序字段"));
 
             interfaceBuilder.append(getSort());
 
@@ -451,15 +451,15 @@ public class GenerateApiUtil {
                 if (beApiField instanceof BeApi.BeApiSchema) {
 
                     // 生成：interface
-                    generateInterface(strBuilder, classNameSet, (BeApi.BeApiSchema)beApiField, "dto：内部类");
+                    generateInterface(strBuilder, classNameSet, (BeApi.BeApiSchema) beApiField, "dto：内部类");
 
                 }
 
             }
 
             interfaceBuilder.append(StrUtil
-                .format(getApiInterfaceFieldTemp(), beApiSchema.getName(), "?", beApiSchema.getClassName(),
-                    BooleanUtil.isTrue(beApiSchema.getArrFlag()) ? "[]" : "", beApiSchema.getDescription()));
+                    .format(getApiInterfaceFieldTemp(), beApiSchema.getName(), "?", beApiSchema.getClassName(),
+                            BooleanUtil.isTrue(beApiSchema.getArrFlag()) ? "[]" : "", beApiSchema.getDescription()));
 
         }
 
@@ -469,7 +469,7 @@ public class GenerateApiUtil {
      * 生成 interface，BeApiParameter类型
      */
     public void generateInterfaceParameter(StrBuilder interfaceBuilder, String fieldName,
-        BeApi.BeApiParameter beApiParameter) {
+                                           BeApi.BeApiParameter beApiParameter) {
 
         String type = beApiParameter.getType();
 
@@ -477,7 +477,7 @@ public class GenerateApiUtil {
         type = handleIntegerType(beApiParameter, type);
 
         interfaceBuilder.append(StrUtil.format(getApiInterfaceFieldTemp(), fieldName, "?", type,
-            BooleanUtil.isTrue(beApiParameter.getArrFlag()) ? "[]" : "", beApiParameter.getDescription()));
+                BooleanUtil.isTrue(beApiParameter.getArrFlag()) ? "[]" : "", beApiParameter.getDescription()));
 
         if (StrUtil.isNotBlank(beApiParameter.getPattern())) {
 

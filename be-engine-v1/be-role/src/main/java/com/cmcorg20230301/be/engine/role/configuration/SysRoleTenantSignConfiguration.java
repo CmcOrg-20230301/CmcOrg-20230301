@@ -31,7 +31,7 @@ public class SysRoleTenantSignConfiguration implements ITenantSignConfiguration 
     public void delete(Set<Long> tenantIdSet) {
 
         List<SysRoleDO> sysRoleDOList =
-            sysRoleService.lambdaQuery().in(BaseEntityNoId::getTenantId, tenantIdSet).select(BaseEntity::getId).list();
+                sysRoleService.lambdaQuery().in(BaseEntityNoId::getTenantId, tenantIdSet).select(BaseEntity::getId).list();
 
         Set<Long> roleIdSet = sysRoleDOList.stream().map(BaseEntity::getId).collect(Collectors.toSet());
 

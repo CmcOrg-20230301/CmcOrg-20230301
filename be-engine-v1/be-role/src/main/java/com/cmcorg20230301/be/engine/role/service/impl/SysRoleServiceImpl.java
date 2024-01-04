@@ -61,12 +61,12 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRoleDO> im
 
         // 处理：BaseTenantInsertOrUpdateDTO
         SysTenantUtil.handleBaseTenantInsertOrUpdateDTO(dto, getCheckIllegalFunc1(CollUtil.newHashSet(dto.getId())),
-            getTenantIdBaseEntityFunc1());
+                getTenantIdBaseEntityFunc1());
 
         // 角色名，不能重复
         boolean exists =
-            lambdaQuery().eq(SysRoleDO::getName, dto.getName()).ne(dto.getId() != null, BaseEntity::getId, dto.getId())
-                .eq(BaseEntityNoId::getTenantId, dto.getTenantId()).exists();
+                lambdaQuery().eq(SysRoleDO::getName, dto.getName()).ne(dto.getId() != null, BaseEntity::getId, dto.getId())
+                        .eq(BaseEntityNoId::getTenantId, dto.getTenantId()).exists();
 
         if (exists) {
             ApiResultVO.error(BizCodeEnum.THE_SAME_ROLE_NAME_EXIST);
@@ -76,8 +76,8 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRoleDO> im
         if (BooleanUtil.isTrue(dto.getDefaultFlag())) {
 
             lambdaUpdate().set(SysRoleDO::getDefaultFlag, false).eq(SysRoleDO::getDefaultFlag, true)
-                .eq(BaseEntityNoId::getTenantId, dto.getTenantId())
-                .ne(dto.getId() != null, BaseEntity::getId, dto.getId()).update();
+                    .eq(BaseEntityNoId::getTenantId, dto.getTenantId())
+                    .ne(dto.getId() != null, BaseEntity::getId, dto.getId()).update();
 
         }
 
@@ -120,8 +120,8 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRoleDO> im
 
             // 获取：没有被禁用的菜单 idSet
             Set<Long> menuIdSet = SysMenuUtil.getSysMenuCacheMap().values().stream()
-                .filter(it -> it.getTenantId().equals(dto.getTenantId()) && dto.getMenuIdSet().contains(it.getId()))
-                .map(BaseEntity::getId).collect(Collectors.toSet());
+                    .filter(it -> it.getTenantId().equals(dto.getTenantId()) && dto.getMenuIdSet().contains(it.getId()))
+                    .map(BaseEntity::getId).collect(Collectors.toSet());
 
             if (CollUtil.isNotEmpty(menuIdSet)) {
 
@@ -148,9 +148,9 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRoleDO> im
 
             // 获取：没有被禁用的用户 idSet
             List<SysUserDO> sysUserDOList =
-                ChainWrappers.lambdaQueryChain(sysUserMapper).in(BaseEntity::getId, dto.getUserIdSet())
-                    .eq(BaseEntity::getEnableFlag, true).eq(BaseEntityNoIdSuper::getTenantId, dto.getTenantId())
-                    .select(BaseEntity::getId).list();
+                    ChainWrappers.lambdaQueryChain(sysUserMapper).in(BaseEntity::getId, dto.getUserIdSet())
+                            .eq(BaseEntity::getEnableFlag, true).eq(BaseEntityNoIdSuper::getTenantId, dto.getTenantId())
+                            .select(BaseEntity::getId).list();
 
             if (CollUtil.isNotEmpty(sysUserDOList)) {
 
@@ -187,11 +187,11 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRoleDO> im
         SysTenantUtil.handleMyTenantPageDTO(dto, true);
 
         return lambdaQuery().like(StrUtil.isNotBlank(dto.getName()), SysRoleDO::getName, dto.getName())
-            .like(StrUtil.isNotBlank(dto.getRemark()), BaseEntity::getRemark, dto.getRemark())
-            .eq(dto.getEnableFlag() != null, BaseEntity::getEnableFlag, dto.getEnableFlag())
-            .eq(dto.getDefaultFlag() != null, SysRoleDO::getDefaultFlag, dto.getDefaultFlag())
-            .in(BaseEntityNoId::getTenantId, dto.getTenantIdSet()) //
-            .orderByDesc(BaseEntity::getUpdateTime).page(dto.page(true));
+                .like(StrUtil.isNotBlank(dto.getRemark()), BaseEntity::getRemark, dto.getRemark())
+                .eq(dto.getEnableFlag() != null, BaseEntity::getEnableFlag, dto.getEnableFlag())
+                .eq(dto.getDefaultFlag() != null, SysRoleDO::getDefaultFlag, dto.getDefaultFlag())
+                .in(BaseEntityNoId::getTenantId, dto.getTenantIdSet()) //
+                .orderByDesc(BaseEntity::getUpdateTime).page(dto.page(true));
 
     }
 
@@ -205,8 +205,8 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRoleDO> im
         Set<Long> queryTenantIdSet = SysTenantUtil.getUserRefTenantIdSet();
 
         SysRoleDO sysRoleDO =
-            lambdaQuery().eq(BaseEntity::getId, notNullId.getId()).in(BaseEntityNoId::getTenantId, queryTenantIdSet)
-                .one();
+                lambdaQuery().eq(BaseEntity::getId, notNullId.getId()).in(BaseEntityNoId::getTenantId, queryTenantIdSet)
+                        .one();
 
         if (sysRoleDO == null) {
             return null;
@@ -216,12 +216,12 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRoleDO> im
 
         // 完善子表的数据
         List<SysRoleRefMenuDO> menuList =
-            sysRoleRefMenuService.lambdaQuery().eq(SysRoleRefMenuDO::getRoleId, sysRoleInfoByIdVO.getId())
-                .select(SysRoleRefMenuDO::getMenuId).list();
+                sysRoleRefMenuService.lambdaQuery().eq(SysRoleRefMenuDO::getRoleId, sysRoleInfoByIdVO.getId())
+                        .select(SysRoleRefMenuDO::getMenuId).list();
 
         List<SysRoleRefUserDO> userList =
-            sysRoleRefUserService.lambdaQuery().eq(SysRoleRefUserDO::getRoleId, sysRoleInfoByIdVO.getId())
-                .select(SysRoleRefUserDO::getUserId).list();
+                sysRoleRefUserService.lambdaQuery().eq(SysRoleRefUserDO::getRoleId, sysRoleInfoByIdVO.getId())
+                        .select(SysRoleRefUserDO::getUserId).list();
 
         sysRoleInfoByIdVO.setMenuIdSet(menuList.stream().map(SysRoleRefMenuDO::getMenuId).collect(Collectors.toSet()));
         sysRoleInfoByIdVO.setUserIdSet(userList.stream().map(SysRoleRefUserDO::getUserId).collect(Collectors.toSet()));
@@ -272,7 +272,7 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRoleDO> im
     private Func1<Set<Long>, Long> getCheckIllegalFunc1(Set<Long> idSet) {
 
         return tenantIdSet -> lambdaQuery().in(BaseEntity::getId, idSet).in(BaseEntityNoId::getTenantId, tenantIdSet)
-            .count();
+                .count();
 
     }
 

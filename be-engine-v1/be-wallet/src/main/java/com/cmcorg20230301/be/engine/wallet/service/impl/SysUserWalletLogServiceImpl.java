@@ -30,7 +30,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 @Service
 @Slf4j(topic = LogTopicConstant.USER_WALLET)
 public class SysUserWalletLogServiceImpl extends ServiceImpl<SysUserWalletLogMapper, SysUserWalletLogDO>
-    implements SysUserWalletLogService {
+        implements SysUserWalletLogService {
 
     private static CopyOnWriteArrayList<SysUserWalletLogDO> SYS_USER_WALLET_LOG_DO_LIST = new CopyOnWriteArrayList<>();
 
@@ -85,21 +85,21 @@ public class SysUserWalletLogServiceImpl extends ServiceImpl<SysUserWalletLogMap
         SysTenantUtil.handleMyTenantPageDTO(dto, true);
 
         return lambdaQuery().eq(dto.getUserId() != null, SysUserWalletLogDO::getUserId, dto.getUserId())
-            .eq(dto.getType() != null, SysUserWalletLogDO::getType, dto.getType())
+                .eq(dto.getType() != null, SysUserWalletLogDO::getType, dto.getType())
 
-            .ne(SysUserWalletLogDO::getWithdrawableMoneyChange, BigDecimal.ZERO)
+                .ne(SysUserWalletLogDO::getWithdrawableMoneyChange, BigDecimal.ZERO)
 
-            .like(StrUtil.isNotBlank(dto.getName()), SysUserWalletLogDO::getName, dto.getName())
+                .like(StrUtil.isNotBlank(dto.getName()), SysUserWalletLogDO::getName, dto.getName())
 
-            .le(dto.getCtEndTime() != null, SysUserWalletLogDO::getCreateTime, dto.getCtEndTime())
+                .le(dto.getCtEndTime() != null, SysUserWalletLogDO::getCreateTime, dto.getCtEndTime())
 
-            .ge(dto.getCtBeginTime() != null, SysUserWalletLogDO::getCreateTime, dto.getCtBeginTime())
+                .ge(dto.getCtBeginTime() != null, SysUserWalletLogDO::getCreateTime, dto.getCtBeginTime())
 
-            .like(StrUtil.isNotBlank(dto.getRemark()), SysUserWalletLogDO::getRemark, dto.getRemark())
+                .like(StrUtil.isNotBlank(dto.getRemark()), SysUserWalletLogDO::getRemark, dto.getRemark())
 
-            .in(BaseEntityNoId::getTenantId, dto.getTenantIdSet()) //
+                .in(BaseEntityNoId::getTenantId, dto.getTenantIdSet()) //
 
-            .orderByDesc(BaseEntityNoIdSuper::getUpdateTime).page(dto.page(true));
+                .orderByDesc(BaseEntityNoIdSuper::getUpdateTime).page(dto.page(true));
 
     }
 

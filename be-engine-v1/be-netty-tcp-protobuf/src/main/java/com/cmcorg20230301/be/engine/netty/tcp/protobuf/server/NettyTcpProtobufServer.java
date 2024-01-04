@@ -116,7 +116,7 @@ public class NettyTcpProtobufServer {
 
         // 关闭 socket
         SocketUtil.closeSocket(channelFuture, parentGroup, childGroup, sysSocketServerId,
-            NettyTcpProtobufServerHandler.USER_ID_CHANNEL_MAP, "NettyTcpProtobuf", disableFlag);
+                NettyTcpProtobufServerHandler.USER_ID_CHANNEL_MAP, "NettyTcpProtobuf", disableFlag);
 
         if (!disableFlag) {
 
@@ -170,33 +170,33 @@ public class NettyTcpProtobufServer {
 
         serverBootstrap.group(parentGroup, childGroup) // 绑定线程池
 
-            .channel(NioServerSocketChannel.class) // 指定使用的channel
+                .channel(NioServerSocketChannel.class) // 指定使用的channel
 
-            .localAddress(port) // 绑定监听端口
+                .localAddress(port) // 绑定监听端口
 
-            .childHandler(new ChannelInitializer<SocketChannel>() { // 绑定客户端连接时候触发操作
+                .childHandler(new ChannelInitializer<SocketChannel>() { // 绑定客户端连接时候触发操作
 
-                @Override
-                protected void initChannel(SocketChannel ch) { // 绑定客户端连接时候触发操作
+                    @Override
+                    protected void initChannel(SocketChannel ch) { // 绑定客户端连接时候触发操作
 
-                    ch.pipeline().addLast(new ProtobufVarint32FrameDecoder());
+                        ch.pipeline().addLast(new ProtobufVarint32FrameDecoder());
 
-                    ch.pipeline().addLast(new ProtobufDecoder(BaseProto.BaseRequest.getDefaultInstance()));
+                        ch.pipeline().addLast(new ProtobufDecoder(BaseProto.BaseRequest.getDefaultInstance()));
 
-                    ch.pipeline().addLast(new ProtobufVarint32LengthFieldPrepender());
+                        ch.pipeline().addLast(new ProtobufVarint32LengthFieldPrepender());
 
-                    ch.pipeline().addLast(new ProtobufEncoder());
+                        ch.pipeline().addLast(new ProtobufEncoder());
 
-                    ch.pipeline().addLast(nettyTcpProtobufServerHandler);
+                        ch.pipeline().addLast(nettyTcpProtobufServerHandler);
 
-                }
+                    }
 
-            });
+                });
 
         channelFuture = serverBootstrap.bind().sync(); // 服务器同步创建绑定
 
         sysSocketServerId =
-            SocketUtil.getSysSocketServerId(port, nettyTcpProtobufProperties, SysSocketTypeEnum.TCP_PROTOBUF);
+                SocketUtil.getSysSocketServerId(port, nettyTcpProtobufProperties, SysSocketTypeEnum.TCP_PROTOBUF);
 
         log.info("NettyTcpProtobuf 启动完成：端口：{}，总接口个数：{}个", port, NettyTcpProtobufBeanPostProcessor.getMappingMapSize());
 

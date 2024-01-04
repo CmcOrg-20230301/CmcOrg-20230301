@@ -32,7 +32,7 @@ public class NettyWebSocketHttpController {
     @PostMapping(value = "/getWebSocketUrlById")
     @Operation(summary = "通过主键 id，获取：webSocket连接地址，格式：scheme://ip:port/path?code=xxx")
     public ApiResultVO<String> getWebSocketUrlById(
-        @RequestBody @Valid NotNullIdAndIntegerValue notNullIdAndIntegerValue) {
+            @RequestBody @Valid NotNullIdAndIntegerValue notNullIdAndIntegerValue) {
         return ApiResultVO.ok(BaseBizCodeEnum.OK, baseService.getWebSocketUrlById(notNullIdAndIntegerValue));
     }
 

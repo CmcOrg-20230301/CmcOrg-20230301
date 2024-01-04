@@ -38,7 +38,7 @@ public class SysUserBankCardController {
     @Operation(summary = "新增/修改-用户")
     @PostMapping("/insertOrUpdate/userSelf")
     public ApiResultVO<String> insertOrUpdateUserSelf(
-        @RequestBody @Valid SysUserBankCardInsertOrUpdateUserSelfDTO dto) {
+            @RequestBody @Valid SysUserBankCardInsertOrUpdateUserSelfDTO dto) {
         return ApiResultVO.okMsg(baseService.insertOrUpdateUserSelf(dto));
     }
 

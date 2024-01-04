@@ -66,7 +66,7 @@ public class WebSocketMessageDTO<T> {
 
     public static <T> WebSocketMessageDTO<T> errorMsg(String uri, String msgTemp, Object... paramArr) {
         return new WebSocketMessageDTO<>(uri, BaseBizCodeEnum.API_RESULT_SYS_ERROR.getCode(),
-            StrUtil.format(msgTemp, paramArr), null);
+                StrUtil.format(msgTemp, paramArr), null);
     }
 
     public static <T> WebSocketMessageDTO<T> errorCode(String uri, Integer code) {
@@ -82,7 +82,7 @@ public class WebSocketMessageDTO<T> {
 
     public static <T> WebSocketMessageDTO<T> okData(String uri, T data) {
         return new WebSocketMessageDTO<>(uri, BaseBizCodeEnum.API_RESULT_OK.getCode(),
-            BaseBizCodeEnum.API_RESULT_OK.getMsg(), data);
+                BaseBizCodeEnum.API_RESULT_OK.getMsg(), data);
     }
 
     public static <T> WebSocketMessageDTO<T> okMsg(String uri, String msg) {

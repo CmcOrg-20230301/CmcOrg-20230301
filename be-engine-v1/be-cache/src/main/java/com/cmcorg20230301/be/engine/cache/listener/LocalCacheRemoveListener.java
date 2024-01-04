@@ -33,9 +33,9 @@ public class LocalCacheRemoveListener {
         try {
 
             Set<String> keySet = recordList.stream() //
-                .map(it -> JSONUtil.toList(it, String.class)) //
-                .flatMap(Collection::stream)  //
-                .collect(Collectors.toSet());
+                    .map(it -> JSONUtil.toList(it, String.class)) //
+                    .flatMap(Collection::stream)  //
+                    .collect(Collectors.toSet());
 
             if (keySet.size() != 0) {
 

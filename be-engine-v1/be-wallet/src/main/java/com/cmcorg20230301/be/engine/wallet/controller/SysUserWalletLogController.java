@@ -42,7 +42,7 @@ public class SysUserWalletLogController {
     @Operation(summary = "分页排序查询-用户")
     @PostMapping("/page/userSelf")
     public ApiResultVO<Page<SysUserWalletLogDO>> myPageUserSelf(
-        @RequestBody @Valid SysUserWalletLogUserSelfPageDTO dto) {
+            @RequestBody @Valid SysUserWalletLogUserSelfPageDTO dto) {
         return ApiResultVO.okData(baseService.myPageUserSelf(dto));
     }
 
