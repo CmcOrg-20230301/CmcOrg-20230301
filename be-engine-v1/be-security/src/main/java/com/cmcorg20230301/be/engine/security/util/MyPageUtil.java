@@ -39,4 +39,18 @@ public class MyPageUtil {
 
     }
 
+    /**
+     * 获取：滚动查询的 page对象
+     * 作用：根据 最后一个 id查询数据
+     */
+    public static <T> Page<T> getScrollPage(Integer size) {
+
+        if (size == null) {
+            size = 20;
+        }
+
+        return new Page<>(0, size, 0, true);
+
+    }
+
 }

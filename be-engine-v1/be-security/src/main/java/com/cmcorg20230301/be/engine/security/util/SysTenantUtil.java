@@ -131,11 +131,7 @@ public class SysTenantUtil {
 
             Map<Long, SysTenantDO> mapTemp = new HashMap<>(map.size());
 
-            for (Map.Entry<Long, SysTenantDO> item : map.entrySet()) {
-
-                mapTemp.put(item.getKey(), item.getValue());
-
-            }
+            mapTemp.putAll(map);
 
             SysTenantDO sysTenantDO = getDefaultSysTenantDO();
 
@@ -370,8 +366,9 @@ public class SysTenantUtil {
     }
 
     /**
-     * 处理：BaseTenantInsertOrUpdateDTO，备注：如果不存在 id，则强制设置 tenantId为当前用户的租户 id，如果存在 id，则获取数据库里，实际的 tenantId，然后也是强制设置
-     * 并且会检查：该 id所在的租户，是否是当前用户所管理的租户
+     * 处理：BaseTenantInsertOrUpdateDTO，备注：
+     * 如果不存在 id，则强制设置 tenantId为当前用户的租户 id，
+     * 如果存在 id，则获取数据库里，实际的 tenantId，然后也是强制设置，并且会检查：该 id所在的租户，是否是当前用户所管理的租户
      *
      * @param getTenantIdBaseEntityFunc1 备注：只会使用 BaseEntityNoIdFather的 tenantId属性
      */
@@ -521,6 +518,26 @@ public class SysTenantUtil {
 
         if (!exists) {
             ApiResultVO.error(BaseBizCodeEnum.ILLEGAL_REQUEST, userId);
+        }
+
+    }
+
+    /**
+     * 检查：userIdSet，是否属于当前用户的租户，备注：只判断本级租户
+     */
+    public static void checkUserIdSetBelongCurrentTenant(Set<Long> userIdSet) {
+
+        if (CollUtil.isEmpty(userIdSet)) {
+            return;
+        }
+
+        Long currentTenantIdDefault = UserUtil.getCurrentTenantIdDefault();
+
+        // 检查：userIdSet，是否合法
+        Long count = ChainWrappers.lambdaQueryChain(sysUserMapper).in(BaseEntity::getId, userIdSet).eq(BaseEntityNoIdSuper::getTenantId, currentTenantIdDefault).count();
+
+        if (count != userIdSet.size()) {
+            ApiResultVO.error(BaseBizCodeEnum.ILLEGAL_REQUEST, userIdSet);
         }
 
     }

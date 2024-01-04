@@ -15,7 +15,7 @@ public class BaseEntity extends BaseEntityNoId {
      * 这里是自定义的主键 id
      */
     @TableId(type = IdType.ASSIGN_ID)
-    @Schema(description = "主键id")
+    @Schema(description = "主键 id")
     private Long id;
 
 }

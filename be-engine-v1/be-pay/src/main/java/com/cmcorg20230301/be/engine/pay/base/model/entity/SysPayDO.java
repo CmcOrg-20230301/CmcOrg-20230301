@@ -22,7 +22,7 @@ import java.util.Date;
 public class SysPayDO extends BaseEntity {
 
     @TableId(type = IdType.INPUT)
-    @Schema(description = "主键id")
+    @Schema(description = "主键 id")
     private Long id;
 
     /**

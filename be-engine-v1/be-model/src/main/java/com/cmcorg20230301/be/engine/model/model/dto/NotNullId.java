@@ -15,7 +15,7 @@ public class NotNullId {
 
     @Min(1)
     @NotNull
-    @Schema(description = "主键id")
+    @Schema(description = "主键 id")
     private Long id;
 
 }

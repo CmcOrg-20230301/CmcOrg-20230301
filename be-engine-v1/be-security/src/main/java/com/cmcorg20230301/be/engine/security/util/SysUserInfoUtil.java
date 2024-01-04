@@ -2,18 +2,21 @@ package com.cmcorg20230301.be.engine.security.util;
 
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.date.DateUtil;
+import cn.hutool.core.map.MapUtil;
 import com.cmcorg20230301.be.engine.model.model.constant.BaseConstant;
 import com.cmcorg20230301.be.engine.model.model.constant.LogTopicConstant;
 import com.cmcorg20230301.be.engine.security.model.entity.SysUserInfoDO;
 import com.cmcorg20230301.be.engine.security.service.BaseSysUserInfoService;
 import lombok.extern.slf4j.Slf4j;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Nullable;
 import javax.annotation.PreDestroy;
-import java.util.Date;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
 
 @Component
 @Slf4j(topic = LogTopicConstant.USER_INFO)
@@ -107,6 +110,41 @@ public class SysUserInfoUtil {
             baseSysUserInfoService.updateBatchById(tempUserInfoDoMap.values());
 
         }, DateUtil.offsetSecond(new Date(), 2));
+
+    }
+
+    /**
+     * 通过：用户主键 idSet，获取：用户资料集合
+     */
+    @NotNull
+    public static List<SysUserInfoDO> getUserInfoDOList(Set<Long> userIdSet) {
+
+        if (CollUtil.isEmpty(userIdSet)) {
+            return new ArrayList<>();
+        }
+
+        return baseSysUserInfoService.lambdaQuery().in(SysUserInfoDO::getId, userIdSet)
+                .list();
+
+    }
+
+    /**
+     * 通过：用户主键 idSet，获取：用户资料 map，key：用户主键 id，value：用户资料
+     */
+    @NotNull
+    public static Map<Long, SysUserInfoDO> getUserInfoDoMap(Set<Long> userIdSet) {
+
+        if (CollUtil.isEmpty(userIdSet)) {
+            return MapUtil.newHashMap();
+        }
+
+        List<SysUserInfoDO> userInfoDOList = getUserInfoDOList(userIdSet);
+
+        if (CollUtil.isEmpty(userInfoDOList)) {
+            return MapUtil.newHashMap();
+        }
+
+        return userInfoDOList.stream().collect(Collectors.toMap(SysUserInfoDO::getId, it -> it));
 
     }
 

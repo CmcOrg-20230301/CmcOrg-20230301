@@ -13,7 +13,7 @@ public class SysUserPageVO {
     @Schema(description = "租户 id")
     private Long tenantId;
 
-    @Schema(description = "主键id")
+    @Schema(description = "主键 id")
     private Long id;
 
     @Schema(description = "昵称")
