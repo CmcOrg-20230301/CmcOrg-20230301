@@ -16,7 +16,7 @@ spring:
         # driver-class-name: com.mysql.cj.jdbc.Driver
         # url: jdbc:mysql://${be.common.doris-host}:9031/be_doris_v1?${be.mysql.connect-param}
         # username: ${be.common.username}
-      # password: ${be.common.doris-password}
+        # password: ${be.common.doris-password}
 
   shardingsphere:
     # props:
