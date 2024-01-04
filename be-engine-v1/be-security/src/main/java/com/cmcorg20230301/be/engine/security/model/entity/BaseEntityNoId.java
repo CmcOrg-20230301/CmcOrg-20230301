@@ -2,7 +2,6 @@ package com.cmcorg20230301.be.engine.security.model.entity;
 
 import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.Version;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -12,7 +11,7 @@ import lombok.EqualsAndHashCode;
 @Schema(description = "实体类基类-没有主键 id")
 public class BaseEntityNoId extends BaseEntityNoIdSuper {
 
-    @Version
+    // 如果要加 @Version，建议继承本类，再给子类的字段上面加这个注解，因为乐观锁的需求没有那么多
     @TableField(fill = FieldFill.INSERT)
     @Schema(description = "乐观锁")
     private Integer version;
