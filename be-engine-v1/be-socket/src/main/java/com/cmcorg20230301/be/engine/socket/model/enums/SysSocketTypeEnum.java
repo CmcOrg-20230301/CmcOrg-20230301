@@ -16,8 +16,6 @@ public enum SysSocketTypeEnum {
 
     WEB_SOCKET(201), //
 
-    UDP_PROTOBUF(301), //
-
     ;
 
     @EnumValue

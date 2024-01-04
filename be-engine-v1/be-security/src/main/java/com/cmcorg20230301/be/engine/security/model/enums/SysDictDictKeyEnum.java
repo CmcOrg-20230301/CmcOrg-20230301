@@ -10,12 +10,6 @@ import lombok.Getter;
 @Getter
 public enum SysDictDictKeyEnum {
 
-    SYS_REQUEST_CATEGORY, // 请求类别
-
-    SYS_SOCKET_TYPE, // socket类型
-
-    SYS_SOCKET_ONLINE_TYPE, // socket在线状态
-
     ;
 
 }
