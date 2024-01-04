@@ -299,8 +299,10 @@ public class PayUtil {
         }
 
         if (checkFlag) {
+
             // 检查：是否是用户关联的租户
             SysTenantUtil.checkTenantId(sysPayDO.getTenantId());
+
         }
 
         ISysPay iSysPay = SYS_PAY_MAP.get(sysPayDO.getPayType());
