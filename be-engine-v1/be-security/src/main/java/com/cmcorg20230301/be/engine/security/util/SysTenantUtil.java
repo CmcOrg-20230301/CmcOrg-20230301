@@ -93,7 +93,7 @@ public class SysTenantUtil {
     public static void checkTenantId(Long tenantId) {
 
         if (tenantId == null) {
-            return;
+            ApiResultVO.error(BaseBizCodeEnum.ILLEGAL_REQUEST);
         }
 
         // 如果登录了，则需要判断，租户 id是否是：用户关联的租户 id
@@ -530,14 +530,12 @@ public class SysTenantUtil {
      */
     public static void checkUserIdAndTenantIdDTO(UserIdAndTenantIdDTO userIdAndTenantIdDTO) {
 
-        SysTenantUtil.checkUserId(userIdAndTenantIdDTO.getUserId());
-
-        SysTenantUtil.checkTenantId(userIdAndTenantIdDTO.getTenantId());
+        checkUserIdAndTenantId(userIdAndTenantIdDTO.getUserId(), userIdAndTenantIdDTO.getTenantId());
 
     }
 
     /**
-     * 检查：UserIdAndTenantIdDTO对象
+     * 检查：UserIdAndTenantId
      */
     public static void checkUserIdAndTenantId(Long userId, Long tenantId) {
 
