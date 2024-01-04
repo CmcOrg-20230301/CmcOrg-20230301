@@ -1,7 +1,5 @@
 package com.cmcorg20230301.be.engine.im.session.model.entity;
 
-import com.baomidou.mybatisplus.annotation.FieldStrategy;
-import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.cmcorg20230301.be.engine.im.session.model.configuration.ISysImSessionContentType;
 import com.cmcorg20230301.be.engine.security.model.entity.BaseEntity;
@@ -14,14 +12,6 @@ import lombok.EqualsAndHashCode;
 @Data
 @Schema(description = "子表：会话内容，主表：会话")
 public class SysImSessionContentDO extends BaseEntity {
-
-    @TableField(value = "MAX(id)", insertStrategy = FieldStrategy.NEVER, updateStrategy = FieldStrategy.NEVER, whereStrategy = FieldStrategy.NEVER, select = false)
-    @Schema(description = "最大的 id")
-    private Long maxId;
-
-    @TableField(value = "MIN(id)", insertStrategy = FieldStrategy.NEVER, updateStrategy = FieldStrategy.NEVER, whereStrategy = FieldStrategy.NEVER, select = false)
-    @Schema(description = "最小的 id")
-    private Long minId;
 
     @Schema(description = "会话主键 id")
     private Long sessionId;
