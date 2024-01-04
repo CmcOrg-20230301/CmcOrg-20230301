@@ -83,10 +83,18 @@
         <module>be-other-app</module>
         <module>be-other-app-wx</module>
         <module>be-other-app-baidu</module>
+        <module>be-im-session</module>
     </modules>
 
     <dependencyManagement>
         <dependencies>
+
+            <!-- be-im-session -->
+            <dependency>
+                <groupId>${cmcorg.groupId}</groupId>
+                <artifactId>be-im-session</artifactId>
+                <version>${cmcorg.version}</version>
+            </dependency>
 
             <!-- be-other-app-baidu -->
             <dependency>
