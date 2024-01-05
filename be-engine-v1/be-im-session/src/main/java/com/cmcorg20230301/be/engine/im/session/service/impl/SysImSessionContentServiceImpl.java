@@ -151,11 +151,11 @@ public class SysImSessionContentServiceImpl extends ServiceImpl<SysImSessionCont
 
         if (backwardFlag) { // 往后查询
 
-            return lambdaQuery().gt(BaseEntity::getId, id).page(MyPageUtil.getScrollPage(dto.getPageSize()));
+            return lambdaQuery().gt(BaseEntity::getId, id).eq(SysImSessionContentDO::getSessionId, sessionId).page(MyPageUtil.getScrollPage(dto.getPageSize()));
 
         } else { // 往前查询
 
-            return lambdaQuery().lt(BaseEntity::getId, id).page(MyPageUtil.getScrollPage(dto.getPageSize()));
+            return lambdaQuery().lt(BaseEntity::getId, id).eq(SysImSessionContentDO::getSessionId, sessionId).page(MyPageUtil.getScrollPage(dto.getPageSize()));
 
         }
 
