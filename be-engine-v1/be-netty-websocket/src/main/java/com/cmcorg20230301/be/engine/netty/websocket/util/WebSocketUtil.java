@@ -50,11 +50,11 @@ public class WebSocketUtil {
 
         Set<Long> userIdSet = sysWebSocketEventBO.getUserIdSet();
 
-        if (CollUtil.isEmpty(userIdSet) || sysWebSocketEventBO.getMessage() == null) {
+        if (CollUtil.isEmpty(userIdSet) || sysWebSocketEventBO.getWebSocketMessageDTO() == null) {
             return;
         }
 
-        String jsonStr = objectMapper.writeValueAsString(sysWebSocketEventBO.getMessage());
+        String jsonStr = objectMapper.writeValueAsString(sysWebSocketEventBO.getWebSocketMessageDTO());
 
         for (Long item : userIdSet) {
 

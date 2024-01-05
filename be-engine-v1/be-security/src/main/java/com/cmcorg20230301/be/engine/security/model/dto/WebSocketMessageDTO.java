@@ -82,7 +82,7 @@ public class WebSocketMessageDTO<T> {
 
     public static <T> WebSocketMessageDTO<T> okData(String uri, T data) {
         return new WebSocketMessageDTO<>(uri, BaseBizCodeEnum.API_RESULT_OK.getCode(),
-                BaseBizCodeEnum.API_RESULT_OK.getMsg(), data);
+                null, data);
     }
 
     public static <T> WebSocketMessageDTO<T> okMsg(String uri, String msg) {

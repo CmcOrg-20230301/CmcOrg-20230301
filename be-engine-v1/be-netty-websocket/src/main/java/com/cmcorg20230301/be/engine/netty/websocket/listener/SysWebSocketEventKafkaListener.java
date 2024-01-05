@@ -53,7 +53,7 @@ public class SysWebSocketEventKafkaListener {
 
                         TryUtil.tryCatch(() -> {
 
-                            SysWebSocketEventBO sysWebSocketEventBO = objectMapper.readValue(item, SysWebSocketEventBO.class);
+                            SysWebSocketEventBO<?> sysWebSocketEventBO = objectMapper.readValue(item, SysWebSocketEventBO.class);
 
                             // 发送：webSocket消息
                             WebSocketUtil.send(sysWebSocketEventBO);

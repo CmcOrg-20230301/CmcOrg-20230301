@@ -1,5 +1,7 @@
 package com.cmcorg20230301.be.engine.im.session.model.entity;
 
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.cmcorg20230301.be.engine.im.session.model.configuration.ISysImSessionContentType;
 import com.cmcorg20230301.be.engine.security.model.entity.BaseEntity;
@@ -12,6 +14,10 @@ import lombok.EqualsAndHashCode;
 @Data
 @Schema(description = "子表：会话内容，主表：会话")
 public class SysImSessionContentDO extends BaseEntity {
+
+    @TableId(type = IdType.INPUT)
+    @Schema(description = "主键 id")
+    private Long id;
 
     @Schema(description = "会话主键 id")
     private Long sessionId;

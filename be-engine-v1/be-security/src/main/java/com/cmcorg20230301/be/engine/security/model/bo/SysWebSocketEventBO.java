@@ -19,6 +19,6 @@ public class SysWebSocketEventBO<T> {
     /**
      * 传输的数据
      */
-    private WebSocketMessageDTO<T> message;
+    private WebSocketMessageDTO<T> webSocketMessageDTO;
 
 }

@@ -15,12 +15,17 @@ import com.cmcorg20230301.be.engine.im.session.model.entity.SysImSessionContentD
 import com.cmcorg20230301.be.engine.im.session.model.entity.SysImSessionRefUserDO;
 import com.cmcorg20230301.be.engine.im.session.model.enums.SysImSessionContentTypeEnum;
 import com.cmcorg20230301.be.engine.im.session.service.SysImSessionContentService;
+import com.cmcorg20230301.be.engine.kafka.util.KafkaUtil;
 import com.cmcorg20230301.be.engine.model.model.constant.BaseConstant;
+import com.cmcorg20230301.be.engine.redisson.util.IdGeneratorUtil;
 import com.cmcorg20230301.be.engine.security.exception.BaseBizCodeEnum;
+import com.cmcorg20230301.be.engine.security.model.bo.SysWebSocketEventBO;
+import com.cmcorg20230301.be.engine.security.model.dto.WebSocketMessageDTO;
 import com.cmcorg20230301.be.engine.security.model.entity.BaseEntity;
 import com.cmcorg20230301.be.engine.security.model.entity.BaseEntityNoIdSuper;
 import com.cmcorg20230301.be.engine.security.model.vo.ApiResultVO;
 import com.cmcorg20230301.be.engine.security.util.MyPageUtil;
+import com.cmcorg20230301.be.engine.security.util.MyThreadUtil;
 import com.cmcorg20230301.be.engine.security.util.UserUtil;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Service;
@@ -29,6 +34,8 @@ import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 public class SysImSessionContentServiceImpl extends ServiceImpl<SysImSessionContentMapper, SysImSessionContentDO>
@@ -57,6 +64,13 @@ public class SysImSessionContentServiceImpl extends ServiceImpl<SysImSessionCont
         // 检查：sessionId是否合法
         Long sessionId = checkSessionId(dto.getSessionId(), true);
 
+        Long currentTenantIdDefault = UserUtil.getCurrentTenantIdDefault();
+
+        // 获取：该会话里面的所有用户主键 idSet
+        List<SysImSessionRefUserDO> sysImSessionRefUserDOList = ChainWrappers.lambdaQueryChain(sysImSessionRefUserMapper).eq(SysImSessionRefUserDO::getSessionId, sessionId).eq(BaseEntityNoIdSuper::getTenantId, currentTenantIdDefault).select(SysImSessionRefUserDO::getUserId).list();
+
+        Set<Long> userIdSet = sysImSessionRefUserDOList.stream().map(SysImSessionRefUserDO::getUserId).collect(Collectors.toSet());
+
         List<SysImSessionContentDO> insertList = new ArrayList<>();
 
         int type = SysImSessionContentTypeEnum.TEXT.getCode();
@@ -78,6 +92,8 @@ public class SysImSessionContentServiceImpl extends ServiceImpl<SysImSessionCont
 
             SysImSessionContentDO sysImSessionContentDO = new SysImSessionContentDO();
 
+            sysImSessionContentDO.setId(IdGeneratorUtil.nextId());
+
             sysImSessionContentDO.setSessionId(sessionId);
 
             sysImSessionContentDO.setContent(item.getContent());
@@ -97,6 +113,21 @@ public class SysImSessionContentServiceImpl extends ServiceImpl<SysImSessionCont
             sysImSessionContentDO.setUpdateTime(date);
 
             sysImSessionContentDO.setCreateTs(item.getCreateTs());
+
+            MyThreadUtil.execute(() -> {
+
+                SysWebSocketEventBO<SysImSessionContentDO> sysWebSocketEventBO = new SysWebSocketEventBO<>();
+
+                sysWebSocketEventBO.setUserIdSet(userIdSet);
+
+                WebSocketMessageDTO<SysImSessionContentDO> webSocketMessageDTO = WebSocketMessageDTO.okData("/sys/im/session/content/send", sysImSessionContentDO);
+
+                sysWebSocketEventBO.setWebSocketMessageDTO(webSocketMessageDTO);
+
+                // 发送：webSocket事件
+                KafkaUtil.sendSysWebSocketEventTopic(sysWebSocketEventBO);
+
+            });
 
             insertList.add(sysImSessionContentDO);
 

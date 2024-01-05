@@ -46,11 +46,11 @@ public class PayHelper {
 
         sysWebSocketEventBO.setUserIdSet(CollUtil.newHashSet(sysPayDO.getUserId()));
 
-        WebSocketMessageDTO<Long> message = WebSocketMessageDTO.okData("/sys/pay/closeModal", sysPayDO.getId());
+        WebSocketMessageDTO<Long> webSocketMessageDTO = WebSocketMessageDTO.okData("/sys/pay/closeModal", sysPayDO.getId());
 
-        sysWebSocketEventBO.setMessage(message);
+        sysWebSocketEventBO.setWebSocketMessageDTO(webSocketMessageDTO);
 
-        // 通知：webSocket事件的 kafka监听器
+        // 发送：webSocket事件
         KafkaUtil.sendSysWebSocketEventTopic(sysWebSocketEventBO);
 
     }
