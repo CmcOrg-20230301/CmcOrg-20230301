@@ -15,6 +15,7 @@ import com.cmcorg20230301.be.engine.security.model.entity.BaseEntityNoId;
 import com.cmcorg20230301.be.engine.security.util.MyEntityUtil;
 import com.cmcorg20230301.be.engine.security.util.SysTenantUtil;
 import com.cmcorg20230301.be.engine.security.util.UserUtil;
+import com.cmcorg20230301.be.engine.util.util.NicknameUtil;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Service;
 
@@ -36,7 +37,7 @@ public class SysImSessionServiceImpl extends ServiceImpl<SysImSessionMapper, Sys
 
         SysImSessionDO sysImSessionDO = new SysImSessionDO();
 
-        sysImSessionDO.setName(dto.getName());
+        sysImSessionDO.setName(MyEntityUtil.getNotNullStr(dto.getName(), NicknameUtil.getDateTimeNickname("会话-")));
 
         if (dto.getId() == null) { // 只有：新增时才有效
 

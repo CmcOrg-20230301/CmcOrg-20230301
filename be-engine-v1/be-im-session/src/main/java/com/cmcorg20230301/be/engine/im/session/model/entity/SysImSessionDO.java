@@ -22,7 +22,7 @@ public class SysImSessionDO extends BaseEntity {
     @Schema(description = "会话类型：101 私聊 201 群聊 301 客服")
     private Integer type;
 
-    @Schema(description = "归属者主键 id（群主）")
+    @Schema(description = "归属者主键 id（群主），备注：如果为客服类型时，群主必须是用户")
     private Long belongId;
 
 }
