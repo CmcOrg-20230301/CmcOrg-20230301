@@ -22,7 +22,7 @@ public class SysImSessionRefUserDO extends BaseEntityNoIdSuper {
     @Schema(description = "会话主键 id")
     private Long sessionId;
 
-    @Schema(description = "是否启用")
+    @Schema(description = "是否被禁言")
     private Boolean enableFlag;
 
     @Schema(description = "是否逻辑删除")

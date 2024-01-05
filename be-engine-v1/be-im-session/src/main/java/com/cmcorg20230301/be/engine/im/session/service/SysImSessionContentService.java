@@ -10,8 +10,8 @@ import javax.validation.Valid;
 
 public interface SysImSessionContentService extends IService<SysImSessionContentDO> {
 
-    String sendText(@Valid SysImSessionContentSendTextListDTO dto);
+    String sendTextUserSelf(@Valid SysImSessionContentSendTextListDTO dto);
 
-    Page<SysImSessionContentDO> scrollPage(SysImSessionContentListDTO dto);
+    Page<SysImSessionContentDO> scrollPageUserSelf(SysImSessionContentListDTO dto);
 
 }

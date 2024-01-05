@@ -1,6 +1,9 @@
 package com.cmcorg20230301.be.engine.im.session.controller;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.cmcorg20230301.be.engine.im.session.model.dto.SysImSessionInsertOrUpDateDTO;
+import com.cmcorg20230301.be.engine.im.session.model.dto.SysImSessionPageDTO;
+import com.cmcorg20230301.be.engine.im.session.model.entity.SysImSessionDO;
 import com.cmcorg20230301.be.engine.im.session.service.SysImSessionService;
 import com.cmcorg20230301.be.engine.security.model.vo.ApiResultVO;
 import io.swagger.v3.oas.annotations.Operation;
@@ -24,9 +27,16 @@ public class SysImSessionController {
 
     @Operation(summary = "新增/修改")
     @PostMapping("/insertOrUpdate")
-    @PreAuthorize("hasAuthority('sysArea:insertOrUpdate')")
-    public ApiResultVO<String> insertOrUpdate(@RequestBody @Valid SysImSessionInsertOrUpDateDTO dto) {
+    @PreAuthorize("hasAuthority('sysImSession:insertOrUpdate')")
+    public ApiResultVO<Long> insertOrUpdate(@RequestBody @Valid SysImSessionInsertOrUpDateDTO dto) {
         return ApiResultVO.okData(baseService.insertOrUpdate(dto));
+    }
+
+    @Operation(summary = "分页排序查询")
+    @PostMapping("/page")
+    @PreAuthorize("hasAuthority('sysImSession:page')")
+    public ApiResultVO<Page<SysImSessionDO>> myPage(@RequestBody @Valid SysImSessionPageDTO dto) {
+        return ApiResultVO.okData(baseService.myPage(dto));
     }
 
 }

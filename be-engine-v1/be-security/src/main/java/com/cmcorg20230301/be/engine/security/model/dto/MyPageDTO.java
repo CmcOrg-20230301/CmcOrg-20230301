@@ -48,7 +48,8 @@ public class MyPageDTO {
     /**
      * 分页属性拷贝
      * toUnderlineCaseFlag：一般为 true
-     * 备注：order by 和 group by 可以使用别名，where里面不能使用别名
+     * 备注：order by 和 group by 可以使用别名，where 里面不能使用别名
+     * 注意：group by 比 order by 先执行，order by 不会对 group by 内部进行排序
      */
     @NotNull
     public <T> Page<T> page(boolean toUnderlineCaseFlag) {

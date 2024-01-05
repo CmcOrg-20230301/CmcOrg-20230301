@@ -7,10 +7,12 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.baomidou.mybatisplus.extension.toolkit.ChainWrappers;
 import com.cmcorg20230301.be.engine.im.session.mapper.SysImSessionContentMapper;
 import com.cmcorg20230301.be.engine.im.session.mapper.SysImSessionMapper;
+import com.cmcorg20230301.be.engine.im.session.mapper.SysImSessionRefUserMapper;
 import com.cmcorg20230301.be.engine.im.session.model.dto.SysImSessionContentListDTO;
 import com.cmcorg20230301.be.engine.im.session.model.dto.SysImSessionContentSendTextDTO;
 import com.cmcorg20230301.be.engine.im.session.model.dto.SysImSessionContentSendTextListDTO;
 import com.cmcorg20230301.be.engine.im.session.model.entity.SysImSessionContentDO;
+import com.cmcorg20230301.be.engine.im.session.model.entity.SysImSessionRefUserDO;
 import com.cmcorg20230301.be.engine.im.session.model.enums.SysImSessionContentTypeEnum;
 import com.cmcorg20230301.be.engine.im.session.service.SysImSessionContentService;
 import com.cmcorg20230301.be.engine.model.model.constant.BaseConstant;
@@ -39,14 +41,21 @@ public class SysImSessionContentServiceImpl extends ServiceImpl<SysImSessionCont
         SysImSessionContentServiceImpl.sysImSessionMapper = sysImSessionMapper;
     }
 
+    private static SysImSessionRefUserMapper sysImSessionRefUserMapper;
+
+    @Resource
+    public void setSysImSessionRefUserService(SysImSessionRefUserMapper sysImSessionRefUserMapper) {
+        SysImSessionContentServiceImpl.sysImSessionRefUserMapper = sysImSessionRefUserMapper;
+    }
+
     /**
      * 发送内容
      */
     @Override
-    public String sendText(SysImSessionContentSendTextListDTO dto) {
+    public String sendTextUserSelf(SysImSessionContentSendTextListDTO dto) {
 
         // 检查：sessionId是否合法
-        Long sessionId = checkSessionId(dto.getSessionId());
+        Long sessionId = checkSessionId(dto.getSessionId(), true);
 
         List<SysImSessionContentDO> insertList = new ArrayList<>();
 
@@ -103,19 +112,40 @@ public class SysImSessionContentServiceImpl extends ServiceImpl<SysImSessionCont
      * 检查：sessionId是否合法
      */
     @NotNull
-    public static Long checkSessionId(Long sessionId) {
+    public static Long checkSessionId(Long sessionId, boolean checkEnableFlag) {
 
         if (sessionId == null) {
             ApiResultVO.error(BaseBizCodeEnum.ILLEGAL_REQUEST, null);
         }
 
+        if (UserUtil.getCurrentUserAdminFlag()) {
+            return sessionId;
+        }
+
         Long tenantId = UserUtil.getCurrentTenantIdDefault();
+
+        Long userId = UserUtil.getCurrentUserId();
 
         // 检查：sessionId，是否属于当前租户
         boolean exists = ChainWrappers.lambdaQueryChain(sysImSessionMapper).eq(BaseEntityNoIdSuper::getTenantId, tenantId).eq(BaseEntity::getId, sessionId).exists();
 
         if (!exists) {
             ApiResultVO.error(BaseBizCodeEnum.ILLEGAL_REQUEST, sessionId);
+        }
+
+        // 检查：用户是否在该会话中
+        SysImSessionRefUserDO sysImSessionRefUserDO = ChainWrappers.lambdaQueryChain(sysImSessionRefUserMapper).eq(BaseEntityNoIdSuper::getTenantId, tenantId).eq(SysImSessionRefUserDO::getSessionId, sessionId).eq(SysImSessionRefUserDO::getUserId, userId).select(SysImSessionRefUserDO::getEnableFlag).one();
+
+        if (sysImSessionRefUserDO == null) {
+            ApiResultVO.error("操作失败：您已不在本次会话中", sessionId);
+        }
+
+        if (checkEnableFlag) {
+
+            if (BooleanUtil.isFalse(sysImSessionRefUserDO.getEnableFlag())) {
+                ApiResultVO.error("操作失败：您已被禁言", sessionId);
+            }
+
         }
 
         return sessionId;
@@ -126,10 +156,10 @@ public class SysImSessionContentServiceImpl extends ServiceImpl<SysImSessionCont
      * 查询会话内容
      */
     @Override
-    public Page<SysImSessionContentDO> scrollPage(SysImSessionContentListDTO dto) {
+    public Page<SysImSessionContentDO> scrollPageUserSelf(SysImSessionContentListDTO dto) {
 
         // 检查：sessionId是否合法
-        Long sessionId = checkSessionId(dto.getSessionId());
+        Long sessionId = checkSessionId(dto.getSessionId(), false);
 
         Long id = dto.getId();
 

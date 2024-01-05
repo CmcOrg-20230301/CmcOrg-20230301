@@ -146,6 +146,7 @@ public class UserUtil {
 
     /**
      * 这里只会返回实际的 userId 或者 -1，备注：-1表示没有 用户id，在大多数情况下，表示的是 系统
+     * 备注：尽量采用 {@link #getCurrentUserId} 方法
      */
     @NotNull
     public static Long getCurrentUserIdDefault() {

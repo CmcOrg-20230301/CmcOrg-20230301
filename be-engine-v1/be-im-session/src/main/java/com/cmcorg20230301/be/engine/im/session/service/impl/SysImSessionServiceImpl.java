@@ -2,12 +2,14 @@ package com.cmcorg20230301.be.engine.im.session.service.impl;
 
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.lang.func.Func1;
+import cn.hutool.core.util.StrUtil;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.cmcorg20230301.be.engine.im.session.mapper.SysImSessionMapper;
 import com.cmcorg20230301.be.engine.im.session.model.dto.SysImSessionInsertOrUpDateDTO;
+import com.cmcorg20230301.be.engine.im.session.model.dto.SysImSessionPageDTO;
 import com.cmcorg20230301.be.engine.im.session.model.entity.SysImSessionDO;
 import com.cmcorg20230301.be.engine.im.session.service.SysImSessionService;
-import com.cmcorg20230301.be.engine.security.exception.BaseBizCodeEnum;
 import com.cmcorg20230301.be.engine.security.model.entity.BaseEntity;
 import com.cmcorg20230301.be.engine.security.model.entity.BaseEntityNoId;
 import com.cmcorg20230301.be.engine.security.util.MyEntityUtil;
@@ -26,7 +28,7 @@ public class SysImSessionServiceImpl extends ServiceImpl<SysImSessionMapper, Sys
      * 新增/修改
      */
     @Override
-    public String insertOrUpdate(SysImSessionInsertOrUpDateDTO dto) {
+    public Long insertOrUpdate(SysImSessionInsertOrUpDateDTO dto) {
 
         // 处理：BaseTenantInsertOrUpdateDTO
         SysTenantUtil.handleBaseTenantInsertOrUpdateDTO(dto, getCheckIllegalFunc1(CollUtil.newHashSet(dto.getId())),
@@ -53,7 +55,23 @@ public class SysImSessionServiceImpl extends ServiceImpl<SysImSessionMapper, Sys
 
         saveOrUpdate(sysImSessionDO);
 
-        return BaseBizCodeEnum.OK;
+        return sysImSessionDO.getId();
+
+    }
+
+    /**
+     * 分页排序查询
+     */
+    @Override
+    public Page<SysImSessionDO> myPage(SysImSessionPageDTO dto) {
+
+        // 处理：MyTenantPageDTO
+        SysTenantUtil.handleMyTenantPageDTO(dto, true);
+
+        return lambdaQuery().like(StrUtil.isNotBlank(dto.getName()), SysImSessionDO::getName, dto.getName())
+                .eq(dto.getType() != null, SysImSessionDO::getType, dto.getType())
+                .in(BaseEntityNoId::getTenantId, dto.getTenantIdSet()) //
+                .page(dto.createTimeDescDefaultOrderPage(true));
 
     }
 
