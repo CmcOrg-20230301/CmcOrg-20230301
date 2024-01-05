@@ -24,6 +24,7 @@ import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Component
@@ -41,16 +42,21 @@ public class WebSocketUtil {
      * 发送消息
      */
     @SneakyThrows
-    public static void send(@Nullable SysWebSocketEventBO sysWebSocketEventBO) {
+    public static void send(@Nullable SysWebSocketEventBO<?> sysWebSocketEventBO) {
 
-        if (sysWebSocketEventBO == null || CollUtil.isEmpty(sysWebSocketEventBO.getUserIdSet())
-                || sysWebSocketEventBO.getDto() == null) {
+        if (sysWebSocketEventBO == null) {
             return;
         }
 
-        String jsonStr = objectMapper.writeValueAsString(sysWebSocketEventBO.getDto());
+        Set<Long> userIdSet = sysWebSocketEventBO.getUserIdSet();
 
-        for (Long item : sysWebSocketEventBO.getUserIdSet()) {
+        if (CollUtil.isEmpty(userIdSet) || sysWebSocketEventBO.getMessage() == null) {
+            return;
+        }
+
+        String jsonStr = objectMapper.writeValueAsString(sysWebSocketEventBO.getMessage());
+
+        for (Long item : userIdSet) {
 
             ConcurrentHashMap<Long, Channel> channelMap = NettyWebSocketServerHandler.USER_ID_CHANNEL_MAP.get(item);
 

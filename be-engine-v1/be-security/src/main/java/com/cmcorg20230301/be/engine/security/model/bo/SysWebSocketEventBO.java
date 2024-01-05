@@ -9,7 +9,7 @@ import java.util.Set;
  * webSocket事件的 bo
  */
 @Data
-public class SysWebSocketEventBO {
+public class SysWebSocketEventBO<T> {
 
     /**
      * 用户主键 idSet
@@ -19,6 +19,6 @@ public class SysWebSocketEventBO {
     /**
      * 传输的数据
      */
-    private WebSocketMessageDTO<?> dto;
+    private WebSocketMessageDTO<T> message;
 
 }

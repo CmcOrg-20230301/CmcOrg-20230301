@@ -91,7 +91,7 @@ public class TryUtil {
     /**
      * 执行：VoidFunc0
      */
-    private static void execVoidFunc0(@Nullable VoidFunc0 voidFunc0) {
+    public static void execVoidFunc0(@Nullable VoidFunc0 voidFunc0) {
 
         if (voidFunc0 == null) {
             return;

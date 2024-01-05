@@ -42,13 +42,13 @@ public class PayHelper {
      */
     public static void sendSysPayCloseModalTopic(SysPayDO sysPayDO) {
 
-        SysWebSocketEventBO sysWebSocketEventBO = new SysWebSocketEventBO();
+        SysWebSocketEventBO<Long> sysWebSocketEventBO = new SysWebSocketEventBO<>();
 
         sysWebSocketEventBO.setUserIdSet(CollUtil.newHashSet(sysPayDO.getUserId()));
 
-        WebSocketMessageDTO<Object> dto = WebSocketMessageDTO.okData("/sys/pay/closeModal", sysPayDO.getId());
+        WebSocketMessageDTO<Long> message = WebSocketMessageDTO.okData("/sys/pay/closeModal", sysPayDO.getId());
 
-        sysWebSocketEventBO.setDto(dto);
+        sysWebSocketEventBO.setMessage(message);
 
         // 通知：webSocket事件的 kafka监听器
         KafkaUtil.sendSysWebSocketEventTopic(sysWebSocketEventBO);

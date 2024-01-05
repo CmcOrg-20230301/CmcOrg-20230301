@@ -18,10 +18,10 @@ public class MyThreadUtil {
     private static TaskExecutor taskExecutor;
     private static TaskScheduler taskScheduler;
 
-    public MyThreadUtil(TaskExecutor taskExecutor, TaskScheduler taskScheduler) {
+    public MyThreadUtil(TaskExecutor myTaskExecutor, TaskScheduler myTaskScheduler) {
 
-        MyThreadUtil.taskExecutor = taskExecutor;
-        MyThreadUtil.taskScheduler = taskScheduler;
+        MyThreadUtil.taskExecutor = myTaskExecutor;
+        MyThreadUtil.taskScheduler = myTaskScheduler;
 
     }
 
@@ -51,30 +51,7 @@ public class MyThreadUtil {
 
         execute(() -> {
 
-            try {
-
-                // 执行
-                voidFunc0.call();
-
-            } catch (Exception e) {
-
-                MyExceptionUtil.printError(e);
-
-                if (exceptionVoidFunc0 != null) {
-
-                    try {
-
-                        exceptionVoidFunc0.call();
-
-                    } catch (Exception exception) {
-
-                        MyExceptionUtil.printError(exception);
-
-                    }
-
-                }
-
-            } finally {
+            TryUtil.tryCatchFinally(voidFunc0, exceptionVoidFunc0, () -> {
 
                 if (countDownLatch != null) {
 
@@ -82,21 +59,9 @@ public class MyThreadUtil {
 
                 }
 
-                if (finallyVoidFunc0 != null) {
+                TryUtil.execVoidFunc0(finallyVoidFunc0);
 
-                    try {
-
-                        finallyVoidFunc0.call();
-
-                    } catch (Exception e) {
-
-                        MyExceptionUtil.printError(e);
-
-                    }
-
-                }
-
-            }
+            });
 
         });
 
