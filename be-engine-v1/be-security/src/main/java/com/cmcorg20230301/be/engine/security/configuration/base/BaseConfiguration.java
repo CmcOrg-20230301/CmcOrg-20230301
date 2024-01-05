@@ -63,7 +63,7 @@ public class BaseConfiguration {
      * 设置：@Async的线程池
      */
     @Bean
-    public TaskExecutor taskExecutor() {
+    public TaskExecutor myTaskExecutor() {
 
         int availableProcessors = Runtime.getRuntime().availableProcessors();
 
@@ -82,7 +82,7 @@ public class BaseConfiguration {
         executor.setKeepAliveSeconds(60);
 
         // 设置：线程名前缀
-        executor.setThreadNamePrefix("taskExecutor-");
+        executor.setThreadNamePrefix("myTaskExecutor-");
 
         // 设置：线程池通用属性
         setCommonExecutor(executor);
@@ -95,7 +95,7 @@ public class BaseConfiguration {
      * 设置：@Scheduled 的线程池，备注：额外加了 @Async注解，会在 @Async的线程池里面执行
      */
     @Bean
-    public TaskScheduler taskScheduler() {
+    public TaskScheduler myTaskScheduler() {
 
         int availableProcessors = Runtime.getRuntime().availableProcessors();
 
@@ -105,7 +105,7 @@ public class BaseConfiguration {
         scheduler.setPoolSize(availableProcessors * 10);
 
         // 设置：线程名前缀
-        scheduler.setThreadNamePrefix("taskScheduler-");
+        scheduler.setThreadNamePrefix("myTaskScheduler-");
 
         // 设置：线程池通用属性
         setCommonExecutor(scheduler);

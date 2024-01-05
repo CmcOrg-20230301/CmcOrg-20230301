@@ -5,6 +5,8 @@ import com.cmcorg20230301.be.engine.kafka.model.enums.KafkaTopicEnum;
 import com.cmcorg20230301.be.engine.netty.websocket.util.WebSocketUtil;
 import com.cmcorg20230301.be.engine.security.model.bo.SysWebSocketEventBO;
 import com.cmcorg20230301.be.engine.security.util.KafkaHelper;
+import com.cmcorg20230301.be.engine.security.util.MyThreadUtil;
+import com.cmcorg20230301.be.engine.security.util.TryUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.kafka.annotation.KafkaHandler;
 import org.springframework.kafka.annotation.KafkaListener;
@@ -36,28 +38,35 @@ public class SysWebSocketEventKafkaListener {
     @KafkaHandler
     public void receive(List<String> recordList, Acknowledgment acknowledgment) {
 
-        try {
+        // ack消息
+        TryUtil.tryCatchFinally(() -> {
 
             if (KafkaHelper.notHandleKafkaTopCheck(TOPIC_LIST)) {
                 return;
             }
 
-            for (String item : recordList) {
+            if (CollUtil.isEmpty(recordList)) {
 
-                SysWebSocketEventBO sysWebSocketEventBO = objectMapper.readValue(item, SysWebSocketEventBO.class);
+                MyThreadUtil.execute(() -> {
 
-                // 发送：webSocket消息
-                WebSocketUtil.send(sysWebSocketEventBO);
+                    for (String item : recordList) {
+
+                        TryUtil.tryCatch(() -> {
+
+                            SysWebSocketEventBO sysWebSocketEventBO = objectMapper.readValue(item, SysWebSocketEventBO.class);
+
+                            // 发送：webSocket消息
+                            WebSocketUtil.send(sysWebSocketEventBO);
+
+                        });
+
+                    }
+
+                });
 
             }
 
-        } catch (Exception ignored) {
-
-        } finally {
-
-            acknowledgment.acknowledge(); // ack消息
-
-        }
+        }, acknowledgment::acknowledge);
 
     }
 

@@ -7,6 +7,7 @@ import com.cmcorg20230301.be.engine.model.model.constant.LogTopicConstant;
 import com.cmcorg20230301.be.engine.pay.base.model.configuration.ISysPayRefHandler;
 import com.cmcorg20230301.be.engine.pay.base.model.entity.SysPayDO;
 import com.cmcorg20230301.be.engine.security.util.KafkaHelper;
+import com.cmcorg20230301.be.engine.security.util.TryUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.Nullable;
@@ -56,7 +57,7 @@ public class SysPayTradeNotifyKafkaListener {
     @KafkaHandler
     public void receive(String recordStr, Acknowledgment acknowledgment) {
 
-        try {
+        TryUtil.tryCatchFinally(() -> {
 
             if (KafkaHelper.notHandleKafkaTopCheck(TOPIC_LIST)) {
                 return;
@@ -73,13 +74,7 @@ public class SysPayTradeNotifyKafkaListener {
 
             }
 
-        } catch (Exception ignored) {
-
-        } finally {
-
-            acknowledgment.acknowledge(); // ack消息
-
-        }
+        }, acknowledgment::acknowledge);
 
     }
 

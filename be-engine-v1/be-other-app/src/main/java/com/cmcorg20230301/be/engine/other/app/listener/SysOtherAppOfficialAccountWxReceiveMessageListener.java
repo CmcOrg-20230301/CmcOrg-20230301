@@ -8,8 +8,8 @@ import com.cmcorg20230301.be.engine.other.app.model.interfaces.ISysOtherAppOffic
 import com.cmcorg20230301.be.engine.redisson.model.enums.BaseRedisKeyEnum;
 import com.cmcorg20230301.be.engine.redisson.util.RedissonUtil;
 import com.cmcorg20230301.be.engine.security.util.KafkaHelper;
-import com.cmcorg20230301.be.engine.security.util.MyExceptionUtil;
 import com.cmcorg20230301.be.engine.security.util.MyThreadUtil;
+import com.cmcorg20230301.be.engine.security.util.TryUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.Nullable;
@@ -58,7 +58,7 @@ public class SysOtherAppOfficialAccountWxReceiveMessageListener {
     @KafkaHandler
     public void receive(List<String> recordList, Acknowledgment acknowledgment) {
 
-        try {
+        TryUtil.tryCatchFinally(() -> {
 
             if (KafkaHelper.notHandleKafkaTopCheck(TOPIC_LIST)) {
                 return;
@@ -99,7 +99,7 @@ public class SysOtherAppOfficialAccountWxReceiveMessageListener {
                                 return;
                             }
 
-                            try {
+                            TryUtil.tryCatch(() -> {
 
                                 for (ISysOtherAppOfficialAccountWxReceiveMessageHandle subItem : iSysOtherAppOfficialAccountWxReceiveMessageHandleList) {
 
@@ -108,11 +108,7 @@ public class SysOtherAppOfficialAccountWxReceiveMessageListener {
 
                                 }
 
-                            } catch (Exception e) {
-
-                                MyExceptionUtil.printError(e);
-
-                            }
+                            });
 
                         });
 
@@ -122,11 +118,7 @@ public class SysOtherAppOfficialAccountWxReceiveMessageListener {
 
             }
 
-        } finally {
-
-            acknowledgment.acknowledge(); // ack消息
-
-        }
+        }, acknowledgment::acknowledge);
 
     }
 

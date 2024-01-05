@@ -4,6 +4,7 @@ import cn.hutool.core.collection.CollUtil;
 import cn.hutool.json.JSONUtil;
 import com.cmcorg20230301.be.engine.kafka.model.enums.KafkaTopicEnum;
 import com.cmcorg20230301.be.engine.model.model.constant.LogTopicConstant;
+import com.cmcorg20230301.be.engine.security.util.TryUtil;
 import com.cmcorg20230301.be.engine.socket.model.configuration.ISocketDisable;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.Nullable;
@@ -40,7 +41,7 @@ public class SocketDisableKafkaListener {
     @KafkaHandler
     public void receive(List<String> recordList, Acknowledgment acknowledgment) {
 
-        try {
+        TryUtil.tryCatchFinally(() -> {
 
             Set<Long> socketIdSet = recordList.stream() //
                     .map(it -> JSONUtil.toList(it, Long.class)) //
@@ -58,11 +59,7 @@ public class SocketDisableKafkaListener {
 
             }
 
-        } finally {
-
-            acknowledgment.acknowledge(); // ack消息
-
-        }
+        }, acknowledgment::acknowledge);
 
     }
 
