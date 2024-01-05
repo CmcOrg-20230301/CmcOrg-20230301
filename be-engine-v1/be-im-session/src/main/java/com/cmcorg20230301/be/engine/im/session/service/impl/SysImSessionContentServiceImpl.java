@@ -1,5 +1,6 @@
 package com.cmcorg20230301.be.engine.im.session.service.impl;
 
+import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.BooleanUtil;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -31,10 +32,7 @@ import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -64,10 +62,64 @@ public class SysImSessionContentServiceImpl extends ServiceImpl<SysImSessionCont
         // 检查：sessionId是否合法
         Long sessionId = checkSessionId(dto.getSessionId(), true);
 
-        Long currentTenantIdDefault = UserUtil.getCurrentTenantIdDefault();
+        Long userId = UserUtil.getCurrentUserId();
+
+        Long tenantId = UserUtil.getCurrentTenantIdDefault();
+
+        // 处理消息：防止重复添加消息
+        handleSendTextUserSelfDTO(dto, userId, tenantId);
+
+        // 执行
+        return doSendTextUserSelf(dto, sessionId, userId, tenantId);
+
+    }
+
+    /**
+     * 处理消息：防止重复添加消息
+     */
+    private void handleSendTextUserSelfDTO(SysImSessionContentSendTextListDTO dto, Long userId, Long tenantId) {
+
+        Set<Long> createTsSet = dto.getContentSet().stream().map(SysImSessionContentSendTextDTO::getCreateTs).collect(Collectors.toSet());
+
+        List<SysImSessionContentDO> sysImSessionContentDOList = lambdaQuery().eq(SysImSessionContentDO::getSessionId, dto.getSessionId()).eq(BaseEntityNoIdSuper::getCreateId, userId).eq(BaseEntityNoIdSuper::getTenantId, tenantId).in(SysImSessionContentDO::getCreateTs, createTsSet).select(SysImSessionContentDO::getCreateTs).list();
+
+        if (CollUtil.isEmpty(sysImSessionContentDOList)) {
+            return;
+        }
+
+        // 已经存在数据库里面的，创建时间的时间戳
+        Set<Long> existCreateTsSet = sysImSessionContentDOList.stream().map(SysImSessionContentDO::getCreateTs).collect(Collectors.toSet());
+
+        Iterator<SysImSessionContentSendTextDTO> iterator = dto.getContentSet().iterator();
+
+        while (iterator.hasNext() && existCreateTsSet.size() != 0) {
+
+            SysImSessionContentSendTextDTO item = iterator.next();
+
+            if (existCreateTsSet.contains(item.getCreateTs())) {
+
+                iterator.remove();
+
+                existCreateTsSet.remove(item.getCreateTs());
+
+            }
+
+        }
+
+    }
+
+    /**
+     * 执行：发送内容
+     */
+    @NotNull
+    private String doSendTextUserSelf(SysImSessionContentSendTextListDTO dto, Long sessionId, Long userId, Long tenantId) {
+
+        if (CollUtil.isEmpty(dto.getContentSet())) {
+            return BaseBizCodeEnum.OK;
+        }
 
         // 获取：该会话里面的所有用户主键 idSet
-        List<SysImSessionRefUserDO> sysImSessionRefUserDOList = ChainWrappers.lambdaQueryChain(sysImSessionRefUserMapper).eq(SysImSessionRefUserDO::getSessionId, sessionId).eq(BaseEntityNoIdSuper::getTenantId, currentTenantIdDefault).select(SysImSessionRefUserDO::getUserId).list();
+        List<SysImSessionRefUserDO> sysImSessionRefUserDOList = ChainWrappers.lambdaQueryChain(sysImSessionRefUserMapper).eq(SysImSessionRefUserDO::getSessionId, sessionId).eq(BaseEntityNoIdSuper::getTenantId, tenantId).select(SysImSessionRefUserDO::getUserId).list();
 
         Set<Long> userIdSet = sysImSessionRefUserDOList.stream().map(SysImSessionRefUserDO::getUserId).collect(Collectors.toSet());
 
@@ -78,7 +130,21 @@ public class SysImSessionContentServiceImpl extends ServiceImpl<SysImSessionCont
         // 创建时间不能低于该值
         long checkTs = System.currentTimeMillis() - BaseConstant.YEAR_30_EXPIRE_TIME;
 
-        for (SysImSessionContentSendTextDTO item : dto.getContentList()) {
+        // insertList
+        handleSendTextUserSelfInsertList(dto, sessionId, userId, checkTs, type, userIdSet, insertList);
+
+        saveBatch(insertList);
+
+        return BaseBizCodeEnum.OK;
+
+    }
+
+    /**
+     * 处理：insertList
+     */
+    private static void handleSendTextUserSelfInsertList(SysImSessionContentSendTextListDTO dto, Long sessionId, Long userId, long checkTs, int type, Set<Long> userIdSet, List<SysImSessionContentDO> insertList) {
+
+        for (SysImSessionContentSendTextDTO item : dto.getContentSet()) {
 
             if (StrUtil.isBlank(item.getContent())) {
                 continue;
@@ -108,34 +174,38 @@ public class SysImSessionContentServiceImpl extends ServiceImpl<SysImSessionCont
 
             sysImSessionContentDO.setRemark("");
 
+            sysImSessionContentDO.setCreateId(userId);
+
             sysImSessionContentDO.setCreateTime(date);
+
+            sysImSessionContentDO.setUpdateId(userId);
 
             sysImSessionContentDO.setUpdateTime(date);
 
             sysImSessionContentDO.setCreateTs(item.getCreateTs());
 
-            MyThreadUtil.execute(() -> {
+            if (CollUtil.isNotEmpty(userIdSet)) {
 
-                SysWebSocketEventBO<SysImSessionContentDO> sysWebSocketEventBO = new SysWebSocketEventBO<>();
+                MyThreadUtil.execute(() -> {
 
-                sysWebSocketEventBO.setUserIdSet(userIdSet);
+                    SysWebSocketEventBO<SysImSessionContentDO> sysWebSocketEventBO = new SysWebSocketEventBO<>();
 
-                WebSocketMessageDTO<SysImSessionContentDO> webSocketMessageDTO = WebSocketMessageDTO.okData("/sys/im/session/content/send", sysImSessionContentDO);
+                    sysWebSocketEventBO.setUserIdSet(userIdSet);
 
-                sysWebSocketEventBO.setWebSocketMessageDTO(webSocketMessageDTO);
+                    WebSocketMessageDTO<SysImSessionContentDO> webSocketMessageDTO = WebSocketMessageDTO.okData("/sys/im/session/content/send", sysImSessionContentDO);
 
-                // 发送：webSocket事件
-                KafkaUtil.sendSysWebSocketEventTopic(sysWebSocketEventBO);
+                    sysWebSocketEventBO.setWebSocketMessageDTO(webSocketMessageDTO);
 
-            });
+                    // 发送：webSocket事件
+                    KafkaUtil.sendSysWebSocketEventTopic(sysWebSocketEventBO);
+
+                });
+
+            }
 
             insertList.add(sysImSessionContentDO);
 
         }
-
-        saveBatch(insertList);
-
-        return BaseBizCodeEnum.OK;
 
     }
 
@@ -212,11 +282,11 @@ public class SysImSessionContentServiceImpl extends ServiceImpl<SysImSessionCont
 
         if (backwardFlag) { // 往后查询
 
-            return lambdaQuery().gt(BaseEntity::getId, id).eq(SysImSessionContentDO::getSessionId, sessionId).page(MyPageUtil.getScrollPage(dto.getPageSize()));
+            return lambdaQuery().gt(BaseEntity::getId, id).eq(SysImSessionContentDO::getSessionId, sessionId).orderByAsc(SysImSessionContentDO::getCreateTs).page(MyPageUtil.getScrollPage(dto.getPageSize()));
 
         } else { // 往前查询
 
-            return lambdaQuery().lt(BaseEntity::getId, id).eq(SysImSessionContentDO::getSessionId, sessionId).page(MyPageUtil.getScrollPage(dto.getPageSize()));
+            return lambdaQuery().lt(BaseEntity::getId, id).eq(SysImSessionContentDO::getSessionId, sessionId).orderByDesc(SysImSessionContentDO::getCreateTs).page(MyPageUtil.getScrollPage(dto.getPageSize()));
 
         }
 

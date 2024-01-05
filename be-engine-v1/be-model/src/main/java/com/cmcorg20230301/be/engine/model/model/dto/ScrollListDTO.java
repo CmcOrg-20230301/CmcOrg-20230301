@@ -1,10 +1,14 @@
 package com.cmcorg20230301.be.engine.model.model.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
 @Schema(description = "滚动列表查询")
+@NoArgsConstructor
+@AllArgsConstructor
 public class ScrollListDTO {
 
     @Schema(description = "主键 id，如果为 null，则根据 backwardFlag，来查询最大 id或者最小 id，注意：不会查询该 id的数据")

@@ -43,6 +43,8 @@ public class UserSelfServiceImpl extends ServiceImpl<SysUserMapper, SysUserDO> i
 
         UserSelfInfoVO sysUserSelfInfoVO = new UserSelfInfoVO();
 
+        sysUserSelfInfoVO.setId(currentUserId);
+
         sysUserSelfInfoVO.setTenantId(currentTenantIdDefault);
 
         if (UserUtil.getCurrentUserAdminFlag(currentUserId)) {
