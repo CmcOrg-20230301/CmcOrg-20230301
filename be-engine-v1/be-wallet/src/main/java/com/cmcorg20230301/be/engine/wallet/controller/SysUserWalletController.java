@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.annotation.Resource;
 import javax.validation.Valid;
 
-@Tag(name = "用户钱包-管理")
+@Tag(name = "基础-用户钱包-管理")
 @RestController
 @RequestMapping("/sys/userWallet")
 public class SysUserWalletController {

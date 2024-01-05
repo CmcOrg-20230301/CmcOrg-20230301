@@ -21,7 +21,7 @@ import javax.validation.Valid;
 
 @RequestMapping("/sys/smsConfiguration")
 @RestController
-@Tag(name = "短信配置-管理")
+@Tag(name = "基础-短信配置-管理")
 public class SysSmsConfigurationController {
 
     @Resource

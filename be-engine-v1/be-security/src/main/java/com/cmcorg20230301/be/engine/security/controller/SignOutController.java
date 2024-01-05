@@ -12,7 +12,7 @@ import javax.annotation.Resource;
 
 @RestController
 @RequestMapping(value = "/sign/out")
-@Tag(name = "退出登录")
+@Tag(name = "基础-退出登录")
 public class SignOutController {
 
     @Resource

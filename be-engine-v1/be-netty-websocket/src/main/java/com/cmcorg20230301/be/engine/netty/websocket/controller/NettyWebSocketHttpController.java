@@ -17,7 +17,7 @@ import java.util.Set;
 
 @RestController
 @RequestMapping(value = "/netty/webSocket")
-@Tag(name = "netty-webSocket")
+@Tag(name = "基础-netty-webSocket")
 public class NettyWebSocketHttpController {
 
     @Resource

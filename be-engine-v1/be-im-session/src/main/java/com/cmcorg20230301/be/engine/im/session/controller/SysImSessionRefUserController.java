@@ -15,7 +15,7 @@ import javax.validation.Valid;
 
 @RestController
 @RequestMapping("/sys/im/session/refUser")
-@Tag(name = "即时通讯-会话-用户-管理")
+@Tag(name = "基础-即时通讯-会话-用户-管理")
 public class SysImSessionRefUserController {
 
     @Resource

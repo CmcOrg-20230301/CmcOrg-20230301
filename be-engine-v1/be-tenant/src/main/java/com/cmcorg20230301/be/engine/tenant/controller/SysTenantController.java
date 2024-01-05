@@ -22,7 +22,7 @@ import javax.annotation.Resource;
 import javax.validation.Valid;
 import java.util.List;
 
-@Tag(name = "租户-管理")
+@Tag(name = "基础-租户-管理")
 @RestController
 @RequestMapping("/sys/tenant")
 public class SysTenantController {

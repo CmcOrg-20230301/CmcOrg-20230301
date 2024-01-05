@@ -22,7 +22,7 @@ import javax.annotation.Resource;
 import javax.validation.Valid;
 import java.util.List;
 
-@Tag(name = "岗位-管理")
+@Tag(name = "基础-岗位-管理")
 @RestController
 @RequestMapping("/sys/post")
 public class SysPostController {

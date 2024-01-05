@@ -16,7 +16,7 @@ import javax.validation.Valid;
 
 @RequestMapping("/sys/pay")
 @RestController
-@Tag(name = "支付-管理")
+@Tag(name = "基础-支付-管理")
 public class SysPayController {
 
     @Resource

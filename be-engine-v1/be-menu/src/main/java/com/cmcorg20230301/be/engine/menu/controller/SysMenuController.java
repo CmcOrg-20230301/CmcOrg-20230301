@@ -24,7 +24,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping(value = "/sys/menu")
-@Tag(name = "菜单-管理")
+@Tag(name = "基础-菜单-管理")
 public class SysMenuController {
 
     @Resource

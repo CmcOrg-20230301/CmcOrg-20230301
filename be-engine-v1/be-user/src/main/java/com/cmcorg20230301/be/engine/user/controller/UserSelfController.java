@@ -16,7 +16,7 @@ import javax.validation.Valid;
 
 @RestController
 @RequestMapping(value = "/user/self")
-@Tag(name = "用户-自我-管理")
+@Tag(name = "基础-用户-自我-管理")
 public class UserSelfController {
 
     @Resource

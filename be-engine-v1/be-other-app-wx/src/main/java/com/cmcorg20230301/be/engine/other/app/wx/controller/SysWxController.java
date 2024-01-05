@@ -16,7 +16,7 @@ import javax.validation.Valid;
 
 @RequestMapping("/sys/wx")
 @RestController
-@Tag(name = "微信-管理")
+@Tag(name = "基础-微信-管理")
 public class SysWxController {
 
     @Resource

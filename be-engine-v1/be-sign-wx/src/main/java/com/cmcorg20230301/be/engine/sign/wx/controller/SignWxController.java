@@ -20,7 +20,7 @@ import javax.validation.Valid;
 
 @RestController
 @RequestMapping(value = "/sign/wx")
-@Tag(name = "登录注册-微信")
+@Tag(name = "基础-登录注册-微信")
 public class SignWxController {
 
     @Resource

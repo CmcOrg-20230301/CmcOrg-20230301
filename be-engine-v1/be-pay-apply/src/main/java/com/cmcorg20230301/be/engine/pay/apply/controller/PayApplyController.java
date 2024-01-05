@@ -13,7 +13,7 @@ import javax.annotation.Resource;
 
 @RestController
 @RequestMapping(value = "/sys/payApply")
-@Tag(name = "支付-苹果")
+@Tag(name = "基础-支付-苹果")
 public class PayApplyController {
 
     @Resource

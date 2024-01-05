@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.annotation.Resource;
 import javax.validation.Valid;
 
-@Tag(name = "用户钱包-操作日志")
+@Tag(name = "基础-用户钱包-操作日志")
 @RestController
 @RequestMapping("/sys/userWalletLog")
 public class SysUserWalletLogController {

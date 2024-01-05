@@ -21,7 +21,7 @@ import javax.validation.Valid;
 
 @RequestMapping("/sys/param")
 @RestController
-@Tag(name = "系统参数-管理")
+@Tag(name = "基础-系统参数-管理")
 public class SysParamController {
 
     @Resource

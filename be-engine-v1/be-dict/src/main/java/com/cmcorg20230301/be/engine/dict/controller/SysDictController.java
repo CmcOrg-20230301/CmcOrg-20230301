@@ -23,7 +23,7 @@ import javax.annotation.Resource;
 import javax.validation.Valid;
 import java.util.List;
 
-@Tag(name = "字典-管理")
+@Tag(name = "基础-字典-管理")
 @RestController
 @RequestMapping("/sys/dict")
 public class SysDictController {

@@ -18,7 +18,7 @@ import javax.validation.Valid;
 
 @RestController
 @RequestMapping("/sys/im/session/content")
-@Tag(name = "即时通讯-会话-内容-管理")
+@Tag(name = "基础-即时通讯-会话-内容-管理")
 public class SysImSessionContentController {
 
     @Resource

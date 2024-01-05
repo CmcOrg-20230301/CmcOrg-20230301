@@ -19,7 +19,7 @@ import javax.validation.Valid;
 
 @RestController
 @RequestMapping(value = "/sys/socket")
-@Tag(name = "socket-管理")
+@Tag(name = "基础-socket-管理")
 public class SysSocketController {
 
     @Resource

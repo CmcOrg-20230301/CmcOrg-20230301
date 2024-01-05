@@ -21,7 +21,7 @@ import javax.annotation.Resource;
 import javax.validation.Valid;
 import java.util.List;
 
-@Tag(name = "部门-管理")
+@Tag(name = "基础-部门-管理")
 @RestController
 @RequestMapping("/sys/dept")
 public class SysDeptController {

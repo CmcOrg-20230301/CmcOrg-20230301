@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.annotation.Resource;
 import javax.validation.Valid;
 
-@Tag(name = "用户银行卡-管理")
+@Tag(name = "基础-用户银行卡-管理")
 @RestController
 @RequestMapping("/sys/userBankCard")
 public class SysUserBankCardController {

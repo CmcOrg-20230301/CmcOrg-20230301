@@ -12,7 +12,7 @@ import javax.annotation.Resource;
 
 @NettyWebSocketController
 @RequestMapping(value = "/netty/webSocket/heartBeat")
-@Tag(name = "WebSocket-心跳检测")
+@Tag(name = "基础-WebSocket-心跳检测")
 public class NettyWebSocketHeartBeatController {
 
     @Resource

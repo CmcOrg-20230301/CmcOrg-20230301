@@ -20,7 +20,7 @@ import javax.validation.Valid;
 
 @RestController
 @RequestMapping("/sys/request")
-@Tag(name = "请求-管理")
+@Tag(name = "基础-请求-管理")
 public class SysRequestController {
 
     @Resource

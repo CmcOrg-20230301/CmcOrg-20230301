@@ -22,7 +22,7 @@ import javax.validation.Valid;
 
 @RequestMapping("/sys/role")
 @RestController
-@Tag(name = "角色-管理")
+@Tag(name = "基础-角色-管理")
 public class SysRoleController {
 
     @Resource

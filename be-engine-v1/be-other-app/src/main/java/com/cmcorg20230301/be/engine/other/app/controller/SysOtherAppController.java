@@ -21,7 +21,7 @@ import javax.validation.Valid;
 
 @RequestMapping("/sys/otherApp")
 @RestController
-@Tag(name = "第三方应用-管理")
+@Tag(name = "基础-第三方应用-管理")
 public class SysOtherAppController {
 
     @Resource

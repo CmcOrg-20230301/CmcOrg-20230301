@@ -21,7 +21,7 @@ import javax.validation.Valid;
 
 @RestController
 @RequestMapping(value = "/sys/fileStorageConfiguration")
-@Tag(name = "文件-存储配置-管理")
+@Tag(name = "基础-文件-存储配置-管理")
 public class SysFileStorageConfigurationController {
 
     @Resource

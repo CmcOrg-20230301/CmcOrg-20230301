@@ -19,7 +19,7 @@ import javax.validation.Valid;
 
 @RestController
 @RequestMapping(value = "/sign/phone")
-@Tag(name = "登录注册-手机")
+@Tag(name = "基础-登录注册-手机")
 public class SignPhoneController {
 
     @Resource

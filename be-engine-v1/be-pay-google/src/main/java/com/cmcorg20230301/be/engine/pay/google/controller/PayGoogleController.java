@@ -17,7 +17,7 @@ import javax.validation.Valid;
 
 @RestController
 @RequestMapping(value = "/sys/payGoogle")
-@Tag(name = "支付-谷歌")
+@Tag(name = "基础-支付-谷歌")
 public class PayGoogleController {
 
     @Resource

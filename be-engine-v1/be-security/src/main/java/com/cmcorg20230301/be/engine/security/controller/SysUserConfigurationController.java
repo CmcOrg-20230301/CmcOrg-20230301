@@ -17,7 +17,7 @@ import javax.validation.Valid;
 
 @RestController
 @RequestMapping(value = "/sys/userConfiguration")
-@Tag(name = "用户-配置")
+@Tag(name = "基础-用户-配置")
 public class SysUserConfigurationController {
 
     @Resource

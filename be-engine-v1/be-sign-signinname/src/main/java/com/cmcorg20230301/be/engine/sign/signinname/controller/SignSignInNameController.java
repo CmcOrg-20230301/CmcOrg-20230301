@@ -18,7 +18,7 @@ import javax.validation.Valid;
 
 @RestController
 @RequestMapping(value = "/sign/signInName")
-@Tag(name = "登录注册-登录名")
+@Tag(name = "基础-登录注册-登录名")
 public class SignSignInNameController {
 
     @Resource

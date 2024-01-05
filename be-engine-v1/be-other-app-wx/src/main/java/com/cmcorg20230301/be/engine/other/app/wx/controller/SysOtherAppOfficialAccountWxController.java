@@ -16,7 +16,7 @@ import javax.servlet.http.HttpServletRequest;
  */
 @RequestMapping("/sys/otherApp/officialAccount/wx")
 @RestController
-@Tag(name = "第三方应用-公众号-微信-管理")
+@Tag(name = "基础-第三方应用-公众号-微信-管理")
 public class SysOtherAppOfficialAccountWxController {
 
     @Resource

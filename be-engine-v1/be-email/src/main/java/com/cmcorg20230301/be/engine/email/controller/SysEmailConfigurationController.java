@@ -17,7 +17,7 @@ import javax.validation.Valid;
 
 @RestController
 @RequestMapping(value = "/sys/emailConfiguration")
-@Tag(name = "邮箱-配置")
+@Tag(name = "基础-邮箱-配置")
 public class SysEmailConfigurationController {
 
     @Resource

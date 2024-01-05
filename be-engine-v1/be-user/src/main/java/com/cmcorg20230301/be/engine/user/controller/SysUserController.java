@@ -25,7 +25,7 @@ import javax.validation.Valid;
 
 @RestController
 @RequestMapping(value = "/sys/user")
-@Tag(name = "用户-管理")
+@Tag(name = "基础-用户-管理")
 public class SysUserController {
 
     @Resource

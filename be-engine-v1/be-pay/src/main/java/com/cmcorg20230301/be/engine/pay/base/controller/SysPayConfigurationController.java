@@ -22,7 +22,7 @@ import javax.validation.Valid;
 
 @RequestMapping("/sys/payConfiguration")
 @RestController
-@Tag(name = "支付配置-管理")
+@Tag(name = "基础-支付配置-管理")
 public class SysPayConfigurationController {
 
     @Resource

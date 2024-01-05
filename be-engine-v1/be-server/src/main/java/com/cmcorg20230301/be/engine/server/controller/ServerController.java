@@ -14,7 +14,7 @@ import javax.annotation.Resource;
 
 @RestController
 @RequestMapping("/server")
-@Tag(name = "服务器-管理")
+@Tag(name = "基础-服务器-管理")
 public class ServerController {
 
     @Resource

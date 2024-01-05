@@ -23,7 +23,7 @@ import java.util.List;
 
 @RequestMapping("/sys/otherApp/officialAccount/menu")
 @RestController
-@Tag(name = "第三方应用-公众号-菜单-管理")
+@Tag(name = "基础-第三方应用-公众号-菜单-管理")
 public class SysOtherAppOfficialAccountMenuController {
 
     @Resource

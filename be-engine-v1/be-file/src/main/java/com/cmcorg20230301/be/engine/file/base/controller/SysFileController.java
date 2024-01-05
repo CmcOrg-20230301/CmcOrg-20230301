@@ -25,7 +25,7 @@ import javax.validation.Valid;
 
 @RestController
 @RequestMapping(value = "/sys/file")
-@Tag(name = "文件-管理")
+@Tag(name = "基础-文件-管理")
 public class SysFileController {
 
     @Resource

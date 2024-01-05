@@ -19,7 +19,7 @@ import javax.validation.Valid;
 
 @RestController
 @RequestMapping(value = "/sign/email")
-@Tag(name = "登录注册-邮箱")
+@Tag(name = "基础-登录注册-邮箱")
 public class SignEmailController {
 
     @Resource
