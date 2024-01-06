@@ -31,7 +31,7 @@ export function SysSmsConfigurationInsertOrUpdate(form: SysSmsConfigurationInser
 }
 
 export interface NotNullId {
-    id?: string // 主键id，required：true，format：int64
+    id?: string // 主键 id，required：true，format：int64
 }
 
 export interface SysSmsConfigurationDO {
@@ -41,7 +41,7 @@ export interface SysSmsConfigurationDO {
     delFlag?: boolean // 是否逻辑删除
     type?: number // 短信类型：101 阿里 201 腾讯，format：int32
     updateId?: string // 修改人id，format：int64
-    id?: string // 主键id，format：int64
+    id?: string // 主键 id，format：int64
     enableFlag?: boolean // 是否启用
     sendUpdate?: string // 发送：修改手机
     sendSignIn?: string // 发送：登录短信

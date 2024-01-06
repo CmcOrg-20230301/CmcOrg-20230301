@@ -37,7 +37,7 @@ export interface SysFileStorageConfigurationDO {
     createId?: string // 创建人id，format：int64
     tenantId?: string // 租户 id，format：int64
     name?: string // 文件存储配置名
-    id?: string // 主键id，format：int64
+    id?: string // 主键 id，format：int64
     enableFlag?: boolean // 是否启用
     bucketPrivateName?: string // 私有类型的桶名
     publicDownloadEndpoint?: string // 公开下载的端点
@@ -58,7 +58,7 @@ export function SysFileStorageConfigurationDeleteByIdSet(form: NotEmptyIdSet, co
 }
 
 export interface NotNullId {
-    id?: string // 主键id，required：true，format：int64
+    id?: string // 主键 id，required：true，format：int64
 }
 
 // 通过主键id，查看详情

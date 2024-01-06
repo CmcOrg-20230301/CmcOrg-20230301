@@ -39,7 +39,7 @@ export interface SysOtherAppDO {
     appId?: string // 第三方应用的 appId，备注：同一个类型下，所有租户不能重复，原因：比如接收公众号消息时，就无法找到具体是哪一个租户
     tenantId?: string // 租户 id，format：int64
     name?: string // 第三方应用名
-    id?: string // 主键id，format：int64
+    id?: string // 主键 id，format：int64
     enableFlag?: boolean // 是否启用
 }
 
@@ -68,7 +68,7 @@ export function SysOtherAppOfficialAccountMenuInsertOrUpdate(form: SysOtherAppOf
 }
 
 export interface NotNullId {
-    id?: string // 主键id，required：true，format：int64
+    id?: string // 主键 id，required：true，format：int64
 }
 
 export interface SysOtherAppOfficialAccountMenuDO {
@@ -87,7 +87,7 @@ export interface SysOtherAppOfficialAccountMenuDO {
     otherAppId?: string // 所属的，第三方应用相关配置主键 id，format：int64
     tenantId?: string // 租户 id，format：int64
     name?: string // 菜单名，备注：一级菜单最多4个汉字，二级菜单最多8个汉字，多出来的部分将会以 ... 代替
-    id?: string // 主键id，format：int64
+    id?: string // 主键 id，format：int64
     replyContent?: string // 回复的内容，备注：一般是点击按钮之后，回复的内容
     enableFlag?: boolean // 是否启用
     value?: string // 如果是按钮，则表示按钮的 key，如果是链接，则表示是 url

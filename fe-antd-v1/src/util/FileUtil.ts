@@ -3,12 +3,12 @@ import {RcFile} from "antd/es/upload";
 import {NotNullId} from "@/api/http/SysFile";
 import {ToastError} from "@/util/ToastUtil";
 import {GetBrowserCategory} from "@/util/BrowserCategoryUtil";
-import {BrowserCategoryEnum} from "@/model/enum/BrowserCategoryEnum";
 import {LocalStorageKeyList} from "@/model/constant/LocalStorageKey";
 import {IInit} from "@/util/UseEffectUtil";
 import {SessionStorageKeyList} from "@/model/constant/SessionStorageKey";
 import {GetAppNav} from "@/MyApp";
 import PathConstant from "@/model/constant/PathConstant";
+import {SysRequestCategoryEnum} from "@/model/enum/SysRequestCategoryEnum.ts";
 
 // 获取：文件是否可以预览
 export function GetFileCanPreviewFlag(fileName: string) {
@@ -44,7 +44,7 @@ export function OpenFileDownloadPageFlag(): boolean {
     const browserCategory = GetBrowserCategory();
 
     // 如果是：微信浏览器，则需要打开下载页面
-    if (browserCategory === BrowserCategoryEnum.ANDROID_BROWSER_WX.code || browserCategory === BrowserCategoryEnum.APPLE_BROWSER_WX.code || browserCategory === BrowserCategoryEnum.WINDOWS_BROWSER_WX.code || browserCategory === BrowserCategoryEnum.MAC_BROWSER_WX.code || browserCategory === BrowserCategoryEnum.LINUX_BROWSER_WX.code) {
+    if (browserCategory === SysRequestCategoryEnum.ANDROID_BROWSER_WX.code || browserCategory === SysRequestCategoryEnum.IOS_BROWSER_WX.code || browserCategory === SysRequestCategoryEnum.PC_BROWSER_WINDOWS_WX.code || browserCategory === SysRequestCategoryEnum.PC_BROWSER_MAC_WX.code || browserCategory === SysRequestCategoryEnum.PC_BROWSER_LINUX_WX.code) {
 
         return true;
 

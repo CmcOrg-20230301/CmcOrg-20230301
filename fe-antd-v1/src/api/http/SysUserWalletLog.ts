@@ -36,7 +36,7 @@ export interface SysUserWalletLogDO {
     tenantId?: string // 租户 id，format：int64
     name?: string // 记录名
     withdrawableMoneyPre?: number // 可提现的钱，前
-    id?: string // 主键id，format：int64
+    id?: string // 主键 id，format：int64
     refId?: string // 关联的 id，format：int64
     enableFlag?: boolean // 是否启用
 }

@@ -1,4 +1,4 @@
-import {DoGetDictList, GetDictList, GetDictListByKey, NoFormGetDictTreeList, YesNoDict} from "@/util/DictUtil";
+import {DoGetDictList, GetDictList, NoFormGetDictTreeList, YesNoDict} from "@/util/DictUtil";
 import {SysRequestDO, SysRequestPageDTO} from "@/api/http/SysRequest";
 import {HandlerRegion} from "@/util/StrUtil";
 import {SysUserDictList} from "@/api/http/SysUser";
@@ -7,6 +7,7 @@ import {ProColumns} from "@ant-design/pro-components";
 import {SysTenantDictList} from "@/api/http/SysTenant";
 import {SearchTransform} from "@/util/CommonUtil";
 import CommonConstant from "@/model/constant/CommonConstant";
+import {SysRequestCategoryEnumDict} from "@/model/enum/SysRequestCategoryEnum.ts";
 
 const TableColumnList = (): ProColumns<SysRequestDO>[] => [
 
@@ -141,10 +142,8 @@ const TableColumnList = (): ProColumns<SysRequestDO>[] => [
     },
 
     {
-        title: '请求类别', dataIndex: 'category', ellipsis: true, width: 90, valueType: 'select',
-        request: () => {
-            return GetDictListByKey('sys_request_category')
-        },
+        title: '请求类别', dataIndex: 'category', ellipsis: true, width: 90,
+        valueEnum: SysRequestCategoryEnumDict,
         fieldProps: {
             allowClear: true,
             showSearch: true,

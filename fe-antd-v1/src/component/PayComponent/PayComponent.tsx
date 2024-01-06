@@ -6,7 +6,9 @@ import {Modal, QRCode} from "antd";
 import CommonConstant from "@/model/constant/CommonConstant";
 import {GetSysPayTypeNamePre, SysPayTypeEnum, SysPayTypeEnumMap} from "@/model/enum/SysPayTypeEnum";
 import {GetBrowserCategory} from "@/util/BrowserCategoryUtil";
-import {BrowserCategoryEnum} from "@/model/enum/BrowserCategoryEnum";
+import {useAppSelector} from "@/store";
+import {SYS_PAY_CLOSE_MODAL} from "@/api/socket/WebSocket.ts";
+import {SysRequestCategoryEnum} from "@/model/enum/SysRequestCategoryEnum";
 
 /**
  * 获取：支付类型
@@ -17,7 +19,7 @@ export function GetSysPayType(): undefined | number {
 
         const browserCategory = GetBrowserCategory();
 
-        if (browserCategory === BrowserCategoryEnum.ANDROID_BROWSER_WX.code || browserCategory === BrowserCategoryEnum.APPLE_BROWSER_WX.code) {
+        if (browserCategory === SysRequestCategoryEnum.ANDROID_BROWSER_WX.code || browserCategory === SysRequestCategoryEnum.IOS_BROWSER_WX.code) {
 
             return SysPayTypeEnum.WX_JSAPI.code // 微信-jsApi
 
@@ -38,7 +40,7 @@ export function GetSysPayType(): undefined | number {
 /**
  * 处理：是否购买成功
  */
-export function UseEffectSysPayPayTradeStatusById(outTradeNoRef: React.MutableRefObject<string>, setQrCodeModalOpen: (value: (((prevState: boolean) => boolean) | boolean)) => void, callBack?: () => void) {
+export function UseEffectSysPayPayTradeStatusById(outTradeNoRef: React.MutableRefObject<string>, setQrCodeModalOpen: (value: (((prevState: boolean) => boolean) | boolean)) => void, props: IPayComponent) {
 
     useEffect(() => {
 
@@ -50,17 +52,8 @@ export function UseEffectSysPayPayTradeStatusById(outTradeNoRef: React.MutableRe
 
                     if (res.data === SysPayTradeStatusEnum.TRADE_SUCCESS.code) {
 
-                        outTradeNoRef.current = ""
-
-                        ToastSuccess("购买成功")
-
-                        setQrCodeModalOpen(false)
-
-                        if (callBack) {
-
-                            callBack()
-
-                        }
+                        // 处理：关闭弹窗
+                        handleCloseModal(outTradeNoRef, setQrCodeModalOpen, props);
 
                     }
 
@@ -68,7 +61,7 @@ export function UseEffectSysPayPayTradeStatusById(outTradeNoRef: React.MutableRe
 
             }
 
-        }, 1300);
+        }, 3000);
 
         return () => {
 
@@ -99,6 +92,27 @@ export interface BuyVO {
 export interface IPayComponentRef {
 
     HandleBuyVO: (buyVO: BuyVO) => void
+
+}
+
+// 处理：关闭弹窗
+function handleCloseModal(outTradeNoRef: React.MutableRefObject<string>, setQrCodeModalOpen: (value: (((prevState: boolean) => boolean) | boolean)) => void, props: IPayComponent) {
+
+    if (!outTradeNoRef.current) {
+        return
+    }
+
+    outTradeNoRef.current = ""
+
+    ToastSuccess("购买成功")
+
+    setQrCodeModalOpen(false)
+
+    if (props.callBack) {
+
+        props.callBack()
+
+    }
 
 }
 
@@ -166,7 +180,24 @@ const PayComponent = forwardRef<IPayComponentRef, IPayComponent>((props, ref) =>
     }, [])
 
     // 处理：是否购买成功
-    UseEffectSysPayPayTradeStatusById(outTradeNoRef, setQrCodeModalOpen, props.callBack);
+    UseEffectSysPayPayTradeStatusById(outTradeNoRef, setQrCodeModalOpen, props);
+
+    const webSocketMessage = useAppSelector((state) => state.common.webSocketMessage);
+
+    useEffect(() => {
+
+        if (webSocketMessage.uri === SYS_PAY_CLOSE_MODAL) {
+
+            if (outTradeNoRef.current && webSocketMessage.data === outTradeNoRef.current) {
+
+                // 处理：关闭弹窗
+                handleCloseModal(outTradeNoRef, setQrCodeModalOpen, props);
+
+            }
+
+        }
+
+    }, [webSocketMessage])
 
     return <>
 

@@ -2,7 +2,7 @@ import $http from "@/util/HttpUtil";
 import {AxiosRequestConfig} from "axios";
 
 export interface NotNullIdAndIntegerValue {
-    id?: string // 主键id，required：true，format：int64
+    id?: string // 主键 id，required：true，format：int64
     value?: number // 值，required：true，format：int32
 }
 

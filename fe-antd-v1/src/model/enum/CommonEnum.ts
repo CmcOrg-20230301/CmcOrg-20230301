@@ -11,4 +11,6 @@ export interface IEnum<T = number | string> {
 
     status?: PresetStatusColorType
 
+    [x: string]: any
+
 }

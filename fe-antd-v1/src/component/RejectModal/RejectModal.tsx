@@ -9,7 +9,7 @@ interface IRejectModal {
 
     trigger?: JSX.Element
 
-    onFinish?: (form: NotNullIdAndStringValue) => Promise<any>
+    onFinish?: (rejectReason: string) => Promise<any>
 
 }
 
@@ -104,11 +104,11 @@ export default function (props: IRejectModal) {
 
             ]}
 
-            onFinish={async (form) => {
+            onFinish={async (form: NotNullIdAndStringValue) => {
 
                 if (props.onFinish) {
 
-                    await props.onFinish(form)
+                    await props.onFinish(form.value!)
 
                 }
 

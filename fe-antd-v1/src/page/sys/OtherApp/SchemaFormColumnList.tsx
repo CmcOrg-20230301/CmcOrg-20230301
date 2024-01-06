@@ -1,6 +1,7 @@
-import {GetDictListByKey, YesNoDict} from "@/util/DictUtil";
+import {YesNoDict} from "@/util/DictUtil";
 import {SysOtherAppInsertOrUpdateDTO} from "@/api/http/SysOtherApp";
 import {ProFormColumnsType} from "@ant-design/pro-components";
+import {SysOtherAppTypeEnumDict} from "@/model/enum/SysOtherAppTypeEnum.ts";
 
 export const InitForm: SysOtherAppInsertOrUpdateDTO = {} as SysOtherAppInsertOrUpdateDTO
 
@@ -11,7 +12,7 @@ const SchemaFormColumnList = (): ProFormColumnsType<SysOtherAppInsertOrUpdateDTO
         {
             title: '类型',
             dataIndex: 'type',
-            valueType: 'select',
+            valueEnum: SysOtherAppTypeEnumDict,
             fieldProps: {
                 allowClear: true,
                 showSearch: true,
@@ -22,9 +23,6 @@ const SchemaFormColumnList = (): ProFormColumnsType<SysOtherAppInsertOrUpdateDTO
                         required: true,
                     },
                 ],
-            },
-            request: () => {
-                return GetDictListByKey('sys_other_app_type')
             },
         },
 

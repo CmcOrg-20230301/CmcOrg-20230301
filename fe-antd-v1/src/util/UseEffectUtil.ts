@@ -131,6 +131,8 @@ function handleUserSelfMenuList(userSelfMenuList: SysMenuDO[], callBack: ((data:
 
         GetAppDispatch()(setUserSelfMenuList(userSelfMenuList))
 
+        ConnectWebSocket() // 连接 webSocket
+
     }
 
     if (callBack) {
@@ -138,8 +140,6 @@ function handleUserSelfMenuList(userSelfMenuList: SysMenuDO[], callBack: ((data:
         callBack(userSelfMenuList)
 
     }
-
-    ConnectWebSocket() // 连接 webSocket
 
 }
 
@@ -163,7 +163,6 @@ export function UseEffectLoadSysMenuUserSelfMenuList(callBack?: (data: SysMenuDO
 
             // 处理：用户菜单
             handleUserSelfMenuList(userSelfMenuList, callBack, false);
-
             return;
 
         }

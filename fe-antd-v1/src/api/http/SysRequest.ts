@@ -32,7 +32,7 @@ export interface SysRequestDO {
     tenantId?: string // 租户 id，format：int64
     name?: string // 接口名（备用）
     responseValue?: string // 请求返回的值
-    id?: string // 主键id，format：int64
+    id?: string // 主键 id，format：int64
     category?: string // 请求类别
     region?: string // Ip2RegionUtil.getRegion() 获取到的 ip所处区域
     enableFlag?: boolean // 是否启用

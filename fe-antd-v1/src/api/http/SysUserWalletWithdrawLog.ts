@@ -23,7 +23,7 @@ export function SysUserWalletWithdrawLogInsertOrUpdateTenant(form: SysUserWallet
 }
 
 export interface NotNullIdAndStringValue {
-    id?: string // 主键id，required：true，format：int64
+    id?: string // 主键 id，required：true，format：int64
     value?: string // 值，required：true
 }
 
@@ -70,7 +70,7 @@ export interface SysUserWalletWithdrawLogDO {
     createId?: string // 创建人id，format：int64
     tenantId?: string // 租户 id，format：int64
     branchBankName?: string // 冗余字段：支行
-    id?: string // 主键id，format：int64
+    id?: string // 主键 id，format：int64
     enableFlag?: boolean // 是否启用
 }
 
@@ -80,7 +80,7 @@ export function SysUserWalletWithdrawLogPage(form: SysUserWalletWithdrawLogPageD
 }
 
 export interface NotNullId {
-    id?: string // 主键id，required：true，format：int64
+    id?: string // 主键 id，required：true，format：int64
 }
 
 // 取消-租户

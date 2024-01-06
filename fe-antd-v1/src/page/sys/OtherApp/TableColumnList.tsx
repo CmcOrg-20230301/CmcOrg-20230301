@@ -1,4 +1,4 @@
-import {GetDictList, GetDictListByKey, NoFormGetDictTreeList, YesNoDict} from "@/util/DictUtil";
+import {GetDictList, NoFormGetDictTreeList, YesNoDict} from "@/util/DictUtil";
 import {ActionType, ProColumns} from "@ant-design/pro-components";
 import {SysOtherAppDeleteByIdSet, SysOtherAppDO, SysOtherAppInsertOrUpdateDTO} from "@/api/http/SysOtherApp";
 import {ExecConfirm, ToastSuccess} from "@/util/ToastUtil";
@@ -10,6 +10,7 @@ import {EllipsisOutlined} from "@ant-design/icons";
 import React from "react";
 import PathConstant from "@/model/constant/PathConstant";
 import {GoPage} from "@/layout/AdminLayout/AdminLayout";
+import {SysOtherAppTypeEnumDict} from "@/model/enum/SysOtherAppTypeEnum.ts";
 
 const TableColumnList = (currentForm: React.MutableRefObject<SysOtherAppInsertOrUpdateDTO>, setFormOpen: React.Dispatch<React.SetStateAction<boolean>>, actionRef: React.RefObject<ActionType | undefined>): ProColumns<SysOtherAppDO>[] => [
 
@@ -48,10 +49,8 @@ const TableColumnList = (currentForm: React.MutableRefObject<SysOtherAppInsertOr
     },
 
     {
-        title: '类型', dataIndex: 'type', ellipsis: true, width: 90, valueType: 'select',
-        request: () => {
-            return GetDictListByKey('sys_other_app_type')
-        },
+        title: '类型', dataIndex: 'type', ellipsis: true, width: 90,
+        valueEnum: SysOtherAppTypeEnumDict,
         fieldProps: {
             allowClear: true,
             showSearch: true,

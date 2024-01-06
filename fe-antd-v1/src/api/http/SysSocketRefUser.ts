@@ -32,7 +32,7 @@ export interface SysSocketRefUserDO {
     path?: string // 路径
     nickname?: string // 冗余字段，用户昵称
     host?: string // 冗余字段，主机
-    id?: string // 主键id，format：int64
+    id?: string // 主键 id，format：int64
     enableFlag?: boolean // 是否启用
     jwtHash?: string // jwtHash
     jwtHashExpireTs?: string // jwtHash未来过期的时间戳，format：int64

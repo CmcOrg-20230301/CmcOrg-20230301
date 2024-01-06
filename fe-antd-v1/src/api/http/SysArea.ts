@@ -27,7 +27,7 @@ export interface SysAreaDO {
     createId?: string // 创建人id，format：int64
     tenantId?: string // 租户 id，format：int64
     name?: string // 区域名
-    id?: string // 主键id，format：int64
+    id?: string // 主键 id，format：int64
     enableFlag?: boolean // 是否启用
 }
 
@@ -62,7 +62,7 @@ export function SysAreaDeleteByIdSet(form: NotEmptyIdSet, config?: AxiosRequestC
 }
 
 export interface NotNullId {
-    id?: string // 主键id，required：true，format：int64
+    id?: string // 主键 id，required：true，format：int64
 }
 
 export interface SysAreaInfoByIdVO {
@@ -79,7 +79,7 @@ export interface SysAreaInfoByIdVO {
     createId?: string // 创建人id，format：int64
     tenantId?: string // 租户 id，format：int64
     name?: string // 区域名
-    id?: string // 主键id，format：int64
+    id?: string // 主键 id，format：int64
     enableFlag?: boolean // 是否启用
 }
 

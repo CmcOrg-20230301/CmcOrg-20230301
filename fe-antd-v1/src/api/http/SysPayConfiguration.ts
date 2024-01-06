@@ -37,7 +37,7 @@ export interface SysPayConfigurationDO {
     tenantId?: string // 租户 id，format：int64
     name?: string // 支付名（不可重复）
     notifyUrl?: string // 支付平台，异步接收地址
-    id?: string // 主键id，format：int64
+    id?: string // 主键 id，format：int64
     enableFlag?: boolean // 是否启用
 }
 
@@ -89,7 +89,7 @@ export function SysPayConfigurationInsertOrUpdate(form: SysPayConfigurationInser
 }
 
 export interface NotNullId {
-    id?: string // 主键id，required：true，format：int64
+    id?: string // 主键 id，required：true，format：int64
 }
 
 // 通过主键id，查看详情

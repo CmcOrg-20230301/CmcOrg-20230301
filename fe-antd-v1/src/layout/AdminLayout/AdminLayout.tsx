@@ -13,7 +13,6 @@ import React, {useEffect, useState} from "react";
 import {SysMenuDO} from "@/api/http/SysMenu";
 import PathConstant from "@/model/constant/PathConstant";
 import {setUserSelfAvatarUrl, setUserSelfInfo} from "@/store/userSlice";
-import {LogoutOutlined, UserOutlined, WalletOutlined} from "@ant-design/icons";
 import {GetCopyright} from "@/layout/SignLayout/SignLayout";
 import {Avatar, Button, Dropdown, Space, Typography} from "antd";
 import SessionStorageKey from "@/model/constant/SessionStorageKey";
@@ -30,6 +29,7 @@ import {SysFileGetPublicUrl} from "@/api/http/SysFile";
 import {SysTenantGetNameById} from "@/api/http/SysTenant";
 import {TENANT_NAME_SUF} from "@/page/sign/SignUp/SignUpUtil";
 import {UseEffectLoadSysMenuUserSelfMenuList} from "@/util/UseEffectUtil";
+import {LogoutOutlined, UserOutlined, WalletOutlined} from "@ant-design/icons";
 
 // 前往：第一个页面
 function goFirstPage(menuList: SysMenuDO[]) {
@@ -184,7 +184,10 @@ function AdminLayoutElement(props: IAdminLayoutElement) {
 
                     userSelfMenuListTemp.forEach(item => {
 
-                        item.icon = <MyIcon icon={item.icon as string}/>
+                        if (item.icon) {
+                            item.icon = <MyIcon icon={item.icon as string}/>
+                        }
+
                         item.hideInMenu = !item.showFlag
 
                     })
@@ -251,115 +254,107 @@ function AdminLayoutElement(props: IAdminLayoutElement) {
 
             )}
 
-            rightContentRender={() => (
+            actionsRender={(props) => [
 
-                <RouteContext.Consumer>
+                <Space key={"1"} size={"large"}>
 
-                    {(routeContextType: RouteContextType) => {
+                    <Dropdown
 
-                        return <Space size={"large"}>
+                        menu={{
 
-                            <Dropdown
+                            items: [
 
-                                menu={{
-
-                                    items: [
-
-                                        {
-                                            key: '1',
-                                            label: <a onClick={() => {
-
-                                                GoPage(PathConstant.USER_SELF_PATH)
-
-                                            }
-                                            }>
-                                                个人中心
-                                            </a>,
-
-                                            icon: <UserOutlined/>
-                                        },
-
-                                        {
-                                            key: '2',
-                                            label: <a onClick={() => {
-
-                                                GoPage(PathConstant.SYS_USER_SELF_WALLET_PATH)
-
-                                            }
-                                            }>
-                                                我的钱包
-                                            </a>,
-
-                                            icon: <WalletOutlined/>
-                                        },
-
-                                        {
-                                            key: '3',
-                                            danger: true,
-                                            label: <a
-                                                onClick={() => {
-
-                                                    ExecConfirm(async () => {
-
-                                                        await SignOutSelf().then((res) => {
-
-                                                            ToastSuccess(res.msg)
-                                                            SignOut()
-
-                                                        })
-
-                                                    }, undefined, "确定退出登录吗？")
-
-                                                }}
-                                            >
-                                                退出登录
-                                            </a>,
-
-                                            icon: <LogoutOutlined/>
-                                        },
-
-                                    ]
-
-                                }}>
-
-                                <Button className={"m-r-10"} type="text" onClick={() => {
-
-                                    if (!routeContextType.isMobile) {
+                                {
+                                    key: '1',
+                                    label: <a onClick={() => {
 
                                         GoPage(PathConstant.USER_SELF_PATH)
 
                                     }
+                                    }>
+                                        个人中心
+                                    </a>,
 
-                                }}>
+                                    icon: <UserOutlined/>
+                                },
 
-                                    <Space>
+                                {
+                                    key: '2',
+                                    label: <a onClick={() => {
 
-                                        <Avatar
+                                        GoPage(PathConstant.SYS_USER_SELF_WALLET_PATH)
 
-                                            size="small"
+                                    }
+                                    }>
+                                        我的钱包
+                                    </a>,
 
-                                            src={
-                                                userSelfAvatarUrl ? userSelfAvatarUrl : CommonConstant.FIXED_AVATAR_URL
-                                            }
+                                    icon: <WalletOutlined/>
+                                },
 
-                                        />
+                                {
+                                    key: '3',
+                                    danger: true,
+                                    label: <a
+                                        onClick={() => {
 
-                                        <Typography.Text ellipsis style={{width: 95}}
-                                                         type="secondary">{userSelfInfo.nickname}</Typography.Text>
+                                            ExecConfirm(async () => {
 
-                                    </Space>
+                                                await SignOutSelf().then((res) => {
 
-                                </Button>
+                                                    ToastSuccess(res.msg)
+                                                    SignOut()
 
-                            </Dropdown>
+                                                })
 
-                        </Space>
+                                            }, undefined, "确定退出登录吗？")
 
-                    }}
+                                        }}
+                                    >
+                                        退出登录
+                                    </a>,
 
-                </RouteContext.Consumer>
+                                    icon: <LogoutOutlined/>
+                                },
 
-            )}
+                            ]
+
+                        }}>
+
+                        <Button className={"m-r-10"} type="text" onClick={() => {
+
+                            if (!props.isMobile) {
+
+                                GoPage(PathConstant.USER_SELF_PATH)
+
+                            }
+
+                        }}>
+
+                            <Space>
+
+                                <Avatar
+
+                                    size="small"
+
+                                    src={
+                                        userSelfAvatarUrl ? userSelfAvatarUrl : CommonConstant.FIXED_AVATAR_URL
+                                    }
+
+                                />
+
+                                <Typography.Text ellipsis style={{width: 95}}
+                                                 type="secondary">{userSelfInfo.nickname}</Typography.Text>
+
+                            </Space>
+
+                        </Button>
+
+                    </Dropdown>
+
+                </Space>
+
+            ]}
 
             footerRender={() => (
 

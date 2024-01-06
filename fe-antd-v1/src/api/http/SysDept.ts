@@ -44,7 +44,7 @@ export interface SysDeptDO {
     createId?: string // 创建人id，format：int64
     tenantId?: string // 租户 id，format：int64
     name?: string // 部门名
-    id?: string // 主键id，format：int64
+    id?: string // 主键 id，format：int64
     enableFlag?: boolean // 是否启用
 }
 
@@ -54,7 +54,7 @@ export function SysDeptPage(form: SysDeptPageDTO, config?: AxiosRequestConfig) {
 }
 
 export interface NotNullId {
-    id?: string // 主键id，required：true，format：int64
+    id?: string // 主键 id，required：true，format：int64
 }
 
 // 通过主键id，查看详情

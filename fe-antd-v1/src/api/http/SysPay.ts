@@ -2,7 +2,7 @@ import $http from "@/util/HttpUtil";
 import {AxiosRequestConfig} from "axios";
 
 export interface NotNullId {
-    id?: string // 主键id，required：true，format：int64
+    id?: string // 主键 id，required：true，format：int64
 }
 
 // 通过主键id，查看支付状态-第三方支付平台
