@@ -13,7 +13,7 @@
     "@ant-design/icons": "^5.2.6",
     "@ant-design/pro-components": "^2.6.43",
     "@reduxjs/toolkit": "^2.0.1",
-    "antd": "^5.12.5",
+    "antd": "^5.12.8",
     "crypto-js": "^4.2.0",
     "jsencrypt": "^3.3.2",
     "react": "^18.2.0",
@@ -25,17 +25,17 @@
   "devDependencies": {
     "@types/crypto-js": "^4.2.1",
     "@types/node": "^20.10.6",
-    "@types/react": "^18.2.46",
+    "@types/react": "^18.2.47",
     "@types/react-dom": "^18.2.18",
-    "@typescript-eslint/eslint-plugin": "^6.16.0",
-    "@typescript-eslint/parser": "^6.16.0",
+    "@typescript-eslint/eslint-plugin": "^6.17.0",
+    "@typescript-eslint/parser": "^6.17.0",
     "@vitejs/plugin-react": "^4.2.1",
-    "axios": "^1.6.3",
+    "axios": "^1.6.5",
     "eslint": "^8.56.0",
     "eslint-plugin-react-hooks": "^4.6.0",
     "eslint-plugin-react-refresh": "^0.4.5",
     "less": "^4.2.0",
     "typescript": "^5.3.3",
-    "vite": "^5.0.10"
+    "vite": "^5.0.11"
   }
 }
