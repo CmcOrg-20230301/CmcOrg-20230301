@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
 import javax.validation.Valid;
+import java.util.Set;
 
 @RestController
 @RequestMapping("/sys/im/session/content")
@@ -26,7 +27,7 @@ public class SysImSessionContentController {
 
     @Operation(summary = "发送内容-文字-用户自我")
     @PostMapping("/send/text/userSelf")
-    public ApiResultVO<String> sendTextUserSelf(@RequestBody @Valid SysImSessionContentSendTextListDTO dto) {
+    public ApiResultVO<Set<Long>> sendTextUserSelf(@RequestBody @Valid SysImSessionContentSendTextListDTO dto) {
         return ApiResultVO.okData(baseService.sendTextUserSelf(dto));
     }
 

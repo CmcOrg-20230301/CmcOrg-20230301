@@ -55,9 +55,11 @@ public class SysImSessionContentServiceImpl extends ServiceImpl<SysImSessionCont
 
     /**
      * 发送内容
+     *
+     * @return createTsSet
      */
     @Override
-    public String sendTextUserSelf(SysImSessionContentSendTextListDTO dto) {
+    public Set<Long> sendTextUserSelf(SysImSessionContentSendTextListDTO dto) {
 
         // 检查：sessionId是否合法
         Long sessionId = checkSessionId(dto.getSessionId(), true);
@@ -70,7 +72,9 @@ public class SysImSessionContentServiceImpl extends ServiceImpl<SysImSessionCont
         handleSendTextUserSelfDTO(dto, userId, tenantId);
 
         // 执行
-        return doSendTextUserSelf(dto, sessionId, userId, tenantId);
+        doSendTextUserSelf(dto, sessionId, userId, tenantId);
+
+        return dto.getContentSet().stream().map(SysImSessionContentSendTextDTO::getCreateTs).collect(Collectors.toSet());
 
     }
 
@@ -111,11 +115,10 @@ public class SysImSessionContentServiceImpl extends ServiceImpl<SysImSessionCont
     /**
      * 执行：发送内容
      */
-    @NotNull
-    private String doSendTextUserSelf(SysImSessionContentSendTextListDTO dto, Long sessionId, Long userId, Long tenantId) {
+    private void doSendTextUserSelf(SysImSessionContentSendTextListDTO dto, Long sessionId, Long userId, Long tenantId) {
 
         if (CollUtil.isEmpty(dto.getContentSet())) {
-            return BaseBizCodeEnum.OK;
+            return;
         }
 
         // 获取：该会话里面的所有用户主键 idSet
@@ -134,8 +137,6 @@ public class SysImSessionContentServiceImpl extends ServiceImpl<SysImSessionCont
         handleSendTextUserSelfInsertList(dto, sessionId, userId, checkTs, type, userIdSet, insertList);
 
         saveBatch(insertList);
-
-        return BaseBizCodeEnum.OK;
 
     }
 

@@ -25,6 +25,8 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Unmodifiable;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
@@ -259,6 +261,16 @@ public class UserUtil {
      * 获取：当前 security上下文里面存储的用户信息
      */
     @Nullable
+    public static Authentication getSecurityContextHolderContextAuthentication() {
+
+        return SecurityContextHolder.getContext().getAuthentication();
+
+    }
+
+    /**
+     * 获取：当前 security上下文里面存储的用户信息
+     */
+    @Nullable
     public static JSONObject getSecurityContextHolderContextAuthenticationPrincipalJsonObject() {
 
         JSONObject result = null;
@@ -475,19 +487,21 @@ public class UserUtil {
     /**
      * 给 security设置用户信息，并执行方法
      */
-    public static void securityContextHolderSetAuthenticationAndExecFun(VoidFunc0 voidFunc0, SysUserDO sysUserDO) {
+    public static void securityContextHolderSetAuthenticationAndExecFun(VoidFunc0 voidFunc0, SysUserDO sysUserDO, boolean setAuthoritySetFlag) {
 
         // 执行
         securityContextHolderSetAuthenticationAndExecFun(voidFunc0, sysUserDO.getId(), sysUserDO.getTenantId(),
-                sysUserDO.getWxAppId(), sysUserDO.getWxOpenId());
+                sysUserDO.getWxAppId(), sysUserDO.getWxOpenId(), setAuthoritySetFlag);
 
     }
 
     /**
      * 给 security设置用户信息，并执行方法
+     *
+     * @param setAuthoritySetFlag 是否设置：权限
      */
     public static void securityContextHolderSetAuthenticationAndExecFun(VoidFunc0 voidFunc0, Long userId, Long tenantId,
-                                                                        String wxAppId, String wxOpenId) {
+                                                                        @Nullable String wxAppId, @Nullable String wxOpenId, boolean setAuthoritySetFlag) {
 
         JSONObject principalJson = JSONUtil.createObj();
 
@@ -495,13 +509,29 @@ public class UserUtil {
 
         principalJson.set(MyJwtUtil.PAYLOAD_MAP_TENANT_ID_KEY, new NumberWithFormat(tenantId, null));
 
-        principalJson.set(MyJwtUtil.PAYLOAD_MAP_WX_APP_ID_KEY, wxAppId);
+        if (StrUtil.isNotBlank(wxAppId)) {
 
-        principalJson.set(MyJwtUtil.PAYLOAD_MAP_WX_OPEN_ID_KEY, wxOpenId);
+            principalJson.set(MyJwtUtil.PAYLOAD_MAP_WX_APP_ID_KEY, wxAppId);
+
+        }
+
+        if (StrUtil.isNotBlank(wxOpenId)) {
+
+            principalJson.set(MyJwtUtil.PAYLOAD_MAP_WX_OPEN_ID_KEY, wxOpenId);
+
+        }
+
+        Set<SimpleGrantedAuthority> authoritySet = null;
+
+        if (setAuthoritySetFlag) {
+
+            authoritySet = MyJwtUtil.getSimpleGrantedAuthorityListByUserId(userId, tenantId);
+
+        }
 
         // 把 principalJson 设置到：security的上下文里面
         SecurityContextHolder.getContext()
-                .setAuthentication(new UsernamePasswordAuthenticationToken(principalJson, null, null));
+                .setAuthentication(new UsernamePasswordAuthenticationToken(principalJson, null, authoritySet));
 
         try {
 
