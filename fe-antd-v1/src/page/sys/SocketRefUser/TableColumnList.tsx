@@ -1,4 +1,4 @@
-import {DoGetDictList, GetDictList, GetDictListByKey, NoFormGetDictTreeList} from "@/util/DictUtil";
+import {DoGetDictList, GetDictList, NoFormGetDictTreeList} from "@/util/DictUtil";
 import {ActionType, ProColumns} from "@ant-design/pro-components";
 import {SysSocketRefUserDO, SysSocketRefUserOfflineByIdSet} from "@/api/http/SysSocketRefUser";
 import {HandlerRegion} from "@/util/StrUtil";
@@ -7,6 +7,9 @@ import {ExecConfirm, ToastSuccess} from "@/util/ToastUtil";
 import {SysUserDictList} from "@/api/http/SysUser";
 import {SysTenantDictList} from "@/api/http/SysTenant";
 import {SearchTransform} from "@/util/CommonUtil";
+import {SysRequestCategoryEnumDict} from "@/model/enum/SysRequestCategoryEnum.ts";
+import {SysSocketTypeEnumDict} from "@/model/enum/SysSocketTypeEnum.ts";
+import {SysSocketOnlineTypeEnumDict} from "@/model/enum/SysSocketOnlineTypeEnum.ts";
 
 const TableColumnList = (actionRef: React.RefObject<ActionType | undefined>): ProColumns<SysSocketRefUserDO>[] => [
 
@@ -60,10 +63,8 @@ const TableColumnList = (actionRef: React.RefObject<ActionType | undefined>): Pr
     {title: 'socketId', dataIndex: 'socketId', ellipsis: true, width: 90,},
 
     {
-        title: '类型', dataIndex: 'type', ellipsis: true, width: 90, valueType: 'select',
-        request: () => {
-            return GetDictListByKey('sys_socket_type')
-        },
+        title: '类型', dataIndex: 'type', ellipsis: true, width: 90,
+        valueEnum: SysSocketTypeEnumDict,
         fieldProps: {
             allowClear: true,
             showSearch: true,
@@ -79,10 +80,8 @@ const TableColumnList = (actionRef: React.RefObject<ActionType | undefined>): Pr
     {title: '路径', dataIndex: 'path', ellipsis: true, width: 90, hideInSearch: true,},
 
     {
-        title: '在线状态', dataIndex: 'onlineType', ellipsis: true, width: 90, valueType: 'select',
-        request: () => {
-            return GetDictListByKey('sys_socket_online_type')
-        },
+        title: '在线状态', dataIndex: 'onlineType', ellipsis: true, width: 90,
+        valueEnum: SysSocketOnlineTypeEnumDict,
         fieldProps: {
             allowClear: true,
             showSearch: true,
@@ -98,10 +97,8 @@ const TableColumnList = (actionRef: React.RefObject<ActionType | undefined>): Pr
     },
 
     {
-        title: '请求类别', dataIndex: 'category', ellipsis: true, width: 90, valueType: 'select',
-        request: () => {
-            return GetDictListByKey('sys_request_category')
-        },
+        title: '请求类别', dataIndex: 'category', ellipsis: true, width: 90,
+        valueEnum: SysRequestCategoryEnumDict,
         fieldProps: {
             allowClear: true,
             showSearch: true,

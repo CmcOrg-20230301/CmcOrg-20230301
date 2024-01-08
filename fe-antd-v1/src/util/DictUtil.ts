@@ -132,14 +132,14 @@ interface IDictResult {
 }
 
 // 通用的，获取字典集合，没有加查询条件的请求，可以调用这个方法
-export function GetDictList<T extends IDictResult>(requestFunction: (form: MyPageDTO | any, config?: AxiosRequestConfig) => Promise<RequestData<T>>, name: string = "name") {
+export function GetDictList<T extends IDictResult>(requestFunction: (form: MyPageDTO | any, config?: AxiosRequestConfig) => Promise<RequestData<T>>, labelKey: string = "name", valueKey: string = "id") {
 
-    return DoGetDictList(requestFunction({pageSize: '-1'}), name)
+    return DoGetDictList(requestFunction({pageSize: '-1'}), labelKey, valueKey)
 
 }
 
 // 通用的，获取字典集合，加了查询条件的请求，可以调用这个方法
-export function DoGetDictList<T extends IDictResult>(promise: Promise<RequestData<T>>, name: string = "name") {
+export function DoGetDictList<T extends IDictResult>(promise: Promise<RequestData<T>>, labelKey: string = "name", valueKey: string = "id") {
 
     return new Promise<DictLongListVO[]>(resolve => {
 
@@ -151,8 +151,8 @@ export function DoGetDictList<T extends IDictResult>(promise: Promise<RequestDat
 
                 dictList = res.data.map(item => ({
 
-                    label: item[name]!,
-                    value: item.id!,
+                    label: item[labelKey]!,
+                    value: item[valueKey]!,
 
                 }));
 
@@ -220,7 +220,11 @@ export function DoGetDictTreeList<T extends IDictTreeResult>(promise: Promise<Re
 }
 
 // 处理：获取字典树集合，返回值
-function HandleGetDictTreeList<T extends IDictTreeResult>(res: { data: T[] | undefined; success?: boolean; total?: number } & Record<string, any>, toTreeFlag: boolean, resolve: (value: (PromiseLike<IMyTree[]> | IMyTree[])) => void, pid: string | number) {
+function HandleGetDictTreeList<T extends IDictTreeResult>(res: {
+    data: T[] | undefined;
+    success?: boolean;
+    total?: number
+} & Record<string, any>, toTreeFlag: boolean, resolve: (value: (PromiseLike<IMyTree[]> | IMyTree[])) => void, pid: string | number) {
 
     let dictList: IMyTree[] = []
 

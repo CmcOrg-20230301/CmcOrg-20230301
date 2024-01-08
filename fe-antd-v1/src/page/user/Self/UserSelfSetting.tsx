@@ -40,9 +40,9 @@ import {
 import {PasswordRSAEncrypt, RSAEncryptPro} from "@/util/RsaUtil";
 import {SysRequestDO, SysRequestPageDTO, SysRequestSelfLoginRecord} from "@/api/http/SysRequest";
 import {HandlerRegion} from "@/util/StrUtil";
-import {GetDictListByKey} from "@/util/DictUtil";
 import {UserSelfRefreshJwtSecretSuf} from "@/api/http/UserSelf";
 import {UseEffectFullScreenChange} from "@/util/UseEffectUtil";
+import {SysRequestCategoryEnumDict} from "@/model/enum/SysRequestCategoryEnum.ts";
 
 interface IUserSelfSetting {
 
@@ -747,16 +747,13 @@ function RequestSelfLoginRecordModal() {
                         {
                             title: '来源',
                             dataIndex: 'category',
-                            valueType: 'select',
                             width: 120,
                             ellipsis: true,
                             fieldProps: {
                                 allowClear: true,
                                 showSearch: true,
                             },
-                            request: () => {
-                                return GetDictListByKey('sys_request_category')
-                            }
+                            valueEnum: SysRequestCategoryEnumDict,
                         },
 
                     ]}

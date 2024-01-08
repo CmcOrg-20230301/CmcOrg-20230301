@@ -6,6 +6,7 @@ export interface IWebSocketMessage<T> {
     data?: T // 数据
     code?: string // 响应代码，成功返回：200
     msg?: string // 响应描述
+    service?: string // 服务名
 }
 
 /**

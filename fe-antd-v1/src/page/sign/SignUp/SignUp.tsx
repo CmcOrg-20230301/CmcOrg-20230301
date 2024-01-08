@@ -80,7 +80,10 @@ export default function () {
 
                       }}
 
-                      items={[{key: "0", label: `${signUpTypeArr[0]}注册`}, {key: "1", label: `${signUpTypeArr[1]}注册`}]}
+                      items={[
+                          {key: "0", label: `${signUpTypeArr[0]}注册`},
+                          {key: "1", label: `${signUpTypeArr[1]}注册`}
+                      ]}
                 >
 
                 </Tabs>

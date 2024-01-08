@@ -33,7 +33,7 @@ export interface SysMenuDO {
     path?: string // 页面的 path，备注：相同父菜单下，子菜单 path不能重复
     router?: string // 路由
     children?: SysMenuDO[] // 子节点
-    id?: string // 主键id，format：int64
+    id?: string // 主键 id，format：int64
     firstFlag?: boolean // 是否是起始页面，备注：只能存在一个 firstFlag === true 的菜单
     enableFlag?: boolean // 是否启用
     redirect?: string // 重定向，优先级最高
@@ -61,7 +61,7 @@ export function SysMenuTree(form: SysMenuPageDTO, config?: AxiosRequestConfig) {
 }
 
 export interface NotNullId {
-    id?: string // 主键id，required：true，format：int64
+    id?: string // 主键 id，required：true，format：int64
 }
 
 export interface SysMenuInfoByIdVO {
@@ -75,7 +75,7 @@ export interface SysMenuInfoByIdVO {
     path?: string // 页面的 path，备注：相同父菜单下，子菜单 path不能重复
     router?: string // 路由
     children?: SysMenuDO[] // 子节点
-    id?: string // 主键id，format：int64
+    id?: string // 主键 id，format：int64
     firstFlag?: boolean // 是否是起始页面，备注：只能存在一个 firstFlag === true 的菜单
     enableFlag?: boolean // 是否启用
     redirect?: string // 重定向，优先级最高

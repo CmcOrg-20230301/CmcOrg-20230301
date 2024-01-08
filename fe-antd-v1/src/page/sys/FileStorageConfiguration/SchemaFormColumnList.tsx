@@ -1,6 +1,7 @@
-import {GetDictListByKey, YesNoDict} from "@/util/DictUtil";
+import {YesNoDict} from "@/util/DictUtil";
 import {SysFileStorageConfigurationInsertOrUpdateDTO} from "@/api/http/SysFileStorageConfiguration";
 import {ProFormColumnsType} from "@ant-design/pro-components";
+import {SysFileStorageTypeEnumDict} from "@/model/enum/SysFileStorageTypeEnum.ts";
 
 export const InitForm: SysFileStorageConfigurationInsertOrUpdateDTO = {} as SysFileStorageConfigurationInsertOrUpdateDTO
 
@@ -24,7 +25,7 @@ const SchemaFormColumnList = (): ProFormColumnsType<SysFileStorageConfigurationI
         {
             title: '存储类型',
             dataIndex: 'type',
-            valueType: 'select',
+            valueEnum: SysFileStorageTypeEnumDict,
             fieldProps: {
                 allowClear: true,
                 showSearch: true,
@@ -35,9 +36,6 @@ const SchemaFormColumnList = (): ProFormColumnsType<SysFileStorageConfigurationI
                         required: true,
                     },
                 ],
-            },
-            request: () => {
-                return GetDictListByKey('sys_file_storage_configuration_type')
             },
         },
 

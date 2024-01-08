@@ -10,7 +10,7 @@ export default {
 
     MAIN_PATH: '/b',
 
-    MAIN_REDIRECT_PATH: '/b/lx/saas/assistant/otherApp/officialAccount/wx/user/index',
+    MAIN_REDIRECT_PATH: '',
 
     USER_SELF_PATH: '/admin/user/self', // 个人中心
 

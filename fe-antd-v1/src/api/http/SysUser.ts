@@ -4,7 +4,7 @@ import $http from "@/util/HttpUtil";
 import {AxiosRequestConfig} from "axios";
 
 export interface NotNullId {
-    id?: string // 主键id，required：true，format：int64
+    id?: string // 主键 id，required：true，format：int64
 }
 
 export interface SysUserDO {
@@ -22,7 +22,7 @@ export interface SysUserDO {
     createId?: string // 创建人id，format：int64
     signInName?: string // 登录名，可以为空
     tenantId?: string // 租户 id，format：int64
-    id?: string // 主键id，format：int64
+    id?: string // 主键 id，format：int64
     enableFlag?: boolean // 正常/冻结
     email?: string // 邮箱，可以为空
 }
@@ -37,7 +37,7 @@ export interface SysUserInfoByIdVO {
     children?: SysUserDO[] // 子节点
     nickname?: string // 昵称
     tenantIdSet?: string[] // 租户 idSet，format：int64
-    id?: string // 主键id，format：int64
+    id?: string // 主键 id，format：int64
     enableFlag?: boolean // 正常/冻结
     email?: string // 邮箱，可以为空
     postIdSet?: string[] // 岗位 idSet，format：int64
@@ -135,7 +135,7 @@ export interface SysUserPageVO {
     nickname?: string // 昵称
     roleIdSet?: string[] // 角色 idSet，format：int64
     tenantIdSet?: string[] // 租户 idSet，format：int64
-    id?: string // 主键id，format：int64
+    id?: string // 主键 id，format：int64
     region?: string // Ip2RegionUtil.getRegion() 获取到的 ip所处区域
     enableFlag?: boolean // 正常/冻结
     email?: string // 邮箱，备注：会脱敏

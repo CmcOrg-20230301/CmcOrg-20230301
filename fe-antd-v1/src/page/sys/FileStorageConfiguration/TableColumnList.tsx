@@ -1,4 +1,4 @@
-import {GetDictList, GetDictListByKey, NoFormGetDictTreeList, YesNoDict} from "@/util/DictUtil";
+import {GetDictList, NoFormGetDictTreeList, YesNoDict} from "@/util/DictUtil";
 import {ActionType, ProColumns} from "@ant-design/pro-components";
 import {
     SysFileStorageConfigurationDeleteByIdSet,
@@ -9,6 +9,7 @@ import {ExecConfirm, ToastSuccess} from "@/util/ToastUtil";
 import {SysTenantDictList} from "@/api/http/SysTenant";
 import {TreeSelect} from "antd";
 import {SearchTransform} from "@/util/CommonUtil";
+import {SysFileStorageTypeEnumDict} from "@/model/enum/SysFileStorageTypeEnum.ts";
 
 const TableColumnList = (currentForm: React.MutableRefObject<SysFileStorageConfigurationInsertOrUpdateDTO>, setFormOpen: React.Dispatch<React.SetStateAction<boolean>>, actionRef: React.RefObject<ActionType | undefined>): ProColumns<SysFileStorageConfigurationDO>[] => [
 
@@ -49,10 +50,8 @@ const TableColumnList = (currentForm: React.MutableRefObject<SysFileStorageConfi
     {title: '文件存储名', dataIndex: 'name', ellipsis: true, width: 90,},
 
     {
-        title: '存储类型', dataIndex: 'type', ellipsis: true, width: 90, valueType: 'select',
-        request: () => {
-            return GetDictListByKey('sys_file_storage_configuration_type')
-        },
+        title: '存储类型', dataIndex: 'type', ellipsis: true, width: 90,
+        valueEnum: SysFileStorageTypeEnumDict,
         fieldProps: {
             allowClear: true,
             showSearch: true,

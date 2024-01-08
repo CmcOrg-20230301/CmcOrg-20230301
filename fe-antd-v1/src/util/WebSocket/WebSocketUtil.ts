@@ -67,7 +67,6 @@ export function ConnectWebSocket() {
         return // 如果没有 jwt，则不重连了，目的：防止一直连
     }
 
-
     if (!window.WebSocket) {
         console.log('您的浏览器不支持 WebSocket协议，请更换浏览器再试')
         return;
@@ -118,11 +117,7 @@ export function ConnectWebSocket() {
             const webSocketMessage: IWebSocketMessage<any> = JSON.parse(message.data)
 
             // 更新 redux里面 webSocket的值
-            GetAppDispatch()(setWebSocketMessage({} as IWebSocketMessage<any>)) // 先重置，再设置值
-
-            setTimeout(() => {
-                GetAppDispatch()(setWebSocketMessage(webSocketMessage))
-            }, 200)
+            GetAppDispatch()(setWebSocketMessage(webSocketMessage))
 
         }
 

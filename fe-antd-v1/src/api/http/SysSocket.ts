@@ -46,7 +46,7 @@ export interface SysSocketDO {
     createId?: string // 创建人id，format：int64
     tenantId?: string // 租户 id，format：int64
     host?: string // 主机
-    id?: string // 主键id，format：int64
+    id?: string // 主键 id，format：int64
     enableFlag?: boolean // 是否启用
 }
 

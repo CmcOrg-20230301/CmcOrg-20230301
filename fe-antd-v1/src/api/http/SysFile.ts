@@ -45,7 +45,7 @@ export interface SysFileDO {
     uploadType?: number // 文件上传类型，format：int32
     belongId?: string // 归属者用户主键 id（拥有全部权限），format：int64
     showFileName?: string // 展示用的文件名，默认为：原始文件名（包含文件类型）
-    id?: string // 主键id，format：int64
+    id?: string // 主键 id，format：int64
     enableFlag?: boolean // 是否启用
     storageConfigurationId?: string // 存储文件配置主键 id，format：int64
     newFileName?: string // 新的文件名（包含文件类型），例如：uuid.xxx
@@ -100,7 +100,7 @@ export function SysFileRemoveByFileIdSet(form: NotEmptyIdSet, config?: AxiosRequ
 }
 
 export interface NotNullId {
-    id?: string // 主键id，required：true，format：int64
+    id?: string // 主键 id，required：true，format：int64
 }
 
 // 下载文件：私有

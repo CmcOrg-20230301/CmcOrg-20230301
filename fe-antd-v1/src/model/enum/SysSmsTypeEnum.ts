@@ -9,7 +9,7 @@ export interface ISysSmsTypeEnum {
 
 }
 
-// 用户钱包操作日志类型，枚举类
+// 短信类型，枚举类
 export const SysSmsTypeEnum: ISysSmsTypeEnum = {
 
     ALI_YUN: {

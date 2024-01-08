@@ -4,7 +4,7 @@ import $http from "@/util/HttpUtil";
 import {AxiosRequestConfig} from "axios";
 
 export interface NotNullId {
-    id?: string // 主键id，required：true，format：int64
+    id?: string // 主键 id，required：true，format：int64
 }
 
 export interface SysParamDO {
@@ -19,7 +19,7 @@ export interface SysParamDO {
     createId?: string // 创建人id，format：int64
     tenantId?: string // 租户 id，format：int64
     name?: string // 配置名，以 uuid为不变值进行使用，不要用此属性
-    id?: string // 主键id，format：int64
+    id?: string // 主键 id，format：int64
     enableFlag?: boolean // 是否启用
     value?: string // 值
 }

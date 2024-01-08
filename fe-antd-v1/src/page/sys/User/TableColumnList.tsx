@@ -1,4 +1,4 @@
-import {GetDictList, GetDictListByKey, NoFormGetDictTreeList, YesNoDict} from "@/util/DictUtil";
+import {GetDictList, NoFormGetDictTreeList, YesNoDict} from "@/util/DictUtil";
 import {ActionType, ModalForm, ProColumns, ProFormText} from "@ant-design/pro-components";
 import {
     SysUserDeleteByIdSet,
@@ -19,6 +19,7 @@ import {Dropdown, TreeSelect, Typography} from "antd";
 import {SysTenantDictList} from "@/api/http/SysTenant";
 import {SearchTransform} from "@/util/CommonUtil";
 import {HandlerRegion} from "@/util/StrUtil";
+import {SysRequestCategoryEnumDict} from "@/model/enum/SysRequestCategoryEnum.ts";
 
 const TableColumnList = (currentForm: React.MutableRefObject<SysUserInsertOrUpdateDTO>, setFormOpen: React.Dispatch<React.SetStateAction<boolean>>, actionRef: React.RefObject<ActionType | undefined>, userAvatarUrlObj: Record<string, string>): ProColumns<SysUserPageVO>[] => [
 
@@ -103,10 +104,8 @@ const TableColumnList = (currentForm: React.MutableRefObject<SysUserInsertOrUpda
     {title: '微信openId', dataIndex: 'wxOpenId', ellipsis: true, width: 120, hideInTable: true},
 
     {
-        title: '注册终端', dataIndex: 'signUpType', ellipsis: true, width: 60, valueType: 'select',
-        request: () => {
-            return GetDictListByKey('sys_request_category')
-        },
+        title: '注册终端', dataIndex: 'signUpType', ellipsis: true, width: 60,
+        valueEnum: SysRequestCategoryEnumDict,
         fieldProps: {
             allowClear: true,
             showSearch: true,

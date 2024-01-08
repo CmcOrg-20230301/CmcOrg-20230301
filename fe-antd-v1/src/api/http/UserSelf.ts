@@ -27,6 +27,7 @@ export interface UserSelfInfoVO {
     tenantId?: string // 租户 id，可以为空，为空则表示：默认租户：0，format：int64
     wxAppId?: string // 微信 appId，会脱敏
     bio?: string // 个人简介
+    id?: string // 用户主键 id，format：int64
     email?: string // 邮箱，会脱敏
 }
 

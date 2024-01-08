@@ -2,10 +2,10 @@ import {IEnum} from "@/model/enum/CommonEnum";
 import {ProSchemaValueEnumType} from "@ant-design/pro-components";
 import {ToastInfo, ToastSuccess} from "@/util/ToastUtil";
 import {GetBrowserCategory} from "@/util/BrowserCategoryUtil";
-import {BrowserCategoryEnum} from "@/model/enum/BrowserCategoryEnum";
 import {Typography} from "antd";
 import {GetApp} from "@/MyApp";
 import {BuyVO} from "@/component/PayComponent/PayComponent";
+import {SysRequestCategoryEnum} from "@/model/enum/SysRequestCategoryEnum.ts";
 
 export interface ISysUserWalletWithdrawTypeEnumItem extends IEnum<number> {
 
@@ -62,7 +62,7 @@ export const SysPayTypeEnum: ISysPayTypeEnum = {
 
                 const browserCategory = GetBrowserCategory();
 
-                if (browserCategory === BrowserCategoryEnum.ANDROID_BROWSER_WX.code || browserCategory === BrowserCategoryEnum.APPLE_BROWSER_WX.code) {
+                if (browserCategory === SysRequestCategoryEnum.ANDROID_BROWSER_WX.code || browserCategory === SysRequestCategoryEnum.IOS_BROWSER_WX.code) {
 
                     ToastInfo(
                         <div className={"flex-c"}>

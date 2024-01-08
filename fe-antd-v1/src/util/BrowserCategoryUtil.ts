@@ -1,21 +1,4 @@
-/**
- * 获取：浏览器的类别
- *
- * 101 windows-浏览器
- * 102 mac-浏览器
- * 103 linux-浏览器
- *
- * 104 windows-浏览器-微信
- * 105 mac-浏览器-微信
- * 106 linux-浏览器-微信
- *
- * 302 安卓-浏览器
- * 303 安卓-浏览器-微信
- *
- * 402 苹果-浏览器
- * 403 苹果-浏览器-微信
- */
-import {BrowserCategoryEnum} from "@/model/enum/BrowserCategoryEnum";
+import {SysRequestCategoryEnum} from "@/model/enum/SysRequestCategoryEnum.ts";
 
 export function GetBrowserCategory(): number {
 
@@ -29,46 +12,46 @@ export function GetBrowserCategory(): number {
 
         if (/(Android)/i.test(userAgent)) {
 
-            return BrowserCategoryEnum.ANDROID_BROWSER_WX.code! // 安卓-浏览器-微信
+            return SysRequestCategoryEnum.ANDROID_BROWSER_WX.code! // 安卓-浏览器-微信
 
         } else if (/(iPhone|iPad|iPod|iOS)/i.test(userAgent)) {
 
-            return BrowserCategoryEnum.APPLE_BROWSER_WX.code! // 苹果-浏览器-微信
+            return SysRequestCategoryEnum.IOS_BROWSER_WX.code! // 苹果-浏览器-微信
 
         } else if (/(Mac)/i.test(userAgent)) {
 
-            return BrowserCategoryEnum.MAC_BROWSER_WX.code! // mac-浏览器-微信
+            return SysRequestCategoryEnum.PC_BROWSER_MAC_WX.code! // mac-浏览器-微信
 
         } else if (/(Linux)/i.test(userAgent)) {
 
-            return BrowserCategoryEnum.LINUX_BROWSER_WX.code! // linux-浏览器-微信
+            return SysRequestCategoryEnum.PC_BROWSER_LINUX_WX.code! // linux-浏览器-微信
 
         } else if (/(Windows)/i.test(userAgent)) {
 
-            return BrowserCategoryEnum.WINDOWS_BROWSER_WX.code! // windows-浏览器-微信
+            return SysRequestCategoryEnum.PC_BROWSER_WINDOWS_WX.code! // windows-浏览器-微信
 
         }
 
-        return BrowserCategoryEnum.ANDROID_BROWSER_WX.code! // 安卓-浏览器-微信
+        return SysRequestCategoryEnum.ANDROID_BROWSER_WX.code! // 安卓-浏览器-微信
 
     } else if (/(Android)/i.test(userAgent)) {
 
-        return BrowserCategoryEnum.ANDROID_BROWSER.code! // 安卓-浏览器
+        return SysRequestCategoryEnum.ANDROID_BROWSER.code! // 安卓-浏览器
 
     } else if (/(iPhone|iPad|iPod|iOS)/i.test(userAgent)) {
 
-        return BrowserCategoryEnum.APPLE_BROWSER.code! // 苹果-浏览器
+        return SysRequestCategoryEnum.IOS_BROWSER.code! // 苹果-浏览器
 
     } else if (/(Mac)/i.test(userAgent)) {
 
-        return BrowserCategoryEnum.MAC_BROWSER.code! // mac-浏览器
+        return SysRequestCategoryEnum.PC_BROWSER_MAC.code! // mac-浏览器
 
     } else if (/(Linux)/i.test(userAgent)) {
 
-        return BrowserCategoryEnum.LINUX_BROWSER.code! // linux-浏览器
+        return SysRequestCategoryEnum.PC_BROWSER_LINUX.code! // linux-浏览器
 
     }
 
-    return BrowserCategoryEnum.WINDOWS_BROWSER.code! // windows-浏览器
+    return SysRequestCategoryEnum.PC_BROWSER_WINDOWS.code! // windows-浏览器
 
 }

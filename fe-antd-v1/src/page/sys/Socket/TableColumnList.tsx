@@ -1,7 +1,8 @@
-import {GetDictListByKey, YesNoDict} from "@/util/DictUtil";
+import {YesNoDict} from "@/util/DictUtil";
 import {ActionType, ProColumns} from "@ant-design/pro-components";
 import {SysSocketDisableByIdSet, SysSocketDO, SysSocketEnableByIdSet} from "@/api/http/SysSocket";
 import {ExecConfirm, ToastSuccess} from "@/util/ToastUtil";
+import {SysSocketTypeEnumDict} from "@/model/enum/SysSocketTypeEnum.ts";
 
 const TableColumnList = (actionRef: React.RefObject<ActionType | undefined>): ProColumns<SysSocketDO>[] => [
 
@@ -15,10 +16,8 @@ const TableColumnList = (actionRef: React.RefObject<ActionType | undefined>): Pr
     {title: 'id', dataIndex: 'id', ellipsis: true, width: 90,},
 
     {
-        title: '类型', dataIndex: 'type', ellipsis: true, width: 90, valueType: 'select',
-        request: () => {
-            return GetDictListByKey('sys_socket_type')
-        },
+        title: '类型', dataIndex: 'type', ellipsis: true, width: 90,
+        valueEnum: SysSocketTypeEnumDict,
         fieldProps: {
             allowClear: true,
             showSearch: true,

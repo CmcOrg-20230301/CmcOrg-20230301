@@ -427,11 +427,11 @@ export default function () {
 
                             resArr.push(
                                 <RejectModal key={"2"} trigger={<Button type={"primary"} danger={true}>拒绝</Button>}
-                                             onFinish={async form => {
+                                             onFinish={async rejectReason => {
 
                                                  await SysUserWalletWithdrawLogReject({
                                                      id: currentForm.current.id,
-                                                     value: form.value
+                                                     value: rejectReason
                                                  }).then(res => {
 
                                                      ToastSuccess(res.msg)
