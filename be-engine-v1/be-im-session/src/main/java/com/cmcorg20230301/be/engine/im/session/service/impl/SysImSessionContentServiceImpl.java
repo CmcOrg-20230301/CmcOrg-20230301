@@ -283,11 +283,11 @@ public class SysImSessionContentServiceImpl extends ServiceImpl<SysImSessionCont
 
         if (backwardFlag) { // 往后查询
 
-            return lambdaQuery().gt(BaseEntity::getId, id).eq(SysImSessionContentDO::getSessionId, sessionId).orderByAsc(SysImSessionContentDO::getCreateTs).page(MyPageUtil.getScrollPage(dto.getPageSize()));
+            return lambdaQuery().gt(BaseEntity::getId, id).eq(SysImSessionContentDO::getSessionId, sessionId).orderByAsc(SysImSessionContentDO::getCreateTs).select(SysImSessionContentDO::getCreateTs, BaseEntityNoIdSuper::getCreateId, SysImSessionContentDO::getId, SysImSessionContentDO::getType, SysImSessionContentDO::getContent, SysImSessionContentDO::getShowFlag).page(MyPageUtil.getScrollPage(dto.getPageSize()));
 
         } else { // 往前查询
 
-            return lambdaQuery().lt(BaseEntity::getId, id).eq(SysImSessionContentDO::getSessionId, sessionId).orderByDesc(SysImSessionContentDO::getCreateTs).page(MyPageUtil.getScrollPage(dto.getPageSize()));
+            return lambdaQuery().lt(BaseEntity::getId, id).eq(SysImSessionContentDO::getSessionId, sessionId).orderByDesc(SysImSessionContentDO::getCreateTs).select(SysImSessionContentDO::getCreateTs, BaseEntityNoIdSuper::getCreateId, SysImSessionContentDO::getId, SysImSessionContentDO::getType, SysImSessionContentDO::getContent, SysImSessionContentDO::getShowFlag).page(MyPageUtil.getScrollPage(dto.getPageSize()));
 
         }
 
