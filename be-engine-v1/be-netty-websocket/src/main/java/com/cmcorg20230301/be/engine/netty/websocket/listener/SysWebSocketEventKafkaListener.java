@@ -45,7 +45,7 @@ public class SysWebSocketEventKafkaListener {
                 return;
             }
 
-            if (CollUtil.isEmpty(recordList)) {
+            if (CollUtil.isNotEmpty(recordList)) {
 
                 MyThreadUtil.execute(() -> {
 
