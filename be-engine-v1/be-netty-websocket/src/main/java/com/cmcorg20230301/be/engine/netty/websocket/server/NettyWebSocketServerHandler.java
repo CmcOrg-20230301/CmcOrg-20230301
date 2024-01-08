@@ -42,9 +42,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import org.redisson.api.RedissonClient;
 import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.security.access.expression.SecurityExpressionRoot;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PreDestroy;
@@ -356,25 +354,12 @@ public class NettyWebSocketServerHandler extends ChannelInboundHandlerAdapter {
 
         Long tenantId = channel.attr(TENANT_ID_KEY).get();
 
-        // 备注：加了该注解，并且使用代理 bean对象执行该方法，不会自动检查权限
+        // 备注：加了该注解，并且使用代理 bean对象执行该方法，会自动检查权限
         boolean setAuthoritySetFlag = method.getAnnotation(PreAuthorize.class) != null;
 
         UserUtil.securityContextHolderSetAuthenticationAndExecFun(() -> {
 
             try {
-
-                if (setAuthoritySetFlag) { // 权限检查
-
-                    String value = method.getAnnotation(PreAuthorize.class).value();
-
-                    Authentication authentication = UserUtil.getSecurityContextHolderContextAuthentication();
-
-                    SecurityExpressionRoot securityExpressionRoot = new SecurityExpressionRoot(authentication) {
-                    };
-
-                    securityExpressionRoot.hasAuthority(value);
-
-                }
 
                 Object invoke = ReflectUtil.invokeRaw(mappingValue.getBean(), method, args);
 
