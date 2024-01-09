@@ -525,7 +525,15 @@ public class SysTenantUtil {
     /**
      * 检查：userIdSet，是否属于当前用户的租户，备注：只判断本级租户
      */
-    public static void checkUserIdSetBelongCurrentTenant(Set<Long> userIdSet) {
+    public static void checkUserIdSetBelongCurrentTenant(Set<Long> userIdSetTemp) {
+
+        if (CollUtil.isEmpty(userIdSetTemp)) {
+            return;
+        }
+
+        Set<Long> userIdSet = new HashSet<>(userIdSetTemp);
+
+        userIdSet.remove(BaseConstant.ADMIN_ID);
 
         if (CollUtil.isEmpty(userIdSet)) {
             return;

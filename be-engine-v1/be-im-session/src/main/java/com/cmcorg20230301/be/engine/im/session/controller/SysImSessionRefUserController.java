@@ -24,7 +24,7 @@ public class SysImSessionRefUserController {
     @Operation(summary = "加入新用户")
     @PostMapping("/join/userIdSet")
     public ApiResultVO<String> joinUserIdSet(@RequestBody @Valid NotNullIdAndNotEmptyLongSet notNullIdAndNotEmptyLongSet) {
-        return ApiResultVO.okData(baseService.joinUserIdSet(notNullIdAndNotEmptyLongSet));
+        return ApiResultVO.okMsg(baseService.joinUserIdSet(notNullIdAndNotEmptyLongSet));
     }
 
 }

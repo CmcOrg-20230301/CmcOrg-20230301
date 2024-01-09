@@ -6,6 +6,7 @@ import cn.hutool.core.map.MapUtil;
 import com.cmcorg20230301.be.engine.model.model.constant.BaseConstant;
 import com.cmcorg20230301.be.engine.model.model.constant.LogTopicConstant;
 import com.cmcorg20230301.be.engine.security.model.entity.SysUserInfoDO;
+import com.cmcorg20230301.be.engine.security.properties.SecurityProperties;
 import com.cmcorg20230301.be.engine.security.service.BaseSysUserInfoService;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
@@ -14,6 +15,7 @@ import org.springframework.stereotype.Component;
 
 import javax.annotation.Nullable;
 import javax.annotation.PreDestroy;
+import javax.annotation.Resource;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
@@ -132,7 +134,7 @@ public class SysUserInfoUtil {
      * 通过：用户主键 idSet，获取：用户资料 map，key：用户主键 id，value：用户资料
      */
     @NotNull
-    public static Map<Long, SysUserInfoDO> getUserInfoDoMap(Set<Long> userIdSet) {
+    public static Map<Long, SysUserInfoDO> getUserInfoDoMap(Set<Long> userIdSet, boolean addAdminFlag) {
 
         if (CollUtil.isEmpty(userIdSet)) {
             return MapUtil.newHashMap();
@@ -141,10 +143,57 @@ public class SysUserInfoUtil {
         List<SysUserInfoDO> userInfoDOList = getUserInfoDOList(userIdSet);
 
         if (CollUtil.isEmpty(userInfoDOList)) {
-            return MapUtil.newHashMap();
+
+            Map<Long, SysUserInfoDO> map = MapUtil.newHashMap();
+
+            if (addAdminFlag) {
+
+                map.put(BaseConstant.ADMIN_ID, getAdminUserInfoDO());
+
+            }
+
+            return map;
+
         }
 
-        return userInfoDOList.stream().collect(Collectors.toMap(SysUserInfoDO::getId, it -> it));
+        Map<Long, SysUserInfoDO> map = userInfoDOList.stream().collect(Collectors.toMap(SysUserInfoDO::getId, it -> it));
+
+        if (addAdminFlag) {
+
+            map.put(BaseConstant.ADMIN_ID, getAdminUserInfoDO());
+
+        }
+
+        return map;
+
+    }
+
+    private static SecurityProperties securityProperties;
+
+    @Resource
+    public void setSecurityProperties(SecurityProperties securityProperties) {
+        SysUserInfoUtil.securityProperties = securityProperties;
+    }
+
+    /**
+     * 获取：admin的用户信息
+     */
+    @NotNull
+    public static SysUserInfoDO getAdminUserInfoDO() {
+
+        Long currentTenantIdDefault = UserUtil.getCurrentTenantIdDefault();
+
+        SysUserInfoDO sysUserInfoDO = new SysUserInfoDO();
+
+        sysUserInfoDO.setId(BaseConstant.ADMIN_ID);
+
+        sysUserInfoDO.setTenantId(currentTenantIdDefault);
+
+        sysUserInfoDO.setAvatarFileId(BaseConstant.SYS_ID);
+        sysUserInfoDO.setNickname(securityProperties.getAdminNickname());
+        sysUserInfoDO.setBio("");
+
+        return sysUserInfoDO;
 
     }
 

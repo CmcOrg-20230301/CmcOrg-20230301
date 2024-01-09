@@ -95,7 +95,7 @@ public class MyPageDTO {
         Page<T> page = page(toUnderlineFlag);
 
         if (orderEmpty()) {
-            page.orders().add(createTimeOrderItem());
+            page.orders().add(createTimeOrderItem(toUnderlineFlag));
         }
 
         return page;
@@ -106,7 +106,13 @@ public class MyPageDTO {
      * 获取：默认的创建时间排序
      */
     @NotNull
-    public static OrderItem createTimeOrderItem() {
+    public static OrderItem createTimeOrderItem(boolean toUnderlineFlag) {
+
+        if (toUnderlineFlag) {
+
+            return OrderItem.desc("create_time");
+
+        }
 
         return OrderItem.desc("createTime");
 

@@ -75,7 +75,7 @@ public class SysImSessionRefUserServiceImpl extends ServiceImpl<SysImSessionRefU
 
             }
 
-            Map<Long, SysUserInfoDO> userInfoDoMap = SysUserInfoUtil.getUserInfoDoMap(userIdSet);
+            Map<Long, SysUserInfoDO> userInfoDoMap = SysUserInfoUtil.getUserInfoDoMap(userIdSet, true);
 
             List<SysImSessionRefUserDO> insertList = new ArrayList<>();
 
