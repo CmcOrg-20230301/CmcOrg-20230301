@@ -26,7 +26,6 @@ import com.cmcorg20230301.be.engine.security.model.entity.BaseEntity;
 import com.cmcorg20230301.be.engine.security.model.entity.BaseEntityNoIdSuper;
 import com.cmcorg20230301.be.engine.security.model.vo.ApiResultVO;
 import com.cmcorg20230301.be.engine.security.util.MyPageUtil;
-import com.cmcorg20230301.be.engine.security.util.MyThreadUtil;
 import com.cmcorg20230301.be.engine.security.util.UserUtil;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Service;
@@ -169,40 +168,36 @@ public class SysImSessionContentServiceImpl extends ServiceImpl<SysImSessionCont
 
             sysImSessionContentDO.setType(type);
 
+            sysImSessionContentDO.setCreateId(userId);
+
+            sysImSessionContentDO.setCreateTime(date);
+
+            sysImSessionContentDO.setCreateTs(item.getCreateTs());
+
+            if (CollUtil.isNotEmpty(userIdSet)) {
+
+                SysWebSocketEventBO<SysImSessionContentDO> sysWebSocketEventBO = new SysWebSocketEventBO<>();
+
+                sysWebSocketEventBO.setUserIdSet(userIdSet);
+
+                WebSocketMessageDTO<SysImSessionContentDO> webSocketMessageDTO = WebSocketMessageDTO.okData("/sys/im/session/content/send", sysImSessionContentDO);
+
+                sysWebSocketEventBO.setWebSocketMessageDTO(webSocketMessageDTO);
+
+                // 发送：webSocket事件
+                KafkaUtil.sendSysWebSocketEventTopic(sysWebSocketEventBO);
+
+            }
+
             sysImSessionContentDO.setEnableFlag(true);
 
             sysImSessionContentDO.setDelFlag(false);
 
             sysImSessionContentDO.setRemark("");
 
-            sysImSessionContentDO.setCreateId(userId);
-
-            sysImSessionContentDO.setCreateTime(date);
-
             sysImSessionContentDO.setUpdateId(userId);
 
             sysImSessionContentDO.setUpdateTime(date);
-
-            sysImSessionContentDO.setCreateTs(item.getCreateTs());
-
-            if (CollUtil.isNotEmpty(userIdSet)) {
-
-                MyThreadUtil.execute(() -> {
-
-                    SysWebSocketEventBO<SysImSessionContentDO> sysWebSocketEventBO = new SysWebSocketEventBO<>();
-
-                    sysWebSocketEventBO.setUserIdSet(userIdSet);
-
-                    WebSocketMessageDTO<SysImSessionContentDO> webSocketMessageDTO = WebSocketMessageDTO.okData("/sys/im/session/content/send", sysImSessionContentDO);
-
-                    sysWebSocketEventBO.setWebSocketMessageDTO(webSocketMessageDTO);
-
-                    // 发送：webSocket事件
-                    KafkaUtil.sendSysWebSocketEventTopic(sysWebSocketEventBO);
-
-                });
-
-            }
 
             insertList.add(sysImSessionContentDO);
 
