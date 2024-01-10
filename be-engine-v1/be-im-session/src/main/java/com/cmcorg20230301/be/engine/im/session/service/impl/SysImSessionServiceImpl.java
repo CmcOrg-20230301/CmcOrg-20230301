@@ -3,15 +3,23 @@ package com.cmcorg20230301.be.engine.im.session.service.impl;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.lang.func.Func1;
 import cn.hutool.core.util.StrUtil;
+import com.baomidou.dynamic.datasource.annotation.DSTransactional;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.cmcorg20230301.be.engine.im.session.mapper.SysImSessionMapper;
-import com.cmcorg20230301.be.engine.im.session.model.dto.SysImSessionInsertOrUpDateDTO;
+import com.cmcorg20230301.be.engine.im.session.model.dto.SysImSessionInsertOrUpdateDTO;
 import com.cmcorg20230301.be.engine.im.session.model.dto.SysImSessionPageDTO;
+import com.cmcorg20230301.be.engine.im.session.model.dto.SysImSessionQueryCustomerSessionIdUserSelfDTO;
 import com.cmcorg20230301.be.engine.im.session.model.entity.SysImSessionDO;
+import com.cmcorg20230301.be.engine.im.session.model.enums.SysImSessionTypeEnum;
+import com.cmcorg20230301.be.engine.im.session.service.SysImSessionRefUserService;
 import com.cmcorg20230301.be.engine.im.session.service.SysImSessionService;
+import com.cmcorg20230301.be.engine.model.model.dto.NotNullIdAndNotEmptyLongSet;
+import com.cmcorg20230301.be.engine.redisson.model.enums.BaseRedisKeyEnum;
+import com.cmcorg20230301.be.engine.redisson.util.RedissonUtil;
 import com.cmcorg20230301.be.engine.security.model.entity.BaseEntity;
 import com.cmcorg20230301.be.engine.security.model.entity.BaseEntityNoId;
+import com.cmcorg20230301.be.engine.security.model.entity.BaseEntityNoIdSuper;
 import com.cmcorg20230301.be.engine.security.util.MyEntityUtil;
 import com.cmcorg20230301.be.engine.security.util.SysTenantUtil;
 import com.cmcorg20230301.be.engine.security.util.UserUtil;
@@ -19,17 +27,21 @@ import com.cmcorg20230301.be.engine.util.util.NicknameUtil;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.Resource;
 import java.util.Set;
 
 @Service
 public class SysImSessionServiceImpl extends ServiceImpl<SysImSessionMapper, SysImSessionDO>
         implements SysImSessionService {
 
+    @Resource
+    SysImSessionRefUserService sysImSessionRefUserService;
+
     /**
      * 新增/修改
      */
     @Override
-    public Long insertOrUpdate(SysImSessionInsertOrUpDateDTO dto) {
+    public Long insertOrUpdate(SysImSessionInsertOrUpdateDTO dto) {
 
         // 处理：BaseTenantInsertOrUpdateDTO
         SysTenantUtil.handleBaseTenantInsertOrUpdateDTO(dto, getCheckIllegalFunc1(CollUtil.newHashSet(dto.getId())),
@@ -73,6 +85,56 @@ public class SysImSessionServiceImpl extends ServiceImpl<SysImSessionMapper, Sys
                 .eq(dto.getType() != null, SysImSessionDO::getType, dto.getType())
                 .in(BaseEntityNoId::getTenantId, dto.getTenantIdSet()) //
                 .page(dto.createTimeDescDefaultOrderPage(true));
+
+    }
+
+    /**
+     * 查询：用户自我，所属客服会话的主键 id
+     */
+    @Override
+    @DSTransactional
+    public Long queryCustomerSessionIdUserSelf(SysImSessionQueryCustomerSessionIdUserSelfDTO dto) {
+
+        Long currentUserId = UserUtil.getCurrentUserId();
+
+        Long currentTenantIdDefault = UserUtil.getCurrentTenantIdDefault();
+
+        if (StrUtil.isBlank(dto.getName())) {
+            dto.setName("客服");
+        }
+
+        if (dto.getType() == null) {
+            dto.setType(SysImSessionTypeEnum.CUSTOMER.getCode());
+        }
+
+        return RedissonUtil.doLock(BaseRedisKeyEnum.PRE_SYS_IM_SESSION_USER_ID.name() + currentUserId, () -> {
+
+            SysImSessionDO sysImSessionDO = lambdaQuery().eq(SysImSessionDO::getType, dto.getType()).eq(SysImSessionDO::getBelongId, currentUserId).eq(BaseEntityNoIdSuper::getTenantId, currentTenantIdDefault).one();
+
+            if (sysImSessionDO != null) {
+                return sysImSessionDO.getId();
+            }
+
+            SysImSessionInsertOrUpdateDTO sysImSessionInsertOrUpdateDTO = new SysImSessionInsertOrUpdateDTO();
+
+            sysImSessionInsertOrUpdateDTO.setType(dto.getType());
+
+            sysImSessionInsertOrUpdateDTO.setName(dto.getName());
+
+            Long sessionId = insertOrUpdate(sysImSessionInsertOrUpdateDTO); // 新增会话
+
+            NotNullIdAndNotEmptyLongSet notNullIdAndNotEmptyLongSet = new NotNullIdAndNotEmptyLongSet();
+
+            notNullIdAndNotEmptyLongSet.setValueSet(CollUtil.newHashSet(currentUserId));
+
+            notNullIdAndNotEmptyLongSet.setId(sessionId);
+
+            // 把当前用户，加入会话中
+            sysImSessionRefUserService.joinUserIdSet(notNullIdAndNotEmptyLongSet);
+
+            return sessionId;
+
+        });
 
     }
 

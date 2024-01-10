@@ -10,7 +10,7 @@ import javax.validation.constraints.NotNull;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
-public class SysImSessionInsertOrUpDateDTO extends BaseTenantInsertOrUpdateDTO {
+public class SysImSessionInsertOrUpdateDTO extends BaseTenantInsertOrUpdateDTO {
 
     @Schema(description = "会话名")
     private String name;

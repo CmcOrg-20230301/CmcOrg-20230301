@@ -1,8 +1,9 @@
 package com.cmcorg20230301.be.engine.im.session.controller;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.cmcorg20230301.be.engine.im.session.model.dto.SysImSessionInsertOrUpDateDTO;
+import com.cmcorg20230301.be.engine.im.session.model.dto.SysImSessionInsertOrUpdateDTO;
 import com.cmcorg20230301.be.engine.im.session.model.dto.SysImSessionPageDTO;
+import com.cmcorg20230301.be.engine.im.session.model.dto.SysImSessionQueryCustomerSessionIdUserSelfDTO;
 import com.cmcorg20230301.be.engine.im.session.model.entity.SysImSessionDO;
 import com.cmcorg20230301.be.engine.im.session.service.SysImSessionService;
 import com.cmcorg20230301.be.engine.security.model.vo.ApiResultVO;
@@ -28,7 +29,7 @@ public class SysImSessionController {
     @Operation(summary = "新增/修改")
     @PostMapping("/insertOrUpdate")
     @PreAuthorize("hasAuthority('sysImSession:insertOrUpdate')")
-    public ApiResultVO<Long> insertOrUpdate(@RequestBody @Valid SysImSessionInsertOrUpDateDTO dto) {
+    public ApiResultVO<Long> insertOrUpdate(@RequestBody @Valid SysImSessionInsertOrUpdateDTO dto) {
         return ApiResultVO.okData(baseService.insertOrUpdate(dto));
     }
 
@@ -37,6 +38,12 @@ public class SysImSessionController {
     @PreAuthorize("hasAuthority('sysImSession:page')")
     public ApiResultVO<Page<SysImSessionDO>> myPage(@RequestBody @Valid SysImSessionPageDTO dto) {
         return ApiResultVO.okData(baseService.myPage(dto));
+    }
+
+    @Operation(summary = "查询：用户自我，所属客服会话的主键 id")
+    @PostMapping("/query/customer/sessionId/userSelf")
+    public ApiResultVO<Long> queryCustomerSessionIdUserSelf(@RequestBody @Valid SysImSessionQueryCustomerSessionIdUserSelfDTO dto) {
+        return ApiResultVO.okData(baseService.queryCustomerSessionIdUserSelf(dto));
     }
 
 }

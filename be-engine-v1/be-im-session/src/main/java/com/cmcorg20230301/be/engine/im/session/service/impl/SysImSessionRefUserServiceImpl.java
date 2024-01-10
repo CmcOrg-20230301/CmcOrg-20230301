@@ -1,6 +1,7 @@
 package com.cmcorg20230301.be.engine.im.session.service.impl;
 
 import cn.hutool.core.collection.CollUtil;
+import com.baomidou.dynamic.datasource.annotation.DSTransactional;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.baomidou.mybatisplus.extension.toolkit.ChainWrappers;
 import com.cmcorg20230301.be.engine.im.session.mapper.SysImSessionMapper;
@@ -9,6 +10,7 @@ import com.cmcorg20230301.be.engine.im.session.model.entity.SysImSessionDO;
 import com.cmcorg20230301.be.engine.im.session.model.entity.SysImSessionRefUserDO;
 import com.cmcorg20230301.be.engine.im.session.service.SysImSessionRefUserService;
 import com.cmcorg20230301.be.engine.model.model.dto.NotNullIdAndNotEmptyLongSet;
+import com.cmcorg20230301.be.engine.redisson.model.enums.BaseRedisKeyEnum;
 import com.cmcorg20230301.be.engine.redisson.util.RedissonUtil;
 import com.cmcorg20230301.be.engine.security.exception.BaseBizCodeEnum;
 import com.cmcorg20230301.be.engine.security.model.entity.BaseEntity;
@@ -38,6 +40,7 @@ public class SysImSessionRefUserServiceImpl extends ServiceImpl<SysImSessionRefU
      * 加入新用户
      */
     @Override
+    @DSTransactional
     public String joinUserIdSet(NotNullIdAndNotEmptyLongSet notNullIdAndNotEmptyLongSet) {
 
         Set<Long> userIdSet = notNullIdAndNotEmptyLongSet.getValueSet();
@@ -56,7 +59,7 @@ public class SysImSessionRefUserServiceImpl extends ServiceImpl<SysImSessionRefU
             ApiResultVO.error(BaseBizCodeEnum.ILLEGAL_REQUEST, sessionId);
         }
 
-        return RedissonUtil.doMultiLock(sessionId.toString(), userIdSet, () -> {
+        return RedissonUtil.doMultiLock(BaseRedisKeyEnum.PRE_SYS_IM_SESSION_REF_USER_ID + sessionId.toString(), userIdSet, () -> {
 
             // 查询出：已经存在该会话的用户数据
             List<SysImSessionRefUserDO> sysImSessionRefUserDOList = lambdaQuery().in(SysImSessionRefUserDO::getUserId, userIdSet).eq(BaseEntityNoIdSuper::getTenantId, tenantId).eq(SysImSessionRefUserDO::getSessionId, sessionId).select(SysImSessionRefUserDO::getUserId).list();
@@ -112,7 +115,6 @@ public class SysImSessionRefUserServiceImpl extends ServiceImpl<SysImSessionRefU
             return BaseBizCodeEnum.OK;
 
         });
-
 
     }
 
