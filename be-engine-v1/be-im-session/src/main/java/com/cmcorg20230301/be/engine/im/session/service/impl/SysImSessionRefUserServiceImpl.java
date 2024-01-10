@@ -74,7 +74,7 @@ public class SysImSessionRefUserServiceImpl extends ServiceImpl<SysImSessionRefU
         return RedissonUtil.doLock(BaseRedisKeyEnum.PRE_SYS_IM_SESSION_ID + sessionId.toString(), () -> {
 
             // 查询出：已经存在该会话的用户数据
-            List<SysImSessionRefUserDO> sysImSessionRefUserDOList = lambdaQuery().in(SysImSessionRefUserDO::getUserId, userIdSet).eq(BaseEntityNoIdSuper::getTenantId, tenantId).eq(SysImSessionRefUserDO::getSessionId, sessionId).select(SysImSessionRefUserDO::getUserId).list();
+            List<SysImSessionRefUserDO> sysImSessionRefUserDOList = lambdaQuery().eq(BaseEntityNoIdSuper::getTenantId, tenantId).eq(SysImSessionRefUserDO::getSessionId, sessionId).select(SysImSessionRefUserDO::getUserId).list();
 
             Set<Long> existUserIdSet = sysImSessionRefUserDOList.stream().map(SysImSessionRefUserDO::getUserId).collect(Collectors.toSet());
 
@@ -116,16 +116,20 @@ public class SysImSessionRefUserServiceImpl extends ServiceImpl<SysImSessionRefU
 
             saveBatch(insertList);
 
-            SysWebSocketEventBO<Set<Long>> sysWebSocketEventBO = new SysWebSocketEventBO<>();
+            if (CollUtil.isNotEmpty(existUserIdSet)) {
 
-            sysWebSocketEventBO.setUserIdSet(userIdSet);
+                SysWebSocketEventBO<Set<Long>> sysWebSocketEventBO = new SysWebSocketEventBO<>();
 
-            WebSocketMessageDTO<Set<Long>> webSocketMessageDTO = WebSocketMessageDTO.okData("/sys/im/session/refUser/join/userIdSet", userIdSet);
+                sysWebSocketEventBO.setUserIdSet(existUserIdSet);
 
-            sysWebSocketEventBO.setWebSocketMessageDTO(webSocketMessageDTO);
+                WebSocketMessageDTO<Set<Long>> webSocketMessageDTO = WebSocketMessageDTO.okData("/sys/im/session/refUser/join/userIdSet", userIdSet);
 
-            // 发送：webSocket事件
-            KafkaUtil.sendSysWebSocketEventTopic(sysWebSocketEventBO);
+                sysWebSocketEventBO.setWebSocketMessageDTO(webSocketMessageDTO);
+
+                // 发送：webSocket事件
+                KafkaUtil.sendSysWebSocketEventTopic(sysWebSocketEventBO);
+
+            }
 
             return BaseBizCodeEnum.OK;
 
