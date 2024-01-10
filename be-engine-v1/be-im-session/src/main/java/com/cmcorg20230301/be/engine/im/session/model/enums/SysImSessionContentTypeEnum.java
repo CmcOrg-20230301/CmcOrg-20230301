@@ -1,7 +1,7 @@
 package com.cmcorg20230301.be.engine.im.session.model.enums;
 
 import com.baomidou.mybatisplus.annotation.EnumValue;
-import com.cmcorg20230301.be.engine.im.session.model.configuration.ISysImSessionType;
+import com.cmcorg20230301.be.engine.im.session.model.configuration.ISysImSessionContentType;
 import com.fasterxml.jackson.annotation.JsonValue;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -11,7 +11,7 @@ import lombok.Getter;
  */
 @Getter
 @AllArgsConstructor
-public enum SysImSessionContentTypeEnum implements ISysImSessionType {
+public enum SysImSessionContentTypeEnum implements ISysImSessionContentType {
 
     TEXT(101), // 文字
 

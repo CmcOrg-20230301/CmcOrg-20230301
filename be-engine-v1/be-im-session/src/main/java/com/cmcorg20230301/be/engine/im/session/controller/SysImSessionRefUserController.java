@@ -1,7 +1,10 @@
 package com.cmcorg20230301.be.engine.im.session.controller;
 
+import com.cmcorg20230301.be.engine.im.session.model.vo.SysImSessionRefUserQueryRefUserInfoMapVO;
 import com.cmcorg20230301.be.engine.im.session.service.SysImSessionRefUserService;
+import com.cmcorg20230301.be.engine.model.model.dto.NotNullId;
 import com.cmcorg20230301.be.engine.model.model.dto.NotNullIdAndNotEmptyLongSet;
+import com.cmcorg20230301.be.engine.model.model.vo.LongObjectMapVO;
 import com.cmcorg20230301.be.engine.security.model.vo.ApiResultVO;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -25,6 +28,12 @@ public class SysImSessionRefUserController {
     @PostMapping("/join/userIdSet")
     public ApiResultVO<String> joinUserIdSet(@RequestBody @Valid NotNullIdAndNotEmptyLongSet notNullIdAndNotEmptyLongSet) {
         return ApiResultVO.okMsg(baseService.joinUserIdSet(notNullIdAndNotEmptyLongSet));
+    }
+
+    @Operation(summary = "查询：当前会话的用户信息，map")
+    @PostMapping("/query/refUserInfoMap")
+    public ApiResultVO<LongObjectMapVO<SysImSessionRefUserQueryRefUserInfoMapVO>> queryRefUserInfoMap(@RequestBody @Valid NotNullId notNullId) {
+        return ApiResultVO.okData(baseService.queryRefUserInfoMap(notNullId));
     }
 
 }

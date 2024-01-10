@@ -3,7 +3,6 @@ package com.cmcorg20230301.be.engine.im.session.model.entity;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
-import com.cmcorg20230301.be.engine.im.session.model.configuration.ISysImSessionType;
 import com.cmcorg20230301.be.engine.security.model.entity.BaseEntityNoIdSuper;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
@@ -31,13 +30,10 @@ public class SysImSessionRefUserDO extends BaseEntityNoIdSuper {
     @Schema(description = "我对会话的备注")
     private String remark;
 
-    /**
-     * {@link ISysImSessionType}
-     */
-    @Schema(description = "冗余字段：会话类型：101 私聊 201 群聊 301 客服")
-    private Integer sessionType;
+    @Schema(description = "是私聊时，关联的另外一个用户的主键 id")
+    private Long privateChatRefUserId;
 
-    @Schema(description = "我在会话的昵称")
+    @Schema(description = "我在会话的昵称，备注：为空则表示，需要获取用户的实时昵称")
     private String sessionNickname;
 
 }

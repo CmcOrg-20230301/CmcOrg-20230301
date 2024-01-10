@@ -14,6 +14,12 @@
 
     <dependencies>
 
+        <!-- be-file -->
+        <dependency>
+            <groupId>${cmcorg.groupId}</groupId>
+            <artifactId>be-file</artifactId>
+        </dependency>
+
         <!-- be-security -->
         <dependency>
             <groupId>${cmcorg.groupId}</groupId>
