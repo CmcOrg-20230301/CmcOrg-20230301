@@ -14,14 +14,17 @@ import com.cmcorg20230301.be.engine.im.session.model.entity.SysImSessionDO;
 import com.cmcorg20230301.be.engine.im.session.model.entity.SysImSessionRefUserDO;
 import com.cmcorg20230301.be.engine.im.session.model.vo.SysImSessionRefUserQueryRefUserInfoMapVO;
 import com.cmcorg20230301.be.engine.im.session.service.SysImSessionRefUserService;
+import com.cmcorg20230301.be.engine.kafka.util.KafkaUtil;
 import com.cmcorg20230301.be.engine.model.model.constant.BaseConstant;
 import com.cmcorg20230301.be.engine.model.model.dto.NotEmptyIdSet;
-import com.cmcorg20230301.be.engine.model.model.dto.NotNullId;
+import com.cmcorg20230301.be.engine.model.model.dto.NotNullIdAndLongSet;
 import com.cmcorg20230301.be.engine.model.model.dto.NotNullIdAndNotEmptyLongSet;
 import com.cmcorg20230301.be.engine.model.model.vo.LongObjectMapVO;
 import com.cmcorg20230301.be.engine.redisson.model.enums.BaseRedisKeyEnum;
 import com.cmcorg20230301.be.engine.redisson.util.RedissonUtil;
 import com.cmcorg20230301.be.engine.security.exception.BaseBizCodeEnum;
+import com.cmcorg20230301.be.engine.security.model.bo.SysWebSocketEventBO;
+import com.cmcorg20230301.be.engine.security.model.dto.WebSocketMessageDTO;
 import com.cmcorg20230301.be.engine.security.model.entity.BaseEntity;
 import com.cmcorg20230301.be.engine.security.model.entity.BaseEntityNoIdSuper;
 import com.cmcorg20230301.be.engine.security.model.entity.SysUserInfoDO;
@@ -72,14 +75,14 @@ public class SysImSessionRefUserServiceImpl extends ServiceImpl<SysImSessionRefU
             ApiResultVO.error(BaseBizCodeEnum.ILLEGAL_REQUEST, sessionId);
         }
 
-        return RedissonUtil.doMultiLock(BaseRedisKeyEnum.PRE_SYS_IM_SESSION_REF_USER_ID + sessionId.toString(), userIdSet, () -> {
+        return RedissonUtil.doLock(BaseRedisKeyEnum.PRE_SYS_IM_SESSION_ID + sessionId.toString(), () -> {
 
             // 查询出：已经存在该会话的用户数据
             List<SysImSessionRefUserDO> sysImSessionRefUserDOList = lambdaQuery().in(SysImSessionRefUserDO::getUserId, userIdSet).eq(BaseEntityNoIdSuper::getTenantId, tenantId).eq(SysImSessionRefUserDO::getSessionId, sessionId).select(SysImSessionRefUserDO::getUserId).list();
 
-            if (CollUtil.isNotEmpty(sysImSessionRefUserDOList)) {
+            Set<Long> existUserIdSet = sysImSessionRefUserDOList.stream().map(SysImSessionRefUserDO::getUserId).collect(Collectors.toSet());
 
-                Set<Long> existUserIdSet = sysImSessionRefUserDOList.stream().map(SysImSessionRefUserDO::getUserId).collect(Collectors.toSet());
+            if (CollUtil.isNotEmpty(existUserIdSet)) {
 
                 userIdSet.removeAll(existUserIdSet);
 
@@ -117,6 +120,17 @@ public class SysImSessionRefUserServiceImpl extends ServiceImpl<SysImSessionRefU
 
             saveBatch(insertList);
 
+            SysWebSocketEventBO<Set<Long>> sysWebSocketEventBO = new SysWebSocketEventBO<>();
+
+            sysWebSocketEventBO.setUserIdSet(userIdSet);
+
+            WebSocketMessageDTO<Set<Long>> webSocketMessageDTO = WebSocketMessageDTO.okData("/sys/im/session/refUser/join/userIdSet", userIdSet);
+
+            sysWebSocketEventBO.setWebSocketMessageDTO(webSocketMessageDTO);
+
+            // 发送：webSocket事件
+            KafkaUtil.sendSysWebSocketEventTopic(sysWebSocketEventBO);
+
             return BaseBizCodeEnum.OK;
 
         });
@@ -128,10 +142,10 @@ public class SysImSessionRefUserServiceImpl extends ServiceImpl<SysImSessionRefU
      */
     @SneakyThrows
     @Override
-    public LongObjectMapVO<SysImSessionRefUserQueryRefUserInfoMapVO> queryRefUserInfoMap(NotNullId notNullId) {
+    public LongObjectMapVO<SysImSessionRefUserQueryRefUserInfoMapVO> queryRefUserInfoMap(NotNullIdAndLongSet notNullIdAndLongSet) {
 
         // 检查：sessionId是否合法
-        Long sessionId = SysImSessionContentServiceImpl.checkSessionId(notNullId.getId(), false);
+        Long sessionId = SysImSessionContentServiceImpl.checkSessionId(notNullIdAndLongSet.getId(), false);
 
         Long tenantId = UserUtil.getCurrentTenantIdDefault();
 
@@ -141,8 +155,10 @@ public class SysImSessionRefUserServiceImpl extends ServiceImpl<SysImSessionRefU
 
         vo.setMap(map);
 
+        Set<Long> valueSet = notNullIdAndLongSet.getValueSet();
+
         // 查询出：已经存在该会话的用户数据
-        List<SysImSessionRefUserDO> sysImSessionRefUserDOList = lambdaQuery().eq(BaseEntityNoIdSuper::getTenantId, tenantId).eq(SysImSessionRefUserDO::getSessionId, sessionId).select(SysImSessionRefUserDO::getUserId, SysImSessionRefUserDO::getSessionNickname).list();
+        List<SysImSessionRefUserDO> sysImSessionRefUserDOList = lambdaQuery().in(CollUtil.isNotEmpty(valueSet), SysImSessionRefUserDO::getUserId, valueSet).eq(BaseEntityNoIdSuper::getTenantId, tenantId).eq(SysImSessionRefUserDO::getSessionId, sessionId).select(SysImSessionRefUserDO::getUserId, SysImSessionRefUserDO::getSessionNickname).list();
 
         if (CollUtil.isEmpty(sysImSessionRefUserDOList)) {
             return vo;

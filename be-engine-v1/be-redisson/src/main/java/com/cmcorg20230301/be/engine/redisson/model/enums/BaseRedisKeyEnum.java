@@ -11,9 +11,9 @@ import com.cmcorg20230301.be.engine.model.model.interfaces.IRedisKey;
 public enum BaseRedisKeyEnum implements IRedisKey {
 
     // 【PRE_】开头 ↓
-    PRE_SYS_IM_SESSION_USER_ID, // 即时通讯会话锁，目的：不重复增加会话，锁：【userId】
+    PRE_SYS_IM_SESSION_ID, // 即时通讯会话锁，目的：往会话里面添加用户时，防止重复添加，锁：【sessionId】
 
-    PRE_SYS_IM_SESSION_REF_USER_ID, // 即时通讯会话关联用户锁，目的：不重复增加用户，锁：【sessionId 和 userId】
+    PRE_SYS_IM_SESSION_USER_ID, // 即时通讯会话锁，目的：创建会话时，防止重复添加，锁：【userId】
 
     PRE_SYS_OTHER_APP_OFFICIAL_ACCOUNT_WX_RECEIVE_MESSAGE_ID, // 微信公众号消息 id锁，目的：不重复处理消息，锁：【msgId】
 
