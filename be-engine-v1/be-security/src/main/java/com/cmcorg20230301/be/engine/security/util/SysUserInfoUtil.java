@@ -119,14 +119,22 @@ public class SysUserInfoUtil {
      * 通过：用户主键 idSet，获取：用户资料集合
      */
     @NotNull
-    public static List<SysUserInfoDO> getUserInfoDOList(Set<Long> userIdSet) {
+    public static List<SysUserInfoDO> getUserInfoDOList(Set<Long> userIdSet, boolean addAdminFlag) {
 
         if (CollUtil.isEmpty(userIdSet)) {
             return new ArrayList<>();
         }
 
-        return baseSysUserInfoService.lambdaQuery().in(SysUserInfoDO::getId, userIdSet)
+        List<SysUserInfoDO> sysUserInfoDOList = baseSysUserInfoService.lambdaQuery().in(SysUserInfoDO::getId, userIdSet)
                 .list();
+
+        if (addAdminFlag) {
+
+            sysUserInfoDOList.add(getAdminUserInfoDO());
+
+        }
+
+        return sysUserInfoDOList;
 
     }
 
@@ -140,31 +148,9 @@ public class SysUserInfoUtil {
             return MapUtil.newHashMap();
         }
 
-        List<SysUserInfoDO> userInfoDOList = getUserInfoDOList(userIdSet);
+        List<SysUserInfoDO> userInfoDOList = getUserInfoDOList(userIdSet, addAdminFlag);
 
-        if (CollUtil.isEmpty(userInfoDOList)) {
-
-            Map<Long, SysUserInfoDO> map = MapUtil.newHashMap();
-
-            if (addAdminFlag) {
-
-                map.put(BaseConstant.ADMIN_ID, getAdminUserInfoDO());
-
-            }
-
-            return map;
-
-        }
-
-        Map<Long, SysUserInfoDO> map = userInfoDOList.stream().collect(Collectors.toMap(SysUserInfoDO::getId, it -> it));
-
-        if (addAdminFlag) {
-
-            map.put(BaseConstant.ADMIN_ID, getAdminUserInfoDO());
-
-        }
-
-        return map;
+        return userInfoDOList.stream().collect(Collectors.toMap(SysUserInfoDO::getId, it -> it));
 
     }
 

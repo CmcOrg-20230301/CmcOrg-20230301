@@ -2,7 +2,6 @@ package com.cmcorg20230301.be.engine.im.session.service.impl;
 
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.map.MapUtil;
-import cn.hutool.core.thread.ThreadUtil;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.dynamic.datasource.annotation.DSTransactional;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -29,7 +28,6 @@ import com.cmcorg20230301.be.engine.security.model.entity.BaseEntity;
 import com.cmcorg20230301.be.engine.security.model.entity.BaseEntityNoIdSuper;
 import com.cmcorg20230301.be.engine.security.model.entity.SysUserInfoDO;
 import com.cmcorg20230301.be.engine.security.model.vo.ApiResultVO;
-import com.cmcorg20230301.be.engine.security.util.MyThreadUtil;
 import com.cmcorg20230301.be.engine.security.util.SysTenantUtil;
 import com.cmcorg20230301.be.engine.security.util.SysUserInfoUtil;
 import com.cmcorg20230301.be.engine.security.util.UserUtil;
@@ -38,8 +36,6 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.util.*;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
 @Service
@@ -166,33 +162,52 @@ public class SysImSessionRefUserServiceImpl extends ServiceImpl<SysImSessionRefU
 
         Set<Long> userIdSet = sysImSessionRefUserDOList.stream().map(SysImSessionRefUserDO::getUserId).collect(Collectors.toSet());
 
-        AtomicReference<Map<Long, SysUserInfoDO>> userInfoMap = new AtomicReference<>(MapUtil.newHashMap());
+        // 查询：用户信息
+        List<SysUserInfoDO> sysUserInfoDOList = SysUserInfoUtil.getUserInfoDOList(userIdSet, true);
 
-        AtomicReference<Map<Long, String>> avatarUrlMap = new AtomicReference<>(MapUtil.newHashMap());
+        Map<Long, SysUserInfoDO> userInfoMap = new HashMap<>(sysUserInfoDOList.size());
 
-        CountDownLatch countDownLatch = ThreadUtil.newCountDownLatch(2);
+        Set<Long> avatarFileIdSet = new HashSet<>();
 
-        MyThreadUtil.execute(() -> {
+        for (SysUserInfoDO item : sysUserInfoDOList) {
 
-            userInfoMap.set(SysUserInfoUtil.getUserInfoDoMap(userIdSet, true));
+            userInfoMap.put(item.getId(), item);
 
-        }, countDownLatch);
+            if (item.getAvatarFileId() != -1) {
 
-        MyThreadUtil.execute(() -> {
+                avatarFileIdSet.add(item.getAvatarFileId());
 
-            avatarUrlMap.set(sysFileService.getPublicUrl(new NotEmptyIdSet(userIdSet)).getMap());
+            }
 
-        }, countDownLatch);
+        }
 
-        countDownLatch.await();
+        Map<Long, String> avatarUrlMap = MapUtil.newHashMap();
+
+        if (CollUtil.isNotEmpty(avatarFileIdSet)) {
+
+            avatarUrlMap = sysFileService.getPublicUrl(new NotEmptyIdSet(avatarFileIdSet)).getMap();
+
+        }
+
+        // 执行：组装
+        queryRefUserInfoMapHandle(sysImSessionRefUserDOList, userInfoMap, avatarUrlMap, map);
+
+        return vo;
+
+    }
+
+    /**
+     * 查询：当前会话的用户信息，map，组装
+     */
+    private static void queryRefUserInfoMapHandle(List<SysImSessionRefUserDO> sysImSessionRefUserDOList, Map<Long, SysUserInfoDO> userInfoMap, Map<Long, String> avatarUrlMap, HashMap<Long, SysImSessionRefUserQueryRefUserInfoMapVO> map) {
 
         for (SysImSessionRefUserDO item : sysImSessionRefUserDOList) {
+
+            SysUserInfoDO sysUserInfoDO = userInfoMap.get(item.getUserId());
 
             String sessionNickname = item.getSessionNickname();
 
             if (StrUtil.isBlank(sessionNickname)) {
-
-                SysUserInfoDO sysUserInfoDO = userInfoMap.get().get(item.getUserId());
 
                 if (sysUserInfoDO != null) {
                     sessionNickname = sysUserInfoDO.getNickname();
@@ -200,19 +215,21 @@ public class SysImSessionRefUserServiceImpl extends ServiceImpl<SysImSessionRefU
 
             }
 
-            String avatarUrl = avatarUrlMap.get().get(item.getUserId());
-
             SysImSessionRefUserQueryRefUserInfoMapVO userInfoVO = new SysImSessionRefUserQueryRefUserInfoMapVO();
 
             userInfoVO.setSessionNickname(sessionNickname);
 
-            userInfoVO.setSessionAvatarUrl(avatarUrl);
+            if (sysUserInfoDO != null && sysUserInfoDO.getAvatarFileId() != -1) {
+
+                String avatarUrl = avatarUrlMap.get(sysUserInfoDO.getAvatarFileId());
+
+                userInfoVO.setSessionAvatarUrl(avatarUrl);
+
+            }
 
             map.put(item.getUserId(), userInfoVO);
 
         }
-
-        return vo;
 
     }
 
