@@ -15,6 +15,13 @@ import java.util.Set;
 @AllArgsConstructor
 public class NotNullIdAndNotEmptyLongSet extends NotNullId {
 
+    public NotNullIdAndNotEmptyLongSet(Long id, Set<Long> valueSet) {
+
+        super(id);
+        this.valueSet = valueSet;
+
+    }
+
     @NotEmpty
     @Schema(description = "值 set")
     private Set<Long> valueSet;

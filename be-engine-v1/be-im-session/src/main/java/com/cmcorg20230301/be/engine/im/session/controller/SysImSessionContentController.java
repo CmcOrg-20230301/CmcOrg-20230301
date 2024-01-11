@@ -5,6 +5,7 @@ import com.cmcorg20230301.be.engine.im.session.model.dto.SysImSessionContentList
 import com.cmcorg20230301.be.engine.im.session.model.dto.SysImSessionContentSendTextListDTO;
 import com.cmcorg20230301.be.engine.im.session.model.entity.SysImSessionContentDO;
 import com.cmcorg20230301.be.engine.im.session.service.SysImSessionContentService;
+import com.cmcorg20230301.be.engine.model.model.dto.NotNullIdAndNotEmptyLongSet;
 import com.cmcorg20230301.be.engine.security.model.vo.ApiResultVO;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -15,7 +16,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
 import javax.validation.Valid;
-import java.util.Set;
 
 @RestController
 @RequestMapping("/sys/im/session/content")
@@ -27,7 +27,7 @@ public class SysImSessionContentController {
 
     @Operation(summary = "发送内容-文字-用户自我")
     @PostMapping("/send/text/userSelf")
-    public ApiResultVO<Set<Long>> sendTextUserSelf(@RequestBody @Valid SysImSessionContentSendTextListDTO dto) {
+    public ApiResultVO<NotNullIdAndNotEmptyLongSet> sendTextUserSelf(@RequestBody @Valid SysImSessionContentSendTextListDTO dto) {
         return ApiResultVO.okData(baseService.sendTextUserSelf(dto));
     }
 

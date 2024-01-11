@@ -118,11 +118,11 @@ public class SysImSessionRefUserServiceImpl extends ServiceImpl<SysImSessionRefU
 
             if (CollUtil.isNotEmpty(existUserIdSet)) {
 
-                SysWebSocketEventBO<Set<Long>> sysWebSocketEventBO = new SysWebSocketEventBO<>();
+                SysWebSocketEventBO<NotNullIdAndNotEmptyLongSet> sysWebSocketEventBO = new SysWebSocketEventBO<>();
 
                 sysWebSocketEventBO.setUserIdSet(existUserIdSet);
 
-                WebSocketMessageDTO<Set<Long>> webSocketMessageDTO = WebSocketMessageDTO.okData("/sys/im/session/refUser/join/userIdSet", userIdSet);
+                WebSocketMessageDTO<NotNullIdAndNotEmptyLongSet> webSocketMessageDTO = WebSocketMessageDTO.okData("/sys/im/session/refUser/join/userIdSet", new NotNullIdAndNotEmptyLongSet(sessionId, userIdSet));
 
                 sysWebSocketEventBO.setWebSocketMessageDTO(webSocketMessageDTO);
 
