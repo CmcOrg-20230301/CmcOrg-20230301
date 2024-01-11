@@ -69,6 +69,8 @@ public class SysImSessionServiceImpl extends ServiceImpl<SysImSessionMapper, Sys
 
             sysImSessionDO.setBelongId(UserUtil.getCurrentUserId());
 
+            sysImSessionDO.setLastContentCreateTs(-1L);
+
         }
 
         sysImSessionDO.setId(dto.getId());
@@ -99,7 +101,7 @@ public class SysImSessionServiceImpl extends ServiceImpl<SysImSessionMapper, Sys
         Page<SysImSessionDO> page = lambdaQuery().like(StrUtil.isNotBlank(dto.getName()), SysImSessionDO::getName, dto.getName())
                 .eq(dto.getType() != null, SysImSessionDO::getType, dto.getType())
                 .in(BaseEntityNoId::getTenantId, dto.getTenantIdSet()) //
-                .page(dto.createTimeDescDefaultOrderPage(true));
+                .page(dto.updateTimeDescDefaultOrderPage(true));
 
         if (CollUtil.isEmpty(page.getRecords())) {
             return page;
@@ -220,7 +222,7 @@ public class SysImSessionServiceImpl extends ServiceImpl<SysImSessionMapper, Sys
 
         return RedissonUtil.doLock(BaseRedisKeyEnum.PRE_SYS_IM_SESSION_USER_ID.name() + currentUserId, () -> {
 
-            SysImSessionDO sysImSessionDO = lambdaQuery().eq(SysImSessionDO::getType, dto.getType()).eq(SysImSessionDO::getBelongId, currentUserId).eq(BaseEntityNoIdSuper::getTenantId, currentTenantIdDefault).one();
+            SysImSessionDO sysImSessionDO = lambdaQuery().eq(SysImSessionDO::getType, dto.getType()).eq(SysImSessionDO::getBelongId, currentUserId).eq(BaseEntityNoIdSuper::getTenantId, currentTenantIdDefault).select(BaseEntity::getId).one();
 
             if (sysImSessionDO != null) {
                 return sysImSessionDO.getId();

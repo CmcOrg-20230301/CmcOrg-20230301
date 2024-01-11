@@ -103,6 +103,22 @@ public class MyPageDTO {
     }
 
     /**
+     * 分页属性拷贝-增加：默认更新时间 倒序排序
+     */
+    @NotNull
+    public <T> Page<T> updateTimeDescDefaultOrderPage(boolean toUnderlineFlag) {
+
+        Page<T> page = page(toUnderlineFlag);
+
+        if (orderEmpty()) {
+            page.orders().add(updateTimeOrderItem(toUnderlineFlag));
+        }
+
+        return page;
+
+    }
+
+    /**
      * 获取：默认的创建时间排序
      */
     @NotNull
@@ -115,6 +131,22 @@ public class MyPageDTO {
         }
 
         return OrderItem.desc("createTime");
+
+    }
+
+    /**
+     * 获取：默认的修改时间排序
+     */
+    @NotNull
+    public static OrderItem updateTimeOrderItem(boolean toUnderlineFlag) {
+
+        if (toUnderlineFlag) {
+
+            return OrderItem.desc("update_time");
+
+        }
+
+        return OrderItem.desc("updateTime");
 
     }
 

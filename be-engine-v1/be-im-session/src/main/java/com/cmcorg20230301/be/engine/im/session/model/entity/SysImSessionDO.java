@@ -42,7 +42,7 @@ public class SysImSessionDO extends BaseEntity {
     @Schema(description = "最后一条消息的内容类型")
     private Integer lastContentType;
 
-    @TableField(exist = false)
+    @TableField(select = false)
     @Schema(description = "最后一条消息的创建时间戳")
     private Long lastContentCreateTs;
 
