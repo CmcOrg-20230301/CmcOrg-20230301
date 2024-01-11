@@ -224,17 +224,30 @@ public class SysImSessionServiceImpl extends ServiceImpl<SysImSessionMapper, Sys
 
             SysImSessionDO sysImSessionDO = lambdaQuery().eq(SysImSessionDO::getType, dto.getType()).eq(SysImSessionDO::getBelongId, currentUserId).eq(BaseEntityNoIdSuper::getTenantId, currentTenantIdDefault).select(BaseEntity::getId).one();
 
-            if (sysImSessionDO != null) {
-                return sysImSessionDO.getId();
+            Long sessionId;
+
+            if (sysImSessionDO == null) {
+
+                SysImSessionInsertOrUpdateDTO sysImSessionInsertOrUpdateDTO = new SysImSessionInsertOrUpdateDTO();
+
+                sysImSessionInsertOrUpdateDTO.setType(dto.getType());
+
+                sysImSessionInsertOrUpdateDTO.setName(dto.getName());
+
+                sessionId = insertOrUpdate(sysImSessionInsertOrUpdateDTO); // 新增会话
+
+            } else {
+
+                sessionId = sysImSessionDO.getId();
+
+                // 查询出：是否已经存在该会话中
+                boolean exists = sysImSessionRefUserService.lambdaQuery().eq(BaseEntityNoIdSuper::getTenantId, currentTenantIdDefault).eq(SysImSessionRefUserDO::getSessionId, sessionId).eq(SysImSessionRefUserDO::getUserId, currentUserId).exists();
+
+                if (exists) {
+                    return sessionId;
+                }
+
             }
-
-            SysImSessionInsertOrUpdateDTO sysImSessionInsertOrUpdateDTO = new SysImSessionInsertOrUpdateDTO();
-
-            sysImSessionInsertOrUpdateDTO.setType(dto.getType());
-
-            sysImSessionInsertOrUpdateDTO.setName(dto.getName());
-
-            Long sessionId = insertOrUpdate(sysImSessionInsertOrUpdateDTO); // 新增会话
 
             NotNullIdAndNotEmptyLongSet notNullIdAndNotEmptyLongSet = new NotNullIdAndNotEmptyLongSet();
 
