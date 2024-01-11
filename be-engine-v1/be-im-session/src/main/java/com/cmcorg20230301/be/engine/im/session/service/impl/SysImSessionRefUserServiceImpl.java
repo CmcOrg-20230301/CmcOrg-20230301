@@ -16,6 +16,7 @@ import com.cmcorg20230301.be.engine.im.session.service.SysImSessionRefUserServic
 import com.cmcorg20230301.be.engine.kafka.util.KafkaUtil;
 import com.cmcorg20230301.be.engine.model.model.constant.BaseConstant;
 import com.cmcorg20230301.be.engine.model.model.dto.NotEmptyIdSet;
+import com.cmcorg20230301.be.engine.model.model.dto.NotNullId;
 import com.cmcorg20230301.be.engine.model.model.dto.NotNullIdAndLongSet;
 import com.cmcorg20230301.be.engine.model.model.dto.NotNullIdAndNotEmptyLongSet;
 import com.cmcorg20230301.be.engine.model.model.vo.LongObjectMapVO;
@@ -238,6 +239,23 @@ public class SysImSessionRefUserServiceImpl extends ServiceImpl<SysImSessionRefU
             map.put(item.getUserId(), userInfoVO);
 
         }
+
+    }
+
+    /**
+     * 更新-最后一次打开会话的时间戳-用户自我
+     */
+    @Override
+    public String updateLastOpenTsUserSelf(NotNullId notNullId) {
+
+        // 检查：sessionId是否合法
+        Long sessionId = SysImSessionContentServiceImpl.checkSessionId(notNullId.getId(), false);
+
+        Long currentUserId = UserUtil.getCurrentUserId();
+
+        lambdaUpdate().eq(SysImSessionRefUserDO::getUserId, currentUserId).eq(SysImSessionRefUserDO::getSessionId, sessionId).set(SysImSessionRefUserDO::getLastOpenTs, System.currentTimeMillis()).update();
+
+        return BaseBizCodeEnum.OK;
 
     }
 

@@ -4,6 +4,7 @@ import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.convert.Convert;
 import cn.hutool.core.date.DateUtil;
+import cn.hutool.core.lang.func.VoidFunc0;
 import cn.hutool.core.map.MapUtil;
 import cn.hutool.core.net.url.UrlQuery;
 import cn.hutool.core.util.ArrayUtil;
@@ -29,6 +30,7 @@ import com.cmcorg20230301.be.engine.security.util.*;
 import com.cmcorg20230301.be.engine.socket.model.entity.SysSocketRefUserDO;
 import com.cmcorg20230301.be.engine.socket.service.SysSocketRefUserService;
 import com.cmcorg20230301.be.engine.socket.util.SocketUtil;
+import com.cmcorg20230301.be.engine.util.util.CallBack;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
@@ -47,6 +49,7 @@ import org.springframework.stereotype.Component;
 
 import javax.annotation.PreDestroy;
 import javax.annotation.Resource;
+import javax.validation.Valid;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
@@ -337,18 +340,20 @@ public class NettyWebSocketServerHandler extends ChannelInboundHandlerAdapter {
 
         Method method = mappingValue.getMethod();
 
+        CallBack<VoidFunc0> validVoidFunc0CallBack = new CallBack<>();
+
         // 获取：方法的参数数组
-        Object[] args = getMethodArgs(method, dto);
+        Object[] args = getMethodArgs(method, dto, validVoidFunc0CallBack);
 
         // 执行
-        doHandleTextWebSocketFrame(channel, mappingValue, method, args, uri, text, costMs);
+        doHandleTextWebSocketFrame(channel, mappingValue, method, args, uri, text, costMs, validVoidFunc0CallBack);
 
     }
 
     /**
      * 执行：处理：TextWebSocketFrame
      */
-    private void doHandleTextWebSocketFrame(Channel channel, NettyWebSocketBeanPostProcessor.MappingValue mappingValue, Method method, Object[] args, String uri, String text, long costMs) {
+    private void doHandleTextWebSocketFrame(Channel channel, NettyWebSocketBeanPostProcessor.MappingValue mappingValue, Method method, Object[] args, String uri, String text, long costMs, CallBack<VoidFunc0> validVoidFunc0CallBack) {
 
         Long userId = channel.attr(USER_ID_KEY).get();
 
@@ -360,6 +365,12 @@ public class NettyWebSocketServerHandler extends ChannelInboundHandlerAdapter {
         UserUtil.securityContextHolderSetAuthenticationAndExecFun(() -> {
 
             try {
+
+                if (validVoidFunc0CallBack.getValue() != null) {
+
+                    validVoidFunc0CallBack.getValue().call(); // 备注：aop 时，@Valid 不会起作用，所以在这里编程式调用
+
+                }
 
                 Object invoke = ReflectUtil.invokeRaw(mappingValue.getBean(), method, args);
 
@@ -408,7 +419,7 @@ public class NettyWebSocketServerHandler extends ChannelInboundHandlerAdapter {
     /**
      * 获取：方法的参数数组
      */
-    private static Object[] getMethodArgs(Method method, WebSocketMessageDTO<?> dto) {
+    private static Object[] getMethodArgs(Method method, WebSocketMessageDTO<?> dto, CallBack<VoidFunc0> validVoidFunc0CallBack) {
 
         Parameter[] parameterArr = method.getParameters();
 
@@ -423,6 +434,18 @@ public class NettyWebSocketServerHandler extends ChannelInboundHandlerAdapter {
         Parameter parameter = parameterArr[0];
 
         Object object = BeanUtil.toBean(dto.getData(), parameter.getType());
+
+        Valid validAnnotation = parameter.getAnnotation(Valid.class);
+
+        if (validAnnotation != null) {
+
+            validVoidFunc0CallBack.setValue(() -> {
+
+                MyValidUtil.validReturnStr(object);
+
+            });
+
+        }
 
         args = new Object[]{object};
 

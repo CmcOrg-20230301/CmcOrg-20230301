@@ -13,6 +13,7 @@ import com.cmcorg20230301.be.engine.im.session.model.dto.SysImSessionContentList
 import com.cmcorg20230301.be.engine.im.session.model.dto.SysImSessionContentSendTextDTO;
 import com.cmcorg20230301.be.engine.im.session.model.dto.SysImSessionContentSendTextListDTO;
 import com.cmcorg20230301.be.engine.im.session.model.entity.SysImSessionContentDO;
+import com.cmcorg20230301.be.engine.im.session.model.entity.SysImSessionDO;
 import com.cmcorg20230301.be.engine.im.session.model.entity.SysImSessionRefUserDO;
 import com.cmcorg20230301.be.engine.im.session.model.enums.SysImSessionContentTypeEnum;
 import com.cmcorg20230301.be.engine.im.session.service.SysImSessionContentService;
@@ -53,7 +54,7 @@ public class SysImSessionContentServiceImpl extends ServiceImpl<SysImSessionCont
     }
 
     /**
-     * 发送内容
+     * 发送内容-文字-用户自我
      *
      * @return createTsSet
      */
@@ -146,13 +147,18 @@ public class SysImSessionContentServiceImpl extends ServiceImpl<SysImSessionCont
 
         int type = SysImSessionContentTypeEnum.TEXT.getCode();
 
+        long currentTimeMillis = System.currentTimeMillis();
+
         // 创建时间不能低于该值
-        long checkTs = System.currentTimeMillis() - BaseConstant.YEAR_30_EXPIRE_TIME;
+        long checkTs = currentTimeMillis - BaseConstant.YEAR_30_EXPIRE_TIME;
 
         // insertList
         handleSendTextUserSelfInsertList(dto, sessionId, userId, checkTs, type, userIdSet, insertList);
 
         saveBatch(insertList);
+
+        // 更新：该会话，最后一次接受到消息的时间
+        ChainWrappers.lambdaUpdateChain(sysImSessionMapper).eq(BaseEntity::getId, sessionId).set(SysImSessionDO::getLastReceiveContentTs, currentTimeMillis).update();
 
     }
 
@@ -267,7 +273,7 @@ public class SysImSessionContentServiceImpl extends ServiceImpl<SysImSessionCont
     }
 
     /**
-     * 查询会话内容
+     * 查询会话内容-用户自我
      */
     @Override
     public Page<SysImSessionContentDO> scrollPageUserSelf(SysImSessionContentListDTO dto) {

@@ -27,6 +27,10 @@ public class SysImSessionDO extends BaseEntity {
     @Schema(description = "归属者主键 id（群主），备注：如果为客服类型时，群主必须是用户")
     private Long belongId;
 
+    @TableField(select = false)
+    @Schema(description = "最后一次接受到消息时的时间戳，默认为：-1，备注：该字段用于：排序")
+    private Long lastReceiveContentTs;
+
     @TableField(exist = false)
     @Schema(description = "未读消息的总数量")
     private Integer unreadContentTotal;
@@ -42,7 +46,7 @@ public class SysImSessionDO extends BaseEntity {
     @Schema(description = "最后一条消息的内容类型")
     private Integer lastContentType;
 
-    @TableField(select = false)
+    @TableField(exist = false)
     @Schema(description = "最后一条消息的创建时间戳")
     private Long lastContentCreateTs;
 

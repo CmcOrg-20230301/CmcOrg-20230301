@@ -69,7 +69,7 @@ public class SysImSessionServiceImpl extends ServiceImpl<SysImSessionMapper, Sys
 
             sysImSessionDO.setBelongId(UserUtil.getCurrentUserId());
 
-            sysImSessionDO.setLastContentCreateTs(-1L);
+            sysImSessionDO.setLastReceiveContentTs(-1L);
 
         }
 
