@@ -2,15 +2,21 @@ package com.cmcorg20230301.be.engine.im.session.service.impl;
 
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.lang.func.Func1;
+import cn.hutool.core.thread.ThreadUtil;
+import cn.hutool.core.util.BooleanUtil;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.dynamic.datasource.annotation.DSTransactional;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.baomidou.mybatisplus.extension.toolkit.ChainWrappers;
+import com.cmcorg20230301.be.engine.im.session.mapper.SysImSessionContentMapper;
 import com.cmcorg20230301.be.engine.im.session.mapper.SysImSessionMapper;
 import com.cmcorg20230301.be.engine.im.session.model.dto.SysImSessionInsertOrUpdateDTO;
 import com.cmcorg20230301.be.engine.im.session.model.dto.SysImSessionPageDTO;
 import com.cmcorg20230301.be.engine.im.session.model.dto.SysImSessionQueryCustomerSessionIdUserSelfDTO;
+import com.cmcorg20230301.be.engine.im.session.model.entity.SysImSessionContentDO;
 import com.cmcorg20230301.be.engine.im.session.model.entity.SysImSessionDO;
+import com.cmcorg20230301.be.engine.im.session.model.entity.SysImSessionRefUserDO;
 import com.cmcorg20230301.be.engine.im.session.model.enums.SysImSessionTypeEnum;
 import com.cmcorg20230301.be.engine.im.session.service.SysImSessionRefUserService;
 import com.cmcorg20230301.be.engine.im.session.service.SysImSessionService;
@@ -20,15 +26,18 @@ import com.cmcorg20230301.be.engine.redisson.util.RedissonUtil;
 import com.cmcorg20230301.be.engine.security.model.entity.BaseEntity;
 import com.cmcorg20230301.be.engine.security.model.entity.BaseEntityNoId;
 import com.cmcorg20230301.be.engine.security.model.entity.BaseEntityNoIdSuper;
-import com.cmcorg20230301.be.engine.security.util.MyEntityUtil;
-import com.cmcorg20230301.be.engine.security.util.SysTenantUtil;
-import com.cmcorg20230301.be.engine.security.util.UserUtil;
+import com.cmcorg20230301.be.engine.security.util.*;
 import com.cmcorg20230301.be.engine.util.util.NicknameUtil;
+import lombok.SneakyThrows;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.CountDownLatch;
+import java.util.stream.Collectors;
 
 @Service
 public class SysImSessionServiceImpl extends ServiceImpl<SysImSessionMapper, SysImSessionDO>
@@ -36,6 +45,9 @@ public class SysImSessionServiceImpl extends ServiceImpl<SysImSessionMapper, Sys
 
     @Resource
     SysImSessionRefUserService sysImSessionRefUserService;
+
+    @Resource
+    SysImSessionContentMapper sysImSessionContentMapper;
 
     /**
      * 新增/修改
@@ -74,17 +86,116 @@ public class SysImSessionServiceImpl extends ServiceImpl<SysImSessionMapper, Sys
 
     /**
      * 分页排序查询
+     *
+     * @param queryNoJoinSessionContentFlag 是否查询：未加入的会话的会话内容
      */
+    @SneakyThrows
     @Override
-    public Page<SysImSessionDO> myPage(SysImSessionPageDTO dto) {
+    public Page<SysImSessionDO> myPage(SysImSessionPageDTO dto, boolean queryNoJoinSessionContentFlag) {
 
         // 处理：MyTenantPageDTO
         SysTenantUtil.handleMyTenantPageDTO(dto, true);
 
-        return lambdaQuery().like(StrUtil.isNotBlank(dto.getName()), SysImSessionDO::getName, dto.getName())
+        Page<SysImSessionDO> page = lambdaQuery().like(StrUtil.isNotBlank(dto.getName()), SysImSessionDO::getName, dto.getName())
                 .eq(dto.getType() != null, SysImSessionDO::getType, dto.getType())
                 .in(BaseEntityNoId::getTenantId, dto.getTenantIdSet()) //
                 .page(dto.createTimeDescDefaultOrderPage(true));
+
+        if (CollUtil.isEmpty(page.getRecords())) {
+            return page;
+        }
+
+        if (!BooleanUtil.isTrue(dto.getQueryContentInfoFlag())) {
+            return page;
+        }
+
+        // 查询：会话的消息相关信息
+        myPageQueryContentInfo(queryNoJoinSessionContentFlag, page.getRecords());
+
+        return page;
+
+    }
+
+    /**
+     * 查询：会话的消息相关信息
+     */
+    @SneakyThrows
+    private void myPageQueryContentInfo(boolean queryNoJoinSessionContentFlag, List<SysImSessionDO> sysImSessionDOList) {
+
+        // 查询：未读的消息数量和最后一条未读的消息内容
+        Map<Long, SysImSessionDO> sessionMap = sysImSessionDOList.stream().collect(Collectors.toMap(BaseEntity::getId, it -> it));
+
+        Long currentUserId = UserUtil.getCurrentUserId();
+
+        List<SysImSessionRefUserDO> sysImSessionRefUserDOList = sysImSessionRefUserService.lambdaQuery().eq(SysImSessionRefUserDO::getUserId, currentUserId).in(SysImSessionRefUserDO::getSessionId, sessionMap.keySet()).select(SysImSessionRefUserDO::getSessionId, SysImSessionRefUserDO::getLastOpenTs).list();
+
+        if (CollUtil.isEmpty(sysImSessionRefUserDOList) && !queryNoJoinSessionContentFlag) {
+            return;
+        }
+
+        Map<Long, Long> lastOpenTsMap = sysImSessionRefUserDOList.stream().collect(Collectors.toMap(SysImSessionRefUserDO::getSessionId, SysImSessionRefUserDO::getLastOpenTs));
+
+        CountDownLatch countDownLatch = ThreadUtil.newCountDownLatch(sysImSessionDOList.size());
+
+        for (SysImSessionDO item : sysImSessionDOList) {
+
+            Long sessionId = item.getId();
+
+            // 最后一次：打开该会话的时间戳
+            Long lastOpenTs = lastOpenTsMap.get(sessionId);
+
+            if (lastOpenTs == null) {
+
+                if (queryNoJoinSessionContentFlag) {
+
+                    lastOpenTs = 0L;
+
+                } else {
+
+                    countDownLatch.countDown();
+                    continue;
+
+                }
+
+            }
+
+            Long finalLastOpenTs = lastOpenTs;
+
+            MyThreadUtil.execute(() -> {
+
+                // 未读消息的数量
+                Long unreadContentTotal = ChainWrappers.lambdaQueryChain(sysImSessionContentMapper).eq(SysImSessionContentDO::getSessionId, sessionId).eq(SysImSessionContentDO::getShowFlag, true).gt(SysImSessionContentDO::getCreateTs, finalLastOpenTs).count();
+
+                if (unreadContentTotal > 99) {
+
+                    item.setUnreadContentTotal(100);
+
+                } else {
+
+                    item.setUnreadContentTotal(unreadContentTotal.intValue());
+
+                }
+
+                // 查询出：最后一条消息
+                Page<SysImSessionContentDO> sessionContentPage = ChainWrappers.lambdaQueryChain(sysImSessionContentMapper).eq(SysImSessionContentDO::getSessionId, sessionId).eq(SysImSessionContentDO::getShowFlag, true).select(SysImSessionContentDO::getContent, SysImSessionContentDO::getCreateTs, SysImSessionContentDO::getType).orderByDesc(SysImSessionContentDO::getCreateTs).page(MyPageUtil.getLimit1Page());
+
+                if (CollUtil.isEmpty(sessionContentPage.getRecords())) {
+                    return;
+                }
+
+                SysImSessionContentDO sysImSessionContentDO = sessionContentPage.getRecords().get(0);
+
+                item.setLastContent(sysImSessionContentDO.getContent());
+
+                item.setLastContentType(sysImSessionContentDO.getType());
+
+                item.setLastContentCreateTs(sysImSessionContentDO.getCreateTs());
+
+            }, countDownLatch);
+
+        }
+
+        countDownLatch.await();
 
     }
 

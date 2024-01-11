@@ -1,6 +1,8 @@
 package com.cmcorg20230301.be.engine.im.session.model.entity;
 
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.cmcorg20230301.be.engine.im.session.model.configuration.ISysImSessionContentType;
 import com.cmcorg20230301.be.engine.im.session.model.configuration.ISysImSessionType;
 import com.cmcorg20230301.be.engine.security.model.entity.BaseEntity;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -24,5 +26,24 @@ public class SysImSessionDO extends BaseEntity {
 
     @Schema(description = "归属者主键 id（群主），备注：如果为客服类型时，群主必须是用户")
     private Long belongId;
+
+    @TableField(exist = false)
+    @Schema(description = "未读消息的总数量")
+    private Integer unreadContentTotal;
+
+    @TableField(exist = false)
+    @Schema(description = "最后一条消息")
+    private String lastContent;
+
+    /**
+     * {@link ISysImSessionContentType}
+     */
+    @TableField(exist = false)
+    @Schema(description = "最后一条消息的内容类型")
+    private Integer lastContentType;
+
+    @TableField(exist = false)
+    @Schema(description = "最后一条消息的创建时间戳")
+    private Long lastContentCreateTs;
 
 }

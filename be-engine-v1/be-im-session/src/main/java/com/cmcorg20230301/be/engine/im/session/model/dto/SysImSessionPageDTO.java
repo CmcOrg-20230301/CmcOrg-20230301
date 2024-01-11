@@ -19,4 +19,7 @@ public class SysImSessionPageDTO extends MyTenantPageDTO {
     @Schema(description = "会话类型：101 私聊 201 群聊 301 客服")
     private Integer type;
 
+    @Schema(description = "是否查询：消息相关信息，默认：false")
+    private Boolean queryContentInfoFlag;
+
 }

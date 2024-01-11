@@ -11,7 +11,7 @@ public interface SysImSessionService extends IService<SysImSessionDO> {
 
     Long insertOrUpdate(SysImSessionInsertOrUpdateDTO dto);
 
-    Page<SysImSessionDO> myPage(SysImSessionPageDTO dto);
+    Page<SysImSessionDO> myPage(SysImSessionPageDTO dto, boolean queryNoJoinSessionContentFlag);
 
     Long queryCustomerSessionIdUserSelf(SysImSessionQueryCustomerSessionIdUserSelfDTO dto);
 

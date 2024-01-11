@@ -35,7 +35,16 @@ public class MyPageUtil {
      */
     public static <T> Page<T> getLimit1Page() {
 
-        return new Page<>(0, 1, 0, false);
+        return getLimitPage(1);
+
+    }
+
+    /**
+     * 获取：没有偏移数据的分页对象
+     */
+    public static <T> Page<T> getLimitPage(long size) {
+
+        return new Page<>(0, size, 0, false);
 
     }
 

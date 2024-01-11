@@ -24,7 +24,7 @@ public class SysImSessionRefUserDO extends BaseEntityNoIdSuper {
     @Schema(description = "是否被禁言")
     private Boolean enableFlag;
 
-    @Schema(description = "是否逻辑删除")
+    @Schema(description = "是否逻辑删除，暂时未使用")
     private Boolean delFlag;
 
     @Schema(description = "我对会话的备注")
@@ -35,5 +35,8 @@ public class SysImSessionRefUserDO extends BaseEntityNoIdSuper {
 
     @Schema(description = "我在会话的昵称，备注：为空则表示，需要获取用户的实时昵称")
     private String sessionNickname;
+
+    @Schema(description = "我最后一次打开该会话的时间戳")
+    private Long lastOpenTs;
 
 }
