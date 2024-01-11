@@ -92,6 +92,8 @@ public class SysImSessionRefUserServiceImpl extends ServiceImpl<SysImSessionRefU
 
             List<SysImSessionRefUserDO> insertList = new ArrayList<>();
 
+            long currentTimeMillis = System.currentTimeMillis();
+
             for (Long item : userIdSet) {
 
                 SysImSessionRefUserDO sysImSessionRefUserDO = new SysImSessionRefUserDO();
@@ -109,6 +111,8 @@ public class SysImSessionRefUserServiceImpl extends ServiceImpl<SysImSessionRefU
                 sysImSessionRefUserDO.setPrivateChatRefUserId(BaseConstant.NEGATIVE_ONE_LONG);
 
                 sysImSessionRefUserDO.setSessionNickname("");
+
+                sysImSessionRefUserDO.setLastOpenTs(currentTimeMillis);
 
                 insertList.add(sysImSessionRefUserDO);
 
