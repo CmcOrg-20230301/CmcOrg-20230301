@@ -36,8 +36,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
-public class SysImSessionContentServiceImpl extends ServiceImpl<SysImSessionContentMapper, SysImSessionContentDO>
-        implements SysImSessionContentService {
+public class SysImSessionContentServiceImpl extends ServiceImpl<SysImSessionContentMapper, SysImSessionContentDO> implements SysImSessionContentService {
 
     private static SysImSessionMapper sysImSessionMapper;
 
@@ -60,6 +59,21 @@ public class SysImSessionContentServiceImpl extends ServiceImpl<SysImSessionCont
      */
     @Override
     public NotNullIdAndNotEmptyLongSet sendTextUserSelf(SysImSessionContentSendTextListDTO dto) {
+
+        int maxLength = 600;
+
+        // 检查：内容长度
+        boolean anyMatch = dto.getContentSet().stream().anyMatch(item -> {
+
+            return item.getContent().length() > maxLength;
+
+        });
+
+        if (anyMatch) {
+
+            ApiResultVO.error("操作失败：字数长度不能超过 " + maxLength, dto.getSessionId());
+
+        }
 
         // 检查：sessionId是否合法
         Long sessionId = checkSessionId(dto.getSessionId(), true);
