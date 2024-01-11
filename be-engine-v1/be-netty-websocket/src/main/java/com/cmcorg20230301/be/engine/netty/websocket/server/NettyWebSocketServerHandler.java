@@ -368,7 +368,7 @@ public class NettyWebSocketServerHandler extends ChannelInboundHandlerAdapter {
 
                 if (validVoidFunc0CallBack.getValue() != null) {
 
-                    validVoidFunc0CallBack.getValue().call(); // 备注：aop 时，@Valid 不会起作用，所以在这里编程式调用
+                    validVoidFunc0CallBack.getValue().call();// 备注：aop 时，@Valid 不会起作用，所以在这里编程式调用
 
                 }
 
@@ -441,7 +441,7 @@ public class NettyWebSocketServerHandler extends ChannelInboundHandlerAdapter {
 
             validVoidFunc0CallBack.setValue(() -> {
 
-                MyValidUtil.validReturnStr(object);
+                MyValidUtil.validWillError(object);
 
             });
 

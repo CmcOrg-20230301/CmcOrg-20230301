@@ -1,6 +1,9 @@
 package com.cmcorg20230301.be.engine.security.util;
 
 import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.util.StrUtil;
+import com.cmcorg20230301.be.engine.security.exception.BaseBizCodeEnum;
+import com.cmcorg20230301.be.engine.security.model.vo.ApiResultVO;
 
 import javax.validation.ConstraintViolation;
 import javax.validation.Validation;
@@ -40,6 +43,21 @@ public class MyValidUtil {
         }
 
         return errSet.stream().map(ConstraintViolation::getMessage).collect(Collectors.toList()).toString();
+
+    }
+
+    /**
+     * 执行：验证
+     */
+    public static <T> void validWillError(T t) {
+
+        String errMsg = validReturnStr(t);
+
+        if (StrUtil.isBlank(errMsg)) {
+            return;
+        }
+
+        ApiResultVO.error(BaseBizCodeEnum.PARAMETER_CHECK_ERROR, errMsg);
 
     }
 
