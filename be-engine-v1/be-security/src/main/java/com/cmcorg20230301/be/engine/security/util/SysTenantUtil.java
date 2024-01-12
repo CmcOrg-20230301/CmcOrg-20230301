@@ -118,7 +118,7 @@ public class SysTenantUtil {
 
         Map<Long, SysTenantDO> map = MyCacheUtil.getMap(BaseRedisKeyEnum.SYS_TENANT_CACHE, CacheHelper.getDefaultLongMap(new SysTenantDO()), () -> {
 
-            List<SysTenantDO> sysTenantDOList = ChainWrappers.lambdaQueryChain(sysTenantMapper).select(BaseEntity::getId, SysTenantDO::getName, BaseEntityNoId::getEnableFlag, SysTenantDO::getParentId).list();
+            List<SysTenantDO> sysTenantDOList = ChainWrappers.lambdaQueryChain(sysTenantMapper).select(BaseEntity::getId, SysTenantDO::getName, SysTenantDO::getManageName, BaseEntityNoId::getEnableFlag, SysTenantDO::getParentId).list();
 
             return sysTenantDOList.stream().collect(Collectors.toMap(BaseEntity::getId, it -> it));
 
@@ -179,8 +179,12 @@ public class SysTenantUtil {
         SysTenantDO sysTenantDO = new SysTenantDO();
 
         sysTenantDO.setId(BaseConstant.TOP_TENANT_ID);
+
         sysTenantDO.setParentId(BaseConstant.NEGATIVE_ONE);
+
         sysTenantDO.setName(BaseConstant.TOP_TENANT_NAME);
+
+        sysTenantDO.setManageName(BaseConstant.TENANT_MANAGE_NAME);
 
         return sysTenantDO;
 

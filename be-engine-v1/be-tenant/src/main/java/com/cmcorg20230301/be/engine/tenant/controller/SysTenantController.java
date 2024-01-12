@@ -79,6 +79,12 @@ public class SysTenantController {
         return ApiResultVO.okMsg(baseService.addOrderNo(dto));
     }
 
+    @Operation(summary = "通过主键id，获取租户后台管理系统名")
+    @PostMapping("/getManageNameById")
+    public ApiResultVO<String> getManageNameById(@RequestBody @Valid NotNullLong notNullLong) {
+        return ApiResultVO.okData(baseService.getManageNameById(notNullLong));
+    }
+
     @Operation(summary = "通过主键id，获取租户名")
     @PostMapping("/getNameById")
     public ApiResultVO<String> getNameById(@RequestBody @Valid NotNullLong notNullLong) {

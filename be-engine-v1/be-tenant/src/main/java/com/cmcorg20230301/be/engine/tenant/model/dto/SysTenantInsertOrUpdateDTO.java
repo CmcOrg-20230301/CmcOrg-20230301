@@ -25,6 +25,9 @@ public class SysTenantInsertOrUpdateDTO extends BaseTenantInsertOrUpdateDTO {
     @Schema(description = "租户名")
     private String name;
 
+    @Schema(description = "管理后台名称")
+    private String manageName;
+
     @Schema(description = "备注")
     private String remark;
 

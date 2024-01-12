@@ -64,6 +64,8 @@ public interface BaseConstant {
 
     Long TENANT_USER_ID = NEGATIVE_TWO; // 租户的用户 id
 
+    String TENANT_MANAGE_NAME = "后台管理系统"; // 租户管理后台的名称
+
     Long TOP_PARENT_ID = ZERO; // 顶层 parentId：0
 
     // id 相关 ↑

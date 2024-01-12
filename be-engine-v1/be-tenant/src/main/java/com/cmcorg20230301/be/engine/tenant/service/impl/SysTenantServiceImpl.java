@@ -117,7 +117,11 @@ public class SysTenantServiceImpl extends ServiceImpl<SysTenantMapper, SysTenant
         SysTenantDO sysTenantDO = new SysTenantDO();
 
         sysTenantDO.setEnableFlag(BooleanUtil.isTrue(dto.getEnableFlag()));
+
         sysTenantDO.setName(dto.getName());
+
+        sysTenantDO.setManageName(MyEntityUtil.getNotNullStr(dto.getManageName(), BaseConstant.TENANT_MANAGE_NAME));
+
         sysTenantDO.setOrderNo(MyEntityUtil.getNotNullOrderNo(dto.getOrderNo()));
         sysTenantDO.setId(dto.getId());
         sysTenantDO.setRemark(MyEntityUtil.getNotNullStr(dto.getRemark()));
@@ -376,6 +380,7 @@ public class SysTenantServiceImpl extends ServiceImpl<SysTenantMapper, SysTenant
 
         Page<SysTenantDO> page =
                 lambdaQuery().like(StrUtil.isNotBlank(dto.getName()), SysTenantDO::getName, dto.getName())
+                        .like(StrUtil.isNotBlank(dto.getManageName()), SysTenantDO::getManageName, dto.getManageName())
                         .like(StrUtil.isNotBlank(dto.getRemark()), BaseEntityTree::getRemark, dto.getRemark())
                         .eq(dto.getEnableFlag() != null, BaseEntityTree::getEnableFlag, dto.getEnableFlag())
                         .eq(dto.getId() != null, BaseEntity::getId, dto.getId()) //
@@ -664,6 +669,30 @@ public class SysTenantServiceImpl extends ServiceImpl<SysTenantMapper, SysTenant
         updateBatchById(sysTenantDOList);
 
         return BaseBizCodeEnum.OK;
+
+    }
+
+    /**
+     * 通过主键id，获取租户后台管理系统名
+     */
+    @Override
+    public String getManageNameById(NotNullLong notNullLong) {
+
+        if (notNullLong.getValue().equals(BaseConstant.TOP_TENANT_ID)) {
+
+            return BaseConstant.TENANT_MANAGE_NAME;
+
+        }
+
+        SysTenantDO sysTenantDO = SysTenantUtil.getSysTenantCacheMap(false).get(notNullLong.getValue());
+
+        if (sysTenantDO == null) {
+
+            return null;
+
+        }
+
+        return sysTenantDO.getManageName();
 
     }
 

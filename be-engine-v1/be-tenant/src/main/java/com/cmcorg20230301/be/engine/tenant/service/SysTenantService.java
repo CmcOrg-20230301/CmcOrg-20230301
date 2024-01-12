@@ -28,6 +28,8 @@ public interface SysTenantService extends IService<SysTenantDO> {
 
     String addOrderNo(ChangeNumberDTO dto);
 
+    String getManageNameById(NotNullLong notNullLong);
+
     String getNameById(NotNullLong notNullLong);
 
     List<SysMenuDO> getSyncMenuInfo(NotNullId notEmptyIdSet);

@@ -21,6 +21,9 @@ public class SysTenantDO extends BaseEntityTree<SysTenantDO> {
     @Schema(description = "排序号（值越大越前面，默认为 0）")
     private Integer orderNo;
 
+    @Schema(description = "管理后台名称")
+    private String manageName;
+
     @TableField(exist = false)
     @Schema(description = "关联菜单的数量")
     private Long refMenuCount;

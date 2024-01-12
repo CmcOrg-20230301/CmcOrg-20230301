@@ -21,7 +21,7 @@ public class TenantSecurityPermitConfiguration implements ISecurityPermitConfigu
 
     @Override
     public Set<String> anyPermitAllSet() {
-        return CollUtil.newHashSet("/sys/tenant/getNameById");
+        return CollUtil.newHashSet("/sys/tenant/getNameById", "/sys/tenant/getManageNameById");
     }
 
 }
