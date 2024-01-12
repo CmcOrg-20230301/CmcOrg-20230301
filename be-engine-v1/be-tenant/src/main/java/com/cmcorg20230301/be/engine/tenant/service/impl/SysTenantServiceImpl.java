@@ -25,9 +25,11 @@ import com.cmcorg20230301.be.engine.security.model.configuration.ITenantSignConf
 import com.cmcorg20230301.be.engine.security.model.entity.*;
 import com.cmcorg20230301.be.engine.security.model.enums.SysDictTypeEnum;
 import com.cmcorg20230301.be.engine.security.model.vo.ApiResultVO;
+import com.cmcorg20230301.be.engine.security.service.SysUserConfigurationService;
 import com.cmcorg20230301.be.engine.security.util.*;
 import com.cmcorg20230301.be.engine.tenant.model.dto.SysTenantInsertOrUpdateDTO;
 import com.cmcorg20230301.be.engine.tenant.model.dto.SysTenantPageDTO;
+import com.cmcorg20230301.be.engine.tenant.model.vo.SysTenantConfigurationByIdVO;
 import com.cmcorg20230301.be.engine.tenant.model.vo.SysTenantInfoByIdVO;
 import com.cmcorg20230301.be.engine.tenant.service.SysTenantRefUserService;
 import com.cmcorg20230301.be.engine.tenant.service.SysTenantService;
@@ -69,6 +71,9 @@ public class SysTenantServiceImpl extends ServiceImpl<SysTenantMapper, SysTenant
         this.iTenantSignConfigurationList = iTenantSignConfigurationList;
 
     }
+
+    @Resource
+    SysUserConfigurationService sysUserConfigurationService;
 
     /**
      * 新增/修改
@@ -669,6 +674,26 @@ public class SysTenantServiceImpl extends ServiceImpl<SysTenantMapper, SysTenant
         updateBatchById(sysTenantDOList);
 
         return BaseBizCodeEnum.OK;
+
+    }
+
+    /**
+     * 通过主键id，获取租户相关的配置
+     */
+    @Override
+    public SysTenantConfigurationByIdVO getConfigurationById(NotNullLong notNullLong) {
+
+        SysUserConfigurationDO sysUserConfigurationDO = sysUserConfigurationService.getSysUserConfigurationDoByTenantId(notNullLong.getValue());
+
+        SysTenantConfigurationByIdVO sysTenantConfigurationByIdVO = new SysTenantConfigurationByIdVO();
+
+        sysTenantConfigurationByIdVO.setSignInNameSignUpEnable(sysUserConfigurationDO.getSignInNameSignUpEnable());
+
+        sysTenantConfigurationByIdVO.setEmailSignUpEnable(sysUserConfigurationDO.getEmailSignUpEnable());
+
+        sysTenantConfigurationByIdVO.setPhoneSignUpEnable(sysUserConfigurationDO.getPhoneSignUpEnable());
+
+        return sysTenantConfigurationByIdVO;
 
     }
 

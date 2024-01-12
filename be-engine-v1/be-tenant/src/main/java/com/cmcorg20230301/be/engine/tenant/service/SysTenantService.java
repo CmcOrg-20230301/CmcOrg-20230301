@@ -8,6 +8,7 @@ import com.cmcorg20230301.be.engine.security.model.entity.SysMenuDO;
 import com.cmcorg20230301.be.engine.security.model.entity.SysTenantDO;
 import com.cmcorg20230301.be.engine.tenant.model.dto.SysTenantInsertOrUpdateDTO;
 import com.cmcorg20230301.be.engine.tenant.model.dto.SysTenantPageDTO;
+import com.cmcorg20230301.be.engine.tenant.model.vo.SysTenantConfigurationByIdVO;
 import com.cmcorg20230301.be.engine.tenant.model.vo.SysTenantInfoByIdVO;
 
 import java.util.List;
@@ -27,6 +28,8 @@ public interface SysTenantService extends IService<SysTenantDO> {
     String deleteByIdSet(NotEmptyIdSet notEmptyIdSet);
 
     String addOrderNo(ChangeNumberDTO dto);
+
+    SysTenantConfigurationByIdVO getConfigurationById(NotNullLong notNullLong);
 
     String getManageNameById(NotNullLong notNullLong);
 

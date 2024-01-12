@@ -8,6 +8,7 @@ import com.cmcorg20230301.be.engine.security.model.entity.SysTenantDO;
 import com.cmcorg20230301.be.engine.security.model.vo.ApiResultVO;
 import com.cmcorg20230301.be.engine.tenant.model.dto.SysTenantInsertOrUpdateDTO;
 import com.cmcorg20230301.be.engine.tenant.model.dto.SysTenantPageDTO;
+import com.cmcorg20230301.be.engine.tenant.model.vo.SysTenantConfigurationByIdVO;
 import com.cmcorg20230301.be.engine.tenant.model.vo.SysTenantInfoByIdVO;
 import com.cmcorg20230301.be.engine.tenant.service.SysTenantService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -77,6 +78,12 @@ public class SysTenantController {
     @PreAuthorize("hasAuthority('sysTenant:insertOrUpdate')")
     public ApiResultVO<String> addOrderNo(@RequestBody @Valid ChangeNumberDTO dto) {
         return ApiResultVO.okMsg(baseService.addOrderNo(dto));
+    }
+
+    @Operation(summary = "通过主键id，获取租户相关的配置")
+    @PostMapping("/getConfigurationById")
+    public ApiResultVO<SysTenantConfigurationByIdVO> getConfigurationById(@RequestBody @Valid NotNullLong notNullLong) {
+        return ApiResultVO.okData(baseService.getConfigurationById(notNullLong));
     }
 
     @Operation(summary = "通过主键id，获取租户后台管理系统名")

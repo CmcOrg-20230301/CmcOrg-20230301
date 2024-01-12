@@ -13,6 +13,8 @@ import com.cmcorg20230301.be.engine.security.util.SysTenantUtil;
 import com.cmcorg20230301.be.engine.security.util.UserUtil;
 import org.springframework.stereotype.Service;
 
+import javax.validation.constraints.NotNull;
+
 @Service
 public class SysUserConfigurationServiceImpl extends ServiceImpl<SysSignConfigurationMapper, SysUserConfigurationDO>
         implements SysUserConfigurationService {
@@ -20,6 +22,7 @@ public class SysUserConfigurationServiceImpl extends ServiceImpl<SysSignConfigur
     /**
      * 通过：租户 id，获取：用户登录注册相关配置
      */
+    @NotNull
     @Override
     public SysUserConfigurationDO getSysUserConfigurationDoByTenantId(Long tenantId) {
 
