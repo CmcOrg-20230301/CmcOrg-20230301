@@ -5,6 +5,7 @@ import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.lang.func.Func1;
 import cn.hutool.core.lang.func.VoidFunc1;
 import cn.hutool.core.map.MapUtil;
+import cn.hutool.core.thread.ThreadUtil;
 import cn.hutool.core.util.BooleanUtil;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.dynamic.datasource.annotation.DSTransactional;
@@ -30,6 +31,7 @@ import com.cmcorg20230301.be.engine.tenant.model.dto.SysTenantPageDTO;
 import com.cmcorg20230301.be.engine.tenant.model.vo.SysTenantInfoByIdVO;
 import com.cmcorg20230301.be.engine.tenant.service.SysTenantRefUserService;
 import com.cmcorg20230301.be.engine.tenant.service.SysTenantService;
+import lombok.SneakyThrows;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,6 +39,8 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.util.*;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
 @Service
@@ -352,6 +356,7 @@ public class SysTenantServiceImpl extends ServiceImpl<SysTenantMapper, SysTenant
     /**
      * 分页排序查询：租户
      */
+    @SneakyThrows
     @Override
     public Page<SysTenantDO> myPage(SysTenantPageDTO dto) {
 
@@ -384,47 +389,71 @@ public class SysTenantServiceImpl extends ServiceImpl<SysTenantMapper, SysTenant
 
         Set<Long> idSet = page.getRecords().stream().map(BaseEntity::getId).collect(Collectors.toSet());
 
-        // 获取：绑定的菜单
-        List<SysMenuDO> sysMenuDOList =
-                sysMenuService.lambdaQuery().in(BaseEntityNoId::getTenantId, idSet).select(BaseEntityNoId::getTenantId)
-                        .list();
+        CountDownLatch countDownLatch = ThreadUtil.newCountDownLatch(4);
 
-        Map<Long, Long> refMenuCountMap =
-                sysMenuDOList.stream().collect(Collectors.groupingBy(BaseEntityNoId::getTenantId, Collectors.counting()));
+        AtomicReference<Map<Long, Long>> refMenuCountMap = new AtomicReference<>();
 
-        // 获取：用户
-        List<SysUserDO> sysUserDOList =
-                ChainWrappers.lambdaQueryChain(sysUserMapper).in(BaseEntityNoId::getTenantId, idSet)
-                        .select(BaseEntityNoId::getTenantId).list();
+        AtomicReference<Map<Long, Long>> userCountMap = new AtomicReference<>();
 
-        Map<Long, Long> userCountMap =
-                sysUserDOList.stream().collect(Collectors.groupingBy(BaseEntityNoId::getTenantId, Collectors.counting()));
+        AtomicReference<Map<Long, Long>> dictCountMap = new AtomicReference<>();
 
-        // 获取：字典
-        List<SysDictDO> sysDictDOList =
-                sysDictService.lambdaQuery().in(BaseEntityNoId::getTenantId, idSet).select(BaseEntityNoId::getTenantId)
-                        .list();
+        AtomicReference<Map<Long, Long>> paramCountMap = new AtomicReference<>();
 
-        Map<Long, Long> dictCountMap =
-                sysDictDOList.stream().collect(Collectors.groupingBy(BaseEntityNoId::getTenantId, Collectors.counting()));
+        MyThreadUtil.execute(() -> {
 
-        // 获取：参数
-        List<SysParamDO> sysParamDOList =
-                sysParamService.lambdaQuery().in(BaseEntityNoId::getTenantId, idSet).select(BaseEntityNoId::getTenantId)
-                        .list();
+            // 获取：绑定的菜单
+            List<SysMenuDO> sysMenuDOList =
+                    sysMenuService.lambdaQuery().in(BaseEntityNoId::getTenantId, idSet).select(BaseEntityNoId::getTenantId)
+                            .list();
 
-        Map<Long, Long> paramCountMap =
-                sysParamDOList.stream().collect(Collectors.groupingBy(BaseEntityNoId::getTenantId, Collectors.counting()));
+            refMenuCountMap.set(sysMenuDOList.stream().collect(Collectors.groupingBy(BaseEntityNoId::getTenantId, Collectors.counting())));
+
+        }, countDownLatch);
+
+        MyThreadUtil.execute(() -> {
+
+            // 获取：用户
+            List<SysUserDO> sysUserDOList =
+                    ChainWrappers.lambdaQueryChain(sysUserMapper).in(BaseEntityNoId::getTenantId, idSet)
+                            .select(BaseEntityNoId::getTenantId).list();
+
+            userCountMap.set(sysUserDOList.stream().collect(Collectors.groupingBy(BaseEntityNoId::getTenantId, Collectors.counting())));
+
+        }, countDownLatch);
+
+        MyThreadUtil.execute(() -> {
+
+            // 获取：字典
+            List<SysDictDO> sysDictDOList =
+                    sysDictService.lambdaQuery().in(BaseEntityNoId::getTenantId, idSet).select(BaseEntityNoId::getTenantId)
+                            .list();
+
+            dictCountMap.set(sysDictDOList.stream().collect(Collectors.groupingBy(BaseEntityNoId::getTenantId, Collectors.counting())));
+
+        }, countDownLatch);
+
+        MyThreadUtil.execute(() -> {
+
+            // 获取：参数
+            List<SysParamDO> sysParamDOList =
+                    sysParamService.lambdaQuery().in(BaseEntityNoId::getTenantId, idSet).select(BaseEntityNoId::getTenantId)
+                            .list();
+
+            paramCountMap.set(sysParamDOList.stream().collect(Collectors.groupingBy(BaseEntityNoId::getTenantId, Collectors.counting())));
+
+        }, countDownLatch);
+
+        countDownLatch.await();
 
         for (SysTenantDO item : page.getRecords()) {
 
-            item.setRefMenuCount(refMenuCountMap.getOrDefault(item.getId(), 0L));
+            item.setRefMenuCount(refMenuCountMap.get().getOrDefault(item.getId(), 0L));
 
-            item.setUserCount(userCountMap.getOrDefault(item.getId(), 0L));
+            item.setUserCount(userCountMap.get().getOrDefault(item.getId(), 0L));
 
-            item.setDictCount(dictCountMap.getOrDefault(item.getId(), 0L));
+            item.setDictCount(dictCountMap.get().getOrDefault(item.getId(), 0L));
 
-            item.setParamCount(paramCountMap.getOrDefault(item.getId(), 0L));
+            item.setParamCount(paramCountMap.get().getOrDefault(item.getId(), 0L));
 
         }
 
