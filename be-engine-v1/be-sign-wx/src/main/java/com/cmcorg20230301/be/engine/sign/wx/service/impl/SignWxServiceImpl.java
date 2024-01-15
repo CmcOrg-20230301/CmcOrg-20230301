@@ -6,6 +6,8 @@ import cn.hutool.jwt.JWT;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.toolkit.ChainWrappers;
 import com.cmcorg20230301.be.engine.model.model.constant.BaseConstant;
+import com.cmcorg20230301.be.engine.model.model.dto.NotNullId;
+import com.cmcorg20230301.be.engine.model.model.vo.GetQrCodeVO;
 import com.cmcorg20230301.be.engine.model.model.vo.SignInVO;
 import com.cmcorg20230301.be.engine.other.app.mapper.SysOtherAppMapper;
 import com.cmcorg20230301.be.engine.other.app.model.entity.SysOtherAppDO;
@@ -16,6 +18,7 @@ import com.cmcorg20230301.be.engine.other.app.wx.model.vo.WxPhoneByCodeVO;
 import com.cmcorg20230301.be.engine.other.app.wx.model.vo.WxUserInfoVO;
 import com.cmcorg20230301.be.engine.other.app.wx.util.WxUtil;
 import com.cmcorg20230301.be.engine.redisson.model.enums.BaseRedisKeyEnum;
+import com.cmcorg20230301.be.engine.redisson.util.IdGeneratorUtil;
 import com.cmcorg20230301.be.engine.security.mapper.SysUserInfoMapper;
 import com.cmcorg20230301.be.engine.security.mapper.SysUserMapper;
 import com.cmcorg20230301.be.engine.security.model.entity.BaseEntityNoId;
@@ -35,6 +38,7 @@ import com.cmcorg20230301.be.engine.util.util.CallBack;
 import com.cmcorg20230301.be.engine.util.util.NicknameUtil;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.redisson.api.RedissonClient;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -52,6 +56,9 @@ public class SignWxServiceImpl implements SignWxService {
 
     @Resource
     SysOtherAppMapper sysOtherAppMapper;
+
+    @Resource
+    RedissonClient redissonClient;
 
     /**
      * 小程序：手机号 code登录
@@ -200,7 +207,7 @@ public class SignWxServiceImpl implements SignWxService {
      */
     @Override
     @Nullable
-    public String getQrCodeUrl(UserSignBaseDTO dto) {
+    public GetQrCodeVO getQrCodeUrl(UserSignBaseDTO dto) {
 
         Long tenantId = dto.getTenantId();
 
@@ -218,7 +225,23 @@ public class SignWxServiceImpl implements SignWxService {
 
         String accessToken = WxUtil.getAccessToken(tenantId, sysOtherAppDO.getAppId());
 
-        return WxUtil.getQrCodeUrl(accessToken, WxQrSceneTypeEnum.SIGN_IN);
+        Long queryId = IdGeneratorUtil.nextId();
+
+        WxQrSceneTypeEnum wxQrSceneTypeEnum = WxQrSceneTypeEnum.SIGN_IN;
+
+        String qrCodeUrl = WxUtil.getQrCodeUrl(accessToken, wxQrSceneTypeEnum, queryId.toString());
+
+        return new GetQrCodeVO(qrCodeUrl, queryId);
+
+    }
+
+    /**
+     * 扫码登录：查询二维码数据
+     */
+    @Override
+    public SignInVO queryQrCodeById(NotNullId notNullId) {
+
+        return redissonClient.<SignInVO>getBucket(BaseRedisKeyEnum.PRE_SYS_WX_QR_CODE_SIGN.name() + notNullId.getId()).getAndDelete();
 
     }
 

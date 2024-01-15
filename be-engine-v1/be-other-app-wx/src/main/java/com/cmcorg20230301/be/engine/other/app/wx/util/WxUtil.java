@@ -16,6 +16,7 @@ import com.cmcorg20230301.be.engine.model.model.constant.LogTopicConstant;
 import com.cmcorg20230301.be.engine.other.app.model.entity.SysOtherAppDO;
 import com.cmcorg20230301.be.engine.other.app.service.SysOtherAppService;
 import com.cmcorg20230301.be.engine.other.app.wx.model.enums.WxMediaUploadTypeEnum;
+import com.cmcorg20230301.be.engine.other.app.wx.model.enums.WxQrSceneTypeEnum;
 import com.cmcorg20230301.be.engine.other.app.wx.model.interfaces.IWxQrSceneType;
 import com.cmcorg20230301.be.engine.other.app.wx.model.vo.*;
 import com.cmcorg20230301.be.engine.redisson.model.enums.BaseRedisKeyEnum;
@@ -249,7 +250,7 @@ public class WxUtil {
      * 获取：临时二维码的url地址
      */
     @SneakyThrows
-    public static String getQrCodeUrl(String accessToken, IWxQrSceneType iWxQrSceneType) {
+    public static String getQrCodeUrl(String accessToken, IWxQrSceneType iWxQrSceneType, @Nullable String data) {
 
         boolean foreverFlag = false;
 
@@ -259,7 +260,15 @@ public class WxUtil {
 
         }
 
-        return getQrCodeUrl(accessToken, iWxQrSceneType.getSceneStr(), foreverFlag, iWxQrSceneType.getExpireSecond());
+        String sceneStr = iWxQrSceneType.getSceneStr();
+
+        if (StrUtil.isNotBlank(data)) {
+
+            sceneStr = sceneStr + WxQrSceneTypeEnum.SEPARATOR + data;
+
+        }
+
+        return getQrCodeUrl(accessToken, sceneStr, foreverFlag, iWxQrSceneType.getExpireSecond());
 
     }
 

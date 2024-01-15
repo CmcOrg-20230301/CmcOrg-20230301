@@ -1,6 +1,8 @@
 package com.cmcorg20230301.be.engine.sign.wx.controller;
 
 import com.cmcorg20230301.be.engine.model.model.constant.OperationDescriptionConstant;
+import com.cmcorg20230301.be.engine.model.model.dto.NotNullId;
+import com.cmcorg20230301.be.engine.model.model.vo.GetQrCodeVO;
 import com.cmcorg20230301.be.engine.model.model.vo.SignInVO;
 import com.cmcorg20230301.be.engine.security.exception.BaseBizCodeEnum;
 import com.cmcorg20230301.be.engine.security.model.vo.ApiResultVO;
@@ -53,8 +55,14 @@ public class SignWxController {
 
     @PostMapping(value = "/sign/in/getQrCodeUrl")
     @Operation(summary = "扫码登录：获取二维码")
-    public ApiResultVO<String> getQrUrl(@RequestBody @Valid UserSignBaseDTO dto) {
+    public ApiResultVO<GetQrCodeVO> getQrUrl(@RequestBody @Valid UserSignBaseDTO dto) {
         return ApiResultVO.okData(signWxService.getQrCodeUrl(dto));
+    }
+
+    @PostMapping(value = "/sign/in/queryQrCodeById")
+    @Operation(summary = "扫码登录：查询二维码数据")
+    public ApiResultVO<SignInVO> queryQrCodeById(@RequestBody @Valid NotNullId notNullId) {
+        return ApiResultVO.okData(signWxService.queryQrCodeById(notNullId));
     }
 
 }

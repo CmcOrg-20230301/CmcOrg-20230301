@@ -138,7 +138,9 @@ public class MyJwtUtil {
 
         if (UserUtil.getCurrentUserAdminFlag(userId) && BooleanUtil
                 .isFalse(MyJwtUtil.securityProperties.getAdminEnable())) {
+
             return null;
+
         }
 
         if (StrUtil.isBlank(jwtSecretSuf)) {

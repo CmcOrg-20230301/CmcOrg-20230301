@@ -543,7 +543,7 @@ public class SignUtil {
      * 登录时，获取：jwt
      */
     @Nullable
-    private static SignInVO signInGetJwt(SysUserDO sysUserDO) {
+    public static SignInVO signInGetJwt(SysUserDO sysUserDO) {
 
         // 校验密码，成功之后，再判断是否被冻结，免得透露用户被封号的信息
         if (BooleanUtil.isFalse(sysUserDO.getEnableFlag())) {

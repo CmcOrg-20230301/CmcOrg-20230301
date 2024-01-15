@@ -17,6 +17,7 @@ import com.cmcorg20230301.be.engine.menu.service.SysMenuService;
 import com.cmcorg20230301.be.engine.model.model.constant.BaseConstant;
 import com.cmcorg20230301.be.engine.model.model.dto.*;
 import com.cmcorg20230301.be.engine.model.model.vo.DictTreeVO;
+import com.cmcorg20230301.be.engine.model.model.vo.GetQrCodeVO;
 import com.cmcorg20230301.be.engine.param.service.SysParamService;
 import com.cmcorg20230301.be.engine.security.exception.BaseBizCodeEnum;
 import com.cmcorg20230301.be.engine.security.mapper.SysTenantMapper;
@@ -707,9 +708,9 @@ public class SysTenantServiceImpl extends ServiceImpl<SysTenantMapper, SysTenant
 
         MyThreadUtil.execute(() -> {
 
-            String qrCodeUrl = signWxService.getQrCodeUrl(new UserSignBaseDTO(notNullLong.getValue()));
+            GetQrCodeVO getQrCodeVO = signWxService.getQrCodeUrl(new UserSignBaseDTO(notNullLong.getValue()));
 
-            sysTenantConfigurationByIdVO.setWxQrCodeSignUpUrl(qrCodeUrl);
+            sysTenantConfigurationByIdVO.setWxQrCodeSignUp(getQrCodeVO);
 
         }, countDownLatch);
 

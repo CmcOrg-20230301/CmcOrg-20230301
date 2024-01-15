@@ -11,6 +11,8 @@ import com.cmcorg20230301.be.engine.model.model.interfaces.IRedisKey;
 public enum BaseRedisKeyEnum implements IRedisKey {
 
     // 【PRE_】开头 ↓
+    PRE_SYS_WX_QR_CODE_SIGN, // 微信扫码登录注册时，生成的，查询二维码数据的 id，备注：只有扫描了二维码之后，才会放数据到 redis里面
+
     PRE_SYS_IM_SESSION_ID, // 即时通讯会话锁，目的：往会话里面添加用户时，防止重复添加，锁：【sessionId】
 
     PRE_SYS_IM_SESSION_USER_ID, // 即时通讯会话锁，目的：创建会话时，防止重复添加，锁：【userId】
