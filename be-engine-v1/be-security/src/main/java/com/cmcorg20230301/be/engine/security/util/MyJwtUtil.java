@@ -189,13 +189,16 @@ public class MyJwtUtil {
 
         long jwtExpireTime = BaseConstant.JWT_EXPIRE_TIME;
 
+        // 过期时间
+        Date expireTs = new Date(System.currentTimeMillis() + jwtExpireTime);
+
         String jwt = JWT.create() //
-                .setExpiresAt(new Date(System.currentTimeMillis() + jwtExpireTime)) // 设置过期时间
+                .setExpiresAt(expireTs) // 设置过期时间
                 .addPayloads(payloadMap) // 增加JWT载荷信息
                 .setKey(MyJwtUtil.getJwtSecret(jwtSecretSuf).getBytes()) // 设置密钥
                 .sign();
 
-        return new SignInVO(SecurityConstant.JWT_PREFIX + jwt, jwtExpireTime - (10 * 60 * 1000), tenantId);
+        return new SignInVO(SecurityConstant.JWT_PREFIX + jwt, expireTs.getTime() - (10 * 60 * 1000), tenantId);
 
     }
 
