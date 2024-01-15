@@ -27,6 +27,8 @@ import com.cmcorg20230301.be.engine.security.model.enums.SysDictTypeEnum;
 import com.cmcorg20230301.be.engine.security.model.vo.ApiResultVO;
 import com.cmcorg20230301.be.engine.security.service.SysUserConfigurationService;
 import com.cmcorg20230301.be.engine.security.util.*;
+import com.cmcorg20230301.be.engine.sign.helper.model.dto.UserSignBaseDTO;
+import com.cmcorg20230301.be.engine.sign.wx.service.SignWxService;
 import com.cmcorg20230301.be.engine.tenant.model.dto.SysTenantInsertOrUpdateDTO;
 import com.cmcorg20230301.be.engine.tenant.model.dto.SysTenantPageDTO;
 import com.cmcorg20230301.be.engine.tenant.model.vo.SysTenantConfigurationByIdVO;
@@ -62,6 +64,9 @@ public class SysTenantServiceImpl extends ServiceImpl<SysTenantMapper, SysTenant
 
     @Resource
     SysUserMapper sysUserMapper;
+
+    @Resource
+    SignWxService signWxService;
 
     @Nullable List<ITenantSignConfiguration> iTenantSignConfigurationList;
 
@@ -680,18 +685,35 @@ public class SysTenantServiceImpl extends ServiceImpl<SysTenantMapper, SysTenant
     /**
      * 通过主键id，获取租户相关的配置
      */
+    @SneakyThrows
     @Override
     public SysTenantConfigurationByIdVO getConfigurationById(NotNullLong notNullLong) {
 
-        SysUserConfigurationDO sysUserConfigurationDO = sysUserConfigurationService.getSysUserConfigurationDoByTenantId(notNullLong.getValue());
-
         SysTenantConfigurationByIdVO sysTenantConfigurationByIdVO = new SysTenantConfigurationByIdVO();
 
-        sysTenantConfigurationByIdVO.setSignInNameSignUpEnable(sysUserConfigurationDO.getSignInNameSignUpEnable());
+        CountDownLatch countDownLatch = ThreadUtil.newCountDownLatch(2);
 
-        sysTenantConfigurationByIdVO.setEmailSignUpEnable(sysUserConfigurationDO.getEmailSignUpEnable());
+        MyThreadUtil.execute(() -> {
 
-        sysTenantConfigurationByIdVO.setPhoneSignUpEnable(sysUserConfigurationDO.getPhoneSignUpEnable());
+            SysUserConfigurationDO sysUserConfigurationDO = sysUserConfigurationService.getSysUserConfigurationDoByTenantId(notNullLong.getValue());
+
+            sysTenantConfigurationByIdVO.setSignInNameSignUpEnable(sysUserConfigurationDO.getSignInNameSignUpEnable());
+
+            sysTenantConfigurationByIdVO.setEmailSignUpEnable(sysUserConfigurationDO.getEmailSignUpEnable());
+
+            sysTenantConfigurationByIdVO.setPhoneSignUpEnable(sysUserConfigurationDO.getPhoneSignUpEnable());
+
+        }, countDownLatch);
+
+        MyThreadUtil.execute(() -> {
+
+            String qrCodeUrl = signWxService.getQrCodeUrl(new UserSignBaseDTO(notNullLong.getValue()));
+
+            sysTenantConfigurationByIdVO.setWxQrCodeSignUpUrl(qrCodeUrl);
+
+        }, countDownLatch);
+
+        countDownLatch.await();
 
         return sysTenantConfigurationByIdVO;
 

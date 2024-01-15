@@ -16,6 +16,7 @@ import com.cmcorg20230301.be.engine.model.model.constant.LogTopicConstant;
 import com.cmcorg20230301.be.engine.other.app.model.entity.SysOtherAppDO;
 import com.cmcorg20230301.be.engine.other.app.service.SysOtherAppService;
 import com.cmcorg20230301.be.engine.other.app.wx.model.enums.WxMediaUploadTypeEnum;
+import com.cmcorg20230301.be.engine.other.app.wx.model.interfaces.IWxQrSceneType;
 import com.cmcorg20230301.be.engine.other.app.wx.model.vo.*;
 import com.cmcorg20230301.be.engine.redisson.model.enums.BaseRedisKeyEnum;
 import com.cmcorg20230301.be.engine.security.exception.BaseBizCodeEnum;
@@ -245,27 +246,50 @@ public class WxUtil {
     }
 
     /**
-     * 获取：永久二维码的url地址
-     *
-     * @param sceneStr 场景值，字符串类型，长度限制为1到64，一般为；用户的 wxOpenId
+     * 获取：临时二维码的url地址
      */
     @SneakyThrows
-    public static InputStream qrcodeCreate(String accessToken, String sceneStr) {
+    public static String getQrCodeUrl(String accessToken, IWxQrSceneType iWxQrSceneType) {
 
-        String bodyJsonStr = JSONUtil.createObj().set("action_name", "QR_LIMIT_STR_SCENE")
-                .set("action_info", JSONUtil.createObj().set("scene", JSONUtil.createObj().set("scene_str", sceneStr)))
-                .toString();
+        boolean foreverFlag = false;
+
+        if (iWxQrSceneType.getExpireSecond() <= 0) {
+
+            foreverFlag = true;
+
+        }
+
+        return getQrCodeUrl(accessToken, iWxQrSceneType.getSceneStr(), foreverFlag, iWxQrSceneType.getExpireSecond());
+
+    }
+
+    /**
+     * 获取：二维码的url地址
+     *
+     * @param sceneStr     场景值，字符串类型，长度限制为1到64，一般为；用户的 wxOpenId
+     * @param foreverFlag  是否是永久饿二维码地址，注意：永久二维码，是无过期时间的，但数量较少（目前为最多10万个），临时二维码，是有过期时间的，最长可以设置为在二维码生成后的30天（即2592000秒）后过期，但能够生成较多数量
+     * @param expireSecond 该二维码有效时间，以秒为单位。 最大不超过2592000（即 30天），此字段如果不填，则默认有效期为 60秒。
+     */
+    @SneakyThrows
+    public static String getQrCodeUrl(String accessToken, String sceneStr, boolean foreverFlag, @Nullable Integer expireSecond) {
+
+        JSONObject jsonObject = JSONUtil.createObj().set("action_name", foreverFlag ? "QR_LIMIT_STR_SCENE" : "QR_STR_SCENE")
+                .set("action_info", JSONUtil.createObj().set("scene", JSONUtil.createObj().set("scene_str", sceneStr)));
+
+        if (!foreverFlag && expireSecond != null) {
+
+            jsonObject.set("expire_seconds", expireSecond);
+
+        }
 
         String result =
-                HttpUtil.post("https://api.weixin.qq.com/cgi-bin/qrcode/create?access_token=" + accessToken, bodyJsonStr);
+                HttpUtil.post("https://api.weixin.qq.com/cgi-bin/qrcode/create?access_token=" + accessToken, jsonObject.toString());
 
         log.info("wx-qrcodeCreate-result：{}", result);
 
         String ticket = JSONUtil.parseObj(result).getStr("ticket");
 
-        return HttpRequest
-                .get("https://mp.weixin.qq.com/cgi-bin/showqrcode?ticket=" + URLEncoder.encode(ticket, "UTF-8")).execute()
-                .bodyStream();
+        return "https://mp.weixin.qq.com/cgi-bin/showqrcode?ticket=" + URLEncoder.encode(ticket, "UTF-8");
 
     }
 

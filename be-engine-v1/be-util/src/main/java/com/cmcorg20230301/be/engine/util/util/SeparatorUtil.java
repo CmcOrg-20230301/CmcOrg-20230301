@@ -19,6 +19,9 @@ public class SeparatorUtil {
     // 数字分隔符
     public final static String NUMBER_STR_SEPARATOR = "000000";
 
+    // 井号分隔符
+    public final static String POUND_SIGN_SEPARATOR = "#";
+
     /**
      * 返回：被【竖线分隔符】，包裹的字符串
      */

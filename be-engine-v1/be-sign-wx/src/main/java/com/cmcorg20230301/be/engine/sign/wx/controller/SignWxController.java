@@ -4,6 +4,7 @@ import com.cmcorg20230301.be.engine.model.model.constant.OperationDescriptionCon
 import com.cmcorg20230301.be.engine.model.model.vo.SignInVO;
 import com.cmcorg20230301.be.engine.security.exception.BaseBizCodeEnum;
 import com.cmcorg20230301.be.engine.security.model.vo.ApiResultVO;
+import com.cmcorg20230301.be.engine.sign.helper.model.dto.UserSignBaseDTO;
 import com.cmcorg20230301.be.engine.sign.wx.model.dto.SignInBrowserCodeDTO;
 import com.cmcorg20230301.be.engine.sign.wx.model.dto.SignInMiniProgramCodeDTO;
 import com.cmcorg20230301.be.engine.sign.wx.model.dto.SignInMiniProgramPhoneCodeDTO;
@@ -48,6 +49,12 @@ public class SignWxController {
     @Operation(summary = "浏览器：微信 code登录，可以获取用户的基础信息", description = OperationDescriptionConstant.SIGN_IN)
     public ApiResultVO<SignInVO> signInBrowserCodeUserInfo(@RequestBody @Valid SignInBrowserCodeDTO dto) {
         return ApiResultVO.ok(BaseBizCodeEnum.OK, signWxService.signInBrowserCodeUserInfo(dto));
+    }
+
+    @PostMapping(value = "/sign/in/getQrCodeUrl")
+    @Operation(summary = "扫码登录：获取二维码")
+    public ApiResultVO<String> getQrUrl(@RequestBody @Valid UserSignBaseDTO dto) {
+        return ApiResultVO.okData(signWxService.getQrCodeUrl(dto));
     }
 
 }

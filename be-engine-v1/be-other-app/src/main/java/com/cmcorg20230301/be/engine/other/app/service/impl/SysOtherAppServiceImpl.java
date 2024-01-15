@@ -42,7 +42,7 @@ public class SysOtherAppServiceImpl extends ServiceImpl<SysOtherAppMapper, SysOt
                 getTenantIdBaseEntityFunc1());
 
         return RedissonUtil.doLock(
-                BaseRedisKeyEnum.PRE_OTHER_APP_TYPE_AND_APP_ID.name() + ":" + dto.getType().getCode() + ":" + dto
+                BaseRedisKeyEnum.PRE_OTHER_APP_TYPE_AND_APP_ID.name() + ":" + dto.getType() + ":" + dto
                         .getAppId(), () -> {
 
                     // 同一个类型下，第三方 appId，不能重复

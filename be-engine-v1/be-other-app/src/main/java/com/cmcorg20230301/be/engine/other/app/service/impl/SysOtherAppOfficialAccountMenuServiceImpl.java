@@ -75,12 +75,12 @@ public class SysOtherAppOfficialAccountMenuServiceImpl
 
         sysOtherAppOfficialAccountMenuDO.setOtherAppId(dto.getOtherAppId());
 
-        SysOtherAppTypeEnum sysOtherAppTypeEnum = sysOtherAppDO.getType();
+        Integer type = sysOtherAppDO.getType();
 
         // 暂时：只能配置：微信公众号类型的第三方应用
-        if (SysOtherAppTypeEnum.WX_OFFICIAL_ACCOUNT.equals(sysOtherAppTypeEnum)) {
+        if (SysOtherAppTypeEnum.WX_OFFICIAL_ACCOUNT.getCode() == type) {
 
-            sysOtherAppOfficialAccountMenuDO.setType(SysOtherAppOfficialAccountMenuTypeEnum.WX_OFFICIAL_ACCOUNT);
+            sysOtherAppOfficialAccountMenuDO.setType(SysOtherAppOfficialAccountMenuTypeEnum.WX_OFFICIAL_ACCOUNT.getCode());
 
         } else {
 

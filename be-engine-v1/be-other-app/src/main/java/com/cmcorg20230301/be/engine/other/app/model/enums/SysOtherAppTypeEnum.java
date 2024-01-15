@@ -1,6 +1,7 @@
 package com.cmcorg20230301.be.engine.other.app.model.enums;
 
 import com.baomidou.mybatisplus.annotation.EnumValue;
+import com.cmcorg20230301.be.engine.other.app.model.interfaces.ISysOtherAppType;
 import com.fasterxml.jackson.annotation.JsonValue;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -10,7 +11,7 @@ import lombok.Getter;
  */
 @AllArgsConstructor
 @Getter
-public enum SysOtherAppTypeEnum {
+public enum SysOtherAppTypeEnum implements ISysOtherAppType {
 
     WX_MINI_PROGRAM(101), // 微信小程序
 

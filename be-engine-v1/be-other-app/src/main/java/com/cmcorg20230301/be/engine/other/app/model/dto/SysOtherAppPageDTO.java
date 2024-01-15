@@ -1,6 +1,6 @@
 package com.cmcorg20230301.be.engine.other.app.model.dto;
 
-import com.cmcorg20230301.be.engine.other.app.model.enums.SysOtherAppTypeEnum;
+import com.cmcorg20230301.be.engine.other.app.model.interfaces.ISysOtherAppType;
 import com.cmcorg20230301.be.engine.security.model.dto.MyTenantPageDTO;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
@@ -10,8 +10,11 @@ import lombok.EqualsAndHashCode;
 @Data
 public class SysOtherAppPageDTO extends MyTenantPageDTO {
 
+    /**
+     * {@link ISysOtherAppType}
+     */
     @Schema(description = "第三方应用类型")
-    private SysOtherAppTypeEnum type;
+    private Integer type;
 
     @Schema(description = "第三方应用名")
     private String name;

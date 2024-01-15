@@ -1,7 +1,7 @@
 package com.cmcorg20230301.be.engine.other.app.model.entity;
 
 import com.baomidou.mybatisplus.annotation.TableName;
-import com.cmcorg20230301.be.engine.other.app.model.enums.SysOtherAppTypeEnum;
+import com.cmcorg20230301.be.engine.other.app.model.interfaces.ISysOtherAppType;
 import com.cmcorg20230301.be.engine.security.model.entity.BaseEntity;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
@@ -13,8 +13,11 @@ import lombok.EqualsAndHashCode;
 @Schema(description = "主表：第三方应用相关配置")
 public class SysOtherAppDO extends BaseEntity {
 
+    /**
+     * {@link ISysOtherAppType}
+     */
     @Schema(description = "第三方应用类型")
-    private SysOtherAppTypeEnum type;
+    private Integer type;
 
     @Schema(description = "第三方应用名")
     private String name;

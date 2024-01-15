@@ -1,7 +1,7 @@
 package com.cmcorg20230301.be.engine.other.app.model.dto;
 
 import com.cmcorg20230301.be.engine.model.model.dto.BaseTenantInsertOrUpdateDTO;
-import com.cmcorg20230301.be.engine.other.app.model.enums.SysOtherAppTypeEnum;
+import com.cmcorg20230301.be.engine.other.app.model.interfaces.ISysOtherAppType;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -13,9 +13,12 @@ import javax.validation.constraints.NotNull;
 @Data
 public class SysOtherAppInsertOrUpdateDTO extends BaseTenantInsertOrUpdateDTO {
 
+    /**
+     * {@link ISysOtherAppType}
+     */
     @NotNull
     @Schema(description = "第三方应用类型")
-    private SysOtherAppTypeEnum type;
+    private Integer type;
 
     @NotBlank
     @Schema(description = "第三方应用名")
