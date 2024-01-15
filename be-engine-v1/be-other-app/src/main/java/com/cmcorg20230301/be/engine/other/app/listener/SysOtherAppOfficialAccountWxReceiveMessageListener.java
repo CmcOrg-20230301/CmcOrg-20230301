@@ -87,13 +87,15 @@ public class SysOtherAppOfficialAccountWxReceiveMessageListener {
 
                     for (SysOtherAppOfficialAccountWxReceiveMessageDTO item : sysOtherAppOfficialAccountWxReceiveMessageDTOList) {
 
+                        String msgIdStr = item.getMsgIdStr();
+
                         String redisKey =
                                 BaseRedisKeyEnum.PRE_SYS_OTHER_APP_OFFICIAL_ACCOUNT_WX_RECEIVE_MESSAGE_ID.name()
-                                        + item.getMsgId();
+                                        + msgIdStr;
 
                         RedissonUtil.doLock(redisKey, () -> {
 
-                            boolean deleteFlag = redissonClient.<Long>getBucket(redisKey).delete();
+                            boolean deleteFlag = redissonClient.<String>getBucket(redisKey).delete();
 
                             if (!deleteFlag) {
                                 return;

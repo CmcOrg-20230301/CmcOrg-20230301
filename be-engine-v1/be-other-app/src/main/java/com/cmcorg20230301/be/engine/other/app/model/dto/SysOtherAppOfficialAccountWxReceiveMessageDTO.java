@@ -33,6 +33,24 @@ public class SysOtherAppOfficialAccountWxReceiveMessageDTO {
 
     private Long MsgId;
 
+    public String getMsgIdStr() {
+
+        String msgIdStr;
+
+        if (getMsgId() == null) {
+
+            msgIdStr = getEventKey();
+
+        } else {
+
+            msgIdStr = getMsgId().toString();
+
+        }
+
+        return msgIdStr;
+
+    }
+
     private Long MsgDataId;
 
     private Integer Idx;

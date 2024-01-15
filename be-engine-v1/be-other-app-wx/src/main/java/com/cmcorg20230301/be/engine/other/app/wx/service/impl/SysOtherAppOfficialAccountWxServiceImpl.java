@@ -100,13 +100,15 @@ public class SysOtherAppOfficialAccountWxServiceImpl implements SysOtherAppOffic
 
         dto.setContent(content);
 
-        log.info("收到消息：{}，dto：{}", XmlUtil.toStr(document), JSONUtil.toJsonStr(dto));
+        String msgIdStr = dto.getMsgIdStr();
+
+        log.info("收到消息：{}，dto：{}，msgIdStr：{}", XmlUtil.toStr(document), JSONUtil.toJsonStr(dto), msgIdStr);
 
         String redisKey =
-                BaseRedisKeyEnum.PRE_SYS_OTHER_APP_OFFICIAL_ACCOUNT_WX_RECEIVE_MESSAGE_ID.name() + dto.getMsgId();
+                BaseRedisKeyEnum.PRE_SYS_OTHER_APP_OFFICIAL_ACCOUNT_WX_RECEIVE_MESSAGE_ID.name() + msgIdStr;
 
-        redissonClient.<Long>getBucket(redisKey)
-                .set(dto.getMsgId(), Duration.ofMillis(BaseConstant.SHORT_CODE_EXPIRE_TIME));
+        redissonClient.<String>getBucket(redisKey)
+                .set("", Duration.ofMillis(BaseConstant.SHORT_CODE_EXPIRE_TIME));
 
         // 发送给：kafka进行处理
         KafkaUtil.sendSysOtherAppOfficialAccountWxReceiveMessageDTO(dto);
