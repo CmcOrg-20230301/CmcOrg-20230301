@@ -16,4 +16,7 @@ public class GetQrCodeVO {
     @Schema(description = "查询：二维码数据的 id")
     private Long queryId;
 
+    @Schema(description = "二维码过期时间戳")
+    private Long expireTs;
+
 }

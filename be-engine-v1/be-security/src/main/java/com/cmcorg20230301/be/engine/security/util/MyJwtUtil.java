@@ -195,7 +195,7 @@ public class MyJwtUtil {
                 .setKey(MyJwtUtil.getJwtSecret(jwtSecretSuf).getBytes()) // 设置密钥
                 .sign();
 
-        return new SignInVO(SecurityConstant.JWT_PREFIX + jwt, jwtExpireTime - (10 * 60 * 1000));
+        return new SignInVO(SecurityConstant.JWT_PREFIX + jwt, jwtExpireTime - (10 * 60 * 1000), tenantId);
 
     }
 

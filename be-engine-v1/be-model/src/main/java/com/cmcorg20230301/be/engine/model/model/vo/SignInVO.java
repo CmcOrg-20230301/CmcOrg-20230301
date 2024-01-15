@@ -16,4 +16,7 @@ public class SignInVO {
     @Schema(description = "jwt过期时间")
     private Long jwtExpireTime;
 
+    @Schema(description = "租户主键 id")
+    private Long tenantId;
+
 }

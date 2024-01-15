@@ -55,7 +55,7 @@ public class SignWxController {
 
     @PostMapping(value = "/sign/in/getQrCodeUrl")
     @Operation(summary = "扫码登录：获取二维码")
-    public ApiResultVO<GetQrCodeVO> getQrUrl(@RequestBody @Valid UserSignBaseDTO dto) {
+    public ApiResultVO<GetQrCodeVO> getQrCodeUrl(@RequestBody @Valid UserSignBaseDTO dto) {
         return ApiResultVO.okData(signWxService.getQrCodeUrl(dto));
     }
 

@@ -231,7 +231,7 @@ public class SignWxServiceImpl implements SignWxService {
 
         String qrCodeUrl = WxUtil.getQrCodeUrl(accessToken, wxQrSceneTypeEnum, queryId.toString());
 
-        return new GetQrCodeVO(qrCodeUrl, queryId);
+        return new GetQrCodeVO(qrCodeUrl, queryId, System.currentTimeMillis() + ((wxQrSceneTypeEnum.getExpireSecond() - 10) * 1000L));
 
     }
 
