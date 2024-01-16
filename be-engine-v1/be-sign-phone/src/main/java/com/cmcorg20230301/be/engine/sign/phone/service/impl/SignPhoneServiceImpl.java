@@ -246,16 +246,14 @@ public class SignPhoneServiceImpl implements SignPhoneService {
     @Override
     public String signInSendCode(PhoneNotBlankDTO dto) {
 
-        Long currentTenantIdDefault = UserUtil.getCurrentTenantIdDefault();
-
-        SignUtil.checkWillError(PRE_REDIS_KEY_ENUM, null, false, currentTenantIdDefault); // 检查：是否可以进行操作
+        SignUtil.checkWillError(PRE_REDIS_KEY_ENUM, dto.getPhone(), false, dto.getTenantId()); // 检查：是否可以进行操作
 
         String key = PRE_REDIS_KEY_ENUM + dto.getPhone();
 
         return SignUtil
-                .sendCode(key, ChainWrappers.lambdaQueryChain(sysUserMapper).eq(SysUserDO::getPhone, dto.getPhone()), true,
+                .sendCode(key, ChainWrappers.lambdaQueryChain(sysUserMapper).eq(SysUserDO::getPhone, dto.getPhone()), null,
                         com.cmcorg20230301.be.engine.sms.base.exception.BizCodeEnum.PHONE_NOT_REGISTERED, (code) -> SysSmsUtil
-                                .sendSignIn(SysSmsHelper.getSysSmsSendBO(currentTenantIdDefault, code, dto.getPhone())));
+                                .sendSignIn(SysSmsHelper.getSysSmsSendBO(dto.getTenantId(), code, dto.getPhone())));
 
     }
 
@@ -265,7 +263,7 @@ public class SignPhoneServiceImpl implements SignPhoneService {
     @Override
     public SignInVO signInCode(SignPhoneSignInCodeDTO dto) {
 
-        SignUtil.checkWillError(PRE_REDIS_KEY_ENUM, null, false, UserUtil.getCurrentTenantIdDefault()); // 检查：是否可以进行操作
+        SignUtil.checkWillError(PRE_REDIS_KEY_ENUM, dto.getPhone(), false, UserUtil.getCurrentTenantIdDefault()); // 检查：是否可以进行操作
 
         return SignUtil
                 .signInCode(ChainWrappers.lambdaQueryChain(sysUserMapper).eq(SysUserDO::getPhone, dto.getPhone()),

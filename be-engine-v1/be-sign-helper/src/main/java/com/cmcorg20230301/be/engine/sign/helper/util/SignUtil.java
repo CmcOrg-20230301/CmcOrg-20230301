@@ -86,9 +86,11 @@ public class SignUtil {
 
     /**
      * 发送验证码
+     *
+     * @param mustExist 是否必须存在，如果为 null，则，不存在和 存在都不会报错
      */
     public static String sendCode(String key, LambdaQueryChainWrapper<SysUserDO> lambdaQueryChainWrapper,
-                                  boolean mustExist, IBizCode iBizCode, Consumer<String> consumer) {
+                                  @Nullable Boolean mustExist, IBizCode iBizCode, Consumer<String> consumer) {
 
         return RedissonUtil.doLock(key, () -> {
 
@@ -104,7 +106,10 @@ public class SignUtil {
 
             }
 
-            if (mustExist) {
+            if (mustExist == null) {
+
+
+            } else if (mustExist) {
 
                 if (BooleanUtil.isFalse(exists)) {
                     ApiResultVO.error(iBizCode);
