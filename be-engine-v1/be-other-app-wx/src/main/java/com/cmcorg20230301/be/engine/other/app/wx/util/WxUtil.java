@@ -248,6 +248,7 @@ public class WxUtil {
 
     /**
      * 获取：临时二维码的url地址
+     * 注意：要保证 sceneStr + data的全局唯一性
      */
     @SneakyThrows
     public static String getQrCodeUrl(String accessToken, IWxQrSceneType iWxQrSceneType, @Nullable String data) {
