@@ -1232,29 +1232,33 @@ public class SignUtil {
             userId = UserUtil.getCurrentUserIdNotAdmin();
         }
 
-        boolean legalFlag = false; // 是否合法
+        boolean illegalFlag = false; // 是否非法操作
 
         if (baseRedisKeyEnum.equals(BaseRedisKeyEnum.PRE_SIGN_IN_NAME)) { // 如果是：登录名
 
-            // 判断：密码不能为空，并且不能有邮箱，手机
-            legalFlag = ChainWrappers.lambdaQueryChain(sysUserMapper).eq(userId != null, BaseEntity::getId, userId)
+            if (userId == null) {
+                userId = UserUtil.getCurrentUserIdNotAdmin();
+            }
+
+            // 判断：密码不能为空，并且，邮箱为空，手机为空
+            illegalFlag = !ChainWrappers.lambdaQueryChain(sysUserMapper).eq(BaseEntity::getId, userId)
                     .ne(SysUserDO::getPassword, "").eq(SysUserDO::getEmail, "").eq(SysUserDO::getPhone, "")
                     .eq(BaseEntityNoId::getTenantId, tenantId).exists();
 
         } else if (baseRedisKeyEnum.equals(BaseRedisKeyEnum.PRE_EMAIL)) { // 如果是：邮箱
 
             // 判断：不能有手机
-            legalFlag = ChainWrappers.lambdaQueryChain(sysUserMapper).eq(userId != null, BaseEntity::getId, userId)
-                    .eq(userId == null, SysUserDO::getEmail, account).eq(SysUserDO::getPhone, "")
+            illegalFlag = ChainWrappers.lambdaQueryChain(sysUserMapper).eq(userId != null, BaseEntity::getId, userId)
+                    .eq(userId == null, SysUserDO::getEmail, account).ne(SysUserDO::getPhone, "")
                     .eq(BaseEntityNoId::getTenantId, tenantId).exists();
 
         } else if (baseRedisKeyEnum.equals(BaseRedisKeyEnum.PRE_PHONE)) { // 如果是：手机号
 
-            legalFlag = true; // 目前手机号操作，都合法
+            // 目前手机号操作，都合法
 
         }
 
-        if (BooleanUtil.isFalse(legalFlag)) { // 如果不合法
+        if (illegalFlag) { // 如果不合法
 
             ApiResultVO.errorMsg(BaseBizCodeEnum.ILLEGAL_REQUEST.getMsg() + "：" + baseRedisKeyEnum.name());
 
