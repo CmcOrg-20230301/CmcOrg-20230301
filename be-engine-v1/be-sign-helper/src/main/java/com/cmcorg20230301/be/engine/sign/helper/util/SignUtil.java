@@ -16,13 +16,17 @@ import com.cmcorg20230301.be.engine.file.base.service.SysFileService;
 import com.cmcorg20230301.be.engine.file.base.util.SysFileUtil;
 import com.cmcorg20230301.be.engine.ip2region.util.Ip2RegionUtil;
 import com.cmcorg20230301.be.engine.model.exception.IBizCode;
+import com.cmcorg20230301.be.engine.model.model.bo.SysQrCodeSceneBindBO;
 import com.cmcorg20230301.be.engine.model.model.constant.BaseConstant;
 import com.cmcorg20230301.be.engine.model.model.constant.BaseRegexConstant;
 import com.cmcorg20230301.be.engine.model.model.constant.LogTopicConstant;
 import com.cmcorg20230301.be.engine.model.model.constant.ParamConstant;
+import com.cmcorg20230301.be.engine.model.model.dto.SysQrCodeSceneBindExistUserDTO;
+import com.cmcorg20230301.be.engine.model.model.enums.SysBindExistUserTypeEnum;
 import com.cmcorg20230301.be.engine.model.model.interfaces.IRedisKey;
 import com.cmcorg20230301.be.engine.model.model.vo.GetQrCodeVO;
 import com.cmcorg20230301.be.engine.model.model.vo.SignInVO;
+import com.cmcorg20230301.be.engine.model.model.vo.SysQrCodeSceneBindVO;
 import com.cmcorg20230301.be.engine.other.app.mapper.SysOtherAppMapper;
 import com.cmcorg20230301.be.engine.other.app.model.entity.SysOtherAppDO;
 import com.cmcorg20230301.be.engine.other.app.model.enums.SysOtherAppTypeEnum;
@@ -1325,7 +1329,7 @@ public class SignUtil {
      * 检查：是否可以进行操作：敏感操作都需要调用此方法
      *
      * @param baseRedisKeyEnum 操作账户的类型：登录名，邮箱，微信，手机号
-     * @param account          账号信息，一般情况为 null，只有忘记密码，或者验证码登录并注册的时候，才会传值
+     * @param account          账号信息，一般情况为 null，只有：忘记密码，或者 验证码登录并注册 的时候，才会传值
      */
     public static void checkWillError(BaseRedisKeyEnum baseRedisKeyEnum, String account,
                                       @Nullable Long tenantId, String appId) {
@@ -1495,6 +1499,86 @@ public class SignUtil {
         SysOtherAppDO sysOtherAppDO = page.getRecords().get(0);
 
         return func1.call(sysOtherAppDO);
+
+    }
+
+    /**
+     * 绑定微信
+     */
+    public static SysQrCodeSceneBindVO setWx(Long qrCodeId) {
+
+        SysQrCodeSceneBindBO sysQrCodeSceneBindBO = redissonClient.<SysQrCodeSceneBindBO>getBucket(BaseRedisKeyEnum.PRE_SYS_WX_QR_CODE_BIND.name() + qrCodeId).getAndDelete();
+
+        SysQrCodeSceneBindVO sysQrCodeSceneBindVO = new SysQrCodeSceneBindVO();
+
+        if (sysQrCodeSceneBindBO == null) {
+
+            sysQrCodeSceneBindVO.setSceneFlag(false);
+
+        } else {
+
+            sysQrCodeSceneBindVO.setSceneFlag(true);
+
+            // 是否已经存在用户
+            boolean existUserFlag = sysQrCodeSceneBindBO.getUserId() != null;
+
+            if (existUserFlag) { // 如果：存在用户，则需要让用户进行二次操作：覆盖或者取消绑定
+
+                Long operateId = IdGeneratorUtil.nextId();
+
+                RBucket<SysQrCodeSceneBindBO> rBucket = redissonClient.getBucket(BaseRedisKeyEnum.PRE_SYS_WX_QR_CODE_BIND_EXIST_USER.name() + operateId);
+
+                rBucket.set(sysQrCodeSceneBindBO, Duration.ofMillis(BaseConstant.MINUTE_10_EXPIRE_TIME));
+
+                sysQrCodeSceneBindVO.setExistUserOperateId(operateId);
+
+            } else { // 如果：不存在用户，则开始绑定
+
+                SignUtil.bindAccount(null, BaseRedisKeyEnum.PRE_WX_OPEN_ID, sysQrCodeSceneBindBO.getOpenId(), sysQrCodeSceneBindBO.getAppId());
+
+            }
+
+        }
+
+        return sysQrCodeSceneBindVO;
+
+    }
+
+    /**
+     * 设置微信-存在用户
+     */
+    public static String setWxExistUser(SysQrCodeSceneBindExistUserDTO dto) {
+
+        RBucket<SysQrCodeSceneBindBO> rBucket = redissonClient.getBucket(BaseRedisKeyEnum.PRE_SYS_WX_QR_CODE_BIND_EXIST_USER.name() + dto.getId());
+
+        SysQrCodeSceneBindBO sysQrCodeSceneBindBO = rBucket.getAndDelete();
+
+        if (sysQrCodeSceneBindBO == null) {
+            ApiResultVO.errorMsg("操作失败：已过时，请重新扫码后再进行操作");
+        }
+
+        if (SysBindExistUserTypeEnum.CANCEL.equals(dto.getType())) {
+            return BaseBizCodeEnum.OK;
+        }
+
+        // 判断：该用户的数据是否改变
+        boolean exists = ChainWrappers.lambdaQueryChain(sysUserMapper).eq(BaseEntity::getId, sysQrCodeSceneBindBO.getUserId()).eq(BaseEntityNoIdSuper::getTenantId, sysQrCodeSceneBindBO.getTenantId()).eq(SysUserDO::getWxAppId, sysQrCodeSceneBindBO.getAppId()).eq(SysUserDO::getWxOpenId, sysQrCodeSceneBindBO.getOpenId()).exists();
+
+        if (!exists) {
+            ApiResultVO.errorMsg("操作失败：已过时，请重新扫码后再进行操作");
+        }
+
+        if (SysBindExistUserTypeEnum.COVER.equals(dto.getType())) { // 覆盖
+
+            // 注销：该账号
+            SignUtil.signDelete(null, BaseRedisKeyEnum.PRE_WX_OPEN_ID, null, sysQrCodeSceneBindBO.getUserId());
+
+            // 当前账户，绑定该微信
+            SignUtil.bindAccount(null, BaseRedisKeyEnum.PRE_WX_OPEN_ID, sysQrCodeSceneBindBO.getOpenId(), sysQrCodeSceneBindBO.getAppId());
+
+        }
+
+        return BaseBizCodeEnum.OK;
 
     }
 
