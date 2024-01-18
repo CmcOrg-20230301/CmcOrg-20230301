@@ -14,6 +14,18 @@
 
     <dependencies>
 
+        <!-- be-sign-phone -->
+        <dependency>
+            <groupId>${cmcorg.groupId}</groupId>
+            <artifactId>be-sign-phone</artifactId>
+        </dependency>
+
+        <!-- be-sign-wx -->
+        <dependency>
+            <groupId>${cmcorg.groupId}</groupId>
+            <artifactId>be-sign-wx</artifactId>
+        </dependency>
+
         <!-- be-email -->
         <dependency>
             <groupId>${cmcorg.groupId}</groupId>

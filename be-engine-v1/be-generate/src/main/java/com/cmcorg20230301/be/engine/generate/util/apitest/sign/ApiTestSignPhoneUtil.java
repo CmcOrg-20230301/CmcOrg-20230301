@@ -240,7 +240,7 @@ public class ApiTestSignPhoneUtil {
 
         long currentTs = System.currentTimeMillis();
 
-        SignPhoneUpdateAccountDTO dto = new SignPhoneUpdateAccountDTO();
+        SignPhoneUpdatePhoneDTO dto = new SignPhoneUpdatePhoneDTO();
         dto.setNewPhone(newPhone);
         dto.setOldPhoneCode(code);
         dto.setNewPhoneCode(newCode);

@@ -11,7 +11,7 @@ import com.cmcorg20230301.be.engine.security.util.MyRsaUtil;
 import com.cmcorg20230301.be.engine.sign.email.model.dto.EmailNotBlankDTO;
 import com.cmcorg20230301.be.engine.sign.email.model.dto.SignEmailBindAccountDTO;
 import com.cmcorg20230301.be.engine.sign.phone.model.dto.PhoneNotBlankDTO;
-import com.cmcorg20230301.be.engine.sign.phone.model.dto.SignPhoneBindAccountDTO;
+import com.cmcorg20230301.be.engine.sign.phone.model.dto.SignPhoneSetPhoneDTO;
 import com.cmcorg20230301.be.engine.sign.signinname.model.dto.*;
 import lombok.extern.slf4j.Slf4j;
 
@@ -115,7 +115,7 @@ public class ApiTestSignSignInNameUtil {
 
         long currentTs = System.currentTimeMillis();
 
-        SignPhoneBindAccountDTO dto = new SignPhoneBindAccountDTO();
+        SignPhoneSetPhoneDTO dto = new SignPhoneSetPhoneDTO();
         dto.setCode(code);
         dto.setPhone(phone);
 
@@ -212,7 +212,7 @@ public class ApiTestSignSignInNameUtil {
 
         currentPassword = MyRsaUtil.rsaEncrypt(currentPassword, rsaPublicKey);
 
-        SignSignInNameUpdateAccountDTO dto = new SignSignInNameUpdateAccountDTO();
+        SignSignInNameUpdateSignInNameDTO dto = new SignSignInNameUpdateSignInNameDTO();
         dto.setNewSignInName(newSignInName);
         dto.setCurrentPassword(currentPassword);
 

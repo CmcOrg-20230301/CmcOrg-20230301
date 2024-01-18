@@ -16,13 +16,12 @@ import com.cmcorg20230301.be.engine.model.model.constant.LogTopicConstant;
 import com.cmcorg20230301.be.engine.other.app.model.entity.SysOtherAppDO;
 import com.cmcorg20230301.be.engine.other.app.service.SysOtherAppService;
 import com.cmcorg20230301.be.engine.other.app.wx.model.enums.WxMediaUploadTypeEnum;
-import com.cmcorg20230301.be.engine.other.app.wx.model.enums.WxQrSceneTypeEnum;
-import com.cmcorg20230301.be.engine.other.app.wx.model.interfaces.IWxQrSceneType;
 import com.cmcorg20230301.be.engine.other.app.wx.model.vo.*;
 import com.cmcorg20230301.be.engine.redisson.model.enums.BaseRedisKeyEnum;
 import com.cmcorg20230301.be.engine.security.exception.BaseBizCodeEnum;
 import com.cmcorg20230301.be.engine.security.model.entity.BaseEntityNoId;
 import com.cmcorg20230301.be.engine.security.model.entity.BaseEntityNoIdSuper;
+import com.cmcorg20230301.be.engine.security.model.interfaces.ISysQrCodeSceneType;
 import com.cmcorg20230301.be.engine.security.model.vo.ApiResultVO;
 import com.cmcorg20230301.be.engine.util.util.MyStrUtil;
 import com.cmcorg20230301.be.engine.util.util.RetryUtil;
@@ -251,25 +250,26 @@ public class WxUtil {
      * 注意：要保证 sceneStr + data的全局唯一性
      */
     @SneakyThrows
-    public static String getQrCodeUrl(String accessToken, IWxQrSceneType iWxQrSceneType, @Nullable String data) {
+    public static String getQrCodeUrl(String accessToken, ISysQrCodeSceneType iSysQrCodeSceneType, @Nullable String data) {
 
         boolean foreverFlag = false;
 
-        if (iWxQrSceneType.getExpireSecond() <= 0) {
+        if (iSysQrCodeSceneType.getExpireSecond() <= 0) {
 
             foreverFlag = true;
 
         }
 
-        String sceneStr = iWxQrSceneType.getSceneStr();
+        String sceneStr = iSysQrCodeSceneType.getSceneStr();
 
         if (StrUtil.isNotBlank(data)) {
 
-            sceneStr = sceneStr + WxQrSceneTypeEnum.SEPARATOR + data;
+            sceneStr = sceneStr + ISysQrCodeSceneType.SEPARATOR + data;
 
         }
 
-        return getQrCodeUrl(accessToken, sceneStr, foreverFlag, iWxQrSceneType.getExpireSecond());
+        // 执行
+        return getQrCodeUrl(accessToken, sceneStr, foreverFlag, iSysQrCodeSceneType.getExpireSecond());
 
     }
 

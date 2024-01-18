@@ -194,7 +194,7 @@ public class ApiTestSignEmailUtil {
 
         long currentTs = System.currentTimeMillis();
 
-        SignEmailUpdateAccountDTO dto = new SignEmailUpdateAccountDTO();
+        SignEmailUpdateEmailDTO dto = new SignEmailUpdateEmailDTO();
         dto.setNewEmail(newEmail);
         dto.setOldEmailCode(code);
         dto.setNewEmailCode(newCode);

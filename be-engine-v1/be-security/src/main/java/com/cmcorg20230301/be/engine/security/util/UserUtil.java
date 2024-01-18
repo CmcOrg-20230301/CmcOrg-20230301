@@ -500,14 +500,22 @@ public class UserUtil {
      *
      * @param setAuthoritySetFlag 是否设置：权限
      */
-    public static void securityContextHolderSetAuthenticationAndExecFun(VoidFunc0 voidFunc0, Long userId, Long tenantId,
+    public static void securityContextHolderSetAuthenticationAndExecFun(VoidFunc0 voidFunc0, @Nullable Long userId, @Nullable Long tenantId,
                                                                         @Nullable String wxAppId, @Nullable String wxOpenId, boolean setAuthoritySetFlag) {
 
         JSONObject principalJson = JSONUtil.createObj();
 
-        principalJson.set(MyJwtUtil.PAYLOAD_MAP_USER_ID_KEY, new NumberWithFormat(userId, null));
+        if (userId != null) {
 
-        principalJson.set(MyJwtUtil.PAYLOAD_MAP_TENANT_ID_KEY, new NumberWithFormat(tenantId, null));
+            principalJson.set(MyJwtUtil.PAYLOAD_MAP_USER_ID_KEY, new NumberWithFormat(userId, null));
+
+        }
+
+        if (tenantId != null) {
+
+            principalJson.set(MyJwtUtil.PAYLOAD_MAP_TENANT_ID_KEY, new NumberWithFormat(tenantId, null));
+
+        }
 
         if (StrUtil.isNotBlank(wxAppId)) {
 

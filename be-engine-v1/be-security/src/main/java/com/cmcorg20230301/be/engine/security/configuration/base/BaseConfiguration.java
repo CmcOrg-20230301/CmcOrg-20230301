@@ -70,7 +70,7 @@ public class BaseConfiguration {
         ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
 
         // 设置：核心线程数
-        executor.setCorePoolSize(availableProcessors * 10);
+        executor.setCorePoolSize(availableProcessors * 100);
 
         // 设置：最大线程数
         executor.setMaxPoolSize(availableProcessors * 100);
@@ -102,7 +102,7 @@ public class BaseConfiguration {
         ThreadPoolTaskScheduler scheduler = new ThreadPoolTaskScheduler();
 
         // 设置：核心线程数，备注：默认情况下，核心线程不会被销毁
-        scheduler.setPoolSize(availableProcessors * 10);
+        scheduler.setPoolSize(availableProcessors * 100);
 
         // 设置：线程名前缀
         scheduler.setThreadNamePrefix("myTaskScheduler-");

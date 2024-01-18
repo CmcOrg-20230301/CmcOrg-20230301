@@ -3,7 +3,6 @@ package com.cmcorg20230301.be.engine.sign.email.controller;
 import com.cmcorg20230301.be.engine.model.model.constant.OperationDescriptionConstant;
 import com.cmcorg20230301.be.engine.model.model.dto.NotBlankCodeDTO;
 import com.cmcorg20230301.be.engine.model.model.vo.SignInVO;
-import com.cmcorg20230301.be.engine.security.exception.BaseBizCodeEnum;
 import com.cmcorg20230301.be.engine.security.model.vo.ApiResultVO;
 import com.cmcorg20230301.be.engine.sign.email.model.dto.*;
 import com.cmcorg20230301.be.engine.sign.email.service.SignEmailService;
@@ -38,9 +37,9 @@ public class SignEmailController {
     }
 
     @PostMapping(value = "/sign/in/password")
-    @Operation(summary = "邮箱账号密码登录", description = OperationDescriptionConstant.SIGN_IN)
+    @Operation(summary = "邮箱：账号密码登录", description = OperationDescriptionConstant.SIGN_IN)
     public ApiResultVO<SignInVO> signInPassword(@RequestBody @Valid SignEmailSignInPasswordDTO dto) {
-        return ApiResultVO.ok(BaseBizCodeEnum.OK, baseService.signInPassword(dto));
+        return ApiResultVO.okData(baseService.signInPassword(dto));
     }
 
     @PostMapping(value = "/updatePassword/sendCode")
@@ -55,16 +54,16 @@ public class SignEmailController {
         return ApiResultVO.okMsg(baseService.updatePassword(dto));
     }
 
-    @PostMapping(value = "/updateAccount/sendCode")
+    @PostMapping(value = "/updateEmail/sendCode")
     @Operation(summary = "修改邮箱-发送验证码")
-    public ApiResultVO<String> updateAccountSendCode() {
-        return ApiResultVO.okMsg(baseService.updateAccountSendCode());
+    public ApiResultVO<String> updateEmailSendCode() {
+        return ApiResultVO.okMsg(baseService.updateEmailSendCode());
     }
 
-    @PostMapping(value = "/updateAccount")
+    @PostMapping(value = "/updateEmail")
     @Operation(summary = "修改邮箱")
-    public ApiResultVO<String> updateAccount(@RequestBody @Valid SignEmailUpdateAccountDTO dto) {
-        return ApiResultVO.okMsg(baseService.updateAccount(dto));
+    public ApiResultVO<String> updateEmail(@RequestBody @Valid SignEmailUpdateEmailDTO dto) {
+        return ApiResultVO.okMsg(baseService.updateEmail(dto));
     }
 
     @PostMapping(value = "/forgetPassword/sendCode")
@@ -89,18 +88,6 @@ public class SignEmailController {
     @Operation(summary = "账号注销")
     public ApiResultVO<String> signDelete(@RequestBody @Valid NotBlankCodeDTO dto) {
         return ApiResultVO.okMsg(baseService.signDelete(dto));
-    }
-
-    @PostMapping(value = "/bindAccount/sendCode")
-    @Operation(summary = "绑定邮箱-发送验证码")
-    public ApiResultVO<String> bindAccountSendCode(@RequestBody @Valid EmailNotBlankDTO dto) {
-        return ApiResultVO.okMsg(baseService.bindAccountSendCode(dto));
-    }
-
-    @PostMapping(value = "/bindAccount")
-    @Operation(summary = "绑定邮箱")
-    public ApiResultVO<String> bindAccount(@RequestBody @Valid SignEmailBindAccountDTO dto) {
-        return ApiResultVO.okMsg(baseService.bindAccount(dto));
     }
 
 }

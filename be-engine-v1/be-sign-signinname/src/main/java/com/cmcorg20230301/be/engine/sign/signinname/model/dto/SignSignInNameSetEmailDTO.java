@@ -1,4 +1,4 @@
-package com.cmcorg20230301.be.engine.sign.email.model.dto;
+package com.cmcorg20230301.be.engine.sign.signinname.model.dto;
 
 import com.cmcorg20230301.be.engine.model.model.constant.BaseRegexConstant;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -9,7 +9,7 @@ import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
 @Data
-public class SignEmailBindAccountDTO {
+public class SignSignInNameSetEmailDTO {
 
     @Size(max = 200)
     @NotBlank
@@ -21,9 +21,5 @@ public class SignEmailBindAccountDTO {
     @NotBlank
     @Schema(description = "邮箱验证码")
     private String code;
-
-    @NotBlank
-    @Schema(description = "当前密码")
-    private String currentPassword;
 
 }

@@ -16,9 +16,9 @@ public interface SignEmailService {
 
     String updatePassword(SignEmailUpdatePasswordDTO dto);
 
-    String updateAccountSendCode();
+    String updateEmailSendCode();
 
-    String updateAccount(SignEmailUpdateAccountDTO dto);
+    String updateEmail(SignEmailUpdateEmailDTO dto);
 
     String forgetPasswordSendCode(EmailNotBlankDTO dto);
 
@@ -27,9 +27,5 @@ public interface SignEmailService {
     String signDeleteSendCode();
 
     String signDelete(NotBlankCodeDTO dto);
-
-    String bindAccountSendCode(EmailNotBlankDTO dto);
-
-    String bindAccount(SignEmailBindAccountDTO dto);
 
 }

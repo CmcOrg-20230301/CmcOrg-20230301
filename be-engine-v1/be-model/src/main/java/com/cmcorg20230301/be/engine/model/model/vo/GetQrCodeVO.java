@@ -13,8 +13,8 @@ public class GetQrCodeVO {
     @Schema(description = "二维码的 url地址")
     private String qrCodeUrl;
 
-    @Schema(description = "查询：二维码数据的 id")
-    private Long queryId;
+    @Schema(description = "二维码 id")
+    private Long qrCodeId;
 
     @Schema(description = "二维码过期时间戳")
     private Long expireTs;

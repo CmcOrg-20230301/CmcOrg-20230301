@@ -282,7 +282,6 @@ public class MyJwtUtil {
 
         if (userId == null || tenantId == null) {
             ApiResultVO.error(BaseBizCodeEnum.ILLEGAL_REQUEST); // 直接抛出异常
-            return null;
         }
 
         // admin账号，自带所有权限

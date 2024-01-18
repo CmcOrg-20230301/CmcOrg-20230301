@@ -11,7 +11,11 @@ import com.cmcorg20230301.be.engine.model.model.interfaces.IRedisKey;
 public enum BaseRedisKeyEnum implements IRedisKey {
 
     // 【PRE_】开头 ↓
-    PRE_SYS_WX_QR_CODE_SIGN, // 微信扫码登录注册时，生成的，查询二维码数据的 id，备注：只有扫描了二维码之后，才会放数据到 redis里面
+    PRE_SYS_WX_QR_CODE_BIND_EXIST_USER, // 微信扫码绑定时，如果存在用户，则需要用户进行二次操作：覆盖或者取消绑定
+
+    PRE_SYS_WX_QR_CODE_BIND, // 微信扫码绑定时，生成的，二维码 id，备注：只有扫描了二维码之后，才会放数据到 redis里面
+
+    PRE_SYS_WX_QR_CODE_SIGN, // 微信扫码登录注册时，生成的，二维码 id，备注：只有扫描了二维码之后，才会放数据到 redis里面
 
     PRE_SYS_IM_SESSION_ID, // 即时通讯会话锁，目的：往会话里面添加用户时，防止重复添加，锁：【sessionId】
 
@@ -37,11 +41,12 @@ public enum BaseRedisKeyEnum implements IRedisKey {
 
     PRE_JWT_HASH, // jwtHash 前缀
 
-    PRE_WX_APP_ID, // 微信 appId：锁【微信 appId】
-    PRE_WX_OPEN_ID, // 微信 openId：锁【微信 openId】
-    PRE_PHONE, // 手机号码：锁【手机号码】
-    PRE_EMAIL, // 邮箱：锁【邮箱】
-    PRE_SIGN_IN_NAME, // 登录名：锁【登录名】
+    PRE_WX_APP_ID, // 微信 appId（应用）：锁：【微信 appId】
+    PRE_WX_OPEN_ID, // 微信 openId（用户）：锁：【微信 openId】，备注：一般锁：微信 openId
+
+    PRE_PHONE, // 手机号码：锁：【手机号码】
+    PRE_EMAIL, // 邮箱：锁：【邮箱】
+    PRE_SIGN_IN_NAME, // 登录名：锁：【登录名】
 
     PRE_TOO_MANY_PASSWORD_ERROR, // 密码错误次数太多：锁【用户主键 id】
     PRE_PASSWORD_ERROR_COUNT, // 密码错误总数：锁【用户主键 id】

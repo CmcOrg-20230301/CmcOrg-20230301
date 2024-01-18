@@ -1,11 +1,14 @@
 package com.cmcorg20230301.be.engine.sign.helper.util;
 
 import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.lang.func.Func1;
+import cn.hutool.core.lang.func.VoidFunc0;
 import cn.hutool.core.map.MapUtil;
 import cn.hutool.core.util.BooleanUtil;
 import cn.hutool.core.util.ReUtil;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.extension.conditions.query.LambdaQueryChainWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.toolkit.ChainWrappers;
 import com.cmcorg20230301.be.engine.datasource.util.TransactionUtil;
 import com.cmcorg20230301.be.engine.file.base.model.entity.SysFileDO;
@@ -18,19 +21,28 @@ import com.cmcorg20230301.be.engine.model.model.constant.BaseRegexConstant;
 import com.cmcorg20230301.be.engine.model.model.constant.LogTopicConstant;
 import com.cmcorg20230301.be.engine.model.model.constant.ParamConstant;
 import com.cmcorg20230301.be.engine.model.model.interfaces.IRedisKey;
+import com.cmcorg20230301.be.engine.model.model.vo.GetQrCodeVO;
 import com.cmcorg20230301.be.engine.model.model.vo.SignInVO;
+import com.cmcorg20230301.be.engine.other.app.mapper.SysOtherAppMapper;
+import com.cmcorg20230301.be.engine.other.app.model.entity.SysOtherAppDO;
+import com.cmcorg20230301.be.engine.other.app.model.enums.SysOtherAppTypeEnum;
+import com.cmcorg20230301.be.engine.other.app.wx.util.WxUtil;
 import com.cmcorg20230301.be.engine.redisson.model.enums.BaseRedisKeyEnum;
+import com.cmcorg20230301.be.engine.redisson.util.IdGeneratorUtil;
 import com.cmcorg20230301.be.engine.redisson.util.RedissonUtil;
 import com.cmcorg20230301.be.engine.security.exception.BaseBizCodeEnum;
 import com.cmcorg20230301.be.engine.security.mapper.*;
 import com.cmcorg20230301.be.engine.security.model.configuration.IUserSignConfiguration;
 import com.cmcorg20230301.be.engine.security.model.entity.*;
+import com.cmcorg20230301.be.engine.security.model.interfaces.ISysQrCodeSceneType;
 import com.cmcorg20230301.be.engine.security.model.vo.ApiResultVO;
 import com.cmcorg20230301.be.engine.security.properties.SecurityProperties;
 import com.cmcorg20230301.be.engine.security.util.*;
 import com.cmcorg20230301.be.engine.sign.helper.exception.BizCodeEnum;
+import com.cmcorg20230301.be.engine.util.util.CallBack;
 import com.cmcorg20230301.be.engine.util.util.NicknameUtil;
 import com.cmcorg20230301.be.engine.util.util.VoidFunc2;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -61,6 +73,7 @@ public class SignUtil {
     private static SysPostRefUserMapper sysPostRefUserMapper;
     private static SysTenantRefUserMapper sysTenantRefUserMapper;
     private static SysFileService sysFileService;
+    private static SysOtherAppMapper sysOtherAppMapper;
 
     @Nullable
     private static List<IUserSignConfiguration> iUserSignConfigurationList;
@@ -69,7 +82,7 @@ public class SignUtil {
                     SecurityProperties securityProperties, SysRoleRefUserMapper sysRoleRefUserMapper,
                     SysDeptRefUserMapper sysDeptRefUserMapper, SysPostRefUserMapper sysPostRefUserMapper,
                     SysTenantRefUserMapper sysTenantRefUserMapper, SysFileService sysFileService,
-                    @Autowired(required = false) @Nullable List<IUserSignConfiguration> iUserSignConfigurationList) {
+                    @Autowired(required = false) @Nullable List<IUserSignConfiguration> iUserSignConfigurationList, SysOtherAppMapper sysOtherAppMapper) {
 
         SignUtil.sysUserInfoMapper = sysUserInfoMapper;
         SignUtil.sysUserMapper = sysUserMapper;
@@ -81,6 +94,7 @@ public class SignUtil {
         SignUtil.sysTenantRefUserMapper = sysTenantRefUserMapper;
         SignUtil.sysFileService = sysFileService;
         SignUtil.iUserSignConfigurationList = iUserSignConfigurationList;
+        SignUtil.sysOtherAppMapper = sysOtherAppMapper;
 
     }
 
@@ -247,6 +261,7 @@ public class SignUtil {
     /**
      * 新增：用户
      */
+    @NotNull
     public static SysUserDO insertUser(String password, Map<Enum<? extends IRedisKey>, String> accountMap,
                                        boolean checkPasswordBlank, @Nullable SysUserInfoDO tempSysUserInfoDO, Boolean enableFlag,
                                        @Nullable Long tenantId) {
@@ -392,7 +407,7 @@ public class SignUtil {
     @NotNull
     public static SignInVO signInAccount(LambdaQueryChainWrapper<SysUserDO> lambdaQueryChainWrapper,
                                          Enum<? extends IRedisKey> redisKeyEnum, String account, Supplier<SysUserInfoDO> sysUserInfoDOSupplier,
-                                         @Nullable Long tenantId, @Nullable Consumer<Map<Enum<? extends IRedisKey>, String>> consumer) {
+                                         @Nullable Long tenantId, @Nullable Consumer<Map<Enum<? extends IRedisKey>, String>> consumer, @Nullable CallBack<SysUserDO> sysUserDOCallBack) {
 
         String key = redisKeyEnum + account;
 
@@ -424,6 +439,12 @@ public class SignUtil {
 
             }
 
+            if (sysUserDOCallBack != null) {
+
+                sysUserDOCallBack.setValue(sysUserDO); // 回调该对象
+
+            }
+
             // 登录时，获取：jwt
             return signInGetJwt(sysUserDO);
 
@@ -434,9 +455,9 @@ public class SignUtil {
     /**
      * 验证码登录
      */
-    @NotNull
+    @Nullable
     public static SignInVO signInCode(LambdaQueryChainWrapper<SysUserDO> lambdaQueryChainWrapper, String code,
-                                      Enum<? extends IRedisKey> redisKeyEnum, String account, @Nullable Long tenantId) {
+                                      Enum<? extends IRedisKey> redisKeyEnum, String account, @Nullable Long tenantId, @Nullable VoidFunc0 voidFunc0) {
 
         // 登录时，获取账号信息
         SysUserDO sysUserDOTemp = signInGetSysUserDO(lambdaQueryChainWrapper, false, tenantId);
@@ -445,28 +466,46 @@ public class SignUtil {
 
         return RedissonUtil.doLock(key, () -> {
 
-            RBucket<String> bucket = redissonClient.getBucket(key);
+            // 执行
+            return doSignInCode(code, redisKeyEnum, account, tenantId, voidFunc0, key, sysUserDOTemp);
 
-            CodeUtil.checkCode(code, bucket.get()); // 检查 code是否正确
+        });
 
-            SysUserDO sysUserDO = sysUserDOTemp;
+    }
 
-            if (sysUserDO == null) {
+    /**
+     * 执行：验证码登录
+     */
+    @SneakyThrows
+    @Nullable
+    private static SignInVO doSignInCode(String code, Enum<? extends IRedisKey> redisKeyEnum, String account, @Nullable Long tenantId, @Nullable VoidFunc0 voidFunc0, String key, SysUserDO sysUserDOTemp) {
 
-                // 如果登录的账号不存在，则进行新增
-                Map<Enum<? extends IRedisKey>, String> accountMap = MapUtil.newHashMap();
-                accountMap.put(redisKeyEnum, account);
+        RBucket<String> bucket = redissonClient.getBucket(key);
 
-                sysUserDO = SignUtil.insertUser(null, accountMap, false, null, null, tenantId);
+        CodeUtil.checkCode(code, bucket.get()); // 检查 code是否正确
+
+        SysUserDO sysUserDO = sysUserDOTemp;
+
+        if (sysUserDO == null) {
+
+            if (voidFunc0 != null) {
+
+                voidFunc0.call();
 
             }
 
-            bucket.delete(); // 删除：验证码
+            // 如果登录的账号不存在，则进行新增
+            Map<Enum<? extends IRedisKey>, String> accountMap = MapUtil.newHashMap();
+            accountMap.put(redisKeyEnum, account);
 
-            // 登录时，获取：jwt
-            return signInGetJwt(sysUserDO);
+            sysUserDO = SignUtil.insertUser(null, accountMap, false, null, null, tenantId);
 
-        });
+        }
+
+        bucket.delete(); // 删除：验证码
+
+        // 登录时，获取：jwt
+        return signInGetJwt(sysUserDO);
 
     }
 
@@ -660,7 +699,7 @@ public class SignUtil {
         String paramValue = SysParamUtil.getValueByUuid(ParamConstant.RSA_PRIVATE_KEY_UUID); // 获取非对称 私钥
 
         if (BaseRedisKeyEnum.PRE_SIGN_IN_NAME.equals(redisKeyEnum)) {
-            checkCurrentPassword(oldPassword, currentUserIdNotAdmin, paramValue); // 检查：当前密码是否正确
+            checkCurrentPasswordWillError(oldPassword, currentUserIdNotAdmin, paramValue, null); // 检查：当前密码是否正确
         }
 
         String newPassword = MyRsaUtil.rsaDecrypt(newPasswordTemp, paramValue);
@@ -712,26 +751,41 @@ public class SignUtil {
 
     /**
      * 检查：当前密码是否正确
+     *
+     * @param checkPassword 前端传过来的密码
+     * @param userPassword  用户，数据库里面的密码
      */
-    private static void checkCurrentPassword(String currentPassword, Long currentUserIdNotAdmin, String paramValue) {
+    public static void checkCurrentPasswordWillError(String checkPassword, Long currentUserIdNotAdmin, @Nullable String paramValue, @Nullable String userPassword) {
+
+        if (StrUtil.isBlank(checkPassword)) {
+
+            ApiResultVO.error(BaseBizCodeEnum.PARAMETER_CHECK_ERROR);
+
+        }
 
         // 判断：密码错误次数过多，是否被冻结
         checkTooManyPasswordError(currentUserIdNotAdmin);
 
-        SysUserDO sysUserDO = ChainWrappers.lambdaQueryChain(sysUserMapper).eq(BaseEntity::getId, currentUserIdNotAdmin)
-                .select(SysUserDO::getPassword).one();
+        if (StrUtil.isBlank(userPassword)) {
 
-        if (sysUserDO == null) {
-            ApiResultVO.error(BizCodeEnum.USER_DOES_NOT_EXIST);
+            SysUserDO sysUserDO = ChainWrappers.lambdaQueryChain(sysUserMapper).eq(BaseEntity::getId, currentUserIdNotAdmin)
+                    .select(SysUserDO::getPassword).one();
+
+            if (sysUserDO == null) {
+                ApiResultVO.error(BizCodeEnum.USER_DOES_NOT_EXIST);
+            }
+
+            userPassword = sysUserDO.getPassword();
+
         }
 
         if (paramValue == null) {
-            currentPassword = MyRsaUtil.rsaDecrypt(currentPassword);
+            checkPassword = MyRsaUtil.rsaDecrypt(checkPassword);
         } else {
-            currentPassword = MyRsaUtil.rsaDecrypt(currentPassword, paramValue);
+            checkPassword = MyRsaUtil.rsaDecrypt(checkPassword, paramValue);
         }
 
-        if (BooleanUtil.isFalse(PasswordConvertUtil.match(sysUserDO.getPassword(), currentPassword))) {
+        if (BooleanUtil.isFalse(PasswordConvertUtil.match(userPassword, checkPassword))) {
 
             // 密码输入错误处理
             passwordErrorHandler(currentUserIdNotAdmin);
@@ -763,6 +817,10 @@ public class SignUtil {
         } else if (BaseRedisKeyEnum.PRE_PHONE.equals(redisKeyEnum)) {
 
             return sysUserDO.getPhone();
+
+        } else if (BaseRedisKeyEnum.PRE_WX_OPEN_ID.equals(redisKeyEnum)) {
+
+            return sysUserDO.getWxOpenId();
 
         } else {
 
@@ -796,6 +854,10 @@ public class SignUtil {
 
             lambdaQueryChainWrapper.select(SysUserDO::getPhone);
 
+        } else if (BaseRedisKeyEnum.PRE_WX_OPEN_ID.equals(redisKeyEnum)) {
+
+            lambdaQueryChainWrapper.select(SysUserDO::getWxOpenId, SysUserDO::getWxAppId);
+
         } else {
 
             ApiResultVO.sysError();
@@ -816,14 +878,14 @@ public class SignUtil {
      * 修改登录账号
      */
     public static String updateAccount(String oldCode, String newCode, Enum<? extends IRedisKey> redisKeyEnum,
-                                       String newAccount, String currentPassword) {
+                                       String newAccount, String currentPassword, String appId) {
 
         Long currentUserIdNotAdmin = UserUtil.getCurrentUserIdNotAdmin();
 
         Long currentTenantIdDefault = UserUtil.getCurrentTenantIdDefault();
 
         if (BaseRedisKeyEnum.PRE_SIGN_IN_NAME.equals(redisKeyEnum)) {
-            checkCurrentPassword(currentPassword, currentUserIdNotAdmin, null);
+            checkCurrentPasswordWillError(currentPassword, currentUserIdNotAdmin, null, null);
         }
 
         // 获取：旧的账号
@@ -866,8 +928,7 @@ public class SignUtil {
             boolean exist = accountIsExists(redisKeyEnum, newAccount, null, currentTenantIdDefault, null);
 
             // 是否删除：redis中的验证码
-            boolean deleteRedisFlag =
-                    BaseRedisKeyEnum.PRE_EMAIL.equals(redisKeyEnum) || BaseRedisKeyEnum.PRE_PHONE.equals(redisKeyEnum);
+            boolean deleteRedisFlag = getDeleteRedisFlag(redisKeyEnum);
 
             if (exist) {
 
@@ -875,7 +936,19 @@ public class SignUtil {
                     newBucket.delete();
                 }
 
-                ApiResultVO.errorMsg("操作失败：已被人占用");
+                if (BaseRedisKeyEnum.PRE_EMAIL.equals(redisKeyEnum)) {
+
+                    ApiResultVO.errorMsg("操作失败：邮箱已被人占用");
+
+                } else if (BaseRedisKeyEnum.PRE_PHONE.equals(redisKeyEnum)) {
+
+                    ApiResultVO.errorMsg("操作失败：手机号码已被人占用");
+
+                } else {
+
+                    ApiResultVO.errorMsg("操作失败：已被人占用");
+
+                }
 
             }
 
@@ -884,7 +957,7 @@ public class SignUtil {
             sysUserDO.setId(currentUserIdNotAdmin);
 
             // 通过：BaseRedisKeyEnum，设置：账号
-            setSysUserDOAccountByRedisKeyEnum(redisKeyEnum, newAccount, sysUserDO);
+            setSysUserDOAccountByRedisKeyEnum(redisKeyEnum, newAccount, sysUserDO, appId);
 
             return TransactionUtil.exec(() -> {
 
@@ -909,10 +982,19 @@ public class SignUtil {
     }
 
     /**
+     * 是否删除：redis中的验证码
+     */
+    private static boolean getDeleteRedisFlag(Enum<? extends IRedisKey> redisKeyEnum) {
+
+        return BaseRedisKeyEnum.PRE_EMAIL.equals(redisKeyEnum) || BaseRedisKeyEnum.PRE_PHONE.equals(redisKeyEnum);
+
+    }
+
+    /**
      * 通过：BaseRedisKeyEnum，设置：账号
      */
     private static void setSysUserDOAccountByRedisKeyEnum(Enum<? extends IRedisKey> redisKeyEnum, String newAccount,
-                                                          SysUserDO sysUserDO) {
+                                                          SysUserDO sysUserDO, String appId) {
 
         if (BaseRedisKeyEnum.PRE_EMAIL.equals(redisKeyEnum)) {
 
@@ -926,6 +1008,11 @@ public class SignUtil {
 
             sysUserDO.setPhone(newAccount);
 
+        } else if (BaseRedisKeyEnum.PRE_WX_OPEN_ID.equals(redisKeyEnum)) {
+
+            sysUserDO.setWxAppId(appId);
+            sysUserDO.setWxOpenId(newAccount);
+
         } else {
 
             ApiResultVO.sysError();
@@ -938,7 +1025,7 @@ public class SignUtil {
      * 检查登录账号是否存在
      */
     public static boolean accountIsExists(Enum<? extends IRedisKey> redisKeyEnum, String newAccount, @Nullable Long id,
-                                          @Nullable Long tenantId, String wxAppId) {
+                                          @Nullable Long tenantId, String appId) {
 
         tenantId = SysTenantUtil.getTenantId(tenantId);
 
@@ -961,7 +1048,7 @@ public class SignUtil {
 
         } else if (BaseRedisKeyEnum.PRE_WX_OPEN_ID.equals(redisKeyEnum)) {
 
-            lambdaQueryChainWrapper.eq(SysUserDO::getWxAppId, wxAppId).eq(SysUserDO::getWxOpenId, newAccount);
+            lambdaQueryChainWrapper.eq(SysUserDO::getWxAppId, appId).eq(SysUserDO::getWxOpenId, newAccount);
 
         } else {
 
@@ -1046,36 +1133,40 @@ public class SignUtil {
     /**
      * 账号注销
      */
-    public static String signDelete(String code, Enum<? extends IRedisKey> redisKeyEnum, String currentPassword) {
+    public static String signDelete(String code, Enum<? extends IRedisKey> redisKeyEnum, String currentPassword, @Nullable Long userId) {
 
-        Long currentUserIdNotAdmin = UserUtil.getCurrentUserIdNotAdmin();
+        if (userId == null) {
+            userId = UserUtil.getCurrentUserIdNotAdmin();
+        }
 
         if (StrUtil.isNotBlank(currentPassword)) {
-            checkCurrentPassword(currentPassword, currentUserIdNotAdmin, null);
+            checkCurrentPasswordWillError(currentPassword, userId, null, null);
         }
 
         // 通过：redisKeyEnum，获取账号
-        String account = getAccountByIdAndRedisKeyEnum(redisKeyEnum, currentUserIdNotAdmin);
+        String account = getAccountByIdAndRedisKeyEnum(redisKeyEnum, userId);
 
         String key = redisKeyEnum + account;
+
+        Long finalUserId = userId;
 
         return RedissonUtil.doLock(key, () -> {
 
             RBucket<String> bucket = redissonClient.getBucket(key);
 
             // 是否：检查验证码
-            boolean checkCodeFlag = BooleanUtil.isFalse(BaseRedisKeyEnum.PRE_SIGN_IN_NAME.equals(redisKeyEnum));
+            boolean deleteRedisFlag = getDeleteRedisFlag(redisKeyEnum);
 
-            if (checkCodeFlag) {
+            if (deleteRedisFlag) {
                 CodeUtil.checkCode(code, bucket.get()); // 检查 code是否正确
             }
 
             return TransactionUtil.exec(() -> {
 
                 // 执行：账号注销
-                doSignDelete(CollUtil.newHashSet(currentUserIdNotAdmin));
+                doSignDelete(CollUtil.newHashSet(finalUserId));
 
-                if (checkCodeFlag) {
+                if (deleteRedisFlag) {
                     bucket.delete(); // 删除：验证码
                 }
 
@@ -1168,7 +1259,7 @@ public class SignUtil {
     /**
      * 绑定登录账号
      */
-    public static String bindAccount(String code, Enum<? extends IRedisKey> redisKeyEnum, String account) {
+    public static String bindAccount(String code, Enum<? extends IRedisKey> redisKeyEnum, String account, String appId) {
 
         Long currentUserIdNotAdmin = UserUtil.getCurrentUserIdNotAdmin();
 
@@ -1181,21 +1272,32 @@ public class SignUtil {
             RBucket<String> bucket = redissonClient.getBucket(key);
 
             // 检查：绑定的登录账号是否存在
-            boolean exist = accountIsExists(redisKeyEnum, account, null, currentTenantIdDefault, null);
+            boolean exist = accountIsExists(redisKeyEnum, account, null, currentTenantIdDefault, appId);
+
+            boolean deleteRedisFlag = getDeleteRedisFlag(redisKeyEnum);
 
             if (exist) {
 
-                bucket.delete();
+                if (deleteRedisFlag) {
+
+                    bucket.delete();
+
+                }
+
                 ApiResultVO.errorMsg("操作失败：账号已被绑定，请重试");
 
             }
 
-            CodeUtil.checkCode(code, bucket.get()); // 检查 code是否正确
+            if (deleteRedisFlag) {
+
+                CodeUtil.checkCode(code, bucket.get()); // 检查 code是否正确
+
+            }
 
             SysUserDO sysUserDO = new SysUserDO();
 
             // 通过：BaseRedisKeyEnum，设置：账号
-            setSysUserDOAccountByRedisKeyEnum(redisKeyEnum, account, sysUserDO);
+            setSysUserDOAccountByRedisKeyEnum(redisKeyEnum, account, sysUserDO, appId);
 
             sysUserDO.setId(currentUserIdNotAdmin);
 
@@ -1203,7 +1305,11 @@ public class SignUtil {
 
                 sysUserMapper.updateById(sysUserDO); // 保存：用户
 
-                bucket.delete(); // 删除：验证码
+                if (deleteRedisFlag) {
+
+                    bucket.delete();
+
+                }
 
                 UserUtil.setJwtSecretSuf(currentUserIdNotAdmin); // 设置：jwt秘钥后缀
 
@@ -1216,58 +1322,179 @@ public class SignUtil {
     }
 
     /**
-     * 检查：是否可以进行操作：根据用户有无手机号，有无邮箱，有无密码，来做判断
-     * 敏感操作都需要调用此方法，例如：修改登录名，修改邮箱，修改手机号，修改绑定的微信，忘记密码，账号注销，绑定邮箱，绑定手机，绑定微信
+     * 检查：是否可以进行操作：敏感操作都需要调用此方法
      *
-     * @param account      账号信息，一般情况为 null，目前只有忘记密码的时候，才会传值
-     * @param notCheckFlag 是否不检查，一般情况为 false，目前，在绑定邮箱，修改邮箱的时候，才会为 true，目的：不检查：是否有手机
+     * @param baseRedisKeyEnum 操作账户的类型：登录名，邮箱，微信，手机号
+     * @param account          账号信息，一般情况为 null，只有忘记密码，或者验证码登录并注册的时候，才会传值
      */
-    public static void checkWillError(BaseRedisKeyEnum baseRedisKeyEnum, String account, boolean notCheckFlag,
-                                      @Nullable Long tenantId) {
-
-        if (notCheckFlag) {
-            return;
-        }
+    public static void checkWillError(BaseRedisKeyEnum baseRedisKeyEnum, String account,
+                                      @Nullable Long tenantId, String appId) {
 
         tenantId = SysTenantUtil.getTenantId(tenantId);
 
         Long userId = null;
 
-        if (StrUtil.isBlank(account)) {
+        boolean accountBlankFlag = StrUtil.isBlank(account);
+
+        if (accountBlankFlag) {
             userId = UserUtil.getCurrentUserIdNotAdmin();
         }
 
-        boolean illegalFlag = false; // 是否非法操作
+        // 敏感操作：
+        // 1 设置或者修改：密码，登录名，邮箱，手机，微信
+        // 2 账户注销
+        LambdaQueryChainWrapper<SysUserDO> lambdaQueryChainWrapper = ChainWrappers.lambdaQueryChain(sysUserMapper).eq(accountBlankFlag, BaseEntity::getId, userId).eq(BaseEntityNoIdSuper::getTenantId, tenantId);
 
-        if (baseRedisKeyEnum.equals(BaseRedisKeyEnum.PRE_SIGN_IN_NAME)) { // 如果是：登录名
+        // 处理：lambdaQueryChainWrapper对象
+        checkWillErrorHandleLambdaQueryChainWrapper(baseRedisKeyEnum, account, appId, lambdaQueryChainWrapper, accountBlankFlag);
 
-            if (userId == null) {
-                userId = UserUtil.getCurrentUserIdNotAdmin();
+        SysUserDO sysUserDO = lambdaQueryChainWrapper.one();
+
+        if (sysUserDO == null) {
+            return;
+        }
+
+        // 执行：检查
+        checkWillErrorDoCheck(baseRedisKeyEnum, sysUserDO);
+
+    }
+
+    /**
+     * 执行：检查
+     */
+    private static void checkWillErrorDoCheck(BaseRedisKeyEnum baseRedisKeyEnum, SysUserDO sysUserDO) {
+
+        if (baseRedisKeyEnum.equals(BaseRedisKeyEnum.PRE_SIGN_IN_NAME)) { // 登录名
+
+            // 必须有密码，并且，邮箱为空，手机为空，微信为空
+            if (StrUtil.isBlank(sysUserDO.getPassword())) {
+                ApiResultVO.errorMsg("操作失败：请设置密码之后再试");
             }
 
-            // 判断：密码不能为空，并且，邮箱为空，手机为空
-            illegalFlag = !ChainWrappers.lambdaQueryChain(sysUserMapper).eq(BaseEntity::getId, userId)
-                    .ne(SysUserDO::getPassword, "").eq(SysUserDO::getEmail, "").eq(SysUserDO::getPhone, "")
-                    .eq(BaseEntityNoId::getTenantId, tenantId).exists();
+            if (StrUtil.isNotBlank(sysUserDO.getEmail())) {
+                ApiResultVO.errorMsg("操作失败：请用邮箱验证码进行操作");
+            }
 
-        } else if (baseRedisKeyEnum.equals(BaseRedisKeyEnum.PRE_EMAIL)) { // 如果是：邮箱
+            if (StrUtil.isNotBlank(sysUserDO.getWxAppId())) {
+                ApiResultVO.errorMsg("操作失败：请用微信扫码进行操作");
+            }
 
-            // 判断：不能有手机
-            illegalFlag = ChainWrappers.lambdaQueryChain(sysUserMapper).eq(userId != null, BaseEntity::getId, userId)
-                    .eq(userId == null, SysUserDO::getEmail, account).ne(SysUserDO::getPhone, "")
-                    .eq(BaseEntityNoId::getTenantId, tenantId).exists();
+            if (StrUtil.isNotBlank(sysUserDO.getPhone())) {
+                ApiResultVO.errorMsg("操作失败：请用手机验证码进行操作");
+            }
 
-        } else if (baseRedisKeyEnum.equals(BaseRedisKeyEnum.PRE_PHONE)) { // 如果是：手机号
+        } else if (baseRedisKeyEnum.equals(BaseRedisKeyEnum.PRE_EMAIL)) { // 邮箱
 
-            // 目前手机号操作，都合法
+            // 必须有密码，并且，手机为空，微信为空
+            if (StrUtil.isBlank(sysUserDO.getPassword())) {
+                ApiResultVO.errorMsg("操作失败：请设置密码之后再试");
+            }
+
+            if (StrUtil.isNotBlank(sysUserDO.getWxAppId())) {
+                ApiResultVO.errorMsg("操作失败：请用微信扫码进行操作");
+            }
+
+            if (StrUtil.isNotBlank(sysUserDO.getPhone())) {
+                ApiResultVO.errorMsg("操作失败：请用手机验证码进行操作");
+            }
+
+        } else if (baseRedisKeyEnum.equals(BaseRedisKeyEnum.PRE_WX_OPEN_ID)) { // 微信
+
+            // 手机为空
+            if (StrUtil.isNotBlank(sysUserDO.getPhone())) {
+                ApiResultVO.errorMsg("操作失败：请用手机验证码进行操作");
+            }
+
+        } else if (baseRedisKeyEnum.equals(BaseRedisKeyEnum.PRE_PHONE)) { // 手机
+
+            // 目前：手机支持任何操作
 
         }
 
-        if (illegalFlag) { // 如果不合法
+    }
 
-            ApiResultVO.errorMsg(BaseBizCodeEnum.ILLEGAL_REQUEST.getMsg() + "：" + baseRedisKeyEnum.name());
+    /**
+     * 处理：lambdaQueryChainWrapper对象
+     */
+    private static void checkWillErrorHandleLambdaQueryChainWrapper(BaseRedisKeyEnum baseRedisKeyEnum, String account, String appId, LambdaQueryChainWrapper<SysUserDO> lambdaQueryChainWrapper, boolean accountBlankFlag) {
+
+        if (baseRedisKeyEnum.equals(BaseRedisKeyEnum.PRE_SIGN_IN_NAME)) { // 登录名
+
+            lambdaQueryChainWrapper.eq(!accountBlankFlag, SysUserDO::getSignInName, account);
+
+        } else if (baseRedisKeyEnum.equals(BaseRedisKeyEnum.PRE_EMAIL)) { // 邮箱
+
+            lambdaQueryChainWrapper.eq(!accountBlankFlag, SysUserDO::getEmail, account);
+
+        } else if (baseRedisKeyEnum.equals(BaseRedisKeyEnum.PRE_WX_OPEN_ID)) { // 微信
+
+            if (StrUtil.isBlank(appId)) {
+                ApiResultVO.errorMsg(BaseBizCodeEnum.ILLEGAL_REQUEST.getMsg() + "：wxAppId" + "，请联系管理员");
+            }
+
+            lambdaQueryChainWrapper.eq(!accountBlankFlag, SysUserDO::getWxAppId, appId).eq(SysUserDO::getWxOpenId, account);
+
+        } else if (baseRedisKeyEnum.equals(BaseRedisKeyEnum.PRE_PHONE)) { // 手机
+
+            lambdaQueryChainWrapper.eq(!accountBlankFlag, SysUserDO::getSignInName, account);
+
+        } else {
+
+            ApiResultVO.errorMsg(BaseBizCodeEnum.ILLEGAL_REQUEST.getMsg() + "：" + baseRedisKeyEnum.name() + "，请联系管理员");
 
         }
+
+    }
+
+    /**
+     * 获取：微信，二维码地址
+     */
+    @SneakyThrows
+    @Nullable
+    public static GetQrCodeVO getQrCodeUrlWx(@Nullable Long tenantId, boolean getQrCodeUrlFlag, ISysQrCodeSceneType iSysQrCodeSceneType) {
+
+        return getQrCodeUrl(tenantId, getQrCodeUrlFlag, SysOtherAppTypeEnum.WX_OFFICIAL_ACCOUNT.getCode(), sysOtherAppDO -> {
+
+            String accessToken = WxUtil.getAccessToken(tenantId, sysOtherAppDO.getAppId());
+
+            Long qrCodeId = IdGeneratorUtil.nextId();
+
+            String qrCodeUrl = WxUtil.getQrCodeUrl(accessToken, iSysQrCodeSceneType, qrCodeId.toString());
+
+            return new GetQrCodeVO(qrCodeUrl, qrCodeId, System.currentTimeMillis() + ((iSysQrCodeSceneType.getExpireSecond() - 10) * 1000L));
+
+        });
+
+    }
+
+    /**
+     * 获取：二维码地址
+     */
+    @SneakyThrows
+    @Nullable
+    public static GetQrCodeVO getQrCodeUrl(@Nullable Long tenantId, boolean getQrCodeUrlFlag, @Nullable Integer otherAppType, Func1<SysOtherAppDO, GetQrCodeVO> func1) {
+
+        if (tenantId == null) {
+            tenantId = BaseConstant.TOP_TENANT_ID;
+        }
+
+        if (otherAppType == null) {
+            otherAppType = SysOtherAppTypeEnum.WX_OFFICIAL_ACCOUNT.getCode();
+        }
+
+        Page<SysOtherAppDO> page = ChainWrappers.lambdaQueryChain(sysOtherAppMapper).eq(SysOtherAppDO::getType, otherAppType).eq(BaseEntityNoId::getEnableFlag, true).eq(BaseEntityNoIdSuper::getTenantId, tenantId).select(SysOtherAppDO::getAppId).page(MyPageUtil.getLimit1Page());
+
+        if (CollUtil.isEmpty(page.getRecords())) {
+            return null;
+        }
+
+        if (!getQrCodeUrlFlag) {
+            return new GetQrCodeVO(); // 这里回复一个对象，然后前端可以根据这个值，和前面的 null值进行判断，是否要进一步获取二维码地址，原因：二维码地址获取速度慢
+        }
+
+        SysOtherAppDO sysOtherAppDO = page.getRecords().get(0);
+
+        return func1.call(sysOtherAppDO);
 
     }
 

@@ -20,12 +20,6 @@
             <artifactId>be-other-app</artifactId>
         </dependency>
 
-        <!-- be-sign-helper -->
-        <dependency>
-            <groupId>${cmcorg.groupId}</groupId>
-            <artifactId>be-sign-helper</artifactId>
-        </dependency>
-
         <!-- be-cache -->
         <dependency>
             <groupId>${cmcorg.groupId}</groupId>

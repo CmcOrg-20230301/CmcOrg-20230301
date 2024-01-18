@@ -18,8 +18,8 @@ public interface SignWxService {
 
     SignInVO signInBrowserCodeUserInfo(SignInBrowserCodeDTO dto);
 
-    GetQrCodeVO getQrCodeUrl(UserSignBaseDTO dto);
+    GetQrCodeVO signInGetQrCodeUrl(UserSignBaseDTO dto, boolean getQrCodeUrlFlag);
 
-    SignInVO queryQrCodeById(NotNullId notNullId);
+    SignInVO signInByQrCodeId(NotNullId notNullId);
 
 }

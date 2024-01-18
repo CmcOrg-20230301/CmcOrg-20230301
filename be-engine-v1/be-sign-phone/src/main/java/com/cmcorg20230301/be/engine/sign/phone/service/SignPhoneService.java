@@ -16,24 +16,20 @@ public interface SignPhoneService {
 
     String updatePassword(SignPhoneUpdatePasswordDTO dto);
 
-    String updateAccountSendCode();
+    String updatePhoneSendCode();
 
-    String updateAccount(SignPhoneUpdateAccountDTO dto);
+    String updatePhone(SignPhoneUpdatePhoneDTO dto);
 
     String forgetPasswordSendCode(PhoneNotBlankDTO dto);
 
     String forgetPassword(SignPhoneForgetPasswordDTO dto);
 
-    String signDeleteSendCode();
-
-    String signDelete(NotBlankCodeDTO dto);
-
-    String bindAccountSendCode(PhoneNotBlankDTO dto);
-
-    String bindAccount(SignPhoneBindAccountDTO dto);
-
     String signInSendCode(PhoneNotBlankDTO dto);
 
     SignInVO signInCode(SignPhoneSignInCodeDTO dto);
+
+    String signDeleteSendCode();
+
+    String signDelete(NotBlankCodeDTO dto);
 
 }

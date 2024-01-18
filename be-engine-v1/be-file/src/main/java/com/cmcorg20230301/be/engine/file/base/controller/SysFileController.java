@@ -9,7 +9,6 @@ import com.cmcorg20230301.be.engine.file.base.service.SysFileService;
 import com.cmcorg20230301.be.engine.model.model.dto.NotEmptyIdSet;
 import com.cmcorg20230301.be.engine.model.model.dto.NotNullId;
 import com.cmcorg20230301.be.engine.model.model.vo.LongObjectMapVO;
-import com.cmcorg20230301.be.engine.security.exception.BaseBizCodeEnum;
 import com.cmcorg20230301.be.engine.security.model.vo.ApiResultVO;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -34,7 +33,7 @@ public class SysFileController {
     @Operation(summary = "上传文件：公有和私有")
     @PostMapping("/upload")
     public ApiResultVO<Long> upload(SysFileUploadDTO dto) {
-        return ApiResultVO.ok(BaseBizCodeEnum.OK, baseService.upload(dto));
+        return ApiResultVO.okData(baseService.upload(dto));
     }
 
     @Operation(summary = "下载文件：私有")

@@ -39,10 +39,10 @@ public class SysUserDO extends BaseEntity {
     @Schema(description = "手机号，可以为空")
     private String phone;
 
-    @Schema(description = "微信 openId，可以为空，wxOpenId + wxAppId 全租户唯一")
-    private String wxOpenId;
-
-    @Schema(description = "微信 appId，可以为空，wxOpenId + wxAppId 全租户唯一")
+    @Schema(description = "微信 appId，可以为空，wxAppId + wxOpenId 全租户唯一，备注：因为微信对不同的公众号或者小程序，会提供相同的 wxAppId，所以需要加上 wxOpenId，进行唯一性检查")
     private String wxAppId;
+
+    @Schema(description = "微信 openId，可以为空，wxAppId + wxOpenId 全租户唯一")
+    private String wxOpenId;
 
 }

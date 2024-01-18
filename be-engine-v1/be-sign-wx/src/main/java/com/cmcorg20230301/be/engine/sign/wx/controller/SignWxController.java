@@ -4,7 +4,6 @@ import com.cmcorg20230301.be.engine.model.model.constant.OperationDescriptionCon
 import com.cmcorg20230301.be.engine.model.model.dto.NotNullId;
 import com.cmcorg20230301.be.engine.model.model.vo.GetQrCodeVO;
 import com.cmcorg20230301.be.engine.model.model.vo.SignInVO;
-import com.cmcorg20230301.be.engine.security.exception.BaseBizCodeEnum;
 import com.cmcorg20230301.be.engine.security.model.vo.ApiResultVO;
 import com.cmcorg20230301.be.engine.sign.helper.model.dto.UserSignBaseDTO;
 import com.cmcorg20230301.be.engine.sign.wx.model.dto.SignInBrowserCodeDTO;
@@ -32,37 +31,37 @@ public class SignWxController {
     @PostMapping(value = "/sign/in/miniProgram/phoneCode")
     @Operation(summary = "小程序：手机号 code登录", description = OperationDescriptionConstant.SIGN_IN)
     public ApiResultVO<SignInVO> signInMiniProgramPhoneCode(@RequestBody @Valid SignInMiniProgramPhoneCodeDTO dto) {
-        return ApiResultVO.ok(BaseBizCodeEnum.OK, signWxService.signInMiniProgramPhoneCode(dto));
+        return ApiResultVO.okData(signWxService.signInMiniProgramPhoneCode(dto));
     }
 
     @PostMapping(value = "/sign/in/miniProgram/code")
     @Operation(summary = "小程序：微信 code登录", description = OperationDescriptionConstant.SIGN_IN)
     public ApiResultVO<SignInVO> signInMiniProgramCode(@RequestBody @Valid SignInMiniProgramCodeDTO dto) {
-        return ApiResultVO.ok(BaseBizCodeEnum.OK, signWxService.signInMiniProgramCode(dto));
+        return ApiResultVO.okData(signWxService.signInMiniProgramCode(dto));
     }
 
     @PostMapping(value = "/sign/in/browser/code")
     @Operation(summary = "浏览器：微信 code登录", description = OperationDescriptionConstant.SIGN_IN)
     public ApiResultVO<SignInVO> signInBrowserCode(@RequestBody @Valid SignInBrowserCodeDTO dto) {
-        return ApiResultVO.ok(BaseBizCodeEnum.OK, signWxService.signInBrowserCode(dto));
+        return ApiResultVO.okData(signWxService.signInBrowserCode(dto));
     }
 
     @PostMapping(value = "/sign/in/browser/code/userInfo")
     @Operation(summary = "浏览器：微信 code登录，可以获取用户的基础信息", description = OperationDescriptionConstant.SIGN_IN)
     public ApiResultVO<SignInVO> signInBrowserCodeUserInfo(@RequestBody @Valid SignInBrowserCodeDTO dto) {
-        return ApiResultVO.ok(BaseBizCodeEnum.OK, signWxService.signInBrowserCodeUserInfo(dto));
+        return ApiResultVO.okData(signWxService.signInBrowserCodeUserInfo(dto));
     }
 
     @PostMapping(value = "/sign/in/getQrCodeUrl")
     @Operation(summary = "扫码登录：获取二维码")
-    public ApiResultVO<GetQrCodeVO> getQrCodeUrl(@RequestBody @Valid UserSignBaseDTO dto) {
-        return ApiResultVO.okData(signWxService.getQrCodeUrl(dto));
+    public ApiResultVO<GetQrCodeVO> signInGetQrCodeUrl(@RequestBody @Valid UserSignBaseDTO dto) {
+        return ApiResultVO.okData(signWxService.signInGetQrCodeUrl(dto, true));
     }
 
-    @PostMapping(value = "/sign/in/queryQrCodeById")
-    @Operation(summary = "扫码登录：查询二维码数据")
-    public ApiResultVO<SignInVO> queryQrCodeById(@RequestBody @Valid NotNullId notNullId) {
-        return ApiResultVO.okData(signWxService.queryQrCodeById(notNullId));
+    @PostMapping(value = "/sign/in/byQrCodeId")
+    @Operation(summary = "扫码登录：通过二维码 id")
+    public ApiResultVO<SignInVO> signInByQrCodeId(@RequestBody @Valid NotNullId notNullId) {
+        return ApiResultVO.okData(signWxService.signInByQrCodeId(notNullId));
     }
 
 }

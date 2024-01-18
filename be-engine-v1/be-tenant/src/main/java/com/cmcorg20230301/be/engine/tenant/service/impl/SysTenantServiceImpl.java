@@ -708,7 +708,7 @@ public class SysTenantServiceImpl extends ServiceImpl<SysTenantMapper, SysTenant
 
         MyThreadUtil.execute(() -> {
 
-            GetQrCodeVO getQrCodeVO = signWxService.getQrCodeUrl(new UserSignBaseDTO(notNullLong.getValue()));
+            GetQrCodeVO getQrCodeVO = signWxService.signInGetQrCodeUrl(new UserSignBaseDTO(notNullLong.getValue()), false);
 
             sysTenantConfigurationByIdVO.setWxQrCodeSignUp(getQrCodeVO);
 

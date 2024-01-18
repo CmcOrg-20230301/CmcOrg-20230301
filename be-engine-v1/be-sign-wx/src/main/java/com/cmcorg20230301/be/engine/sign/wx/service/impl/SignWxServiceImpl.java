@@ -1,38 +1,29 @@
 package com.cmcorg20230301.be.engine.sign.wx.service.impl;
 
-import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.BooleanUtil;
 import cn.hutool.jwt.JWT;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.toolkit.ChainWrappers;
-import com.cmcorg20230301.be.engine.model.model.constant.BaseConstant;
 import com.cmcorg20230301.be.engine.model.model.dto.NotNullId;
 import com.cmcorg20230301.be.engine.model.model.vo.GetQrCodeVO;
 import com.cmcorg20230301.be.engine.model.model.vo.SignInVO;
 import com.cmcorg20230301.be.engine.other.app.mapper.SysOtherAppMapper;
-import com.cmcorg20230301.be.engine.other.app.model.entity.SysOtherAppDO;
-import com.cmcorg20230301.be.engine.other.app.model.enums.SysOtherAppTypeEnum;
-import com.cmcorg20230301.be.engine.other.app.wx.model.enums.WxQrSceneTypeEnum;
 import com.cmcorg20230301.be.engine.other.app.wx.model.vo.WxOpenIdVO;
 import com.cmcorg20230301.be.engine.other.app.wx.model.vo.WxPhoneByCodeVO;
 import com.cmcorg20230301.be.engine.other.app.wx.model.vo.WxUserInfoVO;
 import com.cmcorg20230301.be.engine.other.app.wx.util.WxUtil;
 import com.cmcorg20230301.be.engine.redisson.model.enums.BaseRedisKeyEnum;
-import com.cmcorg20230301.be.engine.redisson.util.IdGeneratorUtil;
 import com.cmcorg20230301.be.engine.security.mapper.SysUserInfoMapper;
 import com.cmcorg20230301.be.engine.security.mapper.SysUserMapper;
-import com.cmcorg20230301.be.engine.security.model.entity.BaseEntityNoId;
-import com.cmcorg20230301.be.engine.security.model.entity.BaseEntityNoIdSuper;
 import com.cmcorg20230301.be.engine.security.model.entity.SysUserDO;
 import com.cmcorg20230301.be.engine.security.model.entity.SysUserInfoDO;
 import com.cmcorg20230301.be.engine.security.util.MyJwtUtil;
-import com.cmcorg20230301.be.engine.security.util.MyPageUtil;
 import com.cmcorg20230301.be.engine.security.util.SysTenantUtil;
 import com.cmcorg20230301.be.engine.sign.helper.model.dto.UserSignBaseDTO;
 import com.cmcorg20230301.be.engine.sign.helper.util.SignUtil;
 import com.cmcorg20230301.be.engine.sign.wx.model.dto.SignInBrowserCodeDTO;
 import com.cmcorg20230301.be.engine.sign.wx.model.dto.SignInMiniProgramCodeDTO;
 import com.cmcorg20230301.be.engine.sign.wx.model.dto.SignInMiniProgramPhoneCodeDTO;
+import com.cmcorg20230301.be.engine.sign.wx.model.enums.WxSysQrCodeSceneTypeEnum;
 import com.cmcorg20230301.be.engine.sign.wx.service.SignWxService;
 import com.cmcorg20230301.be.engine.util.util.CallBack;
 import com.cmcorg20230301.be.engine.util.util.NicknameUtil;
@@ -78,7 +69,7 @@ public class SignWxServiceImpl implements SignWxService {
 
                     accountMap.put(BaseRedisKeyEnum.PRE_WX_APP_ID, dto.getAppId());
 
-                });
+                }, null);
 
     }
 
@@ -98,7 +89,7 @@ public class SignWxServiceImpl implements SignWxService {
 
                     accountMap.put(BaseRedisKeyEnum.PRE_WX_APP_ID, dto.getAppId());
 
-                });
+                }, null);
 
     }
 
@@ -134,7 +125,7 @@ public class SignWxServiceImpl implements SignWxService {
 
                     accountMap.put(BaseRedisKeyEnum.PRE_WX_APP_ID, dto.getAppId());
 
-                });
+                }, null);
 
     }
 
@@ -172,7 +163,7 @@ public class SignWxServiceImpl implements SignWxService {
 
                     accountMap.put(BaseRedisKeyEnum.PRE_WX_APP_ID, dto.getAppId());
 
-                });
+                }, null);
 
         if (BooleanUtil.isFalse(signUpFlagCallBack.getValue())) {
 
@@ -207,39 +198,18 @@ public class SignWxServiceImpl implements SignWxService {
      */
     @Override
     @Nullable
-    public GetQrCodeVO getQrCodeUrl(UserSignBaseDTO dto) {
+    public GetQrCodeVO signInGetQrCodeUrl(UserSignBaseDTO dto, boolean getQrCodeUrlFlag) {
 
-        Long tenantId = dto.getTenantId();
-
-        if (tenantId == null) {
-            tenantId = BaseConstant.TOP_TENANT_ID;
-        }
-
-        Page<SysOtherAppDO> page = ChainWrappers.lambdaQueryChain(sysOtherAppMapper).eq(SysOtherAppDO::getType, SysOtherAppTypeEnum.WX_OFFICIAL_ACCOUNT.getCode()).eq(BaseEntityNoId::getEnableFlag, true).eq(BaseEntityNoIdSuper::getTenantId, tenantId).select(SysOtherAppDO::getAppId).page(MyPageUtil.getLimit1Page());
-
-        if (CollUtil.isEmpty(page.getRecords())) {
-            return null;
-        }
-
-        SysOtherAppDO sysOtherAppDO = page.getRecords().get(0);
-
-        String accessToken = WxUtil.getAccessToken(tenantId, sysOtherAppDO.getAppId());
-
-        Long queryId = IdGeneratorUtil.nextId();
-
-        WxQrSceneTypeEnum wxQrSceneTypeEnum = WxQrSceneTypeEnum.SIGN_IN;
-
-        String qrCodeUrl = WxUtil.getQrCodeUrl(accessToken, wxQrSceneTypeEnum, queryId.toString());
-
-        return new GetQrCodeVO(qrCodeUrl, queryId, System.currentTimeMillis() + ((wxQrSceneTypeEnum.getExpireSecond() - 10) * 1000L));
+        // 执行
+        return SignUtil.getQrCodeUrlWx(dto.getTenantId(), getQrCodeUrlFlag, WxSysQrCodeSceneTypeEnum.WX_SIGN_IN);
 
     }
 
     /**
-     * 扫码登录：查询二维码数据
+     * 扫码登录-二维码 id
      */
     @Override
-    public SignInVO queryQrCodeById(NotNullId notNullId) {
+    public SignInVO signInByQrCodeId(NotNullId notNullId) {
 
         return redissonClient.<SignInVO>getBucket(BaseRedisKeyEnum.PRE_SYS_WX_QR_CODE_SIGN.name() + notNullId.getId()).getAndDelete();
 
