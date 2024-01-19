@@ -3,9 +3,9 @@ import {ProSchemaValueEnumType} from "@ant-design/pro-components";
 
 export interface ISysOtherAppOfficialAccountMenuButtonTypeEnum {
 
-    CLICK: IEnum,
+    CLICK: IEnum<number>,
 
-    VIEW: IEnum,
+    VIEW: IEnum<number>,
 
 }
 
@@ -28,8 +28,8 @@ export const SysOtherAppOfficialAccountMenuButtonTypeEnumDict = new Map<number, 
 
 Object.keys(SysOtherAppOfficialAccountMenuButtonTypeEnum).forEach(key => {
 
-    const item = SysOtherAppOfficialAccountMenuButtonTypeEnum[key];
+    const item = SysOtherAppOfficialAccountMenuButtonTypeEnum[key] as IEnum<number>;
 
-    SysOtherAppOfficialAccountMenuButtonTypeEnumDict.set(item.code as number, {text: item.name})
+    SysOtherAppOfficialAccountMenuButtonTypeEnumDict.set(item.code!, {text: item.name})
 
 })

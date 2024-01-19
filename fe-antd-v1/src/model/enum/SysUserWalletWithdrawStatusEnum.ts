@@ -5,11 +5,11 @@ import {SysUserWalletWithdrawLogDictListWithdrawStatus} from "@/api/http/SysUser
 
 export interface ISysUserWalletWithdrawStatusEnum {
 
-    COMMIT: IEnum,
-    ACCEPT: IEnum,
-    SUCCESS: IEnum,
-    REJECT: IEnum,
-    CANCEL: IEnum,
+    COMMIT: IEnum<number>,
+    ACCEPT: IEnum<number>,
+    SUCCESS: IEnum<number>,
+    REJECT: IEnum<number>,
+    CANCEL: IEnum<number>,
 
 }
 
@@ -52,9 +52,9 @@ export const SysUserWalletWithdrawStatusEnumMap = new Map<number, PresetStatusCo
 
 Object.keys(SysUserWalletWithdrawStatusEnum).forEach(key => {
 
-    const item = SysUserWalletWithdrawStatusEnum[key];
+    const item = SysUserWalletWithdrawStatusEnum[key] as IEnum<number>;
 
-    SysUserWalletWithdrawStatusEnumMap.set(item.code as number, item.status!)
+    SysUserWalletWithdrawStatusEnumMap.set(item.code!, item.status!)
 
 })
 

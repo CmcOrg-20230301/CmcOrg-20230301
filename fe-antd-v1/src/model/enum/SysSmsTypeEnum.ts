@@ -28,8 +28,8 @@ export const SysSmsTypeEnumDict = new Map<number, ProSchemaValueEnumType>();
 
 Object.keys(SysSmsTypeEnum).forEach(key => {
 
-    const item = SysSmsTypeEnum[key];
+    const item = SysSmsTypeEnum[key] as IEnum<number>;
 
-    SysSmsTypeEnumDict.set(item.code as number, {text: item.name})
+    SysSmsTypeEnumDict.set(item.code!, {text: item.name})
 
 })

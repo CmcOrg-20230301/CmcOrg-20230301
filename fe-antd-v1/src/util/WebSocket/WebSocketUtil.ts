@@ -1,19 +1,22 @@
 import LocalStorageKey from "@/model/constant/LocalStorageKey";
 import {GetAppDispatch} from "@/MyApp";
 import {setWebSocketMessage, setWebSocketStatus} from "@/store/commonSlice";
-import {GetWebSocketId, IWebSocketMessage, WebSocketSend} from "@/util/WebSocket/WebSocketHelper";
+import {GetWebSocketId, IWebSocketMessage} from "@/util/WebSocket/WebSocketHelper";
 import {NettyWebSocketGetWebSocketUrlById} from "@/api/http/NettyWebSocket";
 import {HeartBeatRequest} from "@/api/socket/WebSocket";
+import {DevFlag} from "@/util/SysUtil.ts";
+import {SysSocketOnlineTypeEnum} from "@/model/enum/SysSocketOnlineTypeEnum.ts";
 
 let myWebSocket: WebSocket | null = null
 let heartBeatInterval: any = null // 心跳检测，定时器
+let connectFlag: boolean = false // 是否连接中
 
 export function GetMyWebSocket() {
     return myWebSocket
 }
 
 // 备注：开发环境的超时时间设置长一点
-const retryTime = import.meta.env.DEV ? 5000 : 2000
+const retryTime = DevFlag() ? 5000 : 2000
 
 // 获取：webSocket的连接地址
 async function GetWebSocketUrl(): Promise<string | null> {
@@ -26,9 +29,21 @@ async function GetWebSocketUrl(): Promise<string | null> {
             return
         }
 
-        // console.log('webSocketId：', res)
+        const jwt = localStorage.getItem(LocalStorageKey.JWT);
 
-        await NettyWebSocketGetWebSocketUrlById({id: res, value: 101}).then(res => {
+        if (!jwt) {
+            return
+        }
+
+        await NettyWebSocketGetWebSocketUrlById({id: res, value: SysSocketOnlineTypeEnum.ONLINE.code!}, {
+
+            headers: {
+
+                hiddenErrorMsg: true
+
+            } as any
+
+        }).then(res => {
 
             webSocketUrl = res.data
 
@@ -72,7 +87,15 @@ export function ConnectWebSocket() {
         return;
     }
 
+    if (connectFlag) {
+        return;
+    }
+
+    connectFlag = true;
+
     GetWebSocketUrl().then(webSocketUrl => {
+
+        connectFlag = false
 
         if (!webSocketUrl) {
 
@@ -141,14 +164,5 @@ export function ConnectWebSocket() {
         }
 
     })
-
-}
-
-/**
- * 发送消息
- */
-export function Send<T>(webSocketMessage: IWebSocketMessage<T>) {
-
-    return WebSocketSend(myWebSocket, webSocketMessage);
 
 }

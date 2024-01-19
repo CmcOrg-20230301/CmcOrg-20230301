@@ -28,7 +28,7 @@ function HandleWxSign(res: ApiResultVO<SignInVO>, form: IOauth2WxForm) {
 
     const noJwtUri = localStorage.getItem(LocalStorageKey.NO_JWT_URI);
 
-    SignInSuccess(res, form.tenantId!, undefined, false, false)
+    SignInSuccess(res.data, undefined, false, false)
 
     localStorage.setItem(LocalStorageKey.MAIN_URI, PathConstant.MAIN_PATH)
     localStorage.setItem(LocalStorageKey.MAIN_REDIRECT_URI, PathConstant.MAIN_REDIRECT_PATH)

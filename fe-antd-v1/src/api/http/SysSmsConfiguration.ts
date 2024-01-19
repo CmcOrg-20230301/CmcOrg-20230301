@@ -36,30 +36,37 @@ export interface NotNullId {
 
 export interface SysSmsConfigurationDO {
     sendCommon?: string // 发送：通用短信
+    sendSignDelete?: string // 发送：账号注销
     secretId?: string // 钥匙
     remark?: string // 备注
     delFlag?: boolean // 是否逻辑删除
     type?: number // 短信类型：101 阿里 201 腾讯，format：int32
     updateId?: string // 修改人id，format：int64
+    sendSetEmail?: string // 发送：设置邮箱
+    sendUpdatePhone?: string // 发送：修改手机
     id?: string // 主键 id，format：int64
+    sendSetWx?: string // 发送：设置微信
     enableFlag?: boolean // 是否启用
-    sendUpdate?: string // 发送：修改手机
     sendSignIn?: string // 发送：登录短信
     defaultFlag?: boolean // 是否是默认短信发送，备注：只会有一个默认短信发送
     signName?: string // 签名内容
+    sendSetSignInName?: string // 发送：设置登录名
     secretKey?: string // 秘钥
+    sendUpdateEmail?: string // 发送：修改邮箱
+    sendSetPhone?: string // 发送：设置手机
     sendSignUp?: string // 发送：注册短信
     updateTime?: string // 修改时间，format：date-time
-    sendDelete?: string // 发送：账号注销
     version?: number // 乐观锁，format：int32
+    sendUpdateSignInName?: string // 发送：修改登录名
     sendUpdatePassword?: string // 发送：修改密码
+    sendUpdateWx?: string // 发送：修改微信
     sendForgetPassword?: string // 发送：忘记密码
     createTime?: string // 创建时间，format：date-time
     createId?: string // 创建人id，format：int64
     sdkAppId?: string // 短信应用 id
-    sendBind?: string // 发送：绑定手机
     tenantId?: string // 租户 id，format：int64
     name?: string // 短信名
+    sendSetPassword?: string // 发送：设置密码
 }
 
 // 通过主键id，查看详情

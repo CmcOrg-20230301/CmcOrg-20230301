@@ -1,46 +1,85 @@
-import {useRef, useState} from "react";
+import {useMemo, useRef, useState} from "react";
 import SignLayout from "@/layout/SignLayout/SignLayout";
 import {LoginForm, ProFormCaptcha, ProFormInstance, ProFormText} from "@ant-design/pro-components";
 import CommonConstant from "@/model/constant/CommonConstant";
 import IconSvg from '../../../../public/icon.svg'
 import {Tabs} from "antd";
-import {LockOutlined, SafetyCertificateOutlined, UserOutlined} from "@ant-design/icons";
+import {LockOutlined, SafetyCertificateOutlined} from "@ant-design/icons";
 import {GetAppNav} from "@/MyApp";
 import PathConstant from "@/model/constant/PathConstant";
 import {SendCode, SignUpFormHandler, UseEffectSign} from "@/page/sign/SignUp/SignUpUtil";
 import {Validate} from "@/util/ValidatorUtil";
 import Link from "antd/lib/typography/Link";
-
-type TSignUpType = '0' | '1'; // 注册方式
+import {useAppSelector} from "@/store";
+import {MyUseState} from "@/util/HookUtil.ts";
+import {SysTenantConfigurationByIdVO, SysTenantGetConfigurationById} from "@/api/http/SysTenant.ts";
+import LocalStorageKey from "@/model/constant/LocalStorageKey.ts";
+import {SetSysTenantConfigurationByIdVOCallBack} from "@/page/sign/SignIn/SignIn.tsx";
+import type {Tab} from "rc-tabs/lib/interface";
+import {ISysSignTypeItemEnum, SysSignTypeEnum, SysSignTypeEnumMap} from "@/model/enum/SysSignTypeEnum.tsx";
 
 export interface ISignUpForm {
 
     account: string // 账号
     originPassword: string // 原始密码
     password: string // 密码
-    code?: string // 验证码
-    type: TSignUpType // 注册方式
+    code: string // 验证码
+    signUpType: string // 注册方式
     tenantId: string // 租户 id
 
 }
 
-const signUpTypeArr = ['登录名', '邮箱']
-
 // 注册
 export default function () {
 
-    const tenantIdRef = useRef<string>('0');
+    const tenantIdRef = useRef<string>(CommonConstant.TOP_TENANT_ID_STR);
 
-    const [tenantName, setTenantName] = useState<string>(""); // 租户名
+    const tenantManageName = useAppSelector(state => state.common.tenantManageName);
 
-    UseEffectSign(tenantIdRef, setTenantName)
+    UseEffectSign(tenantIdRef)
 
-    const [activeKey, setActiveKey] = useState<TSignUpType>('0');
     const formRef = useRef<ProFormInstance<ISignUpForm>>();
+
+    // 展示的注册方式
+    const [tabItemArr, setTabItemArr] = useState<Tab[]>([]);
+
+    const [signUpType, setSignUpType, signUpTypeRef] = MyUseState(useState<string>(""));
+
+    const [sysTenantConfigurationByIdVO, setSysTenantConfigurationByIdVO, sysTenantConfigurationByIdVORef] =
+
+        MyUseState(
+            useState<SysTenantConfigurationByIdVO>({}),
+
+            newState => {
+
+                SetSysTenantConfigurationByIdVOCallBack(signUpTypeRef.current, setSignUpType, setTabItemArr, undefined, 2)(newState)
+
+            }
+        )
+
+    UseEffectSign(tenantIdRef, () => {
+
+        // 为了触发：callBack
+        setSysTenantConfigurationByIdVO(JSON.parse(localStorage.getItem(LocalStorageKey.SYS_TENANT_CONFIGURATION_BY_ID_VO) || "{}"))
+
+        // 租户相关配置
+        SysTenantGetConfigurationById({value: tenantIdRef.current}).then(res => {
+
+            setSysTenantConfigurationByIdVO(res.data)
+
+        })
+
+    })
+
+    const sysSignUpTypeEnum: ISysSignTypeItemEnum | undefined = useMemo(() => {
+
+        return SysSignTypeEnumMap.get(signUpType)
+
+    }, [signUpType]);
 
     return (
 
-        <SignLayout token={{colorPrimary: '#13C2C2FF'}} tenantName={tenantName}>
+        <SignLayout token={{colorPrimary: '#13C2C2FF'}} tenantManageName={tenantManageName}>
 
             <LoginForm<ISignUpForm>
 
@@ -48,7 +87,7 @@ export default function () {
 
                 logo={IconSvg}
 
-                title={tenantName + CommonConstant.SYS_NAME}
+                title={tenantManageName}
 
                 submitter={{searchConfig: {submitText: '注册'}}}
 
@@ -63,7 +102,7 @@ export default function () {
 
                 onFinish={async (form) => {
 
-                    await SignUpFormHandler({...form, type: activeKey, tenantId: tenantIdRef.current})
+                    await SignUpFormHandler({...form, signUpType, tenantId: tenantIdRef.current})
 
                     return true
 
@@ -71,19 +110,17 @@ export default function () {
 
             >
 
-                <Tabs activeKey={activeKey}
+                <Tabs activeKey={signUpType}
 
                       onChange={(activeKey) => {
 
                           formRef.current?.resetFields() // 重置表单
-                          setActiveKey(activeKey as TSignUpType)
+                          setSignUpType(activeKey)
 
                       }}
 
-                      items={[
-                          {key: "0", label: `${signUpTypeArr[0]}注册`},
-                          {key: "1", label: `${signUpTypeArr[1]}注册`}
-                      ]}
+                      items={tabItemArr}
+
                 >
 
                 </Tabs>
@@ -91,17 +128,18 @@ export default function () {
                 <ProFormText
 
                     name="account"
+
                     fieldProps={{
                         size: 'large',
                         allowClear: true,
-                        prefix: <UserOutlined className={'prefixIcon'}/>,
+                        prefix: sysSignUpTypeEnum?.prefix,
                     }}
 
-                    placeholder={signUpTypeArr[Number(activeKey)]}
+                    placeholder={sysSignUpTypeEnum?.placeholder}
 
                     rules={[
                         {
-                            validator: activeKey === '0' ? Validate.signInName.validator : Validate.email.validator
+                            validator: sysSignUpTypeEnum?.validator
                         }
                     ]}
 
@@ -110,12 +148,15 @@ export default function () {
                 <ProFormText.Password
 
                     name="password"
+
                     fieldProps={{
                         size: 'large',
                         allowClear: true,
-                        prefix: <LockOutlined className={'prefixIcon'}/>,
+                        prefix: <LockOutlined/>,
                     }}
+
                     placeholder={'密码'}
+
                     rules={[
                         {
                             validator: Validate.password.validator
@@ -125,7 +166,8 @@ export default function () {
                 />
 
                 {
-                    activeKey === '1' && (
+
+                    (signUpType === SysSignTypeEnum.Email.code || signUpType === SysSignTypeEnum.Phone.code) && (
 
                         <>
 
@@ -144,12 +186,14 @@ export default function () {
 
                                 rules={[{validator: Validate.code.validator}]}
                                 placeholder={'请输入验证码'}
+
                                 name="code"
+
                                 onGetCaptcha={async () => {
 
                                     await formRef.current?.validateFields(['account']).then(async res => {
 
-                                        await SendCode({...res, type: activeKey, tenantId: tenantIdRef.current})
+                                        await SendCode({...res, signUpType, tenantId: tenantIdRef.current})
 
                                     })
 

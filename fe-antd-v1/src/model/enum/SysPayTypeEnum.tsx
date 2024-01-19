@@ -7,7 +7,7 @@ import {GetApp} from "@/MyApp";
 import {BuyVO} from "@/component/PayComponent/PayComponent";
 import {SysRequestCategoryEnum} from "@/model/enum/SysRequestCategoryEnum.ts";
 
-export interface ISysUserWalletWithdrawTypeEnumItem extends IEnum<number> {
+export interface ISysPayTypeItemEnum extends IEnum<number> {
 
     openPay?: (buyVO: BuyVO, ScanTheCodeToPay: () => void, callBack?: () => void, hiddenMsg?: boolean) => void | true // 打开支付，备注：默认是扫码付款
 
@@ -15,16 +15,16 @@ export interface ISysUserWalletWithdrawTypeEnumItem extends IEnum<number> {
 
 export interface ISysPayTypeEnum {
 
-    ALI_QR_CODE: ISysUserWalletWithdrawTypeEnumItem,
-    ALI_APP: ISysUserWalletWithdrawTypeEnumItem,
-    ALI_WEB_PC: ISysUserWalletWithdrawTypeEnumItem,
-    ALI_WEB_APP: ISysUserWalletWithdrawTypeEnumItem,
+    ALI_QR_CODE: ISysPayTypeItemEnum,
+    ALI_APP: ISysPayTypeItemEnum,
+    ALI_WEB_PC: ISysPayTypeItemEnum,
+    ALI_WEB_APP: ISysPayTypeItemEnum,
 
-    WX_NATIVE: ISysUserWalletWithdrawTypeEnumItem,
-    WX_JSAPI: ISysUserWalletWithdrawTypeEnumItem,
+    WX_NATIVE: ISysPayTypeItemEnum,
+    WX_JSAPI: ISysPayTypeItemEnum,
 
-    UNION: ISysUserWalletWithdrawTypeEnumItem,
-    GOOGLE: ISysUserWalletWithdrawTypeEnumItem,
+    UNION: ISysPayTypeItemEnum,
+    GOOGLE: ISysPayTypeItemEnum,
 
 }
 
@@ -147,13 +147,13 @@ export const SysPayTypeEnum: ISysPayTypeEnum = {
 
 }
 
-export const SysPayTypeEnumMap = new Map<number, ISysUserWalletWithdrawTypeEnumItem>();
+export const SysPayTypeEnumMap = new Map<number, ISysPayTypeItemEnum>();
 
 Object.keys(SysPayTypeEnum).forEach(key => {
 
-    const item = SysPayTypeEnum[key];
+    const item = SysPayTypeEnum[key] as ISysPayTypeItemEnum;
 
-    SysPayTypeEnumMap.set(item.code as number, item)
+    SysPayTypeEnumMap.set(item.code!, item)
 
 })
 
@@ -161,9 +161,9 @@ export const SysPayTypeEnumDict = new Map<number, ProSchemaValueEnumType>();
 
 Object.keys(SysPayTypeEnum).forEach(key => {
 
-    const item = SysPayTypeEnum[key];
+    const item = SysPayTypeEnum[key] as ISysPayTypeItemEnum;
 
-    SysPayTypeEnumDict.set(item.code as number, {text: item.name})
+    SysPayTypeEnumDict.set(item.code!, {text: item.name})
 
 })
 

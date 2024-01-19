@@ -2,13 +2,15 @@ const LocalStorageKey = {
 
     JWT: "JWT",
 
-    JWT_EXPIRE_TIME: "JWT_EXPIRE_TIME", // jwt过期时间
-
-    USER_SELF_INFO: 'USER_SELF_INFO',
+    JWT_EXPIRE_TS: "JWT_EXPIRE_TS", // jwt过期时间戳
 
     USER_SELF_AVATAR_URL: 'USER_SELF_AVATAR_URL',
 
     TENANT_ID: 'TENANT_ID', // 租户 id
+
+    SYS_TENANT_CONFIGURATION_BY_ID_VO: 'SYS_TENANT_CONFIGURATION_BY_ID_VO', // 租户相关的配置
+
+    TENANT_MANAGE_NAME: 'TENANT_MANAGE_NAME', // 管理系统名称
 
     USER_WALLET_OWNER_INFO: "USER_WALLET_OWNER_INFO", // 用户钱包：归属者信息：租户或者用户
 

@@ -4,6 +4,7 @@ import {ProFormColumnsType} from "@ant-design/pro-components";
 import {SysUserDictList} from "@/api/http/SysUser";
 import {TreeSelect} from "antd";
 import {SysMenuPage} from "@/api/http/SysMenu";
+import CommonConstant from "@/model/constant/CommonConstant.ts";
 
 export const InitForm: SysTenantInsertOrUpdateDTO = {} as SysTenantInsertOrUpdateDTO
 
@@ -37,6 +38,19 @@ const SchemaFormColumnList = (): ProFormColumnsType<SysTenantInsertOrUpdateDTO>[
                     },
                 ],
             },
+        },
+
+        {
+            title: '管理后台名',
+            dataIndex: 'manageName',
+            formItemProps: {
+                rules: [
+                    {
+                        whitespace: true,
+                    },
+                ],
+            },
+            initialValue: CommonConstant.SYS_NAME
         },
 
         {

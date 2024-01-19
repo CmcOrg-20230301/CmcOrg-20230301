@@ -35,8 +35,8 @@ export const SysSocketOnlineTypeEnumDict = new Map<number, ProSchemaValueEnumTyp
 
 Object.keys(SysSocketOnlineTypeEnum).forEach(key => {
 
-    const item = SysSocketOnlineTypeEnum[key];
+    const item = SysSocketOnlineTypeEnum[key] as IEnum<number>;
 
-    SysSocketOnlineTypeEnumDict.set(item.code as number, {text: item.name})
+    SysSocketOnlineTypeEnumDict.set(item.code!, {text: item.name})
 
 })

@@ -4,20 +4,18 @@ import {Navigate} from "react-router-dom";
 import {CopyrightOutlined} from "@ant-design/icons";
 import {ConfigProvider} from "antd";
 import {AliasToken} from "antd/es/theme/interface/alias";
-import {RemoveTenantNameSuf} from "@/page/sign/SignUp/SignUpUtil";
-import CommonConstant from "@/model/constant/CommonConstant";
 
 interface ISignLayout extends PropsWithChildren {
 
     token?: Partial<AliasToken>
 
-    tenantName?: string
+    tenantManageName?: string
 
 }
 
-export function GetCopyright(tenantName ?: string) {
+export function GetCopyright(tenantManageName?: string) {
 
-    return `2021-${new Date().getFullYear()} ${RemoveTenantNameSuf(tenantName) || 'Cmc Org'}. All Rights Reserved.`
+    return `2021-${new Date().getFullYear()} ${tenantManageName || ''}. All Rights Reserved.`
 
 }
 
@@ -30,9 +28,13 @@ export default function (props: ISignLayout) {
 
     useEffect(() => {
 
-        document.title = CommonConstant.SYS_NAME;
+        if (props.tenantManageName) {
 
-    }, [])
+            document.title = props.tenantManageName;
+
+        }
+
+    }, [props.tenantManageName])
 
     return (
 
@@ -54,7 +56,7 @@ export default function (props: ISignLayout) {
 
                         <div className={"m-r-10 f-14 black1"}>
 
-                            <CopyrightOutlined/> {GetCopyright(props.tenantName)}
+                            <CopyrightOutlined/> {GetCopyright(props.tenantManageName)}
 
                         </div>
 

@@ -128,8 +128,8 @@ export const SysRequestCategoryEnumDict = new Map<number, ProSchemaValueEnumType
 
 Object.keys(SysRequestCategoryEnum).forEach(key => {
 
-    const item = SysRequestCategoryEnum[key];
+    const item = SysRequestCategoryEnum[key] as IEnum<number>;
 
-    SysRequestCategoryEnumDict.set(item.code as number, {text: item.name})
+    SysRequestCategoryEnumDict.set(item.code!, {text: item.name})
 
 })

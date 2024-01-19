@@ -3,8 +3,8 @@ import {ProSchemaValueEnumType} from "@ant-design/pro-components";
 
 export interface ISysUserTenantEnum {
 
-    USER: IEnum,
-    TENANT: IEnum,
+    USER: IEnum<number>,
+    TENANT: IEnum<number>,
 
 }
 
@@ -27,8 +27,8 @@ export const SysUserTenantEnumDict = new Map<number, ProSchemaValueEnumType>();
 
 Object.keys(SysUserTenantEnum).forEach(key => {
 
-    const item = SysUserTenantEnum[key];
+    const item = SysUserTenantEnum[key] as IEnum<number>;
 
-    SysUserTenantEnumDict.set(item.code as number, {text: item.name})
+    SysUserTenantEnumDict.set(item.code!, {text: item.name})
 
 })

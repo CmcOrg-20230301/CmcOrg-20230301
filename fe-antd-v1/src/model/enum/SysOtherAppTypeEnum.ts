@@ -42,8 +42,8 @@ export const SysOtherAppTypeEnumDict = new Map<number, ProSchemaValueEnumType>()
 
 Object.keys(SysOtherAppTypeEnum).forEach(key => {
 
-    const item = SysOtherAppTypeEnum[key];
+    const item = SysOtherAppTypeEnum[key] as IEnum<number>;
 
-    SysOtherAppTypeEnumDict.set(item.code as number, {text: item.name})
+    SysOtherAppTypeEnumDict.set(item.code!, {text: item.name})
 
 })

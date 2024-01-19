@@ -2,20 +2,27 @@ import {ToastError} from './ToastUtil'
 import MyPageDTO from "@/model/dto/MyPageDTO";
 import LocalStorageKey from "@/model/constant/LocalStorageKey";
 import {SignOut} from "./UserUtil";
-import axios, {AxiosInstance, AxiosRequestConfig, AxiosResponse, CreateAxiosDefaults} from "axios";
+import axios, {
+    AxiosError,
+    AxiosInstance,
+    AxiosRequestConfig,
+    AxiosResponse,
+    CreateAxiosDefaults,
+    InternalAxiosRequestConfig
+} from "axios";
 import {RequestData} from '@ant-design/pro-components';
 import {GetBrowserCategory} from "@/util/BrowserCategoryUtil";
 import PathConstant from "@/model/constant/PathConstant";
+import {DevFlag} from "@/util/SysUtil.ts";
+import CommonConstant from "@/model/constant/CommonConstant.ts";
 
 const TIMEOUT_MSG = '请求超时，请重试'
 const BASE_ERROR_MSG = "请求错误："
 const REQUEST_ERROR_MSG = "请求失败：服务器未启动"
 
-let hiddenErrorMsgFlag = false
-
 const config: { baseURL: string; timeout: number } = {
 
-    baseURL: import.meta.env.DEV ? '/api' : window.apiUrl,
+    baseURL: DevFlag() ? '/api' : window.apiUrl,
     timeout: 30 * 60 * 1000, // 默认 30分钟
 
 }
@@ -24,7 +31,7 @@ const $http = axios.create(config as CreateAxiosDefaults) as MyAxiosInstance
 
 // 请求拦截器
 $http.interceptors.request.use(
-    (config) => {
+    (config: InternalAxiosRequestConfig) => {
 
         if (!config.url?.startsWith('http')) {
 
@@ -36,15 +43,11 @@ $http.interceptors.request.use(
 
         }
 
-        if (config.headers?.hiddenErrorMsg) {
-            hiddenErrorMsgFlag = true
-        }
-
         return config
 
     },
 
-    (err) => {
+    (err: AxiosError) => {
 
         ToastError(BASE_ERROR_MSG + err.message)
 
@@ -87,25 +90,25 @@ $http.interceptors.response.use(
             return response // 如果请求的是文件
         }
 
-        const hiddenErrorMsg = config.headers?.hiddenErrorMsg // 是否隐藏错误提示
-
-        // 接口请求报错，是否隐藏错误信息：关闭
-        if (hiddenErrorMsg) {
-            hiddenErrorMsgFlag = false
-        }
+        const hiddenErrorMsgFlag = config.headers?.hiddenErrorMsg // 是否隐藏错误提示
 
         const res = response.data
 
-        if (res.code !== 200 || !res.successFlag) {
+        if (res.code !== CommonConstant.API_OK_CODE || !res.successFlag) {
 
             if (res.code === 100111) { // 这个代码需要跳转到：登录页面
 
                 SignOut()
-                ToastError(res.msg)
+
+                if (!hiddenErrorMsgFlag) {
+
+                    ToastError(res.msg)
+
+                }
 
             } else {
 
-                if (!hiddenErrorMsg) {
+                if (!hiddenErrorMsgFlag) {
 
                     ToastError(res.msg || REQUEST_ERROR_MSG)
 
@@ -128,7 +131,9 @@ $http.interceptors.response.use(
         }
 
     },
-    (err) => {
+    (err: AxiosError) => {
+
+        const hiddenErrorMsgFlag = err.config?.headers?.hiddenErrorMsg // 是否隐藏错误提示
 
         if (hiddenErrorMsgFlag) {
             return Promise.reject(err) // 这里会触发 catch，备注：如果没有 catch，则会报错
@@ -151,7 +156,7 @@ $http.interceptors.response.use(
 
             msg = '接口【' + substring + '】异常，请联系管理员'
 
-            if (substring === '404') {
+            if (substring === '404' || substring === '500') {
 
                 RequestErrorAutoReload() // 自动刷新页面
 
@@ -256,7 +261,7 @@ $http.myTreePost = <T, D extends MyPageDTO>(url: string, data?: D, config?: Axio
 
     return new Promise((resolve, reject) => {
 
-        handleData(data)
+        HandleData(data)
 
         return $http.post<ApiResultVO, AxiosResponse<ApiResultVO<T[]>>, D>(url, data, config).then(({data}) => {
 
@@ -279,7 +284,7 @@ $http.myProTreePost = <T, D extends MyPageDTO>(url: string, data?: D, config?: A
 
     return new Promise((resolve, reject) => {
 
-        handleData(data)
+        HandleData(data)
 
         return $http.post<ApiResultVO, AxiosResponse<ApiResultVO<T[]>>, D>(url, data, config).then(({data}) => {
 
@@ -307,7 +312,7 @@ $http.myPagePost = <T, D extends MyPageDTO>(url: string, data?: D, config?: Axio
 
     return new Promise((resolve, reject) => {
 
-        handleData(data)
+        HandleData(data)
 
         return $http.post<ApiResultVO, AxiosResponse<ApiResultVO<Page<T>>>, D>(url, data, config).then(({data}) => {
 
@@ -351,7 +356,7 @@ $http.myProPagePost = <T, D extends MyPageDTO>(url: string, data?: D, config?: A
 }
 
 // 处理数据
-function handleData<D extends MyPageDTO>(data?: D) {
+function HandleData<D extends MyPageDTO>(data?: D) {
 
     if (data?.sort) {
 

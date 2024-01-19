@@ -70,8 +70,8 @@ export const SysUserWalletLogTypeEnumDict = new Map<number, ProSchemaValueEnumTy
 
 Object.keys(SysUserWalletLogTypeEnum).forEach(key => {
 
-    const item = SysUserWalletLogTypeEnum[key];
+    const item = SysUserWalletLogTypeEnum[key] as IEnum<number>;
 
-    SysUserWalletLogTypeEnumDict.set(item.code as number, {text: item.name})
+    SysUserWalletLogTypeEnumDict.set(item.code!, {text: item.name})
 
 })

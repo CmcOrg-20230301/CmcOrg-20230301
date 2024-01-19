@@ -1,9 +1,28 @@
 import dayjs from "dayjs";
 
 /**
- * 格式化时间：
+ * 格式化时间
  */
 export function FormatDateTime(date: Date = new Date()) {
+
+    return dayjs(date).format('YYYY-MM-DD HH:mm:ss')
+
+}
+
+/**
+ * 格式化时间，如果是今天，则不显示年月日
+ */
+export function FormatDateTimeForCurrentDay(date: Date = new Date()) {
+
+    const currentDay = Math.trunc(GetServerTimestamp() / 86400000);
+
+    const checkDay = Math.trunc(date.getTime() / 86400000);
+
+    if (currentDay === checkDay) {
+
+        return dayjs(date).format('HH:mm:ss')
+
+    }
 
     return dayjs(date).format('YYYY-MM-DD HH:mm:ss')
 

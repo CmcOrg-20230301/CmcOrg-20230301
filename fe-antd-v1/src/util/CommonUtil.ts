@@ -37,9 +37,16 @@ export function GetTenantId(): string {
 /**
  * 设置：TenantId 到 Storage里面
  */
-export function SetTenantIdToStorage(tenantId: string) {
+export function SetTenantIdToStorage(tenantId?: string) {
+
+    if (!tenantId) {
+
+        tenantId = CommonConstant.TOP_TENANT_ID_STR
+
+    }
 
     localStorage.setItem(LocalStorageKey.TENANT_ID, tenantId)
+
     sessionStorage.setItem(SessionStorageKey.TENANT_ID, tenantId)
 
 }
@@ -54,6 +61,12 @@ export function GetTenantIdFromStorage() {
     if (!tenantId) {
 
         tenantId = sessionStorage.getItem(SessionStorageKey.TENANT_ID);
+
+        if (tenantId) {
+
+            localStorage.setItem(LocalStorageKey.TENANT_ID, tenantId)
+
+        }
 
     }
 

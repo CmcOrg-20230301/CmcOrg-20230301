@@ -8,7 +8,7 @@ export interface SysOtherAppPageDTO {
     openId?: string // 第三方应用的 openId/微信号，例如：接收微信公众号消息时的 ToUserName
     pageSize?: string // 每页显示条数，format：int64
     remark?: string // 备注
-    type?: string // 第三方应用类型
+    type?: number // 第三方应用类型，format：int32
     current?: string // 第几页，format：int64
     imageReplyContent?: string // 用户发送图片之后，回复的内容
     qrCode?: string // 二维码，备注：不是二维码图片的地址，而是二维码解码之后的值
@@ -28,7 +28,7 @@ export interface SysOtherAppDO {
     remark?: string // 备注
     secret?: string // 第三方应用的 secret
     delFlag?: boolean // 是否逻辑删除
-    type?: string // 第三方应用类型
+    type?: number // 第三方应用类型，format：int32
     version?: number // 乐观锁，format：int32
     updateId?: string // 修改人id，format：int64
     imageReplyContent?: string // 用户发送图片之后，回复的内容
@@ -76,7 +76,7 @@ export interface SysOtherAppOfficialAccountMenuDO {
     updateTime?: string // 修改时间，format：date-time
     remark?: string // 备注
     delFlag?: boolean // 是否逻辑删除
-    type?: string // 类型
+    type?: number // 类型，format：int32
     version?: number // 乐观锁，format：int32
     parentId?: string // 父节点id（顶级则为0），format：int64
     updateId?: string // 修改人id，format：int64
@@ -118,7 +118,7 @@ export interface SysOtherAppInsertOrUpdateDTO {
     openId?: string // 第三方应用的 openId/微信号，例如：接收微信公众号消息时的 ToUserName
     remark?: string // 备注
     secret?: string // 第三方应用的 secret，required：true
-    type?: string // 第三方应用类型，required：true
+    type?: number // 第三方应用类型，required：true，format：int32
     imageReplyContent?: string // 用户发送图片之后，回复的内容
     qrCode?: string // 二维码，备注：不是二维码图片的地址，而是二维码解码之后的值
     subscribeReplyContent?: string // 用户点击关注之后，回复的内容，备注：如果取关然后再关注，也会回复该内容
@@ -143,7 +143,7 @@ export interface SysOtherAppOfficialAccountMenuPageDTO {
     tenantIdSet?: string[] // 租户 idSet，format：int64
     remark?: string // 备注
     replyContent?: string // 回复的内容，备注：一般是点击按钮之后，回复的内容
-    type?: string // 类型
+    type?: number // 类型，format：int32
     value?: string // 如果是按钮，则表示按钮的 key，如果是链接，则表示是 url
     enableFlag?: boolean // 是否启用
     order?: MyOrderDTO // 排序字段

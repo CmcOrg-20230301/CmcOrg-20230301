@@ -9,17 +9,29 @@ export function ToastSuccess(msg: React.ReactNode, duration: number = 5) {
 
 export function ToastInfo(msg: React.ReactNode, duration: number = 5) {
 
+    if (!msg) {
+        return
+    }
+
     GetApp().message.info(msg, duration);
 
 }
 
 export function ToastWarning(msg: React.ReactNode, duration: number = 5) {
 
+    if (!msg) {
+        return
+    }
+
     GetApp().message.warning(msg, duration);
 
 }
 
 export function ToastError(msg: React.ReactNode, duration: number = 5) {
+
+    if (!msg) {
+        return
+    }
 
     GetApp().message.error(msg, duration);
 

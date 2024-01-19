@@ -28,8 +28,8 @@ export const ChangeNumberTypeEnumDict = new Map<number, ProSchemaValueEnumType>(
 
 Object.keys(ChangeNumberTypeEnum).forEach(key => {
 
-    const item = ChangeNumberTypeEnum[key];
+    const item = ChangeNumberTypeEnum[key] as IEnum<number>;
 
-    ChangeNumberTypeEnumDict.set(item.code as number, {text: item.name})
+    ChangeNumberTypeEnumDict.set(item.code!, {text: item.name})
 
 })

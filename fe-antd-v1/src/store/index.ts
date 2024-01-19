@@ -2,6 +2,7 @@ import {configureStore} from '@reduxjs/toolkit'
 import {TypedUseSelectorHook, useDispatch, useSelector} from 'react-redux'
 import commonReducer from './commonSlice'
 import userReducer from './userSlice'
+import {DevFlag} from "@/util/SysUtil.ts";
 
 const store = configureStore({
 
@@ -12,7 +13,7 @@ const store = configureStore({
 
     },
 
-    devTools: import.meta.env.DEV,
+    devTools: DevFlag(),
 
 })
 

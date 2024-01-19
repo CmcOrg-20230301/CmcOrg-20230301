@@ -1,5 +1,5 @@
 import {Outlet} from "react-router-dom";
-import {UseEffectLoadSysMenuUserSelfMenuList} from "@/util/UseEffectUtil";
+import {UseEffectLoadSysMenuUserSelfMenuList, UseEffectLoadUserSelfInfo} from "@/util/UseEffectUtil";
 import {GetAppNav} from "@/MyApp";
 import LocalStorageKey from "@/model/constant/LocalStorageKey";
 
@@ -18,6 +18,9 @@ export default function () {
         }
 
     });
+
+    // 加载：用户数据
+    UseEffectLoadUserSelfInfo()
 
     return <Outlet/>
 

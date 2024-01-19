@@ -1,85 +1,111 @@
-import React, {ReactNode, useRef, useState} from "react";
-import {
-    NotBlankCodeDTO,
-    SignEmailBindAccount,
-    SignEmailBindAccountDTO,
-    SignEmailBindAccountSendCode,
-    SignEmailSignDelete,
-    SignEmailSignDeleteSendCode,
-    SignEmailUpdateAccount,
-    SignEmailUpdateAccountDTO,
-    SignEmailUpdateAccountSendCode,
-    SignEmailUpdatePassword,
-    SignEmailUpdatePasswordDTO,
-    SignEmailUpdatePasswordSendCode
-} from "@/api/http/SignEmail";
+import React, {useEffect, useMemo, useState} from "react";
 import {useAppSelector} from "@/store";
 import {List, Modal} from "antd";
-import {Validate} from "@/util/ValidatorUtil";
-import {ExecConfirm, ToastSuccess} from "@/util/ToastUtil";
-import {
-    ColumnsState,
-    ModalForm,
-    ProFormCaptcha,
-    ProFormInstance,
-    ProFormText,
-    ProTable
-} from "@ant-design/pro-components";
-import CommonConstant from "@/model/constant/CommonConstant";
-import {SignOut} from "@/util/UserUtil";
+import {ColumnsState, ProTable} from "@ant-design/pro-components";
 import {USER_CENTER_KEY_TWO} from "@/page/user/Self/Self";
 import Title from "antd/es/typography/Title";
-import {
-    SignSignInNameSignDelete,
-    SignSignInNameSignDeleteDTO,
-    SignSignInNameUpdateAccount,
-    SignSignInNameUpdateAccountDTO,
-    SignSignInNameUpdatePassword,
-    SignSignInNameUpdatePasswordDTO
-} from "@/api/http/SignSignInName";
-import {PasswordRSAEncrypt, RSAEncryptPro} from "@/util/RsaUtil";
+
 import {SysRequestDO, SysRequestPageDTO, SysRequestSelfLoginRecord} from "@/api/http/SysRequest";
 import {HandlerRegion} from "@/util/StrUtil";
-import {UserSelfRefreshJwtSecretSuf} from "@/api/http/UserSelf";
+import {UserSelfInfoVO} from "@/api/http/UserSelf";
 import {UseEffectFullScreenChange} from "@/util/UseEffectUtil";
 import {SysRequestCategoryEnumDict} from "@/model/enum/SysRequestCategoryEnum.ts";
+import {SysTenantConfigurationByIdVO, SysTenantGetConfigurationById} from "@/api/http/SysTenant.ts";
+import {MyUseState} from "@/util/HookUtil.ts";
+import LocalStorageKey from "@/model/constant/LocalStorageKey.ts";
+import {IEnum} from "@/model/enum/CommonEnum.ts";
+import {
+    DEFAULT_SYS_USER_ACCOUNT_LEVEL_ENUM,
+    GetSysUserAccountLevelEnum,
+    SysUserAccountLevelEnum
+} from "@/model/enum/SysUserAccountLevelEnum.ts";
+import UserSelfDeleteByEmailModalForm from "@/page/user/Self/userSelfSetting/email/UserSelfDeleteByEmailModalForm.tsx";
+import UpdatePasswordByWxModalForm from "@/page/user/Self/userSelfSetting/wx/UpdatePasswordByWxModalForm.tsx";
+import SetPasswordByWxModalForm from "@/page/user/Self/userSelfSetting/wx/SetPasswordByWxModalForm.tsx";
+import UpdateSignNameByWxModalForm from "@/page/user/Self/userSelfSetting/wx/UpdateSignNameByWxModalForm.tsx";
+import SetSignNameByWxModalForm from "@/page/user/Self/userSelfSetting/wx/SetSignNameByWxModalForm.tsx";
+import UpdateEmailByWxModalForm from "@/page/user/Self/userSelfSetting/wx/UpdateEmailByWxModalForm.tsx";
+import SetEmailByWxModalForm from "@/page/user/Self/userSelfSetting/wx/SetEmailByWxModalForm.tsx";
+import SetPhoneByWxModalForm from "@/page/user/Self/userSelfSetting/wx/SetPhoneByWxModalForm.tsx";
+import UpdateWxByWxModalForm from "@/page/user/Self/userSelfSetting/wx/UpdateWxByWxModalForm.tsx";
+import UserSelfDeleteByWxModalForm from "@/page/user/Self/userSelfSetting/wx/UserSelfDeleteByWxModalForm.tsx";
+import SetSignNameByEmailModalForm from "@/page/user/Self/userSelfSetting/email/SetSignNameByEmailModalForm.tsx";
+import SetPhoneByEmailModalForm from "@/page/user/Self/userSelfSetting/email/SetPhoneByEmailModalForm.tsx";
+import SetWxByEmailModalForm from "@/page/user/Self/userSelfSetting/email/SetWxByEmailModalForm.tsx";
+import UpdatePasswordByPhoneModalForm from "@/page/user/Self/userSelfSetting/phone/UpdatePasswordByPhoneModalForm.tsx";
+import UpdateSignNameByEmailModalForm from "@/page/user/Self/userSelfSetting/email/UpdateSignNameByEmailModalForm.tsx";
+import UpdateEmailByEmailModalForm from "@/page/user/Self/userSelfSetting/email/UpdateEmailByEmailModalForm.tsx";
+import UpdatePasswordBySignInNameModalForm
+    from "@/page/user/Self/userSelfSetting/signInName/UpdatePasswordBySignInNameModalForm.tsx";
+import SetEmailBySignInNameModalForm
+    from "@/page/user/Self/userSelfSetting/signInName/SetEmailBySignInNameModalForm.tsx";
+import UserSelfDeleteBySignInNameModalForm
+    from "@/page/user/Self/userSelfSetting/signInName/UserSelfDeleteBySignInNameModalForm.tsx";
+import UpdateSignNameBySignInNameModalForm from "./userSelfSetting/signInName/UpdateSignNameBySignInNameModalForm";
+import SetPhoneBySignInNameModalForm
+    from "@/page/user/Self/userSelfSetting/signInName/SetPhoneBySignInNameModalForm.tsx";
+import UpdatePasswordByEmailModalForm from "@/page/user/Self/userSelfSetting/email/UpdatePasswordByEmailModalForm.tsx";
+import UserSelfDeleteByPhoneModalForm from "@/page/user/Self/userSelfSetting/phone/UserSelfDeleteByPhoneModalForm.tsx";
+import SetPasswordByPhoneModalForm from "./userSelfSetting/phone/SetPasswordByPhoneModalForm";
+import UpdateSignNameByPhoneModalForm from "./userSelfSetting/phone/UpdateSignNameByPhoneModalForm";
+import SetSignNameByPhoneModalForm from "@/page/user/Self/userSelfSetting/phone/SetSignNameByPhoneModalForm.tsx";
+import UpdateEmailByPhoneModalForm from "@/page/user/Self/userSelfSetting/phone/UpdateEmailByPhoneModalForm.tsx";
+import SetEmailByPhoneModalForm from "@/page/user/Self/userSelfSetting/phone/SetEmailByPhoneModalForm.tsx";
+import UpdatePhoneByPhoneModalForm from "@/page/user/Self/userSelfSetting/phone/UpdatePhoneByPhoneModalForm.tsx";
+import UpdateWxByPhoneModalForm from "@/page/user/Self/userSelfSetting/phone/UpdateWxByPhoneModalForm.tsx";
+import SetWxByPhoneModalForm from "@/page/user/Self/userSelfSetting/phone/SetWxByPhoneModalForm.tsx";
+import SetWxBySignInNameModalForm from "@/page/user/Self/userSelfSetting/signInName/SetWxBySignInNameModalForm.tsx";
 
 interface IUserSelfSetting {
 
     title: string
     description?: string
-    actions: ReactNode[];
+    actions: (JSX.Element | null)[];
 
 }
 
-const RequestSelfLoginRecordModalTitle = "登录记录"
-const SetSignNameAccountModalTitle = "设置登录名"
-const UpdateSignNameAccountModalTitle = "修改登录名"
-const SetEmailAccountModalTitle = "设置邮箱"
-const UpdateEmailAccountModalTitle = "修改邮箱"
-const UserSelfDeleteModalTitle = "账号注销"
-const UserSelfDeleteModalTargetName = "立即注销"
-const UserSelfUpdatePasswordTitle = "修改密码"
+export const UserSelfSetPasswordTitle = "设置密码"
+export const UserSelfUpdatePasswordTitle = "修改密码"
 
-// 账号设置
-export default function () {
+export const UserSelfSetSignNameModalTitle = "设置登录名"
+export const UserSelfUpdateSignNameModalTitle = "修改登录名"
 
-    const userSelfInfo = useAppSelector((state) => state.user.userSelfInfo)
+export const UserSelfSetEmailModalTitle = "绑定邮箱"
+export const UserSelfUpdateEmailModalTitle = "修改邮箱"
 
-    return (
+export const UserSelfSetPhoneModalTitle = "绑定手机号"
+export const UserSelfUpdatePhoneModalTitle = "修改手机号"
 
-        <List<IUserSelfSetting>
+export const UserSelfSetWxModalTitle = "绑定微信"
+export const UserSelfUpdateWxModalTitle = "修改微信"
 
-            header={<Title level={5}>{USER_CENTER_KEY_TWO}</Title>}
-            rowKey={"title"}
+export const RequestSelfLoginRecordModalTitle = "登录记录"
 
-            dataSource={[
+export const UserSelfDeleteModalTitle = "账号注销"
+export const UserSelfDeleteModalTargetName = "立即注销"
+
+/**
+ * 获取：dataSourceMap
+ */
+function GetDataSourceMap(userSelfInfo: UserSelfInfoVO) {
+
+    const dataSourceMap: Map<number, IUserSelfSetting[]> = new Map();
+
+    Object.keys(SysUserAccountLevelEnum).forEach(key => {
+
+        const item = SysUserAccountLevelEnum[key] as IEnum<number>;
+
+        let dataSourceArr: IUserSelfSetting[]
+
+        if (item.code === SysUserAccountLevelEnum.WX.code) { // 微信
+
+            dataSourceArr = [
 
                 {
                     title: '密码',
                     actions: [
-                        userSelfInfo.email ? <UserSelfUpdatePasswordByCodeModalForm key={"1"}/> :
-                            <UserSelfUpdatePasswordByPasswordModalForm key={"1"}/>
+                        userSelfInfo.passwordFlag ? <UpdatePasswordByWxModalForm key={"1"}/> :
+                            <SetPasswordByWxModalForm key={"1"}/>
                     ]
                 },
 
@@ -87,7 +113,8 @@ export default function () {
                     title: '登录名',
                     description: userSelfInfo.signInName || '暂无',
                     actions: [
-                        <UpdateSignNameAccountModalForm key={"1"}/>
+                        userSelfInfo.signInName ? <UpdateSignNameByWxModalForm key={"1"}/> :
+                            <SetSignNameByWxModalForm key={"1"}/>
                     ]
                 },
 
@@ -95,32 +122,24 @@ export default function () {
                     title: '邮箱',
                     description: userSelfInfo.email || '暂无',
                     actions: [
-                        userSelfInfo.email ? <UpdateEmailAccountModalForm key={"1"}/> :
-                            <SetEmailAccountModalForm key={"1"}/>
+                        userSelfInfo.email ? <UpdateEmailByWxModalForm key={"1"}/> :
+                            <SetEmailByWxModalForm key={"1"}/>
                     ]
                 },
 
                 {
-                    title: '刷新令牌',
-                    description: '刷新之后，执行任意操作，都会要求重新登录，用于：不修改密码，退出所有登录',
+                    title: '手机号',
+                    description: userSelfInfo.phone || '暂无',
                     actions: [
+                        userSelfInfo.phone ? null : <SetPhoneByWxModalForm key={"1"}/>
+                    ]
+                },
 
-                        <a key="1" onClick={() => {
-
-                            ExecConfirm(async () => {
-
-                                await UserSelfRefreshJwtSecretSuf().then(res => {
-
-                                    ToastSuccess(res.msg)
-
-                                })
-
-                            }, undefined, '确定执行【刷新令牌】操作吗？')
-
-                        }}>
-                            执行刷新
-                        </a>
-
+                {
+                    title: '微信',
+                    description: userSelfInfo.wxOpenId || '暂无',
+                    actions: [
+                        userSelfInfo.wxOpenId ? <UpdateWxByWxModalForm key={"1"}/> : null
                     ]
                 },
 
@@ -135,12 +154,267 @@ export default function () {
                     title: UserSelfDeleteModalTitle,
                     description: userSelfInfo.createTime ? ('注册时间：' + userSelfInfo.createTime) : undefined,
                     actions: [
-                        userSelfInfo.email ? <UserSelfDeleteByCodeModalForm key={"1"}/> :
-                            <UserSelfDeleteByPasswordModalForm key={"1"}/>
+                        <UserSelfDeleteByWxModalForm key={"1"}/>
                     ]
                 },
 
-            ]}
+            ]
+
+        } else if (item.code === SysUserAccountLevelEnum.EMAIL.code) { // 邮箱
+
+            dataSourceArr = [
+
+                {
+                    title: '密码',
+                    actions: [
+                        userSelfInfo.passwordFlag ? <UpdatePasswordByEmailModalForm key={"1"}/> : null
+                    ]
+                },
+
+                {
+                    title: '登录名',
+                    description: userSelfInfo.signInName || '暂无',
+                    actions: [
+                        userSelfInfo.signInName ? <UpdateSignNameByEmailModalForm key={"1"}/> :
+                            <SetSignNameByEmailModalForm key={"1"}/>
+                    ]
+                },
+
+                {
+                    title: '邮箱',
+                    description: userSelfInfo.email || '暂无',
+                    actions: [
+                        userSelfInfo.email ? <UpdateEmailByEmailModalForm key={"1"}/> : null
+                    ]
+                },
+
+                {
+                    title: '手机号',
+                    description: userSelfInfo.phone || '暂无',
+                    actions: [
+                        userSelfInfo.phone ? null : <SetPhoneByEmailModalForm key={"1"}/>
+                    ]
+                },
+
+                {
+                    title: '微信',
+                    description: userSelfInfo.wxOpenId || '暂无',
+                    actions: [
+                        userSelfInfo.wxOpenId ? null : <SetWxByEmailModalForm key={"1"}/>
+                    ]
+                },
+
+                {
+                    title: RequestSelfLoginRecordModalTitle,
+                    actions: [
+                        <RequestSelfLoginRecordModal key={"1"}/>
+                    ]
+                },
+
+                {
+                    title: UserSelfDeleteModalTitle,
+                    description: userSelfInfo.createTime ? ('注册时间：' + userSelfInfo.createTime) : undefined,
+                    actions: [
+                        <UserSelfDeleteByEmailModalForm key={"1"}/>
+                    ]
+                },
+
+            ]
+
+        } else if (item.code === SysUserAccountLevelEnum.PHONE.code) { // 手机
+
+            dataSourceArr = [
+
+                {
+                    title: '密码',
+                    actions: [
+                        userSelfInfo.passwordFlag ? <UpdatePasswordByPhoneModalForm key={"1"}/> :
+                            <SetPasswordByPhoneModalForm key={"1"}/>
+                    ]
+                },
+
+                {
+                    title: '登录名',
+                    description: userSelfInfo.signInName || '暂无',
+                    actions: [
+                        userSelfInfo.signInName ? <UpdateSignNameByPhoneModalForm key={"1"}/> :
+                            <SetSignNameByPhoneModalForm key={"1"}/>
+                    ]
+                },
+
+                {
+                    title: '邮箱',
+                    description: userSelfInfo.email || '暂无',
+                    actions: [
+                        userSelfInfo.email ? <UpdateEmailByPhoneModalForm key={"1"}/> :
+                            <SetEmailByPhoneModalForm key={"1"}/>
+                    ]
+                },
+
+                {
+                    title: '手机号',
+                    description: userSelfInfo.phone || '暂无',
+                    actions: [
+                        userSelfInfo.phone ? <UpdatePhoneByPhoneModalForm key={"1"}/> : null
+                    ]
+                },
+
+                {
+                    title: '微信',
+                    description: userSelfInfo.wxOpenId || '暂无',
+                    actions: [
+                        userSelfInfo.wxOpenId ? <UpdateWxByPhoneModalForm key={"1"}/> :
+                            <SetWxByPhoneModalForm key={"1"}/>
+                    ]
+                },
+
+                {
+                    title: RequestSelfLoginRecordModalTitle,
+                    actions: [
+                        <RequestSelfLoginRecordModal key={"1"}/>
+                    ]
+                },
+
+                {
+                    title: UserSelfDeleteModalTitle,
+                    description: userSelfInfo.createTime ? ('注册时间：' + userSelfInfo.createTime) : undefined,
+                    actions: [
+                        <UserSelfDeleteByPhoneModalForm key={"1"}/>
+                    ]
+                },
+
+            ]
+
+        } else { // 默认是：登录名
+
+            dataSourceArr = [
+
+                {
+                    title: '密码',
+                    actions: [
+                        userSelfInfo.passwordFlag ? <UpdatePasswordBySignInNameModalForm key={"1"}/> : null
+                    ]
+                },
+
+                {
+                    title: '登录名',
+                    description: userSelfInfo.signInName || '暂无',
+                    actions: [
+                        userSelfInfo.signInName ? <UpdateSignNameBySignInNameModalForm key={"1"}/> :
+                            null
+                    ]
+                },
+
+                {
+                    title: '邮箱',
+                    description: userSelfInfo.email || '暂无',
+                    actions: [
+                        userSelfInfo.email ? null : <SetEmailBySignInNameModalForm key={"1"}/>
+                    ]
+                },
+
+                {
+                    title: '手机号',
+                    description: userSelfInfo.phone || '暂无',
+                    actions: [
+                        userSelfInfo.phone ? null : <SetPhoneBySignInNameModalForm key={"1"}/>
+                    ]
+                },
+
+                {
+                    title: '微信',
+                    description: userSelfInfo.wxOpenId || '暂无',
+                    actions: [
+                        userSelfInfo.wxOpenId ? null : <SetWxBySignInNameModalForm key={"1"}/>
+                    ]
+                },
+
+                {
+                    title: RequestSelfLoginRecordModalTitle,
+                    actions: [
+                        <RequestSelfLoginRecordModal key={"1"}/>
+                    ]
+                },
+
+                {
+                    title: UserSelfDeleteModalTitle,
+                    description: userSelfInfo.createTime ? ('注册时间：' + userSelfInfo.createTime) : undefined,
+                    actions: [
+                        <UserSelfDeleteBySignInNameModalForm key={"1"}/>
+                    ]
+                },
+
+            ]
+
+        }
+
+        dataSourceMap.set(item.code!, dataSourceArr)
+
+    })
+
+    return dataSourceMap;
+
+}
+
+// 账号设置
+export default function () {
+
+    const userSelfInfo = useAppSelector((state) => state.user.userSelfInfo)
+
+    const [sysTenantConfigurationByIdVO, setSysTenantConfigurationByIdVO, sysTenantConfigurationByIdVORef] = MyUseState(useState<SysTenantConfigurationByIdVO>({}))
+
+    useEffect(() => {
+
+        setSysTenantConfigurationByIdVO(JSON.parse(localStorage.getItem(LocalStorageKey.SYS_TENANT_CONFIGURATION_BY_ID_VO) || "{}"))
+
+    }, [])
+
+    const [dataSource, setDataSource] = useState<IUserSelfSetting[]>([]);
+
+    const dataSourceMap = useMemo(() => {
+
+        return GetDataSourceMap(userSelfInfo);
+
+    }, []);
+
+    const [sysUserAccountLevelEnum, setSysUserAccountLevelEnum] = MyUseState(useState<IEnum<number>>(DEFAULT_SYS_USER_ACCOUNT_LEVEL_ENUM), newState => {
+
+        const dataSourceTemp = dataSourceMap.get(newState.code!)!;
+
+        // 更新：页面显示
+        setDataSource(dataSourceTemp)
+
+    });
+
+    useEffect(() => {
+
+        if (userSelfInfo.tenantId) {
+
+            // 租户相关配置
+            SysTenantGetConfigurationById({value: userSelfInfo.tenantId}).then(res => {
+
+                setSysTenantConfigurationByIdVO(res.data)
+
+                localStorage.setItem(LocalStorageKey.SYS_TENANT_CONFIGURATION_BY_ID_VO, JSON.stringify(res.data))
+
+            })
+
+            // 设置：用户账户等级
+            setSysUserAccountLevelEnum(GetSysUserAccountLevelEnum(userSelfInfo))
+
+        }
+
+    }, [userSelfInfo])
+
+    return (
+
+        <List<IUserSelfSetting>
+
+            header={<Title level={5}>{USER_CENTER_KEY_TWO}</Title>}
+
+            rowKey={"title"}
+
+            dataSource={dataSource}
 
             renderItem={item => (
 
@@ -156,505 +430,6 @@ export default function () {
             )}
 
         />
-
-    )
-
-}
-
-// 设置邮箱：通过：邮箱验证码
-export function SetEmailAccountModalForm() {
-
-    const formRef = useRef<ProFormInstance<SignEmailBindAccountDTO>>();
-
-    return <ModalForm<SignEmailBindAccountDTO>
-
-        formRef={formRef}
-        modalProps={{
-            maskClosable: false
-        }}
-
-        isKeyPressSubmit
-        width={CommonConstant.MODAL_FORM_WIDTH}
-        title={SetEmailAccountModalTitle}
-        trigger={<a>{SetEmailAccountModalTitle}</a>}
-        onFinish={async (form) => {
-
-            await SignEmailBindAccount(form).then(res => {
-
-                SignOut()
-                ToastSuccess(res.msg)
-
-            })
-
-            return true
-
-        }}
-    >
-
-        <ProFormText
-            name="email"
-            fieldProps={{
-                allowClear: true,
-            }}
-            required
-            label="邮箱"
-            placeholder={'请输入邮箱'}
-            rules={[
-                {
-                    validator: Validate.email.validator
-                }
-            ]}
-        />
-
-        <ProFormCaptcha
-            fieldProps={{
-                maxLength: 6,
-                allowClear: true,
-            }}
-            required
-            label="验证码"
-            name="code"
-            placeholder={"请输入验证码"}
-            rules={[{validator: Validate.code.validator}]}
-            onGetCaptcha={async () => {
-
-                await formRef.current?.validateFields(['email']).then(async res => {
-
-                    await SignEmailBindAccountSendCode({email: res.email}).then(res => {
-
-                        ToastSuccess(res.msg)
-
-                    })
-
-                })
-
-            }}
-        />
-
-    </ModalForm>
-
-}
-
-// 修改邮箱：通过：邮箱验证码
-export function UpdateEmailAccountModalForm() {
-
-    const formRef = useRef<ProFormInstance<SignEmailUpdateAccountDTO>>();
-
-    return <ModalForm<SignEmailUpdateAccountDTO>
-
-        formRef={formRef}
-        modalProps={{
-            maskClosable: false
-        }}
-
-        isKeyPressSubmit
-        width={CommonConstant.MODAL_FORM_WIDTH}
-        title={UpdateEmailAccountModalTitle}
-        trigger={<a>{UpdateEmailAccountModalTitle}</a>}
-        onFinish={async (form) => {
-
-            await SignEmailUpdateAccount(form).then(res => {
-
-                SignOut()
-                ToastSuccess(res.msg)
-
-            })
-
-            return true
-
-        }}
-
-    >
-
-        <ProFormText
-
-            name="newEmail"
-            fieldProps={{
-                allowClear: true,
-            }}
-            required
-            label="新邮箱"
-            placeholder={'请输入新邮箱'}
-
-            rules={[
-                {
-                    validator: Validate.email.validator
-                }
-            ]}
-
-        />
-
-        <ProFormCaptcha
-
-            fieldProps={{
-                maxLength: 6,
-                allowClear: true,
-            }}
-
-            required
-            label="新邮箱验证码"
-            name="newEmailCode"
-            placeholder={"请输入新邮箱验证码"}
-            rules={[{validator: Validate.code.validator}]}
-
-            onGetCaptcha={async () => {
-
-                await formRef.current?.validateFields(['newEmail']).then(async res => {
-
-                    await SignEmailBindAccountSendCode({email: res.newEmail}).then(res => {
-
-                        ToastSuccess(res.msg)
-
-                    })
-
-                })
-
-            }}
-
-        />
-
-        <ProFormCaptcha
-
-            fieldProps={{
-                maxLength: 6,
-                allowClear: true,
-            }}
-
-            required
-            label="旧邮箱验证码"
-            name="oldEmailCode"
-            placeholder={"请输入旧邮箱验证码"}
-            rules={[{validator: Validate.code.validator}]}
-
-            onGetCaptcha={async () => {
-
-                await SignEmailUpdateAccountSendCode().then(res => {
-
-                    ToastSuccess(res.msg)
-
-                })
-
-            }}
-
-        />
-
-    </ModalForm>
-
-}
-
-// 设置登录名：通过：密码
-export function UpdateSignNameAccountModalForm() {
-
-    const userSelfInfo = useAppSelector((state) => state.user.userSelfInfo)
-
-    return <ModalForm<SignSignInNameUpdateAccountDTO>
-
-        modalProps={{
-            maskClosable: false
-        }}
-
-        isKeyPressSubmit
-
-        width={CommonConstant.MODAL_FORM_WIDTH}
-
-        title={userSelfInfo.signInName ? UpdateSignNameAccountModalTitle : SetSignNameAccountModalTitle}
-
-        trigger={<a>{userSelfInfo.signInName ? UpdateSignNameAccountModalTitle : SetSignNameAccountModalTitle}</a>}
-
-        onFinish={async (form) => {
-
-            form.currentPassword = PasswordRSAEncrypt(form.currentPassword!)
-
-            await SignSignInNameUpdateAccount(form).then(res => {
-
-                SignOut()
-                ToastSuccess(res.msg)
-
-            })
-
-            return true
-
-        }}
-
-    >
-
-        <ProFormText
-
-            name="newSignInName"
-            fieldProps={{
-                allowClear: true,
-            }}
-            required
-            label="新登录名"
-            placeholder={'请输入新登录名'}
-            rules={[
-                {
-                    validator: Validate.signInName.validator
-                }
-            ]}
-
-        />
-
-        <ProFormText.Password
-
-            fieldProps={{
-                allowClear: true,
-            }}
-            label="当前密码"
-            name="currentPassword"
-            rules={[{
-                required: true,
-            }]}
-
-        />
-
-    </ModalForm>
-
-}
-
-// 用户修改密码：通过：旧密码
-export function UserSelfUpdatePasswordByPasswordModalForm() {
-
-    return <ModalForm<SignSignInNameUpdatePasswordDTO>
-
-        modalProps={{
-            maskClosable: false
-        }}
-
-        isKeyPressSubmit
-
-        width={CommonConstant.MODAL_FORM_WIDTH}
-        title={UserSelfUpdatePasswordTitle}
-
-        trigger={<a>{UserSelfUpdatePasswordTitle}</a>}
-        onFinish={async (form) => {
-
-            form.oldPassword = PasswordRSAEncrypt(form.oldPassword!)
-            form.originNewPassword = RSAEncryptPro(form.newPassword!)
-            form.newPassword = PasswordRSAEncrypt(form.newPassword!)
-
-            await SignSignInNameUpdatePassword(form).then(res => {
-
-                SignOut()
-                ToastSuccess(res.msg)
-
-            })
-
-            return true
-
-        }}
-
-    >
-
-        <ProFormText
-
-            label="旧密码"
-            placeholder={'请输入旧密码'}
-            name="oldPassword"
-            fieldProps={{
-                allowClear: true,
-            }}
-            rules={[{required: true,},]}
-
-        />
-
-        <ProFormText
-
-            label="新密码"
-            placeholder={'请输入新密码'}
-            name="newPassword"
-            required
-            fieldProps={{
-                allowClear: true,
-            }}
-            rules={[{validator: Validate.password.validator}]}
-
-        />
-
-    </ModalForm>
-
-}
-
-// 用户修改密码：通过：发送验证码
-export function UserSelfUpdatePasswordByCodeModalForm() {
-
-    return <ModalForm<SignEmailUpdatePasswordDTO>
-
-        modalProps={{
-            maskClosable: false
-        }}
-
-        isKeyPressSubmit
-
-        width={CommonConstant.MODAL_FORM_WIDTH}
-        title={UserSelfUpdatePasswordTitle}
-        trigger={<a>{UserSelfUpdatePasswordTitle}</a>}
-
-        onFinish={async (form) => {
-
-            form.originNewPassword = RSAEncryptPro(form.newPassword!)
-            form.newPassword = PasswordRSAEncrypt(form.newPassword!)
-
-            await SignEmailUpdatePassword(form).then(res => {
-
-                SignOut()
-                ToastSuccess(res.msg)
-
-            })
-
-            return true
-
-        }}
-
-    >
-
-        <ProFormCaptcha
-
-            fieldProps={{
-                maxLength: 6,
-                allowClear: true,
-            }}
-            required
-            label="验证码"
-            placeholder={'请输入验证码'}
-            name="code"
-            rules={[{validator: Validate.code.validator}]}
-
-            onGetCaptcha={async () => {
-
-                await SignEmailUpdatePasswordSendCode().then(res => {
-                    ToastSuccess(res.msg)
-                })
-
-            }}
-
-        />
-
-        <ProFormText
-
-            label="新密码"
-            placeholder={'请输入新密码'}
-            name="newPassword"
-            required
-            fieldProps={{
-                allowClear: true,
-            }}
-            rules={[{validator: Validate.password.validator}]}
-
-        />
-
-    </ModalForm>
-
-}
-
-// 账号注销：通过：密码
-export function UserSelfDeleteByPasswordModalForm() {
-
-    return (
-
-        <ModalForm<SignSignInNameSignDeleteDTO>
-
-            modalProps={{
-                maskClosable: false
-            }}
-            isKeyPressSubmit
-
-            width={CommonConstant.MODAL_FORM_WIDTH}
-            title={UserSelfDeleteModalTitle}
-            trigger={<a className={"red3"}>{UserSelfDeleteModalTargetName}</a>}
-
-            onFinish={async (form) => {
-
-                const currentPassword = PasswordRSAEncrypt(form.currentPassword!)
-
-                await SignSignInNameSignDelete({currentPassword}).then(res => {
-
-                    SignOut()
-                    ToastSuccess(res.msg)
-
-                })
-
-                return true
-
-            }}
-
-        >
-
-            <ProFormText.Password
-                fieldProps={{
-                    allowClear: true,
-                }}
-                placeholder={'请输入当前密码'}
-                label="当前密码"
-                name="currentPassword"
-                rules={[{
-                    required: true,
-                }]}
-            />
-
-        </ModalForm>
-
-    )
-
-}
-
-// 账号注销：通过：发送验证码
-export function UserSelfDeleteByCodeModalForm() {
-
-    return (
-
-        <ModalForm<NotBlankCodeDTO>
-
-            modalProps={{
-                maskClosable: false
-            }}
-            isKeyPressSubmit
-
-            width={CommonConstant.MODAL_FORM_WIDTH}
-            title={UserSelfDeleteModalTitle}
-            trigger={<a className={"red3"}>{UserSelfDeleteModalTargetName}</a>}
-
-            onFinish={async (form) => {
-
-                await SignEmailSignDelete({code: form.code}).then(res => {
-
-                    SignOut()
-                    ToastSuccess(res.msg)
-
-                })
-
-                return true
-
-            }}
-
-        >
-
-            <ProFormCaptcha
-
-                fieldProps={{
-                    maxLength: 6,
-                    allowClear: true,
-                }}
-
-                required
-                label="验证码"
-                name="code"
-                placeholder={"请输入验证码"}
-                rules={[{validator: Validate.code.validator}]}
-
-                onGetCaptcha={async () => {
-
-                    await SignEmailSignDeleteSendCode().then(res => {
-
-                        ToastSuccess(res.msg)
-
-                    })
-
-                }}
-
-            />
-
-        </ModalForm>
 
     )
 

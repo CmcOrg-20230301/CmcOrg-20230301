@@ -3,12 +3,14 @@ import LocalStorageKey, {LocalStorageKeyList} from "@/model/constant/LocalStorag
 import {ClearStorage, SignOut} from "@/util/UserUtil";
 import {SysMenuDO, SysMenuUserSelfMenuList} from "@/api/http/SysMenu";
 import {ToastError} from "@/util/ToastUtil";
-import {setUserSelfMenuList} from "@/store/userSlice";
+import {setUserSelfAvatarUrl, setUserSelfInfo, setUserSelfMenuList} from "@/store/userSlice";
 import {ConnectWebSocket} from "@/util/WebSocket/WebSocketUtil";
-import {GetAppDispatch, GetAppNav, GetUserSelfMenuList} from "@/MyApp";
-import {GetURLSearchParams} from "@/util/CommonUtil";
+import {GetAppDispatch, GetAppNav, GetUserSelfInfo, GetUserSelfMenuList} from "@/MyApp";
+import {GetURLSearchParams, SetTenantIdToStorage} from "@/util/CommonUtil";
 import {SessionStorageKeyList} from "@/model/constant/SessionStorageKey";
 import VConsole from 'vconsole';
+import {UserSelfInfo, UserSelfInfoVO} from "@/api/http/UserSelf.ts";
+import {SysFileGetPublicUrl} from "@/api/http/SysFile.ts";
 
 export interface IInit {
 
@@ -172,6 +174,49 @@ export function UseEffectLoadSysMenuUserSelfMenuList(callBack?: (data: SysMenuDO
 
             // 处理：用户菜单
             handleUserSelfMenuList(res.data, callBack, true);
+
+        })
+
+    }, [])
+
+}
+
+// 加载：用户数据
+export function UseEffectLoadUserSelfInfo(callBack?: (data: UserSelfInfoVO) => void) {
+
+    useEffect(() => {
+
+        const userSelfInfoVO = GetUserSelfInfo();
+
+        if (userSelfInfoVO.id) { // 如果：已经加载过了用户信息
+            return
+        }
+
+        const appDispatch = GetAppDispatch();
+
+        UserSelfInfo().then(res => {
+
+            appDispatch(setUserSelfInfo(res.data))
+
+            const avatarFileId = res.data.avatarFileId!;
+
+            if (avatarFileId as any !== -1) {
+
+                SysFileGetPublicUrl({idSet: [avatarFileId!]}).then(res => {
+
+                    appDispatch(setUserSelfAvatarUrl(res.data.map![avatarFileId] || ''))
+
+                })
+
+            }
+
+            SetTenantIdToStorage(res.data.tenantId!); // 更新为：最新的租户 id
+
+            if (callBack) {
+
+                callBack(res.data)
+
+            }
 
         })
 

@@ -51,30 +51,6 @@ const TableColumnList = (currentForm: React.MutableRefObject<SysSmsConfiguration
 
     {title: '短信名', dataIndex: 'name', ellipsis: true, width: 90,},
 
-    {title: '钥匙', dataIndex: 'secretId', ellipsis: true, width: 90,},
-
-    {title: '秘钥', dataIndex: 'secretKey', ellipsis: true, width: 90,},
-
-    {title: '短信应用 id', dataIndex: 'sdkAppId', ellipsis: true, width: 90,},
-
-    {title: '签名内容', dataIndex: 'signName', ellipsis: true, width: 90,},
-
-    {title: '账号注销', dataIndex: 'sendDelete', ellipsis: true, width: 90,},
-
-    {title: '绑定手机', dataIndex: 'sendBind', ellipsis: true, width: 90,},
-
-    {title: '修改手机', dataIndex: 'sendUpdate', ellipsis: true, width: 90,},
-
-    {title: '修改密码', dataIndex: 'sendUpdatePassword', ellipsis: true, width: 90,},
-
-    {title: '忘记密码', dataIndex: 'sendForgetPassword', ellipsis: true, width: 90,},
-
-    {title: '登录短信', dataIndex: 'sendSignIn', ellipsis: true, width: 90,},
-
-    {title: '注册短信', dataIndex: 'sendSignUp', ellipsis: true, width: 90,},
-
-    {title: '通用短信', dataIndex: 'sendCommon', ellipsis: true, width: 90,},
-
     {
         title: '默认发送',
         dataIndex: 'defaultFlag',

@@ -50,7 +50,7 @@ export function UseEffectSysPayPayTradeStatusById(outTradeNoRef: React.MutableRe
 
                 SysPayPayTradeStatusById({id: outTradeNoRef.current}).then(res => {
 
-                    if (res.data === SysPayTradeStatusEnum.TRADE_SUCCESS.code) {
+                    if (res.data === SysPayTradeStatusEnum.TRADE_SUCCESS.code as any) {
 
                         // 处理：关闭弹窗
                         handleCloseModal(outTradeNoRef, setQrCodeModalOpen, props);

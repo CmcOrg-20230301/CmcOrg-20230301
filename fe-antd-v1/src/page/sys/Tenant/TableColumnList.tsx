@@ -72,6 +72,8 @@ const TableColumnList = (currentForm: React.MutableRefObject<SysTenantInsertOrUp
 
     {title: '租户名', dataIndex: 'name', ellipsis: true, width: 120,},
 
+    {title: '管理后台名', dataIndex: 'manageName', ellipsis: true, width: 120,},
+
     {title: '排序号', dataIndex: 'orderNo', ellipsis: true, hideInSearch: true, width: 120,},
 
     {

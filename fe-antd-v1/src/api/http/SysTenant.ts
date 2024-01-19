@@ -8,6 +8,7 @@ export interface SysTenantInsertOrUpdateDTO {
     userIdSet?: string[] // 用户 idSet，format：int64
     tenantId?: string // 租户 id，可以为空，为空则表示：默认租户：0，format：int64
     name?: string // 租户名，required：true
+    manageName?: string // 管理后台名称
     menuIdSet?: string[] // 菜单 idSet，format：int64
     remark?: string // 备注
     id?: string // 主键 id，format：int64
@@ -43,6 +44,7 @@ export function SysTenantDeleteByIdSet(form: NotEmptyIdSet, config?: AxiosReques
 export interface SysTenantPageDTO {
     current?: string // 第几页，format：int64
     name?: string // 租户名
+    manageName?: string // 管理后台名称
     pageSize?: string // 每页显示条数，format：int64
     tenantIdSet?: string[] // 租户 idSet，format：int64
     remark?: string // 备注
@@ -69,6 +71,7 @@ export interface SysTenantDO {
     createId?: string // 创建人id，format：int64
     tenantId?: string // 租户 id，format：int64
     name?: string // 租户名
+    manageName?: string // 管理后台名称
     id?: string // 主键 id，format：int64
     enableFlag?: boolean // 是否启用
 }
@@ -85,6 +88,29 @@ export interface NotNullLong {
 // 通过主键id，获取租户名
 export function SysTenantGetNameById(form: NotNullLong, config?: AxiosRequestConfig) {
     return $http.myPost<string>('/sys/tenant/getNameById', form, config)
+}
+
+export interface GetQrCodeVO {
+    expireTs?: string // 二维码过期时间戳，format：int64
+    qrCodeId?: string // 二维码 id，format：int64
+    qrCodeUrl?: string // 二维码的 url地址
+}
+
+export interface SysTenantConfigurationByIdVO {
+    emailSignUpEnable?: boolean // 是否启用：邮箱注册功能，默认启用
+    signInNameSignUpEnable?: boolean // 是否启用：用户名注册功能，默认启用
+    wxQrCodeSignUp?: GetQrCodeVO // null
+    phoneSignUpEnable?: boolean // 是否启用：手机号码注册功能，默认启用
+}
+
+// 通过主键id，获取租户相关的配置
+export function SysTenantGetConfigurationById(form: NotNullLong, config?: AxiosRequestConfig) {
+    return $http.myPost<SysTenantConfigurationByIdVO>('/sys/tenant/getConfigurationById', form, config)
+}
+
+// 通过主键id，获取租户后台管理系统名
+export function SysTenantGetManageNameById(form: NotNullLong, config?: AxiosRequestConfig) {
+    return $http.myPost<string>('/sys/tenant/getManageNameById', form, config)
 }
 
 // 删除租户所有菜单
@@ -135,6 +161,7 @@ export interface SysTenantInfoByIdVO {
     createId?: string // 创建人id，format：int64
     tenantId?: string // 租户 id，format：int64
     name?: string // 租户名
+    manageName?: string // 管理后台名称
     id?: string // 主键 id，format：int64
     enableFlag?: boolean // 是否启用
 }

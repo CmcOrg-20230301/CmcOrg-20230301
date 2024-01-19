@@ -6,7 +6,9 @@ import {createSlice, PayloadAction} from '@reduxjs/toolkit'
 interface IUserSlice {
 
     userSelfMenuList: SysMenuDO[] // 用户菜单
+
     userSelfInfo: UserSelfInfoVO // 当前用户，基本信息
+
     userSelfAvatarUrl: string // 当前用户，头像链接
 
 }
@@ -15,9 +17,7 @@ const initialState: IUserSlice = {
 
     userSelfMenuList: [],
 
-    userSelfInfo: JSON.parse(
-        localStorage.getItem(LocalStorageKey.USER_SELF_INFO) || '{}'
-    ),
+    userSelfInfo: {},
 
     userSelfAvatarUrl: localStorage.getItem(LocalStorageKey.USER_SELF_AVATAR_URL) || ''
 
@@ -26,7 +26,9 @@ const initialState: IUserSlice = {
 export const userSlice = createSlice({
 
     name: 'userSlice',
+
     initialState,
+
     reducers: {
 
         setUserSelfMenuList: (state, action: PayloadAction<SysMenuDO[]>) => {
@@ -36,11 +38,6 @@ export const userSlice = createSlice({
         setUserSelfInfo: (state, action: PayloadAction<UserSelfInfoVO>) => {
 
             state.userSelfInfo = action.payload
-
-            localStorage.setItem(
-                LocalStorageKey.USER_SELF_INFO,
-                JSON.stringify(action.payload)
-            )
 
         },
 

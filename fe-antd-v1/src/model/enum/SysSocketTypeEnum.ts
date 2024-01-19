@@ -28,8 +28,8 @@ export const SysSocketTypeEnumDict = new Map<number, ProSchemaValueEnumType>();
 
 Object.keys(SysSocketTypeEnum).forEach(key => {
 
-    const item = SysSocketTypeEnum[key];
+    const item = SysSocketTypeEnum[key] as IEnum<number>;
 
-    SysSocketTypeEnumDict.set(item.code as number, {text: item.name})
+    SysSocketTypeEnumDict.set(item.code!, {text: item.name})
 
 })

@@ -7,52 +7,33 @@ import {SignEmailSignUp, SignEmailSignUpSendCode} from "@/api/http/SignEmail";
 import {ISignUpForm} from "@/page/sign/SignUp/SignUp";
 
 import {SignSignInNameSignUp} from "@/api/http/SignSignInName";
-import {useEffect} from "react";
+import React, {useEffect} from "react";
 import {CloseWebSocket} from "@/util/WebSocket/WebSocketUtil";
-import {SysTenantGetNameById} from "@/api/http/SysTenant";
 import {GetTenantId} from "@/util/CommonUtil";
+import {SetTenantManageName} from "@/page/sign/SignIn/SignInUtil.ts";
+import {SysSignTypeEnum} from "@/model/enum/SysSignTypeEnum.tsx";
+import {SignPhoneSignUp, SignPhoneSignUpSendCode} from "@/api/http/SignPhone.ts";
 
-// 租户名后缀
-export const TENANT_NAME_SUF = " - "
-
-export function UseEffectSign(tenantIdRef: React.MutableRefObject<string>, setTenantName: (value: (((prevState: string) => string) | string)) => void) {
+/**
+ * 登录，注册页面，打开时的通用操作
+ */
+export function UseEffectSign(tenantIdRef: React.MutableRefObject<string>, voidFun?: () => void) {
 
     useEffect(() => {
 
         tenantIdRef.current = GetTenantId()
 
-        SysTenantGetNameById({value: tenantIdRef.current}).then(res => {
-
-            if (res.data) {
-
-                setTenantName(res.data + TENANT_NAME_SUF)
-
-            } else {
-
-                setTenantName("")
-
-            }
-
-        })
+        SetTenantManageName(tenantIdRef.current);
 
         CloseWebSocket() // 关闭 webSocket
 
+        if (voidFun) {
+
+            voidFun()
+
+        }
+
     }, [])
-
-}
-
-/**
- * 移除：租户名后缀
- */
-export function RemoveTenantNameSuf(tenantName?: string) {
-
-    if (!tenantName) {
-        return ""
-    }
-
-    const regExp = new RegExp(TENANT_NAME_SUF);
-
-    return tenantName.replace(regExp, "");
 
 }
 
@@ -65,11 +46,27 @@ export async function SignUpFormHandler(form: ISignUpForm) {
     const originPassword = RSAEncryptPro(form.password, date)
     const password = PasswordRSAEncrypt(form.password, date)
 
-    if (form.type === '1') { // 如果是：邮箱
+    if (form.signUpType === SysSignTypeEnum.Email.code) { // 如果是：邮箱
 
         await SignEmailSignUp({
 
             email: form.account,
+            password,
+            originPassword,
+            code: form.code,
+            tenantId: form.tenantId
+
+        }).then(res => {
+
+            SignUpSuccess(res, form.tenantId)
+
+        })
+
+    } else if (form.signUpType === SysSignTypeEnum.Phone.code) { // 如果是：手机
+
+        await SignPhoneSignUp({
+
+            phone: form.account,
             password,
             originPassword,
             code: form.code,
@@ -119,9 +116,17 @@ export async function SendCode(form: ISignUpForm) {
         return
     }
 
-    if (form.type === '1') { // 如果是：邮箱
+    if (form.signUpType === SysSignTypeEnum.Email.code) { // 如果是：邮箱
 
         await SignEmailSignUpSendCode({email: form.account, tenantId: form.tenantId}).then(res => {
+
+            ToastSuccess(res.msg)
+
+        })
+
+    } else if (form.signUpType === SysSignTypeEnum.Phone.code) { // 如果是：手机
+
+        await SignPhoneSignUpSendCode({phone: form.account, tenantId: form.tenantId}).then(res => {
 
             ToastSuccess(res.msg)
 

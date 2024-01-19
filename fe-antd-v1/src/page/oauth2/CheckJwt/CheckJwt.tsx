@@ -4,6 +4,7 @@ import PathConstant from "@/model/constant/PathConstant";
 import LocalStorageKey from "@/model/constant/LocalStorageKey";
 import SessionStorageKey from "@/model/constant/SessionStorageKey";
 import {GetTenantIdFromStorage} from "@/util/CommonUtil";
+import {GetServerTimestamp} from "@/util/DateUtil.ts";
 
 function GoBlank() {
     GetAppNav()(PathConstant.BLANK_PATH, {state: {showText: '跳转失败：参数不存在'}})
@@ -51,15 +52,15 @@ export default function () {
 
         let jwt = localStorage.getItem(LocalStorageKey.JWT);
 
-        const jwtExpireTime = localStorage.getItem(LocalStorageKey.JWT_EXPIRE_TIME);
+        const jwtExpireTsStr = localStorage.getItem(LocalStorageKey.JWT_EXPIRE_TS);
 
-        if (jwtExpireTime) {
+        if (jwtExpireTsStr) {
 
-            const time = new Date(Number(jwtExpireTime)).getTime();
+            const jwtExpireTs = Number(jwtExpireTsStr) || 0;
 
-            const currentTime = new Date().getTime();
+            const currentTime = GetServerTimestamp();
 
-            if (currentTime >= time) { // 如果：jwt过期了
+            if (currentTime >= jwtExpireTs) { // 如果：jwt过期了
 
                 jwt = null
 

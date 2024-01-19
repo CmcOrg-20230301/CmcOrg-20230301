@@ -8,31 +8,27 @@ import {
 } from "@ant-design/pro-components";
 import CommonConstant from "@/model/constant/CommonConstant";
 import {Outlet} from "react-router-dom";
-import {GetAppDispatch, GetAppNav} from "@/MyApp";
+import {GetAppNav} from "@/MyApp";
 import React, {useEffect, useState} from "react";
 import {SysMenuDO} from "@/api/http/SysMenu";
 import PathConstant from "@/model/constant/PathConstant";
-import {setUserSelfAvatarUrl, setUserSelfInfo} from "@/store/userSlice";
 import {GetCopyright} from "@/layout/SignLayout/SignLayout";
 import {Avatar, Button, Dropdown, Space, Typography} from "antd";
 import SessionStorageKey from "@/model/constant/SessionStorageKey";
 import {ExecConfirm, ToastSuccess} from "@/util/ToastUtil";
 import {SignOut} from "@/util/UserUtil";
 import {useAppSelector} from "@/store";
-import {UserSelfInfo} from "@/api/http/UserSelf";
 import MyIcon from "@/component/MyIcon/MyIcon";
 import {ListToTree} from "@/util/TreeUtil";
 import {InDev} from "@/util/CommonUtil";
 import {SignOutSelf} from "@/api/http/SignOut";
 import {RouterMapKeyList} from "@/router/RouterMap";
-import {SysFileGetPublicUrl} from "@/api/http/SysFile";
-import {SysTenantGetNameById} from "@/api/http/SysTenant";
-import {TENANT_NAME_SUF} from "@/page/sign/SignUp/SignUpUtil";
-import {UseEffectLoadSysMenuUserSelfMenuList} from "@/util/UseEffectUtil";
+import {UseEffectLoadSysMenuUserSelfMenuList, UseEffectLoadUserSelfInfo} from "@/util/UseEffectUtil";
 import {LogoutOutlined, UserOutlined, WalletOutlined} from "@ant-design/icons";
+import {SetTenantManageName} from "@/page/sign/SignIn/SignInUtil.ts";
 
 // 前往：第一个页面
-function goFirstPage(menuList: SysMenuDO[]) {
+function GoFirstPage(menuList: SysMenuDO[]) {
 
     if (window.location.pathname !== PathConstant.ADMIN_PATH) {
         return
@@ -46,7 +42,7 @@ function goFirstPage(menuList: SysMenuDO[]) {
 
         if (menuList.some(item => item.path === adminRedirectPath)) {
 
-            return GetAppNav()(adminRedirectPath)
+            return GoPage(adminRedirectPath)
 
         }
 
@@ -56,7 +52,7 @@ function goFirstPage(menuList: SysMenuDO[]) {
 
         if (item.firstFlag && item.path) {
 
-            GetAppNav()(item.path)
+            GoPage(item.path)
             return true
 
         }
@@ -67,13 +63,15 @@ function goFirstPage(menuList: SysMenuDO[]) {
 
 }
 
+export const CopyrightFooterId = "CopyrightFooterId"
+
 // Admin 页面布局
 export default function () {
 
     const [element, setElement] = useState<React.ReactNode>(null);
 
     // 设置 element
-    function doSetElement(userSelfMenuList: SysMenuDO[]) {
+    function DoSetElement(userSelfMenuList: SysMenuDO[]) {
 
         if (element == null) {
             setElement(<AdminLayoutElement userSelfMenuList={userSelfMenuList}/>)
@@ -84,8 +82,7 @@ export default function () {
     // 加载菜单
     UseEffectLoadSysMenuUserSelfMenuList(data => {
 
-        doSetElement(data)
-        goFirstPage(data)
+        DoSetElement(data)
 
     });
 
@@ -118,7 +115,6 @@ export function GoPage(path: string, data?: any) {
 function AdminLayoutElement(props: IAdminLayoutElement) {
 
     const [pathname, setPathname] = useState<string>('')
-    const appDispatch = GetAppDispatch();
 
     setPathnameTemp = setPathname
 
@@ -126,43 +122,18 @@ function AdminLayoutElement(props: IAdminLayoutElement) {
 
     const userSelfAvatarUrl = useAppSelector((state) => state.user.userSelfAvatarUrl)
 
-    const [tenantName, setTenantName] = useState<string>(""); // 租户名
+    const tenantManageName = useAppSelector(state => state.common.tenantManageName);
+
+    // 加载：用户数据
+    UseEffectLoadUserSelfInfo((data) => {
+
+        SetTenantManageName(data.tenantId)
+
+    })
 
     useEffect(() => {
 
-        setPathname(window.location.pathname)
-
-        UserSelfInfo().then(res => {
-
-            appDispatch(setUserSelfInfo(res.data))
-
-            const avatarFileId = res.data.avatarFileId!;
-
-            if (avatarFileId as any !== -1) {
-
-                SysFileGetPublicUrl({idSet: [avatarFileId!]}).then(res => {
-
-                    appDispatch(setUserSelfAvatarUrl(res.data.map![avatarFileId] || ''))
-
-                })
-
-            }
-
-            SysTenantGetNameById({value: res.data.tenantId}).then(res => {
-
-                if (res.data) {
-
-                    setTenantName(res.data + TENANT_NAME_SUF)
-
-                } else {
-
-                    setTenantName("")
-
-                }
-
-            })
-
-        })
+        GoFirstPage(props.userSelfMenuList)
 
     }, [])
 
@@ -170,7 +141,7 @@ function AdminLayoutElement(props: IAdminLayoutElement) {
 
         <ProLayout
 
-            title={tenantName + CommonConstant.SYS_NAME}
+            title={tenantManageName}
 
             location={{
                 pathname
@@ -254,9 +225,9 @@ function AdminLayoutElement(props: IAdminLayoutElement) {
 
             )}
 
-            actionsRender={(props) => [
+            rightContentRender={(props) => {
 
-                <Space key={"1"} size={"large"}>
+                return <Space size={"large"}>
 
                     <Dropdown
 
@@ -354,13 +325,19 @@ function AdminLayoutElement(props: IAdminLayoutElement) {
 
                 </Space>
 
-            ]}
+            }}
 
             footerRender={() => (
 
-                <DefaultFooter
-                    copyright={GetCopyright(tenantName)}
-                />
+                <div id={CopyrightFooterId}>
+
+                    <DefaultFooter
+
+                        copyright={GetCopyright(tenantManageName)}
+
+                    />
+
+                </div>
 
             )}
 

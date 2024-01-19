@@ -3,17 +3,17 @@ import {ProSchemaValueEnumType} from "@ant-design/pro-components";
 
 export interface ISysPayTradeStatusEnum {
 
-    NOT_EXIST: IEnum,
+    NOT_EXIST: IEnum<number>,
 
-    WAIT_BUYER_PAY: IEnum,
+    WAIT_BUYER_PAY: IEnum<number>,
 
-    WAIT_BUYER_CONSUME: IEnum,
+    WAIT_BUYER_CONSUME: IEnum<number>,
 
-    TRADE_CLOSED: IEnum,
+    TRADE_CLOSED: IEnum<number>,
 
-    TRADE_SUCCESS: IEnum,
+    TRADE_SUCCESS: IEnum<number>,
 
-    TRADE_FINISHED: IEnum,
+    TRADE_FINISHED: IEnum<number>,
 
 }
 
@@ -58,9 +58,9 @@ export const SysPayTradeStatusEnumDict = new Map<number, ProSchemaValueEnumType>
 
 Object.keys(SysPayTradeStatusEnum).forEach(key => {
 
-    const item = SysPayTradeStatusEnum[key];
+    const item = SysPayTradeStatusEnum[key] as IEnum<number>;
 
-    SysPayTradeStatusEnumDict.set(item.code as number, {text: item.name})
+    SysPayTradeStatusEnumDict.set(item.code!, {text: item.name})
 
 })
 
@@ -68,8 +68,8 @@ export const SysPayTradeStatusEnumStatusDict = new Map<number, ProSchemaValueEnu
 
 Object.keys(SysPayTradeStatusEnum).forEach(key => {
 
-    const item = SysPayTradeStatusEnum[key];
+    const item = SysPayTradeStatusEnum[key] as IEnum<number>;
 
-    SysPayTradeStatusEnumStatusDict.set(item.code as number, {text: item.name, status: item.status})
+    SysPayTradeStatusEnumStatusDict.set(item.code!, {text: item.name, status: item.status})
 
 })

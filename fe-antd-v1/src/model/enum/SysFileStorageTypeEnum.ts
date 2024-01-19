@@ -36,8 +36,8 @@ export const SysFileStorageTypeEnumDict = new Map<number, ProSchemaValueEnumType
 
 Object.keys(SysFileStorageTypeEnum).forEach(key => {
 
-    const item = SysFileStorageTypeEnum[key];
+    const item = SysFileStorageTypeEnum[key] as IEnum<number>;
 
-    SysFileStorageTypeEnumDict.set(item.code as number, {text: item.name})
+    SysFileStorageTypeEnumDict.set(item.code!, {text: item.name})
 
 })

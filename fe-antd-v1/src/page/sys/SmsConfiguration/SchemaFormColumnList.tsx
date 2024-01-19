@@ -55,45 +55,35 @@ const SchemaFormColumnList = (): ProFormColumnsType<SysSmsConfigurationInsertOrU
             dataIndex: 'signName',
         },
 
-        {
-            title: '账号注销',
-            dataIndex: 'sendDelete',
-        },
+        {title: '通用短信', dataIndex: 'sendCommon'},
 
-        {
-            title: '绑定手机',
-            dataIndex: 'sendBind',
-        },
+        {title: '注册短信', dataIndex: 'sendSignUp'},
 
-        {
-            title: '修改手机',
-            dataIndex: 'sendUpdate',
-        },
+        {title: '登录短信', dataIndex: 'sendSignIn'},
 
-        {
-            title: '修改密码',
-            dataIndex: 'sendUpdatePassword',
-        },
+        {title: '设置密码', dataIndex: 'sendSetPassword'},
 
-        {
-            title: '忘记密码',
-            dataIndex: 'sendForgetPassword',
-        },
+        {title: '修改密码', dataIndex: 'sendUpdatePassword'},
 
-        {
-            title: '登录短信',
-            dataIndex: 'sendSignIn',
-        },
+        {title: '设置登录名', dataIndex: 'sendSetSignInName'},
 
-        {
-            title: '注册短信',
-            dataIndex: 'sendSignUp',
-        },
+        {title: '修改登录名', dataIndex: 'sendUpdateSignInName'},
 
-        {
-            title: '通用短信',
-            dataIndex: 'sendCommon',
-        },
+        {title: '设置邮箱', dataIndex: 'sendSetEmail'},
+
+        {title: '修改邮箱', dataIndex: 'sendUpdateEmail'},
+
+        {title: '设置微信', dataIndex: 'sendSetWx'},
+
+        {title: '修改微信', dataIndex: 'sendUpdateWx'},
+
+        {title: '设置手机', dataIndex: 'sendSetPhone'},
+
+        {title: '修改手机', dataIndex: 'sendUpdatePhone'},
+
+        {title: '忘记密码', dataIndex: 'sendForgetPassword'},
+
+        {title: '账号注销', dataIndex: 'sendSignDelete'},
 
         {
             title: '默认发送',
