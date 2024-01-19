@@ -1,7 +1,9 @@
 package com.cmcorg20230301.be.engine.sign.email.service;
 
 import com.cmcorg20230301.be.engine.model.model.dto.NotBlankCodeDTO;
+import com.cmcorg20230301.be.engine.model.model.vo.GetQrCodeVO;
 import com.cmcorg20230301.be.engine.model.model.vo.SignInVO;
+import com.cmcorg20230301.be.engine.model.model.vo.SysQrCodeSceneBindVO;
 import com.cmcorg20230301.be.engine.sign.email.model.dto.*;
 
 public interface SignEmailService {
@@ -16,9 +18,31 @@ public interface SignEmailService {
 
     String updatePassword(SignEmailUpdatePasswordDTO dto);
 
-    String updateEmailSendCode();
+    String setSignInNameSendCode();
+
+    String setSignInName(SignEmailSetSignInNameDTO dto);
+
+    String updateSignInNameSendCode();
+
+    String updateSignInName(SignEmailSetSignInNameDTO dto);
+
+    String updateEmailSendCodeNew(EmailNotBlankDTO dto);
+
+    String updateEmailSendCodeOld();
 
     String updateEmail(SignEmailUpdateEmailDTO dto);
+
+    String setWxSendCode();
+
+    GetQrCodeVO setWxGetQrCodeUrl(SignEmailSetWxGetQrCodeUrlDTO dto);
+
+    SysQrCodeSceneBindVO setWx(SignEmailSetWxDTO dto);
+
+    String setPhoneSendCodeEmail();
+
+    String setPhoneSendCodePhone(SignEmailSetPhoneSendCodePhoneDTO dto);
+
+    String setPhone(SignEmailSetPhoneDTO dto);
 
     String forgetPasswordSendCode(EmailNotBlankDTO dto);
 

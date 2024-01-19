@@ -1,7 +1,6 @@
 package com.cmcorg20230301.be.engine.sign.signinname.service;
 
 import com.cmcorg20230301.be.engine.model.model.dto.NotNullId;
-import com.cmcorg20230301.be.engine.model.model.dto.SysQrCodeSceneBindExistUserDTO;
 import com.cmcorg20230301.be.engine.model.model.vo.GetQrCodeVO;
 import com.cmcorg20230301.be.engine.model.model.vo.SignInVO;
 import com.cmcorg20230301.be.engine.model.model.vo.SysQrCodeSceneBindVO;
@@ -24,8 +23,6 @@ public interface SignSignInNameService {
     GetQrCodeVO setWxGetQrCodeUrl(SignSignInNameSetWxGetQrCodeUrlDTO dto);
 
     SysQrCodeSceneBindVO setWx(NotNullId notNullId);
-
-    String setWxExistUser(SysQrCodeSceneBindExistUserDTO dto);
 
     String setPhoneSendCode(SignSignInNameSetPhoneSendCodeDTO dto);
 

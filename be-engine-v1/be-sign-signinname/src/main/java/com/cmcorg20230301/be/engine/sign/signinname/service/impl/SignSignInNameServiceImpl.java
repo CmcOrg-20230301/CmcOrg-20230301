@@ -5,7 +5,6 @@ import com.baomidou.mybatisplus.extension.toolkit.ChainWrappers;
 import com.cmcorg20230301.be.engine.email.enums.EmailMessageEnum;
 import com.cmcorg20230301.be.engine.email.util.MyEmailUtil;
 import com.cmcorg20230301.be.engine.model.model.dto.NotNullId;
-import com.cmcorg20230301.be.engine.model.model.dto.SysQrCodeSceneBindExistUserDTO;
 import com.cmcorg20230301.be.engine.model.model.vo.GetQrCodeVO;
 import com.cmcorg20230301.be.engine.model.model.vo.SignInVO;
 import com.cmcorg20230301.be.engine.model.model.vo.SysQrCodeSceneBindVO;
@@ -23,7 +22,6 @@ import com.cmcorg20230301.be.engine.sign.signinname.model.dto.*;
 import com.cmcorg20230301.be.engine.sign.signinname.service.SignSignInNameService;
 import com.cmcorg20230301.be.engine.sms.base.util.SysSmsHelper;
 import com.cmcorg20230301.be.engine.sms.base.util.SysSmsUtil;
-import org.redisson.api.RedissonClient;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -39,9 +37,6 @@ public class SignSignInNameServiceImpl implements SignSignInNameService {
     @Resource
     SysUserConfigurationService sysUserConfigurationService;
 
-    @Resource
-    RedissonClient redissonClient;
-
     /**
      * 注册
      */
@@ -56,7 +51,7 @@ public class SignSignInNameServiceImpl implements SignSignInNameService {
         }
 
         return SignUtil
-                .signUp(dto.getPassword(), dto.getOriginPassword(), null, PRE_REDIS_KEY_ENUM, dto.getSignInName(),
+                .signUp(dto.getPassword(), dto.getOriginPassword(), null, BaseRedisKeyEnum.PRE_SIGN_IN_NAME, dto.getSignInName(),
                         dto.getTenantId());
 
     }
@@ -81,7 +76,7 @@ public class SignSignInNameServiceImpl implements SignSignInNameService {
 
         SignUtil.checkWillError(PRE_REDIS_KEY_ENUM, null, UserUtil.getCurrentTenantIdDefault(), null); // 检查：是否可以进行操作
 
-        return SignUtil.updatePassword(dto.getNewPassword(), dto.getOriginNewPassword(), PRE_REDIS_KEY_ENUM, null,
+        return SignUtil.updatePassword(dto.getNewPassword(), dto.getOriginNewPassword(), BaseRedisKeyEnum.PRE_SIGN_IN_NAME, null,
                 dto.getOldPassword());
 
     }
@@ -94,7 +89,7 @@ public class SignSignInNameServiceImpl implements SignSignInNameService {
 
         SignUtil.checkWillError(PRE_REDIS_KEY_ENUM, null, UserUtil.getCurrentTenantIdDefault(), null); // 检查：是否可以进行操作
 
-        return SignUtil.updateAccount(null, null, PRE_REDIS_KEY_ENUM, dto.getNewSignInName(), dto.getCurrentPassword(), null);
+        return SignUtil.updateAccount(null, null, BaseRedisKeyEnum.PRE_SIGN_IN_NAME, BaseRedisKeyEnum.PRE_SIGN_IN_NAME, dto.getNewSignInName(), dto.getCurrentPassword(), null);
 
     }
 
@@ -108,12 +103,12 @@ public class SignSignInNameServiceImpl implements SignSignInNameService {
 
         SignUtil.checkWillError(PRE_REDIS_KEY_ENUM, null, currentTenantIdDefault, null); // 检查：是否可以进行操作
 
-        String key = PRE_REDIS_KEY_ENUM + dto.getEmail();
+        String key = BaseRedisKeyEnum.PRE_EMAIL + dto.getEmail();
 
         return SignUtil
                 .sendCode(key, ChainWrappers.lambdaQueryChain(sysUserMapper).eq(SysUserDO::getEmail, dto.getEmail()), false,
                         BizCodeEnum.EMAIL_HAS_BEEN_REGISTERED, (code) -> MyEmailUtil
-                                .send(dto.getEmail(), EmailMessageEnum.BIND_EMAIL, code, false, currentTenantIdDefault));
+                                .send(dto.getEmail(), EmailMessageEnum.BIND_EMAIL, code, currentTenantIdDefault));
 
     }
 
@@ -125,7 +120,7 @@ public class SignSignInNameServiceImpl implements SignSignInNameService {
 
         SignUtil.checkWillError(PRE_REDIS_KEY_ENUM, null, UserUtil.getCurrentTenantIdDefault(), null); // 检查：是否可以进行操作
 
-        return SignUtil.bindAccount(dto.getCode(), PRE_REDIS_KEY_ENUM, dto.getEmail(), null);
+        return SignUtil.bindAccount(dto.getCode(), BaseRedisKeyEnum.PRE_EMAIL, BaseRedisKeyEnum.PRE_EMAIL, dto.getEmail(), null);
 
     }
 
@@ -151,20 +146,7 @@ public class SignSignInNameServiceImpl implements SignSignInNameService {
         SignUtil.checkWillError(PRE_REDIS_KEY_ENUM, null, UserUtil.getCurrentTenantIdDefault(), null); // 检查：是否可以进行操作
 
         // 执行
-        return SignUtil.setWx(notNullId.getId());
-
-    }
-
-    /**
-     * 设置微信-存在用户
-     */
-    @Override
-    public String setWxExistUser(SysQrCodeSceneBindExistUserDTO dto) {
-
-        SignUtil.checkWillError(PRE_REDIS_KEY_ENUM, null, UserUtil.getCurrentTenantIdDefault(), null); // 检查：是否可以进行操作
-
-        // 执行
-        return SignUtil.setWxExistUser(dto);
+        return SignUtil.setWx(notNullId.getId(), null, BaseRedisKeyEnum.PRE_SIGN_IN_NAME);
 
     }
 
@@ -178,7 +160,7 @@ public class SignSignInNameServiceImpl implements SignSignInNameService {
 
         SignUtil.checkWillError(PRE_REDIS_KEY_ENUM, null, currentTenantIdDefault, null); // 检查：是否可以进行操作
 
-        String key = PRE_REDIS_KEY_ENUM + dto.getPhone();
+        String key = BaseRedisKeyEnum.PRE_PHONE + dto.getPhone();
 
         return SignUtil
                 .sendCode(key, ChainWrappers.lambdaQueryChain(sysUserMapper).eq(SysUserDO::getPhone, dto.getPhone()), false,
@@ -195,7 +177,7 @@ public class SignSignInNameServiceImpl implements SignSignInNameService {
 
         SignUtil.checkWillError(PRE_REDIS_KEY_ENUM, null, UserUtil.getCurrentTenantIdDefault(), null); // 检查：是否可以进行操作
 
-        return SignUtil.bindAccount(dto.getCode(), PRE_REDIS_KEY_ENUM, dto.getPhone(), null);
+        return SignUtil.bindAccount(dto.getCode(), BaseRedisKeyEnum.PRE_PHONE, BaseRedisKeyEnum.PRE_PHONE, dto.getPhone(), null);
 
     }
 
@@ -207,7 +189,7 @@ public class SignSignInNameServiceImpl implements SignSignInNameService {
 
         SignUtil.checkWillError(PRE_REDIS_KEY_ENUM, null, UserUtil.getCurrentTenantIdDefault(), null); // 检查：是否可以进行操作
 
-        return SignUtil.signDelete(null, PRE_REDIS_KEY_ENUM, dto.getCurrentPassword(), null);
+        return SignUtil.signDelete(null, BaseRedisKeyEnum.PRE_SIGN_IN_NAME, dto.getCurrentPassword(), null);
 
     }
 

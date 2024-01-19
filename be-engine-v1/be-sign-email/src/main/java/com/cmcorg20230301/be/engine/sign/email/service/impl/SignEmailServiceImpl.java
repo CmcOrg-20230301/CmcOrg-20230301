@@ -5,11 +5,15 @@ import com.baomidou.mybatisplus.extension.toolkit.ChainWrappers;
 import com.cmcorg20230301.be.engine.email.enums.EmailMessageEnum;
 import com.cmcorg20230301.be.engine.email.util.MyEmailUtil;
 import com.cmcorg20230301.be.engine.model.model.dto.NotBlankCodeDTO;
+import com.cmcorg20230301.be.engine.model.model.vo.GetQrCodeVO;
 import com.cmcorg20230301.be.engine.model.model.vo.SignInVO;
+import com.cmcorg20230301.be.engine.model.model.vo.SysQrCodeSceneBindVO;
 import com.cmcorg20230301.be.engine.redisson.model.enums.BaseRedisKeyEnum;
+import com.cmcorg20230301.be.engine.security.exception.BaseBizCodeEnum;
 import com.cmcorg20230301.be.engine.security.mapper.SysUserMapper;
 import com.cmcorg20230301.be.engine.security.model.entity.SysUserConfigurationDO;
 import com.cmcorg20230301.be.engine.security.model.entity.SysUserDO;
+import com.cmcorg20230301.be.engine.security.model.enums.SysQrCodeSceneTypeEnum;
 import com.cmcorg20230301.be.engine.security.model.vo.ApiResultVO;
 import com.cmcorg20230301.be.engine.security.service.SysUserConfigurationService;
 import com.cmcorg20230301.be.engine.security.util.UserUtil;
@@ -17,6 +21,8 @@ import com.cmcorg20230301.be.engine.sign.email.model.dto.*;
 import com.cmcorg20230301.be.engine.sign.email.service.SignEmailService;
 import com.cmcorg20230301.be.engine.sign.helper.exception.BizCodeEnum;
 import com.cmcorg20230301.be.engine.sign.helper.util.SignUtil;
+import com.cmcorg20230301.be.engine.sms.base.util.SysSmsHelper;
+import com.cmcorg20230301.be.engine.sms.base.util.SysSmsUtil;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -45,7 +51,7 @@ public class SignEmailServiceImpl implements SignEmailService {
         return SignUtil
                 .sendCode(key, ChainWrappers.lambdaQueryChain(sysUserMapper).eq(SysUserDO::getEmail, dto.getEmail()), false,
                         BizCodeEnum.EMAIL_HAS_BEEN_REGISTERED,
-                        (code) -> MyEmailUtil.send(dto.getEmail(), EmailMessageEnum.SIGN_UP, code, false, dto.getTenantId()));
+                        (code) -> MyEmailUtil.send(dto.getEmail(), EmailMessageEnum.SIGN_UP, code, dto.getTenantId()));
 
     }
 
@@ -99,8 +105,8 @@ public class SignEmailServiceImpl implements SignEmailService {
 
         SignUtil.checkWillError(PRE_REDIS_KEY_ENUM, null, currentTenantIdDefault, null); // 检查：是否可以进行操作
 
-        return SignUtil.getAccountAndSendCode(PRE_REDIS_KEY_ENUM, (code, account) -> MyEmailUtil
-                .send(account, EmailMessageEnum.UPDATE_PASSWORD, code, false, currentTenantIdDefault));
+        return SignUtil.getAccountAndSendCode(BaseRedisKeyEnum.PRE_EMAIL, (code, account) -> MyEmailUtil
+                .send(account, EmailMessageEnum.UPDATE_PASSWORD, code, currentTenantIdDefault));
 
     }
 
@@ -113,15 +119,15 @@ public class SignEmailServiceImpl implements SignEmailService {
         SignUtil.checkWillError(PRE_REDIS_KEY_ENUM, null, UserUtil.getCurrentTenantIdDefault(), null); // 检查：是否可以进行操作
 
         return SignUtil
-                .updatePassword(dto.getNewPassword(), dto.getOriginNewPassword(), PRE_REDIS_KEY_ENUM, dto.getCode(), null);
+                .updatePassword(dto.getNewPassword(), dto.getOriginNewPassword(), BaseRedisKeyEnum.PRE_EMAIL, dto.getCode(), null);
 
     }
 
     /**
-     * 修改邮箱-发送验证码
+     * 设置登录名-发送验证码
      */
     @Override
-    public String updateEmailSendCode() {
+    public String setSignInNameSendCode() {
 
         Long currentTenantIdDefault = UserUtil.getCurrentTenantIdDefault();
 
@@ -129,12 +135,97 @@ public class SignEmailServiceImpl implements SignEmailService {
 
         String currentUserEmailNotAdmin = UserUtil.getCurrentUserEmailNotAdmin();
 
-        String key = PRE_REDIS_KEY_ENUM + currentUserEmailNotAdmin;
+        String key = BaseRedisKeyEnum.PRE_EMAIL + currentUserEmailNotAdmin;
 
         return SignUtil.sendCode(key, null, true,
-                com.cmcorg20230301.be.engine.email.exception.BizCodeEnum.EMAIL_DOES_NOT_EXIST_PLEASE_RE_ENTER,
+                BaseBizCodeEnum.API_RESULT_SYS_ERROR,
                 (code) -> MyEmailUtil
-                        .send(currentUserEmailNotAdmin, EmailMessageEnum.UPDATE_EMAIL, code, false, currentTenantIdDefault));
+                        .send(currentUserEmailNotAdmin, EmailMessageEnum.SET_SIGN_IN_NAME, code, currentTenantIdDefault));
+
+    }
+
+    /**
+     * 设置登录名
+     */
+    @Override
+    public String setSignInName(SignEmailSetSignInNameDTO dto) {
+
+        SignUtil.checkWillError(PRE_REDIS_KEY_ENUM, null, UserUtil.getCurrentTenantIdDefault(), null); // 检查：是否可以进行操作
+
+        return SignUtil.bindAccount(dto.getCode(), BaseRedisKeyEnum.PRE_EMAIL, BaseRedisKeyEnum.PRE_SIGN_IN_NAME, dto.getSignInName(), null);
+
+    }
+
+    /**
+     * 修改登录名-发送验证码
+     */
+    @Override
+    public String updateSignInNameSendCode() {
+
+        Long currentTenantIdDefault = UserUtil.getCurrentTenantIdDefault();
+
+        SignUtil.checkWillError(PRE_REDIS_KEY_ENUM, null, currentTenantIdDefault, null); // 检查：是否可以进行操作
+
+        String currentUserEmailNotAdmin = UserUtil.getCurrentUserEmailNotAdmin();
+
+        String key = BaseRedisKeyEnum.PRE_EMAIL + currentUserEmailNotAdmin;
+
+        return SignUtil.sendCode(key, null, true,
+                BaseBizCodeEnum.API_RESULT_SYS_ERROR,
+                (code) -> MyEmailUtil
+                        .send(currentUserEmailNotAdmin, EmailMessageEnum.UPDATE_SIGN_IN_NAME, code, currentTenantIdDefault));
+
+    }
+
+    /**
+     * 修改登录名
+     */
+    @Override
+    public String updateSignInName(SignEmailSetSignInNameDTO dto) {
+
+        SignUtil.checkWillError(PRE_REDIS_KEY_ENUM, null, UserUtil.getCurrentTenantIdDefault(), null); // 检查：是否可以进行操作
+
+        return SignUtil.bindAccount(dto.getCode(), BaseRedisKeyEnum.PRE_EMAIL, BaseRedisKeyEnum.PRE_SIGN_IN_NAME, dto.getSignInName(), null);
+
+    }
+
+    /**
+     * 修改邮箱-发送新邮箱验证码
+     */
+    @Override
+    public String updateEmailSendCodeNew(EmailNotBlankDTO dto) {
+
+        Long currentTenantIdDefault = UserUtil.getCurrentTenantIdDefault();
+
+        SignUtil.checkWillError(PRE_REDIS_KEY_ENUM, null, currentTenantIdDefault, null); // 检查：是否可以进行操作
+
+        String key = BaseRedisKeyEnum.PRE_EMAIL + dto.getEmail();
+
+        return SignUtil
+                .sendCode(key, ChainWrappers.lambdaQueryChain(sysUserMapper).eq(SysUserDO::getEmail, dto.getEmail()), false,
+                        BizCodeEnum.EMAIL_HAS_BEEN_REGISTERED, (code) -> MyEmailUtil
+                                .send(dto.getEmail(), EmailMessageEnum.BIND_EMAIL, code, currentTenantIdDefault));
+
+    }
+
+    /**
+     * 修改邮箱-发送旧邮箱验证码
+     */
+    @Override
+    public String updateEmailSendCodeOld() {
+
+        Long currentTenantIdDefault = UserUtil.getCurrentTenantIdDefault();
+
+        SignUtil.checkWillError(PRE_REDIS_KEY_ENUM, null, currentTenantIdDefault, null); // 检查：是否可以进行操作
+
+        String currentUserEmailNotAdmin = UserUtil.getCurrentUserEmailNotAdmin();
+
+        String key = BaseRedisKeyEnum.PRE_EMAIL + currentUserEmailNotAdmin;
+
+        return SignUtil.sendCode(key, null, true,
+                BaseBizCodeEnum.API_RESULT_SYS_ERROR,
+                (code) -> MyEmailUtil
+                        .send(currentUserEmailNotAdmin, EmailMessageEnum.UPDATE_EMAIL, code, currentTenantIdDefault));
 
     }
 
@@ -147,7 +238,107 @@ public class SignEmailServiceImpl implements SignEmailService {
         SignUtil.checkWillError(PRE_REDIS_KEY_ENUM, null, UserUtil.getCurrentTenantIdDefault(), null); // 检查：是否可以进行操作
 
         return SignUtil
-                .updateAccount(dto.getOldEmailCode(), dto.getNewEmailCode(), PRE_REDIS_KEY_ENUM, dto.getNewEmail(), null, null);
+                .updateAccount(dto.getOldEmailCode(), dto.getNewEmailCode(), BaseRedisKeyEnum.PRE_EMAIL, BaseRedisKeyEnum.PRE_EMAIL, dto.getNewEmail(), null, null);
+
+    }
+
+    /**
+     * 设置微信：发送验证码
+     */
+    @Override
+    public String setWxSendCode() {
+
+        Long currentTenantIdDefault = UserUtil.getCurrentTenantIdDefault();
+
+        SignUtil.checkWillError(PRE_REDIS_KEY_ENUM, null, currentTenantIdDefault, null); // 检查：是否可以进行操作
+
+        String currentUserEmailNotAdmin = UserUtil.getCurrentUserEmailNotAdmin();
+
+        String key = BaseRedisKeyEnum.PRE_EMAIL + currentUserEmailNotAdmin;
+
+        return SignUtil.sendCode(key, null, true,
+                BaseBizCodeEnum.API_RESULT_SYS_ERROR,
+                (code) -> MyEmailUtil
+                        .send(currentUserEmailNotAdmin, EmailMessageEnum.BIND_WX, code, currentTenantIdDefault));
+
+    }
+
+    /**
+     * 设置微信：获取二维码地址
+     */
+    @Override
+    public GetQrCodeVO setWxGetQrCodeUrl(SignEmailSetWxGetQrCodeUrlDTO dto) {
+
+        SignUtil.checkWillError(PRE_REDIS_KEY_ENUM, null, UserUtil.getCurrentTenantIdDefault(), null); // 检查：是否可以进行操作
+
+        // 执行
+        return SignUtil.getQrCodeUrlWx(UserUtil.getCurrentTenantIdDefault(), true, SysQrCodeSceneTypeEnum.WX_BIND);
+
+    }
+
+    /**
+     * 设置微信
+     */
+    @Override
+    public SysQrCodeSceneBindVO setWx(SignEmailSetWxDTO dto) {
+
+        SignUtil.checkWillError(PRE_REDIS_KEY_ENUM, null, UserUtil.getCurrentTenantIdDefault(), null); // 检查：是否可以进行操作
+
+        // 执行
+        return SignUtil.setWx(dto.getQrCodeId(), dto.getEmailCode(), BaseRedisKeyEnum.PRE_EMAIL);
+
+    }
+
+    /**
+     * 设置手机：发送邮箱验证码
+     */
+    @Override
+    public String setPhoneSendCodeEmail() {
+
+        Long currentTenantIdDefault = UserUtil.getCurrentTenantIdDefault();
+
+        SignUtil.checkWillError(PRE_REDIS_KEY_ENUM, null, currentTenantIdDefault, null); // 检查：是否可以进行操作
+
+        String currentUserEmailNotAdmin = UserUtil.getCurrentUserEmailNotAdmin();
+
+        String key = BaseRedisKeyEnum.PRE_EMAIL + currentUserEmailNotAdmin;
+
+        return SignUtil.sendCode(key, null, true,
+                BaseBizCodeEnum.API_RESULT_SYS_ERROR,
+                (code) -> MyEmailUtil
+                        .send(currentUserEmailNotAdmin, EmailMessageEnum.BIND_PHONE, code, currentTenantIdDefault));
+
+    }
+
+    /**
+     * 设置手机：发送手机验证码
+     */
+    @Override
+    public String setPhoneSendCodePhone(SignEmailSetPhoneSendCodePhoneDTO dto) {
+
+        Long currentTenantIdDefault = UserUtil.getCurrentTenantIdDefault();
+
+        SignUtil.checkWillError(PRE_REDIS_KEY_ENUM, null, currentTenantIdDefault, null); // 检查：是否可以进行操作
+
+        String key = BaseRedisKeyEnum.PRE_PHONE + dto.getPhone();
+
+        return SignUtil
+                .sendCode(key, ChainWrappers.lambdaQueryChain(sysUserMapper).eq(SysUserDO::getPhone, dto.getPhone()), false,
+                        BizCodeEnum.PHONE_HAS_BEEN_REGISTERED, (code) -> SysSmsUtil
+                                .sendBind(SysSmsHelper.getSysSmsSendBO(currentTenantIdDefault, code, dto.getPhone())));
+
+    }
+
+    /**
+     * 设置手机
+     */
+    @Override
+    public String setPhone(SignEmailSetPhoneDTO dto) {
+
+        SignUtil.checkWillError(PRE_REDIS_KEY_ENUM, null, UserUtil.getCurrentTenantIdDefault(), null); // 检查：是否可以进行操作
+
+        return SignUtil
+                .updateAccount(dto.getEmailCode(), dto.getPhoneCode(), BaseRedisKeyEnum.PRE_EMAIL, BaseRedisKeyEnum.PRE_PHONE, dto.getPhone(), null, null);
 
     }
 
@@ -159,12 +350,12 @@ public class SignEmailServiceImpl implements SignEmailService {
 
         SignUtil.checkWillError(PRE_REDIS_KEY_ENUM, dto.getEmail(), dto.getTenantId(), null); // 检查：是否可以进行操作
 
-        String key = PRE_REDIS_KEY_ENUM + dto.getEmail();
+        String key = BaseRedisKeyEnum.PRE_EMAIL + dto.getEmail();
 
         return SignUtil
                 .sendCode(key, ChainWrappers.lambdaQueryChain(sysUserMapper).eq(SysUserDO::getEmail, dto.getEmail()), true,
                         com.cmcorg20230301.be.engine.email.exception.BizCodeEnum.EMAIL_NOT_REGISTERED, (code) -> MyEmailUtil
-                                .send(dto.getEmail(), EmailMessageEnum.FORGET_PASSWORD, code, false, dto.getTenantId()));
+                                .send(dto.getEmail(), EmailMessageEnum.FORGET_PASSWORD, code, dto.getTenantId()));
 
     }
 
@@ -177,7 +368,7 @@ public class SignEmailServiceImpl implements SignEmailService {
         SignUtil.checkWillError(PRE_REDIS_KEY_ENUM, dto.getEmail(), dto.getTenantId(), null); // 检查：是否可以进行操作
 
         return SignUtil
-                .forgetPassword(dto.getNewPassword(), dto.getOriginNewPassword(), dto.getCode(), PRE_REDIS_KEY_ENUM,
+                .forgetPassword(dto.getNewPassword(), dto.getOriginNewPassword(), dto.getCode(), BaseRedisKeyEnum.PRE_EMAIL,
                         dto.getEmail(), ChainWrappers.lambdaQueryChain(sysUserMapper).eq(SysUserDO::getEmail, dto.getEmail()));
 
     }
@@ -192,8 +383,8 @@ public class SignEmailServiceImpl implements SignEmailService {
 
         SignUtil.checkWillError(PRE_REDIS_KEY_ENUM, null, currentTenantIdDefault, null); // 检查：是否可以进行操作
 
-        return SignUtil.getAccountAndSendCode(PRE_REDIS_KEY_ENUM, (code, account) -> MyEmailUtil
-                .send(account, EmailMessageEnum.SIGN_DELETE, code, false, currentTenantIdDefault));
+        return SignUtil.getAccountAndSendCode(BaseRedisKeyEnum.PRE_EMAIL, (code, account) -> MyEmailUtil
+                .send(account, EmailMessageEnum.SIGN_DELETE, code, currentTenantIdDefault));
 
     }
 
@@ -205,7 +396,7 @@ public class SignEmailServiceImpl implements SignEmailService {
 
         SignUtil.checkWillError(PRE_REDIS_KEY_ENUM, null, UserUtil.getCurrentTenantIdDefault(), null); // 检查：是否可以进行操作
 
-        return SignUtil.signDelete(dto.getCode(), PRE_REDIS_KEY_ENUM, null, null);
+        return SignUtil.signDelete(dto.getCode(), BaseRedisKeyEnum.PRE_EMAIL, null, null);
 
     }
 

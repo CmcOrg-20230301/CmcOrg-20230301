@@ -21,8 +21,6 @@ import com.cmcorg20230301.be.engine.model.model.constant.BaseConstant;
 import com.cmcorg20230301.be.engine.model.model.constant.BaseRegexConstant;
 import com.cmcorg20230301.be.engine.model.model.constant.LogTopicConstant;
 import com.cmcorg20230301.be.engine.model.model.constant.ParamConstant;
-import com.cmcorg20230301.be.engine.model.model.dto.SysQrCodeSceneBindExistUserDTO;
-import com.cmcorg20230301.be.engine.model.model.enums.SysBindExistUserTypeEnum;
 import com.cmcorg20230301.be.engine.model.model.interfaces.IRedisKey;
 import com.cmcorg20230301.be.engine.model.model.vo.GetQrCodeVO;
 import com.cmcorg20230301.be.engine.model.model.vo.SignInVO;
@@ -105,15 +103,16 @@ public class SignUtil {
     /**
      * 发送验证码
      *
-     * @param mustExist 是否必须存在，如果为 null，则，不存在和 存在都不会报错
+     * @param mustExist 是否必须存在，如果为 null，则，不存在和 存在都不会报错，例如：手机验证码注册并登录时
      */
-    public static String sendCode(String key, LambdaQueryChainWrapper<SysUserDO> lambdaQueryChainWrapper,
+    public static String sendCode(String key, @Nullable LambdaQueryChainWrapper<SysUserDO> lambdaQueryChainWrapper,
                                   @Nullable Boolean mustExist, IBizCode iBizCode, Consumer<String> consumer) {
 
         return RedissonUtil.doLock(key, () -> {
 
             // 判断是否存在
             boolean exists;
+
             if (lambdaQueryChainWrapper == null) {
 
                 exists = true;
@@ -129,7 +128,7 @@ public class SignUtil {
 
             } else if (mustExist) {
 
-                if (BooleanUtil.isFalse(exists)) {
+                if (!exists) {
                     ApiResultVO.error(iBizCode);
                 }
 
@@ -880,34 +879,36 @@ public class SignUtil {
 
     /**
      * 修改登录账号
+     *
+     * @param oldRedisKeyEnum，这个参数不能为 null
+     * @param newRedisKeyEnum，这个参数不能为 null
      */
-    public static String updateAccount(String oldCode, String newCode, Enum<? extends IRedisKey> redisKeyEnum,
-                                       String newAccount, String currentPassword, String appId) {
+    public static String updateAccount(String oldCode, String newCode, Enum<? extends IRedisKey> oldRedisKeyEnum, Enum<? extends IRedisKey> newRedisKeyEnum, String newAccount, String currentPassword, String appId) {
 
         Long currentUserIdNotAdmin = UserUtil.getCurrentUserIdNotAdmin();
 
         Long currentTenantIdDefault = UserUtil.getCurrentTenantIdDefault();
 
-        if (BaseRedisKeyEnum.PRE_SIGN_IN_NAME.equals(redisKeyEnum)) {
+        if (BaseRedisKeyEnum.PRE_SIGN_IN_NAME.equals(newRedisKeyEnum)) {
             checkCurrentPasswordWillError(currentPassword, currentUserIdNotAdmin, null, null);
         }
 
         // 获取：旧的账号
-        String oldAccount = getAccountByIdAndRedisKeyEnum(redisKeyEnum, currentUserIdNotAdmin);
+        String oldAccount = getAccountByIdAndRedisKeyEnum(oldRedisKeyEnum, currentUserIdNotAdmin);
 
-        String oldKey = redisKeyEnum + oldAccount;
-        String newKey = redisKeyEnum + newAccount;
+        String oldKey = oldRedisKeyEnum + oldAccount;
+        String newKey = newRedisKeyEnum + newAccount;
 
         return RedissonUtil.doMultiLock(null, CollUtil.newHashSet(oldKey, newKey), () -> {
 
             RBucket<String> oldBucket = redissonClient.getBucket(oldKey);
 
-            if (BaseRedisKeyEnum.PRE_EMAIL.equals(redisKeyEnum)) {
+            if (BaseRedisKeyEnum.PRE_EMAIL.equals(oldRedisKeyEnum)) {
 
                 // 检查 code是否正确
                 CodeUtil.checkCode(oldCode, oldBucket.get(), "操作失败：请先获取旧邮箱的验证码", "旧邮箱验证码有误，请重新输入");
 
-            } else if (BaseRedisKeyEnum.PRE_PHONE.equals(redisKeyEnum)) {
+            } else if (BaseRedisKeyEnum.PRE_PHONE.equals(oldRedisKeyEnum)) {
 
                 // 检查 code是否正确
                 CodeUtil.checkCode(oldCode, oldBucket.get(), "操作失败：请先获取旧手机号码的验证码", "旧手机号码验证码有误，请重新输入");
@@ -916,35 +917,37 @@ public class SignUtil {
 
             RBucket<String> newBucket = redissonClient.getBucket(newKey);
 
-            if (BaseRedisKeyEnum.PRE_EMAIL.equals(redisKeyEnum)) {
+            if (BaseRedisKeyEnum.PRE_EMAIL.equals(newRedisKeyEnum)) {
 
                 // 检查 code是否正确
                 CodeUtil.checkCode(newCode, newBucket.get(), "操作失败：请先获取新邮箱的验证码", "新邮箱验证码有误，请重新输入");
 
-            } else if (BaseRedisKeyEnum.PRE_PHONE.equals(redisKeyEnum)) {
+            } else if (BaseRedisKeyEnum.PRE_PHONE.equals(newRedisKeyEnum)) {
 
                 // 检查 code是否正确
-                CodeUtil.checkCode(oldCode, oldBucket.get(), "操作失败：请先获取新手机号码的验证码", "新手机号码验证码有误，请重新输入");
+                CodeUtil.checkCode(newCode, newBucket.get(), "操作失败：请先获取新手机号码的验证码", "新手机号码验证码有误，请重新输入");
 
             }
 
             // 检查：新的登录账号是否存在
-            boolean exist = accountIsExists(redisKeyEnum, newAccount, null, currentTenantIdDefault, null);
+            boolean exist = accountIsExists(newRedisKeyEnum, newAccount, null, currentTenantIdDefault, appId);
 
             // 是否删除：redis中的验证码
-            boolean deleteRedisFlag = getDeleteRedisFlag(redisKeyEnum);
+            boolean oldDeleteRedisFlag = getDeleteRedisFlag(oldRedisKeyEnum);
+
+            boolean newDeleteRedisFlag = getDeleteRedisFlag(newRedisKeyEnum);
 
             if (exist) {
 
-                if (deleteRedisFlag) {
+                if (newDeleteRedisFlag) {
                     newBucket.delete();
                 }
 
-                if (BaseRedisKeyEnum.PRE_EMAIL.equals(redisKeyEnum)) {
+                if (BaseRedisKeyEnum.PRE_EMAIL.equals(newRedisKeyEnum)) {
 
                     ApiResultVO.errorMsg("操作失败：邮箱已被人占用");
 
-                } else if (BaseRedisKeyEnum.PRE_PHONE.equals(redisKeyEnum)) {
+                } else if (BaseRedisKeyEnum.PRE_PHONE.equals(newRedisKeyEnum)) {
 
                     ApiResultVO.errorMsg("操作失败：手机号码已被人占用");
 
@@ -961,16 +964,22 @@ public class SignUtil {
             sysUserDO.setId(currentUserIdNotAdmin);
 
             // 通过：BaseRedisKeyEnum，设置：账号
-            setSysUserDOAccountByRedisKeyEnum(redisKeyEnum, newAccount, sysUserDO, appId);
+            setSysUserDOAccountByRedisKeyEnum(newRedisKeyEnum, newAccount, sysUserDO, appId);
 
             return TransactionUtil.exec(() -> {
 
                 sysUserMapper.updateById(sysUserDO); // 更新：用户
 
-                if (deleteRedisFlag) {
+                if (oldDeleteRedisFlag) {
 
                     // 删除：验证码
                     oldBucket.delete();
+
+                }
+
+                if (newDeleteRedisFlag) {
+
+                    // 删除：验证码
                     newBucket.delete();
 
                 }
@@ -1262,23 +1271,26 @@ public class SignUtil {
 
     /**
      * 绑定登录账号
+     *
+     * @param codeRedisKeyEnum    不能为 null
+     * @param accountRedisKeyEnum 不能为 null
      */
-    public static String bindAccount(String code, Enum<? extends IRedisKey> redisKeyEnum, String account, String appId) {
+    public static String bindAccount(String code, Enum<? extends IRedisKey> codeRedisKeyEnum, Enum<? extends IRedisKey> accountRedisKeyEnum, String account, String appId) {
 
         Long currentUserIdNotAdmin = UserUtil.getCurrentUserIdNotAdmin();
 
         Long currentTenantIdDefault = UserUtil.getCurrentTenantIdDefault();
 
-        String key = redisKeyEnum + account;
+        String key = accountRedisKeyEnum + account;
 
         return RedissonUtil.doLock(key, () -> {
 
             RBucket<String> bucket = redissonClient.getBucket(key);
 
             // 检查：绑定的登录账号是否存在
-            boolean exist = accountIsExists(redisKeyEnum, account, null, currentTenantIdDefault, appId);
+            boolean exist = accountIsExists(accountRedisKeyEnum, account, null, currentTenantIdDefault, appId);
 
-            boolean deleteRedisFlag = getDeleteRedisFlag(redisKeyEnum);
+            boolean deleteRedisFlag = getDeleteRedisFlag(codeRedisKeyEnum);
 
             if (exist) {
 
@@ -1301,7 +1313,7 @@ public class SignUtil {
             SysUserDO sysUserDO = new SysUserDO();
 
             // 通过：BaseRedisKeyEnum，设置：账号
-            setSysUserDOAccountByRedisKeyEnum(redisKeyEnum, account, sysUserDO, appId);
+            setSysUserDOAccountByRedisKeyEnum(accountRedisKeyEnum, account, sysUserDO, appId);
 
             sysUserDO.setId(currentUserIdNotAdmin);
 
@@ -1346,7 +1358,8 @@ public class SignUtil {
 
         // 敏感操作：
         // 1 设置或者修改：密码，登录名，邮箱，手机，微信
-        // 2 账户注销
+        // 2 忘记密码
+        // 3 账户注销
         LambdaQueryChainWrapper<SysUserDO> lambdaQueryChainWrapper = ChainWrappers.lambdaQueryChain(sysUserMapper).eq(accountBlankFlag, BaseEntity::getId, userId).eq(BaseEntityNoIdSuper::getTenantId, tenantId);
 
         // 处理：lambdaQueryChainWrapper对象
@@ -1505,7 +1518,7 @@ public class SignUtil {
     /**
      * 绑定微信
      */
-    public static SysQrCodeSceneBindVO setWx(Long qrCodeId) {
+    public static SysQrCodeSceneBindVO setWx(Long qrCodeId, String code, Enum<? extends IRedisKey> codeRedisKeyEnum) {
 
         SysQrCodeSceneBindBO sysQrCodeSceneBindBO = redissonClient.<SysQrCodeSceneBindBO>getBucket(BaseRedisKeyEnum.PRE_SYS_WX_QR_CODE_BIND.name() + qrCodeId).getAndDelete();
 
@@ -1519,66 +1532,31 @@ public class SignUtil {
 
             sysQrCodeSceneBindVO.setSceneFlag(true);
 
-            // 是否已经存在用户
-            boolean existUserFlag = sysQrCodeSceneBindBO.getUserId() != null;
+            Long qrCodeUserId = sysQrCodeSceneBindBO.getUserId();
 
-            if (existUserFlag) { // 如果：存在用户，则需要让用户进行二次操作：覆盖或者取消绑定
+            if (qrCodeUserId == null) { // 如果：不存在用户，则开始绑定
 
-                Long operateId = IdGeneratorUtil.nextId();
+                SignUtil.bindAccount(code, codeRedisKeyEnum, BaseRedisKeyEnum.PRE_WX_OPEN_ID, sysQrCodeSceneBindBO.getOpenId(), sysQrCodeSceneBindBO.getAppId());
 
-                RBucket<SysQrCodeSceneBindBO> rBucket = redissonClient.getBucket(BaseRedisKeyEnum.PRE_SYS_WX_QR_CODE_BIND_EXIST_USER.name() + operateId);
+            } else {
 
-                rBucket.set(sysQrCodeSceneBindBO, Duration.ofMillis(BaseConstant.MINUTE_10_EXPIRE_TIME));
+                Long currentUserId = UserUtil.getCurrentUserId();
 
-                sysQrCodeSceneBindVO.setExistUserOperateId(operateId);
+                if (currentUserId.equals(qrCodeUserId)) {
 
-            } else { // 如果：不存在用户，则开始绑定
+                    sysQrCodeSceneBindVO.setErrorMsg("操作失败：您已绑定该微信，请勿重复绑定");
 
-                SignUtil.bindAccount(null, BaseRedisKeyEnum.PRE_WX_OPEN_ID, sysQrCodeSceneBindBO.getOpenId(), sysQrCodeSceneBindBO.getAppId());
+                } else {
+
+                    sysQrCodeSceneBindVO.setErrorMsg("操作失败：该微信已被绑定");
+
+                }
 
             }
 
         }
 
         return sysQrCodeSceneBindVO;
-
-    }
-
-    /**
-     * 设置微信-存在用户
-     */
-    public static String setWxExistUser(SysQrCodeSceneBindExistUserDTO dto) {
-
-        RBucket<SysQrCodeSceneBindBO> rBucket = redissonClient.getBucket(BaseRedisKeyEnum.PRE_SYS_WX_QR_CODE_BIND_EXIST_USER.name() + dto.getId());
-
-        SysQrCodeSceneBindBO sysQrCodeSceneBindBO = rBucket.getAndDelete();
-
-        if (sysQrCodeSceneBindBO == null) {
-            ApiResultVO.errorMsg("操作失败：已过时，请重新扫码后再进行操作");
-        }
-
-        if (SysBindExistUserTypeEnum.CANCEL.equals(dto.getType())) {
-            return BaseBizCodeEnum.OK;
-        }
-
-        // 判断：该用户的数据是否改变
-        boolean exists = ChainWrappers.lambdaQueryChain(sysUserMapper).eq(BaseEntity::getId, sysQrCodeSceneBindBO.getUserId()).eq(BaseEntityNoIdSuper::getTenantId, sysQrCodeSceneBindBO.getTenantId()).eq(SysUserDO::getWxAppId, sysQrCodeSceneBindBO.getAppId()).eq(SysUserDO::getWxOpenId, sysQrCodeSceneBindBO.getOpenId()).exists();
-
-        if (!exists) {
-            ApiResultVO.errorMsg("操作失败：已过时，请重新扫码后再进行操作");
-        }
-
-        if (SysBindExistUserTypeEnum.COVER.equals(dto.getType())) { // 覆盖
-
-            // 注销：该账号
-            SignUtil.signDelete(null, BaseRedisKeyEnum.PRE_WX_OPEN_ID, null, sysQrCodeSceneBindBO.getUserId());
-
-            // 当前账户，绑定该微信
-            SignUtil.bindAccount(null, BaseRedisKeyEnum.PRE_WX_OPEN_ID, sysQrCodeSceneBindBO.getOpenId(), sysQrCodeSceneBindBO.getAppId());
-
-        }
-
-        return BaseBizCodeEnum.OK;
 
     }
 

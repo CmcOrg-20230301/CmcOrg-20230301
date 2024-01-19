@@ -12,6 +12,10 @@ public interface SignPhoneService {
 
     SignInVO signInPassword(SignPhoneSignInPasswordDTO dto);
 
+    String signInSendCode(PhoneNotBlankDTO dto);
+
+    SignInVO signInCode(SignPhoneSignInCodeDTO dto);
+
     String updatePasswordSendCode();
 
     String updatePassword(SignPhoneUpdatePasswordDTO dto);
@@ -23,10 +27,6 @@ public interface SignPhoneService {
     String forgetPasswordSendCode(PhoneNotBlankDTO dto);
 
     String forgetPassword(SignPhoneForgetPasswordDTO dto);
-
-    String signInSendCode(PhoneNotBlankDTO dto);
-
-    SignInVO signInCode(SignPhoneSignInCodeDTO dto);
 
     String signDeleteSendCode();
 

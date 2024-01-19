@@ -90,6 +90,33 @@ public class SignPhoneServiceImpl implements SignPhoneService {
     }
 
     /**
+     * 手机验证码登录-发送验证码
+     */
+    @Override
+    public String signInSendCode(PhoneNotBlankDTO dto) {
+
+        String key = PRE_REDIS_KEY_ENUM + dto.getPhone();
+
+        return SignUtil
+                .sendCode(key, ChainWrappers.lambdaQueryChain(sysUserMapper).eq(SysUserDO::getPhone, dto.getPhone()), null,
+                        com.cmcorg20230301.be.engine.sms.base.exception.BizCodeEnum.PHONE_NOT_REGISTERED, (code) -> SysSmsUtil
+                                .sendSignIn(SysSmsHelper.getSysSmsSendBO(dto.getTenantId(), code, dto.getPhone())));
+
+    }
+
+    /**
+     * 手机验证码登录
+     */
+    @Override
+    public SignInVO signInCode(SignPhoneSignInCodeDTO dto) {
+
+        return SignUtil
+                .signInCode(ChainWrappers.lambdaQueryChain(sysUserMapper).eq(SysUserDO::getPhone, dto.getPhone()),
+                        dto.getCode(), PRE_REDIS_KEY_ENUM, dto.getPhone(), dto.getTenantId(), null);
+
+    }
+
+    /**
      * 修改密码-发送验证码
      */
     @Override
@@ -147,7 +174,7 @@ public class SignPhoneServiceImpl implements SignPhoneService {
         SignUtil.checkWillError(PRE_REDIS_KEY_ENUM, null, UserUtil.getCurrentTenantIdDefault(), null); // 检查：是否可以进行操作
 
         return SignUtil
-                .updateAccount(dto.getOldPhoneCode(), dto.getNewPhoneCode(), PRE_REDIS_KEY_ENUM, dto.getNewPhone(), null, null);
+                .updateAccount(dto.getOldPhoneCode(), dto.getNewPhoneCode(), BaseRedisKeyEnum.PRE_PHONE, BaseRedisKeyEnum.PRE_PHONE, dto.getNewPhone(), null, null);
 
     }
 
@@ -179,33 +206,6 @@ public class SignPhoneServiceImpl implements SignPhoneService {
         return SignUtil
                 .forgetPassword(dto.getNewPassword(), dto.getOriginNewPassword(), dto.getCode(), PRE_REDIS_KEY_ENUM,
                         dto.getPhone(), ChainWrappers.lambdaQueryChain(sysUserMapper).eq(SysUserDO::getPhone, dto.getPhone()));
-
-    }
-
-    /**
-     * 手机验证码登录-发送验证码
-     */
-    @Override
-    public String signInSendCode(PhoneNotBlankDTO dto) {
-
-        String key = PRE_REDIS_KEY_ENUM + dto.getPhone();
-
-        return SignUtil
-                .sendCode(key, ChainWrappers.lambdaQueryChain(sysUserMapper).eq(SysUserDO::getPhone, dto.getPhone()), null,
-                        com.cmcorg20230301.be.engine.sms.base.exception.BizCodeEnum.PHONE_NOT_REGISTERED, (code) -> SysSmsUtil
-                                .sendSignIn(SysSmsHelper.getSysSmsSendBO(dto.getTenantId(), code, dto.getPhone())));
-
-    }
-
-    /**
-     * 手机验证码登录
-     */
-    @Override
-    public SignInVO signInCode(SignPhoneSignInCodeDTO dto) {
-
-        return SignUtil
-                .signInCode(ChainWrappers.lambdaQueryChain(sysUserMapper).eq(SysUserDO::getPhone, dto.getPhone()),
-                        dto.getCode(), PRE_REDIS_KEY_ENUM, dto.getPhone(), dto.getTenantId(), null);
 
     }
 

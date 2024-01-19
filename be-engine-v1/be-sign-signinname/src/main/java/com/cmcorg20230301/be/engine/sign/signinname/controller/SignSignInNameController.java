@@ -2,7 +2,6 @@ package com.cmcorg20230301.be.engine.sign.signinname.controller;
 
 import com.cmcorg20230301.be.engine.model.model.constant.OperationDescriptionConstant;
 import com.cmcorg20230301.be.engine.model.model.dto.NotNullId;
-import com.cmcorg20230301.be.engine.model.model.dto.SysQrCodeSceneBindExistUserDTO;
 import com.cmcorg20230301.be.engine.model.model.vo.GetQrCodeVO;
 import com.cmcorg20230301.be.engine.model.model.vo.SignInVO;
 import com.cmcorg20230301.be.engine.model.model.vo.SysQrCodeSceneBindVO;
@@ -75,13 +74,7 @@ public class SignSignInNameController {
         return ApiResultVO.okData(baseService.setWx(notNullId));
     }
 
-    @PostMapping(value = "/setWx/existUser")
-    @Operation(summary = "设置微信-存在用户")
-    public ApiResultVO<SysQrCodeSceneBindVO> setWxExistUser(@RequestBody @Valid SysQrCodeSceneBindExistUserDTO dto) {
-        return ApiResultVO.okMsg(baseService.setWxExistUser(dto));
-    }
-
-    @PostMapping(value = "/setEmail/sendCode")
+    @PostMapping(value = "/setPhone/sendCode")
     @Operation(summary = "设置手机：发送验证码")
     public ApiResultVO<String> setPhoneSendCode(@RequestBody @Valid SignSignInNameSetPhoneSendCodeDTO dto) {
         return ApiResultVO.okMsg(baseService.setPhoneSendCode(dto));

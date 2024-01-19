@@ -31,6 +31,16 @@ public class MyEmailUtil {
     /**
      * 发送邮件
      */
+    public static void send(String to, EmailMessageEnum emailMessageEnum, String content,
+                            @Nullable Long tenantId) {
+
+        send(to, emailMessageEnum, content, false, tenantId);
+
+    }
+
+    /**
+     * 发送邮件
+     */
     public static void send(String to, EmailMessageEnum emailMessageEnum, String content, boolean isHtml,
                             @Nullable Long tenantId) {
 
@@ -60,8 +70,10 @@ public class MyEmailUtil {
         mailAccount.setPass(sysEmailConfigurationDO.getPass());
 
         if (BooleanUtil.isTrue(sysEmailConfigurationDO.getSslFlag())) {
+
             mailAccount.setStarttlsEnable(true);
             mailAccount.setSslEnable(true);
+
         }
 
         try {

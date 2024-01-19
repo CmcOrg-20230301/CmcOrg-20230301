@@ -11,8 +11,6 @@ import com.cmcorg20230301.be.engine.model.model.interfaces.IRedisKey;
 public enum BaseRedisKeyEnum implements IRedisKey {
 
     // 【PRE_】开头 ↓
-    PRE_SYS_WX_QR_CODE_BIND_EXIST_USER, // 微信扫码绑定时，如果存在用户，则需要用户进行二次操作：覆盖或者取消绑定
-
     PRE_SYS_WX_QR_CODE_BIND, // 微信扫码绑定时，生成的，二维码 id，备注：只有扫描了二维码之后，才会放数据到 redis里面
 
     PRE_SYS_WX_QR_CODE_SIGN, // 微信扫码登录注册时，生成的，二维码 id，备注：只有扫描了二维码之后，才会放数据到 redis里面
