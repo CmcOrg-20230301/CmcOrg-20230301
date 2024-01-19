@@ -34,7 +34,7 @@ public interface SignEmailService {
 
     String setWxSendCode();
 
-    GetQrCodeVO setWxGetQrCodeUrl(SignEmailSetWxGetQrCodeUrlDTO dto);
+    GetQrCodeVO setWxGetQrCodeUrl();
 
     SysQrCodeSceneBindVO setWx(SignEmailSetWxDTO dto);
 

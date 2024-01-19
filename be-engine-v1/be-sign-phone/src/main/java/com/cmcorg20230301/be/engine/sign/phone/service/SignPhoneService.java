@@ -54,7 +54,7 @@ public interface SignPhoneService {
 
     String updateWxSendCode();
 
-    GetQrCodeVO updateWxGetQrCodeUrlNew(SignPhoneUpdateWxGetQrCodeUrlNewDTO dto);
+    GetQrCodeVO updateWxGetQrCodeUrlNew();
 
     SysQrCodeSceneBindVO updateWx(SignPhoneUpdateWxDTO dto);
 

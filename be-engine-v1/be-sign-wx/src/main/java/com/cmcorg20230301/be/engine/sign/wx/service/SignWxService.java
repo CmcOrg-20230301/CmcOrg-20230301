@@ -51,7 +51,7 @@ public interface SignWxService {
 
     GetQrCodeVO updateWxGetQrCodeUrlOld();
 
-    GetQrCodeVO updateWxGetQrCodeUrlNew(SignWxUpdateWxGetQrCodeUrlNewDTO dto);
+    GetQrCodeVO updateWxGetQrCodeUrlNew();
 
     SysQrCodeSceneBindVO updateWx(SignWxUpdateWxDTO dto);
 
@@ -63,6 +63,6 @@ public interface SignWxService {
 
     GetQrCodeVO signDeleteGetQrCodeUrl();
 
-    SysQrCodeSceneBindVO signDelete(SignWxSignDeleteDTO dto);
+    SysQrCodeSceneBindVO signDelete(NotNullId notNullId);
 
 }

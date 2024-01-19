@@ -166,8 +166,8 @@ public class SignPhoneController {
 
     @PostMapping(value = "/updateWx/getQrCodeUrl/new")
     @Operation(summary = "修改微信：获取新微信的二维码地址")
-    public ApiResultVO<GetQrCodeVO> updateWxGetQrCodeUrlNew(@RequestBody @Valid SignPhoneUpdateWxGetQrCodeUrlNewDTO dto) {
-        return ApiResultVO.okData(baseService.updateWxGetQrCodeUrlNew(dto));
+    public ApiResultVO<GetQrCodeVO> updateWxGetQrCodeUrlNew() {
+        return ApiResultVO.okData(baseService.updateWxGetQrCodeUrlNew());
     }
 
     @PostMapping(value = "/updateWx")

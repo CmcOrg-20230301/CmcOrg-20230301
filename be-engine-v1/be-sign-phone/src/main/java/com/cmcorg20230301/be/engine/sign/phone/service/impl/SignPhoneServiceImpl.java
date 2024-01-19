@@ -409,7 +409,7 @@ public class SignPhoneServiceImpl implements SignPhoneService {
      * 修改微信：获取新微信的二维码地址
      */
     @Override
-    public GetQrCodeVO updateWxGetQrCodeUrlNew(SignPhoneUpdateWxGetQrCodeUrlNewDTO dto) {
+    public GetQrCodeVO updateWxGetQrCodeUrlNew() {
 
         SignUtil.checkWillError(PRE_REDIS_KEY_ENUM, null, UserUtil.getCurrentTenantIdDefault(), null); // 检查：是否可以进行操作
 

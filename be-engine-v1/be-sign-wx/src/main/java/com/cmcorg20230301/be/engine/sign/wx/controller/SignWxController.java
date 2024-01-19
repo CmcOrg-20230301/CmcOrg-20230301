@@ -155,8 +155,8 @@ public class SignWxController {
 
     @PostMapping(value = "/updateWx/getQrCodeUrl/new")
     @Operation(summary = "修改微信：获取新的二维码地址")
-    public ApiResultVO<GetQrCodeVO> updateWxGetQrCodeUrlNew(@RequestBody @Valid SignWxUpdateWxGetQrCodeUrlNewDTO dto) {
-        return ApiResultVO.okData(baseService.updateWxGetQrCodeUrlNew(dto));
+    public ApiResultVO<GetQrCodeVO> updateWxGetQrCodeUrlNew() {
+        return ApiResultVO.okData(baseService.updateWxGetQrCodeUrlNew());
     }
 
     @PostMapping(value = "/updateWx")
@@ -191,8 +191,8 @@ public class SignWxController {
 
     @PostMapping(value = "/signDelete")
     @Operation(summary = "账号注销")
-    public ApiResultVO<SysQrCodeSceneBindVO> signDelete(@RequestBody @Valid SignWxSignDeleteDTO dto) {
-        return ApiResultVO.okData(baseService.signDelete(dto));
+    public ApiResultVO<SysQrCodeSceneBindVO> signDelete(@RequestBody @Valid NotNullId notNullId) {
+        return ApiResultVO.okData(baseService.signDelete(notNullId));
     }
 
 }

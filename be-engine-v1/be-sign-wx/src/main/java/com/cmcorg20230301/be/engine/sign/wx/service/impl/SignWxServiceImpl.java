@@ -561,7 +561,7 @@ public class SignWxServiceImpl implements SignWxService {
      * 修改微信：获取新的二维码地址
      */
     @Override
-    public GetQrCodeVO updateWxGetQrCodeUrlNew(SignWxUpdateWxGetQrCodeUrlNewDTO dto) {
+    public GetQrCodeVO updateWxGetQrCodeUrlNew() {
 
         SignUtil.checkWillError(PRE_REDIS_KEY_ENUM, null, UserUtil.getCurrentTenantIdDefault(), null); // 检查：是否可以进行操作
 
@@ -686,11 +686,11 @@ public class SignWxServiceImpl implements SignWxService {
      * 账号注销
      */
     @Override
-    public SysQrCodeSceneBindVO signDelete(SignWxSignDeleteDTO dto) {
+    public SysQrCodeSceneBindVO signDelete(NotNullId notNullId) {
 
         SignUtil.checkWillError(PRE_REDIS_KEY_ENUM, null, UserUtil.getCurrentTenantIdDefault(), null); // 检查：是否可以进行操作
 
-        RBucket<String> bucket = redissonClient.getBucket(BaseRedisKeyEnum.PRE_SYS_WX_QR_CODE_WX_SIGN_DELETE.name() + dto.getId());
+        RBucket<String> bucket = redissonClient.getBucket(BaseRedisKeyEnum.PRE_SYS_WX_QR_CODE_WX_SIGN_DELETE.name() + notNullId.getId());
 
         SysQrCodeSceneBindVO sysQrCodeSceneBindVO = new SysQrCodeSceneBindVO();
 

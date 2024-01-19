@@ -64,8 +64,8 @@ public class SignSignInNameController {
 
     @PostMapping(value = "/setWx/getQrCodeUrl")
     @Operation(summary = "设置微信：获取二维码地址")
-    public ApiResultVO<GetQrCodeVO> setWxGetQrCodeUrl(@RequestBody @Valid SignSignInNameSetWxGetQrCodeUrlDTO dto) {
-        return ApiResultVO.okData(baseService.setWxGetQrCodeUrl(dto));
+    public ApiResultVO<GetQrCodeVO> setWxGetQrCodeUrl() {
+        return ApiResultVO.okData(baseService.setWxGetQrCodeUrl());
     }
 
     @PostMapping(value = "/setWx")

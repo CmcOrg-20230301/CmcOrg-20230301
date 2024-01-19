@@ -20,7 +20,7 @@ public interface SignSignInNameService {
 
     String setEmail(SignSignInNameSetEmailDTO dto);
 
-    GetQrCodeVO setWxGetQrCodeUrl(SignSignInNameSetWxGetQrCodeUrlDTO dto);
+    GetQrCodeVO setWxGetQrCodeUrl();
 
     SysQrCodeSceneBindVO setWx(NotNullId notNullId);
 

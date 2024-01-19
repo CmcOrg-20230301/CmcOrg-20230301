@@ -267,7 +267,7 @@ public class SignEmailServiceImpl implements SignEmailService {
      * 设置微信：获取二维码地址
      */
     @Override
-    public GetQrCodeVO setWxGetQrCodeUrl(SignEmailSetWxGetQrCodeUrlDTO dto) {
+    public GetQrCodeVO setWxGetQrCodeUrl() {
 
         SignUtil.checkWillError(PRE_REDIS_KEY_ENUM, null, UserUtil.getCurrentTenantIdDefault(), null); // 检查：是否可以进行操作
 
