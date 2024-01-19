@@ -89,10 +89,28 @@ public enum WxSysQrCodeSceneTypeEnum implements ISysQrCodeSceneType {
 
     }, false),
 
+    // 修改微信
+    WX_UPDATE_WX("WX_UPDATE_WX", BaseConstant.MINUTE_3_EXPIRE_TIME / 1000, (qrCodeSceneValue, redissonClient, sysUserDO) -> {
+
+        RBucket<String> bucket = redissonClient.getBucket(BaseRedisKeyEnum.PRE_SYS_WX_QR_CODE_UPDATE_WX.name() + qrCodeSceneValue);
+
+        bucket.set("", Duration.ofMillis(BaseConstant.SECOND_10_EXPIRE_TIME));
+
+    }, false),
+
     // 设置手机
     WX_SET_PHONE("WX_SET_PHONE", BaseConstant.MINUTE_3_EXPIRE_TIME / 1000, (qrCodeSceneValue, redissonClient, sysUserDO) -> {
 
         RBucket<String> bucket = redissonClient.getBucket(BaseRedisKeyEnum.PRE_SYS_WX_QR_CODE_SET_PHONE.name() + qrCodeSceneValue);
+
+        bucket.set("", Duration.ofMillis(BaseConstant.SECOND_10_EXPIRE_TIME));
+
+    }, false),
+
+    // 账号注销
+    WX_SIGN_DELETE("WX_SIGN_DELETE", BaseConstant.MINUTE_3_EXPIRE_TIME / 1000, (qrCodeSceneValue, redissonClient, sysUserDO) -> {
+
+        RBucket<String> bucket = redissonClient.getBucket(BaseRedisKeyEnum.PRE_SYS_WX_QR_CODE_WX_SIGN_DELETE.name() + qrCodeSceneValue);
 
         bucket.set("", Duration.ofMillis(BaseConstant.SECOND_10_EXPIRE_TIME));
 

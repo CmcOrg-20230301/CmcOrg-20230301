@@ -45,7 +45,7 @@ public interface SignWxService {
 
     String updateEmailSendCode(SignWxUpdateEmailSendCodeDTO dto);
 
-    GetQrCodeVO updateEmailGetQrCodeUrl();
+    GetQrCodeVO updateEmailGetQrCodeUrl(SignWxUpdateEmailGetQrCodeUrlDTO dto);
 
     SysQrCodeSceneBindVO updateEmail(SignWxUpdateEmailDTO dto);
 

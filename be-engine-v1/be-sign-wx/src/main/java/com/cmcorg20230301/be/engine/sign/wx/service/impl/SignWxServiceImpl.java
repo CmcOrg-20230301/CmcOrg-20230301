@@ -19,6 +19,7 @@ import com.cmcorg20230301.be.engine.security.mapper.SysUserInfoMapper;
 import com.cmcorg20230301.be.engine.security.mapper.SysUserMapper;
 import com.cmcorg20230301.be.engine.security.model.entity.SysUserDO;
 import com.cmcorg20230301.be.engine.security.model.entity.SysUserInfoDO;
+import com.cmcorg20230301.be.engine.security.model.enums.SysQrCodeSceneTypeEnum;
 import com.cmcorg20230301.be.engine.security.util.MyJwtUtil;
 import com.cmcorg20230301.be.engine.security.util.SysTenantUtil;
 import com.cmcorg20230301.be.engine.security.util.UserUtil;
@@ -28,6 +29,8 @@ import com.cmcorg20230301.be.engine.sign.helper.util.SignUtil;
 import com.cmcorg20230301.be.engine.sign.wx.model.dto.*;
 import com.cmcorg20230301.be.engine.sign.wx.model.enums.WxSysQrCodeSceneTypeEnum;
 import com.cmcorg20230301.be.engine.sign.wx.service.SignWxService;
+import com.cmcorg20230301.be.engine.sms.base.util.SysSmsHelper;
+import com.cmcorg20230301.be.engine.sms.base.util.SysSmsUtil;
 import com.cmcorg20230301.be.engine.util.util.CallBack;
 import com.cmcorg20230301.be.engine.util.util.NicknameUtil;
 import org.jetbrains.annotations.NotNull;
@@ -480,15 +483,36 @@ public class SignWxServiceImpl implements SignWxService {
      */
     @Override
     public String updateEmailSendCode(SignWxUpdateEmailSendCodeDTO dto) {
-        return null;
+
+        Long currentTenantIdDefault = UserUtil.getCurrentTenantIdDefault();
+
+        SignUtil.checkWillError(PRE_REDIS_KEY_ENUM, null, currentTenantIdDefault, null); // 检查：是否可以进行操作
+
+        String key = BaseRedisKeyEnum.PRE_EMAIL + dto.getEmail();
+
+        return SignUtil
+                .sendCode(key, ChainWrappers.lambdaQueryChain(sysUserMapper).eq(SysUserDO::getEmail, dto.getEmail()), false,
+                        BizCodeEnum.EMAIL_HAS_BEEN_REGISTERED, (code) -> MyEmailUtil
+                                .send(dto.getEmail(), EmailMessageEnum.BIND_EMAIL, code, currentTenantIdDefault), currentTenantIdDefault);
+
     }
 
     /**
      * 修改邮箱-获取二维码
      */
     @Override
-    public GetQrCodeVO updateEmailGetQrCodeUrl() {
-        return null;
+    public GetQrCodeVO updateEmailGetQrCodeUrl(SignWxUpdateEmailGetQrCodeUrlDTO dto) {
+
+        Long currentTenantIdDefault = UserUtil.getCurrentTenantIdDefault();
+
+        SignUtil.checkWillError(PRE_REDIS_KEY_ENUM, null, currentTenantIdDefault, null); // 检查：是否可以进行操作
+
+        // 检查：邮箱是否被占用
+        SignUtil.checkAccountExistWillError(ChainWrappers.lambdaQueryChain(sysUserMapper).eq(SysUserDO::getEmail, dto.getEmail()), false, BizCodeEnum.EMAIL_HAS_BEEN_REGISTERED, currentTenantIdDefault);
+
+        // 执行
+        return SignUtil.getQrCodeUrlWx(currentTenantIdDefault, true, WxSysQrCodeSceneTypeEnum.WX_UPDATE_EMAIL);
+
     }
 
     /**
@@ -496,7 +520,30 @@ public class SignWxServiceImpl implements SignWxService {
      */
     @Override
     public SysQrCodeSceneBindVO updateEmail(SignWxUpdateEmailDTO dto) {
-        return null;
+
+        SignUtil.checkWillError(PRE_REDIS_KEY_ENUM, null, UserUtil.getCurrentTenantIdDefault(), null); // 检查：是否可以进行操作
+
+        RBucket<String> bucket = redissonClient.getBucket(BaseRedisKeyEnum.PRE_SYS_WX_QR_CODE_UPDATE_EMAIL.name() + dto.getId());
+
+        SysQrCodeSceneBindVO sysQrCodeSceneBindVO = new SysQrCodeSceneBindVO();
+
+        boolean deleteFlag = bucket.delete();
+
+        if (deleteFlag) {
+
+            sysQrCodeSceneBindVO.setSceneFlag(true);
+
+            // 设置邮箱
+            SignUtil.bindAccount(dto.getCode(), BaseRedisKeyEnum.PRE_EMAIL, dto.getEmail(), null, null);
+
+        } else {
+
+            sysQrCodeSceneBindVO.setSceneFlag(false);
+
+        }
+
+        return sysQrCodeSceneBindVO;
+
     }
 
     /**
@@ -504,7 +551,14 @@ public class SignWxServiceImpl implements SignWxService {
      */
     @Override
     public GetQrCodeVO updateWxGetQrCodeUrlOld() {
-        return null;
+
+        Long currentTenantIdDefault = UserUtil.getCurrentTenantIdDefault();
+
+        SignUtil.checkWillError(PRE_REDIS_KEY_ENUM, null, currentTenantIdDefault, null); // 检查：是否可以进行操作
+
+        // 执行
+        return SignUtil.getQrCodeUrlWx(currentTenantIdDefault, true, WxSysQrCodeSceneTypeEnum.WX_UPDATE_WX);
+
     }
 
     /**
@@ -512,7 +566,12 @@ public class SignWxServiceImpl implements SignWxService {
      */
     @Override
     public GetQrCodeVO updateWxGetQrCodeUrlNew(SignWxUpdateWxGetQrCodeUrlNewDTO dto) {
-        return null;
+
+        SignUtil.checkWillError(PRE_REDIS_KEY_ENUM, null, UserUtil.getCurrentTenantIdDefault(), null); // 检查：是否可以进行操作
+
+        // 执行
+        return SignUtil.getQrCodeUrlWx(UserUtil.getCurrentTenantIdDefault(), true, SysQrCodeSceneTypeEnum.WX_BIND);
+
     }
 
     /**
@@ -520,7 +579,30 @@ public class SignWxServiceImpl implements SignWxService {
      */
     @Override
     public SysQrCodeSceneBindVO updateWx(SignWxUpdateWxDTO dto) {
-        return null;
+
+        SignUtil.checkWillError(PRE_REDIS_KEY_ENUM, null, UserUtil.getCurrentTenantIdDefault(), null); // 检查：是否可以进行操作
+
+        RBucket<String> bucket = redissonClient.getBucket(BaseRedisKeyEnum.PRE_SYS_WX_QR_CODE_UPDATE_WX.name() + dto.getOldQrCodeId());
+
+        SysQrCodeSceneBindVO sysQrCodeSceneBindVO = new SysQrCodeSceneBindVO();
+
+        boolean deleteFlag = bucket.delete();
+
+        if (deleteFlag) {
+
+            sysQrCodeSceneBindVO.setSceneFlag(true);
+
+            // 修改微信
+            return SignUtil.setWx(dto.getNewQrCodeId(), null, null);
+
+        } else {
+
+            sysQrCodeSceneBindVO.setSceneFlag(false);
+
+        }
+
+        return sysQrCodeSceneBindVO;
+
     }
 
     /**
@@ -528,7 +610,18 @@ public class SignWxServiceImpl implements SignWxService {
      */
     @Override
     public String setPhoneSendCode(SignWxSetPhoneSendCodeDTO dto) {
-        return null;
+
+        Long currentTenantIdDefault = UserUtil.getCurrentTenantIdDefault();
+
+        SignUtil.checkWillError(PRE_REDIS_KEY_ENUM, null, currentTenantIdDefault, null); // 检查：是否可以进行操作
+
+        String key = BaseRedisKeyEnum.PRE_PHONE + dto.getPhone();
+
+        return SignUtil
+                .sendCode(key, ChainWrappers.lambdaQueryChain(sysUserMapper).eq(SysUserDO::getPhone, dto.getPhone()), false,
+                        BizCodeEnum.PHONE_HAS_BEEN_REGISTERED, (code) -> SysSmsUtil
+                                .sendBind(SysSmsHelper.getSysSmsSendBO(currentTenantIdDefault, code, dto.getPhone())), currentTenantIdDefault);
+
     }
 
     /**
@@ -536,7 +629,17 @@ public class SignWxServiceImpl implements SignWxService {
      */
     @Override
     public GetQrCodeVO setPhoneGetQrCodeUrl(SignWxSetPhoneGetQrCodeUrlDTO dto) {
-        return null;
+
+        Long currentTenantIdDefault = UserUtil.getCurrentTenantIdDefault();
+
+        SignUtil.checkWillError(PRE_REDIS_KEY_ENUM, null, currentTenantIdDefault, null); // 检查：是否可以进行操作
+
+        // 检查：手机是否被占用
+        SignUtil.checkAccountExistWillError(ChainWrappers.lambdaQueryChain(sysUserMapper).eq(SysUserDO::getPhone, dto.getPhone()), false, BizCodeEnum.PHONE_HAS_BEEN_REGISTERED, currentTenantIdDefault);
+
+        // 执行
+        return SignUtil.getQrCodeUrlWx(currentTenantIdDefault, true, WxSysQrCodeSceneTypeEnum.WX_SET_PHONE);
+
     }
 
     /**
@@ -544,23 +647,30 @@ public class SignWxServiceImpl implements SignWxService {
      */
     @Override
     public SysQrCodeSceneBindVO setPhone(SignWxSetPhoneDTO dto) {
-        return null;
-    }
 
-    /**
-     * 忘记密码-获取二维码
-     */
-    @Override
-    public GetQrCodeVO forgetPasswordGetQrCodeUrl(SignWxForgetPasswordGetQrCodeUrlDTO dto) {
-        return null;
-    }
+        SignUtil.checkWillError(PRE_REDIS_KEY_ENUM, null, UserUtil.getCurrentTenantIdDefault(), null); // 检查：是否可以进行操作
 
-    /**
-     * 忘记密码
-     */
-    @Override
-    public SysQrCodeSceneBindVO forgetPassword(SignWxForgetPasswordDTO dto) {
-        return null;
+        RBucket<String> bucket = redissonClient.getBucket(BaseRedisKeyEnum.PRE_SYS_WX_QR_CODE_SET_PHONE.name() + dto.getId());
+
+        SysQrCodeSceneBindVO sysQrCodeSceneBindVO = new SysQrCodeSceneBindVO();
+
+        boolean deleteFlag = bucket.delete();
+
+        if (deleteFlag) {
+
+            sysQrCodeSceneBindVO.setSceneFlag(true);
+
+            // 设置邮箱
+            SignUtil.bindAccount(dto.getCode(), BaseRedisKeyEnum.PRE_PHONE, dto.getPhone(), null, null);
+
+        } else {
+
+            sysQrCodeSceneBindVO.setSceneFlag(false);
+
+        }
+
+        return sysQrCodeSceneBindVO;
+
     }
 
     /**
@@ -568,7 +678,12 @@ public class SignWxServiceImpl implements SignWxService {
      */
     @Override
     public GetQrCodeVO signDeleteGetQrCodeUrl() {
-        return null;
+
+        SignUtil.checkWillError(PRE_REDIS_KEY_ENUM, null, UserUtil.getCurrentTenantIdDefault(), null); // 检查：是否可以进行操作
+
+        // 执行
+        return SignUtil.getQrCodeUrlWx(UserUtil.getCurrentTenantIdDefault(), true, WxSysQrCodeSceneTypeEnum.WX_SIGN_DELETE);
+
     }
 
     /**
@@ -576,7 +691,29 @@ public class SignWxServiceImpl implements SignWxService {
      */
     @Override
     public SysQrCodeSceneBindVO signDelete(SignWxSignDeleteDTO dto) {
-        return null;
+
+        SignUtil.checkWillError(PRE_REDIS_KEY_ENUM, null, UserUtil.getCurrentTenantIdDefault(), null); // 检查：是否可以进行操作
+
+        RBucket<String> bucket = redissonClient.getBucket(BaseRedisKeyEnum.PRE_SYS_WX_QR_CODE_WX_SIGN_DELETE.name() + dto.getId());
+
+        SysQrCodeSceneBindVO sysQrCodeSceneBindVO = new SysQrCodeSceneBindVO();
+
+        boolean deleteFlag = bucket.delete();
+
+        if (deleteFlag) {
+
+            sysQrCodeSceneBindVO.setSceneFlag(true);
+
+            SignUtil.signDelete(null, BaseRedisKeyEnum.PRE_WX_OPEN_ID, null, null);
+
+        } else {
+
+            sysQrCodeSceneBindVO.setSceneFlag(false);
+
+        }
+
+        return sysQrCodeSceneBindVO;
+
     }
 
 }

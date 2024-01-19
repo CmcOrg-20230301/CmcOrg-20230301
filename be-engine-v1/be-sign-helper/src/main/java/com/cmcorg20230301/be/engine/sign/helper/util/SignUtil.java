@@ -758,9 +758,19 @@ public class SignUtil {
 
                 sysUserMapper.updateById(sysUserDO); // 保存：用户
 
-                if (checkCodeFlag) {
-                    bucket.delete(); // 删除：验证码
-                }
+                RedissonUtil.batch((batch) -> {
+
+                    // 移除密码错误次数相关
+                    batch.getBucket(BaseRedisKeyEnum.PRE_PASSWORD_ERROR_COUNT.name() + ":" + currentUserIdNotAdmin)
+                            .deleteAsync();
+
+                    batch.getMap(BaseRedisKeyEnum.PRE_TOO_MANY_PASSWORD_ERROR.name()).removeAsync(currentUserIdNotAdmin);
+
+                    if (checkCodeFlag) {
+                        batch.getBucket(key).deleteAsync(); // 删除：验证码
+                    }
+
+                });
 
                 UserUtil.setJwtSecretSuf(currentUserIdNotAdmin); // 设置：jwt秘钥后缀
 
@@ -1152,6 +1162,7 @@ public class SignUtil {
                     // 移除密码错误次数相关
                     batch.getBucket(BaseRedisKeyEnum.PRE_PASSWORD_ERROR_COUNT.name() + ":" + sysUserDO.getId())
                             .deleteAsync();
+
                     batch.getMap(BaseRedisKeyEnum.PRE_TOO_MANY_PASSWORD_ERROR.name()).removeAsync(sysUserDO.getId());
 
                     // 删除：验证码
@@ -1172,7 +1183,7 @@ public class SignUtil {
     /**
      * 账号注销
      */
-    public static String signDelete(String code, Enum<? extends IRedisKey> redisKeyEnum, String currentPassword, @Nullable Long userId) {
+    public static String signDelete(@Nullable String code, Enum<? extends IRedisKey> redisKeyEnum, String currentPassword, @Nullable Long userId) {
 
         if (userId == null) {
             userId = UserUtil.getCurrentUserIdNotAdmin();
@@ -1454,7 +1465,7 @@ public class SignUtil {
 
         } else if (baseRedisKeyEnum.equals(BaseRedisKeyEnum.PRE_WX_OPEN_ID)) { // 微信
 
-            // 手机为空
+            // 必须手机为空
             if (StrUtil.isNotBlank(sysUserDO.getPhone())) {
                 ApiResultVO.errorMsg("操作失败：请用手机验证码进行操作");
             }
@@ -1472,13 +1483,17 @@ public class SignUtil {
      */
     private static void checkWillErrorHandleLambdaQueryChainWrapper(BaseRedisKeyEnum baseRedisKeyEnum, String account, String appId, LambdaQueryChainWrapper<SysUserDO> lambdaQueryChainWrapper, boolean accountBlankFlag) {
 
+        if (accountBlankFlag) {
+            return;
+        }
+
         if (baseRedisKeyEnum.equals(BaseRedisKeyEnum.PRE_SIGN_IN_NAME)) { // 登录名
 
-            lambdaQueryChainWrapper.eq(!accountBlankFlag, SysUserDO::getSignInName, account);
+            lambdaQueryChainWrapper.eq(SysUserDO::getSignInName, account);
 
         } else if (baseRedisKeyEnum.equals(BaseRedisKeyEnum.PRE_EMAIL)) { // 邮箱
 
-            lambdaQueryChainWrapper.eq(!accountBlankFlag, SysUserDO::getEmail, account);
+            lambdaQueryChainWrapper.eq(SysUserDO::getEmail, account);
 
         } else if (baseRedisKeyEnum.equals(BaseRedisKeyEnum.PRE_WX_OPEN_ID)) { // 微信
 
@@ -1486,11 +1501,11 @@ public class SignUtil {
                 ApiResultVO.errorMsg(BaseBizCodeEnum.ILLEGAL_REQUEST.getMsg() + "：wxAppId" + "，请联系管理员");
             }
 
-            lambdaQueryChainWrapper.eq(!accountBlankFlag, SysUserDO::getWxAppId, appId).eq(SysUserDO::getWxOpenId, account);
+            lambdaQueryChainWrapper.eq(SysUserDO::getWxAppId, appId).eq(SysUserDO::getWxOpenId, account);
 
         } else if (baseRedisKeyEnum.equals(BaseRedisKeyEnum.PRE_PHONE)) { // 手机
 
-            lambdaQueryChainWrapper.eq(!accountBlankFlag, SysUserDO::getSignInName, account);
+            lambdaQueryChainWrapper.eq(SysUserDO::getPhone, account);
 
         } else {
 

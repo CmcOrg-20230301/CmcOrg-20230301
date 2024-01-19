@@ -9,12 +9,12 @@ import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
 @Data
-public class SignWxSetPhoneSendCodeDTO {
+public class SignWxUpdateEmailGetQrCodeUrlDTO {
 
-    @Size(max = 100)
+    @Size(max = 200)
     @NotBlank
-    @Pattern(regexp = BaseRegexConstant.PHONE)
-    @Schema(description = "手机号码")
-    private String phone;
+    @Pattern(regexp = BaseRegexConstant.EMAIL)
+    @Schema(description = "邮箱")
+    private String email;
 
 }

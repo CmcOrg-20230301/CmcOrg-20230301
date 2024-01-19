@@ -137,8 +137,8 @@ public class SignWxController {
 
     @PostMapping(value = "/updateEmail/getQrCodeUrl")
     @Operation(summary = "修改邮箱-获取二维码")
-    public ApiResultVO<GetQrCodeVO> updateEmailGetQrCodeUrl() {
-        return ApiResultVO.okData(baseService.updateEmailGetQrCodeUrl());
+    public ApiResultVO<GetQrCodeVO> updateEmailGetQrCodeUrl(@RequestBody @Valid SignWxUpdateEmailGetQrCodeUrlDTO dto) {
+        return ApiResultVO.okData(baseService.updateEmailGetQrCodeUrl(dto));
     }
 
     @PostMapping(value = "/updateEmail")
