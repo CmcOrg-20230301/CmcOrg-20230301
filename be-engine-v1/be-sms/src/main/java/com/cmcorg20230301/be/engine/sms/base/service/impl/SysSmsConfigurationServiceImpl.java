@@ -60,20 +60,27 @@ public class SysSmsConfigurationServiceImpl extends ServiceImpl<SysSmsConfigurat
         sysSmsConfigurationDO.setSecretKey(MyEntityUtil.getNotNullStr(dto.getSecretKey()));
         sysSmsConfigurationDO.setSdkAppId(MyEntityUtil.getNotNullStr(dto.getSdkAppId()));
         sysSmsConfigurationDO.setSignName(MyEntityUtil.getNotNullStr(dto.getSignName()));
-        sysSmsConfigurationDO.setSendSignDelete(MyEntityUtil.getNotNullStr(dto.getSendDelete()));
-        sysSmsConfigurationDO.setSendSetPhone(MyEntityUtil.getNotNullStr(dto.getSendBind()));
-        sysSmsConfigurationDO.setSendUpdatePhone(MyEntityUtil.getNotNullStr(dto.getSendUpdate()));
-        sysSmsConfigurationDO.setSendUpdatePassword(MyEntityUtil.getNotNullStr(dto.getSendUpdatePassword()));
-        sysSmsConfigurationDO.setSendForgetPassword(MyEntityUtil.getNotNullStr(dto.getSendForgetPassword()));
-        sysSmsConfigurationDO.setSendSignIn(MyEntityUtil.getNotNullStr(dto.getSendSignIn()));
-        sysSmsConfigurationDO.setSendSignUp(MyEntityUtil.getNotNullStr(dto.getSendSignUp()));
-
-        sysSmsConfigurationDO.setSendCommon(MyEntityUtil.getNotNullStr(dto.getSendCommon()));
 
         sysSmsConfigurationDO.setId(dto.getId());
         sysSmsConfigurationDO.setEnableFlag(BooleanUtil.isTrue(dto.getEnableFlag()));
         sysSmsConfigurationDO.setDelFlag(false);
         sysSmsConfigurationDO.setRemark(MyEntityUtil.getNotNullStr(dto.getRemark()));
+
+        sysSmsConfigurationDO.setSendCommon(MyEntityUtil.getNotNullStr(dto.getSendCommon()));
+        sysSmsConfigurationDO.setSendSignUp(MyEntityUtil.getNotNullStr(dto.getSendSignUp()));
+        sysSmsConfigurationDO.setSendSignIn(MyEntityUtil.getNotNullStr(dto.getSendSignIn()));
+        sysSmsConfigurationDO.setSendSetPassword(MyEntityUtil.getNotNullStr(dto.getSendSetPassword()));
+        sysSmsConfigurationDO.setSendUpdatePassword(MyEntityUtil.getNotNullStr(dto.getSendUpdatePassword()));
+        sysSmsConfigurationDO.setSendSetSignInName(MyEntityUtil.getNotNullStr(dto.getSendSetSignInName()));
+        sysSmsConfigurationDO.setSendUpdateSignInName(MyEntityUtil.getNotNullStr(dto.getSendUpdateSignInName()));
+        sysSmsConfigurationDO.setSendSetEmail(MyEntityUtil.getNotNullStr(dto.getSendSetEmail()));
+        sysSmsConfigurationDO.setSendUpdateEmail(MyEntityUtil.getNotNullStr(dto.getSendUpdateEmail()));
+        sysSmsConfigurationDO.setSendSetWx(MyEntityUtil.getNotNullStr(dto.getSendSetWx()));
+        sysSmsConfigurationDO.setSendUpdateWx(MyEntityUtil.getNotNullStr(dto.getSendUpdateWx()));
+        sysSmsConfigurationDO.setSendSetPhone(MyEntityUtil.getNotNullStr(dto.getSendSetPhone()));
+        sysSmsConfigurationDO.setSendUpdatePhone(MyEntityUtil.getNotNullStr(dto.getSendUpdatePhone()));
+        sysSmsConfigurationDO.setSendForgetPassword(MyEntityUtil.getNotNullStr(dto.getSendForgetPassword()));
+        sysSmsConfigurationDO.setSendSignDelete(MyEntityUtil.getNotNullStr(dto.getSendSignDelete()));
 
         saveOrUpdate(sysSmsConfigurationDO);
 
