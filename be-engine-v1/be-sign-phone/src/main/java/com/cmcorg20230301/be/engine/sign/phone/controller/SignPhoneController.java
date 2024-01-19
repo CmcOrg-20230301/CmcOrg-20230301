@@ -101,14 +101,20 @@ public class SignPhoneController {
 
     @PostMapping(value = "/updateSignInName")
     @Operation(summary = "修改登录名")
-    public ApiResultVO<String> updateSignInName(@RequestBody @Valid SignPhoneSetSignInNameDTO dto) {
+    public ApiResultVO<String> updateSignInName(@RequestBody @Valid SignPhoneUpdateSignInNameDTO dto) {
         return ApiResultVO.okMsg(baseService.updateSignInName(dto));
     }
 
-    @PostMapping(value = "/setEmail/sendCode")
-    @Operation(summary = "设置邮箱-发送验证码")
-    public ApiResultVO<String> setEmailSendCode() {
-        return ApiResultVO.okMsg(baseService.setEmailSendCode());
+    @PostMapping(value = "/setEmail/sendCode/phone")
+    @Operation(summary = "设置邮箱-发送手机验证码")
+    public ApiResultVO<String> setEmailSendCodePhone() {
+        return ApiResultVO.okMsg(baseService.setEmailSendCodePhone());
+    }
+
+    @PostMapping(value = "/setEmail/sendCode/email")
+    @Operation(summary = "设置邮箱-发送邮箱验证码")
+    public ApiResultVO<String> setEmailSendCodeEmail() {
+        return ApiResultVO.okMsg(baseService.setEmailSendCodeEmail());
     }
 
     @PostMapping(value = "/setEmail")
@@ -117,16 +123,28 @@ public class SignPhoneController {
         return ApiResultVO.okMsg(baseService.setEmail(dto));
     }
 
-    @PostMapping(value = "/updateEmail/sendCode")
-    @Operation(summary = "修改邮箱-发送验证码")
-    public ApiResultVO<String> updateEmailSendCode() {
-        return ApiResultVO.okMsg(baseService.updateEmailSendCode());
+    @PostMapping(value = "/updateEmail/sendCode/phone")
+    @Operation(summary = "修改邮箱-发送手机验证码")
+    public ApiResultVO<String> updateEmailSendCodePhone() {
+        return ApiResultVO.okMsg(baseService.updateEmailSendCodePhone());
+    }
+
+    @PostMapping(value = "/updateEmail/sendCode/email")
+    @Operation(summary = "修改邮箱-发送邮箱验证码")
+    public ApiResultVO<String> updateEmailSendCodeEmail() {
+        return ApiResultVO.okMsg(baseService.updateEmailSendCodeEmail());
     }
 
     @PostMapping(value = "/updateEmail")
     @Operation(summary = "修改邮箱")
     public ApiResultVO<String> updateEmail(@RequestBody @Valid SignPhoneUpdateEmailDTO dto) {
         return ApiResultVO.okMsg(baseService.updateEmail(dto));
+    }
+
+    @PostMapping(value = "/setWx/sendCode/phone")
+    @Operation(summary = "设置微信-发送手机验证码")
+    public ApiResultVO<String> setWxSendCodePhone() {
+        return ApiResultVO.okMsg(baseService.setWxSendCodePhone());
     }
 
     @PostMapping(value = "/setWx/getQrCodeUrl")
@@ -159,10 +177,16 @@ public class SignPhoneController {
         return ApiResultVO.okData(baseService.updateWx(dto));
     }
 
-    @PostMapping(value = "/updatePhone/sendCode")
-    @Operation(summary = "修改手机-发送验证码")
-    public ApiResultVO<String> updatePhoneSendCode() {
-        return ApiResultVO.okMsg(baseService.updatePhoneSendCode());
+    @PostMapping(value = "/updatePhone/sendCode/new")
+    @Operation(summary = "修改手机-发送新手机验证码")
+    public ApiResultVO<String> updatePhoneSendCodeNew() {
+        return ApiResultVO.okMsg(baseService.updatePhoneSendCodeNew());
+    }
+
+    @PostMapping(value = "/updatePhone/sendCode/old")
+    @Operation(summary = "修改手机-发送旧手机验证码")
+    public ApiResultVO<String> updatePhoneSendCodeOld() {
+        return ApiResultVO.okMsg(baseService.updatePhoneSendCodeOld());
     }
 
     @PostMapping(value = "/updatePhone")

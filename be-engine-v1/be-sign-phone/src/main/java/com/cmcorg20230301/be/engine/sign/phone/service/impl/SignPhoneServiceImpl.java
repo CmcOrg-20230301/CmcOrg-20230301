@@ -3,7 +3,10 @@ package com.cmcorg20230301.be.engine.sign.phone.service.impl;
 import cn.hutool.core.util.BooleanUtil;
 import com.baomidou.mybatisplus.extension.toolkit.ChainWrappers;
 import com.cmcorg20230301.be.engine.model.model.dto.NotBlankCodeDTO;
+import com.cmcorg20230301.be.engine.model.model.dto.NotNullId;
+import com.cmcorg20230301.be.engine.model.model.vo.GetQrCodeVO;
 import com.cmcorg20230301.be.engine.model.model.vo.SignInVO;
+import com.cmcorg20230301.be.engine.model.model.vo.SysQrCodeSceneBindVO;
 import com.cmcorg20230301.be.engine.redisson.model.enums.BaseRedisKeyEnum;
 import com.cmcorg20230301.be.engine.security.mapper.SysUserMapper;
 import com.cmcorg20230301.be.engine.security.model.entity.SysUserConfigurationDO;
@@ -117,6 +120,22 @@ public class SignPhoneServiceImpl implements SignPhoneService {
     }
 
     /**
+     * 设置密码-发送验证码
+     */
+    @Override
+    public String setPasswordSendCode() {
+        return null;
+    }
+
+    /**
+     * 设置密码
+     */
+    @Override
+    public String setPassword(SignPhoneSetPasswordDTO dto) {
+        return null;
+    }
+
+    /**
      * 修改密码-发送验证码
      */
     @Override
@@ -126,7 +145,7 @@ public class SignPhoneServiceImpl implements SignPhoneService {
 
         SignUtil.checkWillError(PRE_REDIS_KEY_ENUM, null, currentTenantIdDefault, null); // 检查：是否可以进行操作
 
-        return SignUtil.getAccountAndSendCode(PRE_REDIS_KEY_ENUM, (code, account) -> SysSmsUtil
+        return SignUtil.getAccountAndSendCode(BaseRedisKeyEnum.PRE_PHONE, (code, account) -> SysSmsUtil
                 .sendUpdatePassword(SysSmsHelper.getSysSmsSendBO(currentTenantIdDefault, code, account)));
 
     }
@@ -140,15 +159,151 @@ public class SignPhoneServiceImpl implements SignPhoneService {
         SignUtil.checkWillError(PRE_REDIS_KEY_ENUM, null, UserUtil.getCurrentTenantIdDefault(), null); // 检查：是否可以进行操作
 
         return SignUtil
-                .updatePassword(dto.getNewPassword(), dto.getOriginNewPassword(), PRE_REDIS_KEY_ENUM, dto.getCode(), null);
+                .updatePassword(dto.getNewPassword(), dto.getOriginNewPassword(), BaseRedisKeyEnum.PRE_PHONE, dto.getCode(), null);
 
     }
 
     /**
-     * 修改手机-发送验证码
+     * 设置登录名-发送验证码
      */
     @Override
-    public String updatePhoneSendCode() {
+    public String setSignInNameSendCode() {
+        return null;
+    }
+
+    /**
+     * 设置登录名
+     */
+    @Override
+    public String setSignInName(SignPhoneSetSignInNameDTO dto) {
+        return null;
+    }
+
+    /**
+     * 修改登录名-发送验证码
+     */
+    @Override
+    public String updateSignInNameSendCode() {
+        return null;
+    }
+
+    /**
+     * 修改登录名
+     */
+    @Override
+    public String updateSignInName(SignPhoneUpdateSignInNameDTO dto) {
+        return null;
+    }
+
+    /**
+     * 设置邮箱-发送手机验证码
+     */
+    @Override
+    public String setEmailSendCodePhone() {
+        return null;
+    }
+
+    /**
+     * 设置邮箱-发送邮箱验证码
+     */
+    @Override
+    public String setEmailSendCodeEmail() {
+        return null;
+    }
+
+    /**
+     * 设置邮箱
+     */
+    @Override
+    public String setEmail(SignPhoneSetEmailDTO dto) {
+        return null;
+    }
+
+    /**
+     * 修改邮箱-发送手机验证码
+     */
+    @Override
+    public String updateEmailSendCodePhone() {
+        return null;
+    }
+
+    /**
+     * 修改邮箱-发送邮箱验证码
+     */
+    @Override
+    public String updateEmailSendCodeEmail() {
+        return null;
+    }
+
+    /**
+     * 修改邮箱
+     */
+    @Override
+    public String updateEmail(SignPhoneUpdateEmailDTO dto) {
+        return null;
+    }
+
+    /**
+     * 设置微信-发送手机验证码
+     */
+    @Override
+    public String setWxSendCodePhone() {
+        return null;
+    }
+
+    /**
+     * 设置微信：获取二维码地址
+     */
+    @Override
+    public GetQrCodeVO setWxGetQrCodeUrl(SignPhoneSetWxGetQrCodeUrlDTO dto) {
+        return null;
+    }
+
+    /**
+     * 设置微信
+     */
+    @Override
+    public SysQrCodeSceneBindVO setWx(NotNullId notNullId) {
+        return null;
+    }
+
+    /**
+     * 修改微信：发送验证码
+     */
+    @Override
+    public GetQrCodeVO updateWxSendCode(SignPhoneUpdateWxSendCodeDTO dto) {
+        return null;
+    }
+
+    /**
+     * 修改微信：获取新的二维码地址
+     */
+    @Override
+    public GetQrCodeVO updateWxGetQrCodeUrlNew(SignPhoneUpdateWxGetQrCodeUrlNewDTO dto) {
+        return null;
+    }
+
+    /**
+     * 修改微信
+     */
+    @Override
+    public SysQrCodeSceneBindVO updateWx(SignPhoneUpdateWxDTO dto) {
+        return null;
+    }
+
+    /**
+     * 修改手机-发送新手机验证码
+     */
+    @Override
+    public String updatePhoneSendCodeNew() {
+        return null;
+    }
+
+    /**
+     * 修改手机-发送旧手机验证码
+     */
+    @Override
+    public String updatePhoneSendCodeOld() {
 
         Long currentTenantIdDefault = UserUtil.getCurrentTenantIdDefault();
 
@@ -156,7 +311,7 @@ public class SignPhoneServiceImpl implements SignPhoneService {
 
         String currentUserPhoneNotAdmin = UserUtil.getCurrentUserPhoneNotAdmin();
 
-        String key = PRE_REDIS_KEY_ENUM + currentUserPhoneNotAdmin;
+        String key = BaseRedisKeyEnum.PRE_PHONE + currentUserPhoneNotAdmin;
 
         return SignUtil.sendCode(key, null, true,
                 com.cmcorg20230301.be.engine.sms.base.exception.BizCodeEnum.PHONE_DOES_NOT_EXIST_PLEASE_RE_ENTER,
@@ -186,7 +341,7 @@ public class SignPhoneServiceImpl implements SignPhoneService {
 
         SignUtil.checkWillError(PRE_REDIS_KEY_ENUM, dto.getPhone(), dto.getTenantId(), null); // 检查：是否可以进行操作
 
-        String key = PRE_REDIS_KEY_ENUM + dto.getPhone();
+        String key = BaseRedisKeyEnum.PRE_PHONE + dto.getPhone();
 
         return SignUtil
                 .sendCode(key, ChainWrappers.lambdaQueryChain(sysUserMapper).eq(SysUserDO::getPhone, dto.getPhone()), true,
@@ -204,7 +359,7 @@ public class SignPhoneServiceImpl implements SignPhoneService {
         SignUtil.checkWillError(PRE_REDIS_KEY_ENUM, dto.getPhone(), dto.getTenantId(), null); // 检查：是否可以进行操作
 
         return SignUtil
-                .forgetPassword(dto.getNewPassword(), dto.getOriginNewPassword(), dto.getCode(), PRE_REDIS_KEY_ENUM,
+                .forgetPassword(dto.getNewPassword(), dto.getOriginNewPassword(), dto.getCode(), BaseRedisKeyEnum.PRE_PHONE,
                         dto.getPhone(), ChainWrappers.lambdaQueryChain(sysUserMapper).eq(SysUserDO::getPhone, dto.getPhone()));
 
     }
@@ -219,7 +374,7 @@ public class SignPhoneServiceImpl implements SignPhoneService {
 
         SignUtil.checkWillError(PRE_REDIS_KEY_ENUM, null, currentTenantIdDefault, null); // 检查：是否可以进行操作
 
-        return SignUtil.getAccountAndSendCode(PRE_REDIS_KEY_ENUM, (code, account) -> SysSmsUtil
+        return SignUtil.getAccountAndSendCode(BaseRedisKeyEnum.PRE_PHONE, (code, account) -> SysSmsUtil
                 .sendDelete(SysSmsHelper.getSysSmsSendBO(currentTenantIdDefault, code, account)));
 
     }
@@ -232,7 +387,7 @@ public class SignPhoneServiceImpl implements SignPhoneService {
 
         SignUtil.checkWillError(PRE_REDIS_KEY_ENUM, null, UserUtil.getCurrentTenantIdDefault(), null); // 检查：是否可以进行操作
 
-        return SignUtil.signDelete(dto.getCode(), PRE_REDIS_KEY_ENUM, null, null);
+        return SignUtil.signDelete(dto.getCode(), BaseRedisKeyEnum.PRE_PHONE, null, null);
 
     }
 

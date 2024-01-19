@@ -35,6 +35,15 @@ public enum WxSysQrCodeSceneTypeEnum implements ISysQrCodeSceneType {
 
     }, false),
 
+    // 设置密码
+    WX_SET_PASSWORD("WX_SET_PASSWORD", BaseConstant.MINUTE_3_EXPIRE_TIME / 1000, (qrCodeSceneValue, redissonClient, sysUserDO) -> {
+
+        RBucket<String> bucket = redissonClient.getBucket(BaseRedisKeyEnum.PRE_SYS_WX_QR_CODE_SET_PASSWORD.name() + qrCodeSceneValue);
+
+        bucket.set("", Duration.ofMillis(BaseConstant.SECOND_10_EXPIRE_TIME));
+
+    }, false),
+
     ;
 
     @EnumValue

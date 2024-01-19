@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.extension.toolkit.ChainWrappers;
 import com.cmcorg20230301.be.engine.model.model.dto.NotNullId;
 import com.cmcorg20230301.be.engine.model.model.vo.GetQrCodeVO;
 import com.cmcorg20230301.be.engine.model.model.vo.SignInVO;
+import com.cmcorg20230301.be.engine.model.model.vo.SysQrCodeSceneBindVO;
 import com.cmcorg20230301.be.engine.other.app.mapper.SysOtherAppMapper;
 import com.cmcorg20230301.be.engine.other.app.wx.model.vo.WxOpenIdVO;
 import com.cmcorg20230301.be.engine.other.app.wx.model.vo.WxPhoneByCodeVO;
@@ -16,13 +17,13 @@ import com.cmcorg20230301.be.engine.security.mapper.SysUserInfoMapper;
 import com.cmcorg20230301.be.engine.security.mapper.SysUserMapper;
 import com.cmcorg20230301.be.engine.security.model.entity.SysUserDO;
 import com.cmcorg20230301.be.engine.security.model.entity.SysUserInfoDO;
+import com.cmcorg20230301.be.engine.security.model.enums.SysQrCodeSceneTypeEnum;
 import com.cmcorg20230301.be.engine.security.util.MyJwtUtil;
 import com.cmcorg20230301.be.engine.security.util.SysTenantUtil;
+import com.cmcorg20230301.be.engine.security.util.UserUtil;
 import com.cmcorg20230301.be.engine.sign.helper.model.dto.UserSignBaseDTO;
 import com.cmcorg20230301.be.engine.sign.helper.util.SignUtil;
-import com.cmcorg20230301.be.engine.sign.wx.model.dto.SignInBrowserCodeDTO;
-import com.cmcorg20230301.be.engine.sign.wx.model.dto.SignInMiniProgramCodeDTO;
-import com.cmcorg20230301.be.engine.sign.wx.model.dto.SignInMiniProgramPhoneCodeDTO;
+import com.cmcorg20230301.be.engine.sign.wx.model.dto.*;
 import com.cmcorg20230301.be.engine.sign.wx.model.enums.WxSysQrCodeSceneTypeEnum;
 import com.cmcorg20230301.be.engine.sign.wx.service.SignWxService;
 import com.cmcorg20230301.be.engine.util.util.CallBack;
@@ -213,6 +214,206 @@ public class SignWxServiceImpl implements SignWxService {
 
         return redissonClient.<SignInVO>getBucket(BaseRedisKeyEnum.PRE_SYS_WX_QR_CODE_SIGN.name() + notNullId.getId()).getAndDelete();
 
+    }
+
+    /**
+     * 设置密码-获取二维码
+     */
+    @Override
+    public GetQrCodeVO setPasswordGetQrCodeUrl() {
+
+        SignUtil.checkWillError(PRE_REDIS_KEY_ENUM, null, UserUtil.getCurrentTenantIdDefault(), null); // 检查：是否可以进行操作
+
+        // 执行
+        return SignUtil.getQrCodeUrlWx(UserUtil.getCurrentTenantIdDefault(), true, SysQrCodeSceneTypeEnum.WX_BIND);
+
+    }
+
+    /**
+     * 设置密码
+     */
+    @Override
+    public String setPassword(SignWxSetPasswordDTO dto) {
+
+
+        return null;
+
+    }
+
+    /**
+     * 修改密码-获取二维码
+     */
+    @Override
+    public GetQrCodeVO updatePasswordGetQrCodeUrl() {
+        return null;
+    }
+
+    /**
+     * 修改密码
+     */
+    @Override
+    public String updatePassword(SignWxUpdatePasswordDTO dto) {
+        return null;
+    }
+
+    /**
+     * 设置登录名-获取二维码
+     */
+    @Override
+    public GetQrCodeVO setSignInNameGetQrCodeUrl() {
+        return null;
+    }
+
+    /**
+     * 设置登录名
+     */
+    @Override
+    public String setSignInName(SignWxSetSignInNameDTO dto) {
+        return null;
+    }
+
+    /**
+     * 修改登录名-获取二维码
+     */
+    @Override
+    public GetQrCodeVO updateSignInNameGetQrCodeUrl() {
+        return null;
+    }
+
+    /**
+     * 修改登录名
+     */
+    @Override
+    public String updateSignInName(SignWxUpdateSignInNameDTO dto) {
+        return null;
+    }
+
+    /**
+     * 设置邮箱：发送验证码
+     */
+    @Override
+    public String setEmailSendCode(SignWxSetEmailSendCodeDTO dto) {
+        return null;
+    }
+
+    /**
+     * 设置邮箱-获取二维码
+     */
+    @Override
+    public GetQrCodeVO setEmailGetQrCodeUrl() {
+        return null;
+    }
+
+    /**
+     * 设置邮箱
+     */
+    @Override
+    public String setEmail(SignWxSetEmailDTO dto) {
+        return null;
+    }
+
+    /**
+     * 修改邮箱：发送验证码
+     */
+    @Override
+    public String updateEmailSendCode(SignWxUpdateEmailSendCodeDTO dto) {
+        return null;
+    }
+
+    /**
+     * 修改邮箱-获取二维码
+     */
+    @Override
+    public GetQrCodeVO updateEmailGetQrCodeUrl() {
+        return null;
+    }
+
+    /**
+     * 修改邮箱
+     */
+    @Override
+    public String updateEmail(SignWxUpdateEmailDTO dto) {
+        return null;
+    }
+
+    /**
+     * 修改微信：获取旧的二维码地址
+     */
+    @Override
+    public GetQrCodeVO updateWxGetQrCodeUrlOld() {
+        return null;
+    }
+
+    /**
+     * 修改微信：获取新的二维码地址
+     */
+    @Override
+    public GetQrCodeVO updateWxGetQrCodeUrlNew(SignWxUpdateWxGetQrCodeUrlNewDTO dto) {
+        return null;
+    }
+
+    /**
+     * 修改微信
+     */
+    @Override
+    public SysQrCodeSceneBindVO updateWx(SignWxUpdateWxDTO dto) {
+        return null;
+    }
+
+    /**
+     * 设置手机：发送验证码
+     */
+    @Override
+    public String setPhoneSendCode(SignWxSetPhoneSendCodeDTO dto) {
+        return null;
+    }
+
+    /**
+     * 设置手机：获取二维码
+     */
+    @Override
+    public GetQrCodeVO setPhoneGetQrCodeUrl(SignWxSetPhoneGetQrCodeUrlDTO dto) {
+        return null;
+    }
+
+    /**
+     * 设置手机
+     */
+    @Override
+    public String setPhone(SignWxSetPhoneDTO dto) {
+        return null;
+    }
+
+    /**
+     * 忘记密码-获取二维码
+     */
+    @Override
+    public GetQrCodeVO forgetPasswordGetQrCodeUrl(SignWxForgetPasswordGetQrCodeUrlDTO dto) {
+        return null;
+    }
+
+    /**
+     * 忘记密码
+     */
+    @Override
+    public String forgetPassword(SignWxForgetPasswordDTO dto) {
+        return null;
+    }
+
+    /**
+     * 账号注销-获取二维码
+     */
+    @Override
+    public GetQrCodeVO signDeleteGetQrCodeUrl() {
+        return null;
+    }
+
+    /**
+     * 账号注销
+     */
+    @Override
+    public String signDelete(SignWxSignDeleteDTO dto) {
+        return null;
     }
 
 }
