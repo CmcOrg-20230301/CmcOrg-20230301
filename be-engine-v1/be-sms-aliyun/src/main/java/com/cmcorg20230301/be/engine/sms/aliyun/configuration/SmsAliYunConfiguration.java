@@ -33,97 +33,6 @@ public class SmsAliYunConfiguration implements ISysSms {
     }
 
     /**
-     * 发送：账号注销
-     */
-    @Override
-    public void sendDelete(SysSmsSendBO sysSmsSendBO) {
-
-        sysSmsSendBO.setTemplateId(sysSmsSendBO.getSysSmsConfigurationDO().getSendDelete());
-
-        // 执行
-        sendForCode(sysSmsSendBO);
-
-    }
-
-    /**
-     * 发送：绑定手机
-     */
-    @Override
-    public void sendBind(SysSmsSendBO sysSmsSendBO) {
-
-        sysSmsSendBO.setTemplateId(sysSmsSendBO.getSysSmsConfigurationDO().getSendBind());
-
-        // 执行
-        sendForCode(sysSmsSendBO);
-
-    }
-
-    /**
-     * 发送：修改手机
-     */
-    @Override
-    public void sendUpdate(SysSmsSendBO sysSmsSendBO) {
-
-        sysSmsSendBO.setTemplateId(sysSmsSendBO.getSysSmsConfigurationDO().getSendUpdate());
-
-        // 执行
-        sendForCode(sysSmsSendBO);
-
-    }
-
-    /**
-     * 发送：修改密码
-     */
-    @Override
-    public void sendUpdatePassword(SysSmsSendBO sysSmsSendBO) {
-
-        sysSmsSendBO.setTemplateId(sysSmsSendBO.getSysSmsConfigurationDO().getSendUpdatePassword());
-
-        // 执行
-        sendForCode(sysSmsSendBO);
-
-    }
-
-    /**
-     * 发送：忘记密码
-     */
-    @Override
-    public void sendForgetPassword(SysSmsSendBO sysSmsSendBO) {
-
-        sysSmsSendBO.setTemplateId(sysSmsSendBO.getSysSmsConfigurationDO().getSendForgetPassword());
-
-        // 执行
-        sendForCode(sysSmsSendBO);
-
-    }
-
-    /**
-     * 发送：登录短信
-     */
-    @Override
-    public void sendSignIn(SysSmsSendBO sysSmsSendBO) {
-
-        sysSmsSendBO.setTemplateId(sysSmsSendBO.getSysSmsConfigurationDO().getSendSignIn());
-
-        // 执行
-        sendForCode(sysSmsSendBO);
-
-    }
-
-    /**
-     * 发送：注册短信
-     */
-    @Override
-    public void sendSignUp(SysSmsSendBO sysSmsSendBO) {
-
-        sysSmsSendBO.setTemplateId(sysSmsSendBO.getSysSmsConfigurationDO().getSendSignUp());
-
-        // 执行
-        sendForCode(sysSmsSendBO);
-
-    }
-
-    /**
      * 执行发送
      */
     @Override
@@ -137,7 +46,7 @@ public class SmsAliYunConfiguration implements ISysSms {
     /**
      * 发送：验证码相关
      */
-    public static void sendForCode(SysSmsSendBO sysSmsSendBO) {
+    public void sendForCode(SysSmsSendBO sysSmsSendBO) {
 
         if (StrUtil.isBlank(sysSmsSendBO.getTemplateId())) {
 
@@ -193,8 +102,10 @@ public class SmsAliYunConfiguration implements ISysSms {
         String code = body.getCode();
 
         if (BooleanUtil.isFalse("OK".equalsIgnoreCase(code))) {
+
             throw new RuntimeException(
                     StrUtil.format("阿里云短信发送失败，code：【{}】，message：【{}】", code, body.getMessage()));
+
         }
 
     }

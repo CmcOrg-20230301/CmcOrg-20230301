@@ -46,7 +46,7 @@ public class SignEmailServiceImpl implements SignEmailService {
 
         checkSignUpEnable(dto.getTenantId()); // 检查：是否允许注册
 
-        String key = PRE_REDIS_KEY_ENUM + dto.getEmail();
+        String key = BaseRedisKeyEnum.PRE_EMAIL + dto.getEmail();
 
         return SignUtil
                 .sendCode(key, ChainWrappers.lambdaQueryChain(sysUserMapper).eq(SysUserDO::getEmail, dto.getEmail()), false,
@@ -78,7 +78,7 @@ public class SignEmailServiceImpl implements SignEmailService {
         checkSignUpEnable(dto.getTenantId()); // 检查：是否允许注册
 
         return SignUtil
-                .signUp(dto.getPassword(), dto.getOriginPassword(), dto.getCode(), PRE_REDIS_KEY_ENUM, dto.getEmail(),
+                .signUp(dto.getPassword(), dto.getOriginPassword(), dto.getCode(), BaseRedisKeyEnum.PRE_EMAIL, dto.getEmail(),
                         dto.getTenantId());
 
     }
@@ -329,7 +329,7 @@ public class SignEmailServiceImpl implements SignEmailService {
         return SignUtil
                 .sendCode(key, ChainWrappers.lambdaQueryChain(sysUserMapper).eq(SysUserDO::getPhone, dto.getPhone()), false,
                         BizCodeEnum.PHONE_HAS_BEEN_REGISTERED, (code) -> SysSmsUtil
-                                .sendBind(SysSmsHelper.getSysSmsSendBO(currentTenantIdDefault, code, dto.getPhone())), currentTenantIdDefault);
+                                .sendSetPhone(SysSmsHelper.getSysSmsSendBO(currentTenantIdDefault, code, dto.getPhone())), currentTenantIdDefault);
 
     }
 

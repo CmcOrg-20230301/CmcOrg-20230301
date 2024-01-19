@@ -3,9 +3,11 @@ package com.cmcorg20230301.be.engine.sms.base.util;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.map.MapUtil;
 import cn.hutool.core.util.StrUtil;
+import com.cmcorg20230301.be.engine.security.exception.BaseBizCodeEnum;
 import com.cmcorg20230301.be.engine.security.model.vo.ApiResultVO;
 import com.cmcorg20230301.be.engine.sms.base.model.bo.SysSmsSendBO;
 import com.cmcorg20230301.be.engine.sms.base.model.configuration.ISysSms;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -36,110 +38,26 @@ public class SysSmsUtil {
     }
 
     /**
-     * 发送：账号注销
+     * 执行发送
      */
-    public static void sendDelete(SysSmsSendBO sysSmsSendBO) {
+    public static void send(SysSmsSendBO sysSmsSendBO) {
 
-        SysSmsHelper.handleSysSmsConfigurationDO(sysSmsSendBO);
+        ISysSms isysSms = getIsysSms(sysSmsSendBO);
 
-        ISysSms iSysSms = getIsysSms(sysSmsSendBO);
-
-        if (iSysSms == null) {
-            return;
-        }
-
-        // 执行：发送
-        iSysSms.sendDelete(sysSmsSendBO);
+        // 执行
+        isysSms.send(sysSmsSendBO);
 
     }
 
     /**
-     * 发送：绑定手机
+     * 发送：验证码相关
      */
-    public static void sendBind(SysSmsSendBO sysSmsSendBO) {
+    public static void sendForCode(SysSmsSendBO sysSmsSendBO) {
 
-        SysSmsHelper.handleSysSmsConfigurationDO(sysSmsSendBO);
+        ISysSms isysSms = getIsysSms(sysSmsSendBO);
 
-        ISysSms iSysSms = getIsysSms(sysSmsSendBO);
-
-        if (iSysSms == null) {
-            return;
-        }
-
-        // 执行：发送
-        iSysSms.sendBind(sysSmsSendBO);
-
-    }
-
-    /**
-     * 发送：修改手机
-     */
-    public static void sendUpdate(SysSmsSendBO sysSmsSendBO) {
-
-        SysSmsHelper.handleSysSmsConfigurationDO(sysSmsSendBO);
-
-        ISysSms iSysSms = getIsysSms(sysSmsSendBO);
-
-        if (iSysSms == null) {
-            return;
-        }
-
-        // 执行：发送
-        iSysSms.sendUpdate(sysSmsSendBO);
-
-    }
-
-    /**
-     * 发送：修改密码
-     */
-    public static void sendUpdatePassword(SysSmsSendBO sysSmsSendBO) {
-
-        SysSmsHelper.handleSysSmsConfigurationDO(sysSmsSendBO);
-
-        ISysSms iSysSms = getIsysSms(sysSmsSendBO);
-
-        if (iSysSms == null) {
-            return;
-        }
-
-        // 执行：发送
-        iSysSms.sendUpdatePassword(sysSmsSendBO);
-
-    }
-
-    /**
-     * 发送：忘记密码
-     */
-    public static void sendForgetPassword(SysSmsSendBO sysSmsSendBO) {
-
-        SysSmsHelper.handleSysSmsConfigurationDO(sysSmsSendBO);
-
-        ISysSms iSysSms = getIsysSms(sysSmsSendBO);
-
-        if (iSysSms == null) {
-            return;
-        }
-
-        // 执行：发送
-        iSysSms.sendForgetPassword(sysSmsSendBO);
-
-    }
-
-    /**
-     * 发送：登录短信
-     */
-    public static void sendSignIn(SysSmsSendBO sysSmsSendBO) {
-
-        SysSmsHelper.handleSysSmsConfigurationDO(sysSmsSendBO);
-
-        ISysSms iSysSms = getIsysSms(sysSmsSendBO);
-
-        if (iSysSms == null) {
-            return;
-        }
-
-        // 执行：发送
-        iSysSms.sendSignIn(sysSmsSendBO);
+        // 执行
+        isysSms.sendForCode(sysSmsSendBO);
 
     }
 
@@ -148,45 +66,196 @@ public class SysSmsUtil {
      */
     public static void sendSignUp(SysSmsSendBO sysSmsSendBO) {
 
-        SysSmsHelper.handleSysSmsConfigurationDO(sysSmsSendBO);
+        ISysSms isysSms = getIsysSms(sysSmsSendBO);
 
-        ISysSms iSysSms = getIsysSms(sysSmsSendBO);
-
-        if (iSysSms == null) {
-            return;
-        }
-
-        // 执行：发送
-        iSysSms.sendSignUp(sysSmsSendBO);
+        // 执行
+        isysSms.sendSignUp(sysSmsSendBO);
 
     }
 
     /**
-     * 执行发s短信
+     * 发送：登录短信
      */
-    public static void send(SysSmsSendBO sysSmsSendBO) {
+    public static void sendSignIn(SysSmsSendBO sysSmsSendBO) {
 
-        SysSmsHelper.handleSysSmsConfigurationDO(sysSmsSendBO);
+        ISysSms isysSms = getIsysSms(sysSmsSendBO);
 
-        ISysSms iSysSms = getIsysSms(sysSmsSendBO);
+        // 执行
+        isysSms.sendSignIn(sysSmsSendBO);
 
-        if (iSysSms == null) {
-            return;
-        }
+    }
 
-        // 执行：发送
-        iSysSms.send(sysSmsSendBO);
+    /**
+     * 发送：设置密码
+     */
+    public static void sendSetPassword(SysSmsSendBO sysSmsSendBO) {
+
+        ISysSms isysSms = getIsysSms(sysSmsSendBO);
+
+        // 执行
+        isysSms.sendSetPassword(sysSmsSendBO);
+
+    }
+
+    /**
+     * 发送：修改密码
+     */
+    public static void sendUpdatePassword(SysSmsSendBO sysSmsSendBO) {
+
+        ISysSms isysSms = getIsysSms(sysSmsSendBO);
+
+        // 执行
+        isysSms.sendUpdatePassword(sysSmsSendBO);
+
+    }
+
+    /**
+     * 发送：设置登录名
+     */
+    public static void sendSetSignInName(SysSmsSendBO sysSmsSendBO) {
+
+        ISysSms isysSms = getIsysSms(sysSmsSendBO);
+
+        // 执行
+        isysSms.sendSetSignInName(sysSmsSendBO);
+
+    }
+
+    /**
+     * 发送：修改登录名
+     */
+    public static void sendUpdateSignInName(SysSmsSendBO sysSmsSendBO) {
+
+        ISysSms isysSms = getIsysSms(sysSmsSendBO);
+
+        // 执行
+        isysSms.sendUpdateSignInName(sysSmsSendBO);
+
+    }
+
+    /**
+     * 发送：设置邮箱
+     */
+    public static void sendSetEmail(SysSmsSendBO sysSmsSendBO) {
+
+        ISysSms isysSms = getIsysSms(sysSmsSendBO);
+
+        // 执行
+        isysSms.sendSetEmail(sysSmsSendBO);
+
+    }
+
+    /**
+     * 发送：修改邮箱
+     */
+    public static void sendUpdateEmail(SysSmsSendBO sysSmsSendBO) {
+
+        ISysSms isysSms = getIsysSms(sysSmsSendBO);
+
+        // 执行
+        isysSms.sendUpdateEmail(sysSmsSendBO);
+
+    }
+
+    /**
+     * 发送：设置微信
+     */
+    public static void sendSetWx(SysSmsSendBO sysSmsSendBO) {
+
+        ISysSms isysSms = getIsysSms(sysSmsSendBO);
+
+        // 执行
+        isysSms.sendSetWx(sysSmsSendBO);
+
+    }
+
+    /**
+     * 发送：修改微信
+     */
+    public static void sendUpdateWx(SysSmsSendBO sysSmsSendBO) {
+
+        ISysSms isysSms = getIsysSms(sysSmsSendBO);
+
+        // 执行
+        isysSms.sendUpdateWx(sysSmsSendBO);
+
+    }
+
+    /**
+     * 发送：设置手机
+     */
+    public static void sendSetPhone(SysSmsSendBO sysSmsSendBO) {
+
+        ISysSms isysSms = getIsysSms(sysSmsSendBO);
+
+        // 执行
+        isysSms.sendSetPhone(sysSmsSendBO);
+
+    }
+
+    /**
+     * 发送：修改手机
+     */
+    public static void sendUpdatePhone(SysSmsSendBO sysSmsSendBO) {
+
+        ISysSms isysSms = getIsysSms(sysSmsSendBO);
+
+        // 执行
+        isysSms.sendUpdatePhone(sysSmsSendBO);
+
+    }
+
+    /**
+     * 发送：忘记密码
+     */
+    public static void sendForgetPassword(SysSmsSendBO sysSmsSendBO) {
+
+        ISysSms isysSms = getIsysSms(sysSmsSendBO);
+
+        // 执行
+        isysSms.sendForgetPassword(sysSmsSendBO);
+
+    }
+
+    /**
+     * 发送：账号注销
+     */
+    public static void sendSignDelete(SysSmsSendBO sysSmsSendBO) {
+
+        ISysSms isysSms = getIsysSms(sysSmsSendBO);
+
+        // 执行
+        isysSms.sendSignDelete(sysSmsSendBO);
 
     }
 
     /**
      * 获取：短信实现类
      */
-    @Nullable
+    @NotNull
     public static ISysSms getIsysSms(SysSmsSendBO sysSmsSendBO) {
 
+        if (StrUtil.isBlank(sysSmsSendBO.getPhoneNumber())) {
+
+            ApiResultVO.error(BaseBizCodeEnum.UNABLE_TO_SEND_VERIFICATION_CODE_BECAUSE_THE_PHONE_IS_NOT_BOUND);
+
+        }
+
+        SysSmsHelper.handleSysSmsConfigurationDO(sysSmsSendBO);
+
+        // 执行：获取
+        return doGetIsysSms(sysSmsSendBO);
+
+    }
+
+    /**
+     * 获取：短信实现类
+     */
+    @NotNull
+    public static ISysSms doGetIsysSms(SysSmsSendBO sysSmsSendBO) {
+
         if (StrUtil.isBlank(sysSmsSendBO.getSendContent())) {
-            return null;
+            ApiResultVO.errorMsg("操作失败：发送内容不能为空");
         }
 
         Integer smsType = sysSmsSendBO.getSysSmsConfigurationDO().getType();

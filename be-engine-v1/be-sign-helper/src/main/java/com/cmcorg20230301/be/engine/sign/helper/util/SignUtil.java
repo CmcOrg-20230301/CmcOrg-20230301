@@ -117,10 +117,10 @@ public class SignUtil {
 
         String code = CodeUtil.getCode();
 
+        consumer.accept(code); // 进行额外的处理
+
         // 保存到 redis中，设置 10分钟过期
         redissonClient.getBucket(key).set(code, Duration.ofMillis(BaseConstant.LONG_CODE_EXPIRE_TIME));
-
-        consumer.accept(code); // 进行额外的处理
 
         return BaseBizCodeEnum.SEND_OK;
 
@@ -722,7 +722,10 @@ public class SignUtil {
         String paramValue = SysParamUtil.getValueByUuid(ParamConstant.RSA_PRIVATE_KEY_UUID, currentTenantIdDefault); // 获取非对称 私钥
 
         if (BaseRedisKeyEnum.PRE_SIGN_IN_NAME.equals(redisKeyEnum)) {
-            checkCurrentPasswordWillError(oldPassword, currentUserIdNotAdmin, paramValue, null, currentTenantIdDefault); // 检查：当前密码是否正确
+
+            // 检查：当前密码是否正确
+            checkCurrentPasswordWillError(oldPassword, currentUserIdNotAdmin, paramValue, null, currentTenantIdDefault);
+
         }
 
         String newPassword = MyRsaUtil.rsaDecrypt(newPasswordTemp, paramValue);

@@ -165,7 +165,7 @@ public class SignSignInNameServiceImpl implements SignSignInNameService {
         return SignUtil
                 .sendCode(key, ChainWrappers.lambdaQueryChain(sysUserMapper).eq(SysUserDO::getPhone, dto.getPhone()), false,
                         BizCodeEnum.PHONE_HAS_BEEN_REGISTERED, (code) -> SysSmsUtil
-                                .sendBind(SysSmsHelper.getSysSmsSendBO(currentTenantIdDefault, code, dto.getPhone())), currentTenantIdDefault);
+                                .sendSetPhone(SysSmsHelper.getSysSmsSendBO(currentTenantIdDefault, code, dto.getPhone())), currentTenantIdDefault);
 
     }
 

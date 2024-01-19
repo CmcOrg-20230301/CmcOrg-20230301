@@ -1,7 +1,6 @@
 package com.cmcorg20230301.be.engine.sign.phone.service;
 
 import com.cmcorg20230301.be.engine.model.model.dto.NotBlankCodeDTO;
-import com.cmcorg20230301.be.engine.model.model.dto.NotNullId;
 import com.cmcorg20230301.be.engine.model.model.vo.GetQrCodeVO;
 import com.cmcorg20230301.be.engine.model.model.vo.SignInVO;
 import com.cmcorg20230301.be.engine.model.model.vo.SysQrCodeSceneBindVO;
@@ -27,39 +26,39 @@ public interface SignPhoneService {
 
     String updatePassword(SignPhoneUpdatePasswordDTO dto);
 
-    String setSignInNameSendCode();
+    String setSignInNameSendCode(SignPhoneSetSignInNameSendCodeDTO dto);
 
     String setSignInName(SignPhoneSetSignInNameDTO dto);
 
-    String updateSignInNameSendCode();
+    String updateSignInNameSendCode(SignPhoneUpdateSignInNameSendCodeDTO dto);
 
     String updateSignInName(SignPhoneUpdateSignInNameDTO dto);
 
-    String setEmailSendCodePhone();
+    String setEmailSendCodePhone(SignPhoneSetEmailSendCodePhoneDTO dto);
 
-    String setEmailSendCodeEmail();
+    String setEmailSendCodeEmail(SignPhoneSetEmailSendCodeEmailDTO dto);
 
     String setEmail(SignPhoneSetEmailDTO dto);
 
-    String updateEmailSendCodePhone();
+    String updateEmailSendCodePhone(SignPhoneUpdateEmailSendCodePhoneDTO dto);
 
-    String updateEmailSendCodeEmail();
+    String updateEmailSendCodeEmail(SignPhoneUpdateEmailSendCodeEmailDTO dto);
 
     String updateEmail(SignPhoneUpdateEmailDTO dto);
 
     String setWxSendCodePhone();
 
-    GetQrCodeVO setWxGetQrCodeUrl(SignPhoneSetWxGetQrCodeUrlDTO dto);
+    GetQrCodeVO setWxGetQrCodeUrl();
 
-    SysQrCodeSceneBindVO setWx(NotNullId notNullId);
+    SysQrCodeSceneBindVO setWx(SignPhoneSetWxDTO dto);
 
-    GetQrCodeVO updateWxSendCode(SignPhoneUpdateWxSendCodeDTO dto);
+    String updateWxSendCode();
 
     GetQrCodeVO updateWxGetQrCodeUrlNew(SignPhoneUpdateWxGetQrCodeUrlNewDTO dto);
 
     SysQrCodeSceneBindVO updateWx(SignPhoneUpdateWxDTO dto);
 
-    String updatePhoneSendCodeNew();
+    String updatePhoneSendCodeNew(SignPhoneUpdatePhoneSendCodeNewDTO dto);
 
     String updatePhoneSendCodeOld();
 

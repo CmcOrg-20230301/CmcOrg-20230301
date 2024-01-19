@@ -100,6 +100,7 @@ public class SysSmsHelper {
     /**
      * 获取：默认短信
      */
+    @NotNull
     public static SysSmsConfigurationDO getDefaultSysSmsConfigurationDO(@Nullable Long tenantId,
                                                                         @Nullable Boolean useParentTenantPayFlag) {
 

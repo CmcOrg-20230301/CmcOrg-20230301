@@ -87,7 +87,7 @@ public class SignWxServiceImpl implements SignWxService {
         // 直接通过：微信 openId登录
         return SignUtil.signInAccount(
                 ChainWrappers.lambdaQueryChain(sysUserMapper).eq(SysUserDO::getWxOpenId, wxOpenIdVO.getOpenid())
-                        .eq(SysUserDO::getWxAppId, dto.getAppId()), PRE_REDIS_KEY_ENUM, wxOpenIdVO.getOpenid(),
+                        .eq(SysUserDO::getWxAppId, dto.getAppId()), BaseRedisKeyEnum.PRE_WX_OPEN_ID, wxOpenIdVO.getOpenid(),
                 SignWxServiceImpl::getWxSysUserInfoDO, dto.getTenantId(), accountMap -> {
 
                     accountMap.put(BaseRedisKeyEnum.PRE_WX_APP_ID, dto.getAppId());
@@ -123,7 +123,7 @@ public class SignWxServiceImpl implements SignWxService {
         // 直接通过：微信 openId登录
         return SignUtil.signInAccount(
                 ChainWrappers.lambdaQueryChain(sysUserMapper).eq(SysUserDO::getWxOpenId, wxOpenIdVO.getOpenid())
-                        .eq(SysUserDO::getWxAppId, dto.getAppId()), PRE_REDIS_KEY_ENUM, wxOpenIdVO.getOpenid(),
+                        .eq(SysUserDO::getWxAppId, dto.getAppId()), BaseRedisKeyEnum.PRE_WX_OPEN_ID, wxOpenIdVO.getOpenid(),
                 SignWxServiceImpl::getWxSysUserInfoDO, dto.getTenantId(), accountMap -> {
 
                     accountMap.put(BaseRedisKeyEnum.PRE_WX_APP_ID, dto.getAppId());
@@ -148,7 +148,7 @@ public class SignWxServiceImpl implements SignWxService {
         // 直接通过：微信 openId登录
         SignInVO signInVO = SignUtil.signInAccount(
                 ChainWrappers.lambdaQueryChain(sysUserMapper).eq(SysUserDO::getWxOpenId, wxOpenIdVO.getOpenid())
-                        .eq(SysUserDO::getWxAppId, dto.getAppId()), PRE_REDIS_KEY_ENUM, wxOpenIdVO.getOpenid(), () -> {
+                        .eq(SysUserDO::getWxAppId, dto.getAppId()), BaseRedisKeyEnum.PRE_WX_OPEN_ID, wxOpenIdVO.getOpenid(), () -> {
 
                     WxUserInfoVO wxUserInfoVO = WxUtil
                             .getWxUserInfoByBrowserAccessToken(wxOpenIdVO.getAccessToken(), wxOpenIdVO.getOpenid(), tenantId,
@@ -616,7 +616,7 @@ public class SignWxServiceImpl implements SignWxService {
         return SignUtil
                 .sendCode(key, ChainWrappers.lambdaQueryChain(sysUserMapper).eq(SysUserDO::getPhone, dto.getPhone()), false,
                         BizCodeEnum.PHONE_HAS_BEEN_REGISTERED, (code) -> SysSmsUtil
-                                .sendBind(SysSmsHelper.getSysSmsSendBO(currentTenantIdDefault, code, dto.getPhone())), currentTenantIdDefault);
+                                .sendSetPhone(SysSmsHelper.getSysSmsSendBO(currentTenantIdDefault, code, dto.getPhone())), currentTenantIdDefault);
 
     }
 

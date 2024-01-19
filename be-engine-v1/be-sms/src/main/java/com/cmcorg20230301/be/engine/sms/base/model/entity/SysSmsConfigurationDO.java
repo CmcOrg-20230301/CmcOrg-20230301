@@ -37,28 +37,49 @@ public class SysSmsConfigurationDO extends BaseEntity {
     @Schema(description = "签名内容")
     private String signName;
 
-    @Schema(description = "发送：账号注销")
-    private String sendDelete;
-
-    @Schema(description = "发送：绑定手机")
-    private String sendBind;
-
-    @Schema(description = "发送：修改手机")
-    private String sendUpdate;
-
-    @Schema(description = "发送：修改密码")
-    private String sendUpdatePassword;
-
-    @Schema(description = "发送：忘记密码")
-    private String sendForgetPassword;
-
-    @Schema(description = "发送：登录短信")
-    private String sendSignIn;
+    @Schema(description = "发送：通用短信")
+    private String sendCommon;
 
     @Schema(description = "发送：注册短信")
     private String sendSignUp;
 
-    @Schema(description = "发送：通用短信")
-    private String sendCommon;
+    @Schema(description = "发送：登录短信")
+    private String sendSignIn;
+
+    @Schema(description = "发送：设置密码")
+    private String sendSetPassword;
+
+    @Schema(description = "发送：修改密码")
+    private String sendUpdatePassword;
+
+    @Schema(description = "发送：设置登录名")
+    private String sendSetSignInName;
+
+    @Schema(description = "发送：修改登录名")
+    private String sendUpdateSignInName;
+
+    @Schema(description = "发送：设置邮箱")
+    private String sendSetEmail;
+
+    @Schema(description = "发送：修改邮箱")
+    private String sendUpdateEmail;
+
+    @Schema(description = "发送：设置微信")
+    private String sendSetWx;
+
+    @Schema(description = "发送：修改微信")
+    private String sendUpdateWx;
+
+    @Schema(description = "发送：设置手机")
+    private String sendSetPhone;
+
+    @Schema(description = "发送：修改手机")
+    private String sendUpdatePhone;
+
+    @Schema(description = "发送：忘记密码")
+    private String sendForgetPassword;
+
+    @Schema(description = "发送：账号注销")
+    private String sendSignDelete;
 
 }

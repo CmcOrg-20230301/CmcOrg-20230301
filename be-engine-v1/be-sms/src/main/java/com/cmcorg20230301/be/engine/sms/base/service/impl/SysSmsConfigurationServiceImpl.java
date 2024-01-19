@@ -60,9 +60,9 @@ public class SysSmsConfigurationServiceImpl extends ServiceImpl<SysSmsConfigurat
         sysSmsConfigurationDO.setSecretKey(MyEntityUtil.getNotNullStr(dto.getSecretKey()));
         sysSmsConfigurationDO.setSdkAppId(MyEntityUtil.getNotNullStr(dto.getSdkAppId()));
         sysSmsConfigurationDO.setSignName(MyEntityUtil.getNotNullStr(dto.getSignName()));
-        sysSmsConfigurationDO.setSendDelete(MyEntityUtil.getNotNullStr(dto.getSendDelete()));
-        sysSmsConfigurationDO.setSendBind(MyEntityUtil.getNotNullStr(dto.getSendBind()));
-        sysSmsConfigurationDO.setSendUpdate(MyEntityUtil.getNotNullStr(dto.getSendUpdate()));
+        sysSmsConfigurationDO.setSendSignDelete(MyEntityUtil.getNotNullStr(dto.getSendDelete()));
+        sysSmsConfigurationDO.setSendSetPhone(MyEntityUtil.getNotNullStr(dto.getSendBind()));
+        sysSmsConfigurationDO.setSendUpdatePhone(MyEntityUtil.getNotNullStr(dto.getSendUpdate()));
         sysSmsConfigurationDO.setSendUpdatePassword(MyEntityUtil.getNotNullStr(dto.getSendUpdatePassword()));
         sysSmsConfigurationDO.setSendForgetPassword(MyEntityUtil.getNotNullStr(dto.getSendForgetPassword()));
         sysSmsConfigurationDO.setSendSignIn(MyEntityUtil.getNotNullStr(dto.getSendSignIn()));

@@ -9,6 +9,7 @@ import com.cmcorg20230301.be.engine.email.enums.EmailMessageEnum;
 import com.cmcorg20230301.be.engine.email.exception.BizCodeEnum;
 import com.cmcorg20230301.be.engine.email.model.entity.SysEmailConfigurationDO;
 import com.cmcorg20230301.be.engine.email.service.SysEmailConfigurationService;
+import com.cmcorg20230301.be.engine.security.exception.BaseBizCodeEnum;
 import com.cmcorg20230301.be.engine.security.model.vo.ApiResultVO;
 import com.cmcorg20230301.be.engine.security.util.SysTenantUtil;
 import org.jetbrains.annotations.Nullable;
@@ -45,7 +46,10 @@ public class MyEmailUtil {
                             @Nullable Long tenantId) {
 
         if (StrUtil.isBlank(to)) {
-            ApiResultVO.sysError(); // 因为这里 to字段都是由程序来赋值的，所以基本不会为空
+
+            ApiResultVO
+                    .error(BaseBizCodeEnum.UNABLE_TO_SEND_VERIFICATION_CODE_BECAUSE_THE_EMAIL_ADDRESS_IS_NOT_BOUND);
+
         }
 
         tenantId = SysTenantUtil.getTenantId(tenantId);

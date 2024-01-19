@@ -9,17 +9,12 @@ import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
 @Data
-public class SignPhoneUpdateSignInNameDTO {
+public class SignPhoneSetEmailSendCodeEmailDTO {
 
-    @Size(max = 20)
+    @Size(max = 200)
     @NotBlank
-    @Pattern(regexp = BaseRegexConstant.SIGN_IN_NAME_REGEXP)
-    @Schema(description = "登录名")
-    private String signInName;
-
-    @Pattern(regexp = BaseRegexConstant.CODE_6_REGEXP)
-    @NotBlank
-    @Schema(description = "手机验证码")
-    private String code;
+    @Pattern(regexp = BaseRegexConstant.EMAIL)
+    @Schema(description = "邮箱")
+    private String email;
 
 }
