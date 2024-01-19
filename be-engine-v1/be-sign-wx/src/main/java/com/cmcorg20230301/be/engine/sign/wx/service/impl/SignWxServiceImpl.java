@@ -9,7 +9,6 @@ import com.cmcorg20230301.be.engine.model.model.dto.NotNullId;
 import com.cmcorg20230301.be.engine.model.model.vo.GetQrCodeVO;
 import com.cmcorg20230301.be.engine.model.model.vo.SignInVO;
 import com.cmcorg20230301.be.engine.model.model.vo.SysQrCodeSceneBindVO;
-import com.cmcorg20230301.be.engine.other.app.mapper.SysOtherAppMapper;
 import com.cmcorg20230301.be.engine.other.app.wx.model.vo.WxOpenIdVO;
 import com.cmcorg20230301.be.engine.other.app.wx.model.vo.WxPhoneByCodeVO;
 import com.cmcorg20230301.be.engine.other.app.wx.model.vo.WxUserInfoVO;
@@ -51,9 +50,6 @@ public class SignWxServiceImpl implements SignWxService {
 
     @Resource
     SysUserInfoMapper sysUserInfoMapper;
-
-    @Resource
-    SysOtherAppMapper sysOtherAppMapper;
 
     @Resource
     RedissonClient redissonClient;
@@ -704,6 +700,7 @@ public class SignWxServiceImpl implements SignWxService {
 
             sysQrCodeSceneBindVO.setSceneFlag(true);
 
+            // 账号注销
             SignUtil.signDelete(null, BaseRedisKeyEnum.PRE_WX_OPEN_ID, null, null);
 
         } else {

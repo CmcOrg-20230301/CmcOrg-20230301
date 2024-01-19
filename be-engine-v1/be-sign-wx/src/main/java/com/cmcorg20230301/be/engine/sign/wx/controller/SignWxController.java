@@ -183,18 +183,6 @@ public class SignWxController {
         return ApiResultVO.okData(baseService.setPhone(dto));
     }
 
-    @PostMapping(value = "/forgetPassword/getQrCodeUrl")
-    @Operation(summary = "忘记密码-获取二维码")
-    public ApiResultVO<GetQrCodeVO> forgetPasswordGetQrCodeUrl(@RequestBody @Valid SignWxForgetPasswordGetQrCodeUrlDTO dto) {
-        return ApiResultVO.okData(baseService.forgetPasswordGetQrCodeUrl(dto));
-    }
-
-    @PostMapping(value = "/forgetPassword")
-    @Operation(summary = "忘记密码")
-    public ApiResultVO<SysQrCodeSceneBindVO> forgetPassword(@RequestBody @Valid SignWxForgetPasswordDTO dto) {
-        return ApiResultVO.okData(baseService.forgetPassword(dto));
-    }
-
     @PostMapping(value = "/signDelete/getQrCodeUrl")
     @Operation(summary = "账号注销-获取二维码")
     public ApiResultVO<GetQrCodeVO> signDeleteGetQrCodeUrl() {

@@ -61,10 +61,6 @@ public interface SignWxService {
 
     SysQrCodeSceneBindVO setPhone(SignWxSetPhoneDTO dto);
 
-    GetQrCodeVO forgetPasswordGetQrCodeUrl(SignWxForgetPasswordGetQrCodeUrlDTO dto);
-
-    SysQrCodeSceneBindVO forgetPassword(SignWxForgetPasswordDTO dto);
-
     GetQrCodeVO signDeleteGetQrCodeUrl();
 
     SysQrCodeSceneBindVO signDelete(SignWxSignDeleteDTO dto);
