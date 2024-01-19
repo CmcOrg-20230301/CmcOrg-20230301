@@ -18,15 +18,15 @@ public interface SignEmailService {
 
     String updatePassword(SignEmailUpdatePasswordDTO dto);
 
-    String setSignInNameSendCode();
+    String setSignInNameSendCode(SignEmailSetSignInNameSendCodeDTO dto);
 
     String setSignInName(SignEmailSetSignInNameDTO dto);
 
-    String updateSignInNameSendCode();
+    String updateSignInNameSendCode(SignEmailUpdateSignInNameSendCodeDTO dto);
 
     String updateSignInName(SignEmailSetSignInNameDTO dto);
 
-    String updateEmailSendCodeNew(EmailNotBlankDTO dto);
+    String updateEmailSendCodeNew(SignEmailUpdateEmailSendCodeNewDTO dto);
 
     String updateEmailSendCodeOld();
 

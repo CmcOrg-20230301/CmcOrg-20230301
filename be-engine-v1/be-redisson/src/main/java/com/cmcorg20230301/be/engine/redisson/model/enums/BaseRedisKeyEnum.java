@@ -11,6 +11,18 @@ import com.cmcorg20230301.be.engine.model.model.interfaces.IRedisKey;
 public enum BaseRedisKeyEnum implements IRedisKey {
 
     // 【PRE_】开头 ↓
+    PRE_SYS_WX_QR_CODE_SET_PHONE, // 微信扫码设置手机时，生成的，二维码 id，备注：只有扫描了二维码之后，才会放数据到 redis里面
+
+    PRE_SYS_WX_QR_CODE_UPDATE_EMAIL, // 微信扫码修改邮箱时，生成的，二维码 id，备注：只有扫描了二维码之后，才会放数据到 redis里面
+
+    PRE_SYS_WX_QR_CODE_SET_EMAIL, // 微信扫码设置邮箱时，生成的，二维码 id，备注：只有扫描了二维码之后，才会放数据到 redis里面
+
+    PRE_SYS_WX_QR_CODE_UPDATE_SIGN_IN_NAME, // 微信扫码修改登录名时，生成的，二维码 id，备注：只有扫描了二维码之后，才会放数据到 redis里面
+
+    PRE_SYS_WX_QR_CODE_SET_SIGN_IN_NAME, // 微信扫码设置登录名时，生成的，二维码 id，备注：只有扫描了二维码之后，才会放数据到 redis里面
+
+    PRE_SYS_WX_QR_CODE_UPDATE_PASSWORD, // 微信扫码修改密码时，生成的，二维码 id，备注：只有扫描了二维码之后，才会放数据到 redis里面
+
     PRE_SYS_WX_QR_CODE_SET_PASSWORD, // 微信扫码设置密码时，生成的，二维码 id，备注：只有扫描了二维码之后，才会放数据到 redis里面
 
     PRE_SYS_WX_QR_CODE_BIND, // 微信扫码绑定时，生成的，二维码 id，备注：只有扫描了二维码之后，才会放数据到 redis里面

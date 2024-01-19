@@ -170,7 +170,7 @@ public class IpFilter implements Filter {
     private IpSpeedBO getIpSpeedBO() {
 
         // ip 请求速率：多少秒钟，一个 ip可以请求多少次，用冒号隔开的
-        String ipTotalCheckValue = SysParamUtil.getValueByUuid(ParamConstant.IP_REQUESTS_PER_SECOND_UUID);
+        String ipTotalCheckValue = SysParamUtil.getValueByUuid(ParamConstant.IP_REQUESTS_PER_SECOND_UUID, null);
 
         if (ipTotalCheckValue == null) {
             return null;

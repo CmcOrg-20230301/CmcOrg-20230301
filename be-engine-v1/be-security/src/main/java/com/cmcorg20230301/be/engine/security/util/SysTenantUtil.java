@@ -217,7 +217,7 @@ public class SysTenantUtil {
 
             CollUtil.addAll(resultSet, tenantIdSet);
 
-            String refChildrenFlagStr = SysParamUtil.getValueByUuid(ParamConstant.TENANT_REF_CHILDREN_FLAG_UUID);
+            String refChildrenFlagStr = SysParamUtil.getValueByUuid(ParamConstant.TENANT_REF_CHILDREN_FLAG_UUID, currentTenantIdDefault);
 
             Boolean refChildrenFlag = Convert.toBool(refChildrenFlagStr, false); // 默认：不关联
 

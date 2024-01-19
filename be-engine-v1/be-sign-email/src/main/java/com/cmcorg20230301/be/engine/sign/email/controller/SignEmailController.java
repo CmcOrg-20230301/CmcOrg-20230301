@@ -58,8 +58,8 @@ public class SignEmailController {
 
     @PostMapping(value = "/setSignInName/sendCode")
     @Operation(summary = "设置登录名-发送验证码")
-    public ApiResultVO<String> setSignInNameSendCode() {
-        return ApiResultVO.okMsg(baseService.setSignInNameSendCode());
+    public ApiResultVO<String> setSignInNameSendCode(@RequestBody @Valid SignEmailSetSignInNameSendCodeDTO dto) {
+        return ApiResultVO.okMsg(baseService.setSignInNameSendCode(dto));
     }
 
     @PostMapping(value = "/setSignInName")
@@ -70,8 +70,8 @@ public class SignEmailController {
 
     @PostMapping(value = "/updateSignInName/sendCode")
     @Operation(summary = "修改登录名-发送验证码")
-    public ApiResultVO<String> updateSignInNameSendCode() {
-        return ApiResultVO.okMsg(baseService.updateSignInNameSendCode());
+    public ApiResultVO<String> updateSignInNameSendCode(@RequestBody @Valid SignEmailUpdateSignInNameSendCodeDTO dto) {
+        return ApiResultVO.okMsg(baseService.updateSignInNameSendCode(dto));
     }
 
     @PostMapping(value = "/updateSignInName")
@@ -82,7 +82,7 @@ public class SignEmailController {
 
     @PostMapping(value = "/updateEmail/sendCode/new")
     @Operation(summary = "修改邮箱-发送新邮箱验证码")
-    public ApiResultVO<String> updateEmailSendCodeNew(@RequestBody @Valid EmailNotBlankDTO dto) {
+    public ApiResultVO<String> updateEmailSendCodeNew(@RequestBody @Valid SignEmailUpdateEmailSendCodeNewDTO dto) {
         return ApiResultVO.okMsg(baseService.updateEmailSendCodeNew(dto));
     }
 

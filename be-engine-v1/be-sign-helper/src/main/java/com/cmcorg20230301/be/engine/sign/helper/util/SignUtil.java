@@ -106,50 +106,68 @@ public class SignUtil {
      * @param mustExist 是否必须存在，如果为 null，则，不存在和 存在都不会报错，例如：手机验证码注册并登录时
      */
     public static String sendCode(String key, @Nullable LambdaQueryChainWrapper<SysUserDO> lambdaQueryChainWrapper,
-                                  @Nullable Boolean mustExist, IBizCode iBizCode, Consumer<String> consumer) {
+                                  @Nullable Boolean mustExist, IBizCode iBizCode, Consumer<String> consumer, @Nullable Long tenantId) {
 
-        return RedissonUtil.doLock(key, () -> {
+        if (tenantId == null) {
+            tenantId = BaseConstant.TOP_TENANT_ID;
+        }
 
-            // 判断是否存在
-            boolean exists;
+        // 检查：账户是否存在
+        checkAccountExistWillError(lambdaQueryChainWrapper, mustExist, iBizCode, tenantId);
 
-            if (lambdaQueryChainWrapper == null) {
+        String code = CodeUtil.getCode();
 
-                exists = true;
+        // 保存到 redis中，设置 10分钟过期
+        redissonClient.getBucket(key).set(code, Duration.ofMillis(BaseConstant.LONG_CODE_EXPIRE_TIME));
 
-            } else {
+        consumer.accept(code); // 进行额外的处理
 
-                exists = lambdaQueryChainWrapper.exists();
+        return BaseBizCodeEnum.SEND_OK;
 
+
+    }
+
+    /**
+     * 检查：账号是否存在
+     *
+     * @param mustExist 是否必须存在，如果为 null，则，不存在和 存在都不会报错，例如：手机验证码注册并登录时
+     */
+    @SneakyThrows
+    public static void checkAccountExistWillError(@Nullable LambdaQueryChainWrapper<SysUserDO> lambdaQueryChainWrapper, @Nullable Boolean mustExist, IBizCode iBizCode, @Nullable Long tenantId) {
+
+        if (tenantId == null) {
+            tenantId = BaseConstant.TOP_TENANT_ID;
+        }
+
+        // 判断是否存在
+        boolean exists;
+
+        if (lambdaQueryChainWrapper == null) {
+
+            exists = true;
+
+        } else {
+
+            exists = lambdaQueryChainWrapper.eq(BaseEntityNoIdSuper::getTenantId, tenantId).exists();
+
+        }
+
+        if (mustExist == null) {
+
+
+        } else if (mustExist) {
+
+            if (!exists) {
+                ApiResultVO.error(iBizCode);
             }
 
-            if (mustExist == null) {
+        } else {
 
-
-            } else if (mustExist) {
-
-                if (!exists) {
-                    ApiResultVO.error(iBizCode);
-                }
-
-            } else {
-
-                if (exists) {
-                    ApiResultVO.error(iBizCode);
-                }
-
+            if (exists) {
+                ApiResultVO.error(iBizCode);
             }
 
-            String code = CodeUtil.getCode();
-
-            // 保存到 redis中，设置 10分钟过期
-            redissonClient.getBucket(key).set(code, Duration.ofMillis(BaseConstant.LONG_CODE_EXPIRE_TIME));
-
-            consumer.accept(code); // 进行额外的处理
-
-            return BaseBizCodeEnum.SEND_OK;
-
-        });
+        }
 
     }
 
@@ -205,7 +223,7 @@ public class SignUtil {
 
         }
 
-        String paramValue = SysParamUtil.getValueByUuid(ParamConstant.RSA_PRIVATE_KEY_UUID); // 获取非对称 私钥
+        String paramValue = SysParamUtil.getValueByUuid(ParamConstant.RSA_PRIVATE_KEY_UUID, tenantId); // 获取非对称 私钥
         password = MyRsaUtil.rsaDecrypt(password, paramValue);
         originPassword = MyRsaUtil.rsaDecrypt(originPassword, paramValue);
 
@@ -519,7 +537,7 @@ public class SignUtil {
                                           String account, @Nullable Long tenantId) {
 
         // 密码解密
-        password = MyRsaUtil.rsaDecrypt(password);
+        password = MyRsaUtil.rsaDecrypt(password, tenantId);
 
         // 如果是 admin账户
         if (BaseConstant.ADMIN_ACCOUNT.equals(account)) {
@@ -699,10 +717,12 @@ public class SignUtil {
 
         Long currentUserIdNotAdmin = UserUtil.getCurrentUserIdNotAdmin();
 
-        String paramValue = SysParamUtil.getValueByUuid(ParamConstant.RSA_PRIVATE_KEY_UUID); // 获取非对称 私钥
+        Long currentTenantIdDefault = UserUtil.getCurrentTenantIdDefault();
+
+        String paramValue = SysParamUtil.getValueByUuid(ParamConstant.RSA_PRIVATE_KEY_UUID, currentTenantIdDefault); // 获取非对称 私钥
 
         if (BaseRedisKeyEnum.PRE_SIGN_IN_NAME.equals(redisKeyEnum)) {
-            checkCurrentPasswordWillError(oldPassword, currentUserIdNotAdmin, paramValue, null); // 检查：当前密码是否正确
+            checkCurrentPasswordWillError(oldPassword, currentUserIdNotAdmin, paramValue, null, currentTenantIdDefault); // 检查：当前密码是否正确
         }
 
         String newPassword = MyRsaUtil.rsaDecrypt(newPasswordTemp, paramValue);
@@ -722,7 +742,7 @@ public class SignUtil {
             RBucket<String> bucket = redissonClient.getBucket(key);
 
             // 是否检查：验证码
-            boolean checkCodeFlag = BooleanUtil.isFalse(BaseRedisKeyEnum.PRE_SIGN_IN_NAME.equals(redisKeyEnum));
+            boolean checkCodeFlag = getDeleteRedisFlag(redisKeyEnum);
 
             if (checkCodeFlag) {
                 CodeUtil.checkCode(code, bucket.get()); // 检查 code是否正确
@@ -758,7 +778,7 @@ public class SignUtil {
      * @param checkPassword 前端传过来的密码
      * @param userPassword  用户，数据库里面的密码
      */
-    public static void checkCurrentPasswordWillError(String checkPassword, Long currentUserIdNotAdmin, @Nullable String paramValue, @Nullable String userPassword) {
+    public static void checkCurrentPasswordWillError(String checkPassword, Long currentUserIdNotAdmin, @Nullable String paramValue, @Nullable String userPassword, @Nullable Long tenantId) {
 
         if (StrUtil.isBlank(checkPassword)) {
 
@@ -783,7 +803,7 @@ public class SignUtil {
         }
 
         if (paramValue == null) {
-            checkPassword = MyRsaUtil.rsaDecrypt(checkPassword);
+            checkPassword = MyRsaUtil.rsaDecrypt(checkPassword, tenantId);
         } else {
             checkPassword = MyRsaUtil.rsaDecrypt(checkPassword, paramValue);
         }
@@ -890,7 +910,7 @@ public class SignUtil {
         Long currentTenantIdDefault = UserUtil.getCurrentTenantIdDefault();
 
         if (BaseRedisKeyEnum.PRE_SIGN_IN_NAME.equals(newRedisKeyEnum)) {
-            checkCurrentPasswordWillError(currentPassword, currentUserIdNotAdmin, null, null);
+            checkCurrentPasswordWillError(currentPassword, currentUserIdNotAdmin, null, null, currentTenantIdDefault);
         }
 
         // 获取：旧的账号
@@ -1087,9 +1107,13 @@ public class SignUtil {
      */
     public static String forgetPassword(String newPasswordTemp, String originNewPasswordTemp, String code,
                                         Enum<? extends IRedisKey> redisKeyEnum, String account,
-                                        LambdaQueryChainWrapper<SysUserDO> lambdaQueryChainWrapper) {
+                                        LambdaQueryChainWrapper<SysUserDO> lambdaQueryChainWrapper, @Nullable Long tenantId) {
 
-        String paramValue = SysParamUtil.getValueByUuid(ParamConstant.RSA_PRIVATE_KEY_UUID); // 获取非对称 私钥
+        if (tenantId == null) {
+            tenantId = BaseConstant.TOP_TENANT_ID;
+        }
+
+        String paramValue = SysParamUtil.getValueByUuid(ParamConstant.RSA_PRIVATE_KEY_UUID, tenantId); // 获取非对称 私钥
         String newPassword = MyRsaUtil.rsaDecrypt(newPasswordTemp, paramValue);
         String originNewPassword = MyRsaUtil.rsaDecrypt(originNewPasswordTemp, paramValue);
 
@@ -1099,6 +1123,8 @@ public class SignUtil {
 
         String key = redisKeyEnum.name() + account;
 
+        Long finalTenantId = tenantId;
+
         return RedissonUtil.doLock(key, () -> {
 
             RBucket<String> bucket = redissonClient.getBucket(key);
@@ -1106,7 +1132,7 @@ public class SignUtil {
             CodeUtil.checkCode(code, bucket.get()); // 检查 code是否正确
 
             // 获取：用户 id
-            SysUserDO sysUserDO = lambdaQueryChainWrapper.select(BaseEntity::getId).one();
+            SysUserDO sysUserDO = lambdaQueryChainWrapper.eq(BaseEntityNoIdSuper::getTenantId, finalTenantId).select(BaseEntity::getId).one();
 
             if (sysUserDO == null) {
 
@@ -1152,8 +1178,10 @@ public class SignUtil {
             userId = UserUtil.getCurrentUserIdNotAdmin();
         }
 
+        Long currentTenantIdDefault = UserUtil.getCurrentTenantIdDefault();
+
         if (StrUtil.isNotBlank(currentPassword)) {
-            checkCurrentPasswordWillError(currentPassword, userId, null, null);
+            checkCurrentPasswordWillError(currentPassword, userId, null, null, currentTenantIdDefault);
         }
 
         // 通过：redisKeyEnum，获取账号
@@ -1272,25 +1300,34 @@ public class SignUtil {
     /**
      * 绑定登录账号
      *
-     * @param codeRedisKeyEnum    不能为 null
      * @param accountRedisKeyEnum 不能为 null
      */
-    public static String bindAccount(String code, Enum<? extends IRedisKey> codeRedisKeyEnum, Enum<? extends IRedisKey> accountRedisKeyEnum, String account, String appId) {
+    public static String bindAccount(@Nullable String code, Enum<? extends IRedisKey> accountRedisKeyEnum, String account, String appId, @Nullable String codeKey) {
 
         Long currentUserIdNotAdmin = UserUtil.getCurrentUserIdNotAdmin();
 
         Long currentTenantIdDefault = UserUtil.getCurrentTenantIdDefault();
 
-        String key = accountRedisKeyEnum + account;
+        String accountKey = accountRedisKeyEnum + account;
 
-        return RedissonUtil.doLock(key, () -> {
+        boolean codeKeyBlankFlag = StrUtil.isBlank(codeKey);
 
-            RBucket<String> bucket = redissonClient.getBucket(key);
+        Set<String> nameSet = CollUtil.newHashSet(accountKey);
+
+        if (!codeKeyBlankFlag) {
+
+            nameSet.add(codeKey);
+
+        }
+
+        return RedissonUtil.doMultiLock(null, nameSet, () -> {
+
+            RBucket<String> bucket = redissonClient.getBucket(codeKeyBlankFlag ? accountKey : codeKey);
 
             // 检查：绑定的登录账号是否存在
             boolean exist = accountIsExists(accountRedisKeyEnum, account, null, currentTenantIdDefault, appId);
 
-            boolean deleteRedisFlag = getDeleteRedisFlag(codeRedisKeyEnum);
+            boolean deleteRedisFlag = StrUtil.isNotBlank(code);
 
             if (exist) {
 
@@ -1518,7 +1555,7 @@ public class SignUtil {
     /**
      * 绑定微信
      */
-    public static SysQrCodeSceneBindVO setWx(Long qrCodeId, String code, Enum<? extends IRedisKey> codeRedisKeyEnum) {
+    public static SysQrCodeSceneBindVO setWx(Long qrCodeId, String code, String codeKey) {
 
         SysQrCodeSceneBindBO sysQrCodeSceneBindBO = redissonClient.<SysQrCodeSceneBindBO>getBucket(BaseRedisKeyEnum.PRE_SYS_WX_QR_CODE_BIND.name() + qrCodeId).getAndDelete();
 
@@ -1536,7 +1573,7 @@ public class SignUtil {
 
             if (qrCodeUserId == null) { // 如果：不存在用户，则开始绑定
 
-                SignUtil.bindAccount(code, codeRedisKeyEnum, BaseRedisKeyEnum.PRE_WX_OPEN_ID, sysQrCodeSceneBindBO.getOpenId(), sysQrCodeSceneBindBO.getAppId());
+                SignUtil.bindAccount(code, BaseRedisKeyEnum.PRE_WX_OPEN_ID, sysQrCodeSceneBindBO.getOpenId(), sysQrCodeSceneBindBO.getAppId(), codeKey);
 
             } else {
 

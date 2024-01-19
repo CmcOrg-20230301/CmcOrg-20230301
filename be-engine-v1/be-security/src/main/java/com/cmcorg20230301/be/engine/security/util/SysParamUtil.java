@@ -44,17 +44,19 @@ public class SysParamUtil {
      * 备注：请不要直接传字符串，请在：ParamConstant 类里面加一个常量
      */
     @Nullable
-    public static String getValueByUuid(String paramUuid) {
-
-        Long currentTenantIdDefault;
+    public static String getValueByUuid(String paramUuid, @Nullable Long tenantId) {
 
         if (SYSTEM_PARAM_UUID_SET.contains(paramUuid)) { // 如果是：系统内置参数
 
-            currentTenantIdDefault = BaseConstant.TOP_TENANT_ID; // 则使用默认租户
+            tenantId = BaseConstant.TOP_TENANT_ID; // 则使用默认租户
 
         } else {
 
-            currentTenantIdDefault = UserUtil.getCurrentTenantIdDefault();
+            if (tenantId == null) {
+
+                tenantId = UserUtil.getCurrentTenantIdDefault();
+
+            }
 
         }
 
@@ -72,7 +74,7 @@ public class SysParamUtil {
 
                 });
 
-        String resultValue = map.get(currentTenantIdDefault).get(paramUuid);
+        String resultValue = map.get(tenantId).get(paramUuid);
 
         if (resultValue == null) { // 如果：不存在该参数，则从默认租户里面取
 

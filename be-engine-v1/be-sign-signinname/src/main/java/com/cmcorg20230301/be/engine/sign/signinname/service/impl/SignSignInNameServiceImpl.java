@@ -82,7 +82,7 @@ public class SignSignInNameServiceImpl implements SignSignInNameService {
     }
 
     /**
-     * 修改账号
+     * 修改登录名
      */
     @Override
     public String updateSignInName(SignSignInNameUpdateSignInNameDTO dto) {
@@ -108,7 +108,7 @@ public class SignSignInNameServiceImpl implements SignSignInNameService {
         return SignUtil
                 .sendCode(key, ChainWrappers.lambdaQueryChain(sysUserMapper).eq(SysUserDO::getEmail, dto.getEmail()), false,
                         BizCodeEnum.EMAIL_HAS_BEEN_REGISTERED, (code) -> MyEmailUtil
-                                .send(dto.getEmail(), EmailMessageEnum.BIND_EMAIL, code, currentTenantIdDefault));
+                                .send(dto.getEmail(), EmailMessageEnum.BIND_EMAIL, code, currentTenantIdDefault), currentTenantIdDefault);
 
     }
 
@@ -120,7 +120,7 @@ public class SignSignInNameServiceImpl implements SignSignInNameService {
 
         SignUtil.checkWillError(PRE_REDIS_KEY_ENUM, null, UserUtil.getCurrentTenantIdDefault(), null); // 检查：是否可以进行操作
 
-        return SignUtil.bindAccount(dto.getCode(), BaseRedisKeyEnum.PRE_EMAIL, BaseRedisKeyEnum.PRE_EMAIL, dto.getEmail(), null);
+        return SignUtil.bindAccount(dto.getCode(), BaseRedisKeyEnum.PRE_EMAIL, dto.getEmail(), null, null);
 
     }
 
@@ -146,7 +146,7 @@ public class SignSignInNameServiceImpl implements SignSignInNameService {
         SignUtil.checkWillError(PRE_REDIS_KEY_ENUM, null, UserUtil.getCurrentTenantIdDefault(), null); // 检查：是否可以进行操作
 
         // 执行
-        return SignUtil.setWx(notNullId.getId(), null, BaseRedisKeyEnum.PRE_SIGN_IN_NAME);
+        return SignUtil.setWx(notNullId.getId(), null, null);
 
     }
 
@@ -165,7 +165,7 @@ public class SignSignInNameServiceImpl implements SignSignInNameService {
         return SignUtil
                 .sendCode(key, ChainWrappers.lambdaQueryChain(sysUserMapper).eq(SysUserDO::getPhone, dto.getPhone()), false,
                         BizCodeEnum.PHONE_HAS_BEEN_REGISTERED, (code) -> SysSmsUtil
-                                .sendBind(SysSmsHelper.getSysSmsSendBO(currentTenantIdDefault, code, dto.getPhone())));
+                                .sendBind(SysSmsHelper.getSysSmsSendBO(currentTenantIdDefault, code, dto.getPhone())), currentTenantIdDefault);
 
     }
 
@@ -177,7 +177,7 @@ public class SignSignInNameServiceImpl implements SignSignInNameService {
 
         SignUtil.checkWillError(PRE_REDIS_KEY_ENUM, null, UserUtil.getCurrentTenantIdDefault(), null); // 检查：是否可以进行操作
 
-        return SignUtil.bindAccount(dto.getCode(), BaseRedisKeyEnum.PRE_PHONE, BaseRedisKeyEnum.PRE_PHONE, dto.getPhone(), null);
+        return SignUtil.bindAccount(dto.getCode(), BaseRedisKeyEnum.PRE_PHONE, dto.getPhone(), null, null);
 
     }
 

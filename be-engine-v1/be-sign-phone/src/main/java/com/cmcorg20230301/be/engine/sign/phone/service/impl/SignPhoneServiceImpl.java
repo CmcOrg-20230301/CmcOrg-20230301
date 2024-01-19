@@ -48,7 +48,7 @@ public class SignPhoneServiceImpl implements SignPhoneService {
         return SignUtil
                 .sendCode(key, ChainWrappers.lambdaQueryChain(sysUserMapper).eq(SysUserDO::getPhone, dto.getPhone()), false,
                         BizCodeEnum.PHONE_HAS_BEEN_REGISTERED,
-                        (code) -> SysSmsUtil.sendSignUp(SysSmsHelper.getSysSmsSendBO(dto.getTenantId(), code, dto.getPhone())));
+                        (code) -> SysSmsUtil.sendSignUp(SysSmsHelper.getSysSmsSendBO(dto.getTenantId(), code, dto.getPhone())), dto.getTenantId());
 
     }
 
@@ -103,7 +103,7 @@ public class SignPhoneServiceImpl implements SignPhoneService {
         return SignUtil
                 .sendCode(key, ChainWrappers.lambdaQueryChain(sysUserMapper).eq(SysUserDO::getPhone, dto.getPhone()), null,
                         com.cmcorg20230301.be.engine.sms.base.exception.BizCodeEnum.PHONE_NOT_REGISTERED, (code) -> SysSmsUtil
-                                .sendSignIn(SysSmsHelper.getSysSmsSendBO(dto.getTenantId(), code, dto.getPhone())));
+                                .sendSignIn(SysSmsHelper.getSysSmsSendBO(dto.getTenantId(), code, dto.getPhone())), dto.getTenantId());
 
     }
 
@@ -316,7 +316,7 @@ public class SignPhoneServiceImpl implements SignPhoneService {
         return SignUtil.sendCode(key, null, true,
                 com.cmcorg20230301.be.engine.sms.base.exception.BizCodeEnum.PHONE_DOES_NOT_EXIST_PLEASE_RE_ENTER,
                 (code) -> SysSmsUtil
-                        .sendUpdate(SysSmsHelper.getSysSmsSendBO(currentTenantIdDefault, code, currentUserPhoneNotAdmin)));
+                        .sendUpdate(SysSmsHelper.getSysSmsSendBO(currentTenantIdDefault, code, currentUserPhoneNotAdmin)), currentTenantIdDefault);
 
     }
 
@@ -346,7 +346,7 @@ public class SignPhoneServiceImpl implements SignPhoneService {
         return SignUtil
                 .sendCode(key, ChainWrappers.lambdaQueryChain(sysUserMapper).eq(SysUserDO::getPhone, dto.getPhone()), true,
                         com.cmcorg20230301.be.engine.sms.base.exception.BizCodeEnum.PHONE_NOT_REGISTERED, (code) -> SysSmsUtil
-                                .sendForgetPassword(SysSmsHelper.getSysSmsSendBO(dto.getTenantId(), code, dto.getPhone())));
+                                .sendForgetPassword(SysSmsHelper.getSysSmsSendBO(dto.getTenantId(), code, dto.getPhone())), dto.getTenantId());
 
     }
 
@@ -360,7 +360,7 @@ public class SignPhoneServiceImpl implements SignPhoneService {
 
         return SignUtil
                 .forgetPassword(dto.getNewPassword(), dto.getOriginNewPassword(), dto.getCode(), BaseRedisKeyEnum.PRE_PHONE,
-                        dto.getPhone(), ChainWrappers.lambdaQueryChain(sysUserMapper).eq(SysUserDO::getPhone, dto.getPhone()));
+                        dto.getPhone(), ChainWrappers.lambdaQueryChain(sysUserMapper).eq(SysUserDO::getPhone, dto.getPhone()), dto.getTenantId());
 
     }
 

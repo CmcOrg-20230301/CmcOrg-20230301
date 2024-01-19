@@ -23,31 +23,31 @@ public interface SignWxService {
 
     GetQrCodeVO setPasswordGetQrCodeUrl();
 
-    String setPassword(SignWxSetPasswordDTO dto);
+    SysQrCodeSceneBindVO setPassword(SignWxSetPasswordDTO dto);
 
     GetQrCodeVO updatePasswordGetQrCodeUrl();
 
-    String updatePassword(SignWxUpdatePasswordDTO dto);
+    SysQrCodeSceneBindVO updatePassword(SignWxUpdatePasswordDTO dto);
 
-    GetQrCodeVO setSignInNameGetQrCodeUrl();
+    GetQrCodeVO setSignInNameGetQrCodeUrl(SignWxSetSignInNameGetQrCodeUrlDTO dto);
 
-    String setSignInName(SignWxSetSignInNameDTO dto);
+    SysQrCodeSceneBindVO setSignInName(SignWxSetSignInNameDTO dto);
 
-    GetQrCodeVO updateSignInNameGetQrCodeUrl();
+    GetQrCodeVO updateSignInNameGetQrCodeUrl(SignWxUpdateSignInNameGetQrCodeUrlDTO dto);
 
-    String updateSignInName(SignWxUpdateSignInNameDTO dto);
+    SysQrCodeSceneBindVO updateSignInName(SignWxUpdateSignInNameDTO dto);
 
     String setEmailSendCode(SignWxSetEmailSendCodeDTO dto);
 
-    GetQrCodeVO setEmailGetQrCodeUrl();
+    GetQrCodeVO setEmailGetQrCodeUrl(SignWxSetEmailGetQrCodeUrlDTO dto);
 
-    String setEmail(SignWxSetEmailDTO dto);
+    SysQrCodeSceneBindVO setEmail(SignWxSetEmailDTO dto);
 
     String updateEmailSendCode(SignWxUpdateEmailSendCodeDTO dto);
 
     GetQrCodeVO updateEmailGetQrCodeUrl();
 
-    String updateEmail(SignWxUpdateEmailDTO dto);
+    SysQrCodeSceneBindVO updateEmail(SignWxUpdateEmailDTO dto);
 
     GetQrCodeVO updateWxGetQrCodeUrlOld();
 
@@ -59,14 +59,14 @@ public interface SignWxService {
 
     GetQrCodeVO setPhoneGetQrCodeUrl(SignWxSetPhoneGetQrCodeUrlDTO dto);
 
-    String setPhone(SignWxSetPhoneDTO dto);
+    SysQrCodeSceneBindVO setPhone(SignWxSetPhoneDTO dto);
 
     GetQrCodeVO forgetPasswordGetQrCodeUrl(SignWxForgetPasswordGetQrCodeUrlDTO dto);
 
-    String forgetPassword(SignWxForgetPasswordDTO dto);
+    SysQrCodeSceneBindVO forgetPassword(SignWxForgetPasswordDTO dto);
 
     GetQrCodeVO signDeleteGetQrCodeUrl();
 
-    String signDelete(SignWxSignDeleteDTO dto);
+    SysQrCodeSceneBindVO signDelete(SignWxSignDeleteDTO dto);
 
 }

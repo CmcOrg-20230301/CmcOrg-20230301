@@ -3,6 +3,8 @@ package com.cmcorg20230301.be.engine.sign.wx.service.impl;
 import cn.hutool.core.util.BooleanUtil;
 import cn.hutool.jwt.JWT;
 import com.baomidou.mybatisplus.extension.toolkit.ChainWrappers;
+import com.cmcorg20230301.be.engine.email.enums.EmailMessageEnum;
+import com.cmcorg20230301.be.engine.email.util.MyEmailUtil;
 import com.cmcorg20230301.be.engine.model.model.dto.NotNullId;
 import com.cmcorg20230301.be.engine.model.model.vo.GetQrCodeVO;
 import com.cmcorg20230301.be.engine.model.model.vo.SignInVO;
@@ -17,10 +19,10 @@ import com.cmcorg20230301.be.engine.security.mapper.SysUserInfoMapper;
 import com.cmcorg20230301.be.engine.security.mapper.SysUserMapper;
 import com.cmcorg20230301.be.engine.security.model.entity.SysUserDO;
 import com.cmcorg20230301.be.engine.security.model.entity.SysUserInfoDO;
-import com.cmcorg20230301.be.engine.security.model.enums.SysQrCodeSceneTypeEnum;
 import com.cmcorg20230301.be.engine.security.util.MyJwtUtil;
 import com.cmcorg20230301.be.engine.security.util.SysTenantUtil;
 import com.cmcorg20230301.be.engine.security.util.UserUtil;
+import com.cmcorg20230301.be.engine.sign.helper.exception.BizCodeEnum;
 import com.cmcorg20230301.be.engine.sign.helper.model.dto.UserSignBaseDTO;
 import com.cmcorg20230301.be.engine.sign.helper.util.SignUtil;
 import com.cmcorg20230301.be.engine.sign.wx.model.dto.*;
@@ -30,6 +32,7 @@ import com.cmcorg20230301.be.engine.util.util.CallBack;
 import com.cmcorg20230301.be.engine.util.util.NicknameUtil;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.redisson.api.RBucket;
 import org.redisson.api.RedissonClient;
 import org.springframework.stereotype.Service;
 
@@ -225,7 +228,7 @@ public class SignWxServiceImpl implements SignWxService {
         SignUtil.checkWillError(PRE_REDIS_KEY_ENUM, null, UserUtil.getCurrentTenantIdDefault(), null); // 检查：是否可以进行操作
 
         // 执行
-        return SignUtil.getQrCodeUrlWx(UserUtil.getCurrentTenantIdDefault(), true, SysQrCodeSceneTypeEnum.WX_BIND);
+        return SignUtil.getQrCodeUrlWx(UserUtil.getCurrentTenantIdDefault(), true, WxSysQrCodeSceneTypeEnum.WX_SET_PASSWORD);
 
     }
 
@@ -233,10 +236,31 @@ public class SignWxServiceImpl implements SignWxService {
      * 设置密码
      */
     @Override
-    public String setPassword(SignWxSetPasswordDTO dto) {
+    public SysQrCodeSceneBindVO setPassword(SignWxSetPasswordDTO dto) {
 
+        SignUtil.checkWillError(PRE_REDIS_KEY_ENUM, null, UserUtil.getCurrentTenantIdDefault(), null); // 检查：是否可以进行操作
 
-        return null;
+        RBucket<String> bucket = redissonClient.getBucket(BaseRedisKeyEnum.PRE_SYS_WX_QR_CODE_SET_PASSWORD.name() + dto.getId());
+
+        SysQrCodeSceneBindVO sysQrCodeSceneBindVO = new SysQrCodeSceneBindVO();
+
+        boolean deleteFlag = bucket.delete();
+
+        if (deleteFlag) {
+
+            sysQrCodeSceneBindVO.setSceneFlag(true);
+
+            // 修改密码
+            SignUtil
+                    .updatePassword(dto.getNewPassword(), dto.getOriginNewPassword(), BaseRedisKeyEnum.PRE_WX_OPEN_ID, null, null);
+
+        } else {
+
+            sysQrCodeSceneBindVO.setSceneFlag(false);
+
+        }
+
+        return sysQrCodeSceneBindVO;
 
     }
 
@@ -245,47 +269,142 @@ public class SignWxServiceImpl implements SignWxService {
      */
     @Override
     public GetQrCodeVO updatePasswordGetQrCodeUrl() {
-        return null;
+
+        SignUtil.checkWillError(PRE_REDIS_KEY_ENUM, null, UserUtil.getCurrentTenantIdDefault(), null); // 检查：是否可以进行操作
+
+        // 执行
+        return SignUtil.getQrCodeUrlWx(UserUtil.getCurrentTenantIdDefault(), true, WxSysQrCodeSceneTypeEnum.WX_UPDATE_PASSWORD);
+
     }
 
     /**
      * 修改密码
      */
     @Override
-    public String updatePassword(SignWxUpdatePasswordDTO dto) {
-        return null;
+    public SysQrCodeSceneBindVO updatePassword(SignWxUpdatePasswordDTO dto) {
+
+        SignUtil.checkWillError(PRE_REDIS_KEY_ENUM, null, UserUtil.getCurrentTenantIdDefault(), null); // 检查：是否可以进行操作
+
+        RBucket<String> bucket = redissonClient.getBucket(BaseRedisKeyEnum.PRE_SYS_WX_QR_CODE_UPDATE_PASSWORD.name() + dto.getId());
+
+        SysQrCodeSceneBindVO sysQrCodeSceneBindVO = new SysQrCodeSceneBindVO();
+
+        boolean deleteFlag = bucket.delete();
+
+        if (deleteFlag) {
+
+            sysQrCodeSceneBindVO.setSceneFlag(true);
+
+            // 修改密码
+            SignUtil
+                    .updatePassword(dto.getNewPassword(), dto.getOriginNewPassword(), BaseRedisKeyEnum.PRE_WX_OPEN_ID, null, null);
+
+        } else {
+
+            sysQrCodeSceneBindVO.setSceneFlag(false);
+
+        }
+
+        return sysQrCodeSceneBindVO;
+
     }
 
     /**
      * 设置登录名-获取二维码
      */
     @Override
-    public GetQrCodeVO setSignInNameGetQrCodeUrl() {
-        return null;
+    public GetQrCodeVO setSignInNameGetQrCodeUrl(SignWxSetSignInNameGetQrCodeUrlDTO dto) {
+
+        Long currentTenantIdDefault = UserUtil.getCurrentTenantIdDefault();
+
+        SignUtil.checkWillError(PRE_REDIS_KEY_ENUM, null, currentTenantIdDefault, null); // 检查：是否可以进行操作
+
+        // 检查：登录名是否被占用
+        SignUtil.checkAccountExistWillError(ChainWrappers.lambdaQueryChain(sysUserMapper).eq(SysUserDO::getSignInName, dto.getSignInName()), false, BizCodeEnum.SIGN_IN_NAME_EXIST_PLEASE_RE_ENTER, currentTenantIdDefault);
+
+        // 执行
+        return SignUtil.getQrCodeUrlWx(currentTenantIdDefault, true, WxSysQrCodeSceneTypeEnum.WX_SET_SIGN_IN_NAME);
+
     }
 
     /**
      * 设置登录名
      */
     @Override
-    public String setSignInName(SignWxSetSignInNameDTO dto) {
-        return null;
+    public SysQrCodeSceneBindVO setSignInName(SignWxSetSignInNameDTO dto) {
+
+        SignUtil.checkWillError(PRE_REDIS_KEY_ENUM, null, UserUtil.getCurrentTenantIdDefault(), null); // 检查：是否可以进行操作
+
+        RBucket<String> bucket = redissonClient.getBucket(BaseRedisKeyEnum.PRE_SYS_WX_QR_CODE_SET_SIGN_IN_NAME.name() + dto.getId());
+
+        SysQrCodeSceneBindVO sysQrCodeSceneBindVO = new SysQrCodeSceneBindVO();
+
+        boolean deleteFlag = bucket.delete();
+
+        if (deleteFlag) {
+
+            sysQrCodeSceneBindVO.setSceneFlag(true);
+
+            // 设置登录名
+            SignUtil.bindAccount(null, BaseRedisKeyEnum.PRE_SIGN_IN_NAME, dto.getSignInName(), null, null);
+
+        } else {
+
+            sysQrCodeSceneBindVO.setSceneFlag(false);
+
+        }
+
+        return sysQrCodeSceneBindVO;
+
     }
 
     /**
      * 修改登录名-获取二维码
      */
     @Override
-    public GetQrCodeVO updateSignInNameGetQrCodeUrl() {
-        return null;
+    public GetQrCodeVO updateSignInNameGetQrCodeUrl(SignWxUpdateSignInNameGetQrCodeUrlDTO dto) {
+
+        Long currentTenantIdDefault = UserUtil.getCurrentTenantIdDefault();
+
+        SignUtil.checkWillError(PRE_REDIS_KEY_ENUM, null, currentTenantIdDefault, null); // 检查：是否可以进行操作
+
+        // 检查：登录名是否被占用
+        SignUtil.checkAccountExistWillError(ChainWrappers.lambdaQueryChain(sysUserMapper).eq(SysUserDO::getSignInName, dto.getSignInName()), false, BizCodeEnum.SIGN_IN_NAME_EXIST_PLEASE_RE_ENTER, currentTenantIdDefault);
+
+        // 执行
+        return SignUtil.getQrCodeUrlWx(currentTenantIdDefault, true, WxSysQrCodeSceneTypeEnum.WX_UPDATE_SIGN_IN_NAME);
+
     }
 
     /**
      * 修改登录名
      */
     @Override
-    public String updateSignInName(SignWxUpdateSignInNameDTO dto) {
-        return null;
+    public SysQrCodeSceneBindVO updateSignInName(SignWxUpdateSignInNameDTO dto) {
+
+        SignUtil.checkWillError(PRE_REDIS_KEY_ENUM, null, UserUtil.getCurrentTenantIdDefault(), null); // 检查：是否可以进行操作
+
+        RBucket<String> bucket = redissonClient.getBucket(BaseRedisKeyEnum.PRE_SYS_WX_QR_CODE_UPDATE_SIGN_IN_NAME.name() + dto.getId());
+
+        SysQrCodeSceneBindVO sysQrCodeSceneBindVO = new SysQrCodeSceneBindVO();
+
+        boolean deleteFlag = bucket.delete();
+
+        if (deleteFlag) {
+
+            sysQrCodeSceneBindVO.setSceneFlag(true);
+
+            // 设置登录名
+            SignUtil.bindAccount(null, BaseRedisKeyEnum.PRE_SIGN_IN_NAME, dto.getSignInName(), null, null);
+
+        } else {
+
+            sysQrCodeSceneBindVO.setSceneFlag(false);
+
+        }
+
+        return sysQrCodeSceneBindVO;
+
     }
 
     /**
@@ -293,23 +412,67 @@ public class SignWxServiceImpl implements SignWxService {
      */
     @Override
     public String setEmailSendCode(SignWxSetEmailSendCodeDTO dto) {
-        return null;
+
+        Long currentTenantIdDefault = UserUtil.getCurrentTenantIdDefault();
+
+        SignUtil.checkWillError(PRE_REDIS_KEY_ENUM, null, currentTenantIdDefault, null); // 检查：是否可以进行操作
+
+        String key = BaseRedisKeyEnum.PRE_EMAIL + dto.getEmail();
+
+        return SignUtil
+                .sendCode(key, ChainWrappers.lambdaQueryChain(sysUserMapper).eq(SysUserDO::getEmail, dto.getEmail()), false,
+                        BizCodeEnum.EMAIL_HAS_BEEN_REGISTERED, (code) -> MyEmailUtil
+                                .send(dto.getEmail(), EmailMessageEnum.BIND_EMAIL, code, currentTenantIdDefault), currentTenantIdDefault);
+
     }
 
     /**
      * 设置邮箱-获取二维码
      */
     @Override
-    public GetQrCodeVO setEmailGetQrCodeUrl() {
-        return null;
+    public GetQrCodeVO setEmailGetQrCodeUrl(SignWxSetEmailGetQrCodeUrlDTO dto) {
+
+        Long currentTenantIdDefault = UserUtil.getCurrentTenantIdDefault();
+
+        SignUtil.checkWillError(PRE_REDIS_KEY_ENUM, null, currentTenantIdDefault, null); // 检查：是否可以进行操作
+
+        // 检查：邮箱是否被占用
+        SignUtil.checkAccountExistWillError(ChainWrappers.lambdaQueryChain(sysUserMapper).eq(SysUserDO::getEmail, dto.getEmail()), false, BizCodeEnum.EMAIL_HAS_BEEN_REGISTERED, currentTenantIdDefault);
+
+        // 执行
+        return SignUtil.getQrCodeUrlWx(currentTenantIdDefault, true, WxSysQrCodeSceneTypeEnum.WX_SET_EMAIL);
+
     }
 
     /**
      * 设置邮箱
      */
     @Override
-    public String setEmail(SignWxSetEmailDTO dto) {
-        return null;
+    public SysQrCodeSceneBindVO setEmail(SignWxSetEmailDTO dto) {
+
+        SignUtil.checkWillError(PRE_REDIS_KEY_ENUM, null, UserUtil.getCurrentTenantIdDefault(), null); // 检查：是否可以进行操作
+
+        RBucket<String> bucket = redissonClient.getBucket(BaseRedisKeyEnum.PRE_SYS_WX_QR_CODE_SET_EMAIL.name() + dto.getId());
+
+        SysQrCodeSceneBindVO sysQrCodeSceneBindVO = new SysQrCodeSceneBindVO();
+
+        boolean deleteFlag = bucket.delete();
+
+        if (deleteFlag) {
+
+            sysQrCodeSceneBindVO.setSceneFlag(true);
+
+            // 设置邮箱
+            SignUtil.bindAccount(dto.getCode(), BaseRedisKeyEnum.PRE_EMAIL, dto.getEmail(), null, null);
+
+        } else {
+
+            sysQrCodeSceneBindVO.setSceneFlag(false);
+
+        }
+
+        return sysQrCodeSceneBindVO;
+
     }
 
     /**
@@ -332,7 +495,7 @@ public class SignWxServiceImpl implements SignWxService {
      * 修改邮箱
      */
     @Override
-    public String updateEmail(SignWxUpdateEmailDTO dto) {
+    public SysQrCodeSceneBindVO updateEmail(SignWxUpdateEmailDTO dto) {
         return null;
     }
 
@@ -380,7 +543,7 @@ public class SignWxServiceImpl implements SignWxService {
      * 设置手机
      */
     @Override
-    public String setPhone(SignWxSetPhoneDTO dto) {
+    public SysQrCodeSceneBindVO setPhone(SignWxSetPhoneDTO dto) {
         return null;
     }
 
@@ -396,7 +559,7 @@ public class SignWxServiceImpl implements SignWxService {
      * 忘记密码
      */
     @Override
-    public String forgetPassword(SignWxForgetPasswordDTO dto) {
+    public SysQrCodeSceneBindVO forgetPassword(SignWxForgetPasswordDTO dto) {
         return null;
     }
 
@@ -412,7 +575,7 @@ public class SignWxServiceImpl implements SignWxService {
      * 账号注销
      */
     @Override
-    public String signDelete(SignWxSignDeleteDTO dto) {
+    public SysQrCodeSceneBindVO signDelete(SignWxSignDeleteDTO dto) {
         return null;
     }
 

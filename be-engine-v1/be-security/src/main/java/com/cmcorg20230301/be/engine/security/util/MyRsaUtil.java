@@ -10,6 +10,7 @@ import com.cmcorg20230301.be.engine.model.model.constant.ParamConstant;
 import com.cmcorg20230301.be.engine.security.exception.BaseBizCodeEnum;
 import com.cmcorg20230301.be.engine.security.model.vo.ApiResultVO;
 import com.cmcorg20230301.be.engine.util.util.SeparatorUtil;
+import org.jetbrains.annotations.Nullable;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -22,9 +23,9 @@ public class MyRsaUtil {
     /**
      * 非对称：解密
      */
-    public static String rsaDecrypt(String str) {
+    public static String rsaDecrypt(String str, @Nullable Long tenantId) {
 
-        String paramValue = SysParamUtil.getValueByUuid(ParamConstant.RSA_PRIVATE_KEY_UUID); // 获取非对称加密，私钥
+        String paramValue = SysParamUtil.getValueByUuid(ParamConstant.RSA_PRIVATE_KEY_UUID, tenantId); // 获取非对称加密，私钥
 
         return rsaDecrypt(str, paramValue); // 返回解密之后的 字符串
 

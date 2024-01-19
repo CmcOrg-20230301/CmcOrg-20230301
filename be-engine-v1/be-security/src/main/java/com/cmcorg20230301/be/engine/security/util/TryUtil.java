@@ -1,6 +1,7 @@
 package com.cmcorg20230301.be.engine.security.util;
 
 import cn.hutool.core.lang.func.VoidFunc0;
+import cn.hutool.core.lang.func.VoidFunc1;
 import org.jetbrains.annotations.Nullable;
 
 /**
@@ -28,7 +29,7 @@ public class TryUtil {
     /**
      * 执行：try-catch
      */
-    public static void tryCatch(VoidFunc0 voidFunc0, @Nullable VoidFunc0 exceptionVoidFunc0) {
+    public static void tryCatch(VoidFunc0 voidFunc0, @Nullable VoidFunc1<Exception> exceptionVoidFunc1) {
 
         try {
 
@@ -38,7 +39,7 @@ public class TryUtil {
 
             MyExceptionUtil.printError(e);
 
-            execVoidFunc0(exceptionVoidFunc0);
+            execVoidFunc1(exceptionVoidFunc1, e);
 
         }
 
@@ -68,7 +69,7 @@ public class TryUtil {
     /**
      * 执行：try-catch-finally
      */
-    public static void tryCatchFinally(VoidFunc0 voidFunc0, @Nullable VoidFunc0 exceptionVoidFunc0, @Nullable VoidFunc0 finallyVoidFunc0) {
+    public static void tryCatchFinally(VoidFunc0 voidFunc0, @Nullable VoidFunc1<Exception> exceptionVoidFunc1, @Nullable VoidFunc0 finallyVoidFunc0) {
 
         try {
 
@@ -78,7 +79,7 @@ public class TryUtil {
 
             MyExceptionUtil.printError(e);
 
-            execVoidFunc0(exceptionVoidFunc0);
+            execVoidFunc1(exceptionVoidFunc1, e);
 
         } finally {
 
@@ -100,6 +101,27 @@ public class TryUtil {
         try {
 
             voidFunc0.call();
+
+        } catch (Exception e) {
+
+            MyExceptionUtil.printError(e);
+
+        }
+
+    }
+
+    /**
+     * 执行：VoidFunc0
+     */
+    public static <T> void execVoidFunc1(@Nullable VoidFunc1<T> voidFunc1, T t) {
+
+        if (voidFunc1 == null) {
+            return;
+        }
+
+        try {
+
+            voidFunc1.call(t);
 
         } catch (Exception e) {
 

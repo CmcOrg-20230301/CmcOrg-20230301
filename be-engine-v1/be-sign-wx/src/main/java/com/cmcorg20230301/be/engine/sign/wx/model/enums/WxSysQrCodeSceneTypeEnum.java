@@ -44,6 +44,60 @@ public enum WxSysQrCodeSceneTypeEnum implements ISysQrCodeSceneType {
 
     }, false),
 
+    // 修改密码
+    WX_UPDATE_PASSWORD("WX_UPDATE_PASSWORD", BaseConstant.MINUTE_3_EXPIRE_TIME / 1000, (qrCodeSceneValue, redissonClient, sysUserDO) -> {
+
+        RBucket<String> bucket = redissonClient.getBucket(BaseRedisKeyEnum.PRE_SYS_WX_QR_CODE_UPDATE_PASSWORD.name() + qrCodeSceneValue);
+
+        bucket.set("", Duration.ofMillis(BaseConstant.SECOND_10_EXPIRE_TIME));
+
+    }, false),
+
+    // 设置登录名
+    WX_SET_SIGN_IN_NAME("WX_SET_SIGN_IN_NAME", BaseConstant.MINUTE_3_EXPIRE_TIME / 1000, (qrCodeSceneValue, redissonClient, sysUserDO) -> {
+
+        RBucket<String> bucket = redissonClient.getBucket(BaseRedisKeyEnum.PRE_SYS_WX_QR_CODE_SET_SIGN_IN_NAME.name() + qrCodeSceneValue);
+
+        bucket.set("", Duration.ofMillis(BaseConstant.SECOND_10_EXPIRE_TIME));
+
+    }, false),
+
+    // 修改登录名
+    WX_UPDATE_SIGN_IN_NAME("WX_UPDATE_SIGN_IN_NAME", BaseConstant.MINUTE_3_EXPIRE_TIME / 1000, (qrCodeSceneValue, redissonClient, sysUserDO) -> {
+
+        RBucket<String> bucket = redissonClient.getBucket(BaseRedisKeyEnum.PRE_SYS_WX_QR_CODE_UPDATE_SIGN_IN_NAME.name() + qrCodeSceneValue);
+
+        bucket.set("", Duration.ofMillis(BaseConstant.SECOND_10_EXPIRE_TIME));
+
+    }, false),
+
+    // 设置邮箱
+    WX_SET_EMAIL("WX_SET_EMAIL", BaseConstant.MINUTE_3_EXPIRE_TIME / 1000, (qrCodeSceneValue, redissonClient, sysUserDO) -> {
+
+        RBucket<String> bucket = redissonClient.getBucket(BaseRedisKeyEnum.PRE_SYS_WX_QR_CODE_SET_EMAIL.name() + qrCodeSceneValue);
+
+        bucket.set("", Duration.ofMillis(BaseConstant.SECOND_10_EXPIRE_TIME));
+
+    }, false),
+
+    // 修改邮箱
+    WX_UPDATE_EMAIL("WX_UPDATE_EMAIL", BaseConstant.MINUTE_3_EXPIRE_TIME / 1000, (qrCodeSceneValue, redissonClient, sysUserDO) -> {
+
+        RBucket<String> bucket = redissonClient.getBucket(BaseRedisKeyEnum.PRE_SYS_WX_QR_CODE_UPDATE_EMAIL.name() + qrCodeSceneValue);
+
+        bucket.set("", Duration.ofMillis(BaseConstant.SECOND_10_EXPIRE_TIME));
+
+    }, false),
+
+    // 设置手机
+    WX_SET_PHONE("WX_SET_PHONE", BaseConstant.MINUTE_3_EXPIRE_TIME / 1000, (qrCodeSceneValue, redissonClient, sysUserDO) -> {
+
+        RBucket<String> bucket = redissonClient.getBucket(BaseRedisKeyEnum.PRE_SYS_WX_QR_CODE_SET_PHONE.name() + qrCodeSceneValue);
+
+        bucket.set("", Duration.ofMillis(BaseConstant.SECOND_10_EXPIRE_TIME));
+
+    }, false),
+
     ;
 
     @EnumValue

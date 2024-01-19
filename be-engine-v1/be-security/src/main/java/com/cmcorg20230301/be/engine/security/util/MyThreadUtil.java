@@ -1,6 +1,7 @@
 package com.cmcorg20230301.be.engine.security.util;
 
 import cn.hutool.core.lang.func.VoidFunc0;
+import cn.hutool.core.lang.func.VoidFunc1;
 import org.springframework.core.task.TaskExecutor;
 import org.springframework.scheduling.TaskScheduler;
 import org.springframework.scheduling.Trigger;
@@ -47,11 +48,11 @@ public class MyThreadUtil {
      * 异步执行
      */
     public static void execute(VoidFunc0 voidFunc0, @Nullable CountDownLatch countDownLatch,
-                               @Nullable VoidFunc0 exceptionVoidFunc0, @Nullable VoidFunc0 finallyVoidFunc0) {
+                               @Nullable VoidFunc1<Exception> exceptionVoidFunc1, @Nullable VoidFunc0 finallyVoidFunc0) {
 
         execute(() -> {
 
-            TryUtil.tryCatchFinally(voidFunc0, exceptionVoidFunc0, () -> {
+            TryUtil.tryCatchFinally(voidFunc0, exceptionVoidFunc1, () -> {
 
                 if (countDownLatch != null) {
 
