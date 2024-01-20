@@ -76,7 +76,7 @@ public class SignEmailController {
 
     @PostMapping(value = "/updateSignInName")
     @Operation(summary = "修改登录名")
-    public ApiResultVO<String> updateSignInName(@RequestBody @Valid SignEmailSetSignInNameDTO dto) {
+    public ApiResultVO<String> updateSignInName(@RequestBody @Valid SignEmailUpdateSignInNameDTO dto) {
         return ApiResultVO.okMsg(baseService.updateSignInName(dto));
     }
 
@@ -124,7 +124,7 @@ public class SignEmailController {
 
     @PostMapping(value = "/setPhone/sendCode/phone")
     @Operation(summary = "设置手机：发送手机验证码")
-    public ApiResultVO<String> setPhoneSendCodePhone(SignEmailSetPhoneSendCodePhoneDTO dto) {
+    public ApiResultVO<String> setPhoneSendCodePhone(@RequestBody @Valid SignEmailSetPhoneSendCodePhoneDTO dto) {
         return ApiResultVO.okMsg(baseService.setPhoneSendCodePhone(dto));
     }
 

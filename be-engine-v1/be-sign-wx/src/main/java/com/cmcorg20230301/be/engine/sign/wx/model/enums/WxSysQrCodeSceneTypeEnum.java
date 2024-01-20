@@ -1,5 +1,6 @@
 package com.cmcorg20230301.be.engine.sign.wx.model.enums;
 
+import cn.hutool.core.util.BooleanUtil;
 import com.baomidou.mybatisplus.annotation.EnumValue;
 import com.cmcorg20230301.be.engine.model.model.constant.BaseConstant;
 import com.cmcorg20230301.be.engine.model.model.vo.SignInVO;
@@ -132,7 +133,15 @@ public enum WxSysQrCodeSceneTypeEnum implements ISysQrCodeSceneType {
 
         for (WxSysQrCodeSceneTypeEnum item : WxSysQrCodeSceneTypeEnum.values()) {
 
-            SysQrCodeSceneTypeEnum.MAP.put(item.getSceneStr(), item);
+            if (BooleanUtil.isTrue(item.getBindFlag())) {
+
+                SysQrCodeSceneTypeEnum.BIND_MAP.put(item.getSceneStr(), item);
+
+            } else {
+
+                SysQrCodeSceneTypeEnum.MAP.put(item.getSceneStr(), item);
+
+            }
 
         }
 

@@ -375,7 +375,7 @@ export default function () {
 
         return GetDataSourceMap(userSelfInfo);
 
-    }, []);
+    }, [userSelfInfo]);
 
     const [sysUserAccountLevelEnum, setSysUserAccountLevelEnum] = MyUseState(useState<IEnum<number>>(DEFAULT_SYS_USER_ACCOUNT_LEVEL_ENUM), newState => {
 

@@ -1,13 +1,13 @@
 import $http from "@/util/HttpUtil";
 import {AxiosRequestConfig} from "axios";
 
-export interface SignEmailSetSignInNameDTO {
+export interface SignEmailUpdateSignInNameDTO {
     code?: string // 邮箱验证码，正则表达式：^[0-9]{6}$，required：true
     signInName?: string // 登录名，正则表达式：^[\u4E00-\u9FA5A-Za-z0-9_-]{2,20}$，maxLength：20，minLength：0，required：true
 }
 
 // 修改登录名
-export function SignEmailUpdateSignInName(form: SignEmailSetSignInNameDTO, config?: AxiosRequestConfig) {
+export function SignEmailUpdateSignInName(form: SignEmailUpdateSignInNameDTO, config?: AxiosRequestConfig) {
     return $http.myPost<string>('/sign/email/updateSignInName', form, config)
 }
 
@@ -112,6 +112,11 @@ export interface GetQrCodeVO {
 // 设置微信：获取二维码地址
 export function SignEmailSetWxGetQrCodeUrl(config?: AxiosRequestConfig) {
     return $http.myPost<GetQrCodeVO>('/sign/email/setWx/getQrCodeUrl', undefined, config)
+}
+
+export interface SignEmailSetSignInNameDTO {
+    code?: string // 邮箱验证码，正则表达式：^[0-9]{6}$，required：true
+    signInName?: string // 登录名，正则表达式：^[\u4E00-\u9FA5A-Za-z0-9_-]{2,20}$，maxLength：20，minLength：0，required：true
 }
 
 // 设置登录名

@@ -181,7 +181,7 @@ public class SignEmailServiceImpl implements SignEmailService {
      * 修改登录名
      */
     @Override
-    public String updateSignInName(SignEmailSetSignInNameDTO dto) {
+    public String updateSignInName(SignEmailUpdateSignInNameDTO dto) {
 
         SignUtil.checkWillError(PRE_REDIS_KEY_ENUM, null, UserUtil.getCurrentTenantIdDefault(), null); // 检查：是否可以进行操作
 

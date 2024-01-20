@@ -24,7 +24,7 @@ public interface SignEmailService {
 
     String updateSignInNameSendCode(SignEmailUpdateSignInNameSendCodeDTO dto);
 
-    String updateSignInName(SignEmailSetSignInNameDTO dto);
+    String updateSignInName(SignEmailUpdateSignInNameDTO dto);
 
     String updateEmailSendCodeNew(SignEmailUpdateEmailSendCodeNewDTO dto);
 
