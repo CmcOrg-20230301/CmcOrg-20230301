@@ -139,6 +139,15 @@ export function SignEmailSetWx(form: SignEmailSetWxDTO, config?: AxiosRequestCon
     return $http.myPost<SysQrCodeSceneBindVO>('/sign/email/setWx', form, config)
 }
 
+export interface NotNullId {
+    id?: string // 主键 id，required：true，format：int64
+}
+
+// 设置微信：获取二维码是否已经被扫描
+export function SignEmailSetWxGetQrCodeSceneFlag(form: NotNullId, config?: AxiosRequestConfig) {
+    return $http.myPost<SysQrCodeSceneBindVO>('/sign/email/setWx/getQrCodeSceneFlag', form, config)
+}
+
 // 设置微信：发送验证码
 export function SignEmailSetWxSendCode(config?: AxiosRequestConfig) {
     return $http.myPost<string>('/sign/email/setWx/sendCode', undefined, config)

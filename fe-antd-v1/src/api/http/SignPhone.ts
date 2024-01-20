@@ -216,6 +216,15 @@ export function SignPhoneUpdatePhone(form: SignPhoneUpdatePhoneDTO, config?: Axi
     return $http.myPost<string>('/sign/phone/updatePhone', form, config)
 }
 
+export interface NotNullId {
+    id?: string // 主键 id，required：true，format：int64
+}
+
+// 设置微信：获取二维码是否已经被扫描
+export function SignPhoneSetWxGetQrCodeSceneFlag(form: NotNullId, config?: AxiosRequestConfig) {
+    return $http.myPost<SysQrCodeSceneBindVO>('/sign/phone/setWx/getQrCodeSceneFlag', form, config)
+}
+
 export interface SignPhoneUpdatePasswordDTO {
     originNewPassword?: string // 前端加密之后的原始新密码，required：true
     code?: string // 手机验证码，正则表达式：^[0-9]{6}$，required：true

@@ -1,6 +1,20 @@
 import $http from "@/util/HttpUtil";
 import {AxiosRequestConfig} from "axios";
 
+export interface NotNullId {
+    id?: string // 主键 id，required：true，format：int64
+}
+
+export interface SysQrCodeSceneBindVO {
+    sceneFlag?: boolean // 是否：已经扫码
+    errorMsg?: string // 错误信息
+}
+
+// 设置微信：获取二维码是否已经被扫描
+export function SignSignInNameSetWxGetQrCodeSceneFlag(form: NotNullId, config?: AxiosRequestConfig) {
+    return $http.myPost<SysQrCodeSceneBindVO>('/sign/signInName/setWx/getQrCodeSceneFlag', form, config)
+}
+
 export interface SignSignInNameUpdatePasswordDTO {
     originNewPassword?: string // 前端加密之后的原始新密码，required：true
     oldPassword?: string // 前端加密之后的旧密码，required：true
@@ -21,17 +35,13 @@ export function SignSignInNameSetEmailSendCode(form: SignSignInNameSetEmailSendC
     return $http.myPost<string>('/sign/signInName/setEmail/sendCode', form, config)
 }
 
-export interface NotNullId {
+export interface SignSignInNameSetWxDTO {
     id?: string // 主键 id，required：true，format：int64
-}
-
-export interface SysQrCodeSceneBindVO {
-    sceneFlag?: boolean // 是否：已经扫码
-    errorMsg?: string // 错误信息
+    currentPassword?: string // 前端加密之后的密码，required：true
 }
 
 // 设置微信
-export function SignSignInNameSetWx(form: NotNullId, config?: AxiosRequestConfig) {
+export function SignSignInNameSetWx(form: SignSignInNameSetWxDTO, config?: AxiosRequestConfig) {
     return $http.myPost<SysQrCodeSceneBindVO>('/sign/signInName/setWx', form, config)
 }
 
@@ -78,6 +88,7 @@ export function SignSignInNameSignUp(form: SignSignInNameSignUpDTO, config?: Axi
 export interface SignSignInNameSetEmailDTO {
     code?: string // 邮箱验证码，正则表达式：^[0-9]{6}$，required：true
     email?: string // 邮箱，正则表达式：^\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$，maxLength：200，minLength：0，required：true
+    currentPassword?: string // 前端加密之后的密码，required：true
 }
 
 // 设置邮箱
@@ -116,6 +127,7 @@ export function SignSignInNameSetWxGetQrCodeUrl(config?: AxiosRequestConfig) {
 export interface SignSignInNameSetPhoneDTO {
     code?: string // 手机验证码，正则表达式：^[0-9]{6}$，required：true
     phone?: string // 手机号码，正则表达式：^(13[0-9]|14[01456879]|15[0-35-9]|16[2567]|17[0-8]|18[0-9]|19[0-35-9])\d{8}$，maxLength：100，minLength：0，required：true
+    currentPassword?: string // 前端加密之后的密码，required：true
 }
 
 // 设置手机

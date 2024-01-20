@@ -10,6 +10,7 @@ import {UserSelfSetPhoneModalTitle} from "@/page/user/Self/UserSelfSetting.tsx";
 import {SignOut} from "@/util/UserUtil.ts";
 import {ToastSuccess} from "@/util/ToastUtil.ts";
 import {Validate} from "@/util/ValidatorUtil.ts";
+import {PasswordRSAEncrypt} from "@/util/RsaUtil.ts";
 
 export default function () {
 
@@ -27,6 +28,8 @@ export default function () {
         title={UserSelfSetPhoneModalTitle}
         trigger={<a>{UserSelfSetPhoneModalTitle}</a>}
         onFinish={async (form) => {
+
+            form.currentPassword = PasswordRSAEncrypt(form.currentPassword!)
 
             await SignSignInNameSetPhone(form).then(res => {
 

@@ -5,16 +5,13 @@ import {UserSelfSetWxModalTitle} from "@/page/user/Self/UserSelfSetting.tsx";
 import {MyUseState} from "@/util/HookUtil.ts";
 import {GetQrCodeVO} from "@/api/http/SignSignInName.ts";
 import {GetServerTimestamp} from "@/util/DateUtil.ts";
-import {ToastSuccess} from "@/util/ToastUtil.ts";
+import {ToastError, ToastSuccess} from "@/util/ToastUtil.ts";
 import {AxiosRequestConfig} from "axios";
 import {ApiResultVO} from "@/util/HttpUtil.ts";
 import {NotNullId, SysQrCodeSceneBindVO} from "@/api/http/SignWx.ts";
-import {ModalForm, ProFormInstance} from "@ant-design/pro-components";
+import {ModalForm, ProFormGroup, ProFormInstance} from "@ant-design/pro-components";
 
 export interface ISetWxModalForm {
-
-    // 表单数组
-    formItemArr: JSX.Element[]
 
     // 获取：二维码
     setWxGetQrCodeUrl(config?: AxiosRequestConfig<any> | undefined): Promise<ApiResultVO<GetQrCodeVO>>
@@ -24,6 +21,12 @@ export interface ISetWxModalForm {
 
     // 绑定微信
     setWx(form: any, config?: AxiosRequestConfig<any> | undefined): Promise<ApiResultVO<SysQrCodeSceneBindVO>>
+
+    // 表单数组
+    formItemArr: JSX.Element[]
+
+    // 处理：表单数据
+    handleFormFun?: (form: any) => void;
 
 }
 
@@ -138,9 +141,34 @@ export default function (props: ISetWxModalForm) {
 
             onFinish={async (form) => {
 
-                await props.setWx(form).then(res => {
+                if (!qrCodeSceneFlag) {
 
-                    ToastSuccess(res.msg)
+                    ToastError("操作失败：请先微信扫码")
+                    return
+
+                }
+
+                if (props.handleFormFun) { // 处理：表单数据
+
+                    props.handleFormFun(form)
+
+                }
+
+                await props.setWx({...form, qrCodeId: qrCodeVO?.qrCodeId, id: qrCodeVO?.qrCodeId}).then(res => {
+
+                    if (res.data.sceneFlag) {
+
+                        if (res.data.errorMsg) {
+
+                            ToastError(res.data.errorMsg)
+
+                        } else {
+
+                            ToastSuccess(res.msg)
+
+                        }
+
+                    }
 
                 })
 
@@ -156,26 +184,29 @@ export default function (props: ISetWxModalForm) {
 
             }
 
-            {
+            <ProFormGroup title="微信扫码">
 
-                qrCodeSceneFlag &&
+                {
 
-                <Result
-                    status="success"
-                    title="扫码成功"
-                />
+                    qrCodeSceneFlag &&
 
+                    <Result
+                        status="success"
+                        title="扫码成功"
+                    />
 
-            }
+                }
 
-            {
+                {
 
-                (qrCodeVO?.qrCodeUrl && !qrCodeSceneFlag) &&
+                    (qrCodeVO?.qrCodeUrl && !qrCodeSceneFlag) &&
 
-                <Image src={qrCodeVO.qrCodeUrl}
-                       height={CommonConstant.QR_CODE_WIDTH} preview={false}/>
+                    <Image src={qrCodeVO.qrCodeUrl}
+                           height={CommonConstant.QR_CODE_WIDTH} preview={false}/>
 
-            }
+                }
+
+            </ProFormGroup>
 
         </ModalForm>
 

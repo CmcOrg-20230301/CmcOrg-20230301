@@ -1,6 +1,12 @@
 import React from "react";
-import {SignSignInNameSetWx, SignSignInNameSetWxGetQrCodeUrl} from "@/api/http/SignSignInName.ts";
+import {
+    SignSignInNameSetWx,
+    SignSignInNameSetWxGetQrCodeSceneFlag,
+    SignSignInNameSetWxGetQrCodeUrl
+} from "@/api/http/SignSignInName.ts";
 import SetWxModalForm from "../SetWxModalForm";
+import {ProFormText} from "@ant-design/pro-components";
+import {PasswordRSAEncrypt} from "@/util/RsaUtil.ts";
 
 export default function () {
 
@@ -8,8 +14,34 @@ export default function () {
 
         <SetWxModalForm setWxGetQrCodeUrl={SignSignInNameSetWxGetQrCodeUrl}
                         setWxGetQrCodeSceneFlag={SignSignInNameSetWxGetQrCodeSceneFlag}
-                        formItemArr={[]}
-                        setWx={SignSignInNameSetWx}/>
+                        setWx={SignSignInNameSetWx}
+
+                        handleFormFun={form => {
+
+                            form.currentPassword = PasswordRSAEncrypt(form.currentPassword!)
+
+                        }}
+
+                        formItemArr={[
+
+                            <ProFormText.Password
+
+                                key={"1"}
+
+                                fieldProps={{
+                                    allowClear: true,
+                                }}
+                                label="当前密码"
+                                name="currentPassword"
+                                rules={[{
+                                    required: true,
+                                }]}
+
+                            />
+
+                        ]}
+
+        />
 
     </>
 

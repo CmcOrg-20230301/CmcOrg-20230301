@@ -10,6 +10,7 @@ import {
     SignSignInNameSetEmailDTO,
     SignSignInNameSetEmailSendCode
 } from "@/api/http/SignSignInName.ts";
+import {PasswordRSAEncrypt} from "@/util/RsaUtil.ts";
 
 export default function () {
 
@@ -29,6 +30,8 @@ export default function () {
 
         onFinish={async (form) => {
 
+            form.currentPassword = PasswordRSAEncrypt(form.currentPassword!)
+
             await SignSignInNameSetEmail(form).then(res => {
 
                 SignOut()
@@ -41,6 +44,19 @@ export default function () {
         }}
 
     >
+
+        <ProFormText.Password
+
+            fieldProps={{
+                allowClear: true,
+            }}
+            label="当前密码"
+            name="currentPassword"
+            rules={[{
+                required: true,
+            }]}
+
+        />
 
         <ProFormText
 
