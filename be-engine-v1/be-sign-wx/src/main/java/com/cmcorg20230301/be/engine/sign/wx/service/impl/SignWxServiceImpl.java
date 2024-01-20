@@ -5,6 +5,7 @@ import cn.hutool.jwt.JWT;
 import com.baomidou.mybatisplus.extension.toolkit.ChainWrappers;
 import com.cmcorg20230301.be.engine.email.enums.EmailMessageEnum;
 import com.cmcorg20230301.be.engine.email.util.MyEmailUtil;
+import com.cmcorg20230301.be.engine.model.model.bo.SysQrCodeSceneBindBO;
 import com.cmcorg20230301.be.engine.model.model.dto.NotNullId;
 import com.cmcorg20230301.be.engine.model.model.vo.GetQrCodeVO;
 import com.cmcorg20230301.be.engine.model.model.vo.SignInVO;
@@ -232,6 +233,22 @@ public class SignWxServiceImpl implements SignWxService {
     }
 
     /**
+     * 设置密码：获取二维码是否已经被扫描
+     */
+    @Override
+    public SysQrCodeSceneBindVO setPasswordGetQrCodeSceneFlag(NotNullId notNullId) {
+
+        boolean exists = redissonClient.<SysQrCodeSceneBindBO>getBucket(BaseRedisKeyEnum.PRE_SYS_WX_QR_CODE_SET_PASSWORD.name() + notNullId.getId()).isExists();
+
+        SysQrCodeSceneBindVO sysQrCodeSceneBindVO = new SysQrCodeSceneBindVO();
+
+        sysQrCodeSceneBindVO.setSceneFlag(exists);
+
+        return sysQrCodeSceneBindVO;
+
+    }
+
+    /**
      * 设置密码
      */
     @Override
@@ -273,6 +290,22 @@ public class SignWxServiceImpl implements SignWxService {
 
         // 执行
         return SignUtil.getQrCodeUrlWx(UserUtil.getCurrentTenantIdDefault(), true, WxSysQrCodeSceneTypeEnum.WX_UPDATE_PASSWORD);
+
+    }
+
+    /**
+     * 修改密码：获取二维码是否已经被扫描
+     */
+    @Override
+    public SysQrCodeSceneBindVO updatePasswordGetQrCodeSceneFlag(NotNullId notNullId) {
+
+        boolean exists = redissonClient.<SysQrCodeSceneBindBO>getBucket(BaseRedisKeyEnum.PRE_SYS_WX_QR_CODE_UPDATE_PASSWORD.name() + notNullId.getId()).isExists();
+
+        SysQrCodeSceneBindVO sysQrCodeSceneBindVO = new SysQrCodeSceneBindVO();
+
+        sysQrCodeSceneBindVO.setSceneFlag(exists);
+
+        return sysQrCodeSceneBindVO;
 
     }
 
@@ -327,6 +360,22 @@ public class SignWxServiceImpl implements SignWxService {
     }
 
     /**
+     * 设置登录名：获取二维码是否已经被扫描
+     */
+    @Override
+    public SysQrCodeSceneBindVO setSignInNameGetQrCodeSceneFlag(NotNullId notNullId) {
+
+        boolean exists = redissonClient.<SysQrCodeSceneBindBO>getBucket(BaseRedisKeyEnum.PRE_SYS_WX_QR_CODE_SET_SIGN_IN_NAME.name() + notNullId.getId()).isExists();
+
+        SysQrCodeSceneBindVO sysQrCodeSceneBindVO = new SysQrCodeSceneBindVO();
+
+        sysQrCodeSceneBindVO.setSceneFlag(exists);
+
+        return sysQrCodeSceneBindVO;
+
+    }
+
+    /**
      * 设置登录名
      */
     @Override
@@ -372,6 +421,22 @@ public class SignWxServiceImpl implements SignWxService {
 
         // 执行
         return SignUtil.getQrCodeUrlWx(currentTenantIdDefault, true, WxSysQrCodeSceneTypeEnum.WX_UPDATE_SIGN_IN_NAME);
+
+    }
+
+    /**
+     * 修改登录名：获取二维码是否已经被扫描
+     */
+    @Override
+    public SysQrCodeSceneBindVO updateSignInNameGetQrCodeSceneFlag(NotNullId notNullId) {
+
+        boolean exists = redissonClient.<SysQrCodeSceneBindBO>getBucket(BaseRedisKeyEnum.PRE_SYS_WX_QR_CODE_UPDATE_SIGN_IN_NAME.name() + notNullId.getId()).isExists();
+
+        SysQrCodeSceneBindVO sysQrCodeSceneBindVO = new SysQrCodeSceneBindVO();
+
+        sysQrCodeSceneBindVO.setSceneFlag(exists);
+
+        return sysQrCodeSceneBindVO;
 
     }
 
@@ -444,6 +509,22 @@ public class SignWxServiceImpl implements SignWxService {
     }
 
     /**
+     * 设置邮箱：获取二维码是否已经被扫描
+     */
+    @Override
+    public SysQrCodeSceneBindVO setEmailGetQrCodeSceneFlag(NotNullId notNullId) {
+
+        boolean exists = redissonClient.<SysQrCodeSceneBindBO>getBucket(BaseRedisKeyEnum.PRE_SYS_WX_QR_CODE_SET_EMAIL.name() + notNullId.getId()).isExists();
+
+        SysQrCodeSceneBindVO sysQrCodeSceneBindVO = new SysQrCodeSceneBindVO();
+
+        sysQrCodeSceneBindVO.setSceneFlag(exists);
+
+        return sysQrCodeSceneBindVO;
+
+    }
+
+    /**
      * 设置邮箱
      */
     @Override
@@ -512,6 +593,22 @@ public class SignWxServiceImpl implements SignWxService {
     }
 
     /**
+     * 修改邮箱：获取二维码是否已经被扫描
+     */
+    @Override
+    public SysQrCodeSceneBindVO updateEmailGetQrCodeSceneFlag(NotNullId notNullId) {
+
+        boolean exists = redissonClient.<SysQrCodeSceneBindBO>getBucket(BaseRedisKeyEnum.PRE_SYS_WX_QR_CODE_UPDATE_EMAIL.name() + notNullId.getId()).isExists();
+
+        SysQrCodeSceneBindVO sysQrCodeSceneBindVO = new SysQrCodeSceneBindVO();
+
+        sysQrCodeSceneBindVO.setSceneFlag(exists);
+
+        return sysQrCodeSceneBindVO;
+
+    }
+
+    /**
      * 修改邮箱
      */
     @Override
@@ -558,6 +655,22 @@ public class SignWxServiceImpl implements SignWxService {
     }
 
     /**
+     * 修改微信：获取旧的二维码是否已经被扫描
+     */
+    @Override
+    public SysQrCodeSceneBindVO updateWxGetQrCodeSceneFlagOld(NotNullId notNullId) {
+
+        boolean exists = redissonClient.<SysQrCodeSceneBindBO>getBucket(BaseRedisKeyEnum.PRE_SYS_WX_QR_CODE_UPDATE_WX.name() + notNullId.getId()).isExists();
+
+        SysQrCodeSceneBindVO sysQrCodeSceneBindVO = new SysQrCodeSceneBindVO();
+
+        sysQrCodeSceneBindVO.setSceneFlag(exists);
+
+        return sysQrCodeSceneBindVO;
+
+    }
+
+    /**
      * 修改微信：获取新的二维码地址
      */
     @Override
@@ -567,6 +680,22 @@ public class SignWxServiceImpl implements SignWxService {
 
         // 执行
         return SignUtil.getQrCodeUrlWx(UserUtil.getCurrentTenantIdDefault(), true, SysQrCodeSceneTypeEnum.WX_BIND);
+
+    }
+
+    /**
+     * 修改微信：获取新的二维码是否已经被扫描
+     */
+    @Override
+    public SysQrCodeSceneBindVO updateWxGetQrCodeSceneFlagNew(NotNullId notNullId) {
+
+        boolean exists = redissonClient.<SysQrCodeSceneBindBO>getBucket(BaseRedisKeyEnum.PRE_SYS_WX_QR_CODE_BIND.name() + notNullId.getId()).isExists();
+
+        SysQrCodeSceneBindVO sysQrCodeSceneBindVO = new SysQrCodeSceneBindVO();
+
+        sysQrCodeSceneBindVO.setSceneFlag(exists);
+
+        return sysQrCodeSceneBindVO;
 
     }
 
@@ -635,6 +764,22 @@ public class SignWxServiceImpl implements SignWxService {
 
         // 执行
         return SignUtil.getQrCodeUrlWx(currentTenantIdDefault, true, WxSysQrCodeSceneTypeEnum.WX_SET_PHONE);
+
+    }
+
+    /**
+     * 设置手机：获取二维码是否已经被扫描
+     */
+    @Override
+    public SysQrCodeSceneBindVO setPhoneGetQrCodeSceneFlag(NotNullId notNullId) {
+
+        boolean exists = redissonClient.<SysQrCodeSceneBindBO>getBucket(BaseRedisKeyEnum.PRE_SYS_WX_QR_CODE_SET_PHONE.name() + notNullId.getId()).isExists();
+
+        SysQrCodeSceneBindVO sysQrCodeSceneBindVO = new SysQrCodeSceneBindVO();
+
+        sysQrCodeSceneBindVO.setSceneFlag(exists);
+
+        return sysQrCodeSceneBindVO;
 
     }
 

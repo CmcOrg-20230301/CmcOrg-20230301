@@ -23,17 +23,25 @@ public interface SignWxService {
 
     GetQrCodeVO setPasswordGetQrCodeUrl();
 
+    SysQrCodeSceneBindVO setPasswordGetQrCodeSceneFlag(NotNullId notNullId);
+
     SysQrCodeSceneBindVO setPassword(SignWxSetPasswordDTO dto);
 
     GetQrCodeVO updatePasswordGetQrCodeUrl();
+
+    SysQrCodeSceneBindVO updatePasswordGetQrCodeSceneFlag(NotNullId notNullId);
 
     SysQrCodeSceneBindVO updatePassword(SignWxUpdatePasswordDTO dto);
 
     GetQrCodeVO setSignInNameGetQrCodeUrl(SignWxSetSignInNameGetQrCodeUrlDTO dto);
 
+    SysQrCodeSceneBindVO setSignInNameGetQrCodeSceneFlag(NotNullId notNullId);
+
     SysQrCodeSceneBindVO setSignInName(SignWxSetSignInNameDTO dto);
 
     GetQrCodeVO updateSignInNameGetQrCodeUrl(SignWxUpdateSignInNameGetQrCodeUrlDTO dto);
+
+    SysQrCodeSceneBindVO updateSignInNameGetQrCodeSceneFlag(NotNullId notNullId);
 
     SysQrCodeSceneBindVO updateSignInName(SignWxUpdateSignInNameDTO dto);
 
@@ -41,23 +49,33 @@ public interface SignWxService {
 
     GetQrCodeVO setEmailGetQrCodeUrl(SignWxSetEmailGetQrCodeUrlDTO dto);
 
+    SysQrCodeSceneBindVO setEmailGetQrCodeSceneFlag(NotNullId notNullId);
+
     SysQrCodeSceneBindVO setEmail(SignWxSetEmailDTO dto);
 
     String updateEmailSendCode(SignWxUpdateEmailSendCodeDTO dto);
 
     GetQrCodeVO updateEmailGetQrCodeUrl(SignWxUpdateEmailGetQrCodeUrlDTO dto);
 
+    SysQrCodeSceneBindVO updateEmailGetQrCodeSceneFlag(NotNullId notNullId);
+
     SysQrCodeSceneBindVO updateEmail(SignWxUpdateEmailDTO dto);
 
     GetQrCodeVO updateWxGetQrCodeUrlOld();
 
+    SysQrCodeSceneBindVO updateWxGetQrCodeSceneFlagOld(NotNullId notNullId);
+
     GetQrCodeVO updateWxGetQrCodeUrlNew();
+
+    SysQrCodeSceneBindVO updateWxGetQrCodeSceneFlagNew(NotNullId notNullId);
 
     SysQrCodeSceneBindVO updateWx(SignWxUpdateWxDTO dto);
 
     String setPhoneSendCode(SignWxSetPhoneSendCodeDTO dto);
 
     GetQrCodeVO setPhoneGetQrCodeUrl(SignWxSetPhoneGetQrCodeUrlDTO dto);
+
+    SysQrCodeSceneBindVO setPhoneGetQrCodeSceneFlag(NotNullId notNullId);
 
     SysQrCodeSceneBindVO setPhone(SignWxSetPhoneDTO dto);
 
