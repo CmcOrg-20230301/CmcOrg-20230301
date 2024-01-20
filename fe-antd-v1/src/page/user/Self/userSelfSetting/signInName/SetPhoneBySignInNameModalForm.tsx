@@ -48,8 +48,8 @@ export default function () {
                 allowClear: true,
             }}
             required
-            label="手机号码"
-            placeholder={'请输入手机号码'}
+            label="手机号"
+            placeholder={'请输入手机号'}
 
             rules={[
                 {

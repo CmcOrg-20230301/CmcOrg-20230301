@@ -9,7 +9,7 @@ import {ToastError, ToastSuccess} from "@/util/ToastUtil.ts";
 
 export default function () {
 
-    const [qrCodeModalOpen, setQrCodeModalOpen] = useState<boolean>(false);
+    const [qrCodeModalOpen, setQrCodeModalOpen, qrCodeModalOpenRef] = MyUseState(useState<boolean>(false));
 
     const [qrCodeVO, setQrCodeVO, qrCodeVORef] = MyUseState(useState<GetQrCodeVO | undefined>());
 
@@ -29,7 +29,7 @@ export default function () {
 
         const interval = setInterval(() => {
 
-            if (qrCodeVORef.current) { // 如果：允许绑定微信
+            if (qrCodeVORef.current && qrCodeModalOpenRef.current) { // 如果：允许绑定微信
 
                 // 二维码过期时间
                 const expireTs = Number(qrCodeVORef.current.expireTs || 1);
@@ -89,34 +89,44 @@ export default function () {
 
     }, [])
 
-    return <Modal
+    return <>
 
-        title={UserSelfSetWxModalTitle}
-        open={qrCodeModalOpen}
+        <a onClick={() => {
 
-        maskClosable={false}
+            setQrCodeModalOpen(true)
 
-        footer={null}
+        }}>{UserSelfSetWxModalTitle}</a>
 
-        onCancel={() => {
+        <Modal
 
-            setQrCodeModalOpen(false)
+            title={UserSelfSetWxModalTitle}
+            open={qrCodeModalOpen}
 
-        }}
+            maskClosable={false}
 
-        className={"noFooterModal flex-center"}
+            footer={null}
 
-    >
+            onCancel={() => {
 
-        {
+                setQrCodeModalOpen(false)
 
-            qrCodeVO?.qrCodeUrl &&
+            }}
 
-            <Image src={qrCodeVO.qrCodeUrl}
-                   height={CommonConstant.QR_CODE_WIDTH} preview={false}/>
+            className={"noFooterModal flex-center"}
 
-        }
+        >
 
-    </Modal>
+            {
+
+                qrCodeVO?.qrCodeUrl &&
+
+                <Image src={qrCodeVO.qrCodeUrl}
+                       height={CommonConstant.QR_CODE_WIDTH} preview={false}/>
+
+            }
+
+        </Modal>
+
+    </>
 
 }
