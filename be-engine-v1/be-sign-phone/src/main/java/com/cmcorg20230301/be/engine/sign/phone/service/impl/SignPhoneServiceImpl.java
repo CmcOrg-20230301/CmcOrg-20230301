@@ -4,7 +4,9 @@ import cn.hutool.core.util.BooleanUtil;
 import com.baomidou.mybatisplus.extension.toolkit.ChainWrappers;
 import com.cmcorg20230301.be.engine.email.enums.EmailMessageEnum;
 import com.cmcorg20230301.be.engine.email.util.MyEmailUtil;
+import com.cmcorg20230301.be.engine.model.model.bo.SysQrCodeSceneBindBO;
 import com.cmcorg20230301.be.engine.model.model.dto.NotBlankCodeDTO;
+import com.cmcorg20230301.be.engine.model.model.dto.NotNullId;
 import com.cmcorg20230301.be.engine.model.model.vo.GetQrCodeVO;
 import com.cmcorg20230301.be.engine.model.model.vo.SignInVO;
 import com.cmcorg20230301.be.engine.model.model.vo.SysQrCodeSceneBindVO;
@@ -23,6 +25,7 @@ import com.cmcorg20230301.be.engine.sign.phone.model.dto.*;
 import com.cmcorg20230301.be.engine.sign.phone.service.SignPhoneService;
 import com.cmcorg20230301.be.engine.sms.base.util.SysSmsHelper;
 import com.cmcorg20230301.be.engine.sms.base.util.SysSmsUtil;
+import org.redisson.api.RedissonClient;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -37,6 +40,9 @@ public class SignPhoneServiceImpl implements SignPhoneService {
 
     @Resource
     SysUserConfigurationService sysUserConfigurationService;
+
+    @Resource
+    RedissonClient redissonClient;
 
     /**
      * 注册-发送验证码
@@ -370,6 +376,22 @@ public class SignPhoneServiceImpl implements SignPhoneService {
 
         // 执行
         return SignUtil.getQrCodeUrlWx(UserUtil.getCurrentTenantIdDefault(), true, SysQrCodeSceneTypeEnum.WX_BIND);
+
+    }
+
+    /**
+     * 设置微信：获取二维码是否已经被扫描
+     */
+    @Override
+    public SysQrCodeSceneBindVO getQrCodeSceneFlag(NotNullId notNullId) {
+
+        boolean exists = redissonClient.<SysQrCodeSceneBindBO>getBucket(BaseRedisKeyEnum.PRE_SYS_WX_QR_CODE_BIND.name() + notNullId.getId()).isExists();
+
+        SysQrCodeSceneBindVO sysQrCodeSceneBindVO = new SysQrCodeSceneBindVO();
+
+        sysQrCodeSceneBindVO.setSceneFlag(exists);
+
+        return sysQrCodeSceneBindVO;
 
     }
 

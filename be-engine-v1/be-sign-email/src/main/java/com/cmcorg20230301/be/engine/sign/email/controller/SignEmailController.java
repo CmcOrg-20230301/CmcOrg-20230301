@@ -2,6 +2,7 @@ package com.cmcorg20230301.be.engine.sign.email.controller;
 
 import com.cmcorg20230301.be.engine.model.model.constant.OperationDescriptionConstant;
 import com.cmcorg20230301.be.engine.model.model.dto.NotBlankCodeDTO;
+import com.cmcorg20230301.be.engine.model.model.dto.NotNullId;
 import com.cmcorg20230301.be.engine.model.model.vo.GetQrCodeVO;
 import com.cmcorg20230301.be.engine.model.model.vo.SignInVO;
 import com.cmcorg20230301.be.engine.model.model.vo.SysQrCodeSceneBindVO;
@@ -108,6 +109,12 @@ public class SignEmailController {
     @Operation(summary = "设置微信：获取二维码地址")
     public ApiResultVO<GetQrCodeVO> setWxGetQrCodeUrl() {
         return ApiResultVO.okData(baseService.setWxGetQrCodeUrl());
+    }
+
+    @PostMapping(value = "/setWx/getQrCodeSceneFlag")
+    @Operation(summary = "设置微信：获取二维码是否已经被扫描")
+    public ApiResultVO<SysQrCodeSceneBindVO> getQrCodeSceneFlag(@RequestBody @Valid NotNullId notNullId) {
+        return ApiResultVO.okData(baseService.getQrCodeSceneFlag(notNullId));
     }
 
     @PostMapping(value = "/setWx")

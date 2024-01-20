@@ -1,6 +1,7 @@
 package com.cmcorg20230301.be.engine.sign.email.service;
 
 import com.cmcorg20230301.be.engine.model.model.dto.NotBlankCodeDTO;
+import com.cmcorg20230301.be.engine.model.model.dto.NotNullId;
 import com.cmcorg20230301.be.engine.model.model.vo.GetQrCodeVO;
 import com.cmcorg20230301.be.engine.model.model.vo.SignInVO;
 import com.cmcorg20230301.be.engine.model.model.vo.SysQrCodeSceneBindVO;
@@ -35,6 +36,8 @@ public interface SignEmailService {
     String setWxSendCode();
 
     GetQrCodeVO setWxGetQrCodeUrl();
+
+    SysQrCodeSceneBindVO getQrCodeSceneFlag(NotNullId notNullId);
 
     SysQrCodeSceneBindVO setWx(SignEmailSetWxDTO dto);
 
