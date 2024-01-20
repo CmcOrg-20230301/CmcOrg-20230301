@@ -1573,6 +1573,7 @@ public class SignUtil {
     /**
      * 绑定微信
      */
+    @NotNull
     public static SysQrCodeSceneBindVO setWx(Long qrCodeId, String code, String codeKey) {
 
         SysQrCodeSceneBindBO sysQrCodeSceneBindBO = redissonClient.<SysQrCodeSceneBindBO>getBucket(BaseRedisKeyEnum.PRE_SYS_WX_QR_CODE_BIND.name() + qrCodeId).getAndDelete();
