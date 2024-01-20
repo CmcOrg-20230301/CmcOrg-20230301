@@ -208,7 +208,7 @@ public class SignPhoneServiceImpl implements SignPhoneService {
         SignUtil.checkWillError(PRE_REDIS_KEY_ENUM, null, UserUtil.getCurrentTenantIdDefault(), null); // 检查：是否可以进行操作
 
         // 设置登录名
-        return SignUtil.bindAccount(dto.getCode(), BaseRedisKeyEnum.PRE_SIGN_IN_NAME, dto.getSignInName(), null, null);
+        return SignUtil.bindAccount(dto.getCode(), BaseRedisKeyEnum.PRE_SIGN_IN_NAME, dto.getSignInName(), null, null, null);
 
     }
 
@@ -241,7 +241,7 @@ public class SignPhoneServiceImpl implements SignPhoneService {
         SignUtil.checkWillError(PRE_REDIS_KEY_ENUM, null, UserUtil.getCurrentTenantIdDefault(), null); // 检查：是否可以进行操作
 
         // 设置登录名
-        return SignUtil.bindAccount(dto.getCode(), BaseRedisKeyEnum.PRE_SIGN_IN_NAME, dto.getSignInName(), null, null);
+        return SignUtil.bindAccount(dto.getCode(), BaseRedisKeyEnum.PRE_SIGN_IN_NAME, dto.getSignInName(), null, null, null);
 
     }
 
@@ -386,7 +386,7 @@ public class SignPhoneServiceImpl implements SignPhoneService {
         String codeKey = BaseRedisKeyEnum.PRE_PHONE + currentUserPhoneNotAdmin;
 
         // 执行
-        return SignUtil.setWx(dto.getQrCodeId(), dto.getPhoneCode(), codeKey);
+        return SignUtil.setWx(dto.getQrCodeId(), dto.getPhoneCode(), codeKey, null);
 
     }
 
@@ -431,7 +431,7 @@ public class SignPhoneServiceImpl implements SignPhoneService {
         String codeKey = BaseRedisKeyEnum.PRE_PHONE + currentUserPhoneNotAdmin;
 
         // 执行
-        return SignUtil.setWx(dto.getQrCodeId(), dto.getPhoneCode(), codeKey);
+        return SignUtil.setWx(dto.getQrCodeId(), dto.getPhoneCode(), codeKey, null);
 
     }
 

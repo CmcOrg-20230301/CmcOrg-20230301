@@ -1316,11 +1316,18 @@ public class SignUtil {
      *
      * @param accountRedisKeyEnum 不能为 null
      */
-    public static String bindAccount(@Nullable String code, Enum<? extends IRedisKey> accountRedisKeyEnum, String account, String appId, @Nullable String codeKey) {
+    public static String bindAccount(@Nullable String code, Enum<? extends IRedisKey> accountRedisKeyEnum, String account, String appId, @Nullable String codeKey, @Nullable String password) {
 
         Long currentUserIdNotAdmin = UserUtil.getCurrentUserIdNotAdmin();
 
         Long currentTenantIdDefault = UserUtil.getCurrentTenantIdDefault();
+
+        if (StrUtil.isNotBlank(password)) {
+
+            // 检查密码是否正确
+            checkCurrentPasswordWillError(password, currentUserIdNotAdmin, null, null, currentTenantIdDefault);
+
+        }
 
         String accountKey = accountRedisKeyEnum + account;
 
@@ -1574,7 +1581,7 @@ public class SignUtil {
      * 绑定微信
      */
     @NotNull
-    public static SysQrCodeSceneBindVO setWx(Long qrCodeId, String code, String codeKey) {
+    public static SysQrCodeSceneBindVO setWx(Long qrCodeId, String code, String codeKey, String currentPassword) {
 
         SysQrCodeSceneBindBO sysQrCodeSceneBindBO = redissonClient.<SysQrCodeSceneBindBO>getBucket(BaseRedisKeyEnum.PRE_SYS_WX_QR_CODE_BIND.name() + qrCodeId).getAndDelete();
 
@@ -1592,13 +1599,13 @@ public class SignUtil {
 
             if (qrCodeUserId == null) { // 如果：不存在用户，则开始绑定
 
-                SignUtil.bindAccount(code, BaseRedisKeyEnum.PRE_WX_OPEN_ID, sysQrCodeSceneBindBO.getOpenId(), sysQrCodeSceneBindBO.getAppId(), codeKey);
+                SignUtil.bindAccount(code, BaseRedisKeyEnum.PRE_WX_OPEN_ID, sysQrCodeSceneBindBO.getOpenId(), sysQrCodeSceneBindBO.getAppId(), codeKey, currentPassword);
 
             } else {
 
-                Long currentUserId = UserUtil.getCurrentUserId();
+                Long currentUserIdNotAdmin = UserUtil.getCurrentUserIdNotAdmin();
 
-                if (currentUserId.equals(qrCodeUserId)) {
+                if (currentUserIdNotAdmin.equals(qrCodeUserId)) {
 
                     sysQrCodeSceneBindVO.setErrorMsg("操作失败：您已绑定该微信，请勿重复绑定");
 

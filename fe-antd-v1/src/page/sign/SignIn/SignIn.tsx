@@ -230,6 +230,8 @@ export default function () {
 
                             if (res.data) {
 
+                                clearInterval(interval)
+
                                 // 完成登录
                                 SignInSuccess(res.data)
 

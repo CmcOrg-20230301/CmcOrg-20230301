@@ -22,4 +22,8 @@ public class SignSignInNameSetPhoneDTO {
     @Schema(description = "手机验证码")
     private String code;
 
+    @NotBlank
+    @Schema(description = "前端加密之后的密码")
+    private String currentPassword;
+
 }

@@ -4,6 +4,7 @@ import cn.hutool.core.util.BooleanUtil;
 import com.baomidou.mybatisplus.extension.toolkit.ChainWrappers;
 import com.cmcorg20230301.be.engine.email.enums.EmailMessageEnum;
 import com.cmcorg20230301.be.engine.email.util.MyEmailUtil;
+import com.cmcorg20230301.be.engine.model.model.bo.SysQrCodeSceneBindBO;
 import com.cmcorg20230301.be.engine.model.model.dto.NotNullId;
 import com.cmcorg20230301.be.engine.model.model.vo.GetQrCodeVO;
 import com.cmcorg20230301.be.engine.model.model.vo.SignInVO;
@@ -22,6 +23,7 @@ import com.cmcorg20230301.be.engine.sign.signinname.model.dto.*;
 import com.cmcorg20230301.be.engine.sign.signinname.service.SignSignInNameService;
 import com.cmcorg20230301.be.engine.sms.base.util.SysSmsHelper;
 import com.cmcorg20230301.be.engine.sms.base.util.SysSmsUtil;
+import org.redisson.api.RedissonClient;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -36,6 +38,9 @@ public class SignSignInNameServiceImpl implements SignSignInNameService {
 
     @Resource
     SysUserConfigurationService sysUserConfigurationService;
+
+    @Resource
+    RedissonClient redissonClient;
 
     /**
      * 注册
@@ -120,7 +125,7 @@ public class SignSignInNameServiceImpl implements SignSignInNameService {
 
         SignUtil.checkWillError(PRE_REDIS_KEY_ENUM, null, UserUtil.getCurrentTenantIdDefault(), null); // 检查：是否可以进行操作
 
-        return SignUtil.bindAccount(dto.getCode(), BaseRedisKeyEnum.PRE_EMAIL, dto.getEmail(), null, null);
+        return SignUtil.bindAccount(dto.getCode(), BaseRedisKeyEnum.PRE_EMAIL, dto.getEmail(), null, null, dto.getCurrentPassword());
 
     }
 
@@ -138,15 +143,31 @@ public class SignSignInNameServiceImpl implements SignSignInNameService {
     }
 
     /**
+     * 设置微信：获取二维码是否已经被扫描
+     */
+    @Override
+    public SysQrCodeSceneBindVO getQrCodeSceneFlag(NotNullId notNullId) {
+
+        boolean exists = redissonClient.<SysQrCodeSceneBindBO>getBucket(BaseRedisKeyEnum.PRE_SYS_WX_QR_CODE_BIND.name() + notNullId.getId()).isExists();
+
+        SysQrCodeSceneBindVO sysQrCodeSceneBindVO = new SysQrCodeSceneBindVO();
+
+        sysQrCodeSceneBindVO.setSceneFlag(exists);
+
+        return sysQrCodeSceneBindVO;
+
+    }
+
+    /**
      * 设置微信
      */
     @Override
-    public SysQrCodeSceneBindVO setWx(NotNullId notNullId) {
+    public SysQrCodeSceneBindVO setWx(SignSignInNameSetWxDTO dto) {
 
         SignUtil.checkWillError(PRE_REDIS_KEY_ENUM, null, UserUtil.getCurrentTenantIdDefault(), null); // 检查：是否可以进行操作
 
         // 执行
-        return SignUtil.setWx(notNullId.getId(), null, null);
+        return SignUtil.setWx(dto.getId(), null, null, dto.getCurrentPassword());
 
     }
 
@@ -177,7 +198,7 @@ public class SignSignInNameServiceImpl implements SignSignInNameService {
 
         SignUtil.checkWillError(PRE_REDIS_KEY_ENUM, null, UserUtil.getCurrentTenantIdDefault(), null); // 检查：是否可以进行操作
 
-        return SignUtil.bindAccount(dto.getCode(), BaseRedisKeyEnum.PRE_PHONE, dto.getPhone(), null, null);
+        return SignUtil.bindAccount(dto.getCode(), BaseRedisKeyEnum.PRE_PHONE, dto.getPhone(), null, null, dto.getCurrentPassword());
 
     }
 

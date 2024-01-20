@@ -22,7 +22,9 @@ public interface SignSignInNameService {
 
     GetQrCodeVO setWxGetQrCodeUrl();
 
-    SysQrCodeSceneBindVO setWx(NotNullId notNullId);
+    SysQrCodeSceneBindVO getQrCodeSceneFlag(NotNullId notNullId);
+
+    SysQrCodeSceneBindVO setWx(SignSignInNameSetWxDTO dto);
 
     String setPhoneSendCode(SignSignInNameSetPhoneSendCodeDTO dto);
 

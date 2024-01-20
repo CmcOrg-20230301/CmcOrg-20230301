@@ -22,4 +22,8 @@ public class SignSignInNameSetEmailDTO {
     @Schema(description = "邮箱验证码")
     private String code;
 
+    @NotBlank
+    @Schema(description = "前端加密之后的密码")
+    private String currentPassword;
+
 }

@@ -345,7 +345,7 @@ public class SignWxServiceImpl implements SignWxService {
             sysQrCodeSceneBindVO.setSceneFlag(true);
 
             // 设置登录名
-            SignUtil.bindAccount(null, BaseRedisKeyEnum.PRE_SIGN_IN_NAME, dto.getSignInName(), null, null);
+            SignUtil.bindAccount(null, BaseRedisKeyEnum.PRE_SIGN_IN_NAME, dto.getSignInName(), null, null, null);
 
         } else {
 
@@ -394,7 +394,7 @@ public class SignWxServiceImpl implements SignWxService {
             sysQrCodeSceneBindVO.setSceneFlag(true);
 
             // 设置登录名
-            SignUtil.bindAccount(null, BaseRedisKeyEnum.PRE_SIGN_IN_NAME, dto.getSignInName(), null, null);
+            SignUtil.bindAccount(null, BaseRedisKeyEnum.PRE_SIGN_IN_NAME, dto.getSignInName(), null, null, null);
 
         } else {
 
@@ -462,7 +462,7 @@ public class SignWxServiceImpl implements SignWxService {
             sysQrCodeSceneBindVO.setSceneFlag(true);
 
             // 设置邮箱
-            SignUtil.bindAccount(dto.getCode(), BaseRedisKeyEnum.PRE_EMAIL, dto.getEmail(), null, null);
+            SignUtil.bindAccount(dto.getCode(), BaseRedisKeyEnum.PRE_EMAIL, dto.getEmail(), null, null, null);
 
         } else {
 
@@ -530,7 +530,7 @@ public class SignWxServiceImpl implements SignWxService {
             sysQrCodeSceneBindVO.setSceneFlag(true);
 
             // 设置邮箱
-            SignUtil.bindAccount(dto.getCode(), BaseRedisKeyEnum.PRE_EMAIL, dto.getEmail(), null, null);
+            SignUtil.bindAccount(dto.getCode(), BaseRedisKeyEnum.PRE_EMAIL, dto.getEmail(), null, null, null);
 
         } else {
 
@@ -589,7 +589,7 @@ public class SignWxServiceImpl implements SignWxService {
             sysQrCodeSceneBindVO.setSceneFlag(true);
 
             // 修改微信
-            return SignUtil.setWx(dto.getNewQrCodeId(), null, null);
+            return SignUtil.setWx(dto.getNewQrCodeId(), null, null, null);
 
         } else {
 
@@ -657,7 +657,7 @@ public class SignWxServiceImpl implements SignWxService {
             sysQrCodeSceneBindVO.setSceneFlag(true);
 
             // 设置邮箱
-            SignUtil.bindAccount(dto.getCode(), BaseRedisKeyEnum.PRE_PHONE, dto.getPhone(), null, null);
+            SignUtil.bindAccount(dto.getCode(), BaseRedisKeyEnum.PRE_PHONE, dto.getPhone(), null, null, null);
 
         } else {
 

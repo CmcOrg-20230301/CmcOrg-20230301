@@ -41,6 +41,19 @@ export default function () {
 
     >
 
+        <ProFormText.Password
+
+            fieldProps={{
+                allowClear: true,
+            }}
+            label="当前密码"
+            name="currentPassword"
+            rules={[{
+                required: true,
+            }]}
+
+        />
+
         <ProFormText
 
             name="phone"

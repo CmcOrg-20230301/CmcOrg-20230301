@@ -68,10 +68,16 @@ public class SignSignInNameController {
         return ApiResultVO.okData(baseService.setWxGetQrCodeUrl());
     }
 
+    @PostMapping(value = "/setWx/getQrCodeSceneFlag")
+    @Operation(summary = "设置微信：获取二维码是否已经被扫描")
+    public ApiResultVO<SysQrCodeSceneBindVO> getQrCodeSceneFlag(@RequestBody @Valid NotNullId notNullId) {
+        return ApiResultVO.okData(baseService.getQrCodeSceneFlag(notNullId));
+    }
+
     @PostMapping(value = "/setWx")
     @Operation(summary = "设置微信")
-    public ApiResultVO<SysQrCodeSceneBindVO> setWx(@RequestBody @Valid NotNullId notNullId) {
-        return ApiResultVO.okData(baseService.setWx(notNullId));
+    public ApiResultVO<SysQrCodeSceneBindVO> setWx(@RequestBody @Valid SignSignInNameSetWxDTO dto) {
+        return ApiResultVO.okData(baseService.setWx(dto));
     }
 
     @PostMapping(value = "/setPhone/sendCode")

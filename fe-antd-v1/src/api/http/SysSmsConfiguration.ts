@@ -5,24 +5,31 @@ import {AxiosRequestConfig} from "axios";
 
 export interface SysSmsConfigurationInsertOrUpdateDTO {
     sendCommon?: string // 发送：通用短信
-    sendUpdate?: string // 发送：修改手机
+    sendSignDelete?: string // 发送：账号注销
+    secretId?: string // 钥匙
+    remark?: string // 备注
+    type?: number // 短信类型：101 阿里 201 腾讯，required：true，format：int32
+    sendSetEmail?: string // 发送：设置邮箱
+    sendUpdatePhone?: string // 发送：修改手机
+    id?: string // 主键 id，format：int64
+    sendSetWx?: string // 发送：设置微信
+    enableFlag?: boolean // 是否启用
     sendSignIn?: string // 发送：登录短信
     defaultFlag?: boolean // 是否是默认短信发送，备注：只会有一个默认短信发送
     signName?: string // 签名内容
+    sendSetSignInName?: string // 发送：设置登录名
     secretKey?: string // 秘钥
+    sendUpdateEmail?: string // 发送：修改邮箱
+    sendSetPhone?: string // 发送：设置手机
     sendSignUp?: string // 发送：注册短信
-    secretId?: string // 钥匙
-    sendDelete?: string // 发送：账号注销
-    remark?: string // 备注
-    type?: number // 短信类型：101 阿里 201 腾讯，required：true，format：int32
+    sendUpdateSignInName?: string // 发送：修改登录名
     sendUpdatePassword?: string // 发送：修改密码
+    sendUpdateWx?: string // 发送：修改微信
     sendForgetPassword?: string // 发送：忘记密码
     sdkAppId?: string // 短信应用 id
-    sendBind?: string // 发送：绑定手机
     tenantId?: string // 租户 id，可以为空，为空则表示：默认租户：0，format：int64
     name?: string // 短信名，required：true
-    id?: string // 主键 id，format：int64
-    enableFlag?: boolean // 是否启用
+    sendSetPassword?: string // 发送：设置密码
 }
 
 // 新增/修改

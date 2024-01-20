@@ -26,6 +26,7 @@ export default function () {
         width={CommonConstant.MODAL_FORM_WIDTH}
         title={UserSelfSetEmailModalTitle}
         trigger={<a>{UserSelfSetEmailModalTitle}</a>}
+
         onFinish={async (form) => {
 
             await SignSignInNameSetEmail(form).then(res => {
