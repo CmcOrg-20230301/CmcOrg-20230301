@@ -14,8 +14,6 @@ export default function () {
 
     return <>
 
-        {/*<SetWxModalForm setWxGetQrCodeUrl={SignEmailSetWxGetQrCodeUrl} setWxGetQrCodeSceneFlag={SignEmailSetWx}/>*/}
-
         <SetWxModalForm setWxGetQrCodeUrl={SignEmailSetWxGetQrCodeUrl}
                         setWxGetQrCodeSceneFlag={SignEmailSetWxGetQrCodeSceneFlag}
                         setWx={SignEmailSetWx}

@@ -12,7 +12,6 @@ import {Validate} from "@/util/ValidatorUtil.ts";
 import React from "react";
 import {UserSelfUpdatePasswordTitle} from "@/page/user/Self/UserSelfSetting.tsx";
 
-// 修改密码：通过邮箱
 export default function () {
 
     return <>
