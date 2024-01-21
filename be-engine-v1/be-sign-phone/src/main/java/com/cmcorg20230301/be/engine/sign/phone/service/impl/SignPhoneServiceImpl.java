@@ -383,7 +383,7 @@ public class SignPhoneServiceImpl implements SignPhoneService {
      * 设置微信：获取二维码是否已经被扫描
      */
     @Override
-    public SysQrCodeSceneBindVO getQrCodeSceneFlag(NotNullId notNullId) {
+    public SysQrCodeSceneBindVO setWxGetQrCodeSceneFlag(NotNullId notNullId) {
 
         boolean exists = redissonClient.<SysQrCodeSceneBindBO>getBucket(BaseRedisKeyEnum.PRE_SYS_WX_QR_CODE_BIND.name() + notNullId.getId()).isExists();
 
@@ -416,7 +416,7 @@ public class SignPhoneServiceImpl implements SignPhoneService {
      * 修改微信：发送验证码
      */
     @Override
-    public String updateWxSendCode() {
+    public String updateWxSendCodePhone() {
 
         Long currentTenantIdDefault = UserUtil.getCurrentTenantIdDefault();
 
@@ -437,6 +437,22 @@ public class SignPhoneServiceImpl implements SignPhoneService {
 
         // 执行
         return SignUtil.getQrCodeUrlWx(UserUtil.getCurrentTenantIdDefault(), true, SysQrCodeSceneTypeEnum.WX_BIND);
+
+    }
+
+    /**
+     * 修改微信：获取新微信二维码是否已经被扫描
+     */
+    @Override
+    public SysQrCodeSceneBindVO updateWxGetQrCodeSceneFlagNew(NotNullId notNullId) {
+
+        boolean exists = redissonClient.<SysQrCodeSceneBindBO>getBucket(BaseRedisKeyEnum.PRE_SYS_WX_QR_CODE_BIND.name() + notNullId.getId()).isExists();
+
+        SysQrCodeSceneBindVO sysQrCodeSceneBindVO = new SysQrCodeSceneBindVO();
+
+        sysQrCodeSceneBindVO.setSceneFlag(exists);
+
+        return sysQrCodeSceneBindVO;
 
     }
 

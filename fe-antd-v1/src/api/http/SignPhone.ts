@@ -48,6 +48,20 @@ export function SignPhoneSignInCode(form: SignPhoneSignInCodeDTO, config?: Axios
     return $http.myPost<SignInVO>('/sign/phone/sign/in/code', form, config)
 }
 
+export interface NotNullId {
+    id?: string // 主键 id，required：true，format：int64
+}
+
+export interface SysQrCodeSceneBindVO {
+    sceneFlag?: boolean // 是否：已经扫码
+    errorMsg?: string // 错误信息
+}
+
+// 修改微信：获取新微信二维码是否已经被扫描
+export function SignPhoneUpdateWxGetQrCodeSceneFlagNew(form: NotNullId, config?: AxiosRequestConfig) {
+    return $http.myPost<SysQrCodeSceneBindVO>('/sign/phone/updateWx/getQrCodeSceneFlag/new', form, config)
+}
+
 // 修改微信：获取新微信的二维码地址
 export function SignPhoneUpdateWxGetQrCodeUrlNew(config?: AxiosRequestConfig) {
     return $http.myPost<GetQrCodeVO>('/sign/phone/updateWx/getQrCodeUrl/new', undefined, config)
@@ -67,11 +81,6 @@ export function SignPhoneUpdatePhoneSendCodeOld(config?: AxiosRequestConfig) {
     return $http.myPost<string>('/sign/phone/updatePhone/sendCode/old', undefined, config)
 }
 
-// 修改微信：发送验证码
-export function SignPhoneUpdateWxSendCode(config?: AxiosRequestConfig) {
-    return $http.myPost<string>('/sign/phone/updateWx/sendCode', undefined, config)
-}
-
 export interface SignPhoneSignUpDTO {
     password?: string // 前端加密之后的密码，required：true
     code?: string // 手机验证码，正则表达式：^[0-9]{6}$，required：true
@@ -83,6 +92,11 @@ export interface SignPhoneSignUpDTO {
 // 注册
 export function SignPhoneSignUp(form: SignPhoneSignUpDTO, config?: AxiosRequestConfig) {
     return $http.myPost<string>('/sign/phone/sign/up', form, config)
+}
+
+// 修改微信：发送手机验证码
+export function SignPhoneUpdateWxSendCodePhone(config?: AxiosRequestConfig) {
+    return $http.myPost<string>('/sign/phone/updateWx/sendCode/phone', undefined, config)
 }
 
 export interface SignPhoneUpdatePhoneSendCodeNewDTO {
@@ -97,11 +111,6 @@ export function SignPhoneUpdatePhoneSendCodeNew(form: SignPhoneUpdatePhoneSendCo
 export interface SignPhoneUpdateWxDTO {
     qrCodeId?: string // 二维码 id，required：true，format：int64
     phoneCode?: string // 手机验证码，正则表达式：^[0-9]{6}$，required：true
-}
-
-export interface SysQrCodeSceneBindVO {
-    sceneFlag?: boolean // 是否：已经扫码
-    errorMsg?: string // 错误信息
 }
 
 // 修改微信
@@ -214,10 +223,6 @@ export interface SignPhoneUpdatePhoneDTO {
 // 修改手机
 export function SignPhoneUpdatePhone(form: SignPhoneUpdatePhoneDTO, config?: AxiosRequestConfig) {
     return $http.myPost<string>('/sign/phone/updatePhone', form, config)
-}
-
-export interface NotNullId {
-    id?: string // 主键 id，required：true，format：int64
 }
 
 // 设置微信：获取二维码是否已经被扫描

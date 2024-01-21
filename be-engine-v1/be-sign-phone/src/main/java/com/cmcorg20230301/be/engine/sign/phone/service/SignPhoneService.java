@@ -51,13 +51,15 @@ public interface SignPhoneService {
 
     GetQrCodeVO setWxGetQrCodeUrl();
 
-    SysQrCodeSceneBindVO getQrCodeSceneFlag(NotNullId notNullId);
+    SysQrCodeSceneBindVO setWxGetQrCodeSceneFlag(NotNullId notNullId);
 
     SysQrCodeSceneBindVO setWx(SignPhoneSetWxDTO dto);
 
-    String updateWxSendCode();
+    String updateWxSendCodePhone();
 
     GetQrCodeVO updateWxGetQrCodeUrlNew();
+
+    SysQrCodeSceneBindVO updateWxGetQrCodeSceneFlagNew(NotNullId notNullId);
 
     SysQrCodeSceneBindVO updateWx(SignPhoneUpdateWxDTO dto);
 

@@ -155,8 +155,8 @@ public class SignPhoneController {
 
     @PostMapping(value = "/setWx/getQrCodeSceneFlag")
     @Operation(summary = "设置微信：获取二维码是否已经被扫描")
-    public ApiResultVO<SysQrCodeSceneBindVO> getQrCodeSceneFlag(@RequestBody @Valid NotNullId notNullId) {
-        return ApiResultVO.okData(baseService.getQrCodeSceneFlag(notNullId));
+    public ApiResultVO<SysQrCodeSceneBindVO> setWxGetQrCodeSceneFlag(@RequestBody @Valid NotNullId notNullId) {
+        return ApiResultVO.okData(baseService.setWxGetQrCodeSceneFlag(notNullId));
     }
 
     @PostMapping(value = "/setWx")
@@ -165,16 +165,22 @@ public class SignPhoneController {
         return ApiResultVO.okData(baseService.setWx(dto));
     }
 
-    @PostMapping(value = "/updateWx/sendCode")
-    @Operation(summary = "修改微信：发送验证码")
-    public ApiResultVO<String> updateWxSendCode() {
-        return ApiResultVO.okMsg(baseService.updateWxSendCode());
+    @PostMapping(value = "/updateWx/sendCode/phone")
+    @Operation(summary = "修改微信：发送手机验证码")
+    public ApiResultVO<String> updateWxSendCodePhone() {
+        return ApiResultVO.okMsg(baseService.updateWxSendCodePhone());
     }
 
     @PostMapping(value = "/updateWx/getQrCodeUrl/new")
     @Operation(summary = "修改微信：获取新微信的二维码地址")
     public ApiResultVO<GetQrCodeVO> updateWxGetQrCodeUrlNew() {
         return ApiResultVO.okData(baseService.updateWxGetQrCodeUrlNew());
+    }
+
+    @PostMapping(value = "/updateWx/getQrCodeSceneFlag/new")
+    @Operation(summary = "修改微信：获取新微信二维码是否已经被扫描")
+    public ApiResultVO<SysQrCodeSceneBindVO> updateWxGetQrCodeSceneFlagNew(@RequestBody @Valid NotNullId notNullId) {
+        return ApiResultVO.okData(baseService.updateWxGetQrCodeSceneFlagNew(notNullId));
     }
 
     @PostMapping(value = "/updateWx")

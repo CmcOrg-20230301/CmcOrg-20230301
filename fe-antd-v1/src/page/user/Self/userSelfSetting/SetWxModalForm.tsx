@@ -28,6 +28,9 @@ export interface ISetWxModalForm {
     // 处理：表单数据
     handleFormFun?: (form: any) => void;
 
+    // 标题
+    title?: string
+
 }
 
 export default function (props: ISetWxModalForm) {
@@ -130,8 +133,8 @@ export default function (props: ISetWxModalForm) {
             isKeyPressSubmit
             width={CommonConstant.MODAL_FORM_WIDTH}
 
-            title={UserSelfSetWxModalTitle}
-            trigger={<a>{UserSelfSetWxModalTitle}</a>}
+            title={props.title || UserSelfSetWxModalTitle}
+            trigger={<a>{props.title || UserSelfSetWxModalTitle}</a>}
 
             onOpenChange={(visible: boolean) => {
 
