@@ -39,14 +39,13 @@ import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.redisson.api.RedissonClient;
-import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-@Component
+//@Component
 @Slf4j(topic = LogTopicConstant.OTHER_APP_OFFICIAL_ACCOUNT_WX)
 public class SysOtherAppOfficialAccountWxReceiveMessageHandle implements ISysOtherAppOfficialAccountWxReceiveMessageHandle {
 

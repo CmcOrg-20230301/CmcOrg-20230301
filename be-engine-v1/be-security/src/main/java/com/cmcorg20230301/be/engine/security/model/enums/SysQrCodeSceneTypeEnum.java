@@ -38,7 +38,7 @@ public enum SysQrCodeSceneTypeEnum implements ISysQrCodeSceneType {
         sysQrCodeSceneBindBO.setAppId(sysUserDO.getWxAppId());
         sysQrCodeSceneBindBO.setOpenId(sysUserDO.getWxOpenId());
 
-        bucket.set(sysQrCodeSceneBindBO, Duration.ofMillis(BaseConstant.SECOND_10_EXPIRE_TIME));
+        bucket.set(sysQrCodeSceneBindBO, Duration.ofMillis(BaseConstant.MINUTE_3_EXPIRE_TIME));
 
     }, true),
 

@@ -3,6 +3,7 @@ package com.cmcorg20230301.be.engine.sign.helper.util;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.lang.func.Func1;
 import cn.hutool.core.lang.func.VoidFunc0;
+import cn.hutool.core.lang.func.VoidFunc1;
 import cn.hutool.core.map.MapUtil;
 import cn.hutool.core.util.BooleanUtil;
 import cn.hutool.core.util.ReUtil;
@@ -1532,6 +1533,7 @@ public class SignUtil {
     @Nullable
     public static GetQrCodeVO getQrCodeUrlWx(@Nullable Long tenantId, boolean getQrCodeUrlFlag, ISysQrCodeSceneType iSysQrCodeSceneType) {
 
+        // 执行
         return getQrCodeUrl(tenantId, getQrCodeUrlFlag, SysOtherAppTypeEnum.WX_OFFICIAL_ACCOUNT.getCode(), sysOtherAppDO -> {
 
             String accessToken = WxUtil.getAccessToken(tenantId, sysOtherAppDO.getAppId());
@@ -1583,7 +1585,36 @@ public class SignUtil {
     @NotNull
     public static SysQrCodeSceneBindVO setWx(Long qrCodeId, String code, String codeKey, String currentPassword) {
 
-        SysQrCodeSceneBindBO sysQrCodeSceneBindBO = redissonClient.<SysQrCodeSceneBindBO>getBucket(BaseRedisKeyEnum.PRE_SYS_WX_QR_CODE_BIND.name() + qrCodeId).getAndDelete();
+        // 执行
+        return getSysQrCodeSceneBindVoAndHandle(qrCodeId, true, sysQrCodeSceneBindBO -> {
+
+            // 执行
+            SignUtil.bindAccount(code, BaseRedisKeyEnum.PRE_WX_OPEN_ID, sysQrCodeSceneBindBO.getOpenId(), sysQrCodeSceneBindBO.getAppId(), codeKey, currentPassword);
+
+        });
+
+    }
+
+    /**
+     * 获取：微信绑定信息
+     */
+    @SneakyThrows
+    @NotNull
+    public static SysQrCodeSceneBindVO getSysQrCodeSceneBindVoAndHandle(Long qrCodeId, boolean deleteFlag, @Nullable VoidFunc1<SysQrCodeSceneBindBO> voidFunc1) {
+
+        RBucket<SysQrCodeSceneBindBO> rBucket = redissonClient.getBucket(BaseRedisKeyEnum.PRE_SYS_WX_QR_CODE_BIND.name() + qrCodeId);
+
+        SysQrCodeSceneBindBO sysQrCodeSceneBindBO;
+
+        if (deleteFlag) {
+
+            sysQrCodeSceneBindBO = rBucket.getAndDelete();
+
+        } else {
+
+            sysQrCodeSceneBindBO = rBucket.get();
+
+        }
 
         SysQrCodeSceneBindVO sysQrCodeSceneBindVO = new SysQrCodeSceneBindVO();
 
@@ -1599,7 +1630,11 @@ public class SignUtil {
 
             if (qrCodeUserId == null) { // 如果：不存在用户，则开始绑定
 
-                SignUtil.bindAccount(code, BaseRedisKeyEnum.PRE_WX_OPEN_ID, sysQrCodeSceneBindBO.getOpenId(), sysQrCodeSceneBindBO.getAppId(), codeKey, currentPassword);
+                if (voidFunc1 != null) {
+
+                    voidFunc1.call(sysQrCodeSceneBindBO);
+
+                }
 
             } else {
 
@@ -1614,6 +1649,57 @@ public class SignUtil {
                     sysQrCodeSceneBindVO.setErrorMsg("操作失败：该微信已被绑定");
 
                 }
+
+            }
+
+        }
+
+        return sysQrCodeSceneBindVO;
+
+    }
+
+    /**
+     * 获取：已经绑定了微信的用户。进行扫码操作
+     */
+    @SneakyThrows
+    @NotNull
+    public static SysQrCodeSceneBindVO getSysQrCodeSceneBindVoAndHandleForUserId(Long qrCodeId, boolean deleteFlag, BaseRedisKeyEnum baseRedisKeyEnum, @Nullable VoidFunc0 voidFunc0) {
+
+        RBucket<Long> bucket = redissonClient.getBucket(baseRedisKeyEnum.name() + qrCodeId);
+
+        Long userId;
+
+        if (deleteFlag) {
+
+            userId = bucket.getAndDelete();
+
+        } else {
+
+            userId = bucket.get();
+
+        }
+
+        SysQrCodeSceneBindVO sysQrCodeSceneBindVO = new SysQrCodeSceneBindVO();
+
+        if (userId == null) {
+
+            sysQrCodeSceneBindVO.setSceneFlag(false);
+
+        } else {
+
+            sysQrCodeSceneBindVO.setSceneFlag(true);
+
+            Long currentUserIdNotAdmin = UserUtil.getCurrentUserIdNotAdmin();
+
+            if (!userId.equals(currentUserIdNotAdmin)) {
+
+                ApiResultVO.errorMsg("操作失败：扫码用户不是当前用户，请重新进行扫码操作");
+
+            }
+
+            if (voidFunc0 != null) {
+
+                voidFunc0.call();
 
             }
 

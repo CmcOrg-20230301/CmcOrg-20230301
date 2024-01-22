@@ -174,7 +174,7 @@ public class SysSmsHelper {
 
         if (BaseConstant.TOP_TENANT_ID.equals(currentTenantId)) {
 
-            ApiResultVO.error("操作失败：未配置短信，请联系管理员",
+            ApiResultVO.error("操作失败：未配置短信发送，请联系管理员",
                     StrUtil.format("tenantIdOriginal：{}，currentTenantId：{}", tenantIdOriginal, currentTenantId));
 
         }

@@ -58,7 +58,7 @@ public class SignWxController {
     }
 
     @PostMapping(value = "/sign/in/byQrCodeId")
-    @Operation(summary = "扫码登录：通过二维码 id")
+    @Operation(summary = "扫码登录：通过二维码 id", description = OperationDescriptionConstant.SIGN_IN)
     public ApiResultVO<SignInVO> signInByQrCodeId(@RequestBody @Valid NotNullId notNullId) {
         return ApiResultVO.okData(baseService.signInByQrCodeId(notNullId));
     }
@@ -101,8 +101,8 @@ public class SignWxController {
 
     @PostMapping(value = "/setSignInName/getQrCodeUrl")
     @Operation(summary = "设置登录名-获取二维码")
-    public ApiResultVO<GetQrCodeVO> setSignInNameGetQrCodeUrl(@RequestBody @Valid SignWxSetSignInNameGetQrCodeUrlDTO dto) {
-        return ApiResultVO.okData(baseService.setSignInNameGetQrCodeUrl(dto));
+    public ApiResultVO<GetQrCodeVO> setSignInNameGetQrCodeUrl() {
+        return ApiResultVO.okData(baseService.setSignInNameGetQrCodeUrl());
     }
 
     @PostMapping(value = "/setSignInName/getQrCodeSceneFlag")
@@ -119,8 +119,8 @@ public class SignWxController {
 
     @PostMapping(value = "/updateSignInName/getQrCodeUrl")
     @Operation(summary = "修改登录名-获取二维码")
-    public ApiResultVO<GetQrCodeVO> updateSignInNameGetQrCodeUrl(@RequestBody @Valid SignWxUpdateSignInNameGetQrCodeUrlDTO dto) {
-        return ApiResultVO.okData(baseService.updateSignInNameGetQrCodeUrl(dto));
+    public ApiResultVO<GetQrCodeVO> updateSignInNameGetQrCodeUrl() {
+        return ApiResultVO.okData(baseService.updateSignInNameGetQrCodeUrl());
     }
 
     @PostMapping(value = "/updateSignInName/getQrCodeSceneFlag")
@@ -143,8 +143,8 @@ public class SignWxController {
 
     @PostMapping(value = "/setEmail/getQrCodeUrl")
     @Operation(summary = "设置邮箱-获取二维码")
-    public ApiResultVO<GetQrCodeVO> setEmailGetQrCodeUrl(@RequestBody @Valid SignWxSetEmailGetQrCodeUrlDTO dto) {
-        return ApiResultVO.okData(baseService.setEmailGetQrCodeUrl(dto));
+    public ApiResultVO<GetQrCodeVO> setEmailGetQrCodeUrl() {
+        return ApiResultVO.okData(baseService.setEmailGetQrCodeUrl());
     }
 
     @PostMapping(value = "/setEmail/getQrCodeSceneFlag")
@@ -167,8 +167,8 @@ public class SignWxController {
 
     @PostMapping(value = "/updateEmail/getQrCodeUrl")
     @Operation(summary = "修改邮箱-获取二维码")
-    public ApiResultVO<GetQrCodeVO> updateEmailGetQrCodeUrl(@RequestBody @Valid SignWxUpdateEmailGetQrCodeUrlDTO dto) {
-        return ApiResultVO.okData(baseService.updateEmailGetQrCodeUrl(dto));
+    public ApiResultVO<GetQrCodeVO> updateEmailGetQrCodeUrl() {
+        return ApiResultVO.okData(baseService.updateEmailGetQrCodeUrl());
     }
 
     @PostMapping(value = "/updateEmail/getQrCodeSceneFlag")
@@ -221,8 +221,8 @@ public class SignWxController {
 
     @PostMapping(value = "/setPhone/getQrCodeUrl")
     @Operation(summary = "设置手机：获取二维码")
-    public ApiResultVO<GetQrCodeVO> setPhoneGetQrCodeUrl(@RequestBody @Valid SignWxSetPhoneGetQrCodeUrlDTO dto) {
-        return ApiResultVO.okData(baseService.setPhoneGetQrCodeUrl(dto));
+    public ApiResultVO<GetQrCodeVO> setPhoneGetQrCodeUrl() {
+        return ApiResultVO.okData(baseService.setPhoneGetQrCodeUrl());
     }
 
     @PostMapping(value = "/setPhone/getQrCodeSceneFlag")
@@ -241,6 +241,12 @@ public class SignWxController {
     @Operation(summary = "账号注销-获取二维码")
     public ApiResultVO<GetQrCodeVO> signDeleteGetQrCodeUrl() {
         return ApiResultVO.okData(baseService.signDeleteGetQrCodeUrl());
+    }
+
+    @PostMapping(value = "/signDelete/getQrCodeSceneFlag")
+    @Operation(summary = "账号注销：获取二维码是否已经被扫描")
+    public ApiResultVO<SysQrCodeSceneBindVO> signDeleteGetQrCodeSceneFlag(@RequestBody @Valid NotNullId notNullId) {
+        return ApiResultVO.okData(baseService.signDeleteGetQrCodeSceneFlag(notNullId));
     }
 
     @PostMapping(value = "/signDelete")

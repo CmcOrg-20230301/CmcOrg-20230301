@@ -17,7 +17,6 @@ public class SignEmailSetWxDTO {
     @Schema(description = "二维码 id")
     private Long qrCodeId;
 
-
     @Pattern(regexp = BaseRegexConstant.CODE_6_REGEXP)
     @NotBlank
     @Schema(description = "邮箱验证码")
