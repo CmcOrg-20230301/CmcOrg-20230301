@@ -58,7 +58,7 @@ public class SignWxController {
     }
 
     @PostMapping(value = "/sign/in/byQrCodeId")
-    @Operation(summary = "扫码登录：通过二维码 id")
+    @Operation(summary = "扫码登录：通过二维码 id", description = OperationDescriptionConstant.SIGN_IN)
     public ApiResultVO<SignInVO> signInByQrCodeId(@RequestBody @Valid NotNullId notNullId) {
         return ApiResultVO.okData(baseService.signInByQrCodeId(notNullId));
     }
@@ -241,6 +241,12 @@ public class SignWxController {
     @Operation(summary = "账号注销-获取二维码")
     public ApiResultVO<GetQrCodeVO> signDeleteGetQrCodeUrl() {
         return ApiResultVO.okData(baseService.signDeleteGetQrCodeUrl());
+    }
+
+    @PostMapping(value = "/signDelete/getQrCodeSceneFlag")
+    @Operation(summary = "账号注销：获取二维码是否已经被扫描")
+    public ApiResultVO<SysQrCodeSceneBindVO> signDeleteGetQrCodeSceneFlag(@RequestBody @Valid NotNullId notNullId) {
+        return ApiResultVO.okData(baseService.signDeleteGetQrCodeSceneFlag(notNullId));
     }
 
     @PostMapping(value = "/signDelete")

@@ -828,6 +828,22 @@ public class SignWxServiceImpl implements SignWxService {
     }
 
     /**
+     * 账号注销：获取二维码是否已经被扫描
+     */
+    @Override
+    public SysQrCodeSceneBindVO signDeleteGetQrCodeSceneFlag(NotNullId notNullId) {
+
+        boolean exists = redissonClient.<SysQrCodeSceneBindBO>getBucket(BaseRedisKeyEnum.PRE_SYS_WX_QR_CODE_WX_SIGN_DELETE.name() + notNullId.getId()).isExists();
+
+        SysQrCodeSceneBindVO sysQrCodeSceneBindVO = new SysQrCodeSceneBindVO();
+
+        sysQrCodeSceneBindVO.setSceneFlag(exists);
+
+        return sysQrCodeSceneBindVO;
+
+    }
+
+    /**
      * 账号注销
      */
     @Override

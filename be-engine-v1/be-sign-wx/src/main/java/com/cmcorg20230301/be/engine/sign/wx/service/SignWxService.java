@@ -81,6 +81,8 @@ public interface SignWxService {
 
     GetQrCodeVO signDeleteGetQrCodeUrl();
 
+    SysQrCodeSceneBindVO signDeleteGetQrCodeSceneFlag(NotNullId notNullId);
+
     SysQrCodeSceneBindVO signDelete(NotNullId notNullId);
 
 }
