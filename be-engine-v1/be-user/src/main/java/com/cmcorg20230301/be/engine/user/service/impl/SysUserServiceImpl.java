@@ -12,8 +12,6 @@ import com.baomidou.dynamic.datasource.annotation.DSTransactional;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.baomidou.mybatisplus.extension.toolkit.ChainWrappers;
-import com.cmcorg20230301.be.engine.cache.util.CacheHelper;
-import com.cmcorg20230301.be.engine.cache.util.MyCacheUtil;
 import com.cmcorg20230301.be.engine.dept.service.SysDeptRefUserService;
 import com.cmcorg20230301.be.engine.model.model.constant.BaseConstant;
 import com.cmcorg20230301.be.engine.model.model.constant.BaseRegexConstant;
@@ -179,14 +177,9 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserProMapper, SysUserDO>
         }
 
         // 获取所有：用户信息
-        List<SysUserInfoDO> sysUserInfoDOList =
-                MyCacheUtil.getCollection(BaseRedisKeyEnum.SYS_USER_INFO_CACHE, CacheHelper.getDefaultList(), () -> {
-
-                    return ChainWrappers.lambdaQueryChain(sysUserInfoMapper)
-                            .select(SysUserInfoDO::getId, SysUserInfoDO::getNickname, SysUserInfoDO::getTenantId)
-                            .orderByDesc(SysUserInfoDO::getId).list();
-
-                });
+        List<SysUserInfoDO> sysUserInfoDOList = ChainWrappers.lambdaQueryChain(sysUserInfoMapper)
+                .select(SysUserInfoDO::getId, SysUserInfoDO::getNickname, SysUserInfoDO::getTenantId)
+                .orderByDesc(SysUserInfoDO::getId).list();
 
         List<DictVO> dictVOList = sysUserInfoDOList.stream().filter(it -> tenantIdSet.contains(it.getTenantId()))
                 .map(it -> new DictVO(it.getId(), it.getNickname())).collect(Collectors.toList());
