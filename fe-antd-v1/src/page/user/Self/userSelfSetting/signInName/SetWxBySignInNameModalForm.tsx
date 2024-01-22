@@ -4,7 +4,7 @@ import {
     SignSignInNameSetWxGetQrCodeSceneFlag,
     SignSignInNameSetWxGetQrCodeUrl
 } from "@/api/http/SignSignInName.ts";
-import SetWxModalForm from "../SetWxModalForm";
+import SetWxModalForm from "../wx/SetWxModalForm.tsx";
 import {ProFormText} from "@ant-design/pro-components";
 import {PasswordRSAEncrypt} from "@/util/RsaUtil.ts";
 
@@ -16,13 +16,13 @@ export default function () {
                         setWxGetQrCodeSceneFlag={SignSignInNameSetWxGetQrCodeSceneFlag}
                         setWx={SignSignInNameSetWx}
 
-                        handleFormFun={form => {
+                        handleFormFun={(form, qrCodeId) => {
 
                             form.currentPassword = PasswordRSAEncrypt(form.currentPassword!)
 
                         }}
 
-                        formItemArr={[
+                        formItemArr={formRef => [
 
                             <ProFormText.Password
 

@@ -1,4 +1,4 @@
-import SetWxModalForm from "@/page/user/Self/userSelfSetting/SetWxModalForm.tsx";
+import SetWxModalForm from "@/page/user/Self/userSelfSetting/wx/SetWxModalForm.tsx";
 import {
     SignPhoneUpdateWx,
     SignPhoneUpdateWxGetQrCodeSceneFlagNew,
@@ -21,7 +21,7 @@ export default function () {
 
                         title={UserSelfUpdateWxModalTitle}
 
-                        formItemArr={[
+                        formItemArr={formRef => [
 
                             <ProFormCaptcha
 

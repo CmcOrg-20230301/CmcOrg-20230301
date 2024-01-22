@@ -1,4 +1,4 @@
-import SetWxModalForm from "@/page/user/Self/userSelfSetting/SetWxModalForm.tsx";
+import SetWxModalForm from "@/page/user/Self/userSelfSetting/wx/SetWxModalForm.tsx";
 import {ProFormCaptcha} from "@ant-design/pro-components";
 import {Validate} from "@/util/ValidatorUtil.ts";
 import {ToastSuccess} from "@/util/ToastUtil.ts";
@@ -18,7 +18,7 @@ export default function () {
                         setWxGetQrCodeSceneFlag={SignPhoneSetWxGetQrCodeSceneFlag}
                         setWx={SignPhoneSetWx}
 
-                        formItemArr={[
+                        formItemArr={formRef => [
 
                             <ProFormCaptcha
 

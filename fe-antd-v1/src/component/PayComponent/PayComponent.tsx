@@ -210,6 +210,8 @@ const PayComponent = forwardRef<IPayComponentRef, IPayComponent>((props, ref) =>
 
             footer={null}
 
+            className={"noFooterModal flex-center"}
+
             onCancel={() => {
 
                 outTradeNoRef.current = ""
@@ -217,8 +219,6 @@ const PayComponent = forwardRef<IPayComponentRef, IPayComponent>((props, ref) =>
                 setQrCodeModalOpen(false)
 
             }}
-
-            className={"noFooterModal flex-center"}
 
         >
 

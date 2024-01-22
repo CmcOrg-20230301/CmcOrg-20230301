@@ -18,6 +18,20 @@ import './style/theme.less'
 dayjs.extend(relativeTime)
 dayjs.locale('zh-cn');
 
+// 自定义 console.error ↓
+const consoleErrorOld = console.error
+
+console.error = (message?: any, ...optionalParams: any[]) => {
+
+    if (message?.startsWith('Warning: [antd: Select] `bordered` is deprecated.')) {
+        return
+    }
+
+    consoleErrorOld(message, ...optionalParams)
+
+}
+// 自定义 console.error ↑
+
 ReactDOM.createRoot(document.getElementById('root')!).render(
     // <React.StrictMode>
 

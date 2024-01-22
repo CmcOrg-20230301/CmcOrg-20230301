@@ -175,7 +175,11 @@ export default function () {
                 // 二维码过期时间
                 const expireTs = Number(sysTenantConfigurationByIdVORef.current.wxQrCodeSignUp.expireTs || 1);
 
-                if (expireTs > 0 && GetServerTimestamp() > expireTs && !signWxSignInGetQrCodeUrlFlagRef.current) {
+                if (expireTs > 0 && GetServerTimestamp() > expireTs) {
+
+                    if (signWxSignInGetQrCodeUrlFlagRef.current) {
+                        return;
+                    }
 
                     signWxSignInGetQrCodeUrlFlagRef.current = true
 

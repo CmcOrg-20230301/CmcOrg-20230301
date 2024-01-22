@@ -1,5 +1,5 @@
 import CommonConstant from "@/model/constant/CommonConstant.ts";
-import {UserSelfUpdateSignNameModalTitle} from "@/page/user/Self/UserSelfSetting.tsx";
+import {UserSelfUpdateSignInNameModalTitle} from "@/page/user/Self/UserSelfSetting.tsx";
 import {PasswordRSAEncrypt} from "@/util/RsaUtil.ts";
 import {SignOut} from "@/util/UserUtil.ts";
 import {ToastSuccess} from "@/util/ToastUtil.ts";
@@ -19,9 +19,9 @@ export default function () {
 
         width={CommonConstant.MODAL_FORM_WIDTH}
 
-        title={UserSelfUpdateSignNameModalTitle}
+        title={UserSelfUpdateSignInNameModalTitle}
 
-        trigger={<a>{UserSelfUpdateSignNameModalTitle}</a>}
+        trigger={<a>{UserSelfUpdateSignInNameModalTitle}</a>}
 
         onFinish={async (form) => {
 

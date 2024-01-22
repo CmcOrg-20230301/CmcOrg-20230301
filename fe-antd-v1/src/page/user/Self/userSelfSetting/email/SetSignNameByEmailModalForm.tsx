@@ -1,6 +1,6 @@
 import {ModalForm, ProFormCaptcha, ProFormInstance, ProFormText} from "@ant-design/pro-components";
 import CommonConstant from "@/model/constant/CommonConstant.ts";
-import {UserSelfSetSignNameModalTitle} from "@/page/user/Self/UserSelfSetting.tsx";
+import {UserSelfSetSignInNameModalTitle} from "@/page/user/Self/UserSelfSetting.tsx";
 import {SignOut} from "@/util/UserUtil.ts";
 import {ToastSuccess} from "@/util/ToastUtil.ts";
 import {Validate} from "@/util/ValidatorUtil.ts";
@@ -29,9 +29,9 @@ export default function () {
 
             width={CommonConstant.MODAL_FORM_WIDTH}
 
-            title={UserSelfSetSignNameModalTitle}
+            title={UserSelfSetSignInNameModalTitle}
 
-            trigger={<a>{UserSelfSetSignNameModalTitle}</a>}
+            trigger={<a>{UserSelfSetSignInNameModalTitle}</a>}
 
             onFinish={async (form) => {
 

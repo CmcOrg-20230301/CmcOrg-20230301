@@ -76,6 +76,11 @@ export function SignWxUpdateWxGetQrCodeUrlNew(config?: AxiosRequestConfig) {
     return $http.myPost<GetQrCodeVO>('/sign/wx/updateWx/getQrCodeUrl/new', undefined, config)
 }
 
+// 账号注销：获取二维码是否已经被扫描
+export function SignWxSignDeleteGetQrCodeSceneFlag(form: NotNullId, config?: AxiosRequestConfig) {
+    return $http.myPost<SysQrCodeSceneBindVO>('/sign/wx/signDelete/getQrCodeSceneFlag', form, config)
+}
+
 export interface SignWxSetPasswordDTO {
     originNewPassword?: string // 前端加密之后的原始新密码，required：true
     newPassword?: string // 前端加密之后的新密码，required：true
@@ -141,13 +146,9 @@ export function SignWxUpdateWxGetQrCodeUrlOld(config?: AxiosRequestConfig) {
     return $http.myPost<GetQrCodeVO>('/sign/wx/updateWx/getQrCodeUrl/old', undefined, config)
 }
 
-export interface SignWxSetEmailGetQrCodeUrlDTO {
-    email?: string // 邮箱，正则表达式：^\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$，maxLength：200，minLength：0，required：true
-}
-
 // 设置邮箱-获取二维码
-export function SignWxSetEmailGetQrCodeUrl(form: SignWxSetEmailGetQrCodeUrlDTO, config?: AxiosRequestConfig) {
-    return $http.myPost<GetQrCodeVO>('/sign/wx/setEmail/getQrCodeUrl', form, config)
+export function SignWxSetEmailGetQrCodeUrl(config?: AxiosRequestConfig) {
+    return $http.myPost<GetQrCodeVO>('/sign/wx/setEmail/getQrCodeUrl', undefined, config)
 }
 
 // 扫码登录：通过二维码 id
@@ -175,22 +176,14 @@ export function SignWxSetPasswordGetQrCodeUrl(config?: AxiosRequestConfig) {
     return $http.myPost<GetQrCodeVO>('/sign/wx/setPassword/getQrCodeUrl', undefined, config)
 }
 
-export interface SignWxUpdateSignInNameGetQrCodeUrlDTO {
-    signInName?: string // 登录名，正则表达式：^[\u4E00-\u9FA5A-Za-z0-9_-]{2,20}$，maxLength：20，minLength：0，required：true
-}
-
 // 修改登录名-获取二维码
-export function SignWxUpdateSignInNameGetQrCodeUrl(form: SignWxUpdateSignInNameGetQrCodeUrlDTO, config?: AxiosRequestConfig) {
-    return $http.myPost<GetQrCodeVO>('/sign/wx/updateSignInName/getQrCodeUrl', form, config)
-}
-
-export interface SignWxUpdateEmailGetQrCodeUrlDTO {
-    email?: string // 邮箱，正则表达式：^\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$，maxLength：200，minLength：0，required：true
+export function SignWxUpdateSignInNameGetQrCodeUrl(config?: AxiosRequestConfig) {
+    return $http.myPost<GetQrCodeVO>('/sign/wx/updateSignInName/getQrCodeUrl', undefined, config)
 }
 
 // 修改邮箱-获取二维码
-export function SignWxUpdateEmailGetQrCodeUrl(form: SignWxUpdateEmailGetQrCodeUrlDTO, config?: AxiosRequestConfig) {
-    return $http.myPost<GetQrCodeVO>('/sign/wx/updateEmail/getQrCodeUrl', form, config)
+export function SignWxUpdateEmailGetQrCodeUrl(config?: AxiosRequestConfig) {
+    return $http.myPost<GetQrCodeVO>('/sign/wx/updateEmail/getQrCodeUrl', undefined, config)
 }
 
 // 浏览器：微信 code登录，可以获取用户的基础信息
@@ -227,13 +220,9 @@ export function SignWxUpdateEmailSendCode(form: SignWxUpdateEmailSendCodeDTO, co
     return $http.myPost<string>('/sign/wx/updateEmail/sendCode', form, config)
 }
 
-export interface SignWxSetPhoneGetQrCodeUrlDTO {
-    phone?: string // 手机号码，正则表达式：^(13[0-9]|14[01456879]|15[0-35-9]|16[2567]|17[0-8]|18[0-9]|19[0-35-9])\d{8}$，maxLength：100，minLength：0，required：true
-}
-
 // 设置手机：获取二维码
-export function SignWxSetPhoneGetQrCodeUrl(form: SignWxSetPhoneGetQrCodeUrlDTO, config?: AxiosRequestConfig) {
-    return $http.myPost<GetQrCodeVO>('/sign/wx/setPhone/getQrCodeUrl', form, config)
+export function SignWxSetPhoneGetQrCodeUrl(config?: AxiosRequestConfig) {
+    return $http.myPost<GetQrCodeVO>('/sign/wx/setPhone/getQrCodeUrl', undefined, config)
 }
 
 // 设置手机：获取二维码是否已经被扫描
@@ -272,13 +261,9 @@ export function SignWxSetEmailGetQrCodeSceneFlag(form: NotNullId, config?: Axios
     return $http.myPost<SysQrCodeSceneBindVO>('/sign/wx/setEmail/getQrCodeSceneFlag', form, config)
 }
 
-export interface SignWxSetSignInNameGetQrCodeUrlDTO {
-    signInName?: string // 登录名，正则表达式：^[\u4E00-\u9FA5A-Za-z0-9_-]{2,20}$，maxLength：20，minLength：0，required：true
-}
-
 // 设置登录名-获取二维码
-export function SignWxSetSignInNameGetQrCodeUrl(form: SignWxSetSignInNameGetQrCodeUrlDTO, config?: AxiosRequestConfig) {
-    return $http.myPost<GetQrCodeVO>('/sign/wx/setSignInName/getQrCodeUrl', form, config)
+export function SignWxSetSignInNameGetQrCodeUrl(config?: AxiosRequestConfig) {
+    return $http.myPost<GetQrCodeVO>('/sign/wx/setSignInName/getQrCodeUrl', undefined, config)
 }
 
 export interface SignWxSetPhoneSendCodeDTO {

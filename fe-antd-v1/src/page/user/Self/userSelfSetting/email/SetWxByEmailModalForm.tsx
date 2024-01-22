@@ -1,5 +1,5 @@
 import React from "react";
-import SetWxModalForm from "@/page/user/Self/userSelfSetting/SetWxModalForm.tsx";
+import SetWxModalForm from "@/page/user/Self/userSelfSetting/wx/SetWxModalForm.tsx";
 import {ProFormCaptcha} from "@ant-design/pro-components";
 import {
     SignEmailSetWx,
@@ -18,7 +18,7 @@ export default function () {
                         setWxGetQrCodeSceneFlag={SignEmailSetWxGetQrCodeSceneFlag}
                         setWx={SignEmailSetWx}
 
-                        formItemArr={[
+                        formItemArr={formRef => [
 
                             <ProFormCaptcha
 

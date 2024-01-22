@@ -67,8 +67,8 @@ interface IUserSelfSetting {
 export const UserSelfSetPasswordTitle = "设置密码"
 export const UserSelfUpdatePasswordTitle = "修改密码"
 
-export const UserSelfSetSignNameModalTitle = "设置登录名"
-export const UserSelfUpdateSignNameModalTitle = "修改登录名"
+export const UserSelfSetSignInNameModalTitle = "设置登录名"
+export const UserSelfUpdateSignInNameModalTitle = "修改登录名"
 
 export const UserSelfSetEmailModalTitle = "绑定邮箱"
 export const UserSelfUpdateEmailModalTitle = "修改邮箱"
