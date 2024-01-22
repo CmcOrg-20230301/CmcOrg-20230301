@@ -689,13 +689,8 @@ public class SignWxServiceImpl implements SignWxService {
     @Override
     public SysQrCodeSceneBindVO updateWxGetQrCodeSceneFlagNew(NotNullId notNullId) {
 
-        boolean exists = redissonClient.<SysQrCodeSceneBindBO>getBucket(BaseRedisKeyEnum.PRE_SYS_WX_QR_CODE_BIND.name() + notNullId.getId()).isExists();
-
-        SysQrCodeSceneBindVO sysQrCodeSceneBindVO = new SysQrCodeSceneBindVO();
-
-        sysQrCodeSceneBindVO.setSceneFlag(exists);
-
-        return sysQrCodeSceneBindVO;
+        // 执行
+        return SignUtil.getSysQrCodeSceneBindVoAndHandle(notNullId.getId(), false, null);
 
     }
 

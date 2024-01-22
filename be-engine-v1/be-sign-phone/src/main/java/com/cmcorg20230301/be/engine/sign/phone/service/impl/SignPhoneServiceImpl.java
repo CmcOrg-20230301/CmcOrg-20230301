@@ -4,7 +4,6 @@ import cn.hutool.core.util.BooleanUtil;
 import com.baomidou.mybatisplus.extension.toolkit.ChainWrappers;
 import com.cmcorg20230301.be.engine.email.enums.EmailMessageEnum;
 import com.cmcorg20230301.be.engine.email.util.MyEmailUtil;
-import com.cmcorg20230301.be.engine.model.model.bo.SysQrCodeSceneBindBO;
 import com.cmcorg20230301.be.engine.model.model.dto.NotBlankCodeDTO;
 import com.cmcorg20230301.be.engine.model.model.dto.NotNullId;
 import com.cmcorg20230301.be.engine.model.model.vo.GetQrCodeVO;
@@ -385,13 +384,8 @@ public class SignPhoneServiceImpl implements SignPhoneService {
     @Override
     public SysQrCodeSceneBindVO setWxGetQrCodeSceneFlag(NotNullId notNullId) {
 
-        boolean exists = redissonClient.<SysQrCodeSceneBindBO>getBucket(BaseRedisKeyEnum.PRE_SYS_WX_QR_CODE_BIND.name() + notNullId.getId()).isExists();
-
-        SysQrCodeSceneBindVO sysQrCodeSceneBindVO = new SysQrCodeSceneBindVO();
-
-        sysQrCodeSceneBindVO.setSceneFlag(exists);
-
-        return sysQrCodeSceneBindVO;
+        // 执行
+        return SignUtil.getSysQrCodeSceneBindVoAndHandle(notNullId.getId(), false, null);
 
     }
 
@@ -446,13 +440,8 @@ public class SignPhoneServiceImpl implements SignPhoneService {
     @Override
     public SysQrCodeSceneBindVO updateWxGetQrCodeSceneFlagNew(NotNullId notNullId) {
 
-        boolean exists = redissonClient.<SysQrCodeSceneBindBO>getBucket(BaseRedisKeyEnum.PRE_SYS_WX_QR_CODE_BIND.name() + notNullId.getId()).isExists();
-
-        SysQrCodeSceneBindVO sysQrCodeSceneBindVO = new SysQrCodeSceneBindVO();
-
-        sysQrCodeSceneBindVO.setSceneFlag(exists);
-
-        return sysQrCodeSceneBindVO;
+        // 执行
+        return SignUtil.getSysQrCodeSceneBindVoAndHandle(notNullId.getId(), false, null);
 
     }
 
