@@ -1588,6 +1588,7 @@ public class SignUtil {
         // 执行
         return getSysQrCodeSceneBindVoAndHandle(qrCodeId, true, sysQrCodeSceneBindBO -> {
 
+            // 执行
             SignUtil.bindAccount(code, BaseRedisKeyEnum.PRE_WX_OPEN_ID, sysQrCodeSceneBindBO.getOpenId(), sysQrCodeSceneBindBO.getAppId(), codeKey, currentPassword);
 
         });
@@ -1648,6 +1649,57 @@ public class SignUtil {
                     sysQrCodeSceneBindVO.setErrorMsg("操作失败：该微信已被绑定");
 
                 }
+
+            }
+
+        }
+
+        return sysQrCodeSceneBindVO;
+
+    }
+
+    /**
+     * 获取：已经绑定了微信的用户。进行扫码操作
+     */
+    @SneakyThrows
+    @NotNull
+    public static SysQrCodeSceneBindVO getSysQrCodeSceneBindVoAndHandleForUserId(Long qrCodeId, boolean deleteFlag, BaseRedisKeyEnum baseRedisKeyEnum, @Nullable VoidFunc0 voidFunc0) {
+
+        RBucket<Long> bucket = redissonClient.getBucket(baseRedisKeyEnum.name() + qrCodeId);
+
+        Long userId;
+
+        if (deleteFlag) {
+
+            userId = bucket.getAndDelete();
+
+        } else {
+
+            userId = bucket.get();
+
+        }
+
+        SysQrCodeSceneBindVO sysQrCodeSceneBindVO = new SysQrCodeSceneBindVO();
+
+        if (userId == null) {
+
+            sysQrCodeSceneBindVO.setSceneFlag(false);
+
+        } else {
+
+            sysQrCodeSceneBindVO.setSceneFlag(true);
+
+            Long currentUserIdNotAdmin = UserUtil.getCurrentUserIdNotAdmin();
+
+            if (!userId.equals(currentUserIdNotAdmin)) {
+
+                ApiResultVO.errorMsg("操作失败：扫码用户不是当前用户，请重新进行扫码操作");
+
+            }
+
+            if (voidFunc0 != null) {
+
+                voidFunc0.call();
 
             }
 
