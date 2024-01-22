@@ -3,14 +3,20 @@ import LocalStorageKey, {LocalStorageKeyList} from "@/model/constant/LocalStorag
 import {ClearStorage, SignOut} from "@/util/UserUtil";
 import {SysMenuDO, SysMenuUserSelfMenuList} from "@/api/http/SysMenu";
 import {ToastError} from "@/util/ToastUtil";
-import {setUserSelfAvatarUrl, setUserSelfInfo, setUserSelfMenuList} from "@/store/userSlice";
+import {
+    setUserSelfAvatarUrl,
+    setUserSelfInfo,
+    setUserSelfMenuList,
+    setUserSelfMenuListLoadFlag
+} from "@/store/userSlice";
 import {ConnectWebSocket} from "@/util/WebSocket/WebSocketUtil";
-import {GetAppDispatch, GetAppNav, GetUserSelfInfo, GetUserSelfMenuList} from "@/MyApp";
+import {GetAppDispatch, GetAppNav, GetUserSelfInfo} from "@/MyApp";
 import {GetURLSearchParams, SetTenantIdToStorage} from "@/util/CommonUtil";
 import {SessionStorageKeyList} from "@/model/constant/SessionStorageKey";
 import VConsole from 'vconsole';
 import {UserSelfInfo, UserSelfInfoVO} from "@/api/http/UserSelf.ts";
 import {SysFileGetPublicUrl} from "@/api/http/SysFile.ts";
+import {useAppSelector} from "@/store";
 
 export interface IInit {
 
@@ -119,7 +125,7 @@ export function UseEffectFullScreenChange(setFullScreenFlag: (value: (((prevStat
 }
 
 // 处理：用户菜单
-function handleUserSelfMenuList(userSelfMenuList: SysMenuDO[], callBack: ((data: SysMenuDO[]) => void) | undefined, firstFlag: boolean) {
+function handleUserSelfMenuList(userSelfMenuList: SysMenuDO[], callBack: ((data: SysMenuDO[], firstFlag: boolean) => void) | undefined, firstFlag: boolean) {
 
     if (!userSelfMenuList || !userSelfMenuList.length) {
 
@@ -139,14 +145,18 @@ function handleUserSelfMenuList(userSelfMenuList: SysMenuDO[], callBack: ((data:
 
     if (callBack) {
 
-        callBack(userSelfMenuList)
+        callBack(userSelfMenuList, firstFlag)
 
     }
 
 }
 
 // 加载菜单
-export function UseEffectLoadSysMenuUserSelfMenuList(callBack?: (data: SysMenuDO[]) => void) {
+export function UseEffectLoadSysMenuUserSelfMenuList(callBack?: (data: SysMenuDO[], firstFlag: boolean) => void) {
+
+    const userSelfMenuList = useAppSelector((state) => state.user.userSelfMenuList);
+
+    const userSelfMenuListLoadFlag = useAppSelector((state) => state.user.userSelfMenuListLoadFlag);
 
     useEffect(() => {
 
@@ -159,15 +169,16 @@ export function UseEffectLoadSysMenuUserSelfMenuList(callBack?: (data: SysMenuDO
 
         }
 
-        const userSelfMenuList = GetUserSelfMenuList();
-
-        if (userSelfMenuList && userSelfMenuList.length) {  // 如果：已经加载过了菜单
-
-            // 处理：用户菜单
-            handleUserSelfMenuList(userSelfMenuList, callBack, false);
-            return;
-
+        if (callBack) {
+            callBack(userSelfMenuList, false)
         }
+
+        if (userSelfMenuListLoadFlag) {  // 如果：已经加载过了菜单
+            return;
+        }
+
+        // 先设置为：true
+        GetAppDispatch()(setUserSelfMenuListLoadFlag(true))
 
         // 加载菜单
         SysMenuUserSelfMenuList().then(res => {

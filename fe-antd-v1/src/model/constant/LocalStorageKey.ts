@@ -4,6 +4,8 @@ const LocalStorageKey = {
 
     JWT_EXPIRE_TS: "JWT_EXPIRE_TS", // jwt过期时间戳
 
+    USER_SELF_MENU_LIST: 'USER_SELF_MENU_LIST', // 用户菜单
+
     USER_SELF_AVATAR_URL: 'USER_SELF_AVATAR_URL',
 
     TENANT_ID: 'TENANT_ID', // 租户 id

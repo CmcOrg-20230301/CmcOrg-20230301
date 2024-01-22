@@ -7,13 +7,17 @@ import LocalStorageKey from "@/model/constant/LocalStorageKey";
 export default function () {
 
     // 加载菜单
-    UseEffectLoadSysMenuUserSelfMenuList(() => {
+    UseEffectLoadSysMenuUserSelfMenuList((data, firstFlag) => {
 
-        const mainRedirectUri = localStorage.getItem(LocalStorageKey.MAIN_REDIRECT_URI);
+        if (firstFlag) {
 
-        if (mainRedirectUri) {
+            const mainRedirectUri = localStorage.getItem(LocalStorageKey.MAIN_REDIRECT_URI);
 
-            GetAppNav()(mainRedirectUri)
+            if (mainRedirectUri) {
+
+                GetAppNav()(mainRedirectUri)
+
+            }
 
         }
 

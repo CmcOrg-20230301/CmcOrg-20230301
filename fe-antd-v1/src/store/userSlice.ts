@@ -7,6 +7,8 @@ interface IUserSlice {
 
     userSelfMenuList: SysMenuDO[] // 用户菜单
 
+    userSelfMenuListLoadFlag: boolean // 是否：加载过菜单
+
     userSelfInfo: UserSelfInfoVO // 当前用户，基本信息
 
     userSelfAvatarUrl: string // 当前用户，头像链接
@@ -15,7 +17,9 @@ interface IUserSlice {
 
 const initialState: IUserSlice = {
 
-    userSelfMenuList: [],
+    userSelfMenuList: JSON.parse(localStorage.getItem(LocalStorageKey.USER_SELF_MENU_LIST) || "[]"),
+
+    userSelfMenuListLoadFlag: false,
 
     userSelfInfo: {},
 
@@ -32,7 +36,19 @@ export const userSlice = createSlice({
     reducers: {
 
         setUserSelfMenuList: (state, action: PayloadAction<SysMenuDO[]>) => {
+
             state.userSelfMenuList = action.payload
+
+            state.userSelfMenuListLoadFlag = true
+
+            localStorage.setItem(LocalStorageKey.USER_SELF_MENU_LIST, JSON.stringify(action.payload))
+
+        },
+
+        setUserSelfMenuListLoadFlag: (state, action: PayloadAction<boolean>) => {
+
+            state.userSelfMenuListLoadFlag = action.payload
+
         },
 
         setUserSelfInfo: (state, action: PayloadAction<UserSelfInfoVO>) => {
@@ -56,6 +72,7 @@ export const userSlice = createSlice({
 
             // 退出登录
             state.userSelfMenuList = []
+            state.userSelfMenuListLoadFlag = false
             state.userSelfInfo = {}
             state.userSelfAvatarUrl = ""
 
@@ -65,7 +82,13 @@ export const userSlice = createSlice({
 
 })
 
-export const {setUserSelfMenuList, setUserSelfInfo, setUserSelfAvatarUrl, signOut} = userSlice.actions
+export const {
+    setUserSelfMenuList,
+    setUserSelfInfo,
+    setUserSelfAvatarUrl,
+    signOut,
+    setUserSelfMenuListLoadFlag
+} = userSlice.actions
 export const {} = userSlice.actions
 
 export default userSlice.reducer

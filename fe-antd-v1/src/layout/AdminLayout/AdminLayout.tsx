@@ -71,18 +71,16 @@ export default function () {
     const [element, setElement] = useState<React.ReactNode>(null);
 
     // 设置 element
-    function DoSetElement(userSelfMenuList: SysMenuDO[]) {
+    function DoSetElement(userSelfMenuList: SysMenuDO[], firstFlag: boolean) {
 
-        if (element == null) {
-            setElement(<AdminLayoutElement userSelfMenuList={userSelfMenuList}/>)
-        }
+        setElement(<AdminLayoutElement userSelfMenuList={userSelfMenuList} firstFlag={firstFlag}/>)
 
     }
 
     // 加载菜单
-    UseEffectLoadSysMenuUserSelfMenuList(data => {
+    UseEffectLoadSysMenuUserSelfMenuList((data, firstFlag) => {
 
-        DoSetElement(data)
+        DoSetElement(data, firstFlag)
 
     });
 
@@ -93,6 +91,8 @@ export default function () {
 interface IAdminLayoutElement {
 
     userSelfMenuList: SysMenuDO[]
+
+    firstFlag: boolean
 
 }
 
@@ -131,11 +131,17 @@ function AdminLayoutElement(props: IAdminLayoutElement) {
 
     })
 
+    const [loadUserSelfMenuListParam, setLoadUserSelfMenuListParam] = useState<number>(0);
+
     useEffect(() => {
 
+        // 更新：页面
+        setLoadUserSelfMenuListParam(loadUserSelfMenuListParam + 1)
+
+        // 前往：第一个页面
         GoFirstPage(props.userSelfMenuList)
 
-    }, [])
+    }, [props.userSelfMenuList])
 
     return (
 
@@ -148,6 +154,10 @@ function AdminLayoutElement(props: IAdminLayoutElement) {
             }}
 
             menu={{
+
+                loading: false,
+
+                params: {loadUserSelfMenuListParam},
 
                 request: async () => {
 

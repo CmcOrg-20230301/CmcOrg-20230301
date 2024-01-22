@@ -31,11 +31,15 @@ export const commonSlice = createSlice({
     reducers: {
 
         setWebSocketMessage(state, action: PayloadAction<IWebSocketMessage<any>>) {
+
             state.webSocketMessage = action.payload
+
         },
 
         setWebSocketStatus(state, action: PayloadAction<boolean>) {
+
             state.webSocketStatus = action.payload
+
         },
 
         setTenantManageName(state, action: PayloadAction<string>) {
