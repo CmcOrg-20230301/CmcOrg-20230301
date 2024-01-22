@@ -33,13 +33,13 @@ public interface SignWxService {
 
     SysQrCodeSceneBindVO updatePassword(SignWxUpdatePasswordDTO dto);
 
-    GetQrCodeVO setSignInNameGetQrCodeUrl(SignWxSetSignInNameGetQrCodeUrlDTO dto);
+    GetQrCodeVO setSignInNameGetQrCodeUrl();
 
     SysQrCodeSceneBindVO setSignInNameGetQrCodeSceneFlag(NotNullId notNullId);
 
     SysQrCodeSceneBindVO setSignInName(SignWxSetSignInNameDTO dto);
 
-    GetQrCodeVO updateSignInNameGetQrCodeUrl(SignWxUpdateSignInNameGetQrCodeUrlDTO dto);
+    GetQrCodeVO updateSignInNameGetQrCodeUrl();
 
     SysQrCodeSceneBindVO updateSignInNameGetQrCodeSceneFlag(NotNullId notNullId);
 
@@ -47,7 +47,7 @@ public interface SignWxService {
 
     String setEmailSendCode(SignWxSetEmailSendCodeDTO dto);
 
-    GetQrCodeVO setEmailGetQrCodeUrl(SignWxSetEmailGetQrCodeUrlDTO dto);
+    GetQrCodeVO setEmailGetQrCodeUrl();
 
     SysQrCodeSceneBindVO setEmailGetQrCodeSceneFlag(NotNullId notNullId);
 
@@ -55,7 +55,7 @@ public interface SignWxService {
 
     String updateEmailSendCode(SignWxUpdateEmailSendCodeDTO dto);
 
-    GetQrCodeVO updateEmailGetQrCodeUrl(SignWxUpdateEmailGetQrCodeUrlDTO dto);
+    GetQrCodeVO updateEmailGetQrCodeUrl();
 
     SysQrCodeSceneBindVO updateEmailGetQrCodeSceneFlag(NotNullId notNullId);
 
@@ -73,7 +73,7 @@ public interface SignWxService {
 
     String setPhoneSendCode(SignWxSetPhoneSendCodeDTO dto);
 
-    GetQrCodeVO setPhoneGetQrCodeUrl(SignWxSetPhoneGetQrCodeUrlDTO dto);
+    GetQrCodeVO setPhoneGetQrCodeUrl();
 
     SysQrCodeSceneBindVO setPhoneGetQrCodeSceneFlag(NotNullId notNullId);
 

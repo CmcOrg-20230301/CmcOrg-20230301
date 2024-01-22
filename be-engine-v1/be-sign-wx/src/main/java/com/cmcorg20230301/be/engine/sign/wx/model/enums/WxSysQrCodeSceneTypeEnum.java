@@ -32,7 +32,7 @@ public enum WxSysQrCodeSceneTypeEnum implements ISysQrCodeSceneType {
 
         SignInVO signInVO = SignUtil.signInGetJwt(sysUserDO);
 
-        bucket.set(signInVO, Duration.ofMillis(BaseConstant.SECOND_10_EXPIRE_TIME));
+        bucket.set(signInVO, Duration.ofMillis(BaseConstant.MINUTE_3_EXPIRE_TIME));
 
     }, false),
 
@@ -41,7 +41,7 @@ public enum WxSysQrCodeSceneTypeEnum implements ISysQrCodeSceneType {
 
         RBucket<String> bucket = redissonClient.getBucket(BaseRedisKeyEnum.PRE_SYS_WX_QR_CODE_SET_PASSWORD.name() + qrCodeSceneValue);
 
-        bucket.set("", Duration.ofMillis(BaseConstant.SECOND_10_EXPIRE_TIME));
+        bucket.set("", Duration.ofMillis(BaseConstant.MINUTE_3_EXPIRE_TIME));
 
     }, false),
 
@@ -50,7 +50,7 @@ public enum WxSysQrCodeSceneTypeEnum implements ISysQrCodeSceneType {
 
         RBucket<String> bucket = redissonClient.getBucket(BaseRedisKeyEnum.PRE_SYS_WX_QR_CODE_UPDATE_PASSWORD.name() + qrCodeSceneValue);
 
-        bucket.set("", Duration.ofMillis(BaseConstant.SECOND_10_EXPIRE_TIME));
+        bucket.set("", Duration.ofMillis(BaseConstant.MINUTE_3_EXPIRE_TIME));
 
     }, false),
 
@@ -59,7 +59,7 @@ public enum WxSysQrCodeSceneTypeEnum implements ISysQrCodeSceneType {
 
         RBucket<String> bucket = redissonClient.getBucket(BaseRedisKeyEnum.PRE_SYS_WX_QR_CODE_SET_SIGN_IN_NAME.name() + qrCodeSceneValue);
 
-        bucket.set("", Duration.ofMillis(BaseConstant.SECOND_10_EXPIRE_TIME));
+        bucket.set("", Duration.ofMillis(BaseConstant.MINUTE_3_EXPIRE_TIME));
 
     }, false),
 
@@ -68,7 +68,7 @@ public enum WxSysQrCodeSceneTypeEnum implements ISysQrCodeSceneType {
 
         RBucket<String> bucket = redissonClient.getBucket(BaseRedisKeyEnum.PRE_SYS_WX_QR_CODE_UPDATE_SIGN_IN_NAME.name() + qrCodeSceneValue);
 
-        bucket.set("", Duration.ofMillis(BaseConstant.SECOND_10_EXPIRE_TIME));
+        bucket.set("", Duration.ofMillis(BaseConstant.MINUTE_3_EXPIRE_TIME));
 
     }, false),
 
@@ -77,7 +77,7 @@ public enum WxSysQrCodeSceneTypeEnum implements ISysQrCodeSceneType {
 
         RBucket<String> bucket = redissonClient.getBucket(BaseRedisKeyEnum.PRE_SYS_WX_QR_CODE_SET_EMAIL.name() + qrCodeSceneValue);
 
-        bucket.set("", Duration.ofMillis(BaseConstant.SECOND_10_EXPIRE_TIME));
+        bucket.set("", Duration.ofMillis(BaseConstant.MINUTE_3_EXPIRE_TIME));
 
     }, false),
 
@@ -86,7 +86,7 @@ public enum WxSysQrCodeSceneTypeEnum implements ISysQrCodeSceneType {
 
         RBucket<String> bucket = redissonClient.getBucket(BaseRedisKeyEnum.PRE_SYS_WX_QR_CODE_UPDATE_EMAIL.name() + qrCodeSceneValue);
 
-        bucket.set("", Duration.ofMillis(BaseConstant.SECOND_10_EXPIRE_TIME));
+        bucket.set("", Duration.ofMillis(BaseConstant.MINUTE_3_EXPIRE_TIME));
 
     }, false),
 
@@ -95,7 +95,7 @@ public enum WxSysQrCodeSceneTypeEnum implements ISysQrCodeSceneType {
 
         RBucket<String> bucket = redissonClient.getBucket(BaseRedisKeyEnum.PRE_SYS_WX_QR_CODE_UPDATE_WX.name() + qrCodeSceneValue);
 
-        bucket.set("", Duration.ofMillis(BaseConstant.SECOND_10_EXPIRE_TIME));
+        bucket.set("", Duration.ofMillis(BaseConstant.MINUTE_3_EXPIRE_TIME));
 
     }, false),
 
@@ -104,7 +104,7 @@ public enum WxSysQrCodeSceneTypeEnum implements ISysQrCodeSceneType {
 
         RBucket<String> bucket = redissonClient.getBucket(BaseRedisKeyEnum.PRE_SYS_WX_QR_CODE_SET_PHONE.name() + qrCodeSceneValue);
 
-        bucket.set("", Duration.ofMillis(BaseConstant.SECOND_10_EXPIRE_TIME));
+        bucket.set("", Duration.ofMillis(BaseConstant.MINUTE_3_EXPIRE_TIME));
 
     }, false),
 
@@ -113,7 +113,7 @@ public enum WxSysQrCodeSceneTypeEnum implements ISysQrCodeSceneType {
 
         RBucket<String> bucket = redissonClient.getBucket(BaseRedisKeyEnum.PRE_SYS_WX_QR_CODE_WX_SIGN_DELETE.name() + qrCodeSceneValue);
 
-        bucket.set("", Duration.ofMillis(BaseConstant.SECOND_10_EXPIRE_TIME));
+        bucket.set("", Duration.ofMillis(BaseConstant.MINUTE_3_EXPIRE_TIME));
 
     }, false),
 

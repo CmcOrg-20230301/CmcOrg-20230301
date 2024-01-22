@@ -1533,6 +1533,7 @@ public class SignUtil {
     @Nullable
     public static GetQrCodeVO getQrCodeUrlWx(@Nullable Long tenantId, boolean getQrCodeUrlFlag, ISysQrCodeSceneType iSysQrCodeSceneType) {
 
+        // 执行
         return getQrCodeUrl(tenantId, getQrCodeUrlFlag, SysOtherAppTypeEnum.WX_OFFICIAL_ACCOUNT.getCode(), sysOtherAppDO -> {
 
             String accessToken = WxUtil.getAccessToken(tenantId, sysOtherAppDO.getAppId());

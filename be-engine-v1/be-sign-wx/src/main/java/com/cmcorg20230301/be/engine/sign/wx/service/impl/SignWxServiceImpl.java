@@ -345,14 +345,11 @@ public class SignWxServiceImpl implements SignWxService {
      * 设置登录名-获取二维码
      */
     @Override
-    public GetQrCodeVO setSignInNameGetQrCodeUrl(SignWxSetSignInNameGetQrCodeUrlDTO dto) {
+    public GetQrCodeVO setSignInNameGetQrCodeUrl() {
 
         Long currentTenantIdDefault = UserUtil.getCurrentTenantIdDefault();
 
         SignUtil.checkWillError(PRE_REDIS_KEY_ENUM, null, currentTenantIdDefault, null); // 检查：是否可以进行操作
-
-        // 检查：登录名是否被占用
-        SignUtil.checkAccountExistWillError(ChainWrappers.lambdaQueryChain(sysUserMapper).eq(SysUserDO::getSignInName, dto.getSignInName()), false, BizCodeEnum.SIGN_IN_NAME_EXIST_PLEASE_RE_ENTER, currentTenantIdDefault);
 
         // 执行
         return SignUtil.getQrCodeUrlWx(currentTenantIdDefault, true, WxSysQrCodeSceneTypeEnum.WX_SET_SIGN_IN_NAME);
@@ -410,14 +407,11 @@ public class SignWxServiceImpl implements SignWxService {
      * 修改登录名-获取二维码
      */
     @Override
-    public GetQrCodeVO updateSignInNameGetQrCodeUrl(SignWxUpdateSignInNameGetQrCodeUrlDTO dto) {
+    public GetQrCodeVO updateSignInNameGetQrCodeUrl() {
 
         Long currentTenantIdDefault = UserUtil.getCurrentTenantIdDefault();
 
         SignUtil.checkWillError(PRE_REDIS_KEY_ENUM, null, currentTenantIdDefault, null); // 检查：是否可以进行操作
-
-        // 检查：登录名是否被占用
-        SignUtil.checkAccountExistWillError(ChainWrappers.lambdaQueryChain(sysUserMapper).eq(SysUserDO::getSignInName, dto.getSignInName()), false, BizCodeEnum.SIGN_IN_NAME_EXIST_PLEASE_RE_ENTER, currentTenantIdDefault);
 
         // 执行
         return SignUtil.getQrCodeUrlWx(currentTenantIdDefault, true, WxSysQrCodeSceneTypeEnum.WX_UPDATE_SIGN_IN_NAME);
@@ -494,14 +488,11 @@ public class SignWxServiceImpl implements SignWxService {
      * 设置邮箱-获取二维码
      */
     @Override
-    public GetQrCodeVO setEmailGetQrCodeUrl(SignWxSetEmailGetQrCodeUrlDTO dto) {
+    public GetQrCodeVO setEmailGetQrCodeUrl() {
 
         Long currentTenantIdDefault = UserUtil.getCurrentTenantIdDefault();
 
         SignUtil.checkWillError(PRE_REDIS_KEY_ENUM, null, currentTenantIdDefault, null); // 检查：是否可以进行操作
-
-        // 检查：邮箱是否被占用
-        SignUtil.checkAccountExistWillError(ChainWrappers.lambdaQueryChain(sysUserMapper).eq(SysUserDO::getEmail, dto.getEmail()), false, BizCodeEnum.EMAIL_HAS_BEEN_REGISTERED, currentTenantIdDefault);
 
         // 执行
         return SignUtil.getQrCodeUrlWx(currentTenantIdDefault, true, WxSysQrCodeSceneTypeEnum.WX_SET_EMAIL);
@@ -578,14 +569,11 @@ public class SignWxServiceImpl implements SignWxService {
      * 修改邮箱-获取二维码
      */
     @Override
-    public GetQrCodeVO updateEmailGetQrCodeUrl(SignWxUpdateEmailGetQrCodeUrlDTO dto) {
+    public GetQrCodeVO updateEmailGetQrCodeUrl() {
 
         Long currentTenantIdDefault = UserUtil.getCurrentTenantIdDefault();
 
         SignUtil.checkWillError(PRE_REDIS_KEY_ENUM, null, currentTenantIdDefault, null); // 检查：是否可以进行操作
-
-        // 检查：邮箱是否被占用
-        SignUtil.checkAccountExistWillError(ChainWrappers.lambdaQueryChain(sysUserMapper).eq(SysUserDO::getEmail, dto.getEmail()), false, BizCodeEnum.EMAIL_HAS_BEEN_REGISTERED, currentTenantIdDefault);
 
         // 执行
         return SignUtil.getQrCodeUrlWx(currentTenantIdDefault, true, WxSysQrCodeSceneTypeEnum.WX_UPDATE_EMAIL);
@@ -748,14 +736,11 @@ public class SignWxServiceImpl implements SignWxService {
      * 设置手机：获取二维码
      */
     @Override
-    public GetQrCodeVO setPhoneGetQrCodeUrl(SignWxSetPhoneGetQrCodeUrlDTO dto) {
+    public GetQrCodeVO setPhoneGetQrCodeUrl() {
 
         Long currentTenantIdDefault = UserUtil.getCurrentTenantIdDefault();
 
         SignUtil.checkWillError(PRE_REDIS_KEY_ENUM, null, currentTenantIdDefault, null); // 检查：是否可以进行操作
-
-        // 检查：手机是否被占用
-        SignUtil.checkAccountExistWillError(ChainWrappers.lambdaQueryChain(sysUserMapper).eq(SysUserDO::getPhone, dto.getPhone()), false, BizCodeEnum.PHONE_HAS_BEEN_REGISTERED, currentTenantIdDefault);
 
         // 执行
         return SignUtil.getQrCodeUrlWx(currentTenantIdDefault, true, WxSysQrCodeSceneTypeEnum.WX_SET_PHONE);
