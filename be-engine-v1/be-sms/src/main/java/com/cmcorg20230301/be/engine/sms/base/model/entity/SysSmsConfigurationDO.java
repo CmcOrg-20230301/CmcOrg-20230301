@@ -76,6 +76,9 @@ public class SysSmsConfigurationDO extends BaseEntity {
     @Schema(description = "发送：修改手机")
     private String sendUpdatePhone;
 
+    @Schema(description = "发送：设置统一登录")
+    private String sendSetSingleSignIn;
+
     @Schema(description = "发送：忘记密码")
     private String sendForgetPassword;
 

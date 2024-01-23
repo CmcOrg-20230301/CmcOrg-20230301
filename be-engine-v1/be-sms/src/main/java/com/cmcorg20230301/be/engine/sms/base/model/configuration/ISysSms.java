@@ -153,6 +153,17 @@ public interface ISysSms {
     }
 
     /**
+     * 发送：设置统一登录
+     */
+    default void sendSetSingleSignIn(SysSmsSendBO sysSmsSendBO) {
+
+        sysSmsSendBO.setTemplateId(sysSmsSendBO.getSysSmsConfigurationDO().getSendForgetPassword());
+
+        sendForCode(sysSmsSendBO);
+
+    }
+
+    /**
      * 发送：忘记密码
      */
     default void sendForgetPassword(SysSmsSendBO sysSmsSendBO) {

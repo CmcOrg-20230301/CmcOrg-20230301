@@ -16,7 +16,6 @@ import com.cmcorg20230301.be.engine.other.app.wx.util.WxUtil;
 import com.cmcorg20230301.be.engine.redisson.model.enums.BaseRedisKeyEnum;
 import com.cmcorg20230301.be.engine.security.mapper.SysUserInfoMapper;
 import com.cmcorg20230301.be.engine.security.mapper.SysUserMapper;
-import com.cmcorg20230301.be.engine.security.mapper.SysUserSingleSignInMapper;
 import com.cmcorg20230301.be.engine.security.model.entity.SysUserDO;
 import com.cmcorg20230301.be.engine.security.model.entity.SysUserInfoDO;
 import com.cmcorg20230301.be.engine.security.model.enums.SysQrCodeSceneTypeEnum;
@@ -53,9 +52,6 @@ public class SignWxServiceImpl implements SignWxService {
 
     @Resource
     RedissonClient redissonClient;
-
-    @Resource
-    SysUserSingleSignInMapper sysUserSingleSignInMapper;
 
     /**
      * 小程序：手机号 code登录
@@ -701,7 +697,7 @@ public class SignWxServiceImpl implements SignWxService {
         SignUtil.checkWillError(PRE_REDIS_KEY_ENUM, null, UserUtil.getCurrentTenantIdDefault(), null); // 检查：是否可以进行操作
 
         // 执行
-        return SignUtil.getQrCodeUrlWxForSingleSignIn(UserUtil.getCurrentTenantIdDefault(), true, WxSysQrCodeSceneTypeEnum.WX_SINGLE_SIGN_IN_BIND);
+        return SignUtil.getQrCodeUrlWxForSingleSignIn(UserUtil.getCurrentTenantIdDefault(), true, SysQrCodeSceneTypeEnum.WX_SINGLE_SIGN_IN_BIND);
 
     }
 

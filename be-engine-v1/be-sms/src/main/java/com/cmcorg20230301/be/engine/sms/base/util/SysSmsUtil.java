@@ -206,6 +206,18 @@ public class SysSmsUtil {
     }
 
     /**
+     * 发送：设置统一登录
+     */
+    public static void sendSetSingleSignIn(SysSmsSendBO sysSmsSendBO) {
+
+        ISysSms isysSms = getIsysSms(sysSmsSendBO);
+
+        // 执行
+        isysSms.sendSetSingleSignIn(sysSmsSendBO);
+
+    }
+
+    /**
      * 发送：忘记密码
      */
     public static void sendForgetPassword(SysSmsSendBO sysSmsSendBO) {

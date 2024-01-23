@@ -511,6 +511,62 @@ public class SignPhoneServiceImpl implements SignPhoneService {
     }
 
     /**
+     * 设置统一登录：发送手机验证码
+     */
+    @Override
+    public String setSingleSignInSendCodePhone() {
+
+        Long currentTenantIdDefault = UserUtil.getCurrentTenantIdDefault();
+
+        SignUtil.checkWillError(PRE_REDIS_KEY_ENUM, null, currentTenantIdDefault, null); // 检查：是否可以进行操作
+
+        return SignUtil.getAccountAndSendCode(BaseRedisKeyEnum.PRE_PHONE, (code, account) -> SysSmsUtil
+                .sendSetSingleSignIn(SysSmsHelper.getSysSmsSendBO(currentTenantIdDefault, code, account)));
+
+    }
+
+    /**
+     * 设置统一登录：获取统一登录微信的二维码地址
+     */
+    @Override
+    public GetQrCodeVO setSingleSignInGetQrCodeUrlSingleSignIn() {
+
+        SignUtil.checkWillError(PRE_REDIS_KEY_ENUM, null, UserUtil.getCurrentTenantIdDefault(), null); // 检查：是否可以进行操作
+
+        // 执行
+        return SignUtil.getQrCodeUrlWxForSingleSignIn(UserUtil.getCurrentTenantIdDefault(), true, SysQrCodeSceneTypeEnum.WX_SINGLE_SIGN_IN_BIND);
+
+    }
+
+    /**
+     * 设置统一登录：获取统一登录微信的二维码是否已经被扫描
+     */
+    @Override
+    public SysQrCodeSceneBindVO setSingleSignInGetQrCodeSceneFlagSingleSignIn(NotNullId notNullId) {
+
+        // 执行
+        return SignUtil.getSysQrCodeSceneBindVoAndHandleForSingleSignIn(notNullId.getId(), false, null);
+
+    }
+
+    /**
+     * 设置统一登录
+     */
+    @Override
+    public SysQrCodeSceneBindVO setSingleSignIn(SignPhoneSetSingleSignInDTO dto) {
+
+        SignUtil.checkWillError(PRE_REDIS_KEY_ENUM, null, UserUtil.getCurrentTenantIdDefault(), null); // 检查：是否可以进行操作
+
+        String currentUserPhoneNotAdmin = UserUtil.getCurrentUserPhoneNotAdmin();
+
+        String codeKey = BaseRedisKeyEnum.PRE_PHONE + currentUserPhoneNotAdmin;
+
+        // 执行
+        return SignUtil.setWxForSingleSignIn(dto.getQrCodeId(), dto.getPhoneCode(), codeKey, null);
+
+    }
+
+    /**
      * 忘记密码-发送验证码
      */
     @Override

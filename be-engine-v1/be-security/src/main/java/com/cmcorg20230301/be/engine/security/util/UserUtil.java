@@ -15,10 +15,7 @@ import com.cmcorg20230301.be.engine.cache.util.MyCacheUtil;
 import com.cmcorg20230301.be.engine.model.model.constant.BaseConstant;
 import com.cmcorg20230301.be.engine.redisson.model.enums.BaseRedisKeyEnum;
 import com.cmcorg20230301.be.engine.security.exception.BaseBizCodeEnum;
-import com.cmcorg20230301.be.engine.security.mapper.SysRoleMapper;
-import com.cmcorg20230301.be.engine.security.mapper.SysRoleRefUserMapper;
-import com.cmcorg20230301.be.engine.security.mapper.SysUserInfoMapper;
-import com.cmcorg20230301.be.engine.security.mapper.SysUserMapper;
+import com.cmcorg20230301.be.engine.security.mapper.*;
 import com.cmcorg20230301.be.engine.security.model.entity.*;
 import com.cmcorg20230301.be.engine.security.model.vo.ApiResultVO;
 import org.jetbrains.annotations.NotNull;
@@ -43,14 +40,16 @@ public class UserUtil {
     private static SysRoleRefUserMapper sysRoleRefUserMapper;
     private static SysUserMapper sysUserMapper;
     private static SysUserInfoMapper sysUserInfoMapper;
+    public static SysUserSingleSignInMapper sysUserSingleSignInMapper;
 
     public UserUtil(SysRoleMapper sysRoleMapper, SysRoleRefUserMapper sysRoleRefUserMapper, SysUserMapper sysUserMapper,
-                    SysUserInfoMapper sysUserInfoMapper) {
+                    SysUserInfoMapper sysUserInfoMapper, SysUserSingleSignInMapper sysUserSingleSignInMapper) {
 
         UserUtil.sysRoleMapper = sysRoleMapper;
         UserUtil.sysRoleRefUserMapper = sysRoleRefUserMapper;
         UserUtil.sysUserMapper = sysUserMapper;
         UserUtil.sysUserInfoMapper = sysUserInfoMapper;
+        UserUtil.sysUserSingleSignInMapper = sysUserSingleSignInMapper;
 
     }
 

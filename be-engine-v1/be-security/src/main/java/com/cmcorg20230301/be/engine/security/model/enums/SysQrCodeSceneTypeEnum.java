@@ -3,11 +3,14 @@ package com.cmcorg20230301.be.engine.security.model.enums;
 import cn.hutool.core.map.MapUtil;
 import cn.hutool.core.util.BooleanUtil;
 import com.baomidou.mybatisplus.annotation.EnumValue;
+import com.baomidou.mybatisplus.extension.toolkit.ChainWrappers;
 import com.cmcorg20230301.be.engine.model.model.bo.SysQrCodeSceneBindBO;
 import com.cmcorg20230301.be.engine.model.model.constant.BaseConstant;
 import com.cmcorg20230301.be.engine.redisson.model.enums.BaseRedisKeyEnum;
 import com.cmcorg20230301.be.engine.security.model.entity.SysUserDO;
+import com.cmcorg20230301.be.engine.security.model.entity.SysUserSingleSignInDO;
 import com.cmcorg20230301.be.engine.security.model.interfaces.ISysQrCodeSceneType;
+import com.cmcorg20230301.be.engine.security.util.UserUtil;
 import com.cmcorg20230301.be.engine.util.util.VoidFunc3;
 import com.fasterxml.jackson.annotation.JsonValue;
 import lombok.AllArgsConstructor;
@@ -34,6 +37,30 @@ public enum SysQrCodeSceneTypeEnum implements ISysQrCodeSceneType {
 
         sysQrCodeSceneBindBO.setUserId(sysUserDO.getId());
         sysQrCodeSceneBindBO.setTenantId(sysUserDO.getTenantId());
+
+        sysQrCodeSceneBindBO.setAppId(sysUserDO.getWxAppId());
+        sysQrCodeSceneBindBO.setOpenId(sysUserDO.getWxOpenId());
+
+        bucket.set(sysQrCodeSceneBindBO, Duration.ofMillis(BaseConstant.MINUTE_3_EXPIRE_TIME));
+
+    }, true),
+
+    // 微信单点登录绑定
+    WX_SINGLE_SIGN_IN_BIND("WX_SINGLE_SIGN_IN_BIND", BaseConstant.MINUTE_3_EXPIRE_TIME / 1000, (qrCodeSceneValue, redissonClient, sysUserDO) -> {
+
+        RBucket<SysQrCodeSceneBindBO> bucket = redissonClient.getBucket(BaseRedisKeyEnum.PRE_SYS_WX_QR_CODE_SINGLE_SIGN_IN_BIND.name() + qrCodeSceneValue);
+
+        // 微信单点登录不能重复
+        SysUserSingleSignInDO sysUserSingleSignInDO = ChainWrappers.lambdaQueryChain(UserUtil.sysUserSingleSignInMapper).eq(SysUserSingleSignInDO::getWxAppId, sysUserDO.getWxAppId()).eq(SysUserSingleSignInDO::getWxOpenId, sysUserDO.getWxOpenId()).select(SysUserSingleSignInDO::getId, SysUserSingleSignInDO::getTenantId).one();
+
+        SysQrCodeSceneBindBO sysQrCodeSceneBindBO = new SysQrCodeSceneBindBO();
+
+        if (sysUserSingleSignInDO != null) {
+
+            sysQrCodeSceneBindBO.setUserId(sysUserSingleSignInDO.getId());
+            sysQrCodeSceneBindBO.setTenantId(sysUserSingleSignInDO.getTenantId());
+
+        }
 
         sysQrCodeSceneBindBO.setAppId(sysUserDO.getWxAppId());
         sysQrCodeSceneBindBO.setOpenId(sysUserDO.getWxOpenId());
