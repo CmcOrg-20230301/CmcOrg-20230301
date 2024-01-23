@@ -677,7 +677,7 @@ public class SignWxServiceImpl implements SignWxService {
         SignUtil.checkWillError(PRE_REDIS_KEY_ENUM, null, currentTenantIdDefault, null); // 检查：是否可以进行操作
 
         // 执行
-        return SignUtil.getQrCodeUrlWx(currentTenantIdDefault, true, WxSysQrCodeSceneTypeEnum.WX_SET_PHONE);
+        return SignUtil.getQrCodeUrlWx(currentTenantIdDefault, true, WxSysQrCodeSceneTypeEnum.WX_SET_SINGLE_SIGN_IN);
 
     }
 

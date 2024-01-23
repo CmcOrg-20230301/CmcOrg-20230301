@@ -1443,13 +1443,13 @@ public class SignUtil {
 
             if (singleSignInExists) {
 
-                sysUserSingleSignInMapper.insert(sysUserSingleSignInDO); // 新增
+                sysUserSingleSignInMapper.updateById(sysUserSingleSignInDO); // 更新
 
             } else {
 
                 sysUserSingleSignInDO.setTenantId(currentTenantIdDefault);
 
-                sysUserSingleSignInMapper.updateById(sysUserSingleSignInDO); // 更新
+                sysUserSingleSignInMapper.insert(sysUserSingleSignInDO); // 新增
 
             }
 
