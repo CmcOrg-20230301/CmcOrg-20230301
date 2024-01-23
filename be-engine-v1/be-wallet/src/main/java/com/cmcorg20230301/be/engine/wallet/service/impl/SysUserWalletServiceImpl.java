@@ -470,7 +470,7 @@ public class SysUserWalletServiceImpl extends ServiceImpl<SysUserWalletMapper, S
 
         payDTO.setPreDoPayConsumer(tempPayDTO -> {
 
-            if (BaseConstant.TOP_TENANT_ID.equals(tenantId)) {
+            if (UserUtil.getCurrentTenantTopFlag(tenantId)) {
                 return;
             }
 

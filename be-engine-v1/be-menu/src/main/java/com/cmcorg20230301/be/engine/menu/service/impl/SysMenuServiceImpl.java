@@ -119,7 +119,7 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenuDO> im
         }
 
         // 如果不是顶级租户，则不进行处理
-        if (!BaseConstant.TOP_TENANT_ID.equals(dto.getTenantId())) {
+        if (!UserUtil.getCurrentTenantTopFlag(dto.getTenantId())) {
             return;
         }
 

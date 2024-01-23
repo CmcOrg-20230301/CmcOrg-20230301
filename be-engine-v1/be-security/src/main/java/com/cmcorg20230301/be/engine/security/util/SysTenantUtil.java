@@ -52,7 +52,7 @@ public class SysTenantUtil {
     @NotNull
     public static Long getTenantId(@Nullable Long tenantId) {
 
-        if (tenantId == null || tenantId.equals(BaseConstant.TOP_TENANT_ID)) {
+        if (tenantId == null || UserUtil.getCurrentTenantTopFlag(tenantId)) {
 
             return BaseConstant.TOP_TENANT_ID;
 
@@ -152,7 +152,7 @@ public class SysTenantUtil {
     @NotNull
     public static SysTenantDO getSysTenantDO(Long tenantId) {
 
-        if (BaseConstant.TOP_TENANT_ID.equals(tenantId)) {
+        if (UserUtil.getCurrentTenantTopFlag(tenantId)) {
             return SysTenantUtil.getDefaultSysTenantDO();
         }
 
@@ -492,9 +492,7 @@ public class SysTenantUtil {
             return true;
         }
 
-        Long currentTenantIdDefault = UserUtil.getCurrentTenantIdDefault();
-
-        if (BaseConstant.TOP_TENANT_ID.equals(currentTenantIdDefault)) {
+        if (UserUtil.getCurrentTenantTopFlag()) {
             return true;
         }
 

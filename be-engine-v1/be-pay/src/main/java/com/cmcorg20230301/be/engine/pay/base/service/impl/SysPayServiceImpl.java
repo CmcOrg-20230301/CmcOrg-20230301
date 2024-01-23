@@ -1,7 +1,6 @@
 package com.cmcorg20230301.be.engine.pay.base.service.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.cmcorg20230301.be.engine.model.model.constant.BaseConstant;
 import com.cmcorg20230301.be.engine.model.model.dto.NotNullId;
 import com.cmcorg20230301.be.engine.pay.base.mapper.SysPayMapper;
 import com.cmcorg20230301.be.engine.pay.base.model.entity.SysPayDO;
@@ -29,7 +28,7 @@ public class SysPayServiceImpl extends ServiceImpl<SysPayMapper, SysPayDO> imple
 
         Long currentTenantIdDefault = UserUtil.getCurrentTenantIdDefault();
 
-        if (!BaseConstant.TOP_TENANT_ID.equals(currentTenantIdDefault)) {
+        if (!UserUtil.getCurrentTenantTopFlag(currentTenantIdDefault)) {
 
             // 添加：父级的租户主键 id
             Long parentTenantId = SysTenantUtil.getSysTenantDO(currentTenantIdDefault).getParentId();

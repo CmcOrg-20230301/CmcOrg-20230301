@@ -43,4 +43,7 @@ public class SysOtherAppDO extends BaseEntity {
     @Schema(description = "第三方应用的 openId/微信号，例如：接收微信公众号消息时的 ToUserName，不能重复")
     private String openId;
 
+    @Schema(description = "是否是单点登录的第三方应用，备注：所有租户都只存在一个，单点登录的第三方应用")
+    private Boolean singleSignInFlag;
+
 }

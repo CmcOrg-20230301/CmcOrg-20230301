@@ -12,7 +12,6 @@ import com.cmcorg20230301.be.engine.dict.model.dto.SysDictInsertOrUpdateDTO;
 import com.cmcorg20230301.be.engine.dict.model.dto.SysDictListByDictKeyDTO;
 import com.cmcorg20230301.be.engine.dict.model.dto.SysDictPageDTO;
 import com.cmcorg20230301.be.engine.dict.service.SysDictService;
-import com.cmcorg20230301.be.engine.model.model.constant.BaseConstant;
 import com.cmcorg20230301.be.engine.model.model.dto.ChangeNumberDTO;
 import com.cmcorg20230301.be.engine.model.model.dto.NotEmptyIdSet;
 import com.cmcorg20230301.be.engine.model.model.dto.NotNullId;
@@ -117,9 +116,7 @@ public class SysDictServiceImpl extends ServiceImpl<SysDictMapper, SysDictDO> im
         sysDictDO.setDelFlag(false);
         sysDictDO.setId(dto.getId());
 
-        Long currentTenantIdDefault = UserUtil.getCurrentTenantIdDefault();
-
-        if (BaseConstant.TOP_TENANT_ID.equals(currentTenantIdDefault)) { // 如果是：顶层租户
+        if (UserUtil.getCurrentTenantTopFlag()) { // 如果是：顶层租户
 
             sysDictDO.setSystemFlag(BooleanUtil.isTrue(dto.getSystemFlag()));
 

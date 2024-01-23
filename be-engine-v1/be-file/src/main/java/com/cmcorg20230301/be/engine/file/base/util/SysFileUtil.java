@@ -253,7 +253,7 @@ public class SysFileUtil {
 
         }
 
-        if (sysFileStorageConfigurationDO == null && !BaseConstant.TOP_TENANT_ID.equals(tenantId)) {
+        if (sysFileStorageConfigurationDO == null && !UserUtil.getCurrentTenantTopFlag(tenantId)) {
 
             SysTenantDO sysTenantDO = SysTenantUtil.getSysTenantCacheMap(false).get(tenantId);
 

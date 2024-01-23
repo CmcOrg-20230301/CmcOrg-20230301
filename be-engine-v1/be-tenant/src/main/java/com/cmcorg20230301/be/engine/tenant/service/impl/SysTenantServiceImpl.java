@@ -377,7 +377,7 @@ public class SysTenantServiceImpl extends ServiceImpl<SysTenantMapper, SysTenant
 
         Long currentTenantIdDefault = UserUtil.getCurrentTenantIdDefault();
 
-        if (BaseConstant.TOP_TENANT_ID.equals(currentTenantIdDefault)) {
+        if (UserUtil.getCurrentTenantTopFlag(currentTenantIdDefault)) {
 
             // 处理：MyTenantPageDTO
             SysTenantUtil.handleMyTenantPageDTO(dto, false);
@@ -726,7 +726,7 @@ public class SysTenantServiceImpl extends ServiceImpl<SysTenantMapper, SysTenant
     @Override
     public String getManageNameById(NotNullLong notNullLong) {
 
-        if (notNullLong.getValue().equals(BaseConstant.TOP_TENANT_ID)) {
+        if (UserUtil.getCurrentTenantTopFlag(notNullLong.getValue())) {
 
             return BaseConstant.TENANT_MANAGE_NAME;
 
@@ -750,7 +750,7 @@ public class SysTenantServiceImpl extends ServiceImpl<SysTenantMapper, SysTenant
     @Override
     public String getNameById(NotNullLong notNullLong) {
 
-        if (notNullLong.getValue().equals(BaseConstant.TOP_TENANT_ID)) {
+        if (UserUtil.getCurrentTenantTopFlag(notNullLong.getValue())) {
 
             return "";
 
@@ -792,7 +792,7 @@ public class SysTenantServiceImpl extends ServiceImpl<SysTenantMapper, SysTenant
 
         // 获取：需要增加的菜单集合
         Set<SysMenuDO> needAddMenuSet = allSysMenuDoCollection.stream()
-                .filter(it -> it.getTenantId().equals(BaseConstant.TOP_TENANT_ID) && !uuidSet.contains(it.getUuid()))
+                .filter(it -> UserUtil.getCurrentTenantTopFlag(it.getTenantId()) && !uuidSet.contains(it.getUuid()))
                 .collect(Collectors.toSet());
 
         return MyTreeUtil.getFullTreeList(needAddMenuSet, allSysMenuDoCollection);
@@ -904,7 +904,7 @@ public class SysTenantServiceImpl extends ServiceImpl<SysTenantMapper, SysTenant
 
         // 默认租户的，系统内置字典
         List<SysDictDO> systemSysDictDOList = allSysDictDOList.stream()
-                .filter(it -> it.getSystemFlag() && it.getTenantId().equals(BaseConstant.TOP_TENANT_ID))
+                .filter(it -> it.getSystemFlag() && UserUtil.getCurrentTenantTopFlag(it.getTenantId()))
                 .collect(Collectors.toList());
 
         // 根据：字典 key，进行分组
@@ -1023,7 +1023,7 @@ public class SysTenantServiceImpl extends ServiceImpl<SysTenantMapper, SysTenant
 
         // 默认租户的，非系统内置字典
         List<SysParamDO> defaultTenantSysParamDOList = allSysParamDOList.stream()
-                .filter(it -> !it.getSystemFlag() && it.getTenantId().equals(BaseConstant.TOP_TENANT_ID))
+                .filter(it -> !it.getSystemFlag() && UserUtil.getCurrentTenantTopFlag(it.getTenantId()))
                 .collect(Collectors.toList());
 
         List<SysParamDO> insertList = new ArrayList<>();

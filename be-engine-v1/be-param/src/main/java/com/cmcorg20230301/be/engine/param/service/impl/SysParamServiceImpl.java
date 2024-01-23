@@ -7,7 +7,6 @@ import cn.hutool.core.util.BooleanUtil;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.cmcorg20230301.be.engine.model.model.constant.BaseConstant;
 import com.cmcorg20230301.be.engine.model.model.dto.NotEmptyIdSet;
 import com.cmcorg20230301.be.engine.model.model.dto.NotNullId;
 import com.cmcorg20230301.be.engine.param.model.dto.SysParamInsertOrUpdateDTO;
@@ -58,7 +57,7 @@ public class SysParamServiceImpl extends ServiceImpl<SysParamMapper, SysParamDO>
 
         Long currentTenantIdDefault = UserUtil.getCurrentTenantIdDefault();
 
-        if (BaseConstant.TOP_TENANT_ID.equals(currentTenantIdDefault)) { // 如果是：顶层租户
+        if (UserUtil.getCurrentTenantTopFlag(currentTenantIdDefault)) { // 如果是：顶层租户
 
             sysParamDO.setSystemFlag(BooleanUtil.isTrue(dto.getSystemFlag()));
             sysParamDO.setRemark(MyEntityUtil.getNotNullStr(dto.getRemark()));

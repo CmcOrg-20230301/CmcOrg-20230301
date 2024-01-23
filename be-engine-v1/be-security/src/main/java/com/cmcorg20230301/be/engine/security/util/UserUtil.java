@@ -198,6 +198,24 @@ public class UserUtil {
     }
 
     /**
+     * 用户所属租户，是否是顶级租户
+     */
+    public static boolean getCurrentTenantTopFlag() {
+
+        return BaseConstant.TOP_TENANT_ID.equals(getCurrentTenantIdDefault());
+
+    }
+
+    /**
+     * 用户所属租户，是否是顶级租户
+     */
+    public static boolean getCurrentTenantTopFlag(Long tenantId) {
+
+        return BaseConstant.TOP_TENANT_ID.equals(tenantId);
+
+    }
+
+    /**
      * 这里只会返回实际的 tenantId 或者 0，备注：0表示默认的 租户 id
      */
     @NotNull

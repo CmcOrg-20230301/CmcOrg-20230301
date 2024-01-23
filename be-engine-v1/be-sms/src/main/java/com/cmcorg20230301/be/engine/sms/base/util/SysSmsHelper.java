@@ -11,6 +11,7 @@ import com.cmcorg20230301.be.engine.security.model.entity.BaseEntityNoIdSuper;
 import com.cmcorg20230301.be.engine.security.model.entity.SysTenantDO;
 import com.cmcorg20230301.be.engine.security.model.vo.ApiResultVO;
 import com.cmcorg20230301.be.engine.security.util.SysTenantUtil;
+import com.cmcorg20230301.be.engine.security.util.UserUtil;
 import com.cmcorg20230301.be.engine.sms.base.model.bo.SysSmsSendBO;
 import com.cmcorg20230301.be.engine.sms.base.model.entity.SysSmsConfigurationDO;
 import com.cmcorg20230301.be.engine.sms.base.service.SysSmsConfigurationService;
@@ -172,7 +173,7 @@ public class SysSmsHelper {
     public static SysSmsConfigurationDO handleUseParentTenantSmsFlag(Long tenantIdOriginal, Long currentTenantId,
                                                                      @Nullable Consumer<LambdaQueryChainWrapper<SysSmsConfigurationDO>> lambdaQueryChainWrapperConsumer) {
 
-        if (BaseConstant.TOP_TENANT_ID.equals(currentTenantId)) {
+        if (UserUtil.getCurrentTenantTopFlag(currentTenantId)) {
 
             ApiResultVO.error("操作失败：未配置短信发送，请联系管理员",
                     StrUtil.format("tenantIdOriginal：{}，currentTenantId：{}", tenantIdOriginal, currentTenantId));
