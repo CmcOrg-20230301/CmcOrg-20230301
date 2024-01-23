@@ -141,6 +141,30 @@ public class SignEmailController {
         return ApiResultVO.okMsg(baseService.setPhone(dto));
     }
 
+    @PostMapping(value = "/setSingleSignIn/sendCode/email")
+    @Operation(summary = "设置统一登录：发送邮箱验证码")
+    public ApiResultVO<String> setSingleSignInSendCodeEmail() {
+        return ApiResultVO.okMsg(baseService.setSingleSignInSendCodeEmail());
+    }
+
+    @PostMapping(value = "/setSingleSignIn/getQrCodeUrl/singleSignIn")
+    @Operation(summary = "设置统一登录：获取统一登录微信的二维码地址")
+    public ApiResultVO<GetQrCodeVO> setSingleSignInGetQrCodeUrlSingleSignIn() {
+        return ApiResultVO.okData(baseService.setSingleSignInGetQrCodeUrlSingleSignIn());
+    }
+
+    @PostMapping(value = "/setSingleSignIn/getQrCodeSceneFlag/singleSignIn")
+    @Operation(summary = "设置统一登录：获取统一登录微信的二维码是否已经被扫描")
+    public ApiResultVO<SysQrCodeSceneBindVO> setSingleSignInGetQrCodeSceneFlagSingleSignIn(@RequestBody @Valid NotNullId notNullId) {
+        return ApiResultVO.okData(baseService.setSingleSignInGetQrCodeSceneFlagSingleSignIn(notNullId));
+    }
+
+    @PostMapping(value = "/setSingleSignIn")
+    @Operation(summary = "设置统一登录")
+    public ApiResultVO<SysQrCodeSceneBindVO> setSingleSignIn(@RequestBody @Valid SignEmailSetSingleSignInDTO dto) {
+        return ApiResultVO.okData(baseService.setSingleSignIn(dto));
+    }
+
     @PostMapping(value = "/forgetPassword/sendCode")
     @Operation(summary = "忘记密码-发送验证码")
     public ApiResultVO<String> forgetPasswordSendCode(@RequestBody @Valid EmailNotBlankDTO dto) {

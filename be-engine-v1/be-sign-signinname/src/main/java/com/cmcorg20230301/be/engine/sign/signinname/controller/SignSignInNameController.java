@@ -92,6 +92,24 @@ public class SignSignInNameController {
         return ApiResultVO.okMsg(baseService.setPhone(dto));
     }
 
+    @PostMapping(value = "/setSingleSignIn/getQrCodeUrl/singleSignIn")
+    @Operation(summary = "设置统一登录：获取统一登录微信的二维码地址")
+    public ApiResultVO<GetQrCodeVO> setSingleSignInGetQrCodeUrlSingleSignIn() {
+        return ApiResultVO.okData(baseService.setSingleSignInGetQrCodeUrlSingleSignIn());
+    }
+
+    @PostMapping(value = "/setSingleSignIn/getQrCodeSceneFlag/singleSignIn")
+    @Operation(summary = "设置统一登录：获取统一登录微信的二维码是否已经被扫描")
+    public ApiResultVO<SysQrCodeSceneBindVO> setSingleSignInGetQrCodeSceneFlagSingleSignIn(@RequestBody @Valid NotNullId notNullId) {
+        return ApiResultVO.okData(baseService.setSingleSignInGetQrCodeSceneFlagSingleSignIn(notNullId));
+    }
+
+    @PostMapping(value = "/setSingleSignIn")
+    @Operation(summary = "设置统一登录")
+    public ApiResultVO<SysQrCodeSceneBindVO> setSingleSignIn(@RequestBody @Valid SignSignInNameSetSingleSignInDTO dto) {
+        return ApiResultVO.okData(baseService.setSingleSignIn(dto));
+    }
+
     @PostMapping(value = "/signDelete")
     @Operation(summary = "账号注销")
     public ApiResultVO<String> signDelete(@RequestBody @Valid SignSignInNameSignDeleteDTO dto) {

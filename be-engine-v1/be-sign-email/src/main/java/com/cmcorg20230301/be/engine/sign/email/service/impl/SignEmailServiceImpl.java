@@ -363,6 +363,68 @@ public class SignEmailServiceImpl implements SignEmailService {
     }
 
     /**
+     * 设置统一登录：发送邮箱验证码
+     */
+    @Override
+    public String setSingleSignInSendCodeEmail() {
+
+        Long currentTenantIdDefault = UserUtil.getCurrentTenantIdDefault();
+
+        SignUtil.checkWillError(PRE_REDIS_KEY_ENUM, null, currentTenantIdDefault, null); // 检查：是否可以进行操作
+
+        String currentUserEmailNotAdmin = UserUtil.getCurrentUserEmailNotAdmin();
+
+        String key = BaseRedisKeyEnum.PRE_EMAIL + currentUserEmailNotAdmin;
+
+        return SignUtil.sendCode(key, null, true,
+                BaseBizCodeEnum.API_RESULT_SYS_ERROR,
+                (code) -> MyEmailUtil
+                        .send(currentUserEmailNotAdmin, EmailMessageEnum.SET_SINGLE_SIGN_IN, code, currentTenantIdDefault), currentTenantIdDefault);
+
+    }
+
+    /**
+     * 设置统一登录：获取统一登录微信的二维码地址
+     */
+    @Override
+    public GetQrCodeVO setSingleSignInGetQrCodeUrlSingleSignIn() {
+
+        SignUtil.checkWillError(PRE_REDIS_KEY_ENUM, null, UserUtil.getCurrentTenantIdDefault(), null); // 检查：是否可以进行操作
+
+        // 执行
+        return SignUtil.getQrCodeUrlWxForSingleSignIn(UserUtil.getCurrentTenantIdDefault(), true, SysQrCodeSceneTypeEnum.WX_SINGLE_SIGN_IN_BIND);
+
+    }
+
+    /**
+     * 设置统一登录：获取统一登录微信的二维码是否已经被扫描
+     */
+    @Override
+    public SysQrCodeSceneBindVO setSingleSignInGetQrCodeSceneFlagSingleSignIn(NotNullId notNullId) {
+
+        // 执行
+        return SignUtil.getSysQrCodeSceneBindVoAndHandleForSingleSignIn(notNullId.getId(), false, null);
+
+    }
+
+    /**
+     * 设置统一登录
+     */
+    @Override
+    public SysQrCodeSceneBindVO setSingleSignIn(SignEmailSetSingleSignInDTO dto) {
+
+        SignUtil.checkWillError(PRE_REDIS_KEY_ENUM, null, UserUtil.getCurrentTenantIdDefault(), null); // 检查：是否可以进行操作
+
+        String currentUserEmailNotAdmin = UserUtil.getCurrentUserEmailNotAdmin();
+
+        String codeKey = BaseRedisKeyEnum.PRE_EMAIL + currentUserEmailNotAdmin;
+
+        // 执行
+        return SignUtil.setWxForSingleSignIn(dto.getQrCodeId(), dto.getEmailCode(), codeKey, null);
+
+    }
+
+    /**
      * 忘记密码-发送验证码
      */
     @Override

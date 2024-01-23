@@ -47,6 +47,14 @@ public interface SignEmailService {
 
     String setPhone(SignEmailSetPhoneDTO dto);
 
+    String setSingleSignInSendCodeEmail();
+
+    GetQrCodeVO setSingleSignInGetQrCodeUrlSingleSignIn();
+
+    SysQrCodeSceneBindVO setSingleSignInGetQrCodeSceneFlagSingleSignIn(NotNullId notNullId);
+
+    SysQrCodeSceneBindVO setSingleSignIn(SignEmailSetSingleSignInDTO dto);
+
     String forgetPasswordSendCode(EmailNotBlankDTO dto);
 
     String forgetPassword(SignEmailForgetPasswordDTO dto);
