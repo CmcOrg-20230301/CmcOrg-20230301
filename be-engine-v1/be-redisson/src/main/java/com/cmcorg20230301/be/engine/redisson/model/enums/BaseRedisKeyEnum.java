@@ -13,6 +13,8 @@ public enum BaseRedisKeyEnum implements IRedisKey {
     // 【PRE_】开头 ↓
     PRE_SYS_WX_QR_CODE_WX_SIGN_DELETE, // 微信扫码账户注销时，生成的，二维码 id，备注：只有扫描了二维码之后，才会放数据到 redis里面
 
+    PRE_SYS_WX_QR_CODE_SET_SINGLE_SIGN_IN, // 微信扫码设置单点登录时，生成的，二维码 id，备注：只有扫描了二维码之后，才会放数据到 redis里面
+
     PRE_SYS_WX_QR_CODE_SET_PHONE, // 微信扫码设置手机时，生成的，二维码 id，备注：只有扫描了二维码之后，才会放数据到 redis里面
 
     PRE_SYS_WX_QR_CODE_UPDATE_WX, // 微信扫码修改微信时，生成的，二维码 id，备注：只有扫描了二维码之后，才会放数据到 redis里面
@@ -30,6 +32,8 @@ public enum BaseRedisKeyEnum implements IRedisKey {
     PRE_SYS_WX_QR_CODE_SET_PASSWORD, // 微信扫码设置密码时，生成的，二维码 id，备注：只有扫描了二维码之后，才会放数据到 redis里面
 
     PRE_SYS_WX_QR_CODE_BIND, // 微信扫码绑定时，生成的，二维码 id，备注：只有扫描了二维码之后，才会放数据到 redis里面
+
+    PRE_SYS_WX_QR_CODE_SINGLE_SIGN_IN_BIND, // 微信扫码绑定单点登录时，生成的，二维码 id，备注：只有扫描了二维码之后，才会放数据到 redis里面
 
     PRE_SYS_WX_QR_CODE_SIGN, // 微信扫码登录注册时，生成的，二维码 id，备注：只有扫描了二维码之后，才会放数据到 redis里面
 

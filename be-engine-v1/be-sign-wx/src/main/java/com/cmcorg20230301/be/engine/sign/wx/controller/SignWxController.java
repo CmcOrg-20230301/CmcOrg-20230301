@@ -237,6 +237,36 @@ public class SignWxController {
         return ApiResultVO.okData(baseService.setPhone(dto));
     }
 
+    @PostMapping(value = "/setSingleSignIn/getQrCodeUrl/current")
+    @Operation(summary = "设置统一登录：获取当前微信的二维码地址")
+    public ApiResultVO<GetQrCodeVO> setSingleSignInGetQrCodeUrlCurrent() {
+        return ApiResultVO.okData(baseService.setSingleSignInGetQrCodeUrlCurrent());
+    }
+
+    @PostMapping(value = "/setSingleSignIn/getQrCodeSceneFlag/current")
+    @Operation(summary = "设置统一登录：获取当前微信的二维码是否已经被扫描")
+    public ApiResultVO<SysQrCodeSceneBindVO> setSingleSignInGetQrCodeSceneFlagCurrent(@RequestBody @Valid NotNullId notNullId) {
+        return ApiResultVO.okData(baseService.setSingleSignInGetQrCodeSceneFlagCurrent(notNullId));
+    }
+
+    @PostMapping(value = "/setSingleSignIn/getQrCodeUrl/singleSignIn")
+    @Operation(summary = "设置统一登录：获取统一登录微信的二维码地址")
+    public ApiResultVO<GetQrCodeVO> setSingleSignInGetQrCodeUrlSingleSignIn() {
+        return ApiResultVO.okData(baseService.updateWxGetQrCodeUrlSingleSignIn());
+    }
+
+    @PostMapping(value = "/setSingleSignIn/getQrCodeSceneFlag/SingleSignIn")
+    @Operation(summary = "设置统一登录：获取统一登录微信的二维码是否已经被扫描")
+    public ApiResultVO<SysQrCodeSceneBindVO> setSingleSignInGetQrCodeSceneFlagSingleSignIn(@RequestBody @Valid NotNullId notNullId) {
+        return ApiResultVO.okData(baseService.setSingleSignInGetQrCodeSceneFlagSingleSignIn(notNullId));
+    }
+
+    @PostMapping(value = "/setSingleSignIn")
+    @Operation(summary = "设置统一登录")
+    public ApiResultVO<SysQrCodeSceneBindVO> setSingleSignIn(@RequestBody @Valid SignWxSetSingleSignInDTO dto) {
+        return ApiResultVO.okData(baseService.setSingleSignIn(dto));
+    }
+
     @PostMapping(value = "/signDelete/getQrCodeUrl")
     @Operation(summary = "账号注销-获取二维码")
     public ApiResultVO<GetQrCodeVO> signDeleteGetQrCodeUrl() {

@@ -77,6 +77,7 @@ public class SignUtil {
     private static SysTenantRefUserMapper sysTenantRefUserMapper;
     private static SysFileService sysFileService;
     private static SysOtherAppMapper sysOtherAppMapper;
+    private static SysUserSingleSignInMapper sysUserSingleSignInMapper;
 
     @Nullable
     private static List<IUserSignConfiguration> iUserSignConfigurationList;
@@ -85,7 +86,7 @@ public class SignUtil {
                     SecurityProperties securityProperties, SysRoleRefUserMapper sysRoleRefUserMapper,
                     SysDeptRefUserMapper sysDeptRefUserMapper, SysPostRefUserMapper sysPostRefUserMapper,
                     SysTenantRefUserMapper sysTenantRefUserMapper, SysFileService sysFileService,
-                    @Autowired(required = false) @Nullable List<IUserSignConfiguration> iUserSignConfigurationList, SysOtherAppMapper sysOtherAppMapper) {
+                    @Autowired(required = false) @Nullable List<IUserSignConfiguration> iUserSignConfigurationList, SysOtherAppMapper sysOtherAppMapper, SysUserSingleSignInMapper sysUserSingleSignInMapper) {
 
         SignUtil.sysUserInfoMapper = sysUserInfoMapper;
         SignUtil.sysUserMapper = sysUserMapper;
@@ -98,6 +99,7 @@ public class SignUtil {
         SignUtil.sysFileService = sysFileService;
         SignUtil.iUserSignConfigurationList = iUserSignConfigurationList;
         SignUtil.sysOtherAppMapper = sysOtherAppMapper;
+        SignUtil.sysUserSingleSignInMapper = sysUserSingleSignInMapper;
 
     }
 
@@ -1074,6 +1076,13 @@ public class SignUtil {
     public static boolean accountIsExists(Enum<? extends IRedisKey> redisKeyEnum, String newAccount, @Nullable Long id,
                                           @Nullable Long tenantId, String appId) {
 
+        // 如果是：微信单点登录绑定时
+        if (BaseRedisKeyEnum.PRE_SYS_WX_QR_CODE_SINGLE_SIGN_IN_BIND.equals(redisKeyEnum)) {
+
+            return ChainWrappers.lambdaQueryChain(sysUserSingleSignInMapper).eq(SysUserSingleSignInDO::getWxAppId, appId).eq(SysUserSingleSignInDO::getWxOpenId, newAccount).exists();
+
+        }
+
         tenantId = SysTenantUtil.getTenantId(tenantId);
 
         LambdaQueryChainWrapper<SysUserDO> lambdaQueryChainWrapper =
@@ -1342,6 +1351,15 @@ public class SignUtil {
 
         }
 
+        // 是否是：设置单点登录
+        boolean singleSignInFlag = BaseRedisKeyEnum.PRE_SYS_WX_QR_CODE_SINGLE_SIGN_IN_BIND.equals(accountRedisKeyEnum);
+
+        if (singleSignInFlag) {
+
+            nameSet.add(accountRedisKeyEnum.name() + currentUserIdNotAdmin); // 锁定该用户
+
+        }
+
         return RedissonUtil.doMultiLock(null, nameSet, () -> {
 
             RBucket<String> bucket = redissonClient.getBucket(codeKeyBlankFlag ? accountKey : codeKey);
@@ -1369,28 +1387,81 @@ public class SignUtil {
 
             }
 
-            SysUserDO sysUserDO = new SysUserDO();
+            // 如果是：微信单点登录绑定时
+            if (singleSignInFlag) {
 
-            // 通过：BaseRedisKeyEnum，设置：账号
-            setSysUserDOAccountByRedisKeyEnum(accountRedisKeyEnum, account, sysUserDO, appId);
+                // 处理
+                return bindAccountForSingleSignInFlag(account, appId, currentUserIdNotAdmin, currentTenantIdDefault, deleteRedisFlag, bucket);
 
-            sysUserDO.setId(currentUserIdNotAdmin);
+            } else {
 
-            return TransactionUtil.exec(() -> {
+                SysUserDO sysUserDO = new SysUserDO();
 
-                sysUserMapper.updateById(sysUserDO); // 保存：用户
+                // 通过：BaseRedisKeyEnum，设置：账号
+                setSysUserDOAccountByRedisKeyEnum(accountRedisKeyEnum, account, sysUserDO, appId);
 
-                if (deleteRedisFlag) {
+                sysUserDO.setId(currentUserIdNotAdmin);
 
-                    bucket.delete();
+                return TransactionUtil.exec(() -> {
 
-                }
+                    sysUserMapper.updateById(sysUserDO); // 保存：用户
 
-                UserUtil.setJwtSecretSuf(currentUserIdNotAdmin); // 设置：jwt秘钥后缀
+                    if (deleteRedisFlag) {
 
-                return BaseBizCodeEnum.OK;
+                        bucket.delete();
 
-            });
+                    }
+
+                    UserUtil.setJwtSecretSuf(currentUserIdNotAdmin); // 设置：jwt秘钥后缀
+
+                    return BaseBizCodeEnum.OK;
+
+                });
+
+            }
+
+        });
+
+    }
+
+    /**
+     * 处理：微信单点登录绑定时
+     */
+    @NotNull
+    private static String bindAccountForSingleSignInFlag(String account, String appId, Long currentUserIdNotAdmin, Long currentTenantIdDefault, boolean deleteRedisFlag, RBucket<String> bucket) {
+
+        SysUserSingleSignInDO sysUserSingleSignInDO = new SysUserSingleSignInDO();
+
+        boolean singleSignInExists = ChainWrappers.lambdaQueryChain(sysUserSingleSignInMapper).eq(SysUserSingleSignInDO::getId, currentUserIdNotAdmin).exists();
+
+        sysUserSingleSignInDO.setId(currentUserIdNotAdmin);
+
+        sysUserSingleSignInDO.setWxAppId(appId);
+        sysUserSingleSignInDO.setWxOpenId(account);
+
+        return TransactionUtil.exec(() -> {
+
+            if (singleSignInExists) {
+
+                sysUserSingleSignInMapper.insert(sysUserSingleSignInDO); // 新增
+
+            } else {
+
+                sysUserSingleSignInDO.setTenantId(currentTenantIdDefault);
+
+                sysUserSingleSignInMapper.updateById(sysUserSingleSignInDO); // 更新
+
+            }
+
+            if (deleteRedisFlag) {
+
+                bucket.delete();
+
+            }
+
+            UserUtil.setJwtSecretSuf(currentUserIdNotAdmin); // 设置：jwt秘钥后缀
+
+            return BaseBizCodeEnum.OK;
 
         });
 
@@ -1544,6 +1615,32 @@ public class SignUtil {
 
             return new GetQrCodeVO(qrCodeUrl, qrCodeId, System.currentTimeMillis() + ((iSysQrCodeSceneType.getExpireSecond() - 10) * 1000L));
 
+        }, null);
+
+    }
+
+    /**
+     * 获取：单点登录微信，二维码地址
+     */
+    @SneakyThrows
+    @Nullable
+    public static GetQrCodeVO getQrCodeUrlWxForSingleSignIn(@Nullable Long tenantId, boolean getQrCodeUrlFlag, ISysQrCodeSceneType iSysQrCodeSceneType) {
+
+        // 执行
+        return getQrCodeUrl(tenantId, getQrCodeUrlFlag, SysOtherAppTypeEnum.WX_OFFICIAL_ACCOUNT.getCode(), sysOtherAppDO -> {
+
+            String accessToken = WxUtil.getAccessToken(tenantId, sysOtherAppDO.getAppId());
+
+            Long qrCodeId = IdGeneratorUtil.nextId();
+
+            String qrCodeUrl = WxUtil.getQrCodeUrl(accessToken, iSysQrCodeSceneType, qrCodeId.toString());
+
+            return new GetQrCodeVO(qrCodeUrl, qrCodeId, System.currentTimeMillis() + ((iSysQrCodeSceneType.getExpireSecond() - 10) * 1000L));
+
+        }, lambdaQueryChainWrapper -> {
+
+            lambdaQueryChainWrapper.eq(SysOtherAppDO::getSingleSignInFlag, true);
+
         });
 
     }
@@ -1553,7 +1650,7 @@ public class SignUtil {
      */
     @SneakyThrows
     @Nullable
-    public static GetQrCodeVO getQrCodeUrl(@Nullable Long tenantId, boolean getQrCodeUrlFlag, @Nullable Integer otherAppType, Func1<SysOtherAppDO, GetQrCodeVO> func1) {
+    public static GetQrCodeVO getQrCodeUrl(@Nullable Long tenantId, boolean getQrCodeUrlFlag, @Nullable Integer otherAppType, Func1<SysOtherAppDO, GetQrCodeVO> func1, @Nullable Consumer<LambdaQueryChainWrapper<SysOtherAppDO>> lambdaQueryChainWrapperConsumer) {
 
         if (tenantId == null) {
             tenantId = BaseConstant.TOP_TENANT_ID;
@@ -1563,7 +1660,15 @@ public class SignUtil {
             otherAppType = SysOtherAppTypeEnum.WX_OFFICIAL_ACCOUNT.getCode();
         }
 
-        Page<SysOtherAppDO> page = ChainWrappers.lambdaQueryChain(sysOtherAppMapper).eq(SysOtherAppDO::getType, otherAppType).eq(BaseEntityNoId::getEnableFlag, true).eq(BaseEntityNoIdSuper::getTenantId, tenantId).select(SysOtherAppDO::getAppId).page(MyPageUtil.getLimit1Page());
+        LambdaQueryChainWrapper<SysOtherAppDO> lambdaQueryChainWrapper = ChainWrappers.lambdaQueryChain(sysOtherAppMapper).eq(SysOtherAppDO::getType, otherAppType).eq(BaseEntityNoId::getEnableFlag, true).eq(BaseEntityNoIdSuper::getTenantId, tenantId);
+
+        if (lambdaQueryChainWrapperConsumer != null) {
+
+            lambdaQueryChainWrapperConsumer.accept(lambdaQueryChainWrapper);
+
+        }
+
+        Page<SysOtherAppDO> page = lambdaQueryChainWrapper.select(SysOtherAppDO::getAppId).page(MyPageUtil.getLimit1Page());
 
         if (CollUtil.isEmpty(page.getRecords())) {
             return null;
@@ -1596,13 +1701,53 @@ public class SignUtil {
     }
 
     /**
+     * 绑定微信单点登录
+     */
+    @NotNull
+    public static SysQrCodeSceneBindVO setWxForSingleSignIn(Long qrCodeId, String code, String codeKey, String currentPassword) {
+
+        // 执行
+        return getSysQrCodeSceneBindVoAndHandleForSingleSignIn(qrCodeId, true, sysQrCodeSceneBindBO -> {
+
+            // 执行
+            SignUtil.bindAccount(code, BaseRedisKeyEnum.PRE_SYS_WX_QR_CODE_SINGLE_SIGN_IN_BIND, sysQrCodeSceneBindBO.getOpenId(), sysQrCodeSceneBindBO.getAppId(), codeKey, currentPassword);
+
+        });
+
+    }
+
+    /**
      * 获取：微信绑定信息
      */
     @SneakyThrows
     @NotNull
     public static SysQrCodeSceneBindVO getSysQrCodeSceneBindVoAndHandle(Long qrCodeId, boolean deleteFlag, @Nullable VoidFunc1<SysQrCodeSceneBindBO> voidFunc1) {
 
-        RBucket<SysQrCodeSceneBindBO> rBucket = redissonClient.getBucket(BaseRedisKeyEnum.PRE_SYS_WX_QR_CODE_BIND.name() + qrCodeId);
+        // 执行
+        return execGetSysQrCodeSceneBindVoAndHandle(qrCodeId, deleteFlag, BaseRedisKeyEnum.PRE_SYS_WX_QR_CODE_BIND, voidFunc1);
+
+    }
+
+    /**
+     * 获取：微信单点登录绑定信息
+     */
+    @SneakyThrows
+    @NotNull
+    public static SysQrCodeSceneBindVO getSysQrCodeSceneBindVoAndHandleForSingleSignIn(Long qrCodeId, boolean deleteFlag, @Nullable VoidFunc1<SysQrCodeSceneBindBO> voidFunc1) {
+
+        // 执行
+        return execGetSysQrCodeSceneBindVoAndHandle(qrCodeId, deleteFlag, BaseRedisKeyEnum.PRE_SYS_WX_QR_CODE_SINGLE_SIGN_IN_BIND, voidFunc1);
+
+    }
+
+    /**
+     * 获取：微信绑定信息
+     */
+    @SneakyThrows
+    @NotNull
+    public static SysQrCodeSceneBindVO execGetSysQrCodeSceneBindVoAndHandle(Long qrCodeId, boolean deleteFlag, BaseRedisKeyEnum baseRedisKeyEnum, @Nullable VoidFunc1<SysQrCodeSceneBindBO> voidFunc1) {
+
+        RBucket<SysQrCodeSceneBindBO> rBucket = redissonClient.getBucket(baseRedisKeyEnum.name() + qrCodeId);
 
         SysQrCodeSceneBindBO sysQrCodeSceneBindBO;
 
