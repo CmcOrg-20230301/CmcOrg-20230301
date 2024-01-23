@@ -255,7 +255,7 @@ public class SignWxController {
         return ApiResultVO.okData(baseService.updateWxGetQrCodeUrlSingleSignIn());
     }
 
-    @PostMapping(value = "/setSingleSignIn/getQrCodeSceneFlag/SingleSignIn")
+    @PostMapping(value = "/setSingleSignIn/getQrCodeSceneFlag/singleSignIn")
     @Operation(summary = "设置统一登录：获取统一登录微信的二维码是否已经被扫描")
     public ApiResultVO<SysQrCodeSceneBindVO> setSingleSignInGetQrCodeSceneFlagSingleSignIn(@RequestBody @Valid NotNullId notNullId) {
         return ApiResultVO.okData(baseService.setSingleSignInGetQrCodeSceneFlagSingleSignIn(notNullId));

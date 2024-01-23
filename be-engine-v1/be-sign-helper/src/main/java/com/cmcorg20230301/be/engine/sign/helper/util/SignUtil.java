@@ -77,7 +77,7 @@ public class SignUtil {
     private static SysTenantRefUserMapper sysTenantRefUserMapper;
     private static SysFileService sysFileService;
     private static SysOtherAppMapper sysOtherAppMapper;
-    private static SysUserSingleSignInMapper sysUserSingleSignInMapper;
+    public static SysUserSingleSignInMapper sysUserSingleSignInMapper;
 
     @Nullable
     private static List<IUserSignConfiguration> iUserSignConfigurationList;
