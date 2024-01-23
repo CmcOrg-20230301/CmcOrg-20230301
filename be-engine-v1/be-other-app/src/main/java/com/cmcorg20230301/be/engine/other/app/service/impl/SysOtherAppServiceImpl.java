@@ -68,10 +68,10 @@ public class SysOtherAppServiceImpl extends ServiceImpl<SysOtherAppMapper, SysOt
 
             }
 
-            // 如果是单点登录的第三方应用，则取消之前的单点登录的第三方应用，备注：针对全部租户
+            // 如果是单点登录的第三方应用，则取消之前的单点登录的第三方应用类型，备注：针对全部租户
             if (BooleanUtil.isTrue(dto.getSingleSignInFlag())) {
 
-                lambdaUpdate().set(SysOtherAppDO::getSingleSignInFlag, false).eq(SysOtherAppDO::getSingleSignInFlag, true).ne(dto.getId() != null, BaseEntity::getId, dto.getId()).update();
+                lambdaUpdate().set(SysOtherAppDO::getSingleSignInFlag, false).eq(SysOtherAppDO::getType, dto.getType()).eq(SysOtherAppDO::getSingleSignInFlag, true).ne(dto.getId() != null, BaseEntity::getId, dto.getId()).update();
 
             }
 
@@ -113,11 +113,19 @@ public class SysOtherAppServiceImpl extends ServiceImpl<SysOtherAppMapper, SysOt
         // 处理：MyTenantPageDTO
         SysTenantUtil.handleMyTenantPageDTO(dto, true);
 
-        return lambdaQuery().like(StrUtil.isNotBlank(dto.getName()), SysOtherAppDO::getName, dto.getName()).like(StrUtil.isNotBlank(dto.getAppId()), SysOtherAppDO::getAppId, dto.getAppId()).like(StrUtil.isNotBlank(dto.getSubscribeReplyContent()), SysOtherAppDO::getSubscribeReplyContent, dto.getSubscribeReplyContent()) //
+        return lambdaQuery().like(StrUtil.isNotBlank(dto.getName()), SysOtherAppDO::getName, dto.getName()) //
+                .like(StrUtil.isNotBlank(dto.getAppId()), SysOtherAppDO::getAppId, dto.getAppId()) //
+                .like(StrUtil.isNotBlank(dto.getSubscribeReplyContent()), SysOtherAppDO::getSubscribeReplyContent, dto.getSubscribeReplyContent()) //
                 .like(StrUtil.isNotBlank(dto.getTextReplyContent()), SysOtherAppDO::getTextReplyContent, dto.getTextReplyContent()) //
                 .like(StrUtil.isNotBlank(dto.getImageReplyContent()), SysOtherAppDO::getImageReplyContent, dto.getImageReplyContent()) //
-                .like(StrUtil.isNotBlank(dto.getQrCode()), SysOtherAppDO::getQrCode, dto.getQrCode()).like(StrUtil.isNotBlank(dto.getOpenId()), SysOtherAppDO::getOpenId, dto.getOpenId()).like(StrUtil.isNotBlank(dto.getRemark()), BaseEntity::getRemark, dto.getRemark()).eq(dto.getType() != null, SysOtherAppDO::getType, dto.getType()).eq(dto.getEnableFlag() != null, BaseEntity::getEnableFlag, dto.getEnableFlag()).in(BaseEntityNoId::getTenantId, dto.getTenantIdSet()) //
-                .select(BaseEntity::getId, BaseEntityNoIdSuper::getTenantId, BaseEntityNoId::getEnableFlag, BaseEntityNoId::getRemark, BaseEntityNoIdSuper::getCreateId, BaseEntityNoIdSuper::getCreateTime, BaseEntityNoIdSuper::getUpdateId, BaseEntityNoIdSuper::getUpdateTime, SysOtherAppDO::getAppId, SysOtherAppDO::getName, SysOtherAppDO::getType, SysOtherAppDO::getSubscribeReplyContent, SysOtherAppDO::getQrCode).orderByDesc(BaseEntity::getUpdateTime).page(dto.page(true));
+                .like(StrUtil.isNotBlank(dto.getQrCode()), SysOtherAppDO::getQrCode, dto.getQrCode()) //
+                .like(StrUtil.isNotBlank(dto.getOpenId()), SysOtherAppDO::getOpenId, dto.getOpenId()) //
+                .like(StrUtil.isNotBlank(dto.getRemark()), BaseEntity::getRemark, dto.getRemark()) //
+                .eq(dto.getType() != null, SysOtherAppDO::getType, dto.getType()) //
+                .eq(dto.getSingleSignInFlag() != null, SysOtherAppDO::getSingleSignInFlag, dto.getSingleSignInFlag()) //
+                .eq(dto.getEnableFlag() != null, BaseEntity::getEnableFlag, dto.getEnableFlag()) //
+                .in(BaseEntityNoId::getTenantId, dto.getTenantIdSet()) //
+                .select(BaseEntity::getId, BaseEntityNoIdSuper::getTenantId, BaseEntityNoId::getEnableFlag, BaseEntityNoId::getRemark, BaseEntityNoIdSuper::getCreateId, BaseEntityNoIdSuper::getCreateTime, BaseEntityNoIdSuper::getUpdateId, BaseEntityNoIdSuper::getUpdateTime, SysOtherAppDO::getAppId, SysOtherAppDO::getName, SysOtherAppDO::getType, SysOtherAppDO::getSubscribeReplyContent, SysOtherAppDO::getQrCode, SysOtherAppDO::getSingleSignInFlag).orderByDesc(BaseEntity::getUpdateTime).page(dto.page(true));
 
     }
 

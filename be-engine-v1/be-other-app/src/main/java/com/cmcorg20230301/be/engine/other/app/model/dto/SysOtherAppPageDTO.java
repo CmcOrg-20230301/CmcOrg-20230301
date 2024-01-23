@@ -37,6 +37,9 @@ public class SysOtherAppPageDTO extends MyTenantPageDTO {
     @Schema(description = "第三方应用的 openId/微信号，例如：接收微信公众号消息时的 ToUserName")
     private String openId;
 
+    @Schema(description = "是否是单点登录的第三方应用，备注：所有租户都只存在一个类型，单点登录的第三方应用")
+    private Boolean singleSignInFlag;
+
     @Schema(description = "是否启用")
     private Boolean enableFlag;
 
