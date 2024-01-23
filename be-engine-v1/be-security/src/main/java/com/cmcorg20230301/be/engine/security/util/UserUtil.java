@@ -38,7 +38,7 @@ public class UserUtil {
 
     private static SysRoleMapper sysRoleMapper;
     private static SysRoleRefUserMapper sysRoleRefUserMapper;
-    private static SysUserMapper sysUserMapper;
+    public static SysUserMapper sysUserMapper;
     private static SysUserInfoMapper sysUserInfoMapper;
     public static SysUserSingleSignInMapper sysUserSingleSignInMapper;
 

@@ -2,12 +2,17 @@ package com.cmcorg20230301.be.engine.sign.wx.model.enums;
 
 import cn.hutool.core.util.BooleanUtil;
 import com.baomidou.mybatisplus.annotation.EnumValue;
+import com.baomidou.mybatisplus.extension.toolkit.ChainWrappers;
 import com.cmcorg20230301.be.engine.model.model.constant.BaseConstant;
 import com.cmcorg20230301.be.engine.model.model.vo.SignInVO;
 import com.cmcorg20230301.be.engine.redisson.model.enums.BaseRedisKeyEnum;
+import com.cmcorg20230301.be.engine.security.model.entity.BaseEntity;
+import com.cmcorg20230301.be.engine.security.model.entity.BaseEntityNoIdSuper;
 import com.cmcorg20230301.be.engine.security.model.entity.SysUserDO;
+import com.cmcorg20230301.be.engine.security.model.entity.SysUserSingleSignInDO;
 import com.cmcorg20230301.be.engine.security.model.enums.SysQrCodeSceneTypeEnum;
 import com.cmcorg20230301.be.engine.security.model.interfaces.ISysQrCodeSceneType;
+import com.cmcorg20230301.be.engine.security.util.UserUtil;
 import com.cmcorg20230301.be.engine.sign.helper.util.SignUtil;
 import com.cmcorg20230301.be.engine.util.util.VoidFunc3;
 import com.fasterxml.jackson.annotation.JsonValue;
@@ -34,7 +39,7 @@ public enum WxSysQrCodeSceneTypeEnum implements ISysQrCodeSceneType {
 
         bucket.set(signInVO, Duration.ofMillis(BaseConstant.MINUTE_3_EXPIRE_TIME));
 
-    }, false),
+    }, true),
 
     // 设置密码
     WX_SET_PASSWORD("WX_SET_PASSWORD", BaseConstant.MINUTE_3_EXPIRE_TIME / 1000, (qrCodeSceneValue, redissonClient, sysUserDO) -> {
@@ -43,7 +48,7 @@ public enum WxSysQrCodeSceneTypeEnum implements ISysQrCodeSceneType {
 
         bucket.set(sysUserDO.getId(), Duration.ofMillis(BaseConstant.MINUTE_3_EXPIRE_TIME));
 
-    }, false),
+    }, true),
 
     // 修改密码
     WX_UPDATE_PASSWORD("WX_UPDATE_PASSWORD", BaseConstant.MINUTE_3_EXPIRE_TIME / 1000, (qrCodeSceneValue, redissonClient, sysUserDO) -> {
@@ -52,7 +57,7 @@ public enum WxSysQrCodeSceneTypeEnum implements ISysQrCodeSceneType {
 
         bucket.set(sysUserDO.getId(), Duration.ofMillis(BaseConstant.MINUTE_3_EXPIRE_TIME));
 
-    }, false),
+    }, true),
 
     // 设置登录名
     WX_SET_SIGN_IN_NAME("WX_SET_SIGN_IN_NAME", BaseConstant.MINUTE_3_EXPIRE_TIME / 1000, (qrCodeSceneValue, redissonClient, sysUserDO) -> {
@@ -61,7 +66,7 @@ public enum WxSysQrCodeSceneTypeEnum implements ISysQrCodeSceneType {
 
         bucket.set(sysUserDO.getId(), Duration.ofMillis(BaseConstant.MINUTE_3_EXPIRE_TIME));
 
-    }, false),
+    }, true),
 
     // 修改登录名
     WX_UPDATE_SIGN_IN_NAME("WX_UPDATE_SIGN_IN_NAME", BaseConstant.MINUTE_3_EXPIRE_TIME / 1000, (qrCodeSceneValue, redissonClient, sysUserDO) -> {
@@ -70,7 +75,7 @@ public enum WxSysQrCodeSceneTypeEnum implements ISysQrCodeSceneType {
 
         bucket.set(sysUserDO.getId(), Duration.ofMillis(BaseConstant.MINUTE_3_EXPIRE_TIME));
 
-    }, false),
+    }, true),
 
     // 设置邮箱
     WX_SET_EMAIL("WX_SET_EMAIL", BaseConstant.MINUTE_3_EXPIRE_TIME / 1000, (qrCodeSceneValue, redissonClient, sysUserDO) -> {
@@ -79,7 +84,7 @@ public enum WxSysQrCodeSceneTypeEnum implements ISysQrCodeSceneType {
 
         bucket.set(sysUserDO.getId(), Duration.ofMillis(BaseConstant.MINUTE_3_EXPIRE_TIME));
 
-    }, false),
+    }, true),
 
     // 修改邮箱
     WX_UPDATE_EMAIL("WX_UPDATE_EMAIL", BaseConstant.MINUTE_3_EXPIRE_TIME / 1000, (qrCodeSceneValue, redissonClient, sysUserDO) -> {
@@ -88,7 +93,7 @@ public enum WxSysQrCodeSceneTypeEnum implements ISysQrCodeSceneType {
 
         bucket.set(sysUserDO.getId(), Duration.ofMillis(BaseConstant.MINUTE_3_EXPIRE_TIME));
 
-    }, false),
+    }, true),
 
     // 修改微信
     WX_UPDATE_WX("WX_UPDATE_WX", BaseConstant.MINUTE_3_EXPIRE_TIME / 1000, (qrCodeSceneValue, redissonClient, sysUserDO) -> {
@@ -97,7 +102,7 @@ public enum WxSysQrCodeSceneTypeEnum implements ISysQrCodeSceneType {
 
         bucket.set(sysUserDO.getId(), Duration.ofMillis(BaseConstant.MINUTE_3_EXPIRE_TIME));
 
-    }, false),
+    }, true),
 
     // 设置手机
     WX_SET_PHONE("WX_SET_PHONE", BaseConstant.MINUTE_3_EXPIRE_TIME / 1000, (qrCodeSceneValue, redissonClient, sysUserDO) -> {
@@ -106,7 +111,7 @@ public enum WxSysQrCodeSceneTypeEnum implements ISysQrCodeSceneType {
 
         bucket.set(sysUserDO.getId(), Duration.ofMillis(BaseConstant.MINUTE_3_EXPIRE_TIME));
 
-    }, false),
+    }, true),
 
     // 设置单点登录
     WX_SET_SINGLE_SIGN_IN("WX_SET_SINGLE_SIGN_IN", BaseConstant.MINUTE_3_EXPIRE_TIME / 1000, (qrCodeSceneValue, redissonClient, sysUserDO) -> {
@@ -114,6 +119,32 @@ public enum WxSysQrCodeSceneTypeEnum implements ISysQrCodeSceneType {
         RBucket<Long> bucket = redissonClient.getBucket(BaseRedisKeyEnum.PRE_SYS_WX_QR_CODE_SET_SINGLE_SIGN_IN.name() + qrCodeSceneValue);
 
         bucket.set(sysUserDO.getId(), Duration.ofMillis(BaseConstant.MINUTE_3_EXPIRE_TIME));
+
+    }, true),
+
+    // 微信单点登录
+    WX_SINGLE_SIGN_IN("WX_SINGLE_SIGN_IN", BaseConstant.MINUTE_3_EXPIRE_TIME / 1000, (qrCodeSceneValue, redissonClient, sysUserDO) -> {
+
+        // 获取：微信单点登录的信息
+        SysUserSingleSignInDO sysUserSingleSignInDO = ChainWrappers.lambdaQueryChain(UserUtil.sysUserSingleSignInMapper).eq(SysUserSingleSignInDO::getWxAppId, sysUserDO.getWxAppId()).eq(SysUserSingleSignInDO::getWxOpenId, sysUserDO.getWxOpenId()).select(SysUserSingleSignInDO::getId, SysUserSingleSignInDO::getTenantId).one();
+
+        SignInVO signInVO;
+
+        if (sysUserSingleSignInDO == null) {
+
+            signInVO = new SignInVO();
+
+        } else {
+
+            SysUserDO sysUserDoTemp = ChainWrappers.lambdaQueryChain(UserUtil.sysUserMapper).eq(BaseEntity::getId, sysUserSingleSignInDO.getId()).eq(BaseEntityNoIdSuper::getTenantId, sysUserSingleSignInDO.getTenantId()).one();
+
+            signInVO = SignUtil.signInGetJwt(sysUserDoTemp);
+
+        }
+
+        RBucket<SignInVO> bucket = redissonClient.getBucket(BaseRedisKeyEnum.PRE_SYS_WX_QR_CODE_SIGN_IN_SINGLE.name() + qrCodeSceneValue);
+
+        bucket.set(signInVO, Duration.ofMillis(BaseConstant.MINUTE_3_EXPIRE_TIME));
 
     }, false),
 
@@ -124,7 +155,7 @@ public enum WxSysQrCodeSceneTypeEnum implements ISysQrCodeSceneType {
 
         bucket.set(sysUserDO.getId(), Duration.ofMillis(BaseConstant.MINUTE_3_EXPIRE_TIME));
 
-    }, false),
+    }, true),
 
     ;
 
@@ -136,19 +167,19 @@ public enum WxSysQrCodeSceneTypeEnum implements ISysQrCodeSceneType {
 
     private final VoidFunc3<String, RedissonClient, SysUserDO> qrSceneValueConsumer; // 处理：二维码扫码之后的值
 
-    private final Boolean bindFlag; // 是否是：绑定操作
+    private final Boolean autoSignUpFlag; // 是否自动注册
 
     static {
 
         for (WxSysQrCodeSceneTypeEnum item : WxSysQrCodeSceneTypeEnum.values()) {
 
-            if (BooleanUtil.isTrue(item.getBindFlag())) {
+            if (BooleanUtil.isTrue(item.getAutoSignUpFlag())) {
 
-                SysQrCodeSceneTypeEnum.BIND_MAP.put(item.getSceneStr(), item);
+                SysQrCodeSceneTypeEnum.AUTO_SIGN_UP_MAP.put(item.getSceneStr(), item);
 
             } else {
 
-                SysQrCodeSceneTypeEnum.MAP.put(item.getSceneStr(), item);
+                SysQrCodeSceneTypeEnum.NOT_AUTO_SIGN_UP_MAP.put(item.getSceneStr(), item);
 
             }
 

@@ -63,6 +63,18 @@ public class SignWxController {
         return ApiResultVO.okData(baseService.signInByQrCodeId(notNullId));
     }
 
+    @PostMapping(value = "/sign/in/getQrCodeUrl")
+    @Operation(summary = "单点登录：扫码登录：获取二维码")
+    public ApiResultVO<GetQrCodeVO> signInSingleGetQrCodeUrl() {
+        return ApiResultVO.okData(baseService.signInSingleGetQrCodeUrl(true));
+    }
+
+    @PostMapping(value = "/sign/in/single/byQrCodeId")
+    @Operation(summary = "单点登录：扫码登录：通过二维码 id", description = OperationDescriptionConstant.SIGN_IN)
+    public ApiResultVO<SignInVO> signInSingleByQrCodeId(@RequestBody @Valid NotNullId notNullId) {
+        return ApiResultVO.okData(baseService.signInSingleByQrCodeId(notNullId));
+    }
+
     @PostMapping(value = "/setPassword/getQrCodeUrl")
     @Operation(summary = "设置密码-获取二维码")
     public ApiResultVO<GetQrCodeVO> setPasswordGetQrCodeUrl() {

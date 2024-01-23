@@ -81,7 +81,8 @@ public class SysOtherAppOfficialAccountWxReceiveMessageHandle implements ISysOth
 
         SysUserDO sysUserDO = getSysUserDO(dto);
 
-        sysUserDO = handleQrCodeSceneBind(dto, sysUserDO, sysOtherAppDO); // 处理：扫码二维码绑定操作
+        // 处理：扫码二维码绑定操作
+        sysUserDO = handleQrCodeSceneBind(dto, sysUserDO, sysOtherAppDO);
 
         if (sysUserDO == null) {
             sysUserDO = signInUser(dto, sysOtherAppDO); // 新增一个用户
@@ -173,34 +174,21 @@ public class SysOtherAppOfficialAccountWxReceiveMessageHandle implements ISysOth
             return sysUserDO;
         }
 
-        SysUserDO sysUserDoTemp;
+        // 用户是否不存在
+        if (sysUserDO == null) {
 
-        boolean userNotExistFlag = sysUserDO == null; // 用户是否不存在
+            sysUserDO = new SysUserDO();
 
-        if (userNotExistFlag) {
-
-            sysUserDoTemp = new SysUserDO();
-
-            sysUserDoTemp.setWxOpenId(dto.getFromUserName());
-            sysUserDoTemp.setWxAppId(sysOtherAppDO.getAppId());
-            sysUserDoTemp.setTenantId(sysOtherAppDO.getTenantId());
-
-        } else {
-
-            sysUserDoTemp = sysUserDO;
+            sysUserDO.setWxOpenId(dto.getFromUserName());
+            sysUserDO.setWxAppId(sysOtherAppDO.getAppId());
+            sysUserDO.setTenantId(sysOtherAppDO.getTenantId());
 
         }
 
-        dto.setSysUserDO(sysUserDoTemp);
+        dto.setSysUserDO(sysUserDO);
 
         // 处理：二维码上携带的数据
-        boolean handleFlag = handleQrCodeSceneValue(dto, qrCodeSceneValue, SysQrCodeSceneTypeEnum.BIND_MAP);
-
-        if (handleFlag) { // 如果是：绑定操作
-
-            sysUserDO = new SysUserDO(); // 赋值为一个空对象，目的：不新增用户对象
-
-        }
+        handleQrCodeSceneValue(dto, qrCodeSceneValue, SysQrCodeSceneTypeEnum.NOT_AUTO_SIGN_UP_MAP);
 
         return sysUserDO;
 
@@ -232,7 +220,7 @@ public class SysOtherAppOfficialAccountWxReceiveMessageHandle implements ISysOth
 
             } else if ("SCAN".equals(dto.getEvent())) {
 
-                handleQrCodeSceneValue(dto, dto.getEventKey(), SysQrCodeSceneTypeEnum.MAP); // 处理：扫码二维码事件
+                handleQrCodeSceneValue(dto, dto.getEventKey(), SysQrCodeSceneTypeEnum.AUTO_SIGN_UP_MAP); // 处理：扫码二维码事件
 
             }
 
@@ -284,7 +272,7 @@ public class SysOtherAppOfficialAccountWxReceiveMessageHandle implements ISysOth
             String qrCodeSceneValue = StrUtil.subAfter(eventKey, "qrscene_", false);
 
             // 处理：二维码上携带的数据
-            handleQrCodeSceneValue(dto, qrCodeSceneValue, SysQrCodeSceneTypeEnum.MAP);
+            handleQrCodeSceneValue(dto, qrCodeSceneValue, SysQrCodeSceneTypeEnum.AUTO_SIGN_UP_MAP);
 
         }
 

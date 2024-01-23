@@ -21,6 +21,10 @@ public interface SignWxService {
 
     SignInVO signInByQrCodeId(NotNullId notNullId);
 
+    GetQrCodeVO signInSingleGetQrCodeUrl(boolean getQrCodeUrlFlag);
+
+    SignInVO signInSingleByQrCodeId(NotNullId notNullId);
+
     GetQrCodeVO setPasswordGetQrCodeUrl();
 
     SysQrCodeSceneBindVO setPasswordGetQrCodeSceneFlag(NotNullId notNullId);

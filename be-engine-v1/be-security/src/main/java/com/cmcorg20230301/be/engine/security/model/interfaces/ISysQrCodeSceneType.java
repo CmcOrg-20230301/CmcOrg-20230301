@@ -21,6 +21,6 @@ public interface ISysQrCodeSceneType {
 
     VoidFunc3<String, RedissonClient, SysUserDO> getQrSceneValueConsumer(); // 处理：二维码扫码之后的值
 
-    Boolean getBindFlag(); // 是否是：绑定操作
+    Boolean getAutoSignUpFlag(); // 是否自动注册
 
 }

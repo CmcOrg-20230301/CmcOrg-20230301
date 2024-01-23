@@ -5,6 +5,7 @@ import cn.hutool.jwt.JWT;
 import com.baomidou.mybatisplus.extension.toolkit.ChainWrappers;
 import com.cmcorg20230301.be.engine.email.enums.EmailMessageEnum;
 import com.cmcorg20230301.be.engine.email.util.MyEmailUtil;
+import com.cmcorg20230301.be.engine.model.model.constant.BaseConstant;
 import com.cmcorg20230301.be.engine.model.model.dto.NotNullId;
 import com.cmcorg20230301.be.engine.model.model.vo.GetQrCodeVO;
 import com.cmcorg20230301.be.engine.model.model.vo.SignInVO;
@@ -214,6 +215,27 @@ public class SignWxServiceImpl implements SignWxService {
     public SignInVO signInByQrCodeId(NotNullId notNullId) {
 
         return redissonClient.<SignInVO>getBucket(BaseRedisKeyEnum.PRE_SYS_WX_QR_CODE_SIGN.name() + notNullId.getId()).getAndDelete();
+
+    }
+
+    /**
+     * 单点登录：扫码登录：获取二维码
+     */
+    @Override
+    public GetQrCodeVO signInSingleGetQrCodeUrl(boolean getQrCodeUrlFlag) {
+
+        // 执行
+        return SignUtil.getQrCodeUrlWxForSingleSignIn(BaseConstant.TOP_TENANT_ID, true, WxSysQrCodeSceneTypeEnum.WX_SINGLE_SIGN_IN);
+
+    }
+
+    /**
+     * 单点登录：扫码登录：通过二维码 id
+     */
+    @Override
+    public SignInVO signInSingleByQrCodeId(NotNullId notNullId) {
+
+        return redissonClient.<SignInVO>getBucket(BaseRedisKeyEnum.PRE_SYS_WX_QR_CODE_SIGN_IN_SINGLE.name() + notNullId.getId()).getAndDelete();
 
     }
 

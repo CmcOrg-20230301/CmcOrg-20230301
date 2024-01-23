@@ -43,7 +43,7 @@ public enum SysQrCodeSceneTypeEnum implements ISysQrCodeSceneType {
 
         bucket.set(sysQrCodeSceneBindBO, Duration.ofMillis(BaseConstant.MINUTE_3_EXPIRE_TIME));
 
-    }, true),
+    }, false),
 
     // 微信单点登录绑定
     WX_SINGLE_SIGN_IN_BIND("WX_SINGLE_SIGN_IN_BIND", BaseConstant.MINUTE_3_EXPIRE_TIME / 1000, (qrCodeSceneValue, redissonClient, sysUserDO) -> {
@@ -67,7 +67,7 @@ public enum SysQrCodeSceneTypeEnum implements ISysQrCodeSceneType {
 
         bucket.set(sysQrCodeSceneBindBO, Duration.ofMillis(BaseConstant.MINUTE_3_EXPIRE_TIME));
 
-    }, true),
+    }, false),
 
     ;
 
@@ -79,25 +79,25 @@ public enum SysQrCodeSceneTypeEnum implements ISysQrCodeSceneType {
 
     private final VoidFunc3<String, RedissonClient, SysUserDO> qrSceneValueConsumer; // 处理：二维码扫码之后的值
 
-    private final Boolean bindFlag; // 是否是：绑定操作
+    private final Boolean autoSignUpFlag; // 是否自动注册
 
-    // 不是绑定操作的 map
-    public static final Map<String, ISysQrCodeSceneType> MAP = MapUtil.newConcurrentHashMap(SysQrCodeSceneTypeEnum.values().length);
+    // 自动注册的 map
+    public static final Map<String, ISysQrCodeSceneType> AUTO_SIGN_UP_MAP = MapUtil.newConcurrentHashMap(SysQrCodeSceneTypeEnum.values().length);
 
-    // 绑定操作的 map
-    public static final Map<String, ISysQrCodeSceneType> BIND_MAP = MapUtil.newConcurrentHashMap(SysQrCodeSceneTypeEnum.values().length);
+    // 不自动注册的 map
+    public static final Map<String, ISysQrCodeSceneType> NOT_AUTO_SIGN_UP_MAP = MapUtil.newConcurrentHashMap(SysQrCodeSceneTypeEnum.values().length);
 
     static {
 
         for (SysQrCodeSceneTypeEnum item : SysQrCodeSceneTypeEnum.values()) {
 
-            if (BooleanUtil.isTrue(item.getBindFlag())) {
+            if (BooleanUtil.isTrue(item.getAutoSignUpFlag())) {
 
-                BIND_MAP.put(item.getSceneStr(), item);
+                AUTO_SIGN_UP_MAP.put(item.getSceneStr(), item);
 
             } else {
 
-                MAP.put(item.getSceneStr(), item);
+                NOT_AUTO_SIGN_UP_MAP.put(item.getSceneStr(), item);
 
             }
 
