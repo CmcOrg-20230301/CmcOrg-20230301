@@ -63,7 +63,7 @@ public class SignWxController {
         return ApiResultVO.okData(baseService.signInByQrCodeId(notNullId));
     }
 
-    @PostMapping(value = "/sign/in/getQrCodeUrl")
+    @PostMapping(value = "/sign/in/single/getQrCodeUrl")
     @Operation(summary = "单点登录：扫码登录：获取二维码")
     public ApiResultVO<GetQrCodeVO> signInSingleGetQrCodeUrl() {
         return ApiResultVO.okData(baseService.signInSingleGetQrCodeUrl(true));

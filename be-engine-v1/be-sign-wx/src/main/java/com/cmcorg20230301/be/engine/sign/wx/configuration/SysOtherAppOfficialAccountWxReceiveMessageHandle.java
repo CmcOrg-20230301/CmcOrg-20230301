@@ -81,8 +81,8 @@ public class SysOtherAppOfficialAccountWxReceiveMessageHandle implements ISysOth
 
         SysUserDO sysUserDO = getSysUserDO(dto);
 
-        // 处理：扫码二维码绑定操作
-        sysUserDO = handleQrCodeSceneBind(dto, sysUserDO, sysOtherAppDO);
+        // 处理：扫码二维码不自动注册的操作
+        sysUserDO = handleQrCodeSceneNotAutoSignUp(dto, sysUserDO, sysOtherAppDO);
 
         if (sysUserDO == null) {
             sysUserDO = signInUser(dto, sysOtherAppDO); // 新增一个用户
@@ -142,10 +142,10 @@ public class SysOtherAppOfficialAccountWxReceiveMessageHandle implements ISysOth
     }
 
     /**
-     * 处理：扫码二维码绑定操作
+     * 处理：扫码二维码不自动注册的操作
      */
     @Nullable
-    private SysUserDO handleQrCodeSceneBind(SysOtherAppOfficialAccountWxReceiveMessageDTO dto, @Nullable SysUserDO sysUserDO, SysOtherAppDO sysOtherAppDO) {
+    private SysUserDO handleQrCodeSceneNotAutoSignUp(SysOtherAppOfficialAccountWxReceiveMessageDTO dto, @Nullable SysUserDO sysUserDO, SysOtherAppDO sysOtherAppDO) {
 
         if (!"event".equals(dto.getMsgType())) {
             return sysUserDO;
