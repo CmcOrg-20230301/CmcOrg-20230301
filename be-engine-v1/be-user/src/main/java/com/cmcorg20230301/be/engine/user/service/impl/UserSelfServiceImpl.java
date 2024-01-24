@@ -1,5 +1,6 @@
 package com.cmcorg20230301.be.engine.user.service.impl;
 
+import cn.hutool.core.thread.ThreadUtil;
 import cn.hutool.core.util.DesensitizedUtil;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -8,19 +9,24 @@ import com.cmcorg20230301.be.engine.model.model.constant.BaseConstant;
 import com.cmcorg20230301.be.engine.security.exception.BaseBizCodeEnum;
 import com.cmcorg20230301.be.engine.security.mapper.SysUserInfoMapper;
 import com.cmcorg20230301.be.engine.security.mapper.SysUserMapper;
+import com.cmcorg20230301.be.engine.security.mapper.SysUserSingleSignInMapper;
 import com.cmcorg20230301.be.engine.security.model.entity.BaseEntity;
 import com.cmcorg20230301.be.engine.security.model.entity.SysUserDO;
 import com.cmcorg20230301.be.engine.security.model.entity.SysUserInfoDO;
+import com.cmcorg20230301.be.engine.security.model.entity.SysUserSingleSignInDO;
 import com.cmcorg20230301.be.engine.security.properties.SecurityProperties;
 import com.cmcorg20230301.be.engine.security.util.MyEntityUtil;
+import com.cmcorg20230301.be.engine.security.util.MyThreadUtil;
 import com.cmcorg20230301.be.engine.security.util.UserUtil;
 import com.cmcorg20230301.be.engine.user.model.dto.UserSelfUpdateInfoDTO;
 import com.cmcorg20230301.be.engine.user.model.vo.UserSelfInfoVO;
 import com.cmcorg20230301.be.engine.user.service.UserSelfService;
 import com.cmcorg20230301.be.engine.util.util.NicknameUtil;
+import lombok.SneakyThrows;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.concurrent.CountDownLatch;
 
 @Service
 public class UserSelfServiceImpl extends ServiceImpl<SysUserMapper, SysUserDO> implements UserSelfService {
@@ -31,9 +37,13 @@ public class UserSelfServiceImpl extends ServiceImpl<SysUserMapper, SysUserDO> i
     @Resource
     SysUserInfoMapper sysUserInfoMapper;
 
+    @Resource
+    SysUserSingleSignInMapper sysUserSingleSignInMapper;
+
     /**
      * 获取：当前用户，基本信息
      */
+    @SneakyThrows
     @Override
     public UserSelfInfoVO userSelfInfo() {
 
@@ -59,33 +69,57 @@ public class UserSelfServiceImpl extends ServiceImpl<SysUserMapper, SysUserDO> i
 
         }
 
-        SysUserInfoDO sysUserInfoDO =
-                ChainWrappers.lambdaQueryChain(sysUserInfoMapper).eq(SysUserInfoDO::getId, currentUserId)
-                        .select(SysUserInfoDO::getAvatarFileId, SysUserInfoDO::getNickname, SysUserInfoDO::getBio).one();
+        CountDownLatch countDownLatch = ThreadUtil.newCountDownLatch(3);
 
-        SysUserDO sysUserDO = lambdaQuery().eq(BaseEntity::getId, currentUserId)
-                .select(SysUserDO::getEmail, SysUserDO::getPassword, SysUserDO::getSignInName, SysUserDO::getPhone,
-                        SysUserDO::getWxOpenId, BaseEntity::getCreateTime, SysUserDO::getWxAppId).one();
+        MyThreadUtil.execute(() -> {
 
-        if (sysUserInfoDO != null && sysUserDO != null) {
+            SysUserInfoDO sysUserInfoDO =
+                    ChainWrappers.lambdaQueryChain(sysUserInfoMapper).eq(SysUserInfoDO::getId, currentUserId)
+                            .select(SysUserInfoDO::getAvatarFileId, SysUserInfoDO::getNickname, SysUserInfoDO::getBio).one();
 
-            sysUserSelfInfoVO.setAvatarFileId(sysUserInfoDO.getAvatarFileId());
-            sysUserSelfInfoVO.setNickname(sysUserInfoDO.getNickname());
-            sysUserSelfInfoVO.setBio(sysUserInfoDO.getBio());
+            if (sysUserInfoDO != null) {
 
-            // 备注：要和 userMyPage接口保持一致
-            sysUserSelfInfoVO.setEmail(DesensitizedUtil.email(sysUserDO.getEmail())); // 脱敏
-            sysUserSelfInfoVO.setSignInName(DesensitizedUtil.chineseName(sysUserDO.getSignInName())); // 脱敏
-            sysUserSelfInfoVO.setPhone(DesensitizedUtil.mobilePhone(sysUserDO.getPhone())); // 脱敏
-            sysUserSelfInfoVO.setWxOpenId(
-                    StrUtil.hide(sysUserDO.getWxOpenId(), 3, sysUserDO.getWxOpenId().length() - 4)); // 脱敏：只显示前 3位，后 4位
-            sysUserSelfInfoVO.setWxAppId(
-                    StrUtil.hide(sysUserDO.getWxAppId(), 3, sysUserDO.getWxAppId().length() - 4)); // 脱敏：只显示前 3位，后 4位
+                sysUserSelfInfoVO.setAvatarFileId(sysUserInfoDO.getAvatarFileId());
+                sysUserSelfInfoVO.setNickname(sysUserInfoDO.getNickname());
+                sysUserSelfInfoVO.setBio(sysUserInfoDO.getBio());
 
-            sysUserSelfInfoVO.setPasswordFlag(StrUtil.isNotBlank(sysUserDO.getPassword()));
-            sysUserSelfInfoVO.setCreateTime(sysUserDO.getCreateTime());
+            }
 
-        }
+        }, countDownLatch);
+
+        MyThreadUtil.execute(() -> {
+
+            SysUserDO sysUserDO = lambdaQuery().eq(BaseEntity::getId, currentUserId)
+                    .select(SysUserDO::getEmail, SysUserDO::getPassword, SysUserDO::getSignInName, SysUserDO::getPhone,
+                            SysUserDO::getWxOpenId, BaseEntity::getCreateTime, SysUserDO::getWxAppId).one();
+
+            if (sysUserDO != null) {
+
+                // 备注：要和 userMyPage接口保持一致
+                sysUserSelfInfoVO.setEmail(DesensitizedUtil.email(sysUserDO.getEmail())); // 脱敏
+                sysUserSelfInfoVO.setSignInName(DesensitizedUtil.chineseName(sysUserDO.getSignInName())); // 脱敏
+                sysUserSelfInfoVO.setPhone(DesensitizedUtil.mobilePhone(sysUserDO.getPhone())); // 脱敏
+                sysUserSelfInfoVO.setWxOpenId(
+                        StrUtil.hide(sysUserDO.getWxOpenId(), 3, sysUserDO.getWxOpenId().length() - 4)); // 脱敏：只显示前 3位，后 4位
+                sysUserSelfInfoVO.setWxAppId(
+                        StrUtil.hide(sysUserDO.getWxAppId(), 3, sysUserDO.getWxAppId().length() - 4)); // 脱敏：只显示前 3位，后 4位
+
+                sysUserSelfInfoVO.setPasswordFlag(StrUtil.isNotBlank(sysUserDO.getPassword()));
+                sysUserSelfInfoVO.setCreateTime(sysUserDO.getCreateTime());
+
+            }
+
+        }, countDownLatch);
+
+        MyThreadUtil.execute(() -> {
+
+            boolean exists = ChainWrappers.lambdaQueryChain(sysUserSingleSignInMapper).eq(SysUserSingleSignInDO::getId, currentUserId).eq(SysUserSingleSignInDO::getTenantId, currentTenantIdDefault).exists();
+
+            sysUserSelfInfoVO.setSingleSignInFlag(exists);
+
+        }, countDownLatch);
+
+        countDownLatch.await();
 
         return sysUserSelfInfoVO;
 
