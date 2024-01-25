@@ -45,9 +45,9 @@ export default function () {
                 }}
 
                 required
-                label="验证码"
+                label="手机验证码"
                 name="code"
-                placeholder={"请输入验证码"}
+                placeholder={"请输入手机验证码"}
                 rules={[{validator: Validate.code.validator}]}
 
                 onGetCaptcha={async () => {

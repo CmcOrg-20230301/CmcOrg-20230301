@@ -73,6 +73,7 @@ export interface SysSmsConfigurationDO {
     sdkAppId?: string // 短信应用 id
     tenantId?: string // 租户 id，format：int64
     name?: string // 短信名
+    sendSetSingleSignIn?: string // 发送：设置统一登录
     sendSetPassword?: string // 发送：设置密码
 }
 

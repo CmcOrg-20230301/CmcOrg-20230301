@@ -11,6 +11,8 @@ interface IUserSlice {
 
     userSelfInfo: UserSelfInfoVO // 当前用户，基本信息
 
+    userSelfInfoLoadFlag: boolean // 是否：当前用户基本信息
+
     userSelfAvatarUrl: string // 当前用户，头像链接
 
 }
@@ -22,6 +24,8 @@ const initialState: IUserSlice = {
     userSelfMenuListLoadFlag: false,
 
     userSelfInfo: {},
+
+    userSelfInfoLoadFlag: false,
 
     userSelfAvatarUrl: localStorage.getItem(LocalStorageKey.USER_SELF_AVATAR_URL) || ''
 
@@ -57,6 +61,12 @@ export const userSlice = createSlice({
 
         },
 
+        setUserSelfInfoLoadFlag: (state, action: PayloadAction<boolean>) => {
+
+            state.userSelfInfoLoadFlag = action.payload
+
+        },
+
         setUserSelfAvatarUrl: (state, action: PayloadAction<string>) => {
 
             state.userSelfAvatarUrl = action.payload
@@ -74,6 +84,7 @@ export const userSlice = createSlice({
             state.userSelfMenuList = []
             state.userSelfMenuListLoadFlag = false
             state.userSelfInfo = {}
+            state.userSelfInfoLoadFlag = false
             state.userSelfAvatarUrl = ""
 
         }
@@ -87,7 +98,8 @@ export const {
     setUserSelfInfo,
     setUserSelfAvatarUrl,
     signOut,
-    setUserSelfMenuListLoadFlag
+    setUserSelfMenuListLoadFlag,
+    setUserSelfInfoLoadFlag
 } = userSlice.actions
 export const {} = userSlice.actions
 

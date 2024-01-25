@@ -43,8 +43,8 @@ export default function () {
 
         <ProFormText
 
-            label="旧密码"
-            placeholder={'请输入旧密码'}
+            label="当前密码"
+            placeholder={'请输入当前密码'}
             name="oldPassword"
             fieldProps={{
                 allowClear: true,

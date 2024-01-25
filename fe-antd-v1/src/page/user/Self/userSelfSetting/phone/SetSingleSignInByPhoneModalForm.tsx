@@ -1,27 +1,37 @@
 import SetWxModalForm from "@/page/user/Self/userSelfSetting/wx/SetWxModalForm.tsx";
-import {
-    SignPhoneUpdateWx,
-    SignPhoneUpdateWxGetQrCodeSceneFlagNew,
-    SignPhoneUpdateWxGetQrCodeUrlNew,
-    SignPhoneUpdateWxSendCodePhone
-} from "@/api/http/SignPhone.ts";
 import {ProFormCaptcha} from "@ant-design/pro-components";
 import {Validate} from "@/util/ValidatorUtil.ts";
 import {ToastSuccess} from "@/util/ToastUtil.ts";
 import React from "react";
-import {UserSelfUpdateWxModalTitle} from "@/page/user/Self/UserSelfSetting.tsx";
+import {
+    SignPhoneSetSingleSignIn,
+    SignPhoneSetSingleSignInGetQrCodeSceneFlagSingleSignIn,
+    SignPhoneSetSingleSignInGetQrCodeUrlSingleSignIn,
+    SignPhoneSetSingleSignInSendCodePhone
+} from "@/api/http/SignPhone.ts";
+import {
+    UserSelfSetSingleSignInModalTitle,
+    UserSelfUpdateSingleSignInModalTitle
+} from "@/page/user/Self/UserSelfSetting.tsx";
+import {UserSelfInfoVO} from "@/api/http/UserSelf.ts";
 
-export default function () {
+interface ISetSingleSignInByPhoneModalForm {
+
+    userSelfInfo: UserSelfInfoVO
+
+}
+
+export default function (props: ISetSingleSignInByPhoneModalForm) {
 
     return <>
 
-        <SetWxModalForm setWxGetQrCodeUrl={SignPhoneUpdateWxGetQrCodeUrlNew}
-                        setWxGetQrCodeSceneFlag={SignPhoneUpdateWxGetQrCodeSceneFlagNew}
-                        setWx={SignPhoneUpdateWx}
+        <SetWxModalForm setWxGetQrCodeUrl={SignPhoneSetSingleSignInGetQrCodeUrlSingleSignIn}
+                        setWxGetQrCodeSceneFlag={SignPhoneSetSingleSignInGetQrCodeSceneFlagSingleSignIn}
+                        setWx={SignPhoneSetSingleSignIn}
 
-                        title={UserSelfUpdateWxModalTitle}
+                        title={props.userSelfInfo.singleSignInFlag ? UserSelfUpdateSingleSignInModalTitle : UserSelfSetSingleSignInModalTitle}
 
-                        label={"新微信扫码"}
+                        label={"统一登录微信扫码"}
 
                         formItemArr={formRef => [
 
@@ -42,7 +52,7 @@ export default function () {
 
                                 onGetCaptcha={async () => {
 
-                                    await SignPhoneUpdateWxSendCodePhone().then(res => {
+                                    await SignPhoneSetSingleSignInSendCodePhone().then(res => {
 
                                         ToastSuccess(res.msg)
 

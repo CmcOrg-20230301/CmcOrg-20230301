@@ -22,7 +22,7 @@ import MyIcon from "@/component/MyIcon/MyIcon";
 import {ListToTree} from "@/util/TreeUtil";
 import {InDev} from "@/util/CommonUtil";
 import {SignOutSelf} from "@/api/http/SignOut";
-import {RouterMapKeyList} from "@/router/RouterMap";
+import {RouterMapKeySet} from "@/router/RouterMap";
 import {UseEffectLoadSysMenuUserSelfMenuList, UseEffectLoadUserSelfInfo} from "@/util/UseEffectUtil";
 import {LogoutOutlined, UserOutlined, WalletOutlined} from "@ant-design/icons";
 import {SetTenantManageName} from "@/page/sign/SignIn/SignInUtil.ts";
@@ -30,19 +30,32 @@ import {SetTenantManageName} from "@/page/sign/SignIn/SignInUtil.ts";
 // 前往：第一个页面
 function GoFirstPage(menuList: SysMenuDO[]) {
 
-    if (window.location.pathname !== PathConstant.ADMIN_PATH) {
-        return
+    const pathname = window.location.pathname;
+
+    let notFoundRedirectPath = sessionStorage.getItem(SessionStorageKey.NOT_FOUND_REDIRECT_PATH);
+
+    if (!notFoundRedirectPath) {
+
+        if (pathname !== PathConstant.ADMIN_PATH) {
+
+            notFoundRedirectPath = pathname
+
+        }
+
     }
 
-    const adminRedirectPath = sessionStorage.getItem(SessionStorageKey.ADMIN_REDIRECT_PATH);
+    if (notFoundRedirectPath) {
 
-    if (adminRedirectPath) {
+        sessionStorage.removeItem(SessionStorageKey.NOT_FOUND_REDIRECT_PATH)
 
-        sessionStorage.removeItem(SessionStorageKey.ADMIN_REDIRECT_PATH)
+        console.log('admin-notFoundRedirectPath', notFoundRedirectPath)
 
-        if (menuList.some(item => item.path === adminRedirectPath)) {
+        if (menuList.some(item => item.path === notFoundRedirectPath)) { // 防止：死循环加载
 
-            return GoPage(adminRedirectPath)
+            console.log('admin-notFoundRedirectPath-goPage', notFoundRedirectPath)
+
+            GoPage(notFoundRedirectPath)
+            return
 
         }
 
@@ -51,6 +64,8 @@ function GoFirstPage(menuList: SysMenuDO[]) {
     menuList.some((item) => {
 
         if (item.firstFlag && item.path) {
+
+            console.log('admin-first-goPage', item.path)
 
             GoPage(item.path)
             return true
@@ -65,38 +80,7 @@ function GoFirstPage(menuList: SysMenuDO[]) {
 
 export const CopyrightFooterId = "CopyrightFooterId"
 
-// Admin 页面布局
-export default function () {
-
-    const [element, setElement] = useState<React.ReactNode>(null);
-
-    // 设置 element
-    function DoSetElement(userSelfMenuList: SysMenuDO[], firstFlag: boolean) {
-
-        setElement(<AdminLayoutElement userSelfMenuList={userSelfMenuList} firstFlag={firstFlag}/>)
-
-    }
-
-    // 加载菜单
-    UseEffectLoadSysMenuUserSelfMenuList((data, firstFlag) => {
-
-        DoSetElement(data, firstFlag)
-
-    });
-
-    return element
-
-}
-
-interface IAdminLayoutElement {
-
-    userSelfMenuList: SysMenuDO[]
-
-    firstFlag: boolean
-
-}
-
-let setPathnameTemp: (value: (((prevState: string) => string) | string)) => void
+let SetPathnameTemp: (value: (((prevState: string) => string) | string)) => void
 
 /**
  * 前往页面，目的：可以设置 ProLayout组件的 pathname参数
@@ -106,23 +90,32 @@ let setPathnameTemp: (value: (((prevState: string) => string) | string)) => void
  */
 export function GoPage(path: string, data?: any) {
 
-    setPathnameTemp(path)
+    SetPathnameTemp(path)
     GetAppNav()(path, data)
 
 }
 
 // Admin 页面布局元素
-function AdminLayoutElement(props: IAdminLayoutElement) {
+export default function () {
 
     const [pathname, setPathname] = useState<string>('')
 
-    setPathnameTemp = setPathname
+    SetPathnameTemp = setPathname
 
     const userSelfInfo = useAppSelector((state) => state.user.userSelfInfo)
 
     const userSelfAvatarUrl = useAppSelector((state) => state.user.userSelfAvatarUrl)
 
     const tenantManageName = useAppSelector(state => state.common.tenantManageName);
+
+    const [userSelfMenuList, setUserSelfMenuList] = useState<SysMenuDO[]>([]);
+
+    // 加载菜单
+    UseEffectLoadSysMenuUserSelfMenuList((data) => {
+
+        setUserSelfMenuList(data)
+
+    });
 
     // 加载：用户数据
     UseEffectLoadUserSelfInfo((data) => {
@@ -139,9 +132,9 @@ function AdminLayoutElement(props: IAdminLayoutElement) {
         setLoadUserSelfMenuListParam(loadUserSelfMenuListParam + 1)
 
         // 前往：第一个页面
-        GoFirstPage(props.userSelfMenuList)
+        GoFirstPage(userSelfMenuList)
 
-    }, [props.userSelfMenuList])
+    }, [userSelfMenuList])
 
     return (
 
@@ -157,23 +150,28 @@ function AdminLayoutElement(props: IAdminLayoutElement) {
 
                 loading: false,
 
-                params: {loadUserSelfMenuListParam},
+                // === 1，目的：防止重复渲染
+                params: {param: loadUserSelfMenuListParam === 1 ? 0 : loadUserSelfMenuListParam},
 
-                request: async () => {
+                request: async (): Promise<MenuDataItem[]> => {
 
-                    const userSelfMenuListTemp: MenuDataItem[] = JSON.parse(JSON.stringify(props.userSelfMenuList));
+                    const userSelfMenuListTemp: MenuDataItem[] = [];
 
-                    userSelfMenuListTemp.forEach(item => {
+                    userSelfMenuList.forEach(itemTemp => {
+
+                        const item: MenuDataItem = {...itemTemp} as any
 
                         if (item.icon) {
-                            item.icon = <MyIcon icon={item.icon as string}/>
+                            item.icon = <MyIcon icon={itemTemp.icon}/>
                         }
 
                         item.hideInMenu = !item.showFlag
 
+                        userSelfMenuListTemp.push(item)
+
                     })
 
-                    return ListToTree(userSelfMenuListTemp);
+                    return ListToTree(userSelfMenuListTemp)
 
                 },
 
@@ -212,7 +210,7 @@ function AdminLayoutElement(props: IAdminLayoutElement) {
 
                         if (path && item.router) {
 
-                            if (RouterMapKeyList.includes(item.router)) {
+                            if (RouterMapKeySet.has(item.router)) {
 
                                 GoPage(path)
                                 return;

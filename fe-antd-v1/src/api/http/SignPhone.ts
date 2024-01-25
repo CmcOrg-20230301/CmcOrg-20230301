@@ -1,6 +1,20 @@
 import $http from "@/util/HttpUtil";
 import {AxiosRequestConfig} from "axios";
 
+export interface NotNullId {
+    id?: string // 主键 id，required：true，format：int64
+}
+
+export interface SysQrCodeSceneBindVO {
+    sceneFlag?: boolean // 是否：已经扫码
+    errorMsg?: string // 错误信息
+}
+
+// 设置统一登录：获取统一登录微信的二维码是否已经被扫描
+export function SignPhoneSetSingleSignInGetQrCodeSceneFlagSingleSignIn(form: NotNullId, config?: AxiosRequestConfig) {
+    return $http.myPost<SysQrCodeSceneBindVO>('/sign/phone/setSingleSignIn/getQrCodeSceneFlag/singleSignIn', form, config)
+}
+
 // 账号注销-发送验证码
 export function SignPhoneSignDeleteSendCode(config?: AxiosRequestConfig) {
     return $http.myPost<string>('/sign/phone/signDelete/sendCode', undefined, config)
@@ -48,15 +62,6 @@ export function SignPhoneSignInCode(form: SignPhoneSignInCodeDTO, config?: Axios
     return $http.myPost<SignInVO>('/sign/phone/sign/in/code', form, config)
 }
 
-export interface NotNullId {
-    id?: string // 主键 id，required：true，format：int64
-}
-
-export interface SysQrCodeSceneBindVO {
-    sceneFlag?: boolean // 是否：已经扫码
-    errorMsg?: string // 错误信息
-}
-
 // 修改微信：获取新微信二维码是否已经被扫描
 export function SignPhoneUpdateWxGetQrCodeSceneFlagNew(form: NotNullId, config?: AxiosRequestConfig) {
     return $http.myPost<SysQrCodeSceneBindVO>('/sign/phone/updateWx/getQrCodeSceneFlag/new', form, config)
@@ -74,6 +79,11 @@ export interface SignPhoneUpdateEmailSendCodePhoneDTO {
 // 修改邮箱-发送手机验证码
 export function SignPhoneUpdateEmailSendCodePhone(form: SignPhoneUpdateEmailSendCodePhoneDTO, config?: AxiosRequestConfig) {
     return $http.myPost<string>('/sign/phone/updateEmail/sendCode/phone', form, config)
+}
+
+// 设置统一登录：获取统一登录微信的二维码地址
+export function SignPhoneSetSingleSignInGetQrCodeUrlSingleSignIn(config?: AxiosRequestConfig) {
+    return $http.myPost<GetQrCodeVO>('/sign/phone/setSingleSignIn/getQrCodeUrl/singleSignIn', undefined, config)
 }
 
 // 修改手机-发送旧手机验证码
@@ -97,6 +107,16 @@ export function SignPhoneSignUp(form: SignPhoneSignUpDTO, config?: AxiosRequestC
 // 修改微信：发送手机验证码
 export function SignPhoneUpdateWxSendCodePhone(config?: AxiosRequestConfig) {
     return $http.myPost<string>('/sign/phone/updateWx/sendCode/phone', undefined, config)
+}
+
+export interface SignPhoneSetSingleSignInDTO {
+    qrCodeId?: string // 二维码 id，required：true，format：int64
+    phoneCode?: string // 手机验证码，正则表达式：^[0-9]{6}$，required：true
+}
+
+// 设置统一登录
+export function SignPhoneSetSingleSignIn(form: SignPhoneSetSingleSignInDTO, config?: AxiosRequestConfig) {
+    return $http.myPost<SysQrCodeSceneBindVO>('/sign/phone/setSingleSignIn', form, config)
 }
 
 export interface SignPhoneUpdatePhoneSendCodeNewDTO {
@@ -131,6 +151,11 @@ export function SignPhoneSignInSendCode(form: PhoneNotBlankDTO, config?: AxiosRe
 // 设置微信-发送手机验证码
 export function SignPhoneSetWxSendCodePhone(config?: AxiosRequestConfig) {
     return $http.myPost<string>('/sign/phone/setWx/sendCode/phone', undefined, config)
+}
+
+// 设置统一登录：发送手机验证码
+export function SignPhoneSetSingleSignInSendCodePhone(config?: AxiosRequestConfig) {
+    return $http.myPost<string>('/sign/phone/setSingleSignIn/sendCode/phone', undefined, config)
 }
 
 export interface SignPhoneUpdateSignInNameDTO {

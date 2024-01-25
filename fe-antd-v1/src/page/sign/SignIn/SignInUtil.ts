@@ -15,6 +15,7 @@ import CommonConstant from "@/model/constant/CommonConstant.ts";
 import {SysSignTypeEnum} from "@/model/enum/SysSignTypeEnum.tsx";
 import {SignPhoneSignInCode, SignPhoneSignInPassword} from "@/api/http/SignPhone.ts";
 import {ISignInForm} from "./SignIn";
+import {GetStorageForeverValue, SetStorageForeverValue} from "@/util/StorageUtil.ts";
 
 /**
  * 设置：后台系统名
@@ -99,7 +100,11 @@ export async function SignInFormHandler(form: ISignInForm) {
  */
 export function SignInSuccess(signInVO: SignInVO, path: string = PathConstant.ADMIN_PATH, showMsg: boolean = true, redirectFlag: boolean = true) {
 
+    const StorageForeverValue = GetStorageForeverValue();
+
     ClearStorage()
+
+    SetStorageForeverValue(StorageForeverValue);
 
     GetAppDispatch()(signOut()) // store 退出登录
 

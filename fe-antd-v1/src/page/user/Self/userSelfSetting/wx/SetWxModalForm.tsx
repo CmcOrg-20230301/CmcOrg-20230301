@@ -10,6 +10,7 @@ import {AxiosRequestConfig} from "axios";
 import {ApiResultVO} from "@/util/HttpUtil.ts";
 import {NotNullId, SysQrCodeSceneBindVO} from "@/api/http/SignWx.ts";
 import {ModalForm, ProFormInstance} from "@ant-design/pro-components";
+import {SignOut} from "@/util/UserUtil.ts";
 
 export interface ISetWxModalForm {
 
@@ -32,9 +33,6 @@ export interface ISetWxModalForm {
     title?: string
 
     trigger?: JSX.Element;
-
-    // 表单提交成功之后的后置方法
-    submitSuccessSufFun?: () => void;
 
     label?: string
 
@@ -239,11 +237,8 @@ export default function (props: ISetWxModalForm) {
 
                         } else {
 
+                            SignOut()
                             ToastSuccess(res.msg)
-
-                            if (props.submitSuccessSufFun) {
-                                props.submitSuccessSufFun()
-                            }
 
                         }
 

@@ -30,9 +30,6 @@ function HandleWxSign(res: ApiResultVO<SignInVO>, form: IOauth2WxForm) {
 
     SignInSuccess(res.data, undefined, false, false)
 
-    localStorage.setItem(LocalStorageKey.MAIN_URI, PathConstant.MAIN_PATH)
-    localStorage.setItem(LocalStorageKey.MAIN_REDIRECT_URI, PathConstant.MAIN_REDIRECT_PATH)
-
     if (noJwtUri) {
 
         localStorage.setItem(LocalStorageKey.NO_JWT_URI, noJwtUri)
@@ -44,7 +41,9 @@ function HandleWxSign(res: ApiResultVO<SignInVO>, form: IOauth2WxForm) {
     }
 
     if (form.redirect) {
+
         sessionStorage.setItem(SessionStorageKey.OAUTH2_REDIRECT_URI, form.redirect)
+
     }
 
     GetAppNav()(PathConstant.BLANK_LAYOUT_PATH)

@@ -3,9 +3,7 @@ import {RcFile} from "antd/es/upload";
 import {NotNullId} from "@/api/http/SysFile";
 import {ToastError} from "@/util/ToastUtil";
 import {GetBrowserCategory} from "@/util/BrowserCategoryUtil";
-import {LocalStorageKeyList} from "@/model/constant/LocalStorageKey";
 import {IInit} from "@/util/UseEffectUtil";
-import {SessionStorageKeyList} from "@/model/constant/SessionStorageKey";
 import {GetAppNav} from "@/MyApp";
 import PathConstant from "@/model/constant/PathConstant";
 import {SysRequestCategoryEnum} from "@/model/enum/SysRequestCategoryEnum.ts";
@@ -22,17 +20,41 @@ export function GoFileDownloadPage(id: string) {
 
     const data: IInit = {localStorageData: {}, sessionStorageData: {}}
 
-    LocalStorageKeyList.forEach((key) => {
+    for (let i = 0; i < localStorage.length; i++) {
 
-        data.localStorageData![key] = localStorage.getItem(key)!
+        const key = localStorage.key(i);
 
-    })
+        if (key) {
 
-    SessionStorageKeyList.forEach((key) => {
+            const value = localStorage.getItem(key);
 
-        data.sessionStorageData![key] = sessionStorage.getItem(key)!
+            if (value && value.length < 500) { // 防止大数据
 
-    })
+                data.localStorageData![key] = value
+
+            }
+
+        }
+
+    }
+
+    for (let i = 0; i < sessionStorage.length; i++) {
+
+        const key = sessionStorage.key(i);
+
+        if (key) {
+
+            const value = sessionStorage.getItem(key);
+
+            if (value && value.length < 500) { // 防止大数据
+
+                data.sessionStorageData![key] = value
+
+            }
+
+        }
+
+    }
 
     GetAppNav()(PathConstant.FILE_DOWNLOAD_PATH + "?data=" + encodeURIComponent(JSON.stringify(data)) + "&id=" + id)
 

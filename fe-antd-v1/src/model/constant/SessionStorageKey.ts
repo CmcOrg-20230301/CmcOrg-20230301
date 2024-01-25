@@ -1,6 +1,6 @@
 const SessionStorageKey = {
 
-    ADMIN_REDIRECT_PATH: 'ADMIN_REDIRECT_PATH', // 页面打开时，进行路由跳转的地址，为空则不跳转
+    NOT_FOUND_REDIRECT_PATH: 'NOT_FOUND_REDIRECT_PATH', // 页面打开时，进行路由跳转的地址，为空则不跳转
 
     WEB_SOCKET_ID: 'WEB_SOCKET_ID',
 
@@ -11,5 +11,3 @@ const SessionStorageKey = {
 }
 
 export default SessionStorageKey
-
-export const SessionStorageKeyList = Object.keys(SessionStorageKey)

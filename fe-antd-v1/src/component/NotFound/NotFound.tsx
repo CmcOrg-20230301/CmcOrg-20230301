@@ -1,21 +1,29 @@
-import {Navigate} from 'react-router-dom';
 import PathConstant from "@/model/constant/PathConstant";
 import SessionStorageKey from "@/model/constant/SessionStorageKey";
 import LocalStorageKey from "@/model/constant/LocalStorageKey";
 import {GetTenantIdFromStorage} from "@/util/CommonUtil";
+import {Navigate} from "react-router-dom";
 
 // 404页面
 export default function () {
 
-    console.log("NotFound", window.location.pathname)
+    const pathname = window.location.pathname;
 
-    if (!sessionStorage.getItem(SessionStorageKey.ADMIN_REDIRECT_PATH)) {
+    console.log("NotFound", pathname)
 
-        sessionStorage.setItem(SessionStorageKey.ADMIN_REDIRECT_PATH, window.location.pathname)
+    if (!sessionStorage.getItem(SessionStorageKey.NOT_FOUND_REDIRECT_PATH)) {
+
+        if (pathname !== PathConstant.TOP_PATH) { // 目的：防止无限循环
+
+            sessionStorage.setItem(SessionStorageKey.NOT_FOUND_REDIRECT_PATH, pathname)
+
+        }
 
     } else {
 
-        sessionStorage.removeItem(SessionStorageKey.ADMIN_REDIRECT_PATH)
+        console.log('NotFound-removeItem：', sessionStorage.getItem(SessionStorageKey.NOT_FOUND_REDIRECT_PATH))
+
+        sessionStorage.removeItem(SessionStorageKey.NOT_FOUND_REDIRECT_PATH)
 
     }
 

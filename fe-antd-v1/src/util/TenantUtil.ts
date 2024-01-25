@@ -24,7 +24,7 @@ export function CurrentTenantFlag(tenantId ?: string) {
  */
 export function CurrentTenantTopFlag() {
 
-    let userSelfInfoVO = GetUserSelfInfo();
+    const userSelfInfoVO = GetUserSelfInfo();
 
     return userSelfInfoVO.tenantId === CommonConstant.TOP_TENANT_ID_STR
 

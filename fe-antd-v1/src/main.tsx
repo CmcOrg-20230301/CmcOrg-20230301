@@ -14,6 +14,15 @@ import './style/layout.less'
 import './style/style.less'
 import './style/antd.less'
 import './style/theme.less'
+import LocalStorageKey from "@/model/constant/LocalStorageKey.ts";
+import VConsole from "vconsole";
+import {BrowserRouter} from "react-router-dom";
+
+const consoleOpenFlag = localStorage.getItem(LocalStorageKey.CONSOLE_OPEN_FLAG);
+
+if (consoleOpenFlag === '1') {
+    new VConsole(); // 打开控制台
+}
 
 dayjs.extend(relativeTime)
 dayjs.locale('zh-cn');
@@ -23,7 +32,7 @@ const consoleErrorOld = console.error
 
 console.error = (message?: any, ...optionalParams: any[]) => {
 
-    if (message?.startsWith('Warning: [antd: Select] `bordered` is deprecated.')) {
+    if (message && typeof (message) === "string" && message.startsWith('Warning: [antd:')) {
         return
     }
 
@@ -35,25 +44,29 @@ console.error = (message?: any, ...optionalParams: any[]) => {
 ReactDOM.createRoot(document.getElementById('root')!).render(
     // <React.StrictMode>
 
-    <Provider store={store}>
+    <BrowserRouter>
 
-        <ConfigProvider locale={zhCN}>
+        <Provider store={store}>
 
-            <App>
+            <ConfigProvider locale={zhCN}>
 
-                <MyApp/>
+                <App>
 
-                <div title={"返回顶部"}>
+                    <MyApp/>
 
-                    <FloatButton.BackTop/>
+                    <div title={"返回顶部"}>
 
-                </div>
+                        <FloatButton.BackTop/>
 
-            </App>
+                    </div>
 
-        </ConfigProvider>
+                </App>
 
-    </Provider>
+            </ConfigProvider>
+
+        </Provider>
+
+    </BrowserRouter>
 
     // </React.StrictMode>
 )

@@ -30,9 +30,9 @@ export default function () {
                                 }}
 
                                 required
-                                label="验证码"
+                                label="手机验证码"
                                 name="phoneCode"
-                                placeholder={"验证码"}
+                                placeholder={"手机验证码"}
                                 rules={[{validator: Validate.code.validator}]}
 
                                 onGetCaptcha={async () => {

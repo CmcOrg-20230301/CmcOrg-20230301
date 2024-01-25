@@ -1,5 +1,7 @@
 export default {
 
+    SINGLE_SIGN_IN_PATH: '/single/sign/in', // 单点登录
+
     SIGN_IN_PATH: '/sign/in',
 
     SIGN_UP_PATH: '/sign/up',
@@ -8,9 +10,7 @@ export default {
 
     BLANK_LAYOUT_PATH: '/b',
 
-    MAIN_PATH: '/b',
-
-    MAIN_REDIRECT_PATH: '',
+    TOP_PATH: '/',
 
     USER_SELF_PATH: '/admin/user/self', // 个人中心
 
@@ -31,8 +31,6 @@ export default {
     INIT_BLANK_PATH: '/initBlank',
 
     FILE_DOWNLOAD_PATH: '/fileDownload',
-
-    NOT_FOUND_PATH: '/notFound',
 
     SYS_OTHER_APP_PATH: '/admin/sys/other/app', // 第三方应用管理
 

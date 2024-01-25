@@ -61,47 +61,76 @@ export function SetSysTenantConfigurationByIdVOCallBack(signInType: string, setS
 
         const signInFlag = signType === 1; // 是否是：登录
 
+        let signInTypeExistFlag = false; // 登录方式是否存在
+
         SysSignTypeEnumMap.forEach(item => {
 
-            if (item.showFlag(sysTenantConfigurationByIdVO, signType)) {
+            if (!item.showFlag(sysTenantConfigurationByIdVO, signType)) {
+                return
+            }
 
-                if (signInFlag) { // 如果是：登录
+            if (signInFlag) { // 如果是：登录
 
-                    if (item.signInAddAccountFlag) {
+                if (item.signInAddAccountFlag) {
 
-                        if (accountPlaceholderTemp) {
+                    if (accountPlaceholderTemp) {
 
-                            accountPlaceholderTemp = accountPlaceholderTemp + "\\" + item.placeholder
-
-                        } else {
-
-                            accountPlaceholderTemp = item.placeholder!
-
-                            tabItemArrTemp.push({
-                                key: SysSignTypeEnum.SignInName.code!,
-                                label: SysSignTypeEnum.SignInName.name
-                            })
-
-                        }
+                        accountPlaceholderTemp = accountPlaceholderTemp + "\\" + item.placeholder
 
                     } else {
 
-                        tabItemArrTemp.push({key: item.code!, label: item.name})
+                        accountPlaceholderTemp = item.placeholder!
+
+                        tabItemArrTemp.push({
+                            key: SysSignTypeEnum.SignInName.code!,
+                            label: SysSignTypeEnum.SignInName.name
+                        })
+
+                        if (!signInTypeExistFlag && signInType && signInType === SysSignTypeEnum.SignInName.code) {
+                            signInTypeExistFlag = true
+                        }
 
                     }
 
-                } else { // 如果是：注册
+                } else {
 
-                    tabItemArrTemp.push({key: item.code!, label: item.placeholder + "注册"})
+                    tabItemArrTemp.push({key: item.code!, label: item.name})
 
+                    if (!signInTypeExistFlag && signInType && signInType === item.code) {
+                        signInTypeExistFlag = true
+                    }
+
+                }
+
+            } else { // 如果是：注册
+
+                tabItemArrTemp.push({key: item.code!, label: item.placeholder + "注册"})
+
+                if (!signInTypeExistFlag && signInType && signInType === item.code) {
+                    signInTypeExistFlag = true
                 }
 
             }
 
+
         })
 
-        if (!signInType && tabItemArrTemp.length) {
-            setSignInType(tabItemArrTemp[0].key)
+        if (signInType) {
+
+            if (!signInTypeExistFlag) {
+
+                if (tabItemArrTemp.length) {
+                    setSignInType(tabItemArrTemp[0].key)
+                }
+
+            }
+
+        } else {
+
+            if (tabItemArrTemp.length) {
+                setSignInType(tabItemArrTemp[0].key)
+            }
+
         }
 
         setTabItemArr(tabItemArrTemp)
@@ -128,7 +157,7 @@ export default function () {
     // 展示的登录方式
     const [tabItemArr, setTabItemArr] = useState<Tab[]>([]);
 
-    const [signInType, setSignInType, signInTypeRef] = MyUseState(useState<string>(""));
+    const [signInType, setSignInType, signInTypeRef] = MyUseState(useState<string>(localStorage.getItem(LocalStorageKey.SIGN_IN_TYPE) || ""));
 
     const [accountPlaceholder, setAccountPlaceholder] = useState<string>("");
 
@@ -160,7 +189,11 @@ export default function () {
 
     const sysSignInTypeEnum: ISysSignTypeItemEnum | undefined = useMemo(() => {
 
-        return SysSignTypeEnumMap.get(signInType)
+        const sysSignTypeItemEnum = SysSignTypeEnumMap.get(signInType) || SysSignTypeEnum.SignInName;
+
+        localStorage.setItem(LocalStorageKey.SIGN_IN_TYPE, sysSignTypeItemEnum.code!)
+
+        return sysSignTypeItemEnum
 
     }, [signInType]);
 

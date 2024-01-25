@@ -2,21 +2,36 @@ import React from "react";
 import SetWxModalForm from "@/page/user/Self/userSelfSetting/wx/SetWxModalForm.tsx";
 import {ProFormCaptcha} from "@ant-design/pro-components";
 import {
-    SignEmailSetWx,
-    SignEmailSetWxGetQrCodeSceneFlag,
-    SignEmailSetWxGetQrCodeUrl,
-    SignEmailSetWxSendCode
+    SignEmailSetSingleSignIn,
+    SignEmailSetSingleSignInGetQrCodeSceneFlagSingleSignIn,
+    SignEmailSetSingleSignInGetQrCodeUrlSingleSignIn,
+    SignEmailSetSingleSignInSendCodeEmail
 } from "@/api/http/SignEmail.ts";
 import {Validate} from "@/util/ValidatorUtil.ts";
 import {ToastSuccess} from "@/util/ToastUtil.ts";
+import {
+    UserSelfSetSingleSignInModalTitle,
+    UserSelfUpdateSingleSignInModalTitle
+} from "@/page/user/Self/UserSelfSetting.tsx";
+import {UserSelfInfoVO} from "@/api/http/UserSelf.ts";
 
-export default function () {
+interface ISetSingleSignInByEmailModalForm {
+
+    userSelfInfo: UserSelfInfoVO
+
+}
+
+export default function (props: ISetSingleSignInByEmailModalForm) {
 
     return <>
 
-        <SetWxModalForm setWxGetQrCodeUrl={SignEmailSetWxGetQrCodeUrl}
-                        setWxGetQrCodeSceneFlag={SignEmailSetWxGetQrCodeSceneFlag}
-                        setWx={SignEmailSetWx}
+        <SetWxModalForm setWxGetQrCodeUrl={SignEmailSetSingleSignInGetQrCodeUrlSingleSignIn}
+                        setWxGetQrCodeSceneFlag={SignEmailSetSingleSignInGetQrCodeSceneFlagSingleSignIn}
+                        setWx={SignEmailSetSingleSignIn}
+
+                        title={props.userSelfInfo.singleSignInFlag ? UserSelfUpdateSingleSignInModalTitle : UserSelfSetSingleSignInModalTitle}
+
+                        label={"统一登录微信扫码"}
 
                         formItemArr={formRef => [
 
@@ -37,7 +52,7 @@ export default function () {
 
                                 onGetCaptcha={async () => {
 
-                                    await SignEmailSetWxSendCode().then(res => {
+                                    await SignEmailSetSingleSignInSendCodeEmail().then(res => {
 
                                         ToastSuccess(res.msg)
 

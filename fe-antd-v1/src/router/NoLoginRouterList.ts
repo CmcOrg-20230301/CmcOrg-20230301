@@ -10,6 +10,11 @@ interface INoLoginRouterList {
 const NoLoginRouterList: INoLoginRouterList[] = [
 
     {
+        path: PathConstant.SINGLE_SIGN_IN_PATH,
+        elementStr: 'singleSignInSignIn'
+    },
+
+    {
         path: PathConstant.SIGN_IN_PATH,
         elementStr: 'signSignInSignIn'
     },

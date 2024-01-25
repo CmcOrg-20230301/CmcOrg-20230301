@@ -3,8 +3,7 @@ import {ToastSuccess} from "./ToastUtil";
 import PathConstant from "@/model/constant/PathConstant";
 import {signOut} from "@/store/userSlice";
 import {RandomStr} from "@/util/StrUtil";
-import {GetTenantIdFromStorage, SetTenantIdToStorage} from "@/util/CommonUtil";
-import LocalStorageKey from "@/model/constant/LocalStorageKey";
+import {GetStorageForeverValue, SetStorageForeverValue} from "@/util/StorageUtil.ts";
 
 // 清除数据
 export function ClearStorage() {
@@ -17,31 +16,15 @@ export function ClearStorage() {
 // 退出登录
 export function SignOut(msg ?: string) {
 
-    const tenantId = GetTenantIdFromStorage();
-
-    const mainUri = localStorage.getItem(LocalStorageKey.MAIN_URI);
-
-    const noJwtUri = localStorage.getItem(LocalStorageKey.NO_JWT_URI);
+    const StorageForeverValue = GetStorageForeverValue();
 
     ClearStorage()
 
-    SetTenantIdToStorage(tenantId);
-
-    if (mainUri) {
-
-        localStorage.setItem(LocalStorageKey.MAIN_URI, mainUri)
-
-    }
-
-    if (noJwtUri) {
-
-        localStorage.setItem(LocalStorageKey.NO_JWT_URI, noJwtUri)
-
-    }
+    SetStorageForeverValue(StorageForeverValue);
 
     GetAppDispatch()(signOut()) // store 退出登录
 
-    GetAppNav()(PathConstant.NOT_FOUND_PATH)
+    GetAppNav()(PathConstant.TOP_PATH)
 
     if (msg) {
 

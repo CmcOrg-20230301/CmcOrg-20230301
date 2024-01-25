@@ -26,8 +26,8 @@ const LocalStorageKey = {
 
     CONSOLE_OPEN_FLAG: 'CONSOLE_OPEN_FLAG', // 是否打开控制台，默认 '0'，打开 '1'
 
+    SIGN_IN_TYPE: 'SIGN_IN_TYPE', // 登录方式
+
 }
 
 export default LocalStorageKey
-
-export const LocalStorageKeyList = Object.keys(LocalStorageKey)

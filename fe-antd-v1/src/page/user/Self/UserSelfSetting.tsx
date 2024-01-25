@@ -55,6 +55,13 @@ import UpdatePhoneByPhoneModalForm from "@/page/user/Self/userSelfSetting/phone/
 import UpdateWxByPhoneModalForm from "@/page/user/Self/userSelfSetting/phone/UpdateWxByPhoneModalForm.tsx";
 import SetWxByPhoneModalForm from "@/page/user/Self/userSelfSetting/phone/SetWxByPhoneModalForm.tsx";
 import SetWxBySignInNameModalForm from "@/page/user/Self/userSelfSetting/signInName/SetWxBySignInNameModalForm.tsx";
+import SetSingleSignInByPhoneModalForm
+    from "@/page/user/Self/userSelfSetting/phone/SetSingleSignInByPhoneModalForm.tsx";
+import SetSingleSignInByWxModalForm from "@/page/user/Self/userSelfSetting/wx/SetSingleSignInByWxModalForm.tsx";
+import SetSingleSignInBySignInNameModalForm
+    from "@/page/user/Self/userSelfSetting/signInName/SetSingleSignInBySignInNameModalForm.tsx";
+import SetSingleSignInByEmailModalForm
+    from "@/page/user/Self/userSelfSetting/email/SetSingleSignInByEmailModalForm.tsx";
 
 interface IUserSelfSetting {
 
@@ -78,6 +85,9 @@ export const UserSelfUpdatePhoneModalTitle = "修改手机号"
 
 export const UserSelfSetWxModalTitle = "绑定微信"
 export const UserSelfUpdateWxModalTitle = "修改微信"
+
+export const UserSelfSetSingleSignInModalTitle = "设置"
+export const UserSelfUpdateSingleSignInModalTitle = "修改"
 
 export const RequestSelfLoginRecordModalTitle = "登录记录"
 
@@ -144,6 +154,14 @@ function GetDataSourceMap(userSelfInfo: UserSelfInfoVO) {
                 },
 
                 {
+                    title: '统一登录',
+                    description: '便捷快速登录账号',
+                    actions: [
+                        <SetSingleSignInByWxModalForm key={"1"} userSelfInfo={userSelfInfo}/>
+                    ]
+                },
+
+                {
                     title: RequestSelfLoginRecordModalTitle,
                     actions: [
                         <RequestSelfLoginRecordModal key={"1"}/>
@@ -201,6 +219,14 @@ function GetDataSourceMap(userSelfInfo: UserSelfInfoVO) {
                     description: userSelfInfo.wxOpenId || '暂无',
                     actions: [
                         userSelfInfo.wxOpenId ? null : <SetWxByEmailModalForm key={"1"}/>
+                    ]
+                },
+
+                {
+                    title: '统一登录',
+                    description: '便捷快速登录账号',
+                    actions: [
+                        <SetSingleSignInByEmailModalForm key={"1"} userSelfInfo={userSelfInfo}/>
                     ]
                 },
 
@@ -269,6 +295,14 @@ function GetDataSourceMap(userSelfInfo: UserSelfInfoVO) {
                 },
 
                 {
+                    title: '统一登录',
+                    description: '便捷快速登录账号',
+                    actions: [
+                        <SetSingleSignInByPhoneModalForm key={"1"} userSelfInfo={userSelfInfo}/>
+                    ]
+                },
+
+                {
                     title: RequestSelfLoginRecordModalTitle,
                     actions: [
                         <RequestSelfLoginRecordModal key={"1"}/>
@@ -326,6 +360,14 @@ function GetDataSourceMap(userSelfInfo: UserSelfInfoVO) {
                     description: userSelfInfo.wxOpenId || '暂无',
                     actions: [
                         userSelfInfo.wxOpenId ? null : <SetWxBySignInNameModalForm key={"1"}/>
+                    ]
+                },
+
+                {
+                    title: '统一登录',
+                    description: '便捷快速登录账号',
+                    actions: [
+                        <SetSingleSignInBySignInNameModalForm key={"1"} userSelfInfo={userSelfInfo}/>
                     ]
                 },
 

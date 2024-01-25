@@ -1,22 +1,22 @@
 import {useEffect} from "react";
-import LocalStorageKey, {LocalStorageKeyList} from "@/model/constant/LocalStorageKey";
+import LocalStorageKey from "@/model/constant/LocalStorageKey";
 import {ClearStorage, SignOut} from "@/util/UserUtil";
 import {SysMenuDO, SysMenuUserSelfMenuList} from "@/api/http/SysMenu";
 import {ToastError} from "@/util/ToastUtil";
 import {
     setUserSelfAvatarUrl,
     setUserSelfInfo,
+    setUserSelfInfoLoadFlag,
     setUserSelfMenuList,
     setUserSelfMenuListLoadFlag
 } from "@/store/userSlice";
 import {ConnectWebSocket} from "@/util/WebSocket/WebSocketUtil";
-import {GetAppDispatch, GetAppNav, GetUserSelfInfo} from "@/MyApp";
+import {GetAppDispatch, GetAppNav} from "@/MyApp";
 import {GetURLSearchParams, SetTenantIdToStorage} from "@/util/CommonUtil";
-import {SessionStorageKeyList} from "@/model/constant/SessionStorageKey";
 import VConsole from 'vconsole';
 import {UserSelfInfo, UserSelfInfoVO} from "@/api/http/UserSelf.ts";
 import {SysFileGetPublicUrl} from "@/api/http/SysFile.ts";
-import {useAppSelector} from "@/store";
+import {useAppDispatch, useAppSelector} from "@/store";
 
 export interface IInit {
 
@@ -47,15 +47,11 @@ export function UseEffectInit() {
 
             Object.keys(data.localStorageData).forEach((key) => {
 
-                if (LocalStorageKeyList.includes(key)) {
+                const value = data.localStorageData![key];
 
-                    const value = data.localStorageData![key];
+                if (value) {
 
-                    if (value) {
-
-                        localStorage.setItem(key, value)
-
-                    }
+                    localStorage.setItem(key, value)
 
                 }
 
@@ -67,15 +63,11 @@ export function UseEffectInit() {
 
             Object.keys(data.sessionStorageData).forEach((key) => {
 
-                if (SessionStorageKeyList.includes(key)) {
+                const value = data.sessionStorageData![key];
 
-                    const value = data.sessionStorageData![key];
+                if (value) {
 
-                    if (value) {
-
-                        sessionStorage.setItem(key, value)
-
-                    }
+                    sessionStorage.setItem(key, value)
 
                 }
 
@@ -158,6 +150,8 @@ export function UseEffectLoadSysMenuUserSelfMenuList(callBack?: (data: SysMenuDO
 
     const userSelfMenuListLoadFlag = useAppSelector((state) => state.user.userSelfMenuListLoadFlag);
 
+    const appDispatch = useAppDispatch();
+
     useEffect(() => {
 
         const jwt = localStorage.getItem(LocalStorageKey.JWT);
@@ -178,7 +172,7 @@ export function UseEffectLoadSysMenuUserSelfMenuList(callBack?: (data: SysMenuDO
         }
 
         // 先设置为：true
-        GetAppDispatch()(setUserSelfMenuListLoadFlag(true))
+        appDispatch(setUserSelfMenuListLoadFlag(true))
 
         // 加载菜单
         SysMenuUserSelfMenuList().then(res => {
@@ -195,15 +189,35 @@ export function UseEffectLoadSysMenuUserSelfMenuList(callBack?: (data: SysMenuDO
 // 加载：用户数据
 export function UseEffectLoadUserSelfInfo(callBack?: (data: UserSelfInfoVO) => void) {
 
+    const userSelfInfo = useAppSelector((state) => state.user.userSelfInfo)
+
+    const userSelfInfoLoadFlag = useAppSelector((state) => state.user.userSelfInfoLoadFlag);
+
+    const appDispatch = useAppDispatch();
+
     useEffect(() => {
 
-        const userSelfInfoVO = GetUserSelfInfo();
+        const jwt = localStorage.getItem(LocalStorageKey.JWT);
 
-        if (userSelfInfoVO.id) { // 如果：已经加载过了用户信息
+        if (!jwt) {
+
+            SignOut()
             return
+
         }
 
-        const appDispatch = GetAppDispatch();
+        if (userSelfInfoLoadFlag) { // 如果：已经加载过了用户信息
+
+            if (callBack) {
+                callBack(userSelfInfo)
+            }
+
+            return
+
+        }
+
+        // 先设置为：true
+        appDispatch(setUserSelfInfoLoadFlag(true))
 
         UserSelfInfo().then(res => {
 
@@ -243,10 +257,7 @@ export function UseEffectConsoleOpenKeydownListener() {
         const consoleOpenFlag = localStorage.getItem(LocalStorageKey.CONSOLE_OPEN_FLAG);
 
         if (consoleOpenFlag === '1') {
-
-            new VConsole(); // 打开控制台
             return
-
         }
 
         const consoleOpenKeydownArr = ['c', 'm', 'c', '+', '-', '*', '/', '1', '2', '3', '.']
