@@ -27,4 +27,7 @@ public class CommonProperties {
     @Schema(description = "开发环境：不处理的 kafka主题集合")
     private Set<String> devNotHandleKafkaTopSet;
 
+    @Schema(description = "单点登录，采用配置的租户主键 id")
+    private Long singleSignInTenantId;
+
 }

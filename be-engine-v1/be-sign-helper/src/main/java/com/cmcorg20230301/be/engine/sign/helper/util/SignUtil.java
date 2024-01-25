@@ -39,6 +39,7 @@ import com.cmcorg20230301.be.engine.security.model.configuration.IUserSignConfig
 import com.cmcorg20230301.be.engine.security.model.entity.*;
 import com.cmcorg20230301.be.engine.security.model.interfaces.ISysQrCodeSceneType;
 import com.cmcorg20230301.be.engine.security.model.vo.ApiResultVO;
+import com.cmcorg20230301.be.engine.security.properties.CommonProperties;
 import com.cmcorg20230301.be.engine.security.properties.SecurityProperties;
 import com.cmcorg20230301.be.engine.security.util.*;
 import com.cmcorg20230301.be.engine.sign.helper.exception.BizCodeEnum;
@@ -78,6 +79,7 @@ public class SignUtil {
     private static SysFileService sysFileService;
     private static SysOtherAppMapper sysOtherAppMapper;
     private static SysUserSingleSignInMapper sysUserSingleSignInMapper;
+    private static CommonProperties commonProperties;
 
     @Nullable
     private static List<IUserSignConfiguration> iUserSignConfigurationList;
@@ -86,7 +88,7 @@ public class SignUtil {
                     SecurityProperties securityProperties, SysRoleRefUserMapper sysRoleRefUserMapper,
                     SysDeptRefUserMapper sysDeptRefUserMapper, SysPostRefUserMapper sysPostRefUserMapper,
                     SysTenantRefUserMapper sysTenantRefUserMapper, SysFileService sysFileService,
-                    @Autowired(required = false) @Nullable List<IUserSignConfiguration> iUserSignConfigurationList, SysOtherAppMapper sysOtherAppMapper, SysUserSingleSignInMapper sysUserSingleSignInMapper) {
+                    @Autowired(required = false) @Nullable List<IUserSignConfiguration> iUserSignConfigurationList, SysOtherAppMapper sysOtherAppMapper, SysUserSingleSignInMapper sysUserSingleSignInMapper, CommonProperties commonProperties) {
 
         SignUtil.sysUserInfoMapper = sysUserInfoMapper;
         SignUtil.sysUserMapper = sysUserMapper;
@@ -100,6 +102,7 @@ public class SignUtil {
         SignUtil.iUserSignConfigurationList = iUserSignConfigurationList;
         SignUtil.sysOtherAppMapper = sysOtherAppMapper;
         SignUtil.sysUserSingleSignInMapper = sysUserSingleSignInMapper;
+        SignUtil.commonProperties = commonProperties;
 
     }
 
@@ -1624,7 +1627,9 @@ public class SignUtil {
      */
     @SneakyThrows
     @Nullable
-    public static GetQrCodeVO getQrCodeUrlWxForSingleSignIn(@Nullable Long tenantId, boolean getQrCodeUrlFlag, ISysQrCodeSceneType iSysQrCodeSceneType) {
+    public static GetQrCodeVO getQrCodeUrlWxForSingleSignIn(boolean getQrCodeUrlFlag, ISysQrCodeSceneType iSysQrCodeSceneType) {
+
+        Long tenantId = commonProperties.getSingleSignInTenantId();
 
         // 执行
         return getQrCodeUrl(tenantId, getQrCodeUrlFlag, SysOtherAppTypeEnum.WX_OFFICIAL_ACCOUNT.getCode(), sysOtherAppDO -> {

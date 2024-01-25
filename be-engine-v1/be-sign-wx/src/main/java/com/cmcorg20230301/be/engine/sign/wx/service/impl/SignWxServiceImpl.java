@@ -5,7 +5,6 @@ import cn.hutool.jwt.JWT;
 import com.baomidou.mybatisplus.extension.toolkit.ChainWrappers;
 import com.cmcorg20230301.be.engine.email.enums.EmailMessageEnum;
 import com.cmcorg20230301.be.engine.email.util.MyEmailUtil;
-import com.cmcorg20230301.be.engine.model.model.constant.BaseConstant;
 import com.cmcorg20230301.be.engine.model.model.dto.NotNullId;
 import com.cmcorg20230301.be.engine.model.model.vo.GetQrCodeVO;
 import com.cmcorg20230301.be.engine.model.model.vo.SignInVO;
@@ -225,7 +224,7 @@ public class SignWxServiceImpl implements SignWxService {
     public GetQrCodeVO signInSingleGetQrCodeUrl(boolean getQrCodeUrlFlag) {
 
         // 执行
-        return SignUtil.getQrCodeUrlWxForSingleSignIn(BaseConstant.TOP_TENANT_ID, true, WxSysQrCodeSceneTypeEnum.WX_SINGLE_SIGN_IN);
+        return SignUtil.getQrCodeUrlWxForSingleSignIn(true, WxSysQrCodeSceneTypeEnum.WX_SINGLE_SIGN_IN);
 
     }
 
@@ -719,7 +718,7 @@ public class SignWxServiceImpl implements SignWxService {
         SignUtil.checkWillError(PRE_REDIS_KEY_ENUM, null, UserUtil.getCurrentTenantIdDefault(), null); // 检查：是否可以进行操作
 
         // 执行
-        return SignUtil.getQrCodeUrlWxForSingleSignIn(BaseConstant.TOP_TENANT_ID, true, SysQrCodeSceneTypeEnum.WX_SINGLE_SIGN_IN_BIND);
+        return SignUtil.getQrCodeUrlWxForSingleSignIn(true, SysQrCodeSceneTypeEnum.WX_SINGLE_SIGN_IN_BIND);
 
     }
 
