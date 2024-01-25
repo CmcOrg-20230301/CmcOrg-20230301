@@ -23,6 +23,8 @@ public interface SysUserService extends IService<SysUserDO> {
 
     SysUserInfoByIdVO infoById(NotNullId notNullId);
 
+    Boolean manageSignInFlag();
+
     String deleteByIdSet(NotEmptyIdSet notEmptyIdSet);
 
     String refreshJwtSecretSuf(NotEmptyIdSet notEmptyIdSet);

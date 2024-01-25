@@ -74,6 +74,8 @@ public enum BaseRedisKeyEnum implements IRedisKey {
     PRE_PASSWORD_ERROR_COUNT, // 密码错误总数：锁【用户主键 id】
 
     // 【_CACHE】结尾 ↓
+    SYS_USER_MANAGE_SIGN_IN_FLAG_CACHE, // 用户是否允许登录后台管理系统
+
     SYS_USER_DISABLE_CACHE, // 用户是否被冻结，如果存在，则表示，用户被冻结了
 
     USER_ID_REF_TENANT_ID_SET_CACHE, // 用户 id关联的 tenantIdSet

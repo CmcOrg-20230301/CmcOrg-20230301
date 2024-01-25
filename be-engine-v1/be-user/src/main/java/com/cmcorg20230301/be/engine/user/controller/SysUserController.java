@@ -59,6 +59,12 @@ public class SysUserController {
         return ApiResultVO.okData(baseService.infoById(notNullId));
     }
 
+    @Operation(summary = "是否允许登录：后台管理系统")
+    @PostMapping("/manageSignInFlag")
+    public ApiResultVO<Boolean> manageSignInFlag() {
+        return ApiResultVO.okData(baseService.manageSignInFlag());
+    }
+
     @Operation(summary = "批量：注销用户")
     @PostMapping("/deleteByIdSet")
     @PreAuthorize("hasAuthority('sysUser:deleteByIdSet')")

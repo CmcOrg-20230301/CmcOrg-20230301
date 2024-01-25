@@ -2,8 +2,10 @@ package com.cmcorg20230301.be.engine.user.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.convert.Convert;
 import cn.hutool.core.lang.func.Func1;
 import cn.hutool.core.map.MapUtil;
+import cn.hutool.core.thread.ThreadUtil;
 import cn.hutool.core.util.BooleanUtil;
 import cn.hutool.core.util.DesensitizedUtil;
 import cn.hutool.core.util.ReUtil;
@@ -12,6 +14,8 @@ import com.baomidou.dynamic.datasource.annotation.DSTransactional;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.baomidou.mybatisplus.extension.toolkit.ChainWrappers;
+import com.cmcorg20230301.be.engine.cache.util.CacheRedisKafkaLocalUtil;
+import com.cmcorg20230301.be.engine.cache.util.MyCacheUtil;
 import com.cmcorg20230301.be.engine.dept.service.SysDeptRefUserService;
 import com.cmcorg20230301.be.engine.model.model.constant.BaseConstant;
 import com.cmcorg20230301.be.engine.model.model.constant.BaseRegexConstant;
@@ -44,12 +48,14 @@ import com.cmcorg20230301.be.engine.user.model.vo.SysUserPageVO;
 import com.cmcorg20230301.be.engine.user.service.SysUserService;
 import com.cmcorg20230301.be.engine.util.util.MyMapUtil;
 import com.cmcorg20230301.be.engine.util.util.NicknameUtil;
+import lombok.SneakyThrows;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.util.*;
+import java.util.concurrent.CountDownLatch;
 import java.util.stream.Collectors;
 
 @Service
@@ -150,6 +156,11 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserProMapper, SysUserDO>
             it.setPostIdSet(postUserGroupMap.get(it.getId()));
 
             it.setTenantIdSet(userIdRefTenantIdSetMap.get(it.getId()));
+
+            // 获取
+            Boolean manageSignInFlag = getManageSignInFlag(it.getId(), it.getTenantId());
+
+            it.setManageSignInFlag(manageSignInFlag);
 
         });
 
@@ -276,6 +287,8 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserProMapper, SysUserDO>
 
             }
 
+            SysUserDO sysUserDO;
+
             if (dto.getId() == null) { // 新增：用户
 
                 SysUserInfoDO sysUserInfoDO = new SysUserInfoDO();
@@ -283,7 +296,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserProMapper, SysUserDO>
                 sysUserInfoDO.setNickname(dto.getNickname());
                 sysUserInfoDO.setBio(dto.getBio());
 
-                SysUserDO sysUserDO = SignUtil
+                sysUserDO = SignUtil
                         .insertUser(dto.getPassword(), accountMap, false, sysUserInfoDO, dto.getEnableFlag(),
                                 dto.getTenantId());
 
@@ -294,7 +307,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserProMapper, SysUserDO>
                 // 删除子表数据
                 SignUtil.doSignDeleteSub(CollUtil.newHashSet(dto.getId()), false);
 
-                SysUserDO sysUserDO = new SysUserDO();
+                sysUserDO = new SysUserDO();
 
                 sysUserDO.setId(dto.getId());
                 sysUserDO.setEnableFlag(BooleanUtil.isTrue(dto.getEnableFlag()));
@@ -322,6 +335,9 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserProMapper, SysUserDO>
                 sysUserInfoMapper.updateById(sysUserInfoDO);
 
             }
+
+            // 设置
+            setManageSignInFlag(sysUserDO.getId(), dto.getManageSignInFlag());
 
             return BaseBizCodeEnum.OK;
 
@@ -489,6 +505,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserProMapper, SysUserDO>
     /**
      * 通过主键id，查看详情
      */
+    @SneakyThrows
     @Override
     public SysUserInfoByIdVO infoById(NotNullId notNullId) {
 
@@ -505,49 +522,132 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserProMapper, SysUserDO>
 
         SysUserInfoByIdVO sysUserInfoByIdVO = BeanUtil.copyProperties(sysUserDO, SysUserInfoByIdVO.class);
 
-        SysUserInfoDO sysUserInfoDO =
-                ChainWrappers.lambdaQueryChain(sysUserInfoMapper).eq(SysUserInfoDO::getId, notNullId.getId())
-                        .select(SysUserInfoDO::getNickname, SysUserInfoDO::getAvatarFileId, SysUserInfoDO::getBio).one();
+        CountDownLatch countDownLatch = ThreadUtil.newCountDownLatch(5);
 
-        sysUserInfoByIdVO.setNickname(sysUserInfoDO.getNickname());
-        sysUserInfoByIdVO.setAvatarFileId(sysUserInfoDO.getAvatarFileId());
-        sysUserInfoByIdVO.setBio(sysUserInfoDO.getBio());
+        MyThreadUtil.execute(() -> {
 
-        // 获取：用户绑定的角色 idSet
-        List<SysRoleRefUserDO> refUserDOList =
-                sysRoleRefUserService.lambdaQuery().eq(SysRoleRefUserDO::getUserId, notNullId.getId())
-                        .select(SysRoleRefUserDO::getRoleId).list();
+            SysUserInfoDO sysUserInfoDO =
+                    ChainWrappers.lambdaQueryChain(sysUserInfoMapper).eq(SysUserInfoDO::getId, notNullId.getId())
+                            .select(SysUserInfoDO::getNickname, SysUserInfoDO::getAvatarFileId, SysUserInfoDO::getBio).one();
 
-        Set<Long> roleIdSet = refUserDOList.stream().map(SysRoleRefUserDO::getRoleId).collect(Collectors.toSet());
+            sysUserInfoByIdVO.setNickname(sysUserInfoDO.getNickname());
+            sysUserInfoByIdVO.setAvatarFileId(sysUserInfoDO.getAvatarFileId());
+            sysUserInfoByIdVO.setBio(sysUserInfoDO.getBio());
 
-        // 获取：用户绑定的部门 idSet
-        List<SysDeptRefUserDO> deptRefUserDOList =
-                sysDeptRefUserService.lambdaQuery().eq(SysDeptRefUserDO::getUserId, notNullId.getId())
-                        .select(SysDeptRefUserDO::getDeptId).list();
+            // 获取
+            Boolean manageSignInFlag = getManageSignInFlag(sysUserDO.getId(), sysUserDO.getTenantId());
 
-        Set<Long> deptIdSet = deptRefUserDOList.stream().map(SysDeptRefUserDO::getDeptId).collect(Collectors.toSet());
+            sysUserInfoByIdVO.setManageSignInFlag(manageSignInFlag);
 
-        // 获取：用户绑定的岗位 idSet
-        List<SysPostRefUserDO> jobRefUserDOList =
-                sysPostRefUserService.lambdaQuery().eq(SysPostRefUserDO::getUserId, notNullId.getId())
-                        .select(SysPostRefUserDO::getPostId).list();
+        }, countDownLatch);
 
-        Set<Long> postIdSet = jobRefUserDOList.stream().map(SysPostRefUserDO::getPostId).collect(Collectors.toSet());
+        MyThreadUtil.execute(() -> {
 
-        // 获取：用户绑定的租户 idSet
-        List<SysTenantRefUserDO> tenantRefUserDOList =
-                sysTenantRefUserService.lambdaQuery().eq(SysTenantRefUserDO::getUserId, notNullId.getId())
-                        .select(SysTenantRefUserDO::getTenantId).list();
+            // 获取：用户绑定的角色 idSet
+            List<SysRoleRefUserDO> refUserDOList =
+                    sysRoleRefUserService.lambdaQuery().eq(SysRoleRefUserDO::getUserId, notNullId.getId())
+                            .select(SysRoleRefUserDO::getRoleId).list();
 
-        Set<Long> tenantIdSet =
-                tenantRefUserDOList.stream().map(SysTenantRefUserDO::getTenantId).collect(Collectors.toSet());
+            Set<Long> roleIdSet = refUserDOList.stream().map(SysRoleRefUserDO::getRoleId).collect(Collectors.toSet());
 
-        sysUserInfoByIdVO.setRoleIdSet(roleIdSet);
-        sysUserInfoByIdVO.setDeptIdSet(deptIdSet);
-        sysUserInfoByIdVO.setPostIdSet(postIdSet);
-        sysUserInfoByIdVO.setTenantIdSet(tenantIdSet);
+            sysUserInfoByIdVO.setRoleIdSet(roleIdSet);
+
+        }, countDownLatch);
+
+        MyThreadUtil.execute(() -> {
+
+            // 获取：用户绑定的部门 idSet
+            List<SysDeptRefUserDO> deptRefUserDOList =
+                    sysDeptRefUserService.lambdaQuery().eq(SysDeptRefUserDO::getUserId, notNullId.getId())
+                            .select(SysDeptRefUserDO::getDeptId).list();
+
+            Set<Long> deptIdSet = deptRefUserDOList.stream().map(SysDeptRefUserDO::getDeptId).collect(Collectors.toSet());
+
+            sysUserInfoByIdVO.setDeptIdSet(deptIdSet);
+
+        }, countDownLatch);
+
+        MyThreadUtil.execute(() -> {
+
+            // 获取：用户绑定的岗位 idSet
+            List<SysPostRefUserDO> jobRefUserDOList =
+                    sysPostRefUserService.lambdaQuery().eq(SysPostRefUserDO::getUserId, notNullId.getId())
+                            .select(SysPostRefUserDO::getPostId).list();
+
+            Set<Long> postIdSet = jobRefUserDOList.stream().map(SysPostRefUserDO::getPostId).collect(Collectors.toSet());
+
+            sysUserInfoByIdVO.setPostIdSet(postIdSet);
+
+        }, countDownLatch);
+
+        MyThreadUtil.execute(() -> {
+
+            // 获取：用户绑定的租户 idSet
+            List<SysTenantRefUserDO> tenantRefUserDOList =
+                    sysTenantRefUserService.lambdaQuery().eq(SysTenantRefUserDO::getUserId, notNullId.getId())
+                            .select(SysTenantRefUserDO::getTenantId).list();
+
+            Set<Long> tenantIdSet =
+                    tenantRefUserDOList.stream().map(SysTenantRefUserDO::getTenantId).collect(Collectors.toSet());
+
+            sysUserInfoByIdVO.setTenantIdSet(tenantIdSet);
+
+        }, countDownLatch);
+
+        countDownLatch.await();
 
         return sysUserInfoByIdVO;
+
+    }
+
+    /**
+     * 是否允许登录：后台管理系统
+     */
+    @Override
+    @NotNull
+    public Boolean manageSignInFlag() {
+
+        Long currentUserId = UserUtil.getCurrentUserId();
+
+        Long currentTenantIdDefault = UserUtil.getCurrentTenantIdDefault();
+
+        // 执行
+        return getManageSignInFlag(currentUserId, currentTenantIdDefault);
+
+    }
+
+    /**
+     * 获取：是否允许登录：后台管理系统
+     */
+    public static boolean getManageSignInFlag(Long currentUserId, @Nullable Long currentTenantIdDefault) {
+
+        if (UserUtil.getCurrentUserAdminFlag(currentUserId)) {
+            return true;
+        }
+
+        Boolean manageSignInFlag = MyCacheUtil.onlyGetSecondMap(BaseRedisKeyEnum.SYS_USER_MANAGE_SIGN_IN_FLAG_CACHE, null, String.valueOf(currentUserId));
+
+        if (manageSignInFlag == null) {
+
+            String defaultManageSignInFlagStr = SysParamUtil.getValueByUuid(ParamConstant.DEFAULT_MANAGE_SIGN_IN_FLAG, currentTenantIdDefault);
+
+            return Convert.toBool(defaultManageSignInFlagStr, false);
+
+        }
+
+        return manageSignInFlag;
+
+    }
+
+    /**
+     * 设置：是否允许登录：后台管理系统
+     */
+    public static void setManageSignInFlag(Long userId, @Nullable Boolean manageSignInFlag) {
+
+        // 设置
+        CacheRedisKafkaLocalUtil
+                .putSecondMap(BaseRedisKeyEnum.SYS_USER_MANAGE_SIGN_IN_FLAG_CACHE, null, String.valueOf(userId),
+                        BooleanUtil.isTrue(manageSignInFlag), null);
 
     }
 

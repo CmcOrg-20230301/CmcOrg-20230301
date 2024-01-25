@@ -64,4 +64,7 @@ public class SysUserInsertOrUpdateDTO extends BaseTenantInsertOrUpdateDTO {
     @Schema(description = "租户 idSet")
     private Set<Long> tenantIdSet;
 
+    @Schema(description = "是否允许登录：后台管理系统")
+    private Boolean manageSignInFlag;
+
 }

@@ -11,7 +11,9 @@ public interface ParamConstant {
 
     String IP_REQUESTS_PER_SECOND_UUID = "2"; // ip请求速率 uuid
 
-    String TENANT_REF_CHILDREN_FLAG_UUID = "3"; // 是否关联子级租户 uuid
+    String TENANT_REF_CHILDREN_FLAG_UUID = "3"; // 是否关联子级租户 uuid：0 表示不关联 1 表示关联
+
+    String DEFAULT_MANAGE_SIGN_IN_FLAG = "4"; // 默认允许用户是否登录后台管理系统：0 表示不允许 1 表示允许
 
     // 参数配置相关 ↑
 

@@ -155,7 +155,7 @@ public class SysParamServiceImpl extends ServiceImpl<SysParamMapper, SysParamDO>
 
         }
 
-        for (String item : SysParamUtil.SYSTEM_PARAM_UUID_SET) {
+        for (String item : SysParamUtil.SYSTEM_PARAM_NOT_DELETE_ID_SET) {
 
             if (idSet.contains(Convert.toLong(item))) {
 
