@@ -4,6 +4,7 @@ import cn.hutool.core.util.BooleanUtil;
 import com.baomidou.mybatisplus.extension.toolkit.ChainWrappers;
 import com.cmcorg20230301.be.engine.email.enums.EmailMessageEnum;
 import com.cmcorg20230301.be.engine.email.util.MyEmailUtil;
+import com.cmcorg20230301.be.engine.model.model.constant.BaseConstant;
 import com.cmcorg20230301.be.engine.model.model.dto.NotBlankCodeDTO;
 import com.cmcorg20230301.be.engine.model.model.dto.NotNullId;
 import com.cmcorg20230301.be.engine.model.model.vo.GetQrCodeVO;
@@ -392,7 +393,7 @@ public class SignEmailServiceImpl implements SignEmailService {
         SignUtil.checkWillError(PRE_REDIS_KEY_ENUM, null, UserUtil.getCurrentTenantIdDefault(), null); // 检查：是否可以进行操作
 
         // 执行
-        return SignUtil.getQrCodeUrlWxForSingleSignIn(UserUtil.getCurrentTenantIdDefault(), true, SysQrCodeSceneTypeEnum.WX_SINGLE_SIGN_IN_BIND);
+        return SignUtil.getQrCodeUrlWxForSingleSignIn(BaseConstant.TOP_TENANT_ID, true, SysQrCodeSceneTypeEnum.WX_SINGLE_SIGN_IN_BIND);
 
     }
 

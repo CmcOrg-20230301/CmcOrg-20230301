@@ -4,6 +4,7 @@ import cn.hutool.core.date.BetweenFormatter;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.exceptions.ExceptionUtil;
 import cn.hutool.core.util.BooleanUtil;
+import cn.hutool.core.util.StrUtil;
 import cn.hutool.extra.servlet.ServletUtil;
 import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
@@ -217,6 +218,10 @@ public class SysRequestAop {
 
         // 登录时需要额外处理来获取 用户id
         ApiResultVO<SignInVO> apiResultVO = (ApiResultVO) object;
+
+        if (apiResultVO.getData() == null || StrUtil.isBlank(apiResultVO.getData().getJwt())) {
+            return;
+        }
 
         JWT jwt = JWT.of(MyJwtUtil.getJwtStrByHeadAuthorization(apiResultVO.getData().getJwt()));
 
