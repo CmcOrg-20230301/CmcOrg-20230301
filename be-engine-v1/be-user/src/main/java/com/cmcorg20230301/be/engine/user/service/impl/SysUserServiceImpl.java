@@ -601,7 +601,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserProMapper, SysUserDO>
     }
 
     /**
-     * 是否允许登录：后台管理系统
+     * 是否允许后台登录
      */
     @Override
     @NotNull
@@ -617,7 +617,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserProMapper, SysUserDO>
     }
 
     /**
-     * 获取：是否允许登录：后台管理系统
+     * 获取：是否允许后台登录
      */
     public static boolean getManageSignInFlag(Long currentUserId, @Nullable Long currentTenantIdDefault) {
 
@@ -640,7 +640,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserProMapper, SysUserDO>
     }
 
     /**
-     * 设置：是否允许登录：后台管理系统
+     * 设置：是否允许后台登录
      */
     public static void setManageSignInFlag(Long userId, @Nullable Boolean manageSignInFlag) {
 

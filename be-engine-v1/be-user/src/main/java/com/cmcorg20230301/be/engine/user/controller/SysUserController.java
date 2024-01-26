@@ -59,7 +59,7 @@ public class SysUserController {
         return ApiResultVO.okData(baseService.infoById(notNullId));
     }
 
-    @Operation(summary = "是否允许登录：后台管理系统")
+    @Operation(summary = "是否允许后台登录")
     @PostMapping("/manageSignInFlag")
     public ApiResultVO<Boolean> manageSignInFlag() {
         return ApiResultVO.okData(baseService.manageSignInFlag());
