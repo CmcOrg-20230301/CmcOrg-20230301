@@ -19,6 +19,7 @@ import com.cmcorg20230301.be.engine.security.mapper.SysUserMapper;
 import com.cmcorg20230301.be.engine.security.model.entity.SysUserDO;
 import com.cmcorg20230301.be.engine.security.model.entity.SysUserInfoDO;
 import com.cmcorg20230301.be.engine.security.model.enums.SysQrCodeSceneTypeEnum;
+import com.cmcorg20230301.be.engine.security.properties.SingleSignInProperties;
 import com.cmcorg20230301.be.engine.security.util.MyJwtUtil;
 import com.cmcorg20230301.be.engine.security.util.SysTenantUtil;
 import com.cmcorg20230301.be.engine.security.util.UserUtil;
@@ -52,6 +53,9 @@ public class SignWxServiceImpl implements SignWxService {
 
     @Resource
     RedissonClient redissonClient;
+
+    @Resource
+    SingleSignInProperties singleSignInProperties;
 
     /**
      * 小程序：手机号 code登录
@@ -663,10 +667,10 @@ public class SignWxServiceImpl implements SignWxService {
     }
 
     /**
-     * 设置统一登录：获取当前微信的二维码地址
+     * 设置统一登录：微信：获取当前微信的二维码地址
      */
     @Override
-    public GetQrCodeVO setSingleSignInGetQrCodeUrlCurrent() {
+    public GetQrCodeVO setSingleSignInWxGetQrCodeUrlCurrent() {
 
         Long currentTenantIdDefault = UserUtil.getCurrentTenantIdDefault();
 
@@ -678,10 +682,10 @@ public class SignWxServiceImpl implements SignWxService {
     }
 
     /**
-     * 设置统一登录：获取当前微信的二维码是否已经被扫描
+     * 设置统一登录：微信：获取当前微信的二维码是否已经被扫描
      */
     @Override
-    public SysQrCodeSceneBindVO setSingleSignInGetQrCodeSceneFlagCurrent(NotNullId notNullId) {
+    public SysQrCodeSceneBindVO setSingleSignInWxGetQrCodeSceneFlagCurrent(NotNullId notNullId) {
 
         // 执行
         return SignUtil.getSysQrCodeSceneBindVoAndHandleForUserId(notNullId.getId(), false, BaseRedisKeyEnum.PRE_SYS_WX_QR_CODE_SET_SINGLE_SIGN_IN, null);
@@ -689,10 +693,10 @@ public class SignWxServiceImpl implements SignWxService {
     }
 
     /**
-     * 设置统一登录：获取统一登录微信的二维码地址
+     * 设置统一登录：微信：获取统一登录微信的二维码地址
      */
     @Override
-    public GetQrCodeVO updateWxGetQrCodeUrlSingleSignIn() {
+    public GetQrCodeVO setSingleSignInWxGetQrCodeUrl() {
 
         SignUtil.checkWillError(PRE_REDIS_KEY_ENUM, null, UserUtil.getCurrentTenantIdDefault(), null); // 检查：是否可以进行操作
 
@@ -702,10 +706,10 @@ public class SignWxServiceImpl implements SignWxService {
     }
 
     /**
-     * 设置统一登录：获取统一登录微信的二维码是否已经被扫描
+     * 设置统一登录：微信：获取统一登录微信的二维码是否已经被扫描
      */
     @Override
-    public SysQrCodeSceneBindVO setSingleSignInGetQrCodeSceneFlagSingleSignIn(NotNullId notNullId) {
+    public SysQrCodeSceneBindVO setSingleSignInWxGetQrCodeSceneFlag(NotNullId notNullId) {
 
         // 执行
         return SignUtil.getSysQrCodeSceneBindVoAndHandleForSingleSignIn(notNullId.getId(), false, null);
@@ -713,10 +717,10 @@ public class SignWxServiceImpl implements SignWxService {
     }
 
     /**
-     * 设置统一登录
+     * 设置统一登录：微信
      */
     @Override
-    public SysQrCodeSceneBindVO setSingleSignIn(SignWxSetSingleSignInDTO dto) {
+    public SysQrCodeSceneBindVO setSingleSignInWx(SignWxSetSingleSignInWxDTO dto) {
 
         SignUtil.checkWillError(PRE_REDIS_KEY_ENUM, null, UserUtil.getCurrentTenantIdDefault(), null); // 检查：是否可以进行操作
 
@@ -742,6 +746,61 @@ public class SignWxServiceImpl implements SignWxService {
         }
 
         return sysQrCodeSceneBindVoCallBack.getValue();
+
+    }
+
+    /**
+     * 设置统一登录：手机验证码：获取当前微信的二维码地址
+     */
+    @Override
+    public GetQrCodeVO setSingleSignInPhoneGetQrCodeUrlCurrent() {
+
+        Long currentTenantIdDefault = UserUtil.getCurrentTenantIdDefault();
+
+        SignUtil.checkWillError(PRE_REDIS_KEY_ENUM, null, currentTenantIdDefault, null); // 检查：是否可以进行操作
+
+        // 执行
+        return SignUtil.getQrCodeUrlWx(currentTenantIdDefault, true, WxSysQrCodeSceneTypeEnum.WX_SET_SINGLE_SIGN_IN);
+
+    }
+
+    /**
+     * 设置统一登录：手机验证码：获取当前微信的二维码是否已经被扫描
+     */
+    @Override
+    public SysQrCodeSceneBindVO setSingleSignInPhoneGetQrCodeSceneFlagCurrent(NotNullId notNullId) {
+
+        // 执行
+        return SignUtil.getSysQrCodeSceneBindVoAndHandleForUserId(notNullId.getId(), false, BaseRedisKeyEnum.PRE_SYS_WX_QR_CODE_SET_SINGLE_SIGN_IN, null);
+
+    }
+
+    /**
+     * 设置统一登录：手机验证码：发送验证码
+     */
+    @Override
+    public String setSingleSignInPhoneSendCode(SignWxSetSingleSignInPhoneSendCodeDTO dto) {
+
+        SignUtil.checkWillError(PRE_REDIS_KEY_ENUM, null, UserUtil.getCurrentTenantIdDefault(), null); // 检查：是否可以进行操作
+
+        // 执行
+        return SignUtil.sendCodeForSingle(dto.getSingleSignInPhone(), false, "操作失败：该手机号已被绑定", (code) -> SysSmsUtil
+                .sendSetSingleSignIn(SysSmsHelper.getSysSmsSendBO(code, dto.getSingleSignInPhone(), singleSignInProperties.getSmsConfigurationId())), BaseRedisKeyEnum.PRE_SYS_SINGLE_SIGN_IN_SET_PHONE);
+
+    }
+
+    /**
+     * 设置统一登录：手机验证码
+     */
+    @Override
+    public SysQrCodeSceneBindVO setSingleSignInPhone(SignWxSetSingleSignInPhoneDTO dto) {
+
+        // 执行
+        return SignUtil.getSysQrCodeSceneBindVoAndHandleForUserId(dto.getId(), false, BaseRedisKeyEnum.PRE_SYS_WX_QR_CODE_SET_PHONE, () -> {
+
+            SignUtil.bindAccountForSingle(dto.getSingleSignInPhoneCode(), BaseRedisKeyEnum.PRE_SYS_SINGLE_SIGN_IN_SET_PHONE, dto.getSingleSignInPhone(), null, null, null);
+
+        });
 
     }
 

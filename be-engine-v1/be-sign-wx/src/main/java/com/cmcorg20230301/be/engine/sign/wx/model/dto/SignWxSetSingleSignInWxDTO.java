@@ -7,7 +7,7 @@ import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
 @Data
-public class SignWxSetSingleSignInDTO {
+public class SignWxSetSingleSignInWxDTO {
 
     @Min(1)
     @NotNull

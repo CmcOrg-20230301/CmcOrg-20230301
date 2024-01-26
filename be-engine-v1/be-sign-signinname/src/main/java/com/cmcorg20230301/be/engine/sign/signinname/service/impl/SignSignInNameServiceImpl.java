@@ -243,7 +243,7 @@ public class SignSignInNameServiceImpl implements SignSignInNameService {
 
         // 执行
         return SignUtil.sendCodeForSingle(dto.getPhone(), false, "操作失败：该手机号已被绑定", (code) -> SysSmsUtil
-                .sendSignIn(SysSmsHelper.getSysSmsSendBO(code, dto.getPhone(), singleSignInProperties.getSmsConfigurationId())), BaseRedisKeyEnum.PRE_PHONE);
+                .sendSetSingleSignIn(SysSmsHelper.getSysSmsSendBO(code, dto.getPhone(), singleSignInProperties.getSmsConfigurationId())), BaseRedisKeyEnum.PRE_PHONE);
 
     }
 

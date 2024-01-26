@@ -79,15 +79,23 @@ public interface SignWxService {
 
     SysQrCodeSceneBindVO setPhone(SignWxSetPhoneDTO dto);
 
-    GetQrCodeVO setSingleSignInGetQrCodeUrlCurrent();
+    GetQrCodeVO setSingleSignInWxGetQrCodeUrlCurrent();
 
-    SysQrCodeSceneBindVO setSingleSignInGetQrCodeSceneFlagCurrent(NotNullId notNullId);
+    SysQrCodeSceneBindVO setSingleSignInWxGetQrCodeSceneFlagCurrent(NotNullId notNullId);
 
-    GetQrCodeVO updateWxGetQrCodeUrlSingleSignIn();
+    GetQrCodeVO setSingleSignInWxGetQrCodeUrl();
 
-    SysQrCodeSceneBindVO setSingleSignInGetQrCodeSceneFlagSingleSignIn(NotNullId notNullId);
+    SysQrCodeSceneBindVO setSingleSignInWxGetQrCodeSceneFlag(NotNullId notNullId);
 
-    SysQrCodeSceneBindVO setSingleSignIn(SignWxSetSingleSignInDTO dto);
+    SysQrCodeSceneBindVO setSingleSignInWx(SignWxSetSingleSignInWxDTO dto);
+
+    GetQrCodeVO setSingleSignInPhoneGetQrCodeUrlCurrent();
+
+    SysQrCodeSceneBindVO setSingleSignInPhoneGetQrCodeSceneFlagCurrent(NotNullId notNullId);
+
+    String setSingleSignInPhoneSendCode(SignWxSetSingleSignInPhoneSendCodeDTO dto);
+
+    SysQrCodeSceneBindVO setSingleSignInPhone(SignWxSetSingleSignInPhoneDTO dto);
 
     GetQrCodeVO signDeleteGetQrCodeUrl();
 
