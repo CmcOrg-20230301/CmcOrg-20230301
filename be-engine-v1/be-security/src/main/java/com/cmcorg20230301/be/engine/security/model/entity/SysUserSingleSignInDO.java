@@ -8,7 +8,7 @@ import java.util.Date;
 
 @TableName(value = "sys_user_single_sign_in")
 @Data
-@Schema(description = "子表：用户单点登录，主表：用户")
+@Schema(description = "子表：用户统一登录，主表：用户")
 public class SysUserSingleSignInDO {
 
     @Schema(description = "用户主键 id")
@@ -26,10 +26,16 @@ public class SysUserSingleSignInDO {
     @Schema(description = "修改时间")
     private Date updateTime;
 
-    @Schema(description = "单点登录微信 appId")
+    @Schema(description = "统一登录微信 appId，可以为空")
     private String wxAppId;
 
-    @Schema(description = "单点登录微信 openId")
+    @Schema(description = "统一登录微信 openId，可以为空")
     private String wxOpenId;
+
+    @Schema(description = "统一登录手机号，可以为空")
+    private String phone;
+
+    @Schema(description = "统一登录邮箱，可以为空")
+    private String email;
 
 }

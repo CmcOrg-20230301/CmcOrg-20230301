@@ -487,14 +487,14 @@ public class SignUtil {
                                       Enum<? extends IRedisKey> redisKeyEnum, String account, @Nullable Long tenantId, @Nullable VoidFunc0 voidFunc0) {
 
         // 登录时，获取账号信息
-        SysUserDO sysUserDOTemp = signInGetSysUserDO(lambdaQueryChainWrapper, false, tenantId);
+        SysUserDO sysUserDO = signInGetSysUserDO(lambdaQueryChainWrapper, false, tenantId);
 
         String key = redisKeyEnum + account;
 
         return RedissonUtil.doLock(key, () -> {
 
             // 执行
-            return doSignInCode(code, redisKeyEnum, account, tenantId, voidFunc0, key, sysUserDOTemp);
+            return doSignInCode(code, redisKeyEnum, account, tenantId, voidFunc0, key, sysUserDO);
 
         });
 
@@ -505,13 +505,13 @@ public class SignUtil {
      */
     @SneakyThrows
     @Nullable
-    private static SignInVO doSignInCode(String code, Enum<? extends IRedisKey> redisKeyEnum, String account, @Nullable Long tenantId, @Nullable VoidFunc0 voidFunc0, String key, SysUserDO sysUserDOTemp) {
+    private static SignInVO doSignInCode(String code, Enum<? extends IRedisKey> redisKeyEnum, String account, @Nullable Long tenantId, @Nullable VoidFunc0 voidFunc0, String key, SysUserDO sysUserDoTemp) {
 
         RBucket<String> bucket = redissonClient.getBucket(key);
 
         CodeUtil.checkCode(code, bucket.get()); // 检查 code是否正确
 
-        SysUserDO sysUserDO = sysUserDOTemp;
+        SysUserDO sysUserDO = sysUserDoTemp;
 
         if (sysUserDO == null) {
 
@@ -1079,10 +1079,15 @@ public class SignUtil {
     public static boolean accountIsExists(Enum<? extends IRedisKey> redisKeyEnum, String newAccount, @Nullable Long id,
                                           @Nullable Long tenantId, String appId) {
 
-        // 如果是：微信单点登录绑定时
-        if (BaseRedisKeyEnum.PRE_SYS_WX_QR_CODE_SINGLE_SIGN_IN_BIND.equals(redisKeyEnum)) {
+        // 如果是：统一登录，设置微信时
+        if (BaseRedisKeyEnum.PRE_SYS_SINGLE_SIGN_IN_SET_WX.equals(redisKeyEnum)) {
 
             return ChainWrappers.lambdaQueryChain(sysUserSingleSignInMapper).eq(SysUserSingleSignInDO::getWxAppId, appId).eq(SysUserSingleSignInDO::getWxOpenId, newAccount).exists();
+
+        } else if (BaseRedisKeyEnum.PRE_SYS_SINGLE_SIGN_IN_SET_PHONE.equals(redisKeyEnum)) {
+
+            // 如果是：统一登录，设置手机验证码登录时
+            return ChainWrappers.lambdaQueryChain(sysUserSingleSignInMapper).eq(SysUserSingleSignInDO::getPhone, newAccount).exists();
 
         }
 
@@ -1354,8 +1359,8 @@ public class SignUtil {
 
         }
 
-        // 是否是：设置单点登录
-        boolean singleSignInFlag = BaseRedisKeyEnum.PRE_SYS_WX_QR_CODE_SINGLE_SIGN_IN_BIND.equals(accountRedisKeyEnum);
+        // 是否是：设置统一登录
+        boolean singleSignInFlag = BaseRedisKeyEnum.PRE_SYS_SINGLE_SIGN_IN_SET_WX.equals(accountRedisKeyEnum) || BaseRedisKeyEnum.PRE_SYS_SINGLE_SIGN_IN_SET_PHONE.equals(accountRedisKeyEnum);
 
         if (singleSignInFlag) {
 
@@ -1390,11 +1395,11 @@ public class SignUtil {
 
             }
 
-            // 如果是：微信单点登录绑定时
+            // 如果是：微信统一登录绑定时
             if (singleSignInFlag) {
 
                 // 处理
-                return bindAccountForSingleSignInFlag(account, appId, currentUserIdNotAdmin, currentTenantIdDefault, deleteRedisFlag, bucket);
+                return bindAccountForSingleSignIn(account, appId, currentUserIdNotAdmin, currentTenantIdDefault, deleteRedisFlag, bucket, accountRedisKeyEnum);
 
             } else {
 
@@ -1428,10 +1433,10 @@ public class SignUtil {
     }
 
     /**
-     * 处理：微信单点登录绑定时
+     * 处理：统一登录设置账号
      */
     @NotNull
-    private static String bindAccountForSingleSignInFlag(String account, String appId, Long currentUserIdNotAdmin, Long currentTenantIdDefault, boolean deleteRedisFlag, RBucket<String> bucket) {
+    private static String bindAccountForSingleSignIn(String account, String appId, Long currentUserIdNotAdmin, Long currentTenantIdDefault, boolean deleteRedisFlag, RBucket<String> bucket, Enum<? extends IRedisKey> accountRedisKeyEnum) {
 
         SysUserSingleSignInDO sysUserSingleSignInDO = new SysUserSingleSignInDO();
 
@@ -1439,8 +1444,20 @@ public class SignUtil {
 
         sysUserSingleSignInDO.setId(currentUserIdNotAdmin);
 
-        sysUserSingleSignInDO.setWxAppId(appId);
-        sysUserSingleSignInDO.setWxOpenId(account);
+        if (BaseRedisKeyEnum.PRE_SYS_SINGLE_SIGN_IN_SET_WX.equals(accountRedisKeyEnum)) {
+
+            sysUserSingleSignInDO.setWxAppId(appId);
+            sysUserSingleSignInDO.setWxOpenId(account);
+
+        } else if (BaseRedisKeyEnum.PRE_SYS_SINGLE_SIGN_IN_SET_PHONE.equals(accountRedisKeyEnum)) {
+
+            sysUserSingleSignInDO.setPhone(account);
+
+        } else {
+
+            ApiResultVO.sysError();
+
+        }
 
         return TransactionUtil.exec(() -> {
 
@@ -1629,7 +1646,7 @@ public class SignUtil {
     }
 
     /**
-     * 获取：单点登录微信，二维码地址
+     * 获取：统一登录微信，二维码地址
      */
     @SneakyThrows
     @Nullable
@@ -1708,7 +1725,7 @@ public class SignUtil {
     }
 
     /**
-     * 绑定微信单点登录
+     * 绑定微信统一登录
      */
     @NotNull
     public static SysQrCodeSceneBindVO setWxForSingleSignIn(Long qrCodeId, String code, String codeKey, String currentPassword) {
@@ -1717,7 +1734,7 @@ public class SignUtil {
         return getSysQrCodeSceneBindVoAndHandleForSingleSignIn(qrCodeId, true, sysQrCodeSceneBindBO -> {
 
             // 执行
-            SignUtil.bindAccount(code, BaseRedisKeyEnum.PRE_SYS_WX_QR_CODE_SINGLE_SIGN_IN_BIND, sysQrCodeSceneBindBO.getOpenId(), sysQrCodeSceneBindBO.getAppId(), codeKey, currentPassword);
+            SignUtil.bindAccount(code, BaseRedisKeyEnum.PRE_SYS_SINGLE_SIGN_IN_SET_WX, sysQrCodeSceneBindBO.getOpenId(), sysQrCodeSceneBindBO.getAppId(), codeKey, currentPassword);
 
         });
 
@@ -1736,14 +1753,14 @@ public class SignUtil {
     }
 
     /**
-     * 获取：微信单点登录绑定信息
+     * 获取：微信统一登录绑定信息
      */
     @SneakyThrows
     @NotNull
     public static SysQrCodeSceneBindVO getSysQrCodeSceneBindVoAndHandleForSingleSignIn(Long qrCodeId, boolean deleteFlag, @Nullable VoidFunc1<SysQrCodeSceneBindBO> voidFunc1) {
 
         // 执行
-        return execGetSysQrCodeSceneBindVoAndHandle(qrCodeId, deleteFlag, BaseRedisKeyEnum.PRE_SYS_WX_QR_CODE_SINGLE_SIGN_IN_BIND, voidFunc1);
+        return execGetSysQrCodeSceneBindVoAndHandle(qrCodeId, deleteFlag, BaseRedisKeyEnum.PRE_SYS_SINGLE_SIGN_IN_SET_WX, voidFunc1);
 
     }
 

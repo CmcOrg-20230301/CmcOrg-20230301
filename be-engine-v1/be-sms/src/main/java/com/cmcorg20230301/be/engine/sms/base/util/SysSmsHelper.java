@@ -6,6 +6,7 @@ import cn.hutool.core.util.RandomUtil;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.extension.conditions.query.LambdaQueryChainWrapper;
 import com.cmcorg20230301.be.engine.model.model.constant.BaseConstant;
+import com.cmcorg20230301.be.engine.security.model.entity.BaseEntity;
 import com.cmcorg20230301.be.engine.security.model.entity.BaseEntityNoId;
 import com.cmcorg20230301.be.engine.security.model.entity.BaseEntityNoIdSuper;
 import com.cmcorg20230301.be.engine.security.model.entity.SysTenantDO;
@@ -46,6 +47,32 @@ public class SysSmsHelper {
 
         sysSmsSendBO.setTenantId(tenantId);
         sysSmsSendBO.setUseParentTenantSmsFlag(true);
+        sysSmsSendBO.setSendContent(sendContent);
+        sysSmsSendBO.setPhoneNumber(phoneNumber);
+
+        return sysSmsSendBO;
+
+    }
+
+    /**
+     * 获取：SysSmsSendBO对象
+     */
+    public static SysSmsSendBO getSysSmsSendBO(String sendContent, String phoneNumber, Long id) {
+
+        if (id == null) {
+            ApiResultVO.errorMsg("系统错误：短信配置 id为空");
+        }
+
+        SysSmsConfigurationDO sysSmsConfigurationDO = sysSmsConfigurationService.lambdaQuery().eq(BaseEntity::getId, id).one();
+
+        if (sysSmsConfigurationDO == null) {
+            ApiResultVO.error("未找到短信配置", id);
+        }
+
+        SysSmsSendBO sysSmsSendBO = new SysSmsSendBO();
+
+        sysSmsSendBO.setSysSmsConfigurationDO(sysSmsConfigurationDO);
+
         sysSmsSendBO.setSendContent(sendContent);
         sysSmsSendBO.setPhoneNumber(phoneNumber);
 

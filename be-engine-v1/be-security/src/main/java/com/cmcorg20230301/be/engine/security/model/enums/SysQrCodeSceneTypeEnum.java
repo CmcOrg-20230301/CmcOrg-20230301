@@ -45,12 +45,12 @@ public enum SysQrCodeSceneTypeEnum implements ISysQrCodeSceneType {
 
     }, false),
 
-    // 微信单点登录绑定
+    // 微信统一登录绑定
     WX_SINGLE_SIGN_IN_BIND("WX_SINGLE_SIGN_IN_BIND", BaseConstant.MINUTE_3_EXPIRE_TIME / 1000, (qrCodeSceneValue, redissonClient, sysUserDO) -> {
 
-        RBucket<SysQrCodeSceneBindBO> bucket = redissonClient.getBucket(BaseRedisKeyEnum.PRE_SYS_WX_QR_CODE_SINGLE_SIGN_IN_BIND.name() + qrCodeSceneValue);
+        RBucket<SysQrCodeSceneBindBO> bucket = redissonClient.getBucket(BaseRedisKeyEnum.PRE_SYS_SINGLE_SIGN_IN_SET_WX.name() + qrCodeSceneValue);
 
-        // 微信单点登录不能重复
+        // 微信统一登录不能重复
         SysUserSingleSignInDO sysUserSingleSignInDO = ChainWrappers.lambdaQueryChain(UserUtil.sysUserSingleSignInMapper).eq(SysUserSingleSignInDO::getWxAppId, sysUserDO.getWxAppId()).eq(SysUserSingleSignInDO::getWxOpenId, sysUserDO.getWxOpenId()).select(SysUserSingleSignInDO::getId, SysUserSingleSignInDO::getTenantId).one();
 
         SysQrCodeSceneBindBO sysQrCodeSceneBindBO = new SysQrCodeSceneBindBO();

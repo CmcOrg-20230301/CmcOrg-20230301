@@ -84,6 +84,7 @@
         <module>be-other-app-wx</module>
         <module>be-other-app-baidu</module>
         <module>be-im-session</module>
+        <module>be-sign-single</module>
     </modules>
 
     <dependencyManagement>

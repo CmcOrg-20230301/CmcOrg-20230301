@@ -3,12 +3,12 @@ package com.cmcorg20230301.be.engine.tenant.controller;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.cmcorg20230301.be.engine.model.model.dto.*;
 import com.cmcorg20230301.be.engine.model.model.vo.DictTreeVO;
+import com.cmcorg20230301.be.engine.model.model.vo.SysSignConfigurationVO;
 import com.cmcorg20230301.be.engine.security.model.entity.SysMenuDO;
 import com.cmcorg20230301.be.engine.security.model.entity.SysTenantDO;
 import com.cmcorg20230301.be.engine.security.model.vo.ApiResultVO;
 import com.cmcorg20230301.be.engine.tenant.model.dto.SysTenantInsertOrUpdateDTO;
 import com.cmcorg20230301.be.engine.tenant.model.dto.SysTenantPageDTO;
-import com.cmcorg20230301.be.engine.tenant.model.vo.SysTenantConfigurationByIdVO;
 import com.cmcorg20230301.be.engine.tenant.model.vo.SysTenantInfoByIdVO;
 import com.cmcorg20230301.be.engine.tenant.service.SysTenantService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -82,7 +82,7 @@ public class SysTenantController {
 
     @Operation(summary = "通过主键id，获取租户相关的配置")
     @PostMapping("/getConfigurationById")
-    public ApiResultVO<SysTenantConfigurationByIdVO> getConfigurationById(@RequestBody @Valid NotNullLong notNullLong) {
+    public ApiResultVO<SysSignConfigurationVO> getConfigurationById(@RequestBody @Valid NotNullLong notNullLong) {
         return ApiResultVO.okData(baseService.getConfigurationById(notNullLong));
     }
 

@@ -1,11 +1,10 @@
-package com.cmcorg20230301.be.engine.tenant.model.vo;
+package com.cmcorg20230301.be.engine.model.model.vo;
 
-import com.cmcorg20230301.be.engine.model.model.vo.GetQrCodeVO;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
 @Data
-public class SysTenantConfigurationByIdVO {
+public class SysSignConfigurationVO {
 
     @Schema(description = "是否启用：用户名注册功能，默认启用")
     private Boolean signInNameSignUpEnable;

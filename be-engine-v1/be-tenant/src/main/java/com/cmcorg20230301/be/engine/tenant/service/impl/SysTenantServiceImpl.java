@@ -18,6 +18,7 @@ import com.cmcorg20230301.be.engine.model.model.constant.BaseConstant;
 import com.cmcorg20230301.be.engine.model.model.dto.*;
 import com.cmcorg20230301.be.engine.model.model.vo.DictTreeVO;
 import com.cmcorg20230301.be.engine.model.model.vo.GetQrCodeVO;
+import com.cmcorg20230301.be.engine.model.model.vo.SysSignConfigurationVO;
 import com.cmcorg20230301.be.engine.param.service.SysParamService;
 import com.cmcorg20230301.be.engine.security.exception.BaseBizCodeEnum;
 import com.cmcorg20230301.be.engine.security.mapper.SysTenantMapper;
@@ -32,7 +33,6 @@ import com.cmcorg20230301.be.engine.sign.helper.model.dto.UserSignBaseDTO;
 import com.cmcorg20230301.be.engine.sign.wx.service.SignWxService;
 import com.cmcorg20230301.be.engine.tenant.model.dto.SysTenantInsertOrUpdateDTO;
 import com.cmcorg20230301.be.engine.tenant.model.dto.SysTenantPageDTO;
-import com.cmcorg20230301.be.engine.tenant.model.vo.SysTenantConfigurationByIdVO;
 import com.cmcorg20230301.be.engine.tenant.model.vo.SysTenantInfoByIdVO;
 import com.cmcorg20230301.be.engine.tenant.service.SysTenantRefUserService;
 import com.cmcorg20230301.be.engine.tenant.service.SysTenantService;
@@ -688,9 +688,9 @@ public class SysTenantServiceImpl extends ServiceImpl<SysTenantMapper, SysTenant
      */
     @SneakyThrows
     @Override
-    public SysTenantConfigurationByIdVO getConfigurationById(NotNullLong notNullLong) {
+    public SysSignConfigurationVO getConfigurationById(NotNullLong notNullLong) {
 
-        SysTenantConfigurationByIdVO sysTenantConfigurationByIdVO = new SysTenantConfigurationByIdVO();
+        SysSignConfigurationVO sysSignConfigurationVO = new SysSignConfigurationVO();
 
         CountDownLatch countDownLatch = ThreadUtil.newCountDownLatch(2);
 
@@ -698,11 +698,11 @@ public class SysTenantServiceImpl extends ServiceImpl<SysTenantMapper, SysTenant
 
             SysUserConfigurationDO sysUserConfigurationDO = sysUserConfigurationService.getSysUserConfigurationDoByTenantId(notNullLong.getValue());
 
-            sysTenantConfigurationByIdVO.setSignInNameSignUpEnable(sysUserConfigurationDO.getSignInNameSignUpEnable());
+            sysSignConfigurationVO.setSignInNameSignUpEnable(sysUserConfigurationDO.getSignInNameSignUpEnable());
 
-            sysTenantConfigurationByIdVO.setEmailSignUpEnable(sysUserConfigurationDO.getEmailSignUpEnable());
+            sysSignConfigurationVO.setEmailSignUpEnable(sysUserConfigurationDO.getEmailSignUpEnable());
 
-            sysTenantConfigurationByIdVO.setPhoneSignUpEnable(sysUserConfigurationDO.getPhoneSignUpEnable());
+            sysSignConfigurationVO.setPhoneSignUpEnable(sysUserConfigurationDO.getPhoneSignUpEnable());
 
         }, countDownLatch);
 
@@ -710,13 +710,13 @@ public class SysTenantServiceImpl extends ServiceImpl<SysTenantMapper, SysTenant
 
             GetQrCodeVO getQrCodeVO = signWxService.signInGetQrCodeUrl(new UserSignBaseDTO(notNullLong.getValue()), false);
 
-            sysTenantConfigurationByIdVO.setWxQrCodeSignUp(getQrCodeVO);
+            sysSignConfigurationVO.setWxQrCodeSignUp(getQrCodeVO);
 
         }, countDownLatch);
 
         countDownLatch.await();
 
-        return sysTenantConfigurationByIdVO;
+        return sysSignConfigurationVO;
 
     }
 

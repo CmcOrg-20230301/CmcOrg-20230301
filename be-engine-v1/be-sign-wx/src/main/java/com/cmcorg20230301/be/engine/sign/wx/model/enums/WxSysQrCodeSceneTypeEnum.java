@@ -113,7 +113,7 @@ public enum WxSysQrCodeSceneTypeEnum implements ISysQrCodeSceneType {
 
     }, true),
 
-    // 设置单点登录
+    // 设置统一登录
     WX_SET_SINGLE_SIGN_IN("WX_SET_SINGLE_SIGN_IN", BaseConstant.MINUTE_3_EXPIRE_TIME / 1000, (qrCodeSceneValue, redissonClient, sysUserDO) -> {
 
         RBucket<Long> bucket = redissonClient.getBucket(BaseRedisKeyEnum.PRE_SYS_WX_QR_CODE_SET_SINGLE_SIGN_IN.name() + qrCodeSceneValue);
@@ -122,10 +122,10 @@ public enum WxSysQrCodeSceneTypeEnum implements ISysQrCodeSceneType {
 
     }, true),
 
-    // 微信单点登录
+    // 微信统一登录
     WX_SINGLE_SIGN_IN("WX_SINGLE_SIGN_IN", BaseConstant.MINUTE_3_EXPIRE_TIME / 1000, (qrCodeSceneValue, redissonClient, sysUserDO) -> {
 
-        // 获取：微信单点登录的信息
+        // 获取：微信统一登录的信息
         SysUserSingleSignInDO sysUserSingleSignInDO = ChainWrappers.lambdaQueryChain(UserUtil.sysUserSingleSignInMapper).eq(SysUserSingleSignInDO::getWxAppId, sysUserDO.getWxAppId()).eq(SysUserSingleSignInDO::getWxOpenId, sysUserDO.getWxOpenId()).select(SysUserSingleSignInDO::getId, SysUserSingleSignInDO::getTenantId).one();
 
         SignInVO signInVO;

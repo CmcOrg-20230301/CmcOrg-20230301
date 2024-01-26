@@ -24,7 +24,6 @@ import com.cmcorg20230301.be.engine.sign.phone.model.dto.*;
 import com.cmcorg20230301.be.engine.sign.phone.service.SignPhoneService;
 import com.cmcorg20230301.be.engine.sms.base.util.SysSmsHelper;
 import com.cmcorg20230301.be.engine.sms.base.util.SysSmsUtil;
-import org.redisson.api.RedissonClient;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -39,9 +38,6 @@ public class SignPhoneServiceImpl implements SignPhoneService {
 
     @Resource
     SysUserConfigurationService sysUserConfigurationService;
-
-    @Resource
-    RedissonClient redissonClient;
 
     /**
      * 注册-发送验证码
