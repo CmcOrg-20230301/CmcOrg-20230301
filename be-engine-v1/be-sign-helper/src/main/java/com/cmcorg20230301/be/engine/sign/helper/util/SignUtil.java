@@ -1918,7 +1918,7 @@ public class SignUtil {
 
         }
 
-        Page<SysOtherAppDO> page = lambdaQueryChainWrapper.select(SysOtherAppDO::getAppId).page(MyPageUtil.getLimit1Page());
+        Page<SysOtherAppDO> page = lambdaQueryChainWrapper.select(SysOtherAppDO::getAppId, BaseEntityNoIdSuper::getTenantId).page(MyPageUtil.getLimit1Page());
 
         if (CollUtil.isEmpty(page.getRecords())) {
             return null;
