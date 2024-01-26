@@ -159,6 +159,12 @@
             <artifactId>be-dict</artifactId>
         </dependency>
 
+        <!-- be-sign-single -->
+        <dependency>
+            <groupId>${cmcorg.groupId}</groupId>
+            <artifactId>be-sign-single</artifactId>
+        </dependency>
+
         <!-- be-sign-wx -->
         <dependency>
             <groupId>${cmcorg.groupId}</groupId>

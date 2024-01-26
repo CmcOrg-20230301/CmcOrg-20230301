@@ -307,6 +307,13 @@
                 <version>${cmcorg.version}</version>
             </dependency>
 
+            <!-- be-sign-single -->
+            <dependency>
+                <groupId>${cmcorg.groupId}</groupId>
+                <artifactId>be-sign-single</artifactId>
+                <version>${cmcorg.version}</version>
+            </dependency>
+
             <!-- be-sign-wx -->
             <dependency>
                 <groupId>${cmcorg.groupId}</groupId>
