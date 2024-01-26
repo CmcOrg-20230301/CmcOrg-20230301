@@ -38,7 +38,7 @@ public interface SignSignInNameService {
 
     String setSingleSignInSendCodePhone(SignSignInNameSetSingleSignInPhoneSendCodeDTO dto);
 
-    String setSingleSignInPhone(SignSignInNameSetPhoneDTO dto);
+    String setSingleSignInPhone(SignSignInNameSetSingleSignInPhoneDTO dto);
 
     String signDelete(SignSignInNameSignDeleteDTO dto);
 

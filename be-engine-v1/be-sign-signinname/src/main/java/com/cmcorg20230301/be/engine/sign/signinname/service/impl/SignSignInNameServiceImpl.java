@@ -251,7 +251,7 @@ public class SignSignInNameServiceImpl implements SignSignInNameService {
      * 设置统一登录：手机验证码
      */
     @Override
-    public String setSingleSignInPhone(SignSignInNameSetPhoneDTO dto) {
+    public String setSingleSignInPhone(SignSignInNameSetSingleSignInPhoneDTO dto) {
 
         SignUtil.checkWillError(PRE_REDIS_KEY_ENUM, null, UserUtil.getCurrentTenantIdDefault(), null); // 检查：是否可以进行操作
 

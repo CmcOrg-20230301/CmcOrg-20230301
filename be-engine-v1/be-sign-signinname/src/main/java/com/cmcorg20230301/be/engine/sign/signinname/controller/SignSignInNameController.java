@@ -118,7 +118,7 @@ public class SignSignInNameController {
 
     @PostMapping(value = "/setSingleSignIn/phone")
     @Operation(summary = "设置统一登录：手机验证码")
-    public ApiResultVO<String> setSingleSignInPhone(@RequestBody @Valid SignSignInNameSetPhoneDTO dto) {
+    public ApiResultVO<String> setSingleSignInPhone(@RequestBody @Valid SignSignInNameSetSingleSignInPhoneDTO dto) {
         return ApiResultVO.okMsg(baseService.setSingleSignInPhone(dto));
     }
 
