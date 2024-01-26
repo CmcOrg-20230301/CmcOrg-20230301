@@ -1649,6 +1649,7 @@ public class SignUtil {
             sysUserSingleSignInDO.setWxAppId("");
             sysUserSingleSignInDO.setWxOpenId("");
             sysUserSingleSignInDO.setPhone("");
+            sysUserSingleSignInDO.setEmail("");
 
         }
 
