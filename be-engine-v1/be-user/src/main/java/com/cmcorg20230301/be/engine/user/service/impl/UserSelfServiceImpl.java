@@ -113,9 +113,22 @@ public class UserSelfServiceImpl extends ServiceImpl<SysUserMapper, SysUserDO> i
 
         MyThreadUtil.execute(() -> {
 
-            boolean exists = ChainWrappers.lambdaQueryChain(sysUserSingleSignInMapper).eq(SysUserSingleSignInDO::getId, currentUserId).eq(SysUserSingleSignInDO::getTenantId, currentTenantIdDefault).exists();
+            SysUserSingleSignInDO sysUserSingleSignInDO = ChainWrappers.lambdaQueryChain(sysUserSingleSignInMapper).eq(SysUserSingleSignInDO::getId, currentUserId).eq(SysUserSingleSignInDO::getTenantId, currentTenantIdDefault).select(SysUserSingleSignInDO::getWxOpenId, SysUserSingleSignInDO::getPhone, SysUserSingleSignInDO::getEmail).one();
 
-            sysUserSelfInfoVO.setSingleSignInFlag(exists);
+            sysUserSelfInfoVO.setSingleSignInWxFlag(false);
+            sysUserSelfInfoVO.setSingleSignInPhoneFlag(false);
+
+            if (sysUserSingleSignInDO != null) {
+
+                if (StrUtil.isNotBlank(sysUserSingleSignInDO.getWxOpenId())) {
+                    sysUserSelfInfoVO.setSingleSignInWxFlag(true);
+                }
+
+                if (StrUtil.isNotBlank(sysUserSelfInfoVO.getPhone())) {
+                    sysUserSelfInfoVO.setSingleSignInPhoneFlag(true);
+                }
+
+            }
 
         }, countDownLatch);
 

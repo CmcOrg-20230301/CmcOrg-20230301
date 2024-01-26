@@ -41,7 +41,10 @@ public class UserSelfInfoVO extends UserSelfUpdateInfoDTO {
     @Schema(description = "头像 fileId（文件主键 id）")
     private Long avatarFileId;
 
-    @Schema(description = "是否设置了：统一登录")
-    private Boolean singleSignInFlag;
+    @Schema(description = "是否设置了：统一登录：微信")
+    private Boolean singleSignInWxFlag;
+
+    @Schema(description = "是否设置了：统一登录：手机")
+    private Boolean singleSignInPhoneFlag;
 
 }
