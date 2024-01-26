@@ -11,6 +11,8 @@ public interface PropertiesPrefixConstant {
 
     String COMMON = PRE_BE + "common"; // 通用相关
 
+    String SINGLE_SIGN_IN = PRE_BE + "single-sign-in"; // 单点登录相关
+
     String LOG = PRE_BE + "log"; // 日志相关
 
     String CACHE = PRE_BE + "cache"; // 缓存相关

@@ -39,8 +39,8 @@ import com.cmcorg20230301.be.engine.security.model.configuration.IUserSignConfig
 import com.cmcorg20230301.be.engine.security.model.entity.*;
 import com.cmcorg20230301.be.engine.security.model.interfaces.ISysQrCodeSceneType;
 import com.cmcorg20230301.be.engine.security.model.vo.ApiResultVO;
-import com.cmcorg20230301.be.engine.security.properties.CommonProperties;
 import com.cmcorg20230301.be.engine.security.properties.SecurityProperties;
+import com.cmcorg20230301.be.engine.security.properties.SingleSignInProperties;
 import com.cmcorg20230301.be.engine.security.util.*;
 import com.cmcorg20230301.be.engine.sign.helper.exception.BizCodeEnum;
 import com.cmcorg20230301.be.engine.util.util.CallBack;
@@ -79,7 +79,7 @@ public class SignUtil {
     private static SysFileService sysFileService;
     private static SysOtherAppMapper sysOtherAppMapper;
     private static SysUserSingleSignInMapper sysUserSingleSignInMapper;
-    private static CommonProperties commonProperties;
+    private static SingleSignInProperties singleSignInProperties;
 
     @Nullable
     private static List<IUserSignConfiguration> iUserSignConfigurationList;
@@ -88,7 +88,7 @@ public class SignUtil {
                     SecurityProperties securityProperties, SysRoleRefUserMapper sysRoleRefUserMapper,
                     SysDeptRefUserMapper sysDeptRefUserMapper, SysPostRefUserMapper sysPostRefUserMapper,
                     SysTenantRefUserMapper sysTenantRefUserMapper, SysFileService sysFileService,
-                    @Autowired(required = false) @Nullable List<IUserSignConfiguration> iUserSignConfigurationList, SysOtherAppMapper sysOtherAppMapper, SysUserSingleSignInMapper sysUserSingleSignInMapper, CommonProperties commonProperties) {
+                    @Autowired(required = false) @Nullable List<IUserSignConfiguration> iUserSignConfigurationList, SysOtherAppMapper sysOtherAppMapper, SysUserSingleSignInMapper sysUserSingleSignInMapper, SingleSignInProperties singleSignInProperties) {
 
         SignUtil.sysUserInfoMapper = sysUserInfoMapper;
         SignUtil.sysUserMapper = sysUserMapper;
@@ -102,7 +102,7 @@ public class SignUtil {
         SignUtil.iUserSignConfigurationList = iUserSignConfigurationList;
         SignUtil.sysOtherAppMapper = sysOtherAppMapper;
         SignUtil.sysUserSingleSignInMapper = sysUserSingleSignInMapper;
-        SignUtil.commonProperties = commonProperties;
+        SignUtil.singleSignInProperties = singleSignInProperties;
 
     }
 
@@ -1607,10 +1607,16 @@ public class SignUtil {
     @Nullable
     public static GetQrCodeVO getQrCodeUrlWx(@Nullable Long tenantId, boolean getQrCodeUrlFlag, ISysQrCodeSceneType iSysQrCodeSceneType) {
 
+        if (tenantId == null) {
+            tenantId = BaseConstant.TOP_TENANT_ID;
+        }
+
+        Long finalTenantId = tenantId;
+
         // 执行
         return getQrCodeUrl(tenantId, getQrCodeUrlFlag, SysOtherAppTypeEnum.WX_OFFICIAL_ACCOUNT.getCode(), sysOtherAppDO -> {
 
-            String accessToken = WxUtil.getAccessToken(tenantId, sysOtherAppDO.getAppId());
+            String accessToken = WxUtil.getAccessToken(finalTenantId, sysOtherAppDO.getAppId());
 
             Long qrCodeId = IdGeneratorUtil.nextId();
 
@@ -1629,12 +1635,12 @@ public class SignUtil {
     @Nullable
     public static GetQrCodeVO getQrCodeUrlWxForSingleSignIn(boolean getQrCodeUrlFlag, ISysQrCodeSceneType iSysQrCodeSceneType) {
 
-        Long tenantId = commonProperties.getSingleSignInTenantId();
+        Long wxSysOtherAppId = singleSignInProperties.getWxSysOtherAppId();
 
         // 执行
-        return getQrCodeUrl(tenantId, getQrCodeUrlFlag, SysOtherAppTypeEnum.WX_OFFICIAL_ACCOUNT.getCode(), sysOtherAppDO -> {
+        return getQrCodeUrl(null, getQrCodeUrlFlag, SysOtherAppTypeEnum.WX_OFFICIAL_ACCOUNT.getCode(), sysOtherAppDO -> {
 
-            String accessToken = WxUtil.getAccessToken(tenantId, sysOtherAppDO.getAppId());
+            String accessToken = WxUtil.getAccessToken(sysOtherAppDO.getTenantId(), sysOtherAppDO.getAppId());
 
             Long qrCodeId = IdGeneratorUtil.nextId();
 
@@ -1644,7 +1650,7 @@ public class SignUtil {
 
         }, lambdaQueryChainWrapper -> {
 
-            lambdaQueryChainWrapper.eq(SysOtherAppDO::getSingleSignInFlag, true);
+            lambdaQueryChainWrapper.eq(SysOtherAppDO::getId, wxSysOtherAppId);
 
         });
 
@@ -1657,15 +1663,11 @@ public class SignUtil {
     @Nullable
     public static GetQrCodeVO getQrCodeUrl(@Nullable Long tenantId, boolean getQrCodeUrlFlag, @Nullable Integer otherAppType, Func1<SysOtherAppDO, GetQrCodeVO> func1, @Nullable Consumer<LambdaQueryChainWrapper<SysOtherAppDO>> lambdaQueryChainWrapperConsumer) {
 
-        if (tenantId == null) {
-            tenantId = BaseConstant.TOP_TENANT_ID;
-        }
-
         if (otherAppType == null) {
             otherAppType = SysOtherAppTypeEnum.WX_OFFICIAL_ACCOUNT.getCode();
         }
 
-        LambdaQueryChainWrapper<SysOtherAppDO> lambdaQueryChainWrapper = ChainWrappers.lambdaQueryChain(sysOtherAppMapper).eq(SysOtherAppDO::getType, otherAppType).eq(BaseEntityNoId::getEnableFlag, true).eq(BaseEntityNoIdSuper::getTenantId, tenantId);
+        LambdaQueryChainWrapper<SysOtherAppDO> lambdaQueryChainWrapper = ChainWrappers.lambdaQueryChain(sysOtherAppMapper).eq(SysOtherAppDO::getType, otherAppType).eq(BaseEntityNoId::getEnableFlag, true).eq(tenantId != null, BaseEntityNoIdSuper::getTenantId, tenantId);
 
         if (lambdaQueryChainWrapperConsumer != null) {
 

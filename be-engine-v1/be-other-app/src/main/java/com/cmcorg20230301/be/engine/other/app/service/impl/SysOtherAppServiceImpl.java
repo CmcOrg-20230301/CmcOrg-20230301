@@ -23,7 +23,6 @@ import com.cmcorg20230301.be.engine.security.model.entity.BaseEntityNoIdSuper;
 import com.cmcorg20230301.be.engine.security.model.vo.ApiResultVO;
 import com.cmcorg20230301.be.engine.security.util.MyEntityUtil;
 import com.cmcorg20230301.be.engine.security.util.SysTenantUtil;
-import com.cmcorg20230301.be.engine.security.util.UserUtil;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Service;
 
@@ -62,19 +61,6 @@ public class SysOtherAppServiceImpl extends ServiceImpl<SysOtherAppMapper, SysOt
 
             }
 
-            if (!UserUtil.getCurrentTenantTopFlag()) {
-
-                dto.setSingleSignInFlag(false); // 只有：顶级租户，才可以设置为：true
-
-            }
-
-            // 如果是单点登录的第三方应用，则取消之前的单点登录的第三方应用类型，备注：针对全部租户
-            if (BooleanUtil.isTrue(dto.getSingleSignInFlag())) {
-
-                lambdaUpdate().set(SysOtherAppDO::getSingleSignInFlag, false).eq(SysOtherAppDO::getType, dto.getType()).eq(SysOtherAppDO::getSingleSignInFlag, true).ne(dto.getId() != null, BaseEntity::getId, dto.getId()).update();
-
-            }
-
             SysOtherAppDO sysOtherAppDO = new SysOtherAppDO();
 
             sysOtherAppDO.setType(dto.getType());
@@ -88,8 +74,6 @@ public class SysOtherAppServiceImpl extends ServiceImpl<SysOtherAppMapper, SysOt
 
             sysOtherAppDO.setQrCode(MyEntityUtil.getNotNullStr(dto.getQrCode()));
             sysOtherAppDO.setOpenId(MyEntityUtil.getNotNullStr(dto.getOpenId()));
-
-            sysOtherAppDO.setSingleSignInFlag(BooleanUtil.isTrue(dto.getSingleSignInFlag()));
 
             sysOtherAppDO.setId(dto.getId());
             sysOtherAppDO.setEnableFlag(BooleanUtil.isTrue(dto.getEnableFlag()));
@@ -122,10 +106,9 @@ public class SysOtherAppServiceImpl extends ServiceImpl<SysOtherAppMapper, SysOt
                 .like(StrUtil.isNotBlank(dto.getOpenId()), SysOtherAppDO::getOpenId, dto.getOpenId()) //
                 .like(StrUtil.isNotBlank(dto.getRemark()), BaseEntity::getRemark, dto.getRemark()) //
                 .eq(dto.getType() != null, SysOtherAppDO::getType, dto.getType()) //
-                .eq(dto.getSingleSignInFlag() != null, SysOtherAppDO::getSingleSignInFlag, dto.getSingleSignInFlag()) //
                 .eq(dto.getEnableFlag() != null, BaseEntity::getEnableFlag, dto.getEnableFlag()) //
                 .in(BaseEntityNoId::getTenantId, dto.getTenantIdSet()) //
-                .select(BaseEntity::getId, BaseEntityNoIdSuper::getTenantId, BaseEntityNoId::getEnableFlag, BaseEntityNoId::getRemark, BaseEntityNoIdSuper::getCreateId, BaseEntityNoIdSuper::getCreateTime, BaseEntityNoIdSuper::getUpdateId, BaseEntityNoIdSuper::getUpdateTime, SysOtherAppDO::getAppId, SysOtherAppDO::getName, SysOtherAppDO::getType, SysOtherAppDO::getSubscribeReplyContent, SysOtherAppDO::getQrCode, SysOtherAppDO::getSingleSignInFlag).orderByDesc(BaseEntity::getUpdateTime).page(dto.page(true));
+                .select(BaseEntity::getId, BaseEntityNoIdSuper::getTenantId, BaseEntityNoId::getEnableFlag, BaseEntityNoId::getRemark, BaseEntityNoIdSuper::getCreateId, BaseEntityNoIdSuper::getCreateTime, BaseEntityNoIdSuper::getUpdateId, BaseEntityNoIdSuper::getUpdateTime, SysOtherAppDO::getAppId, SysOtherAppDO::getName, SysOtherAppDO::getType, SysOtherAppDO::getSubscribeReplyContent, SysOtherAppDO::getQrCode).orderByDesc(BaseEntity::getUpdateTime).page(dto.page(true));
 
     }
 
