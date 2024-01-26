@@ -197,7 +197,7 @@ public class SignSignInNameServiceImpl implements SignSignInNameService {
     }
 
     /**
-     * 设置统一登录：获取统一登录微信的二维码地址
+     * 设置统一登录：微信：获取统一登录微信的二维码地址
      */
     @Override
     public GetQrCodeVO setSingleSignInWxGetQrCodeUrl() {
@@ -210,7 +210,7 @@ public class SignSignInNameServiceImpl implements SignSignInNameService {
     }
 
     /**
-     * 设置统一登录：获取统一登录微信的二维码是否已经被扫描
+     * 设置统一登录：微信：获取统一登录微信的二维码是否已经被扫描
      */
     @Override
     public SysQrCodeSceneBindVO setSingleSignInWxGetQrCodeSceneFlag(NotNullId notNullId) {
@@ -221,7 +221,7 @@ public class SignSignInNameServiceImpl implements SignSignInNameService {
     }
 
     /**
-     * 设置统一登录
+     * 设置统一登录：微信
      */
     @Override
     public SysQrCodeSceneBindVO setSingleSignInWx(SignSignInNameSetSingleSignInWxDTO dto) {

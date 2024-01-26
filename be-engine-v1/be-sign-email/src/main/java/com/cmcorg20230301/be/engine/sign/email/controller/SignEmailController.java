@@ -142,19 +142,19 @@ public class SignEmailController {
     }
 
     @PostMapping(value = "/setSingleSignIn/wx/sendCode")
-    @Operation(summary = "设置统一登录：微信：发送邮箱验证码")
+    @Operation(summary = "设置统一登录：微信：微信：发送邮箱验证码")
     public ApiResultVO<String> setSingleSignInWxSendCode() {
         return ApiResultVO.okMsg(baseService.setSingleSignInWxSendCode());
     }
 
     @PostMapping(value = "/setSingleSignIn/wx/getQrCodeUrl")
-    @Operation(summary = "设置统一登录：获取统一登录微信的二维码地址")
+    @Operation(summary = "设置统一登录：微信：获取统一登录微信的二维码地址")
     public ApiResultVO<GetQrCodeVO> setSingleSignInWxGetQrCodeUrl() {
         return ApiResultVO.okData(baseService.setSingleSignInWxGetQrCodeUrl());
     }
 
     @PostMapping(value = "/setSingleSignIn/wx/getQrCodeSceneFlag")
-    @Operation(summary = "设置统一登录：获取统一登录微信的二维码是否已经被扫描")
+    @Operation(summary = "设置统一登录：微信：获取统一登录微信的二维码是否已经被扫描")
     public ApiResultVO<SysQrCodeSceneBindVO> setSingleSignInWxGetQrCodeSceneFlag(@RequestBody @Valid NotNullId notNullId) {
         return ApiResultVO.okData(baseService.setSingleSignInWxGetQrCodeSceneFlag(notNullId));
     }

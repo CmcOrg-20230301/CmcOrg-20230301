@@ -237,33 +237,33 @@ public class SignWxController {
         return ApiResultVO.okData(baseService.setPhone(dto));
     }
 
-    @PostMapping(value = "/setSingleSignIn/getQrCodeUrl/current")
-    @Operation(summary = "设置统一登录：获取当前微信的二维码地址")
-    public ApiResultVO<GetQrCodeVO> setSingleSignInGetQrCodeUrlCurrent() {
+    @PostMapping(value = "/setSingleSignIn/wx/getQrCodeUrl/current")
+    @Operation(summary = "设置统一登录：微信：获取当前微信的二维码地址")
+    public ApiResultVO<GetQrCodeVO> setSingleSignInWxGetQrCodeUrlCurrent() {
         return ApiResultVO.okData(baseService.setSingleSignInGetQrCodeUrlCurrent());
     }
 
-    @PostMapping(value = "/setSingleSignIn/getQrCodeSceneFlag/current")
-    @Operation(summary = "设置统一登录：获取当前微信的二维码是否已经被扫描")
-    public ApiResultVO<SysQrCodeSceneBindVO> setSingleSignInGetQrCodeSceneFlagCurrent(@RequestBody @Valid NotNullId notNullId) {
+    @PostMapping(value = "/setSingleSignIn/wx/getQrCodeSceneFlag/current")
+    @Operation(summary = "设置统一登录：微信：获取当前微信的二维码是否已经被扫描")
+    public ApiResultVO<SysQrCodeSceneBindVO> setSingleSignInWxGetQrCodeSceneFlagCurrent(@RequestBody @Valid NotNullId notNullId) {
         return ApiResultVO.okData(baseService.setSingleSignInGetQrCodeSceneFlagCurrent(notNullId));
     }
 
-    @PostMapping(value = "/setSingleSignIn/getQrCodeUrl/singleSignIn")
-    @Operation(summary = "设置统一登录：获取统一登录微信的二维码地址")
-    public ApiResultVO<GetQrCodeVO> setSingleSignInGetQrCodeUrlSingleSignIn() {
+    @PostMapping(value = "/setSingleSignIn/wx/getQrCodeUrl")
+    @Operation(summary = "设置统一登录：微信：获取统一登录微信的二维码地址")
+    public ApiResultVO<GetQrCodeVO> setSingleSignInWxGetQrCodeUrl () {
         return ApiResultVO.okData(baseService.updateWxGetQrCodeUrlSingleSignIn());
     }
 
-    @PostMapping(value = "/setSingleSignIn/getQrCodeSceneFlag/singleSignIn")
-    @Operation(summary = "设置统一登录：获取统一登录微信的二维码是否已经被扫描")
-    public ApiResultVO<SysQrCodeSceneBindVO> setSingleSignInGetQrCodeSceneFlagSingleSignIn(@RequestBody @Valid NotNullId notNullId) {
+    @PostMapping(value = "/setSingleSignIn/wx/getQrCodeSceneFlag")
+    @Operation(summary = "设置统一登录：微信：获取统一登录微信的二维码是否已经被扫描")
+    public ApiResultVO<SysQrCodeSceneBindVO> setSingleSignInWxGetQrCodeSceneFlag(@RequestBody @Valid NotNullId notNullId) {
         return ApiResultVO.okData(baseService.setSingleSignInGetQrCodeSceneFlagSingleSignIn(notNullId));
     }
 
-    @PostMapping(value = "/setSingleSignIn")
-    @Operation(summary = "设置统一登录")
-    public ApiResultVO<SysQrCodeSceneBindVO> setSingleSignIn(@RequestBody @Valid SignWxSetSingleSignInDTO dto) {
+    @PostMapping(value = "/setSingleSignIn/wx")
+    @Operation(summary = "设置统一登录：微信")
+    public ApiResultVO<SysQrCodeSceneBindVO> setSingleSignInWx(@RequestBody @Valid SignWxSetSingleSignInDTO dto) {
         return ApiResultVO.okData(baseService.setSingleSignIn(dto));
     }
 
