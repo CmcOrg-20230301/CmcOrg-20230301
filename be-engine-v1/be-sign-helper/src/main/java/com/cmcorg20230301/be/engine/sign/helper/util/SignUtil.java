@@ -1644,6 +1644,14 @@ public class SignUtil {
 
         sysUserSingleSignInDO.setId(currentUserIdNotAdmin);
 
+        if (!singleSignInExists) {
+
+            sysUserSingleSignInDO.setWxAppId("");
+            sysUserSingleSignInDO.setWxOpenId("");
+            sysUserSingleSignInDO.setPhone("");
+
+        }
+
         if (BaseRedisKeyEnum.PRE_SYS_SINGLE_SIGN_IN_SET_WX.equals(accountRedisKeyEnum)) {
 
             sysUserSingleSignInDO.setWxAppId(appId);

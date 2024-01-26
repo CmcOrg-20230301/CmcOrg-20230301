@@ -796,7 +796,7 @@ public class SignWxServiceImpl implements SignWxService {
     public SysQrCodeSceneBindVO setSingleSignInPhone(SignWxSetSingleSignInPhoneDTO dto) {
 
         // 执行
-        return SignUtil.getSysQrCodeSceneBindVoAndHandleForUserId(dto.getId(), false, BaseRedisKeyEnum.PRE_SYS_WX_QR_CODE_SET_PHONE, () -> {
+        return SignUtil.getSysQrCodeSceneBindVoAndHandleForUserId(dto.getId(), false, BaseRedisKeyEnum.PRE_SYS_WX_QR_CODE_SET_SINGLE_SIGN_IN, () -> {
 
             SignUtil.bindAccountForSingle(dto.getSingleSignInPhoneCode(), BaseRedisKeyEnum.PRE_SYS_SINGLE_SIGN_IN_SET_PHONE, dto.getSingleSignInPhone(), null, null, null);
 
