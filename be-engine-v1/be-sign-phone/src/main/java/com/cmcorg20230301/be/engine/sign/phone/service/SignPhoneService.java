@@ -69,13 +69,19 @@ public interface SignPhoneService {
 
     String updatePhone(SignPhoneUpdatePhoneDTO dto);
 
-    String setSingleSignInSendCodePhone();
+    String setSingleSignInWxSendCode();
 
-    GetQrCodeVO setSingleSignInGetQrCodeUrlSingleSignIn();
+    GetQrCodeVO setSingleSignInWxGetQrCodeUrl();
 
-    SysQrCodeSceneBindVO setSingleSignInGetQrCodeSceneFlagSingleSignIn(NotNullId notNullId);
+    SysQrCodeSceneBindVO setSingleSignInWxGetQrCodeSceneFlag(NotNullId notNullId);
 
-    SysQrCodeSceneBindVO setSingleSignIn(SignPhoneSetSingleSignInDTO dto);
+    SysQrCodeSceneBindVO setSingleSignInWx(SignPhoneSetSingleSignInWxDTO dto);
+
+    String setSingleSignInPhoneSendCodeCurrent();
+
+    String setSingleSignInSendCodePhone(SignPhoneSetSingleSignInPhoneSendCodeDTO dto);
+
+    String setSingleSignInPhone(SignPhoneSetSingleSignInPhoneDTO dto);
 
     String forgetPasswordSendCode(PhoneNotBlankDTO dto);
 

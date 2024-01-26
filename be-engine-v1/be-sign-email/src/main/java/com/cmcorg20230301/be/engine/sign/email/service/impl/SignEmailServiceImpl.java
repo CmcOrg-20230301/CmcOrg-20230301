@@ -16,6 +16,7 @@ import com.cmcorg20230301.be.engine.security.model.entity.SysUserConfigurationDO
 import com.cmcorg20230301.be.engine.security.model.entity.SysUserDO;
 import com.cmcorg20230301.be.engine.security.model.enums.SysQrCodeSceneTypeEnum;
 import com.cmcorg20230301.be.engine.security.model.vo.ApiResultVO;
+import com.cmcorg20230301.be.engine.security.properties.SingleSignInProperties;
 import com.cmcorg20230301.be.engine.security.service.SysUserConfigurationService;
 import com.cmcorg20230301.be.engine.security.util.UserUtil;
 import com.cmcorg20230301.be.engine.sign.email.model.dto.*;
@@ -24,7 +25,6 @@ import com.cmcorg20230301.be.engine.sign.helper.exception.BizCodeEnum;
 import com.cmcorg20230301.be.engine.sign.helper.util.SignUtil;
 import com.cmcorg20230301.be.engine.sms.base.util.SysSmsHelper;
 import com.cmcorg20230301.be.engine.sms.base.util.SysSmsUtil;
-import org.redisson.api.RedissonClient;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -41,7 +41,7 @@ public class SignEmailServiceImpl implements SignEmailService {
     SysUserConfigurationService sysUserConfigurationService;
 
     @Resource
-    RedissonClient redissonClient;
+    SingleSignInProperties singleSignInProperties;
 
     /**
      * 注册-发送验证码
@@ -363,10 +363,10 @@ public class SignEmailServiceImpl implements SignEmailService {
     }
 
     /**
-     * 设置统一登录：发送邮箱验证码
+     * 设置统一登录：微信：发送邮箱验证码
      */
     @Override
-    public String setSingleSignInSendCodeEmail() {
+    public String setSingleSignInWxSendCode() {
 
         Long currentTenantIdDefault = UserUtil.getCurrentTenantIdDefault();
 
@@ -387,7 +387,7 @@ public class SignEmailServiceImpl implements SignEmailService {
      * 设置统一登录：获取统一登录微信的二维码地址
      */
     @Override
-    public GetQrCodeVO setSingleSignInGetQrCodeUrlSingleSignIn() {
+    public GetQrCodeVO setSingleSignInWxGetQrCodeUrl() {
 
         SignUtil.checkWillError(PRE_REDIS_KEY_ENUM, null, UserUtil.getCurrentTenantIdDefault(), null); // 检查：是否可以进行操作
 
@@ -400,7 +400,7 @@ public class SignEmailServiceImpl implements SignEmailService {
      * 设置统一登录：获取统一登录微信的二维码是否已经被扫描
      */
     @Override
-    public SysQrCodeSceneBindVO setSingleSignInGetQrCodeSceneFlagSingleSignIn(NotNullId notNullId) {
+    public SysQrCodeSceneBindVO setSingleSignInWxGetQrCodeSceneFlag(NotNullId notNullId) {
 
         // 执行
         return SignUtil.getSysQrCodeSceneBindVoAndHandleForSingleSignIn(notNullId.getId(), false, null);
@@ -411,7 +411,7 @@ public class SignEmailServiceImpl implements SignEmailService {
      * 设置统一登录
      */
     @Override
-    public SysQrCodeSceneBindVO setSingleSignIn(SignEmailSetSingleSignInDTO dto) {
+    public SysQrCodeSceneBindVO setSingleSignInWx(SignEmailSetSingleSignInWxDTO dto) {
 
         SignUtil.checkWillError(PRE_REDIS_KEY_ENUM, null, UserUtil.getCurrentTenantIdDefault(), null); // 检查：是否可以进行操作
 
@@ -421,6 +421,54 @@ public class SignEmailServiceImpl implements SignEmailService {
 
         // 执行
         return SignUtil.setWxForSingleSignIn(dto.getQrCodeId(), dto.getEmailCode(), codeKey, null);
+
+    }
+
+    /**
+     * 设置统一登录：手机验证码：发送当前账号已经绑定邮箱的验证码
+     */
+    @Override
+    public String setSingleSignInPhoneSendCodeCurrent() {
+
+        Long currentTenantIdDefault = UserUtil.getCurrentTenantIdDefault();
+
+        SignUtil.checkWillError(PRE_REDIS_KEY_ENUM, null, currentTenantIdDefault, null); // 检查：是否可以进行操作
+
+        String currentUserEmailNotAdmin = UserUtil.getCurrentUserEmailNotAdmin();
+
+        String key = BaseRedisKeyEnum.PRE_EMAIL + currentUserEmailNotAdmin;
+
+        return SignUtil.sendCode(key, null, true,
+                BaseBizCodeEnum.API_RESULT_SYS_ERROR,
+                (code) -> MyEmailUtil
+                        .send(currentUserEmailNotAdmin, EmailMessageEnum.SET_SINGLE_SIGN_IN, code, currentTenantIdDefault), currentTenantIdDefault);
+
+    }
+
+    /**
+     * 设置统一登录：手机验证码：发送要绑定统一登录手机的验证码
+     */
+    @Override
+    public String setSingleSignInSendCodePhone(SignEmailSetSingleSignInPhoneSendCodeDTO dto) {
+
+        SignUtil.checkWillError(PRE_REDIS_KEY_ENUM, null, UserUtil.getCurrentTenantIdDefault(), null); // 检查：是否可以进行操作
+
+        // 执行
+        return SignUtil.sendCodeForSingle(dto.getPhone(), false, "操作失败：该手机号已被绑定", (code) -> SysSmsUtil
+                .sendSignIn(SysSmsHelper.getSysSmsSendBO(code, dto.getPhone(), singleSignInProperties.getSmsConfigurationId())), BaseRedisKeyEnum.PRE_SYS_SINGLE_SIGN_IN_SET_PHONE);
+
+    }
+
+    /**
+     * 设置统一登录：手机验证码
+     */
+    @Override
+    public String setSingleSignInPhone(SignEmailSetSingleSignInPhoneDTO dto) {
+
+        SignUtil.checkWillError(PRE_REDIS_KEY_ENUM, null, UserUtil.getCurrentTenantIdDefault(), null); // 检查：是否可以进行操作
+
+        // 执行
+        return SignUtil.bindAccountForSingle(dto.getSingleSignInPhoneCode(), BaseRedisKeyEnum.PRE_SYS_SINGLE_SIGN_IN_SET_PHONE, dto.getSingleSignInPhone(), null, dto.getCurrentEmailCode(), BaseRedisKeyEnum.PRE_EMAIL);
 
     }
 

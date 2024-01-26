@@ -9,7 +9,7 @@ import javax.validation.constraints.NotBlank;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
-public class SignSignInNameSetSingleSignInDTO extends NotNullId {
+public class SignSignInNameSetSingleSignInWxDTO extends NotNullId {
 
     @NotBlank
     @Schema(description = "前端加密之后的密码")

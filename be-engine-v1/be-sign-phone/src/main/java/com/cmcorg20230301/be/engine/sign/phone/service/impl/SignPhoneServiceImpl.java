@@ -16,6 +16,7 @@ import com.cmcorg20230301.be.engine.security.model.entity.SysUserConfigurationDO
 import com.cmcorg20230301.be.engine.security.model.entity.SysUserDO;
 import com.cmcorg20230301.be.engine.security.model.enums.SysQrCodeSceneTypeEnum;
 import com.cmcorg20230301.be.engine.security.model.vo.ApiResultVO;
+import com.cmcorg20230301.be.engine.security.properties.SingleSignInProperties;
 import com.cmcorg20230301.be.engine.security.service.SysUserConfigurationService;
 import com.cmcorg20230301.be.engine.security.util.UserUtil;
 import com.cmcorg20230301.be.engine.sign.helper.exception.BizCodeEnum;
@@ -38,6 +39,9 @@ public class SignPhoneServiceImpl implements SignPhoneService {
 
     @Resource
     SysUserConfigurationService sysUserConfigurationService;
+
+    @Resource
+    SingleSignInProperties singleSignInProperties;
 
     /**
      * 注册-发送验证码
@@ -510,7 +514,7 @@ public class SignPhoneServiceImpl implements SignPhoneService {
      * 设置统一登录：发送手机验证码
      */
     @Override
-    public String setSingleSignInSendCodePhone() {
+    public String setSingleSignInWxSendCode() {
 
         Long currentTenantIdDefault = UserUtil.getCurrentTenantIdDefault();
 
@@ -525,7 +529,7 @@ public class SignPhoneServiceImpl implements SignPhoneService {
      * 设置统一登录：获取统一登录微信的二维码地址
      */
     @Override
-    public GetQrCodeVO setSingleSignInGetQrCodeUrlSingleSignIn() {
+    public GetQrCodeVO setSingleSignInWxGetQrCodeUrl() {
 
         SignUtil.checkWillError(PRE_REDIS_KEY_ENUM, null, UserUtil.getCurrentTenantIdDefault(), null); // 检查：是否可以进行操作
 
@@ -538,7 +542,7 @@ public class SignPhoneServiceImpl implements SignPhoneService {
      * 设置统一登录：获取统一登录微信的二维码是否已经被扫描
      */
     @Override
-    public SysQrCodeSceneBindVO setSingleSignInGetQrCodeSceneFlagSingleSignIn(NotNullId notNullId) {
+    public SysQrCodeSceneBindVO setSingleSignInWxGetQrCodeSceneFlag(NotNullId notNullId) {
 
         // 执行
         return SignUtil.getSysQrCodeSceneBindVoAndHandleForSingleSignIn(notNullId.getId(), false, null);
@@ -549,7 +553,7 @@ public class SignPhoneServiceImpl implements SignPhoneService {
      * 设置统一登录
      */
     @Override
-    public SysQrCodeSceneBindVO setSingleSignIn(SignPhoneSetSingleSignInDTO dto) {
+    public SysQrCodeSceneBindVO setSingleSignInWx(SignPhoneSetSingleSignInWxDTO dto) {
 
         SignUtil.checkWillError(PRE_REDIS_KEY_ENUM, null, UserUtil.getCurrentTenantIdDefault(), null); // 检查：是否可以进行操作
 
@@ -559,6 +563,48 @@ public class SignPhoneServiceImpl implements SignPhoneService {
 
         // 执行
         return SignUtil.setWxForSingleSignIn(dto.getQrCodeId(), dto.getPhoneCode(), codeKey, null);
+
+    }
+
+    /**
+     * 设置统一登录：手机验证码：发送当前账号已经绑定手机的验证码
+     */
+    @Override
+    public String setSingleSignInPhoneSendCodeCurrent() {
+
+        Long currentTenantIdDefault = UserUtil.getCurrentTenantIdDefault();
+
+        SignUtil.checkWillError(PRE_REDIS_KEY_ENUM, null, currentTenantIdDefault, null); // 检查：是否可以进行操作
+
+        return SignUtil.getAccountAndSendCode(BaseRedisKeyEnum.PRE_PHONE, (code, account) -> SysSmsUtil
+                .sendSetSingleSignIn(SysSmsHelper.getSysSmsSendBO(currentTenantIdDefault, code, account)));
+
+    }
+
+    /**
+     * 设置统一登录：手机验证码：发送要绑定统一登录手机的验证码
+     */
+    @Override
+    public String setSingleSignInSendCodePhone(SignPhoneSetSingleSignInPhoneSendCodeDTO dto) {
+
+        SignUtil.checkWillError(PRE_REDIS_KEY_ENUM, null, UserUtil.getCurrentTenantIdDefault(), null); // 检查：是否可以进行操作
+
+        // 执行
+        return SignUtil.sendCodeForSingle(dto.getPhone(), false, "操作失败：该手机号已被绑定", (code) -> SysSmsUtil
+                .sendSignIn(SysSmsHelper.getSysSmsSendBO(code, dto.getPhone(), singleSignInProperties.getSmsConfigurationId())), BaseRedisKeyEnum.PRE_SYS_SINGLE_SIGN_IN_SET_PHONE);
+
+    }
+
+    /**
+     * 设置统一登录：手机验证码
+     */
+    @Override
+    public String setSingleSignInPhone(SignPhoneSetSingleSignInPhoneDTO dto) {
+
+        SignUtil.checkWillError(PRE_REDIS_KEY_ENUM, null, UserUtil.getCurrentTenantIdDefault(), null); // 检查：是否可以进行操作
+
+        // 执行
+        return SignUtil.bindAccountForSingle(dto.getSingleSignInPhoneCode(), BaseRedisKeyEnum.PRE_SYS_SINGLE_SIGN_IN_SET_PHONE, dto.getSingleSignInPhone(), null, dto.getCurrentPhoneCode(), BaseRedisKeyEnum.PRE_PHONE);
 
     }
 

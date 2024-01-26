@@ -30,11 +30,15 @@ public interface SignSignInNameService {
 
     String setPhone(SignSignInNameSetPhoneDTO dto);
 
-    GetQrCodeVO setSingleSignInGetQrCodeUrlSingleSignIn();
+    GetQrCodeVO setSingleSignInWxGetQrCodeUrl();
 
-    SysQrCodeSceneBindVO setSingleSignInGetQrCodeSceneFlagSingleSignIn(NotNullId notNullId);
+    SysQrCodeSceneBindVO setSingleSignInWxGetQrCodeSceneFlag(NotNullId notNullId);
 
-    SysQrCodeSceneBindVO setSingleSignIn(SignSignInNameSetSingleSignInDTO dto);
+    SysQrCodeSceneBindVO setSingleSignInWx(SignSignInNameSetSingleSignInWxDTO dto);
+
+    String setSingleSignInSendCodePhone(SignSignInNameSetSingleSignInPhoneSendCodeDTO dto);
+
+    String setSingleSignInPhone(SignSignInNameSetPhoneDTO dto);
 
     String signDelete(SignSignInNameSignDeleteDTO dto);
 

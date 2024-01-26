@@ -37,8 +37,8 @@ public enum BaseBizCodeEnum implements IBizCode {
     PARENT_ID_CANNOT_BE_EQUAL_TO_ID(100121, "操作失败：parentId 不能等于 id"), //
     THE_ADMIN_ACCOUNT_DOES_NOT_SUPPORT_THIS_OPERATION(100131, "操作失败：admin 账号不支持此操作"), //
     OPERATION_TIMED_OUT_PLEASE_TRY_AGAIN(100161, "操作超时，请重新进行操作"), // 返回这个 code（100161），前端会在步骤表单，往前返回步骤
-    UNABLE_TO_SEND_VERIFICATION_CODE_BECAUSE_THE_EMAIL_ADDRESS_IS_NOT_BOUND(100171, "操作失败：您还没有绑定邮箱，无法发送验证码"), //
-    UNABLE_TO_SEND_VERIFICATION_CODE_BECAUSE_THE_PHONE_IS_NOT_BOUND(100181, "操作失败：您还没有绑定手机号码，无法发送验证码"), //
+    THIS_OPERATION_CANNOT_BE_PERFORMED_WITHOUT_BINDING_AN_EMAIL_ADDRESS(100171, "操作失败：您还没有绑定邮箱，无法进行该操作"), //
+    THERE_IS_NO_BOUND_MOBILE_PHONE_NUMBER_SO_THIS_OPERATION_CANNOT_BE_PERFORMED(100181, "操作失败：您还没有绑定手机号码，无法进行该操作"), //
 
     ;
 

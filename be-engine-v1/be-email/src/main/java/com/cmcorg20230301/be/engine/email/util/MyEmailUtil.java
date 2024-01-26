@@ -48,7 +48,7 @@ public class MyEmailUtil {
         if (StrUtil.isBlank(to)) {
 
             ApiResultVO
-                    .error(BaseBizCodeEnum.UNABLE_TO_SEND_VERIFICATION_CODE_BECAUSE_THE_EMAIL_ADDRESS_IS_NOT_BOUND);
+                    .error(BaseBizCodeEnum.THIS_OPERATION_CANNOT_BE_PERFORMED_WITHOUT_BINDING_AN_EMAIL_ADDRESS);
 
         }
 

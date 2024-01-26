@@ -18,6 +18,10 @@ public enum BaseRedisKeyEnum implements IRedisKey {
 
     PRE_SYS_SINGLE_SIGN_IN_SET_PHONE, // 统一登录：设置手机验证码登录
 
+    PRE_SYS_SINGLE_SIGN_IN_SET_EMAIL, // 统一登录：设置邮箱验证码登录
+
+    PRE_SYS_SINGLE_SIGN_IN, // 统一登录锁：锁：【userId】
+
     // 统一登录相关 ↑
 
     // 微信操作相关 ↓

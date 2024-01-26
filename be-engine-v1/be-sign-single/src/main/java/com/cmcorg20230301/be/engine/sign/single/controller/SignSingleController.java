@@ -46,7 +46,7 @@ public class SignSingleController {
     }
 
     @PostMapping(value = "/sign/in/sendCode/phone")
-    @Operation(summary = "统一登录：手机验证码登录-发送验证码")
+    @Operation(summary = "统一登录：手机验证码登录：发送验证码")
     public ApiResultVO<String> signInSendCodePhone(@RequestBody @Valid SignSingleSignInSendCodePhoneDTO dto) {
         return ApiResultVO.okMsg(baseService.signInSendCodePhone(dto));
     }

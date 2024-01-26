@@ -92,22 +92,34 @@ public class SignSignInNameController {
         return ApiResultVO.okMsg(baseService.setPhone(dto));
     }
 
-    @PostMapping(value = "/setSingleSignIn/getQrCodeUrl/singleSignIn")
+    @PostMapping(value = "/setSingleSignIn/wx/getQrCodeUrl")
     @Operation(summary = "设置统一登录：获取统一登录微信的二维码地址")
-    public ApiResultVO<GetQrCodeVO> setSingleSignInGetQrCodeUrlSingleSignIn() {
-        return ApiResultVO.okData(baseService.setSingleSignInGetQrCodeUrlSingleSignIn());
+    public ApiResultVO<GetQrCodeVO> setSingleSignInWxGetQrCodeUrl() {
+        return ApiResultVO.okData(baseService.setSingleSignInWxGetQrCodeUrl());
     }
 
-    @PostMapping(value = "/setSingleSignIn/getQrCodeSceneFlag/singleSignIn")
+    @PostMapping(value = "/setSingleSignIn/wx/getQrCodeSceneFlag")
     @Operation(summary = "设置统一登录：获取统一登录微信的二维码是否已经被扫描")
-    public ApiResultVO<SysQrCodeSceneBindVO> setSingleSignInGetQrCodeSceneFlagSingleSignIn(@RequestBody @Valid NotNullId notNullId) {
-        return ApiResultVO.okData(baseService.setSingleSignInGetQrCodeSceneFlagSingleSignIn(notNullId));
+    public ApiResultVO<SysQrCodeSceneBindVO> setSingleSignInWxGetQrCodeSceneFlag(@RequestBody @Valid NotNullId notNullId) {
+        return ApiResultVO.okData(baseService.setSingleSignInWxGetQrCodeSceneFlag(notNullId));
     }
 
-    @PostMapping(value = "/setSingleSignIn")
-    @Operation(summary = "设置统一登录")
-    public ApiResultVO<SysQrCodeSceneBindVO> setSingleSignIn(@RequestBody @Valid SignSignInNameSetSingleSignInDTO dto) {
-        return ApiResultVO.okData(baseService.setSingleSignIn(dto));
+    @PostMapping(value = "/setSingleSignIn/wx")
+    @Operation(summary = "设置统一登录：微信")
+    public ApiResultVO<SysQrCodeSceneBindVO> setSingleSignInWx(@RequestBody @Valid SignSignInNameSetSingleSignInWxDTO dto) {
+        return ApiResultVO.okData(baseService.setSingleSignInWx(dto));
+    }
+
+    @PostMapping(value = "/setSingleSignIn/phone/sendCode")
+    @Operation(summary = "设置统一登录：手机验证码：发送验证码")
+    public ApiResultVO<String> setSingleSignInPhoneSendCode(@RequestBody @Valid SignSignInNameSetSingleSignInPhoneSendCodeDTO dto) {
+        return ApiResultVO.okMsg(baseService.setSingleSignInSendCodePhone(dto));
+    }
+
+    @PostMapping(value = "/setSingleSignIn/phone")
+    @Operation(summary = "设置统一登录：手机验证码")
+    public ApiResultVO<String> setSingleSignInPhone(@RequestBody @Valid SignSignInNameSetPhoneDTO dto) {
+        return ApiResultVO.okMsg(baseService.setSingleSignInPhone(dto));
     }
 
     @PostMapping(value = "/signDelete")

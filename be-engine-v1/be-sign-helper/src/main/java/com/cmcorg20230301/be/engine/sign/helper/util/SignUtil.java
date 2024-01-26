@@ -130,6 +130,72 @@ public class SignUtil {
 
         return BaseBizCodeEnum.SEND_OK;
 
+    }
+
+    /**
+     * 发送验证码：统一登录
+     *
+     * @param mustExist 是否必须存在，如果为 null，则，不存在和 存在都不会报错，例如：手机验证码注册并登录时
+     */
+    public static String sendCodeForSingle(String account,
+                                           @Nullable Boolean mustExist, String errorMsg, Consumer<String> consumer, BaseRedisKeyEnum baseRedisKeyEnum) {
+
+        // 判断是否存在
+        boolean exists = false;
+
+        if (BaseRedisKeyEnum.PRE_SYS_SINGLE_SIGN_IN_SET_PHONE.equals(baseRedisKeyEnum)) {
+
+            Long smsConfigurationId = singleSignInProperties.getSmsConfigurationId();
+
+            if (smsConfigurationId == null) {
+                ApiResultVO.errorMsg("操作失败：暂未配置手机验证码统一登录，请刷新重试");
+            }
+
+            exists = ChainWrappers.lambdaQueryChain(sysUserSingleSignInMapper).eq(SysUserSingleSignInDO::getPhone, account).exists();
+
+        } else if (BaseRedisKeyEnum.PRE_SYS_SINGLE_SIGN_IN_SET_EMAIL.equals(baseRedisKeyEnum)) {
+
+            Long emailConfigurationId = singleSignInProperties.getEmailConfigurationId();
+
+            if (emailConfigurationId == null) {
+                ApiResultVO.errorMsg("操作失败：暂未配置邮箱验证码统一登录，请刷新重试");
+            }
+
+            exists = ChainWrappers.lambdaQueryChain(sysUserSingleSignInMapper).eq(SysUserSingleSignInDO::getEmail, account).exists();
+
+        } else {
+
+            ApiResultVO.error(BaseBizCodeEnum.API_RESULT_SYS_ERROR, baseRedisKeyEnum.name());
+
+        }
+
+        String key = baseRedisKeyEnum + account;
+
+        if (mustExist == null) {
+
+
+        } else if (mustExist) {
+
+            if (!exists) {
+                ApiResultVO.error(errorMsg, account);
+            }
+
+        } else {
+
+            if (exists) {
+                ApiResultVO.error(errorMsg, account);
+            }
+
+        }
+
+        String code = CodeUtil.getCode();
+
+        consumer.accept(code); // 进行额外的处理
+
+        // 保存到 redis中，设置 10分钟过期
+        redissonClient.getBucket(key).set(code, Duration.ofMillis(BaseConstant.LONG_CODE_EXPIRE_TIME));
+
+        return BaseBizCodeEnum.SEND_OK;
 
     }
 
@@ -190,7 +256,7 @@ public class SignUtil {
             if (StrUtil.isBlank(account)) {
 
                 ApiResultVO
-                        .error(BaseBizCodeEnum.UNABLE_TO_SEND_VERIFICATION_CODE_BECAUSE_THE_EMAIL_ADDRESS_IS_NOT_BOUND);
+                        .error(BaseBizCodeEnum.THIS_OPERATION_CANNOT_BE_PERFORMED_WITHOUT_BINDING_AN_EMAIL_ADDRESS);
 
             }
 
@@ -198,7 +264,7 @@ public class SignUtil {
 
             if (StrUtil.isBlank(account)) {
 
-                ApiResultVO.error(BaseBizCodeEnum.UNABLE_TO_SEND_VERIFICATION_CODE_BECAUSE_THE_PHONE_IS_NOT_BOUND);
+                ApiResultVO.error(BaseBizCodeEnum.THERE_IS_NO_BOUND_MOBILE_PHONE_NUMBER_SO_THIS_OPERATION_CANNOT_BE_PERFORMED);
 
             }
 
@@ -919,8 +985,8 @@ public class SignUtil {
     /**
      * 修改登录账号
      *
-     * @param oldRedisKeyEnum，这个参数不能为 null
-     * @param newRedisKeyEnum，这个参数不能为 null
+     * @param oldRedisKeyEnum 这个参数不能为 null
+     * @param newRedisKeyEnum 这个参数不能为 null
      */
     public static String updateAccount(String oldCode, String newCode, Enum<? extends IRedisKey> oldRedisKeyEnum, Enum<? extends IRedisKey> newRedisKeyEnum, String newAccount, String currentPassword, String appId) {
 
@@ -945,12 +1011,12 @@ public class SignUtil {
             if (BaseRedisKeyEnum.PRE_EMAIL.equals(oldRedisKeyEnum)) {
 
                 // 检查 code是否正确
-                CodeUtil.checkCode(oldCode, oldBucket.get(), "操作失败：请先获取旧邮箱的验证码", "旧邮箱验证码有误，请重新输入");
+                CodeUtil.checkCode(oldCode, oldBucket.get(), "操作失败：请先获取旧邮箱的验证码", "旧邮箱的验证码有误，请重新输入");
 
             } else if (BaseRedisKeyEnum.PRE_PHONE.equals(oldRedisKeyEnum)) {
 
                 // 检查 code是否正确
-                CodeUtil.checkCode(oldCode, oldBucket.get(), "操作失败：请先获取旧手机号码的验证码", "旧手机号码验证码有误，请重新输入");
+                CodeUtil.checkCode(oldCode, oldBucket.get(), "操作失败：请先获取旧手机号码的验证码", "旧手机号码的验证码有误，请重新输入");
 
             }
 
@@ -959,12 +1025,12 @@ public class SignUtil {
             if (BaseRedisKeyEnum.PRE_EMAIL.equals(newRedisKeyEnum)) {
 
                 // 检查 code是否正确
-                CodeUtil.checkCode(newCode, newBucket.get(), "操作失败：请先获取新邮箱的验证码", "新邮箱验证码有误，请重新输入");
+                CodeUtil.checkCode(newCode, newBucket.get(), "操作失败：请先获取新邮箱的验证码", "新邮箱的验证码有误，请重新输入");
 
             } else if (BaseRedisKeyEnum.PRE_PHONE.equals(newRedisKeyEnum)) {
 
                 // 检查 code是否正确
-                CodeUtil.checkCode(newCode, newBucket.get(), "操作失败：请先获取新手机号码的验证码", "新手机号码验证码有误，请重新输入");
+                CodeUtil.checkCode(newCode, newBucket.get(), "操作失败：请先获取新手机号码的验证码", "新手机号码的验证码有误，请重新输入");
 
             }
 
@@ -1364,7 +1430,7 @@ public class SignUtil {
 
         if (singleSignInFlag) {
 
-            nameSet.add(accountRedisKeyEnum.name() + currentUserIdNotAdmin); // 锁定该用户
+            nameSet.add(BaseRedisKeyEnum.PRE_SYS_SINGLE_SIGN_IN.name() + currentUserIdNotAdmin); // 锁定该用户
 
         }
 
@@ -1399,7 +1465,7 @@ public class SignUtil {
             if (singleSignInFlag) {
 
                 // 处理
-                return bindAccountForSingleSignIn(account, appId, currentUserIdNotAdmin, currentTenantIdDefault, deleteRedisFlag, bucket, accountRedisKeyEnum);
+                return bindAccountForSingleSignIn(account, appId, currentUserIdNotAdmin, currentTenantIdDefault, deleteRedisFlag, bucket, accountRedisKeyEnum, null);
 
             } else {
 
@@ -1433,10 +1499,144 @@ public class SignUtil {
     }
 
     /**
+     * 绑定统一登录账号
+     *
+     * @param singleSignInRedisKeyEnum 不能为 null
+     */
+    public static String bindAccountForSingle(@Nullable String singleSignInCode, Enum<? extends IRedisKey> singleSignInRedisKeyEnum, String singleSignInAccount, @Nullable String password, @Nullable String currentCode, @Nullable Enum<? extends IRedisKey> currentRedisKeyEnum) {
+
+        if (!BaseRedisKeyEnum.PRE_SYS_SINGLE_SIGN_IN_SET_PHONE.equals(singleSignInRedisKeyEnum)) {
+
+            ApiResultVO.error(BaseBizCodeEnum.API_RESULT_SYS_ERROR, singleSignInRedisKeyEnum);
+
+        }
+
+        Long currentUserIdNotAdmin = UserUtil.getCurrentUserIdNotAdmin();
+
+        Long currentTenantIdDefault = UserUtil.getCurrentTenantIdDefault();
+
+        if (StrUtil.isNotBlank(password)) {
+
+            // 检查密码是否正确
+            checkCurrentPasswordWillError(password, currentUserIdNotAdmin, null, null, currentTenantIdDefault);
+
+        }
+
+        Set<String> nameSet = CollUtil.newHashSet(BaseRedisKeyEnum.PRE_SYS_SINGLE_SIGN_IN.name() + currentUserIdNotAdmin);
+
+        String currentKey = null;
+
+        String singleSignInKey = singleSignInRedisKeyEnum.name() + singleSignInAccount;
+
+        nameSet.add(singleSignInKey);
+
+        if (StrUtil.isNotBlank(currentCode)) {
+
+            if (BaseRedisKeyEnum.PRE_PHONE.equals(currentRedisKeyEnum)) {
+
+                String currentUserPhoneNotAdmin = UserUtil.getCurrentUserPhoneNotAdmin();
+
+                currentKey = currentRedisKeyEnum.name() + currentUserPhoneNotAdmin;
+
+                nameSet.add(currentKey);
+
+            } else if (BaseRedisKeyEnum.PRE_EMAIL.equals(currentRedisKeyEnum)) {
+
+                String currentUserEmailNotAdmin = UserUtil.getCurrentUserEmailNotAdmin();
+
+                currentKey = currentRedisKeyEnum.name() + currentUserEmailNotAdmin;
+
+                nameSet.add(currentKey);
+
+            } else {
+
+                ApiResultVO.error(BaseBizCodeEnum.API_RESULT_SYS_ERROR, currentRedisKeyEnum);
+
+            }
+
+        }
+
+        String finalCurrentKey = currentKey;
+
+        return RedissonUtil.doMultiLock(null, nameSet, () -> {
+
+            RBucket<String> currentBucket = null;
+
+            if (StrUtil.isNotBlank(finalCurrentKey)) {
+
+                currentBucket = redissonClient.getBucket(finalCurrentKey);
+
+                if (BaseRedisKeyEnum.PRE_EMAIL.equals(currentRedisKeyEnum)) {
+
+                    // 检查 code是否正确
+                    CodeUtil.checkCode(currentCode, currentBucket.get(), "操作失败：请先获取当前邮箱的验证码", "当前邮箱的验证码有误，请重新输入");
+
+                } else if (BaseRedisKeyEnum.PRE_PHONE.equals(currentRedisKeyEnum)) {
+
+                    // 检查 code是否正确
+                    CodeUtil.checkCode(currentCode, currentBucket.get(), "操作失败：请先获取当前手机号码的验证码", "当前手机号码的验证码有误，请重新输入");
+
+                }
+
+            }
+
+            RBucket<String> singleSignInBucket = redissonClient.getBucket(singleSignInKey);
+
+            if (BaseRedisKeyEnum.PRE_SYS_SINGLE_SIGN_IN_SET_PHONE.equals(singleSignInRedisKeyEnum)) {
+
+                // 检查 code是否正确
+                CodeUtil.checkCode(singleSignInCode, singleSignInBucket.get(), "操作失败：请先获取统一登录的手机验证码", "统一登录的手机验证码有误，请重新输入");
+
+            }
+
+            // 检查：新的统一登录账号是否存在
+            boolean exist = true;
+
+            if (BaseRedisKeyEnum.PRE_SYS_SINGLE_SIGN_IN_SET_PHONE.equals(singleSignInRedisKeyEnum)) {
+
+                exist = ChainWrappers.lambdaQueryChain(sysUserSingleSignInMapper).eq(SysUserSingleSignInDO::getPhone, singleSignInAccount).exists();
+
+            }
+
+            if (exist) {
+
+                singleSignInBucket.delete();
+
+                if (BaseRedisKeyEnum.PRE_SYS_SINGLE_SIGN_IN_SET_PHONE.equals(singleSignInRedisKeyEnum)) {
+
+                    ApiResultVO.errorMsg("操作失败：统一登录的手机号码已被人占用");
+
+                } else {
+
+                    ApiResultVO.errorMsg("操作失败：已被人占用");
+
+                }
+
+            }
+
+            RBucket<String> finalCurrentBucket = currentBucket;
+
+            // 设置：统一登录的账号
+            return bindAccountForSingleSignIn(singleSignInAccount, null, currentUserIdNotAdmin, currentTenantIdDefault, true, singleSignInBucket, singleSignInRedisKeyEnum, () -> {
+
+                if (finalCurrentBucket != null) {
+
+                    // 删除：验证码
+                    finalCurrentBucket.delete();
+
+                }
+
+            });
+
+        });
+
+    }
+
+    /**
      * 处理：统一登录设置账号
      */
     @NotNull
-    private static String bindAccountForSingleSignIn(String account, String appId, Long currentUserIdNotAdmin, Long currentTenantIdDefault, boolean deleteRedisFlag, RBucket<String> bucket, Enum<? extends IRedisKey> accountRedisKeyEnum) {
+    private static String bindAccountForSingleSignIn(String account, String appId, Long currentUserIdNotAdmin, Long currentTenantIdDefault, boolean deleteRedisFlag, @Nullable RBucket<String> bucket, Enum<? extends IRedisKey> accountRedisKeyEnum, VoidFunc0 voidFunc0) {
 
         SysUserSingleSignInDO sysUserSingleSignInDO = new SysUserSingleSignInDO();
 
@@ -1461,29 +1661,51 @@ public class SignUtil {
 
         return TransactionUtil.exec(() -> {
 
-            if (singleSignInExists) {
+            // 执行
+            return doBindAccountForSingleSignIn(currentUserIdNotAdmin, currentTenantIdDefault, deleteRedisFlag, bucket, voidFunc0, singleSignInExists, sysUserSingleSignInDO);
 
-                sysUserSingleSignInMapper.updateById(sysUserSingleSignInDO); // 更新
+        });
 
-            } else {
+    }
 
-                sysUserSingleSignInDO.setTenantId(currentTenantIdDefault);
+    /**
+     * 执行
+     */
+    @SneakyThrows
+    @NotNull
+    private static String doBindAccountForSingleSignIn(Long currentUserIdNotAdmin, Long currentTenantIdDefault, boolean deleteRedisFlag, @Nullable RBucket<String> bucket, VoidFunc0 voidFunc0, boolean singleSignInExists, SysUserSingleSignInDO sysUserSingleSignInDO) {
 
-                sysUserSingleSignInMapper.insert(sysUserSingleSignInDO); // 新增
+        if (singleSignInExists) {
 
-            }
+            sysUserSingleSignInMapper.updateById(sysUserSingleSignInDO); // 更新
 
-            if (deleteRedisFlag) {
+        } else {
+
+            sysUserSingleSignInDO.setTenantId(currentTenantIdDefault);
+
+            sysUserSingleSignInMapper.insert(sysUserSingleSignInDO); // 新增
+
+        }
+
+        if (deleteRedisFlag) {
+
+            if (bucket != null) {
 
                 bucket.delete();
 
             }
 
-            UserUtil.setJwtSecretSuf(currentUserIdNotAdmin); // 设置：jwt秘钥后缀
+        }
 
-            return BaseBizCodeEnum.OK;
+        if (voidFunc0 != null) {
 
-        });
+            voidFunc0.call();
+
+        }
+
+        UserUtil.setJwtSecretSuf(currentUserIdNotAdmin); // 设置：jwt秘钥后缀
+
+        return BaseBizCodeEnum.OK;
 
     }
 
@@ -1653,6 +1875,10 @@ public class SignUtil {
     public static GetQrCodeVO getQrCodeUrlWxForSingleSignIn(boolean getQrCodeUrlFlag, ISysQrCodeSceneType iSysQrCodeSceneType) {
 
         Long wxSysOtherAppId = singleSignInProperties.getWxSysOtherAppId();
+
+        if (wxSysOtherAppId == null) {
+            ApiResultVO.errorMsg("操作失败：暂未配置微信统一登录，请刷新重试");
+        }
 
         // 执行
         return getQrCodeUrl(null, getQrCodeUrlFlag, SysOtherAppTypeEnum.WX_OFFICIAL_ACCOUNT.getCode(), sysOtherAppDO -> {

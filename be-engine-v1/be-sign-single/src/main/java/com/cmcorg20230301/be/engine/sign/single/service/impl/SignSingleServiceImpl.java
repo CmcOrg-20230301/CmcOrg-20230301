@@ -7,7 +7,6 @@ import com.cmcorg20230301.be.engine.model.model.vo.SignInVO;
 import com.cmcorg20230301.be.engine.model.model.vo.SysSignConfigurationVO;
 import com.cmcorg20230301.be.engine.redisson.model.enums.BaseRedisKeyEnum;
 import com.cmcorg20230301.be.engine.redisson.util.RedissonUtil;
-import com.cmcorg20230301.be.engine.security.exception.BaseBizCodeEnum;
 import com.cmcorg20230301.be.engine.security.mapper.SysUserMapper;
 import com.cmcorg20230301.be.engine.security.mapper.SysUserSingleSignInMapper;
 import com.cmcorg20230301.be.engine.security.model.entity.BaseEntity;
@@ -84,45 +83,24 @@ public class SignSingleServiceImpl implements SignSingleService {
     }
 
     /**
-     * 手机验证码登录-发送验证码
+     * 手统一登录：手机验证码登录：发送验证码
      */
     @Override
     public String signInSendCodePhone(SignSingleSignInSendCodePhoneDTO dto) {
 
-        Long smsConfigurationId = singleSignInProperties.getSmsConfigurationId();
-
-        if (smsConfigurationId == null) {
-            ApiResultVO.errorMsg("操作失败：暂未配置手机验证码登录，请刷新重试");
-        }
-
-        String key = BaseRedisKeyEnum.PRE_PHONE + dto.getPhone();
-
-        Long count = ChainWrappers.lambdaQueryChain(sysUserSingleSignInMapper).eq(SysUserSingleSignInDO::getPhone, dto.getPhone()).count();
-
-        if (count == 0) {
-
-            ApiResultVO.errorMsg("操作失败：该手机号未设置统一登录，请在【个人中心-统一登录】处，进行设置后再试");
-
-        } else if (count > 1) {
-
-            ApiResultVO.error("操作失败：存在多个手机号，请联系管理员", dto.getPhone());
-
-        }
-
-        return SignUtil
-                .sendCode(key, null, null,
-                        BaseBizCodeEnum.API_RESULT_SYS_ERROR, (code) -> SysSmsUtil
-                                .sendSignIn(SysSmsHelper.getSysSmsSendBO(code, dto.getPhone(), smsConfigurationId)), null);
+        // 执行
+        return SignUtil.sendCodeForSingle(dto.getPhone(), true, "操作失败：该手机号未设置统一登录，请在【个人中心-统一登录】处，进行设置后再试", (code) -> SysSmsUtil
+                .sendSignIn(SysSmsHelper.getSysSmsSendBO(code, dto.getPhone(), singleSignInProperties.getSmsConfigurationId())), BaseRedisKeyEnum.PRE_SYS_SINGLE_SIGN_IN_SET_PHONE);
 
     }
 
     /**
-     * 手机验证码登录
+     * 统一登录：手机验证码登录
      */
     @Override
     public SignInVO signInCodePhone(SignSingleSignInCodePhoneDTO dto) {
 
-        String key = BaseRedisKeyEnum.PRE_PHONE + dto.getPhone();
+        String key = BaseRedisKeyEnum.PRE_SYS_SINGLE_SIGN_IN_SET_PHONE + dto.getPhone();
 
         return RedissonUtil.doLock(key, () -> {
 

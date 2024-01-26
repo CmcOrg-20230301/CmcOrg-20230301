@@ -10,7 +10,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 
 @Data
-public class SignEmailSetSingleSignInDTO {
+public class SignEmailSetSingleSignInWxDTO {
 
     @Min(1)
     @NotNull

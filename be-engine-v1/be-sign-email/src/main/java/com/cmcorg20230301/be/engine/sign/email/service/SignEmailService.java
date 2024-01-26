@@ -47,13 +47,19 @@ public interface SignEmailService {
 
     String setPhone(SignEmailSetPhoneDTO dto);
 
-    String setSingleSignInSendCodeEmail();
+    String setSingleSignInWxSendCode();
 
-    GetQrCodeVO setSingleSignInGetQrCodeUrlSingleSignIn();
+    GetQrCodeVO setSingleSignInWxGetQrCodeUrl();
 
-    SysQrCodeSceneBindVO setSingleSignInGetQrCodeSceneFlagSingleSignIn(NotNullId notNullId);
+    SysQrCodeSceneBindVO setSingleSignInWxGetQrCodeSceneFlag(NotNullId notNullId);
 
-    SysQrCodeSceneBindVO setSingleSignIn(SignEmailSetSingleSignInDTO dto);
+    SysQrCodeSceneBindVO setSingleSignInWx(SignEmailSetSingleSignInWxDTO dto);
+
+    String setSingleSignInPhoneSendCodeCurrent();
+
+    String setSingleSignInSendCodePhone(SignEmailSetSingleSignInPhoneSendCodeDTO dto);
+
+    String setSingleSignInPhone(SignEmailSetSingleSignInPhoneDTO dto);
 
     String forgetPasswordSendCode(EmailNotBlankDTO dto);
 
