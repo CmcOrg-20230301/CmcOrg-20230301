@@ -124,7 +124,7 @@ public class UserSelfServiceImpl extends ServiceImpl<SysUserMapper, SysUserDO> i
                     sysUserSelfInfoVO.setSingleSignInWxFlag(true);
                 }
 
-                if (StrUtil.isNotBlank(sysUserSelfInfoVO.getPhone())) {
+                if (StrUtil.isNotBlank(sysUserSingleSignInDO.getPhone())) {
                     sysUserSelfInfoVO.setSingleSignInPhoneFlag(true);
                 }
 
