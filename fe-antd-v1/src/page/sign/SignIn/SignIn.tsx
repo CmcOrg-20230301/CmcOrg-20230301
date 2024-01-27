@@ -77,7 +77,7 @@ export function SetSysSignConfigurationVOCallBack(signInType: string, setSignInT
 
                     if (accountPlaceholderTemp) {
 
-                        accountPlaceholderTemp = accountPlaceholderTemp + "\\" + item.placeholder
+                        accountPlaceholderTemp = accountPlaceholderTemp + "/" + item.placeholder
 
                     } else {
 
