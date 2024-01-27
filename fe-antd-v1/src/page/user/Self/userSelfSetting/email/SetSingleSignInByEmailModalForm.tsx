@@ -1,19 +1,20 @@
 import React from "react";
 import SetWxModalForm from "@/page/user/Self/userSelfSetting/wx/SetWxModalForm.tsx";
 import {ProFormCaptcha} from "@ant-design/pro-components";
-import {
-    SignEmailSetSingleSignIn,
-    SignEmailSetSingleSignInGetQrCodeSceneFlagSingleSignIn,
-    SignEmailSetSingleSignInGetQrCodeUrlSingleSignIn,
-    SignEmailSetSingleSignInSendCodeEmail
-} from "@/api/http/SignEmail.ts";
+
 import {Validate} from "@/util/ValidatorUtil.ts";
 import {ToastSuccess} from "@/util/ToastUtil.ts";
-import {
-    UserSelfSetSingleSignInModalTitle,
-    UserSelfUpdateSingleSignInModalTitle
-} from "@/page/user/Self/UserSelfSetting.tsx";
 import {UserSelfInfoVO} from "@/api/http/UserSelf.ts";
+import {
+    UserSelfSetSingleSignInWxModalTitle,
+    UserSelfUpdateSingleSignInWxModalTitle
+} from "@/page/user/Self/UserSelfSetting.tsx";
+import {
+    SignEmailSetSingleSignInWx,
+    SignEmailSetSingleSignInWxGetQrCodeSceneFlag,
+    SignEmailSetSingleSignInWxGetQrCodeUrl,
+    SignEmailSetSingleSignInWxSendCode
+} from "@/api/http/SignEmail.ts";
 
 interface ISetSingleSignInByEmailModalForm {
 
@@ -25,11 +26,11 @@ export default function (props: ISetSingleSignInByEmailModalForm) {
 
     return <>
 
-        <SetWxModalForm setWxGetQrCodeUrl={SignEmailSetSingleSignInGetQrCodeUrlSingleSignIn}
-                        setWxGetQrCodeSceneFlag={SignEmailSetSingleSignInGetQrCodeSceneFlagSingleSignIn}
-                        setWx={SignEmailSetSingleSignIn}
+        <SetWxModalForm setWxGetQrCodeUrl={SignEmailSetSingleSignInWxGetQrCodeUrl}
+                        setWxGetQrCodeSceneFlag={SignEmailSetSingleSignInWxGetQrCodeSceneFlag}
+                        setWx={SignEmailSetSingleSignInWx}
 
-                        title={props.userSelfInfo.singleSignInFlag ? UserSelfUpdateSingleSignInModalTitle : UserSelfSetSingleSignInModalTitle}
+                        title={props.userSelfInfo.singleSignInWxFlag ? UserSelfUpdateSingleSignInWxModalTitle : UserSelfSetSingleSignInWxModalTitle}
 
                         label={"统一登录微信扫码"}
 
@@ -52,7 +53,7 @@ export default function (props: ISetSingleSignInByEmailModalForm) {
 
                                 onGetCaptcha={async () => {
 
-                                    await SignEmailSetSingleSignInSendCodeEmail().then(res => {
+                                    await SignEmailSetSingleSignInWxSendCode().then(res => {
 
                                         ToastSuccess(res.msg)
 

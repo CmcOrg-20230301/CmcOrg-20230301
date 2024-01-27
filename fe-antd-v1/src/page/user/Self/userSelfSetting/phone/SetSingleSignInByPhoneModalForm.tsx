@@ -3,17 +3,17 @@ import {ProFormCaptcha} from "@ant-design/pro-components";
 import {Validate} from "@/util/ValidatorUtil.ts";
 import {ToastSuccess} from "@/util/ToastUtil.ts";
 import React from "react";
-import {
-    SignPhoneSetSingleSignIn,
-    SignPhoneSetSingleSignInGetQrCodeSceneFlagSingleSignIn,
-    SignPhoneSetSingleSignInGetQrCodeUrlSingleSignIn,
-    SignPhoneSetSingleSignInSendCodePhone
-} from "@/api/http/SignPhone.ts";
-import {
-    UserSelfSetSingleSignInModalTitle,
-    UserSelfUpdateSingleSignInModalTitle
-} from "@/page/user/Self/UserSelfSetting.tsx";
 import {UserSelfInfoVO} from "@/api/http/UserSelf.ts";
+import {
+    UserSelfSetSingleSignInWxModalTitle,
+    UserSelfUpdateSingleSignInWxModalTitle
+} from "@/page/user/Self/UserSelfSetting.tsx";
+import {
+    SignPhoneSetSingleSignInWx,
+    SignPhoneSetSingleSignInWxGetQrCodeSceneFlag,
+    SignPhoneSetSingleSignInWxGetQrCodeUrl,
+    SignPhoneSetSingleSignInWxSendCode
+} from "@/api/http/SignPhone.ts";
 
 interface ISetSingleSignInByPhoneModalForm {
 
@@ -25,11 +25,11 @@ export default function (props: ISetSingleSignInByPhoneModalForm) {
 
     return <>
 
-        <SetWxModalForm setWxGetQrCodeUrl={SignPhoneSetSingleSignInGetQrCodeUrlSingleSignIn}
-                        setWxGetQrCodeSceneFlag={SignPhoneSetSingleSignInGetQrCodeSceneFlagSingleSignIn}
-                        setWx={SignPhoneSetSingleSignIn}
+        <SetWxModalForm setWxGetQrCodeUrl={SignPhoneSetSingleSignInWxGetQrCodeUrl}
+                        setWxGetQrCodeSceneFlag={SignPhoneSetSingleSignInWxGetQrCodeSceneFlag}
+                        setWx={SignPhoneSetSingleSignInWx}
 
-                        title={props.userSelfInfo.singleSignInFlag ? UserSelfUpdateSingleSignInModalTitle : UserSelfSetSingleSignInModalTitle}
+                        title={props.userSelfInfo.singleSignInWxFlag ? UserSelfUpdateSingleSignInWxModalTitle : UserSelfSetSingleSignInWxModalTitle}
 
                         label={"统一登录微信扫码"}
 
@@ -52,7 +52,7 @@ export default function (props: ISetSingleSignInByPhoneModalForm) {
 
                                 onGetCaptcha={async () => {
 
-                                    await SignPhoneSetSingleSignInSendCodePhone().then(res => {
+                                    await SignPhoneSetSingleSignInWxSendCode().then(res => {
 
                                         ToastSuccess(res.msg)
 

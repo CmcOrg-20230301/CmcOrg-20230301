@@ -1,14 +1,7 @@
 import SetWxModalForm from "@/page/user/Self/userSelfSetting/wx/SetWxModalForm.tsx";
 import {
-    SignWxSetSingleSignIn,
-    SignWxSetSingleSignInGetQrCodeSceneFlagCurrent,
-    SignWxSetSingleSignInGetQrCodeSceneFlagSingleSignIn,
-    SignWxSetSingleSignInGetQrCodeUrlCurrent,
-    SignWxSetSingleSignInGetQrCodeUrlSingleSignIn
-} from "@/api/http/SignWx.ts";
-import {
-    UserSelfSetSingleSignInModalTitle,
-    UserSelfUpdateSingleSignInModalTitle
+    UserSelfSetSingleSignInWxModalTitle,
+    UserSelfUpdateSingleSignInWxModalTitle
 } from "@/page/user/Self/UserSelfSetting.tsx";
 import React, {useEffect, useRef, useState} from "react";
 import {Form, Image, Result} from "antd";
@@ -18,6 +11,13 @@ import {GetQrCodeVO} from "@/api/http/SignSignInName.ts";
 import {GetServerTimestamp} from "@/util/DateUtil.ts";
 import {ToastError} from "@/util/ToastUtil.ts";
 import {UserSelfInfoVO} from "@/api/http/UserSelf.ts";
+import {
+    SignWxSetSingleSignInWx,
+    SignWxSetSingleSignInWxGetQrCodeSceneFlag,
+    SignWxSetSingleSignInWxGetQrCodeSceneFlagCurrent,
+    SignWxSetSingleSignInWxGetQrCodeUrl,
+    SignWxSetSingleSignInWxGetQrCodeUrlCurrent
+} from "@/api/http/SignWx.ts";
 
 interface ISetSingleSignInByWxModalForm {
 
@@ -42,7 +42,7 @@ export default function (props: ISetSingleSignInByWxModalForm) {
     // 初始化数据
     function InitData() {
 
-        SignWxSetSingleSignInGetQrCodeUrlSingleSignIn().then(res => {
+        SignWxSetSingleSignInWxGetQrCodeUrl().then(res => {
 
             setQrCodeVO(res.data)
 
@@ -70,7 +70,7 @@ export default function (props: ISetSingleSignInByWxModalForm) {
 
                     getQrCodeUrlFlagRef.current = true
 
-                    SignWxSetSingleSignInGetQrCodeUrlSingleSignIn().then(res => {
+                    SignWxSetSingleSignInWxGetQrCodeUrl().then(res => {
 
                         getQrCodeUrlFlagRef.current = false
 
@@ -89,7 +89,7 @@ export default function (props: ISetSingleSignInByWxModalForm) {
 
                 if (qrCodeModalOpenFlagRef.current && qrCodeVORef.current.qrCodeId && !qrCodeSceneFlagRef.current) {
 
-                    SignWxSetSingleSignInGetQrCodeSceneFlagSingleSignIn({id: qrCodeVORef.current.qrCodeId}).then(res => {
+                    SignWxSetSingleSignInWxGetQrCodeSceneFlag({id: qrCodeVORef.current.qrCodeId}).then(res => {
 
                         if (res.data.sceneFlag) {
 
@@ -125,11 +125,11 @@ export default function (props: ISetSingleSignInByWxModalForm) {
 
     return <>
 
-        <SetWxModalForm setWxGetQrCodeUrl={SignWxSetSingleSignInGetQrCodeUrlCurrent}
-                        setWxGetQrCodeSceneFlag={SignWxSetSingleSignInGetQrCodeSceneFlagCurrent}
-                        setWx={SignWxSetSingleSignIn}
+        <SetWxModalForm setWxGetQrCodeUrl={SignWxSetSingleSignInWxGetQrCodeUrlCurrent}
+                        setWxGetQrCodeSceneFlag={SignWxSetSingleSignInWxGetQrCodeSceneFlagCurrent}
+                        setWx={SignWxSetSingleSignInWx}
 
-                        title={props.userSelfInfo.singleSignInFlag ? UserSelfUpdateSingleSignInModalTitle : UserSelfSetSingleSignInModalTitle}
+                        title={props.userSelfInfo.singleSignInWxFlag ? UserSelfUpdateSingleSignInWxModalTitle : UserSelfSetSingleSignInWxModalTitle}
 
                         label={"当前账号微信扫码"}
 

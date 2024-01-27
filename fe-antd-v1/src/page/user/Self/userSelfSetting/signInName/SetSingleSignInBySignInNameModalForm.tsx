@@ -1,17 +1,17 @@
 import React from "react";
-import {
-    SignSignInNameSetSingleSignIn,
-    SignSignInNameSetSingleSignInGetQrCodeSceneFlagSingleSignIn,
-    SignSignInNameSetSingleSignInGetQrCodeUrlSingleSignIn
-} from "@/api/http/SignSignInName.ts";
 import SetWxModalForm from "../wx/SetWxModalForm.tsx";
 import {ProFormText} from "@ant-design/pro-components";
 import {PasswordRSAEncrypt} from "@/util/RsaUtil.ts";
 import {
-    UserSelfSetSingleSignInModalTitle,
-    UserSelfUpdateSingleSignInModalTitle
+    UserSelfSetSingleSignInWxModalTitle,
+    UserSelfUpdateSingleSignInWxModalTitle
 } from "@/page/user/Self/UserSelfSetting.tsx";
 import {UserSelfInfoVO} from "@/api/http/UserSelf.ts";
+import {
+    SignSignInNameSetSingleSignInWx,
+    SignSignInNameSetSingleSignInWxGetQrCodeSceneFlag,
+    SignSignInNameSetSingleSignInWxGetQrCodeUrl
+} from "@/api/http/SignSignInName.ts";
 
 interface ISetSingleSignInBySignInNameModalForm {
 
@@ -23,9 +23,9 @@ export default function (props: ISetSingleSignInBySignInNameModalForm) {
 
     return <>
 
-        <SetWxModalForm setWxGetQrCodeUrl={SignSignInNameSetSingleSignInGetQrCodeUrlSingleSignIn}
-                        setWxGetQrCodeSceneFlag={SignSignInNameSetSingleSignInGetQrCodeSceneFlagSingleSignIn}
-                        setWx={SignSignInNameSetSingleSignIn}
+        <SetWxModalForm setWxGetQrCodeUrl={SignSignInNameSetSingleSignInWxGetQrCodeUrl}
+                        setWxGetQrCodeSceneFlag={SignSignInNameSetSingleSignInWxGetQrCodeSceneFlag}
+                        setWx={SignSignInNameSetSingleSignInWx}
 
                         handleFormFun={(form, qrCodeId) => {
 
@@ -33,7 +33,7 @@ export default function (props: ISetSingleSignInBySignInNameModalForm) {
 
                         }}
 
-                        title={props.userSelfInfo.singleSignInFlag ? UserSelfUpdateSingleSignInModalTitle : UserSelfSetSingleSignInModalTitle}
+                        title={props.userSelfInfo.singleSignInWxFlag ? UserSelfUpdateSingleSignInWxModalTitle : UserSelfSetSingleSignInWxModalTitle}
 
                         label={"统一登录微信扫码"}
 

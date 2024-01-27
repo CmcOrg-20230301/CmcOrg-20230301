@@ -4,7 +4,6 @@ import {List, Modal} from "antd";
 import {ColumnsState, ProTable} from "@ant-design/pro-components";
 import {USER_CENTER_KEY_TWO} from "@/page/user/Self/Self";
 import Title from "antd/es/typography/Title";
-
 import {SysRequestDO, SysRequestPageDTO, SysRequestSelfLoginRecord} from "@/api/http/SysRequest";
 import {HandlerRegion} from "@/util/StrUtil";
 import {UserSelfInfoVO} from "@/api/http/UserSelf";
