@@ -92,6 +92,7 @@ Object.keys(fileObj).forEach((item: string) => {
 
 })
 
-export const RouterMapKeySet = new Set<string>(Object.keys(RouterMap))
+export const RouterMapKeyArr = Object.keys(RouterMap)
+export const RouterMapKeySet = new Set<string>(RouterMapKeyArr)
 
 export default RouterMap

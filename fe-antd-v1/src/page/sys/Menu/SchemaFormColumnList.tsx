@@ -1,4 +1,4 @@
-import {RouterMapKeySet} from "@/router/RouterMap";
+import {RouterMapKeyArr} from "@/router/RouterMap";
 import {GetDictList, GetDictTreeList, YesNoDict} from "@/util/DictUtil";
 import {SysMenuInsertOrUpdateDTO, SysMenuPage} from "@/api/http/SysMenu";
 import {SysRolePage} from "@/api/http/SysRole";
@@ -110,7 +110,7 @@ const SchemaFormColumnList = (): ProFormColumnsType<SysMenuInsertOrUpdateDTO>[] 
                             valueType: 'select',
                             fieldProps: {
                                 showSearch: true,
-                                options: RouterMapKeySet,
+                                options: RouterMapKeyArr,
                             },
                         },
 
