@@ -40,6 +40,7 @@ export interface SysUserInfoByIdVO {
     id?: string // 主键 id，format：int64
     enableFlag?: boolean // 正常/冻结
     email?: string // 邮箱，可以为空
+    manageSignInFlag?: boolean // 是否允许登录：后台管理系统
     postIdSet?: string[] // 岗位 idSet，format：int64
     avatarFileId?: string // 头像 fileId（文件主键 id），format：int64
     wxAppId?: string // 微信 appId，可以为空，wxAppId + wxOpenId 全租户唯一，备注：因为微信对不同的公众号或者小程序，会提供相同的 wxAppId，所以需要加上 wxOpenId，进行唯一性检查
@@ -78,6 +79,11 @@ export interface SysUserUpdatePasswordDTO {
 // 批量：修改密码
 export function SysUserUpdatePassword(form: SysUserUpdatePasswordDTO, config?: AxiosRequestConfig) {
     return $http.myPost<string>('/sys/user/updatePassword', form, config)
+}
+
+// 是否允许后台登录
+export function SysUserManageSignInFlag(config?: AxiosRequestConfig) {
+    return $http.myPost<boolean>('/sys/user/manageSignInFlag', undefined, config)
 }
 
 // 批量：注销用户
@@ -139,6 +145,7 @@ export interface SysUserPageVO {
     region?: string // Ip2RegionUtil.getRegion() 获取到的 ip所处区域
     enableFlag?: boolean // 正常/冻结
     email?: string // 邮箱，备注：会脱敏
+    manageSignInFlag?: boolean // 后台登录
 }
 
 // 分页排序查询
@@ -183,6 +190,7 @@ export interface SysUserInsertOrUpdateDTO {
     id?: string // 主键 id，format：int64
     enableFlag?: boolean // 正常/冻结
     email?: string // 邮箱，maxLength：200，minLength：0
+    manageSignInFlag?: boolean // 是否允许登录：后台管理系统
 }
 
 // 新增/修改

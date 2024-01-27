@@ -27,7 +27,7 @@ export function ToastWarning(msg: React.ReactNode, duration: number = 5) {
 
 }
 
-export function ToastError(msg: React.ReactNode, duration: number = 5) {
+export function ToastError(msg: React.ReactNode, duration: number = 8) {
 
     if (!msg) {
         return

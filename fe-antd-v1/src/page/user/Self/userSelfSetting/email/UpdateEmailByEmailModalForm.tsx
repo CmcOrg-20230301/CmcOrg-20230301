@@ -99,9 +99,9 @@ export default function () {
             }}
 
             required
-            label="旧邮箱验证码"
+            label="当前邮箱验证码"
             name="oldEmailCode"
-            placeholder={"请输入旧邮箱验证码"}
+            placeholder={"请输入当前邮箱验证码"}
             rules={[{validator: Validate.code.validator}]}
 
             onGetCaptcha={async () => {

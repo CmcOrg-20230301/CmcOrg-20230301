@@ -14,7 +14,7 @@ export function ClearStorage() {
 }
 
 // 退出登录
-export function SignOut(msg ?: string) {
+export function SignOut(msg ?: string, path?: string) {
 
     const StorageForeverValue = GetStorageForeverValue();
 
@@ -24,7 +24,7 @@ export function SignOut(msg ?: string) {
 
     GetAppDispatch()(signOut()) // store 退出登录
 
-    GetAppNav()(PathConstant.TOP_PATH)
+    GetAppNav()(path || PathConstant.TOP_PATH)
 
     if (msg) {
 

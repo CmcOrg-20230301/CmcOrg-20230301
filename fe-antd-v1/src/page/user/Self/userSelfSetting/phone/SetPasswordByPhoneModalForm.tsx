@@ -49,8 +49,8 @@ export default function () {
                     allowClear: true,
                 }}
                 required
-                label="手机验证码"
-                placeholder={'请输入手机验证码'}
+                label="当前手机验证码"
+                placeholder={'请输入当前手机验证码'}
                 name="code"
                 rules={[{validator: Validate.code.validator}]}
 

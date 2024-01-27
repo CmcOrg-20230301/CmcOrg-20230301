@@ -10,7 +10,7 @@ import {HandlerRegion} from "@/util/StrUtil";
 import {UserSelfInfoVO} from "@/api/http/UserSelf";
 import {UseEffectFullScreenChange} from "@/util/UseEffectUtil";
 import {SysRequestCategoryEnumDict} from "@/model/enum/SysRequestCategoryEnum.ts";
-import {SysTenantConfigurationByIdVO, SysTenantGetConfigurationById} from "@/api/http/SysTenant.ts";
+import {SysSignConfigurationVO, SysTenantGetConfigurationById} from "@/api/http/SysTenant.ts";
 import {MyUseState} from "@/util/HookUtil.ts";
 import LocalStorageKey from "@/model/constant/LocalStorageKey.ts";
 import {IEnum} from "@/model/enum/CommonEnum.ts";
@@ -55,13 +55,21 @@ import UpdatePhoneByPhoneModalForm from "@/page/user/Self/userSelfSetting/phone/
 import UpdateWxByPhoneModalForm from "@/page/user/Self/userSelfSetting/phone/UpdateWxByPhoneModalForm.tsx";
 import SetWxByPhoneModalForm from "@/page/user/Self/userSelfSetting/phone/SetWxByPhoneModalForm.tsx";
 import SetWxBySignInNameModalForm from "@/page/user/Self/userSelfSetting/signInName/SetWxBySignInNameModalForm.tsx";
-import SetSingleSignInByPhoneModalForm
-    from "@/page/user/Self/userSelfSetting/phone/SetSingleSignInByPhoneModalForm.tsx";
-import SetSingleSignInByWxModalForm from "@/page/user/Self/userSelfSetting/wx/SetSingleSignInByWxModalForm.tsx";
-import SetSingleSignInBySignInNameModalForm
-    from "@/page/user/Self/userSelfSetting/signInName/SetSingleSignInBySignInNameModalForm.tsx";
-import SetSingleSignInByEmailModalForm
-    from "@/page/user/Self/userSelfSetting/email/SetSingleSignInByEmailModalForm.tsx";
+import SetSingleSignInWxByPhoneModalForm
+    from "@/page/user/Self/userSelfSetting/phone/SetSingleSignInWxByPhoneModalForm.tsx";
+import SetSingleSignInWxBySignInNameModalForm
+    from "@/page/user/Self/userSelfSetting/signInName/SetSingleSignInWxBySignInNameModalForm.tsx";
+import SetSingleSignInWxByEmailModalForm
+    from "@/page/user/Self/userSelfSetting/email/SetSingleSignInWxByEmailModalForm.tsx";
+import SetSingleSignInPhoneByWxModalForm
+    from "@/page/user/Self/userSelfSetting/wx/SetSingleSignInPhoneByWxModalForm.tsx";
+import SetSingleSignInWxByWxModalForm from "@/page/user/Self/userSelfSetting/wx/SetSingleSignInWxByWxModalForm.tsx";
+import SetSingleSignInPhoneByEmailModalForm
+    from "@/page/user/Self/userSelfSetting/email/SetSingleSignInPhoneByEmailModalForm.tsx";
+import SetSingleSignInPhoneByPhoneModalForm
+    from "@/page/user/Self/userSelfSetting/phone/SetSingleSignInPhoneByPhoneModalForm.tsx";
+import SetSingleSignInPhoneBySignInNameModalForm
+    from "@/page/user/Self/userSelfSetting/signInName/SetSingleSignInPhoneBySignInNameModalForm.tsx";
 
 interface IUserSelfSetting {
 
@@ -86,8 +94,11 @@ export const UserSelfUpdatePhoneModalTitle = "修改手机号"
 export const UserSelfSetWxModalTitle = "绑定微信"
 export const UserSelfUpdateWxModalTitle = "修改微信"
 
-export const UserSelfSetSingleSignInModalTitle = "设置"
-export const UserSelfUpdateSingleSignInModalTitle = "修改"
+export const UserSelfSetSingleSignInWxModalTitle = "设置微信"
+export const UserSelfUpdateSingleSignInWxModalTitle = "修改微信"
+
+export const UserSelfSetSingleSignInPhoneModalTitle = "设置手机号"
+export const UserSelfUpdateSingleSignInPhoneModalTitle = "修改手机号"
 
 export const RequestSelfLoginRecordModalTitle = "登录记录"
 
@@ -157,7 +168,8 @@ function GetDataSourceMap(userSelfInfo: UserSelfInfoVO) {
                     title: '统一登录',
                     description: '便捷快速登录账号',
                     actions: [
-                        <SetSingleSignInByWxModalForm key={"1"} userSelfInfo={userSelfInfo}/>
+                        <SetSingleSignInWxByWxModalForm key={"1"} userSelfInfo={userSelfInfo}/>,
+                        <SetSingleSignInPhoneByWxModalForm key={"2"} userSelfInfo={userSelfInfo}/>
                     ]
                 },
 
@@ -226,7 +238,8 @@ function GetDataSourceMap(userSelfInfo: UserSelfInfoVO) {
                     title: '统一登录',
                     description: '便捷快速登录账号',
                     actions: [
-                        <SetSingleSignInByEmailModalForm key={"1"} userSelfInfo={userSelfInfo}/>
+                        <SetSingleSignInWxByEmailModalForm key={"1"} userSelfInfo={userSelfInfo}/>,
+                        <SetSingleSignInPhoneByEmailModalForm key={"2"} userSelfInfo={userSelfInfo}/>
                     ]
                 },
 
@@ -298,7 +311,8 @@ function GetDataSourceMap(userSelfInfo: UserSelfInfoVO) {
                     title: '统一登录',
                     description: '便捷快速登录账号',
                     actions: [
-                        <SetSingleSignInByPhoneModalForm key={"1"} userSelfInfo={userSelfInfo}/>
+                        <SetSingleSignInWxByPhoneModalForm key={"1"} userSelfInfo={userSelfInfo}/>,
+                        <SetSingleSignInPhoneByPhoneModalForm key={"2"} userSelfInfo={userSelfInfo}/>
                     ]
                 },
 
@@ -367,7 +381,8 @@ function GetDataSourceMap(userSelfInfo: UserSelfInfoVO) {
                     title: '统一登录',
                     description: '便捷快速登录账号',
                     actions: [
-                        <SetSingleSignInBySignInNameModalForm key={"1"} userSelfInfo={userSelfInfo}/>
+                        <SetSingleSignInWxBySignInNameModalForm key={"1"} userSelfInfo={userSelfInfo}/>,
+                        <SetSingleSignInPhoneBySignInNameModalForm key={"2"} userSelfInfo={userSelfInfo}/>
                     ]
                 },
 
@@ -403,11 +418,11 @@ export default function () {
 
     const userSelfInfo = useAppSelector((state) => state.user.userSelfInfo)
 
-    const [sysTenantConfigurationByIdVO, setSysTenantConfigurationByIdVO, sysTenantConfigurationByIdVORef] = MyUseState(useState<SysTenantConfigurationByIdVO>({}))
+    const [sysSignConfigurationVO, setSysSignConfigurationVO, sysSignConfigurationVORef] = MyUseState(useState<SysSignConfigurationVO>({}))
 
     useEffect(() => {
 
-        setSysTenantConfigurationByIdVO(JSON.parse(localStorage.getItem(LocalStorageKey.SYS_TENANT_CONFIGURATION_BY_ID_VO) || "{}"))
+        setSysSignConfigurationVO(JSON.parse(localStorage.getItem(LocalStorageKey.SYS_SIGN_CONFIGURATION_VO) || "{}"))
 
     }, [])
 
@@ -435,9 +450,9 @@ export default function () {
             // 租户相关配置
             SysTenantGetConfigurationById({value: userSelfInfo.tenantId}).then(res => {
 
-                setSysTenantConfigurationByIdVO(res.data)
+                setSysSignConfigurationVO(res.data)
 
-                localStorage.setItem(LocalStorageKey.SYS_TENANT_CONFIGURATION_BY_ID_VO, JSON.stringify(res.data))
+                localStorage.setItem(LocalStorageKey.SYS_SIGN_CONFIGURATION_VO, JSON.stringify(res.data))
 
             })
 

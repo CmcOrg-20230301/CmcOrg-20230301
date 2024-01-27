@@ -98,13 +98,17 @@ $http.interceptors.response.use(
 
             if (res.code === 100111) { // 这个代码需要跳转到：登录页面
 
-                SignOut()
-
                 if (!hiddenErrorMsgFlag) {
 
-                    ToastError(res.msg)
+                    if (localStorage.getItem(LocalStorageKey.JWT)) { // 存在 jwt才提示错误消息
+
+                        ToastError(res.msg)
+
+                    }
 
                 }
+
+                SignOut()
 
             } else {
 

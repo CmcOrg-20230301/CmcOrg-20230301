@@ -6,7 +6,6 @@ import {AxiosRequestConfig} from "axios";
 export interface SysOtherAppPageDTO {
     textReplyContent?: string // 用户发送文字之后，回复的内容
     openId?: string // 第三方应用的 openId/微信号，例如：接收微信公众号消息时的 ToUserName
-    singleSignInFlag?: boolean // 是否是单点登录的第三方应用，备注：所有租户都只存在一个类型，单点登录的第三方应用
     pageSize?: string // 每页显示条数，format：int64
     remark?: string // 备注
     type?: number // 第三方应用类型，format：int32
@@ -25,7 +24,6 @@ export interface SysOtherAppPageDTO {
 export interface SysOtherAppDO {
     textReplyContent?: string // 用户发送文字之后，回复的内容
     openId?: string // 第三方应用的 openId/微信号，例如：接收微信公众号消息时的 ToUserName，不能重复
-    singleSignInFlag?: boolean // 是否是单点登录的第三方应用，备注：所有租户都只存在一个类型，单点登录的第三方应用
     updateTime?: string // 修改时间，format：date-time
     remark?: string // 备注
     secret?: string // 第三方应用的 secret
@@ -118,7 +116,6 @@ export function SysOtherAppInfoById(form: NotNullId, config?: AxiosRequestConfig
 export interface SysOtherAppInsertOrUpdateDTO {
     textReplyContent?: string // 用户发送文字之后，回复的内容
     openId?: string // 第三方应用的 openId/微信号，例如：接收微信公众号消息时的 ToUserName
-    singleSignInFlag?: boolean // 是否是单点登录的第三方应用，备注：所有租户都只存在一个类型，单点登录的第三方应用
     remark?: string // 备注
     secret?: string // 第三方应用的 secret，required：true
     type?: number // 第三方应用类型，required：true，format：int32

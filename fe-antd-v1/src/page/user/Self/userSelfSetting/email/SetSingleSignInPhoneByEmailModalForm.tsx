@@ -1,22 +1,33 @@
 import React, {useRef} from "react";
 import {ModalForm, ProFormCaptcha, ProFormInstance, ProFormText} from "@ant-design/pro-components";
-import {SignSignInNameSetPhoneDTO} from "@/api/http/SignSignInName.ts";
 import CommonConstant from "@/model/constant/CommonConstant.ts";
-import {UserSelfSetPhoneModalTitle} from "@/page/user/Self/UserSelfSetting.tsx";
+import {
+    UserSelfSetSingleSignInPhoneModalTitle,
+    UserSelfUpdateSingleSignInPhoneModalTitle
+} from "@/page/user/Self/UserSelfSetting.tsx";
 import {SignOut} from "@/util/UserUtil.ts";
 import {ToastSuccess} from "@/util/ToastUtil.ts";
 import {Validate} from "@/util/ValidatorUtil.ts";
 import {
-    SignEmailSetPhone,
-    SignEmailSetPhoneSendCodeEmail,
-    SignEmailSetPhoneSendCodePhone
+    SignEmailSetSingleSignInPhone,
+    SignEmailSetSingleSignInPhoneDTO,
+    SignEmailSetSingleSignInPhoneSendCode,
+    SignEmailSetSingleSignInPhoneSendCodeCurrent
 } from "@/api/http/SignEmail.ts";
+import {UserSelfInfoVO} from "@/api/http/UserSelf.ts";
+import PathConstant from "@/model/constant/PathConstant.ts";
 
-export default function () {
+interface ISetSingleSignInPhoneByEmailModalForm {
 
-    const formRef = useRef<ProFormInstance<SignSignInNameSetPhoneDTO>>();
+    userSelfInfo: UserSelfInfoVO
 
-    return <ModalForm<SignSignInNameSetPhoneDTO>
+}
+
+export default function (props: ISetSingleSignInPhoneByEmailModalForm) {
+
+    const formRef = useRef<ProFormInstance<SignEmailSetSingleSignInPhoneDTO>>();
+
+    return <ModalForm<SignEmailSetSingleSignInPhoneDTO>
 
         formRef={formRef}
         modalProps={{
@@ -25,13 +36,14 @@ export default function () {
 
         isKeyPressSubmit
         width={CommonConstant.MODAL_FORM_WIDTH}
-        title={UserSelfSetPhoneModalTitle}
-        trigger={<a>{UserSelfSetPhoneModalTitle}</a>}
+        title={props.userSelfInfo.singleSignInPhoneFlag ? UserSelfUpdateSingleSignInPhoneModalTitle : UserSelfSetSingleSignInPhoneModalTitle}
+        trigger={
+            <a>{props.userSelfInfo.singleSignInPhoneFlag ? UserSelfUpdateSingleSignInPhoneModalTitle : UserSelfSetSingleSignInPhoneModalTitle}</a>}
         onFinish={async (form) => {
 
-            await SignEmailSetPhone(form).then(res => {
+            await SignEmailSetSingleSignInPhone(form).then(res => {
 
-                SignOut()
+                SignOut(undefined, PathConstant.SINGLE_SIGN_IN_PATH)
                 ToastSuccess(res.msg)
 
             })
@@ -44,13 +56,13 @@ export default function () {
 
         <ProFormText
 
-            name="phone"
+            name="singleSignInPhone"
             fieldProps={{
                 allowClear: true,
             }}
             required
-            label="手机号"
-            placeholder={'请输入手机号'}
+            label="统一登录手机号"
+            placeholder={'请输入统一登录手机号'}
 
             rules={[
                 {
@@ -68,16 +80,16 @@ export default function () {
             }}
 
             required
-            label="手机验证码"
-            name="code"
-            placeholder={"请输入手机验证码"}
+            label="统一登录手机验证码"
+            name="singleSignInPhoneCode"
+            placeholder={"请输入统一登录手机验证码"}
             rules={[{validator: Validate.code.validator}]}
 
             onGetCaptcha={async () => {
 
-                await formRef.current?.validateFields(['phone']).then(async res => {
+                await formRef.current?.validateFields(['singleSignInPhone']).then(async res => {
 
-                    await SignEmailSetPhoneSendCodePhone({phone: res.phone}).then(res => {
+                    await SignEmailSetSingleSignInPhoneSendCode({phone: res.singleSignInPhone}).then(res => {
 
                         ToastSuccess(res.msg)
 
@@ -98,13 +110,13 @@ export default function () {
 
             required
             label="当前邮箱验证码"
-            name="emailCode"
+            name="currentEmailCode"
             placeholder={"请输入当前邮箱验证码"}
             rules={[{validator: Validate.code.validator}]}
 
             onGetCaptcha={async () => {
 
-                await SignEmailSetPhoneSendCodeEmail().then(res => {
+                await SignEmailSetSingleSignInPhoneSendCodeCurrent().then(res => {
 
                     ToastSuccess(res.msg)
 

@@ -170,6 +170,13 @@ const SchemaFormColumnList = (formRef: React.MutableRefObject<FormInstance<SysUs
         },
 
         {
+            title: '后台登录',
+            dataIndex: 'manageSignInFlag',
+            valueEnum: YesNoDict,
+            valueType: 'switch',
+        },
+
+        {
             title: '关联角色',
             dataIndex: 'roleIdSet',
             valueType: 'select',

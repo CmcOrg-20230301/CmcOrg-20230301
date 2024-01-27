@@ -2,7 +2,6 @@ import {YesNoDict} from "@/util/DictUtil";
 import {SysOtherAppInsertOrUpdateDTO} from "@/api/http/SysOtherApp";
 import {ProFormColumnsType} from "@ant-design/pro-components";
 import {SysOtherAppTypeEnumDict} from "@/model/enum/SysOtherAppTypeEnum.ts";
-import {CurrentTenantTopFlag} from "@/util/TenantUtil.ts";
 
 export const InitForm: SysOtherAppInsertOrUpdateDTO = {} as SysOtherAppInsertOrUpdateDTO
 
@@ -158,31 +157,6 @@ const SchemaFormColumnList = (): ProFormColumnsType<SysOtherAppInsertOrUpdateDTO
                 ],
             },
             tooltip: '例如：接收微信公众号消息时的 ToUserName，不能重复',
-        },
-
-        {
-
-            valueType: 'dependency',
-
-            name: ['tenantId'],
-
-            columns: ({tenantId}: SysOtherAppInsertOrUpdateDTO): ProFormColumnsType<SysOtherAppInsertOrUpdateDTO>[] => {
-
-                return CurrentTenantTopFlag() ?
-
-                    [
-
-                        {
-                            title: '单点登录',
-                            dataIndex: 'singleSignInFlag',
-                            valueEnum: YesNoDict,
-                            valueType: 'switch',
-                        },
-
-                    ] : []
-
-            }
-
         },
 
         {

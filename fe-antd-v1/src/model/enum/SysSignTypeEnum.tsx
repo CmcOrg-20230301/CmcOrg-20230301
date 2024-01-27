@@ -1,5 +1,5 @@
 import {IEnum} from "@/model/enum/CommonEnum.ts";
-import {SysTenantConfigurationByIdVO} from "@/api/http/SysTenant.ts";
+import {SysSignConfigurationVO} from "@/api/http/SysTenant.ts";
 import {ReactNode} from "react";
 import {MailOutlined, MobileOutlined, UserOutlined} from "@ant-design/icons";
 import {Rule} from "antd/lib/form";
@@ -7,7 +7,7 @@ import {Validate} from "@/util/ValidatorUtil.ts";
 
 export interface ISysSignTypeItemEnum extends IEnum<string> {
 
-    showFlag: (sysTenantConfigurationByIdVO: SysTenantConfigurationByIdVO, signType: TSignType) => boolean
+    showFlag: (sysSignConfigurationVO: SysSignConfigurationVO, signType: TSignType) => boolean
 
     noSignInBtnFlag?: boolean // 是否不展示：登录按钮，默认：false
 
@@ -48,9 +48,9 @@ export const SysSignTypeEnum: ISysSignTypeEnum = {
         placeholder: '登录名',
         prefix: <UserOutlined/>,
         validator: Validate.signInName.validator,
-        showFlag: (sysTenantConfigurationByIdVO: SysTenantConfigurationByIdVO, signType: TSignType): boolean => {
+        showFlag: (sysSignConfigurationVO: SysSignConfigurationVO, signType: TSignType): boolean => {
 
-            return sysTenantConfigurationByIdVO.signInNameSignUpEnable === true
+            return sysSignConfigurationVO.signInNameSignUpEnable === true
 
         }
     },
@@ -62,9 +62,9 @@ export const SysSignTypeEnum: ISysSignTypeEnum = {
         placeholder: '邮箱',
         prefix: <MailOutlined/>,
         validator: Validate.email.validator,
-        showFlag: (sysTenantConfigurationByIdVO: SysTenantConfigurationByIdVO, signType: TSignType): boolean => {
+        showFlag: (sysSignConfigurationVO: SysSignConfigurationVO, signType: TSignType): boolean => {
 
-            return sysTenantConfigurationByIdVO.emailSignUpEnable === true
+            return sysSignConfigurationVO.emailSignUpEnable === true
 
         }
     },
@@ -76,9 +76,9 @@ export const SysSignTypeEnum: ISysSignTypeEnum = {
         prefix: <MobileOutlined/>,
         noSignUpLinkFlag: true,
         validator: Validate.phone.validator,
-        showFlag: (sysTenantConfigurationByIdVO: SysTenantConfigurationByIdVO, signType: TSignType): boolean => {
+        showFlag: (sysSignConfigurationVO: SysSignConfigurationVO, signType: TSignType): boolean => {
 
-            return sysTenantConfigurationByIdVO.phoneSignUpEnable === true
+            return sysSignConfigurationVO.phoneSignUpEnable === true
 
         }
     },
@@ -91,13 +91,13 @@ export const SysSignTypeEnum: ISysSignTypeEnum = {
         noSignInBtnFlag: true,
         noSignUpLinkFlag: true,
         noForgetPasswordFlag: true,
-        showFlag: (sysTenantConfigurationByIdVO: SysTenantConfigurationByIdVO, signType: TSignType): boolean => {
+        showFlag: (sysSignConfigurationVO: SysSignConfigurationVO, signType: TSignType): boolean => {
 
             if (signType === 2) {
                 return false;
             }
 
-            return Boolean(sysTenantConfigurationByIdVO.wxQrCodeSignUp)
+            return Boolean(sysSignConfigurationVO.wxQrCodeSignUp)
 
         }
     },

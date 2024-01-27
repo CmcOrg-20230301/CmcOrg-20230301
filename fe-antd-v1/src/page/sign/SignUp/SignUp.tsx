@@ -12,9 +12,9 @@ import {Validate} from "@/util/ValidatorUtil";
 import Link from "antd/lib/typography/Link";
 import {useAppSelector} from "@/store";
 import {MyUseState} from "@/util/HookUtil.ts";
-import {SysTenantConfigurationByIdVO, SysTenantGetConfigurationById} from "@/api/http/SysTenant.ts";
+import {SysSignConfigurationVO, SysTenantGetConfigurationById} from "@/api/http/SysTenant.ts";
 import LocalStorageKey from "@/model/constant/LocalStorageKey.ts";
-import {SetSysTenantConfigurationByIdVOCallBack} from "@/page/sign/SignIn/SignIn.tsx";
+import {SetSysSignConfigurationVOCallBack} from "@/page/sign/SignIn/SignIn.tsx";
 import type {Tab} from "rc-tabs/lib/interface";
 import {ISysSignTypeItemEnum, SysSignTypeEnum, SysSignTypeEnumMap} from "@/model/enum/SysSignTypeEnum.tsx";
 
@@ -45,14 +45,14 @@ export default function () {
 
     const [signUpType, setSignUpType, signUpTypeRef] = MyUseState(useState<string>(""));
 
-    const [sysTenantConfigurationByIdVO, setSysTenantConfigurationByIdVO, sysTenantConfigurationByIdVORef] =
+    const [sysSignConfigurationVO, setSysSignConfigurationVO, sysSignConfigurationVORef] =
 
         MyUseState(
-            useState<SysTenantConfigurationByIdVO>({}),
+            useState<SysSignConfigurationVO>({}),
 
             newState => {
 
-                SetSysTenantConfigurationByIdVOCallBack(signUpTypeRef.current, setSignUpType, setTabItemArr, undefined, 2)(newState)
+                SetSysSignConfigurationVOCallBack(signUpTypeRef.current, setSignUpType, setTabItemArr, undefined, 2)(newState)
 
             }
         )
@@ -60,12 +60,12 @@ export default function () {
     UseEffectSign(tenantIdRef, () => {
 
         // 为了触发：callBack
-        setSysTenantConfigurationByIdVO(JSON.parse(localStorage.getItem(LocalStorageKey.SYS_TENANT_CONFIGURATION_BY_ID_VO) || "{}"))
+        setSysSignConfigurationVO(JSON.parse(localStorage.getItem(LocalStorageKey.SYS_SIGN_CONFIGURATION_VO) || "{}"))
 
         // 租户相关配置
         SysTenantGetConfigurationById({value: tenantIdRef.current}).then(res => {
 
-            setSysTenantConfigurationByIdVO(res.data)
+            setSysSignConfigurationVO(res.data)
 
         })
 

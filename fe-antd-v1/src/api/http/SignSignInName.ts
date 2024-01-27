@@ -15,6 +15,17 @@ export function SignSignInNameSetWxGetQrCodeSceneFlag(form: NotNullId, config?: 
     return $http.myPost<SysQrCodeSceneBindVO>('/sign/signInName/setWx/getQrCodeSceneFlag', form, config)
 }
 
+export interface GetQrCodeVO {
+    expireTs?: string // 二维码过期时间戳，format：int64
+    qrCodeId?: string // 二维码 id，format：int64
+    qrCodeUrl?: string // 二维码的 url地址
+}
+
+// 设置统一登录：微信：获取统一登录微信的二维码地址
+export function SignSignInNameSetSingleSignInWxGetQrCodeUrl(config?: AxiosRequestConfig) {
+    return $http.myPost<GetQrCodeVO>('/sign/signInName/setSingleSignIn/wx/getQrCodeUrl', undefined, config)
+}
+
 export interface SignSignInNameSetWxDTO {
     id?: string // 主键 id，required：true，format：int64
     currentPassword?: string // 前端加密之后的密码，required：true
@@ -25,15 +36,14 @@ export function SignSignInNameSetWx(form: SignSignInNameSetWxDTO, config?: Axios
     return $http.myPost<SysQrCodeSceneBindVO>('/sign/signInName/setWx', form, config)
 }
 
-export interface GetQrCodeVO {
-    expireTs?: string // 二维码过期时间戳，format：int64
-    qrCodeId?: string // 二维码 id，format：int64
-    qrCodeUrl?: string // 二维码的 url地址
+export interface SignSignInNameSetSingleSignInWxDTO {
+    id?: string // 主键 id，required：true，format：int64
+    currentPassword?: string // 前端加密之后的密码，required：true
 }
 
-// 设置统一登录：获取统一登录微信的二维码地址
-export function SignSignInNameSetSingleSignInGetQrCodeUrlSingleSignIn(config?: AxiosRequestConfig) {
-    return $http.myPost<GetQrCodeVO>('/sign/signInName/setSingleSignIn/getQrCodeUrl/singleSignIn', undefined, config)
+// 设置统一登录：微信
+export function SignSignInNameSetSingleSignInWx(form: SignSignInNameSetSingleSignInWxDTO, config?: AxiosRequestConfig) {
+    return $http.myPost<SysQrCodeSceneBindVO>('/sign/signInName/setSingleSignIn/wx', form, config)
 }
 
 export interface SignSignInNameSetPhoneSendCodeDTO {
@@ -54,6 +64,11 @@ export function SignSignInNameSignDelete(form: SignSignInNameSignDeleteDTO, conf
     return $http.myPost<string>('/sign/signInName/signDelete', form, config)
 }
 
+// 设置统一登录：微信：获取统一登录微信的二维码是否已经被扫描
+export function SignSignInNameSetSingleSignInWxGetQrCodeSceneFlag(form: NotNullId, config?: AxiosRequestConfig) {
+    return $http.myPost<SysQrCodeSceneBindVO>('/sign/signInName/setSingleSignIn/wx/getQrCodeSceneFlag', form, config)
+}
+
 export interface SignSignInNameSetEmailDTO {
     code?: string // 邮箱验证码，正则表达式：^[0-9]{6}$，required：true
     email?: string // 邮箱，正则表达式：^\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$，maxLength：200，minLength：0，required：true
@@ -65,9 +80,15 @@ export function SignSignInNameSetEmail(form: SignSignInNameSetEmailDTO, config?:
     return $http.myPost<string>('/sign/signInName/setEmail', form, config)
 }
 
-// 设置统一登录：获取统一登录微信的二维码是否已经被扫描
-export function SignSignInNameSetSingleSignInGetQrCodeSceneFlagSingleSignIn(form: NotNullId, config?: AxiosRequestConfig) {
-    return $http.myPost<SysQrCodeSceneBindVO>('/sign/signInName/setSingleSignIn/getQrCodeSceneFlag/singleSignIn', form, config)
+export interface SignSignInNameSetSingleSignInPhoneDTO {
+    code?: string // 手机验证码，正则表达式：^[0-9]{6}$，required：true
+    phone?: string // 手机号码，正则表达式：^(13[0-9]|14[01456879]|15[0-35-9]|16[2567]|17[0-8]|18[0-9]|19[0-35-9])\d{8}$，maxLength：100，minLength：0，required：true
+    currentPassword?: string // 前端加密之后的密码，required：true
+}
+
+// 设置统一登录：手机验证码
+export function SignSignInNameSetSingleSignInPhone(form: SignSignInNameSetSingleSignInPhoneDTO, config?: AxiosRequestConfig) {
+    return $http.myPost<string>('/sign/signInName/setSingleSignIn/phone', form, config)
 }
 
 export interface SignSignInNameUpdatePasswordDTO {
@@ -79,6 +100,15 @@ export interface SignSignInNameUpdatePasswordDTO {
 // 修改密码
 export function SignSignInNameUpdatePassword(form: SignSignInNameUpdatePasswordDTO, config?: AxiosRequestConfig) {
     return $http.myPost<string>('/sign/signInName/updatePassword', form, config)
+}
+
+export interface SignSignInNameSetSingleSignInPhoneSendCodeDTO {
+    phone?: string // 手机号码，正则表达式：^(13[0-9]|14[01456879]|15[0-35-9]|16[2567]|17[0-8]|18[0-9]|19[0-35-9])\d{8}$，maxLength：100，minLength：0，required：true
+}
+
+// 设置统一登录：手机验证码：发送验证码
+export function SignSignInNameSetSingleSignInPhoneSendCode(form: SignSignInNameSetSingleSignInPhoneSendCodeDTO, config?: AxiosRequestConfig) {
+    return $http.myPost<string>('/sign/signInName/setSingleSignIn/phone/sendCode', form, config)
 }
 
 export interface SignSignInNameSetEmailSendCodeDTO {
@@ -110,16 +140,6 @@ export interface SignSignInNameSignUpDTO {
 // 注册
 export function SignSignInNameSignUp(form: SignSignInNameSignUpDTO, config?: AxiosRequestConfig) {
     return $http.myPost<string>('/sign/signInName/sign/up', form, config)
-}
-
-export interface SignSignInNameSetSingleSignInDTO {
-    id?: string // 主键 id，required：true，format：int64
-    currentPassword?: string // 前端加密之后的密码，required：true
-}
-
-// 设置统一登录
-export function SignSignInNameSetSingleSignIn(form: SignSignInNameSetSingleSignInDTO, config?: AxiosRequestConfig) {
-    return $http.myPost<SysQrCodeSceneBindVO>('/sign/signInName/setSingleSignIn', form, config)
 }
 
 export interface SignSignInNameSignInPasswordDTO {

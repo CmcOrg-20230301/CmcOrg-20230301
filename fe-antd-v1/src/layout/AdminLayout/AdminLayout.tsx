@@ -115,7 +115,7 @@ export default function () {
 
         setUserSelfMenuList(data)
 
-    });
+    }, true);
 
     // 加载：用户数据
     UseEffectLoadUserSelfInfo((data) => {

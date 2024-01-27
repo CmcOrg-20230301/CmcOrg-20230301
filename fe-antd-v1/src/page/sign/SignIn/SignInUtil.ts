@@ -16,6 +16,7 @@ import {SysSignTypeEnum} from "@/model/enum/SysSignTypeEnum.tsx";
 import {SignPhoneSignInCode, SignPhoneSignInPassword} from "@/api/http/SignPhone.ts";
 import {ISignInForm} from "./SignIn";
 import {GetStorageForeverValue, SetStorageForeverValue} from "@/util/StorageUtil.ts";
+import {SignSingleSignInCodePhone} from "@/api/http/SignSingle.ts";
 
 /**
  * 设置：后台系统名
@@ -73,11 +74,23 @@ export async function SignInFormHandler(form: ISignInForm) {
 
         if (form.phoneSignInType == 1) { // 1 验证码登录
 
-            await SignPhoneSignInCode({code: form.code, tenantId: form.tenantId, phone: form.phone}).then(res => {
+            if (form.singleSignInFlag) {
 
-                SignInSuccess(res.data)
+                await SignSingleSignInCodePhone({code: form.code, phone: form.phone}).then(res => {
 
-            })
+                    SignInSuccess(res.data)
+
+                })
+
+            } else {
+
+                await SignPhoneSignInCode({code: form.code, tenantId: form.tenantId, phone: form.phone}).then(res => {
+
+                    SignInSuccess(res.data)
+
+                })
+
+            }
 
         } else { // 密码登录
 

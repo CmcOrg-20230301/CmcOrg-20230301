@@ -1,12 +1,15 @@
 import SetWxModalForm from "@/page/user/Self/userSelfSetting/wx/SetWxModalForm.tsx";
 import {
-    SignWxUpdateWx,
-    SignWxUpdateWxGetQrCodeSceneFlagNew,
-    SignWxUpdateWxGetQrCodeSceneFlagOld,
-    SignWxUpdateWxGetQrCodeUrlNew,
-    SignWxUpdateWxGetQrCodeUrlOld
+    SignWxSetSingleSignInWx,
+    SignWxSetSingleSignInWxGetQrCodeSceneFlag,
+    SignWxSetSingleSignInWxGetQrCodeSceneFlagCurrent,
+    SignWxSetSingleSignInWxGetQrCodeUrl,
+    SignWxSetSingleSignInWxGetQrCodeUrlCurrent
 } from "@/api/http/SignWx.ts";
-import {UserSelfUpdateWxModalTitle} from "@/page/user/Self/UserSelfSetting.tsx";
+import {
+    UserSelfSetSingleSignInWxModalTitle,
+    UserSelfUpdateSingleSignInWxModalTitle
+} from "@/page/user/Self/UserSelfSetting.tsx";
 import React, {useEffect, useRef, useState} from "react";
 import {Form, Image, Result} from "antd";
 import CommonConstant from "@/model/constant/CommonConstant.ts";
@@ -14,8 +17,16 @@ import {MyUseState} from "@/util/HookUtil.ts";
 import {GetQrCodeVO} from "@/api/http/SignSignInName.ts";
 import {GetServerTimestamp} from "@/util/DateUtil.ts";
 import {ToastError} from "@/util/ToastUtil.ts";
+import {UserSelfInfoVO} from "@/api/http/UserSelf.ts";
+import PathConstant from "@/model/constant/PathConstant.ts";
 
-export default function () {
+interface ISetSingleSignInWxByWxModalForm {
+
+    userSelfInfo: UserSelfInfoVO
+
+}
+
+export default function (props: ISetSingleSignInWxByWxModalForm) {
 
     const qrCodeModalOpenFlagRef = useRef<boolean>(false);
 
@@ -32,7 +43,7 @@ export default function () {
     // 初始化数据
     function InitData() {
 
-        SignWxUpdateWxGetQrCodeUrlNew().then(res => {
+        SignWxSetSingleSignInWxGetQrCodeUrl().then(res => {
 
             setQrCodeVO(res.data)
 
@@ -60,7 +71,7 @@ export default function () {
 
                     getQrCodeUrlFlagRef.current = true
 
-                    SignWxUpdateWxGetQrCodeUrlNew().then(res => {
+                    SignWxSetSingleSignInWxGetQrCodeUrl().then(res => {
 
                         getQrCodeUrlFlagRef.current = false
 
@@ -79,7 +90,7 @@ export default function () {
 
                 if (qrCodeModalOpenFlagRef.current && qrCodeVORef.current.qrCodeId && !qrCodeSceneFlagRef.current) {
 
-                    SignWxUpdateWxGetQrCodeSceneFlagNew({id: qrCodeVORef.current.qrCodeId}).then(res => {
+                    SignWxSetSingleSignInWxGetQrCodeSceneFlag({id: qrCodeVORef.current.qrCodeId}).then(res => {
 
                         if (res.data.sceneFlag) {
 
@@ -115,16 +126,18 @@ export default function () {
 
     return <>
 
-        <SetWxModalForm setWxGetQrCodeUrl={SignWxUpdateWxGetQrCodeUrlOld}
-                        setWxGetQrCodeSceneFlag={SignWxUpdateWxGetQrCodeSceneFlagOld}
-                        setWx={SignWxUpdateWx}
+        <SetWxModalForm setWxGetQrCodeUrl={SignWxSetSingleSignInWxGetQrCodeUrlCurrent}
+                        setWxGetQrCodeSceneFlag={SignWxSetSingleSignInWxGetQrCodeSceneFlagCurrent}
+                        setWx={SignWxSetSingleSignInWx}
 
-                        title={UserSelfUpdateWxModalTitle}
+                        title={props.userSelfInfo.singleSignInWxFlag ? UserSelfUpdateSingleSignInWxModalTitle : UserSelfSetSingleSignInWxModalTitle}
+
+                        label={"当前账号微信扫码"}
 
                         handleFormFun={(form, qrCodeId) => {
 
-                            form.oldQrCodeId = qrCodeId
-                            form.newQrCodeId = qrCodeVORef.current?.qrCodeId
+                            form.currentQrCodeId = qrCodeId
+                            form.singleSignInQrCodeId = qrCodeVORef.current?.qrCodeId
 
                         }}
 
@@ -133,6 +146,8 @@ export default function () {
                             InitData()
 
                         }}
+
+                        signOutPath={PathConstant.SINGLE_SIGN_IN_PATH}
 
                         onOpenChange={(visible) => {
 
@@ -154,7 +169,7 @@ export default function () {
 
                         formItemArr={formRef => [
 
-                            <Form.Item key={"1"} label="新微信扫码" required={true}>
+                            <Form.Item key={"1"} label="统一登录微信扫码" required={true}>
 
                                 {
 

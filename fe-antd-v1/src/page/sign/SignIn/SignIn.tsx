@@ -20,7 +20,7 @@ import {Validate} from "@/util/ValidatorUtil";
 import {UseEffectSign} from "@/page/sign/SignUp/SignUpUtil";
 import {GetTenantId} from "@/util/CommonUtil";
 import {useAppSelector} from "@/store";
-import {SysTenantConfigurationByIdVO, SysTenantGetConfigurationById} from "@/api/http/SysTenant.ts";
+import {SysSignConfigurationVO, SysTenantGetConfigurationById} from "@/api/http/SysTenant.ts";
 import {SignWxSignInByQrCodeId, SignWxSignInGetQrCodeUrl} from "@/api/http/SignWx.ts";
 import {MyUseState} from "@/util/HookUtil.ts";
 import {GetServerTimestamp} from "@/util/DateUtil.ts";
@@ -44,6 +44,8 @@ export interface ISignInForm {
     account: string // 登录名/邮箱
     code: string // 验证码
 
+    singleSignInFlag?: boolean // 是否是统一登录
+
 }
 
 /**
@@ -51,9 +53,9 @@ export interface ISignInForm {
  *
  * @param signType 1 登录 2 注册
  */
-export function SetSysTenantConfigurationByIdVOCallBack(signInType: string, setSignInType: (value: string) => void, setTabItemArr: (value: (((prevState: Tab[]) => Tab[]) | Tab[])) => void, setAccountPlaceholder: ((value: (((prevState: string) => string) | string)) => void) | undefined, signType: TSignType) {
+export function SetSysSignConfigurationVOCallBack(signInType: string, setSignInType: (value: string) => void, setTabItemArr: (value: (((prevState: Tab[]) => Tab[]) | Tab[])) => void, setAccountPlaceholder: ((value: (((prevState: string) => string) | string)) => void) | undefined, signType: TSignType, savaFlag: boolean = true) {
 
-    return sysTenantConfigurationByIdVO => {
+    return sysSignConfigurationVO => {
 
         const tabItemArrTemp: Tab[] = []
 
@@ -65,7 +67,7 @@ export function SetSysTenantConfigurationByIdVOCallBack(signInType: string, setS
 
         SysSignTypeEnumMap.forEach(item => {
 
-            if (!item.showFlag(sysTenantConfigurationByIdVO, signType)) {
+            if (!item.showFlag(sysSignConfigurationVO, signType)) {
                 return
             }
 
@@ -139,7 +141,11 @@ export function SetSysTenantConfigurationByIdVOCallBack(signInType: string, setS
             setAccountPlaceholder(accountPlaceholderTemp)
         }
 
-        localStorage.setItem(LocalStorageKey.SYS_TENANT_CONFIGURATION_BY_ID_VO, JSON.stringify(sysTenantConfigurationByIdVO))
+        if (savaFlag) {
+
+            localStorage.setItem(LocalStorageKey.SYS_SIGN_CONFIGURATION_VO, JSON.stringify(sysSignConfigurationVO))
+
+        }
 
     };
 
@@ -161,14 +167,14 @@ export default function () {
 
     const [accountPlaceholder, setAccountPlaceholder] = useState<string>("");
 
-    const [sysTenantConfigurationByIdVO, setSysTenantConfigurationByIdVO, sysTenantConfigurationByIdVORef] =
+    const [sysSignConfigurationVO, setSysSignConfigurationVO, sysSignConfigurationVORef] =
 
         MyUseState(
-            useState<SysTenantConfigurationByIdVO>({}),
+            useState<SysSignConfigurationVO>({}),
 
             newState => {
 
-                SetSysTenantConfigurationByIdVOCallBack(signInTypeRef.current, setSignInType, setTabItemArr, setAccountPlaceholder, 1)(newState)
+                SetSysSignConfigurationVOCallBack(signInTypeRef.current, setSignInType, setTabItemArr, setAccountPlaceholder, 1)(newState)
 
             }
         )
@@ -176,12 +182,12 @@ export default function () {
     UseEffectSign(tenantIdRef, () => {
 
         // 为了触发：callBack
-        setSysTenantConfigurationByIdVO(JSON.parse(localStorage.getItem(LocalStorageKey.SYS_TENANT_CONFIGURATION_BY_ID_VO) || "{}"))
+        setSysSignConfigurationVO(JSON.parse(localStorage.getItem(LocalStorageKey.SYS_SIGN_CONFIGURATION_VO) || "{}"))
 
         // 租户相关配置
         SysTenantGetConfigurationById({value: tenantIdRef.current}).then(res => {
 
-            setSysTenantConfigurationByIdVO(res.data)
+            setSysSignConfigurationVO(res.data)
 
         })
 
@@ -203,10 +209,10 @@ export default function () {
 
         const interval = setInterval(() => {
 
-            if (sysTenantConfigurationByIdVORef.current.wxQrCodeSignUp) { // 如果：允许微信登录
+            if (sysSignConfigurationVORef.current.wxQrCodeSignUp) { // 如果：允许微信登录
 
                 // 二维码过期时间
-                const expireTs = Number(sysTenantConfigurationByIdVORef.current.wxQrCodeSignUp.expireTs || 1);
+                const expireTs = Number(sysSignConfigurationVORef.current.wxQrCodeSignUp.expireTs || 1);
 
                 if (expireTs > 0 && GetServerTimestamp() > expireTs) {
 
@@ -229,17 +235,17 @@ export default function () {
                         signWxSignInGetQrCodeUrlFlagRef.current = false
 
                         // 重置：二维码数据
-                        sysTenantConfigurationByIdVORef.current.wxQrCodeSignUp = {}
+                        sysSignConfigurationVORef.current.wxQrCodeSignUp = {}
 
                         if (res.data) {
 
                             // 再次设置：二维码数据
-                            sysTenantConfigurationByIdVORef.current.wxQrCodeSignUp = res.data
+                            sysSignConfigurationVORef.current.wxQrCodeSignUp = res.data
 
                         }
 
                         // 更新页面
-                        setSysTenantConfigurationByIdVO({...sysTenantConfigurationByIdVORef.current})
+                        setSysSignConfigurationVO({...sysSignConfigurationVORef.current})
 
                     }).catch(() => {
 
@@ -253,9 +259,9 @@ export default function () {
 
                 if (signInTypeRef.current === SysSignTypeEnum.WxQrCode.code) {
 
-                    if (sysTenantConfigurationByIdVORef.current.wxQrCodeSignUp.qrCodeId) {
+                    if (sysSignConfigurationVORef.current.wxQrCodeSignUp.qrCodeId) {
 
-                        SignWxSignInByQrCodeId({id: sysTenantConfigurationByIdVORef.current.wxQrCodeSignUp.qrCodeId}, {
+                        SignWxSignInByQrCodeId({id: sysSignConfigurationVORef.current.wxQrCodeSignUp.qrCodeId}, {
 
                             headers: {
 
@@ -489,9 +495,9 @@ export default function () {
 
                 }
 
-                {signInType === SysSignTypeEnum.WxQrCode.code && sysTenantConfigurationByIdVO.wxQrCodeSignUp?.qrCodeUrl && (
+                {signInType === SysSignTypeEnum.WxQrCode.code && sysSignConfigurationVO.wxQrCodeSignUp?.qrCodeUrl && (
 
-                    <Image src={sysTenantConfigurationByIdVO.wxQrCodeSignUp.qrCodeUrl}
+                    <Image src={sysSignConfigurationVO.wxQrCodeSignUp.qrCodeUrl}
                            height={CommonConstant.QR_CODE_WIDTH} preview={false}/>
 
                 )}

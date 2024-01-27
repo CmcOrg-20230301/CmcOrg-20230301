@@ -17,6 +17,7 @@ import VConsole from 'vconsole';
 import {UserSelfInfo, UserSelfInfoVO} from "@/api/http/UserSelf.ts";
 import {SysFileGetPublicUrl} from "@/api/http/SysFile.ts";
 import {useAppDispatch, useAppSelector} from "@/store";
+import {SysUserManageSignInFlag} from "@/api/http/SysUser.ts";
 
 export interface IInit {
 
@@ -144,7 +145,7 @@ function handleUserSelfMenuList(userSelfMenuList: SysMenuDO[], callBack: ((data:
 }
 
 // 加载菜单
-export function UseEffectLoadSysMenuUserSelfMenuList(callBack?: (data: SysMenuDO[], firstFlag: boolean) => void) {
+export function UseEffectLoadSysMenuUserSelfMenuList(callBack?: (data: SysMenuDO[], firstFlag: boolean) => void, manageFlag: boolean = false) {
 
     const userSelfMenuList = useAppSelector((state) => state.user.userSelfMenuList);
 
@@ -154,12 +155,56 @@ export function UseEffectLoadSysMenuUserSelfMenuList(callBack?: (data: SysMenuDO
 
     useEffect(() => {
 
+        // 执行
+        LoadSysMenuUserSelfMenuList(callBack, userSelfMenuList, userSelfMenuListLoadFlag, appDispatch, manageFlag)();
+
+    }, [])
+
+}
+
+const ManageSignInToastError = "您暂不允许登录后台，请联系管理员"
+
+/**
+ * 执行：加载菜单
+ */
+function LoadSysMenuUserSelfMenuList(callBack: ((data: SysMenuDO[], firstFlag: boolean) => void) | undefined, userSelfMenuList: SysMenuDO[], userSelfMenuListLoadFlag: boolean, appDispatch, manageFlag: boolean) {
+
+    return async () => {
+
         const jwt = localStorage.getItem(LocalStorageKey.JWT);
 
         if (!jwt) {
 
             SignOut()
             return
+
+        }
+
+        let handleManageSignInFlag = false // 是否：处理过后台登录的限制
+
+        if (manageFlag) {
+
+            const manageSignInFlag = localStorage.getItem(LocalStorageKey.MANAGE_SIGN_IN_FLAG);
+
+            if (manageSignInFlag !== '1') {
+
+                const res = await SysUserManageSignInFlag();
+
+                if (res.data) {
+
+                    localStorage.setItem(LocalStorageKey.MANAGE_SIGN_IN_FLAG, "1")
+
+                    handleManageSignInFlag = true
+
+                } else {
+
+                    ToastError(ManageSignInToastError)
+                    SignOut()
+                    return
+
+                }
+
+            }
 
         }
 
@@ -174,6 +219,21 @@ export function UseEffectLoadSysMenuUserSelfMenuList(callBack?: (data: SysMenuDO
         // 先设置为：true
         appDispatch(setUserSelfMenuListLoadFlag(true))
 
+        if (manageFlag && !handleManageSignInFlag) {
+
+            SysUserManageSignInFlag().then(res => {
+
+                if (!res.data) {
+
+                    ToastError(ManageSignInToastError)
+                    SignOut()
+
+                }
+
+            })
+
+        }
+
         // 加载菜单
         SysMenuUserSelfMenuList().then(res => {
 
@@ -182,7 +242,7 @@ export function UseEffectLoadSysMenuUserSelfMenuList(callBack?: (data: SysMenuDO
 
         })
 
-    }, [])
+    }
 
 }
 

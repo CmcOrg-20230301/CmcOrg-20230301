@@ -19,6 +19,7 @@ import {GetTenantIdFromStorage, SearchTransform, SetTenantIdToStorage} from "@/u
 import {SignOut} from "@/util/UserUtil";
 import CommonConstant from "@/model/constant/CommonConstant";
 import {ItemType} from "antd/es/menu/hooks/useItems";
+import PathConstant from "@/model/constant/PathConstant.ts";
 
 const TableColumnList = (currentForm: React.MutableRefObject<SysTenantInsertOrUpdateDTO>, setFormOpen: React.Dispatch<React.SetStateAction<boolean>>, actionRef: React.RefObject<ActionType | undefined>): ProColumns<SysTenantDO>[] => [
 
@@ -64,7 +65,7 @@ const TableColumnList = (currentForm: React.MutableRefObject<SysTenantInsertOrUp
 
                 SetTenantIdToStorage(entity.id!);
 
-                SignOut();
+                SignOut(undefined, `${PathConstant.SIGN_IN_PATH}?tenantId=${entity.id!}`);
 
             }}>{entity.id}</a>,
 

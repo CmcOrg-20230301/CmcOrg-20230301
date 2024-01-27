@@ -11,9 +11,6 @@ import {SysMenuDO} from "@/api/http/SysMenu.ts";
 import type {To} from "@remix-run/router";
 import type {NavigateOptions} from "react-router/dist/lib/context";
 
-// 页面布局集合
-const LayoutRouterOriginArr = [ManualRouterName.AdminLayout, ManualRouterName.BlankLayout];
-
 let appNav: NavigateFunction
 
 export function GetAppNav() {
@@ -146,7 +143,10 @@ function UpdateLayoutChildrenRouter(setElement: React.Dispatch<React.SetStateAct
 
     })
 
-    LayoutRouterOriginArr.forEach(item => {
+    const layoutRouterOriginArr = [ManualRouterName.AdminLayout, ManualRouterName.BlankLayout]
+
+    // 页面布局集合
+    layoutRouterOriginArr.forEach(item => {
 
         routerArr.push(
             <Route

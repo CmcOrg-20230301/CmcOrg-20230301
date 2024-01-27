@@ -21,8 +21,9 @@ export interface UserSelfInfoVO {
     wxOpenId?: string // 微信 openId，会脱敏
     avatarFileId?: string // 头像 fileId（文件主键 id），format：int64
     wxAppId?: string // 微信 appId，会脱敏
-    singleSignInFlag?: boolean // 是否设置了：统一登录
     bio?: string // 个人简介
+    singleSignInPhoneFlag?: boolean // 是否设置了：统一登录：手机
+    singleSignInWxFlag?: boolean // 是否设置了：统一登录：微信
     phone?: string // 手机号码，会脱敏
     createTime?: string // 账号注册时间，format：date-time
     signInName?: string // 登录名，会脱敏

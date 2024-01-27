@@ -4,19 +4,37 @@ import {Validate} from "@/util/ValidatorUtil.ts";
 import {ToastSuccess} from "@/util/ToastUtil.ts";
 import React from "react";
 import {
-    SignPhoneSetWx,
-    SignPhoneSetWxGetQrCodeSceneFlag,
-    SignPhoneSetWxGetQrCodeUrl,
-    SignPhoneSetWxSendCodePhone
+    UserSelfSetSingleSignInWxModalTitle,
+    UserSelfUpdateSingleSignInWxModalTitle
+} from "@/page/user/Self/UserSelfSetting.tsx";
+import {UserSelfInfoVO} from "@/api/http/UserSelf.ts";
+import PathConstant from "@/model/constant/PathConstant.ts";
+import {
+    SignPhoneSetSingleSignInWx,
+    SignPhoneSetSingleSignInWxGetQrCodeSceneFlag,
+    SignPhoneSetSingleSignInWxGetQrCodeUrl,
+    SignPhoneSetSingleSignInWxSendCode
 } from "@/api/http/SignPhone.ts";
 
-export default function () {
+interface ISetSingleSignInWxByPhoneModalForm {
+
+    userSelfInfo: UserSelfInfoVO
+
+}
+
+export default function (props: ISetSingleSignInWxByPhoneModalForm) {
 
     return <>
 
-        <SetWxModalForm setWxGetQrCodeUrl={SignPhoneSetWxGetQrCodeUrl}
-                        setWxGetQrCodeSceneFlag={SignPhoneSetWxGetQrCodeSceneFlag}
-                        setWx={SignPhoneSetWx}
+        <SetWxModalForm setWxGetQrCodeUrl={SignPhoneSetSingleSignInWxGetQrCodeUrl}
+                        setWxGetQrCodeSceneFlag={SignPhoneSetSingleSignInWxGetQrCodeSceneFlag}
+                        setWx={SignPhoneSetSingleSignInWx}
+
+                        title={props.userSelfInfo.singleSignInWxFlag ? UserSelfUpdateSingleSignInWxModalTitle : UserSelfSetSingleSignInWxModalTitle}
+
+                        label={"统一登录微信扫码"}
+
+                        signOutPath={PathConstant.SINGLE_SIGN_IN_PATH}
 
                         formItemArr={formRef => [
 
@@ -37,7 +55,7 @@ export default function () {
 
                                 onGetCaptcha={async () => {
 
-                                    await SignPhoneSetWxSendCodePhone().then(res => {
+                                    await SignPhoneSetSingleSignInWxSendCode().then(res => {
 
                                         ToastSuccess(res.msg)
 

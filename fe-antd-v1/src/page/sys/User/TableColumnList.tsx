@@ -188,6 +188,13 @@ const TableColumnList = (currentForm: React.MutableRefObject<SysUserInsertOrUpda
     },
 
     {
+        title: '后台登录',
+        dataIndex: 'manageSignInFlag',
+        valueEnum: YesNoDict,
+        width: 100,
+    },
+
+    {
 
         title: '操作',
         dataIndex: 'option',

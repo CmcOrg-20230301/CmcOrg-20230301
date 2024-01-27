@@ -99,9 +99,9 @@ export default function () {
             }}
 
             required
-            label="旧手机验证码"
+            label="当前手机验证码"
             name="oldPhoneCode"
-            placeholder={"请输入旧手机验证码"}
+            placeholder={"请输入当前手机验证码"}
             rules={[{validator: Validate.code.validator}]}
 
             onGetCaptcha={async () => {

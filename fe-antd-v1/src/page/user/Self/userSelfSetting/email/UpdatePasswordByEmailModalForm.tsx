@@ -53,8 +53,8 @@ export default function () {
                     allowClear: true,
                 }}
                 required
-                label="邮箱验证码"
-                placeholder={'请输入邮箱验证码'}
+                label="当前邮箱验证码"
+                placeholder={'请输入当前邮箱验证码'}
                 name="code"
                 rules={[{validator: Validate.code.validator}]}
 

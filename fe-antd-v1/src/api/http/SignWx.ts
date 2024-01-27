@@ -41,6 +41,11 @@ export function SignWxSignInGetQrCodeUrl(form: UserSignBaseDTO, config?: AxiosRe
     return $http.myPost<GetQrCodeVO>('/sign/wx/sign/in/getQrCodeUrl', form, config)
 }
 
+// 设置统一登录：微信：获取当前微信的二维码是否已经被扫描
+export function SignWxSetSingleSignInWxGetQrCodeSceneFlagCurrent(form: NotNullId, config?: AxiosRequestConfig) {
+    return $http.myPost<SysQrCodeSceneBindVO>('/sign/wx/setSingleSignIn/wx/getQrCodeSceneFlag/current', form, config)
+}
+
 // 修改微信：获取新的二维码是否已经被扫描
 export function SignWxUpdateWxGetQrCodeSceneFlagNew(form: NotNullId, config?: AxiosRequestConfig) {
     return $http.myPost<SysQrCodeSceneBindVO>('/sign/wx/updateWx/getQrCodeSceneFlag/new', form, config)
@@ -51,9 +56,19 @@ export function SignWxSetSignInNameGetQrCodeSceneFlag(form: NotNullId, config?: 
     return $http.myPost<SysQrCodeSceneBindVO>('/sign/wx/setSignInName/getQrCodeSceneFlag', form, config)
 }
 
-// 设置统一登录：获取统一登录微信的二维码地址
-export function SignWxSetSingleSignInGetQrCodeUrlSingleSignIn(config?: AxiosRequestConfig) {
-    return $http.myPost<GetQrCodeVO>('/sign/wx/setSingleSignIn/getQrCodeUrl/singleSignIn', undefined, config)
+// 设置统一登录：手机验证码：获取当前微信的二维码是否已经被扫描
+export function SignWxSetSingleSignInPhoneGetQrCodeSceneFlagCurrent(form: NotNullId, config?: AxiosRequestConfig) {
+    return $http.myPost<SysQrCodeSceneBindVO>('/sign/wx/setSingleSignIn/phone/getQrCodeSceneFlag/current', form, config)
+}
+
+export interface SignWxSetSingleSignInWxDTO {
+    singleSignInQrCodeId?: string // 统一登录微信的二维码 id，required：true，format：int64
+    currentQrCodeId?: string // 当前微信的二维码 id，required：true，format：int64
+}
+
+// 设置统一登录：微信
+export function SignWxSetSingleSignInWx(form: SignWxSetSingleSignInWxDTO, config?: AxiosRequestConfig) {
+    return $http.myPost<SysQrCodeSceneBindVO>('/sign/wx/setSingleSignIn/wx', form, config)
 }
 
 export interface SignWxUpdateEmailDTO {
@@ -102,14 +117,20 @@ export function SignWxUpdateEmailGetQrCodeSceneFlag(form: NotNullId, config?: Ax
     return $http.myPost<SysQrCodeSceneBindVO>('/sign/wx/updateEmail/getQrCodeSceneFlag', form, config)
 }
 
-// 单点登录：扫码登录：获取二维码
-export function SignWxSignInSingleGetQrCodeUrl(config?: AxiosRequestConfig) {
-    return $http.myPost<GetQrCodeVO>('/sign/wx/sign/in/single/getQrCodeUrl', undefined, config)
-}
-
 // 修改登录名：获取二维码是否已经被扫描
 export function SignWxUpdateSignInNameGetQrCodeSceneFlag(form: NotNullId, config?: AxiosRequestConfig) {
     return $http.myPost<SysQrCodeSceneBindVO>('/sign/wx/updateSignInName/getQrCodeSceneFlag', form, config)
+}
+
+export interface SignWxSetSingleSignInPhoneDTO {
+    singleSignInPhone?: string // 统一登录的手机号码，正则表达式：^(13[0-9]|14[01456879]|15[0-35-9]|16[2567]|17[0-8]|18[0-9]|19[0-35-9])\d{8}$，maxLength：100，minLength：0，required：true
+    singleSignInPhoneCode?: string // 统一登录的手机验证码，正则表达式：^[0-9]{6}$，required：true
+    id?: string // 主键 id，required：true，format：int64
+}
+
+// 设置统一登录：手机验证码
+export function SignWxSetSingleSignInPhone(form: SignWxSetSingleSignInPhoneDTO, config?: AxiosRequestConfig) {
+    return $http.myPost<SysQrCodeSceneBindVO>('/sign/wx/setSingleSignIn/phone', form, config)
 }
 
 export interface SignInMiniProgramPhoneCodeDTO {
@@ -140,6 +161,11 @@ export function SignWxSignInBrowserCode(form: SignInBrowserCodeDTO, config?: Axi
     return $http.myPost<SignInVO>('/sign/wx/sign/in/browser/code', form, config)
 }
 
+// 设置统一登录：微信：获取统一登录微信的二维码地址
+export function SignWxSetSingleSignInWxGetQrCodeUrl(config?: AxiosRequestConfig) {
+    return $http.myPost<GetQrCodeVO>('/sign/wx/setSingleSignIn/wx/getQrCodeUrl', undefined, config)
+}
+
 export interface SignWxSetPhoneDTO {
     code?: string // 手机验证码，正则表达式：^[0-9]{6}$，required：true
     phone?: string // 手机号码，正则表达式：^(13[0-9]|14[01456879]|15[0-35-9]|16[2567]|17[0-8]|18[0-9]|19[0-35-9])\d{8}$，maxLength：100，minLength：0，required：true
@@ -149,21 +175,6 @@ export interface SignWxSetPhoneDTO {
 // 设置手机
 export function SignWxSetPhone(form: SignWxSetPhoneDTO, config?: AxiosRequestConfig) {
     return $http.myPost<SysQrCodeSceneBindVO>('/sign/wx/setPhone', form, config)
-}
-
-export interface SignWxSetSingleSignInDTO {
-    singleSignInQrCodeId?: string // 统一登录微信的二维码 id，required：true，format：int64
-    currentQrCodeId?: string // 当前微信的二维码 id，required：true，format：int64
-}
-
-// 设置统一登录
-export function SignWxSetSingleSignIn(form: SignWxSetSingleSignInDTO, config?: AxiosRequestConfig) {
-    return $http.myPost<SysQrCodeSceneBindVO>('/sign/wx/setSingleSignIn', form, config)
-}
-
-// 设置统一登录：获取统一登录微信的二维码是否已经被扫描
-export function SignWxSetSingleSignInGetQrCodeSceneFlagSingleSignIn(form: NotNullId, config?: AxiosRequestConfig) {
-    return $http.myPost<SysQrCodeSceneBindVO>('/sign/wx/setSingleSignIn/getQrCodeSceneFlag/singleSignIn', form, config)
 }
 
 // 修改微信：获取旧的二维码地址
@@ -179,6 +190,20 @@ export function SignWxSetEmailGetQrCodeUrl(config?: AxiosRequestConfig) {
 // 扫码登录：通过二维码 id
 export function SignWxSignInByQrCodeId(form: NotNullId, config?: AxiosRequestConfig) {
     return $http.myPost<SignInVO>('/sign/wx/sign/in/byQrCodeId', form, config)
+}
+
+export interface SignWxSetSingleSignInPhoneSendCodeDTO {
+    singleSignInPhone?: string // 统一登录的手机号码，正则表达式：^(13[0-9]|14[01456879]|15[0-35-9]|16[2567]|17[0-8]|18[0-9]|19[0-35-9])\d{8}$，maxLength：100，minLength：0，required：true
+}
+
+// 设置统一登录：手机验证码：发送验证码
+export function SignWxSetSingleSignInPhoneSendCode(form: SignWxSetSingleSignInPhoneSendCodeDTO, config?: AxiosRequestConfig) {
+    return $http.myPost<string>('/sign/wx/setSingleSignIn/phone/sendCode', form, config)
+}
+
+// 设置统一登录：微信：获取当前微信的二维码地址
+export function SignWxSetSingleSignInWxGetQrCodeUrlCurrent(config?: AxiosRequestConfig) {
+    return $http.myPost<GetQrCodeVO>('/sign/wx/setSingleSignIn/wx/getQrCodeUrl/current', undefined, config)
 }
 
 // 账号注销-获取二维码
@@ -211,14 +236,14 @@ export function SignWxUpdateEmailGetQrCodeUrl(config?: AxiosRequestConfig) {
     return $http.myPost<GetQrCodeVO>('/sign/wx/updateEmail/getQrCodeUrl', undefined, config)
 }
 
+// 设置统一登录：手机验证码：获取当前微信的二维码地址
+export function SignWxSetSingleSignInPhoneGetQrCodeUrlCurrent(config?: AxiosRequestConfig) {
+    return $http.myPost<GetQrCodeVO>('/sign/wx/setSingleSignIn/phone/getQrCodeUrl/current', undefined, config)
+}
+
 // 浏览器：微信 code登录，可以获取用户的基础信息
 export function SignWxSignInBrowserCodeUserInfo(form: SignInBrowserCodeDTO, config?: AxiosRequestConfig) {
     return $http.myPost<SignInVO>('/sign/wx/sign/in/browser/code/userInfo', form, config)
-}
-
-// 设置统一登录：获取当前微信的二维码地址
-export function SignWxSetSingleSignInGetQrCodeUrlCurrent(config?: AxiosRequestConfig) {
-    return $http.myPost<GetQrCodeVO>('/sign/wx/setSingleSignIn/getQrCodeUrl/current', undefined, config)
 }
 
 export interface SignWxUpdateWxDTO {
@@ -231,6 +256,11 @@ export function SignWxUpdateWx(form: SignWxUpdateWxDTO, config?: AxiosRequestCon
     return $http.myPost<SysQrCodeSceneBindVO>('/sign/wx/updateWx', form, config)
 }
 
+// 设置统一登录：微信：获取统一登录微信的二维码是否已经被扫描
+export function SignWxSetSingleSignInWxGetQrCodeSceneFlag(form: NotNullId, config?: AxiosRequestConfig) {
+    return $http.myPost<SysQrCodeSceneBindVO>('/sign/wx/setSingleSignIn/wx/getQrCodeSceneFlag', form, config)
+}
+
 // 修改密码-获取二维码
 export function SignWxUpdatePasswordGetQrCodeUrl(config?: AxiosRequestConfig) {
     return $http.myPost<GetQrCodeVO>('/sign/wx/updatePassword/getQrCodeUrl', undefined, config)
@@ -239,11 +269,6 @@ export function SignWxUpdatePasswordGetQrCodeUrl(config?: AxiosRequestConfig) {
 // 账号注销
 export function SignWxSignDelete(form: NotNullId, config?: AxiosRequestConfig) {
     return $http.myPost<SysQrCodeSceneBindVO>('/sign/wx/signDelete', form, config)
-}
-
-// 单点登录：扫码登录：通过二维码 id
-export function SignWxSignInSingleByQrCodeId(form: NotNullId, config?: AxiosRequestConfig) {
-    return $http.myPost<SignInVO>('/sign/wx/sign/in/single/byQrCodeId', form, config)
 }
 
 export interface SignWxUpdateEmailSendCodeDTO {
@@ -299,11 +324,6 @@ export function SignWxSetEmailGetQrCodeSceneFlag(form: NotNullId, config?: Axios
 // 设置登录名-获取二维码
 export function SignWxSetSignInNameGetQrCodeUrl(config?: AxiosRequestConfig) {
     return $http.myPost<GetQrCodeVO>('/sign/wx/setSignInName/getQrCodeUrl', undefined, config)
-}
-
-// 设置统一登录：获取当前微信的二维码是否已经被扫描
-export function SignWxSetSingleSignInGetQrCodeSceneFlagCurrent(form: NotNullId, config?: AxiosRequestConfig) {
-    return $http.myPost<SysQrCodeSceneBindVO>('/sign/wx/setSingleSignIn/getQrCodeSceneFlag/current', form, config)
 }
 
 export interface SignWxSetPhoneSendCodeDTO {

@@ -96,7 +96,7 @@ export interface GetQrCodeVO {
     qrCodeUrl?: string // 二维码的 url地址
 }
 
-export interface SysTenantConfigurationByIdVO {
+export interface SysSignConfigurationVO {
     emailSignUpEnable?: boolean // 是否启用：邮箱注册功能，默认启用
     signInNameSignUpEnable?: boolean // 是否启用：用户名注册功能，默认启用
     wxQrCodeSignUp?: GetQrCodeVO // null
@@ -105,7 +105,7 @@ export interface SysTenantConfigurationByIdVO {
 
 // 通过主键id，获取租户相关的配置
 export function SysTenantGetConfigurationById(form: NotNullLong, config?: AxiosRequestConfig) {
-    return $http.myPost<SysTenantConfigurationByIdVO>('/sys/tenant/getConfigurationById', form, config)
+    return $http.myPost<SysSignConfigurationVO>('/sys/tenant/getConfigurationById', form, config)
 }
 
 // 通过主键id，获取租户后台管理系统名

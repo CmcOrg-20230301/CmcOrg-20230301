@@ -42,6 +42,9 @@ export interface ISetWxModalForm {
     // 需要重新扫码时
     reQrCodeScene?: () => void
 
+    // 退出登录时，需要跳转的页面
+    signOutPath?: string
+
 }
 
 export default function (props: ISetWxModalForm) {
@@ -237,7 +240,7 @@ export default function (props: ISetWxModalForm) {
 
                         } else {
 
-                            SignOut()
+                            SignOut(undefined, props.signOutPath)
                             ToastSuccess(res.msg)
 
                         }
@@ -267,7 +270,7 @@ export default function (props: ISetWxModalForm) {
 
             }
 
-            <Form.Item label={props.label || "微信扫码"} required={true}>
+            <Form.Item label={props.label || "当前微信扫码"} required={true}>
 
                 {
 

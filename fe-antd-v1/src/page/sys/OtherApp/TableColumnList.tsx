@@ -105,13 +105,6 @@ const TableColumnList = (currentForm: React.MutableRefObject<SysOtherAppInsertOr
         }
     },
 
-    {
-        title: '单点登录',
-        dataIndex: 'singleSignInFlag',
-        valueEnum: YesNoDict,
-        width: 90,
-    },
-
     {title: '备注', dataIndex: 'remark', ellipsis: true, width: 120,},
 
     {

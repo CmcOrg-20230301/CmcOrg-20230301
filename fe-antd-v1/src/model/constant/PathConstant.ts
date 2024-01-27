@@ -1,6 +1,6 @@
 export default {
 
-    SINGLE_SIGN_IN_PATH: '/single/sign/in', // 单点登录
+    SINGLE_SIGN_IN_PATH: '/single/sign/in', // 统一登录
 
     SIGN_IN_PATH: '/sign/in',
 
