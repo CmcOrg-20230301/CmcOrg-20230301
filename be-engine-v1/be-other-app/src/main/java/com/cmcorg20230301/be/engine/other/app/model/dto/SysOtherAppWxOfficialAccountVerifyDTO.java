@@ -3,7 +3,7 @@ package com.cmcorg20230301.be.engine.other.app.model.dto;
 import lombok.Data;
 
 @Data
-public class SysOtherAppOfficialAccountWxVerifyDTO {
+public class SysOtherAppWxOfficialAccountVerifyDTO {
 
     private String signature;
 

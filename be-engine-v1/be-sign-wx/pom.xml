@@ -10,7 +10,7 @@
     </parent>
 
     <artifactId>be-sign-wx</artifactId>
-    <description>微信小程序登录注册</description>
+    <description>微信登录注册</description>
 
     <dependencies>
 

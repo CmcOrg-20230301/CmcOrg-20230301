@@ -5,7 +5,7 @@ import com.cmcorg20230301.be.engine.security.model.entity.SysUserDO;
 import lombok.Data;
 
 @Data
-public class SysOtherAppOfficialAccountWxReceiveMessageDTO {
+public class SysOtherAppWxOfficialAccountReceiveMessageDTO {
 
     // 由程序赋值的额外属性 ↓
 

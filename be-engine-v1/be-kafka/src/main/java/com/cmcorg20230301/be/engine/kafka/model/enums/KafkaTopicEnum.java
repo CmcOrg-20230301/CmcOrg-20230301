@@ -13,7 +13,7 @@ public enum KafkaTopicEnum implements IKafkaTopic {
 
     // 第三方应用相关 ↓
 
-    SYS_OTHER_APP_OFFICIAL_ACCOUNT_WX_RECEIVE_MESSAGE_TOPIC, // 微信公众号接收到消息之后，发送需要处理的对象 topic
+    SYS_OTHER_APP_WX_OFFICIAL_ACCOUN_RECEIVE_MESSAGE_TOPIC, // 微信公众号接收到消息之后，发送需要处理的对象 topic
 
     // 第三方应用相关 ↑
 

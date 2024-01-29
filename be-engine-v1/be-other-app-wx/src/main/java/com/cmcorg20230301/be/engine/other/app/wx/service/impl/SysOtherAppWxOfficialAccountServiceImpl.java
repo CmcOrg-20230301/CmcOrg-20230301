@@ -9,11 +9,11 @@ import cn.hutool.json.JSONUtil;
 import com.cmcorg20230301.be.engine.kafka.util.KafkaUtil;
 import com.cmcorg20230301.be.engine.model.model.constant.BaseConstant;
 import com.cmcorg20230301.be.engine.model.model.constant.LogTopicConstant;
-import com.cmcorg20230301.be.engine.other.app.model.dto.SysOtherAppOfficialAccountWxReceiveMessageDTO;
-import com.cmcorg20230301.be.engine.other.app.model.dto.SysOtherAppOfficialAccountWxVerifyDTO;
+import com.cmcorg20230301.be.engine.other.app.model.dto.SysOtherAppWxOfficialAccountReceiveMessageDTO;
+import com.cmcorg20230301.be.engine.other.app.model.dto.SysOtherAppWxOfficialAccountVerifyDTO;
 import com.cmcorg20230301.be.engine.other.app.model.vo.WxOffiaccountReceiveMessageVO;
 import com.cmcorg20230301.be.engine.other.app.properties.SysOtherAppOfficialAccountProperties;
-import com.cmcorg20230301.be.engine.other.app.wx.service.SysOtherAppOfficialAccountWxService;
+import com.cmcorg20230301.be.engine.other.app.wx.service.SysOtherAppWxOfficialAccountService;
 import com.cmcorg20230301.be.engine.redisson.model.enums.BaseRedisKeyEnum;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -30,8 +30,8 @@ import java.util.Collections;
 import java.util.List;
 
 @Service
-@Slf4j(topic = LogTopicConstant.OTHER_APP_OFFICIAL_ACCOUNT_WX)
-public class SysOtherAppOfficialAccountWxServiceImpl implements SysOtherAppOfficialAccountWxService {
+@Slf4j(topic = LogTopicConstant.OTHER_APP_WX_OFFICIAL_ACCOUNT)
+public class SysOtherAppWxOfficialAccountServiceImpl implements SysOtherAppWxOfficialAccountService {
 
     @Resource
     SysOtherAppOfficialAccountProperties sysOtherAppOfficialAccountProperties;
@@ -43,7 +43,7 @@ public class SysOtherAppOfficialAccountWxServiceImpl implements SysOtherAppOffic
      * 微信公众号 token验证
      */
     @Override
-    public String verify(SysOtherAppOfficialAccountWxVerifyDTO dto) {
+    public String verify(SysOtherAppWxOfficialAccountVerifyDTO dto) {
 
         List<String> list = new ArrayList<>();
 
@@ -80,8 +80,8 @@ public class SysOtherAppOfficialAccountWxServiceImpl implements SysOtherAppOffic
 
         Document document = XmlUtil.readXML(request.getInputStream());
 
-        SysOtherAppOfficialAccountWxReceiveMessageDTO dto =
-                XmlUtil.xmlToBean(document.getDocumentElement(), SysOtherAppOfficialAccountWxReceiveMessageDTO.class);
+        SysOtherAppWxOfficialAccountReceiveMessageDTO dto =
+                XmlUtil.xmlToBean(document.getDocumentElement(), SysOtherAppWxOfficialAccountReceiveMessageDTO.class);
 
         String content = dto.getContent();
 
@@ -105,13 +105,13 @@ public class SysOtherAppOfficialAccountWxServiceImpl implements SysOtherAppOffic
         log.info("收到消息：{}，dto：{}，msgIdStr：{}", XmlUtil.toStr(document), JSONUtil.toJsonStr(dto), msgIdStr);
 
         String redisKey =
-                BaseRedisKeyEnum.PRE_SYS_OTHER_APP_OFFICIAL_ACCOUNT_WX_RECEIVE_MESSAGE_ID.name() + msgIdStr;
+                BaseRedisKeyEnum.PRE_SYS_OTHER_APP_WX_OFFICIAL_ACCOUNT_RECEIVE_MESSAGE_ID.name() + msgIdStr;
 
         redissonClient.<String>getBucket(redisKey)
                 .set("", Duration.ofMillis(BaseConstant.SHORT_CODE_EXPIRE_TIME));
 
         // 发送给：kafka进行处理
-        KafkaUtil.sendSysOtherAppOfficialAccountWxReceiveMessageDTO(dto);
+        KafkaUtil.sendSysOtherAppWxOfficialAccountReceiveMessageDTO(dto);
 
         return "";
 
@@ -121,7 +121,7 @@ public class SysOtherAppOfficialAccountWxServiceImpl implements SysOtherAppOffic
      * 处理：返回的消息为微信格式
      */
     @NotNull
-    public static String handleReturnContent(SysOtherAppOfficialAccountWxReceiveMessageDTO dto, String fromUserName,
+    public static String handleReturnContent(SysOtherAppWxOfficialAccountReceiveMessageDTO dto, String fromUserName,
                                              String returnContent) {
 
         WxOffiaccountReceiveMessageVO wxOffiaccountReceiveMessageVO = new WxOffiaccountReceiveMessageVO();

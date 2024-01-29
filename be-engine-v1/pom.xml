@@ -82,6 +82,7 @@
         <module>be-profit-share</module>
         <module>be-other-app</module>
         <module>be-other-app-wx</module>
+        <module>be-other-app-wx-work</module>
         <module>be-other-app-baidu</module>
         <module>be-im-session</module>
         <module>be-sign-single</module>
@@ -101,6 +102,13 @@
             <dependency>
                 <groupId>${cmcorg.groupId}</groupId>
                 <artifactId>be-other-app-baidu</artifactId>
+                <version>${cmcorg.version}</version>
+            </dependency>
+
+            <!-- be-other-app-wx-work -->
+            <dependency>
+                <groupId>${cmcorg.groupId}</groupId>
+                <artifactId>be-other-app-wx-work</artifactId>
                 <version>${cmcorg.version}</version>
             </dependency>
 

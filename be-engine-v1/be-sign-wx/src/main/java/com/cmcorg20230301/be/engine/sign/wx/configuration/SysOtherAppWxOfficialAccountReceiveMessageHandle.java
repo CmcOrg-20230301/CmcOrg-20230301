@@ -7,13 +7,13 @@ import com.baomidou.mybatisplus.extension.toolkit.ChainWrappers;
 import com.cmcorg20230301.be.engine.model.model.constant.LogTopicConstant;
 import com.cmcorg20230301.be.engine.other.app.mapper.SysOtherAppMapper;
 import com.cmcorg20230301.be.engine.other.app.mapper.SysOtherAppOfficialAccountMenuMapper;
-import com.cmcorg20230301.be.engine.other.app.model.dto.SysOtherAppOfficialAccountWxReceiveMessageDTO;
+import com.cmcorg20230301.be.engine.other.app.model.dto.SysOtherAppWxOfficialAccountReceiveMessageDTO;
 import com.cmcorg20230301.be.engine.other.app.model.entity.SysOtherAppDO;
 import com.cmcorg20230301.be.engine.other.app.model.entity.SysOtherAppOfficialAccountMenuDO;
 import com.cmcorg20230301.be.engine.other.app.model.enums.SysOtherAppOfficialAccountMenuButtonTypeEnum;
 import com.cmcorg20230301.be.engine.other.app.model.enums.SysOtherAppOfficialAccountMenuTypeEnum;
 import com.cmcorg20230301.be.engine.other.app.model.enums.SysOtherAppTypeEnum;
-import com.cmcorg20230301.be.engine.other.app.model.interfaces.ISysOtherAppOfficialAccountWxReceiveMessageHandle;
+import com.cmcorg20230301.be.engine.other.app.model.interfaces.ISysOtherAppWxOfficialAccountReceiveMessageHandle;
 import com.cmcorg20230301.be.engine.other.app.wx.util.WxUtil;
 import com.cmcorg20230301.be.engine.redisson.model.enums.BaseRedisKeyEnum;
 import com.cmcorg20230301.be.engine.security.exception.BaseBizCodeEnum;
@@ -46,8 +46,8 @@ import java.util.List;
 import java.util.Map;
 
 //@Component
-@Slf4j(topic = LogTopicConstant.OTHER_APP_OFFICIAL_ACCOUNT_WX)
-public class SysOtherAppOfficialAccountWxReceiveMessageHandle implements ISysOtherAppOfficialAccountWxReceiveMessageHandle {
+@Slf4j(topic = LogTopicConstant.OTHER_APP_WX_OFFICIAL_ACCOUNT)
+public class SysOtherAppWxOfficialAccountReceiveMessageHandle implements ISysOtherAppWxOfficialAccountReceiveMessageHandle {
 
     @Resource
     SysUserMapper sysUserMapper;
@@ -65,7 +65,7 @@ public class SysOtherAppOfficialAccountWxReceiveMessageHandle implements ISysOth
      * 处理消息
      */
     @Override
-    public void handle(SysOtherAppOfficialAccountWxReceiveMessageDTO dto) {
+    public void handle(SysOtherAppWxOfficialAccountReceiveMessageDTO dto) {
 
         SysOtherAppDO sysOtherAppDO = ChainWrappers.lambdaQueryChain(sysOtherAppMapper).eq(SysOtherAppDO::getOpenId, dto.getToUserName()).eq(SysOtherAppDO::getType, SysOtherAppTypeEnum.WX_OFFICIAL_ACCOUNT.getCode()).one();
 
@@ -118,7 +118,7 @@ public class SysOtherAppOfficialAccountWxReceiveMessageHandle implements ISysOth
     /**
      * 新增一个用户
      */
-    private SysUserDO signInUser(SysOtherAppOfficialAccountWxReceiveMessageDTO dto, SysOtherAppDO sysOtherAppDO) {
+    private SysUserDO signInUser(SysOtherAppWxOfficialAccountReceiveMessageDTO dto, SysOtherAppDO sysOtherAppDO) {
 
         CallBack<SysUserDO> sysUserDoCallBack = new CallBack<>();
 
@@ -127,7 +127,7 @@ public class SysOtherAppOfficialAccountWxReceiveMessageHandle implements ISysOth
 
             SysUserInfoDO sysUserInfoDO = SignWxServiceImpl.getWxSysUserInfoDO();
 
-            sysUserInfoDO.setSignUpType(SysRequestCategoryEnum.OFFICIAL_ACCOUNT_WX);
+            sysUserInfoDO.setSignUpType(SysRequestCategoryEnum.WX_OFFICIAL_ACCOUNT);
 
             return sysUserInfoDO;
 
@@ -145,7 +145,7 @@ public class SysOtherAppOfficialAccountWxReceiveMessageHandle implements ISysOth
      * 处理：扫码二维码不自动注册的操作
      */
     @Nullable
-    private SysUserDO handleQrCodeSceneNotAutoSignUp(SysOtherAppOfficialAccountWxReceiveMessageDTO dto, @Nullable SysUserDO sysUserDO, SysOtherAppDO sysOtherAppDO) {
+    private SysUserDO handleQrCodeSceneNotAutoSignUp(SysOtherAppWxOfficialAccountReceiveMessageDTO dto, @Nullable SysUserDO sysUserDO, SysOtherAppDO sysOtherAppDO) {
 
         if (!"event".equals(dto.getMsgType())) {
             return sysUserDO;
@@ -197,7 +197,7 @@ public class SysOtherAppOfficialAccountWxReceiveMessageHandle implements ISysOth
     /**
      * 获取：用户数据
      */
-    private SysUserDO getSysUserDO(SysOtherAppOfficialAccountWxReceiveMessageDTO dto) {
+    private SysUserDO getSysUserDO(SysOtherAppWxOfficialAccountReceiveMessageDTO dto) {
 
         return ChainWrappers.lambdaQueryChain(sysUserMapper).eq(SysUserDO::getWxOpenId, dto.getFromUserName()).eq(SysUserDO::getWxAppId, dto.getSysOtherAppDO().getAppId()).one();
 
@@ -206,7 +206,7 @@ public class SysOtherAppOfficialAccountWxReceiveMessageHandle implements ISysOth
     /**
      * 执行
      */
-    private void doHandle(SysOtherAppOfficialAccountWxReceiveMessageDTO dto) {
+    private void doHandle(SysOtherAppWxOfficialAccountReceiveMessageDTO dto) {
 
         if ("event".equals(dto.getMsgType())) {
 
@@ -257,7 +257,7 @@ public class SysOtherAppOfficialAccountWxReceiveMessageHandle implements ISysOth
     /**
      * 处理：订阅消息
      */
-    private void handleEventSubscribe(SysOtherAppOfficialAccountWxReceiveMessageDTO dto) {
+    private void handleEventSubscribe(SysOtherAppWxOfficialAccountReceiveMessageDTO dto) {
 
         // 回复文字内容：给微信公众号
         execTextSend(dto, dto.getSysOtherAppDO().getSubscribeReplyContent());
@@ -281,7 +281,7 @@ public class SysOtherAppOfficialAccountWxReceiveMessageHandle implements ISysOth
     /**
      * 处理：二维码上携带的数据
      */
-    private boolean handleQrCodeSceneValue(SysOtherAppOfficialAccountWxReceiveMessageDTO dto, String qrCodeSceneValue, Map<String, ISysQrCodeSceneType> map) {
+    private boolean handleQrCodeSceneValue(SysOtherAppWxOfficialAccountReceiveMessageDTO dto, String qrCodeSceneValue, Map<String, ISysQrCodeSceneType> map) {
 
         boolean handleFlag = false; // 是否：处理
 
@@ -314,7 +314,7 @@ public class SysOtherAppOfficialAccountWxReceiveMessageHandle implements ISysOth
     /**
      * 处理：点击菜单事件
      */
-    private void handleEventClick(SysOtherAppOfficialAccountWxReceiveMessageDTO dto) {
+    private void handleEventClick(SysOtherAppWxOfficialAccountReceiveMessageDTO dto) {
 
         SysOtherAppOfficialAccountMenuDO sysOtherAppOfficialAccountMenuDO = ChainWrappers.lambdaQueryChain(sysOtherAppOfficialAccountMenuMapper).eq(SysOtherAppOfficialAccountMenuDO::getOtherAppId, dto.getSysOtherAppDO().getId()).eq(BaseEntityNoIdSuper::getTenantId, dto.getSysOtherAppDO().getTenantId()).eq(BaseEntityNoId::getEnableFlag, true) //
                 .eq(SysOtherAppOfficialAccountMenuDO::getType, SysOtherAppOfficialAccountMenuTypeEnum.WX_OFFICIAL_ACCOUNT) //
@@ -332,7 +332,7 @@ public class SysOtherAppOfficialAccountWxReceiveMessageHandle implements ISysOth
     /**
      * 处理：文字消息
      */
-    private void handleTextMsg(SysOtherAppOfficialAccountWxReceiveMessageDTO dto) {
+    private void handleTextMsg(SysOtherAppWxOfficialAccountReceiveMessageDTO dto) {
 
         if (StrUtil.isNotBlank(dto.getSysOtherAppDO().getTextReplyContent())) {
 
@@ -368,7 +368,7 @@ public class SysOtherAppOfficialAccountWxReceiveMessageHandle implements ISysOth
     /**
      * 回复文字内容：给微信公众号
      */
-    public static void execTextSend(SysOtherAppOfficialAccountWxReceiveMessageDTO dto, String content) {
+    public static void execTextSend(SysOtherAppWxOfficialAccountReceiveMessageDTO dto, String content) {
 
         String accessToken = getAccessToken(dto);
 
@@ -381,7 +381,7 @@ public class SysOtherAppOfficialAccountWxReceiveMessageHandle implements ISysOth
      * 获取：微信 accessToken
      */
     @NotNull
-    private static String getAccessToken(SysOtherAppOfficialAccountWxReceiveMessageDTO dto) {
+    private static String getAccessToken(SysOtherAppWxOfficialAccountReceiveMessageDTO dto) {
 
         Long tenantId = dto.getSysUserDO().getTenantId();
 

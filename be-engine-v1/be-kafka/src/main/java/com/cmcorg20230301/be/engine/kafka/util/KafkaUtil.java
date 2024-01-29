@@ -49,11 +49,11 @@ public class KafkaUtil {
     /**
      * 发送消息：socket启用的 topic
      */
-    public static void sendSysOtherAppOfficialAccountWxReceiveMessageDTO(
-            Object sysOtherAppOfficialAccountWxReceiveMessageDTO) {
+    public static void sendSysOtherAppWxOfficialAccountReceiveMessageDTO(
+            Object sysOtherAppWxOfficialAccountReceiveMessageDTO) {
 
-        send(KafkaTopicEnum.SYS_OTHER_APP_OFFICIAL_ACCOUNT_WX_RECEIVE_MESSAGE_TOPIC,
-                sysOtherAppOfficialAccountWxReceiveMessageDTO);
+        send(KafkaTopicEnum.SYS_OTHER_APP_WX_OFFICIAL_ACCOUN_RECEIVE_MESSAGE_TOPIC,
+                sysOtherAppWxOfficialAccountReceiveMessageDTO);
 
     }
 

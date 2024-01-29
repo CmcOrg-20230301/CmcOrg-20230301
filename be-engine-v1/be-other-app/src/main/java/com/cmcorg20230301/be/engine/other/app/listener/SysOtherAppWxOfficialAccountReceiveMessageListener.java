@@ -3,8 +3,8 @@ package com.cmcorg20230301.be.engine.other.app.listener;
 import cn.hutool.core.collection.CollUtil;
 import com.cmcorg20230301.be.engine.kafka.model.enums.KafkaTopicEnum;
 import com.cmcorg20230301.be.engine.model.model.constant.LogTopicConstant;
-import com.cmcorg20230301.be.engine.other.app.model.dto.SysOtherAppOfficialAccountWxReceiveMessageDTO;
-import com.cmcorg20230301.be.engine.other.app.model.interfaces.ISysOtherAppOfficialAccountWxReceiveMessageHandle;
+import com.cmcorg20230301.be.engine.other.app.model.dto.SysOtherAppWxOfficialAccountReceiveMessageDTO;
+import com.cmcorg20230301.be.engine.other.app.model.interfaces.ISysOtherAppWxOfficialAccountReceiveMessageHandle;
 import com.cmcorg20230301.be.engine.redisson.model.enums.BaseRedisKeyEnum;
 import com.cmcorg20230301.be.engine.redisson.util.RedissonUtil;
 import com.cmcorg20230301.be.engine.security.util.KafkaHelper;
@@ -30,28 +30,28 @@ import java.util.stream.Collectors;
 @Component
 @KafkaListener(topics = "#{__listener.TOPIC_LIST}", groupId = "#{kafkaDynamicGroupIdConfiguration.getGroupId()}",
         batch = "true")
-@Slf4j(topic = LogTopicConstant.OTHER_APP_OFFICIAL_ACCOUNT_WX)
-public class SysOtherAppOfficialAccountWxReceiveMessageListener {
+@Slf4j(topic = LogTopicConstant.OTHER_APP_WX_OFFICIAL_ACCOUNT)
+public class SysOtherAppWxOfficialAccountReceiveMessageListener {
 
     public static final List<String> TOPIC_LIST =
-            CollUtil.newArrayList(KafkaTopicEnum.SYS_OTHER_APP_OFFICIAL_ACCOUNT_WX_RECEIVE_MESSAGE_TOPIC.name());
+            CollUtil.newArrayList(KafkaTopicEnum.SYS_OTHER_APP_WX_OFFICIAL_ACCOUN_RECEIVE_MESSAGE_TOPIC.name());
 
     // 目的：Long 转 String，Enum 转 code
     private static ObjectMapper objectMapper;
 
     @Nullable
-    private static List<ISysOtherAppOfficialAccountWxReceiveMessageHandle>
-            iSysOtherAppOfficialAccountWxReceiveMessageHandleList;
+    private static List<ISysOtherAppWxOfficialAccountReceiveMessageHandle>
+            iSysOtherAppWxOfficialAccountReceiveMessageHandleList;
 
     @Resource
     RedissonClient redissonClient;
 
-    public SysOtherAppOfficialAccountWxReceiveMessageListener(ObjectMapper objectMapper,
-                                                              @Nullable List<ISysOtherAppOfficialAccountWxReceiveMessageHandle> iSysOtherAppOfficialAccountWxReceiveMessageHandleList) {
+    public SysOtherAppWxOfficialAccountReceiveMessageListener(ObjectMapper objectMapper,
+                                                              @Nullable List<ISysOtherAppWxOfficialAccountReceiveMessageHandle> iSysOtherAppWxOfficialAccountReceiveMessageHandleList) {
 
-        SysOtherAppOfficialAccountWxReceiveMessageListener.objectMapper = objectMapper;
-        SysOtherAppOfficialAccountWxReceiveMessageListener.iSysOtherAppOfficialAccountWxReceiveMessageHandleList =
-                iSysOtherAppOfficialAccountWxReceiveMessageHandleList;
+        SysOtherAppWxOfficialAccountReceiveMessageListener.objectMapper = objectMapper;
+        SysOtherAppWxOfficialAccountReceiveMessageListener.iSysOtherAppWxOfficialAccountReceiveMessageHandleList =
+                iSysOtherAppWxOfficialAccountReceiveMessageHandleList;
 
     }
 
@@ -64,13 +64,13 @@ public class SysOtherAppOfficialAccountWxReceiveMessageListener {
                 return;
             }
 
-            List<SysOtherAppOfficialAccountWxReceiveMessageDTO> sysOtherAppOfficialAccountWxReceiveMessageDTOList =
+            List<SysOtherAppWxOfficialAccountReceiveMessageDTO> sysOtherAppWxOfficialAccountReceiveMessageDTOList =
 
                     recordList.stream().map(it -> {
 
                         try {
 
-                            return objectMapper.readValue(it, SysOtherAppOfficialAccountWxReceiveMessageDTO.class);
+                            return objectMapper.readValue(it, SysOtherAppWxOfficialAccountReceiveMessageDTO.class);
 
                         } catch (Exception ignored) {
 
@@ -80,17 +80,17 @@ public class SysOtherAppOfficialAccountWxReceiveMessageListener {
 
                     }).filter(Objects::nonNull).collect(Collectors.toList());
 
-            if (CollUtil.isNotEmpty(sysOtherAppOfficialAccountWxReceiveMessageDTOList) && CollUtil.isNotEmpty(
-                    iSysOtherAppOfficialAccountWxReceiveMessageHandleList)) {
+            if (CollUtil.isNotEmpty(sysOtherAppWxOfficialAccountReceiveMessageDTOList) && CollUtil.isNotEmpty(
+                    iSysOtherAppWxOfficialAccountReceiveMessageHandleList)) {
 
                 MyThreadUtil.execute(() -> {
 
-                    for (SysOtherAppOfficialAccountWxReceiveMessageDTO item : sysOtherAppOfficialAccountWxReceiveMessageDTOList) {
+                    for (SysOtherAppWxOfficialAccountReceiveMessageDTO item : sysOtherAppWxOfficialAccountReceiveMessageDTOList) {
 
                         String msgIdStr = item.getMsgIdStr();
 
                         String redisKey =
-                                BaseRedisKeyEnum.PRE_SYS_OTHER_APP_OFFICIAL_ACCOUNT_WX_RECEIVE_MESSAGE_ID.name()
+                                BaseRedisKeyEnum.PRE_SYS_OTHER_APP_WX_OFFICIAL_ACCOUNT_RECEIVE_MESSAGE_ID.name()
                                         + msgIdStr;
 
                         RedissonUtil.doLock(redisKey, () -> {
@@ -103,7 +103,7 @@ public class SysOtherAppOfficialAccountWxReceiveMessageListener {
 
                             TryUtil.tryCatch(() -> {
 
-                                for (ISysOtherAppOfficialAccountWxReceiveMessageHandle subItem : iSysOtherAppOfficialAccountWxReceiveMessageHandleList) {
+                                for (ISysOtherAppWxOfficialAccountReceiveMessageHandle subItem : iSysOtherAppWxOfficialAccountReceiveMessageHandleList) {
 
                                     // 处理消息
                                     subItem.handle(item);
