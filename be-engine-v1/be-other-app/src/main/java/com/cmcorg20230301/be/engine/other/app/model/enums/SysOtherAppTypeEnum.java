@@ -17,6 +17,8 @@ public enum SysOtherAppTypeEnum implements ISysOtherAppType {
 
     WX_OFFICIAL_ACCOUNT(102), // 微信公众号
 
+    WX_WORK(103), // 企业微信
+
     ALI_PAY_PROGRAM(201), // 支付宝小程序
 
     BAI_DU(301), // 百度

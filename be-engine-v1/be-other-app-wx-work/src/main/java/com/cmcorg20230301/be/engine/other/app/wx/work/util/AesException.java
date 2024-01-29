@@ -1,6 +1,5 @@
-﻿package com.cmcorg20230301.be.engine.other.app.wx.work.util;
+package com.cmcorg20230301.be.engine.other.app.wx.work.util;
 
-@SuppressWarnings("serial")
 public class AesException extends Exception {
 
     public final static int OK = 0;

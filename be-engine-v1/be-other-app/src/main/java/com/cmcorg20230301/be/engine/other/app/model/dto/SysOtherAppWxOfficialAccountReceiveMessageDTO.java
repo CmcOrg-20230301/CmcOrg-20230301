@@ -39,7 +39,7 @@ public class SysOtherAppWxOfficialAccountReceiveMessageDTO {
 
         if (getMsgId() == null) {
 
-            msgIdStr = getFromUserName() + getCreateTime();
+            msgIdStr = getToUserName() + getEvent() + getCreateTime();
 
         } else {
 

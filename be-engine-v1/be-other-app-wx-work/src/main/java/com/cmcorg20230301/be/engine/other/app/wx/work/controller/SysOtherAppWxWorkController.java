@@ -31,7 +31,7 @@ public class SysOtherAppWxWorkController {
     }
 
     /**
-     * 微信公众号：推送的消息
+     * 企业微信：推送的消息
      */
     @PostMapping
     public void receiveMessage(HttpServletRequest request) {

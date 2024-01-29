@@ -6,6 +6,10 @@
  * 针对org.apache.commons.codec.binary.Base64，
  * 需要导入架包commons-codec-1.9（或commons-codec-1.8等其他版本）
  * 官方下载地址：http://commons.apache.org/proper/commons-codec/download_codec.cgi
+ * <p>
+ * 针对org.apache.commons.codec.binary.Base64，
+ * 需要导入架包commons-codec-1.9（或commons-codec-1.8等其他版本）
+ * 官方下载地址：http://commons.apache.org/proper/commons-codec/download_codec.cgi
  */
 
 // ------------------------------------------------------------------------
@@ -46,23 +50,20 @@ public class WXBizMsgCrypt {
     Base64 base64 = new Base64();
     byte[] aesKey;
     String token;
-    String receiveid;
 
     /**
      * 构造函数
      * @param token 企业微信后台，开发者设置的token
      * @param encodingAesKey 企业微信后台，开发者设置的EncodingAESKey
-     * @param receiveid, 不同场景含义不同，详见文档
      *
      * @throws AesException 执行失败，请查看该异常的错误码和具体的错误信息
      */
-    public WXBizMsgCrypt(String token, String encodingAesKey, String receiveid) throws AesException {
+    public WXBizMsgCrypt(String token, String encodingAesKey) throws AesException {
         if (encodingAesKey.length() != 43) {
             throw new AesException(AesException.IllegalAesKey);
         }
 
         this.token = token;
-        this.receiveid = receiveid;
         aesKey = Base64.decodeBase64(encodingAesKey + "=");
     }
 
@@ -110,13 +111,11 @@ public class WXBizMsgCrypt {
         byte[] randomStrBytes = randomStr.getBytes(CHARSET);
         byte[] textBytes = text.getBytes(CHARSET);
         byte[] networkBytesOrder = getNetworkBytesOrder(textBytes.length);
-        byte[] receiveidBytes = receiveid.getBytes(CHARSET);
 
         // randomStr + networkBytesOrder + text + receiveid
         byteCollector.addBytes(randomStrBytes);
         byteCollector.addBytes(networkBytesOrder);
         byteCollector.addBytes(textBytes);
-        byteCollector.addBytes(receiveidBytes);
 
         // ... + pad: 使用自定义的填充方式对明文进行补位填充
         byte[] padBytes = PKCS7Encoder.encode(byteCollector.size());
@@ -189,10 +188,6 @@ public class WXBizMsgCrypt {
             throw new AesException(AesException.IllegalBuffer);
         }
 
-        // receiveid不相同的情况
-        if (!from_receiveid.equals(receiveid)) {
-            throw new AesException(AesException.ValidateCorpidError);
-        }
         return xmlContent;
 
     }

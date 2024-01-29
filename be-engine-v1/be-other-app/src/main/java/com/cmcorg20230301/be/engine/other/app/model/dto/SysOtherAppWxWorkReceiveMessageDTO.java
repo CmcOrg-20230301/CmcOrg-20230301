@@ -1,5 +1,6 @@
 package com.cmcorg20230301.be.engine.other.app.model.dto;
 
+import cn.hutool.json.JSONObject;
 import com.cmcorg20230301.be.engine.other.app.model.entity.SysOtherAppDO;
 import com.cmcorg20230301.be.engine.security.model.entity.SysUserDO;
 import lombok.Data;
@@ -51,7 +52,7 @@ public class SysOtherAppWxWorkReceiveMessageDTO {
 
         if (getMsgId() == null) {
 
-            msgIdStr = getFromUserName() + getCreateTime();
+            msgIdStr = getToUserName() + getEvent() + getCreateTime();
 
         } else {
 
@@ -63,9 +64,30 @@ public class SysOtherAppWxWorkReceiveMessageDTO {
 
     }
 
+    private String Event;
+
     /**
      * 企业应用的id，整型。可在应用的设置页面查看
      */
     private Integer AgentID;
+
+    // 微信客服的参数 ↓
+
+    /**
+     * 调用拉取消息接口时，需要传此token，用于校验请求的合法性
+     */
+    private String Token;
+
+    /**
+     * 有新消息的客服账号。可通过sync_msg接口指定open_kfid获取此客服账号的消息
+     */
+    private String OpenKfId;
+
+    /**
+     * 由程序进行赋值：微信客服消息对象
+     */
+    private JSONObject wxKfMsgJsonObject;
+
+    // 微信客服的参数 ↑
 
 }

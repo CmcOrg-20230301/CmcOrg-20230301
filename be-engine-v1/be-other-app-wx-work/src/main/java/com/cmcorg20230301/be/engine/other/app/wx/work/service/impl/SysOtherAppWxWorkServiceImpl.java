@@ -41,10 +41,9 @@ public class SysOtherAppWxWorkServiceImpl implements SysOtherAppWxWorkService {
     public String verify(SysOtherAppWxWorkVerifyDTO dto) {
 
         String sToken = sysOtherAppOfficialAccountProperties.getToken();
-        String sCorpID = sysOtherAppOfficialAccountProperties.getCorpId();
         String sEncodingAESKey = sysOtherAppOfficialAccountProperties.getEncodingAesKey();
 
-        WXBizMsgCrypt wxcpt = new WXBizMsgCrypt(sToken, sEncodingAESKey, sCorpID);
+        WXBizMsgCrypt wxcpt = new WXBizMsgCrypt(sToken, sEncodingAESKey);
 
         String sVerifyMsgSig = dto.getMsg_signature();
 
@@ -60,7 +59,7 @@ public class SysOtherAppWxWorkServiceImpl implements SysOtherAppWxWorkService {
     }
 
     /**
-     * 微信公众号：推送的消息
+     * 企业微信：推送的消息
      */
     @SneakyThrows
     @Override
@@ -73,10 +72,9 @@ public class SysOtherAppWxWorkServiceImpl implements SysOtherAppWxWorkService {
         String sReqData = IoUtil.readUtf8(request.getInputStream());
 
         String sToken = sysOtherAppOfficialAccountProperties.getToken();
-        String sCorpID = sysOtherAppOfficialAccountProperties.getCorpId();
         String sEncodingAESKey = sysOtherAppOfficialAccountProperties.getEncodingAesKey();
 
-        WXBizMsgCrypt wxcpt = new WXBizMsgCrypt(sToken, sEncodingAESKey, sCorpID);
+        WXBizMsgCrypt wxcpt = new WXBizMsgCrypt(sToken, sEncodingAESKey);
 
         String sMsg = wxcpt.DecryptMsg(sReqMsgSig, sReqTimeStamp, sReqNonce, sReqData);
 

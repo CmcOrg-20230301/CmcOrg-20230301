@@ -502,6 +502,10 @@ public class SignUtil {
                                          Enum<? extends IRedisKey> redisKeyEnum, String account, Supplier<SysUserInfoDO> sysUserInfoDOSupplier,
                                          @Nullable Long tenantId, @Nullable Consumer<Map<Enum<? extends IRedisKey>, String>> consumer, @Nullable CallBack<SysUserDO> sysUserDOCallBack) {
 
+        if (StrUtil.isBlank(account)) {
+            ApiResultVO.errorMsg("操作失败：账号信息为空");
+        }
+
         String key = redisKeyEnum + account;
 
         return RedissonUtil.doLock(key, () -> {

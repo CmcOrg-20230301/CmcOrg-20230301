@@ -18,6 +18,7 @@ import com.cmcorg20230301.be.engine.other.app.service.SysOtherAppService;
 import com.cmcorg20230301.be.engine.other.app.wx.model.enums.WxMediaUploadTypeEnum;
 import com.cmcorg20230301.be.engine.other.app.wx.model.vo.*;
 import com.cmcorg20230301.be.engine.redisson.model.enums.BaseRedisKeyEnum;
+import com.cmcorg20230301.be.engine.redisson.util.RedissonUtil;
 import com.cmcorg20230301.be.engine.security.exception.BaseBizCodeEnum;
 import com.cmcorg20230301.be.engine.security.model.entity.BaseEntityNoId;
 import com.cmcorg20230301.be.engine.security.model.entity.BaseEntityNoIdSuper;
@@ -29,8 +30,11 @@ import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.redisson.api.RMap;
+import org.redisson.api.RedissonClient;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.Resource;
 import java.io.File;
 import java.io.InputStream;
 import java.net.URLEncoder;
@@ -45,6 +49,13 @@ public class WxUtil {
 
         WxUtil.sysOtherAppService = sysOtherAppService;
 
+    }
+
+    private static RedissonClient redissonClient;
+
+    @Resource
+    public void setRedissonClient(RedissonClient redissonClient) {
+        WxUtil.redissonClient = redissonClient;
     }
 
     /**
@@ -248,7 +259,7 @@ public class WxUtil {
                 .eq(SysOtherAppDO::getAppId, appId).eq(BaseEntityNoId::getEnableFlag, true).select(SysOtherAppDO::getSecret)
                 .one();
 
-        String errorMessageStr = "accessToken";
+        String errorMessageStr = "accessTokenForWord";
 
         if (sysOtherAppDO == null) {
             ApiResultVO.error(BaseBizCodeEnum.ILLEGAL_REQUEST.getMsg(), errorMessageStr);
@@ -414,6 +425,82 @@ public class WxUtil {
                 .post("https://qyapi.weixin.qq.com/cgi-bin/message/send?access_token=" + accessToken, bodyJsonStr);
 
         log.info("wx-work-sendResult-text：{}，touser：{}，content：{}", sendResultStr, wxOpenId, content);
+
+    }
+
+    /**
+     * 执行：发送文字消息：企业微信客服
+     */
+    public static void doTextSendForWorkKf(String wxOpenId, String accessToken, String content, Integer agentId) {
+
+        MyStrUtil.subWithMaxLengthAndConsumer(content, 600, subContent -> {
+
+            // 执行
+            execDoTextSendForWorkKf(wxOpenId, accessToken, subContent, agentId);
+
+        });
+
+    }
+
+    /**
+     * 执行：发送文字消息
+     * 注意：content的长度不要超过 600，这是微信官方那边的限制，不然会请求出错的
+     * 建议使用：doTextSend，方法，因为该方法会裁减
+     */
+    public static void execDoTextSendForWorkKf(String wxOpenId, String accessToken, String content, Integer openKfId) {
+
+        if (StrUtil.isBlank(content)) {
+            return;
+        }
+
+        String bodyJsonStr = JSONUtil.createObj().set("touser", wxOpenId).set("open_kfid", openKfId).set("msgtype", "text")
+                .set("text", JSONUtil.createObj().set("content", content)).toString();
+
+        String sendResultStr = HttpUtil
+                .post("https://qyapi.weixin.qq.com/cgi-bin/kf/send_msg?access_token=" + accessToken, bodyJsonStr);
+
+        log.info("wx-work-kf-sendResult-text：{}，touser：{}，content：{}", sendResultStr, wxOpenId, content);
+
+    }
+
+    /**
+     * 企业微信：读取消息：最近一条
+     */
+    @NotNull
+    public static JSONObject syncMsgLimit1(String accessToken, Long tenantId, String token, String openKfId, String appId) {
+
+        JSONObject jsonObject = JSONUtil.createObj();
+
+        return RedissonUtil.doLock(BaseRedisKeyEnum.PRE_SYS_WX_WORK_SYNC_MSG.name() + tenantId, () -> {
+
+            RMap<Long, String> rMap = redissonClient.<Long, String>getMap(BaseRedisKeyEnum.PRE_SYS_WX_WORK_SYNC_MSG.name());
+
+            // 上一次调用时返回的 next_cursor，第一次拉取可以不填。若不填，从3天内最早的消息开始返回。
+            String cursor = rMap.get(tenantId);
+
+            if (StrUtil.isNotBlank(cursor)) {
+                jsonObject.set("cursor", cursor);
+            }
+
+
+            String bodyJsonStr = jsonObject.set("token", token).set("limit", 1)
+                    .set("open_kfid", openKfId).toString();
+
+            String sendResultStr = HttpUtil
+                    .post("https://qyapi.weixin.qq.com/cgi-bin/kf/sync_msg?access_token=" + accessToken, bodyJsonStr);
+
+            log.info("wx-work-syncMsg：{}，tenantId：{}，openKfId：{}", sendResultStr, tenantId, openKfId);
+
+            WxSyncMsgVO wxSyncMsgVO = JSONUtil.toBean(sendResultStr, WxSyncMsgVO.class);
+
+            // 检查：微信回调 vo对象
+            checkWxVO(wxSyncMsgVO, "syncMsg", tenantId, appId);
+
+            rMap.put(tenantId, wxSyncMsgVO.getNextCursor()); // 设置：下一次的游标值
+
+            return wxSyncMsgVO.getMsgList().get(0);
+
+        });
 
     }
 
