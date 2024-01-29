@@ -1,5 +1,7 @@
 package com.cmcorg20230301.be.engine.sign.wx.configuration;
 
+import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.BooleanUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONObject;
@@ -29,11 +31,13 @@ import com.cmcorg20230301.be.engine.sign.wx.service.impl.SignWxServiceImpl;
 import com.cmcorg20230301.be.engine.util.util.CallBack;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.redisson.api.RedissonClient;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
 import java.util.Date;
+import java.util.List;
 
 @Component
 @Slf4j(topic = LogTopicConstant.OTHER_APP_WX_WORK)
@@ -51,23 +55,40 @@ public class SysOtherAppWxWorkReceiveMessageHandle implements ISysOtherAppWxWork
     @Resource
     RedissonClient redissonClient;
 
+    @Nullable
+    private static List<ISysOtherAppWxWorkReceiveMessageHandle> iSysOtherAppWxWorkReceiveMessageHandleList;
+
+    @Resource
+    public void setISysOtherAppWxWorkReceiveMessageHandleList(List<ISysOtherAppWxWorkReceiveMessageHandle> iSysOtherAppWxWorkReceiveMessageHandleList) {
+        SysOtherAppWxWorkReceiveMessageHandle.iSysOtherAppWxWorkReceiveMessageHandleList = iSysOtherAppWxWorkReceiveMessageHandleList;
+    }
+
     /**
      * 处理消息
      */
     @Override
     public void handle(SysOtherAppWxWorkReceiveMessageDTO dto) {
 
-        SysOtherAppDO sysOtherAppDO = ChainWrappers.lambdaQueryChain(sysOtherAppMapper).eq(SysOtherAppDO::getOpenId, dto.getToUserName()).eq(SysOtherAppDO::getType, SysOtherAppTypeEnum.WX_WORK.getCode()).one();
+        SysOtherAppDO sysOtherAppDO = dto.getSysOtherAppDO();
 
         if (sysOtherAppDO == null) {
-            ApiResultVO.error("该微信公众号的 openId，不存在本系统，请联系管理员", dto.getToUserName());
+
+            sysOtherAppDO = ChainWrappers.lambdaQueryChain(sysOtherAppMapper).eq(SysOtherAppDO::getOpenId, dto.getToUserName()).eq(SysOtherAppDO::getType, SysOtherAppTypeEnum.WX_WORK.getCode()).one();
+
+            if (sysOtherAppDO == null) {
+                ApiResultVO.error("该微信公众号的 openId，不存在本系统，请联系管理员", dto.getToUserName());
+            }
+
+            if (BooleanUtil.isFalse(sysOtherAppDO.getEnableFlag())) {
+                ApiResultVO.error("该微信公众号已被禁用，请联系管理员", dto.getToUserName());
+            }
+
+            dto.setSysOtherAppDO(sysOtherAppDO); // 设置：第三方应用数据
+
         }
 
-        if (BooleanUtil.isFalse(sysOtherAppDO.getEnableFlag())) {
-            ApiResultVO.error("该微信公众号已被禁用，请联系管理员", dto.getToUserName());
-        }
-
-        dto.setSysOtherAppDO(sysOtherAppDO); // 设置：第三方应用数据
+        // 先：处理微信客服事件
+        handleKfMsgOrEvent(dto);
 
         SysUserDO sysUserDO = getSysUserDO(dto);
 
@@ -133,29 +154,70 @@ public class SysOtherAppWxWorkReceiveMessageHandle implements ISysOtherAppWxWork
      */
     private SysUserDO getSysUserDO(SysOtherAppWxWorkReceiveMessageDTO dto) {
 
-        if (StrUtil.isBlank(dto.getFromUserName())) {
+        return ChainWrappers.lambdaQueryChain(sysUserMapper).eq(SysUserDO::getWxOpenId, dto.getFromUserName()).eq(SysUserDO::getWxAppId, dto.getSysOtherAppDO().getAppId()).one();
 
-            if ("event".equals(dto.getMsgType())) {
+    }
 
-                if ("kf_msg_or_event".equals(dto.getEvent())) { // 如果是：微信客服消息
+    /**
+     * 处理微信客服事件
+     */
+    private static void handleKfMsgOrEvent(SysOtherAppWxWorkReceiveMessageDTO dto) {
 
-                    String accessToken = getAccessToken(dto);
+        if (StrUtil.isNotBlank(dto.getFromUserName())) {
+            return;
+        }
 
-                    JSONObject jsonObject = WxUtil.syncMsgLimit1(accessToken, dto.getSysOtherAppDO().getTenantId(), dto.getToken(), dto.getOpenKfId(), dto.getSysOtherAppDO().getAppId());
+        if (!"event".equals(dto.getMsgType())) {
+            return;
+        }
 
-                    String externalUserid = jsonObject.getStr("external_userid");
+        if (!"kf_msg_or_event".equals(dto.getEvent())) {
+            return;
+        }
 
-                    dto.setFromUserName(externalUserid);
+        // 如果是：微信客服消息
+        // 先：复制一份
+        SysOtherAppWxWorkReceiveMessageDTO copyDtoTemp = BeanUtil.copyProperties(dto, SysOtherAppWxWorkReceiveMessageDTO.class);
 
-                    dto.setWxKfMsgJsonObject(jsonObject);
+        String accessToken = getAccessToken(dto);
 
-                }
+        // 获取：最新消息
+        List<JSONObject> jsonObjectList = WxUtil.syncMsg(accessToken, dto.getSysOtherAppDO().getTenantId(), dto.getToken(), dto.getOpenKfId(), dto.getSysOtherAppDO().getAppId());
+
+        JSONObject jsonObject = jsonObjectList.remove(0); // 先处理：第一个消息
+
+        dto.setFromUserName(jsonObject.getStr("external_userid"));
+
+        dto.setWxKfMsgJsonObject(jsonObject);
+
+        if (CollUtil.isNotEmpty(iSysOtherAppWxWorkReceiveMessageHandleList)) {
+
+            for (JSONObject item : jsonObjectList) {
+
+                MyThreadUtil.execute(() -> {
+
+                    TryUtil.tryCatch(() -> {
+
+                        for (ISysOtherAppWxWorkReceiveMessageHandle subItem : iSysOtherAppWxWorkReceiveMessageHandleList) {
+
+                            SysOtherAppWxWorkReceiveMessageDTO copyDto = BeanUtil.copyProperties(copyDtoTemp, SysOtherAppWxWorkReceiveMessageDTO.class);
+
+                            copyDto.setFromUserName(item.getStr("external_userid"));
+
+                            copyDto.setWxKfMsgJsonObject(item);
+
+                            // 处理消息
+                            subItem.handle(copyDto);
+
+                        }
+
+                    });
+
+                });
 
             }
 
         }
-
-        return ChainWrappers.lambdaQueryChain(sysUserMapper).eq(SysUserDO::getWxOpenId, dto.getFromUserName()).eq(SysUserDO::getWxAppId, dto.getSysOtherAppDO().getAppId()).one();
 
     }
 

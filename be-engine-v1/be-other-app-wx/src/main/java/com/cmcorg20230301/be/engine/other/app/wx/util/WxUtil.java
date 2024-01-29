@@ -38,6 +38,7 @@ import javax.annotation.Resource;
 import java.io.File;
 import java.io.InputStream;
 import java.net.URLEncoder;
+import java.util.List;
 
 @Component
 @Slf4j(topic = LogTopicConstant.OTHER_APP_WX)
@@ -464,12 +465,10 @@ public class WxUtil {
     }
 
     /**
-     * 企业微信：读取消息：最近一条
+     * 企业微信：读取消息：最近 1000条
      */
     @NotNull
-    public static JSONObject syncMsgLimit1(String accessToken, Long tenantId, String token, String openKfId, String appId) {
-
-        JSONObject jsonObject = JSONUtil.createObj();
+    public static List<JSONObject> syncMsg(String accessToken, Long tenantId, String token, String openKfId, String appId) {
 
         return RedissonUtil.doLock(BaseRedisKeyEnum.PRE_SYS_WX_WORK_SYNC_MSG.name() + tenantId, () -> {
 
@@ -478,12 +477,13 @@ public class WxUtil {
             // 上一次调用时返回的 next_cursor，第一次拉取可以不填。若不填，从3天内最早的消息开始返回。
             String cursor = rMap.get(tenantId);
 
+            JSONObject jsonObject = JSONUtil.createObj();
+
             if (StrUtil.isNotBlank(cursor)) {
                 jsonObject.set("cursor", cursor);
             }
 
-
-            String bodyJsonStr = jsonObject.set("token", token).set("limit", 1)
+            String bodyJsonStr = jsonObject.set("token", token).set("limit", 1000)
                     .set("open_kfid", openKfId).toString();
 
             String sendResultStr = HttpUtil
@@ -498,7 +498,7 @@ public class WxUtil {
 
             rMap.put(tenantId, wxSyncMsgVO.getNextCursor()); // 设置：下一次的游标值
 
-            return wxSyncMsgVO.getMsgList().get(0);
+            return wxSyncMsgVO.getMsgList();
 
         });
 
