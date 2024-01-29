@@ -2,7 +2,7 @@ package com.cmcorg20230301.be.engine.other.app.wx.work.util;
 
 import java.util.ArrayList;
 
-public class ByteGroup {
+class ByteGroup {
     ArrayList<Byte> byteContainer = new ArrayList<Byte>();
 
     public byte[] toBytes() {

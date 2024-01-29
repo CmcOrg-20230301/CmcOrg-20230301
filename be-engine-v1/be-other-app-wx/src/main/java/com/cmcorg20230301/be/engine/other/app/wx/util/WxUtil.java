@@ -182,7 +182,7 @@ public class WxUtil {
     }
 
     /**
-     * 获取：微信小程序全局唯一后台接口调用凭据
+     * 获取：微信公众号全局唯一后台接口调用凭据
      */
     @NotNull
     public static String getAccessToken(@Nullable Long tenantId, String appId) {
@@ -220,6 +220,50 @@ public class WxUtil {
 
         CacheRedisKafkaLocalUtil
                 .put(BaseRedisKeyEnum.WX_ACCESS_TOKEN_CACHE, sufKey, null, wxAccessTokenVO.getExpiresIn() * 1000,
+                        wxAccessTokenVO::getAccessToken);
+
+        return wxAccessTokenVO.getAccessToken();
+
+    }
+
+    /**
+     * 获取：企业微信全局唯一后台接口调用凭据
+     */
+    @NotNull
+    public static String getAccessTokenForWork(@Nullable Long tenantId, String appId) {
+
+        if (tenantId == null) {
+            tenantId = BaseConstant.TOP_TENANT_ID;
+        }
+
+        String sufKey = tenantId + ":" + appId;
+
+        String accessToken = MyCacheUtil.onlyGet(BaseRedisKeyEnum.WX_WORK_ACCESS_TOKEN_CACHE, sufKey);
+
+        if (StrUtil.isNotBlank(accessToken)) {
+            return accessToken;
+        }
+
+        SysOtherAppDO sysOtherAppDO = sysOtherAppService.lambdaQuery().eq(BaseEntityNoIdSuper::getTenantId, tenantId)
+                .eq(SysOtherAppDO::getAppId, appId).eq(BaseEntityNoId::getEnableFlag, true).select(SysOtherAppDO::getSecret)
+                .one();
+
+        String errorMessageStr = "accessToken";
+
+        if (sysOtherAppDO == null) {
+            ApiResultVO.error(BaseBizCodeEnum.ILLEGAL_REQUEST.getMsg(), errorMessageStr);
+        }
+
+        String jsonStr = HttpUtil.get(
+                "https://qyapi.weixin.qq.com/cgi-bin/gettoken?corpid=" + appId + "&corpsecret=" + sysOtherAppDO.getSecret());
+
+        WxAccessTokenVO wxAccessTokenVO = JSONUtil.toBean(jsonStr, WxAccessTokenVO.class);
+
+        // 检查：微信回调 vo对象
+        checkWxVO(wxAccessTokenVO, errorMessageStr, tenantId, appId);
+
+        CacheRedisKafkaLocalUtil
+                .put(BaseRedisKeyEnum.WX_WORK_ACCESS_TOKEN_CACHE, sufKey, null, wxAccessTokenVO.getExpiresIn() * 1000,
                         wxAccessTokenVO::getAccessToken);
 
         return wxAccessTokenVO.getAccessToken();
@@ -335,6 +379,41 @@ public class WxUtil {
                 .post("https://api.weixin.qq.com/cgi-bin/message/custom/send?access_token=" + accessToken, bodyJsonStr);
 
         log.info("wx-sendResult-text：{}，touser：{}，content：{}", sendResultStr, wxOpenId, content);
+
+    }
+
+    /**
+     * 执行：发送文字消息：企业微信
+     */
+    public static void doTextSendForWork(String wxOpenId, String accessToken, String content, Integer agentId) {
+
+        MyStrUtil.subWithMaxLengthAndConsumer(content, 600, subContent -> {
+
+            // 执行
+            execDoTextSendForWork(wxOpenId, accessToken, subContent, agentId);
+
+        });
+
+    }
+
+    /**
+     * 执行：发送文字消息
+     * 注意：content的长度不要超过 600，这是微信官方那边的限制，不然会请求出错的
+     * 建议使用：doTextSend，方法，因为该方法会裁减
+     */
+    public static void execDoTextSendForWork(String wxOpenId, String accessToken, String content, Integer agentId) {
+
+        if (StrUtil.isBlank(content)) {
+            return;
+        }
+
+        String bodyJsonStr = JSONUtil.createObj().set("touser", wxOpenId).set("msgtype", "text")
+                .set("content", content).set("agentid", agentId).toString();
+
+        String sendResultStr = HttpUtil
+                .post("https://qyapi.weixin.qq.com/cgi-bin/message/send?access_token=" + accessToken, bodyJsonStr);
+
+        log.info("wx-work-sendResult-text：{}，touser：{}，content：{}", sendResultStr, wxOpenId, content);
 
     }
 

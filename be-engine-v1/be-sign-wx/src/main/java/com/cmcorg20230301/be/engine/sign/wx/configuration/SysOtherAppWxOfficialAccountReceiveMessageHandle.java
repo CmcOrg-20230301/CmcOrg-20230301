@@ -383,7 +383,7 @@ public class SysOtherAppWxOfficialAccountReceiveMessageHandle implements ISysOth
     @NotNull
     private static String getAccessToken(SysOtherAppWxOfficialAccountReceiveMessageDTO dto) {
 
-        Long tenantId = dto.getSysUserDO().getTenantId();
+        Long tenantId = dto.getSysOtherAppDO().getTenantId();
 
         return WxUtil.getAccessToken(tenantId, dto.getSysOtherAppDO().getAppId());
 

@@ -1,16 +1,22 @@
-package com.cmcorg20230301.be.engine.other.app.wx.work.util;
+/**
+ * 对企业微信发送给企业后台的消息加解密示例代码.
+ *
+ * @copyright Copyright (c) 1998-2014 Tencent Inc.
+ */
 
-import com.cmcorg20230301.be.engine.other.app.wx.work.exception.AesException;
+// ------------------------------------------------------------------------
+
+package com.cmcorg20230301.be.engine.other.app.wx.work.util;
 
 import java.security.MessageDigest;
 import java.util.Arrays;
 
 /**
  * SHA1 class
- * <p>
+ *
  * 计算消息签名接口.
  */
-public class SHA1 {
+class SHA1 {
 
     /**
      * 用SHA1算法生成安全签名
@@ -50,6 +56,6 @@ public class SHA1 {
         } catch (Exception e) {
             e.printStackTrace();
             throw new AesException(AesException.ComputeSignatureError);
-        }
-    }
+		}
+	}
 }

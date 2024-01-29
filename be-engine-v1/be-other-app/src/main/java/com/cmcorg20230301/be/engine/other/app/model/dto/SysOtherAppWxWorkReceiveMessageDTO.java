@@ -5,7 +5,7 @@ import com.cmcorg20230301.be.engine.security.model.entity.SysUserDO;
 import lombok.Data;
 
 @Data
-public class SysOtherAppWxOfficialAccountReceiveMessageDTO {
+public class SysOtherAppWxWorkReceiveMessageDTO {
 
     // 由程序赋值的额外属性 ↓
 
@@ -16,21 +16,33 @@ public class SysOtherAppWxOfficialAccountReceiveMessageDTO {
     // 由程序赋值的额外属性 ↑
 
     /**
-     * 开发者微信号，备注：这个不是 wxAppId
+     * 企业微信CorpID
      */
     private String ToUserName;
 
     /**
-     * 发送方帐号（一个OpenID）
+     * 成员UserID
      */
     private String FromUserName;
 
-    private Long CreateTime;
+    /**
+     * 消息创建时间（整型）
+     */
+    private Integer CreateTime;
 
+    /**
+     * 消息类型，此时固定为：text
+     */
     private String MsgType;
 
+    /**
+     * 文本消息内容
+     */
     private String Content;
 
+    /**
+     * 消息id，64位整型
+     */
     private Long MsgId;
 
     public String getMsgIdStr() {
@@ -51,35 +63,9 @@ public class SysOtherAppWxOfficialAccountReceiveMessageDTO {
 
     }
 
-    private Long MsgDataId;
-
-    private Integer Idx;
-
     /**
-     * 图像链接（由微信那边生成）
+     * 企业应用的id，整型。可在应用的设置页面查看
      */
-    private String PicUrl;
-
-    /**
-     * 事件类型：subscribe 订阅 unsubscribe 取消订阅 CLICK 点击菜单事件
-     */
-    private String Event;
-
-    private String EventKey;
-
-    /**
-     * 语音消息媒体id，可以调用获取临时素材接口拉取数据。
-     */
-    private String MediaId;
-
-    /**
-     * 语音格式，如amr，speex等
-     */
-    private String Format;
-
-    /**
-     * 语音识别结果，UTF8编码
-     */
-    private String Recognition;
+    private Integer AgentID;
 
 }

@@ -58,6 +58,8 @@ public enum BaseRedisKeyEnum implements IRedisKey {
 
     PRE_SYS_IM_SESSION_USER_ID, // 即时通讯会话锁，目的：创建会话时，防止重复添加，锁：【userId】
 
+    PRE_SYS_OTHER_APP_WX_WORK_RECEIVE_MESSAGE_ID, // 企业微信消息 id锁，目的：不重复处理消息，锁：【msgId】
+
     PRE_SYS_OTHER_APP_WX_OFFICIAL_ACCOUNT_RECEIVE_MESSAGE_ID, // 微信公众号消息 id锁，目的：不重复处理消息，锁：【msgId】
 
     PRE_OTHER_APP_TYPE_AND_APP_ID, // 第三方应用，类型code 和 appid锁，目的：同一个类型下的 appId不能重复，锁：【类型code 和 appid】
@@ -103,7 +105,9 @@ public enum BaseRedisKeyEnum implements IRedisKey {
 
     XXL_JOB_COOKIE_CACHE, // xxl-job cookie缓存
 
-    WX_ACCESS_TOKEN_CACHE, // 微信小程序全局唯一后台接口调用凭据
+    WX_WORK_ACCESS_TOKEN_CACHE, // 企业微信全局唯一后台接口调用凭据
+
+    WX_ACCESS_TOKEN_CACHE, // 微信公众号全局唯一后台接口调用凭据
 
     BAI_DU_ACCESS_TOKEN_CACHE, // 百度全局唯一后台接口调用凭据
 

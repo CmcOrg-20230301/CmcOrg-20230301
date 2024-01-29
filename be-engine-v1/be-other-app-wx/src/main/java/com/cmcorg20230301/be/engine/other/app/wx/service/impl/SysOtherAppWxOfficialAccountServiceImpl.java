@@ -102,7 +102,7 @@ public class SysOtherAppWxOfficialAccountServiceImpl implements SysOtherAppWxOff
 
         String msgIdStr = dto.getMsgIdStr();
 
-        log.info("收到消息：{}，dto：{}，msgIdStr：{}", XmlUtil.toStr(document), JSONUtil.toJsonStr(dto), msgIdStr);
+        log.info("微信公众号，收到消息：{}，dto：{}，msgIdStr：{}", XmlUtil.toStr(document), JSONUtil.toJsonStr(dto), msgIdStr);
 
         String redisKey =
                 BaseRedisKeyEnum.PRE_SYS_OTHER_APP_WX_OFFICIAL_ACCOUNT_RECEIVE_MESSAGE_ID.name() + msgIdStr;

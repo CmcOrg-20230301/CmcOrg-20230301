@@ -1,6 +1,22 @@
+/**
+ * 对企业微信发送给企业后台的消息加解密示例代码.
+ *
+ * @copyright Copyright (c) 1998-2014 Tencent Inc.
+ * <p>
+ * 针对org.apache.commons.codec.binary.Base64，
+ * 需要导入架包commons-codec-1.9（或commons-codec-1.8等其他版本）
+ * 官方下载地址：http://commons.apache.org/proper/commons-codec/download_codec.cgi
+ */
+
+// ------------------------------------------------------------------------
+
+/**
+ * 针对org.apache.commons.codec.binary.Base64，
+ * 需要导入架包commons-codec-1.9（或commons-codec-1.8等其他版本）
+ * 官方下载地址：http://commons.apache.org/proper/commons-codec/download_codec.cgi
+ */
 package com.cmcorg20230301.be.engine.other.app.wx.work.util;
 
-import com.cmcorg20230301.be.engine.other.app.wx.work.exception.AesException;
 import org.apache.commons.codec.binary.Base64;
 
 import javax.crypto.Cipher;
@@ -12,9 +28,20 @@ import java.util.Random;
 
 /**
  * 提供接收和推送给企业微信消息的加解密接口(UTF8编码的字符串).
+ * <ol>
+ * 	<li>第三方回复加密消息给企业微信</li>
+ * 	<li>第三方收到企业微信发送的消息，验证消息的安全性，并对消息进行解密。</li>
+ * </ol>
+ * 说明：异常java.security.InvalidKeyException:illegal Key Size的解决方案
+ * <ol>
+ * 	<li>在官方网站下载JCE无限制权限策略文件（JDK7的下载地址：
+ *      http://www.oracle.com/technetwork/java/javase/downloads/jce-7-download-432124.html</li>
+ * 	<li>下载后解压，可以看到local_policy.jar和US_export_policy.jar以及readme.txt</li>
+ * 	<li>如果安装了JRE，将两个jar文件放到%JRE_HOME%\lib\security目录下覆盖原来的文件</li>
+ * 	<li>如果安装了JDK，将两个jar文件放到%JDK_HOME%\jre\lib\security目录下覆盖原来文件</li>
+ * </ol>
  */
-public class WXBizJsonMsgCrypt {
-
+public class WXBizMsgCrypt {
     static Charset CHARSET = Charset.forName("utf-8");
     Base64 base64 = new Base64();
     byte[] aesKey;
@@ -23,13 +50,13 @@ public class WXBizJsonMsgCrypt {
 
     /**
      * 构造函数
-     *
-     * @param token          企业微信后台，开发者设置的token
+     * @param token 企业微信后台，开发者设置的token
      * @param encodingAesKey 企业微信后台，开发者设置的EncodingAESKey
-     * @param receiveid,     不同场景含义不同，详见文档
+     * @param receiveid, 不同场景含义不同，详见文档
+     *
      * @throws AesException 执行失败，请查看该异常的错误码和具体的错误信息
      */
-    public WXBizJsonMsgCrypt(String token, String encodingAesKey, String receiveid) throws AesException {
+    public WXBizMsgCrypt(String token, String encodingAesKey, String receiveid) throws AesException {
         if (encodingAesKey.length() != 43) {
             throw new AesException(AesException.IllegalAesKey);
         }
@@ -144,7 +171,7 @@ public class WXBizJsonMsgCrypt {
             throw new AesException(AesException.DecryptAESError);
         }
 
-        String jsonContent, from_receiveid;
+        String xmlContent, from_receiveid;
         try {
             // 去除补位字符
             byte[] bytes = PKCS7Encoder.decode(original);
@@ -152,10 +179,10 @@ public class WXBizJsonMsgCrypt {
             // 分离16位随机字符串,网络字节序和receiveid
             byte[] networkOrder = Arrays.copyOfRange(bytes, 16, 20);
 
-            int jsonLength = recoverNetworkBytesOrder(networkOrder);
+            int xmlLength = recoverNetworkBytesOrder(networkOrder);
 
-            jsonContent = new String(Arrays.copyOfRange(bytes, 20, 20 + jsonLength), CHARSET);
-            from_receiveid = new String(Arrays.copyOfRange(bytes, 20 + jsonLength, bytes.length),
+            xmlContent = new String(Arrays.copyOfRange(bytes, 20, 20 + xmlLength), CHARSET);
+            from_receiveid = new String(Arrays.copyOfRange(bytes, 20 + xmlLength, bytes.length),
                     CHARSET);
         } catch (Exception e) {
             e.printStackTrace();
@@ -166,7 +193,7 @@ public class WXBizJsonMsgCrypt {
         if (!from_receiveid.equals(receiveid)) {
             throw new AesException(AesException.ValidateCorpidError);
         }
-        return jsonContent;
+        return xmlContent;
 
     }
 
@@ -175,13 +202,14 @@ public class WXBizJsonMsgCrypt {
      * <ol>
      * 	<li>对要发送的消息进行AES-CBC加密</li>
      * 	<li>生成安全签名</li>
-     * 	<li>将消息密文和安全签名打包成json格式</li>
+     * 	<li>将消息密文和安全签名打包成xml格式</li>
      * </ol>
      *
-     * @param replyMsg  企业微信待回复用户的消息，json格式的字符串
+     * @param replyMsg 企业微信待回复用户的消息，xml格式的字符串
      * @param timeStamp 时间戳，可以自己生成，也可以用URL参数的timestamp
-     * @param nonce     随机串，可以自己生成，也可以用URL参数的nonce
-     * @return 加密后的可以直接回复用户的密文，包括msg_signature, timestamp, nonce, encrypt的json格式的字符串
+     * @param nonce 随机串，可以自己生成，也可以用URL参数的nonce
+     *
+     * @return 加密后的可以直接回复用户的密文，包括msg_signature, timestamp, nonce, encrypt的xml格式的字符串
      * @throws AesException 执行失败，请查看该异常的错误码和具体的错误信息
      */
     public String EncryptMsg(String replyMsg, String timeStamp, String nonce) throws AesException {
@@ -196,8 +224,8 @@ public class WXBizJsonMsgCrypt {
         String signature = SHA1.getSHA1(token, timeStamp, nonce, encrypt);
 
         // System.out.println("发送给平台的签名是: " + signature[1].toString());
-        // 生成发送的json
-        String result = JsonParse.generate(encrypt, signature, timeStamp, nonce);
+        // 生成发送的xml
+        String result = XMLParse.generate(encrypt, signature, timeStamp, nonce);
         return result;
     }
 
@@ -205,14 +233,15 @@ public class WXBizJsonMsgCrypt {
      * 检验消息的真实性，并且获取解密后的明文.
      * <ol>
      * 	<li>利用收到的密文生成安全签名，进行签名验证</li>
-     * 	<li>若验证通过，则提取json中的加密消息</li>
+     * 	<li>若验证通过，则提取xml中的加密消息</li>
      * 	<li>对消息进行解密</li>
      * </ol>
      *
      * @param msgSignature 签名串，对应URL参数的msg_signature
-     * @param timeStamp    时间戳，对应URL参数的timestamp
-     * @param nonce        随机串，对应URL参数的nonce
-     * @param postData     密文，对应POST请求的数据
+     * @param timeStamp 时间戳，对应URL参数的timestamp
+     * @param nonce 随机串，对应URL参数的nonce
+     * @param postData 密文，对应POST请求的数据
+     *
      * @return 解密后的原文
      * @throws AesException 执行失败，请查看该异常的错误码和具体的错误信息
      */
@@ -221,7 +250,7 @@ public class WXBizJsonMsgCrypt {
 
         // 密钥，公众账号的app secret
         // 提取密文
-        Object[] encrypt = JsonParse.extract(postData);
+        Object[] encrypt = XMLParse.extract(postData);
 
         // 验证安全签名
         String signature = SHA1.getSHA1(token, timeStamp, nonce, encrypt[1].toString());
@@ -240,11 +269,11 @@ public class WXBizJsonMsgCrypt {
 
     /**
      * 验证URL
-     *
      * @param msgSignature 签名串，对应URL参数的msg_signature
-     * @param timeStamp    时间戳，对应URL参数的timestamp
-     * @param nonce        随机串，对应URL参数的nonce
-     * @param echoStr      随机串，对应URL参数的echostr
+     * @param timeStamp 时间戳，对应URL参数的timestamp
+     * @param nonce 随机串，对应URL参数的nonce
+     * @param echoStr 随机串，对应URL参数的echostr
+     *
      * @return 解密之后的echostr
      * @throws AesException 执行失败，请查看该异常的错误码和具体的错误信息
      */

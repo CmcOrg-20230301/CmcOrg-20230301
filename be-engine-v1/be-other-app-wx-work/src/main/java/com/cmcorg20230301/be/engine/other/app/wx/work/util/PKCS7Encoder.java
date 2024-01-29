@@ -1,3 +1,11 @@
+/**
+ * 对企业微信发送给企业后台的消息加解密示例代码.
+ *
+ * @copyright Copyright (c) 1998-2014 Tencent Inc.
+ */
+
+// ------------------------------------------------------------------------
+
 package com.cmcorg20230301.be.engine.other.app.wx.work.util;
 
 import java.nio.charset.Charset;
@@ -6,7 +14,7 @@ import java.util.Arrays;
 /**
  * 提供基于PKCS7算法的加解密接口.
  */
-public class PKCS7Encoder {
+class PKCS7Encoder {
     static Charset CHARSET = Charset.forName("utf-8");
     static int BLOCK_SIZE = 32;
 
@@ -53,7 +61,7 @@ public class PKCS7Encoder {
      */
     static char chr(int a) {
         byte target = (byte) (a & 0xFF);
-        return (char) target;
-    }
+		return (char) target;
+	}
 
 }

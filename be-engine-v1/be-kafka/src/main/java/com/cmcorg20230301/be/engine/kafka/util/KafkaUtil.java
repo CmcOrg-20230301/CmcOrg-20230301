@@ -47,7 +47,18 @@ public class KafkaUtil {
     }
 
     /**
-     * 发送消息：socket启用的 topic
+     * 发送消息：企业微信接收到消息之后，发送需要处理的对象 topic
+     */
+    public static void sendSysOtherAppWxWorkReceiveMessageDTO(
+            Object sysOtherAppWxWorkReceiveMessageDTO) {
+
+        send(KafkaTopicEnum.SYS_OTHER_APP_WX_WORK_RECEIVE_MESSAGE_TOPIC,
+                sysOtherAppWxWorkReceiveMessageDTO);
+
+    }
+
+    /**
+     * 发送消息：微信公众号接收到消息之后，发送需要处理的对象 topic
      */
     public static void sendSysOtherAppWxOfficialAccountReceiveMessageDTO(
             Object sysOtherAppWxOfficialAccountReceiveMessageDTO) {
