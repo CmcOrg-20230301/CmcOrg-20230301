@@ -7,7 +7,7 @@ import org.springframework.context.annotation.Configuration;
 import java.util.Set;
 
 @Configuration
-public class SysOtherAppWxWordSecurityPermitConfiguration implements ISecurityPermitConfiguration {
+public class SysOtherAppWxWorkSecurityPermitConfiguration implements ISecurityPermitConfiguration {
 
     @Override
     public Set<String> devPermitAllSet() {
@@ -21,7 +21,7 @@ public class SysOtherAppWxWordSecurityPermitConfiguration implements ISecurityPe
 
     @Override
     public Set<String> anyPermitAllSet() {
-        return CollUtil.newHashSet("/sys/otherApp/officialAccount/wx/**");
+        return CollUtil.newHashSet("/sys/otherApp/wx/work/**");
     }
 
 }

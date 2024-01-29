@@ -4,7 +4,7 @@ import cn.hutool.json.JSONObject;
 
 import javax.servlet.http.HttpServletRequest;
 
-public interface SysOtherAppWxWordService {
+public interface SysOtherAppWxWorkService {
 
     String verify(JSONObject dto);
 
