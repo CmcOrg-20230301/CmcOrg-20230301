@@ -5,5 +5,12 @@ import lombok.Data;
 @Data
 public class SysOtherAppWxWorkVerifyDTO {
 
+    private String msg_signature;
+
+    private String timestamp;
+
+    private String nonce;
+
+    private String echostr;
 
 }

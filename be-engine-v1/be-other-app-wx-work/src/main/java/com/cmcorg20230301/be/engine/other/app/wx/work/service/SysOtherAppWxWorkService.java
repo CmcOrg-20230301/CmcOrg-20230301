@@ -1,13 +1,13 @@
 package com.cmcorg20230301.be.engine.other.app.wx.work.service;
 
-import cn.hutool.json.JSONObject;
+import com.cmcorg20230301.be.engine.other.app.wx.work.model.dto.SysOtherAppWxWorkVerifyDTO;
 
 import javax.servlet.http.HttpServletRequest;
 
 public interface SysOtherAppWxWorkService {
 
-    String verify(JSONObject dto);
+    String verify(SysOtherAppWxWorkVerifyDTO dto);
 
-    String receiveMessage(HttpServletRequest request);
+    void receiveMessage(HttpServletRequest request);
 
 }

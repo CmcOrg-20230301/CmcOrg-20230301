@@ -16,4 +16,10 @@ public class SysOtherAppOfficialAccountProperties {
     @Schema(description = "token：一般为 32位无横杠的 uuid")
     private String token;
 
+    @Schema(description = "回调消息加解密参数是AES密钥的Base64编码，用于解密回调消息内容对应的密文")
+    private String encodingAesKey;
+
+    @Schema(description = "企业 id")
+    private String corpId;
+
 }

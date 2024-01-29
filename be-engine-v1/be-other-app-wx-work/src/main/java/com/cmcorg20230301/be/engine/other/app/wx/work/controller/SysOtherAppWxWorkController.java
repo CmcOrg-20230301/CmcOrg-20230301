@@ -1,6 +1,6 @@
 package com.cmcorg20230301.be.engine.other.app.wx.work.controller;
 
-import cn.hutool.json.JSONObject;
+import com.cmcorg20230301.be.engine.other.app.wx.work.model.dto.SysOtherAppWxWorkVerifyDTO;
 import com.cmcorg20230301.be.engine.other.app.wx.work.service.SysOtherAppWxWorkService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -26,7 +26,7 @@ public class SysOtherAppWxWorkController {
      * 企业微信 token验证
      */
     @GetMapping
-    public String verify(JSONObject dto) {
+    public String verify(SysOtherAppWxWorkVerifyDTO dto) {
         return baseService.verify(dto);
     }
 
@@ -34,8 +34,8 @@ public class SysOtherAppWxWorkController {
      * 微信公众号：推送的消息
      */
     @PostMapping
-    public String receiveMessage(HttpServletRequest request) {
-        return baseService.receiveMessage(request);
+    public void receiveMessage(HttpServletRequest request) {
+        baseService.receiveMessage(request);
     }
 
 }
