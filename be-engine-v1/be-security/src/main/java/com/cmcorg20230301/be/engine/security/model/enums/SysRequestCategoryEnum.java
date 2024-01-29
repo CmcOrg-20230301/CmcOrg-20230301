@@ -36,7 +36,9 @@ public enum SysRequestCategoryEnum {
     MINI_PROGRAM_WE_CHAT_ANDROID(501, "小程序-微信-安卓"), //
     MINI_PROGRAM_WE_CHAT_IOS(502, "小程序-微信-苹果"), //
 
-    WX_OFFICIAL_ACCOUNT(601, "公众号-微信"), //
+    WX_OFFICIAL_ACCOUNT(601, "微信公众号"), //
+
+    WX_WORK(701, "企业微信"), //
 
     ;
 

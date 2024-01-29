@@ -431,12 +431,12 @@ public class WxUtil {
     /**
      * 执行：发送文字消息：企业微信客服
      */
-    public static void doTextSendForWorkKf(String wxOpenId, String accessToken, String content, Integer agentId) {
+    public static void doTextSendForWorkKf(String wxOpenId, String accessToken, String content, String openKfId) {
 
         MyStrUtil.subWithMaxLengthAndConsumer(content, 600, subContent -> {
 
             // 执行
-            execDoTextSendForWorkKf(wxOpenId, accessToken, subContent, agentId);
+            execDoTextSendForWorkKf(wxOpenId, accessToken, subContent, openKfId);
 
         });
 
@@ -447,7 +447,7 @@ public class WxUtil {
      * 注意：content的长度不要超过 600，这是微信官方那边的限制，不然会请求出错的
      * 建议使用：doTextSend，方法，因为该方法会裁减
      */
-    public static void execDoTextSendForWorkKf(String wxOpenId, String accessToken, String content, Integer openKfId) {
+    public static void execDoTextSendForWorkKf(String wxOpenId, String accessToken, String content, String openKfId) {
 
         if (StrUtil.isBlank(content)) {
             return;

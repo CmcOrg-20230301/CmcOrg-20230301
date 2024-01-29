@@ -135,7 +135,7 @@ public class SysOtherAppWxOfficialAccountReceiveMessageHandle implements ISysOth
 
             accountMap.put(BaseRedisKeyEnum.PRE_WX_APP_ID, sysOtherAppDO.getAppId());
 
-        }, null);
+        }, sysUserDoCallBack);
 
         return sysUserDoCallBack.getValue(); // 返回：回调对象
 

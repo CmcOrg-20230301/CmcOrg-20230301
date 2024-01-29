@@ -114,7 +114,7 @@ public class SysOtherAppWxWorkReceiveMessageHandle implements ISysOtherAppWxWork
 
             SysUserInfoDO sysUserInfoDO = SignWxServiceImpl.getWxSysUserInfoDO();
 
-            sysUserInfoDO.setSignUpType(SysRequestCategoryEnum.WX_OFFICIAL_ACCOUNT);
+            sysUserInfoDO.setSignUpType(SysRequestCategoryEnum.WX_WORK);
 
             return sysUserInfoDO;
 
@@ -122,7 +122,7 @@ public class SysOtherAppWxWorkReceiveMessageHandle implements ISysOtherAppWxWork
 
             accountMap.put(BaseRedisKeyEnum.PRE_WX_APP_ID, sysOtherAppDO.getAppId());
 
-        }, null);
+        }, sysUserDoCallBack);
 
         return sysUserDoCallBack.getValue(); // 返回：回调对象
 
@@ -254,7 +254,7 @@ public class SysOtherAppWxWorkReceiveMessageHandle implements ISysOtherAppWxWork
         String accessToken = getAccessToken(dto);
 
         // 执行：发送
-        WxUtil.doTextSendForWorkKf(dto.getFromUserName(), accessToken, content, dto.getAgentID());
+        WxUtil.doTextSendForWorkKf(dto.getFromUserName(), accessToken, content, dto.getOpenKfId());
 
     }
 
