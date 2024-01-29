@@ -40,7 +40,7 @@ public class SysOtherAppWxWorkReceiveMessageListener {
     private static ObjectMapper objectMapper;
 
     @Nullable
-    private static List<ISysOtherAppWxWorkReceiveMessageHandle>
+    public static List<ISysOtherAppWxWorkReceiveMessageHandle>
             iSysOtherAppWxWorkReceiveMessageHandleList;
 
     @Resource

@@ -7,6 +7,7 @@ import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONObject;
 import com.baomidou.mybatisplus.extension.toolkit.ChainWrappers;
 import com.cmcorg20230301.be.engine.model.model.constant.LogTopicConstant;
+import com.cmcorg20230301.be.engine.other.app.listener.SysOtherAppWxWorkReceiveMessageListener;
 import com.cmcorg20230301.be.engine.other.app.mapper.SysOtherAppMapper;
 import com.cmcorg20230301.be.engine.other.app.mapper.SysOtherAppOfficialAccountMenuMapper;
 import com.cmcorg20230301.be.engine.other.app.model.dto.SysOtherAppWxWorkReceiveMessageDTO;
@@ -31,7 +32,6 @@ import com.cmcorg20230301.be.engine.sign.wx.service.impl.SignWxServiceImpl;
 import com.cmcorg20230301.be.engine.util.util.CallBack;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.redisson.api.RedissonClient;
 import org.springframework.stereotype.Component;
 
@@ -54,14 +54,6 @@ public class SysOtherAppWxWorkReceiveMessageHandle implements ISysOtherAppWxWork
 
     @Resource
     RedissonClient redissonClient;
-
-    @Nullable
-    private static List<ISysOtherAppWxWorkReceiveMessageHandle> iSysOtherAppWxWorkReceiveMessageHandleList;
-
-    @Resource
-    public void setISysOtherAppWxWorkReceiveMessageHandleList(List<ISysOtherAppWxWorkReceiveMessageHandle> iSysOtherAppWxWorkReceiveMessageHandleList) {
-        SysOtherAppWxWorkReceiveMessageHandle.iSysOtherAppWxWorkReceiveMessageHandleList = iSysOtherAppWxWorkReceiveMessageHandleList;
-    }
 
     /**
      * 处理消息
@@ -190,7 +182,7 @@ public class SysOtherAppWxWorkReceiveMessageHandle implements ISysOtherAppWxWork
 
         dto.setWxKfMsgJsonObject(jsonObject);
 
-        if (CollUtil.isNotEmpty(iSysOtherAppWxWorkReceiveMessageHandleList)) {
+        if (CollUtil.isNotEmpty(SysOtherAppWxWorkReceiveMessageListener.iSysOtherAppWxWorkReceiveMessageHandleList)) {
 
             for (JSONObject item : jsonObjectList) {
 
@@ -198,7 +190,7 @@ public class SysOtherAppWxWorkReceiveMessageHandle implements ISysOtherAppWxWork
 
                     TryUtil.tryCatch(() -> {
 
-                        for (ISysOtherAppWxWorkReceiveMessageHandle subItem : iSysOtherAppWxWorkReceiveMessageHandleList) {
+                        for (ISysOtherAppWxWorkReceiveMessageHandle subItem : SysOtherAppWxWorkReceiveMessageListener.iSysOtherAppWxWorkReceiveMessageHandleList) {
 
                             SysOtherAppWxWorkReceiveMessageDTO copyDto = BeanUtil.copyProperties(copyDtoTemp, SysOtherAppWxWorkReceiveMessageDTO.class);
 
