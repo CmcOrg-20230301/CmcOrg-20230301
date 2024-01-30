@@ -84,7 +84,7 @@ public class SysOtherAppWxWorkReceiveMessageDTO {
     private String OpenKfId;
 
     /**
-     * 由程序进行赋值：微信客服消息对象
+     * 由程序进行赋值：微信客服消息对象，备注：如果是微信客服，则该字段一定有值
      */
     private JSONObject wxKfMsgJsonObject;
 
