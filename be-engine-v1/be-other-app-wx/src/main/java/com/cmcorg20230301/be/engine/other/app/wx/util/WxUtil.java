@@ -543,7 +543,7 @@ public class WxUtil {
                 "https://api.weixin.qq.com/cgi-bin/media/upload?access_token=" + accessToken + "&type="
                         + wxMediaUploadTypeEnum.getName()).form("media", file).execute().body();
 
-        log.info("WxMediaUpload，result：{}", resultStr);
+        log.info("wx-mediaUpload，result：{}", resultStr);
 
         return JSONUtil.parseObj(resultStr);
 
@@ -565,6 +565,114 @@ public class WxUtil {
                 .post("https://api.weixin.qq.com/cgi-bin/message/custom/send?access_token=" + accessToken, bodyJsonStr);
 
         log.info("wx-sendResult-image：{}，touser：{}", sendResultStr, wxOpenId);
+
+    }
+
+    /**
+     * 执行：上传图片
+     */
+    public static JSONObject uploadImageUrlForWork(String accessToken, String url) {
+
+        File file = null;
+
+        try {
+
+            // 获取：流
+            InputStream inputStream = RetryUtil.execHttpRequestInputStream(HttpRequest.get(url));
+
+            file = FileUtil.touch(FileTempPathConstant.WX_MEDIA_UPLOAD_TEMP_PATH + IdUtil.simpleUUID() + ".jpg");
+
+            // 图片格式转换为：jpg格式
+            ImgUtil.convert(inputStream, "JPG", FileUtil.getOutputStream(file));
+
+            // 执行上传
+            return uploadForWork(accessToken, file, WxMediaUploadTypeEnum.IMAGE);
+
+        } finally {
+
+            FileUtil.del(file); // 删除：文件
+
+        }
+
+    }
+
+    /**
+     * 执行：上传文件
+     */
+    public static JSONObject uploadFileUrlForWork(String accessToken, InputStream inputStream, String fileType) {
+
+        File file = null;
+
+        try {
+
+            file = FileUtil.touch(FileTempPathConstant.WX_MEDIA_UPLOAD_TEMP_PATH + IdUtil.simpleUUID() + "." + fileType);
+
+            // 写入文件
+            FileUtil.writeFromStream(inputStream, file);
+
+            // 执行上传
+            return uploadForWork(accessToken, file, WxMediaUploadTypeEnum.FILE);
+
+        } finally {
+
+            FileUtil.del(file); // 删除：文件
+
+        }
+
+    }
+
+    /**
+     * 执行：上传
+     *
+     * @return {"media_id": ""}
+     */
+    public static JSONObject uploadForWork(String accessToken, File file, WxMediaUploadTypeEnum wxMediaUploadTypeEnum) {
+
+        String resultStr = HttpRequest.post(
+                "https://qyapi.weixin.qq.com/cgi-bin/media/upload?access_token=" + accessToken + "&type="
+                        + wxMediaUploadTypeEnum.getName()).form("media", file).execute().body();
+
+        log.info("wxWork-MediaUpload，result：{}", resultStr);
+
+        return JSONUtil.parseObj(resultStr);
+
+    }
+
+    /**
+     * 执行：发送图像消息
+     */
+    public static void doImageSendForWorkKf(String wxOpenId, String accessToken, String mediaId, String openKfId) {
+
+        if (StrUtil.isBlank(mediaId)) {
+            return;
+        }
+
+        String bodyJsonStr = JSONUtil.createObj().set("touser", wxOpenId).set("open_kfid", openKfId).set("msgtype", "image")
+                .set("image", JSONUtil.createObj().set("media_id", mediaId)).toString();
+
+        String sendResultStr = HttpUtil
+                .post("https://qyapi.weixin.qq.com/cgi-bin/kf/send_msg?access_token=" + accessToken, bodyJsonStr);
+
+        log.info("wxWork-sendResult-image：{}，touser：{}", sendResultStr, wxOpenId);
+
+    }
+
+    /**
+     * 执行：发送文件消息
+     */
+    public static void doFileSendForWorkKf(String wxOpenId, String accessToken, String mediaId, String openKfId) {
+
+        if (StrUtil.isBlank(mediaId)) {
+            return;
+        }
+
+        String bodyJsonStr = JSONUtil.createObj().set("touser", wxOpenId).set("open_kfid", openKfId).set("msgtype", "file")
+                .set("file", JSONUtil.createObj().set("media_id", mediaId)).toString();
+
+        String sendResultStr = HttpUtil
+                .post("https://qyapi.weixin.qq.com/cgi-bin/kf/send_msg?access_token=" + accessToken, bodyJsonStr);
+
+        log.info("wxWork-sendResult-file：{}，touser：{}", sendResultStr, wxOpenId);
 
     }
 

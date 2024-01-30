@@ -20,6 +20,8 @@ public enum WxMediaUploadTypeEnum {
 
     THUMB("thumb"), // 缩略图
 
+    FILE("file"), // 普通文件
+
     ;
 
     @EnumValue

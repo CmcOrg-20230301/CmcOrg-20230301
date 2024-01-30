@@ -123,6 +123,8 @@ public class SysFileUtil {
 
     /**
      * 通用：上传处理
+     *
+     * @return 文件主键 id
      */
     @NotNull
     public static Long uploadCommonHandle(SysFileUploadBO bo, String fileType,
