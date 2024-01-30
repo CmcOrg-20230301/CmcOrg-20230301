@@ -33,13 +33,12 @@ import com.cmcorg20230301.be.engine.util.util.CallBack;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import org.redisson.api.RedissonClient;
-import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
 import java.util.Date;
 import java.util.List;
 
-@Component
+//@Component
 @Slf4j(topic = LogTopicConstant.OTHER_APP_WX_WORK)
 public class SysOtherAppWxWorkReceiveMessageHandle implements ISysOtherAppWxWorkReceiveMessageHandle {
 
@@ -80,7 +79,11 @@ public class SysOtherAppWxWorkReceiveMessageHandle implements ISysOtherAppWxWork
         }
 
         // 先：处理微信客服事件
-        handleKfMsgOrEvent(dto);
+        boolean returnFlag = handleKfMsgOrEvent(dto);
+
+        if (returnFlag) {
+            return;
+        }
 
         SysUserDO sysUserDO = getSysUserDO(dto);
 
