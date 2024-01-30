@@ -152,19 +152,22 @@ public class SysOtherAppWxWorkReceiveMessageHandle implements ISysOtherAppWxWork
 
     /**
      * 处理微信客服事件
+     *
+     * @return true 则表示不需要后续的处理
      */
-    private static void handleKfMsgOrEvent(SysOtherAppWxWorkReceiveMessageDTO dto) {
+    private static boolean handleKfMsgOrEvent(SysOtherAppWxWorkReceiveMessageDTO dto) {
 
+        // 由于下面会对该字段进行赋值，所以这里判断会避免无限循环
         if (StrUtil.isNotBlank(dto.getFromUserName())) {
-            return;
+            return false;
         }
 
         if (!"event".equals(dto.getMsgType())) {
-            return;
+            return false;
         }
 
         if (!"kf_msg_or_event".equals(dto.getEvent())) {
-            return;
+            return false;
         }
 
         // 如果是：微信客服消息
@@ -175,6 +178,10 @@ public class SysOtherAppWxWorkReceiveMessageHandle implements ISysOtherAppWxWork
 
         // 获取：最新消息
         List<JSONObject> jsonObjectList = WxUtil.syncMsg(accessToken, dto.getSysOtherAppDO().getTenantId(), dto.getToken(), dto.getOpenKfId(), dto.getSysOtherAppDO().getAppId());
+
+        if (CollUtil.isEmpty(jsonObjectList)) {
+            return true;
+        }
 
         JSONObject jsonObject = jsonObjectList.remove(0); // 先处理：第一个消息
 
@@ -210,6 +217,8 @@ public class SysOtherAppWxWorkReceiveMessageHandle implements ISysOtherAppWxWork
             }
 
         }
+
+        return false;
 
     }
 
