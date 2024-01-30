@@ -32,8 +32,8 @@ import com.cmcorg20230301.be.engine.security.model.entity.BaseEntityNoIdSuper;
 import com.cmcorg20230301.be.engine.security.model.entity.SysTenantDO;
 import com.cmcorg20230301.be.engine.security.model.vo.ApiResultVO;
 import com.cmcorg20230301.be.engine.security.util.MyEntityUtil;
-import com.cmcorg20230301.be.engine.security.util.MyExceptionUtil;
 import com.cmcorg20230301.be.engine.security.util.SysTenantUtil;
+import com.cmcorg20230301.be.engine.security.util.TryUtil;
 import com.cmcorg20230301.be.engine.security.util.UserUtil;
 import com.cmcorg20230301.be.engine.util.util.CallBack;
 import com.cmcorg20230301.be.engine.wallet.configuration.SysUserWalletUserSignConfiguration;
@@ -84,7 +84,7 @@ public class SysUserWalletServiceImpl extends ServiceImpl<SysUserWalletMapper, S
 
         for (SysUserWalletDO item : sysUserWalletDOList) {
 
-            try {
+            TryUtil.tryCatch(() -> {
 
                 Long id = item.getId();
 
@@ -135,11 +135,7 @@ public class SysUserWalletServiceImpl extends ServiceImpl<SysUserWalletMapper, S
 
                 });
 
-            } catch (Exception e) {
-
-                MyExceptionUtil.printError(e);
-
-            }
+            });
 
         }
 

@@ -85,7 +85,7 @@ public class RetryUtil {
 
             result = supplier.get();
 
-        } catch (Exception e) {
+        } catch (Throwable e) {
 
             log.info("重试：{}", execNumber);
 
@@ -119,7 +119,7 @@ public class RetryUtil {
 
             voidFunc0.call();
 
-        } catch (Exception e) {
+        } catch (Throwable e) {
 
             log.info("重试：{}", execNumber);
 

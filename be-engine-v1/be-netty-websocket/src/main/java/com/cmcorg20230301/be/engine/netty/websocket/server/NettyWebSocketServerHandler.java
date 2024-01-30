@@ -273,7 +273,7 @@ public class NettyWebSocketServerHandler extends ChannelInboundHandlerAdapter {
         // 首次连接是 FullHttpRequest，处理参数
         if (msg instanceof FullHttpRequest) {
 
-            try {
+            TryUtil.tryCatch(() -> {
 
                 // 处理：FullHttpRequest
                 handleFullHttpRequest(ctx, (FullHttpRequest) msg);
@@ -281,26 +281,24 @@ public class NettyWebSocketServerHandler extends ChannelInboundHandlerAdapter {
                 // 传递给下一个 handler，备注：这里不需要释放资源
                 ctx.fireChannelRead(msg);
 
-            } catch (Exception e) {
+            }, e -> {
 
                 ReferenceCountUtil.release(msg); // 备注：这里需要释放资源
 
-                throw e;
-
-            }
+            });
 
         } else if (msg instanceof TextWebSocketFrame) {
 
-            try {
+            TryUtil.tryCatchFinally(() -> {
 
                 // 处理：TextWebSocketFrame
                 handleTextWebSocketFrame((TextWebSocketFrame) msg, ctx.channel());
 
-            } finally {
+            }, () -> {
 
                 ReferenceCountUtil.release(msg); // 备注：这里需要释放资源
 
-            }
+            });
 
         } else {
 

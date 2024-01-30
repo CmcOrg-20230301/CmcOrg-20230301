@@ -111,6 +111,7 @@ public class XxlJobServiceImpl implements XxlJobService {
 
             // 移除 redis中的 cookie，然后再执行一次本方法
             CacheRedisKafkaLocalUtil.remove(BaseRedisKeyEnum.XXL_JOB_COOKIE_CACHE, null);
+
             return doAddJob(formJson, null);
 
         }
@@ -163,12 +164,14 @@ public class XxlJobServiceImpl implements XxlJobService {
             }
 
             JSONObject jsonObject = (JSONObject) data.get(0); // 获取第一个【执行器】
+
             dto.setJobGroup(jsonObject.getStr("id")); // 设置 jobGroup
 
         } catch (Exception e) {
 
             // 移除 redis中的 cookie，然后再执行一次本方法
             CacheRedisKafkaLocalUtil.remove(BaseRedisKeyEnum.XXL_JOB_COOKIE_CACHE, null);
+
             setJobGroup(dto, null);
 
         }
@@ -238,6 +241,7 @@ public class XxlJobServiceImpl implements XxlJobService {
 
             // 移除 redis中的 cookie，然后再执行一次本方法
             CacheRedisKafkaLocalUtil.remove(BaseRedisKeyEnum.XXL_JOB_COOKIE_CACHE, null);
+
             deleteById(notNullId);
 
         }

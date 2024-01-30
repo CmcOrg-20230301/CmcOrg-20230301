@@ -18,7 +18,7 @@ public class TryUtil {
 
             voidFunc0.call();
 
-        } catch (Exception e) {
+        } catch (Throwable e) {
 
             MyExceptionUtil.printError(e);
 
@@ -29,13 +29,13 @@ public class TryUtil {
     /**
      * 执行：try-catch
      */
-    public static void tryCatch(VoidFunc0 voidFunc0, @Nullable VoidFunc1<Exception> exceptionVoidFunc1) {
+    public static void tryCatch(VoidFunc0 voidFunc0, @Nullable VoidFunc1<Throwable> exceptionVoidFunc1) {
 
         try {
 
             voidFunc0.call();
 
-        } catch (Exception e) {
+        } catch (Throwable e) {
 
             MyExceptionUtil.printError(e);
 
@@ -54,7 +54,7 @@ public class TryUtil {
 
             voidFunc0.call();
 
-        } catch (Exception e) {
+        } catch (Throwable e) {
 
             MyExceptionUtil.printError(e);
 
@@ -69,13 +69,13 @@ public class TryUtil {
     /**
      * 执行：try-catch-finally
      */
-    public static void tryCatchFinally(VoidFunc0 voidFunc0, @Nullable VoidFunc1<Exception> exceptionVoidFunc1, @Nullable VoidFunc0 finallyVoidFunc0) {
+    public static void tryCatchFinally(VoidFunc0 voidFunc0, @Nullable VoidFunc1<Throwable> exceptionVoidFunc1, @Nullable VoidFunc0 finallyVoidFunc0) {
 
         try {
 
             voidFunc0.call();
 
-        } catch (Exception e) {
+        } catch (Throwable e) {
 
             MyExceptionUtil.printError(e);
 
@@ -102,7 +102,7 @@ public class TryUtil {
 
             voidFunc0.call();
 
-        } catch (Exception e) {
+        } catch (Throwable e) {
 
             MyExceptionUtil.printError(e);
 
@@ -123,7 +123,7 @@ public class TryUtil {
 
             voidFunc1.call(t);
 
-        } catch (Exception e) {
+        } catch (Throwable e) {
 
             MyExceptionUtil.printError(e);
 

@@ -3,6 +3,7 @@ package com.cmcorg20230301.be.engine.netty.tcp.protobuf.server;
 import cn.hutool.core.map.MapUtil;
 import com.cmcorg20230301.be.engine.model.model.constant.LogTopicConstant;
 import com.cmcorg20230301.be.engine.netty.tcp.protobuf.properties.NettyTcpProtobufProperties;
+import com.cmcorg20230301.be.engine.security.util.TryUtil;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
@@ -78,7 +79,7 @@ public class NettyTcpProtobufServerHandler extends ChannelInboundHandlerAdapter 
     @Override
     public void channelRead(@NotNull ChannelHandlerContext ctx, @NotNull Object msg) {
 
-        try {
+        TryUtil.tryCatchFinally(() -> {
 
             if (msg instanceof BaseProto.BaseRequest) {
 
@@ -87,11 +88,11 @@ public class NettyTcpProtobufServerHandler extends ChannelInboundHandlerAdapter 
 
             }
 
-        } finally {
+        }, () -> {
 
             ReferenceCountUtil.release(msg); // 备注：这里需要释放资源
 
-        }
+        });
 
     }
 

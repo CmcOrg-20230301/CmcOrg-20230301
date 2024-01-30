@@ -9,7 +9,6 @@ import com.baomidou.mybatisplus.extension.toolkit.ChainWrappers;
 import com.cmcorg20230301.be.engine.model.model.constant.LogTopicConstant;
 import com.cmcorg20230301.be.engine.other.app.listener.SysOtherAppWxWorkReceiveMessageListener;
 import com.cmcorg20230301.be.engine.other.app.mapper.SysOtherAppMapper;
-import com.cmcorg20230301.be.engine.other.app.mapper.SysOtherAppOfficialAccountMenuMapper;
 import com.cmcorg20230301.be.engine.other.app.model.dto.SysOtherAppWxWorkReceiveMessageDTO;
 import com.cmcorg20230301.be.engine.other.app.model.entity.SysOtherAppDO;
 import com.cmcorg20230301.be.engine.other.app.model.enums.SysOtherAppTypeEnum;
@@ -32,7 +31,6 @@ import com.cmcorg20230301.be.engine.sign.wx.service.impl.SignWxServiceImpl;
 import com.cmcorg20230301.be.engine.util.util.CallBack;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
-import org.redisson.api.RedissonClient;
 
 import javax.annotation.Resource;
 import java.util.Date;
@@ -48,12 +46,6 @@ public class SysOtherAppWxWorkReceiveMessageHandle implements ISysOtherAppWxWork
     @Resource
     SysOtherAppMapper sysOtherAppMapper;
 
-    @Resource
-    SysOtherAppOfficialAccountMenuMapper sysOtherAppOfficialAccountMenuMapper;
-
-    @Resource
-    RedissonClient redissonClient;
-
     /**
      * 处理消息
      */
@@ -67,11 +59,11 @@ public class SysOtherAppWxWorkReceiveMessageHandle implements ISysOtherAppWxWork
             sysOtherAppDO = ChainWrappers.lambdaQueryChain(sysOtherAppMapper).eq(SysOtherAppDO::getOpenId, dto.getToUserName()).eq(SysOtherAppDO::getType, SysOtherAppTypeEnum.WX_WORK.getCode()).one();
 
             if (sysOtherAppDO == null) {
-                ApiResultVO.error("该微信公众号的 openId，不存在本系统，请联系管理员", dto.getToUserName());
+                ApiResultVO.error("该企业微信的 openId，不存在本系统，请联系管理员", dto.getToUserName());
             }
 
             if (BooleanUtil.isFalse(sysOtherAppDO.getEnableFlag())) {
-                ApiResultVO.error("该微信公众号已被禁用，请联系管理员", dto.getToUserName());
+                ApiResultVO.error("该企业微信已被禁用，请联系管理员", dto.getToUserName());
             }
 
             dto.setSysOtherAppDO(sysOtherAppDO); // 设置：第三方应用数据
@@ -158,7 +150,7 @@ public class SysOtherAppWxWorkReceiveMessageHandle implements ISysOtherAppWxWork
      *
      * @return true 则表示不需要后续的处理
      */
-    private static boolean handleKfMsgOrEvent(SysOtherAppWxWorkReceiveMessageDTO dto) {
+    private boolean handleKfMsgOrEvent(SysOtherAppWxWorkReceiveMessageDTO dto) {
 
         // 由于下面会对该字段进行赋值，所以这里判断会避免无限循环
         if (StrUtil.isNotBlank(dto.getFromUserName())) {
@@ -196,6 +188,11 @@ public class SysOtherAppWxWorkReceiveMessageHandle implements ISysOtherAppWxWork
 
             for (JSONObject item : jsonObjectList) {
 
+                // 如果是：事件类型，则暂不进行处理
+                if ("event".equals(item.getStr("msgtype"))) {
+                    continue;
+                }
+
                 MyThreadUtil.execute(() -> {
 
                     TryUtil.tryCatch(() -> {
@@ -221,6 +218,11 @@ public class SysOtherAppWxWorkReceiveMessageHandle implements ISysOtherAppWxWork
 
         }
 
+        // 如果是：事件类型，则暂不进行处理
+        if ("event".equals(jsonObject.getStr("msgtype"))) {
+            return true;
+        }
+
         return false;
 
     }
@@ -234,43 +236,58 @@ public class SysOtherAppWxWorkReceiveMessageHandle implements ISysOtherAppWxWork
 
             if ("kf_msg_or_event".equals(dto.getEvent())) { // 如果是：微信客服消息
 
-                JSONObject jsonObject = dto.getWxKfMsgJsonObject();
-
-                String msgtype = jsonObject.getStr("msgtype");
-
-                if ("text".equals(msgtype)) {
-
-                    JSONObject text = jsonObject.getJSONObject("text");
-
-                    String content = text.getStr("content");
-
-                    execTextSendForKf(dto, "收到消息：" + content);
-
-                } else {
-
-                    execTextSendForKf(dto, "暂时只支持：文字、图片、语音消息");
-
-                }
+                doHandleKfMsgOrEvent(dto); // 处理
 
             }
-
-        } else if ("image".equals(dto.getMsgType())) { // 处理：图片消息
-
-            if (StrUtil.isNotBlank(dto.getSysOtherAppDO().getImageReplyContent())) {
-
-                // 回复文字内容：给企业微信
-                execTextSend(dto, dto.getSysOtherAppDO().getImageReplyContent());
-
-            }
-
-        } else if ("text".equals(dto.getMsgType())) {
-
-            handleTextMsg(dto); // 处理：文字消息
 
         } else {
 
             // 回复文字内容：给企业微信
-            execTextSend(dto, "暂时只支持：文字、图片、语音消息");
+            execTextSend(dto, "暂未支持，请联系管理员");
+
+        }
+
+    }
+
+    /**
+     * 处理：微信客服消息
+     */
+    private void doHandleKfMsgOrEvent(SysOtherAppWxWorkReceiveMessageDTO dto) {
+
+        JSONObject jsonObject = dto.getWxKfMsgJsonObject();
+
+        String msgtype = jsonObject.getStr("msgtype");
+
+        if ("text".equals(msgtype)) {
+
+            JSONObject text = jsonObject.getJSONObject("text");
+
+            String content = text.getStr("content");
+
+            dto.setContent(content);
+
+            handleTextMsg(dto); // 处理：文字消息
+
+        } else if ("image".equals(msgtype)) {
+
+            JSONObject image = jsonObject.getJSONObject("image");
+
+            String mediaId = image.getStr("media_id");
+
+            String accessToken = getAccessToken(dto);
+
+            String mediaUrl = WxUtil.getMediaUrlForWork(accessToken, mediaId);
+
+            if (StrUtil.isNotBlank(dto.getSysOtherAppDO().getImageReplyContent())) {
+
+                // 回复文字内容
+                execTextSend(dto, dto.getSysOtherAppDO().getImageReplyContent());
+
+            }
+
+        } else {
+
+            execTextSend(dto, "暂时只支持：文字、图片消息");
 
         }
 
@@ -285,7 +302,7 @@ public class SysOtherAppWxWorkReceiveMessageHandle implements ISysOtherAppWxWork
 
             MyThreadUtil.execute(() -> {
 
-                // 回复文字内容：给企业微信
+                // 回复文字内容
                 execTextSend(dto, dto.getSysOtherAppDO().getTextReplyContent());
 
             });
@@ -298,12 +315,12 @@ public class SysOtherAppWxWorkReceiveMessageHandle implements ISysOtherAppWxWork
 
             if (e instanceof BaseException) {
 
-                // 回复文字内容：给企业微信
+                // 回复文字内容
                 execTextSend(dto, ((BaseException) e).getApiResultVO().getMsg());
 
             } else {
 
-                // 回复文字内容：给企业微信
+                // 回复文字内容
                 execTextSend(dto, BaseBizCodeEnum.API_RESULT_SYS_ERROR.getMsg());
 
             }
@@ -313,26 +330,23 @@ public class SysOtherAppWxWorkReceiveMessageHandle implements ISysOtherAppWxWork
     }
 
     /**
-     * 回复文字内容：给企业微信客服
-     */
-    public static void execTextSendForKf(SysOtherAppWxWorkReceiveMessageDTO dto, String content) {
-
-        String accessToken = getAccessToken(dto);
-
-        // 执行：发送
-        WxUtil.doTextSendForWorkKf(dto.getFromUserName(), accessToken, content, dto.getOpenKfId());
-
-    }
-
-    /**
-     * 回复文字内容：给企业微信
+     * 回复文字内容：给企业微信/微信客服
      */
     public static void execTextSend(SysOtherAppWxWorkReceiveMessageDTO dto, String content) {
 
         String accessToken = getAccessToken(dto);
 
-        // 执行：发送
-        WxUtil.doTextSendForWork(dto.getFromUserName(), accessToken, content, dto.getAgentID());
+        if (dto.getWxKfMsgJsonObject() == null) {
+
+            // 执行：发送
+            WxUtil.doTextSendForWork(dto.getFromUserName(), accessToken, content, dto.getAgentID());
+
+        } else {
+
+            // 执行：发送
+            WxUtil.doTextSendForWorkKf(dto.getFromUserName(), accessToken, content, dto.getOpenKfId());
+
+        }
 
     }
 

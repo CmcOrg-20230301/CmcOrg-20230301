@@ -558,20 +558,16 @@ public class UserUtil {
         SecurityContextHolder.getContext()
                 .setAuthentication(new UsernamePasswordAuthenticationToken(principalJson, null, authoritySet));
 
-        try {
+        TryUtil.tryCatchFinally(() -> {
 
             // 执行方法
             voidFunc0.call();
 
-        } catch (Exception e) {
-
-            MyExceptionUtil.printError(e);
-
-        } finally {
+        }, () -> {
 
             SecurityContextHolder.clearContext(); // 清除：当前线程存储的值
 
-        }
+        });
 
     }
 

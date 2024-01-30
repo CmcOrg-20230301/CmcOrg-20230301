@@ -48,7 +48,7 @@ public class MyThreadUtil {
      * 异步执行
      */
     public static void execute(VoidFunc0 voidFunc0, @Nullable CountDownLatch countDownLatch,
-                               @Nullable VoidFunc1<Exception> exceptionVoidFunc1, @Nullable VoidFunc0 finallyVoidFunc0) {
+                               @Nullable VoidFunc1<Throwable> exceptionVoidFunc1, @Nullable VoidFunc0 finallyVoidFunc0) {
 
         execute(() -> {
 
