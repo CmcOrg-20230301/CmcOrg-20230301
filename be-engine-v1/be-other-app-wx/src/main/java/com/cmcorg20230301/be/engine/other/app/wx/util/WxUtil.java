@@ -677,6 +677,19 @@ public class WxUtil {
     }
 
     /**
+     * 获取临时素材：url
+     */
+    public static String getMediaUrlForWork(String accessToken, String mediaId) {
+
+        if (StrUtil.isBlank(mediaId)) {
+            return null;
+        }
+
+        return "https://qyapi.weixin.qq.com/cgi-bin/media/get?access_token=" + accessToken + "&media_id=" + mediaId;
+
+    }
+
+    /**
      * 执行：发送语音消息
      */
     public static void doVoiceSend(String wxOpenId, String accessToken, String mediaId) {
