@@ -304,19 +304,9 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenuDO> im
     @Override
     public List<SysMenuDO> tree(SysMenuPageDTO dto) {
 
-        CountDownLatch countDownLatch = ThreadUtil.newCountDownLatch(2);
-
-        CallBack<List<SysMenuDO>> sysMenuDoListCallBack = new CallBack<>();
+        CountDownLatch countDownLatch = ThreadUtil.newCountDownLatch(1);
 
         CallBack<List<SysMenuDO>> allListCallBack = new CallBack<>();
-
-        MyThreadUtil.execute(() -> {
-
-            // 根据条件进行筛选，得到符合条件的数据，然后再逆向生成整棵树，并返回这个树结构
-            dto.setPageSize(-1); // 不分页
-            sysMenuDoListCallBack.setValue(myPage(dto).getRecords());
-
-        }, countDownLatch);
 
         MyThreadUtil.execute(() -> {
 
@@ -324,9 +314,13 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenuDO> im
 
         }, countDownLatch);
 
+        // 根据条件进行筛选，得到符合条件的数据，然后再逆向生成整棵树，并返回这个树结构
+        dto.setPageSize(-1); // 不分页
+        List<SysMenuDO> sysMenuDoListCallBack = myPage(dto).getRecords();
+
         countDownLatch.await();
 
-        if (sysMenuDoListCallBack.getValue().size() == 0) {
+        if (sysMenuDoListCallBack.size() == 0) {
             return new ArrayList<>();
         }
 
@@ -334,7 +328,7 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenuDO> im
             return new ArrayList<>();
         }
 
-        return MyTreeUtil.getFullTreeByDeepNode(sysMenuDoListCallBack.getValue(), allListCallBack.getValue());
+        return MyTreeUtil.getFullTreeByDeepNode(sysMenuDoListCallBack, allListCallBack.getValue());
 
     }
 
