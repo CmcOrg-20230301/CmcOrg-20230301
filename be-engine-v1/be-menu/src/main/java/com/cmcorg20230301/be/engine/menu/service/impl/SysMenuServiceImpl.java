@@ -304,6 +304,9 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenuDO> im
     @Override
     public List<SysMenuDO> tree(SysMenuPageDTO dto) {
 
+        // 处理：MyTenantPageDTO
+        SysTenantUtil.handleMyTenantPageDTO(dto, true);
+
         CountDownLatch countDownLatch = ThreadUtil.newCountDownLatch(1);
 
         CallBack<List<SysMenuDO>> allListCallBack = new CallBack<>();
