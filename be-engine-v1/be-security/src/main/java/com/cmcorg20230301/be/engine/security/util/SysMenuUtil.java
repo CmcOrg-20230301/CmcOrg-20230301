@@ -47,7 +47,22 @@ public class SysMenuUtil {
                     List<SysMenuDO> sysMenuDOList =
                             ChainWrappers.lambdaQueryChain(sysMenuMapper).eq(BaseEntityNoId::getEnableFlag, true).list();
 
-                    return sysMenuDOList.stream().collect(Collectors.toMap(BaseEntity::getId, it -> it));
+                    return sysMenuDOList.stream().collect(Collectors.toMap(BaseEntity::getId, it -> {
+
+                        it.setCreateId(null);
+                        it.setCreateTime(null);
+
+                        it.setUpdateId(null);
+                        it.setUpdateTime(null);
+
+                        it.setDelFlag(null);
+                        it.setEnableFlag(null);
+
+                        it.setVersion(null);
+
+                        return it;
+
+                    }));
 
                 });
 
