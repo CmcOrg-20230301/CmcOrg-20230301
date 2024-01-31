@@ -425,7 +425,7 @@ public class WxUtil {
         String sendResultStr = HttpUtil
                 .post("https://qyapi.weixin.qq.com/cgi-bin/message/send?access_token=" + accessToken, bodyJsonStr);
 
-        log.info("wx-work-sendResult-text：{}，touser：{}，content：{}", sendResultStr, wxOpenId, content);
+        log.info("wxWork-sendResult-text：{}，touser：{}，content：{}", sendResultStr, wxOpenId, content);
 
     }
 
@@ -460,7 +460,7 @@ public class WxUtil {
         String sendResultStr = HttpUtil
                 .post("https://qyapi.weixin.qq.com/cgi-bin/kf/send_msg?access_token=" + accessToken, bodyJsonStr);
 
-        log.info("wx-work-kf-sendResult-text：{}，touser：{}，content：{}", sendResultStr, wxOpenId, content);
+        log.info("wxWork-kf-sendResult-text：{}，touser：{}，content：{}", sendResultStr, wxOpenId, content);
 
     }
 
@@ -489,7 +489,7 @@ public class WxUtil {
             String sendResultStr = HttpUtil
                     .post("https://qyapi.weixin.qq.com/cgi-bin/kf/sync_msg?access_token=" + accessToken, bodyJsonStr);
 
-            log.info("wx-work-syncMsg：{}，tenantId：{}，openKfId：{}", sendResultStr, tenantId, openKfId);
+            log.info("wxWork-syncMsg：{}，tenantId：{}，openKfId：{}", sendResultStr, tenantId, openKfId);
 
             WxSyncMsgVO wxSyncMsgVO = JSONUtil.toBean(sendResultStr, WxSyncMsgVO.class);
 
