@@ -709,6 +709,25 @@ public class WxUtil {
     }
 
     /**
+     * 执行：转人工客服
+     */
+    public static void toCustomerService(String openKfId, String accessToken, String externalUserId) {
+
+        if (StrUtil.isBlank(externalUserId)) {
+            return;
+        }
+
+        String bodyJsonStr = JSONUtil.createObj().set("open_kfid", openKfId).set("external_userid", externalUserId)
+                .set("service_state", 2).toString();
+
+        String sendResultStr = HttpUtil
+                .post("https://qyapi.weixin.qq.com/cgi-bin/kf/service_state/trans?access_token=" + accessToken, bodyJsonStr);
+
+        log.info("wxWork-toCustomerServiceResult：{}，touser：{}", sendResultStr, externalUserId);
+
+    }
+
+    /**
      * 执行：发送模板消息
      */
     public static void doTemplateMessageSend(String wxOpenId, String accessToken, String templateId, JSONObject data,
