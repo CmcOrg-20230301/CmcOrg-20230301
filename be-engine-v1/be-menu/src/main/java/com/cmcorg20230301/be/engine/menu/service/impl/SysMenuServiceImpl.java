@@ -288,6 +288,7 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenuDO> im
                 .eq(dto.getAuthFlag() != null, SysMenuDO::getAuthFlag, dto.getAuthFlag())
                 .eq(dto.getShowFlag() != null, SysMenuDO::getShowFlag, dto.getShowFlag())
                 .in(BaseEntityNoId::getTenantId, dto.getTenantIdSet()) //
+                .select(BaseEntity::getId, BaseEntityNoIdSuper::getTenantId, SysMenuDO::getName, SysMenuDO::getPath, SysMenuDO::getAuths, SysMenuDO::getShowFlag, BaseEntityNoId::getEnableFlag, SysMenuDO::getRedirect, BaseEntityTree::getOrderNo)
                 .orderByDesc(BaseEntityTree::getOrderNo).page(dto.page(true));
 
     }
