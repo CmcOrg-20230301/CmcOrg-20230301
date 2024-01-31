@@ -3,6 +3,7 @@ package com.cmcorg20230301.be.engine.menu.service.impl;
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.lang.func.Func1;
+import cn.hutool.core.thread.ThreadUtil;
 import cn.hutool.core.util.BooleanUtil;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.dynamic.datasource.annotation.DSTransactional;
@@ -25,7 +26,9 @@ import com.cmcorg20230301.be.engine.security.mapper.SysRoleMapper;
 import com.cmcorg20230301.be.engine.security.model.entity.*;
 import com.cmcorg20230301.be.engine.security.model.vo.ApiResultVO;
 import com.cmcorg20230301.be.engine.security.util.*;
+import com.cmcorg20230301.be.engine.util.util.CallBack;
 import com.cmcorg20230301.be.engine.util.util.MyMapUtil;
+import lombok.SneakyThrows;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Service;
 
@@ -34,6 +37,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.CountDownLatch;
 import java.util.stream.Collectors;
 
 @Service
@@ -288,7 +292,7 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenuDO> im
                 .eq(dto.getAuthFlag() != null, SysMenuDO::getAuthFlag, dto.getAuthFlag())
                 .eq(dto.getShowFlag() != null, SysMenuDO::getShowFlag, dto.getShowFlag())
                 .in(BaseEntityNoId::getTenantId, dto.getTenantIdSet()) //
-                .select(BaseEntity::getId, BaseEntityNoIdSuper::getTenantId, SysMenuDO::getName, SysMenuDO::getPath, SysMenuDO::getAuths, SysMenuDO::getShowFlag, BaseEntityNoId::getEnableFlag, SysMenuDO::getRedirect, BaseEntityTree::getOrderNo)
+                .select(BaseEntity::getId, BaseEntityTree::getParentId, BaseEntityNoIdSuper::getTenantId, SysMenuDO::getName, SysMenuDO::getPath, SysMenuDO::getAuths, SysMenuDO::getShowFlag, BaseEntityNoId::getEnableFlag, SysMenuDO::getRedirect, BaseEntityTree::getOrderNo)
                 .orderByDesc(BaseEntityTree::getOrderNo).page(dto.page(true));
 
     }
@@ -296,24 +300,41 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenuDO> im
     /**
      * 查询：树结构
      */
+    @SneakyThrows
     @Override
     public List<SysMenuDO> tree(SysMenuPageDTO dto) {
 
-        // 根据条件进行筛选，得到符合条件的数据，然后再逆向生成整棵树，并返回这个树结构
-        dto.setPageSize(-1); // 不分页
-        List<SysMenuDO> sysMenuDOList = myPage(dto).getRecords();
+        CountDownLatch countDownLatch = ThreadUtil.newCountDownLatch(2);
 
-        if (sysMenuDOList.size() == 0) {
+        CallBack<List<SysMenuDO>> sysMenuDoListCallBack = new CallBack<>();
+
+        CallBack<List<SysMenuDO>> allListCallBack = new CallBack<>();
+
+        MyThreadUtil.execute(() -> {
+
+            // 根据条件进行筛选，得到符合条件的数据，然后再逆向生成整棵树，并返回这个树结构
+            dto.setPageSize(-1); // 不分页
+            sysMenuDoListCallBack.setValue(myPage(dto).getRecords());
+
+        }, countDownLatch);
+
+        MyThreadUtil.execute(() -> {
+
+            allListCallBack.setValue(lambdaQuery().in(BaseEntityNoId::getTenantId, dto.getTenantIdSet()).list());
+
+        }, countDownLatch);
+
+        countDownLatch.await();
+
+        if (sysMenuDoListCallBack.getValue().size() == 0) {
             return new ArrayList<>();
         }
 
-        List<SysMenuDO> allList = lambdaQuery().in(BaseEntityNoId::getTenantId, dto.getTenantIdSet()).list();
-
-        if (allList.size() == 0) {
+        if (allListCallBack.getValue().size() == 0) {
             return new ArrayList<>();
         }
 
-        return MyTreeUtil.getFullTreeByDeepNode(sysMenuDOList, allList);
+        return MyTreeUtil.getFullTreeByDeepNode(sysMenuDoListCallBack.getValue(), allListCallBack.getValue());
 
     }
 
