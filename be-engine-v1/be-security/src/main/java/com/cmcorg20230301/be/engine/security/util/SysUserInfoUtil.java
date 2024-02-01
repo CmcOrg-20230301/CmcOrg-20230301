@@ -8,6 +8,7 @@ import com.cmcorg20230301.be.engine.model.model.constant.LogTopicConstant;
 import com.cmcorg20230301.be.engine.security.model.entity.SysUserInfoDO;
 import com.cmcorg20230301.be.engine.security.properties.SecurityProperties;
 import com.cmcorg20230301.be.engine.security.service.BaseSysUserInfoService;
+import com.cmcorg20230301.be.engine.util.util.NicknameUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -178,6 +179,32 @@ public class SysUserInfoUtil {
         sysUserInfoDO.setAvatarFileId(BaseConstant.SYS_ID);
         sysUserInfoDO.setNickname(securityProperties.getAdminNickname());
         sysUserInfoDO.setBio("");
+
+        return sysUserInfoDO;
+
+    }
+
+    /**
+     * 获取：带有昵称的 用户对象
+     */
+    @NotNull
+    public static SysUserInfoDO getWxSysUserInfoDO() {
+
+        SysUserInfoDO sysUserInfoDO = new SysUserInfoDO();
+        sysUserInfoDO.setNickname(NicknameUtil.getRandomNickname("微信用户"));
+
+        return sysUserInfoDO;
+
+    }
+
+    /**
+     * 获取：带有昵称的 用户对象
+     */
+    @NotNull
+    public static SysUserInfoDO getWxWorkSysUserInfoDO() {
+
+        SysUserInfoDO sysUserInfoDO = new SysUserInfoDO();
+        sysUserInfoDO.setNickname(NicknameUtil.getRandomNickname("企业微信用户"));
 
         return sysUserInfoDO;
 

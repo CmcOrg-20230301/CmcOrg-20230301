@@ -14,6 +14,7 @@ import com.cmcorg20230301.be.engine.model.model.constant.BaseConstant;
 import com.cmcorg20230301.be.engine.model.model.constant.FileTempPathConstant;
 import com.cmcorg20230301.be.engine.model.model.constant.LogTopicConstant;
 import com.cmcorg20230301.be.engine.other.app.model.entity.SysOtherAppDO;
+import com.cmcorg20230301.be.engine.other.app.model.enums.SysOtherAppTypeEnum;
 import com.cmcorg20230301.be.engine.other.app.service.SysOtherAppService;
 import com.cmcorg20230301.be.engine.other.app.wx.model.enums.WxMediaUploadTypeEnum;
 import com.cmcorg20230301.be.engine.other.app.wx.model.vo.*;
@@ -70,7 +71,7 @@ public class WxUtil {
         }
 
         SysOtherAppDO sysOtherAppDO = sysOtherAppService.lambdaQuery().eq(BaseEntityNoIdSuper::getTenantId, tenantId)
-                .eq(SysOtherAppDO::getAppId, appId).eq(BaseEntityNoId::getEnableFlag, true).select(SysOtherAppDO::getSecret)
+                .eq(SysOtherAppDO::getAppId, appId).eq(BaseEntityNoId::getEnableFlag, true).eq(SysOtherAppDO::getType, SysOtherAppTypeEnum.WX_MINI_PROGRAM).select(SysOtherAppDO::getSecret)
                 .one();
 
         String errorMessageStr = "miniProgramOpenId";
@@ -103,7 +104,7 @@ public class WxUtil {
         }
 
         SysOtherAppDO sysOtherAppDO = sysOtherAppService.lambdaQuery().eq(BaseEntityNoIdSuper::getTenantId, tenantId)
-                .eq(SysOtherAppDO::getAppId, appId).eq(BaseEntityNoId::getEnableFlag, true).select(SysOtherAppDO::getSecret)
+                .eq(SysOtherAppDO::getAppId, appId).eq(BaseEntityNoId::getEnableFlag, true).eq(SysOtherAppDO::getType, SysOtherAppTypeEnum.WX_MINI_PROGRAM).select(SysOtherAppDO::getSecret)
                 .one();
 
         String errorMessageStr = "用户手机号";
@@ -130,7 +131,7 @@ public class WxUtil {
     }
 
     /**
-     * 通过微信浏览器的 code，获取微信的 openId信息
+     * 通过微信浏览器的 code，获取微信的 openId信息：微信公众号
      */
     @NotNull
     public static WxOpenIdVO getWxBrowserOpenIdVoByCode(@Nullable Long tenantId, String code, String appId) {
@@ -140,7 +141,7 @@ public class WxUtil {
         }
 
         SysOtherAppDO sysOtherAppDO = sysOtherAppService.lambdaQuery().eq(BaseEntityNoIdSuper::getTenantId, tenantId)
-                .eq(SysOtherAppDO::getAppId, appId).eq(BaseEntityNoId::getEnableFlag, true).select(SysOtherAppDO::getSecret)
+                .eq(SysOtherAppDO::getAppId, appId).eq(BaseEntityNoId::getEnableFlag, true).eq(SysOtherAppDO::getType, SysOtherAppTypeEnum.WX_OFFICIAL_ACCOUNT).select(SysOtherAppDO::getSecret)
                 .one();
 
         String errorMessageStr = "browserOpenId";
@@ -158,6 +159,30 @@ public class WxUtil {
         checkWxVO(wxOpenIdVO, errorMessageStr, tenantId, appId); // 检查：微信回调 vo对象
 
         return wxOpenIdVO;
+
+    }
+
+    /**
+     * 通过企业微信浏览器的 code，获取企业微信的 openId信息
+     */
+    @NotNull
+    public static WxWorkOpenIdVO getWxWorkBrowserOpenIdVoByCode(@Nullable Long tenantId, String code, String appId) {
+
+        if (tenantId == null) {
+            tenantId = BaseConstant.TOP_TENANT_ID;
+        }
+
+        String accessToken = WxUtil.getAccessTokenForWork(tenantId, appId);
+
+        String jsonStr = HttpUtil.get(
+                "https://qyapi.weixin.qq.com/cgi-bin/auth/getuserinfo?access_token=" + accessToken
+                        + "&code=" + code);
+
+        WxWorkOpenIdVO wxWorkOpenIdVO = JSONUtil.toBean(jsonStr, WxWorkOpenIdVO.class);
+
+        checkWxVO(wxWorkOpenIdVO, "browserOpenIdForWork", tenantId, appId); // 检查：微信回调 vo对象
+
+        return wxWorkOpenIdVO;
 
     }
 
@@ -203,7 +228,9 @@ public class WxUtil {
             tenantId = BaseConstant.TOP_TENANT_ID;
         }
 
-        String sufKey = tenantId + ":" + appId;
+        SysOtherAppTypeEnum sysOtherAppTypeEnum = SysOtherAppTypeEnum.WX_OFFICIAL_ACCOUNT;
+
+        String sufKey = tenantId + ":" + sysOtherAppTypeEnum + ":" + appId;
 
         String accessToken = MyCacheUtil.onlyGet(BaseRedisKeyEnum.WX_ACCESS_TOKEN_CACHE, sufKey);
 
@@ -212,7 +239,7 @@ public class WxUtil {
         }
 
         SysOtherAppDO sysOtherAppDO = sysOtherAppService.lambdaQuery().eq(BaseEntityNoIdSuper::getTenantId, tenantId)
-                .eq(SysOtherAppDO::getAppId, appId).eq(BaseEntityNoId::getEnableFlag, true).select(SysOtherAppDO::getSecret)
+                .eq(SysOtherAppDO::getAppId, appId).eq(SysOtherAppDO::getType, sysOtherAppTypeEnum).eq(BaseEntityNoId::getEnableFlag, true).select(SysOtherAppDO::getSecret)
                 .one();
 
         String errorMessageStr = "accessToken";
@@ -248,7 +275,9 @@ public class WxUtil {
             tenantId = BaseConstant.TOP_TENANT_ID;
         }
 
-        String sufKey = tenantId + ":" + appId;
+        SysOtherAppTypeEnum sysOtherAppTypeEnum = SysOtherAppTypeEnum.WX_WORK;
+
+        String sufKey = tenantId + ":" + sysOtherAppTypeEnum + ":" + appId;
 
         String accessToken = MyCacheUtil.onlyGet(BaseRedisKeyEnum.WX_WORK_ACCESS_TOKEN_CACHE, sufKey);
 
@@ -257,10 +286,10 @@ public class WxUtil {
         }
 
         SysOtherAppDO sysOtherAppDO = sysOtherAppService.lambdaQuery().eq(BaseEntityNoIdSuper::getTenantId, tenantId)
-                .eq(SysOtherAppDO::getAppId, appId).eq(BaseEntityNoId::getEnableFlag, true).select(SysOtherAppDO::getSecret)
+                .eq(SysOtherAppDO::getAppId, appId).eq(BaseEntityNoId::getEnableFlag, true).eq(SysOtherAppDO::getType, sysOtherAppTypeEnum).select(SysOtherAppDO::getSecret)
                 .one();
 
-        String errorMessageStr = "accessTokenForWord";
+        String errorMessageStr = "accessTokenForWork";
 
         if (sysOtherAppDO == null) {
             ApiResultVO.error(BaseBizCodeEnum.ILLEGAL_REQUEST.getMsg(), errorMessageStr);

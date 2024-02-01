@@ -53,6 +53,8 @@
         <module>be-sign-email</module>
         <module>be-sign-phone</module>
         <module>be-sign-wx</module>
+        <module>be-sign-single</module>
+        <module>be-sign-wx-work</module>
         <module>be-dict</module>
         <module>be-menu</module>
         <module>be-server</module>
@@ -85,7 +87,6 @@
         <module>be-other-app-wx-work</module>
         <module>be-other-app-baidu</module>
         <module>be-im-session</module>
-        <module>be-sign-single</module>
     </modules>
 
     <dependencyManagement>
@@ -312,6 +313,13 @@
             <dependency>
                 <groupId>${cmcorg.groupId}</groupId>
                 <artifactId>be-dict</artifactId>
+                <version>${cmcorg.version}</version>
+            </dependency>
+
+            <!-- be-sign-wx-work -->
+            <dependency>
+                <groupId>${cmcorg.groupId}</groupId>
+                <artifactId>be-sign-wx-work</artifactId>
                 <version>${cmcorg.version}</version>
             </dependency>
 

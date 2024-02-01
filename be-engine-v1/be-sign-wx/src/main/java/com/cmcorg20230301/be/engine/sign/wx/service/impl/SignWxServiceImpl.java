@@ -22,8 +22,12 @@ import com.cmcorg20230301.be.engine.security.model.enums.SysQrCodeSceneTypeEnum;
 import com.cmcorg20230301.be.engine.security.properties.SingleSignInProperties;
 import com.cmcorg20230301.be.engine.security.util.MyJwtUtil;
 import com.cmcorg20230301.be.engine.security.util.SysTenantUtil;
+import com.cmcorg20230301.be.engine.security.util.SysUserInfoUtil;
 import com.cmcorg20230301.be.engine.security.util.UserUtil;
 import com.cmcorg20230301.be.engine.sign.helper.exception.BizCodeEnum;
+import com.cmcorg20230301.be.engine.sign.helper.model.dto.SignInBrowserCodeDTO;
+import com.cmcorg20230301.be.engine.sign.helper.model.dto.SignInMiniProgramCodeDTO;
+import com.cmcorg20230301.be.engine.sign.helper.model.dto.SignInMiniProgramPhoneCodeDTO;
 import com.cmcorg20230301.be.engine.sign.helper.model.dto.UserSignBaseDTO;
 import com.cmcorg20230301.be.engine.sign.helper.util.SignUtil;
 import com.cmcorg20230301.be.engine.sign.wx.model.dto.*;
@@ -32,8 +36,6 @@ import com.cmcorg20230301.be.engine.sign.wx.service.SignWxService;
 import com.cmcorg20230301.be.engine.sms.base.util.SysSmsHelper;
 import com.cmcorg20230301.be.engine.sms.base.util.SysSmsUtil;
 import com.cmcorg20230301.be.engine.util.util.CallBack;
-import com.cmcorg20230301.be.engine.util.util.NicknameUtil;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.redisson.api.RedissonClient;
 import org.springframework.stereotype.Service;
@@ -91,27 +93,11 @@ public class SignWxServiceImpl implements SignWxService {
         return SignUtil.signInAccount(
                 ChainWrappers.lambdaQueryChain(sysUserMapper).eq(SysUserDO::getWxOpenId, wxOpenIdVO.getOpenid())
                         .eq(SysUserDO::getWxAppId, dto.getAppId()), BaseRedisKeyEnum.PRE_WX_OPEN_ID, wxOpenIdVO.getOpenid(),
-                SignWxServiceImpl::getWxSysUserInfoDO, dto.getTenantId(), accountMap -> {
+                SysUserInfoUtil::getWxSysUserInfoDO, dto.getTenantId(), accountMap -> {
 
                     accountMap.put(BaseRedisKeyEnum.PRE_WX_APP_ID, dto.getAppId());
 
                 }, null);
-
-    }
-
-    // 微信用户：昵称前缀
-    public static final String WX_SYS_USER_INFO_NICKNAME_PRE = "微信用户";
-
-    /**
-     * 获取：带有昵称的 用户对象
-     */
-    @NotNull
-    public static SysUserInfoDO getWxSysUserInfoDO() {
-
-        SysUserInfoDO sysUserInfoDO = new SysUserInfoDO();
-        sysUserInfoDO.setNickname(NicknameUtil.getRandomNickname(WX_SYS_USER_INFO_NICKNAME_PRE));
-
-        return sysUserInfoDO;
 
     }
 
@@ -127,7 +113,7 @@ public class SignWxServiceImpl implements SignWxService {
         return SignUtil.signInAccount(
                 ChainWrappers.lambdaQueryChain(sysUserMapper).eq(SysUserDO::getWxOpenId, wxOpenIdVO.getOpenid())
                         .eq(SysUserDO::getWxAppId, dto.getAppId()), BaseRedisKeyEnum.PRE_WX_OPEN_ID, wxOpenIdVO.getOpenid(),
-                SignWxServiceImpl::getWxSysUserInfoDO, dto.getTenantId(), accountMap -> {
+                SysUserInfoUtil::getWxSysUserInfoDO, dto.getTenantId(), accountMap -> {
 
                     accountMap.put(BaseRedisKeyEnum.PRE_WX_APP_ID, dto.getAppId());
 
