@@ -728,6 +728,32 @@ public class WxUtil {
     }
 
     /**
+     * 获取会话状态：企业微信客服
+     */
+    @Nullable
+    public static WxServiceStateVO serviceStateForWorkKf(String openKfId, String accessToken, String externalUserId, Long tenantId, String appId) {
+
+        if (StrUtil.isBlank(externalUserId)) {
+            return null;
+        }
+
+        String bodyJsonStr = JSONUtil.createObj().set("open_kfid", openKfId).set("external_userid", externalUserId).toString();
+
+        String sendResultStr = HttpUtil
+                .post("https://qyapi.weixin.qq.com/cgi-bin/kf/service_state/get?access_token=" + accessToken, bodyJsonStr);
+
+        log.info("wxWork-serviceStateResult：{}，touser：{}", sendResultStr, externalUserId);
+
+        WxServiceStateVO wxServiceStateVO = JSONUtil.toBean(sendResultStr, WxServiceStateVO.class);
+
+        // 检查：微信回调 vo对象
+        checkWxVO(wxServiceStateVO, "serviceState", tenantId, appId);
+
+        return wxServiceStateVO;
+
+    }
+
+    /**
      * 执行：发送模板消息
      */
     public static void doTemplateMessageSend(String wxOpenId, String accessToken, String templateId, JSONObject data,
