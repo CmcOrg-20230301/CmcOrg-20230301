@@ -41,7 +41,7 @@ public class SysSocketRefUserController {
 
     @Operation(summary = "批量：开关控制台")
     @PostMapping("/changeConsoleFlagByIdSet")
-    @PreAuthorize("hasAuthority('sysSocketRefUser:changeConsoleFlagByIdSet')")
+    @PreAuthorize("hasAuthority('sysSocketRefUser:insertOrUpdate')")
     public ApiResultVO<String> changeConsoleFlagByIdSet(@RequestBody @Valid NotEmptyIdSet notEmptyIdSet) {
         return ApiResultVO.okMsg(baseService.changeConsoleFlagByIdSet(notEmptyIdSet));
     }

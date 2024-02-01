@@ -339,6 +339,8 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserProMapper, SysUserDO>
             // 设置
             setManageSignInFlag(sysUserDO.getId(), dto.getManageSignInFlag());
 
+            setSysWxWorkKfAutoAssistantFlag(sysUserDO.getId(), dto.getSysWxWorkKfAutoAssistantFlag());
+
             return BaseBizCodeEnum.OK;
 
         });
@@ -539,6 +541,10 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserProMapper, SysUserDO>
 
             sysUserInfoByIdVO.setManageSignInFlag(manageSignInFlag);
 
+            Boolean sysWxWorkKfAutoAssistantFlag = getSysWxWorkKfAutoAssistantFlag(sysUserDO.getId());
+
+            sysUserInfoByIdVO.setSysWxWorkKfAutoAssistantFlag(sysWxWorkKfAutoAssistantFlag);
+
         }, countDownLatch);
 
         MyThreadUtil.execute(() -> {
@@ -648,6 +654,34 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserProMapper, SysUserDO>
         CacheRedisKafkaLocalUtil
                 .putSecondMap(BaseRedisKeyEnum.SYS_USER_MANAGE_SIGN_IN_FLAG_CACHE, null, String.valueOf(userId),
                         BooleanUtil.isTrue(manageSignInFlag), null);
+
+    }
+
+    /**
+     * 获取：企业微信-微信客服，是否自动交给智能助手接待，默认：true
+     */
+    public static boolean getSysWxWorkKfAutoAssistantFlag(Long currentUserId) {
+
+        if (UserUtil.getCurrentUserAdminFlag(currentUserId)) {
+            return true;
+        }
+
+        Boolean sysWxWorkKfAutoAssistantFlag = MyCacheUtil.onlyGetSecondMap(BaseRedisKeyEnum.SYS_WX_WORK_KF_AUTO_ASSISTANT_FLAG_CACHE, null, String.valueOf(currentUserId));
+
+
+        return !BooleanUtil.isFalse(sysWxWorkKfAutoAssistantFlag);
+
+    }
+
+    /**
+     * 设置：企业微信-微信客服，是否自动交给智能助手接待，默认：true
+     */
+    public static void setSysWxWorkKfAutoAssistantFlag(Long userId, @Nullable Boolean sysWxWorkKfAutoAssistantFlag) {
+
+        // 设置
+        CacheRedisKafkaLocalUtil
+                .putSecondMap(BaseRedisKeyEnum.SYS_WX_WORK_KF_AUTO_ASSISTANT_FLAG_CACHE, null, String.valueOf(userId),
+                        !BooleanUtil.isFalse(sysWxWorkKfAutoAssistantFlag), null);
 
     }
 

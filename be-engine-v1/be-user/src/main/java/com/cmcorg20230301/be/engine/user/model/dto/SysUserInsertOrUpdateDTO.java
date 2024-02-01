@@ -67,4 +67,7 @@ public class SysUserInsertOrUpdateDTO extends BaseTenantInsertOrUpdateDTO {
     @Schema(description = "是否允许登录：后台管理系统")
     private Boolean manageSignInFlag;
 
+    @Schema(description = "企业微信-微信客服：当会话状态为：0 未处理时，是否自动交给智能助手接待，默认：true")
+    private Boolean sysWxWorkKfAutoAssistantFlag;
+
 }
