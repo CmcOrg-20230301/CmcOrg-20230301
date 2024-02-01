@@ -6,6 +6,7 @@ import com.cmcorg20230301.be.engine.log.properties.LogProperties;
 import com.cmcorg20230301.be.engine.model.model.constant.LogTopicConstant;
 import com.cmcorg20230301.be.engine.security.model.entity.SysSqlSlowDO;
 import com.cmcorg20230301.be.engine.security.util.SqlUtil;
+import com.cmcorg20230301.be.engine.util.util.CallBack;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.executor.statement.StatementHandler;
@@ -55,13 +56,79 @@ public class MybatisSqlLoggerInterceptor implements Interceptor {
         // sql语句类型：select、delete、insert、update
         SqlCommandType sqlCommandType = mappedStatement.getSqlCommandType();
 
-        boolean logFlag = true;
+        boolean logFlag;
 
         if (SqlCommandType.INSERT.equals(sqlCommandType)) {
 
             logFlag = logProperties.getLogTopicSet().contains(LogTopicConstant.MYBATIS_INSERT);
 
+        } else {
+
+            logFlag = logProperties.getLogTopicSet().contains(LogTopicConstant.MYBATIS);
+
         }
+
+        long timeNumber = System.currentTimeMillis();
+
+        try {
+
+            return invocation.proceed();
+
+        } finally {
+
+            timeNumber = (System.currentTimeMillis() - timeNumber);
+
+            boolean slowFlag = timeNumber > 10; // 是否是：慢 sql
+
+            CallBack<String> sqlIdCallBack = new CallBack<>();
+            CallBack<String> sqlCallBack = new CallBack<>();
+            CallBack<String> costMsStrCallBack = new CallBack<>();
+
+            if (logFlag || slowFlag) {
+
+                // 当：要打印日志，或者要记录慢 sql的时候，才执行该方法
+                handle(mappedStatement, statementHandler, sqlIdCallBack, sqlCallBack, costMsStrCallBack, timeNumber);
+
+            }
+
+            if (logFlag) {
+
+                String pre = "";
+
+                if (slowFlag) {
+
+                    pre = "慢";
+
+                }
+
+                log.info("{}sql，耗时：{}，内容：{}【{}】：{}", pre, costMsStrCallBack.getValue(), sqlIdCallBack.getValue(), sqlCommandType.toString(), sqlCallBack.getValue());
+
+            }
+
+            if (slowFlag) { // 记录到数据库里
+
+                SysSqlSlowDO sysSqlSlowDO = new SysSqlSlowDO();
+
+                sysSqlSlowDO.setName(sqlIdCallBack.getValue());
+                sysSqlSlowDO.setType(sqlCommandType.toString());
+                sysSqlSlowDO.setCostMsStr(costMsStrCallBack.getValue());
+                sysSqlSlowDO.setCostMs(timeNumber);
+                sysSqlSlowDO.setSqlContent(sqlCallBack.getValue());
+
+                SqlUtil.add(sysSqlSlowDO);
+
+            }
+
+        }
+
+    }
+
+    /**
+     * 处理：sql语句
+     */
+    public void handle(MappedStatement mappedStatement, StatementHandler statementHandler, CallBack<String> sqlIdCallBack,
+                       CallBack<String> sqlCallBack,
+                       CallBack<String> costMsStrCallBack, long timeNumber) {
 
         // id为，执行的 mapper方法的全路径名，如：com.cmcorg20230301.be.engine.security.mapper.SysUserMapper.insert
         String sqlId = mappedStatement.getId();
@@ -74,49 +141,10 @@ public class MybatisSqlLoggerInterceptor implements Interceptor {
         // 获取到最终的sql语句
         String sql = showSql(configuration, boundSql);
 
-        long timeNumber = System.currentTimeMillis();
-
-        try {
-
-            return invocation.proceed();
-
-        } finally {
-
-            timeNumber = (System.currentTimeMillis() - timeNumber);
-
-            String pre = "";
-
-            boolean slowFlag = timeNumber > 200; // 是否是：慢 sql
-
-            if (slowFlag) {
-
-                pre = "慢";
-
-            }
-
-            String costMsStr = DateUtil.formatBetween(timeNumber);
-
-            if (logFlag) {
-
-                log.info("{}sql，耗时：{}，内容：{}【{}】：{}", pre, costMsStr, sqlId, sqlCommandType.toString(), sql);
-
-            }
-
-            if (slowFlag) { // 记录到数据库里
-
-                SysSqlSlowDO sysSqlSlowDO = new SysSqlSlowDO();
-
-                sysSqlSlowDO.setName(sqlId);
-                sysSqlSlowDO.setType(sqlCommandType.toString());
-                sysSqlSlowDO.setCostMsStr(costMsStr);
-                sysSqlSlowDO.setCostMs(timeNumber);
-                sysSqlSlowDO.setSql(sql);
-
-                SqlUtil.add(sysSqlSlowDO);
-
-            }
-
-        }
+        // 设置：回调对象
+        sqlIdCallBack.setValue(sqlId);
+        sqlCallBack.setValue(sql);
+        costMsStrCallBack.setValue(DateUtil.formatBetween(timeNumber));
 
     }
 

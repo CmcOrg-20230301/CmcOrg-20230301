@@ -30,6 +30,6 @@ public class SysSqlSlowDO extends BaseEntityNoIdSuper {
     private Long costMs;
 
     @Schema(description = "sql内容")
-    private String sql;
+    private String sqlContent;
 
 }
