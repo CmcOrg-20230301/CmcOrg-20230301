@@ -72,7 +72,7 @@ public class SignWxServiceImpl implements SignWxService {
         // 直接通过：手机号登录
         return SignUtil.signInAccount(
                 ChainWrappers.lambdaQueryChain(sysUserMapper).eq(SysUserDO::getPhone, wxPhoneInfoVO.getPhoneNumber()),
-                BaseRedisKeyEnum.PRE_PHONE, wxPhoneInfoVO.getPhoneNumber(), SignWxServiceImpl::getWxSysUserInfoDO,
+                BaseRedisKeyEnum.PRE_PHONE, wxPhoneInfoVO.getPhoneNumber(), SysUserInfoUtil::getWxSysUserInfoDO,
                 dto.getTenantId(), accountMap -> {
 
                     accountMap.put(BaseRedisKeyEnum.PRE_WX_APP_ID, dto.getAppId());
@@ -165,7 +165,7 @@ public class SignWxServiceImpl implements SignWxService {
             Long userId = MyJwtUtil.getPayloadMapUserIdValue(jwt.getPayload().getClaimsJson());
 
             boolean exists = ChainWrappers.lambdaQueryChain(sysUserInfoMapper).eq(SysUserInfoDO::getId, userId)
-                    .likeRight(SysUserInfoDO::getNickname, WX_SYS_USER_INFO_NICKNAME_PRE).exists();
+                    .likeRight(SysUserInfoDO::getNickname, SysUserInfoUtil.WX_SYS_USER_INFO_NICKNAME_PRE).exists();
 
             if (exists) {
 

@@ -184,6 +184,9 @@ public class SysUserInfoUtil {
 
     }
 
+    // 微信用户：昵称前缀
+    public static final String WX_SYS_USER_INFO_NICKNAME_PRE = "微信用户";
+
     /**
      * 获取：带有昵称的 用户对象
      */
@@ -191,11 +194,15 @@ public class SysUserInfoUtil {
     public static SysUserInfoDO getWxSysUserInfoDO() {
 
         SysUserInfoDO sysUserInfoDO = new SysUserInfoDO();
-        sysUserInfoDO.setNickname(NicknameUtil.getRandomNickname("微信用户"));
+        sysUserInfoDO.setNickname(NicknameUtil.getRandomNickname(WX_SYS_USER_INFO_NICKNAME_PRE));
 
         return sysUserInfoDO;
 
     }
+
+    // 企业微信用户：昵称前缀
+    public static final String WX_WORK_SYS_USER_INFO_NICKNAME_PRE = "企业微信用户";
+
 
     /**
      * 获取：带有昵称的 用户对象
@@ -204,7 +211,7 @@ public class SysUserInfoUtil {
     public static SysUserInfoDO getWxWorkSysUserInfoDO() {
 
         SysUserInfoDO sysUserInfoDO = new SysUserInfoDO();
-        sysUserInfoDO.setNickname(NicknameUtil.getRandomNickname("企业微信用户"));
+        sysUserInfoDO.setNickname(NicknameUtil.getRandomNickname(WX_WORK_SYS_USER_INFO_NICKNAME_PRE));
 
         return sysUserInfoDO;
 
