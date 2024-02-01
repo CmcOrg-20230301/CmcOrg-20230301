@@ -32,7 +32,6 @@ import com.cmcorg20230301.be.engine.security.util.SysUserInfoUtil;
 import com.cmcorg20230301.be.engine.security.util.TryUtil;
 import com.cmcorg20230301.be.engine.security.util.UserUtil;
 import com.cmcorg20230301.be.engine.sign.helper.util.SignUtil;
-import com.cmcorg20230301.be.engine.sign.wx.service.impl.SignWxServiceImpl;
 import com.cmcorg20230301.be.engine.util.util.CallBack;
 import com.cmcorg20230301.be.engine.util.util.VoidFunc3;
 import lombok.extern.slf4j.Slf4j;
@@ -125,7 +124,7 @@ public class SysOtherAppWxOfficialAccountReceiveMessageHandle implements ISysOth
         // 直接通过：微信 openId登录
         SignUtil.signInAccount(ChainWrappers.lambdaQueryChain(sysUserMapper).eq(SysUserDO::getWxOpenId, dto.getFromUserName()).eq(SysUserDO::getWxAppId, sysOtherAppDO.getAppId()), BaseRedisKeyEnum.PRE_WX_OPEN_ID, dto.getFromUserName(), () -> {
 
-            SysUserInfoDO sysUserInfoDO = SignWxServiceImpl.getWxSysUserInfoDO();
+            SysUserInfoDO sysUserInfoDO = SysUserInfoUtil.getWxSysUserInfoDO();
 
             sysUserInfoDO.setSignUpType(SysRequestCategoryEnum.WX_OFFICIAL_ACCOUNT);
 
