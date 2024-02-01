@@ -6,6 +6,7 @@ import cn.hutool.core.map.MapUtil;
 import com.cmcorg20230301.be.engine.model.model.constant.BaseConstant;
 import com.cmcorg20230301.be.engine.model.model.constant.LogTopicConstant;
 import com.cmcorg20230301.be.engine.security.model.entity.SysUserInfoDO;
+import com.cmcorg20230301.be.engine.security.model.enums.SysRequestCategoryEnum;
 import com.cmcorg20230301.be.engine.security.properties.SecurityProperties;
 import com.cmcorg20230301.be.engine.security.service.BaseSysUserInfoService;
 import com.cmcorg20230301.be.engine.util.util.NicknameUtil;
@@ -194,6 +195,7 @@ public class SysUserInfoUtil {
     public static SysUserInfoDO getWxSysUserInfoDO() {
 
         SysUserInfoDO sysUserInfoDO = new SysUserInfoDO();
+
         sysUserInfoDO.setNickname(NicknameUtil.getRandomNickname(WX_SYS_USER_INFO_NICKNAME_PRE));
 
         return sysUserInfoDO;
@@ -211,6 +213,9 @@ public class SysUserInfoUtil {
     public static SysUserInfoDO getWxWorkSysUserInfoDO() {
 
         SysUserInfoDO sysUserInfoDO = new SysUserInfoDO();
+
+        sysUserInfoDO.setSignUpType(SysRequestCategoryEnum.WX_WORK);
+
         sysUserInfoDO.setNickname(NicknameUtil.getRandomNickname(WX_WORK_SYS_USER_INFO_NICKNAME_PRE));
 
         return sysUserInfoDO;
