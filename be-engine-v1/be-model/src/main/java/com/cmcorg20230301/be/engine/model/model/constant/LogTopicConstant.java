@@ -7,6 +7,8 @@ public interface LogTopicConstant {
 
     String PRE_BE = PropertiesPrefixConstant.PRE_BE;
 
+    String SQL = PRE_BE + "sql"; // sql相关
+
     String MYBATIS = PRE_BE + "mybatis"; // mybatis相关
 
     String MYBATIS_INSERT = MYBATIS + ".insert"; // mybatis-insert相关

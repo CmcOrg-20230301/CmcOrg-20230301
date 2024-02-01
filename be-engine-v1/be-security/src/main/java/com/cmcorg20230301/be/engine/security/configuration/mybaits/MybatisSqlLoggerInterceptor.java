@@ -4,6 +4,8 @@ import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.date.DateUtil;
 import com.cmcorg20230301.be.engine.log.properties.LogProperties;
 import com.cmcorg20230301.be.engine.model.model.constant.LogTopicConstant;
+import com.cmcorg20230301.be.engine.security.model.entity.SysSqlSlowDO;
+import com.cmcorg20230301.be.engine.security.util.SqlUtil;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.executor.statement.StatementHandler;
@@ -92,14 +94,25 @@ public class MybatisSqlLoggerInterceptor implements Interceptor {
 
             }
 
+            String costMsStr = DateUtil.formatBetween(timeNumber);
+
             if (logFlag) {
 
-                log.info("{}sql，耗时：{}，内容：{}【{}】：{}", pre, DateUtil.formatBetween(timeNumber), sqlId, sqlCommandType.toString(), sql);
+                log.info("{}sql，耗时：{}，内容：{}【{}】：{}", pre, costMsStr, sqlId, sqlCommandType.toString(), sql);
 
             }
 
             if (slowFlag) { // 记录到数据库里
 
+                SysSqlSlowDO sysSqlSlowDO = new SysSqlSlowDO();
+
+                sysSqlSlowDO.setName(sqlId);
+                sysSqlSlowDO.setType(sqlCommandType.toString());
+                sysSqlSlowDO.setCostMsStr(costMsStr);
+                sysSqlSlowDO.setCostMs(timeNumber);
+                sysSqlSlowDO.setSql(sql);
+
+                SqlUtil.add(sysSqlSlowDO);
 
             }
 
