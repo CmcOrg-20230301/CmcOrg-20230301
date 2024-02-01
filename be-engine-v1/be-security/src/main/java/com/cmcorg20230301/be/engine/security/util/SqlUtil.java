@@ -55,7 +55,7 @@ public class SqlUtil {
         // 目的：防止还有程序往：tempList，里面添加数据，所以这里等待一会
         MyThreadUtil.schedule(() -> {
 
-            log.info("保存慢sql日志数据，长度：{}", tempSysSqlSlowDOList.size());
+            log.info("保存慢 sql日志数据，长度：{}", tempSysSqlSlowDOList.size());
 
             // 批量保存数据
             sqlSlowService.saveBatch(tempSysSqlSlowDOList);
