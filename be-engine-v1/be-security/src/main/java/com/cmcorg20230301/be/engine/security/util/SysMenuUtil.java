@@ -55,9 +55,6 @@ public class SysMenuUtil {
                         it.setUpdateId(null);
                         it.setUpdateTime(null);
 
-                        it.setDelFlag(null);
-                        it.setEnableFlag(null);
-
                         it.setVersion(null);
 
                         return it;
