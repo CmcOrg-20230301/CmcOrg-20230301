@@ -7,6 +7,8 @@ public interface LogTopicConstant {
 
     String PRE_BE = PropertiesPrefixConstant.PRE_BE;
 
+    String MYBATIS = PRE_BE + "mybatis"; // mybatis相关
+
     String FILE_TYPE = PRE_BE + "file-type"; // 文件类型相关
 
     String NORMAL = PRE_BE + "normal"; // 没有指定 loggerName的日志，即：不以 be开头的 loggerName
