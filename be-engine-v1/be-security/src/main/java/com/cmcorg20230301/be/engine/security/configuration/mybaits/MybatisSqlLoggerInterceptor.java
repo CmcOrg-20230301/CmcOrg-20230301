@@ -78,7 +78,7 @@ public class MybatisSqlLoggerInterceptor implements Interceptor {
 
             timeNumber = (System.currentTimeMillis() - timeNumber);
 
-            boolean slowFlag = timeNumber > 10; // 是否是：慢 sql
+            boolean slowFlag = timeNumber > 200; // 是否是：慢 sql
 
             CallBack<String> sqlIdCallBack = new CallBack<>();
             CallBack<String> sqlCallBack = new CallBack<>();
