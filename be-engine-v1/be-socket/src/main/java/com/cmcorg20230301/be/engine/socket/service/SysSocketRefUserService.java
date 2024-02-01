@@ -12,4 +12,6 @@ public interface SysSocketRefUserService extends IService<SysSocketRefUserDO> {
 
     String offlineByIdSet(NotEmptyIdSet notEmptyIdSet);
 
+    String changeConsoleFlagByIdSet(NotEmptyIdSet notEmptyIdSet);
+
 }

@@ -42,19 +42,23 @@ public class WebSocketUtil {
      * 发送消息
      */
     @SneakyThrows
-    public static void send(@Nullable SysWebSocketEventBO<?> sysWebSocketEventBO) {
+    public static void send(@Nullable SysWebSocketEventBO<?> bo) {
 
-        if (sysWebSocketEventBO == null) {
+        if (bo == null) {
             return;
         }
 
-        Set<Long> userIdSet = sysWebSocketEventBO.getUserIdSet();
+        Set<Long> userIdSet = bo.getUserIdSet();
 
-        if (CollUtil.isEmpty(userIdSet) || sysWebSocketEventBO.getWebSocketMessageDTO() == null) {
+        if (CollUtil.isEmpty(userIdSet) || bo.getWebSocketMessageDTO() == null) {
             return;
         }
 
-        String jsonStr = objectMapper.writeValueAsString(sysWebSocketEventBO.getWebSocketMessageDTO());
+        String jsonStr = objectMapper.writeValueAsString(bo.getWebSocketMessageDTO());
+
+        Set<Long> sysSocketRefUserIdSet = bo.getSysSocketRefUserIdSet();
+
+        boolean checkFlag = CollUtil.isNotEmpty(sysSocketRefUserIdSet);
 
         for (Long item : userIdSet) {
 
@@ -68,6 +72,16 @@ public class WebSocketUtil {
             List<Channel> channelList = new ArrayList<>(channelMap.values());
 
             for (Channel subItem : channelList) {
+
+                if (checkFlag) {
+
+                    Long sysSocketRefUserId = subItem.attr(NettyWebSocketServerHandler.SYS_SOCKET_REF_USER_ID_KEY).get();
+
+                    if (!sysSocketRefUserIdSet.contains(sysSocketRefUserId)) {
+                        continue;
+                    }
+
+                }
 
                 // 发送数据
                 subItem.writeAndFlush(new TextWebSocketFrame(jsonStr));

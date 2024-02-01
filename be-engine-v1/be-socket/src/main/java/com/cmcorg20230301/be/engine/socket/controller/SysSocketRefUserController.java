@@ -39,4 +39,11 @@ public class SysSocketRefUserController {
         return ApiResultVO.okMsg(baseService.offlineByIdSet(notEmptyIdSet));
     }
 
+    @Operation(summary = "批量：开关控制台")
+    @PostMapping("/changeConsoleFlagByIdSet")
+    @PreAuthorize("hasAuthority('sysSocketRefUser:changeConsoleFlagByIdSet')")
+    public ApiResultVO<String> changeConsoleFlagByIdSet(@RequestBody @Valid NotEmptyIdSet notEmptyIdSet) {
+        return ApiResultVO.okMsg(baseService.changeConsoleFlagByIdSet(notEmptyIdSet));
+    }
+
 }

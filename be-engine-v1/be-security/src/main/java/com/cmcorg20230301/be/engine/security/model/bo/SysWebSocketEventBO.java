@@ -17,6 +17,11 @@ public class SysWebSocketEventBO<T> {
     private Set<Long> userIdSet;
 
     /**
+     * socket关联用户主键 idSet
+     */
+    private Set<Long> sysSocketRefUserIdSet;
+
+    /**
      * 传输的数据
      */
     private WebSocketMessageDTO<T> webSocketMessageDTO;

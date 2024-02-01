@@ -6,6 +6,7 @@ import com.cmcorg20230301.be.engine.security.configuration.base.BaseConfiguratio
 import com.cmcorg20230301.be.engine.security.exception.BaseBizCodeEnum;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
+import org.jetbrains.annotations.Nullable;
 
 @Data
 public class WebSocketMessageDTO<T> {
@@ -13,6 +14,7 @@ public class WebSocketMessageDTO<T> {
     @Schema(description = "路径")
     private String uri;
 
+    @Nullable
     @Schema(description = "数据")
     private T data;
 
@@ -29,7 +31,7 @@ public class WebSocketMessageDTO<T> {
         this.uri = uri;
     }
 
-    private WebSocketMessageDTO(String uri, Integer code, String msg, T data) {
+    private WebSocketMessageDTO(String uri, Integer code, String msg, @Nullable T data) {
 
         this.uri = uri;
         this.msg = msg;
@@ -56,11 +58,11 @@ public class WebSocketMessageDTO<T> {
         return new WebSocketMessageDTO<>(uri, iBizCode.getCode(), iBizCode.getMsg(), null);
     }
 
-    public static <T> WebSocketMessageDTO<T> error(String uri, IBizCode iBizCode, T data) {
+    public static <T> WebSocketMessageDTO<T> error(String uri, IBizCode iBizCode, @Nullable T data) {
         return new WebSocketMessageDTO<>(uri, iBizCode.getCode(), iBizCode.getMsg(), data);
     }
 
-    public static <T> WebSocketMessageDTO<T> error(String uri, String msg, T data) {
+    public static <T> WebSocketMessageDTO<T> error(String uri, String msg, @Nullable T data) {
         return new WebSocketMessageDTO<>(uri, BaseBizCodeEnum.API_RESULT_SYS_ERROR.getCode(), msg, data);
     }
 
@@ -76,11 +78,11 @@ public class WebSocketMessageDTO<T> {
     /**
      * 操作成功
      */
-    public static <T> WebSocketMessageDTO<T> ok(String uri, String msg, T data) {
+    public static <T> WebSocketMessageDTO<T> ok(String uri, String msg, @Nullable T data) {
         return new WebSocketMessageDTO<>(uri, BaseBizCodeEnum.API_RESULT_OK.getCode(), msg, data);
     }
 
-    public static <T> WebSocketMessageDTO<T> okData(String uri, T data) {
+    public static <T> WebSocketMessageDTO<T> okData(String uri, @Nullable T data) {
         return new WebSocketMessageDTO<>(uri, BaseBizCodeEnum.API_RESULT_OK.getCode(),
                 null, data);
     }

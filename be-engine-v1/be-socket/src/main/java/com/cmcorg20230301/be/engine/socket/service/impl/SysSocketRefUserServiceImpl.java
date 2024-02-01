@@ -5,8 +5,12 @@ import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.cmcorg20230301.be.engine.cache.util.CacheRedisKafkaLocalUtil;
+import com.cmcorg20230301.be.engine.kafka.util.KafkaUtil;
 import com.cmcorg20230301.be.engine.model.model.dto.NotEmptyIdSet;
+import com.cmcorg20230301.be.engine.model.model.dto.NotNullIdAndNotEmptyLongSet;
 import com.cmcorg20230301.be.engine.security.exception.BaseBizCodeEnum;
+import com.cmcorg20230301.be.engine.security.model.bo.SysWebSocketEventBO;
+import com.cmcorg20230301.be.engine.security.model.dto.WebSocketMessageDTO;
 import com.cmcorg20230301.be.engine.security.model.entity.BaseEntity;
 import com.cmcorg20230301.be.engine.security.model.entity.BaseEntityNoId;
 import com.cmcorg20230301.be.engine.security.util.SysTenantUtil;
@@ -17,6 +21,8 @@ import com.cmcorg20230301.be.engine.socket.service.SysSocketRefUserService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 public class SysSocketRefUserServiceImpl extends ServiceImpl<SysSocketRefUserMapper, SysSocketRefUserDO>
@@ -77,6 +83,37 @@ public class SysSocketRefUserServiceImpl extends ServiceImpl<SysSocketRefUserMap
             lambdaUpdate().in(BaseEntity::getId, notEmptyIdSet.getIdSet()).remove();
 
         }
+
+        return BaseBizCodeEnum.OK;
+
+    }
+
+    /**
+     * 批量：打开控制台
+     */
+    @Override
+    public String changeConsoleFlagByIdSet(NotEmptyIdSet notEmptyIdSet) {
+
+        List<SysSocketRefUserDO> sysSocketRefUserDOList = lambdaQuery().in(BaseEntity::getId, notEmptyIdSet.getIdSet()).select(SysSocketRefUserDO::getUserId).list();
+
+        Set<Long> userIdSet = sysSocketRefUserDOList.stream().map(SysSocketRefUserDO::getUserId).collect(Collectors.toSet());
+
+        if (CollUtil.isEmpty(userIdSet)) {
+            return BaseBizCodeEnum.OK;
+        }
+
+        SysWebSocketEventBO<NotNullIdAndNotEmptyLongSet> sysWebSocketEventBO = new SysWebSocketEventBO<>();
+
+        sysWebSocketEventBO.setUserIdSet(userIdSet);
+
+        sysWebSocketEventBO.setSysSocketRefUserIdSet(notEmptyIdSet.getIdSet());
+
+        WebSocketMessageDTO<NotNullIdAndNotEmptyLongSet> webSocketMessageDTO = WebSocketMessageDTO.okData("/sys/socketRefUser/changeConsoleFlagByIdSet", null);
+
+        sysWebSocketEventBO.setWebSocketMessageDTO(webSocketMessageDTO);
+
+        // 发送：webSocket事件
+        KafkaUtil.sendSysWebSocketEventTopic(sysWebSocketEventBO);
 
         return BaseBizCodeEnum.OK;
 
