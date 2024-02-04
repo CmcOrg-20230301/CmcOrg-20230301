@@ -94,6 +94,23 @@ public class ResponseUtil {
     }
 
     /**
+     * 获取 word下载的 OutputStream
+     */
+    @SneakyThrows
+    public static OutputStream getWordOutputStream(HttpServletResponse response, String fileName) {
+
+        // 备注：.doc是：application/msword
+        // 备注：.docx是：application/vnd.openxmlformats-officedocument.wordprocessingml.document
+        response.setContentType("application/vnd.openxmlformats-officedocument.wordprocessingml.document;charset=utf-8");
+
+        response
+                .setHeader("Content-Disposition", "attachment;filename=" + URLEncoder.encode(fileName, "UTF-8") + ".docx");
+
+        return response.getOutputStream();
+
+    }
+
+    /**
      * 获取 文件下载的 OutputStream
      */
     @SneakyThrows
