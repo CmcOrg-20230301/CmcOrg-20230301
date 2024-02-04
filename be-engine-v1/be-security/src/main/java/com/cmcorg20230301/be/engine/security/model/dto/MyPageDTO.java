@@ -119,6 +119,22 @@ public class MyPageDTO {
     }
 
     /**
+     * 分页属性拷贝-增加：id 倒序排序
+     */
+    @NotNull
+    public <T> Page<T> idDescDefaultOrderPage(boolean toUnderlineFlag) {
+
+        Page<T> page = page(toUnderlineFlag);
+
+        if (orderEmpty()) {
+            page.orders().add(idOrderItem());
+        }
+
+        return page;
+
+    }
+
+    /**
      * 获取：默认的创建时间排序
      */
     @NotNull
@@ -147,6 +163,16 @@ public class MyPageDTO {
         }
 
         return OrderItem.desc("updateTime");
+
+    }
+
+    /**
+     * 获取：默认的 id排序
+     */
+    @NotNull
+    public static OrderItem idOrderItem() {
+
+        return OrderItem.desc("id");
 
     }
 
