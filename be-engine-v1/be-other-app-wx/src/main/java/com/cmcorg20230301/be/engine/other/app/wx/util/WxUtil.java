@@ -393,7 +393,7 @@ public class WxUtil {
      */
     public static void doTextSend(String wxOpenId, String accessToken, String content) {
 
-        MyStrUtil.subWithMaxLengthAndConsumer(content, 680, subContent -> {
+        MyStrUtil.subWithMaxByteLengthAndConsumer(content, 2048, subContent -> {
 
             // 执行
             execDoTextSend(wxOpenId, accessToken, subContent);
@@ -428,7 +428,7 @@ public class WxUtil {
      */
     public static void doTextSendForWork(String wxOpenId, String accessToken, String content, Integer agentId) {
 
-        MyStrUtil.subWithMaxLengthAndConsumer(content, 680, subContent -> {
+        MyStrUtil.subWithMaxByteLengthAndConsumer(content, 2048, subContent -> {
 
             // 执行
             execDoTextSendForWork(wxOpenId, accessToken, subContent, agentId);
@@ -463,7 +463,7 @@ public class WxUtil {
      */
     public static void doTextSendForWorkKf(String wxOpenId, String accessToken, String content, String openKfId) {
 
-        MyStrUtil.subWithMaxLengthAndConsumer(content, 600, subContent -> {
+        MyStrUtil.subWithMaxByteLengthAndConsumer(content, 2048, subContent -> {
 
             // 执行
             execDoTextSendForWorkKf(wxOpenId, accessToken, subContent, openKfId);
