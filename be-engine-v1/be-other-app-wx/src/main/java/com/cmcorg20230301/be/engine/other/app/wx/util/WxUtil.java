@@ -772,7 +772,7 @@ public class WxUtil {
         String sendResultStr = HttpUtil
                 .post("https://qyapi.weixin.qq.com/cgi-bin/kf/service_state/trans?access_token=" + accessToken, bodyJsonStr);
 
-        log.info("wxWork-toCustomerServiceResult：{}，touser：{}", sendResultStr, externalUserId);
+        log.info("wxWork-toCustomerServiceResult：{}，touser：{}，serviceState：{}", sendResultStr, externalUserId, serviceState);
 
     }
 
