@@ -742,12 +742,23 @@ public class WxUtil {
      */
     public static void toCustomerService(String openKfId, String accessToken, String externalUserId) {
 
+        toCustomerService(openKfId, accessToken, externalUserId, 2);
+
+    }
+
+    /**
+     * 执行：转人工客服
+     *
+     * @param serviceState 0 未处理 1 由智能助手接待 2 待接入池排队中 3 由人工接待 4 已结束/未开始
+     */
+    public static void toCustomerService(String openKfId, String accessToken, String externalUserId, int serviceState) {
+
         if (StrUtil.isBlank(externalUserId)) {
             return;
         }
 
         String bodyJsonStr = JSONUtil.createObj().set("open_kfid", openKfId).set("external_userid", externalUserId)
-                .set("service_state", 2).toString();
+                .set("service_state", serviceState).toString();
 
         String sendResultStr = HttpUtil
                 .post("https://qyapi.weixin.qq.com/cgi-bin/kf/service_state/trans?access_token=" + accessToken, bodyJsonStr);

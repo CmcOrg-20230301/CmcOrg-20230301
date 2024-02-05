@@ -92,6 +92,8 @@ public enum BaseRedisKeyEnum implements IRedisKey {
     PRE_PASSWORD_ERROR_COUNT, // 密码错误总数：锁【用户主键 id】
 
     // 【_CACHE】结尾 ↓
+    SYS_WX_WORK_KF_RETURN_ASSISTANT_CHECK_CACHE, // 企业微信-微信客服：用户输入转人工之后，5分钟之后如果人工未接待，则又转回智能客服，第二个 key：用户 id
+
     SYS_WX_WORK_KF_AUTO_ASSISTANT_FLAG_CACHE, // 企业微信-微信客服：当会话状态为：0 未处理时，是否自动交给智能助手接待，默认：true，如果为 false，则放进待接入池等待，用户 id
 
     SYS_USER_MANAGE_SIGN_IN_FLAG_CACHE, // 用户是否允许登录后台，用户 id

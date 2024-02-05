@@ -190,7 +190,7 @@ public class CacheRedisKafkaLocalUtil {
 
             value = CacheHelper.checkAndReturnResult(value, defaultResult); // 检查并设置值
 
-            redissonClient.getMap(key).putAsync(secondKey, value);
+            redissonClient.getMap(key).put(secondKey, value);
 
             CacheLocalUtil.putSecondMap(key, secondKey, value); // 添加本地缓存
 
