@@ -742,28 +742,56 @@ public class WxUtil {
      */
     public static void toCustomerService(String openKfId, String accessToken, String externalUserId) {
 
-        toCustomerService(openKfId, accessToken, externalUserId, 2);
+        toCustomerService(openKfId, accessToken, externalUserId, 2, null);
 
     }
 
     /**
      * 执行：转人工客服
      *
-     * @param serviceState 0 未处理 1 由智能助手接待 2 待接入池排队中 3 由人工接待 4 已结束/未开始
+     * @param serviceState   0 未处理 1 由智能助手接待 2 待接入池排队中 3 由人工接待 4 已结束/未开始
+     * @param servicerUserId 接待人员的userid。第三方应用填密文userid，即open_userid。当state=3时要求必填，接待人员须处于“正在接待”中。
      */
-    public static void toCustomerService(String openKfId, String accessToken, String externalUserId, int serviceState) {
+    public static void toCustomerService(String openKfId, String accessToken, String externalUserId, int serviceState, @Nullable String servicerUserId) {
 
         if (StrUtil.isBlank(externalUserId)) {
             return;
         }
 
-        String bodyJsonStr = JSONUtil.createObj().set("open_kfid", openKfId).set("external_userid", externalUserId)
+        JSONObject jsonObject = JSONUtil.createObj();
+
+        if (StrUtil.isNotBlank(servicerUserId)) {
+
+            jsonObject.set("servicer_userid", servicerUserId);
+
+        }
+
+        String bodyJsonStr = jsonObject.set("open_kfid", openKfId).set("external_userid", externalUserId)
                 .set("service_state", serviceState).toString();
 
         String sendResultStr = HttpUtil
                 .post("https://qyapi.weixin.qq.com/cgi-bin/kf/service_state/trans?access_token=" + accessToken, bodyJsonStr);
 
         log.info("wxWork-toCustomerServiceResult：{}，touser：{}", sendResultStr, externalUserId);
+
+    }
+
+    /**
+     * 获取接待人员列表
+     */
+    public static WxServicerListVO kfList(String openKfId, String accessToken, Long tenantId, String appId) {
+
+        String sendResultStr = HttpUtil
+                .get("https://qyapi.weixin.qq.com/cgi-bin/kf/servicer/list?access_token=" + accessToken + "&open_kfid=" + openKfId);
+
+        log.info("wxWork-kfListResult：{}，openKfId：{}", sendResultStr, openKfId);
+
+        WxServicerListVO wxServicerListVO = JSONUtil.toBean(sendResultStr, WxServicerListVO.class);
+
+        // 检查：微信回调 vo对象
+        checkWxVO(wxServicerListVO, "kfList", tenantId, appId);
+
+        return wxServicerListVO;
 
     }
 
