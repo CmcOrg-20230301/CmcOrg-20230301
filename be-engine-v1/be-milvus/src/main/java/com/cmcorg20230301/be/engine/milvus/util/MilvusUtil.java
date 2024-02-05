@@ -3,6 +3,7 @@ package com.cmcorg20230301.be.engine.milvus.util;
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.bean.copier.CopyOptions;
 import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.lang.TypeReference;
 import cn.hutool.core.text.StrBuilder;
 import cn.hutool.core.util.StrUtil;
 import com.alibaba.fastjson.JSONObject;
@@ -415,10 +416,9 @@ public class MilvusUtil {
      * 注意：like只支持：like ab%，不支持 %ab%，不然会报错
      */
     @NotNull
-    public static <T> List<T> queryAll(String collectionName, @Nullable String exprStr, List<String> outFieldList,
-                                       Class<T> tClass) {
+    public static <T> List<T> queryAll(String collectionName, @Nullable String exprStr, List<String> outFieldList) {
 
-        return query(collectionName, exprStr, outFieldList, 0, MAX_LIMIT, tClass);
+        return query(collectionName, exprStr, outFieldList, 0, MAX_LIMIT);
 
     }
 
@@ -430,7 +430,7 @@ public class MilvusUtil {
      */
     @NotNull
     public static <T> List<T> query(String collectionName, @Nullable String exprStr, List<String> outFieldList,
-                                    long offset, long limit, Class<T> tClass) {
+                                    long offset, long limit) {
 
         if (milvusServiceClient == null) {
             return new ArrayList<>();
@@ -458,6 +458,11 @@ public class MilvusUtil {
         QueryResultsWrapper queryResultsWrapper = new QueryResultsWrapper(queryResultsR.getData());
 
         List<T> resultList = new ArrayList<>(); // 本方法返回值
+
+        TypeReference<T> tTypeReference = new TypeReference<T>() {
+        };
+
+        Class<T> tClass = (Class<T>) tTypeReference.getType();
 
         for (QueryResultsWrapper.RowRecord item : queryResultsWrapper.getRowRecords()) {
 
