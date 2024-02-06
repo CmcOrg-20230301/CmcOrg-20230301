@@ -12,10 +12,10 @@ import com.cmcorg20230301.be.engine.security.service.BaseSysUserInfoService;
 import com.cmcorg20230301.be.engine.util.util.NicknameUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.Nullable;
 import javax.annotation.PreDestroy;
 import javax.annotation.Resource;
 import java.util.*;

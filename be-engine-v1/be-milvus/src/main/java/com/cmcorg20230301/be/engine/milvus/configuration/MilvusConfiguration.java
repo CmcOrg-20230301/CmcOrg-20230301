@@ -5,10 +5,10 @@ import com.cmcorg20230301.be.engine.milvus.properties.MilvusProperties;
 import io.milvus.client.MilvusServiceClient;
 import io.milvus.param.ConnectParam;
 import lombok.extern.slf4j.Slf4j;
+import org.jetbrains.annotations.Nullable;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import javax.annotation.Nullable;
 import javax.annotation.Resource;
 
 @Configuration
