@@ -10,6 +10,7 @@ import com.cmcorg20230301.be.engine.model.model.constant.BaseConstant;
 import com.cmcorg20230301.be.engine.pay.base.model.dto.PayDTO;
 import com.cmcorg20230301.be.engine.pay.base.model.entity.SysPayConfigurationDO;
 import com.cmcorg20230301.be.engine.pay.base.model.entity.SysPayDO;
+import com.cmcorg20230301.be.engine.pay.base.model.enums.SysPayTypeEnum;
 import com.cmcorg20230301.be.engine.pay.base.service.SysPayConfigurationService;
 import com.cmcorg20230301.be.engine.security.model.bo.SysWebSocketEventBO;
 import com.cmcorg20230301.be.engine.security.model.dto.WebSocketMessageDTO;
@@ -74,6 +75,27 @@ public class PayHelper {
         SysPayConfigurationDO sysPayConfigurationDO = null;
 
         if (CollUtil.isEmpty(sysPayConfigurationDOList)) {
+
+            if (SysPayTypeEnum.WX_JSAPI.getCode() == sysPayType) {
+
+                // 获取：当前微信二维码支付
+                sysPayConfigurationDOList =
+                        sysPayConfigurationService.lambdaQuery().eq(BaseEntityNoIdSuper::getTenantId, tenantId)
+                                .eq(BaseEntityNoId::getEnableFlag, true).eq(SysPayConfigurationDO::getType, SysPayTypeEnum.WX_NATIVE.getCode()).list();
+
+                if (CollUtil.isEmpty(sysPayConfigurationDOList)) {
+
+                    // 微信 jsApi支付，不支持获取上级租户，因为：需要传递 wxOpenId
+                    ApiResultVO.error("操作失败：暂未配置支付", sysPayType);
+
+                } else {
+
+                    // 随机取一个
+                    sysPayConfigurationDO = RandomUtil.randomEle(sysPayConfigurationDOList);
+
+                }
+
+            }
 
             if (BooleanUtil.isTrue(useParentTenantPayFlag)) {
 
