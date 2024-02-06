@@ -93,6 +93,8 @@ public class PayHelper {
                     // 随机取一个
                     sysPayConfigurationDO = RandomUtil.randomEle(sysPayConfigurationDOList);
 
+                    return sysPayConfigurationDO;
+
                 }
 
             }
