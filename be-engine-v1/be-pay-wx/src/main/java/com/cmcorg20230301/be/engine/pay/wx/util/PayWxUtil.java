@@ -9,6 +9,7 @@ import com.cmcorg20230301.be.engine.pay.base.model.entity.SysPayConfigurationDO;
 import com.cmcorg20230301.be.engine.pay.base.model.enums.SysPayTradeStatusEnum;
 import com.wechat.pay.java.core.RSAAutoCertificateConfig;
 import com.wechat.pay.java.core.util.GsonUtil;
+import com.wechat.pay.java.service.payments.h5.H5Service;
 import com.wechat.pay.java.service.payments.jsapi.JsapiServiceExtension;
 import com.wechat.pay.java.service.payments.jsapi.model.PrepayWithRequestPaymentResponse;
 import com.wechat.pay.java.service.payments.model.Transaction;
@@ -188,6 +189,80 @@ public class PayWxUtil {
 
         // 调用接口
         Transaction transaction = jsapiServiceExtension.queryOrderByOutTradeNo(queryRequest);
+
+        return SysPayTradeStatusEnum.getByStatus(transaction.getTradeState().name());
+
+    }
+
+    /**
+     * 获取：H5Service 对象
+     */
+    private static H5Service getH5Service(SysPayConfigurationDO sysPayConfigurationDO) {
+
+        RSAAutoCertificateConfig rsaAutoCertificateConfig = getRsaAutoCertificateConfig(sysPayConfigurationDO);
+
+        return new H5Service.Builder().config(rsaAutoCertificateConfig).build();
+
+    }
+
+    /**
+     * 支付-h5
+     */
+    @SneakyThrows
+    @NotNull
+    public static SysPayReturnBO payH5(PayDTO dto) {
+
+        SysPayConfigurationDO sysPayConfigurationDO = dto.getSysPayConfigurationDO();
+
+        H5Service h5Service = getH5Service(sysPayConfigurationDO);
+
+        com.wechat.pay.java.service.payments.h5.model.PrepayRequest request =
+                new com.wechat.pay.java.service.payments.h5.model.PrepayRequest();
+
+        com.wechat.pay.java.service.payments.h5.model.Amount amount =
+                new com.wechat.pay.java.service.payments.h5.model.Amount();
+
+        amount.setTotal(dto.getTotalAmount().multiply(BaseConstant.BIG_DECIMAL_ONE_HUNDRED).intValue());
+
+        request.setAmount(amount);
+
+        request.setAppid(sysPayConfigurationDO.getAppId());
+        request.setMchid(sysPayConfigurationDO.getMerchantId());
+        request.setDescription(dto.getSubject());
+
+        request.setNotifyUrl(sysPayConfigurationDO.getNotifyUrl() + "/" + sysPayConfigurationDO.getId());
+
+        request.setOutTradeNo(dto.getOutTradeNo());
+        request.setTimeExpire(DatePattern.UTC_WITH_XXX_OFFSET_FORMAT.format(dto.getExpireTime()));
+
+        // 调用接口
+        com.wechat.pay.java.service.payments.h5.model.PrepayResponse prepayResponse =
+                h5Service.prepay(request);
+
+        // 返回：支付跳转的地址
+        return new SysPayReturnBO(prepayResponse.getH5Url(), sysPayConfigurationDO.getAppId());
+
+    }
+
+    /**
+     * 查询订单状态-h5
+     *
+     * @param outTradeNo 本系统的支付主键 id，必填
+     */
+    @SneakyThrows
+    @NotNull
+    public static SysPayTradeStatusEnum queryH5(String outTradeNo, SysPayConfigurationDO sysPayConfigurationDO) {
+
+        H5Service h5Service = getH5Service(sysPayConfigurationDO);
+
+        com.wechat.pay.java.service.payments.h5.model.QueryOrderByOutTradeNoRequest queryRequest =
+                new com.wechat.pay.java.service.payments.h5.model.QueryOrderByOutTradeNoRequest();
+
+        queryRequest.setMchid(sysPayConfigurationDO.getMerchantId());
+        queryRequest.setOutTradeNo(outTradeNo);
+
+        // 调用接口
+        Transaction transaction = h5Service.queryOrderByOutTradeNo(queryRequest);
 
         return SysPayTradeStatusEnum.getByStatus(transaction.getTradeState().name());
 

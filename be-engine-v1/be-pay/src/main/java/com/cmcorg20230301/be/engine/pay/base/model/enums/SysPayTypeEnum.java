@@ -29,6 +29,8 @@ public enum SysPayTypeEnum implements ISysPayType {
 
     WX_JSAPI(202, getWxCheckSysPayConfigurationInsertOrUpdateDtoConsumer()), // 微信-jsApi：微信内嵌网页，调用支付
 
+    WX_H5(203, getWxCheckSysPayConfigurationInsertOrUpdateDtoConsumer()), // 微信-h5：网页跳转，调用支付
+
     UNION(301, getUnionCheckSysPayConfigurationInsertOrUpdateDtoConsumer()), // 云闪付
 
     GOOGLE(401, dto -> {
