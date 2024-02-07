@@ -23,7 +23,7 @@ export interface SysOtherAppPageDTO {
 
 export interface SysOtherAppDO {
     textReplyContent?: string // 用户发送文字之后，回复的内容
-    openId?: string // 第三方应用的 openId/微信号，例如：接收微信公众号消息时的 ToUserName，不能重复
+    openId?: string // 第三方应用的 openId/微信号/企业ID，例如：接收微信公众号消息时的 ToUserName，不能重复
     updateTime?: string // 修改时间，format：date-time
     remark?: string // 备注
     secret?: string // 第三方应用的 secret

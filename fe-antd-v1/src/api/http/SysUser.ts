@@ -32,6 +32,7 @@ export interface SysUserInfoByIdVO {
     bio?: string // 个人简介
     remark?: string // 备注
     delFlag?: boolean // 是否注销，未使用，而是采取直接删除的方式，目的：防止数据量越来越大
+    sysWxWorkKfAutoAssistantFlag?: boolean // 企业微信-微信客服：当会话状态为：0 未处理时，是否自动交给智能助手接待，默认：true
     updateId?: string // 修改人id，format：int64
     password?: string // 密码，可为空，如果为空，则登录时需要提示【进行忘记密码操作】
     children?: SysUserDO[] // 子节点
@@ -178,6 +179,7 @@ export interface SysUserInsertOrUpdateDTO {
     wxOpenId?: string // 微信 openId
     wxAppId?: string // 微信 appId
     bio?: string // 个人简介
+    sysWxWorkKfAutoAssistantFlag?: boolean // 企业微信-微信客服：当会话状态为：0 未处理时，是否自动交给智能助手接待，默认：true
     originPassword?: string // 前端加密之后的原始密码
     password?: string // 前端加密之后的密码
     deptIdSet?: string[] // 部门 idSet，format：int64

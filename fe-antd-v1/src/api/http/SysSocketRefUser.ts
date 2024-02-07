@@ -3,6 +3,15 @@ import MyOrderDTO from "@/model/dto/MyOrderDTO";
 import $http from "@/util/HttpUtil";
 import {AxiosRequestConfig} from "axios";
 
+export interface NotEmptyIdSet {
+    idSet?: string[] // 主键 idSet，required：true，format：int64
+}
+
+// 批量：开关控制台
+export function SysSocketRefUserChangeConsoleFlagByIdSet(form: NotEmptyIdSet, config?: AxiosRequestConfig) {
+    return $http.myPost<string>('/sys/socketRefUser/changeConsoleFlagByIdSet', form, config)
+}
+
 export interface SysSocketRefUserPageDTO {
     scheme?: string // 协议
     ip?: string // ip
@@ -53,10 +62,6 @@ export interface SysSocketRefUserDO {
 // 分页排序查询
 export function SysSocketRefUserPage(form: SysSocketRefUserPageDTO, config?: AxiosRequestConfig) {
     return $http.myProPagePost<SysSocketRefUserDO>('/sys/socketRefUser/page', form, config)
-}
-
-export interface NotEmptyIdSet {
-    idSet?: string[] // 主键 idSet，required：true，format：int64
 }
 
 // 批量：下线用户

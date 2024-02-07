@@ -20,8 +20,26 @@ import {BrowserRouter} from "react-router-dom";
 
 const consoleOpenFlag = localStorage.getItem(LocalStorageKey.CONSOLE_OPEN_FLAG);
 
+let vConsole: VConsole | null = null
+
+export function OpenVConsole() {
+
+    DestroyVConsole() // 先销毁，再打开
+
+    vConsole = new VConsole(); // 打开控制台
+
+}
+
+export function DestroyVConsole() {
+
+    vConsole?.destroy() // 销毁控制台
+
+}
+
 if (consoleOpenFlag === '1') {
-    new VConsole(); // 打开控制台
+
+    OpenVConsole()
+
 }
 
 dayjs.extend(relativeTime)

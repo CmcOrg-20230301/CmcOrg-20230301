@@ -15,6 +15,8 @@ export default function () {
 
         if (pathname !== PathConstant.TOP_PATH) { // 目的：防止无限循环
 
+            console.log('NotFound-setItem：', pathname)
+
             sessionStorage.setItem(SessionStorageKey.NOT_FOUND_REDIRECT_PATH, pathname)
 
         }

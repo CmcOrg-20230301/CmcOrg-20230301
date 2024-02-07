@@ -79,7 +79,7 @@ export default function () {
 
     return (
 
-        <SignLayout token={{colorPrimary: '#13C2C2FF'}} tenantManageName={tenantManageName}>
+        <SignLayout token={{colorPrimary: '#13C2C2'}} tenantManageName={tenantManageName}>
 
             <LoginForm<ISignUpForm>
 

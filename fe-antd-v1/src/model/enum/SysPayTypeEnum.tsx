@@ -2,10 +2,11 @@ import {IEnum} from "@/model/enum/CommonEnum";
 import {ProSchemaValueEnumType} from "@ant-design/pro-components";
 import {ToastInfo, ToastSuccess} from "@/util/ToastUtil";
 import {GetBrowserCategory} from "@/util/BrowserCategoryUtil";
-import {Typography} from "antd";
+import {QRCode, Typography} from "antd";
 import {GetApp} from "@/MyApp";
 import {BuyVO} from "@/component/PayComponent/PayComponent";
 import {SysRequestCategoryEnum} from "@/model/enum/SysRequestCategoryEnum.ts";
+import CommonConstant from "@/model/constant/CommonConstant.ts";
 
 export interface ISysPayTypeItemEnum extends IEnum<number> {
 
@@ -22,6 +23,7 @@ export interface ISysPayTypeEnum {
 
     WX_NATIVE: ISysPayTypeItemEnum,
     WX_JSAPI: ISysPayTypeItemEnum,
+    WX_H5: ISysPayTypeItemEnum,
 
     UNION: ISysPayTypeItemEnum,
     GOOGLE: ISysPayTypeItemEnum,
@@ -67,7 +69,7 @@ export const SysPayTypeEnum: ISysPayTypeEnum = {
                     ToastInfo(
                         <div className={"flex-c"}>
 
-                            <Typography.Text className={"m-b-10"}
+                            <Typography.Text className={"m-t-b-10"}
                                              type="secondary">请复制下面的链接，然后发送给任意联系人，然后点击发送之后的消息，即可打开微信支付</Typography.Text>
 
                             <Typography.Text copyable={{
@@ -81,6 +83,16 @@ export const SysPayTypeEnum: ISysPayTypeEnum = {
                                 }
 
                             }}>{buyVO.payReturnValue}</Typography.Text>
+
+                            <Typography.Text className={"m-t-10"}
+                                             type="secondary">或者扫码支付</Typography.Text>
+
+                            <div className={"flex-center w100"}>
+
+                                <QRCode value={buyVO.payReturnValue!} size={CommonConstant.QR_CODE_WIDTH}
+                                        bordered={false}/>
+
+                            </div>
 
                         </div>
                         , 60 * 60 * 24)
@@ -133,6 +145,11 @@ export const SysPayTypeEnum: ISysPayTypeEnum = {
 
         }
 
+    },
+
+    WX_H5: {
+        code: 203,
+        name: '微信-h5支付',
     },
 
     UNION: {

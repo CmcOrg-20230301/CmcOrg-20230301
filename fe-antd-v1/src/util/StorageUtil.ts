@@ -21,6 +21,8 @@ export interface IStorageForeverValue {
 
     TENANT_MANAGE_NAME: string
 
+    OTHER_APP_ID: string
+
 }
 
 const StorageForeverValue: IStorageForeverValue = {
@@ -42,6 +44,8 @@ const StorageForeverValue: IStorageForeverValue = {
     SYS_SIGN_CONFIGURATION_VO_SINGLE: LocalStorageKey.SYS_SIGN_CONFIGURATION_VO_SINGLE,
 
     TENANT_MANAGE_NAME: LocalStorageKey.TENANT_MANAGE_NAME,
+
+    OTHER_APP_ID: LocalStorageKey.OTHER_APP_ID,
 
 }
 

@@ -1,6 +1,10 @@
 import {DoGetDictList, GetDictList, NoFormGetDictTreeList} from "@/util/DictUtil";
 import {ActionType, ProColumns} from "@ant-design/pro-components";
-import {SysSocketRefUserDO, SysSocketRefUserOfflineByIdSet} from "@/api/http/SysSocketRefUser";
+import {
+    SysSocketRefUserChangeConsoleFlagByIdSet,
+    SysSocketRefUserDO,
+    SysSocketRefUserOfflineByIdSet
+} from "@/api/http/SysSocketRefUser";
 import {HandlerRegion} from "@/util/StrUtil";
 import {TreeSelect} from "antd";
 import {ExecConfirm, ToastSuccess} from "@/util/ToastUtil";
@@ -140,6 +144,21 @@ const TableColumnList = (actionRef: React.RefObject<ActionType | undefined>): Pr
                 }, undefined, `确定下线【${entity.id}】吗？`)
 
             }}>下线</a>,
+
+            <a key="2" onClick={() => {
+
+                ExecConfirm(async () => {
+
+                    await SysSocketRefUserChangeConsoleFlagByIdSet({idSet: [entity.id!]}).then(res => {
+
+                        ToastSuccess(res.msg)
+                        actionRef.current?.reload()
+
+                    })
+
+                }, undefined, `确定打开或者关闭【${entity.id}】的控制台吗？`)
+
+            }}>控制台</a>,
 
         ],
 

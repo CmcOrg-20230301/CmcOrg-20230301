@@ -53,7 +53,7 @@ export function UseEffectSysPayPayTradeStatusById(outTradeNoRef: React.MutableRe
                     if (res.data === SysPayTradeStatusEnum.TRADE_SUCCESS.code as any) {
 
                         // 处理：关闭弹窗
-                        handleCloseModal(outTradeNoRef, setQrCodeModalOpen, props);
+                        HandleCloseModal(outTradeNoRef, setQrCodeModalOpen, props);
 
                     }
 
@@ -96,7 +96,7 @@ export interface IPayComponentRef {
 }
 
 // 处理：关闭弹窗
-function handleCloseModal(outTradeNoRef: React.MutableRefObject<string>, setQrCodeModalOpen: (value: (((prevState: boolean) => boolean) | boolean)) => void, props: IPayComponent) {
+function HandleCloseModal(outTradeNoRef: React.MutableRefObject<string>, setQrCodeModalOpen: (value: (((prevState: boolean) => boolean) | boolean)) => void, props: IPayComponent) {
 
     if (!outTradeNoRef.current) {
         return
@@ -191,7 +191,7 @@ const PayComponent = forwardRef<IPayComponentRef, IPayComponent>((props, ref) =>
             if (outTradeNoRef.current && webSocketMessage.data === outTradeNoRef.current) {
 
                 // 处理：关闭弹窗
-                handleCloseModal(outTradeNoRef, setQrCodeModalOpen, props);
+                HandleCloseModal(outTradeNoRef, setQrCodeModalOpen, props);
 
             }
 
