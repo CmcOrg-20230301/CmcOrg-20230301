@@ -1,6 +1,8 @@
-package com.cmcorg20230301.be.engine.security.model.entity;
+package com.cmcorg20230301.be.engine.api.token.model.entity;
 
+import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
@@ -20,10 +22,12 @@ public class SysApiTokenDO {
     @Schema(description = "租户 id")
     private Long tenantId;
 
-    @Schema(description = "")
+    @TableField(fill = FieldFill.INSERT)
+    @Schema(description = "创建时间")
     private Date createTime;
 
-    @Schema(description = "")
+    @TableField(fill = FieldFill.INSERT_UPDATE)
+    @Schema(description = "修改时间")
     private Date updateTime;
 
     @Schema(description = "调用 api时，传递的 token，格式：uuid")
