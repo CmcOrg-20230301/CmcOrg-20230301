@@ -14,7 +14,7 @@ import lombok.EqualsAndHashCode;
 @Schema(description = "关联表：会话，用户")
 public class SysImSessionRefUserDO extends BaseEntityNoIdSuper {
 
-    @TableId(type = IdType.ASSIGN_ID)
+    @TableId(type = IdType.INPUT)
     @Schema(description = "用户主键 id")
     private Long userId;
 
