@@ -2,6 +2,7 @@ import {useRef, useState} from "react";
 import {ActionType, ColumnsState, ProTable} from "@ant-design/pro-components";
 import {Space} from "antd";
 import {
+    SysSocketRefUserChangeConsoleFlagByIdSet,
     SysSocketRefUserDO,
     SysSocketRefUserOfflineByIdSet,
     SysSocketRefUserPage,
@@ -95,6 +96,21 @@ export default function () {
                             }, undefined, `确定下线选中的【${selectedRowKeys.length}】项吗？`)
 
                         }}>批量下线</a>
+
+                        <a key="2" onClick={() => {
+
+                            ExecConfirm(async () => {
+
+                                await SysSocketRefUserChangeConsoleFlagByIdSet({idSet: selectedRowKeys as string[]}).then(res => {
+
+                                    ToastSuccess(res.msg)
+                                    actionRef.current?.reload()
+
+                                })
+
+                            }, undefined, `确定打开或者关闭选中的【${selectedRowKeys.length}】项的控制台吗？`)
+
+                        }}>控制台</a>
 
                         <a onClick={onCleanSelected}>取消选择</a>
 

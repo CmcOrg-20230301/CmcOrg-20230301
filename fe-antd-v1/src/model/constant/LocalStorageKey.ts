@@ -12,6 +12,8 @@ const LocalStorageKey = {
 
     TENANT_ID: 'TENANT_ID', // 租户 id
 
+    OTHER_APP_ID: 'OTHER_APP_ID', // 第三方应用 id
+
     SYS_SIGN_CONFIGURATION_VO: 'SYS_SIGN_CONFIGURATION_VO', // 登录注册相关的配置
 
     SYS_SIGN_CONFIGURATION_VO_SINGLE: 'SYS_SIGN_CONFIGURATION_VO_SINGLE', // 登录注册相关的配置：统一登录

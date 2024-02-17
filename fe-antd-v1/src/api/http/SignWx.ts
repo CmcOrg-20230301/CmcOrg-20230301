@@ -134,7 +134,7 @@ export function SignWxSetSingleSignInPhone(form: SignWxSetSingleSignInPhoneDTO, 
 }
 
 export interface SignInMiniProgramPhoneCodeDTO {
-    appId?: string // 微信 appId，required：true
+    appId?: string // 第三方应用 appId，required：true
     tenantId?: string // 租户 id，可以为空，为空则表示：默认租户：0，format：int64
     phoneCode?: string // 手机号码 code，required：true
 }
@@ -151,8 +151,8 @@ export function SignWxSignInMiniProgramPhoneCode(form: SignInMiniProgramPhoneCod
 }
 
 export interface SignInBrowserCodeDTO {
-    code?: string // 微信 code，required：true
-    appId?: string // 微信 appId，required：true
+    code?: string // 第三方应用 code，required：true
+    appId?: string // 第三方应用 appId，required：true
     tenantId?: string // 租户 id，可以为空，为空则表示：默认租户：0，format：int64
 }
 
@@ -341,8 +341,8 @@ export function SignWxUpdatePasswordGetQrCodeSceneFlag(form: NotNullId, config?:
 }
 
 export interface SignInMiniProgramCodeDTO {
-    code?: string // 微信 code，required：true
-    appId?: string // 微信 appId，required：true
+    code?: string // 第三方应用 code，required：true
+    appId?: string // 第三方应用 appId，required：true
     tenantId?: string // 租户 id，可以为空，为空则表示：默认租户：0，format：int64
 }
 

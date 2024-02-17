@@ -12,15 +12,17 @@ function GoBlank() {
 
 export interface ICheckJwt {
 
-    hasJwtUrl: string // 有 jwt时跳转的地址
+    hasJwtUrl?: string // 有 jwt时跳转的地址
 
-    noJwtUrl: string // 没有 jwt时跳转的地址
+    noJwtUrl?: string // 没有 jwt时跳转的地址
 
-    mainUri: string, // 主页地址，例如：/admin
+    mainUri?: string, // 主页地址，例如：/admin
 
-    mainRedirectUri: string // 主页跳转地址，例如：/admin/sys/dict，主要用在：BlankLayout里
+    mainRedirectUri?: string // 主页跳转地址，例如：/admin/sys/dict，主要用在：BlankLayout里
 
-    tenantId: string // 租户主键 id，用于：判断 jwt存在时，存储的 tenantId是否和 本次的 tenantId一致，如果不一致
+    tenantId?: string // 租户主键 id，用于：判断 jwt存在时，存储的 tenantId是否和 本次的 tenantId一致，如果不一致，则需要重新登录
+
+    otherAppId?: string // 第三方应用 id，也需要和存储的 otherAppId进行比较，如果不一致，则需要重新登录
 
 }
 
@@ -78,7 +80,23 @@ export default function () {
 
                 const storageTenantId = GetTenantIdFromStorage();
 
-                if (storageTenantId !== form.tenantId) {
+                if (storageTenantId !== form.tenantId) { // 如果和 jwt里面的租户 id不一致
+
+                    jwt = null
+
+                }
+
+            }
+
+        }
+
+        if (jwt) {
+
+            if (form.otherAppId) {
+
+                const otherAppId = localStorage.getItem(LocalStorageKey.OTHER_APP_ID);
+
+                if (otherAppId !== form.otherAppId) { // 如果和 存储的第三方应用 id不一致
 
                     jwt = null
 
@@ -114,14 +132,23 @@ export default function () {
 
             } else {
 
-                localStorage.setItem(LocalStorageKey.MAIN_URI, form.mainUri!)
-                localStorage.setItem(LocalStorageKey.MAIN_REDIRECT_URI, form.mainRedirectUri!)
+                if (form.mainUri) {
+                    localStorage.setItem(LocalStorageKey.MAIN_URI, form.mainUri)
+                }
+
+                if (form.mainRedirectUri) {
+                    localStorage.setItem(LocalStorageKey.MAIN_REDIRECT_URI, form.mainRedirectUri)
+                }
+
+                if (form.otherAppId) {
+                    localStorage.setItem(LocalStorageKey.OTHER_APP_ID, form.otherAppId)
+                }
 
                 if (hasJwtUrl) {
                     sessionStorage.setItem(SessionStorageKey.OAUTH2_REDIRECT_URI, hasJwtUrl)
                 }
 
-                GetAppNav()(form.mainUri)
+                GetAppNav()(form.mainUri || PathConstant.TOP_PATH)
 
             }
 
@@ -133,7 +160,7 @@ export default function () {
 
             } else {
 
-                GetAppNav()(noJwtUrl)
+                GetAppNav()(noJwtUrl || PathConstant.TOP_PATH)
 
             }
 

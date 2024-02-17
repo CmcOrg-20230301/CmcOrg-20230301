@@ -13,6 +13,9 @@ export const SYS_IM_SESSION_CONTENT_SEND = "/sys/im/session/content/send"
 // 即时通讯，加入新用户
 export const SYS_IM_SESSION_REF_USER_JOIN_USER_ID_SET = "/sys/im/session/refUser/join/userIdSet"
 
+// 开关控制台
+export const SYS_SOCKET_REF_USER_CHANGE_CONSOLE_FLAG_BY_ID_SET = "/sys/socketRefUser/changeConsoleFlagByIdSet";
+
 /**
  * 心跳检测，请求
  */

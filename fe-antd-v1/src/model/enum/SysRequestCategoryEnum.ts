@@ -26,7 +26,9 @@ export interface ISysRequestCategoryEnum {
     MINI_PROGRAM_WE_CHAT_ANDROID: IEnum<number>,
     MINI_PROGRAM_WE_CHAT_IOS: IEnum<number>,
 
-    OFFICIAL_ACCOUNT_WX: IEnum<number>,
+    WX_OFFICIAL_ACCOUNT: IEnum<number>,
+
+    WX_WORK: IEnum<number>,
 
 }
 
@@ -117,9 +119,14 @@ export const SysRequestCategoryEnum: ISysRequestCategoryEnum = {
         name: '小程序-微信-苹果',
     },
 
-    OFFICIAL_ACCOUNT_WX: {
+    WX_OFFICIAL_ACCOUNT: {
         code: 601,
-        name: '公众号-微信',
+        name: '微信公众号',
+    },
+
+    WX_WORK: {
+        code: 701,
+        name: '企业微信',
     },
 
 }

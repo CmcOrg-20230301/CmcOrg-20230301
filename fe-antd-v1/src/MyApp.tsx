@@ -1,6 +1,6 @@
 import {NavigateFunction, Route, Routes, useNavigate} from "react-router-dom";
 import React, {useEffect, useState} from "react";
-import NoLoginRouterList from "@/router/NoLoginRouterList";
+import NoSignInRouterList from "@/router/NoSignInRouterList.ts";
 import RouterMap, {ManualRouterName, RouterMapKeySet} from "@/router/RouterMap";
 import {AppDispatch, useAppDispatch, useAppSelector} from "@/store";
 import {App} from "antd";
@@ -19,7 +19,7 @@ export function GetAppNav() {
 
         console.log({to, options})
 
-        return appNav(to)
+        return appNav(to, options)
 
     }
 
@@ -127,7 +127,7 @@ function UpdateLayoutChildrenRouter(setElement: React.Dispatch<React.SetStateAct
 
     let index = 1
 
-    NoLoginRouterList.forEach(item => {
+    NoSignInRouterList.forEach(item => {
 
         routerArr.push(
             <Route
@@ -200,11 +200,15 @@ function LoadElement(props: ILoadElement) {
 
     useEffect(() => {
 
-        console.log('elementStr', props.elementStr)
-
         if (props.elementStr && RouterMapKeySet.has(props.elementStr)) {
 
+            console.log('elementStr', props.elementStr)
+
             setElement(React.createElement(RouterMap[props.elementStr].element))
+
+        } else {
+
+            console.log('elementStr-notFound', props.elementStr)
 
         }
 

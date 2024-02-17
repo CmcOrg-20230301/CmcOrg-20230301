@@ -7,6 +7,8 @@ export interface ISysOtherAppTypeEnum {
 
     WX_OFFICIAL_ACCOUNT: IEnum<number>,
 
+    WX_WORK: IEnum<number>,
+
     ALI_PAY_PROGRAM: IEnum<number>,
 
     BAI_DU: IEnum<number>,
@@ -24,6 +26,11 @@ export const SysOtherAppTypeEnum: ISysOtherAppTypeEnum = {
     WX_OFFICIAL_ACCOUNT: {
         code: 102,
         name: '微信公众号',
+    },
+
+    WX_WORK: {
+        code: 103,
+        name: '企业微信',
     },
 
     ALI_PAY_PROGRAM: {

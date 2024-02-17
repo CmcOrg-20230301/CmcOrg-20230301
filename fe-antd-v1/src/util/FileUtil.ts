@@ -183,7 +183,7 @@ export function FileDownload<T>(url: string, callBack: (blob: Blob, fileName?: s
 
 }
 
-// 文件下载
+// 执行：文件下载
 export function ExecFileDownload<T>(url: string, form?: T) {
 
     FileDownload(url, Download, form)

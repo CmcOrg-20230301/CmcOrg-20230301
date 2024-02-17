@@ -8,13 +8,14 @@ import LocalStorageKey from "@/model/constant/LocalStorageKey";
 import {ApiResultVO} from "@/util/HttpUtil";
 import SessionStorageKey from "@/model/constant/SessionStorageKey";
 import {SignInVO} from "@/api/http/SignSignInName";
+import {SignWxWorkSignInBrowserCode} from "@/api/http/SignWxWork.ts";
 
 export interface IOauth2WxForm {
 
     code?: string
     tenantId?: string
     appId?: string
-    type?: '1' | '2' | '3'
+    type?: '1' | '2' | '3' | '4'
     redirect?: string // 重定向地址
 
 }
@@ -46,7 +47,13 @@ function HandleWxSign(res: ApiResultVO<SignInVO>, form: IOauth2WxForm) {
 
     }
 
-    GetAppNav()(PathConstant.BLANK_LAYOUT_PATH)
+    if (form.appId) {
+
+        localStorage.setItem(LocalStorageKey.OTHER_APP_ID, form.appId)
+
+    }
+
+    GetAppNav()(PathConstant.TOP_PATH)
 
 }
 
@@ -55,7 +62,7 @@ export default function () {
 
     useEffect(() => {
 
-        // type：1 静默授权 2 跳转获取用户信息 3 执行获取用户信息
+        // type：1 微信公众号静默授权 2 微信公众号跳转获取用户信息 3 微信公众号执行获取用户信息 4 企业微信静默授权
         // 例如：?code=123&tenantId=456&appId=789&type=1
         // 备注：code字段微信那边会传递
         // 备注：不要用 state字段传递值，直接拼接到：redirect_uri 字段里，备注：记得 UrlEncode编码
@@ -118,6 +125,15 @@ export default function () {
 
             // 登录，获取：jwt
             SignWxSignInBrowserCodeUserInfo(form).then(res => {
+
+                HandleWxSign(res, form); // 处理登录返回值
+
+            })
+
+        } else if (form.type === '4') { // 登录，获取：jwt
+
+            // 登录，获取：jwt
+            SignWxWorkSignInBrowserCode(form).then(res => {
 
                 HandleWxSign(res, form); // 处理登录返回值
 

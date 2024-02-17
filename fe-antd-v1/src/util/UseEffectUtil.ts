@@ -13,11 +13,12 @@ import {
 import {ConnectWebSocket} from "@/util/WebSocket/WebSocketUtil";
 import {GetAppDispatch, GetAppNav} from "@/MyApp";
 import {GetURLSearchParams, SetTenantIdToStorage} from "@/util/CommonUtil";
-import VConsole from 'vconsole';
 import {UserSelfInfo, UserSelfInfoVO} from "@/api/http/UserSelf.ts";
 import {SysFileGetPublicUrl} from "@/api/http/SysFile.ts";
 import {useAppDispatch, useAppSelector} from "@/store";
 import {SysUserManageSignInFlag} from "@/api/http/SysUser.ts";
+import {SYS_SOCKET_REF_USER_CHANGE_CONSOLE_FLAG_BY_ID_SET} from "@/api/socket/WebSocket.ts";
+import {DestroyVConsole, OpenVConsole} from "@/main.tsx";
 
 export interface IInit {
 
@@ -87,6 +88,22 @@ export function UseEffectInit() {
             } else {
 
                 GetAppNav()(redirect)
+
+            }
+
+        } else {
+
+            const jwt = localStorage.getItem(LocalStorageKey.JWT);
+
+            if (jwt) {
+
+                const mainUri = localStorage.getItem(LocalStorageKey.MAIN_URI);
+
+                if (mainUri) {
+
+                    GetAppNav()(mainUri)
+
+                }
 
             }
 
@@ -312,6 +329,32 @@ export function UseEffectLoadUserSelfInfo(callBack?: (data: UserSelfInfoVO) => v
 // 控制台：按键触发
 export function UseEffectConsoleOpenKeydownListener() {
 
+    const webSocketMessage = useAppSelector((state) => state.common.webSocketMessage);
+
+    useEffect(() => {
+
+        if (webSocketMessage.uri === SYS_SOCKET_REF_USER_CHANGE_CONSOLE_FLAG_BY_ID_SET) {
+
+            const consoleOpenFlag = localStorage.getItem(LocalStorageKey.CONSOLE_OPEN_FLAG);
+
+            if (consoleOpenFlag === '1') {
+
+                localStorage.setItem(LocalStorageKey.CONSOLE_OPEN_FLAG, '0');
+
+                DestroyVConsole() // 销毁控制台
+
+                return
+
+            }
+
+            localStorage.setItem(LocalStorageKey.CONSOLE_OPEN_FLAG, '1');
+
+            OpenVConsole(); // 打开控制台
+
+        }
+
+    }, [webSocketMessage])
+
     useEffect(() => {
 
         const consoleOpenFlag = localStorage.getItem(LocalStorageKey.CONSOLE_OPEN_FLAG);
@@ -359,7 +402,7 @@ export function UseEffectConsoleOpenKeydownListener() {
 
                     localStorage.setItem(LocalStorageKey.CONSOLE_OPEN_FLAG, '1');
 
-                    new VConsole(); // 打开控制台
+                    OpenVConsole(); // 打开控制台
 
                 }
 

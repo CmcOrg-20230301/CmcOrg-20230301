@@ -177,6 +177,13 @@ const SchemaFormColumnList = (formRef: React.MutableRefObject<FormInstance<SysUs
         },
 
         {
+            title: '企业微信客服智能助手接待',
+            dataIndex: 'sysWxWorkKfAutoAssistantFlag',
+            valueEnum: YesNoDict,
+            valueType: 'switch',
+        },
+
+        {
             title: '关联角色',
             dataIndex: 'roleIdSet',
             valueType: 'select',
