@@ -213,12 +213,6 @@
             <artifactId>be-user</artifactId>
         </dependency>
 
-        <!-- be-xxl-job -->
-        <dependency>
-            <groupId>${cmcorg.groupId}</groupId>
-            <artifactId>be-xxl-job</artifactId>
-        </dependency>
-
         <!-- be-model -->
         <dependency>
             <groupId>${cmcorg.groupId}</groupId>
