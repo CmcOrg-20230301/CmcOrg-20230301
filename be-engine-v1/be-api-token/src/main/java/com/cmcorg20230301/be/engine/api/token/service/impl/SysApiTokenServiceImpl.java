@@ -12,6 +12,7 @@ import com.cmcorg20230301.be.engine.api.token.model.dto.SysApiTokenPageDTO;
 import com.cmcorg20230301.be.engine.api.token.model.entity.SysApiTokenDO;
 import com.cmcorg20230301.be.engine.api.token.service.SysApiTokenService;
 import com.cmcorg20230301.be.engine.model.model.dto.NotEmptyIdSet;
+import com.cmcorg20230301.be.engine.model.model.dto.NotNullId;
 import com.cmcorg20230301.be.engine.security.exception.BaseBizCodeEnum;
 import com.cmcorg20230301.be.engine.security.model.entity.BaseEntityNoIdSuper;
 import com.cmcorg20230301.be.engine.security.util.SysTenantUtil;
@@ -67,6 +68,20 @@ public class SysApiTokenServiceImpl extends ServiceImpl<SysApiTokenMapper, SysAp
         return lambdaQuery().like(StrUtil.isNotBlank(dto.getName()), SysApiTokenDO::getName, dto.getName())
                 .in(SysApiTokenDO::getTenantId, dto.getTenantIdSet()) //
                 .page(dto.updateTimeDescDefaultOrderPage(true));
+
+    }
+
+    /**
+     * 通过主键id，查看详情
+     */
+    @Override
+    public SysApiTokenDO infoById(NotNullId notNullId) {
+
+        // 获取：用户关联的租户
+        Set<Long> queryTenantIdSet = SysTenantUtil.getUserRefTenantIdSet();
+
+        return lambdaQuery().eq(SysApiTokenDO::getId, notNullId.getId()).in(SysApiTokenDO::getTenantId, queryTenantIdSet)
+                .one();
 
     }
 

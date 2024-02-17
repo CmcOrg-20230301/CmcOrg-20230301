@@ -6,6 +6,7 @@ import com.cmcorg20230301.be.engine.api.token.model.dto.SysApiTokenPageDTO;
 import com.cmcorg20230301.be.engine.api.token.model.entity.SysApiTokenDO;
 import com.cmcorg20230301.be.engine.api.token.service.SysApiTokenService;
 import com.cmcorg20230301.be.engine.model.model.dto.NotEmptyIdSet;
+import com.cmcorg20230301.be.engine.model.model.dto.NotNullId;
 import com.cmcorg20230301.be.engine.security.model.vo.ApiResultVO;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -38,6 +39,13 @@ public class SysApiTokenController {
     @PreAuthorize("hasAuthority('sysApiToken:page')")
     public ApiResultVO<Page<SysApiTokenDO>> myPage(@RequestBody @Valid SysApiTokenPageDTO dto) {
         return ApiResultVO.okData(baseService.myPage(dto));
+    }
+
+    @Operation(summary = "通过主键id，查看详情")
+    @PostMapping("/infoById")
+    @PreAuthorize("hasAuthority('sysApiToken:infoById')")
+    public ApiResultVO<SysApiTokenDO> infoById(@RequestBody @Valid NotNullId notNullId) {
+        return ApiResultVO.okData(baseService.infoById(notNullId));
     }
 
     @Operation(summary = "批量删除")
