@@ -1,15 +1,13 @@
 package com.cmcorg20230301.be.engine.api.token.model.entity;
 
-import com.baomidou.mybatisplus.annotation.FieldFill;
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.*;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
 import java.util.Date;
 
 @Data
+@TableName(value = "sys_api_token")
 @Schema(description = "主表：apiToken")
 public class SysApiTokenDO {
 
