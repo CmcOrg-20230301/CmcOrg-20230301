@@ -84,18 +84,19 @@ public class SysUserWalletLogServiceImpl extends ServiceImpl<SysUserWalletLogMap
         // 处理：MyTenantPageDTO
         SysTenantUtil.handleMyTenantPageDTO(dto, true);
 
-        return lambdaQuery().eq(dto.getUserId() != null, SysUserWalletLogDO::getUserId, dto.getUserId())
-                .eq(dto.getType() != null, SysUserWalletLogDO::getType, dto.getType())
+        return lambdaQuery().eq(dto.getUserId() != null, SysUserWalletLogDO::getUserId, dto.getUserId()) //
 
-                .ne(SysUserWalletLogDO::getWithdrawableMoneyChange, BigDecimal.ZERO)
+                .eq(dto.getType() != null, SysUserWalletLogDO::getType, dto.getType()) //
 
-                .like(StrUtil.isNotBlank(dto.getName()), SysUserWalletLogDO::getName, dto.getName())
+                .ne(SysUserWalletLogDO::getWithdrawableMoneyChange, BigDecimal.ZERO) //
 
-                .le(dto.getCtEndTime() != null, SysUserWalletLogDO::getCreateTime, dto.getCtEndTime())
+                .like(StrUtil.isNotBlank(dto.getName()), SysUserWalletLogDO::getName, dto.getName()) //
 
-                .ge(dto.getCtBeginTime() != null, SysUserWalletLogDO::getCreateTime, dto.getCtBeginTime())
+                .le(dto.getCtEndTime() != null, SysUserWalletLogDO::getCreateTime, dto.getCtEndTime()) //
 
-                .like(StrUtil.isNotBlank(dto.getRemark()), SysUserWalletLogDO::getRemark, dto.getRemark())
+                .ge(dto.getCtBeginTime() != null, SysUserWalletLogDO::getCreateTime, dto.getCtBeginTime()) //
+
+                .like(StrUtil.isNotBlank(dto.getRemark()), SysUserWalletLogDO::getRemark, dto.getRemark()) //
 
                 .in(BaseEntityNoId::getTenantId, dto.getTenantIdSet()) //
 
@@ -116,12 +117,13 @@ public class SysUserWalletLogServiceImpl extends ServiceImpl<SysUserWalletLogMap
 
         sysUserWalletLogPageDTO.setUserId(BaseConstant.TENANT_USER_ID);
 
+        // 执行
         return myPage(sysUserWalletLogPageDTO);
 
     }
 
     /**
-     * 分页排序查询-用户
+     * 分页排序查询-用户自我
      */
     @Override
     public Page<SysUserWalletLogDO> myPageUserSelf(SysUserWalletLogUserSelfPageDTO dto) {
@@ -132,6 +134,7 @@ public class SysUserWalletLogServiceImpl extends ServiceImpl<SysUserWalletLogMap
 
         sysUserWalletLogPageDTO.setUserId(currentUserId);
 
+        // 执行
         return myPage(sysUserWalletLogPageDTO);
 
     }

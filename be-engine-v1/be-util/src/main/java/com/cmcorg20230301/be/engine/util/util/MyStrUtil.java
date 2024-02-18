@@ -85,9 +85,16 @@ public class MyStrUtil {
 
             }
 
+            String str = strBuilder.toStringAndReset();
+
+            if (StrUtil.isNotBlank(str)) {
+
+                consumer.accept(str);
+
+            }
+
         }
 
     }
-
 
 }

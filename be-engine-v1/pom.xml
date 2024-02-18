@@ -87,10 +87,18 @@
         <module>be-other-app-wx-work</module>
         <module>be-other-app-baidu</module>
         <module>be-im-session</module>
+        <module>be-api-token</module>
     </modules>
 
     <dependencyManagement>
         <dependencies>
+
+            <!-- be-api-token -->
+            <dependency>
+                <groupId>${cmcorg.groupId}</groupId>
+                <artifactId>be-api-token</artifactId>
+                <version>${cmcorg.version}</version>
+            </dependency>
 
             <!-- be-im-session -->
             <dependency>

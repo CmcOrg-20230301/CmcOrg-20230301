@@ -15,6 +15,13 @@
 
     <dependencies>
 
+        <!-- be-api-token -->
+        <dependency>
+            <groupId>${cmcorg.groupId}</groupId>
+            <artifactId>be-api-token</artifactId>
+            <version>${cmcorg.version}</version>
+        </dependency>
+
         <!-- be-other-app -->
         <dependency>
             <groupId>${cmcorg.groupId}</groupId>
@@ -211,12 +218,6 @@
         <dependency>
             <groupId>${cmcorg.groupId}</groupId>
             <artifactId>be-user</artifactId>
-        </dependency>
-
-        <!-- be-xxl-job -->
-        <dependency>
-            <groupId>${cmcorg.groupId}</groupId>
-            <artifactId>be-xxl-job</artifactId>
         </dependency>
 
         <!-- be-model -->

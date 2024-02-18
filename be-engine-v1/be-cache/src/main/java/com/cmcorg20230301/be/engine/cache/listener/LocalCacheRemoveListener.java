@@ -40,6 +40,7 @@ public class LocalCacheRemoveListener {
             if (keySet.size() != 0) {
 
                 log.info("kafka：清除 本地缓存：{}", keySet);
+
                 CacheLocalUtil.removeAll(keySet); // 清除本地缓存
 
             }
