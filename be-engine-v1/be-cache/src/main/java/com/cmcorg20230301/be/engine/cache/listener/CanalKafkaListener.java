@@ -75,6 +75,7 @@ public class CanalKafkaListener {
 
                 // 发送：本地缓存移除的 topic
                 KafkaUtil.sendLocalCacheRemoveTopic(removeLocalCacheKeySet);
+
                 CacheLocalUtil.removeAll(removeLocalCacheKeySet); // 清除本地缓存
 
             }

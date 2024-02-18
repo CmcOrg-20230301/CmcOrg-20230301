@@ -79,6 +79,7 @@ public class MyCacheUtil {
         if (func0 != null) {
 
             log.info("{}：读取提供者的数据", key);
+
             result = func0.call();
 
         }
@@ -86,13 +87,19 @@ public class MyCacheUtil {
         result = CacheHelper.checkAndReturnResult(result, defaultResult); // 检查并设置值
 
         log.info("{}：加入 redis缓存", key);
+
         if (timeToLive < 1) {
+
             redissonClient.<T>getBucket(key).set(result); // 先加入到 redis里
+
         } else {
+
             redissonClient.<T>getBucket(key).set(result, Duration.ofMillis(timeToLive)); // 先加入到 redis里
+
         }
 
         log.info("{}：加入 本地缓存", key);
+
         CacheLocalUtil.put(key, result, timeToLive);
 
         return result;
@@ -124,6 +131,7 @@ public class MyCacheUtil {
         if (result != null) {
 
             log.info("{}：返回 本地缓存", key);
+
             return result;
 
         }
@@ -167,6 +175,7 @@ public class MyCacheUtil {
         if (func0 != null) {
 
             log.info("{}：读取提供者的数据", key);
+
             result = func0.call();
 
         }
@@ -174,9 +183,11 @@ public class MyCacheUtil {
         result = CacheHelper.checkAndReturnResult(result, defaultResult); // 检查并设置值
 
         log.info("{}：加入 redis缓存", key);
+
         redissonClient.getMap(key).put(secondKey, result); // 先加入到 redis里
 
         log.info("{}：加入 本地缓存", key);
+
         CacheLocalUtil.putSecondMap(key, secondKey, result);
 
         return result;
@@ -213,6 +224,7 @@ public class MyCacheUtil {
         if (result != null) {
 
             log.info("{}：返回 本地缓存", key);
+
             return result;
 
         }
@@ -266,6 +278,7 @@ public class MyCacheUtil {
         if (func0 != null) {
 
             log.info("{}：读取提供者的数据", key);
+
             result = func0.call();
 
         }
@@ -273,7 +286,9 @@ public class MyCacheUtil {
         result = CacheHelper.checkAndReturnResult(result, defaultResult); // 检查并设置值
 
         log.info("{}：加入 redis缓存", key);
+
         T finalResult = result;
+
         RedissonUtil.batch((batch) -> {
 
             batch.getMap(key).deleteAsync();
@@ -282,6 +297,7 @@ public class MyCacheUtil {
         });
 
         log.info("{}：加入 本地缓存", key);
+
         CacheLocalUtil.put(key, result, -1);
 
         return result;
@@ -301,6 +317,7 @@ public class MyCacheUtil {
         if (CollUtil.isNotEmpty(result)) {
 
             log.info("{}：返回 本地缓存", key);
+
             return result;
 
         }
@@ -314,6 +331,7 @@ public class MyCacheUtil {
         }
 
         log.info("{}：加入 本地缓存，并返回 redis缓存", key);
+
         CacheLocalUtil.put(key, result, -1);
 
         return result;
@@ -355,6 +373,7 @@ public class MyCacheUtil {
         if (func0 != null) {
 
             log.info("{}：读取提供者的数据", key);
+
             result = func0.call();
 
         }
@@ -381,6 +400,7 @@ public class MyCacheUtil {
         });
 
         log.info("{}：加入 本地缓存", key);
+
         CacheLocalUtil.put(key, result, -1);
 
         return result;
@@ -400,6 +420,7 @@ public class MyCacheUtil {
         if (CollUtil.isNotEmpty(result)) {
 
             log.info("{}：返回 本地缓存", key);
+
             return result;
 
         }
@@ -421,6 +442,7 @@ public class MyCacheUtil {
         }
 
         log.info("{}：加入 本地缓存，并返回 redis缓存", key);
+
         CacheLocalUtil.put(key, result, -1);
 
         return result;

@@ -43,6 +43,7 @@ public class LocalCacheUpdateMapListener {
                 for (NotEmptyKeyValueSet.KeyValue subItem : keyValueSet) {
 
                     log.info("kafka：更新本地 map缓存：大 key：{}，小 key：{}", key, subItem.getKey());
+
                     CacheLocalUtil.putSecondMap(key, subItem.getKey(), subItem.getValue()); // 更新：本地缓存
 
                 }
