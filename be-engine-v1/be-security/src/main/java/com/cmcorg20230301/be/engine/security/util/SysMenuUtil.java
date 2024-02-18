@@ -119,7 +119,7 @@ public class SysMenuUtil {
                 return null; // 如果：没有角色
             }
 
-            Map<Long, Set<SysMenuDO>> resultMap = MapUtil.newHashMap();
+            Map<Long, Set<SysMenuDO>> resultMap = MapUtil.newHashMap(allRoleIdSet.size());
 
             for (Long item : allRoleIdSet) {
 
