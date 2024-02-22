@@ -72,8 +72,8 @@ public class WebSocketMessageDTO<T> {
                 StrUtil.format(msgTemp, paramArr), null);
     }
 
-    public static <T> WebSocketMessageDTO<T> errorCode(IWebSocketUri iWebSocketUri, Integer code) {
-        return new WebSocketMessageDTO<>(iWebSocketUri.getUri(), code, null, null);
+    public static <T> WebSocketMessageDTO<T> errorCode(String uri, Integer code) {
+        return new WebSocketMessageDTO<>(uri, code, null, null);
     }
 
     /**
