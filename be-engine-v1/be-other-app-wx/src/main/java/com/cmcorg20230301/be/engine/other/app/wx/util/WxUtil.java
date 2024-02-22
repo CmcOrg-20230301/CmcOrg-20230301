@@ -71,7 +71,7 @@ public class WxUtil {
         }
 
         SysOtherAppDO sysOtherAppDO = sysOtherAppService.lambdaQuery().eq(BaseEntityNoIdSuper::getTenantId, tenantId)
-                .eq(StrUtil.isNotBlank(appId), SysOtherAppDO::getAppId, appId).eq(BaseEntityNoId::getEnableFlag, true).eq(SysOtherAppDO::getType, SysOtherAppTypeEnum.WX_MINI_PROGRAM).select(SysOtherAppDO::getSecret)
+                .eq(StrUtil.isNotBlank(appId), SysOtherAppDO::getAppId, appId).eq(BaseEntityNoId::getEnableFlag, true).eq(SysOtherAppDO::getType, SysOtherAppTypeEnum.WX_MINI_PROGRAM).select(SysOtherAppDO::getSecret, SysOtherAppDO::getAppId)
                 .one();
 
         String errorMessageStr = "miniProgramOpenId";
