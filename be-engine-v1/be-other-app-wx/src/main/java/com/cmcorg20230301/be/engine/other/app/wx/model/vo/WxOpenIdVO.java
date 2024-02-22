@@ -23,4 +23,7 @@ public class WxOpenIdVO extends WxBaseVO {
     @Schema(description = "access_token接口调用凭证超时时间，单位（秒）")
     private Long expiresIn;
 
+    @Schema(description = "微信的 appId，备注，微信不会返回，这里由程序进行赋值")
+    private String appId;
+
 }

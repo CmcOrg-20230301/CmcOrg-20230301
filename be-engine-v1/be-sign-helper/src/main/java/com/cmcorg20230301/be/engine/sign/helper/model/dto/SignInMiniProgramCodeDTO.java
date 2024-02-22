@@ -10,7 +10,6 @@ import javax.validation.constraints.NotBlank;
 @Data
 public class SignInMiniProgramCodeDTO extends UserSignBaseDTO {
 
-    @NotBlank
     @Schema(description = "第三方应用 appId")
     private String appId;
 

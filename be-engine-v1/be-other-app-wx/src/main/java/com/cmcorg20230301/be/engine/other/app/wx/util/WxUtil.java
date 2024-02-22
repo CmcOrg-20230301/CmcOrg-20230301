@@ -64,14 +64,14 @@ public class WxUtil {
      * 通过微信小程序的 code，获取微信的 openId信息
      */
     @NotNull
-    public static WxOpenIdVO getWxMiniProgramOpenIdVoByCode(@Nullable Long tenantId, String code, String appId) {
+    public static WxOpenIdVO getWxMiniProgramOpenIdVoByCode(@Nullable Long tenantId, String code, @Nullable String appId) {
 
         if (tenantId == null) {
             tenantId = BaseConstant.TOP_TENANT_ID;
         }
 
         SysOtherAppDO sysOtherAppDO = sysOtherAppService.lambdaQuery().eq(BaseEntityNoIdSuper::getTenantId, tenantId)
-                .eq(SysOtherAppDO::getAppId, appId).eq(BaseEntityNoId::getEnableFlag, true).eq(SysOtherAppDO::getType, SysOtherAppTypeEnum.WX_MINI_PROGRAM).select(SysOtherAppDO::getSecret)
+                .eq(StrUtil.isNotBlank(appId), SysOtherAppDO::getAppId, appId).eq(BaseEntityNoId::getEnableFlag, true).eq(SysOtherAppDO::getType, SysOtherAppTypeEnum.WX_MINI_PROGRAM).select(SysOtherAppDO::getSecret)
                 .one();
 
         String errorMessageStr = "miniProgramOpenId";
@@ -81,12 +81,16 @@ public class WxUtil {
         }
 
         String jsonStr = HttpUtil.get(
-                "https://api.weixin.qq.com/sns/jscode2session?appid=" + appId + "&secret=" + sysOtherAppDO.getSecret()
+                "https://api.weixin.qq.com/sns/jscode2session?appid=" + sysOtherAppDO.getAppId() + "&secret=" + sysOtherAppDO.getSecret()
                         + "&js_code=" + code + "&grant_type=authorization_code");
+
+        log.info("微信小程序登录：{}", jsonStr);
 
         WxOpenIdVO wxOpenIdVO = JSONUtil.toBean(jsonStr, WxOpenIdVO.class);
 
-        checkWxVO(wxOpenIdVO, errorMessageStr, tenantId, appId); // 检查：微信回调 vo对象
+        checkWxVO(wxOpenIdVO, errorMessageStr, tenantId, sysOtherAppDO.getAppId()); // 检查：微信回调 vo对象
+
+        wxOpenIdVO.setAppId(sysOtherAppDO.getAppId());
 
         return wxOpenIdVO;
 

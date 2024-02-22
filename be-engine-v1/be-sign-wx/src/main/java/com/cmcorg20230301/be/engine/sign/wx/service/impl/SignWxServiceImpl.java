@@ -92,10 +92,10 @@ public class SignWxServiceImpl implements SignWxService {
         // 直接通过：微信 openId登录
         return SignUtil.signInAccount(
                 ChainWrappers.lambdaQueryChain(sysUserMapper).eq(SysUserDO::getWxOpenId, wxOpenIdVO.getOpenid())
-                        .eq(SysUserDO::getWxAppId, dto.getAppId()), BaseRedisKeyEnum.PRE_WX_OPEN_ID, wxOpenIdVO.getOpenid(),
+                        .eq(SysUserDO::getWxAppId, wxOpenIdVO.getAppId()), BaseRedisKeyEnum.PRE_WX_OPEN_ID, wxOpenIdVO.getOpenid(),
                 SysUserInfoUtil::getWxSysUserInfoDO, dto.getTenantId(), accountMap -> {
 
-                    accountMap.put(BaseRedisKeyEnum.PRE_WX_APP_ID, dto.getAppId());
+                    accountMap.put(BaseRedisKeyEnum.PRE_WX_APP_ID, wxOpenIdVO.getAppId());
 
                 }, null);
 
