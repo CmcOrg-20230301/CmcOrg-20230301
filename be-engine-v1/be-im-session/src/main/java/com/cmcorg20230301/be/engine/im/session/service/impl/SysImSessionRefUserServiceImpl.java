@@ -19,6 +19,7 @@ import com.cmcorg20230301.be.engine.model.model.dto.NotEmptyIdSet;
 import com.cmcorg20230301.be.engine.model.model.dto.NotNullId;
 import com.cmcorg20230301.be.engine.model.model.dto.NotNullIdAndLongSet;
 import com.cmcorg20230301.be.engine.model.model.dto.NotNullIdAndNotEmptyLongSet;
+import com.cmcorg20230301.be.engine.model.model.enums.BaseWebSocketUriEnum;
 import com.cmcorg20230301.be.engine.model.model.vo.LongObjectMapVO;
 import com.cmcorg20230301.be.engine.redisson.model.enums.BaseRedisKeyEnum;
 import com.cmcorg20230301.be.engine.redisson.util.RedissonUtil;
@@ -127,7 +128,7 @@ public class SysImSessionRefUserServiceImpl extends ServiceImpl<SysImSessionRefU
 
                 sysWebSocketEventBO.setUserIdSet(existUserIdSet);
 
-                WebSocketMessageDTO<NotNullIdAndNotEmptyLongSet> webSocketMessageDTO = WebSocketMessageDTO.okData("/sys/im/session/refUser/join/userIdSet", new NotNullIdAndNotEmptyLongSet(sessionId, userIdSet));
+                WebSocketMessageDTO<NotNullIdAndNotEmptyLongSet> webSocketMessageDTO = WebSocketMessageDTO.okData(BaseWebSocketUriEnum.SYS_IM_SESSION_REF_USER_JOIN_USER_ID_SET, new NotNullIdAndNotEmptyLongSet(sessionId, userIdSet));
 
                 sysWebSocketEventBO.setWebSocketMessageDTO(webSocketMessageDTO);
 

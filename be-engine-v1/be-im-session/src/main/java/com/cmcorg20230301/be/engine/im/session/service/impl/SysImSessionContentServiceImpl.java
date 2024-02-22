@@ -20,6 +20,7 @@ import com.cmcorg20230301.be.engine.im.session.service.SysImSessionContentServic
 import com.cmcorg20230301.be.engine.kafka.util.KafkaUtil;
 import com.cmcorg20230301.be.engine.model.model.constant.BaseConstant;
 import com.cmcorg20230301.be.engine.model.model.dto.NotNullIdAndNotEmptyLongSet;
+import com.cmcorg20230301.be.engine.model.model.enums.BaseWebSocketUriEnum;
 import com.cmcorg20230301.be.engine.redisson.util.IdGeneratorUtil;
 import com.cmcorg20230301.be.engine.security.exception.BaseBizCodeEnum;
 import com.cmcorg20230301.be.engine.security.model.bo.SysWebSocketEventBO;
@@ -203,7 +204,7 @@ public class SysImSessionContentServiceImpl extends ServiceImpl<SysImSessionCont
 
                 sysWebSocketEventBO.setUserIdSet(userIdSet);
 
-                WebSocketMessageDTO<SysImSessionContentDO> webSocketMessageDTO = WebSocketMessageDTO.okData("/sys/im/session/content/send", sysImSessionContentDO);
+                WebSocketMessageDTO<SysImSessionContentDO> webSocketMessageDTO = WebSocketMessageDTO.okData(BaseWebSocketUriEnum.SYS_IM_SESSION_CONTENT_SEND, sysImSessionContentDO);
 
                 sysWebSocketEventBO.setWebSocketMessageDTO(webSocketMessageDTO);
 

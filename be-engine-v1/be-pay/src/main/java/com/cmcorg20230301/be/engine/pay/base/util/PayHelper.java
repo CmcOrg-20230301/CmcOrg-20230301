@@ -7,6 +7,7 @@ import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.extension.conditions.query.LambdaQueryChainWrapper;
 import com.cmcorg20230301.be.engine.kafka.util.KafkaUtil;
 import com.cmcorg20230301.be.engine.model.model.constant.BaseConstant;
+import com.cmcorg20230301.be.engine.model.model.enums.BaseWebSocketUriEnum;
 import com.cmcorg20230301.be.engine.pay.base.model.dto.PayDTO;
 import com.cmcorg20230301.be.engine.pay.base.model.entity.SysPayConfigurationDO;
 import com.cmcorg20230301.be.engine.pay.base.model.entity.SysPayDO;
@@ -48,7 +49,7 @@ public class PayHelper {
 
         sysWebSocketEventBO.setUserIdSet(CollUtil.newHashSet(sysPayDO.getUserId()));
 
-        WebSocketMessageDTO<Long> webSocketMessageDTO = WebSocketMessageDTO.okData("/sys/pay/closeModal", sysPayDO.getId());
+        WebSocketMessageDTO<Long> webSocketMessageDTO = WebSocketMessageDTO.okData(BaseWebSocketUriEnum.SYS_PAY_CLOSE_MODAL, sysPayDO.getId());
 
         sysWebSocketEventBO.setWebSocketMessageDTO(webSocketMessageDTO);
 

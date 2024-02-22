@@ -8,6 +8,7 @@ import com.cmcorg20230301.be.engine.cache.util.CacheRedisKafkaLocalUtil;
 import com.cmcorg20230301.be.engine.kafka.util.KafkaUtil;
 import com.cmcorg20230301.be.engine.model.model.dto.NotEmptyIdSet;
 import com.cmcorg20230301.be.engine.model.model.dto.NotNullIdAndNotEmptyLongSet;
+import com.cmcorg20230301.be.engine.model.model.enums.BaseWebSocketUriEnum;
 import com.cmcorg20230301.be.engine.security.exception.BaseBizCodeEnum;
 import com.cmcorg20230301.be.engine.security.model.bo.SysWebSocketEventBO;
 import com.cmcorg20230301.be.engine.security.model.dto.WebSocketMessageDTO;
@@ -108,7 +109,7 @@ public class SysSocketRefUserServiceImpl extends ServiceImpl<SysSocketRefUserMap
 
         sysWebSocketEventBO.setSysSocketRefUserIdSet(notEmptyIdSet.getIdSet());
 
-        WebSocketMessageDTO<NotNullIdAndNotEmptyLongSet> webSocketMessageDTO = WebSocketMessageDTO.okData("/sys/socketRefUser/changeConsoleFlagByIdSet", null);
+        WebSocketMessageDTO<NotNullIdAndNotEmptyLongSet> webSocketMessageDTO = WebSocketMessageDTO.okData(BaseWebSocketUriEnum.SYS_SOCKET_REF_USER_CHANGE_CONSOLE_FLAG_BY_ID_SET, null);
 
         sysWebSocketEventBO.setWebSocketMessageDTO(webSocketMessageDTO);
 
