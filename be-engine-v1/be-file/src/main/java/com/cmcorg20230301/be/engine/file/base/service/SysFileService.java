@@ -18,8 +18,6 @@ public interface SysFileService extends IService<SysFileDO> {
 
     void privateDownload(NotNullId notNullId, HttpServletResponse response);
 
-    void privateDownloadGet(Long id, HttpServletResponse response);
-
     String removeByFileIdSet(NotEmptyIdSet notEmptyIdSet, boolean checkBelongFlag);
 
     LongObjectMapVO<String> getPublicUrl(NotEmptyIdSet notEmptyIdSet);

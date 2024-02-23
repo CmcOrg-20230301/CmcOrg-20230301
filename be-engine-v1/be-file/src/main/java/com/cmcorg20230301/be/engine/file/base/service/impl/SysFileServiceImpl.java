@@ -87,16 +87,6 @@ public class SysFileServiceImpl extends ServiceImpl<SysFileMapper, SysFileDO> im
     }
 
     /**
-     * 下载文件：私有
-     */
-    @Override
-    public void privateDownloadGet(Long id, HttpServletResponse response) {
-
-        privateDownload(new NotNullId(id), response);
-
-    }
-
-    /**
      * 批量删除文件：公有和私有
      */
     @Override
