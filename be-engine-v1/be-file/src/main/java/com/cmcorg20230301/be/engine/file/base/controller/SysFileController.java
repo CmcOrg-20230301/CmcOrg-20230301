@@ -13,10 +13,7 @@ import com.cmcorg20230301.be.engine.security.model.vo.ApiResultVO;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
@@ -40,6 +37,12 @@ public class SysFileController {
     @PostMapping("/privateDownload")
     public void privateDownload(@RequestBody @Valid NotNullId notNullId, HttpServletResponse response) {
         baseService.privateDownload(notNullId, response);
+    }
+
+    @Operation(summary = "下载文件：私有")
+    @GetMapping("/privateDownload/get/{id}")
+    public void privateDownloadGet(@PathVariable(value = "id") Long id, HttpServletResponse response) {
+        baseService.privateDownloadGet(id, response);
     }
 
     @Operation(summary = "批量删除文件：公有和私有")
