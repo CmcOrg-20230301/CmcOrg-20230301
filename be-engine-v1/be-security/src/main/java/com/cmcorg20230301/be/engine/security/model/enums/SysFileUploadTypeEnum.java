@@ -35,14 +35,17 @@ public enum SysFileUploadTypeEnum implements ISysFileUploadType {
     TEXT(301, "text", CollUtil.newHashSet("txt"), 1024 * 1024 * 2, false), //
 
     // pdf
-    PDF(302, "pdf", CollUtil.newHashSet("pdf"), 1024 * 1024 * 2, false), //
+    PDF(401, "pdf", CollUtil.newHashSet("pdf"), 1024 * 1024 * 2, false), //
+
+    // 临时文件-图片
+    TEMP_IMAGE(501, "temp-image", AVATAR.getAcceptFileTypeSet(), 1024 * 1024 * 10, true), //
 
     ;
 
     @EnumValue
     @JsonValue
     private final int code; // 类型编码
-    private final String folderName; // 文件夹名，备注：前后后不要加斜杠
+    private final String folderName; // 文件夹名，备注：前后不要加斜杠
     private final Set<String> acceptFileTypeSet; // 支持上传的文件类型（字母必须全小写），为 null则表示支持所有文件，为 空集合则表示不支持所有文件
     private final long maxFileSize; // 最大的文件大小 byte（包含），-1 则表示不限制大小 0 表示最大文件大小为0，则只能上传空文件
     private final boolean publicFlag; // 是否公开访问
