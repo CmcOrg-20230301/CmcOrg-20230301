@@ -1,7 +1,26 @@
 @color-border: #D4D8DD;
+@blue1: #1989fa;
+@red1: #ee0a24;
+@transparent: rgba(0, 0, 0, 0);
 
 .border-a {
   border: 1px solid @color-border !important;
+}
+
+.border-a-blue1 {
+  border: 1px solid @blue1 !important;
+}
+
+.border-a-blue1-3 {
+  border: 3px solid @blue1 !important;
+}
+
+.border-a-transparent-3 {
+  border: 3px solid @transparent !important;
+}
+
+.border-a-red1 {
+  border: 1px solid @red1 !important;
 }
 
 .border-b {
@@ -22,4 +41,13 @@
 
 .b-r-6 {
   border-radius: 6px !important;
+}
+
+.b-r-16 {
+  border-radius: 16px !important;
+}
+
+.b-r-16-t {
+  border-top-left-radius: 16px !important;
+  border-top-right-radius: 16px !important;
 }

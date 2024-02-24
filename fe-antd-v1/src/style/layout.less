@@ -41,6 +41,10 @@
   display: none;
 }
 
+.box {
+  box-sizing: border-box !important;
+}
+
 .flex-s {
   flex-shrink: 0 !important;
 }
@@ -221,8 +225,9 @@
 
 }
 
-.wh(20, 100, 5);
-.wh(100, 800, 50);
+.wh(0, 100, 1);
+.wh(100, 200, 5);
+.wh(200, 800, 50);
 
 .fw(@i) when (@i <=1000) {
 
