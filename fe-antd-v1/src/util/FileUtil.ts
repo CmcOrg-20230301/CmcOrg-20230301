@@ -7,6 +7,7 @@ import {IInit} from "@/util/UseEffectUtil";
 import {GetAppNav} from "@/MyApp";
 import PathConstant from "@/model/constant/PathConstant";
 import {SysRequestCategoryEnum} from "@/model/enum/SysRequestCategoryEnum.ts";
+import {MyLocalStorage, MySessionStorage} from "@/util/StorageUtil.ts";
 
 // 获取：文件是否可以预览
 export function GetFileCanPreviewFlag(fileName: string) {
@@ -20,13 +21,15 @@ export function GoFileDownloadPage(id: string) {
 
     const data: IInit = {localStorageData: {}, sessionStorageData: {}}
 
-    for (let i = 0; i < localStorage.length; i++) {
+    const localStorageLength = MyLocalStorage.length();
 
-        const key = localStorage.key(i);
+    for (let i = 0; i < localStorageLength; i++) {
+
+        const key = MyLocalStorage.key(i);
 
         if (key) {
 
-            const value = localStorage.getItem(key);
+            const value = MyLocalStorage.getItem(key);
 
             if (value && value.length < 500) { // 防止大数据
 
@@ -38,13 +41,15 @@ export function GoFileDownloadPage(id: string) {
 
     }
 
-    for (let i = 0; i < sessionStorage.length; i++) {
+    const sessionStorageLength = MySessionStorage.length();
 
-        const key = sessionStorage.key(i);
+    for (let i = 0; i < sessionStorageLength; i++) {
+
+        const key = MySessionStorage.key(i);
 
         if (key) {
 
-            const value = sessionStorage.getItem(key);
+            const value = MySessionStorage.getItem(key);
 
             if (value && value.length < 500) { // 防止大数据
 

@@ -9,6 +9,7 @@ import {ApiResultVO} from "@/util/HttpUtil";
 import SessionStorageKey from "@/model/constant/SessionStorageKey";
 import {SignInVO} from "@/api/http/SignSignInName";
 import {SignWxWorkSignInBrowserCode} from "@/api/http/SignWxWork.ts";
+import {MyLocalStorage, MySessionStorage} from "@/util/StorageUtil.ts";
 
 export interface IOauth2WxForm {
 
@@ -27,29 +28,29 @@ function GoBlank() {
 // 处理登录返回值
 function HandleWxSign(res: ApiResultVO<SignInVO>, form: IOauth2WxForm) {
 
-    const noJwtUri = localStorage.getItem(LocalStorageKey.NO_JWT_URI);
+    const noJwtUri = MyLocalStorage.getItem(LocalStorageKey.NO_JWT_URI);
 
     SignInSuccess(res.data, undefined, false, false)
 
     if (noJwtUri) {
 
-        localStorage.setItem(LocalStorageKey.NO_JWT_URI, noJwtUri)
+        MyLocalStorage.setItem(LocalStorageKey.NO_JWT_URI, noJwtUri)
 
     } else {
 
-        localStorage.setItem(LocalStorageKey.NO_JWT_URI, PathConstant.BLANK_PATH + "?showText=登录过期，请重新打开页面")
+        MyLocalStorage.setItem(LocalStorageKey.NO_JWT_URI, PathConstant.BLANK_PATH + "?showText=登录过期，请重新打开页面")
 
     }
 
     if (form.redirect) {
 
-        sessionStorage.setItem(SessionStorageKey.OAUTH2_REDIRECT_URI, form.redirect)
+        MySessionStorage.setItem(SessionStorageKey.OAUTH2_REDIRECT_URI, form.redirect)
 
     }
 
     if (form.appId) {
 
-        localStorage.setItem(LocalStorageKey.OTHER_APP_ID, form.appId)
+        MyLocalStorage.setItem(LocalStorageKey.OTHER_APP_ID, form.appId)
 
     }
 
@@ -109,7 +110,7 @@ export default function () {
             form.redirect = ''
         }
 
-        localStorage.removeItem(LocalStorageKey.JWT) // 移除：jwt
+        MyLocalStorage.removeItem(LocalStorageKey.JWT) // 移除：jwt
 
         if (form.type === '2') { // 需要再跳转一次
 

@@ -17,6 +17,7 @@ import LocalStorageKey from "@/model/constant/LocalStorageKey.ts";
 import {SetSysSignConfigurationVOCallBack} from "@/page/sign/SignIn/SignIn.tsx";
 import type {Tab} from "rc-tabs/lib/interface";
 import {ISysSignTypeItemEnum, SysSignTypeEnum, SysSignTypeEnumMap} from "@/model/enum/SysSignTypeEnum.tsx";
+import {MyLocalStorage} from "@/util/StorageUtil.ts";
 
 export interface ISignUpForm {
 
@@ -60,7 +61,7 @@ export default function () {
     UseEffectSign(tenantIdRef, () => {
 
         // 为了触发：callBack
-        setSysSignConfigurationVO(JSON.parse(localStorage.getItem(LocalStorageKey.SYS_SIGN_CONFIGURATION_VO) || "{}"))
+        setSysSignConfigurationVO(JSON.parse(MyLocalStorage.getItem(LocalStorageKey.SYS_SIGN_CONFIGURATION_VO) || "{}"))
 
         // 租户相关配置
         SysTenantGetConfigurationById({value: tenantIdRef.current}).then(res => {

@@ -69,6 +69,7 @@ import SetSingleSignInPhoneByPhoneModalForm
     from "@/page/user/Self/userSelfSetting/phone/SetSingleSignInPhoneByPhoneModalForm.tsx";
 import SetSingleSignInPhoneBySignInNameModalForm
     from "@/page/user/Self/userSelfSetting/signInName/SetSingleSignInPhoneBySignInNameModalForm.tsx";
+import {MyLocalStorage} from "@/util/StorageUtil.ts";
 
 interface IUserSelfSetting {
 
@@ -421,7 +422,7 @@ export default function () {
 
     useEffect(() => {
 
-        setSysSignConfigurationVO(JSON.parse(localStorage.getItem(LocalStorageKey.SYS_SIGN_CONFIGURATION_VO) || "{}"))
+        setSysSignConfigurationVO(JSON.parse(MyLocalStorage.getItem(LocalStorageKey.SYS_SIGN_CONFIGURATION_VO) || "{}"))
 
     }, [])
 
@@ -451,7 +452,7 @@ export default function () {
 
                 setSysSignConfigurationVO(res.data)
 
-                localStorage.setItem(LocalStorageKey.SYS_SIGN_CONFIGURATION_VO, JSON.stringify(res.data))
+                MyLocalStorage.setItem(LocalStorageKey.SYS_SIGN_CONFIGURATION_VO, JSON.stringify(res.data))
 
             })
 

@@ -5,6 +5,7 @@ import LocalStorageKey from "@/model/constant/LocalStorageKey";
 import SessionStorageKey from "@/model/constant/SessionStorageKey";
 import {GetTenantIdFromStorage} from "@/util/CommonUtil";
 import {GetServerTimestamp} from "@/util/DateUtil.ts";
+import {MyLocalStorage, MySessionStorage} from "@/util/StorageUtil.ts";
 
 function GoBlank() {
     GetAppNav()(PathConstant.BLANK_PATH, {state: {showText: '跳转失败：参数不存在'}})
@@ -52,9 +53,9 @@ export default function () {
 
         })
 
-        let jwt = localStorage.getItem(LocalStorageKey.JWT);
+        let jwt = MyLocalStorage.getItem(LocalStorageKey.JWT);
 
-        const jwtExpireTsStr = localStorage.getItem(LocalStorageKey.JWT_EXPIRE_TS);
+        const jwtExpireTsStr = MyLocalStorage.getItem(LocalStorageKey.JWT_EXPIRE_TS);
 
         if (jwtExpireTsStr) {
 
@@ -94,7 +95,7 @@ export default function () {
 
             if (form.otherAppId) {
 
-                const otherAppId = localStorage.getItem(LocalStorageKey.OTHER_APP_ID);
+                const otherAppId = MyLocalStorage.getItem(LocalStorageKey.OTHER_APP_ID);
 
                 if (otherAppId !== form.otherAppId) { // 如果和 存储的第三方应用 id不一致
 
@@ -120,7 +121,7 @@ export default function () {
 
             noJwtUrl = decodeURIComponent(noJwtUrl)
 
-            localStorage.setItem(LocalStorageKey.NO_JWT_URI, noJwtUrl)
+            MyLocalStorage.setItem(LocalStorageKey.NO_JWT_URI, noJwtUrl)
 
         }
 
@@ -133,19 +134,19 @@ export default function () {
             } else {
 
                 if (form.mainUri) {
-                    localStorage.setItem(LocalStorageKey.MAIN_URI, form.mainUri)
+                    MyLocalStorage.setItem(LocalStorageKey.MAIN_URI, form.mainUri)
                 }
 
                 if (form.mainRedirectUri) {
-                    localStorage.setItem(LocalStorageKey.MAIN_REDIRECT_URI, form.mainRedirectUri)
+                    MyLocalStorage.setItem(LocalStorageKey.MAIN_REDIRECT_URI, form.mainRedirectUri)
                 }
 
                 if (form.otherAppId) {
-                    localStorage.setItem(LocalStorageKey.OTHER_APP_ID, form.otherAppId)
+                    MyLocalStorage.setItem(LocalStorageKey.OTHER_APP_ID, form.otherAppId)
                 }
 
                 if (hasJwtUrl) {
-                    sessionStorage.setItem(SessionStorageKey.OAUTH2_REDIRECT_URI, hasJwtUrl)
+                    MySessionStorage.setItem(SessionStorageKey.OAUTH2_REDIRECT_URI, hasJwtUrl)
                 }
 
                 GetAppNav()(form.mainUri || PathConstant.TOP_PATH)

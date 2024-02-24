@@ -2,6 +2,7 @@ import {ToastWarning} from "./ToastUtil";
 import LocalStorageKey from "@/model/constant/LocalStorageKey";
 import SessionStorageKey from "@/model/constant/SessionStorageKey";
 import CommonConstant from "@/model/constant/CommonConstant";
+import {MyLocalStorage, MySessionStorage} from "@/util/StorageUtil.ts";
 
 export const InDevMsg = "功能开发中，敬请期待~"
 
@@ -45,9 +46,9 @@ export function SetTenantIdToStorage(tenantId?: string) {
 
     }
 
-    localStorage.setItem(LocalStorageKey.TENANT_ID, tenantId)
+    MyLocalStorage.setItem(LocalStorageKey.TENANT_ID, tenantId)
 
-    sessionStorage.setItem(SessionStorageKey.TENANT_ID, tenantId)
+    MySessionStorage.setItem(SessionStorageKey.TENANT_ID, tenantId)
 
 }
 
@@ -56,15 +57,15 @@ export function SetTenantIdToStorage(tenantId?: string) {
  */
 export function GetTenantIdFromStorage() {
 
-    let tenantId = localStorage.getItem(LocalStorageKey.TENANT_ID);
+    let tenantId = MyLocalStorage.getItem(LocalStorageKey.TENANT_ID);
 
     if (!tenantId) {
 
-        tenantId = sessionStorage.getItem(SessionStorageKey.TENANT_ID);
+        tenantId = MySessionStorage.getItem(SessionStorageKey.TENANT_ID);
 
         if (tenantId) {
 
-            localStorage.setItem(LocalStorageKey.TENANT_ID, tenantId)
+            MyLocalStorage.setItem(LocalStorageKey.TENANT_ID, tenantId)
 
         }
 

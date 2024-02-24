@@ -17,8 +17,9 @@ import './style/theme.less'
 import LocalStorageKey from "@/model/constant/LocalStorageKey.ts";
 import VConsole from "vconsole";
 import {BrowserRouter} from "react-router-dom";
+import {MyLocalStorage} from "@/util/StorageUtil.ts";
 
-const consoleOpenFlag = localStorage.getItem(LocalStorageKey.CONSOLE_OPEN_FLAG);
+const consoleOpenFlag = MyLocalStorage.getItem(LocalStorageKey.CONSOLE_OPEN_FLAG);
 
 let vConsole: VConsole | null = null
 

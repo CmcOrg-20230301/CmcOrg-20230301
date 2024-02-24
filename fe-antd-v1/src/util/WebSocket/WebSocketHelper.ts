@@ -12,7 +12,7 @@ export interface IWebSocketMessage<T> {
 /**
  * 处理：所有 webSocketUrl
  */
-function handleAllWebSocketUrl(webSocketUrlArr: string[], resolve: (value: (PromiseLike<string> | string)) => void) {
+function HandleAllWebSocketUrl(webSocketUrlArr: string[], resolve: (value: (PromiseLike<string> | string)) => void) {
 
     // webSocketId 和 延迟，单位：毫秒
     const webSocketIdAndTsObj: Record<string, number> = {}
@@ -108,7 +108,7 @@ export function GetWebSocketId() {
         }).then(res => {
 
             // 处理：所有 webSocketUrl
-            handleAllWebSocketUrl(res.data, resolve);
+            HandleAllWebSocketUrl(res.data, resolve);
 
         }).catch(() => {
 

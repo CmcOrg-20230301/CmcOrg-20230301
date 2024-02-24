@@ -4,6 +4,7 @@ import {Navigate} from "react-router-dom";
 import {CopyrightOutlined} from "@ant-design/icons";
 import {ConfigProvider} from "antd";
 import {AliasToken} from "antd/es/theme/interface/alias";
+import {MyLocalStorage} from "@/util/StorageUtil.ts";
 
 interface ISignLayout extends PropsWithChildren {
 
@@ -22,7 +23,7 @@ export function GetCopyright(tenantManageName?: string) {
 // 登录注册页面布局
 export default function (props: ISignLayout) {
 
-    if (localStorage.getItem(LocalStorageKey.JWT)) {
+    if (MyLocalStorage.getItem(LocalStorageKey.JWT)) {
         return <Navigate to={"/"}/>
     }
 

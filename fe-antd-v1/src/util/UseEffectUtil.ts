@@ -19,6 +19,7 @@ import {useAppDispatch, useAppSelector} from "@/store";
 import {SysUserManageSignInFlag} from "@/api/http/SysUser.ts";
 import {SYS_SOCKET_REF_USER_CHANGE_CONSOLE_FLAG_BY_ID_SET} from "@/api/socket/WebSocket.ts";
 import {DestroyVConsole, OpenVConsole} from "@/main.tsx";
+import {MyLocalStorage, MySessionStorage} from "@/util/StorageUtil.ts";
 
 export interface IInit {
 
@@ -53,7 +54,7 @@ export function UseEffectInit() {
 
                 if (value) {
 
-                    localStorage.setItem(key, value)
+                    MyLocalStorage.setItem(key, value)
 
                 }
 
@@ -69,7 +70,7 @@ export function UseEffectInit() {
 
                 if (value) {
 
-                    sessionStorage.setItem(key, value)
+                    MySessionStorage.setItem(key, value)
 
                 }
 
@@ -93,11 +94,11 @@ export function UseEffectInit() {
 
         } else {
 
-            const jwt = localStorage.getItem(LocalStorageKey.JWT);
+            const jwt = MyLocalStorage.getItem(LocalStorageKey.JWT);
 
             if (jwt) {
 
-                const mainUri = localStorage.getItem(LocalStorageKey.MAIN_URI);
+                const mainUri = MyLocalStorage.getItem(LocalStorageKey.MAIN_URI);
 
                 if (mainUri) {
 
@@ -188,7 +189,7 @@ function LoadSysMenuUserSelfMenuList(callBack: ((data: SysMenuDO[], firstFlag: b
 
     return async () => {
 
-        const jwt = localStorage.getItem(LocalStorageKey.JWT);
+        const jwt = MyLocalStorage.getItem(LocalStorageKey.JWT);
 
         if (!jwt) {
 
@@ -201,7 +202,7 @@ function LoadSysMenuUserSelfMenuList(callBack: ((data: SysMenuDO[], firstFlag: b
 
         if (manageFlag) {
 
-            const manageSignInFlag = localStorage.getItem(LocalStorageKey.MANAGE_SIGN_IN_FLAG);
+            const manageSignInFlag = MyLocalStorage.getItem(LocalStorageKey.MANAGE_SIGN_IN_FLAG);
 
             if (manageSignInFlag !== '1') {
 
@@ -209,7 +210,7 @@ function LoadSysMenuUserSelfMenuList(callBack: ((data: SysMenuDO[], firstFlag: b
 
                 if (res.data) {
 
-                    localStorage.setItem(LocalStorageKey.MANAGE_SIGN_IN_FLAG, "1")
+                    MyLocalStorage.setItem(LocalStorageKey.MANAGE_SIGN_IN_FLAG, "1")
 
                     handleManageSignInFlag = true
 
@@ -274,7 +275,7 @@ export function UseEffectLoadUserSelfInfo(callBack?: (data: UserSelfInfoVO) => v
 
     useEffect(() => {
 
-        const jwt = localStorage.getItem(LocalStorageKey.JWT);
+        const jwt = MyLocalStorage.getItem(LocalStorageKey.JWT);
 
         if (!jwt) {
 
@@ -335,11 +336,11 @@ export function UseEffectConsoleOpenKeydownListener() {
 
         if (webSocketMessage.uri === SYS_SOCKET_REF_USER_CHANGE_CONSOLE_FLAG_BY_ID_SET) {
 
-            const consoleOpenFlag = localStorage.getItem(LocalStorageKey.CONSOLE_OPEN_FLAG);
+            const consoleOpenFlag = MyLocalStorage.getItem(LocalStorageKey.CONSOLE_OPEN_FLAG);
 
             if (consoleOpenFlag === '1') {
 
-                localStorage.setItem(LocalStorageKey.CONSOLE_OPEN_FLAG, '0');
+                MyLocalStorage.setItem(LocalStorageKey.CONSOLE_OPEN_FLAG, '0');
 
                 DestroyVConsole() // 销毁控制台
 
@@ -347,7 +348,7 @@ export function UseEffectConsoleOpenKeydownListener() {
 
             }
 
-            localStorage.setItem(LocalStorageKey.CONSOLE_OPEN_FLAG, '1');
+            MyLocalStorage.setItem(LocalStorageKey.CONSOLE_OPEN_FLAG, '1');
 
             OpenVConsole(); // 打开控制台
 
@@ -357,7 +358,7 @@ export function UseEffectConsoleOpenKeydownListener() {
 
     useEffect(() => {
 
-        const consoleOpenFlag = localStorage.getItem(LocalStorageKey.CONSOLE_OPEN_FLAG);
+        const consoleOpenFlag = MyLocalStorage.getItem(LocalStorageKey.CONSOLE_OPEN_FLAG);
 
         if (consoleOpenFlag === '1') {
             return
@@ -400,7 +401,7 @@ export function UseEffectConsoleOpenKeydownListener() {
 
                     document.removeEventListener('keydown', handleKeydown);
 
-                    localStorage.setItem(LocalStorageKey.CONSOLE_OPEN_FLAG, '1');
+                    MyLocalStorage.setItem(LocalStorageKey.CONSOLE_OPEN_FLAG, '1');
 
                     OpenVConsole(); // 打开控制台
 

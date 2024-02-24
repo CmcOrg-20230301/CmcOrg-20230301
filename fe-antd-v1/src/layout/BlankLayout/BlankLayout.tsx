@@ -5,6 +5,7 @@ import PathConstant from "@/model/constant/PathConstant.ts";
 import SessionStorageKey from "@/model/constant/SessionStorageKey.ts";
 import LocalStorageKey from "@/model/constant/LocalStorageKey.ts";
 import {GetAppNav} from "@/MyApp.tsx";
+import {MyLocalStorage, MySessionStorage} from "@/util/StorageUtil.ts";
 
 // 空白布局
 export default function () {
@@ -14,7 +15,7 @@ export default function () {
 
         const pathname = window.location.pathname;
 
-        let notFoundRedirectPath = sessionStorage.getItem(SessionStorageKey.NOT_FOUND_REDIRECT_PATH);
+        let notFoundRedirectPath = MySessionStorage.getItem(SessionStorageKey.NOT_FOUND_REDIRECT_PATH);
 
         if (!notFoundRedirectPath) {
 
@@ -28,7 +29,7 @@ export default function () {
 
         if (notFoundRedirectPath) {
 
-            sessionStorage.removeItem(SessionStorageKey.NOT_FOUND_REDIRECT_PATH)
+            MySessionStorage.removeItem(SessionStorageKey.NOT_FOUND_REDIRECT_PATH)
 
             console.log('blank-notFoundRedirectPath', notFoundRedirectPath)
 
@@ -43,11 +44,11 @@ export default function () {
 
         }
 
-        const oauth2WxRedirectUri = sessionStorage.getItem(SessionStorageKey.OAUTH2_REDIRECT_URI)
+        const oauth2WxRedirectUri = MySessionStorage.getItem(SessionStorageKey.OAUTH2_REDIRECT_URI)
 
         if (oauth2WxRedirectUri) {
 
-            sessionStorage.removeItem(SessionStorageKey.OAUTH2_REDIRECT_URI)
+            MySessionStorage.removeItem(SessionStorageKey.OAUTH2_REDIRECT_URI)
 
             console.log('blank-oauth2WxRedirectUri', oauth2WxRedirectUri)
 
@@ -62,7 +63,7 @@ export default function () {
 
         }
 
-        const mainRedirectUri = localStorage.getItem(LocalStorageKey.MAIN_REDIRECT_URI);
+        const mainRedirectUri = MyLocalStorage.getItem(LocalStorageKey.MAIN_REDIRECT_URI);
 
         if (mainRedirectUri) {
 

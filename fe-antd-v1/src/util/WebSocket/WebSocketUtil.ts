@@ -6,6 +6,7 @@ import {NettyWebSocketGetWebSocketUrlById} from "@/api/http/NettyWebSocket";
 import {HeartBeatRequest} from "@/api/socket/WebSocket";
 import {DevFlag} from "@/util/SysUtil.ts";
 import {SysSocketOnlineTypeEnum} from "@/model/enum/SysSocketOnlineTypeEnum.ts";
+import {MyLocalStorage} from "@/util/StorageUtil.ts";
 
 let myWebSocket: WebSocket | null = null
 let heartBeatInterval: any = null // 心跳检测，定时器
@@ -29,7 +30,7 @@ async function GetWebSocketUrl(): Promise<string | null> {
             return
         }
 
-        const jwt = localStorage.getItem(LocalStorageKey.JWT);
+        const jwt = MyLocalStorage.getItem(LocalStorageKey.JWT);
 
         if (!jwt) {
             return
@@ -78,7 +79,7 @@ export function ConnectWebSocket() {
         return
     }
 
-    if (!localStorage.getItem(LocalStorageKey.JWT)) {
+    if (!MyLocalStorage.getItem(LocalStorageKey.JWT)) {
         return // 如果没有 jwt，则不重连了，目的：防止一直连
     }
 

@@ -1,6 +1,7 @@
 import {createSlice, PayloadAction} from '@reduxjs/toolkit'
 import {IWebSocketMessage} from "@/util/WebSocket/WebSocketHelper";
 import LocalStorageKey from "@/model/constant/LocalStorageKey.ts";
+import {MyLocalStorage} from "@/util/StorageUtil.ts";
 
 interface ICommonSlice {
 
@@ -18,7 +19,7 @@ const initialState: ICommonSlice = {
 
     webSocketStatus: false,
 
-    tenantManageName: localStorage.getItem(LocalStorageKey.TENANT_MANAGE_NAME) || "",
+    tenantManageName: MyLocalStorage.getItem(LocalStorageKey.TENANT_MANAGE_NAME) || "",
 
 }
 
@@ -46,7 +47,7 @@ export const commonSlice = createSlice({
 
             state.tenantManageName = action.payload
 
-            localStorage.setItem(LocalStorageKey.TENANT_MANAGE_NAME, action.payload)
+            MyLocalStorage.setItem(LocalStorageKey.TENANT_MANAGE_NAME, action.payload)
 
         },
 

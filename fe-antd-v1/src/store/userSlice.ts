@@ -2,6 +2,7 @@ import {SysMenuDO} from "@/api/http/SysMenu";
 import {UserSelfInfoVO} from "@/api/http/UserSelf";
 import LocalStorageKey from "@/model/constant/LocalStorageKey";
 import {createSlice, PayloadAction} from '@reduxjs/toolkit'
+import {MyLocalStorage} from "@/util/StorageUtil.ts";
 
 interface IUserSlice {
 
@@ -19,15 +20,15 @@ interface IUserSlice {
 
 const initialState: IUserSlice = {
 
-    userSelfMenuList: JSON.parse(localStorage.getItem(LocalStorageKey.USER_SELF_MENU_LIST) || "[]"),
+    userSelfMenuList: JSON.parse(MyLocalStorage.getItem(LocalStorageKey.USER_SELF_MENU_LIST) || "[]"),
 
     userSelfMenuListLoadFlag: false,
 
-    userSelfInfo: {},
+    userSelfInfo: JSON.parse(MyLocalStorage.getItem(LocalStorageKey.USER_SELF_INFO) || "{}"),
 
     userSelfInfoLoadFlag: false,
 
-    userSelfAvatarUrl: localStorage.getItem(LocalStorageKey.USER_SELF_AVATAR_URL) || ''
+    userSelfAvatarUrl: MyLocalStorage.getItem(LocalStorageKey.USER_SELF_AVATAR_URL) || ''
 
 }
 
@@ -45,7 +46,7 @@ export const userSlice = createSlice({
 
             state.userSelfMenuListLoadFlag = true
 
-            localStorage.setItem(LocalStorageKey.USER_SELF_MENU_LIST, JSON.stringify(action.payload))
+            MyLocalStorage.setItem(LocalStorageKey.USER_SELF_MENU_LIST, JSON.stringify(action.payload))
 
         },
 
@@ -59,6 +60,8 @@ export const userSlice = createSlice({
 
             state.userSelfInfo = action.payload
 
+            MyLocalStorage.setItem(LocalStorageKey.USER_SELF_INFO, JSON.stringify(action.payload))
+
         },
 
         setUserSelfInfoLoadFlag: (state, action: PayloadAction<boolean>) => {
@@ -71,7 +74,7 @@ export const userSlice = createSlice({
 
             state.userSelfAvatarUrl = action.payload
 
-            localStorage.setItem(
+            MyLocalStorage.setItem(
                 LocalStorageKey.USER_SELF_AVATAR_URL,
                 action.payload
             )

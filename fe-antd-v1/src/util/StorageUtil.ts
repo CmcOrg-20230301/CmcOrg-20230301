@@ -62,7 +62,7 @@ export function GetStorageForeverValue() {
 
         const storageKey = StorageForeverValue[key] as string;
 
-        const storageValue = localStorage.getItem(storageKey);
+        const storageValue = MyLocalStorage.getItem(storageKey);
 
         if (storageValue) {
 
@@ -85,8 +85,104 @@ export function SetStorageForeverValue(resObj: Record<string, string>) {
 
     Object.keys(resObj).forEach(key => {
 
-        localStorage.setItem(key, resObj[key])
+        MyLocalStorage.setItem(key, resObj[key])
 
     })
+
+}
+
+interface IStorage {
+
+    length(): number
+
+    clear(): void
+
+    getItem(key: string): string | null
+
+    key(index: number): string | null
+
+    removeItem(key: string): void
+
+    setItem(key: string, value: string): void
+
+}
+
+export const MyLocalStorage: IStorage = {
+
+    length(): number {
+
+        return localStorage.length
+
+    },
+
+    clear(): void {
+
+        localStorage.clear()
+
+    },
+
+    getItem(key: string): string | null {
+
+        return localStorage.getItem(key)
+
+    },
+
+    key(index: number): string | null {
+
+        return localStorage.key(index)
+
+    },
+
+    removeItem(key: string): void {
+
+        localStorage.removeItem(key)
+
+    },
+
+    setItem(key: string, value: string): void {
+
+        localStorage.setItem(key, value)
+
+    }
+
+}
+
+export const MySessionStorage: IStorage = {
+
+    length(): number {
+
+        return sessionStorage.length
+
+    },
+
+    clear(): void {
+
+        sessionStorage.clear()
+
+    },
+
+    getItem(key: string): string | null {
+
+        return sessionStorage.getItem(key)
+
+    },
+
+    key(index: number): string | null {
+
+        return sessionStorage.key(index)
+
+    },
+
+    removeItem(key: string): void {
+
+        sessionStorage.removeItem(key)
+
+    },
+
+    setItem(key: string, value: string): void {
+
+        sessionStorage.setItem(key, value)
+
+    }
 
 }

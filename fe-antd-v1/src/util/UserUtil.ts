@@ -3,13 +3,13 @@ import {ToastSuccess} from "./ToastUtil";
 import PathConstant from "@/model/constant/PathConstant";
 import {signOut} from "@/store/userSlice";
 import {RandomStr} from "@/util/StrUtil";
-import {GetStorageForeverValue, SetStorageForeverValue} from "@/util/StorageUtil.ts";
+import {GetStorageForeverValue, MyLocalStorage, MySessionStorage, SetStorageForeverValue} from "@/util/StorageUtil.ts";
 
 // 清除数据
 export function ClearStorage() {
 
-    localStorage.clear()
-    sessionStorage.clear()
+    MyLocalStorage.clear()
+    MySessionStorage.clear()
 
 }
 

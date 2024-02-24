@@ -26,13 +26,14 @@ import {RouterMapKeySet} from "@/router/RouterMap";
 import {UseEffectLoadSysMenuUserSelfMenuList, UseEffectLoadUserSelfInfo} from "@/util/UseEffectUtil";
 import {LogoutOutlined, UserOutlined, WalletOutlined} from "@ant-design/icons";
 import {SetTenantManageName} from "@/page/sign/SignIn/SignInUtil.ts";
+import {MySessionStorage} from "@/util/StorageUtil.ts";
 
 // 前往：第一个页面
 function GoFirstPage(menuList: SysMenuDO[]) {
 
     const pathname = window.location.pathname;
 
-    let notFoundRedirectPath = sessionStorage.getItem(SessionStorageKey.NOT_FOUND_REDIRECT_PATH);
+    let notFoundRedirectPath = MySessionStorage.getItem(SessionStorageKey.NOT_FOUND_REDIRECT_PATH);
 
     if (!notFoundRedirectPath) {
 
@@ -46,7 +47,7 @@ function GoFirstPage(menuList: SysMenuDO[]) {
 
     if (notFoundRedirectPath) {
 
-        sessionStorage.removeItem(SessionStorageKey.NOT_FOUND_REDIRECT_PATH)
+        MySessionStorage.removeItem(SessionStorageKey.NOT_FOUND_REDIRECT_PATH)
 
         console.log('admin-notFoundRedirectPath', notFoundRedirectPath)
 

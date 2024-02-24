@@ -64,7 +64,7 @@ export function SysUserWalletLogPageTenant(form: SysUserWalletLogUserSelfPageDTO
     return $http.myProPagePost<SysUserWalletLogDO>('/sys/userWalletLog/page/tenant', form, config)
 }
 
-// 分页排序查询-用户
+// 分页排序查询-用户自我
 export function SysUserWalletLogPageUserSelf(form: SysUserWalletLogUserSelfPageDTO, config?: AxiosRequestConfig) {
     return $http.myProPagePost<SysUserWalletLogDO>('/sys/userWalletLog/page/userSelf', form, config)
 }

@@ -342,7 +342,7 @@ export function SignWxUpdatePasswordGetQrCodeSceneFlag(form: NotNullId, config?:
 
 export interface SignInMiniProgramCodeDTO {
     code?: string // 第三方应用 code，required：true
-    appId?: string // 第三方应用 appId，required：true
+    appId?: string // 第三方应用 appId
     tenantId?: string // 租户 id，可以为空，为空则表示：默认租户：0，format：int64
 }
 

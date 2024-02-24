@@ -11,6 +11,7 @@ import CommonConstant from "@/model/constant/CommonConstant";
 import {DoGetDictList, GetByValueFromDictList} from "@/util/DictUtil";
 import {SysUserDictList} from "@/api/http/SysUser";
 import {SysUserTenantEnum} from "@/model/enum/SysUserTenantEnum";
+import {MyLocalStorage} from "@/util/StorageUtil.ts";
 
 export const USER_WALLET_KEY_ONE = "钱包"
 
@@ -36,7 +37,7 @@ export default function () {
         if (!location.state?.id) {
 
             // 获取：历史值
-            const ownerInfo: IUserWalletOwnerInfo = JSON.parse(localStorage.getItem(LocalStorageKey.USER_WALLET_OWNER_INFO) || '{}');
+            const ownerInfo: IUserWalletOwnerInfo = JSON.parse(MyLocalStorage.getItem(LocalStorageKey.USER_WALLET_OWNER_INFO) || '{}');
 
             if (ownerInfo.id) {
 
@@ -56,7 +57,7 @@ export default function () {
 
         if (location.state?.id) {
 
-            localStorage.setItem(LocalStorageKey.USER_WALLET_OWNER_INFO, JSON.stringify(location.state)) // 存储起来下次使用
+            MyLocalStorage.setItem(LocalStorageKey.USER_WALLET_OWNER_INFO, JSON.stringify(location.state)) // 存储起来下次使用
 
             if (location.state.type === SysUserTenantEnum.TENANT.code) {
 

@@ -33,6 +33,7 @@ import {
     SignPhoneForgetPasswordSendCode,
     SignPhoneSignInSendCode
 } from "@/api/http/SignPhone.ts";
+import {MyLocalStorage} from "@/util/StorageUtil.ts";
 
 export interface ISignInForm {
 
@@ -143,7 +144,7 @@ export function SetSysSignConfigurationVOCallBack(signInType: string, setSignInT
 
         if (savaFlag) {
 
-            localStorage.setItem(LocalStorageKey.SYS_SIGN_CONFIGURATION_VO, JSON.stringify(sysSignConfigurationVO))
+            MyLocalStorage.setItem(LocalStorageKey.SYS_SIGN_CONFIGURATION_VO, JSON.stringify(sysSignConfigurationVO))
 
         }
 
@@ -163,7 +164,7 @@ export default function () {
     // 展示的登录方式
     const [tabItemArr, setTabItemArr] = useState<Tab[]>([]);
 
-    const [signInType, setSignInType, signInTypeRef] = MyUseState(useState<string>(localStorage.getItem(LocalStorageKey.SIGN_IN_TYPE) || ""));
+    const [signInType, setSignInType, signInTypeRef] = MyUseState(useState<string>(MyLocalStorage.getItem(LocalStorageKey.SIGN_IN_TYPE) || ""));
 
     const [accountPlaceholder, setAccountPlaceholder] = useState<string>("");
 
@@ -182,7 +183,7 @@ export default function () {
     UseEffectSign(tenantIdRef, () => {
 
         // 为了触发：callBack
-        setSysSignConfigurationVO(JSON.parse(localStorage.getItem(LocalStorageKey.SYS_SIGN_CONFIGURATION_VO) || "{}"))
+        setSysSignConfigurationVO(JSON.parse(MyLocalStorage.getItem(LocalStorageKey.SYS_SIGN_CONFIGURATION_VO) || "{}"))
 
         // 租户相关配置
         SysTenantGetConfigurationById({value: tenantIdRef.current}).then(res => {
@@ -197,7 +198,7 @@ export default function () {
 
         const sysSignTypeItemEnum = SysSignTypeEnumMap.get(signInType) || SysSignTypeEnum.SignInName;
 
-        localStorage.setItem(LocalStorageKey.SIGN_IN_TYPE, sysSignTypeItemEnum.code!)
+        MyLocalStorage.setItem(LocalStorageKey.SIGN_IN_TYPE, sysSignTypeItemEnum.code!)
 
         return sysSignTypeItemEnum
 

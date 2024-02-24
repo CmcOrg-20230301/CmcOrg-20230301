@@ -15,6 +15,7 @@ import {GetBrowserCategory} from "@/util/BrowserCategoryUtil";
 import PathConstant from "@/model/constant/PathConstant";
 import {DevFlag} from "@/util/SysUtil.ts";
 import CommonConstant from "@/model/constant/CommonConstant.ts";
+import {MyLocalStorage} from "@/util/StorageUtil.ts";
 
 const TIMEOUT_MSG = '请求超时，请重试'
 const BASE_ERROR_MSG = "请求错误："
@@ -37,7 +38,7 @@ $http.interceptors.request.use(
 
             // 不以 http开头的，才携带 jwt
             config.headers!['Authorization'] =
-                localStorage.getItem(LocalStorageKey.JWT) || ''
+                MyLocalStorage.getItem(LocalStorageKey.JWT) || ''
 
             config.headers!['category'] = GetBrowserCategory() // 请求类别
 
@@ -100,7 +101,7 @@ $http.interceptors.response.use(
 
                 if (!hiddenErrorMsgFlag) {
 
-                    if (localStorage.getItem(LocalStorageKey.JWT)) { // 存在 jwt才提示错误消息
+                    if (MyLocalStorage.getItem(LocalStorageKey.JWT)) { // 存在 jwt才提示错误消息
 
                         ToastError(res.msg)
 
@@ -194,13 +195,13 @@ interface MyAxiosInstance extends AxiosInstance {
 
     myProPost<T = string, D = any>(url: string, data?: D, config?: AxiosRequestConfig<D>): Promise<T>
 
-    myTreePost<T, D extends MyPageDTO = any>(url: string, data?: D, config?: AxiosRequestConfig<D>): Promise<T[]>
+    myTreePost<T = string, D extends MyPageDTO = any>(url: string, data?: D, config?: AxiosRequestConfig<D>): Promise<T[]>
 
-    myProTreePost<T, D extends MyPageDTO = any>(url: string, data?: D, config?: AxiosRequestConfig<D>): Promise<RequestData<T>>
+    myProTreePost<T = string, D extends MyPageDTO = any>(url: string, data?: D, config?: AxiosRequestConfig<D>): Promise<RequestData<T>>
 
-    myPagePost<T, D extends MyPageDTO = any>(url: string, data?: D, config?: AxiosRequestConfig<D>): Promise<Page<T>>
+    myPagePost<T = string, D extends MyPageDTO = any>(url: string, data?: D, config?: AxiosRequestConfig<D>): Promise<Page<T>>
 
-    myProPagePost<T, D extends MyPageDTO = any>(url: string, data?: D, config?: AxiosRequestConfig<D>): Promise<RequestData<T>>
+    myProPagePost<T = string, D extends MyPageDTO = any>(url: string, data?: D, config?: AxiosRequestConfig<D>): Promise<RequestData<T>>
 
 }
 

@@ -15,7 +15,7 @@ import CommonConstant from "@/model/constant/CommonConstant.ts";
 import {SysSignTypeEnum} from "@/model/enum/SysSignTypeEnum.tsx";
 import {SignPhoneSignInCode, SignPhoneSignInPassword} from "@/api/http/SignPhone.ts";
 import {ISignInForm} from "./SignIn";
-import {GetStorageForeverValue, SetStorageForeverValue} from "@/util/StorageUtil.ts";
+import {GetStorageForeverValue, MyLocalStorage, SetStorageForeverValue} from "@/util/StorageUtil.ts";
 import {SignSingleSignInCodePhone} from "@/api/http/SignSingle.ts";
 
 /**
@@ -125,9 +125,9 @@ export function SignInSuccess(signInVO: SignInVO, path: string = PathConstant.AD
         ToastSuccess('欢迎回来~')
     }
 
-    localStorage.setItem(LocalStorageKey.JWT, signInVO.jwt!)
+    MyLocalStorage.setItem(LocalStorageKey.JWT, signInVO.jwt!)
 
-    localStorage.setItem(LocalStorageKey.JWT_EXPIRE_TS, signInVO.jwtExpireTs!)
+    MyLocalStorage.setItem(LocalStorageKey.JWT_EXPIRE_TS, signInVO.jwtExpireTs!)
 
     SetTenantIdToStorage(signInVO.tenantId);
 

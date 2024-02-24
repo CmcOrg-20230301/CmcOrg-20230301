@@ -36,6 +36,7 @@ import {Navigate, useLocation} from "react-router-dom";
 import LocalStorageKey from "@/model/constant/LocalStorageKey";
 import PathConstant from "@/model/constant/PathConstant";
 import {GoPage} from "@/layout/AdminLayout/AdminLayout";
+import {MyLocalStorage} from "@/util/StorageUtil";
 
 // 第三方应用-公众号-菜单-管理
 export default function () {
@@ -45,7 +46,7 @@ export default function () {
     if (!location.state?.otherAppId) {
 
         // 获取：历史值：otherAppId
-        const otherAppId = localStorage.getItem(LocalStorageKey.SYS_OTHER_APP_OFFICIAL_ACCOUNT_MENU_OTHER_APP_ID);
+        const otherAppId = MyLocalStorage.getItem(LocalStorageKey.SYS_OTHER_APP_OFFICIAL_ACCOUNT_MENU_OTHER_APP_ID);
 
         if (otherAppId) {
 
@@ -85,7 +86,7 @@ export default function () {
 
         if (location.state?.otherAppId) {
 
-            localStorage.setItem(LocalStorageKey.SYS_OTHER_APP_OFFICIAL_ACCOUNT_MENU_OTHER_APP_ID, location.state?.otherAppId) // 存储起来下次使用
+            MyLocalStorage.setItem(LocalStorageKey.SYS_OTHER_APP_OFFICIAL_ACCOUNT_MENU_OTHER_APP_ID, location.state?.otherAppId) // 存储起来下次使用
 
             SysOtherAppGetNameById({id: location.state.otherAppId}).then(res => {
 

@@ -23,6 +23,7 @@ import {
     SignSingleSignInGetQrCodeUrlWx,
     SignSingleSignInSendCodePhone
 } from "@/api/http/SignSingle.ts";
+import {MyLocalStorage} from "@/util/StorageUtil.ts";
 
 const tenantManageName = "灵秀AI Agent"
 
@@ -34,7 +35,7 @@ export default function () {
     // 展示的登录方式
     const [tabItemArr, setTabItemArr] = useState<Tab[]>([]);
 
-    const [signInType, setSignInType, signInTypeRef] = MyUseState(useState<string>(localStorage.getItem(LocalStorageKey.SIGN_IN_TYPE_SINGLE) || ""));
+    const [signInType, setSignInType, signInTypeRef] = MyUseState(useState<string>(MyLocalStorage.getItem(LocalStorageKey.SIGN_IN_TYPE_SINGLE) || ""));
 
     const [accountPlaceholder, setAccountPlaceholder] = useState<string>("");
 
@@ -47,7 +48,7 @@ export default function () {
 
                 SetSysSignConfigurationVOCallBack(signInTypeRef.current, setSignInType, setTabItemArr, setAccountPlaceholder, 1, false)(newState)
 
-                localStorage.setItem(LocalStorageKey.SYS_SIGN_CONFIGURATION_VO_SINGLE, JSON.stringify(newState))
+                MyLocalStorage.setItem(LocalStorageKey.SYS_SIGN_CONFIGURATION_VO_SINGLE, JSON.stringify(newState))
 
             }
         )
@@ -57,7 +58,7 @@ export default function () {
         CloseWebSocket() // 关闭 webSocket
 
         // 为了触发：callBack
-        setSysSignConfigurationVO(JSON.parse(localStorage.getItem(LocalStorageKey.SYS_SIGN_CONFIGURATION_VO_SINGLE) || "{}"))
+        setSysSignConfigurationVO(JSON.parse(MyLocalStorage.getItem(LocalStorageKey.SYS_SIGN_CONFIGURATION_VO_SINGLE) || "{}"))
 
         // 统一登录相关的配置
         SignSingleSignInGetConfiguration().then(res => {
@@ -72,7 +73,7 @@ export default function () {
 
         const sysSignTypeItemEnum = SysSignTypeEnumMap.get(signInType) || SysSignTypeEnum.Phone;
 
-        localStorage.setItem(LocalStorageKey.SIGN_IN_TYPE_SINGLE, sysSignTypeItemEnum.code!)
+        MyLocalStorage.setItem(LocalStorageKey.SIGN_IN_TYPE_SINGLE, sysSignTypeItemEnum.code!)
 
         return sysSignTypeItemEnum
 
@@ -153,7 +154,7 @@ export default function () {
                                     clearInterval(interval)
 
                                     // 设置：为统一登录的页面
-                                    localStorage.setItem(LocalStorageKey.NO_JWT_URI, PathConstant.SINGLE_SIGN_IN_PATH)
+                                    MyLocalStorage.setItem(LocalStorageKey.NO_JWT_URI, PathConstant.SINGLE_SIGN_IN_PATH)
 
                                     // 完成登录
                                     SignInSuccess(res.data)
