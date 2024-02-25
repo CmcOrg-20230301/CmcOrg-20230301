@@ -1,7 +1,6 @@
 import {SortOrder} from "antd/es/table/interface";
 import MyOrderDTO from "@/model/dto/MyOrderDTO";
-import $http from "@/util/HttpUtil";
-import {AxiosRequestConfig} from "axios";
+import {$http, IHttpConfig} from "@/util/HttpUtil";
 
 export interface SysMenuPageDTO {
     redirect?: string // 重定向，优先级最高
@@ -51,12 +50,12 @@ export interface SysMenuDO {
 }
 
 // 分页排序查询
-export function SysMenuPage(form: SysMenuPageDTO, config?: AxiosRequestConfig) {
+export function SysMenuPage(form: SysMenuPageDTO, config?: IHttpConfig) {
     return $http.myProPagePost<SysMenuDO>('/sys/menu/page', form, config)
 }
 
 // 查询：树结构
-export function SysMenuTree(form: SysMenuPageDTO, config?: AxiosRequestConfig) {
+export function SysMenuTree(form: SysMenuPageDTO, config?: IHttpConfig) {
     return $http.myProTreePost<SysMenuDO>('/sys/menu/tree', form, config)
 }
 
@@ -94,7 +93,7 @@ export interface SysMenuInfoByIdVO {
 }
 
 // 通过主键id，查看详情
-export function SysMenuInfoById(form: NotNullId, config?: AxiosRequestConfig) {
+export function SysMenuInfoById(form: NotNullId, config?: IHttpConfig) {
     return $http.myProPost<SysMenuInfoByIdVO>('/sys/menu/infoById', form, config)
 }
 
@@ -104,7 +103,7 @@ export interface ChangeNumberDTO {
 }
 
 // 通过主键 idSet，加减排序号
-export function SysMenuAddOrderNo(form: ChangeNumberDTO, config?: AxiosRequestConfig) {
+export function SysMenuAddOrderNo(form: ChangeNumberDTO, config?: IHttpConfig) {
     return $http.myPost<string>('/sys/menu/addOrderNo', form, config)
 }
 
@@ -113,12 +112,12 @@ export interface NotEmptyIdSet {
 }
 
 // 批量删除
-export function SysMenuDeleteByIdSet(form: NotEmptyIdSet, config?: AxiosRequestConfig) {
+export function SysMenuDeleteByIdSet(form: NotEmptyIdSet, config?: IHttpConfig) {
     return $http.myPost<string>('/sys/menu/deleteByIdSet', form, config)
 }
 
 // 获取：当前用户绑定的菜单
-export function SysMenuUserSelfMenuList(config?: AxiosRequestConfig) {
+export function SysMenuUserSelfMenuList(config?: IHttpConfig) {
     return $http.myPost<SysMenuDO[]>('/sys/menu/userSelfMenuList', undefined, config)
 }
 
@@ -143,6 +142,6 @@ export interface SysMenuInsertOrUpdateDTO {
 }
 
 // 新增/修改
-export function SysMenuInsertOrUpdate(form: SysMenuInsertOrUpdateDTO, config?: AxiosRequestConfig) {
+export function SysMenuInsertOrUpdate(form: SysMenuInsertOrUpdateDTO, config?: IHttpConfig) {
     return $http.myPost<string>('/sys/menu/insertOrUpdate', form, config)
 }

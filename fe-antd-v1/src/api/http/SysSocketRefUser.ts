@@ -1,14 +1,13 @@
 import {SortOrder} from "antd/es/table/interface";
 import MyOrderDTO from "@/model/dto/MyOrderDTO";
-import $http from "@/util/HttpUtil";
-import {AxiosRequestConfig} from "axios";
+import {$http, IHttpConfig} from "@/util/HttpUtil";
 
 export interface NotEmptyIdSet {
     idSet?: string[] // 主键 idSet，required：true，format：int64
 }
 
 // 批量：开关控制台
-export function SysSocketRefUserChangeConsoleFlagByIdSet(form: NotEmptyIdSet, config?: AxiosRequestConfig) {
+export function SysSocketRefUserChangeConsoleFlagByIdSet(form: NotEmptyIdSet, config?: IHttpConfig) {
     return $http.myPost<string>('/sys/socketRefUser/changeConsoleFlagByIdSet', form, config)
 }
 
@@ -60,11 +59,11 @@ export interface SysSocketRefUserDO {
 }
 
 // 分页排序查询
-export function SysSocketRefUserPage(form: SysSocketRefUserPageDTO, config?: AxiosRequestConfig) {
+export function SysSocketRefUserPage(form: SysSocketRefUserPageDTO, config?: IHttpConfig) {
     return $http.myProPagePost<SysSocketRefUserDO>('/sys/socketRefUser/page', form, config)
 }
 
 // 批量：下线用户
-export function SysSocketRefUserOfflineByIdSet(form: NotEmptyIdSet, config?: AxiosRequestConfig) {
+export function SysSocketRefUserOfflineByIdSet(form: NotEmptyIdSet, config?: IHttpConfig) {
     return $http.myPost<string>('/sys/socketRefUser/offlineByIdSet', form, config)
 }

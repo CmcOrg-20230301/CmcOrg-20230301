@@ -1,7 +1,6 @@
 import {SortOrder} from "antd/es/table/interface";
 import MyOrderDTO from "@/model/dto/MyOrderDTO";
-import $http from "@/util/HttpUtil";
-import {AxiosRequestConfig} from "axios";
+import {$http, IHttpConfig} from "@/util/HttpUtil";
 
 export interface NotNullId {
     id?: string // 主键 id，required：true，format：int64
@@ -29,7 +28,7 @@ export interface SysDictDO {
 }
 
 // 通过主键id，查看详情
-export function SysDictInfoById(form: NotNullId, config?: AxiosRequestConfig) {
+export function SysDictInfoById(form: NotNullId, config?: IHttpConfig) {
     return $http.myProPost<SysDictDO>('/sys/dict/infoById', form, config)
 }
 
@@ -48,12 +47,12 @@ export interface SysDictPageDTO {
 }
 
 // 查询：树结构
-export function SysDictTree(form: SysDictPageDTO, config?: AxiosRequestConfig) {
+export function SysDictTree(form: SysDictPageDTO, config?: IHttpConfig) {
     return $http.myProTreePost<SysDictDO>('/sys/dict/tree', form, config)
 }
 
 // 分页排序查询
-export function SysDictPage(form: SysDictPageDTO, config?: AxiosRequestConfig) {
+export function SysDictPage(form: SysDictPageDTO, config?: IHttpConfig) {
     return $http.myProPagePost<SysDictDO>('/sys/dict/page', form, config)
 }
 
@@ -71,7 +70,7 @@ export interface SysDictInsertOrUpdateDTO {
 }
 
 // 新增/修改
-export function SysDictInsertOrUpdate(form: SysDictInsertOrUpdateDTO, config?: AxiosRequestConfig) {
+export function SysDictInsertOrUpdate(form: SysDictInsertOrUpdateDTO, config?: IHttpConfig) {
     return $http.myPost<string>('/sys/dict/insertOrUpdate', form, config)
 }
 
@@ -80,7 +79,7 @@ export interface NotEmptyIdSet {
 }
 
 // 批量删除
-export function SysDictDeleteByIdSet(form: NotEmptyIdSet, config?: AxiosRequestConfig) {
+export function SysDictDeleteByIdSet(form: NotEmptyIdSet, config?: IHttpConfig) {
     return $http.myPost<string>('/sys/dict/deleteByIdSet', form, config)
 }
 
@@ -94,7 +93,7 @@ export interface DictIntegerVO {
 }
 
 // 通过：dictKey获取字典项集合，备注：会进行缓存
-export function SysDictListByDictKey(form: SysDictListByDictKeyDTO, config?: AxiosRequestConfig) {
+export function SysDictListByDictKey(form: SysDictListByDictKeyDTO, config?: IHttpConfig) {
     return $http.myPost<DictIntegerVO[]>('/sys/dict/listByDictKey', form, config)
 }
 
@@ -104,6 +103,6 @@ export interface ChangeNumberDTO {
 }
 
 // 通过主键 idSet，加减排序号
-export function SysDictAddOrderNo(form: ChangeNumberDTO, config?: AxiosRequestConfig) {
+export function SysDictAddOrderNo(form: ChangeNumberDTO, config?: IHttpConfig) {
     return $http.myPost<string>('/sys/dict/addOrderNo', form, config)
 }

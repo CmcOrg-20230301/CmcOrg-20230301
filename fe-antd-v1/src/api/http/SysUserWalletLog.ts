@@ -1,7 +1,6 @@
 import {SortOrder} from "antd/es/table/interface";
 import MyOrderDTO from "@/model/dto/MyOrderDTO";
-import $http from "@/util/HttpUtil";
-import {AxiosRequestConfig} from "axios";
+import {$http, IHttpConfig} from "@/util/HttpUtil";
 
 export interface SysUserWalletLogPageDTO {
     current?: string // 第几页，format：int64
@@ -42,7 +41,7 @@ export interface SysUserWalletLogDO {
 }
 
 // 分页排序查询
-export function SysUserWalletLogPage(form: SysUserWalletLogPageDTO, config?: AxiosRequestConfig) {
+export function SysUserWalletLogPage(form: SysUserWalletLogPageDTO, config?: IHttpConfig) {
     return $http.myProPagePost<SysUserWalletLogDO>('/sys/userWalletLog/page', form, config)
 }
 
@@ -60,11 +59,11 @@ export interface SysUserWalletLogUserSelfPageDTO {
 }
 
 // 分页排序查询-租户
-export function SysUserWalletLogPageTenant(form: SysUserWalletLogUserSelfPageDTO, config?: AxiosRequestConfig) {
+export function SysUserWalletLogPageTenant(form: SysUserWalletLogUserSelfPageDTO, config?: IHttpConfig) {
     return $http.myProPagePost<SysUserWalletLogDO>('/sys/userWalletLog/page/tenant', form, config)
 }
 
 // 分页排序查询-用户自我
-export function SysUserWalletLogPageUserSelf(form: SysUserWalletLogUserSelfPageDTO, config?: AxiosRequestConfig) {
+export function SysUserWalletLogPageUserSelf(form: SysUserWalletLogUserSelfPageDTO, config?: IHttpConfig) {
     return $http.myProPagePost<SysUserWalletLogDO>('/sys/userWalletLog/page/userSelf', form, config)
 }

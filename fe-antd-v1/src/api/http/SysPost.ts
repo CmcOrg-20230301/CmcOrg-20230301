@@ -1,14 +1,13 @@
 import {SortOrder} from "antd/es/table/interface";
 import MyOrderDTO from "@/model/dto/MyOrderDTO";
-import $http from "@/util/HttpUtil";
-import {AxiosRequestConfig} from "axios";
+import {$http, IHttpConfig} from "@/util/HttpUtil";
 
 export interface NotEmptyIdSet {
     idSet?: string[] // 主键 idSet，required：true，format：int64
 }
 
 // 批量删除
-export function SysPostDeleteByIdSet(form: NotEmptyIdSet, config?: AxiosRequestConfig) {
+export function SysPostDeleteByIdSet(form: NotEmptyIdSet, config?: IHttpConfig) {
     return $http.myPost<string>('/sys/post/deleteByIdSet', form, config)
 }
 
@@ -41,7 +40,7 @@ export interface SysPostDO {
 }
 
 // 分页排序查询
-export function SysPostPage(form: SysPostPageDTO, config?: AxiosRequestConfig) {
+export function SysPostPage(form: SysPostPageDTO, config?: IHttpConfig) {
     return $http.myProPagePost<SysPostDO>('/sys/post/page', form, config)
 }
 
@@ -51,7 +50,7 @@ export interface ChangeNumberDTO {
 }
 
 // 通过主键 idSet，加减排序号
-export function SysPostAddOrderNo(form: ChangeNumberDTO, config?: AxiosRequestConfig) {
+export function SysPostAddOrderNo(form: ChangeNumberDTO, config?: IHttpConfig) {
     return $http.myPost<string>('/sys/post/addOrderNo', form, config)
 }
 
@@ -67,7 +66,7 @@ export interface SysPostInsertOrUpdateDTO {
 }
 
 // 新增/修改
-export function SysPostInsertOrUpdate(form: SysPostInsertOrUpdateDTO, config?: AxiosRequestConfig) {
+export function SysPostInsertOrUpdate(form: SysPostInsertOrUpdateDTO, config?: IHttpConfig) {
     return $http.myPost<string>('/sys/post/insertOrUpdate', form, config)
 }
 
@@ -94,11 +93,11 @@ export interface SysPostInfoByIdVO {
 }
 
 // 通过主键id，查看详情
-export function SysPostInfoById(form: NotNullId, config?: AxiosRequestConfig) {
+export function SysPostInfoById(form: NotNullId, config?: IHttpConfig) {
     return $http.myProPost<SysPostInfoByIdVO>('/sys/post/infoById', form, config)
 }
 
 // 查询：树结构
-export function SysPostTree(form: SysPostPageDTO, config?: AxiosRequestConfig) {
+export function SysPostTree(form: SysPostPageDTO, config?: IHttpConfig) {
     return $http.myProTreePost<SysPostDO>('/sys/post/tree', form, config)
 }

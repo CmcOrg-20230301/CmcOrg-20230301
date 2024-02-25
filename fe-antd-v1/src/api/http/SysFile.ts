@@ -1,7 +1,6 @@
 import {SortOrder} from "antd/es/table/interface";
 import MyOrderDTO from "@/model/dto/MyOrderDTO";
-import $http from "@/util/HttpUtil";
-import {AxiosRequestConfig} from "axios";
+import {$http, IHttpConfig} from "@/util/HttpUtil";
 
 export interface NotEmptyIdSet {
     idSet?: string[] // 主键 idSet，required：true，format：int64
@@ -12,7 +11,7 @@ export interface LongObjectMapVOString {
 }
 
 // 批量获取：公开文件的 url
-export function SysFileGetPublicUrl(form: NotEmptyIdSet, config?: AxiosRequestConfig) {
+export function SysFileGetPublicUrl(form: NotEmptyIdSet, config?: IHttpConfig) {
     return $http.myPost<LongObjectMapVOString>('/sys/file/getPublicUrl', form, config)
 }
 
@@ -64,7 +63,7 @@ export interface SysFileDO {
 }
 
 // 分页排序查询
-export function SysFilePage(form: SysFilePageDTO, config?: AxiosRequestConfig) {
+export function SysFilePage(form: SysFilePageDTO, config?: IHttpConfig) {
     return $http.myProPagePost<SysFileDO>('/sys/file/page', form, config)
 }
 
@@ -85,17 +84,17 @@ export interface SysFilePageSelfDTO {
 }
 
 // 分页排序查询-租户
-export function SysFilePageTenant(form: SysFilePageSelfDTO, config?: AxiosRequestConfig) {
+export function SysFilePageTenant(form: SysFilePageSelfDTO, config?: IHttpConfig) {
     return $http.myProPagePost<SysFileDO>('/sys/file/page/tenant', form, config)
 }
 
 // 分页排序查询-自我
-export function SysFilePageSelf(form: SysFilePageSelfDTO, config?: AxiosRequestConfig) {
+export function SysFilePageSelf(form: SysFilePageSelfDTO, config?: IHttpConfig) {
     return $http.myProPagePost<SysFileDO>('/sys/file/page/self', form, config)
 }
 
 // 批量删除文件：公有和私有
-export function SysFileRemoveByFileIdSet(form: NotEmptyIdSet, config?: AxiosRequestConfig) {
+export function SysFileRemoveByFileIdSet(form: NotEmptyIdSet, config?: IHttpConfig) {
     return $http.myPost<string>('/sys/file/removeByFileIdSet', form, config)
 }
 
@@ -104,6 +103,6 @@ export interface NotNullId {
 }
 
 // 下载文件：私有
-export function SysFilePrivateDownload(form: NotNullId, config?: AxiosRequestConfig) {
+export function SysFilePrivateDownload(form: NotNullId, config?: IHttpConfig) {
     return $http.myPost<void>('/sys/file/privateDownload', form, config)
 }

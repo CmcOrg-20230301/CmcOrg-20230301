@@ -1,7 +1,6 @@
 import {SortOrder} from "antd/es/table/interface";
 import MyOrderDTO from "@/model/dto/MyOrderDTO";
-import $http from "@/util/HttpUtil";
-import {AxiosRequestConfig} from "axios";
+import {$http, IHttpConfig} from "@/util/HttpUtil";
 
 export interface NotNullId {
     id?: string // 主键 id，required：true，format：int64
@@ -58,7 +57,7 @@ export interface SysUserInfoByIdVO {
 }
 
 // 通过主键id，查看详情
-export function SysUserInfoById(form: NotNullId, config?: AxiosRequestConfig) {
+export function SysUserInfoById(form: NotNullId, config?: IHttpConfig) {
     return $http.myProPost<SysUserInfoByIdVO>('/sys/user/infoById', form, config)
 }
 
@@ -67,7 +66,7 @@ export interface NotEmptyIdSet {
 }
 
 // 批量：冻结
-export function SysUserFreeze(form: NotEmptyIdSet, config?: AxiosRequestConfig) {
+export function SysUserFreeze(form: NotEmptyIdSet, config?: IHttpConfig) {
     return $http.myPost<string>('/sys/user/freeze', form, config)
 }
 
@@ -78,27 +77,27 @@ export interface SysUserUpdatePasswordDTO {
 }
 
 // 批量：修改密码
-export function SysUserUpdatePassword(form: SysUserUpdatePasswordDTO, config?: AxiosRequestConfig) {
+export function SysUserUpdatePassword(form: SysUserUpdatePasswordDTO, config?: IHttpConfig) {
     return $http.myPost<string>('/sys/user/updatePassword', form, config)
 }
 
 // 是否允许后台登录
-export function SysUserManageSignInFlag(config?: AxiosRequestConfig) {
+export function SysUserManageSignInFlag(config?: IHttpConfig) {
     return $http.myPost<boolean>('/sys/user/manageSignInFlag', undefined, config)
 }
 
 // 批量：注销用户
-export function SysUserDeleteByIdSet(form: NotEmptyIdSet, config?: AxiosRequestConfig) {
+export function SysUserDeleteByIdSet(form: NotEmptyIdSet, config?: IHttpConfig) {
     return $http.myPost<string>('/sys/user/deleteByIdSet', form, config)
 }
 
 // 刷新：用户jwt私钥后缀
-export function SysUserRefreshJwtSecretSuf(form: NotEmptyIdSet, config?: AxiosRequestConfig) {
+export function SysUserRefreshJwtSecretSuf(form: NotEmptyIdSet, config?: IHttpConfig) {
     return $http.myPost<string>('/sys/user/refreshJwtSecretSuf', form, config)
 }
 
 // 批量：解冻
-export function SysUserThaw(form: NotEmptyIdSet, config?: AxiosRequestConfig) {
+export function SysUserThaw(form: NotEmptyIdSet, config?: IHttpConfig) {
     return $http.myPost<string>('/sys/user/thaw', form, config)
 }
 
@@ -150,7 +149,7 @@ export interface SysUserPageVO {
 }
 
 // 分页排序查询
-export function SysUserPage(form: SysUserPageDTO, config?: AxiosRequestConfig) {
+export function SysUserPage(form: SysUserPageDTO, config?: IHttpConfig) {
     return $http.myProPagePost<SysUserPageVO>('/sys/user/page', form, config)
 }
 
@@ -165,12 +164,12 @@ export interface DictVO {
 }
 
 // 下拉列表
-export function SysUserDictList(form: SysUserDictListDTO, config?: AxiosRequestConfig) {
+export function SysUserDictList(form: SysUserDictListDTO, config?: IHttpConfig) {
     return $http.myProPagePost<DictVO>('/sys/user/dictList', form, config)
 }
 
 // 批量：重置头像
-export function SysUserResetAvatar(form: NotEmptyIdSet, config?: AxiosRequestConfig) {
+export function SysUserResetAvatar(form: NotEmptyIdSet, config?: IHttpConfig) {
     return $http.myPost<string>('/sys/user/resetAvatar', form, config)
 }
 
@@ -196,6 +195,6 @@ export interface SysUserInsertOrUpdateDTO {
 }
 
 // 新增/修改
-export function SysUserInsertOrUpdate(form: SysUserInsertOrUpdateDTO, config?: AxiosRequestConfig) {
+export function SysUserInsertOrUpdate(form: SysUserInsertOrUpdateDTO, config?: IHttpConfig) {
     return $http.myPost<string>('/sys/user/insertOrUpdate', form, config)
 }

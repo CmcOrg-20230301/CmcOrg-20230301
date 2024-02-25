@@ -1,5 +1,4 @@
-import $http from "@/util/HttpUtil";
-import {AxiosRequestConfig} from "axios";
+import {$http, IHttpConfig} from "@/util/HttpUtil";
 
 export interface SysPayGooglePaySuccessDTO {
     sysPayConfigurationId?: string // 支付配置主键 id，required：true，format：int64
@@ -8,7 +7,7 @@ export interface SysPayGooglePaySuccessDTO {
 }
 
 // 支付成功的回调，备注：由客户端调用
-export function SysPayGooglePaySuccess(form: SysPayGooglePaySuccessDTO, config?: AxiosRequestConfig) {
+export function SysPayGooglePaySuccess(form: SysPayGooglePaySuccessDTO, config?: IHttpConfig) {
     return $http.myPost<boolean>('/sys/payGoogle/paySuccess', form, config)
 }
 
@@ -18,6 +17,6 @@ export interface SysPayGooglePayConsumeDTO {
 }
 
 // 支付核销的回调，备注：由客户端调用
-export function SysPayGooglePayConsume(form: SysPayGooglePayConsumeDTO, config?: AxiosRequestConfig) {
+export function SysPayGooglePayConsume(form: SysPayGooglePayConsumeDTO, config?: IHttpConfig) {
     return $http.myPost<boolean>('/sys/payGoogle/payConsume', form, config)
 }

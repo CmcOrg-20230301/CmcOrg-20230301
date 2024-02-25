@@ -1,7 +1,6 @@
 import {SortOrder} from "antd/es/table/interface";
 import MyOrderDTO from "@/model/dto/MyOrderDTO";
-import $http from "@/util/HttpUtil";
-import {AxiosRequestConfig} from "axios";
+import {$http, IHttpConfig} from "@/util/HttpUtil";
 
 export interface SysOtherAppPageDTO {
     textReplyContent?: string // 用户发送文字之后，回复的内容
@@ -44,7 +43,7 @@ export interface SysOtherAppDO {
 }
 
 // 分页排序查询
-export function SysOtherAppPage(form: SysOtherAppPageDTO, config?: AxiosRequestConfig) {
+export function SysOtherAppPage(form: SysOtherAppPageDTO, config?: IHttpConfig) {
     return $http.myProPagePost<SysOtherAppDO>('/sys/otherApp/page', form, config)
 }
 
@@ -63,7 +62,7 @@ export interface SysOtherAppOfficialAccountMenuInsertOrUpdateDTO {
 }
 
 // 新增/修改
-export function SysOtherAppOfficialAccountMenuInsertOrUpdate(form: SysOtherAppOfficialAccountMenuInsertOrUpdateDTO, config?: AxiosRequestConfig) {
+export function SysOtherAppOfficialAccountMenuInsertOrUpdate(form: SysOtherAppOfficialAccountMenuInsertOrUpdateDTO, config?: IHttpConfig) {
     return $http.myPost<string>('/sys/otherApp/officialAccount/menu/insertOrUpdate', form, config)
 }
 
@@ -94,7 +93,7 @@ export interface SysOtherAppOfficialAccountMenuDO {
 }
 
 // 通过主键id，查看详情
-export function SysOtherAppOfficialAccountMenuInfoById(form: NotNullId, config?: AxiosRequestConfig) {
+export function SysOtherAppOfficialAccountMenuInfoById(form: NotNullId, config?: IHttpConfig) {
     return $http.myProPost<SysOtherAppOfficialAccountMenuDO>('/sys/otherApp/officialAccount/menu/infoById', form, config)
 }
 
@@ -104,12 +103,12 @@ export interface ChangeNumberDTO {
 }
 
 // 通过主键 idSet，加减排序号
-export function SysOtherAppOfficialAccountMenuAddOrderNo(form: ChangeNumberDTO, config?: AxiosRequestConfig) {
+export function SysOtherAppOfficialAccountMenuAddOrderNo(form: ChangeNumberDTO, config?: IHttpConfig) {
     return $http.myPost<string>('/sys/otherApp/officialAccount/menu/addOrderNo', form, config)
 }
 
 // 通过主键id，查看详情
-export function SysOtherAppInfoById(form: NotNullId, config?: AxiosRequestConfig) {
+export function SysOtherAppInfoById(form: NotNullId, config?: IHttpConfig) {
     return $http.myProPost<SysOtherAppDO>('/sys/otherApp/infoById', form, config)
 }
 
@@ -130,7 +129,7 @@ export interface SysOtherAppInsertOrUpdateDTO {
 }
 
 // 新增/修改
-export function SysOtherAppInsertOrUpdate(form: SysOtherAppInsertOrUpdateDTO, config?: AxiosRequestConfig) {
+export function SysOtherAppInsertOrUpdate(form: SysOtherAppInsertOrUpdateDTO, config?: IHttpConfig) {
     return $http.myPost<string>('/sys/otherApp/insertOrUpdate', form, config)
 }
 
@@ -151,17 +150,17 @@ export interface SysOtherAppOfficialAccountMenuPageDTO {
 }
 
 // 查询：树结构
-export function SysOtherAppOfficialAccountMenuTree(form: SysOtherAppOfficialAccountMenuPageDTO, config?: AxiosRequestConfig) {
+export function SysOtherAppOfficialAccountMenuTree(form: SysOtherAppOfficialAccountMenuPageDTO, config?: IHttpConfig) {
     return $http.myProTreePost<SysOtherAppOfficialAccountMenuDO>('/sys/otherApp/officialAccount/menu/tree', form, config)
 }
 
 // 分页排序查询
-export function SysOtherAppOfficialAccountMenuPage(form: SysOtherAppOfficialAccountMenuPageDTO, config?: AxiosRequestConfig) {
+export function SysOtherAppOfficialAccountMenuPage(form: SysOtherAppOfficialAccountMenuPageDTO, config?: IHttpConfig) {
     return $http.myProPagePost<SysOtherAppOfficialAccountMenuDO>('/sys/otherApp/officialAccount/menu/page', form, config)
 }
 
 // 通过主键id，获取第三方应用名
-export function SysOtherAppGetNameById(form: NotNullId, config?: AxiosRequestConfig) {
+export function SysOtherAppGetNameById(form: NotNullId, config?: IHttpConfig) {
     return $http.myPost<string>('/sys/otherApp/getNameById', form, config)
 }
 
@@ -170,11 +169,11 @@ export interface NotEmptyIdSet {
 }
 
 // 批量删除
-export function SysOtherAppDeleteByIdSet(form: NotEmptyIdSet, config?: AxiosRequestConfig) {
+export function SysOtherAppDeleteByIdSet(form: NotEmptyIdSet, config?: IHttpConfig) {
     return $http.myPost<string>('/sys/otherApp/deleteByIdSet', form, config)
 }
 
 // 批量删除
-export function SysOtherAppOfficialAccountMenuDeleteByIdSet(form: NotEmptyIdSet, config?: AxiosRequestConfig) {
+export function SysOtherAppOfficialAccountMenuDeleteByIdSet(form: NotEmptyIdSet, config?: IHttpConfig) {
     return $http.myPost<string>('/sys/otherApp/officialAccount/menu/deleteByIdSet', form, config)
 }

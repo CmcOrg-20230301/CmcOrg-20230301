@@ -1,7 +1,6 @@
 import {SortOrder} from "antd/es/table/interface";
 import MyOrderDTO from "@/model/dto/MyOrderDTO";
-import $http from "@/util/HttpUtil";
-import {AxiosRequestConfig} from "axios";
+import {$http, IHttpConfig} from "@/util/HttpUtil";
 
 export interface SysSmsConfigurationInsertOrUpdateDTO {
     sendCommon?: string // 发送：通用短信
@@ -33,7 +32,7 @@ export interface SysSmsConfigurationInsertOrUpdateDTO {
 }
 
 // 新增/修改
-export function SysSmsConfigurationInsertOrUpdate(form: SysSmsConfigurationInsertOrUpdateDTO, config?: AxiosRequestConfig) {
+export function SysSmsConfigurationInsertOrUpdate(form: SysSmsConfigurationInsertOrUpdateDTO, config?: IHttpConfig) {
     return $http.myPost<string>('/sys/smsConfiguration/insertOrUpdate', form, config)
 }
 
@@ -78,7 +77,7 @@ export interface SysSmsConfigurationDO {
 }
 
 // 通过主键id，查看详情
-export function SysSmsConfigurationInfoById(form: NotNullId, config?: AxiosRequestConfig) {
+export function SysSmsConfigurationInfoById(form: NotNullId, config?: IHttpConfig) {
     return $http.myProPost<SysSmsConfigurationDO>('/sys/smsConfiguration/infoById', form, config)
 }
 
@@ -87,7 +86,7 @@ export interface NotEmptyIdSet {
 }
 
 // 批量删除
-export function SysSmsConfigurationDeleteByIdSet(form: NotEmptyIdSet, config?: AxiosRequestConfig) {
+export function SysSmsConfigurationDeleteByIdSet(form: NotEmptyIdSet, config?: IHttpConfig) {
     return $http.myPost<string>('/sys/smsConfiguration/deleteByIdSet', form, config)
 }
 
@@ -105,6 +104,6 @@ export interface SysSmsConfigurationPageDTO {
 }
 
 // 分页排序查询
-export function SysSmsConfigurationPage(form: SysSmsConfigurationPageDTO, config?: AxiosRequestConfig) {
+export function SysSmsConfigurationPage(form: SysSmsConfigurationPageDTO, config?: IHttpConfig) {
     return $http.myProPagePost<SysSmsConfigurationDO>('/sys/smsConfiguration/page', form, config)
 }

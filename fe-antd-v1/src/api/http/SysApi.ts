@@ -1,14 +1,13 @@
 import {SortOrder} from "antd/es/table/interface";
 import MyOrderDTO from "@/model/dto/MyOrderDTO";
-import $http from "@/util/HttpUtil";
-import {AxiosRequestConfig} from "axios";
+import {$http, IHttpConfig} from "@/util/HttpUtil";
 
 export interface NotEmptyIdSet {
     idSet?: string[] // 主键 idSet，required：true，format：int64
 }
 
 // 批量删除
-export function SysApiTokenDeleteByIdSet(form: NotEmptyIdSet, config?: AxiosRequestConfig) {
+export function SysApiTokenDeleteByIdSet(form: NotEmptyIdSet, config?: IHttpConfig) {
     return $http.myPost<string>('/sys/api/token/deleteByIdSet', form, config)
 }
 
@@ -27,7 +26,7 @@ export interface SysApiTokenDO {
 }
 
 // 通过主键id，查看详情
-export function SysApiTokenInfoById(form: NotNullId, config?: AxiosRequestConfig) {
+export function SysApiTokenInfoById(form: NotNullId, config?: IHttpConfig) {
     return $http.myProPost<SysApiTokenDO>('/sys/api/token/infoById', form, config)
 }
 
@@ -41,7 +40,7 @@ export interface SysApiTokenPageDTO {
 }
 
 // 分页排序查询
-export function SysApiTokenPage(form: SysApiTokenPageDTO, config?: AxiosRequestConfig) {
+export function SysApiTokenPage(form: SysApiTokenPageDTO, config?: IHttpConfig) {
     return $http.myProPagePost<SysApiTokenDO>('/sys/api/token/page', form, config)
 }
 
@@ -52,6 +51,6 @@ export interface SysApiTokenInsertOrUpdateDTO {
 }
 
 // 新增/修改
-export function SysApiTokenInsertOrUpdate(form: SysApiTokenInsertOrUpdateDTO, config?: AxiosRequestConfig) {
+export function SysApiTokenInsertOrUpdate(form: SysApiTokenInsertOrUpdateDTO, config?: IHttpConfig) {
     return $http.myPost<string>('/sys/api/token/insertOrUpdate', form, config)
 }

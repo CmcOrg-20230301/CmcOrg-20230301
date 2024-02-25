@@ -1,8 +1,8 @@
 import {ProSchemaValueEnumType, RequestData} from "@ant-design/pro-components";
 import {ListToTree} from "./TreeUtil";
 import MyPageDTO from "@/model/dto/MyPageDTO";
-import {AxiosRequestConfig} from "axios";
 import {SysDictListByDictKey} from "@/api/http/SysDict";
+import {IHttpConfig} from "@/util/HttpUtil.ts";
 
 // 将 map转换为 下拉选 list
 export function NumberTextMapToSelectList(map: Map<string, { text: string }>) {
@@ -132,7 +132,7 @@ interface IDictResult {
 }
 
 // 通用的，获取字典集合，没有加查询条件的请求，可以调用这个方法
-export function GetDictList<T extends IDictResult>(requestFunction: (form: MyPageDTO | any, config?: AxiosRequestConfig) => Promise<RequestData<T>>, labelKey: string = "name", valueKey: string = "id") {
+export function GetDictList<T extends IDictResult>(requestFunction: (form: MyPageDTO | any, config?: IHttpConfig) => Promise<RequestData<T>>, labelKey: string = "name", valueKey: string = "id") {
 
     return DoGetDictList(requestFunction({pageSize: '-1'}), labelKey, valueKey)
 
@@ -191,14 +191,14 @@ interface IDictTreeResult {
 }
 
 // 通用的，获取字典树集合
-export function GetDictTreeList<T extends IDictTreeResult>(requestFunction: (form: MyPageDTO, config?: AxiosRequestConfig) => Promise<RequestData<T>>, toTreeFlag: boolean = true, pid: string | number = '0') {
+export function GetDictTreeList<T extends IDictTreeResult>(requestFunction: (form: MyPageDTO, config?: IHttpConfig) => Promise<RequestData<T>>, toTreeFlag: boolean = true, pid: string | number = '0') {
 
     return DoGetDictTreeList(requestFunction({pageSize: '-1'}), toTreeFlag, pid)
 
 }
 
 // 通用的，获取字典树集合
-export function NoFormGetDictTreeList<T extends IDictTreeResult>(requestFunction: (config?: AxiosRequestConfig) => Promise<RequestData<T>>, toTreeFlag: boolean = true, pid: string | number = '0') {
+export function NoFormGetDictTreeList<T extends IDictTreeResult>(requestFunction: (config?: IHttpConfig) => Promise<RequestData<T>>, toTreeFlag: boolean = true, pid: string | number = '0') {
 
     return DoGetDictTreeList(requestFunction(), toTreeFlag, pid)
 

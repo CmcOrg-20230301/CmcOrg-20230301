@@ -1,5 +1,4 @@
-import $http from "@/util/HttpUtil";
-import {AxiosRequestConfig} from "axios";
+import {$http, IHttpConfig} from "@/util/HttpUtil";
 
 export interface SignInBrowserCodeDTO {
     code?: string // 第三方应用 code，required：true
@@ -14,6 +13,6 @@ export interface SignInVO {
 }
 
 // 浏览器：企业微信 code登录
-export function SignWxWorkSignInBrowserCode(form: SignInBrowserCodeDTO, config?: AxiosRequestConfig) {
+export function SignWxWorkSignInBrowserCode(form: SignInBrowserCodeDTO, config?: IHttpConfig) {
     return $http.myPost<SignInVO>('/sign/wxWork/sign/in/browser/code', form, config)
 }

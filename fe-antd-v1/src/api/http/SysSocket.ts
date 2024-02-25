@@ -1,19 +1,18 @@
 import {SortOrder} from "antd/es/table/interface";
 import MyOrderDTO from "@/model/dto/MyOrderDTO";
-import $http from "@/util/HttpUtil";
-import {AxiosRequestConfig} from "axios";
+import {$http, IHttpConfig} from "@/util/HttpUtil";
 
 export interface NotEmptyIdSet {
     idSet?: string[] // 主键 idSet，required：true，format：int64
 }
 
 // 批量：启用socket
-export function SysSocketEnableByIdSet(form: NotEmptyIdSet, config?: AxiosRequestConfig) {
+export function SysSocketEnableByIdSet(form: NotEmptyIdSet, config?: IHttpConfig) {
     return $http.myPost<string>('/sys/socket/enableByIdSet', form, config)
 }
 
 // 批量：禁用socket
-export function SysSocketDisableByIdSet(form: NotEmptyIdSet, config?: AxiosRequestConfig) {
+export function SysSocketDisableByIdSet(form: NotEmptyIdSet, config?: IHttpConfig) {
     return $http.myPost<string>('/sys/socket/disableByIdSet', form, config)
 }
 
@@ -51,6 +50,6 @@ export interface SysSocketDO {
 }
 
 // 分页排序查询
-export function SysSocketPage(form: SysSocketPageDTO, config?: AxiosRequestConfig) {
+export function SysSocketPage(form: SysSocketPageDTO, config?: IHttpConfig) {
     return $http.myProPagePost<SysSocketDO>('/sys/socket/page', form, config)
 }

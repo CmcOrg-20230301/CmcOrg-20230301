@@ -6,8 +6,7 @@ import {MyUseState} from "@/util/HookUtil.ts";
 import {GetQrCodeVO} from "@/api/http/SignSignInName.ts";
 import {GetServerTimestamp} from "@/util/DateUtil.ts";
 import {ToastError, ToastSuccess} from "@/util/ToastUtil.ts";
-import {AxiosRequestConfig} from "axios";
-import {ApiResultVO} from "@/util/HttpUtil.ts";
+import {ApiResultVO, IHttpConfig} from "@/util/HttpUtil.ts";
 import {NotNullId, SysQrCodeSceneBindVO} from "@/api/http/SignWx.ts";
 import {ModalForm, ProFormInstance} from "@ant-design/pro-components";
 import {SignOut} from "@/util/UserUtil.ts";
@@ -15,13 +14,13 @@ import {SignOut} from "@/util/UserUtil.ts";
 export interface ISetWxModalForm {
 
     // 获取：二维码
-    setWxGetQrCodeUrl: (config?: AxiosRequestConfig<any> | undefined) => Promise<ApiResultVO<GetQrCodeVO>>
+    setWxGetQrCodeUrl: (config?: IHttpConfig<any> | undefined) => Promise<ApiResultVO<GetQrCodeVO>>
 
     // 获取：二维码是否扫描
-    setWxGetQrCodeSceneFlag: (form: NotNullId, config?: AxiosRequestConfig<any> | undefined) => Promise<ApiResultVO<SysQrCodeSceneBindVO>>
+    setWxGetQrCodeSceneFlag: (form: NotNullId, config?: IHttpConfig<any> | undefined) => Promise<ApiResultVO<SysQrCodeSceneBindVO>>
 
     // 绑定微信
-    setWx: (form: any, config?: AxiosRequestConfig<any> | undefined) => Promise<ApiResultVO<SysQrCodeSceneBindVO>>
+    setWx: (form: any, config?: IHttpConfig<any> | undefined) => Promise<ApiResultVO<SysQrCodeSceneBindVO>>
 
     // 表单数组
     formItemArr?: (formRef: React.MutableRefObject<ProFormInstance | undefined>) => JSX.Element[]

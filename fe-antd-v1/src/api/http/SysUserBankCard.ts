@@ -1,7 +1,6 @@
 import {SortOrder} from "antd/es/table/interface";
 import MyOrderDTO from "@/model/dto/MyOrderDTO";
-import $http from "@/util/HttpUtil";
-import {AxiosRequestConfig} from "axios";
+import {$http, IHttpConfig} from "@/util/HttpUtil";
 
 export interface DictStringVO {
     name?: string // 显示用
@@ -9,7 +8,7 @@ export interface DictStringVO {
 }
 
 // 下拉列表-开户行名称
-export function SysUserBankCardDictListOpenBankName(config?: AxiosRequestConfig) {
+export function SysUserBankCardDictListOpenBankName(config?: IHttpConfig) {
     return $http.myProPagePost<DictStringVO>('/sys/userBankCard/dictList/openBankName', undefined, config)
 }
 
@@ -38,12 +37,12 @@ export interface SysUserBankCardDO {
 }
 
 // 通过主键id，查看详情
-export function SysUserBankCardInfoById(form: NotNullLong, config?: AxiosRequestConfig) {
+export function SysUserBankCardInfoById(form: NotNullLong, config?: IHttpConfig) {
     return $http.myProPost<SysUserBankCardDO>('/sys/userBankCard/infoById', form, config)
 }
 
 // 通过主键id，查看详情-用户
-export function SysUserBankCardInfoByIdUserSelf(config?: AxiosRequestConfig) {
+export function SysUserBankCardInfoByIdUserSelf(config?: IHttpConfig) {
     return $http.myProPost<SysUserBankCardDO>('/sys/userBankCard/infoById/userSelf', undefined, config)
 }
 
@@ -56,7 +55,7 @@ export interface SysUserBankCardInsertOrUpdateUserSelfDTO {
 }
 
 // 新增/修改-用户
-export function SysUserBankCardInsertOrUpdateUserSelf(form: SysUserBankCardInsertOrUpdateUserSelfDTO, config?: AxiosRequestConfig) {
+export function SysUserBankCardInsertOrUpdateUserSelf(form: SysUserBankCardInsertOrUpdateUserSelfDTO, config?: IHttpConfig) {
     return $http.myPost<string>('/sys/userBankCard/insertOrUpdate/userSelf', form, config)
 }
 
@@ -74,7 +73,7 @@ export interface SysUserBankCardPageDTO {
 }
 
 // 分页排序查询
-export function SysUserBankCardPage(form: SysUserBankCardPageDTO, config?: AxiosRequestConfig) {
+export function SysUserBankCardPage(form: SysUserBankCardPageDTO, config?: IHttpConfig) {
     return $http.myProPagePost<SysUserBankCardDO>('/sys/userBankCard/page', form, config)
 }
 
@@ -88,6 +87,6 @@ export interface SysUserBankCardInsertOrUpdateDTO {
 }
 
 // 新增/修改
-export function SysUserBankCardInsertOrUpdate(form: SysUserBankCardInsertOrUpdateDTO, config?: AxiosRequestConfig) {
+export function SysUserBankCardInsertOrUpdate(form: SysUserBankCardInsertOrUpdateDTO, config?: IHttpConfig) {
     return $http.myPost<string>('/sys/userBankCard/insertOrUpdate', form, config)
 }

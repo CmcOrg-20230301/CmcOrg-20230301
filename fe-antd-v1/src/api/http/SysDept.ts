@@ -1,7 +1,6 @@
 import {SortOrder} from "antd/es/table/interface";
 import MyOrderDTO from "@/model/dto/MyOrderDTO";
-import $http from "@/util/HttpUtil";
-import {AxiosRequestConfig} from "axios";
+import {$http, IHttpConfig} from "@/util/HttpUtil";
 
 export interface SysDeptInsertOrUpdateDTO {
     orderNo?: number // 排序号（值越大越前面，默认为 0），format：int32
@@ -16,7 +15,7 @@ export interface SysDeptInsertOrUpdateDTO {
 }
 
 // 新增/修改
-export function SysDeptInsertOrUpdate(form: SysDeptInsertOrUpdateDTO, config?: AxiosRequestConfig) {
+export function SysDeptInsertOrUpdate(form: SysDeptInsertOrUpdateDTO, config?: IHttpConfig) {
     return $http.myPost<string>('/sys/dept/insertOrUpdate', form, config)
 }
 
@@ -49,7 +48,7 @@ export interface SysDeptDO {
 }
 
 // 分页排序查询
-export function SysDeptPage(form: SysDeptPageDTO, config?: AxiosRequestConfig) {
+export function SysDeptPage(form: SysDeptPageDTO, config?: IHttpConfig) {
     return $http.myProPagePost<SysDeptDO>('/sys/dept/page', form, config)
 }
 
@@ -58,12 +57,12 @@ export interface NotNullId {
 }
 
 // 通过主键id，查看详情
-export function SysDeptInfoById(form: NotNullId, config?: AxiosRequestConfig) {
+export function SysDeptInfoById(form: NotNullId, config?: IHttpConfig) {
     return $http.myProPost<SysDeptDO>('/sys/dept/infoById', form, config)
 }
 
 // 查询：树结构
-export function SysDeptTree(form: SysDeptPageDTO, config?: AxiosRequestConfig) {
+export function SysDeptTree(form: SysDeptPageDTO, config?: IHttpConfig) {
     return $http.myProTreePost<SysDeptDO>('/sys/dept/tree', form, config)
 }
 
@@ -72,7 +71,7 @@ export interface NotEmptyIdSet {
 }
 
 // 批量删除
-export function SysDeptDeleteByIdSet(form: NotEmptyIdSet, config?: AxiosRequestConfig) {
+export function SysDeptDeleteByIdSet(form: NotEmptyIdSet, config?: IHttpConfig) {
     return $http.myPost<string>('/sys/dept/deleteByIdSet', form, config)
 }
 
@@ -82,6 +81,6 @@ export interface ChangeNumberDTO {
 }
 
 // 通过主键 idSet，加减排序号
-export function SysDeptAddOrderNo(form: ChangeNumberDTO, config?: AxiosRequestConfig) {
+export function SysDeptAddOrderNo(form: ChangeNumberDTO, config?: IHttpConfig) {
     return $http.myPost<string>('/sys/dept/addOrderNo', form, config)
 }

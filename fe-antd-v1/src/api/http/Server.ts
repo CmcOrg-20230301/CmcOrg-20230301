@@ -1,5 +1,4 @@
-import $http from "@/util/HttpUtil";
-import {AxiosRequestConfig} from "axios";
+import {$http, IHttpConfig} from "@/util/HttpUtil.ts";
 
 export interface ServerWorkInfoVO {
     diskAvailable?: string // 磁盘可以使用总量（字节），format：int64
@@ -16,6 +15,6 @@ export interface ServerWorkInfoVO {
 }
 
 // 服务器运行情况
-export function ServerWorkInfo(config?: AxiosRequestConfig) {
+export function ServerWorkInfo(config?: IHttpConfig) {
     return $http.myPost<ServerWorkInfoVO>('/server/workInfo', undefined, config)
 }

@@ -1,7 +1,6 @@
-import $http from "@/util/HttpUtil";
-import {AxiosRequestConfig} from "axios";
+import {$http, IHttpConfig} from "@/util/HttpUtil";
 
 // 当前用户-退出登录
-export function SignOutSelf(config?: AxiosRequestConfig) {
+export function SignOutSelf(config?: IHttpConfig) {
     return $http.myPost<string>('/sign/out/self', undefined, config)
 }

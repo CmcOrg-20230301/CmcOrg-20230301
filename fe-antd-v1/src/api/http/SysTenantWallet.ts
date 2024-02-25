@@ -1,14 +1,13 @@
 import {SortOrder} from "antd/es/table/interface";
 import MyOrderDTO from "@/model/dto/MyOrderDTO";
-import $http from "@/util/HttpUtil";
-import {AxiosRequestConfig} from "axios";
+import {$http, IHttpConfig} from "@/util/HttpUtil";
 
 export interface NotEmptyIdSet {
     idSet?: string[] // 主键 idSet，required：true，format：int64
 }
 
 // 批量冻结
-export function SysTenantWalletFrozenByIdSet(form: NotEmptyIdSet, config?: AxiosRequestConfig) {
+export function SysTenantWalletFrozenByIdSet(form: NotEmptyIdSet, config?: IHttpConfig) {
     return $http.myPost<string>('/sys/tenantWallet/frozenByIdSet', form, config)
 }
 
@@ -18,7 +17,7 @@ export interface ChangeBigDecimalNumberIdSetDTO {
 }
 
 // 通过租户主键 idSet，加减可提现的钱
-export function SysTenantWalletAddWithdrawableMoneyBackground(form: ChangeBigDecimalNumberIdSetDTO, config?: AxiosRequestConfig) {
+export function SysTenantWalletAddWithdrawableMoneyBackground(form: ChangeBigDecimalNumberIdSetDTO, config?: IHttpConfig) {
     return $http.myPost<string>('/sys/tenantWallet/addWithdrawableMoney/background', form, config)
 }
 
@@ -47,7 +46,7 @@ export interface SysUserWalletDO {
 }
 
 // 通过租户主键id，查看详情
-export function SysTenantWalletInfoById(form: NotNullLong, config?: AxiosRequestConfig) {
+export function SysTenantWalletInfoById(form: NotNullLong, config?: IHttpConfig) {
     return $http.myProPost<SysUserWalletDO>('/sys/tenantWallet/infoById', form, config)
 }
 
@@ -66,16 +65,16 @@ export interface SysUserWalletPageDTO {
 }
 
 // 分页排序查询
-export function SysTenantWalletPage(form: SysUserWalletPageDTO, config?: AxiosRequestConfig) {
+export function SysTenantWalletPage(form: SysUserWalletPageDTO, config?: IHttpConfig) {
     return $http.myProPagePost<SysUserWalletDO>('/sys/tenantWallet/page', form, config)
 }
 
 // 批量解冻
-export function SysTenantWalletThawByIdSet(form: NotEmptyIdSet, config?: AxiosRequestConfig) {
+export function SysTenantWalletThawByIdSet(form: NotEmptyIdSet, config?: IHttpConfig) {
     return $http.myPost<string>('/sys/tenantWallet/thawByIdSet', form, config)
 }
 
 // 查询：树结构
-export function SysTenantWalletTree(form: SysUserWalletPageDTO, config?: AxiosRequestConfig) {
+export function SysTenantWalletTree(form: SysUserWalletPageDTO, config?: IHttpConfig) {
     return $http.myProTreePost<SysUserWalletDO>('/sys/tenantWallet/tree', form, config)
 }

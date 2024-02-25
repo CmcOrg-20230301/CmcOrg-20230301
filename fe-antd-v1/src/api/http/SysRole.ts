@@ -1,7 +1,6 @@
 import {SortOrder} from "antd/es/table/interface";
 import MyOrderDTO from "@/model/dto/MyOrderDTO";
-import $http from "@/util/HttpUtil";
-import {AxiosRequestConfig} from "axios";
+import {$http, IHttpConfig} from "@/util/HttpUtil";
 
 export interface SysRoleInsertOrUpdateDTO {
     userIdSet?: string[] // 用户 idSet，format：int64
@@ -15,7 +14,7 @@ export interface SysRoleInsertOrUpdateDTO {
 }
 
 // 新增/修改
-export function SysRoleInsertOrUpdate(form: SysRoleInsertOrUpdateDTO, config?: AxiosRequestConfig) {
+export function SysRoleInsertOrUpdate(form: SysRoleInsertOrUpdateDTO, config?: IHttpConfig) {
     return $http.myPost<string>('/sys/role/insertOrUpdate', form, config)
 }
 
@@ -41,7 +40,7 @@ export interface SysRoleInfoByIdVO {
 }
 
 // 通过主键id，查看详情
-export function SysRoleInfoById(form: NotNullId, config?: AxiosRequestConfig) {
+export function SysRoleInfoById(form: NotNullId, config?: IHttpConfig) {
     return $http.myProPost<SysRoleInfoByIdVO>('/sys/role/infoById', form, config)
 }
 
@@ -73,7 +72,7 @@ export interface SysRoleDO {
 }
 
 // 分页排序查询
-export function SysRolePage(form: SysRolePageDTO, config?: AxiosRequestConfig) {
+export function SysRolePage(form: SysRolePageDTO, config?: IHttpConfig) {
     return $http.myProPagePost<SysRoleDO>('/sys/role/page', form, config)
 }
 
@@ -82,6 +81,6 @@ export interface NotEmptyIdSet {
 }
 
 // 批量删除
-export function SysRoleDeleteByIdSet(form: NotEmptyIdSet, config?: AxiosRequestConfig) {
+export function SysRoleDeleteByIdSet(form: NotEmptyIdSet, config?: IHttpConfig) {
     return $http.myPost<string>('/sys/role/deleteByIdSet', form, config)
 }

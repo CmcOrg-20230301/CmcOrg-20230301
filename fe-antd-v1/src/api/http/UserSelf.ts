@@ -1,5 +1,4 @@
-import $http from "@/util/HttpUtil";
-import {AxiosRequestConfig} from "axios";
+import {$http, IHttpConfig} from "@/util/HttpUtil";
 
 export interface UserSelfUpdateInfoDTO {
     nickname?: string // 昵称，正则表达式：^[\u4E00-\u9FA5A-Za-z0-9_-]{1,20}$
@@ -7,12 +6,12 @@ export interface UserSelfUpdateInfoDTO {
 }
 
 // 当前用户：基本信息：修改
-export function UserSelfUpdateInfo(form: UserSelfUpdateInfoDTO, config?: AxiosRequestConfig) {
+export function UserSelfUpdateInfo(form: UserSelfUpdateInfoDTO, config?: IHttpConfig) {
     return $http.myPost<string>('/user/self/updateInfo', form, config)
 }
 
 // 当前用户：重置头像
-export function UserSelfResetAvatar(config?: AxiosRequestConfig) {
+export function UserSelfResetAvatar(config?: IHttpConfig) {
     return $http.myPost<string>('/user/self/resetAvatar', undefined, config)
 }
 
@@ -34,11 +33,11 @@ export interface UserSelfInfoVO {
 }
 
 // 获取：当前用户，基本信息
-export function UserSelfInfo(config?: AxiosRequestConfig) {
+export function UserSelfInfo(config?: IHttpConfig) {
     return $http.myPost<UserSelfInfoVO>('/user/self/info', undefined, config)
 }
 
 // 当前用户：刷新jwt私钥后缀
-export function UserSelfRefreshJwtSecretSuf(config?: AxiosRequestConfig) {
+export function UserSelfRefreshJwtSecretSuf(config?: IHttpConfig) {
     return $http.myPost<string>('/user/self/refreshJwtSecretSuf', undefined, config)
 }

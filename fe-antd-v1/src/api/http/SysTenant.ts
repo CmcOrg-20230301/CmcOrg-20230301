@@ -1,7 +1,6 @@
 import {SortOrder} from "antd/es/table/interface";
 import MyOrderDTO from "@/model/dto/MyOrderDTO";
-import $http from "@/util/HttpUtil";
-import {AxiosRequestConfig} from "axios";
+import {$http, IHttpConfig} from "@/util/HttpUtil";
 
 export interface SysTenantInsertOrUpdateDTO {
     orderNo?: number // 排序号（值越大越前面，默认为 0），format：int32
@@ -17,7 +16,7 @@ export interface SysTenantInsertOrUpdateDTO {
 }
 
 // 新增/修改
-export function SysTenantInsertOrUpdate(form: SysTenantInsertOrUpdateDTO, config?: AxiosRequestConfig) {
+export function SysTenantInsertOrUpdate(form: SysTenantInsertOrUpdateDTO, config?: IHttpConfig) {
     return $http.myPost<string>('/sys/tenant/insertOrUpdate', form, config)
 }
 
@@ -28,7 +27,7 @@ export interface DictTreeVO {
 }
 
 // 下拉列表
-export function SysTenantDictList(config?: AxiosRequestConfig) {
+export function SysTenantDictList(config?: IHttpConfig) {
     return $http.myProPagePost<DictTreeVO>('/sys/tenant/dictList', undefined, config)
 }
 
@@ -37,7 +36,7 @@ export interface NotEmptyIdSet {
 }
 
 // 批量删除
-export function SysTenantDeleteByIdSet(form: NotEmptyIdSet, config?: AxiosRequestConfig) {
+export function SysTenantDeleteByIdSet(form: NotEmptyIdSet, config?: IHttpConfig) {
     return $http.myPost<string>('/sys/tenant/deleteByIdSet', form, config)
 }
 
@@ -77,7 +76,7 @@ export interface SysTenantDO {
 }
 
 // 分页排序查询
-export function SysTenantPage(form: SysTenantPageDTO, config?: AxiosRequestConfig) {
+export function SysTenantPage(form: SysTenantPageDTO, config?: IHttpConfig) {
     return $http.myProPagePost<SysTenantDO>('/sys/tenant/page', form, config)
 }
 
@@ -86,7 +85,7 @@ export interface NotNullLong {
 }
 
 // 通过主键id，获取租户名
-export function SysTenantGetNameById(form: NotNullLong, config?: AxiosRequestConfig) {
+export function SysTenantGetNameById(form: NotNullLong, config?: IHttpConfig) {
     return $http.myPost<string>('/sys/tenant/getNameById', form, config)
 }
 
@@ -104,27 +103,27 @@ export interface SysSignConfigurationVO {
 }
 
 // 通过主键id，获取租户相关的配置
-export function SysTenantGetConfigurationById(form: NotNullLong, config?: AxiosRequestConfig) {
+export function SysTenantGetConfigurationById(form: NotNullLong, config?: IHttpConfig) {
     return $http.myPost<SysSignConfigurationVO>('/sys/tenant/getConfigurationById', form, config)
 }
 
 // 通过主键id，获取租户后台管理系统名
-export function SysTenantGetManageNameById(form: NotNullLong, config?: AxiosRequestConfig) {
+export function SysTenantGetManageNameById(form: NotNullLong, config?: IHttpConfig) {
     return $http.myPost<string>('/sys/tenant/getManageNameById', form, config)
 }
 
 // 删除租户所有菜单
-export function SysTenantDeleteTenantAllMenu(form: NotEmptyIdSet, config?: AxiosRequestConfig) {
+export function SysTenantDeleteTenantAllMenu(form: NotEmptyIdSet, config?: IHttpConfig) {
     return $http.myPost<string>('/sys/tenant/deleteTenantAllMenu', form, config)
 }
 
 // 批量：冻结
-export function SysTenantFreeze(form: NotEmptyIdSet, config?: AxiosRequestConfig) {
+export function SysTenantFreeze(form: NotEmptyIdSet, config?: IHttpConfig) {
     return $http.myPost<string>('/sys/tenant/freeze', form, config)
 }
 
 // 查询：树结构
-export function SysTenantTree(form: SysTenantPageDTO, config?: AxiosRequestConfig) {
+export function SysTenantTree(form: SysTenantPageDTO, config?: IHttpConfig) {
     return $http.myProTreePost<SysTenantDO>('/sys/tenant/tree', form, config)
 }
 
@@ -134,7 +133,7 @@ export interface NotNullIdAndNotEmptyLongSet {
 }
 
 // 执行：同步菜单给租户
-export function SysTenantDoSyncMenu(form: NotNullIdAndNotEmptyLongSet, config?: AxiosRequestConfig) {
+export function SysTenantDoSyncMenu(form: NotNullIdAndNotEmptyLongSet, config?: IHttpConfig) {
     return $http.myPost<string>('/sys/tenant/doSyncMenu', form, config)
 }
 
@@ -167,17 +166,17 @@ export interface SysTenantInfoByIdVO {
 }
 
 // 通过主键id，查看详情
-export function SysTenantInfoById(form: NotNullId, config?: AxiosRequestConfig) {
+export function SysTenantInfoById(form: NotNullId, config?: IHttpConfig) {
     return $http.myProPost<SysTenantInfoByIdVO>('/sys/tenant/infoById', form, config)
 }
 
 // 批量：解冻
-export function SysTenantThaw(form: NotEmptyIdSet, config?: AxiosRequestConfig) {
+export function SysTenantThaw(form: NotEmptyIdSet, config?: IHttpConfig) {
     return $http.myPost<string>('/sys/tenant/thaw', form, config)
 }
 
 // 执行：同步字典给租户
-export function SysTenantDoSyncDict(config?: AxiosRequestConfig) {
+export function SysTenantDoSyncDict(config?: IHttpConfig) {
     return $http.myPost<string>('/sys/tenant/doSyncDict', undefined, config)
 }
 
@@ -210,12 +209,12 @@ export interface SysMenuDO {
 }
 
 // 获取：需要同步给租户的菜单
-export function SysTenantGetSyncMenuInfo(form: NotNullId, config?: AxiosRequestConfig) {
+export function SysTenantGetSyncMenuInfo(form: NotNullId, config?: IHttpConfig) {
     return $http.myPost<SysMenuDO[]>('/sys/tenant/getSyncMenuInfo', form, config)
 }
 
 // 执行：同步参数给租户
-export function SysTenantDoSyncParam(config?: AxiosRequestConfig) {
+export function SysTenantDoSyncParam(config?: IHttpConfig) {
     return $http.myPost<string>('/sys/tenant/doSyncParam', undefined, config)
 }
 
@@ -225,6 +224,6 @@ export interface ChangeNumberDTO {
 }
 
 // 通过主键 idSet，加减排序号
-export function SysTenantAddOrderNo(form: ChangeNumberDTO, config?: AxiosRequestConfig) {
+export function SysTenantAddOrderNo(form: ChangeNumberDTO, config?: IHttpConfig) {
     return $http.myPost<string>('/sys/tenant/addOrderNo', form, config)
 }

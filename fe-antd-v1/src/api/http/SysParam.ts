@@ -1,7 +1,6 @@
 import {SortOrder} from "antd/es/table/interface";
 import MyOrderDTO from "@/model/dto/MyOrderDTO";
-import $http from "@/util/HttpUtil";
-import {AxiosRequestConfig} from "axios";
+import {$http, IHttpConfig} from "@/util/HttpUtil";
 
 export interface NotNullId {
     id?: string // 主键 id，required：true，format：int64
@@ -25,7 +24,7 @@ export interface SysParamDO {
 }
 
 // 通过主键id，查看详情
-export function SysParamInfoById(form: NotNullId, config?: AxiosRequestConfig) {
+export function SysParamInfoById(form: NotNullId, config?: IHttpConfig) {
     return $http.myProPost<SysParamDO>('/sys/param/infoById', form, config)
 }
 
@@ -40,7 +39,7 @@ export interface SysParamInsertOrUpdateDTO {
 }
 
 // 新增/修改
-export function SysParamInsertOrUpdate(form: SysParamInsertOrUpdateDTO, config?: AxiosRequestConfig) {
+export function SysParamInsertOrUpdate(form: SysParamInsertOrUpdateDTO, config?: IHttpConfig) {
     return $http.myPost<string>('/sys/param/insertOrUpdate', form, config)
 }
 
@@ -49,7 +48,7 @@ export interface NotEmptyIdSet {
 }
 
 // 批量删除
-export function SysParamDeleteByIdSet(form: NotEmptyIdSet, config?: AxiosRequestConfig) {
+export function SysParamDeleteByIdSet(form: NotEmptyIdSet, config?: IHttpConfig) {
     return $http.myPost<string>('/sys/param/deleteByIdSet', form, config)
 }
 
@@ -65,6 +64,6 @@ export interface SysParamPageDTO {
 }
 
 // 分页排序查询
-export function SysParamPage(form: SysParamPageDTO, config?: AxiosRequestConfig) {
+export function SysParamPage(form: SysParamPageDTO, config?: IHttpConfig) {
     return $http.myProPagePost<SysParamDO>('/sys/param/page', form, config)
 }

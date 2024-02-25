@@ -1,7 +1,6 @@
 import {SortOrder} from "antd/es/table/interface";
 import MyOrderDTO from "@/model/dto/MyOrderDTO";
-import $http from "@/util/HttpUtil";
-import {AxiosRequestConfig} from "axios";
+import {$http, IHttpConfig} from "@/util/HttpUtil";
 
 export interface NotNullLong {
     value?: string // 值，required：true，format：int64
@@ -28,7 +27,7 @@ export interface SysUserBankCardDO {
 }
 
 // 通过租户主键id，查看详情
-export function SysTenantBankCardInfoById(form: NotNullLong, config?: AxiosRequestConfig) {
+export function SysTenantBankCardInfoById(form: NotNullLong, config?: IHttpConfig) {
     return $http.myProPost<SysUserBankCardDO>('/sys/tenantBankCard/infoById', form, config)
 }
 
@@ -46,12 +45,12 @@ export interface SysUserBankCardPageDTO {
 }
 
 // 查询：树结构
-export function SysTenantBankCardTree(form: SysUserBankCardPageDTO, config?: AxiosRequestConfig) {
+export function SysTenantBankCardTree(form: SysUserBankCardPageDTO, config?: IHttpConfig) {
     return $http.myProTreePost<SysUserBankCardDO>('/sys/tenantBankCard/tree', form, config)
 }
 
 // 分页排序查询
-export function SysTenantBankCardPage(form: SysUserBankCardPageDTO, config?: AxiosRequestConfig) {
+export function SysTenantBankCardPage(form: SysUserBankCardPageDTO, config?: IHttpConfig) {
     return $http.myProPagePost<SysUserBankCardDO>('/sys/tenantBankCard/page', form, config)
 }
 
@@ -64,6 +63,6 @@ export interface SysUserBankCardInsertOrUpdateUserSelfDTO {
 }
 
 // 新增/修改-租户
-export function SysTenantBankCardInsertOrUpdateTenant(form: SysUserBankCardInsertOrUpdateUserSelfDTO, config?: AxiosRequestConfig) {
+export function SysTenantBankCardInsertOrUpdateTenant(form: SysUserBankCardInsertOrUpdateUserSelfDTO, config?: IHttpConfig) {
     return $http.myPost<string>('/sys/tenantBankCard/insertOrUpdate/tenant', form, config)
 }

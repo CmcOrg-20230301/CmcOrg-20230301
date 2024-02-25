@@ -1,12 +1,11 @@
-import $http from "@/util/HttpUtil";
-import {AxiosRequestConfig} from "axios";
+import {$http, IHttpConfig} from "@/util/HttpUtil";
 
 export interface SignEmailUpdateEmailSendCodeNewDTO {
     email?: string // 邮箱，正则表达式：^\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$，maxLength：200，minLength：0，required：true
 }
 
 // 修改邮箱-发送新邮箱验证码
-export function SignEmailUpdateEmailSendCodeNew(form: SignEmailUpdateEmailSendCodeNewDTO, config?: AxiosRequestConfig) {
+export function SignEmailUpdateEmailSendCodeNew(form: SignEmailUpdateEmailSendCodeNewDTO, config?: IHttpConfig) {
     return $http.myPost<string>('/sign/email/updateEmail/sendCode/new', form, config)
 }
 
@@ -21,12 +20,12 @@ export interface SysQrCodeSceneBindVO {
 }
 
 // 设置统一登录：微信
-export function SignEmailSetSingleSignInWx(form: SignEmailSetSingleSignInWxDTO, config?: AxiosRequestConfig) {
+export function SignEmailSetSingleSignInWx(form: SignEmailSetSingleSignInWxDTO, config?: IHttpConfig) {
     return $http.myPost<SysQrCodeSceneBindVO>('/sign/email/setSingleSignIn/wx', form, config)
 }
 
 // 修改邮箱-发送旧邮箱验证码
-export function SignEmailUpdateEmailSendCodeOld(config?: AxiosRequestConfig) {
+export function SignEmailUpdateEmailSendCodeOld(config?: IHttpConfig) {
     return $http.myPost<string>('/sign/email/updateEmail/sendCode/old', undefined, config)
 }
 
@@ -35,7 +34,7 @@ export interface SignEmailSetSingleSignInPhoneSendCodeDTO {
 }
 
 // 设置统一登录：手机验证码：发送要绑定统一登录手机的验证码
-export function SignEmailSetSingleSignInPhoneSendCode(form: SignEmailSetSingleSignInPhoneSendCodeDTO, config?: AxiosRequestConfig) {
+export function SignEmailSetSingleSignInPhoneSendCode(form: SignEmailSetSingleSignInPhoneSendCodeDTO, config?: IHttpConfig) {
     return $http.myPost<string>('/sign/email/setSingleSignIn/phone/sendCode', form, config)
 }
 
@@ -44,12 +43,12 @@ export interface SignEmailUpdateSignInNameSendCodeDTO {
 }
 
 // 修改登录名-发送验证码
-export function SignEmailUpdateSignInNameSendCode(form: SignEmailUpdateSignInNameSendCodeDTO, config?: AxiosRequestConfig) {
+export function SignEmailUpdateSignInNameSendCode(form: SignEmailUpdateSignInNameSendCodeDTO, config?: IHttpConfig) {
     return $http.myPost<string>('/sign/email/updateSignInName/sendCode', form, config)
 }
 
 // 修改密码-发送验证码
-export function SignEmailUpdatePasswordSendCode(config?: AxiosRequestConfig) {
+export function SignEmailUpdatePasswordSendCode(config?: IHttpConfig) {
     return $http.myPost<string>('/sign/email/updatePassword/sendCode', undefined, config)
 }
 
@@ -58,7 +57,7 @@ export interface SignEmailSetPhoneSendCodePhoneDTO {
 }
 
 // 设置手机：发送手机验证码
-export function SignEmailSetPhoneSendCodePhone(form: SignEmailSetPhoneSendCodePhoneDTO, config?: AxiosRequestConfig) {
+export function SignEmailSetPhoneSendCodePhone(form: SignEmailSetPhoneSendCodePhoneDTO, config?: IHttpConfig) {
     return $http.myPost<string>('/sign/email/setPhone/sendCode/phone', form, config)
 }
 
@@ -69,7 +68,7 @@ export interface GetQrCodeVO {
 }
 
 // 设置微信：获取二维码地址
-export function SignEmailSetWxGetQrCodeUrl(config?: AxiosRequestConfig) {
+export function SignEmailSetWxGetQrCodeUrl(config?: IHttpConfig) {
     return $http.myPost<GetQrCodeVO>('/sign/email/setWx/getQrCodeUrl', undefined, config)
 }
 
@@ -78,12 +77,12 @@ export interface NotNullId {
 }
 
 // 设置微信：获取二维码是否已经被扫描
-export function SignEmailSetWxGetQrCodeSceneFlag(form: NotNullId, config?: AxiosRequestConfig) {
+export function SignEmailSetWxGetQrCodeSceneFlag(form: NotNullId, config?: IHttpConfig) {
     return $http.myPost<SysQrCodeSceneBindVO>('/sign/email/setWx/getQrCodeSceneFlag', form, config)
 }
 
 // 设置微信：发送验证码
-export function SignEmailSetWxSendCode(config?: AxiosRequestConfig) {
+export function SignEmailSetWxSendCode(config?: IHttpConfig) {
     return $http.myPost<string>('/sign/email/setWx/sendCode', undefined, config)
 }
 
@@ -94,17 +93,17 @@ export interface SignEmailUpdatePasswordDTO {
 }
 
 // 修改密码
-export function SignEmailUpdatePassword(form: SignEmailUpdatePasswordDTO, config?: AxiosRequestConfig) {
+export function SignEmailUpdatePassword(form: SignEmailUpdatePasswordDTO, config?: IHttpConfig) {
     return $http.myPost<string>('/sign/email/updatePassword', form, config)
 }
 
 // 设置统一登录：微信：获取统一登录微信的二维码地址
-export function SignEmailSetSingleSignInWxGetQrCodeUrl(config?: AxiosRequestConfig) {
+export function SignEmailSetSingleSignInWxGetQrCodeUrl(config?: IHttpConfig) {
     return $http.myPost<GetQrCodeVO>('/sign/email/setSingleSignIn/wx/getQrCodeUrl', undefined, config)
 }
 
 // 设置手机：发送邮箱验证码
-export function SignEmailSetPhoneSendCodeEmail(config?: AxiosRequestConfig) {
+export function SignEmailSetPhoneSendCodeEmail(config?: IHttpConfig) {
     return $http.myPost<string>('/sign/email/setPhone/sendCode/email', undefined, config)
 }
 
@@ -115,7 +114,7 @@ export interface SignEmailSetPhoneDTO {
 }
 
 // 设置手机
-export function SignEmailSetPhone(form: SignEmailSetPhoneDTO, config?: AxiosRequestConfig) {
+export function SignEmailSetPhone(form: SignEmailSetPhoneDTO, config?: IHttpConfig) {
     return $http.myPost<string>('/sign/email/setPhone', form, config)
 }
 
@@ -132,7 +131,7 @@ export interface SignInVO {
 }
 
 // 邮箱：账号密码登录
-export function SignEmailSignInPassword(form: SignEmailSignInPasswordDTO, config?: AxiosRequestConfig) {
+export function SignEmailSignInPassword(form: SignEmailSignInPasswordDTO, config?: IHttpConfig) {
     return $http.myPost<SignInVO>('/sign/email/sign/in/password', form, config)
 }
 
@@ -142,7 +141,7 @@ export interface SignEmailUpdateSignInNameDTO {
 }
 
 // 修改登录名
-export function SignEmailUpdateSignInName(form: SignEmailUpdateSignInNameDTO, config?: AxiosRequestConfig) {
+export function SignEmailUpdateSignInName(form: SignEmailUpdateSignInNameDTO, config?: IHttpConfig) {
     return $http.myPost<string>('/sign/email/updateSignInName', form, config)
 }
 
@@ -155,7 +154,7 @@ export interface SignEmailSignUpDTO {
 }
 
 // 注册
-export function SignEmailSignUp(form: SignEmailSignUpDTO, config?: AxiosRequestConfig) {
+export function SignEmailSignUp(form: SignEmailSignUpDTO, config?: IHttpConfig) {
     return $http.myPost<string>('/sign/email/sign/up', form, config)
 }
 
@@ -165,7 +164,7 @@ export interface EmailNotBlankDTO {
 }
 
 // 注册-发送验证码
-export function SignEmailSignUpSendCode(form: EmailNotBlankDTO, config?: AxiosRequestConfig) {
+export function SignEmailSignUpSendCode(form: EmailNotBlankDTO, config?: IHttpConfig) {
     return $http.myPost<string>('/sign/email/sign/up/sendCode', form, config)
 }
 
@@ -176,7 +175,7 @@ export interface SignEmailSetSingleSignInPhoneDTO {
 }
 
 // 设置统一登录：手机验证码
-export function SignEmailSetSingleSignInPhone(form: SignEmailSetSingleSignInPhoneDTO, config?: AxiosRequestConfig) {
+export function SignEmailSetSingleSignInPhone(form: SignEmailSetSingleSignInPhoneDTO, config?: IHttpConfig) {
     return $http.myPost<string>('/sign/email/setSingleSignIn/phone', form, config)
 }
 
@@ -189,22 +188,22 @@ export interface SignEmailForgetPasswordDTO {
 }
 
 // 忘记密码
-export function SignEmailForgetPassword(form: SignEmailForgetPasswordDTO, config?: AxiosRequestConfig) {
+export function SignEmailForgetPassword(form: SignEmailForgetPasswordDTO, config?: IHttpConfig) {
     return $http.myPost<string>('/sign/email/forgetPassword', form, config)
 }
 
 // 忘记密码-发送验证码
-export function SignEmailForgetPasswordSendCode(form: EmailNotBlankDTO, config?: AxiosRequestConfig) {
+export function SignEmailForgetPasswordSendCode(form: EmailNotBlankDTO, config?: IHttpConfig) {
     return $http.myPost<string>('/sign/email/forgetPassword/sendCode', form, config)
 }
 
 // 设置统一登录：微信：微信：发送邮箱验证码
-export function SignEmailSetSingleSignInWxSendCode(config?: AxiosRequestConfig) {
+export function SignEmailSetSingleSignInWxSendCode(config?: IHttpConfig) {
     return $http.myPost<string>('/sign/email/setSingleSignIn/wx/sendCode', undefined, config)
 }
 
 // 账号注销-发送验证码
-export function SignEmailSignDeleteSendCode(config?: AxiosRequestConfig) {
+export function SignEmailSignDeleteSendCode(config?: IHttpConfig) {
     return $http.myPost<string>('/sign/email/signDelete/sendCode', undefined, config)
 }
 
@@ -213,12 +212,12 @@ export interface SignEmailSetSignInNameSendCodeDTO {
 }
 
 // 设置登录名-发送验证码
-export function SignEmailSetSignInNameSendCode(form: SignEmailSetSignInNameSendCodeDTO, config?: AxiosRequestConfig) {
+export function SignEmailSetSignInNameSendCode(form: SignEmailSetSignInNameSendCodeDTO, config?: IHttpConfig) {
     return $http.myPost<string>('/sign/email/setSignInName/sendCode', form, config)
 }
 
 // 设置统一登录：微信：获取统一登录微信的二维码是否已经被扫描
-export function SignEmailSetSingleSignInWxGetQrCodeSceneFlag(form: NotNullId, config?: AxiosRequestConfig) {
+export function SignEmailSetSingleSignInWxGetQrCodeSceneFlag(form: NotNullId, config?: IHttpConfig) {
     return $http.myPost<SysQrCodeSceneBindVO>('/sign/email/setSingleSignIn/wx/getQrCodeSceneFlag', form, config)
 }
 
@@ -228,7 +227,7 @@ export interface SignEmailSetSignInNameDTO {
 }
 
 // 设置登录名
-export function SignEmailSetSignInName(form: SignEmailSetSignInNameDTO, config?: AxiosRequestConfig) {
+export function SignEmailSetSignInName(form: SignEmailSetSignInNameDTO, config?: IHttpConfig) {
     return $http.myPost<string>('/sign/email/setSignInName', form, config)
 }
 
@@ -238,12 +237,12 @@ export interface SignEmailSetWxDTO {
 }
 
 // 设置微信
-export function SignEmailSetWx(form: SignEmailSetWxDTO, config?: AxiosRequestConfig) {
+export function SignEmailSetWx(form: SignEmailSetWxDTO, config?: IHttpConfig) {
     return $http.myPost<SysQrCodeSceneBindVO>('/sign/email/setWx', form, config)
 }
 
 // 设置统一登录：手机验证码：发送当前账号已经绑定邮箱的验证码
-export function SignEmailSetSingleSignInPhoneSendCodeCurrent(config?: AxiosRequestConfig) {
+export function SignEmailSetSingleSignInPhoneSendCodeCurrent(config?: IHttpConfig) {
     return $http.myPost<string>('/sign/email/setSingleSignIn/phone/sendCode/current', undefined, config)
 }
 
@@ -254,7 +253,7 @@ export interface SignEmailUpdateEmailDTO {
 }
 
 // 修改邮箱
-export function SignEmailUpdateEmail(form: SignEmailUpdateEmailDTO, config?: AxiosRequestConfig) {
+export function SignEmailUpdateEmail(form: SignEmailUpdateEmailDTO, config?: IHttpConfig) {
     return $http.myPost<string>('/sign/email/updateEmail', form, config)
 }
 
@@ -263,6 +262,6 @@ export interface NotBlankCodeDTO {
 }
 
 // 账号注销
-export function SignEmailSignDelete(form: NotBlankCodeDTO, config?: AxiosRequestConfig) {
+export function SignEmailSignDelete(form: NotBlankCodeDTO, config?: IHttpConfig) {
     return $http.myPost<string>('/sign/email/signDelete', form, config)
 }

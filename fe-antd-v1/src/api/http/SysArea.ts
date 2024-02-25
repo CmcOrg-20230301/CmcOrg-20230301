@@ -1,7 +1,6 @@
 import {SortOrder} from "antd/es/table/interface";
 import MyOrderDTO from "@/model/dto/MyOrderDTO";
-import $http from "@/util/HttpUtil";
-import {AxiosRequestConfig} from "axios";
+import {$http, IHttpConfig} from "@/util/HttpUtil";
 
 export interface SysAreaPageDTO {
     current?: string // 第几页，format：int64
@@ -32,7 +31,7 @@ export interface SysAreaDO {
 }
 
 // 查询：树结构
-export function SysAreaTree(form: SysAreaPageDTO, config?: AxiosRequestConfig) {
+export function SysAreaTree(form: SysAreaPageDTO, config?: IHttpConfig) {
     return $http.myProTreePost<SysAreaDO>('/sys/area/tree', form, config)
 }
 
@@ -48,7 +47,7 @@ export interface SysAreaInsertOrUpdateDTO {
 }
 
 // 新增/修改
-export function SysAreaInsertOrUpdate(form: SysAreaInsertOrUpdateDTO, config?: AxiosRequestConfig) {
+export function SysAreaInsertOrUpdate(form: SysAreaInsertOrUpdateDTO, config?: IHttpConfig) {
     return $http.myPost<string>('/sys/area/insertOrUpdate', form, config)
 }
 
@@ -57,7 +56,7 @@ export interface NotEmptyIdSet {
 }
 
 // 批量删除
-export function SysAreaDeleteByIdSet(form: NotEmptyIdSet, config?: AxiosRequestConfig) {
+export function SysAreaDeleteByIdSet(form: NotEmptyIdSet, config?: IHttpConfig) {
     return $http.myPost<string>('/sys/area/deleteByIdSet', form, config)
 }
 
@@ -84,7 +83,7 @@ export interface SysAreaInfoByIdVO {
 }
 
 // 通过主键id，查看详情
-export function SysAreaInfoById(form: NotNullId, config?: AxiosRequestConfig) {
+export function SysAreaInfoById(form: NotNullId, config?: IHttpConfig) {
     return $http.myProPost<SysAreaInfoByIdVO>('/sys/area/infoById', form, config)
 }
 
@@ -94,11 +93,11 @@ export interface ChangeNumberDTO {
 }
 
 // 通过主键 idSet，加减排序号
-export function SysAreaAddOrderNo(form: ChangeNumberDTO, config?: AxiosRequestConfig) {
+export function SysAreaAddOrderNo(form: ChangeNumberDTO, config?: IHttpConfig) {
     return $http.myPost<string>('/sys/area/addOrderNo', form, config)
 }
 
 // 分页排序查询
-export function SysAreaPage(form: SysAreaPageDTO, config?: AxiosRequestConfig) {
+export function SysAreaPage(form: SysAreaPageDTO, config?: IHttpConfig) {
     return $http.myProPagePost<SysAreaDO>('/sys/area/page', form, config)
 }

@@ -1,7 +1,6 @@
 import {SortOrder} from "antd/es/table/interface";
 import MyOrderDTO from "@/model/dto/MyOrderDTO";
-import $http from "@/util/HttpUtil";
-import {AxiosRequestConfig} from "axios";
+import {$http, IHttpConfig} from "@/util/HttpUtil";
 
 export interface NotNullLong {
     value?: string // 值，required：true，format：int64
@@ -28,12 +27,12 @@ export interface SysUserWalletDO {
 }
 
 // 通过主键id，查看详情
-export function SysUserWalletInfoById(form: NotNullLong, config?: AxiosRequestConfig) {
+export function SysUserWalletInfoById(form: NotNullLong, config?: IHttpConfig) {
     return $http.myProPost<SysUserWalletDO>('/sys/userWallet/infoById', form, config)
 }
 
 // 通过主键id，查看详情-用户
-export function SysUserWalletInfoByIdUserSelf(config?: AxiosRequestConfig) {
+export function SysUserWalletInfoByIdUserSelf(config?: IHttpConfig) {
     return $http.myProPost<SysUserWalletDO>('/sys/userWallet/infoById/userSelf', undefined, config)
 }
 
@@ -42,7 +41,7 @@ export interface NotEmptyIdSet {
 }
 
 // 批量冻结
-export function SysUserWalletFrozenByIdSet(form: NotEmptyIdSet, config?: AxiosRequestConfig) {
+export function SysUserWalletFrozenByIdSet(form: NotEmptyIdSet, config?: IHttpConfig) {
     return $http.myPost<string>('/sys/userWallet/frozenByIdSet', form, config)
 }
 
@@ -61,12 +60,12 @@ export interface SysUserWalletPageDTO {
 }
 
 // 分页排序查询
-export function SysUserWalletPage(form: SysUserWalletPageDTO, config?: AxiosRequestConfig) {
+export function SysUserWalletPage(form: SysUserWalletPageDTO, config?: IHttpConfig) {
     return $http.myProPagePost<SysUserWalletDO>('/sys/userWallet/page', form, config)
 }
 
 // 批量解冻
-export function SysUserWalletThawByIdSet(form: NotEmptyIdSet, config?: AxiosRequestConfig) {
+export function SysUserWalletThawByIdSet(form: NotEmptyIdSet, config?: IHttpConfig) {
     return $http.myPost<string>('/sys/userWallet/thawByIdSet', form, config)
 }
 
@@ -84,7 +83,7 @@ export interface BuyVO {
 }
 
 // 充值-租户
-export function SysUserWalletRechargeTenant(form: SysUserWalletRechargeTenantDTO, config?: AxiosRequestConfig) {
+export function SysUserWalletRechargeTenant(form: SysUserWalletRechargeTenantDTO, config?: IHttpConfig) {
     return $http.myPost<BuyVO>('/sys/userWallet/recharge/tenant', form, config)
 }
 
@@ -94,7 +93,7 @@ export interface ChangeBigDecimalNumberIdSetDTO {
 }
 
 // 通过主键 idSet，加减可提现的钱
-export function SysUserWalletAddWithdrawableMoneyBackground(form: ChangeBigDecimalNumberIdSetDTO, config?: AxiosRequestConfig) {
+export function SysUserWalletAddWithdrawableMoneyBackground(form: ChangeBigDecimalNumberIdSetDTO, config?: IHttpConfig) {
     return $http.myPost<string>('/sys/userWallet/addWithdrawableMoney/background', form, config)
 }
 
@@ -104,6 +103,6 @@ export interface SysUserWalletRechargeUserSelfDTO {
 }
 
 // 充值-用户自我
-export function SysUserWalletRechargeUserSelf(form: SysUserWalletRechargeUserSelfDTO, config?: AxiosRequestConfig) {
+export function SysUserWalletRechargeUserSelf(form: SysUserWalletRechargeUserSelfDTO, config?: IHttpConfig) {
     return $http.myPost<BuyVO>('/sys/userWallet/recharge/userSelf', form, config)
 }

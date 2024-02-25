@@ -40,7 +40,7 @@ public class GenerateApiUtil {
 
     private String apiInterfaceFieldTemp = "    {}{}: {}{} // {}";
 
-    private String apiRequestTemp = "\n" + "// {}\n" + "export function {}({}config?: AxiosRequestConfig) {\n"
+    private String apiRequestTemp = "\n" + "// {}\n" + "export function {}({}config?: IHttpConfig) {\n"
             + "    return $http.{}<{}>('{}', {}, config)\n" + "}\n";
 
     private String apiRequestFormName = "form";
@@ -48,7 +48,7 @@ public class GenerateApiUtil {
     private String apiRequestFormTemp = apiRequestFormName + ": {}, ";
 
     private String apiImportBase =
-            "import $http from \"@/util/HttpUtil\";\nimport {AxiosRequestConfig} from \"axios\";\n";
+            "import {$http, IHttpConfig} from \"@/util/HttpUtil\";\n";
 
     private String apiImportBaseMyOrderDTO = "import MyOrderDTO from \"@/model/dto/MyOrderDTO\";\n";
 

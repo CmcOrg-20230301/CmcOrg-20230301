@@ -1,7 +1,6 @@
 import {SortOrder} from "antd/es/table/interface";
 import MyOrderDTO from "@/model/dto/MyOrderDTO";
-import $http from "@/util/HttpUtil";
-import {AxiosRequestConfig} from "axios";
+import {$http, IHttpConfig} from "@/util/HttpUtil";
 
 export interface SysPayConfigurationPageDTO {
     current?: string // 第几页，format：int64
@@ -42,7 +41,7 @@ export interface SysPayConfigurationDO {
 }
 
 // 分页排序查询
-export function SysPayConfigurationPage(form: SysPayConfigurationPageDTO, config?: AxiosRequestConfig) {
+export function SysPayConfigurationPage(form: SysPayConfigurationPageDTO, config?: IHttpConfig) {
     return $http.myProPagePost<SysPayConfigurationDO>('/sys/payConfiguration/page', form, config)
 }
 
@@ -51,7 +50,7 @@ export interface NotEmptyIdSet {
 }
 
 // 批量删除
-export function SysPayConfigurationDeleteByIdSet(form: NotEmptyIdSet, config?: AxiosRequestConfig) {
+export function SysPayConfigurationDeleteByIdSet(form: NotEmptyIdSet, config?: IHttpConfig) {
     return $http.myPost<string>('/sys/payConfiguration/deleteByIdSet', form, config)
 }
 
@@ -61,7 +60,7 @@ export interface DictVO {
 }
 
 // 下拉列表
-export function SysPayConfigurationDictList(config?: AxiosRequestConfig) {
+export function SysPayConfigurationDictList(config?: IHttpConfig) {
     return $http.myProPagePost<DictVO>('/sys/payConfiguration/dictList', undefined, config)
 }
 
@@ -84,7 +83,7 @@ export interface SysPayConfigurationInsertOrUpdateDTO {
 }
 
 // 新增/修改
-export function SysPayConfigurationInsertOrUpdate(form: SysPayConfigurationInsertOrUpdateDTO, config?: AxiosRequestConfig) {
+export function SysPayConfigurationInsertOrUpdate(form: SysPayConfigurationInsertOrUpdateDTO, config?: IHttpConfig) {
     return $http.myPost<string>('/sys/payConfiguration/insertOrUpdate', form, config)
 }
 
@@ -93,6 +92,6 @@ export interface NotNullId {
 }
 
 // 通过主键id，查看详情
-export function SysPayConfigurationInfoById(form: NotNullId, config?: AxiosRequestConfig) {
+export function SysPayConfigurationInfoById(form: NotNullId, config?: IHttpConfig) {
     return $http.myProPost<SysPayConfigurationDO>('/sys/payConfiguration/infoById', form, config)
 }

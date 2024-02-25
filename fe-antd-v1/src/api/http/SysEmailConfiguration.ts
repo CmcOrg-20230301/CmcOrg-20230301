@@ -1,5 +1,4 @@
-import $http from "@/util/HttpUtil";
-import {AxiosRequestConfig} from "axios";
+import {$http, IHttpConfig} from "@/util/HttpUtil";
 
 export interface SysEmailConfigurationInsertOrUpdateDTO {
     port?: number // 端口，required：true，format：int32
@@ -10,7 +9,7 @@ export interface SysEmailConfigurationInsertOrUpdateDTO {
 }
 
 // 新增/修改
-export function SysEmailConfigurationInsertOrUpdate(form: SysEmailConfigurationInsertOrUpdateDTO, config?: AxiosRequestConfig) {
+export function SysEmailConfigurationInsertOrUpdate(form: SysEmailConfigurationInsertOrUpdateDTO, config?: IHttpConfig) {
     return $http.myPost<string>('/sys/emailConfiguration/insertOrUpdate', form, config)
 }
 
@@ -24,6 +23,6 @@ export interface SysEmailConfigurationDO {
 }
 
 // 通过主键id，查看详情
-export function SysEmailConfigurationInfoById(config?: AxiosRequestConfig) {
+export function SysEmailConfigurationInfoById(config?: IHttpConfig) {
     return $http.myProPost<SysEmailConfigurationDO>('/sys/emailConfiguration/infoById', undefined, config)
 }

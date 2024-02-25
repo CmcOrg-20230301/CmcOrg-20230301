@@ -1,7 +1,6 @@
 import {SortOrder} from "antd/es/table/interface";
 import MyOrderDTO from "@/model/dto/MyOrderDTO";
-import $http from "@/util/HttpUtil";
-import {AxiosRequestConfig} from "axios";
+import {$http, IHttpConfig} from "@/util/HttpUtil";
 
 export interface SysFileStorageConfigurationPageDTO {
     defaultFlag?: boolean // 是否是默认存储，备注：只会有一个默认存储
@@ -44,7 +43,7 @@ export interface SysFileStorageConfigurationDO {
 }
 
 // 分页排序查询
-export function SysFileStorageConfigurationPage(form: SysFileStorageConfigurationPageDTO, config?: AxiosRequestConfig) {
+export function SysFileStorageConfigurationPage(form: SysFileStorageConfigurationPageDTO, config?: IHttpConfig) {
     return $http.myProPagePost<SysFileStorageConfigurationDO>('/sys/fileStorageConfiguration/page', form, config)
 }
 
@@ -53,7 +52,7 @@ export interface NotEmptyIdSet {
 }
 
 // 批量删除
-export function SysFileStorageConfigurationDeleteByIdSet(form: NotEmptyIdSet, config?: AxiosRequestConfig) {
+export function SysFileStorageConfigurationDeleteByIdSet(form: NotEmptyIdSet, config?: IHttpConfig) {
     return $http.myPost<string>('/sys/fileStorageConfiguration/deleteByIdSet', form, config)
 }
 
@@ -62,7 +61,7 @@ export interface NotNullId {
 }
 
 // 通过主键id，查看详情
-export function SysFileStorageConfigurationInfoById(form: NotNullId, config?: AxiosRequestConfig) {
+export function SysFileStorageConfigurationInfoById(form: NotNullId, config?: IHttpConfig) {
     return $http.myProPost<SysFileStorageConfigurationDO>('/sys/fileStorageConfiguration/infoById', form, config)
 }
 
@@ -83,6 +82,6 @@ export interface SysFileStorageConfigurationInsertOrUpdateDTO {
 }
 
 // 新增/修改
-export function SysFileStorageConfigurationInsertOrUpdate(form: SysFileStorageConfigurationInsertOrUpdateDTO, config?: AxiosRequestConfig) {
+export function SysFileStorageConfigurationInsertOrUpdate(form: SysFileStorageConfigurationInsertOrUpdateDTO, config?: IHttpConfig) {
     return $http.myPost<string>('/sys/fileStorageConfiguration/insertOrUpdate', form, config)
 }
