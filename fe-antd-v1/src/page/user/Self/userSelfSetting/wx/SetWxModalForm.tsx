@@ -14,13 +14,13 @@ import {SignOut} from "@/util/UserUtil.ts";
 export interface ISetWxModalForm {
 
     // 获取：二维码
-    setWxGetQrCodeUrl: (config?: IHttpConfig<any> | undefined) => Promise<ApiResultVO<GetQrCodeVO>>
+    setWxGetQrCodeUrl: (config?: IHttpConfig | undefined) => Promise<ApiResultVO<GetQrCodeVO>>
 
     // 获取：二维码是否扫描
-    setWxGetQrCodeSceneFlag: (form: NotNullId, config?: IHttpConfig<any> | undefined) => Promise<ApiResultVO<SysQrCodeSceneBindVO>>
+    setWxGetQrCodeSceneFlag: (form: NotNullId, config?: IHttpConfig | undefined) => Promise<ApiResultVO<SysQrCodeSceneBindVO>>
 
     // 绑定微信
-    setWx: (form: any, config?: IHttpConfig<any> | undefined) => Promise<ApiResultVO<SysQrCodeSceneBindVO>>
+    setWx: (form: any, config?: IHttpConfig | undefined) => Promise<ApiResultVO<SysQrCodeSceneBindVO>>
 
     // 表单数组
     formItemArr?: (formRef: React.MutableRefObject<ProFormInstance | undefined>) => JSX.Element[]
