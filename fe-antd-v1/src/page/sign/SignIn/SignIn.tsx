@@ -5,7 +5,7 @@ import React, {useEffect, useMemo, useRef, useState} from 'react';
 import IconSvg from '../../../../public/icon.svg'
 import SignLayout from "@/layout/SignLayout/SignLayout";
 import CommonConstant from "@/model/constant/CommonConstant";
-import {SignInFormHandler, SignInSuccess} from "@/page/sign/SignIn/SignInUtil";
+import {SignInFormHandler} from "@/page/sign/SignIn/SignInUtil";
 import {GetAppNav} from "@/MyApp";
 import PathConstant from "@/model/constant/PathConstant";
 import Link from 'antd/es/typography/Link';
@@ -34,6 +34,7 @@ import {
     SignPhoneSignInSendCode
 } from "@/api/http/SignPhone.ts";
 import {MyLocalStorage} from "@/util/StorageUtil.ts";
+import {SignInSuccess} from "@/util/UserUtil.ts";
 
 export interface ISignInForm {
 

@@ -1,4 +1,3 @@
-import $http from "./HttpUtil";
 import {RcFile} from "antd/es/upload";
 import {NotNullId} from "@/api/http/SysFile";
 import {ToastError} from "@/util/ToastUtil";
@@ -8,6 +7,7 @@ import {GetAppNav} from "@/MyApp";
 import PathConstant from "@/model/constant/PathConstant";
 import {SysRequestCategoryEnum} from "@/model/enum/SysRequestCategoryEnum.ts";
 import {MyLocalStorage, MySessionStorage} from "@/util/StorageUtil.ts";
+import {$http, MyAxios} from "@/util/HttpUtil.ts";
 
 // 获取：文件是否可以预览
 export function GetFileCanPreviewFlag(fileName: string) {
@@ -173,7 +173,7 @@ export function Download(
 // 文件下载
 export function FileDownload<T>(url: string, callBack: (blob: Blob, fileName?: string) => void, form?: T) {
 
-    $http.request({
+    MyAxios.request({
 
         url: url,
         responseType: 'blob',

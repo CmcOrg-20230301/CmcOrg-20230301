@@ -8,6 +8,7 @@ import CommonConstant from "@/model/constant/CommonConstant.ts";
 import PathConstant from "@/model/constant/PathConstant.ts";
 import axios, {AxiosError, AxiosResponse} from "axios";
 import {SignOut} from "@/util/UserUtil.ts";
+import {RequestData} from "@ant-design/pro-components";
 
 const TIMEOUT_MSG = '请求超时，请重试'
 const BASE_ERROR_MSG = "请求错误："
@@ -231,14 +232,6 @@ export interface Page<T> {
 
 }
 
-export interface RequestData<T> {
-
-    data?: T[];
-    success?: boolean;
-    total?: number;
-
-}
-
 interface IHttp {
 
     myPost<T = string, D = any>(url: string, data?: D, config?: IHttpConfig): Promise<ApiResultVO<T>>
@@ -358,7 +351,7 @@ export function myProPagePost<T = string, D extends MyPageDTO = any>(url: string
 
 }
 
-const myAxios = axios.create()
+export const MyAxios = axios.create()
 
 /**
  * 执行请求
@@ -369,7 +362,7 @@ export function request<T = string, D = any>(url: string, data?: D, configTemp?:
 
         const config = RequestInterceptors(configTemp, url)
 
-        myAxios.request({
+        MyAxios.request({
 
             url: config.fullUrl!,
 

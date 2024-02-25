@@ -1,6 +1,5 @@
 import PathConstant from "@/model/constant/PathConstant";
 import {useEffect} from "react";
-import {SignInSuccess} from "@/page/sign/SignIn/SignInUtil";
 import {SignWxSignInBrowserCode, SignWxSignInBrowserCodeUserInfo} from "@/api/http/SignWx";
 import {GetAppNav} from "@/MyApp";
 import CommonConstant from "@/model/constant/CommonConstant";
@@ -10,6 +9,7 @@ import SessionStorageKey from "@/model/constant/SessionStorageKey";
 import {SignInVO} from "@/api/http/SignSignInName";
 import {SignWxWorkSignInBrowserCode} from "@/api/http/SignWxWork.ts";
 import {MyLocalStorage, MySessionStorage} from "@/util/StorageUtil.ts";
+import {SignInSuccess} from "@/util/UserUtil.ts";
 
 export interface IOauth2WxForm {
 

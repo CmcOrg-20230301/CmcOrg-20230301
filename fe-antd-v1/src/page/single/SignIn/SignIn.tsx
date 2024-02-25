@@ -1,7 +1,7 @@
 import {useEffect, useMemo, useRef, useState} from "react";
 import {GetServerTimestamp} from "@/util/DateUtil.ts";
 import {ISysSignTypeItemEnum, SysSignTypeEnum, SysSignTypeEnumMap} from "@/model/enum/SysSignTypeEnum.tsx";
-import {SignInFormHandler, SignInSuccess} from "@/page/sign/SignIn/SignInUtil.ts";
+import {SignInFormHandler} from "@/page/sign/SignIn/SignInUtil.ts";
 import SignLayout from "@/layout/SignLayout/SignLayout";
 import {LoginForm, ProFormCaptcha, ProFormInstance, ProFormText} from "@ant-design/pro-components";
 import {Validate} from "@/util/ValidatorUtil.ts";
@@ -24,6 +24,7 @@ import {
     SignSingleSignInSendCodePhone
 } from "@/api/http/SignSingle.ts";
 import {MyLocalStorage} from "@/util/StorageUtil.ts";
+import {SignInSuccess} from "@/util/UserUtil.ts";
 
 const tenantManageName = "灵秀AI Agent"
 
