@@ -7,6 +7,7 @@ import {GetBrowserCategory} from "@/util/BrowserCategoryUtil.ts";
 import CommonConstant from "@/model/constant/CommonConstant.ts";
 import PathConstant from "@/model/constant/PathConstant.ts";
 import axios, {AxiosError, AxiosResponse} from "axios";
+import {SignOut} from "@/util/UserUtil.ts";
 
 const TIMEOUT_MSG = '请求超时，请重试'
 const BASE_ERROR_MSG = "请求错误："
@@ -105,13 +106,29 @@ export function ResponseInterceptorsSuccess<T = string>(result: AxiosResponse, c
 
         if (res.code === 100111) { // 这个代码需要跳转到：登录页面
 
-            return null
-
-        } else {
-
             if (!hiddenErrorMsgFlag) {
 
-                ToastError(res.msg || REQUEST_ERROR_MSG)
+                if (localStorage.getItem(LocalStorageKey.JWT)) { // 存在 jwt才提示错误消息
+
+                    ToastError(res.msg)
+
+                }
+
+            }
+
+            SignOut()
+
+            return null
+
+        }
+
+        if (!hiddenErrorMsgFlag) {
+
+            ToastError(res.msg || REQUEST_ERROR_MSG)
+
+            if (!res.msg) {
+
+                RequestErrorAutoReload() // 自动刷新页面
 
             }
 
