@@ -1,61 +1,173 @@
-import {ToastError} from './ToastUtil'
-import MyPageDTO from "@/model/dto/MyPageDTO";
-import LocalStorageKey from "@/model/constant/LocalStorageKey";
-import {SignOut} from "./UserUtil";
-import axios, {
-    AxiosError,
-    AxiosInstance,
-    AxiosRequestConfig,
-    AxiosResponse,
-    CreateAxiosDefaults,
-    InternalAxiosRequestConfig
-} from "axios";
-import {RequestData} from '@ant-design/pro-components';
-import {GetBrowserCategory} from "@/util/BrowserCategoryUtil";
-import PathConstant from "@/model/constant/PathConstant";
 import {DevFlag} from "@/util/SysUtil.ts";
-import CommonConstant from "@/model/constant/CommonConstant.ts";
+import MyPageDTO from "@/model/dto/MyPageDTO.ts";
+import {ToastError} from "@/util/ToastUtil.ts";
 import {MyLocalStorage} from "@/util/StorageUtil.ts";
+import LocalStorageKey from "@/model/constant/LocalStorageKey.ts";
+import {GetBrowserCategory} from "@/util/BrowserCategoryUtil.ts";
+import CommonConstant from "@/model/constant/CommonConstant.ts";
+import PathConstant from "@/model/constant/PathConstant.ts";
+import axios, {AxiosError, AxiosResponse} from "axios";
 
 const TIMEOUT_MSG = '请求超时，请重试'
 const BASE_ERROR_MSG = "请求错误："
 const REQUEST_ERROR_MSG = "请求失败：服务器未启动"
 
-const config: { baseURL: string; timeout: number } = {
+export interface IHttpConfig {
 
-    baseURL: DevFlag() ? '/api' : window.apiUrl,
-    timeout: 30 * 60 * 1000, // 默认 30分钟
+    url?: string
+    baseURL?: string
+    fullUrl?: string // 该字段不要赋值，程序会进行赋值
+    timeout?: number
+    headers?: Record<string, string | number>
+    responseType?: 'text' | 'arraybuffer' | 'blob' | 'json'
+    method?:
+        'OPTIONS'
+        | 'GET'
+        | 'HEAD'
+        | 'POST'
+        | 'PUT'
+        | 'DELETE'
+        | 'TRACE'
+        | 'CONNECT'
 
 }
 
-const $http = axios.create(config as CreateAxiosDefaults) as MyAxiosInstance
+export const BaseConfig: IHttpConfig = {
 
-// 请求拦截器
-$http.interceptors.request.use(
-    (config: InternalAxiosRequestConfig) => {
+    baseURL: DevFlag() ? '/api' : window.apiUrl,
+    timeout: 30 * 60 * 1000, // 默认 30分钟
+    method: "POST",
+    responseType: 'json',
 
-        if (!config.url?.startsWith('http')) {
+}
 
-            // 不以 http开头的，才携带 jwt
-            config.headers!['Authorization'] =
-                MyLocalStorage.getItem(LocalStorageKey.JWT) || ''
+/**
+ * 请求拦截器
+ */
+export function RequestInterceptors(config: IHttpConfig | undefined, url: string): IHttpConfig {
 
-            config.headers!['category'] = GetBrowserCategory() // 请求类别
+    if (config) {
+
+        config = {...BaseConfig, ...config}
+
+    } else {
+
+        config = {...BaseConfig}
+
+    }
+
+    if (!config.headers) {
+        config.headers = {}
+    }
+
+    config.url = url
+
+    if (!config.url.startsWith('http')) {
+
+        // 不以 http开头的，才携带 jwt
+        config.headers['Authorization'] =
+            MyLocalStorage.getItem(LocalStorageKey.JWT) || ''
+
+        config.headers['category'] = GetBrowserCategory() // 请求类别
+
+        if (config.baseURL) {
+
+            config.fullUrl = config.baseURL + config.url
+
+        } else {
+
+            config.fullUrl = config.url
 
         }
 
-        return config
+    } else {
 
-    },
-
-    (err: AxiosError) => {
-
-        ToastError(BASE_ERROR_MSG + err.message)
-
-        return Promise.reject(err) // 这里会触发 catch，备注：如果没有 catch，则会报错
+        config.fullUrl = config.url
 
     }
-)
+
+    return config
+
+}
+
+/**
+ * 响应拦截器-成功
+ *
+ * @return null 则表示需要重试
+ */
+export function ResponseInterceptorsSuccess<T = string>(result: AxiosResponse, config: IHttpConfig): ApiResultVO<T> | undefined | T | null {
+
+    const hiddenErrorMsgFlag = config.headers?.hiddenErrorMsg // 是否隐藏错误提示
+
+    const res = result.data as ApiResultVO<T>
+
+    if (res.code !== CommonConstant.API_OK_CODE || !res.successFlag) {
+
+        if (res.code === 100111) { // 这个代码需要跳转到：登录页面
+
+            return null
+
+        } else {
+
+            if (!hiddenErrorMsgFlag) {
+
+                ToastError(res.msg || REQUEST_ERROR_MSG)
+
+            }
+
+        }
+
+        return undefined // 这里会触发 catch，备注：如果没有 catch，则会报错
+
+    } else {
+
+        return res
+
+    }
+
+}
+
+/**
+ * 响应拦截器-错误
+ */
+export function ResponseInterceptorsError(err: AxiosError, config: IHttpConfig): AxiosError {
+
+    const hiddenErrorMsgFlag = config.headers?.hiddenErrorMsg // 是否隐藏错误提示
+
+    if (hiddenErrorMsgFlag) {
+        return err // 这里会触发 catch，备注：如果没有 catch，则会报错
+    }
+
+    // 所有的请求错误，例如 500 404 错误，超出 2xx 范围的状态码都会触发该函数。
+    let msg: string = err.message
+
+    if (msg === 'Network Error') {
+
+        msg = '连接异常，请重试'
+
+    } else if (msg.includes('timeout')) {
+
+        msg = TIMEOUT_MSG
+
+    } else if (msg.includes('Request failed with status code')) {
+
+        const substring = msg.substring(msg.length - 3);
+
+        msg = '接口【' + substring + '】异常，请联系管理员'
+
+        if (substring === '404' || substring === '500') {
+
+            RequestErrorAutoReload() // 自动刷新页面
+
+        }
+
+    }
+
+    ToastError(msg || (BASE_ERROR_MSG + err.message))
+
+    return err // 这里会触发 catch，备注：如果没有 catch，则会报错
+
+}
 
 export const RequestErrorAutoReloadPathSet = new Set<string>()
 
@@ -77,105 +189,6 @@ function RequestErrorAutoReload() {
 
 }
 
-// 响应拦截器
-$http.interceptors.response.use(
-    (response: AxiosResponse<ApiResultVO>) => {
-
-        const config = response.config
-
-        if (config.url?.startsWith('http')) {
-            return response // 如果是 http请求
-        }
-
-        if (config.responseType === 'blob') {
-            return response // 如果请求的是文件
-        }
-
-        const hiddenErrorMsgFlag = config.headers?.hiddenErrorMsg // 是否隐藏错误提示
-
-        const res = response.data
-
-        if (res.code !== CommonConstant.API_OK_CODE || !res.successFlag) {
-
-            if (res.code === 100111) { // 这个代码需要跳转到：登录页面
-
-                if (!hiddenErrorMsgFlag) {
-
-                    if (MyLocalStorage.getItem(LocalStorageKey.JWT)) { // 存在 jwt才提示错误消息
-
-                        ToastError(res.msg)
-
-                    }
-
-                }
-
-                SignOut()
-
-            } else {
-
-                if (!hiddenErrorMsgFlag) {
-
-                    ToastError(res.msg || REQUEST_ERROR_MSG)
-
-                    if (!res.msg) {
-
-                        RequestErrorAutoReload() // 自动刷新页面
-
-                    }
-
-                }
-
-            }
-
-            return Promise.reject(res) // 这里会触发 catch，备注：如果没有 catch，则会报错
-
-        } else {
-
-            return response
-
-        }
-
-    },
-    (err: AxiosError) => {
-
-        const hiddenErrorMsgFlag = err.config?.headers?.hiddenErrorMsg // 是否隐藏错误提示
-
-        if (hiddenErrorMsgFlag) {
-            return Promise.reject(err) // 这里会触发 catch，备注：如果没有 catch，则会报错
-        }
-
-        // 所有的请求错误，例如 500 404 错误，超出 2xx 范围的状态码都会触发该函数。
-        let msg: string = err.message
-
-        if (msg === 'Network Error') {
-
-            msg = '连接异常，请重试'
-
-        } else if (msg.includes('timeout')) {
-
-            msg = TIMEOUT_MSG
-
-        } else if (msg.includes('Request failed with status code')) {
-
-            const substring = msg.substring(msg.length - 3);
-
-            msg = '接口【' + substring + '】异常，请联系管理员'
-
-            if (substring === '404' || substring === '500') {
-
-                RequestErrorAutoReload() // 自动刷新页面
-
-            }
-
-        }
-
-        ToastError(msg || (BASE_ERROR_MSG + err.message))
-
-        return Promise.reject(err) // 这里会触发 catch，备注：如果没有 catch，则会报错
-
-    }
-)
-
 /**
  * 针对本系统
  */
@@ -186,22 +199,6 @@ export interface ApiResultVO<T = string> {
     msg: string
     data: T
     service: string
-
-}
-
-interface MyAxiosInstance extends AxiosInstance {
-
-    myPost<T = string, D = any>(url: string, data?: D, config?: AxiosRequestConfig<D>): Promise<ApiResultVO<T>>
-
-    myProPost<T = string, D = any>(url: string, data?: D, config?: AxiosRequestConfig<D>): Promise<T>
-
-    myTreePost<T = string, D extends MyPageDTO = any>(url: string, data?: D, config?: AxiosRequestConfig<D>): Promise<T[]>
-
-    myProTreePost<T = string, D extends MyPageDTO = any>(url: string, data?: D, config?: AxiosRequestConfig<D>): Promise<RequestData<T>>
-
-    myPagePost<T = string, D extends MyPageDTO = any>(url: string, data?: D, config?: AxiosRequestConfig<D>): Promise<Page<T>>
-
-    myProPagePost<T = string, D extends MyPageDTO = any>(url: string, data?: D, config?: AxiosRequestConfig<D>): Promise<RequestData<T>>
 
 }
 
@@ -217,86 +214,84 @@ export interface Page<T> {
 
 }
 
-/**
- * 针对本系统
- */
-$http.myPost = <T = string, D = any>(url: string, data?: D, config?: AxiosRequestConfig<D>): Promise<ApiResultVO<T>> => {
+export interface RequestData<T> {
 
-    return new Promise((resolve, reject) => {
+    data?: T[];
+    success?: boolean;
+    total?: number;
 
-        return $http.post<ApiResultVO, AxiosResponse<ApiResultVO<T>>, D>(url, data, config).then(({data}) => {
+}
 
-            resolve(data)
+interface IHttp {
 
-        }).catch(err => {
+    myPost<T = string, D = any>(url: string, data?: D, config?: IHttpConfig): Promise<ApiResultVO<T>>
 
-            reject(err)
+    myProPost<T = string, D = any>(url: string, data?: D, config?: IHttpConfig): Promise<T>
 
-        })
+    myTreePost<T = string, D extends MyPageDTO = any>(url: string, data?: D, config?: IHttpConfig): Promise<T[]>
 
-    })
+    myProTreePost<T = string, D extends MyPageDTO = any>(url: string, data?: D, config?: IHttpConfig): Promise<RequestData<T>>
+
+    myPagePost<T = string, D extends MyPageDTO = any>(url: string, data?: D, config?: IHttpConfig): Promise<Page<T>>
+
+    myProPagePost<T = string, D extends MyPageDTO = any>(url: string, data?: D, config?: IHttpConfig): Promise<RequestData<T>>
+
+}
+
+export const $http: IHttp = {
+
+    myPost,
+    myProPost,
+
+    myTreePost,
+    myProTreePost,
+
+    myPagePost,
+    myProPagePost,
 
 }
 
 /**
- * 针对：proComponents
+ * post请求
  */
-$http.myProPost = <T = string, D = any>(url: string, data?: D, config?: AxiosRequestConfig<D>): Promise<T> => {
+export function myPost<T = string, D = any>(url: string, data?: D, config?: IHttpConfig): Promise<ApiResultVO<T>> {
 
-    return new Promise((resolve, reject) => {
-
-        return $http.post<ApiResultVO, AxiosResponse<ApiResultVO<T>>, D>(url, data, config).then(({data}) => {
-
-            resolve(data.data)
-
-        }).catch(err => {
-
-            reject(err)
-
-        })
-
-    })
+    return request(url, data, config, false)
 
 }
 
 /**
- * 针对本系统
+ * post请求
  */
-$http.myTreePost = <T, D extends MyPageDTO>(url: string, data?: D, config?: AxiosRequestConfig<D>): Promise<T[]> => {
+export function myProPost<T = string, D = any>(url: string, data?: D, config?: IHttpConfig): Promise<T> {
 
-    return new Promise((resolve, reject) => {
-
-        HandleData(data)
-
-        return $http.post<ApiResultVO, AxiosResponse<ApiResultVO<T[]>>, D>(url, data, config).then(({data}) => {
-
-            resolve(data.data)
-
-        }).catch(err => {
-
-            reject(err)
-
-        })
-
-    })
+    return request<T, D>(url, data, config, true)
 
 }
 
 /**
- * 针对：proComponents
+ * post请求
  */
-$http.myProTreePost = <T, D extends MyPageDTO>(url: string, data?: D, config?: AxiosRequestConfig<D>): Promise<RequestData<T>> => {
+export function myTreePost<T = string, D extends MyPageDTO = any>(url: string, data?: D, config?: IHttpConfig): Promise<T[]> {
 
-    return new Promise((resolve, reject) => {
+    return request<T[], D>(url, data, config, true)
 
-        HandleData(data)
+}
 
-        return $http.post<ApiResultVO, AxiosResponse<ApiResultVO<T[]>>, D>(url, data, config).then(({data}) => {
+/**
+ * post请求
+ */
+export function myProTreePost<T = string, D extends MyPageDTO = any>(url: string, data?: D, config?: IHttpConfig): Promise<RequestData<T>> {
+
+    return new Promise<RequestData<T>>((resolve, reject) => {
+
+        request<T[], D>(url, data, config, true).then(res => {
 
             resolve({
 
                 success: true,
-                data: data.data
+                total: res.length,
+                data: res
 
             })
 
@@ -311,36 +306,22 @@ $http.myProTreePost = <T, D extends MyPageDTO>(url: string, data?: D, config?: A
 }
 
 /**
- * 针对本系统
+ * post请求
  */
-$http.myPagePost = <T, D extends MyPageDTO>(url: string, data?: D, config?: AxiosRequestConfig<D>): Promise<Page<T>> => {
+export function myPagePost<T = string, D extends MyPageDTO = any>(url: string, data?: D, config?: IHttpConfig): Promise<Page<T>> {
 
-    return new Promise((resolve, reject) => {
-
-        HandleData(data)
-
-        return $http.post<ApiResultVO, AxiosResponse<ApiResultVO<Page<T>>>, D>(url, data, config).then(({data}) => {
-
-            resolve(data.data)
-
-        }).catch(err => {
-
-            reject(err)
-
-        })
-
-    })
+    return request<Page<T>, D>(url, data, config, true)
 
 }
 
 /**
- * 针对：proComponents
+ * post请求
  */
-$http.myProPagePost = <T, D extends MyPageDTO>(url: string, data?: D, config?: AxiosRequestConfig<D>): Promise<RequestData<T>> => {
+export function myProPagePost<T = string, D extends MyPageDTO = any>(url: string, data?: D, config?: IHttpConfig): Promise<RequestData<T>> {
 
-    return new Promise((resolve, reject) => {
+    return new Promise<RequestData<T>>((resolve, reject) => {
 
-        return $http.myPagePost<T, D>(url, data, config).then((res) => {
+        request<Page<T>, D>(url, data, config, true).then(res => {
 
             resolve({
 
@@ -360,19 +341,60 @@ $http.myProPagePost = <T, D extends MyPageDTO>(url: string, data?: D, config?: A
 
 }
 
-// 处理数据
-function HandleData<D extends MyPageDTO>(data?: D) {
+const myAxios = axios.create()
 
-    if (data?.sort) {
 
-        const name = Object.keys(data.sort)[0]
+/**
+ * 执行请求
+ */
+export function request<T = string, D = any>(url: string, data?: D, configTemp?: IHttpConfig, resDataFlag?: boolean) {
 
-        data.order = {name, value: data.sort[name]}
+    return new Promise<T>((resolve, reject) => {
 
-        data.sort = undefined
+        const config = RequestInterceptors(configTemp, url)
 
-    }
+        myAxios.request({
+
+            url: config.fullUrl!,
+
+            method: config.method,
+
+            headers: config.headers,
+
+            timeout: config.timeout,
+
+            data: data as any,
+
+        }).then(result => {
+
+            let res = ResponseInterceptorsSuccess<T>(result, config);
+
+            if (res) {
+
+                if (resDataFlag) {
+
+                    res = res as ApiResultVO<T>;
+
+                    resolve(res.data)
+
+                } else {
+
+                    resolve(res as T)
+
+                }
+
+            } else {
+
+                reject(new Error('请求错误：' + JSON.stringify(config)))
+
+            }
+
+        }).catch(err => {
+
+            reject(ResponseInterceptorsError(err, config))
+
+        })
+
+    })
 
 }
-
-export default $http

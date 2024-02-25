@@ -1,21 +1,15 @@
 import {PasswordRSAEncrypt} from "@/util/RsaUtil";
-import {ToastSuccess} from "@/util/ToastUtil";
-import LocalStorageKey from "@/model/constant/LocalStorageKey";
-import {GetAppDispatch, GetAppNav} from "@/MyApp";
-import PathConstant from "@/model/constant/PathConstant";
+import {GetAppDispatch} from "@/MyApp";
 import {Validate} from "@/util/ValidatorUtil";
 import {SignEmailSignInPassword} from "@/api/http/SignEmail";
-import {SignInVO, SignSignInNameSignInPassword} from "@/api/http/SignSignInName";
-import {signOut} from "@/store/userSlice";
-import {SetTenantIdToStorage} from "@/util/CommonUtil";
-import {ClearStorage} from "@/util/UserUtil";
+import {SignSignInNameSignInPassword} from "@/api/http/SignSignInName";
+import {SignInSuccess} from "@/util/UserUtil";
 import {SysTenantGetManageNameById} from "@/api/http/SysTenant.ts";
 import {setTenantManageName} from "@/store/commonSlice.ts";
 import CommonConstant from "@/model/constant/CommonConstant.ts";
 import {SysSignTypeEnum} from "@/model/enum/SysSignTypeEnum.tsx";
 import {SignPhoneSignInCode, SignPhoneSignInPassword} from "@/api/http/SignPhone.ts";
 import {ISignInForm} from "./SignIn";
-import {GetStorageForeverValue, MyLocalStorage, SetStorageForeverValue} from "@/util/StorageUtil.ts";
 import {SignSingleSignInCodePhone} from "@/api/http/SignSingle.ts";
 
 /**
@@ -104,35 +98,6 @@ export async function SignInFormHandler(form: ISignInForm) {
 
         }
 
-    }
-
-}
-
-/**
- * 登录成功之后的处理
- */
-export function SignInSuccess(signInVO: SignInVO, path: string = PathConstant.ADMIN_PATH, showMsg: boolean = true, redirectFlag: boolean = true) {
-
-    const StorageForeverValue = GetStorageForeverValue();
-
-    ClearStorage()
-
-    SetStorageForeverValue(StorageForeverValue);
-
-    GetAppDispatch()(signOut()) // store 退出登录
-
-    if (showMsg) {
-        ToastSuccess('欢迎回来~')
-    }
-
-    MyLocalStorage.setItem(LocalStorageKey.JWT, signInVO.jwt!)
-
-    MyLocalStorage.setItem(LocalStorageKey.JWT_EXPIRE_TS, signInVO.jwtExpireTs!)
-
-    SetTenantIdToStorage(signInVO.tenantId);
-
-    if (redirectFlag) {
-        GetAppNav()(path)
     }
 
 }
