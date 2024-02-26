@@ -392,6 +392,10 @@ export function request<T = string, D = any>(url: string, data?: D, configTemp?:
 
                 }
 
+            } else if (res === null) {
+
+                console.error(new Error('登录过期'))
+
             } else {
 
                 reject(new Error('请求错误：' + JSON.stringify(config)))
