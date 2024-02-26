@@ -83,6 +83,7 @@ public enum BaseRedisKeyEnum implements IRedisKey {
 
     PRE_WX_APP_ID, // 微信 appId（应用）：锁：【微信 appId】
     PRE_WX_OPEN_ID, // 微信 openId（用户）：锁：【微信 openId】，备注：一般锁：微信 openId
+    PRE_WX_UNION_ID, // 微信 unionId（平台）：锁：【微信 unionId】
 
     PRE_PHONE, // 手机号码：锁：【手机号码】
     PRE_EMAIL, // 邮箱：锁：【邮箱】

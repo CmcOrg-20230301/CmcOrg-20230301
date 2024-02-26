@@ -16,9 +16,15 @@ public interface SignWxService {
 
     SignInVO signInMiniProgramCode(SignInMiniProgramCodeDTO dto);
 
+    SignInVO signInMiniProgramCodeUnionId(SignInMiniProgramCodeDTO dto);
+
     SignInVO signInBrowserCode(SignInBrowserCodeDTO dto);
 
+    SignInVO signInBrowserCodeUnionId(SignInBrowserCodeDTO dto);
+
     SignInVO signInBrowserCodeUserInfo(SignInBrowserCodeDTO dto);
+
+    SignInVO signInBrowserCodeUserInfoUnionId(SignInBrowserCodeDTO dto);
 
     GetQrCodeVO signInGetQrCodeUrl(UserSignBaseDTO dto, boolean getQrCodeUrlFlag);
 
