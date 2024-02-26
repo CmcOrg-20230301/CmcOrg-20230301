@@ -109,7 +109,7 @@ export function ResponseInterceptorsSuccess<T = string>(result: AxiosResponse, c
 
             if (!hiddenErrorMsgFlag) {
 
-                if (localStorage.getItem(LocalStorageKey.JWT)) { // 存在 jwt才提示错误消息
+                if (MyLocalStorage.getItem(LocalStorageKey.JWT)) { // 存在 jwt才提示错误消息
 
                     ToastError(res.msg)
 
