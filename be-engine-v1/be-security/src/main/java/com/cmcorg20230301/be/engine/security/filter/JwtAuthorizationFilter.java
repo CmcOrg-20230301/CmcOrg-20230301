@@ -71,7 +71,7 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
     private UsernamePasswordAuthenticationToken getAuthentication(HttpServletRequest request,
                                                                   HttpServletResponse response) {
 
-        // 从请求头里，获取：jwt字符串
+        // 从请求头里，获取：jwt字符串，备注：就算加了不需要登录就可以访问，但是也会走该方法
         String jwtStr = MyJwtUtil.getJwtStrByRequest(request);
 
         if (jwtStr == null) {
