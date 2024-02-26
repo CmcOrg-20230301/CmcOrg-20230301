@@ -167,6 +167,24 @@ public class WxUtil {
     }
 
     /**
+     * 通过微信浏览器的 access_token，获取：微信里该用户的 unionId
+     */
+    @NotNull
+    public static WxUnionIdInfoVO getWxUnionIdByBrowserAccessToken(String accessToken, String openId,
+                                                                   Long tenantId, String appId) {
+
+        String jsonStr = HttpUtil.get(
+                "https://api.weixin.qq.com/cgi-bin/user/info?access_token=" + accessToken + "&openid=" + openId);
+
+        WxUnionIdInfoVO wxUnionIdInfoVO = JSONUtil.toBean(jsonStr, WxUnionIdInfoVO.class);
+
+        checkWxVO(wxUnionIdInfoVO, "微信 unionId信息", tenantId, appId); // 检查：微信回调 vo对象
+
+        return wxUnionIdInfoVO;
+
+    }
+
+    /**
      * 通过企业微信浏览器的 code，获取企业微信的 openId信息
      */
     @NotNull

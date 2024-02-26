@@ -11,6 +11,7 @@ import com.cmcorg20230301.be.engine.model.model.vo.SignInVO;
 import com.cmcorg20230301.be.engine.model.model.vo.SysQrCodeSceneBindVO;
 import com.cmcorg20230301.be.engine.other.app.wx.model.vo.WxOpenIdVO;
 import com.cmcorg20230301.be.engine.other.app.wx.model.vo.WxPhoneByCodeVO;
+import com.cmcorg20230301.be.engine.other.app.wx.model.vo.WxUnionIdInfoVO;
 import com.cmcorg20230301.be.engine.other.app.wx.model.vo.WxUserInfoVO;
 import com.cmcorg20230301.be.engine.other.app.wx.util.WxUtil;
 import com.cmcorg20230301.be.engine.redisson.model.enums.BaseRedisKeyEnum;
@@ -149,7 +150,18 @@ public class SignWxServiceImpl implements SignWxService {
     @Override
     public SignInVO signInBrowserCodeUnionId(SignInBrowserCodeDTO dto) {
 
-        return null;
+        WxOpenIdVO wxOpenIdVO = WxUtil.getWxBrowserOpenIdVoByCode(dto.getTenantId(), dto.getCode(), dto.getAppId());
+
+        WxUnionIdInfoVO wxUnionIdInfoVO = WxUtil.getWxUnionIdByBrowserAccessToken(wxOpenIdVO.getAccessToken(), wxOpenIdVO.getOpenid(), dto.getTenantId(), dto.getAppId());
+
+        // 直接通过：微信 unionId登录
+        return SignUtil.signInAccount(ChainWrappers.lambdaQueryChain(sysUserMapper).eq(SysUserDO::getWxUnionId, wxUnionIdInfoVO.getUnionid()).eq(SysUserDO::getWxAppId, wxOpenIdVO.getAppId()), BaseRedisKeyEnum.PRE_WX_UNION_ID, wxUnionIdInfoVO.getUnionid(), SysUserInfoUtil::getWxSysUserInfoDO, dto.getTenantId(), accountMap -> {
+
+            accountMap.put(BaseRedisKeyEnum.PRE_WX_APP_ID, wxOpenIdVO.getAppId());
+
+            accountMap.put(BaseRedisKeyEnum.PRE_WX_OPEN_ID, wxOpenIdVO.getOpenid());
+
+        }, null);
 
     }
 
