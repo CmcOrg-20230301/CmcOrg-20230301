@@ -22,10 +22,8 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 @EnableGlobalMethodSecurity(prePostEnabled = true) // 开启 @PreAuthorize 权限注解
 @EnableWebSecurity
@@ -35,19 +33,42 @@ public class SecurityConfiguration {
     private static final List<AntPathRequestMatcher> PERMIT_ALL_ANT_PATH_REQUEST_MATCHER_LIST = new ArrayList<>();
 
     /**
+     * 权限检查的 urlMap
+     */
+    private static final Map<String, Boolean> PERMIT_URL_MAP = new ConcurrentHashMap<>();
+
+    /**
      * 检查：是否不需要权限检查
      *
      * @return true 不需要 false 需要
      */
     public static boolean permitAllCheck(HttpServletRequest request) {
 
+        String uri = request.getRequestURI();
+
+        Boolean passFlag = PERMIT_URL_MAP.get(uri);
+
+        if (passFlag != null) {
+
+            log.info("权限检查的 uri：{}，结果：{}", uri, passFlag);
+
+            return passFlag;
+
+        }
+
         for (AntPathRequestMatcher item : PERMIT_ALL_ANT_PATH_REQUEST_MATCHER_LIST) {
 
             if (item.matcher(request).isMatch()) {
+
+                PERMIT_URL_MAP.put(uri, true);
+
                 return true;
+
             }
 
         }
+
+        PERMIT_URL_MAP.put(uri, false);
 
         return false;
 
