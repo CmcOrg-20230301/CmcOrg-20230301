@@ -50,7 +50,7 @@ public class SecurityConfiguration {
 
         if (passFlag != null) {
 
-            log.info("权限检查的 uri：{}，结果：{}", uri, passFlag);
+//            log.info("权限检查的 uri：{}，结果：{}", uri, passFlag);
 
             return passFlag;
 
