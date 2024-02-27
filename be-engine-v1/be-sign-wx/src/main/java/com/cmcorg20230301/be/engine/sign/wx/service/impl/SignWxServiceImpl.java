@@ -112,8 +112,7 @@ public class SignWxServiceImpl implements SignWxService {
 
         // 直接通过：微信 unionId登录
         return SignUtil.signInAccount(
-                ChainWrappers.lambdaQueryChain(sysUserMapper).eq(SysUserDO::getWxUnionId, wxOpenIdVO.getUnionid())
-                        .eq(SysUserDO::getWxAppId, wxOpenIdVO.getAppId()), BaseRedisKeyEnum.PRE_WX_UNION_ID, wxOpenIdVO.getUnionid(),
+                ChainWrappers.lambdaQueryChain(sysUserMapper).eq(SysUserDO::getWxUnionId, wxOpenIdVO.getUnionid()), BaseRedisKeyEnum.PRE_WX_UNION_ID, wxOpenIdVO.getUnionid(),
                 SysUserInfoUtil::getWxSysUserInfoDO, dto.getTenantId(), accountMap -> {
 
                     accountMap.put(BaseRedisKeyEnum.PRE_WX_APP_ID, wxOpenIdVO.getAppId());
@@ -155,7 +154,7 @@ public class SignWxServiceImpl implements SignWxService {
         WxUnionIdInfoVO wxUnionIdInfoVO = WxUtil.getWxUnionIdByBrowserAccessToken(wxOpenIdVO.getAccessToken(), wxOpenIdVO.getOpenid(), dto.getTenantId(), dto.getAppId());
 
         // 直接通过：微信 unionId登录
-        return SignUtil.signInAccount(ChainWrappers.lambdaQueryChain(sysUserMapper).eq(SysUserDO::getWxUnionId, wxUnionIdInfoVO.getUnionid()).eq(SysUserDO::getWxAppId, wxOpenIdVO.getAppId()), BaseRedisKeyEnum.PRE_WX_UNION_ID, wxUnionIdInfoVO.getUnionid(), SysUserInfoUtil::getWxSysUserInfoDO, dto.getTenantId(), accountMap -> {
+        return SignUtil.signInAccount(ChainWrappers.lambdaQueryChain(sysUserMapper).eq(SysUserDO::getWxUnionId, wxUnionIdInfoVO.getUnionid()), BaseRedisKeyEnum.PRE_WX_UNION_ID, wxUnionIdInfoVO.getUnionid(), SysUserInfoUtil::getWxSysUserInfoDO, dto.getTenantId(), accountMap -> {
 
             accountMap.put(BaseRedisKeyEnum.PRE_WX_APP_ID, wxOpenIdVO.getAppId());
 
@@ -245,7 +244,7 @@ public class SignWxServiceImpl implements SignWxService {
         // 直接通过：微信 unionId登录
         SignInVO signInVO = SignUtil.signInAccount(
                 ChainWrappers.lambdaQueryChain(sysUserMapper).eq(SysUserDO::getWxUnionId, wxOpenIdVO.getUnionid())
-                        .eq(SysUserDO::getWxAppId, wxOpenIdVO.getAppId()), BaseRedisKeyEnum.PRE_WX_UNION_ID, wxOpenIdVO.getUnionid(), () -> {
+                , BaseRedisKeyEnum.PRE_WX_UNION_ID, wxOpenIdVO.getUnionid(), () -> {
 
                     WxUserInfoVO wxUserInfoVO = WxUtil
                             .getWxUserInfoByBrowserAccessToken(wxOpenIdVO.getAccessToken(), wxOpenIdVO.getOpenid(), tenantId,

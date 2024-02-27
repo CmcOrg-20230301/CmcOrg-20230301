@@ -45,7 +45,7 @@ public class SysUserDO extends BaseEntity {
     @Schema(description = "微信 openId，可以为空，wxAppId + wxOpenId 全租户唯一")
     private String wxOpenId;
 
-    @Schema(description = "微信 unionId，可以为空，wxAppId + wxUnionId 全租户唯一")
+    @Schema(description = "微信 unionId，可以为空，wxUnionId 全租户唯一")
     private String wxUnionId;
 
 }
