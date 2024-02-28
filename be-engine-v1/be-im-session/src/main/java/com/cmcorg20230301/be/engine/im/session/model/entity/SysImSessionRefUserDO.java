@@ -39,4 +39,7 @@ public class SysImSessionRefUserDO extends BaseEntityNoIdSuper {
     @Schema(description = "我最后一次打开该会话的时间戳")
     private Long lastOpenTs;
 
+    @Schema(description = "是否显示在会话列表")
+    private Boolean showFlag;
+
 }

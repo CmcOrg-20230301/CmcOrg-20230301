@@ -116,6 +116,8 @@ public class SysImSessionRefUserServiceImpl extends ServiceImpl<SysImSessionRefU
 
                 sysImSessionRefUserDO.setLastOpenTs(currentTimeMillis);
 
+                sysImSessionRefUserDO.setShowFlag(true);
+
                 insertList.add(sysImSessionRefUserDO);
 
             }
