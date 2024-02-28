@@ -5,8 +5,6 @@ import cn.hutool.core.util.ArrayUtil;
 import com.cmcorg20230301.be.engine.model.model.configuration.ISecurityPermitConfiguration;
 import com.cmcorg20230301.be.engine.security.configuration.base.BaseConfiguration;
 import com.cmcorg20230301.be.engine.security.filter.JwtAuthorizationFilter;
-import com.cmcorg20230301.be.engine.security.model.configuration.IJwtValidatorConfiguration;
-import com.cmcorg20230301.be.engine.security.properties.SecurityProperties;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.aopalliance.intercept.MethodInterceptor;
@@ -21,15 +19,60 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import javax.servlet.http.HttpServletRequest;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 @EnableGlobalMethodSecurity(prePostEnabled = true) // 开启 @PreAuthorize 权限注解
 @EnableWebSecurity
 @Slf4j
 public class SecurityConfiguration {
+
+    private static final List<AntPathRequestMatcher> PERMIT_ALL_ANT_PATH_REQUEST_MATCHER_LIST = new ArrayList<>();
+
+    /**
+     * 权限检查的 urlMap
+     */
+    private static final Map<String, Boolean> PERMIT_URL_MAP = new ConcurrentHashMap<>();
+
+    /**
+     * 检查：是否不需要权限检查
+     *
+     * @return true 不需要 false 需要
+     */
+    public static boolean permitAllCheck(HttpServletRequest request) {
+
+        String uri = request.getRequestURI();
+
+        Boolean passFlag = PERMIT_URL_MAP.get(uri);
+
+        if (passFlag != null) {
+
+//            log.info("权限检查的 uri：{}，结果：{}", uri, passFlag);
+
+            return passFlag;
+
+        }
+
+        for (AntPathRequestMatcher item : PERMIT_ALL_ANT_PATH_REQUEST_MATCHER_LIST) {
+
+            if (item.matcher(request).isMatch()) {
+
+                PERMIT_URL_MAP.put(uri, true);
+
+                return true;
+
+            }
+
+        }
+
+        PERMIT_URL_MAP.put(uri, false);
+
+        return false;
+
+    }
 
     /**
      * @param methodSecurityInterceptor 注意：这个名字不要改
@@ -53,8 +96,7 @@ public class SecurityConfiguration {
     @SneakyThrows
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity, BaseConfiguration baseConfiguration,
-                                            List<ISecurityPermitConfiguration> iSecurityPermitConfigurationList, SecurityProperties securityProperties,
-                                            List<IJwtValidatorConfiguration> iJwtValidatorConfigurationList) {
+                                            List<ISecurityPermitConfiguration> iSecurityPermitConfigurationList, JwtAuthorizationFilter jwtAuthorizationFilter) {
 
         boolean prodFlag = BaseConfiguration.prodFlag();
 
@@ -82,11 +124,21 @@ public class SecurityConfiguration {
 
         log.info("permitAllSet：{}", permitAllSet);
 
+        if (CollUtil.isNotEmpty(permitAllSet) && CollUtil.isEmpty(PERMIT_ALL_ANT_PATH_REQUEST_MATCHER_LIST)) {
+
+            for (String item : permitAllSet) {
+
+                PERMIT_ALL_ANT_PATH_REQUEST_MATCHER_LIST.add(new AntPathRequestMatcher(item));
+
+            }
+
+        }
+
         httpSecurity.authorizeRequests().antMatchers(ArrayUtil.toArray(permitAllSet, String.class))
                 .permitAll() // 可以匿名访问的请求
                 .anyRequest().authenticated(); // 拦截所有请求
 
-        httpSecurity.addFilterBefore(new JwtAuthorizationFilter(securityProperties, iJwtValidatorConfigurationList),
+        httpSecurity.addFilterBefore(jwtAuthorizationFilter,
                 UsernamePasswordAuthenticationFilter.class);
 
         httpSecurity.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS); // 不需要session

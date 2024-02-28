@@ -454,6 +454,7 @@ public class SignUtil {
         sysUserDO.setPhone("");
         sysUserDO.setWxOpenId("");
         sysUserDO.setWxAppId("");
+        sysUserDO.setWxUnionId("");
 
         for (Map.Entry<Enum<? extends IRedisKey>, String> item : accountMap.entrySet()) {
 
@@ -476,6 +477,10 @@ public class SignUtil {
             } else if (BaseRedisKeyEnum.PRE_WX_OPEN_ID.equals(item.getKey())) {
 
                 sysUserDO.setWxOpenId(item.getValue());
+
+            } else if (BaseRedisKeyEnum.PRE_WX_UNION_ID.equals(item.getKey())) {
+
+                sysUserDO.setWxUnionId(item.getValue());
 
             }
 

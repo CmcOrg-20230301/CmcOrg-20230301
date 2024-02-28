@@ -11,6 +11,7 @@ import cn.hutool.jwt.JWTValidator;
 import com.cmcorg20230301.be.engine.cache.util.MyCacheUtil;
 import com.cmcorg20230301.be.engine.model.model.vo.SignInVO;
 import com.cmcorg20230301.be.engine.security.configuration.base.BaseConfiguration;
+import com.cmcorg20230301.be.engine.security.configuration.security.SecurityConfiguration;
 import com.cmcorg20230301.be.engine.security.exception.BaseBizCodeEnum;
 import com.cmcorg20230301.be.engine.security.model.configuration.IJwtValidatorConfiguration;
 import com.cmcorg20230301.be.engine.security.model.vo.ApiResultVO;
@@ -22,8 +23,10 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
+import javax.annotation.Resource;
 import javax.servlet.FilterChain;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -34,18 +37,14 @@ import java.util.List;
  * 自定义 jwt过滤器，备注：后续接口方法，无需判断账号是否封禁或者不存在
  */
 @Slf4j
+@Component
 public class JwtAuthorizationFilter extends OncePerRequestFilter {
 
-    private static SecurityProperties securityProperties;
-    private static List<IJwtValidatorConfiguration> iJwtValidatorConfigurationList;
+    @Resource
+    SecurityProperties securityProperties;
 
-    public JwtAuthorizationFilter(SecurityProperties securityProperties,
-                                  List<IJwtValidatorConfiguration> iJwtValidatorConfigurationList) {
-
-        JwtAuthorizationFilter.securityProperties = securityProperties;
-        JwtAuthorizationFilter.iJwtValidatorConfigurationList = iJwtValidatorConfigurationList;
-
-    }
+    @Resource
+    List<IJwtValidatorConfiguration> iJwtValidatorConfigurationList;
 
     @SneakyThrows
     @Override
@@ -71,10 +70,14 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
     private UsernamePasswordAuthenticationToken getAuthentication(HttpServletRequest request,
                                                                   HttpServletResponse response) {
 
-        // 从请求头里，获取：jwt字符串
+        // 从请求头里，获取：jwt字符串，备注：就算加了不需要登录就可以访问，但是也会走该方法
         String jwtStr = MyJwtUtil.getJwtStrByRequest(request);
 
         if (jwtStr == null) {
+            return null;
+        }
+
+        if (SecurityConfiguration.permitAllCheck(request)) {
             return null;
         }
 

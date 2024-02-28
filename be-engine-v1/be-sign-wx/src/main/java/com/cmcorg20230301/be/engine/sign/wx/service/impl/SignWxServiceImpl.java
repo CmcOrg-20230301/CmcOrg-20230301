@@ -11,6 +11,7 @@ import com.cmcorg20230301.be.engine.model.model.vo.SignInVO;
 import com.cmcorg20230301.be.engine.model.model.vo.SysQrCodeSceneBindVO;
 import com.cmcorg20230301.be.engine.other.app.wx.model.vo.WxOpenIdVO;
 import com.cmcorg20230301.be.engine.other.app.wx.model.vo.WxPhoneByCodeVO;
+import com.cmcorg20230301.be.engine.other.app.wx.model.vo.WxUnionIdInfoVO;
 import com.cmcorg20230301.be.engine.other.app.wx.model.vo.WxUserInfoVO;
 import com.cmcorg20230301.be.engine.other.app.wx.util.WxUtil;
 import com.cmcorg20230301.be.engine.redisson.model.enums.BaseRedisKeyEnum;
@@ -102,6 +103,27 @@ public class SignWxServiceImpl implements SignWxService {
     }
 
     /**
+     * 小程序：微信 unionId登录
+     */
+    @Override
+    public SignInVO signInMiniProgramCodeUnionId(SignInMiniProgramCodeDTO dto) {
+
+        WxOpenIdVO wxOpenIdVO = WxUtil.getWxMiniProgramOpenIdVoByCode(dto.getTenantId(), dto.getCode(), dto.getAppId());
+
+        // 直接通过：微信 unionId登录
+        return SignUtil.signInAccount(
+                ChainWrappers.lambdaQueryChain(sysUserMapper).eq(SysUserDO::getWxUnionId, wxOpenIdVO.getUnionid()), BaseRedisKeyEnum.PRE_WX_UNION_ID, wxOpenIdVO.getUnionid(),
+                SysUserInfoUtil::getWxSysUserInfoDO, dto.getTenantId(), accountMap -> {
+
+                    accountMap.put(BaseRedisKeyEnum.PRE_WX_APP_ID, wxOpenIdVO.getAppId());
+
+                    accountMap.put(BaseRedisKeyEnum.PRE_WX_OPEN_ID, wxOpenIdVO.getOpenid());
+
+                }, null);
+
+    }
+
+    /**
      * 浏览器：微信 code登录
      */
     @Override
@@ -112,12 +134,33 @@ public class SignWxServiceImpl implements SignWxService {
         // 直接通过：微信 openId登录
         return SignUtil.signInAccount(
                 ChainWrappers.lambdaQueryChain(sysUserMapper).eq(SysUserDO::getWxOpenId, wxOpenIdVO.getOpenid())
-                        .eq(SysUserDO::getWxAppId, dto.getAppId()), BaseRedisKeyEnum.PRE_WX_OPEN_ID, wxOpenIdVO.getOpenid(),
+                        .eq(SysUserDO::getWxAppId, wxOpenIdVO.getAppId()), BaseRedisKeyEnum.PRE_WX_OPEN_ID, wxOpenIdVO.getOpenid(),
                 SysUserInfoUtil::getWxSysUserInfoDO, dto.getTenantId(), accountMap -> {
 
-                    accountMap.put(BaseRedisKeyEnum.PRE_WX_APP_ID, dto.getAppId());
+                    accountMap.put(BaseRedisKeyEnum.PRE_WX_APP_ID, wxOpenIdVO.getAppId());
 
                 }, null);
+
+    }
+
+    /**
+     * 浏览器：微信 unionId登录
+     */
+    @Override
+    public SignInVO signInBrowserCodeUnionId(SignInBrowserCodeDTO dto) {
+
+        WxOpenIdVO wxOpenIdVO = WxUtil.getWxBrowserOpenIdVoByCode(dto.getTenantId(), dto.getCode(), dto.getAppId());
+
+        WxUnionIdInfoVO wxUnionIdInfoVO = WxUtil.getWxUnionIdByBrowserAccessToken(wxOpenIdVO.getAccessToken(), wxOpenIdVO.getOpenid(), dto.getTenantId(), dto.getAppId());
+
+        // 直接通过：微信 unionId登录
+        return SignUtil.signInAccount(ChainWrappers.lambdaQueryChain(sysUserMapper).eq(SysUserDO::getWxUnionId, wxUnionIdInfoVO.getUnionid()), BaseRedisKeyEnum.PRE_WX_UNION_ID, wxUnionIdInfoVO.getUnionid(), SysUserInfoUtil::getWxSysUserInfoDO, dto.getTenantId(), accountMap -> {
+
+            accountMap.put(BaseRedisKeyEnum.PRE_WX_APP_ID, wxOpenIdVO.getAppId());
+
+            accountMap.put(BaseRedisKeyEnum.PRE_WX_OPEN_ID, wxOpenIdVO.getOpenid());
+
+        }, null);
 
     }
 
@@ -137,11 +180,11 @@ public class SignWxServiceImpl implements SignWxService {
         // 直接通过：微信 openId登录
         SignInVO signInVO = SignUtil.signInAccount(
                 ChainWrappers.lambdaQueryChain(sysUserMapper).eq(SysUserDO::getWxOpenId, wxOpenIdVO.getOpenid())
-                        .eq(SysUserDO::getWxAppId, dto.getAppId()), BaseRedisKeyEnum.PRE_WX_OPEN_ID, wxOpenIdVO.getOpenid(), () -> {
+                        .eq(SysUserDO::getWxAppId, wxOpenIdVO.getAppId()), BaseRedisKeyEnum.PRE_WX_OPEN_ID, wxOpenIdVO.getOpenid(), () -> {
 
                     WxUserInfoVO wxUserInfoVO = WxUtil
                             .getWxUserInfoByBrowserAccessToken(wxOpenIdVO.getAccessToken(), wxOpenIdVO.getOpenid(), tenantId,
-                                    dto.getAppId());
+                                    wxOpenIdVO.getAppId());
 
                     SysUserInfoDO sysUserInfoDO = new SysUserInfoDO();
 
@@ -153,7 +196,7 @@ public class SignWxServiceImpl implements SignWxService {
 
                 }, dto.getTenantId(), accountMap -> {
 
-                    accountMap.put(BaseRedisKeyEnum.PRE_WX_APP_ID, dto.getAppId());
+                    accountMap.put(BaseRedisKeyEnum.PRE_WX_APP_ID, wxOpenIdVO.getAppId());
 
                 }, null);
 
@@ -171,7 +214,73 @@ public class SignWxServiceImpl implements SignWxService {
 
                 WxUserInfoVO wxUserInfoVO = WxUtil
                         .getWxUserInfoByBrowserAccessToken(wxOpenIdVO.getAccessToken(), wxOpenIdVO.getOpenid(), tenantId,
-                                dto.getAppId());
+                                wxOpenIdVO.getAppId());
+
+                // 更新：用户的昵称
+                ChainWrappers.lambdaUpdateChain(sysUserInfoMapper).eq(SysUserInfoDO::getId, userId)
+                        .set(SysUserInfoDO::getNickname, wxUserInfoVO.getNickname()).update();
+
+            }
+
+        }
+
+        return signInVO;
+
+    }
+
+    /**
+     * 浏览器：微信 unionId登录，可以获取用户的基础信息
+     */
+    @Override
+    public SignInVO signInBrowserCodeUserInfoUnionId(SignInBrowserCodeDTO dto) {
+
+        WxOpenIdVO wxOpenIdVO = WxUtil.getWxBrowserOpenIdVoByCode(dto.getTenantId(), dto.getCode(), dto.getAppId());
+
+        // 是否是：注册
+        CallBack<Boolean> signUpFlagCallBack = new CallBack<>(false);
+
+        Long tenantId = SysTenantUtil.getTenantId(dto.getTenantId());
+
+        // 直接通过：微信 unionId登录
+        SignInVO signInVO = SignUtil.signInAccount(
+                ChainWrappers.lambdaQueryChain(sysUserMapper).eq(SysUserDO::getWxUnionId, wxOpenIdVO.getUnionid())
+                , BaseRedisKeyEnum.PRE_WX_UNION_ID, wxOpenIdVO.getUnionid(), () -> {
+
+                    WxUserInfoVO wxUserInfoVO = WxUtil
+                            .getWxUserInfoByBrowserAccessToken(wxOpenIdVO.getAccessToken(), wxOpenIdVO.getOpenid(), tenantId,
+                                    wxOpenIdVO.getAppId());
+
+                    SysUserInfoDO sysUserInfoDO = new SysUserInfoDO();
+
+                    sysUserInfoDO.setNickname(wxUserInfoVO.getNickname());
+
+                    signUpFlagCallBack.setValue(true);
+
+                    return sysUserInfoDO;
+
+                }, dto.getTenantId(), accountMap -> {
+
+                    accountMap.put(BaseRedisKeyEnum.PRE_WX_APP_ID, wxOpenIdVO.getAppId());
+
+                    accountMap.put(BaseRedisKeyEnum.PRE_WX_OPEN_ID, wxOpenIdVO.getOpenid());
+
+                }, null);
+
+        if (BooleanUtil.isFalse(signUpFlagCallBack.getValue())) {
+
+            JWT jwt = JWT.of(MyJwtUtil.getJwtStrByHeadAuthorization(signInVO.getJwt()));
+
+            // 获取：userId的值
+            Long userId = MyJwtUtil.getPayloadMapUserIdValue(jwt.getPayload().getClaimsJson());
+
+            boolean exists = ChainWrappers.lambdaQueryChain(sysUserInfoMapper).eq(SysUserInfoDO::getId, userId)
+                    .likeRight(SysUserInfoDO::getNickname, SysUserInfoUtil.WX_SYS_USER_INFO_NICKNAME_PRE).exists();
+
+            if (exists) {
+
+                WxUserInfoVO wxUserInfoVO = WxUtil
+                        .getWxUserInfoByBrowserAccessToken(wxOpenIdVO.getAccessToken(), wxOpenIdVO.getOpenid(), tenantId,
+                                wxOpenIdVO.getAppId());
 
                 // 更新：用户的昵称
                 ChainWrappers.lambdaUpdateChain(sysUserInfoMapper).eq(SysUserInfoDO::getId, userId)

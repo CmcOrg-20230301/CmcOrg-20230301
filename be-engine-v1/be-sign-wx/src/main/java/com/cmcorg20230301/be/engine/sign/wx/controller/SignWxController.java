@@ -42,16 +42,34 @@ public class SignWxController {
         return ApiResultVO.okData(baseService.signInMiniProgramCode(dto));
     }
 
+    @PostMapping(value = "/sign/in/miniProgram/code/unionId")
+    @Operation(summary = "小程序：微信 unionId登录", description = OperationDescriptionConstant.SIGN_IN)
+    public ApiResultVO<SignInVO> signInMiniProgramCodeUnionId(@RequestBody @Valid SignInMiniProgramCodeDTO dto) {
+        return ApiResultVO.okData(baseService.signInMiniProgramCodeUnionId(dto));
+    }
+
     @PostMapping(value = "/sign/in/browser/code")
     @Operation(summary = "浏览器：微信 code登录", description = OperationDescriptionConstant.SIGN_IN)
     public ApiResultVO<SignInVO> signInBrowserCode(@RequestBody @Valid SignInBrowserCodeDTO dto) {
         return ApiResultVO.okData(baseService.signInBrowserCode(dto));
     }
 
+    @PostMapping(value = "/sign/in/browser/code/unionId")
+    @Operation(summary = "浏览器：微信 unionId登录", description = OperationDescriptionConstant.SIGN_IN)
+    public ApiResultVO<SignInVO> signInBrowserCodeUnionId(@RequestBody @Valid SignInBrowserCodeDTO dto) {
+        return ApiResultVO.okData(baseService.signInBrowserCodeUnionId(dto));
+    }
+
     @PostMapping(value = "/sign/in/browser/code/userInfo")
     @Operation(summary = "浏览器：微信 code登录，可以获取用户的基础信息", description = OperationDescriptionConstant.SIGN_IN)
     public ApiResultVO<SignInVO> signInBrowserCodeUserInfo(@RequestBody @Valid SignInBrowserCodeDTO dto) {
         return ApiResultVO.okData(baseService.signInBrowserCodeUserInfo(dto));
+    }
+
+    @PostMapping(value = "/sign/in/browser/code/userInfo/unionId")
+    @Operation(summary = "浏览器：微信 unionId登录，可以获取用户的基础信息", description = OperationDescriptionConstant.SIGN_IN)
+    public ApiResultVO<SignInVO> signInBrowserCodeUserInfoUnionId(@RequestBody @Valid SignInBrowserCodeDTO dto) {
+        return ApiResultVO.okData(baseService.signInBrowserCodeUserInfoUnionId(dto));
     }
 
     @PostMapping(value = "/sign/in/getQrCodeUrl")
