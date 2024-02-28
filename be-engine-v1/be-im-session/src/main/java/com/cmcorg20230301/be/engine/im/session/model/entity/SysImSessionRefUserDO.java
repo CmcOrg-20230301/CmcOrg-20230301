@@ -30,9 +30,6 @@ public class SysImSessionRefUserDO extends BaseEntityNoIdSuper {
     @Schema(description = "我对会话的备注")
     private String remark;
 
-    @Schema(description = "是私聊时，关联的另外一个用户的主键 id")
-    private Long privateChatRefUserId;
-
     @Schema(description = "我在会话的昵称，备注：为空则表示，需要获取用户的实时昵称")
     private String sessionNickname;
 

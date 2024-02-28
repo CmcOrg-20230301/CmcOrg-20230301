@@ -37,7 +37,7 @@ public class SysImSessionController {
     @PostMapping("/page")
     @PreAuthorize("hasAuthority('sysImSession:page')")
     public ApiResultVO<Page<SysImSessionDO>> myPage(@RequestBody @Valid SysImSessionPageDTO dto) {
-        return ApiResultVO.okData(baseService.myPage(dto, false));
+        return ApiResultVO.okData(baseService.myPage(dto, true));
     }
 
     @Operation(summary = "查询：用户自我，所属客服会话的主键 id")

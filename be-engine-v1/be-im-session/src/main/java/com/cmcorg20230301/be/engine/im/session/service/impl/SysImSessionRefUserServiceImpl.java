@@ -4,17 +4,18 @@ import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.map.MapUtil;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.dynamic.datasource.annotation.DSTransactional;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.baomidou.mybatisplus.extension.toolkit.ChainWrappers;
 import com.cmcorg20230301.be.engine.file.base.service.SysFileService;
 import com.cmcorg20230301.be.engine.im.session.mapper.SysImSessionMapper;
 import com.cmcorg20230301.be.engine.im.session.mapper.SysImSessionRefUserMapper;
+import com.cmcorg20230301.be.engine.im.session.model.dto.SysImSessionRefUserSelfPageDTO;
 import com.cmcorg20230301.be.engine.im.session.model.entity.SysImSessionDO;
 import com.cmcorg20230301.be.engine.im.session.model.entity.SysImSessionRefUserDO;
 import com.cmcorg20230301.be.engine.im.session.model.vo.SysImSessionRefUserQueryRefUserInfoMapVO;
 import com.cmcorg20230301.be.engine.im.session.service.SysImSessionRefUserService;
 import com.cmcorg20230301.be.engine.kafka.util.KafkaUtil;
-import com.cmcorg20230301.be.engine.model.model.constant.BaseConstant;
 import com.cmcorg20230301.be.engine.model.model.dto.NotEmptyIdSet;
 import com.cmcorg20230301.be.engine.model.model.dto.NotNullId;
 import com.cmcorg20230301.be.engine.model.model.dto.NotNullIdAndLongSet;
@@ -109,8 +110,6 @@ public class SysImSessionRefUserServiceImpl extends ServiceImpl<SysImSessionRefU
                 sysImSessionRefUserDO.setDelFlag(false);
 
                 sysImSessionRefUserDO.setRemark("");
-
-                sysImSessionRefUserDO.setPrivateChatRefUserId(BaseConstant.NEGATIVE_ONE_LONG);
 
                 sysImSessionRefUserDO.setSessionNickname("");
 
@@ -260,6 +259,30 @@ public class SysImSessionRefUserServiceImpl extends ServiceImpl<SysImSessionRefU
 
         return BaseBizCodeEnum.OK;
 
+    }
+
+    /**
+     * 分页排序查询-会话列表-自我
+     */
+    @Override
+    public Page<SysImSessionDO> myPageSelf(SysImSessionRefUserSelfPageDTO dto) {
+        return null;
+    }
+
+    /**
+     * 私聊：申请添加
+     */
+    @Override
+    public String privateChatApply(NotNullId notNullId) {
+        return null;
+    }
+
+    /**
+     * 私聊：同意添加
+     */
+    @Override
+    public String privateChatAgree(NotEmptyIdSet notEmptyIdSet) {
+        return null;
     }
 
 }

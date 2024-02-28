@@ -120,6 +120,8 @@ public class SysImSessionServiceImpl extends ServiceImpl<SysImSessionMapper, Sys
 
     /**
      * 查询：会话的消息相关信息
+     *
+     * @param queryNoJoinSessionContentFlag 是否查询：未加入会话的聊天内容，一般为 false
      */
     @SneakyThrows
     private void myPageQueryContentInfo(boolean queryNoJoinSessionContentFlag, List<SysImSessionDO> sysImSessionDOList) {
