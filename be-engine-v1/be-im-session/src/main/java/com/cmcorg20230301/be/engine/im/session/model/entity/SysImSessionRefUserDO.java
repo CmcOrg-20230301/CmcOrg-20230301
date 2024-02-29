@@ -39,4 +39,7 @@ public class SysImSessionRefUserDO extends BaseEntityNoIdSuper {
     @Schema(description = "是否显示在会话列表")
     private Boolean showFlag;
 
+    @Schema(description = "是私聊时，关联的另外一个用户的主键 id，其他类型时，该值为：-1")
+    private Long privateChatRefUserId;
+
 }
