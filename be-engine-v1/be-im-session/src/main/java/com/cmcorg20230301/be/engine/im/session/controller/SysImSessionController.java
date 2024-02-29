@@ -1,7 +1,6 @@
 package com.cmcorg20230301.be.engine.im.session.controller;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.cmcorg20230301.be.engine.im.session.model.dto.SysImSessionInsertOrUpdateDTO;
 import com.cmcorg20230301.be.engine.im.session.model.dto.SysImSessionPageDTO;
 import com.cmcorg20230301.be.engine.im.session.model.dto.SysImSessionQueryCustomerSessionIdUserSelfDTO;
 import com.cmcorg20230301.be.engine.im.session.model.entity.SysImSessionDO;
@@ -25,13 +24,6 @@ public class SysImSessionController {
 
     @Resource
     SysImSessionService baseService;
-
-    @Operation(summary = "新增/修改")
-    @PostMapping("/insertOrUpdate")
-    @PreAuthorize("hasAuthority('sysImSession:insertOrUpdate')")
-    public ApiResultVO<Long> insertOrUpdate(@RequestBody @Valid SysImSessionInsertOrUpdateDTO dto) {
-        return ApiResultVO.okData(baseService.insertOrUpdate(dto));
-    }
 
     @Operation(summary = "分页排序查询")
     @PostMapping("/page")
