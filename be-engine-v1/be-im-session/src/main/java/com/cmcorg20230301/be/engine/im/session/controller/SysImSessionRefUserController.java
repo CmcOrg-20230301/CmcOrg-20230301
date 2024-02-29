@@ -5,8 +5,6 @@ import com.cmcorg20230301.be.engine.im.session.model.dto.SysImSessionRefUserSelf
 import com.cmcorg20230301.be.engine.im.session.model.entity.SysImSessionDO;
 import com.cmcorg20230301.be.engine.im.session.model.vo.SysImSessionRefUserQueryRefUserInfoMapVO;
 import com.cmcorg20230301.be.engine.im.session.service.SysImSessionRefUserService;
-import com.cmcorg20230301.be.engine.model.model.dto.NotEmptyIdSet;
-import com.cmcorg20230301.be.engine.model.model.dto.NotNullId;
 import com.cmcorg20230301.be.engine.model.model.dto.NotNullIdAndLongSet;
 import com.cmcorg20230301.be.engine.model.model.dto.NotNullIdAndNotEmptyLongSet;
 import com.cmcorg20230301.be.engine.model.model.vo.LongObjectMapVO;
@@ -47,18 +45,6 @@ public class SysImSessionRefUserController {
     @PostMapping("/page/self")
     public ApiResultVO<Page<SysImSessionDO>> myPageSelf(@RequestBody @Valid SysImSessionRefUserSelfPageDTO dto) {
         return ApiResultVO.okData(baseService.myPageSelf(dto));
-    }
-
-    @Operation(summary = "私聊：申请添加")
-    @PostMapping("/privateChat/apply")
-    public ApiResultVO<String> privateChatApply(@RequestBody @Valid NotNullId notNullId) {
-        return ApiResultVO.okMsg(baseService.privateChatApply(notNullId));
-    }
-
-    @Operation(summary = "私聊：同意添加")
-    @PostMapping("/privateChat/agree")
-    public ApiResultVO<String> privateChatAgree(@RequestBody @Valid NotEmptyIdSet notEmptyIdSet) {
-        return ApiResultVO.okMsg(baseService.privateChatAgree(notEmptyIdSet));
     }
 
 }

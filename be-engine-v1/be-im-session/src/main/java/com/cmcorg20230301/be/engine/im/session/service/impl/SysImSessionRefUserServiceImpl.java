@@ -269,20 +269,4 @@ public class SysImSessionRefUserServiceImpl extends ServiceImpl<SysImSessionRefU
         return null;
     }
 
-    /**
-     * 私聊：申请添加
-     */
-    @Override
-    public String privateChatApply(NotNullId notNullId) {
-        return null;
-    }
-
-    /**
-     * 私聊：同意添加
-     */
-    @Override
-    public String privateChatAgree(NotEmptyIdSet notEmptyIdSet) {
-        return null;
-    }
-
 }

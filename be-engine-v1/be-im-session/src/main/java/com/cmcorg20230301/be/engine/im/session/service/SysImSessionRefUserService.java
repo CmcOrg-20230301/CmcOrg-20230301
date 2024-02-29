@@ -6,7 +6,6 @@ import com.cmcorg20230301.be.engine.im.session.model.dto.SysImSessionRefUserSelf
 import com.cmcorg20230301.be.engine.im.session.model.entity.SysImSessionDO;
 import com.cmcorg20230301.be.engine.im.session.model.entity.SysImSessionRefUserDO;
 import com.cmcorg20230301.be.engine.im.session.model.vo.SysImSessionRefUserQueryRefUserInfoMapVO;
-import com.cmcorg20230301.be.engine.model.model.dto.NotEmptyIdSet;
 import com.cmcorg20230301.be.engine.model.model.dto.NotNullId;
 import com.cmcorg20230301.be.engine.model.model.dto.NotNullIdAndLongSet;
 import com.cmcorg20230301.be.engine.model.model.dto.NotNullIdAndNotEmptyLongSet;
@@ -21,9 +20,5 @@ public interface SysImSessionRefUserService extends IService<SysImSessionRefUser
     String updateLastOpenTsUserSelf(NotNullId notNullId);
 
     Page<SysImSessionDO> myPageSelf(SysImSessionRefUserSelfPageDTO dto);
-
-    String privateChatApply(NotNullId notNullId);
-
-    String privateChatAgree(NotEmptyIdSet notEmptyIdSet);
 
 }

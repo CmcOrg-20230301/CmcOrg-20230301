@@ -11,6 +11,13 @@ import com.cmcorg20230301.be.engine.model.model.interfaces.IRedisKey;
 public enum BaseRedisKeyEnum implements IRedisKey {
 
     // 【PRE_】开头 ↓
+
+    // im 相关 ↓
+
+    PRE_SYS_IM_SESSION_APPLY, // 会话申请锁，锁：【用户主键 id + 租户主键 id + 会话主键 id】
+
+    // im 相关 ↑
+
     PRE_SYS_WX_WORK_SYNC_MSG, // 企业微信，获取消息锁，锁：【租户主键 id】
 
     // 统一登录相关 ↓
