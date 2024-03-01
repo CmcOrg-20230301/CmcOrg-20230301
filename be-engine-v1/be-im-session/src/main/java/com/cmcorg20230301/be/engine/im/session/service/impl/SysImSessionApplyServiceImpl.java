@@ -7,6 +7,7 @@ import com.baomidou.mybatisplus.extension.toolkit.ChainWrappers;
 import com.cmcorg20230301.be.engine.im.session.mapper.SysImSessionApplyMapper;
 import com.cmcorg20230301.be.engine.im.session.model.dto.SysImSessionApplyPrivateChatApplyDTO;
 import com.cmcorg20230301.be.engine.im.session.model.dto.SysImSessionApplyPrivateChatRejectDTO;
+import com.cmcorg20230301.be.engine.im.session.model.dto.SysImSessionInsertOrUpdateDTO;
 import com.cmcorg20230301.be.engine.im.session.model.entity.SysImSessionApplyDO;
 import com.cmcorg20230301.be.engine.im.session.model.entity.SysImSessionRefUserDO;
 import com.cmcorg20230301.be.engine.im.session.model.enums.SysImSessionApplyStatusEnum;
@@ -17,6 +18,7 @@ import com.cmcorg20230301.be.engine.im.session.service.SysImSessionService;
 import com.cmcorg20230301.be.engine.model.model.constant.BaseConstant;
 import com.cmcorg20230301.be.engine.model.model.dto.NotEmptyIdSet;
 import com.cmcorg20230301.be.engine.model.model.dto.NotNullId;
+import com.cmcorg20230301.be.engine.model.model.dto.NotNullIdAndNotEmptyLongSet;
 import com.cmcorg20230301.be.engine.redisson.model.enums.BaseRedisKeyEnum;
 import com.cmcorg20230301.be.engine.redisson.util.IdGeneratorUtil;
 import com.cmcorg20230301.be.engine.redisson.util.RedissonUtil;
@@ -35,7 +37,6 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 @Service
 public class SysImSessionApplyServiceImpl extends ServiceImpl<SysImSessionApplyMapper, SysImSessionApplyDO>
@@ -179,46 +180,56 @@ public class SysImSessionApplyServiceImpl extends ServiceImpl<SysImSessionApplyM
     @NotNull
     private String handlePrivateChatAgree(Long userId, Long tenantId, Set<Long> applyIdSet, Date date) {
 
-        List<SysImSessionApplyDO> sysImSessionApplyDOList = lambdaQuery().eq(SysImSessionApplyDO::getPrivateChatApplyTargetUserId, userId).eq(BaseEntityNoIdSuper::getTenantId, tenantId).in(SysImSessionApplyDO::getId, applyIdSet).eq(SysImSessionApplyDO::getStatus, SysImSessionApplyStatusEnum.APPLYING).select(SysImSessionApplyDO::getId).list();
+        List<SysImSessionApplyDO> sysImSessionApplyDOList = lambdaQuery().eq(SysImSessionApplyDO::getPrivateChatApplyTargetUserId, userId).eq(BaseEntityNoIdSuper::getTenantId, tenantId).in(SysImSessionApplyDO::getId, applyIdSet).eq(SysImSessionApplyDO::getStatus, SysImSessionApplyStatusEnum.APPLYING).select(SysImSessionApplyDO::getId, SysImSessionApplyDO::getSessionId, SysImSessionApplyDO::getUserId).list();
 
         if (CollUtil.isEmpty(sysImSessionApplyDOList)) {
             return BaseBizCodeEnum.OK;
         }
 
-        // 重新赋值：会话申请主键 id集合
-        applyIdSet = sysImSessionApplyDOList.stream().map(SysImSessionApplyDO::getId).collect(Collectors.toSet());
+        // 会话主键 id集合，目的：让会话关联的用户恢复可用状态
+        Set<Long> enabelSessionIdSet = new HashSet<>();
 
-        // 更新为：已通过，备注：如果：我也给申请人发送了好友申请，则不处理该数据
-        lambdaUpdate().in(SysImSessionApplyDO::getId, applyIdSet).set(SysImSessionApplyDO::getStatus, SysImSessionApplyStatusEnum.PASSED).set(BaseEntityNoIdSuper::getUpdateTime, date).set(SysImSessionApplyDO::getShowFlag, true).update();
+        for (SysImSessionApplyDO item : sysImSessionApplyDOList) {
 
-        // 会话关联用户主键 id集合，目的：让会话恢复可用状态
-        Set<Long> enabelSessionRefUserIdSet = new HashSet<>();
+            item.setShowFlag(true);
+            item.setUpdateTime(date);
+            item.setStatus(SysImSessionApplyStatusEnum.PASSED);
 
-        // 遍历处理：申请：让会话恢复可用状态/新建会话
-        for (Long item : applyIdSet) {
+            if (item.getSessionId() == -1) {
 
-            List<SysImSessionRefUserDO> sysImSessionRefUserDOList = sysImSessionRefUserService.lambdaQuery().and(i -> i.eq(SysImSessionRefUserDO::getPrivateChatRefUserId, userId).or().eq(SysImSessionRefUserDO::getUserId, userId)).select(SysImSessionRefUserDO::getId).list();
+                SysImSessionInsertOrUpdateDTO sysImSessionInsertOrUpdateDTO = new SysImSessionInsertOrUpdateDTO();
 
-            if (CollUtil.isEmpty(sysImSessionRefUserDOList)) {
+                sysImSessionInsertOrUpdateDTO.setType(SysImSessionTypeEnum.PRIVATE_CHAT.getCode());
 
                 // 新建一个会话
+                Long sessionId = sysImSessionService.insertOrUpdate(sysImSessionInsertOrUpdateDTO);
+
+                NotNullIdAndNotEmptyLongSet notNullIdAndNotEmptyLongSet = new NotNullIdAndNotEmptyLongSet();
+
+                notNullIdAndNotEmptyLongSet.setValueSet(CollUtil.newHashSet(userId, item.getUserId()));
+
+                notNullIdAndNotEmptyLongSet.setId(sessionId);
 
                 // 加入该会话
+                sysImSessionRefUserService.joinUserIdSet(notNullIdAndNotEmptyLongSet);
+
+                item.setSessionId(sessionId); // 设置：关联的 sessionId
 
             } else {
 
-                for (SysImSessionRefUserDO subItem : sysImSessionRefUserDOList) {
-                    enabelSessionRefUserIdSet.add(subItem.getId());
-                }
+                enabelSessionIdSet.add(item.getSessionId());
 
             }
 
         }
 
-        if (CollUtil.isNotEmpty(enabelSessionRefUserIdSet)) {
+        // 更新为：已通过，备注：如果：我也给申请人发送了好友申请，则不处理该数据
+        updateBatchById(sysImSessionApplyDOList);
 
-            // 批量：让会话恢复可用状态
-            sysImSessionRefUserService.lambdaUpdate().in(SysImSessionRefUserDO::getId, enabelSessionRefUserIdSet).set(SysImSessionRefUserDO::getShowFlag, true).set(SysImSessionRefUserDO::getEnableFlag, true).set(SysImSessionRefUserDO::getBlockFlag, true).set(BaseEntityNoIdSuper::getUpdateTime, date).update();
+        if (CollUtil.isNotEmpty(enabelSessionIdSet)) {
+
+            // 批量：让会话关联的用户恢复可用状态
+            sysImSessionRefUserService.lambdaUpdate().in(SysImSessionRefUserDO::getSessionId, enabelSessionIdSet).set(SysImSessionRefUserDO::getShowFlag, true).set(SysImSessionRefUserDO::getEnableFlag, true).set(SysImSessionRefUserDO::getBlockFlag, false).set(BaseEntityNoIdSuper::getUpdateTime, date).update();
 
         }
 

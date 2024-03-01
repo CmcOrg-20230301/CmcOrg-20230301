@@ -43,8 +43,12 @@ import java.util.stream.Collectors;
 public class SysImSessionServiceImpl extends ServiceImpl<SysImSessionMapper, SysImSessionDO>
         implements SysImSessionService {
 
+    private static SysImSessionRefUserService sysImSessionRefUserService;
+
     @Resource
-    SysImSessionRefUserService sysImSessionRefUserService;
+    public void setSysImSessionRefUserService(SysImSessionRefUserService sysImSessionRefUserService) {
+        SysImSessionServiceImpl.sysImSessionRefUserService = sysImSessionRefUserService;
+    }
 
     @Resource
     SysImSessionContentMapper sysImSessionContentMapper;
@@ -270,11 +274,11 @@ public class SysImSessionServiceImpl extends ServiceImpl<SysImSessionMapper, Sys
     /**
      * 加入会话
      */
-    private void queryCustomerSessionIdUserSelfJoinSession(Long currentUserId, Long sessionId) {
+    private void queryCustomerSessionIdUserSelfJoinSession(Long userId, Long sessionId) {
 
         NotNullIdAndNotEmptyLongSet notNullIdAndNotEmptyLongSet = new NotNullIdAndNotEmptyLongSet();
 
-        notNullIdAndNotEmptyLongSet.setValueSet(CollUtil.newHashSet(currentUserId));
+        notNullIdAndNotEmptyLongSet.setValueSet(CollUtil.newHashSet(userId));
 
         notNullIdAndNotEmptyLongSet.setId(sessionId);
 

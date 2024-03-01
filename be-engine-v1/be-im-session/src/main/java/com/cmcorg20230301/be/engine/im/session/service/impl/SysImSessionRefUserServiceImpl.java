@@ -128,6 +128,8 @@ public class SysImSessionRefUserServiceImpl extends ServiceImpl<SysImSessionRefU
 
                 sysImSessionRefUserDO.setShowFlag(true);
 
+                sysImSessionRefUserDO.setBlockFlag(false);
+
                 insertList.add(sysImSessionRefUserDO);
 
             }
