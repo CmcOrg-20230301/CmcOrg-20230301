@@ -14,7 +14,7 @@ public enum BaseRedisKeyEnum implements IRedisKey {
 
     // im 相关 ↓
 
-    PRE_SYS_IM_SESSION_APPLY, // 会话申请锁，锁：【用户主键 id + 租户主键 id + 会话主键 id】
+    PRE_SYS_IM_SESSION_APPLY_PRIVATE_CHAT, // 会话申请锁，锁：【用户主键 id + 租户主键 id + 目标用户主键 id】
 
     // im 相关 ↑
 

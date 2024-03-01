@@ -26,6 +26,9 @@ public class SysImSessionApplyDO extends BaseEntityNoIdSuper {
     @Schema(description = "会话主键 id")
     private Long sessionId;
 
+    @Schema(description = "会话是私聊时，申请目标用户的主键 id，其他类型时，该值为：-1")
+    private Long privateChatApplyTargetUserId;
+
     @Schema(description = "是否启用")
     private Boolean enableFlag;
 
@@ -40,9 +43,6 @@ public class SysImSessionApplyDO extends BaseEntityNoIdSuper {
      */
     @Schema(description = "冗余字段，会话类型：101 私聊 201 群聊 301 客服")
     private Integer sessionType;
-
-    @Schema(description = "会话是私聊时，申请目标用户的主键 id，其他类型时，该值为：-1")
-    private Long privateChatApplyTargetUserId;
 
     @Schema(description = "状态：101 申请中 201 已通过 301 已拒绝")
     private SysImSessionApplyStatusEnum status;

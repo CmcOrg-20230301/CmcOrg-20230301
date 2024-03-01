@@ -19,6 +19,8 @@ public enum SysImSessionApplyStatusEnum implements ISysImSessionContentType {
 
     REJECTED(301), // 已拒绝
 
+    BLOCKED(401), // 已被拉黑
+
     ;
 
     @EnumValue
