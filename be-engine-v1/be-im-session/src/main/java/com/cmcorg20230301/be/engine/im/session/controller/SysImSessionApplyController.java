@@ -1,5 +1,7 @@
 package com.cmcorg20230301.be.engine.im.session.controller;
 
+import com.cmcorg20230301.be.engine.im.session.model.dto.SysImSessionApplyPrivateChatApplyDTO;
+import com.cmcorg20230301.be.engine.im.session.model.dto.SysImSessionApplyPrivateChatRejectDTO;
 import com.cmcorg20230301.be.engine.im.session.service.SysImSessionApplyService;
 import com.cmcorg20230301.be.engine.model.model.dto.NotEmptyIdSet;
 import com.cmcorg20230301.be.engine.model.model.dto.NotNullId;
@@ -24,14 +26,32 @@ public class SysImSessionApplyController {
 
     @Operation(summary = "私聊：申请添加")
     @PostMapping("/privateChat/apply")
-    public ApiResultVO<String> privateChatApply(@RequestBody @Valid NotNullId notNullId) {
-        return ApiResultVO.okMsg(baseService.privateChatApply(notNullId));
+    public ApiResultVO<String> privateChatApply(@RequestBody @Valid SysImSessionApplyPrivateChatApplyDTO dto) {
+        return ApiResultVO.okMsg(baseService.privateChatApply(dto));
     }
 
     @Operation(summary = "私聊：同意添加")
     @PostMapping("/privateChat/agree")
     public ApiResultVO<String> privateChatAgree(@RequestBody @Valid NotEmptyIdSet notEmptyIdSet) {
         return ApiResultVO.okMsg(baseService.privateChatAgree(notEmptyIdSet));
+    }
+
+    @Operation(summary = "私聊：拒绝添加")
+    @PostMapping("/privateChat/reject")
+    public ApiResultVO<String> privateChatReject(@RequestBody @Valid SysImSessionApplyPrivateChatRejectDTO dto) {
+        return ApiResultVO.okMsg(baseService.privateChatReject(dto));
+    }
+
+    @Operation(summary = "私聊：拉黑")
+    @PostMapping("/privateChat/block")
+    public ApiResultVO<String> privateChatBlock(@RequestBody @Valid NotNullId notNullId) {
+        return ApiResultVO.okMsg(baseService.privateChatBlock(notNullId));
+    }
+
+    @Operation(summary = "私聊：拉黑取消")
+    @PostMapping("/privateChat/block/cancel")
+    public ApiResultVO<String> privateChatBlockCancel(@RequestBody @Valid NotEmptyIdSet notEmptyIdSet) {
+        return ApiResultVO.okMsg(baseService.privateChatBlockCancel(notEmptyIdSet));
     }
 
 }

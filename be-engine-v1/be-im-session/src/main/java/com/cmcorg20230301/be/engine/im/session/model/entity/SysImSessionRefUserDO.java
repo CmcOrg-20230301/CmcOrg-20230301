@@ -15,14 +15,14 @@ import lombok.EqualsAndHashCode;
 public class SysImSessionRefUserDO extends BaseEntityNoIdSuper {
 
     @TableId(type = IdType.INPUT)
+    @Schema(description = "主键 id")
+    private Long id;
+
     @Schema(description = "用户主键 id")
     private Long userId;
 
     @Schema(description = "会话主键 id")
     private Long sessionId;
-
-    @Schema(description = "是否被禁言")
-    private Boolean enableFlag;
 
     @Schema(description = "是否逻辑删除，暂时未使用")
     private Boolean delFlag;
@@ -41,5 +41,11 @@ public class SysImSessionRefUserDO extends BaseEntityNoIdSuper {
 
     @Schema(description = "是私聊时，关联的另外一个用户的主键 id，其他类型时，该值为：-1")
     private Long privateChatRefUserId;
+
+    @Schema(description = "是否没有被禁言")
+    private Boolean enableFlag;
+
+    @Schema(description = "是否被拉黑")
+    private Boolean blockFlag;
 
 }

@@ -23,6 +23,7 @@ import com.cmcorg20230301.be.engine.model.model.dto.NotNullIdAndNotEmptyLongSet;
 import com.cmcorg20230301.be.engine.model.model.enums.BaseWebSocketUriEnum;
 import com.cmcorg20230301.be.engine.model.model.vo.LongObjectMapVO;
 import com.cmcorg20230301.be.engine.redisson.model.enums.BaseRedisKeyEnum;
+import com.cmcorg20230301.be.engine.redisson.util.IdGeneratorUtil;
 import com.cmcorg20230301.be.engine.redisson.util.RedissonUtil;
 import com.cmcorg20230301.be.engine.security.exception.BaseBizCodeEnum;
 import com.cmcorg20230301.be.engine.security.model.bo.SysWebSocketEventBO;
@@ -74,7 +75,15 @@ public class SysImSessionRefUserServiceImpl extends ServiceImpl<SysImSessionRefU
             ApiResultVO.error(BaseBizCodeEnum.ILLEGAL_REQUEST, sessionId);
         }
 
-        return RedissonUtil.doLock(BaseRedisKeyEnum.PRE_SYS_IM_SESSION_ID + sessionId.toString(), () -> {
+        Set<String> keySet = new HashSet<>();
+
+        for (Long item : userIdSet) {
+
+            keySet.add(BaseRedisKeyEnum.PRE_SYS_IM_SESSION_REF_USER.name() + sessionId + item);
+
+        }
+
+        return RedissonUtil.doMultiLock("", keySet, () -> {
 
             // 查询出：已经存在该会话的用户数据
             List<SysImSessionRefUserDO> sysImSessionRefUserDOList = lambdaQuery().eq(BaseEntityNoIdSuper::getTenantId, tenantId).eq(SysImSessionRefUserDO::getSessionId, sessionId).select(SysImSessionRefUserDO::getUserId).list();
@@ -100,6 +109,8 @@ public class SysImSessionRefUserServiceImpl extends ServiceImpl<SysImSessionRefU
             for (Long item : userIdSet) {
 
                 SysImSessionRefUserDO sysImSessionRefUserDO = new SysImSessionRefUserDO();
+
+                sysImSessionRefUserDO.setId(IdGeneratorUtil.nextId());
 
                 sysImSessionRefUserDO.setUserId(item);
 

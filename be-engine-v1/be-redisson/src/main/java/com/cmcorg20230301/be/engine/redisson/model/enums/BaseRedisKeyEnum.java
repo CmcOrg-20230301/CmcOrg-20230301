@@ -14,7 +14,11 @@ public enum BaseRedisKeyEnum implements IRedisKey {
 
     // im 相关 ↓
 
-    PRE_SYS_IM_SESSION_APPLY_PRIVATE_CHAT, // 会话申请锁，锁：【用户主键 id + 租户主键 id + 目标用户主键 id】
+    PRE_SYS_IM_SESSION_APPLY_PRIVATE_CHAT, // 即时通讯会话申请锁，锁：【用户主键 id + 目标用户主键 id】
+
+    PRE_SYS_IM_SESSION_REF_USER, // 即时通讯会话关联用户锁，目的：往会话里面添加用户时，防止重复添加，锁：【sessionId + 用户主键 id】
+
+    PRE_SYS_IM_SESSION_CUSTOMER, // 即时通讯客服会话锁，目的：创建会话时，防止重复添加，锁：【用户主键 id】
 
     // im 相关 ↑
 
@@ -61,10 +65,6 @@ public enum BaseRedisKeyEnum implements IRedisKey {
     PRE_SYS_WX_QR_CODE_SIGN_IN_SINGLE, // 微信扫码登录注册时，生成的，二维码 id，备注：只有扫描了二维码之后，才会放数据到 redis里面
 
     // 微信操作相关 ↑
-
-    PRE_SYS_IM_SESSION_ID, // 即时通讯会话锁，目的：往会话里面添加用户时，防止重复添加，锁：【sessionId】
-
-    PRE_SYS_IM_SESSION_USER_ID, // 即时通讯会话锁，目的：创建会话时，防止重复添加，锁：【userId】
 
     PRE_SYS_OTHER_APP_WX_WORK_RECEIVE_MESSAGE_ID, // 企业微信消息 id锁，目的：不重复处理消息，锁：【msgId】
 

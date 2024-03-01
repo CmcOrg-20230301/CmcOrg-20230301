@@ -210,9 +210,9 @@ public class SysImSessionServiceImpl extends ServiceImpl<SysImSessionMapper, Sys
     @DSTransactional
     public Long queryCustomerSessionIdUserSelf(SysImSessionQueryCustomerSessionIdUserSelfDTO dto) {
 
-        Long currentUserId = UserUtil.getCurrentUserId();
+        Long userId = UserUtil.getCurrentUserId();
 
-        Long currentTenantIdDefault = UserUtil.getCurrentTenantIdDefault();
+        Long tenantId = UserUtil.getCurrentTenantIdDefault();
 
         if (StrUtil.isBlank(dto.getName())) {
             dto.setName("客服");
@@ -222,9 +222,9 @@ public class SysImSessionServiceImpl extends ServiceImpl<SysImSessionMapper, Sys
             dto.setType(SysImSessionTypeEnum.CUSTOMER.getCode());
         }
 
-        return RedissonUtil.doLock(BaseRedisKeyEnum.PRE_SYS_IM_SESSION_USER_ID.name() + currentUserId, () -> {
+        return RedissonUtil.doLock(BaseRedisKeyEnum.PRE_SYS_IM_SESSION_CUSTOMER.name() + userId, () -> {
 
-            SysImSessionDO sysImSessionDO = lambdaQuery().eq(SysImSessionDO::getType, dto.getType()).eq(SysImSessionDO::getBelongId, currentUserId).eq(BaseEntityNoIdSuper::getTenantId, currentTenantIdDefault).select(BaseEntity::getId).one();
+            SysImSessionDO sysImSessionDO = lambdaQuery().eq(SysImSessionDO::getType, dto.getType()).eq(SysImSessionDO::getBelongId, userId).eq(BaseEntityNoIdSuper::getTenantId, tenantId).select(BaseEntity::getId).one();
 
             Long sessionId;
 
@@ -238,31 +238,48 @@ public class SysImSessionServiceImpl extends ServiceImpl<SysImSessionMapper, Sys
 
                 sessionId = insertOrUpdate(sysImSessionInsertOrUpdateDTO); // 新增会话
 
-            } else {
+                // 加入会话
+                queryCustomerSessionIdUserSelfJoinSession(userId, sessionId);
 
-                sessionId = sysImSessionDO.getId();
+                return sessionId;
+
+            }
+
+            sessionId = sysImSessionDO.getId();
+
+            return RedissonUtil.doLock(BaseRedisKeyEnum.PRE_SYS_IM_SESSION_REF_USER.name() + sessionId + userId, () -> {
 
                 // 查询出：是否已经存在该会话中
-                boolean exists = sysImSessionRefUserService.lambdaQuery().eq(BaseEntityNoIdSuper::getTenantId, currentTenantIdDefault).eq(SysImSessionRefUserDO::getSessionId, sessionId).eq(SysImSessionRefUserDO::getUserId, currentUserId).exists();
+                boolean exists = sysImSessionRefUserService.lambdaQuery().eq(BaseEntityNoIdSuper::getTenantId, tenantId).eq(SysImSessionRefUserDO::getSessionId, sessionId).eq(SysImSessionRefUserDO::getUserId, userId).exists();
 
                 if (exists) {
                     return sessionId;
                 }
 
-            }
+                // 加入会话
+                queryCustomerSessionIdUserSelfJoinSession(userId, sessionId);
 
-            NotNullIdAndNotEmptyLongSet notNullIdAndNotEmptyLongSet = new NotNullIdAndNotEmptyLongSet();
+                return sessionId;
 
-            notNullIdAndNotEmptyLongSet.setValueSet(CollUtil.newHashSet(currentUserId));
-
-            notNullIdAndNotEmptyLongSet.setId(sessionId);
-
-            // 把当前用户，加入会话中
-            sysImSessionRefUserService.joinUserIdSet(notNullIdAndNotEmptyLongSet);
-
-            return sessionId;
+            });
 
         });
+
+    }
+
+    /**
+     * 加入会话
+     */
+    private void queryCustomerSessionIdUserSelfJoinSession(Long currentUserId, Long sessionId) {
+
+        NotNullIdAndNotEmptyLongSet notNullIdAndNotEmptyLongSet = new NotNullIdAndNotEmptyLongSet();
+
+        notNullIdAndNotEmptyLongSet.setValueSet(CollUtil.newHashSet(currentUserId));
+
+        notNullIdAndNotEmptyLongSet.setId(sessionId);
+
+        // 把当前用户，加入会话中
+        sysImSessionRefUserService.joinUserIdSet(notNullIdAndNotEmptyLongSet);
 
     }
 
