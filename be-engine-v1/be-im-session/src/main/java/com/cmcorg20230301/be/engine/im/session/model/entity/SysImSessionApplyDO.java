@@ -17,6 +17,9 @@ import lombok.EqualsAndHashCode;
 public class SysImSessionApplyDO extends BaseEntityNoIdSuper {
 
     @TableId(type = IdType.INPUT)
+    @Schema(description = "主键 id")
+    private Long id;
+
     @Schema(description = "用户主键 id")
     private Long userId;
 
