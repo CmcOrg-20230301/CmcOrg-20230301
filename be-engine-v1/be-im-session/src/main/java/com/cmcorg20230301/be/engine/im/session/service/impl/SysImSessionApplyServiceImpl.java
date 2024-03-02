@@ -343,20 +343,38 @@ public class SysImSessionApplyServiceImpl extends ServiceImpl<SysImSessionApplyM
 
         return RedissonUtil.doMultiLock("", ketSet, () -> {
 
-            // 处理
-            return handlePrivateChatBlockCancel(userId, tenantId, applyUserIdSet, date);
+            List<SysImSessionApplyDO> sysImSessionApplyDOList = lambdaQuery().eq(SysImSessionApplyDO::getPrivateChatApplyTargetUserId, userId).eq(BaseEntityNoIdSuper::getTenantId, tenantId).in(SysImSessionApplyDO::getUserId, applyUserIdSet).eq(SysImSessionApplyDO::getStatus, SysImSessionApplyStatusEnum.BLOCKED).select(SysImSessionApplyDO::getId, SysImSessionApplyDO::getSessionId, SysImSessionApplyDO::getBlockPreStatus).list();
+
+            if (CollUtil.isEmpty(sysImSessionApplyDOList)) {
+                ApiResultVO.error("操作失败：拉黑状态已发生改变，请刷新重试", applyUserIdSet);
+            }
+
+            Set<Long> applyIdSet = new HashSet<>();
+
+            Set<Long> sessionIdSet = new HashSet<>();
+
+            for (SysImSessionApplyDO item : sysImSessionApplyDOList) {
+
+                applyIdSet.add(item.getId());
+
+                if (item.getSessionId() != BaseConstant.NEGATIVE_ONE) {
+
+                    sessionIdSet.add(item.getSessionId());
+
+                }
+
+                item.setUpdateTime(date);
+                item.setStatus(item.getBlockPreStatus()); // 恢复：拉黑之前的状态
+
+            }
+
+            updateBatchById(sysImSessionApplyDOList);
+
+            sysImSessionRefUserService.lambdaUpdate().in(SysImSessionRefUserDO::getSessionId, sessionIdSet).set(SysImSessionRefUserDO::getBlockFlag, false).set(BaseEntityNoIdSuper::getUpdateTime, date).update();
+
+            return BaseBizCodeEnum.OK;
 
         });
-
-    }
-
-    /**
-     * 处理
-     */
-    @NotNull
-    private String handlePrivateChatBlockCancel(Long userId, Long tenantId, Set<Long> applyUserIdSet, Date date) {
-
-        return BaseBizCodeEnum.OK;
 
     }
 
