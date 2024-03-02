@@ -383,7 +383,27 @@ public class SysImSessionApplyServiceImpl extends ServiceImpl<SysImSessionApplyM
      */
     @Override
     public String privateChatApplyCancel(NotNullId notNullId) {
-        return null;
+
+        Long tenantId = UserUtil.getCurrentTenantIdDefault();
+
+        Long userId = UserUtil.getCurrentUserId();
+
+        Long privateChatApplyTargetUserId = notNullId.getId();
+
+        String key = getPrivateChatApplyKey(userId, privateChatApplyTargetUserId);
+
+        return RedissonUtil.doLock(key, () -> {
+
+            boolean remove = lambdaUpdate().eq(SysImSessionApplyDO::getPrivateChatApplyTargetUserId, privateChatApplyTargetUserId).eq(BaseEntityNoIdSuper::getTenantId, tenantId).eq(SysImSessionApplyDO::getUserId, userId).eq(SysImSessionApplyDO::getStatus, SysImSessionApplyStatusEnum.APPLYING).remove();
+
+            if (!remove) {
+                ApiResultVO.error("操作失败：申请状态已发生改变，请刷新重试", privateChatApplyTargetUserId);
+            }
+
+            return BaseBizCodeEnum.OK;
+
+        });
+
     }
 
     /**
@@ -391,7 +411,23 @@ public class SysImSessionApplyServiceImpl extends ServiceImpl<SysImSessionApplyM
      */
     @Override
     public String privateChatApplyHidden(NotNullId notNullId) {
-        return null;
+
+        Long tenantId = UserUtil.getCurrentTenantIdDefault();
+
+        Long userId = UserUtil.getCurrentUserId();
+
+        Long applyUserId = notNullId.getId();
+
+        String key = getPrivateChatApplyKey(userId, applyUserId);
+
+        return RedissonUtil.doLock(key, () -> {
+
+            lambdaUpdate().eq(SysImSessionApplyDO::getPrivateChatApplyTargetUserId, applyUserId).eq(BaseEntityNoIdSuper::getTenantId, tenantId).eq(SysImSessionApplyDO::getUserId, userId).set(SysImSessionApplyDO::getShowFlag, false).update();
+
+            return BaseBizCodeEnum.OK;
+
+        });
+
     }
 
     /**
@@ -399,7 +435,34 @@ public class SysImSessionApplyServiceImpl extends ServiceImpl<SysImSessionApplyM
      */
     @Override
     public String privateChatDelete(NotNullId notNullId) {
-        return null;
+
+        Long tenantId = UserUtil.getCurrentTenantIdDefault();
+
+        Long userId = UserUtil.getCurrentUserId();
+
+        Long applyUserId = notNullId.getId();
+
+        String key = getPrivateChatApplyKey(userId, applyUserId);
+
+        Date date = new Date();
+
+        return RedissonUtil.doLock(key, () -> {
+
+            SysImSessionApplyDO sysImSessionApplyDO = lambdaQuery().eq(SysImSessionApplyDO::getPrivateChatApplyTargetUserId, userId).eq(BaseEntityNoIdSuper::getTenantId, tenantId).eq(SysImSessionApplyDO::getUserId, applyUserId).select(SysImSessionApplyDO::getId, SysImSessionApplyDO::getStatus, SysImSessionApplyDO::getSessionId).one();
+
+            if (sysImSessionApplyDO == null) {
+                return BaseBizCodeEnum.OK;
+            }
+
+            lambdaUpdate().eq(SysImSessionApplyDO::getId, sysImSessionApplyDO.getId()).set(SysImSessionApplyDO::getStatus, SysImSessionApplyStatusEnum.BLOCKED).set(BaseEntityNoIdSuper::getUpdateTime, date).set(SysImSessionApplyDO::getBlockPreStatus, sysImSessionApplyDO.getStatus()).update();
+
+            // 双方一起被删除
+            sysImSessionRefUserService.lambdaUpdate().eq(SysImSessionRefUserDO::getSessionId, sysImSessionApplyDO.getSessionId()).set(SysImSessionRefUserDO::getEnableFlag, false).set(BaseEntityNoIdSuper::getUpdateTime, date).update();
+
+            return BaseBizCodeEnum.OK;
+
+        });
+
     }
 
 }
