@@ -2,6 +2,7 @@ package com.cmcorg20230301.be.engine.im.session.service.impl;
 
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.map.MapUtil;
+import cn.hutool.core.util.BooleanUtil;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.dynamic.datasource.annotation.DSTransactional;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -10,6 +11,7 @@ import com.baomidou.mybatisplus.extension.toolkit.ChainWrappers;
 import com.cmcorg20230301.be.engine.file.base.service.SysFileService;
 import com.cmcorg20230301.be.engine.im.session.mapper.SysImSessionMapper;
 import com.cmcorg20230301.be.engine.im.session.mapper.SysImSessionRefUserMapper;
+import com.cmcorg20230301.be.engine.im.session.model.dto.SysImSessionRefUserJoinUserIdSetDTO;
 import com.cmcorg20230301.be.engine.im.session.model.dto.SysImSessionRefUserSelfPageDTO;
 import com.cmcorg20230301.be.engine.im.session.model.entity.SysImSessionDO;
 import com.cmcorg20230301.be.engine.im.session.model.entity.SysImSessionRefUserDO;
@@ -32,6 +34,7 @@ import com.cmcorg20230301.be.engine.security.model.entity.BaseEntity;
 import com.cmcorg20230301.be.engine.security.model.entity.BaseEntityNoIdSuper;
 import com.cmcorg20230301.be.engine.security.model.entity.SysUserInfoDO;
 import com.cmcorg20230301.be.engine.security.model.vo.ApiResultVO;
+import com.cmcorg20230301.be.engine.security.util.MyEntityUtil;
 import com.cmcorg20230301.be.engine.security.util.SysTenantUtil;
 import com.cmcorg20230301.be.engine.security.util.SysUserInfoUtil;
 import com.cmcorg20230301.be.engine.security.util.UserUtil;
@@ -43,8 +46,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
-public class SysImSessionRefUserServiceImpl extends ServiceImpl<SysImSessionRefUserMapper, SysImSessionRefUserDO>
-        implements SysImSessionRefUserService {
+public class SysImSessionRefUserServiceImpl extends ServiceImpl<SysImSessionRefUserMapper, SysImSessionRefUserDO> implements SysImSessionRefUserService {
 
     @Resource
     SysImSessionMapper sysImSessionMapper;
@@ -57,14 +59,14 @@ public class SysImSessionRefUserServiceImpl extends ServiceImpl<SysImSessionRefU
      */
     @Override
     @DSTransactional
-    public String joinUserIdSet(NotNullIdAndNotEmptyLongSet notNullIdAndNotEmptyLongSet) {
+    public String joinUserIdSet(SysImSessionRefUserJoinUserIdSetDTO dto) {
 
-        Set<Long> userIdSet = notNullIdAndNotEmptyLongSet.getValueSet();
+        Set<Long> userIdSet = dto.getValueSet();
 
         // 检查：用户 idSet，是否属于当前租户
         SysTenantUtil.checkUserIdSetBelongCurrentTenant(userIdSet);
 
-        Long sessionId = notNullIdAndNotEmptyLongSet.getId();
+        Long sessionId = dto.getId();
 
         Long tenantId = UserUtil.getCurrentTenantIdDefault();
 
@@ -74,6 +76,9 @@ public class SysImSessionRefUserServiceImpl extends ServiceImpl<SysImSessionRefU
         if (sysImSessionDO == null) {
             ApiResultVO.error(BaseBizCodeEnum.ILLEGAL_REQUEST, sessionId);
         }
+
+        // 获取：私聊时关联的用户 map
+        Map<Long, Long> privateChatRefUserIdMap = getPrivateChatRefUserIdMap(dto, userIdSet, sessionId);
 
         Set<String> keySet = new HashSet<>();
 
@@ -130,6 +135,8 @@ public class SysImSessionRefUserServiceImpl extends ServiceImpl<SysImSessionRefU
 
                 sysImSessionRefUserDO.setBlockFlag(false);
 
+                sysImSessionRefUserDO.setPrivateChatRefUserId(MyEntityUtil.getNotNullLong(privateChatRefUserIdMap.get(item)));
+
                 insertList.add(sysImSessionRefUserDO);
 
             }
@@ -154,6 +161,33 @@ public class SysImSessionRefUserServiceImpl extends ServiceImpl<SysImSessionRefU
             return BaseBizCodeEnum.OK;
 
         });
+
+    }
+
+    /**
+     * 获取：私聊时关联的用户 map
+     */
+    private static Map<Long, Long> getPrivateChatRefUserIdMap(SysImSessionRefUserJoinUserIdSetDTO dto, Set<Long> userIdSet, Long sessionId) {
+
+        Map<Long, Long> privateChatRefUserIdMap = MapUtil.newHashMap();
+
+        if (BooleanUtil.isTrue(dto.getPrivateChatFlag())) {
+
+            if (userIdSet.size() != 2) {
+
+                ApiResultVO.error(BaseBizCodeEnum.ILLEGAL_REQUEST, sessionId);
+
+            }
+
+            List<Long> userIdList = new ArrayList<>(userIdSet);
+
+            privateChatRefUserIdMap.put(userIdList.get(0), userIdList.get(1));
+
+            privateChatRefUserIdMap.put(userIdList.get(1), userIdList.get(0));
+
+        }
+
+        return privateChatRefUserIdMap;
 
     }
 

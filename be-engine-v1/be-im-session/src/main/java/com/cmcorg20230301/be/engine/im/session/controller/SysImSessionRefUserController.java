@@ -1,12 +1,12 @@
 package com.cmcorg20230301.be.engine.im.session.controller;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.cmcorg20230301.be.engine.im.session.model.dto.SysImSessionRefUserJoinUserIdSetDTO;
 import com.cmcorg20230301.be.engine.im.session.model.dto.SysImSessionRefUserSelfPageDTO;
 import com.cmcorg20230301.be.engine.im.session.model.entity.SysImSessionDO;
 import com.cmcorg20230301.be.engine.im.session.model.vo.SysImSessionRefUserQueryRefUserInfoMapVO;
 import com.cmcorg20230301.be.engine.im.session.service.SysImSessionRefUserService;
 import com.cmcorg20230301.be.engine.model.model.dto.NotNullIdAndLongSet;
-import com.cmcorg20230301.be.engine.model.model.dto.NotNullIdAndNotEmptyLongSet;
 import com.cmcorg20230301.be.engine.model.model.vo.LongObjectMapVO;
 import com.cmcorg20230301.be.engine.security.model.vo.ApiResultVO;
 import io.swagger.v3.oas.annotations.Operation;
@@ -31,8 +31,8 @@ public class SysImSessionRefUserController {
     @Operation(summary = "加入新用户")
     @PostMapping("/join/userIdSet")
     @PreAuthorize("hasAuthority('sysImSessionRefUser:joinUserIdSet')")
-    public ApiResultVO<String> joinUserIdSet(@RequestBody @Valid NotNullIdAndNotEmptyLongSet notNullIdAndNotEmptyLongSet) {
-        return ApiResultVO.okMsg(baseService.joinUserIdSet(notNullIdAndNotEmptyLongSet));
+    public ApiResultVO<String> joinUserIdSet(@RequestBody @Valid SysImSessionRefUserJoinUserIdSetDTO dto) {
+        return ApiResultVO.okMsg(baseService.joinUserIdSet(dto));
     }
 
     @Operation(summary = "查询：当前会话的用户信息，map")

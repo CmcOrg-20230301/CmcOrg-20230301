@@ -14,13 +14,13 @@ import com.cmcorg20230301.be.engine.im.session.mapper.SysImSessionMapper;
 import com.cmcorg20230301.be.engine.im.session.model.dto.SysImSessionInsertOrUpdateDTO;
 import com.cmcorg20230301.be.engine.im.session.model.dto.SysImSessionPageDTO;
 import com.cmcorg20230301.be.engine.im.session.model.dto.SysImSessionQueryCustomerSessionIdUserSelfDTO;
+import com.cmcorg20230301.be.engine.im.session.model.dto.SysImSessionRefUserJoinUserIdSetDTO;
 import com.cmcorg20230301.be.engine.im.session.model.entity.SysImSessionContentDO;
 import com.cmcorg20230301.be.engine.im.session.model.entity.SysImSessionDO;
 import com.cmcorg20230301.be.engine.im.session.model.entity.SysImSessionRefUserDO;
 import com.cmcorg20230301.be.engine.im.session.model.enums.SysImSessionTypeEnum;
 import com.cmcorg20230301.be.engine.im.session.service.SysImSessionRefUserService;
 import com.cmcorg20230301.be.engine.im.session.service.SysImSessionService;
-import com.cmcorg20230301.be.engine.model.model.dto.NotNullIdAndNotEmptyLongSet;
 import com.cmcorg20230301.be.engine.redisson.model.enums.BaseRedisKeyEnum;
 import com.cmcorg20230301.be.engine.redisson.util.RedissonUtil;
 import com.cmcorg20230301.be.engine.security.model.entity.BaseEntity;
@@ -276,14 +276,14 @@ public class SysImSessionServiceImpl extends ServiceImpl<SysImSessionMapper, Sys
      */
     private void queryCustomerSessionIdUserSelfJoinSession(Long userId, Long sessionId) {
 
-        NotNullIdAndNotEmptyLongSet notNullIdAndNotEmptyLongSet = new NotNullIdAndNotEmptyLongSet();
+        SysImSessionRefUserJoinUserIdSetDTO sysImSessionRefUserJoinUserIdSetDTO = new SysImSessionRefUserJoinUserIdSetDTO();
 
-        notNullIdAndNotEmptyLongSet.setValueSet(CollUtil.newHashSet(userId));
+        sysImSessionRefUserJoinUserIdSetDTO.setValueSet(CollUtil.newHashSet(userId));
 
-        notNullIdAndNotEmptyLongSet.setId(sessionId);
+        sysImSessionRefUserJoinUserIdSetDTO.setId(sessionId);
 
         // 把当前用户，加入会话中
-        sysImSessionRefUserService.joinUserIdSet(notNullIdAndNotEmptyLongSet);
+        sysImSessionRefUserService.joinUserIdSet(sysImSessionRefUserJoinUserIdSetDTO);
 
     }
 

@@ -8,6 +8,7 @@ import com.cmcorg20230301.be.engine.im.session.mapper.SysImSessionApplyMapper;
 import com.cmcorg20230301.be.engine.im.session.model.dto.SysImSessionApplyPrivateChatApplyDTO;
 import com.cmcorg20230301.be.engine.im.session.model.dto.SysImSessionApplyPrivateChatRejectDTO;
 import com.cmcorg20230301.be.engine.im.session.model.dto.SysImSessionInsertOrUpdateDTO;
+import com.cmcorg20230301.be.engine.im.session.model.dto.SysImSessionRefUserJoinUserIdSetDTO;
 import com.cmcorg20230301.be.engine.im.session.model.entity.SysImSessionApplyDO;
 import com.cmcorg20230301.be.engine.im.session.model.entity.SysImSessionRefUserDO;
 import com.cmcorg20230301.be.engine.im.session.model.enums.SysImSessionApplyStatusEnum;
@@ -18,7 +19,6 @@ import com.cmcorg20230301.be.engine.im.session.service.SysImSessionService;
 import com.cmcorg20230301.be.engine.model.model.constant.BaseConstant;
 import com.cmcorg20230301.be.engine.model.model.dto.NotEmptyIdSet;
 import com.cmcorg20230301.be.engine.model.model.dto.NotNullId;
-import com.cmcorg20230301.be.engine.model.model.dto.NotNullIdAndNotEmptyLongSet;
 import com.cmcorg20230301.be.engine.redisson.model.enums.BaseRedisKeyEnum;
 import com.cmcorg20230301.be.engine.redisson.util.IdGeneratorUtil;
 import com.cmcorg20230301.be.engine.redisson.util.RedissonUtil;
@@ -210,14 +210,16 @@ public class SysImSessionApplyServiceImpl extends ServiceImpl<SysImSessionApplyM
                 // 新建一个会话
                 Long sessionId = sysImSessionService.insertOrUpdate(sysImSessionInsertOrUpdateDTO);
 
-                NotNullIdAndNotEmptyLongSet notNullIdAndNotEmptyLongSet = new NotNullIdAndNotEmptyLongSet();
+                SysImSessionRefUserJoinUserIdSetDTO sysImSessionRefUserJoinUserIdSetDTO = new SysImSessionRefUserJoinUserIdSetDTO();
 
-                notNullIdAndNotEmptyLongSet.setValueSet(CollUtil.newHashSet(userId, item.getUserId()));
+                sysImSessionRefUserJoinUserIdSetDTO.setValueSet(CollUtil.newHashSet(userId, item.getUserId()));
 
-                notNullIdAndNotEmptyLongSet.setId(sessionId);
+                sysImSessionRefUserJoinUserIdSetDTO.setId(sessionId);
+
+                sysImSessionRefUserJoinUserIdSetDTO.setPrivateChatFlag(true);
 
                 // 加入该会话
-                sysImSessionRefUserService.joinUserIdSet(notNullIdAndNotEmptyLongSet);
+                sysImSessionRefUserService.joinUserIdSet(sysImSessionRefUserJoinUserIdSetDTO);
 
                 item.setSessionId(sessionId); // 设置：关联的 sessionId
 
@@ -280,6 +282,7 @@ public class SysImSessionApplyServiceImpl extends ServiceImpl<SysImSessionApplyM
      * 私聊：拉黑
      */
     @Override
+    @DSTransactional
     public String privateChatBlock(NotNullId notNullId) {
 
         Long tenantId = UserUtil.getCurrentTenantIdDefault();
@@ -290,15 +293,19 @@ public class SysImSessionApplyServiceImpl extends ServiceImpl<SysImSessionApplyM
 
         String key = getPrivateChatApplyKey(userId, applyUserId);
 
+        Date date = new Date();
+
         return RedissonUtil.doLock(key, () -> {
 
-            SysImSessionApplyDO sysImSessionApplyDO = lambdaQuery().eq(SysImSessionApplyDO::getPrivateChatApplyTargetUserId, userId).eq(BaseEntityNoIdSuper::getTenantId, tenantId).eq(SysImSessionApplyDO::getUserId, applyUserId).select(SysImSessionApplyDO::getId, SysImSessionApplyDO::getStatus).one();
+            SysImSessionApplyDO sysImSessionApplyDO = lambdaQuery().eq(SysImSessionApplyDO::getPrivateChatApplyTargetUserId, userId).eq(BaseEntityNoIdSuper::getTenantId, tenantId).eq(SysImSessionApplyDO::getUserId, applyUserId).select(SysImSessionApplyDO::getId, SysImSessionApplyDO::getStatus, SysImSessionApplyDO::getSessionId).one();
 
             if (sysImSessionApplyDO == null) {
                 return BaseBizCodeEnum.OK;
             }
 
-            lambdaUpdate().eq(SysImSessionApplyDO::getId, sysImSessionApplyDO.getId()).set(SysImSessionApplyDO::getStatus, SysImSessionApplyStatusEnum.BLOCKED).set(BaseEntityNoIdSuper::getUpdateTime, new Date()).set(SysImSessionApplyDO::getBlockPreStatus, sysImSessionApplyDO.getStatus()).update();
+            lambdaUpdate().eq(SysImSessionApplyDO::getId, sysImSessionApplyDO.getId()).set(SysImSessionApplyDO::getStatus, SysImSessionApplyStatusEnum.BLOCKED).set(BaseEntityNoIdSuper::getUpdateTime, date).set(SysImSessionApplyDO::getBlockPreStatus, sysImSessionApplyDO.getStatus()).update();
+
+            sysImSessionRefUserService.lambdaUpdate().eq(SysImSessionRefUserDO::getSessionId, sysImSessionApplyDO.getSessionId()).set(SysImSessionRefUserDO::getBlockFlag, true).set(BaseEntityNoIdSuper::getUpdateTime, date).update();
 
             return BaseBizCodeEnum.OK;
 
@@ -318,6 +325,12 @@ public class SysImSessionApplyServiceImpl extends ServiceImpl<SysImSessionApplyM
 
         Set<Long> applyUserIdSet = notEmptyIdSet.getIdSet();
 
+        Long count = lambdaQuery().eq(SysImSessionApplyDO::getPrivateChatApplyTargetUserId, userId).eq(BaseEntityNoIdSuper::getTenantId, tenantId).in(SysImSessionApplyDO::getUserId, applyUserIdSet).count();
+
+        if (count != applyUserIdSet.size()) {
+            ApiResultVO.error(BaseBizCodeEnum.ILLEGAL_REQUEST);
+        }
+
         Set<String> ketSet = new HashSet<>();
 
         for (Long item : applyUserIdSet) {
@@ -330,10 +343,20 @@ public class SysImSessionApplyServiceImpl extends ServiceImpl<SysImSessionApplyM
 
         return RedissonUtil.doMultiLock("", ketSet, () -> {
 
-
-            return BaseBizCodeEnum.OK;
+            // 处理
+            return handlePrivateChatBlockCancel(userId, tenantId, applyUserIdSet, date);
 
         });
+
+    }
+
+    /**
+     * 处理
+     */
+    @NotNull
+    private String handlePrivateChatBlockCancel(Long userId, Long tenantId, Set<Long> applyUserIdSet, Date date) {
+
+        return BaseBizCodeEnum.OK;
 
     }
 
