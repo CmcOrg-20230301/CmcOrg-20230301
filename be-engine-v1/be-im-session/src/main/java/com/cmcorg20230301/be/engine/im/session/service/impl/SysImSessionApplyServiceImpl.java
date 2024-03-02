@@ -440,28 +440,18 @@ public class SysImSessionApplyServiceImpl extends ServiceImpl<SysImSessionApplyM
 
         Long userId = UserUtil.getCurrentUserId();
 
-        Long applyUserId = notNullId.getId();
-
-        String key = getPrivateChatApplyKey(userId, applyUserId);
+        Long sessionId = notNullId.getId();
 
         Date date = new Date();
 
-        return RedissonUtil.doLock(key, () -> {
+        // 双方一起删除
+        boolean update = sysImSessionRefUserService.lambdaUpdate().and(i -> i.eq(SysImSessionRefUserDO::getUserId, userId).or().eq(SysImSessionRefUserDO::getPrivateChatRefUserId, userId)).eq(BaseEntityNoIdSuper::getTenantId, tenantId).eq(SysImSessionRefUserDO::getSessionId, sessionId).set(SysImSessionRefUserDO::getEnableFlag, false).set(BaseEntityNoIdSuper::getUpdateTime, date).update();
 
-            SysImSessionApplyDO sysImSessionApplyDO = lambdaQuery().eq(SysImSessionApplyDO::getPrivateChatApplyTargetUserId, userId).eq(BaseEntityNoIdSuper::getTenantId, tenantId).eq(SysImSessionApplyDO::getUserId, applyUserId).select(SysImSessionApplyDO::getId, SysImSessionApplyDO::getStatus, SysImSessionApplyDO::getSessionId).one();
+        if (!update) {
+            ApiResultVO.error(BaseBizCodeEnum.ILLEGAL_REQUEST, sessionId);
+        }
 
-            if (sysImSessionApplyDO == null) {
-                return BaseBizCodeEnum.OK;
-            }
-
-            lambdaUpdate().eq(SysImSessionApplyDO::getId, sysImSessionApplyDO.getId()).set(SysImSessionApplyDO::getStatus, SysImSessionApplyStatusEnum.BLOCKED).set(BaseEntityNoIdSuper::getUpdateTime, date).set(SysImSessionApplyDO::getBlockPreStatus, sysImSessionApplyDO.getStatus()).update();
-
-            // 双方一起被删除
-            sysImSessionRefUserService.lambdaUpdate().eq(SysImSessionRefUserDO::getSessionId, sysImSessionApplyDO.getSessionId()).set(SysImSessionRefUserDO::getEnableFlag, false).set(BaseEntityNoIdSuper::getUpdateTime, date).update();
-
-            return BaseBizCodeEnum.OK;
-
-        });
+        return BaseBizCodeEnum.OK;
 
     }
 
