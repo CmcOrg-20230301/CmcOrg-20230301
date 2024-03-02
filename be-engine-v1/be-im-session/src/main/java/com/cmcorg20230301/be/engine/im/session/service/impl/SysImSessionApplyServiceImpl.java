@@ -95,6 +95,8 @@ public class SysImSessionApplyServiceImpl extends ServiceImpl<SysImSessionApplyM
                 sysImSessionApplyDO.setRejectReason("");
                 sysImSessionApplyDO.setTenantId(tenantId);
 
+                sysImSessionApplyDO.setBlockPreStatus(SysImSessionApplyStatusEnum.APPLYING);
+
                 save(sysImSessionApplyDO); // 保存到数据库
 
             } else { // 如果：已经存在申请
@@ -147,17 +149,17 @@ public class SysImSessionApplyServiceImpl extends ServiceImpl<SysImSessionApplyM
 
         Long userId = UserUtil.getCurrentUserId();
 
-        Set<Long> applyIdSet = notEmptyIdSet.getIdSet();
+        Set<Long> applyUserIdSet = notEmptyIdSet.getIdSet();
 
-        Long count = lambdaQuery().eq(SysImSessionApplyDO::getPrivateChatApplyTargetUserId, userId).eq(BaseEntityNoIdSuper::getTenantId, tenantId).in(SysImSessionApplyDO::getId, applyIdSet).count();
+        Long count = lambdaQuery().eq(SysImSessionApplyDO::getPrivateChatApplyTargetUserId, userId).eq(BaseEntityNoIdSuper::getTenantId, tenantId).in(SysImSessionApplyDO::getUserId, applyUserIdSet).count();
 
-        if (count != applyIdSet.size()) {
+        if (count != applyUserIdSet.size()) {
             ApiResultVO.error(BaseBizCodeEnum.ILLEGAL_REQUEST);
         }
 
         Set<String> ketSet = new HashSet<>();
 
-        for (Long item : applyIdSet) {
+        for (Long item : applyUserIdSet) {
 
             ketSet.add(getPrivateChatApplyKey(userId, item));
 
@@ -168,7 +170,7 @@ public class SysImSessionApplyServiceImpl extends ServiceImpl<SysImSessionApplyM
         return RedissonUtil.doMultiLock("", ketSet, () -> {
 
             // 处理
-            return handlePrivateChatAgree(userId, tenantId, applyIdSet, date);
+            return handlePrivateChatAgree(userId, tenantId, applyUserIdSet, date);
 
         });
 
@@ -178,22 +180,26 @@ public class SysImSessionApplyServiceImpl extends ServiceImpl<SysImSessionApplyM
      * 处理
      */
     @NotNull
-    private String handlePrivateChatAgree(Long userId, Long tenantId, Set<Long> applyIdSet, Date date) {
+    private String handlePrivateChatAgree(Long userId, Long tenantId, Set<Long> applyUserIdSet, Date date) {
 
-        List<SysImSessionApplyDO> sysImSessionApplyDOList = lambdaQuery().eq(SysImSessionApplyDO::getPrivateChatApplyTargetUserId, userId).eq(BaseEntityNoIdSuper::getTenantId, tenantId).in(SysImSessionApplyDO::getId, applyIdSet).eq(SysImSessionApplyDO::getStatus, SysImSessionApplyStatusEnum.APPLYING).select(SysImSessionApplyDO::getId, SysImSessionApplyDO::getSessionId, SysImSessionApplyDO::getUserId).list();
+        List<SysImSessionApplyDO> sysImSessionApplyDOList = lambdaQuery().eq(SysImSessionApplyDO::getPrivateChatApplyTargetUserId, userId).eq(BaseEntityNoIdSuper::getTenantId, tenantId).in(SysImSessionApplyDO::getUserId, applyUserIdSet).eq(SysImSessionApplyDO::getStatus, SysImSessionApplyStatusEnum.APPLYING).select(SysImSessionApplyDO::getId, SysImSessionApplyDO::getSessionId, SysImSessionApplyDO::getUserId).list();
 
         if (CollUtil.isEmpty(sysImSessionApplyDOList)) {
-            return BaseBizCodeEnum.OK;
+            ApiResultVO.error("操作失败：申请状态已发生改变，请刷新重试", applyUserIdSet);
         }
 
         // 会话主键 id集合，目的：让会话关联的用户恢复可用状态
         Set<Long> enabelSessionIdSet = new HashSet<>();
+
+        Set<Long> userIdSet = new HashSet<>();
 
         for (SysImSessionApplyDO item : sysImSessionApplyDOList) {
 
             item.setShowFlag(true);
             item.setUpdateTime(date);
             item.setStatus(SysImSessionApplyStatusEnum.PASSED);
+
+            userIdSet.add(item.getUserId());
 
             if (item.getSessionId() == -1) {
 
@@ -223,7 +229,10 @@ public class SysImSessionApplyServiceImpl extends ServiceImpl<SysImSessionApplyM
 
         }
 
-        // 更新为：已通过，备注：如果：我也给申请人发送了好友申请，则不处理该数据
+        // 如果：也给申请人发送了好友申请，则处理该数据也为通过
+        lambdaUpdate().eq(SysImSessionApplyDO::getUserId, userId).in(SysImSessionApplyDO::getPrivateChatApplyTargetUserId, userIdSet).eq(SysImSessionApplyDO::getStatus, SysImSessionApplyStatusEnum.APPLYING).set(SysImSessionApplyDO::getShowFlag, true).eq(SysImSessionApplyDO::getStatus, SysImSessionApplyStatusEnum.PASSED).set(BaseEntityNoIdSuper::getUpdateTime, date).update();
+
+        // 更新为：已通过
         updateBatchById(sysImSessionApplyDOList);
 
         if (CollUtil.isNotEmpty(enabelSessionIdSet)) {
@@ -247,7 +256,23 @@ public class SysImSessionApplyServiceImpl extends ServiceImpl<SysImSessionApplyM
 
         Long userId = UserUtil.getCurrentUserId();
 
-        return BaseBizCodeEnum.OK;
+        Long applyUserId = dto.getId();
+
+        String key = getPrivateChatApplyKey(userId, applyUserId);
+
+        String rejectReason = MyEntityUtil.getNotNullStr(dto.getRejectReason());
+
+        return RedissonUtil.doLock(key, () -> {
+
+            boolean update = lambdaUpdate().eq(SysImSessionApplyDO::getPrivateChatApplyTargetUserId, userId).eq(BaseEntityNoIdSuper::getTenantId, tenantId).eq(SysImSessionApplyDO::getUserId, applyUserId).eq(SysImSessionApplyDO::getStatus, SysImSessionApplyStatusEnum.APPLYING).set(SysImSessionApplyDO::getShowFlag, true).set(SysImSessionApplyDO::getStatus, SysImSessionApplyStatusEnum.REJECTED).set(BaseEntityNoIdSuper::getUpdateTime, new Date()).set(SysImSessionApplyDO::getRejectReason, rejectReason).update();
+
+            if (!update) {
+                ApiResultVO.error("操作失败：申请状态已发生改变，请刷新重试", applyUserId);
+            }
+
+            return BaseBizCodeEnum.OK;
+
+        });
 
     }
 
@@ -257,7 +282,27 @@ public class SysImSessionApplyServiceImpl extends ServiceImpl<SysImSessionApplyM
     @Override
     public String privateChatBlock(NotNullId notNullId) {
 
-        return BaseBizCodeEnum.OK;
+        Long tenantId = UserUtil.getCurrentTenantIdDefault();
+
+        Long userId = UserUtil.getCurrentUserId();
+
+        Long applyUserId = notNullId.getId();
+
+        String key = getPrivateChatApplyKey(userId, applyUserId);
+
+        return RedissonUtil.doLock(key, () -> {
+
+            SysImSessionApplyDO sysImSessionApplyDO = lambdaQuery().eq(SysImSessionApplyDO::getPrivateChatApplyTargetUserId, userId).eq(BaseEntityNoIdSuper::getTenantId, tenantId).eq(SysImSessionApplyDO::getUserId, applyUserId).select(SysImSessionApplyDO::getId, SysImSessionApplyDO::getStatus).one();
+
+            if (sysImSessionApplyDO == null) {
+                return BaseBizCodeEnum.OK;
+            }
+
+            lambdaUpdate().eq(SysImSessionApplyDO::getId, sysImSessionApplyDO.getId()).set(SysImSessionApplyDO::getStatus, SysImSessionApplyStatusEnum.BLOCKED).set(BaseEntityNoIdSuper::getUpdateTime, new Date()).set(SysImSessionApplyDO::getBlockPreStatus, sysImSessionApplyDO.getStatus()).update();
+
+            return BaseBizCodeEnum.OK;
+
+        });
 
     }
 
@@ -267,8 +312,53 @@ public class SysImSessionApplyServiceImpl extends ServiceImpl<SysImSessionApplyM
     @Override
     public String privateChatBlockCancel(NotEmptyIdSet notEmptyIdSet) {
 
-        return BaseBizCodeEnum.OK;
+        Long tenantId = UserUtil.getCurrentTenantIdDefault();
 
+        Long userId = UserUtil.getCurrentUserId();
+
+        Set<Long> applyUserIdSet = notEmptyIdSet.getIdSet();
+
+        Set<String> ketSet = new HashSet<>();
+
+        for (Long item : applyUserIdSet) {
+
+            ketSet.add(getPrivateChatApplyKey(userId, item));
+
+        }
+
+        Date date = new Date();
+
+        return RedissonUtil.doMultiLock("", ketSet, () -> {
+
+
+            return BaseBizCodeEnum.OK;
+
+        });
+
+    }
+
+    /**
+     * 私聊：申请取消
+     */
+    @Override
+    public String privateChatApplyCancel(NotNullId notNullId) {
+        return null;
+    }
+
+    /**
+     * 私聊：申请隐藏
+     */
+    @Override
+    public String privateChatApplyHidden(NotNullId notNullId) {
+        return null;
+    }
+
+    /**
+     * 私聊删除
+     */
+    @Override
+    public String privateChatDelete(NotNullId notNullId) {
+        return null;
     }
 
 }

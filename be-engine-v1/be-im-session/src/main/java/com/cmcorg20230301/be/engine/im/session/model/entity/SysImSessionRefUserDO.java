@@ -42,7 +42,7 @@ public class SysImSessionRefUserDO extends BaseEntityNoIdSuper {
     @Schema(description = "是私聊时，关联的另外一个用户的主键 id，其他类型时，该值为：-1")
     private Long privateChatRefUserId;
 
-    @Schema(description = "是否没有被禁言")
+    @Schema(description = "群聊时是否没有被禁言，或者私聊时是否没有被删除")
     private Boolean enableFlag;
 
     @Schema(description = "是否被拉黑")

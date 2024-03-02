@@ -47,6 +47,9 @@ public class SysImSessionApplyDO extends BaseEntityNoIdSuper {
     @Schema(description = "状态：101 申请中 201 已通过 301 已拒绝")
     private SysImSessionApplyStatusEnum status;
 
+    @Schema(description = "拉黑前的状态，用于：取消拉黑之后恢复原始状态，初始值为：申请中")
+    private SysImSessionApplyStatusEnum blockPreStatus;
+
     @Schema(description = "是否显示在申请列表")
     private Boolean showFlag;
 

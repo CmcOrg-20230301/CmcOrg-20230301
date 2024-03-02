@@ -54,4 +54,22 @@ public class SysImSessionApplyController {
         return ApiResultVO.okMsg(baseService.privateChatBlockCancel(notEmptyIdSet));
     }
 
+    @Operation(summary = "私聊：申请取消")
+    @PostMapping("/privateChat/apply/cancel")
+    public ApiResultVO<String> privateChatApplyCancel(@RequestBody @Valid NotNullId notNullId) {
+        return ApiResultVO.okMsg(baseService.privateChatApplyCancel(notNullId));
+    }
+
+    @Operation(summary = "私聊：申请隐藏")
+    @PostMapping("/privateChat/apply/hidden")
+    public ApiResultVO<String> privateChatApplyHidden(@RequestBody @Valid NotNullId notNullId) {
+        return ApiResultVO.okMsg(baseService.privateChatApplyHidden(notNullId));
+    }
+
+    @Operation(summary = "私聊：删除")
+    @PostMapping("/privateChat/delete")
+    public ApiResultVO<String> privateChatDelete(@RequestBody @Valid NotNullId notNullId) {
+        return ApiResultVO.okMsg(baseService.privateChatDelete(notNullId));
+    }
+
 }

@@ -19,4 +19,10 @@ public interface SysImSessionApplyService extends IService<SysImSessionApplyDO> 
 
     String privateChatBlockCancel(NotEmptyIdSet notEmptyIdSet);
 
+    String privateChatApplyCancel(NotNullId notNullId);
+
+    String privateChatApplyHidden(NotNullId notNullId);
+
+    String privateChatDelete(NotNullId notNullId);
+
 }
