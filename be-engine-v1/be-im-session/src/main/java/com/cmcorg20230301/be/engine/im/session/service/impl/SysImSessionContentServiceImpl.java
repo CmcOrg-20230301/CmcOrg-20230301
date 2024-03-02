@@ -62,7 +62,7 @@ public class SysImSessionContentServiceImpl extends ServiceImpl<SysImSessionCont
     @Override
     public NotNullIdAndNotEmptyLongSet sendTextUserSelf(SysImSessionContentSendTextListDTO dto) {
 
-        int maxLength = 600;
+        int maxLength = 2500;
 
         // 检查：内容长度
         boolean anyMatch = dto.getContentSet().stream().anyMatch(item -> {
@@ -255,7 +255,7 @@ public class SysImSessionContentServiceImpl extends ServiceImpl<SysImSessionCont
         }
 
         // 检查：用户是否在该会话中
-        SysImSessionRefUserDO sysImSessionRefUserDO = ChainWrappers.lambdaQueryChain(sysImSessionRefUserMapper).eq(BaseEntityNoIdSuper::getTenantId, tenantId).eq(SysImSessionRefUserDO::getSessionId, sessionId).eq(SysImSessionRefUserDO::getUserId, userId).select(SysImSessionRefUserDO::getEnableFlag).one();
+        SysImSessionRefUserDO sysImSessionRefUserDO = ChainWrappers.lambdaQueryChain(sysImSessionRefUserMapper).eq(BaseEntityNoIdSuper::getTenantId, tenantId).eq(SysImSessionRefUserDO::getSessionId, sessionId).eq(SysImSessionRefUserDO::getUserId, userId).select(SysImSessionRefUserDO::getEnableFlag, SysImSessionRefUserDO::getPrivateChatRefUserId, SysImSessionRefUserDO::getBlockFlag).one();
 
         if (sysImSessionRefUserDO == null) {
             ApiResultVO.error("操作失败：您已不在本次会话中", sessionId);
@@ -264,7 +264,23 @@ public class SysImSessionContentServiceImpl extends ServiceImpl<SysImSessionCont
         if (checkEnableFlag) {
 
             if (BooleanUtil.isFalse(sysImSessionRefUserDO.getEnableFlag())) {
-                ApiResultVO.error("操作失败：您已被禁言", sessionId);
+
+                if (sysImSessionRefUserDO.getPrivateChatRefUserId() == BaseConstant.NEGATIVE_ONE) {
+
+                    ApiResultVO.error("操作失败：会话已被删除，无法发送消息", sessionId);
+
+                } else {
+
+                    ApiResultVO.error("操作失败：您已被禁言", sessionId);
+
+                }
+
+            }
+
+            if (BooleanUtil.isFalse(sysImSessionRefUserDO.getBlockFlag())) {
+
+                ApiResultVO.error("操作失败：您已被拉黑，无法发送消息", sessionId);
+
             }
 
         }
