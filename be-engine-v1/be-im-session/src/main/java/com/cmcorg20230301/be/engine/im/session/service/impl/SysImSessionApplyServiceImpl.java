@@ -1,8 +1,10 @@
 package com.cmcorg20230301.be.engine.im.session.service.impl;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.baomidou.mybatisplus.extension.toolkit.ChainWrappers;
 import com.cmcorg20230301.be.engine.im.session.mapper.SysImSessionApplyMapper;
+import com.cmcorg20230301.be.engine.im.session.model.dto.SysImSessionApplyPrivateChatSelfPageDTO;
 import com.cmcorg20230301.be.engine.im.session.model.entity.SysImSessionApplyDO;
 import com.cmcorg20230301.be.engine.im.session.model.enums.SysImSessionApplyStatusEnum;
 import com.cmcorg20230301.be.engine.im.session.model.enums.SysImSessionTypeEnum;
@@ -37,6 +39,18 @@ public class SysImSessionApplyServiceImpl extends ServiceImpl<SysImSessionApplyM
 
     @Resource
     SysUserMapper sysUserMapper;
+
+    /**
+     * 分页排序查询-私聊申请列表-自我
+     */
+    @Override
+    public Page<SysImSessionApplyDO> privateChatMyPageSelf(SysImSessionApplyPrivateChatSelfPageDTO dto) {
+
+        Long userId = UserUtil.getCurrentUserId();
+
+        return lambdaQuery().eq(SysImSessionApplyDO::getPrivateChatApplyTargetUserId, userId).eq(SysImSessionApplyDO::getShowFlag, true).page(dto.updateTimeDescDefaultOrderPage(true));
+
+    }
 
     /**
      * 私聊：申请添加
