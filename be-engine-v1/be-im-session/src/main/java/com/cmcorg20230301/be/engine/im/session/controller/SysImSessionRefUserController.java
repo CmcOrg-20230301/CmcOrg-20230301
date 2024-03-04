@@ -1,8 +1,5 @@
 package com.cmcorg20230301.be.engine.im.session.controller;
 
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.cmcorg20230301.be.engine.im.session.model.dto.SysImSessionRefUserSelfPageDTO;
-import com.cmcorg20230301.be.engine.im.session.model.entity.SysImSessionDO;
 import com.cmcorg20230301.be.engine.im.session.model.vo.SysImSessionRefUserQueryRefUserInfoMapVO;
 import com.cmcorg20230301.be.engine.im.session.service.SysImSessionRefUserService;
 import com.cmcorg20230301.be.engine.model.model.dto.NotNullIdAndLongSet;
@@ -39,12 +36,6 @@ public class SysImSessionRefUserController {
     @PostMapping("/query/refUserInfoMap")
     public ApiResultVO<LongObjectMapVO<SysImSessionRefUserQueryRefUserInfoMapVO>> queryRefUserInfoMap(@RequestBody @Valid NotNullIdAndLongSet notNullIdAndLongSet) {
         return ApiResultVO.okData(baseService.queryRefUserInfoMap(notNullIdAndLongSet));
-    }
-
-    @Operation(summary = "分页排序查询-会话列表-自我")
-    @PostMapping("/page/self")
-    public ApiResultVO<Page<SysImSessionDO>> myPageSelf(@RequestBody @Valid SysImSessionRefUserSelfPageDTO dto) {
-        return ApiResultVO.okData(baseService.myPageSelf(dto));
     }
 
 }

@@ -14,6 +14,7 @@ import com.cmcorg20230301.be.engine.im.session.mapper.SysImSessionMapper;
 import com.cmcorg20230301.be.engine.im.session.model.dto.SysImSessionInsertOrUpdateDTO;
 import com.cmcorg20230301.be.engine.im.session.model.dto.SysImSessionPageDTO;
 import com.cmcorg20230301.be.engine.im.session.model.dto.SysImSessionQueryCustomerSessionIdUserSelfDTO;
+import com.cmcorg20230301.be.engine.im.session.model.dto.SysImSessionUserSelfPageDTO;
 import com.cmcorg20230301.be.engine.im.session.model.entity.SysImSessionContentDO;
 import com.cmcorg20230301.be.engine.im.session.model.entity.SysImSessionDO;
 import com.cmcorg20230301.be.engine.im.session.model.entity.SysImSessionRefUserDO;
@@ -263,6 +264,23 @@ public class SysImSessionServiceImpl extends ServiceImpl<SysImSessionMapper, Sys
             return sessionId;
 
         });
+
+    }
+
+    /**
+     * 分页排序查询-会话列表-自我
+     */
+    @Override
+    public Page<SysImSessionDO> myPageSelf(SysImSessionUserSelfPageDTO dto) {
+
+        Long userId = UserUtil.getCurrentUserId();
+
+        dto.setUserId(userId);
+
+        Page<SysImSessionDO> page = baseMapper.myPageSelf(dto.page(), dto);
+
+
+        return page;
 
     }
 
