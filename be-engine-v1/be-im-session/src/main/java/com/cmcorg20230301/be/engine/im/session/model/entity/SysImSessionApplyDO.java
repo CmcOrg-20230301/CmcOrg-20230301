@@ -13,7 +13,7 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = true)
 @TableName(value = "sys_im_session_apply")
 @Data
-@Schema(defaultValue = "主表：会话申请")
+@Schema(description = "主表：会话申请")
 public class SysImSessionApplyDO extends BaseEntityNoIdSuper {
 
     @TableId(type = IdType.INPUT)
