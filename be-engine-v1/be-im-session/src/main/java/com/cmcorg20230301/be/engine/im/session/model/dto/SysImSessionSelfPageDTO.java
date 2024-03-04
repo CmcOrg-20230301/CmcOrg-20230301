@@ -7,7 +7,7 @@ import lombok.EqualsAndHashCode;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
-public class SysImSessionUserSelfPageDTO extends MyTenantPageDTO {
+public class SysImSessionSelfPageDTO extends MyTenantPageDTO {
 
     @Schema(description = "用户主键 id，备注：由程序进行赋值", hidden = true)
     private Long userId;

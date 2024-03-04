@@ -54,4 +54,8 @@ public class SysImSessionDO extends BaseEntity {
     @Schema(description = "私聊关联的另外一个用户主键 id")
     private Long privateChatRefUserId;
 
+    @TableField(exist = false)
+    @Schema(description = "我最后一次打开该会话的时间戳")
+    private Long lastOpenTs;
+
 }

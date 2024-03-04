@@ -3,7 +3,7 @@ package com.cmcorg20230301.be.engine.im.session.controller;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.cmcorg20230301.be.engine.im.session.model.dto.SysImSessionPageDTO;
 import com.cmcorg20230301.be.engine.im.session.model.dto.SysImSessionQueryCustomerSessionIdUserSelfDTO;
-import com.cmcorg20230301.be.engine.im.session.model.dto.SysImSessionUserSelfPageDTO;
+import com.cmcorg20230301.be.engine.im.session.model.dto.SysImSessionSelfPageDTO;
 import com.cmcorg20230301.be.engine.im.session.model.entity.SysImSessionDO;
 import com.cmcorg20230301.be.engine.im.session.service.SysImSessionService;
 import com.cmcorg20230301.be.engine.security.model.vo.ApiResultVO;
@@ -41,7 +41,7 @@ public class SysImSessionController {
 
     @Operation(summary = "分页排序查询-会话列表-自我")
     @PostMapping("/page/self")
-    public ApiResultVO<Page<SysImSessionDO>> myPageSelf(@RequestBody @Valid SysImSessionUserSelfPageDTO dto) {
+    public ApiResultVO<Page<SysImSessionDO>> myPageSelf(@RequestBody @Valid SysImSessionSelfPageDTO dto) {
         return ApiResultVO.okData(baseService.myPageSelf(dto));
     }
 
