@@ -130,7 +130,7 @@ public class SysImSessionApplyServiceImpl extends ServiceImpl<SysImSessionApplyM
     }
 
     /**
-     * 分页排序查询-私聊列表-自我
+     * 分页排序查询-好友列表-自我
      */
     @Override
     public Page<SysImSessionApplyDO> privateChatPageSelf(SysImSessionApplyPrivateChatSelfPageDTO dto) {

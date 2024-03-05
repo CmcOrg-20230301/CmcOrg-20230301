@@ -38,7 +38,7 @@ public class SysImSessionApplyController {
         return ApiResultVO.okData(baseService.privateChatApplyPageSelf(dto));
     }
 
-    @Operation(summary = "分页排序查询-私聊列表-自我")
+    @Operation(summary = "分页排序查询-好友列表-自我")
     @PostMapping("/privateChat/page/self")
     public ApiResultVO<Page<SysImSessionApplyDO>> privateChatPageSelf(@RequestBody @Valid SysImSessionApplyPrivateChatSelfPageDTO dto) {
         return ApiResultVO.okData(baseService.privateChatPageSelf(dto));
