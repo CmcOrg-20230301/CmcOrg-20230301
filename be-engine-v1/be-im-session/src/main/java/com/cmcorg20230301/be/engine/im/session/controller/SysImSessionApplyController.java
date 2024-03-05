@@ -2,8 +2,9 @@ package com.cmcorg20230301.be.engine.im.session.controller;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.cmcorg20230301.be.engine.im.session.model.dto.*;
-import com.cmcorg20230301.be.engine.im.session.model.entity.SysImSessionApplyDO;
+import com.cmcorg20230301.be.engine.im.session.model.vo.SysImSessionApplyPrivateChatApplySelfPageVO;
 import com.cmcorg20230301.be.engine.im.session.model.vo.SysImSessionApplyPrivateChatApplyUserPageVO;
+import com.cmcorg20230301.be.engine.im.session.model.vo.SysImSessionApplyPrivateChatSelfPageVO;
 import com.cmcorg20230301.be.engine.im.session.service.SysImSessionApplyService;
 import com.cmcorg20230301.be.engine.model.model.dto.NotEmptyIdSet;
 import com.cmcorg20230301.be.engine.model.model.dto.NotNullId;
@@ -34,13 +35,13 @@ public class SysImSessionApplyController {
 
     @Operation(summary = "分页排序查询-私聊申请列表-自我")
     @PostMapping("/privateChat/apply/page/self")
-    public ApiResultVO<Page<SysImSessionApplyDO>> privateChatApplyPageSelf(@RequestBody @Valid SysImSessionApplyPrivateChatApplySelfPageDTO dto) {
+    public ApiResultVO<Page<SysImSessionApplyPrivateChatApplySelfPageVO>> privateChatApplyPageSelf(@RequestBody @Valid SysImSessionApplyPrivateChatApplySelfPageDTO dto) {
         return ApiResultVO.okData(baseService.privateChatApplyPageSelf(dto));
     }
 
     @Operation(summary = "分页排序查询-好友列表-自我")
     @PostMapping("/privateChat/page/self")
-    public ApiResultVO<Page<SysImSessionApplyDO>> privateChatPageSelf(@RequestBody @Valid SysImSessionApplyPrivateChatSelfPageDTO dto) {
+    public ApiResultVO<Page<SysImSessionApplyPrivateChatSelfPageVO>> privateChatPageSelf(@RequestBody @Valid SysImSessionApplyPrivateChatSelfPageDTO dto) {
         return ApiResultVO.okData(baseService.privateChatPageSelf(dto));
     }
 

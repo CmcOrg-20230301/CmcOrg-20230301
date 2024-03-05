@@ -14,7 +14,9 @@ import com.cmcorg20230301.be.engine.im.session.model.entity.SysImSessionApplyDO;
 import com.cmcorg20230301.be.engine.im.session.model.entity.SysImSessionRefUserDO;
 import com.cmcorg20230301.be.engine.im.session.model.enums.SysImSessionApplyStatusEnum;
 import com.cmcorg20230301.be.engine.im.session.model.enums.SysImSessionTypeEnum;
+import com.cmcorg20230301.be.engine.im.session.model.vo.SysImSessionApplyPrivateChatApplySelfPageVO;
 import com.cmcorg20230301.be.engine.im.session.model.vo.SysImSessionApplyPrivateChatApplyUserPageVO;
+import com.cmcorg20230301.be.engine.im.session.model.vo.SysImSessionApplyPrivateChatSelfPageVO;
 import com.cmcorg20230301.be.engine.im.session.service.SysImSessionApplyService;
 import com.cmcorg20230301.be.engine.im.session.service.SysImSessionRefUserService;
 import com.cmcorg20230301.be.engine.im.session.service.SysImSessionService;
@@ -38,6 +40,7 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class SysImSessionApplyServiceImpl extends ServiceImpl<SysImSessionApplyMapper, SysImSessionApplyDO>
@@ -121,11 +124,68 @@ public class SysImSessionApplyServiceImpl extends ServiceImpl<SysImSessionApplyM
      * 分页排序查询-私聊申请列表-自我
      */
     @Override
-    public Page<SysImSessionApplyDO> privateChatApplyPageSelf(SysImSessionApplyPrivateChatApplySelfPageDTO dto) {
+    public Page<SysImSessionApplyPrivateChatApplySelfPageVO> privateChatApplyPageSelf(SysImSessionApplyPrivateChatApplySelfPageDTO dto) {
 
         Long userId = UserUtil.getCurrentUserId();
 
-        return lambdaQuery().eq(SysImSessionApplyDO::getPrivateChatApplyTargetUserId, userId).eq(SysImSessionApplyDO::getShowFlag, true).page(dto.updateTimeDescDefaultOrderPage(true));
+        Long tenantId = UserUtil.getCurrentTenantIdDefault();
+
+        Page<SysImSessionApplyDO> pageTemp = lambdaQuery().eq(BaseEntityNoIdSuper::getTenantId, tenantId).eq(SysImSessionApplyDO::getPrivateChatApplyTargetUserId, userId).eq(SysImSessionApplyDO::getShowFlag, true).select(SysImSessionApplyDO::getUserId).page(dto.updateTimeDescDefaultOrderPage(true));
+
+        if (CollUtil.isEmpty(pageTemp.getRecords())) {
+            return new Page<>();
+        }
+
+        Set<Long> applyUserIdSet = pageTemp.getRecords().stream().map(SysImSessionApplyDO::getUserId).collect(Collectors.toSet());
+
+        List<SysUserInfoDO> sysUserInfoDOList = baseSysUserInfoService.lambdaQuery()
+                .eq(SysUserInfoDO::getTenantId, tenantId) //
+                .in(SysUserInfoDO::getId, applyUserIdSet) //
+                .select(SysUserInfoDO::getId, SysUserInfoDO::getAvatarFileId, SysUserInfoDO::getNickname)
+                .list();
+
+        Set<Long> avatarFileIdSet = new HashSet<>();
+
+        for (SysUserInfoDO item : sysUserInfoDOList) {
+
+            if (item.getAvatarFileId() != -1) {
+
+                avatarFileIdSet.add(item.getAvatarFileId());
+
+            }
+
+        }
+
+        Map<Long, String> avatarUrlMap = MapUtil.newHashMap();
+
+        if (CollUtil.isNotEmpty(avatarFileIdSet)) {
+
+            avatarUrlMap = sysFileService.getPublicUrl(new NotEmptyIdSet(avatarFileIdSet)).getMap();
+
+        }
+
+        List<SysImSessionApplyPrivateChatApplySelfPageVO> list = new ArrayList<>(sysUserInfoDOList.size());
+
+        for (SysUserInfoDO item : sysUserInfoDOList) {
+
+            SysImSessionApplyPrivateChatApplySelfPageVO sysImSessionApplyPrivateChatApplySelfPageVO = new SysImSessionApplyPrivateChatApplySelfPageVO();
+
+            sysImSessionApplyPrivateChatApplySelfPageVO.setUserId(item.getId());
+            sysImSessionApplyPrivateChatApplySelfPageVO.setNickname(item.getNickname());
+
+            if (item.getAvatarFileId() != -1) {
+
+                String avatarUrl = avatarUrlMap.get(item.getAvatarFileId());
+
+                sysImSessionApplyPrivateChatApplySelfPageVO.setAvatarUrl(avatarUrl);
+
+            }
+
+            list.add(sysImSessionApplyPrivateChatApplySelfPageVO);
+
+        }
+
+        return new Page<SysImSessionApplyPrivateChatApplySelfPageVO>().setTotal(pageTemp.getTotal()).setRecords(list);
 
     }
 
@@ -133,8 +193,11 @@ public class SysImSessionApplyServiceImpl extends ServiceImpl<SysImSessionApplyM
      * 分页排序查询-好友列表-自我
      */
     @Override
-    public Page<SysImSessionApplyDO> privateChatPageSelf(SysImSessionApplyPrivateChatSelfPageDTO dto) {
+    public Page<SysImSessionApplyPrivateChatSelfPageVO> privateChatPageSelf(SysImSessionApplyPrivateChatSelfPageDTO dto) {
+
+
         return null;
+
     }
 
     /**
