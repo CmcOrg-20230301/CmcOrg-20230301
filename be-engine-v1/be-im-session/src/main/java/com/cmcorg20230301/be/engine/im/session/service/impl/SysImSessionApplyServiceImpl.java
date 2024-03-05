@@ -195,8 +195,64 @@ public class SysImSessionApplyServiceImpl extends ServiceImpl<SysImSessionApplyM
     @Override
     public Page<SysImSessionApplyPrivateChatSelfPageVO> privateChatPageSelf(SysImSessionApplyPrivateChatSelfPageDTO dto) {
 
+        Long userId = UserUtil.getCurrentUserId();
 
-        return null;
+        Long tenantId = UserUtil.getCurrentTenantIdDefault();
+
+        Page<SysImSessionApplyDO> pageTemp = lambdaQuery().eq(BaseEntityNoIdSuper::getTenantId, tenantId).eq(SysImSessionApplyDO::getPrivateChatApplyTargetUserId, userId).eq(SysImSessionApplyDO::getStatus, SysImSessionApplyStatusEnum.PASSED).select(SysImSessionApplyDO::getUserId).page(dto.updateTimeDescDefaultOrderPage(true));
+
+        if (CollUtil.isEmpty(pageTemp.getRecords())) {
+            return new Page<>();
+        }
+
+        Set<Long> applyUserIdSet = pageTemp.getRecords().stream().map(SysImSessionApplyDO::getUserId).collect(Collectors.toSet());
+
+        List<SysUserInfoDO> sysUserInfoDOList = baseSysUserInfoService.lambdaQuery().eq(SysUserInfoDO::getTenantId, tenantId) //
+                .in(SysUserInfoDO::getId, applyUserIdSet) //
+                .select(SysUserInfoDO::getId, SysUserInfoDO::getAvatarFileId, SysUserInfoDO::getNickname).list();
+
+        Set<Long> avatarFileIdSet = new HashSet<>();
+
+        for (SysUserInfoDO item : sysUserInfoDOList) {
+
+            if (item.getAvatarFileId() != -1) {
+
+                avatarFileIdSet.add(item.getAvatarFileId());
+
+            }
+
+        }
+
+        Map<Long, String> avatarUrlMap = MapUtil.newHashMap();
+
+        if (CollUtil.isNotEmpty(avatarFileIdSet)) {
+
+            avatarUrlMap = sysFileService.getPublicUrl(new NotEmptyIdSet(avatarFileIdSet)).getMap();
+
+        }
+
+        List<SysImSessionApplyPrivateChatSelfPageVO> list = new ArrayList<>(sysUserInfoDOList.size());
+
+        for (SysUserInfoDO item : sysUserInfoDOList) {
+
+            SysImSessionApplyPrivateChatSelfPageVO sysImSessionApplyPrivateChatSelfPageVO = new SysImSessionApplyPrivateChatSelfPageVO();
+
+            sysImSessionApplyPrivateChatSelfPageVO.setUserId(item.getId());
+            sysImSessionApplyPrivateChatSelfPageVO.setNickname(item.getNickname());
+
+            if (item.getAvatarFileId() != -1) {
+
+                String avatarUrl = avatarUrlMap.get(item.getAvatarFileId());
+
+                sysImSessionApplyPrivateChatSelfPageVO.setAvatarUrl(avatarUrl);
+
+            }
+
+            list.add(sysImSessionApplyPrivateChatSelfPageVO);
+
+        }
+
+        return new Page<SysImSessionApplyPrivateChatSelfPageVO>().setTotal(pageTemp.getTotal()).setRecords(list);
 
     }
 
