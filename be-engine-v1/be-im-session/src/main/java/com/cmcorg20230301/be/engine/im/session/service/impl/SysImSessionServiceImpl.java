@@ -11,10 +11,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.baomidou.mybatisplus.extension.toolkit.ChainWrappers;
 import com.cmcorg20230301.be.engine.im.session.mapper.SysImSessionContentMapper;
 import com.cmcorg20230301.be.engine.im.session.mapper.SysImSessionMapper;
-import com.cmcorg20230301.be.engine.im.session.model.dto.SysImSessionInsertOrUpdateDTO;
-import com.cmcorg20230301.be.engine.im.session.model.dto.SysImSessionPageDTO;
-import com.cmcorg20230301.be.engine.im.session.model.dto.SysImSessionQueryCustomerSessionIdUserSelfDTO;
-import com.cmcorg20230301.be.engine.im.session.model.dto.SysImSessionRefUserJoinUserIdSetDTO;
+import com.cmcorg20230301.be.engine.im.session.model.dto.*;
 import com.cmcorg20230301.be.engine.im.session.model.entity.SysImSessionContentDO;
 import com.cmcorg20230301.be.engine.im.session.model.entity.SysImSessionDO;
 import com.cmcorg20230301.be.engine.im.session.model.entity.SysImSessionRefUserDO;
@@ -30,6 +27,7 @@ import com.cmcorg20230301.be.engine.security.util.*;
 import com.cmcorg20230301.be.engine.util.util.NicknameUtil;
 import lombok.SneakyThrows;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -116,7 +114,7 @@ public class SysImSessionServiceImpl extends ServiceImpl<SysImSessionMapper, Sys
         }
 
         // 查询：会话的消息相关信息
-        myPageQueryContentInfo(queryNoJoinSessionContentFlag, page.getRecords());
+        myPageQueryContentInfo(queryNoJoinSessionContentFlag, page.getRecords(), null);
 
         return page;
 
@@ -128,7 +126,7 @@ public class SysImSessionServiceImpl extends ServiceImpl<SysImSessionMapper, Sys
      * @param queryNoJoinSessionContentFlag 是否查询：未加入会话的聊天内容，一般为 false
      */
     @SneakyThrows
-    private void myPageQueryContentInfo(boolean queryNoJoinSessionContentFlag, List<SysImSessionDO> sysImSessionDOList) {
+    private void myPageQueryContentInfo(boolean queryNoJoinSessionContentFlag, List<SysImSessionDO> sysImSessionDOList, @Nullable Map<Long, Long> lastOpenTsMap) {
 
         // 查询：未读的消息数量和最后一条未读的消息内容
         Map<Long, SysImSessionDO> sessionMap = sysImSessionDOList.stream().collect(Collectors.toMap(BaseEntity::getId, it -> it));
@@ -141,7 +139,16 @@ public class SysImSessionServiceImpl extends ServiceImpl<SysImSessionMapper, Sys
             return;
         }
 
-        Map<Long, Long> lastOpenTsMap = sysImSessionRefUserDOList.stream().collect(Collectors.toMap(SysImSessionRefUserDO::getSessionId, SysImSessionRefUserDO::getLastOpenTs));
+        if (lastOpenTsMap == null) {
+
+            // 获取：打开每个会话的最近时间 map
+            lastOpenTsMap = getLastOpenTsMap(queryNoJoinSessionContentFlag, currentUserId, sessionMap);
+
+        }
+
+        if (lastOpenTsMap == null) {
+            return;
+        }
 
         CountDownLatch countDownLatch = ThreadUtil.newCountDownLatch(sysImSessionDOList.size());
 
@@ -204,6 +211,22 @@ public class SysImSessionServiceImpl extends ServiceImpl<SysImSessionMapper, Sys
         }
 
         countDownLatch.await();
+
+    }
+
+    /**
+     * 获取：打开每个会话的最近时间 map
+     */
+    @Nullable
+    private Map<Long, Long> getLastOpenTsMap(boolean queryNoJoinSessionContentFlag, Long currentUserId, Map<Long, SysImSessionDO> sessionMap) {
+
+        List<SysImSessionRefUserDO> sysImSessionRefUserDOList = sysImSessionRefUserService.lambdaQuery().eq(SysImSessionRefUserDO::getUserId, currentUserId).in(SysImSessionRefUserDO::getSessionId, sessionMap.keySet()).select(SysImSessionRefUserDO::getSessionId, SysImSessionRefUserDO::getLastOpenTs).list();
+
+        if (CollUtil.isEmpty(sysImSessionRefUserDOList) && !queryNoJoinSessionContentFlag) {
+            return null;
+        }
+
+        return sysImSessionRefUserDOList.stream().collect(Collectors.toMap(SysImSessionRefUserDO::getSessionId, SysImSessionRefUserDO::getLastOpenTs));
 
     }
 
@@ -284,6 +307,27 @@ public class SysImSessionServiceImpl extends ServiceImpl<SysImSessionMapper, Sys
 
         // 把当前用户，加入会话中
         sysImSessionRefUserService.joinUserIdSet(sysImSessionRefUserJoinUserIdSetDTO);
+
+    }
+
+    /**
+     * 分页排序查询-会话列表-自我
+     */
+    @Override
+    public Page<SysImSessionDO> myPageSelf(SysImSessionSelfPageDTO dto) {
+
+        Long userId = UserUtil.getCurrentUserId();
+
+        dto.setUserId(userId);
+
+        Page<SysImSessionDO> page = baseMapper.myPageSelf(dto.page(), dto);
+
+        Map<Long, Long> lastOpenTsMap = page.getRecords().stream().collect(Collectors.toMap(BaseEntity::getId, SysImSessionDO::getLastOpenTs));
+
+        // 查询：会话的消息相关信息
+        myPageQueryContentInfo(false, page.getRecords(), lastOpenTsMap);
+
+        return page;
 
     }
 

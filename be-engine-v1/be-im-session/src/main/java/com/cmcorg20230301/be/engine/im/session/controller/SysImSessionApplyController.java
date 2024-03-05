@@ -1,7 +1,10 @@
 package com.cmcorg20230301.be.engine.im.session.controller;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.cmcorg20230301.be.engine.im.session.model.dto.SysImSessionApplyPrivateChatApplyDTO;
 import com.cmcorg20230301.be.engine.im.session.model.dto.SysImSessionApplyPrivateChatRejectDTO;
+import com.cmcorg20230301.be.engine.im.session.model.dto.SysImSessionApplyPrivateChatSelfPageDTO;
+import com.cmcorg20230301.be.engine.im.session.model.entity.SysImSessionApplyDO;
 import com.cmcorg20230301.be.engine.im.session.service.SysImSessionApplyService;
 import com.cmcorg20230301.be.engine.model.model.dto.NotEmptyIdSet;
 import com.cmcorg20230301.be.engine.model.model.dto.NotNullId;
@@ -23,6 +26,12 @@ public class SysImSessionApplyController {
 
     @Resource
     SysImSessionApplyService baseService;
+
+    @Operation(summary = "分页排序查询-私聊申请列表-自我")
+    @PostMapping("/privateChat/page/self")
+    public ApiResultVO<Page<SysImSessionApplyDO>> privateChatMyPageSelf(@RequestBody @Valid SysImSessionApplyPrivateChatSelfPageDTO dto) {
+        return ApiResultVO.okData(baseService.privateChatMyPageSelf(dto));
+    }
 
     @Operation(summary = "私聊：申请添加")
     @PostMapping("/privateChat/apply")
