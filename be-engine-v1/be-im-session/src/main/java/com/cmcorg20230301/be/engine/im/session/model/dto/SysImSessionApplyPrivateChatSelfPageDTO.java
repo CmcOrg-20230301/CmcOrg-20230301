@@ -6,6 +6,5 @@ import lombok.EqualsAndHashCode;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
-public class SysImSessionRefUserSelfPageDTO extends MyTenantPageDTO {
-
+public class SysImSessionApplyPrivateChatSelfPageDTO extends MyTenantPageDTO {
 }

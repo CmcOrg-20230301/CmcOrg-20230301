@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.cmcorg20230301.be.engine.im.session.model.dto.SysImSessionInsertOrUpdateDTO;
 import com.cmcorg20230301.be.engine.im.session.model.dto.SysImSessionPageDTO;
 import com.cmcorg20230301.be.engine.im.session.model.dto.SysImSessionQueryCustomerSessionIdUserSelfDTO;
+import com.cmcorg20230301.be.engine.im.session.model.dto.SysImSessionSelfPageDTO;
 import com.cmcorg20230301.be.engine.im.session.model.entity.SysImSessionDO;
 
 public interface SysImSessionService extends IService<SysImSessionDO> {
@@ -14,5 +15,7 @@ public interface SysImSessionService extends IService<SysImSessionDO> {
     Page<SysImSessionDO> myPage(SysImSessionPageDTO dto, boolean queryNoJoinSessionContentFlag);
 
     Long queryCustomerSessionIdUserSelf(SysImSessionQueryCustomerSessionIdUserSelfDTO dto);
+
+    Page<SysImSessionDO> myPageSelf(SysImSessionSelfPageDTO dto);
 
 }
