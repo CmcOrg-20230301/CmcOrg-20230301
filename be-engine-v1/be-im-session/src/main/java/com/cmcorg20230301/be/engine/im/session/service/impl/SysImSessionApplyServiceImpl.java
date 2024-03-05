@@ -1,11 +1,13 @@
 package com.cmcorg20230301.be.engine.im.session.service.impl;
 
 import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.map.MapUtil;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.dynamic.datasource.annotation.DSTransactional;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.baomidou.mybatisplus.extension.toolkit.ChainWrappers;
+import com.cmcorg20230301.be.engine.file.base.service.SysFileService;
 import com.cmcorg20230301.be.engine.im.session.mapper.SysImSessionApplyMapper;
 import com.cmcorg20230301.be.engine.im.session.model.dto.*;
 import com.cmcorg20230301.be.engine.im.session.model.entity.SysImSessionApplyDO;
@@ -53,6 +55,9 @@ public class SysImSessionApplyServiceImpl extends ServiceImpl<SysImSessionApplyM
     @Resource
     BaseSysUserInfoService baseSysUserInfoService;
 
+    @Resource
+    SysFileService sysFileService;
+
     /**
      * 分页排序查询-私聊申请对象列表
      */
@@ -67,6 +72,26 @@ public class SysImSessionApplyServiceImpl extends ServiceImpl<SysImSessionApplyM
                 .select(SysUserInfoDO::getId, SysUserInfoDO::getAvatarFileId, SysUserInfoDO::getNickname)
                 .page(dto.updateTimeDescDefaultOrderPage(true));
 
+        Set<Long> avatarFileIdSet = new HashSet<>();
+
+        for (SysUserInfoDO item : pageTemp.getRecords()) {
+
+            if (item.getAvatarFileId() != -1) {
+
+                avatarFileIdSet.add(item.getAvatarFileId());
+
+            }
+
+        }
+
+        Map<Long, String> avatarUrlMap = MapUtil.newHashMap();
+
+        if (CollUtil.isNotEmpty(avatarFileIdSet)) {
+
+            avatarUrlMap = sysFileService.getPublicUrl(new NotEmptyIdSet(avatarFileIdSet)).getMap();
+
+        }
+
         List<SysImSessionApplyPrivateChatApplyUserPageVO> list = new ArrayList<>(pageTemp.getRecords().size());
 
         for (SysUserInfoDO item : pageTemp.getRecords()) {
@@ -75,7 +100,14 @@ public class SysImSessionApplyServiceImpl extends ServiceImpl<SysImSessionApplyM
 
             sysImSessionApplyPrivateChatApplyUserPageVO.setUserId(item.getId());
             sysImSessionApplyPrivateChatApplyUserPageVO.setNickname(item.getNickname());
-            sysImSessionApplyPrivateChatApplyUserPageVO.setAvatarFileId(item.getAvatarFileId());
+
+            if (item.getAvatarFileId() != -1) {
+
+                String avatarUrl = avatarUrlMap.get(item.getAvatarFileId());
+
+                sysImSessionApplyPrivateChatApplyUserPageVO.setAvatarUrl(avatarUrl);
+
+            }
 
             list.add(sysImSessionApplyPrivateChatApplyUserPageVO);
 

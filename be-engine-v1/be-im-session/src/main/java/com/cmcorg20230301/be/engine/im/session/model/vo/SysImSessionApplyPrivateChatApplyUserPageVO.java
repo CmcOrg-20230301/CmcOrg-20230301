@@ -12,7 +12,7 @@ public class SysImSessionApplyPrivateChatApplyUserPageVO {
     @Schema(description = "昵称")
     private String nickname;
 
-    @Schema(description = "头像文件主键 id")
-    private Long avatarFileId;
+    @Schema(description = "头像地址")
+    private String avatarUrl;
 
 }
