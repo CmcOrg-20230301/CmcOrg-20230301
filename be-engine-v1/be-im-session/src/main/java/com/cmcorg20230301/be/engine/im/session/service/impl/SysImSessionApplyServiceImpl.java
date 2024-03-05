@@ -121,12 +121,20 @@ public class SysImSessionApplyServiceImpl extends ServiceImpl<SysImSessionApplyM
      * 分页排序查询-私聊申请列表-自我
      */
     @Override
-    public Page<SysImSessionApplyDO> privateChatMyPageSelf(SysImSessionApplyPrivateChatSelfPageDTO dto) {
+    public Page<SysImSessionApplyDO> privateChatApplyPageSelf(SysImSessionApplyPrivateChatApplySelfPageDTO dto) {
 
         Long userId = UserUtil.getCurrentUserId();
 
         return lambdaQuery().eq(SysImSessionApplyDO::getPrivateChatApplyTargetUserId, userId).eq(SysImSessionApplyDO::getShowFlag, true).page(dto.updateTimeDescDefaultOrderPage(true));
 
+    }
+
+    /**
+     * 分页排序查询-私聊列表-自我
+     */
+    @Override
+    public Page<SysImSessionApplyDO> privateChatPageSelf(SysImSessionApplyPrivateChatSelfPageDTO dto) {
+        return null;
     }
 
     /**
