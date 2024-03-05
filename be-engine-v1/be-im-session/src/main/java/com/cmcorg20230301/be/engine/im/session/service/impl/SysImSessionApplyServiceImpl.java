@@ -1,6 +1,7 @@
 package com.cmcorg20230301.be.engine.im.session.service.impl;
 
 import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.util.StrUtil;
 import com.baomidou.dynamic.datasource.annotation.DSTransactional;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -11,6 +12,7 @@ import com.cmcorg20230301.be.engine.im.session.model.entity.SysImSessionApplyDO;
 import com.cmcorg20230301.be.engine.im.session.model.entity.SysImSessionRefUserDO;
 import com.cmcorg20230301.be.engine.im.session.model.enums.SysImSessionApplyStatusEnum;
 import com.cmcorg20230301.be.engine.im.session.model.enums.SysImSessionTypeEnum;
+import com.cmcorg20230301.be.engine.im.session.model.vo.SysImSessionApplyPrivateChatApplyUserPageVO;
 import com.cmcorg20230301.be.engine.im.session.service.SysImSessionApplyService;
 import com.cmcorg20230301.be.engine.im.session.service.SysImSessionRefUserService;
 import com.cmcorg20230301.be.engine.im.session.service.SysImSessionService;
@@ -24,17 +26,16 @@ import com.cmcorg20230301.be.engine.security.exception.BaseBizCodeEnum;
 import com.cmcorg20230301.be.engine.security.mapper.SysUserMapper;
 import com.cmcorg20230301.be.engine.security.model.entity.BaseEntity;
 import com.cmcorg20230301.be.engine.security.model.entity.BaseEntityNoIdSuper;
+import com.cmcorg20230301.be.engine.security.model.entity.SysUserInfoDO;
 import com.cmcorg20230301.be.engine.security.model.vo.ApiResultVO;
+import com.cmcorg20230301.be.engine.security.service.BaseSysUserInfoService;
 import com.cmcorg20230301.be.engine.security.util.MyEntityUtil;
 import com.cmcorg20230301.be.engine.security.util.UserUtil;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @Service
 public class SysImSessionApplyServiceImpl extends ServiceImpl<SysImSessionApplyMapper, SysImSessionApplyDO>
@@ -48,6 +49,41 @@ public class SysImSessionApplyServiceImpl extends ServiceImpl<SysImSessionApplyM
 
     @Resource
     SysUserMapper sysUserMapper;
+
+    @Resource
+    BaseSysUserInfoService baseSysUserInfoService;
+
+    /**
+     * 分页排序查询-私聊申请对象列表
+     */
+    @Override
+    public Page<SysImSessionApplyPrivateChatApplyUserPageVO> privateChatApplyUserPage(SysImSessionApplyPrivateChatApplyUserPageDTO dto) {
+
+        Long tenantId = UserUtil.getCurrentTenantIdDefault();
+
+        Page<SysUserInfoDO> pageTemp = baseSysUserInfoService.lambdaQuery()
+                .like(StrUtil.isNotBlank(dto.getNickname()), SysUserInfoDO::getNickname, dto.getNickname()) //
+                .eq(SysUserInfoDO::getTenantId, tenantId)
+                .select(SysUserInfoDO::getId, SysUserInfoDO::getAvatarFileId, SysUserInfoDO::getNickname)
+                .page(dto.updateTimeDescDefaultOrderPage(true));
+
+        List<SysImSessionApplyPrivateChatApplyUserPageVO> list = new ArrayList<>();
+
+        for (SysUserInfoDO item : pageTemp.getRecords()) {
+
+            SysImSessionApplyPrivateChatApplyUserPageVO sysImSessionApplyPrivateChatApplyUserPageVO = new SysImSessionApplyPrivateChatApplyUserPageVO();
+
+            sysImSessionApplyPrivateChatApplyUserPageVO.setUserId(item.getId());
+            sysImSessionApplyPrivateChatApplyUserPageVO.setNickname(item.getNickname());
+            sysImSessionApplyPrivateChatApplyUserPageVO.setAvatarFileId(item.getAvatarFileId());
+
+            list.add(sysImSessionApplyPrivateChatApplyUserPageVO);
+
+        }
+
+        return new Page<SysImSessionApplyPrivateChatApplyUserPageVO>().setTotal(pageTemp.getTotal()).setRecords(list);
+
+    }
 
     /**
      * 分页排序查询-私聊申请列表-自我

@@ -277,7 +277,7 @@ public class SysImSessionContentServiceImpl extends ServiceImpl<SysImSessionCont
 
             }
 
-            if (BooleanUtil.isFalse(sysImSessionRefUserDO.getBlockFlag())) {
+            if (BooleanUtil.isTrue(sysImSessionRefUserDO.getBlockFlag())) {
 
                 ApiResultVO.error("操作失败：您已被拉黑，无法发送消息", sessionId);
 

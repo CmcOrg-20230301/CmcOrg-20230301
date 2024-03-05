@@ -74,6 +74,18 @@ public class SysSocketServiceImpl extends ServiceImpl<SysSocketMapper, SysSocket
 
     }
 
+    /**
+     * 批量：删除socket
+     */
+    @Override
+    public String deleteByIdSet(NotEmptyIdSet notEmptyIdSet) {
+
+        removeBatchByIds(notEmptyIdSet.getIdSet());
+
+        return BaseBizCodeEnum.OK;
+
+    }
+
 }
 
 

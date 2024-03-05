@@ -14,4 +14,6 @@ public interface SysSocketService extends IService<SysSocketDO> {
 
     String enableByIdSet(NotEmptyIdSet notEmptyIdSet);
 
+    String deleteByIdSet(NotEmptyIdSet notEmptyIdSet);
+
 }

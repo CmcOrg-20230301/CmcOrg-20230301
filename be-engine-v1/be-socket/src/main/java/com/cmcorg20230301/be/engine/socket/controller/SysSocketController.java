@@ -46,4 +46,11 @@ public class SysSocketController {
         return ApiResultVO.okMsg(baseService.enableByIdSet(notEmptyIdSet));
     }
 
+    @Operation(summary = "批量：删除socket")
+    @PostMapping("/deleteByIdSet")
+    @PreAuthorize("hasAuthority('sysSocket:insertOrUpdate')")
+    public ApiResultVO<String> deleteByIdSet(@RequestBody @Valid NotEmptyIdSet notEmptyIdSet) {
+        return ApiResultVO.okMsg(baseService.deleteByIdSet(notEmptyIdSet));
+    }
+
 }
