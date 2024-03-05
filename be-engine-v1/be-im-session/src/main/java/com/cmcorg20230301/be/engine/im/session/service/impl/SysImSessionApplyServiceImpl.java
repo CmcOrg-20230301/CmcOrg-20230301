@@ -67,7 +67,7 @@ public class SysImSessionApplyServiceImpl extends ServiceImpl<SysImSessionApplyM
                 .select(SysUserInfoDO::getId, SysUserInfoDO::getAvatarFileId, SysUserInfoDO::getNickname)
                 .page(dto.updateTimeDescDefaultOrderPage(true));
 
-        List<SysImSessionApplyPrivateChatApplyUserPageVO> list = new ArrayList<>();
+        List<SysImSessionApplyPrivateChatApplyUserPageVO> list = new ArrayList<>(pageTemp.getRecords().size());
 
         for (SysUserInfoDO item : pageTemp.getRecords()) {
 
