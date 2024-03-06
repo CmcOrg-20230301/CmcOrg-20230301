@@ -15,4 +15,7 @@ public class SysImSessionApplyPrivateChatSelfPageVO {
     @Schema(description = "头像地址")
     private String avatarUrl;
 
+    @Schema(description = "会话主键 id")
+    private Long sessionId;
+
 }

@@ -199,16 +199,16 @@ public class SysImSessionApplyServiceImpl extends ServiceImpl<SysImSessionApplyM
 
         Long tenantId = UserUtil.getCurrentTenantIdDefault();
 
-        Page<SysImSessionApplyDO> pageTemp = lambdaQuery().eq(BaseEntityNoIdSuper::getTenantId, tenantId).eq(SysImSessionApplyDO::getPrivateChatApplyTargetUserId, userId).eq(SysImSessionApplyDO::getStatus, SysImSessionApplyStatusEnum.PASSED).select(SysImSessionApplyDO::getUserId).page(dto.updateTimeDescDefaultOrderPage(true));
+        Page<SysImSessionApplyDO> pageTemp = lambdaQuery().eq(BaseEntityNoIdSuper::getTenantId, tenantId).eq(SysImSessionApplyDO::getPrivateChatApplyTargetUserId, userId).eq(SysImSessionApplyDO::getStatus, SysImSessionApplyStatusEnum.PASSED).select(SysImSessionApplyDO::getUserId, SysImSessionApplyDO::getSessionId).page(dto.updateTimeDescDefaultOrderPage(true));
 
         if (CollUtil.isEmpty(pageTemp.getRecords())) {
             return new Page<>();
         }
 
-        Set<Long> applyUserIdSet = pageTemp.getRecords().stream().map(SysImSessionApplyDO::getUserId).collect(Collectors.toSet());
+        Map<Long, Long> applyUserIdAndSessionIdMap = pageTemp.getRecords().stream().collect(Collectors.toMap(SysImSessionApplyDO::getUserId, SysImSessionApplyDO::getSessionId));
 
         List<SysUserInfoDO> sysUserInfoDOList = baseSysUserInfoService.lambdaQuery().eq(SysUserInfoDO::getTenantId, tenantId) //
-                .in(SysUserInfoDO::getId, applyUserIdSet) //
+                .in(SysUserInfoDO::getId, applyUserIdAndSessionIdMap.keySet()) //
                 .select(SysUserInfoDO::getId, SysUserInfoDO::getAvatarFileId, SysUserInfoDO::getNickname).list();
 
         Set<Long> avatarFileIdSet = new HashSet<>();
@@ -247,6 +247,10 @@ public class SysImSessionApplyServiceImpl extends ServiceImpl<SysImSessionApplyM
                 sysImSessionApplyPrivateChatSelfPageVO.setAvatarUrl(avatarUrl);
 
             }
+
+            Long sessionId = applyUserIdAndSessionIdMap.get(item.getId());
+
+            sysImSessionApplyPrivateChatSelfPageVO.setSessionId(sessionId);
 
             list.add(sysImSessionApplyPrivateChatSelfPageVO);
 
