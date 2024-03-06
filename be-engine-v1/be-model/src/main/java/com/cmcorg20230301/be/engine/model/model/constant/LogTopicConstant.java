@@ -45,9 +45,11 @@ public interface LogTopicConstant {
 
     String OTHER_APP_WX = PRE_BE + "other-app-wx"; // 第三方应用-微信相关
 
-    String OTHER_APP_OFFICIAL_ACCOUNT_MENU = PRE_BE + "other-app-official-account-menu"; // 第三方应用-公众号-菜单相关
+    String OTHER_APP_OFFICIAL_ACCOUNT_MENU =
+        PRE_BE + "other-app-official-account-menu"; // 第三方应用-公众号-菜单相关
 
-    String OTHER_APP_WX_OFFICIAL_ACCOUNT = PRE_BE + "other-app-wx-official-account"; // 第三方应用-微信公众号相关
+    String OTHER_APP_WX_OFFICIAL_ACCOUNT =
+        PRE_BE + "other-app-wx-official-account"; // 第三方应用-微信公众号相关
 
     String OTHER_APP_WX_WORK = PRE_BE + "other-app-wx-work"; // 第三方应用-企业微信相关
 

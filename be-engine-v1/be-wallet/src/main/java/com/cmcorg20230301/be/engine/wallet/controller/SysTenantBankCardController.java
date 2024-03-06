@@ -30,21 +30,24 @@ public class SysTenantBankCardController {
     @Operation(summary = "新增/修改-租户")
     @PostMapping("/insertOrUpdate/tenant")
     @PreAuthorize("hasAuthority('sysTenantBankCard:insertOrUpdate')")
-    public ApiResultVO<String> insertOrUpdateTenant(@RequestBody @Valid SysUserBankCardInsertOrUpdateUserSelfDTO dto) {
+    public ApiResultVO<String> insertOrUpdateTenant(
+        @RequestBody @Valid SysUserBankCardInsertOrUpdateUserSelfDTO dto) {
         return ApiResultVO.okMsg(baseService.insertOrUpdateTenant(dto));
     }
 
     @Operation(summary = "分页排序查询")
     @PostMapping("/page")
     @PreAuthorize("hasAuthority('sysTenantBankCard:page')")
-    public ApiResultVO<Page<SysUserBankCardDO>> myPage(@RequestBody @Valid SysUserBankCardPageDTO dto) {
+    public ApiResultVO<Page<SysUserBankCardDO>> myPage(
+        @RequestBody @Valid SysUserBankCardPageDTO dto) {
         return ApiResultVO.okData(baseService.myPage(dto));
     }
 
     @Operation(summary = "查询：树结构")
     @PostMapping("/tree")
     @PreAuthorize("hasAuthority('sysTenantBankCard:page')")
-    public ApiResultVO<List<SysUserBankCardDO>> tree(@RequestBody @Valid SysUserBankCardPageDTO dto) {
+    public ApiResultVO<List<SysUserBankCardDO>> tree(
+        @RequestBody @Valid SysUserBankCardPageDTO dto) {
         return ApiResultVO.okData(baseService.tree(dto));
     }
 

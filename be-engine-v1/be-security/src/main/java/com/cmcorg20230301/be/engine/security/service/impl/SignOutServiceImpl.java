@@ -6,10 +6,9 @@ import com.cmcorg20230301.be.engine.security.exception.BaseBizCodeEnum;
 import com.cmcorg20230301.be.engine.security.service.SignOutService;
 import com.cmcorg20230301.be.engine.security.util.MyJwtUtil;
 import com.cmcorg20230301.be.engine.util.util.CallBack;
-import org.springframework.stereotype.Service;
-
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import org.springframework.stereotype.Service;
 
 @Service
 public class SignOutServiceImpl implements SignOutService {
@@ -25,13 +24,15 @@ public class SignOutServiceImpl implements SignOutService {
 
         CallBack<Long> jwtHashRemainMsCallBack = new CallBack<>();
 
-        String jwtHash = MyJwtUtil.getJwtHashByRequest(httpServletRequest, jwtHashRemainMsCallBack, null);
+        String jwtHash = MyJwtUtil.getJwtHashByRequest(httpServletRequest, jwtHashRemainMsCallBack,
+            null);
 
         if (StrUtil.isBlank(jwtHash)) {
             return BaseBizCodeEnum.OK;
         }
 
-        CacheRedisKafkaLocalUtil.put(jwtHash, jwtHashRemainMsCallBack.getValue(), () -> "不可用的 jwt：退出登录");
+        CacheRedisKafkaLocalUtil.put(jwtHash, jwtHashRemainMsCallBack.getValue(),
+            () -> "不可用的 jwt：退出登录");
 
         return BaseBizCodeEnum.OK;
 

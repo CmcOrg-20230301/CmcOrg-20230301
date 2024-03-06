@@ -37,11 +37,10 @@ public class SysUserInfoUtil {
     private static ConcurrentHashMap<Long, SysUserInfoDO> USER_INFO_DO_MAP = new ConcurrentHashMap<>();
 
     /**
-     * 添加
-     * 备注：如果为 null，则不会更新该字段
+     * 添加 备注：如果为 null，则不会更新该字段
      */
     public static void add(Long id, @Nullable Date lastActiveTime, @Nullable String lastIp,
-                           @Nullable String lastRegion) {
+        @Nullable String lastRegion) {
 
         if (id == null) {
             return;
@@ -127,8 +126,9 @@ public class SysUserInfoUtil {
             return new ArrayList<>();
         }
 
-        List<SysUserInfoDO> sysUserInfoDOList = baseSysUserInfoService.lambdaQuery().in(SysUserInfoDO::getId, userIdSet)
-                .list();
+        List<SysUserInfoDO> sysUserInfoDOList = baseSysUserInfoService.lambdaQuery()
+            .in(SysUserInfoDO::getId, userIdSet)
+            .list();
 
         if (addAdminFlag) {
 
@@ -144,7 +144,8 @@ public class SysUserInfoUtil {
      * 通过：用户主键 idSet，获取：用户资料 map，key：用户主键 id，value：用户资料
      */
     @NotNull
-    public static Map<Long, SysUserInfoDO> getUserInfoDoMap(Set<Long> userIdSet, boolean addAdminFlag) {
+    public static Map<Long, SysUserInfoDO> getUserInfoDoMap(Set<Long> userIdSet,
+        boolean addAdminFlag) {
 
         if (CollUtil.isEmpty(userIdSet)) {
             return MapUtil.newHashMap();
@@ -216,7 +217,8 @@ public class SysUserInfoUtil {
 
         sysUserInfoDO.setSignUpType(SysRequestCategoryEnum.WX_WORK);
 
-        sysUserInfoDO.setNickname(NicknameUtil.getRandomNickname(WX_WORK_SYS_USER_INFO_NICKNAME_PRE));
+        sysUserInfoDO.setNickname(
+            NicknameUtil.getRandomNickname(WX_WORK_SYS_USER_INFO_NICKNAME_PRE));
 
         return sysUserInfoDO;
 

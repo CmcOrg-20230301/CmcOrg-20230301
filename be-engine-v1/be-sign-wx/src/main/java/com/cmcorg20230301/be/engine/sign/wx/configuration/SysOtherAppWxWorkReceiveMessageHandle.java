@@ -37,7 +37,8 @@ import java.util.List;
 
 //@Component
 @Slf4j(topic = LogTopicConstant.OTHER_APP_WX_WORK)
-public class SysOtherAppWxWorkReceiveMessageHandle implements ISysOtherAppWxWorkReceiveMessageHandle {
+public class SysOtherAppWxWorkReceiveMessageHandle implements
+    ISysOtherAppWxWorkReceiveMessageHandle {
 
     @Resource
     SysUserMapper sysUserMapper;
@@ -55,10 +56,13 @@ public class SysOtherAppWxWorkReceiveMessageHandle implements ISysOtherAppWxWork
 
         if (sysOtherAppDO == null) {
 
-            sysOtherAppDO = ChainWrappers.lambdaQueryChain(sysOtherAppMapper).eq(SysOtherAppDO::getOpenId, dto.getToUserName()).eq(SysOtherAppDO::getType, SysOtherAppTypeEnum.WX_WORK.getCode()).one();
+            sysOtherAppDO = ChainWrappers.lambdaQueryChain(sysOtherAppMapper)
+                .eq(SysOtherAppDO::getOpenId, dto.getToUserName())
+                .eq(SysOtherAppDO::getType, SysOtherAppTypeEnum.WX_WORK.getCode()).one();
 
             if (sysOtherAppDO == null) {
-                ApiResultVO.error("该企业微信的 openId，不存在本系统，请联系管理员", dto.getToUserName());
+                ApiResultVO.error("该企业微信的 openId，不存在本系统，请联系管理员",
+                    dto.getToUserName());
             }
 
             if (BooleanUtil.isFalse(sysOtherAppDO.getEnableFlag())) {
@@ -112,24 +116,28 @@ public class SysOtherAppWxWorkReceiveMessageHandle implements ISysOtherAppWxWork
     /**
      * 新增一个用户
      */
-    private SysUserDO signInUser(SysOtherAppWxWorkReceiveMessageDTO dto, SysOtherAppDO sysOtherAppDO) {
+    private SysUserDO signInUser(SysOtherAppWxWorkReceiveMessageDTO dto,
+        SysOtherAppDO sysOtherAppDO) {
 
         CallBack<SysUserDO> sysUserDoCallBack = new CallBack<>();
 
         // 直接通过：微信 openId登录
-        SignUtil.signInAccount(ChainWrappers.lambdaQueryChain(sysUserMapper).eq(SysUserDO::getWxOpenId, dto.getFromUserName()).eq(SysUserDO::getWxAppId, sysOtherAppDO.getAppId()), BaseRedisKeyEnum.PRE_WX_OPEN_ID, dto.getFromUserName(), () -> {
+        SignUtil.signInAccount(ChainWrappers.lambdaQueryChain(sysUserMapper)
+                .eq(SysUserDO::getWxOpenId, dto.getFromUserName())
+                .eq(SysUserDO::getWxAppId, sysOtherAppDO.getAppId()), BaseRedisKeyEnum.PRE_WX_OPEN_ID,
+            dto.getFromUserName(), () -> {
 
-            SysUserInfoDO sysUserInfoDO = SysUserInfoUtil.getWxSysUserInfoDO();
+                SysUserInfoDO sysUserInfoDO = SysUserInfoUtil.getWxSysUserInfoDO();
 
-            sysUserInfoDO.setSignUpType(SysRequestCategoryEnum.WX_WORK);
+                sysUserInfoDO.setSignUpType(SysRequestCategoryEnum.WX_WORK);
 
-            return sysUserInfoDO;
+                return sysUserInfoDO;
 
-        }, sysOtherAppDO.getTenantId(), accountMap -> {
+            }, sysOtherAppDO.getTenantId(), accountMap -> {
 
-            accountMap.put(BaseRedisKeyEnum.PRE_WX_APP_ID, sysOtherAppDO.getAppId());
+                accountMap.put(BaseRedisKeyEnum.PRE_WX_APP_ID, sysOtherAppDO.getAppId());
 
-        }, sysUserDoCallBack);
+            }, sysUserDoCallBack);
 
         return sysUserDoCallBack.getValue(); // 返回：回调对象
 
@@ -140,7 +148,9 @@ public class SysOtherAppWxWorkReceiveMessageHandle implements ISysOtherAppWxWork
      */
     private SysUserDO getSysUserDO(SysOtherAppWxWorkReceiveMessageDTO dto) {
 
-        return ChainWrappers.lambdaQueryChain(sysUserMapper).eq(SysUserDO::getWxOpenId, dto.getFromUserName()).eq(SysUserDO::getWxAppId, dto.getSysOtherAppDO().getAppId()).one();
+        return ChainWrappers.lambdaQueryChain(sysUserMapper)
+            .eq(SysUserDO::getWxOpenId, dto.getFromUserName())
+            .eq(SysUserDO::getWxAppId, dto.getSysOtherAppDO().getAppId()).one();
 
     }
 
@@ -166,12 +176,15 @@ public class SysOtherAppWxWorkReceiveMessageHandle implements ISysOtherAppWxWork
 
         // 如果是：微信客服消息
         // 先：复制一份
-        SysOtherAppWxWorkReceiveMessageDTO copyDtoTemp = BeanUtil.copyProperties(dto, SysOtherAppWxWorkReceiveMessageDTO.class);
+        SysOtherAppWxWorkReceiveMessageDTO copyDtoTemp = BeanUtil.copyProperties(dto,
+            SysOtherAppWxWorkReceiveMessageDTO.class);
 
         String accessToken = getAccessToken(dto);
 
         // 获取：最新消息
-        List<JSONObject> jsonObjectList = WxUtil.syncMsg(accessToken, dto.getSysOtherAppDO().getTenantId(), dto.getToken(), dto.getOpenKfId(), dto.getSysOtherAppDO().getAppId());
+        List<JSONObject> jsonObjectList = WxUtil.syncMsg(accessToken,
+            dto.getSysOtherAppDO().getTenantId(), dto.getToken(), dto.getOpenKfId(),
+            dto.getSysOtherAppDO().getAppId());
 
         if (CollUtil.isEmpty(jsonObjectList)) {
             return true;
@@ -183,7 +196,8 @@ public class SysOtherAppWxWorkReceiveMessageHandle implements ISysOtherAppWxWork
 
         dto.setWxKfMsgJsonObject(jsonObject);
 
-        if (CollUtil.isNotEmpty(SysOtherAppWxWorkReceiveMessageListener.iSysOtherAppWxWorkReceiveMessageHandleList)) {
+        if (CollUtil.isNotEmpty(
+            SysOtherAppWxWorkReceiveMessageListener.iSysOtherAppWxWorkReceiveMessageHandleList)) {
 
             for (JSONObject item : jsonObjectList) {
 
@@ -198,7 +212,8 @@ public class SysOtherAppWxWorkReceiveMessageHandle implements ISysOtherAppWxWork
 
                         for (ISysOtherAppWxWorkReceiveMessageHandle subItem : SysOtherAppWxWorkReceiveMessageListener.iSysOtherAppWxWorkReceiveMessageHandleList) {
 
-                            SysOtherAppWxWorkReceiveMessageDTO copyDto = BeanUtil.copyProperties(copyDtoTemp, SysOtherAppWxWorkReceiveMessageDTO.class);
+                            SysOtherAppWxWorkReceiveMessageDTO copyDto = BeanUtil.copyProperties(
+                                copyDtoTemp, SysOtherAppWxWorkReceiveMessageDTO.class);
 
                             copyDto.setFromUserName(item.getStr("external_userid"));
 
@@ -343,7 +358,8 @@ public class SysOtherAppWxWorkReceiveMessageHandle implements ISysOtherAppWxWork
         } else {
 
             // 执行：发送
-            WxUtil.doTextSendForWorkKf(dto.getFromUserName(), accessToken, content, dto.getOpenKfId());
+            WxUtil.doTextSendForWorkKf(dto.getFromUserName(), accessToken, content,
+                dto.getOpenKfId());
 
         }
 

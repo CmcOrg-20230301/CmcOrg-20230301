@@ -61,7 +61,8 @@ public class SysUserWalletController {
     @Operation(summary = "通过主键 idSet，加减可提现的钱")
     @PostMapping("/addWithdrawableMoney/background")
     @PreAuthorize("hasAuthority('sysUserWallet:addWithdrawableMoney')")
-    public ApiResultVO<String> addWithdrawableMoneyBackground(@RequestBody @Valid ChangeBigDecimalNumberIdSetDTO dto) {
+    public ApiResultVO<String> addWithdrawableMoneyBackground(
+        @RequestBody @Valid ChangeBigDecimalNumberIdSetDTO dto) {
         return ApiResultVO.okMsg(baseService.addWithdrawableMoneyBackground(dto));
     }
 
@@ -74,14 +75,16 @@ public class SysUserWalletController {
     @Operation(summary = "充值-用户自我")
     @PostMapping("/recharge/userSelf")
     @PreAuthorize("hasAuthority('sysUserWallet:rechargeUserSelf')")
-    public ApiResultVO<BuyVO> rechargeUserSelf(@RequestBody @Valid SysUserWalletRechargeUserSelfDTO dto) {
+    public ApiResultVO<BuyVO> rechargeUserSelf(
+        @RequestBody @Valid SysUserWalletRechargeUserSelfDTO dto) {
         return ApiResultVO.okData(baseService.rechargeUserSelf(dto));
     }
 
     @Operation(summary = "充值-租户")
     @PostMapping("/recharge/tenant")
     @PreAuthorize("hasAuthority('sysUserWallet:rechargeTenant')")
-    public ApiResultVO<BuyVO> rechargeTenant(@RequestBody @Valid SysUserWalletRechargeTenantDTO dto) {
+    public ApiResultVO<BuyVO> rechargeTenant(
+        @RequestBody @Valid SysUserWalletRechargeTenantDTO dto) {
         return ApiResultVO.okData(baseService.rechargeTenant(dto));
     }
 

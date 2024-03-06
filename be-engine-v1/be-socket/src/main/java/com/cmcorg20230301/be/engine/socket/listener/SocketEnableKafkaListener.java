@@ -24,11 +24,12 @@ import java.util.stream.Collectors;
  */
 @Component
 @KafkaListener(topics = "#{__listener.TOPIC_LIST}", groupId = "#{kafkaDynamicGroupIdConfiguration.getGroupId()}",
-        batch = "true")
+    batch = "true")
 @Slf4j(topic = LogTopicConstant.SOCKET)
 public class SocketEnableKafkaListener {
 
-    public static final List<String> TOPIC_LIST = CollUtil.newArrayList(KafkaTopicEnum.SOCKET_ENABLE_TOPIC.name());
+    public static final List<String> TOPIC_LIST = CollUtil.newArrayList(
+        KafkaTopicEnum.SOCKET_ENABLE_TOPIC.name());
 
     @Nullable
     private static List<ISocketEnable> iSocketEnableList;
@@ -44,9 +45,9 @@ public class SocketEnableKafkaListener {
         TryUtil.tryCatchFinally(() -> {
 
             Set<Long> socketIdSet = recordList.stream() //
-                    .map(it -> JSONUtil.toList(it, Long.class)) //
-                    .flatMap(Collection::stream)  //
-                    .collect(Collectors.toSet());
+                .map(it -> JSONUtil.toList(it, Long.class)) //
+                .flatMap(Collection::stream)  //
+                .collect(Collectors.toSet());
 
             if (CollUtil.isNotEmpty(iSocketEnableList)) {
 

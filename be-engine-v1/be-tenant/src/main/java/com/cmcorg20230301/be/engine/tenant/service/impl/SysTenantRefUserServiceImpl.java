@@ -7,8 +7,9 @@ import com.cmcorg20230301.be.engine.tenant.service.SysTenantRefUserService;
 import org.springframework.stereotype.Service;
 
 @Service
-public class SysTenantRefUserServiceImpl extends ServiceImpl<SysTenantRefUserMapper, SysTenantRefUserDO>
-        implements SysTenantRefUserService {
+public class SysTenantRefUserServiceImpl extends
+    ServiceImpl<SysTenantRefUserMapper, SysTenantRefUserDO>
+    implements SysTenantRefUserService {
 
 }
 

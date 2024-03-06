@@ -9,14 +9,13 @@ import com.cmcorg20230301.be.engine.security.model.entity.SysRequestDO;
 import com.cmcorg20230301.be.engine.security.model.vo.ApiResultVO;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import javax.annotation.Resource;
+import javax.validation.Valid;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import javax.annotation.Resource;
-import javax.validation.Valid;
 
 @RestController
 @RequestMapping("/sys/request")
@@ -41,7 +40,8 @@ public class SysRequestController {
 
     @PostMapping("/self/loginRecord")
     @Operation(summary = "当前用户：登录记录")
-    public ApiResultVO<Page<SysRequestDO>> selfLoginRecord(@RequestBody @Valid SysRequestSelfLoginRecordPageDTO dto) {
+    public ApiResultVO<Page<SysRequestDO>> selfLoginRecord(
+        @RequestBody @Valid SysRequestSelfLoginRecordPageDTO dto) {
         return ApiResultVO.okData(baseService.selfLoginRecord(dto));
     }
 

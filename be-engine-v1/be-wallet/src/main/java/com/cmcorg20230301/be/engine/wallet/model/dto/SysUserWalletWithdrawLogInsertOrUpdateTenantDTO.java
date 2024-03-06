@@ -8,7 +8,8 @@ import javax.validation.constraints.NotNull;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
-public class SysUserWalletWithdrawLogInsertOrUpdateTenantDTO extends SysUserWalletWithdrawLogInsertOrUpdateUserSelfDTO {
+public class SysUserWalletWithdrawLogInsertOrUpdateTenantDTO extends
+    SysUserWalletWithdrawLogInsertOrUpdateUserSelfDTO {
 
     @NotNull
     @Schema(description = "租户主键 id")

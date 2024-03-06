@@ -16,16 +16,15 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.netty.channel.Channel;
 import io.netty.handler.codec.http.websocketx.TextWebSocketFrame;
 import io.swagger.v3.oas.annotations.Operation;
-import lombok.SneakyThrows;
-import org.jetbrains.annotations.Nullable;
-import org.springframework.stereotype.Component;
-
-import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import javax.annotation.Resource;
+import lombok.SneakyThrows;
+import org.jetbrains.annotations.Nullable;
+import org.springframework.stereotype.Component;
 
 @Component
 public class WebSocketUtil {
@@ -62,7 +61,8 @@ public class WebSocketUtil {
 
         for (Long item : userIdSet) {
 
-            ConcurrentHashMap<Long, Channel> channelMap = NettyWebSocketServerHandler.USER_ID_CHANNEL_MAP.get(item);
+            ConcurrentHashMap<Long, Channel> channelMap = NettyWebSocketServerHandler.USER_ID_CHANNEL_MAP.get(
+                item);
 
             if (CollUtil.isEmpty(channelMap)) {
                 continue;
@@ -75,7 +75,8 @@ public class WebSocketUtil {
 
                 if (checkFlag) {
 
-                    Long sysSocketRefUserId = subItem.attr(NettyWebSocketServerHandler.SYS_SOCKET_REF_USER_ID_KEY).get();
+                    Long sysSocketRefUserId = subItem.attr(
+                        NettyWebSocketServerHandler.SYS_SOCKET_REF_USER_ID_KEY).get();
 
                     if (!sysSocketRefUserIdSet.contains(sysSocketRefUserId)) {
                         continue;
@@ -96,8 +97,10 @@ public class WebSocketUtil {
      * 发送消息
      */
     @SneakyThrows
-    public static <T> void send(Channel channel, WebSocketMessageDTO<T> dto, String text, long costMs,
-                                @Nullable NettyWebSocketBeanPostProcessor.MappingValue mappingValue, String errorMsg, boolean successFlag) {
+    public static <T> void send(Channel channel, WebSocketMessageDTO<T> dto, String text,
+        long costMs,
+        @Nullable NettyWebSocketBeanPostProcessor.MappingValue mappingValue, String errorMsg,
+        boolean successFlag) {
 
         Long userId = channel.attr(NettyWebSocketServerHandler.USER_ID_KEY).get();
 
@@ -106,7 +109,8 @@ public class WebSocketUtil {
         Date date = new Date();
 
         costMs = System.currentTimeMillis() - costMs; // 耗时（毫秒）
-        String costMsStr = DateUtil.formatBetween(costMs, BetweenFormatter.Level.MILLISECOND); // 耗时（字符串）
+        String costMsStr = DateUtil.formatBetween(costMs,
+            BetweenFormatter.Level.MILLISECOND); // 耗时（字符串）
 
         String summary;
 
@@ -130,7 +134,8 @@ public class WebSocketUtil {
         sysRequestDO.setCostMsStr(costMsStr);
         sysRequestDO.setCostMs(costMs);
         sysRequestDO.setName(summary);
-        sysRequestDO.setCategory(channel.attr(NettyWebSocketServerHandler.SYS_REQUEST_CATEGORY_ENUM_KEY).get());
+        sysRequestDO.setCategory(
+            channel.attr(NettyWebSocketServerHandler.SYS_REQUEST_CATEGORY_ENUM_KEY).get());
 
         String ip = channel.attr(NettyWebSocketServerHandler.IP_KEY).get();
 

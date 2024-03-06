@@ -1,44 +1,44 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <modelVersion>4.0.0</modelVersion>
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
 
-    <parent>
-        <groupId>com.cmcorg20230301</groupId>
-        <artifactId>be-engine-v1</artifactId>
-        <version>2023.3.1</version>
-    </parent>
+  <parent>
+    <groupId>com.cmcorg20230301</groupId>
+    <artifactId>be-engine-v1</artifactId>
+    <version>2023.3.1</version>
+  </parent>
 
-    <artifactId>be-sign-single</artifactId>
-    <description>统一登录</description>
+  <artifactId>be-sign-single</artifactId>
+  <description>统一登录</description>
 
-    <dependencies>
+  <dependencies>
 
-        <!-- be-sign-phone -->
-        <dependency>
-            <groupId>${cmcorg.groupId}</groupId>
-            <artifactId>be-sign-phone</artifactId>
-        </dependency>
+    <!-- be-sign-phone -->
+    <dependency>
+      <groupId>${cmcorg.groupId}</groupId>
+      <artifactId>be-sign-phone</artifactId>
+    </dependency>
 
-        <!-- be-sign-wx -->
-        <dependency>
-            <groupId>${cmcorg.groupId}</groupId>
-            <artifactId>be-sign-wx</artifactId>
-        </dependency>
+    <!-- be-sign-wx -->
+    <dependency>
+      <groupId>${cmcorg.groupId}</groupId>
+      <artifactId>be-sign-wx</artifactId>
+    </dependency>
 
-        <!-- be-sign-email -->
-        <dependency>
-            <groupId>${cmcorg.groupId}</groupId>
-            <artifactId>be-sign-email</artifactId>
-        </dependency>
+    <!-- be-sign-email -->
+    <dependency>
+      <groupId>${cmcorg.groupId}</groupId>
+      <artifactId>be-sign-email</artifactId>
+    </dependency>
 
-        <!-- be-sign-helper -->
-        <dependency>
-            <groupId>${cmcorg.groupId}</groupId>
-            <artifactId>be-sign-helper</artifactId>
-        </dependency>
+    <!-- be-sign-helper -->
+    <dependency>
+      <groupId>${cmcorg.groupId}</groupId>
+      <artifactId>be-sign-helper</artifactId>
+    </dependency>
 
-    </dependencies>
+  </dependencies>
 
 </project>

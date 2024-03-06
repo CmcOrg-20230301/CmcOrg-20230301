@@ -12,7 +12,8 @@ public interface SysImSessionRefUserService extends IService<SysImSessionRefUser
 
     String joinUserIdSet(SysImSessionRefUserJoinUserIdSetDTO dto);
 
-    LongObjectMapVO<SysImSessionRefUserQueryRefUserInfoMapVO> queryRefUserInfoMap(NotNullIdAndLongSet notNullIdAndLongSet);
+    LongObjectMapVO<SysImSessionRefUserQueryRefUserInfoMapVO> queryRefUserInfoMap(
+        NotNullIdAndLongSet notNullIdAndLongSet);
 
     String updateLastOpenTsUserSelf(NotNullId notNullId);
 

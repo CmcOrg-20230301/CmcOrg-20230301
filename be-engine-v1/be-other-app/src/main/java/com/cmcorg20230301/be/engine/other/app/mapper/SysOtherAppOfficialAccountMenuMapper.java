@@ -5,6 +5,7 @@ import com.cmcorg20230301.be.engine.other.app.model.entity.SysOtherAppOfficialAc
 import org.apache.ibatis.annotations.Mapper;
 
 @Mapper
-public interface SysOtherAppOfficialAccountMenuMapper extends BaseMapper<SysOtherAppOfficialAccountMenuDO> {
+public interface SysOtherAppOfficialAccountMenuMapper extends
+    BaseMapper<SysOtherAppOfficialAccountMenuDO> {
 
 }

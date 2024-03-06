@@ -13,15 +13,14 @@ import com.cmcorg20230301.be.engine.security.model.entity.SysDictDO;
 import com.cmcorg20230301.be.engine.security.model.vo.ApiResultVO;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import java.util.List;
+import javax.annotation.Resource;
+import javax.validation.Valid;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import javax.annotation.Resource;
-import javax.validation.Valid;
-import java.util.List;
 
 @Tag(name = "基础-字典-管理")
 @RestController
@@ -47,7 +46,8 @@ public class SysDictController {
 
     @Operation(summary = "通过：dictKey获取字典项集合，备注：会进行缓存")
     @PostMapping("/listByDictKey")
-    public ApiResultVO<List<DictIntegerVO>> listByDictKey(@RequestBody @Valid SysDictListByDictKeyDTO dto) {
+    public ApiResultVO<List<DictIntegerVO>> listByDictKey(
+        @RequestBody @Valid SysDictListByDictKeyDTO dto) {
         return ApiResultVO.okData(baseService.listByDictKey(dto));
     }
 

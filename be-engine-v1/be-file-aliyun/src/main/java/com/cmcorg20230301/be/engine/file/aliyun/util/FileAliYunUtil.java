@@ -6,15 +6,14 @@ import com.aliyun.oss.OSS;
 import com.aliyun.oss.OSSClientBuilder;
 import com.aliyun.oss.model.DeleteObjectsRequest;
 import com.cmcorg20230301.be.engine.file.base.model.entity.SysFileStorageConfigurationDO;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Set;
 import lombok.SneakyThrows;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
-
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Set;
 
 /**
  * 阿里云文件工具类
@@ -23,18 +22,18 @@ import java.util.Set;
 public class FileAliYunUtil {
 
     /**
-     * 上传文件
-     * 备注：objectName 相同会被覆盖掉
+     * 上传文件 备注：objectName 相同会被覆盖掉
      */
     @SneakyThrows
     public static void upload(String bucketName, String objectName, MultipartFile file,
-                              @NotNull SysFileStorageConfigurationDO sysFileStorageConfigurationDO) {
+        @NotNull SysFileStorageConfigurationDO sysFileStorageConfigurationDO) {
 
         InputStream inputStream = file.getInputStream();
 
         OSS oss = new OSSClientBuilder()
-                .build(sysFileStorageConfigurationDO.getUploadEndpoint(), sysFileStorageConfigurationDO.getAccessKey(),
-                        sysFileStorageConfigurationDO.getSecretKey());
+            .build(sysFileStorageConfigurationDO.getUploadEndpoint(),
+                sysFileStorageConfigurationDO.getAccessKey(),
+                sysFileStorageConfigurationDO.getSecretKey());
 
         oss.putObject(bucketName, objectName, inputStream);
 
@@ -48,11 +47,12 @@ public class FileAliYunUtil {
     @SneakyThrows
     @Nullable
     public static InputStream download(String bucketName, String objectName,
-                                       SysFileStorageConfigurationDO sysFileStorageConfigurationDO) {
+        SysFileStorageConfigurationDO sysFileStorageConfigurationDO) {
 
         OSS oss = new OSSClientBuilder()
-                .build(sysFileStorageConfigurationDO.getUploadEndpoint(), sysFileStorageConfigurationDO.getAccessKey(),
-                        sysFileStorageConfigurationDO.getSecretKey());
+            .build(sysFileStorageConfigurationDO.getUploadEndpoint(),
+                sysFileStorageConfigurationDO.getAccessKey(),
+                sysFileStorageConfigurationDO.getSecretKey());
 
         return oss.getObject(bucketName, objectName).getObjectContent();
 
@@ -63,7 +63,7 @@ public class FileAliYunUtil {
      */
     @SneakyThrows
     public static void remove(String bucketName, Set<String> objectNameSet,
-                              SysFileStorageConfigurationDO sysFileStorageConfigurationDO) {
+        SysFileStorageConfigurationDO sysFileStorageConfigurationDO) {
 
         if (CollUtil.isEmpty(objectNameSet)) {
             return;
@@ -74,8 +74,9 @@ public class FileAliYunUtil {
         deleteObjectsRequest.setKeys(new ArrayList<>(objectNameSet));
 
         OSS oss = new OSSClientBuilder()
-                .build(sysFileStorageConfigurationDO.getUploadEndpoint(), sysFileStorageConfigurationDO.getAccessKey(),
-                        sysFileStorageConfigurationDO.getSecretKey());
+            .build(sysFileStorageConfigurationDO.getUploadEndpoint(),
+                sysFileStorageConfigurationDO.getAccessKey(),
+                sysFileStorageConfigurationDO.getSecretKey());
 
         oss.deleteObject(deleteObjectsRequest);
 

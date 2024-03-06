@@ -7,6 +7,8 @@ import cn.hutool.json.JSONUtil;
 import com.cmcorg20230301.be.engine.model.model.constant.BaseConstant;
 import com.cmcorg20230301.be.engine.model.model.constant.LogTopicConstant;
 import com.cmcorg20230301.be.engine.model.model.interfaces.IRedisKey;
+import java.util.Set;
+import javax.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -15,12 +17,8 @@ import org.redisson.api.RedissonClient;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.Resource;
-import java.util.Set;
-
 /**
- * 本地缓存工具类
- * 备注：不建议直接使用本类的方法，建议再封装一层
+ * 本地缓存工具类 备注：不建议直接使用本类的方法，建议再封装一层
  */
 @Slf4j(topic = LogTopicConstant.CACHE_LOCAL)
 @Component
@@ -85,7 +83,7 @@ public class CacheLocalUtil {
      * 添加：本地缓存
      */
     public static void put(@NotNull Enum<? extends IRedisKey> redisKeyEnum, @Nullable String sufKey,
-                           @NotNull Object value) {
+        @NotNull Object value) {
 
         String key = CacheHelper.getKey(redisKeyEnum, sufKey);
 
@@ -106,7 +104,8 @@ public class CacheLocalUtil {
     /**
      * 添加：本地缓存到 map里
      */
-    public static <T> void putSecondMap(@NotNull String key, @NotNull String secondKey, @NotNull T value) {
+    public static <T> void putSecondMap(@NotNull String key, @NotNull String secondKey,
+        @NotNull T value) {
 
         Cache<String, T> secondMap = getSecondMap(key);
 
@@ -128,7 +127,8 @@ public class CacheLocalUtil {
      * 通过：redisKeyEnum，获取：本地缓存
      */
     @Nullable
-    public static <T> T get(@NotNull Enum<? extends IRedisKey> redisKeyEnum, @Nullable String sufKey) {
+    public static <T> T get(@NotNull Enum<? extends IRedisKey> redisKeyEnum,
+        @Nullable String sufKey) {
 
         String key = CacheHelper.getKey(redisKeyEnum, sufKey);
 
@@ -191,7 +191,8 @@ public class CacheLocalUtil {
     /**
      * 通过：redisKeyEnum，移除：本地缓存
      */
-    public static void remove(@NotNull Enum<? extends IRedisKey> redisKeyEnum, @Nullable String sufKey) {
+    public static void remove(@NotNull Enum<? extends IRedisKey> redisKeyEnum,
+        @Nullable String sufKey) {
 
         String key = CacheHelper.getKey(redisKeyEnum, sufKey);
 

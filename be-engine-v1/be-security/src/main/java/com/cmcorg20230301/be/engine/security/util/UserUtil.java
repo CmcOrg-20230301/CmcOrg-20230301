@@ -42,8 +42,9 @@ public class UserUtil {
     private static SysUserInfoMapper sysUserInfoMapper;
     public static SysUserSingleSignInMapper sysUserSingleSignInMapper;
 
-    public UserUtil(SysRoleMapper sysRoleMapper, SysRoleRefUserMapper sysRoleRefUserMapper, SysUserMapper sysUserMapper,
-                    SysUserInfoMapper sysUserInfoMapper, SysUserSingleSignInMapper sysUserSingleSignInMapper) {
+    public UserUtil(SysRoleMapper sysRoleMapper, SysRoleRefUserMapper sysRoleRefUserMapper,
+        SysUserMapper sysUserMapper,
+        SysUserInfoMapper sysUserInfoMapper, SysUserSingleSignInMapper sysUserSingleSignInMapper) {
 
         UserUtil.sysRoleMapper = sysRoleMapper;
         UserUtil.sysRoleRefUserMapper = sysRoleRefUserMapper;
@@ -54,8 +55,7 @@ public class UserUtil {
     }
 
     /**
-     * 获取当前 userId
-     * 这里只会返回实际的 userId，如果为 null，则会抛出异常
+     * 获取当前 userId 这里只会返回实际的 userId，如果为 null，则会抛出异常
      */
     @NotNull
     public static Long getCurrentUserId() {
@@ -71,16 +71,16 @@ public class UserUtil {
     }
 
     /**
-     * 获取当前用户的昵称
-     * 这里只会返回实际的昵称，如果为 null，则会抛出异常
+     * 获取当前用户的昵称 这里只会返回实际的昵称，如果为 null，则会抛出异常
      */
     @NotNull
     public static String getCurrentUserNickName() {
 
         Long userId = getCurrentUserId();
 
-        SysUserInfoDO sysUserInfoDO = ChainWrappers.lambdaQueryChain(sysUserInfoMapper).eq(SysUserInfoDO::getId, userId)
-                .select(SysUserInfoDO::getNickname).one();
+        SysUserInfoDO sysUserInfoDO = ChainWrappers.lambdaQueryChain(sysUserInfoMapper)
+            .eq(SysUserInfoDO::getId, userId)
+            .select(SysUserInfoDO::getNickname).one();
 
         if (sysUserInfoDO == null) {
             return "";
@@ -98,11 +98,13 @@ public class UserUtil {
 
         Long currentUserIdNotAdmin = getCurrentUserIdNotAdmin();
 
-        SysUserDO sysUserDO = ChainWrappers.lambdaQueryChain(sysUserMapper).eq(BaseEntity::getId, currentUserIdNotAdmin)
-                .select(SysUserDO::getEmail).one();
+        SysUserDO sysUserDO = ChainWrappers.lambdaQueryChain(sysUserMapper)
+            .eq(BaseEntity::getId, currentUserIdNotAdmin)
+            .select(SysUserDO::getEmail).one();
 
         if (sysUserDO == null || StrUtil.isBlank(sysUserDO.getEmail())) {
-            ApiResultVO.error(BaseBizCodeEnum.THIS_OPERATION_CANNOT_BE_PERFORMED_WITHOUT_BINDING_AN_EMAIL_ADDRESS);
+            ApiResultVO.error(
+                BaseBizCodeEnum.THIS_OPERATION_CANNOT_BE_PERFORMED_WITHOUT_BINDING_AN_EMAIL_ADDRESS);
         }
 
         return sysUserDO.getEmail();
@@ -117,11 +119,13 @@ public class UserUtil {
 
         Long currentUserIdNotAdmin = getCurrentUserIdNotAdmin();
 
-        SysUserDO sysUserDO = ChainWrappers.lambdaQueryChain(sysUserMapper).eq(BaseEntity::getId, currentUserIdNotAdmin)
-                .select(SysUserDO::getPhone).one();
+        SysUserDO sysUserDO = ChainWrappers.lambdaQueryChain(sysUserMapper)
+            .eq(BaseEntity::getId, currentUserIdNotAdmin)
+            .select(SysUserDO::getPhone).one();
 
         if (sysUserDO == null || StrUtil.isBlank(sysUserDO.getPhone())) {
-            ApiResultVO.error(BaseBizCodeEnum.THERE_IS_NO_BOUND_MOBILE_PHONE_NUMBER_SO_THIS_OPERATION_CANNOT_BE_PERFORMED);
+            ApiResultVO.error(
+                BaseBizCodeEnum.THERE_IS_NO_BOUND_MOBILE_PHONE_NUMBER_SO_THIS_OPERATION_CANNOT_BE_PERFORMED);
         }
 
         return sysUserDO.getPhone();
@@ -129,8 +133,7 @@ public class UserUtil {
     }
 
     /**
-     * 获取当前 userId，如果是 admin账号，则会报错，只会返回 用户id，不会返回 null
-     * 因为 admin不支持一些操作，例如：修改密码，修改邮箱等
+     * 获取当前 userId，如果是 admin账号，则会报错，只会返回 用户id，不会返回 null 因为 admin不支持一些操作，例如：修改密码，修改邮箱等
      */
     @NotNull
     public static Long getCurrentUserIdNotAdmin() {
@@ -146,8 +149,7 @@ public class UserUtil {
     }
 
     /**
-     * 这里只会返回实际的 userId 或者 -1，备注：-1表示没有 用户id，在大多数情况下，表示的是 系统
-     * 备注：尽量采用 {@link #getCurrentUserId} 方法
+     * 这里只会返回实际的 userId 或者 -1，备注：-1表示没有 用户id，在大多数情况下，表示的是 系统 备注：尽量采用 {@link #getCurrentUserId} 方法
      */
     @NotNull
     public static Long getCurrentUserIdDefault() {
@@ -231,46 +233,46 @@ public class UserUtil {
     }
 
     /**
-     * 获取当前 wxAppId，注意：这里获取 wxAppId之后需要做 非空判断
-     * 这里只会返回实际的 wxAppId或者 null
+     * 获取当前 wxAppId，注意：这里获取 wxAppId之后需要做 非空判断 这里只会返回实际的 wxAppId或者 null
      */
     @Nullable
     private static String getCurrentUserWxAppIdWillNull() {
 
-        return MyJwtUtil.getPayloadMapWxAppIdValue(getSecurityContextHolderContextAuthenticationPrincipalJsonObject());
+        return MyJwtUtil.getPayloadMapWxAppIdValue(
+            getSecurityContextHolderContextAuthenticationPrincipalJsonObject());
 
     }
 
     /**
-     * 获取当前 wxOpenId，注意：这里获取 wxOpenId之后需要做 非空判断
-     * 这里只会返回实际的 wxOpenId或者 null
+     * 获取当前 wxOpenId，注意：这里获取 wxOpenId之后需要做 非空判断 这里只会返回实际的 wxOpenId或者 null
      */
     @Nullable
     private static String getCurrentUserWxOpenIdWillNull() {
 
-        return MyJwtUtil.getPayloadMapWxOpenIdValue(getSecurityContextHolderContextAuthenticationPrincipalJsonObject());
+        return MyJwtUtil.getPayloadMapWxOpenIdValue(
+            getSecurityContextHolderContextAuthenticationPrincipalJsonObject());
 
     }
 
     /**
-     * 获取当前 userId，注意：这里获取 userId之后需要做 非空判断
-     * 这里只会返回实际的 userId或者 null
+     * 获取当前 userId，注意：这里获取 userId之后需要做 非空判断 这里只会返回实际的 userId或者 null
      */
     @Nullable
     private static Long getCurrentUserIdWillNull() {
 
-        return MyJwtUtil.getPayloadMapUserIdValue(getSecurityContextHolderContextAuthenticationPrincipalJsonObject());
+        return MyJwtUtil.getPayloadMapUserIdValue(
+            getSecurityContextHolderContextAuthenticationPrincipalJsonObject());
 
     }
 
     /**
-     * 获取当前 tenantId，注意：这里获取 tenantId之后需要做 非空判断
-     * 这里只会返回实际的 tenantId或者 null
+     * 获取当前 tenantId，注意：这里获取 tenantId之后需要做 非空判断 这里只会返回实际的 tenantId或者 null
      */
     @Nullable
     private static Long getCurrentTenantIdWillNull() {
 
-        return MyJwtUtil.getPayloadMapTenantIdValue(getSecurityContextHolderContextAuthenticationPrincipalJsonObject());
+        return MyJwtUtil.getPayloadMapTenantIdValue(
+            getSecurityContextHolderContextAuthenticationPrincipalJsonObject());
 
     }
 
@@ -294,7 +296,8 @@ public class UserUtil {
 
         if (SecurityContextHolder.getContext().getAuthentication() != null) {
 
-            Object principalObject = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+            Object principalObject = SecurityContextHolder.getContext().getAuthentication()
+                .getPrincipal();
 
             if (principalObject instanceof JSONObject) {
                 result = (JSONObject) principalObject;
@@ -310,7 +313,8 @@ public class UserUtil {
      * 获取：当前 security上下文里面存储的用户信息，通过：key
      */
     @Nullable
-    public static <T> T getSecurityContextHolderContextAuthenticationPrincipalJsonObjectValueByKey(String key) {
+    public static <T> T getSecurityContextHolderContextAuthenticationPrincipalJsonObjectValueByKey(
+        String key) {
 
         JSONObject principalJSONObject = getSecurityContextHolderContextAuthenticationPrincipalJsonObject();
 
@@ -323,11 +327,11 @@ public class UserUtil {
     }
 
     /**
-     * 通过用户 id，获取 菜单 set
-     * type：1 完整的菜单信息 2 给 security获取权限时使用
+     * 通过用户 id，获取 菜单 set type：1 完整的菜单信息 2 给 security获取权限时使用
      */
     @Nullable
-    public static Set<SysMenuDO> getMenuSetByUserId(@NotNull Long userId, int type, @NotNull Long tenantId) {
+    public static Set<SysMenuDO> getMenuSetByUserId(@NotNull Long userId, int type,
+        @NotNull Long tenantId) {
 
         Set<Long> roleIdSet = new HashSet<>();
 
@@ -352,7 +356,8 @@ public class UserUtil {
         Set<SysMenuDO> resultSet = new HashSet<>();
 
         // 获取：角色关联的菜单集合 map
-        Map<Long, Set<SysMenuDO>> roleRefMenuSetMap = SysMenuUtil.getRoleRefMenuSetMap(baseRedisKeyEnum);
+        Map<Long, Set<SysMenuDO>> roleRefMenuSetMap = SysMenuUtil.getRoleRefMenuSetMap(
+            baseRedisKeyEnum);
 
         for (Long item : roleIdSet) {
 
@@ -398,12 +403,15 @@ public class UserUtil {
     public static Map<Long, Set<Long>> getUserRefRoleIdSetMap() {
 
         return MyCacheUtil
-                .getMap(BaseRedisKeyEnum.USER_ID_REF_ROLE_ID_SET_CACHE, CacheHelper.getDefaultLongSetMap(), () -> {
+            .getMap(BaseRedisKeyEnum.USER_ID_REF_ROLE_ID_SET_CACHE,
+                CacheHelper.getDefaultLongSetMap(), () -> {
 
-                    List<SysRoleRefUserDO> sysRoleRefUserDOList = ChainWrappers.lambdaQueryChain(sysRoleRefUserMapper)
-                            .select(SysRoleRefUserDO::getRoleId, SysRoleRefUserDO::getUserId).list();
+                    List<SysRoleRefUserDO> sysRoleRefUserDOList = ChainWrappers.lambdaQueryChain(
+                            sysRoleRefUserMapper)
+                        .select(SysRoleRefUserDO::getRoleId, SysRoleRefUserDO::getUserId).list();
 
-                    return sysRoleRefUserDOList.stream().collect(Collectors.groupingBy(SysRoleRefUserDO::getUserId,
+                    return sysRoleRefUserDOList.stream()
+                        .collect(Collectors.groupingBy(SysRoleRefUserDO::getUserId,
                             Collectors.mapping(SysRoleRefUserDO::getRoleId, Collectors.toSet())));
 
                 });
@@ -416,17 +424,19 @@ public class UserUtil {
     private static void getDefaultRoleId(Set<Long> roleIdSet, @NotNull Long tenantId) {
 
         Map<Long, Long> map = MyCacheUtil
-                .getMap(BaseRedisKeyEnum.TENANT_DEFAULT_ROLE_ID_CACHE, CacheHelper.getDefaultLongMap(BaseConstant.SYS_ID),
-                        () -> {
+            .getMap(BaseRedisKeyEnum.TENANT_DEFAULT_ROLE_ID_CACHE,
+                CacheHelper.getDefaultLongMap(BaseConstant.SYS_ID),
+                () -> {
 
-                            List<SysRoleDO> sysRoleDOList = ChainWrappers.lambdaQueryChain(sysRoleMapper)
-                                    .select(BaseEntity::getId, BaseEntityNoId::getTenantId).eq(BaseEntity::getEnableFlag, true)
-                                    .eq(SysRoleDO::getDefaultFlag, true).list();
+                    List<SysRoleDO> sysRoleDOList = ChainWrappers.lambdaQueryChain(sysRoleMapper)
+                        .select(BaseEntity::getId, BaseEntityNoId::getTenantId)
+                        .eq(BaseEntity::getEnableFlag, true)
+                        .eq(SysRoleDO::getDefaultFlag, true).list();
 
-                            return sysRoleDOList.stream()
-                                    .collect(Collectors.toMap(BaseEntityNoId::getTenantId, BaseEntity::getId));
+                    return sysRoleDOList.stream()
+                        .collect(Collectors.toMap(BaseEntityNoId::getTenantId, BaseEntity::getId));
 
-                        });
+                });
 
         Long defaultRoleId = map.get(tenantId);
 
@@ -444,8 +454,9 @@ public class UserUtil {
     public static void setJwtSecretSuf(long userId) {
 
         CacheRedisKafkaLocalUtil
-                .putSecondMap(BaseRedisKeyEnum.USER_ID_AND_JWT_SECRET_SUF_CACHE, null, String.valueOf(userId),
-                        IdUtil.simpleUUID(), null);
+            .putSecondMap(BaseRedisKeyEnum.USER_ID_AND_JWT_SECRET_SUF_CACHE, null,
+                String.valueOf(userId),
+                IdUtil.simpleUUID(), null);
 
     }
 
@@ -455,8 +466,9 @@ public class UserUtil {
     @NotNull
     public static String getJwtSecretSuf(long userId) {
 
-        return MyCacheUtil.getSecondMap(BaseRedisKeyEnum.USER_ID_AND_JWT_SECRET_SUF_CACHE, null, String.valueOf(userId),
-                IdUtil.simpleUUID(), null);
+        return MyCacheUtil.getSecondMap(BaseRedisKeyEnum.USER_ID_AND_JWT_SECRET_SUF_CACHE, null,
+            String.valueOf(userId),
+            IdUtil.simpleUUID(), null);
 
     }
 
@@ -466,7 +478,8 @@ public class UserUtil {
     public static void removeJwtSecretSuf(long userId) {
 
         CacheRedisKafkaLocalUtil
-                .removeSecondMap(BaseRedisKeyEnum.USER_ID_AND_JWT_SECRET_SUF_CACHE, null, String.valueOf(userId));
+            .removeSecondMap(BaseRedisKeyEnum.USER_ID_AND_JWT_SECRET_SUF_CACHE, null,
+                String.valueOf(userId));
 
     }
 
@@ -476,7 +489,8 @@ public class UserUtil {
     public static void setDisable(long userId) {
 
         CacheRedisKafkaLocalUtil
-                .putSecondMap(BaseRedisKeyEnum.SYS_USER_DISABLE_CACHE, null, String.valueOf(userId), true, null);
+            .putSecondMap(BaseRedisKeyEnum.SYS_USER_DISABLE_CACHE, null, String.valueOf(userId),
+                true, null);
 
     }
 
@@ -486,7 +500,8 @@ public class UserUtil {
     public static boolean getDisable(long userId) {
 
         Boolean disableFlag =
-                MyCacheUtil.onlyGetSecondMap(BaseRedisKeyEnum.SYS_USER_DISABLE_CACHE, null, String.valueOf(userId));
+            MyCacheUtil.onlyGetSecondMap(BaseRedisKeyEnum.SYS_USER_DISABLE_CACHE, null,
+                String.valueOf(userId));
 
         return BooleanUtil.isTrue(disableFlag);
 
@@ -497,18 +512,21 @@ public class UserUtil {
      */
     public static void removeDisable(long userId) {
 
-        CacheRedisKafkaLocalUtil.removeSecondMap(BaseRedisKeyEnum.SYS_USER_DISABLE_CACHE, null, String.valueOf(userId));
+        CacheRedisKafkaLocalUtil.removeSecondMap(BaseRedisKeyEnum.SYS_USER_DISABLE_CACHE, null,
+            String.valueOf(userId));
 
     }
 
     /**
      * 给 security设置用户信息，并执行方法
      */
-    public static void securityContextHolderSetAuthenticationAndExecFun(VoidFunc0 voidFunc0, SysUserDO sysUserDO, boolean setAuthoritySetFlag) {
+    public static void securityContextHolderSetAuthenticationAndExecFun(VoidFunc0 voidFunc0,
+        SysUserDO sysUserDO, boolean setAuthoritySetFlag) {
 
         // 执行
-        securityContextHolderSetAuthenticationAndExecFun(voidFunc0, sysUserDO.getId(), sysUserDO.getTenantId(),
-                sysUserDO.getWxAppId(), sysUserDO.getWxOpenId(), setAuthoritySetFlag);
+        securityContextHolderSetAuthenticationAndExecFun(voidFunc0, sysUserDO.getId(),
+            sysUserDO.getTenantId(),
+            sysUserDO.getWxAppId(), sysUserDO.getWxOpenId(), setAuthoritySetFlag);
 
     }
 
@@ -517,20 +535,23 @@ public class UserUtil {
      *
      * @param setAuthoritySetFlag 是否设置：权限
      */
-    public static void securityContextHolderSetAuthenticationAndExecFun(VoidFunc0 voidFunc0, @Nullable Long userId, @Nullable Long tenantId,
-                                                                        @Nullable String wxAppId, @Nullable String wxOpenId, boolean setAuthoritySetFlag) {
+    public static void securityContextHolderSetAuthenticationAndExecFun(VoidFunc0 voidFunc0,
+        @Nullable Long userId, @Nullable Long tenantId,
+        @Nullable String wxAppId, @Nullable String wxOpenId, boolean setAuthoritySetFlag) {
 
         JSONObject principalJson = JSONUtil.createObj();
 
         if (userId != null) {
 
-            principalJson.set(MyJwtUtil.PAYLOAD_MAP_USER_ID_KEY, new NumberWithFormat(userId, null));
+            principalJson.set(MyJwtUtil.PAYLOAD_MAP_USER_ID_KEY,
+                new NumberWithFormat(userId, null));
 
         }
 
         if (tenantId != null) {
 
-            principalJson.set(MyJwtUtil.PAYLOAD_MAP_TENANT_ID_KEY, new NumberWithFormat(tenantId, null));
+            principalJson.set(MyJwtUtil.PAYLOAD_MAP_TENANT_ID_KEY,
+                new NumberWithFormat(tenantId, null));
 
         }
 
@@ -556,7 +577,8 @@ public class UserUtil {
 
         // 把 principalJson 设置到：security的上下文里面
         SecurityContextHolder.getContext()
-                .setAuthentication(new UsernamePasswordAuthenticationToken(principalJson, null, authoritySet));
+            .setAuthentication(
+                new UsernamePasswordAuthenticationToken(principalJson, null, authoritySet));
 
         TryUtil.tryCatchFinally(() -> {
 

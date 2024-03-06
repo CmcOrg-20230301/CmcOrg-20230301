@@ -59,7 +59,8 @@ import java.util.concurrent.CountDownLatch;
 import java.util.stream.Collectors;
 
 @Service
-public class SysUserServiceImpl extends ServiceImpl<SysUserProMapper, SysUserDO> implements SysUserService {
+public class SysUserServiceImpl extends ServiceImpl<SysUserProMapper, SysUserDO> implements
+    SysUserService {
 
     @Resource
     SysRoleRefUserService sysRoleRefUserService;
@@ -104,8 +105,10 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserProMapper, SysUserDO>
             item.setEmail(DesensitizedUtil.email(item.getEmail())); // 脱敏
             item.setSignInName(DesensitizedUtil.chineseName(item.getSignInName())); // 脱敏
             item.setPhone(DesensitizedUtil.mobilePhone(item.getPhone())); // 脱敏
-            item.setWxOpenId(StrUtil.hide(item.getWxOpenId(), 3, item.getWxOpenId().length() - 4)); // 脱敏：只显示前 3位，后 4位
-            item.setWxAppId(StrUtil.hide(item.getWxAppId(), 3, item.getWxAppId().length() - 4)); // 脱敏：只显示前 3位，后 4位
+            item.setWxOpenId(StrUtil.hide(item.getWxOpenId(), 3,
+                item.getWxOpenId().length() - 4)); // 脱敏：只显示前 3位，后 4位
+            item.setWxAppId(StrUtil.hide(item.getWxAppId(), 3,
+                item.getWxAppId().length() - 4)); // 脱敏：只显示前 3位，后 4位
 
             userIdSet.add(item.getId());
 
@@ -128,20 +131,20 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserProMapper, SysUserDO>
     private void handleRefData(Page<SysUserPageVO> page, Set<Long> userIdSet) {
 
         List<SysDeptRefUserDO> sysDeptRefUserDOList =
-                sysDeptRefUserService.lambdaQuery().in(SysDeptRefUserDO::getUserId, userIdSet)
-                        .select(SysDeptRefUserDO::getUserId, SysDeptRefUserDO::getDeptId).list();
+            sysDeptRefUserService.lambdaQuery().in(SysDeptRefUserDO::getUserId, userIdSet)
+                .select(SysDeptRefUserDO::getUserId, SysDeptRefUserDO::getDeptId).list();
 
         List<SysPostRefUserDO> sysPostRefUserDOList =
-                sysPostRefUserService.lambdaQuery().in(SysPostRefUserDO::getUserId, userIdSet)
-                        .select(SysPostRefUserDO::getUserId, SysPostRefUserDO::getPostId).list();
+            sysPostRefUserService.lambdaQuery().in(SysPostRefUserDO::getUserId, userIdSet)
+                .select(SysPostRefUserDO::getUserId, SysPostRefUserDO::getPostId).list();
 
         Map<Long, Set<Long>> deptUserGroupMap = sysDeptRefUserDOList.stream().collect(Collectors
-                .groupingBy(SysDeptRefUserDO::getUserId,
-                        Collectors.mapping(SysDeptRefUserDO::getDeptId, Collectors.toSet())));
+            .groupingBy(SysDeptRefUserDO::getUserId,
+                Collectors.mapping(SysDeptRefUserDO::getDeptId, Collectors.toSet())));
 
         Map<Long, Set<Long>> postUserGroupMap = sysPostRefUserDOList.stream().collect(Collectors
-                .groupingBy(SysPostRefUserDO::getUserId,
-                        Collectors.mapping(SysPostRefUserDO::getPostId, Collectors.toSet())));
+            .groupingBy(SysPostRefUserDO::getUserId,
+                Collectors.mapping(SysPostRefUserDO::getPostId, Collectors.toSet())));
 
         Map<Long, Set<Long>> userRefRoleIdSetMap = UserUtil.getUserRefRoleIdSetMap();
 
@@ -189,16 +192,18 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserProMapper, SysUserDO>
 
         // 获取所有：用户信息
         List<SysUserInfoDO> sysUserInfoDOList = ChainWrappers.lambdaQueryChain(sysUserInfoMapper)
-                .select(SysUserInfoDO::getId, SysUserInfoDO::getNickname, SysUserInfoDO::getTenantId)
-                .orderByDesc(SysUserInfoDO::getId).list();
+            .select(SysUserInfoDO::getId, SysUserInfoDO::getNickname, SysUserInfoDO::getTenantId)
+            .orderByDesc(SysUserInfoDO::getId).list();
 
-        List<DictVO> dictVOList = sysUserInfoDOList.stream().filter(it -> tenantIdSet.contains(it.getTenantId()))
-                .map(it -> new DictVO(it.getId(), it.getNickname())).collect(Collectors.toList());
+        List<DictVO> dictVOList = sysUserInfoDOList.stream()
+            .filter(it -> tenantIdSet.contains(it.getTenantId()))
+            .map(it -> new DictVO(it.getId(), it.getNickname())).collect(Collectors.toList());
 
         // 增加 admin账号
         if (BooleanUtil.isTrue(dto.getAddAdminFlag())) {
 
-            dictVOList.add(new DictVO(BaseConstant.ADMIN_ID, securityProperties.getAdminNickname()));
+            dictVOList.add(
+                new DictVO(BaseConstant.ADMIN_ID, securityProperties.getAdminNickname()));
 
         }
 
@@ -214,8 +219,9 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserProMapper, SysUserDO>
     public String insertOrUpdate(SysUserInsertOrUpdateDTO dto) {
 
         // 处理：BaseTenantInsertOrUpdateDTO
-        SysTenantUtil.handleBaseTenantInsertOrUpdateDTO(dto, getCheckIllegalFunc1(CollUtil.newHashSet(dto.getId())),
-                getTenantIdBaseEntityFunc1());
+        SysTenantUtil.handleBaseTenantInsertOrUpdateDTO(dto,
+            getCheckIllegalFunc1(CollUtil.newHashSet(dto.getId())),
+            getTenantIdBaseEntityFunc1());
 
         boolean emailBlank = StrUtil.isBlank(dto.getEmail());
         boolean signInNameBlank = StrUtil.isBlank(dto.getSignInName());
@@ -231,7 +237,8 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserProMapper, SysUserDO>
             ApiResultVO.errorMsg("操作失败：微信appId和微信openId，必须都有值");
         }
 
-        boolean passwordFlag = StrUtil.isNotBlank(dto.getPassword()) && StrUtil.isNotBlank(dto.getOriginPassword());
+        boolean passwordFlag =
+            StrUtil.isNotBlank(dto.getPassword()) && StrUtil.isNotBlank(dto.getOriginPassword());
 
         if (dto.getId() == null && passwordFlag) { // 只有新增时，才可以设置密码
 
@@ -270,7 +277,8 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserProMapper, SysUserDO>
     /**
      * 执行：新增/修改
      */
-    private String doInsertOrUpdate(SysUserInsertOrUpdateDTO dto, Set<Enum<? extends IRedisKey>> redisKeyEnumSet) {
+    private String doInsertOrUpdate(SysUserInsertOrUpdateDTO dto,
+        Set<Enum<? extends IRedisKey>> redisKeyEnumSet) {
 
         return RedissonUtil.doMultiLock(null, redisKeyEnumSet, () -> {
 
@@ -297,8 +305,9 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserProMapper, SysUserDO>
                 sysUserInfoDO.setBio(dto.getBio());
 
                 sysUserDO = SignUtil
-                        .insertUser(dto.getPassword(), accountMap, false, sysUserInfoDO, dto.getEnableFlag(),
-                                dto.getTenantId());
+                    .insertUser(dto.getPassword(), accountMap, false, sysUserInfoDO,
+                        dto.getEnableFlag(),
+                        dto.getTenantId());
 
                 insertOrUpdateSub(sysUserDO, dto); // 新增数据到子表
 
@@ -326,7 +335,8 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserProMapper, SysUserDO>
                 sysUserInfoDO.setId(dto.getId());
 
                 sysUserInfoDO
-                        .setNickname(MyEntityUtil.getNotNullStr(dto.getNickname(), NicknameUtil.getRandomNickname()));
+                    .setNickname(MyEntityUtil.getNotNullStr(dto.getNickname(),
+                        NicknameUtil.getRandomNickname()));
 
                 sysUserInfoDO.setBio(MyEntityUtil.getNotNullStr(dto.getBio()));
 
@@ -339,7 +349,8 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserProMapper, SysUserDO>
             // 设置
             setManageSignInFlag(sysUserDO.getId(), dto.getManageSignInFlag());
 
-            setSysWxWorkKfAutoAssistantFlag(sysUserDO.getId(), dto.getSysWxWorkKfAutoAssistantFlag());
+            setSysWxWorkKfAutoAssistantFlag(sysUserDO.getId(),
+                dto.getSysWxWorkKfAutoAssistantFlag());
 
             return BaseBizCodeEnum.OK;
 
@@ -352,14 +363,16 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserProMapper, SysUserDO>
      */
     private void insertOrUpdateHandlePassword(SysUserInsertOrUpdateDTO dto) {
 
-        String paramValue = SysParamUtil.getValueByUuid(ParamConstant.RSA_PRIVATE_KEY_UUID, dto.getTenantId()); // 获取非对称 私钥
+        String paramValue = SysParamUtil.getValueByUuid(ParamConstant.RSA_PRIVATE_KEY_UUID,
+            dto.getTenantId()); // 获取非对称 私钥
         dto.setOriginPassword(MyRsaUtil.rsaDecrypt(dto.getOriginPassword(), paramValue));
         dto.setPassword(MyRsaUtil.rsaDecrypt(dto.getPassword(), paramValue));
 
-        if (BooleanUtil.isFalse(ReUtil.isMatch(BaseRegexConstant.PASSWORD_REGEXP, dto.getOriginPassword()))) {
+        if (BooleanUtil.isFalse(
+            ReUtil.isMatch(BaseRegexConstant.PASSWORD_REGEXP, dto.getOriginPassword()))) {
 
             ApiResultVO.error(
-                    com.cmcorg20230301.be.engine.sign.helper.exception.BizCodeEnum.PASSWORD_RESTRICTIONS); // 不合法直接抛出异常
+                com.cmcorg20230301.be.engine.sign.helper.exception.BizCodeEnum.PASSWORD_RESTRICTIONS); // 不合法直接抛出异常
 
         }
 
@@ -369,7 +382,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserProMapper, SysUserDO>
      * 判断：账号是否重复
      */
     private boolean accountIsExist(SysUserInsertOrUpdateDTO dto, Enum<? extends IRedisKey> item,
-                                   Map<Enum<? extends IRedisKey>, String> map, @Nullable Long tenantId) {
+        Map<Enum<? extends IRedisKey>, String> map, @Nullable Long tenantId) {
 
         boolean exist = false;
 
@@ -380,7 +393,8 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserProMapper, SysUserDO>
 
         } else if (BaseRedisKeyEnum.PRE_SIGN_IN_NAME.equals(item)) {
 
-            exist = SignUtil.accountIsExists(item, dto.getSignInName(), dto.getId(), tenantId, null);
+            exist = SignUtil.accountIsExists(item, dto.getSignInName(), dto.getId(), tenantId,
+                null);
             map.put(item, dto.getSignInName());
 
         } else if (BaseRedisKeyEnum.PRE_PHONE.equals(item)) {
@@ -390,7 +404,8 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserProMapper, SysUserDO>
 
         } else if (BaseRedisKeyEnum.PRE_WX_OPEN_ID.equals(item)) {
 
-            exist = SignUtil.accountIsExists(item, dto.getWxOpenId(), dto.getId(), tenantId, dto.getWxAppId());
+            exist = SignUtil.accountIsExists(item, dto.getWxOpenId(), dto.getId(), tenantId,
+                dto.getWxAppId());
             map.put(BaseRedisKeyEnum.PRE_WX_APP_ID, dto.getWxAppId());
             map.put(item, dto.getWxOpenId());
 
@@ -422,7 +437,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserProMapper, SysUserDO>
         if (CollUtil.isNotEmpty(dto.getRoleIdSet())) {
 
             List<SysRoleRefUserDO> insertList =
-                    new ArrayList<>(MyMapUtil.getInitialCapacity(dto.getRoleIdSet().size()));
+                new ArrayList<>(MyMapUtil.getInitialCapacity(dto.getRoleIdSet().size()));
 
             for (Long item : dto.getRoleIdSet()) {
 
@@ -443,7 +458,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserProMapper, SysUserDO>
         if (CollUtil.isNotEmpty(dto.getDeptIdSet())) {
 
             List<SysDeptRefUserDO> insertList =
-                    new ArrayList<>(MyMapUtil.getInitialCapacity(dto.getDeptIdSet().size()));
+                new ArrayList<>(MyMapUtil.getInitialCapacity(dto.getDeptIdSet().size()));
 
             for (Long item : dto.getDeptIdSet()) {
 
@@ -464,7 +479,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserProMapper, SysUserDO>
         if (CollUtil.isNotEmpty(dto.getPostIdSet())) {
 
             List<SysPostRefUserDO> insertList =
-                    new ArrayList<>(MyMapUtil.getInitialCapacity(dto.getPostIdSet().size()));
+                new ArrayList<>(MyMapUtil.getInitialCapacity(dto.getPostIdSet().size()));
 
             for (Long item : dto.getPostIdSet()) {
 
@@ -485,7 +500,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserProMapper, SysUserDO>
         if (CollUtil.isNotEmpty(dto.getTenantIdSet())) {
 
             List<SysTenantRefUserDO> insertList =
-                    new ArrayList<>(MyMapUtil.getInitialCapacity(dto.getTenantIdSet().size()));
+                new ArrayList<>(MyMapUtil.getInitialCapacity(dto.getTenantIdSet().size()));
 
             for (Long item : dto.getTenantIdSet()) {
 
@@ -515,33 +530,39 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserProMapper, SysUserDO>
         Set<Long> queryTenantIdSet = SysTenantUtil.getUserRefTenantIdSet();
 
         SysUserDO sysUserDO =
-                lambdaQuery().eq(BaseEntity::getId, notNullId.getId()).in(BaseEntityNoId::getTenantId, queryTenantIdSet)
-                        .one();
+            lambdaQuery().eq(BaseEntity::getId, notNullId.getId())
+                .in(BaseEntityNoId::getTenantId, queryTenantIdSet)
+                .one();
 
         if (sysUserDO == null) {
             return null;
         }
 
-        SysUserInfoByIdVO sysUserInfoByIdVO = BeanUtil.copyProperties(sysUserDO, SysUserInfoByIdVO.class);
+        SysUserInfoByIdVO sysUserInfoByIdVO = BeanUtil.copyProperties(sysUserDO,
+            SysUserInfoByIdVO.class);
 
         CountDownLatch countDownLatch = ThreadUtil.newCountDownLatch(5);
 
         MyThreadUtil.execute(() -> {
 
             SysUserInfoDO sysUserInfoDO =
-                    ChainWrappers.lambdaQueryChain(sysUserInfoMapper).eq(SysUserInfoDO::getId, notNullId.getId())
-                            .select(SysUserInfoDO::getNickname, SysUserInfoDO::getAvatarFileId, SysUserInfoDO::getBio).one();
+                ChainWrappers.lambdaQueryChain(sysUserInfoMapper)
+                    .eq(SysUserInfoDO::getId, notNullId.getId())
+                    .select(SysUserInfoDO::getNickname, SysUserInfoDO::getAvatarFileId,
+                        SysUserInfoDO::getBio).one();
 
             sysUserInfoByIdVO.setNickname(sysUserInfoDO.getNickname());
             sysUserInfoByIdVO.setAvatarFileId(sysUserInfoDO.getAvatarFileId());
             sysUserInfoByIdVO.setBio(sysUserInfoDO.getBio());
 
             // 获取
-            Boolean manageSignInFlag = getManageSignInFlag(sysUserDO.getId(), sysUserDO.getTenantId());
+            Boolean manageSignInFlag = getManageSignInFlag(sysUserDO.getId(),
+                sysUserDO.getTenantId());
 
             sysUserInfoByIdVO.setManageSignInFlag(manageSignInFlag);
 
-            Boolean sysWxWorkKfAutoAssistantFlag = getSysWxWorkKfAutoAssistantFlag(sysUserDO.getId());
+            Boolean sysWxWorkKfAutoAssistantFlag = getSysWxWorkKfAutoAssistantFlag(
+                sysUserDO.getId());
 
             sysUserInfoByIdVO.setSysWxWorkKfAutoAssistantFlag(sysWxWorkKfAutoAssistantFlag);
 
@@ -551,10 +572,12 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserProMapper, SysUserDO>
 
             // 获取：用户绑定的角色 idSet
             List<SysRoleRefUserDO> refUserDOList =
-                    sysRoleRefUserService.lambdaQuery().eq(SysRoleRefUserDO::getUserId, notNullId.getId())
-                            .select(SysRoleRefUserDO::getRoleId).list();
+                sysRoleRefUserService.lambdaQuery()
+                    .eq(SysRoleRefUserDO::getUserId, notNullId.getId())
+                    .select(SysRoleRefUserDO::getRoleId).list();
 
-            Set<Long> roleIdSet = refUserDOList.stream().map(SysRoleRefUserDO::getRoleId).collect(Collectors.toSet());
+            Set<Long> roleIdSet = refUserDOList.stream().map(SysRoleRefUserDO::getRoleId)
+                .collect(Collectors.toSet());
 
             sysUserInfoByIdVO.setRoleIdSet(roleIdSet);
 
@@ -564,10 +587,12 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserProMapper, SysUserDO>
 
             // 获取：用户绑定的部门 idSet
             List<SysDeptRefUserDO> deptRefUserDOList =
-                    sysDeptRefUserService.lambdaQuery().eq(SysDeptRefUserDO::getUserId, notNullId.getId())
-                            .select(SysDeptRefUserDO::getDeptId).list();
+                sysDeptRefUserService.lambdaQuery()
+                    .eq(SysDeptRefUserDO::getUserId, notNullId.getId())
+                    .select(SysDeptRefUserDO::getDeptId).list();
 
-            Set<Long> deptIdSet = deptRefUserDOList.stream().map(SysDeptRefUserDO::getDeptId).collect(Collectors.toSet());
+            Set<Long> deptIdSet = deptRefUserDOList.stream().map(SysDeptRefUserDO::getDeptId)
+                .collect(Collectors.toSet());
 
             sysUserInfoByIdVO.setDeptIdSet(deptIdSet);
 
@@ -577,10 +602,12 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserProMapper, SysUserDO>
 
             // 获取：用户绑定的岗位 idSet
             List<SysPostRefUserDO> jobRefUserDOList =
-                    sysPostRefUserService.lambdaQuery().eq(SysPostRefUserDO::getUserId, notNullId.getId())
-                            .select(SysPostRefUserDO::getPostId).list();
+                sysPostRefUserService.lambdaQuery()
+                    .eq(SysPostRefUserDO::getUserId, notNullId.getId())
+                    .select(SysPostRefUserDO::getPostId).list();
 
-            Set<Long> postIdSet = jobRefUserDOList.stream().map(SysPostRefUserDO::getPostId).collect(Collectors.toSet());
+            Set<Long> postIdSet = jobRefUserDOList.stream().map(SysPostRefUserDO::getPostId)
+                .collect(Collectors.toSet());
 
             sysUserInfoByIdVO.setPostIdSet(postIdSet);
 
@@ -590,11 +617,13 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserProMapper, SysUserDO>
 
             // 获取：用户绑定的租户 idSet
             List<SysTenantRefUserDO> tenantRefUserDOList =
-                    sysTenantRefUserService.lambdaQuery().eq(SysTenantRefUserDO::getUserId, notNullId.getId())
-                            .select(SysTenantRefUserDO::getTenantId).list();
+                sysTenantRefUserService.lambdaQuery()
+                    .eq(SysTenantRefUserDO::getUserId, notNullId.getId())
+                    .select(SysTenantRefUserDO::getTenantId).list();
 
             Set<Long> tenantIdSet =
-                    tenantRefUserDOList.stream().map(SysTenantRefUserDO::getTenantId).collect(Collectors.toSet());
+                tenantRefUserDOList.stream().map(SysTenantRefUserDO::getTenantId)
+                    .collect(Collectors.toSet());
 
             sysUserInfoByIdVO.setTenantIdSet(tenantIdSet);
 
@@ -625,17 +654,21 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserProMapper, SysUserDO>
     /**
      * 获取：是否允许后台登录
      */
-    public static boolean getManageSignInFlag(Long currentUserId, @Nullable Long currentTenantIdDefault) {
+    public static boolean getManageSignInFlag(Long currentUserId,
+        @Nullable Long currentTenantIdDefault) {
 
         if (UserUtil.getCurrentUserAdminFlag(currentUserId)) {
             return true;
         }
 
-        Boolean manageSignInFlag = MyCacheUtil.onlyGetSecondMap(BaseRedisKeyEnum.SYS_USER_MANAGE_SIGN_IN_FLAG_CACHE, null, String.valueOf(currentUserId));
+        Boolean manageSignInFlag = MyCacheUtil.onlyGetSecondMap(
+            BaseRedisKeyEnum.SYS_USER_MANAGE_SIGN_IN_FLAG_CACHE, null,
+            String.valueOf(currentUserId));
 
         if (manageSignInFlag == null) {
 
-            String defaultManageSignInFlagStr = SysParamUtil.getValueByUuid(ParamConstant.DEFAULT_MANAGE_SIGN_IN_FLAG, currentTenantIdDefault);
+            String defaultManageSignInFlagStr = SysParamUtil.getValueByUuid(
+                ParamConstant.DEFAULT_MANAGE_SIGN_IN_FLAG, currentTenantIdDefault);
 
             return Convert.toBool(defaultManageSignInFlagStr, false);
 
@@ -652,8 +685,9 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserProMapper, SysUserDO>
 
         // 设置
         CacheRedisKafkaLocalUtil
-                .putSecondMap(BaseRedisKeyEnum.SYS_USER_MANAGE_SIGN_IN_FLAG_CACHE, null, String.valueOf(userId),
-                        BooleanUtil.isTrue(manageSignInFlag), null);
+            .putSecondMap(BaseRedisKeyEnum.SYS_USER_MANAGE_SIGN_IN_FLAG_CACHE, null,
+                String.valueOf(userId),
+                BooleanUtil.isTrue(manageSignInFlag), null);
 
     }
 
@@ -666,8 +700,9 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserProMapper, SysUserDO>
             return true;
         }
 
-        Boolean sysWxWorkKfAutoAssistantFlag = MyCacheUtil.onlyGetSecondMap(BaseRedisKeyEnum.SYS_WX_WORK_KF_AUTO_ASSISTANT_FLAG_CACHE, null, String.valueOf(currentUserId));
-
+        Boolean sysWxWorkKfAutoAssistantFlag = MyCacheUtil.onlyGetSecondMap(
+            BaseRedisKeyEnum.SYS_WX_WORK_KF_AUTO_ASSISTANT_FLAG_CACHE, null,
+            String.valueOf(currentUserId));
 
         return !BooleanUtil.isFalse(sysWxWorkKfAutoAssistantFlag);
 
@@ -676,12 +711,14 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserProMapper, SysUserDO>
     /**
      * 设置：企业微信-微信客服，是否自动交给智能助手接待，默认：true
      */
-    public static void setSysWxWorkKfAutoAssistantFlag(Long userId, @Nullable Boolean sysWxWorkKfAutoAssistantFlag) {
+    public static void setSysWxWorkKfAutoAssistantFlag(Long userId,
+        @Nullable Boolean sysWxWorkKfAutoAssistantFlag) {
 
         // 设置
         CacheRedisKafkaLocalUtil
-                .putSecondMap(BaseRedisKeyEnum.SYS_WX_WORK_KF_AUTO_ASSISTANT_FLAG_CACHE, null, String.valueOf(userId),
-                        !BooleanUtil.isFalse(sysWxWorkKfAutoAssistantFlag), null);
+            .putSecondMap(BaseRedisKeyEnum.SYS_WX_WORK_KF_AUTO_ASSISTANT_FLAG_CACHE, null,
+                String.valueOf(userId),
+                !BooleanUtil.isFalse(sysWxWorkKfAutoAssistantFlag), null);
 
     }
 
@@ -714,7 +751,8 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserProMapper, SysUserDO>
         }
 
         // 检查：是否非法操作
-        SysTenantUtil.checkIllegal(notEmptyIdSet.getIdSet(), getCheckIllegalFunc1(notEmptyIdSet.getIdSet()));
+        SysTenantUtil.checkIllegal(notEmptyIdSet.getIdSet(),
+            getCheckIllegalFunc1(notEmptyIdSet.getIdSet()));
 
         for (Long item : notEmptyIdSet.getIdSet()) {
 
@@ -737,10 +775,12 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserProMapper, SysUserDO>
         }
 
         // 检查：是否非法操作
-        SysTenantUtil.checkIllegal(notEmptyIdSet.getIdSet(), getCheckIllegalFunc1(notEmptyIdSet.getIdSet()));
+        SysTenantUtil.checkIllegal(notEmptyIdSet.getIdSet(),
+            getCheckIllegalFunc1(notEmptyIdSet.getIdSet()));
 
-        ChainWrappers.lambdaUpdateChain(sysUserInfoMapper).in(SysUserInfoDO::getId, notEmptyIdSet.getIdSet())
-                .set(SysUserInfoDO::getAvatarFileId, -1).update();
+        ChainWrappers.lambdaUpdateChain(sysUserInfoMapper)
+            .in(SysUserInfoDO::getId, notEmptyIdSet.getIdSet())
+            .set(SysUserInfoDO::getAvatarFileId, -1).update();
 
         return BaseBizCodeEnum.OK;
 
@@ -756,19 +796,23 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserProMapper, SysUserDO>
         // 检查：是否非法操作
         SysTenantUtil.checkIllegal(dto.getIdSet(), getCheckIllegalFunc1(dto.getIdSet()));
 
-        boolean passwordFlag = StrUtil.isNotBlank(dto.getNewPassword()) && StrUtil.isNotBlank(dto.getNewOriginPassword());
+        boolean passwordFlag = StrUtil.isNotBlank(dto.getNewPassword()) && StrUtil.isNotBlank(
+            dto.getNewOriginPassword());
 
         String password = "";
 
         if (passwordFlag) {
 
-            String paramValue = SysParamUtil.getValueByUuid(ParamConstant.RSA_PRIVATE_KEY_UUID, null); // 获取非对称 私钥
+            String paramValue = SysParamUtil.getValueByUuid(ParamConstant.RSA_PRIVATE_KEY_UUID,
+                null); // 获取非对称 私钥
             dto.setNewOriginPassword(MyRsaUtil.rsaDecrypt(dto.getNewOriginPassword(), paramValue));
             dto.setNewPassword(MyRsaUtil.rsaDecrypt(dto.getNewPassword(), paramValue));
 
-            if (BooleanUtil.isFalse(ReUtil.isMatch(BaseRegexConstant.PASSWORD_REGEXP, dto.getNewOriginPassword()))) {
+            if (BooleanUtil.isFalse(
+                ReUtil.isMatch(BaseRegexConstant.PASSWORD_REGEXP, dto.getNewOriginPassword()))) {
 
-                ApiResultVO.error(com.cmcorg20230301.be.engine.sign.helper.exception.BizCodeEnum.PASSWORD_RESTRICTIONS); // 不合法直接抛出异常
+                ApiResultVO.error(
+                    com.cmcorg20230301.be.engine.sign.helper.exception.BizCodeEnum.PASSWORD_RESTRICTIONS); // 不合法直接抛出异常
 
             }
 
@@ -776,7 +820,8 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserProMapper, SysUserDO>
 
         }
 
-        lambdaUpdate().in(BaseEntity::getId, dto.getIdSet()).set(SysUserDO::getPassword, password).update();
+        lambdaUpdate().in(BaseEntity::getId, dto.getIdSet()).set(SysUserDO::getPassword, password)
+            .update();
 
         refreshJwtSecretSuf(new NotEmptyIdSet(dto.getIdSet())); // 刷新：jwt私钥后缀
 
@@ -796,12 +841,15 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserProMapper, SysUserDO>
         }
 
         // 检查：是否非法操作
-        SysTenantUtil.checkIllegal(notEmptyIdSet.getIdSet(), getCheckIllegalFunc1(notEmptyIdSet.getIdSet()));
+        SysTenantUtil.checkIllegal(notEmptyIdSet.getIdSet(),
+            getCheckIllegalFunc1(notEmptyIdSet.getIdSet()));
 
-        lambdaUpdate().in(BaseEntity::getId, notEmptyIdSet.getIdSet()).set(SysUserDO::getEnableFlag, true).update();
+        lambdaUpdate().in(BaseEntity::getId, notEmptyIdSet.getIdSet())
+            .set(SysUserDO::getEnableFlag, true).update();
 
-        ChainWrappers.lambdaUpdateChain(sysUserInfoMapper).in(SysUserInfoDO::getId, notEmptyIdSet.getIdSet())
-                .set(SysUserInfoDO::getEnableFlag, true).update();
+        ChainWrappers.lambdaUpdateChain(sysUserInfoMapper)
+            .in(SysUserInfoDO::getId, notEmptyIdSet.getIdSet())
+            .set(SysUserInfoDO::getEnableFlag, true).update();
 
         return BaseBizCodeEnum.OK;
 
@@ -819,12 +867,15 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserProMapper, SysUserDO>
         }
 
         // 检查：是否非法操作
-        SysTenantUtil.checkIllegal(notEmptyIdSet.getIdSet(), getCheckIllegalFunc1(notEmptyIdSet.getIdSet()));
+        SysTenantUtil.checkIllegal(notEmptyIdSet.getIdSet(),
+            getCheckIllegalFunc1(notEmptyIdSet.getIdSet()));
 
-        lambdaUpdate().in(BaseEntity::getId, notEmptyIdSet.getIdSet()).set(SysUserDO::getEnableFlag, false).update();
+        lambdaUpdate().in(BaseEntity::getId, notEmptyIdSet.getIdSet())
+            .set(SysUserDO::getEnableFlag, false).update();
 
-        ChainWrappers.lambdaUpdateChain(sysUserInfoMapper).in(SysUserInfoDO::getId, notEmptyIdSet.getIdSet())
-                .set(SysUserInfoDO::getEnableFlag, false).update();
+        ChainWrappers.lambdaUpdateChain(sysUserInfoMapper)
+            .in(SysUserInfoDO::getId, notEmptyIdSet.getIdSet())
+            .set(SysUserInfoDO::getEnableFlag, false).update();
 
         return BaseBizCodeEnum.OK;
 
@@ -836,8 +887,9 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserProMapper, SysUserDO>
     @NotNull
     private Func1<Set<Long>, Long> getCheckIllegalFunc1(Set<Long> idSet) {
 
-        return tenantIdSet -> lambdaQuery().in(BaseEntity::getId, idSet).in(BaseEntityNoId::getTenantId, tenantIdSet)
-                .count();
+        return tenantIdSet -> lambdaQuery().in(BaseEntity::getId, idSet)
+            .in(BaseEntityNoId::getTenantId, tenantIdSet)
+            .count();
 
     }
 

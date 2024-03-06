@@ -16,7 +16,8 @@ import com.cmcorg20230301.be.engine.socket.service.SysSocketService;
 import org.springframework.stereotype.Service;
 
 @Service
-public class SysSocketServiceImpl extends ServiceImpl<SysSocketMapper, SysSocketDO> implements SysSocketService {
+public class SysSocketServiceImpl extends ServiceImpl<SysSocketMapper, SysSocketDO> implements
+    SysSocketService {
 
     /**
      * 分页排序查询
@@ -24,13 +25,15 @@ public class SysSocketServiceImpl extends ServiceImpl<SysSocketMapper, SysSocket
     @Override
     public Page<SysSocketDO> myPage(SysSocketPageDTO dto) {
 
-        return lambdaQuery().like(StrUtil.isNotBlank(dto.getScheme()), SysSocketDO::getScheme, dto.getScheme())
-                .like(StrUtil.isNotBlank(dto.getHost()), SysSocketDO::getHost, dto.getHost())
-                .eq(dto.getPort() != null, SysSocketDO::getPort, dto.getPort())
-                .eq(dto.getType() != null, SysSocketDO::getType, dto.getType())
-                .eq(dto.getEnableFlag() != null, BaseEntity::getEnableFlag, dto.getEnableFlag())
-                .eq(dto.getId() != null, BaseEntity::getId, dto.getId())
-                .like(StrUtil.isNotBlank(dto.getRemark()), SysSocketDO::getRemark, dto.getRemark()).page(dto.page(true));
+        return lambdaQuery().like(StrUtil.isNotBlank(dto.getScheme()), SysSocketDO::getScheme,
+                dto.getScheme())
+            .like(StrUtil.isNotBlank(dto.getHost()), SysSocketDO::getHost, dto.getHost())
+            .eq(dto.getPort() != null, SysSocketDO::getPort, dto.getPort())
+            .eq(dto.getType() != null, SysSocketDO::getType, dto.getType())
+            .eq(dto.getEnableFlag() != null, BaseEntity::getEnableFlag, dto.getEnableFlag())
+            .eq(dto.getId() != null, BaseEntity::getId, dto.getId())
+            .like(StrUtil.isNotBlank(dto.getRemark()), SysSocketDO::getRemark, dto.getRemark())
+            .page(dto.page(true));
 
     }
 
@@ -44,8 +47,9 @@ public class SysSocketServiceImpl extends ServiceImpl<SysSocketMapper, SysSocket
             return BaseBizCodeEnum.OK;
         }
 
-        lambdaUpdate().in(BaseEntity::getId, notEmptyIdSet.getIdSet()).set(BaseEntityNoId::getEnableFlag, false)
-                .update();
+        lambdaUpdate().in(BaseEntity::getId, notEmptyIdSet.getIdSet())
+            .set(BaseEntityNoId::getEnableFlag, false)
+            .update();
 
         // 发送消息：socket禁用的 topic
         KafkaUtil.sendSocketDisableTopic(notEmptyIdSet.getIdSet());
@@ -64,8 +68,9 @@ public class SysSocketServiceImpl extends ServiceImpl<SysSocketMapper, SysSocket
             return BaseBizCodeEnum.OK;
         }
 
-        lambdaUpdate().in(BaseEntity::getId, notEmptyIdSet.getIdSet()).set(BaseEntityNoId::getEnableFlag, true)
-                .update();
+        lambdaUpdate().in(BaseEntity::getId, notEmptyIdSet.getIdSet())
+            .set(BaseEntityNoId::getEnableFlag, true)
+            .update();
 
         // 发送消息：socket启用的 topic
         KafkaUtil.sendSocketEnableTopic(notEmptyIdSet.getIdSet());

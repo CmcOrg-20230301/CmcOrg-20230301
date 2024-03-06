@@ -82,7 +82,8 @@ public class SysTenantController {
 
     @Operation(summary = "通过主键id，获取租户相关的配置")
     @PostMapping("/getConfigurationById")
-    public ApiResultVO<SysSignConfigurationVO> getConfigurationById(@RequestBody @Valid NotNullLong notNullLong) {
+    public ApiResultVO<SysSignConfigurationVO> getConfigurationById(
+        @RequestBody @Valid NotNullLong notNullLong) {
         return ApiResultVO.okData(baseService.getConfigurationById(notNullLong));
     }
 
@@ -108,14 +109,16 @@ public class SysTenantController {
     @Operation(summary = "执行：同步菜单给租户")
     @PostMapping("/doSyncMenu")
     @PreAuthorize("hasAuthority('sysTenant:syncMenu')")
-    public ApiResultVO<String> doSyncMenu(@RequestBody @Valid NotNullIdAndNotEmptyLongSet notNullIdAndNotEmptyLongSet) {
+    public ApiResultVO<String> doSyncMenu(
+        @RequestBody @Valid NotNullIdAndNotEmptyLongSet notNullIdAndNotEmptyLongSet) {
         return ApiResultVO.okMsg(baseService.doSyncMenu(notNullIdAndNotEmptyLongSet));
     }
 
     @Operation(summary = "删除租户所有菜单")
     @PostMapping("/deleteTenantAllMenu")
     @PreAuthorize("hasAuthority('sysTenant:syncMenu')")
-    public ApiResultVO<String> deleteTenantAllMenu(@RequestBody @Valid NotEmptyIdSet notEmptyIdSet) {
+    public ApiResultVO<String> deleteTenantAllMenu(
+        @RequestBody @Valid NotEmptyIdSet notEmptyIdSet) {
         return ApiResultVO.okMsg(baseService.deleteTenantAllMenu(notEmptyIdSet));
     }
 

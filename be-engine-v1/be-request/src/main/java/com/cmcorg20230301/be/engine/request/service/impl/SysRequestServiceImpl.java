@@ -18,7 +18,8 @@ import com.cmcorg20230301.be.engine.security.util.UserUtil;
 import org.springframework.stereotype.Service;
 
 @Service
-public class SysRequestServiceImpl extends ServiceImpl<SysRequestMapper, SysRequestDO> implements SysRequestService {
+public class SysRequestServiceImpl extends ServiceImpl<SysRequestMapper, SysRequestDO> implements
+    SysRequestService {
 
     /**
      * 分页排序查询
@@ -29,24 +30,27 @@ public class SysRequestServiceImpl extends ServiceImpl<SysRequestMapper, SysRequ
         // 处理：MyTenantPageDTO
         SysTenantUtil.handleMyTenantPageDTO(dto, true);
 
-        return lambdaQuery().like(StrUtil.isNotBlank(dto.getUri()), SysRequestDO::getUri, dto.getUri())
-                .like(StrUtil.isNotBlank(dto.getName()), SysRequestDO::getName, dto.getName())
-                .like(StrUtil.isNotBlank(dto.getIp()), SysRequestDO::getIp, dto.getIp())
-                .like(StrUtil.isNotBlank(dto.getRegion()), SysRequestDO::getRegion, dto.getRegion())
-                .like(StrUtil.isNotBlank(dto.getType()), SysRequestDO::getType, dto.getType())
-                .le(dto.getEndCostMs() != null, SysRequestDO::getCostMs, dto.getEndCostMs())
-                .ge(dto.getBeginCostMs() != null, SysRequestDO::getCostMs, dto.getBeginCostMs())
-                .le(dto.getCtEndTime() != null, SysRequestDO::getCreateTime, dto.getCtEndTime())
-                .ge(dto.getCtBeginTime() != null, SysRequestDO::getCreateTime, dto.getCtBeginTime())
-                .eq(dto.getCategory() != null, SysRequestDO::getCategory, dto.getCategory())
-                .eq(dto.getCreateId() != null, BaseEntity::getCreateId, dto.getCreateId())
-                .eq(dto.getSuccessFlag() != null, SysRequestDO::getSuccessFlag, dto.getSuccessFlag())
-                .in(BaseEntityNoId::getTenantId, dto.getTenantIdSet()) //
-                .orderByDesc(BaseEntity::getCreateTime)
-                .select(SysRequestDO::getIp, SysRequestDO::getUri, SysRequestDO::getSuccessFlag, SysRequestDO::getCostMsStr,
-                        BaseEntityNoId::getCreateTime, BaseEntityNoId::getCreateId, SysRequestDO::getName,
-                        SysRequestDO::getCategory, SysRequestDO::getIp, SysRequestDO::getRegion, SysRequestDO::getErrorMsg,
-                        BaseEntity::getId, BaseEntityNoId::getTenantId).page(dto.page(true));
+        return lambdaQuery().like(StrUtil.isNotBlank(dto.getUri()), SysRequestDO::getUri,
+                dto.getUri())
+            .like(StrUtil.isNotBlank(dto.getName()), SysRequestDO::getName, dto.getName())
+            .like(StrUtil.isNotBlank(dto.getIp()), SysRequestDO::getIp, dto.getIp())
+            .like(StrUtil.isNotBlank(dto.getRegion()), SysRequestDO::getRegion, dto.getRegion())
+            .like(StrUtil.isNotBlank(dto.getType()), SysRequestDO::getType, dto.getType())
+            .le(dto.getEndCostMs() != null, SysRequestDO::getCostMs, dto.getEndCostMs())
+            .ge(dto.getBeginCostMs() != null, SysRequestDO::getCostMs, dto.getBeginCostMs())
+            .le(dto.getCtEndTime() != null, SysRequestDO::getCreateTime, dto.getCtEndTime())
+            .ge(dto.getCtBeginTime() != null, SysRequestDO::getCreateTime, dto.getCtBeginTime())
+            .eq(dto.getCategory() != null, SysRequestDO::getCategory, dto.getCategory())
+            .eq(dto.getCreateId() != null, BaseEntity::getCreateId, dto.getCreateId())
+            .eq(dto.getSuccessFlag() != null, SysRequestDO::getSuccessFlag, dto.getSuccessFlag())
+            .in(BaseEntityNoId::getTenantId, dto.getTenantIdSet()) //
+            .orderByDesc(BaseEntity::getCreateTime)
+            .select(SysRequestDO::getIp, SysRequestDO::getUri, SysRequestDO::getSuccessFlag,
+                SysRequestDO::getCostMsStr,
+                BaseEntityNoId::getCreateTime, BaseEntityNoId::getCreateId, SysRequestDO::getName,
+                SysRequestDO::getCategory, SysRequestDO::getIp, SysRequestDO::getRegion,
+                SysRequestDO::getErrorMsg,
+                BaseEntity::getId, BaseEntityNoId::getTenantId).page(dto.page(true));
 
     }
 

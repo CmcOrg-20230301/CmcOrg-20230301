@@ -8,15 +8,14 @@ import com.cmcorg20230301.be.engine.pay.base.model.bo.SysPayTradeNotifyBO;
 import com.cmcorg20230301.be.engine.pay.base.model.entity.SysPayConfigurationDO;
 import com.cmcorg20230301.be.engine.pay.base.util.PayHelper;
 import com.cmcorg20230301.be.engine.pay.base.util.PayUtil;
-import lombok.SneakyThrows;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Service;
-
-import javax.servlet.http.HttpServletRequest;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import javax.servlet.http.HttpServletRequest;
+import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
 
 @Service
 @Slf4j
@@ -30,7 +29,8 @@ public class PayAliServiceImpl implements PayAliService {
     public String notifyCallBack(HttpServletRequest request, long sysPayConfigurationId) {
 
         // 获取：支付的参数配置对象
-        SysPayConfigurationDO sysPayConfigurationDO = PayHelper.getSysPayConfigurationDO(sysPayConfigurationId);
+        SysPayConfigurationDO sysPayConfigurationDO = PayHelper.getSysPayConfigurationDO(
+            sysPayConfigurationId);
 
         if (sysPayConfigurationDO == null) {
             return "success";
@@ -50,7 +50,8 @@ public class PayAliServiceImpl implements PayAliService {
 
             for (int i = 0; i < values.length; i++) {
 
-                valueStr = (i == values.length - 1) ? valueStr + values[i] : valueStr + values[i] + ",";
+                valueStr =
+                    (i == values.length - 1) ? valueStr + values[i] : valueStr + values[i] + ",";
 
             }
 
@@ -61,26 +62,30 @@ public class PayAliServiceImpl implements PayAliService {
         AlipayConfig alipayConfig = PayAliUtil.getAlipayConfig(sysPayConfigurationDO);
 
         boolean signVerified = AlipaySignature
-                .rsaCheckV1(paramsMap, alipayConfig.getAlipayPublicKey(), alipayConfig.getCharset(),
-                        alipayConfig.getSignType()); // 调用SDK验证签名
+            .rsaCheckV1(paramsMap, alipayConfig.getAlipayPublicKey(), alipayConfig.getCharset(),
+                alipayConfig.getSignType()); // 调用SDK验证签名
 
         if (signVerified) {
 
             // 商户订单号
-            String outTradeNo = new String(request.getParameter("out_trade_no").getBytes(StandardCharsets.ISO_8859_1),
-                    StandardCharsets.UTF_8);
+            String outTradeNo = new String(
+                request.getParameter("out_trade_no").getBytes(StandardCharsets.ISO_8859_1),
+                StandardCharsets.UTF_8);
 
             // 支付宝交易号
-            String tradeNo = new String(request.getParameter("trade_no").getBytes(StandardCharsets.ISO_8859_1),
-                    StandardCharsets.UTF_8);
+            String tradeNo = new String(
+                request.getParameter("trade_no").getBytes(StandardCharsets.ISO_8859_1),
+                StandardCharsets.UTF_8);
 
             // 付款金额
-            String totalAmount = new String(request.getParameter("total_amount").getBytes(StandardCharsets.ISO_8859_1),
-                    StandardCharsets.UTF_8);
+            String totalAmount = new String(
+                request.getParameter("total_amount").getBytes(StandardCharsets.ISO_8859_1),
+                StandardCharsets.UTF_8);
 
             // 交易状态
-            String tradeStatus = new String(request.getParameter("trade_status").getBytes(StandardCharsets.ISO_8859_1),
-                    StandardCharsets.UTF_8);
+            String tradeStatus = new String(
+                request.getParameter("trade_status").getBytes(StandardCharsets.ISO_8859_1),
+                StandardCharsets.UTF_8);
 
             SysPayTradeNotifyBO sysPayTradeNotifyBO = new SysPayTradeNotifyBO();
 

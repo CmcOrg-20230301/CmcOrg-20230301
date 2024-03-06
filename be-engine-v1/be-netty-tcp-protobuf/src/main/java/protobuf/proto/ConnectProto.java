@@ -5,6 +5,7 @@
 package protobuf.proto;
 
 public final class ConnectProto {
+
     private ConnectProto() {
     }
 
@@ -16,8 +17,8 @@ public final class ConnectProto {
     }
 
     public interface SecurityRequestOrBuilder extends
-            // @@protoc_insertion_point(interface_extends:SecurityRequest)
-            com.google.protobuf.MessageOrBuilder {
+        // @@protoc_insertion_point(interface_extends:SecurityRequest)
+        com.google.protobuf.MessageOrBuilder {
 
         /**
          * <pre>
@@ -45,9 +46,11 @@ public final class ConnectProto {
     /**
      * Protobuf type {@code SecurityRequest}
      */
-    public static final class SecurityRequest extends com.google.protobuf.GeneratedMessageV3 implements
-            // @@protoc_insertion_point(message_implements:SecurityRequest)
-            SecurityRequestOrBuilder {
+    public static final class SecurityRequest extends
+        com.google.protobuf.GeneratedMessageV3 implements
+        // @@protoc_insertion_point(message_implements:SecurityRequest)
+        SecurityRequestOrBuilder {
+
         private static final long serialVersionUID = 0L;
 
         // Use SecurityRequest.newBuilder() to construct.
@@ -72,8 +75,8 @@ public final class ConnectProto {
         @java.lang.Override
         protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable internalGetFieldAccessorTable() {
             return protobuf.proto.ConnectProto.internal_static_SecurityRequest_fieldAccessorTable
-                    .ensureFieldAccessorsInitialized(protobuf.proto.ConnectProto.SecurityRequest.class,
-                            protobuf.proto.ConnectProto.SecurityRequest.Builder.class);
+                .ensureFieldAccessorsInitialized(protobuf.proto.ConnectProto.SecurityRequest.class,
+                    protobuf.proto.ConnectProto.SecurityRequest.Builder.class);
         }
 
         public static final int CODE_FIELD_NUMBER = 1;
@@ -115,7 +118,8 @@ public final class ConnectProto {
         public com.google.protobuf.ByteString getCodeBytes() {
             java.lang.Object ref = code_;
             if (ref instanceof java.lang.String) {
-                com.google.protobuf.ByteString b = com.google.protobuf.ByteString.copyFromUtf8((java.lang.String) ref);
+                com.google.protobuf.ByteString b = com.google.protobuf.ByteString.copyFromUtf8(
+                    (java.lang.String) ref);
                 code_ = b;
                 return b;
             } else {
@@ -128,17 +132,20 @@ public final class ConnectProto {
         @java.lang.Override
         public final boolean isInitialized() {
             byte isInitialized = memoizedIsInitialized;
-            if (isInitialized == 1)
+            if (isInitialized == 1) {
                 return true;
-            if (isInitialized == 0)
+            }
+            if (isInitialized == 0) {
                 return false;
+            }
 
             memoizedIsInitialized = 1;
             return true;
         }
 
         @java.lang.Override
-        public void writeTo(com.google.protobuf.CodedOutputStream output) throws java.io.IOException {
+        public void writeTo(com.google.protobuf.CodedOutputStream output)
+            throws java.io.IOException {
             if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(code_)) {
                 com.google.protobuf.GeneratedMessageV3.writeString(output, 1, code_);
             }
@@ -148,8 +155,9 @@ public final class ConnectProto {
         @java.lang.Override
         public int getSerializedSize() {
             int size = memoizedSize;
-            if (size != -1)
+            if (size != -1) {
                 return size;
+            }
 
             size = 0;
             if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(code_)) {
@@ -170,10 +178,12 @@ public final class ConnectProto {
             }
             protobuf.proto.ConnectProto.SecurityRequest other = (protobuf.proto.ConnectProto.SecurityRequest) obj;
 
-            if (!getCode().equals(other.getCode()))
+            if (!getCode().equals(other.getCode())) {
                 return false;
-            if (!getUnknownFields().equals(other.getUnknownFields()))
+            }
+            if (!getUnknownFields().equals(other.getUnknownFields())) {
                 return false;
+            }
             return true;
         }
 
@@ -191,68 +201,84 @@ public final class ConnectProto {
             return hash;
         }
 
-        public static protobuf.proto.ConnectProto.SecurityRequest parseFrom(java.nio.ByteBuffer data)
-                throws com.google.protobuf.InvalidProtocolBufferException {
+        public static protobuf.proto.ConnectProto.SecurityRequest parseFrom(
+            java.nio.ByteBuffer data)
+            throws com.google.protobuf.InvalidProtocolBufferException {
             return PARSER.parseFrom(data);
         }
 
-        public static protobuf.proto.ConnectProto.SecurityRequest parseFrom(java.nio.ByteBuffer data,
-                                                                            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-                throws com.google.protobuf.InvalidProtocolBufferException {
+        public static protobuf.proto.ConnectProto.SecurityRequest parseFrom(
+            java.nio.ByteBuffer data,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws com.google.protobuf.InvalidProtocolBufferException {
             return PARSER.parseFrom(data, extensionRegistry);
         }
 
-        public static protobuf.proto.ConnectProto.SecurityRequest parseFrom(com.google.protobuf.ByteString data)
-                throws com.google.protobuf.InvalidProtocolBufferException {
+        public static protobuf.proto.ConnectProto.SecurityRequest parseFrom(
+            com.google.protobuf.ByteString data)
+            throws com.google.protobuf.InvalidProtocolBufferException {
             return PARSER.parseFrom(data);
         }
 
-        public static protobuf.proto.ConnectProto.SecurityRequest parseFrom(com.google.protobuf.ByteString data,
-                                                                            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-                throws com.google.protobuf.InvalidProtocolBufferException {
+        public static protobuf.proto.ConnectProto.SecurityRequest parseFrom(
+            com.google.protobuf.ByteString data,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws com.google.protobuf.InvalidProtocolBufferException {
             return PARSER.parseFrom(data, extensionRegistry);
         }
 
         public static protobuf.proto.ConnectProto.SecurityRequest parseFrom(byte[] data)
-                throws com.google.protobuf.InvalidProtocolBufferException {
+            throws com.google.protobuf.InvalidProtocolBufferException {
             return PARSER.parseFrom(data);
         }
 
         public static protobuf.proto.ConnectProto.SecurityRequest parseFrom(byte[] data,
-                                                                            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-                throws com.google.protobuf.InvalidProtocolBufferException {
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws com.google.protobuf.InvalidProtocolBufferException {
             return PARSER.parseFrom(data, extensionRegistry);
         }
 
-        public static protobuf.proto.ConnectProto.SecurityRequest parseFrom(java.io.InputStream input)
-                throws java.io.IOException {
+        public static protobuf.proto.ConnectProto.SecurityRequest parseFrom(
+            java.io.InputStream input)
+            throws java.io.IOException {
             return com.google.protobuf.GeneratedMessageV3.parseWithIOException(PARSER, input);
         }
 
-        public static protobuf.proto.ConnectProto.SecurityRequest parseFrom(java.io.InputStream input,
-                                                                            com.google.protobuf.ExtensionRegistryLite extensionRegistry) throws java.io.IOException {
-            return com.google.protobuf.GeneratedMessageV3.parseWithIOException(PARSER, input, extensionRegistry);
+        public static protobuf.proto.ConnectProto.SecurityRequest parseFrom(
+            java.io.InputStream input,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws java.io.IOException {
+            return com.google.protobuf.GeneratedMessageV3.parseWithIOException(PARSER, input,
+                extensionRegistry);
         }
 
-        public static protobuf.proto.ConnectProto.SecurityRequest parseDelimitedFrom(java.io.InputStream input)
-                throws java.io.IOException {
-            return com.google.protobuf.GeneratedMessageV3.parseDelimitedWithIOException(PARSER, input);
+        public static protobuf.proto.ConnectProto.SecurityRequest parseDelimitedFrom(
+            java.io.InputStream input)
+            throws java.io.IOException {
+            return com.google.protobuf.GeneratedMessageV3.parseDelimitedWithIOException(PARSER,
+                input);
         }
 
-        public static protobuf.proto.ConnectProto.SecurityRequest parseDelimitedFrom(java.io.InputStream input,
-                                                                                     com.google.protobuf.ExtensionRegistryLite extensionRegistry) throws java.io.IOException {
+        public static protobuf.proto.ConnectProto.SecurityRequest parseDelimitedFrom(
+            java.io.InputStream input,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws java.io.IOException {
             return com.google.protobuf.GeneratedMessageV3
-                    .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+                .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
         }
 
-        public static protobuf.proto.ConnectProto.SecurityRequest parseFrom(com.google.protobuf.CodedInputStream input)
-                throws java.io.IOException {
+        public static protobuf.proto.ConnectProto.SecurityRequest parseFrom(
+            com.google.protobuf.CodedInputStream input)
+            throws java.io.IOException {
             return com.google.protobuf.GeneratedMessageV3.parseWithIOException(PARSER, input);
         }
 
-        public static protobuf.proto.ConnectProto.SecurityRequest parseFrom(com.google.protobuf.CodedInputStream input,
-                                                                            com.google.protobuf.ExtensionRegistryLite extensionRegistry) throws java.io.IOException {
-            return com.google.protobuf.GeneratedMessageV3.parseWithIOException(PARSER, input, extensionRegistry);
+        public static protobuf.proto.ConnectProto.SecurityRequest parseFrom(
+            com.google.protobuf.CodedInputStream input,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws java.io.IOException {
+            return com.google.protobuf.GeneratedMessageV3.parseWithIOException(PARSER, input,
+                extensionRegistry);
         }
 
         @java.lang.Override
@@ -274,7 +300,8 @@ public final class ConnectProto {
         }
 
         @java.lang.Override
-        protected Builder newBuilderForType(com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        protected Builder newBuilderForType(
+            com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
             Builder builder = new Builder(parent);
             return builder;
         }
@@ -282,9 +309,11 @@ public final class ConnectProto {
         /**
          * Protobuf type {@code SecurityRequest}
          */
-        public static final class Builder extends com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
-                // @@protoc_insertion_point(builder_implements:SecurityRequest)
-                protobuf.proto.ConnectProto.SecurityRequestOrBuilder {
+        public static final class Builder extends
+            com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+            // @@protoc_insertion_point(builder_implements:SecurityRequest)
+            protobuf.proto.ConnectProto.SecurityRequestOrBuilder {
+
             public static final com.google.protobuf.Descriptors.Descriptor getDescriptor() {
                 return protobuf.proto.ConnectProto.internal_static_SecurityRequest_descriptor;
             }
@@ -292,8 +321,9 @@ public final class ConnectProto {
             @java.lang.Override
             protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable internalGetFieldAccessorTable() {
                 return protobuf.proto.ConnectProto.internal_static_SecurityRequest_fieldAccessorTable
-                        .ensureFieldAccessorsInitialized(protobuf.proto.ConnectProto.SecurityRequest.class,
-                                protobuf.proto.ConnectProto.SecurityRequest.Builder.class);
+                    .ensureFieldAccessorsInitialized(
+                        protobuf.proto.ConnectProto.SecurityRequest.class,
+                        protobuf.proto.ConnectProto.SecurityRequest.Builder.class);
             }
 
             // Construct using protobuf.proto.ConnectProto.SecurityRequest.newBuilder()
@@ -336,7 +366,7 @@ public final class ConnectProto {
             @java.lang.Override
             public protobuf.proto.ConnectProto.SecurityRequest buildPartial() {
                 protobuf.proto.ConnectProto.SecurityRequest result =
-                        new protobuf.proto.ConnectProto.SecurityRequest(this);
+                    new protobuf.proto.ConnectProto.SecurityRequest(this);
                 if (bitField0_ != 0) {
                     buildPartial0(result);
                 }
@@ -357,7 +387,8 @@ public final class ConnectProto {
             }
 
             @java.lang.Override
-            public Builder setField(com.google.protobuf.Descriptors.FieldDescriptor field, java.lang.Object value) {
+            public Builder setField(com.google.protobuf.Descriptors.FieldDescriptor field,
+                java.lang.Object value) {
                 return super.setField(field, value);
             }
 
@@ -372,14 +403,15 @@ public final class ConnectProto {
             }
 
             @java.lang.Override
-            public Builder setRepeatedField(com.google.protobuf.Descriptors.FieldDescriptor field, int index,
-                                            java.lang.Object value) {
+            public Builder setRepeatedField(com.google.protobuf.Descriptors.FieldDescriptor field,
+                int index,
+                java.lang.Object value) {
                 return super.setRepeatedField(field, index, value);
             }
 
             @java.lang.Override
             public Builder addRepeatedField(com.google.protobuf.Descriptors.FieldDescriptor field,
-                                            java.lang.Object value) {
+                java.lang.Object value) {
                 return super.addRepeatedField(field, value);
             }
 
@@ -394,8 +426,9 @@ public final class ConnectProto {
             }
 
             public Builder mergeFrom(protobuf.proto.ConnectProto.SecurityRequest other) {
-                if (other == protobuf.proto.ConnectProto.SecurityRequest.getDefaultInstance())
+                if (other == protobuf.proto.ConnectProto.SecurityRequest.getDefaultInstance()) {
                     return this;
+                }
                 if (!other.getCode().isEmpty()) {
                     code_ = other.code_;
                     bitField0_ |= 0x00000001;
@@ -413,7 +446,8 @@ public final class ConnectProto {
 
             @java.lang.Override
             public Builder mergeFrom(com.google.protobuf.CodedInputStream input,
-                                     com.google.protobuf.ExtensionRegistryLite extensionRegistry) throws java.io.IOException {
+                com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+                throws java.io.IOException {
                 if (extensionRegistry == null) {
                     throw new java.lang.NullPointerException();
                 }
@@ -484,7 +518,7 @@ public final class ConnectProto {
                 java.lang.Object ref = code_;
                 if (ref instanceof String) {
                     com.google.protobuf.ByteString b =
-                            com.google.protobuf.ByteString.copyFromUtf8((java.lang.String) ref);
+                        com.google.protobuf.ByteString.copyFromUtf8((java.lang.String) ref);
                     code_ = b;
                     return b;
                 } else {
@@ -550,12 +584,14 @@ public final class ConnectProto {
             }
 
             @java.lang.Override
-            public final Builder setUnknownFields(final com.google.protobuf.UnknownFieldSet unknownFields) {
+            public final Builder setUnknownFields(
+                final com.google.protobuf.UnknownFieldSet unknownFields) {
                 return super.setUnknownFields(unknownFields);
             }
 
             @java.lang.Override
-            public final Builder mergeUnknownFields(final com.google.protobuf.UnknownFieldSet unknownFields) {
+            public final Builder mergeUnknownFields(
+                final com.google.protobuf.UnknownFieldSet unknownFields) {
                 return super.mergeUnknownFields(unknownFields);
             }
 
@@ -574,25 +610,26 @@ public final class ConnectProto {
         }
 
         private static final com.google.protobuf.Parser<SecurityRequest> PARSER =
-                new com.google.protobuf.AbstractParser<SecurityRequest>() {
-                    @java.lang.Override
-                    public SecurityRequest parsePartialFrom(com.google.protobuf.CodedInputStream input,
-                                                            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-                            throws com.google.protobuf.InvalidProtocolBufferException {
-                        Builder builder = newBuilder();
-                        try {
-                            builder.mergeFrom(input, extensionRegistry);
-                        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-                            throw e.setUnfinishedMessage(builder.buildPartial());
-                        } catch (com.google.protobuf.UninitializedMessageException e) {
-                            throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
-                        } catch (java.io.IOException e) {
-                            throw new com.google.protobuf.InvalidProtocolBufferException(e)
-                                    .setUnfinishedMessage(builder.buildPartial());
-                        }
-                        return builder.buildPartial();
+            new com.google.protobuf.AbstractParser<SecurityRequest>() {
+                @java.lang.Override
+                public SecurityRequest parsePartialFrom(com.google.protobuf.CodedInputStream input,
+                    com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+                    throws com.google.protobuf.InvalidProtocolBufferException {
+                    Builder builder = newBuilder();
+                    try {
+                        builder.mergeFrom(input, extensionRegistry);
+                    } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+                        throw e.setUnfinishedMessage(builder.buildPartial());
+                    } catch (com.google.protobuf.UninitializedMessageException e) {
+                        throw e.asInvalidProtocolBufferException()
+                            .setUnfinishedMessage(builder.buildPartial());
+                    } catch (java.io.IOException e) {
+                        throw new com.google.protobuf.InvalidProtocolBufferException(e)
+                            .setUnfinishedMessage(builder.buildPartial());
                     }
-                };
+                    return builder.buildPartial();
+                }
+            };
 
         public static com.google.protobuf.Parser<SecurityRequest> parser() {
             return PARSER;
@@ -612,7 +649,7 @@ public final class ConnectProto {
 
     private static final com.google.protobuf.Descriptors.Descriptor internal_static_SecurityRequest_descriptor;
     private static final com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-            internal_static_SecurityRequest_fieldAccessorTable;
+        internal_static_SecurityRequest_fieldAccessorTable;
 
     public static com.google.protobuf.Descriptors.FileDescriptor getDescriptor() {
         return descriptor;
@@ -621,14 +658,17 @@ public final class ConnectProto {
     private static com.google.protobuf.Descriptors.FileDescriptor descriptor;
 
     static {
-        java.lang.String[] descriptorData = {"\n\022ConnectProto.proto\"\037\n\017SecurityRequest\022"
+        java.lang.String[] descriptorData = {
+            "\n\022ConnectProto.proto\"\037\n\017SecurityRequest\022"
                 + "\014\n\004code\030\001 \001(\tB\020\n\016protobuf.protob\006proto3"};
         descriptor = com.google.protobuf.Descriptors.FileDescriptor
-                .internalBuildGeneratedFileFrom(descriptorData, new com.google.protobuf.Descriptors.FileDescriptor[]{});
+            .internalBuildGeneratedFileFrom(descriptorData,
+                new com.google.protobuf.Descriptors.FileDescriptor[]{});
         internal_static_SecurityRequest_descriptor = getDescriptor().getMessageTypes().get(0);
         internal_static_SecurityRequest_fieldAccessorTable =
-                new com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(internal_static_SecurityRequest_descriptor,
-                        new java.lang.String[]{"Code",});
+            new com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+                internal_static_SecurityRequest_descriptor,
+                new java.lang.String[]{"Code",});
     }
 
     // @@protoc_insertion_point(outer_class_scope)

@@ -33,7 +33,7 @@ public class MyEmailUtil {
      * 发送邮件
      */
     public static void send(String to, EmailMessageEnum emailMessageEnum, String content,
-                            @Nullable Long tenantId) {
+        @Nullable Long tenantId) {
 
         send(to, emailMessageEnum, content, false, tenantId);
 
@@ -42,20 +42,23 @@ public class MyEmailUtil {
     /**
      * 发送邮件
      */
-    public static void send(String to, EmailMessageEnum emailMessageEnum, String content, boolean isHtml,
-                            @Nullable Long tenantId) {
+    public static void send(String to, EmailMessageEnum emailMessageEnum, String content,
+        boolean isHtml,
+        @Nullable Long tenantId) {
 
         if (StrUtil.isBlank(to)) {
 
             ApiResultVO
-                    .error(BaseBizCodeEnum.THIS_OPERATION_CANNOT_BE_PERFORMED_WITHOUT_BINDING_AN_EMAIL_ADDRESS);
+                .error(
+                    BaseBizCodeEnum.THIS_OPERATION_CANNOT_BE_PERFORMED_WITHOUT_BINDING_AN_EMAIL_ADDRESS);
 
         }
 
         tenantId = SysTenantUtil.getTenantId(tenantId);
 
         SysEmailConfigurationDO sysEmailConfigurationDO =
-                sysEmailConfigurationService.lambdaQuery().eq(SysEmailConfigurationDO::getId, tenantId).one();
+            sysEmailConfigurationService.lambdaQuery().eq(SysEmailConfigurationDO::getId, tenantId)
+                .one();
 
         if (sysEmailConfigurationDO == null) {
             ApiResultVO.error("操作失败：未配置邮箱参数，请联系管理员", tenantId);
@@ -63,7 +66,7 @@ public class MyEmailUtil {
 
         // 消息内容，加上统一的前缀
         content = "【" + sysEmailConfigurationDO.getContentPre() + "】" + StrUtil
-                .format(emailMessageEnum.getContentTemp(), content);
+            .format(emailMessageEnum.getContentTemp(), content);
 
         String finalContent = content;
 

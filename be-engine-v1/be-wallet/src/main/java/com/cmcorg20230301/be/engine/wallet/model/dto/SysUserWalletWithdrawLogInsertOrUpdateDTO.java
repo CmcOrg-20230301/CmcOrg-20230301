@@ -9,7 +9,8 @@ import org.jetbrains.annotations.NotNull;
 @EqualsAndHashCode(callSuper = true)
 @Data
 @NoArgsConstructor
-public class SysUserWalletWithdrawLogInsertOrUpdateDTO extends SysUserWalletWithdrawLogInsertOrUpdateUserSelfDTO {
+public class SysUserWalletWithdrawLogInsertOrUpdateDTO extends
+    SysUserWalletWithdrawLogInsertOrUpdateUserSelfDTO {
 
     @NotNull
     @Schema(description = "用户主键 id")

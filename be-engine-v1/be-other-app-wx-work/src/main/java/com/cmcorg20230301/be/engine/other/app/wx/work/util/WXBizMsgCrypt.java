@@ -3,12 +3,13 @@
  *
  * @copyright Copyright (c) 1998-2014 Tencent Inc.
  * <p>
- * 针对org.apache.commons.codec.binary.Base64，
- * 需要导入架包commons-codec-1.9（或commons-codec-1.8等其他版本）
+ * 针对org.apache.commons.codec.binary.Base64， 需要导入架包commons-codec-1.9（或commons-codec-1.8等其他版本）
  * 官方下载地址：http://commons.apache.org/proper/commons-codec/download_codec.cgi
  * <p>
- * 针对org.apache.commons.codec.binary.Base64，
- * 需要导入架包commons-codec-1.9（或commons-codec-1.8等其他版本）
+ * 针对org.apache.commons.codec.binary.Base64， 需要导入架包commons-codec-1.9（或commons-codec-1.8等其他版本）
+ * 官方下载地址：http://commons.apache.org/proper/commons-codec/download_codec.cgi
+ * <p>
+ * 针对org.apache.commons.codec.binary.Base64， 需要导入架包commons-codec-1.9（或commons-codec-1.8等其他版本）
  * 官方下载地址：http://commons.apache.org/proper/commons-codec/download_codec.cgi
  */
 
@@ -21,14 +22,13 @@
  */
 package com.cmcorg20230301.be.engine.other.app.wx.work.util;
 
-import org.apache.commons.codec.binary.Base64;
-
-import javax.crypto.Cipher;
-import javax.crypto.spec.IvParameterSpec;
-import javax.crypto.spec.SecretKeySpec;
 import java.nio.charset.Charset;
 import java.util.Arrays;
 import java.util.Random;
+import javax.crypto.Cipher;
+import javax.crypto.spec.IvParameterSpec;
+import javax.crypto.spec.SecretKeySpec;
+import org.apache.commons.codec.binary.Base64;
 
 /**
  * 提供接收和推送给企业微信消息的加解密接口(UTF8编码的字符串).
@@ -46,6 +46,7 @@ import java.util.Random;
  * </ol>
  */
 public class WXBizMsgCrypt {
+
     static Charset CHARSET = Charset.forName("utf-8");
     Base64 base64 = new Base64();
     byte[] aesKey;
@@ -182,7 +183,7 @@ public class WXBizMsgCrypt {
 
             xmlContent = new String(Arrays.copyOfRange(bytes, 20, 20 + xmlLength), CHARSET);
             from_receiveid = new String(Arrays.copyOfRange(bytes, 20 + xmlLength, bytes.length),
-                    CHARSET);
+                CHARSET);
         } catch (Exception e) {
             e.printStackTrace();
             throw new AesException(AesException.IllegalBuffer);
@@ -241,7 +242,7 @@ public class WXBizMsgCrypt {
      * @throws AesException 执行失败，请查看该异常的错误码和具体的错误信息
      */
     public String DecryptMsg(String msgSignature, String timeStamp, String nonce, String postData)
-            throws AesException {
+        throws AesException {
 
         // 密钥，公众账号的app secret
         // 提取密文
@@ -273,7 +274,7 @@ public class WXBizMsgCrypt {
      * @throws AesException 执行失败，请查看该异常的错误码和具体的错误信息
      */
     public String VerifyURL(String msgSignature, String timeStamp, String nonce, String echoStr)
-            throws AesException {
+        throws AesException {
         String signature = SHA1.getSHA1(token, timeStamp, nonce, echoStr);
 
         if (!signature.equals(msgSignature)) {

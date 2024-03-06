@@ -13,12 +13,16 @@ import com.cmcorg20230301.be.engine.generate.model.bo.BeApi;
 import com.cmcorg20230301.be.engine.generate.util.apitest.ApiTestHelper;
 import com.cmcorg20230301.be.engine.security.model.vo.ApiResultVO;
 import com.cmcorg20230301.be.engine.util.util.CallBack;
+import java.io.File;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
-
-import java.io.File;
-import java.util.*;
-import java.util.stream.Collectors;
 
 /**
  * 生成页面的工具类
@@ -47,7 +51,8 @@ public class GeneratePageUtil {
 
     // Admin 表单 页面模板
     private String adminFormFileName = "SchemaFormColumnList" + tsx;
-    private String adminFormTemp = FileUtil.readUtf8String("template/admin/SchemaFormColumnList.txt");
+    private String adminFormTemp = FileUtil.readUtf8String(
+        "template/admin/SchemaFormColumnList.txt");
 
     // Admin Table 页面模板
     private String adminTableFileName = "TableColumnList" + tsx;
@@ -82,7 +87,7 @@ public class GeneratePageUtil {
 
     // 一般的 form json字段模板
     private String adminFormJsonItemNormal =
-            "\n        {\n            title: '{}',\n            dataIndex: '{}',\n{}        },\n";
+        "\n        {\n            title: '{}',\n            dataIndex: '{}',\n{}        },\n";
 
     // 一般的 table json字段模板
     private String adminTableJsonItemNormal = "\n    {title: '{}', dataIndex: '{}', ellipsis: true, width: 90,{}},\n";
@@ -92,8 +97,9 @@ public class GeneratePageUtil {
 
     // formItemProps
     private String adminJsonItemFormItemProps =
-            "            formItemProps: {\n" + "                rules: [\n" + "                    {" + "{}"
-                    + "\n                    },\n" + "                ],\n" + "            },\n";
+        "            formItemProps: {\n" + "                rules: [\n" + "                    {"
+            + "{}"
+            + "\n                    },\n" + "                ],\n" + "            },\n";
 
     // formItemProps required: true
     private String adminFormJsonItemFormItemPropsRequired = "\n                        required: true,";
@@ -118,36 +124,44 @@ public class GeneratePageUtil {
     private String importYesNoDict = "import {YesNoDict} from \"@/util/DictUtil\";\n";
 
     private String adminTableJsonItemYesNoDictSelect =
-            "\n    {}{\n" + "        title: '{}',\n" + "        dataIndex: '{}',\n" + "        valueEnum: YesNoDict,\n"
-                    + "        width: 90,\n" + "    },\n";
+        "\n    {}{\n" + "        title: '{}',\n" + "        dataIndex: '{}',\n"
+            + "        valueEnum: YesNoDict,\n"
+            + "        width: 90,\n" + "    },\n";
 
     // YesNoDict 开关
     private String adminFormJsonItemYesNoDictSwitch =
-            "\n    {}{\n" + "            title: '{}',\n" + "            dataIndex: '{}',\n"
-                    + "            valueEnum: YesNoDict,\n" + "            valueType: 'switch',\n" + "{}        },\n";
+        "\n    {}{\n" + "            title: '{}',\n" + "            dataIndex: '{}',\n"
+            + "            valueEnum: YesNoDict,\n" + "            valueType: 'switch',\n"
+            + "{}        },\n";
 
     // fromNow 并且 hideInSearch
     private String adminTableJsonItemFromNowAndHideInSearch =
-            "\n    {}{\n" + "        title: '{}',\n" + "        dataIndex: '{}',\n" + "        hideInSearch: true,\n"
-                    + "        valueType: 'fromNow',\n" + "        width: 90,\n" + "    },\n";
+        "\n    {}{\n" + "        title: '{}',\n" + "        dataIndex: '{}',\n"
+            + "        hideInSearch: true,\n"
+            + "        valueType: 'fromNow',\n" + "        width: 90,\n" + "    },\n";
 
     // 最大长度为 300的文字域输入框，remark
     private String remark = "remark";
 
     private String adminFormJsonItemTextarea300Remark =
-            "\n        {\n" + "            title: '{}',\n" + "            dataIndex: 'remark',\n"
-                    + "            valueType: 'textarea',\n" + "            formItemProps: {\n" + "                rules: [\n"
-                    + "                    {\n" + "                        whitespace: true,\n"
-                    + "                        max: 300,\n" + "                    },\n" + "                ],\n"
-                    + "            },\n" + "            fieldProps: {\n" + "                showCount: true,\n"
-                    + "                maxLength: 300,\n" + "                allowClear: true,\n" + "            }\n"
-                    + "        },\n";
+        "\n        {\n" + "            title: '{}',\n" + "            dataIndex: 'remark',\n"
+            + "            valueType: 'textarea',\n" + "            formItemProps: {\n"
+            + "                rules: [\n"
+            + "                    {\n" + "                        whitespace: true,\n"
+            + "                        max: 300,\n" + "                    },\n"
+            + "                ],\n"
+            + "            },\n" + "            fieldProps: {\n"
+            + "                showCount: true,\n"
+            + "                maxLength: 300,\n" + "                allowClear: true,\n"
+            + "            }\n"
+            + "        },\n";
 
     // fieldProps：下拉选，多选
     private String adminJsonFieldPropsSelectMultiple =
-            "            valueType: 'select',\n" + "            fieldProps: {\n" + "                showSearch: true,\n"
-                    + "                allowClear: true,\n" + "                mode: 'multiple',\n"
-                    + "                maxTagCount: 'responsive',\n" + "            },\n{}\n";
+        "            valueType: 'select',\n" + "            fieldProps: {\n"
+            + "                showSearch: true,\n"
+            + "                allowClear: true,\n" + "                mode: 'multiple',\n"
+            + "                maxTagCount: 'responsive',\n" + "            },\n{}\n";
 
     public String getSystemUserDir() {
 
@@ -164,7 +178,8 @@ public class GeneratePageUtil {
         GeneratePageUtil generatePageUtil = new GeneratePageUtil();
 
         // 执行
-        generatePageUtil.exec(generatePageUtil.getSpringDocEndpoint(), generatePageUtil.getPagePath());
+        generatePageUtil.exec(generatePageUtil.getSpringDocEndpoint(),
+            generatePageUtil.getPagePath());
 
     }
 
@@ -180,9 +195,11 @@ public class GeneratePageUtil {
         System.out.println("所有的 group ↑");
 
         String sysGroupStr =
-                apiMap.keySet().stream().filter(it -> it.startsWith("Sys")).collect(Collectors.joining(" "));
+            apiMap.keySet().stream().filter(it -> it.startsWith("Sys"))
+                .collect(Collectors.joining(" "));
 
-        String group = ApiTestHelper.getStrFromScanner("请输入要生成页面的 group，多个用空格隔开，例如：" + sysGroupStr + "，为【all】则生成全部");
+        String group = ApiTestHelper.getStrFromScanner(
+            "请输入要生成页面的 group，多个用空格隔开，例如：" + sysGroupStr + "，为【all】则生成全部");
 
         Collection<String> groupSet;
 
@@ -207,7 +224,8 @@ public class GeneratePageUtil {
     /**
      * 开始执行
      */
-    public void doExec(String pagePath, HashMap<String, HashMap<String, BeApi>> apiMap, String group) {
+    public void doExec(String pagePath, HashMap<String, HashMap<String, BeApi>> apiMap,
+        String group) {
 
         HashMap<String, BeApi> pathBeApiMap = apiMap.get(group);
 
@@ -232,29 +250,34 @@ public class GeneratePageUtil {
         CallBack<String> adminDeleteNameCallBack = new CallBack<>();
 
         // 生成 table页面
-        generateTableColumnList(pathBeApiMap, pagePath, group, adminPageVoCallBack, adminDeleteByIdSetApiCallBack,
-                adminInsertOrUpdateApiCallBack, adminControllerCallBack, adminDeleteNameCallBack,
-                adminInsertOrUpdateDtoCallBack);
+        generateTableColumnList(pathBeApiMap, pagePath, group, adminPageVoCallBack,
+            adminDeleteByIdSetApiCallBack,
+            adminInsertOrUpdateApiCallBack, adminControllerCallBack, adminDeleteNameCallBack,
+            adminInsertOrUpdateDtoCallBack);
 
         // 生成 page页面
-        generatePage(pathBeApiMap, pagePath, group, fileNamePre, adminPageVoCallBack, adminDeleteByIdSetApiCallBack,
-                adminInsertOrUpdateApiCallBack, adminControllerCallBack, adminDeleteNameCallBack,
-                adminInsertOrUpdateDtoCallBack);
+        generatePage(pathBeApiMap, pagePath, group, fileNamePre, adminPageVoCallBack,
+            adminDeleteByIdSetApiCallBack,
+            adminInsertOrUpdateApiCallBack, adminControllerCallBack, adminDeleteNameCallBack,
+            adminInsertOrUpdateDtoCallBack);
 
         // 生成 表单页面
-        generateSchemaFormColumnList(pathBeApiMap, pagePath, group, fileNamePre, adminPageVoCallBack,
-                adminDeleteByIdSetApiCallBack, adminInsertOrUpdateApiCallBack, adminControllerCallBack,
-                adminDeleteNameCallBack, adminInsertOrUpdateDtoCallBack);
+        generateSchemaFormColumnList(pathBeApiMap, pagePath, group, fileNamePre,
+            adminPageVoCallBack,
+            adminDeleteByIdSetApiCallBack, adminInsertOrUpdateApiCallBack, adminControllerCallBack,
+            adminDeleteNameCallBack, adminInsertOrUpdateDtoCallBack);
 
     }
 
     /**
      * 生成 表单页面
      */
-    public void generateSchemaFormColumnList(HashMap<String, BeApi> pathBeApiMap, String pagePath, String group,
-                                             String fileNamePre, CallBack<String> adminPageVoCallBack, CallBack<String> adminDeleteByIdSetApiCallBack,
-                                             CallBack<String> adminInsertOrUpdateApiCallBack, CallBack<String> adminControllerCallBack,
-                                             CallBack<String> adminDeleteNameCallBack, CallBack<String> adminInsertOrUpdateDtoCallBack) {
+    public void generateSchemaFormColumnList(HashMap<String, BeApi> pathBeApiMap, String pagePath,
+        String group,
+        String fileNamePre, CallBack<String> adminPageVoCallBack,
+        CallBack<String> adminDeleteByIdSetApiCallBack,
+        CallBack<String> adminInsertOrUpdateApiCallBack, CallBack<String> adminControllerCallBack,
+        CallBack<String> adminDeleteNameCallBack, CallBack<String> adminInsertOrUpdateDtoCallBack) {
 
         String pageFilePath = pagePath + getAdminFormFileName();
 
@@ -275,7 +298,8 @@ public class GeneratePageUtil {
 
         // 执行替换
         tempStrBuilder =
-                StrBuilder.create(equalsAndReplace(tempStrBuilder.toString(), adminController, getAdminController()));
+            StrBuilder.create(
+                equalsAndReplace(tempStrBuilder.toString(), adminController, getAdminController()));
 
         Set<String> importClassNameSet = new HashSet<>(); // 防止重复写入
         StrBuilder otherStrBuilder = StrBuilder.create(); // 对象复用
@@ -298,7 +322,8 @@ public class GeneratePageUtil {
 
                 }
 
-                for (Map.Entry<String, BeApi.BeApiField> subItem : requestBody.getFieldMap().entrySet()) {
+                for (Map.Entry<String, BeApi.BeApiField> subItem : requestBody.getFieldMap()
+                    .entrySet()) {
 
                     // 一个字段
                     BeApi.BeApiField beApiField = subItem.getValue();
@@ -313,40 +338,48 @@ public class GeneratePageUtil {
 
                         if ("boolean".equals(beApiParameter.getType())) {
 
-                            importClassForTs(tempStrBuilder, importClassNameSet, getYesNoDict(), getImportYesNoDict());
+                            importClassForTs(tempStrBuilder, importClassNameSet, getYesNoDict(),
+                                getImportYesNoDict());
 
                             // 获取：formTooltip
                             String formTooltip = getFormTooltip(beApiParameter, description);
 
                             formJsonStrBuilder.append(StrUtil
-                                    .format(getAdminFormJsonItemYesNoDictSwitch(), getTabIndent(), description,
-                                            beApiParameter.getName(), formTooltip));
+                                .format(getAdminFormJsonItemYesNoDictSwitch(), getTabIndent(),
+                                    description,
+                                    beApiParameter.getName(), formTooltip));
 
                         } else if (getRemark().equals(beApiParameter.getName())) {
 
                             formJsonStrBuilder
-                                    .append(StrUtil.format(getAdminFormJsonItemTextarea300Remark(), description));
+                                .append(StrUtil.format(getAdminFormJsonItemTextarea300Remark(),
+                                    description));
 
-                        } else if (CollUtil.newArrayList("string", "integer").contains(beApiParameter.getType())) {
+                        } else if (CollUtil.newArrayList("string", "integer")
+                            .contains(beApiParameter.getType())) {
 
                             // 添加：formItemProps
-                            appendFormItemProps(otherStrBuilder, formItemPropsStrBuilder, beApiParameter);
+                            appendFormItemProps(otherStrBuilder, formItemPropsStrBuilder,
+                                beApiParameter);
 
                             // 添加：select
-                            appendSelect(otherStrBuilder, formItemPropsStrBuilder, beApiParameter, tempStrBuilder,
-                                    importClassNameSet);
+                            appendSelect(otherStrBuilder, formItemPropsStrBuilder, beApiParameter,
+                                tempStrBuilder,
+                                importClassNameSet);
 
                             // 添加：formTooltip
                             otherStrBuilder.append(getFormTooltip(beApiParameter, description));
 
                             formJsonStrBuilder.append(StrUtil
-                                    .format(getAdminFormJsonItemNormal(), description, beApiParameter.getName(),
-                                            otherStrBuilder.toStringAndReset()));
+                                .format(getAdminFormJsonItemNormal(), description,
+                                    beApiParameter.getName(),
+                                    otherStrBuilder.toStringAndReset()));
 
                         } else {
 
-                            log.info("暂不支持此类型，path：{}，name：{}，type：{}", beApi.getPath(), beApiParameter.getName(),
-                                    beApiParameter.getType());
+                            log.info("暂不支持此类型，path：{}，name：{}，type：{}", beApi.getPath(),
+                                beApiParameter.getName(),
+                                beApiParameter.getType());
 
                         }
 
@@ -362,13 +395,16 @@ public class GeneratePageUtil {
 
         // 执行替换
         tempStrBuilder = StrBuilder
-                .create(equalsAndReplace(tempStrBuilder.toString(), adminInsertOrUpdateApi, getAdminInsertOrUpdateApi()));
+            .create(equalsAndReplace(tempStrBuilder.toString(), adminInsertOrUpdateApi,
+                getAdminInsertOrUpdateApi()));
 
         tempStrBuilder = StrBuilder
-                .create(equalsAndReplace(tempStrBuilder.toString(), adminInsertOrUpdateDTO, getAdminInsertOrUpdateDTO()));
+            .create(equalsAndReplace(tempStrBuilder.toString(), adminInsertOrUpdateDTO,
+                getAdminInsertOrUpdateDTO()));
 
         tempStrBuilder = StrBuilder
-                .create(equalsAndReplace(tempStrBuilder.toString(), formJsonStrBuilder.toString(), getAdminFormJson()));
+            .create(equalsAndReplace(tempStrBuilder.toString(), formJsonStrBuilder.toString(),
+                getAdminFormJson()));
 
         // 写入内容到文件里
         FileUtil.writeUtf8String(tempStrBuilder.toString(), touchFile);
@@ -379,7 +415,8 @@ public class GeneratePageUtil {
      * 添加：select
      */
     public void appendSelect(StrBuilder otherStrBuilder, StrBuilder formItemPropsStrBuilder,
-                             BeApi.BeApiParameter beApiParameter, StrBuilder tempStrBuilder, Set<String> importClassNameSet) {
+        BeApi.BeApiParameter beApiParameter, StrBuilder tempStrBuilder,
+        Set<String> importClassNameSet) {
 
         if (BooleanUtil.isTrue(beApiParameter.getArrFlag())) {
 
@@ -392,12 +429,14 @@ public class GeneratePageUtil {
     /**
      * 通过：关键字导入包
      */
-    public void importByKeyWord(StrBuilder strBuilder, String keyword, String objectStr, boolean insertFlag,
-                                VoidFunc0 voidFunc0) {
+    public void importByKeyWord(StrBuilder strBuilder, String keyword, String objectStr,
+        boolean insertFlag,
+        VoidFunc0 voidFunc0) {
 
         String regexp = "^.*import \\{(.*?)\\} from .*/" + keyword + "\";.*$";
 
-        String group1 = ReUtil.getGroup1(regexp, strBuilder.toString()); // 例如：GetDictList, YesNoDict
+        String group1 = ReUtil.getGroup1(regexp,
+            strBuilder.toString()); // 例如：GetDictList, YesNoDict
 
         if (StrUtil.isBlank(group1)) {
             voidFunc0.callWithRuntimeException(); // 执行：其他操作
@@ -421,7 +460,8 @@ public class GeneratePageUtil {
         String formatStr = StrUtil.format(replaceTemp, CollUtil.join(splitTrimList, ", "));
 
         String replaceResult =
-                StrUtil.replace(strBuilder.toStringAndReset(), StrUtil.format(replaceTemp, group1), formatStr);
+            StrUtil.replace(strBuilder.toStringAndReset(), StrUtil.format(replaceTemp, group1),
+                formatStr);
 
         strBuilder.append(replaceResult);
 
@@ -431,7 +471,7 @@ public class GeneratePageUtil {
      * 添加：formItemProps
      */
     public void appendFormItemProps(StrBuilder otherStrBuilder, StrBuilder formItemPropsStrBuilder,
-                                    BeApi.BeApiParameter beApiParameter) {
+        BeApi.BeApiParameter beApiParameter) {
 
         if (BooleanUtil.isTrue(beApiParameter.getRequired())) {
 
@@ -445,8 +485,9 @@ public class GeneratePageUtil {
 
         }
 
-        if ("integer".equals(beApiParameter.getType()) && beApiParameter.getArrFlag() != null && BooleanUtil
-                .isFalse(beApiParameter.getArrFlag())) { // 如果是：number，并且不是数组
+        if ("integer".equals(beApiParameter.getType()) && beApiParameter.getArrFlag() != null
+            && BooleanUtil
+            .isFalse(beApiParameter.getArrFlag())) { // 如果是：number，并且不是数组
 
             formItemPropsStrBuilder.append(getAdminFormJsonItemFormItemPropsTypeNumber());
 
@@ -455,21 +496,24 @@ public class GeneratePageUtil {
         if (StrUtil.isNotBlank(beApiParameter.getPattern())) {
 
             formItemPropsStrBuilder
-                    .append(StrUtil.format(getAdminFormJsonItemFormItemPropsPattern(), beApiParameter.getPattern()));
+                .append(StrUtil.format(getAdminFormJsonItemFormItemPropsPattern(),
+                    beApiParameter.getPattern()));
 
         }
 
         if (beApiParameter.getMaxLength() != null) {
 
             formItemPropsStrBuilder
-                    .append(StrUtil.format(getAdminFormJsonItemFormItemPropsMax(), beApiParameter.getMaxLength()));
+                .append(StrUtil.format(getAdminFormJsonItemFormItemPropsMax(),
+                    beApiParameter.getMaxLength()));
 
         }
 
         if (beApiParameter.getMinLength() != null) {
 
             formItemPropsStrBuilder
-                    .append(StrUtil.format(getAdminFormJsonItemFormItemPropsMin(), beApiParameter.getMinLength()));
+                .append(StrUtil.format(getAdminFormJsonItemFormItemPropsMin(),
+                    beApiParameter.getMinLength()));
 
         }
 
@@ -477,7 +521,8 @@ public class GeneratePageUtil {
 
         if (StrUtil.isNotBlank(formItemPropsStr)) { // 不为空，才添加：formItemProps
 
-            otherStrBuilder.append(StrUtil.format(getAdminJsonItemFormItemProps(), formItemPropsStr));
+            otherStrBuilder.append(
+                StrUtil.format(getAdminJsonItemFormItemProps(), formItemPropsStr));
 
         }
 
@@ -496,7 +541,8 @@ public class GeneratePageUtil {
 
         } else {
 
-            formTooltip = StrUtil.format(getAdminJsonItemTooltip(), beApiParameter.getDescription());
+            formTooltip = StrUtil.format(getAdminJsonItemTooltip(),
+                beApiParameter.getDescription());
 
         }
 
@@ -507,10 +553,11 @@ public class GeneratePageUtil {
     /**
      * 生成 page页面
      */
-    public void generatePage(HashMap<String, BeApi> pathBeApiMap, String pagePath, String group, String fileNamePre,
-                             CallBack<String> adminPageVoCallBack, CallBack<String> adminDeleteByIdSetApiCallBack,
-                             CallBack<String> adminInsertOrUpdateApiCallBack, CallBack<String> adminControllerCallBack,
-                             CallBack<String> adminDeleteNameCallBack, CallBack<String> adminInsertOrUpdateDtoCallBack) {
+    public void generatePage(HashMap<String, BeApi> pathBeApiMap, String pagePath, String group,
+        String fileNamePre,
+        CallBack<String> adminPageVoCallBack, CallBack<String> adminDeleteByIdSetApiCallBack,
+        CallBack<String> adminInsertOrUpdateApiCallBack, CallBack<String> adminControllerCallBack,
+        CallBack<String> adminDeleteNameCallBack, CallBack<String> adminInsertOrUpdateDtoCallBack) {
 
         String pageFilePath = pagePath + fileNamePre + getTsx();
 
@@ -607,10 +654,11 @@ public class GeneratePageUtil {
     /**
      * 生成 table页面
      */
-    public void generateTableColumnList(HashMap<String, BeApi> pathBeApiMap, String pagePath, String group,
-                                        CallBack<String> adminPageVoCallBack, CallBack<String> adminDeleteByIdSetApiCallBack,
-                                        CallBack<String> adminInsertOrUpdateApiCallBack, CallBack<String> adminControllerCallBack,
-                                        CallBack<String> adminDeleteNameCallBack, CallBack<String> adminInsertOrUpdateDtoCallBack) {
+    public void generateTableColumnList(HashMap<String, BeApi> pathBeApiMap, String pagePath,
+        String group,
+        CallBack<String> adminPageVoCallBack, CallBack<String> adminDeleteByIdSetApiCallBack,
+        CallBack<String> adminInsertOrUpdateApiCallBack, CallBack<String> adminControllerCallBack,
+        CallBack<String> adminDeleteNameCallBack, CallBack<String> adminInsertOrUpdateDtoCallBack) {
 
         String tableFilePath = pagePath + getAdminTableFileName();
 
@@ -656,22 +704,25 @@ public class GeneratePageUtil {
 
                     // 拿到：返回值的对象 ↓
                     BeApi.BeApiSchema beApiSchema =
-                            (BeApi.BeApiSchema) response.getFieldMap().get(response.getClassName());
+                        (BeApi.BeApiSchema) response.getFieldMap().get(response.getClassName());
 
                     BeApi.BeApiField data = beApiSchema.getFieldMap().get("data");
 
                     BeApi.BeApiSchema dataBeApiSchema = (BeApi.BeApiSchema) data;
 
                     BeApi.BeApiSchema dataRealBeApiSchema =
-                            (BeApi.BeApiSchema) dataBeApiSchema.getFieldMap().get(dataBeApiSchema.getClassName());
+                        (BeApi.BeApiSchema) dataBeApiSchema.getFieldMap()
+                            .get(dataBeApiSchema.getClassName());
 
-                    BeApi.BeApiSchema records = (BeApi.BeApiSchema) dataRealBeApiSchema.getFieldMap().get("records");
+                    BeApi.BeApiSchema records = (BeApi.BeApiSchema) dataRealBeApiSchema.getFieldMap()
+                        .get("records");
 
                     BeApi.BeApiSchema recordsBeApiSchema =
-                            (BeApi.BeApiSchema) records.getFieldMap().get(records.getClassName());
+                        (BeApi.BeApiSchema) records.getFieldMap().get(records.getClassName());
                     // 拿到：返回值的对象 ↑
 
-                    for (Map.Entry<String, BeApi.BeApiField> subItem : recordsBeApiSchema.getFieldMap().entrySet()) {
+                    for (Map.Entry<String, BeApi.BeApiField> subItem : recordsBeApiSchema.getFieldMap()
+                        .entrySet()) {
 
                         // 一个字段
                         BeApi.BeApiField beApiField = subItem.getValue();
@@ -687,27 +738,31 @@ public class GeneratePageUtil {
                             if ("boolean".equals(beApiParameter.getType())) {
 
                                 importClassForTs(tempStrBuilder, importClassNameSet, getYesNoDict(),
-                                        getImportYesNoDict());
+                                    getImportYesNoDict());
 
                                 tableJsonStrBuilder.append(StrUtil
-                                        .format(getAdminTableJsonItemYesNoDictSelect(), "", description,
-                                                beApiParameter.getName()));
+                                    .format(getAdminTableJsonItemYesNoDictSelect(), "", description,
+                                        beApiParameter.getName()));
 
                             } else if ("date-time".equals(beApiParameter.getFormat())) {
 
                                 tableJsonStrBuilder.append(StrUtil
-                                        .format(getAdminTableJsonItemFromNowAndHideInSearch(), "", description,
-                                                beApiParameter.getName()));
+                                    .format(getAdminTableJsonItemFromNowAndHideInSearch(), "",
+                                        description,
+                                        beApiParameter.getName()));
 
-                            } else if (CollUtil.newArrayList("string", "integer").contains(beApiParameter.getType())) {
+                            } else if (CollUtil.newArrayList("string", "integer")
+                                .contains(beApiParameter.getType())) {
 
                                 tableJsonStrBuilder.append(StrUtil
-                                        .format(getAdminTableJsonItemNormal(), description, beApiParameter.getName(), ""));
+                                    .format(getAdminTableJsonItemNormal(), description,
+                                        beApiParameter.getName(), ""));
 
                             } else {
 
-                                log.info("暂不支持此类型，path：{}，name：{}，type：{}", beApi.getPath(), beApiParameter.getName(),
-                                        beApiParameter.getType());
+                                log.info("暂不支持此类型，path：{}，name：{}，type：{}", beApi.getPath(),
+                                    beApiParameter.getName(),
+                                    beApiParameter.getType());
 
                             }
 
@@ -736,24 +791,31 @@ public class GeneratePageUtil {
 
         // 执行替换
         tempStrBuilder = StrBuilder
-                .create(equalsAndReplace(tempStrBuilder.toString(), adminInsertOrUpdateApi, getAdminInsertOrUpdateApi()));
+            .create(equalsAndReplace(tempStrBuilder.toString(), adminInsertOrUpdateApi,
+                getAdminInsertOrUpdateApi()));
 
         tempStrBuilder = StrBuilder
-                .create(equalsAndReplace(tempStrBuilder.toString(), adminInsertOrUpdateDTO, getAdminInsertOrUpdateDTO()));
+            .create(equalsAndReplace(tempStrBuilder.toString(), adminInsertOrUpdateDTO,
+                getAdminInsertOrUpdateDTO()));
 
-        tempStrBuilder = StrBuilder.create(equalsAndReplace(tempStrBuilder.toString(), adminPageVO, getAdminPageVO()));
+        tempStrBuilder = StrBuilder.create(
+            equalsAndReplace(tempStrBuilder.toString(), adminPageVO, getAdminPageVO()));
 
         tempStrBuilder = StrBuilder
-                .create(equalsAndReplace(tempStrBuilder.toString(), adminDeleteByIdSetApi, getAdminDeleteByIdSetApi()));
+            .create(equalsAndReplace(tempStrBuilder.toString(), adminDeleteByIdSetApi,
+                getAdminDeleteByIdSetApi()));
 
         tempStrBuilder =
-                StrBuilder.create(equalsAndReplace(tempStrBuilder.toString(), adminController, getAdminController()));
+            StrBuilder.create(
+                equalsAndReplace(tempStrBuilder.toString(), adminController, getAdminController()));
 
         tempStrBuilder =
-                StrBuilder.create(equalsAndReplace(tempStrBuilder.toString(), adminDeleteName, getAdminDeleteName()));
+            StrBuilder.create(
+                equalsAndReplace(tempStrBuilder.toString(), adminDeleteName, getAdminDeleteName()));
 
         tempStrBuilder = StrBuilder
-                .create(equalsAndReplace(tempStrBuilder.toString(), tableJsonStrBuilder.toString(), getAdminTableJson()));
+            .create(equalsAndReplace(tempStrBuilder.toString(), tableJsonStrBuilder.toString(),
+                getAdminTableJson()));
 
         // 设置：回调值
         adminPageVoCallBack.setValue(adminPageVO);
@@ -786,8 +848,9 @@ public class GeneratePageUtil {
     /**
      * ts：导入包
      */
-    public void importClassForTs(StrBuilder tempStrBuilder, Set<String> importClassNameSet, String className,
-                                 String importClassStr) {
+    public void importClassForTs(StrBuilder tempStrBuilder, Set<String> importClassNameSet,
+        String className,
+        String importClassStr) {
 
         if (BooleanUtil.isFalse(importClassNameSet.contains(className))) {
 

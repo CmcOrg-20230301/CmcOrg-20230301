@@ -16,7 +16,7 @@ public class SecurityProperties {
 
     @Schema(description = "jwt 密钥前缀")
     private String jwtSecretPre =
-            "202e5c4e94c60b8e96cc6c8c2471309c11123a39ef996dd5ab3b180ba9a0ddcefe99123edeff516e1d3d264f8dde85eaf6ace1ea236d826fda32080d00f64b47ad0111";
+        "202e5c4e94c60b8e96cc6c8c2471309c11123a39ef996dd5ab3b180ba9a0ddcefe99123edeff516e1d3d264f8dde85eaf6ace1ea236d826fda32080d00f64b47ad0111";
 
     @Schema(description = "是否允许：admin登录")
     private Boolean adminEnable = true;
@@ -37,8 +37,7 @@ public class SecurityProperties {
     }
 
     /**
-     * 生成 admin的密码
-     * 备注：需要和前端一致：先 512，然后再 256
+     * 生成 admin的密码 备注：需要和前端一致：先 512，然后再 256
      */
     private static void generateAdminPassword() {
 
@@ -46,7 +45,8 @@ public class SecurityProperties {
 
         password = DigestUtil.sha256Hex((DigestUtil.sha512Hex(password)));
 
-        System.out.println(password); // 89750f4648ab240704529a1504ac8bbb4c85abd9b88522cef992eee8eb2304b2
+        System.out.println(
+            password); // 89750f4648ab240704529a1504ac8bbb4c85abd9b88522cef992eee8eb2304b2
 
     }
 

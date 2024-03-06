@@ -29,7 +29,8 @@ public class ServerServiceImpl implements ServerService {
 
         serverWorkInfoVO.setJvmTotalMemory(runtimeInfo.getTotalMemory());
         serverWorkInfoVO.setJvmFreeMemory(runtimeInfo.getFreeMemory());
-        serverWorkInfoVO.setJvmUsedMemory(serverWorkInfoVO.getJvmTotalMemory() - serverWorkInfoVO.getJvmFreeMemory());
+        serverWorkInfoVO.setJvmUsedMemory(
+            serverWorkInfoVO.getJvmTotalMemory() - serverWorkInfoVO.getJvmFreeMemory());
 
         // 服务器内存信息
         GlobalMemory memory = OshiUtil.getMemory();

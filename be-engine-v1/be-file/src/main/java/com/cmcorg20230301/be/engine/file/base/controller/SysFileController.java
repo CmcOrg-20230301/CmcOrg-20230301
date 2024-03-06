@@ -12,15 +12,14 @@ import com.cmcorg20230301.be.engine.model.model.vo.LongObjectMapVO;
 import com.cmcorg20230301.be.engine.security.model.vo.ApiResultVO;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletResponse;
+import javax.validation.Valid;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import javax.annotation.Resource;
-import javax.servlet.http.HttpServletResponse;
-import javax.validation.Valid;
 
 @RestController
 @RequestMapping(value = "/sys/file")
@@ -38,7 +37,8 @@ public class SysFileController {
 
     @Operation(summary = "下载文件：私有")
     @PostMapping("/privateDownload")
-    public void privateDownload(@RequestBody @Valid NotNullId notNullId, HttpServletResponse response) {
+    public void privateDownload(@RequestBody @Valid NotNullId notNullId,
+        HttpServletResponse response) {
         baseService.privateDownload(notNullId, response);
     }
 
@@ -50,7 +50,8 @@ public class SysFileController {
 
     @Operation(summary = "批量获取：公开文件的 url")
     @PostMapping("/getPublicUrl")
-    public ApiResultVO<LongObjectMapVO<String>> getPublicUrl(@RequestBody @Valid NotEmptyIdSet notEmptyIdSet) {
+    public ApiResultVO<LongObjectMapVO<String>> getPublicUrl(
+        @RequestBody @Valid NotEmptyIdSet notEmptyIdSet) {
         return ApiResultVO.okData(baseService.getPublicUrl(notEmptyIdSet));
     }
 

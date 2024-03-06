@@ -26,7 +26,13 @@ import com.cmcorg20230301.be.engine.security.model.dto.WebSocketMessageDTO;
 import com.cmcorg20230301.be.engine.security.model.entity.SysRequestDO;
 import com.cmcorg20230301.be.engine.security.model.enums.SysRequestCategoryEnum;
 import com.cmcorg20230301.be.engine.security.model.vo.ApiResultVO;
-import com.cmcorg20230301.be.engine.security.util.*;
+import com.cmcorg20230301.be.engine.security.util.MyEntityUtil;
+import com.cmcorg20230301.be.engine.security.util.MyExceptionUtil;
+import com.cmcorg20230301.be.engine.security.util.MyThreadUtil;
+import com.cmcorg20230301.be.engine.security.util.MyValidUtil;
+import com.cmcorg20230301.be.engine.security.util.RequestUtil;
+import com.cmcorg20230301.be.engine.security.util.TryUtil;
+import com.cmcorg20230301.be.engine.security.util.UserUtil;
 import com.cmcorg20230301.be.engine.socket.model.entity.SysSocketRefUserDO;
 import com.cmcorg20230301.be.engine.socket.service.SysSocketRefUserService;
 import com.cmcorg20230301.be.engine.socket.util.SocketUtil;
@@ -39,17 +45,6 @@ import io.netty.handler.codec.http.FullHttpRequest;
 import io.netty.handler.codec.http.websocketx.TextWebSocketFrame;
 import io.netty.util.AttributeKey;
 import io.netty.util.ReferenceCountUtil;
-import lombok.SneakyThrows;
-import lombok.extern.slf4j.Slf4j;
-import org.jetbrains.annotations.NotNull;
-import org.redisson.api.RedissonClient;
-import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.stereotype.Component;
-
-import javax.annotation.PreDestroy;
-import javax.annotation.Resource;
-import javax.validation.Valid;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
@@ -59,6 +54,16 @@ import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.CopyOnWriteArraySet;
+import javax.annotation.PreDestroy;
+import javax.annotation.Resource;
+import javax.validation.Valid;
+import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
+import org.jetbrains.annotations.NotNull;
+import org.redisson.api.RedissonClient;
+import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.stereotype.Component;
 
 @Component
 @ChannelHandler.Sharable
@@ -78,10 +83,12 @@ public class NettyWebSocketServerHandler extends ChannelInboundHandlerAdapter {
     public static final AttributeKey<Long> USER_ID_KEY = AttributeKey.valueOf("USER_ID_KEY");
 
     // SysSocketRefUserId key
-    public static final AttributeKey<Long> SYS_SOCKET_REF_USER_ID_KEY = AttributeKey.valueOf("SYS_SOCKET_REF_USER_ID_KEY");
+    public static final AttributeKey<Long> SYS_SOCKET_REF_USER_ID_KEY = AttributeKey.valueOf(
+        "SYS_SOCKET_REF_USER_ID_KEY");
 
     // SysRequestCategoryEnum key
-    public static final AttributeKey<SysRequestCategoryEnum> SYS_REQUEST_CATEGORY_ENUM_KEY = AttributeKey.valueOf("SYS_REQUEST_CATEGORY_ENUM_KEY");
+    public static final AttributeKey<SysRequestCategoryEnum> SYS_REQUEST_CATEGORY_ENUM_KEY = AttributeKey.valueOf(
+        "SYS_REQUEST_CATEGORY_ENUM_KEY");
 
     // Ip key
     public static final AttributeKey<String> IP_KEY = AttributeKey.valueOf("IP_KEY");
@@ -90,7 +97,8 @@ public class NettyWebSocketServerHandler extends ChannelInboundHandlerAdapter {
     public static final AttributeKey<Long> TENANT_ID_KEY = AttributeKey.valueOf("TENANT_ID_KEY");
 
     // 最近活跃时间 key
-    public static final AttributeKey<Date> ACTIVITY_TIME_KEY = AttributeKey.valueOf("ACTIVITY_TIME_KEY");
+    public static final AttributeKey<Date> ACTIVITY_TIME_KEY = AttributeKey.valueOf(
+        "ACTIVITY_TIME_KEY");
 
     // 用户通道 map，大key：用户主键 id，小key：sysSocketRefUserId，value：通道
     public static final ConcurrentHashMap<Long, ConcurrentHashMap<Long, Channel>> USER_ID_CHANNEL_MAP = MapUtil.newConcurrentHashMap();
@@ -109,7 +117,8 @@ public class NettyWebSocketServerHandler extends ChannelInboundHandlerAdapter {
         long currentTimeMillis = System.currentTimeMillis();
 
         // 再包一层的原因：防止遍历的时候，被修改了
-        List<ConcurrentHashMap<Long, Channel>> allChannelMapList = new ArrayList<>(USER_ID_CHANNEL_MAP.values());
+        List<ConcurrentHashMap<Long, Channel>> allChannelMapList = new ArrayList<>(
+            USER_ID_CHANNEL_MAP.values());
 
         for (ConcurrentHashMap<Long, Channel> item : allChannelMapList) {
 
@@ -168,9 +177,11 @@ public class NettyWebSocketServerHandler extends ChannelInboundHandlerAdapter {
         // 目的：防止还有程序往：tempList，里面添加数据，所以这里等待一会
         MyThreadUtil.schedule(() -> {
 
-            int sum = USER_ID_CHANNEL_MAP.values().stream().mapToInt(it -> it.values().size()).sum();
+            int sum = USER_ID_CHANNEL_MAP.values().stream().mapToInt(it -> it.values().size())
+                .sum();
 
-            log.info("WebSocket 保存数据，长度：{}，连接总数：{}", tempSysSocketRefUserDOList.size(), sum);
+            log.info("WebSocket 保存数据，长度：{}，连接总数：{}", tempSysSocketRefUserDOList.size(),
+                sum);
 
             // 批量保存数据
             sysSocketRefUserService.saveBatch(tempSysSocketRefUserDOList);
@@ -200,9 +211,11 @@ public class NettyWebSocketServerHandler extends ChannelInboundHandlerAdapter {
         // 目的：防止还有程序往：tempList，里面添加数据，所以这里等待一会
         MyThreadUtil.schedule(() -> {
 
-            int sum = USER_ID_CHANNEL_MAP.values().stream().mapToInt(it -> it.values().size()).sum();
+            int sum = USER_ID_CHANNEL_MAP.values().stream().mapToInt(it -> it.values().size())
+                .sum();
 
-            log.info("WebSocket 移除数据，长度：{}，连接总数：{}", tempSysSocketRefUserIdSet.size(), sum);
+            log.info("WebSocket 移除数据，长度：{}，连接总数：{}", tempSysSocketRefUserIdSet.size(),
+                sum);
 
             // 批量保存数据
             sysSocketRefUserService.removeByIds(tempSysSocketRefUserIdSet);
@@ -237,11 +250,13 @@ public class NettyWebSocketServerHandler extends ChannelInboundHandlerAdapter {
 
             Long sysSocketRefUserId = channel.attr(SYS_SOCKET_REF_USER_ID_KEY).get();
 
-            ConcurrentHashMap<Long, Channel> channelMap = USER_ID_CHANNEL_MAP.computeIfAbsent(userId, k -> MapUtil.newConcurrentHashMap());
+            ConcurrentHashMap<Long, Channel> channelMap = USER_ID_CHANNEL_MAP.computeIfAbsent(
+                userId, k -> MapUtil.newConcurrentHashMap());
 
             channelMap.remove(sysSocketRefUserId);
 
-            log.info("WebSocket 断开，用户：{}，连接数：{}，sysSocketRefUserId：{}", userId, channelMap.size(), sysSocketRefUserId);
+            log.info("WebSocket 断开，用户：{}，连接数：{}，sysSocketRefUserId：{}", userId,
+                channelMap.size(), sysSocketRefUserId);
 
             SYS_SOCKET_REMOVE_REF_USER_ID_SET.add(sysSocketRefUserId);
 
@@ -312,7 +327,8 @@ public class NettyWebSocketServerHandler extends ChannelInboundHandlerAdapter {
     /**
      * 处理：TextWebSocketFrame
      */
-    private void handleTextWebSocketFrame(@NotNull TextWebSocketFrame textWebSocketFrame, Channel channel) {
+    private void handleTextWebSocketFrame(@NotNull TextWebSocketFrame textWebSocketFrame,
+        Channel channel) {
 
         long costMs = System.currentTimeMillis();
 
@@ -322,11 +338,13 @@ public class NettyWebSocketServerHandler extends ChannelInboundHandlerAdapter {
 
         String uri = dto.getUri();
 
-        NettyWebSocketBeanPostProcessor.MappingValue mappingValue = NettyWebSocketBeanPostProcessor.getMappingValueByKey(uri);
+        NettyWebSocketBeanPostProcessor.MappingValue mappingValue = NettyWebSocketBeanPostProcessor.getMappingValueByKey(
+            uri);
 
         if (mappingValue == null) {
 
-            WebSocketMessageDTO<Object> webSocketMessageDTO = WebSocketMessageDTO.errorCode(uri, 404);
+            WebSocketMessageDTO<Object> webSocketMessageDTO = WebSocketMessageDTO.errorCode(uri,
+                404);
 
             WebSocketUtil.send(channel, webSocketMessageDTO, text, costMs, null, "", false);
 
@@ -344,14 +362,17 @@ public class NettyWebSocketServerHandler extends ChannelInboundHandlerAdapter {
         Object[] args = getMethodArgs(method, dto, validVoidFunc0CallBack);
 
         // 执行
-        doHandleTextWebSocketFrame(channel, mappingValue, method, args, uri, text, costMs, validVoidFunc0CallBack);
+        doHandleTextWebSocketFrame(channel, mappingValue, method, args, uri, text, costMs,
+            validVoidFunc0CallBack);
 
     }
 
     /**
      * 执行：处理：TextWebSocketFrame
      */
-    private void doHandleTextWebSocketFrame(Channel channel, NettyWebSocketBeanPostProcessor.MappingValue mappingValue, Method method, Object[] args, String uri, String text, long costMs, CallBack<VoidFunc0> validVoidFunc0CallBack) {
+    private void doHandleTextWebSocketFrame(Channel channel,
+        NettyWebSocketBeanPostProcessor.MappingValue mappingValue, Method method, Object[] args,
+        String uri, String text, long costMs, CallBack<VoidFunc0> validVoidFunc0CallBack) {
 
         Long userId = channel.attr(USER_ID_KEY).get();
 
@@ -373,9 +394,11 @@ public class NettyWebSocketServerHandler extends ChannelInboundHandlerAdapter {
                 Object invoke = ReflectUtil.invokeRaw(mappingValue.getBean(), method, args);
 
                 // 获取：WebSocketMessageDTO对象
-                WebSocketMessageDTO<Object> webSocketMessageDTO = getWebSocketMessageDTO(uri, invoke);
+                WebSocketMessageDTO<Object> webSocketMessageDTO = getWebSocketMessageDTO(uri,
+                    invoke);
 
-                WebSocketUtil.send(channel, webSocketMessageDTO, text, costMs, mappingValue, "", true);
+                WebSocketUtil.send(channel, webSocketMessageDTO, text, costMs, mappingValue, "",
+                    true);
 
             } catch (Throwable e) {
 
@@ -417,7 +440,8 @@ public class NettyWebSocketServerHandler extends ChannelInboundHandlerAdapter {
     /**
      * 获取：方法的参数数组
      */
-    private static Object[] getMethodArgs(Method method, WebSocketMessageDTO<?> dto, CallBack<VoidFunc0> validVoidFunc0CallBack) {
+    private static Object[] getMethodArgs(Method method, WebSocketMessageDTO<?> dto,
+        CallBack<VoidFunc0> validVoidFunc0CallBack) {
 
         Parameter[] parameterArr = method.getParameters();
 
@@ -454,7 +478,8 @@ public class NettyWebSocketServerHandler extends ChannelInboundHandlerAdapter {
     /**
      * 处理：错误
      */
-    private void handleTextWebSocketFrameError(Channel channel, long costMs, String text, String uri, NettyWebSocketBeanPostProcessor.MappingValue mappingValue, Throwable e) {
+    private void handleTextWebSocketFrameError(Channel channel, long costMs, String text,
+        String uri, NettyWebSocketBeanPostProcessor.MappingValue mappingValue, Throwable e) {
 
         if (e instanceof InvocationTargetException) {
 
@@ -481,14 +506,16 @@ public class NettyWebSocketServerHandler extends ChannelInboundHandlerAdapter {
         }
 
         // 发送消息
-        WebSocketUtil.send(channel, webSocketMessageDTO, text, costMs, mappingValue, MyEntityUtil.getNotNullStr(e.getMessage()), false);
+        WebSocketUtil.send(channel, webSocketMessageDTO, text, costMs, mappingValue,
+            MyEntityUtil.getNotNullStr(e.getMessage()), false);
 
     }
 
     /**
      * 处理：FullHttpRequest
      */
-    private void handleFullHttpRequest(@NotNull ChannelHandlerContext ctx, @NotNull FullHttpRequest fullHttpRequest) {
+    private void handleFullHttpRequest(@NotNull ChannelHandlerContext ctx,
+        @NotNull FullHttpRequest fullHttpRequest) {
 
         UrlQuery urlQuery = UrlQuery.of(fullHttpRequest.uri(), CharsetUtil.CHARSET_UTF_8);
 
@@ -504,11 +531,13 @@ public class NettyWebSocketServerHandler extends ChannelInboundHandlerAdapter {
 
         String key = BaseRedisKeyEnum.PRE_WEB_SOCKET_CODE.name() + code;
 
-        SysSocketRefUserDO sysSocketRefUserDO = redissonClient.<SysSocketRefUserDO>getBucket(key).getAndDelete();
+        SysSocketRefUserDO sysSocketRefUserDO = redissonClient.<SysSocketRefUserDO>getBucket(key)
+            .getAndDelete();
 
         if (sysSocketRefUserDO == null) {
 
-            handleFullHttpRequestError(ctx, fullHttpRequest.uri(), "SysSocketRefUserDO为null", fullHttpRequest); // 处理：非法连接
+            handleFullHttpRequestError(ctx, fullHttpRequest.uri(), "SysSocketRefUserDO为null",
+                fullHttpRequest); // 处理：非法连接
 
             return;
 
@@ -516,7 +545,8 @@ public class NettyWebSocketServerHandler extends ChannelInboundHandlerAdapter {
 
         if (!sysSocketRefUserDO.getSocketId().equals(NettyWebSocketServer.sysSocketServerId)) {
 
-            handleFullHttpRequestError(ctx, fullHttpRequest.uri(), "SocketId不相同", fullHttpRequest); // 处理：非法连接
+            handleFullHttpRequestError(ctx, fullHttpRequest.uri(), "SocketId不相同",
+                fullHttpRequest); // 处理：非法连接
 
             return;
 
@@ -533,7 +563,8 @@ public class NettyWebSocketServerHandler extends ChannelInboundHandlerAdapter {
     /**
      * 处理：上线操作
      */
-    private void onlineHandle(Channel channel, SysSocketRefUserDO sysSocketRefUserDO, @NotNull FullHttpRequest fullHttpRequest) {
+    private void onlineHandle(Channel channel, SysSocketRefUserDO sysSocketRefUserDO,
+        @NotNull FullHttpRequest fullHttpRequest) {
 
         SYS_SOCKET_REF_USER_DO_INSERT_LIST.add(sysSocketRefUserDO);
 
@@ -561,18 +592,21 @@ public class NettyWebSocketServerHandler extends ChannelInboundHandlerAdapter {
         // 设置：最近活跃时间
         channel.attr(ACTIVITY_TIME_KEY).set(new Date());
 
-        ConcurrentHashMap<Long, Channel> channelMap = USER_ID_CHANNEL_MAP.computeIfAbsent(userId, k -> MapUtil.newConcurrentHashMap());
+        ConcurrentHashMap<Long, Channel> channelMap = USER_ID_CHANNEL_MAP.computeIfAbsent(userId,
+            k -> MapUtil.newConcurrentHashMap());
 
         channelMap.put(sysSocketRefUserDoId, channel);
 
-        log.info("WebSocket 连接，用户：{}，连接数：{}，sysSocketRefUserDoId：{}", userId, channelMap.size(), sysSocketRefUserDoId);
+        log.info("WebSocket 连接，用户：{}，连接数：{}，sysSocketRefUserDoId：{}", userId,
+            channelMap.size(), sysSocketRefUserDoId);
 
     }
 
     /**
      * 处理：非法连接
      */
-    private void handleFullHttpRequestError(@NotNull ChannelHandlerContext ctx, String requestParam, String errorMsg, @NotNull FullHttpRequest fullHttpRequest) {
+    private void handleFullHttpRequestError(@NotNull ChannelHandlerContext ctx, String requestParam,
+        String errorMsg, @NotNull FullHttpRequest fullHttpRequest) {
 
         ctx.close(); // 关闭连接
 

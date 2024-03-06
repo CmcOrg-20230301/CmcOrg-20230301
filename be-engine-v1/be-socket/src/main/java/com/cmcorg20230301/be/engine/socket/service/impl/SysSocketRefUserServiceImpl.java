@@ -26,8 +26,9 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
-public class SysSocketRefUserServiceImpl extends ServiceImpl<SysSocketRefUserMapper, SysSocketRefUserDO>
-        implements SysSocketRefUserService {
+public class SysSocketRefUserServiceImpl extends
+    ServiceImpl<SysSocketRefUserMapper, SysSocketRefUserDO>
+    implements SysSocketRefUserService {
 
     /**
      * 分页排序查询
@@ -38,19 +39,23 @@ public class SysSocketRefUserServiceImpl extends ServiceImpl<SysSocketRefUserMap
         // 处理：MyTenantPageDTO
         SysTenantUtil.handleMyTenantPageDTO(dto, false);
 
-        return lambdaQuery().eq(dto.getUserId() != null, SysSocketRefUserDO::getUserId, dto.getUserId())
-                .eq(dto.getSocketId() != null, SysSocketRefUserDO::getSocketId, dto.getSocketId())
-                .like(StrUtil.isNotBlank(dto.getScheme()), SysSocketRefUserDO::getScheme, dto.getScheme())
-                .like(StrUtil.isNotBlank(dto.getHost()), SysSocketRefUserDO::getHost, dto.getHost())
-                .eq(dto.getPort() != null, SysSocketRefUserDO::getPort, dto.getPort())
-                .eq(dto.getType() != null, SysSocketRefUserDO::getType, dto.getType())
-                .eq(dto.getId() != null, BaseEntity::getId, dto.getId())
-                .eq(dto.getOnlineType() != null, SysSocketRefUserDO::getOnlineType, dto.getOnlineType())
-                .like(StrUtil.isNotBlank(dto.getIp()), SysSocketRefUserDO::getIp, dto.getIp())
-                .like(StrUtil.isNotBlank(dto.getRegion()), SysSocketRefUserDO::getRegion, dto.getRegion())
-                .like(StrUtil.isNotBlank(dto.getRemark()), SysSocketRefUserDO::getRemark, dto.getRemark())
-                .in(BaseEntityNoId::getTenantId, dto.getTenantIdSet()) //
-                .page(dto.page(true));
+        return lambdaQuery().eq(dto.getUserId() != null, SysSocketRefUserDO::getUserId,
+                dto.getUserId())
+            .eq(dto.getSocketId() != null, SysSocketRefUserDO::getSocketId, dto.getSocketId())
+            .like(StrUtil.isNotBlank(dto.getScheme()), SysSocketRefUserDO::getScheme,
+                dto.getScheme())
+            .like(StrUtil.isNotBlank(dto.getHost()), SysSocketRefUserDO::getHost, dto.getHost())
+            .eq(dto.getPort() != null, SysSocketRefUserDO::getPort, dto.getPort())
+            .eq(dto.getType() != null, SysSocketRefUserDO::getType, dto.getType())
+            .eq(dto.getId() != null, BaseEntity::getId, dto.getId())
+            .eq(dto.getOnlineType() != null, SysSocketRefUserDO::getOnlineType, dto.getOnlineType())
+            .like(StrUtil.isNotBlank(dto.getIp()), SysSocketRefUserDO::getIp, dto.getIp())
+            .like(StrUtil.isNotBlank(dto.getRegion()), SysSocketRefUserDO::getRegion,
+                dto.getRegion())
+            .like(StrUtil.isNotBlank(dto.getRemark()), SysSocketRefUserDO::getRemark,
+                dto.getRemark())
+            .in(BaseEntityNoId::getTenantId, dto.getTenantIdSet()) //
+            .page(dto.page(true));
 
     }
 
@@ -66,18 +71,20 @@ public class SysSocketRefUserServiceImpl extends ServiceImpl<SysSocketRefUserMap
 
         // 检查：是否非法操作
         SysTenantUtil.checkIllegal(notEmptyIdSet.getIdSet(),
-                tenantIdSet -> lambdaQuery().in(BaseEntity::getId, notEmptyIdSet.getIdSet())
-                        .in(BaseEntityNoId::getTenantId, tenantIdSet).count());
+            tenantIdSet -> lambdaQuery().in(BaseEntity::getId, notEmptyIdSet.getIdSet())
+                .in(BaseEntityNoId::getTenantId, tenantIdSet).count());
 
-        List<SysSocketRefUserDO> sysSocketRefUserDOList = lambdaQuery().in(BaseEntity::getId, notEmptyIdSet.getIdSet())
-                .select(SysSocketRefUserDO::getJwtHash, SysSocketRefUserDO::getJwtHashExpireTs).list();
+        List<SysSocketRefUserDO> sysSocketRefUserDOList = lambdaQuery().in(BaseEntity::getId,
+                notEmptyIdSet.getIdSet())
+            .select(SysSocketRefUserDO::getJwtHash, SysSocketRefUserDO::getJwtHashExpireTs).list();
 
         if (CollUtil.isNotEmpty(sysSocketRefUserDOList)) {
 
             for (SysSocketRefUserDO sysSocketRefUserDO : sysSocketRefUserDOList) {
 
                 CacheRedisKafkaLocalUtil
-                        .put(sysSocketRefUserDO.getJwtHash(), sysSocketRefUserDO.getJwtHashExpireTs(), () -> "不可用的 jwt：下线");
+                    .put(sysSocketRefUserDO.getJwtHash(), sysSocketRefUserDO.getJwtHashExpireTs(),
+                        () -> "不可用的 jwt：下线");
 
             }
 
@@ -95,9 +102,11 @@ public class SysSocketRefUserServiceImpl extends ServiceImpl<SysSocketRefUserMap
     @Override
     public String changeConsoleFlagByIdSet(NotEmptyIdSet notEmptyIdSet) {
 
-        List<SysSocketRefUserDO> sysSocketRefUserDOList = lambdaQuery().in(BaseEntity::getId, notEmptyIdSet.getIdSet()).select(SysSocketRefUserDO::getUserId).list();
+        List<SysSocketRefUserDO> sysSocketRefUserDOList = lambdaQuery().in(BaseEntity::getId,
+            notEmptyIdSet.getIdSet()).select(SysSocketRefUserDO::getUserId).list();
 
-        Set<Long> userIdSet = sysSocketRefUserDOList.stream().map(SysSocketRefUserDO::getUserId).collect(Collectors.toSet());
+        Set<Long> userIdSet = sysSocketRefUserDOList.stream().map(SysSocketRefUserDO::getUserId)
+            .collect(Collectors.toSet());
 
         if (CollUtil.isEmpty(userIdSet)) {
             return BaseBizCodeEnum.OK;
@@ -109,7 +118,8 @@ public class SysSocketRefUserServiceImpl extends ServiceImpl<SysSocketRefUserMap
 
         sysWebSocketEventBO.setSysSocketRefUserIdSet(notEmptyIdSet.getIdSet());
 
-        WebSocketMessageDTO<NotNullIdAndNotEmptyLongSet> webSocketMessageDTO = WebSocketMessageDTO.okData(BaseWebSocketUriEnum.SYS_SOCKET_REF_USER_CHANGE_CONSOLE_FLAG_BY_ID_SET, null);
+        WebSocketMessageDTO<NotNullIdAndNotEmptyLongSet> webSocketMessageDTO = WebSocketMessageDTO.okData(
+            BaseWebSocketUriEnum.SYS_SOCKET_REF_USER_CHANGE_CONSOLE_FLAG_BY_ID_SET, null);
 
         sysWebSocketEventBO.setWebSocketMessageDTO(webSocketMessageDTO);
 

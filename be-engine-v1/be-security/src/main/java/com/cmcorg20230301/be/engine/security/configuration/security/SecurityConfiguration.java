@@ -5,6 +5,13 @@ import cn.hutool.core.util.ArrayUtil;
 import com.cmcorg20230301.be.engine.model.model.configuration.ISecurityPermitConfiguration;
 import com.cmcorg20230301.be.engine.security.configuration.base.BaseConfiguration;
 import com.cmcorg20230301.be.engine.security.filter.JwtAuthorizationFilter;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+import javax.servlet.http.HttpServletRequest;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.aopalliance.intercept.MethodInterceptor;
@@ -20,10 +27,6 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
-
-import javax.servlet.http.HttpServletRequest;
-import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
 
 @EnableGlobalMethodSecurity(prePostEnabled = true) // 开启 @PreAuthorize 权限注解
 @EnableWebSecurity
@@ -77,14 +80,16 @@ public class SecurityConfiguration {
     /**
      * @param methodSecurityInterceptor 注意：这个名字不要改
      */
-    public SecurityConfiguration(@Autowired(required = false) @Nullable MethodInterceptor methodSecurityInterceptor) {
+    public SecurityConfiguration(
+        @Autowired(required = false) @Nullable MethodInterceptor methodSecurityInterceptor) {
 
         if (methodSecurityInterceptor instanceof MethodSecurityInterceptor) {
 
             AffirmativeBased accessDecisionManager =
-                    (AffirmativeBased) ((MethodSecurityInterceptor) methodSecurityInterceptor).getAccessDecisionManager();
+                (AffirmativeBased) ((MethodSecurityInterceptor) methodSecurityInterceptor).getAccessDecisionManager();
 
-            accessDecisionManager.getDecisionVoters().add(0, new MyAccessDecisionVoter()); // 添加：自定义投票者
+            accessDecisionManager.getDecisionVoters()
+                .add(0, new MyAccessDecisionVoter()); // 添加：自定义投票者
 
         }
 
@@ -95,8 +100,10 @@ public class SecurityConfiguration {
      */
     @SneakyThrows
     @Bean
-    SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity, BaseConfiguration baseConfiguration,
-                                            List<ISecurityPermitConfiguration> iSecurityPermitConfigurationList, JwtAuthorizationFilter jwtAuthorizationFilter) {
+    SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity,
+        BaseConfiguration baseConfiguration,
+        List<ISecurityPermitConfiguration> iSecurityPermitConfigurationList,
+        JwtAuthorizationFilter jwtAuthorizationFilter) {
 
         boolean prodFlag = BaseConfiguration.prodFlag();
 
@@ -124,7 +131,8 @@ public class SecurityConfiguration {
 
         log.info("permitAllSet：{}", permitAllSet);
 
-        if (CollUtil.isNotEmpty(permitAllSet) && CollUtil.isEmpty(PERMIT_ALL_ANT_PATH_REQUEST_MATCHER_LIST)) {
+        if (CollUtil.isNotEmpty(permitAllSet) && CollUtil.isEmpty(
+            PERMIT_ALL_ANT_PATH_REQUEST_MATCHER_LIST)) {
 
             for (String item : permitAllSet) {
 
@@ -135,13 +143,14 @@ public class SecurityConfiguration {
         }
 
         httpSecurity.authorizeRequests().antMatchers(ArrayUtil.toArray(permitAllSet, String.class))
-                .permitAll() // 可以匿名访问的请求
-                .anyRequest().authenticated(); // 拦截所有请求
+            .permitAll() // 可以匿名访问的请求
+            .anyRequest().authenticated(); // 拦截所有请求
 
         httpSecurity.addFilterBefore(jwtAuthorizationFilter,
-                UsernamePasswordAuthenticationFilter.class);
+            UsernamePasswordAuthenticationFilter.class);
 
-        httpSecurity.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS); // 不需要session
+        httpSecurity.sessionManagement()
+            .sessionCreationPolicy(SessionCreationPolicy.STATELESS); // 不需要session
 
         // 用户没有登录，但是访问需要权限的资源时，而报出的错误
         httpSecurity.exceptionHandling().authenticationEntryPoint(new MyAuthenticationEntryPoint());

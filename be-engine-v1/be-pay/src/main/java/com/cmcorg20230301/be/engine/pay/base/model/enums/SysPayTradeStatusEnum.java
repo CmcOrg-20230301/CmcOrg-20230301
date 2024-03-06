@@ -3,12 +3,11 @@ package com.cmcorg20230301.be.engine.pay.base.model.enums;
 import cn.hutool.core.collection.CollUtil;
 import com.baomidou.mybatisplus.annotation.EnumValue;
 import com.fasterxml.jackson.annotation.JsonValue;
+import java.util.HashSet;
+import java.util.Set;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
-
-import java.util.HashSet;
-import java.util.Set;
 
 /**
  * 交易状态枚举类
@@ -25,7 +24,8 @@ public enum SysPayTradeStatusEnum {
 
     WAIT_BUYER_CONSUME(201, CollUtil.newHashSet("WAIT_BUYER_CONSUME")), // 支付完成，等待核销，例如：谷歌支付
 
-    TRADE_CLOSED(301, CollUtil.newHashSet("TRADE_CLOSED", "REFUND", "CLOSED")), // 未付款交易超时关闭，或支付完成后全额退款
+    TRADE_CLOSED(301,
+        CollUtil.newHashSet("TRADE_CLOSED", "REFUND", "CLOSED")), // 未付款交易超时关闭，或支付完成后全额退款
 
     TRADE_SUCCESS(401, CollUtil.newHashSet("TRADE_SUCCESS", "SUCCESS")), // 交易支付成功
 

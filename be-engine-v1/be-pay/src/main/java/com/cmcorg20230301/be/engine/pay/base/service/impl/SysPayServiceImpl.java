@@ -10,12 +10,12 @@ import com.cmcorg20230301.be.engine.pay.base.util.PayUtil;
 import com.cmcorg20230301.be.engine.security.model.entity.BaseEntityNoId;
 import com.cmcorg20230301.be.engine.security.util.SysTenantUtil;
 import com.cmcorg20230301.be.engine.security.util.UserUtil;
+import java.util.Set;
 import org.springframework.stereotype.Service;
 
-import java.util.Set;
-
 @Service
-public class SysPayServiceImpl extends ServiceImpl<SysPayMapper, SysPayDO> implements SysPayService {
+public class SysPayServiceImpl extends ServiceImpl<SysPayMapper, SysPayDO> implements
+    SysPayService {
 
     /**
      * 通过主键id，查看支付状态-本平台
@@ -31,15 +31,17 @@ public class SysPayServiceImpl extends ServiceImpl<SysPayMapper, SysPayDO> imple
         if (!UserUtil.getCurrentTenantTopFlag(currentTenantIdDefault)) {
 
             // 添加：父级的租户主键 id
-            Long parentTenantId = SysTenantUtil.getSysTenantDO(currentTenantIdDefault).getParentId();
+            Long parentTenantId = SysTenantUtil.getSysTenantDO(currentTenantIdDefault)
+                .getParentId();
 
             queryTenantIdSet.add(parentTenantId);
 
         }
 
         SysPayDO sysPayDO =
-                lambdaQuery().eq(SysPayDO::getId, notNullId.getId()).in(BaseEntityNoId::getTenantId, queryTenantIdSet)
-                        .select(SysPayDO::getStatus).one();
+            lambdaQuery().eq(SysPayDO::getId, notNullId.getId())
+                .in(BaseEntityNoId::getTenantId, queryTenantIdSet)
+                .select(SysPayDO::getStatus).one();
 
         if (sysPayDO == null) {
             return null;

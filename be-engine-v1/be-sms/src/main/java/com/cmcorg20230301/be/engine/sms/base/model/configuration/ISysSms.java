@@ -80,7 +80,8 @@ public interface ISysSms {
      */
     default void sendUpdateSignInName(SysSmsSendBO sysSmsSendBO) {
 
-        sysSmsSendBO.setTemplateId(sysSmsSendBO.getSysSmsConfigurationDO().getSendUpdateSignInName());
+        sysSmsSendBO.setTemplateId(
+            sysSmsSendBO.getSysSmsConfigurationDO().getSendUpdateSignInName());
 
         sendForCode(sysSmsSendBO);
 

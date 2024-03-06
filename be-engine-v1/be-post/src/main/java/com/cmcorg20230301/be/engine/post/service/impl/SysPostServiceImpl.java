@@ -20,23 +20,28 @@ import com.cmcorg20230301.be.engine.post.service.SysPostService;
 import com.cmcorg20230301.be.engine.security.exception.BaseBizCodeEnum;
 import com.cmcorg20230301.be.engine.security.mapper.SysPostMapper;
 import com.cmcorg20230301.be.engine.security.mapper.SysUserMapper;
-import com.cmcorg20230301.be.engine.security.model.entity.*;
+import com.cmcorg20230301.be.engine.security.model.entity.BaseEntity;
+import com.cmcorg20230301.be.engine.security.model.entity.BaseEntityNoId;
+import com.cmcorg20230301.be.engine.security.model.entity.BaseEntityNoIdSuper;
+import com.cmcorg20230301.be.engine.security.model.entity.BaseEntityTree;
+import com.cmcorg20230301.be.engine.security.model.entity.SysPostDO;
+import com.cmcorg20230301.be.engine.security.model.entity.SysPostRefUserDO;
 import com.cmcorg20230301.be.engine.security.model.vo.ApiResultVO;
 import com.cmcorg20230301.be.engine.security.util.MyEntityUtil;
 import com.cmcorg20230301.be.engine.security.util.MyTreeUtil;
 import com.cmcorg20230301.be.engine.security.util.SysTenantUtil;
 import com.cmcorg20230301.be.engine.util.util.MyMapUtil;
-import org.jetbrains.annotations.NotNull;
-import org.springframework.stereotype.Service;
-
-import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
+import javax.annotation.Resource;
+import org.jetbrains.annotations.NotNull;
+import org.springframework.stereotype.Service;
 
 @Service
-public class SysPostServiceImpl extends ServiceImpl<SysPostMapper, SysPostDO> implements SysPostService {
+public class SysPostServiceImpl extends ServiceImpl<SysPostMapper, SysPostDO> implements
+    SysPostService {
 
     @Resource
     SysPostRefUserService sysPostRefUserService;
@@ -52,8 +57,9 @@ public class SysPostServiceImpl extends ServiceImpl<SysPostMapper, SysPostDO> im
     public String insertOrUpdate(SysPostInsertOrUpdateDTO dto) {
 
         // 处理：BaseTenantInsertOrUpdateDTO
-        SysTenantUtil.handleBaseTenantInsertOrUpdateDTO(dto, getCheckIllegalFunc1(CollUtil.newHashSet(dto.getId())),
-                getTenantIdBaseEntityFunc1());
+        SysTenantUtil.handleBaseTenantInsertOrUpdateDTO(dto,
+            getCheckIllegalFunc1(CollUtil.newHashSet(dto.getId())),
+            getTenantIdBaseEntityFunc1());
 
         if (dto.getId() != null && dto.getId().equals(dto.getParentId())) {
             ApiResultVO.error(BaseBizCodeEnum.PARENT_ID_CANNOT_BE_EQUAL_TO_ID);
@@ -61,9 +67,10 @@ public class SysPostServiceImpl extends ServiceImpl<SysPostMapper, SysPostDO> im
 
         // 相同父节点下：岗位名（不能重复）
         boolean exists = lambdaQuery().eq(SysPostDO::getName, dto.getName())
-                .eq(BaseEntityTree::getParentId, MyEntityUtil.getNotNullParentId(dto.getParentId()))
-                .ne(dto.getId() != null, BaseEntity::getId, dto.getId()).eq(BaseEntityNoId::getTenantId, dto.getTenantId())
-                .exists();
+            .eq(BaseEntityTree::getParentId, MyEntityUtil.getNotNullParentId(dto.getParentId()))
+            .ne(dto.getId() != null, BaseEntity::getId, dto.getId())
+            .eq(BaseEntityNoId::getTenantId, dto.getTenantId())
+            .exists();
 
         if (exists) {
             ApiResultVO.errorMsg("操作失败：相同父节点下，岗位名不能重复");
@@ -100,15 +107,16 @@ public class SysPostServiceImpl extends ServiceImpl<SysPostMapper, SysPostDO> im
         if (CollUtil.isNotEmpty(dto.getUserIdSet())) {
 
             // 检查：用户 idSet，是否合法
-            Long count = ChainWrappers.lambdaQueryChain(sysUserMapper).in(BaseEntity::getId, dto.getUserIdSet())
-                    .eq(BaseEntityNoIdSuper::getTenantId, dto.getTenantId()).count();
+            Long count = ChainWrappers.lambdaQueryChain(sysUserMapper)
+                .in(BaseEntity::getId, dto.getUserIdSet())
+                .eq(BaseEntityNoIdSuper::getTenantId, dto.getTenantId()).count();
 
             if (count != dto.getUserIdSet().size()) {
                 ApiResultVO.errorMsg("操作失败：关联的用户数据非法");
             }
 
             List<SysPostRefUserDO> insertList =
-                    new ArrayList<>(MyMapUtil.getInitialCapacity(dto.getUserIdSet().size()));
+                new ArrayList<>(MyMapUtil.getInitialCapacity(dto.getUserIdSet().size()));
 
             for (Long item : dto.getUserIdSet()) {
 
@@ -136,11 +144,13 @@ public class SysPostServiceImpl extends ServiceImpl<SysPostMapper, SysPostDO> im
         // 处理：MyTenantPageDTO
         SysTenantUtil.handleMyTenantPageDTO(dto, true);
 
-        return lambdaQuery().like(StrUtil.isNotBlank(dto.getName()), SysPostDO::getName, dto.getName())
-                .like(StrUtil.isNotBlank(dto.getRemark()), BaseEntityTree::getRemark, dto.getRemark())
-                .eq(dto.getEnableFlag() != null, BaseEntityTree::getEnableFlag, dto.getEnableFlag())
-                .in(BaseEntityNoId::getTenantId, dto.getTenantIdSet()) //
-                .eq(BaseEntityTree::getDelFlag, false).orderByDesc(BaseEntityTree::getOrderNo).page(dto.page(true));
+        return lambdaQuery().like(StrUtil.isNotBlank(dto.getName()), SysPostDO::getName,
+                dto.getName())
+            .like(StrUtil.isNotBlank(dto.getRemark()), BaseEntityTree::getRemark, dto.getRemark())
+            .eq(dto.getEnableFlag() != null, BaseEntityTree::getEnableFlag, dto.getEnableFlag())
+            .in(BaseEntityNoId::getTenantId, dto.getTenantIdSet()) //
+            .eq(BaseEntityTree::getDelFlag, false).orderByDesc(BaseEntityTree::getOrderNo)
+            .page(dto.page(true));
 
     }
 
@@ -158,7 +168,8 @@ public class SysPostServiceImpl extends ServiceImpl<SysPostMapper, SysPostDO> im
             return new ArrayList<>();
         }
 
-        List<SysPostDO> allList = lambdaQuery().in(BaseEntityNoId::getTenantId, dto.getTenantIdSet()).list();
+        List<SysPostDO> allList = lambdaQuery().in(BaseEntityNoId::getTenantId,
+            dto.getTenantIdSet()).list();
 
         if (allList.size() == 0) {
             return new ArrayList<>();
@@ -178,22 +189,25 @@ public class SysPostServiceImpl extends ServiceImpl<SysPostMapper, SysPostDO> im
         Set<Long> queryTenantIdSet = SysTenantUtil.getUserRefTenantIdSet();
 
         SysPostDO sysPostDO =
-                lambdaQuery().eq(BaseEntity::getId, notNullId.getId()).in(BaseEntityNoId::getTenantId, queryTenantIdSet)
-                        .one();
+            lambdaQuery().eq(BaseEntity::getId, notNullId.getId())
+                .in(BaseEntityNoId::getTenantId, queryTenantIdSet)
+                .one();
 
         if (sysPostDO == null) {
             return null;
         }
 
-        SysPostInfoByIdVO sysPostInfoByIdVO = BeanUtil.copyProperties(sysPostDO, SysPostInfoByIdVO.class);
+        SysPostInfoByIdVO sysPostInfoByIdVO = BeanUtil.copyProperties(sysPostDO,
+            SysPostInfoByIdVO.class);
 
         // 获取：绑定的用户 idSet
         List<SysPostRefUserDO> sysPostRefUserDOList =
-                sysPostRefUserService.lambdaQuery().eq(SysPostRefUserDO::getPostId, notNullId.getId())
-                        .select(SysPostRefUserDO::getUserId).list();
+            sysPostRefUserService.lambdaQuery().eq(SysPostRefUserDO::getPostId, notNullId.getId())
+                .select(SysPostRefUserDO::getUserId).list();
 
         Set<Long> userIdSet =
-                sysPostRefUserDOList.stream().map(SysPostRefUserDO::getUserId).collect(Collectors.toSet());
+            sysPostRefUserDOList.stream().map(SysPostRefUserDO::getUserId)
+                .collect(Collectors.toSet());
 
         sysPostInfoByIdVO.setUserIdSet(userIdSet);
 
@@ -263,8 +277,9 @@ public class SysPostServiceImpl extends ServiceImpl<SysPostMapper, SysPostDO> im
         }
 
         List<SysPostDO> sysPostDOList =
-                lambdaQuery().in(BaseEntity::getId, dto.getIdSet()).select(BaseEntity::getId, BaseEntityTree::getOrderNo)
-                        .list();
+            lambdaQuery().in(BaseEntity::getId, dto.getIdSet())
+                .select(BaseEntity::getId, BaseEntityTree::getOrderNo)
+                .list();
 
         for (SysPostDO item : sysPostDOList) {
             item.setOrderNo((int) (item.getOrderNo() + dto.getNumber()));
@@ -282,8 +297,9 @@ public class SysPostServiceImpl extends ServiceImpl<SysPostMapper, SysPostDO> im
     @NotNull
     private Func1<Set<Long>, Long> getCheckIllegalFunc1(Set<Long> idSet) {
 
-        return tenantIdSet -> lambdaQuery().in(BaseEntity::getId, idSet).in(BaseEntityNoId::getTenantId, tenantIdSet)
-                .count();
+        return tenantIdSet -> lambdaQuery().in(BaseEntity::getId, idSet)
+            .in(BaseEntityNoId::getTenantId, tenantIdSet)
+            .count();
 
     }
 

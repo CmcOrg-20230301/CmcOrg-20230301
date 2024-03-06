@@ -4,7 +4,8 @@ import com.cmcorg20230301.be.engine.sign.helper.configuration.AbstractSignHelper
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-public class SignPhoneSecurityPermitConfiguration extends AbstractSignHelperSecurityPermitConfiguration {
+public class SignPhoneSecurityPermitConfiguration extends
+    AbstractSignHelperSecurityPermitConfiguration {
 
     @Override
     protected String getSignPreUri() {

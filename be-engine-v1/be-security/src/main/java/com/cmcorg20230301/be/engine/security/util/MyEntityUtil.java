@@ -5,11 +5,10 @@ import cn.hutool.core.util.ClassUtil;
 import cn.hutool.core.util.StrUtil;
 import com.cmcorg20230301.be.engine.model.model.constant.BaseConstant;
 import com.cmcorg20230301.be.engine.security.model.entity.BaseEntityTree;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
 import java.math.BigDecimal;
 import java.util.Map;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class MyEntityUtil {
 
@@ -58,7 +57,8 @@ public class MyEntityUtil {
      */
     public static void handleParentId(BaseEntityTree<?> baseEntityTree) {
 
-        if (baseEntityTree != null && BaseConstant.TOP_PARENT_ID.equals(baseEntityTree.getParentId())) {
+        if (baseEntityTree != null && BaseConstant.TOP_PARENT_ID.equals(
+            baseEntityTree.getParentId())) {
             baseEntityTree.setParentId(null);
         }
 
@@ -76,7 +76,8 @@ public class MyEntityUtil {
      * 获取不为 null对象的 BigDecimal，如果为空，则返回默认值
      */
     @NotNull
-    public static BigDecimal getNotNullBigDecimal(BigDecimal bigDecimal, BigDecimal defaultBigDecimal) {
+    public static BigDecimal getNotNullBigDecimal(BigDecimal bigDecimal,
+        BigDecimal defaultBigDecimal) {
         return bigDecimal == null ? defaultBigDecimal : bigDecimal;
     }
 

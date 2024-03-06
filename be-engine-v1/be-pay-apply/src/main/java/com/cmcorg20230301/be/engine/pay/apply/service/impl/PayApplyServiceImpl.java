@@ -14,15 +14,14 @@ import com.cmcorg20230301.be.engine.pay.base.model.entity.SysPayDO;
 import com.cmcorg20230301.be.engine.pay.base.model.enums.SysPayTradeStatusEnum;
 import com.cmcorg20230301.be.engine.pay.base.service.SysPayService;
 import com.cmcorg20230301.be.engine.pay.base.util.PayUtil;
-import lombok.SneakyThrows;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Service;
-
-import javax.annotation.Resource;
 import java.io.ByteArrayInputStream;
 import java.security.PublicKey;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
+import javax.annotation.Resource;
+import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
 
 @Service
 @Slf4j(topic = LogTopicConstant.PAY_APPLY)
@@ -47,7 +46,8 @@ public class PayApplyServiceImpl implements PayApplyService {
 
         JSONObject signedPayloadJson = getPayloads(signedPayloadStr);
 
-        String signedTransactionInfoStr = signedPayloadJson.getJSONObject("data").getStr("signedTransactionInfo");
+        String signedTransactionInfoStr = signedPayloadJson.getJSONObject("data")
+            .getStr("signedTransactionInfo");
 
         JSONObject signedTransactionInfoJson = getPayloads(signedTransactionInfoStr);
 
@@ -75,7 +75,8 @@ public class PayApplyServiceImpl implements PayApplyService {
         }
 
         SysPayDO sysPayDO =
-                sysPayService.lambdaQuery().eq(SysPayDO::getId, outTradeNo).select(SysPayDO::getOriginalPrice).one();
+            sysPayService.lambdaQuery().eq(SysPayDO::getId, outTradeNo)
+                .select(SysPayDO::getOriginalPrice).one();
 
         if (sysPayDO == null) {
 
@@ -86,7 +87,8 @@ public class PayApplyServiceImpl implements PayApplyService {
 
         SysPayTradeNotifyBO sysPayTradeNotifyBO = new SysPayTradeNotifyBO();
 
-        sysPayTradeNotifyBO.setTradeStatus(CollUtil.getFirst(SysPayTradeStatusEnum.TRADE_SUCCESS.getStatusSet()));
+        sysPayTradeNotifyBO.setTradeStatus(
+            CollUtil.getFirst(SysPayTradeStatusEnum.TRADE_SUCCESS.getStatusSet()));
         sysPayTradeNotifyBO.setOutTradeNo(outTradeNo);
         sysPayTradeNotifyBO.setTradeNo(BaseConstant.NEGATIVE_ONE_STR);
         sysPayTradeNotifyBO.setTotalAmount(sysPayDO.getOriginalPrice().toPlainString());
@@ -112,7 +114,8 @@ public class PayApplyServiceImpl implements PayApplyService {
 
         CertificateFactory fact = CertificateFactory.getInstance("X.509");
 
-        X509Certificate cer = (X509Certificate) fact.generateCertificate(new ByteArrayInputStream(x5c0Bytes));
+        X509Certificate cer = (X509Certificate) fact.generateCertificate(
+            new ByteArrayInputStream(x5c0Bytes));
 
         PublicKey publicKey = cer.getPublicKey();
 

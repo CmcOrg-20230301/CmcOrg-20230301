@@ -1,11 +1,16 @@
 package com.cmcorg20230301.be.engine.datasource.annotation;
 
+import java.lang.annotation.Documented;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Inherited;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.lang.annotation.*;
-
 /**
- * 这个 {@link com.baomidou.dynamic.datasource.annotation.DSTransactional} 注解的含义是：多数据源事务，既：多个事务循环提交，或者多个事务同时回滚
+ * 这个 {@link com.baomidou.dynamic.datasource.annotation.DSTransactional}
+ * 注解的含义是：多数据源事务，既：多个事务循环提交，或者多个事务同时回滚
  * <p>
  * <p>
  * 建议：全部使用：@DSTransactional 注解，避免不必要的麻烦
@@ -23,7 +28,8 @@ import java.lang.annotation.*;
  * 备注：@DS，在一个方法调用另外一个方法的时候，也不会生效，因为不会进入 aop
  * <p>
  * <p>
- * 备注：但是可以手动切换数据源：DynamicDataSourceContextHolder.push("slave"); 但是使用完毕之后，要 DynamicDataSourceContextHolder.clear()，不然该线程还会有这个数据源
+ * 备注：但是可以手动切换数据源：DynamicDataSourceContextHolder.push("slave"); 但是使用完毕之后，要
+ * DynamicDataSourceContextHolder.clear()，不然该线程还会有这个数据源
  */
 @Target({ElementType.TYPE, ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)
@@ -31,4 +37,5 @@ import java.lang.annotation.*;
 @Documented
 @Transactional(rollbackFor = Exception.class)
 public @interface MyTransactional {
+
 }

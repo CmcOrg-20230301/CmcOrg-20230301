@@ -96,9 +96,11 @@ public class SocketUtil {
      *
      * @param disableFlag 是否是禁用，即：不删除数据库里面的数据
      */
-    public static void closeSocket(ChannelFuture channelFuture, EventLoopGroup parentGroup, EventLoopGroup childGroup,
-                                   Long sysSocketServerId, ConcurrentHashMap<Long, ConcurrentHashMap<Long, Channel>> userIdChannelMap, String name,
-                                   boolean disableFlag) {
+    public static void closeSocket(ChannelFuture channelFuture, EventLoopGroup parentGroup,
+        EventLoopGroup childGroup,
+        Long sysSocketServerId,
+        ConcurrentHashMap<Long, ConcurrentHashMap<Long, Channel>> userIdChannelMap, String name,
+        boolean disableFlag) {
 
         long closeChannelCount = 0;
 
@@ -130,7 +132,8 @@ public class SocketUtil {
 
         }
 
-        log.info("{} 下线{}：{}，移除连接：{}", name, removeFlag ? "成功" : "失败", sysSocketServerId, closeChannelCount);
+        log.info("{} 下线{}：{}，移除连接：{}", name, removeFlag ? "成功" : "失败", sysSocketServerId,
+            closeChannelCount);
 
         if (channelFuture != null) {
 
@@ -155,8 +158,9 @@ public class SocketUtil {
     /**
      * 获取：sysSocketServerId
      */
-    public static Long getSysSocketServerId(int port, SysSocketBaseProperties sysSocketBaseProperties,
-                                            SysSocketTypeEnum sysSocketTypeEnum) {
+    public static Long getSysSocketServerId(int port,
+        SysSocketBaseProperties sysSocketBaseProperties,
+        SysSocketTypeEnum sysSocketTypeEnum) {
 
         SysSocketDO sysSocketDO = new SysSocketDO();
 
@@ -174,14 +178,17 @@ public class SocketUtil {
 
         // 移除：mac地址，port，相同的 socket数据
         List<SysSocketDO> sysSocketDOList =
-                sysSocketService.lambdaQuery().eq(SysSocketDO::getMacAddress, sysSocketDO.getMacAddress())
-                        .eq(SysSocketDO::getPort, sysSocketDO.getPort()).select(BaseEntity::getId).list();
+            sysSocketService.lambdaQuery()
+                .eq(SysSocketDO::getMacAddress, sysSocketDO.getMacAddress())
+                .eq(SysSocketDO::getPort, sysSocketDO.getPort()).select(BaseEntity::getId).list();
 
         if (CollUtil.isNotEmpty(sysSocketDOList)) {
 
-            Set<Long> socketIdSet = sysSocketDOList.stream().map(BaseEntity::getId).collect(Collectors.toSet());
+            Set<Long> socketIdSet = sysSocketDOList.stream().map(BaseEntity::getId)
+                .collect(Collectors.toSet());
 
-            sysSocketRefUserService.lambdaUpdate().in(SysSocketRefUserDO::getSocketId, socketIdSet).remove();
+            sysSocketRefUserService.lambdaUpdate().in(SysSocketRefUserDO::getSocketId, socketIdSet)
+                .remove();
 
             sysSocketService.removeBatchByIds(socketIdSet);
 

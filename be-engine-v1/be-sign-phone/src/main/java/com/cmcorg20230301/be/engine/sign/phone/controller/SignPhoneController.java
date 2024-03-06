@@ -41,7 +41,8 @@ public class SignPhoneController {
 
     @PostMapping(value = "/sign/in/password")
     @Operation(summary = "手机：账号密码登录", description = OperationDescriptionConstant.SIGN_IN)
-    public ApiResultVO<SignInVO> signInPassword(@RequestBody @Valid SignPhoneSignInPasswordDTO dto) {
+    public ApiResultVO<SignInVO> signInPassword(
+        @RequestBody @Valid SignPhoneSignInPasswordDTO dto) {
         return ApiResultVO.okData(baseService.signInPassword(dto));
     }
 
@@ -83,7 +84,8 @@ public class SignPhoneController {
 
     @PostMapping(value = "/setSignInName/sendCode")
     @Operation(summary = "设置登录名-发送验证码")
-    public ApiResultVO<String> setSignInNameSendCode(@RequestBody @Valid SignPhoneSetSignInNameSendCodeDTO dto) {
+    public ApiResultVO<String> setSignInNameSendCode(
+        @RequestBody @Valid SignPhoneSetSignInNameSendCodeDTO dto) {
         return ApiResultVO.okMsg(baseService.setSignInNameSendCode(dto));
     }
 
@@ -95,25 +97,29 @@ public class SignPhoneController {
 
     @PostMapping(value = "/updateSignInName/sendCode")
     @Operation(summary = "修改登录名-发送验证码")
-    public ApiResultVO<String> updateSignInNameSendCode(@RequestBody @Valid SignPhoneUpdateSignInNameSendCodeDTO dto) {
+    public ApiResultVO<String> updateSignInNameSendCode(
+        @RequestBody @Valid SignPhoneUpdateSignInNameSendCodeDTO dto) {
         return ApiResultVO.okMsg(baseService.updateSignInNameSendCode(dto));
     }
 
     @PostMapping(value = "/updateSignInName")
     @Operation(summary = "修改登录名")
-    public ApiResultVO<String> updateSignInName(@RequestBody @Valid SignPhoneUpdateSignInNameDTO dto) {
+    public ApiResultVO<String> updateSignInName(
+        @RequestBody @Valid SignPhoneUpdateSignInNameDTO dto) {
         return ApiResultVO.okMsg(baseService.updateSignInName(dto));
     }
 
     @PostMapping(value = "/setEmail/sendCode/phone")
     @Operation(summary = "设置邮箱-发送手机验证码")
-    public ApiResultVO<String> setEmailSendCodePhone(@RequestBody @Valid SignPhoneSetEmailSendCodePhoneDTO dto) {
+    public ApiResultVO<String> setEmailSendCodePhone(
+        @RequestBody @Valid SignPhoneSetEmailSendCodePhoneDTO dto) {
         return ApiResultVO.okMsg(baseService.setEmailSendCodePhone(dto));
     }
 
     @PostMapping(value = "/setEmail/sendCode/email")
     @Operation(summary = "设置邮箱-发送邮箱验证码")
-    public ApiResultVO<String> setEmailSendCodeEmail(@RequestBody @Valid SignPhoneSetEmailSendCodeEmailDTO dto) {
+    public ApiResultVO<String> setEmailSendCodeEmail(
+        @RequestBody @Valid SignPhoneSetEmailSendCodeEmailDTO dto) {
         return ApiResultVO.okMsg(baseService.setEmailSendCodeEmail(dto));
     }
 
@@ -125,13 +131,15 @@ public class SignPhoneController {
 
     @PostMapping(value = "/updateEmail/sendCode/phone")
     @Operation(summary = "修改邮箱-发送手机验证码")
-    public ApiResultVO<String> updateEmailSendCodePhone(@RequestBody @Valid SignPhoneUpdateEmailSendCodePhoneDTO dto) {
+    public ApiResultVO<String> updateEmailSendCodePhone(
+        @RequestBody @Valid SignPhoneUpdateEmailSendCodePhoneDTO dto) {
         return ApiResultVO.okMsg(baseService.updateEmailSendCodePhone(dto));
     }
 
     @PostMapping(value = "/updateEmail/sendCode/email")
     @Operation(summary = "修改邮箱-发送邮箱验证码")
-    public ApiResultVO<String> updateEmailSendCodeEmail(@RequestBody @Valid SignPhoneUpdateEmailSendCodeEmailDTO dto) {
+    public ApiResultVO<String> updateEmailSendCodeEmail(
+        @RequestBody @Valid SignPhoneUpdateEmailSendCodeEmailDTO dto) {
         return ApiResultVO.okMsg(baseService.updateEmailSendCodeEmail(dto));
     }
 
@@ -155,7 +163,8 @@ public class SignPhoneController {
 
     @PostMapping(value = "/setWx/getQrCodeSceneFlag")
     @Operation(summary = "设置微信：获取二维码是否已经被扫描")
-    public ApiResultVO<SysQrCodeSceneBindVO> setWxGetQrCodeSceneFlag(@RequestBody @Valid NotNullId notNullId) {
+    public ApiResultVO<SysQrCodeSceneBindVO> setWxGetQrCodeSceneFlag(
+        @RequestBody @Valid NotNullId notNullId) {
         return ApiResultVO.okData(baseService.setWxGetQrCodeSceneFlag(notNullId));
     }
 
@@ -179,19 +188,22 @@ public class SignPhoneController {
 
     @PostMapping(value = "/updateWx/getQrCodeSceneFlag/new")
     @Operation(summary = "修改微信：获取新微信二维码是否已经被扫描")
-    public ApiResultVO<SysQrCodeSceneBindVO> updateWxGetQrCodeSceneFlagNew(@RequestBody @Valid NotNullId notNullId) {
+    public ApiResultVO<SysQrCodeSceneBindVO> updateWxGetQrCodeSceneFlagNew(
+        @RequestBody @Valid NotNullId notNullId) {
         return ApiResultVO.okData(baseService.updateWxGetQrCodeSceneFlagNew(notNullId));
     }
 
     @PostMapping(value = "/updateWx")
     @Operation(summary = "修改微信")
-    public ApiResultVO<SysQrCodeSceneBindVO> updateWx(@RequestBody @Valid SignPhoneUpdateWxDTO dto) {
+    public ApiResultVO<SysQrCodeSceneBindVO> updateWx(
+        @RequestBody @Valid SignPhoneUpdateWxDTO dto) {
         return ApiResultVO.okData(baseService.updateWx(dto));
     }
 
     @PostMapping(value = "/updatePhone/sendCode/new")
     @Operation(summary = "修改手机-发送新手机验证码")
-    public ApiResultVO<String> updatePhoneSendCodeNew(@RequestBody @Valid SignPhoneUpdatePhoneSendCodeNewDTO dto) {
+    public ApiResultVO<String> updatePhoneSendCodeNew(
+        @RequestBody @Valid SignPhoneUpdatePhoneSendCodeNewDTO dto) {
         return ApiResultVO.okMsg(baseService.updatePhoneSendCodeNew(dto));
     }
 
@@ -221,13 +233,15 @@ public class SignPhoneController {
 
     @PostMapping(value = "/setSingleSignIn/wx/getQrCodeSceneFlag")
     @Operation(summary = "设置统一登录：微信：获取统一登录微信的二维码是否已经被扫描")
-    public ApiResultVO<SysQrCodeSceneBindVO> setSingleSignInWxGetQrCodeSceneFlag(@RequestBody @Valid NotNullId notNullId) {
+    public ApiResultVO<SysQrCodeSceneBindVO> setSingleSignInWxGetQrCodeSceneFlag(
+        @RequestBody @Valid NotNullId notNullId) {
         return ApiResultVO.okData(baseService.setSingleSignInWxGetQrCodeSceneFlag(notNullId));
     }
 
     @PostMapping(value = "/setSingleSignIn/wx")
     @Operation(summary = "设置统一登录：微信")
-    public ApiResultVO<SysQrCodeSceneBindVO> setSingleSignInWx(@RequestBody @Valid SignPhoneSetSingleSignInWxDTO dto) {
+    public ApiResultVO<SysQrCodeSceneBindVO> setSingleSignInWx(
+        @RequestBody @Valid SignPhoneSetSingleSignInWxDTO dto) {
         return ApiResultVO.okData(baseService.setSingleSignInWx(dto));
     }
 
@@ -239,13 +253,15 @@ public class SignPhoneController {
 
     @PostMapping(value = "/setSingleSignIn/phone/sendCode")
     @Operation(summary = "设置统一登录：手机验证码：发送要绑定统一登录手机的验证码")
-    public ApiResultVO<String> setSingleSignInPhoneSendCode(@RequestBody @Valid SignPhoneSetSingleSignInPhoneSendCodeDTO dto) {
+    public ApiResultVO<String> setSingleSignInPhoneSendCode(
+        @RequestBody @Valid SignPhoneSetSingleSignInPhoneSendCodeDTO dto) {
         return ApiResultVO.okMsg(baseService.setSingleSignInSendCodePhone(dto));
     }
 
     @PostMapping(value = "/setSingleSignIn/phone")
     @Operation(summary = "设置统一登录：手机验证码")
-    public ApiResultVO<String> setSingleSignInPhone(@RequestBody @Valid SignPhoneSetSingleSignInPhoneDTO dto) {
+    public ApiResultVO<String> setSingleSignInPhone(
+        @RequestBody @Valid SignPhoneSetSingleSignInPhoneDTO dto) {
         return ApiResultVO.okMsg(baseService.setSingleSignInPhone(dto));
     }
 

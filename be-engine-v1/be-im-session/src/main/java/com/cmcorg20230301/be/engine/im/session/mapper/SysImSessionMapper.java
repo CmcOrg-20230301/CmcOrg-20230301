@@ -11,6 +11,7 @@ import org.apache.ibatis.annotations.Param;
 public interface SysImSessionMapper extends BaseMapper<SysImSessionDO> {
 
     // 分页排序查询
-    Page<SysImSessionDO> myPageSelf(@Param("page") Page<SysImSessionDO> page, @Param("dto") SysImSessionSelfPageDTO dto);
+    Page<SysImSessionDO> myPageSelf(@Param("page") Page<SysImSessionDO> page,
+        @Param("dto") SysImSessionSelfPageDTO dto);
 
 }

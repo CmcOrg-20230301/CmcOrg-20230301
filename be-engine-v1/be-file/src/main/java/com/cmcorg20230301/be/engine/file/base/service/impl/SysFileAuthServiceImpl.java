@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class SysFileAuthServiceImpl extends ServiceImpl<SysFileAuthMapper, SysFileAuthDO>
-        implements SysFileAuthService {
+    implements SysFileAuthService {
 
 }
 

@@ -66,7 +66,8 @@ public class SysTenantWalletController {
     @Operation(summary = "通过租户主键 idSet，加减可提现的钱")
     @PostMapping("/addWithdrawableMoney/background")
     @PreAuthorize("hasAuthority('sysTenantWallet:addWithdrawableMoney:background')")
-    public ApiResultVO<String> addWithdrawableMoneyBackground(@RequestBody @Valid ChangeBigDecimalNumberIdSetDTO dto) {
+    public ApiResultVO<String> addWithdrawableMoneyBackground(
+        @RequestBody @Valid ChangeBigDecimalNumberIdSetDTO dto) {
         return ApiResultVO.okMsg(baseService.addWithdrawableMoneyBackground(dto));
     }
 

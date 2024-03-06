@@ -1,22 +1,22 @@
 package com.cmcorg20230301.be.engine.model.validator;
 
 import com.cmcorg20230301.be.engine.model.model.annotation.NotCheckBlankPattern;
+import java.lang.invoke.MethodHandles;
+import java.util.regex.Matcher;
+import java.util.regex.PatternSyntaxException;
+import javax.validation.ConstraintValidator;
+import javax.validation.ConstraintValidatorContext;
+import javax.validation.constraints.Pattern;
 import org.hibernate.validator.constraintvalidation.HibernateConstraintValidatorContext;
 import org.hibernate.validator.internal.engine.messageinterpolation.util.InterpolationHelper;
 import org.hibernate.validator.internal.util.logging.Log;
 import org.hibernate.validator.internal.util.logging.LoggerFactory;
 
-import javax.validation.ConstraintValidator;
-import javax.validation.ConstraintValidatorContext;
-import javax.validation.constraints.Pattern;
-import java.lang.invoke.MethodHandles;
-import java.util.regex.Matcher;
-import java.util.regex.PatternSyntaxException;
-
 /**
  * 备注：参考 {@link org.hibernate.validator.internal.constraintvalidators.bv.PatternValidator}
  */
-public class NotBlankPatternValidator implements ConstraintValidator<NotCheckBlankPattern, CharSequence> {
+public class NotBlankPatternValidator implements
+    ConstraintValidator<NotCheckBlankPattern, CharSequence> {
 
     private static final Log LOG = LoggerFactory.make(MethodHandles.lookup());
 
@@ -49,7 +49,8 @@ public class NotBlankPatternValidator implements ConstraintValidator<NotCheckBla
     }
 
     @Override
-    public boolean isValid(CharSequence value, ConstraintValidatorContext constraintValidatorContext) {
+    public boolean isValid(CharSequence value,
+        ConstraintValidatorContext constraintValidatorContext) {
 
         if (value == null || value.length() == 0) {
             return true;
@@ -57,7 +58,8 @@ public class NotBlankPatternValidator implements ConstraintValidator<NotCheckBla
 
         if (constraintValidatorContext instanceof HibernateConstraintValidatorContext) {
 
-            constraintValidatorContext.unwrap(HibernateConstraintValidatorContext.class).addMessageParameter("regexp", escapedRegexp);
+            constraintValidatorContext.unwrap(HibernateConstraintValidatorContext.class)
+                .addMessageParameter("regexp", escapedRegexp);
 
         }
 

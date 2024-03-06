@@ -25,7 +25,8 @@ public class MyRsaUtil {
      */
     public static String rsaDecrypt(String str, @Nullable Long tenantId) {
 
-        String paramValue = SysParamUtil.getValueByUuid(ParamConstant.RSA_PRIVATE_KEY_UUID, tenantId); // 获取非对称加密，私钥
+        String paramValue = SysParamUtil.getValueByUuid(ParamConstant.RSA_PRIVATE_KEY_UUID,
+            tenantId); // 获取非对称加密，私钥
 
         return rsaDecrypt(str, paramValue); // 返回解密之后的 字符串
 
@@ -84,7 +85,8 @@ public class MyRsaUtil {
 
         // 不能和服务器时间相差过大
         if (checkTs > EXPIRE_TIME) {
-            ApiResultVO.errorMsg("操作失败：您的时间：{}，与当前时间：{}，相差过大，请调整时间后再试", userTs, currentTimeMillis);
+            ApiResultVO.errorMsg("操作失败：您的时间：{}，与当前时间：{}，相差过大，请调整时间后再试",
+                userTs, currentTimeMillis);
         }
 
         return split[0]; // 返回解密之后的 字符串

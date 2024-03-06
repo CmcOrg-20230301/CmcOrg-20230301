@@ -16,7 +16,17 @@ import com.cmcorg20230301.be.engine.security.exception.BaseBizCodeEnum;
 import com.cmcorg20230301.be.engine.security.model.configuration.IJwtValidatorConfiguration;
 import com.cmcorg20230301.be.engine.security.model.vo.ApiResultVO;
 import com.cmcorg20230301.be.engine.security.properties.SecurityProperties;
-import com.cmcorg20230301.be.engine.security.util.*;
+import com.cmcorg20230301.be.engine.security.util.MyExceptionUtil;
+import com.cmcorg20230301.be.engine.security.util.MyJwtUtil;
+import com.cmcorg20230301.be.engine.security.util.RequestUtil;
+import com.cmcorg20230301.be.engine.security.util.ResponseUtil;
+import com.cmcorg20230301.be.engine.security.util.UserUtil;
+import java.util.Date;
+import java.util.List;
+import javax.annotation.Resource;
+import javax.servlet.FilterChain;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
@@ -25,13 +35,6 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
-
-import javax.annotation.Resource;
-import javax.servlet.FilterChain;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.util.Date;
-import java.util.List;
 
 /**
  * 自定义 jwt过滤器，备注：后续接口方法，无需判断账号是否封禁或者不存在
@@ -48,15 +51,18 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
 
     @SneakyThrows
     @Override
-    protected void doFilterInternal(@NotNull HttpServletRequest request, @NotNull HttpServletResponse response,
-                                    @NotNull FilterChain filterChain) {
+    protected void doFilterInternal(@NotNull HttpServletRequest request,
+        @NotNull HttpServletResponse response,
+        @NotNull FilterChain filterChain) {
 
         //        long beginTime = System.currentTimeMillis();
 
-        UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = getAuthentication(request, response);
+        UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = getAuthentication(
+            request, response);
 
         if (usernamePasswordAuthenticationToken != null) {
-            SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
+            SecurityContextHolder.getContext()
+                .setAuthentication(usernamePasswordAuthenticationToken);
         }
 
         //        log.info("鉴权耗时：{}", DateUtil.formatBetween(System.currentTimeMillis() - beginTime));
@@ -68,7 +74,7 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
     @SneakyThrows
     @Nullable
     private UsernamePasswordAuthenticationToken getAuthentication(HttpServletRequest request,
-                                                                  HttpServletResponse response) {
+        HttpServletResponse response) {
 
         // 从请求头里，获取：jwt字符串，备注：就算加了不需要登录就可以访问，但是也会走该方法
         String jwtStr = MyJwtUtil.getJwtStrByRequest(request);
@@ -107,7 +113,8 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
             return null;
         }
 
-        String jwtHash = MyJwtUtil.generateRedisJwtHash(jwtStr, userId, RequestUtil.getRequestCategoryEnum(request));
+        String jwtHash = MyJwtUtil.generateRedisJwtHash(jwtStr, userId,
+            RequestUtil.getRequestCategoryEnum(request));
 
         String jwtHashRedis = MyCacheUtil.onlyGet(jwtHash);
 
@@ -123,7 +130,8 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
 
         // 验证算法
         if (jwt.verify() == false) {
-            return loginExpired(response, userId, request); // 提示登录过期，请重新登录，目的：为了可以随时修改配置的 jwt前缀，或者用户 jwt后缀修改
+            return loginExpired(response, userId,
+                request); // 提示登录过期，请重新登录，目的：为了可以随时修改配置的 jwt前缀，或者用户 jwt后缀修改
         }
 
         try {
@@ -156,7 +164,7 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
 
         // 通过 userId 获取用户具有的权限
         return new UsernamePasswordAuthenticationToken(jwt.getPayload().getClaimsJson(), null,
-                MyJwtUtil.getSimpleGrantedAuthorityListByUserId(userId, tenantId));
+            MyJwtUtil.getSimpleGrantedAuthorityListByUserId(userId, tenantId));
 
     }
 
@@ -218,11 +226,11 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
     }
 
     /**
-     * 提示登录过期，请重新登录
-     * 备注：这里抛出异常不会进入：ExceptionAdvice
+     * 提示登录过期，请重新登录 备注：这里抛出异常不会进入：ExceptionAdvice
      */
-    public static UsernamePasswordAuthenticationToken loginExpired(HttpServletResponse response, Long userId,
-                                                                   HttpServletRequest request) {
+    public static UsernamePasswordAuthenticationToken loginExpired(HttpServletResponse response,
+        Long userId,
+        HttpServletRequest request) {
 
         log.info("登录过期，uri：{}", request.getRequestURI());
 

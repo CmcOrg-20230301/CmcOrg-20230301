@@ -81,9 +81,10 @@ public class SysTenantWalletServiceImpl implements SysTenantWalletService {
         }
 
         List<SysUserWalletDO> allList =
-                sysUserWalletService.lambdaQuery().in(BaseEntityNoIdSuper::getTenantId, dto.getTenantIdSet())
-                        .eq(SysUserWalletDO::getId, BaseConstant.TENANT_USER_ID) //
-                        .list();
+            sysUserWalletService.lambdaQuery()
+                .in(BaseEntityNoIdSuper::getTenantId, dto.getTenantIdSet())
+                .eq(SysUserWalletDO::getId, BaseConstant.TENANT_USER_ID) //
+                .list();
 
         if (allList.size() == 0) {
             return new ArrayList<>();
@@ -93,8 +94,9 @@ public class SysTenantWalletServiceImpl implements SysTenantWalletService {
         Map<Long, SysTenantDO> sysTenantCacheMap = SysTenantUtil.getSysTenantCacheMap(true);
 
         Map<Long, SysTenantDO> allSysTenantDoMap =
-                sysTenantCacheMap.entrySet().stream().filter(it -> dto.getTenantIdSet().contains(it.getKey()))
-                        .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+            sysTenantCacheMap.entrySet().stream()
+                .filter(it -> dto.getTenantIdSet().contains(it.getKey()))
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 
         // 处理：集合
         handleSysUserWalletDoIterator(allSysTenantDoMap, sysUserWalletDOList.iterator());
@@ -102,7 +104,8 @@ public class SysTenantWalletServiceImpl implements SysTenantWalletService {
         // 处理：集合
         handleSysUserWalletDoIterator(allSysTenantDoMap, allList.iterator());
 
-        return MyTreeUtil.getFullTreeByDeepNode(sysUserWalletDOList, allList, BaseConstant.NEGATIVE_ONE);
+        return MyTreeUtil.getFullTreeByDeepNode(sysUserWalletDOList, allList,
+            BaseConstant.NEGATIVE_ONE);
 
     }
 
@@ -110,7 +113,7 @@ public class SysTenantWalletServiceImpl implements SysTenantWalletService {
      * 处理：SysUserWalletDO的迭代器
      */
     private void handleSysUserWalletDoIterator(Map<Long, SysTenantDO> allSysTenantDoMap,
-                                               Iterator<SysUserWalletDO> iterator) {
+        Iterator<SysUserWalletDO> iterator) {
 
         while (iterator.hasNext()) {
 
@@ -142,9 +145,11 @@ public class SysTenantWalletServiceImpl implements SysTenantWalletService {
         // 获取：用户关联的租户
         Set<Long> queryTenantIdSet = SysTenantUtil.getUserRefTenantIdSet();
 
-        return sysUserWalletService.lambdaQuery().eq(SysUserWalletDO::getTenantId, notNullLong.getValue())
-                .eq(SysUserWalletDO::getId, BaseConstant.TENANT_USER_ID).in(BaseEntityNoId::getTenantId, queryTenantIdSet)
-                .one();
+        return sysUserWalletService.lambdaQuery()
+            .eq(SysUserWalletDO::getTenantId, notNullLong.getValue())
+            .eq(SysUserWalletDO::getId, BaseConstant.TENANT_USER_ID)
+            .in(BaseEntityNoId::getTenantId, queryTenantIdSet)
+            .one();
 
     }
 
@@ -163,13 +168,14 @@ public class SysTenantWalletServiceImpl implements SysTenantWalletService {
         SysTenantUtil.checkIllegal(dto.getIdSet(), getCheckIllegalFunc1(dto.getIdSet()));
 
         SysUserWalletLogTypeEnum sysUserWalletLogTypeEnum =
-                addNumber.compareTo(BigDecimal.ZERO) > 0 ? SysUserWalletLogTypeEnum.ADD_BACKGROUND :
-                        SysUserWalletLogTypeEnum.REDUCE_BACKGROUND;
+            addNumber.compareTo(BigDecimal.ZERO) > 0 ? SysUserWalletLogTypeEnum.ADD_BACKGROUND :
+                SysUserWalletLogTypeEnum.REDUCE_BACKGROUND;
 
         // 执行
         return sysUserWalletService
-                .doAddWithdrawableMoney(currentUserId, new Date(), dto.getIdSet(), addNumber, sysUserWalletLogTypeEnum,
-                        false, false, true, null, null, true, null, null);
+            .doAddWithdrawableMoney(currentUserId, new Date(), dto.getIdSet(), addNumber,
+                sysUserWalletLogTypeEnum,
+                false, false, true, null, null, true, null, null);
 
     }
 
@@ -179,9 +185,11 @@ public class SysTenantWalletServiceImpl implements SysTenantWalletService {
     @NotNull
     private Func1<Set<Long>, Long> getCheckIllegalFunc1(Set<Long> idSet) {
 
-        return tenantIdSet -> sysUserWalletService.lambdaQuery().in(SysUserWalletDO::getTenantId, idSet)
-                .eq(SysUserWalletDO::getId, BaseConstant.TENANT_USER_ID).in(BaseEntityNoId::getTenantId, tenantIdSet)
-                .count();
+        return tenantIdSet -> sysUserWalletService.lambdaQuery()
+            .in(SysUserWalletDO::getTenantId, idSet)
+            .eq(SysUserWalletDO::getId, BaseConstant.TENANT_USER_ID)
+            .in(BaseEntityNoId::getTenantId, tenantIdSet)
+            .count();
 
     }
 

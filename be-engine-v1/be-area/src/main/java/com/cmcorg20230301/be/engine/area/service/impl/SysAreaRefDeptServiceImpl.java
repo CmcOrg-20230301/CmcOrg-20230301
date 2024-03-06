@@ -8,6 +8,6 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class SysAreaRefDeptServiceImpl extends ServiceImpl<SysAreaRefDeptMapper, SysAreaRefDeptDO>
-        implements SysAreaRefDeptService {
+    implements SysAreaRefDeptService {
 
 }

@@ -7,12 +7,11 @@ import cn.hutool.core.util.StrUtil;
 import cn.hutool.extra.qrcode.QrCodeUtil;
 import cn.hutool.extra.qrcode.QrConfig;
 import com.cmcorg20230301.be.engine.security.properties.CommonProperties;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Component;
-
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 import javax.validation.constraints.NotNull;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Component;
 
 /**
  * 谷歌验证器工具类
@@ -52,7 +51,8 @@ public class GoogleAuthenticatorUtil {
     @NotNull
     public static boolean authCode(String code, String secret) {
 
-        return GoogleAuthenticatorUtil.checkCode(secret, Long.parseLong(code), System.currentTimeMillis());
+        return GoogleAuthenticatorUtil.checkCode(secret, Long.parseLong(code),
+            System.currentTimeMillis());
 
     }
 

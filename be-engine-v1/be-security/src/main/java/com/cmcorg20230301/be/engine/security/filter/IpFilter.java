@@ -18,14 +18,8 @@ import com.cmcorg20230301.be.engine.security.properties.SecurityProperties;
 import com.cmcorg20230301.be.engine.security.util.ResponseUtil;
 import com.cmcorg20230301.be.engine.security.util.SysParamUtil;
 import com.cmcorg20230301.be.engine.util.util.SeparatorUtil;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.SneakyThrows;
-import org.jetbrains.annotations.Nullable;
-import org.redisson.api.RedissonClient;
-import org.springframework.core.annotation.Order;
-import org.springframework.stereotype.Component;
-
+import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 import javax.annotation.Resource;
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
@@ -34,8 +28,13 @@ import javax.servlet.ServletResponse;
 import javax.servlet.annotation.WebFilter;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.List;
-import java.util.concurrent.atomic.AtomicInteger;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.SneakyThrows;
+import org.jetbrains.annotations.Nullable;
+import org.redisson.api.RedissonClient;
+import org.springframework.core.annotation.Order;
+import org.springframework.stereotype.Component;
 
 /**
  * ip 拦截器
@@ -54,7 +53,8 @@ public class IpFilter implements Filter {
     private static final long TIMEOUT = BaseConstant.SECOND_20_EXPIRE_TIME;
 
     // ip请求速率 map，key：ip
-    private static final TimedCache<String, AtomicInteger> IP_SPEED_MAP = CacheUtil.newTimedCache(TIMEOUT);
+    private static final TimedCache<String, AtomicInteger> IP_SPEED_MAP = CacheUtil.newTimedCache(
+        TIMEOUT);
 
     static {
 
@@ -79,14 +79,14 @@ public class IpFilter implements Filter {
         if (timeStr == null) {
             chain.doFilter(request, response);
         } else {
-            ResponseUtil.out((HttpServletResponse) response, "操作次数过多，请在 " + timeStr + "后，再进行操作", true);
+            ResponseUtil.out((HttpServletResponse) response,
+                "操作次数过多，请在 " + timeStr + "后，再进行操作", true);
         }
 
     }
 
     /**
-     * ip 请求速率处理
-     * 返回 null，则表示不在黑名单，不为 null，则会返回剩余移除黑名单的倒计时时间（字符串）
+     * ip 请求速率处理 返回 null，则表示不在黑名单，不为 null，则会返回剩余移除黑名单的倒计时时间（字符串）
      */
     @Nullable
     private String ipCheckHandler(String ip) {
@@ -103,7 +103,8 @@ public class IpFilter implements Filter {
 
             if (remainTime > 0) {
                 // 如果在 黑名单里，则返回剩余时间
-                return DateUtil.formatBetween(remainTime, BetweenFormatter.Level.SECOND); // 剩余时间（字符串）
+                return DateUtil.formatBetween(remainTime,
+                    BetweenFormatter.Level.SECOND); // 剩余时间（字符串）
             }
 
         }
@@ -143,7 +144,8 @@ public class IpFilter implements Filter {
             IP_SPEED_MAP.remove(ip); // 移除：ip计数
 
             CacheRedisKafkaLocalUtil
-                    .put(BaseRedisKeyEnum.PRE_IP_BLACK, ip, "黑名单 ip", BaseConstant.DAY_1_EXPIRE_TIME, null);
+                .put(BaseRedisKeyEnum.PRE_IP_BLACK, ip, "黑名单 ip", BaseConstant.DAY_1_EXPIRE_TIME,
+                    null);
 
             return "24小时";
 
@@ -170,13 +172,15 @@ public class IpFilter implements Filter {
     private IpSpeedBO getIpSpeedBO() {
 
         // ip 请求速率：多少秒钟，一个 ip可以请求多少次，用冒号隔开的
-        String ipTotalCheckValue = SysParamUtil.getValueByUuid(ParamConstant.IP_REQUESTS_PER_SECOND_UUID, null);
+        String ipTotalCheckValue = SysParamUtil.getValueByUuid(
+            ParamConstant.IP_REQUESTS_PER_SECOND_UUID, null);
 
         if (ipTotalCheckValue == null) {
             return null;
         }
 
-        List<String> splitTrimList = StrUtil.splitTrim(ipTotalCheckValue, SeparatorUtil.COLON_SEPARATOR);
+        List<String> splitTrimList = StrUtil.splitTrim(ipTotalCheckValue,
+            SeparatorUtil.COLON_SEPARATOR);
 
         if (splitTrimList.size() != 2) {
             return null;

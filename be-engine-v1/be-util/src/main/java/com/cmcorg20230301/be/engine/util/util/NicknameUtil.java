@@ -16,8 +16,7 @@ public class NicknameUtil {
     }
 
     /**
-     * 根据前缀获取：默认的昵称
-     * 备注：不使用邮箱的原因，因为邮箱不符合 用户昵称的规则：只能包含中文，数字，字母，下划线，长度2-20
+     * 根据前缀获取：默认的昵称 备注：不使用邮箱的原因，因为邮箱不符合 用户昵称的规则：只能包含中文，数字，字母，下划线，长度2-20
      */
     public static String getRandomNickname(@Nullable String preStr) {
 

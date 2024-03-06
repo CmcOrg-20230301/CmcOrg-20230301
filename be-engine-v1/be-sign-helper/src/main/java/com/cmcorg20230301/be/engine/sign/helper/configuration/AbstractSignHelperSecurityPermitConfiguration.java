@@ -7,12 +7,13 @@ import com.cmcorg20230301.be.engine.model.model.configuration.ISecurityPermitCon
 import java.util.Set;
 import java.util.stream.Collectors;
 
-public abstract class AbstractSignHelperSecurityPermitConfiguration implements ISecurityPermitConfiguration {
+public abstract class AbstractSignHelperSecurityPermitConfiguration implements
+    ISecurityPermitConfiguration {
 
     private static final String BASE_PRE_URI = "/sign/";
 
     private static final Set<String> URI_TEMP_SET =
-            CollUtil.newHashSet("/sign/up/**", "/sign/in/**", "/forgetPassword/**");
+        CollUtil.newHashSet("/sign/up/**", "/sign/in/**", "/forgetPassword/**");
 
     protected abstract String getSignPreUri();
 
@@ -33,7 +34,8 @@ public abstract class AbstractSignHelperSecurityPermitConfiguration implements I
             return null;
         }
 
-        return URI_TEMP_SET.stream().map(it -> BASE_PRE_URI + getSignPreUri() + it).collect(Collectors.toSet());
+        return URI_TEMP_SET.stream().map(it -> BASE_PRE_URI + getSignPreUri() + it)
+            .collect(Collectors.toSet());
 
     }
 

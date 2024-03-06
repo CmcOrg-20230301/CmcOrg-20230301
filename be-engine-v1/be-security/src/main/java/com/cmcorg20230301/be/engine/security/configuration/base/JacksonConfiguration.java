@@ -15,7 +15,7 @@ public class JacksonConfiguration {
     public Jackson2ObjectMapperBuilderCustomizer jackson2ObjectMapperBuilderCustomizer() {
 
         return jacksonObjectMapperBuilder -> jacksonObjectMapperBuilder
-                .serializerByType(Long.class, ToStringSerializer.instance);
+            .serializerByType(Long.class, ToStringSerializer.instance);
 
     }
 

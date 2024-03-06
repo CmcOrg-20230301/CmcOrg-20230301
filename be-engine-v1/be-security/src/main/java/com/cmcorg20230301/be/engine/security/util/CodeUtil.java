@@ -32,7 +32,7 @@ public class CodeUtil {
      * 检查验证码
      */
     public static void checkCode(String sourceCode, String targetCode, String targetCodeBlankError,
-                                 String notEqualsError) {
+        String notEqualsError) {
 
         // 如果不存在验证码
         if (StrUtil.isBlank(targetCode)) {

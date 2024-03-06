@@ -28,21 +28,23 @@ public class SysUserWalletLogController {
     @Operation(summary = "分页排序查询")
     @PostMapping("/page")
     @PreAuthorize("hasAuthority('sysUserWalletLog:page')")
-    public ApiResultVO<Page<SysUserWalletLogDO>> myPage(@RequestBody @Valid SysUserWalletLogPageDTO dto) {
+    public ApiResultVO<Page<SysUserWalletLogDO>> myPage(
+        @RequestBody @Valid SysUserWalletLogPageDTO dto) {
         return ApiResultVO.okData(baseService.myPage(dto));
     }
 
     @Operation(summary = "分页排序查询-租户")
     @PostMapping("/page/tenant")
     @PreAuthorize("hasAuthority('sysUserWalletLog:page')")
-    public ApiResultVO<Page<SysUserWalletLogDO>> myPageTenant(@RequestBody @Valid SysUserWalletLogUserSelfPageDTO dto) {
+    public ApiResultVO<Page<SysUserWalletLogDO>> myPageTenant(
+        @RequestBody @Valid SysUserWalletLogUserSelfPageDTO dto) {
         return ApiResultVO.okData(baseService.myPageTenant(dto));
     }
 
     @Operation(summary = "分页排序查询-用户自我")
     @PostMapping("/page/userSelf")
     public ApiResultVO<Page<SysUserWalletLogDO>> myPageUserSelf(
-            @RequestBody @Valid SysUserWalletLogUserSelfPageDTO dto) {
+        @RequestBody @Valid SysUserWalletLogUserSelfPageDTO dto) {
         return ApiResultVO.okData(baseService.myPageUserSelf(dto));
     }
 

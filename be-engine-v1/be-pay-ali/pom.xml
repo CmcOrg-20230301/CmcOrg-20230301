@@ -1,37 +1,38 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <modelVersion>4.0.0</modelVersion>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
 
-    <parent>
-        <groupId>com.cmcorg20230301</groupId>
-        <artifactId>be-engine-v1</artifactId>
-        <version>2023.3.1</version>
-    </parent>
+  <parent>
+    <groupId>com.cmcorg20230301</groupId>
+    <artifactId>be-engine-v1</artifactId>
+    <version>2023.3.1</version>
+  </parent>
 
-    <artifactId>be-pay-ali</artifactId>
-    <description>支付宝支付相关</description>
+  <artifactId>be-pay-ali</artifactId>
+  <description>支付宝支付相关</description>
 
-    <dependencies>
+  <dependencies>
 
-        <!-- 支付宝支付，获取最新版本号：https://github.com/alipay/alipay-sdk-java-all -->
-        <dependency>
-            <groupId>com.alipay.sdk</groupId>
-            <artifactId>alipay-sdk-java</artifactId>
-        </dependency>
+    <!-- 支付宝支付，获取最新版本号：https://github.com/alipay/alipay-sdk-java-all -->
+    <dependency>
+      <groupId>com.alipay.sdk</groupId>
+      <artifactId>alipay-sdk-java</artifactId>
+    </dependency>
 
-        <!-- be-pay -->
-        <dependency>
-            <groupId>${cmcorg.groupId}</groupId>
-            <artifactId>be-pay</artifactId>
-        </dependency>
+    <!-- be-pay -->
+    <dependency>
+      <groupId>${cmcorg.groupId}</groupId>
+      <artifactId>be-pay</artifactId>
+    </dependency>
 
-        <!-- be-security -->
-        <dependency>
-            <groupId>${cmcorg.groupId}</groupId>
-            <artifactId>be-security</artifactId>
-        </dependency>
+    <!-- be-security -->
+    <dependency>
+      <groupId>${cmcorg.groupId}</groupId>
+      <artifactId>be-security</artifactId>
+    </dependency>
 
-    </dependencies>
+  </dependencies>
 
 </project>

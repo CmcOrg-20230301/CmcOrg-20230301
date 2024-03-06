@@ -24,14 +24,17 @@ import io.milvus.param.dml.SearchParam;
 import io.milvus.param.index.CreateIndexParam;
 import io.milvus.response.QueryResultsWrapper;
 import io.milvus.response.SearchResultsWrapper;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.function.Consumer;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
-import java.util.*;
-import java.util.function.Consumer;
 
 /**
  * milvus工具类
@@ -92,41 +95,48 @@ public class MilvusUtil {
      * 字段名集合，备注：不包含向量字段，因为数据量太大了，如果想返回向量字段，可以手动添加，添加之后就可以返回该字段的数据了
      */
     public static final List<String> FIELD_NAME_LIST = CollUtil
-            .newArrayList(ID_FIELD_NAME, TENANT_ID_FIELD_NAME, USER_ID_FIELD_NAME, ENABLE_FLAG_FIELD_NAME,
-                    RESULT_FIELD_NAME, VECTOR_TEXT_FIELD_NAME);
+        .newArrayList(ID_FIELD_NAME, TENANT_ID_FIELD_NAME, USER_ID_FIELD_NAME,
+            ENABLE_FLAG_FIELD_NAME,
+            RESULT_FIELD_NAME, VECTOR_TEXT_FIELD_NAME);
 
     /**
-     * 创建并加载 collection
-     * 备注：id字段建议不是自增，而是手动指定
+     * 创建并加载 collection 备注：id字段建议不是自增，而是手动指定
      *
      * @param vectorLength 向量集合长度，注意：这里的向量长度必须完全一致，不然会报错
      */
     public static boolean createAndLoadCollection(String collectionName, int vectorLength,
-                                                  @Nullable List<FieldType> otherFieldTypeList) {
+        @Nullable List<FieldType> otherFieldTypeList) {
 
         FieldType idFieldType =
-                FieldType.newBuilder().withName(ID_FIELD_NAME).withDataType(DataType.Int64).withPrimaryKey(true).build();
+            FieldType.newBuilder().withName(ID_FIELD_NAME).withDataType(DataType.Int64)
+                .withPrimaryKey(true).build();
 
         FieldType tenantIdFieldType =
-                FieldType.newBuilder().withName(TENANT_ID_FIELD_NAME).withDataType(DataType.Int64).build();
+            FieldType.newBuilder().withName(TENANT_ID_FIELD_NAME).withDataType(DataType.Int64)
+                .build();
 
         FieldType userIdFieldType =
-                FieldType.newBuilder().withName(USER_ID_FIELD_NAME).withDataType(DataType.Int64).build();
+            FieldType.newBuilder().withName(USER_ID_FIELD_NAME).withDataType(DataType.Int64)
+                .build();
 
         FieldType enableFlagFieldType =
-                FieldType.newBuilder().withName(ENABLE_FLAG_FIELD_NAME).withDataType(DataType.Bool).build();
+            FieldType.newBuilder().withName(ENABLE_FLAG_FIELD_NAME).withDataType(DataType.Bool)
+                .build();
 
         FieldType resultFieldType =
-                FieldType.newBuilder().withName(RESULT_FIELD_NAME).withDataType(DataType.VarChar).withMaxLength(2000)
-                        .build();
+            FieldType.newBuilder().withName(RESULT_FIELD_NAME).withDataType(DataType.VarChar)
+                .withMaxLength(2000)
+                .build();
 
         FieldType vectorTextFieldType =
-                FieldType.newBuilder().withName(VECTOR_TEXT_FIELD_NAME).withDataType(DataType.VarChar).withMaxLength(2000)
-                        .build();
+            FieldType.newBuilder().withName(VECTOR_TEXT_FIELD_NAME).withDataType(DataType.VarChar)
+                .withMaxLength(2000)
+                .build();
 
         FieldType vectorListFieldType =
-                FieldType.newBuilder().withName(VECTOR_LIST_FIELD_NAME).withDataType(DataType.FloatVector)
-                        .withDimension(vectorLength).build();
+            FieldType.newBuilder().withName(VECTOR_LIST_FIELD_NAME)
+                .withDataType(DataType.FloatVector)
+                .withDimension(vectorLength).build();
 
         List<FieldType> fieldTypeList = new ArrayList<>();
 
@@ -150,8 +160,9 @@ public class MilvusUtil {
     /**
      * 创建并加载 collection
      */
-    public static boolean createAndLoadCollection(String collectionName, List<FieldType> fieldTypeList,
-                                                  FieldType vectorListFieldType) {
+    public static boolean createAndLoadCollection(String collectionName,
+        List<FieldType> fieldTypeList,
+        FieldType vectorListFieldType) {
 
         if (milvusServiceClient == null) {
             return false;
@@ -162,8 +173,9 @@ public class MilvusUtil {
         }
 
         // 备注：不建议使用：withDatabaseName(databaseName)，原因：因为 search的时候不能指定 databaseName
-        CreateCollectionParam.Builder builder = CreateCollectionParam.newBuilder().withCollectionName(collectionName) //
-                .withFieldTypes(fieldTypeList);
+        CreateCollectionParam.Builder builder = CreateCollectionParam.newBuilder()
+            .withCollectionName(collectionName) //
+            .withFieldTypes(fieldTypeList);
 
         // 创建集合，备注：如果存在则不会重新创建
         milvusServiceClient.createCollection(builder.build());
@@ -172,11 +184,14 @@ public class MilvusUtil {
         String indexParam = "{\"nlist\":1024}"; // ExtraParam，备注：值越大占用的空间越多
 
         // 创建索引，备注：如果存在则不会重新创建
-        milvusServiceClient.createIndex(CreateIndexParam.newBuilder().withCollectionName(collectionName)
-                .withFieldName(vectorListFieldType.getName()).withIndexType(indexType).withMetricType(MetricType.L2)
+        milvusServiceClient.createIndex(
+            CreateIndexParam.newBuilder().withCollectionName(collectionName)
+                .withFieldName(vectorListFieldType.getName()).withIndexType(indexType)
+                .withMetricType(MetricType.L2)
                 .withExtraParam(indexParam).withSyncMode(Boolean.FALSE).build());
 
-        milvusServiceClient.loadCollection(LoadCollectionParam.newBuilder().withCollectionName(collectionName).build());
+        milvusServiceClient.loadCollection(
+            LoadCollectionParam.newBuilder().withCollectionName(collectionName).build());
 
         return true;
 
@@ -189,7 +204,8 @@ public class MilvusUtil {
      * @return null 则表示没有匹配上
      */
     @Nullable
-    public static String match(List<Float> floatList, String collectionName, @Nullable String exprStr) {
+    public static String match(List<Float> floatList, String collectionName,
+        @Nullable String exprStr) {
 
         // 执行
         return match(floatList, collectionName, RESULT_FIELD_NAME, VECTOR_LIST_FIELD_NAME, exprStr);
@@ -203,8 +219,9 @@ public class MilvusUtil {
      * @return null 则表示没有匹配上
      */
     @Nullable
-    public static SearchResultsWrapper doMatch(List<Float> floatList, String collectionName, List<String> outFieldList,
-                                               @Nullable String exprStr) {
+    public static SearchResultsWrapper doMatch(List<Float> floatList, String collectionName,
+        List<String> outFieldList,
+        @Nullable String exprStr) {
 
         // 执行
         return doMatch(floatList, collectionName, outFieldList, VECTOR_LIST_FIELD_NAME, exprStr);
@@ -219,7 +236,7 @@ public class MilvusUtil {
      */
     @Nullable
     public static String match(List<Float> floatList, String collectionName, String resultFieldName,
-                               String vectorFieldName, @Nullable String exprStr) {
+        String vectorFieldName, @Nullable String exprStr) {
 
         // 得分在 0.2以下，则算匹配上了向量数据库
         return match(floatList, collectionName, resultFieldName, vectorFieldName, 0.2f, exprStr);
@@ -233,8 +250,9 @@ public class MilvusUtil {
      * @return null 则表示没有匹配上
      */
     @Nullable
-    public static SearchResultsWrapper doMatch(List<Float> floatList, String collectionName, List<String> outFieldList,
-                                               String vectorFieldName, @Nullable String exprStr) {
+    public static SearchResultsWrapper doMatch(List<Float> floatList, String collectionName,
+        List<String> outFieldList,
+        String vectorFieldName, @Nullable String exprStr) {
 
         // 得分在 0.2以下，则算匹配上了向量数据库
         return doMatch(floatList, collectionName, outFieldList, vectorFieldName, 0.2f, exprStr);
@@ -249,11 +267,12 @@ public class MilvusUtil {
      */
     @Nullable
     public static String match(List<Float> floatList, String collectionName, String resultFieldName,
-                               String vectorFieldName, float score, @Nullable String exprStr) {
+        String vectorFieldName, float score, @Nullable String exprStr) {
 
         SearchResultsWrapper searchResultsWrapper =
-                doMatch(floatList, collectionName, Collections.singletonList(resultFieldName), vectorFieldName, score,
-                        exprStr);
+            doMatch(floatList, collectionName, Collections.singletonList(resultFieldName),
+                vectorFieldName, score,
+                exprStr);
 
         if (searchResultsWrapper == null) {
             return null;
@@ -271,8 +290,9 @@ public class MilvusUtil {
      * @return null 则表示没有匹配上
      */
     @Nullable
-    private static SearchResultsWrapper doMatch(List<Float> floatList, String collectionName, List<String> outFieldList,
-                                                String vectorFieldName, float score, @Nullable String exprStr) {
+    private static SearchResultsWrapper doMatch(List<Float> floatList, String collectionName,
+        List<String> outFieldList,
+        String vectorFieldName, float score, @Nullable String exprStr) {
 
         if (milvusServiceClient == null) {
             return null;
@@ -287,8 +307,11 @@ public class MilvusUtil {
 
         List<List<Float>> vectorList = Collections.singletonList(floatList);
 
-        SearchParam.Builder builder = SearchParam.newBuilder().withCollectionName(collectionName).withConsistencyLevel(ConsistencyLevelEnum.STRONG).withMetricType(MetricType.L2).withOutFields(outFieldList)
-                .withTopK(topK).withVectors(vectorList).withVectorFieldName(vectorFieldName).withParams(param);
+        SearchParam.Builder builder = SearchParam.newBuilder().withCollectionName(collectionName)
+            .withConsistencyLevel(ConsistencyLevelEnum.STRONG).withMetricType(MetricType.L2)
+            .withOutFields(outFieldList)
+            .withTopK(topK).withVectors(vectorList).withVectorFieldName(vectorFieldName)
+            .withParams(param);
 
         if (StrUtil.isNotBlank(exprStr)) {
             builder.withExpr(exprStr); // 添加：额外的查询条件
@@ -296,7 +319,8 @@ public class MilvusUtil {
 
         R<SearchResults> searchResults = milvusServiceClient.search(builder.build());
 
-        SearchResultsWrapper searchResultsWrapper = new SearchResultsWrapper(searchResults.getData().getResults());
+        SearchResultsWrapper searchResultsWrapper = new SearchResultsWrapper(
+            searchResults.getData().getResults());
 
         if (searchResultsWrapper.getRowRecords(0).size() == 0) { // 防止：没有匹配数据
             return null;
@@ -315,9 +339,13 @@ public class MilvusUtil {
     /**
      * 新增，备注：milvus 暂时不支持修改，请删除之后，再新增，以达到修改的目的
      *
-     * @param insertRowList 注意：id字段一定要有值，不然会报错，建议：继承 {@link com.cmcorg20230301.be.engine.milvus.mode.entity.milvus.BaseMilvusDO} 该类，方便统一管理
+     * @param insertRowList 注意：id字段一定要有值，不然会报错，建议：继承
+     *                      {@link
+     *                      com.cmcorg20230301.be.engine.milvus.mode.entity.milvus.BaseMilvusDO}
+     *                      该类，方便统一管理
      */
-    public static <T> boolean insert(String collectionName, List<T> insertRowList, @Nullable Consumer<T> consumer) {
+    public static <T> boolean insert(String collectionName, List<T> insertRowList,
+        @Nullable Consumer<T> consumer) {
 
         return insert(collectionName, insertRowList, null, consumer);
 
@@ -326,8 +354,9 @@ public class MilvusUtil {
     /**
      * 新增，备注：milvus 暂时不支持修改，请删除之后，再新增，以达到修改的目的
      */
-    public static <T> boolean insert(String collectionName, List<T> insertRowList, @Nullable String idFieldName,
-                                     @Nullable Consumer<T> consumer) {
+    public static <T> boolean insert(String collectionName, List<T> insertRowList,
+        @Nullable String idFieldName,
+        @Nullable Consumer<T> consumer) {
 
         if (milvusServiceClient == null) {
             return false;
@@ -364,7 +393,8 @@ public class MilvusUtil {
         }
 
         InsertParam insertParam =
-                InsertParam.newBuilder().withCollectionName(collectionName).withRows(insertList).build();
+            InsertParam.newBuilder().withCollectionName(collectionName).withRows(insertList)
+                .build();
 
         // 注意：如果 主键为自增，则不能有值，不然这会报错，并且不能包含 id字段
         milvusServiceClient.insert(insertParam);
@@ -383,7 +413,7 @@ public class MilvusUtil {
         }
 
         QueryParam.Builder builder = QueryParam.newBuilder().withCollectionName(collectionName)
-                .withConsistencyLevel(ConsistencyLevelEnum.STRONG);
+            .withConsistencyLevel(ConsistencyLevelEnum.STRONG);
 
         if (StrUtil.isNotBlank(exprStr)) {
             builder.withExpr(exprStr);
@@ -411,34 +441,34 @@ public class MilvusUtil {
     public static final long MAX_LIMIT = 16384;
 
     /**
-     * 查询所有数据
-     * 注意：like只支持：like ab%，不支持 %ab%，不然会报错
+     * 查询所有数据 注意：like只支持：like ab%，不支持 %ab%，不然会报错
      */
     @NotNull
-    public static <T> List<T> queryAll(String collectionName, @Nullable String exprStr, List<String> outFieldList,
-                                       Class<T> tClass) {
+    public static <T> List<T> queryAll(String collectionName, @Nullable String exprStr,
+        List<String> outFieldList,
+        Class<T> tClass) {
 
         return query(collectionName, exprStr, outFieldList, 0, MAX_LIMIT, tClass);
 
     }
 
     /**
-     * 查询
-     * 注意：like只支持：like ab%，不支持 %ab%，不然会报错
+     * 查询 注意：like只支持：like ab%，不支持 %ab%，不然会报错
      *
      * @param limit 不能小于：0，并且不能大于：16384
      */
     @NotNull
-    public static <T> List<T> query(String collectionName, @Nullable String exprStr, List<String> outFieldList,
-                                    long offset, long limit,
-                                    Class<T> tClass) {
+    public static <T> List<T> query(String collectionName, @Nullable String exprStr,
+        List<String> outFieldList,
+        long offset, long limit,
+        Class<T> tClass) {
 
         if (milvusServiceClient == null) {
             return new ArrayList<>();
         }
 
         QueryParam.Builder builder = QueryParam.newBuilder().withCollectionName(collectionName)
-                .withConsistencyLevel(ConsistencyLevelEnum.STRONG);
+            .withConsistencyLevel(ConsistencyLevelEnum.STRONG);
 
         if (StrUtil.isNotBlank(exprStr)) {
             builder.withExpr(exprStr);
@@ -505,8 +535,7 @@ public class MilvusUtil {
     }
 
     /**
-     * 删除
-     * 注意：milvus，暂时只支持主键 删除，不支持其他删除，所以：不建议调用本方法
+     * 删除 注意：milvus，暂时只支持主键 删除，不支持其他删除，所以：不建议调用本方法
      */
     public static boolean delete(String collectionName, String exprStr) {
 
@@ -515,7 +544,8 @@ public class MilvusUtil {
         }
 
         milvusServiceClient
-                .delete(DeleteParam.newBuilder().withCollectionName(collectionName).withExpr(exprStr).build());
+            .delete(DeleteParam.newBuilder().withCollectionName(collectionName).withExpr(exprStr)
+                .build());
 
         return true;
 

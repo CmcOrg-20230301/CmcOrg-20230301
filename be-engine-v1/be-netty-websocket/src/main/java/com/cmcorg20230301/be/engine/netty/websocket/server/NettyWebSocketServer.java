@@ -21,13 +21,12 @@ import io.netty.handler.codec.http.HttpObjectAggregator;
 import io.netty.handler.codec.http.HttpServerCodec;
 import io.netty.handler.codec.http.websocketx.WebSocketServerProtocolHandler;
 import io.netty.handler.stream.ChunkedWriteHandler;
-import lombok.SneakyThrows;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Component;
-
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.annotation.Resource;
+import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Component;
 
 @Component
 @Slf4j
@@ -43,7 +42,8 @@ public class NettyWebSocketServer {
     private static NettyWebSocketServerHandler nettyWebSocketServerHandler;
 
     @Resource
-    public void setNettyWebSocketServerHandler(NettyWebSocketServerHandler nettyWebSocketServerHandler) {
+    public void setNettyWebSocketServerHandler(
+        NettyWebSocketServerHandler nettyWebSocketServerHandler) {
         NettyWebSocketServer.nettyWebSocketServerHandler = nettyWebSocketServerHandler;
     }
 
@@ -115,7 +115,7 @@ public class NettyWebSocketServer {
 
         // 关闭 socket
         SocketUtil.closeSocket(channelFuture, parentGroup, childGroup, sysSocketServerId,
-                NettyWebSocketServerHandler.USER_ID_CHANNEL_MAP, "NettyWebSocket", disableFlag);
+            NettyWebSocketServerHandler.USER_ID_CHANNEL_MAP, "NettyWebSocket", disableFlag);
 
         if (!disableFlag) {
 
@@ -169,38 +169,41 @@ public class NettyWebSocketServer {
 
         serverBootstrap.group(parentGroup, childGroup) // 绑定线程池
 
-                .channel(NioServerSocketChannel.class) // 指定使用的channel
+            .channel(NioServerSocketChannel.class) // 指定使用的channel
 
-                .localAddress(port) // 绑定监听端口
+            .localAddress(port) // 绑定监听端口
 
-                .childHandler(new ChannelInitializer<SocketChannel>() { // 绑定客户端连接时候触发操作
+            .childHandler(new ChannelInitializer<SocketChannel>() { // 绑定客户端连接时候触发操作
 
-                    @Override
-                    protected void initChannel(SocketChannel ch) { // 绑定客户端连接时候触发操作
+                @Override
+                protected void initChannel(SocketChannel ch) { // 绑定客户端连接时候触发操作
 
-                        // webSocket协议本身是基于http协议的，所以这边也要使用http解编码器
-                        ch.pipeline().addLast(new HttpServerCodec());
+                    // webSocket协议本身是基于http协议的，所以这边也要使用http解编码器
+                    ch.pipeline().addLast(new HttpServerCodec());
 
-                        // 以块的方式来写的处理器
-                        ch.pipeline().addLast(new ChunkedWriteHandler());
+                    // 以块的方式来写的处理器
+                    ch.pipeline().addLast(new ChunkedWriteHandler());
 
-                        ch.pipeline().addLast(new HttpObjectAggregator(8192));
+                    ch.pipeline().addLast(new HttpObjectAggregator(8192));
 
-                        ch.pipeline().addLast(nettyWebSocketServerHandler);
+                    ch.pipeline().addLast(nettyWebSocketServerHandler);
 
-                        ch.pipeline().addLast(
-                                new WebSocketServerProtocolHandler(nettyWebSocketProperties.getPath(), null, true, 65536 * 10));
+                    ch.pipeline().addLast(
+                        new WebSocketServerProtocolHandler(nettyWebSocketProperties.getPath(), null,
+                            true, 65536 * 10));
 
-                    }
+                }
 
-                });
+            });
 
         channelFuture = serverBootstrap.bind().sync(); // 服务器同步创建绑定
 
         sysSocketServerId =
-                SocketUtil.getSysSocketServerId(port, nettyWebSocketProperties, SysSocketTypeEnum.WEB_SOCKET);
+            SocketUtil.getSysSocketServerId(port, nettyWebSocketProperties,
+                SysSocketTypeEnum.WEB_SOCKET);
 
-        log.info("NettyWebSocket 启动完成：端口：{}，总接口个数：{}个", port, NettyWebSocketBeanPostProcessor.getMappingMapSize());
+        log.info("NettyWebSocket 启动完成：端口：{}，总接口个数：{}个", port,
+            NettyWebSocketBeanPostProcessor.getMappingMapSize());
 
     }
 

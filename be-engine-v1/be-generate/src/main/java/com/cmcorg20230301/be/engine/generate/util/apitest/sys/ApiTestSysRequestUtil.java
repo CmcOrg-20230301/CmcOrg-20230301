@@ -23,18 +23,20 @@ public class ApiTestSysRequestUtil {
 
         // 执行
         exec(API_ENDPOINT, ApiTestHelper.ADMIN_SIGN_IN_NAME, ApiTestHelper.ADMIN_PASSWORD,
-                ApiTestHelper.RSA_PUBLIC_KEY);
+            ApiTestHelper.RSA_PUBLIC_KEY);
 
     }
 
     /**
      * 执行
      */
-    private static void exec(String apiEndpoint, String adminSignInName, String adminPassword, String rsaPublicKey) {
+    private static void exec(String apiEndpoint, String adminSignInName, String adminPassword,
+        String rsaPublicKey) {
 
         // 登录名-用户名账号密码登录
         SignInVO signInVO =
-                ApiTestSignSignInNameUtil.signInNameSignIn(apiEndpoint, adminSignInName, adminPassword, rsaPublicKey);
+            ApiTestSignSignInNameUtil.signInNameSignIn(apiEndpoint, adminSignInName, adminPassword,
+                rsaPublicKey);
 
         String jwt = signInVO.getJwt();
 
@@ -61,10 +63,12 @@ public class ApiTestSysRequestUtil {
 
         SysRequestSelfLoginRecordPageDTO dto = new SysRequestSelfLoginRecordPageDTO();
 
-        String bodyStr = HttpRequest.post(apiEndpoint + "/sys/request/self/loginRecord").body(JSONUtil.toJsonStr(dto))
-                .header("Authorization", jwt).execute().body();
+        String bodyStr = HttpRequest.post(apiEndpoint + "/sys/request/self/loginRecord")
+            .body(JSONUtil.toJsonStr(dto))
+            .header("Authorization", jwt).execute().body();
 
-        log.info("请求-当前用户：登录记录：耗时：{}，bodyStr：{}", ApiTestHelper.calcCostMs(currentTs), bodyStr);
+        log.info("请求-当前用户：登录记录：耗时：{}，bodyStr：{}", ApiTestHelper.calcCostMs(currentTs),
+            bodyStr);
 
     }
 
@@ -76,9 +80,11 @@ public class ApiTestSysRequestUtil {
         long currentTs = System.currentTimeMillis();
 
         String bodyStr =
-                HttpRequest.post(apiEndpoint + "/sys/request/allAvg").header("Authorization", jwt).execute().body();
+            HttpRequest.post(apiEndpoint + "/sys/request/allAvg").header("Authorization", jwt)
+                .execute().body();
 
-        log.info("请求-所有请求的平均耗时：耗时：{}，bodyStr：{}", ApiTestHelper.calcCostMs(currentTs), bodyStr);
+        log.info("请求-所有请求的平均耗时：耗时：{}，bodyStr：{}", ApiTestHelper.calcCostMs(currentTs),
+            bodyStr);
 
     }
 
@@ -91,10 +97,12 @@ public class ApiTestSysRequestUtil {
 
         SysRequestPageDTO dto = new SysRequestPageDTO();
 
-        String bodyStr = HttpRequest.post(apiEndpoint + "/sys/request/allAvgPro").body(JSONUtil.toJsonStr(dto))
-                .header("Authorization", jwt).execute().body();
+        String bodyStr = HttpRequest.post(apiEndpoint + "/sys/request/allAvgPro")
+            .body(JSONUtil.toJsonStr(dto))
+            .header("Authorization", jwt).execute().body();
 
-        log.info("请求-所有请求的平均耗时-增强：增加筛选项：耗时：{}，bodyStr：{}", ApiTestHelper.calcCostMs(currentTs), bodyStr);
+        log.info("请求-所有请求的平均耗时-增强：增加筛选项：耗时：{}，bodyStr：{}",
+            ApiTestHelper.calcCostMs(currentTs), bodyStr);
 
     }
 
@@ -107,10 +115,12 @@ public class ApiTestSysRequestUtil {
 
         SysRequestPageDTO dto = new SysRequestPageDTO();
 
-        String bodyStr = HttpRequest.post(apiEndpoint + "/sys/request/page").body(JSONUtil.toJsonStr(dto))
-                .header("Authorization", jwt).execute().body();
+        String bodyStr = HttpRequest.post(apiEndpoint + "/sys/request/page")
+            .body(JSONUtil.toJsonStr(dto))
+            .header("Authorization", jwt).execute().body();
 
-        log.info("请求-分页排序查询：耗时：{}，bodyStr：{}", ApiTestHelper.calcCostMs(currentTs), bodyStr);
+        log.info("请求-分页排序查询：耗时：{}，bodyStr：{}", ApiTestHelper.calcCostMs(currentTs),
+            bodyStr);
 
     }
 

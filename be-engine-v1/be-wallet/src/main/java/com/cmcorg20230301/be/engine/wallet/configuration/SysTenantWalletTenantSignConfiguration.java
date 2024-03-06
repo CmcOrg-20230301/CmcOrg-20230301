@@ -21,7 +21,8 @@ public class SysTenantWalletTenantSignConfiguration implements ITenantSignConfig
     public void signUp(@NotNull Long tenantId) {
 
         SysUserWalletDO sysUserWalletDO =
-                SysUserWalletUserSignConfiguration.getInitSysUserWalletDO(BaseConstant.TENANT_USER_ID, tenantId);
+            SysUserWalletUserSignConfiguration.getInitSysUserWalletDO(BaseConstant.TENANT_USER_ID,
+                tenantId);
 
         sysUserWalletMapper.insert(sysUserWalletDO);
 
@@ -30,8 +31,9 @@ public class SysTenantWalletTenantSignConfiguration implements ITenantSignConfig
     @Override
     public void delete(Set<Long> tenantIdSet) {
 
-        ChainWrappers.lambdaUpdateChain(sysUserWalletMapper).eq(SysUserWalletDO::getId, BaseConstant.TENANT_USER_ID)
-                .in(SysUserWalletDO::getTenantId, tenantIdSet).remove();
+        ChainWrappers.lambdaUpdateChain(sysUserWalletMapper)
+            .eq(SysUserWalletDO::getId, BaseConstant.TENANT_USER_ID)
+            .in(SysUserWalletDO::getTenantId, tenantIdSet).remove();
 
     }
 

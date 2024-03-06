@@ -4,12 +4,11 @@ import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.StrUtil;
 import com.cmcorg20230301.be.engine.security.exception.BaseBizCodeEnum;
 import com.cmcorg20230301.be.engine.security.model.vo.ApiResultVO;
-
+import java.util.Set;
+import java.util.stream.Collectors;
 import javax.validation.ConstraintViolation;
 import javax.validation.Validation;
 import javax.validation.Validator;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 /**
  * 我的验证工具类
@@ -42,7 +41,8 @@ public class MyValidUtil {
             return null;
         }
 
-        return errSet.stream().map(ConstraintViolation::getMessage).collect(Collectors.toList()).toString();
+        return errSet.stream().map(ConstraintViolation::getMessage).collect(Collectors.toList())
+            .toString();
 
     }
 

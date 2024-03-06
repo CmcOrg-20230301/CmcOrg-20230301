@@ -22,6 +22,7 @@ public interface ISysPay {
     /**
      * 查询订单状态
      */
-    @NotNull SysPayTradeStatusEnum query(String outTradeNo, SysPayConfigurationDO sysPayConfigurationDO);
+    @NotNull SysPayTradeStatusEnum query(String outTradeNo,
+        SysPayConfigurationDO sysPayConfigurationDO);
 
 }

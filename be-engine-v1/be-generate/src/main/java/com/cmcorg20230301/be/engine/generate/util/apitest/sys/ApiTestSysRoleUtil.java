@@ -20,10 +20,9 @@ import com.cmcorg20230301.be.engine.security.model.entity.SysRoleDO;
 import com.cmcorg20230301.be.engine.security.model.vo.ApiResultVO;
 import com.cmcorg20230301.be.engine.user.model.dto.SysUserInsertOrUpdateDTO;
 import com.cmcorg20230301.be.engine.user.model.vo.SysUserPageVO;
-import lombok.extern.slf4j.Slf4j;
-
 import java.util.Set;
 import java.util.stream.Collectors;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * 角色相关接口测试工具
@@ -38,20 +37,23 @@ public class ApiTestSysRoleUtil {
     public static void main(String[] args) {
 
         // 执行
-        exec(API_ENDPOINT, ApiTestHelper.ADMIN_SIGN_IN_NAME, ApiTestHelper.ADMIN_PASSWORD, ApiTestHelper.RSA_PUBLIC_KEY,
-                IdUtil.simpleUUID());
+        exec(API_ENDPOINT, ApiTestHelper.ADMIN_SIGN_IN_NAME, ApiTestHelper.ADMIN_PASSWORD,
+            ApiTestHelper.RSA_PUBLIC_KEY,
+            IdUtil.simpleUUID());
 
     }
 
     /**
      * 执行
      */
-    private static void exec(String apiEndpoint, String adminSignInName, String adminPassword, String rsaPublicKey,
-                             String sysRoleName) {
+    private static void exec(String apiEndpoint, String adminSignInName, String adminPassword,
+        String rsaPublicKey,
+        String sysRoleName) {
 
         // 登录名-用户名账号密码登录
         SignInVO signInVO =
-                ApiTestSignSignInNameUtil.signInNameSignIn(apiEndpoint, adminSignInName, adminPassword, rsaPublicKey);
+            ApiTestSignSignInNameUtil.signInNameSignIn(apiEndpoint, adminSignInName, adminPassword,
+                rsaPublicKey);
 
         String jwt = signInVO.getJwt();
 
@@ -105,8 +107,9 @@ public class ApiTestSysRoleUtil {
         notEmptyIdSet.setIdSet(idSet);
 
         String bodyStr =
-                HttpRequest.post(apiEndpoint + "/sys/role/deleteByIdSet").body(JSONUtil.toJsonStr(notEmptyIdSet))
-                        .header("Authorization", jwt).execute().body();
+            HttpRequest.post(apiEndpoint + "/sys/role/deleteByIdSet")
+                .body(JSONUtil.toJsonStr(notEmptyIdSet))
+                .header("Authorization", jwt).execute().body();
 
         log.info("角色-批量删除：耗时：{}，bodyStr：{}", ApiTestHelper.calcCostMs(currentTs), bodyStr);
 
@@ -122,13 +125,16 @@ public class ApiTestSysRoleUtil {
         NotNullId notNullId = new NotNullId();
         notNullId.setId(id);
 
-        String bodyStr = HttpRequest.post(apiEndpoint + "/sys/role/infoById").body(JSONUtil.toJsonStr(notNullId))
-                .header("Authorization", jwt).execute().body();
+        String bodyStr = HttpRequest.post(apiEndpoint + "/sys/role/infoById")
+            .body(JSONUtil.toJsonStr(notNullId))
+            .header("Authorization", jwt).execute().body();
 
-        log.info("角色-通过主键id，查看详情：耗时：{}，bodyStr：{}", ApiTestHelper.calcCostMs(currentTs), bodyStr);
+        log.info("角色-通过主键id，查看详情：耗时：{}，bodyStr：{}", ApiTestHelper.calcCostMs(currentTs),
+            bodyStr);
 
-        ApiResultVO<SysRoleDO> apiResultVO = JSONUtil.toBean(bodyStr, new TypeReference<ApiResultVO<SysRoleDO>>() {
-        }, false);
+        ApiResultVO<SysRoleDO> apiResultVO = JSONUtil.toBean(bodyStr,
+            new TypeReference<ApiResultVO<SysRoleDO>>() {
+            }, false);
 
         return apiResultVO.getData();
 
@@ -137,7 +143,8 @@ public class ApiTestSysRoleUtil {
     /**
      * 角色-分页排序查询
      */
-    public static Page<SysRoleDO> sysRolePage(String apiEndpoint, String jwt, SysRoleInsertOrUpdateDTO dto) {
+    public static Page<SysRoleDO> sysRolePage(String apiEndpoint, String jwt,
+        SysRoleInsertOrUpdateDTO dto) {
 
         long currentTs = System.currentTimeMillis();
 
@@ -145,14 +152,16 @@ public class ApiTestSysRoleUtil {
         pageDTO.setName(dto.getName());
 
         String bodyStr =
-                HttpRequest.post(apiEndpoint + "/sys/role/page").body(JSONUtil.toJsonStr(dto)).header("Authorization", jwt)
-                        .execute().body();
+            HttpRequest.post(apiEndpoint + "/sys/role/page").body(JSONUtil.toJsonStr(dto))
+                .header("Authorization", jwt)
+                .execute().body();
 
-        log.info("角色-分页排序查询：耗时：{}，bodyStr：{}", ApiTestHelper.calcCostMs(currentTs), bodyStr);
+        log.info("角色-分页排序查询：耗时：{}，bodyStr：{}", ApiTestHelper.calcCostMs(currentTs),
+            bodyStr);
 
         ApiResultVO<Page<SysRoleDO>> apiResultVO =
-                JSONUtil.toBean(bodyStr, new TypeReference<ApiResultVO<Page<SysRoleDO>>>() {
-                }, false);
+            JSONUtil.toBean(bodyStr, new TypeReference<ApiResultVO<Page<SysRoleDO>>>() {
+            }, false);
 
         return apiResultVO.getData();
 
@@ -161,18 +170,21 @@ public class ApiTestSysRoleUtil {
     /**
      * 角色-新增/修改
      */
-    private static SysRoleInsertOrUpdateDTO sysRoleInsertOrUpdate(String apiEndpoint, String jwt, String sysRoleName) {
+    private static SysRoleInsertOrUpdateDTO sysRoleInsertOrUpdate(String apiEndpoint, String jwt,
+        String sysRoleName) {
 
         Page<SysMenuDO> sysMenuDOPage =
-                ApiTestSysMenuUtil.sysMenuPage(apiEndpoint, jwt, new SysMenuInsertOrUpdateDTO());
+            ApiTestSysMenuUtil.sysMenuPage(apiEndpoint, jwt, new SysMenuInsertOrUpdateDTO());
 
-        Set<Long> menuIdSet = sysMenuDOPage.getRecords().stream().map(BaseEntity::getId).collect(Collectors.toSet());
+        Set<Long> menuIdSet = sysMenuDOPage.getRecords().stream().map(BaseEntity::getId)
+            .collect(Collectors.toSet());
 
         Page<SysUserPageVO> sysUserPageVOPage =
-                ApiTestSysUserUtil.sysUserPage(apiEndpoint, jwt, new SysUserInsertOrUpdateDTO());
+            ApiTestSysUserUtil.sysUserPage(apiEndpoint, jwt, new SysUserInsertOrUpdateDTO());
 
         Set<Long> userIdSet =
-                sysUserPageVOPage.getRecords().stream().map(SysUserPageVO::getId).collect(Collectors.toSet());
+            sysUserPageVOPage.getRecords().stream().map(SysUserPageVO::getId)
+                .collect(Collectors.toSet());
 
         long currentTs = System.currentTimeMillis();
 
@@ -184,8 +196,9 @@ public class ApiTestSysRoleUtil {
         dto.setEnableFlag(true);
         dto.setRemark("");
 
-        String bodyStr = HttpRequest.post(apiEndpoint + "/sys/role/insertOrUpdate").body(JSONUtil.toJsonStr(dto))
-                .header("Authorization", jwt).execute().body();
+        String bodyStr = HttpRequest.post(apiEndpoint + "/sys/role/insertOrUpdate")
+            .body(JSONUtil.toJsonStr(dto))
+            .header("Authorization", jwt).execute().body();
 
         log.info("角色-新增/修改：耗时：{}，bodyStr：{}", ApiTestHelper.calcCostMs(currentTs), bodyStr);
 

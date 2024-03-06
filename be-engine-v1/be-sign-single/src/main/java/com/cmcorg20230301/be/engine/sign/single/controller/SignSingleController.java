@@ -47,13 +47,15 @@ public class SignSingleController {
 
     @PostMapping(value = "/sign/in/sendCode/phone")
     @Operation(summary = "统一登录：手机验证码登录：发送验证码")
-    public ApiResultVO<String> signInSendCodePhone(@RequestBody @Valid SignSingleSignInSendCodePhoneDTO dto) {
+    public ApiResultVO<String> signInSendCodePhone(
+        @RequestBody @Valid SignSingleSignInSendCodePhoneDTO dto) {
         return ApiResultVO.okMsg(baseService.signInSendCodePhone(dto));
     }
 
     @PostMapping(value = "/sign/in/code/phone")
     @Operation(summary = "统一登录：手机验证码登录", description = OperationDescriptionConstant.SIGN_IN)
-    public ApiResultVO<SignInVO> signInCodePhone(@RequestBody @Valid SignSingleSignInCodePhoneDTO dto) {
+    public ApiResultVO<SignInVO> signInCodePhone(
+        @RequestBody @Valid SignSingleSignInCodePhoneDTO dto) {
         return ApiResultVO.okData(baseService.signInCodePhone(dto));
     }
 

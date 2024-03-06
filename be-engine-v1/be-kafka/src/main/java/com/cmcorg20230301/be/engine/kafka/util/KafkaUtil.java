@@ -4,11 +4,10 @@ import com.cmcorg20230301.be.engine.kafka.model.enums.KafkaTopicEnum;
 import com.cmcorg20230301.be.engine.kafka.model.interfaces.IKafkaTopic;
 import com.cmcorg20230301.be.engine.model.model.dto.NotEmptyKeyValueSet;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import java.util.Set;
 import lombok.SneakyThrows;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Component;
-
-import java.util.Set;
 
 /**
  * Kafka 工具类
@@ -50,10 +49,10 @@ public class KafkaUtil {
      * 发送消息：企业微信接收到消息之后，发送需要处理的对象 topic
      */
     public static void sendSysOtherAppWxWorkReceiveMessageDTO(
-            Object sysOtherAppWxWorkReceiveMessageDTO) {
+        Object sysOtherAppWxWorkReceiveMessageDTO) {
 
         send(KafkaTopicEnum.SYS_OTHER_APP_WX_WORK_RECEIVE_MESSAGE_TOPIC,
-                sysOtherAppWxWorkReceiveMessageDTO);
+            sysOtherAppWxWorkReceiveMessageDTO);
 
     }
 
@@ -61,10 +60,10 @@ public class KafkaUtil {
      * 发送消息：微信公众号接收到消息之后，发送需要处理的对象 topic
      */
     public static void sendSysOtherAppWxOfficialAccountReceiveMessageDTO(
-            Object sysOtherAppWxOfficialAccountReceiveMessageDTO) {
+        Object sysOtherAppWxOfficialAccountReceiveMessageDTO) {
 
         send(KafkaTopicEnum.SYS_OTHER_APP_WX_OFFICIAL_ACCOUN_RECEIVE_MESSAGE_TOPIC,
-                sysOtherAppWxOfficialAccountReceiveMessageDTO);
+            sysOtherAppWxOfficialAccountReceiveMessageDTO);
 
     }
 

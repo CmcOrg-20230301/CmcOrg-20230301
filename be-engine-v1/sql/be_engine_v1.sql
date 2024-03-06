@@ -138,118 +138,141 @@ CREATE TABLE `sys_dict`
 INSERT INTO `sys_dict` (`id`, `tenant_id`, `create_id`, `create_time`, `update_id`, `update_time`,
                         `enable_flag`, `version`, `del_flag`, `remark`, `dict_key`, `name`, `type`,
                         `value`, `order_no`, `uuid`, `system_flag`)
-VALUES (230602172317117446, 0, 0, '2023-06-02 17:23:17', 0, '2023-06-02 17:23:17', 1, 0, 0, '', 'sys_request_category',
+VALUES (230602172317117446, 0, 0, '2023-06-02 17:23:17', 0, '2023-06-02 17:23:17', 1, 0, 0, '',
+        'sys_request_category',
         '请求类别', 1, -1, 10000, '7e56dc276554434e87c045de5eff459f', 1);
 INSERT INTO `sys_dict` (`id`, `tenant_id`, `create_id`, `create_time`, `update_id`, `update_time`,
                         `enable_flag`, `version`, `del_flag`, `remark`, `dict_key`, `name`, `type`,
                         `value`, `order_no`, `uuid`, `system_flag`)
-VALUES (230602172924117450, 0, 0, '2023-06-02 17:29:24', 0, '2023-06-02 17:32:06', 1, 0, 0, '', 'sys_request_category',
+VALUES (230602172924117450, 0, 0, '2023-06-02 17:29:24', 0, '2023-06-02 17:32:06', 1, 0, 0, '',
+        'sys_request_category',
         'windows-浏览器', 2, 101, 10000, '08a2702cc939421ebc877aef9053b241', 1);
 INSERT INTO `sys_dict` (`id`, `tenant_id`, `create_id`, `create_time`, `update_id`, `update_time`,
                         `enable_flag`, `version`, `del_flag`, `remark`, `dict_key`, `name`, `type`,
                         `value`, `order_no`, `uuid`, `system_flag`)
-VALUES (230602173355117474, 0, 0, '2023-06-02 17:33:56', 0, '2023-06-02 17:34:00', 1, 0, 0, '', 'sys_request_category',
+VALUES (230602173355117474, 0, 0, '2023-06-02 17:33:56', 0, '2023-06-02 17:34:00', 1, 0, 0, '',
+        'sys_request_category',
         'mac-浏览器', 2, 102, 9900, '340d327435c24502ae0cd6840f8d3339', 1);
 INSERT INTO `sys_dict` (`id`, `tenant_id`, `create_id`, `create_time`, `update_id`, `update_time`,
                         `enable_flag`, `version`, `del_flag`, `remark`, `dict_key`, `name`, `type`,
                         `value`, `order_no`, `uuid`, `system_flag`)
-VALUES (230602173407117480, 0, 0, '2023-06-02 17:34:08', 0, '2023-06-02 17:34:08', 1, 0, 0, '', 'sys_request_category',
+VALUES (230602173407117480, 0, 0, '2023-06-02 17:34:08', 0, '2023-06-02 17:34:08', 1, 0, 0, '',
+        'sys_request_category',
         'linux-浏览器', 2, 103, 9800, '8babfedd533b496f9e53a4758807d974', 1);
 INSERT INTO `sys_dict` (`id`, `tenant_id`, `create_id`, `create_time`, `update_id`, `update_time`,
                         `enable_flag`, `version`, `del_flag`, `remark`, `dict_key`, `name`, `type`,
                         `value`, `order_no`, `uuid`, `system_flag`)
-VALUES (230602173426117483, 0, 0, '2023-06-02 17:34:27', 0, '2023-06-02 17:34:27', 1, 0, 0, '', 'sys_request_category',
+VALUES (230602173426117483, 0, 0, '2023-06-02 17:34:27', 0, '2023-06-02 17:34:27', 1, 0, 0, '',
+        'sys_request_category',
         'windows-客户端', 2, 201, 9700, 'd94105f521354c6fa72e85ab729f577d', 1);
 INSERT INTO `sys_dict` (`id`, `tenant_id`, `create_id`, `create_time`, `update_id`, `update_time`,
                         `enable_flag`, `version`, `del_flag`, `remark`, `dict_key`, `name`, `type`,
                         `value`, `order_no`, `uuid`, `system_flag`)
-VALUES (230602173437117486, 0, 0, '2023-06-02 17:34:37', 0, '2023-06-02 17:34:37', 1, 0, 0, '', 'sys_request_category',
+VALUES (230602173437117486, 0, 0, '2023-06-02 17:34:37', 0, '2023-06-02 17:34:37', 1, 0, 0, '',
+        'sys_request_category',
         'mac-客户端', 2, 202, 9600, 'e30fa6e51c714c578358ddb509973ccc', 1);
 INSERT INTO `sys_dict` (`id`, `tenant_id`, `create_id`, `create_time`, `update_id`, `update_time`,
                         `enable_flag`, `version`, `del_flag`, `remark`, `dict_key`, `name`, `type`,
                         `value`, `order_no`, `uuid`, `system_flag`)
-VALUES (230602173443117489, 0, 0, '2023-06-02 17:34:43', 0, '2023-06-02 17:34:43', 1, 0, 0, '', 'sys_request_category',
+VALUES (230602173443117489, 0, 0, '2023-06-02 17:34:43', 0, '2023-06-02 17:34:43', 1, 0, 0, '',
+        'sys_request_category',
         'linux-客户端', 2, 203, 9500, 'ec96af09f632477f8ba5ac5bab2f6844', 1);
 INSERT INTO `sys_dict` (`id`, `tenant_id`, `create_id`, `create_time`, `update_id`, `update_time`,
                         `enable_flag`, `version`, `del_flag`, `remark`, `dict_key`, `name`, `type`,
                         `value`, `order_no`, `uuid`, `system_flag`)
-VALUES (230602173451117492, 0, 0, '2023-06-02 17:34:52', 0, '2023-06-02 17:34:52', 1, 0, 0, '', 'sys_request_category',
+VALUES (230602173451117492, 0, 0, '2023-06-02 17:34:52', 0, '2023-06-02 17:34:52', 1, 0, 0, '',
+        'sys_request_category',
         '安卓端', 2, 301, 9400, '49bb59c89fc64cdda36928ae85b3780c', 1);
 INSERT INTO `sys_dict` (`id`, `tenant_id`, `create_id`, `create_time`, `update_id`, `update_time`,
                         `enable_flag`, `version`, `del_flag`, `remark`, `dict_key`, `name`, `type`,
                         `value`, `order_no`, `uuid`, `system_flag`)
-VALUES (230602173457117495, 0, 0, '2023-06-02 17:34:58', 0, '2023-06-02 17:34:58', 1, 0, 0, '', 'sys_request_category',
+VALUES (230602173457117495, 0, 0, '2023-06-02 17:34:58', 0, '2023-06-02 17:34:58', 1, 0, 0, '',
+        'sys_request_category',
         '安卓-浏览器', 2, 302, 9300, 'da949f68c67647349b57099f60ce4da0', 1);
 INSERT INTO `sys_dict` (`id`, `tenant_id`, `create_id`, `create_time`, `update_id`, `update_time`,
                         `enable_flag`, `version`, `del_flag`, `remark`, `dict_key`, `name`, `type`,
                         `value`, `order_no`, `uuid`, `system_flag`)
-VALUES (230602173503117498, 0, 0, '2023-06-02 17:35:03', 0, '2023-06-02 17:35:03', 1, 0, 0, '', 'sys_request_category',
+VALUES (230602173503117498, 0, 0, '2023-06-02 17:35:03', 0, '2023-06-02 17:35:03', 1, 0, 0, '',
+        'sys_request_category',
         '安卓-浏览器-微信', 2, 303, 9200, '48263073c7cb4a2e813890cc5dbae083', 1);
 INSERT INTO `sys_dict` (`id`, `tenant_id`, `create_id`, `create_time`, `update_id`, `update_time`,
                         `enable_flag`, `version`, `del_flag`, `remark`, `dict_key`, `name`, `type`,
                         `value`, `order_no`, `uuid`, `system_flag`)
-VALUES (230602173512117501, 0, 0, '2023-06-02 17:35:12', 0, '2023-06-02 17:35:12', 1, 0, 0, '', 'sys_request_category',
+VALUES (230602173512117501, 0, 0, '2023-06-02 17:35:12', 0, '2023-06-02 17:35:12', 1, 0, 0, '',
+        'sys_request_category',
         '苹果端', 2, 401, 9100, '792d008442cd436397047698b14c0578', 1);
 INSERT INTO `sys_dict` (`id`, `tenant_id`, `create_id`, `create_time`, `update_id`, `update_time`,
                         `enable_flag`, `version`, `del_flag`, `remark`, `dict_key`, `name`, `type`,
                         `value`, `order_no`, `uuid`, `system_flag`)
-VALUES (230602173532117507, 0, 0, '2023-06-02 17:35:32', 0, '2023-06-02 17:35:41', 1, 0, 0, '', 'sys_request_category',
+VALUES (230602173532117507, 0, 0, '2023-06-02 17:35:32', 0, '2023-06-02 17:35:41', 1, 0, 0, '',
+        'sys_request_category',
         '苹果-浏览器', 2, 402, 9000, '55a4f2f71a3c4390b540a0a6944e1418', 1);
 INSERT INTO `sys_dict` (`id`, `tenant_id`, `create_id`, `create_time`, `update_id`, `update_time`,
                         `enable_flag`, `version`, `del_flag`, `remark`, `dict_key`, `name`, `type`,
                         `value`, `order_no`, `uuid`, `system_flag`)
-VALUES (230602173538117510, 0, 0, '2023-06-02 17:35:38', 0, '2023-06-02 17:35:38', 1, 0, 0, '', 'sys_request_category',
+VALUES (230602173538117510, 0, 0, '2023-06-02 17:35:38', 0, '2023-06-02 17:35:38', 1, 0, 0, '',
+        'sys_request_category',
         '苹果-浏览器-微信', 2, 403, 8900, 'fd05b29318004da8843470abc0e5e771', 1);
 INSERT INTO `sys_dict` (`id`, `tenant_id`, `create_id`, `create_time`, `update_id`, `update_time`,
                         `enable_flag`, `version`, `del_flag`, `remark`, `dict_key`, `name`, `type`,
                         `value`, `order_no`, `uuid`, `system_flag`)
-VALUES (230602173552117516, 0, 0, '2023-06-02 17:35:53', 0, '2023-06-02 17:35:53', 1, 0, 0, '', 'sys_request_category',
+VALUES (230602173552117516, 0, 0, '2023-06-02 17:35:53', 0, '2023-06-02 17:35:53', 1, 0, 0, '',
+        'sys_request_category',
         '小程序-微信-安卓', 2, 501, 8800, '9c9cfed7019c487c8d469bc0e1cce7ad', 1);
 INSERT INTO `sys_dict` (`id`, `tenant_id`, `create_id`, `create_time`, `update_id`, `update_time`,
                         `enable_flag`, `version`, `del_flag`, `remark`, `dict_key`, `name`, `type`,
                         `value`, `order_no`, `uuid`, `system_flag`)
-VALUES (230602173602117519, 0, 0, '2023-06-02 17:36:03', 0, '2023-06-02 17:36:03', 1, 0, 0, '', 'sys_request_category',
+VALUES (230602173602117519, 0, 0, '2023-06-02 17:36:03', 0, '2023-06-02 17:36:03', 1, 0, 0, '',
+        'sys_request_category',
         '小程序-微信-苹果', 2, 502, 8700, '45a5cc91202c45f58eae1f7e6955b2aa', 1);
 INSERT INTO `sys_dict` (`id`, `tenant_id`, `create_id`, `create_time`, `update_id`, `update_time`,
                         `enable_flag`, `version`, `del_flag`, `remark`, `dict_key`, `name`, `type`,
                         `value`, `order_no`, `uuid`, `system_flag`)
-VALUES (230810115441152907, 0, 0, '2023-08-10 11:54:42', 0, '2023-08-10 12:01:29', 1, 0, 0, '', 'sys_request_category',
+VALUES (230810115441152907, 0, 0, '2023-08-10 11:54:42', 0, '2023-08-10 12:01:29', 1, 0, 0, '',
+        'sys_request_category',
         'windows-浏览器-微信', 2, 104, 9790, '174aee7dec7e4e68a599e341f4ffd706', 1);
 INSERT INTO `sys_dict` (`id`, `tenant_id`, `create_id`, `create_time`, `update_id`, `update_time`,
                         `enable_flag`, `version`, `del_flag`, `remark`, `dict_key`, `name`, `type`,
                         `value`, `order_no`, `uuid`, `system_flag`)
-VALUES (230810120204152982, 0, 0, '2023-08-10 12:02:04', 0, '2023-08-10 12:02:04', 1, 0, 0, '', 'sys_request_category',
+VALUES (230810120204152982, 0, 0, '2023-08-10 12:02:04', 0, '2023-08-10 12:02:04', 1, 0, 0, '',
+        'sys_request_category',
         'mac-浏览器-微信', 2, 105, 9780, '450e51f96a8046db8dcb471ddb803d35', 1);
 INSERT INTO `sys_dict` (`id`, `tenant_id`, `create_id`, `create_time`, `update_id`, `update_time`,
                         `enable_flag`, `version`, `del_flag`, `remark`, `dict_key`, `name`, `type`,
                         `value`, `order_no`, `uuid`, `system_flag`)
-VALUES (230810120224152985, 0, 0, '2023-08-10 12:02:24', 0, '2023-08-10 12:02:24', 1, 0, 0, '', 'sys_request_category',
+VALUES (230810120224152985, 0, 0, '2023-08-10 12:02:24', 0, '2023-08-10 12:02:24', 1, 0, 0, '',
+        'sys_request_category',
         'linux-浏览器-微信', 2, 106, 9770, '03f02ce14bb149dab417ba42cc1d10c3', 1);
 INSERT INTO `sys_dict` (`id`, `tenant_id`, `create_id`, `create_time`, `update_id`, `update_time`,
                         `enable_flag`, `version`, `del_flag`, `remark`, `dict_key`, `name`, `type`,
                         `value`, `order_no`, `uuid`, `system_flag`)
-VALUES (230816153518154273, 0, 0, '2023-08-16 15:35:18', 0, '2023-08-16 15:35:18', 1, 0, 0, '', 'sys_socket_type',
+VALUES (230816153518154273, 0, 0, '2023-08-16 15:35:18', 0, '2023-08-16 15:35:18', 1, 0, 0, '',
+        'sys_socket_type',
         'socket类型', 1, -1, 9900, 'bcebb3c73e204ecf9307ed40016057fd', 1);
 INSERT INTO `sys_dict` (`id`, `tenant_id`, `create_id`, `create_time`, `update_id`, `update_time`,
                         `enable_flag`, `version`, `del_flag`, `remark`, `dict_key`, `name`, `type`,
                         `value`, `order_no`, `uuid`, `system_flag`)
-VALUES (230816153602154277, 0, 0, '2023-08-16 15:36:02', 0, '2023-08-23 17:08:24', 1, 0, 0, '', 'sys_socket_type',
+VALUES (230816153602154277, 0, 0, '2023-08-16 15:36:02', 0, '2023-08-23 17:08:24', 1, 0, 0, '',
+        'sys_socket_type',
         'tcp_protobuf', 2, 101, 10000, 'c49e57d255b644c1aa4f05cb872c88c7', 1);
 INSERT INTO `sys_dict` (`id`, `tenant_id`, `create_id`, `create_time`, `update_id`, `update_time`,
                         `enable_flag`, `version`, `del_flag`, `remark`, `dict_key`, `name`, `type`,
                         `value`, `order_no`, `uuid`, `system_flag`)
-VALUES (230816153610154281, 0, 0, '2023-08-16 15:36:11', 0, '2023-08-23 17:08:28', 1, 0, 0, '', 'sys_socket_type',
+VALUES (230816153610154281, 0, 0, '2023-08-16 15:36:11', 0, '2023-08-23 17:08:28', 1, 0, 0, '',
+        'sys_socket_type',
         'web_socket', 2, 201, 9900, '652e76d2e5da41aa9df1954b13e36a5a', 1);
 INSERT INTO `sys_dict` (`id`, `tenant_id`, `create_id`, `create_time`, `update_id`, `update_time`,
                         `enable_flag`, `version`, `del_flag`, `remark`, `dict_key`, `name`, `type`,
                         `value`, `order_no`, `uuid`, `system_flag`)
-VALUES (230816153619154284, 0, 0, '2023-08-16 15:36:19', 0, '2023-08-23 17:08:31', 1, 0, 0, '', 'sys_socket_type',
+VALUES (230816153619154284, 0, 0, '2023-08-16 15:36:19', 0, '2023-08-23 17:08:31', 1, 0, 0, '',
+        'sys_socket_type',
         'udp_protobuf', 2, 301, 9800, '99c5de40bdaa4ed780861f8e851d39f4', 1);
 INSERT INTO `sys_dict` (`id`, `tenant_id`, `create_id`, `create_time`, `update_id`, `update_time`,
                         `enable_flag`, `version`, `del_flag`, `remark`, `dict_key`, `name`, `type`,
                         `value`, `order_no`, `uuid`, `system_flag`)
 VALUES (230823164923154681, 0, 0, '2023-08-23 16:49:23', 0, '2023-08-23 16:49:43', 1, 0, 0, '',
-        'sys_socket_online_type', 'socket在线状态', 1, -1, 9800, '2eb263aeb0ca4a909ca26187dcc331b5', 1);
+        'sys_socket_online_type', 'socket在线状态', 1, -1, 9800, '2eb263aeb0ca4a909ca26187dcc331b5',
+        1);
 INSERT INTO `sys_dict` (`id`, `tenant_id`, `create_id`, `create_time`, `update_id`, `update_time`,
                         `enable_flag`, `version`, `del_flag`, `remark`, `dict_key`, `name`, `type`,
                         `value`, `order_no`, `uuid`, `system_flag`)
@@ -264,56 +287,84 @@ INSERT INTO `sys_dict` (`id`, `tenant_id`, `create_id`, `create_time`, `update_i
                         `enable_flag`, `version`, `del_flag`, `remark`, `dict_key`, `name`, `type`,
                         `value`, `order_no`, `uuid`, `system_flag`)
 VALUES (230823165101154704, 0, 0, '2023-08-23 16:51:01', 0, '2023-08-23 16:51:01', 1, 0, 0, '',
-        'sys_socket_online_type', 'ping_test', 2, 100001, 9800, 'bfdef308355649ccb87f075f3924b1f3', 1);
-INSERT INTO `be_engine_v1`.`sys_dict` (`id`, `tenant_id`, `create_id`, `create_time`, `update_id`, `update_time`,
-                                       `enable_flag`, `version`, `del_flag`, `remark`, `dict_key`, `name`, `type`,
+        'sys_socket_online_type', 'ping_test', 2, 100001, 9800, 'bfdef308355649ccb87f075f3924b1f3',
+        1);
+INSERT INTO `be_engine_v1`.`sys_dict` (`id`, `tenant_id`, `create_id`, `create_time`, `update_id`,
+                                       `update_time`,
+                                       `enable_flag`, `version`, `del_flag`, `remark`, `dict_key`,
+                                       `name`, `type`,
                                        `value`, `order_no`, `uuid`, `system_flag`)
-VALUES (231023100017080109, 0, 0, '2023-10-23 10:00:18', 0, '2023-10-23 10:00:18', 1, 0, 0, '', 'sys_pay_type',
+VALUES (231023100017080109, 0, 0, '2023-10-23 10:00:18', 0, '2023-10-23 10:00:18', 1, 0, 0, '',
+        'sys_pay_type',
         '支付方式',
         1, -1, 9500, 'fa934b92b7e84d0d92543743ec6c369c', 1);
-INSERT INTO `be_engine_v1`.`sys_dict` (`id`, `tenant_id`, `create_id`, `create_time`, `update_id`, `update_time`,
-                                       `enable_flag`, `version`, `del_flag`, `remark`, `dict_key`, `name`, `type`,
+INSERT INTO `be_engine_v1`.`sys_dict` (`id`, `tenant_id`, `create_id`, `create_time`, `update_id`,
+                                       `update_time`,
+                                       `enable_flag`, `version`, `del_flag`, `remark`, `dict_key`,
+                                       `name`, `type`,
                                        `value`, `order_no`, `uuid`, `system_flag`)
-VALUES (231023100056080114, 0, 0, '2023-10-23 10:00:56', 0, '2023-10-23 10:00:56', 1, 0, 0, '', 'sys_pay_type',
+VALUES (231023100056080114, 0, 0, '2023-10-23 10:00:56', 0, '2023-10-23 10:00:56', 1, 0, 0, '',
+        'sys_pay_type',
         '支付宝',
         2, 101, 10000, '5cd6ba1880314633a322b534410e212c', 1);
-INSERT INTO `be_engine_v1`.`sys_dict` (`id`, `tenant_id`, `create_id`, `create_time`, `update_id`, `update_time`,
-                                       `enable_flag`, `version`, `del_flag`, `remark`, `dict_key`, `name`, `type`,
+INSERT INTO `be_engine_v1`.`sys_dict` (`id`, `tenant_id`, `create_id`, `create_time`, `update_id`,
+                                       `update_time`,
+                                       `enable_flag`, `version`, `del_flag`, `remark`, `dict_key`,
+                                       `name`, `type`,
                                        `value`, `order_no`, `uuid`, `system_flag`)
-VALUES (231023100115080119, 0, 0, '2023-10-23 10:01:15', 0, '2023-10-23 10:01:15', 1, 0, 0, '', 'sys_pay_type', '微信',
+VALUES (231023100115080119, 0, 0, '2023-10-23 10:01:15', 0, '2023-10-23 10:01:15', 1, 0, 0, '',
+        'sys_pay_type', '微信',
         2,
         201, 9900, '376ffa1bf407420c858d0c0a802da9e7', 1);
-INSERT INTO `be_engine_v1`.`sys_dict` (`id`, `tenant_id`, `create_id`, `create_time`, `update_id`, `update_time`,
-                                       `enable_flag`, `version`, `del_flag`, `remark`, `dict_key`, `name`, `type`,
+INSERT INTO `be_engine_v1`.`sys_dict` (`id`, `tenant_id`, `create_id`, `create_time`, `update_id`,
+                                       `update_time`,
+                                       `enable_flag`, `version`, `del_flag`, `remark`, `dict_key`,
+                                       `name`, `type`,
                                        `value`, `order_no`, `uuid`, `system_flag`)
-VALUES (231023100126080124, 0, 0, '2023-10-23 10:01:26', 0, '2023-10-23 10:01:26', 1, 0, 0, '', 'sys_pay_type',
+VALUES (231023100126080124, 0, 0, '2023-10-23 10:01:26', 0, '2023-10-23 10:01:26', 1, 0, 0, '',
+        'sys_pay_type',
         '云闪付',
         2, 301, 9800, '5fd4331fd7e14a41872a2b977d3ad56b', 1);
-INSERT INTO `be_engine_v1`.`sys_dict` (`id`, `tenant_id`, `create_id`, `create_time`, `update_id`, `update_time`,
-                                       `enable_flag`, `version`, `del_flag`, `remark`, `dict_key`, `name`, `type`,
+INSERT INTO `be_engine_v1`.`sys_dict` (`id`, `tenant_id`, `create_id`, `create_time`, `update_id`,
+                                       `update_time`,
+                                       `enable_flag`, `version`, `del_flag`, `remark`, `dict_key`,
+                                       `name`, `type`,
                                        `value`, `order_no`, `uuid`, `system_flag`)
-VALUES (231023100136080128, 0, 0, '2023-10-23 10:01:37', 0, '2023-10-23 10:01:37', 1, 0, 0, '', 'sys_pay_type', '谷歌',
+VALUES (231023100136080128, 0, 0, '2023-10-23 10:01:37', 0, '2023-10-23 10:01:37', 1, 0, 0, '',
+        'sys_pay_type', '谷歌',
         2,
         401, 9700, 'ae1954ff27a448c196170b2c20e1774f', 1);
-INSERT INTO `be_engine_v1`.`sys_dict` (`id`, `tenant_id`, `create_id`, `create_time`, `update_id`, `update_time`,
-                                       `enable_flag`, `version`, `del_flag`, `remark`, `dict_key`, `name`, `type`,
+INSERT INTO `be_engine_v1`.`sys_dict` (`id`, `tenant_id`, `create_id`, `create_time`, `update_id`,
+                                       `update_time`,
+                                       `enable_flag`, `version`, `del_flag`, `remark`, `dict_key`,
+                                       `name`, `type`,
                                        `value`, `order_no`, `uuid`, `system_flag`)
-VALUES (231023100245080135, 0, 0, '2023-10-23 10:02:46', 0, '2023-10-23 10:02:46', 1, 0, 0, '', 'sys_other_app_type',
+VALUES (231023100245080135, 0, 0, '2023-10-23 10:02:46', 0, '2023-10-23 10:02:46', 1, 0, 0, '',
+        'sys_other_app_type',
         '第三方应用类型', 1, -1, 9400, '73b703820ca94e50bde9b17886c26f44', 1);
-INSERT INTO `be_engine_v1`.`sys_dict` (`id`, `tenant_id`, `create_id`, `create_time`, `update_id`, `update_time`,
-                                       `enable_flag`, `version`, `del_flag`, `remark`, `dict_key`, `name`, `type`,
+INSERT INTO `be_engine_v1`.`sys_dict` (`id`, `tenant_id`, `create_id`, `create_time`, `update_id`,
+                                       `update_time`,
+                                       `enable_flag`, `version`, `del_flag`, `remark`, `dict_key`,
+                                       `name`, `type`,
                                        `value`, `order_no`, `uuid`, `system_flag`)
-VALUES (231023100257080139, 0, 0, '2023-10-23 10:02:58', 0, '2023-10-23 10:02:58', 1, 0, 0, '', 'sys_other_app_type',
+VALUES (231023100257080139, 0, 0, '2023-10-23 10:02:58', 0, '2023-10-23 10:02:58', 1, 0, 0, '',
+        'sys_other_app_type',
         '微信小程序', 2, 101, 10000, 'b64c2b9d483546c5ad9a1f8e36df7018', 1);
-INSERT INTO `be_engine_v1`.`sys_dict` (`id`, `tenant_id`, `create_id`, `create_time`, `update_id`, `update_time`,
-                                       `enable_flag`, `version`, `del_flag`, `remark`, `dict_key`, `name`, `type`,
+INSERT INTO `be_engine_v1`.`sys_dict` (`id`, `tenant_id`, `create_id`, `create_time`, `update_id`,
+                                       `update_time`,
+                                       `enable_flag`, `version`, `del_flag`, `remark`, `dict_key`,
+                                       `name`, `type`,
                                        `value`, `order_no`, `uuid`, `system_flag`)
-VALUES (231023100309080144, 0, 0, '2023-10-23 10:03:10', 0, '2023-10-23 10:03:10', 1, 0, 0, '', 'sys_other_app_type',
+VALUES (231023100309080144, 0, 0, '2023-10-23 10:03:10', 0, '2023-10-23 10:03:10', 1, 0, 0, '',
+        'sys_other_app_type',
         '微信公众号', 2, 102, 9900, '8903df79fa784e96a0fb60e3df879f6e', 1);
-INSERT INTO `be_engine_v1`.`sys_dict` (`id`, `tenant_id`, `create_id`, `create_time`, `update_id`, `update_time`,
-                                       `enable_flag`, `version`, `del_flag`, `remark`, `dict_key`, `name`, `type`,
+INSERT INTO `be_engine_v1`.`sys_dict` (`id`, `tenant_id`, `create_id`, `create_time`, `update_id`,
+                                       `update_time`,
+                                       `enable_flag`, `version`, `del_flag`, `remark`, `dict_key`,
+                                       `name`, `type`,
                                        `value`, `order_no`, `uuid`, `system_flag`)
-VALUES (231023100318080148, 0, 0, '2023-10-23 10:03:19', 0, '2023-10-23 10:03:19', 1, 0, 0, '', 'sys_other_app_type',
+VALUES (231023100318080148, 0, 0, '2023-10-23 10:03:19', 0, '2023-10-23 10:03:19', 1, 0, 0, '',
+        'sys_other_app_type',
         '支付宝小程序', 2, 201, 9800, '1d559f6e02484b608a69c16b255a0792', 1);
 
 
@@ -425,390 +476,703 @@ CREATE TABLE `sys_menu`
 -- ----------------------------
 -- Records of sys_menu
 -- ----------------------------
-INSERT INTO `sys_menu` (`id`, `tenant_id`, `create_id`, `create_time`, `update_id`, `update_time`, `enable_flag`,
-                        `version`, `del_flag`, `remark`, `name`, `path`, `icon`, `parent_id`, `auths`, `show_flag`,
-                        `link_flag`, `router`, `redirect`, `order_no`, `first_flag`, `auth_flag`, `uuid`)
-VALUES (3, 0, 1, '2021-12-22 10:53:32', 0, '2023-05-23 22:18:42', 1, 2, 0, '', '系统管理', '', 'SettingOutlined',
+INSERT INTO `sys_menu` (`id`, `tenant_id`, `create_id`, `create_time`, `update_id`, `update_time`,
+                        `enable_flag`,
+                        `version`, `del_flag`, `remark`, `name`, `path`, `icon`, `parent_id`,
+                        `auths`, `show_flag`,
+                        `link_flag`, `router`, `redirect`, `order_no`, `first_flag`, `auth_flag`,
+                        `uuid`)
+VALUES (3, 0, 1, '2021-12-22 10:53:32', 0, '2023-05-23 22:18:42', 1, 2, 0, '', '系统管理', '',
+        'SettingOutlined',
         221004205817000054, '', 1, 0, '', '', 9900, 0, 0, 'e2e208c7578547f48b21bc51690535ff');
-INSERT INTO `sys_menu` (`id`, `tenant_id`, `create_id`, `create_time`, `update_id`, `update_time`, `enable_flag`,
-                        `version`, `del_flag`, `remark`, `name`, `path`, `icon`, `parent_id`, `auths`, `show_flag`,
-                        `link_flag`, `router`, `redirect`, `order_no`, `first_flag`, `auth_flag`, `uuid`)
-VALUES (4, 0, 1, '2021-12-20 11:10:15', 0, '2023-06-01 14:07:47', 1, 2, 0, '', '菜单管理', '/admin/sys/menu', '', 3, '',
+INSERT INTO `sys_menu` (`id`, `tenant_id`, `create_id`, `create_time`, `update_id`, `update_time`,
+                        `enable_flag`,
+                        `version`, `del_flag`, `remark`, `name`, `path`, `icon`, `parent_id`,
+                        `auths`, `show_flag`,
+                        `link_flag`, `router`, `redirect`, `order_no`, `first_flag`, `auth_flag`,
+                        `uuid`)
+VALUES (4, 0, 1, '2021-12-20 11:10:15', 0, '2023-06-01 14:07:47', 1, 2, 0, '', '菜单管理',
+        '/admin/sys/menu', '', 3, '',
         1,
         0, 'sysMenuMenu', '', 10000, 0, 0, '7c881482370d49b182e50909b248ca74');
-INSERT INTO `sys_menu` (`id`, `tenant_id`, `create_id`, `create_time`, `update_id`, `update_time`, `enable_flag`,
-                        `version`, `del_flag`, `remark`, `name`, `path`, `icon`, `parent_id`, `auths`, `show_flag`,
-                        `link_flag`, `router`, `redirect`, `order_no`, `first_flag`, `auth_flag`, `uuid`)
-VALUES (5, 0, 1, '2022-05-21 01:00:18', 1, '2022-05-21 01:00:18', 1, 2, 0, '', '新增修改', '', '', 4,
+INSERT INTO `sys_menu` (`id`, `tenant_id`, `create_id`, `create_time`, `update_id`, `update_time`,
+                        `enable_flag`,
+                        `version`, `del_flag`, `remark`, `name`, `path`, `icon`, `parent_id`,
+                        `auths`, `show_flag`,
+                        `link_flag`, `router`, `redirect`, `order_no`, `first_flag`, `auth_flag`,
+                        `uuid`)
+VALUES (5, 0, 1, '2022-05-21 01:00:18', 1, '2022-05-21 01:00:18', 1, 2, 0, '', '新增修改', '', '',
+        4,
         'sysMenu:insertOrUpdate', 0, 0, '', '', 10000, 0, 1, 'c270837361cd434a8d645500ec069999');
-INSERT INTO `sys_menu` (`id`, `tenant_id`, `create_id`, `create_time`, `update_id`, `update_time`, `enable_flag`,
-                        `version`, `del_flag`, `remark`, `name`, `path`, `icon`, `parent_id`, `auths`, `show_flag`,
-                        `link_flag`, `router`, `redirect`, `order_no`, `first_flag`, `auth_flag`, `uuid`)
-VALUES (6, 0, 1, '2022-05-21 01:00:18', 1, '2022-05-21 01:00:18', 1, 2, 0, '', '列表查询', '', '', 4, 'sysMenu:page', 0,
+INSERT INTO `sys_menu` (`id`, `tenant_id`, `create_id`, `create_time`, `update_id`, `update_time`,
+                        `enable_flag`,
+                        `version`, `del_flag`, `remark`, `name`, `path`, `icon`, `parent_id`,
+                        `auths`, `show_flag`,
+                        `link_flag`, `router`, `redirect`, `order_no`, `first_flag`, `auth_flag`,
+                        `uuid`)
+VALUES (6, 0, 1, '2022-05-21 01:00:18', 1, '2022-05-21 01:00:18', 1, 2, 0, '', '列表查询', '', '',
+        4, 'sysMenu:page', 0,
         0,
         '', '', 9990, 0, 1, 'dc7021d578894376bd2d4aa0fca7f969');
-INSERT INTO `sys_menu` (`id`, `tenant_id`, `create_id`, `create_time`, `update_id`, `update_time`, `enable_flag`,
-                        `version`, `del_flag`, `remark`, `name`, `path`, `icon`, `parent_id`, `auths`, `show_flag`,
-                        `link_flag`, `router`, `redirect`, `order_no`, `first_flag`, `auth_flag`, `uuid`)
+INSERT INTO `sys_menu` (`id`, `tenant_id`, `create_id`, `create_time`, `update_id`, `update_time`,
+                        `enable_flag`,
+                        `version`, `del_flag`, `remark`, `name`, `path`, `icon`, `parent_id`,
+                        `auths`, `show_flag`,
+                        `link_flag`, `router`, `redirect`, `order_no`, `first_flag`, `auth_flag`,
+                        `uuid`)
 VALUES (7, 0, 1, '2022-05-21 01:00:19', 1, '2022-05-21 01:00:19', 1, 2, 0, '', '删除', '', '', 4,
         'sysMenu:deleteByIdSet',
         0, 0, '', '', 9980, 0, 1, '9116fbdc0c164ef3a443003814bb95fe');
-INSERT INTO `sys_menu` (`id`, `tenant_id`, `create_id`, `create_time`, `update_id`, `update_time`, `enable_flag`,
-                        `version`, `del_flag`, `remark`, `name`, `path`, `icon`, `parent_id`, `auths`, `show_flag`,
-                        `link_flag`, `router`, `redirect`, `order_no`, `first_flag`, `auth_flag`, `uuid`)
-VALUES (8, 0, 1, '2022-05-21 01:00:19', 1, '2022-05-21 01:00:19', 1, 2, 0, '', '查看详情', '', '', 4,
+INSERT INTO `sys_menu` (`id`, `tenant_id`, `create_id`, `create_time`, `update_id`, `update_time`,
+                        `enable_flag`,
+                        `version`, `del_flag`, `remark`, `name`, `path`, `icon`, `parent_id`,
+                        `auths`, `show_flag`,
+                        `link_flag`, `router`, `redirect`, `order_no`, `first_flag`, `auth_flag`,
+                        `uuid`)
+VALUES (8, 0, 1, '2022-05-21 01:00:19', 1, '2022-05-21 01:00:19', 1, 2, 0, '', '查看详情', '', '',
+        4,
         'sysMenu:infoById', 0,
         0, '', '', 9970, 0, 1, 'd00e87e7090b45f1abac8a3afa2bc941');
-INSERT INTO `sys_menu` (`id`, `tenant_id`, `create_id`, `create_time`, `update_id`, `update_time`, `enable_flag`,
-                        `version`, `del_flag`, `remark`, `name`, `path`, `icon`, `parent_id`, `auths`, `show_flag`,
-                        `link_flag`, `router`, `redirect`, `order_no`, `first_flag`, `auth_flag`, `uuid`)
-VALUES (9, 0, 1, '2021-12-22 11:09:35', 0, '2022-07-18 02:56:28', 1, 2, 0, '', '角色管理', '/admin/sys/role', '', 3, '',
+INSERT INTO `sys_menu` (`id`, `tenant_id`, `create_id`, `create_time`, `update_id`, `update_time`,
+                        `enable_flag`,
+                        `version`, `del_flag`, `remark`, `name`, `path`, `icon`, `parent_id`,
+                        `auths`, `show_flag`,
+                        `link_flag`, `router`, `redirect`, `order_no`, `first_flag`, `auth_flag`,
+                        `uuid`)
+VALUES (9, 0, 1, '2021-12-22 11:09:35', 0, '2022-07-18 02:56:28', 1, 2, 0, '', '角色管理',
+        '/admin/sys/role', '', 3, '',
         1,
         0, 'sysRoleRole', '', 9990, 0, 0, 'a17458ccd5374a0baf5dacfb66dee6b8');
-INSERT INTO `sys_menu` (`id`, `tenant_id`, `create_id`, `create_time`, `update_id`, `update_time`, `enable_flag`,
-                        `version`, `del_flag`, `remark`, `name`, `path`, `icon`, `parent_id`, `auths`, `show_flag`,
-                        `link_flag`, `router`, `redirect`, `order_no`, `first_flag`, `auth_flag`, `uuid`)
-VALUES (10, 0, 1, '2022-05-21 01:03:25', 1, '2022-05-21 01:03:25', 1, 2, 0, '', '新增修改', '', '', 9,
+INSERT INTO `sys_menu` (`id`, `tenant_id`, `create_id`, `create_time`, `update_id`, `update_time`,
+                        `enable_flag`,
+                        `version`, `del_flag`, `remark`, `name`, `path`, `icon`, `parent_id`,
+                        `auths`, `show_flag`,
+                        `link_flag`, `router`, `redirect`, `order_no`, `first_flag`, `auth_flag`,
+                        `uuid`)
+VALUES (10, 0, 1, '2022-05-21 01:03:25', 1, '2022-05-21 01:03:25', 1, 2, 0, '', '新增修改', '', '',
+        9,
         'sysRole:insertOrUpdate', 0, 0, '', '', 10000, 0, 1, '1638ccae8f7d471ab006a245166f8b99');
-INSERT INTO `sys_menu` (`id`, `tenant_id`, `create_id`, `create_time`, `update_id`, `update_time`, `enable_flag`,
-                        `version`, `del_flag`, `remark`, `name`, `path`, `icon`, `parent_id`, `auths`, `show_flag`,
-                        `link_flag`, `router`, `redirect`, `order_no`, `first_flag`, `auth_flag`, `uuid`)
-VALUES (11, 0, 1, '2022-05-21 01:03:26', 1, '2022-05-21 01:03:26', 1, 2, 0, '', '列表查询', '', '', 9, 'sysRole:page',
+INSERT INTO `sys_menu` (`id`, `tenant_id`, `create_id`, `create_time`, `update_id`, `update_time`,
+                        `enable_flag`,
+                        `version`, `del_flag`, `remark`, `name`, `path`, `icon`, `parent_id`,
+                        `auths`, `show_flag`,
+                        `link_flag`, `router`, `redirect`, `order_no`, `first_flag`, `auth_flag`,
+                        `uuid`)
+VALUES (11, 0, 1, '2022-05-21 01:03:26', 1, '2022-05-21 01:03:26', 1, 2, 0, '', '列表查询', '', '',
+        9, 'sysRole:page',
         0, 0,
         '', '', 9990, 0, 1, '01fade35763c4ed0827a9b52e1540e8c');
-INSERT INTO `sys_menu` (`id`, `tenant_id`, `create_id`, `create_time`, `update_id`, `update_time`, `enable_flag`,
-                        `version`, `del_flag`, `remark`, `name`, `path`, `icon`, `parent_id`, `auths`, `show_flag`,
-                        `link_flag`, `router`, `redirect`, `order_no`, `first_flag`, `auth_flag`, `uuid`)
+INSERT INTO `sys_menu` (`id`, `tenant_id`, `create_id`, `create_time`, `update_id`, `update_time`,
+                        `enable_flag`,
+                        `version`, `del_flag`, `remark`, `name`, `path`, `icon`, `parent_id`,
+                        `auths`, `show_flag`,
+                        `link_flag`, `router`, `redirect`, `order_no`, `first_flag`, `auth_flag`,
+                        `uuid`)
 VALUES (12, 0, 1, '2022-05-21 01:03:26', 1, '2022-05-21 01:03:26', 1, 2, 0, '', '删除', '', '', 9,
         'sysRole:deleteByIdSet', 0, 0, '', '', 9980, 0, 1, 'c477053a4fb049fc809a819b7e84e7e3');
-INSERT INTO `sys_menu` (`id`, `tenant_id`, `create_id`, `create_time`, `update_id`, `update_time`, `enable_flag`,
-                        `version`, `del_flag`, `remark`, `name`, `path`, `icon`, `parent_id`, `auths`, `show_flag`,
-                        `link_flag`, `router`, `redirect`, `order_no`, `first_flag`, `auth_flag`, `uuid`)
-VALUES (13, 0, 1, '2022-05-21 01:03:26', 1, '2022-05-21 01:03:26', 1, 2, 0, '', '查看详情', '', '', 9,
+INSERT INTO `sys_menu` (`id`, `tenant_id`, `create_id`, `create_time`, `update_id`, `update_time`,
+                        `enable_flag`,
+                        `version`, `del_flag`, `remark`, `name`, `path`, `icon`, `parent_id`,
+                        `auths`, `show_flag`,
+                        `link_flag`, `router`, `redirect`, `order_no`, `first_flag`, `auth_flag`,
+                        `uuid`)
+VALUES (13, 0, 1, '2022-05-21 01:03:26', 1, '2022-05-21 01:03:26', 1, 2, 0, '', '查看详情', '', '',
+        9,
         'sysRole:infoById',
         0, 0, '', '', 9970, 0, 1, 'a17e3709381346ffbb6c6d614a1d36d2');
-INSERT INTO `sys_menu` (`id`, `tenant_id`, `create_id`, `create_time`, `update_id`, `update_time`, `enable_flag`,
-                        `version`, `del_flag`, `remark`, `name`, `path`, `icon`, `parent_id`, `auths`, `show_flag`,
-                        `link_flag`, `router`, `redirect`, `order_no`, `first_flag`, `auth_flag`, `uuid`)
-VALUES (14, 0, 1, '2021-12-22 11:09:16', 0, '2023-06-27 15:41:02', 1, 2, 0, '', '用户管理', '/admin/sys/user', '', 3,
+INSERT INTO `sys_menu` (`id`, `tenant_id`, `create_id`, `create_time`, `update_id`, `update_time`,
+                        `enable_flag`,
+                        `version`, `del_flag`, `remark`, `name`, `path`, `icon`, `parent_id`,
+                        `auths`, `show_flag`,
+                        `link_flag`, `router`, `redirect`, `order_no`, `first_flag`, `auth_flag`,
+                        `uuid`)
+VALUES (14, 0, 1, '2021-12-22 11:09:16', 0, '2023-06-27 15:41:02', 1, 2, 0, '', '用户管理',
+        '/admin/sys/user', '', 3,
         '', 1,
         0, 'sysUserUser', '', 9980, 1, 0, 'e00a139651a44fa4a4ae5235a8918fff');
-INSERT INTO `sys_menu` (`id`, `tenant_id`, `create_id`, `create_time`, `update_id`, `update_time`, `enable_flag`,
-                        `version`, `del_flag`, `remark`, `name`, `path`, `icon`, `parent_id`, `auths`, `show_flag`,
-                        `link_flag`, `router`, `redirect`, `order_no`, `first_flag`, `auth_flag`, `uuid`)
-VALUES (15, 0, 1, '2022-05-21 01:03:16', 1, '2022-05-21 01:03:16', 1, 2, 0, '', '新增修改', '', '', 14,
+INSERT INTO `sys_menu` (`id`, `tenant_id`, `create_id`, `create_time`, `update_id`, `update_time`,
+                        `enable_flag`,
+                        `version`, `del_flag`, `remark`, `name`, `path`, `icon`, `parent_id`,
+                        `auths`, `show_flag`,
+                        `link_flag`, `router`, `redirect`, `order_no`, `first_flag`, `auth_flag`,
+                        `uuid`)
+VALUES (15, 0, 1, '2022-05-21 01:03:16', 1, '2022-05-21 01:03:16', 1, 2, 0, '', '新增修改', '', '',
+        14,
         'sysUser:insertOrUpdate', 0, 0, '', '', 10000, 0, 1, 'd310fd26607b4fba9f74c9e7a6731401');
-INSERT INTO `sys_menu` (`id`, `tenant_id`, `create_id`, `create_time`, `update_id`, `update_time`, `enable_flag`,
-                        `version`, `del_flag`, `remark`, `name`, `path`, `icon`, `parent_id`, `auths`, `show_flag`,
-                        `link_flag`, `router`, `redirect`, `order_no`, `first_flag`, `auth_flag`, `uuid`)
-VALUES (16, 0, 1, '2022-05-21 01:03:17', 1, '2022-05-21 01:03:17', 1, 2, 0, '', '列表查询', '', '', 14, 'sysUser:page',
+INSERT INTO `sys_menu` (`id`, `tenant_id`, `create_id`, `create_time`, `update_id`, `update_time`,
+                        `enable_flag`,
+                        `version`, `del_flag`, `remark`, `name`, `path`, `icon`, `parent_id`,
+                        `auths`, `show_flag`,
+                        `link_flag`, `router`, `redirect`, `order_no`, `first_flag`, `auth_flag`,
+                        `uuid`)
+VALUES (16, 0, 1, '2022-05-21 01:03:17', 1, '2022-05-21 01:03:17', 1, 2, 0, '', '列表查询', '', '',
+        14, 'sysUser:page',
         0,
         0, '', '', 9990, 0, 1, '0d93bb8ebf564b6d907e520fad121990');
-INSERT INTO `sys_menu` (`id`, `tenant_id`, `create_id`, `create_time`, `update_id`, `update_time`, `enable_flag`,
-                        `version`, `del_flag`, `remark`, `name`, `path`, `icon`, `parent_id`, `auths`, `show_flag`,
-                        `link_flag`, `router`, `redirect`, `order_no`, `first_flag`, `auth_flag`, `uuid`)
+INSERT INTO `sys_menu` (`id`, `tenant_id`, `create_id`, `create_time`, `update_id`, `update_time`,
+                        `enable_flag`,
+                        `version`, `del_flag`, `remark`, `name`, `path`, `icon`, `parent_id`,
+                        `auths`, `show_flag`,
+                        `link_flag`, `router`, `redirect`, `order_no`, `first_flag`, `auth_flag`,
+                        `uuid`)
 VALUES (17, 0, 1, '2022-05-21 01:03:17', 1, '2022-05-21 01:03:17', 1, 2, 0, '', '删除', '', '', 14,
         'sysUser:deleteByIdSet', 0, 0, '', '', 9980, 0, 1, '8d020eb2d1a84d198e4e38d14ef78096');
-INSERT INTO `sys_menu` (`id`, `tenant_id`, `create_id`, `create_time`, `update_id`, `update_time`, `enable_flag`,
-                        `version`, `del_flag`, `remark`, `name`, `path`, `icon`, `parent_id`, `auths`, `show_flag`,
-                        `link_flag`, `router`, `redirect`, `order_no`, `first_flag`, `auth_flag`, `uuid`)
-VALUES (18, 0, 1, '2022-05-21 01:03:17', 1, '2022-05-21 01:03:17', 1, 2, 0, '', '查看详情', '', '', 14,
+INSERT INTO `sys_menu` (`id`, `tenant_id`, `create_id`, `create_time`, `update_id`, `update_time`,
+                        `enable_flag`,
+                        `version`, `del_flag`, `remark`, `name`, `path`, `icon`, `parent_id`,
+                        `auths`, `show_flag`,
+                        `link_flag`, `router`, `redirect`, `order_no`, `first_flag`, `auth_flag`,
+                        `uuid`)
+VALUES (18, 0, 1, '2022-05-21 01:03:17', 1, '2022-05-21 01:03:17', 1, 2, 0, '', '查看详情', '', '',
+        14,
         'sysUser:infoById',
         0, 0, '', '', 9970, 0, 1, '977681cc18844823bd9e1ba0730b8ebe');
-INSERT INTO `sys_menu` (`id`, `tenant_id`, `create_id`, `create_time`, `update_id`, `update_time`, `enable_flag`,
-                        `version`, `del_flag`, `remark`, `name`, `path`, `icon`, `parent_id`, `auths`, `show_flag`,
-                        `link_flag`, `router`, `redirect`, `order_no`, `first_flag`, `auth_flag`, `uuid`)
-VALUES (19, 0, 1, '2021-12-22 11:09:53', 1, '2022-07-03 14:12:10', 1, 2, 0, '', '字典管理', '/admin/sys/dict', '', 3,
+INSERT INTO `sys_menu` (`id`, `tenant_id`, `create_id`, `create_time`, `update_id`, `update_time`,
+                        `enable_flag`,
+                        `version`, `del_flag`, `remark`, `name`, `path`, `icon`, `parent_id`,
+                        `auths`, `show_flag`,
+                        `link_flag`, `router`, `redirect`, `order_no`, `first_flag`, `auth_flag`,
+                        `uuid`)
+VALUES (19, 0, 1, '2021-12-22 11:09:53', 1, '2022-07-03 14:12:10', 1, 2, 0, '', '字典管理',
+        '/admin/sys/dict', '', 3,
         '', 1,
         0, 'sysDictDict', '', 9970, 0, 0, '29362e6a7c244927b14b90d9773a9da9');
-INSERT INTO `sys_menu` (`id`, `tenant_id`, `create_id`, `create_time`, `update_id`, `update_time`, `enable_flag`,
-                        `version`, `del_flag`, `remark`, `name`, `path`, `icon`, `parent_id`, `auths`, `show_flag`,
-                        `link_flag`, `router`, `redirect`, `order_no`, `first_flag`, `auth_flag`, `uuid`)
-VALUES (20, 0, 1, '2022-05-21 01:03:32', 1, '2022-05-21 01:03:32', 1, 2, 0, '', '新增修改', '', '', 19,
+INSERT INTO `sys_menu` (`id`, `tenant_id`, `create_id`, `create_time`, `update_id`, `update_time`,
+                        `enable_flag`,
+                        `version`, `del_flag`, `remark`, `name`, `path`, `icon`, `parent_id`,
+                        `auths`, `show_flag`,
+                        `link_flag`, `router`, `redirect`, `order_no`, `first_flag`, `auth_flag`,
+                        `uuid`)
+VALUES (20, 0, 1, '2022-05-21 01:03:32', 1, '2022-05-21 01:03:32', 1, 2, 0, '', '新增修改', '', '',
+        19,
         'sysDict:insertOrUpdate', 0, 0, '', '', 10000, 0, 1, '31fda4fd348e4f8fbb4420d32c06d303');
-INSERT INTO `sys_menu` (`id`, `tenant_id`, `create_id`, `create_time`, `update_id`, `update_time`, `enable_flag`,
-                        `version`, `del_flag`, `remark`, `name`, `path`, `icon`, `parent_id`, `auths`, `show_flag`,
-                        `link_flag`, `router`, `redirect`, `order_no`, `first_flag`, `auth_flag`, `uuid`)
-VALUES (21, 0, 1, '2022-05-21 01:03:32', 1, '2022-05-21 01:03:32', 1, 2, 0, '', '列表查询', '', '', 19, 'sysDict:page',
+INSERT INTO `sys_menu` (`id`, `tenant_id`, `create_id`, `create_time`, `update_id`, `update_time`,
+                        `enable_flag`,
+                        `version`, `del_flag`, `remark`, `name`, `path`, `icon`, `parent_id`,
+                        `auths`, `show_flag`,
+                        `link_flag`, `router`, `redirect`, `order_no`, `first_flag`, `auth_flag`,
+                        `uuid`)
+VALUES (21, 0, 1, '2022-05-21 01:03:32', 1, '2022-05-21 01:03:32', 1, 2, 0, '', '列表查询', '', '',
+        19, 'sysDict:page',
         0,
         0, '', '', 9990, 0, 1, '2b7badefb6904f6db2eebea40385bf45');
-INSERT INTO `sys_menu` (`id`, `tenant_id`, `create_id`, `create_time`, `update_id`, `update_time`, `enable_flag`,
-                        `version`, `del_flag`, `remark`, `name`, `path`, `icon`, `parent_id`, `auths`, `show_flag`,
-                        `link_flag`, `router`, `redirect`, `order_no`, `first_flag`, `auth_flag`, `uuid`)
+INSERT INTO `sys_menu` (`id`, `tenant_id`, `create_id`, `create_time`, `update_id`, `update_time`,
+                        `enable_flag`,
+                        `version`, `del_flag`, `remark`, `name`, `path`, `icon`, `parent_id`,
+                        `auths`, `show_flag`,
+                        `link_flag`, `router`, `redirect`, `order_no`, `first_flag`, `auth_flag`,
+                        `uuid`)
 VALUES (22, 0, 1, '2022-05-21 01:03:32', 1, '2022-05-21 01:03:32', 1, 2, 0, '', '删除', '', '', 19,
         'sysDict:deleteByIdSet', 0, 0, '', '', 9980, 0, 1, 'ca1d0c485c58468ebfecf0e7a6e57c77');
-INSERT INTO `sys_menu` (`id`, `tenant_id`, `create_id`, `create_time`, `update_id`, `update_time`, `enable_flag`,
-                        `version`, `del_flag`, `remark`, `name`, `path`, `icon`, `parent_id`, `auths`, `show_flag`,
-                        `link_flag`, `router`, `redirect`, `order_no`, `first_flag`, `auth_flag`, `uuid`)
-VALUES (23, 0, 1, '2022-05-21 01:03:32', 1, '2022-05-21 01:03:32', 1, 2, 0, '', '查看详情', '', '', 19,
+INSERT INTO `sys_menu` (`id`, `tenant_id`, `create_id`, `create_time`, `update_id`, `update_time`,
+                        `enable_flag`,
+                        `version`, `del_flag`, `remark`, `name`, `path`, `icon`, `parent_id`,
+                        `auths`, `show_flag`,
+                        `link_flag`, `router`, `redirect`, `order_no`, `first_flag`, `auth_flag`,
+                        `uuid`)
+VALUES (23, 0, 1, '2022-05-21 01:03:32', 1, '2022-05-21 01:03:32', 1, 2, 0, '', '查看详情', '', '',
+        19,
         'sysDict:infoById',
         0, 0, '', '', 9970, 0, 1, '92191c72bee6497aaf77502fbcf051a1');
-INSERT INTO `sys_menu` (`id`, `tenant_id`, `create_id`, `create_time`, `update_id`, `update_time`, `enable_flag`,
-                        `version`, `del_flag`, `remark`, `name`, `path`, `icon`, `parent_id`, `auths`, `show_flag`,
-                        `link_flag`, `router`, `redirect`, `order_no`, `first_flag`, `auth_flag`, `uuid`)
-VALUES (24, 0, 1, '2021-12-22 11:10:31', 0, '2023-09-01 11:33:42', 1, 2, 0, '', '参数管理', '/admin/sys/param', '', 3,
+INSERT INTO `sys_menu` (`id`, `tenant_id`, `create_id`, `create_time`, `update_id`, `update_time`,
+                        `enable_flag`,
+                        `version`, `del_flag`, `remark`, `name`, `path`, `icon`, `parent_id`,
+                        `auths`, `show_flag`,
+                        `link_flag`, `router`, `redirect`, `order_no`, `first_flag`, `auth_flag`,
+                        `uuid`)
+VALUES (24, 0, 1, '2021-12-22 11:10:31', 0, '2023-09-01 11:33:42', 1, 2, 0, '', '参数管理',
+        '/admin/sys/param', '', 3,
         '',
         1, 0, 'sysParamParam', '', 9960, 0, 0, 'e802321ab4804f749b69705d60af19f2');
-INSERT INTO `sys_menu` (`id`, `tenant_id`, `create_id`, `create_time`, `update_id`, `update_time`, `enable_flag`,
-                        `version`, `del_flag`, `remark`, `name`, `path`, `icon`, `parent_id`, `auths`, `show_flag`,
-                        `link_flag`, `router`, `redirect`, `order_no`, `first_flag`, `auth_flag`, `uuid`)
-VALUES (25, 0, 1, '2022-05-21 01:03:57', 1, '2022-05-21 01:03:57', 1, 2, 0, '', '新增修改', '', '', 24,
+INSERT INTO `sys_menu` (`id`, `tenant_id`, `create_id`, `create_time`, `update_id`, `update_time`,
+                        `enable_flag`,
+                        `version`, `del_flag`, `remark`, `name`, `path`, `icon`, `parent_id`,
+                        `auths`, `show_flag`,
+                        `link_flag`, `router`, `redirect`, `order_no`, `first_flag`, `auth_flag`,
+                        `uuid`)
+VALUES (25, 0, 1, '2022-05-21 01:03:57', 1, '2022-05-21 01:03:57', 1, 2, 0, '', '新增修改', '', '',
+        24,
         'sysParam:insertOrUpdate', 0, 0, '', '', 10000, 0, 1, '510ec0d7e07d4f45b4edce278a9dd7ee');
-INSERT INTO `sys_menu` (`id`, `tenant_id`, `create_id`, `create_time`, `update_id`, `update_time`, `enable_flag`,
-                        `version`, `del_flag`, `remark`, `name`, `path`, `icon`, `parent_id`, `auths`, `show_flag`,
-                        `link_flag`, `router`, `redirect`, `order_no`, `first_flag`, `auth_flag`, `uuid`)
-VALUES (26, 0, 1, '2022-05-21 01:03:57', 1, '2022-05-21 01:03:57', 1, 2, 0, '', '列表查询', '', '', 24, 'sysParam:page',
+INSERT INTO `sys_menu` (`id`, `tenant_id`, `create_id`, `create_time`, `update_id`, `update_time`,
+                        `enable_flag`,
+                        `version`, `del_flag`, `remark`, `name`, `path`, `icon`, `parent_id`,
+                        `auths`, `show_flag`,
+                        `link_flag`, `router`, `redirect`, `order_no`, `first_flag`, `auth_flag`,
+                        `uuid`)
+VALUES (26, 0, 1, '2022-05-21 01:03:57', 1, '2022-05-21 01:03:57', 1, 2, 0, '', '列表查询', '', '',
+        24, 'sysParam:page',
         0,
         0, '', '', 9990, 0, 1, 'b3990737b39147d9b56436a11b078f8d');
-INSERT INTO `sys_menu` (`id`, `tenant_id`, `create_id`, `create_time`, `update_id`, `update_time`, `enable_flag`,
-                        `version`, `del_flag`, `remark`, `name`, `path`, `icon`, `parent_id`, `auths`, `show_flag`,
-                        `link_flag`, `router`, `redirect`, `order_no`, `first_flag`, `auth_flag`, `uuid`)
+INSERT INTO `sys_menu` (`id`, `tenant_id`, `create_id`, `create_time`, `update_id`, `update_time`,
+                        `enable_flag`,
+                        `version`, `del_flag`, `remark`, `name`, `path`, `icon`, `parent_id`,
+                        `auths`, `show_flag`,
+                        `link_flag`, `router`, `redirect`, `order_no`, `first_flag`, `auth_flag`,
+                        `uuid`)
 VALUES (27, 0, 1, '2022-05-21 01:03:57', 1, '2022-05-21 01:03:57', 1, 2, 0, '', '删除', '', '', 24,
         'sysParam:deleteByIdSet', 0, 0, '', '', 9980, 0, 1, 'c0fb13728a524687aeacb36285a4a7d4');
-INSERT INTO `sys_menu` (`id`, `tenant_id`, `create_id`, `create_time`, `update_id`, `update_time`, `enable_flag`,
-                        `version`, `del_flag`, `remark`, `name`, `path`, `icon`, `parent_id`, `auths`, `show_flag`,
-                        `link_flag`, `router`, `redirect`, `order_no`, `first_flag`, `auth_flag`, `uuid`)
-VALUES (28, 0, 1, '2022-05-21 01:03:57', 1, '2022-05-21 01:03:57', 1, 2, 0, '', '查看详情', '', '', 24,
+INSERT INTO `sys_menu` (`id`, `tenant_id`, `create_id`, `create_time`, `update_id`, `update_time`,
+                        `enable_flag`,
+                        `version`, `del_flag`, `remark`, `name`, `path`, `icon`, `parent_id`,
+                        `auths`, `show_flag`,
+                        `link_flag`, `router`, `redirect`, `order_no`, `first_flag`, `auth_flag`,
+                        `uuid`)
+VALUES (28, 0, 1, '2022-05-21 01:03:57', 1, '2022-05-21 01:03:57', 1, 2, 0, '', '查看详情', '', '',
+        24,
         'sysParam:infoById',
         0, 0, '', '', 9970, 0, 1, 'ba76e238e98a4b7ab1dcaba0c70b8172');
-INSERT INTO `sys_menu` (`id`, `tenant_id`, `create_id`, `create_time`, `update_id`, `update_time`, `enable_flag`,
-                        `version`, `del_flag`, `remark`, `name`, `path`, `icon`, `parent_id`, `auths`, `show_flag`,
-                        `link_flag`, `router`, `redirect`, `order_no`, `first_flag`, `auth_flag`, `uuid`)
-VALUES (55, 0, 1, '2021-12-24 11:37:27', 0, '2022-10-05 13:23:04', 1, 2, 0, '', '个人管理', '', '', 0, '', 0, 0, '', '',
+INSERT INTO `sys_menu` (`id`, `tenant_id`, `create_id`, `create_time`, `update_id`, `update_time`,
+                        `enable_flag`,
+                        `version`, `del_flag`, `remark`, `name`, `path`, `icon`, `parent_id`,
+                        `auths`, `show_flag`,
+                        `link_flag`, `router`, `redirect`, `order_no`, `first_flag`, `auth_flag`,
+                        `uuid`)
+VALUES (55, 0, 1, '2021-12-24 11:37:27', 0, '2022-10-05 13:23:04', 1, 2, 0, '', '个人管理', '', '',
+        0, '', 0, 0, '', '',
         0,
         0, 0, '05ba09064c9047a5b1f13e4b4fb92d37');
-INSERT INTO `sys_menu` (`id`, `tenant_id`, `create_id`, `create_time`, `update_id`, `update_time`, `enable_flag`,
-                        `version`, `del_flag`, `remark`, `name`, `path`, `icon`, `parent_id`, `auths`, `show_flag`,
-                        `link_flag`, `router`, `redirect`, `order_no`, `first_flag`, `auth_flag`, `uuid`)
-VALUES (56, 0, 1, '2021-12-24 11:37:42', 0, '2022-10-05 13:24:13', 1, 2, 0, '', '个人中心', '/admin/user/self', '', 55,
+INSERT INTO `sys_menu` (`id`, `tenant_id`, `create_id`, `create_time`, `update_id`, `update_time`,
+                        `enable_flag`,
+                        `version`, `del_flag`, `remark`, `name`, `path`, `icon`, `parent_id`,
+                        `auths`, `show_flag`,
+                        `link_flag`, `router`, `redirect`, `order_no`, `first_flag`, `auth_flag`,
+                        `uuid`)
+VALUES (56, 0, 1, '2021-12-24 11:37:42', 0, '2022-10-05 13:24:13', 1, 2, 0, '', '个人中心',
+        '/admin/user/self', '', 55,
         '',
         0, 0, 'userSelfSelf', '', 10000, 0, 0, '4f12c3aedbd54e18a17e3c1d38e7ef15');
-INSERT INTO `sys_menu` (`id`, `tenant_id`, `create_id`, `create_time`, `update_id`, `update_time`, `enable_flag`,
-                        `version`, `del_flag`, `remark`, `name`, `path`, `icon`, `parent_id`, `auths`, `show_flag`,
-                        `link_flag`, `router`, `redirect`, `order_no`, `first_flag`, `auth_flag`, `uuid`)
-VALUES (63, 0, 1, '2022-07-12 11:01:41', 1, '2022-07-12 11:02:01', 1, 2, 0, '', 'Helper App', 'https://cmc0.github.io',
-        'CodeOutlined', 221004205817000054, '', 1, 1, '', '', 0, 0, 0, 'e11f796ac6be411daf824b86c902b48c');
-INSERT INTO `sys_menu` (`id`, `tenant_id`, `create_id`, `create_time`, `update_id`, `update_time`, `enable_flag`,
-                        `version`, `del_flag`, `remark`, `name`, `path`, `icon`, `parent_id`, `auths`, `show_flag`,
-                        `link_flag`, `router`, `redirect`, `order_no`, `first_flag`, `auth_flag`, `uuid`)
-VALUES (221004205817000054, 0, 0, '2022-10-04 12:58:17', 0, '2023-06-27 15:40:23', 1, 2, 0, '', '系统平台', '',
-        'SettingOutlined', 0, '', 1, 0, '', '/admin/sys/user', 10000, 0, 0, '65836dcd36c04a59932d0318543766f9');
-INSERT INTO `sys_menu` (`id`, `tenant_id`, `create_id`, `create_time`, `update_id`, `update_time`, `enable_flag`,
-                        `version`, `del_flag`, `remark`, `name`, `path`, `icon`, `parent_id`, `auths`, `show_flag`,
-                        `link_flag`, `router`, `redirect`, `order_no`, `first_flag`, `auth_flag`, `uuid`)
-VALUES (221005155605000086, 0, 0, '2022-10-05 07:56:05', 0, '2023-07-11 12:04:49', 1, 2, 0, '', '欢迎',
+INSERT INTO `sys_menu` (`id`, `tenant_id`, `create_id`, `create_time`, `update_id`, `update_time`,
+                        `enable_flag`,
+                        `version`, `del_flag`, `remark`, `name`, `path`, `icon`, `parent_id`,
+                        `auths`, `show_flag`,
+                        `link_flag`, `router`, `redirect`, `order_no`, `first_flag`, `auth_flag`,
+                        `uuid`)
+VALUES (63, 0, 1, '2022-07-12 11:01:41', 1, '2022-07-12 11:02:01', 1, 2, 0, '', 'Helper App',
+        'https://cmc0.github.io',
+        'CodeOutlined', 221004205817000054, '', 1, 1, '', '', 0, 0, 0,
+        'e11f796ac6be411daf824b86c902b48c');
+INSERT INTO `sys_menu` (`id`, `tenant_id`, `create_id`, `create_time`, `update_id`, `update_time`,
+                        `enable_flag`,
+                        `version`, `del_flag`, `remark`, `name`, `path`, `icon`, `parent_id`,
+                        `auths`, `show_flag`,
+                        `link_flag`, `router`, `redirect`, `order_no`, `first_flag`, `auth_flag`,
+                        `uuid`)
+VALUES (221004205817000054, 0, 0, '2022-10-04 12:58:17', 0, '2023-06-27 15:40:23', 1, 2, 0, '',
+        '系统平台', '',
+        'SettingOutlined', 0, '', 1, 0, '', '/admin/sys/user', 10000, 0, 0,
+        '65836dcd36c04a59932d0318543766f9');
+INSERT INTO `sys_menu` (`id`, `tenant_id`, `create_id`, `create_time`, `update_id`, `update_time`,
+                        `enable_flag`,
+                        `version`, `del_flag`, `remark`, `name`, `path`, `icon`, `parent_id`,
+                        `auths`, `show_flag`,
+                        `link_flag`, `router`, `redirect`, `order_no`, `first_flag`, `auth_flag`,
+                        `uuid`)
+VALUES (221005155605000086, 0, 0, '2022-10-05 07:56:05', 0, '2023-07-11 12:04:49', 1, 2, 0, '',
+        '欢迎',
         '/admin/welcome',
-        'SmileOutlined', 0, '', 1, 0, 'WelcomeWelcome', '', 11000, 0, 0, '06e78e05c2494fa180f3d0780a75e60f');
-INSERT INTO `sys_menu` (`id`, `tenant_id`, `create_id`, `create_time`, `update_id`, `update_time`, `enable_flag`,
-                        `version`, `del_flag`, `remark`, `name`, `path`, `icon`, `parent_id`, `auths`, `show_flag`,
-                        `link_flag`, `router`, `redirect`, `order_no`, `first_flag`, `auth_flag`, `uuid`)
-VALUES (230523221709113901, 0, 0, '2023-05-23 22:17:10', 0, '2023-07-30 14:05:05', 1, 0, 0, '', '系统监控', '',
+        'SmileOutlined', 0, '', 1, 0, 'WelcomeWelcome', '', 11000, 0, 0,
+        '06e78e05c2494fa180f3d0780a75e60f');
+INSERT INTO `sys_menu` (`id`, `tenant_id`, `create_id`, `create_time`, `update_id`, `update_time`,
+                        `enable_flag`,
+                        `version`, `del_flag`, `remark`, `name`, `path`, `icon`, `parent_id`,
+                        `auths`, `show_flag`,
+                        `link_flag`, `router`, `redirect`, `order_no`, `first_flag`, `auth_flag`,
+                        `uuid`)
+VALUES (230523221709113901, 0, 0, '2023-05-23 22:17:10', 0, '2023-07-30 14:05:05', 1, 0, 0, '',
+        '系统监控', '',
         'FundProjectionScreenOutlined', 221004205817000054, '', 1, 0, '', '', 1000, 0, 0,
         'e1746afe9ef040cfb268f3daecd68d0c');
-INSERT INTO `sys_menu` (`id`, `tenant_id`, `create_id`, `create_time`, `update_id`, `update_time`, `enable_flag`,
-                        `version`, `del_flag`, `remark`, `name`, `path`, `icon`, `parent_id`, `auths`, `show_flag`,
-                        `link_flag`, `router`, `redirect`, `order_no`, `first_flag`, `auth_flag`, `uuid`)
-VALUES (230523221904113916, 0, 0, '2023-05-23 22:19:05', 0, '2023-06-02 09:47:12', 1, 0, 0, '', '请求监控',
-        '/admin/sys/request', '', 230523221709113901, '', 1, 0, 'sysRequestRequest', '', 10000, 0, 0,
+INSERT INTO `sys_menu` (`id`, `tenant_id`, `create_id`, `create_time`, `update_id`, `update_time`,
+                        `enable_flag`,
+                        `version`, `del_flag`, `remark`, `name`, `path`, `icon`, `parent_id`,
+                        `auths`, `show_flag`,
+                        `link_flag`, `router`, `redirect`, `order_no`, `first_flag`, `auth_flag`,
+                        `uuid`)
+VALUES (230523221904113916, 0, 0, '2023-05-23 22:19:05', 0, '2023-06-02 09:47:12', 1, 0, 0, '',
+        '请求监控',
+        '/admin/sys/request', '', 230523221709113901, '', 1, 0, 'sysRequestRequest', '', 10000, 0,
+        0,
         '849a8b49827c4bf29fabb15694be23dc');
-INSERT INTO `sys_menu` (`id`, `tenant_id`, `create_id`, `create_time`, `update_id`, `update_time`, `enable_flag`,
-                        `version`, `del_flag`, `remark`, `name`, `path`, `icon`, `parent_id`, `auths`, `show_flag`,
-                        `link_flag`, `router`, `redirect`, `order_no`, `first_flag`, `auth_flag`, `uuid`)
-VALUES (230523222026113937, 0, 0, '2023-05-23 22:20:27', 0, '2023-05-23 22:20:27', 1, 0, 0, '', '列表查询', '', '',
-        230523221904113916, 'sysRequest:page', 0, 0, '', '', 0, 0, 1, '5ff1feceb0bc4dc8956ff17bc3d22b60');
-INSERT INTO `sys_menu` (`id`, `tenant_id`, `create_id`, `create_time`, `update_id`, `update_time`, `enable_flag`,
-                        `version`, `del_flag`, `remark`, `name`, `path`, `icon`, `parent_id`, `auths`, `show_flag`,
-                        `link_flag`, `router`, `redirect`, `order_no`, `first_flag`, `auth_flag`, `uuid`)
-VALUES (230620155859123966, 0, 0, '2023-06-20 15:58:59', 0, '2023-06-20 16:00:52', 1, 0, 0, '', '组织管理', '',
-        'ApartmentOutlined', 221004205817000054, '', 1, 0, '', '', 9800, 0, 0, '5edd19a7f68149b4b4b4ff1ee5e13e41');
-INSERT INTO `sys_menu` (`id`, `tenant_id`, `create_id`, `create_time`, `update_id`, `update_time`, `enable_flag`,
-                        `version`, `del_flag`, `remark`, `name`, `path`, `icon`, `parent_id`, `auths`, `show_flag`,
-                        `link_flag`, `router`, `redirect`, `order_no`, `first_flag`, `auth_flag`, `uuid`)
-VALUES (230620155944123975, 0, 0, '2023-06-20 15:59:45', 0, '2023-06-20 16:01:26', 1, 0, 0, '', '区域管理',
+INSERT INTO `sys_menu` (`id`, `tenant_id`, `create_id`, `create_time`, `update_id`, `update_time`,
+                        `enable_flag`,
+                        `version`, `del_flag`, `remark`, `name`, `path`, `icon`, `parent_id`,
+                        `auths`, `show_flag`,
+                        `link_flag`, `router`, `redirect`, `order_no`, `first_flag`, `auth_flag`,
+                        `uuid`)
+VALUES (230523222026113937, 0, 0, '2023-05-23 22:20:27', 0, '2023-05-23 22:20:27', 1, 0, 0, '',
+        '列表查询', '', '',
+        230523221904113916, 'sysRequest:page', 0, 0, '', '', 0, 0, 1,
+        '5ff1feceb0bc4dc8956ff17bc3d22b60');
+INSERT INTO `sys_menu` (`id`, `tenant_id`, `create_id`, `create_time`, `update_id`, `update_time`,
+                        `enable_flag`,
+                        `version`, `del_flag`, `remark`, `name`, `path`, `icon`, `parent_id`,
+                        `auths`, `show_flag`,
+                        `link_flag`, `router`, `redirect`, `order_no`, `first_flag`, `auth_flag`,
+                        `uuid`)
+VALUES (230620155859123966, 0, 0, '2023-06-20 15:58:59', 0, '2023-06-20 16:00:52', 1, 0, 0, '',
+        '组织管理', '',
+        'ApartmentOutlined', 221004205817000054, '', 1, 0, '', '', 9800, 0, 0,
+        '5edd19a7f68149b4b4b4ff1ee5e13e41');
+INSERT INTO `sys_menu` (`id`, `tenant_id`, `create_id`, `create_time`, `update_id`, `update_time`,
+                        `enable_flag`,
+                        `version`, `del_flag`, `remark`, `name`, `path`, `icon`, `parent_id`,
+                        `auths`, `show_flag`,
+                        `link_flag`, `router`, `redirect`, `order_no`, `first_flag`, `auth_flag`,
+                        `uuid`)
+VALUES (230620155944123975, 0, 0, '2023-06-20 15:59:45', 0, '2023-06-20 16:01:26', 1, 0, 0, '',
+        '区域管理',
         '/admin/sys/area', '', 230620155859123966, '', 1, 0, 'sysAreaArea', '', 10000, 0, 0,
         '4467f211593c4a05ad5bca4f2c9661ac');
-INSERT INTO `sys_menu` (`id`, `tenant_id`, `create_id`, `create_time`, `update_id`, `update_time`, `enable_flag`,
-                        `version`, `del_flag`, `remark`, `name`, `path`, `icon`, `parent_id`, `auths`, `show_flag`,
-                        `link_flag`, `router`, `redirect`, `order_no`, `first_flag`, `auth_flag`, `uuid`)
-VALUES (230620160002123980, 0, 0, '2023-06-20 16:00:02', 0, '2023-06-20 16:01:37', 1, 0, 0, '', '部门管理',
+INSERT INTO `sys_menu` (`id`, `tenant_id`, `create_id`, `create_time`, `update_id`, `update_time`,
+                        `enable_flag`,
+                        `version`, `del_flag`, `remark`, `name`, `path`, `icon`, `parent_id`,
+                        `auths`, `show_flag`,
+                        `link_flag`, `router`, `redirect`, `order_no`, `first_flag`, `auth_flag`,
+                        `uuid`)
+VALUES (230620160002123980, 0, 0, '2023-06-20 16:00:02', 0, '2023-06-20 16:01:37', 1, 0, 0, '',
+        '部门管理',
         '/admin/sys/dept', '', 230620155859123966, '', 1, 0, 'sysDeptDept', '', 9900, 0, 0,
         '1c4c466f900f42a3bd8522a51c2b7e1a');
-INSERT INTO `sys_menu` (`id`, `tenant_id`, `create_id`, `create_time`, `update_id`, `update_time`, `enable_flag`,
-                        `version`, `del_flag`, `remark`, `name`, `path`, `icon`, `parent_id`, `auths`, `show_flag`,
-                        `link_flag`, `router`, `redirect`, `order_no`, `first_flag`, `auth_flag`, `uuid`)
-VALUES (230620160014123985, 0, 0, '2023-06-20 16:00:14', 0, '2023-06-20 16:01:48', 1, 0, 0, '', '岗位管理',
+INSERT INTO `sys_menu` (`id`, `tenant_id`, `create_id`, `create_time`, `update_id`, `update_time`,
+                        `enable_flag`,
+                        `version`, `del_flag`, `remark`, `name`, `path`, `icon`, `parent_id`,
+                        `auths`, `show_flag`,
+                        `link_flag`, `router`, `redirect`, `order_no`, `first_flag`, `auth_flag`,
+                        `uuid`)
+VALUES (230620160014123985, 0, 0, '2023-06-20 16:00:14', 0, '2023-06-20 16:01:48', 1, 0, 0, '',
+        '岗位管理',
         '/admin/sys/post', '', 230620155859123966, '', 1, 0, 'sysPostPost', '', 9800, 0, 0,
         '65275d07b60e44e78c594d906d6e4a76');
-INSERT INTO `sys_menu` (`id`, `tenant_id`, `create_id`, `create_time`, `update_id`, `update_time`, `enable_flag`,
-                        `version`, `del_flag`, `remark`, `name`, `path`, `icon`, `parent_id`, `auths`, `show_flag`,
-                        `link_flag`, `router`, `redirect`, `order_no`, `first_flag`, `auth_flag`, `uuid`)
-VALUES (230620160155124026, 0, 0, '2023-06-20 16:01:56', 0, '2023-06-20 16:01:56', 1, 0, 0, '', '新增修改', '', '',
-        230620155944123975, 'sysArea:insertOrUpdate', 0, 0, '', '', 10000, 0, 1, '203b615cd66e4598b6f5978b25b6a83e');
-INSERT INTO `sys_menu` (`id`, `tenant_id`, `create_id`, `create_time`, `update_id`, `update_time`, `enable_flag`,
-                        `version`, `del_flag`, `remark`, `name`, `path`, `icon`, `parent_id`, `auths`, `show_flag`,
-                        `link_flag`, `router`, `redirect`, `order_no`, `first_flag`, `auth_flag`, `uuid`)
-VALUES (230620160156124028, 0, 0, '2023-06-20 16:01:57', 0, '2023-06-20 16:01:57', 1, 0, 0, '', '列表查询', '', '',
-        230620155944123975, 'sysArea:page', 0, 0, '', '', 9900, 0, 1, '04dc8059c9f947fa9b20a4300ac7088b');
-INSERT INTO `sys_menu` (`id`, `tenant_id`, `create_id`, `create_time`, `update_id`, `update_time`, `enable_flag`,
-                        `version`, `del_flag`, `remark`, `name`, `path`, `icon`, `parent_id`, `auths`, `show_flag`,
-                        `link_flag`, `router`, `redirect`, `order_no`, `first_flag`, `auth_flag`, `uuid`)
-VALUES (230620160156124029, 0, 0, '2023-06-20 16:01:57', 0, '2023-06-20 16:01:57', 1, 0, 0, '', '删除', '', '',
-        230620155944123975, 'sysArea:deleteByIdSet', 0, 0, '', '', 9800, 0, 1, '02c59fade32e4795b745161223629aa1');
-INSERT INTO `sys_menu` (`id`, `tenant_id`, `create_id`, `create_time`, `update_id`, `update_time`, `enable_flag`,
-                        `version`, `del_flag`, `remark`, `name`, `path`, `icon`, `parent_id`, `auths`, `show_flag`,
-                        `link_flag`, `router`, `redirect`, `order_no`, `first_flag`, `auth_flag`, `uuid`)
-VALUES (230620160157124030, 0, 0, '2023-06-20 16:01:57', 0, '2023-06-20 16:01:57', 1, 0, 0, '', '查看详情', '', '',
-        230620155944123975, 'sysArea:infoById', 0, 0, '', '', 9700, 0, 1, '15a294d1dc8e471689f9d0e96672f930');
-INSERT INTO `sys_menu` (`id`, `tenant_id`, `create_id`, `create_time`, `update_id`, `update_time`, `enable_flag`,
-                        `version`, `del_flag`, `remark`, `name`, `path`, `icon`, `parent_id`, `auths`, `show_flag`,
-                        `link_flag`, `router`, `redirect`, `order_no`, `first_flag`, `auth_flag`, `uuid`)
-VALUES (230620160215124035, 0, 0, '2023-06-20 16:02:15', 0, '2023-06-20 16:02:15', 1, 0, 0, '', '新增修改', '', '',
-        230620160002123980, 'sysDept:insertOrUpdate', 0, 0, '', '', 10000, 0, 1, '50c850679e2c4419b6dc703d71f7ad43');
-INSERT INTO `sys_menu` (`id`, `tenant_id`, `create_id`, `create_time`, `update_id`, `update_time`, `enable_flag`,
-                        `version`, `del_flag`, `remark`, `name`, `path`, `icon`, `parent_id`, `auths`, `show_flag`,
-                        `link_flag`, `router`, `redirect`, `order_no`, `first_flag`, `auth_flag`, `uuid`)
-VALUES (230620160215124036, 0, 0, '2023-06-20 16:02:16', 0, '2023-06-20 16:02:16', 1, 0, 0, '', '列表查询', '', '',
-        230620160002123980, 'sysDept:page', 0, 0, '', '', 9900, 0, 1, '4a1895d57c4c4734bb09e5c032351206');
-INSERT INTO `sys_menu` (`id`, `tenant_id`, `create_id`, `create_time`, `update_id`, `update_time`, `enable_flag`,
-                        `version`, `del_flag`, `remark`, `name`, `path`, `icon`, `parent_id`, `auths`, `show_flag`,
-                        `link_flag`, `router`, `redirect`, `order_no`, `first_flag`, `auth_flag`, `uuid`)
-VALUES (230620160216124037, 0, 0, '2023-06-20 16:02:16', 0, '2023-06-20 16:02:16', 1, 0, 0, '', '删除', '', '',
-        230620160002123980, 'sysDept:deleteByIdSet', 0, 0, '', '', 9800, 0, 1, 'cfe40ce03a7840d8b2f736883f2893fc');
-INSERT INTO `sys_menu` (`id`, `tenant_id`, `create_id`, `create_time`, `update_id`, `update_time`, `enable_flag`,
-                        `version`, `del_flag`, `remark`, `name`, `path`, `icon`, `parent_id`, `auths`, `show_flag`,
-                        `link_flag`, `router`, `redirect`, `order_no`, `first_flag`, `auth_flag`, `uuid`)
-VALUES (230620160216124040, 0, 0, '2023-06-20 16:02:17', 0, '2023-06-20 16:02:17', 1, 0, 0, '', '查看详情', '', '',
-        230620160002123980, 'sysDept:infoById', 0, 0, '', '', 9700, 0, 1, '3fdbfe4d02b9404aa0798eadf792c228');
-INSERT INTO `sys_menu` (`id`, `tenant_id`, `create_id`, `create_time`, `update_id`, `update_time`, `enable_flag`,
-                        `version`, `del_flag`, `remark`, `name`, `path`, `icon`, `parent_id`, `auths`, `show_flag`,
-                        `link_flag`, `router`, `redirect`, `order_no`, `first_flag`, `auth_flag`, `uuid`)
-VALUES (230620160233124044, 0, 0, '2023-06-20 16:02:33', 0, '2023-06-20 16:02:33', 1, 0, 0, '', '新增修改', '', '',
-        230620160014123985, 'sysPost:insertOrUpdate', 0, 0, '', '', 10000, 0, 1, '8ac374791d954ada89d8cc3f4013652e');
-INSERT INTO `sys_menu` (`id`, `tenant_id`, `create_id`, `create_time`, `update_id`, `update_time`, `enable_flag`,
-                        `version`, `del_flag`, `remark`, `name`, `path`, `icon`, `parent_id`, `auths`, `show_flag`,
-                        `link_flag`, `router`, `redirect`, `order_no`, `first_flag`, `auth_flag`, `uuid`)
-VALUES (230620160233124045, 0, 0, '2023-06-20 16:02:34', 0, '2023-06-20 16:02:34', 1, 0, 0, '', '列表查询', '', '',
-        230620160014123985, 'sysPost:page', 0, 0, '', '', 9900, 0, 1, 'ab1f1a3114e14dde82b8c25bcef10f06');
-INSERT INTO `sys_menu` (`id`, `tenant_id`, `create_id`, `create_time`, `update_id`, `update_time`, `enable_flag`,
-                        `version`, `del_flag`, `remark`, `name`, `path`, `icon`, `parent_id`, `auths`, `show_flag`,
-                        `link_flag`, `router`, `redirect`, `order_no`, `first_flag`, `auth_flag`, `uuid`)
-VALUES (230620160234124046, 0, 0, '2023-06-20 16:02:34', 0, '2023-06-20 16:02:34', 1, 0, 0, '', '删除', '', '',
-        230620160014123985, 'sysPost:deleteByIdSet', 0, 0, '', '', 9800, 0, 1, 'e2f6fa7820514766836b417510187e26');
-INSERT INTO `sys_menu` (`id`, `tenant_id`, `create_id`, `create_time`, `update_id`, `update_time`, `enable_flag`,
-                        `version`, `del_flag`, `remark`, `name`, `path`, `icon`, `parent_id`, `auths`, `show_flag`,
-                        `link_flag`, `router`, `redirect`, `order_no`, `first_flag`, `auth_flag`, `uuid`)
-VALUES (230620160234124047, 0, 0, '2023-06-20 16:02:35', 0, '2023-06-20 16:02:35', 1, 0, 0, '', '查看详情', '', '',
-        230620160014123985, 'sysPost:infoById', 0, 0, '', '', 9700, 0, 1, '4bf37d5747df4f1a9d8adb490ccd7ce6');
-INSERT INTO `sys_menu` (`id`, `tenant_id`, `create_id`, `create_time`, `update_id`, `update_time`, `enable_flag`,
-                        `version`, `del_flag`, `remark`, `name`, `path`, `icon`, `parent_id`, `auths`, `show_flag`,
-                        `link_flag`, `router`, `redirect`, `order_no`, `first_flag`, `auth_flag`, `uuid`)
-VALUES (230728151103147771, 0, 0, '2023-07-28 15:11:04', 0, '2023-07-28 16:15:13', 1, 0, 0, '', '连接管理', '',
-        'ApiOutlined', 221004205817000054, '', 1, 0, '', '', 9600, 0, 0, 'cee12ae9d73b4d2a8e8e0490d9706838');
-INSERT INTO `sys_menu` (`id`, `tenant_id`, `create_id`, `create_time`, `update_id`, `update_time`, `enable_flag`,
-                        `version`, `del_flag`, `remark`, `name`, `path`, `icon`, `parent_id`, `auths`, `show_flag`,
-                        `link_flag`, `router`, `redirect`, `order_no`, `first_flag`, `auth_flag`, `uuid`)
-VALUES (230728151435147782, 0, 0, '2023-07-28 15:14:36', 0, '2023-07-28 15:39:06', 1, 0, 0, '', '连接服务',
+INSERT INTO `sys_menu` (`id`, `tenant_id`, `create_id`, `create_time`, `update_id`, `update_time`,
+                        `enable_flag`,
+                        `version`, `del_flag`, `remark`, `name`, `path`, `icon`, `parent_id`,
+                        `auths`, `show_flag`,
+                        `link_flag`, `router`, `redirect`, `order_no`, `first_flag`, `auth_flag`,
+                        `uuid`)
+VALUES (230620160155124026, 0, 0, '2023-06-20 16:01:56', 0, '2023-06-20 16:01:56', 1, 0, 0, '',
+        '新增修改', '', '',
+        230620155944123975, 'sysArea:insertOrUpdate', 0, 0, '', '', 10000, 0, 1,
+        '203b615cd66e4598b6f5978b25b6a83e');
+INSERT INTO `sys_menu` (`id`, `tenant_id`, `create_id`, `create_time`, `update_id`, `update_time`,
+                        `enable_flag`,
+                        `version`, `del_flag`, `remark`, `name`, `path`, `icon`, `parent_id`,
+                        `auths`, `show_flag`,
+                        `link_flag`, `router`, `redirect`, `order_no`, `first_flag`, `auth_flag`,
+                        `uuid`)
+VALUES (230620160156124028, 0, 0, '2023-06-20 16:01:57', 0, '2023-06-20 16:01:57', 1, 0, 0, '',
+        '列表查询', '', '',
+        230620155944123975, 'sysArea:page', 0, 0, '', '', 9900, 0, 1,
+        '04dc8059c9f947fa9b20a4300ac7088b');
+INSERT INTO `sys_menu` (`id`, `tenant_id`, `create_id`, `create_time`, `update_id`, `update_time`,
+                        `enable_flag`,
+                        `version`, `del_flag`, `remark`, `name`, `path`, `icon`, `parent_id`,
+                        `auths`, `show_flag`,
+                        `link_flag`, `router`, `redirect`, `order_no`, `first_flag`, `auth_flag`,
+                        `uuid`)
+VALUES (230620160156124029, 0, 0, '2023-06-20 16:01:57', 0, '2023-06-20 16:01:57', 1, 0, 0, '',
+        '删除', '', '',
+        230620155944123975, 'sysArea:deleteByIdSet', 0, 0, '', '', 9800, 0, 1,
+        '02c59fade32e4795b745161223629aa1');
+INSERT INTO `sys_menu` (`id`, `tenant_id`, `create_id`, `create_time`, `update_id`, `update_time`,
+                        `enable_flag`,
+                        `version`, `del_flag`, `remark`, `name`, `path`, `icon`, `parent_id`,
+                        `auths`, `show_flag`,
+                        `link_flag`, `router`, `redirect`, `order_no`, `first_flag`, `auth_flag`,
+                        `uuid`)
+VALUES (230620160157124030, 0, 0, '2023-06-20 16:01:57', 0, '2023-06-20 16:01:57', 1, 0, 0, '',
+        '查看详情', '', '',
+        230620155944123975, 'sysArea:infoById', 0, 0, '', '', 9700, 0, 1,
+        '15a294d1dc8e471689f9d0e96672f930');
+INSERT INTO `sys_menu` (`id`, `tenant_id`, `create_id`, `create_time`, `update_id`, `update_time`,
+                        `enable_flag`,
+                        `version`, `del_flag`, `remark`, `name`, `path`, `icon`, `parent_id`,
+                        `auths`, `show_flag`,
+                        `link_flag`, `router`, `redirect`, `order_no`, `first_flag`, `auth_flag`,
+                        `uuid`)
+VALUES (230620160215124035, 0, 0, '2023-06-20 16:02:15', 0, '2023-06-20 16:02:15', 1, 0, 0, '',
+        '新增修改', '', '',
+        230620160002123980, 'sysDept:insertOrUpdate', 0, 0, '', '', 10000, 0, 1,
+        '50c850679e2c4419b6dc703d71f7ad43');
+INSERT INTO `sys_menu` (`id`, `tenant_id`, `create_id`, `create_time`, `update_id`, `update_time`,
+                        `enable_flag`,
+                        `version`, `del_flag`, `remark`, `name`, `path`, `icon`, `parent_id`,
+                        `auths`, `show_flag`,
+                        `link_flag`, `router`, `redirect`, `order_no`, `first_flag`, `auth_flag`,
+                        `uuid`)
+VALUES (230620160215124036, 0, 0, '2023-06-20 16:02:16', 0, '2023-06-20 16:02:16', 1, 0, 0, '',
+        '列表查询', '', '',
+        230620160002123980, 'sysDept:page', 0, 0, '', '', 9900, 0, 1,
+        '4a1895d57c4c4734bb09e5c032351206');
+INSERT INTO `sys_menu` (`id`, `tenant_id`, `create_id`, `create_time`, `update_id`, `update_time`,
+                        `enable_flag`,
+                        `version`, `del_flag`, `remark`, `name`, `path`, `icon`, `parent_id`,
+                        `auths`, `show_flag`,
+                        `link_flag`, `router`, `redirect`, `order_no`, `first_flag`, `auth_flag`,
+                        `uuid`)
+VALUES (230620160216124037, 0, 0, '2023-06-20 16:02:16', 0, '2023-06-20 16:02:16', 1, 0, 0, '',
+        '删除', '', '',
+        230620160002123980, 'sysDept:deleteByIdSet', 0, 0, '', '', 9800, 0, 1,
+        'cfe40ce03a7840d8b2f736883f2893fc');
+INSERT INTO `sys_menu` (`id`, `tenant_id`, `create_id`, `create_time`, `update_id`, `update_time`,
+                        `enable_flag`,
+                        `version`, `del_flag`, `remark`, `name`, `path`, `icon`, `parent_id`,
+                        `auths`, `show_flag`,
+                        `link_flag`, `router`, `redirect`, `order_no`, `first_flag`, `auth_flag`,
+                        `uuid`)
+VALUES (230620160216124040, 0, 0, '2023-06-20 16:02:17', 0, '2023-06-20 16:02:17', 1, 0, 0, '',
+        '查看详情', '', '',
+        230620160002123980, 'sysDept:infoById', 0, 0, '', '', 9700, 0, 1,
+        '3fdbfe4d02b9404aa0798eadf792c228');
+INSERT INTO `sys_menu` (`id`, `tenant_id`, `create_id`, `create_time`, `update_id`, `update_time`,
+                        `enable_flag`,
+                        `version`, `del_flag`, `remark`, `name`, `path`, `icon`, `parent_id`,
+                        `auths`, `show_flag`,
+                        `link_flag`, `router`, `redirect`, `order_no`, `first_flag`, `auth_flag`,
+                        `uuid`)
+VALUES (230620160233124044, 0, 0, '2023-06-20 16:02:33', 0, '2023-06-20 16:02:33', 1, 0, 0, '',
+        '新增修改', '', '',
+        230620160014123985, 'sysPost:insertOrUpdate', 0, 0, '', '', 10000, 0, 1,
+        '8ac374791d954ada89d8cc3f4013652e');
+INSERT INTO `sys_menu` (`id`, `tenant_id`, `create_id`, `create_time`, `update_id`, `update_time`,
+                        `enable_flag`,
+                        `version`, `del_flag`, `remark`, `name`, `path`, `icon`, `parent_id`,
+                        `auths`, `show_flag`,
+                        `link_flag`, `router`, `redirect`, `order_no`, `first_flag`, `auth_flag`,
+                        `uuid`)
+VALUES (230620160233124045, 0, 0, '2023-06-20 16:02:34', 0, '2023-06-20 16:02:34', 1, 0, 0, '',
+        '列表查询', '', '',
+        230620160014123985, 'sysPost:page', 0, 0, '', '', 9900, 0, 1,
+        'ab1f1a3114e14dde82b8c25bcef10f06');
+INSERT INTO `sys_menu` (`id`, `tenant_id`, `create_id`, `create_time`, `update_id`, `update_time`,
+                        `enable_flag`,
+                        `version`, `del_flag`, `remark`, `name`, `path`, `icon`, `parent_id`,
+                        `auths`, `show_flag`,
+                        `link_flag`, `router`, `redirect`, `order_no`, `first_flag`, `auth_flag`,
+                        `uuid`)
+VALUES (230620160234124046, 0, 0, '2023-06-20 16:02:34', 0, '2023-06-20 16:02:34', 1, 0, 0, '',
+        '删除', '', '',
+        230620160014123985, 'sysPost:deleteByIdSet', 0, 0, '', '', 9800, 0, 1,
+        'e2f6fa7820514766836b417510187e26');
+INSERT INTO `sys_menu` (`id`, `tenant_id`, `create_id`, `create_time`, `update_id`, `update_time`,
+                        `enable_flag`,
+                        `version`, `del_flag`, `remark`, `name`, `path`, `icon`, `parent_id`,
+                        `auths`, `show_flag`,
+                        `link_flag`, `router`, `redirect`, `order_no`, `first_flag`, `auth_flag`,
+                        `uuid`)
+VALUES (230620160234124047, 0, 0, '2023-06-20 16:02:35', 0, '2023-06-20 16:02:35', 1, 0, 0, '',
+        '查看详情', '', '',
+        230620160014123985, 'sysPost:infoById', 0, 0, '', '', 9700, 0, 1,
+        '4bf37d5747df4f1a9d8adb490ccd7ce6');
+INSERT INTO `sys_menu` (`id`, `tenant_id`, `create_id`, `create_time`, `update_id`, `update_time`,
+                        `enable_flag`,
+                        `version`, `del_flag`, `remark`, `name`, `path`, `icon`, `parent_id`,
+                        `auths`, `show_flag`,
+                        `link_flag`, `router`, `redirect`, `order_no`, `first_flag`, `auth_flag`,
+                        `uuid`)
+VALUES (230728151103147771, 0, 0, '2023-07-28 15:11:04', 0, '2023-07-28 16:15:13', 1, 0, 0, '',
+        '连接管理', '',
+        'ApiOutlined', 221004205817000054, '', 1, 0, '', '', 9600, 0, 0,
+        'cee12ae9d73b4d2a8e8e0490d9706838');
+INSERT INTO `sys_menu` (`id`, `tenant_id`, `create_id`, `create_time`, `update_id`, `update_time`,
+                        `enable_flag`,
+                        `version`, `del_flag`, `remark`, `name`, `path`, `icon`, `parent_id`,
+                        `auths`, `show_flag`,
+                        `link_flag`, `router`, `redirect`, `order_no`, `first_flag`, `auth_flag`,
+                        `uuid`)
+VALUES (230728151435147782, 0, 0, '2023-07-28 15:14:36', 0, '2023-07-28 15:39:06', 1, 0, 0, '',
+        '连接服务',
         '/admin/sys/socket', '', 230728151103147771, '', 1, 0, 'sysSocketSocket', '', 10000, 0, 0,
         '25a4065ec5344a5e8b671ba78a9bf631');
-INSERT INTO `sys_menu` (`id`, `tenant_id`, `create_id`, `create_time`, `update_id`, `update_time`, `enable_flag`,
-                        `version`, `del_flag`, `remark`, `name`, `path`, `icon`, `parent_id`, `auths`, `show_flag`,
-                        `link_flag`, `router`, `redirect`, `order_no`, `first_flag`, `auth_flag`, `uuid`)
-VALUES (230728151554147791, 0, 0, '2023-07-28 15:15:54', 0, '2023-07-28 15:15:54', 1, 0, 0, '', '在线用户',
-        '/admin/sys/socketRefUser', '', 230728151103147771, '', 1, 0, 'sysSocketRefUserSocketRefUser', '', 9900, 0, 0,
+INSERT INTO `sys_menu` (`id`, `tenant_id`, `create_id`, `create_time`, `update_id`, `update_time`,
+                        `enable_flag`,
+                        `version`, `del_flag`, `remark`, `name`, `path`, `icon`, `parent_id`,
+                        `auths`, `show_flag`,
+                        `link_flag`, `router`, `redirect`, `order_no`, `first_flag`, `auth_flag`,
+                        `uuid`)
+VALUES (230728151554147791, 0, 0, '2023-07-28 15:15:54', 0, '2023-07-28 15:15:54', 1, 0, 0, '',
+        '在线用户',
+        '/admin/sys/socketRefUser', '', 230728151103147771, '', 1, 0,
+        'sysSocketRefUserSocketRefUser', '', 9900, 0, 0,
         '0eb5961ca18f47058c889906a6f1e0a7');
-INSERT INTO `sys_menu` (`id`, `tenant_id`, `create_id`, `create_time`, `update_id`, `update_time`, `enable_flag`,
-                        `version`, `del_flag`, `remark`, `name`, `path`, `icon`, `parent_id`, `auths`, `show_flag`,
-                        `link_flag`, `router`, `redirect`, `order_no`, `first_flag`, `auth_flag`, `uuid`)
-VALUES (230810002442152333, 0, 0, '2023-08-10 00:24:43', 0, '2023-08-10 00:24:43', 1, 0, 0, '', '新增修改', '', '',
-        230728151435147782, 'sysSocket:insertOrUpdate', 0, 0, '', '', 10000, 0, 1, '535a25615f9e44249c84068849017cc3');
-INSERT INTO `sys_menu` (`id`, `tenant_id`, `create_id`, `create_time`, `update_id`, `update_time`, `enable_flag`,
-                        `version`, `del_flag`, `remark`, `name`, `path`, `icon`, `parent_id`, `auths`, `show_flag`,
-                        `link_flag`, `router`, `redirect`, `order_no`, `first_flag`, `auth_flag`, `uuid`)
-VALUES (230810002442152334, 0, 0, '2023-08-10 00:24:43', 0, '2023-08-10 00:24:43', 1, 0, 0, '', '列表查询', '', '',
-        230728151435147782, 'sysSocket:page', 0, 0, '', '', 9900, 0, 1, '8df7909eb49e4bb792eef753297fed2a');
-INSERT INTO `sys_menu` (`id`, `tenant_id`, `create_id`, `create_time`, `update_id`, `update_time`, `enable_flag`,
-                        `version`, `del_flag`, `remark`, `name`, `path`, `icon`, `parent_id`, `auths`, `show_flag`,
-                        `link_flag`, `router`, `redirect`, `order_no`, `first_flag`, `auth_flag`, `uuid`)
-VALUES (230810002442152335, 0, 0, '2023-08-10 00:24:43', 0, '2023-08-10 00:24:43', 1, 0, 0, '', '删除', '', '',
-        230728151435147782, 'sysSocket:deleteByIdSet', 0, 0, '', '', 9800, 0, 1, 'dd3a6d0aaed84bada06b9c013b1fcf11');
-INSERT INTO `sys_menu` (`id`, `tenant_id`, `create_id`, `create_time`, `update_id`, `update_time`, `enable_flag`,
-                        `version`, `del_flag`, `remark`, `name`, `path`, `icon`, `parent_id`, `auths`, `show_flag`,
-                        `link_flag`, `router`, `redirect`, `order_no`, `first_flag`, `auth_flag`, `uuid`)
-VALUES (230810002442152336, 0, 0, '2023-08-10 00:24:43', 0, '2023-08-10 00:24:43', 1, 0, 0, '', '查看详情', '', '',
-        230728151435147782, 'sysSocket:infoById', 0, 0, '', '', 9700, 0, 1, 'b077dd0008c44306823c19c423c7831e');
-INSERT INTO `sys_menu` (`id`, `tenant_id`, `create_id`, `create_time`, `update_id`, `update_time`, `enable_flag`,
-                        `version`, `del_flag`, `remark`, `name`, `path`, `icon`, `parent_id`, `auths`, `show_flag`,
-                        `link_flag`, `router`, `redirect`, `order_no`, `first_flag`, `auth_flag`, `uuid`)
-VALUES (230810002513152343, 0, 0, '2023-08-10 00:25:14', 0, '2023-08-10 00:25:14', 1, 0, 0, '', '新增修改', '', '',
+INSERT INTO `sys_menu` (`id`, `tenant_id`, `create_id`, `create_time`, `update_id`, `update_time`,
+                        `enable_flag`,
+                        `version`, `del_flag`, `remark`, `name`, `path`, `icon`, `parent_id`,
+                        `auths`, `show_flag`,
+                        `link_flag`, `router`, `redirect`, `order_no`, `first_flag`, `auth_flag`,
+                        `uuid`)
+VALUES (230810002442152333, 0, 0, '2023-08-10 00:24:43', 0, '2023-08-10 00:24:43', 1, 0, 0, '',
+        '新增修改', '', '',
+        230728151435147782, 'sysSocket:insertOrUpdate', 0, 0, '', '', 10000, 0, 1,
+        '535a25615f9e44249c84068849017cc3');
+INSERT INTO `sys_menu` (`id`, `tenant_id`, `create_id`, `create_time`, `update_id`, `update_time`,
+                        `enable_flag`,
+                        `version`, `del_flag`, `remark`, `name`, `path`, `icon`, `parent_id`,
+                        `auths`, `show_flag`,
+                        `link_flag`, `router`, `redirect`, `order_no`, `first_flag`, `auth_flag`,
+                        `uuid`)
+VALUES (230810002442152334, 0, 0, '2023-08-10 00:24:43', 0, '2023-08-10 00:24:43', 1, 0, 0, '',
+        '列表查询', '', '',
+        230728151435147782, 'sysSocket:page', 0, 0, '', '', 9900, 0, 1,
+        '8df7909eb49e4bb792eef753297fed2a');
+INSERT INTO `sys_menu` (`id`, `tenant_id`, `create_id`, `create_time`, `update_id`, `update_time`,
+                        `enable_flag`,
+                        `version`, `del_flag`, `remark`, `name`, `path`, `icon`, `parent_id`,
+                        `auths`, `show_flag`,
+                        `link_flag`, `router`, `redirect`, `order_no`, `first_flag`, `auth_flag`,
+                        `uuid`)
+VALUES (230810002442152335, 0, 0, '2023-08-10 00:24:43', 0, '2023-08-10 00:24:43', 1, 0, 0, '',
+        '删除', '', '',
+        230728151435147782, 'sysSocket:deleteByIdSet', 0, 0, '', '', 9800, 0, 1,
+        'dd3a6d0aaed84bada06b9c013b1fcf11');
+INSERT INTO `sys_menu` (`id`, `tenant_id`, `create_id`, `create_time`, `update_id`, `update_time`,
+                        `enable_flag`,
+                        `version`, `del_flag`, `remark`, `name`, `path`, `icon`, `parent_id`,
+                        `auths`, `show_flag`,
+                        `link_flag`, `router`, `redirect`, `order_no`, `first_flag`, `auth_flag`,
+                        `uuid`)
+VALUES (230810002442152336, 0, 0, '2023-08-10 00:24:43', 0, '2023-08-10 00:24:43', 1, 0, 0, '',
+        '查看详情', '', '',
+        230728151435147782, 'sysSocket:infoById', 0, 0, '', '', 9700, 0, 1,
+        'b077dd0008c44306823c19c423c7831e');
+INSERT INTO `sys_menu` (`id`, `tenant_id`, `create_id`, `create_time`, `update_id`, `update_time`,
+                        `enable_flag`,
+                        `version`, `del_flag`, `remark`, `name`, `path`, `icon`, `parent_id`,
+                        `auths`, `show_flag`,
+                        `link_flag`, `router`, `redirect`, `order_no`, `first_flag`, `auth_flag`,
+                        `uuid`)
+VALUES (230810002513152343, 0, 0, '2023-08-10 00:25:14', 0, '2023-08-10 00:25:14', 1, 0, 0, '',
+        '新增修改', '', '',
         230728151554147791, 'sysSocketRefUser:insertOrUpdate', 0, 0, '', '', 10000, 0, 1,
         '425ed98c1c4b4e0fbca62599f50da564');
-INSERT INTO `sys_menu` (`id`, `tenant_id`, `create_id`, `create_time`, `update_id`, `update_time`, `enable_flag`,
-                        `version`, `del_flag`, `remark`, `name`, `path`, `icon`, `parent_id`, `auths`, `show_flag`,
-                        `link_flag`, `router`, `redirect`, `order_no`, `first_flag`, `auth_flag`, `uuid`)
-VALUES (230810002513152344, 0, 0, '2023-08-10 00:25:14', 0, '2023-08-10 00:25:14', 1, 0, 0, '', '列表查询', '', '',
-        230728151554147791, 'sysSocketRefUser:page', 0, 0, '', '', 9900, 0, 1, '9faf7606b50f4850a01af28bae98a121');
-INSERT INTO `sys_menu` (`id`, `tenant_id`, `create_id`, `create_time`, `update_id`, `update_time`, `enable_flag`,
-                        `version`, `del_flag`, `remark`, `name`, `path`, `icon`, `parent_id`, `auths`, `show_flag`,
-                        `link_flag`, `router`, `redirect`, `order_no`, `first_flag`, `auth_flag`, `uuid`)
-VALUES (230810002513152345, 0, 0, '2023-08-10 00:25:14', 0, '2023-08-10 00:25:14', 1, 0, 0, '', '删除', '', '',
+INSERT INTO `sys_menu` (`id`, `tenant_id`, `create_id`, `create_time`, `update_id`, `update_time`,
+                        `enable_flag`,
+                        `version`, `del_flag`, `remark`, `name`, `path`, `icon`, `parent_id`,
+                        `auths`, `show_flag`,
+                        `link_flag`, `router`, `redirect`, `order_no`, `first_flag`, `auth_flag`,
+                        `uuid`)
+VALUES (230810002513152344, 0, 0, '2023-08-10 00:25:14', 0, '2023-08-10 00:25:14', 1, 0, 0, '',
+        '列表查询', '', '',
+        230728151554147791, 'sysSocketRefUser:page', 0, 0, '', '', 9900, 0, 1,
+        '9faf7606b50f4850a01af28bae98a121');
+INSERT INTO `sys_menu` (`id`, `tenant_id`, `create_id`, `create_time`, `update_id`, `update_time`,
+                        `enable_flag`,
+                        `version`, `del_flag`, `remark`, `name`, `path`, `icon`, `parent_id`,
+                        `auths`, `show_flag`,
+                        `link_flag`, `router`, `redirect`, `order_no`, `first_flag`, `auth_flag`,
+                        `uuid`)
+VALUES (230810002513152345, 0, 0, '2023-08-10 00:25:14', 0, '2023-08-10 00:25:14', 1, 0, 0, '',
+        '删除', '', '',
         230728151554147791, 'sysSocketRefUser:deleteByIdSet', 0, 0, '', '', 9800, 0, 1,
         'ce99a0638bc246119fb60263818de514');
-INSERT INTO `sys_menu` (`id`, `tenant_id`, `create_id`, `create_time`, `update_id`, `update_time`, `enable_flag`,
-                        `version`, `del_flag`, `remark`, `name`, `path`, `icon`, `parent_id`, `auths`, `show_flag`,
-                        `link_flag`, `router`, `redirect`, `order_no`, `first_flag`, `auth_flag`, `uuid`)
-VALUES (230810002513152346, 0, 0, '2023-08-10 00:25:14', 0, '2023-08-10 00:25:14', 1, 0, 0, '', '查看详情', '', '',
-        230728151554147791, 'sysSocketRefUser:infoById', 0, 0, '', '', 9700, 0, 1, '6ec8fb97eab3434e9f6dec6880e0f608');
-INSERT INTO `sys_menu` (`id`, `tenant_id`, `create_id`, `create_time`, `update_id`, `update_time`, `enable_flag`,
-                        `version`, `del_flag`, `remark`, `name`, `path`, `icon`, `parent_id`, `auths`, `show_flag`,
-                        `link_flag`, `router`, `redirect`, `order_no`, `first_flag`, `auth_flag`, `uuid`)
-VALUES (230825160158155313, 0, 0, '2023-08-25 16:01:59', 0, '2023-08-28 16:37:10', 1, 0, 0, '', '租户管理',
+INSERT INTO `sys_menu` (`id`, `tenant_id`, `create_id`, `create_time`, `update_id`, `update_time`,
+                        `enable_flag`,
+                        `version`, `del_flag`, `remark`, `name`, `path`, `icon`, `parent_id`,
+                        `auths`, `show_flag`,
+                        `link_flag`, `router`, `redirect`, `order_no`, `first_flag`, `auth_flag`,
+                        `uuid`)
+VALUES (230810002513152346, 0, 0, '2023-08-10 00:25:14', 0, '2023-08-10 00:25:14', 1, 0, 0, '',
+        '查看详情', '', '',
+        230728151554147791, 'sysSocketRefUser:infoById', 0, 0, '', '', 9700, 0, 1,
+        '6ec8fb97eab3434e9f6dec6880e0f608');
+INSERT INTO `sys_menu` (`id`, `tenant_id`, `create_id`, `create_time`, `update_id`, `update_time`,
+                        `enable_flag`,
+                        `version`, `del_flag`, `remark`, `name`, `path`, `icon`, `parent_id`,
+                        `auths`, `show_flag`,
+                        `link_flag`, `router`, `redirect`, `order_no`, `first_flag`, `auth_flag`,
+                        `uuid`)
+VALUES (230825160158155313, 0, 0, '2023-08-25 16:01:59', 0, '2023-08-28 16:37:10', 1, 0, 0, '',
+        '租户管理',
         '/admin/sys/tenant', '', 230620155859123966, '', 1, 0, 'sysTenantTenant', '', 9700, 0, 0,
         'fca446313e524b2fba8a2d05efc3b4d2');
-INSERT INTO `sys_menu` (`id`, `tenant_id`, `create_id`, `create_time`, `update_id`, `update_time`, `enable_flag`,
-                        `version`, `del_flag`, `remark`, `name`, `path`, `icon`, `parent_id`, `auths`, `show_flag`,
-                        `link_flag`, `router`, `redirect`, `order_no`, `first_flag`, `auth_flag`, `uuid`)
-VALUES (230825160232155328, 0, 0, '2023-08-25 16:02:33', 0, '2023-08-25 16:02:33', 1, 0, 0, '', '新增修改', '', '',
-        230825160158155313, 'sysTenant:insertOrUpdate', 0, 0, '', '', 10000, 0, 1, '0d8a6ed8186944478482907f3886aa22');
-INSERT INTO `sys_menu` (`id`, `tenant_id`, `create_id`, `create_time`, `update_id`, `update_time`, `enable_flag`,
-                        `version`, `del_flag`, `remark`, `name`, `path`, `icon`, `parent_id`, `auths`, `show_flag`,
-                        `link_flag`, `router`, `redirect`, `order_no`, `first_flag`, `auth_flag`, `uuid`)
-VALUES (230825160232155329, 0, 0, '2023-08-25 16:02:33', 0, '2023-08-25 16:02:33', 1, 0, 0, '', '列表查询', '', '',
-        230825160158155313, 'sysTenant:page', 0, 0, '', '', 9900, 0, 1, '2cc3d7369c074530b59d681d01ce43a6');
-INSERT INTO `sys_menu` (`id`, `tenant_id`, `create_id`, `create_time`, `update_id`, `update_time`, `enable_flag`,
-                        `version`, `del_flag`, `remark`, `name`, `path`, `icon`, `parent_id`, `auths`, `show_flag`,
-                        `link_flag`, `router`, `redirect`, `order_no`, `first_flag`, `auth_flag`, `uuid`)
-VALUES (230825160232155330, 0, 0, '2023-08-25 16:02:33', 0, '2023-08-25 16:02:33', 1, 0, 0, '', '删除', '', '',
-        230825160158155313, 'sysTenant:deleteByIdSet', 0, 0, '', '', 9800, 0, 1, 'b9825506337242a0b3869ece8dba6ae9');
-INSERT INTO `sys_menu` (`id`, `tenant_id`, `create_id`, `create_time`, `update_id`, `update_time`, `enable_flag`,
-                        `version`, `del_flag`, `remark`, `name`, `path`, `icon`, `parent_id`, `auths`, `show_flag`,
-                        `link_flag`, `router`, `redirect`, `order_no`, `first_flag`, `auth_flag`, `uuid`)
-VALUES (230825160233155331, 0, 0, '2023-08-25 16:02:33', 0, '2023-08-25 16:02:33', 1, 0, 0, '', '查看详情', '', '',
-        230825160158155313, 'sysTenant:infoById', 0, 0, '', '', 9700, 0, 1, '9c89c4e07f6946b7992ed2b7d386cded');
-INSERT INTO `sys_menu` (`id`, `tenant_id`, `create_id`, `create_time`, `update_id`, `update_time`, `enable_flag`,
-                        `version`, `del_flag`, `remark`, `name`, `path`, `icon`, `parent_id`, `auths`, `show_flag`,
-                        `link_flag`, `router`, `redirect`, `order_no`, `first_flag`, `auth_flag`, `uuid`)
-VALUES (230829100731158505, 0, 0, '2023-08-29 10:07:32', 0, '2023-08-29 10:07:32', 1, 0, 0, '', '下拉列表', '', '', 14,
+INSERT INTO `sys_menu` (`id`, `tenant_id`, `create_id`, `create_time`, `update_id`, `update_time`,
+                        `enable_flag`,
+                        `version`, `del_flag`, `remark`, `name`, `path`, `icon`, `parent_id`,
+                        `auths`, `show_flag`,
+                        `link_flag`, `router`, `redirect`, `order_no`, `first_flag`, `auth_flag`,
+                        `uuid`)
+VALUES (230825160232155328, 0, 0, '2023-08-25 16:02:33', 0, '2023-08-25 16:02:33', 1, 0, 0, '',
+        '新增修改', '', '',
+        230825160158155313, 'sysTenant:insertOrUpdate', 0, 0, '', '', 10000, 0, 1,
+        '0d8a6ed8186944478482907f3886aa22');
+INSERT INTO `sys_menu` (`id`, `tenant_id`, `create_id`, `create_time`, `update_id`, `update_time`,
+                        `enable_flag`,
+                        `version`, `del_flag`, `remark`, `name`, `path`, `icon`, `parent_id`,
+                        `auths`, `show_flag`,
+                        `link_flag`, `router`, `redirect`, `order_no`, `first_flag`, `auth_flag`,
+                        `uuid`)
+VALUES (230825160232155329, 0, 0, '2023-08-25 16:02:33', 0, '2023-08-25 16:02:33', 1, 0, 0, '',
+        '列表查询', '', '',
+        230825160158155313, 'sysTenant:page', 0, 0, '', '', 9900, 0, 1,
+        '2cc3d7369c074530b59d681d01ce43a6');
+INSERT INTO `sys_menu` (`id`, `tenant_id`, `create_id`, `create_time`, `update_id`, `update_time`,
+                        `enable_flag`,
+                        `version`, `del_flag`, `remark`, `name`, `path`, `icon`, `parent_id`,
+                        `auths`, `show_flag`,
+                        `link_flag`, `router`, `redirect`, `order_no`, `first_flag`, `auth_flag`,
+                        `uuid`)
+VALUES (230825160232155330, 0, 0, '2023-08-25 16:02:33', 0, '2023-08-25 16:02:33', 1, 0, 0, '',
+        '删除', '', '',
+        230825160158155313, 'sysTenant:deleteByIdSet', 0, 0, '', '', 9800, 0, 1,
+        'b9825506337242a0b3869ece8dba6ae9');
+INSERT INTO `sys_menu` (`id`, `tenant_id`, `create_id`, `create_time`, `update_id`, `update_time`,
+                        `enable_flag`,
+                        `version`, `del_flag`, `remark`, `name`, `path`, `icon`, `parent_id`,
+                        `auths`, `show_flag`,
+                        `link_flag`, `router`, `redirect`, `order_no`, `first_flag`, `auth_flag`,
+                        `uuid`)
+VALUES (230825160233155331, 0, 0, '2023-08-25 16:02:33', 0, '2023-08-25 16:02:33', 1, 0, 0, '',
+        '查看详情', '', '',
+        230825160158155313, 'sysTenant:infoById', 0, 0, '', '', 9700, 0, 1,
+        '9c89c4e07f6946b7992ed2b7d386cded');
+INSERT INTO `sys_menu` (`id`, `tenant_id`, `create_id`, `create_time`, `update_id`, `update_time`,
+                        `enable_flag`,
+                        `version`, `del_flag`, `remark`, `name`, `path`, `icon`, `parent_id`,
+                        `auths`, `show_flag`,
+                        `link_flag`, `router`, `redirect`, `order_no`, `first_flag`, `auth_flag`,
+                        `uuid`)
+VALUES (230829100731158505, 0, 0, '2023-08-29 10:07:32', 0, '2023-08-29 10:07:32', 1, 0, 0, '',
+        '下拉列表', '', '', 14,
         'sysUser:dictList', 0, 0, '', '', 9900, 0, 1, '68ba2133b1f74fb497deeea970d69917');
-INSERT INTO `sys_menu` (`id`, `tenant_id`, `create_id`, `create_time`, `update_id`, `update_time`, `enable_flag`,
-                        `version`, `del_flag`, `remark`, `name`, `path`, `icon`, `parent_id`, `auths`, `show_flag`,
-                        `link_flag`, `router`, `redirect`, `order_no`, `first_flag`, `auth_flag`, `uuid`)
-VALUES (230829100759158511, 0, 0, '2023-08-29 10:07:59', 0, '2023-08-29 10:07:59', 1, 0, 0, '', '下拉列表', '', '',
-        230825160158155313, 'sysTenant:dictList', 0, 0, '', '', 9600, 0, 1, '06f50499ada146c697867f3c49e0abd1');
-INSERT INTO `sys_menu` (`id`, `tenant_id`, `create_id`, `create_time`, `update_id`, `update_time`, `enable_flag`,
-                        `version`, `del_flag`, `remark`, `name`, `path`, `icon`, `parent_id`, `auths`, `show_flag`,
-                        `link_flag`, `router`, `redirect`, `order_no`, `first_flag`, `auth_flag`, `uuid`)
-VALUES (230905190104004364, 0, 0, '2023-09-05 19:01:05', 0, '2023-09-06 09:46:20', 1, 0, 0, '', '新增菜单', '', '',
-        230825160158155313, 'sysTenant:syncMenu', 0, 0, '', '', 9500, 0, 1, 'c4cabde48fd64960997d311b6a822834');
-INSERT INTO `sys_menu` (`id`, `tenant_id`, `create_id`, `create_time`, `update_id`, `update_time`, `enable_flag`,
-                        `version`, `del_flag`, `remark`, `name`, `path`, `icon`, `parent_id`, `auths`, `show_flag`,
-                        `link_flag`, `router`, `redirect`, `order_no`, `first_flag`, `auth_flag`, `uuid`)
-VALUES (230906094600005368, 0, 0, '2023-09-06 09:46:01', 0, '2023-09-06 09:46:33', 1, 0, 0, '', '新增字典', '', '',
-        230825160158155313, 'sysTenant:syncDict', 0, 0, '', '', 9400, 0, 1, 'd0bcfce4d7d245e2b624f91517a3350c');
-INSERT INTO `sys_menu` (`id`, `tenant_id`, `create_id`, `create_time`, `update_id`, `update_time`, `enable_flag`,
-                        `version`, `del_flag`, `remark`, `name`, `path`, `icon`, `parent_id`, `auths`, `show_flag`,
-                        `link_flag`, `router`, `redirect`, `order_no`, `first_flag`, `auth_flag`, `uuid`)
-VALUES (230906094702005387, 0, 0, '2023-09-06 09:47:02', 0, '2023-09-06 09:47:02', 1, 0, 0, '', '新增参数', '', '',
-        230825160158155313, 'sysTenant:syncParam', 0, 0, '', '', 9300, 0, 1, 'c7b3853197924276aaac7428d7d4eb86');
+INSERT INTO `sys_menu` (`id`, `tenant_id`, `create_id`, `create_time`, `update_id`, `update_time`,
+                        `enable_flag`,
+                        `version`, `del_flag`, `remark`, `name`, `path`, `icon`, `parent_id`,
+                        `auths`, `show_flag`,
+                        `link_flag`, `router`, `redirect`, `order_no`, `first_flag`, `auth_flag`,
+                        `uuid`)
+VALUES (230829100759158511, 0, 0, '2023-08-29 10:07:59', 0, '2023-08-29 10:07:59', 1, 0, 0, '',
+        '下拉列表', '', '',
+        230825160158155313, 'sysTenant:dictList', 0, 0, '', '', 9600, 0, 1,
+        '06f50499ada146c697867f3c49e0abd1');
+INSERT INTO `sys_menu` (`id`, `tenant_id`, `create_id`, `create_time`, `update_id`, `update_time`,
+                        `enable_flag`,
+                        `version`, `del_flag`, `remark`, `name`, `path`, `icon`, `parent_id`,
+                        `auths`, `show_flag`,
+                        `link_flag`, `router`, `redirect`, `order_no`, `first_flag`, `auth_flag`,
+                        `uuid`)
+VALUES (230905190104004364, 0, 0, '2023-09-05 19:01:05', 0, '2023-09-06 09:46:20', 1, 0, 0, '',
+        '新增菜单', '', '',
+        230825160158155313, 'sysTenant:syncMenu', 0, 0, '', '', 9500, 0, 1,
+        'c4cabde48fd64960997d311b6a822834');
+INSERT INTO `sys_menu` (`id`, `tenant_id`, `create_id`, `create_time`, `update_id`, `update_time`,
+                        `enable_flag`,
+                        `version`, `del_flag`, `remark`, `name`, `path`, `icon`, `parent_id`,
+                        `auths`, `show_flag`,
+                        `link_flag`, `router`, `redirect`, `order_no`, `first_flag`, `auth_flag`,
+                        `uuid`)
+VALUES (230906094600005368, 0, 0, '2023-09-06 09:46:01', 0, '2023-09-06 09:46:33', 1, 0, 0, '',
+        '新增字典', '', '',
+        230825160158155313, 'sysTenant:syncDict', 0, 0, '', '', 9400, 0, 1,
+        'd0bcfce4d7d245e2b624f91517a3350c');
+INSERT INTO `sys_menu` (`id`, `tenant_id`, `create_id`, `create_time`, `update_id`, `update_time`,
+                        `enable_flag`,
+                        `version`, `del_flag`, `remark`, `name`, `path`, `icon`, `parent_id`,
+                        `auths`, `show_flag`,
+                        `link_flag`, `router`, `redirect`, `order_no`, `first_flag`, `auth_flag`,
+                        `uuid`)
+VALUES (230906094702005387, 0, 0, '2023-09-06 09:47:02', 0, '2023-09-06 09:47:02', 1, 0, 0, '',
+        '新增参数', '', '',
+        230825160158155313, 'sysTenant:syncParam', 0, 0, '', '', 9300, 0, 1,
+        'c7b3853197924276aaac7428d7d4eb86');
 
 -- ----------------------------
 -- Table structure for sys_param

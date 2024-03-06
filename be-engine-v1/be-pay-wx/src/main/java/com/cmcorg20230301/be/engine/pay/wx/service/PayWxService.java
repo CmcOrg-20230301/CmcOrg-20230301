@@ -5,8 +5,10 @@ import javax.servlet.http.HttpServletResponse;
 
 public interface PayWxService {
 
-    void notifyCallBackNative(HttpServletRequest request, HttpServletResponse response, long sysPayConfigurationId);
+    void notifyCallBackNative(HttpServletRequest request, HttpServletResponse response,
+        long sysPayConfigurationId);
 
-    void notifyCallBackJsApi(HttpServletRequest request, HttpServletResponse response, long sysPayConfigurationId);
+    void notifyCallBackJsApi(HttpServletRequest request, HttpServletResponse response,
+        long sysPayConfigurationId);
 
 }

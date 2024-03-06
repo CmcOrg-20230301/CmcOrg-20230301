@@ -1,37 +1,38 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <modelVersion>4.0.0</modelVersion>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
 
-    <parent>
-        <groupId>com.cmcorg20230301</groupId>
-        <artifactId>be-engine-v1</artifactId>
-        <version>2023.3.1</version>
-    </parent>
+  <parent>
+    <groupId>com.cmcorg20230301</groupId>
+    <artifactId>be-engine-v1</artifactId>
+    <version>2023.3.1</version>
+  </parent>
 
-    <artifactId>be-milvus</artifactId>
-    <description>milvus向量数据库相关</description>
+  <artifactId>be-milvus</artifactId>
+  <description>milvus向量数据库相关</description>
 
-    <dependencies>
+  <dependencies>
 
-        <!-- be-model -->
-        <dependency>
-            <groupId>${cmcorg.groupId}</groupId>
-            <artifactId>be-model</artifactId>
-        </dependency>
+    <!-- be-model -->
+    <dependency>
+      <groupId>${cmcorg.groupId}</groupId>
+      <artifactId>be-model</artifactId>
+    </dependency>
 
-        <!-- be-util -->
-        <dependency>
-            <groupId>${cmcorg.groupId}</groupId>
-            <artifactId>be-util</artifactId>
-        </dependency>
+    <!-- be-util -->
+    <dependency>
+      <groupId>${cmcorg.groupId}</groupId>
+      <artifactId>be-util</artifactId>
+    </dependency>
 
-        <!-- 向量数据库 -->
-        <dependency>
-            <groupId>io.milvus</groupId>
-            <artifactId>milvus-sdk-java</artifactId>
-        </dependency>
+    <!-- 向量数据库 -->
+    <dependency>
+      <groupId>io.milvus</groupId>
+      <artifactId>milvus-sdk-java</artifactId>
+    </dependency>
 
-    </dependencies>
+  </dependencies>
 
 </project>

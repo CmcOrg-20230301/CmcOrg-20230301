@@ -30,20 +30,19 @@ import com.cmcorg20230301.be.engine.security.util.MyEntityUtil;
 import com.cmcorg20230301.be.engine.security.util.MyThreadUtil;
 import com.cmcorg20230301.be.engine.security.util.SysTenantUtil;
 import com.cmcorg20230301.be.engine.security.util.UserUtil;
-import lombok.extern.slf4j.Slf4j;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.stereotype.Component;
-
-import javax.annotation.PreDestroy;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.function.Consumer;
+import javax.annotation.PreDestroy;
+import lombok.extern.slf4j.Slf4j;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.stereotype.Component;
 
 @Component
 @Slf4j(topic = LogTopicConstant.PAY)
@@ -55,8 +54,9 @@ public class PayUtil {
 
     private static SysPayConfigurationService sysPayConfigurationService;
 
-    public PayUtil(@Autowired(required = false) @Nullable List<ISysPay> iSysPayList, SysPayService sysPayService,
-                   SysPayConfigurationService sysPayConfigurationService) {
+    public PayUtil(@Autowired(required = false) @Nullable List<ISysPay> iSysPayList,
+        SysPayService sysPayService,
+        SysPayConfigurationService sysPayConfigurationService) {
 
         PayUtil.sysPayService = sysPayService;
 
@@ -173,12 +173,14 @@ public class PayUtil {
             if (dto.getPayType() == null) { // 如果是：默认支付
 
                 sysPayConfigurationDO =
-                        PayHelper.getDefaultSysPayConfigurationDO(tenantId, dto.getUseParentTenantPayFlag());
+                    PayHelper.getDefaultSysPayConfigurationDO(tenantId,
+                        dto.getUseParentTenantPayFlag());
 
             } else {
 
                 sysPayConfigurationDO =
-                        PayHelper.getSysPayConfigurationDO(tenantId, dto.getPayType(), dto.getUseParentTenantPayFlag());
+                    PayHelper.getSysPayConfigurationDO(tenantId, dto.getPayType(),
+                        dto.getUseParentTenantPayFlag());
 
             }
 
@@ -196,8 +198,9 @@ public class PayUtil {
 
         String openId;
 
-        if (dto.getPayType() >= SysPayTypeEnum.WX_NATIVE.getCode() && dto.getPayType() < SysPayTypeEnum.UNION
-                .getCode()) {
+        if (dto.getPayType() >= SysPayTypeEnum.WX_NATIVE.getCode()
+            && dto.getPayType() < SysPayTypeEnum.UNION
+            .getCode()) {
 
             openId = UserUtil.getCurrentUserWxOpenIdDefault();
 
@@ -234,7 +237,8 @@ public class PayUtil {
      * 获取：SysPayDO对象
      */
     @NotNull
-    private static SysPayDO getSysPayDO(PayDTO dto, ISysPay iSysPay, Long payId, SysPayReturnBO sysPayReturnBO) {
+    private static SysPayDO getSysPayDO(PayDTO dto, ISysPay iSysPay, Long payId,
+        SysPayReturnBO sysPayReturnBO) {
 
         SysPayDO sysPayDO = new SysPayDO();
 
@@ -314,7 +318,8 @@ public class PayUtil {
         Long sysPayConfigurationId = sysPayDO.getSysPayConfigurationId();
 
         SysPayConfigurationDO sysPayConfigurationDO =
-                sysPayConfigurationService.lambdaQuery().eq(BaseEntity::getId, sysPayConfigurationId).one();
+            sysPayConfigurationService.lambdaQuery().eq(BaseEntity::getId, sysPayConfigurationId)
+                .one();
 
         if (sysPayConfigurationDO == null) {
             ApiResultVO.error("操作失败：支付配置未找到", sysPayConfigurationId);
@@ -329,7 +334,7 @@ public class PayUtil {
      * 处理：订单回调
      */
     public static boolean handleTradeNotify(@Nullable SysPayTradeNotifyBO sysPayTradeNotifyBO,
-                                            @Nullable Consumer<SysPayDO> consumer) {
+        @Nullable Consumer<SysPayDO> consumer) {
 
         if (sysPayTradeNotifyBO == null) {
             return false;
@@ -337,45 +342,48 @@ public class PayUtil {
 
         // 获取：支付状态
         SysPayTradeStatusEnum sysPayTradeStatusEnum =
-                SysPayTradeStatusEnum.getByStatus(sysPayTradeNotifyBO.getTradeStatus());
+            SysPayTradeStatusEnum.getByStatus(sysPayTradeNotifyBO.getTradeStatus());
 
         if (SysPayTradeStatusEnum.NOT_EXIST.equals(sysPayTradeStatusEnum)) {
             return false;
         }
 
-        return RedissonUtil.doLock(BaseRedisKeyEnum.PRE_PAY.name() + sysPayTradeNotifyBO.getOutTradeNo(), () -> {
+        return RedissonUtil.doLock(
+            BaseRedisKeyEnum.PRE_PAY.name() + sysPayTradeNotifyBO.getOutTradeNo(), () -> {
 
-            // 查询：支付状态不同的数据
-            SysPayDO sysPayDO = sysPayService.lambdaQuery().eq(SysPayDO::getId, sysPayTradeNotifyBO.getOutTradeNo())
+                // 查询：支付状态不同的数据
+                SysPayDO sysPayDO = sysPayService.lambdaQuery()
+                    .eq(SysPayDO::getId, sysPayTradeNotifyBO.getOutTradeNo())
                     .ne(SysPayDO::getStatus, sysPayTradeStatusEnum).one();
 
-            if (sysPayDO == null) {
-                return false;
-            }
+                if (sysPayDO == null) {
+                    return false;
+                }
 
-            sysPayDO.setPayPrice(new BigDecimal(sysPayTradeNotifyBO.getTotalAmount()));
-            sysPayDO.setStatus(sysPayTradeStatusEnum);
-            sysPayDO.setTradeNo(sysPayTradeNotifyBO.getTradeNo());
-            sysPayDO.setPayCurrency(MyEntityUtil.getNotNullStr(sysPayTradeNotifyBO.getPayCurrency()));
+                sysPayDO.setPayPrice(new BigDecimal(sysPayTradeNotifyBO.getTotalAmount()));
+                sysPayDO.setStatus(sysPayTradeStatusEnum);
+                sysPayDO.setTradeNo(sysPayTradeNotifyBO.getTradeNo());
+                sysPayDO.setPayCurrency(
+                    MyEntityUtil.getNotNullStr(sysPayTradeNotifyBO.getPayCurrency()));
 
-            if (consumer != null) {
+                if (consumer != null) {
 
-                consumer.accept(sysPayDO); // 进行额外的处理
+                    consumer.accept(sysPayDO); // 进行额外的处理
 
-            }
+                }
 
-            SYS_PAY_DO_LIST.add(sysPayDO);
+                SYS_PAY_DO_LIST.add(sysPayDO);
 
-            if (SysPayRefTypeEnum.NONE.getCode() != sysPayDO.getRefType()) {
+                if (SysPayRefTypeEnum.NONE.getCode() != sysPayDO.getRefType()) {
 
-                // 支付成功，处理业务
-                KafkaUtil.sendPayStatusChangeTopic(sysPayDO);
+                    // 支付成功，处理业务
+                    KafkaUtil.sendPayStatusChangeTopic(sysPayDO);
 
-            }
+                }
 
-            return true;
+                return true;
 
-        });
+            });
 
     }
 

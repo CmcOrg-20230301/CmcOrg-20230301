@@ -4,12 +4,11 @@ import cn.hutool.core.util.StrUtil;
 import com.cmcorg20230301.be.engine.milvus.properties.MilvusProperties;
 import io.milvus.client.MilvusServiceClient;
 import io.milvus.param.ConnectParam;
+import javax.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-
-import javax.annotation.Resource;
 
 @Configuration
 @Slf4j
@@ -27,11 +26,13 @@ public class MilvusConfiguration {
         }
 
         ConnectParam.Builder builder =
-                ConnectParam.newBuilder().withHost(milvusProperties.getHost()).withPort(milvusProperties.getPort());
+            ConnectParam.newBuilder().withHost(milvusProperties.getHost())
+                .withPort(milvusProperties.getPort());
 
         if (StrUtil.isNotBlank(milvusProperties.getUsername())) {
 
-            builder.withAuthorization(milvusProperties.getUsername(), milvusProperties.getPassword());
+            builder.withAuthorization(milvusProperties.getUsername(),
+                milvusProperties.getPassword());
 
         }
 

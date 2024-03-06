@@ -29,7 +29,8 @@ public class TryUtil {
     /**
      * 执行：try-catch
      */
-    public static void tryCatch(VoidFunc0 voidFunc0, @Nullable VoidFunc1<Throwable> exceptionVoidFunc1) {
+    public static void tryCatch(VoidFunc0 voidFunc0,
+        @Nullable VoidFunc1<Throwable> exceptionVoidFunc1) {
 
         try {
 
@@ -69,7 +70,8 @@ public class TryUtil {
     /**
      * 执行：try-catch-finally
      */
-    public static void tryCatchFinally(VoidFunc0 voidFunc0, @Nullable VoidFunc1<Throwable> exceptionVoidFunc1, @Nullable VoidFunc0 finallyVoidFunc0) {
+    public static void tryCatchFinally(VoidFunc0 voidFunc0,
+        @Nullable VoidFunc1<Throwable> exceptionVoidFunc1, @Nullable VoidFunc0 finallyVoidFunc0) {
 
         try {
 

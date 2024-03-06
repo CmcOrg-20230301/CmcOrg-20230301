@@ -65,9 +65,10 @@ public class SysTenantBankCardServiceImpl implements SysTenantBankCardService {
         }
 
         List<SysUserBankCardDO> allList =
-                sysUserBankCardService.lambdaQuery().in(BaseEntityNoIdSuper::getTenantId, dto.getTenantIdSet())
-                        .eq(SysUserBankCardDO::getId, BaseConstant.TENANT_USER_ID) //
-                        .list();
+            sysUserBankCardService.lambdaQuery()
+                .in(BaseEntityNoIdSuper::getTenantId, dto.getTenantIdSet())
+                .eq(SysUserBankCardDO::getId, BaseConstant.TENANT_USER_ID) //
+                .list();
 
         if (allList.size() == 0) {
             return new ArrayList<>();
@@ -77,8 +78,9 @@ public class SysTenantBankCardServiceImpl implements SysTenantBankCardService {
         Map<Long, SysTenantDO> sysTenantCacheMap = SysTenantUtil.getSysTenantCacheMap(true);
 
         Map<Long, SysTenantDO> allSysTenantDoMap =
-                sysTenantCacheMap.entrySet().stream().filter(it -> dto.getTenantIdSet().contains(it.getKey()))
-                        .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+            sysTenantCacheMap.entrySet().stream()
+                .filter(it -> dto.getTenantIdSet().contains(it.getKey()))
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 
         // 处理：集合
         handleSysUserBankCardDoIterator(allSysTenantDoMap, sysUserBankCardDOList.iterator());
@@ -86,7 +88,8 @@ public class SysTenantBankCardServiceImpl implements SysTenantBankCardService {
         // 处理：集合
         handleSysUserBankCardDoIterator(allSysTenantDoMap, allList.iterator());
 
-        return MyTreeUtil.getFullTreeByDeepNode(sysUserBankCardDOList, allList, BaseConstant.NEGATIVE_ONE);
+        return MyTreeUtil.getFullTreeByDeepNode(sysUserBankCardDOList, allList,
+            BaseConstant.NEGATIVE_ONE);
 
     }
 
@@ -94,7 +97,7 @@ public class SysTenantBankCardServiceImpl implements SysTenantBankCardService {
      * 处理：SysUserWalletDO的迭代器
      */
     private void handleSysUserBankCardDoIterator(Map<Long, SysTenantDO> allSysTenantDoMap,
-                                                 Iterator<SysUserBankCardDO> iterator) {
+        Iterator<SysUserBankCardDO> iterator) {
 
         while (iterator.hasNext()) {
 
@@ -126,9 +129,11 @@ public class SysTenantBankCardServiceImpl implements SysTenantBankCardService {
         // 获取：用户关联的租户
         Set<Long> queryTenantIdSet = SysTenantUtil.getUserRefTenantIdSet();
 
-        return sysUserBankCardService.lambdaQuery().eq(BaseEntityNoIdSuper::getTenantId, notNullLong.getValue())
-                .eq(SysUserBankCardDO::getId, BaseConstant.TENANT_USER_ID).in(BaseEntityNoId::getTenantId, queryTenantIdSet)
-                .one();
+        return sysUserBankCardService.lambdaQuery()
+            .eq(BaseEntityNoIdSuper::getTenantId, notNullLong.getValue())
+            .eq(SysUserBankCardDO::getId, BaseConstant.TENANT_USER_ID)
+            .in(BaseEntityNoId::getTenantId, queryTenantIdSet)
+            .one();
 
     }
 

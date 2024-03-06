@@ -5,12 +5,9 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 public class MyPageUtil {
 
     /**
-     * 将页数和每页条目数转换为开始位置<br>
-     * 此方法用于不包括结束位置的分页方法<br>
-     * 例如：
+     * 将页数和每页条目数转换为开始位置<br> 此方法用于不包括结束位置的分页方法<br> 例如：
      * <p>
-     * 页码：1，每页10 =》 10
-     * 页码：2，每页10 =》 20
+     * 页码：1，每页10 =》 10 页码：2，每页10 =》 20
      *
      * @param pageNo   页码（从 1计数）
      * @param pageSize 每页条目数
@@ -49,8 +46,7 @@ public class MyPageUtil {
     }
 
     /**
-     * 获取：滚动查询的 page对象
-     * 作用：根据 最后一个 id查询数据
+     * 获取：滚动查询的 page对象 作用：根据 最后一个 id查询数据
      */
     public static <T> Page<T> getScrollPage(Integer size) {
 

@@ -28,7 +28,8 @@ public class SysSocketRefUserController {
     @Operation(summary = "分页排序查询")
     @PostMapping("/page")
     @PreAuthorize("hasAuthority('sysSocketRefUser:page')")
-    public ApiResultVO<Page<SysSocketRefUserDO>> myPage(@RequestBody @Valid SysSocketRefUserPageDTO dto) {
+    public ApiResultVO<Page<SysSocketRefUserDO>> myPage(
+        @RequestBody @Valid SysSocketRefUserPageDTO dto) {
         return ApiResultVO.okData(baseService.myPage(dto));
     }
 
@@ -42,7 +43,8 @@ public class SysSocketRefUserController {
     @Operation(summary = "批量：开关控制台")
     @PostMapping("/changeConsoleFlagByIdSet")
     @PreAuthorize("hasAuthority('sysSocketRefUser:insertOrUpdate')")
-    public ApiResultVO<String> changeConsoleFlagByIdSet(@RequestBody @Valid NotEmptyIdSet notEmptyIdSet) {
+    public ApiResultVO<String> changeConsoleFlagByIdSet(
+        @RequestBody @Valid NotEmptyIdSet notEmptyIdSet) {
         return ApiResultVO.okMsg(baseService.changeConsoleFlagByIdSet(notEmptyIdSet));
     }
 

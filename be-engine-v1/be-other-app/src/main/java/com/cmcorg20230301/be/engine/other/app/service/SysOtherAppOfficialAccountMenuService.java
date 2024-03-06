@@ -8,10 +8,10 @@ import com.cmcorg20230301.be.engine.model.model.dto.NotNullId;
 import com.cmcorg20230301.be.engine.other.app.model.dto.SysOtherAppOfficialAccountMenuInsertOrUpdateDTO;
 import com.cmcorg20230301.be.engine.other.app.model.dto.SysOtherAppOfficialAccountMenuPageDTO;
 import com.cmcorg20230301.be.engine.other.app.model.entity.SysOtherAppOfficialAccountMenuDO;
-
 import java.util.List;
 
-public interface SysOtherAppOfficialAccountMenuService extends IService<SysOtherAppOfficialAccountMenuDO> {
+public interface SysOtherAppOfficialAccountMenuService extends
+    IService<SysOtherAppOfficialAccountMenuDO> {
 
     String insertOrUpdate(SysOtherAppOfficialAccountMenuInsertOrUpdateDTO dto);
 

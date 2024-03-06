@@ -8,6 +8,6 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class SysSqlSlowServiceImpl extends ServiceImpl<SysSqlSlowMapper, SysSqlSlowDO>
-        implements SysSqlSlowService {
+    implements SysSqlSlowService {
 
 }

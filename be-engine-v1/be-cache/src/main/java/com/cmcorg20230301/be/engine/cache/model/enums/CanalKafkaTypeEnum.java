@@ -1,7 +1,6 @@
 package com.cmcorg20230301.be.engine.cache.model.enums;
 
 import cn.hutool.core.collection.CollUtil;
-
 import java.util.Set;
 
 /**
@@ -28,7 +27,7 @@ public enum CanalKafkaTypeEnum {
     ;
 
     private static final Set<CanalKafkaTypeEnum> DATE_UPDATE_SET =
-            CollUtil.newHashSet(INSERT, UPDATE, DELETE, ALTER, ERASE, TRUNCATE, RENAME, CREATE);
+        CollUtil.newHashSet(INSERT, UPDATE, DELETE, ALTER, ERASE, TRUNCATE, RENAME, CREATE);
 
     public boolean dateUpdateFlag() {
         return DATE_UPDATE_SET.contains(this);

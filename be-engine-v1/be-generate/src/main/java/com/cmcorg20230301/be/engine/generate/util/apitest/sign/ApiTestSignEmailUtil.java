@@ -8,7 +8,12 @@ import com.cmcorg20230301.be.engine.generate.util.apitest.ApiTestHelper;
 import com.cmcorg20230301.be.engine.model.model.dto.NotBlankCodeDTO;
 import com.cmcorg20230301.be.engine.model.model.vo.SignInVO;
 import com.cmcorg20230301.be.engine.security.util.MyRsaUtil;
-import com.cmcorg20230301.be.engine.sign.email.model.dto.*;
+import com.cmcorg20230301.be.engine.sign.email.model.dto.EmailNotBlankDTO;
+import com.cmcorg20230301.be.engine.sign.email.model.dto.SignEmailForgetPasswordDTO;
+import com.cmcorg20230301.be.engine.sign.email.model.dto.SignEmailSignInPasswordDTO;
+import com.cmcorg20230301.be.engine.sign.email.model.dto.SignEmailSignUpDTO;
+import com.cmcorg20230301.be.engine.sign.email.model.dto.SignEmailUpdateEmailDTO;
+import com.cmcorg20230301.be.engine.sign.email.model.dto.SignEmailUpdatePasswordDTO;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -42,8 +47,9 @@ public class ApiTestSignEmailUtil {
     public static void main(String[] args) {
 
         // 执行
-        exec(API_ENDPOINT, EMAIL, PASSWORD_TEMP, NEW_EMAIL, NEW_PASSWORD_TEMP, ApiTestHelper.RSA_PUBLIC_KEY,
-                NEW_PASSWORD_2_TEMP);
+        exec(API_ENDPOINT, EMAIL, PASSWORD_TEMP, NEW_EMAIL, NEW_PASSWORD_TEMP,
+            ApiTestHelper.RSA_PUBLIC_KEY,
+            NEW_PASSWORD_2_TEMP);
 
     }
 
@@ -51,7 +57,7 @@ public class ApiTestSignEmailUtil {
      * 执行
      */
     private static void exec(String apiEndpoint, String email, String passwordTemp, String newEmail,
-                             String newPasswordTemp, String rsaPublicKey, String newPassword2Temp) {
+        String newPasswordTemp, String rsaPublicKey, String newPassword2Temp) {
 
         // 邮箱-注册-发送验证码
         emailSignUpSendCode(apiEndpoint, email);
@@ -119,8 +125,9 @@ public class ApiTestSignEmailUtil {
         NotBlankCodeDTO dto = new NotBlankCodeDTO();
         dto.setCode(code);
 
-        String bodyStr = HttpRequest.post(apiEndpoint + "/sign/email/signDelete").header("Authorization", jwt)
-                .body(JSONUtil.toJsonStr(dto)).execute().body();
+        String bodyStr = HttpRequest.post(apiEndpoint + "/sign/email/signDelete")
+            .header("Authorization", jwt)
+            .body(JSONUtil.toJsonStr(dto)).execute().body();
 
         log.info("邮箱-账号注销：耗时：{}，bodyStr：{}", ApiTestHelper.calcCostMs(currentTs), bodyStr);
 
@@ -134,18 +141,21 @@ public class ApiTestSignEmailUtil {
         long currentTs = System.currentTimeMillis();
 
         String bodyStr =
-                HttpRequest.post(apiEndpoint + "/sign/email/signDelete/sendCode").header("Authorization", jwt).execute()
-                        .body();
+            HttpRequest.post(apiEndpoint + "/sign/email/signDelete/sendCode")
+                .header("Authorization", jwt).execute()
+                .body();
 
-        log.info("邮箱-账号注销-发送验证码：耗时：{}，bodyStr：{}", ApiTestHelper.calcCostMs(currentTs), bodyStr);
+        log.info("邮箱-账号注销-发送验证码：耗时：{}，bodyStr：{}", ApiTestHelper.calcCostMs(currentTs),
+            bodyStr);
 
     }
 
     /**
      * 邮箱-忘记密码
      */
-    private static void emailForgetPassword(String apiEndpoint, String newEmail, String code, String newPassword2Temp,
-                                            String rsaPublicKey) {
+    private static void emailForgetPassword(String apiEndpoint, String newEmail, String code,
+        String newPassword2Temp,
+        String rsaPublicKey) {
 
         long currentTs = System.currentTimeMillis();
 
@@ -162,7 +172,8 @@ public class ApiTestSignEmailUtil {
         dto.setEmail(newEmail);
 
         String bodyStr =
-                HttpRequest.post(apiEndpoint + "/sign/email/forgetPassword").body(JSONUtil.toJsonStr(dto)).execute().body();
+            HttpRequest.post(apiEndpoint + "/sign/email/forgetPassword")
+                .body(JSONUtil.toJsonStr(dto)).execute().body();
 
         log.info("邮箱-忘记密码：耗时：{}，bodyStr：{}", ApiTestHelper.calcCostMs(currentTs), bodyStr);
 
@@ -179,18 +190,21 @@ public class ApiTestSignEmailUtil {
         dto.setEmail(newEmail);
 
         String bodyStr =
-                HttpRequest.post(apiEndpoint + "/sign/email/forgetPassword/sendCode").body(JSONUtil.toJsonStr(dto))
-                        .execute().body();
+            HttpRequest.post(apiEndpoint + "/sign/email/forgetPassword/sendCode")
+                .body(JSONUtil.toJsonStr(dto))
+                .execute().body();
 
-        log.info("邮箱-忘记密码-发送验证码：耗时：{}，bodyStr：{}", ApiTestHelper.calcCostMs(currentTs), bodyStr);
+        log.info("邮箱-忘记密码-发送验证码：耗时：{}，bodyStr：{}", ApiTestHelper.calcCostMs(currentTs),
+            bodyStr);
 
     }
 
     /**
      * 邮箱-修改邮箱
      */
-    private static void emailUpdateAccount(String apiEndpoint, String jwt, String newEmail, String code,
-                                           String newCode) {
+    private static void emailUpdateAccount(String apiEndpoint, String jwt, String newEmail,
+        String code,
+        String newCode) {
 
         long currentTs = System.currentTimeMillis();
 
@@ -199,8 +213,9 @@ public class ApiTestSignEmailUtil {
         dto.setOldEmailCode(code);
         dto.setNewEmailCode(newCode);
 
-        String bodyStr = HttpRequest.post(apiEndpoint + "/sign/email/updateAccount").body(JSONUtil.toJsonStr(dto))
-                .header("Authorization", jwt).execute().body();
+        String bodyStr = HttpRequest.post(apiEndpoint + "/sign/email/updateAccount")
+            .body(JSONUtil.toJsonStr(dto))
+            .header("Authorization", jwt).execute().body();
 
         log.info("邮箱-修改邮箱：耗时：{}，bodyStr：{}", ApiTestHelper.calcCostMs(currentTs), bodyStr);
 
@@ -214,18 +229,21 @@ public class ApiTestSignEmailUtil {
         long currentTs = System.currentTimeMillis();
 
         String bodyStr =
-                HttpRequest.post(apiEndpoint + "/sign/email/updateAccount/sendCode").header("Authorization", jwt).execute()
-                        .body();
+            HttpRequest.post(apiEndpoint + "/sign/email/updateAccount/sendCode")
+                .header("Authorization", jwt).execute()
+                .body();
 
-        log.info("邮箱-修改邮箱-发送验证码：耗时：{}，bodyStr：{}", ApiTestHelper.calcCostMs(currentTs), bodyStr);
+        log.info("邮箱-修改邮箱-发送验证码：耗时：{}，bodyStr：{}", ApiTestHelper.calcCostMs(currentTs),
+            bodyStr);
 
     }
 
     /**
      * 邮箱-修改密码
      */
-    private static void emailUpdatePassword(String apiEndpoint, String jwt, String newPasswordTemp, String rsaPublicKey,
-                                            String code) {
+    private static void emailUpdatePassword(String apiEndpoint, String jwt, String newPasswordTemp,
+        String rsaPublicKey,
+        String code) {
 
         long currentTs = System.currentTimeMillis();
 
@@ -240,8 +258,9 @@ public class ApiTestSignEmailUtil {
         dto.setNewPassword(newPassword);
         dto.setOriginNewPassword(originNewPassword);
 
-        String bodyStr = HttpRequest.post(apiEndpoint + "/sign/email/updatePassword").body(JSONUtil.toJsonStr(dto))
-                .header("Authorization", jwt).execute().body();
+        String bodyStr = HttpRequest.post(apiEndpoint + "/sign/email/updatePassword")
+            .body(JSONUtil.toJsonStr(dto))
+            .header("Authorization", jwt).execute().body();
 
         log.info("邮箱-修改密码：耗时：{}，bodyStr：{}", ApiTestHelper.calcCostMs(currentTs), bodyStr);
 
@@ -255,17 +274,20 @@ public class ApiTestSignEmailUtil {
         long currentTs = System.currentTimeMillis();
 
         String bodyStr =
-                HttpRequest.post(apiEndpoint + "/sign/email/updatePassword/sendCode").header("Authorization", jwt).execute()
-                        .body();
+            HttpRequest.post(apiEndpoint + "/sign/email/updatePassword/sendCode")
+                .header("Authorization", jwt).execute()
+                .body();
 
-        log.info("邮箱-修改密码-发送验证码：耗时：{}，bodyStr：{}", ApiTestHelper.calcCostMs(currentTs), bodyStr);
+        log.info("邮箱-修改密码-发送验证码：耗时：{}，bodyStr：{}", ApiTestHelper.calcCostMs(currentTs),
+            bodyStr);
 
     }
 
     /**
      * 邮箱-账号密码登录
      */
-    private static SignInVO emailSignIn(String apiEndpoint, String email, String passwordTemp, String rsaPublicKey) {
+    private static SignInVO emailSignIn(String apiEndpoint, String email, String passwordTemp,
+        String rsaPublicKey) {
 
         long currentTs = System.currentTimeMillis();
 
@@ -278,10 +300,12 @@ public class ApiTestSignEmailUtil {
         dto.setEmail(email);
 
         String bodyStr =
-                HttpRequest.post(apiEndpoint + "/sign/email/sign/in/password").body(JSONUtil.toJsonStr(dto)).execute()
-                        .body();
+            HttpRequest.post(apiEndpoint + "/sign/email/sign/in/password")
+                .body(JSONUtil.toJsonStr(dto)).execute()
+                .body();
 
-        log.info("邮箱-账号密码登录：耗时：{}，bodyStr：{}", ApiTestHelper.calcCostMs(currentTs), bodyStr);
+        log.info("邮箱-账号密码登录：耗时：{}，bodyStr：{}", ApiTestHelper.calcCostMs(currentTs),
+            bodyStr);
 
         return JSONUtil.parseObj(bodyStr).get("data", SignInVO.class);
 
@@ -298,18 +322,21 @@ public class ApiTestSignEmailUtil {
         dto.setEmail(email);
 
         String bodyStr =
-                HttpRequest.post(apiEndpoint + "/sign/email/sign/up/sendCode").body(JSONUtil.toJsonStr(dto)).execute()
-                        .body();
+            HttpRequest.post(apiEndpoint + "/sign/email/sign/up/sendCode")
+                .body(JSONUtil.toJsonStr(dto)).execute()
+                .body();
 
-        log.info("邮箱-注册-发送验证码：耗时：{}，bodyStr：{}", ApiTestHelper.calcCostMs(currentTs), bodyStr);
+        log.info("邮箱-注册-发送验证码：耗时：{}，bodyStr：{}", ApiTestHelper.calcCostMs(currentTs),
+            bodyStr);
 
     }
 
     /**
      * 邮箱-注册
      */
-    private static void emailSignUp(String apiEndpoint, String email, String passwordTemp, String rsaPublicKey,
-                                    String code) {
+    private static void emailSignUp(String apiEndpoint, String email, String passwordTemp,
+        String rsaPublicKey,
+        String code) {
 
         long currentTs = System.currentTimeMillis();
 
@@ -326,7 +353,8 @@ public class ApiTestSignEmailUtil {
         dto.setEmail(email);
 
         String bodyStr =
-                HttpRequest.post(apiEndpoint + "/sign/email/sign/up").body(JSONUtil.toJsonStr(dto)).execute().body();
+            HttpRequest.post(apiEndpoint + "/sign/email/sign/up").body(JSONUtil.toJsonStr(dto))
+                .execute().body();
 
         log.info("邮箱-注册：耗时：{}，bodyStr：{}", ApiTestHelper.calcCostMs(currentTs), bodyStr);
 

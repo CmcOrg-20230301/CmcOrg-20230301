@@ -25,7 +25,7 @@ public class PayGoogleServiceImpl implements PayGoogleService {
     public boolean paySuccess(SysPayGooglePaySuccessDTO dto) {
 
         SysPayConfigurationDO sysPayConfigurationDO =
-                PayHelper.getSysPayConfigurationDO(dto.getSysPayConfigurationId());
+            PayHelper.getSysPayConfigurationDO(dto.getSysPayConfigurationId());
 
         if (sysPayConfigurationDO == null) {
             return false;
@@ -34,7 +34,7 @@ public class PayGoogleServiceImpl implements PayGoogleService {
         SysPayTradeNotifyBO sysPayTradeNotifyBO = new SysPayTradeNotifyBO();
 
         SysPayTradeStatusEnum sysPayTradeStatusEnum =
-                PayGoogleUtil.query(dto.getId().toString(), sysPayTradeNotifyBO, sysPayConfigurationDO);
+            PayGoogleUtil.query(dto.getId().toString(), sysPayTradeNotifyBO, sysPayConfigurationDO);
 
         if (SysPayTradeStatusEnum.WAIT_BUYER_CONSUME.equals(sysPayTradeStatusEnum) == false) {
             return false;
@@ -60,7 +60,7 @@ public class PayGoogleServiceImpl implements PayGoogleService {
     public boolean payConsume(SysPayGooglePayConsumeDTO dto) {
 
         SysPayConfigurationDO sysPayConfigurationDO =
-                PayHelper.getSysPayConfigurationDO(dto.getSysPayConfigurationId());
+            PayHelper.getSysPayConfigurationDO(dto.getSysPayConfigurationId());
 
         if (sysPayConfigurationDO == null) {
             return false;
@@ -69,7 +69,7 @@ public class PayGoogleServiceImpl implements PayGoogleService {
         SysPayTradeNotifyBO sysPayTradeNotifyBO = new SysPayTradeNotifyBO();
 
         SysPayTradeStatusEnum sysPayTradeStatusEnum =
-                PayGoogleUtil.query(dto.getId().toString(), sysPayTradeNotifyBO, sysPayConfigurationDO);
+            PayGoogleUtil.query(dto.getId().toString(), sysPayTradeNotifyBO, sysPayConfigurationDO);
 
         if (SysPayTradeStatusEnum.TRADE_FINISHED.equals(sysPayTradeStatusEnum) == false) {
             return false;

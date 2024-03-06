@@ -28,14 +28,14 @@ import com.cmcorg20230301.be.engine.security.util.ResponseUtil;
 import com.cmcorg20230301.be.engine.security.util.SysTenantUtil;
 import com.cmcorg20230301.be.engine.security.util.UserUtil;
 import com.cmcorg20230301.be.engine.util.util.CallBack;
+import java.io.InputStream;
+import javax.servlet.http.HttpServletResponse;
 import lombok.SneakyThrows;
 import org.springframework.stereotype.Service;
 
-import javax.servlet.http.HttpServletResponse;
-import java.io.InputStream;
-
 @Service
-public class SysFileServiceImpl extends ServiceImpl<SysFileMapper, SysFileDO> implements SysFileService {
+public class SysFileServiceImpl extends ServiceImpl<SysFileMapper, SysFileDO> implements
+    SysFileService {
 
     /**
      * 上传文件：公有和私有
@@ -124,37 +124,43 @@ public class SysFileServiceImpl extends ServiceImpl<SysFileMapper, SysFileDO> im
         SysTenantUtil.handleMyTenantPageDTO(dto, false);
 
         return lambdaQuery()
-                .like(StrUtil.isNotBlank(dto.getOriginFileName()), SysFileDO::getOriginFileName, dto.getOriginFileName())
+            .like(StrUtil.isNotBlank(dto.getOriginFileName()), SysFileDO::getOriginFileName,
+                dto.getOriginFileName())
 
-                .like(StrUtil.isNotBlank(dto.getRemark()), BaseEntity::getRemark, dto.getRemark())
+            .like(StrUtil.isNotBlank(dto.getRemark()), BaseEntity::getRemark, dto.getRemark())
 
-                .eq(dto.getBelongId() != null, SysFileDO::getBelongId, dto.getBelongId())
+            .eq(dto.getBelongId() != null, SysFileDO::getBelongId, dto.getBelongId())
 
-                .eq(dto.getUploadType() != null, SysFileDO::getUploadType, dto.getUploadType())
+            .eq(dto.getUploadType() != null, SysFileDO::getUploadType, dto.getUploadType())
 
-                .eq(dto.getStorageType() != null, SysFileDO::getStorageType, dto.getStorageType())
+            .eq(dto.getStorageType() != null, SysFileDO::getStorageType, dto.getStorageType())
 
-                .eq(dto.getPublicFlag() != null, SysFileDO::getPublicFlag, dto.getPublicFlag())
+            .eq(dto.getPublicFlag() != null, SysFileDO::getPublicFlag, dto.getPublicFlag())
 
-                .eq(dto.getEnableFlag() != null, BaseEntity::getEnableFlag, dto.getEnableFlag())
+            .eq(dto.getEnableFlag() != null, BaseEntity::getEnableFlag, dto.getEnableFlag())
 
-                .eq(dto.getRefId() != null, SysFileDO::getRefId, dto.getRefId())
+            .eq(dto.getRefId() != null, SysFileDO::getRefId, dto.getRefId())
 
-                .ne(SysUserTenantEnum.USER.equals(dto.getSysUserTenantEnum()), SysFileDO::getBelongId,
-                        BaseConstant.TENANT_USER_ID) //
+            .ne(SysUserTenantEnum.USER.equals(dto.getSysUserTenantEnum()), SysFileDO::getBelongId,
+                BaseConstant.TENANT_USER_ID) //
 
-                .eq(SysUserTenantEnum.TENANT.equals(dto.getSysUserTenantEnum()), SysFileDO::getBelongId,
-                        BaseConstant.TENANT_USER_ID) //
+            .eq(SysUserTenantEnum.TENANT.equals(dto.getSysUserTenantEnum()), SysFileDO::getBelongId,
+                BaseConstant.TENANT_USER_ID) //
 
-                .in(BaseEntityNoId::getTenantId, dto.getTenantIdSet()) //
+            .in(BaseEntityNoId::getTenantId, dto.getTenantIdSet()) //
 
-                .select(BaseEntity::getId, BaseEntityNoIdSuper::getTenantId, BaseEntityNoId::getEnableFlag,
-                        BaseEntityNoId::getRemark, BaseEntityNoIdSuper::getCreateId, BaseEntityNoIdSuper::getCreateTime,
-                        BaseEntityNoIdSuper::getUpdateId, BaseEntityNoIdSuper::getUpdateTime, SysFileDO::getOriginFileName,
-                        SysFileDO::getBelongId, SysFileDO::getUploadType, SysFileDO::getStorageType, SysFileDO::getPublicFlag,
-                        SysFileDO::getFileSize, SysFileDO::getExtraJson).orderByDesc(BaseEntity::getUpdateTime)
+            .select(BaseEntity::getId, BaseEntityNoIdSuper::getTenantId,
+                BaseEntityNoId::getEnableFlag,
+                BaseEntityNoId::getRemark, BaseEntityNoIdSuper::getCreateId,
+                BaseEntityNoIdSuper::getCreateTime,
+                BaseEntityNoIdSuper::getUpdateId, BaseEntityNoIdSuper::getUpdateTime,
+                SysFileDO::getOriginFileName,
+                SysFileDO::getBelongId, SysFileDO::getUploadType, SysFileDO::getStorageType,
+                SysFileDO::getPublicFlag,
+                SysFileDO::getFileSize, SysFileDO::getExtraJson)
+            .orderByDesc(BaseEntity::getUpdateTime)
 
-                .page(dto.page(true));
+            .page(dto.page(true));
 
     }
 

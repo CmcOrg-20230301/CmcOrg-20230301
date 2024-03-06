@@ -7,6 +7,10 @@ import com.cmcorg20230301.be.engine.model.model.constant.LogTopicConstant;
 import com.cmcorg20230301.be.engine.security.model.entity.SysSqlSlowDO;
 import com.cmcorg20230301.be.engine.security.util.SqlUtil;
 import com.cmcorg20230301.be.engine.util.util.CallBack;
+import java.sql.Connection;
+import java.util.Date;
+import java.util.List;
+import javax.annotation.Resource;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.executor.statement.StatementHandler;
@@ -25,17 +29,13 @@ import org.apache.ibatis.session.Configuration;
 import org.apache.ibatis.type.TypeHandlerRegistry;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.Resource;
-import java.sql.Connection;
-import java.util.Date;
-import java.util.List;
-
 /**
  * mybatis-sql日志拦截器
  */
 @Component
 @Slf4j(topic = LogTopicConstant.MYBATIS)
-@Intercepts({@Signature(type = StatementHandler.class, method = "prepare", args = {Connection.class, Integer.class})})
+@Intercepts({@Signature(type = StatementHandler.class, method = "prepare", args = {Connection.class,
+    Integer.class})})
 public class MybatisSqlLoggerInterceptor implements Interceptor {
 
     @Resource
@@ -48,10 +48,12 @@ public class MybatisSqlLoggerInterceptor implements Interceptor {
         StatementHandler statementHandler = (StatementHandler) invocation.getTarget();
 
         MetaObject metaObject = MetaObject
-                .forObject(statementHandler, SystemMetaObject.DEFAULT_OBJECT_FACTORY, SystemMetaObject.DEFAULT_OBJECT_WRAPPER_FACTORY,
-                        new DefaultReflectorFactory());
+            .forObject(statementHandler, SystemMetaObject.DEFAULT_OBJECT_FACTORY,
+                SystemMetaObject.DEFAULT_OBJECT_WRAPPER_FACTORY,
+                new DefaultReflectorFactory());
 
-        MappedStatement mappedStatement = (MappedStatement) metaObject.getValue("delegate.mappedStatement");
+        MappedStatement mappedStatement = (MappedStatement) metaObject.getValue(
+            "delegate.mappedStatement");
 
         // sql语句类型：select、delete、insert、update
         SqlCommandType sqlCommandType = mappedStatement.getSqlCommandType();
@@ -87,7 +89,8 @@ public class MybatisSqlLoggerInterceptor implements Interceptor {
             if (logFlag || slowFlag) {
 
                 // 当：要打印日志，或者要记录慢 sql的时候，才执行该方法
-                handle(mappedStatement, statementHandler, sqlIdCallBack, sqlCallBack, costMsStrCallBack, timeNumber);
+                handle(mappedStatement, statementHandler, sqlIdCallBack, sqlCallBack,
+                    costMsStrCallBack, timeNumber);
 
             }
 
@@ -101,7 +104,8 @@ public class MybatisSqlLoggerInterceptor implements Interceptor {
 
                 }
 
-                log.info("{}sql，耗时：{}，内容：{}【{}】：{}", pre, costMsStrCallBack.getValue(), sqlIdCallBack.getValue(), sqlCommandType.toString(), sqlCallBack.getValue());
+                log.info("{}sql，耗时：{}，内容：{}【{}】：{}", pre, costMsStrCallBack.getValue(),
+                    sqlIdCallBack.getValue(), sqlCommandType.toString(), sqlCallBack.getValue());
 
             }
 
@@ -126,9 +130,10 @@ public class MybatisSqlLoggerInterceptor implements Interceptor {
     /**
      * 处理：sql语句
      */
-    public void handle(MappedStatement mappedStatement, StatementHandler statementHandler, CallBack<String> sqlIdCallBack,
-                       CallBack<String> sqlCallBack,
-                       CallBack<String> costMsStrCallBack, long timeNumber) {
+    public void handle(MappedStatement mappedStatement, StatementHandler statementHandler,
+        CallBack<String> sqlIdCallBack,
+        CallBack<String> sqlCallBack,
+        CallBack<String> costMsStrCallBack, long timeNumber) {
 
         // id为，执行的 mapper方法的全路径名，如：com.cmcorg20230301.be.engine.security.mapper.SysUserMapper.insert
         String sqlId = mappedStatement.getId();
@@ -157,7 +162,7 @@ public class MybatisSqlLoggerInterceptor implements Interceptor {
         Object parameterObject = boundSql.getParameterObject();
 
         List<ParameterMapping> parameterMappings = boundSql
-                .getParameterMappings();
+            .getParameterMappings();
 
         // sql语句中多个空格都用一个空格代替
         String sql = boundSql.getSql().replaceAll("[\\s]+", " ");
@@ -218,8 +223,7 @@ public class MybatisSqlLoggerInterceptor implements Interceptor {
     }
 
     /**
-     * 如果参数是 String，则添加单引号， 如果是日期，则转换为时间格式器并加单引号；
-     * 对参数是 null，和不是 null的情况作了处理
+     * 如果参数是 String，则添加单引号， 如果是日期，则转换为时间格式器并加单引号； 对参数是 null，和不是 null的情况作了处理
      */
     private String getParameterValue(Object obj) {
 

@@ -21,17 +21,17 @@ import com.cmcorg20230301.be.engine.security.model.entity.BaseEntityNoId;
 import com.cmcorg20230301.be.engine.security.model.entity.BaseEntityNoIdSuper;
 import com.cmcorg20230301.be.engine.security.util.MyEntityUtil;
 import com.cmcorg20230301.be.engine.security.util.SysTenantUtil;
-import org.jetbrains.annotations.NotNull;
-import org.springframework.stereotype.Service;
-
 import java.util.List;
 import java.util.Set;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
+import org.jetbrains.annotations.NotNull;
+import org.springframework.stereotype.Service;
 
 @Service
-public class SysPayConfigurationServiceImpl extends ServiceImpl<SysPayConfigurationMapper, SysPayConfigurationDO>
-        implements SysPayConfigurationService {
+public class SysPayConfigurationServiceImpl extends
+    ServiceImpl<SysPayConfigurationMapper, SysPayConfigurationDO>
+    implements SysPayConfigurationService {
 
     /**
      * 新增/修改
@@ -42,22 +42,24 @@ public class SysPayConfigurationServiceImpl extends ServiceImpl<SysPayConfigurat
 
         // 每个支付方式，需要单独检查 dto
         Consumer<SysPayConfigurationInsertOrUpdateDTO> checkSysPayConfigurationInsertOrUpdateDtoConsumer =
-                dto.getType().getCheckSysPayConfigurationInsertOrUpdateDtoConsumer();
+            dto.getType().getCheckSysPayConfigurationInsertOrUpdateDtoConsumer();
 
         if (checkSysPayConfigurationInsertOrUpdateDtoConsumer != null) {
             checkSysPayConfigurationInsertOrUpdateDtoConsumer.accept(dto);
         }
 
         // 处理：BaseTenantInsertOrUpdateDTO
-        SysTenantUtil.handleBaseTenantInsertOrUpdateDTO(dto, getCheckIllegalFunc1(CollUtil.newHashSet(dto.getId())),
-                getTenantIdBaseEntityFunc1());
+        SysTenantUtil.handleBaseTenantInsertOrUpdateDTO(dto,
+            getCheckIllegalFunc1(CollUtil.newHashSet(dto.getId())),
+            getTenantIdBaseEntityFunc1());
 
         // 如果是默认支付方式，则取消之前的默认支付方式
         if (BooleanUtil.isTrue(dto.getDefaultFlag())) {
 
             lambdaUpdate().set(SysPayConfigurationDO::getDefaultFlag, false)
-                    .eq(SysPayConfigurationDO::getDefaultFlag, true).eq(BaseEntityNoId::getTenantId, dto.getTenantId())
-                    .ne(dto.getId() != null, BaseEntity::getId, dto.getId()).update();
+                .eq(SysPayConfigurationDO::getDefaultFlag, true)
+                .eq(BaseEntityNoId::getTenantId, dto.getTenantId())
+                .ne(dto.getId() != null, BaseEntity::getId, dto.getId()).update();
 
         }
 
@@ -71,10 +73,12 @@ public class SysPayConfigurationServiceImpl extends ServiceImpl<SysPayConfigurat
         sysPayConfigurationDO.setAppId(MyEntityUtil.getNotNullStr(dto.getAppId()));
         sysPayConfigurationDO.setPrivateKey(MyEntityUtil.getNotNullStr(dto.getPrivateKey()));
 
-        sysPayConfigurationDO.setPlatformPublicKey(MyEntityUtil.getNotNullStr(dto.getPlatformPublicKey()));
+        sysPayConfigurationDO.setPlatformPublicKey(
+            MyEntityUtil.getNotNullStr(dto.getPlatformPublicKey()));
         sysPayConfigurationDO.setNotifyUrl(MyEntityUtil.getNotNullStr(dto.getNotifyUrl()));
         sysPayConfigurationDO.setMerchantId(MyEntityUtil.getNotNullStr(dto.getMerchantId()));
-        sysPayConfigurationDO.setMerchantSerialNumber(MyEntityUtil.getNotNullStr(dto.getMerchantSerialNumber()));
+        sysPayConfigurationDO.setMerchantSerialNumber(
+            MyEntityUtil.getNotNullStr(dto.getMerchantSerialNumber()));
         sysPayConfigurationDO.setApiV3Key(MyEntityUtil.getNotNullStr(dto.getApiV3Key()));
 
         sysPayConfigurationDO.setId(dto.getId());
@@ -97,18 +101,25 @@ public class SysPayConfigurationServiceImpl extends ServiceImpl<SysPayConfigurat
         // 处理：MyTenantPageDTO
         SysTenantUtil.handleMyTenantPageDTO(dto, true);
 
-        return lambdaQuery().like(StrUtil.isNotBlank(dto.getName()), SysPayConfigurationDO::getName, dto.getName())
-                .like(StrUtil.isNotBlank(dto.getAppId()), SysPayConfigurationDO::getAppId, dto.getAppId())
-                .like(StrUtil.isNotBlank(dto.getRemark()), BaseEntity::getRemark, dto.getRemark())
-                .eq(dto.getType() != null, SysPayConfigurationDO::getType, dto.getType())
-                .eq(dto.getDefaultFlag() != null, SysPayConfigurationDO::getDefaultFlag, dto.getDefaultFlag())
-                .eq(dto.getEnableFlag() != null, BaseEntity::getEnableFlag, dto.getEnableFlag())
-                .in(BaseEntityNoId::getTenantId, dto.getTenantIdSet()) //
-                .select(BaseEntity::getId, BaseEntityNoIdSuper::getTenantId, SysPayConfigurationDO::getAppId,
-                        SysPayConfigurationDO::getType, SysPayConfigurationDO::getName, BaseEntityNoIdSuper::getCreateId,
-                        BaseEntityNoIdSuper::getCreateTime, BaseEntityNoIdSuper::getUpdateId,
-                        BaseEntityNoIdSuper::getUpdateTime, BaseEntityNoId::getEnableFlag, BaseEntityNoId::getRemark,
-                        SysPayConfigurationDO::getDefaultFlag).orderByDesc(BaseEntity::getUpdateTime).page(dto.page(true));
+        return lambdaQuery().like(StrUtil.isNotBlank(dto.getName()), SysPayConfigurationDO::getName,
+                dto.getName())
+            .like(StrUtil.isNotBlank(dto.getAppId()), SysPayConfigurationDO::getAppId,
+                dto.getAppId())
+            .like(StrUtil.isNotBlank(dto.getRemark()), BaseEntity::getRemark, dto.getRemark())
+            .eq(dto.getType() != null, SysPayConfigurationDO::getType, dto.getType())
+            .eq(dto.getDefaultFlag() != null, SysPayConfigurationDO::getDefaultFlag,
+                dto.getDefaultFlag())
+            .eq(dto.getEnableFlag() != null, BaseEntity::getEnableFlag, dto.getEnableFlag())
+            .in(BaseEntityNoId::getTenantId, dto.getTenantIdSet()) //
+            .select(BaseEntity::getId, BaseEntityNoIdSuper::getTenantId,
+                SysPayConfigurationDO::getAppId,
+                SysPayConfigurationDO::getType, SysPayConfigurationDO::getName,
+                BaseEntityNoIdSuper::getCreateId,
+                BaseEntityNoIdSuper::getCreateTime, BaseEntityNoIdSuper::getUpdateId,
+                BaseEntityNoIdSuper::getUpdateTime, BaseEntityNoId::getEnableFlag,
+                BaseEntityNoId::getRemark,
+                SysPayConfigurationDO::getDefaultFlag).orderByDesc(BaseEntity::getUpdateTime)
+            .page(dto.page(true));
 
     }
 
@@ -122,11 +133,13 @@ public class SysPayConfigurationServiceImpl extends ServiceImpl<SysPayConfigurat
         Set<Long> tenantIdSet = SysTenantUtil.getUserRefTenantIdSet();
 
         List<SysPayConfigurationDO> sysPayConfigurationDOList =
-                lambdaQuery().select(BaseEntity::getId, SysPayConfigurationDO::getName)
-                        .in(BaseEntityNoIdSuper::getTenantId, tenantIdSet).orderByDesc(BaseEntity::getUpdateTime).list();
+            lambdaQuery().select(BaseEntity::getId, SysPayConfigurationDO::getName)
+                .in(BaseEntityNoIdSuper::getTenantId, tenantIdSet)
+                .orderByDesc(BaseEntity::getUpdateTime).list();
 
-        List<DictVO> dictVOList = sysPayConfigurationDOList.stream().map(it -> new DictVO(it.getId(), it.getName()))
-                .collect(Collectors.toList());
+        List<DictVO> dictVOList = sysPayConfigurationDOList.stream()
+            .map(it -> new DictVO(it.getId(), it.getName()))
+            .collect(Collectors.toList());
 
         return new Page<DictVO>().setTotal(dictVOList.size()).setRecords(dictVOList);
 
@@ -141,8 +154,9 @@ public class SysPayConfigurationServiceImpl extends ServiceImpl<SysPayConfigurat
         // 获取：用户关联的租户
         Set<Long> queryTenantIdSet = SysTenantUtil.getUserRefTenantIdSet();
 
-        return lambdaQuery().eq(BaseEntity::getId, notNullId.getId()).in(BaseEntityNoId::getTenantId, queryTenantIdSet)
-                .one();
+        return lambdaQuery().eq(BaseEntity::getId, notNullId.getId())
+            .in(BaseEntityNoId::getTenantId, queryTenantIdSet)
+            .one();
 
     }
 
@@ -173,8 +187,9 @@ public class SysPayConfigurationServiceImpl extends ServiceImpl<SysPayConfigurat
     @NotNull
     private Func1<Set<Long>, Long> getCheckIllegalFunc1(Set<Long> idSet) {
 
-        return tenantIdSet -> lambdaQuery().in(BaseEntity::getId, idSet).in(BaseEntityNoId::getTenantId, tenantIdSet)
-                .count();
+        return tenantIdSet -> lambdaQuery().in(BaseEntity::getId, idSet)
+            .in(BaseEntityNoId::getTenantId, tenantIdSet)
+            .count();
 
     }
 

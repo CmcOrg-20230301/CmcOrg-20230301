@@ -5,14 +5,13 @@ import cn.hutool.core.date.DatePattern;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.StrUtil;
 import com.cmcorg20230301.be.engine.redisson.model.enums.BaseRedisKeyEnum;
+import java.util.Date;
+import java.util.LinkedList;
+import javax.annotation.PostConstruct;
 import org.jetbrains.annotations.NotNull;
 import org.redisson.api.RAtomicLong;
 import org.redisson.api.RedissonClient;
 import org.springframework.stereotype.Component;
-
-import javax.annotation.PostConstruct;
-import java.util.Date;
-import java.util.LinkedList;
 
 /**
  * id，生成工具类
@@ -57,7 +56,8 @@ public class IdGeneratorUtil {
         // 需要补充的数量
         int needSize = ID_SET_SIZE - ID_POOL.size();
 
-        RAtomicLong atomicLong = redissonClient.getAtomicLong(BaseRedisKeyEnum.ATOMIC_LONG_ID_GENERATOR.name());
+        RAtomicLong atomicLong = redissonClient.getAtomicLong(
+            BaseRedisKeyEnum.ATOMIC_LONG_ID_GENERATOR.name());
 
         long endId = atomicLong.addAndGet(needSize);
 
@@ -87,15 +87,15 @@ public class IdGeneratorUtil {
     }
 
     /**
-     * 获取：下一个 id
-     * 备注：一秒 999999个 id，并且可以使用到 2999年的最后一秒
+     * 获取：下一个 id 备注：一秒 999999个 id，并且可以使用到 2999年的最后一秒
      */
     @NotNull
     public static Long nextId() {
 
         // long最大值：9223372036854775807
         // 例如：20220928221425 -> 0220928221425
-        String timeStr = DateUtil.format(new Date(), DatePattern.PURE_DATETIME_PATTERN).substring(1);
+        String timeStr = DateUtil.format(new Date(), DatePattern.PURE_DATETIME_PATTERN)
+            .substring(1);
 
         long id;
 

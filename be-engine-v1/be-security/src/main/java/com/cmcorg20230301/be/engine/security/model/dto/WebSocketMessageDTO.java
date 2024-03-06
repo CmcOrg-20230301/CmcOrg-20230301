@@ -56,20 +56,27 @@ public class WebSocketMessageDTO<T> {
      * 操作失败
      */
     public static <T> WebSocketMessageDTO<T> error(IWebSocketUri iWebSocketUri, IBizCode iBizCode) {
-        return new WebSocketMessageDTO<>(iWebSocketUri.getUri(), iBizCode.getCode(), iBizCode.getMsg(), null);
+        return new WebSocketMessageDTO<>(iWebSocketUri.getUri(), iBizCode.getCode(),
+            iBizCode.getMsg(), null);
     }
 
-    public static <T> WebSocketMessageDTO<T> error(IWebSocketUri iWebSocketUri, IBizCode iBizCode, @Nullable T data) {
-        return new WebSocketMessageDTO<>(iWebSocketUri.getUri(), iBizCode.getCode(), iBizCode.getMsg(), data);
+    public static <T> WebSocketMessageDTO<T> error(IWebSocketUri iWebSocketUri, IBizCode iBizCode,
+        @Nullable T data) {
+        return new WebSocketMessageDTO<>(iWebSocketUri.getUri(), iBizCode.getCode(),
+            iBizCode.getMsg(), data);
     }
 
-    public static <T> WebSocketMessageDTO<T> error(IWebSocketUri iWebSocketUri, String msg, @Nullable T data) {
-        return new WebSocketMessageDTO<>(iWebSocketUri.getUri(), BaseBizCodeEnum.API_RESULT_SYS_ERROR.getCode(), msg, data);
+    public static <T> WebSocketMessageDTO<T> error(IWebSocketUri iWebSocketUri, String msg,
+        @Nullable T data) {
+        return new WebSocketMessageDTO<>(iWebSocketUri.getUri(),
+            BaseBizCodeEnum.API_RESULT_SYS_ERROR.getCode(), msg, data);
     }
 
-    public static <T> WebSocketMessageDTO<T> errorMsg(IWebSocketUri iWebSocketUri, String msgTemp, Object... paramArr) {
-        return new WebSocketMessageDTO<>(iWebSocketUri.getUri(), BaseBizCodeEnum.API_RESULT_SYS_ERROR.getCode(),
-                StrUtil.format(msgTemp, paramArr), null);
+    public static <T> WebSocketMessageDTO<T> errorMsg(IWebSocketUri iWebSocketUri, String msgTemp,
+        Object... paramArr) {
+        return new WebSocketMessageDTO<>(iWebSocketUri.getUri(),
+            BaseBizCodeEnum.API_RESULT_SYS_ERROR.getCode(),
+            StrUtil.format(msgTemp, paramArr), null);
     }
 
     public static <T> WebSocketMessageDTO<T> errorCode(String uri, Integer code) {
@@ -79,17 +86,21 @@ public class WebSocketMessageDTO<T> {
     /**
      * 操作成功
      */
-    public static <T> WebSocketMessageDTO<T> ok(IWebSocketUri iWebSocketUri, String msg, @Nullable T data) {
-        return new WebSocketMessageDTO<>(iWebSocketUri.getUri(), BaseBizCodeEnum.API_RESULT_OK.getCode(), msg, data);
+    public static <T> WebSocketMessageDTO<T> ok(IWebSocketUri iWebSocketUri, String msg,
+        @Nullable T data) {
+        return new WebSocketMessageDTO<>(iWebSocketUri.getUri(),
+            BaseBizCodeEnum.API_RESULT_OK.getCode(), msg, data);
     }
 
     public static <T> WebSocketMessageDTO<T> okData(IWebSocketUri iWebSocketUri, @Nullable T data) {
-        return new WebSocketMessageDTO<>(iWebSocketUri.getUri(), BaseBizCodeEnum.API_RESULT_OK.getCode(),
-                null, data);
+        return new WebSocketMessageDTO<>(iWebSocketUri.getUri(),
+            BaseBizCodeEnum.API_RESULT_OK.getCode(),
+            null, data);
     }
 
     public static <T> WebSocketMessageDTO<T> okMsg(IWebSocketUri iWebSocketUri, String msg) {
-        return new WebSocketMessageDTO<>(iWebSocketUri.getUri(), BaseBizCodeEnum.API_RESULT_OK.getCode(), msg, null);
+        return new WebSocketMessageDTO<>(iWebSocketUri.getUri(),
+            BaseBizCodeEnum.API_RESULT_OK.getCode(), msg, null);
     }
 
 }

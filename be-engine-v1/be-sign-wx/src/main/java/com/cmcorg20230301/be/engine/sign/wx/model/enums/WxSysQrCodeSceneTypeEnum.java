@@ -31,131 +31,162 @@ import java.time.Duration;
 public enum WxSysQrCodeSceneTypeEnum implements ISysQrCodeSceneType {
 
     // 登录
-    WX_SIGN_IN("WX_SIGN_IN", BaseConstant.MINUTE_3_EXPIRE_TIME / 1000, (qrCodeSceneValue, redissonClient, sysUserDO) -> {
+    WX_SIGN_IN("WX_SIGN_IN", BaseConstant.MINUTE_3_EXPIRE_TIME / 1000,
+        (qrCodeSceneValue, redissonClient, sysUserDO) -> {
 
-        RBucket<SignInVO> bucket = redissonClient.getBucket(BaseRedisKeyEnum.PRE_SYS_WX_QR_CODE_SIGN.name() + qrCodeSceneValue);
+            RBucket<SignInVO> bucket = redissonClient.getBucket(
+                BaseRedisKeyEnum.PRE_SYS_WX_QR_CODE_SIGN.name() + qrCodeSceneValue);
 
-        SignInVO signInVO = SignUtil.signInGetJwt(sysUserDO);
+            SignInVO signInVO = SignUtil.signInGetJwt(sysUserDO);
 
-        bucket.set(signInVO, Duration.ofMillis(BaseConstant.MINUTE_3_EXPIRE_TIME));
+            bucket.set(signInVO, Duration.ofMillis(BaseConstant.MINUTE_3_EXPIRE_TIME));
 
-    }, true),
+        }, true),
 
     // 设置密码
-    WX_SET_PASSWORD("WX_SET_PASSWORD", BaseConstant.MINUTE_3_EXPIRE_TIME / 1000, (qrCodeSceneValue, redissonClient, sysUserDO) -> {
+    WX_SET_PASSWORD("WX_SET_PASSWORD", BaseConstant.MINUTE_3_EXPIRE_TIME / 1000,
+        (qrCodeSceneValue, redissonClient, sysUserDO) -> {
 
-        RBucket<Long> bucket = redissonClient.getBucket(BaseRedisKeyEnum.PRE_SYS_WX_QR_CODE_SET_PASSWORD.name() + qrCodeSceneValue);
+            RBucket<Long> bucket = redissonClient.getBucket(
+                BaseRedisKeyEnum.PRE_SYS_WX_QR_CODE_SET_PASSWORD.name() + qrCodeSceneValue);
 
-        bucket.set(sysUserDO.getId(), Duration.ofMillis(BaseConstant.MINUTE_3_EXPIRE_TIME));
+            bucket.set(sysUserDO.getId(), Duration.ofMillis(BaseConstant.MINUTE_3_EXPIRE_TIME));
 
-    }, true),
+        }, true),
 
     // 修改密码
-    WX_UPDATE_PASSWORD("WX_UPDATE_PASSWORD", BaseConstant.MINUTE_3_EXPIRE_TIME / 1000, (qrCodeSceneValue, redissonClient, sysUserDO) -> {
+    WX_UPDATE_PASSWORD("WX_UPDATE_PASSWORD", BaseConstant.MINUTE_3_EXPIRE_TIME / 1000,
+        (qrCodeSceneValue, redissonClient, sysUserDO) -> {
 
-        RBucket<Long> bucket = redissonClient.getBucket(BaseRedisKeyEnum.PRE_SYS_WX_QR_CODE_UPDATE_PASSWORD.name() + qrCodeSceneValue);
+            RBucket<Long> bucket = redissonClient.getBucket(
+                BaseRedisKeyEnum.PRE_SYS_WX_QR_CODE_UPDATE_PASSWORD.name() + qrCodeSceneValue);
 
-        bucket.set(sysUserDO.getId(), Duration.ofMillis(BaseConstant.MINUTE_3_EXPIRE_TIME));
+            bucket.set(sysUserDO.getId(), Duration.ofMillis(BaseConstant.MINUTE_3_EXPIRE_TIME));
 
-    }, true),
+        }, true),
 
     // 设置登录名
-    WX_SET_SIGN_IN_NAME("WX_SET_SIGN_IN_NAME", BaseConstant.MINUTE_3_EXPIRE_TIME / 1000, (qrCodeSceneValue, redissonClient, sysUserDO) -> {
+    WX_SET_SIGN_IN_NAME("WX_SET_SIGN_IN_NAME", BaseConstant.MINUTE_3_EXPIRE_TIME / 1000,
+        (qrCodeSceneValue, redissonClient, sysUserDO) -> {
 
-        RBucket<Long> bucket = redissonClient.getBucket(BaseRedisKeyEnum.PRE_SYS_WX_QR_CODE_SET_SIGN_IN_NAME.name() + qrCodeSceneValue);
+            RBucket<Long> bucket = redissonClient.getBucket(
+                BaseRedisKeyEnum.PRE_SYS_WX_QR_CODE_SET_SIGN_IN_NAME.name() + qrCodeSceneValue);
 
-        bucket.set(sysUserDO.getId(), Duration.ofMillis(BaseConstant.MINUTE_3_EXPIRE_TIME));
+            bucket.set(sysUserDO.getId(), Duration.ofMillis(BaseConstant.MINUTE_3_EXPIRE_TIME));
 
-    }, true),
+        }, true),
 
     // 修改登录名
-    WX_UPDATE_SIGN_IN_NAME("WX_UPDATE_SIGN_IN_NAME", BaseConstant.MINUTE_3_EXPIRE_TIME / 1000, (qrCodeSceneValue, redissonClient, sysUserDO) -> {
+    WX_UPDATE_SIGN_IN_NAME("WX_UPDATE_SIGN_IN_NAME", BaseConstant.MINUTE_3_EXPIRE_TIME / 1000,
+        (qrCodeSceneValue, redissonClient, sysUserDO) -> {
 
-        RBucket<Long> bucket = redissonClient.getBucket(BaseRedisKeyEnum.PRE_SYS_WX_QR_CODE_UPDATE_SIGN_IN_NAME.name() + qrCodeSceneValue);
+            RBucket<Long> bucket = redissonClient.getBucket(
+                BaseRedisKeyEnum.PRE_SYS_WX_QR_CODE_UPDATE_SIGN_IN_NAME.name() + qrCodeSceneValue);
 
-        bucket.set(sysUserDO.getId(), Duration.ofMillis(BaseConstant.MINUTE_3_EXPIRE_TIME));
+            bucket.set(sysUserDO.getId(), Duration.ofMillis(BaseConstant.MINUTE_3_EXPIRE_TIME));
 
-    }, true),
+        }, true),
 
     // 设置邮箱
-    WX_SET_EMAIL("WX_SET_EMAIL", BaseConstant.MINUTE_3_EXPIRE_TIME / 1000, (qrCodeSceneValue, redissonClient, sysUserDO) -> {
+    WX_SET_EMAIL("WX_SET_EMAIL", BaseConstant.MINUTE_3_EXPIRE_TIME / 1000,
+        (qrCodeSceneValue, redissonClient, sysUserDO) -> {
 
-        RBucket<Long> bucket = redissonClient.getBucket(BaseRedisKeyEnum.PRE_SYS_WX_QR_CODE_SET_EMAIL.name() + qrCodeSceneValue);
+            RBucket<Long> bucket = redissonClient.getBucket(
+                BaseRedisKeyEnum.PRE_SYS_WX_QR_CODE_SET_EMAIL.name() + qrCodeSceneValue);
 
-        bucket.set(sysUserDO.getId(), Duration.ofMillis(BaseConstant.MINUTE_3_EXPIRE_TIME));
+            bucket.set(sysUserDO.getId(), Duration.ofMillis(BaseConstant.MINUTE_3_EXPIRE_TIME));
 
-    }, true),
+        }, true),
 
     // 修改邮箱
-    WX_UPDATE_EMAIL("WX_UPDATE_EMAIL", BaseConstant.MINUTE_3_EXPIRE_TIME / 1000, (qrCodeSceneValue, redissonClient, sysUserDO) -> {
+    WX_UPDATE_EMAIL("WX_UPDATE_EMAIL", BaseConstant.MINUTE_3_EXPIRE_TIME / 1000,
+        (qrCodeSceneValue, redissonClient, sysUserDO) -> {
 
-        RBucket<Long> bucket = redissonClient.getBucket(BaseRedisKeyEnum.PRE_SYS_WX_QR_CODE_UPDATE_EMAIL.name() + qrCodeSceneValue);
+            RBucket<Long> bucket = redissonClient.getBucket(
+                BaseRedisKeyEnum.PRE_SYS_WX_QR_CODE_UPDATE_EMAIL.name() + qrCodeSceneValue);
 
-        bucket.set(sysUserDO.getId(), Duration.ofMillis(BaseConstant.MINUTE_3_EXPIRE_TIME));
+            bucket.set(sysUserDO.getId(), Duration.ofMillis(BaseConstant.MINUTE_3_EXPIRE_TIME));
 
-    }, true),
+        }, true),
 
     // 修改微信
-    WX_UPDATE_WX("WX_UPDATE_WX", BaseConstant.MINUTE_3_EXPIRE_TIME / 1000, (qrCodeSceneValue, redissonClient, sysUserDO) -> {
+    WX_UPDATE_WX("WX_UPDATE_WX", BaseConstant.MINUTE_3_EXPIRE_TIME / 1000,
+        (qrCodeSceneValue, redissonClient, sysUserDO) -> {
 
-        RBucket<Long> bucket = redissonClient.getBucket(BaseRedisKeyEnum.PRE_SYS_WX_QR_CODE_UPDATE_WX.name() + qrCodeSceneValue);
+            RBucket<Long> bucket = redissonClient.getBucket(
+                BaseRedisKeyEnum.PRE_SYS_WX_QR_CODE_UPDATE_WX.name() + qrCodeSceneValue);
 
-        bucket.set(sysUserDO.getId(), Duration.ofMillis(BaseConstant.MINUTE_3_EXPIRE_TIME));
+            bucket.set(sysUserDO.getId(), Duration.ofMillis(BaseConstant.MINUTE_3_EXPIRE_TIME));
 
-    }, true),
+        }, true),
 
     // 设置手机
-    WX_SET_PHONE("WX_SET_PHONE", BaseConstant.MINUTE_3_EXPIRE_TIME / 1000, (qrCodeSceneValue, redissonClient, sysUserDO) -> {
+    WX_SET_PHONE("WX_SET_PHONE", BaseConstant.MINUTE_3_EXPIRE_TIME / 1000,
+        (qrCodeSceneValue, redissonClient, sysUserDO) -> {
 
-        RBucket<Long> bucket = redissonClient.getBucket(BaseRedisKeyEnum.PRE_SYS_WX_QR_CODE_SET_PHONE.name() + qrCodeSceneValue);
+            RBucket<Long> bucket = redissonClient.getBucket(
+                BaseRedisKeyEnum.PRE_SYS_WX_QR_CODE_SET_PHONE.name() + qrCodeSceneValue);
 
-        bucket.set(sysUserDO.getId(), Duration.ofMillis(BaseConstant.MINUTE_3_EXPIRE_TIME));
+            bucket.set(sysUserDO.getId(), Duration.ofMillis(BaseConstant.MINUTE_3_EXPIRE_TIME));
 
-    }, true),
+        }, true),
 
     // 设置统一登录
-    WX_SET_SINGLE_SIGN_IN("WX_SET_SINGLE_SIGN_IN", BaseConstant.MINUTE_3_EXPIRE_TIME / 1000, (qrCodeSceneValue, redissonClient, sysUserDO) -> {
+    WX_SET_SINGLE_SIGN_IN("WX_SET_SINGLE_SIGN_IN", BaseConstant.MINUTE_3_EXPIRE_TIME / 1000,
+        (qrCodeSceneValue, redissonClient, sysUserDO) -> {
 
-        RBucket<Long> bucket = redissonClient.getBucket(BaseRedisKeyEnum.PRE_SYS_WX_QR_CODE_SET_SINGLE_SIGN_IN.name() + qrCodeSceneValue);
+            RBucket<Long> bucket = redissonClient.getBucket(
+                BaseRedisKeyEnum.PRE_SYS_WX_QR_CODE_SET_SINGLE_SIGN_IN.name() + qrCodeSceneValue);
 
-        bucket.set(sysUserDO.getId(), Duration.ofMillis(BaseConstant.MINUTE_3_EXPIRE_TIME));
+            bucket.set(sysUserDO.getId(), Duration.ofMillis(BaseConstant.MINUTE_3_EXPIRE_TIME));
 
-    }, true),
+        }, true),
 
     // 微信统一登录
-    WX_SINGLE_SIGN_IN("WX_SINGLE_SIGN_IN", BaseConstant.MINUTE_3_EXPIRE_TIME / 1000, (qrCodeSceneValue, redissonClient, sysUserDO) -> {
+    WX_SINGLE_SIGN_IN("WX_SINGLE_SIGN_IN", BaseConstant.MINUTE_3_EXPIRE_TIME / 1000,
+        (qrCodeSceneValue, redissonClient, sysUserDO) -> {
 
-        // 获取：微信统一登录的信息
-        SysUserSingleSignInDO sysUserSingleSignInDO = ChainWrappers.lambdaQueryChain(UserUtil.sysUserSingleSignInMapper).eq(SysUserSingleSignInDO::getWxAppId, sysUserDO.getWxAppId()).eq(SysUserSingleSignInDO::getWxOpenId, sysUserDO.getWxOpenId()).select(SysUserSingleSignInDO::getId, SysUserSingleSignInDO::getTenantId).one();
+            // 获取：微信统一登录的信息
+            SysUserSingleSignInDO sysUserSingleSignInDO = ChainWrappers.lambdaQueryChain(
+                    UserUtil.sysUserSingleSignInMapper)
+                .eq(SysUserSingleSignInDO::getWxAppId, sysUserDO.getWxAppId())
+                .eq(SysUserSingleSignInDO::getWxOpenId, sysUserDO.getWxOpenId())
+                .select(SysUserSingleSignInDO::getId, SysUserSingleSignInDO::getTenantId).one();
 
-        SignInVO signInVO;
+            SignInVO signInVO;
 
-        if (sysUserSingleSignInDO == null) {
+            if (sysUserSingleSignInDO == null) {
 
-            signInVO = new SignInVO();
+                signInVO = new SignInVO();
 
-        } else {
+            } else {
 
-            SysUserDO sysUserDoTemp = ChainWrappers.lambdaQueryChain(UserUtil.sysUserMapper).eq(BaseEntity::getId, sysUserSingleSignInDO.getId()).eq(BaseEntityNoIdSuper::getTenantId, sysUserSingleSignInDO.getTenantId()).one();
+                SysUserDO sysUserDoTemp = ChainWrappers.lambdaQueryChain(UserUtil.sysUserMapper)
+                    .eq(BaseEntity::getId, sysUserSingleSignInDO.getId())
+                    .eq(BaseEntityNoIdSuper::getTenantId, sysUserSingleSignInDO.getTenantId())
+                    .one();
 
-            signInVO = SignUtil.signInGetJwt(sysUserDoTemp);
+                signInVO = SignUtil.signInGetJwt(sysUserDoTemp);
 
-        }
+            }
 
-        RBucket<SignInVO> bucket = redissonClient.getBucket(BaseRedisKeyEnum.PRE_SYS_WX_QR_CODE_SIGN_IN_SINGLE.name() + qrCodeSceneValue);
+            RBucket<SignInVO> bucket = redissonClient.getBucket(
+                BaseRedisKeyEnum.PRE_SYS_WX_QR_CODE_SIGN_IN_SINGLE.name() + qrCodeSceneValue);
 
-        bucket.set(signInVO, Duration.ofMillis(BaseConstant.MINUTE_3_EXPIRE_TIME));
+            bucket.set(signInVO, Duration.ofMillis(BaseConstant.MINUTE_3_EXPIRE_TIME));
 
-    }, false),
+        }, false),
 
     // 账号注销
-    WX_SIGN_DELETE("WX_SIGN_DELETE", BaseConstant.MINUTE_3_EXPIRE_TIME / 1000, (qrCodeSceneValue, redissonClient, sysUserDO) -> {
+    WX_SIGN_DELETE("WX_SIGN_DELETE", BaseConstant.MINUTE_3_EXPIRE_TIME / 1000,
+        (qrCodeSceneValue, redissonClient, sysUserDO) -> {
 
-        RBucket<Long> bucket = redissonClient.getBucket(BaseRedisKeyEnum.PRE_SYS_WX_QR_CODE_WX_SIGN_DELETE.name() + qrCodeSceneValue);
+            RBucket<Long> bucket = redissonClient.getBucket(
+                BaseRedisKeyEnum.PRE_SYS_WX_QR_CODE_WX_SIGN_DELETE.name() + qrCodeSceneValue);
 
-        bucket.set(sysUserDO.getId(), Duration.ofMillis(BaseConstant.MINUTE_3_EXPIRE_TIME));
+            bucket.set(sysUserDO.getId(), Duration.ofMillis(BaseConstant.MINUTE_3_EXPIRE_TIME));
 
-    }, true),
+        }, true),
 
     ;
 

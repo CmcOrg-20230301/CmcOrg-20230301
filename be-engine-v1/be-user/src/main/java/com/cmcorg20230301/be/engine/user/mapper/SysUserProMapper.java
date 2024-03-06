@@ -12,6 +12,7 @@ import org.apache.ibatis.annotations.Param;
 public interface SysUserProMapper extends BaseMapper<SysUserDO> {
 
     // 分页排序查询
-    Page<SysUserPageVO> myPage(@Param("page") Page<SysUserPageVO> page, @Param("dto") SysUserPageDTO dto);
+    Page<SysUserPageVO> myPage(@Param("page") Page<SysUserPageVO> page,
+        @Param("dto") SysUserPageDTO dto);
 
 }

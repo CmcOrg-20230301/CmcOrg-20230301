@@ -30,14 +30,16 @@ public class SysSmsConfigurationController {
     @Operation(summary = "新增/修改")
     @PostMapping("/insertOrUpdate")
     @PreAuthorize("hasAuthority('sysSmsConfiguration:insertOrUpdate')")
-    public ApiResultVO<String> insertOrUpdate(@RequestBody @Valid SysSmsConfigurationInsertOrUpdateDTO dto) {
+    public ApiResultVO<String> insertOrUpdate(
+        @RequestBody @Valid SysSmsConfigurationInsertOrUpdateDTO dto) {
         return ApiResultVO.okMsg(baseService.insertOrUpdate(dto));
     }
 
     @Operation(summary = "分页排序查询")
     @PostMapping("/page")
     @PreAuthorize("hasAuthority('sysSmsConfiguration:page')")
-    public ApiResultVO<Page<SysSmsConfigurationDO>> myPage(@RequestBody @Valid SysSmsConfigurationPageDTO dto) {
+    public ApiResultVO<Page<SysSmsConfigurationDO>> myPage(
+        @RequestBody @Valid SysSmsConfigurationPageDTO dto) {
         return ApiResultVO.okData(baseService.myPage(dto));
     }
 

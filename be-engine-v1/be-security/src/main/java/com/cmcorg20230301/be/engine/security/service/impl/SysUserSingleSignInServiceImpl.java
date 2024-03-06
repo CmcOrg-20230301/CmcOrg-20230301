@@ -7,7 +7,8 @@ import com.cmcorg20230301.be.engine.security.service.SysUserSingleSignInService;
 import org.springframework.stereotype.Service;
 
 @Service
-public class SysUserSingleSignInServiceImpl extends ServiceImpl<SysUserSingleSignInMapper, SysUserSingleSignInDO>
-        implements SysUserSingleSignInService {
+public class SysUserSingleSignInServiceImpl extends
+    ServiceImpl<SysUserSingleSignInMapper, SysUserSingleSignInDO>
+    implements SysUserSingleSignInService {
 
 }

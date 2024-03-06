@@ -11,7 +11,11 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.baomidou.mybatisplus.extension.toolkit.ChainWrappers;
 import com.cmcorg20230301.be.engine.im.session.mapper.SysImSessionContentMapper;
 import com.cmcorg20230301.be.engine.im.session.mapper.SysImSessionMapper;
-import com.cmcorg20230301.be.engine.im.session.model.dto.*;
+import com.cmcorg20230301.be.engine.im.session.model.dto.SysImSessionInsertOrUpdateDTO;
+import com.cmcorg20230301.be.engine.im.session.model.dto.SysImSessionPageDTO;
+import com.cmcorg20230301.be.engine.im.session.model.dto.SysImSessionQueryCustomerSessionIdUserSelfDTO;
+import com.cmcorg20230301.be.engine.im.session.model.dto.SysImSessionRefUserJoinUserIdSetDTO;
+import com.cmcorg20230301.be.engine.im.session.model.dto.SysImSessionSelfPageDTO;
 import com.cmcorg20230301.be.engine.im.session.model.entity.SysImSessionContentDO;
 import com.cmcorg20230301.be.engine.im.session.model.entity.SysImSessionDO;
 import com.cmcorg20230301.be.engine.im.session.model.entity.SysImSessionRefUserDO;
@@ -23,28 +27,32 @@ import com.cmcorg20230301.be.engine.redisson.util.RedissonUtil;
 import com.cmcorg20230301.be.engine.security.model.entity.BaseEntity;
 import com.cmcorg20230301.be.engine.security.model.entity.BaseEntityNoId;
 import com.cmcorg20230301.be.engine.security.model.entity.BaseEntityNoIdSuper;
-import com.cmcorg20230301.be.engine.security.util.*;
+import com.cmcorg20230301.be.engine.security.util.MyEntityUtil;
+import com.cmcorg20230301.be.engine.security.util.MyPageUtil;
+import com.cmcorg20230301.be.engine.security.util.MyThreadUtil;
+import com.cmcorg20230301.be.engine.security.util.SysTenantUtil;
+import com.cmcorg20230301.be.engine.security.util.UserUtil;
 import com.cmcorg20230301.be.engine.util.util.NicknameUtil;
-import lombok.SneakyThrows;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-import org.springframework.stereotype.Service;
-
-import javax.annotation.Resource;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.CountDownLatch;
 import java.util.stream.Collectors;
+import javax.annotation.Resource;
+import lombok.SneakyThrows;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import org.springframework.stereotype.Service;
 
 @Service
 public class SysImSessionServiceImpl extends ServiceImpl<SysImSessionMapper, SysImSessionDO>
-        implements SysImSessionService {
+    implements SysImSessionService {
 
     private static SysImSessionRefUserService sysImSessionRefUserService;
 
     @Resource
-    public void setSysImSessionRefUserService(SysImSessionRefUserService sysImSessionRefUserService) {
+    public void setSysImSessionRefUserService(
+        SysImSessionRefUserService sysImSessionRefUserService) {
         SysImSessionServiceImpl.sysImSessionRefUserService = sysImSessionRefUserService;
     }
 
@@ -58,12 +66,14 @@ public class SysImSessionServiceImpl extends ServiceImpl<SysImSessionMapper, Sys
     public Long insertOrUpdate(SysImSessionInsertOrUpdateDTO dto) {
 
         // 处理：BaseTenantInsertOrUpdateDTO
-        SysTenantUtil.handleBaseTenantInsertOrUpdateDTO(dto, getCheckIllegalFunc1(CollUtil.newHashSet(dto.getId())),
-                getTenantIdBaseEntityFunc1());
+        SysTenantUtil.handleBaseTenantInsertOrUpdateDTO(dto,
+            getCheckIllegalFunc1(CollUtil.newHashSet(dto.getId())),
+            getTenantIdBaseEntityFunc1());
 
         SysImSessionDO sysImSessionDO = new SysImSessionDO();
 
-        sysImSessionDO.setName(MyEntityUtil.getNotNullStr(dto.getName(), NicknameUtil.getDateTimeNickname("会话-")));
+        sysImSessionDO.setName(
+            MyEntityUtil.getNotNullStr(dto.getName(), NicknameUtil.getDateTimeNickname("会话-")));
 
         if (dto.getId() == null) { // 只有：新增时才有效
 
@@ -95,15 +105,17 @@ public class SysImSessionServiceImpl extends ServiceImpl<SysImSessionMapper, Sys
      */
     @SneakyThrows
     @Override
-    public Page<SysImSessionDO> myPage(SysImSessionPageDTO dto, boolean queryNoJoinSessionContentFlag) {
+    public Page<SysImSessionDO> myPage(SysImSessionPageDTO dto,
+        boolean queryNoJoinSessionContentFlag) {
 
         // 处理：MyTenantPageDTO
         SysTenantUtil.handleMyTenantPageDTO(dto, true);
 
-        Page<SysImSessionDO> page = lambdaQuery().like(StrUtil.isNotBlank(dto.getName()), SysImSessionDO::getName, dto.getName())
-                .eq(dto.getType() != null, SysImSessionDO::getType, dto.getType())
-                .in(BaseEntityNoId::getTenantId, dto.getTenantIdSet()) //
-                .page(dto.updateTimeDescDefaultOrderPage(true));
+        Page<SysImSessionDO> page = lambdaQuery().like(StrUtil.isNotBlank(dto.getName()),
+                SysImSessionDO::getName, dto.getName())
+            .eq(dto.getType() != null, SysImSessionDO::getType, dto.getType())
+            .in(BaseEntityNoId::getTenantId, dto.getTenantIdSet()) //
+            .page(dto.updateTimeDescDefaultOrderPage(true));
 
         if (CollUtil.isEmpty(page.getRecords())) {
             return page;
@@ -126,14 +138,20 @@ public class SysImSessionServiceImpl extends ServiceImpl<SysImSessionMapper, Sys
      * @param queryNoJoinSessionContentFlag 是否查询：未加入会话的聊天内容，一般为 false
      */
     @SneakyThrows
-    private void myPageQueryContentInfo(boolean queryNoJoinSessionContentFlag, List<SysImSessionDO> sysImSessionDOList, @Nullable Map<Long, Long> lastOpenTsMap) {
+    private void myPageQueryContentInfo(boolean queryNoJoinSessionContentFlag,
+        List<SysImSessionDO> sysImSessionDOList, @Nullable Map<Long, Long> lastOpenTsMap) {
 
         // 查询：未读的消息数量和最后一条未读的消息内容
-        Map<Long, SysImSessionDO> sessionMap = sysImSessionDOList.stream().collect(Collectors.toMap(BaseEntity::getId, it -> it));
+        Map<Long, SysImSessionDO> sessionMap = sysImSessionDOList.stream()
+            .collect(Collectors.toMap(BaseEntity::getId, it -> it));
 
         Long currentUserId = UserUtil.getCurrentUserId();
 
-        List<SysImSessionRefUserDO> sysImSessionRefUserDOList = sysImSessionRefUserService.lambdaQuery().eq(SysImSessionRefUserDO::getUserId, currentUserId).in(SysImSessionRefUserDO::getSessionId, sessionMap.keySet()).select(SysImSessionRefUserDO::getSessionId, SysImSessionRefUserDO::getLastOpenTs).list();
+        List<SysImSessionRefUserDO> sysImSessionRefUserDOList = sysImSessionRefUserService.lambdaQuery()
+            .eq(SysImSessionRefUserDO::getUserId, currentUserId)
+            .in(SysImSessionRefUserDO::getSessionId, sessionMap.keySet())
+            .select(SysImSessionRefUserDO::getSessionId, SysImSessionRefUserDO::getLastOpenTs)
+            .list();
 
         if (CollUtil.isEmpty(sysImSessionRefUserDOList) && !queryNoJoinSessionContentFlag) {
             return;
@@ -142,7 +160,8 @@ public class SysImSessionServiceImpl extends ServiceImpl<SysImSessionMapper, Sys
         if (lastOpenTsMap == null) {
 
             // 获取：打开每个会话的最近时间 map
-            lastOpenTsMap = getLastOpenTsMap(queryNoJoinSessionContentFlag, currentUserId, sessionMap);
+            lastOpenTsMap = getLastOpenTsMap(queryNoJoinSessionContentFlag, currentUserId,
+                sessionMap);
 
         }
 
@@ -179,7 +198,10 @@ public class SysImSessionServiceImpl extends ServiceImpl<SysImSessionMapper, Sys
             MyThreadUtil.execute(() -> {
 
                 // 未读消息的数量
-                Long unreadContentTotal = ChainWrappers.lambdaQueryChain(sysImSessionContentMapper).eq(SysImSessionContentDO::getSessionId, sessionId).eq(SysImSessionContentDO::getShowFlag, true).gt(SysImSessionContentDO::getCreateTs, finalLastOpenTs).count();
+                Long unreadContentTotal = ChainWrappers.lambdaQueryChain(sysImSessionContentMapper)
+                    .eq(SysImSessionContentDO::getSessionId, sessionId)
+                    .eq(SysImSessionContentDO::getShowFlag, true)
+                    .gt(SysImSessionContentDO::getCreateTs, finalLastOpenTs).count();
 
                 if (unreadContentTotal > 99) {
 
@@ -192,13 +214,20 @@ public class SysImSessionServiceImpl extends ServiceImpl<SysImSessionMapper, Sys
                 }
 
                 // 查询出：最后一条消息
-                Page<SysImSessionContentDO> sessionContentPage = ChainWrappers.lambdaQueryChain(sysImSessionContentMapper).eq(SysImSessionContentDO::getSessionId, sessionId).eq(SysImSessionContentDO::getShowFlag, true).select(SysImSessionContentDO::getContent, SysImSessionContentDO::getCreateTs, SysImSessionContentDO::getType).orderByDesc(SysImSessionContentDO::getCreateTs).page(MyPageUtil.getLimit1Page());
+                Page<SysImSessionContentDO> sessionContentPage = ChainWrappers.lambdaQueryChain(
+                        sysImSessionContentMapper).eq(SysImSessionContentDO::getSessionId, sessionId)
+                    .eq(SysImSessionContentDO::getShowFlag, true)
+                    .select(SysImSessionContentDO::getContent, SysImSessionContentDO::getCreateTs,
+                        SysImSessionContentDO::getType)
+                    .orderByDesc(SysImSessionContentDO::getCreateTs)
+                    .page(MyPageUtil.getLimit1Page());
 
                 if (CollUtil.isEmpty(sessionContentPage.getRecords())) {
                     return;
                 }
 
-                SysImSessionContentDO sysImSessionContentDO = sessionContentPage.getRecords().get(0);
+                SysImSessionContentDO sysImSessionContentDO = sessionContentPage.getRecords()
+                    .get(0);
 
                 item.setLastContent(sysImSessionContentDO.getContent());
 
@@ -218,15 +247,22 @@ public class SysImSessionServiceImpl extends ServiceImpl<SysImSessionMapper, Sys
      * 获取：打开每个会话的最近时间 map
      */
     @Nullable
-    private Map<Long, Long> getLastOpenTsMap(boolean queryNoJoinSessionContentFlag, Long currentUserId, Map<Long, SysImSessionDO> sessionMap) {
+    private Map<Long, Long> getLastOpenTsMap(boolean queryNoJoinSessionContentFlag,
+        Long currentUserId, Map<Long, SysImSessionDO> sessionMap) {
 
-        List<SysImSessionRefUserDO> sysImSessionRefUserDOList = sysImSessionRefUserService.lambdaQuery().eq(SysImSessionRefUserDO::getUserId, currentUserId).in(SysImSessionRefUserDO::getSessionId, sessionMap.keySet()).select(SysImSessionRefUserDO::getSessionId, SysImSessionRefUserDO::getLastOpenTs).list();
+        List<SysImSessionRefUserDO> sysImSessionRefUserDOList = sysImSessionRefUserService.lambdaQuery()
+            .eq(SysImSessionRefUserDO::getUserId, currentUserId)
+            .in(SysImSessionRefUserDO::getSessionId, sessionMap.keySet())
+            .select(SysImSessionRefUserDO::getSessionId, SysImSessionRefUserDO::getLastOpenTs)
+            .list();
 
         if (CollUtil.isEmpty(sysImSessionRefUserDOList) && !queryNoJoinSessionContentFlag) {
             return null;
         }
 
-        return sysImSessionRefUserDOList.stream().collect(Collectors.toMap(SysImSessionRefUserDO::getSessionId, SysImSessionRefUserDO::getLastOpenTs));
+        return sysImSessionRefUserDOList.stream().collect(
+            Collectors.toMap(SysImSessionRefUserDO::getSessionId,
+                SysImSessionRefUserDO::getLastOpenTs));
 
     }
 
@@ -249,48 +285,56 @@ public class SysImSessionServiceImpl extends ServiceImpl<SysImSessionMapper, Sys
             dto.setType(SysImSessionTypeEnum.CUSTOMER.getCode());
         }
 
-        return RedissonUtil.doLock(BaseRedisKeyEnum.PRE_SYS_IM_SESSION_CUSTOMER.name() + userId, () -> {
+        return RedissonUtil.doLock(BaseRedisKeyEnum.PRE_SYS_IM_SESSION_CUSTOMER.name() + userId,
+            () -> {
 
-            SysImSessionDO sysImSessionDO = lambdaQuery().eq(SysImSessionDO::getType, dto.getType()).eq(SysImSessionDO::getBelongId, userId).eq(BaseEntityNoIdSuper::getTenantId, tenantId).select(BaseEntity::getId).one();
+                SysImSessionDO sysImSessionDO = lambdaQuery().eq(SysImSessionDO::getType,
+                        dto.getType()).eq(SysImSessionDO::getBelongId, userId)
+                    .eq(BaseEntityNoIdSuper::getTenantId, tenantId).select(BaseEntity::getId).one();
 
-            Long sessionId;
+                Long sessionId;
 
-            if (sysImSessionDO == null) {
+                if (sysImSessionDO == null) {
 
-                SysImSessionInsertOrUpdateDTO sysImSessionInsertOrUpdateDTO = new SysImSessionInsertOrUpdateDTO();
+                    SysImSessionInsertOrUpdateDTO sysImSessionInsertOrUpdateDTO = new SysImSessionInsertOrUpdateDTO();
 
-                sysImSessionInsertOrUpdateDTO.setType(dto.getType());
+                    sysImSessionInsertOrUpdateDTO.setType(dto.getType());
 
-                sysImSessionInsertOrUpdateDTO.setName(dto.getName());
+                    sysImSessionInsertOrUpdateDTO.setName(dto.getName());
 
-                sessionId = insertOrUpdate(sysImSessionInsertOrUpdateDTO); // 新增会话
+                    sessionId = insertOrUpdate(sysImSessionInsertOrUpdateDTO); // 新增会话
 
-                // 加入会话
-                queryCustomerSessionIdUserSelfJoinSession(userId, sessionId);
+                    // 加入会话
+                    queryCustomerSessionIdUserSelfJoinSession(userId, sessionId);
 
-                return sessionId;
-
-            }
-
-            sessionId = sysImSessionDO.getId();
-
-            return RedissonUtil.doLock(BaseRedisKeyEnum.PRE_SYS_IM_SESSION_REF_USER.name() + sessionId + userId, () -> {
-
-                // 查询出：是否已经存在该会话中
-                boolean exists = sysImSessionRefUserService.lambdaQuery().eq(BaseEntityNoIdSuper::getTenantId, tenantId).eq(SysImSessionRefUserDO::getSessionId, sessionId).eq(SysImSessionRefUserDO::getUserId, userId).exists();
-
-                if (exists) {
                     return sessionId;
+
                 }
 
-                // 加入会话
-                queryCustomerSessionIdUserSelfJoinSession(userId, sessionId);
+                sessionId = sysImSessionDO.getId();
 
-                return sessionId;
+                return RedissonUtil.doLock(
+                    BaseRedisKeyEnum.PRE_SYS_IM_SESSION_REF_USER.name() + sessionId + userId,
+                    () -> {
+
+                        // 查询出：是否已经存在该会话中
+                        boolean exists = sysImSessionRefUserService.lambdaQuery()
+                            .eq(BaseEntityNoIdSuper::getTenantId, tenantId)
+                            .eq(SysImSessionRefUserDO::getSessionId, sessionId)
+                            .eq(SysImSessionRefUserDO::getUserId, userId).exists();
+
+                        if (exists) {
+                            return sessionId;
+                        }
+
+                        // 加入会话
+                        queryCustomerSessionIdUserSelfJoinSession(userId, sessionId);
+
+                        return sessionId;
+
+                    });
 
             });
-
-        });
 
     }
 
@@ -322,7 +366,8 @@ public class SysImSessionServiceImpl extends ServiceImpl<SysImSessionMapper, Sys
 
         Page<SysImSessionDO> page = baseMapper.myPageSelf(dto.page(), dto);
 
-        Map<Long, Long> lastOpenTsMap = page.getRecords().stream().collect(Collectors.toMap(BaseEntity::getId, SysImSessionDO::getLastOpenTs));
+        Map<Long, Long> lastOpenTsMap = page.getRecords().stream()
+            .collect(Collectors.toMap(BaseEntity::getId, SysImSessionDO::getLastOpenTs));
 
         // 查询：会话的消息相关信息
         myPageQueryContentInfo(false, page.getRecords(), lastOpenTsMap);
@@ -337,8 +382,9 @@ public class SysImSessionServiceImpl extends ServiceImpl<SysImSessionMapper, Sys
     @NotNull
     private Func1<Set<Long>, Long> getCheckIllegalFunc1(Set<Long> idSet) {
 
-        return tenantIdSet -> lambdaQuery().in(BaseEntity::getId, idSet).in(BaseEntityNoId::getTenantId, tenantIdSet)
-                .count();
+        return tenantIdSet -> lambdaQuery().in(BaseEntity::getId, idSet)
+            .in(BaseEntityNoId::getTenantId, tenantIdSet)
+            .count();
 
     }
 

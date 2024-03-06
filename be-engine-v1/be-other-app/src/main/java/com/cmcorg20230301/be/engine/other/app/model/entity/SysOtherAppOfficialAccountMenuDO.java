@@ -12,7 +12,8 @@ import lombok.EqualsAndHashCode;
 @TableName(value = "sys_other_app_official_account_menu")
 @Data
 @Schema(description = "子表：公众号的菜单等相关配置，主表：第三方应用相关配置（sys_other_app）")
-public class SysOtherAppOfficialAccountMenuDO extends BaseEntityTree<SysOtherAppOfficialAccountMenuDO> {
+public class SysOtherAppOfficialAccountMenuDO extends
+    BaseEntityTree<SysOtherAppOfficialAccountMenuDO> {
 
     @Schema(description = "所属的，第三方应用相关配置主键 id")
     private Long otherAppId;

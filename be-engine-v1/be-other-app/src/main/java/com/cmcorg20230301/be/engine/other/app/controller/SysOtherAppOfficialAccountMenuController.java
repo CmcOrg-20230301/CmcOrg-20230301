@@ -11,15 +11,14 @@ import com.cmcorg20230301.be.engine.other.app.service.SysOtherAppOfficialAccount
 import com.cmcorg20230301.be.engine.security.model.vo.ApiResultVO;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import java.util.List;
+import javax.annotation.Resource;
+import javax.validation.Valid;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import javax.annotation.Resource;
-import javax.validation.Valid;
-import java.util.List;
 
 @RequestMapping("/sys/otherApp/officialAccount/menu")
 @RestController
@@ -32,7 +31,8 @@ public class SysOtherAppOfficialAccountMenuController {
     @Operation(summary = "新增/修改")
     @PostMapping("/insertOrUpdate")
     @PreAuthorize("hasAuthority('sysOtherAppOfficialAccountMenu:insertOrUpdate')")
-    public ApiResultVO<String> insertOrUpdate(@RequestBody @Valid SysOtherAppOfficialAccountMenuInsertOrUpdateDTO dto) {
+    public ApiResultVO<String> insertOrUpdate(
+        @RequestBody @Valid SysOtherAppOfficialAccountMenuInsertOrUpdateDTO dto) {
         return ApiResultVO.okMsg(baseService.insertOrUpdate(dto));
     }
 
@@ -40,7 +40,7 @@ public class SysOtherAppOfficialAccountMenuController {
     @PostMapping("/page")
     @PreAuthorize("hasAuthority('sysOtherAppOfficialAccountMenu:page')")
     public ApiResultVO<Page<SysOtherAppOfficialAccountMenuDO>> myPage(
-            @RequestBody @Valid SysOtherAppOfficialAccountMenuPageDTO dto) {
+        @RequestBody @Valid SysOtherAppOfficialAccountMenuPageDTO dto) {
         return ApiResultVO.okData(baseService.myPage(dto));
     }
 
@@ -48,14 +48,15 @@ public class SysOtherAppOfficialAccountMenuController {
     @PostMapping("/tree")
     @PreAuthorize("hasAuthority('sysOtherAppOfficialAccountMenu:page')")
     public ApiResultVO<List<SysOtherAppOfficialAccountMenuDO>> tree(
-            @RequestBody @Valid SysOtherAppOfficialAccountMenuPageDTO dto) {
+        @RequestBody @Valid SysOtherAppOfficialAccountMenuPageDTO dto) {
         return ApiResultVO.okData(baseService.tree(dto));
     }
 
     @Operation(summary = "通过主键id，查看详情")
     @PostMapping("/infoById")
     @PreAuthorize("hasAuthority('sysOtherAppOfficialAccountMenu:infoById')")
-    public ApiResultVO<SysOtherAppOfficialAccountMenuDO> infoById(@RequestBody @Valid NotNullId notNullId) {
+    public ApiResultVO<SysOtherAppOfficialAccountMenuDO> infoById(
+        @RequestBody @Valid NotNullId notNullId) {
         return ApiResultVO.okData(baseService.infoById(notNullId));
     }
 

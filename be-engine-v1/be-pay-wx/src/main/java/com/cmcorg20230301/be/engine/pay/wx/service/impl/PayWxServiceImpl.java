@@ -11,13 +11,12 @@ import com.cmcorg20230301.be.engine.pay.wx.util.PayWxUtil;
 import com.wechat.pay.java.core.RSAAutoCertificateConfig;
 import com.wechat.pay.java.core.notification.NotificationParser;
 import com.wechat.pay.java.core.notification.RequestParam;
-import lombok.SneakyThrows;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Service;
-
 import javax.servlet.ServletInputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
 
 @Service
 @Slf4j
@@ -27,8 +26,9 @@ public class PayWxServiceImpl implements PayWxService {
      * 通用的处理：回调参数
      */
     @SneakyThrows
-    private void commonHandleNotifyCallBack(HttpServletRequest request, HttpServletResponse response,
-                                            Func1<RequestParam, SysPayTradeNotifyBO> func1) {
+    private void commonHandleNotifyCallBack(HttpServletRequest request,
+        HttpServletResponse response,
+        Func1<RequestParam, SysPayTradeNotifyBO> func1) {
 
         String signature = request.getHeader("Wechatpay-Signature");
         String nonce = request.getHeader("Wechatpay-Nonce");
@@ -42,8 +42,9 @@ public class PayWxServiceImpl implements PayWxService {
 
         // 构造 RequestParam
         RequestParam requestParam =
-                new RequestParam.Builder().serialNumber(serial).nonce(nonce).signature(signature).signType(signatureType)
-                        .timestamp(timestamp).body(body).build();
+            new RequestParam.Builder().serialNumber(serial).nonce(nonce).signature(signature)
+                .signType(signatureType)
+                .timestamp(timestamp).body(body).build();
 
         // 调用方法，获取：订单状态
         SysPayTradeNotifyBO sysPayTradeNotifyBO = func1.call(requestParam);
@@ -59,16 +60,17 @@ public class PayWxServiceImpl implements PayWxService {
     @Override
     @SneakyThrows
     public void notifyCallBackNative(HttpServletRequest request, HttpServletResponse response,
-                                     long sysPayConfigurationId) {
+        long sysPayConfigurationId) {
 
-        SysPayConfigurationDO sysPayConfigurationDO = PayHelper.getSysPayConfigurationDO(sysPayConfigurationId);
+        SysPayConfigurationDO sysPayConfigurationDO = PayHelper.getSysPayConfigurationDO(
+            sysPayConfigurationId);
 
         if (sysPayConfigurationDO == null) {
             return;
         }
 
         RSAAutoCertificateConfig rsaAutoCertificateConfig =
-                PayWxUtil.getRsaAutoCertificateConfig(sysPayConfigurationDO);
+            PayWxUtil.getRsaAutoCertificateConfig(sysPayConfigurationDO);
 
         NotificationParser notificationParser = new NotificationParser(rsaAutoCertificateConfig);
 
@@ -76,7 +78,8 @@ public class PayWxServiceImpl implements PayWxService {
 
             // 以支付通知回调为例，验签、解密并转换成 Transaction
             com.wechat.pay.java.service.partnerpayments.nativepay.model.Transaction transaction = notificationParser
-                    .parse(requestParam, com.wechat.pay.java.service.partnerpayments.nativepay.model.Transaction.class);
+                .parse(requestParam,
+                    com.wechat.pay.java.service.partnerpayments.nativepay.model.Transaction.class);
 
             SysPayTradeNotifyBO sysPayTradeNotifyBO = new SysPayTradeNotifyBO();
 
@@ -101,16 +104,17 @@ public class PayWxServiceImpl implements PayWxService {
      */
     @Override
     public void notifyCallBackJsApi(HttpServletRequest request, HttpServletResponse response,
-                                    long sysPayConfigurationId) {
+        long sysPayConfigurationId) {
 
-        SysPayConfigurationDO sysPayConfigurationDO = PayHelper.getSysPayConfigurationDO(sysPayConfigurationId);
+        SysPayConfigurationDO sysPayConfigurationDO = PayHelper.getSysPayConfigurationDO(
+            sysPayConfigurationId);
 
         if (sysPayConfigurationDO == null) {
             return;
         }
 
         RSAAutoCertificateConfig rsaAutoCertificateConfig =
-                PayWxUtil.getRsaAutoCertificateConfig(sysPayConfigurationDO);
+            PayWxUtil.getRsaAutoCertificateConfig(sysPayConfigurationDO);
 
         NotificationParser notificationParser = new NotificationParser(rsaAutoCertificateConfig);
 
@@ -118,7 +122,8 @@ public class PayWxServiceImpl implements PayWxService {
 
             // 以支付通知回调为例，验签、解密并转换成 Transaction
             com.wechat.pay.java.service.partnerpayments.jsapi.model.Transaction transaction = notificationParser
-                    .parse(requestParam, com.wechat.pay.java.service.partnerpayments.jsapi.model.Transaction.class);
+                .parse(requestParam,
+                    com.wechat.pay.java.service.partnerpayments.jsapi.model.Transaction.class);
 
             SysPayTradeNotifyBO sysPayTradeNotifyBO = new SysPayTradeNotifyBO();
 

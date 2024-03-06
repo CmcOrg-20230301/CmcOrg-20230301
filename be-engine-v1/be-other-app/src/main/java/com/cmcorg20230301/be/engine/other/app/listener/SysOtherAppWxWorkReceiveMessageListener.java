@@ -11,6 +11,10 @@ import com.cmcorg20230301.be.engine.security.util.KafkaHelper;
 import com.cmcorg20230301.be.engine.security.util.MyThreadUtil;
 import com.cmcorg20230301.be.engine.security.util.TryUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
+import javax.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.Nullable;
 import org.redisson.api.RedissonClient;
@@ -19,39 +23,34 @@ import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.support.Acknowledgment;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.Resource;
-import java.util.List;
-import java.util.Objects;
-import java.util.stream.Collectors;
-
 /**
  * 处理微信公众号消息的 监听器
  */
 @Component
 @KafkaListener(topics = "#{__listener.TOPIC_LIST}", groupId = "#{kafkaDynamicGroupIdConfiguration.getGroupId()}",
-        batch = "true")
+    batch = "true")
 @Slf4j(topic = LogTopicConstant.OTHER_APP_WX_OFFICIAL_ACCOUNT)
 public class SysOtherAppWxWorkReceiveMessageListener {
 
     public static final List<String> TOPIC_LIST =
-            CollUtil.newArrayList(KafkaTopicEnum.SYS_OTHER_APP_WX_WORK_RECEIVE_MESSAGE_TOPIC.name());
+        CollUtil.newArrayList(KafkaTopicEnum.SYS_OTHER_APP_WX_WORK_RECEIVE_MESSAGE_TOPIC.name());
 
     // 目的：Long 转 String，Enum 转 code
     private static ObjectMapper objectMapper;
 
     @Nullable
     public static List<ISysOtherAppWxWorkReceiveMessageHandle>
-            iSysOtherAppWxWorkReceiveMessageHandleList;
+        iSysOtherAppWxWorkReceiveMessageHandleList;
 
     @Resource
     RedissonClient redissonClient;
 
     public SysOtherAppWxWorkReceiveMessageListener(ObjectMapper objectMapper,
-                                                   @Nullable List<ISysOtherAppWxWorkReceiveMessageHandle> iSysOtherAppWxWorkReceiveMessageHandleList) {
+        @Nullable List<ISysOtherAppWxWorkReceiveMessageHandle> iSysOtherAppWxWorkReceiveMessageHandleList) {
 
         SysOtherAppWxWorkReceiveMessageListener.objectMapper = objectMapper;
         SysOtherAppWxWorkReceiveMessageListener.iSysOtherAppWxWorkReceiveMessageHandleList =
-                iSysOtherAppWxWorkReceiveMessageHandleList;
+            iSysOtherAppWxWorkReceiveMessageHandleList;
 
     }
 
@@ -66,22 +65,22 @@ public class SysOtherAppWxWorkReceiveMessageListener {
 
             List<SysOtherAppWxWorkReceiveMessageDTO> sysOtherAppWxWorkReceiveMessageDTOList =
 
-                    recordList.stream().map(it -> {
+                recordList.stream().map(it -> {
 
-                        try {
+                    try {
 
-                            return objectMapper.readValue(it, SysOtherAppWxWorkReceiveMessageDTO.class);
+                        return objectMapper.readValue(it, SysOtherAppWxWorkReceiveMessageDTO.class);
 
-                        } catch (Exception ignored) {
+                    } catch (Exception ignored) {
 
-                        }
+                    }
 
-                        return null;
+                    return null;
 
-                    }).filter(Objects::nonNull).collect(Collectors.toList());
+                }).filter(Objects::nonNull).collect(Collectors.toList());
 
             if (CollUtil.isNotEmpty(sysOtherAppWxWorkReceiveMessageDTOList) && CollUtil.isNotEmpty(
-                    iSysOtherAppWxWorkReceiveMessageHandleList)) {
+                iSysOtherAppWxWorkReceiveMessageHandleList)) {
 
                 MyThreadUtil.execute(() -> {
 
@@ -90,12 +89,13 @@ public class SysOtherAppWxWorkReceiveMessageListener {
                         String msgIdStr = item.getMsgIdStr();
 
                         String redisKey =
-                                BaseRedisKeyEnum.PRE_SYS_OTHER_APP_WX_WORK_RECEIVE_MESSAGE_ID.name()
-                                        + msgIdStr;
+                            BaseRedisKeyEnum.PRE_SYS_OTHER_APP_WX_WORK_RECEIVE_MESSAGE_ID.name()
+                                + msgIdStr;
 
                         RedissonUtil.doLock(redisKey, () -> {
 
-                            boolean deleteFlag = redissonClient.<String>getBucket(redisKey).delete();
+                            boolean deleteFlag = redissonClient.<String>getBucket(redisKey)
+                                .delete();
 
                             if (!deleteFlag) {
                                 return;

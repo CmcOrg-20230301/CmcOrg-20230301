@@ -5,6 +5,9 @@ import cn.hutool.core.map.MapUtil;
 import cn.hutool.core.text.StrBuilder;
 import cn.hutool.core.util.StrUtil;
 import com.cmcorg20230301.be.engine.netty.tcp.protobuf.annotation.NettyTcpProtobufController;
+import java.lang.reflect.Method;
+import java.util.List;
+import java.util.Map;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.jetbrains.annotations.NotNull;
@@ -12,10 +15,6 @@ import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.RequestMapping;
-
-import java.lang.reflect.Method;
-import java.util.List;
-import java.util.Map;
 
 /**
  * 映射：有 @NettyTcpProtobufController 注解的 Bean
@@ -45,18 +44,20 @@ public class NettyTcpProtobufBeanPostProcessor implements BeanPostProcessor {
     }
 
     @Override
-    public Object postProcessAfterInitialization(@NotNull Object bean, @NotNull String beanName) throws BeansException {
+    public Object postProcessAfterInitialization(@NotNull Object bean, @NotNull String beanName)
+        throws BeansException {
 
         Class<?> beanClass = bean.getClass();
 
         NettyTcpProtobufController nettyTcpProtobufController =
-                beanClass.getAnnotation(NettyTcpProtobufController.class);
+            beanClass.getAnnotation(NettyTcpProtobufController.class);
 
         if (nettyTcpProtobufController == null) {
             return bean;
         }
 
-        RequestMapping classRequestMappingAnnotation = beanClass.getAnnotation(RequestMapping.class);
+        RequestMapping classRequestMappingAnnotation = beanClass.getAnnotation(
+            RequestMapping.class);
 
         StrBuilder strBuilder = StrBuilder.create();
 
@@ -80,8 +81,9 @@ public class NettyTcpProtobufBeanPostProcessor implements BeanPostProcessor {
 
             // 组装并处理路径
             List<String> splitTrimList = StrUtil.splitTrim(
-                    strBuilder.append(classRequestMappingValue).append("/").append(methodRequestMappingValue)
-                            .toStringAndReset(), "/");
+                strBuilder.append(classRequestMappingValue).append("/")
+                    .append(methodRequestMappingValue)
+                    .toStringAndReset(), "/");
 
             String key = "/" + CollUtil.join(splitTrimList, "/");
 

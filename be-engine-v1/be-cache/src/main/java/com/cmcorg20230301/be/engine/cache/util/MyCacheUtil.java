@@ -6,6 +6,10 @@ import cn.hutool.core.util.StrUtil;
 import com.cmcorg20230301.be.engine.model.model.constant.LogTopicConstant;
 import com.cmcorg20230301.be.engine.model.model.interfaces.IRedisKey;
 import com.cmcorg20230301.be.engine.redisson.util.RedissonUtil;
+import java.time.Duration;
+import java.util.Collection;
+import java.util.Map;
+import java.util.Set;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
@@ -15,14 +19,8 @@ import org.redisson.api.RBucket;
 import org.redisson.api.RedissonClient;
 import org.springframework.stereotype.Component;
 
-import java.time.Duration;
-import java.util.Collection;
-import java.util.Map;
-import java.util.Set;
-
 /**
- * 缓存工具类
- * 获取缓存逻辑：先从 本地获取缓存，再从 redis获取缓存，最后从 数据提供者获取数据
+ * 缓存工具类 获取缓存逻辑：先从 本地获取缓存，再从 redis获取缓存，最后从 数据提供者获取数据
  */
 @Component
 @Slf4j(topic = LogTopicConstant.CACHE)
@@ -41,8 +39,9 @@ public class MyCacheUtil {
      */
     @SneakyThrows
     @NotNull
-    public static <T> T get(@NotNull Enum<? extends IRedisKey> redisKeyEnum, @Nullable T defaultResult,
-                            @Nullable Func0<T> func0) {
+    public static <T> T get(@NotNull Enum<? extends IRedisKey> redisKeyEnum,
+        @Nullable T defaultResult,
+        @Nullable Func0<T> func0) {
 
         return get(redisKeyEnum, null, defaultResult, func0);
 
@@ -53,8 +52,9 @@ public class MyCacheUtil {
      */
     @SneakyThrows
     @NotNull
-    public static <T> T get(@NotNull Enum<? extends IRedisKey> redisKeyEnum, @Nullable String sufKey,
-                            @Nullable T defaultResult, @Nullable Func0<T> func0) {
+    public static <T> T get(@NotNull Enum<? extends IRedisKey> redisKeyEnum,
+        @Nullable String sufKey,
+        @Nullable T defaultResult, @Nullable Func0<T> func0) {
 
         return get(redisKeyEnum, sufKey, defaultResult, -1, func0);
 
@@ -65,8 +65,9 @@ public class MyCacheUtil {
      */
     @SneakyThrows
     @NotNull
-    public static <T> T get(@NotNull Enum<? extends IRedisKey> redisKeyEnum, @Nullable String sufKey,
-                            @Nullable T defaultResult, long timeToLive, @Nullable Func0<T> func0) {
+    public static <T> T get(@NotNull Enum<? extends IRedisKey> redisKeyEnum,
+        @Nullable String sufKey,
+        @Nullable T defaultResult, long timeToLive, @Nullable Func0<T> func0) {
 
         String key = CacheHelper.getKey(redisKeyEnum, sufKey);
 
@@ -94,7 +95,8 @@ public class MyCacheUtil {
 
         } else {
 
-            redissonClient.<T>getBucket(key).set(result, Duration.ofMillis(timeToLive)); // 先加入到 redis里
+            redissonClient.<T>getBucket(key)
+                .set(result, Duration.ofMillis(timeToLive)); // 先加入到 redis里
 
         }
 
@@ -111,7 +113,8 @@ public class MyCacheUtil {
      */
     @SneakyThrows
     @Nullable
-    public static <T> T onlyGet(@NotNull Enum<? extends IRedisKey> redisKeyEnum, @Nullable String sufKey) {
+    public static <T> T onlyGet(@NotNull Enum<? extends IRedisKey> redisKeyEnum,
+        @Nullable String sufKey) {
 
         String key = CacheHelper.getKey(redisKeyEnum, sufKey);
 
@@ -161,8 +164,9 @@ public class MyCacheUtil {
      */
     @SneakyThrows
     @NotNull
-    public static <T> T getSecondMap(@NotNull Enum<? extends IRedisKey> redisKeyEnum, @Nullable String sufKey,
-                                     @NotNull String secondKey, @Nullable T defaultResult, @Nullable Func0<T> func0) {
+    public static <T> T getSecondMap(@NotNull Enum<? extends IRedisKey> redisKeyEnum,
+        @Nullable String sufKey,
+        @NotNull String secondKey, @Nullable T defaultResult, @Nullable Func0<T> func0) {
 
         String key = CacheHelper.getKey(redisKeyEnum, sufKey);
 
@@ -199,8 +203,9 @@ public class MyCacheUtil {
      */
     @SneakyThrows
     @Nullable
-    public static <T> T onlyGetSecondMap(@NotNull Enum<? extends IRedisKey> redisKeyEnum, @Nullable String sufKey,
-                                         @NotNull String secondKey) {
+    public static <T> T onlyGetSecondMap(@NotNull Enum<? extends IRedisKey> redisKeyEnum,
+        @Nullable String sufKey,
+        @NotNull String secondKey) {
 
         String key = CacheHelper.getKey(redisKeyEnum, sufKey);
 
@@ -252,7 +257,7 @@ public class MyCacheUtil {
     @NotNull
     @Unmodifiable // 不可对返回值进行修改
     public static <T extends Map<?, ?>> T getMap(@NotNull Enum<? extends IRedisKey> redisKeyEnum,
-                                                 @Nullable T defaultResult, @Nullable Func0<T> func0) {
+        @Nullable T defaultResult, @Nullable Func0<T> func0) {
 
         return getMap(redisKeyEnum, null, defaultResult, func0);
 
@@ -265,7 +270,7 @@ public class MyCacheUtil {
     @Unmodifiable // 不可对返回值进行修改
     @NotNull
     public static <T extends Map<?, ?>> T getMap(@NotNull Enum<? extends IRedisKey> redisKeyEnum,
-                                                 @Nullable String sufKey, @Nullable T defaultResult, @Nullable Func0<T> func0) {
+        @Nullable String sufKey, @Nullable T defaultResult, @Nullable Func0<T> func0) {
 
         String key = CacheHelper.getKey(redisKeyEnum, sufKey);
 
@@ -344,8 +349,9 @@ public class MyCacheUtil {
     @SneakyThrows
     @Unmodifiable // 不可对返回值进行修改
     @NotNull
-    public static <T extends Collection<?>> T getCollection(@NotNull Enum<? extends IRedisKey> redisKeyEnum,
-                                                            @Nullable T defaultResult, @Nullable Func0<T> func0) {
+    public static <T extends Collection<?>> T getCollection(
+        @NotNull Enum<? extends IRedisKey> redisKeyEnum,
+        @Nullable T defaultResult, @Nullable Func0<T> func0) {
 
         return getCollection(redisKeyEnum, null, defaultResult, func0);
 
@@ -357,8 +363,9 @@ public class MyCacheUtil {
     @SneakyThrows
     @Unmodifiable // 不可对返回值进行修改
     @NotNull
-    public static <T extends Collection<?>> T getCollection(@NotNull Enum<? extends IRedisKey> redisKeyEnum,
-                                                            @Nullable String sufKey, @Nullable T defaultResult, @Nullable Func0<T> func0) {
+    public static <T extends Collection<?>> T getCollection(
+        @NotNull Enum<? extends IRedisKey> redisKeyEnum,
+        @Nullable String sufKey, @Nullable T defaultResult, @Nullable Func0<T> func0) {
 
         String key = CacheHelper.getKey(redisKeyEnum, sufKey);
 
@@ -413,7 +420,8 @@ public class MyCacheUtil {
     @SneakyThrows
     @Unmodifiable // 不可对返回值进行修改
     @Nullable
-    public static <T extends Collection<?>> T onlyGetCollection(@NotNull String key, boolean setFlag) {
+    public static <T extends Collection<?>> T onlyGetCollection(@NotNull String key,
+        boolean setFlag) {
 
         T result = CacheLocalUtil.get(key);
 

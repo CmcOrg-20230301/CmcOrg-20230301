@@ -28,26 +28,30 @@ import com.cmcorg20230301.be.engine.security.util.MyEntityUtil;
 import com.cmcorg20230301.be.engine.security.util.SysDictUtil;
 import com.cmcorg20230301.be.engine.security.util.SysTenantUtil;
 import com.cmcorg20230301.be.engine.security.util.UserUtil;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
-import java.util.stream.Collectors;
-
 @Service
-public class SysDictServiceImpl extends ServiceImpl<SysDictMapper, SysDictDO> implements SysDictService {
+public class SysDictServiceImpl extends ServiceImpl<SysDictMapper, SysDictDO> implements
+    SysDictService {
 
     /**
-     * 新增/修改
-     * 备注：这里修改了，租户管理那边也要一起修改
+     * 新增/修改 备注：这里修改了，租户管理那边也要一起修改
      */
     @Override
     @DSTransactional
     public String insertOrUpdate(SysDictInsertOrUpdateDTO dto) {
 
         // 处理：BaseTenantInsertOrUpdateDTO
-        SysTenantUtil.handleBaseTenantInsertOrUpdateDTO(dto, getCheckIllegalFunc1(CollUtil.newHashSet(dto.getId())),
-                getTenantIdBaseEntityFunc1());
+        SysTenantUtil.handleBaseTenantInsertOrUpdateDTO(dto,
+            getCheckIllegalFunc1(CollUtil.newHashSet(dto.getId())),
+            getTenantIdBaseEntityFunc1());
 
         // 检查：是否可以修改一些属性
         checkInsertOrUpdate(dto, dto.getId());
@@ -56,9 +60,11 @@ public class SysDictServiceImpl extends ServiceImpl<SysDictMapper, SysDictDO> im
 
             // 字典 key和 name不能重复
             boolean exists = lambdaQuery().eq(SysDictDO::getType, SysDictTypeEnum.DICT)
-                    .and(i -> i.eq(SysDictDO::getDictKey, dto.getDictKey()).or().eq(SysDictDO::getName, dto.getName()))
-                    .eq(BaseEntity::getEnableFlag, true).ne(dto.getId() != null, BaseEntity::getId, dto.getId())
-                    .eq(BaseEntityNoId::getTenantId, dto.getTenantId()).exists();
+                .and(i -> i.eq(SysDictDO::getDictKey, dto.getDictKey()).or()
+                    .eq(SysDictDO::getName, dto.getName()))
+                .eq(BaseEntity::getEnableFlag, true)
+                .ne(dto.getId() != null, BaseEntity::getId, dto.getId())
+                .eq(BaseEntityNoId::getTenantId, dto.getTenantId()).exists();
 
             if (exists) {
                 ApiResultVO.error(BizCodeEnum.SAME_KEY_OR_NAME_EXIST);
@@ -74,11 +80,13 @@ public class SysDictServiceImpl extends ServiceImpl<SysDictMapper, SysDictDO> im
 
             // 字典项 value和 name不能重复
             boolean exists =
-                    lambdaQuery().eq(SysDictDO::getType, SysDictTypeEnum.DICT_ITEM).eq(BaseEntity::getEnableFlag, true)
-                            .eq(SysDictDO::getDictKey, dto.getDictKey())
-                            .and(i -> i.eq(SysDictDO::getValue, dto.getValue()).or().eq(SysDictDO::getName, dto.getName()))
-                            .ne(dto.getId() != null, BaseEntity::getId, dto.getId())
-                            .eq(BaseEntityNoId::getTenantId, dto.getTenantId()).exists();
+                lambdaQuery().eq(SysDictDO::getType, SysDictTypeEnum.DICT_ITEM)
+                    .eq(BaseEntity::getEnableFlag, true)
+                    .eq(SysDictDO::getDictKey, dto.getDictKey())
+                    .and(i -> i.eq(SysDictDO::getValue, dto.getValue()).or()
+                        .eq(SysDictDO::getName, dto.getName()))
+                    .ne(dto.getId() != null, BaseEntity::getId, dto.getId())
+                    .eq(BaseEntityNoId::getTenantId, dto.getTenantId()).exists();
 
             if (exists) {
                 ApiResultVO.error(BizCodeEnum.SAME_VALUE_OR_NAME_EXIST);
@@ -89,7 +97,8 @@ public class SysDictServiceImpl extends ServiceImpl<SysDictMapper, SysDictDO> im
         if (dto.getId() != null && SysDictTypeEnum.DICT.equals(dto.getType())) {
 
             // 如果是修改，并且是字典，那么也需要修改 该字典的字典项的 dictKey
-            SysDictDO sysDictDO = lambdaQuery().eq(BaseEntity::getId, dto.getId()).select(SysDictDO::getDictKey).one();
+            SysDictDO sysDictDO = lambdaQuery().eq(BaseEntity::getId, dto.getId())
+                .select(SysDictDO::getDictKey).one();
 
             if (sysDictDO == null) {
                 ApiResultVO.errorMsg("操作失败：字典不存在，请刷新重试");
@@ -98,8 +107,9 @@ public class SysDictServiceImpl extends ServiceImpl<SysDictMapper, SysDictDO> im
             if (!sysDictDO.getDictKey().equals(dto.getDictKey())) {
 
                 lambdaUpdate().eq(SysDictDO::getDictKey, sysDictDO.getDictKey())
-                        .eq(SysDictDO::getType, SysDictTypeEnum.DICT_ITEM).set(SysDictDO::getDictKey, dto.getDictKey())
-                        .update();
+                    .eq(SysDictDO::getType, SysDictTypeEnum.DICT_ITEM)
+                    .set(SysDictDO::getDictKey, dto.getDictKey())
+                    .update();
 
             }
 
@@ -155,7 +165,8 @@ public class SysDictServiceImpl extends ServiceImpl<SysDictMapper, SysDictDO> im
 
         }
 
-        boolean exists = lambdaQuery().eq(BaseEntity::getId, id).eq(SysDictDO::getSystemFlag, true).exists();
+        boolean exists = lambdaQuery().eq(BaseEntity::getId, id).eq(SysDictDO::getSystemFlag, true)
+            .exists();
 
         if (exists) {
             ApiResultVO.errorMsg("操作失败：租户不能修改系统内置");
@@ -172,14 +183,15 @@ public class SysDictServiceImpl extends ServiceImpl<SysDictMapper, SysDictDO> im
         // 处理：MyTenantPageDTO
         SysTenantUtil.handleMyTenantPageDTO(dto, true);
 
-        return lambdaQuery().like(StrUtil.isNotBlank(dto.getName()), SysDictDO::getName, dto.getName())
-                .like(StrUtil.isNotBlank(dto.getRemark()), BaseEntity::getRemark, dto.getRemark())
-                .like(StrUtil.isNotBlank(dto.getDictKey()), SysDictDO::getDictKey, dto.getDictKey())
-                .eq(dto.getType() != null, SysDictDO::getType, dto.getType())
-                .eq(dto.getValue() != null, SysDictDO::getValue, dto.getValue())
-                .eq(dto.getEnableFlag() != null, BaseEntity::getEnableFlag, dto.getEnableFlag())
-                .in(BaseEntityNoId::getTenantId, dto.getTenantIdSet()) //
-                .orderByDesc(SysDictDO::getOrderNo).page(dto.page(true));
+        return lambdaQuery().like(StrUtil.isNotBlank(dto.getName()), SysDictDO::getName,
+                dto.getName())
+            .like(StrUtil.isNotBlank(dto.getRemark()), BaseEntity::getRemark, dto.getRemark())
+            .like(StrUtil.isNotBlank(dto.getDictKey()), SysDictDO::getDictKey, dto.getDictKey())
+            .eq(dto.getType() != null, SysDictDO::getType, dto.getType())
+            .eq(dto.getValue() != null, SysDictDO::getValue, dto.getValue())
+            .eq(dto.getEnableFlag() != null, BaseEntity::getEnableFlag, dto.getEnableFlag())
+            .in(BaseEntityNoId::getTenantId, dto.getTenantIdSet()) //
+            .orderByDesc(SysDictDO::getOrderNo).page(dto.page(true));
 
     }
 
@@ -208,7 +220,8 @@ public class SysDictServiceImpl extends ServiceImpl<SysDictMapper, SysDictDO> im
 
         // 过滤出：为字典项的数据，目的：查询其所属字典，封装成树结构
         List<SysDictDO> dictItemList =
-                records.stream().filter(it -> SysDictTypeEnum.DICT_ITEM.equals(it.getType())).collect(Collectors.toList());
+            records.stream().filter(it -> SysDictTypeEnum.DICT_ITEM.equals(it.getType()))
+                .collect(Collectors.toList());
 
         if (dictItemList.size() == 0) {
 
@@ -219,22 +232,29 @@ public class SysDictServiceImpl extends ServiceImpl<SysDictMapper, SysDictDO> im
 
         // 查询出：字典项所属，字典的信息
         List<SysDictDO> allDictList =
-                records.stream().filter(item -> SysDictTypeEnum.DICT.equals(item.getType())).collect(Collectors.toList());
+            records.stream().filter(item -> SysDictTypeEnum.DICT.equals(item.getType()))
+                .collect(Collectors.toList());
 
-        Set<Long> dictIdSet = allDictList.stream().map(BaseEntity::getId).collect(Collectors.toSet());
+        Set<Long> dictIdSet = allDictList.stream().map(BaseEntity::getId)
+            .collect(Collectors.toSet());
 
-        Set<String> dictKeySet = dictItemList.stream().map(SysDictDO::getDictKey).collect(Collectors.toSet());
+        Set<String> dictKeySet = dictItemList.stream().map(SysDictDO::getDictKey)
+            .collect(Collectors.toSet());
 
         // 查询数据库：字典信息
-        List<SysDictDO> sysDictDOList = lambdaQuery().notIn(dictIdSet.size() != 0, BaseEntity::getId, dictIdSet)
-                .in(dictKeySet.size() != 0, SysDictDO::getDictKey, dictKeySet).eq(SysDictDO::getType, SysDictTypeEnum.DICT)
-                .in(BaseEntityNoId::getTenantId, dto.getTenantIdSet()).orderByDesc(SysDictDO::getOrderNo).list();
+        List<SysDictDO> sysDictDOList = lambdaQuery().notIn(dictIdSet.size() != 0,
+                BaseEntity::getId, dictIdSet)
+            .in(dictKeySet.size() != 0, SysDictDO::getDictKey, dictKeySet)
+            .eq(SysDictDO::getType, SysDictTypeEnum.DICT)
+            .in(BaseEntityNoId::getTenantId, dto.getTenantIdSet())
+            .orderByDesc(SysDictDO::getOrderNo).list();
 
         // 拼接本次返回值所需的，所有字典
         allDictList.addAll(sysDictDOList);
 
         Map<String, SysDictDO> dictMap =
-                allDictList.stream().collect(Collectors.toMap(it -> it.getTenantId() + it.getDictKey(), it -> it));
+            allDictList.stream()
+                .collect(Collectors.toMap(it -> it.getTenantId() + it.getDictKey(), it -> it));
 
         // 封装 children
         for (SysDictDO item : dictItemList) {
@@ -267,8 +287,9 @@ public class SysDictServiceImpl extends ServiceImpl<SysDictMapper, SysDictDO> im
         // 获取：用户关联的租户
         Set<Long> queryTenantIdSet = SysTenantUtil.getUserRefTenantIdSet();
 
-        return lambdaQuery().eq(BaseEntity::getId, notNullId.getId()).in(BaseEntityNoId::getTenantId, queryTenantIdSet)
-                .one();
+        return lambdaQuery().eq(BaseEntity::getId, notNullId.getId())
+            .in(BaseEntityNoId::getTenantId, queryTenantIdSet)
+            .one();
 
     }
 
@@ -293,8 +314,9 @@ public class SysDictServiceImpl extends ServiceImpl<SysDictMapper, SysDictDO> im
             if (!SysTenantUtil.adminOrDefaultTenantFlag()) {
 
                 boolean exists =
-                        lambdaQuery().in(BaseEntity::getId, notEmptyIdSet.getIdSet()).eq(SysDictDO::getSystemFlag, true)
-                                .exists();
+                    lambdaQuery().in(BaseEntity::getId, notEmptyIdSet.getIdSet())
+                        .eq(SysDictDO::getSystemFlag, true)
+                        .exists();
 
                 if (exists) {
                     ApiResultVO.errorMsg("操作失败：租户不能删除系统内置");
@@ -305,8 +327,8 @@ public class SysDictServiceImpl extends ServiceImpl<SysDictMapper, SysDictDO> im
         }
 
         List<SysDictDO> sysDictDOList =
-                lambdaQuery().in(BaseEntity::getId, idSet).eq(SysDictDO::getType, SysDictTypeEnum.DICT)
-                        .select(SysDictDO::getDictKey, BaseEntityNoIdSuper::getTenantId).list();
+            lambdaQuery().in(BaseEntity::getId, idSet).eq(SysDictDO::getType, SysDictTypeEnum.DICT)
+                .select(SysDictDO::getDictKey, BaseEntityNoIdSuper::getTenantId).list();
 
         removeByIds(idSet); // 根据 idSet删除
 
@@ -316,14 +338,16 @@ public class SysDictServiceImpl extends ServiceImpl<SysDictMapper, SysDictDO> im
 
         // 如果删除是字典项的父级，则把其下的字典项也跟着删除了
         Map<Long, List<SysDictDO>> groupMap =
-                sysDictDOList.stream().collect(Collectors.groupingBy(BaseEntityNoIdSuper::getTenantId));
+            sysDictDOList.stream().collect(Collectors.groupingBy(BaseEntityNoIdSuper::getTenantId));
 
         for (Map.Entry<Long, List<SysDictDO>> item : groupMap.entrySet()) {
 
-            Set<String> dictKeySet = item.getValue().stream().map(SysDictDO::getDictKey).collect(Collectors.toSet());
+            Set<String> dictKeySet = item.getValue().stream().map(SysDictDO::getDictKey)
+                .collect(Collectors.toSet());
 
-            lambdaUpdate().in(SysDictDO::getDictKey, dictKeySet).eq(BaseEntityNoIdSuper::getTenantId, item.getKey())
-                    .remove();
+            lambdaUpdate().in(SysDictDO::getDictKey, dictKeySet)
+                .eq(BaseEntityNoIdSuper::getTenantId, item.getKey())
+                .remove();
 
         }
 
@@ -345,7 +369,8 @@ public class SysDictServiceImpl extends ServiceImpl<SysDictMapper, SysDictDO> im
         }
 
         List<SysDictDO> sysDictDOList =
-                lambdaQuery().in(BaseEntity::getId, dto.getIdSet()).select(BaseEntity::getId, SysDictDO::getOrderNo).list();
+            lambdaQuery().in(BaseEntity::getId, dto.getIdSet())
+                .select(BaseEntity::getId, SysDictDO::getOrderNo).list();
 
         for (SysDictDO item : sysDictDOList) {
             item.setOrderNo((int) (item.getOrderNo() + dto.getNumber()));
@@ -363,8 +388,9 @@ public class SysDictServiceImpl extends ServiceImpl<SysDictMapper, SysDictDO> im
     @NotNull
     private Func1<Set<Long>, Long> getCheckIllegalFunc1(Set<Long> idSet) {
 
-        return tenantIdSet -> lambdaQuery().in(BaseEntity::getId, idSet).in(BaseEntityNoId::getTenantId, tenantIdSet)
-                .count();
+        return tenantIdSet -> lambdaQuery().in(BaseEntity::getId, idSet)
+            .in(BaseEntityNoId::getTenantId, tenantIdSet)
+            .count();
 
     }
 

@@ -17,12 +17,11 @@ import com.cmcorg20230301.be.engine.security.exception.BaseBizCodeEnum;
 import com.cmcorg20230301.be.engine.security.model.entity.BaseEntityNoId;
 import com.cmcorg20230301.be.engine.security.model.entity.BaseEntityNoIdSuper;
 import com.cmcorg20230301.be.engine.security.model.vo.ApiResultVO;
+import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.stereotype.Component;
-
-import java.util.List;
 
 @Slf4j(topic = LogTopicConstant.BAI_DU)
 @Component
@@ -41,7 +40,8 @@ public class BaiDuUtil {
      *
      * @return 识别的结果
      */
-    public static JSONObject advancedGeneral(@Nullable Long tenantId, @Nullable String appId, String imageUrl) {
+    public static JSONObject advancedGeneral(@Nullable Long tenantId, @Nullable String appId,
+        String imageUrl) {
 
         String accessToken = getAccessToken(tenantId, appId);
 
@@ -53,8 +53,10 @@ public class BaiDuUtil {
         log.info("advancedGeneral-formJson：{}", JSONUtil.toJsonStr(formJson));
 
         String result = HttpRequest
-                .post("https://aip.baidubce.com/rest/2.0/image-classify/v2/advanced_general?access_token=" + accessToken)
-                .form(formJson).execute().body();
+            .post(
+                "https://aip.baidubce.com/rest/2.0/image-classify/v2/advanced_general?access_token="
+                    + accessToken)
+            .form(formJson).execute().body();
 
         log.info("advancedGeneral-result：{}", JSONUtil.toJsonStr(result));
 
@@ -75,9 +77,10 @@ public class BaiDuUtil {
         if (StrUtil.isBlank(appId)) {
 
             List<SysOtherAppDO> sysOtherAppDOList =
-                    sysOtherAppService.lambdaQuery().eq(BaseEntityNoIdSuper::getTenantId, tenantId)
-                            .select(SysOtherAppDO::getAppId).eq(SysOtherAppDO::getType, SysOtherAppTypeEnum.BAI_DU)
-                            .eq(BaseEntityNoId::getEnableFlag, true).list();
+                sysOtherAppService.lambdaQuery().eq(BaseEntityNoIdSuper::getTenantId, tenantId)
+                    .select(SysOtherAppDO::getAppId)
+                    .eq(SysOtherAppDO::getType, SysOtherAppTypeEnum.BAI_DU)
+                    .eq(BaseEntityNoId::getEnableFlag, true).list();
 
             if (CollUtil.isEmpty(sysOtherAppDOList)) {
                 ApiResultVO.error("操作失败：未找到百度相关配置", tenantId);
@@ -90,15 +93,18 @@ public class BaiDuUtil {
 
         String sufKey = tenantId + ":" + appId;
 
-        String accessToken = MyCacheUtil.onlyGet(BaseRedisKeyEnum.BAI_DU_ACCESS_TOKEN_CACHE, sufKey);
+        String accessToken = MyCacheUtil.onlyGet(BaseRedisKeyEnum.BAI_DU_ACCESS_TOKEN_CACHE,
+            sufKey);
 
         if (StrUtil.isNotBlank(accessToken)) {
             return accessToken;
         }
 
-        SysOtherAppDO sysOtherAppDO = sysOtherAppService.lambdaQuery().eq(BaseEntityNoIdSuper::getTenantId, tenantId)
-                .eq(SysOtherAppDO::getAppId, appId).select(SysOtherAppDO::getSecret)
-                .eq(SysOtherAppDO::getType, SysOtherAppTypeEnum.BAI_DU).eq(BaseEntityNoId::getEnableFlag, true).one();
+        SysOtherAppDO sysOtherAppDO = sysOtherAppService.lambdaQuery()
+            .eq(BaseEntityNoIdSuper::getTenantId, tenantId)
+            .eq(SysOtherAppDO::getAppId, appId).select(SysOtherAppDO::getSecret)
+            .eq(SysOtherAppDO::getType, SysOtherAppTypeEnum.BAI_DU)
+            .eq(BaseEntityNoId::getEnableFlag, true).one();
 
         String errorMessageStr = "accessToken";
 
@@ -107,8 +113,9 @@ public class BaiDuUtil {
         }
 
         String jsonStr = HttpRequest.post(
-                "https://aip.baidubce.com/oauth/2.0/token?client_id=" + appId + "&client_secret=" + sysOtherAppDO
-                        .getSecret() + "&grant_type=client_credentials").execute().body();
+            "https://aip.baidubce.com/oauth/2.0/token?client_id=" + appId + "&client_secret="
+                + sysOtherAppDO
+                .getSecret() + "&grant_type=client_credentials").execute().body();
 
         log.info("getAccessToken，jsonStr：{}", jsonStr);
 
@@ -125,7 +132,8 @@ public class BaiDuUtil {
         Long expiresIn = jsonObject.getLong("expires_in"); // 这里的单位是：秒
 
         CacheRedisKafkaLocalUtil
-                .put(BaseRedisKeyEnum.BAI_DU_ACCESS_TOKEN_CACHE, sufKey, null, expiresIn * 1000, () -> accessTokenResult);
+            .put(BaseRedisKeyEnum.BAI_DU_ACCESS_TOKEN_CACHE, sufKey, null, expiresIn * 1000,
+                () -> accessTokenResult);
 
         return accessTokenResult;
 

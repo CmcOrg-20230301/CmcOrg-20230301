@@ -54,9 +54,12 @@ public class SignPhoneServiceImpl implements SignPhoneService {
         String key = BaseRedisKeyEnum.PRE_PHONE + dto.getPhone();
 
         return SignUtil
-                .sendCode(key, ChainWrappers.lambdaQueryChain(sysUserMapper).eq(SysUserDO::getPhone, dto.getPhone()), false,
-                        BizCodeEnum.PHONE_HAS_BEEN_REGISTERED,
-                        (code) -> SysSmsUtil.sendSignUp(SysSmsHelper.getSysSmsSendBO(dto.getTenantId(), code, dto.getPhone())), dto.getTenantId());
+            .sendCode(key, ChainWrappers.lambdaQueryChain(sysUserMapper)
+                    .eq(SysUserDO::getPhone, dto.getPhone()), false,
+                BizCodeEnum.PHONE_HAS_BEEN_REGISTERED,
+                (code) -> SysSmsUtil.sendSignUp(
+                    SysSmsHelper.getSysSmsSendBO(dto.getTenantId(), code, dto.getPhone())),
+                dto.getTenantId());
 
     }
 
@@ -66,7 +69,7 @@ public class SignPhoneServiceImpl implements SignPhoneService {
     private void checkSignUpEnable(Long tenantId) {
 
         SysUserConfigurationDO sysUserConfigurationDO =
-                sysUserConfigurationService.getSysUserConfigurationDoByTenantId(tenantId);
+            sysUserConfigurationService.getSysUserConfigurationDoByTenantId(tenantId);
 
         if (BooleanUtil.isFalse(sysUserConfigurationDO.getPhoneSignUpEnable())) {
             ApiResultVO.errorMsg("操作失败：不允许手机号码注册，请联系管理员");
@@ -83,8 +86,9 @@ public class SignPhoneServiceImpl implements SignPhoneService {
         checkSignUpEnable(dto.getTenantId()); // 检查：是否允许注册
 
         return SignUtil
-                .signUp(dto.getPassword(), dto.getOriginPassword(), dto.getCode(), BaseRedisKeyEnum.PRE_PHONE, dto.getPhone(),
-                        dto.getTenantId());
+            .signUp(dto.getPassword(), dto.getOriginPassword(), dto.getCode(),
+                BaseRedisKeyEnum.PRE_PHONE, dto.getPhone(),
+                dto.getTenantId());
 
     }
 
@@ -95,8 +99,9 @@ public class SignPhoneServiceImpl implements SignPhoneService {
     public SignInVO signInPassword(SignPhoneSignInPasswordDTO dto) {
 
         return SignUtil
-                .signInPassword(ChainWrappers.lambdaQueryChain(sysUserMapper).eq(SysUserDO::getPhone, dto.getPhone()),
-                        dto.getPassword(), dto.getPhone(), dto.getTenantId());
+            .signInPassword(ChainWrappers.lambdaQueryChain(sysUserMapper)
+                    .eq(SysUserDO::getPhone, dto.getPhone()),
+                dto.getPassword(), dto.getPhone(), dto.getTenantId());
 
     }
 
@@ -109,9 +114,12 @@ public class SignPhoneServiceImpl implements SignPhoneService {
         String key = BaseRedisKeyEnum.PRE_PHONE + dto.getPhone();
 
         return SignUtil
-                .sendCode(key, ChainWrappers.lambdaQueryChain(sysUserMapper).eq(SysUserDO::getPhone, dto.getPhone()), null,
-                        BaseBizCodeEnum.API_RESULT_SYS_ERROR, (code) -> SysSmsUtil
-                                .sendSignIn(SysSmsHelper.getSysSmsSendBO(dto.getTenantId(), code, dto.getPhone())), dto.getTenantId());
+            .sendCode(key, ChainWrappers.lambdaQueryChain(sysUserMapper)
+                    .eq(SysUserDO::getPhone, dto.getPhone()), null,
+                BaseBizCodeEnum.API_RESULT_SYS_ERROR, (code) -> SysSmsUtil
+                    .sendSignIn(
+                        SysSmsHelper.getSysSmsSendBO(dto.getTenantId(), code, dto.getPhone())),
+                dto.getTenantId());
 
     }
 
@@ -122,8 +130,9 @@ public class SignPhoneServiceImpl implements SignPhoneService {
     public SignInVO signInCode(SignPhoneSignInCodeDTO dto) {
 
         return SignUtil
-                .signInCode(ChainWrappers.lambdaQueryChain(sysUserMapper).eq(SysUserDO::getPhone, dto.getPhone()),
-                        dto.getCode(), BaseRedisKeyEnum.PRE_PHONE, dto.getPhone(), dto.getTenantId(), null);
+            .signInCode(ChainWrappers.lambdaQueryChain(sysUserMapper)
+                    .eq(SysUserDO::getPhone, dto.getPhone()),
+                dto.getCode(), BaseRedisKeyEnum.PRE_PHONE, dto.getPhone(), dto.getTenantId(), null);
 
     }
 
@@ -135,10 +144,13 @@ public class SignPhoneServiceImpl implements SignPhoneService {
 
         Long currentTenantIdDefault = UserUtil.getCurrentTenantIdDefault();
 
-        SignUtil.checkWillError(PRE_REDIS_KEY_ENUM, null, currentTenantIdDefault, null); // 检查：是否可以进行操作
+        SignUtil.checkWillError(PRE_REDIS_KEY_ENUM, null, currentTenantIdDefault,
+            null); // 检查：是否可以进行操作
 
-        return SignUtil.getAccountAndSendCode(BaseRedisKeyEnum.PRE_PHONE, (code, account) -> SysSmsUtil
-                .sendSetPassword(SysSmsHelper.getSysSmsSendBO(currentTenantIdDefault, code, account)));
+        return SignUtil.getAccountAndSendCode(BaseRedisKeyEnum.PRE_PHONE,
+            (code, account) -> SysSmsUtil
+                .sendSetPassword(
+                    SysSmsHelper.getSysSmsSendBO(currentTenantIdDefault, code, account)));
 
     }
 
@@ -148,11 +160,13 @@ public class SignPhoneServiceImpl implements SignPhoneService {
     @Override
     public String setPassword(SignPhoneSetPasswordDTO dto) {
 
-        SignUtil.checkWillError(PRE_REDIS_KEY_ENUM, null, UserUtil.getCurrentTenantIdDefault(), null); // 检查：是否可以进行操作
+        SignUtil.checkWillError(PRE_REDIS_KEY_ENUM, null, UserUtil.getCurrentTenantIdDefault(),
+            null); // 检查：是否可以进行操作
 
         // 修改密码
         return SignUtil
-                .updatePassword(dto.getNewPassword(), dto.getOriginNewPassword(), BaseRedisKeyEnum.PRE_PHONE, dto.getCode(), null);
+            .updatePassword(dto.getNewPassword(), dto.getOriginNewPassword(),
+                BaseRedisKeyEnum.PRE_PHONE, dto.getCode(), null);
 
     }
 
@@ -164,10 +178,13 @@ public class SignPhoneServiceImpl implements SignPhoneService {
 
         Long currentTenantIdDefault = UserUtil.getCurrentTenantIdDefault();
 
-        SignUtil.checkWillError(PRE_REDIS_KEY_ENUM, null, currentTenantIdDefault, null); // 检查：是否可以进行操作
+        SignUtil.checkWillError(PRE_REDIS_KEY_ENUM, null, currentTenantIdDefault,
+            null); // 检查：是否可以进行操作
 
-        return SignUtil.getAccountAndSendCode(BaseRedisKeyEnum.PRE_PHONE, (code, account) -> SysSmsUtil
-                .sendUpdatePassword(SysSmsHelper.getSysSmsSendBO(currentTenantIdDefault, code, account)));
+        return SignUtil.getAccountAndSendCode(BaseRedisKeyEnum.PRE_PHONE,
+            (code, account) -> SysSmsUtil
+                .sendUpdatePassword(
+                    SysSmsHelper.getSysSmsSendBO(currentTenantIdDefault, code, account)));
 
     }
 
@@ -177,10 +194,12 @@ public class SignPhoneServiceImpl implements SignPhoneService {
     @Override
     public String updatePassword(SignPhoneUpdatePasswordDTO dto) {
 
-        SignUtil.checkWillError(PRE_REDIS_KEY_ENUM, null, UserUtil.getCurrentTenantIdDefault(), null); // 检查：是否可以进行操作
+        SignUtil.checkWillError(PRE_REDIS_KEY_ENUM, null, UserUtil.getCurrentTenantIdDefault(),
+            null); // 检查：是否可以进行操作
 
         return SignUtil
-                .updatePassword(dto.getNewPassword(), dto.getOriginNewPassword(), BaseRedisKeyEnum.PRE_PHONE, dto.getCode(), null);
+            .updatePassword(dto.getNewPassword(), dto.getOriginNewPassword(),
+                BaseRedisKeyEnum.PRE_PHONE, dto.getCode(), null);
 
     }
 
@@ -192,15 +211,18 @@ public class SignPhoneServiceImpl implements SignPhoneService {
 
         Long currentTenantIdDefault = UserUtil.getCurrentTenantIdDefault();
 
-        SignUtil.checkWillError(PRE_REDIS_KEY_ENUM, null, currentTenantIdDefault, null); // 检查：是否可以进行操作
+        SignUtil.checkWillError(PRE_REDIS_KEY_ENUM, null, currentTenantIdDefault,
+            null); // 检查：是否可以进行操作
 
         String currentUserPhoneNotAdmin = UserUtil.getCurrentUserPhoneNotAdmin();
 
         String key = BaseRedisKeyEnum.PRE_SIGN_IN_NAME + dto.getSignInName();
 
-        return SignUtil.sendCode(key, ChainWrappers.lambdaQueryChain(sysUserMapper).eq(SysUserDO::getSignInName, dto.getSignInName()), false,
-                BizCodeEnum.SIGN_IN_NAME_EXIST_PLEASE_RE_ENTER, code -> SysSmsUtil
-                        .sendSetSignInName(SysSmsHelper.getSysSmsSendBO(currentTenantIdDefault, code, currentUserPhoneNotAdmin)), currentTenantIdDefault);
+        return SignUtil.sendCode(key, ChainWrappers.lambdaQueryChain(sysUserMapper)
+                .eq(SysUserDO::getSignInName, dto.getSignInName()), false,
+            BizCodeEnum.SIGN_IN_NAME_EXIST_PLEASE_RE_ENTER, code -> SysSmsUtil
+                .sendSetSignInName(SysSmsHelper.getSysSmsSendBO(currentTenantIdDefault, code,
+                    currentUserPhoneNotAdmin)), currentTenantIdDefault);
 
     }
 
@@ -210,10 +232,12 @@ public class SignPhoneServiceImpl implements SignPhoneService {
     @Override
     public String setSignInName(SignPhoneSetSignInNameDTO dto) {
 
-        SignUtil.checkWillError(PRE_REDIS_KEY_ENUM, null, UserUtil.getCurrentTenantIdDefault(), null); // 检查：是否可以进行操作
+        SignUtil.checkWillError(PRE_REDIS_KEY_ENUM, null, UserUtil.getCurrentTenantIdDefault(),
+            null); // 检查：是否可以进行操作
 
         // 设置登录名
-        return SignUtil.bindAccount(dto.getCode(), BaseRedisKeyEnum.PRE_SIGN_IN_NAME, dto.getSignInName(), null, null, null);
+        return SignUtil.bindAccount(dto.getCode(), BaseRedisKeyEnum.PRE_SIGN_IN_NAME,
+            dto.getSignInName(), null, null, null);
 
     }
 
@@ -225,15 +249,18 @@ public class SignPhoneServiceImpl implements SignPhoneService {
 
         Long currentTenantIdDefault = UserUtil.getCurrentTenantIdDefault();
 
-        SignUtil.checkWillError(PRE_REDIS_KEY_ENUM, null, currentTenantIdDefault, null); // 检查：是否可以进行操作
+        SignUtil.checkWillError(PRE_REDIS_KEY_ENUM, null, currentTenantIdDefault,
+            null); // 检查：是否可以进行操作
 
         String currentUserPhoneNotAdmin = UserUtil.getCurrentUserPhoneNotAdmin();
 
         String key = BaseRedisKeyEnum.PRE_SIGN_IN_NAME + dto.getSignInName();
 
-        return SignUtil.sendCode(key, ChainWrappers.lambdaQueryChain(sysUserMapper).eq(SysUserDO::getSignInName, dto.getSignInName()), false,
-                BizCodeEnum.SIGN_IN_NAME_EXIST_PLEASE_RE_ENTER, code -> SysSmsUtil
-                        .sendUpdateSignInName(SysSmsHelper.getSysSmsSendBO(currentTenantIdDefault, code, currentUserPhoneNotAdmin)), currentTenantIdDefault);
+        return SignUtil.sendCode(key, ChainWrappers.lambdaQueryChain(sysUserMapper)
+                .eq(SysUserDO::getSignInName, dto.getSignInName()), false,
+            BizCodeEnum.SIGN_IN_NAME_EXIST_PLEASE_RE_ENTER, code -> SysSmsUtil
+                .sendUpdateSignInName(SysSmsHelper.getSysSmsSendBO(currentTenantIdDefault, code,
+                    currentUserPhoneNotAdmin)), currentTenantIdDefault);
 
     }
 
@@ -243,10 +270,12 @@ public class SignPhoneServiceImpl implements SignPhoneService {
     @Override
     public String updateSignInName(SignPhoneUpdateSignInNameDTO dto) {
 
-        SignUtil.checkWillError(PRE_REDIS_KEY_ENUM, null, UserUtil.getCurrentTenantIdDefault(), null); // 检查：是否可以进行操作
+        SignUtil.checkWillError(PRE_REDIS_KEY_ENUM, null, UserUtil.getCurrentTenantIdDefault(),
+            null); // 检查：是否可以进行操作
 
         // 设置登录名
-        return SignUtil.bindAccount(dto.getCode(), BaseRedisKeyEnum.PRE_SIGN_IN_NAME, dto.getSignInName(), null, null, null);
+        return SignUtil.bindAccount(dto.getCode(), BaseRedisKeyEnum.PRE_SIGN_IN_NAME,
+            dto.getSignInName(), null, null, null);
 
     }
 
@@ -258,12 +287,16 @@ public class SignPhoneServiceImpl implements SignPhoneService {
 
         Long currentTenantIdDefault = UserUtil.getCurrentTenantIdDefault();
 
-        SignUtil.checkWillError(PRE_REDIS_KEY_ENUM, null, currentTenantIdDefault, null); // 检查：是否可以进行操作
+        SignUtil.checkWillError(PRE_REDIS_KEY_ENUM, null, currentTenantIdDefault,
+            null); // 检查：是否可以进行操作
 
         // 检查：邮箱是否被占用
-        SignUtil.checkAccountExistWillError(ChainWrappers.lambdaQueryChain(sysUserMapper).eq(SysUserDO::getEmail, dto.getEmail()), false, BizCodeEnum.EMAIL_HAS_BEEN_REGISTERED, currentTenantIdDefault);
+        SignUtil.checkAccountExistWillError(
+            ChainWrappers.lambdaQueryChain(sysUserMapper).eq(SysUserDO::getEmail, dto.getEmail()),
+            false, BizCodeEnum.EMAIL_HAS_BEEN_REGISTERED, currentTenantIdDefault);
 
-        return SignUtil.getAccountAndSendCode(BaseRedisKeyEnum.PRE_PHONE, (code, account) -> SysSmsUtil
+        return SignUtil.getAccountAndSendCode(BaseRedisKeyEnum.PRE_PHONE,
+            (code, account) -> SysSmsUtil
                 .sendSetEmail(SysSmsHelper.getSysSmsSendBO(currentTenantIdDefault, code, account)));
 
     }
@@ -276,14 +309,17 @@ public class SignPhoneServiceImpl implements SignPhoneService {
 
         Long currentTenantIdDefault = UserUtil.getCurrentTenantIdDefault();
 
-        SignUtil.checkWillError(PRE_REDIS_KEY_ENUM, null, currentTenantIdDefault, null); // 检查：是否可以进行操作
+        SignUtil.checkWillError(PRE_REDIS_KEY_ENUM, null, currentTenantIdDefault,
+            null); // 检查：是否可以进行操作
 
         String key = BaseRedisKeyEnum.PRE_EMAIL + dto.getEmail();
 
         return SignUtil
-                .sendCode(key, ChainWrappers.lambdaQueryChain(sysUserMapper).eq(SysUserDO::getEmail, dto.getEmail()), false,
-                        BizCodeEnum.EMAIL_HAS_BEEN_REGISTERED, (code) -> MyEmailUtil
-                                .send(dto.getEmail(), EmailMessageEnum.BIND_EMAIL, code, currentTenantIdDefault), currentTenantIdDefault);
+            .sendCode(key, ChainWrappers.lambdaQueryChain(sysUserMapper)
+                    .eq(SysUserDO::getEmail, dto.getEmail()), false,
+                BizCodeEnum.EMAIL_HAS_BEEN_REGISTERED, (code) -> MyEmailUtil
+                    .send(dto.getEmail(), EmailMessageEnum.BIND_EMAIL, code,
+                        currentTenantIdDefault), currentTenantIdDefault);
 
     }
 
@@ -293,10 +329,12 @@ public class SignPhoneServiceImpl implements SignPhoneService {
     @Override
     public String setEmail(SignPhoneSetEmailDTO dto) {
 
-        SignUtil.checkWillError(PRE_REDIS_KEY_ENUM, null, UserUtil.getCurrentTenantIdDefault(), null); // 检查：是否可以进行操作
+        SignUtil.checkWillError(PRE_REDIS_KEY_ENUM, null, UserUtil.getCurrentTenantIdDefault(),
+            null); // 检查：是否可以进行操作
 
         return SignUtil
-                .updateAccount(dto.getPhoneCode(), dto.getEmailCode(), BaseRedisKeyEnum.PRE_PHONE, BaseRedisKeyEnum.PRE_EMAIL, dto.getEmail(), null, null);
+            .updateAccount(dto.getPhoneCode(), dto.getEmailCode(), BaseRedisKeyEnum.PRE_PHONE,
+                BaseRedisKeyEnum.PRE_EMAIL, dto.getEmail(), null, null);
 
     }
 
@@ -308,13 +346,18 @@ public class SignPhoneServiceImpl implements SignPhoneService {
 
         Long currentTenantIdDefault = UserUtil.getCurrentTenantIdDefault();
 
-        SignUtil.checkWillError(PRE_REDIS_KEY_ENUM, null, currentTenantIdDefault, null); // 检查：是否可以进行操作
+        SignUtil.checkWillError(PRE_REDIS_KEY_ENUM, null, currentTenantIdDefault,
+            null); // 检查：是否可以进行操作
 
         // 检查：邮箱是否被占用
-        SignUtil.checkAccountExistWillError(ChainWrappers.lambdaQueryChain(sysUserMapper).eq(SysUserDO::getEmail, dto.getEmail()), false, BizCodeEnum.EMAIL_HAS_BEEN_REGISTERED, currentTenantIdDefault);
+        SignUtil.checkAccountExistWillError(
+            ChainWrappers.lambdaQueryChain(sysUserMapper).eq(SysUserDO::getEmail, dto.getEmail()),
+            false, BizCodeEnum.EMAIL_HAS_BEEN_REGISTERED, currentTenantIdDefault);
 
-        return SignUtil.getAccountAndSendCode(BaseRedisKeyEnum.PRE_PHONE, (code, account) -> SysSmsUtil
-                .sendUpdateEmail(SysSmsHelper.getSysSmsSendBO(currentTenantIdDefault, code, account)));
+        return SignUtil.getAccountAndSendCode(BaseRedisKeyEnum.PRE_PHONE,
+            (code, account) -> SysSmsUtil
+                .sendUpdateEmail(
+                    SysSmsHelper.getSysSmsSendBO(currentTenantIdDefault, code, account)));
 
     }
 
@@ -326,14 +369,17 @@ public class SignPhoneServiceImpl implements SignPhoneService {
 
         Long currentTenantIdDefault = UserUtil.getCurrentTenantIdDefault();
 
-        SignUtil.checkWillError(PRE_REDIS_KEY_ENUM, null, currentTenantIdDefault, null); // 检查：是否可以进行操作
+        SignUtil.checkWillError(PRE_REDIS_KEY_ENUM, null, currentTenantIdDefault,
+            null); // 检查：是否可以进行操作
 
         String key = BaseRedisKeyEnum.PRE_EMAIL + dto.getEmail();
 
         return SignUtil
-                .sendCode(key, ChainWrappers.lambdaQueryChain(sysUserMapper).eq(SysUserDO::getEmail, dto.getEmail()), false,
-                        BizCodeEnum.EMAIL_HAS_BEEN_REGISTERED, (code) -> MyEmailUtil
-                                .send(dto.getEmail(), EmailMessageEnum.BIND_EMAIL, code, currentTenantIdDefault), currentTenantIdDefault);
+            .sendCode(key, ChainWrappers.lambdaQueryChain(sysUserMapper)
+                    .eq(SysUserDO::getEmail, dto.getEmail()), false,
+                BizCodeEnum.EMAIL_HAS_BEEN_REGISTERED, (code) -> MyEmailUtil
+                    .send(dto.getEmail(), EmailMessageEnum.BIND_EMAIL, code,
+                        currentTenantIdDefault), currentTenantIdDefault);
 
     }
 
@@ -343,10 +389,12 @@ public class SignPhoneServiceImpl implements SignPhoneService {
     @Override
     public String updateEmail(SignPhoneUpdateEmailDTO dto) {
 
-        SignUtil.checkWillError(PRE_REDIS_KEY_ENUM, null, UserUtil.getCurrentTenantIdDefault(), null); // 检查：是否可以进行操作
+        SignUtil.checkWillError(PRE_REDIS_KEY_ENUM, null, UserUtil.getCurrentTenantIdDefault(),
+            null); // 检查：是否可以进行操作
 
         return SignUtil
-                .updateAccount(dto.getPhoneCode(), dto.getEmailCode(), BaseRedisKeyEnum.PRE_PHONE, BaseRedisKeyEnum.PRE_EMAIL, dto.getEmail(), null, null);
+            .updateAccount(dto.getPhoneCode(), dto.getEmailCode(), BaseRedisKeyEnum.PRE_PHONE,
+                BaseRedisKeyEnum.PRE_EMAIL, dto.getEmail(), null, null);
 
     }
 
@@ -358,9 +406,11 @@ public class SignPhoneServiceImpl implements SignPhoneService {
 
         Long currentTenantIdDefault = UserUtil.getCurrentTenantIdDefault();
 
-        SignUtil.checkWillError(PRE_REDIS_KEY_ENUM, null, currentTenantIdDefault, null); // 检查：是否可以进行操作
+        SignUtil.checkWillError(PRE_REDIS_KEY_ENUM, null, currentTenantIdDefault,
+            null); // 检查：是否可以进行操作
 
-        return SignUtil.getAccountAndSendCode(BaseRedisKeyEnum.PRE_PHONE, (code, account) -> SysSmsUtil
+        return SignUtil.getAccountAndSendCode(BaseRedisKeyEnum.PRE_PHONE,
+            (code, account) -> SysSmsUtil
                 .sendSetWx(SysSmsHelper.getSysSmsSendBO(currentTenantIdDefault, code, account)));
 
     }
@@ -371,10 +421,12 @@ public class SignPhoneServiceImpl implements SignPhoneService {
     @Override
     public GetQrCodeVO setWxGetQrCodeUrl() {
 
-        SignUtil.checkWillError(PRE_REDIS_KEY_ENUM, null, UserUtil.getCurrentTenantIdDefault(), null); // 检查：是否可以进行操作
+        SignUtil.checkWillError(PRE_REDIS_KEY_ENUM, null, UserUtil.getCurrentTenantIdDefault(),
+            null); // 检查：是否可以进行操作
 
         // 执行
-        return SignUtil.getQrCodeUrlWx(UserUtil.getCurrentTenantIdDefault(), true, SysQrCodeSceneTypeEnum.WX_BIND);
+        return SignUtil.getQrCodeUrlWx(UserUtil.getCurrentTenantIdDefault(), true,
+            SysQrCodeSceneTypeEnum.WX_BIND);
 
     }
 
@@ -395,7 +447,8 @@ public class SignPhoneServiceImpl implements SignPhoneService {
     @Override
     public SysQrCodeSceneBindVO setWx(SignPhoneSetWxDTO dto) {
 
-        SignUtil.checkWillError(PRE_REDIS_KEY_ENUM, null, UserUtil.getCurrentTenantIdDefault(), null); // 检查：是否可以进行操作
+        SignUtil.checkWillError(PRE_REDIS_KEY_ENUM, null, UserUtil.getCurrentTenantIdDefault(),
+            null); // 检查：是否可以进行操作
 
         String currentUserPhoneNotAdmin = UserUtil.getCurrentUserPhoneNotAdmin();
 
@@ -414,9 +467,11 @@ public class SignPhoneServiceImpl implements SignPhoneService {
 
         Long currentTenantIdDefault = UserUtil.getCurrentTenantIdDefault();
 
-        SignUtil.checkWillError(PRE_REDIS_KEY_ENUM, null, currentTenantIdDefault, null); // 检查：是否可以进行操作
+        SignUtil.checkWillError(PRE_REDIS_KEY_ENUM, null, currentTenantIdDefault,
+            null); // 检查：是否可以进行操作
 
-        return SignUtil.getAccountAndSendCode(BaseRedisKeyEnum.PRE_PHONE, (code, account) -> SysSmsUtil
+        return SignUtil.getAccountAndSendCode(BaseRedisKeyEnum.PRE_PHONE,
+            (code, account) -> SysSmsUtil
                 .sendUpdateWx(SysSmsHelper.getSysSmsSendBO(currentTenantIdDefault, code, account)));
 
     }
@@ -427,10 +482,12 @@ public class SignPhoneServiceImpl implements SignPhoneService {
     @Override
     public GetQrCodeVO updateWxGetQrCodeUrlNew() {
 
-        SignUtil.checkWillError(PRE_REDIS_KEY_ENUM, null, UserUtil.getCurrentTenantIdDefault(), null); // 检查：是否可以进行操作
+        SignUtil.checkWillError(PRE_REDIS_KEY_ENUM, null, UserUtil.getCurrentTenantIdDefault(),
+            null); // 检查：是否可以进行操作
 
         // 执行
-        return SignUtil.getQrCodeUrlWx(UserUtil.getCurrentTenantIdDefault(), true, SysQrCodeSceneTypeEnum.WX_BIND);
+        return SignUtil.getQrCodeUrlWx(UserUtil.getCurrentTenantIdDefault(), true,
+            SysQrCodeSceneTypeEnum.WX_BIND);
 
     }
 
@@ -451,7 +508,8 @@ public class SignPhoneServiceImpl implements SignPhoneService {
     @Override
     public SysQrCodeSceneBindVO updateWx(SignPhoneUpdateWxDTO dto) {
 
-        SignUtil.checkWillError(PRE_REDIS_KEY_ENUM, null, UserUtil.getCurrentTenantIdDefault(), null); // 检查：是否可以进行操作
+        SignUtil.checkWillError(PRE_REDIS_KEY_ENUM, null, UserUtil.getCurrentTenantIdDefault(),
+            null); // 检查：是否可以进行操作
 
         String currentUserPhoneNotAdmin = UserUtil.getCurrentUserPhoneNotAdmin();
 
@@ -470,14 +528,18 @@ public class SignPhoneServiceImpl implements SignPhoneService {
 
         Long currentTenantIdDefault = UserUtil.getCurrentTenantIdDefault();
 
-        SignUtil.checkWillError(PRE_REDIS_KEY_ENUM, null, currentTenantIdDefault, null); // 检查：是否可以进行操作
+        SignUtil.checkWillError(PRE_REDIS_KEY_ENUM, null, currentTenantIdDefault,
+            null); // 检查：是否可以进行操作
 
         String key = BaseRedisKeyEnum.PRE_PHONE + dto.getPhone();
 
         return SignUtil
-                .sendCode(key, ChainWrappers.lambdaQueryChain(sysUserMapper).eq(SysUserDO::getPhone, dto.getPhone()), false,
-                        BizCodeEnum.PHONE_HAS_BEEN_REGISTERED, (code) -> SysSmsUtil
-                                .sendSetPhone(SysSmsHelper.getSysSmsSendBO(currentTenantIdDefault, code, dto.getPhone())), currentTenantIdDefault);
+            .sendCode(key, ChainWrappers.lambdaQueryChain(sysUserMapper)
+                    .eq(SysUserDO::getPhone, dto.getPhone()), false,
+                BizCodeEnum.PHONE_HAS_BEEN_REGISTERED, (code) -> SysSmsUtil
+                    .sendSetPhone(
+                        SysSmsHelper.getSysSmsSendBO(currentTenantIdDefault, code, dto.getPhone())),
+                currentTenantIdDefault);
 
 
     }
@@ -490,10 +552,13 @@ public class SignPhoneServiceImpl implements SignPhoneService {
 
         Long currentTenantIdDefault = UserUtil.getCurrentTenantIdDefault();
 
-        SignUtil.checkWillError(PRE_REDIS_KEY_ENUM, null, currentTenantIdDefault, null); // 检查：是否可以进行操作
+        SignUtil.checkWillError(PRE_REDIS_KEY_ENUM, null, currentTenantIdDefault,
+            null); // 检查：是否可以进行操作
 
-        return SignUtil.getAccountAndSendCode(BaseRedisKeyEnum.PRE_PHONE, (code, account) -> SysSmsUtil
-                .sendUpdatePhone(SysSmsHelper.getSysSmsSendBO(currentTenantIdDefault, code, account)));
+        return SignUtil.getAccountAndSendCode(BaseRedisKeyEnum.PRE_PHONE,
+            (code, account) -> SysSmsUtil
+                .sendUpdatePhone(
+                    SysSmsHelper.getSysSmsSendBO(currentTenantIdDefault, code, account)));
 
     }
 
@@ -503,10 +568,12 @@ public class SignPhoneServiceImpl implements SignPhoneService {
     @Override
     public String updatePhone(SignPhoneUpdatePhoneDTO dto) {
 
-        SignUtil.checkWillError(PRE_REDIS_KEY_ENUM, null, UserUtil.getCurrentTenantIdDefault(), null); // 检查：是否可以进行操作
+        SignUtil.checkWillError(PRE_REDIS_KEY_ENUM, null, UserUtil.getCurrentTenantIdDefault(),
+            null); // 检查：是否可以进行操作
 
         return SignUtil
-                .updateAccount(dto.getOldPhoneCode(), dto.getNewPhoneCode(), BaseRedisKeyEnum.PRE_PHONE, BaseRedisKeyEnum.PRE_PHONE, dto.getNewPhone(), null, null);
+            .updateAccount(dto.getOldPhoneCode(), dto.getNewPhoneCode(), BaseRedisKeyEnum.PRE_PHONE,
+                BaseRedisKeyEnum.PRE_PHONE, dto.getNewPhone(), null, null);
 
     }
 
@@ -518,10 +585,13 @@ public class SignPhoneServiceImpl implements SignPhoneService {
 
         Long currentTenantIdDefault = UserUtil.getCurrentTenantIdDefault();
 
-        SignUtil.checkWillError(PRE_REDIS_KEY_ENUM, null, currentTenantIdDefault, null); // 检查：是否可以进行操作
+        SignUtil.checkWillError(PRE_REDIS_KEY_ENUM, null, currentTenantIdDefault,
+            null); // 检查：是否可以进行操作
 
-        return SignUtil.getAccountAndSendCode(BaseRedisKeyEnum.PRE_PHONE, (code, account) -> SysSmsUtil
-                .sendSetSingleSignIn(SysSmsHelper.getSysSmsSendBO(currentTenantIdDefault, code, account)));
+        return SignUtil.getAccountAndSendCode(BaseRedisKeyEnum.PRE_PHONE,
+            (code, account) -> SysSmsUtil
+                .sendSetSingleSignIn(
+                    SysSmsHelper.getSysSmsSendBO(currentTenantIdDefault, code, account)));
 
     }
 
@@ -531,10 +601,12 @@ public class SignPhoneServiceImpl implements SignPhoneService {
     @Override
     public GetQrCodeVO setSingleSignInWxGetQrCodeUrl() {
 
-        SignUtil.checkWillError(PRE_REDIS_KEY_ENUM, null, UserUtil.getCurrentTenantIdDefault(), null); // 检查：是否可以进行操作
+        SignUtil.checkWillError(PRE_REDIS_KEY_ENUM, null, UserUtil.getCurrentTenantIdDefault(),
+            null); // 检查：是否可以进行操作
 
         // 执行
-        return SignUtil.getQrCodeUrlWxForSingleSignIn(true, SysQrCodeSceneTypeEnum.WX_SINGLE_SIGN_IN_BIND);
+        return SignUtil.getQrCodeUrlWxForSingleSignIn(true,
+            SysQrCodeSceneTypeEnum.WX_SINGLE_SIGN_IN_BIND);
 
     }
 
@@ -545,7 +617,8 @@ public class SignPhoneServiceImpl implements SignPhoneService {
     public SysQrCodeSceneBindVO setSingleSignInWxGetQrCodeSceneFlag(NotNullId notNullId) {
 
         // 执行
-        return SignUtil.getSysQrCodeSceneBindVoAndHandleForSingleSignIn(notNullId.getId(), false, null);
+        return SignUtil.getSysQrCodeSceneBindVoAndHandleForSingleSignIn(notNullId.getId(), false,
+            null);
 
     }
 
@@ -555,7 +628,8 @@ public class SignPhoneServiceImpl implements SignPhoneService {
     @Override
     public SysQrCodeSceneBindVO setSingleSignInWx(SignPhoneSetSingleSignInWxDTO dto) {
 
-        SignUtil.checkWillError(PRE_REDIS_KEY_ENUM, null, UserUtil.getCurrentTenantIdDefault(), null); // 检查：是否可以进行操作
+        SignUtil.checkWillError(PRE_REDIS_KEY_ENUM, null, UserUtil.getCurrentTenantIdDefault(),
+            null); // 检查：是否可以进行操作
 
         String currentUserPhoneNotAdmin = UserUtil.getCurrentUserPhoneNotAdmin();
 
@@ -574,10 +648,13 @@ public class SignPhoneServiceImpl implements SignPhoneService {
 
         Long currentTenantIdDefault = UserUtil.getCurrentTenantIdDefault();
 
-        SignUtil.checkWillError(PRE_REDIS_KEY_ENUM, null, currentTenantIdDefault, null); // 检查：是否可以进行操作
+        SignUtil.checkWillError(PRE_REDIS_KEY_ENUM, null, currentTenantIdDefault,
+            null); // 检查：是否可以进行操作
 
-        return SignUtil.getAccountAndSendCode(BaseRedisKeyEnum.PRE_PHONE, (code, account) -> SysSmsUtil
-                .sendSetSingleSignIn(SysSmsHelper.getSysSmsSendBO(currentTenantIdDefault, code, account)));
+        return SignUtil.getAccountAndSendCode(BaseRedisKeyEnum.PRE_PHONE,
+            (code, account) -> SysSmsUtil
+                .sendSetSingleSignIn(
+                    SysSmsHelper.getSysSmsSendBO(currentTenantIdDefault, code, account)));
 
     }
 
@@ -587,11 +664,15 @@ public class SignPhoneServiceImpl implements SignPhoneService {
     @Override
     public String setSingleSignInSendCodePhone(SignPhoneSetSingleSignInPhoneSendCodeDTO dto) {
 
-        SignUtil.checkWillError(PRE_REDIS_KEY_ENUM, null, UserUtil.getCurrentTenantIdDefault(), null); // 检查：是否可以进行操作
+        SignUtil.checkWillError(PRE_REDIS_KEY_ENUM, null, UserUtil.getCurrentTenantIdDefault(),
+            null); // 检查：是否可以进行操作
 
         // 执行
-        return SignUtil.sendCodeForSingle(dto.getPhone(), false, "操作失败：该手机号已被绑定", (code) -> SysSmsUtil
-                .sendSetSingleSignIn(SysSmsHelper.getSysSmsSendBO(code, dto.getPhone(), singleSignInProperties.getSmsConfigurationId())), BaseRedisKeyEnum.PRE_SYS_SINGLE_SIGN_IN_SET_PHONE);
+        return SignUtil.sendCodeForSingle(dto.getPhone(), false, "操作失败：该手机号已被绑定",
+            (code) -> SysSmsUtil
+                .sendSetSingleSignIn(SysSmsHelper.getSysSmsSendBO(code, dto.getPhone(),
+                    singleSignInProperties.getSmsConfigurationId())),
+            BaseRedisKeyEnum.PRE_SYS_SINGLE_SIGN_IN_SET_PHONE);
 
     }
 
@@ -601,10 +682,13 @@ public class SignPhoneServiceImpl implements SignPhoneService {
     @Override
     public String setSingleSignInPhone(SignPhoneSetSingleSignInPhoneDTO dto) {
 
-        SignUtil.checkWillError(PRE_REDIS_KEY_ENUM, null, UserUtil.getCurrentTenantIdDefault(), null); // 检查：是否可以进行操作
+        SignUtil.checkWillError(PRE_REDIS_KEY_ENUM, null, UserUtil.getCurrentTenantIdDefault(),
+            null); // 检查：是否可以进行操作
 
         // 执行
-        return SignUtil.bindAccountForSingle(dto.getSingleSignInPhoneCode(), BaseRedisKeyEnum.PRE_SYS_SINGLE_SIGN_IN_SET_PHONE, dto.getSingleSignInPhone(), null, dto.getCurrentPhoneCode(), BaseRedisKeyEnum.PRE_PHONE);
+        return SignUtil.bindAccountForSingle(dto.getSingleSignInPhoneCode(),
+            BaseRedisKeyEnum.PRE_SYS_SINGLE_SIGN_IN_SET_PHONE, dto.getSingleSignInPhone(), null,
+            dto.getCurrentPhoneCode(), BaseRedisKeyEnum.PRE_PHONE);
 
     }
 
@@ -614,14 +698,19 @@ public class SignPhoneServiceImpl implements SignPhoneService {
     @Override
     public String forgetPasswordSendCode(PhoneNotBlankDTO dto) {
 
-        SignUtil.checkWillError(PRE_REDIS_KEY_ENUM, dto.getPhone(), dto.getTenantId(), null); // 检查：是否可以进行操作
+        SignUtil.checkWillError(PRE_REDIS_KEY_ENUM, dto.getPhone(), dto.getTenantId(),
+            null); // 检查：是否可以进行操作
 
         String key = BaseRedisKeyEnum.PRE_PHONE + dto.getPhone();
 
         return SignUtil
-                .sendCode(key, ChainWrappers.lambdaQueryChain(sysUserMapper).eq(SysUserDO::getPhone, dto.getPhone()), true,
-                        com.cmcorg20230301.be.engine.sms.base.exception.BizCodeEnum.PHONE_NOT_REGISTERED, (code) -> SysSmsUtil
-                                .sendForgetPassword(SysSmsHelper.getSysSmsSendBO(dto.getTenantId(), code, dto.getPhone())), dto.getTenantId());
+            .sendCode(key, ChainWrappers.lambdaQueryChain(sysUserMapper)
+                    .eq(SysUserDO::getPhone, dto.getPhone()), true,
+                com.cmcorg20230301.be.engine.sms.base.exception.BizCodeEnum.PHONE_NOT_REGISTERED,
+                (code) -> SysSmsUtil
+                    .sendForgetPassword(
+                        SysSmsHelper.getSysSmsSendBO(dto.getTenantId(), code, dto.getPhone())),
+                dto.getTenantId());
 
     }
 
@@ -631,11 +720,14 @@ public class SignPhoneServiceImpl implements SignPhoneService {
     @Override
     public String forgetPassword(SignPhoneForgetPasswordDTO dto) {
 
-        SignUtil.checkWillError(PRE_REDIS_KEY_ENUM, dto.getPhone(), dto.getTenantId(), null); // 检查：是否可以进行操作
+        SignUtil.checkWillError(PRE_REDIS_KEY_ENUM, dto.getPhone(), dto.getTenantId(),
+            null); // 检查：是否可以进行操作
 
         return SignUtil
-                .forgetPassword(dto.getNewPassword(), dto.getOriginNewPassword(), dto.getCode(), BaseRedisKeyEnum.PRE_PHONE,
-                        dto.getPhone(), ChainWrappers.lambdaQueryChain(sysUserMapper).eq(SysUserDO::getPhone, dto.getPhone()), dto.getTenantId());
+            .forgetPassword(dto.getNewPassword(), dto.getOriginNewPassword(), dto.getCode(),
+                BaseRedisKeyEnum.PRE_PHONE,
+                dto.getPhone(), ChainWrappers.lambdaQueryChain(sysUserMapper)
+                    .eq(SysUserDO::getPhone, dto.getPhone()), dto.getTenantId());
 
     }
 
@@ -647,10 +739,13 @@ public class SignPhoneServiceImpl implements SignPhoneService {
 
         Long currentTenantIdDefault = UserUtil.getCurrentTenantIdDefault();
 
-        SignUtil.checkWillError(PRE_REDIS_KEY_ENUM, null, currentTenantIdDefault, null); // 检查：是否可以进行操作
+        SignUtil.checkWillError(PRE_REDIS_KEY_ENUM, null, currentTenantIdDefault,
+            null); // 检查：是否可以进行操作
 
-        return SignUtil.getAccountAndSendCode(BaseRedisKeyEnum.PRE_PHONE, (code, account) -> SysSmsUtil
-                .sendSignDelete(SysSmsHelper.getSysSmsSendBO(currentTenantIdDefault, code, account)));
+        return SignUtil.getAccountAndSendCode(BaseRedisKeyEnum.PRE_PHONE,
+            (code, account) -> SysSmsUtil
+                .sendSignDelete(
+                    SysSmsHelper.getSysSmsSendBO(currentTenantIdDefault, code, account)));
 
     }
 
@@ -660,7 +755,8 @@ public class SignPhoneServiceImpl implements SignPhoneService {
     @Override
     public String signDelete(NotBlankCodeDTO dto) {
 
-        SignUtil.checkWillError(PRE_REDIS_KEY_ENUM, null, UserUtil.getCurrentTenantIdDefault(), null); // 检查：是否可以进行操作
+        SignUtil.checkWillError(PRE_REDIS_KEY_ENUM, null, UserUtil.getCurrentTenantIdDefault(),
+            null); // 检查：是否可以进行操作
 
         return SignUtil.signDelete(dto.getCode(), BaseRedisKeyEnum.PRE_PHONE, null, null);
 

@@ -9,6 +9,8 @@ import com.cmcorg20230301.be.engine.pay.base.model.entity.SysPayDO;
 import com.cmcorg20230301.be.engine.security.util.KafkaHelper;
 import com.cmcorg20230301.be.engine.security.util.TryUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import java.util.List;
+import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,9 +18,6 @@ import org.springframework.kafka.annotation.KafkaHandler;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.support.Acknowledgment;
 import org.springframework.stereotype.Component;
-
-import java.util.List;
-import java.util.Map;
 
 /**
  * 支付订单回调通知的 kafka监听器
@@ -29,7 +28,7 @@ import java.util.Map;
 public class SysPayTradeNotifyKafkaListener {
 
     public static final List<String> TOPIC_LIST =
-            CollUtil.newArrayList(KafkaTopicEnum.SYS_PAY_TRADE_NOTIFY_TOPIC.name());
+        CollUtil.newArrayList(KafkaTopicEnum.SYS_PAY_TRADE_NOTIFY_TOPIC.name());
 
     private static final Map<Integer, ISysPayRefHandler> SYS_PAY_REF_HANDLER_MAP = MapUtil.newHashMap();
 
@@ -37,8 +36,8 @@ public class SysPayTradeNotifyKafkaListener {
     private static ObjectMapper objectMapper;
 
     public SysPayTradeNotifyKafkaListener(
-            @Autowired(required = false) @Nullable List<ISysPayRefHandler> iSysPayRefHandlerList,
-            ObjectMapper objectMapper) {
+        @Autowired(required = false) @Nullable List<ISysPayRefHandler> iSysPayRefHandlerList,
+        ObjectMapper objectMapper) {
 
         if (CollUtil.isNotEmpty(iSysPayRefHandlerList)) {
 
@@ -65,7 +64,8 @@ public class SysPayTradeNotifyKafkaListener {
 
             SysPayDO sysPayDO = objectMapper.readValue(recordStr, SysPayDO.class);
 
-            ISysPayRefHandler iSysPayRefHandler = SYS_PAY_REF_HANDLER_MAP.get(sysPayDO.getRefType());
+            ISysPayRefHandler iSysPayRefHandler = SYS_PAY_REF_HANDLER_MAP.get(
+                sysPayDO.getRefType());
 
             if (iSysPayRefHandler != null) {
 

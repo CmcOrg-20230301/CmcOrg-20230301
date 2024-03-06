@@ -6,26 +6,25 @@ import com.cmcorg20230301.be.engine.cache.util.CacheLocalUtil;
 import com.cmcorg20230301.be.engine.kafka.model.enums.KafkaTopicEnum;
 import com.cmcorg20230301.be.engine.model.model.constant.LogTopicConstant;
 import com.cmcorg20230301.be.engine.model.model.dto.NotEmptyKeyValueSet;
+import java.util.List;
+import java.util.Set;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.annotation.KafkaHandler;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.support.Acknowledgment;
 import org.springframework.stereotype.Component;
 
-import java.util.List;
-import java.util.Set;
-
 /**
  * 本地缓存更新的 kafka监听器，针对往 map里面设置值
  */
 @Component
 @KafkaListener(topics = "#{__listener.TOPIC_LIST}", groupId = "#{kafkaDynamicGroupIdConfiguration.getGroupId()}",
-        batch = "true")
+    batch = "true")
 @Slf4j(topic = LogTopicConstant.CACHE_LOCAL)
 public class LocalCacheUpdateMapListener {
 
     public static final List<String> TOPIC_LIST =
-            CollUtil.newArrayList(KafkaTopicEnum.LOCAL_CACHE_UPDATE_MAP_TOPIC.name());
+        CollUtil.newArrayList(KafkaTopicEnum.LOCAL_CACHE_UPDATE_MAP_TOPIC.name());
 
     @KafkaHandler
     public void receive(List<String> recordList, Acknowledgment acknowledgment) {
@@ -34,7 +33,8 @@ public class LocalCacheUpdateMapListener {
 
             for (String item : recordList) {
 
-                NotEmptyKeyValueSet notEmptyKeyValueSet = JSONUtil.toBean(item, NotEmptyKeyValueSet.class);
+                NotEmptyKeyValueSet notEmptyKeyValueSet = JSONUtil.toBean(item,
+                    NotEmptyKeyValueSet.class);
 
                 String key = notEmptyKeyValueSet.getKey();
 
@@ -44,7 +44,8 @@ public class LocalCacheUpdateMapListener {
 
                     log.info("kafka：更新本地 map缓存：大 key：{}，小 key：{}", key, subItem.getKey());
 
-                    CacheLocalUtil.putSecondMap(key, subItem.getKey(), subItem.getValue()); // 更新：本地缓存
+                    CacheLocalUtil.putSecondMap(key, subItem.getKey(),
+                        subItem.getValue()); // 更新：本地缓存
 
                 }
 

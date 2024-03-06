@@ -11,13 +11,13 @@ import com.cmcorg20230301.be.engine.security.model.entity.SysUserConfigurationDO
 import com.cmcorg20230301.be.engine.security.service.SysUserConfigurationService;
 import com.cmcorg20230301.be.engine.security.util.SysTenantUtil;
 import com.cmcorg20230301.be.engine.security.util.UserUtil;
+import javax.validation.constraints.NotNull;
 import org.springframework.stereotype.Service;
 
-import javax.validation.constraints.NotNull;
-
 @Service
-public class SysUserConfigurationServiceImpl extends ServiceImpl<SysSignConfigurationMapper, SysUserConfigurationDO>
-        implements SysUserConfigurationService {
+public class SysUserConfigurationServiceImpl extends
+    ServiceImpl<SysSignConfigurationMapper, SysUserConfigurationDO>
+    implements SysUserConfigurationService {
 
     /**
      * 通过：租户 id，获取：用户登录注册相关配置
@@ -28,18 +28,20 @@ public class SysUserConfigurationServiceImpl extends ServiceImpl<SysSignConfigur
 
         tenantId = SysTenantUtil.getTenantId(tenantId);
 
-        SysUserConfigurationDO sysUserConfigurationDO = lambdaQuery().eq(SysUserConfigurationDO::getId, tenantId).one();
+        SysUserConfigurationDO sysUserConfigurationDO = lambdaQuery().eq(
+            SysUserConfigurationDO::getId, tenantId).one();
 
         if (sysUserConfigurationDO == null) {
 
             Long finalTenantId = tenantId;
 
             sysUserConfigurationDO =
-                    RedissonUtil.doLock(BaseRedisKeyEnum.PRE_SIGN_CONFIGURATION.name() + tenantId, () -> {
+                RedissonUtil.doLock(BaseRedisKeyEnum.PRE_SIGN_CONFIGURATION.name() + tenantId,
+                    () -> {
 
                         // 这里需要再查询一次
                         SysUserConfigurationDO tempSysUserConfigurationDO =
-                                lambdaQuery().eq(SysUserConfigurationDO::getId, finalTenantId).one();
+                            lambdaQuery().eq(SysUserConfigurationDO::getId, finalTenantId).one();
 
                         if (tempSysUserConfigurationDO != null) {
                             return tempSysUserConfigurationDO;
@@ -73,7 +75,7 @@ public class SysUserConfigurationServiceImpl extends ServiceImpl<SysSignConfigur
         Long currentTenantIdDefault = UserUtil.getCurrentTenantIdDefault();
 
         SysUserConfigurationDO sysUserConfigurationDO =
-                lambdaQuery().eq(SysUserConfigurationDO::getId, currentTenantIdDefault).one();
+            lambdaQuery().eq(SysUserConfigurationDO::getId, currentTenantIdDefault).one();
 
         boolean insertFlag = sysUserConfigurationDO == null;
 
@@ -85,7 +87,8 @@ public class SysUserConfigurationServiceImpl extends ServiceImpl<SysSignConfigur
 
         }
 
-        sysUserConfigurationDO.setSignInNameSignUpEnable(BooleanUtil.isTrue(dto.getSignInNameSignUpEnable()));
+        sysUserConfigurationDO.setSignInNameSignUpEnable(
+            BooleanUtil.isTrue(dto.getSignInNameSignUpEnable()));
         sysUserConfigurationDO.setEmailSignUpEnable(BooleanUtil.isTrue(dto.getEmailSignUpEnable()));
         sysUserConfigurationDO.setPhoneSignUpEnable(BooleanUtil.isTrue(dto.getPhoneSignUpEnable()));
 

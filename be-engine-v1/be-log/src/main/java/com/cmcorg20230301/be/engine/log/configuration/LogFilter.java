@@ -29,8 +29,9 @@ public class LogFilter extends Filter<ILoggingEvent> {
 
             }
 
-            if (logProperties.getLogTopicSet().contains(LogTopicConstant.NORMAL) && !iLoggingEvent.getLoggerName()
-                    .startsWith(LogTopicConstant.PRE_BE)) {
+            if (logProperties.getLogTopicSet().contains(LogTopicConstant.NORMAL)
+                && !iLoggingEvent.getLoggerName()
+                .startsWith(LogTopicConstant.PRE_BE)) {
 
                 if (logProperties.getNotLogTopicSet().contains(iLoggingEvent.getLoggerName())) {
 

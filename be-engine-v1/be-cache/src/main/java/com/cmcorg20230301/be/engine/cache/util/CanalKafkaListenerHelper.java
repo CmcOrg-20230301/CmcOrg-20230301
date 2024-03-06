@@ -5,14 +5,18 @@ import cn.hutool.core.util.NumberUtil;
 import cn.hutool.core.util.StrUtil;
 import com.cmcorg20230301.be.engine.cache.model.dto.CanalKafkaDTO;
 import com.cmcorg20230301.be.engine.model.model.constant.LogTopicConstant;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.Nullable;
 import org.redisson.api.RBatch;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
-import java.util.*;
 
 /**
  * canal-kafka监听器的帮助类
@@ -49,7 +53,7 @@ public class CanalKafkaListenerHelper {
     }
 
     public CanalKafkaListenerHelper(
-            @Autowired(required = false) @Nullable List<ICanalKafkaHandler> iCanalKafkaHandlerList) {
+        @Autowired(required = false) @Nullable List<ICanalKafkaHandler> iCanalKafkaHandlerList) {
 
         if (CollUtil.isNotEmpty(iCanalKafkaHandlerList)) {
 
@@ -57,8 +61,9 @@ public class CanalKafkaListenerHelper {
 
                 put(item); // 添加到：map里面
 
-                log.info("CANAL_KAFKA_HANDLER_MAP，长度：{}，className：{}", CANAL_KAFKA_HANDLER_MAP.size(),
-                        item.getClass().getSimpleName());
+                log.info("CANAL_KAFKA_HANDLER_MAP，长度：{}，className：{}",
+                    CANAL_KAFKA_HANDLER_MAP.size(),
+                    item.getClass().getSimpleName());
 
             }
 
@@ -78,7 +83,7 @@ public class CanalKafkaListenerHelper {
         for (String item : iCanalKafkaHandler.getFullTableNameSet()) {
 
             List<ICanalKafkaHandler> iCanalKafkaHandlerList =
-                    CANAL_KAFKA_HANDLER_MAP.computeIfAbsent(item, k -> new ArrayList<>());
+                CANAL_KAFKA_HANDLER_MAP.computeIfAbsent(item, k -> new ArrayList<>());
 
             iCanalKafkaHandlerList.add(iCanalKafkaHandler); // 添加到：集合里
 

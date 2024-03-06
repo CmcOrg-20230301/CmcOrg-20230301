@@ -31,21 +31,23 @@ public class SysUserBankCardController {
     @Operation(summary = "新增/修改")
     @PostMapping("/insertOrUpdate")
     @PreAuthorize("hasAuthority('sysUserBankCard:insertOrUpdate')")
-    public ApiResultVO<String> insertOrUpdate(@RequestBody @Valid SysUserBankCardInsertOrUpdateDTO dto) {
+    public ApiResultVO<String> insertOrUpdate(
+        @RequestBody @Valid SysUserBankCardInsertOrUpdateDTO dto) {
         return ApiResultVO.okMsg(baseService.insertOrUpdate(dto));
     }
 
     @Operation(summary = "新增/修改-用户")
     @PostMapping("/insertOrUpdate/userSelf")
     public ApiResultVO<String> insertOrUpdateUserSelf(
-            @RequestBody @Valid SysUserBankCardInsertOrUpdateUserSelfDTO dto) {
+        @RequestBody @Valid SysUserBankCardInsertOrUpdateUserSelfDTO dto) {
         return ApiResultVO.okMsg(baseService.insertOrUpdateUserSelf(dto));
     }
 
     @Operation(summary = "分页排序查询")
     @PostMapping("/page")
     @PreAuthorize("hasAuthority('sysUserBankCard:page')")
-    public ApiResultVO<Page<SysUserBankCardDO>> myPage(@RequestBody @Valid SysUserBankCardPageDTO dto) {
+    public ApiResultVO<Page<SysUserBankCardDO>> myPage(
+        @RequestBody @Valid SysUserBankCardPageDTO dto) {
         return ApiResultVO.okData(baseService.myPage(dto));
     }
 

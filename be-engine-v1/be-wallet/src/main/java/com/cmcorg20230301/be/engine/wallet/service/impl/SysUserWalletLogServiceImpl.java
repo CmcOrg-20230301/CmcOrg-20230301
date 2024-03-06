@@ -29,8 +29,9 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 @Service
 @Slf4j(topic = LogTopicConstant.USER_WALLET)
-public class SysUserWalletLogServiceImpl extends ServiceImpl<SysUserWalletLogMapper, SysUserWalletLogDO>
-        implements SysUserWalletLogService {
+public class SysUserWalletLogServiceImpl extends
+    ServiceImpl<SysUserWalletLogMapper, SysUserWalletLogDO>
+    implements SysUserWalletLogService {
 
     private static CopyOnWriteArrayList<SysUserWalletLogDO> SYS_USER_WALLET_LOG_DO_LIST = new CopyOnWriteArrayList<>();
 
@@ -84,23 +85,27 @@ public class SysUserWalletLogServiceImpl extends ServiceImpl<SysUserWalletLogMap
         // 处理：MyTenantPageDTO
         SysTenantUtil.handleMyTenantPageDTO(dto, true);
 
-        return lambdaQuery().eq(dto.getUserId() != null, SysUserWalletLogDO::getUserId, dto.getUserId()) //
+        return lambdaQuery().eq(dto.getUserId() != null, SysUserWalletLogDO::getUserId,
+                dto.getUserId()) //
 
-                .eq(dto.getType() != null, SysUserWalletLogDO::getType, dto.getType()) //
+            .eq(dto.getType() != null, SysUserWalletLogDO::getType, dto.getType()) //
 
-                .ne(SysUserWalletLogDO::getWithdrawableMoneyChange, BigDecimal.ZERO) //
+            .ne(SysUserWalletLogDO::getWithdrawableMoneyChange, BigDecimal.ZERO) //
 
-                .like(StrUtil.isNotBlank(dto.getName()), SysUserWalletLogDO::getName, dto.getName()) //
+            .like(StrUtil.isNotBlank(dto.getName()), SysUserWalletLogDO::getName, dto.getName()) //
 
-                .le(dto.getCtEndTime() != null, SysUserWalletLogDO::getCreateTime, dto.getCtEndTime()) //
+            .le(dto.getCtEndTime() != null, SysUserWalletLogDO::getCreateTime,
+                dto.getCtEndTime()) //
 
-                .ge(dto.getCtBeginTime() != null, SysUserWalletLogDO::getCreateTime, dto.getCtBeginTime()) //
+            .ge(dto.getCtBeginTime() != null, SysUserWalletLogDO::getCreateTime,
+                dto.getCtBeginTime()) //
 
-                .like(StrUtil.isNotBlank(dto.getRemark()), SysUserWalletLogDO::getRemark, dto.getRemark()) //
+            .like(StrUtil.isNotBlank(dto.getRemark()), SysUserWalletLogDO::getRemark,
+                dto.getRemark()) //
 
-                .in(BaseEntityNoId::getTenantId, dto.getTenantIdSet()) //
+            .in(BaseEntityNoId::getTenantId, dto.getTenantIdSet()) //
 
-                .orderByDesc(BaseEntityNoIdSuper::getUpdateTime).page(dto.page(true));
+            .orderByDesc(BaseEntityNoIdSuper::getUpdateTime).page(dto.page(true));
 
     }
 
@@ -113,7 +118,8 @@ public class SysUserWalletLogServiceImpl extends ServiceImpl<SysUserWalletLogMap
         // 检查：租户 id是否属于自己
         SysTenantUtil.checkAndGetTenantIdSet(true, dto.getTenantIdSet());
 
-        SysUserWalletLogPageDTO sysUserWalletLogPageDTO = BeanUtil.copyProperties(dto, SysUserWalletLogPageDTO.class);
+        SysUserWalletLogPageDTO sysUserWalletLogPageDTO = BeanUtil.copyProperties(dto,
+            SysUserWalletLogPageDTO.class);
 
         sysUserWalletLogPageDTO.setUserId(BaseConstant.TENANT_USER_ID);
 
@@ -130,7 +136,8 @@ public class SysUserWalletLogServiceImpl extends ServiceImpl<SysUserWalletLogMap
 
         Long currentUserId = UserUtil.getCurrentUserId();
 
-        SysUserWalletLogPageDTO sysUserWalletLogPageDTO = BeanUtil.copyProperties(dto, SysUserWalletLogPageDTO.class);
+        SysUserWalletLogPageDTO sysUserWalletLogPageDTO = BeanUtil.copyProperties(dto,
+            SysUserWalletLogPageDTO.class);
 
         sysUserWalletLogPageDTO.setUserId(currentUserId);
 

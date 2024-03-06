@@ -10,14 +10,13 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.util.AttributeKey;
 import io.netty.util.ReferenceCountUtil;
+import java.util.concurrent.ConcurrentHashMap;
+import javax.annotation.Resource;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Component;
 import protobuf.proto.BaseProto;
-
-import javax.annotation.Resource;
-import java.util.concurrent.ConcurrentHashMap;
 
 @Component
 @ChannelHandler.Sharable
@@ -32,11 +31,11 @@ public class NettyTcpProtobufServerHandler extends ChannelInboundHandlerAdapter 
 
     // sysSocketRefUserId key
     private static final AttributeKey<Long> SYS_SOCKET_REF_USER_ID_KEY =
-            AttributeKey.valueOf("SYS_SOCKET_REF_USER_ID_KEY");
+        AttributeKey.valueOf("SYS_SOCKET_REF_USER_ID_KEY");
 
     // 用户通道 map，大key：用户主键 id，小key：sysSocketRefUserId，value：通道
     public static final ConcurrentHashMap<Long, ConcurrentHashMap<Long, Channel>> USER_ID_CHANNEL_MAP =
-            MapUtil.newConcurrentHashMap();
+        MapUtil.newConcurrentHashMap();
 
     /**
      * 连接成功时

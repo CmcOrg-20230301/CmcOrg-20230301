@@ -7,16 +7,15 @@ import com.baomidou.dynamic.datasource.provider.AbstractDataSourceProvider;
 import com.baomidou.dynamic.datasource.provider.DynamicDataSourceProvider;
 import com.baomidou.dynamic.datasource.spring.boot.autoconfigure.DynamicDataSourceAutoConfiguration;
 import com.baomidou.dynamic.datasource.spring.boot.autoconfigure.DynamicDataSourceProperties;
+import java.util.List;
+import java.util.Map;
+import javax.annotation.Resource;
+import javax.sql.DataSource;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.context.annotation.Primary;
-
-import javax.annotation.Resource;
-import javax.sql.DataSource;
-import java.util.List;
-import java.util.Map;
 
 /**
  * 参考：{@link DynamicDataSourceAutoConfiguration}
@@ -49,7 +48,8 @@ public class DynamicDataSourceShardingJdbcProvider {
                 Map<String, DataSource> dataSourceMap = MapUtil.newHashMap();
 
                 // 将 shardingJdbc 管理的数据源也交给动态数据源管理，并替换：默认数据源
-                dataSourceMap.put(dynamicDataSourceProperties.getPrimary(), shardingSphereDataSource);
+                dataSourceMap.put(dynamicDataSourceProperties.getPrimary(),
+                    shardingSphereDataSource);
 
                 return dataSourceMap;
 

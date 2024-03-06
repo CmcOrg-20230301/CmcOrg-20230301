@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class SysDeptRefUserServiceImpl extends ServiceImpl<SysDeptRefUserMapper, SysDeptRefUserDO>
-        implements SysDeptRefUserService {
+    implements SysDeptRefUserService {
 
 }
 

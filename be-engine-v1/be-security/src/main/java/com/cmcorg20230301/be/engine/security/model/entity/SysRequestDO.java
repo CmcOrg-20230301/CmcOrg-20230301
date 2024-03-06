@@ -9,7 +9,8 @@ import lombok.EqualsAndHashCode;
 /**
  * 新增/修改字段，示例：
  * <p>
- * ALTER TABLE be_doris_v1.sys_request ADD COLUMN `aaa` BIGINT NOT NULL DEFAULT "0" COMMENT "bbb" AFTER `ccc`;
+ * ALTER TABLE be_doris_v1.sys_request ADD COLUMN `aaa` BIGINT NOT NULL DEFAULT "0" COMMENT "bbb"
+ * AFTER `ccc`;
  * <p>
  * ALTER TABLE be_doris_v1.sys_request MODIFY COLUMN `aaa` STRING NOT NULL COMMENT "bbb";
  */

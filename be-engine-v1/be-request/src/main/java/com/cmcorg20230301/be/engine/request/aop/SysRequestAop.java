@@ -17,8 +17,16 @@ import com.cmcorg20230301.be.engine.security.exception.BaseException;
 import com.cmcorg20230301.be.engine.security.exception.NoLogException;
 import com.cmcorg20230301.be.engine.security.model.entity.SysRequestDO;
 import com.cmcorg20230301.be.engine.security.model.vo.ApiResultVO;
-import com.cmcorg20230301.be.engine.security.util.*;
+import com.cmcorg20230301.be.engine.security.util.MyEntityUtil;
+import com.cmcorg20230301.be.engine.security.util.MyExceptionUtil;
+import com.cmcorg20230301.be.engine.security.util.MyJwtUtil;
+import com.cmcorg20230301.be.engine.security.util.RequestUtil;
+import com.cmcorg20230301.be.engine.security.util.SysUserInfoUtil;
+import com.cmcorg20230301.be.engine.security.util.UserUtil;
 import io.swagger.v3.oas.annotations.Operation;
+import java.lang.reflect.UndeclaredThrowableException;
+import java.util.Date;
+import javax.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
@@ -26,10 +34,6 @@ import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.stereotype.Component;
-
-import javax.servlet.http.HttpServletRequest;
-import java.lang.reflect.UndeclaredThrowableException;
-import java.util.Date;
 
 @Aspect
 @Component
@@ -44,14 +48,16 @@ public class SysRequestAop {
     }
 
     @Around("pointcut() && @annotation(operation)")
-    public Object around(ProceedingJoinPoint proceedingJoinPoint, Operation operation) throws Throwable {
+    public Object around(ProceedingJoinPoint proceedingJoinPoint, Operation operation)
+        throws Throwable {
 
         HttpServletRequest httpServletRequest = RequestUtil.getRequest();
 
         // 目的：因为 socket也会走这里，但是 socket没有 httpServletRequest对象
         if (httpServletRequest == null) {
 
-            if (((MethodSignature) proceedingJoinPoint.getSignature()).getReturnType() == void.class) {
+            if (((MethodSignature) proceedingJoinPoint.getSignature()).getReturnType()
+                == void.class) {
 
                 proceedingJoinPoint.proceed();
 
@@ -104,7 +110,8 @@ public class SysRequestAop {
         sysRequestDO.setRegion(Ip2RegionUtil.getRegion(sysRequestDO.getIp()));
 
         // 更新：用户信息
-        SysUserInfoUtil.add(currentUserIdDefault, date, sysRequestDO.getIp(), sysRequestDO.getRegion());
+        SysUserInfoUtil.add(currentUserIdDefault, date, sysRequestDO.getIp(),
+            sysRequestDO.getRegion());
 
         sysRequestDO.setSuccessFlag(true);
         sysRequestDO.setErrorMsg("");
@@ -125,7 +132,8 @@ public class SysRequestAop {
 
         try {
 
-            if (((MethodSignature) proceedingJoinPoint.getSignature()).getReturnType() == void.class) {
+            if (((MethodSignature) proceedingJoinPoint.getSignature()).getReturnType()
+                == void.class) {
 
                 proceedingJoinPoint.proceed(); // 执行方法，备注：如果执行方法时抛出了异常，catch可以捕获到
 
@@ -133,7 +141,8 @@ public class SysRequestAop {
 
                 object = proceedingJoinPoint.proceed(); // 执行方法，备注：如果执行方法时抛出了异常，catch可以捕获到
 
-                sysRequestDO.setResponseValue(MyEntityUtil.getNotNullStr(JSONUtil.toJsonStr(object)));
+                sysRequestDO.setResponseValue(
+                    MyEntityUtil.getNotNullStr(JSONUtil.toJsonStr(object)));
 
             }
 
@@ -166,7 +175,7 @@ public class SysRequestAop {
         handleCostMs(costMs, sysRequestDO);
 
         log.info("uri：{}，耗时：{}，成功：{}", sysRequestDO.getUri(), sysRequestDO.getCostMsStr(),
-                sysRequestDO.getSuccessFlag());
+            sysRequestDO.getSuccessFlag());
 
         // 添加一个：请求数据
         RequestUtil.add(sysRequestDO);
@@ -181,7 +190,8 @@ public class SysRequestAop {
     private void handleCostMs(long costMs, SysRequestDO sysRequestDO) {
 
         costMs = System.currentTimeMillis() - costMs; // 耗时（毫秒）
-        String costMsStr = DateUtil.formatBetween(costMs, BetweenFormatter.Level.MILLISECOND); // 耗时（字符串）
+        String costMsStr = DateUtil.formatBetween(costMs,
+            BetweenFormatter.Level.MILLISECOND); // 耗时（字符串）
 
         sysRequestDO.setCostMsStr(costMsStr);
         sysRequestDO.setCostMs(costMs);
@@ -212,7 +222,8 @@ public class SysRequestAop {
      */
     private void handleSignIn(SysRequestDO sysRequestDO, Object object) {
 
-        if (BooleanUtil.isFalse(OperationDescriptionConstant.SIGN_IN.equals(sysRequestDO.getType()))) {
+        if (BooleanUtil.isFalse(
+            OperationDescriptionConstant.SIGN_IN.equals(sysRequestDO.getType()))) {
             return;
         }
 

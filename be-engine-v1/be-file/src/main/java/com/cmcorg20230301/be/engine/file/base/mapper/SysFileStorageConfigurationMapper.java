@@ -5,6 +5,7 @@ import com.cmcorg20230301.be.engine.file.base.model.entity.SysFileStorageConfigu
 import org.apache.ibatis.annotations.Mapper;
 
 @Mapper
-public interface SysFileStorageConfigurationMapper extends BaseMapper<SysFileStorageConfigurationDO> {
+public interface SysFileStorageConfigurationMapper extends
+    BaseMapper<SysFileStorageConfigurationDO> {
 
 }

@@ -1,49 +1,50 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <modelVersion>4.0.0</modelVersion>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
 
-    <parent>
-        <groupId>com.cmcorg20230301</groupId>
-        <artifactId>be-engine-v1</artifactId>
-        <version>2023.3.1</version>
-    </parent>
+  <parent>
+    <groupId>com.cmcorg20230301</groupId>
+    <artifactId>be-engine-v1</artifactId>
+    <version>2023.3.1</version>
+  </parent>
 
-    <artifactId>be-tenant</artifactId>
-    <description>租户管理相关</description>
+  <artifactId>be-tenant</artifactId>
+  <description>租户管理相关</description>
 
-    <dependencies>
+  <dependencies>
 
-        <!-- be-sign-wx -->
-        <dependency>
-            <groupId>${cmcorg.groupId}</groupId>
-            <artifactId>be-sign-wx</artifactId>
-        </dependency>
+    <!-- be-sign-wx -->
+    <dependency>
+      <groupId>${cmcorg.groupId}</groupId>
+      <artifactId>be-sign-wx</artifactId>
+    </dependency>
 
-        <!-- be-dict -->
-        <dependency>
-            <groupId>${cmcorg.groupId}</groupId>
-            <artifactId>be-dict</artifactId>
-        </dependency>
+    <!-- be-dict -->
+    <dependency>
+      <groupId>${cmcorg.groupId}</groupId>
+      <artifactId>be-dict</artifactId>
+    </dependency>
 
-        <!-- be-param -->
-        <dependency>
-            <groupId>${cmcorg.groupId}</groupId>
-            <artifactId>be-param</artifactId>
-        </dependency>
+    <!-- be-param -->
+    <dependency>
+      <groupId>${cmcorg.groupId}</groupId>
+      <artifactId>be-param</artifactId>
+    </dependency>
 
-        <!-- be-menu -->
-        <dependency>
-            <groupId>${cmcorg.groupId}</groupId>
-            <artifactId>be-menu</artifactId>
-        </dependency>
+    <!-- be-menu -->
+    <dependency>
+      <groupId>${cmcorg.groupId}</groupId>
+      <artifactId>be-menu</artifactId>
+    </dependency>
 
-        <!-- be-security -->
-        <dependency>
-            <groupId>${cmcorg.groupId}</groupId>
-            <artifactId>be-security</artifactId>
-        </dependency>
+    <!-- be-security -->
+    <dependency>
+      <groupId>${cmcorg.groupId}</groupId>
+      <artifactId>be-security</artifactId>
+    </dependency>
 
-    </dependencies>
+  </dependencies>
 
 </project>

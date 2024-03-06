@@ -75,7 +75,8 @@ public class SysUserController {
     @Operation(summary = "刷新：用户jwt私钥后缀")
     @PostMapping(value = "/refreshJwtSecretSuf")
     @PreAuthorize("hasAuthority('sysUser:insertOrUpdate')")
-    public ApiResultVO<String> refreshJwtSecretSuf(@RequestBody @Valid NotEmptyIdSet notEmptyIdSet) {
+    public ApiResultVO<String> refreshJwtSecretSuf(
+        @RequestBody @Valid NotEmptyIdSet notEmptyIdSet) {
         return ApiResultVO.okMsg(baseService.refreshJwtSecretSuf(notEmptyIdSet));
     }
 

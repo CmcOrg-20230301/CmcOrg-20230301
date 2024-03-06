@@ -36,15 +36,21 @@ import com.cmcorg20230301.be.engine.security.util.MyEntityUtil;
 import com.cmcorg20230301.be.engine.security.util.SysTenantUtil;
 import com.cmcorg20230301.be.engine.security.util.SysUserInfoUtil;
 import com.cmcorg20230301.be.engine.security.util.UserUtil;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
+import javax.annotation.Resource;
 import lombok.SneakyThrows;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.Resource;
-import java.util.*;
-import java.util.stream.Collectors;
-
 @Service
-public class SysImSessionRefUserServiceImpl extends ServiceImpl<SysImSessionRefUserMapper, SysImSessionRefUserDO> implements SysImSessionRefUserService {
+public class SysImSessionRefUserServiceImpl extends
+    ServiceImpl<SysImSessionRefUserMapper, SysImSessionRefUserDO> implements
+    SysImSessionRefUserService {
 
     @Resource
     SysImSessionMapper sysImSessionMapper;
@@ -69,14 +75,17 @@ public class SysImSessionRefUserServiceImpl extends ServiceImpl<SysImSessionRefU
         Long tenantId = UserUtil.getCurrentTenantIdDefault();
 
         // 检查：sessionId，是否属于当前租户
-        SysImSessionDO sysImSessionDO = ChainWrappers.lambdaQueryChain(sysImSessionMapper).eq(BaseEntityNoIdSuper::getTenantId, tenantId).eq(BaseEntity::getId, sessionId).select(SysImSessionDO::getType).one();
+        SysImSessionDO sysImSessionDO = ChainWrappers.lambdaQueryChain(sysImSessionMapper)
+            .eq(BaseEntityNoIdSuper::getTenantId, tenantId).eq(BaseEntity::getId, sessionId)
+            .select(SysImSessionDO::getType).one();
 
         if (sysImSessionDO == null) {
             ApiResultVO.error(BaseBizCodeEnum.ILLEGAL_REQUEST, sessionId);
         }
 
         // 获取：私聊时关联的用户 map
-        Map<Long, Long> privateChatRefUserIdMap = getPrivateChatRefUserIdMap(dto, userIdSet, sessionId);
+        Map<Long, Long> privateChatRefUserIdMap = getPrivateChatRefUserIdMap(dto, userIdSet,
+            sessionId);
 
         Set<String> keySet = new HashSet<>();
 
@@ -89,9 +98,13 @@ public class SysImSessionRefUserServiceImpl extends ServiceImpl<SysImSessionRefU
         return RedissonUtil.doMultiLock("", keySet, () -> {
 
             // 查询出：已经存在该会话的用户数据
-            List<SysImSessionRefUserDO> sysImSessionRefUserDOList = lambdaQuery().eq(BaseEntityNoIdSuper::getTenantId, tenantId).eq(SysImSessionRefUserDO::getSessionId, sessionId).select(SysImSessionRefUserDO::getUserId).list();
+            List<SysImSessionRefUserDO> sysImSessionRefUserDOList = lambdaQuery().eq(
+                    BaseEntityNoIdSuper::getTenantId, tenantId)
+                .eq(SysImSessionRefUserDO::getSessionId, sessionId)
+                .select(SysImSessionRefUserDO::getUserId).list();
 
-            Set<Long> existUserIdSet = sysImSessionRefUserDOList.stream().map(SysImSessionRefUserDO::getUserId).collect(Collectors.toSet());
+            Set<Long> existUserIdSet = sysImSessionRefUserDOList.stream()
+                .map(SysImSessionRefUserDO::getUserId).collect(Collectors.toSet());
 
             if (CollUtil.isNotEmpty(existUserIdSet)) {
 
@@ -133,7 +146,8 @@ public class SysImSessionRefUserServiceImpl extends ServiceImpl<SysImSessionRefU
 
                 sysImSessionRefUserDO.setBlockFlag(false);
 
-                sysImSessionRefUserDO.setPrivateChatRefUserId(MyEntityUtil.getNotNullLong(privateChatRefUserIdMap.get(item)));
+                sysImSessionRefUserDO.setPrivateChatRefUserId(
+                    MyEntityUtil.getNotNullLong(privateChatRefUserIdMap.get(item)));
 
                 insertList.add(sysImSessionRefUserDO);
 
@@ -147,7 +161,9 @@ public class SysImSessionRefUserServiceImpl extends ServiceImpl<SysImSessionRefU
 
                 sysWebSocketEventBO.setUserIdSet(existUserIdSet);
 
-                WebSocketMessageDTO<NotNullIdAndNotEmptyLongSet> webSocketMessageDTO = WebSocketMessageDTO.okData(BaseWebSocketUriEnum.SYS_IM_SESSION_REF_USER_JOIN_USER_ID_SET, new NotNullIdAndNotEmptyLongSet(sessionId, userIdSet));
+                WebSocketMessageDTO<NotNullIdAndNotEmptyLongSet> webSocketMessageDTO = WebSocketMessageDTO.okData(
+                    BaseWebSocketUriEnum.SYS_IM_SESSION_REF_USER_JOIN_USER_ID_SET,
+                    new NotNullIdAndNotEmptyLongSet(sessionId, userIdSet));
 
                 sysWebSocketEventBO.setWebSocketMessageDTO(webSocketMessageDTO);
 
@@ -165,7 +181,8 @@ public class SysImSessionRefUserServiceImpl extends ServiceImpl<SysImSessionRefU
     /**
      * 获取：私聊时关联的用户 map
      */
-    private static Map<Long, Long> getPrivateChatRefUserIdMap(SysImSessionRefUserJoinUserIdSetDTO dto, Set<Long> userIdSet, Long sessionId) {
+    private static Map<Long, Long> getPrivateChatRefUserIdMap(
+        SysImSessionRefUserJoinUserIdSetDTO dto, Set<Long> userIdSet, Long sessionId) {
 
         Map<Long, Long> privateChatRefUserIdMap = MapUtil.newHashMap();
 
@@ -194,10 +211,12 @@ public class SysImSessionRefUserServiceImpl extends ServiceImpl<SysImSessionRefU
      */
     @SneakyThrows
     @Override
-    public LongObjectMapVO<SysImSessionRefUserQueryRefUserInfoMapVO> queryRefUserInfoMap(NotNullIdAndLongSet notNullIdAndLongSet) {
+    public LongObjectMapVO<SysImSessionRefUserQueryRefUserInfoMapVO> queryRefUserInfoMap(
+        NotNullIdAndLongSet notNullIdAndLongSet) {
 
         // 检查：sessionId是否合法
-        Long sessionId = SysImSessionContentServiceImpl.checkSessionId(notNullIdAndLongSet.getId(), false);
+        Long sessionId = SysImSessionContentServiceImpl.checkSessionId(notNullIdAndLongSet.getId(),
+            false);
 
         Long tenantId = UserUtil.getCurrentTenantIdDefault();
 
@@ -210,13 +229,19 @@ public class SysImSessionRefUserServiceImpl extends ServiceImpl<SysImSessionRefU
         Set<Long> valueSet = notNullIdAndLongSet.getValueSet();
 
         // 查询出：已经存在该会话的用户数据
-        List<SysImSessionRefUserDO> sysImSessionRefUserDOList = lambdaQuery().in(CollUtil.isNotEmpty(valueSet), SysImSessionRefUserDO::getUserId, valueSet).eq(BaseEntityNoIdSuper::getTenantId, tenantId).eq(SysImSessionRefUserDO::getSessionId, sessionId).select(SysImSessionRefUserDO::getUserId, SysImSessionRefUserDO::getSessionNickname).list();
+        List<SysImSessionRefUserDO> sysImSessionRefUserDOList = lambdaQuery().in(
+                CollUtil.isNotEmpty(valueSet), SysImSessionRefUserDO::getUserId, valueSet)
+            .eq(BaseEntityNoIdSuper::getTenantId, tenantId)
+            .eq(SysImSessionRefUserDO::getSessionId, sessionId)
+            .select(SysImSessionRefUserDO::getUserId, SysImSessionRefUserDO::getSessionNickname)
+            .list();
 
         if (CollUtil.isEmpty(sysImSessionRefUserDOList)) {
             return vo;
         }
 
-        Set<Long> userIdSet = sysImSessionRefUserDOList.stream().map(SysImSessionRefUserDO::getUserId).collect(Collectors.toSet());
+        Set<Long> userIdSet = sysImSessionRefUserDOList.stream()
+            .map(SysImSessionRefUserDO::getUserId).collect(Collectors.toSet());
 
         // 查询：用户信息
         List<SysUserInfoDO> sysUserInfoDOList = SysUserInfoUtil.getUserInfoDOList(userIdSet, true);
@@ -255,7 +280,10 @@ public class SysImSessionRefUserServiceImpl extends ServiceImpl<SysImSessionRefU
     /**
      * 查询：当前会话的用户信息，map，组装
      */
-    private static void queryRefUserInfoMapHandle(List<SysImSessionRefUserDO> sysImSessionRefUserDOList, Map<Long, SysUserInfoDO> userInfoMap, Map<Long, String> avatarUrlMap, HashMap<Long, SysImSessionRefUserQueryRefUserInfoMapVO> map) {
+    private static void queryRefUserInfoMapHandle(
+        List<SysImSessionRefUserDO> sysImSessionRefUserDOList, Map<Long, SysUserInfoDO> userInfoMap,
+        Map<Long, String> avatarUrlMap,
+        HashMap<Long, SysImSessionRefUserQueryRefUserInfoMapVO> map) {
 
         for (SysImSessionRefUserDO item : sysImSessionRefUserDOList) {
 
@@ -300,7 +328,9 @@ public class SysImSessionRefUserServiceImpl extends ServiceImpl<SysImSessionRefU
 
         Long currentUserId = UserUtil.getCurrentUserId();
 
-        lambdaUpdate().eq(SysImSessionRefUserDO::getUserId, currentUserId).eq(SysImSessionRefUserDO::getSessionId, sessionId).set(SysImSessionRefUserDO::getLastOpenTs, System.currentTimeMillis()).update();
+        lambdaUpdate().eq(SysImSessionRefUserDO::getUserId, currentUserId)
+            .eq(SysImSessionRefUserDO::getSessionId, sessionId)
+            .set(SysImSessionRefUserDO::getLastOpenTs, System.currentTimeMillis()).update();
 
         return BaseBizCodeEnum.OK;
 

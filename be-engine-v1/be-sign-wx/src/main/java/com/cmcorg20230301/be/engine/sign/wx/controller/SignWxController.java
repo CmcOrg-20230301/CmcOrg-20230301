@@ -32,19 +32,22 @@ public class SignWxController {
 
     @PostMapping(value = "/sign/in/miniProgram/phoneCode")
     @Operation(summary = "小程序：手机号 code登录", description = OperationDescriptionConstant.SIGN_IN)
-    public ApiResultVO<SignInVO> signInMiniProgramPhoneCode(@RequestBody @Valid SignInMiniProgramPhoneCodeDTO dto) {
+    public ApiResultVO<SignInVO> signInMiniProgramPhoneCode(
+        @RequestBody @Valid SignInMiniProgramPhoneCodeDTO dto) {
         return ApiResultVO.okData(baseService.signInMiniProgramPhoneCode(dto));
     }
 
     @PostMapping(value = "/sign/in/miniProgram/code")
     @Operation(summary = "小程序：微信 code登录", description = OperationDescriptionConstant.SIGN_IN)
-    public ApiResultVO<SignInVO> signInMiniProgramCode(@RequestBody @Valid SignInMiniProgramCodeDTO dto) {
+    public ApiResultVO<SignInVO> signInMiniProgramCode(
+        @RequestBody @Valid SignInMiniProgramCodeDTO dto) {
         return ApiResultVO.okData(baseService.signInMiniProgramCode(dto));
     }
 
     @PostMapping(value = "/sign/in/miniProgram/code/unionId")
     @Operation(summary = "小程序：微信 unionId登录", description = OperationDescriptionConstant.SIGN_IN)
-    public ApiResultVO<SignInVO> signInMiniProgramCodeUnionId(@RequestBody @Valid SignInMiniProgramCodeDTO dto) {
+    public ApiResultVO<SignInVO> signInMiniProgramCodeUnionId(
+        @RequestBody @Valid SignInMiniProgramCodeDTO dto) {
         return ApiResultVO.okData(baseService.signInMiniProgramCodeUnionId(dto));
     }
 
@@ -56,19 +59,22 @@ public class SignWxController {
 
     @PostMapping(value = "/sign/in/browser/code/unionId")
     @Operation(summary = "浏览器：微信 unionId登录", description = OperationDescriptionConstant.SIGN_IN)
-    public ApiResultVO<SignInVO> signInBrowserCodeUnionId(@RequestBody @Valid SignInBrowserCodeDTO dto) {
+    public ApiResultVO<SignInVO> signInBrowserCodeUnionId(
+        @RequestBody @Valid SignInBrowserCodeDTO dto) {
         return ApiResultVO.okData(baseService.signInBrowserCodeUnionId(dto));
     }
 
     @PostMapping(value = "/sign/in/browser/code/userInfo")
     @Operation(summary = "浏览器：微信 code登录，可以获取用户的基础信息", description = OperationDescriptionConstant.SIGN_IN)
-    public ApiResultVO<SignInVO> signInBrowserCodeUserInfo(@RequestBody @Valid SignInBrowserCodeDTO dto) {
+    public ApiResultVO<SignInVO> signInBrowserCodeUserInfo(
+        @RequestBody @Valid SignInBrowserCodeDTO dto) {
         return ApiResultVO.okData(baseService.signInBrowserCodeUserInfo(dto));
     }
 
     @PostMapping(value = "/sign/in/browser/code/userInfo/unionId")
     @Operation(summary = "浏览器：微信 unionId登录，可以获取用户的基础信息", description = OperationDescriptionConstant.SIGN_IN)
-    public ApiResultVO<SignInVO> signInBrowserCodeUserInfoUnionId(@RequestBody @Valid SignInBrowserCodeDTO dto) {
+    public ApiResultVO<SignInVO> signInBrowserCodeUserInfoUnionId(
+        @RequestBody @Valid SignInBrowserCodeDTO dto) {
         return ApiResultVO.okData(baseService.signInBrowserCodeUserInfoUnionId(dto));
     }
 
@@ -92,13 +98,15 @@ public class SignWxController {
 
     @PostMapping(value = "/setPassword/getQrCodeSceneFlag")
     @Operation(summary = "设置密码：获取二维码是否已经被扫描")
-    public ApiResultVO<SysQrCodeSceneBindVO> setPasswordGetQrCodeSceneFlag(@RequestBody @Valid NotNullId notNullId) {
+    public ApiResultVO<SysQrCodeSceneBindVO> setPasswordGetQrCodeSceneFlag(
+        @RequestBody @Valid NotNullId notNullId) {
         return ApiResultVO.okData(baseService.setPasswordGetQrCodeSceneFlag(notNullId));
     }
 
     @PostMapping(value = "/setPassword")
     @Operation(summary = "设置密码")
-    public ApiResultVO<SysQrCodeSceneBindVO> setPassword(@RequestBody @Valid SignWxSetPasswordDTO dto) {
+    public ApiResultVO<SysQrCodeSceneBindVO> setPassword(
+        @RequestBody @Valid SignWxSetPasswordDTO dto) {
         return ApiResultVO.okData(baseService.setPassword(dto));
     }
 
@@ -110,13 +118,15 @@ public class SignWxController {
 
     @PostMapping(value = "/updatePassword/getQrCodeSceneFlag")
     @Operation(summary = "修改密码：获取二维码是否已经被扫描")
-    public ApiResultVO<SysQrCodeSceneBindVO> updatePasswordGetQrCodeSceneFlag(@RequestBody @Valid NotNullId notNullId) {
+    public ApiResultVO<SysQrCodeSceneBindVO> updatePasswordGetQrCodeSceneFlag(
+        @RequestBody @Valid NotNullId notNullId) {
         return ApiResultVO.okData(baseService.updatePasswordGetQrCodeSceneFlag(notNullId));
     }
 
     @PostMapping(value = "/updatePassword")
     @Operation(summary = "修改密码")
-    public ApiResultVO<SysQrCodeSceneBindVO> updatePassword(@RequestBody @Valid SignWxUpdatePasswordDTO dto) {
+    public ApiResultVO<SysQrCodeSceneBindVO> updatePassword(
+        @RequestBody @Valid SignWxUpdatePasswordDTO dto) {
         return ApiResultVO.okData(baseService.updatePassword(dto));
     }
 
@@ -128,13 +138,15 @@ public class SignWxController {
 
     @PostMapping(value = "/setSignInName/getQrCodeSceneFlag")
     @Operation(summary = "设置登录名：获取二维码是否已经被扫描")
-    public ApiResultVO<SysQrCodeSceneBindVO> setSignInNameGetQrCodeSceneFlag(@RequestBody @Valid NotNullId notNullId) {
+    public ApiResultVO<SysQrCodeSceneBindVO> setSignInNameGetQrCodeSceneFlag(
+        @RequestBody @Valid NotNullId notNullId) {
         return ApiResultVO.okData(baseService.setSignInNameGetQrCodeSceneFlag(notNullId));
     }
 
     @PostMapping(value = "/setSignInName")
     @Operation(summary = "设置登录名")
-    public ApiResultVO<SysQrCodeSceneBindVO> setSignInName(@RequestBody @Valid SignWxSetSignInNameDTO dto) {
+    public ApiResultVO<SysQrCodeSceneBindVO> setSignInName(
+        @RequestBody @Valid SignWxSetSignInNameDTO dto) {
         return ApiResultVO.okData(baseService.setSignInName(dto));
     }
 
@@ -146,13 +158,15 @@ public class SignWxController {
 
     @PostMapping(value = "/updateSignInName/getQrCodeSceneFlag")
     @Operation(summary = "修改登录名：获取二维码是否已经被扫描")
-    public ApiResultVO<SysQrCodeSceneBindVO> updateSignInNameGetQrCodeSceneFlag(@RequestBody @Valid NotNullId notNullId) {
+    public ApiResultVO<SysQrCodeSceneBindVO> updateSignInNameGetQrCodeSceneFlag(
+        @RequestBody @Valid NotNullId notNullId) {
         return ApiResultVO.okData(baseService.updateSignInNameGetQrCodeSceneFlag(notNullId));
     }
 
     @PostMapping(value = "/updateSignInName")
     @Operation(summary = "修改登录名")
-    public ApiResultVO<SysQrCodeSceneBindVO> updateSignInName(@RequestBody @Valid SignWxUpdateSignInNameDTO dto) {
+    public ApiResultVO<SysQrCodeSceneBindVO> updateSignInName(
+        @RequestBody @Valid SignWxUpdateSignInNameDTO dto) {
         return ApiResultVO.okData(baseService.updateSignInName(dto));
     }
 
@@ -170,7 +184,8 @@ public class SignWxController {
 
     @PostMapping(value = "/setEmail/getQrCodeSceneFlag")
     @Operation(summary = "设置邮箱：获取二维码是否已经被扫描")
-    public ApiResultVO<SysQrCodeSceneBindVO> setEmailGetQrCodeSceneFlag(@RequestBody @Valid NotNullId notNullId) {
+    public ApiResultVO<SysQrCodeSceneBindVO> setEmailGetQrCodeSceneFlag(
+        @RequestBody @Valid NotNullId notNullId) {
         return ApiResultVO.okData(baseService.setEmailGetQrCodeSceneFlag(notNullId));
     }
 
@@ -182,7 +197,8 @@ public class SignWxController {
 
     @PostMapping(value = "/updateEmail/sendCode")
     @Operation(summary = "修改邮箱：发送验证码")
-    public ApiResultVO<String> updateEmailSendCode(@RequestBody @Valid SignWxUpdateEmailSendCodeDTO dto) {
+    public ApiResultVO<String> updateEmailSendCode(
+        @RequestBody @Valid SignWxUpdateEmailSendCodeDTO dto) {
         return ApiResultVO.okMsg(baseService.updateEmailSendCode(dto));
     }
 
@@ -194,13 +210,15 @@ public class SignWxController {
 
     @PostMapping(value = "/updateEmail/getQrCodeSceneFlag")
     @Operation(summary = "修改邮箱：获取二维码是否已经被扫描")
-    public ApiResultVO<SysQrCodeSceneBindVO> updateEmailGetQrCodeSceneFlag(@RequestBody @Valid NotNullId notNullId) {
+    public ApiResultVO<SysQrCodeSceneBindVO> updateEmailGetQrCodeSceneFlag(
+        @RequestBody @Valid NotNullId notNullId) {
         return ApiResultVO.okData(baseService.updateEmailGetQrCodeSceneFlag(notNullId));
     }
 
     @PostMapping(value = "/updateEmail")
     @Operation(summary = "修改邮箱")
-    public ApiResultVO<SysQrCodeSceneBindVO> updateEmail(@RequestBody @Valid SignWxUpdateEmailDTO dto) {
+    public ApiResultVO<SysQrCodeSceneBindVO> updateEmail(
+        @RequestBody @Valid SignWxUpdateEmailDTO dto) {
         return ApiResultVO.okData(baseService.updateEmail(dto));
     }
 
@@ -212,7 +230,8 @@ public class SignWxController {
 
     @PostMapping(value = "/updateWx/getQrCodeSceneFlag/old")
     @Operation(summary = "修改微信：获取旧的二维码是否已经被扫描")
-    public ApiResultVO<SysQrCodeSceneBindVO> updateWxGetQrCodeSceneFlagOld(@RequestBody @Valid NotNullId notNullId) {
+    public ApiResultVO<SysQrCodeSceneBindVO> updateWxGetQrCodeSceneFlagOld(
+        @RequestBody @Valid NotNullId notNullId) {
         return ApiResultVO.okData(baseService.updateWxGetQrCodeSceneFlagOld(notNullId));
     }
 
@@ -224,7 +243,8 @@ public class SignWxController {
 
     @PostMapping(value = "/updateWx/getQrCodeSceneFlag/new")
     @Operation(summary = "修改微信：获取新的二维码是否已经被扫描")
-    public ApiResultVO<SysQrCodeSceneBindVO> updateWxGetQrCodeSceneFlagNew(@RequestBody @Valid NotNullId notNullId) {
+    public ApiResultVO<SysQrCodeSceneBindVO> updateWxGetQrCodeSceneFlagNew(
+        @RequestBody @Valid NotNullId notNullId) {
         return ApiResultVO.okData(baseService.updateWxGetQrCodeSceneFlagNew(notNullId));
     }
 
@@ -248,7 +268,8 @@ public class SignWxController {
 
     @PostMapping(value = "/setPhone/getQrCodeSceneFlag")
     @Operation(summary = "设置手机：获取二维码是否已经被扫描")
-    public ApiResultVO<SysQrCodeSceneBindVO> setPhoneGetQrCodeSceneFlag(@RequestBody @Valid NotNullId notNullId) {
+    public ApiResultVO<SysQrCodeSceneBindVO> setPhoneGetQrCodeSceneFlag(
+        @RequestBody @Valid NotNullId notNullId) {
         return ApiResultVO.okData(baseService.setPhoneGetQrCodeSceneFlag(notNullId));
     }
 
@@ -266,25 +287,29 @@ public class SignWxController {
 
     @PostMapping(value = "/setSingleSignIn/wx/getQrCodeSceneFlag/current")
     @Operation(summary = "设置统一登录：微信：获取当前微信的二维码是否已经被扫描")
-    public ApiResultVO<SysQrCodeSceneBindVO> setSingleSignInWxGetQrCodeSceneFlagCurrent(@RequestBody @Valid NotNullId notNullId) {
-        return ApiResultVO.okData(baseService.setSingleSignInWxGetQrCodeSceneFlagCurrent(notNullId));
+    public ApiResultVO<SysQrCodeSceneBindVO> setSingleSignInWxGetQrCodeSceneFlagCurrent(
+        @RequestBody @Valid NotNullId notNullId) {
+        return ApiResultVO.okData(
+            baseService.setSingleSignInWxGetQrCodeSceneFlagCurrent(notNullId));
     }
 
     @PostMapping(value = "/setSingleSignIn/wx/getQrCodeUrl")
     @Operation(summary = "设置统一登录：微信：获取统一登录微信的二维码地址")
-    public ApiResultVO<GetQrCodeVO> setSingleSignInWxGetQrCodeUrl () {
+    public ApiResultVO<GetQrCodeVO> setSingleSignInWxGetQrCodeUrl() {
         return ApiResultVO.okData(baseService.setSingleSignInWxGetQrCodeUrl());
     }
 
     @PostMapping(value = "/setSingleSignIn/wx/getQrCodeSceneFlag")
     @Operation(summary = "设置统一登录：微信：获取统一登录微信的二维码是否已经被扫描")
-    public ApiResultVO<SysQrCodeSceneBindVO> setSingleSignInWxGetQrCodeSceneFlag(@RequestBody @Valid NotNullId notNullId) {
+    public ApiResultVO<SysQrCodeSceneBindVO> setSingleSignInWxGetQrCodeSceneFlag(
+        @RequestBody @Valid NotNullId notNullId) {
         return ApiResultVO.okData(baseService.setSingleSignInWxGetQrCodeSceneFlag(notNullId));
     }
 
     @PostMapping(value = "/setSingleSignIn/wx")
     @Operation(summary = "设置统一登录：微信")
-    public ApiResultVO<SysQrCodeSceneBindVO> setSingleSignInWx(@RequestBody @Valid SignWxSetSingleSignInWxDTO dto) {
+    public ApiResultVO<SysQrCodeSceneBindVO> setSingleSignInWx(
+        @RequestBody @Valid SignWxSetSingleSignInWxDTO dto) {
         return ApiResultVO.okData(baseService.setSingleSignInWx(dto));
     }
 
@@ -296,19 +321,23 @@ public class SignWxController {
 
     @PostMapping(value = "/setSingleSignIn/phone/getQrCodeSceneFlag/current")
     @Operation(summary = "设置统一登录：手机验证码：获取当前微信的二维码是否已经被扫描")
-    public ApiResultVO<SysQrCodeSceneBindVO> setSingleSignInPhoneGetQrCodeSceneFlagCurrent(@RequestBody @Valid NotNullId notNullId) {
-        return ApiResultVO.okData(baseService.setSingleSignInPhoneGetQrCodeSceneFlagCurrent(notNullId));
+    public ApiResultVO<SysQrCodeSceneBindVO> setSingleSignInPhoneGetQrCodeSceneFlagCurrent(
+        @RequestBody @Valid NotNullId notNullId) {
+        return ApiResultVO.okData(
+            baseService.setSingleSignInPhoneGetQrCodeSceneFlagCurrent(notNullId));
     }
 
     @PostMapping(value = "/setSingleSignIn/phone/sendCode")
     @Operation(summary = "设置统一登录：手机验证码：发送验证码")
-    public ApiResultVO<String> setSingleSignInPhoneSendCode(@RequestBody @Valid SignWxSetSingleSignInPhoneSendCodeDTO dto) {
+    public ApiResultVO<String> setSingleSignInPhoneSendCode(
+        @RequestBody @Valid SignWxSetSingleSignInPhoneSendCodeDTO dto) {
         return ApiResultVO.okMsg(baseService.setSingleSignInPhoneSendCode(dto));
     }
 
     @PostMapping(value = "/setSingleSignIn/phone")
     @Operation(summary = "设置统一登录：手机验证码")
-    public ApiResultVO<SysQrCodeSceneBindVO> setSingleSignInPhone(@RequestBody @Valid SignWxSetSingleSignInPhoneDTO dto) {
+    public ApiResultVO<SysQrCodeSceneBindVO> setSingleSignInPhone(
+        @RequestBody @Valid SignWxSetSingleSignInPhoneDTO dto) {
         return ApiResultVO.okData(baseService.setSingleSignInPhone(dto));
     }
 
@@ -320,7 +349,8 @@ public class SignWxController {
 
     @PostMapping(value = "/signDelete/getQrCodeSceneFlag")
     @Operation(summary = "账号注销：获取二维码是否已经被扫描")
-    public ApiResultVO<SysQrCodeSceneBindVO> signDeleteGetQrCodeSceneFlag(@RequestBody @Valid NotNullId notNullId) {
+    public ApiResultVO<SysQrCodeSceneBindVO> signDeleteGetQrCodeSceneFlag(
+        @RequestBody @Valid NotNullId notNullId) {
         return ApiResultVO.okData(baseService.signDeleteGetQrCodeSceneFlag(notNullId));
     }
 

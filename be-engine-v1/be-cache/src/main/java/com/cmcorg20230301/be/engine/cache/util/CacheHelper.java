@@ -6,11 +6,16 @@ import cn.hutool.core.util.StrUtil;
 import com.cmcorg20230301.be.engine.model.model.constant.BaseConstant;
 import com.cmcorg20230301.be.engine.model.model.constant.LogTopicConstant;
 import com.cmcorg20230301.be.engine.model.model.interfaces.IRedisKey;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.*;
 
 /**
  * 缓存帮助类
@@ -22,7 +27,8 @@ public class CacheHelper {
      * 获取：key
      */
     @NotNull
-    public static String getKey(@NotNull Enum<? extends IRedisKey> redisKeyEnum, @Nullable String sufKey) {
+    public static String getKey(@NotNull Enum<? extends IRedisKey> redisKeyEnum,
+        @Nullable String sufKey) {
 
         String key = redisKeyEnum.name();
 
@@ -70,8 +76,7 @@ public class CacheHelper {
     }
 
     /**
-     * 处理：默认的 map，移除：默认值
-     * 注意：深度拷贝
+     * 处理：默认的 map，移除：默认值 注意：深度拷贝
      */
     public static <T> Map<Long, T> handleDefaultLongMap(Map<Long, T> map) {
 
@@ -173,8 +178,7 @@ public class CacheHelper {
     }
 
     /**
-     * 检查：result，如果 result为空，则使用 defaultResult
-     * 目的：防止设置不到值到缓存里面
+     * 检查：result，如果 result为空，则使用 defaultResult 目的：防止设置不到值到缓存里面
      */
     @NotNull
     public static <T> T checkAndReturnResult(T result, T defaultResult) {
@@ -215,7 +219,8 @@ public class CacheHelper {
 
             if (CollUtil.isEmpty(map)) {
 
-                throw new RuntimeException("操作失败：result为 Map类型，但是长度为 0"); // 不能为 null，目的：防止缓存不写入数据
+                throw new RuntimeException(
+                    "操作失败：result为 Map类型，但是长度为 0"); // 不能为 null，目的：防止缓存不写入数据
 
             } else {
 
@@ -225,7 +230,8 @@ public class CacheHelper {
                     if (item.getValue() == null) {
 
                         throw new RuntimeException(
-                                "操作失败：result为 Map类型，但是 value为 null，key：" + item.getKey()); // 不能为 null，目的：防止缓存不写入数据
+                            "操作失败：result为 Map类型，但是 value为 null，key："
+                                + item.getKey()); // 不能为 null，目的：防止缓存不写入数据
 
                     }
 
@@ -237,7 +243,8 @@ public class CacheHelper {
 
             if (CollUtil.isEmpty((Collection<?>) result)) {
 
-                throw new RuntimeException("操作失败：result为 Collection类型，但是长度为 0"); // 不能为 null，目的：防止缓存不写入数据
+                throw new RuntimeException(
+                    "操作失败：result为 Collection类型，但是长度为 0"); // 不能为 null，目的：防止缓存不写入数据
 
             }
 

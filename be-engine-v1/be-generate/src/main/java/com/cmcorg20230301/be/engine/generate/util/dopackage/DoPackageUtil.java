@@ -11,13 +11,12 @@ import cn.hutool.extra.ssh.JschUtil;
 import cn.hutool.extra.ssh.Sftp;
 import com.cmcorg20230301.be.engine.generate.util.apitest.ApiTestHelper;
 import com.jcraft.jsch.Session;
-import lombok.Data;
-import lombok.SneakyThrows;
-import lombok.extern.slf4j.Slf4j;
-
 import java.io.File;
 import java.util.concurrent.CountDownLatch;
 import java.util.function.Consumer;
+import lombok.Data;
+import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * 打包工具类
@@ -125,7 +124,8 @@ public class DoPackageUtil {
     @SneakyThrows
     public void exec() {
 
-        String nextLine = ApiTestHelper.getStrFromScanner("请输入：1 全部打包 2 后端打包 3 前端打包");
+        String nextLine = ApiTestHelper.getStrFromScanner(
+            "请输入：1 全部打包 2 后端打包 3 前端打包");
 
         int number = Convert.toInt(nextLine, 1);
 
@@ -196,7 +196,8 @@ public class DoPackageUtil {
             }
 
             // 这里需要先清除一下，不然不会重新打包
-            RuntimeUtil.execForStr("cmd", "/c", "cd " + projectPath + "/" + getBeStartFolderName() + " && mvn clean");
+            RuntimeUtil.execForStr("cmd", "/c",
+                "cd " + projectPath + "/" + getBeStartFolderName() + " && mvn clean");
 
             RuntimeUtil.execForStr("cmd", "/c", "cd " + projectPath + " && mvn package");
 

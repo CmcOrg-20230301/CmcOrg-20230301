@@ -22,17 +22,16 @@ import com.cmcorg20230301.be.engine.security.util.MyEntityUtil;
 import com.cmcorg20230301.be.engine.security.util.SysParamUtil;
 import com.cmcorg20230301.be.engine.security.util.SysTenantUtil;
 import com.cmcorg20230301.be.engine.security.util.UserUtil;
+import java.util.Set;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Service;
 
-import java.util.Set;
-
 @Service
-public class SysParamServiceImpl extends ServiceImpl<SysParamMapper, SysParamDO> implements SysParamService {
+public class SysParamServiceImpl extends ServiceImpl<SysParamMapper, SysParamDO> implements
+    SysParamService {
 
     /**
-     * 新增/修改
-     * 备注：这里修改了，租户管理那边也要一起修改
+     * 新增/修改 备注：这里修改了，租户管理那边也要一起修改
      */
     @Override
     public String insertOrUpdate(SysParamInsertOrUpdateDTO dto) {
@@ -41,8 +40,9 @@ public class SysParamServiceImpl extends ServiceImpl<SysParamMapper, SysParamDO>
         SysTenantUtil.checkInsert(dto);
 
         // 处理：BaseTenantInsertOrUpdateDTO
-        SysTenantUtil.handleBaseTenantInsertOrUpdateDTO(dto, getCheckIllegalFunc1(CollUtil.newHashSet(dto.getId())),
-                getTenantIdBaseEntityFunc1());
+        SysTenantUtil.handleBaseTenantInsertOrUpdateDTO(dto,
+            getCheckIllegalFunc1(CollUtil.newHashSet(dto.getId())),
+            getTenantIdBaseEntityFunc1());
 
         // 检查：是否可以修改一些属性
         dto = checkUpdate(dto, dto.getId());
@@ -93,7 +93,8 @@ public class SysParamServiceImpl extends ServiceImpl<SysParamMapper, SysParamDO>
         SysParamInsertOrUpdateDTO sysParamInsertOrUpdateDTO = new SysParamInsertOrUpdateDTO();
 
         sysParamInsertOrUpdateDTO.setName(null); // 不允许修改
-        sysParamInsertOrUpdateDTO.setValue(dto.getValue()); // 允许修改，备注：现在只允许修改 value字段，如果新允许了其他字段，则：租户参数同步也要进行修改
+        sysParamInsertOrUpdateDTO.setValue(
+            dto.getValue()); // 允许修改，备注：现在只允许修改 value字段，如果新允许了其他字段，则：租户参数同步也要进行修改
         sysParamInsertOrUpdateDTO.setEnableFlag(true); // 不允许修改
         sysParamInsertOrUpdateDTO.setTenantId(dto.getTenantId());
         sysParamInsertOrUpdateDTO.setId(id);
@@ -111,11 +112,12 @@ public class SysParamServiceImpl extends ServiceImpl<SysParamMapper, SysParamDO>
         // 处理：MyTenantPageDTO
         SysTenantUtil.handleMyTenantPageDTO(dto, true);
 
-        return lambdaQuery().like(StrUtil.isNotBlank(dto.getName()), SysParamDO::getName, dto.getName())
-                .like(StrUtil.isNotBlank(dto.getRemark()), BaseEntity::getRemark, dto.getRemark())
-                .eq(dto.getEnableFlag() != null, BaseEntity::getEnableFlag, dto.getEnableFlag())
-                .in(BaseEntityNoId::getTenantId, dto.getTenantIdSet()) //
-                .orderByDesc(BaseEntity::getUpdateTime).page(dto.page(true));
+        return lambdaQuery().like(StrUtil.isNotBlank(dto.getName()), SysParamDO::getName,
+                dto.getName())
+            .like(StrUtil.isNotBlank(dto.getRemark()), BaseEntity::getRemark, dto.getRemark())
+            .eq(dto.getEnableFlag() != null, BaseEntity::getEnableFlag, dto.getEnableFlag())
+            .in(BaseEntityNoId::getTenantId, dto.getTenantIdSet()) //
+            .orderByDesc(BaseEntity::getUpdateTime).page(dto.page(true));
 
     }
 
@@ -128,8 +130,9 @@ public class SysParamServiceImpl extends ServiceImpl<SysParamMapper, SysParamDO>
         // 获取：用户关联的租户
         Set<Long> queryTenantIdSet = SysTenantUtil.getUserRefTenantIdSet();
 
-        return lambdaQuery().eq(BaseEntity::getId, notNullId.getId()).in(BaseEntityNoId::getTenantId, queryTenantIdSet)
-                .one();
+        return lambdaQuery().eq(BaseEntity::getId, notNullId.getId())
+            .in(BaseEntityNoId::getTenantId, queryTenantIdSet)
+            .one();
 
     }
 
@@ -177,8 +180,9 @@ public class SysParamServiceImpl extends ServiceImpl<SysParamMapper, SysParamDO>
     @NotNull
     private Func1<Set<Long>, Long> getCheckIllegalFunc1(Set<Long> idSet) {
 
-        return tenantIdSet -> lambdaQuery().in(BaseEntity::getId, idSet).in(BaseEntityNoId::getTenantId, tenantIdSet)
-                .count();
+        return tenantIdSet -> lambdaQuery().in(BaseEntity::getId, idSet)
+            .in(BaseEntityNoId::getTenantId, tenantIdSet)
+            .count();
 
     }
 

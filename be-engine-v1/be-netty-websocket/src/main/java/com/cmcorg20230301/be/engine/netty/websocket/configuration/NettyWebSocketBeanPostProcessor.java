@@ -6,6 +6,9 @@ import cn.hutool.core.text.StrBuilder;
 import cn.hutool.core.util.ArrayUtil;
 import cn.hutool.core.util.StrUtil;
 import com.cmcorg20230301.be.engine.netty.websocket.annotation.NettyWebSocketController;
+import java.lang.reflect.Method;
+import java.util.List;
+import java.util.Map;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.SneakyThrows;
@@ -15,10 +18,6 @@ import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-
-import java.lang.reflect.Method;
-import java.util.List;
-import java.util.Map;
 
 /**
  * 映射：有 @NettyWebSocketController 注解的 Bean
@@ -49,12 +48,13 @@ public class NettyWebSocketBeanPostProcessor implements BeanPostProcessor {
 
     @SneakyThrows
     @Override
-    public Object postProcessAfterInitialization(@NotNull Object bean, @NotNull String beanName) throws BeansException {
+    public Object postProcessAfterInitialization(@NotNull Object bean, @NotNull String beanName)
+        throws BeansException {
 
         Class<?> beanClass = bean.getClass();
 
         NettyWebSocketController nettyWebSocketControllerAnnotation =
-                beanClass.getAnnotation(NettyWebSocketController.class);
+            beanClass.getAnnotation(NettyWebSocketController.class);
 
         if (nettyWebSocketControllerAnnotation == null) {
             return bean;
@@ -72,7 +72,8 @@ public class NettyWebSocketBeanPostProcessor implements BeanPostProcessor {
 
         }
 
-        RequestMapping classRequestMappingAnnotation = beanClass.getAnnotation(RequestMapping.class);
+        RequestMapping classRequestMappingAnnotation = beanClass.getAnnotation(
+            RequestMapping.class);
 
         StrBuilder strBuilder = StrBuilder.create();
 
@@ -106,8 +107,9 @@ public class NettyWebSocketBeanPostProcessor implements BeanPostProcessor {
 
             // 组装并处理路径
             List<String> splitTrimList = StrUtil.splitTrim(
-                    strBuilder.append(classRequestMappingValue).append("/").append(methodRequestMappingValue)
-                            .toStringAndReset(), "/");
+                strBuilder.append(classRequestMappingValue).append("/")
+                    .append(methodRequestMappingValue)
+                    .toStringAndReset(), "/");
 
             String key = "/" + CollUtil.join(splitTrimList, "/");
 
