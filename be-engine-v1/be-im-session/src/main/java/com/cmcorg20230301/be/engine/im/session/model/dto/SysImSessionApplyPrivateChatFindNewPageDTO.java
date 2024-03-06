@@ -7,7 +7,7 @@ import lombok.EqualsAndHashCode;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
-public class SysImSessionApplyPrivateChatApplyUserPageDTO extends MyTenantPageDTO {
+public class SysImSessionApplyPrivateChatFindNewPageDTO extends MyTenantPageDTO {
 
     @Schema(description = "昵称")
     private String nickname;

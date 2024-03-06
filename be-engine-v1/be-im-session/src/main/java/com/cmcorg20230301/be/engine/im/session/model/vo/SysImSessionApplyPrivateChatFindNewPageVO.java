@@ -4,7 +4,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
 @Data
-public class SysImSessionApplyPrivateChatApplyUserPageVO {
+public class SysImSessionApplyPrivateChatFindNewPageVO {
 
     @Schema(description = "用户主键 id")
     private Long userId;

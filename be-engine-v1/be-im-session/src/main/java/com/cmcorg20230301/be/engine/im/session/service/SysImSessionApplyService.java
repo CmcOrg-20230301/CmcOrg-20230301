@@ -5,14 +5,14 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.cmcorg20230301.be.engine.im.session.model.dto.*;
 import com.cmcorg20230301.be.engine.im.session.model.entity.SysImSessionApplyDO;
 import com.cmcorg20230301.be.engine.im.session.model.vo.SysImSessionApplyPrivateChatApplySelfPageVO;
-import com.cmcorg20230301.be.engine.im.session.model.vo.SysImSessionApplyPrivateChatApplyUserPageVO;
+import com.cmcorg20230301.be.engine.im.session.model.vo.SysImSessionApplyPrivateChatFindNewPageVO;
 import com.cmcorg20230301.be.engine.im.session.model.vo.SysImSessionApplyPrivateChatSelfPageVO;
 import com.cmcorg20230301.be.engine.model.model.dto.NotEmptyIdSet;
 import com.cmcorg20230301.be.engine.model.model.dto.NotNullId;
 
 public interface SysImSessionApplyService extends IService<SysImSessionApplyDO> {
 
-    Page<SysImSessionApplyPrivateChatApplyUserPageVO> privateChatApplyUserPage(SysImSessionApplyPrivateChatApplyUserPageDTO dto);
+    Page<SysImSessionApplyPrivateChatFindNewPageVO> privateChatFindNewPage(SysImSessionApplyPrivateChatFindNewPageDTO dto);
 
     Page<SysImSessionApplyPrivateChatApplySelfPageVO> privateChatApplyPageSelf(SysImSessionApplyPrivateChatApplySelfPageDTO dto);
 

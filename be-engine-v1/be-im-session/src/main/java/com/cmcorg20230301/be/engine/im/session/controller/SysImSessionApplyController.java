@@ -3,7 +3,7 @@ package com.cmcorg20230301.be.engine.im.session.controller;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.cmcorg20230301.be.engine.im.session.model.dto.*;
 import com.cmcorg20230301.be.engine.im.session.model.vo.SysImSessionApplyPrivateChatApplySelfPageVO;
-import com.cmcorg20230301.be.engine.im.session.model.vo.SysImSessionApplyPrivateChatApplyUserPageVO;
+import com.cmcorg20230301.be.engine.im.session.model.vo.SysImSessionApplyPrivateChatFindNewPageVO;
 import com.cmcorg20230301.be.engine.im.session.model.vo.SysImSessionApplyPrivateChatSelfPageVO;
 import com.cmcorg20230301.be.engine.im.session.service.SysImSessionApplyService;
 import com.cmcorg20230301.be.engine.model.model.dto.NotEmptyIdSet;
@@ -27,10 +27,10 @@ public class SysImSessionApplyController {
     @Resource
     SysImSessionApplyService baseService;
 
-    @Operation(summary = "分页排序查询-私聊申请对象列表")
-    @PostMapping("/privateChat/apply/user")
-    public ApiResultVO<Page<SysImSessionApplyPrivateChatApplyUserPageVO>> privateChatApplyUserPage(@RequestBody @Valid SysImSessionApplyPrivateChatApplyUserPageDTO dto) {
-        return ApiResultVO.okData(baseService.privateChatApplyUserPage(dto));
+    @Operation(summary = "分页排序查询-搜索新的朋友列表")
+    @PostMapping("/privateChat/findNew/page")
+    public ApiResultVO<Page<SysImSessionApplyPrivateChatFindNewPageVO>> privateChatFindNewPage(@RequestBody @Valid SysImSessionApplyPrivateChatFindNewPageDTO dto) {
+        return ApiResultVO.okData(baseService.privateChatFindNewPage(dto));
     }
 
     @Operation(summary = "分页排序查询-私聊申请列表-自我")
