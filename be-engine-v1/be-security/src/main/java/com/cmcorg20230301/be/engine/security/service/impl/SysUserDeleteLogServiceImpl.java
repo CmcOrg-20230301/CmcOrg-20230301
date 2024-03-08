@@ -7,8 +7,7 @@ import com.cmcorg20230301.be.engine.security.service.SysUserDeleteLogService;
 import org.springframework.stereotype.Service;
 
 @Service
-public class SysUserDeleteLogServiceImpl extends
-    ServiceImpl<SysUserDeleteLogMapper, SysUserDeleteLogDO>
+public class SysUserDeleteLogServiceImpl extends ServiceImpl<SysUserDeleteLogMapper, SysUserDeleteLogDO>
     implements SysUserDeleteLogService {
 
 }

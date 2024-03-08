@@ -11,8 +11,7 @@ public class DictTreeVO extends DictVO {
     @Schema(description = "父级 id")
     private Long parentId;
 
-    public DictTreeVO() {
-    }
+    public DictTreeVO() {}
 
     public DictTreeVO(Long id, String name, Long parentId) {
         super(id, name);

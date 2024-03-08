@@ -1,38 +1,38 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0"
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <modelVersion>4.0.0</modelVersion>
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
 
-  <parent>
-    <groupId>com.cmcorg20230301</groupId>
-    <artifactId>be-engine-v1</artifactId>
-    <version>2023.3.1</version>
-  </parent>
+    <parent>
+        <groupId>com.cmcorg20230301</groupId>
+        <artifactId>be-engine-v1</artifactId>
+        <version>2023.3.1</version>
+    </parent>
 
-  <artifactId>be-file-minio</artifactId>
-  <description>minio文件相关</description>
+    <artifactId>be-file-minio</artifactId>
+    <description>minio文件相关</description>
 
-  <dependencies>
+    <dependencies>
 
-    <!-- be-file -->
-    <dependency>
-      <groupId>${cmcorg.groupId}</groupId>
-      <artifactId>be-file</artifactId>
-    </dependency>
+        <!-- be-file -->
+        <dependency>
+            <groupId>${cmcorg.groupId}</groupId>
+            <artifactId>be-file</artifactId>
+        </dependency>
 
-    <!-- minio文件系统 -->
-    <dependency>
-      <groupId>io.minio</groupId>
-      <artifactId>minio</artifactId>
-    </dependency>
+        <!-- minio文件系统 -->
+        <dependency>
+            <groupId>io.minio</groupId>
+            <artifactId>minio</artifactId>
+        </dependency>
 
-    <!-- be-security -->
-    <dependency>
-      <groupId>${cmcorg.groupId}</groupId>
-      <artifactId>be-security</artifactId>
-    </dependency>
+        <!-- be-security -->
+        <dependency>
+            <groupId>${cmcorg.groupId}</groupId>
+            <artifactId>be-security</artifactId>
+        </dependency>
 
-  </dependencies>
+    </dependencies>
 
 </project>

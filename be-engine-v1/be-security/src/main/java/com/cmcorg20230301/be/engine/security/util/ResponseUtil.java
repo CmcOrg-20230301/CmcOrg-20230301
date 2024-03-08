@@ -46,8 +46,7 @@ public class ResponseUtil {
     }
 
     @SneakyThrows
-    public static void out(HttpServletResponse response, String msg, int status,
-        boolean convertFlag) {
+    public static void out(HttpServletResponse response, String msg, int status, boolean convertFlag) {
 
         response.setContentType("application/json;charset=utf-8");
 
@@ -85,12 +84,10 @@ public class ResponseUtil {
 
         // 备注：.xls是：application/vnd.ms-excel
         // 备注：.xlsx是：application/vnd.openxmlformats-officedocument.spreadsheetml.sheet
-        response.setContentType(
-            "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8");
+        response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8");
 
-        response
-            .setHeader("Content-Disposition",
-                "attachment;filename=" + URLEncoder.encode(fileName, "UTF-8") + ".xlsx");
+        response.setHeader("Content-Disposition",
+            "attachment;filename=" + URLEncoder.encode(fileName, "UTF-8") + ".xlsx");
 
         return response.getOutputStream();
 
@@ -104,12 +101,11 @@ public class ResponseUtil {
 
         // 备注：.doc是：application/msword
         // 备注：.docx是：application/vnd.openxmlformats-officedocument.wordprocessingml.document
-        response.setContentType(
-            "application/vnd.openxmlformats-officedocument.wordprocessingml.document;charset=utf-8");
-
         response
-            .setHeader("Content-Disposition",
-                "attachment;filename=" + URLEncoder.encode(fileName, "UTF-8") + ".docx");
+            .setContentType("application/vnd.openxmlformats-officedocument.wordprocessingml.document;charset=utf-8");
+
+        response.setHeader("Content-Disposition",
+            "attachment;filename=" + URLEncoder.encode(fileName, "UTF-8") + ".docx");
 
         return response.getOutputStream();
 
@@ -121,8 +117,7 @@ public class ResponseUtil {
     @SneakyThrows
     public static OutputStream getOutputStream(HttpServletResponse response, String fileName) {
 
-        response.setHeader("Content-Disposition",
-            "attachment;filename=" + URLEncoder.encode(fileName, "UTF-8"));
+        response.setHeader("Content-Disposition", "attachment;filename=" + URLEncoder.encode(fileName, "UTF-8"));
 
         return response.getOutputStream();
 

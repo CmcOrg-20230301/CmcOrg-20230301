@@ -1,11 +1,17 @@
 package com.cmcorg20230301.be.engine.menu.service.impl;
 
-import cn.hutool.core.bean.BeanUtil;
-import cn.hutool.core.collection.CollUtil;
-import cn.hutool.core.lang.func.Func1;
-import cn.hutool.core.thread.ThreadUtil;
-import cn.hutool.core.util.BooleanUtil;
-import cn.hutool.core.util.StrUtil;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Set;
+import java.util.concurrent.CountDownLatch;
+import java.util.stream.Collectors;
+
+import javax.annotation.Resource;
+
+import org.jetbrains.annotations.NotNull;
+import org.springframework.stereotype.Service;
+
 import com.baomidou.dynamic.datasource.annotation.DSTransactional;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -23,35 +29,22 @@ import com.cmcorg20230301.be.engine.role.service.SysRoleRefMenuService;
 import com.cmcorg20230301.be.engine.security.exception.BaseBizCodeEnum;
 import com.cmcorg20230301.be.engine.security.mapper.SysMenuMapper;
 import com.cmcorg20230301.be.engine.security.mapper.SysRoleMapper;
-import com.cmcorg20230301.be.engine.security.model.entity.BaseEntity;
-import com.cmcorg20230301.be.engine.security.model.entity.BaseEntityNoId;
-import com.cmcorg20230301.be.engine.security.model.entity.BaseEntityNoIdSuper;
-import com.cmcorg20230301.be.engine.security.model.entity.BaseEntityTree;
-import com.cmcorg20230301.be.engine.security.model.entity.SysMenuDO;
-import com.cmcorg20230301.be.engine.security.model.entity.SysRoleRefMenuDO;
+import com.cmcorg20230301.be.engine.security.model.entity.*;
 import com.cmcorg20230301.be.engine.security.model.vo.ApiResultVO;
-import com.cmcorg20230301.be.engine.security.util.MyEntityUtil;
-import com.cmcorg20230301.be.engine.security.util.MyThreadUtil;
-import com.cmcorg20230301.be.engine.security.util.MyTreeUtil;
-import com.cmcorg20230301.be.engine.security.util.SysMenuUtil;
-import com.cmcorg20230301.be.engine.security.util.SysTenantUtil;
-import com.cmcorg20230301.be.engine.security.util.UserUtil;
+import com.cmcorg20230301.be.engine.security.util.*;
 import com.cmcorg20230301.be.engine.util.util.CallBack;
 import com.cmcorg20230301.be.engine.util.util.MyMapUtil;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Set;
-import java.util.concurrent.CountDownLatch;
-import java.util.stream.Collectors;
-import javax.annotation.Resource;
+
+import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.lang.func.Func1;
+import cn.hutool.core.thread.ThreadUtil;
+import cn.hutool.core.util.BooleanUtil;
+import cn.hutool.core.util.StrUtil;
 import lombok.SneakyThrows;
-import org.jetbrains.annotations.NotNull;
-import org.springframework.stereotype.Service;
 
 @Service
-public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenuDO> implements
-    SysMenuService {
+public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenuDO> implements SysMenuService {
 
     @Resource
     SysRoleRefMenuService sysRoleRefMenuService;
@@ -70,8 +63,7 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenuDO> im
         SysTenantUtil.checkInsert(dto);
 
         // 处理：BaseTenantInsertOrUpdateDTO
-        SysTenantUtil.handleBaseTenantInsertOrUpdateDTO(dto,
-            getCheckIllegalFunc1(CollUtil.newHashSet(dto.getId())),
+        SysTenantUtil.handleBaseTenantInsertOrUpdateDTO(dto, getCheckIllegalFunc1(CollUtil.newHashSet(dto.getId())),
             getTenantIdBaseEntityFunc1());
 
         // 检查：是否可以修改一些属性
@@ -89,8 +81,7 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenuDO> im
         if (StrUtil.isNotBlank(dto.getPath())) {
 
             boolean exists =
-                lambdaQuery().eq(SysMenuDO::getPath, dto.getPath())
-                    .eq(BaseEntityNoId::getTenantId, dto.getTenantId())
+                lambdaQuery().eq(SysMenuDO::getPath, dto.getPath()).eq(BaseEntityNoId::getTenantId, dto.getTenantId())
                     .ne(dto.getId() != null, BaseEntity::getId, dto.getId()).exists();
 
             if (exists) {
@@ -140,20 +131,17 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenuDO> im
         }
 
         SysMenuDO sysMenuDO =
-            lambdaQuery().eq(BaseEntity::getId, tempSysMenuDO.getId()).select(SysMenuDO::getUuid)
-                .one();
+            lambdaQuery().eq(BaseEntity::getId, tempSysMenuDO.getId()).select(SysMenuDO::getUuid).one();
 
         String uuid = sysMenuDO.getUuid();
 
         // 备注：需要和 SysMenuServiceImpl#checkUpdate 一致
-        lambdaUpdate().eq(SysMenuDO::getUuid, uuid)
-            .ne(BaseEntity::getId, tempSysMenuDO.getId()) // 不同步自己
+        lambdaUpdate().eq(SysMenuDO::getUuid, uuid).ne(BaseEntity::getId, tempSysMenuDO.getId()) // 不同步自己
             .set(SysMenuDO::getPath, tempSysMenuDO.getPath()) //
             .set(SysMenuDO::getRouter, tempSysMenuDO.getRouter()) //
             .set(SysMenuDO::getAuths, tempSysMenuDO.getAuths()) //
             .set(SysMenuDO::getAuthFlag, tempSysMenuDO.getAuthFlag()) //
-            .set(SysMenuDO::getHiddenPageContainerFlag,
-                tempSysMenuDO.getHiddenPageContainerFlag()) //
+            .set(SysMenuDO::getHiddenPageContainerFlag, tempSysMenuDO.getHiddenPageContainerFlag()) //
             .set(SysMenuDO::getLinkFlag, tempSysMenuDO.getLinkFlag()) // 额外多一个参数
             .update();
 
@@ -216,8 +204,7 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenuDO> im
         if (CollUtil.isNotEmpty(dto.getRoleIdSet())) {
 
             // 检查：角色 idSet，是否合法
-            Long count = ChainWrappers.lambdaQueryChain(sysRoleMapper)
-                .in(BaseEntity::getId, dto.getRoleIdSet())
+            Long count = ChainWrappers.lambdaQueryChain(sysRoleMapper).in(BaseEntity::getId, dto.getRoleIdSet())
                 .eq(BaseEntityNoIdSuper::getTenantId, dto.getTenantId()).count();
 
             if (count != dto.getRoleIdSet().size()) {
@@ -296,8 +283,7 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenuDO> im
         // 处理：MyTenantPageDTO
         SysTenantUtil.handleMyTenantPageDTO(dto, true);
 
-        return lambdaQuery().like(StrUtil.isNotBlank(dto.getName()), SysMenuDO::getName,
-                dto.getName())
+        return lambdaQuery().like(StrUtil.isNotBlank(dto.getName()), SysMenuDO::getName, dto.getName())
             .like(StrUtil.isNotBlank(dto.getPath()), SysMenuDO::getPath, dto.getPath())
             .like(StrUtil.isNotBlank(dto.getAuths()), SysMenuDO::getAuths, dto.getAuths())
             .like(StrUtil.isNotBlank(dto.getRedirect()), SysMenuDO::getRedirect, dto.getRedirect())
@@ -309,10 +295,9 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenuDO> im
             .eq(dto.getAuthFlag() != null, SysMenuDO::getAuthFlag, dto.getAuthFlag())
             .eq(dto.getShowFlag() != null, SysMenuDO::getShowFlag, dto.getShowFlag())
             .in(BaseEntityNoId::getTenantId, dto.getTenantIdSet()) //
-            .select(BaseEntity::getId, BaseEntityTree::getParentId,
-                BaseEntityNoIdSuper::getTenantId, SysMenuDO::getName, SysMenuDO::getPath,
-                SysMenuDO::getAuths, SysMenuDO::getShowFlag, BaseEntityNoId::getEnableFlag,
-                SysMenuDO::getRedirect, BaseEntityTree::getOrderNo)
+            .select(BaseEntity::getId, BaseEntityTree::getParentId, BaseEntityNoIdSuper::getTenantId,
+                SysMenuDO::getName, SysMenuDO::getPath, SysMenuDO::getAuths, SysMenuDO::getShowFlag,
+                BaseEntityNoId::getEnableFlag, SysMenuDO::getRedirect, BaseEntityTree::getOrderNo)
             .orderByDesc(BaseEntityTree::getOrderNo).page(dto.page(true));
 
     }
@@ -333,8 +318,7 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenuDO> im
 
         MyThreadUtil.execute(() -> {
 
-            allListCallBack.setValue(
-                lambdaQuery().in(BaseEntityNoId::getTenantId, dto.getTenantIdSet()).list());
+            allListCallBack.setValue(lambdaQuery().in(BaseEntityNoId::getTenantId, dto.getTenantIdSet()).list());
 
         }, countDownLatch);
 
@@ -365,26 +349,21 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenuDO> im
         // 获取：用户关联的租户
         Set<Long> queryTenantIdSet = SysTenantUtil.getUserRefTenantIdSet();
 
-        SysMenuDO sysMenuDO =
-            lambdaQuery().eq(BaseEntity::getId, notNullId.getId())
-                .in(BaseEntityNoId::getTenantId, queryTenantIdSet)
-                .one();
+        SysMenuDO sysMenuDO = lambdaQuery().eq(BaseEntity::getId, notNullId.getId())
+            .in(BaseEntityNoId::getTenantId, queryTenantIdSet).one();
 
         if (sysMenuDO == null) {
             return null;
         }
 
-        SysMenuInfoByIdVO sysMenuInfoByIdVO = BeanUtil.copyProperties(sysMenuDO,
-            SysMenuInfoByIdVO.class);
+        SysMenuInfoByIdVO sysMenuInfoByIdVO = BeanUtil.copyProperties(sysMenuDO, SysMenuInfoByIdVO.class);
 
         // 设置：角色 idSet
-        List<SysRoleRefMenuDO> sysRoleRefMenuDOList =
-            sysRoleRefMenuService.lambdaQuery().eq(SysRoleRefMenuDO::getMenuId, notNullId.getId())
-                .select(SysRoleRefMenuDO::getRoleId).list();
+        List<SysRoleRefMenuDO> sysRoleRefMenuDOList = sysRoleRefMenuService.lambdaQuery()
+            .eq(SysRoleRefMenuDO::getMenuId, notNullId.getId()).select(SysRoleRefMenuDO::getRoleId).list();
 
         sysMenuInfoByIdVO
-            .setRoleIdSet(sysRoleRefMenuDOList.stream().map(SysRoleRefMenuDO::getRoleId)
-                .collect(Collectors.toSet()));
+            .setRoleIdSet(sysRoleRefMenuDOList.stream().map(SysRoleRefMenuDO::getRoleId).collect(Collectors.toSet()));
 
         // 处理：父级 id
         MyEntityUtil.handleParentId(sysMenuInfoByIdVO);
@@ -398,8 +377,7 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenuDO> im
      */
     @Override
     @DSTransactional
-    public String deleteByIdSet(NotEmptyIdSet notEmptyIdSet, boolean checkChildrenFlag,
-        boolean checkDeleteFlag) {
+    public String deleteByIdSet(NotEmptyIdSet notEmptyIdSet, boolean checkChildrenFlag, boolean checkDeleteFlag) {
 
         Set<Long> idSet = notEmptyIdSet.getIdSet();
 
@@ -429,15 +407,12 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenuDO> im
         }
 
         // 如果删除了顶级租户的菜单，则需要全局一起删除
-        List<SysMenuDO> sysMenuDOList =
-            lambdaQuery().in(BaseEntity::getId, idSet)
-                .eq(BaseEntityNoIdSuper::getTenantId, BaseConstant.TOP_TENANT_ID)
-                .select(SysMenuDO::getUuid).list();
+        List<SysMenuDO> sysMenuDOList = lambdaQuery().in(BaseEntity::getId, idSet)
+            .eq(BaseEntityNoIdSuper::getTenantId, BaseConstant.TOP_TENANT_ID).select(SysMenuDO::getUuid).list();
 
         if (CollUtil.isNotEmpty(sysMenuDOList)) {
 
-            Set<String> uuidSet = sysMenuDOList.stream().map(SysMenuDO::getUuid)
-                .collect(Collectors.toSet());
+            Set<String> uuidSet = sysMenuDOList.stream().map(SysMenuDO::getUuid).collect(Collectors.toSet());
 
             lambdaUpdate().in(SysMenuDO::getUuid, uuidSet).remove(); // 根据 uuid，全局一起删除
 
@@ -483,15 +458,13 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenuDO> im
         }
 
         // 获取当前用户绑定的菜单
-        Set<SysMenuDO> sysMenuDoSet = UserUtil.getMenuSetByUserId(userId, 1,
-            currentTenantIdDefault);
+        Set<SysMenuDO> sysMenuDoSet = UserUtil.getMenuSetByUserId(userId, 1, currentTenantIdDefault);
 
         if (CollUtil.isEmpty(sysMenuDoSet)) {
             return new ArrayList<>();
         }
 
-        return sysMenuDoSet.stream()
-            .sorted(Comparator.comparing(BaseEntityTree::getOrderNo, Comparator.reverseOrder()))
+        return sysMenuDoSet.stream().sorted(Comparator.comparing(BaseEntityTree::getOrderNo, Comparator.reverseOrder()))
             .collect(Collectors.toList());
 
     }
@@ -509,13 +482,11 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenuDO> im
             return BaseBizCodeEnum.OK;
         }
 
-        List<SysMenuDO> sysMenuDOList =
-            lambdaQuery().in(BaseEntity::getId, dto.getIdSet())
-                .select(BaseEntity::getId, BaseEntityTree::getOrderNo)
-                .list();
+        List<SysMenuDO> sysMenuDOList = lambdaQuery().in(BaseEntity::getId, dto.getIdSet())
+            .select(BaseEntity::getId, BaseEntityTree::getOrderNo).list();
 
         for (SysMenuDO item : sysMenuDOList) {
-            item.setOrderNo((int) (item.getOrderNo() + dto.getNumber()));
+            item.setOrderNo((int)(item.getOrderNo() + dto.getNumber()));
         }
 
         updateBatchById(sysMenuDOList);
@@ -530,8 +501,7 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenuDO> im
     @NotNull
     private Func1<Set<Long>, Long> getCheckIllegalFunc1(Set<Long> idSet) {
 
-        return tenantIdSet -> lambdaQuery().in(BaseEntity::getId, idSet)
-            .in(BaseEntityNoId::getTenantId, tenantIdSet)
+        return tenantIdSet -> lambdaQuery().in(BaseEntity::getId, idSet).in(BaseEntityNoId::getTenantId, tenantIdSet)
             .count();
 
     }
@@ -547,7 +517,3 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenuDO> im
     }
 
 }
-
-
-
-

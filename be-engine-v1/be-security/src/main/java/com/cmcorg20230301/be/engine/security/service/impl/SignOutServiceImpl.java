@@ -24,15 +24,13 @@ public class SignOutServiceImpl implements SignOutService {
 
         CallBack<Long> jwtHashRemainMsCallBack = new CallBack<>();
 
-        String jwtHash = MyJwtUtil.getJwtHashByRequest(httpServletRequest, jwtHashRemainMsCallBack,
-            null);
+        String jwtHash = MyJwtUtil.getJwtHashByRequest(httpServletRequest, jwtHashRemainMsCallBack, null);
 
         if (StrUtil.isBlank(jwtHash)) {
             return BaseBizCodeEnum.OK;
         }
 
-        CacheRedisKafkaLocalUtil.put(jwtHash, jwtHashRemainMsCallBack.getValue(),
-            () -> "不可用的 jwt：退出登录");
+        CacheRedisKafkaLocalUtil.put(jwtHash, jwtHashRemainMsCallBack.getValue(), () -> "不可用的 jwt：退出登录");
 
         return BaseBizCodeEnum.OK;
 

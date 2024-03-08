@@ -1,18 +1,21 @@
 package com.cmcorg20230301.be.engine.cache.listener;
 
-import cn.hutool.core.collection.CollUtil;
-import cn.hutool.json.JSONUtil;
-import com.cmcorg20230301.be.engine.cache.util.CacheLocalUtil;
-import com.cmcorg20230301.be.engine.kafka.model.enums.KafkaTopicEnum;
-import com.cmcorg20230301.be.engine.model.model.constant.LogTopicConstant;
-import com.cmcorg20230301.be.engine.model.model.dto.NotEmptyKeyValueSet;
 import java.util.List;
 import java.util.Set;
-import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.kafka.annotation.KafkaHandler;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.support.Acknowledgment;
 import org.springframework.stereotype.Component;
+
+import com.cmcorg20230301.be.engine.cache.util.CacheLocalUtil;
+import com.cmcorg20230301.be.engine.kafka.model.enums.KafkaTopicEnum;
+import com.cmcorg20230301.be.engine.model.model.constant.LogTopicConstant;
+import com.cmcorg20230301.be.engine.model.model.dto.NotEmptyKeyValueSet;
+
+import cn.hutool.core.collection.CollUtil;
+import cn.hutool.json.JSONUtil;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * 本地缓存更新的 kafka监听器，针对往 map里面移除值
@@ -33,8 +36,7 @@ public class LocalCacheRemoveMapListener {
 
             for (String item : recordList) {
 
-                NotEmptyKeyValueSet notEmptyKeyValueSet = JSONUtil.toBean(item,
-                    NotEmptyKeyValueSet.class);
+                NotEmptyKeyValueSet notEmptyKeyValueSet = JSONUtil.toBean(item, NotEmptyKeyValueSet.class);
 
                 String key = notEmptyKeyValueSet.getKey();
 

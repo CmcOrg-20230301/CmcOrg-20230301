@@ -1,53 +1,53 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0"
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <modelVersion>4.0.0</modelVersion>
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
 
-  <parent>
-    <groupId>com.cmcorg20230301</groupId>
-    <artifactId>be-engine-v1</artifactId>
-    <version>2023.3.1</version>
-  </parent>
+    <parent>
+        <groupId>com.cmcorg20230301</groupId>
+        <artifactId>be-engine-v1</artifactId>
+        <version>2023.3.1</version>
+    </parent>
 
-  <artifactId>be-gateway</artifactId>
-  <description>gateway相关</description>
+    <artifactId>be-gateway</artifactId>
+    <description>gateway相关</description>
 
-  <dependencies>
+    <dependencies>
 
-    <!-- loadbalancer -->
-    <dependency>
-      <groupId>org.springframework.cloud</groupId>
-      <artifactId>spring-cloud-starter-loadbalancer</artifactId>
-    </dependency>
+        <!-- loadbalancer -->
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-loadbalancer</artifactId>
+        </dependency>
 
-    <!-- gateway -->
-    <dependency>
-      <groupId>org.springframework.cloud</groupId>
-      <artifactId>spring-cloud-starter-gateway</artifactId>
-    </dependency>
+        <!-- gateway -->
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-gateway</artifactId>
+        </dependency>
 
-    <!-- SpringBoot2.4.x之后默认不加载bootstrap.yml文件，需要在 pom里加上依赖 -->
-    <dependency>
-      <groupId>org.springframework.cloud</groupId>
-      <artifactId>spring-cloud-starter-bootstrap</artifactId>
-    </dependency>
+        <!-- SpringBoot2.4.x之后默认不加载bootstrap.yml文件，需要在 pom里加上依赖 -->
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-bootstrap</artifactId>
+        </dependency>
 
-    <!-- nacos-discovery -->
-    <dependency>
-      <groupId>com.alibaba.cloud</groupId>
-      <artifactId>spring-cloud-starter-alibaba-nacos-discovery</artifactId>
-    </dependency>
+        <!-- nacos-discovery -->
+        <dependency>
+            <groupId>com.alibaba.cloud</groupId>
+            <artifactId>spring-cloud-starter-alibaba-nacos-discovery</artifactId>
+        </dependency>
 
-  </dependencies>
+    </dependencies>
 
-  <build>
-    <plugins>
-      <plugin>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-maven-plugin</artifactId>
-      </plugin>
-    </plugins>
-  </build>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
+        </plugins>
+    </build>
 
 </project>

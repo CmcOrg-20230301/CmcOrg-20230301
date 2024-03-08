@@ -71,7 +71,7 @@ public class MyThreadUtil {
      * 提交任务调度请求
      *
      * @param voidFunc0 待执行任务
-     * @param trigger   使用 Trigger指定任务调度规则
+     * @param trigger 使用 Trigger指定任务调度规则
      */
     public static ScheduledFuture<?> schedule(VoidFunc0 voidFunc0, Trigger trigger) {
 
@@ -108,13 +108,11 @@ public class MyThreadUtil {
      *
      * @param voidFunc0 待执行的任务
      * @param startTime 任务启动时间
-     * @param period    两次任务启动时间之间的间隔时间，默认单位是毫秒
+     * @param period 两次任务启动时间之间的间隔时间，默认单位是毫秒
      */
-    public static ScheduledFuture<?> scheduleAtFixedRate(VoidFunc0 voidFunc0, Date startTime,
-        long period) {
+    public static ScheduledFuture<?> scheduleAtFixedRate(VoidFunc0 voidFunc0, Date startTime, long period) {
 
-        return taskScheduler.scheduleAtFixedRate(() -> TryUtil.tryCatch(voidFunc0), startTime,
-            period);
+        return taskScheduler.scheduleAtFixedRate(() -> TryUtil.tryCatch(voidFunc0), startTime, period);
 
     }
 
@@ -122,7 +120,7 @@ public class MyThreadUtil {
      * 使用 fixedRate的方式提交任务调度请求 任务首次启动时间未设置，任务池将会尽可能早的启动任务
      *
      * @param voidFunc0 待执行任务
-     * @param period    两次任务启动时间之间的间隔时间，默认单位是毫秒
+     * @param period 两次任务启动时间之间的间隔时间，默认单位是毫秒
      */
     public static ScheduledFuture<?> scheduleAtFixedRate(VoidFunc0 voidFunc0, long period) {
 
@@ -135,13 +133,11 @@ public class MyThreadUtil {
      *
      * @param voidFunc0 待执行的任务
      * @param startTime 任务启动时间
-     * @param period    两次任务启动时间之间的间隔时间，默认单位是毫秒
+     * @param period 两次任务启动时间之间的间隔时间，默认单位是毫秒
      */
-    public static ScheduledFuture<?> scheduleWithFixedDelay(VoidFunc0 voidFunc0, Date startTime,
-        long period) {
+    public static ScheduledFuture<?> scheduleWithFixedDelay(VoidFunc0 voidFunc0, Date startTime, long period) {
 
-        return taskScheduler.scheduleWithFixedDelay(() -> TryUtil.tryCatch(voidFunc0), startTime,
-            period);
+        return taskScheduler.scheduleWithFixedDelay(() -> TryUtil.tryCatch(voidFunc0), startTime, period);
 
     }
 
@@ -149,7 +145,7 @@ public class MyThreadUtil {
      * 使用 fixedDelay的方式提交任务调度请求 任务首次启动时间未设置，任务池将会尽可能早的启动任务
      *
      * @param voidFunc0 待执行任务
-     * @param period    两次任务启动时间之间的间隔时间，默认单位是毫秒
+     * @param period 两次任务启动时间之间的间隔时间，默认单位是毫秒
      */
     public static ScheduledFuture<?> scheduleWithFixedDelay(VoidFunc0 voidFunc0, long period) {
 

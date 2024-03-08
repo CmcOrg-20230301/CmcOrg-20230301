@@ -1,7 +1,15 @@
 package com.cmcorg20230301.be.engine.pay.base.listener;
 
-import cn.hutool.core.collection.CollUtil;
-import cn.hutool.core.map.MapUtil;
+import java.util.List;
+import java.util.Map;
+
+import org.jetbrains.annotations.Nullable;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.kafka.annotation.KafkaHandler;
+import org.springframework.kafka.annotation.KafkaListener;
+import org.springframework.kafka.support.Acknowledgment;
+import org.springframework.stereotype.Component;
+
 import com.cmcorg20230301.be.engine.kafka.model.enums.KafkaTopicEnum;
 import com.cmcorg20230301.be.engine.model.model.constant.LogTopicConstant;
 import com.cmcorg20230301.be.engine.pay.base.model.configuration.ISysPayRefHandler;
@@ -9,15 +17,10 @@ import com.cmcorg20230301.be.engine.pay.base.model.entity.SysPayDO;
 import com.cmcorg20230301.be.engine.security.util.KafkaHelper;
 import com.cmcorg20230301.be.engine.security.util.TryUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import java.util.List;
-import java.util.Map;
+
+import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.map.MapUtil;
 import lombok.extern.slf4j.Slf4j;
-import org.jetbrains.annotations.Nullable;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.kafka.annotation.KafkaHandler;
-import org.springframework.kafka.annotation.KafkaListener;
-import org.springframework.kafka.support.Acknowledgment;
-import org.springframework.stereotype.Component;
 
 /**
  * 支付订单回调通知的 kafka监听器
@@ -64,8 +67,7 @@ public class SysPayTradeNotifyKafkaListener {
 
             SysPayDO sysPayDO = objectMapper.readValue(recordStr, SysPayDO.class);
 
-            ISysPayRefHandler iSysPayRefHandler = SYS_PAY_REF_HANDLER_MAP.get(
-                sysPayDO.getRefType());
+            ISysPayRefHandler iSysPayRefHandler = SYS_PAY_REF_HANDLER_MAP.get(sysPayDO.getRefType());
 
             if (iSysPayRefHandler != null) {
 

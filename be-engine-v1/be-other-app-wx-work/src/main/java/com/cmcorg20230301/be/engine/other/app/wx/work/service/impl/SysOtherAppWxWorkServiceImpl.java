@@ -1,9 +1,14 @@
 package com.cmcorg20230301.be.engine.other.app.wx.work.service.impl;
 
-import cn.hutool.core.io.IoUtil;
-import cn.hutool.core.util.StrUtil;
-import cn.hutool.core.util.XmlUtil;
-import cn.hutool.json.JSONUtil;
+import java.time.Duration;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+
+import org.redisson.api.RedissonClient;
+import org.springframework.stereotype.Service;
+import org.w3c.dom.Document;
+
 import com.cmcorg20230301.be.engine.kafka.util.KafkaUtil;
 import com.cmcorg20230301.be.engine.model.model.constant.BaseConstant;
 import com.cmcorg20230301.be.engine.model.model.constant.LogTopicConstant;
@@ -13,14 +18,13 @@ import com.cmcorg20230301.be.engine.other.app.wx.work.model.dto.SysOtherAppWxWor
 import com.cmcorg20230301.be.engine.other.app.wx.work.service.SysOtherAppWxWorkService;
 import com.cmcorg20230301.be.engine.other.app.wx.work.util.WXBizMsgCrypt;
 import com.cmcorg20230301.be.engine.redisson.model.enums.BaseRedisKeyEnum;
-import java.time.Duration;
-import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
+
+import cn.hutool.core.io.IoUtil;
+import cn.hutool.core.util.StrUtil;
+import cn.hutool.core.util.XmlUtil;
+import cn.hutool.json.JSONUtil;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-import org.redisson.api.RedissonClient;
-import org.springframework.stereotype.Service;
-import org.w3c.dom.Document;
 
 @Service
 @Slf4j(topic = LogTopicConstant.OTHER_APP_WX_WORK)
@@ -82,8 +86,7 @@ public class SysOtherAppWxWorkServiceImpl implements SysOtherAppWxWorkService {
         Document document = XmlUtil.parseXml(sMsg);
 
         SysOtherAppWxWorkReceiveMessageDTO dto =
-            XmlUtil.xmlToBean(document.getDocumentElement(),
-                SysOtherAppWxWorkReceiveMessageDTO.class);
+            XmlUtil.xmlToBean(document.getDocumentElement(), SysOtherAppWxWorkReceiveMessageDTO.class);
 
         String content = dto.getContent();
 
@@ -104,14 +107,11 @@ public class SysOtherAppWxWorkServiceImpl implements SysOtherAppWxWorkService {
 
         String msgIdStr = dto.getMsgIdStr();
 
-        log.info("企业微信，收到消息：{}，dto：{}，msgIdStr：{}", XmlUtil.toStr(document),
-            JSONUtil.toJsonStr(dto), msgIdStr);
+        log.info("企业微信，收到消息：{}，dto：{}，msgIdStr：{}", XmlUtil.toStr(document), JSONUtil.toJsonStr(dto), msgIdStr);
 
-        String redisKey =
-            BaseRedisKeyEnum.PRE_SYS_OTHER_APP_WX_WORK_RECEIVE_MESSAGE_ID.name() + msgIdStr;
+        String redisKey = BaseRedisKeyEnum.PRE_SYS_OTHER_APP_WX_WORK_RECEIVE_MESSAGE_ID.name() + msgIdStr;
 
-        redissonClient.<String>getBucket(redisKey)
-            .set("", Duration.ofMillis(BaseConstant.SHORT_CODE_EXPIRE_TIME));
+        redissonClient.<String>getBucket(redisKey).set("", Duration.ofMillis(BaseConstant.SHORT_CODE_EXPIRE_TIME));
 
         // 发送给：kafka进行处理
         KafkaUtil.sendSysOtherAppWxWorkReceiveMessageDTO(dto);

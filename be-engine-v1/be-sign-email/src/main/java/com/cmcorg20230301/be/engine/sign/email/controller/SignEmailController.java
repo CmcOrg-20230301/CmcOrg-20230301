@@ -1,5 +1,13 @@
 package com.cmcorg20230301.be.engine.sign.email.controller;
 
+import javax.annotation.Resource;
+import javax.validation.Valid;
+
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
 import com.cmcorg20230301.be.engine.model.model.constant.OperationDescriptionConstant;
 import com.cmcorg20230301.be.engine.model.model.dto.NotBlankCodeDTO;
 import com.cmcorg20230301.be.engine.model.model.dto.NotNullId;
@@ -9,15 +17,9 @@ import com.cmcorg20230301.be.engine.model.model.vo.SysQrCodeSceneBindVO;
 import com.cmcorg20230301.be.engine.security.model.vo.ApiResultVO;
 import com.cmcorg20230301.be.engine.sign.email.model.dto.*;
 import com.cmcorg20230301.be.engine.sign.email.service.SignEmailService;
+
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
-import javax.annotation.Resource;
-import javax.validation.Valid;
 
 @RestController
 @RequestMapping(value = "/sign/email")
@@ -41,8 +43,7 @@ public class SignEmailController {
 
     @PostMapping(value = "/sign/in/password")
     @Operation(summary = "邮箱：账号密码登录", description = OperationDescriptionConstant.SIGN_IN)
-    public ApiResultVO<SignInVO> signInPassword(
-        @RequestBody @Valid SignEmailSignInPasswordDTO dto) {
+    public ApiResultVO<SignInVO> signInPassword(@RequestBody @Valid SignEmailSignInPasswordDTO dto) {
         return ApiResultVO.okData(baseService.signInPassword(dto));
     }
 
@@ -60,8 +61,7 @@ public class SignEmailController {
 
     @PostMapping(value = "/setSignInName/sendCode")
     @Operation(summary = "设置登录名-发送验证码")
-    public ApiResultVO<String> setSignInNameSendCode(
-        @RequestBody @Valid SignEmailSetSignInNameSendCodeDTO dto) {
+    public ApiResultVO<String> setSignInNameSendCode(@RequestBody @Valid SignEmailSetSignInNameSendCodeDTO dto) {
         return ApiResultVO.okMsg(baseService.setSignInNameSendCode(dto));
     }
 
@@ -73,22 +73,19 @@ public class SignEmailController {
 
     @PostMapping(value = "/updateSignInName/sendCode")
     @Operation(summary = "修改登录名-发送验证码")
-    public ApiResultVO<String> updateSignInNameSendCode(
-        @RequestBody @Valid SignEmailUpdateSignInNameSendCodeDTO dto) {
+    public ApiResultVO<String> updateSignInNameSendCode(@RequestBody @Valid SignEmailUpdateSignInNameSendCodeDTO dto) {
         return ApiResultVO.okMsg(baseService.updateSignInNameSendCode(dto));
     }
 
     @PostMapping(value = "/updateSignInName")
     @Operation(summary = "修改登录名")
-    public ApiResultVO<String> updateSignInName(
-        @RequestBody @Valid SignEmailUpdateSignInNameDTO dto) {
+    public ApiResultVO<String> updateSignInName(@RequestBody @Valid SignEmailUpdateSignInNameDTO dto) {
         return ApiResultVO.okMsg(baseService.updateSignInName(dto));
     }
 
     @PostMapping(value = "/updateEmail/sendCode/new")
     @Operation(summary = "修改邮箱-发送新邮箱验证码")
-    public ApiResultVO<String> updateEmailSendCodeNew(
-        @RequestBody @Valid SignEmailUpdateEmailSendCodeNewDTO dto) {
+    public ApiResultVO<String> updateEmailSendCodeNew(@RequestBody @Valid SignEmailUpdateEmailSendCodeNewDTO dto) {
         return ApiResultVO.okMsg(baseService.updateEmailSendCodeNew(dto));
     }
 
@@ -118,8 +115,7 @@ public class SignEmailController {
 
     @PostMapping(value = "/setWx/getQrCodeSceneFlag")
     @Operation(summary = "设置微信：获取二维码是否已经被扫描")
-    public ApiResultVO<SysQrCodeSceneBindVO> getQrCodeSceneFlag(
-        @RequestBody @Valid NotNullId notNullId) {
+    public ApiResultVO<SysQrCodeSceneBindVO> getQrCodeSceneFlag(@RequestBody @Valid NotNullId notNullId) {
         return ApiResultVO.okData(baseService.getQrCodeSceneFlag(notNullId));
     }
 
@@ -137,8 +133,7 @@ public class SignEmailController {
 
     @PostMapping(value = "/setPhone/sendCode/phone")
     @Operation(summary = "设置手机：发送手机验证码")
-    public ApiResultVO<String> setPhoneSendCodePhone(
-        @RequestBody @Valid SignEmailSetPhoneSendCodePhoneDTO dto) {
+    public ApiResultVO<String> setPhoneSendCodePhone(@RequestBody @Valid SignEmailSetPhoneSendCodePhoneDTO dto) {
         return ApiResultVO.okMsg(baseService.setPhoneSendCodePhone(dto));
     }
 
@@ -162,15 +157,14 @@ public class SignEmailController {
 
     @PostMapping(value = "/setSingleSignIn/wx/getQrCodeSceneFlag")
     @Operation(summary = "设置统一登录：微信：获取统一登录微信的二维码是否已经被扫描")
-    public ApiResultVO<SysQrCodeSceneBindVO> setSingleSignInWxGetQrCodeSceneFlag(
-        @RequestBody @Valid NotNullId notNullId) {
+    public ApiResultVO<SysQrCodeSceneBindVO>
+        setSingleSignInWxGetQrCodeSceneFlag(@RequestBody @Valid NotNullId notNullId) {
         return ApiResultVO.okData(baseService.setSingleSignInWxGetQrCodeSceneFlag(notNullId));
     }
 
     @PostMapping(value = "/setSingleSignIn/wx")
     @Operation(summary = "设置统一登录：微信")
-    public ApiResultVO<SysQrCodeSceneBindVO> setSingleSignInWx(
-        @RequestBody @Valid SignEmailSetSingleSignInWxDTO dto) {
+    public ApiResultVO<SysQrCodeSceneBindVO> setSingleSignInWx(@RequestBody @Valid SignEmailSetSingleSignInWxDTO dto) {
         return ApiResultVO.okData(baseService.setSingleSignInWx(dto));
     }
 
@@ -182,15 +176,14 @@ public class SignEmailController {
 
     @PostMapping(value = "/setSingleSignIn/phone/sendCode")
     @Operation(summary = "设置统一登录：手机验证码：发送要绑定统一登录手机的验证码")
-    public ApiResultVO<String> setSingleSignInPhoneSendCode(
-        @RequestBody @Valid SignEmailSetSingleSignInPhoneSendCodeDTO dto) {
+    public ApiResultVO<String>
+        setSingleSignInPhoneSendCode(@RequestBody @Valid SignEmailSetSingleSignInPhoneSendCodeDTO dto) {
         return ApiResultVO.okMsg(baseService.setSingleSignInSendCodePhone(dto));
     }
 
     @PostMapping(value = "/setSingleSignIn/phone")
     @Operation(summary = "设置统一登录：手机验证码")
-    public ApiResultVO<String> setSingleSignInPhone(
-        @RequestBody @Valid SignEmailSetSingleSignInPhoneDTO dto) {
+    public ApiResultVO<String> setSingleSignInPhone(@RequestBody @Valid SignEmailSetSingleSignInPhoneDTO dto) {
         return ApiResultVO.okMsg(baseService.setSingleSignInPhone(dto));
     }
 

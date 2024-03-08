@@ -1,7 +1,8 @@
 package com.cmcorg20230301.be.engine.pay.wx.util;
 
-import cn.hutool.core.date.DatePattern;
-import cn.hutool.core.lang.Assert;
+import org.jetbrains.annotations.NotNull;
+import org.springframework.stereotype.Component;
+
 import com.cmcorg20230301.be.engine.model.model.constant.BaseConstant;
 import com.cmcorg20230301.be.engine.pay.base.model.bo.SysPayReturnBO;
 import com.cmcorg20230301.be.engine.pay.base.model.dto.PayDTO;
@@ -14,9 +15,10 @@ import com.wechat.pay.java.service.payments.jsapi.JsapiServiceExtension;
 import com.wechat.pay.java.service.payments.jsapi.model.PrepayWithRequestPaymentResponse;
 import com.wechat.pay.java.service.payments.model.Transaction;
 import com.wechat.pay.java.service.payments.nativepay.NativePayService;
+
+import cn.hutool.core.date.DatePattern;
+import cn.hutool.core.lang.Assert;
 import lombok.SneakyThrows;
-import org.jetbrains.annotations.NotNull;
-import org.springframework.stereotype.Component;
 
 /**
  * 支付：微信工具类
@@ -27,11 +29,9 @@ public class PayWxUtil {
     /**
      * 获取：RSAAutoCertificateConfig 对象
      */
-    public static RSAAutoCertificateConfig getRsaAutoCertificateConfig(
-        SysPayConfigurationDO sysPayConfigurationDO) {
+    public static RSAAutoCertificateConfig getRsaAutoCertificateConfig(SysPayConfigurationDO sysPayConfigurationDO) {
 
-        return new RSAAutoCertificateConfig.Builder().merchantId(
-                sysPayConfigurationDO.getMerchantId())
+        return new RSAAutoCertificateConfig.Builder().merchantId(sysPayConfigurationDO.getMerchantId())
             .privateKey(sysPayConfigurationDO.getPrivateKey())
             .merchantSerialNumber(sysPayConfigurationDO.getMerchantSerialNumber())
             .apiV3Key(sysPayConfigurationDO.getApiV3Key()).build();
@@ -41,11 +41,9 @@ public class PayWxUtil {
     /**
      * 获取：NativePayService 对象
      */
-    private static NativePayService getNativePayService(
-        SysPayConfigurationDO sysPayConfigurationDO) {
+    private static NativePayService getNativePayService(SysPayConfigurationDO sysPayConfigurationDO) {
 
-        RSAAutoCertificateConfig rsaAutoCertificateConfig = getRsaAutoCertificateConfig(
-            sysPayConfigurationDO);
+        RSAAutoCertificateConfig rsaAutoCertificateConfig = getRsaAutoCertificateConfig(sysPayConfigurationDO);
 
         return new NativePayService.Builder().config(rsaAutoCertificateConfig).build();
 
@@ -68,8 +66,7 @@ public class PayWxUtil {
         com.wechat.pay.java.service.payments.nativepay.model.Amount amount =
             new com.wechat.pay.java.service.payments.nativepay.model.Amount();
 
-        amount.setTotal(
-            dto.getTotalAmount().multiply(BaseConstant.BIG_DECIMAL_ONE_HUNDRED).intValue());
+        amount.setTotal(dto.getTotalAmount().multiply(BaseConstant.BIG_DECIMAL_ONE_HUNDRED).intValue());
 
         request.setAmount(amount);
 
@@ -77,8 +74,7 @@ public class PayWxUtil {
         request.setMchid(sysPayConfigurationDO.getMerchantId());
         request.setDescription(dto.getSubject());
 
-        request.setNotifyUrl(
-            sysPayConfigurationDO.getNotifyUrl() + "/" + sysPayConfigurationDO.getId());
+        request.setNotifyUrl(sysPayConfigurationDO.getNotifyUrl() + "/" + sysPayConfigurationDO.getId());
 
         request.setOutTradeNo(dto.getOutTradeNo());
         request.setTimeExpire(DatePattern.UTC_WITH_XXX_OFFSET_FORMAT.format(dto.getExpireTime()));
@@ -99,8 +95,7 @@ public class PayWxUtil {
      */
     @SneakyThrows
     @NotNull
-    public static SysPayTradeStatusEnum queryNative(String outTradeNo,
-        SysPayConfigurationDO sysPayConfigurationDO) {
+    public static SysPayTradeStatusEnum queryNative(String outTradeNo, SysPayConfigurationDO sysPayConfigurationDO) {
 
         NativePayService nativePayService = getNativePayService(sysPayConfigurationDO);
 
@@ -120,11 +115,9 @@ public class PayWxUtil {
     /**
      * 获取：JsapiServiceExtension 对象
      */
-    private static JsapiServiceExtension getJsapiServiceExtension(
-        SysPayConfigurationDO sysPayConfigurationDO) {
+    private static JsapiServiceExtension getJsapiServiceExtension(SysPayConfigurationDO sysPayConfigurationDO) {
 
-        RSAAutoCertificateConfig rsaAutoCertificateConfig = getRsaAutoCertificateConfig(
-            sysPayConfigurationDO);
+        RSAAutoCertificateConfig rsaAutoCertificateConfig = getRsaAutoCertificateConfig(sysPayConfigurationDO);
 
         return new JsapiServiceExtension.Builder().config(rsaAutoCertificateConfig).build();
 
@@ -141,8 +134,7 @@ public class PayWxUtil {
 
         SysPayConfigurationDO sysPayConfigurationDO = dto.getSysPayConfigurationDO();
 
-        JsapiServiceExtension jsapiServiceExtension = getJsapiServiceExtension(
-            sysPayConfigurationDO);
+        JsapiServiceExtension jsapiServiceExtension = getJsapiServiceExtension(sysPayConfigurationDO);
 
         com.wechat.pay.java.service.payments.jsapi.model.PrepayRequest request =
             new com.wechat.pay.java.service.payments.jsapi.model.PrepayRequest();
@@ -150,8 +142,7 @@ public class PayWxUtil {
         com.wechat.pay.java.service.payments.jsapi.model.Amount amount =
             new com.wechat.pay.java.service.payments.jsapi.model.Amount();
 
-        amount.setTotal(
-            dto.getTotalAmount().multiply(BaseConstant.BIG_DECIMAL_ONE_HUNDRED).intValue());
+        amount.setTotal(dto.getTotalAmount().multiply(BaseConstant.BIG_DECIMAL_ONE_HUNDRED).intValue());
 
         request.setAmount(amount);
 
@@ -159,8 +150,7 @@ public class PayWxUtil {
         request.setMchid(sysPayConfigurationDO.getMerchantId());
         request.setDescription(dto.getSubject());
 
-        request.setNotifyUrl(
-            sysPayConfigurationDO.getNotifyUrl() + "/" + sysPayConfigurationDO.getId());
+        request.setNotifyUrl(sysPayConfigurationDO.getNotifyUrl() + "/" + sysPayConfigurationDO.getId());
 
         request.setOutTradeNo(dto.getOutTradeNo());
         request.setTimeExpire(DatePattern.UTC_WITH_XXX_OFFSET_FORMAT.format(dto.getExpireTime()));
@@ -189,11 +179,9 @@ public class PayWxUtil {
      */
     @SneakyThrows
     @NotNull
-    public static SysPayTradeStatusEnum queryJsApi(String outTradeNo,
-        SysPayConfigurationDO sysPayConfigurationDO) {
+    public static SysPayTradeStatusEnum queryJsApi(String outTradeNo, SysPayConfigurationDO sysPayConfigurationDO) {
 
-        JsapiServiceExtension jsapiServiceExtension = getJsapiServiceExtension(
-            sysPayConfigurationDO);
+        JsapiServiceExtension jsapiServiceExtension = getJsapiServiceExtension(sysPayConfigurationDO);
 
         com.wechat.pay.java.service.payments.jsapi.model.QueryOrderByOutTradeNoRequest queryRequest =
             new com.wechat.pay.java.service.payments.jsapi.model.QueryOrderByOutTradeNoRequest();
@@ -213,8 +201,7 @@ public class PayWxUtil {
      */
     private static H5Service getH5Service(SysPayConfigurationDO sysPayConfigurationDO) {
 
-        RSAAutoCertificateConfig rsaAutoCertificateConfig = getRsaAutoCertificateConfig(
-            sysPayConfigurationDO);
+        RSAAutoCertificateConfig rsaAutoCertificateConfig = getRsaAutoCertificateConfig(sysPayConfigurationDO);
 
         return new H5Service.Builder().config(rsaAutoCertificateConfig).build();
 
@@ -237,8 +224,7 @@ public class PayWxUtil {
         com.wechat.pay.java.service.payments.h5.model.Amount amount =
             new com.wechat.pay.java.service.payments.h5.model.Amount();
 
-        amount.setTotal(
-            dto.getTotalAmount().multiply(BaseConstant.BIG_DECIMAL_ONE_HUNDRED).intValue());
+        amount.setTotal(dto.getTotalAmount().multiply(BaseConstant.BIG_DECIMAL_ONE_HUNDRED).intValue());
 
         request.setAmount(amount);
 
@@ -246,15 +232,13 @@ public class PayWxUtil {
         request.setMchid(sysPayConfigurationDO.getMerchantId());
         request.setDescription(dto.getSubject());
 
-        request.setNotifyUrl(
-            sysPayConfigurationDO.getNotifyUrl() + "/" + sysPayConfigurationDO.getId());
+        request.setNotifyUrl(sysPayConfigurationDO.getNotifyUrl() + "/" + sysPayConfigurationDO.getId());
 
         request.setOutTradeNo(dto.getOutTradeNo());
         request.setTimeExpire(DatePattern.UTC_WITH_XXX_OFFSET_FORMAT.format(dto.getExpireTime()));
 
         // 调用接口
-        com.wechat.pay.java.service.payments.h5.model.PrepayResponse prepayResponse =
-            h5Service.prepay(request);
+        com.wechat.pay.java.service.payments.h5.model.PrepayResponse prepayResponse = h5Service.prepay(request);
 
         // 返回：支付跳转的地址
         return new SysPayReturnBO(prepayResponse.getH5Url(), sysPayConfigurationDO.getAppId());
@@ -268,8 +252,7 @@ public class PayWxUtil {
      */
     @SneakyThrows
     @NotNull
-    public static SysPayTradeStatusEnum queryH5(String outTradeNo,
-        SysPayConfigurationDO sysPayConfigurationDO) {
+    public static SysPayTradeStatusEnum queryH5(String outTradeNo, SysPayConfigurationDO sysPayConfigurationDO) {
 
         H5Service h5Service = getH5Service(sysPayConfigurationDO);
 

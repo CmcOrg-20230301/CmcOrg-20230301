@@ -1,10 +1,15 @@
 package com.cmcorg20230301.be.engine.dept.service.impl;
 
-import cn.hutool.core.bean.BeanUtil;
-import cn.hutool.core.collection.CollUtil;
-import cn.hutool.core.lang.func.Func1;
-import cn.hutool.core.util.BooleanUtil;
-import cn.hutool.core.util.StrUtil;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
+
+import javax.annotation.Resource;
+
+import org.jetbrains.annotations.NotNull;
+import org.springframework.stereotype.Service;
+
 import com.baomidou.dynamic.datasource.annotation.DSTransactional;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -22,29 +27,21 @@ import com.cmcorg20230301.be.engine.security.exception.BaseBizCodeEnum;
 import com.cmcorg20230301.be.engine.security.mapper.SysAreaMapper;
 import com.cmcorg20230301.be.engine.security.mapper.SysDeptMapper;
 import com.cmcorg20230301.be.engine.security.mapper.SysUserMapper;
-import com.cmcorg20230301.be.engine.security.model.entity.BaseEntity;
-import com.cmcorg20230301.be.engine.security.model.entity.BaseEntityNoId;
-import com.cmcorg20230301.be.engine.security.model.entity.BaseEntityNoIdSuper;
-import com.cmcorg20230301.be.engine.security.model.entity.BaseEntityTree;
-import com.cmcorg20230301.be.engine.security.model.entity.SysAreaRefDeptDO;
-import com.cmcorg20230301.be.engine.security.model.entity.SysDeptDO;
-import com.cmcorg20230301.be.engine.security.model.entity.SysDeptRefUserDO;
+import com.cmcorg20230301.be.engine.security.model.entity.*;
 import com.cmcorg20230301.be.engine.security.model.vo.ApiResultVO;
 import com.cmcorg20230301.be.engine.security.util.MyEntityUtil;
 import com.cmcorg20230301.be.engine.security.util.MyTreeUtil;
 import com.cmcorg20230301.be.engine.security.util.SysTenantUtil;
 import com.cmcorg20230301.be.engine.util.util.MyMapUtil;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
-import javax.annotation.Resource;
-import org.jetbrains.annotations.NotNull;
-import org.springframework.stereotype.Service;
+
+import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.lang.func.Func1;
+import cn.hutool.core.util.BooleanUtil;
+import cn.hutool.core.util.StrUtil;
 
 @Service
-public class SysDeptServiceImpl extends ServiceImpl<SysDeptMapper, SysDeptDO> implements
-    SysDeptService {
+public class SysDeptServiceImpl extends ServiceImpl<SysDeptMapper, SysDeptDO> implements SysDeptService {
 
     @Resource
     SysAreaRefDeptService sysAreaRefDeptService;
@@ -66,8 +63,7 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptMapper, SysDeptDO> im
     public String insertOrUpdate(SysDeptInsertOrUpdateDTO dto) {
 
         // 处理：BaseTenantInsertOrUpdateDTO
-        SysTenantUtil.handleBaseTenantInsertOrUpdateDTO(dto,
-            getCheckIllegalFunc1(CollUtil.newHashSet(dto.getId())),
+        SysTenantUtil.handleBaseTenantInsertOrUpdateDTO(dto, getCheckIllegalFunc1(CollUtil.newHashSet(dto.getId())),
             getTenantIdBaseEntityFunc1());
 
         if (dto.getId() != null && dto.getId().equals(dto.getParentId())) {
@@ -77,8 +73,7 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptMapper, SysDeptDO> im
         // 相同父节点下：部门名（不能重复）
         boolean exists = lambdaQuery().eq(SysDeptDO::getName, dto.getName())
             .eq(BaseEntityTree::getParentId, MyEntityUtil.getNotNullParentId(dto.getParentId()))
-            .ne(dto.getId() != null, BaseEntity::getId, dto.getId())
-            .eq(BaseEntityNoId::getTenantId, dto.getTenantId())
+            .ne(dto.getId() != null, BaseEntity::getId, dto.getId()).eq(BaseEntityNoId::getTenantId, dto.getTenantId())
             .exists();
 
         if (exists) {
@@ -121,8 +116,7 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptMapper, SysDeptDO> im
         if (CollUtil.isNotEmpty(dto.getAreaIdSet())) {
 
             // 检查：区域 idSet，是否合法
-            Long count = ChainWrappers.lambdaQueryChain(sysAreaMapper)
-                .in(BaseEntity::getId, dto.getAreaIdSet())
+            Long count = ChainWrappers.lambdaQueryChain(sysAreaMapper).in(BaseEntity::getId, dto.getAreaIdSet())
                 .eq(BaseEntityNoIdSuper::getTenantId, dto.getTenantId()).count();
 
             if (count != dto.getAreaIdSet().size()) {
@@ -151,8 +145,7 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptMapper, SysDeptDO> im
         if (CollUtil.isNotEmpty(dto.getUserIdSet())) {
 
             // 检查：用户 idSet，是否合法
-            Long count = ChainWrappers.lambdaQueryChain(sysUserMapper)
-                .in(BaseEntity::getId, dto.getUserIdSet())
+            Long count = ChainWrappers.lambdaQueryChain(sysUserMapper).in(BaseEntity::getId, dto.getUserIdSet())
                 .eq(BaseEntityNoIdSuper::getTenantId, dto.getTenantId()).count();
 
             if (count != dto.getUserIdSet().size()) {
@@ -188,13 +181,11 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptMapper, SysDeptDO> im
         // 处理：MyTenantPageDTO
         SysTenantUtil.handleMyTenantPageDTO(dto, true);
 
-        return lambdaQuery().like(StrUtil.isNotBlank(dto.getName()), SysDeptDO::getName,
-                dto.getName())
+        return lambdaQuery().like(StrUtil.isNotBlank(dto.getName()), SysDeptDO::getName, dto.getName())
             .like(StrUtil.isNotBlank(dto.getRemark()), BaseEntityTree::getRemark, dto.getRemark())
             .eq(dto.getEnableFlag() != null, BaseEntityTree::getEnableFlag, dto.getEnableFlag())
             .in(BaseEntityNoId::getTenantId, dto.getTenantIdSet()) //
-            .eq(BaseEntityTree::getDelFlag, false).orderByDesc(BaseEntityTree::getOrderNo)
-            .page(dto.page(true));
+            .eq(BaseEntityTree::getDelFlag, false).orderByDesc(BaseEntityTree::getOrderNo).page(dto.page(true));
 
     }
 
@@ -212,8 +203,7 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptMapper, SysDeptDO> im
             return new ArrayList<>();
         }
 
-        List<SysDeptDO> allList = lambdaQuery().in(BaseEntityNoId::getTenantId,
-            dto.getTenantIdSet()).list();
+        List<SysDeptDO> allList = lambdaQuery().in(BaseEntityNoId::getTenantId, dto.getTenantIdSet()).list();
 
         if (allList.size() == 0) {
             return new ArrayList<>();
@@ -232,35 +222,28 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptMapper, SysDeptDO> im
         // 获取：用户关联的租户
         Set<Long> queryTenantIdSet = SysTenantUtil.getUserRefTenantIdSet();
 
-        SysDeptDO sysDeptDO =
-            lambdaQuery().eq(BaseEntity::getId, notNullId.getId())
-                .in(BaseEntityNoId::getTenantId, queryTenantIdSet)
-                .one();
+        SysDeptDO sysDeptDO = lambdaQuery().eq(BaseEntity::getId, notNullId.getId())
+            .in(BaseEntityNoId::getTenantId, queryTenantIdSet).one();
 
         if (sysDeptDO == null) {
             return null;
         }
 
-        SysDeptInfoByIdVO sysDeptInfoByIdVO = BeanUtil.copyProperties(sysDeptDO,
-            SysDeptInfoByIdVO.class);
+        SysDeptInfoByIdVO sysDeptInfoByIdVO = BeanUtil.copyProperties(sysDeptDO, SysDeptInfoByIdVO.class);
 
         // 获取：绑定的区域 idSet
-        List<SysAreaRefDeptDO> sysAreaRefDeptDOList =
-            sysAreaRefDeptService.lambdaQuery().eq(SysAreaRefDeptDO::getDeptId, notNullId.getId())
-                .select(SysAreaRefDeptDO::getAreaId).list();
+        List<SysAreaRefDeptDO> sysAreaRefDeptDOList = sysAreaRefDeptService.lambdaQuery()
+            .eq(SysAreaRefDeptDO::getDeptId, notNullId.getId()).select(SysAreaRefDeptDO::getAreaId).list();
 
         Set<Long> areaIdSet =
-            sysAreaRefDeptDOList.stream().map(SysAreaRefDeptDO::getAreaId)
-                .collect(Collectors.toSet());
+            sysAreaRefDeptDOList.stream().map(SysAreaRefDeptDO::getAreaId).collect(Collectors.toSet());
 
         // 获取：绑定的用户 idSet
-        List<SysDeptRefUserDO> sysDeptRefUserDOList =
-            sysDeptRefUserService.lambdaQuery().eq(SysDeptRefUserDO::getDeptId, notNullId.getId())
-                .select(SysDeptRefUserDO::getUserId).list();
+        List<SysDeptRefUserDO> sysDeptRefUserDOList = sysDeptRefUserService.lambdaQuery()
+            .eq(SysDeptRefUserDO::getDeptId, notNullId.getId()).select(SysDeptRefUserDO::getUserId).list();
 
         Set<Long> userIdSet =
-            sysDeptRefUserDOList.stream().map(SysDeptRefUserDO::getUserId)
-                .collect(Collectors.toSet());
+            sysDeptRefUserDOList.stream().map(SysDeptRefUserDO::getUserId).collect(Collectors.toSet());
 
         sysDeptInfoByIdVO.setAreaIdSet(areaIdSet);
         sysDeptInfoByIdVO.setUserIdSet(userIdSet);
@@ -332,13 +315,11 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptMapper, SysDeptDO> im
             return BaseBizCodeEnum.OK;
         }
 
-        List<SysDeptDO> sysDeptDOList =
-            lambdaQuery().in(BaseEntity::getId, dto.getIdSet())
-                .select(BaseEntity::getId, BaseEntityTree::getOrderNo)
-                .list();
+        List<SysDeptDO> sysDeptDOList = lambdaQuery().in(BaseEntity::getId, dto.getIdSet())
+            .select(BaseEntity::getId, BaseEntityTree::getOrderNo).list();
 
         for (SysDeptDO item : sysDeptDOList) {
-            item.setOrderNo((int) (item.getOrderNo() + dto.getNumber()));
+            item.setOrderNo((int)(item.getOrderNo() + dto.getNumber()));
         }
 
         updateBatchById(sysDeptDOList);
@@ -353,8 +334,7 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptMapper, SysDeptDO> im
     @NotNull
     private Func1<Set<Long>, Long> getCheckIllegalFunc1(Set<Long> idSet) {
 
-        return tenantIdSet -> lambdaQuery().in(BaseEntity::getId, idSet)
-            .in(BaseEntityNoId::getTenantId, tenantIdSet)
+        return tenantIdSet -> lambdaQuery().in(BaseEntity::getId, idSet).in(BaseEntityNoId::getTenantId, tenantIdSet)
             .count();
 
     }
@@ -370,7 +350,3 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptMapper, SysDeptDO> im
     }
 
 }
-
-
-
-

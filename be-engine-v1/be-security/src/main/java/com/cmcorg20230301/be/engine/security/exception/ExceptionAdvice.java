@@ -1,22 +1,12 @@
 package com.cmcorg20230301.be.engine.security.exception;
 
-import cn.hutool.core.map.MapUtil;
-import cn.hutool.extra.servlet.ServletUtil;
-import cn.hutool.json.JSONUtil;
-import com.cmcorg20230301.be.engine.ip2region.util.Ip2RegionUtil;
-import com.cmcorg20230301.be.engine.security.model.entity.SysRequestDO;
-import com.cmcorg20230301.be.engine.security.model.vo.ApiResultVO;
-import com.cmcorg20230301.be.engine.security.util.MyEntityUtil;
-import com.cmcorg20230301.be.engine.security.util.MyExceptionUtil;
-import com.cmcorg20230301.be.engine.security.util.RequestUtil;
-import com.cmcorg20230301.be.engine.security.util.UserUtil;
-import io.swagger.v3.oas.annotations.Operation;
 import java.lang.reflect.Method;
 import java.util.Date;
 import java.util.Map;
+
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
-import lombok.extern.slf4j.Slf4j;
+
 import org.jetbrains.annotations.Nullable;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.access.AccessDeniedException;
@@ -25,6 +15,20 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+
+import com.cmcorg20230301.be.engine.ip2region.util.Ip2RegionUtil;
+import com.cmcorg20230301.be.engine.security.model.entity.SysRequestDO;
+import com.cmcorg20230301.be.engine.security.model.vo.ApiResultVO;
+import com.cmcorg20230301.be.engine.security.util.MyEntityUtil;
+import com.cmcorg20230301.be.engine.security.util.MyExceptionUtil;
+import com.cmcorg20230301.be.engine.security.util.RequestUtil;
+import com.cmcorg20230301.be.engine.security.util.UserUtil;
+
+import cn.hutool.core.map.MapUtil;
+import cn.hutool.extra.servlet.ServletUtil;
+import cn.hutool.json.JSONUtil;
+import io.swagger.v3.oas.annotations.Operation;
+import lombok.extern.slf4j.Slf4j;
 
 @RestControllerAdvice
 @Slf4j
@@ -52,8 +56,7 @@ public class ExceptionAdvice {
 
         try {
 
-            ApiResultVO.error(BaseBizCodeEnum.PARAMETER_CHECK_ERROR,
-                map); // 这里肯定会抛出 BaseException异常
+            ApiResultVO.error(BaseBizCodeEnum.PARAMETER_CHECK_ERROR, map); // 这里肯定会抛出 BaseException异常
 
         } catch (BaseException baseException) {
 
@@ -64,8 +67,7 @@ public class ExceptionAdvice {
                 // 处理：请求
                 handleRequest(httpServletRequest, method.getAnnotation(Operation.class),
                     MyEntityUtil.getNotNullStr(baseException.getMessage()), //
-                    MyEntityUtil.getNotNullStr(
-                        JSONUtil.toJsonStr(e.getBindingResult().getTarget())));
+                    MyEntityUtil.getNotNullStr(JSONUtil.toJsonStr(e.getBindingResult().getTarget())));
 
             }
 
@@ -80,8 +82,7 @@ public class ExceptionAdvice {
     /**
      * 处理：请求
      */
-    public static void handleRequest(HttpServletRequest httpServletRequest,
-        @Nullable Operation operation,
+    public static void handleRequest(HttpServletRequest httpServletRequest, @Nullable Operation operation,
         String errorMsg, String requestParam) {
 
         Date date = new Date();
@@ -108,8 +109,7 @@ public class ExceptionAdvice {
         sysRequestDO.setRequestParam(requestParam);
 
         // 设置：类型
-        sysRequestDO.setType(
-            operation == null ? "" : MyEntityUtil.getNotNullAndTrimStr(operation.description()));
+        sysRequestDO.setType(operation == null ? "" : MyEntityUtil.getNotNullAndTrimStr(operation.description()));
         sysRequestDO.setResponseValue("");
 
         sysRequestDO.setTenantId(currentTenantIdDefault);
@@ -160,14 +160,12 @@ public class ExceptionAdvice {
 
         try {
 
-            ApiResultVO.error(BaseBizCodeEnum.PARAMETER_CHECK_ERROR,
-                e.getMessage()); // 这里肯定会抛出 BaseException异常
+            ApiResultVO.error(BaseBizCodeEnum.PARAMETER_CHECK_ERROR, e.getMessage()); // 这里肯定会抛出 BaseException异常
 
         } catch (BaseException baseException) {
 
             // 处理：请求
-            handleRequest(httpServletRequest, null,
-                MyEntityUtil.getNotNullStr(baseException.getMessage()), "");
+            handleRequest(httpServletRequest, null, MyEntityUtil.getNotNullStr(baseException.getMessage()), "");
 
             return getBaseExceptionApiResult(baseException);
 
@@ -206,8 +204,7 @@ public class ExceptionAdvice {
         } catch (BaseException baseException) {
 
             // 处理：请求
-            handleRequest(httpServletRequest, null,
-                MyEntityUtil.getNotNullStr(baseException.getMessage()), "");
+            handleRequest(httpServletRequest, null, MyEntityUtil.getNotNullStr(baseException.getMessage()), "");
 
             return getBaseExceptionApiResult(baseException);
 

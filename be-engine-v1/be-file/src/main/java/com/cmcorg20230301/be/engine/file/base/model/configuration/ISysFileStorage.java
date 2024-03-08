@@ -1,11 +1,13 @@
 package com.cmcorg20230301.be.engine.file.base.model.configuration;
 
-import com.cmcorg20230301.be.engine.file.base.model.entity.SysFileStorageConfigurationDO;
-import com.cmcorg20230301.be.engine.security.model.interfaces.ISysFileStorageType;
 import java.io.InputStream;
 import java.util.Set;
+
 import org.jetbrains.annotations.NotNull;
 import org.springframework.web.multipart.MultipartFile;
+
+import com.cmcorg20230301.be.engine.file.base.model.entity.SysFileStorageConfigurationDO;
+import com.cmcorg20230301.be.engine.security.model.interfaces.ISysFileStorageType;
 
 public interface ISysFileStorage {
 
@@ -35,10 +37,9 @@ public interface ISysFileStorage {
     /**
      * 获取：文件预览地址
      *
-     * @param uri        例如：avatar/uuid.xxx，备注：不要在最前面加 /
+     * @param uri 例如：avatar/uuid.xxx，备注：不要在最前面加 /
      * @param bucketName 桶名，例如：be-public-bucket，备注：不要在最前面加 /
      */
-    String getUrl(String uri, String bucketName,
-        SysFileStorageConfigurationDO sysFileStorageConfigurationDO);
+    String getUrl(String uri, String bucketName, SysFileStorageConfigurationDO sysFileStorageConfigurationDO);
 
 }

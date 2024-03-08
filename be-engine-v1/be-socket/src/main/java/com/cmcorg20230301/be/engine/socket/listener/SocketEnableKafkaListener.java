@@ -1,12 +1,10 @@
 package com.cmcorg20230301.be.engine.socket.listener;
 
-import cn.hutool.core.collection.CollUtil;
-import cn.hutool.json.JSONUtil;
-import com.cmcorg20230301.be.engine.kafka.model.enums.KafkaTopicEnum;
-import com.cmcorg20230301.be.engine.model.model.constant.LogTopicConstant;
-import com.cmcorg20230301.be.engine.security.util.TryUtil;
-import com.cmcorg20230301.be.engine.socket.model.configuration.ISocketEnable;
-import lombok.extern.slf4j.Slf4j;
+import java.util.Collection;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
+
 import org.jetbrains.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.annotation.KafkaHandler;
@@ -14,10 +12,14 @@ import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.support.Acknowledgment;
 import org.springframework.stereotype.Component;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
+import com.cmcorg20230301.be.engine.kafka.model.enums.KafkaTopicEnum;
+import com.cmcorg20230301.be.engine.model.model.constant.LogTopicConstant;
+import com.cmcorg20230301.be.engine.security.util.TryUtil;
+import com.cmcorg20230301.be.engine.socket.model.configuration.ISocketEnable;
+
+import cn.hutool.core.collection.CollUtil;
+import cn.hutool.json.JSONUtil;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * socket禁用的 kafka监听器
@@ -28,8 +30,7 @@ import java.util.stream.Collectors;
 @Slf4j(topic = LogTopicConstant.SOCKET)
 public class SocketEnableKafkaListener {
 
-    public static final List<String> TOPIC_LIST = CollUtil.newArrayList(
-        KafkaTopicEnum.SOCKET_ENABLE_TOPIC.name());
+    public static final List<String> TOPIC_LIST = CollUtil.newArrayList(KafkaTopicEnum.SOCKET_ENABLE_TOPIC.name());
 
     @Nullable
     private static List<ISocketEnable> iSocketEnableList;
@@ -46,7 +47,7 @@ public class SocketEnableKafkaListener {
 
             Set<Long> socketIdSet = recordList.stream() //
                 .map(it -> JSONUtil.toList(it, Long.class)) //
-                .flatMap(Collection::stream)  //
+                .flatMap(Collection::stream) //
                 .collect(Collectors.toSet());
 
             if (CollUtil.isNotEmpty(iSocketEnableList)) {

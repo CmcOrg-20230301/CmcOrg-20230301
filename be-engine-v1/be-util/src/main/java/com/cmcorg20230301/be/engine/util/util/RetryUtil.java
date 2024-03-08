@@ -1,13 +1,13 @@
 package com.cmcorg20230301.be.engine.util.util;
 
+import java.io.InputStream;
+import java.util.function.Supplier;
+
 import cn.hutool.core.lang.func.VoidFunc0;
 import cn.hutool.core.thread.ThreadUtil;
 import cn.hutool.http.HttpRequest;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-
-import java.io.InputStream;
-import java.util.function.Supplier;
 
 /**
  * 重试工具类
@@ -73,7 +73,7 @@ public class RetryUtil {
     /**
      * 执行
      *
-     * @param gapMs      间隔多少毫秒
+     * @param gapMs 间隔多少毫秒
      * @param execNumber 传值多少，则方法会执行多少次
      */
     @SneakyThrows
@@ -109,7 +109,7 @@ public class RetryUtil {
     /**
      * 执行
      *
-     * @param gapMs      间隔多少毫秒
+     * @param gapMs 间隔多少毫秒
      * @param execNumber 传值多少，则方法会执行多少次
      */
     @SneakyThrows

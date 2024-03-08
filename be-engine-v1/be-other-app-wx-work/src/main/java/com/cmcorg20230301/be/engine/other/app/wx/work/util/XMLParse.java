@@ -9,8 +9,10 @@
 package com.cmcorg20230301.be.engine.other.app.wx.work.util;
 
 import java.io.StringReader;
+
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
+
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -36,7 +38,8 @@ class XMLParse {
             DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
 
             String FEATURE = null;
-            // This is the PRIMARY defense. If DTDs (doctypes) are disallowed, almost all XML entity attacks are prevented
+            // This is the PRIMARY defense. If DTDs (doctypes) are disallowed, almost all XML entity attacks are
+            // prevented
             // Xerces 2 only - http://xerces.apache.org/xerces2-j/features.html#disallow-doctype-decl
             FEATURE = "http://apache.org/xml/features/disallow-doctype-decl";
             dbf.setFeature(FEATURE, true);
@@ -87,18 +90,17 @@ class XMLParse {
     /**
      * 生成xml消息
      *
-     * @param encrypt   加密后的消息密文
+     * @param encrypt 加密后的消息密文
      * @param signature 安全签名
      * @param timestamp 时间戳
-     * @param nonce     随机字符串
+     * @param nonce 随机字符串
      * @return 生成的xml字符串
      */
-    public static String generate(String encrypt, String signature, String timestamp,
-        String nonce) {
+    public static String generate(String encrypt, String signature, String timestamp, String nonce) {
 
-        String format = "<xml>\n" + "<Encrypt><![CDATA[%1$s]]></Encrypt>\n"
-            + "<MsgSignature><![CDATA[%2$s]]></MsgSignature>\n"
-            + "<TimeStamp>%3$s</TimeStamp>\n" + "<Nonce><![CDATA[%4$s]]></Nonce>\n" + "</xml>";
+        String format =
+            "<xml>\n" + "<Encrypt><![CDATA[%1$s]]></Encrypt>\n" + "<MsgSignature><![CDATA[%2$s]]></MsgSignature>\n"
+                + "<TimeStamp>%3$s</TimeStamp>\n" + "<Nonce><![CDATA[%4$s]]></Nonce>\n" + "</xml>";
         return String.format(format, encrypt, signature, timestamp, nonce);
 
     }

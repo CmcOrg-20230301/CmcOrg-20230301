@@ -1,5 +1,16 @@
 package com.cmcorg20230301.be.engine.wallet.controller;
 
+import java.util.List;
+
+import javax.annotation.Resource;
+import javax.validation.Valid;
+
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.cmcorg20230301.be.engine.model.model.dto.ChangeBigDecimalNumberIdSetDTO;
 import com.cmcorg20230301.be.engine.model.model.dto.NotEmptyIdSet;
@@ -8,17 +19,9 @@ import com.cmcorg20230301.be.engine.security.model.vo.ApiResultVO;
 import com.cmcorg20230301.be.engine.wallet.model.dto.SysUserWalletPageDTO;
 import com.cmcorg20230301.be.engine.wallet.model.entity.SysUserWalletDO;
 import com.cmcorg20230301.be.engine.wallet.service.SysTenantWalletService;
+
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
-import javax.annotation.Resource;
-import javax.validation.Valid;
-import java.util.List;
 
 @Tag(name = "基础-租户钱包-管理")
 @RestController
@@ -66,8 +69,7 @@ public class SysTenantWalletController {
     @Operation(summary = "通过租户主键 idSet，加减可提现的钱")
     @PostMapping("/addWithdrawableMoney/background")
     @PreAuthorize("hasAuthority('sysTenantWallet:addWithdrawableMoney:background')")
-    public ApiResultVO<String> addWithdrawableMoneyBackground(
-        @RequestBody @Valid ChangeBigDecimalNumberIdSetDTO dto) {
+    public ApiResultVO<String> addWithdrawableMoneyBackground(@RequestBody @Valid ChangeBigDecimalNumberIdSetDTO dto) {
         return ApiResultVO.okMsg(baseService.addWithdrawableMoneyBackground(dto));
     }
 

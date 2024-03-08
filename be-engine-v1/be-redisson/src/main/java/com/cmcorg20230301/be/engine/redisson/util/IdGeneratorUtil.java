@@ -1,17 +1,21 @@
 package com.cmcorg20230301.be.engine.redisson.util;
 
-import cn.hutool.core.convert.Convert;
-import cn.hutool.core.date.DatePattern;
-import cn.hutool.core.date.DateUtil;
-import cn.hutool.core.util.StrUtil;
-import com.cmcorg20230301.be.engine.redisson.model.enums.BaseRedisKeyEnum;
 import java.util.Date;
 import java.util.LinkedList;
+
 import javax.annotation.PostConstruct;
+
 import org.jetbrains.annotations.NotNull;
 import org.redisson.api.RAtomicLong;
 import org.redisson.api.RedissonClient;
 import org.springframework.stereotype.Component;
+
+import com.cmcorg20230301.be.engine.redisson.model.enums.BaseRedisKeyEnum;
+
+import cn.hutool.core.convert.Convert;
+import cn.hutool.core.date.DatePattern;
+import cn.hutool.core.date.DateUtil;
+import cn.hutool.core.util.StrUtil;
 
 /**
  * id，生成工具类
@@ -56,8 +60,7 @@ public class IdGeneratorUtil {
         // 需要补充的数量
         int needSize = ID_SET_SIZE - ID_POOL.size();
 
-        RAtomicLong atomicLong = redissonClient.getAtomicLong(
-            BaseRedisKeyEnum.ATOMIC_LONG_ID_GENERATOR.name());
+        RAtomicLong atomicLong = redissonClient.getAtomicLong(BaseRedisKeyEnum.ATOMIC_LONG_ID_GENERATOR.name());
 
         long endId = atomicLong.addAndGet(needSize);
 
@@ -94,8 +97,7 @@ public class IdGeneratorUtil {
 
         // long最大值：9223372036854775807
         // 例如：20220928221425 -> 0220928221425
-        String timeStr = DateUtil.format(new Date(), DatePattern.PURE_DATETIME_PATTERN)
-            .substring(1);
+        String timeStr = DateUtil.format(new Date(), DatePattern.PURE_DATETIME_PATTERN).substring(1);
 
         long id;
 

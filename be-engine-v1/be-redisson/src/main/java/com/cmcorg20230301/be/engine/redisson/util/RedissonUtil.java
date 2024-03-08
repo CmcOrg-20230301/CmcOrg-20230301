@@ -1,16 +1,18 @@
 package com.cmcorg20230301.be.engine.redisson.util;
 
-import cn.hutool.core.lang.func.VoidFunc0;
-import cn.hutool.core.lang.func.VoidFunc1;
 import java.util.Set;
 import java.util.function.Supplier;
-import lombok.SneakyThrows;
+
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.redisson.api.RBatch;
 import org.redisson.api.RLock;
 import org.redisson.api.RedissonClient;
 import org.springframework.stereotype.Component;
+
+import cn.hutool.core.lang.func.VoidFunc0;
+import cn.hutool.core.lang.func.VoidFunc1;
+import lombok.SneakyThrows;
 
 @Component
 public class RedissonUtil {
@@ -84,8 +86,7 @@ public class RedissonUtil {
      * 获取连锁，并执行方法
      */
     @SneakyThrows
-    public static void doMultiLock(@Nullable String preName, Set<?> nameSet,
-        @NotNull VoidFunc0 voidFunc0,
+    public static void doMultiLock(@Nullable String preName, Set<?> nameSet, @NotNull VoidFunc0 voidFunc0,
         RLock... lockArr) {
 
         RLock lock = getMultiLock(preName, nameSet, lockArr);
@@ -107,8 +108,7 @@ public class RedissonUtil {
     /**
      * 获取连锁，并执行方法
      */
-    public static <T> T doMultiLock(@Nullable String preName, Set<?> nameSet,
-        @NotNull Supplier<T> supplier,
+    public static <T> T doMultiLock(@Nullable String preName, Set<?> nameSet, @NotNull Supplier<T> supplier,
         RLock... lockArr) {
 
         RLock lock = getMultiLock(preName, nameSet, lockArr);
@@ -130,8 +130,7 @@ public class RedissonUtil {
     /**
      * 获取连锁
      */
-    private static RLock getMultiLock(@Nullable String preName, Set<?> nameSet,
-        RLock... tempLockArr) {
+    private static RLock getMultiLock(@Nullable String preName, Set<?> nameSet, RLock... tempLockArr) {
 
         if (preName == null) {
             preName = ""; // 防止：null 变成 "null"

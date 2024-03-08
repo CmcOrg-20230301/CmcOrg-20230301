@@ -1,5 +1,16 @@
 package com.cmcorg20230301.be.engine.dict.controller;
 
+import java.util.List;
+
+import javax.annotation.Resource;
+import javax.validation.Valid;
+
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.cmcorg20230301.be.engine.dict.model.dto.SysDictInsertOrUpdateDTO;
 import com.cmcorg20230301.be.engine.dict.model.dto.SysDictListByDictKeyDTO;
@@ -11,16 +22,9 @@ import com.cmcorg20230301.be.engine.model.model.dto.NotNullId;
 import com.cmcorg20230301.be.engine.model.model.vo.DictIntegerVO;
 import com.cmcorg20230301.be.engine.security.model.entity.SysDictDO;
 import com.cmcorg20230301.be.engine.security.model.vo.ApiResultVO;
+
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import java.util.List;
-import javax.annotation.Resource;
-import javax.validation.Valid;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
 
 @Tag(name = "基础-字典-管理")
 @RestController
@@ -46,8 +50,7 @@ public class SysDictController {
 
     @Operation(summary = "通过：dictKey获取字典项集合，备注：会进行缓存")
     @PostMapping("/listByDictKey")
-    public ApiResultVO<List<DictIntegerVO>> listByDictKey(
-        @RequestBody @Valid SysDictListByDictKeyDTO dto) {
+    public ApiResultVO<List<DictIntegerVO>> listByDictKey(@RequestBody @Valid SysDictListByDictKeyDTO dto) {
         return ApiResultVO.okData(baseService.listByDictKey(dto));
     }
 

@@ -1,39 +1,29 @@
 package com.cmcorg20230301.be.engine.pay.ali.util;
 
-import cn.hutool.core.date.DateUtil;
-import cn.hutool.core.lang.Assert;
-import cn.hutool.core.lang.func.Func1;
-import cn.hutool.core.util.BooleanUtil;
+import org.jetbrains.annotations.NotNull;
+import org.springframework.stereotype.Component;
+
 import com.alipay.api.AlipayClient;
 import com.alipay.api.AlipayConfig;
 import com.alipay.api.DefaultAlipayClient;
-import com.alipay.api.domain.AlipayTradeAppPayModel;
-import com.alipay.api.domain.AlipayTradePagePayModel;
-import com.alipay.api.domain.AlipayTradePrecreateModel;
-import com.alipay.api.domain.AlipayTradeQueryModel;
-import com.alipay.api.domain.AlipayTradeWapPayModel;
-import com.alipay.api.request.AlipayTradeAppPayRequest;
-import com.alipay.api.request.AlipayTradePagePayRequest;
-import com.alipay.api.request.AlipayTradePrecreateRequest;
-import com.alipay.api.request.AlipayTradeQueryRequest;
-import com.alipay.api.request.AlipayTradeWapPayRequest;
-import com.alipay.api.response.AlipayTradeAppPayResponse;
-import com.alipay.api.response.AlipayTradePagePayResponse;
-import com.alipay.api.response.AlipayTradePrecreateResponse;
-import com.alipay.api.response.AlipayTradeQueryResponse;
-import com.alipay.api.response.AlipayTradeWapPayResponse;
+import com.alipay.api.domain.*;
+import com.alipay.api.request.*;
+import com.alipay.api.response.*;
 import com.cmcorg20230301.be.engine.pay.base.model.bo.SysPayReturnBO;
 import com.cmcorg20230301.be.engine.pay.base.model.dto.PayDTO;
 import com.cmcorg20230301.be.engine.pay.base.model.entity.SysPayConfigurationDO;
 import com.cmcorg20230301.be.engine.pay.base.model.enums.SysPayTradeStatusEnum;
 import com.cmcorg20230301.be.engine.security.model.vo.ApiResultVO;
 import com.cmcorg20230301.be.engine.util.util.MyNumberUtil;
+
+import cn.hutool.core.date.DateUtil;
+import cn.hutool.core.lang.Assert;
+import cn.hutool.core.lang.func.Func1;
+import cn.hutool.core.util.BooleanUtil;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.SneakyThrows;
-import org.jetbrains.annotations.NotNull;
-import org.springframework.stereotype.Component;
 
 /**
  * 支付：支付宝工具类
@@ -83,8 +73,7 @@ public class PayAliUtil {
 
         AlipayClient alipayClient = new DefaultAlipayClient(alipayConfig);
 
-        String notifyUrl =
-            sysPayConfigurationDO.getNotifyUrl() + "/" + sysPayConfigurationDO.getId();
+        String notifyUrl = sysPayConfigurationDO.getNotifyUrl() + "/" + sysPayConfigurationDO.getId();
 
         // 执行支付
         return func1.call(new DoPayBO(sysPayConfigurationDO, alipayClient, notifyUrl));
@@ -120,8 +109,7 @@ public class PayAliUtil {
             handleApiPayResponse(response.isSuccess(), "支付宝支付失败：", response.getSubMsg());
 
             // 返回：扫码地址
-            return new SysPayReturnBO(response.getQrCode(),
-                doPayBO.getSysPayConfigurationDO().getAppId());
+            return new SysPayReturnBO(response.getQrCode(), doPayBO.getSysPayConfigurationDO().getAppId());
 
         });
 
@@ -155,8 +143,7 @@ public class PayAliUtil {
             handleApiPayResponse(response.isSuccess(), "支付宝支付失败：", response.getSubMsg());
 
             // 返回：调用手机支付需要的参数
-            return new SysPayReturnBO(response.getBody(),
-                doPayBO.getSysPayConfigurationDO().getAppId());
+            return new SysPayReturnBO(response.getBody(), doPayBO.getSysPayConfigurationDO().getAppId());
 
         });
 
@@ -185,15 +172,13 @@ public class PayAliUtil {
             request.setBizModel(model);
 
             // 备注：指定为 GET，那么 body就是 url，反之就是：html的 form表单格式
-            AlipayTradePagePayResponse response = doPayBO.getAlipayClient()
-                .pageExecute(request, "GET");
+            AlipayTradePagePayResponse response = doPayBO.getAlipayClient().pageExecute(request, "GET");
 
             // 处理：支付宝的返回值
             handleApiPayResponse(response.isSuccess(), "支付宝支付失败：", response.getSubMsg());
 
             // 返回：支付的 url链接
-            return new SysPayReturnBO(response.getBody(),
-                doPayBO.getSysPayConfigurationDO().getAppId());
+            return new SysPayReturnBO(response.getBody(), doPayBO.getSysPayConfigurationDO().getAppId());
 
         });
 
@@ -224,15 +209,13 @@ public class PayAliUtil {
             request.setBizModel(model);
 
             // 备注：指定为 GET，那么 body就是 url，反之就是：html的 form表单格式
-            AlipayTradeWapPayResponse response = doPayBO.getAlipayClient()
-                .pageExecute(request, "GET");
+            AlipayTradeWapPayResponse response = doPayBO.getAlipayClient().pageExecute(request, "GET");
 
             // 处理：支付宝的返回值
             handleApiPayResponse(response.isSuccess(), "支付宝支付失败：", response.getSubMsg());
 
             // 返回：支付的 url链接
-            return new SysPayReturnBO(response.getBody(),
-                doPayBO.getSysPayConfigurationDO().getAppId());
+            return new SysPayReturnBO(response.getBody(), doPayBO.getSysPayConfigurationDO().getAppId());
 
         });
 
@@ -262,8 +245,7 @@ public class PayAliUtil {
      */
     @SneakyThrows
     @NotNull
-    public static SysPayTradeStatusEnum query(String outTradeNo,
-        SysPayConfigurationDO sysPayConfigurationDO) {
+    public static SysPayTradeStatusEnum query(String outTradeNo, SysPayConfigurationDO sysPayConfigurationDO) {
 
         Assert.notBlank(outTradeNo);
 

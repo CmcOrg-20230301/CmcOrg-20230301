@@ -1,5 +1,16 @@
 package com.cmcorg20230301.be.engine.tenant.controller;
 
+import java.util.List;
+
+import javax.annotation.Resource;
+import javax.validation.Valid;
+
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.cmcorg20230301.be.engine.model.model.dto.*;
 import com.cmcorg20230301.be.engine.model.model.vo.DictTreeVO;
@@ -11,17 +22,9 @@ import com.cmcorg20230301.be.engine.tenant.model.dto.SysTenantInsertOrUpdateDTO;
 import com.cmcorg20230301.be.engine.tenant.model.dto.SysTenantPageDTO;
 import com.cmcorg20230301.be.engine.tenant.model.vo.SysTenantInfoByIdVO;
 import com.cmcorg20230301.be.engine.tenant.service.SysTenantService;
+
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
-import javax.annotation.Resource;
-import javax.validation.Valid;
-import java.util.List;
 
 @Tag(name = "基础-租户-管理")
 @RestController
@@ -82,8 +85,7 @@ public class SysTenantController {
 
     @Operation(summary = "通过主键id，获取租户相关的配置")
     @PostMapping("/getConfigurationById")
-    public ApiResultVO<SysSignConfigurationVO> getConfigurationById(
-        @RequestBody @Valid NotNullLong notNullLong) {
+    public ApiResultVO<SysSignConfigurationVO> getConfigurationById(@RequestBody @Valid NotNullLong notNullLong) {
         return ApiResultVO.okData(baseService.getConfigurationById(notNullLong));
     }
 
@@ -109,16 +111,14 @@ public class SysTenantController {
     @Operation(summary = "执行：同步菜单给租户")
     @PostMapping("/doSyncMenu")
     @PreAuthorize("hasAuthority('sysTenant:syncMenu')")
-    public ApiResultVO<String> doSyncMenu(
-        @RequestBody @Valid NotNullIdAndNotEmptyLongSet notNullIdAndNotEmptyLongSet) {
+    public ApiResultVO<String> doSyncMenu(@RequestBody @Valid NotNullIdAndNotEmptyLongSet notNullIdAndNotEmptyLongSet) {
         return ApiResultVO.okMsg(baseService.doSyncMenu(notNullIdAndNotEmptyLongSet));
     }
 
     @Operation(summary = "删除租户所有菜单")
     @PostMapping("/deleteTenantAllMenu")
     @PreAuthorize("hasAuthority('sysTenant:syncMenu')")
-    public ApiResultVO<String> deleteTenantAllMenu(
-        @RequestBody @Valid NotEmptyIdSet notEmptyIdSet) {
+    public ApiResultVO<String> deleteTenantAllMenu(@RequestBody @Valid NotEmptyIdSet notEmptyIdSet) {
         return ApiResultVO.okMsg(baseService.deleteTenantAllMenu(notEmptyIdSet));
     }
 

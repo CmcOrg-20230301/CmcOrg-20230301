@@ -1,21 +1,18 @@
 package com.cmcorg20230301.be.engine.cache.util;
 
-import cn.hutool.core.collection.CollUtil;
-import cn.hutool.core.map.MapUtil;
-import cn.hutool.core.util.StrUtil;
+import java.util.*;
+
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
 import com.cmcorg20230301.be.engine.model.model.constant.BaseConstant;
 import com.cmcorg20230301.be.engine.model.model.constant.LogTopicConstant;
 import com.cmcorg20230301.be.engine.model.model.interfaces.IRedisKey;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+
+import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.map.MapUtil;
+import cn.hutool.core.util.StrUtil;
 import lombok.extern.slf4j.Slf4j;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 /**
  * 缓存帮助类
@@ -27,8 +24,7 @@ public class CacheHelper {
      * 获取：key
      */
     @NotNull
-    public static String getKey(@NotNull Enum<? extends IRedisKey> redisKeyEnum,
-        @Nullable String sufKey) {
+    public static String getKey(@NotNull Enum<? extends IRedisKey> redisKeyEnum, @Nullable String sufKey) {
 
         String key = redisKeyEnum.name();
 
@@ -188,12 +184,12 @@ public class CacheHelper {
             log.info("CacheHelper：设置默认值：{}", defaultResult);
             result = defaultResult;
 
-        } else if (result instanceof Map && CollUtil.isEmpty((Map<?, ?>) result)) {
+        } else if (result instanceof Map && CollUtil.isEmpty((Map<?, ?>)result)) {
 
             log.info("CacheHelper：Map设置默认值：{}", defaultResult);
             result = defaultResult;
 
-        } else if (result instanceof Collection && CollUtil.isEmpty((Collection<?>) result)) {
+        } else if (result instanceof Collection && CollUtil.isEmpty((Collection<?>)result)) {
 
             log.info("CacheHelper：Collection设置默认值：{}", defaultResult);
             result = defaultResult;
@@ -215,12 +211,11 @@ public class CacheHelper {
 
         } else if (result instanceof Map) {
 
-            Map<?, ?> map = (Map<?, ?>) result;
+            Map<?, ?> map = (Map<?, ?>)result;
 
             if (CollUtil.isEmpty(map)) {
 
-                throw new RuntimeException(
-                    "操作失败：result为 Map类型，但是长度为 0"); // 不能为 null，目的：防止缓存不写入数据
+                throw new RuntimeException("操作失败：result为 Map类型，但是长度为 0"); // 不能为 null，目的：防止缓存不写入数据
 
             } else {
 
@@ -229,9 +224,8 @@ public class CacheHelper {
 
                     if (item.getValue() == null) {
 
-                        throw new RuntimeException(
-                            "操作失败：result为 Map类型，但是 value为 null，key："
-                                + item.getKey()); // 不能为 null，目的：防止缓存不写入数据
+                        throw new RuntimeException("操作失败：result为 Map类型，但是 value为 null，key：" + item.getKey()); // 不能为
+                                                                                                              // null，目的：防止缓存不写入数据
 
                     }
 
@@ -241,10 +235,9 @@ public class CacheHelper {
 
         } else if (result instanceof Collection) {
 
-            if (CollUtil.isEmpty((Collection<?>) result)) {
+            if (CollUtil.isEmpty((Collection<?>)result)) {
 
-                throw new RuntimeException(
-                    "操作失败：result为 Collection类型，但是长度为 0"); // 不能为 null，目的：防止缓存不写入数据
+                throw new RuntimeException("操作失败：result为 Collection类型，但是长度为 0"); // 不能为 null，目的：防止缓存不写入数据
 
             }
 

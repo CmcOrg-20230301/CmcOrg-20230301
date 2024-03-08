@@ -1,17 +1,16 @@
 package com.cmcorg20230301.be.engine.util.util;
 
+import java.util.function.Consumer;
+
 import cn.hutool.core.text.StrBuilder;
 import cn.hutool.core.util.StrUtil;
-
-import java.util.function.Consumer;
 
 public class MyStrUtil {
 
     /**
      * 根据最大长度，拆分字符串，然后把拆分结果多次执行：consumer
      */
-    public static void subWithMaxLengthAndConsumer(String content, int maxLength,
-        Consumer<String> consumer) {
+    public static void subWithMaxLengthAndConsumer(String content, int maxLength, Consumer<String> consumer) {
 
         if (StrUtil.isBlank(content)) {
             return;
@@ -44,8 +43,7 @@ public class MyStrUtil {
     /**
      * 根据最大字节，拆分字符串，然后把拆分结果多次执行：consumer
      */
-    public static void subWithMaxByteLengthAndConsumer(String content, int maxByteLength,
-        Consumer<String> consumer) {
+    public static void subWithMaxByteLengthAndConsumer(String content, int maxByteLength, Consumer<String> consumer) {
 
         if (StrUtil.isBlank(content)) {
             return;

@@ -1,9 +1,10 @@
 package com.cmcorg20230301.be.engine.file.base.service.impl;
 
-import cn.hutool.core.collection.CollUtil;
-import cn.hutool.core.lang.func.Func1;
-import cn.hutool.core.util.BooleanUtil;
-import cn.hutool.core.util.StrUtil;
+import java.util.Set;
+
+import org.jetbrains.annotations.NotNull;
+import org.springframework.stereotype.Service;
+
 import com.baomidou.dynamic.datasource.annotation.DSTransactional;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -20,9 +21,11 @@ import com.cmcorg20230301.be.engine.security.model.entity.BaseEntityNoId;
 import com.cmcorg20230301.be.engine.security.model.entity.BaseEntityNoIdSuper;
 import com.cmcorg20230301.be.engine.security.util.MyEntityUtil;
 import com.cmcorg20230301.be.engine.security.util.SysTenantUtil;
-import java.util.Set;
-import org.jetbrains.annotations.NotNull;
-import org.springframework.stereotype.Service;
+
+import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.lang.func.Func1;
+import cn.hutool.core.util.BooleanUtil;
+import cn.hutool.core.util.StrUtil;
 
 @Service
 public class SysFileStorageConfigurationServiceImpl
@@ -37,8 +40,7 @@ public class SysFileStorageConfigurationServiceImpl
     public String insertOrUpdate(SysFileStorageConfigurationInsertOrUpdateDTO dto) {
 
         // 处理：BaseTenantInsertOrUpdateDTO
-        SysTenantUtil.handleBaseTenantInsertOrUpdateDTO(dto,
-            getCheckIllegalFunc1(CollUtil.newHashSet(dto.getId())),
+        SysTenantUtil.handleBaseTenantInsertOrUpdateDTO(dto, getCheckIllegalFunc1(CollUtil.newHashSet(dto.getId())),
             getTenantIdBaseEntityFunc1());
 
         // 如果是默认文件存储，则取消之前的默认文件存储
@@ -84,38 +86,28 @@ public class SysFileStorageConfigurationServiceImpl
         SysTenantUtil.handleMyTenantPageDTO(dto, true);
 
         return lambdaQuery()
-            .like(StrUtil.isNotBlank(dto.getName()), SysFileStorageConfigurationDO::getName,
-                dto.getName())
-            .like(StrUtil.isNotBlank(dto.getAccessKey()),
-                SysFileStorageConfigurationDO::getAccessKey,
+            .like(StrUtil.isNotBlank(dto.getName()), SysFileStorageConfigurationDO::getName, dto.getName())
+            .like(StrUtil.isNotBlank(dto.getAccessKey()), SysFileStorageConfigurationDO::getAccessKey,
                 dto.getAccessKey()) //
-            .like(StrUtil.isNotBlank(dto.getUploadEndpoint()),
-                SysFileStorageConfigurationDO::getUploadEndpoint,
+            .like(StrUtil.isNotBlank(dto.getUploadEndpoint()), SysFileStorageConfigurationDO::getUploadEndpoint,
                 dto.getUploadEndpoint()) //
             .like(StrUtil.isNotBlank(dto.getPublicDownloadEndpoint()),
-                SysFileStorageConfigurationDO::getPublicDownloadEndpoint,
-                dto.getPublicDownloadEndpoint()) //
-            .like(StrUtil.isNotBlank(dto.getBucketPublicName()),
-                SysFileStorageConfigurationDO::getBucketPublicName,
+                SysFileStorageConfigurationDO::getPublicDownloadEndpoint, dto.getPublicDownloadEndpoint()) //
+            .like(StrUtil.isNotBlank(dto.getBucketPublicName()), SysFileStorageConfigurationDO::getBucketPublicName,
                 dto.getBucketPublicName()) //
-            .like(StrUtil.isNotBlank(dto.getBucketPrivateName()),
-                SysFileStorageConfigurationDO::getBucketPrivateName,
+            .like(StrUtil.isNotBlank(dto.getBucketPrivateName()), SysFileStorageConfigurationDO::getBucketPrivateName,
                 dto.getBucketPrivateName()) //
             .like(StrUtil.isNotBlank(dto.getRemark()), BaseEntity::getRemark, dto.getRemark())
             .eq(dto.getType() != null, SysFileStorageConfigurationDO::getType, dto.getType())
-            .eq(dto.getDefaultFlag() != null, SysFileStorageConfigurationDO::getDefaultFlag,
-                dto.getDefaultFlag())
+            .eq(dto.getDefaultFlag() != null, SysFileStorageConfigurationDO::getDefaultFlag, dto.getDefaultFlag())
             .eq(dto.getEnableFlag() != null, BaseEntity::getEnableFlag, dto.getEnableFlag())
             .in(BaseEntityNoId::getTenantId, dto.getTenantIdSet()) //
-            .select(BaseEntity::getId, BaseEntityNoIdSuper::getTenantId,
-                BaseEntityNoId::getEnableFlag,
-                BaseEntityNoId::getRemark, BaseEntityNoIdSuper::getCreateId,
-                BaseEntityNoIdSuper::getCreateTime,
+            .select(BaseEntity::getId, BaseEntityNoIdSuper::getTenantId, BaseEntityNoId::getEnableFlag,
+                BaseEntityNoId::getRemark, BaseEntityNoIdSuper::getCreateId, BaseEntityNoIdSuper::getCreateTime,
                 BaseEntityNoIdSuper::getUpdateId, BaseEntityNoIdSuper::getUpdateTime,
                 SysFileStorageConfigurationDO::getName, SysFileStorageConfigurationDO::getType,
                 SysFileStorageConfigurationDO::getDefaultFlag)
-            .orderByDesc(BaseEntity::getUpdateTime)
-            .page(dto.page(true));
+            .orderByDesc(BaseEntity::getUpdateTime).page(dto.page(true));
 
     }
 
@@ -128,8 +120,7 @@ public class SysFileStorageConfigurationServiceImpl
         // 获取：用户关联的租户
         Set<Long> queryTenantIdSet = SysTenantUtil.getUserRefTenantIdSet();
 
-        return lambdaQuery().eq(BaseEntity::getId, notNullId.getId())
-            .in(BaseEntityNoId::getTenantId, queryTenantIdSet)
+        return lambdaQuery().eq(BaseEntity::getId, notNullId.getId()).in(BaseEntityNoId::getTenantId, queryTenantIdSet)
             .one();
 
     }
@@ -161,8 +152,7 @@ public class SysFileStorageConfigurationServiceImpl
     @NotNull
     private Func1<Set<Long>, Long> getCheckIllegalFunc1(Set<Long> idSet) {
 
-        return tenantIdSet -> lambdaQuery().in(BaseEntity::getId, idSet)
-            .in(BaseEntityNoId::getTenantId, tenantIdSet)
+        return tenantIdSet -> lambdaQuery().in(BaseEntity::getId, idSet).in(BaseEntityNoId::getTenantId, tenantIdSet)
             .count();
 
     }

@@ -1,6 +1,18 @@
 package com.cmcorg20230301.be.engine.other.app.listener;
 
-import cn.hutool.core.collection.CollUtil;
+import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
+
+import javax.annotation.Resource;
+
+import org.jetbrains.annotations.Nullable;
+import org.redisson.api.RedissonClient;
+import org.springframework.kafka.annotation.KafkaHandler;
+import org.springframework.kafka.annotation.KafkaListener;
+import org.springframework.kafka.support.Acknowledgment;
+import org.springframework.stereotype.Component;
+
 import com.cmcorg20230301.be.engine.kafka.model.enums.KafkaTopicEnum;
 import com.cmcorg20230301.be.engine.model.model.constant.LogTopicConstant;
 import com.cmcorg20230301.be.engine.other.app.model.dto.SysOtherAppWxWorkReceiveMessageDTO;
@@ -11,17 +23,9 @@ import com.cmcorg20230301.be.engine.security.util.KafkaHelper;
 import com.cmcorg20230301.be.engine.security.util.MyThreadUtil;
 import com.cmcorg20230301.be.engine.security.util.TryUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import java.util.List;
-import java.util.Objects;
-import java.util.stream.Collectors;
-import javax.annotation.Resource;
+
+import cn.hutool.core.collection.CollUtil;
 import lombok.extern.slf4j.Slf4j;
-import org.jetbrains.annotations.Nullable;
-import org.redisson.api.RedissonClient;
-import org.springframework.kafka.annotation.KafkaHandler;
-import org.springframework.kafka.annotation.KafkaListener;
-import org.springframework.kafka.support.Acknowledgment;
-import org.springframework.stereotype.Component;
 
 /**
  * 处理微信公众号消息的 监听器
@@ -39,8 +43,7 @@ public class SysOtherAppWxWorkReceiveMessageListener {
     private static ObjectMapper objectMapper;
 
     @Nullable
-    public static List<ISysOtherAppWxWorkReceiveMessageHandle>
-        iSysOtherAppWxWorkReceiveMessageHandleList;
+    public static List<ISysOtherAppWxWorkReceiveMessageHandle> iSysOtherAppWxWorkReceiveMessageHandleList;
 
     @Resource
     RedissonClient redissonClient;
@@ -79,8 +82,8 @@ public class SysOtherAppWxWorkReceiveMessageListener {
 
                 }).filter(Objects::nonNull).collect(Collectors.toList());
 
-            if (CollUtil.isNotEmpty(sysOtherAppWxWorkReceiveMessageDTOList) && CollUtil.isNotEmpty(
-                iSysOtherAppWxWorkReceiveMessageHandleList)) {
+            if (CollUtil.isNotEmpty(sysOtherAppWxWorkReceiveMessageDTOList)
+                && CollUtil.isNotEmpty(iSysOtherAppWxWorkReceiveMessageHandleList)) {
 
                 MyThreadUtil.execute(() -> {
 
@@ -89,13 +92,11 @@ public class SysOtherAppWxWorkReceiveMessageListener {
                         String msgIdStr = item.getMsgIdStr();
 
                         String redisKey =
-                            BaseRedisKeyEnum.PRE_SYS_OTHER_APP_WX_WORK_RECEIVE_MESSAGE_ID.name()
-                                + msgIdStr;
+                            BaseRedisKeyEnum.PRE_SYS_OTHER_APP_WX_WORK_RECEIVE_MESSAGE_ID.name() + msgIdStr;
 
                         RedissonUtil.doLock(redisKey, () -> {
 
-                            boolean deleteFlag = redissonClient.<String>getBucket(redisKey)
-                                .delete();
+                            boolean deleteFlag = redissonClient.<String>getBucket(redisKey).delete();
 
                             if (!deleteFlag) {
                                 return;

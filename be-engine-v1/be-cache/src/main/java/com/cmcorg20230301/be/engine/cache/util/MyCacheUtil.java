@@ -1,23 +1,26 @@
 package com.cmcorg20230301.be.engine.cache.util;
 
-import cn.hutool.core.collection.CollUtil;
-import cn.hutool.core.lang.func.Func0;
-import cn.hutool.core.util.StrUtil;
-import com.cmcorg20230301.be.engine.model.model.constant.LogTopicConstant;
-import com.cmcorg20230301.be.engine.model.model.interfaces.IRedisKey;
-import com.cmcorg20230301.be.engine.redisson.util.RedissonUtil;
 import java.time.Duration;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
-import lombok.SneakyThrows;
-import lombok.extern.slf4j.Slf4j;
+
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Unmodifiable;
 import org.redisson.api.RBucket;
 import org.redisson.api.RedissonClient;
 import org.springframework.stereotype.Component;
+
+import com.cmcorg20230301.be.engine.model.model.constant.LogTopicConstant;
+import com.cmcorg20230301.be.engine.model.model.interfaces.IRedisKey;
+import com.cmcorg20230301.be.engine.redisson.util.RedissonUtil;
+
+import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.lang.func.Func0;
+import cn.hutool.core.util.StrUtil;
+import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * 缓存工具类 获取缓存逻辑：先从 本地获取缓存，再从 redis获取缓存，最后从 数据提供者获取数据
@@ -39,8 +42,7 @@ public class MyCacheUtil {
      */
     @SneakyThrows
     @NotNull
-    public static <T> T get(@NotNull Enum<? extends IRedisKey> redisKeyEnum,
-        @Nullable T defaultResult,
+    public static <T> T get(@NotNull Enum<? extends IRedisKey> redisKeyEnum, @Nullable T defaultResult,
         @Nullable Func0<T> func0) {
 
         return get(redisKeyEnum, null, defaultResult, func0);
@@ -52,8 +54,7 @@ public class MyCacheUtil {
      */
     @SneakyThrows
     @NotNull
-    public static <T> T get(@NotNull Enum<? extends IRedisKey> redisKeyEnum,
-        @Nullable String sufKey,
+    public static <T> T get(@NotNull Enum<? extends IRedisKey> redisKeyEnum, @Nullable String sufKey,
         @Nullable T defaultResult, @Nullable Func0<T> func0) {
 
         return get(redisKeyEnum, sufKey, defaultResult, -1, func0);
@@ -65,8 +66,7 @@ public class MyCacheUtil {
      */
     @SneakyThrows
     @NotNull
-    public static <T> T get(@NotNull Enum<? extends IRedisKey> redisKeyEnum,
-        @Nullable String sufKey,
+    public static <T> T get(@NotNull Enum<? extends IRedisKey> redisKeyEnum, @Nullable String sufKey,
         @Nullable T defaultResult, long timeToLive, @Nullable Func0<T> func0) {
 
         String key = CacheHelper.getKey(redisKeyEnum, sufKey);
@@ -95,8 +95,7 @@ public class MyCacheUtil {
 
         } else {
 
-            redissonClient.<T>getBucket(key)
-                .set(result, Duration.ofMillis(timeToLive)); // 先加入到 redis里
+            redissonClient.<T>getBucket(key).set(result, Duration.ofMillis(timeToLive)); // 先加入到 redis里
 
         }
 
@@ -113,8 +112,7 @@ public class MyCacheUtil {
      */
     @SneakyThrows
     @Nullable
-    public static <T> T onlyGet(@NotNull Enum<? extends IRedisKey> redisKeyEnum,
-        @Nullable String sufKey) {
+    public static <T> T onlyGet(@NotNull Enum<? extends IRedisKey> redisKeyEnum, @Nullable String sufKey) {
 
         String key = CacheHelper.getKey(redisKeyEnum, sufKey);
 
@@ -164,8 +162,7 @@ public class MyCacheUtil {
      */
     @SneakyThrows
     @NotNull
-    public static <T> T getSecondMap(@NotNull Enum<? extends IRedisKey> redisKeyEnum,
-        @Nullable String sufKey,
+    public static <T> T getSecondMap(@NotNull Enum<? extends IRedisKey> redisKeyEnum, @Nullable String sufKey,
         @NotNull String secondKey, @Nullable T defaultResult, @Nullable Func0<T> func0) {
 
         String key = CacheHelper.getKey(redisKeyEnum, sufKey);
@@ -203,8 +200,7 @@ public class MyCacheUtil {
      */
     @SneakyThrows
     @Nullable
-    public static <T> T onlyGetSecondMap(@NotNull Enum<? extends IRedisKey> redisKeyEnum,
-        @Nullable String sufKey,
+    public static <T> T onlyGetSecondMap(@NotNull Enum<? extends IRedisKey> redisKeyEnum, @Nullable String sufKey,
         @NotNull String secondKey) {
 
         String key = CacheHelper.getKey(redisKeyEnum, sufKey);
@@ -327,7 +323,7 @@ public class MyCacheUtil {
 
         }
 
-        result = (T) redissonClient.getMap(key).readAllMap(); // 不会为 null
+        result = (T)redissonClient.getMap(key).readAllMap(); // 不会为 null
 
         if (CollUtil.isEmpty(result)) {
 
@@ -349,8 +345,7 @@ public class MyCacheUtil {
     @SneakyThrows
     @Unmodifiable // 不可对返回值进行修改
     @NotNull
-    public static <T extends Collection<?>> T getCollection(
-        @NotNull Enum<? extends IRedisKey> redisKeyEnum,
+    public static <T extends Collection<?>> T getCollection(@NotNull Enum<? extends IRedisKey> redisKeyEnum,
         @Nullable T defaultResult, @Nullable Func0<T> func0) {
 
         return getCollection(redisKeyEnum, null, defaultResult, func0);
@@ -363,8 +358,7 @@ public class MyCacheUtil {
     @SneakyThrows
     @Unmodifiable // 不可对返回值进行修改
     @NotNull
-    public static <T extends Collection<?>> T getCollection(
-        @NotNull Enum<? extends IRedisKey> redisKeyEnum,
+    public static <T extends Collection<?>> T getCollection(@NotNull Enum<? extends IRedisKey> redisKeyEnum,
         @Nullable String sufKey, @Nullable T defaultResult, @Nullable Func0<T> func0) {
 
         String key = CacheHelper.getKey(redisKeyEnum, sufKey);
@@ -420,8 +414,7 @@ public class MyCacheUtil {
     @SneakyThrows
     @Unmodifiable // 不可对返回值进行修改
     @Nullable
-    public static <T extends Collection<?>> T onlyGetCollection(@NotNull String key,
-        boolean setFlag) {
+    public static <T extends Collection<?>> T onlyGetCollection(@NotNull String key, boolean setFlag) {
 
         T result = CacheLocalUtil.get(key);
 
@@ -435,11 +428,11 @@ public class MyCacheUtil {
 
         if (setFlag) {
 
-            result = (T) redissonClient.getSet(key).readAll(); // 不会为 null
+            result = (T)redissonClient.getSet(key).readAll(); // 不会为 null
 
         } else {
 
-            result = (T) redissonClient.getList(key).readAll(); // 不会为 null
+            result = (T)redissonClient.getList(key).readAll(); // 不会为 null
 
         }
 

@@ -1,5 +1,11 @@
 package com.cmcorg20230301.be.engine.netty.websocket.server;
 
+import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
+import javax.annotation.Resource;
+
+import org.springframework.stereotype.Component;
+
 import com.cmcorg20230301.be.engine.netty.websocket.configuration.NettyWebSocketBeanPostProcessor;
 import com.cmcorg20230301.be.engine.netty.websocket.properties.NettyWebSocketProperties;
 import com.cmcorg20230301.be.engine.redisson.util.IdGeneratorUtil;
@@ -9,6 +15,7 @@ import com.cmcorg20230301.be.engine.socket.mapper.SysSocketRefUserMapper;
 import com.cmcorg20230301.be.engine.socket.model.enums.SysSocketTypeEnum;
 import com.cmcorg20230301.be.engine.socket.service.SysSocketService;
 import com.cmcorg20230301.be.engine.socket.util.SocketUtil;
+
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelInitializer;
@@ -21,12 +28,8 @@ import io.netty.handler.codec.http.HttpObjectAggregator;
 import io.netty.handler.codec.http.HttpServerCodec;
 import io.netty.handler.codec.http.websocketx.WebSocketServerProtocolHandler;
 import io.netty.handler.stream.ChunkedWriteHandler;
-import javax.annotation.PostConstruct;
-import javax.annotation.PreDestroy;
-import javax.annotation.Resource;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Component;
 
 @Component
 @Slf4j
@@ -42,8 +45,7 @@ public class NettyWebSocketServer {
     private static NettyWebSocketServerHandler nettyWebSocketServerHandler;
 
     @Resource
-    public void setNettyWebSocketServerHandler(
-        NettyWebSocketServerHandler nettyWebSocketServerHandler) {
+    public void setNettyWebSocketServerHandler(NettyWebSocketServerHandler nettyWebSocketServerHandler) {
         NettyWebSocketServer.nettyWebSocketServerHandler = nettyWebSocketServerHandler;
     }
 
@@ -189,8 +191,7 @@ public class NettyWebSocketServer {
                     ch.pipeline().addLast(nettyWebSocketServerHandler);
 
                     ch.pipeline().addLast(
-                        new WebSocketServerProtocolHandler(nettyWebSocketProperties.getPath(), null,
-                            true, 65536 * 10));
+                        new WebSocketServerProtocolHandler(nettyWebSocketProperties.getPath(), null, true, 65536 * 10));
 
                 }
 
@@ -199,11 +200,9 @@ public class NettyWebSocketServer {
         channelFuture = serverBootstrap.bind().sync(); // 服务器同步创建绑定
 
         sysSocketServerId =
-            SocketUtil.getSysSocketServerId(port, nettyWebSocketProperties,
-                SysSocketTypeEnum.WEB_SOCKET);
+            SocketUtil.getSysSocketServerId(port, nettyWebSocketProperties, SysSocketTypeEnum.WEB_SOCKET);
 
-        log.info("NettyWebSocket 启动完成：端口：{}，总接口个数：{}个", port,
-            NettyWebSocketBeanPostProcessor.getMappingMapSize());
+        log.info("NettyWebSocket 启动完成：端口：{}，总接口个数：{}个", port, NettyWebSocketBeanPostProcessor.getMappingMapSize());
 
     }
 

@@ -116,8 +116,7 @@ public enum SysFileUploadTypeEnum implements ISysFileUploadType {
         }
 
         if (file.getSize() > maxFileSize) {
-            ApiResultVO.errorMsg(
-                "操作失败：文件大小超过：【" + DataSizeUtil.format(maxFileSize) + "】，请重新选择");
+            ApiResultVO.errorMsg("操作失败：文件大小超过：【" + DataSizeUtil.format(maxFileSize) + "】，请重新选择");
         }
 
     }
@@ -126,8 +125,7 @@ public enum SysFileUploadTypeEnum implements ISysFileUploadType {
      * 上传文件时的检查
      */
     @NotNull
-    public static String uploadCheckWillError(MultipartFile file,
-        ISysFileUploadType iSysFileUploadType) {
+    public static String uploadCheckWillError(MultipartFile file, ISysFileUploadType iSysFileUploadType) {
 
         Assert.notNull(file, "file 不能为空");
         Assert.notNull(iSysFileUploadType, "uploadType 不能为空");
@@ -144,8 +142,7 @@ public enum SysFileUploadTypeEnum implements ISysFileUploadType {
 
         if (fileType == null) {
 
-            ApiResultVO.errorMsg(
-                "操作失败：暂不支持此文件类型【" + originalFilename + "】，请正确上传文件");
+            ApiResultVO.errorMsg("操作失败：暂不支持此文件类型【" + originalFilename + "】，请正确上传文件");
 
         }
 

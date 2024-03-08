@@ -1,7 +1,11 @@
 package com.cmcorg20230301.be.engine.pay.wx.service.impl;
 
-import cn.hutool.core.io.IoUtil;
-import cn.hutool.core.lang.func.Func1;
+import javax.servlet.ServletInputStream;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.springframework.stereotype.Service;
+
 import com.cmcorg20230301.be.engine.pay.base.model.bo.SysPayTradeNotifyBO;
 import com.cmcorg20230301.be.engine.pay.base.model.entity.SysPayConfigurationDO;
 import com.cmcorg20230301.be.engine.pay.base.util.PayHelper;
@@ -11,12 +15,11 @@ import com.cmcorg20230301.be.engine.pay.wx.util.PayWxUtil;
 import com.wechat.pay.java.core.RSAAutoCertificateConfig;
 import com.wechat.pay.java.core.notification.NotificationParser;
 import com.wechat.pay.java.core.notification.RequestParam;
-import javax.servlet.ServletInputStream;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+
+import cn.hutool.core.io.IoUtil;
+import cn.hutool.core.lang.func.Func1;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Service;
 
 @Service
 @Slf4j
@@ -26,8 +29,7 @@ public class PayWxServiceImpl implements PayWxService {
      * 通用的处理：回调参数
      */
     @SneakyThrows
-    private void commonHandleNotifyCallBack(HttpServletRequest request,
-        HttpServletResponse response,
+    private void commonHandleNotifyCallBack(HttpServletRequest request, HttpServletResponse response,
         Func1<RequestParam, SysPayTradeNotifyBO> func1) {
 
         String signature = request.getHeader("Wechatpay-Signature");
@@ -41,10 +43,8 @@ public class PayWxServiceImpl implements PayWxService {
         String body = IoUtil.readUtf8(inputStream);
 
         // 构造 RequestParam
-        RequestParam requestParam =
-            new RequestParam.Builder().serialNumber(serial).nonce(nonce).signature(signature)
-                .signType(signatureType)
-                .timestamp(timestamp).body(body).build();
+        RequestParam requestParam = new RequestParam.Builder().serialNumber(serial).nonce(nonce).signature(signature)
+            .signType(signatureType).timestamp(timestamp).body(body).build();
 
         // 调用方法，获取：订单状态
         SysPayTradeNotifyBO sysPayTradeNotifyBO = func1.call(requestParam);
@@ -62,8 +62,7 @@ public class PayWxServiceImpl implements PayWxService {
     public void notifyCallBackNative(HttpServletRequest request, HttpServletResponse response,
         long sysPayConfigurationId) {
 
-        SysPayConfigurationDO sysPayConfigurationDO = PayHelper.getSysPayConfigurationDO(
-            sysPayConfigurationId);
+        SysPayConfigurationDO sysPayConfigurationDO = PayHelper.getSysPayConfigurationDO(sysPayConfigurationId);
 
         if (sysPayConfigurationDO == null) {
             return;
@@ -78,8 +77,7 @@ public class PayWxServiceImpl implements PayWxService {
 
             // 以支付通知回调为例，验签、解密并转换成 Transaction
             com.wechat.pay.java.service.partnerpayments.nativepay.model.Transaction transaction = notificationParser
-                .parse(requestParam,
-                    com.wechat.pay.java.service.partnerpayments.nativepay.model.Transaction.class);
+                .parse(requestParam, com.wechat.pay.java.service.partnerpayments.nativepay.model.Transaction.class);
 
             SysPayTradeNotifyBO sysPayTradeNotifyBO = new SysPayTradeNotifyBO();
 
@@ -106,8 +104,7 @@ public class PayWxServiceImpl implements PayWxService {
     public void notifyCallBackJsApi(HttpServletRequest request, HttpServletResponse response,
         long sysPayConfigurationId) {
 
-        SysPayConfigurationDO sysPayConfigurationDO = PayHelper.getSysPayConfigurationDO(
-            sysPayConfigurationId);
+        SysPayConfigurationDO sysPayConfigurationDO = PayHelper.getSysPayConfigurationDO(sysPayConfigurationId);
 
         if (sysPayConfigurationDO == null) {
             return;
@@ -122,8 +119,7 @@ public class PayWxServiceImpl implements PayWxService {
 
             // 以支付通知回调为例，验签、解密并转换成 Transaction
             com.wechat.pay.java.service.partnerpayments.jsapi.model.Transaction transaction = notificationParser
-                .parse(requestParam,
-                    com.wechat.pay.java.service.partnerpayments.jsapi.model.Transaction.class);
+                .parse(requestParam, com.wechat.pay.java.service.partnerpayments.jsapi.model.Transaction.class);
 
             SysPayTradeNotifyBO sysPayTradeNotifyBO = new SysPayTradeNotifyBO();
 

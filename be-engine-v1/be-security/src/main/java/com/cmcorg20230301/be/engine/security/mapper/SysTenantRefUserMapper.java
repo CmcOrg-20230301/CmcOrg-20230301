@@ -8,7 +8,3 @@ import org.apache.ibatis.annotations.Mapper;
 public interface SysTenantRefUserMapper extends BaseMapper<SysTenantRefUserDO> {
 
 }
-
-
-
-

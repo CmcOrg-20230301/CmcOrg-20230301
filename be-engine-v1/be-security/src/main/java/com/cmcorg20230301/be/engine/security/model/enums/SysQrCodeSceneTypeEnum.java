@@ -28,37 +28,36 @@ import org.redisson.api.RedissonClient;
 public enum SysQrCodeSceneTypeEnum implements ISysQrCodeSceneType {
 
     // 微信绑定
-    WX_BIND("WX_BIND", BaseConstant.MINUTE_3_EXPIRE_TIME / 1000,
-        (qrCodeSceneValue, redissonClient, sysUserDO) -> {
+    WX_BIND("WX_BIND", BaseConstant.MINUTE_3_EXPIRE_TIME / 1000, (qrCodeSceneValue, redissonClient, sysUserDO) -> {
 
-            RBucket<SysQrCodeSceneBindBO> bucket = redissonClient.getBucket(
-                BaseRedisKeyEnum.PRE_SYS_WX_QR_CODE_BIND.name() + qrCodeSceneValue);
+        RBucket<SysQrCodeSceneBindBO> bucket =
+            redissonClient.getBucket(BaseRedisKeyEnum.PRE_SYS_WX_QR_CODE_BIND.name() + qrCodeSceneValue);
 
-            SysQrCodeSceneBindBO sysQrCodeSceneBindBO = new SysQrCodeSceneBindBO();
+        SysQrCodeSceneBindBO sysQrCodeSceneBindBO = new SysQrCodeSceneBindBO();
 
-            sysQrCodeSceneBindBO.setUserId(sysUserDO.getId());
-            sysQrCodeSceneBindBO.setTenantId(sysUserDO.getTenantId());
+        sysQrCodeSceneBindBO.setUserId(sysUserDO.getId());
+        sysQrCodeSceneBindBO.setTenantId(sysUserDO.getTenantId());
 
-            sysQrCodeSceneBindBO.setAppId(sysUserDO.getWxAppId());
-            sysQrCodeSceneBindBO.setOpenId(sysUserDO.getWxOpenId());
+        sysQrCodeSceneBindBO.setAppId(sysUserDO.getWxAppId());
+        sysQrCodeSceneBindBO.setOpenId(sysUserDO.getWxOpenId());
 
-            bucket.set(sysQrCodeSceneBindBO, Duration.ofMillis(BaseConstant.MINUTE_3_EXPIRE_TIME));
+        bucket.set(sysQrCodeSceneBindBO, Duration.ofMillis(BaseConstant.MINUTE_3_EXPIRE_TIME));
 
-        }, false),
+    }, false),
 
     // 微信统一登录绑定
     WX_SINGLE_SIGN_IN_BIND("WX_SINGLE_SIGN_IN_BIND", BaseConstant.MINUTE_3_EXPIRE_TIME / 1000,
         (qrCodeSceneValue, redissonClient, sysUserDO) -> {
 
-            RBucket<SysQrCodeSceneBindBO> bucket = redissonClient.getBucket(
-                BaseRedisKeyEnum.PRE_SYS_SINGLE_SIGN_IN_SET_WX.name() + qrCodeSceneValue);
+            RBucket<SysQrCodeSceneBindBO> bucket =
+                redissonClient.getBucket(BaseRedisKeyEnum.PRE_SYS_SINGLE_SIGN_IN_SET_WX.name() + qrCodeSceneValue);
 
             // 微信统一登录不能重复
-            SysUserSingleSignInDO sysUserSingleSignInDO = ChainWrappers.lambdaQueryChain(
-                    UserUtil.sysUserSingleSignInMapper)
-                .eq(SysUserSingleSignInDO::getWxAppId, sysUserDO.getWxAppId())
-                .eq(SysUserSingleSignInDO::getWxOpenId, sysUserDO.getWxOpenId())
-                .select(SysUserSingleSignInDO::getId, SysUserSingleSignInDO::getTenantId).one();
+            SysUserSingleSignInDO sysUserSingleSignInDO =
+                ChainWrappers.lambdaQueryChain(UserUtil.sysUserSingleSignInMapper)
+                    .eq(SysUserSingleSignInDO::getWxAppId, sysUserDO.getWxAppId())
+                    .eq(SysUserSingleSignInDO::getWxOpenId, sysUserDO.getWxOpenId())
+                    .select(SysUserSingleSignInDO::getId, SysUserSingleSignInDO::getTenantId).one();
 
             SysQrCodeSceneBindBO sysQrCodeSceneBindBO = new SysQrCodeSceneBindBO();
 
@@ -89,12 +88,12 @@ public enum SysQrCodeSceneTypeEnum implements ISysQrCodeSceneType {
     private final Boolean autoSignUpFlag; // 是否自动注册
 
     // 自动注册的 map
-    public static final Map<String, ISysQrCodeSceneType> AUTO_SIGN_UP_MAP = MapUtil.newConcurrentHashMap(
-        SysQrCodeSceneTypeEnum.values().length);
+    public static final Map<String, ISysQrCodeSceneType> AUTO_SIGN_UP_MAP =
+        MapUtil.newConcurrentHashMap(SysQrCodeSceneTypeEnum.values().length);
 
     // 不自动注册的 map
-    public static final Map<String, ISysQrCodeSceneType> NOT_AUTO_SIGN_UP_MAP = MapUtil.newConcurrentHashMap(
-        SysQrCodeSceneTypeEnum.values().length);
+    public static final Map<String, ISysQrCodeSceneType> NOT_AUTO_SIGN_UP_MAP =
+        MapUtil.newConcurrentHashMap(SysQrCodeSceneTypeEnum.values().length);
 
     static {
 

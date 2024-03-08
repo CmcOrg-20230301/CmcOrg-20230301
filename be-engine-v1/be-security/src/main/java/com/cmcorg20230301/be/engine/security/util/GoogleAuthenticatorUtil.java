@@ -51,8 +51,7 @@ public class GoogleAuthenticatorUtil {
     @NotNull
     public static boolean authCode(String code, String secret) {
 
-        return GoogleAuthenticatorUtil.checkCode(secret, Long.parseLong(code),
-            System.currentTimeMillis());
+        return GoogleAuthenticatorUtil.checkCode(secret, Long.parseLong(code), System.currentTimeMillis());
 
     }
 
@@ -101,7 +100,7 @@ public class GoogleAuthenticatorUtil {
                 // the exceptions thrown would be rare and a static configuration problem
                 MyExceptionUtil.printError(e);
                 throw new RuntimeException(e.getMessage());
-                //return false;
+                // return false;
 
             }
 
@@ -127,7 +126,7 @@ public class GoogleAuthenticatorUtil {
         long value = t;
 
         for (int i = 8; i-- > 0; value >>>= 8) {
-            data[i] = (byte) value;
+            data[i] = (byte)value;
         }
 
         SecretKeySpec signKey = new SecretKeySpec(key, "HmacSHA1");
@@ -152,7 +151,7 @@ public class GoogleAuthenticatorUtil {
         truncatedHash &= 0x7FFFFFFF;
         truncatedHash %= 1000000;
 
-        return (int) truncatedHash;
+        return (int)truncatedHash;
 
     }
 

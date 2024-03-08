@@ -1,7 +1,7 @@
 package com.cmcorg20230301.be.engine.security.configuration.base;
 
-import cn.hutool.http.HttpGlobalConfig;
 import java.util.concurrent.ThreadPoolExecutor;
+
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.AutoConfigureOrder;
@@ -16,6 +16,8 @@ import org.springframework.scheduling.concurrent.ExecutorConfigurationSupport;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 
+import cn.hutool.http.HttpGlobalConfig;
+
 @Configuration
 @ComponentScan(basePackages = "com.cmcorg20230301")
 @MapperScan(basePackages = "com.cmcorg20230301.**.mapper")
@@ -28,10 +30,8 @@ public class BaseConfiguration {
     public static Integer port; // 启动的端口
     public static String profilesActive; // 启动的环境
 
-    public BaseConfiguration(
-        @Value("${spring.application.name:applicationName}") String applicationName,
-        @Value("${server.port:8080}") int port,
-        @Value("${spring.profiles.active:prod}") String profilesActive) {
+    public BaseConfiguration(@Value("${spring.application.name:applicationName}") String applicationName,
+        @Value("${server.port:8080}") int port, @Value("${spring.profiles.active:prod}") String profilesActive) {
 
         BaseConfiguration.applicationName = applicationName;
         BaseConfiguration.port = port;

@@ -1,9 +1,14 @@
 package com.cmcorg20230301.be.engine.other.app.service.impl;
 
-import cn.hutool.core.collection.CollUtil;
-import cn.hutool.core.lang.func.Func1;
-import cn.hutool.core.util.BooleanUtil;
-import cn.hutool.core.util.StrUtil;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
+
+import javax.annotation.Resource;
+
+import org.jetbrains.annotations.NotNull;
+import org.springframework.stereotype.Service;
+
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.baomidou.mybatisplus.extension.toolkit.ChainWrappers;
@@ -30,13 +35,12 @@ import com.cmcorg20230301.be.engine.security.model.vo.ApiResultVO;
 import com.cmcorg20230301.be.engine.security.util.MyEntityUtil;
 import com.cmcorg20230301.be.engine.security.util.MyTreeUtil;
 import com.cmcorg20230301.be.engine.security.util.SysTenantUtil;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
-import javax.annotation.Resource;
+
+import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.lang.func.Func1;
+import cn.hutool.core.util.BooleanUtil;
+import cn.hutool.core.util.StrUtil;
 import lombok.extern.slf4j.Slf4j;
-import org.jetbrains.annotations.NotNull;
-import org.springframework.stereotype.Service;
 
 @Service
 @Slf4j(topic = LogTopicConstant.OTHER_APP_OFFICIAL_ACCOUNT_MENU)
@@ -54,8 +58,7 @@ public class SysOtherAppOfficialAccountMenuServiceImpl
     public String insertOrUpdate(SysOtherAppOfficialAccountMenuInsertOrUpdateDTO dto) {
 
         // 处理：BaseTenantInsertOrUpdateDTO
-        SysTenantUtil.handleBaseTenantInsertOrUpdateDTO(dto,
-            getCheckIllegalFunc1(CollUtil.newHashSet(dto.getId())),
+        SysTenantUtil.handleBaseTenantInsertOrUpdateDTO(dto, getCheckIllegalFunc1(CollUtil.newHashSet(dto.getId())),
             getTenantIdBaseEntityFunc1());
 
         Long otherAppId = dto.getOtherAppId();
@@ -65,8 +68,7 @@ public class SysOtherAppOfficialAccountMenuServiceImpl
         // 第三方应用，必须是在自己租户下
         SysOtherAppDO sysOtherAppDO =
             ChainWrappers.lambdaQueryChain(sysOtherAppMapper).eq(BaseEntity::getId, otherAppId)
-                .in(BaseEntityNoIdSuper::getTenantId, userRefTenantIdSet)
-                .select(SysOtherAppDO::getType).one();
+                .in(BaseEntityNoIdSuper::getTenantId, userRefTenantIdSet).select(SysOtherAppDO::getType).one();
 
         if (sysOtherAppDO == null) {
             ApiResultVO.error(BaseBizCodeEnum.ILLEGAL_REQUEST, otherAppId);
@@ -81,8 +83,8 @@ public class SysOtherAppOfficialAccountMenuServiceImpl
         // 暂时：只能配置：微信公众号类型的第三方应用
         if (SysOtherAppTypeEnum.WX_OFFICIAL_ACCOUNT.getCode() == type) {
 
-            sysOtherAppOfficialAccountMenuDO.setType(
-                SysOtherAppOfficialAccountMenuTypeEnum.WX_OFFICIAL_ACCOUNT.getCode());
+            sysOtherAppOfficialAccountMenuDO
+                .setType(SysOtherAppOfficialAccountMenuTypeEnum.WX_OFFICIAL_ACCOUNT.getCode());
 
         } else {
 
@@ -91,13 +93,10 @@ public class SysOtherAppOfficialAccountMenuServiceImpl
         }
 
         // 同一个类型和同一个第三方 appId下，并且是按钮类型时，value 不能重复
-        boolean exists = lambdaQuery().eq(SysOtherAppOfficialAccountMenuDO::getOtherAppId,
-                dto.getOtherAppId())
+        boolean exists = lambdaQuery().eq(SysOtherAppOfficialAccountMenuDO::getOtherAppId, dto.getOtherAppId())
             .ne(dto.getId() != null, BaseEntity::getId, dto.getId())
-            .eq(SysOtherAppOfficialAccountMenuDO::getType,
-                sysOtherAppOfficialAccountMenuDO.getType())
-            .eq(SysOtherAppOfficialAccountMenuDO::getButtonType,
-                SysOtherAppOfficialAccountMenuButtonTypeEnum.CLICK)
+            .eq(SysOtherAppOfficialAccountMenuDO::getType, sysOtherAppOfficialAccountMenuDO.getType())
+            .eq(SysOtherAppOfficialAccountMenuDO::getButtonType, SysOtherAppOfficialAccountMenuButtonTypeEnum.CLICK)
             .eq(SysOtherAppOfficialAccountMenuDO::getValue, dto.getValue()).exists();
 
         if (exists) {
@@ -108,13 +107,10 @@ public class SysOtherAppOfficialAccountMenuServiceImpl
         sysOtherAppOfficialAccountMenuDO.setButtonType(dto.getButtonType());
 
         sysOtherAppOfficialAccountMenuDO.setValue(dto.getValue());
-        sysOtherAppOfficialAccountMenuDO.setReplyContent(
-            MyEntityUtil.getNotNullStr(dto.getReplyContent()));
+        sysOtherAppOfficialAccountMenuDO.setReplyContent(MyEntityUtil.getNotNullStr(dto.getReplyContent()));
 
-        sysOtherAppOfficialAccountMenuDO.setOrderNo(
-            MyEntityUtil.getNotNullOrderNo(dto.getOrderNo()));
-        sysOtherAppOfficialAccountMenuDO.setParentId(
-            MyEntityUtil.getNotNullParentId(dto.getParentId()));
+        sysOtherAppOfficialAccountMenuDO.setOrderNo(MyEntityUtil.getNotNullOrderNo(dto.getOrderNo()));
+        sysOtherAppOfficialAccountMenuDO.setParentId(MyEntityUtil.getNotNullParentId(dto.getParentId()));
 
         sysOtherAppOfficialAccountMenuDO.setId(dto.getId());
         sysOtherAppOfficialAccountMenuDO.setEnableFlag(BooleanUtil.isTrue(dto.getEnableFlag()));
@@ -131,26 +127,20 @@ public class SysOtherAppOfficialAccountMenuServiceImpl
      * 分页排序查询
      */
     @Override
-    public Page<SysOtherAppOfficialAccountMenuDO> myPage(
-        SysOtherAppOfficialAccountMenuPageDTO dto) {
+    public Page<SysOtherAppOfficialAccountMenuDO> myPage(SysOtherAppOfficialAccountMenuPageDTO dto) {
 
         // 处理：MyTenantPageDTO
         SysTenantUtil.handleMyTenantPageDTO(dto, true);
 
         return lambdaQuery()
-            .eq(dto.getOtherAppId() != null, SysOtherAppOfficialAccountMenuDO::getOtherAppId,
-                dto.getOtherAppId())
-            .like(StrUtil.isNotBlank(dto.getName()), SysOtherAppOfficialAccountMenuDO::getName,
-                dto.getName())
-            .like(StrUtil.isNotBlank(dto.getValue()), SysOtherAppOfficialAccountMenuDO::getValue,
-                dto.getValue())
-            .like(StrUtil.isNotBlank(dto.getReplyContent()),
-                SysOtherAppOfficialAccountMenuDO::getReplyContent,
+            .eq(dto.getOtherAppId() != null, SysOtherAppOfficialAccountMenuDO::getOtherAppId, dto.getOtherAppId())
+            .like(StrUtil.isNotBlank(dto.getName()), SysOtherAppOfficialAccountMenuDO::getName, dto.getName())
+            .like(StrUtil.isNotBlank(dto.getValue()), SysOtherAppOfficialAccountMenuDO::getValue, dto.getValue())
+            .like(StrUtil.isNotBlank(dto.getReplyContent()), SysOtherAppOfficialAccountMenuDO::getReplyContent,
                 dto.getReplyContent()) //
             .like(StrUtil.isNotBlank(dto.getRemark()), BaseEntity::getRemark, dto.getRemark())
             .eq(dto.getType() != null, SysOtherAppOfficialAccountMenuDO::getType, dto.getType())
-            .eq(dto.getButtonType() != null, SysOtherAppOfficialAccountMenuDO::getButtonType,
-                dto.getButtonType())
+            .eq(dto.getButtonType() != null, SysOtherAppOfficialAccountMenuDO::getButtonType, dto.getButtonType())
             .eq(dto.getEnableFlag() != null, BaseEntity::getEnableFlag, dto.getEnableFlag())
             .in(BaseEntityNoId::getTenantId, dto.getTenantIdSet()) //
             .orderByDesc(BaseEntityTree::getOrderNo).page(dto.page(true));
@@ -165,8 +155,7 @@ public class SysOtherAppOfficialAccountMenuServiceImpl
 
         // 根据条件进行筛选，得到符合条件的数据，然后再逆向生成整棵树，并返回这个树结构
         dto.setPageSize(-1); // 不分页
-        List<SysOtherAppOfficialAccountMenuDO> sysOtherAppOfficialAccountMenuDOList = myPage(
-            dto).getRecords();
+        List<SysOtherAppOfficialAccountMenuDO> sysOtherAppOfficialAccountMenuDOList = myPage(dto).getRecords();
 
         if (sysOtherAppOfficialAccountMenuDOList.size() == 0) {
             return new ArrayList<>();
@@ -192,10 +181,8 @@ public class SysOtherAppOfficialAccountMenuServiceImpl
         // 获取：用户关联的租户
         Set<Long> queryTenantIdSet = SysTenantUtil.getUserRefTenantIdSet();
 
-        SysOtherAppOfficialAccountMenuDO sysOtherAppOfficialAccountMenuDO =
-            lambdaQuery().eq(BaseEntity::getId, notNullId.getId())
-                .in(BaseEntityNoId::getTenantId, queryTenantIdSet)
-                .one();
+        SysOtherAppOfficialAccountMenuDO sysOtherAppOfficialAccountMenuDO = lambdaQuery()
+            .eq(BaseEntity::getId, notNullId.getId()).in(BaseEntityNoId::getTenantId, queryTenantIdSet).one();
 
         MyEntityUtil.handleParentId(sysOtherAppOfficialAccountMenuDO);
 
@@ -237,13 +224,11 @@ public class SysOtherAppOfficialAccountMenuServiceImpl
             return BaseBizCodeEnum.OK;
         }
 
-        List<SysOtherAppOfficialAccountMenuDO> sysOtherAppOfficialAccountMenuDOList =
-            lambdaQuery().in(BaseEntity::getId, dto.getIdSet())
-                .select(BaseEntity::getId, BaseEntityTree::getOrderNo)
-                .list();
+        List<SysOtherAppOfficialAccountMenuDO> sysOtherAppOfficialAccountMenuDOList = lambdaQuery()
+            .in(BaseEntity::getId, dto.getIdSet()).select(BaseEntity::getId, BaseEntityTree::getOrderNo).list();
 
         for (SysOtherAppOfficialAccountMenuDO item : sysOtherAppOfficialAccountMenuDOList) {
-            item.setOrderNo((int) (item.getOrderNo() + dto.getNumber()));
+            item.setOrderNo((int)(item.getOrderNo() + dto.getNumber()));
         }
 
         updateBatchById(sysOtherAppOfficialAccountMenuDOList);
@@ -258,8 +243,7 @@ public class SysOtherAppOfficialAccountMenuServiceImpl
     @NotNull
     private Func1<Set<Long>, Long> getCheckIllegalFunc1(Set<Long> idSet) {
 
-        return tenantIdSet -> lambdaQuery().in(BaseEntity::getId, idSet)
-            .in(BaseEntityNoId::getTenantId, tenantIdSet)
+        return tenantIdSet -> lambdaQuery().in(BaseEntity::getId, idSet).in(BaseEntityNoId::getTenantId, tenantIdSet)
             .count();
 
     }

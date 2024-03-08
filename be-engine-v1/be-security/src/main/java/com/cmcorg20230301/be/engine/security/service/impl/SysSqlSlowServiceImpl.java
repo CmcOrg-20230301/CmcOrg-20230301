@@ -7,7 +7,6 @@ import com.cmcorg20230301.be.engine.security.service.SysSqlSlowService;
 import org.springframework.stereotype.Service;
 
 @Service
-public class SysSqlSlowServiceImpl extends ServiceImpl<SysSqlSlowMapper, SysSqlSlowDO>
-    implements SysSqlSlowService {
+public class SysSqlSlowServiceImpl extends ServiceImpl<SysSqlSlowMapper, SysSqlSlowDO> implements SysSqlSlowService {
 
 }

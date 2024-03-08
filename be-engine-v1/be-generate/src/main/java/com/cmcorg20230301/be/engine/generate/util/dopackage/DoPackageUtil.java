@@ -1,5 +1,12 @@
 package com.cmcorg20230301.be.engine.generate.util.dopackage;
 
+import java.io.File;
+import java.util.concurrent.CountDownLatch;
+import java.util.function.Consumer;
+
+import com.cmcorg20230301.be.engine.generate.util.apitest.ApiTestHelper;
+import com.jcraft.jsch.Session;
+
 import cn.hutool.core.convert.Convert;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.io.FileUtil;
@@ -9,11 +16,6 @@ import cn.hutool.core.util.CharsetUtil;
 import cn.hutool.core.util.RuntimeUtil;
 import cn.hutool.extra.ssh.JschUtil;
 import cn.hutool.extra.ssh.Sftp;
-import com.cmcorg20230301.be.engine.generate.util.apitest.ApiTestHelper;
-import com.jcraft.jsch.Session;
-import java.io.File;
-import java.util.concurrent.CountDownLatch;
-import java.util.function.Consumer;
 import lombok.Data;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -63,34 +65,34 @@ public class DoPackageUtil {
         return null;
     }
 
-//    /**
-//     * 后端，打包之前的操作
-//     */
-//    @Override
-//    public Consumer<String> getBePackagePreConsumer() {
-//
-//        return projectPath -> {
-//
-//            log.info("后端引擎打包 ↓");
-//
-//            long timeNumber = System.currentTimeMillis();
-//
-//            String beEngineProjectPath = System.getProperty("user.dir") + "/CmcOrg-20230301/be-engine-v1";
-//
-//            //            RuntimeUtil.execForStr("cmd", "/c", "cd " + beEngineProjectPath + " && mvn package");
-//
-//            RuntimeUtil.execForStr("cmd", "/c", "cd " + beEngineProjectPath + " && mvn clean");
-//
-//            RuntimeUtil.execForStr("cmd", "/c", "cd " + beEngineProjectPath + " && mvn install");
-//
-//            timeNumber = System.currentTimeMillis() - timeNumber;
-//            String timeStr = DateUtil.formatBetween(timeNumber);
-//
-//            log.info("后端引擎打包 ↑ 耗时：" + timeStr);
-//
-//        };
-//
-//    }
+    // /**
+    // * 后端，打包之前的操作
+    // */
+    // @Override
+    // public Consumer<String> getBePackagePreConsumer() {
+    //
+    // return projectPath -> {
+    //
+    // log.info("后端引擎打包 ↓");
+    //
+    // long timeNumber = System.currentTimeMillis();
+    //
+    // String beEngineProjectPath = System.getProperty("user.dir") + "/CmcOrg-20230301/be-engine-v1";
+    //
+    // // RuntimeUtil.execForStr("cmd", "/c", "cd " + beEngineProjectPath + " && mvn package");
+    //
+    // RuntimeUtil.execForStr("cmd", "/c", "cd " + beEngineProjectPath + " && mvn clean");
+    //
+    // RuntimeUtil.execForStr("cmd", "/c", "cd " + beEngineProjectPath + " && mvn install");
+    //
+    // timeNumber = System.currentTimeMillis() - timeNumber;
+    // String timeStr = DateUtil.formatBetween(timeNumber);
+    //
+    // log.info("后端引擎打包 ↑ 耗时：" + timeStr);
+    //
+    // };
+    //
+    // }
 
     /**
      * 后端，重启之前的操作
@@ -124,8 +126,7 @@ public class DoPackageUtil {
     @SneakyThrows
     public void exec() {
 
-        String nextLine = ApiTestHelper.getStrFromScanner(
-            "请输入：1 全部打包 2 后端打包 3 前端打包");
+        String nextLine = ApiTestHelper.getStrFromScanner("请输入：1 全部打包 2 后端打包 3 前端打包");
 
         int number = Convert.toInt(nextLine, 1);
 
@@ -196,8 +197,7 @@ public class DoPackageUtil {
             }
 
             // 这里需要先清除一下，不然不会重新打包
-            RuntimeUtil.execForStr("cmd", "/c",
-                "cd " + projectPath + "/" + getBeStartFolderName() + " && mvn clean");
+            RuntimeUtil.execForStr("cmd", "/c", "cd " + projectPath + "/" + getBeStartFolderName() + " && mvn clean");
 
             RuntimeUtil.execForStr("cmd", "/c", "cd " + projectPath + " && mvn package");
 

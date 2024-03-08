@@ -1,11 +1,11 @@
 package com.cmcorg20230301.be.engine.pay.google.util;
 
-import cn.hutool.core.lang.Assert;
-import cn.hutool.core.util.StrUtil;
-import cn.hutool.http.HttpRequest;
-import cn.hutool.http.HttpUtil;
-import cn.hutool.json.JSONObject;
-import cn.hutool.json.JSONUtil;
+import javax.annotation.Resource;
+
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import org.springframework.stereotype.Component;
+
 import com.cmcorg20230301.be.engine.cache.util.CacheRedisKafkaLocalUtil;
 import com.cmcorg20230301.be.engine.cache.util.MyCacheUtil;
 import com.cmcorg20230301.be.engine.pay.base.model.bo.SysPayReturnBO;
@@ -18,11 +18,14 @@ import com.cmcorg20230301.be.engine.pay.base.service.SysPayService;
 import com.cmcorg20230301.be.engine.pay.google.model.bo.SysPayGooglePurchasesBO;
 import com.cmcorg20230301.be.engine.redisson.model.enums.BaseRedisKeyEnum;
 import com.cmcorg20230301.be.engine.security.model.vo.ApiResultVO;
-import javax.annotation.Resource;
+
+import cn.hutool.core.lang.Assert;
+import cn.hutool.core.util.StrUtil;
+import cn.hutool.http.HttpRequest;
+import cn.hutool.http.HttpUtil;
+import cn.hutool.json.JSONObject;
+import cn.hutool.json.JSONUtil;
 import lombok.SneakyThrows;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-import org.springframework.stereotype.Component;
 
 /**
  * 支付：谷歌工具类
@@ -46,8 +49,7 @@ public class PayGoogleUtil {
 
         SysPayConfigurationDO sysPayConfigurationDO = dto.getSysPayConfigurationDO();
 
-        return new SysPayReturnBO(sysPayConfigurationDO.getId().toString(),
-            sysPayConfigurationDO.getAppId());
+        return new SysPayReturnBO(sysPayConfigurationDO.getId().toString(), sysPayConfigurationDO.getAppId());
 
     }
 
@@ -58,15 +60,13 @@ public class PayGoogleUtil {
      */
     @SneakyThrows
     @NotNull
-    public static SysPayTradeStatusEnum query(String outTradeNo,
-        @Nullable SysPayTradeNotifyBO sysPayTradeNotifyBO,
+    public static SysPayTradeStatusEnum query(String outTradeNo, @Nullable SysPayTradeNotifyBO sysPayTradeNotifyBO,
         SysPayConfigurationDO sysPayConfigurationDO) {
 
         Assert.notBlank(outTradeNo);
 
         SysPayDO sysPayDO = sysPayService.lambdaQuery().eq(SysPayDO::getId, outTradeNo)
-            .select(SysPayDO::getPackageName, SysPayDO::getProductId, SysPayDO::getToken,
-                SysPayDO::getOriginalPrice)
+            .select(SysPayDO::getPackageName, SysPayDO::getProductId, SysPayDO::getToken, SysPayDO::getOriginalPrice)
             .one();
 
         if (sysPayDO == null) {
@@ -82,11 +82,9 @@ public class PayGoogleUtil {
             "https://androidpublisher.googleapis.com/androidpublisher/v3/applications/{}/purchases/products/{}/tokens/{}",
             sysPayDO.getPackageName(), sysPayDO.getProductId(), sysPayDO.getToken());
 
-        String body = HttpRequest.get(url).header("Authorization", "Bearer " + accessToken)
-            .execute().body();
+        String body = HttpRequest.get(url).header("Authorization", "Bearer " + accessToken).execute().body();
 
-        SysPayGooglePurchasesBO sysPayGooglePurchasesBO = JSONUtil.toBean(body,
-            SysPayGooglePurchasesBO.class);
+        SysPayGooglePurchasesBO sysPayGooglePurchasesBO = JSONUtil.toBean(body, SysPayGooglePurchasesBO.class);
 
         String orderId = sysPayGooglePurchasesBO.getOrderId();
 
@@ -97,8 +95,7 @@ public class PayGoogleUtil {
         if (sysPayTradeNotifyBO != null) {
 
             sysPayTradeNotifyBO.setTradeNo(orderId);
-            sysPayTradeNotifyBO.setTotalAmount(
-                sysPayDO.getOriginalPrice().toPlainString()); // 备注：官方暂时没有返回实际支付金额的字段
+            sysPayTradeNotifyBO.setTotalAmount(sysPayDO.getOriginalPrice().toPlainString()); // 备注：官方暂时没有返回实际支付金额的字段
             sysPayTradeNotifyBO.setPayCurrency("");
 
         }
@@ -110,8 +107,7 @@ public class PayGoogleUtil {
 
         }
 
-        if (sysPayGooglePurchasesBO.getPurchaseState() != null
-            && sysPayGooglePurchasesBO.getPurchaseState() == 0) {
+        if (sysPayGooglePurchasesBO.getPurchaseState() != null && sysPayGooglePurchasesBO.getPurchaseState() == 0) {
 
             return SysPayTradeStatusEnum.WAIT_BUYER_CONSUME;
 
@@ -130,8 +126,7 @@ public class PayGoogleUtil {
 
         String sufKey = sysPayConfigurationDO.getTenantId() + ":" + appId;
 
-        String accessToken = MyCacheUtil.onlyGet(BaseRedisKeyEnum.GOOGLE_ACCESS_TOKEN_CACHE,
-            sufKey);
+        String accessToken = MyCacheUtil.onlyGet(BaseRedisKeyEnum.GOOGLE_ACCESS_TOKEN_CACHE, sufKey);
 
         if (StrUtil.isNotBlank(accessToken)) {
             return accessToken;
@@ -158,9 +153,8 @@ public class PayGoogleUtil {
 
         Long expiresIn = jsonObject.getLong("expires_in"); // 这里的单位是：秒
 
-        CacheRedisKafkaLocalUtil
-            .put(BaseRedisKeyEnum.GOOGLE_ACCESS_TOKEN_CACHE, sufKey, null, expiresIn * 1000,
-                () -> accessTokenResult);
+        CacheRedisKafkaLocalUtil.put(BaseRedisKeyEnum.GOOGLE_ACCESS_TOKEN_CACHE, sufKey, null, expiresIn * 1000,
+            () -> accessTokenResult);
 
         return accessTokenResult;
 

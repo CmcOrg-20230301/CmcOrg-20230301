@@ -41,8 +41,7 @@ public class MyValidUtil {
             return null;
         }
 
-        return errSet.stream().map(ConstraintViolation::getMessage).collect(Collectors.toList())
-            .toString();
+        return errSet.stream().map(ConstraintViolation::getMessage).collect(Collectors.toList()).toString();
 
     }
 

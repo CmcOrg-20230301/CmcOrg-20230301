@@ -1,7 +1,7 @@
 package com.cmcorg20230301.be.engine.sms.tencent.configuration;
 
-import cn.hutool.core.util.BooleanUtil;
-import cn.hutool.core.util.StrUtil;
+import org.springframework.context.annotation.Configuration;
+
 import com.cmcorg20230301.be.engine.model.model.constant.BaseConstant;
 import com.cmcorg20230301.be.engine.sms.base.model.bo.SysSmsSendBO;
 import com.cmcorg20230301.be.engine.sms.base.model.configuration.ISysSms;
@@ -15,8 +15,10 @@ import com.tencentcloudapi.sms.v20210111.SmsClient;
 import com.tencentcloudapi.sms.v20210111.models.SendSmsRequest;
 import com.tencentcloudapi.sms.v20210111.models.SendSmsResponse;
 import com.tencentcloudapi.sms.v20210111.models.SendStatus;
+
+import cn.hutool.core.util.BooleanUtil;
+import cn.hutool.core.util.StrUtil;
 import lombok.SneakyThrows;
-import org.springframework.context.annotation.Configuration;
 
 /**
  * 腾讯云短信相关配置类
@@ -51,8 +53,8 @@ public class SmsTencentConfiguration implements ISysSms {
 
         }
 
-        String[] templateParamSet = {sysSmsSendBO.getSendContent(),
-            String.valueOf(BaseConstant.LONG_CODE_EXPIRE_MINUTE)}; // 备注：第二个元素，表示是：验证码多久过期（分钟）
+        String[] templateParamSet =
+            {sysSmsSendBO.getSendContent(), String.valueOf(BaseConstant.LONG_CODE_EXPIRE_MINUTE)}; // 备注：第二个元素，表示是：验证码多久过期（分钟）
 
         sysSmsSendBO.setTemplateParamSet(templateParamSet);
 
@@ -70,10 +72,10 @@ public class SmsTencentConfiguration implements ISysSms {
         SysSmsConfigurationDO sysSmsConfigurationDO = sysSmsSendBO.getSysSmsConfigurationDO();
 
         // 实例化一个认证对象，入参需要传入腾讯云账户 SecretId 和 SecretKey，此处还需注意密钥对的保密
-        // 代码泄露可能会导致 SecretId 和 SecretKey 泄露，并威胁账号下所有资源的安全性。以下代码示例仅供参考，建议采用更安全的方式来使用密钥，请参见：https://cloud.tencent.com/document/product/1278/85305
+        // 代码泄露可能会导致 SecretId 和 SecretKey
+        // 泄露，并威胁账号下所有资源的安全性。以下代码示例仅供参考，建议采用更安全的方式来使用密钥，请参见：https://cloud.tencent.com/document/product/1278/85305
         // 密钥可前往官网控制台 https://console.cloud.tencent.com/cam/capi 进行获取
-        Credential cred = new Credential(sysSmsConfigurationDO.getSecretId(),
-            sysSmsConfigurationDO.getSecretKey());
+        Credential cred = new Credential(sysSmsConfigurationDO.getSecretId(), sysSmsConfigurationDO.getSecretKey());
 
         // 实例化一个http选项，可选的，没有特殊需求可以跳过
         HttpProfile httpProfile = new HttpProfile();
@@ -92,11 +94,13 @@ public class SmsTencentConfiguration implements ISysSms {
         req.setSmsSdkAppId(sysSmsConfigurationDO.getSdkAppId());
 
         /* 短信签名内容: 使用 UTF-8 编码，必须填写已审核通过的签名 */
-        // 签名信息可前往 [国内短信](https://console.cloud.tencent.com/smsv2/csms-sign) 或 [国际/港澳台短信](https://console.cloud.tencent.com/smsv2/isms-sign) 的签名管理查看
+        // 签名信息可前往 [国内短信](https://console.cloud.tencent.com/smsv2/csms-sign) 或
+        // [国际/港澳台短信](https://console.cloud.tencent.com/smsv2/isms-sign) 的签名管理查看
         req.setSignName(sysSmsConfigurationDO.getSignName());
 
         /* 模板 ID: 必须填写已审核通过的模板 ID */
-        // 模板 ID 可前往 [国内短信](https://console.cloud.tencent.com/smsv2/csms-template) 或 [国际/港澳台短信](https://console.cloud.tencent.com/smsv2/isms-template) 的正文模板管理查看
+        // 模板 ID 可前往 [国内短信](https://console.cloud.tencent.com/smsv2/csms-template) 或
+        // [国际/港澳台短信](https://console.cloud.tencent.com/smsv2/isms-template) 的正文模板管理查看
         req.setTemplateId(sysSmsSendBO.getTemplateId());
 
         /* 模板参数: 模板参数的个数需要与 TemplateId 对应模板的变量个数保持一致，若无模板参数，则设置为空 */
@@ -104,7 +108,7 @@ public class SmsTencentConfiguration implements ISysSms {
 
         /* 下发手机号码，采用 E.164 标准，+[国家或地区码][手机号]
          * 示例如：+8613711112222， 其中前面有一个+号 ，86为国家码，13711112222为手机号，最多不要超过200个手机号 */
-        req.setPhoneNumberSet(new String[]{sysSmsSendBO.getPhoneNumber()});
+        req.setPhoneNumberSet(new String[] {sysSmsSendBO.getPhoneNumber()});
 
         // 返回的resp是一个SendSmsResponse的实例，与请求对象对应
         SendSmsResponse resp = client.SendSms(req);
@@ -119,8 +123,7 @@ public class SmsTencentConfiguration implements ISysSms {
 
         if (BooleanUtil.isFalse("Ok".equalsIgnoreCase(code))) {
             throw new RuntimeException(
-                StrUtil.format("腾讯云短信发送失败，code：【{}】，message：【{}】", code,
-                    sendStatus.getMessage()));
+                StrUtil.format("腾讯云短信发送失败，code：【{}】，message：【{}】", code, sendStatus.getMessage()));
         }
 
     }

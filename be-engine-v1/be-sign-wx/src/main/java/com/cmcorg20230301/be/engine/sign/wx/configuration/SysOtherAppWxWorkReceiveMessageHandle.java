@@ -1,10 +1,12 @@
 package com.cmcorg20230301.be.engine.sign.wx.configuration;
 
-import cn.hutool.core.bean.BeanUtil;
-import cn.hutool.core.collection.CollUtil;
-import cn.hutool.core.util.BooleanUtil;
-import cn.hutool.core.util.StrUtil;
-import cn.hutool.json.JSONObject;
+import java.util.Date;
+import java.util.List;
+
+import javax.annotation.Resource;
+
+import org.jetbrains.annotations.NotNull;
+
 import com.baomidou.mybatisplus.extension.toolkit.ChainWrappers;
 import com.cmcorg20230301.be.engine.model.model.constant.LogTopicConstant;
 import com.cmcorg20230301.be.engine.other.app.listener.SysOtherAppWxWorkReceiveMessageListener;
@@ -28,17 +30,17 @@ import com.cmcorg20230301.be.engine.security.util.TryUtil;
 import com.cmcorg20230301.be.engine.security.util.UserUtil;
 import com.cmcorg20230301.be.engine.sign.helper.util.SignUtil;
 import com.cmcorg20230301.be.engine.util.util.CallBack;
+
+import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.util.BooleanUtil;
+import cn.hutool.core.util.StrUtil;
+import cn.hutool.json.JSONObject;
 import lombok.extern.slf4j.Slf4j;
-import org.jetbrains.annotations.NotNull;
 
-import javax.annotation.Resource;
-import java.util.Date;
-import java.util.List;
-
-//@Component
+// @Component
 @Slf4j(topic = LogTopicConstant.OTHER_APP_WX_WORK)
-public class SysOtherAppWxWorkReceiveMessageHandle implements
-    ISysOtherAppWxWorkReceiveMessageHandle {
+public class SysOtherAppWxWorkReceiveMessageHandle implements ISysOtherAppWxWorkReceiveMessageHandle {
 
     @Resource
     SysUserMapper sysUserMapper;
@@ -56,13 +58,12 @@ public class SysOtherAppWxWorkReceiveMessageHandle implements
 
         if (sysOtherAppDO == null) {
 
-            sysOtherAppDO = ChainWrappers.lambdaQueryChain(sysOtherAppMapper)
-                .eq(SysOtherAppDO::getOpenId, dto.getToUserName())
-                .eq(SysOtherAppDO::getType, SysOtherAppTypeEnum.WX_WORK.getCode()).one();
+            sysOtherAppDO =
+                ChainWrappers.lambdaQueryChain(sysOtherAppMapper).eq(SysOtherAppDO::getOpenId, dto.getToUserName())
+                    .eq(SysOtherAppDO::getType, SysOtherAppTypeEnum.WX_WORK.getCode()).one();
 
             if (sysOtherAppDO == null) {
-                ApiResultVO.error("该企业微信的 openId，不存在本系统，请联系管理员",
-                    dto.getToUserName());
+                ApiResultVO.error("该企业微信的 openId，不存在本系统，请联系管理员", dto.getToUserName());
             }
 
             if (BooleanUtil.isFalse(sysOtherAppDO.getEnableFlag())) {
@@ -116,16 +117,15 @@ public class SysOtherAppWxWorkReceiveMessageHandle implements
     /**
      * 新增一个用户
      */
-    private SysUserDO signInUser(SysOtherAppWxWorkReceiveMessageDTO dto,
-        SysOtherAppDO sysOtherAppDO) {
+    private SysUserDO signInUser(SysOtherAppWxWorkReceiveMessageDTO dto, SysOtherAppDO sysOtherAppDO) {
 
         CallBack<SysUserDO> sysUserDoCallBack = new CallBack<>();
 
         // 直接通过：微信 openId登录
-        SignUtil.signInAccount(ChainWrappers.lambdaQueryChain(sysUserMapper)
-                .eq(SysUserDO::getWxOpenId, dto.getFromUserName())
-                .eq(SysUserDO::getWxAppId, sysOtherAppDO.getAppId()), BaseRedisKeyEnum.PRE_WX_OPEN_ID,
-            dto.getFromUserName(), () -> {
+        SignUtil.signInAccount(
+            ChainWrappers.lambdaQueryChain(sysUserMapper).eq(SysUserDO::getWxOpenId, dto.getFromUserName())
+                .eq(SysUserDO::getWxAppId, sysOtherAppDO.getAppId()),
+            BaseRedisKeyEnum.PRE_WX_OPEN_ID, dto.getFromUserName(), () -> {
 
                 SysUserInfoDO sysUserInfoDO = SysUserInfoUtil.getWxSysUserInfoDO();
 
@@ -148,8 +148,7 @@ public class SysOtherAppWxWorkReceiveMessageHandle implements
      */
     private SysUserDO getSysUserDO(SysOtherAppWxWorkReceiveMessageDTO dto) {
 
-        return ChainWrappers.lambdaQueryChain(sysUserMapper)
-            .eq(SysUserDO::getWxOpenId, dto.getFromUserName())
+        return ChainWrappers.lambdaQueryChain(sysUserMapper).eq(SysUserDO::getWxOpenId, dto.getFromUserName())
             .eq(SysUserDO::getWxAppId, dto.getSysOtherAppDO().getAppId()).one();
 
     }
@@ -176,15 +175,14 @@ public class SysOtherAppWxWorkReceiveMessageHandle implements
 
         // 如果是：微信客服消息
         // 先：复制一份
-        SysOtherAppWxWorkReceiveMessageDTO copyDtoTemp = BeanUtil.copyProperties(dto,
-            SysOtherAppWxWorkReceiveMessageDTO.class);
+        SysOtherAppWxWorkReceiveMessageDTO copyDtoTemp =
+            BeanUtil.copyProperties(dto, SysOtherAppWxWorkReceiveMessageDTO.class);
 
         String accessToken = getAccessToken(dto);
 
         // 获取：最新消息
-        List<JSONObject> jsonObjectList = WxUtil.syncMsg(accessToken,
-            dto.getSysOtherAppDO().getTenantId(), dto.getToken(), dto.getOpenKfId(),
-            dto.getSysOtherAppDO().getAppId());
+        List<JSONObject> jsonObjectList = WxUtil.syncMsg(accessToken, dto.getSysOtherAppDO().getTenantId(),
+            dto.getToken(), dto.getOpenKfId(), dto.getSysOtherAppDO().getAppId());
 
         if (CollUtil.isEmpty(jsonObjectList)) {
             return true;
@@ -196,8 +194,7 @@ public class SysOtherAppWxWorkReceiveMessageHandle implements
 
         dto.setWxKfMsgJsonObject(jsonObject);
 
-        if (CollUtil.isNotEmpty(
-            SysOtherAppWxWorkReceiveMessageListener.iSysOtherAppWxWorkReceiveMessageHandleList)) {
+        if (CollUtil.isNotEmpty(SysOtherAppWxWorkReceiveMessageListener.iSysOtherAppWxWorkReceiveMessageHandleList)) {
 
             for (JSONObject item : jsonObjectList) {
 
@@ -212,8 +209,8 @@ public class SysOtherAppWxWorkReceiveMessageHandle implements
 
                         for (ISysOtherAppWxWorkReceiveMessageHandle subItem : SysOtherAppWxWorkReceiveMessageListener.iSysOtherAppWxWorkReceiveMessageHandleList) {
 
-                            SysOtherAppWxWorkReceiveMessageDTO copyDto = BeanUtil.copyProperties(
-                                copyDtoTemp, SysOtherAppWxWorkReceiveMessageDTO.class);
+                            SysOtherAppWxWorkReceiveMessageDTO copyDto =
+                                BeanUtil.copyProperties(copyDtoTemp, SysOtherAppWxWorkReceiveMessageDTO.class);
 
                             copyDto.setFromUserName(item.getStr("external_userid"));
 
@@ -330,7 +327,7 @@ public class SysOtherAppWxWorkReceiveMessageHandle implements
             if (e instanceof BaseException) {
 
                 // 回复文字内容
-                execTextSend(dto, ((BaseException) e).getApiResultVO().getMsg());
+                execTextSend(dto, ((BaseException)e).getApiResultVO().getMsg());
 
             } else {
 
@@ -358,8 +355,7 @@ public class SysOtherAppWxWorkReceiveMessageHandle implements
         } else {
 
             // 执行：发送
-            WxUtil.doTextSendForWorkKf(dto.getFromUserName(), accessToken, content,
-                dto.getOpenKfId());
+            WxUtil.doTextSendForWorkKf(dto.getFromUserName(), accessToken, content, dto.getOpenKfId());
 
         }
 

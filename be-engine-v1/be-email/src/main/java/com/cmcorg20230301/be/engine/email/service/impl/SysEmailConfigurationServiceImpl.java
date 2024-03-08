@@ -1,7 +1,7 @@
 package com.cmcorg20230301.be.engine.email.service.impl;
 
-import cn.hutool.core.lang.Assert;
-import cn.hutool.core.util.BooleanUtil;
+import org.springframework.stereotype.Service;
+
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.cmcorg20230301.be.engine.email.mapper.SysEmailConfigurationMapper;
 import com.cmcorg20230301.be.engine.email.model.dto.SysEmailConfigurationInsertOrUpdateDTO;
@@ -9,11 +9,12 @@ import com.cmcorg20230301.be.engine.email.model.entity.SysEmailConfigurationDO;
 import com.cmcorg20230301.be.engine.email.service.SysEmailConfigurationService;
 import com.cmcorg20230301.be.engine.security.exception.BaseBizCodeEnum;
 import com.cmcorg20230301.be.engine.security.util.UserUtil;
-import org.springframework.stereotype.Service;
+
+import cn.hutool.core.lang.Assert;
+import cn.hutool.core.util.BooleanUtil;
 
 @Service
-public class SysEmailConfigurationServiceImpl extends
-    ServiceImpl<SysEmailConfigurationMapper, SysEmailConfigurationDO>
+public class SysEmailConfigurationServiceImpl extends ServiceImpl<SysEmailConfigurationMapper, SysEmailConfigurationDO>
     implements SysEmailConfigurationService {
 
     /**

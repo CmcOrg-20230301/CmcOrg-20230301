@@ -1,8 +1,12 @@
 package com.cmcorg20230301.be.engine.wallet.service.impl;
 
-import cn.hutool.core.collection.CollUtil;
-import cn.hutool.core.util.DesensitizedUtil;
-import cn.hutool.core.util.StrUtil;
+import java.util.Set;
+
+import javax.annotation.Resource;
+
+import org.jetbrains.annotations.NotNull;
+import org.springframework.stereotype.Service;
+
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.baomidou.mybatisplus.extension.toolkit.ChainWrappers;
@@ -23,15 +27,13 @@ import com.cmcorg20230301.be.engine.wallet.model.dto.SysUserBankCardPageDTO;
 import com.cmcorg20230301.be.engine.wallet.model.entity.SysUserBankCardDO;
 import com.cmcorg20230301.be.engine.wallet.model.enums.SysOpenBankNameEnum;
 import com.cmcorg20230301.be.engine.wallet.service.SysUserBankCardService;
-import org.jetbrains.annotations.NotNull;
-import org.springframework.stereotype.Service;
 
-import javax.annotation.Resource;
-import java.util.Set;
+import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.util.DesensitizedUtil;
+import cn.hutool.core.util.StrUtil;
 
 @Service
-public class SysUserBankCardServiceImpl extends
-    ServiceImpl<SysUserBankCardMapper, SysUserBankCardDO>
+public class SysUserBankCardServiceImpl extends ServiceImpl<SysUserBankCardMapper, SysUserBankCardDO>
     implements SysUserBankCardService {
 
     @Resource
@@ -48,10 +50,8 @@ public class SysUserBankCardServiceImpl extends
         Set<Long> userIdSet = CollUtil.newHashSet(userId);
 
         // 检查：是否非法操作
-        SysTenantUtil.checkIllegal(userIdSet,
-            tenantIdSet -> ChainWrappers.lambdaQueryChain(sysUserMapper)
-                .eq(BaseEntity::getId, userId)
-                .in(BaseEntityNoId::getTenantId, tenantIdSet).count());
+        SysTenantUtil.checkIllegal(userIdSet, tenantIdSet -> ChainWrappers.lambdaQueryChain(sysUserMapper)
+            .eq(BaseEntity::getId, userId).in(BaseEntityNoId::getTenantId, tenantIdSet).count());
 
         // 执行
         return doInsertOrUpdate(dto, false, userId);
@@ -77,8 +77,7 @@ public class SysUserBankCardServiceImpl extends
      * 执行：新增/修改
      */
     @Override
-    public String doInsertOrUpdate(SysUserBankCardInsertOrUpdateUserSelfDTO dto, boolean tenantFlag,
-        Long userId) {
+    public String doInsertOrUpdate(SysUserBankCardInsertOrUpdateUserSelfDTO dto, boolean tenantFlag, Long userId) {
 
         Long id;
 
@@ -100,10 +99,8 @@ public class SysUserBankCardServiceImpl extends
 
         }
 
-        boolean exists =
-            lambdaQuery().eq(SysUserBankCardDO::getId, id)
-                .eq(BaseEntityNoIdSuper::getTenantId, dto.getTenantId())
-                .exists();
+        boolean exists = lambdaQuery().eq(SysUserBankCardDO::getId, id)
+            .eq(BaseEntityNoIdSuper::getTenantId, dto.getTenantId()).exists();
 
         SysUserBankCardDO sysUserBankCardDO = new SysUserBankCardDO();
 
@@ -182,20 +179,16 @@ public class SysUserBankCardServiceImpl extends
 
         }
 
-        Page<SysUserBankCardDO> page = lambdaQuery().eq(dto.getId() != null,
-                SysUserBankCardDO::getId, dto.getId())
+        Page<SysUserBankCardDO> page = lambdaQuery().eq(dto.getId() != null, SysUserBankCardDO::getId, dto.getId())
 
-            .like(StrUtil.isNotBlank(dto.getBankCardNo()), SysUserBankCardDO::getBankCardNo,
-                dto.getBankCardNo())
+            .like(StrUtil.isNotBlank(dto.getBankCardNo()), SysUserBankCardDO::getBankCardNo, dto.getBankCardNo())
 
-            .eq(dto.getOpenBankName() != null, SysUserBankCardDO::getOpenBankName,
-                dto.getOpenBankName())
+            .eq(dto.getOpenBankName() != null, SysUserBankCardDO::getOpenBankName, dto.getOpenBankName())
 
             .like(StrUtil.isNotBlank(dto.getBranchBankName()), SysUserBankCardDO::getBranchBankName,
                 dto.getBranchBankName()) //
 
-            .like(StrUtil.isNotBlank(dto.getPayeeName()), SysUserBankCardDO::getPayeeName,
-                dto.getPayeeName()) //
+            .like(StrUtil.isNotBlank(dto.getPayeeName()), SysUserBankCardDO::getPayeeName, dto.getPayeeName()) //
 
             .ne(!tenantFlag, SysUserBankCardDO::getId, BaseConstant.TENANT_USER_ID) //
 
@@ -225,11 +218,9 @@ public class SysUserBankCardServiceImpl extends
 
         // 备注：需要和：提现记录的脱敏一致
         sysUserBankCardDO
-            .setBankCardNo(StrUtil.cleanBlank(
-                DesensitizedUtil.bankCard(sysUserBankCardDO.getBankCardNo()))); // 脱敏
+            .setBankCardNo(StrUtil.cleanBlank(DesensitizedUtil.bankCard(sysUserBankCardDO.getBankCardNo()))); // 脱敏
 
-        sysUserBankCardDO.setPayeeName(
-            DesensitizedUtil.chineseName(sysUserBankCardDO.getPayeeName())); // 脱敏
+        sysUserBankCardDO.setPayeeName(DesensitizedUtil.chineseName(sysUserBankCardDO.getPayeeName())); // 脱敏
 
     }
 
@@ -272,8 +263,7 @@ public class SysUserBankCardServiceImpl extends
 
         Long currentTenantIdDefault = UserUtil.getCurrentTenantIdDefault();
 
-        SysUserBankCardDO sysUserBankCardDO = lambdaQuery().eq(SysUserBankCardDO::getId,
-                currentUserId)
+        SysUserBankCardDO sysUserBankCardDO = lambdaQuery().eq(SysUserBankCardDO::getId, currentUserId)
             .eq(BaseEntityNoIdSuper::getTenantId, currentTenantIdDefault).one();
 
         // 脱敏：SysUserBankCardDO

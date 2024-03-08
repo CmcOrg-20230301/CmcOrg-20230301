@@ -1,20 +1,19 @@
 package com.cmcorg20230301.be.engine.file.minio.util;
 
-import cn.hutool.core.collection.CollUtil;
-import cn.hutool.core.io.IoUtil;
-import com.cmcorg20230301.be.engine.file.base.model.entity.SysFileStorageConfigurationDO;
-import io.minio.GetObjectArgs;
-import io.minio.MinioClient;
-import io.minio.ObjectWriteArgs;
-import io.minio.PutObjectArgs;
-import io.minio.RemoveObjectArgs;
 import java.io.InputStream;
 import java.util.Set;
-import lombok.SneakyThrows;
+
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
+
+import com.cmcorg20230301.be.engine.file.base.model.entity.SysFileStorageConfigurationDO;
+
+import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.io.IoUtil;
+import io.minio.*;
+import lombok.SneakyThrows;
 
 /**
  * minio文件工具类
@@ -31,10 +30,8 @@ public class FileMinioUtil {
 
         InputStream inputStream = file.getInputStream();
 
-        MinioClient minioClient = MinioClient.builder()
-            .endpoint(sysFileStorageConfigurationDO.getUploadEndpoint())
-            .credentials(sysFileStorageConfigurationDO.getAccessKey(),
-                sysFileStorageConfigurationDO.getSecretKey())
+        MinioClient minioClient = MinioClient.builder().endpoint(sysFileStorageConfigurationDO.getUploadEndpoint())
+            .credentials(sysFileStorageConfigurationDO.getAccessKey(), sysFileStorageConfigurationDO.getSecretKey())
             .build();
 
         minioClient.putObject(PutObjectArgs.builder().bucket(bucketName).object(objectName)
@@ -52,14 +49,11 @@ public class FileMinioUtil {
     public static InputStream download(String bucketName, String objectName,
         SysFileStorageConfigurationDO sysFileStorageConfigurationDO) {
 
-        MinioClient minioClient = MinioClient.builder()
-            .endpoint(sysFileStorageConfigurationDO.getUploadEndpoint())
-            .credentials(sysFileStorageConfigurationDO.getAccessKey(),
-                sysFileStorageConfigurationDO.getSecretKey())
+        MinioClient minioClient = MinioClient.builder().endpoint(sysFileStorageConfigurationDO.getUploadEndpoint())
+            .credentials(sysFileStorageConfigurationDO.getAccessKey(), sysFileStorageConfigurationDO.getSecretKey())
             .build();
 
-        return minioClient.getObject(
-            GetObjectArgs.builder().bucket(bucketName).object(objectName).build());
+        return minioClient.getObject(GetObjectArgs.builder().bucket(bucketName).object(objectName).build());
 
     }
 
@@ -74,16 +68,13 @@ public class FileMinioUtil {
             return;
         }
 
-        MinioClient minioClient = MinioClient.builder()
-            .endpoint(sysFileStorageConfigurationDO.getUploadEndpoint())
-            .credentials(sysFileStorageConfigurationDO.getAccessKey(),
-                sysFileStorageConfigurationDO.getSecretKey())
+        MinioClient minioClient = MinioClient.builder().endpoint(sysFileStorageConfigurationDO.getUploadEndpoint())
+            .credentials(sysFileStorageConfigurationDO.getAccessKey(), sysFileStorageConfigurationDO.getSecretKey())
             .build();
 
         for (String item : objectNameSet) {
 
-            minioClient.removeObject(
-                RemoveObjectArgs.builder().bucket(bucketName).object(item).build());
+            minioClient.removeObject(RemoveObjectArgs.builder().bucket(bucketName).object(item).build());
 
         }
 

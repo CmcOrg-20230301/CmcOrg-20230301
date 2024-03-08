@@ -1,38 +1,38 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0"
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <modelVersion>4.0.0</modelVersion>
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
 
-  <parent>
-    <groupId>com.cmcorg20230301</groupId>
-    <artifactId>be-engine-v1</artifactId>
-    <version>2023.3.1</version>
-  </parent>
+    <parent>
+        <groupId>com.cmcorg20230301</groupId>
+        <artifactId>be-engine-v1</artifactId>
+        <version>2023.3.1</version>
+    </parent>
 
-  <artifactId>be-knife4j</artifactId>
-  <description>knife4j相关</description>
+    <artifactId>be-knife4j</artifactId>
+    <description>knife4j相关</description>
 
-  <dependencies>
+    <dependencies>
 
-    <!-- be-util -->
-    <dependency>
-      <groupId>${cmcorg.groupId}</groupId>
-      <artifactId>be-util</artifactId>
-    </dependency>
+        <!-- be-util -->
+        <dependency>
+            <groupId>${cmcorg.groupId}</groupId>
+            <artifactId>be-util</artifactId>
+        </dependency>
 
-    <!-- be-model -->
-    <dependency>
-      <groupId>${cmcorg.groupId}</groupId>
-      <artifactId>be-model</artifactId>
-    </dependency>
+        <!-- be-model -->
+        <dependency>
+            <groupId>${cmcorg.groupId}</groupId>
+            <artifactId>be-model</artifactId>
+        </dependency>
 
-    <!-- knife4j -->
-    <dependency>
-      <groupId>com.github.xiaoymin</groupId>
-      <artifactId>knife4j-springdoc-ui</artifactId>
-    </dependency>
+        <!-- knife4j -->
+        <dependency>
+            <groupId>com.github.xiaoymin</groupId>
+            <artifactId>knife4j-springdoc-ui</artifactId>
+        </dependency>
 
-  </dependencies>
+    </dependencies>
 
 </project>

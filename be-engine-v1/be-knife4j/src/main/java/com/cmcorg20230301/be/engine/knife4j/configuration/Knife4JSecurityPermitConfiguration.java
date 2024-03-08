@@ -1,9 +1,12 @@
 package com.cmcorg20230301.be.engine.knife4j.configuration;
 
-import cn.hutool.core.collection.CollUtil;
-import com.cmcorg20230301.be.engine.model.model.configuration.ISecurityPermitConfiguration;
 import java.util.Set;
+
 import org.springframework.context.annotation.Configuration;
+
+import com.cmcorg20230301.be.engine.model.model.configuration.ISecurityPermitConfiguration;
+
+import cn.hutool.core.collection.CollUtil;
 
 @Configuration
 public class Knife4JSecurityPermitConfiguration implements ISecurityPermitConfiguration {
@@ -20,8 +23,7 @@ public class Knife4JSecurityPermitConfiguration implements ISecurityPermitConfig
 
     @Override
     public Set<String> anyPermitAllSet() {
-        return CollUtil.newHashSet("/v3/api-docs/**", "/webjars/**", "/doc.html/**",
-            "/favicon.ico");
+        return CollUtil.newHashSet("/v3/api-docs/**", "/webjars/**", "/doc.html/**", "/favicon.ico");
     }
 
 }

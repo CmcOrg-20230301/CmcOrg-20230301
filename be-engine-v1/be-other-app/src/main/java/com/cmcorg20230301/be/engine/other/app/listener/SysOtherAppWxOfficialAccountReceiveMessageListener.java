@@ -1,6 +1,18 @@
 package com.cmcorg20230301.be.engine.other.app.listener;
 
-import cn.hutool.core.collection.CollUtil;
+import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
+
+import javax.annotation.Resource;
+
+import org.jetbrains.annotations.Nullable;
+import org.redisson.api.RedissonClient;
+import org.springframework.kafka.annotation.KafkaHandler;
+import org.springframework.kafka.annotation.KafkaListener;
+import org.springframework.kafka.support.Acknowledgment;
+import org.springframework.stereotype.Component;
+
 import com.cmcorg20230301.be.engine.kafka.model.enums.KafkaTopicEnum;
 import com.cmcorg20230301.be.engine.model.model.constant.LogTopicConstant;
 import com.cmcorg20230301.be.engine.other.app.model.dto.SysOtherAppWxOfficialAccountReceiveMessageDTO;
@@ -11,17 +23,9 @@ import com.cmcorg20230301.be.engine.security.util.KafkaHelper;
 import com.cmcorg20230301.be.engine.security.util.MyThreadUtil;
 import com.cmcorg20230301.be.engine.security.util.TryUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import java.util.List;
-import java.util.Objects;
-import java.util.stream.Collectors;
-import javax.annotation.Resource;
+
+import cn.hutool.core.collection.CollUtil;
 import lombok.extern.slf4j.Slf4j;
-import org.jetbrains.annotations.Nullable;
-import org.redisson.api.RedissonClient;
-import org.springframework.kafka.annotation.KafkaHandler;
-import org.springframework.kafka.annotation.KafkaListener;
-import org.springframework.kafka.support.Acknowledgment;
-import org.springframework.stereotype.Component;
 
 /**
  * 处理微信公众号消息的 监听器
@@ -33,21 +37,20 @@ import org.springframework.stereotype.Component;
 public class SysOtherAppWxOfficialAccountReceiveMessageListener {
 
     public static final List<String> TOPIC_LIST =
-        CollUtil.newArrayList(
-            KafkaTopicEnum.SYS_OTHER_APP_WX_OFFICIAL_ACCOUN_RECEIVE_MESSAGE_TOPIC.name());
+        CollUtil.newArrayList(KafkaTopicEnum.SYS_OTHER_APP_WX_OFFICIAL_ACCOUN_RECEIVE_MESSAGE_TOPIC.name());
 
     // 目的：Long 转 String，Enum 转 code
     private static ObjectMapper objectMapper;
 
     @Nullable
-    private static List<ISysOtherAppWxOfficialAccountReceiveMessageHandle>
-        iSysOtherAppWxOfficialAccountReceiveMessageHandleList;
+    private static List<
+        ISysOtherAppWxOfficialAccountReceiveMessageHandle> iSysOtherAppWxOfficialAccountReceiveMessageHandleList;
 
     @Resource
     RedissonClient redissonClient;
 
-    public SysOtherAppWxOfficialAccountReceiveMessageListener(ObjectMapper objectMapper,
-        @Nullable List<ISysOtherAppWxOfficialAccountReceiveMessageHandle> iSysOtherAppWxOfficialAccountReceiveMessageHandleList) {
+    public SysOtherAppWxOfficialAccountReceiveMessageListener(ObjectMapper objectMapper, @Nullable List<
+        ISysOtherAppWxOfficialAccountReceiveMessageHandle> iSysOtherAppWxOfficialAccountReceiveMessageHandleList) {
 
         SysOtherAppWxOfficialAccountReceiveMessageListener.objectMapper = objectMapper;
         SysOtherAppWxOfficialAccountReceiveMessageListener.iSysOtherAppWxOfficialAccountReceiveMessageHandleList =
@@ -70,8 +73,7 @@ public class SysOtherAppWxOfficialAccountReceiveMessageListener {
 
                     try {
 
-                        return objectMapper.readValue(it,
-                            SysOtherAppWxOfficialAccountReceiveMessageDTO.class);
+                        return objectMapper.readValue(it, SysOtherAppWxOfficialAccountReceiveMessageDTO.class);
 
                     } catch (Exception ignored) {
 
@@ -82,8 +84,7 @@ public class SysOtherAppWxOfficialAccountReceiveMessageListener {
                 }).filter(Objects::nonNull).collect(Collectors.toList());
 
             if (CollUtil.isNotEmpty(sysOtherAppWxOfficialAccountReceiveMessageDTOList)
-                && CollUtil.isNotEmpty(
-                iSysOtherAppWxOfficialAccountReceiveMessageHandleList)) {
+                && CollUtil.isNotEmpty(iSysOtherAppWxOfficialAccountReceiveMessageHandleList)) {
 
                 MyThreadUtil.execute(() -> {
 
@@ -92,13 +93,11 @@ public class SysOtherAppWxOfficialAccountReceiveMessageListener {
                         String msgIdStr = item.getMsgIdStr();
 
                         String redisKey =
-                            BaseRedisKeyEnum.PRE_SYS_OTHER_APP_WX_OFFICIAL_ACCOUNT_RECEIVE_MESSAGE_ID.name()
-                                + msgIdStr;
+                            BaseRedisKeyEnum.PRE_SYS_OTHER_APP_WX_OFFICIAL_ACCOUNT_RECEIVE_MESSAGE_ID.name() + msgIdStr;
 
                         RedissonUtil.doLock(redisKey, () -> {
 
-                            boolean deleteFlag = redissonClient.<String>getBucket(redisKey)
-                                .delete();
+                            boolean deleteFlag = redissonClient.<String>getBucket(redisKey).delete();
 
                             if (!deleteFlag) {
                                 return;

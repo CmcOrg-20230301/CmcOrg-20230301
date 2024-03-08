@@ -1,9 +1,14 @@
 package com.cmcorg20230301.be.engine.other.app.wx.service.impl;
 
-import cn.hutool.core.collection.CollUtil;
-import cn.hutool.http.HttpRequest;
-import cn.hutool.json.JSONObject;
-import cn.hutool.json.JSONUtil;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Set;
+
+import javax.annotation.Resource;
+
+import org.jetbrains.annotations.NotNull;
+import org.springframework.stereotype.Service;
+
 import com.baomidou.mybatisplus.extension.toolkit.ChainWrappers;
 import com.cmcorg20230301.be.engine.model.model.constant.LogTopicConstant;
 import com.cmcorg20230301.be.engine.model.model.dto.NotNullId;
@@ -24,13 +29,12 @@ import com.cmcorg20230301.be.engine.security.model.entity.BaseEntityTree;
 import com.cmcorg20230301.be.engine.security.model.vo.ApiResultVO;
 import com.cmcorg20230301.be.engine.security.util.MyTreeUtil;
 import com.cmcorg20230301.be.engine.security.util.SysTenantUtil;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Set;
-import javax.annotation.Resource;
+
+import cn.hutool.core.collection.CollUtil;
+import cn.hutool.http.HttpRequest;
+import cn.hutool.json.JSONObject;
+import cn.hutool.json.JSONUtil;
 import lombok.extern.slf4j.Slf4j;
-import org.jetbrains.annotations.NotNull;
-import org.springframework.stereotype.Service;
 
 @Service
 @Slf4j(topic = LogTopicConstant.OTHER_APP_WX)
@@ -50,28 +54,23 @@ public class SysWxServiceImpl implements SysWxService {
 
         Set<Long> userRefTenantIdSet = SysTenantUtil.getUserRefTenantIdSet();
 
-        SysOtherAppDO sysOtherAppDO =
-            ChainWrappers.lambdaQueryChain(sysOtherAppMapper)
-                .in(BaseEntityNoIdSuper::getTenantId, userRefTenantIdSet)
-                .eq(BaseEntity::getId, notNullId.getId())
-                .select(BaseEntityNoIdSuper::getTenantId, SysOtherAppDO::getAppId).one();
+        SysOtherAppDO sysOtherAppDO = ChainWrappers.lambdaQueryChain(sysOtherAppMapper)
+            .in(BaseEntityNoIdSuper::getTenantId, userRefTenantIdSet).eq(BaseEntity::getId, notNullId.getId())
+            .select(BaseEntityNoIdSuper::getTenantId, SysOtherAppDO::getAppId).one();
 
         if (sysOtherAppDO == null) {
             return BaseBizCodeEnum.OK;
         }
 
-        String accessToken = WxUtil.getAccessToken(sysOtherAppDO.getTenantId(),
-            sysOtherAppDO.getAppId());
+        String accessToken = WxUtil.getAccessToken(sysOtherAppDO.getTenantId(), sysOtherAppDO.getAppId());
 
         List<SysOtherAppOfficialAccountMenuDO> sysOtherAppOfficialAccountMenuDOList =
             ChainWrappers.lambdaQueryChain(sysOtherAppOfficialAccountMenuMapper)
                 .eq(SysOtherAppOfficialAccountMenuDO::getOtherAppId, notNullId.getId())
-                .eq(BaseEntityNoId::getEnableFlag, true).orderByDesc(BaseEntityTree::getOrderNo)
-                .list();
+                .eq(BaseEntityNoId::getEnableFlag, true).orderByDesc(BaseEntityTree::getOrderNo).list();
 
         // 组装成：树结构
-        List<SysOtherAppOfficialAccountMenuDO> tree = MyTreeUtil.listToTree(
-            sysOtherAppOfficialAccountMenuDOList);
+        List<SysOtherAppOfficialAccountMenuDO> tree = MyTreeUtil.listToTree(sysOtherAppOfficialAccountMenuDOList);
 
         List<SysOtherAppOfficialAccountMenuWxBO> buttonList = new LinkedList<>();
 
@@ -103,8 +102,7 @@ public class SysWxServiceImpl implements SysWxService {
         body.set("button", buttonList);
 
         // 组装成：微信菜单结构
-        String result = HttpRequest.post(
-                "https://api.weixin.qq.com/cgi-bin/menu/create?access_token=" + accessToken)
+        String result = HttpRequest.post("https://api.weixin.qq.com/cgi-bin/menu/create?access_token=" + accessToken)
             .body(JSONUtil.toJsonStr(body)).execute().body();
 
         WxBaseVO wxBaseVO = JSONUtil.toBean(result, WxBaseVO.class);
@@ -121,8 +119,8 @@ public class SysWxServiceImpl implements SysWxService {
     }
 
     @NotNull
-    private SysOtherAppOfficialAccountMenuWxBO getSysOtherAppOfficialAccountMenuWxBO(
-        SysOtherAppOfficialAccountMenuDO item) {
+    private SysOtherAppOfficialAccountMenuWxBO
+        getSysOtherAppOfficialAccountMenuWxBO(SysOtherAppOfficialAccountMenuDO item) {
 
         SysOtherAppOfficialAccountMenuWxBO sysOtherAppOfficialAccountMenuWxBO =
             new SysOtherAppOfficialAccountMenuWxBO();
@@ -132,16 +130,14 @@ public class SysWxServiceImpl implements SysWxService {
         if (item.getButtonType().equals(SysOtherAppOfficialAccountMenuButtonTypeEnum.VIEW)) {
 
             sysOtherAppOfficialAccountMenuWxBO
-                .setType(
-                    SysOtherAppOfficialAccountMenuWxBO.SysOtherAppOfficialAccountMenuWxType.view);
+                .setType(SysOtherAppOfficialAccountMenuWxBO.SysOtherAppOfficialAccountMenuWxType.view);
 
             sysOtherAppOfficialAccountMenuWxBO.setUrl(item.getValue());
 
         } else {
 
             sysOtherAppOfficialAccountMenuWxBO
-                .setType(
-                    SysOtherAppOfficialAccountMenuWxBO.SysOtherAppOfficialAccountMenuWxType.click);
+                .setType(SysOtherAppOfficialAccountMenuWxBO.SysOtherAppOfficialAccountMenuWxType.click);
 
             sysOtherAppOfficialAccountMenuWxBO.setKey(item.getValue());
 

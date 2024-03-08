@@ -1,12 +1,13 @@
 package com.cmcorg20230301.be.engine.log.configuration;
 
-import ch.qos.logback.classic.spi.ILoggingEvent;
-import ch.qos.logback.core.filter.Filter;
-import ch.qos.logback.core.spi.FilterReply;
 import com.alibaba.nacos.common.utils.CollectionUtils;
 import com.cmcorg20230301.be.engine.log.properties.LogProperties;
 import com.cmcorg20230301.be.engine.log.util.LogToFlowChartUtil;
 import com.cmcorg20230301.be.engine.model.model.constant.LogTopicConstant;
+
+import ch.qos.logback.classic.spi.ILoggingEvent;
+import ch.qos.logback.core.filter.Filter;
+import ch.qos.logback.core.spi.FilterReply;
 
 public class LogFilter extends Filter<ILoggingEvent> {
 
@@ -30,8 +31,7 @@ public class LogFilter extends Filter<ILoggingEvent> {
             }
 
             if (logProperties.getLogTopicSet().contains(LogTopicConstant.NORMAL)
-                && !iLoggingEvent.getLoggerName()
-                .startsWith(LogTopicConstant.PRE_BE)) {
+                && !iLoggingEvent.getLoggerName().startsWith(LogTopicConstant.PRE_BE)) {
 
                 if (logProperties.getNotLogTopicSet().contains(iLoggingEvent.getLoggerName())) {
 

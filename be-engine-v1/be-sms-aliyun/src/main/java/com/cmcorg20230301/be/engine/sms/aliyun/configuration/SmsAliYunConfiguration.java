@@ -1,8 +1,9 @@
 package com.cmcorg20230301.be.engine.sms.aliyun.configuration;
 
-import cn.hutool.core.util.BooleanUtil;
-import cn.hutool.core.util.StrUtil;
-import cn.hutool.json.JSONUtil;
+import java.util.concurrent.CompletableFuture;
+
+import org.springframework.context.annotation.Configuration;
+
 import com.aliyun.auth.credentials.Credential;
 import com.aliyun.auth.credentials.provider.StaticCredentialProvider;
 import com.aliyun.sdk.service.dysmsapi20170525.AsyncClient;
@@ -15,11 +16,12 @@ import com.cmcorg20230301.be.engine.sms.base.model.configuration.ISysSms;
 import com.cmcorg20230301.be.engine.sms.base.model.entity.SysSmsConfigurationDO;
 import com.cmcorg20230301.be.engine.sms.base.model.enums.SysSmsTypeEnum;
 import com.cmcorg20230301.be.engine.sms.base.model.interfaces.ISysSmsType;
+
+import cn.hutool.core.util.BooleanUtil;
+import cn.hutool.core.util.StrUtil;
+import cn.hutool.json.JSONUtil;
 import darabonba.core.client.ClientOverrideConfiguration;
 import lombok.SneakyThrows;
-import org.springframework.context.annotation.Configuration;
-
-import java.util.concurrent.CompletableFuture;
 
 /**
  * 阿里云短信相关配置类
@@ -58,7 +60,7 @@ public class SmsAliYunConfiguration implements ISysSms {
         String templateParam = JSONUtil.createObj().set("code", sysSmsSendBO.getSendContent())
             .set("expire", BaseConstant.LONG_CODE_EXPIRE_MINUTE).toString();
 
-        sysSmsSendBO.setTemplateParamSet(new String[]{templateParam});
+        sysSmsSendBO.setTemplateParamSet(new String[] {templateParam});
 
         // 执行：发送短信
         doSend(sysSmsSendBO);
@@ -73,22 +75,19 @@ public class SmsAliYunConfiguration implements ISysSms {
 
         SysSmsConfigurationDO sysSmsConfigurationDO = sysSmsSendBO.getSysSmsConfigurationDO();
 
-        SendSmsRequest sendSmsRequest = SendSmsRequest.builder()
-            .phoneNumbers(sysSmsSendBO.getPhoneNumber())
-            .signName(sysSmsConfigurationDO.getSignName())
-            .templateCode(sysSmsSendBO.getTemplateId())
+        SendSmsRequest sendSmsRequest = SendSmsRequest.builder().phoneNumbers(sysSmsSendBO.getPhoneNumber())
+            .signName(sysSmsConfigurationDO.getSignName()).templateCode(sysSmsSendBO.getTemplateId())
             .templateParam(sysSmsSendBO.getTemplateParamSet()[0]).build();
 
         // Configure Credentials authentication information, including ak, secret, token
-        StaticCredentialProvider provider = StaticCredentialProvider.create(
-            Credential.builder().accessKeyId(sysSmsConfigurationDO.getSecretId())
+        StaticCredentialProvider provider =
+            StaticCredentialProvider.create(Credential.builder().accessKeyId(sysSmsConfigurationDO.getSecretId())
                 .accessKeySecret(sysSmsConfigurationDO.getSecretKey()).build());
 
         // Configure the Client
         AsyncClient client = AsyncClient.builder().region("cn-hangzhou") // Region ID
             .credentialsProvider(provider)
-            .overrideConfiguration(
-                ClientOverrideConfiguration.create().setEndpointOverride("dysmsapi.aliyuncs.com"))
+            .overrideConfiguration(ClientOverrideConfiguration.create().setEndpointOverride("dysmsapi.aliyuncs.com"))
             .build();
 
         // Asynchronously get the return value of the API request
@@ -106,9 +105,7 @@ public class SmsAliYunConfiguration implements ISysSms {
 
         if (BooleanUtil.isFalse("OK".equalsIgnoreCase(code))) {
 
-            throw new RuntimeException(
-                StrUtil.format("阿里云短信发送失败，code：【{}】，message：【{}】", code,
-                    body.getMessage()));
+            throw new RuntimeException(StrUtil.format("阿里云短信发送失败，code：【{}】，message：【{}】", code, body.getMessage()));
 
         }
 

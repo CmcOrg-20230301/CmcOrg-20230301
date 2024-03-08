@@ -57,8 +57,7 @@ public class MyEntityUtil {
      */
     public static void handleParentId(BaseEntityTree<?> baseEntityTree) {
 
-        if (baseEntityTree != null && BaseConstant.TOP_PARENT_ID.equals(
-            baseEntityTree.getParentId())) {
+        if (baseEntityTree != null && BaseConstant.TOP_PARENT_ID.equals(baseEntityTree.getParentId())) {
             baseEntityTree.setParentId(null);
         }
 
@@ -76,8 +75,7 @@ public class MyEntityUtil {
      * 获取不为 null对象的 BigDecimal，如果为空，则返回默认值
      */
     @NotNull
-    public static BigDecimal getNotNullBigDecimal(BigDecimal bigDecimal,
-        BigDecimal defaultBigDecimal) {
+    public static BigDecimal getNotNullBigDecimal(BigDecimal bigDecimal, BigDecimal defaultBigDecimal) {
         return bigDecimal == null ? defaultBigDecimal : bigDecimal;
     }
 
@@ -138,15 +136,15 @@ public class MyEntityUtil {
             if (item.getValue() == null) {
                 continue;
             }
-            if ((item.getValue() instanceof Integer) && ((int) item.getValue() == -1)) {
+            if ((item.getValue() instanceof Integer) && ((int)item.getValue() == -1)) {
                 item.setValue(null);
                 continue;
             }
-            if ((item.getValue() instanceof Byte) && ((byte) item.getValue() == -1)) {
+            if ((item.getValue() instanceof Byte) && ((byte)item.getValue() == -1)) {
                 item.setValue(null);
                 continue;
             }
-            if ((item.getValue() instanceof Long) && ((long) item.getValue() == -1)) {
+            if ((item.getValue() instanceof Long) && ((long)item.getValue() == -1)) {
                 item.setValue(null);
             }
 

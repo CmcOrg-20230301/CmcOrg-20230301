@@ -1,21 +1,25 @@
 package com.cmcorg20230301.be.engine.netty.tcp.protobuf.server;
 
-import cn.hutool.core.map.MapUtil;
+import java.util.concurrent.ConcurrentHashMap;
+
+import javax.annotation.Resource;
+
+import org.jetbrains.annotations.NotNull;
+import org.springframework.stereotype.Component;
+
 import com.cmcorg20230301.be.engine.model.model.constant.LogTopicConstant;
 import com.cmcorg20230301.be.engine.netty.tcp.protobuf.properties.NettyTcpProtobufProperties;
 import com.cmcorg20230301.be.engine.security.util.TryUtil;
+
+import cn.hutool.core.map.MapUtil;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.util.AttributeKey;
 import io.netty.util.ReferenceCountUtil;
-import java.util.concurrent.ConcurrentHashMap;
-import javax.annotation.Resource;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-import org.jetbrains.annotations.NotNull;
-import org.springframework.stereotype.Component;
 import protobuf.proto.BaseProto;
 
 @Component
@@ -83,7 +87,7 @@ public class NettyTcpProtobufServerHandler extends ChannelInboundHandlerAdapter 
             if (msg instanceof BaseProto.BaseRequest) {
 
                 // 处理：BaseRequest
-                handleBaseRequest((BaseProto.BaseRequest) msg);
+                handleBaseRequest((BaseProto.BaseRequest)msg);
 
             }
 

@@ -1,5 +1,14 @@
 package com.cmcorg20230301.be.engine.generate.util.generate;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.jetbrains.annotations.Nullable;
+
+import com.cmcorg20230301.be.engine.generate.model.bo.BeApi;
+
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.map.MapUtil;
 import cn.hutool.core.text.StrMatcher;
@@ -9,13 +18,7 @@ import cn.hutool.http.HttpRequest;
 import cn.hutool.json.JSONArray;
 import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
-import com.cmcorg20230301.be.engine.generate.model.bo.BeApi;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
-import org.jetbrains.annotations.Nullable;
 
 /**
  * 获取所有请求
@@ -25,7 +28,7 @@ public class SpringDocUtil {
 
     // 读取：接口的地址
     private static final String SPRING_DOC_ENDPOINT = "http://43.154.37.130:10001/v3/api-docs/be";
-    //    private static final String SPRING_DOC_ENDPOINT = "http://127.0.0.1:10001/v3/api-docs/be";
+    // private static final String SPRING_DOC_ENDPOINT = "http://127.0.0.1:10001/v3/api-docs/be";
 
     private static final String BE_API_SCHEMA_MAP_KEY = "beApiSchemaMapKey";
 
@@ -60,8 +63,7 @@ public class SpringDocUtil {
 
         JSONObject schemas = components.getJSONObject("schemas");
 
-        HashMap<String, BeApi.BeApiSchema> beApiSchemaMap = MapUtil.newHashMap(
-            schemas.size()); // 所有的对象，key是对象的名称
+        HashMap<String, BeApi.BeApiSchema> beApiSchemaMap = MapUtil.newHashMap(schemas.size()); // 所有的对象，key是对象的名称
 
         List<BeApi.BeApiSchema> todoHandleBeApiSchemaList = new ArrayList<>(); // 待处理的：对象类型集合
 
@@ -83,13 +85,12 @@ public class SpringDocUtil {
     /**
      * 处理：返回值
      */
-    private static void handleResult(JSONObject paths,
-        HashMap<String, HashMap<String, BeApi>> result,
+    private static void handleResult(JSONObject paths, HashMap<String, HashMap<String, BeApi>> result,
         HashMap<String, BeApi.BeApiSchema> beApiSchemaMap) {
 
         for (Map.Entry<String, Object> item : paths.entrySet()) {
 
-            JSONObject value = (JSONObject) item.getValue();
+            JSONObject value = (JSONObject)item.getValue();
 
             String[] valueKeyArr = value.keySet().toArray(new String[0]);
 
@@ -227,13 +228,11 @@ public class SpringDocUtil {
 
         beApiSchema.setClassName(beApiSchemaMapKey);
 
-        BeApi.BeApiSchema propertiesBeApiSchema = beApiSchemaMap.get(
-            beApiSchemaMapKey); // 从 map中获取对象
+        BeApi.BeApiSchema propertiesBeApiSchema = beApiSchemaMap.get(beApiSchemaMapKey); // 从 map中获取对象
 
         if (propertiesBeApiSchema == null) { // 如果不存在
 
-            log.info("处理返回值失败：未找到引用类：key：{}，beApiSchemaMapKey；{}", item.getKey(),
-                beApiSchemaMapKey);
+            log.info("处理返回值失败：未找到引用类：key：{}，beApiSchemaMapKey；{}", item.getKey(), beApiSchemaMapKey);
             return;
 
         }
@@ -258,7 +257,7 @@ public class SpringDocUtil {
 
         for (Object subItem : parameters) {
 
-            JSONObject parameter = (JSONObject) subItem;
+            JSONObject parameter = (JSONObject)subItem;
 
             JSONObject schema = parameter.getJSONObject("schema");
 
@@ -292,13 +291,11 @@ public class SpringDocUtil {
 
                     beApiSchema.setClassName(beApiSchemaMapKey);
 
-                    BeApi.BeApiSchema propertiesBeApiSchema = beApiSchemaMap.get(
-                        beApiSchemaMapKey); // 从 map中获取对象
+                    BeApi.BeApiSchema propertiesBeApiSchema = beApiSchemaMap.get(beApiSchemaMapKey); // 从 map中获取对象
 
                     if (propertiesBeApiSchema == null) { // 如果不存在
 
-                        log.info("未找到引用类：key：{}，beApiSchemaMapKey；{}", item.getKey(),
-                            beApiSchemaMapKey);
+                        log.info("未找到引用类：key：{}，beApiSchemaMapKey；{}", item.getKey(), beApiSchemaMapKey);
                         continue;
 
                     }
@@ -306,8 +303,7 @@ public class SpringDocUtil {
                     HashMap<String, BeApi.BeApiField> propertiesFieldMap = MapUtil.newHashMap();
                     beApiSchema.setFieldMap(propertiesFieldMap);
 
-                    propertiesFieldMap.put(beApiSchemaMapKey,
-                        propertiesBeApiSchema); // 添加到对象类型的，字段 map里
+                    propertiesFieldMap.put(beApiSchemaMapKey, propertiesBeApiSchema); // 添加到对象类型的，字段 map里
 
                     parameterMap.put(beApiSchema.getName(), beApiSchema);
 
@@ -338,8 +334,7 @@ public class SpringDocUtil {
     /**
      * 处理：beApiParameter的属性
      */
-    private static void handleBeApiParameter(JSONObject jsonObject,
-        BeApi.BeApiParameter beApiParameter) {
+    private static void handleBeApiParameter(JSONObject jsonObject, BeApi.BeApiParameter beApiParameter) {
 
         beApiParameter.setType(jsonObject.getStr("type"));
         beApiParameter.setRequired(jsonObject.getBool("required"));
@@ -399,8 +394,7 @@ public class SpringDocUtil {
     /**
      * 处理：待处理的：对象类型集合
      */
-    private static void handleTodoHandleBeApiSchemaList(
-        HashMap<String, BeApi.BeApiSchema> beApiSchemaMap,
+    private static void handleTodoHandleBeApiSchemaList(HashMap<String, BeApi.BeApiSchema> beApiSchemaMap,
         List<BeApi.BeApiSchema> todoHandleBeApiSchemaList) {
 
         for (BeApi.BeApiSchema item : todoHandleBeApiSchemaList) {
@@ -432,13 +426,12 @@ public class SpringDocUtil {
     /**
      * 处理：所有的对象
      */
-    private static void handleBeApiSchemaMap(JSONObject schemas,
-        HashMap<String, BeApi.BeApiSchema> beApiSchemaMap,
+    private static void handleBeApiSchemaMap(JSONObject schemas, HashMap<String, BeApi.BeApiSchema> beApiSchemaMap,
         List<BeApi.BeApiSchema> todoHandleBeApiSchemaList) {
 
         for (Map.Entry<String, Object> item : schemas.entrySet()) {
 
-            JSONObject value = (JSONObject) item.getValue();
+            JSONObject value = (JSONObject)item.getValue();
 
             BeApi.BeApiSchema apiSchema = new BeApi.BeApiSchema();
             apiSchema.setClassName(item.getKey());
@@ -451,8 +444,7 @@ public class SpringDocUtil {
             if (properties != null) {
 
                 // 处理：所有的对象，处理：字段
-                handleBeApiSchemaMapProperties(beApiSchemaMap, todoHandleBeApiSchemaList, apiSchema,
-                    properties);
+                handleBeApiSchemaMapProperties(beApiSchemaMap, todoHandleBeApiSchemaList, apiSchema, properties);
 
             }
 
@@ -468,17 +460,15 @@ public class SpringDocUtil {
     /**
      * 处理：所有的对象，处理：字段
      */
-    private static void handleBeApiSchemaMapProperties(
-        HashMap<String, BeApi.BeApiSchema> beApiSchemaMap,
-        List<BeApi.BeApiSchema> todoHandleBeApiSchemaList, BeApi.BeApiSchema apiSchema,
-        JSONObject properties) {
+    private static void handleBeApiSchemaMapProperties(HashMap<String, BeApi.BeApiSchema> beApiSchemaMap,
+        List<BeApi.BeApiSchema> todoHandleBeApiSchemaList, BeApi.BeApiSchema apiSchema, JSONObject properties) {
 
         HashMap<String, BeApi.BeApiField> fieldMap = MapUtil.newHashMap();
         apiSchema.setFieldMap(fieldMap);
 
         for (Map.Entry<String, Object> item : properties.entrySet()) {
 
-            JSONObject propertiesValue = (JSONObject) item.getValue();
+            JSONObject propertiesValue = (JSONObject)item.getValue();
 
             Boolean arrFlag = null;
 
@@ -515,8 +505,7 @@ public class SpringDocUtil {
                 fieldMap.put(item.getKey(), beApiParameter);
 
                 if (CollUtil.isNotEmpty(apiSchema.getRequiredFieldName())
-                    && apiSchema.getRequiredFieldName()
-                    .contains(item.getKey())) {
+                    && apiSchema.getRequiredFieldName().contains(item.getKey())) {
 
                     beApiParameter.setRequired(true);
 
@@ -542,8 +531,7 @@ public class SpringDocUtil {
 
                 }
 
-                BeApi.BeApiSchema propertiesBeApiSchema = beApiSchemaMap.get(
-                    beApiSchemaMapKey); // 看这个对象是否存在于 map中
+                BeApi.BeApiSchema propertiesBeApiSchema = beApiSchemaMap.get(beApiSchemaMapKey); // 看这个对象是否存在于 map中
 
                 if (propertiesBeApiSchema == null) { // 如果不存在
 
@@ -554,14 +542,12 @@ public class SpringDocUtil {
                 HashMap<String, BeApi.BeApiField> propertiesFieldMap = MapUtil.newHashMap();
                 beApiSchema.setFieldMap(propertiesFieldMap);
 
-                propertiesFieldMap.put(beApiSchemaMapKey,
-                    propertiesBeApiSchema); // 添加到对象类型的，字段 map里
+                propertiesFieldMap.put(beApiSchemaMapKey, propertiesBeApiSchema); // 添加到对象类型的，字段 map里
 
                 fieldMap.put(item.getKey(), beApiSchema);
 
                 if (CollUtil.isNotEmpty(apiSchema.getRequiredFieldName())
-                    && apiSchema.getRequiredFieldName()
-                    .contains(item.getKey())) {
+                    && apiSchema.getRequiredFieldName().contains(item.getKey())) {
 
                     beApiSchema.setRequired(true);
 

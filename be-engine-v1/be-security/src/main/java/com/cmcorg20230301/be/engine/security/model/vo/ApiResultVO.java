@@ -80,8 +80,7 @@ public class ApiResultVO<T> {
 
     @Contract("_,_ -> fail")
     public static <T> ApiResultVO<T> errorMsg(String msgTemp, Object... paramArr) {
-        return new ApiResultVO<T>(BaseBizCodeEnum.API_RESULT_SYS_ERROR.getCode(),
-            StrUtil.format(msgTemp, paramArr),
+        return new ApiResultVO<T>(BaseBizCodeEnum.API_RESULT_SYS_ERROR.getCode(), StrUtil.format(msgTemp, paramArr),
             null).error();
     }
 
@@ -93,8 +92,7 @@ public class ApiResultVO<T> {
     }
 
     public static <T> ApiResultVO<T> okData(T data) {
-        return new ApiResultVO<>(BaseBizCodeEnum.API_RESULT_OK.getCode(),
-            BaseBizCodeEnum.API_RESULT_OK.getMsg(), data);
+        return new ApiResultVO<>(BaseBizCodeEnum.API_RESULT_OK.getCode(), BaseBizCodeEnum.API_RESULT_OK.getMsg(), data);
     }
 
     public static <T> ApiResultVO<T> okMsg(String msg) {

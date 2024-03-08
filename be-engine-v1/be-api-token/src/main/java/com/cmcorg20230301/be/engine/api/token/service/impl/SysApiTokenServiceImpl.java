@@ -1,9 +1,10 @@
 package com.cmcorg20230301.be.engine.api.token.service.impl;
 
-import cn.hutool.core.collection.CollUtil;
-import cn.hutool.core.lang.func.Func1;
-import cn.hutool.core.util.IdUtil;
-import cn.hutool.core.util.StrUtil;
+import java.util.Set;
+
+import org.jetbrains.annotations.NotNull;
+import org.springframework.stereotype.Service;
+
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.cmcorg20230301.be.engine.api.token.mapper.SysApiTokenMapper;
@@ -17,9 +18,11 @@ import com.cmcorg20230301.be.engine.security.exception.BaseBizCodeEnum;
 import com.cmcorg20230301.be.engine.security.model.entity.BaseEntityNoIdSuper;
 import com.cmcorg20230301.be.engine.security.util.SysTenantUtil;
 import com.cmcorg20230301.be.engine.security.util.UserUtil;
-import java.util.Set;
-import org.jetbrains.annotations.NotNull;
-import org.springframework.stereotype.Service;
+
+import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.lang.func.Func1;
+import cn.hutool.core.util.IdUtil;
+import cn.hutool.core.util.StrUtil;
 
 @Service
 public class SysApiTokenServiceImpl extends ServiceImpl<SysApiTokenMapper, SysApiTokenDO>
@@ -32,8 +35,7 @@ public class SysApiTokenServiceImpl extends ServiceImpl<SysApiTokenMapper, SysAp
     public String insertOrUpdate(SysApiTokenInsertOrUpdateDTO dto) {
 
         // 处理：BaseTenantInsertOrUpdateDTO
-        SysTenantUtil.handleBaseTenantInsertOrUpdateDTO(dto,
-            getCheckIllegalFunc1(CollUtil.newHashSet(dto.getId())),
+        SysTenantUtil.handleBaseTenantInsertOrUpdateDTO(dto, getCheckIllegalFunc1(CollUtil.newHashSet(dto.getId())),
             getTenantIdBaseEntityFunc1());
 
         SysApiTokenDO sysApiTokenDO = new SysApiTokenDO();
@@ -65,8 +67,7 @@ public class SysApiTokenServiceImpl extends ServiceImpl<SysApiTokenMapper, SysAp
         // 处理：MyTenantPageDTO
         SysTenantUtil.handleMyTenantPageDTO(dto, true);
 
-        return lambdaQuery().like(StrUtil.isNotBlank(dto.getName()), SysApiTokenDO::getName,
-                dto.getName())
+        return lambdaQuery().like(StrUtil.isNotBlank(dto.getName()), SysApiTokenDO::getName, dto.getName())
             .in(SysApiTokenDO::getTenantId, dto.getTenantIdSet()) //
             .page(dto.updateTimeDescDefaultOrderPage(true));
 
@@ -82,8 +83,7 @@ public class SysApiTokenServiceImpl extends ServiceImpl<SysApiTokenMapper, SysAp
         Set<Long> queryTenantIdSet = SysTenantUtil.getUserRefTenantIdSet();
 
         return lambdaQuery().eq(SysApiTokenDO::getId, notNullId.getId())
-            .in(SysApiTokenDO::getTenantId, queryTenantIdSet)
-            .one();
+            .in(SysApiTokenDO::getTenantId, queryTenantIdSet).one();
 
     }
 
@@ -114,8 +114,7 @@ public class SysApiTokenServiceImpl extends ServiceImpl<SysApiTokenMapper, SysAp
     @NotNull
     private Func1<Set<Long>, Long> getCheckIllegalFunc1(Set<Long> idSet) {
 
-        return tenantIdSet -> lambdaQuery().in(SysApiTokenDO::getId, idSet)
-            .in(SysApiTokenDO::getTenantId, tenantIdSet)
+        return tenantIdSet -> lambdaQuery().in(SysApiTokenDO::getId, idSet).in(SysApiTokenDO::getTenantId, tenantIdSet)
             .count();
 
     }
@@ -128,8 +127,8 @@ public class SysApiTokenServiceImpl extends ServiceImpl<SysApiTokenMapper, SysAp
 
         return id -> {
 
-            SysApiTokenDO sysApiTokenDO = lambdaQuery().eq(SysApiTokenDO::getId, id)
-                .select(SysApiTokenDO::getTenantId).one();
+            SysApiTokenDO sysApiTokenDO =
+                lambdaQuery().eq(SysApiTokenDO::getId, id).select(SysApiTokenDO::getTenantId).one();
 
             if (sysApiTokenDO == null) {
                 return null;

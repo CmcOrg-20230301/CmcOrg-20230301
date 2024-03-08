@@ -1,14 +1,16 @@
 package com.cmcorg20230301.be.engine.file.aliyun.configuration;
 
+import java.io.InputStream;
+import java.util.Set;
+
+import org.jetbrains.annotations.NotNull;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.web.multipart.MultipartFile;
+
 import com.cmcorg20230301.be.engine.file.aliyun.util.FileAliYunUtil;
 import com.cmcorg20230301.be.engine.file.base.model.configuration.ISysFileStorage;
 import com.cmcorg20230301.be.engine.file.base.model.entity.SysFileStorageConfigurationDO;
 import com.cmcorg20230301.be.engine.file.base.model.enums.SysFileStorageTypeEnum;
-import java.io.InputStream;
-import java.util.Set;
-import org.jetbrains.annotations.NotNull;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.web.multipart.MultipartFile;
 
 /**
  * 阿里云 oss文件存储相关配置类
@@ -40,8 +42,7 @@ public class FileStorageAliConfiguration implements ISysFileStorage {
     }
 
     @Override
-    public String getUrl(String uri, String bucketName,
-        SysFileStorageConfigurationDO sysFileStorageConfigurationDO) {
+    public String getUrl(String uri, String bucketName, SysFileStorageConfigurationDO sysFileStorageConfigurationDO) {
         return sysFileStorageConfigurationDO.getPublicDownloadEndpoint() + "/" + uri;
     }
 

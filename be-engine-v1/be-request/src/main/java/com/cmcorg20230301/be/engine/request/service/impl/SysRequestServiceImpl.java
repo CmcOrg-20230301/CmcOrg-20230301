@@ -1,7 +1,7 @@
 package com.cmcorg20230301.be.engine.request.service.impl;
 
-import cn.hutool.core.collection.CollUtil;
-import cn.hutool.core.util.StrUtil;
+import org.springframework.stereotype.Service;
+
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.cmcorg20230301.be.engine.model.model.constant.OperationDescriptionConstant;
@@ -15,11 +15,12 @@ import com.cmcorg20230301.be.engine.security.model.entity.BaseEntityNoId;
 import com.cmcorg20230301.be.engine.security.model.entity.SysRequestDO;
 import com.cmcorg20230301.be.engine.security.util.SysTenantUtil;
 import com.cmcorg20230301.be.engine.security.util.UserUtil;
-import org.springframework.stereotype.Service;
+
+import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.util.StrUtil;
 
 @Service
-public class SysRequestServiceImpl extends ServiceImpl<SysRequestMapper, SysRequestDO> implements
-    SysRequestService {
+public class SysRequestServiceImpl extends ServiceImpl<SysRequestMapper, SysRequestDO> implements SysRequestService {
 
     /**
      * 分页排序查询
@@ -30,8 +31,7 @@ public class SysRequestServiceImpl extends ServiceImpl<SysRequestMapper, SysRequ
         // 处理：MyTenantPageDTO
         SysTenantUtil.handleMyTenantPageDTO(dto, true);
 
-        return lambdaQuery().like(StrUtil.isNotBlank(dto.getUri()), SysRequestDO::getUri,
-                dto.getUri())
+        return lambdaQuery().like(StrUtil.isNotBlank(dto.getUri()), SysRequestDO::getUri, dto.getUri())
             .like(StrUtil.isNotBlank(dto.getName()), SysRequestDO::getName, dto.getName())
             .like(StrUtil.isNotBlank(dto.getIp()), SysRequestDO::getIp, dto.getIp())
             .like(StrUtil.isNotBlank(dto.getRegion()), SysRequestDO::getRegion, dto.getRegion())
@@ -45,12 +45,11 @@ public class SysRequestServiceImpl extends ServiceImpl<SysRequestMapper, SysRequ
             .eq(dto.getSuccessFlag() != null, SysRequestDO::getSuccessFlag, dto.getSuccessFlag())
             .in(BaseEntityNoId::getTenantId, dto.getTenantIdSet()) //
             .orderByDesc(BaseEntity::getCreateTime)
-            .select(SysRequestDO::getIp, SysRequestDO::getUri, SysRequestDO::getSuccessFlag,
-                SysRequestDO::getCostMsStr,
+            .select(SysRequestDO::getIp, SysRequestDO::getUri, SysRequestDO::getSuccessFlag, SysRequestDO::getCostMsStr,
                 BaseEntityNoId::getCreateTime, BaseEntityNoId::getCreateId, SysRequestDO::getName,
-                SysRequestDO::getCategory, SysRequestDO::getIp, SysRequestDO::getRegion,
-                SysRequestDO::getErrorMsg,
-                BaseEntity::getId, BaseEntityNoId::getTenantId).page(dto.page(true));
+                SysRequestDO::getCategory, SysRequestDO::getIp, SysRequestDO::getRegion, SysRequestDO::getErrorMsg,
+                BaseEntity::getId, BaseEntityNoId::getTenantId)
+            .page(dto.page(true));
 
     }
 

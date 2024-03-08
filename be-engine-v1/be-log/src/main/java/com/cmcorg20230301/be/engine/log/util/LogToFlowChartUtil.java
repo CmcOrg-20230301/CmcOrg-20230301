@@ -1,11 +1,13 @@
 package com.cmcorg20230301.be.engine.log.util;
 
-import ch.qos.logback.classic.spi.ILoggingEvent;
-import com.cmcorg20230301.be.engine.log.properties.LogProperties;
-import lombok.extern.slf4j.Slf4j;
+import javax.annotation.Resource;
+
 import org.springframework.stereotype.Component;
 
-import javax.annotation.Resource;
+import com.cmcorg20230301.be.engine.log.properties.LogProperties;
+
+import ch.qos.logback.classic.spi.ILoggingEvent;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * 日志变成流程图，工具类
@@ -26,9 +28,9 @@ public class LogToFlowChartUtil {
      */
     public static void handle(ILoggingEvent iLoggingEvent) {
 
-        //        if (BooleanUtils.isFalse(logProperties.getLogToFlowChartFlag())) {
-        //            return;
-        //        }
+        // if (BooleanUtils.isFalse(logProperties.getLogToFlowChartFlag())) {
+        // return;
+        // }
 
     }
 

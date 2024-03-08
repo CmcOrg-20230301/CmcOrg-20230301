@@ -38,8 +38,8 @@ public class SysTenantUtil {
     private static SysTenantRefUserMapper sysTenantRefUserMapper;
     private static SysUserMapper sysUserMapper;
 
-    public SysTenantUtil(SysTenantMapper sysTenantMapper,
-        SysTenantRefUserMapper sysTenantRefUserMapper, SysUserMapper sysUserMapper) {
+    public SysTenantUtil(SysTenantMapper sysTenantMapper, SysTenantRefUserMapper sysTenantRefUserMapper,
+        SysUserMapper sysUserMapper) {
 
         SysTenantUtil.sysTenantMapper = sysTenantMapper;
         SysTenantUtil.sysTenantRefUserMapper = sysTenantRefUserMapper;
@@ -120,12 +120,14 @@ public class SysTenantUtil {
         Map<Long, SysTenantDO> map = MyCacheUtil.getMap(BaseRedisKeyEnum.SYS_TENANT_CACHE,
             CacheHelper.getDefaultLongMap(new SysTenantDO()), () -> {
 
-                List<SysTenantDO> sysTenantDOList = ChainWrappers.lambdaQueryChain(sysTenantMapper)
-                    .select(BaseEntity::getId, SysTenantDO::getName, SysTenantDO::getManageName,
-                        BaseEntityNoId::getEnableFlag, SysTenantDO::getParentId).list();
+                List<
+                    SysTenantDO> sysTenantDOList =
+                        ChainWrappers
+                            .lambdaQueryChain(sysTenantMapper).select(BaseEntity::getId, SysTenantDO::getName,
+                                SysTenantDO::getManageName, BaseEntityNoId::getEnableFlag, SysTenantDO::getParentId)
+                            .list();
 
-                return sysTenantDOList.stream()
-                    .collect(Collectors.toMap(BaseEntity::getId, it -> it));
+                return sysTenantDOList.stream().collect(Collectors.toMap(BaseEntity::getId, it -> it));
 
             });
 
@@ -222,8 +224,8 @@ public class SysTenantUtil {
 
             CollUtil.addAll(resultSet, tenantIdSet);
 
-            String refChildrenFlagStr = SysParamUtil.getValueByUuid(
-                ParamConstant.TENANT_REF_CHILDREN_FLAG_UUID, currentTenantIdDefault);
+            String refChildrenFlagStr =
+                SysParamUtil.getValueByUuid(ParamConstant.TENANT_REF_CHILDREN_FLAG_UUID, currentTenantIdDefault);
 
             Boolean refChildrenFlag = Convert.toBool(refChildrenFlagStr, false); // 默认：不关联
 
@@ -254,12 +256,10 @@ public class SysTenantUtil {
     @Unmodifiable // 不可对返回值进行修改
     public static Set<Long> getTenantDeepIdSet(Long tenantId) {
 
-        return MyCacheUtil.<Map<Long, Set<Long>>>getMap(
-            BaseRedisKeyEnum.SYS_TENANT_DEEP_ID_SET_CACHE, CacheHelper.getDefaultLongSetMap(),
-            () -> {
+        return MyCacheUtil.<Map<Long, Set<Long>>>getMap(BaseRedisKeyEnum.SYS_TENANT_DEEP_ID_SET_CACHE,
+            CacheHelper.getDefaultLongSetMap(), () -> {
 
-                List<SysTenantDO> tenantDOList = new ArrayList<>(
-                    getSysTenantCacheMap(false).values());
+                List<SysTenantDO> tenantDOList = new ArrayList<>(getSysTenantCacheMap(false).values());
 
                 SysTenantDO sysTenantDO = getDefaultSysTenantDO();
 
@@ -276,9 +276,8 @@ public class SysTenantUtil {
      */
     public static Set<Long> getFirstChildrenTenantIdSet(Long tenantId) {
 
-        return getSysTenantCacheMap(false).values().stream()
-            .filter(it -> it.getParentId().equals(tenantId)).map(BaseEntity::getId)
-            .collect(Collectors.toSet());
+        return getSysTenantCacheMap(false).values().stream().filter(it -> it.getParentId().equals(tenantId))
+            .map(BaseEntity::getId).collect(Collectors.toSet());
 
     }
 
@@ -304,8 +303,7 @@ public class SysTenantUtil {
             if (!CollUtil.containsAll(tenantDeepIdSet, checkTenantIdSet)) {
 
                 ApiResultVO.error("操作失败：无法操作该租户",
-                    StrUtil.format("tenantDeepIdSet：{}，checkTenantIdSet：{}", tenantDeepIdSet,
-                        checkTenantIdSet));
+                    StrUtil.format("tenantDeepIdSet：{}，checkTenantIdSet：{}", tenantDeepIdSet, checkTenantIdSet));
 
             }
 
@@ -319,16 +317,14 @@ public class SysTenantUtil {
     @Unmodifiable // 不可对返回值进行修改
     public static Map<Long, Set<Long>> getUserIdRefTenantIdSetMap() {
 
-        return MyCacheUtil.getMap(BaseRedisKeyEnum.USER_ID_REF_TENANT_ID_SET_CACHE,
-            CacheHelper.getDefaultLongSetMap(), () -> {
+        return MyCacheUtil.getMap(BaseRedisKeyEnum.USER_ID_REF_TENANT_ID_SET_CACHE, CacheHelper.getDefaultLongSetMap(),
+            () -> {
 
-                List<SysTenantRefUserDO> sysTenantRefUserDOList = ChainWrappers.lambdaQueryChain(
-                        sysTenantRefUserMapper)
+                List<SysTenantRefUserDO> sysTenantRefUserDOList = ChainWrappers.lambdaQueryChain(sysTenantRefUserMapper)
                     .select(SysTenantRefUserDO::getTenantId, SysTenantRefUserDO::getUserId).list();
 
-                return sysTenantRefUserDOList.stream().collect(
-                    Collectors.groupingBy(SysTenantRefUserDO::getUserId,
-                        Collectors.mapping(SysTenantRefUserDO::getTenantId, Collectors.toSet())));
+                return sysTenantRefUserDOList.stream().collect(Collectors.groupingBy(SysTenantRefUserDO::getUserId,
+                    Collectors.mapping(SysTenantRefUserDO::getTenantId, Collectors.toSet())));
 
             });
 
@@ -339,8 +335,7 @@ public class SysTenantUtil {
      *
      * @param onlySelfTenantIdFlag 如果 dto没有传递 tenantIdSet，是否设置为：自身租户
      */
-    public static void handleMyTenantPageDTO(@NotNull MyTenantPageDTO dto,
-        boolean onlySelfTenantIdFlag) {
+    public static void handleMyTenantPageDTO(@NotNull MyTenantPageDTO dto, boolean onlySelfTenantIdFlag) {
 
         Set<Long> tenantIdSet = dto.getTenantIdSet();
 
@@ -355,8 +350,7 @@ public class SysTenantUtil {
      * 处理或者检查：tenantIdSet
      */
     @NotNull
-    public static Set<Long> checkAndGetTenantIdSet(boolean onlySelfTenantIdFlag,
-        Set<Long> tenantIdSet) {
+    public static Set<Long> checkAndGetTenantIdSet(boolean onlySelfTenantIdFlag, Set<Long> tenantIdSet) {
 
         // 获取：用户关联的租户
         Set<Long> userRefTenantIdSet = SysTenantUtil.getUserRefTenantIdSet();
@@ -580,8 +574,7 @@ public class SysTenantUtil {
      */
     public static void checkUserIdAndTenantIdDTO(UserIdAndTenantIdDTO userIdAndTenantIdDTO) {
 
-        checkUserIdAndTenantId(userIdAndTenantIdDTO.getUserId(),
-            userIdAndTenantIdDTO.getTenantId());
+        checkUserIdAndTenantId(userIdAndTenantIdDTO.getUserId(), userIdAndTenantIdDTO.getTenantId());
 
     }
 

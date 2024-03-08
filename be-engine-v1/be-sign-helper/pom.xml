@@ -1,62 +1,62 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0"
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <modelVersion>4.0.0</modelVersion>
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
 
-  <parent>
-    <groupId>com.cmcorg20230301</groupId>
-    <artifactId>be-engine-v1</artifactId>
-    <version>2023.3.1</version>
-  </parent>
+    <parent>
+        <groupId>com.cmcorg20230301</groupId>
+        <artifactId>be-engine-v1</artifactId>
+        <version>2023.3.1</version>
+    </parent>
 
-  <artifactId>be-sign-helper</artifactId>
-  <description>登录注册帮助者相关</description>
+    <artifactId>be-sign-helper</artifactId>
+    <description>登录注册帮助者相关</description>
 
-  <dependencies>
+    <dependencies>
 
-    <!-- be-other-app-wx -->
-    <dependency>
-      <groupId>${cmcorg.groupId}</groupId>
-      <artifactId>be-other-app-wx</artifactId>
-    </dependency>
+        <!-- be-other-app-wx -->
+        <dependency>
+            <groupId>${cmcorg.groupId}</groupId>
+            <artifactId>be-other-app-wx</artifactId>
+        </dependency>
 
-    <!-- be-other-app -->
-    <dependency>
-      <groupId>${cmcorg.groupId}</groupId>
-      <artifactId>be-other-app</artifactId>
-    </dependency>
+        <!-- be-other-app -->
+        <dependency>
+            <groupId>${cmcorg.groupId}</groupId>
+            <artifactId>be-other-app</artifactId>
+        </dependency>
 
-    <!-- be-file -->
-    <dependency>
-      <groupId>${cmcorg.groupId}</groupId>
-      <artifactId>be-file</artifactId>
-    </dependency>
+        <!-- be-file -->
+        <dependency>
+            <groupId>${cmcorg.groupId}</groupId>
+            <artifactId>be-file</artifactId>
+        </dependency>
 
-    <!-- be-post -->
-    <dependency>
-      <groupId>${cmcorg.groupId}</groupId>
-      <artifactId>be-post</artifactId>
-    </dependency>
+        <!-- be-post -->
+        <dependency>
+            <groupId>${cmcorg.groupId}</groupId>
+            <artifactId>be-post</artifactId>
+        </dependency>
 
-    <!-- be-dept -->
-    <dependency>
-      <groupId>${cmcorg.groupId}</groupId>
-      <artifactId>be-dept</artifactId>
-    </dependency>
+        <!-- be-dept -->
+        <dependency>
+            <groupId>${cmcorg.groupId}</groupId>
+            <artifactId>be-dept</artifactId>
+        </dependency>
 
-    <!-- be-param -->
-    <dependency>
-      <groupId>${cmcorg.groupId}</groupId>
-      <artifactId>be-param</artifactId>
-    </dependency>
+        <!-- be-param -->
+        <dependency>
+            <groupId>${cmcorg.groupId}</groupId>
+            <artifactId>be-param</artifactId>
+        </dependency>
 
-    <!-- be-security -->
-    <dependency>
-      <groupId>${cmcorg.groupId}</groupId>
-      <artifactId>be-security</artifactId>
-    </dependency>
+        <!-- be-security -->
+        <dependency>
+            <groupId>${cmcorg.groupId}</groupId>
+            <artifactId>be-security</artifactId>
+        </dependency>
 
-  </dependencies>
+    </dependencies>
 
 </project>

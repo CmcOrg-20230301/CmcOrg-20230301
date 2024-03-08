@@ -1,5 +1,14 @@
 package com.cmcorg20230301.be.engine.wallet.controller;
 
+import javax.annotation.Resource;
+import javax.validation.Valid;
+
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.cmcorg20230301.be.engine.model.model.dto.ChangeBigDecimalNumberIdSetDTO;
 import com.cmcorg20230301.be.engine.model.model.dto.NotEmptyIdSet;
@@ -11,16 +20,9 @@ import com.cmcorg20230301.be.engine.wallet.model.dto.SysUserWalletRechargeTenant
 import com.cmcorg20230301.be.engine.wallet.model.dto.SysUserWalletRechargeUserSelfDTO;
 import com.cmcorg20230301.be.engine.wallet.model.entity.SysUserWalletDO;
 import com.cmcorg20230301.be.engine.wallet.service.SysUserWalletService;
+
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
-import javax.annotation.Resource;
-import javax.validation.Valid;
 
 @Tag(name = "基础-用户钱包-管理")
 @RestController
@@ -61,8 +63,7 @@ public class SysUserWalletController {
     @Operation(summary = "通过主键 idSet，加减可提现的钱")
     @PostMapping("/addWithdrawableMoney/background")
     @PreAuthorize("hasAuthority('sysUserWallet:addWithdrawableMoney')")
-    public ApiResultVO<String> addWithdrawableMoneyBackground(
-        @RequestBody @Valid ChangeBigDecimalNumberIdSetDTO dto) {
+    public ApiResultVO<String> addWithdrawableMoneyBackground(@RequestBody @Valid ChangeBigDecimalNumberIdSetDTO dto) {
         return ApiResultVO.okMsg(baseService.addWithdrawableMoneyBackground(dto));
     }
 
@@ -75,16 +76,14 @@ public class SysUserWalletController {
     @Operation(summary = "充值-用户自我")
     @PostMapping("/recharge/userSelf")
     @PreAuthorize("hasAuthority('sysUserWallet:rechargeUserSelf')")
-    public ApiResultVO<BuyVO> rechargeUserSelf(
-        @RequestBody @Valid SysUserWalletRechargeUserSelfDTO dto) {
+    public ApiResultVO<BuyVO> rechargeUserSelf(@RequestBody @Valid SysUserWalletRechargeUserSelfDTO dto) {
         return ApiResultVO.okData(baseService.rechargeUserSelf(dto));
     }
 
     @Operation(summary = "充值-租户")
     @PostMapping("/recharge/tenant")
     @PreAuthorize("hasAuthority('sysUserWallet:rechargeTenant')")
-    public ApiResultVO<BuyVO> rechargeTenant(
-        @RequestBody @Valid SysUserWalletRechargeTenantDTO dto) {
+    public ApiResultVO<BuyVO> rechargeTenant(@RequestBody @Valid SysUserWalletRechargeTenantDTO dto) {
         return ApiResultVO.okData(baseService.rechargeTenant(dto));
     }
 

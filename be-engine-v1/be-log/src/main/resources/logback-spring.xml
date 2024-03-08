@@ -2,68 +2,68 @@
 
 <configuration>
 
-  <include resource="org/springframework/boot/logging/logback/defaults.xml"/>
+    <include resource="org/springframework/boot/logging/logback/defaults.xml"/>
 
-  <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
-    <filter class="com.cmcorg20230301.be.engine.log.configuration.LogFilter"/>
-    <encoder>
-      <pattern>${CONSOLE_LOG_PATTERN}</pattern>
-      <charset>${CONSOLE_LOG_CHARSET}</charset>
-    </encoder>
-  </appender>
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <filter class="com.cmcorg20230301.be.engine.log.configuration.LogFilter"/>
+        <encoder>
+            <pattern>${CONSOLE_LOG_PATTERN}</pattern>
+            <charset>${CONSOLE_LOG_CHARSET}</charset>
+        </encoder>
+    </appender>
 
-  <property name="log.path" value="/home/logs"/>
-  <property name="log.maxHistory" value="15"/>
-  <property name="log.maxFileSize" value="20MB"/>
-  <property name="log.timeFormat" value="yyyy-MM-dd"/>
-  <property name="log.pattern"
-    value="%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level -&#45;&#45; [%thread] %logger Line:%L : %msg%n"/>
+    <property name="log.path" value="/home/logs"/>
+    <property name="log.maxHistory" value="15"/>
+    <property name="log.maxFileSize" value="20MB"/>
+    <property name="log.timeFormat" value="yyyy-MM-dd"/>
+    <property name="log.pattern"
+              value="%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level -&#45;&#45; [%thread] %logger Line:%L : %msg%n"/>
 
-  <!-- 日志文件名称：这里spring.application.name表示工程名称 -->
-  <springProperty scope="context" name="APP_NAME" source="spring.application.name"/>
+    <!-- 日志文件名称：这里spring.application.name表示工程名称 -->
+    <springProperty scope="context" name="APP_NAME" source="spring.application.name"/>
 
-  <!-- 按照每天生成日志文件。仅记录 INFO及以上日志 -->
-  <appender name="FILE-INFO" class="ch.qos.logback.core.rolling.RollingFileAppender">
-    <file>${log.path}/${APP_NAME}/info.log</file>
-    <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
-      <level>INFO</level>
-    </filter>
-    <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-      <FileNamePattern>${log.path}/${APP_NAME}/info-%d{${log.timeFormat}}.%i.log</FileNamePattern>
-      <MaxHistory>${log.maxHistory}</MaxHistory>
-      <TimeBasedFileNamingAndTriggeringPolicy
-        class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
-        <MaxFileSize>${log.maxFileSize}</MaxFileSize>
-      </TimeBasedFileNamingAndTriggeringPolicy>
-    </rollingPolicy>
-    <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
-      <pattern>${log.pattern}</pattern>
-    </encoder>
-  </appender>
+    <!-- 按照每天生成日志文件。仅记录 INFO及以上日志 -->
+    <appender name="FILE-INFO" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${log.path}/${APP_NAME}/info.log</file>
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>INFO</level>
+        </filter>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <FileNamePattern>${log.path}/${APP_NAME}/info-%d{${log.timeFormat}}.%i.log</FileNamePattern>
+            <MaxHistory>${log.maxHistory}</MaxHistory>
+            <TimeBasedFileNamingAndTriggeringPolicy
+                    class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                <MaxFileSize>${log.maxFileSize}</MaxFileSize>
+            </TimeBasedFileNamingAndTriggeringPolicy>
+        </rollingPolicy>
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <pattern>${log.pattern}</pattern>
+        </encoder>
+    </appender>
 
-  <!-- 按照每天生成日志文件。仅记录错误日志 -->
-  <appender name="FILE-ERROR" class="ch.qos.logback.core.rolling.RollingFileAppender">
-    <file>${log.path}/${APP_NAME}/error.log</file>
-    <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
-      <level>ERROR</level>
-    </filter>
-    <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-      <FileNamePattern>${log.path}/${APP_NAME}/error-%d{${log.timeFormat}}.%i.log</FileNamePattern>
-      <MaxHistory>${log.maxHistory}</MaxHistory>
-      <TimeBasedFileNamingAndTriggeringPolicy
-        class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
-        <MaxFileSize>${log.maxFileSize}</MaxFileSize>
-      </TimeBasedFileNamingAndTriggeringPolicy>
-    </rollingPolicy>
-    <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
-      <pattern>${log.pattern}</pattern>
-    </encoder>
-  </appender>
+    <!-- 按照每天生成日志文件。仅记录错误日志 -->
+    <appender name="FILE-ERROR" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${log.path}/${APP_NAME}/error.log</file>
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>ERROR</level>
+        </filter>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <FileNamePattern>${log.path}/${APP_NAME}/error-%d{${log.timeFormat}}.%i.log</FileNamePattern>
+            <MaxHistory>${log.maxHistory}</MaxHistory>
+            <TimeBasedFileNamingAndTriggeringPolicy
+                    class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                <MaxFileSize>${log.maxFileSize}</MaxFileSize>
+            </TimeBasedFileNamingAndTriggeringPolicy>
+        </rollingPolicy>
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <pattern>${log.pattern}</pattern>
+        </encoder>
+    </appender>
 
-  <root level="INFO">
-    <appender-ref ref="CONSOLE"/>
-    <appender-ref ref="FILE-INFO"/>
-    <appender-ref ref="FILE-ERROR"/>
-  </root>
+    <root level="INFO">
+        <appender-ref ref="CONSOLE"/>
+        <appender-ref ref="FILE-INFO"/>
+        <appender-ref ref="FILE-ERROR"/>
+    </root>
 
 </configuration>

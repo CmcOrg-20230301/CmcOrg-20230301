@@ -24,7 +24,8 @@ public class SecurityProperties {
     @Schema(description = "admin 的昵称")
     private String adminNickname = "admin";
 
-    @Schema(description = "admin 的密码，默认为 suancai，下面是 suancai经过 sha加密之后的字符串，加密次数和方法和前端需进行统一，输入 suancai即可登录，也可以使用本类的 generateAdminPassword方法，快速生成新的 admin密码")
+    @Schema(
+        description = "admin 的密码，默认为 suancai，下面是 suancai经过 sha加密之后的字符串，加密次数和方法和前端需进行统一，输入 suancai即可登录，也可以使用本类的 generateAdminPassword方法，快速生成新的 admin密码")
     private String adminPassword = "89750f4648ab240704529a1504ac8bbb4c85abd9b88522cef992eee8eb2304b2";
 
     @Schema(description = "是否启用：ipFilter，默认启用")
@@ -45,8 +46,7 @@ public class SecurityProperties {
 
         password = DigestUtil.sha256Hex((DigestUtil.sha512Hex(password)));
 
-        System.out.println(
-            password); // 89750f4648ab240704529a1504ac8bbb4c85abd9b88522cef992eee8eb2304b2
+        System.out.println(password); // 89750f4648ab240704529a1504ac8bbb4c85abd9b88522cef992eee8eb2304b2
 
     }
 

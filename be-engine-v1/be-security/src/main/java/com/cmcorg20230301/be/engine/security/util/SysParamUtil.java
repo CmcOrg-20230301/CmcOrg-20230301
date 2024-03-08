@@ -30,15 +30,12 @@ public class SysParamUtil {
 
     // 系统内置参数 uuidSet，备注：不允许删除
     // 备注：系统内置参数的 uuid等于 id
-    public static final Set<String> SYSTEM_PARAM_UUID_SET = CollUtil.newHashSet(
-        ParamConstant.RSA_PRIVATE_KEY_UUID, ParamConstant.IP_REQUESTS_PER_SECOND_UUID,
-        ParamConstant.TENANT_REF_CHILDREN_FLAG_UUID);
+    public static final Set<String> SYSTEM_PARAM_UUID_SET = CollUtil.newHashSet(ParamConstant.RSA_PRIVATE_KEY_UUID,
+        ParamConstant.IP_REQUESTS_PER_SECOND_UUID, ParamConstant.TENANT_REF_CHILDREN_FLAG_UUID);
 
     // 不允许删除的：参数主键 id
-    public static final Set<String> SYSTEM_PARAM_NOT_DELETE_ID_SET = (Set<String>) CollUtil.addAll(
-        new HashSet<>(SYSTEM_PARAM_UUID_SET),
-        CollUtil.newHashSet(ParamConstant.DEFAULT_MANAGE_SIGN_IN_FLAG));
-
+    public static final Set<String> SYSTEM_PARAM_NOT_DELETE_ID_SET = (Set<String>)CollUtil
+        .addAll(new HashSet<>(SYSTEM_PARAM_UUID_SET), CollUtil.newHashSet(ParamConstant.DEFAULT_MANAGE_SIGN_IN_FLAG));
 
     private static SysParamMapper sysParamMapper;
 
@@ -66,8 +63,8 @@ public class SysParamUtil {
 
         }
 
-        Map<Long, Map<String, String>> map = MyCacheUtil.getMap(BaseRedisKeyEnum.SYS_PARAM_CACHE,
-            CacheHelper.getDefaultLongMapStringMap(), () -> {
+        Map<Long, Map<String, String>> map =
+            MyCacheUtil.getMap(BaseRedisKeyEnum.SYS_PARAM_CACHE, CacheHelper.getDefaultLongMapStringMap(), () -> {
 
                 List<SysParamDO> sysParamDOList = ChainWrappers.lambdaQueryChain(sysParamMapper)
                     .select(SysParamDO::getUuid, SysParamDO::getValue, BaseEntityNoId::getTenantId)
@@ -75,9 +72,8 @@ public class SysParamUtil {
 
                 // 注意：Collectors.toMap()方法，key不能重复，不然会报错
                 // 可以用第三个参数，解决这个报错：(v1, v2) -> v2 不覆盖（留前值）(v1, v2) -> v1 覆盖（取后值）
-                return sysParamDOList.stream().collect(
-                    Collectors.groupingBy(BaseEntityNoId::getTenantId,
-                        Collectors.toMap(SysParamDO::getUuid, SysParamDO::getValue)));
+                return sysParamDOList.stream().collect(Collectors.groupingBy(BaseEntityNoId::getTenantId,
+                    Collectors.toMap(SysParamDO::getUuid, SysParamDO::getValue)));
 
             });
 
@@ -96,4 +92,3 @@ public class SysParamUtil {
     }
 
 }
-

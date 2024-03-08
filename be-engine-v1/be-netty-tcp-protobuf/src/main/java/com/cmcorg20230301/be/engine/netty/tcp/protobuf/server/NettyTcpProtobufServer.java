@@ -1,5 +1,11 @@
 package com.cmcorg20230301.be.engine.netty.tcp.protobuf.server;
 
+import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
+import javax.annotation.Resource;
+
+import org.springframework.stereotype.Component;
+
 import com.cmcorg20230301.be.engine.netty.tcp.protobuf.configuration.NettyTcpProtobufBeanPostProcessor;
 import com.cmcorg20230301.be.engine.netty.tcp.protobuf.properties.NettyTcpProtobufProperties;
 import com.cmcorg20230301.be.engine.redisson.util.IdGeneratorUtil;
@@ -9,6 +15,7 @@ import com.cmcorg20230301.be.engine.socket.mapper.SysSocketRefUserMapper;
 import com.cmcorg20230301.be.engine.socket.model.enums.SysSocketTypeEnum;
 import com.cmcorg20230301.be.engine.socket.service.SysSocketService;
 import com.cmcorg20230301.be.engine.socket.util.SocketUtil;
+
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelInitializer;
@@ -21,12 +28,8 @@ import io.netty.handler.codec.protobuf.ProtobufDecoder;
 import io.netty.handler.codec.protobuf.ProtobufEncoder;
 import io.netty.handler.codec.protobuf.ProtobufVarint32FrameDecoder;
 import io.netty.handler.codec.protobuf.ProtobufVarint32LengthFieldPrepender;
-import javax.annotation.PostConstruct;
-import javax.annotation.PreDestroy;
-import javax.annotation.Resource;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Component;
 import protobuf.proto.BaseProto;
 
 @Component
@@ -43,8 +46,7 @@ public class NettyTcpProtobufServer {
     private static NettyTcpProtobufServerHandler nettyTcpProtobufServerHandler;
 
     @Resource
-    public void setNettyWebSocketServerHandler(
-        NettyTcpProtobufServerHandler nettyTcpProtobufServerHandler) {
+    public void setNettyWebSocketServerHandler(NettyTcpProtobufServerHandler nettyTcpProtobufServerHandler) {
         NettyTcpProtobufServer.nettyTcpProtobufServerHandler = nettyTcpProtobufServerHandler;
     }
 
@@ -181,8 +183,7 @@ public class NettyTcpProtobufServer {
 
                     ch.pipeline().addLast(new ProtobufVarint32FrameDecoder());
 
-                    ch.pipeline()
-                        .addLast(new ProtobufDecoder(BaseProto.BaseRequest.getDefaultInstance()));
+                    ch.pipeline().addLast(new ProtobufDecoder(BaseProto.BaseRequest.getDefaultInstance()));
 
                     ch.pipeline().addLast(new ProtobufVarint32LengthFieldPrepender());
 
@@ -197,11 +198,9 @@ public class NettyTcpProtobufServer {
         channelFuture = serverBootstrap.bind().sync(); // 服务器同步创建绑定
 
         sysSocketServerId =
-            SocketUtil.getSysSocketServerId(port, nettyTcpProtobufProperties,
-                SysSocketTypeEnum.TCP_PROTOBUF);
+            SocketUtil.getSysSocketServerId(port, nettyTcpProtobufProperties, SysSocketTypeEnum.TCP_PROTOBUF);
 
-        log.info("NettyTcpProtobuf 启动完成：端口：{}，总接口个数：{}个", port,
-            NettyTcpProtobufBeanPostProcessor.getMappingMapSize());
+        log.info("NettyTcpProtobuf 启动完成：端口：{}，总接口个数：{}个", port, NettyTcpProtobufBeanPostProcessor.getMappingMapSize());
 
     }
 

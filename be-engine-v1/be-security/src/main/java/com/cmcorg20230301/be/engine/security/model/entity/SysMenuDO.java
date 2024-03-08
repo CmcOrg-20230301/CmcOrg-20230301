@@ -51,4 +51,3 @@ public class SysMenuDO extends BaseEntityTree<SysMenuDO> {
     private Boolean hiddenPageContainerFlag;
 
 }
-

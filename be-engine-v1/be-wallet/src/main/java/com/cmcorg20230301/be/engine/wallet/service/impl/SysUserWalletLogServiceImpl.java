@@ -1,9 +1,14 @@
 package com.cmcorg20230301.be.engine.wallet.service.impl;
 
-import cn.hutool.core.bean.BeanUtil;
-import cn.hutool.core.collection.CollUtil;
-import cn.hutool.core.date.DateUtil;
-import cn.hutool.core.util.StrUtil;
+import java.math.BigDecimal;
+import java.util.Date;
+import java.util.concurrent.CopyOnWriteArrayList;
+
+import javax.annotation.PreDestroy;
+
+import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.stereotype.Service;
+
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.cmcorg20230301.be.engine.model.model.constant.BaseConstant;
@@ -18,19 +23,16 @@ import com.cmcorg20230301.be.engine.wallet.model.dto.SysUserWalletLogPageDTO;
 import com.cmcorg20230301.be.engine.wallet.model.dto.SysUserWalletLogUserSelfPageDTO;
 import com.cmcorg20230301.be.engine.wallet.model.entity.SysUserWalletLogDO;
 import com.cmcorg20230301.be.engine.wallet.service.SysUserWalletLogService;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.stereotype.Service;
 
-import javax.annotation.PreDestroy;
-import java.math.BigDecimal;
-import java.util.Date;
-import java.util.concurrent.CopyOnWriteArrayList;
+import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.date.DateUtil;
+import cn.hutool.core.util.StrUtil;
+import lombok.extern.slf4j.Slf4j;
 
 @Service
 @Slf4j(topic = LogTopicConstant.USER_WALLET)
-public class SysUserWalletLogServiceImpl extends
-    ServiceImpl<SysUserWalletLogMapper, SysUserWalletLogDO>
+public class SysUserWalletLogServiceImpl extends ServiceImpl<SysUserWalletLogMapper, SysUserWalletLogDO>
     implements SysUserWalletLogService {
 
     private static CopyOnWriteArrayList<SysUserWalletLogDO> SYS_USER_WALLET_LOG_DO_LIST = new CopyOnWriteArrayList<>();
@@ -85,8 +87,7 @@ public class SysUserWalletLogServiceImpl extends
         // 处理：MyTenantPageDTO
         SysTenantUtil.handleMyTenantPageDTO(dto, true);
 
-        return lambdaQuery().eq(dto.getUserId() != null, SysUserWalletLogDO::getUserId,
-                dto.getUserId()) //
+        return lambdaQuery().eq(dto.getUserId() != null, SysUserWalletLogDO::getUserId, dto.getUserId()) //
 
             .eq(dto.getType() != null, SysUserWalletLogDO::getType, dto.getType()) //
 
@@ -94,14 +95,11 @@ public class SysUserWalletLogServiceImpl extends
 
             .like(StrUtil.isNotBlank(dto.getName()), SysUserWalletLogDO::getName, dto.getName()) //
 
-            .le(dto.getCtEndTime() != null, SysUserWalletLogDO::getCreateTime,
-                dto.getCtEndTime()) //
+            .le(dto.getCtEndTime() != null, SysUserWalletLogDO::getCreateTime, dto.getCtEndTime()) //
 
-            .ge(dto.getCtBeginTime() != null, SysUserWalletLogDO::getCreateTime,
-                dto.getCtBeginTime()) //
+            .ge(dto.getCtBeginTime() != null, SysUserWalletLogDO::getCreateTime, dto.getCtBeginTime()) //
 
-            .like(StrUtil.isNotBlank(dto.getRemark()), SysUserWalletLogDO::getRemark,
-                dto.getRemark()) //
+            .like(StrUtil.isNotBlank(dto.getRemark()), SysUserWalletLogDO::getRemark, dto.getRemark()) //
 
             .in(BaseEntityNoId::getTenantId, dto.getTenantIdSet()) //
 
@@ -118,8 +116,7 @@ public class SysUserWalletLogServiceImpl extends
         // 检查：租户 id是否属于自己
         SysTenantUtil.checkAndGetTenantIdSet(true, dto.getTenantIdSet());
 
-        SysUserWalletLogPageDTO sysUserWalletLogPageDTO = BeanUtil.copyProperties(dto,
-            SysUserWalletLogPageDTO.class);
+        SysUserWalletLogPageDTO sysUserWalletLogPageDTO = BeanUtil.copyProperties(dto, SysUserWalletLogPageDTO.class);
 
         sysUserWalletLogPageDTO.setUserId(BaseConstant.TENANT_USER_ID);
 
@@ -136,8 +133,7 @@ public class SysUserWalletLogServiceImpl extends
 
         Long currentUserId = UserUtil.getCurrentUserId();
 
-        SysUserWalletLogPageDTO sysUserWalletLogPageDTO = BeanUtil.copyProperties(dto,
-            SysUserWalletLogPageDTO.class);
+        SysUserWalletLogPageDTO sysUserWalletLogPageDTO = BeanUtil.copyProperties(dto, SysUserWalletLogPageDTO.class);
 
         sysUserWalletLogPageDTO.setUserId(currentUserId);
 

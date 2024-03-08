@@ -1,10 +1,15 @@
 package com.cmcorg20230301.be.engine.role.service.impl;
 
-import cn.hutool.core.bean.BeanUtil;
-import cn.hutool.core.collection.CollUtil;
-import cn.hutool.core.lang.func.Func1;
-import cn.hutool.core.util.BooleanUtil;
-import cn.hutool.core.util.StrUtil;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
+
+import javax.annotation.Resource;
+
+import org.jetbrains.annotations.NotNull;
+import org.springframework.stereotype.Service;
+
 import com.baomidou.dynamic.datasource.annotation.DSTransactional;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -22,29 +27,21 @@ import com.cmcorg20230301.be.engine.security.exception.BaseBizCodeEnum;
 import com.cmcorg20230301.be.engine.security.mapper.SysMenuMapper;
 import com.cmcorg20230301.be.engine.security.mapper.SysRoleMapper;
 import com.cmcorg20230301.be.engine.security.mapper.SysUserMapper;
-import com.cmcorg20230301.be.engine.security.model.entity.BaseEntity;
-import com.cmcorg20230301.be.engine.security.model.entity.BaseEntityNoId;
-import com.cmcorg20230301.be.engine.security.model.entity.BaseEntityNoIdSuper;
-import com.cmcorg20230301.be.engine.security.model.entity.SysRoleDO;
-import com.cmcorg20230301.be.engine.security.model.entity.SysRoleRefMenuDO;
-import com.cmcorg20230301.be.engine.security.model.entity.SysRoleRefUserDO;
-import com.cmcorg20230301.be.engine.security.model.entity.SysUserDO;
+import com.cmcorg20230301.be.engine.security.model.entity.*;
 import com.cmcorg20230301.be.engine.security.model.vo.ApiResultVO;
 import com.cmcorg20230301.be.engine.security.util.MyEntityUtil;
 import com.cmcorg20230301.be.engine.security.util.SysMenuUtil;
 import com.cmcorg20230301.be.engine.security.util.SysTenantUtil;
 import com.cmcorg20230301.be.engine.util.util.MyMapUtil;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
-import javax.annotation.Resource;
-import org.jetbrains.annotations.NotNull;
-import org.springframework.stereotype.Service;
+
+import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.lang.func.Func1;
+import cn.hutool.core.util.BooleanUtil;
+import cn.hutool.core.util.StrUtil;
 
 @Service
-public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRoleDO> implements
-    SysRoleService {
+public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRoleDO> implements SysRoleService {
 
     @Resource
     SysRoleRefMenuService sysRoleRefMenuService;
@@ -66,14 +63,12 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRoleDO> im
     public String insertOrUpdate(SysRoleInsertOrUpdateDTO dto) {
 
         // 处理：BaseTenantInsertOrUpdateDTO
-        SysTenantUtil.handleBaseTenantInsertOrUpdateDTO(dto,
-            getCheckIllegalFunc1(CollUtil.newHashSet(dto.getId())),
+        SysTenantUtil.handleBaseTenantInsertOrUpdateDTO(dto, getCheckIllegalFunc1(CollUtil.newHashSet(dto.getId())),
             getTenantIdBaseEntityFunc1());
 
         // 角色名，不能重复
         boolean exists =
-            lambdaQuery().eq(SysRoleDO::getName, dto.getName())
-                .ne(dto.getId() != null, BaseEntity::getId, dto.getId())
+            lambdaQuery().eq(SysRoleDO::getName, dto.getName()).ne(dto.getId() != null, BaseEntity::getId, dto.getId())
                 .eq(BaseEntityNoId::getTenantId, dto.getTenantId()).exists();
 
         if (exists) {
@@ -128,14 +123,12 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRoleDO> im
 
             // 获取：没有被禁用的菜单 idSet
             Set<Long> menuIdSet = SysMenuUtil.getSysMenuCacheMap().values().stream()
-                .filter(it -> it.getTenantId().equals(dto.getTenantId()) && dto.getMenuIdSet()
-                    .contains(it.getId()))
+                .filter(it -> it.getTenantId().equals(dto.getTenantId()) && dto.getMenuIdSet().contains(it.getId()))
                 .map(BaseEntity::getId).collect(Collectors.toSet());
 
             if (CollUtil.isNotEmpty(menuIdSet)) {
 
-                List<SysRoleRefMenuDO> insertList = new ArrayList<>(
-                    MyMapUtil.getInitialCapacity(menuIdSet.size()));
+                List<SysRoleRefMenuDO> insertList = new ArrayList<>(MyMapUtil.getInitialCapacity(menuIdSet.size()));
 
                 for (Long menuId : menuIdSet) {
 
@@ -157,20 +150,15 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRoleDO> im
         if (CollUtil.isNotEmpty(dto.getUserIdSet())) {
 
             // 获取：没有被禁用的用户 idSet
-            List<SysUserDO> sysUserDOList =
-                ChainWrappers.lambdaQueryChain(sysUserMapper)
-                    .in(BaseEntity::getId, dto.getUserIdSet())
-                    .eq(BaseEntity::getEnableFlag, true)
-                    .eq(BaseEntityNoIdSuper::getTenantId, dto.getTenantId())
-                    .select(BaseEntity::getId).list();
+            List<SysUserDO> sysUserDOList = ChainWrappers.lambdaQueryChain(sysUserMapper)
+                .in(BaseEntity::getId, dto.getUserIdSet()).eq(BaseEntity::getEnableFlag, true)
+                .eq(BaseEntityNoIdSuper::getTenantId, dto.getTenantId()).select(BaseEntity::getId).list();
 
             if (CollUtil.isNotEmpty(sysUserDOList)) {
 
-                Set<Long> userIdSet = sysUserDOList.stream().map(BaseEntity::getId)
-                    .collect(Collectors.toSet());
+                Set<Long> userIdSet = sysUserDOList.stream().map(BaseEntity::getId).collect(Collectors.toSet());
 
-                List<SysRoleRefUserDO> insertList = new ArrayList<>(
-                    MyMapUtil.getInitialCapacity(userIdSet.size()));
+                List<SysRoleRefUserDO> insertList = new ArrayList<>(MyMapUtil.getInitialCapacity(userIdSet.size()));
 
                 for (Long userId : userIdSet) {
 
@@ -200,8 +188,7 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRoleDO> im
         // 处理：MyTenantPageDTO
         SysTenantUtil.handleMyTenantPageDTO(dto, true);
 
-        return lambdaQuery().like(StrUtil.isNotBlank(dto.getName()), SysRoleDO::getName,
-                dto.getName())
+        return lambdaQuery().like(StrUtil.isNotBlank(dto.getName()), SysRoleDO::getName, dto.getName())
             .like(StrUtil.isNotBlank(dto.getRemark()), BaseEntity::getRemark, dto.getRemark())
             .eq(dto.getEnableFlag() != null, BaseEntity::getEnableFlag, dto.getEnableFlag())
             .eq(dto.getDefaultFlag() != null, SysRoleDO::getDefaultFlag, dto.getDefaultFlag())
@@ -219,33 +206,24 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRoleDO> im
         // 获取：用户关联的租户
         Set<Long> queryTenantIdSet = SysTenantUtil.getUserRefTenantIdSet();
 
-        SysRoleDO sysRoleDO =
-            lambdaQuery().eq(BaseEntity::getId, notNullId.getId())
-                .in(BaseEntityNoId::getTenantId, queryTenantIdSet)
-                .one();
+        SysRoleDO sysRoleDO = lambdaQuery().eq(BaseEntity::getId, notNullId.getId())
+            .in(BaseEntityNoId::getTenantId, queryTenantIdSet).one();
 
         if (sysRoleDO == null) {
             return null;
         }
 
-        SysRoleInfoByIdVO sysRoleInfoByIdVO = BeanUtil.copyProperties(sysRoleDO,
-            SysRoleInfoByIdVO.class);
+        SysRoleInfoByIdVO sysRoleInfoByIdVO = BeanUtil.copyProperties(sysRoleDO, SysRoleInfoByIdVO.class);
 
         // 完善子表的数据
-        List<SysRoleRefMenuDO> menuList =
-            sysRoleRefMenuService.lambdaQuery()
-                .eq(SysRoleRefMenuDO::getRoleId, sysRoleInfoByIdVO.getId())
-                .select(SysRoleRefMenuDO::getMenuId).list();
+        List<SysRoleRefMenuDO> menuList = sysRoleRefMenuService.lambdaQuery()
+            .eq(SysRoleRefMenuDO::getRoleId, sysRoleInfoByIdVO.getId()).select(SysRoleRefMenuDO::getMenuId).list();
 
-        List<SysRoleRefUserDO> userList =
-            sysRoleRefUserService.lambdaQuery()
-                .eq(SysRoleRefUserDO::getRoleId, sysRoleInfoByIdVO.getId())
-                .select(SysRoleRefUserDO::getUserId).list();
+        List<SysRoleRefUserDO> userList = sysRoleRefUserService.lambdaQuery()
+            .eq(SysRoleRefUserDO::getRoleId, sysRoleInfoByIdVO.getId()).select(SysRoleRefUserDO::getUserId).list();
 
-        sysRoleInfoByIdVO.setMenuIdSet(
-            menuList.stream().map(SysRoleRefMenuDO::getMenuId).collect(Collectors.toSet()));
-        sysRoleInfoByIdVO.setUserIdSet(
-            userList.stream().map(SysRoleRefUserDO::getUserId).collect(Collectors.toSet()));
+        sysRoleInfoByIdVO.setMenuIdSet(menuList.stream().map(SysRoleRefMenuDO::getMenuId).collect(Collectors.toSet()));
+        sysRoleInfoByIdVO.setUserIdSet(userList.stream().map(SysRoleRefUserDO::getUserId).collect(Collectors.toSet()));
 
         return sysRoleInfoByIdVO;
 
@@ -263,8 +241,7 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRoleDO> im
         }
 
         // 检查：是否非法操作
-        SysTenantUtil.checkIllegal(notEmptyIdSet.getIdSet(),
-            getCheckIllegalFunc1(notEmptyIdSet.getIdSet()));
+        SysTenantUtil.checkIllegal(notEmptyIdSet.getIdSet(), getCheckIllegalFunc1(notEmptyIdSet.getIdSet()));
 
         deleteByIdSetSub(notEmptyIdSet.getIdSet()); // 删除子表数据
 
@@ -293,8 +270,7 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRoleDO> im
     @NotNull
     private Func1<Set<Long>, Long> getCheckIllegalFunc1(Set<Long> idSet) {
 
-        return tenantIdSet -> lambdaQuery().in(BaseEntity::getId, idSet)
-            .in(BaseEntityNoId::getTenantId, tenantIdSet)
+        return tenantIdSet -> lambdaQuery().in(BaseEntity::getId, idSet).in(BaseEntityNoId::getTenantId, tenantIdSet)
             .count();
 
     }
@@ -310,7 +286,3 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRoleDO> im
     }
 
 }
-
-
-
-

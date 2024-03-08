@@ -1,14 +1,15 @@
 package com.cmcorg20230301.be.engine.pay.base.model.enums;
 
-import cn.hutool.core.lang.Assert;
+import java.util.function.Consumer;
+
 import com.baomidou.mybatisplus.annotation.EnumValue;
 import com.cmcorg20230301.be.engine.pay.base.model.dto.SysPayConfigurationInsertOrUpdateDTO;
 import com.cmcorg20230301.be.engine.pay.base.model.interfaces.ISysPayType;
 import com.fasterxml.jackson.annotation.JsonValue;
+
+import cn.hutool.core.lang.Assert;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-
-import java.util.function.Consumer;
 
 /**
  * 支付方式类型：枚举类
@@ -55,7 +56,8 @@ public enum SysPayTypeEnum implements ISysPayType {
     /**
      * 获取：云闪付的，检查 SysPayConfigurationInsertOrUpdateDTO对象的 Consumer
      */
-    private static Consumer<SysPayConfigurationInsertOrUpdateDTO> getUnionCheckSysPayConfigurationInsertOrUpdateDtoConsumer() {
+    private static Consumer<SysPayConfigurationInsertOrUpdateDTO>
+        getUnionCheckSysPayConfigurationInsertOrUpdateDtoConsumer() {
 
         return dto -> {
 
@@ -71,7 +73,8 @@ public enum SysPayTypeEnum implements ISysPayType {
     /**
      * 获取：支付宝的，检查 SysPayConfigurationInsertOrUpdateDTO对象的 Consumer
      */
-    private static Consumer<SysPayConfigurationInsertOrUpdateDTO> getAliCheckSysPayConfigurationInsertOrUpdateDtoConsumer() {
+    private static Consumer<SysPayConfigurationInsertOrUpdateDTO>
+        getAliCheckSysPayConfigurationInsertOrUpdateDtoConsumer() {
 
         return dto -> {
 
@@ -88,7 +91,8 @@ public enum SysPayTypeEnum implements ISysPayType {
     /**
      * 获取：微信的，检查 SysPayConfigurationInsertOrUpdateDTO对象的 Consumer
      */
-    private static Consumer<SysPayConfigurationInsertOrUpdateDTO> getWxCheckSysPayConfigurationInsertOrUpdateDtoConsumer() {
+    private static Consumer<SysPayConfigurationInsertOrUpdateDTO>
+        getWxCheckSysPayConfigurationInsertOrUpdateDtoConsumer() {
 
         return dto -> {
 

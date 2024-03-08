@@ -1,10 +1,7 @@
 package com.cmcorg20230301.be.engine.generate.util.apitest.sys;
 
-import cn.hutool.core.collection.CollUtil;
-import cn.hutool.core.lang.TypeReference;
-import cn.hutool.core.util.IdUtil;
-import cn.hutool.http.HttpRequest;
-import cn.hutool.json.JSONUtil;
+import java.util.Set;
+
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.cmcorg20230301.be.engine.generate.util.apitest.ApiTestHelper;
 import com.cmcorg20230301.be.engine.generate.util.apitest.sign.ApiTestSignSignInNameUtil;
@@ -15,7 +12,12 @@ import com.cmcorg20230301.be.engine.param.model.dto.SysParamInsertOrUpdateDTO;
 import com.cmcorg20230301.be.engine.param.model.dto.SysParamPageDTO;
 import com.cmcorg20230301.be.engine.security.model.entity.SysParamDO;
 import com.cmcorg20230301.be.engine.security.model.vo.ApiResultVO;
-import java.util.Set;
+
+import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.lang.TypeReference;
+import cn.hutool.core.util.IdUtil;
+import cn.hutool.http.HttpRequest;
+import cn.hutool.json.JSONUtil;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -25,14 +27,13 @@ import lombok.extern.slf4j.Slf4j;
 public class ApiTestSysParamUtil {
 
     // 执行，接口的地址，备注：最后面不要加斜杠 /
-    //    private static final String API_ENDPOINT = "http://43.154.37.130:10001";
+    // private static final String API_ENDPOINT = "http://43.154.37.130:10001";
     private static final String API_ENDPOINT = "http://127.0.0.1:10001";
 
     public static void main(String[] args) {
 
         // 执行
-        exec(API_ENDPOINT, ApiTestHelper.ADMIN_SIGN_IN_NAME, ApiTestHelper.ADMIN_PASSWORD,
-            ApiTestHelper.RSA_PUBLIC_KEY,
+        exec(API_ENDPOINT, ApiTestHelper.ADMIN_SIGN_IN_NAME, ApiTestHelper.ADMIN_PASSWORD, ApiTestHelper.RSA_PUBLIC_KEY,
             IdUtil.simpleUUID());
 
     }
@@ -40,14 +41,12 @@ public class ApiTestSysParamUtil {
     /**
      * 执行
      */
-    private static void exec(String apiEndpoint, String adminSignInName, String adminPassword,
-        String rsaPublicKey,
+    private static void exec(String apiEndpoint, String adminSignInName, String adminPassword, String rsaPublicKey,
         String sysParamName) {
 
         // 登录名-用户名账号密码登录
         SignInVO signInVO =
-            ApiTestSignSignInNameUtil.signInNameSignIn(apiEndpoint, adminSignInName, adminPassword,
-                rsaPublicKey);
+            ApiTestSignSignInNameUtil.signInNameSignIn(apiEndpoint, adminSignInName, adminPassword, rsaPublicKey);
 
         String jwt = signInVO.getJwt();
 
@@ -100,13 +99,10 @@ public class ApiTestSysParamUtil {
         NotEmptyIdSet notEmptyIdSet = new NotEmptyIdSet();
         notEmptyIdSet.setIdSet(idSet);
 
-        String bodyStr =
-            HttpRequest.post(apiEndpoint + "/sys/param/deleteByIdSet")
-                .body(JSONUtil.toJsonStr(notEmptyIdSet))
-                .header("Authorization", jwt).execute().body();
+        String bodyStr = HttpRequest.post(apiEndpoint + "/sys/param/deleteByIdSet")
+            .body(JSONUtil.toJsonStr(notEmptyIdSet)).header("Authorization", jwt).execute().body();
 
-        log.info("系统参数-批量删除：耗时：{}，bodyStr：{}", ApiTestHelper.calcCostMs(currentTs),
-            bodyStr);
+        log.info("系统参数-批量删除：耗时：{}，bodyStr：{}", ApiTestHelper.calcCostMs(currentTs), bodyStr);
 
     }
 
@@ -120,16 +116,13 @@ public class ApiTestSysParamUtil {
         NotNullId notNullId = new NotNullId();
         notNullId.setId(id);
 
-        String bodyStr = HttpRequest.post(apiEndpoint + "/sys/param/infoById")
-            .body(JSONUtil.toJsonStr(notNullId))
+        String bodyStr = HttpRequest.post(apiEndpoint + "/sys/param/infoById").body(JSONUtil.toJsonStr(notNullId))
             .header("Authorization", jwt).execute().body();
 
-        log.info("系统参数-通过主键id，查看详情：耗时：{}，bodyStr：{}",
-            ApiTestHelper.calcCostMs(currentTs), bodyStr);
+        log.info("系统参数-通过主键id，查看详情：耗时：{}，bodyStr：{}", ApiTestHelper.calcCostMs(currentTs), bodyStr);
 
-        ApiResultVO<SysParamDO> apiResultVO = JSONUtil.toBean(bodyStr,
-            new TypeReference<ApiResultVO<SysParamDO>>() {
-            }, false);
+        ApiResultVO<SysParamDO> apiResultVO =
+            JSONUtil.toBean(bodyStr, new TypeReference<ApiResultVO<SysParamDO>>() {}, false);
 
         return apiResultVO.getData();
 
@@ -138,25 +131,20 @@ public class ApiTestSysParamUtil {
     /**
      * 系统参数-分页排序查询
      */
-    private static Page<SysParamDO> sysParamPage(String apiEndpoint, String jwt,
-        SysParamInsertOrUpdateDTO dto) {
+    private static Page<SysParamDO> sysParamPage(String apiEndpoint, String jwt, SysParamInsertOrUpdateDTO dto) {
 
         long currentTs = System.currentTimeMillis();
 
         SysParamPageDTO pageDTO = new SysParamPageDTO();
         pageDTO.setName(dto.getName());
 
-        String bodyStr =
-            HttpRequest.post(apiEndpoint + "/sys/param/page").body(JSONUtil.toJsonStr(dto))
-                .header("Authorization", jwt)
-                .execute().body();
+        String bodyStr = HttpRequest.post(apiEndpoint + "/sys/param/page").body(JSONUtil.toJsonStr(dto))
+            .header("Authorization", jwt).execute().body();
 
-        log.info("系统参数-分页排序查询：耗时：{}，bodyStr：{}", ApiTestHelper.calcCostMs(currentTs),
-            bodyStr);
+        log.info("系统参数-分页排序查询：耗时：{}，bodyStr：{}", ApiTestHelper.calcCostMs(currentTs), bodyStr);
 
         ApiResultVO<Page<SysParamDO>> apiResultVO =
-            JSONUtil.toBean(bodyStr, new TypeReference<ApiResultVO<Page<SysParamDO>>>() {
-            }, false);
+            JSONUtil.toBean(bodyStr, new TypeReference<ApiResultVO<Page<SysParamDO>>>() {}, false);
 
         return apiResultVO.getData();
 
@@ -176,12 +164,10 @@ public class ApiTestSysParamUtil {
         dto.setRemark("");
         dto.setEnableFlag(true);
 
-        String bodyStr = HttpRequest.post(apiEndpoint + "/sys/param/insertOrUpdate")
-            .body(JSONUtil.toJsonStr(dto))
+        String bodyStr = HttpRequest.post(apiEndpoint + "/sys/param/insertOrUpdate").body(JSONUtil.toJsonStr(dto))
             .header("Authorization", jwt).execute().body();
 
-        log.info("系统参数-新增/修改：耗时：{}，bodyStr：{}", ApiTestHelper.calcCostMs(currentTs),
-            bodyStr);
+        log.info("系统参数-新增/修改：耗时：{}，bodyStr：{}", ApiTestHelper.calcCostMs(currentTs), bodyStr);
 
         return dto;
 

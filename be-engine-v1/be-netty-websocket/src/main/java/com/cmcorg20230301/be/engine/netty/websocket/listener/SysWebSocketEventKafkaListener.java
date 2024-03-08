@@ -1,6 +1,12 @@
 package com.cmcorg20230301.be.engine.netty.websocket.listener;
 
-import cn.hutool.core.collection.CollUtil;
+import java.util.List;
+
+import org.springframework.kafka.annotation.KafkaHandler;
+import org.springframework.kafka.annotation.KafkaListener;
+import org.springframework.kafka.support.Acknowledgment;
+import org.springframework.stereotype.Component;
+
 import com.cmcorg20230301.be.engine.kafka.model.enums.KafkaTopicEnum;
 import com.cmcorg20230301.be.engine.netty.websocket.util.WebSocketUtil;
 import com.cmcorg20230301.be.engine.security.model.bo.SysWebSocketEventBO;
@@ -8,11 +14,8 @@ import com.cmcorg20230301.be.engine.security.util.KafkaHelper;
 import com.cmcorg20230301.be.engine.security.util.MyThreadUtil;
 import com.cmcorg20230301.be.engine.security.util.TryUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import java.util.List;
-import org.springframework.kafka.annotation.KafkaHandler;
-import org.springframework.kafka.annotation.KafkaListener;
-import org.springframework.kafka.support.Acknowledgment;
-import org.springframework.stereotype.Component;
+
+import cn.hutool.core.collection.CollUtil;
 
 /**
  * webSocket事件的 kafka监听器
@@ -52,8 +55,8 @@ public class SysWebSocketEventKafkaListener {
 
                         TryUtil.tryCatch(() -> {
 
-                            SysWebSocketEventBO<?> sysWebSocketEventBO = objectMapper.readValue(
-                                item, SysWebSocketEventBO.class);
+                            SysWebSocketEventBO<?> sysWebSocketEventBO =
+                                objectMapper.readValue(item, SysWebSocketEventBO.class);
 
                             // 发送：webSocket消息
                             WebSocketUtil.send(sysWebSocketEventBO);

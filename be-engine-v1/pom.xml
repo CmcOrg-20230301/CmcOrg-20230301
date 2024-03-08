@@ -1,806 +1,806 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0"
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <modelVersion>4.0.0</modelVersion>
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
 
-  <parent>
-    <groupId>org.springframework.boot</groupId>
-    <artifactId>spring-boot-starter-parent</artifactId>
-    <version>2.7.17</version>
-    <relativePath/>
-  </parent>
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>2.7.17</version>
+        <relativePath/>
+    </parent>
 
-  <groupId>com.cmcorg20230301</groupId>
-  <artifactId>be-engine-v1</artifactId>
-  <version>2023.3.1</version>
+    <groupId>com.cmcorg20230301</groupId>
+    <artifactId>be-engine-v1</artifactId>
+    <version>2023.3.1</version>
 
-  <packaging>pom</packaging>
+    <packaging>pom</packaging>
 
-  <description>项目顶级 pom.xml，目的：1 方便打包modules 2 依赖版本控制（所以不要在其他 pom.xml里面，添加带有
-    version标签的依赖）
-  </description>
+    <description>项目顶级 pom.xml，目的：1 方便打包modules 2 依赖版本控制（所以不要在其他 pom.xml里面，添加带有
+        version标签的依赖）
+    </description>
 
-  <properties>
-    <java.version>1.8</java.version>
-    <!-- 打包时跳过测试 -->
-    <skipTests>true</skipTests>
-    <cmcorg.groupId>com.cmcorg20230301</cmcorg.groupId>
-    <cmcorg.version>2023.3.1</cmcorg.version>
-  </properties>
+    <properties>
+        <java.version>1.8</java.version>
+        <!-- 打包时跳过测试 -->
+        <skipTests>true</skipTests>
+        <cmcorg.groupId>com.cmcorg20230301</cmcorg.groupId>
+        <cmcorg.version>2023.3.1</cmcorg.version>
+    </properties>
 
-  <modules>
-    <module>be-security</module>
-    <module>be-redisson</module>
-    <module>be-util</module>
-    <module>be-mysql</module>
-    <module>be-datasource</module>
-    <module>be-knife4j</module>
-    <module>be-start</module>
-    <module>be-nacos</module>
-    <module>be-cache</module>
-    <module>be-email</module>
-    <module>be-ip2region</module>
-    <module>be-kafka</module>
-    <module>be-log</module>
-    <module>be-model</module>
-    <module>be-xxl-job</module>
-    <module>be-gateway</module>
-    <module>be-user</module>
-    <module>be-role</module>
-    <module>be-param</module>
-    <module>be-sign-helper</module>
-    <module>be-sign-signinname</module>
-    <module>be-sign-email</module>
-    <module>be-sign-phone</module>
-    <module>be-sign-wx</module>
-    <module>be-sign-single</module>
-    <module>be-sign-wx-work</module>
-    <module>be-dict</module>
-    <module>be-menu</module>
-    <module>be-server</module>
-    <module>be-request</module>
-    <module>be-generate</module>
-    <module>be-sms</module>
-    <module>be-sms-aliyun</module>
-    <module>be-sms-tencent</module>
-    <module>be-file</module>
-    <module>be-file-aliyun</module>
-    <module>be-file-minio</module>
-    <module>be-pay</module>
-    <module>be-pay-ali</module>
-    <module>be-pay-wx</module>
-    <module>be-pay-google</module>
-    <module>be-pay-apply</module>
-    <module>be-socket</module>
-    <module>be-netty-websocket</module>
-    <module>be-netty-tcp-protobuf</module>
-    <module>be-area</module>
-    <module>be-dept</module>
-    <module>be-post</module>
-    <module>be-tenant</module>
-    <module>be-milvus</module>
-    <module>be-start-jar</module>
-    <module>be-wallet</module>
-    <module>be-profit-share</module>
-    <module>be-other-app</module>
-    <module>be-other-app-wx</module>
-    <module>be-other-app-wx-work</module>
-    <module>be-other-app-baidu</module>
-    <module>be-im-session</module>
-    <module>be-api-token</module>
-  </modules>
+    <modules>
+        <module>be-security</module>
+        <module>be-redisson</module>
+        <module>be-util</module>
+        <module>be-mysql</module>
+        <module>be-datasource</module>
+        <module>be-knife4j</module>
+        <module>be-start</module>
+        <module>be-nacos</module>
+        <module>be-cache</module>
+        <module>be-email</module>
+        <module>be-ip2region</module>
+        <module>be-kafka</module>
+        <module>be-log</module>
+        <module>be-model</module>
+        <module>be-xxl-job</module>
+        <module>be-gateway</module>
+        <module>be-user</module>
+        <module>be-role</module>
+        <module>be-param</module>
+        <module>be-sign-helper</module>
+        <module>be-sign-signinname</module>
+        <module>be-sign-email</module>
+        <module>be-sign-phone</module>
+        <module>be-sign-wx</module>
+        <module>be-sign-single</module>
+        <module>be-sign-wx-work</module>
+        <module>be-dict</module>
+        <module>be-menu</module>
+        <module>be-server</module>
+        <module>be-request</module>
+        <module>be-generate</module>
+        <module>be-sms</module>
+        <module>be-sms-aliyun</module>
+        <module>be-sms-tencent</module>
+        <module>be-file</module>
+        <module>be-file-aliyun</module>
+        <module>be-file-minio</module>
+        <module>be-pay</module>
+        <module>be-pay-ali</module>
+        <module>be-pay-wx</module>
+        <module>be-pay-google</module>
+        <module>be-pay-apply</module>
+        <module>be-socket</module>
+        <module>be-netty-websocket</module>
+        <module>be-netty-tcp-protobuf</module>
+        <module>be-area</module>
+        <module>be-dept</module>
+        <module>be-post</module>
+        <module>be-tenant</module>
+        <module>be-milvus</module>
+        <module>be-start-jar</module>
+        <module>be-wallet</module>
+        <module>be-profit-share</module>
+        <module>be-other-app</module>
+        <module>be-other-app-wx</module>
+        <module>be-other-app-wx-work</module>
+        <module>be-other-app-baidu</module>
+        <module>be-im-session</module>
+        <module>be-api-token</module>
+    </modules>
 
-  <dependencyManagement>
+    <dependencyManagement>
+        <dependencies>
+
+            <!-- be-api-token -->
+            <dependency>
+                <groupId>${cmcorg.groupId}</groupId>
+                <artifactId>be-api-token</artifactId>
+                <version>${cmcorg.version}</version>
+            </dependency>
+
+            <!-- be-im-session -->
+            <dependency>
+                <groupId>${cmcorg.groupId}</groupId>
+                <artifactId>be-im-session</artifactId>
+                <version>${cmcorg.version}</version>
+            </dependency>
+
+            <!-- be-other-app-baidu -->
+            <dependency>
+                <groupId>${cmcorg.groupId}</groupId>
+                <artifactId>be-other-app-baidu</artifactId>
+                <version>${cmcorg.version}</version>
+            </dependency>
+
+            <!-- be-other-app-wx-work -->
+            <dependency>
+                <groupId>${cmcorg.groupId}</groupId>
+                <artifactId>be-other-app-wx-work</artifactId>
+                <version>${cmcorg.version}</version>
+            </dependency>
+
+            <!-- be-other-app-wx -->
+            <dependency>
+                <groupId>${cmcorg.groupId}</groupId>
+                <artifactId>be-other-app-wx</artifactId>
+                <version>${cmcorg.version}</version>
+            </dependency>
+
+            <!-- be-other-app -->
+            <dependency>
+                <groupId>${cmcorg.groupId}</groupId>
+                <artifactId>be-other-app</artifactId>
+                <version>${cmcorg.version}</version>
+            </dependency>
+
+            <!-- be-profit-share -->
+            <dependency>
+                <groupId>${cmcorg.groupId}</groupId>
+                <artifactId>be-profit-share</artifactId>
+                <version>${cmcorg.version}</version>
+            </dependency>
+
+            <!-- be-wallet -->
+            <dependency>
+                <groupId>${cmcorg.groupId}</groupId>
+                <artifactId>be-wallet</artifactId>
+                <version>${cmcorg.version}</version>
+            </dependency>
+
+            <!-- be-start-jar -->
+            <dependency>
+                <groupId>${cmcorg.groupId}</groupId>
+                <artifactId>be-start-jar</artifactId>
+                <version>${cmcorg.version}</version>
+            </dependency>
+
+            <!-- be-milvus -->
+            <dependency>
+                <groupId>${cmcorg.groupId}</groupId>
+                <artifactId>be-milvus</artifactId>
+                <version>${cmcorg.version}</version>
+            </dependency>
+
+            <!-- be-tenant -->
+            <dependency>
+                <groupId>${cmcorg.groupId}</groupId>
+                <artifactId>be-tenant</artifactId>
+                <version>${cmcorg.version}</version>
+            </dependency>
+
+            <!-- be-post -->
+            <dependency>
+                <groupId>${cmcorg.groupId}</groupId>
+                <artifactId>be-post</artifactId>
+                <version>${cmcorg.version}</version>
+            </dependency>
+
+            <!-- be-dept -->
+            <dependency>
+                <groupId>${cmcorg.groupId}</groupId>
+                <artifactId>be-dept</artifactId>
+                <version>${cmcorg.version}</version>
+            </dependency>
+
+            <!-- be-area -->
+            <dependency>
+                <groupId>${cmcorg.groupId}</groupId>
+                <artifactId>be-area</artifactId>
+                <version>${cmcorg.version}</version>
+            </dependency>
+
+            <!-- be-netty-tcp-protobuf -->
+            <dependency>
+                <groupId>${cmcorg.groupId}</groupId>
+                <artifactId>be-netty-tcp-protobuf</artifactId>
+                <version>${cmcorg.version}</version>
+            </dependency>
+
+            <!-- be-netty-websocket -->
+            <dependency>
+                <groupId>${cmcorg.groupId}</groupId>
+                <artifactId>be-netty-websocket</artifactId>
+                <version>${cmcorg.version}</version>
+            </dependency>
+
+            <!-- be-socket -->
+            <dependency>
+                <groupId>${cmcorg.groupId}</groupId>
+                <artifactId>be-socket</artifactId>
+                <version>${cmcorg.version}</version>
+            </dependency>
+
+            <!-- be-pay-apply -->
+            <dependency>
+                <groupId>${cmcorg.groupId}</groupId>
+                <artifactId>be-pay-apply</artifactId>
+                <version>${cmcorg.version}</version>
+            </dependency>
+
+            <!-- be-pay-google -->
+            <dependency>
+                <groupId>${cmcorg.groupId}</groupId>
+                <artifactId>be-pay-google</artifactId>
+                <version>${cmcorg.version}</version>
+            </dependency>
+
+            <!-- be-pay-wx -->
+            <dependency>
+                <groupId>${cmcorg.groupId}</groupId>
+                <artifactId>be-pay-wx</artifactId>
+                <version>${cmcorg.version}</version>
+            </dependency>
+
+            <!-- be-pay-ali -->
+            <dependency>
+                <groupId>${cmcorg.groupId}</groupId>
+                <artifactId>be-pay-ali</artifactId>
+                <version>${cmcorg.version}</version>
+            </dependency>
+
+            <!-- be-pay -->
+            <dependency>
+                <groupId>${cmcorg.groupId}</groupId>
+                <artifactId>be-pay</artifactId>
+                <version>${cmcorg.version}</version>
+            </dependency>
+
+            <!-- be-file-minio -->
+            <dependency>
+                <groupId>${cmcorg.groupId}</groupId>
+                <artifactId>be-file-minio</artifactId>
+                <version>${cmcorg.version}</version>
+            </dependency>
+
+            <!-- be-file-aliyun -->
+            <dependency>
+                <groupId>${cmcorg.groupId}</groupId>
+                <artifactId>be-file-aliyun</artifactId>
+                <version>${cmcorg.version}</version>
+            </dependency>
+
+            <!-- be-file -->
+            <dependency>
+                <groupId>${cmcorg.groupId}</groupId>
+                <artifactId>be-file</artifactId>
+                <version>${cmcorg.version}</version>
+            </dependency>
+
+            <!-- be-sms-tencent -->
+            <dependency>
+                <groupId>${cmcorg.groupId}</groupId>
+                <artifactId>be-sms-tencent</artifactId>
+                <version>${cmcorg.version}</version>
+            </dependency>
+
+            <!-- be-sms-aliyun -->
+            <dependency>
+                <groupId>${cmcorg.groupId}</groupId>
+                <artifactId>be-sms-aliyun</artifactId>
+                <version>${cmcorg.version}</version>
+            </dependency>
+
+            <!-- be-sms -->
+            <dependency>
+                <groupId>${cmcorg.groupId}</groupId>
+                <artifactId>be-sms</artifactId>
+                <version>${cmcorg.version}</version>
+            </dependency>
+
+            <!-- be-generate -->
+            <dependency>
+                <groupId>${cmcorg.groupId}</groupId>
+                <artifactId>be-generate</artifactId>
+                <version>${cmcorg.version}</version>
+            </dependency>
+
+            <!-- be-request -->
+            <dependency>
+                <groupId>${cmcorg.groupId}</groupId>
+                <artifactId>be-request</artifactId>
+                <version>${cmcorg.version}</version>
+            </dependency>
+
+            <!-- be-server -->
+            <dependency>
+                <groupId>${cmcorg.groupId}</groupId>
+                <artifactId>be-server</artifactId>
+                <version>${cmcorg.version}</version>
+            </dependency>
+
+            <!-- be-menu -->
+            <dependency>
+                <groupId>${cmcorg.groupId}</groupId>
+                <artifactId>be-menu</artifactId>
+                <version>${cmcorg.version}</version>
+            </dependency>
+
+            <!-- be-dict -->
+            <dependency>
+                <groupId>${cmcorg.groupId}</groupId>
+                <artifactId>be-dict</artifactId>
+                <version>${cmcorg.version}</version>
+            </dependency>
+
+            <!-- be-sign-wx-work -->
+            <dependency>
+                <groupId>${cmcorg.groupId}</groupId>
+                <artifactId>be-sign-wx-work</artifactId>
+                <version>${cmcorg.version}</version>
+            </dependency>
+
+            <!-- be-sign-single -->
+            <dependency>
+                <groupId>${cmcorg.groupId}</groupId>
+                <artifactId>be-sign-single</artifactId>
+                <version>${cmcorg.version}</version>
+            </dependency>
+
+            <!-- be-sign-wx -->
+            <dependency>
+                <groupId>${cmcorg.groupId}</groupId>
+                <artifactId>be-sign-wx</artifactId>
+                <version>${cmcorg.version}</version>
+            </dependency>
+
+            <!-- be-sign-phone -->
+            <dependency>
+                <groupId>${cmcorg.groupId}</groupId>
+                <artifactId>be-sign-phone</artifactId>
+                <version>${cmcorg.version}</version>
+            </dependency>
+
+            <!-- be-sign-email -->
+            <dependency>
+                <groupId>${cmcorg.groupId}</groupId>
+                <artifactId>be-sign-email</artifactId>
+                <version>${cmcorg.version}</version>
+            </dependency>
+
+            <!-- be-sign-signinname -->
+            <dependency>
+                <groupId>${cmcorg.groupId}</groupId>
+                <artifactId>be-sign-signinname</artifactId>
+                <version>${cmcorg.version}</version>
+            </dependency>
+
+            <!-- be-sign-helper -->
+            <dependency>
+                <groupId>${cmcorg.groupId}</groupId>
+                <artifactId>be-sign-helper</artifactId>
+                <version>${cmcorg.version}</version>
+            </dependency>
+
+            <!-- be-param -->
+            <dependency>
+                <groupId>${cmcorg.groupId}</groupId>
+                <artifactId>be-param</artifactId>
+                <version>${cmcorg.version}</version>
+            </dependency>
+
+            <!-- be-role -->
+            <dependency>
+                <groupId>${cmcorg.groupId}</groupId>
+                <artifactId>be-role</artifactId>
+                <version>${cmcorg.version}</version>
+            </dependency>
+
+            <!-- be-user -->
+            <dependency>
+                <groupId>${cmcorg.groupId}</groupId>
+                <artifactId>be-user</artifactId>
+                <version>${cmcorg.version}</version>
+            </dependency>
+
+            <!-- be-xxl-job -->
+            <dependency>
+                <groupId>${cmcorg.groupId}</groupId>
+                <artifactId>be-xxl-job</artifactId>
+                <version>${cmcorg.version}</version>
+            </dependency>
+
+            <!-- be-gateway -->
+            <dependency>
+                <groupId>${cmcorg.groupId}</groupId>
+                <artifactId>be-gateway</artifactId>
+                <version>${cmcorg.version}</version>
+            </dependency>
+
+            <!-- be-model -->
+            <dependency>
+                <groupId>${cmcorg.groupId}</groupId>
+                <artifactId>be-model</artifactId>
+                <version>${cmcorg.version}</version>
+            </dependency>
+
+            <!-- be-log -->
+            <dependency>
+                <groupId>${cmcorg.groupId}</groupId>
+                <artifactId>be-log</artifactId>
+                <version>${cmcorg.version}</version>
+            </dependency>
+
+            <!-- be-kafka -->
+            <dependency>
+                <groupId>${cmcorg.groupId}</groupId>
+                <artifactId>be-kafka</artifactId>
+                <version>${cmcorg.version}</version>
+            </dependency>
+
+            <!-- be-ip2region -->
+            <dependency>
+                <groupId>${cmcorg.groupId}</groupId>
+                <artifactId>be-ip2region</artifactId>
+                <version>${cmcorg.version}</version>
+            </dependency>
+
+            <!-- be-email -->
+            <dependency>
+                <groupId>${cmcorg.groupId}</groupId>
+                <artifactId>be-email</artifactId>
+                <version>${cmcorg.version}</version>
+            </dependency>
+
+            <!-- be-cache -->
+            <dependency>
+                <groupId>${cmcorg.groupId}</groupId>
+                <artifactId>be-cache</artifactId>
+                <version>${cmcorg.version}</version>
+            </dependency>
+
+            <!-- be-nacos -->
+            <dependency>
+                <groupId>${cmcorg.groupId}</groupId>
+                <artifactId>be-nacos</artifactId>
+                <version>${cmcorg.version}</version>
+            </dependency>
+
+            <!-- be-knife4j -->
+            <dependency>
+                <groupId>${cmcorg.groupId}</groupId>
+                <artifactId>be-knife4j</artifactId>
+                <version>${cmcorg.version}</version>
+            </dependency>
+
+            <!-- be-datasource -->
+            <dependency>
+                <groupId>${cmcorg.groupId}</groupId>
+                <artifactId>be-datasource</artifactId>
+                <version>${cmcorg.version}</version>
+            </dependency>
+
+            <!-- be-mysql -->
+            <dependency>
+                <groupId>${cmcorg.groupId}</groupId>
+                <artifactId>be-mysql</artifactId>
+                <version>${cmcorg.version}</version>
+            </dependency>
+
+            <!-- be-util -->
+            <dependency>
+                <groupId>${cmcorg.groupId}</groupId>
+                <artifactId>be-util</artifactId>
+                <version>${cmcorg.version}</version>
+            </dependency>
+
+            <!-- be-redisson -->
+            <dependency>
+                <groupId>${cmcorg.groupId}</groupId>
+                <artifactId>be-redisson</artifactId>
+                <version>${cmcorg.version}</version>
+            </dependency>
+
+            <!-- be-security -->
+            <dependency>
+                <groupId>${cmcorg.groupId}</groupId>
+                <artifactId>be-security</artifactId>
+                <version>${cmcorg.version}</version>
+            </dependency>
+
+            <!-- spring-cloud-dependencies -->
+            <dependency>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-dependencies</artifactId>
+                <version>2021.0.9</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+
+            <!-- nacos-discovery -->
+            <dependency>
+                <groupId>com.alibaba.cloud</groupId>
+                <artifactId>spring-cloud-starter-alibaba-nacos-discovery</artifactId>
+                <version>2021.0.5.0</version>
+            </dependency>
+
+            <!-- nacos-config -->
+            <dependency>
+                <groupId>com.alibaba.cloud</groupId>
+                <artifactId>spring-cloud-starter-alibaba-nacos-config</artifactId>
+                <version>2021.0.5.0</version>
+            </dependency>
+
+            <!-- POI依赖，读取 .docx型文档-->
+            <dependency>
+                <groupId>org.apache.poi</groupId>
+                <artifactId>poi-ooxml</artifactId>
+                <version>5.2.5</version>
+            </dependency>
+
+            <!-- POI依赖，读取 .doc型文档-->
+            <dependency>
+                <groupId>org.apache.poi</groupId>
+                <artifactId>poi-scratchpad</artifactId>
+                <version>5.2.5</version>
+            </dependency>
+
+            <!-- pdfbox -->
+            <dependency>
+                <groupId>org.apache.pdfbox</groupId>
+                <artifactId>pdfbox</artifactId>
+                <version>3.0.1</version>
+            </dependency>
+
+            <!-- 火山引擎 -->
+            <dependency>
+                <groupId>com.volcengine</groupId>
+                <artifactId>volc-sdk-java</artifactId>
+                <version>1.0.138</version>
+            </dependency>
+
+            <!-- webp格式图片转换 -->
+            <dependency>
+                <groupId>org.sejda.imageio</groupId>
+                <artifactId>webp-imageio</artifactId>
+                <version>0.1.6</version>
+            </dependency>
+
+            <!-- Java Discord API，项目地址：https://github.com/discord-jda/JDA -->
+            <dependency>
+                <groupId>net.dv8tion</groupId>
+                <artifactId>JDA</artifactId>
+                <version>5.0.0-beta.18</version>
+            </dependency>
+
+            <!-- 计算：chatGPT，token数量，项目地址：https://github.com/knuddelsgmbh/jtokkit -->
+            <dependency>
+                <groupId>com.knuddels</groupId>
+                <artifactId>jtokkit</artifactId>
+                <version>0.6.1</version>
+            </dependency>
+
+            <!-- 向量数据库 -->
+            <dependency>
+                <groupId>io.milvus</groupId>
+                <artifactId>milvus-sdk-java</artifactId>
+                <version>2.3.3</version>
+                <exclusions>
+                    <exclusion>
+                        <artifactId>log4j-slf4j-impl</artifactId>
+                        <groupId>org.apache.logging.log4j</groupId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+
+            <!-- 微信支付，获取最新版本号：https://github.com/wechatpay-apiv3/wechatpay-java -->
+            <dependency>
+                <groupId>com.github.wechatpay-apiv3</groupId>
+                <artifactId>wechatpay-java</artifactId>
+                <version>0.2.12</version>
+            </dependency>
+
+            <!-- 阿里云oss文件存储 -->
+            <dependency>
+                <groupId>com.aliyun.oss</groupId>
+                <artifactId>aliyun-sdk-oss</artifactId>
+                <version>3.17.3</version>
+            </dependency>
+
+            <!-- minio文件系统 -->
+            <dependency>
+                <groupId>io.minio</groupId>
+                <artifactId>minio</artifactId>
+                <version>8.5.7</version>
+            </dependency>
+
+            <!-- 二维码工具类 -->
+            <dependency>
+                <groupId>com.google.zxing</groupId>
+                <artifactId>core</artifactId>
+                <version>3.5.2</version>
+            </dependency>
+
+            <!-- 解决：sharding-jdbc 启动报错，备注：这个只指定版本号即可，不用引入 -->
+            <dependency>
+                <groupId>org.yaml</groupId>
+                <artifactId>snakeyaml</artifactId>
+                <version>1.33</version>
+            </dependency>
+
+            <!-- sharding-jdbc -->
+            <dependency>
+                <groupId>org.apache.shardingsphere</groupId>
+                <artifactId>shardingsphere-jdbc-core-spring-boot-starter</artifactId>
+                <version>5.2.1</version>
+            </dependency>
+
+            <!-- 动态数据源 -->
+            <dependency>
+                <groupId>com.baomidou</groupId>
+                <artifactId>dynamic-datasource-spring-boot-starter</artifactId>
+                <version>4.2.0</version>
+            </dependency>
+
+            <!-- protobuf：下载地址，例如：https://github.com/protocolbuffers/protobuf/releases/tag/v23.4 -->
+            <dependency>
+                <groupId>com.google.protobuf</groupId>
+                <artifactId>protobuf-java</artifactId>
+                <version>3.25.1</version>
+            </dependency>
+
+            <!-- ssh，sftp -->
+            <dependency>
+                <groupId>com.jcraft</groupId>
+                <artifactId>jsch</artifactId>
+                <version>0.1.55</version>
+            </dependency>
+
+            <!-- excel操作 -->
+            <dependency>
+                <groupId>com.alibaba</groupId>
+                <artifactId>easyexcel</artifactId>
+                <version>3.3.3</version>
+            </dependency>
+
+            <!-- 基于JNA的操作系统和硬件信息库 -->
+            <dependency>
+                <groupId>com.github.oshi</groupId>
+                <artifactId>oshi-core</artifactId>
+                <version>6.4.9</version>
+            </dependency>
+
+            <!-- xxl-job -->
+            <dependency>
+                <groupId>com.xuxueli</groupId>
+                <artifactId>xxl-job-core</artifactId>
+                <version>2.4.0</version>
+            </dependency>
+
+            <!-- 阿里云-短信相关，获取最新版本号：https://next.api.aliyun.com/api/Dysmsapi/2017-05-25/SendSms?lang=JAVAASYNC -->
+            <dependency>
+                <groupId>com.aliyun</groupId>
+                <artifactId>alibabacloud-dysmsapi20170525</artifactId>
+                <version>2.0.24</version>
+            </dependency>
+
+            <!-- 腾讯云-短信相关，获取最新版本号：https://console.cloud.tencent.com/api/explorer?Product=sms&Version=2021-01-11&Action=SendSms -->
+            <dependency>
+                <groupId>com.tencentcloudapi</groupId>
+                <artifactId>tencentcloud-sdk-java-sms</artifactId>
+                <version>3.1.893</version>
+            </dependency>
+
+            <!-- 支付宝支付，获取最新版本号：https://github.com/alipay/alipay-sdk-java-all -->
+            <dependency>
+                <groupId>com.alipay.sdk</groupId>
+                <artifactId>alipay-sdk-java-v3</artifactId>
+                <version>2.8.0.ALL</version>
+            </dependency>
+
+            <!-- 支付宝支付，获取最新版本号：https://github.com/alipay/alipay-sdk-java-all -->
+            <dependency>
+                <groupId>com.alipay.sdk</groupId>
+                <artifactId>alipay-sdk-java</artifactId>
+                <version>4.38.170.ALL</version>
+            </dependency>
+
+            <!-- 邮件 -->
+            <dependency>
+                <groupId>com.sun.mail</groupId>
+                <artifactId>javax.mail</artifactId>
+                <version>1.6.2</version>
+            </dependency>
+
+            <!-- redisson-spring-boot-starter -->
+            <dependency>
+                <groupId>org.redisson</groupId>
+                <artifactId>redisson-spring-boot-starter</artifactId>
+                <version>3.25.2</version>
+            </dependency>
+
+            <!-- 离线IP地址定位库 -->
+            <dependency>
+                <groupId>org.lionsoul</groupId>
+                <artifactId>ip2region</artifactId>
+                <version>2.7.0</version>
+            </dependency>
+
+            <!-- knife4j -->
+            <dependency>
+                <groupId>com.github.xiaoymin</groupId>
+                <artifactId>knife4j-springdoc-ui</artifactId>
+                <version>3.0.3</version>
+            </dependency>
+
+            <!-- springdoc -->
+            <dependency>
+                <groupId>org.springdoc</groupId>
+                <artifactId>springdoc-openapi-ui</artifactId>
+                <version>1.7.0</version>
+            </dependency>
+
+            <!-- hutool -->
+            <dependency>
+                <groupId>cn.hutool</groupId>
+                <artifactId>hutool-all</artifactId>
+                <version>5.8.24</version>
+            </dependency>
+
+            <!-- mybatis-plus -->
+            <dependency>
+                <groupId>com.baomidou</groupId>
+                <artifactId>mybatis-plus-boot-starter</artifactId>
+                <version>3.5.5</version>
+            </dependency>
+
+            <!-- jetbrains-annotations -->
+            <dependency>
+                <groupId>org.jetbrains</groupId>
+                <artifactId>annotations</artifactId>
+                <version>24.1.0</version>
+            </dependency>
+
+        </dependencies>
+    </dependencyManagement>
+
     <dependencies>
 
-      <!-- be-api-token -->
-      <dependency>
-        <groupId>${cmcorg.groupId}</groupId>
-        <artifactId>be-api-token</artifactId>
-        <version>${cmcorg.version}</version>
-      </dependency>
-
-      <!-- be-im-session -->
-      <dependency>
-        <groupId>${cmcorg.groupId}</groupId>
-        <artifactId>be-im-session</artifactId>
-        <version>${cmcorg.version}</version>
-      </dependency>
-
-      <!-- be-other-app-baidu -->
-      <dependency>
-        <groupId>${cmcorg.groupId}</groupId>
-        <artifactId>be-other-app-baidu</artifactId>
-        <version>${cmcorg.version}</version>
-      </dependency>
-
-      <!-- be-other-app-wx-work -->
-      <dependency>
-        <groupId>${cmcorg.groupId}</groupId>
-        <artifactId>be-other-app-wx-work</artifactId>
-        <version>${cmcorg.version}</version>
-      </dependency>
-
-      <!-- be-other-app-wx -->
-      <dependency>
-        <groupId>${cmcorg.groupId}</groupId>
-        <artifactId>be-other-app-wx</artifactId>
-        <version>${cmcorg.version}</version>
-      </dependency>
-
-      <!-- be-other-app -->
-      <dependency>
-        <groupId>${cmcorg.groupId}</groupId>
-        <artifactId>be-other-app</artifactId>
-        <version>${cmcorg.version}</version>
-      </dependency>
-
-      <!-- be-profit-share -->
-      <dependency>
-        <groupId>${cmcorg.groupId}</groupId>
-        <artifactId>be-profit-share</artifactId>
-        <version>${cmcorg.version}</version>
-      </dependency>
-
-      <!-- be-wallet -->
-      <dependency>
-        <groupId>${cmcorg.groupId}</groupId>
-        <artifactId>be-wallet</artifactId>
-        <version>${cmcorg.version}</version>
-      </dependency>
-
-      <!-- be-start-jar -->
-      <dependency>
-        <groupId>${cmcorg.groupId}</groupId>
-        <artifactId>be-start-jar</artifactId>
-        <version>${cmcorg.version}</version>
-      </dependency>
-
-      <!-- be-milvus -->
-      <dependency>
-        <groupId>${cmcorg.groupId}</groupId>
-        <artifactId>be-milvus</artifactId>
-        <version>${cmcorg.version}</version>
-      </dependency>
-
-      <!-- be-tenant -->
-      <dependency>
-        <groupId>${cmcorg.groupId}</groupId>
-        <artifactId>be-tenant</artifactId>
-        <version>${cmcorg.version}</version>
-      </dependency>
-
-      <!-- be-post -->
-      <dependency>
-        <groupId>${cmcorg.groupId}</groupId>
-        <artifactId>be-post</artifactId>
-        <version>${cmcorg.version}</version>
-      </dependency>
-
-      <!-- be-dept -->
-      <dependency>
-        <groupId>${cmcorg.groupId}</groupId>
-        <artifactId>be-dept</artifactId>
-        <version>${cmcorg.version}</version>
-      </dependency>
-
-      <!-- be-area -->
-      <dependency>
-        <groupId>${cmcorg.groupId}</groupId>
-        <artifactId>be-area</artifactId>
-        <version>${cmcorg.version}</version>
-      </dependency>
-
-      <!-- be-netty-tcp-protobuf -->
-      <dependency>
-        <groupId>${cmcorg.groupId}</groupId>
-        <artifactId>be-netty-tcp-protobuf</artifactId>
-        <version>${cmcorg.version}</version>
-      </dependency>
-
-      <!-- be-netty-websocket -->
-      <dependency>
-        <groupId>${cmcorg.groupId}</groupId>
-        <artifactId>be-netty-websocket</artifactId>
-        <version>${cmcorg.version}</version>
-      </dependency>
-
-      <!-- be-socket -->
-      <dependency>
-        <groupId>${cmcorg.groupId}</groupId>
-        <artifactId>be-socket</artifactId>
-        <version>${cmcorg.version}</version>
-      </dependency>
-
-      <!-- be-pay-apply -->
-      <dependency>
-        <groupId>${cmcorg.groupId}</groupId>
-        <artifactId>be-pay-apply</artifactId>
-        <version>${cmcorg.version}</version>
-      </dependency>
-
-      <!-- be-pay-google -->
-      <dependency>
-        <groupId>${cmcorg.groupId}</groupId>
-        <artifactId>be-pay-google</artifactId>
-        <version>${cmcorg.version}</version>
-      </dependency>
-
-      <!-- be-pay-wx -->
-      <dependency>
-        <groupId>${cmcorg.groupId}</groupId>
-        <artifactId>be-pay-wx</artifactId>
-        <version>${cmcorg.version}</version>
-      </dependency>
-
-      <!-- be-pay-ali -->
-      <dependency>
-        <groupId>${cmcorg.groupId}</groupId>
-        <artifactId>be-pay-ali</artifactId>
-        <version>${cmcorg.version}</version>
-      </dependency>
-
-      <!-- be-pay -->
-      <dependency>
-        <groupId>${cmcorg.groupId}</groupId>
-        <artifactId>be-pay</artifactId>
-        <version>${cmcorg.version}</version>
-      </dependency>
-
-      <!-- be-file-minio -->
-      <dependency>
-        <groupId>${cmcorg.groupId}</groupId>
-        <artifactId>be-file-minio</artifactId>
-        <version>${cmcorg.version}</version>
-      </dependency>
-
-      <!-- be-file-aliyun -->
-      <dependency>
-        <groupId>${cmcorg.groupId}</groupId>
-        <artifactId>be-file-aliyun</artifactId>
-        <version>${cmcorg.version}</version>
-      </dependency>
-
-      <!-- be-file -->
-      <dependency>
-        <groupId>${cmcorg.groupId}</groupId>
-        <artifactId>be-file</artifactId>
-        <version>${cmcorg.version}</version>
-      </dependency>
-
-      <!-- be-sms-tencent -->
-      <dependency>
-        <groupId>${cmcorg.groupId}</groupId>
-        <artifactId>be-sms-tencent</artifactId>
-        <version>${cmcorg.version}</version>
-      </dependency>
-
-      <!-- be-sms-aliyun -->
-      <dependency>
-        <groupId>${cmcorg.groupId}</groupId>
-        <artifactId>be-sms-aliyun</artifactId>
-        <version>${cmcorg.version}</version>
-      </dependency>
-
-      <!-- be-sms -->
-      <dependency>
-        <groupId>${cmcorg.groupId}</groupId>
-        <artifactId>be-sms</artifactId>
-        <version>${cmcorg.version}</version>
-      </dependency>
-
-      <!-- be-generate -->
-      <dependency>
-        <groupId>${cmcorg.groupId}</groupId>
-        <artifactId>be-generate</artifactId>
-        <version>${cmcorg.version}</version>
-      </dependency>
-
-      <!-- be-request -->
-      <dependency>
-        <groupId>${cmcorg.groupId}</groupId>
-        <artifactId>be-request</artifactId>
-        <version>${cmcorg.version}</version>
-      </dependency>
-
-      <!-- be-server -->
-      <dependency>
-        <groupId>${cmcorg.groupId}</groupId>
-        <artifactId>be-server</artifactId>
-        <version>${cmcorg.version}</version>
-      </dependency>
-
-      <!-- be-menu -->
-      <dependency>
-        <groupId>${cmcorg.groupId}</groupId>
-        <artifactId>be-menu</artifactId>
-        <version>${cmcorg.version}</version>
-      </dependency>
-
-      <!-- be-dict -->
-      <dependency>
-        <groupId>${cmcorg.groupId}</groupId>
-        <artifactId>be-dict</artifactId>
-        <version>${cmcorg.version}</version>
-      </dependency>
-
-      <!-- be-sign-wx-work -->
-      <dependency>
-        <groupId>${cmcorg.groupId}</groupId>
-        <artifactId>be-sign-wx-work</artifactId>
-        <version>${cmcorg.version}</version>
-      </dependency>
-
-      <!-- be-sign-single -->
-      <dependency>
-        <groupId>${cmcorg.groupId}</groupId>
-        <artifactId>be-sign-single</artifactId>
-        <version>${cmcorg.version}</version>
-      </dependency>
-
-      <!-- be-sign-wx -->
-      <dependency>
-        <groupId>${cmcorg.groupId}</groupId>
-        <artifactId>be-sign-wx</artifactId>
-        <version>${cmcorg.version}</version>
-      </dependency>
-
-      <!-- be-sign-phone -->
-      <dependency>
-        <groupId>${cmcorg.groupId}</groupId>
-        <artifactId>be-sign-phone</artifactId>
-        <version>${cmcorg.version}</version>
-      </dependency>
-
-      <!-- be-sign-email -->
-      <dependency>
-        <groupId>${cmcorg.groupId}</groupId>
-        <artifactId>be-sign-email</artifactId>
-        <version>${cmcorg.version}</version>
-      </dependency>
-
-      <!-- be-sign-signinname -->
-      <dependency>
-        <groupId>${cmcorg.groupId}</groupId>
-        <artifactId>be-sign-signinname</artifactId>
-        <version>${cmcorg.version}</version>
-      </dependency>
-
-      <!-- be-sign-helper -->
-      <dependency>
-        <groupId>${cmcorg.groupId}</groupId>
-        <artifactId>be-sign-helper</artifactId>
-        <version>${cmcorg.version}</version>
-      </dependency>
-
-      <!-- be-param -->
-      <dependency>
-        <groupId>${cmcorg.groupId}</groupId>
-        <artifactId>be-param</artifactId>
-        <version>${cmcorg.version}</version>
-      </dependency>
-
-      <!-- be-role -->
-      <dependency>
-        <groupId>${cmcorg.groupId}</groupId>
-        <artifactId>be-role</artifactId>
-        <version>${cmcorg.version}</version>
-      </dependency>
-
-      <!-- be-user -->
-      <dependency>
-        <groupId>${cmcorg.groupId}</groupId>
-        <artifactId>be-user</artifactId>
-        <version>${cmcorg.version}</version>
-      </dependency>
-
-      <!-- be-xxl-job -->
-      <dependency>
-        <groupId>${cmcorg.groupId}</groupId>
-        <artifactId>be-xxl-job</artifactId>
-        <version>${cmcorg.version}</version>
-      </dependency>
-
-      <!-- be-gateway -->
-      <dependency>
-        <groupId>${cmcorg.groupId}</groupId>
-        <artifactId>be-gateway</artifactId>
-        <version>${cmcorg.version}</version>
-      </dependency>
-
-      <!-- be-model -->
-      <dependency>
-        <groupId>${cmcorg.groupId}</groupId>
-        <artifactId>be-model</artifactId>
-        <version>${cmcorg.version}</version>
-      </dependency>
-
-      <!-- be-log -->
-      <dependency>
-        <groupId>${cmcorg.groupId}</groupId>
-        <artifactId>be-log</artifactId>
-        <version>${cmcorg.version}</version>
-      </dependency>
-
-      <!-- be-kafka -->
-      <dependency>
-        <groupId>${cmcorg.groupId}</groupId>
-        <artifactId>be-kafka</artifactId>
-        <version>${cmcorg.version}</version>
-      </dependency>
-
-      <!-- be-ip2region -->
-      <dependency>
-        <groupId>${cmcorg.groupId}</groupId>
-        <artifactId>be-ip2region</artifactId>
-        <version>${cmcorg.version}</version>
-      </dependency>
-
-      <!-- be-email -->
-      <dependency>
-        <groupId>${cmcorg.groupId}</groupId>
-        <artifactId>be-email</artifactId>
-        <version>${cmcorg.version}</version>
-      </dependency>
-
-      <!-- be-cache -->
-      <dependency>
-        <groupId>${cmcorg.groupId}</groupId>
-        <artifactId>be-cache</artifactId>
-        <version>${cmcorg.version}</version>
-      </dependency>
-
-      <!-- be-nacos -->
-      <dependency>
-        <groupId>${cmcorg.groupId}</groupId>
-        <artifactId>be-nacos</artifactId>
-        <version>${cmcorg.version}</version>
-      </dependency>
-
-      <!-- be-knife4j -->
-      <dependency>
-        <groupId>${cmcorg.groupId}</groupId>
-        <artifactId>be-knife4j</artifactId>
-        <version>${cmcorg.version}</version>
-      </dependency>
-
-      <!-- be-datasource -->
-      <dependency>
-        <groupId>${cmcorg.groupId}</groupId>
-        <artifactId>be-datasource</artifactId>
-        <version>${cmcorg.version}</version>
-      </dependency>
-
-      <!-- be-mysql -->
-      <dependency>
-        <groupId>${cmcorg.groupId}</groupId>
-        <artifactId>be-mysql</artifactId>
-        <version>${cmcorg.version}</version>
-      </dependency>
-
-      <!-- be-util -->
-      <dependency>
-        <groupId>${cmcorg.groupId}</groupId>
-        <artifactId>be-util</artifactId>
-        <version>${cmcorg.version}</version>
-      </dependency>
-
-      <!-- be-redisson -->
-      <dependency>
-        <groupId>${cmcorg.groupId}</groupId>
-        <artifactId>be-redisson</artifactId>
-        <version>${cmcorg.version}</version>
-      </dependency>
-
-      <!-- be-security -->
-      <dependency>
-        <groupId>${cmcorg.groupId}</groupId>
-        <artifactId>be-security</artifactId>
-        <version>${cmcorg.version}</version>
-      </dependency>
-
-      <!-- spring-cloud-dependencies -->
-      <dependency>
-        <groupId>org.springframework.cloud</groupId>
-        <artifactId>spring-cloud-dependencies</artifactId>
-        <version>2021.0.9</version>
-        <type>pom</type>
-        <scope>import</scope>
-      </dependency>
-
-      <!-- nacos-discovery -->
-      <dependency>
-        <groupId>com.alibaba.cloud</groupId>
-        <artifactId>spring-cloud-starter-alibaba-nacos-discovery</artifactId>
-        <version>2021.0.5.0</version>
-      </dependency>
-
-      <!-- nacos-config -->
-      <dependency>
-        <groupId>com.alibaba.cloud</groupId>
-        <artifactId>spring-cloud-starter-alibaba-nacos-config</artifactId>
-        <version>2021.0.5.0</version>
-      </dependency>
-
-      <!-- POI依赖，读取 .docx型文档-->
-      <dependency>
-        <groupId>org.apache.poi</groupId>
-        <artifactId>poi-ooxml</artifactId>
-        <version>5.2.5</version>
-      </dependency>
-
-      <!-- POI依赖，读取 .doc型文档-->
-      <dependency>
-        <groupId>org.apache.poi</groupId>
-        <artifactId>poi-scratchpad</artifactId>
-        <version>5.2.5</version>
-      </dependency>
-
-      <!-- pdfbox -->
-      <dependency>
-        <groupId>org.apache.pdfbox</groupId>
-        <artifactId>pdfbox</artifactId>
-        <version>3.0.1</version>
-      </dependency>
-
-      <!-- 火山引擎 -->
-      <dependency>
-        <groupId>com.volcengine</groupId>
-        <artifactId>volc-sdk-java</artifactId>
-        <version>1.0.138</version>
-      </dependency>
-
-      <!-- webp格式图片转换 -->
-      <dependency>
-        <groupId>org.sejda.imageio</groupId>
-        <artifactId>webp-imageio</artifactId>
-        <version>0.1.6</version>
-      </dependency>
-
-      <!-- Java Discord API，项目地址：https://github.com/discord-jda/JDA -->
-      <dependency>
-        <groupId>net.dv8tion</groupId>
-        <artifactId>JDA</artifactId>
-        <version>5.0.0-beta.18</version>
-      </dependency>
-
-      <!-- 计算：chatGPT，token数量，项目地址：https://github.com/knuddelsgmbh/jtokkit -->
-      <dependency>
-        <groupId>com.knuddels</groupId>
-        <artifactId>jtokkit</artifactId>
-        <version>0.6.1</version>
-      </dependency>
-
-      <!-- 向量数据库 -->
-      <dependency>
-        <groupId>io.milvus</groupId>
-        <artifactId>milvus-sdk-java</artifactId>
-        <version>2.3.3</version>
-        <exclusions>
-          <exclusion>
-            <artifactId>log4j-slf4j-impl</artifactId>
-            <groupId>org.apache.logging.log4j</groupId>
-          </exclusion>
-        </exclusions>
-      </dependency>
-
-      <!-- 微信支付，获取最新版本号：https://github.com/wechatpay-apiv3/wechatpay-java -->
-      <dependency>
-        <groupId>com.github.wechatpay-apiv3</groupId>
-        <artifactId>wechatpay-java</artifactId>
-        <version>0.2.12</version>
-      </dependency>
-
-      <!-- 阿里云oss文件存储 -->
-      <dependency>
-        <groupId>com.aliyun.oss</groupId>
-        <artifactId>aliyun-sdk-oss</artifactId>
-        <version>3.17.3</version>
-      </dependency>
-
-      <!-- minio文件系统 -->
-      <dependency>
-        <groupId>io.minio</groupId>
-        <artifactId>minio</artifactId>
-        <version>8.5.7</version>
-      </dependency>
-
-      <!-- 二维码工具类 -->
-      <dependency>
-        <groupId>com.google.zxing</groupId>
-        <artifactId>core</artifactId>
-        <version>3.5.2</version>
-      </dependency>
-
-      <!-- 解决：sharding-jdbc 启动报错，备注：这个只指定版本号即可，不用引入 -->
-      <dependency>
-        <groupId>org.yaml</groupId>
-        <artifactId>snakeyaml</artifactId>
-        <version>1.33</version>
-      </dependency>
-
-      <!-- sharding-jdbc -->
-      <dependency>
-        <groupId>org.apache.shardingsphere</groupId>
-        <artifactId>shardingsphere-jdbc-core-spring-boot-starter</artifactId>
-        <version>5.2.1</version>
-      </dependency>
-
-      <!-- 动态数据源 -->
-      <dependency>
-        <groupId>com.baomidou</groupId>
-        <artifactId>dynamic-datasource-spring-boot-starter</artifactId>
-        <version>4.2.0</version>
-      </dependency>
-
-      <!-- protobuf：下载地址，例如：https://github.com/protocolbuffers/protobuf/releases/tag/v23.4 -->
-      <dependency>
-        <groupId>com.google.protobuf</groupId>
-        <artifactId>protobuf-java</artifactId>
-        <version>3.25.1</version>
-      </dependency>
-
-      <!-- ssh，sftp -->
-      <dependency>
-        <groupId>com.jcraft</groupId>
-        <artifactId>jsch</artifactId>
-        <version>0.1.55</version>
-      </dependency>
-
-      <!-- excel操作 -->
-      <dependency>
-        <groupId>com.alibaba</groupId>
-        <artifactId>easyexcel</artifactId>
-        <version>3.3.3</version>
-      </dependency>
-
-      <!-- 基于JNA的操作系统和硬件信息库 -->
-      <dependency>
-        <groupId>com.github.oshi</groupId>
-        <artifactId>oshi-core</artifactId>
-        <version>6.4.9</version>
-      </dependency>
-
-      <!-- xxl-job -->
-      <dependency>
-        <groupId>com.xuxueli</groupId>
-        <artifactId>xxl-job-core</artifactId>
-        <version>2.4.0</version>
-      </dependency>
-
-      <!-- 阿里云-短信相关，获取最新版本号：https://next.api.aliyun.com/api/Dysmsapi/2017-05-25/SendSms?lang=JAVAASYNC -->
-      <dependency>
-        <groupId>com.aliyun</groupId>
-        <artifactId>alibabacloud-dysmsapi20170525</artifactId>
-        <version>2.0.24</version>
-      </dependency>
-
-      <!-- 腾讯云-短信相关，获取最新版本号：https://console.cloud.tencent.com/api/explorer?Product=sms&Version=2021-01-11&Action=SendSms -->
-      <dependency>
-        <groupId>com.tencentcloudapi</groupId>
-        <artifactId>tencentcloud-sdk-java-sms</artifactId>
-        <version>3.1.893</version>
-      </dependency>
-
-      <!-- 支付宝支付，获取最新版本号：https://github.com/alipay/alipay-sdk-java-all -->
-      <dependency>
-        <groupId>com.alipay.sdk</groupId>
-        <artifactId>alipay-sdk-java-v3</artifactId>
-        <version>2.8.0.ALL</version>
-      </dependency>
-
-      <!-- 支付宝支付，获取最新版本号：https://github.com/alipay/alipay-sdk-java-all -->
-      <dependency>
-        <groupId>com.alipay.sdk</groupId>
-        <artifactId>alipay-sdk-java</artifactId>
-        <version>4.38.170.ALL</version>
-      </dependency>
-
-      <!-- 邮件 -->
-      <dependency>
-        <groupId>com.sun.mail</groupId>
-        <artifactId>javax.mail</artifactId>
-        <version>1.6.2</version>
-      </dependency>
-
-      <!-- redisson-spring-boot-starter -->
-      <dependency>
-        <groupId>org.redisson</groupId>
-        <artifactId>redisson-spring-boot-starter</artifactId>
-        <version>3.25.2</version>
-      </dependency>
-
-      <!-- 离线IP地址定位库 -->
-      <dependency>
-        <groupId>org.lionsoul</groupId>
-        <artifactId>ip2region</artifactId>
-        <version>2.7.0</version>
-      </dependency>
-
-      <!-- knife4j -->
-      <dependency>
-        <groupId>com.github.xiaoymin</groupId>
-        <artifactId>knife4j-springdoc-ui</artifactId>
-        <version>3.0.3</version>
-      </dependency>
-
-      <!-- springdoc -->
-      <dependency>
-        <groupId>org.springdoc</groupId>
-        <artifactId>springdoc-openapi-ui</artifactId>
-        <version>1.7.0</version>
-      </dependency>
-
-      <!-- hutool -->
-      <dependency>
-        <groupId>cn.hutool</groupId>
-        <artifactId>hutool-all</artifactId>
-        <version>5.8.24</version>
-      </dependency>
-
-      <!-- mybatis-plus -->
-      <dependency>
-        <groupId>com.baomidou</groupId>
-        <artifactId>mybatis-plus-boot-starter</artifactId>
-        <version>3.5.5</version>
-      </dependency>
-
-      <!-- jetbrains-annotations -->
-      <dependency>
-        <groupId>org.jetbrains</groupId>
-        <artifactId>annotations</artifactId>
-        <version>24.1.0</version>
-      </dependency>
+        <!-- jetbrains-annotations -->
+        <dependency>
+            <groupId>org.jetbrains</groupId>
+            <artifactId>annotations</artifactId>
+        </dependency>
+
+        <!-- configuration-processor -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-configuration-processor</artifactId>
+        </dependency>
+
+        <!-- lombok -->
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+        </dependency>
+
+        <!-- spring-boot-starter-test -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+        </dependency>
 
     </dependencies>
-  </dependencyManagement>
 
-  <dependencies>
-
-    <!-- jetbrains-annotations -->
-    <dependency>
-      <groupId>org.jetbrains</groupId>
-      <artifactId>annotations</artifactId>
-    </dependency>
-
-    <!-- configuration-processor -->
-    <dependency>
-      <groupId>org.springframework.boot</groupId>
-      <artifactId>spring-boot-configuration-processor</artifactId>
-    </dependency>
-
-    <!-- lombok -->
-    <dependency>
-      <groupId>org.projectlombok</groupId>
-      <artifactId>lombok</artifactId>
-    </dependency>
-
-    <!-- spring-boot-starter-test -->
-    <dependency>
-      <groupId>org.springframework.boot</groupId>
-      <artifactId>spring-boot-starter-test</artifactId>
-    </dependency>
-
-  </dependencies>
-
-  <build>
-    <pluginManagement>
-      <plugins>
-        <plugin>
-          <groupId>org.springframework.boot</groupId>
-          <artifactId>spring-boot-maven-plugin</artifactId>
-          <configuration>
-            <excludes>
-              <exclude>
-                <groupId>org.projectlombok</groupId>
-                <artifactId>lombok</artifactId>
-              </exclude>
-            </excludes>
-          </configuration>
-        </plugin>
-      </plugins>
-    </pluginManagement>
-  </build>
+    <build>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.springframework.boot</groupId>
+                    <artifactId>spring-boot-maven-plugin</artifactId>
+                    <configuration>
+                        <excludes>
+                            <exclude>
+                                <groupId>org.projectlombok</groupId>
+                                <artifactId>lombok</artifactId>
+                            </exclude>
+                        </excludes>
+                    </configuration>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+    </build>
 
 </project>

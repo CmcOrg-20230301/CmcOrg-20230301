@@ -28,9 +28,8 @@ import java.util.concurrent.CopyOnWriteArrayList;
 @Slf4j(topic = LogTopicConstant.REQUEST)
 public class RequestUtil {
 
-    public static final String[] IP_HEADER_ARR =
-        {"X-Forwarded-For", "X-Real-IP", "Proxy-Client-IP", "WL-Proxy-Client-IP", "HTTP_CLIENT_IP",
-            "HTTP_X_FORWARDED_FOR"};
+    public static final String[] IP_HEADER_ARR = {"X-Forwarded-For", "X-Real-IP", "Proxy-Client-IP",
+        "WL-Proxy-Client-IP", "HTTP_CLIENT_IP", "HTTP_X_FORWARDED_FOR"};
 
     @Resource
     BaseSysRequestService baseSysRequestService;
@@ -85,7 +84,7 @@ public class RequestUtil {
     public static HttpServletRequest getRequest() {
 
         ServletRequestAttributes requestAttributes =
-            (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
+            (ServletRequestAttributes)RequestContextHolder.getRequestAttributes();
 
         if (requestAttributes == null) {
             return null;
@@ -109,16 +108,14 @@ public class RequestUtil {
      * 获取请求类别
      */
     @NotNull
-    public static SysRequestCategoryEnum getRequestCategoryEnum(
-        HttpServletRequest httpServletRequest) {
+    public static SysRequestCategoryEnum getRequestCategoryEnum(HttpServletRequest httpServletRequest) {
 
         if (httpServletRequest == null) {
             return SysRequestCategoryEnum.PC_BROWSER_WINDOWS;
         }
 
         return SysRequestCategoryEnum
-            .getByCode(Convert.toInt(
-                httpServletRequest.getHeader(SecurityConstant.REQUEST_HEADER_CATEGORY)));
+            .getByCode(Convert.toInt(httpServletRequest.getHeader(SecurityConstant.REQUEST_HEADER_CATEGORY)));
 
     }
 

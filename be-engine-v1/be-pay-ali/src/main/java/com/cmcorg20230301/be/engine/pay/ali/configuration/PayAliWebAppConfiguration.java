@@ -1,5 +1,8 @@
 package com.cmcorg20230301.be.engine.pay.ali.configuration;
 
+import org.jetbrains.annotations.NotNull;
+import org.springframework.context.annotation.Configuration;
+
 import com.cmcorg20230301.be.engine.pay.ali.util.PayAliUtil;
 import com.cmcorg20230301.be.engine.pay.base.model.bo.SysPayReturnBO;
 import com.cmcorg20230301.be.engine.pay.base.model.configuration.ISysPay;
@@ -8,8 +11,6 @@ import com.cmcorg20230301.be.engine.pay.base.model.entity.SysPayConfigurationDO;
 import com.cmcorg20230301.be.engine.pay.base.model.enums.SysPayTradeStatusEnum;
 import com.cmcorg20230301.be.engine.pay.base.model.enums.SysPayTypeEnum;
 import com.cmcorg20230301.be.engine.pay.base.model.interfaces.ISysPayType;
-import org.jetbrains.annotations.NotNull;
-import org.springframework.context.annotation.Configuration;
 
 /**
  * 支付宝支付相关配置类
@@ -40,8 +41,7 @@ public class PayAliWebAppConfiguration implements ISysPay {
      */
     @Override
     @NotNull
-    public SysPayTradeStatusEnum query(String outTradeNo,
-        SysPayConfigurationDO sysPayConfigurationDO) {
+    public SysPayTradeStatusEnum query(String outTradeNo, SysPayConfigurationDO sysPayConfigurationDO) {
         return PayAliUtil.query(outTradeNo, sysPayConfigurationDO);
     }
 

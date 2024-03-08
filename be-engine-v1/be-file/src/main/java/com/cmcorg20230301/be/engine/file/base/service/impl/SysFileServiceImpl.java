@@ -1,8 +1,11 @@
 package com.cmcorg20230301.be.engine.file.base.service.impl;
 
-import cn.hutool.core.bean.BeanUtil;
-import cn.hutool.core.collection.CollUtil;
-import cn.hutool.core.util.StrUtil;
+import java.io.InputStream;
+
+import javax.servlet.http.HttpServletResponse;
+
+import org.springframework.stereotype.Service;
+
 import com.baomidou.dynamic.datasource.annotation.DSTransactional;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -28,14 +31,14 @@ import com.cmcorg20230301.be.engine.security.util.ResponseUtil;
 import com.cmcorg20230301.be.engine.security.util.SysTenantUtil;
 import com.cmcorg20230301.be.engine.security.util.UserUtil;
 import com.cmcorg20230301.be.engine.util.util.CallBack;
-import java.io.InputStream;
-import javax.servlet.http.HttpServletResponse;
+
+import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.util.StrUtil;
 import lombok.SneakyThrows;
-import org.springframework.stereotype.Service;
 
 @Service
-public class SysFileServiceImpl extends ServiceImpl<SysFileMapper, SysFileDO> implements
-    SysFileService {
+public class SysFileServiceImpl extends ServiceImpl<SysFileMapper, SysFileDO> implements SysFileService {
 
     /**
      * 上传文件：公有和私有
@@ -124,8 +127,7 @@ public class SysFileServiceImpl extends ServiceImpl<SysFileMapper, SysFileDO> im
         SysTenantUtil.handleMyTenantPageDTO(dto, false);
 
         return lambdaQuery()
-            .like(StrUtil.isNotBlank(dto.getOriginFileName()), SysFileDO::getOriginFileName,
-                dto.getOriginFileName())
+            .like(StrUtil.isNotBlank(dto.getOriginFileName()), SysFileDO::getOriginFileName, dto.getOriginFileName())
 
             .like(StrUtil.isNotBlank(dto.getRemark()), BaseEntity::getRemark, dto.getRemark())
 
@@ -149,14 +151,10 @@ public class SysFileServiceImpl extends ServiceImpl<SysFileMapper, SysFileDO> im
 
             .in(BaseEntityNoId::getTenantId, dto.getTenantIdSet()) //
 
-            .select(BaseEntity::getId, BaseEntityNoIdSuper::getTenantId,
-                BaseEntityNoId::getEnableFlag,
-                BaseEntityNoId::getRemark, BaseEntityNoIdSuper::getCreateId,
-                BaseEntityNoIdSuper::getCreateTime,
-                BaseEntityNoIdSuper::getUpdateId, BaseEntityNoIdSuper::getUpdateTime,
-                SysFileDO::getOriginFileName,
-                SysFileDO::getBelongId, SysFileDO::getUploadType, SysFileDO::getStorageType,
-                SysFileDO::getPublicFlag,
+            .select(BaseEntity::getId, BaseEntityNoIdSuper::getTenantId, BaseEntityNoId::getEnableFlag,
+                BaseEntityNoId::getRemark, BaseEntityNoIdSuper::getCreateId, BaseEntityNoIdSuper::getCreateTime,
+                BaseEntityNoIdSuper::getUpdateId, BaseEntityNoIdSuper::getUpdateTime, SysFileDO::getOriginFileName,
+                SysFileDO::getBelongId, SysFileDO::getUploadType, SysFileDO::getStorageType, SysFileDO::getPublicFlag,
                 SysFileDO::getFileSize, SysFileDO::getExtraJson)
             .orderByDesc(BaseEntity::getUpdateTime)
 
@@ -201,7 +199,3 @@ public class SysFileServiceImpl extends ServiceImpl<SysFileMapper, SysFileDO> im
     }
 
 }
-
-
-
-

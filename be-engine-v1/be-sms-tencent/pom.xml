@@ -1,50 +1,50 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0"
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <modelVersion>4.0.0</modelVersion>
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
 
-  <parent>
-    <groupId>com.cmcorg20230301</groupId>
-    <artifactId>be-engine-v1</artifactId>
-    <version>2023.3.1</version>
-  </parent>
+    <parent>
+        <groupId>com.cmcorg20230301</groupId>
+        <artifactId>be-engine-v1</artifactId>
+        <version>2023.3.1</version>
+    </parent>
 
-  <artifactId>be-sms-tencent</artifactId>
-  <description>腾讯短信相关</description>
+    <artifactId>be-sms-tencent</artifactId>
+    <description>腾讯短信相关</description>
 
-  <dependencies>
+    <dependencies>
 
-    <!-- be-sms -->
-    <dependency>
-      <groupId>com.cmcorg20230301</groupId>
-      <artifactId>be-sms</artifactId>
-    </dependency>
+        <!-- be-sms -->
+        <dependency>
+            <groupId>com.cmcorg20230301</groupId>
+            <artifactId>be-sms</artifactId>
+        </dependency>
 
-    <!-- nacos-config -->
-    <dependency>
-      <groupId>com.alibaba.cloud</groupId>
-      <artifactId>spring-cloud-starter-alibaba-nacos-config</artifactId>
-    </dependency>
+        <!-- nacos-config -->
+        <dependency>
+            <groupId>com.alibaba.cloud</groupId>
+            <artifactId>spring-cloud-starter-alibaba-nacos-config</artifactId>
+        </dependency>
 
-    <!-- be-util -->
-    <dependency>
-      <groupId>${cmcorg.groupId}</groupId>
-      <artifactId>be-util</artifactId>
-    </dependency>
+        <!-- be-util -->
+        <dependency>
+            <groupId>${cmcorg.groupId}</groupId>
+            <artifactId>be-util</artifactId>
+        </dependency>
 
-    <!-- be-model -->
-    <dependency>
-      <groupId>${cmcorg.groupId}</groupId>
-      <artifactId>be-model</artifactId>
-    </dependency>
+        <!-- be-model -->
+        <dependency>
+            <groupId>${cmcorg.groupId}</groupId>
+            <artifactId>be-model</artifactId>
+        </dependency>
 
-    <!-- 腾讯云 -->
-    <dependency>
-      <groupId>com.tencentcloudapi</groupId>
-      <artifactId>tencentcloud-sdk-java-sms</artifactId>
-    </dependency>
+        <!-- 腾讯云 -->
+        <dependency>
+            <groupId>com.tencentcloudapi</groupId>
+            <artifactId>tencentcloud-sdk-java-sms</artifactId>
+        </dependency>
 
-  </dependencies>
+    </dependencies>
 
 </project>

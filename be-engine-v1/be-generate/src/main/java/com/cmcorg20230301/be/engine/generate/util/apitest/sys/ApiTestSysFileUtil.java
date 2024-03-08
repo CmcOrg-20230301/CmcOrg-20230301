@@ -1,10 +1,8 @@
 package com.cmcorg20230301.be.engine.generate.util.apitest.sys;
 
-import cn.hutool.core.bean.BeanUtil;
-import cn.hutool.core.collection.CollUtil;
-import cn.hutool.core.io.FileUtil;
-import cn.hutool.http.HttpRequest;
-import cn.hutool.json.JSONUtil;
+import java.io.File;
+import java.util.Map;
+
 import com.cmcorg20230301.be.engine.file.base.model.dto.SysFileUploadDTO;
 import com.cmcorg20230301.be.engine.generate.util.apitest.ApiTestHelper;
 import com.cmcorg20230301.be.engine.generate.util.apitest.sign.ApiTestSignSignInNameUtil;
@@ -12,8 +10,12 @@ import com.cmcorg20230301.be.engine.model.model.dto.NotEmptyIdSet;
 import com.cmcorg20230301.be.engine.model.model.dto.NotNullId;
 import com.cmcorg20230301.be.engine.model.model.vo.SignInVO;
 import com.cmcorg20230301.be.engine.security.model.enums.SysFileUploadTypeEnum;
-import java.io.File;
-import java.util.Map;
+
+import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.io.FileUtil;
+import cn.hutool.http.HttpRequest;
+import cn.hutool.json.JSONUtil;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 
@@ -24,7 +26,7 @@ import lombok.extern.slf4j.Slf4j;
 public class ApiTestSysFileUtil {
 
     // 执行，接口的地址，备注：最后面不要加斜杠 /
-    //    private static final String API_ENDPOINT = "http://43.154.37.130:10001";
+    // private static final String API_ENDPOINT = "http://43.154.37.130:10001";
     private static final String API_ENDPOINT = "http://127.0.0.1:10001";
 
     // 测试文件的地址，需要包含文件类型后缀
@@ -41,13 +43,11 @@ public class ApiTestSysFileUtil {
     /**
      * 执行
      */
-    private static void exec(String apiEndpoint, String adminSignInName, String adminPassword,
-        String rsaPublicKey) {
+    private static void exec(String apiEndpoint, String adminSignInName, String adminPassword, String rsaPublicKey) {
 
         // 登录名-用户名账号密码登录
         SignInVO signInVO =
-            ApiTestSignSignInNameUtil.signInNameSignIn(apiEndpoint, adminSignInName, adminPassword,
-                rsaPublicKey);
+            ApiTestSignSignInNameUtil.signInNameSignIn(apiEndpoint, adminSignInName, adminPassword, rsaPublicKey);
 
         // 请求-上传文件：公有和私有
         Long fileId = sysFileUpload(apiEndpoint, signInVO.getJwt());
@@ -72,12 +72,10 @@ public class ApiTestSysFileUtil {
 
         NotEmptyIdSet notEmptyIdSet = new NotEmptyIdSet(CollUtil.newHashSet(fileId));
 
-        String bodyStr = HttpRequest.post(apiEndpoint + "/sys/file/removeByFileIdSet")
-            .header("Authorization", jwt)
+        String bodyStr = HttpRequest.post(apiEndpoint + "/sys/file/removeByFileIdSet").header("Authorization", jwt)
             .body(JSONUtil.toJsonStr(notEmptyIdSet)).execute().body();
 
-        log.info("请求-批量删除文件：公有和私有：耗时：{}，bodyByte长度：{}",
-            ApiTestHelper.calcCostMs(currentTs), bodyStr);
+        log.info("请求-批量删除文件：公有和私有：耗时：{}，bodyByte长度：{}", ApiTestHelper.calcCostMs(currentTs), bodyStr);
 
     }
 
@@ -91,12 +89,10 @@ public class ApiTestSysFileUtil {
 
         NotEmptyIdSet notEmptyIdSet = new NotEmptyIdSet(CollUtil.newHashSet(fileId));
 
-        String bodyStr = HttpRequest.post(apiEndpoint + "/sys/file/getPublicUrl")
-            .header("Authorization", jwt)
+        String bodyStr = HttpRequest.post(apiEndpoint + "/sys/file/getPublicUrl").header("Authorization", jwt)
             .body(JSONUtil.toJsonStr(notEmptyIdSet)).execute().body();
 
-        log.info("请求-批量获取：公开文件的 url：耗时：{}，bodyByte长度：{}",
-            ApiTestHelper.calcCostMs(currentTs), bodyStr);
+        log.info("请求-批量获取：公开文件的 url：耗时：{}，bodyByte长度：{}", ApiTestHelper.calcCostMs(currentTs), bodyStr);
 
     }
 
@@ -110,12 +106,10 @@ public class ApiTestSysFileUtil {
 
         NotNullId notNullId = new NotNullId(fileId);
 
-        byte[] bodyByteArr = HttpRequest.post(apiEndpoint + "/sys/file/privateDownload")
-            .header("Authorization", jwt)
+        byte[] bodyByteArr = HttpRequest.post(apiEndpoint + "/sys/file/privateDownload").header("Authorization", jwt)
             .body(JSONUtil.toJsonStr(notNullId)).execute().bodyBytes();
 
-        log.info("请求-下载文件：私有：耗时：{}，bodyByte长度：{}", ApiTestHelper.calcCostMs(currentTs),
-            bodyByteArr.length);
+        log.info("请求-下载文件：私有：耗时：{}，bodyByte长度：{}", ApiTestHelper.calcCostMs(currentTs), bodyByteArr.length);
 
     }
 
@@ -134,13 +128,10 @@ public class ApiTestSysFileUtil {
 
         Map<String, Object> map = BeanUtil.beanToMap(dto);
 
-        String bodyStr =
-            HttpRequest.post(apiEndpoint + "/sys/file/upload").form(map).form("file", file)
-                .header("Authorization", jwt)
-                .execute().body();
+        String bodyStr = HttpRequest.post(apiEndpoint + "/sys/file/upload").form(map).form("file", file)
+            .header("Authorization", jwt).execute().body();
 
-        log.info("请求-上传文件：公有和私有：耗时：{}，bodyStr：{}", ApiTestHelper.calcCostMs(currentTs),
-            bodyStr);
+        log.info("请求-上传文件：公有和私有：耗时：{}，bodyStr：{}", ApiTestHelper.calcCostMs(currentTs), bodyStr);
 
         return JSONUtil.parseObj(bodyStr).getLong("data");
 

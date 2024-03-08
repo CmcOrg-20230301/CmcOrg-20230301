@@ -8,8 +8,7 @@ import com.cmcorg20230301.be.engine.file.base.model.entity.SysFileStorageConfigu
 import com.cmcorg20230301.be.engine.model.model.dto.NotEmptyIdSet;
 import com.cmcorg20230301.be.engine.model.model.dto.NotNullId;
 
-public interface SysFileStorageConfigurationService extends
-    IService<SysFileStorageConfigurationDO> {
+public interface SysFileStorageConfigurationService extends IService<SysFileStorageConfigurationDO> {
 
     String insertOrUpdate(SysFileStorageConfigurationInsertOrUpdateDTO dto);
 

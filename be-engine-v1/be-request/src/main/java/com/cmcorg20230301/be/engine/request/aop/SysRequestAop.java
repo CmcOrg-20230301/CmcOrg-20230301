@@ -1,5 +1,27 @@
 package com.cmcorg20230301.be.engine.request.aop;
 
+import java.lang.reflect.UndeclaredThrowableException;
+import java.util.Date;
+
+import javax.servlet.http.HttpServletRequest;
+
+import org.aspectj.lang.ProceedingJoinPoint;
+import org.aspectj.lang.annotation.Around;
+import org.aspectj.lang.annotation.Aspect;
+import org.aspectj.lang.annotation.Pointcut;
+import org.aspectj.lang.reflect.MethodSignature;
+import org.springframework.stereotype.Component;
+
+import com.cmcorg20230301.be.engine.ip2region.util.Ip2RegionUtil;
+import com.cmcorg20230301.be.engine.model.model.constant.LogTopicConstant;
+import com.cmcorg20230301.be.engine.model.model.constant.OperationDescriptionConstant;
+import com.cmcorg20230301.be.engine.model.model.vo.SignInVO;
+import com.cmcorg20230301.be.engine.security.exception.BaseException;
+import com.cmcorg20230301.be.engine.security.exception.NoLogException;
+import com.cmcorg20230301.be.engine.security.model.entity.SysRequestDO;
+import com.cmcorg20230301.be.engine.security.model.vo.ApiResultVO;
+import com.cmcorg20230301.be.engine.security.util.*;
+
 import cn.hutool.core.date.BetweenFormatter;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.exceptions.ExceptionUtil;
@@ -9,31 +31,8 @@ import cn.hutool.extra.servlet.ServletUtil;
 import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
 import cn.hutool.jwt.JWT;
-import com.cmcorg20230301.be.engine.ip2region.util.Ip2RegionUtil;
-import com.cmcorg20230301.be.engine.model.model.constant.LogTopicConstant;
-import com.cmcorg20230301.be.engine.model.model.constant.OperationDescriptionConstant;
-import com.cmcorg20230301.be.engine.model.model.vo.SignInVO;
-import com.cmcorg20230301.be.engine.security.exception.BaseException;
-import com.cmcorg20230301.be.engine.security.exception.NoLogException;
-import com.cmcorg20230301.be.engine.security.model.entity.SysRequestDO;
-import com.cmcorg20230301.be.engine.security.model.vo.ApiResultVO;
-import com.cmcorg20230301.be.engine.security.util.MyEntityUtil;
-import com.cmcorg20230301.be.engine.security.util.MyExceptionUtil;
-import com.cmcorg20230301.be.engine.security.util.MyJwtUtil;
-import com.cmcorg20230301.be.engine.security.util.RequestUtil;
-import com.cmcorg20230301.be.engine.security.util.SysUserInfoUtil;
-import com.cmcorg20230301.be.engine.security.util.UserUtil;
 import io.swagger.v3.oas.annotations.Operation;
-import java.lang.reflect.UndeclaredThrowableException;
-import java.util.Date;
-import javax.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
-import org.aspectj.lang.ProceedingJoinPoint;
-import org.aspectj.lang.annotation.Around;
-import org.aspectj.lang.annotation.Aspect;
-import org.aspectj.lang.annotation.Pointcut;
-import org.aspectj.lang.reflect.MethodSignature;
-import org.springframework.stereotype.Component;
 
 @Aspect
 @Component
@@ -44,20 +43,17 @@ public class SysRequestAop {
      * 切入点
      */
     @Pointcut("@annotation(io.swagger.v3.oas.annotations.Operation)")
-    public void pointcut() {
-    }
+    public void pointcut() {}
 
     @Around("pointcut() && @annotation(operation)")
-    public Object around(ProceedingJoinPoint proceedingJoinPoint, Operation operation)
-        throws Throwable {
+    public Object around(ProceedingJoinPoint proceedingJoinPoint, Operation operation) throws Throwable {
 
         HttpServletRequest httpServletRequest = RequestUtil.getRequest();
 
         // 目的：因为 socket也会走这里，但是 socket没有 httpServletRequest对象
         if (httpServletRequest == null) {
 
-            if (((MethodSignature) proceedingJoinPoint.getSignature()).getReturnType()
-                == void.class) {
+            if (((MethodSignature)proceedingJoinPoint.getSignature()).getReturnType() == void.class) {
 
                 proceedingJoinPoint.proceed();
 
@@ -110,8 +106,7 @@ public class SysRequestAop {
         sysRequestDO.setRegion(Ip2RegionUtil.getRegion(sysRequestDO.getIp()));
 
         // 更新：用户信息
-        SysUserInfoUtil.add(currentUserIdDefault, date, sysRequestDO.getIp(),
-            sysRequestDO.getRegion());
+        SysUserInfoUtil.add(currentUserIdDefault, date, sysRequestDO.getIp(), sysRequestDO.getRegion());
 
         sysRequestDO.setSuccessFlag(true);
         sysRequestDO.setErrorMsg("");
@@ -132,8 +127,7 @@ public class SysRequestAop {
 
         try {
 
-            if (((MethodSignature) proceedingJoinPoint.getSignature()).getReturnType()
-                == void.class) {
+            if (((MethodSignature)proceedingJoinPoint.getSignature()).getReturnType() == void.class) {
 
                 proceedingJoinPoint.proceed(); // 执行方法，备注：如果执行方法时抛出了异常，catch可以捕获到
 
@@ -141,8 +135,7 @@ public class SysRequestAop {
 
                 object = proceedingJoinPoint.proceed(); // 执行方法，备注：如果执行方法时抛出了异常，catch可以捕获到
 
-                sysRequestDO.setResponseValue(
-                    MyEntityUtil.getNotNullStr(JSONUtil.toJsonStr(object)));
+                sysRequestDO.setResponseValue(MyEntityUtil.getNotNullStr(JSONUtil.toJsonStr(object)));
 
             }
 
@@ -158,7 +151,7 @@ public class SysRequestAop {
 
             if (e instanceof UndeclaredThrowableException) {
 
-                e = ((UndeclaredThrowableException) e).getUndeclaredThrowable();
+                e = ((UndeclaredThrowableException)e).getUndeclaredThrowable();
 
             }
 
@@ -190,8 +183,7 @@ public class SysRequestAop {
     private void handleCostMs(long costMs, SysRequestDO sysRequestDO) {
 
         costMs = System.currentTimeMillis() - costMs; // 耗时（毫秒）
-        String costMsStr = DateUtil.formatBetween(costMs,
-            BetweenFormatter.Level.MILLISECOND); // 耗时（字符串）
+        String costMsStr = DateUtil.formatBetween(costMs, BetweenFormatter.Level.MILLISECOND); // 耗时（字符串）
 
         sysRequestDO.setCostMsStr(costMsStr);
         sysRequestDO.setCostMs(costMs);
@@ -222,13 +214,12 @@ public class SysRequestAop {
      */
     private void handleSignIn(SysRequestDO sysRequestDO, Object object) {
 
-        if (BooleanUtil.isFalse(
-            OperationDescriptionConstant.SIGN_IN.equals(sysRequestDO.getType()))) {
+        if (BooleanUtil.isFalse(OperationDescriptionConstant.SIGN_IN.equals(sysRequestDO.getType()))) {
             return;
         }
 
         // 登录时需要额外处理来获取 用户id
-        ApiResultVO<SignInVO> apiResultVO = (ApiResultVO) object;
+        ApiResultVO<SignInVO> apiResultVO = (ApiResultVO)object;
 
         if (apiResultVO.getData() == null || StrUtil.isBlank(apiResultVO.getData().getJwt())) {
             return;

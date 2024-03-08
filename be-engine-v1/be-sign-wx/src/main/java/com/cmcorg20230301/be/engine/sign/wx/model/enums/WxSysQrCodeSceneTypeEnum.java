@@ -1,6 +1,10 @@
 package com.cmcorg20230301.be.engine.sign.wx.model.enums;
 
-import cn.hutool.core.util.BooleanUtil;
+import java.time.Duration;
+
+import org.redisson.api.RBucket;
+import org.redisson.api.RedissonClient;
+
 import com.baomidou.mybatisplus.annotation.EnumValue;
 import com.baomidou.mybatisplus.extension.toolkit.ChainWrappers;
 import com.cmcorg20230301.be.engine.model.model.constant.BaseConstant;
@@ -16,12 +20,10 @@ import com.cmcorg20230301.be.engine.security.util.UserUtil;
 import com.cmcorg20230301.be.engine.sign.helper.util.SignUtil;
 import com.cmcorg20230301.be.engine.util.util.VoidFunc3;
 import com.fasterxml.jackson.annotation.JsonValue;
+
+import cn.hutool.core.util.BooleanUtil;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import org.redisson.api.RBucket;
-import org.redisson.api.RedissonClient;
-
-import java.time.Duration;
 
 /**
  * 微信二维码，scene的类型
@@ -34,8 +36,8 @@ public enum WxSysQrCodeSceneTypeEnum implements ISysQrCodeSceneType {
     WX_SIGN_IN("WX_SIGN_IN", BaseConstant.MINUTE_3_EXPIRE_TIME / 1000,
         (qrCodeSceneValue, redissonClient, sysUserDO) -> {
 
-            RBucket<SignInVO> bucket = redissonClient.getBucket(
-                BaseRedisKeyEnum.PRE_SYS_WX_QR_CODE_SIGN.name() + qrCodeSceneValue);
+            RBucket<SignInVO> bucket =
+                redissonClient.getBucket(BaseRedisKeyEnum.PRE_SYS_WX_QR_CODE_SIGN.name() + qrCodeSceneValue);
 
             SignInVO signInVO = SignUtil.signInGetJwt(sysUserDO);
 
@@ -47,8 +49,8 @@ public enum WxSysQrCodeSceneTypeEnum implements ISysQrCodeSceneType {
     WX_SET_PASSWORD("WX_SET_PASSWORD", BaseConstant.MINUTE_3_EXPIRE_TIME / 1000,
         (qrCodeSceneValue, redissonClient, sysUserDO) -> {
 
-            RBucket<Long> bucket = redissonClient.getBucket(
-                BaseRedisKeyEnum.PRE_SYS_WX_QR_CODE_SET_PASSWORD.name() + qrCodeSceneValue);
+            RBucket<Long> bucket =
+                redissonClient.getBucket(BaseRedisKeyEnum.PRE_SYS_WX_QR_CODE_SET_PASSWORD.name() + qrCodeSceneValue);
 
             bucket.set(sysUserDO.getId(), Duration.ofMillis(BaseConstant.MINUTE_3_EXPIRE_TIME));
 
@@ -58,8 +60,8 @@ public enum WxSysQrCodeSceneTypeEnum implements ISysQrCodeSceneType {
     WX_UPDATE_PASSWORD("WX_UPDATE_PASSWORD", BaseConstant.MINUTE_3_EXPIRE_TIME / 1000,
         (qrCodeSceneValue, redissonClient, sysUserDO) -> {
 
-            RBucket<Long> bucket = redissonClient.getBucket(
-                BaseRedisKeyEnum.PRE_SYS_WX_QR_CODE_UPDATE_PASSWORD.name() + qrCodeSceneValue);
+            RBucket<Long> bucket =
+                redissonClient.getBucket(BaseRedisKeyEnum.PRE_SYS_WX_QR_CODE_UPDATE_PASSWORD.name() + qrCodeSceneValue);
 
             bucket.set(sysUserDO.getId(), Duration.ofMillis(BaseConstant.MINUTE_3_EXPIRE_TIME));
 
@@ -69,8 +71,8 @@ public enum WxSysQrCodeSceneTypeEnum implements ISysQrCodeSceneType {
     WX_SET_SIGN_IN_NAME("WX_SET_SIGN_IN_NAME", BaseConstant.MINUTE_3_EXPIRE_TIME / 1000,
         (qrCodeSceneValue, redissonClient, sysUserDO) -> {
 
-            RBucket<Long> bucket = redissonClient.getBucket(
-                BaseRedisKeyEnum.PRE_SYS_WX_QR_CODE_SET_SIGN_IN_NAME.name() + qrCodeSceneValue);
+            RBucket<Long> bucket = redissonClient
+                .getBucket(BaseRedisKeyEnum.PRE_SYS_WX_QR_CODE_SET_SIGN_IN_NAME.name() + qrCodeSceneValue);
 
             bucket.set(sysUserDO.getId(), Duration.ofMillis(BaseConstant.MINUTE_3_EXPIRE_TIME));
 
@@ -80,8 +82,8 @@ public enum WxSysQrCodeSceneTypeEnum implements ISysQrCodeSceneType {
     WX_UPDATE_SIGN_IN_NAME("WX_UPDATE_SIGN_IN_NAME", BaseConstant.MINUTE_3_EXPIRE_TIME / 1000,
         (qrCodeSceneValue, redissonClient, sysUserDO) -> {
 
-            RBucket<Long> bucket = redissonClient.getBucket(
-                BaseRedisKeyEnum.PRE_SYS_WX_QR_CODE_UPDATE_SIGN_IN_NAME.name() + qrCodeSceneValue);
+            RBucket<Long> bucket = redissonClient
+                .getBucket(BaseRedisKeyEnum.PRE_SYS_WX_QR_CODE_UPDATE_SIGN_IN_NAME.name() + qrCodeSceneValue);
 
             bucket.set(sysUserDO.getId(), Duration.ofMillis(BaseConstant.MINUTE_3_EXPIRE_TIME));
 
@@ -91,8 +93,8 @@ public enum WxSysQrCodeSceneTypeEnum implements ISysQrCodeSceneType {
     WX_SET_EMAIL("WX_SET_EMAIL", BaseConstant.MINUTE_3_EXPIRE_TIME / 1000,
         (qrCodeSceneValue, redissonClient, sysUserDO) -> {
 
-            RBucket<Long> bucket = redissonClient.getBucket(
-                BaseRedisKeyEnum.PRE_SYS_WX_QR_CODE_SET_EMAIL.name() + qrCodeSceneValue);
+            RBucket<Long> bucket =
+                redissonClient.getBucket(BaseRedisKeyEnum.PRE_SYS_WX_QR_CODE_SET_EMAIL.name() + qrCodeSceneValue);
 
             bucket.set(sysUserDO.getId(), Duration.ofMillis(BaseConstant.MINUTE_3_EXPIRE_TIME));
 
@@ -102,8 +104,8 @@ public enum WxSysQrCodeSceneTypeEnum implements ISysQrCodeSceneType {
     WX_UPDATE_EMAIL("WX_UPDATE_EMAIL", BaseConstant.MINUTE_3_EXPIRE_TIME / 1000,
         (qrCodeSceneValue, redissonClient, sysUserDO) -> {
 
-            RBucket<Long> bucket = redissonClient.getBucket(
-                BaseRedisKeyEnum.PRE_SYS_WX_QR_CODE_UPDATE_EMAIL.name() + qrCodeSceneValue);
+            RBucket<Long> bucket =
+                redissonClient.getBucket(BaseRedisKeyEnum.PRE_SYS_WX_QR_CODE_UPDATE_EMAIL.name() + qrCodeSceneValue);
 
             bucket.set(sysUserDO.getId(), Duration.ofMillis(BaseConstant.MINUTE_3_EXPIRE_TIME));
 
@@ -113,8 +115,8 @@ public enum WxSysQrCodeSceneTypeEnum implements ISysQrCodeSceneType {
     WX_UPDATE_WX("WX_UPDATE_WX", BaseConstant.MINUTE_3_EXPIRE_TIME / 1000,
         (qrCodeSceneValue, redissonClient, sysUserDO) -> {
 
-            RBucket<Long> bucket = redissonClient.getBucket(
-                BaseRedisKeyEnum.PRE_SYS_WX_QR_CODE_UPDATE_WX.name() + qrCodeSceneValue);
+            RBucket<Long> bucket =
+                redissonClient.getBucket(BaseRedisKeyEnum.PRE_SYS_WX_QR_CODE_UPDATE_WX.name() + qrCodeSceneValue);
 
             bucket.set(sysUserDO.getId(), Duration.ofMillis(BaseConstant.MINUTE_3_EXPIRE_TIME));
 
@@ -124,8 +126,8 @@ public enum WxSysQrCodeSceneTypeEnum implements ISysQrCodeSceneType {
     WX_SET_PHONE("WX_SET_PHONE", BaseConstant.MINUTE_3_EXPIRE_TIME / 1000,
         (qrCodeSceneValue, redissonClient, sysUserDO) -> {
 
-            RBucket<Long> bucket = redissonClient.getBucket(
-                BaseRedisKeyEnum.PRE_SYS_WX_QR_CODE_SET_PHONE.name() + qrCodeSceneValue);
+            RBucket<Long> bucket =
+                redissonClient.getBucket(BaseRedisKeyEnum.PRE_SYS_WX_QR_CODE_SET_PHONE.name() + qrCodeSceneValue);
 
             bucket.set(sysUserDO.getId(), Duration.ofMillis(BaseConstant.MINUTE_3_EXPIRE_TIME));
 
@@ -135,8 +137,8 @@ public enum WxSysQrCodeSceneTypeEnum implements ISysQrCodeSceneType {
     WX_SET_SINGLE_SIGN_IN("WX_SET_SINGLE_SIGN_IN", BaseConstant.MINUTE_3_EXPIRE_TIME / 1000,
         (qrCodeSceneValue, redissonClient, sysUserDO) -> {
 
-            RBucket<Long> bucket = redissonClient.getBucket(
-                BaseRedisKeyEnum.PRE_SYS_WX_QR_CODE_SET_SINGLE_SIGN_IN.name() + qrCodeSceneValue);
+            RBucket<Long> bucket = redissonClient
+                .getBucket(BaseRedisKeyEnum.PRE_SYS_WX_QR_CODE_SET_SINGLE_SIGN_IN.name() + qrCodeSceneValue);
 
             bucket.set(sysUserDO.getId(), Duration.ofMillis(BaseConstant.MINUTE_3_EXPIRE_TIME));
 
@@ -147,11 +149,11 @@ public enum WxSysQrCodeSceneTypeEnum implements ISysQrCodeSceneType {
         (qrCodeSceneValue, redissonClient, sysUserDO) -> {
 
             // 获取：微信统一登录的信息
-            SysUserSingleSignInDO sysUserSingleSignInDO = ChainWrappers.lambdaQueryChain(
-                    UserUtil.sysUserSingleSignInMapper)
-                .eq(SysUserSingleSignInDO::getWxAppId, sysUserDO.getWxAppId())
-                .eq(SysUserSingleSignInDO::getWxOpenId, sysUserDO.getWxOpenId())
-                .select(SysUserSingleSignInDO::getId, SysUserSingleSignInDO::getTenantId).one();
+            SysUserSingleSignInDO sysUserSingleSignInDO =
+                ChainWrappers.lambdaQueryChain(UserUtil.sysUserSingleSignInMapper)
+                    .eq(SysUserSingleSignInDO::getWxAppId, sysUserDO.getWxAppId())
+                    .eq(SysUserSingleSignInDO::getWxOpenId, sysUserDO.getWxOpenId())
+                    .select(SysUserSingleSignInDO::getId, SysUserSingleSignInDO::getTenantId).one();
 
             SignInVO signInVO;
 
@@ -163,15 +165,14 @@ public enum WxSysQrCodeSceneTypeEnum implements ISysQrCodeSceneType {
 
                 SysUserDO sysUserDoTemp = ChainWrappers.lambdaQueryChain(UserUtil.sysUserMapper)
                     .eq(BaseEntity::getId, sysUserSingleSignInDO.getId())
-                    .eq(BaseEntityNoIdSuper::getTenantId, sysUserSingleSignInDO.getTenantId())
-                    .one();
+                    .eq(BaseEntityNoIdSuper::getTenantId, sysUserSingleSignInDO.getTenantId()).one();
 
                 signInVO = SignUtil.signInGetJwt(sysUserDoTemp);
 
             }
 
-            RBucket<SignInVO> bucket = redissonClient.getBucket(
-                BaseRedisKeyEnum.PRE_SYS_WX_QR_CODE_SIGN_IN_SINGLE.name() + qrCodeSceneValue);
+            RBucket<SignInVO> bucket =
+                redissonClient.getBucket(BaseRedisKeyEnum.PRE_SYS_WX_QR_CODE_SIGN_IN_SINGLE.name() + qrCodeSceneValue);
 
             bucket.set(signInVO, Duration.ofMillis(BaseConstant.MINUTE_3_EXPIRE_TIME));
 
@@ -181,8 +182,8 @@ public enum WxSysQrCodeSceneTypeEnum implements ISysQrCodeSceneType {
     WX_SIGN_DELETE("WX_SIGN_DELETE", BaseConstant.MINUTE_3_EXPIRE_TIME / 1000,
         (qrCodeSceneValue, redissonClient, sysUserDO) -> {
 
-            RBucket<Long> bucket = redissonClient.getBucket(
-                BaseRedisKeyEnum.PRE_SYS_WX_QR_CODE_WX_SIGN_DELETE.name() + qrCodeSceneValue);
+            RBucket<Long> bucket =
+                redissonClient.getBucket(BaseRedisKeyEnum.PRE_SYS_WX_QR_CODE_WX_SIGN_DELETE.name() + qrCodeSceneValue);
 
             bucket.set(sysUserDO.getId(), Duration.ofMillis(BaseConstant.MINUTE_3_EXPIRE_TIME));
 

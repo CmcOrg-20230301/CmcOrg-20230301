@@ -1,9 +1,5 @@
 package com.cmcorg20230301.be.engine.generate.util.apitest.sign;
 
-import cn.hutool.crypto.digest.DigestUtil;
-import cn.hutool.http.HttpRequest;
-import cn.hutool.json.JSONUtil;
-import cn.hutool.setting.Setting;
 import com.cmcorg20230301.be.engine.generate.util.apitest.ApiTestHelper;
 import com.cmcorg20230301.be.engine.generate.util.apitest.sys.ApiTestSysMenuUtil;
 import com.cmcorg20230301.be.engine.model.model.vo.SignInVO;
@@ -12,11 +8,12 @@ import com.cmcorg20230301.be.engine.sign.email.model.dto.EmailNotBlankDTO;
 import com.cmcorg20230301.be.engine.sign.email.model.dto.SignEmailBindAccountDTO;
 import com.cmcorg20230301.be.engine.sign.phone.model.dto.PhoneNotBlankDTO;
 import com.cmcorg20230301.be.engine.sign.phone.model.dto.SignPhoneSetPhoneDTO;
-import com.cmcorg20230301.be.engine.sign.signinname.model.dto.SignSignInNameSignDeleteDTO;
-import com.cmcorg20230301.be.engine.sign.signinname.model.dto.SignSignInNameSignInPasswordDTO;
-import com.cmcorg20230301.be.engine.sign.signinname.model.dto.SignSignInNameSignUpDTO;
-import com.cmcorg20230301.be.engine.sign.signinname.model.dto.SignSignInNameUpdatePasswordDTO;
-import com.cmcorg20230301.be.engine.sign.signinname.model.dto.SignSignInNameUpdateSignInNameDTO;
+import com.cmcorg20230301.be.engine.sign.signinname.model.dto.*;
+
+import cn.hutool.crypto.digest.DigestUtil;
+import cn.hutool.http.HttpRequest;
+import cn.hutool.json.JSONUtil;
+import cn.hutool.setting.Setting;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -26,7 +23,7 @@ import lombok.extern.slf4j.Slf4j;
 public class ApiTestSignSignInNameUtil {
 
     // 执行，接口的地址，备注：最后面不要加斜杠 /
-    //    private static final String API_ENDPOINT = "http://43.154.37.130:10001";
+    // private static final String API_ENDPOINT = "http://43.154.37.130:10001";
     private static final String API_ENDPOINT = "http://127.0.0.1:10001";
 
     // 配置文件
@@ -61,8 +58,7 @@ public class ApiTestSignSignInNameUtil {
     /**
      * 执行
      */
-    private static void exec(String apiEndpoint, String signInName, String passwordTemp,
-        String newSignInName,
+    private static void exec(String apiEndpoint, String signInName, String passwordTemp, String newSignInName,
         String newPasswordTemp, String rsaPublicKey, String email, String phone) {
 
         // 登录名-注册
@@ -72,15 +68,13 @@ public class ApiTestSignSignInNameUtil {
         SignInVO signInVO = signInNameSignIn(apiEndpoint, signInName, passwordTemp, rsaPublicKey);
 
         // 登录名-修改密码
-        signInNameUpdatePassword(apiEndpoint, signInVO.getJwt(), passwordTemp, newPasswordTemp,
-            rsaPublicKey);
+        signInNameUpdatePassword(apiEndpoint, signInVO.getJwt(), passwordTemp, newPasswordTemp, rsaPublicKey);
 
         // 登录名-用户名账号密码登录
         signInVO = signInNameSignIn(apiEndpoint, signInName, newPasswordTemp, rsaPublicKey);
 
         // 登录名-修改账号
-        signInNameUpdateAccount(apiEndpoint, signInVO.getJwt(), newSignInName, newPasswordTemp,
-            rsaPublicKey);
+        signInNameUpdateAccount(apiEndpoint, signInVO.getJwt(), newSignInName, newPasswordTemp, rsaPublicKey);
 
         // 登录名-用户名账号密码登录
         signInVO = signInNameSignIn(apiEndpoint, newSignInName, newPasswordTemp, rsaPublicKey);
@@ -118,8 +112,7 @@ public class ApiTestSignSignInNameUtil {
     /**
      * 绑定手机号
      */
-    private static void phoneBindAccount(String apiEndpoint, String jwt, String phone,
-        String code) {
+    private static void phoneBindAccount(String apiEndpoint, String jwt, String phone, String code) {
 
         long currentTs = System.currentTimeMillis();
 
@@ -127,8 +120,7 @@ public class ApiTestSignSignInNameUtil {
         dto.setCode(code);
         dto.setPhone(phone);
 
-        String bodyStr = HttpRequest.post(apiEndpoint + "/sign/phone/bindAccount")
-            .header("Authorization", jwt)
+        String bodyStr = HttpRequest.post(apiEndpoint + "/sign/phone/bindAccount").header("Authorization", jwt)
             .body(JSONUtil.toJsonStr(dto)).execute().body();
 
         log.info("绑定手机号：耗时：{}，bodyStr：{}", ApiTestHelper.calcCostMs(currentTs), bodyStr);
@@ -145,20 +137,17 @@ public class ApiTestSignSignInNameUtil {
         PhoneNotBlankDTO dto = new PhoneNotBlankDTO();
         dto.setPhone(phone);
 
-        String bodyStr = HttpRequest.post(apiEndpoint + "/sign/phone/bindAccount/sendCode")
-            .header("Authorization", jwt)
+        String bodyStr = HttpRequest.post(apiEndpoint + "/sign/phone/bindAccount/sendCode").header("Authorization", jwt)
             .body(JSONUtil.toJsonStr(dto)).execute().body();
 
-        log.info("绑定手机号-发送验证码：耗时：{}，bodyStr：{}", ApiTestHelper.calcCostMs(currentTs),
-            bodyStr);
+        log.info("绑定手机号-发送验证码：耗时：{}，bodyStr：{}", ApiTestHelper.calcCostMs(currentTs), bodyStr);
 
     }
 
     /**
      * 绑定邮箱
      */
-    private static void emailBindAccount(String apiEndpoint, String jwt, String email,
-        String code) {
+    private static void emailBindAccount(String apiEndpoint, String jwt, String email, String code) {
 
         long currentTs = System.currentTimeMillis();
 
@@ -166,8 +155,7 @@ public class ApiTestSignSignInNameUtil {
         dto.setCode(code);
         dto.setEmail(email);
 
-        String bodyStr = HttpRequest.post(apiEndpoint + "/sign/email/bindAccount")
-            .header("Authorization", jwt)
+        String bodyStr = HttpRequest.post(apiEndpoint + "/sign/email/bindAccount").header("Authorization", jwt)
             .body(JSONUtil.toJsonStr(dto)).execute().body();
 
         log.info("绑定邮箱：耗时：{}，bodyStr：{}", ApiTestHelper.calcCostMs(currentTs), bodyStr);
@@ -184,20 +172,17 @@ public class ApiTestSignSignInNameUtil {
         EmailNotBlankDTO dto = new EmailNotBlankDTO();
         dto.setEmail(email);
 
-        String bodyStr = HttpRequest.post(apiEndpoint + "/sign/email/bindAccount/sendCode")
-            .header("Authorization", jwt)
+        String bodyStr = HttpRequest.post(apiEndpoint + "/sign/email/bindAccount/sendCode").header("Authorization", jwt)
             .body(JSONUtil.toJsonStr(dto)).execute().body();
 
-        log.info("绑定邮箱-发送验证码：耗时：{}，bodyStr：{}", ApiTestHelper.calcCostMs(currentTs),
-            bodyStr);
+        log.info("绑定邮箱-发送验证码：耗时：{}，bodyStr：{}", ApiTestHelper.calcCostMs(currentTs), bodyStr);
 
     }
 
     /**
      * 登录名-账号注销
      */
-    private static void signInNameSignDelete(String apiEndpoint, String currentPasswordTemp,
-        String jwt,
+    private static void signInNameSignDelete(String apiEndpoint, String currentPasswordTemp, String jwt,
         String rsaPublicKey) {
 
         long currentTs = System.currentTimeMillis();
@@ -209,20 +194,17 @@ public class ApiTestSignSignInNameUtil {
         SignSignInNameSignDeleteDTO dto = new SignSignInNameSignDeleteDTO();
         dto.setCurrentPassword(currentPassword);
 
-        String bodyStr = HttpRequest.post(apiEndpoint + "/sign/signInName/signDelete")
-            .body(JSONUtil.toJsonStr(dto))
+        String bodyStr = HttpRequest.post(apiEndpoint + "/sign/signInName/signDelete").body(JSONUtil.toJsonStr(dto))
             .header("Authorization", jwt).execute().body();
 
-        log.info("登录名-账号注销：耗时：{}，bodyStr：{}", ApiTestHelper.calcCostMs(currentTs),
-            bodyStr);
+        log.info("登录名-账号注销：耗时：{}，bodyStr：{}", ApiTestHelper.calcCostMs(currentTs), bodyStr);
 
     }
 
     /**
      * 登录名-修改账号
      */
-    private static void signInNameUpdateAccount(String apiEndpoint, String jwt,
-        String newSignInName,
+    private static void signInNameUpdateAccount(String apiEndpoint, String jwt, String newSignInName,
         String currentPasswordTemp, String rsaPublicKey) {
 
         long currentTs = System.currentTimeMillis();
@@ -235,20 +217,17 @@ public class ApiTestSignSignInNameUtil {
         dto.setNewSignInName(newSignInName);
         dto.setCurrentPassword(currentPassword);
 
-        String bodyStr = HttpRequest.post(apiEndpoint + "/sign/signInName/updateAccount")
-            .body(JSONUtil.toJsonStr(dto))
+        String bodyStr = HttpRequest.post(apiEndpoint + "/sign/signInName/updateAccount").body(JSONUtil.toJsonStr(dto))
             .header("Authorization", jwt).execute().body();
 
-        log.info("登录名-修改账号：耗时：{}，bodyStr：{}", ApiTestHelper.calcCostMs(currentTs),
-            bodyStr);
+        log.info("登录名-修改账号：耗时：{}，bodyStr：{}", ApiTestHelper.calcCostMs(currentTs), bodyStr);
 
     }
 
     /**
      * 登录名-修改密码
      */
-    private static void signInNameUpdatePassword(String apiEndpoint, String jwt,
-        String passwordTemp,
+    private static void signInNameUpdatePassword(String apiEndpoint, String jwt, String passwordTemp,
         String newPasswordTemp, String rsaPublicKey) {
 
         long currentTs = System.currentTimeMillis();
@@ -268,20 +247,17 @@ public class ApiTestSignSignInNameUtil {
         dto.setNewPassword(newPassword);
         dto.setOriginNewPassword(originNewPassword);
 
-        String bodyStr = HttpRequest.post(apiEndpoint + "/sign/signInName/updatePassword")
-            .body(JSONUtil.toJsonStr(dto))
+        String bodyStr = HttpRequest.post(apiEndpoint + "/sign/signInName/updatePassword").body(JSONUtil.toJsonStr(dto))
             .header("Authorization", jwt).execute().body();
 
-        log.info("登录名-修改密码：耗时：{}，bodyStr：{}", ApiTestHelper.calcCostMs(currentTs),
-            bodyStr);
+        log.info("登录名-修改密码：耗时：{}，bodyStr：{}", ApiTestHelper.calcCostMs(currentTs), bodyStr);
 
     }
 
     /**
      * 登录名-用户名账号密码登录
      */
-    public static SignInVO signInNameSignIn(String apiEndpoint, String signInName,
-        String passwordTemp,
+    public static SignInVO signInNameSignIn(String apiEndpoint, String signInName, String passwordTemp,
         String rsaPublicKey) {
 
         long currentTs = System.currentTimeMillis();
@@ -294,13 +270,10 @@ public class ApiTestSignSignInNameUtil {
         dto.setPassword(password);
         dto.setSignInName(signInName);
 
-        String bodyStr =
-            HttpRequest.post(apiEndpoint + "/sign/signInName/sign/in/password")
-                .body(JSONUtil.toJsonStr(dto)).execute()
-                .body();
+        String bodyStr = HttpRequest.post(apiEndpoint + "/sign/signInName/sign/in/password")
+            .body(JSONUtil.toJsonStr(dto)).execute().body();
 
-        log.info("登录名-用户名账号密码登录：耗时：{}，bodyStr：{}",
-            ApiTestHelper.calcCostMs(currentTs), bodyStr);
+        log.info("登录名-用户名账号密码登录：耗时：{}，bodyStr：{}", ApiTestHelper.calcCostMs(currentTs), bodyStr);
 
         return JSONUtil.parseObj(bodyStr).get("data", SignInVO.class);
 
@@ -326,8 +299,7 @@ public class ApiTestSignSignInNameUtil {
         dto.setSignInName(signInName);
 
         String bodyStr =
-            HttpRequest.post(apiEndpoint + "/sign/signInName/sign/up").body(JSONUtil.toJsonStr(dto))
-                .execute().body();
+            HttpRequest.post(apiEndpoint + "/sign/signInName/sign/up").body(JSONUtil.toJsonStr(dto)).execute().body();
 
         log.info("登录名-注册：耗时：{}，bodyStr：{}", ApiTestHelper.calcCostMs(currentTs), bodyStr);
 

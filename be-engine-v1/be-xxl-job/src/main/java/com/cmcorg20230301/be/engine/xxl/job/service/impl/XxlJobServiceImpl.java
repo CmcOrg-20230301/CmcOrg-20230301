@@ -1,13 +1,12 @@
 package com.cmcorg20230301.be.engine.xxl.job.service.impl;
 
-import cn.hutool.core.collection.CollUtil;
-import cn.hutool.core.util.BooleanUtil;
-import cn.hutool.core.util.StrUtil;
-import cn.hutool.http.HttpRequest;
-import cn.hutool.http.HttpResponse;
-import cn.hutool.json.JSONArray;
-import cn.hutool.json.JSONObject;
-import cn.hutool.json.JSONUtil;
+import java.net.HttpCookie;
+import java.util.Date;
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
+
 import com.cmcorg20230301.be.engine.cache.util.CacheRedisKafkaLocalUtil;
 import com.cmcorg20230301.be.engine.cache.util.MyCacheUtil;
 import com.cmcorg20230301.be.engine.model.model.constant.BaseConstant;
@@ -17,12 +16,15 @@ import com.cmcorg20230301.be.engine.security.model.vo.ApiResultVO;
 import com.cmcorg20230301.be.engine.util.util.MyDateUtil;
 import com.cmcorg20230301.be.engine.xxl.job.model.dto.XxlJobInsertDTO;
 import com.cmcorg20230301.be.engine.xxl.job.service.XxlJobService;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
 
-import java.net.HttpCookie;
-import java.util.Date;
-import java.util.List;
+import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.util.BooleanUtil;
+import cn.hutool.core.util.StrUtil;
+import cn.hutool.http.HttpRequest;
+import cn.hutool.http.HttpResponse;
+import cn.hutool.json.JSONArray;
+import cn.hutool.json.JSONObject;
+import cn.hutool.json.JSONUtil;
 
 @Service
 public class XxlJobServiceImpl implements XxlJobService {
@@ -48,8 +50,7 @@ public class XxlJobServiceImpl implements XxlJobService {
 
         if (dto.getProSendTime() != null) {
             // 增加 10秒，目的：防止时间过短，然后错过了
-            Date date = new Date(
-                dto.getProSendTime().getTime() + BaseConstant.SECOND_10_EXPIRE_TIME);
+            Date date = new Date(dto.getProSendTime().getTime() + BaseConstant.SECOND_10_EXPIRE_TIME);
             dto.setScheduleConf(MyDateUtil.getCron(date)); // 根据时间生成 Cron 表达式
         }
 
@@ -82,8 +83,7 @@ public class XxlJobServiceImpl implements XxlJobService {
         try {
 
             // 新增任务
-            HttpResponse response = HttpRequest.post(adminAddresses + "/jobinfo/add").form(formJson)
-                .cookie(cookie)
+            HttpResponse response = HttpRequest.post(adminAddresses + "/jobinfo/add").form(formJson).cookie(cookie)
                 .timeout(BaseConstant.MINUTE_1_EXPIRE_TIME).execute();
 
             JSONObject bodyJson = JSONUtil.parseObj(response.body());
@@ -99,8 +99,7 @@ public class XxlJobServiceImpl implements XxlJobService {
 
             // 启动任务，备注：因为新增的时候，不支持启动，所以只有再调用启动接口
             formJson = JSONUtil.createObj().set("id", id);
-            response = HttpRequest.post(adminAddresses + "/jobinfo/start").form(formJson)
-                .cookie(cookie)
+            response = HttpRequest.post(adminAddresses + "/jobinfo/start").form(formJson).cookie(cookie)
                 .timeout(BaseConstant.MINUTE_1_EXPIRE_TIME).execute();
 
             bodyJson = JSONUtil.parseObj(response.body());
@@ -135,10 +134,8 @@ public class XxlJobServiceImpl implements XxlJobService {
             JSONObject formJson = JSONUtil.createObj().set("start", 0).set("length", 1);
 
             // 获取执行器
-            HttpResponse response =
-                HttpRequest.post(adminAddresses + "/jobgroup/pageList").form(formJson)
-                    .cookie(cookie)
-                    .timeout(BaseConstant.MINUTE_1_EXPIRE_TIME).execute();
+            HttpResponse response = HttpRequest.post(adminAddresses + "/jobgroup/pageList").form(formJson)
+                .cookie(cookie).timeout(BaseConstant.MINUTE_1_EXPIRE_TIME).execute();
 
             JSONObject bodyJson = JSONUtil.parseObj(response.body());
 
@@ -150,12 +147,10 @@ public class XxlJobServiceImpl implements XxlJobService {
 
             if (CollUtil.isEmpty(data)) { // 如果执行器列表为空，则进行创建
 
-                formJson = JSONUtil.createObj().set("appname", "xxl-job-executor-main")
-                    .set("title", "主执行器")
+                formJson = JSONUtil.createObj().set("appname", "xxl-job-executor-main").set("title", "主执行器")
                     .set("addressType", 0); // addressType：0 自动注册
 
-                response = HttpRequest.post(adminAddresses + "/jobgroup/save").form(formJson)
-                    .cookie(cookie)
+                response = HttpRequest.post(adminAddresses + "/jobgroup/save").form(formJson).cookie(cookie)
                     .timeout(BaseConstant.MINUTE_1_EXPIRE_TIME).execute();
 
                 bodyJson = JSONUtil.parseObj(response.body());
@@ -169,7 +164,7 @@ public class XxlJobServiceImpl implements XxlJobService {
 
             }
 
-            JSONObject jsonObject = (JSONObject) data.get(0); // 获取第一个【执行器】
+            JSONObject jsonObject = (JSONObject)data.get(0); // 获取第一个【执行器】
 
             dto.setJobGroup(jsonObject.getStr("id")); // 设置 jobGroup
 
@@ -189,35 +184,29 @@ public class XxlJobServiceImpl implements XxlJobService {
      */
     private HttpCookie getCookie() {
 
-        JSONObject jsonObject = MyCacheUtil.getMap(BaseRedisKeyEnum.XXL_JOB_COOKIE_CACHE, null,
-            () -> {
+        JSONObject jsonObject = MyCacheUtil.getMap(BaseRedisKeyEnum.XXL_JOB_COOKIE_CACHE, null, () -> {
 
-                JSONObject formJson =
-                    JSONUtil.createObj().set("userName", userName).set("password", password)
-                        .set("ifRemember", "on");
+            JSONObject formJson =
+                JSONUtil.createObj().set("userName", userName).set("password", password).set("ifRemember", "on");
 
-                HttpResponse response =
-                    HttpRequest.post(adminAddresses + "/login").form(formJson)
-                        .timeout(BaseConstant.MINUTE_1_EXPIRE_TIME)
-                        .execute();
+            HttpResponse response = HttpRequest.post(adminAddresses + "/login").form(formJson)
+                .timeout(BaseConstant.MINUTE_1_EXPIRE_TIME).execute();
 
-                if (BooleanUtil.isFalse(response.isOk())) {
-                    ApiResultVO.errorMsg(
-                        "操作失败：登录 xxl-job失败：" + JSONUtil.parseObj(response.body()));
-                }
+            if (BooleanUtil.isFalse(response.isOk())) {
+                ApiResultVO.errorMsg("操作失败：登录 xxl-job失败：" + JSONUtil.parseObj(response.body()));
+            }
 
-                List<HttpCookie> cookieList = response.getCookies();
+            List<HttpCookie> cookieList = response.getCookies();
 
-                if (CollUtil.isEmpty(cookieList)) {
-                    ApiResultVO.errorMsg("操作失败：登录 xxl-job失败：cookieList 为空");
-                }
+            if (CollUtil.isEmpty(cookieList)) {
+                ApiResultVO.errorMsg("操作失败：登录 xxl-job失败：cookieList 为空");
+            }
 
-                HttpCookie httpCookie = cookieList.get(0);
+            HttpCookie httpCookie = cookieList.get(0);
 
-                return JSONUtil.createObj().set("name", httpCookie.getName())
-                    .set("value", httpCookie.getValue());
+            return JSONUtil.createObj().set("name", httpCookie.getName()).set("value", httpCookie.getValue());
 
-            });
+        });
 
         return new HttpCookie(jsonObject.getStr("name"), jsonObject.getStr("value"));
 
@@ -239,8 +228,7 @@ public class XxlJobServiceImpl implements XxlJobService {
 
             JSONObject formJson = JSONUtil.createObj().set("id", notNullId.getId());
 
-            HttpResponse response = HttpRequest.post(adminAddresses + "/jobinfo/remove")
-                .form(formJson).cookie(cookie)
+            HttpResponse response = HttpRequest.post(adminAddresses + "/jobinfo/remove").form(formJson).cookie(cookie)
                 .timeout(BaseConstant.MINUTE_1_EXPIRE_TIME).execute();
 
             JSONObject bodyJson = JSONUtil.parseObj(response.body());

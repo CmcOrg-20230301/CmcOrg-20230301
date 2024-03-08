@@ -1,14 +1,18 @@
 package com.cmcorg20230301.be.engine.netty.websocket.service.impl;
 
-import cn.hutool.core.collection.CollUtil;
-import cn.hutool.core.text.StrBuilder;
-import cn.hutool.core.util.IdUtil;
-import cn.hutool.core.util.StrUtil;
-import cn.hutool.extra.servlet.ServletUtil;
-import cn.hutool.http.Header;
-import cn.hutool.http.useragent.UserAgent;
-import cn.hutool.http.useragent.UserAgentUtil;
-import cn.hutool.json.JSONUtil;
+import java.time.Duration;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import org.redisson.api.RedissonClient;
+import org.springframework.stereotype.Service;
+
 import com.cmcorg20230301.be.engine.ip2region.util.Ip2RegionUtil;
 import com.cmcorg20230301.be.engine.model.model.constant.BaseConstant;
 import com.cmcorg20230301.be.engine.model.model.dto.NotNullIdAndIntegerValue;
@@ -28,16 +32,16 @@ import com.cmcorg20230301.be.engine.socket.model.enums.SysSocketTypeEnum;
 import com.cmcorg20230301.be.engine.socket.service.SysSocketService;
 import com.cmcorg20230301.be.engine.util.util.CallBack;
 import com.cmcorg20230301.be.engine.util.util.MyMapUtil;
-import java.time.Duration;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-import org.redisson.api.RedissonClient;
-import org.springframework.stereotype.Service;
+
+import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.text.StrBuilder;
+import cn.hutool.core.util.IdUtil;
+import cn.hutool.core.util.StrUtil;
+import cn.hutool.extra.servlet.ServletUtil;
+import cn.hutool.http.Header;
+import cn.hutool.http.useragent.UserAgent;
+import cn.hutool.http.useragent.UserAgentUtil;
+import cn.hutool.json.JSONUtil;
 
 @Service
 public class NettyWebSocketServiceImpl implements NettyWebSocketService {
@@ -81,8 +85,7 @@ public class NettyWebSocketServiceImpl implements NettyWebSocketService {
         // 获取：所有 webSocket
         if (sysSocketDOList == null) {
 
-            sysSocketDOList = sysSocketService.lambdaQuery()
-                .eq(SysSocketDO::getType, SysSocketTypeEnum.WEB_SOCKET)
+            sysSocketDOList = sysSocketService.lambdaQuery().eq(SysSocketDO::getType, SysSocketTypeEnum.WEB_SOCKET)
                 .eq(BaseEntityNoId::getEnableFlag, true).list();
 
         }
@@ -99,8 +102,7 @@ public class NettyWebSocketServiceImpl implements NettyWebSocketService {
 
         String region = Ip2RegionUtil.getRegion(ip);
 
-        SysRequestCategoryEnum sysRequestCategoryEnum = RequestUtil.getRequestCategoryEnum(
-            httpServletRequest);
+        SysRequestCategoryEnum sysRequestCategoryEnum = RequestUtil.getRequestCategoryEnum(httpServletRequest);
 
         String userAgentStr = httpServletRequest.getHeader(Header.USER_AGENT.getValue());
 
@@ -108,16 +110,14 @@ public class NettyWebSocketServiceImpl implements NettyWebSocketService {
 
         String userAgentJsonStr = JSONUtil.toJsonStr(userAgent);
 
-        HashSet<String> resSet = new HashSet<>(
-            MyMapUtil.getInitialCapacity(sysSocketDOList.size()));
+        HashSet<String> resSet = new HashSet<>(MyMapUtil.getInitialCapacity(sysSocketDOList.size()));
 
         Long currentTenantIdDefault = UserUtil.getCurrentTenantIdDefault();
 
         for (SysSocketDO item : sysSocketDOList) {
 
             // 处理：获取：所有 webSocket连接地址
-            doHandleGetAllWebSocketUrl(expireTsCallBack, jwtHash, currentUserNickName,
-                currentUserId, ip, region,
+            doHandleGetAllWebSocketUrl(expireTsCallBack, jwtHash, currentUserNickName, currentUserId, ip, region,
                 sysRequestCategoryEnum, userAgentJsonStr, resSet, item, sysSocketOnlineTypeEnum,
                 currentTenantIdDefault);
 
@@ -133,10 +133,8 @@ public class NettyWebSocketServiceImpl implements NettyWebSocketService {
     @Override
     public String getWebSocketUrlById(NotNullIdAndIntegerValue notNullIdAndIntegerValue) {
 
-        SysSocketDO sysSocketDO = sysSocketService.lambdaQuery()
-            .eq(BaseEntity::getId, notNullIdAndIntegerValue.getId())
-            .eq(SysSocketDO::getType, SysSocketTypeEnum.WEB_SOCKET)
-            .eq(BaseEntityNoId::getEnableFlag, true).one();
+        SysSocketDO sysSocketDO = sysSocketService.lambdaQuery().eq(BaseEntity::getId, notNullIdAndIntegerValue.getId())
+            .eq(SysSocketDO::getType, SysSocketTypeEnum.WEB_SOCKET).eq(BaseEntityNoId::getEnableFlag, true).one();
 
         Integer value = notNullIdAndIntegerValue.getValue();
 
@@ -153,8 +151,7 @@ public class NettyWebSocketServiceImpl implements NettyWebSocketService {
     /**
      * 处理：获取：所有 webSocket连接地址
      */
-    private void doHandleGetAllWebSocketUrl(CallBack<Long> expireTsCallBack, String jwtHash,
-        String currentUserNickName,
+    private void doHandleGetAllWebSocketUrl(CallBack<Long> expireTsCallBack, String jwtHash, String currentUserNickName,
         Long currentUserId, String ip, String region, SysRequestCategoryEnum sysRequestCategoryEnum,
         String userAgentJsonStr, HashSet<String> resSet, SysSocketDO sysSocketDO,
         SysSocketOnlineTypeEnum sysSocketOnlineTypeEnum, Long currentTenantIdDefault) {
@@ -207,15 +204,14 @@ public class NettyWebSocketServiceImpl implements NettyWebSocketService {
         sysSocketRefUserDO.setCreateId(currentUserId);
         sysSocketRefUserDO.setUpdateId(currentUserId);
 
-        sysSocketRefUserDO.setEnableFlag(
-            sysSocketOnlineTypeEnum.equals(SysSocketOnlineTypeEnum.PING_TEST) == false);
+        sysSocketRefUserDO.setEnableFlag(sysSocketOnlineTypeEnum.equals(SysSocketOnlineTypeEnum.PING_TEST) == false);
 
         sysSocketRefUserDO.setDelFlag(false);
         sysSocketRefUserDO.setRemark("");
 
         // 设置到：redis里面，用于连接的时候用
-        redissonClient.<SysSocketRefUserDO>getBucket(key)
-            .set(sysSocketRefUserDO, Duration.ofMillis(BaseConstant.SHORT_CODE_EXPIRE_TIME));
+        redissonClient.<SysSocketRefUserDO>getBucket(key).set(sysSocketRefUserDO,
+            Duration.ofMillis(BaseConstant.SHORT_CODE_EXPIRE_TIME));
 
     }
 

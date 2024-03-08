@@ -1,7 +1,7 @@
 package com.cmcorg20230301.be.engine.socket.service.impl;
 
-import cn.hutool.core.collection.CollUtil;
-import cn.hutool.core.util.StrUtil;
+import org.springframework.stereotype.Service;
+
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.cmcorg20230301.be.engine.kafka.util.KafkaUtil;
@@ -13,11 +13,12 @@ import com.cmcorg20230301.be.engine.socket.mapper.SysSocketMapper;
 import com.cmcorg20230301.be.engine.socket.model.dto.SysSocketPageDTO;
 import com.cmcorg20230301.be.engine.socket.model.entity.SysSocketDO;
 import com.cmcorg20230301.be.engine.socket.service.SysSocketService;
-import org.springframework.stereotype.Service;
+
+import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.util.StrUtil;
 
 @Service
-public class SysSocketServiceImpl extends ServiceImpl<SysSocketMapper, SysSocketDO> implements
-    SysSocketService {
+public class SysSocketServiceImpl extends ServiceImpl<SysSocketMapper, SysSocketDO> implements SysSocketService {
 
     /**
      * 分页排序查询
@@ -25,15 +26,13 @@ public class SysSocketServiceImpl extends ServiceImpl<SysSocketMapper, SysSocket
     @Override
     public Page<SysSocketDO> myPage(SysSocketPageDTO dto) {
 
-        return lambdaQuery().like(StrUtil.isNotBlank(dto.getScheme()), SysSocketDO::getScheme,
-                dto.getScheme())
+        return lambdaQuery().like(StrUtil.isNotBlank(dto.getScheme()), SysSocketDO::getScheme, dto.getScheme())
             .like(StrUtil.isNotBlank(dto.getHost()), SysSocketDO::getHost, dto.getHost())
             .eq(dto.getPort() != null, SysSocketDO::getPort, dto.getPort())
             .eq(dto.getType() != null, SysSocketDO::getType, dto.getType())
             .eq(dto.getEnableFlag() != null, BaseEntity::getEnableFlag, dto.getEnableFlag())
             .eq(dto.getId() != null, BaseEntity::getId, dto.getId())
-            .like(StrUtil.isNotBlank(dto.getRemark()), SysSocketDO::getRemark, dto.getRemark())
-            .page(dto.page(true));
+            .like(StrUtil.isNotBlank(dto.getRemark()), SysSocketDO::getRemark, dto.getRemark()).page(dto.page(true));
 
     }
 
@@ -47,8 +46,7 @@ public class SysSocketServiceImpl extends ServiceImpl<SysSocketMapper, SysSocket
             return BaseBizCodeEnum.OK;
         }
 
-        lambdaUpdate().in(BaseEntity::getId, notEmptyIdSet.getIdSet())
-            .set(BaseEntityNoId::getEnableFlag, false)
+        lambdaUpdate().in(BaseEntity::getId, notEmptyIdSet.getIdSet()).set(BaseEntityNoId::getEnableFlag, false)
             .update();
 
         // 发送消息：socket禁用的 topic
@@ -68,8 +66,7 @@ public class SysSocketServiceImpl extends ServiceImpl<SysSocketMapper, SysSocket
             return BaseBizCodeEnum.OK;
         }
 
-        lambdaUpdate().in(BaseEntity::getId, notEmptyIdSet.getIdSet())
-            .set(BaseEntityNoId::getEnableFlag, true)
+        lambdaUpdate().in(BaseEntity::getId, notEmptyIdSet.getIdSet()).set(BaseEntityNoId::getEnableFlag, true)
             .update();
 
         // 发送消息：socket启用的 topic
@@ -92,7 +89,3 @@ public class SysSocketServiceImpl extends ServiceImpl<SysSocketMapper, SysSocket
     }
 
 }
-
-
-
-

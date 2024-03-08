@@ -11,10 +11,10 @@ spring:
   datasource:
     dynamic:
       primary: master # 默认数据源名称，备注：如果不指定值，则值为：master，并且这里会在代码里面注入 master的数据源：shardingJdbc
-        # datasource:
-        # be-doris-v1: # 备注：不要使用下划线，因为下划线会进行分组
-        # driver-class-name: com.mysql.cj.jdbc.Driver
-        # url: jdbc:mysql://${be.common.doris-host}:9031/be_doris_v1?${be.mysql.connect-param}
+      # datasource:
+      # be-doris-v1: # 备注：不要使用下划线，因为下划线会进行分组
+      # driver-class-name: com.mysql.cj.jdbc.Driver
+      # url: jdbc:mysql://${be.common.doris-host}:9031/be_doris_v1?${be.mysql.connect-param}
       # username: ${be.common.username}
       # password: ${be.common.doris-password}
 

@@ -1,23 +1,26 @@
 package com.cmcorg20230301.be.engine.cache.util;
 
-import cn.hutool.core.collection.CollUtil;
-import cn.hutool.core.lang.func.Func0;
-import cn.hutool.core.lang.func.VoidFunc0;
-import cn.hutool.core.util.StrUtil;
+import java.time.Duration;
+import java.util.Collection;
+import java.util.Map;
+
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import org.redisson.api.RedissonClient;
+import org.springframework.stereotype.Component;
+
 import com.cmcorg20230301.be.engine.kafka.util.KafkaUtil;
 import com.cmcorg20230301.be.engine.model.model.constant.LogTopicConstant;
 import com.cmcorg20230301.be.engine.model.model.dto.NotEmptyKeyValueSet;
 import com.cmcorg20230301.be.engine.model.model.interfaces.IRedisKey;
 import com.cmcorg20230301.be.engine.redisson.util.RedissonUtil;
-import java.time.Duration;
-import java.util.Collection;
-import java.util.Map;
+
+import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.lang.func.Func0;
+import cn.hutool.core.lang.func.VoidFunc0;
+import cn.hutool.core.util.StrUtil;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-import org.redisson.api.RedissonClient;
-import org.springframework.stereotype.Component;
 
 /**
  * redis缓存本地化，通过 kafka实现
@@ -51,8 +54,7 @@ public class CacheRedisKafkaLocalUtil {
      * 统一的执行 update方法：针对往 map里面移除值
      */
     @SneakyThrows
-    private static void removeSecondMap(@NotNull String key, @NotNull String secondKey,
-        @NotNull VoidFunc0 voidFunc0) {
+    private static void removeSecondMap(@NotNull String key, @NotNull String secondKey, @NotNull VoidFunc0 voidFunc0) {
 
         if (StrUtil.isBlank(secondKey)) {
             throw new RuntimeException("操作失败：更新时，secondKey不能为空，请联系管理员");
@@ -64,8 +66,7 @@ public class CacheRedisKafkaLocalUtil {
 
         notEmptyKeyValueSet.setKey(key);
 
-        notEmptyKeyValueSet.setKeyValueSet(
-            CollUtil.newHashSet(new NotEmptyKeyValueSet.KeyValue(secondKey, null)));
+        notEmptyKeyValueSet.setKeyValueSet(CollUtil.newHashSet(new NotEmptyKeyValueSet.KeyValue(secondKey, null)));
 
         // 发送：本地缓存更新的 topic，针对往 map里面移除值
         KafkaUtil.sendLocalCacheRemoveMapTopic(notEmptyKeyValueSet);
@@ -76,8 +77,7 @@ public class CacheRedisKafkaLocalUtil {
      * 统一的执行 update方法：针对往 map里面设置值
      */
     @SneakyThrows
-    private static void updateSecondMap(@NotNull String key, @NotNull String secondKey,
-        @NotNull Func0<?> func0) {
+    private static void updateSecondMap(@NotNull String key, @NotNull String secondKey, @NotNull Func0<?> func0) {
 
         if (StrUtil.isBlank(secondKey)) {
             throw new RuntimeException("操作失败：更新时，secondKey不能为空，请联系管理员");
@@ -90,8 +90,7 @@ public class CacheRedisKafkaLocalUtil {
         notEmptyKeyValueSet.setKey(key);
 
         notEmptyKeyValueSet
-            .setKeyValueSet(
-                CollUtil.newHashSet(new NotEmptyKeyValueSet.KeyValue(secondKey, callObject)));
+            .setKeyValueSet(CollUtil.newHashSet(new NotEmptyKeyValueSet.KeyValue(secondKey, callObject)));
 
         // 发送：本地缓存更新的 topic，针对往 map里面设置值
         KafkaUtil.sendLocalCacheUpdateMapTopic(notEmptyKeyValueSet);
@@ -101,8 +100,7 @@ public class CacheRedisKafkaLocalUtil {
     /**
      * 添加：一般类型的缓存
      */
-    public static <T> void put(@NotNull Enum<? extends IRedisKey> redisKeyEnum,
-        @Nullable T defaultResult,
+    public static <T> void put(@NotNull Enum<? extends IRedisKey> redisKeyEnum, @Nullable T defaultResult,
         @Nullable Func0<T> func0) {
 
         put(redisKeyEnum, null, defaultResult, -1, func0);
@@ -114,8 +112,7 @@ public class CacheRedisKafkaLocalUtil {
      *
      * @param timeToLive 存活时间，单位毫秒：-1 永久
      */
-    public static <T> void put(@NotNull Enum<? extends IRedisKey> redisKeyEnum,
-        @Nullable String sufKey,
+    public static <T> void put(@NotNull Enum<? extends IRedisKey> redisKeyEnum, @Nullable String sufKey,
         @Nullable T defaultResult, long timeToLive, @Nullable Func0<T> func0) {
 
         String key = CacheHelper.getKey(redisKeyEnum, sufKey);
@@ -169,8 +166,7 @@ public class CacheRedisKafkaLocalUtil {
      * 添加：一般类型的缓存到 map里
      */
     @SneakyThrows
-    public static <T> void putSecondMap(@NotNull Enum<? extends IRedisKey> redisKeyEnum,
-        @Nullable String sufKey,
+    public static <T> void putSecondMap(@NotNull Enum<? extends IRedisKey> redisKeyEnum, @Nullable String sufKey,
         @NotNull String secondKey, @Nullable T defaultResult, @Nullable Func0<T> func0) {
 
         String key = CacheHelper.getKey(redisKeyEnum, sufKey);
@@ -183,8 +179,7 @@ public class CacheRedisKafkaLocalUtil {
      * 添加：一般类型的缓存到 map里
      */
     @SneakyThrows
-    public static <T> void putSecondMap(@NotNull String key, @NotNull String secondKey,
-        @Nullable T defaultResult,
+    public static <T> void putSecondMap(@NotNull String key, @NotNull String secondKey, @Nullable T defaultResult,
         @Nullable Func0<T> func0) {
 
         updateSecondMap(key, secondKey, () -> {
@@ -255,8 +250,7 @@ public class CacheRedisKafkaLocalUtil {
      * 添加：collection类型的缓存
      */
     @SneakyThrows
-    public static <T extends Collection<?>> void putCollection(
-        @NotNull Enum<? extends IRedisKey> redisKeyEnum,
+    public static <T extends Collection<?>> void putCollection(@NotNull Enum<? extends IRedisKey> redisKeyEnum,
         @Nullable T defaultResult, @Nullable Func0<T> func0) {
 
         putCollection(redisKeyEnum, null, defaultResult, func0);
@@ -267,8 +261,7 @@ public class CacheRedisKafkaLocalUtil {
      * 添加：collection类型的缓存
      */
     @SneakyThrows
-    public static <T extends Collection<?>> void putCollection(
-        @NotNull Enum<? extends IRedisKey> redisKeyEnum,
+    public static <T extends Collection<?>> void putCollection(@NotNull Enum<? extends IRedisKey> redisKeyEnum,
         @Nullable String sufKey, @Nullable T defaultResult, @Nullable Func0<T> func0) {
 
         String key = CacheHelper.getKey(redisKeyEnum, sufKey);
@@ -300,8 +293,7 @@ public class CacheRedisKafkaLocalUtil {
     /**
      * 移除缓存
      */
-    public static void remove(@NotNull Enum<? extends IRedisKey> redisKeyEnum,
-        @Nullable String sufKey) {
+    public static void remove(@NotNull Enum<? extends IRedisKey> redisKeyEnum, @Nullable String sufKey) {
 
         String key = CacheHelper.getKey(redisKeyEnum, sufKey);
 
@@ -318,8 +310,7 @@ public class CacheRedisKafkaLocalUtil {
     /**
      * 移除缓存，从 map里
      */
-    public static void removeSecondMap(@NotNull Enum<? extends IRedisKey> redisKeyEnum,
-        @Nullable String sufKey,
+    public static void removeSecondMap(@NotNull Enum<? extends IRedisKey> redisKeyEnum, @Nullable String sufKey,
         @NotNull String secondKey) {
 
         String key = CacheHelper.getKey(redisKeyEnum, sufKey);

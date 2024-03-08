@@ -94,8 +94,7 @@ public class MyJwtUtil {
             return null;
         }
 
-        NumberWithFormat numberWithFormat = (NumberWithFormat) claimsJson.get(
-            MyJwtUtil.PAYLOAD_MAP_USER_ID_KEY);
+        NumberWithFormat numberWithFormat = (NumberWithFormat)claimsJson.get(MyJwtUtil.PAYLOAD_MAP_USER_ID_KEY);
 
         if (numberWithFormat == null) {
             return null;
@@ -115,8 +114,7 @@ public class MyJwtUtil {
             return null;
         }
 
-        NumberWithFormat numberWithFormat = (NumberWithFormat) claimsJson.get(
-            MyJwtUtil.PAYLOAD_MAP_TENANT_ID_KEY);
+        NumberWithFormat numberWithFormat = (NumberWithFormat)claimsJson.get(MyJwtUtil.PAYLOAD_MAP_TENANT_ID_KEY);
 
         if (numberWithFormat == null) {
             return null;
@@ -130,16 +128,15 @@ public class MyJwtUtil {
      * 统一生成 jwt
      */
     @Nullable
-    public static SignInVO generateJwt(Long userId, String jwtSecretSuf,
-        Consumer<JSONObject> consumer,
+    public static SignInVO generateJwt(Long userId, String jwtSecretSuf, Consumer<JSONObject> consumer,
         @Nullable Long tenantId) {
 
         if (userId == null) {
             return null;
         }
 
-        if (UserUtil.getCurrentUserAdminFlag(userId) && BooleanUtil
-            .isFalse(MyJwtUtil.securityProperties.getAdminEnable())) {
+        if (UserUtil.getCurrentUserAdminFlag(userId)
+            && BooleanUtil.isFalse(MyJwtUtil.securityProperties.getAdminEnable())) {
 
             return null;
 
@@ -152,16 +149,14 @@ public class MyJwtUtil {
 
         }
 
-        if (BooleanUtil.isFalse(UserUtil.getCurrentUserAdminFlag(userId)) && StrUtil.isBlank(
-            jwtSecretSuf)) {
+        if (BooleanUtil.isFalse(UserUtil.getCurrentUserAdminFlag(userId)) && StrUtil.isBlank(jwtSecretSuf)) {
             return null;
         }
 
         RedissonUtil.batch((batch) -> {
 
             // 移除密码错误次数相关
-            batch.getBucket(BaseRedisKeyEnum.PRE_PASSWORD_ERROR_COUNT.name() + ":" + userId)
-                .deleteAsync();
+            batch.getBucket(BaseRedisKeyEnum.PRE_PASSWORD_ERROR_COUNT.name() + ":" + userId).deleteAsync();
             batch.getMap(BaseRedisKeyEnum.PRE_TOO_MANY_PASSWORD_ERROR.name()).removeAsync(userId);
 
         });
@@ -202,8 +197,7 @@ public class MyJwtUtil {
             .setKey(MyJwtUtil.getJwtSecret(jwtSecretSuf).getBytes()) // 设置密钥
             .sign();
 
-        return new SignInVO(SecurityConstant.JWT_PREFIX + jwt,
-            expireTs.getTime() - (10 * 60 * 1000), tenantId);
+        return new SignInVO(SecurityConstant.JWT_PREFIX + jwt, expireTs.getTime() - (10 * 60 * 1000), tenantId);
 
     }
 
@@ -216,10 +210,8 @@ public class MyJwtUtil {
 
         StrBuilder strBuilder = StrBuilder.create();
 
-        strBuilder.append(BaseRedisKeyEnum.PRE_JWT_HASH.name()).append(":").append(userId)
-            .append(":")
-            .append(sysRequestCategoryEnum.getCode()).append(":")
-            .append(DigestUtil.sha512Hex(jwtStr));
+        strBuilder.append(BaseRedisKeyEnum.PRE_JWT_HASH.name()).append(":").append(userId).append(":")
+            .append(sysRequestCategoryEnum.getCode()).append(":").append(DigestUtil.sha512Hex(jwtStr));
 
         return strBuilder.toString();
 
@@ -231,8 +223,7 @@ public class MyJwtUtil {
     @NotNull
     public static String getJwtSecret(String jwtSecretSuf) {
 
-        return MyJwtUtil.securityProperties.getJwtSecretPre() + MyJwtUtil.JWT_SECRET_SYS
-            + jwtSecretSuf;
+        return MyJwtUtil.securityProperties.getJwtSecretPre() + MyJwtUtil.JWT_SECRET_SYS + jwtSecretSuf;
 
     }
 
@@ -244,8 +235,7 @@ public class MyJwtUtil {
 
         String authorization = request.getHeader(SecurityConstant.AUTHORIZATION);
 
-        if (authorization == null || BooleanUtil.isFalse(
-            authorization.startsWith(SecurityConstant.JWT_PREFIX))) {
+        if (authorization == null || BooleanUtil.isFalse(authorization.startsWith(SecurityConstant.JWT_PREFIX))) {
             return null;
         }
 
@@ -286,8 +276,7 @@ public class MyJwtUtil {
      * 通过 userId获取到权限的 set
      */
     @Nullable
-    public static Set<SimpleGrantedAuthority> getSimpleGrantedAuthorityListByUserId(Long userId,
-        Long tenantId) {
+    public static Set<SimpleGrantedAuthority> getSimpleGrantedAuthorityListByUserId(Long userId, Long tenantId) {
 
         if (userId == null || tenantId == null) {
             ApiResultVO.error(BaseBizCodeEnum.ILLEGAL_REQUEST); // 直接抛出异常
@@ -305,8 +294,7 @@ public class MyJwtUtil {
             return null;
         }
 
-        Set<String> authsSet = sysMenuDoSet.stream().map(SysMenuDO::getAuths)
-            .collect(Collectors.toSet());
+        Set<String> authsSet = sysMenuDoSet.stream().map(SysMenuDO::getAuths).collect(Collectors.toSet());
 
         // 组装权限，并去重
         Set<String> authSet = new HashSet<>();
@@ -337,8 +325,7 @@ public class MyJwtUtil {
      * 获取：请求里面的 jwtHash值
      */
     public static String getJwtHashByRequest(HttpServletRequest httpServletRequest,
-        @Nullable CallBack<Long> jwtHashRemainMsCallBack,
-        @Nullable CallBack<Long> expireTsCallBack) {
+        @Nullable CallBack<Long> jwtHashRemainMsCallBack, @Nullable CallBack<Long> expireTsCallBack) {
 
         // 从请求头里，获取：jwt字符串
         String jwtStr = MyJwtUtil.getJwtStrByRequest(httpServletRequest);
@@ -359,9 +346,8 @@ public class MyJwtUtil {
 
         Long currentUserId = UserUtil.getCurrentUserId();
 
-        String jwtHash = MyJwtUtil
-            .generateRedisJwtHash(jwtStr, currentUserId,
-                RequestUtil.getRequestCategoryEnum(httpServletRequest));
+        String jwtHash = MyJwtUtil.generateRedisJwtHash(jwtStr, currentUserId,
+            RequestUtil.getRequestCategoryEnum(httpServletRequest));
 
         // jwt剩余时间
         long remainMs = expiresDate.getTime() - System.currentTimeMillis();

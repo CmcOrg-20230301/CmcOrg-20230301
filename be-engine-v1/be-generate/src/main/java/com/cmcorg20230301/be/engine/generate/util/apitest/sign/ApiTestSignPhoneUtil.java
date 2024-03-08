@@ -1,20 +1,15 @@
 package com.cmcorg20230301.be.engine.generate.util.apitest.sign;
 
-import cn.hutool.crypto.digest.DigestUtil;
-import cn.hutool.http.HttpRequest;
-import cn.hutool.json.JSONUtil;
-import cn.hutool.setting.Setting;
 import com.cmcorg20230301.be.engine.generate.util.apitest.ApiTestHelper;
 import com.cmcorg20230301.be.engine.model.model.dto.NotBlankCodeDTO;
 import com.cmcorg20230301.be.engine.model.model.vo.SignInVO;
 import com.cmcorg20230301.be.engine.security.util.MyRsaUtil;
-import com.cmcorg20230301.be.engine.sign.phone.model.dto.PhoneNotBlankDTO;
-import com.cmcorg20230301.be.engine.sign.phone.model.dto.SignPhoneForgetPasswordDTO;
-import com.cmcorg20230301.be.engine.sign.phone.model.dto.SignPhoneSignInCodeDTO;
-import com.cmcorg20230301.be.engine.sign.phone.model.dto.SignPhoneSignInPasswordDTO;
-import com.cmcorg20230301.be.engine.sign.phone.model.dto.SignPhoneSignUpDTO;
-import com.cmcorg20230301.be.engine.sign.phone.model.dto.SignPhoneUpdatePasswordDTO;
-import com.cmcorg20230301.be.engine.sign.phone.model.dto.SignPhoneUpdatePhoneDTO;
+import com.cmcorg20230301.be.engine.sign.phone.model.dto.*;
+
+import cn.hutool.crypto.digest.DigestUtil;
+import cn.hutool.http.HttpRequest;
+import cn.hutool.json.JSONUtil;
+import cn.hutool.setting.Setting;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -24,7 +19,7 @@ import lombok.extern.slf4j.Slf4j;
 public class ApiTestSignPhoneUtil {
 
     // 执行，接口的地址，备注：最后面不要加斜杠 /
-    //    private static final String API_ENDPOINT = "http://43.154.37.130:10001";
+    // private static final String API_ENDPOINT = "http://43.154.37.130:10001";
     private static final String API_ENDPOINT = "http://127.0.0.1:10001";
 
     // 配置文件
@@ -48,8 +43,7 @@ public class ApiTestSignPhoneUtil {
     public static void main(String[] args) {
 
         // 执行
-        exec(API_ENDPOINT, PHONE, PASSWORD_TEMP, NEW_PHONE, NEW_PASSWORD_TEMP,
-            ApiTestHelper.RSA_PUBLIC_KEY,
+        exec(API_ENDPOINT, PHONE, PASSWORD_TEMP, NEW_PHONE, NEW_PASSWORD_TEMP, ApiTestHelper.RSA_PUBLIC_KEY,
             NEW_PASSWORD_2_TEMP);
 
     }
@@ -103,8 +97,8 @@ public class ApiTestSignPhoneUtil {
         // 手机号-忘记密码
         phoneForgetPassword(apiEndpoint, newPhone, code, newPassword2Temp, rsaPublicKey);
 
-        //        // 手机号-账号密码登录
-        //        signInVO = phoneSignInPassword(apiEndpoint, newPhone, newPassword2Temp, rsaPublicKey);
+        // // 手机号-账号密码登录
+        // signInVO = phoneSignInPassword(apiEndpoint, newPhone, newPassword2Temp, rsaPublicKey);
 
         // 手机号-手机验证码登录-发送验证码
         phoneSignInSendCode(apiEndpoint, newPhone);
@@ -136,11 +130,9 @@ public class ApiTestSignPhoneUtil {
         dto.setPhone(newPhone);
 
         String bodyStr =
-            HttpRequest.post(apiEndpoint + "/sign/phone/sign/in/code").body(JSONUtil.toJsonStr(dto))
-                .execute().body();
+            HttpRequest.post(apiEndpoint + "/sign/phone/sign/in/code").body(JSONUtil.toJsonStr(dto)).execute().body();
 
-        log.info("手机号-手机验证码登录：耗时：{}，bodyStr：{}", ApiTestHelper.calcCostMs(currentTs),
-            bodyStr);
+        log.info("手机号-手机验证码登录：耗时：{}，bodyStr：{}", ApiTestHelper.calcCostMs(currentTs), bodyStr);
 
         return JSONUtil.parseObj(bodyStr).get("data", SignInVO.class);
 
@@ -156,13 +148,10 @@ public class ApiTestSignPhoneUtil {
         PhoneNotBlankDTO dto = new PhoneNotBlankDTO();
         dto.setPhone(newPhone);
 
-        String bodyStr =
-            HttpRequest.post(apiEndpoint + "/sign/phone/sign/in/sendCode")
-                .body(JSONUtil.toJsonStr(dto)).execute()
-                .body();
+        String bodyStr = HttpRequest.post(apiEndpoint + "/sign/phone/sign/in/sendCode").body(JSONUtil.toJsonStr(dto))
+            .execute().body();
 
-        log.info("手机号-手机验证码登录-发送验证码：耗时：{}，bodyStr：{}",
-            ApiTestHelper.calcCostMs(currentTs), bodyStr);
+        log.info("手机号-手机验证码登录-发送验证码：耗时：{}，bodyStr：{}", ApiTestHelper.calcCostMs(currentTs), bodyStr);
 
     }
 
@@ -176,12 +165,10 @@ public class ApiTestSignPhoneUtil {
         NotBlankCodeDTO dto = new NotBlankCodeDTO();
         dto.setCode(code);
 
-        String bodyStr = HttpRequest.post(apiEndpoint + "/sign/phone/signDelete")
-            .header("Authorization", jwt)
+        String bodyStr = HttpRequest.post(apiEndpoint + "/sign/phone/signDelete").header("Authorization", jwt)
             .body(JSONUtil.toJsonStr(dto)).execute().body();
 
-        log.info("手机号-账号注销：耗时：{}，bodyStr：{}", ApiTestHelper.calcCostMs(currentTs),
-            bodyStr);
+        log.info("手机号-账号注销：耗时：{}，bodyStr：{}", ApiTestHelper.calcCostMs(currentTs), bodyStr);
 
     }
 
@@ -192,21 +179,17 @@ public class ApiTestSignPhoneUtil {
 
         long currentTs = System.currentTimeMillis();
 
-        String bodyStr =
-            HttpRequest.post(apiEndpoint + "/sign/phone/signDelete/sendCode")
-                .header("Authorization", jwt).execute()
-                .body();
+        String bodyStr = HttpRequest.post(apiEndpoint + "/sign/phone/signDelete/sendCode").header("Authorization", jwt)
+            .execute().body();
 
-        log.info("手机号-账号注销-发送验证码：耗时：{}，bodyStr：{}",
-            ApiTestHelper.calcCostMs(currentTs), bodyStr);
+        log.info("手机号-账号注销-发送验证码：耗时：{}，bodyStr：{}", ApiTestHelper.calcCostMs(currentTs), bodyStr);
 
     }
 
     /**
      * 手机号-忘记密码
      */
-    private static void phoneForgetPassword(String apiEndpoint, String newPhone, String code,
-        String newPassword2Temp,
+    private static void phoneForgetPassword(String apiEndpoint, String newPhone, String code, String newPassword2Temp,
         String rsaPublicKey) {
 
         long currentTs = System.currentTimeMillis();
@@ -224,11 +207,9 @@ public class ApiTestSignPhoneUtil {
         dto.setPhone(newPhone);
 
         String bodyStr =
-            HttpRequest.post(apiEndpoint + "/sign/phone/forgetPassword")
-                .body(JSONUtil.toJsonStr(dto)).execute().body();
+            HttpRequest.post(apiEndpoint + "/sign/phone/forgetPassword").body(JSONUtil.toJsonStr(dto)).execute().body();
 
-        log.info("手机号-忘记密码：耗时：{}，bodyStr：{}", ApiTestHelper.calcCostMs(currentTs),
-            bodyStr);
+        log.info("手机号-忘记密码：耗时：{}，bodyStr：{}", ApiTestHelper.calcCostMs(currentTs), bodyStr);
 
     }
 
@@ -242,21 +223,17 @@ public class ApiTestSignPhoneUtil {
         PhoneNotBlankDTO dto = new PhoneNotBlankDTO();
         dto.setPhone(newPhone);
 
-        String bodyStr =
-            HttpRequest.post(apiEndpoint + "/sign/phone/forgetPassword/sendCode")
-                .body(JSONUtil.toJsonStr(dto))
-                .execute().body();
+        String bodyStr = HttpRequest.post(apiEndpoint + "/sign/phone/forgetPassword/sendCode")
+            .body(JSONUtil.toJsonStr(dto)).execute().body();
 
-        log.info("手机号-忘记密码-发送验证码：耗时：{}，bodyStr：{}",
-            ApiTestHelper.calcCostMs(currentTs), bodyStr);
+        log.info("手机号-忘记密码-发送验证码：耗时：{}，bodyStr：{}", ApiTestHelper.calcCostMs(currentTs), bodyStr);
 
     }
 
     /**
      * 手机号-修改手机
      */
-    private static void phoneUpdateAccount(String apiEndpoint, String jwt, String newPhone,
-        String code,
+    private static void phoneUpdateAccount(String apiEndpoint, String jwt, String newPhone, String code,
         String newCode) {
 
         long currentTs = System.currentTimeMillis();
@@ -266,12 +243,10 @@ public class ApiTestSignPhoneUtil {
         dto.setOldPhoneCode(code);
         dto.setNewPhoneCode(newCode);
 
-        String bodyStr = HttpRequest.post(apiEndpoint + "/sign/phone/updateAccount")
-            .body(JSONUtil.toJsonStr(dto))
+        String bodyStr = HttpRequest.post(apiEndpoint + "/sign/phone/updateAccount").body(JSONUtil.toJsonStr(dto))
             .header("Authorization", jwt).execute().body();
 
-        log.info("手机号-修改手机：耗时：{}，bodyStr：{}", ApiTestHelper.calcCostMs(currentTs),
-            bodyStr);
+        log.info("手机号-修改手机：耗时：{}，bodyStr：{}", ApiTestHelper.calcCostMs(currentTs), bodyStr);
 
     }
 
@@ -282,21 +257,17 @@ public class ApiTestSignPhoneUtil {
 
         long currentTs = System.currentTimeMillis();
 
-        String bodyStr =
-            HttpRequest.post(apiEndpoint + "/sign/phone/updateAccount/sendCode")
-                .header("Authorization", jwt).execute()
-                .body();
+        String bodyStr = HttpRequest.post(apiEndpoint + "/sign/phone/updateAccount/sendCode")
+            .header("Authorization", jwt).execute().body();
 
-        log.info("手机号-修改手机-发送验证码：耗时：{}，bodyStr：{}",
-            ApiTestHelper.calcCostMs(currentTs), bodyStr);
+        log.info("手机号-修改手机-发送验证码：耗时：{}，bodyStr：{}", ApiTestHelper.calcCostMs(currentTs), bodyStr);
 
     }
 
     /**
      * 手机号-修改密码
      */
-    private static void phoneUpdatePassword(String apiEndpoint, String jwt, String code,
-        String newPasswordTemp,
+    private static void phoneUpdatePassword(String apiEndpoint, String jwt, String code, String newPasswordTemp,
         String rsaPublicKey) {
 
         long currentTs = System.currentTimeMillis();
@@ -312,12 +283,10 @@ public class ApiTestSignPhoneUtil {
         dto.setNewPassword(newPassword);
         dto.setOriginNewPassword(originNewPassword);
 
-        String bodyStr = HttpRequest.post(apiEndpoint + "/sign/phone/updatePassword")
-            .body(JSONUtil.toJsonStr(dto))
+        String bodyStr = HttpRequest.post(apiEndpoint + "/sign/phone/updatePassword").body(JSONUtil.toJsonStr(dto))
             .header("Authorization", jwt).execute().body();
 
-        log.info("手机号-修改密码：耗时：{}，bodyStr：{}", ApiTestHelper.calcCostMs(currentTs),
-            bodyStr);
+        log.info("手机号-修改密码：耗时：{}，bodyStr：{}", ApiTestHelper.calcCostMs(currentTs), bodyStr);
 
     }
 
@@ -328,21 +297,17 @@ public class ApiTestSignPhoneUtil {
 
         long currentTs = System.currentTimeMillis();
 
-        String bodyStr =
-            HttpRequest.post(apiEndpoint + "/sign/phone/updatePassword/sendCode")
-                .header("Authorization", jwt).execute()
-                .body();
+        String bodyStr = HttpRequest.post(apiEndpoint + "/sign/phone/updatePassword/sendCode")
+            .header("Authorization", jwt).execute().body();
 
-        log.info("手机号-修改密码-发送验证码：耗时：{}，bodyStr：{}",
-            ApiTestHelper.calcCostMs(currentTs), bodyStr);
+        log.info("手机号-修改密码-发送验证码：耗时：{}，bodyStr：{}", ApiTestHelper.calcCostMs(currentTs), bodyStr);
 
     }
 
     /**
      * 手机号-账号密码登录
      */
-    private static SignInVO phoneSignInPassword(String apiEndpoint, String phone,
-        String passwordTemp,
+    private static SignInVO phoneSignInPassword(String apiEndpoint, String phone, String passwordTemp,
         String rsaPublicKey) {
 
         long currentTs = System.currentTimeMillis();
@@ -355,13 +320,10 @@ public class ApiTestSignPhoneUtil {
         dto.setPassword(password);
         dto.setPhone(phone);
 
-        String bodyStr =
-            HttpRequest.post(apiEndpoint + "/sign/phone/sign/in/password")
-                .body(JSONUtil.toJsonStr(dto)).execute()
-                .body();
+        String bodyStr = HttpRequest.post(apiEndpoint + "/sign/phone/sign/in/password").body(JSONUtil.toJsonStr(dto))
+            .execute().body();
 
-        log.info("手机号-账号密码登录：耗时：{}，bodyStr：{}", ApiTestHelper.calcCostMs(currentTs),
-            bodyStr);
+        log.info("手机号-账号密码登录：耗时：{}，bodyStr：{}", ApiTestHelper.calcCostMs(currentTs), bodyStr);
 
         return JSONUtil.parseObj(bodyStr).get("data", SignInVO.class);
 
@@ -370,8 +332,7 @@ public class ApiTestSignPhoneUtil {
     /**
      * 手机号-注册
      */
-    private static void phoneSignUp(String apiEndpoint, String phone, String passwordTemp,
-        String rsaPublicKey,
+    private static void phoneSignUp(String apiEndpoint, String phone, String passwordTemp, String rsaPublicKey,
         String code) {
 
         long currentTs = System.currentTimeMillis();
@@ -389,8 +350,7 @@ public class ApiTestSignPhoneUtil {
         dto.setPhone(phone);
 
         String bodyStr =
-            HttpRequest.post(apiEndpoint + "/sign/phone/sign/up").body(JSONUtil.toJsonStr(dto))
-                .execute().body();
+            HttpRequest.post(apiEndpoint + "/sign/phone/sign/up").body(JSONUtil.toJsonStr(dto)).execute().body();
 
         log.info("手机号-注册：耗时：{}，bodyStr：{}", ApiTestHelper.calcCostMs(currentTs), bodyStr);
 
@@ -406,13 +366,10 @@ public class ApiTestSignPhoneUtil {
         PhoneNotBlankDTO dto = new PhoneNotBlankDTO();
         dto.setPhone(phone);
 
-        String bodyStr =
-            HttpRequest.post(apiEndpoint + "/sign/phone/sign/up/sendCode")
-                .body(JSONUtil.toJsonStr(dto)).execute()
-                .body();
+        String bodyStr = HttpRequest.post(apiEndpoint + "/sign/phone/sign/up/sendCode").body(JSONUtil.toJsonStr(dto))
+            .execute().body();
 
-        log.info("手机号-注册-发送验证码：耗时：{}，bodyStr：{}", ApiTestHelper.calcCostMs(currentTs),
-            bodyStr);
+        log.info("手机号-注册-发送验证码：耗时：{}，bodyStr：{}", ApiTestHelper.calcCostMs(currentTs), bodyStr);
 
     }
 

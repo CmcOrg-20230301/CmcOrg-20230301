@@ -26,8 +26,7 @@ public class MyTreeUtil {
     /**
      * 根据底级节点 list，逆向生成整棵树 备注：有子节点时，children才是集合
      */
-    public static <T extends BaseEntityTree<T>> List<T> getFullTreeByDeepNode(
-        Collection<T> deepNodeCollection,
+    public static <T extends BaseEntityTree<T>> List<T> getFullTreeByDeepNode(Collection<T> deepNodeCollection,
         Collection<T> allCollection) {
 
         return getFullTreeByDeepNode(deepNodeCollection, allCollection, BaseConstant.TOP_PARENT_ID);
@@ -37,8 +36,7 @@ public class MyTreeUtil {
     /**
      * 根据底级节点 list，逆向生成整棵树 备注：有子节点时，children才是集合
      */
-    public static <T extends BaseEntityTree<T>> List<T> getFullTreeByDeepNode(
-        Collection<T> deepNodeCollection,
+    public static <T extends BaseEntityTree<T>> List<T> getFullTreeByDeepNode(Collection<T> deepNodeCollection,
         Collection<T> allCollection, long parentId) {
 
         return listToTree(getFullTreeList(deepNodeCollection, allCollection), false, parentId);
@@ -48,11 +46,10 @@ public class MyTreeUtil {
     /**
      * 根据底级节点 list，逆向生成整棵树 list
      *
-     * @param allCollection      所有的集合
+     * @param allCollection 所有的集合
      * @param deepNodeCollection 底级节点集合
      */
-    public static <T extends BaseEntityTree<T>> List<T> getFullTreeList(
-        Collection<T> deepNodeCollection,
+    public static <T extends BaseEntityTree<T>> List<T> getFullTreeList(Collection<T> deepNodeCollection,
         Collection<T> allCollection) {
 
         List<T> resultList = new ArrayList<>(deepNodeCollection); // 先添加底级节点
@@ -66,7 +63,7 @@ public class MyTreeUtil {
     /**
      * 根据底级节点 set，逆向生成整棵树 set
      *
-     * @param allCollection      所有的节点
+     * @param allCollection 所有的节点
      * @param deepNodeCollection 底级节点
      */
     public static <T extends BaseEntityTree<T>> Set<T> getFullTreeSet(Set<T> deepNodeCollection,
@@ -80,20 +77,16 @@ public class MyTreeUtil {
 
     }
 
-    private static <T extends BaseEntityTree<T>> void doGetFullTree(
-        Collection<T> deepNodeCollection,
+    private static <T extends BaseEntityTree<T>> void doGetFullTree(Collection<T> deepNodeCollection,
         Collection<T> allCollection, Collection<T> resultCollection) {
 
         Set<Long> parentIdSet =
-            deepNodeCollection.stream().map(BaseEntityTree::getParentId)
-                .collect(Collectors.toSet());
+            deepNodeCollection.stream().map(BaseEntityTree::getParentId).collect(Collectors.toSet());
 
-        Map<Long, T> allMap = allCollection.stream()
-            .collect(Collectors.toMap(BaseEntityTree::getId, it -> it));
+        Map<Long, T> allMap = allCollection.stream().collect(Collectors.toMap(BaseEntityTree::getId, it -> it));
 
         // 已经添加了 idSet
-        Set<Long> resultIdSet = resultCollection.stream().map(BaseEntity::getId)
-            .collect(Collectors.toSet());
+        Set<Long> resultIdSet = resultCollection.stream().map(BaseEntity::getId).collect(Collectors.toSet());
 
         for (Long item : parentIdSet) {
             getFullTreeListHandle(allMap, resultCollection, item, resultIdSet); // 添加父级节点
@@ -144,8 +137,7 @@ public class MyTreeUtil {
      * @param childrenFlag 【true】 children 一直为集合 【false】 有子节点时，children为集合，无子节点时，children 为 null
      */
     @SneakyThrows
-    public static <T extends BaseEntityTree<T>> List<T> listToTree(Collection<T> collection,
-        boolean childrenFlag) {
+    public static <T extends BaseEntityTree<T>> List<T> listToTree(Collection<T> collection, boolean childrenFlag) {
 
         return listToTree(collection, childrenFlag, BaseConstant.TOP_PARENT_ID);
 
@@ -157,8 +149,7 @@ public class MyTreeUtil {
      * @param childrenFlag 【true】 children 一直为集合 【false】 有子节点时，children为集合，无子节点时，children 为 null
      */
     @SneakyThrows
-    public static <T extends BaseEntityTree<T>> List<T> listToTree(Collection<T> collection,
-        boolean childrenFlag,
+    public static <T extends BaseEntityTree<T>> List<T> listToTree(Collection<T> collection, boolean childrenFlag,
         long topParentId) {
 
         Map<Long, T> listMap = MapUtil.newHashMap(collection.size()); // 把 list的所有元素转换为：id -> 元素，格式
@@ -219,8 +210,7 @@ public class MyTreeUtil {
     /**
      * 处理：把自己添加到：父节点的 children上
      */
-    private static <T extends BaseEntityTree<T>> void listToTreeHandleParentDTO(
-        Map<Long, T> listMap, T item,
+    private static <T extends BaseEntityTree<T>> void listToTreeHandleParentDTO(Map<Long, T> listMap, T item,
         T mapDTO) {
 
         // 获取：父节点
@@ -228,7 +218,7 @@ public class MyTreeUtil {
 
         if (parentDTO == null) {
 
-            parentDTO = (T) ReflectUtil.newInstance(item.getClass());
+            parentDTO = (T)ReflectUtil.newInstance(item.getClass());
 
             List<T> children = new LinkedList<>();
 
@@ -292,14 +282,12 @@ public class MyTreeUtil {
      * 给树形结构的 集合（还没有转换为树形结构），重新设置 id和 parentId
      */
     @SneakyThrows
-    public static <T extends BaseEntityTree<T>> void treeListSetNewIdAndParentId(
-        Collection<T> flatCollection,
+    public static <T extends BaseEntityTree<T>> void treeListSetNewIdAndParentId(Collection<T> flatCollection,
         @Nullable VoidFunc1<Map<Long, Long>> voidFunc1) {
 
         // 旧 id，新 id，map
         Map<Long, Long> idMap =
-            flatCollection.stream()
-                .collect(Collectors.toMap(BaseEntity::getId, it -> IdGeneratorUtil.nextId()));
+            flatCollection.stream().collect(Collectors.toMap(BaseEntity::getId, it -> IdGeneratorUtil.nextId()));
 
         if (voidFunc1 != null) {
 
@@ -328,14 +316,12 @@ public class MyTreeUtil {
      * @param matchIdSet 需要匹配的 idSet，如果为 null，则表示需要匹配所有 id
      * @return key：id，value：包含本节点，以及所有下级节点的 idSet
      */
-    public static <T extends BaseEntityTree<T>> Map<Long, Set<Long>> getIdAndDeepIdSetMap(
-        Collection<T> collection,
+    public static <T extends BaseEntityTree<T>> Map<Long, Set<Long>> getIdAndDeepIdSetMap(Collection<T> collection,
         @Nullable Set<Long> matchIdSet) {
 
         // 通过：父级 id分组，value：子级 idSet
         Map<Long, Set<Long>> groupParentIdMap = collection.stream().collect(Collectors
-            .groupingBy(BaseEntityTree::getParentId,
-                Collectors.mapping(BaseEntity::getId, Collectors.toSet())));
+            .groupingBy(BaseEntityTree::getParentId, Collectors.mapping(BaseEntity::getId, Collectors.toSet())));
 
         Map<Long, Set<Long>> resultMap;
 

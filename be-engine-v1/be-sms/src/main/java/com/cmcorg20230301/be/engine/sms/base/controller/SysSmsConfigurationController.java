@@ -1,5 +1,14 @@
 package com.cmcorg20230301.be.engine.sms.base.controller;
 
+import javax.annotation.Resource;
+import javax.validation.Valid;
+
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.cmcorg20230301.be.engine.model.model.dto.NotEmptyIdSet;
 import com.cmcorg20230301.be.engine.model.model.dto.NotNullId;
@@ -8,16 +17,9 @@ import com.cmcorg20230301.be.engine.sms.base.model.dto.SysSmsConfigurationInsert
 import com.cmcorg20230301.be.engine.sms.base.model.dto.SysSmsConfigurationPageDTO;
 import com.cmcorg20230301.be.engine.sms.base.model.entity.SysSmsConfigurationDO;
 import com.cmcorg20230301.be.engine.sms.base.service.SysSmsConfigurationService;
+
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
-import javax.annotation.Resource;
-import javax.validation.Valid;
 
 @RequestMapping("/sys/smsConfiguration")
 @RestController
@@ -30,16 +32,14 @@ public class SysSmsConfigurationController {
     @Operation(summary = "新增/修改")
     @PostMapping("/insertOrUpdate")
     @PreAuthorize("hasAuthority('sysSmsConfiguration:insertOrUpdate')")
-    public ApiResultVO<String> insertOrUpdate(
-        @RequestBody @Valid SysSmsConfigurationInsertOrUpdateDTO dto) {
+    public ApiResultVO<String> insertOrUpdate(@RequestBody @Valid SysSmsConfigurationInsertOrUpdateDTO dto) {
         return ApiResultVO.okMsg(baseService.insertOrUpdate(dto));
     }
 
     @Operation(summary = "分页排序查询")
     @PostMapping("/page")
     @PreAuthorize("hasAuthority('sysSmsConfiguration:page')")
-    public ApiResultVO<Page<SysSmsConfigurationDO>> myPage(
-        @RequestBody @Valid SysSmsConfigurationPageDTO dto) {
+    public ApiResultVO<Page<SysSmsConfigurationDO>> myPage(@RequestBody @Valid SysSmsConfigurationPageDTO dto) {
         return ApiResultVO.okData(baseService.myPage(dto));
     }
 

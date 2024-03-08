@@ -1,22 +1,20 @@
 package com.cmcorg20230301.be.engine.cache.util;
 
-import cn.hutool.core.collection.CollUtil;
-import cn.hutool.core.util.NumberUtil;
-import cn.hutool.core.util.StrUtil;
-import com.cmcorg20230301.be.engine.cache.model.dto.CanalKafkaDTO;
-import com.cmcorg20230301.be.engine.model.model.constant.LogTopicConstant;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import lombok.Data;
-import lombok.extern.slf4j.Slf4j;
+import java.util.*;
+
 import org.jetbrains.annotations.Nullable;
 import org.redisson.api.RBatch;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import com.cmcorg20230301.be.engine.cache.model.dto.CanalKafkaDTO;
+import com.cmcorg20230301.be.engine.model.model.constant.LogTopicConstant;
+
+import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.util.NumberUtil;
+import cn.hutool.core.util.StrUtil;
+import lombok.Data;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * canal-kafka监听器的帮助类
@@ -61,8 +59,7 @@ public class CanalKafkaListenerHelper {
 
                 put(item); // 添加到：map里面
 
-                log.info("CANAL_KAFKA_HANDLER_MAP，长度：{}，className：{}",
-                    CANAL_KAFKA_HANDLER_MAP.size(),
+                log.info("CANAL_KAFKA_HANDLER_MAP，长度：{}，className：{}", CANAL_KAFKA_HANDLER_MAP.size(),
                     item.getClass().getSimpleName());
 
             }

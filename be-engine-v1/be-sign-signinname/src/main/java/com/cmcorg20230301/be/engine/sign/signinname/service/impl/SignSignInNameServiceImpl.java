@@ -1,6 +1,9 @@
 package com.cmcorg20230301.be.engine.sign.signinname.service.impl;
 
-import cn.hutool.core.util.BooleanUtil;
+import javax.annotation.Resource;
+
+import org.springframework.stereotype.Service;
+
 import com.baomidou.mybatisplus.extension.toolkit.ChainWrappers;
 import com.cmcorg20230301.be.engine.email.enums.EmailMessageEnum;
 import com.cmcorg20230301.be.engine.email.util.MyEmailUtil;
@@ -23,9 +26,8 @@ import com.cmcorg20230301.be.engine.sign.signinname.model.dto.*;
 import com.cmcorg20230301.be.engine.sign.signinname.service.SignSignInNameService;
 import com.cmcorg20230301.be.engine.sms.base.util.SysSmsHelper;
 import com.cmcorg20230301.be.engine.sms.base.util.SysSmsUtil;
-import org.springframework.stereotype.Service;
 
-import javax.annotation.Resource;
+import cn.hutool.core.util.BooleanUtil;
 
 @Service
 public class SignSignInNameServiceImpl implements SignSignInNameService {
@@ -54,10 +56,8 @@ public class SignSignInNameServiceImpl implements SignSignInNameService {
             ApiResultVO.errorMsg("操作失败：不允许用户名注册，请联系管理员");
         }
 
-        return SignUtil
-            .signUp(dto.getPassword(), dto.getOriginPassword(), null,
-                BaseRedisKeyEnum.PRE_SIGN_IN_NAME, dto.getSignInName(),
-                dto.getTenantId());
+        return SignUtil.signUp(dto.getPassword(), dto.getOriginPassword(), null, BaseRedisKeyEnum.PRE_SIGN_IN_NAME,
+            dto.getSignInName(), dto.getTenantId());
 
     }
 
@@ -68,8 +68,7 @@ public class SignSignInNameServiceImpl implements SignSignInNameService {
     public SignInVO signInPassword(SignSignInNameSignInPasswordDTO dto) {
 
         return SignUtil.signInPassword(
-            ChainWrappers.lambdaQueryChain(sysUserMapper)
-                .eq(SysUserDO::getSignInName, dto.getSignInName()),
+            ChainWrappers.lambdaQueryChain(sysUserMapper).eq(SysUserDO::getSignInName, dto.getSignInName()),
             dto.getPassword(), dto.getSignInName(), dto.getTenantId());
 
     }
@@ -80,12 +79,10 @@ public class SignSignInNameServiceImpl implements SignSignInNameService {
     @Override
     public String updatePassword(SignSignInNameUpdatePasswordDTO dto) {
 
-        SignUtil.checkWillError(PRE_REDIS_KEY_ENUM, null, UserUtil.getCurrentTenantIdDefault(),
-            null); // 检查：是否可以进行操作
+        SignUtil.checkWillError(PRE_REDIS_KEY_ENUM, null, UserUtil.getCurrentTenantIdDefault(), null); // 检查：是否可以进行操作
 
         return SignUtil.updatePassword(dto.getNewPassword(), dto.getOriginNewPassword(),
-            BaseRedisKeyEnum.PRE_SIGN_IN_NAME, null,
-            dto.getOldPassword());
+            BaseRedisKeyEnum.PRE_SIGN_IN_NAME, null, dto.getOldPassword());
 
     }
 
@@ -95,12 +92,10 @@ public class SignSignInNameServiceImpl implements SignSignInNameService {
     @Override
     public String updateSignInName(SignSignInNameUpdateSignInNameDTO dto) {
 
-        SignUtil.checkWillError(PRE_REDIS_KEY_ENUM, null, UserUtil.getCurrentTenantIdDefault(),
-            null); // 检查：是否可以进行操作
+        SignUtil.checkWillError(PRE_REDIS_KEY_ENUM, null, UserUtil.getCurrentTenantIdDefault(), null); // 检查：是否可以进行操作
 
-        return SignUtil.updateAccount(null, null, BaseRedisKeyEnum.PRE_SIGN_IN_NAME,
-            BaseRedisKeyEnum.PRE_SIGN_IN_NAME, dto.getNewSignInName(), dto.getCurrentPassword(),
-            null);
+        return SignUtil.updateAccount(null, null, BaseRedisKeyEnum.PRE_SIGN_IN_NAME, BaseRedisKeyEnum.PRE_SIGN_IN_NAME,
+            dto.getNewSignInName(), dto.getCurrentPassword(), null);
 
     }
 
@@ -112,17 +107,15 @@ public class SignSignInNameServiceImpl implements SignSignInNameService {
 
         Long currentTenantIdDefault = UserUtil.getCurrentTenantIdDefault();
 
-        SignUtil.checkWillError(PRE_REDIS_KEY_ENUM, null, currentTenantIdDefault,
-            null); // 检查：是否可以进行操作
+        SignUtil.checkWillError(PRE_REDIS_KEY_ENUM, null, currentTenantIdDefault, null); // 检查：是否可以进行操作
 
         String key = BaseRedisKeyEnum.PRE_EMAIL + dto.getEmail();
 
-        return SignUtil
-            .sendCode(key, ChainWrappers.lambdaQueryChain(sysUserMapper)
-                    .eq(SysUserDO::getEmail, dto.getEmail()), false,
-                BizCodeEnum.EMAIL_HAS_BEEN_REGISTERED, (code) -> MyEmailUtil
-                    .send(dto.getEmail(), EmailMessageEnum.BIND_EMAIL, code,
-                        currentTenantIdDefault), currentTenantIdDefault);
+        return SignUtil.sendCode(key,
+            ChainWrappers.lambdaQueryChain(sysUserMapper).eq(SysUserDO::getEmail, dto.getEmail()), false,
+            BizCodeEnum.EMAIL_HAS_BEEN_REGISTERED,
+            (code) -> MyEmailUtil.send(dto.getEmail(), EmailMessageEnum.BIND_EMAIL, code, currentTenantIdDefault),
+            currentTenantIdDefault);
 
     }
 
@@ -132,11 +125,10 @@ public class SignSignInNameServiceImpl implements SignSignInNameService {
     @Override
     public String setEmail(SignSignInNameSetEmailDTO dto) {
 
-        SignUtil.checkWillError(PRE_REDIS_KEY_ENUM, null, UserUtil.getCurrentTenantIdDefault(),
-            null); // 检查：是否可以进行操作
+        SignUtil.checkWillError(PRE_REDIS_KEY_ENUM, null, UserUtil.getCurrentTenantIdDefault(), null); // 检查：是否可以进行操作
 
-        return SignUtil.bindAccount(dto.getCode(), BaseRedisKeyEnum.PRE_EMAIL, dto.getEmail(), null,
-            null, dto.getCurrentPassword());
+        return SignUtil.bindAccount(dto.getCode(), BaseRedisKeyEnum.PRE_EMAIL, dto.getEmail(), null, null,
+            dto.getCurrentPassword());
 
     }
 
@@ -146,12 +138,10 @@ public class SignSignInNameServiceImpl implements SignSignInNameService {
     @Override
     public GetQrCodeVO setWxGetQrCodeUrl() {
 
-        SignUtil.checkWillError(PRE_REDIS_KEY_ENUM, null, UserUtil.getCurrentTenantIdDefault(),
-            null); // 检查：是否可以进行操作
+        SignUtil.checkWillError(PRE_REDIS_KEY_ENUM, null, UserUtil.getCurrentTenantIdDefault(), null); // 检查：是否可以进行操作
 
         // 执行
-        return SignUtil.getQrCodeUrlWx(UserUtil.getCurrentTenantIdDefault(), true,
-            SysQrCodeSceneTypeEnum.WX_BIND);
+        return SignUtil.getQrCodeUrlWx(UserUtil.getCurrentTenantIdDefault(), true, SysQrCodeSceneTypeEnum.WX_BIND);
 
     }
 
@@ -172,8 +162,7 @@ public class SignSignInNameServiceImpl implements SignSignInNameService {
     @Override
     public SysQrCodeSceneBindVO setWx(SignSignInNameSetWxDTO dto) {
 
-        SignUtil.checkWillError(PRE_REDIS_KEY_ENUM, null, UserUtil.getCurrentTenantIdDefault(),
-            null); // 检查：是否可以进行操作
+        SignUtil.checkWillError(PRE_REDIS_KEY_ENUM, null, UserUtil.getCurrentTenantIdDefault(), null); // 检查：是否可以进行操作
 
         // 执行
         return SignUtil.setWx(dto.getId(), null, null, dto.getCurrentPassword());
@@ -188,18 +177,16 @@ public class SignSignInNameServiceImpl implements SignSignInNameService {
 
         Long currentTenantIdDefault = UserUtil.getCurrentTenantIdDefault();
 
-        SignUtil.checkWillError(PRE_REDIS_KEY_ENUM, null, currentTenantIdDefault,
-            null); // 检查：是否可以进行操作
+        SignUtil.checkWillError(PRE_REDIS_KEY_ENUM, null, currentTenantIdDefault, null); // 检查：是否可以进行操作
 
         String key = BaseRedisKeyEnum.PRE_PHONE + dto.getPhone();
 
-        return SignUtil
-            .sendCode(key, ChainWrappers.lambdaQueryChain(sysUserMapper)
-                    .eq(SysUserDO::getPhone, dto.getPhone()), false,
-                BizCodeEnum.PHONE_HAS_BEEN_REGISTERED, (code) -> SysSmsUtil
-                    .sendSetPhone(
-                        SysSmsHelper.getSysSmsSendBO(currentTenantIdDefault, code, dto.getPhone())),
-                currentTenantIdDefault);
+        return SignUtil.sendCode(key,
+            ChainWrappers.lambdaQueryChain(sysUserMapper).eq(SysUserDO::getPhone, dto.getPhone()), false,
+            BizCodeEnum.PHONE_HAS_BEEN_REGISTERED,
+            (code) -> SysSmsUtil
+                .sendSetPhone(SysSmsHelper.getSysSmsSendBO(currentTenantIdDefault, code, dto.getPhone())),
+            currentTenantIdDefault);
 
     }
 
@@ -209,11 +196,10 @@ public class SignSignInNameServiceImpl implements SignSignInNameService {
     @Override
     public String setPhone(SignSignInNameSetPhoneDTO dto) {
 
-        SignUtil.checkWillError(PRE_REDIS_KEY_ENUM, null, UserUtil.getCurrentTenantIdDefault(),
-            null); // 检查：是否可以进行操作
+        SignUtil.checkWillError(PRE_REDIS_KEY_ENUM, null, UserUtil.getCurrentTenantIdDefault(), null); // 检查：是否可以进行操作
 
-        return SignUtil.bindAccount(dto.getCode(), BaseRedisKeyEnum.PRE_PHONE, dto.getPhone(), null,
-            null, dto.getCurrentPassword());
+        return SignUtil.bindAccount(dto.getCode(), BaseRedisKeyEnum.PRE_PHONE, dto.getPhone(), null, null,
+            dto.getCurrentPassword());
 
     }
 
@@ -223,12 +209,10 @@ public class SignSignInNameServiceImpl implements SignSignInNameService {
     @Override
     public GetQrCodeVO setSingleSignInWxGetQrCodeUrl() {
 
-        SignUtil.checkWillError(PRE_REDIS_KEY_ENUM, null, UserUtil.getCurrentTenantIdDefault(),
-            null); // 检查：是否可以进行操作
+        SignUtil.checkWillError(PRE_REDIS_KEY_ENUM, null, UserUtil.getCurrentTenantIdDefault(), null); // 检查：是否可以进行操作
 
         // 执行
-        return SignUtil.getQrCodeUrlWxForSingleSignIn(true,
-            SysQrCodeSceneTypeEnum.WX_SINGLE_SIGN_IN_BIND);
+        return SignUtil.getQrCodeUrlWxForSingleSignIn(true, SysQrCodeSceneTypeEnum.WX_SINGLE_SIGN_IN_BIND);
 
     }
 
@@ -239,8 +223,7 @@ public class SignSignInNameServiceImpl implements SignSignInNameService {
     public SysQrCodeSceneBindVO setSingleSignInWxGetQrCodeSceneFlag(NotNullId notNullId) {
 
         // 执行
-        return SignUtil.getSysQrCodeSceneBindVoAndHandleForSingleSignIn(notNullId.getId(), false,
-            null);
+        return SignUtil.getSysQrCodeSceneBindVoAndHandleForSingleSignIn(notNullId.getId(), false, null);
 
     }
 
@@ -250,8 +233,7 @@ public class SignSignInNameServiceImpl implements SignSignInNameService {
     @Override
     public SysQrCodeSceneBindVO setSingleSignInWx(SignSignInNameSetSingleSignInWxDTO dto) {
 
-        SignUtil.checkWillError(PRE_REDIS_KEY_ENUM, null, UserUtil.getCurrentTenantIdDefault(),
-            null); // 检查：是否可以进行操作
+        SignUtil.checkWillError(PRE_REDIS_KEY_ENUM, null, UserUtil.getCurrentTenantIdDefault(), null); // 检查：是否可以进行操作
 
         // 执行
         return SignUtil.setWxForSingleSignIn(dto.getId(), null, null, dto.getCurrentPassword());
@@ -264,14 +246,12 @@ public class SignSignInNameServiceImpl implements SignSignInNameService {
     @Override
     public String setSingleSignInSendCodePhone(SignSignInNameSetSingleSignInPhoneSendCodeDTO dto) {
 
-        SignUtil.checkWillError(PRE_REDIS_KEY_ENUM, null, UserUtil.getCurrentTenantIdDefault(),
-            null); // 检查：是否可以进行操作
+        SignUtil.checkWillError(PRE_REDIS_KEY_ENUM, null, UserUtil.getCurrentTenantIdDefault(), null); // 检查：是否可以进行操作
 
         // 执行
         return SignUtil.sendCodeForSingle(dto.getPhone(), false, "操作失败：该手机号已被绑定",
-            (code) -> SysSmsUtil
-                .sendSetSingleSignIn(SysSmsHelper.getSysSmsSendBO(code, dto.getPhone(),
-                    singleSignInProperties.getSmsConfigurationId())),
+            (code) -> SysSmsUtil.sendSetSingleSignIn(
+                SysSmsHelper.getSysSmsSendBO(code, dto.getPhone(), singleSignInProperties.getSmsConfigurationId())),
             BaseRedisKeyEnum.PRE_SYS_SINGLE_SIGN_IN_SET_PHONE);
 
     }
@@ -282,15 +262,13 @@ public class SignSignInNameServiceImpl implements SignSignInNameService {
     @Override
     public String setSingleSignInPhone(SignSignInNameSetSingleSignInPhoneDTO dto) {
 
-        SignUtil.checkWillError(PRE_REDIS_KEY_ENUM, null, UserUtil.getCurrentTenantIdDefault(),
-            null); // 检查：是否可以进行操作
+        SignUtil.checkWillError(PRE_REDIS_KEY_ENUM, null, UserUtil.getCurrentTenantIdDefault(), null); // 检查：是否可以进行操作
 
         String codeKey = BaseRedisKeyEnum.PRE_PHONE + dto.getPhone();
 
         // 执行
-        return SignUtil.bindAccount(dto.getCode(),
-            BaseRedisKeyEnum.PRE_SYS_SINGLE_SIGN_IN_SET_PHONE, dto.getPhone(), null, codeKey,
-            dto.getCurrentPassword());
+        return SignUtil.bindAccount(dto.getCode(), BaseRedisKeyEnum.PRE_SYS_SINGLE_SIGN_IN_SET_PHONE, dto.getPhone(),
+            null, codeKey, dto.getCurrentPassword());
 
     }
 
@@ -300,11 +278,9 @@ public class SignSignInNameServiceImpl implements SignSignInNameService {
     @Override
     public String signDelete(SignSignInNameSignDeleteDTO dto) {
 
-        SignUtil.checkWillError(PRE_REDIS_KEY_ENUM, null, UserUtil.getCurrentTenantIdDefault(),
-            null); // 检查：是否可以进行操作
+        SignUtil.checkWillError(PRE_REDIS_KEY_ENUM, null, UserUtil.getCurrentTenantIdDefault(), null); // 检查：是否可以进行操作
 
-        return SignUtil.signDelete(null, BaseRedisKeyEnum.PRE_SIGN_IN_NAME,
-            dto.getCurrentPassword(), null);
+        return SignUtil.signDelete(null, BaseRedisKeyEnum.PRE_SIGN_IN_NAME, dto.getCurrentPassword(), null);
 
     }
 

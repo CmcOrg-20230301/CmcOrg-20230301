@@ -1,35 +1,35 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
-  "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.cmcorg20230301.be.engine.im.session.mapper.SysImSessionMapper">
 
-  <!-- 分页排序查询 -->
-  <select id="myPageSelf"
-    resultType="com.cmcorg20230301.be.engine.im.session.model.entity.SysImSessionDO">
+    <!-- 分页排序查询 -->
+    <select id="myPageSelf"
+            resultType="com.cmcorg20230301.be.engine.im.session.model.entity.SysImSessionDO">
 
-    SELECT
+        SELECT
 
-    a.private_chat_ref_user_id AS privateChatRefUserId,
-    a.remark AS remark,
-    a.session_id AS id,
-    a.last_open_ts AS lastOpenTs
+        a.private_chat_ref_user_id AS privateChatRefUserId,
+        a.remark AS remark,
+        a.session_id AS id,
+        a.last_open_ts AS lastOpenTs
 
-    FROM sys_im_session_ref_user a
+        FROM sys_im_session_ref_user a
 
-    LEFT JOIN sys_im_session b ON b.id = a.session_id
+        LEFT JOIN sys_im_session b ON b.id = a.session_id
 
-    WHERE
+        WHERE
 
-    a.show_flag = TRUE
+        a.show_flag = TRUE
 
-    <if test="dto.privateChatRefUserId != null">
-      AND a.private_chat_ref_user_id = #{dto.privateChatRefUserId}
-    </if>
+        <if test="dto.privateChatRefUserId != null">
+            AND a.private_chat_ref_user_id = #{dto.privateChatRefUserId}
+        </if>
 
-    AND a.user_id = #{dto.userId}
+        AND a.user_id = #{dto.userId}
 
-    ORDER BY b.last_receive_content_ts
+        ORDER BY b.last_receive_content_ts
 
-  </select>
+    </select>
 
 </mapper>

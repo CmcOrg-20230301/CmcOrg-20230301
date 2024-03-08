@@ -15,8 +15,7 @@ import javax.validation.constraints.NotNull;
 import org.springframework.stereotype.Service;
 
 @Service
-public class SysUserConfigurationServiceImpl extends
-    ServiceImpl<SysSignConfigurationMapper, SysUserConfigurationDO>
+public class SysUserConfigurationServiceImpl extends ServiceImpl<SysSignConfigurationMapper, SysUserConfigurationDO>
     implements SysUserConfigurationService {
 
     /**
@@ -28,37 +27,35 @@ public class SysUserConfigurationServiceImpl extends
 
         tenantId = SysTenantUtil.getTenantId(tenantId);
 
-        SysUserConfigurationDO sysUserConfigurationDO = lambdaQuery().eq(
-            SysUserConfigurationDO::getId, tenantId).one();
+        SysUserConfigurationDO sysUserConfigurationDO = lambdaQuery().eq(SysUserConfigurationDO::getId, tenantId).one();
 
         if (sysUserConfigurationDO == null) {
 
             Long finalTenantId = tenantId;
 
             sysUserConfigurationDO =
-                RedissonUtil.doLock(BaseRedisKeyEnum.PRE_SIGN_CONFIGURATION.name() + tenantId,
-                    () -> {
+                RedissonUtil.doLock(BaseRedisKeyEnum.PRE_SIGN_CONFIGURATION.name() + tenantId, () -> {
 
-                        // 这里需要再查询一次
-                        SysUserConfigurationDO tempSysUserConfigurationDO =
-                            lambdaQuery().eq(SysUserConfigurationDO::getId, finalTenantId).one();
+                    // 这里需要再查询一次
+                    SysUserConfigurationDO tempSysUserConfigurationDO =
+                        lambdaQuery().eq(SysUserConfigurationDO::getId, finalTenantId).one();
 
-                        if (tempSysUserConfigurationDO != null) {
-                            return tempSysUserConfigurationDO;
-                        }
-
-                        tempSysUserConfigurationDO = new SysUserConfigurationDO();
-
-                        tempSysUserConfigurationDO.setId(finalTenantId);
-                        tempSysUserConfigurationDO.setSignInNameSignUpEnable(true);
-                        tempSysUserConfigurationDO.setEmailSignUpEnable(true);
-                        tempSysUserConfigurationDO.setPhoneSignUpEnable(true);
-
-                        save(tempSysUserConfigurationDO); // 保存：用户登录注册相关配置
-
+                    if (tempSysUserConfigurationDO != null) {
                         return tempSysUserConfigurationDO;
+                    }
 
-                    });
+                    tempSysUserConfigurationDO = new SysUserConfigurationDO();
+
+                    tempSysUserConfigurationDO.setId(finalTenantId);
+                    tempSysUserConfigurationDO.setSignInNameSignUpEnable(true);
+                    tempSysUserConfigurationDO.setEmailSignUpEnable(true);
+                    tempSysUserConfigurationDO.setPhoneSignUpEnable(true);
+
+                    save(tempSysUserConfigurationDO); // 保存：用户登录注册相关配置
+
+                    return tempSysUserConfigurationDO;
+
+                });
 
         }
 
@@ -87,8 +84,7 @@ public class SysUserConfigurationServiceImpl extends
 
         }
 
-        sysUserConfigurationDO.setSignInNameSignUpEnable(
-            BooleanUtil.isTrue(dto.getSignInNameSignUpEnable()));
+        sysUserConfigurationDO.setSignInNameSignUpEnable(BooleanUtil.isTrue(dto.getSignInNameSignUpEnable()));
         sysUserConfigurationDO.setEmailSignUpEnable(BooleanUtil.isTrue(dto.getEmailSignUpEnable()));
         sysUserConfigurationDO.setPhoneSignUpEnable(BooleanUtil.isTrue(dto.getPhoneSignUpEnable()));
 

@@ -1,5 +1,11 @@
 package com.cmcorg20230301.be.engine.sign.single.service.impl;
 
+import javax.annotation.Resource;
+
+import org.redisson.api.RBucket;
+import org.redisson.api.RedissonClient;
+import org.springframework.stereotype.Service;
+
 import com.baomidou.mybatisplus.extension.toolkit.ChainWrappers;
 import com.cmcorg20230301.be.engine.model.model.dto.NotNullId;
 import com.cmcorg20230301.be.engine.model.model.vo.GetQrCodeVO;
@@ -23,11 +29,6 @@ import com.cmcorg20230301.be.engine.sign.single.service.SignSingleService;
 import com.cmcorg20230301.be.engine.sign.wx.model.enums.WxSysQrCodeSceneTypeEnum;
 import com.cmcorg20230301.be.engine.sms.base.util.SysSmsHelper;
 import com.cmcorg20230301.be.engine.sms.base.util.SysSmsUtil;
-import org.redisson.api.RBucket;
-import org.redisson.api.RedissonClient;
-import org.springframework.stereotype.Service;
-
-import javax.annotation.Resource;
 
 @Service
 public class SignSingleServiceImpl implements SignSingleService {
@@ -53,12 +54,10 @@ public class SignSingleServiceImpl implements SignSingleService {
         SysSignConfigurationVO sysSignConfigurationVO = new SysSignConfigurationVO();
 
         sysSignConfigurationVO.setSignInNameSignUpEnable(false);
-        sysSignConfigurationVO.setEmailSignUpEnable(
-            singleSignInProperties.getEmailConfigurationId() != null);
-        sysSignConfigurationVO.setPhoneSignUpEnable(
-            singleSignInProperties.getSmsConfigurationId() != null);
-        sysSignConfigurationVO.setWxQrCodeSignUp(
-            singleSignInProperties.getWxSysOtherAppId() == null ? null : new GetQrCodeVO());
+        sysSignConfigurationVO.setEmailSignUpEnable(singleSignInProperties.getEmailConfigurationId() != null);
+        sysSignConfigurationVO.setPhoneSignUpEnable(singleSignInProperties.getSmsConfigurationId() != null);
+        sysSignConfigurationVO
+            .setWxQrCodeSignUp(singleSignInProperties.getWxSysOtherAppId() == null ? null : new GetQrCodeVO());
 
         return sysSignConfigurationVO;
 
@@ -71,8 +70,7 @@ public class SignSingleServiceImpl implements SignSingleService {
     public GetQrCodeVO signInGetQrCodeUrlWx(boolean getQrCodeUrlFlag) {
 
         // 执行
-        return SignUtil.getQrCodeUrlWxForSingleSignIn(true,
-            WxSysQrCodeSceneTypeEnum.WX_SINGLE_SIGN_IN);
+        return SignUtil.getQrCodeUrlWxForSingleSignIn(true, WxSysQrCodeSceneTypeEnum.WX_SINGLE_SIGN_IN);
 
     }
 
@@ -82,8 +80,8 @@ public class SignSingleServiceImpl implements SignSingleService {
     @Override
     public SignInVO signInByQrCodeIdWx(NotNullId notNullId) {
 
-        return redissonClient.<SignInVO>getBucket(
-                BaseRedisKeyEnum.PRE_SYS_WX_QR_CODE_SIGN_IN_SINGLE.name() + notNullId.getId())
+        return redissonClient
+            .<SignInVO>getBucket(BaseRedisKeyEnum.PRE_SYS_WX_QR_CODE_SIGN_IN_SINGLE.name() + notNullId.getId())
             .getAndDelete();
 
     }
@@ -95,11 +93,9 @@ public class SignSingleServiceImpl implements SignSingleService {
     public String signInSendCodePhone(SignSingleSignInSendCodePhoneDTO dto) {
 
         // 执行
-        return SignUtil.sendCodeForSingle(dto.getPhone(), true,
-            "操作失败：该手机号未设置统一登录，请在【个人中心-统一登录】处，进行设置后再试",
-            (code) -> SysSmsUtil
-                .sendSignIn(SysSmsHelper.getSysSmsSendBO(code, dto.getPhone(),
-                    singleSignInProperties.getSmsConfigurationId())),
+        return SignUtil.sendCodeForSingle(dto.getPhone(), true, "操作失败：该手机号未设置统一登录，请在【个人中心-统一登录】处，进行设置后再试",
+            (code) -> SysSmsUtil.sendSignIn(
+                SysSmsHelper.getSysSmsSendBO(code, dto.getPhone(), singleSignInProperties.getSmsConfigurationId())),
             BaseRedisKeyEnum.PRE_SYS_SINGLE_SIGN_IN_SET_PHONE);
 
     }
@@ -121,20 +117,19 @@ public class SignSingleServiceImpl implements SignSingleService {
             bucket.delete(); // 删除：验证码
 
             // 获取：手机验证码统一登录的信息
-            SysUserSingleSignInDO sysUserSingleSignInDO = ChainWrappers.lambdaQueryChain(
-                    sysUserSingleSignInMapper).eq(SysUserSingleSignInDO::getPhone, dto.getPhone())
+            SysUserSingleSignInDO sysUserSingleSignInDO = ChainWrappers.lambdaQueryChain(sysUserSingleSignInMapper)
+                .eq(SysUserSingleSignInDO::getPhone, dto.getPhone())
                 .select(SysUserSingleSignInDO::getId, SysUserSingleSignInDO::getTenantId).one();
 
             if (sysUserSingleSignInDO == null) {
 
-                ApiResultVO.errorMsg(
-                    "操作失败：该手机号未设置统一登录，请在【个人中心-统一登录】处，进行设置后再试");
+                ApiResultVO.errorMsg("操作失败：该手机号未设置统一登录，请在【个人中心-统一登录】处，进行设置后再试");
 
             }
 
-            SysUserDO sysUserDO = ChainWrappers.lambdaQueryChain(sysUserMapper)
-                .eq(BaseEntity::getId, sysUserSingleSignInDO.getId())
-                .eq(BaseEntityNoIdSuper::getTenantId, sysUserSingleSignInDO.getTenantId()).one();
+            SysUserDO sysUserDO =
+                ChainWrappers.lambdaQueryChain(sysUserMapper).eq(BaseEntity::getId, sysUserSingleSignInDO.getId())
+                    .eq(BaseEntityNoIdSuper::getTenantId, sysUserSingleSignInDO.getTenantId()).one();
 
             // 返回登录数据
             return SignUtil.signInGetJwt(sysUserDO);

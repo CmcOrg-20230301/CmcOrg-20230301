@@ -1,19 +1,21 @@
 package com.cmcorg20230301.be.engine.sms.base.util;
 
-import cn.hutool.core.collection.CollUtil;
-import cn.hutool.core.map.MapUtil;
-import cn.hutool.core.util.StrUtil;
-import com.cmcorg20230301.be.engine.security.exception.BaseBizCodeEnum;
-import com.cmcorg20230301.be.engine.security.model.vo.ApiResultVO;
-import com.cmcorg20230301.be.engine.sms.base.model.bo.SysSmsSendBO;
-import com.cmcorg20230301.be.engine.sms.base.model.configuration.ISysSms;
+import java.util.List;
+import java.util.Map;
+
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.List;
-import java.util.Map;
+import com.cmcorg20230301.be.engine.security.exception.BaseBizCodeEnum;
+import com.cmcorg20230301.be.engine.security.model.vo.ApiResultVO;
+import com.cmcorg20230301.be.engine.sms.base.model.bo.SysSmsSendBO;
+import com.cmcorg20230301.be.engine.sms.base.model.configuration.ISysSms;
+
+import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.map.MapUtil;
+import cn.hutool.core.util.StrUtil;
 
 /**
  * 短信工具类
@@ -249,8 +251,8 @@ public class SysSmsUtil {
 
         if (StrUtil.isBlank(sysSmsSendBO.getPhoneNumber())) {
 
-            ApiResultVO.error(
-                BaseBizCodeEnum.THERE_IS_NO_BOUND_MOBILE_PHONE_NUMBER_SO_THIS_OPERATION_CANNOT_BE_PERFORMED);
+            ApiResultVO
+                .error(BaseBizCodeEnum.THERE_IS_NO_BOUND_MOBILE_PHONE_NUMBER_SO_THIS_OPERATION_CANNOT_BE_PERFORMED);
 
         }
 

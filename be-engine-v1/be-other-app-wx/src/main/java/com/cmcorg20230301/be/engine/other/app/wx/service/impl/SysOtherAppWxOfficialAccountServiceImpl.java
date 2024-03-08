@@ -1,11 +1,18 @@
 package com.cmcorg20230301.be.engine.other.app.wx.service.impl;
 
-import cn.hutool.core.bean.BeanUtil;
-import cn.hutool.core.date.DateUtil;
-import cn.hutool.core.util.StrUtil;
-import cn.hutool.core.util.XmlUtil;
-import cn.hutool.crypto.digest.DigestUtil;
-import cn.hutool.json.JSONUtil;
+import java.time.Duration;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+
+import org.jetbrains.annotations.NotNull;
+import org.redisson.api.RedissonClient;
+import org.springframework.stereotype.Service;
+import org.w3c.dom.Document;
+
 import com.cmcorg20230301.be.engine.kafka.util.KafkaUtil;
 import com.cmcorg20230301.be.engine.model.model.constant.BaseConstant;
 import com.cmcorg20230301.be.engine.model.model.constant.LogTopicConstant;
@@ -15,23 +22,19 @@ import com.cmcorg20230301.be.engine.other.app.model.vo.WxOffiaccountReceiveMessa
 import com.cmcorg20230301.be.engine.other.app.properties.SysOtherAppOfficialAccountProperties;
 import com.cmcorg20230301.be.engine.other.app.wx.service.SysOtherAppWxOfficialAccountService;
 import com.cmcorg20230301.be.engine.redisson.model.enums.BaseRedisKeyEnum;
-import java.time.Duration;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
+
+import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.date.DateUtil;
+import cn.hutool.core.util.StrUtil;
+import cn.hutool.core.util.XmlUtil;
+import cn.hutool.crypto.digest.DigestUtil;
+import cn.hutool.json.JSONUtil;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-import org.jetbrains.annotations.NotNull;
-import org.redisson.api.RedissonClient;
-import org.springframework.stereotype.Service;
-import org.w3c.dom.Document;
 
 @Service
 @Slf4j(topic = LogTopicConstant.OTHER_APP_WX_OFFICIAL_ACCOUNT)
-public class SysOtherAppWxOfficialAccountServiceImpl implements
-    SysOtherAppWxOfficialAccountService {
+public class SysOtherAppWxOfficialAccountServiceImpl implements SysOtherAppWxOfficialAccountService {
 
     @Resource
     SysOtherAppOfficialAccountProperties sysOtherAppOfficialAccountProperties;
@@ -81,8 +84,7 @@ public class SysOtherAppWxOfficialAccountServiceImpl implements
         Document document = XmlUtil.readXML(request.getInputStream());
 
         SysOtherAppWxOfficialAccountReceiveMessageDTO dto =
-            XmlUtil.xmlToBean(document.getDocumentElement(),
-                SysOtherAppWxOfficialAccountReceiveMessageDTO.class);
+            XmlUtil.xmlToBean(document.getDocumentElement(), SysOtherAppWxOfficialAccountReceiveMessageDTO.class);
 
         String content = dto.getContent();
 
@@ -103,15 +105,11 @@ public class SysOtherAppWxOfficialAccountServiceImpl implements
 
         String msgIdStr = dto.getMsgIdStr();
 
-        log.info("微信公众号，收到消息：{}，dto：{}，msgIdStr：{}", XmlUtil.toStr(document),
-            JSONUtil.toJsonStr(dto), msgIdStr);
+        log.info("微信公众号，收到消息：{}，dto：{}，msgIdStr：{}", XmlUtil.toStr(document), JSONUtil.toJsonStr(dto), msgIdStr);
 
-        String redisKey =
-            BaseRedisKeyEnum.PRE_SYS_OTHER_APP_WX_OFFICIAL_ACCOUNT_RECEIVE_MESSAGE_ID.name()
-                + msgIdStr;
+        String redisKey = BaseRedisKeyEnum.PRE_SYS_OTHER_APP_WX_OFFICIAL_ACCOUNT_RECEIVE_MESSAGE_ID.name() + msgIdStr;
 
-        redissonClient.<String>getBucket(redisKey)
-            .set("", Duration.ofMillis(BaseConstant.SHORT_CODE_EXPIRE_TIME));
+        redissonClient.<String>getBucket(redisKey).set("", Duration.ofMillis(BaseConstant.SHORT_CODE_EXPIRE_TIME));
 
         // 发送给：kafka进行处理
         KafkaUtil.sendSysOtherAppWxOfficialAccountReceiveMessageDTO(dto);
@@ -124,8 +122,7 @@ public class SysOtherAppWxOfficialAccountServiceImpl implements
      * 处理：返回的消息为微信格式
      */
     @NotNull
-    public static String handleReturnContent(SysOtherAppWxOfficialAccountReceiveMessageDTO dto,
-        String fromUserName,
+    public static String handleReturnContent(SysOtherAppWxOfficialAccountReceiveMessageDTO dto, String fromUserName,
         String returnContent) {
 
         WxOffiaccountReceiveMessageVO wxOffiaccountReceiveMessageVO = new WxOffiaccountReceiveMessageVO();

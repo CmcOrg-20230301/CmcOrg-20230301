@@ -1,11 +1,15 @@
 package com.cmcorg20230301.be.engine.im.session.controller;
 
+import javax.annotation.Resource;
+import javax.validation.Valid;
+
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.cmcorg20230301.be.engine.im.session.model.dto.SysImSessionApplyPrivateChatApplyDTO;
-import com.cmcorg20230301.be.engine.im.session.model.dto.SysImSessionApplyPrivateChatApplySelfPageDTO;
-import com.cmcorg20230301.be.engine.im.session.model.dto.SysImSessionApplyPrivateChatFindNewPageDTO;
-import com.cmcorg20230301.be.engine.im.session.model.dto.SysImSessionApplyPrivateChatRejectDTO;
-import com.cmcorg20230301.be.engine.im.session.model.dto.SysImSessionApplyPrivateChatSelfPageDTO;
+import com.cmcorg20230301.be.engine.im.session.model.dto.*;
 import com.cmcorg20230301.be.engine.im.session.model.vo.SysImSessionApplyPrivateChatApplySelfPageVO;
 import com.cmcorg20230301.be.engine.im.session.model.vo.SysImSessionApplyPrivateChatFindNewPageVO;
 import com.cmcorg20230301.be.engine.im.session.model.vo.SysImSessionApplyPrivateChatSelfPageVO;
@@ -13,14 +17,9 @@ import com.cmcorg20230301.be.engine.im.session.service.SysImSessionApplyService;
 import com.cmcorg20230301.be.engine.model.model.dto.NotEmptyIdSet;
 import com.cmcorg20230301.be.engine.model.model.dto.NotNullId;
 import com.cmcorg20230301.be.engine.security.model.vo.ApiResultVO;
+
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import javax.annotation.Resource;
-import javax.validation.Valid;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/sys/im/session/apply")
@@ -32,29 +31,28 @@ public class SysImSessionApplyController {
 
     @Operation(summary = "分页排序查询-搜索新的朋友列表")
     @PostMapping("/privateChat/findNew/page")
-    public ApiResultVO<Page<SysImSessionApplyPrivateChatFindNewPageVO>> privateChatFindNewPage(
-        @RequestBody @Valid SysImSessionApplyPrivateChatFindNewPageDTO dto) {
+    public ApiResultVO<Page<SysImSessionApplyPrivateChatFindNewPageVO>>
+        privateChatFindNewPage(@RequestBody @Valid SysImSessionApplyPrivateChatFindNewPageDTO dto) {
         return ApiResultVO.okData(baseService.privateChatFindNewPage(dto));
     }
 
     @Operation(summary = "分页排序查询-私聊申请列表-自我")
     @PostMapping("/privateChat/apply/page/self")
-    public ApiResultVO<Page<SysImSessionApplyPrivateChatApplySelfPageVO>> privateChatApplyPageSelf(
-        @RequestBody @Valid SysImSessionApplyPrivateChatApplySelfPageDTO dto) {
+    public ApiResultVO<Page<SysImSessionApplyPrivateChatApplySelfPageVO>>
+        privateChatApplyPageSelf(@RequestBody @Valid SysImSessionApplyPrivateChatApplySelfPageDTO dto) {
         return ApiResultVO.okData(baseService.privateChatApplyPageSelf(dto));
     }
 
     @Operation(summary = "分页排序查询-好友列表-自我")
     @PostMapping("/privateChat/page/self")
-    public ApiResultVO<Page<SysImSessionApplyPrivateChatSelfPageVO>> privateChatPageSelf(
-        @RequestBody @Valid SysImSessionApplyPrivateChatSelfPageDTO dto) {
+    public ApiResultVO<Page<SysImSessionApplyPrivateChatSelfPageVO>>
+        privateChatPageSelf(@RequestBody @Valid SysImSessionApplyPrivateChatSelfPageDTO dto) {
         return ApiResultVO.okData(baseService.privateChatPageSelf(dto));
     }
 
     @Operation(summary = "私聊：申请添加")
     @PostMapping("/privateChat/apply")
-    public ApiResultVO<String> privateChatApply(
-        @RequestBody @Valid SysImSessionApplyPrivateChatApplyDTO dto) {
+    public ApiResultVO<String> privateChatApply(@RequestBody @Valid SysImSessionApplyPrivateChatApplyDTO dto) {
         return ApiResultVO.okMsg(baseService.privateChatApply(dto));
     }
 
@@ -66,8 +64,7 @@ public class SysImSessionApplyController {
 
     @Operation(summary = "私聊：拒绝添加")
     @PostMapping("/privateChat/reject")
-    public ApiResultVO<String> privateChatReject(
-        @RequestBody @Valid SysImSessionApplyPrivateChatRejectDTO dto) {
+    public ApiResultVO<String> privateChatReject(@RequestBody @Valid SysImSessionApplyPrivateChatRejectDTO dto) {
         return ApiResultVO.okMsg(baseService.privateChatReject(dto));
     }
 
@@ -79,8 +76,7 @@ public class SysImSessionApplyController {
 
     @Operation(summary = "私聊：拉黑取消")
     @PostMapping("/privateChat/block/cancel")
-    public ApiResultVO<String> privateChatBlockCancel(
-        @RequestBody @Valid NotEmptyIdSet notEmptyIdSet) {
+    public ApiResultVO<String> privateChatBlockCancel(@RequestBody @Valid NotEmptyIdSet notEmptyIdSet) {
         return ApiResultVO.okMsg(baseService.privateChatBlockCancel(notEmptyIdSet));
     }
 

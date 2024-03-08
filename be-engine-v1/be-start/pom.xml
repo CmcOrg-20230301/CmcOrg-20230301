@@ -1,41 +1,41 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0"
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <modelVersion>4.0.0</modelVersion>
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
 
-  <parent>
-    <groupId>com.cmcorg20230301</groupId>
-    <artifactId>be-engine-v1</artifactId>
-    <version>2023.3.1</version>
-  </parent>
+    <parent>
+        <groupId>com.cmcorg20230301</groupId>
+        <artifactId>be-engine-v1</artifactId>
+        <version>2023.3.1</version>
+    </parent>
 
-  <!-- 备注：不建议直接引入本依赖，原因：会增加打包之后的体积，而是引入下面这个依赖 -->
-  <!-- be-start-jar -->
-  <!--    <dependency>-->
-  <!--        <groupId>${cmcorg.groupId}</groupId>-->
-  <!--        <artifactId>be-start-jar</artifactId>-->
-  <!--    </dependency>-->
-  <artifactId>be-start</artifactId>
-  <description>启动包</description>
-
-  <dependencies>
-
+    <!-- 备注：不建议直接引入本依赖，原因：会增加打包之后的体积，而是引入下面这个依赖 -->
     <!-- be-start-jar -->
-    <dependency>
-      <groupId>${cmcorg.groupId}</groupId>
-      <artifactId>be-start-jar</artifactId>
-    </dependency>
+    <!--    <dependency>-->
+    <!--        <groupId>${cmcorg.groupId}</groupId>-->
+    <!--        <artifactId>be-start-jar</artifactId>-->
+    <!--    </dependency>-->
+    <artifactId>be-start</artifactId>
+    <description>启动包</description>
 
-  </dependencies>
+    <dependencies>
 
-  <build>
-    <plugins>
-      <plugin>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-maven-plugin</artifactId>
-      </plugin>
-    </plugins>
-  </build>
+        <!-- be-start-jar -->
+        <dependency>
+            <groupId>${cmcorg.groupId}</groupId>
+            <artifactId>be-start-jar</artifactId>
+        </dependency>
+
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
+        </plugins>
+    </build>
 
 </project>

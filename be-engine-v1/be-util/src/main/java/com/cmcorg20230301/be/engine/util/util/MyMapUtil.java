@@ -6,7 +6,7 @@ public class MyMapUtil {
 
     public static int getInitialCapacity(int size) {
 
-        return (int) (size / MapUtil.DEFAULT_LOAD_FACTOR) + 1;
+        return (int)(size / MapUtil.DEFAULT_LOAD_FACTOR) + 1;
 
     }
 

@@ -1,5 +1,13 @@
 package com.cmcorg20230301.be.engine.sign.single.controller;
 
+import javax.annotation.Resource;
+import javax.validation.Valid;
+
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
 import com.cmcorg20230301.be.engine.model.model.constant.OperationDescriptionConstant;
 import com.cmcorg20230301.be.engine.model.model.dto.NotNullId;
 import com.cmcorg20230301.be.engine.model.model.vo.GetQrCodeVO;
@@ -9,15 +17,9 @@ import com.cmcorg20230301.be.engine.security.model.vo.ApiResultVO;
 import com.cmcorg20230301.be.engine.sign.single.model.dto.SignSingleSignInCodePhoneDTO;
 import com.cmcorg20230301.be.engine.sign.single.model.dto.SignSingleSignInSendCodePhoneDTO;
 import com.cmcorg20230301.be.engine.sign.single.service.SignSingleService;
+
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
-import javax.annotation.Resource;
-import javax.validation.Valid;
 
 @RestController
 @RequestMapping(value = "/sign/single")
@@ -47,15 +49,13 @@ public class SignSingleController {
 
     @PostMapping(value = "/sign/in/sendCode/phone")
     @Operation(summary = "统一登录：手机验证码登录：发送验证码")
-    public ApiResultVO<String> signInSendCodePhone(
-        @RequestBody @Valid SignSingleSignInSendCodePhoneDTO dto) {
+    public ApiResultVO<String> signInSendCodePhone(@RequestBody @Valid SignSingleSignInSendCodePhoneDTO dto) {
         return ApiResultVO.okMsg(baseService.signInSendCodePhone(dto));
     }
 
     @PostMapping(value = "/sign/in/code/phone")
     @Operation(summary = "统一登录：手机验证码登录", description = OperationDescriptionConstant.SIGN_IN)
-    public ApiResultVO<SignInVO> signInCodePhone(
-        @RequestBody @Valid SignSingleSignInCodePhoneDTO dto) {
+    public ApiResultVO<SignInVO> signInCodePhone(@RequestBody @Valid SignSingleSignInCodePhoneDTO dto) {
         return ApiResultVO.okData(baseService.signInCodePhone(dto));
     }
 
