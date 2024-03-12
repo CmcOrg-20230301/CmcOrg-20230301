@@ -150,7 +150,8 @@ public class WxUtil {
 
         SysOtherAppDO sysOtherAppDO = sysOtherAppService.lambdaQuery().eq(BaseEntityNoIdSuper::getTenantId, tenantId)
             .eq(SysOtherAppDO::getAppId, appId).eq(BaseEntityNoId::getEnableFlag, true)
-            .eq(SysOtherAppDO::getType, SysOtherAppTypeEnum.WX_OFFICIAL_ACCOUNT).select(SysOtherAppDO::getSecret).one();
+            .eq(SysOtherAppDO::getType, SysOtherAppTypeEnum.WX_OFFICIAL_ACCOUNT)
+            .select(SysOtherAppDO::getSecret, SysOtherAppDO::getAppId).one();
 
         String errorMessageStr = "browserOpenId";
 
@@ -164,6 +165,8 @@ public class WxUtil {
         WxOpenIdVO wxOpenIdVO = JSONUtil.toBean(jsonStr, WxOpenIdVO.class);
 
         checkWxVO(wxOpenIdVO, errorMessageStr, tenantId, appId); // 检查：微信回调 vo对象
+
+        wxOpenIdVO.setAppId(sysOtherAppDO.getAppId());
 
         return wxOpenIdVO;
 
