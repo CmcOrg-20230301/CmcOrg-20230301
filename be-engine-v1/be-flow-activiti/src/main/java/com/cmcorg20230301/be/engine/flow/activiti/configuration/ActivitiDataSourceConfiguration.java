@@ -49,6 +49,9 @@ public class ActivitiDataSourceConfiguration extends AbstractProcessEngineAutoCo
         return DataSourceBuilder.create().build();
     }
 
+    /**
+     * 备注：全部拷贝：{@link org.activiti.spring.boot.ProcessEngineAutoConfiguration}
+     */
     @Bean
     public SpringProcessEngineConfiguration springProcessEngineConfiguration(
         @Qualifier(value = "activitiDataSource") DataSource dataSource, PlatformTransactionManager transactionManager,
