@@ -8,6 +8,7 @@ import org.springframework.boot.autoconfigure.AutoConfigureOrder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
 import org.springframework.core.task.TaskExecutor;
 import org.springframework.scheduling.TaskScheduler;
 import org.springframework.scheduling.annotation.EnableAsync;
@@ -64,6 +65,7 @@ public class BaseConfiguration {
      * 设置：@Async的线程池
      */
     @Bean
+    @Primary
     public TaskExecutor myTaskExecutor() {
 
         int availableProcessors = Runtime.getRuntime().availableProcessors();
@@ -96,6 +98,7 @@ public class BaseConfiguration {
      * 设置：@Scheduled 的线程池，备注：额外加了 @Async注解，会在 @Async的线程池里面执行
      */
     @Bean
+    @Primary
     public TaskScheduler myTaskScheduler() {
 
         int availableProcessors = Runtime.getRuntime().availableProcessors();
