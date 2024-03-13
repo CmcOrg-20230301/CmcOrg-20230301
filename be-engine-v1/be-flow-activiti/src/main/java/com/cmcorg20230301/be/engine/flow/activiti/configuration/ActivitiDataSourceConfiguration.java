@@ -15,7 +15,6 @@ import org.activiti.spring.SpringAsyncExecutor;
 import org.activiti.spring.SpringProcessEngineConfiguration;
 import org.activiti.spring.boot.AbstractProcessEngineAutoConfiguration;
 import org.activiti.spring.boot.ActivitiProperties;
-import org.activiti.spring.boot.ProcessEngineAutoConfiguration;
 import org.activiti.spring.boot.ProcessEngineConfigurationConfigurer;
 import org.activiti.spring.boot.process.validation.AsyncPropertyValidator;
 import org.activiti.spring.resources.ResourceFinder;
@@ -25,9 +24,6 @@ import org.activiti.validation.validator.ValidatorSet;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
-import org.springframework.boot.autoconfigure.AutoConfigureBefore;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
-import org.springframework.boot.autoconfigure.task.TaskExecutionAutoConfiguration;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.context.annotation.Bean;
@@ -35,11 +31,10 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.Resource;
 import org.springframework.transaction.PlatformTransactionManager;
 
+import com.cmcorg20230301.be.engine.security.configuration.base.BaseConfiguration;
+
 @Configuration
-@AutoConfigureBefore(value = {ProcessEngineAutoConfiguration.class})
-// @AutoConfigureAfter(name = {"org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration",
-// "org.springframework.boot.autoconfigure.task.TaskExecutionAutoConfiguration"})
-@AutoConfigureAfter(value = {TaskExecutionAutoConfiguration.class})
+@AutoConfigureAfter(value = {BaseConfiguration.class}) // 目的：可以注入：springAsyncExecutor
 public class ActivitiDataSourceConfiguration extends AbstractProcessEngineAutoConfiguration {
 
     private final UserGroupManager userGroupManager;
@@ -55,11 +50,9 @@ public class ActivitiDataSourceConfiguration extends AbstractProcessEngineAutoCo
     }
 
     @Bean
-    @ConditionalOnMissingBean
     public SpringProcessEngineConfiguration springProcessEngineConfiguration(
         @Qualifier(value = "activitiDataSource") DataSource dataSource, PlatformTransactionManager transactionManager,
-        @Qualifier(value = "myTaskExecutor") SpringAsyncExecutor springAsyncExecutor,
-        ActivitiProperties activitiProperties, ResourceFinder resourceFinder,
+        SpringAsyncExecutor springAsyncExecutor, ActivitiProperties activitiProperties, ResourceFinder resourceFinder,
         List<ResourceFinderDescriptor> resourceFinderDescriptors, ProjectModelService projectModelService,
         @Autowired(required = false) List<ProcessEngineConfigurationConfigurer> processEngineConfigurationConfigurers,
         @Autowired(required = false) List<ProcessEngineConfigurator> processEngineConfigurators) throws IOException {
