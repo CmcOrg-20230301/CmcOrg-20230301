@@ -89,10 +89,18 @@
         <module>be-other-app-baidu</module>
         <module>be-im-session</module>
         <module>be-api-token</module>
+        <module>be-flow-activiti</module>
     </modules>
 
     <dependencyManagement>
         <dependencies>
+
+            <!-- be-flow-activiti -->
+            <dependency>
+                <groupId>${cmcorg.groupId}</groupId>
+                <artifactId>be-flow-activiti</artifactId>
+                <version>${cmcorg.version}</version>
+            </dependency>
 
             <!-- be-api-token -->
             <dependency>
@@ -521,6 +529,13 @@
                 <groupId>com.alibaba.cloud</groupId>
                 <artifactId>spring-cloud-starter-alibaba-nacos-config</artifactId>
                 <version>2021.0.5.0</version>
+            </dependency>
+
+            <!-- 工作流-activiti -->
+            <dependency>
+                <groupId>org.activiti</groupId>
+                <artifactId>activiti-spring-boot-starter</artifactId>
+                <version>7.1.0.M6</version>
             </dependency>
 
             <!-- POI依赖，读取 .docx型文档-->

@@ -133,6 +133,10 @@ public class SysImSessionServiceImpl extends ServiceImpl<SysImSessionMapper, Sys
     private void myPageQueryContentInfo(boolean queryNoJoinSessionContentFlag, List<SysImSessionDO> sysImSessionDOList,
         @Nullable Map<Long, Long> lastOpenTsMap) {
 
+        if (CollUtil.isEmpty(sysImSessionDOList)) {
+            return;
+        }
+
         // 查询：未读的消息数量和最后一条未读的消息内容
         Map<Long, SysImSessionDO> sessionMap =
             sysImSessionDOList.stream().collect(Collectors.toMap(BaseEntity::getId, it -> it));

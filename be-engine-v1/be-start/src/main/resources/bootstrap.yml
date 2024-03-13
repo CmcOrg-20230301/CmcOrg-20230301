@@ -35,3 +35,5 @@ spring:
 
           - data-id: refresh.yml
             refresh: true
+
+          - data-id: activiti.yml
