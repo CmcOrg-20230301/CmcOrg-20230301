@@ -294,7 +294,7 @@ public class SysImSessionApplyServiceImpl extends ServiceImpl<SysImSessionApplyM
         boolean exists = ChainWrappers.lambdaQueryChain(sysUserMapper).eq(BaseEntity::getId, targetUserId)
             .eq(BaseEntityNoIdSuper::getTenantId, tenantId).exists();
 
-        if (exists) {
+        if (!exists) {
             ApiResultVO.error("操作失败：目标用户不存在", targetUserId);
         }
 
