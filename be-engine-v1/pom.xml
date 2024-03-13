@@ -536,6 +536,12 @@
                 <groupId>org.activiti</groupId>
                 <artifactId>activiti-spring-boot-starter</artifactId>
                 <version>7.1.0.M6</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.mybatis</groupId>
+                        <artifactId>mybatis</artifactId>
+                    </exclusion>
+                </exclusions>
             </dependency>
 
             <!-- POI依赖，读取 .docx型文档-->
