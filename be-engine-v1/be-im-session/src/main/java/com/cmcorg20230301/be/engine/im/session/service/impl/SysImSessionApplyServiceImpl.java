@@ -77,7 +77,8 @@ public class SysImSessionApplyServiceImpl extends ServiceImpl<SysImSessionApplyM
             .like(StrUtil.isNotBlank(dto.getNickname()), SysUserInfoDO::getNickname, dto.getNickname()) //
             .eq(SysUserInfoDO::getTenantId, tenantId) //
             .select(SysUserInfoDO::getId, SysUserInfoDO::getAvatarFileId, SysUserInfoDO::getNickname) //
-            .page(dto.updateTimeDescDefaultOrderPage(true));
+            .orderByDesc(SysUserInfoDO::getLastActiveTime) //
+            .page(dto.page(true));
 
         Set<Long> avatarFileIdSet = new HashSet<>();
 
