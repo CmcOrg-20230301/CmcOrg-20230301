@@ -37,7 +37,7 @@ import lombok.extern.slf4j.Slf4j;
 public class SysOtherAppWxOfficialAccountReceiveMessageListener {
 
     public static final List<String> TOPIC_LIST =
-        CollUtil.newArrayList(KafkaTopicEnum.SYS_OTHER_APP_WX_OFFICIAL_ACCOUN_RECEIVE_MESSAGE_TOPIC.name());
+        CollUtil.newArrayList(KafkaTopicEnum.SYS_OTHER_APP_WX_OFFICIAL_ACCOUNT_RECEIVE_MESSAGE_TOPIC.name());
 
     // 目的：Long 转 String，Enum 转 code
     private static ObjectMapper objectMapper;

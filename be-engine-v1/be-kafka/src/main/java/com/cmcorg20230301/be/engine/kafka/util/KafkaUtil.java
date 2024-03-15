@@ -63,7 +63,7 @@ public class KafkaUtil {
     public static void
         sendSysOtherAppWxOfficialAccountReceiveMessageDTO(Object sysOtherAppWxOfficialAccountReceiveMessageDTO) {
 
-        send(KafkaTopicEnum.SYS_OTHER_APP_WX_OFFICIAL_ACCOUN_RECEIVE_MESSAGE_TOPIC,
+        send(KafkaTopicEnum.SYS_OTHER_APP_WX_OFFICIAL_ACCOUNT_RECEIVE_MESSAGE_TOPIC,
             sysOtherAppWxOfficialAccountReceiveMessageDTO);
 
     }
