@@ -9,14 +9,14 @@
 
         SELECT
 
-        a.private_chat_ref_user_id AS privateChatRefUserId,
-        a.remark AS remark,
         a.session_id AS id,
         a.last_open_ts AS lastOpenTs,
         a.avatar_file_id AS avatarFileId,
         a.avatar_file_id AS showAvatarFileId,
         a.name AS name,
-        a.name AS showName
+        a.name AS showName,
+        b.private_chat_ref_user_id AS privateChatRefUserId,
+        b.remark AS remark
 
         FROM sys_im_session_ref_user a
 
@@ -24,13 +24,15 @@
 
         WHERE
 
-        a.show_flag = TRUE
+        b.show_flag = TRUE
 
         <if test="dto.privateChatRefUserId != null">
-            AND a.private_chat_ref_user_id = #{dto.privateChatRefUserId}
+            AND b.private_chat_ref_user_id = #{dto.privateChatRefUserId}
         </if>
 
         AND a.user_id = #{dto.userId}
+
+        AND b.user_id = #{dto.userId}
 
         AND a.tenant_id = #{dto.tenantId}
 
