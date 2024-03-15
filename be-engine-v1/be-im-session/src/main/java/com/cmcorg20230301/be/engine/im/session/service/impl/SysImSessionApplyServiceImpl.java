@@ -272,11 +272,15 @@ public class SysImSessionApplyServiceImpl extends ServiceImpl<SysImSessionApplyM
 
         Map<Long, Long> applyUserIdAndSessionIdMap = pageTemp.getRecords().stream().collect(Collectors.toMap((it -> {
 
-            return it.getUserId() == null ? it.getPrivateChatApplyTargetUserId() : it.getUserId();
+            return it.getUserId().equals(userId) ? it.getPrivateChatApplyTargetUserId() : it.getUserId();
 
         }), SysImSessionApplyDO::getSessionId, (v1, v2) -> v1));
 
         applyUserIdAndSessionIdMap.remove(userId); // 移除：当前用户
+
+        if (CollUtil.isEmpty(applyUserIdAndSessionIdMap)) {
+            return new Page<>();
+        }
 
         List<SysUserInfoDO> sysUserInfoDOList =
             baseSysUserInfoService.lambdaQuery().eq(SysUserInfoDO::getTenantId, tenantId) //
