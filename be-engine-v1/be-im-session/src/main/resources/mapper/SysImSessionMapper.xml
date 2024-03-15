@@ -14,7 +14,9 @@
         a.session_id AS id,
         a.last_open_ts AS lastOpenTs,
         a.avatar_file_id AS avatarFileId,
-        a.name AS name
+        a.avatar_file_id AS showAvatarFileId,
+        a.name AS name,
+        a.name AS showName
 
         FROM sys_im_session_ref_user a
 
