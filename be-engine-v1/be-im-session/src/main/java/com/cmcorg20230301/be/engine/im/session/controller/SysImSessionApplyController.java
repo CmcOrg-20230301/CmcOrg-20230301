@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.cmcorg20230301.be.engine.im.session.model.dto.*;
+import com.cmcorg20230301.be.engine.im.session.model.vo.SysImSessionApplyPrivateChatApplyInitiateSelfPageVO;
 import com.cmcorg20230301.be.engine.im.session.model.vo.SysImSessionApplyPrivateChatApplySelfPageVO;
 import com.cmcorg20230301.be.engine.im.session.model.vo.SysImSessionApplyPrivateChatFindNewPageVO;
 import com.cmcorg20230301.be.engine.im.session.model.vo.SysImSessionApplyPrivateChatSelfPageVO;
@@ -36,7 +37,14 @@ public class SysImSessionApplyController {
         return ApiResultVO.okData(baseService.privateChatFindNewPage(dto));
     }
 
-    @Operation(summary = "分页排序查询-私聊申请列表-自我")
+    @Operation(summary = "分页排序查询-私聊申请他人列表-自我")
+    @PostMapping("/privateChat/apply/initiate/page/self")
+    public ApiResultVO<Page<SysImSessionApplyPrivateChatApplyInitiateSelfPageVO>>
+        privateChatApplyInitiatePageSelf(@RequestBody @Valid SysImSessionApplyPrivateChatApplyInitiateSelfPageDTO dto) {
+        return ApiResultVO.okData(baseService.privateChatApplyInitiatePageSelf(dto));
+    }
+
+    @Operation(summary = "分页排序查询-他人私聊申请列表-自我")
     @PostMapping("/privateChat/apply/page/self")
     public ApiResultVO<Page<SysImSessionApplyPrivateChatApplySelfPageVO>>
         privateChatApplyPageSelf(@RequestBody @Valid SysImSessionApplyPrivateChatApplySelfPageDTO dto) {
