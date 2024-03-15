@@ -39,6 +39,7 @@ import com.cmcorg20230301.be.engine.security.model.entity.SysUserInfoDO;
 import com.cmcorg20230301.be.engine.security.model.vo.ApiResultVO;
 import com.cmcorg20230301.be.engine.security.service.BaseSysUserInfoService;
 import com.cmcorg20230301.be.engine.security.util.MyEntityUtil;
+import com.cmcorg20230301.be.engine.security.util.SysUserInfoUtil;
 import com.cmcorg20230301.be.engine.security.util.UserUtil;
 
 import cn.hutool.core.collection.CollUtil;
@@ -152,6 +153,12 @@ public class SysImSessionApplyServiceImpl extends ServiceImpl<SysImSessionApplyM
             baseSysUserInfoService.lambdaQuery().eq(SysUserInfoDO::getTenantId, tenantId) //
                 .in(SysUserInfoDO::getId, applyUserIdSet) //
                 .select(SysUserInfoDO::getId, SysUserInfoDO::getAvatarFileId, SysUserInfoDO::getNickname).list();
+
+        if (applyUserIdSet.contains(BaseConstant.ADMIN_ID)) {
+
+            sysUserInfoDOList.add(SysUserInfoUtil.getAdminUserInfoDO());
+
+        }
 
         Set<Long> avatarFileIdSet = new HashSet<>();
 
