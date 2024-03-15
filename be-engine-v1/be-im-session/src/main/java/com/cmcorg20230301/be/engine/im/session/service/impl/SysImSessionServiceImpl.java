@@ -348,7 +348,11 @@ public class SysImSessionServiceImpl extends ServiceImpl<SysImSessionMapper, Sys
 
         Long userId = UserUtil.getCurrentUserId();
 
+        Long tenantId = UserUtil.getCurrentTenantIdDefault();
+
         dto.setUserId(userId);
+
+        dto.setTenantId(tenantId);
 
         Page<SysImSessionDO> page = baseMapper.myPageSelf(dto.page(), dto);
 
