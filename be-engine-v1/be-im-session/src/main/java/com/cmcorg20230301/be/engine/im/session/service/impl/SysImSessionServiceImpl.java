@@ -76,6 +76,8 @@ public class SysImSessionServiceImpl extends ServiceImpl<SysImSessionMapper, Sys
 
             sysImSessionDO.setLastReceiveContentTs(-1L);
 
+            sysImSessionDO.setAvatarFileId(MyEntityUtil.getNotNullLong(dto.getAvatarFileId()));
+
         }
 
         sysImSessionDO.setId(dto.getId());

@@ -12,7 +12,9 @@
         a.private_chat_ref_user_id AS privateChatRefUserId,
         a.remark AS remark,
         a.session_id AS id,
-        a.last_open_ts AS lastOpenTs
+        a.last_open_ts AS lastOpenTs,
+        a.avatar_file_id AS avatarFileId,
+        a.name AS name
 
         FROM sys_im_session_ref_user a
 

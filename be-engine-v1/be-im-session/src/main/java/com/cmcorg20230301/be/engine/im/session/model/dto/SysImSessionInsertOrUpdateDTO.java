@@ -1,12 +1,13 @@
 package com.cmcorg20230301.be.engine.im.session.model.dto;
 
+import javax.validation.constraints.NotNull;
+
 import com.cmcorg20230301.be.engine.im.session.model.configuration.ISysImSessionType;
 import com.cmcorg20230301.be.engine.model.model.dto.BaseTenantInsertOrUpdateDTO;
+
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-
-import javax.validation.constraints.NotNull;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
@@ -24,5 +25,8 @@ public class SysImSessionInsertOrUpdateDTO extends BaseTenantInsertOrUpdateDTO {
 
     @Schema(description = "备注")
     private String remark;
+
+    @Schema(description = "头像 fileId（文件主键 id）")
+    private Long avatarFileId;
 
 }
