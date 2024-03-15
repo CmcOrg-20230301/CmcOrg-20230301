@@ -257,43 +257,36 @@ public class SysImSessionApplyServiceImpl extends ServiceImpl<SysImSessionApplyM
 
         Long tenantId = UserUtil.getCurrentTenantIdDefault();
 
-        Page<SysImSessionApplyDO> pageTemp = lambdaQuery().eq(BaseEntityNoIdSuper::getTenantId, tenantId)
-            .eq(SysImSessionApplyDO::getPrivateChatApplyTargetUserId, userId)
-            .eq(SysImSessionApplyDO::getStatus, SysImSessionApplyStatusEnum.PASSED)
-            .select(SysImSessionApplyDO::getUserId, SysImSessionApplyDO::getSessionId)
-            .page(dto.updateTimeDescDefaultOrderPage(true));
+        Page<SysImSessionApplyDO> pageTemp =
+            lambdaQuery().eq(BaseEntityNoIdSuper::getTenantId, tenantId)
+                .and(i -> i.eq(SysImSessionApplyDO::getPrivateChatApplyTargetUserId, userId).or()
+                    .eq(SysImSessionApplyDO::getUserId, userId))
+                .eq(SysImSessionApplyDO::getStatus, SysImSessionApplyStatusEnum.PASSED)
+                .select(SysImSessionApplyDO::getUserId, SysImSessionApplyDO::getSessionId,
+                    SysImSessionApplyDO::getPrivateChatApplyTargetUserId)
+                .page(dto.updateTimeDescDefaultOrderPage(true));
 
         if (CollUtil.isEmpty(pageTemp.getRecords())) {
             return new Page<>();
         }
 
-        Map<Long, Long> applyUserIdAndSessionIdMap = pageTemp.getRecords().stream()
-            .collect(Collectors.toMap(SysImSessionApplyDO::getUserId, SysImSessionApplyDO::getSessionId));
+        Map<Long, Long> applyUserIdAndSessionIdMap = pageTemp.getRecords().stream().collect(Collectors.toMap((it -> {
+
+            return it.getUserId() == null ? it.getPrivateChatApplyTargetUserId() : it.getUserId();
+
+        }), SysImSessionApplyDO::getSessionId, (v1, v2) -> v1));
+
+        applyUserIdAndSessionIdMap.remove(userId); // 移除：当前用户
 
         List<SysUserInfoDO> sysUserInfoDOList =
             baseSysUserInfoService.lambdaQuery().eq(SysUserInfoDO::getTenantId, tenantId) //
                 .in(SysUserInfoDO::getId, applyUserIdAndSessionIdMap.keySet()) //
                 .select(SysUserInfoDO::getId, SysUserInfoDO::getAvatarFileId, SysUserInfoDO::getNickname).list();
 
-        Set<Long> avatarFileIdSet = new HashSet<>();
+        Set<Long> avatarFileIdSet =
+            sysUserInfoDOList.stream().map(SysUserInfoDO::getAvatarFileId).collect(Collectors.toSet());
 
-        for (SysUserInfoDO item : sysUserInfoDOList) {
-
-            if (item.getAvatarFileId() != -1) {
-
-                avatarFileIdSet.add(item.getAvatarFileId());
-
-            }
-
-        }
-
-        Map<Long, String> avatarUrlMap = MapUtil.newHashMap();
-
-        if (CollUtil.isNotEmpty(avatarFileIdSet)) {
-
-            avatarUrlMap = sysFileService.getPublicUrl(new NotEmptyIdSet(avatarFileIdSet)).getMap();
-
-        }
+        Map<Long, String> avatarUrlMap = sysFileService.getPublicUrl(new NotEmptyIdSet(avatarFileIdSet)).getMap();
 
         List<SysImSessionApplyPrivateChatSelfPageVO> list = new ArrayList<>(sysUserInfoDOList.size());
 
@@ -305,13 +298,7 @@ public class SysImSessionApplyServiceImpl extends ServiceImpl<SysImSessionApplyM
             sysImSessionApplyPrivateChatSelfPageVO.setUserId(item.getId());
             sysImSessionApplyPrivateChatSelfPageVO.setNickname(item.getNickname());
 
-            if (item.getAvatarFileId() != -1) {
-
-                String avatarUrl = avatarUrlMap.get(item.getAvatarFileId());
-
-                sysImSessionApplyPrivateChatSelfPageVO.setAvatarUrl(avatarUrl);
-
-            }
+            sysImSessionApplyPrivateChatSelfPageVO.setAvatarUrl(avatarUrlMap.get(item.getAvatarFileId()));
 
             Long sessionId = applyUserIdAndSessionIdMap.get(item.getId());
 
