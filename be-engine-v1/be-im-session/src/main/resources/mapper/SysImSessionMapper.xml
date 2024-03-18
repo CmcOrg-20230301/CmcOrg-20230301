@@ -11,12 +11,12 @@
 
         a.session_id AS id,
         a.last_open_ts AS lastOpenTs,
-        a.avatar_file_id AS avatarFileId,
-        a.avatar_file_id AS showAvatarFileId,
-        a.name AS name,
-        a.name AS showName,
-        b.private_chat_ref_user_id AS privateChatRefUserId,
-        b.remark AS remark
+        a.remark AS remark,
+        b.avatar_file_id AS avatarFileId,
+        b.avatar_file_id AS showAvatarFileId,
+        b.name AS name,
+        b.name AS showName,
+        b.private_chat_ref_user_id AS privateChatRefUserId
 
         FROM sys_im_session_ref_user a
 

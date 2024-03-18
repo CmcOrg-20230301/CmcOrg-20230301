@@ -171,68 +171,78 @@ public class SysImSessionServiceImpl extends ServiceImpl<SysImSessionMapper, Sys
 
             Long sessionId = item.getId();
 
-            // 最后一次：打开该会话的时间戳
-            Long lastOpenTs = lastOpenTsMap.get(sessionId);
-
-            if (lastOpenTs == null) {
-
-                if (queryNoJoinSessionContentFlag) {
-
-                    lastOpenTs = 0L;
-
-                } else {
-
-                    countDownLatch.countDown();
-                    continue;
-
-                }
-
-            }
-
-            Long finalLastOpenTs = lastOpenTs;
-
-            MyThreadUtil.execute(() -> {
-
-                // 未读消息的数量
-                Long unreadContentTotal = ChainWrappers.lambdaQueryChain(sysImSessionContentMapper)
-                    .eq(SysImSessionContentDO::getSessionId, sessionId).eq(SysImSessionContentDO::getShowFlag, true)
-                    .gt(SysImSessionContentDO::getCreateTs, finalLastOpenTs).count();
-
-                if (unreadContentTotal > 99) {
-
-                    item.setUnreadContentTotal(100);
-
-                } else {
-
-                    item.setUnreadContentTotal(unreadContentTotal.intValue());
-
-                }
-
-                // 查询出：最后一条消息
-                Page<SysImSessionContentDO> sessionContentPage =
-                    ChainWrappers.lambdaQueryChain(sysImSessionContentMapper)
-                        .eq(SysImSessionContentDO::getSessionId, sessionId).eq(SysImSessionContentDO::getShowFlag, true)
-                        .select(SysImSessionContentDO::getContent, SysImSessionContentDO::getCreateTs,
-                            SysImSessionContentDO::getType)
-                        .orderByDesc(SysImSessionContentDO::getCreateTs).page(MyPageUtil.getLimit1Page());
-
-                if (CollUtil.isEmpty(sessionContentPage.getRecords())) {
-                    return;
-                }
-
-                SysImSessionContentDO sysImSessionContentDO = sessionContentPage.getRecords().get(0);
-
-                item.setLastContent(sysImSessionContentDO.getContent());
-
-                item.setLastContentType(sysImSessionContentDO.getType());
-
-                item.setLastContentCreateTs(sysImSessionContentDO.getCreateTs());
-
-            }, countDownLatch);
+            // 处理：最后打开时间
+            handleLastOpenTs(item, sessionId, countDownLatch, lastOpenTsMap, queryNoJoinSessionContentFlag);
 
         }
 
         countDownLatch.await();
+
+    }
+
+    /**
+     * 处理：最后打开时间
+     */
+    private void handleLastOpenTs(SysImSessionDO item, Long sessionId, CountDownLatch countDownLatch,
+        Map<Long, Long> lastOpenTsMap, boolean queryNoJoinSessionContentFlag) {
+
+        // 最后一次：打开该会话的时间戳
+        Long lastOpenTs = lastOpenTsMap.get(sessionId);
+
+        if (lastOpenTs == null) {
+
+            if (queryNoJoinSessionContentFlag) {
+
+                lastOpenTs = 0L;
+
+            } else {
+
+                countDownLatch.countDown();
+                return;
+
+            }
+
+        }
+
+        Long finalLastOpenTs = lastOpenTs;
+
+        MyThreadUtil.execute(() -> {
+
+            // 未读消息的数量
+            Long unreadContentTotal = ChainWrappers.lambdaQueryChain(sysImSessionContentMapper)
+                .eq(SysImSessionContentDO::getSessionId, sessionId).eq(SysImSessionContentDO::getShowFlag, true)
+                .gt(SysImSessionContentDO::getCreateTs, finalLastOpenTs).count();
+
+            if (unreadContentTotal > 99) {
+
+                item.setUnreadContentTotal(100);
+
+            } else {
+
+                item.setUnreadContentTotal(unreadContentTotal.intValue());
+
+            }
+
+            // 查询出：最后一条消息
+            Page<SysImSessionContentDO> sessionContentPage = ChainWrappers.lambdaQueryChain(sysImSessionContentMapper)
+                .eq(SysImSessionContentDO::getSessionId, sessionId).eq(SysImSessionContentDO::getShowFlag, true)
+                .select(SysImSessionContentDO::getContent, SysImSessionContentDO::getCreateTs,
+                    SysImSessionContentDO::getType)
+                .orderByDesc(SysImSessionContentDO::getCreateTs).page(MyPageUtil.getLimit1Page());
+
+            if (CollUtil.isEmpty(sessionContentPage.getRecords())) {
+                return;
+            }
+
+            SysImSessionContentDO sysImSessionContentDO = sessionContentPage.getRecords().get(0);
+
+            item.setLastContent(sysImSessionContentDO.getContent());
+
+            item.setLastContentType(sysImSessionContentDO.getType());
+
+            item.setLastContentCreateTs(sysImSessionContentDO.getCreateTs());
+
+        }, countDownLatch);
 
     }
 

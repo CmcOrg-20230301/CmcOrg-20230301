@@ -62,7 +62,7 @@ public class SysImSessionDO extends BaseEntity {
     private Long lastOpenTs;
 
     @TableField(exist = false)
-    @Schema(description = "该会话的展示头像地址")
+    @Schema(description = "该会话的展示头像 fileId")
     private Long showAvatarFileId;
 
     @TableField(exist = false)
