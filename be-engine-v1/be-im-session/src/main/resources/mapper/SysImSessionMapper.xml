@@ -32,8 +32,6 @@
 
         AND a.user_id = #{dto.userId}
 
-        AND b.user_id = #{dto.userId}
-
         AND a.tenant_id = #{dto.tenantId}
 
         ORDER BY b.last_receive_content_ts
