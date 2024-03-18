@@ -24,7 +24,7 @@
 
         WHERE
 
-        b.show_flag = TRUE
+        a.show_flag = TRUE
 
         <if test="dto.privateChatRefUserId != null">
             AND b.private_chat_ref_user_id = #{dto.privateChatRefUserId}
