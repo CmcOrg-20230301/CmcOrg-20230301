@@ -76,6 +76,7 @@ public class SysWxServiceImpl implements SysWxService {
 
         for (SysOtherAppOfficialAccountMenuDO item : tree) {
 
+            // 获取：SysOtherAppOfficialAccountMenuWxBO 对象
             SysOtherAppOfficialAccountMenuWxBO sysOtherAppOfficialAccountMenuWxBO =
                 getSysOtherAppOfficialAccountMenuWxBO(item);
 
@@ -118,6 +119,9 @@ public class SysWxServiceImpl implements SysWxService {
 
     }
 
+    /**
+     * 获取：SysOtherAppOfficialAccountMenuWxBO 对象
+     */
     @NotNull
     private SysOtherAppOfficialAccountMenuWxBO
         getSysOtherAppOfficialAccountMenuWxBO(SysOtherAppOfficialAccountMenuDO item) {
@@ -127,12 +131,21 @@ public class SysWxServiceImpl implements SysWxService {
 
         sysOtherAppOfficialAccountMenuWxBO.setName(item.getName());
 
-        if (item.getButtonType().equals(SysOtherAppOfficialAccountMenuButtonTypeEnum.VIEW)) {
+        if (SysOtherAppOfficialAccountMenuButtonTypeEnum.VIEW.equals(item.getButtonType())) {
 
             sysOtherAppOfficialAccountMenuWxBO
                 .setType(SysOtherAppOfficialAccountMenuWxBO.SysOtherAppOfficialAccountMenuWxType.view);
 
             sysOtherAppOfficialAccountMenuWxBO.setUrl(item.getValue());
+
+        } else if (SysOtherAppOfficialAccountMenuButtonTypeEnum.MINIPROGRAM.equals(item.getButtonType())) {
+
+            sysOtherAppOfficialAccountMenuWxBO
+                .setType(SysOtherAppOfficialAccountMenuWxBO.SysOtherAppOfficialAccountMenuWxType.click);
+
+            sysOtherAppOfficialAccountMenuWxBO.setAppid(item.getValue());
+            sysOtherAppOfficialAccountMenuWxBO.setUrl("http://mp.weixin.qq.com");
+            sysOtherAppOfficialAccountMenuWxBO.setPagepath(item.getPagepath());
 
         } else {
 

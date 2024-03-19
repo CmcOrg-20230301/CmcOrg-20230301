@@ -30,8 +30,11 @@ public class SysOtherAppOfficialAccountMenuDO extends BaseEntityTree<SysOtherApp
     @Schema(description = "按钮类型")
     private SysOtherAppOfficialAccountMenuButtonTypeEnum buttonType;
 
-    @Schema(description = "如果是按钮，则表示按钮的 key，如果是链接，则表示是 url")
+    @Schema(description = "如果是按钮，则表示按钮的 key，如果是链接，则表示是 url，如果是小程序，则表示 appid")
     private String value;
+
+    @Schema(description = "小程序的页面路径")
+    private String pagepath;
 
     @Schema(description = "回复的内容，备注：一般是点击按钮之后，回复的内容")
     private String replyContent;

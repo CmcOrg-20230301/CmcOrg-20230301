@@ -61,6 +61,18 @@ public class SysOtherAppOfficialAccountMenuServiceImpl
         SysTenantUtil.handleBaseTenantInsertOrUpdateDTO(dto, getCheckIllegalFunc1(CollUtil.newHashSet(dto.getId())),
             getTenantIdBaseEntityFunc1());
 
+        if (SysOtherAppOfficialAccountMenuButtonTypeEnum.MINIPROGRAM.equals(dto.getButtonType())) {
+
+            if (StrUtil.isBlank(dto.getPagepath())) {
+                ApiResultVO.error("操作失败：小程序的页面路径不能为空", dto.getName());
+            }
+
+        } else {
+
+            dto.setPagepath("");
+
+        }
+
         Long otherAppId = dto.getOtherAppId();
 
         Set<Long> userRefTenantIdSet = SysTenantUtil.getUserRefTenantIdSet();
@@ -107,6 +119,9 @@ public class SysOtherAppOfficialAccountMenuServiceImpl
         sysOtherAppOfficialAccountMenuDO.setButtonType(dto.getButtonType());
 
         sysOtherAppOfficialAccountMenuDO.setValue(dto.getValue());
+
+        sysOtherAppOfficialAccountMenuDO.setPagepath(MyEntityUtil.getNotNullStr(dto.getPagepath()));
+
         sysOtherAppOfficialAccountMenuDO.setReplyContent(MyEntityUtil.getNotNullStr(dto.getReplyContent()));
 
         sysOtherAppOfficialAccountMenuDO.setOrderNo(MyEntityUtil.getNotNullOrderNo(dto.getOrderNo()));

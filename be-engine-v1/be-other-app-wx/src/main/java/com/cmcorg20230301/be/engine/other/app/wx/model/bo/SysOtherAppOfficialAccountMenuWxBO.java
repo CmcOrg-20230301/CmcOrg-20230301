@@ -1,9 +1,9 @@
 package com.cmcorg20230301.be.engine.other.app.wx.model.bo;
 
+import java.util.List;
+
 import cn.hutool.core.annotation.Alias;
 import lombok.Data;
-
-import java.util.List;
 
 /**
  * 微信公众号，菜单
@@ -17,6 +17,8 @@ public class SysOtherAppOfficialAccountMenuWxBO {
 
         view, // 跳转URL用户点击view类型按钮后，微信客户端将会打开开发者在按钮中填写的网页URL，可与网页授权获取用户基本信息接口结合，获得用户基本信息
 
+        miniprogram, // 小程序
+
         ;
 
     }
@@ -28,6 +30,10 @@ public class SysOtherAppOfficialAccountMenuWxBO {
     private String key; // click
 
     private String url; // view
+
+    private String appid; // miniprogram
+
+    private String pagepath; // miniprogram
 
     @Alias(value = "sub_button")
     private List<SysOtherAppOfficialAccountMenuWxBO> subButton; // 子菜单，自定义菜单最多包括3个一级菜单，每个一级菜单最多包含5个二级菜单
