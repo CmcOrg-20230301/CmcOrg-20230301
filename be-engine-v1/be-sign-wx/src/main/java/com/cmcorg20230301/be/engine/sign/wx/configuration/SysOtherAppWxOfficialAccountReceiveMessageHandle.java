@@ -381,7 +381,30 @@ public class SysOtherAppWxOfficialAccountReceiveMessageHandle
      * 处理：前往小程序事件
      */
     private void handleGoMiniprogram(SysOtherAppWxOfficialAccountReceiveMessageDTO dto,
-        SysOtherAppWxEventValueDTO valueDTO) {}
+        SysOtherAppWxEventValueDTO valueDTO) {
+
+        JSONObject jsonObject = valueDTO.getData();
+
+        String appId = jsonObject.getStr("appId");
+
+        String path = jsonObject.getStr("path");
+
+        if (StrUtil.isBlank(appId) || StrUtil.isBlank(path)) {
+            return;
+        }
+
+        // 移除并获取：showText的值
+        String showText = (String)jsonObject.remove("showText");
+
+        log.info("传递的值：{}", dto.getEventKey());
+
+        String accessToken = getAccessToken(dto);
+
+        // 回复文字内容：给微信公众号
+        WxUtil.execDoTextSend(dto.getFromUserName(), accessToken, "请点击该链接进行操作：<a data-miniprogram-appid=\"" + appId
+            + "\" data-miniprogram-path=\"" + path + "\">" + (StrUtil.isBlank(showText) ? appId : showText) + "</a>");
+
+    }
 
     /**
      * 处理：initBlank事件
