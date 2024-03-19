@@ -12,8 +12,10 @@ import org.redisson.api.RedissonClient;
 
 import com.baomidou.mybatisplus.extension.toolkit.ChainWrappers;
 import com.cmcorg20230301.be.engine.model.model.constant.LogTopicConstant;
+import com.cmcorg20230301.be.engine.model.model.vo.SignInVO;
 import com.cmcorg20230301.be.engine.other.app.mapper.SysOtherAppMapper;
 import com.cmcorg20230301.be.engine.other.app.mapper.SysOtherAppOfficialAccountMenuMapper;
+import com.cmcorg20230301.be.engine.other.app.model.dto.SysOtherAppWxEventValueDTO;
 import com.cmcorg20230301.be.engine.other.app.model.dto.SysOtherAppWxOfficialAccountReceiveMessageDTO;
 import com.cmcorg20230301.be.engine.other.app.model.entity.SysOtherAppDO;
 import com.cmcorg20230301.be.engine.other.app.model.entity.SysOtherAppOfficialAccountMenuDO;
@@ -43,8 +45,11 @@ import com.cmcorg20230301.be.engine.util.util.CallBack;
 import com.cmcorg20230301.be.engine.util.util.VoidFunc3;
 
 import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.net.URLEncodeUtil;
 import cn.hutool.core.util.BooleanUtil;
 import cn.hutool.core.util.StrUtil;
+import cn.hutool.json.JSONObject;
+import cn.hutool.json.JSONUtil;
 import lombok.extern.slf4j.Slf4j;
 
 // @Component
@@ -328,22 +333,111 @@ public class SysOtherAppWxOfficialAccountReceiveMessageHandle
      */
     private void handleEventClick(SysOtherAppWxOfficialAccountReceiveMessageDTO dto) {
 
-        SysOtherAppOfficialAccountMenuDO sysOtherAppOfficialAccountMenuDO = ChainWrappers
-            .lambdaQueryChain(sysOtherAppOfficialAccountMenuMapper)
-            .eq(SysOtherAppOfficialAccountMenuDO::getOtherAppId, dto.getSysOtherAppDO().getId())
-            .eq(BaseEntityNoIdSuper::getTenantId, dto.getSysOtherAppDO().getTenantId())
-            .eq(BaseEntityNoId::getEnableFlag, true) //
-            .eq(SysOtherAppOfficialAccountMenuDO::getType, SysOtherAppOfficialAccountMenuTypeEnum.WX_OFFICIAL_ACCOUNT) //
-            .eq(SysOtherAppOfficialAccountMenuDO::getButtonType, SysOtherAppOfficialAccountMenuButtonTypeEnum.CLICK)
-            .eq(SysOtherAppOfficialAccountMenuDO::getValue, dto.getEventKey())
-            .select(SysOtherAppOfficialAccountMenuDO::getReplyContent).one();
+        String eventKey = dto.getEventKey();
 
-        if (sysOtherAppOfficialAccountMenuDO != null) {
+        boolean typeJSONFlag = JSONUtil.isTypeJSON(eventKey);
 
-            // 回复文字内容：给微信公众号
-            execTextSend(dto, sysOtherAppOfficialAccountMenuDO.getReplyContent());
+        if (typeJSONFlag) {
+
+            SysOtherAppWxEventValueDTO valueDTO = JSONUtil.toBean(eventKey, SysOtherAppWxEventValueDTO.class);
+
+            if ("initBlank".equals(valueDTO.getKey())) {
+
+                // 处理：initBlank事件
+                handleInitBlank(dto, valueDTO);
+
+            } else if ("goMiniprogram".equals(valueDTO.getKey())) {
+
+                // 处理：前往小程序事件
+                handleGoMiniprogram(dto, valueDTO);
+
+            }
+
+        } else {
+
+            SysOtherAppOfficialAccountMenuDO sysOtherAppOfficialAccountMenuDO = ChainWrappers
+                .lambdaQueryChain(sysOtherAppOfficialAccountMenuMapper)
+                .eq(SysOtherAppOfficialAccountMenuDO::getOtherAppId, dto.getSysOtherAppDO().getId())
+                .eq(BaseEntityNoIdSuper::getTenantId, dto.getSysOtherAppDO().getTenantId())
+                .eq(BaseEntityNoId::getEnableFlag, true) //
+                .eq(SysOtherAppOfficialAccountMenuDO::getType,
+                    SysOtherAppOfficialAccountMenuTypeEnum.WX_OFFICIAL_ACCOUNT) //
+                .eq(SysOtherAppOfficialAccountMenuDO::getButtonType, SysOtherAppOfficialAccountMenuButtonTypeEnum.CLICK)
+                .eq(SysOtherAppOfficialAccountMenuDO::getValue, dto.getEventKey())
+                .select(SysOtherAppOfficialAccountMenuDO::getReplyContent).one();
+
+            if (sysOtherAppOfficialAccountMenuDO != null) {
+
+                // 回复文字内容：给微信公众号
+                execTextSend(dto, sysOtherAppOfficialAccountMenuDO.getReplyContent());
+
+            }
 
         }
+
+    }
+
+    /**
+     * 处理：前往小程序事件
+     */
+    private void handleGoMiniprogram(SysOtherAppWxOfficialAccountReceiveMessageDTO dto,
+        SysOtherAppWxEventValueDTO valueDTO) {}
+
+    /**
+     * 处理：initBlank事件
+     */
+    private static void handleInitBlank(SysOtherAppWxOfficialAccountReceiveMessageDTO dto,
+        SysOtherAppWxEventValueDTO valueDTO) {
+
+        JSONObject jsonObject = valueDTO.getData();
+
+        // 移除并获取：host的值
+        String host = (String)jsonObject.remove("host");
+
+        if (StrUtil.isBlank(host)) {
+            return;
+        }
+
+        // 移除并获取：showText的值
+        String showText = (String)jsonObject.remove("showText");
+
+        JSONObject dataJsonObject = new JSONObject();
+
+        JSONObject localStorageDataJsonObject = new JSONObject();
+
+        SignInVO signInVO = SignUtil.signInGetJwt(dto.getSysUserDO());
+
+        localStorageDataJsonObject.set("JWT", signInVO.getJwt());
+
+        localStorageDataJsonObject.set("JWT_EXPIRE_TS", signInVO.getJwtExpireTs());
+
+        localStorageDataJsonObject.set("TENANT_ID", dto.getSysOtherAppDO().getTenantId());
+
+        localStorageDataJsonObject.set("OTHER_APP_ID", dto.getSysOtherAppDO().getId());
+
+        for (Map.Entry<String, Object> item : jsonObject.entrySet()) {
+
+            localStorageDataJsonObject.set(item.getKey(), item.getValue());
+
+        }
+
+        dataJsonObject.set("localStorageData", localStorageDataJsonObject);
+
+        JSONObject sessionStorageDataJsonObject = new JSONObject();
+
+        sessionStorageDataJsonObject.set("TENANT_ID", dto.getSysOtherAppDO().getTenantId());
+
+        dataJsonObject.set("sessionStorageData", sessionStorageDataJsonObject);
+
+        String urlStr = host + "/initBlank?showText=...&data=" + URLEncodeUtil.encode(dataJsonObject.toString());
+
+        log.info("传递的值：{}，返回的链接：{}", dto.getEventKey(), urlStr);
+
+        String accessToken = getAccessToken(dto);
+
+        // 回复文字内容：给微信公众号
+        WxUtil.execDoTextSend(dto.getFromUserName(), accessToken,
+            "请点击该链接进行操作：<a href=\"" + urlStr + "\">" + (StrUtil.isBlank(showText) ? urlStr : showText) + "</a>");
 
     }
 
