@@ -141,7 +141,7 @@ public class SysWxServiceImpl implements SysWxService {
         } else if (SysOtherAppOfficialAccountMenuButtonTypeEnum.MINIPROGRAM.equals(item.getButtonType())) {
 
             sysOtherAppOfficialAccountMenuWxBO
-                .setType(SysOtherAppOfficialAccountMenuWxBO.SysOtherAppOfficialAccountMenuWxType.click);
+                .setType(SysOtherAppOfficialAccountMenuWxBO.SysOtherAppOfficialAccountMenuWxType.miniprogram);
 
             sysOtherAppOfficialAccountMenuWxBO.setAppid(item.getValue());
             sysOtherAppOfficialAccountMenuWxBO.setUrl("http://mp.weixin.qq.com");
