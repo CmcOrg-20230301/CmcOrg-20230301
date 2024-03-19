@@ -145,7 +145,7 @@ public class SysWxServiceImpl implements SysWxService {
 
             sysOtherAppOfficialAccountMenuWxBO.setAppid(item.getValue());
             sysOtherAppOfficialAccountMenuWxBO.setUrl("http://mp.weixin.qq.com");
-            sysOtherAppOfficialAccountMenuWxBO.setPagepath(item.getPagepath());
+            sysOtherAppOfficialAccountMenuWxBO.setPagepath(item.getPagePath());
 
         } else {
 

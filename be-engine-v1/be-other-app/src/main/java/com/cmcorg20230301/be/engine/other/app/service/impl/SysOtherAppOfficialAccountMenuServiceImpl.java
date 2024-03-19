@@ -63,13 +63,13 @@ public class SysOtherAppOfficialAccountMenuServiceImpl
 
         if (SysOtherAppOfficialAccountMenuButtonTypeEnum.MINIPROGRAM.equals(dto.getButtonType())) {
 
-            if (StrUtil.isBlank(dto.getPagepath())) {
+            if (StrUtil.isBlank(dto.getPagePath())) {
                 ApiResultVO.error("操作失败：小程序的页面路径不能为空", dto.getName());
             }
 
         } else {
 
-            dto.setPagepath("");
+            dto.setPagePath("");
 
         }
 
@@ -120,7 +120,7 @@ public class SysOtherAppOfficialAccountMenuServiceImpl
 
         sysOtherAppOfficialAccountMenuDO.setValue(dto.getValue());
 
-        sysOtherAppOfficialAccountMenuDO.setPagepath(MyEntityUtil.getNotNullStr(dto.getPagepath()));
+        sysOtherAppOfficialAccountMenuDO.setPagePath(MyEntityUtil.getNotNullStr(dto.getPagePath()));
 
         sysOtherAppOfficialAccountMenuDO.setReplyContent(MyEntityUtil.getNotNullStr(dto.getReplyContent()));
 

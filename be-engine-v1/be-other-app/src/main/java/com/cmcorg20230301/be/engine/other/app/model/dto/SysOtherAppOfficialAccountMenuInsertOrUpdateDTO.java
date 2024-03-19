@@ -32,7 +32,7 @@ public class SysOtherAppOfficialAccountMenuInsertOrUpdateDTO extends BaseTenantI
     private String value;
 
     @Schema(description = "小程序的页面路径")
-    private String pagepath;
+    private String pagePath;
 
     @Schema(description = "回复的内容，备注：一般是点击按钮之后，回复的内容")
     private String replyContent;
