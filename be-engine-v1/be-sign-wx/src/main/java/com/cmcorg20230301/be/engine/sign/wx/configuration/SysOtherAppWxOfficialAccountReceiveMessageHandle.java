@@ -396,13 +396,15 @@ public class SysOtherAppWxOfficialAccountReceiveMessageHandle
         // 移除并获取：showText的值
         String showText = (String)jsonObject.remove("showText");
 
-        log.info("传递的值：{}", dto.getEventKey());
+        String content = "请点击该链接进行操作：<a data-miniprogram-appid=\"" + appId + "\" data-miniprogram-path=\"" + path
+            + "\">" + (StrUtil.isBlank(showText) ? appId : showText) + "</a>";
+
+        log.info("传递的值：{}，发送的值：{}", dto.getEventKey(), content);
 
         String accessToken = getAccessToken(dto);
 
         // 回复文字内容：给微信公众号
-        WxUtil.execDoTextSend(dto.getFromUserName(), accessToken, "请点击该链接进行操作：<a data-miniprogram-appid=\"" + appId
-            + "\" data-miniprogram-path=\"" + path + "\">" + (StrUtil.isBlank(showText) ? appId : showText) + "</a>");
+        WxUtil.execDoTextSend(dto.getFromUserName(), accessToken, content);
 
     }
 
