@@ -90,10 +90,18 @@
         <module>be-im-session</module>
         <module>be-api-token</module>
         <module>be-flow-activiti</module>
+        <module>be-jwt-refresh</module>
     </modules>
 
     <dependencyManagement>
         <dependencies>
+
+            <!-- be-jwt-refresh -->
+            <dependency>
+                <groupId>${cmcorg.groupId}</groupId>
+                <artifactId>be-jwt-refresh</artifactId>
+                <version>${cmcorg.version}</version>
+            </dependency>
 
             <!-- be-flow-activiti -->
             <dependency>
