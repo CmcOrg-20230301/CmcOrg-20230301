@@ -1,7 +1,5 @@
 package com.cmcorg20230301.be.engine.jwt.refresh.service.impl;
 
-import java.util.List;
-
 import javax.annotation.Resource;
 
 import org.springframework.stereotype.Service;
@@ -21,7 +19,6 @@ import com.cmcorg20230301.be.engine.security.model.entity.SysUserDO;
 import com.cmcorg20230301.be.engine.security.model.vo.ApiResultVO;
 import com.cmcorg20230301.be.engine.security.util.MyRsaUtil;
 import com.cmcorg20230301.be.engine.sign.helper.util.SignUtil;
-import com.cmcorg20230301.be.engine.util.util.SeparatorUtil;
 
 import cn.hutool.core.util.StrUtil;
 
@@ -39,27 +36,16 @@ public class SysJwtRefreshServiceImpl extends ServiceImpl<SysJwtRefreshMapper, S
     public SignInVO signInRefreshToken(SysJwtRefreshSignInRefreshTokenDTO dto) {
 
         // 非对称解密
-        String rsaDecryptRefreshToken = MyRsaUtil.rsaDecrypt(dto.getRefreshToken(), dto.getTenantId());
+        String refreshToken = MyRsaUtil.rsaDecrypt(dto.getRefreshToken(), dto.getTenantId());
 
-        List<String> splitList = StrUtil.splitTrim(rsaDecryptRefreshToken, SeparatorUtil.VERTICAL_LINE_SEPARATOR);
-
-        if (splitList.size() != 2) {
-            ApiResultVO.error(BaseBizCodeEnum.ILLEGAL_REQUEST, rsaDecryptRefreshToken);
+        if (StrUtil.isBlank(refreshToken)) {
+            ApiResultVO.error(BaseBizCodeEnum.ILLEGAL_REQUEST, refreshToken);
         }
 
-        String idStr = splitList.get(0);
-
-        String refreshToken = splitList.get(1);
-
-        if (StrUtil.isBlank(idStr) || StrUtil.isBlank(refreshToken)) {
-            ApiResultVO.error(BaseBizCodeEnum.ILLEGAL_REQUEST, rsaDecryptRefreshToken);
-        }
-
-        SysJwtRefreshDO sysJwtRefreshDO =
-            lambdaQuery().eq(SysJwtRefreshDO::getId, idStr).eq(SysJwtRefreshDO::getRefreshToken, refreshToken).one();
+        SysJwtRefreshDO sysJwtRefreshDO = lambdaQuery().eq(SysJwtRefreshDO::getRefreshToken, refreshToken).one();
 
         if (sysJwtRefreshDO == null) {
-            ApiResultVO.error(BaseBizCodeEnum.LOGIN_EXPIRED, rsaDecryptRefreshToken);
+            ApiResultVO.error(BaseBizCodeEnum.LOGIN_EXPIRED, refreshToken);
         }
 
         SysUserDO sysUserDO =
@@ -67,14 +53,14 @@ public class SysJwtRefreshServiceImpl extends ServiceImpl<SysJwtRefreshMapper, S
                 .eq(BaseEntityNoIdSuper::getTenantId, sysJwtRefreshDO.getTenantId()).one();
 
         if (sysUserDO == null) {
-            ApiResultVO.error(BaseBizCodeEnum.LOGIN_EXPIRED, rsaDecryptRefreshToken);
+            ApiResultVO.error(BaseBizCodeEnum.LOGIN_EXPIRED, refreshToken);
         }
 
         // 判断：密码错误次数过多，是否被冻结
         SignUtil.checkTooManyPasswordError(sysUserDO.getId());
 
         // 获取；返回值
-        return SignUtil.signInGetJwt(sysUserDO);
+        return SignUtil.signInGetJwt(sysUserDO, false);
 
     }
 

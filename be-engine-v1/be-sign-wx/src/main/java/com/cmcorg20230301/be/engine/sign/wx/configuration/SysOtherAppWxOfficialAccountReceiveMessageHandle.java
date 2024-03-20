@@ -439,11 +439,13 @@ public class SysOtherAppWxOfficialAccountReceiveMessageHandle
 
         JSONObject localStorageDataJsonObject = new JSONObject();
 
-        SignInVO signInVO = SignUtil.signInGetJwt(dto.getSysUserDO());
+        SignInVO signInVO = SignUtil.signInGetJwt(dto.getSysUserDO(), true);
 
         localStorageDataJsonObject.set("JWT", signInVO.getJwt());
 
         localStorageDataJsonObject.set("JWT_EXPIRE_TS", signInVO.getJwtExpireTs());
+
+        localStorageDataJsonObject.set("JWT_REFRESH_TOKEN", signInVO.getJwtRefreshToken());
 
         localStorageDataJsonObject.set("TENANT_ID", dto.getSysOtherAppDO().getTenantId());
 

@@ -39,7 +39,7 @@ public enum WxSysQrCodeSceneTypeEnum implements ISysQrCodeSceneType {
             RBucket<SignInVO> bucket =
                 redissonClient.getBucket(BaseRedisKeyEnum.PRE_SYS_WX_QR_CODE_SIGN.name() + qrCodeSceneValue);
 
-            SignInVO signInVO = SignUtil.signInGetJwt(sysUserDO);
+            SignInVO signInVO = SignUtil.signInGetJwt(sysUserDO, true);
 
             bucket.set(signInVO, Duration.ofMillis(BaseConstant.MINUTE_3_EXPIRE_TIME));
 
@@ -167,7 +167,7 @@ public enum WxSysQrCodeSceneTypeEnum implements ISysQrCodeSceneType {
                     .eq(BaseEntity::getId, sysUserSingleSignInDO.getId())
                     .eq(BaseEntityNoIdSuper::getTenantId, sysUserSingleSignInDO.getTenantId()).one();
 
-                signInVO = SignUtil.signInGetJwt(sysUserDoTemp);
+                signInVO = SignUtil.signInGetJwt(sysUserDoTemp, true);
 
             }
 

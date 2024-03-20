@@ -132,7 +132,7 @@ public class SignSingleServiceImpl implements SignSingleService {
                     .eq(BaseEntityNoIdSuper::getTenantId, sysUserSingleSignInDO.getTenantId()).one();
 
             // 返回登录数据
-            return SignUtil.signInGetJwt(sysUserDO);
+            return SignUtil.signInGetJwt(sysUserDO, true);
 
         });
 

@@ -553,7 +553,7 @@ public class SignUtil {
             }
 
             // 登录时，获取：jwt
-            return signInGetJwt(sysUserDO);
+            return signInGetJwt(sysUserDO, true);
 
         });
 
@@ -614,7 +614,7 @@ public class SignUtil {
         bucket.delete(); // 删除：验证码
 
         // 登录时，获取：jwt
-        return signInGetJwt(sysUserDO);
+        return signInGetJwt(sysUserDO, true);
 
     }
 
@@ -653,7 +653,7 @@ public class SignUtil {
         }
 
         // 登录时，获取：jwt
-        return signInGetJwt(sysUserDO);
+        return signInGetJwt(sysUserDO, true);
 
     }
 
@@ -696,7 +696,7 @@ public class SignUtil {
      * 登录时，获取：jwt
      */
     @Nullable
-    public static SignInVO signInGetJwt(SysUserDO sysUserDO) {
+    public static SignInVO signInGetJwt(SysUserDO sysUserDO, boolean generateRefreshTokenFlag) {
 
         // 校验密码，成功之后，再判断是否被冻结，免得透露用户被封号的信息
         if (BooleanUtil.isFalse(sysUserDO.getEnableFlag())) {
