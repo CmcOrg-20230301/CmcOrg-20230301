@@ -9,4 +9,7 @@ public class SysJwtRefreshSignInRefreshTokenDTO {
     @Schema(description = "refreshToken")
     private String refreshToken;
 
+    @Schema(description = "租户主键 id")
+    private Long tenantId;
+
 }

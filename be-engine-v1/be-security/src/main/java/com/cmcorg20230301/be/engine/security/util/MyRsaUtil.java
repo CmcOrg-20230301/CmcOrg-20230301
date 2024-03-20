@@ -1,22 +1,24 @@
 package com.cmcorg20230301.be.engine.security.util;
 
-import cn.hutool.core.convert.Convert;
-import cn.hutool.core.util.StrUtil;
-import cn.hutool.crypto.CryptoException;
-import cn.hutool.crypto.asymmetric.KeyType;
-import cn.hutool.crypto.asymmetric.RSA;
+import org.jetbrains.annotations.Nullable;
+import org.springframework.stereotype.Component;
+
 import com.cmcorg20230301.be.engine.model.model.constant.BaseConstant;
 import com.cmcorg20230301.be.engine.model.model.constant.ParamConstant;
 import com.cmcorg20230301.be.engine.security.exception.BaseBizCodeEnum;
 import com.cmcorg20230301.be.engine.security.model.vo.ApiResultVO;
 import com.cmcorg20230301.be.engine.util.util.SeparatorUtil;
-import org.jetbrains.annotations.Nullable;
-import org.springframework.stereotype.Component;
+
+import cn.hutool.core.convert.Convert;
+import cn.hutool.core.util.StrUtil;
+import cn.hutool.crypto.CryptoException;
+import cn.hutool.crypto.asymmetric.KeyType;
+import cn.hutool.crypto.asymmetric.RSA;
 
 @Component
 public class MyRsaUtil {
 
-    public static final int EXPIRE_TIME = BaseConstant.MINUTE_30_EXPIRE_TIME;
+    public static final int EXPIRE_TIME = BaseConstant.HOUR_3_EXPIRE_TIME;
 
     public static final String SEPARATOR = SeparatorUtil.SEMICOLON_SEPARATOR;
 

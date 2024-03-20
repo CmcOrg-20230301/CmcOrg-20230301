@@ -23,7 +23,7 @@ public interface BaseConstant {
     long DAY_15_EXPIRE_TIME = 60 * 60 * 1000 * 24 * 15L; // 15天过期
     long DAY_30_EXPIRE_TIME = 60 * 60 * 1000 * 24 * 30L; // 30天过期
     long YEAR_30_EXPIRE_TIME = 60 * 60 * 1000 * 24 * 365L * 30; // 30年过期
-    long HOUR_3_EXPIRE_TIME = 60 * 60 * 1000 * 3; // 3小时过期
+    int HOUR_3_EXPIRE_TIME = 60 * 60 * 1000 * 3; // 3小时过期
     int MINUTE_30_EXPIRE_TIME = 30 * 60 * 1000; // 30分钟过期
     int MINUTE_10_EXPIRE_TIME = 10 * 60 * 1000; // 10分钟过期，这个一般用于长一点的验证码的过期时间
     int MINUTE_6_EXPIRE_TIME = 6 * 60 * 1000; // 6分钟过期

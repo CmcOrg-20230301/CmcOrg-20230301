@@ -756,7 +756,7 @@ public class SignUtil {
     /**
      * 判断：密码错误次数过多，是否被冻结
      */
-    private static void checkTooManyPasswordError(Long userId) {
+    public static void checkTooManyPasswordError(Long userId) {
 
         String lockMessageStr =
             redissonClient.<Long, String>getMap(BaseRedisKeyEnum.PRE_TOO_MANY_PASSWORD_ERROR.name()).get(userId);

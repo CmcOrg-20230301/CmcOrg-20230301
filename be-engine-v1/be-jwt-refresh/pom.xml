@@ -15,6 +15,12 @@
 
     <dependencies>
 
+        <!-- be-sign-helper -->
+        <dependency>
+            <groupId>${cmcorg.groupId}</groupId>
+            <artifactId>be-sign-helper</artifactId>
+        </dependency>
+
         <!-- be-security -->
         <dependency>
             <groupId>${cmcorg.groupId}</groupId>

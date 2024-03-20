@@ -1,9 +1,13 @@
 package com.cmcorg20230301.be.engine.security.util;
 
-import cn.hutool.core.collection.CollUtil;
-import cn.hutool.core.convert.Convert;
-import cn.hutool.core.lang.func.Func1;
-import cn.hutool.core.util.StrUtil;
+import java.util.*;
+import java.util.stream.Collectors;
+
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.Unmodifiable;
+import org.springframework.stereotype.Component;
+
 import com.baomidou.mybatisplus.extension.toolkit.ChainWrappers;
 import com.cmcorg20230301.be.engine.cache.util.CacheHelper;
 import com.cmcorg20230301.be.engine.cache.util.MyCacheUtil;
@@ -19,14 +23,12 @@ import com.cmcorg20230301.be.engine.security.mapper.SysUserMapper;
 import com.cmcorg20230301.be.engine.security.model.dto.MyTenantPageDTO;
 import com.cmcorg20230301.be.engine.security.model.entity.*;
 import com.cmcorg20230301.be.engine.security.model.vo.ApiResultVO;
-import lombok.SneakyThrows;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-import org.jetbrains.annotations.Unmodifiable;
-import org.springframework.stereotype.Component;
 
-import java.util.*;
-import java.util.stream.Collectors;
+import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.convert.Convert;
+import cn.hutool.core.lang.func.Func1;
+import cn.hutool.core.util.StrUtil;
+import lombok.SneakyThrows;
 
 /**
  * 租户相关的工具类
@@ -227,7 +229,7 @@ public class SysTenantUtil {
             String refChildrenFlagStr =
                 SysParamUtil.getValueByUuid(ParamConstant.TENANT_REF_CHILDREN_FLAG_UUID, currentTenantIdDefault);
 
-            Boolean refChildrenFlag = Convert.toBool(refChildrenFlagStr, false); // 默认：不关联
+            Boolean refChildrenFlag = Convert.toBool(refChildrenFlagStr, true); // 默认：关联
 
             if (refChildrenFlag) { // 如果：默认关联子级租户，则：获取下级租户
 

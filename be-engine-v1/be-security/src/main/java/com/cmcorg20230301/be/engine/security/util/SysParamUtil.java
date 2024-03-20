@@ -1,6 +1,14 @@
 package com.cmcorg20230301.be.engine.security.util;
 
-import cn.hutool.core.collection.CollUtil;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
+
+import org.jetbrains.annotations.Nullable;
+import org.springframework.stereotype.Component;
+
 import com.baomidou.mybatisplus.extension.toolkit.ChainWrappers;
 import com.cmcorg20230301.be.engine.cache.util.CacheHelper;
 import com.cmcorg20230301.be.engine.cache.util.MyCacheUtil;
@@ -11,15 +19,9 @@ import com.cmcorg20230301.be.engine.security.mapper.SysParamMapper;
 import com.cmcorg20230301.be.engine.security.model.entity.BaseEntity;
 import com.cmcorg20230301.be.engine.security.model.entity.BaseEntityNoId;
 import com.cmcorg20230301.be.engine.security.model.entity.SysParamDO;
-import lombok.extern.slf4j.Slf4j;
-import org.jetbrains.annotations.Nullable;
-import org.springframework.stereotype.Component;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.stream.Collectors;
+import cn.hutool.core.collection.CollUtil;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * 系统参数 工具类
@@ -30,12 +32,13 @@ public class SysParamUtil {
 
     // 系统内置参数 uuidSet，备注：不允许删除
     // 备注：系统内置参数的 uuid等于 id
-    public static final Set<String> SYSTEM_PARAM_UUID_SET = CollUtil.newHashSet(ParamConstant.RSA_PRIVATE_KEY_UUID,
-        ParamConstant.IP_REQUESTS_PER_SECOND_UUID, ParamConstant.TENANT_REF_CHILDREN_FLAG_UUID);
+    public static final Set<String> SYSTEM_PARAM_UUID_SET =
+        CollUtil.newHashSet(ParamConstant.RSA_PRIVATE_KEY_UUID, ParamConstant.IP_REQUESTS_PER_SECOND_UUID);
 
     // 不允许删除的：参数主键 id
-    public static final Set<String> SYSTEM_PARAM_NOT_DELETE_ID_SET = (Set<String>)CollUtil
-        .addAll(new HashSet<>(SYSTEM_PARAM_UUID_SET), CollUtil.newHashSet(ParamConstant.DEFAULT_MANAGE_SIGN_IN_FLAG));
+    public static final Set<String> SYSTEM_PARAM_NOT_DELETE_ID_SET = (Set<String>)CollUtil.addAll(
+        new HashSet<>(SYSTEM_PARAM_UUID_SET),
+        CollUtil.newHashSet(ParamConstant.TENANT_REF_CHILDREN_FLAG_UUID, ParamConstant.DEFAULT_MANAGE_SIGN_IN_FLAG));
 
     private static SysParamMapper sysParamMapper;
 
