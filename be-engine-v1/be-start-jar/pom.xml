@@ -15,18 +15,22 @@
 
     <dependencies>
 
+        <!-- be-jwt-refresh -->
+        <dependency>
+            <groupId>${cmcorg.groupId}</groupId>
+            <artifactId>be-jwt-refresh</artifactId>
+        </dependency>
+
         <!-- be-flow-activiti -->
         <dependency>
             <groupId>${cmcorg.groupId}</groupId>
             <artifactId>be-flow-activiti</artifactId>
-            <version>${cmcorg.version}</version>
         </dependency>
 
         <!-- be-api-token -->
         <dependency>
             <groupId>${cmcorg.groupId}</groupId>
             <artifactId>be-api-token</artifactId>
-            <version>${cmcorg.version}</version>
         </dependency>
 
         <!-- be-other-app -->
