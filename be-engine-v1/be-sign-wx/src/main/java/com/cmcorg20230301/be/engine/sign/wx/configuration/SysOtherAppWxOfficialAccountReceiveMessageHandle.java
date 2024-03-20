@@ -346,10 +346,10 @@ public class SysOtherAppWxOfficialAccountReceiveMessageHandle
                 // 处理：initBlank事件
                 handleInitBlank(dto, valueDTO);
 
-            } else if ("goMiniprogram".equals(valueDTO.getKey())) {
+            } else if ("goMiniProgram".equals(valueDTO.getKey())) {
 
                 // 处理：前往小程序事件
-                handleGoMiniprogram(dto, valueDTO);
+                handleGoMiniProgram(dto, valueDTO);
 
             }
 
@@ -380,7 +380,7 @@ public class SysOtherAppWxOfficialAccountReceiveMessageHandle
     /**
      * 处理：前往小程序事件
      */
-    private void handleGoMiniprogram(SysOtherAppWxOfficialAccountReceiveMessageDTO dto,
+    private void handleGoMiniProgram(SysOtherAppWxOfficialAccountReceiveMessageDTO dto,
         SysOtherAppWxEventValueDTO valueDTO) {
 
         JSONObject jsonObject = valueDTO.getData();
