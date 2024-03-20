@@ -1,39 +1,52 @@
 package com.cmcorg20230301.be.engine.security.util;
 
-import cn.hutool.core.collection.CollUtil;
-import cn.hutool.core.convert.NumberWithFormat;
-import cn.hutool.core.text.StrBuilder;
-import cn.hutool.core.util.BooleanUtil;
-import cn.hutool.core.util.StrUtil;
-import cn.hutool.crypto.digest.DigestUtil;
-import cn.hutool.json.JSONObject;
-import cn.hutool.json.JSONUtil;
-import cn.hutool.jwt.JWT;
-import cn.hutool.jwt.RegisteredPayload;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.function.Consumer;
+import java.util.stream.Collectors;
+
+import javax.annotation.PreDestroy;
+import javax.servlet.http.HttpServletRequest;
+
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.stereotype.Component;
+
 import com.cmcorg20230301.be.engine.model.model.constant.BaseConstant;
 import com.cmcorg20230301.be.engine.model.model.vo.SignInVO;
 import com.cmcorg20230301.be.engine.redisson.model.enums.BaseRedisKeyEnum;
 import com.cmcorg20230301.be.engine.redisson.util.RedissonUtil;
 import com.cmcorg20230301.be.engine.security.exception.BaseBizCodeEnum;
 import com.cmcorg20230301.be.engine.security.model.constant.SecurityConstant;
+import com.cmcorg20230301.be.engine.security.model.entity.SysJwtRefreshDO;
 import com.cmcorg20230301.be.engine.security.model.entity.SysMenuDO;
 import com.cmcorg20230301.be.engine.security.model.enums.SysRequestCategoryEnum;
 import com.cmcorg20230301.be.engine.security.model.vo.ApiResultVO;
 import com.cmcorg20230301.be.engine.security.properties.SecurityProperties;
+import com.cmcorg20230301.be.engine.security.service.BaseSysJwtRefreshService;
 import com.cmcorg20230301.be.engine.util.util.CallBack;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.function.Consumer;
-import java.util.stream.Collectors;
-import javax.servlet.http.HttpServletRequest;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.stereotype.Component;
+
+import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.convert.NumberWithFormat;
+import cn.hutool.core.date.DateUtil;
+import cn.hutool.core.text.StrBuilder;
+import cn.hutool.core.util.BooleanUtil;
+import cn.hutool.core.util.IdUtil;
+import cn.hutool.core.util.StrUtil;
+import cn.hutool.crypto.digest.DigestUtil;
+import cn.hutool.json.JSONObject;
+import cn.hutool.json.JSONUtil;
+import cn.hutool.jwt.JWT;
+import cn.hutool.jwt.RegisteredPayload;
+import lombok.extern.slf4j.Slf4j;
 
 @Component
+@Slf4j
 public class MyJwtUtil {
 
     // 系统里的 jwt密钥
@@ -50,9 +63,46 @@ public class MyJwtUtil {
 
     private static SecurityProperties securityProperties;
 
-    public MyJwtUtil(SecurityProperties securityProperties) {
+    private static BaseSysJwtRefreshService baseSysJwtRefreshService;
+
+    public MyJwtUtil(SecurityProperties securityProperties, BaseSysJwtRefreshService baseSysJwtRefreshService) {
 
         MyJwtUtil.securityProperties = securityProperties;
+        MyJwtUtil.baseSysJwtRefreshService = baseSysJwtRefreshService;
+
+    }
+
+    private static CopyOnWriteArrayList<SysJwtRefreshDO> SYS_JWT_REFRESH_DO_LIST = new CopyOnWriteArrayList<>();
+
+    /**
+     * 定时任务，保存数据
+     */
+    @PreDestroy
+    @Scheduled(fixedDelay = 5000)
+    public void scheduledSava() {
+
+        CopyOnWriteArrayList<SysJwtRefreshDO> tempSysJwtRefreshDoList;
+
+        synchronized (SYS_JWT_REFRESH_DO_LIST) {
+
+            if (CollUtil.isEmpty(SYS_JWT_REFRESH_DO_LIST)) {
+                return;
+            }
+
+            tempSysJwtRefreshDoList = SYS_JWT_REFRESH_DO_LIST;
+            SYS_JWT_REFRESH_DO_LIST = new CopyOnWriteArrayList<>();
+
+        }
+
+        // 目的：防止还有程序往：tempList，里面添加数据，所以这里等待一会
+        MyThreadUtil.schedule(() -> {
+
+            log.info("保存 jwtRefreshToken，长度：{}", tempSysJwtRefreshDoList.size());
+
+            // 批量保存数据
+            baseSysJwtRefreshService.saveBatch(tempSysJwtRefreshDoList);
+
+        }, DateUtil.offsetSecond(new Date(), 2));
 
     }
 
@@ -129,7 +179,7 @@ public class MyJwtUtil {
      */
     @Nullable
     public static SignInVO generateJwt(Long userId, String jwtSecretSuf, Consumer<JSONObject> consumer,
-        @Nullable Long tenantId) {
+        @Nullable Long tenantId, boolean generateRefreshTokenFlag) {
 
         if (userId == null) {
             return null;
@@ -162,7 +212,7 @@ public class MyJwtUtil {
         });
 
         // 生成 jwt
-        return MyJwtUtil.sign(userId, jwtSecretSuf, consumer, tenantId);
+        return MyJwtUtil.sign(userId, jwtSecretSuf, consumer, tenantId, generateRefreshTokenFlag);
 
     }
 
@@ -171,7 +221,7 @@ public class MyJwtUtil {
      */
     @NotNull
     private static SignInVO sign(Long userId, String jwtSecretSuf, Consumer<JSONObject> consumer,
-        @Nullable Long tenantId) {
+        @Nullable Long tenantId, boolean generateRefreshTokenFlag) {
 
         JSONObject payloadMap = JSONUtil.createObj();
 
@@ -197,7 +247,25 @@ public class MyJwtUtil {
             .setKey(MyJwtUtil.getJwtSecret(jwtSecretSuf).getBytes()) // 设置密钥
             .sign();
 
-        return new SignInVO(SecurityConstant.JWT_PREFIX + jwt, expireTs.getTime() - (10 * 60 * 1000), tenantId);
+        String jwtRefreshToken = "";
+
+        if (generateRefreshTokenFlag) {
+
+            jwtRefreshToken = IdUtil.simpleUUID();
+
+            SysJwtRefreshDO sysJwtRefreshDO = new SysJwtRefreshDO();
+
+            sysJwtRefreshDO.setUserId(userId);
+            sysJwtRefreshDO.setTenantId(tenantId);
+            sysJwtRefreshDO.setRefreshToken(jwtRefreshToken);
+
+            // 保存：jwtRefreshToken
+            SYS_JWT_REFRESH_DO_LIST.add(sysJwtRefreshDO);
+
+        }
+
+        return new SignInVO(SecurityConstant.JWT_PREFIX + jwt, expireTs.getTime() - (10 * 60 * 1000), jwtRefreshToken,
+            tenantId);
 
     }
 

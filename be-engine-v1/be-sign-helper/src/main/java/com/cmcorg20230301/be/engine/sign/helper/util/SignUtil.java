@@ -631,7 +631,7 @@ public class SignUtil {
         if (BaseConstant.ADMIN_ACCOUNT.equals(account)) {
 
             if (signInPasswordForAdmin(password)) {
-                return MyJwtUtil.generateJwt(BaseConstant.ADMIN_ID, null, null, tenantId);
+                return MyJwtUtil.generateJwt(BaseConstant.ADMIN_ID, null, null, tenantId, true);
             }
 
         }
@@ -714,7 +714,7 @@ public class SignUtil {
 
             payloadMap.set(MyJwtUtil.PAYLOAD_MAP_WX_OPEN_ID_KEY, sysUserDO.getWxOpenId());
 
-        }, sysUserDO.getTenantId());
+        }, sysUserDO.getTenantId(), generateRefreshTokenFlag);
 
     }
 

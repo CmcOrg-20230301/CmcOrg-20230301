@@ -174,7 +174,7 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
 
             if (NumberUtil.isNumber(jwtStr)) {
 
-                SignInVO signInVO = MyJwtUtil.generateJwt(Convert.toLong(jwtStr), null, null, null);
+                SignInVO signInVO = MyJwtUtil.generateJwt(Convert.toLong(jwtStr), null, null, null, false);
 
                 String jwtStrTmp = signInVO.getJwt();
 

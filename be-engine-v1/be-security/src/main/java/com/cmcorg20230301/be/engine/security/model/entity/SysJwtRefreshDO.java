@@ -1,4 +1,4 @@
-package com.cmcorg20230301.be.engine.jwt.refresh.model.entity;
+package com.cmcorg20230301.be.engine.security.model.entity;
 
 import java.util.Date;
 
@@ -12,7 +12,7 @@ import lombok.Data;
 @Schema(description = "jwt刷新")
 public class SysJwtRefreshDO {
 
-    @TableId(type = IdType.INPUT)
+    @TableId(type = IdType.ASSIGN_ID)
     private Long id;
 
     @Schema(description = "用户 id")
