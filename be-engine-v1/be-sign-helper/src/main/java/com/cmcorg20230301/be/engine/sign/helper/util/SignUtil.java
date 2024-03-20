@@ -508,9 +508,9 @@ public class SignUtil {
      */
     @NotNull
     public static SignInVO signInAccount(LambdaQueryChainWrapper<SysUserDO> lambdaQueryChainWrapper,
-        Enum<? extends IRedisKey> redisKeyEnum, String account, Supplier<SysUserInfoDO> sysUserInfoDOSupplier,
+        Enum<? extends IRedisKey> redisKeyEnum, String account, Supplier<SysUserInfoDO> sysUserInfoDoSupplier,
         @Nullable Long tenantId, @Nullable Consumer<Map<Enum<? extends IRedisKey>, String>> consumer,
-        @Nullable CallBack<SysUserDO> sysUserDOCallBack) {
+        @Nullable CallBack<SysUserDO> sysUserDoCallBack) {
 
         if (StrUtil.isBlank(account)) {
             ApiResultVO.errorMsg("操作失败：账号信息为空");
@@ -536,9 +536,9 @@ public class SignUtil {
 
                 SysUserInfoDO tempSysUserInfoDO = null;
 
-                if (sysUserInfoDOSupplier != null) {
+                if (sysUserInfoDoSupplier != null) {
 
-                    tempSysUserInfoDO = sysUserInfoDOSupplier.get();
+                    tempSysUserInfoDO = sysUserInfoDoSupplier.get();
 
                 }
 
@@ -546,9 +546,9 @@ public class SignUtil {
 
             }
 
-            if (sysUserDOCallBack != null) {
+            if (sysUserDoCallBack != null) {
 
-                sysUserDOCallBack.setValue(sysUserDO); // 回调该对象
+                sysUserDoCallBack.setValue(sysUserDO); // 回调该对象
 
             }
 

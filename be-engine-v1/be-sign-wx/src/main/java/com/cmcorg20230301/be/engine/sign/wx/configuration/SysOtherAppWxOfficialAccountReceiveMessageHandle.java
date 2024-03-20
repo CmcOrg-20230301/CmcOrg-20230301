@@ -23,6 +23,7 @@ import com.cmcorg20230301.be.engine.other.app.model.enums.SysOtherAppOfficialAcc
 import com.cmcorg20230301.be.engine.other.app.model.enums.SysOtherAppOfficialAccountMenuTypeEnum;
 import com.cmcorg20230301.be.engine.other.app.model.enums.SysOtherAppTypeEnum;
 import com.cmcorg20230301.be.engine.other.app.model.interfaces.ISysOtherAppWxOfficialAccountReceiveMessageHandle;
+import com.cmcorg20230301.be.engine.other.app.wx.model.vo.WxUnionIdInfoVO;
 import com.cmcorg20230301.be.engine.other.app.wx.util.WxUtil;
 import com.cmcorg20230301.be.engine.redisson.model.enums.BaseRedisKeyEnum;
 import com.cmcorg20230301.be.engine.security.exception.BaseBizCodeEnum;
@@ -130,13 +131,19 @@ public class SysOtherAppWxOfficialAccountReceiveMessageHandle
      */
     private SysUserDO signInUser(SysOtherAppWxOfficialAccountReceiveMessageDTO dto, SysOtherAppDO sysOtherAppDO) {
 
+        String wxOpenId = dto.getFromUserName();
+
+        String accessToken = getAccessToken(dto);
+
+        WxUnionIdInfoVO wxUnionIdInfoVO = WxUtil.getWxUnionIdByBrowserAccessToken(accessToken, wxOpenId,
+            sysOtherAppDO.getTenantId(), sysOtherAppDO.getAppId());
+
         CallBack<SysUserDO> sysUserDoCallBack = new CallBack<>();
 
-        // 直接通过：微信 openId登录
+        // 直接通过：微信 unionId登录
         SignUtil.signInAccount(
-            ChainWrappers.lambdaQueryChain(sysUserMapper).eq(SysUserDO::getWxOpenId, dto.getFromUserName())
-                .eq(SysUserDO::getWxAppId, sysOtherAppDO.getAppId()),
-            BaseRedisKeyEnum.PRE_WX_OPEN_ID, dto.getFromUserName(), () -> {
+            ChainWrappers.lambdaQueryChain(sysUserMapper).eq(SysUserDO::getWxUnionId, wxUnionIdInfoVO.getUnionid()),
+            BaseRedisKeyEnum.PRE_WX_UNION_ID, wxUnionIdInfoVO.getUnionid(), () -> {
 
                 SysUserInfoDO sysUserInfoDO = SysUserInfoUtil.getWxSysUserInfoDO();
 
@@ -147,6 +154,8 @@ public class SysOtherAppWxOfficialAccountReceiveMessageHandle
             }, sysOtherAppDO.getTenantId(), accountMap -> {
 
                 accountMap.put(BaseRedisKeyEnum.PRE_WX_APP_ID, sysOtherAppDO.getAppId());
+
+                accountMap.put(BaseRedisKeyEnum.PRE_WX_OPEN_ID, wxOpenId);
 
             }, sysUserDoCallBack);
 
