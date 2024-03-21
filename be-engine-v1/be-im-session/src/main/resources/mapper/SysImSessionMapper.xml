@@ -12,11 +12,11 @@
         a.session_id AS id,
         a.last_open_ts AS lastOpenTs,
         a.remark AS remark,
+        a.private_chat_ref_user_id AS privateChatRefUserId,
         b.avatar_file_id AS avatarFileId,
         b.avatar_file_id AS showAvatarFileId,
         b.name AS name,
-        b.name AS showName,
-        b.private_chat_ref_user_id AS privateChatRefUserId
+        b.name AS showName
 
         FROM sys_im_session_ref_user a
 
@@ -27,7 +27,7 @@
         a.show_flag = TRUE
 
         <if test="dto.privateChatRefUserId != null">
-            AND b.private_chat_ref_user_id = #{dto.privateChatRefUserId}
+            AND a.private_chat_ref_user_id = #{dto.privateChatRefUserId}
         </if>
 
         AND a.user_id = #{dto.userId}
