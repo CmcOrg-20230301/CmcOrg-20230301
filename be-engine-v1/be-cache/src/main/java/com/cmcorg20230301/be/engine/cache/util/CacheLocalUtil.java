@@ -1,5 +1,7 @@
 package com.cmcorg20230301.be.engine.cache.util;
 
+import java.util.Iterator;
+import java.util.Map;
 import java.util.Set;
 
 import javax.annotation.Resource;
@@ -57,6 +59,26 @@ public class CacheLocalUtil {
         for (String item : rKeys.getKeys()) {
 
             removeKeySet.remove(item); // 如果：redis还存在该值，则不需要本地缓存移除该 key
+
+        }
+
+        Iterator<String> iterator = removeKeySet.iterator();
+
+        while (iterator.hasNext()) {
+
+            String item = iterator.next();
+
+            Object o = LOCAL_CACHE.get(item);
+
+            if (o instanceof Map) {
+
+                if (CollUtil.isEmpty((Map<?, ?>)o)) {
+
+                    iterator.remove(); // 不移除：值为空 map的 key
+
+                }
+
+            }
 
         }
 
