@@ -156,8 +156,10 @@ public class SignWxServiceImpl implements SignWxService {
 
         WxOpenIdVO wxOpenIdVO = WxUtil.getWxBrowserOpenIdVoByCode(dto.getTenantId(), dto.getCode(), dto.getAppId());
 
-        WxUnionIdInfoVO wxUnionIdInfoVO = WxUtil.getWxUnionIdByBrowserAccessToken(wxOpenIdVO.getAccessToken(),
-            wxOpenIdVO.getOpenid(), dto.getTenantId(), dto.getAppId());
+        String accessToken = WxUtil.getAccessToken(dto.getTenantId(), dto.getAppId());
+
+        WxUnionIdInfoVO wxUnionIdInfoVO = WxUtil.getWxUnionIdByBrowserAccessToken(accessToken, wxOpenIdVO.getOpenid(),
+            dto.getTenantId(), dto.getAppId());
 
         // 直接通过：微信 unionId登录
         return SignUtil.signInAccount(

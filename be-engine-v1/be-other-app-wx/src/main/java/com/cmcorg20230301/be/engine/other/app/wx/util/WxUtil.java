@@ -173,7 +173,7 @@ public class WxUtil {
     }
 
     /**
-     * 通过微信浏览器的 access_token，获取：微信里该用户的 unionId
+     * 接口凭证 access_token，不是浏览器的，获取：微信里该用户的 unionId
      */
     @NotNull
     public static WxUnionIdInfoVO getWxUnionIdByBrowserAccessToken(String accessToken, String openId, Long tenantId,
