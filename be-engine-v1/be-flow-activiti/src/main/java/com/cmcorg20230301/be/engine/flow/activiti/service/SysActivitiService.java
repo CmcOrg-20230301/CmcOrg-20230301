@@ -1,12 +1,12 @@
 package com.cmcorg20230301.be.engine.flow.activiti.service;
 
-import org.activiti.engine.repository.Deployment;
-import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.cmcorg20230301.be.engine.flow.activiti.model.dto.*;
+import com.cmcorg20230301.be.engine.flow.activiti.model.vo.SysActivitiDeploymentVO;
 import com.cmcorg20230301.be.engine.flow.activiti.model.vo.SysActivitiProcessDefinitionVO;
+import com.cmcorg20230301.be.engine.flow.activiti.model.vo.SysActivitiProcessInstanceVO;
 import com.cmcorg20230301.be.engine.model.model.dto.NotBlankString;
 import com.cmcorg20230301.be.engine.model.model.dto.NotEmptyStringSet;
 
@@ -14,7 +14,7 @@ public interface SysActivitiService {
 
     String deployInsertOrUpdate(SysActivitiDeployInsertOrUpdateDTO dto);
 
-    Page<Deployment> deployPage(SysActivitiDeployPageDTO dto);
+    Page<SysActivitiDeploymentVO> deployPage(SysActivitiDeployPageDTO dto);
 
     String deployDeleteByIdSet(NotEmptyStringSet notEmptyStringSet);
 
@@ -22,9 +22,9 @@ public interface SysActivitiService {
 
     String processInstanceInsertOrUpdate(SysActivitiProcessInstanceInsertOrUpdateDTO dto);
 
-    ProcessInstance processInstanceInfoById(NotBlankString notBlankString);
+    SysActivitiProcessInstanceVO processInstanceInfoById(NotBlankString notBlankString);
 
-    Page<ProcessInstance> processInstancePage(SysActivitiProcessInstancePageDTO dto);
+    Page<SysActivitiProcessInstanceVO> processInstancePage(SysActivitiProcessInstancePageDTO dto);
 
     String processInstanceSuspendByIdSet(NotEmptyStringSet notEmptyStringSet);
 

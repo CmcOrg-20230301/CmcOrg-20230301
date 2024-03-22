@@ -8,6 +8,7 @@ import javax.annotation.Resource;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.RuntimeService;
 import org.activiti.engine.TaskService;
+import org.activiti.engine.impl.identity.Authentication;
 import org.activiti.engine.repository.*;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.runtime.ProcessInstanceQuery;
@@ -17,8 +18,11 @@ import org.springframework.stereotype.Service;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.cmcorg20230301.be.engine.flow.activiti.model.dto.*;
+import com.cmcorg20230301.be.engine.flow.activiti.model.vo.SysActivitiDeploymentVO;
 import com.cmcorg20230301.be.engine.flow.activiti.model.vo.SysActivitiProcessDefinitionVO;
+import com.cmcorg20230301.be.engine.flow.activiti.model.vo.SysActivitiProcessInstanceVO;
 import com.cmcorg20230301.be.engine.flow.activiti.service.SysActivitiService;
+import com.cmcorg20230301.be.engine.flow.activiti.util.SysActivitiUtil;
 import com.cmcorg20230301.be.engine.model.model.dto.NotBlankString;
 import com.cmcorg20230301.be.engine.model.model.dto.NotEmptyStringSet;
 import com.cmcorg20230301.be.engine.security.exception.BaseBizCodeEnum;
@@ -71,7 +75,7 @@ public class SysActivitiServiceImpl implements SysActivitiService {
      * 部署-分页排序查询
      */
     @Override
-    public Page<Deployment> deployPage(SysActivitiDeployPageDTO dto) {
+    public Page<SysActivitiDeploymentVO> deployPage(SysActivitiDeployPageDTO dto) {
 
         Long tenantId = UserUtil.getCurrentTenantIdDefault();
 
@@ -101,7 +105,15 @@ public class SysActivitiServiceImpl implements SysActivitiService {
 
         List<Deployment> deploymentList = deploymentQuery.listPage((int)firstResult, (int)page.getSize());
 
-        return new Page<Deployment>().setTotal(count).setRecords(deploymentList);
+        List<SysActivitiDeploymentVO> list = new ArrayList<>(deploymentList.size());
+
+        for (Deployment item : deploymentList) {
+
+            list.add(SysActivitiUtil.getSysActivitiDeploymentVO(item));
+
+        }
+
+        return new Page<SysActivitiDeploymentVO>().setTotal(count).setRecords(list);
 
     }
 
@@ -174,20 +186,7 @@ public class SysActivitiServiceImpl implements SysActivitiService {
 
         for (ProcessDefinition item : processDefinitionList) {
 
-            SysActivitiProcessDefinitionVO sysActivitiProcessDefinitionVO = new SysActivitiProcessDefinitionVO();
-
-            sysActivitiProcessDefinitionVO.setId(item.getId());
-            sysActivitiProcessDefinitionVO.setName(item.getName());
-            sysActivitiProcessDefinitionVO.setDescription(item.getDescription());
-            sysActivitiProcessDefinitionVO.setKey(item.getKey());
-            sysActivitiProcessDefinitionVO.setVersion(item.getVersion());
-            sysActivitiProcessDefinitionVO.setCategory(item.getCategory());
-            sysActivitiProcessDefinitionVO.setDeploymentId(item.getDeploymentId());
-            sysActivitiProcessDefinitionVO.setResourceName(item.getResourceName());
-            sysActivitiProcessDefinitionVO.setTenantId(item.getTenantId());
-            sysActivitiProcessDefinitionVO.setSuspensionState(item.isSuspended());
-
-            list.add(sysActivitiProcessDefinitionVO);
+            list.add(SysActivitiUtil.getSysActivitiProcessDefinitionVO(item));
 
         }
 
@@ -201,7 +200,11 @@ public class SysActivitiServiceImpl implements SysActivitiService {
     @Override
     public String processInstanceInsertOrUpdate(SysActivitiProcessInstanceInsertOrUpdateDTO dto) {
 
+        String userId = UserUtil.getCurrentUserId().toString();
+
         String tenantId = UserUtil.getCurrentTenantIdDefault().toString();
+
+        Authentication.setAuthenticatedUserId(userId); // 设置：启动流程实例的 userId
 
         ProcessInstance processInstance = runtimeService.startProcessInstanceByKeyAndTenantId(
             dto.getProcessDefinitionKey(), dto.getBusinessKey(), dto.getVariableMap(), tenantId);
@@ -214,12 +217,14 @@ public class SysActivitiServiceImpl implements SysActivitiService {
      * 流程实例-通过主键id，查看详情
      */
     @Override
-    public ProcessInstance processInstanceInfoById(NotBlankString notBlankString) {
+    public SysActivitiProcessInstanceVO processInstanceInfoById(NotBlankString notBlankString) {
 
         Long tenantId = UserUtil.getCurrentTenantIdDefault();
 
-        return runtimeService.createProcessInstanceQuery().processInstanceId(notBlankString.getValue())
-            .processInstanceTenantId(tenantId.toString()).singleResult();
+        ProcessInstance processInstance = runtimeService.createProcessInstanceQuery()
+            .processInstanceId(notBlankString.getValue()).processInstanceTenantId(tenantId.toString()).singleResult();
+
+        return SysActivitiUtil.getSysActivitiProcessInstanceVO(processInstance);
 
     }
 
@@ -227,7 +232,7 @@ public class SysActivitiServiceImpl implements SysActivitiService {
      * 流程实例-分页排序查询
      */
     @Override
-    public Page<ProcessInstance> processInstancePage(SysActivitiProcessInstancePageDTO dto) {
+    public Page<SysActivitiProcessInstanceVO> processInstancePage(SysActivitiProcessInstancePageDTO dto) {
 
         Long tenantId = UserUtil.getCurrentTenantIdDefault();
 
@@ -263,10 +268,18 @@ public class SysActivitiServiceImpl implements SysActivitiService {
 
         processInstanceQuery.orderByProcessInstanceId().desc();
 
-        List<ProcessInstance> processDefinitionList =
+        List<ProcessInstance> processInstanceList =
             processInstanceQuery.listPage((int)firstResult, (int)page.getSize());
 
-        return new Page<ProcessInstance>().setTotal(count).setRecords(processDefinitionList);
+        List<SysActivitiProcessInstanceVO> list = new ArrayList<>(processInstanceList.size());
+
+        for (ProcessInstance item : processInstanceList) {
+
+            list.add(SysActivitiUtil.getSysActivitiProcessInstanceVO(item));
+
+        }
+
+        return new Page<SysActivitiProcessInstanceVO>().setTotal(count).setRecords(list);
 
     }
 
