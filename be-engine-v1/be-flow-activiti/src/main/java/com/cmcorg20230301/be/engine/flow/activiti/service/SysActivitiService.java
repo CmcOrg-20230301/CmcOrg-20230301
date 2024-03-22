@@ -22,6 +22,8 @@ public interface SysActivitiService {
 
     String processInstanceInsertOrUpdate(SysActivitiProcessInstanceInsertOrUpdateDTO dto);
 
+    String processInstanceInsertOrUpdateByKey(SysActivitiProcessInstanceInsertOrUpdateByKeyDTO dto);
+
     ProcessInstance processInstanceInfoById(NotBlankString notBlankString);
 
     Page<ProcessInstance> processInstancePage(SysActivitiProcessInstancePageDTO dto);

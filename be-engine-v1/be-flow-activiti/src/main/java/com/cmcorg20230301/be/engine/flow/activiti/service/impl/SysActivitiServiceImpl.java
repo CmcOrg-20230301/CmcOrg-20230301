@@ -208,6 +208,19 @@ public class SysActivitiServiceImpl implements SysActivitiService {
     }
 
     /**
+     * 流程实例-新增/修改-通过 key
+     */
+    @Override
+    public String processInstanceInsertOrUpdateByKey(SysActivitiProcessInstanceInsertOrUpdateByKeyDTO dto) {
+
+        ProcessInstance processInstance = runtimeService.startProcessInstanceById(dto.getProcessDefinitionKey(),
+            dto.getBusinessKey(), dto.getVariableMap());
+
+        return processInstance.getProcessInstanceId();
+
+    }
+
+    /**
      * 流程实例-通过主键id，查看详情
      */
     @Override
