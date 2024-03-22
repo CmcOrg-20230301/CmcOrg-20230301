@@ -102,7 +102,7 @@ public class SysActivitiServiceImpl implements SysActivitiService {
 
         long firstResult = (page.getCurrent() - 1) * page.getSize();
 
-        deploymentQuery.orderByDeploymentId().desc();
+        deploymentQuery.orderByDeploymenTime().desc();
 
         List<Deployment> deploymentList = deploymentQuery.listPage((int)firstResult, (int)page.getSize());
 
@@ -392,7 +392,7 @@ public class SysActivitiServiceImpl implements SysActivitiService {
 
         long firstResult = (page.getCurrent() - 1) * page.getSize();
 
-        taskQuery.orderByTaskId().desc();
+        taskQuery.orderByTaskCreateTime().desc();
 
         List<Task> taskList = taskQuery.listPage((int)firstResult, (int)page.getSize());
 
