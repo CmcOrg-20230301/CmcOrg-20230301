@@ -11,8 +11,8 @@ import lombok.Data;
 public class SysActivitiProcessInstanceInsertOrUpdateDTO {
 
     @NotBlank
-    @Schema(description = "流程定义：id")
-    private String processDefinitionId;
+    @Schema(description = "流程定义：key")
+    private String processDefinitionKey;
 
     @NotBlank
     @Schema(description = "业务：key")
