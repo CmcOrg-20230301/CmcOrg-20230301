@@ -1,5 +1,6 @@
 package com.cmcorg20230301.be.engine.flow.activiti.service.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -16,6 +17,7 @@ import org.springframework.stereotype.Service;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.cmcorg20230301.be.engine.flow.activiti.model.dto.*;
+import com.cmcorg20230301.be.engine.flow.activiti.model.vo.SysActivitiProcessDefinitionVO;
 import com.cmcorg20230301.be.engine.flow.activiti.service.SysActivitiService;
 import com.cmcorg20230301.be.engine.model.model.dto.NotBlankString;
 import com.cmcorg20230301.be.engine.model.model.dto.NotEmptyStringSet;
@@ -128,7 +130,7 @@ public class SysActivitiServiceImpl implements SysActivitiService {
      * 流程定义-分页排序查询
      */
     @Override
-    public Page<ProcessDefinition> processDefinitionPage(SysActivitiProcessDefinitionPageDTO dto) {
+    public Page<SysActivitiProcessDefinitionVO> processDefinitionPage(SysActivitiProcessDefinitionPageDTO dto) {
 
         Long tenantId = UserUtil.getCurrentTenantIdDefault();
 
@@ -167,7 +169,28 @@ public class SysActivitiServiceImpl implements SysActivitiService {
         List<ProcessDefinition> processDefinitionList =
             processDefinitionQuery.listPage((int)firstResult, (int)page.getSize());
 
-        return new Page<ProcessDefinition>().setTotal(count).setRecords(processDefinitionList);
+        List<SysActivitiProcessDefinitionVO> list = new ArrayList<>(processDefinitionList.size());
+
+        for (ProcessDefinition item : processDefinitionList) {
+
+            SysActivitiProcessDefinitionVO sysActivitiProcessDefinitionVO = new SysActivitiProcessDefinitionVO();
+
+            sysActivitiProcessDefinitionVO.setId(item.getId());
+            sysActivitiProcessDefinitionVO.setName(item.getName());
+            sysActivitiProcessDefinitionVO.setDescription(item.getDescription());
+            sysActivitiProcessDefinitionVO.setKey(item.getKey());
+            sysActivitiProcessDefinitionVO.setVersion(item.getVersion());
+            sysActivitiProcessDefinitionVO.setCategory(item.getCategory());
+            sysActivitiProcessDefinitionVO.setDeploymentId(item.getDeploymentId());
+            sysActivitiProcessDefinitionVO.setResourceName(item.getResourceName());
+            sysActivitiProcessDefinitionVO.setTenantId(item.getTenantId());
+            sysActivitiProcessDefinitionVO.setSuspensionState(item.isSuspended());
+
+            list.add(sysActivitiProcessDefinitionVO);
+
+        }
+
+        return new Page<SysActivitiProcessDefinitionVO>().setTotal(count).setRecords(list);
 
     }
 

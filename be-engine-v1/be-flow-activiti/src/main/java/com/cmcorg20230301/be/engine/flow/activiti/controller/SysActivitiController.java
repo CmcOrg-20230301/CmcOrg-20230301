@@ -4,7 +4,6 @@ import javax.annotation.Resource;
 import javax.validation.Valid;
 
 import org.activiti.engine.repository.Deployment;
-import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -15,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.cmcorg20230301.be.engine.flow.activiti.model.dto.*;
+import com.cmcorg20230301.be.engine.flow.activiti.model.vo.SysActivitiProcessDefinitionVO;
 import com.cmcorg20230301.be.engine.flow.activiti.service.SysActivitiService;
 import com.cmcorg20230301.be.engine.model.model.dto.NotBlankString;
 import com.cmcorg20230301.be.engine.model.model.dto.NotEmptyStringSet;
@@ -55,7 +55,7 @@ public class SysActivitiController {
     @Operation(summary = "流程定义-分页排序查询")
     @PostMapping("/processDefinition/page")
     @PreAuthorize("hasAuthority('sysActiviti:processDefinitionPage')")
-    public ApiResultVO<Page<ProcessDefinition>>
+    public ApiResultVO<Page<SysActivitiProcessDefinitionVO>>
         processDefinitionPage(@RequestBody @Valid SysActivitiProcessDefinitionPageDTO dto) {
         return ApiResultVO.okData(baseService.processDefinitionPage(dto));
     }
