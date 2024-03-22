@@ -25,6 +25,7 @@ import com.cmcorg20230301.be.engine.security.exception.BaseBizCodeEnum;
 import com.cmcorg20230301.be.engine.security.util.UserUtil;
 
 import cn.hutool.core.io.file.FileNameUtil;
+import cn.hutool.core.util.BooleanUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.http.HttpUtil;
 
@@ -156,8 +157,8 @@ public class SysActivitiServiceImpl implements SysActivitiService {
 
         long count = processDefinitionQuery.count();
 
-        if (count == 0) {
-            return new Page<>();
+        if (count == 0 || BooleanUtil.isTrue(dto.getOnlyQueryCount())) {
+            return new Page<SysActivitiProcessDefinitionVO>().setTotal(count);
         }
 
         Page<Deployment> page = dto.page(true);
