@@ -39,7 +39,7 @@ public class SysActivitiController {
     @PostMapping("/deploy/page")
     @PreAuthorize("hasAuthority('sysActiviti:deployPage')")
     public ApiResultVO<Page<Deployment>> deployPage(@RequestBody @Valid SysActivitiDeployPageDTO dto) {
-        return ApiResultVO.okMsg(baseService.deployPage(dto));
+        return ApiResultVO.okData(baseService.deployPage(dto));
     }
 
     @Operation(summary = "部署-批量删除")
