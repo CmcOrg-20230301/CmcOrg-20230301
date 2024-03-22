@@ -82,4 +82,25 @@ public class SysActivitiController {
         return ApiResultVO.okData(baseService.processInstancePage(dto));
     }
 
+    @Operation(summary = "流程实例-批量挂起")
+    @PostMapping("/processInstance/suspendByIdSet")
+    @PreAuthorize("hasAuthority('sysActiviti:processInstanceSuspendByIdSet')")
+    public ApiResultVO<String> processInstanceSuspendByIdSet(@RequestBody @Valid NotEmptyStringSet notEmptyStringSet) {
+        return ApiResultVO.okMsg(baseService.processInstanceSuspendByIdSet(notEmptyStringSet));
+    }
+
+    @Operation(summary = "流程实例-批量激活")
+    @PostMapping("/processInstance/activeByIdSet")
+    @PreAuthorize("hasAuthority('sysActiviti:processInstanceActiveByIdSet')")
+    public ApiResultVO<String> processInstanceActiveByIdSet(@RequestBody @Valid NotEmptyStringSet notEmptyStringSet) {
+        return ApiResultVO.okMsg(baseService.processInstanceActiveByIdSet(notEmptyStringSet));
+    }
+
+    @Operation(summary = "流程实例-批量删除")
+    @PostMapping("/processInstance/deleteByIdSet")
+    @PreAuthorize("hasAuthority('sysActiviti:processInstanceDeleteByIdSet')")
+    public ApiResultVO<String> processInstanceDeleteByIdSet(@RequestBody @Valid NotEmptyStringSet notEmptyStringSet) {
+        return ApiResultVO.okMsg(baseService.processInstanceDeleteByIdSet(notEmptyStringSet));
+    }
+
 }

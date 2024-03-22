@@ -25,4 +25,10 @@ public interface SysActivitiService {
 
     Page<ProcessInstance> processInstancePage(SysActivitiProcessInstancePageDTO dto);
 
+    String processInstanceSuspendByIdSet(NotEmptyStringSet notEmptyStringSet);
+
+    String processInstanceActiveByIdSet(NotEmptyStringSet notEmptyStringSet);
+
+    String processInstanceDeleteByIdSet(NotEmptyStringSet notEmptyStringSet);
+
 }

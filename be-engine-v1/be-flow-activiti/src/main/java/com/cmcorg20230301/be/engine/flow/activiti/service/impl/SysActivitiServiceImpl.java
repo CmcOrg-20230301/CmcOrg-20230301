@@ -102,9 +102,9 @@ public class SysActivitiServiceImpl implements SysActivitiService {
     @Override
     public String deployDeleteByIdSet(NotEmptyStringSet notEmptyStringSet) {
 
-        for (String item : notEmptyStringSet.getIdSet()) {
+        for (String deploymentId : notEmptyStringSet.getIdSet()) {
 
-            repositoryService.deleteDeployment(item);
+            repositoryService.deleteDeployment(deploymentId);
 
         }
 
@@ -229,6 +229,54 @@ public class SysActivitiServiceImpl implements SysActivitiService {
             processInstanceQuery.listPage((int)firstResult, (int)page.getSize());
 
         return new Page<ProcessInstance>().setTotal(count).setRecords(processDefinitionList);
+
+    }
+
+    /**
+     * 流程实例-批量挂起
+     */
+    @Override
+    public String processInstanceSuspendByIdSet(NotEmptyStringSet notEmptyStringSet) {
+
+        for (String processInstanceId : notEmptyStringSet.getIdSet()) {
+
+            runtimeService.suspendProcessInstanceById(processInstanceId);
+
+        }
+
+        return BaseBizCodeEnum.OK;
+
+    }
+
+    /**
+     * 流程实例-批量激活
+     */
+    @Override
+    public String processInstanceActiveByIdSet(NotEmptyStringSet notEmptyStringSet) {
+
+        for (String processInstanceId : notEmptyStringSet.getIdSet()) {
+
+            runtimeService.activateProcessInstanceById(processInstanceId);
+
+        }
+
+        return BaseBizCodeEnum.OK;
+
+    }
+
+    /**
+     * 流程实例-批量删除
+     */
+    @Override
+    public String processInstanceDeleteByIdSet(NotEmptyStringSet notEmptyStringSet) {
+
+        for (String processInstanceId : notEmptyStringSet.getIdSet()) {
+
+            runtimeService.deleteProcessInstance(processInstanceId, null);
+
+        }
+
+        return BaseBizCodeEnum.OK;
 
     }
 
