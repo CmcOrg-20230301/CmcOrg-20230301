@@ -108,7 +108,13 @@ public class SysActivitiServiceImpl implements SysActivitiService {
     @Override
     public String deployDeleteByIdSet(NotEmptyStringSet notEmptyStringSet) {
 
+        String tenantId = UserUtil.getCurrentTenantIdDefault().toString();
+
         for (String deploymentId : notEmptyStringSet.getIdSet()) {
+
+            // 避免：出现删除不属于自己租户的部署
+            repositoryService.createDeploymentQuery().deploymentId(deploymentId).deploymentTenantId(tenantId)
+                .singleResult();
 
             repositoryService.deleteDeployment(deploymentId);
 
@@ -244,7 +250,13 @@ public class SysActivitiServiceImpl implements SysActivitiService {
     @Override
     public String processInstanceSuspendByIdSet(NotEmptyStringSet notEmptyStringSet) {
 
+        String tenantId = UserUtil.getCurrentTenantIdDefault().toString();
+
         for (String processInstanceId : notEmptyStringSet.getIdSet()) {
+
+            // 避免：出现挂起不属于自己租户的流程实例
+            runtimeService.createProcessInstanceQuery().processInstanceId(processInstanceId)
+                .processInstanceTenantId(tenantId).singleResult();
 
             runtimeService.suspendProcessInstanceById(processInstanceId);
 
@@ -260,7 +272,13 @@ public class SysActivitiServiceImpl implements SysActivitiService {
     @Override
     public String processInstanceActiveByIdSet(NotEmptyStringSet notEmptyStringSet) {
 
+        String tenantId = UserUtil.getCurrentTenantIdDefault().toString();
+
         for (String processInstanceId : notEmptyStringSet.getIdSet()) {
+
+            // 避免：出现激活不属于自己租户的流程实例
+            runtimeService.createProcessInstanceQuery().processInstanceId(processInstanceId)
+                .processInstanceTenantId(tenantId).singleResult();
 
             runtimeService.activateProcessInstanceById(processInstanceId);
 
@@ -276,7 +294,13 @@ public class SysActivitiServiceImpl implements SysActivitiService {
     @Override
     public String processInstanceDeleteByIdSet(NotEmptyStringSet notEmptyStringSet) {
 
+        String tenantId = UserUtil.getCurrentTenantIdDefault().toString();
+
         for (String processInstanceId : notEmptyStringSet.getIdSet()) {
+
+            // 避免：出现删除不属于自己租户的流程实例
+            runtimeService.createProcessInstanceQuery().processInstanceId(processInstanceId)
+                .processInstanceTenantId(tenantId).singleResult();
 
             runtimeService.deleteProcessInstance(processInstanceId, null);
 
