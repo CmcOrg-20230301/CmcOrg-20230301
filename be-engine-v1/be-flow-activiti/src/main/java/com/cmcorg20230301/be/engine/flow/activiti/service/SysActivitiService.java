@@ -3,6 +3,7 @@ package com.cmcorg20230301.be.engine.flow.activiti.service;
 import org.activiti.engine.repository.Deployment;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.runtime.ProcessInstance;
+import org.activiti.engine.task.Task;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.cmcorg20230301.be.engine.flow.activiti.model.dto.*;
@@ -30,5 +31,7 @@ public interface SysActivitiService {
     String processInstanceActiveByIdSet(NotEmptyStringSet notEmptyStringSet);
 
     String processInstanceDeleteByIdSet(NotEmptyStringSet notEmptyStringSet);
+
+    Page<Task> taskPage(SysActivitiTaskPageDTO dto);
 
 }

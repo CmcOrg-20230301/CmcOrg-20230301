@@ -6,9 +6,12 @@ import javax.annotation.Resource;
 
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.RuntimeService;
+import org.activiti.engine.TaskService;
 import org.activiti.engine.repository.*;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.runtime.ProcessInstanceQuery;
+import org.activiti.engine.task.Task;
+import org.activiti.engine.task.TaskQuery;
 import org.springframework.stereotype.Service;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -31,6 +34,9 @@ public class SysActivitiServiceImpl implements SysActivitiService {
 
     @Resource
     RuntimeService runtimeService;
+
+    @Resource
+    TaskService taskService;
 
     /**
      * 部署-新增/修改
@@ -277,6 +283,56 @@ public class SysActivitiServiceImpl implements SysActivitiService {
         }
 
         return BaseBizCodeEnum.OK;
+
+    }
+
+    /**
+     * 任务-分页排序查询
+     */
+    @Override
+    public Page<Task> taskPage(SysActivitiTaskPageDTO dto) {
+
+        Long tenantId = UserUtil.getCurrentTenantIdDefault();
+
+        TaskQuery taskQuery = taskService.createTaskQuery();
+
+        taskQuery.taskTenantId(tenantId.toString());
+
+        if (StrUtil.isNotBlank(dto.getProcessDefinitionId())) {
+            taskQuery.processDefinitionId(dto.getProcessDefinitionId());
+        }
+
+        if (StrUtil.isNotBlank(dto.getProcessDefinitionKey())) {
+            taskQuery.processDefinitionKey(dto.getProcessDefinitionKey());
+        }
+
+        if (StrUtil.isNotBlank(dto.getProcessInstanceId())) {
+            taskQuery.processInstanceId(dto.getProcessInstanceId());
+        }
+
+        if (StrUtil.isNotBlank(dto.getProcessInstanceBusinessKey())) {
+            taskQuery.processInstanceBusinessKey(dto.getProcessInstanceBusinessKey());
+        }
+
+        if (StrUtil.isNotBlank(dto.getTaskId())) {
+            taskQuery.taskId(dto.getTaskId());
+        }
+
+        long count = taskQuery.count();
+
+        if (count == 0) {
+            return new Page<>();
+        }
+
+        Page<Deployment> page = dto.page(true);
+
+        long firstResult = (page.getCurrent() - 1) * page.getSize();
+
+        taskQuery.orderByTaskId().desc();
+
+        List<Task> taskList = taskQuery.listPage((int)firstResult, (int)page.getSize());
+
+        return new Page<Task>().setTotal(count).setRecords(taskList);
 
     }
 

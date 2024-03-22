@@ -6,6 +6,7 @@ import javax.validation.Valid;
 import org.activiti.engine.repository.Deployment;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.runtime.ProcessInstance;
+import org.activiti.engine.task.Task;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -101,6 +102,13 @@ public class SysActivitiController {
     @PreAuthorize("hasAuthority('sysActiviti:processInstanceDeleteByIdSet')")
     public ApiResultVO<String> processInstanceDeleteByIdSet(@RequestBody @Valid NotEmptyStringSet notEmptyStringSet) {
         return ApiResultVO.okMsg(baseService.processInstanceDeleteByIdSet(notEmptyStringSet));
+    }
+
+    @Operation(summary = "任务-分页排序查询")
+    @PostMapping("/task/page")
+    @PreAuthorize("hasAuthority('sysActiviti:taskPage')")
+    public ApiResultVO<Page<Task>> taskPage(@RequestBody @Valid SysActivitiTaskPageDTO dto) {
+        return ApiResultVO.okData(baseService.taskPage(dto));
     }
 
 }
