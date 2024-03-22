@@ -22,7 +22,7 @@ public class SysActivitiTaskPageDTO extends MyTenantPageDTO {
     @Schema(description = "流程实例：业务key")
     private String processInstanceBusinessKey;
 
-    @Schema(description = "滕武：id")
+    @Schema(description = "任务：id")
     private String taskId;
 
 }
