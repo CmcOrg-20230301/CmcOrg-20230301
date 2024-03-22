@@ -30,8 +30,14 @@ public class SysActivitiProcessInstanceVO {
     @Schema(description = "流程实例：是否是暂停状态")
     protected Boolean suspended;
 
+    @Schema(description = "流程实例：是否是结束状态")
+    protected Boolean ended;
+
     @Schema(description = "流程实例：参数")
     private Map<String, Object> processVariableMap;
+
+    @Schema(description = "流程实例：id")
+    private String id;
 
     @Schema(description = "流程实例：租户 id")
     private String tenantId;

@@ -3,12 +3,30 @@ package com.cmcorg20230301.be.engine.flow.activiti.util;
 import org.activiti.engine.repository.Deployment;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.runtime.ProcessInstance;
+import org.activiti.engine.task.Task;
 
 import com.cmcorg20230301.be.engine.flow.activiti.model.vo.SysActivitiDeploymentVO;
 import com.cmcorg20230301.be.engine.flow.activiti.model.vo.SysActivitiProcessDefinitionVO;
 import com.cmcorg20230301.be.engine.flow.activiti.model.vo.SysActivitiProcessInstanceVO;
+import com.cmcorg20230301.be.engine.flow.activiti.model.vo.SysActivitiTaskVO;
 
 public class SysActivitiUtil {
+
+    public static SysActivitiDeploymentVO getSysActivitiDeploymentVO(Deployment item) {
+
+        SysActivitiDeploymentVO sysActivitiDeploymentVO = new SysActivitiDeploymentVO();
+
+        sysActivitiDeploymentVO.setId(item.getId());
+        sysActivitiDeploymentVO.setName(item.getName());
+        sysActivitiDeploymentVO.setCategory(item.getCategory());
+        sysActivitiDeploymentVO.setKey(item.getKey());
+        sysActivitiDeploymentVO.setTenantId(item.getTenantId());
+        sysActivitiDeploymentVO.setDeploymentTime(item.getDeploymentTime());
+        sysActivitiDeploymentVO.setVersion(item.getVersion());
+
+        return sysActivitiDeploymentVO;
+
+    }
 
     public static SysActivitiProcessDefinitionVO getSysActivitiProcessDefinitionVO(ProcessDefinition item) {
 
@@ -26,22 +44,6 @@ public class SysActivitiUtil {
         sysActivitiProcessDefinitionVO.setSuspended(item.isSuspended());
 
         return sysActivitiProcessDefinitionVO;
-
-    }
-
-    public static SysActivitiDeploymentVO getSysActivitiDeploymentVO(Deployment item) {
-
-        SysActivitiDeploymentVO sysActivitiDeploymentVO = new SysActivitiDeploymentVO();
-
-        sysActivitiDeploymentVO.setId(item.getId());
-        sysActivitiDeploymentVO.setName(item.getName());
-        sysActivitiDeploymentVO.setCategory(item.getCategory());
-        sysActivitiDeploymentVO.setKey(item.getKey());
-        sysActivitiDeploymentVO.setTenantId(item.getTenantId());
-        sysActivitiDeploymentVO.setDeploymentTime(item.getDeploymentTime());
-        sysActivitiDeploymentVO.setVersion(item.getVersion());
-
-        return sysActivitiDeploymentVO;
 
     }
 
@@ -63,7 +65,40 @@ public class SysActivitiUtil {
         sysActivitiProcessInstanceVO.setStartTime(item.getStartTime());
         sysActivitiProcessInstanceVO.setStartUserId(item.getStartUserId());
 
+        sysActivitiProcessInstanceVO.setId(item.getId());
+        sysActivitiProcessInstanceVO.setEnded(item.isEnded());
+
         return sysActivitiProcessInstanceVO;
+
+    }
+
+    public static SysActivitiTaskVO getSysActivitiTaskVO(Task item) {
+
+        SysActivitiTaskVO sysActivitiTaskVO = new SysActivitiTaskVO();
+
+        sysActivitiTaskVO.setId(item.getId());
+        sysActivitiTaskVO.setName(item.getName());
+        sysActivitiTaskVO.setDescription(item.getDescription());
+        sysActivitiTaskVO.setPriority(item.getPriority());
+        sysActivitiTaskVO.setOwner(item.getOwner());
+        sysActivitiTaskVO.setAssignee(item.getAssignee());
+        sysActivitiTaskVO.setProcessInstanceId(item.getProcessInstanceId());
+        sysActivitiTaskVO.setExecutionId(item.getExecutionId());
+        sysActivitiTaskVO.setProcessDefinitionId(item.getProcessDefinitionId());
+        sysActivitiTaskVO.setCreateTime(item.getCreateTime());
+        sysActivitiTaskVO.setTaskDefinitionKey(item.getTaskDefinitionKey());
+        sysActivitiTaskVO.setDueDate(item.getDueDate());
+        sysActivitiTaskVO.setCategory(item.getCategory());
+        sysActivitiTaskVO.setParentTaskId(item.getParentTaskId());
+        sysActivitiTaskVO.setTenantId(item.getTenantId());
+        sysActivitiTaskVO.setFormKey(item.getFormKey());
+        sysActivitiTaskVO.setProcessVariableMap(item.getProcessVariables());
+        sysActivitiTaskVO.setClaimTime(item.getClaimTime());
+        sysActivitiTaskVO.setBusinessKey(item.getBusinessKey());
+
+        sysActivitiTaskVO.setSuspended(item.isSuspended());
+
+        return sysActivitiTaskVO;
 
     }
 

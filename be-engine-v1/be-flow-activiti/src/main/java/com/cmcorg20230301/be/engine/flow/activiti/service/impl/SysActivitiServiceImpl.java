@@ -21,6 +21,7 @@ import com.cmcorg20230301.be.engine.flow.activiti.model.dto.*;
 import com.cmcorg20230301.be.engine.flow.activiti.model.vo.SysActivitiDeploymentVO;
 import com.cmcorg20230301.be.engine.flow.activiti.model.vo.SysActivitiProcessDefinitionVO;
 import com.cmcorg20230301.be.engine.flow.activiti.model.vo.SysActivitiProcessInstanceVO;
+import com.cmcorg20230301.be.engine.flow.activiti.model.vo.SysActivitiTaskVO;
 import com.cmcorg20230301.be.engine.flow.activiti.service.SysActivitiService;
 import com.cmcorg20230301.be.engine.flow.activiti.util.SysActivitiUtil;
 import com.cmcorg20230301.be.engine.model.model.dto.NotBlankString;
@@ -353,7 +354,7 @@ public class SysActivitiServiceImpl implements SysActivitiService {
      * 任务-分页排序查询
      */
     @Override
-    public Page<Task> taskPage(SysActivitiTaskPageDTO dto) {
+    public Page<SysActivitiTaskVO> taskPage(SysActivitiTaskPageDTO dto) {
 
         Long tenantId = UserUtil.getCurrentTenantIdDefault();
 
@@ -395,7 +396,15 @@ public class SysActivitiServiceImpl implements SysActivitiService {
 
         List<Task> taskList = taskQuery.listPage((int)firstResult, (int)page.getSize());
 
-        return new Page<Task>().setTotal(count).setRecords(taskList);
+        List<SysActivitiTaskVO> list = new ArrayList<>(taskList.size());
+
+        for (Task item : taskList) {
+
+            list.add(SysActivitiUtil.getSysActivitiTaskVO(item));
+
+        }
+
+        return new Page<SysActivitiTaskVO>().setTotal(count).setRecords(list);
 
     }
 
