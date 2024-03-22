@@ -5,14 +5,13 @@ import java.util.List;
 import javax.annotation.Resource;
 
 import org.activiti.engine.RepositoryService;
-import org.activiti.engine.repository.Deployment;
-import org.activiti.engine.repository.DeploymentBuilder;
-import org.activiti.engine.repository.DeploymentQuery;
+import org.activiti.engine.repository.*;
 import org.springframework.stereotype.Service;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.cmcorg20230301.be.engine.flow.activiti.model.dto.SysActivitiDeployInsertOrUpdateDTO;
 import com.cmcorg20230301.be.engine.flow.activiti.model.dto.SysActivitiDeployPageDTO;
+import com.cmcorg20230301.be.engine.flow.activiti.model.dto.SysActivitiProcessDefinitionPageDTO;
 import com.cmcorg20230301.be.engine.flow.activiti.service.SysActivitiService;
 import com.cmcorg20230301.be.engine.model.model.dto.NotEmptyStringSet;
 import com.cmcorg20230301.be.engine.security.exception.BaseBizCodeEnum;
@@ -62,8 +61,9 @@ public class SysActivitiServiceImpl implements SysActivitiService {
 
         Long tenantId = UserUtil.getCurrentTenantIdDefault();
 
-        DeploymentQuery deploymentQuery =
-            repositoryService.createDeploymentQuery().deploymentTenantId(tenantId.toString());
+        DeploymentQuery deploymentQuery = repositoryService.createDeploymentQuery();
+
+        deploymentQuery.deploymentTenantId(tenantId.toString());
 
         if (StrUtil.isNotBlank(dto.getId())) {
             deploymentQuery.deploymentId(dto.getId());
@@ -74,6 +74,10 @@ public class SysActivitiServiceImpl implements SysActivitiService {
         }
 
         long count = deploymentQuery.count();
+
+        if (count == 0) {
+            return new Page<>();
+        }
 
         Page<Deployment> page = dto.page(true);
 
@@ -100,6 +104,49 @@ public class SysActivitiServiceImpl implements SysActivitiService {
         }
 
         return BaseBizCodeEnum.OK;
+
+    }
+
+    /**
+     * 流程定义-分页排序查询
+     */
+    @Override
+    public Page<ProcessDefinition> processDefinitionPage(SysActivitiProcessDefinitionPageDTO dto) {
+
+        Long tenantId = UserUtil.getCurrentTenantIdDefault();
+
+        ProcessDefinitionQuery processDefinitionQuery = repositoryService.createProcessDefinitionQuery();
+
+        processDefinitionQuery.processDefinitionTenantId(tenantId.toString());
+
+        if (StrUtil.isNotBlank(dto.getDeploymentId())) {
+            processDefinitionQuery.deploymentId(dto.getDeploymentId());
+        }
+
+        if (StrUtil.isNotBlank(dto.getId())) {
+            processDefinitionQuery.processDefinitionId(dto.getId());
+        }
+
+        if (StrUtil.isNotBlank(dto.getName())) {
+            processDefinitionQuery.processDefinitionNameLike(dto.getName());
+        }
+
+        long count = processDefinitionQuery.count();
+
+        if (count == 0) {
+            return new Page<>();
+        }
+
+        Page<Deployment> page = dto.page(true);
+
+        long firstResult = (page.getCurrent() - 1) * page.getSize();
+
+        processDefinitionQuery.orderByProcessDefinitionId().desc();
+
+        List<ProcessDefinition> processDefinitionList =
+            processDefinitionQuery.listPage((int)firstResult, (int)page.getSize());
+
+        return new Page<ProcessDefinition>().setTotal(count).setRecords(processDefinitionList);
 
     }
 

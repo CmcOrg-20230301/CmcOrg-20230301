@@ -4,6 +4,7 @@ import javax.annotation.Resource;
 import javax.validation.Valid;
 
 import org.activiti.engine.repository.Deployment;
+import org.activiti.engine.repository.ProcessDefinition;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.cmcorg20230301.be.engine.flow.activiti.model.dto.SysActivitiDeployInsertOrUpdateDTO;
 import com.cmcorg20230301.be.engine.flow.activiti.model.dto.SysActivitiDeployPageDTO;
+import com.cmcorg20230301.be.engine.flow.activiti.model.dto.SysActivitiProcessDefinitionPageDTO;
 import com.cmcorg20230301.be.engine.flow.activiti.service.SysActivitiService;
 import com.cmcorg20230301.be.engine.model.model.dto.NotEmptyStringSet;
 import com.cmcorg20230301.be.engine.security.model.vo.ApiResultVO;
@@ -47,6 +49,14 @@ public class SysActivitiController {
     @PreAuthorize("hasAuthority('sysActiviti:deployDeleteByIdSet')")
     public ApiResultVO<String> deployDeleteByIdSet(@RequestBody @Valid NotEmptyStringSet notEmptyStringSet) {
         return ApiResultVO.okMsg(baseService.deployDeleteByIdSet(notEmptyStringSet));
+    }
+
+    @Operation(summary = "流程定义-分页排序查询")
+    @PostMapping("/processDefinition/page")
+    @PreAuthorize("hasAuthority('sysActiviti:processDefinitionPage')")
+    public ApiResultVO<Page<ProcessDefinition>>
+        processDefinitionPage(@RequestBody @Valid SysActivitiProcessDefinitionPageDTO dto) {
+        return ApiResultVO.okData(baseService.processDefinitionPage(dto));
     }
 
 }
