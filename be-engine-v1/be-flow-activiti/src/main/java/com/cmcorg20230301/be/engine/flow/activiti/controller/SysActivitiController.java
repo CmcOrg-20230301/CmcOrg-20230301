@@ -111,4 +111,25 @@ public class SysActivitiController {
         return ApiResultVO.okData(baseService.taskPage(dto));
     }
 
+    @Operation(summary = "任务-批量接受")
+    @PostMapping("/task/claimByIdSet")
+    @PreAuthorize("hasAuthority('sysActiviti:taskClaimByIdSet')")
+    public ApiResultVO<String> taskClaimByIdSet(@RequestBody @Valid NotEmptyStringSet notEmptyStringSet) {
+        return ApiResultVO.okMsg(baseService.taskClaimByIdSet(notEmptyStringSet));
+    }
+
+    @Operation(summary = "任务-批量归还")
+    @PostMapping("/task/returnByIdSet")
+    @PreAuthorize("hasAuthority('sysActiviti:taskReturnByIdSet')")
+    public ApiResultVO<String> taskReturnByIdSet(@RequestBody @Valid NotEmptyStringSet notEmptyStringSet) {
+        return ApiResultVO.okMsg(baseService.taskReturnByIdSet(notEmptyStringSet));
+    }
+
+    @Operation(summary = "任务-批量完成")
+    @PostMapping("/task/completeByIdSet")
+    @PreAuthorize("hasAuthority('sysActiviti:taskCompleteByIdSet')")
+    public ApiResultVO<String> taskCompleteByIdSet(@RequestBody @Valid NotEmptyStringSet notEmptyStringSet) {
+        return ApiResultVO.okMsg(baseService.taskCompleteByIdSet(notEmptyStringSet));
+    }
+
 }

@@ -34,4 +34,10 @@ public interface SysActivitiService {
 
     Page<Task> taskPage(SysActivitiTaskPageDTO dto);
 
+    String taskClaimByIdSet(NotEmptyStringSet notEmptyStringSet);
+
+    String taskReturnByIdSet(NotEmptyStringSet notEmptyStringSet);
+
+    String taskCompleteByIdSet(NotEmptyStringSet notEmptyStringSet);
+
 }

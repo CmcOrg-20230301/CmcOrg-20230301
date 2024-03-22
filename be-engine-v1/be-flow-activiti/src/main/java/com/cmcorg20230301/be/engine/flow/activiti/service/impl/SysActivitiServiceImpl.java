@@ -336,4 +336,69 @@ public class SysActivitiServiceImpl implements SysActivitiService {
 
     }
 
+    /**
+     * 任务-批量接受
+     */
+    @Override
+    public String taskClaimByIdSet(NotEmptyStringSet notEmptyStringSet) {
+
+        String userId = UserUtil.getCurrentUserId().toString();
+
+        String tenantId = UserUtil.getCurrentTenantIdDefault().toString();
+
+        for (String taskId : notEmptyStringSet.getIdSet()) {
+
+            // 避免：出现接受不属于自己租户的任务
+            taskService.createTaskQuery().taskId(taskId).taskTenantId(tenantId).singleResult();
+
+            taskService.claim(taskId, userId);
+
+        }
+
+        return BaseBizCodeEnum.OK;
+
+    }
+
+    /**
+     * 任务-批量归还
+     */
+    @Override
+    public String taskReturnByIdSet(NotEmptyStringSet notEmptyStringSet) {
+
+        String tenantId = UserUtil.getCurrentTenantIdDefault().toString();
+
+        for (String taskId : notEmptyStringSet.getIdSet()) {
+
+            // 避免：出现归还不属于自己租户的任务
+            taskService.createTaskQuery().taskId(taskId).taskTenantId(tenantId).singleResult();
+
+            taskService.unclaim(taskId);
+
+        }
+
+        return BaseBizCodeEnum.OK;
+
+    }
+
+    /**
+     * 任务-批量完成
+     */
+    @Override
+    public String taskCompleteByIdSet(NotEmptyStringSet notEmptyStringSet) {
+
+        String tenantId = UserUtil.getCurrentTenantIdDefault().toString();
+
+        for (String taskId : notEmptyStringSet.getIdSet()) {
+
+            // 避免：出现完成不属于自己租户的任务
+            taskService.createTaskQuery().taskId(taskId).taskTenantId(tenantId).singleResult();
+
+            taskService.complete(taskId, notEmptyStringSet.getVariableMap());
+
+        }
+
+        return BaseBizCodeEnum.OK;
+
+    }
+
 }
