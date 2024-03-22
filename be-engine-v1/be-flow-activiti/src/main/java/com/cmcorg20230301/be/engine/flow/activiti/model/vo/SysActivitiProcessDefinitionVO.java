@@ -34,6 +34,6 @@ public class SysActivitiProcessDefinitionVO {
     private String tenantId;
 
     @Schema(description = "流程定义：是否是暂停状态")
-    protected Boolean suspensionState;
+    protected Boolean suspended;
 
 }

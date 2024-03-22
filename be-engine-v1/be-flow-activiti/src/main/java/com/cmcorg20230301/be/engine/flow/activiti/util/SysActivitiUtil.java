@@ -23,7 +23,7 @@ public class SysActivitiUtil {
         sysActivitiProcessDefinitionVO.setDeploymentId(item.getDeploymentId());
         sysActivitiProcessDefinitionVO.setResourceName(item.getResourceName());
         sysActivitiProcessDefinitionVO.setTenantId(item.getTenantId());
-        sysActivitiProcessDefinitionVO.setSuspensionState(item.isSuspended());
+        sysActivitiProcessDefinitionVO.setSuspended(item.isSuspended());
 
         return sysActivitiProcessDefinitionVO;
 
@@ -48,6 +48,20 @@ public class SysActivitiUtil {
     public static SysActivitiProcessInstanceVO getSysActivitiProcessInstanceVO(ProcessInstance item) {
 
         SysActivitiProcessInstanceVO sysActivitiProcessInstanceVO = new SysActivitiProcessInstanceVO();
+
+        sysActivitiProcessInstanceVO.setProcessDefinitionId(item.getProcessDefinitionId());
+        sysActivitiProcessInstanceVO.setProcessDefinitionName(item.getProcessDefinitionName());
+        sysActivitiProcessInstanceVO.setProcessDefinitionKey(item.getProcessDefinitionKey());
+        sysActivitiProcessInstanceVO.setProcessDefinitionVersion(item.getProcessDefinitionVersion());
+        sysActivitiProcessInstanceVO.setDeploymentId(item.getDeploymentId());
+        sysActivitiProcessInstanceVO.setBusinessKey(item.getBusinessKey());
+        sysActivitiProcessInstanceVO.setSuspended(item.isSuspended());
+        sysActivitiProcessInstanceVO.setProcessVariableMap(item.getProcessVariables());
+        sysActivitiProcessInstanceVO.setTenantId(item.getTenantId());
+        sysActivitiProcessInstanceVO.setName(item.getName());
+        sysActivitiProcessInstanceVO.setDescription(item.getDescription());
+        sysActivitiProcessInstanceVO.setStartTime(item.getStartTime());
+        sysActivitiProcessInstanceVO.setStartUserId(item.getStartUserId());
 
         return sysActivitiProcessInstanceVO;
 
