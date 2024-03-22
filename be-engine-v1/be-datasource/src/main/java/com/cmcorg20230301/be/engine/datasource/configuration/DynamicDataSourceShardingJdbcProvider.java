@@ -41,6 +41,14 @@ public class DynamicDataSourceShardingJdbcProvider {
     @Resource
     DataSource shardingSphereDataSource;
 
+    /**
+     * 工作流的数据源
+     */
+    @Lazy
+    @Qualifier("activitiDataSource")
+    @Resource
+    DataSource activitiDataSource;
+
     @Bean
     public DynamicDataSourceProvider dynamicDataSourceProvider() {
 
@@ -53,6 +61,9 @@ public class DynamicDataSourceShardingJdbcProvider {
 
                 // 将 shardingJdbc 管理的数据源也交给动态数据源管理，并替换：默认数据源
                 dataSourceMap.put(dynamicDataSourceProperties.getPrimary(), shardingSphereDataSource);
+
+                // 将 工作流的数据源也交给动态数据源管理
+                dataSourceMap.put("activiti", activitiDataSource);
 
                 return dataSourceMap;
 
