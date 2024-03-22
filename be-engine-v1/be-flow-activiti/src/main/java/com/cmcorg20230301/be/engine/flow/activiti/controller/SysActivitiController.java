@@ -5,6 +5,7 @@ import javax.validation.Valid;
 
 import org.activiti.engine.repository.Deployment;
 import org.activiti.engine.repository.ProcessDefinition;
+import org.activiti.engine.runtime.ProcessInstance;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -12,10 +13,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.cmcorg20230301.be.engine.flow.activiti.model.dto.SysActivitiDeployInsertOrUpdateDTO;
-import com.cmcorg20230301.be.engine.flow.activiti.model.dto.SysActivitiDeployPageDTO;
-import com.cmcorg20230301.be.engine.flow.activiti.model.dto.SysActivitiProcessDefinitionPageDTO;
+import com.cmcorg20230301.be.engine.flow.activiti.model.dto.*;
 import com.cmcorg20230301.be.engine.flow.activiti.service.SysActivitiService;
+import com.cmcorg20230301.be.engine.model.model.dto.NotBlankString;
 import com.cmcorg20230301.be.engine.model.model.dto.NotEmptyStringSet;
 import com.cmcorg20230301.be.engine.security.model.vo.ApiResultVO;
 
@@ -57,6 +57,29 @@ public class SysActivitiController {
     public ApiResultVO<Page<ProcessDefinition>>
         processDefinitionPage(@RequestBody @Valid SysActivitiProcessDefinitionPageDTO dto) {
         return ApiResultVO.okData(baseService.processDefinitionPage(dto));
+    }
+
+    @Operation(summary = "流程实例-新增/修改")
+    @PostMapping("/processInstance/insertOrUpdate")
+    @PreAuthorize("hasAuthority('sysActiviti:processInstanceInsertOrUpdate')")
+    public ApiResultVO<String>
+        processInstanceInsertOrUpdate(@RequestBody @Valid SysActivitiProcessInstanceInsertOrUpdateDTO dto) {
+        return ApiResultVO.okMsg(baseService.processInstanceInsertOrUpdate(dto));
+    }
+
+    @Operation(summary = "流程实例-通过主键id，查看详情")
+    @PostMapping("/processInstance/infoById")
+    @PreAuthorize("hasAuthority('sysActiviti:processInstanceInfoById')")
+    public ApiResultVO<ProcessInstance> processInstanceInfoById(@RequestBody @Valid NotBlankString notBlankString) {
+        return ApiResultVO.okData(baseService.processInstanceInfoById(notBlankString));
+    }
+
+    @Operation(summary = "流程实例-分页排序查询")
+    @PostMapping("/processInstance/page")
+    @PreAuthorize("hasAuthority('sysActiviti:processInstancePage')")
+    public ApiResultVO<Page<ProcessInstance>>
+        processInstancePage(@RequestBody @Valid SysActivitiProcessInstancePageDTO dto) {
+        return ApiResultVO.okData(baseService.processInstancePage(dto));
     }
 
 }

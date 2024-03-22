@@ -8,18 +8,18 @@ import lombok.EqualsAndHashCode;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
-public class SysActivitiProcessDefinitionPageDTO extends MyTenantPageDTO {
-
-    @Schema(description = "部署：id")
-    private String deploymentId;
+public class SysActivitiProcessInstancePageDTO extends MyTenantPageDTO {
 
     @Schema(description = "流程定义：id")
-    private String id;
+    private String processDefinitionId;
 
     @Schema(description = "流程定义：key")
-    private String key;
+    private String processDefinitionKey;
 
-    @Schema(description = "流程定义：名称")
-    private String name;
+    @Schema(description = "流程实例：id")
+    private String processInstanceId;
+
+    @Schema(description = "流程实例：业务key")
+    private String processInstanceBusinessKey;
 
 }
