@@ -53,4 +53,6 @@ public interface LogTopicConstant {
 
     String BAI_DU = PRE_BE + "baidu"; // 百度相关
 
+    String LOG_SERVICE = PRE_BE + "log-service"; // 日志服务相关
+
 }

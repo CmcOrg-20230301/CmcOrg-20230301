@@ -33,12 +33,6 @@
             <artifactId>be-kafka</artifactId>
         </dependency>
 
-        <!-- be-log -->
-        <dependency>
-            <groupId>${cmcorg.groupId}</groupId>
-            <artifactId>be-log</artifactId>
-        </dependency>
-
         <!-- be-util -->
         <dependency>
             <groupId>${cmcorg.groupId}</groupId>
