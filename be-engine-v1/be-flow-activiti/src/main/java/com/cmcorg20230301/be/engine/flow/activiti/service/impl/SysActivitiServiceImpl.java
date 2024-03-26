@@ -27,6 +27,7 @@ import com.cmcorg20230301.be.engine.flow.activiti.util.SysActivitiUtil;
 import com.cmcorg20230301.be.engine.model.model.dto.NotBlankString;
 import com.cmcorg20230301.be.engine.model.model.dto.NotEmptyStringSet;
 import com.cmcorg20230301.be.engine.security.exception.BaseBizCodeEnum;
+import com.cmcorg20230301.be.engine.security.model.vo.ApiResultVO;
 import com.cmcorg20230301.be.engine.security.util.UserUtil;
 
 import cn.hutool.core.io.file.FileNameUtil;
@@ -52,9 +53,13 @@ public class SysActivitiServiceImpl implements SysActivitiService {
     @Override
     public String deployInsertOrUpdate(SysActivitiDeployInsertOrUpdateDTO dto) {
 
-        Long tenantId = UserUtil.getCurrentTenantIdDefault();
-
         String url = dto.getUrl();
+
+        if (!url.endsWith(".bpmn") || !url.endsWith(".bpmn20.xml")) {
+            ApiResultVO.error("操作失败：文件名请以：.bpmn 或者 .bpmn20.xml 结尾", url);
+        }
+
+        Long tenantId = UserUtil.getCurrentTenantIdDefault();
 
         String fileName = FileNameUtil.getName(url);
 
