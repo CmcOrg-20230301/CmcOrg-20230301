@@ -89,7 +89,17 @@ public class SysActivitiServiceImpl implements SysActivitiService {
 
         Deployment deployment = deploymentBuilder.deploy();
 
-        return deployment.getId();
+        String deploymentId = deployment.getId();
+
+        ProcessDefinitionQuery processDefinitionQuery = repositoryService.createProcessDefinitionQuery();
+
+        processDefinitionQuery.deploymentId(deploymentId);
+
+        ProcessDefinition processDefinition = processDefinitionQuery.singleResult();
+
+        repositoryService.setProcessDefinitionCategory(processDefinition.getId(), userId.toString());
+
+        return deploymentId;
 
     }
 
