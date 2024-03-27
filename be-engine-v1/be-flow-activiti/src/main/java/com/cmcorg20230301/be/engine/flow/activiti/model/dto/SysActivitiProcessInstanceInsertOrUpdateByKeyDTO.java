@@ -8,11 +8,11 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
 @Data
-public class SysActivitiProcessInstanceInsertOrUpdateDTO {
+public class SysActivitiProcessInstanceInsertOrUpdateByKeyDTO {
 
     @NotBlank
-    @Schema(description = "流程定义：id")
-    private String processDefinitionId;
+    @Schema(description = "流程定义：key")
+    private String processDefinitionKey;
 
     @NotBlank
     @Schema(description = "业务：key")

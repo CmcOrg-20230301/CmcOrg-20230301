@@ -23,6 +23,8 @@ public interface SysActivitiService {
 
     String processInstanceInsertOrUpdate(SysActivitiProcessInstanceInsertOrUpdateDTO dto);
 
+    String processInstanceInsertOrUpdateByKey(SysActivitiProcessInstanceInsertOrUpdateByKeyDTO dto);
+
     SysActivitiProcessInstanceVO processInstanceInfoById(NotBlankString notBlankString);
 
     Page<SysActivitiProcessInstanceVO> processInstancePage(SysActivitiProcessInstancePageDTO dto);

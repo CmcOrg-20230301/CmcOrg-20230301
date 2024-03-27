@@ -82,6 +82,14 @@ public class SysActivitiController {
         return ApiResultVO.okMsg(baseService.processInstanceInsertOrUpdate(dto));
     }
 
+    @Operation(summary = "流程实例-新增/修改，通过key")
+    @PostMapping("/processInstance/insertOrUpdate/byKey")
+    @PreAuthorize("hasAuthority('sysActiviti:processInstanceInsertOrUpdateByKey')")
+    public ApiResultVO<String>
+        processInstanceInsertOrUpdateByKey(@RequestBody @Valid SysActivitiProcessInstanceInsertOrUpdateByKeyDTO dto) {
+        return ApiResultVO.okMsg(baseService.processInstanceInsertOrUpdateByKey(dto));
+    }
+
     @Operation(summary = "流程实例-通过主键id，查看详情")
     @PostMapping("/processInstance/infoById")
     @PreAuthorize("hasAuthority('sysActiviti:processInstanceInfoById')")

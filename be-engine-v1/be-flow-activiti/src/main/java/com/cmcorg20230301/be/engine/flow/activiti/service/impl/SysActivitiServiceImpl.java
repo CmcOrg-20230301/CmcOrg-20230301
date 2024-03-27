@@ -288,6 +288,31 @@ public class SysActivitiServiceImpl implements SysActivitiService {
 
         String userId = UserUtil.getCurrentUserId().toString();
 
+        Authentication.setAuthenticatedUserId(userId); // 设置：启动流程实例的 userId
+
+        Map<String, Object> variableMap = dto.getVariableMap();
+
+        if (variableMap == null) {
+            variableMap = MapUtil.newHashMap();
+        }
+
+        variableMap.put(SysActivitiUtil.VARIABLE_NAME_USER_ID, userId); // 设置：启动参数
+
+        ProcessInstance processInstance =
+            runtimeService.startProcessInstanceById(dto.getProcessDefinitionId(), dto.getBusinessKey(), variableMap);
+
+        return processInstance.getProcessInstanceId();
+
+    }
+
+    /**
+     * 流程实例-新增/修改，通过key
+     */
+    @Override
+    public String processInstanceInsertOrUpdateByKey(SysActivitiProcessInstanceInsertOrUpdateByKeyDTO dto) {
+
+        String userId = UserUtil.getCurrentUserId().toString();
+
         String tenantId = UserUtil.getCurrentTenantIdDefault().toString();
 
         Authentication.setAuthenticatedUserId(userId); // 设置：启动流程实例的 userId
