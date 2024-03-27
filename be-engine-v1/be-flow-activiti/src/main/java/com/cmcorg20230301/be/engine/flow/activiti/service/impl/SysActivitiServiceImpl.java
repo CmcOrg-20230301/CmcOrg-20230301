@@ -27,6 +27,7 @@ import com.cmcorg20230301.be.engine.flow.activiti.model.vo.*;
 import com.cmcorg20230301.be.engine.flow.activiti.service.SysActivitiService;
 import com.cmcorg20230301.be.engine.flow.activiti.util.SysActivitiUtil;
 import com.cmcorg20230301.be.engine.model.model.dto.NotBlankString;
+import com.cmcorg20230301.be.engine.model.model.dto.NotEmptyStringAndVariableMapSet;
 import com.cmcorg20230301.be.engine.model.model.dto.NotEmptyStringSet;
 import com.cmcorg20230301.be.engine.security.exception.BaseBizCodeEnum;
 import com.cmcorg20230301.be.engine.security.model.vo.ApiResultVO;
@@ -466,16 +467,16 @@ public class SysActivitiServiceImpl implements SysActivitiService {
      * 任务-批量完成
      */
     @Override
-    public String taskCompleteByIdSet(NotEmptyStringSet notEmptyStringSet) {
+    public String taskCompleteByIdSet(NotEmptyStringAndVariableMapSet notEmptyStringAndVariableMapSet) {
 
         String tenantId = UserUtil.getCurrentTenantIdDefault().toString();
 
-        for (String taskId : notEmptyStringSet.getIdSet()) {
+        for (String taskId : notEmptyStringAndVariableMapSet.getIdSet()) {
 
             // 避免：出现完成不属于自己租户的任务
             taskService.createTaskQuery().taskId(taskId).taskTenantId(tenantId).singleResult();
 
-            taskService.complete(taskId, notEmptyStringSet.getVariableMap());
+            taskService.complete(taskId, notEmptyStringAndVariableMapSet.getVariableMap());
 
         }
 

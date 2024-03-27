@@ -14,6 +14,7 @@ import com.cmcorg20230301.be.engine.flow.activiti.model.dto.*;
 import com.cmcorg20230301.be.engine.flow.activiti.model.vo.*;
 import com.cmcorg20230301.be.engine.flow.activiti.service.SysActivitiService;
 import com.cmcorg20230301.be.engine.model.model.dto.NotBlankString;
+import com.cmcorg20230301.be.engine.model.model.dto.NotEmptyStringAndVariableMapSet;
 import com.cmcorg20230301.be.engine.model.model.dto.NotEmptyStringSet;
 import com.cmcorg20230301.be.engine.security.model.vo.ApiResultVO;
 
@@ -126,8 +127,9 @@ public class SysActivitiController {
     @Operation(summary = "任务-批量完成")
     @PostMapping("/task/completeByIdSet")
     @PreAuthorize("hasAuthority('sysActiviti:taskCompleteByIdSet')")
-    public ApiResultVO<String> taskCompleteByIdSet(@RequestBody @Valid NotEmptyStringSet notEmptyStringSet) {
-        return ApiResultVO.okMsg(baseService.taskCompleteByIdSet(notEmptyStringSet));
+    public ApiResultVO<String>
+        taskCompleteByIdSet(@RequestBody @Valid NotEmptyStringAndVariableMapSet notEmptyStringAndVariableMapSet) {
+        return ApiResultVO.okMsg(baseService.taskCompleteByIdSet(notEmptyStringAndVariableMapSet));
     }
 
     @Operation(summary = "历史任务-分页排序查询")

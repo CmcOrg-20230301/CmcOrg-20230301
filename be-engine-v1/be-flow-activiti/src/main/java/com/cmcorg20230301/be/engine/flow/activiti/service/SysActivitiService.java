@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.cmcorg20230301.be.engine.flow.activiti.model.dto.*;
 import com.cmcorg20230301.be.engine.flow.activiti.model.vo.*;
 import com.cmcorg20230301.be.engine.model.model.dto.NotBlankString;
+import com.cmcorg20230301.be.engine.model.model.dto.NotEmptyStringAndVariableMapSet;
 import com.cmcorg20230301.be.engine.model.model.dto.NotEmptyStringSet;
 
 public interface SysActivitiService {
@@ -34,7 +35,7 @@ public interface SysActivitiService {
 
     String taskReturnByIdSet(NotEmptyStringSet notEmptyStringSet);
 
-    String taskCompleteByIdSet(NotEmptyStringSet notEmptyStringSet);
+    String taskCompleteByIdSet(NotEmptyStringAndVariableMapSet notEmptyStringAndVariableMapSet);
 
     Page<SysActivitiHistoryTaskVO> historyTaskPage(SysActivitiHistoryTaskPageDTO dto);
 
