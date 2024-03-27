@@ -177,6 +177,7 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenuDO> im
         sysMenuInsertOrUpdateDTO.setRemark(dto.getRemark());
         sysMenuInsertOrUpdateDTO.setTenantId(dto.getTenantId());
         sysMenuInsertOrUpdateDTO.setId(id);
+        sysMenuInsertOrUpdateDTO.setLinkFlag(dto.getLinkFlag());
 
         // 不能修改 ↓ 备注：需要和 SysMenuServiceImpl#syncUpdate 一致
         sysMenuInsertOrUpdateDTO.setPath(sysMenuDO.getPath());
@@ -245,8 +246,6 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenuDO> im
         sysMenuDO.setId(dto.getId());
         sysMenuDO.setEnableFlag(BooleanUtil.isTrue(dto.getEnableFlag()));
 
-        sysMenuDO.setLinkFlag(StrUtil.startWith(dto.getPath(), "http", true)); // 判断：path是否以 http开头
-
         sysMenuDO.setRouter(MyEntityUtil.getNotNullStr(dto.getRouter()));
         sysMenuDO.setRedirect(MyEntityUtil.getNotNullStr(dto.getRedirect()));
         sysMenuDO.setRemark(MyEntityUtil.getNotNullStr(dto.getRemark()));
@@ -262,11 +261,13 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenuDO> im
 
             sysMenuDO.setAuths(dto.getAuths()); // 只有权限菜单，才可以设置 auths
             sysMenuDO.setShowFlag(false);
+            sysMenuDO.setLinkFlag(false);
 
         } else {
 
             sysMenuDO.setAuths("");
             sysMenuDO.setShowFlag(BooleanUtil.isTrue(dto.getShowFlag()));
+            sysMenuDO.setLinkFlag(BooleanUtil.isTrue(dto.getLinkFlag()));
 
         }
 

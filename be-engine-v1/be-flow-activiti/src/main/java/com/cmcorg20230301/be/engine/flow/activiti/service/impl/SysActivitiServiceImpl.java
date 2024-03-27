@@ -67,6 +67,8 @@ public class SysActivitiServiceImpl implements SysActivitiService {
 
         Long tenantId = UserUtil.getCurrentTenantIdDefault();
 
+        Long userId = UserUtil.getCurrentUserId();
+
         String fileName = FileNameUtil.getName(url);
 
         byte[] downloadByteArr = HttpUtil.downloadBytes(url);
@@ -76,6 +78,8 @@ public class SysActivitiServiceImpl implements SysActivitiService {
         deploymentBuilder.name(fileName);
 
         deploymentBuilder.tenantId(tenantId.toString());
+
+        deploymentBuilder.category(userId.toString());
 
         Deployment deployment = deploymentBuilder.deploy();
 
@@ -91,9 +95,13 @@ public class SysActivitiServiceImpl implements SysActivitiService {
 
         Long tenantId = UserUtil.getCurrentTenantIdDefault();
 
+        Long userId = UserUtil.getCurrentUserId();
+
         DeploymentQuery deploymentQuery = repositoryService.createDeploymentQuery();
 
         deploymentQuery.deploymentTenantId(tenantId.toString());
+
+        deploymentQuery.deploymentCategory(userId.toString());
 
         if (StrUtil.isNotBlank(dto.getId())) {
             deploymentQuery.deploymentId(dto.getId());
@@ -137,11 +145,13 @@ public class SysActivitiServiceImpl implements SysActivitiService {
 
         String tenantId = UserUtil.getCurrentTenantIdDefault().toString();
 
+        String userId = UserUtil.getCurrentUserId().toString();
+
         for (String deploymentId : notEmptyStringSet.getIdSet()) {
 
             // 避免：出现删除不属于自己租户的部署
             repositoryService.createDeploymentQuery().deploymentId(deploymentId).deploymentTenantId(tenantId)
-                .singleResult();
+                .deploymentCategory(userId).singleResult();
 
             repositoryService.deleteDeployment(deploymentId);
 
@@ -158,6 +168,8 @@ public class SysActivitiServiceImpl implements SysActivitiService {
     public Page<SysActivitiProcessDefinitionVO> processDefinitionPage(SysActivitiProcessDefinitionPageDTO dto) {
 
         Long tenantId = UserUtil.getCurrentTenantIdDefault();
+
+        Long userId = UserUtil.getCurrentUserId();
 
         ProcessDefinitionQuery processDefinitionQuery = repositoryService.createProcessDefinitionQuery();
 
