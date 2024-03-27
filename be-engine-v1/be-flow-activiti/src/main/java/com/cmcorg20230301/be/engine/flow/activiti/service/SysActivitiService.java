@@ -2,10 +2,7 @@ package com.cmcorg20230301.be.engine.flow.activiti.service;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.cmcorg20230301.be.engine.flow.activiti.model.dto.*;
-import com.cmcorg20230301.be.engine.flow.activiti.model.vo.SysActivitiDeploymentVO;
-import com.cmcorg20230301.be.engine.flow.activiti.model.vo.SysActivitiProcessDefinitionVO;
-import com.cmcorg20230301.be.engine.flow.activiti.model.vo.SysActivitiProcessInstanceVO;
-import com.cmcorg20230301.be.engine.flow.activiti.model.vo.SysActivitiTaskVO;
+import com.cmcorg20230301.be.engine.flow.activiti.model.vo.*;
 import com.cmcorg20230301.be.engine.model.model.dto.NotBlankString;
 import com.cmcorg20230301.be.engine.model.model.dto.NotEmptyStringSet;
 
@@ -38,5 +35,7 @@ public interface SysActivitiService {
     String taskReturnByIdSet(NotEmptyStringSet notEmptyStringSet);
 
     String taskCompleteByIdSet(NotEmptyStringSet notEmptyStringSet);
+
+    Page<SysActivitiHistoryTaskVO> historyTaskPage(SysActivitiHistoryTaskPageDTO dto);
 
 }

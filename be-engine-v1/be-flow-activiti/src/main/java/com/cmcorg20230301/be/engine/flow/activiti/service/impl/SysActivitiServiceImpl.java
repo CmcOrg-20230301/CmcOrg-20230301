@@ -5,9 +5,12 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
+import org.activiti.engine.HistoryService;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.RuntimeService;
 import org.activiti.engine.TaskService;
+import org.activiti.engine.history.HistoricTaskInstance;
+import org.activiti.engine.history.HistoricTaskInstanceQuery;
 import org.activiti.engine.impl.identity.Authentication;
 import org.activiti.engine.repository.*;
 import org.activiti.engine.runtime.ProcessInstance;
@@ -18,10 +21,7 @@ import org.springframework.stereotype.Service;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.cmcorg20230301.be.engine.flow.activiti.model.dto.*;
-import com.cmcorg20230301.be.engine.flow.activiti.model.vo.SysActivitiDeploymentVO;
-import com.cmcorg20230301.be.engine.flow.activiti.model.vo.SysActivitiProcessDefinitionVO;
-import com.cmcorg20230301.be.engine.flow.activiti.model.vo.SysActivitiProcessInstanceVO;
-import com.cmcorg20230301.be.engine.flow.activiti.model.vo.SysActivitiTaskVO;
+import com.cmcorg20230301.be.engine.flow.activiti.model.vo.*;
 import com.cmcorg20230301.be.engine.flow.activiti.service.SysActivitiService;
 import com.cmcorg20230301.be.engine.flow.activiti.util.SysActivitiUtil;
 import com.cmcorg20230301.be.engine.model.model.dto.NotBlankString;
@@ -46,6 +46,9 @@ public class SysActivitiServiceImpl implements SysActivitiService {
 
     @Resource
     TaskService taskService;
+
+    @Resource
+    HistoryService historyService;
 
     /**
      * 部署-新增/修改
@@ -475,6 +478,65 @@ public class SysActivitiServiceImpl implements SysActivitiService {
         }
 
         return BaseBizCodeEnum.OK;
+
+    }
+
+    /**
+     * 历史任务-分页排序查询
+     */
+    @Override
+    public Page<SysActivitiHistoryTaskVO> historyTaskPage(SysActivitiHistoryTaskPageDTO dto) {
+
+        Long tenantId = UserUtil.getCurrentTenantIdDefault();
+
+        HistoricTaskInstanceQuery historicTaskInstanceQuery = historyService.createHistoricTaskInstanceQuery();
+
+        historicTaskInstanceQuery.taskTenantId(tenantId.toString());
+
+        if (StrUtil.isNotBlank(dto.getProcessDefinitionId())) {
+            historicTaskInstanceQuery.processDefinitionId(dto.getProcessDefinitionId());
+        }
+
+        if (StrUtil.isNotBlank(dto.getProcessDefinitionKey())) {
+            historicTaskInstanceQuery.processDefinitionKey(dto.getProcessDefinitionKey());
+        }
+
+        if (StrUtil.isNotBlank(dto.getProcessInstanceId())) {
+            historicTaskInstanceQuery.processInstanceId(dto.getProcessInstanceId());
+        }
+
+        if (StrUtil.isNotBlank(dto.getProcessInstanceBusinessKey())) {
+            historicTaskInstanceQuery.processInstanceBusinessKey(dto.getProcessInstanceBusinessKey());
+        }
+
+        if (StrUtil.isNotBlank(dto.getTaskId())) {
+            historicTaskInstanceQuery.taskId(dto.getTaskId());
+        }
+
+        long count = historicTaskInstanceQuery.count();
+
+        if (count == 0) {
+            return new Page<>();
+        }
+
+        Page<Deployment> page = dto.page(true);
+
+        long firstResult = (page.getCurrent() - 1) * page.getSize();
+
+        historicTaskInstanceQuery.orderByHistoricTaskInstanceEndTime().desc();
+
+        List<HistoricTaskInstance> historicTaskInstanceList =
+            historicTaskInstanceQuery.listPage((int)firstResult, (int)page.getSize());
+
+        List<SysActivitiHistoryTaskVO> list = new ArrayList<>(historicTaskInstanceList.size());
+
+        for (HistoricTaskInstance item : historicTaskInstanceList) {
+
+            list.add(SysActivitiUtil.getSysActivitiHistoryTaskVO(item));
+
+        }
+
+        return new Page<SysActivitiHistoryTaskVO>().setTotal(count).setRecords(list);
 
     }
 

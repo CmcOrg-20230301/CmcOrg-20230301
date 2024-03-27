@@ -1,14 +1,12 @@
 package com.cmcorg20230301.be.engine.flow.activiti.util;
 
+import org.activiti.engine.history.HistoricTaskInstance;
 import org.activiti.engine.repository.Deployment;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 
-import com.cmcorg20230301.be.engine.flow.activiti.model.vo.SysActivitiDeploymentVO;
-import com.cmcorg20230301.be.engine.flow.activiti.model.vo.SysActivitiProcessDefinitionVO;
-import com.cmcorg20230301.be.engine.flow.activiti.model.vo.SysActivitiProcessInstanceVO;
-import com.cmcorg20230301.be.engine.flow.activiti.model.vo.SysActivitiTaskVO;
+import com.cmcorg20230301.be.engine.flow.activiti.model.vo.*;
 
 public class SysActivitiUtil {
 
@@ -99,6 +97,39 @@ public class SysActivitiUtil {
         sysActivitiTaskVO.setSuspended(item.isSuspended());
 
         return sysActivitiTaskVO;
+
+    }
+
+    public static SysActivitiHistoryTaskVO getSysActivitiHistoryTaskVO(HistoricTaskInstance item) {
+
+        SysActivitiHistoryTaskVO sysActivitiHistoryTaskVO = new SysActivitiHistoryTaskVO();
+
+        sysActivitiHistoryTaskVO.setId(item.getId());
+        sysActivitiHistoryTaskVO.setName(item.getName());
+        sysActivitiHistoryTaskVO.setDescription(item.getDescription());
+        sysActivitiHistoryTaskVO.setPriority(item.getPriority());
+        sysActivitiHistoryTaskVO.setOwner(item.getOwner());
+        sysActivitiHistoryTaskVO.setAssignee(item.getAssignee());
+        sysActivitiHistoryTaskVO.setProcessInstanceId(item.getProcessInstanceId());
+        sysActivitiHistoryTaskVO.setExecutionId(item.getExecutionId());
+        sysActivitiHistoryTaskVO.setProcessDefinitionId(item.getProcessDefinitionId());
+        sysActivitiHistoryTaskVO.setCreateTime(item.getCreateTime());
+        sysActivitiHistoryTaskVO.setTaskDefinitionKey(item.getTaskDefinitionKey());
+        sysActivitiHistoryTaskVO.setDueDate(item.getDueDate());
+        sysActivitiHistoryTaskVO.setCategory(item.getCategory());
+        sysActivitiHistoryTaskVO.setParentTaskId(item.getParentTaskId());
+        sysActivitiHistoryTaskVO.setTenantId(item.getTenantId());
+        sysActivitiHistoryTaskVO.setFormKey(item.getFormKey());
+        sysActivitiHistoryTaskVO.setProcessVariableMap(item.getProcessVariables());
+        sysActivitiHistoryTaskVO.setClaimTime(item.getClaimTime());
+        sysActivitiHistoryTaskVO.setBusinessKey(item.getBusinessKey());
+
+        sysActivitiHistoryTaskVO.setStartTime(item.getStartTime());
+        sysActivitiHistoryTaskVO.setEndTime(item.getEndTime());
+        sysActivitiHistoryTaskVO.setDurationInMillis(item.getDurationInMillis());
+        sysActivitiHistoryTaskVO.setWorkTimeInMillis(item.getWorkTimeInMillis());
+
+        return sysActivitiHistoryTaskVO;
 
     }
 

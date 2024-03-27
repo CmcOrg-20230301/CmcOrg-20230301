@@ -11,10 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.cmcorg20230301.be.engine.flow.activiti.model.dto.*;
-import com.cmcorg20230301.be.engine.flow.activiti.model.vo.SysActivitiDeploymentVO;
-import com.cmcorg20230301.be.engine.flow.activiti.model.vo.SysActivitiProcessDefinitionVO;
-import com.cmcorg20230301.be.engine.flow.activiti.model.vo.SysActivitiProcessInstanceVO;
-import com.cmcorg20230301.be.engine.flow.activiti.model.vo.SysActivitiTaskVO;
+import com.cmcorg20230301.be.engine.flow.activiti.model.vo.*;
 import com.cmcorg20230301.be.engine.flow.activiti.service.SysActivitiService;
 import com.cmcorg20230301.be.engine.model.model.dto.NotBlankString;
 import com.cmcorg20230301.be.engine.model.model.dto.NotEmptyStringSet;
@@ -131,6 +128,14 @@ public class SysActivitiController {
     @PreAuthorize("hasAuthority('sysActiviti:taskCompleteByIdSet')")
     public ApiResultVO<String> taskCompleteByIdSet(@RequestBody @Valid NotEmptyStringSet notEmptyStringSet) {
         return ApiResultVO.okMsg(baseService.taskCompleteByIdSet(notEmptyStringSet));
+    }
+
+    @Operation(summary = "历史任务-分页排序查询")
+    @PostMapping("/history/task/page")
+    @PreAuthorize("hasAuthority('sysActiviti:historyTaskPage')")
+    public ApiResultVO<Page<SysActivitiHistoryTaskVO>>
+        historyTaskPage(@RequestBody @Valid SysActivitiHistoryTaskPageDTO dto) {
+        return ApiResultVO.okData(baseService.historyTaskPage(dto));
     }
 
 }
