@@ -78,4 +78,7 @@ public class SysActivitiHistoryTaskVO {
     @Schema(description = "任务：接受到结束的时间，单位：毫秒")
     private Long workTimeInMillis;
 
+    @Schema(description = "删除原因")
+    private String deleteReason;
+
 }

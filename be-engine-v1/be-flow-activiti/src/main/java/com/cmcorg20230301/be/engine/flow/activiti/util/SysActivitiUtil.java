@@ -130,6 +130,8 @@ public class SysActivitiUtil {
         sysActivitiHistoryTaskVO.setDurationInMillis(item.getDurationInMillis());
         sysActivitiHistoryTaskVO.setWorkTimeInMillis(item.getWorkTimeInMillis());
 
+        sysActivitiHistoryTaskVO.setDeleteReason(item.getDeleteReason());
+
         return sysActivitiHistoryTaskVO;
 
     }
