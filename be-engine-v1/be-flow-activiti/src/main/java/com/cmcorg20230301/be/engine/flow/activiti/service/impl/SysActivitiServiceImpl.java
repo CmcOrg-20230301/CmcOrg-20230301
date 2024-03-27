@@ -175,6 +175,8 @@ public class SysActivitiServiceImpl implements SysActivitiService {
 
         processDefinitionQuery.processDefinitionTenantId(tenantId.toString());
 
+        processDefinitionQuery.processDefinitionCategory(userId.toString());
+
         if (StrUtil.isNotBlank(dto.getDeploymentId())) {
             processDefinitionQuery.deploymentId(dto.getDeploymentId());
         }
@@ -245,8 +247,11 @@ public class SysActivitiServiceImpl implements SysActivitiService {
 
         Long tenantId = UserUtil.getCurrentTenantIdDefault();
 
-        ProcessInstance processInstance = runtimeService.createProcessInstanceQuery()
-            .processInstanceId(notBlankString.getValue()).processInstanceTenantId(tenantId.toString()).singleResult();
+        String userId = UserUtil.getCurrentUserId().toString();
+
+        ProcessInstance processInstance =
+            runtimeService.createProcessInstanceQuery().processInstanceId(notBlankString.getValue())
+                .processInstanceTenantId(tenantId.toString()).startedBy(userId).singleResult();
 
         return SysActivitiUtil.getSysActivitiProcessInstanceVO(processInstance);
 
@@ -260,9 +265,13 @@ public class SysActivitiServiceImpl implements SysActivitiService {
 
         Long tenantId = UserUtil.getCurrentTenantIdDefault();
 
+        String userId = UserUtil.getCurrentUserId().toString();
+
         ProcessInstanceQuery processInstanceQuery = runtimeService.createProcessInstanceQuery();
 
         processInstanceQuery.processInstanceTenantId(tenantId.toString());
+
+        processInstanceQuery.startedBy(userId);
 
         if (StrUtil.isNotBlank(dto.getProcessDefinitionId())) {
             processInstanceQuery.processDefinitionId(dto.getProcessDefinitionId());
@@ -315,11 +324,13 @@ public class SysActivitiServiceImpl implements SysActivitiService {
 
         String tenantId = UserUtil.getCurrentTenantIdDefault().toString();
 
+        String userId = UserUtil.getCurrentUserId().toString();
+
         for (String processInstanceId : notEmptyStringSet.getIdSet()) {
 
             // 避免：出现挂起不属于自己租户的流程实例
             runtimeService.createProcessInstanceQuery().processInstanceId(processInstanceId)
-                .processInstanceTenantId(tenantId).singleResult();
+                .processInstanceTenantId(tenantId).startedBy(userId).singleResult();
 
             runtimeService.suspendProcessInstanceById(processInstanceId);
 
@@ -337,11 +348,13 @@ public class SysActivitiServiceImpl implements SysActivitiService {
 
         String tenantId = UserUtil.getCurrentTenantIdDefault().toString();
 
+        String userId = UserUtil.getCurrentUserId().toString();
+
         for (String processInstanceId : notEmptyStringSet.getIdSet()) {
 
             // 避免：出现激活不属于自己租户的流程实例
             runtimeService.createProcessInstanceQuery().processInstanceId(processInstanceId)
-                .processInstanceTenantId(tenantId).singleResult();
+                .processInstanceTenantId(tenantId).startedBy(userId).singleResult();
 
             runtimeService.activateProcessInstanceById(processInstanceId);
 
@@ -359,11 +372,13 @@ public class SysActivitiServiceImpl implements SysActivitiService {
 
         String tenantId = UserUtil.getCurrentTenantIdDefault().toString();
 
+        String userId = UserUtil.getCurrentUserId().toString();
+
         for (String processInstanceId : notEmptyStringSet.getIdSet()) {
 
             // 避免：出现删除不属于自己租户的流程实例
             runtimeService.createProcessInstanceQuery().processInstanceId(processInstanceId)
-                .processInstanceTenantId(tenantId).singleResult();
+                .processInstanceTenantId(tenantId).startedBy(userId).singleResult();
 
             runtimeService.deleteProcessInstance(processInstanceId, null);
 
@@ -381,9 +396,13 @@ public class SysActivitiServiceImpl implements SysActivitiService {
 
         Long tenantId = UserUtil.getCurrentTenantIdDefault();
 
+        String userId = UserUtil.getCurrentUserId().toString();
+
         TaskQuery taskQuery = taskService.createTaskQuery();
 
         taskQuery.taskTenantId(tenantId.toString());
+
+        taskQuery.taskCategory(userId);
 
         if (StrUtil.isNotBlank(dto.getProcessDefinitionId())) {
             taskQuery.processDefinitionId(dto.getProcessDefinitionId());
@@ -444,7 +463,7 @@ public class SysActivitiServiceImpl implements SysActivitiService {
         for (String taskId : notEmptyStringSet.getIdSet()) {
 
             // 避免：出现接受不属于自己租户的任务
-            taskService.createTaskQuery().taskId(taskId).taskTenantId(tenantId).singleResult();
+            taskService.createTaskQuery().taskId(taskId).taskTenantId(tenantId).taskCategory(userId).singleResult();
 
             taskService.claim(taskId, userId);
 
@@ -462,10 +481,12 @@ public class SysActivitiServiceImpl implements SysActivitiService {
 
         String tenantId = UserUtil.getCurrentTenantIdDefault().toString();
 
+        String userId = UserUtil.getCurrentUserId().toString();
+
         for (String taskId : notEmptyStringSet.getIdSet()) {
 
             // 避免：出现归还不属于自己租户的任务
-            taskService.createTaskQuery().taskId(taskId).taskTenantId(tenantId).singleResult();
+            taskService.createTaskQuery().taskId(taskId).taskTenantId(tenantId).taskCategory(userId).singleResult();
 
             taskService.unclaim(taskId);
 
@@ -483,10 +504,12 @@ public class SysActivitiServiceImpl implements SysActivitiService {
 
         String tenantId = UserUtil.getCurrentTenantIdDefault().toString();
 
+        String userId = UserUtil.getCurrentUserId().toString();
+
         for (String taskId : notEmptyStringAndVariableMapSet.getIdSet()) {
 
             // 避免：出现完成不属于自己租户的任务
-            taskService.createTaskQuery().taskId(taskId).taskTenantId(tenantId).singleResult();
+            taskService.createTaskQuery().taskId(taskId).taskTenantId(tenantId).taskCategory(userId).singleResult();
 
             taskService.complete(taskId, notEmptyStringAndVariableMapSet.getVariableMap());
 
@@ -504,9 +527,13 @@ public class SysActivitiServiceImpl implements SysActivitiService {
 
         Long tenantId = UserUtil.getCurrentTenantIdDefault();
 
+        String userId = UserUtil.getCurrentUserId().toString();
+
         HistoricTaskInstanceQuery historicTaskInstanceQuery = historyService.createHistoricTaskInstanceQuery();
 
         historicTaskInstanceQuery.taskTenantId(tenantId.toString());
+
+        historicTaskInstanceQuery.taskCategory(userId);
 
         if (StrUtil.isNotBlank(dto.getProcessDefinitionId())) {
             historicTaskInstanceQuery.processDefinitionId(dto.getProcessDefinitionId());
@@ -564,9 +591,13 @@ public class SysActivitiServiceImpl implements SysActivitiService {
 
         Long tenantId = UserUtil.getCurrentTenantIdDefault();
 
+        String userId = UserUtil.getCurrentUserId().toString();
+
         HistoricProcessInstanceQuery historicProcessInstanceQuery = historyService.createHistoricProcessInstanceQuery();
 
         historicProcessInstanceQuery.processInstanceTenantId(tenantId.toString());
+
+        historicProcessInstanceQuery.startedBy(userId);
 
         if (StrUtil.isNotBlank(dto.getProcessDefinitionId())) {
             historicProcessInstanceQuery.processDefinitionId(dto.getProcessDefinitionId());
