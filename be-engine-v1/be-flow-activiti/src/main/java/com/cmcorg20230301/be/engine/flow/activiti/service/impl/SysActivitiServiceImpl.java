@@ -55,7 +55,7 @@ public class SysActivitiServiceImpl implements SysActivitiService {
 
         String url = dto.getUrl();
 
-        if (!url.endsWith(".bpmn") || !url.endsWith(".bpmn20.xml")) {
+        if (!url.endsWith(".bpmn") && !url.endsWith(".bpmn20.xml")) {
             ApiResultVO.error("操作失败：文件名请以：.bpmn 或者 .bpmn20.xml 结尾", url);
         }
 
