@@ -293,15 +293,20 @@ public class SysActivitiServiceImpl implements SysActivitiService {
 
         Authentication.setAuthenticatedUserId(userId); // 设置：启动流程实例的 userId
 
+        // 获取：参数 map
         Map<String, Object> variableMap = getVariableMap(dto.getVariableMap(), userId, tenantId);
 
-        ProcessInstance processInstance =
-            runtimeService.startProcessInstanceById(dto.getProcessDefinitionId(), dto.getBusinessKey(), variableMap);
+        ProcessInstance processInstance = runtimeService.createProcessInstanceBuilder().tenantId(tenantId)
+            .processDefinitionId(dto.getProcessDefinitionId()).businessKey(dto.getBusinessKey()).variables(variableMap)
+            .start();
 
         return processInstance.getProcessInstanceId();
 
     }
 
+    /**
+     * 获取：参数 map
+     */
     @NotNull
     private static Map<String, Object> getVariableMap(Map<String, Object> variableMap, String userId, String tenantId) {
 
@@ -329,6 +334,7 @@ public class SysActivitiServiceImpl implements SysActivitiService {
 
         Authentication.setAuthenticatedUserId(userId); // 设置：启动流程实例的 userId
 
+        // 获取：参数 map
         Map<String, Object> variableMap = getVariableMap(dto.getVariableMap(), userId, tenantId);
 
         ProcessInstance processInstance = runtimeService.startProcessInstanceByKeyAndTenantId(
