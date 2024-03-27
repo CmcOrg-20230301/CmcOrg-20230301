@@ -22,6 +22,7 @@ import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.runtime.ProcessInstanceQuery;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.task.TaskQuery;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Service;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -288,9 +289,21 @@ public class SysActivitiServiceImpl implements SysActivitiService {
 
         String userId = UserUtil.getCurrentUserId().toString();
 
+        String tenantId = UserUtil.getCurrentTenantIdDefault().toString();
+
         Authentication.setAuthenticatedUserId(userId); // 设置：启动流程实例的 userId
 
-        Map<String, Object> variableMap = dto.getVariableMap();
+        Map<String, Object> variableMap = getVariableMap(dto.getVariableMap(), userId, tenantId);
+
+        ProcessInstance processInstance =
+            runtimeService.startProcessInstanceById(dto.getProcessDefinitionId(), dto.getBusinessKey(), variableMap);
+
+        return processInstance.getProcessInstanceId();
+
+    }
+
+    @NotNull
+    private static Map<String, Object> getVariableMap(Map<String, Object> variableMap, String userId, String tenantId) {
 
         if (variableMap == null) {
             variableMap = MapUtil.newHashMap();
@@ -298,10 +311,9 @@ public class SysActivitiServiceImpl implements SysActivitiService {
 
         variableMap.put(SysActivitiUtil.VARIABLE_NAME_USER_ID, userId); // 设置：启动参数
 
-        ProcessInstance processInstance =
-            runtimeService.startProcessInstanceById(dto.getProcessDefinitionId(), dto.getBusinessKey(), variableMap);
+        variableMap.put(SysActivitiUtil.VARIABLE_NAME_TENANT_ID, tenantId); // 设置：启动参数
 
-        return processInstance.getProcessInstanceId();
+        return variableMap;
 
     }
 
@@ -317,13 +329,7 @@ public class SysActivitiServiceImpl implements SysActivitiService {
 
         Authentication.setAuthenticatedUserId(userId); // 设置：启动流程实例的 userId
 
-        Map<String, Object> variableMap = dto.getVariableMap();
-
-        if (variableMap == null) {
-            variableMap = MapUtil.newHashMap();
-        }
-
-        variableMap.put(SysActivitiUtil.VARIABLE_NAME_USER_ID, userId); // 设置：启动参数
+        Map<String, Object> variableMap = getVariableMap(dto.getVariableMap(), userId, tenantId);
 
         ProcessInstance processInstance = runtimeService.startProcessInstanceByKeyAndTenantId(
             dto.getProcessDefinitionKey(), dto.getBusinessKey(), variableMap, tenantId);

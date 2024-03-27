@@ -13,6 +13,8 @@ public class SysActivitiUtil {
 
     public static final String VARIABLE_NAME_USER_ID = "userId";
 
+    public static final String VARIABLE_NAME_TENANT_ID = "tenantId";
+
     public static SysActivitiDeploymentVO getSysActivitiDeploymentVO(Deployment item) {
 
         SysActivitiDeploymentVO sysActivitiDeploymentVO = new SysActivitiDeploymentVO();
