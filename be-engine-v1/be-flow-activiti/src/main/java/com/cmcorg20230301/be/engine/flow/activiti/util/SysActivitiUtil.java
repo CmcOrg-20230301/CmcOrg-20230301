@@ -1,5 +1,6 @@
 package com.cmcorg20230301.be.engine.flow.activiti.util;
 
+import org.activiti.engine.history.HistoricProcessInstance;
 import org.activiti.engine.history.HistoricTaskInstance;
 import org.activiti.engine.repository.Deployment;
 import org.activiti.engine.repository.ProcessDefinition;
@@ -130,6 +131,38 @@ public class SysActivitiUtil {
         sysActivitiHistoryTaskVO.setWorkTimeInMillis(item.getWorkTimeInMillis());
 
         return sysActivitiHistoryTaskVO;
+
+    }
+
+    public static SysActivitiHistoryProcessInstanceVO
+        getSysActivitiHistoryProcessInstanceVO(HistoricProcessInstance item) {
+
+        SysActivitiHistoryProcessInstanceVO sysActivitiHistoryProcessInstanceVO =
+            new SysActivitiHistoryProcessInstanceVO();
+
+        sysActivitiHistoryProcessInstanceVO.setProcessDefinitionId(item.getProcessDefinitionId());
+        sysActivitiHistoryProcessInstanceVO.setProcessDefinitionName(item.getProcessDefinitionName());
+        sysActivitiHistoryProcessInstanceVO.setProcessDefinitionKey(item.getProcessDefinitionKey());
+        sysActivitiHistoryProcessInstanceVO.setProcessDefinitionVersion(item.getProcessDefinitionVersion());
+        sysActivitiHistoryProcessInstanceVO.setDeploymentId(item.getDeploymentId());
+        sysActivitiHistoryProcessInstanceVO.setBusinessKey(item.getBusinessKey());
+        sysActivitiHistoryProcessInstanceVO.setProcessVariableMap(item.getProcessVariables());
+        sysActivitiHistoryProcessInstanceVO.setTenantId(item.getTenantId());
+        sysActivitiHistoryProcessInstanceVO.setName(item.getName());
+        sysActivitiHistoryProcessInstanceVO.setDescription(item.getDescription());
+        sysActivitiHistoryProcessInstanceVO.setStartTime(item.getStartTime());
+        sysActivitiHistoryProcessInstanceVO.setStartUserId(item.getStartUserId());
+
+        sysActivitiHistoryProcessInstanceVO.setId(item.getId());
+
+        sysActivitiHistoryProcessInstanceVO.setEndTime(item.getEndTime());
+        sysActivitiHistoryProcessInstanceVO.setDurationInMillis(item.getDurationInMillis());
+        sysActivitiHistoryProcessInstanceVO.setEndActivityId(item.getEndActivityId());
+        sysActivitiHistoryProcessInstanceVO.setStartActivityId(item.getStartActivityId());
+        sysActivitiHistoryProcessInstanceVO.setDeleteReason(item.getDeleteReason());
+        sysActivitiHistoryProcessInstanceVO.setSuperProcessInstanceId(item.getSuperProcessInstanceId());
+
+        return sysActivitiHistoryProcessInstanceVO;
 
     }
 

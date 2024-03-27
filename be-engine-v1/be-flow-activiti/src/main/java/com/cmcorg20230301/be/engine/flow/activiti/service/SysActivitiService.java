@@ -38,4 +38,6 @@ public interface SysActivitiService {
 
     Page<SysActivitiHistoryTaskVO> historyTaskPage(SysActivitiHistoryTaskPageDTO dto);
 
+    Page<SysActivitiHistoryProcessInstanceVO> historyProcessInstancePage(SysActivitiHistoryProcessInstancePageDTO dto);
+
 }

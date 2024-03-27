@@ -9,6 +9,8 @@ import org.activiti.engine.HistoryService;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.RuntimeService;
 import org.activiti.engine.TaskService;
+import org.activiti.engine.history.HistoricProcessInstance;
+import org.activiti.engine.history.HistoricProcessInstanceQuery;
 import org.activiti.engine.history.HistoricTaskInstance;
 import org.activiti.engine.history.HistoricTaskInstanceQuery;
 import org.activiti.engine.impl.identity.Authentication;
@@ -537,6 +539,62 @@ public class SysActivitiServiceImpl implements SysActivitiService {
         }
 
         return new Page<SysActivitiHistoryTaskVO>().setTotal(count).setRecords(list);
+
+    }
+
+    /**
+     * 历史流程实例-分页排序查询
+     */
+    @Override
+    public Page<SysActivitiHistoryProcessInstanceVO>
+        historyProcessInstancePage(SysActivitiHistoryProcessInstancePageDTO dto) {
+
+        Long tenantId = UserUtil.getCurrentTenantIdDefault();
+
+        HistoricProcessInstanceQuery historicProcessInstanceQuery = historyService.createHistoricProcessInstanceQuery();
+
+        historicProcessInstanceQuery.processInstanceTenantId(tenantId.toString());
+
+        if (StrUtil.isNotBlank(dto.getProcessDefinitionId())) {
+            historicProcessInstanceQuery.processDefinitionId(dto.getProcessDefinitionId());
+        }
+
+        if (StrUtil.isNotBlank(dto.getProcessDefinitionKey())) {
+            historicProcessInstanceQuery.processDefinitionKey(dto.getProcessDefinitionKey());
+        }
+
+        if (StrUtil.isNotBlank(dto.getProcessInstanceId())) {
+            historicProcessInstanceQuery.processInstanceId(dto.getProcessInstanceId());
+        }
+
+        if (StrUtil.isNotBlank(dto.getProcessInstanceBusinessKey())) {
+            historicProcessInstanceQuery.processInstanceBusinessKey(dto.getProcessInstanceBusinessKey());
+        }
+
+        long count = historicProcessInstanceQuery.count();
+
+        if (count == 0) {
+            return new Page<>();
+        }
+
+        Page<Deployment> page = dto.page(true);
+
+        long firstResult = (page.getCurrent() - 1) * page.getSize();
+
+        historicProcessInstanceQuery.orderByProcessInstanceEndTime().desc();
+
+        List<HistoricProcessInstance> historicProcessInstanceList =
+            historicProcessInstanceQuery.listPage((int)firstResult, (int)page.getSize());
+
+        List<SysActivitiHistoryProcessInstanceVO> list = new ArrayList<>(historicProcessInstanceList.size());
+
+        for (HistoricProcessInstance item : historicProcessInstanceList) {
+
+            list.add(SysActivitiUtil.getSysActivitiHistoryProcessInstanceVO(item));
+
+        }
+
+        return new Page<SysActivitiHistoryProcessInstanceVO>().setTotal(count).setRecords(list);
 
     }
 

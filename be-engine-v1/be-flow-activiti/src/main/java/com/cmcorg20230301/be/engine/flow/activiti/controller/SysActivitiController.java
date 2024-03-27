@@ -138,4 +138,12 @@ public class SysActivitiController {
         return ApiResultVO.okData(baseService.historyTaskPage(dto));
     }
 
+    @Operation(summary = "历史流程实例-分页排序查询")
+    @PostMapping("/history/processInstance/page")
+    @PreAuthorize("hasAuthority('sysActiviti:historyProcessInstancePage')")
+    public ApiResultVO<Page<SysActivitiHistoryProcessInstanceVO>>
+        historyProcessInstancePage(@RequestBody @Valid SysActivitiHistoryProcessInstancePageDTO dto) {
+        return ApiResultVO.okData(baseService.historyProcessInstancePage(dto));
+    }
+
 }
