@@ -11,6 +11,8 @@ import com.cmcorg20230301.be.engine.flow.activiti.model.vo.*;
 
 public class SysActivitiUtil {
 
+    public static final String VARIABLE_NAME_USER_ID = "userId";
+
     public static SysActivitiDeploymentVO getSysActivitiDeploymentVO(Deployment item) {
 
         SysActivitiDeploymentVO sysActivitiDeploymentVO = new SysActivitiDeploymentVO();

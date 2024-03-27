@@ -2,6 +2,9 @@ package com.cmcorg20230301.be.engine.flow.activiti.service.impl;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.annotation.Resource;
 
@@ -33,7 +36,9 @@ import com.cmcorg20230301.be.engine.security.exception.BaseBizCodeEnum;
 import com.cmcorg20230301.be.engine.security.model.vo.ApiResultVO;
 import com.cmcorg20230301.be.engine.security.util.UserUtil;
 
+import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.io.file.FileNameUtil;
+import cn.hutool.core.map.MapUtil;
 import cn.hutool.core.util.BooleanUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.http.HttpUtil;
@@ -162,6 +167,43 @@ public class SysActivitiServiceImpl implements SysActivitiService {
     }
 
     /**
+     * 部署-批量删除，通过流程定义主键 id
+     */
+    @Override
+    public String deployDeleteByProcessDefinitionIdSet(NotEmptyStringSet notEmptyStringSet) {
+
+        Long tenantId = UserUtil.getCurrentTenantIdDefault();
+
+        Long userId = UserUtil.getCurrentUserId();
+
+        ProcessDefinitionQuery processDefinitionQuery = repositoryService.createProcessDefinitionQuery();
+
+        processDefinitionQuery.processDefinitionTenantId(tenantId.toString());
+
+        processDefinitionQuery.processDefinitionCategory(userId.toString());
+
+        processDefinitionQuery.processDefinitionIds(notEmptyStringSet.getIdSet());
+
+        List<ProcessDefinition> processDefinitionList = processDefinitionQuery.list();
+
+        if (CollUtil.isEmpty(processDefinitionList)) {
+            return BaseBizCodeEnum.OK;
+        }
+
+        Set<String> deploymentIdSet =
+            processDefinitionList.stream().map(ProcessDefinition::getDeploymentId).collect(Collectors.toSet());
+
+        for (String deploymentId : deploymentIdSet) {
+
+            repositoryService.deleteDeployment(deploymentId);
+
+        }
+
+        return BaseBizCodeEnum.OK;
+
+    }
+
+    /**
      * 流程定义-分页排序查询
      */
     @Override
@@ -221,6 +263,24 @@ public class SysActivitiServiceImpl implements SysActivitiService {
     }
 
     /**
+     * 流程定义-通过主键id，查看详情
+     */
+    @Override
+    public SysActivitiProcessDefinitionVO processDefinitionInfoById(NotBlankString notBlankString) {
+
+        Long tenantId = UserUtil.getCurrentTenantIdDefault();
+
+        String userId = UserUtil.getCurrentUserId().toString();
+
+        ProcessDefinition processDefinition =
+            repositoryService.createProcessDefinitionQuery().processDefinitionId(notBlankString.getValue())
+                .processDefinitionTenantId(tenantId.toString()).processDefinitionCategory(userId).singleResult();
+
+        return SysActivitiUtil.getSysActivitiProcessDefinitionVO(processDefinition);
+
+    }
+
+    /**
      * 流程实例-新增/修改
      */
     @Override
@@ -232,8 +292,16 @@ public class SysActivitiServiceImpl implements SysActivitiService {
 
         Authentication.setAuthenticatedUserId(userId); // 设置：启动流程实例的 userId
 
+        Map<String, Object> variableMap = dto.getVariableMap();
+
+        if (variableMap == null) {
+            variableMap = MapUtil.newHashMap();
+        }
+
+        variableMap.put(SysActivitiUtil.VARIABLE_NAME_USER_ID, userId); // 设置：启动参数
+
         ProcessInstance processInstance = runtimeService.startProcessInstanceByKeyAndTenantId(
-            dto.getProcessDefinitionKey(), dto.getBusinessKey(), dto.getVariableMap(), tenantId);
+            dto.getProcessDefinitionKey(), dto.getBusinessKey(), variableMap, tenantId);
 
         return processInstance.getProcessInstanceId();
 
@@ -402,7 +470,7 @@ public class SysActivitiServiceImpl implements SysActivitiService {
 
         taskQuery.taskTenantId(tenantId.toString());
 
-        taskQuery.taskCategory(userId);
+        taskQuery.processVariableValueEquals(SysActivitiUtil.VARIABLE_NAME_USER_ID, userId);
 
         if (StrUtil.isNotBlank(dto.getProcessDefinitionId())) {
             taskQuery.processDefinitionId(dto.getProcessDefinitionId());
@@ -463,7 +531,8 @@ public class SysActivitiServiceImpl implements SysActivitiService {
         for (String taskId : notEmptyStringSet.getIdSet()) {
 
             // 避免：出现接受不属于自己租户的任务
-            taskService.createTaskQuery().taskId(taskId).taskTenantId(tenantId).taskCategory(userId).singleResult();
+            taskService.createTaskQuery().taskId(taskId).taskTenantId(tenantId)
+                .processVariableValueEquals(SysActivitiUtil.VARIABLE_NAME_USER_ID, userId).singleResult();
 
             taskService.claim(taskId, userId);
 
@@ -486,7 +555,8 @@ public class SysActivitiServiceImpl implements SysActivitiService {
         for (String taskId : notEmptyStringSet.getIdSet()) {
 
             // 避免：出现归还不属于自己租户的任务
-            taskService.createTaskQuery().taskId(taskId).taskTenantId(tenantId).taskCategory(userId).singleResult();
+            taskService.createTaskQuery().taskId(taskId).taskTenantId(tenantId)
+                .processVariableValueEquals(SysActivitiUtil.VARIABLE_NAME_USER_ID, userId).singleResult();
 
             taskService.unclaim(taskId);
 
@@ -509,7 +579,8 @@ public class SysActivitiServiceImpl implements SysActivitiService {
         for (String taskId : notEmptyStringAndVariableMapSet.getIdSet()) {
 
             // 避免：出现完成不属于自己租户的任务
-            taskService.createTaskQuery().taskId(taskId).taskTenantId(tenantId).taskCategory(userId).singleResult();
+            taskService.createTaskQuery().taskId(taskId).taskTenantId(tenantId)
+                .processVariableValueEquals(SysActivitiUtil.VARIABLE_NAME_USER_ID, userId).singleResult();
 
             taskService.complete(taskId, notEmptyStringAndVariableMapSet.getVariableMap());
 
@@ -533,7 +604,7 @@ public class SysActivitiServiceImpl implements SysActivitiService {
 
         historicTaskInstanceQuery.taskTenantId(tenantId.toString());
 
-        historicTaskInstanceQuery.taskCategory(userId);
+        historicTaskInstanceQuery.processVariableValueEquals(SysActivitiUtil.VARIABLE_NAME_USER_ID, userId);
 
         if (StrUtil.isNotBlank(dto.getProcessDefinitionId())) {
             historicTaskInstanceQuery.processDefinitionId(dto.getProcessDefinitionId());

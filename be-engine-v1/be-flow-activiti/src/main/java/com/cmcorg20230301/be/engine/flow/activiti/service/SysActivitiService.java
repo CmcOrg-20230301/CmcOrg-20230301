@@ -15,7 +15,11 @@ public interface SysActivitiService {
 
     String deployDeleteByIdSet(NotEmptyStringSet notEmptyStringSet);
 
+    String deployDeleteByProcessDefinitionIdSet(NotEmptyStringSet notEmptyStringSet);
+
     Page<SysActivitiProcessDefinitionVO> processDefinitionPage(SysActivitiProcessDefinitionPageDTO dto);
+
+    SysActivitiProcessDefinitionVO processDefinitionInfoById(NotBlankString notBlankString);
 
     String processInstanceInsertOrUpdate(SysActivitiProcessInstanceInsertOrUpdateDTO dto);
 

@@ -50,12 +50,28 @@ public class SysActivitiController {
         return ApiResultVO.okMsg(baseService.deployDeleteByIdSet(notEmptyStringSet));
     }
 
+    @Operation(summary = "部署-批量删除，通过流程定义主键 id")
+    @PostMapping("/deploy/deleteByProcessDefinitionIdSet")
+    @PreAuthorize("hasAuthority('sysActiviti:deployDeleteByProcessDefinitionIdSet')")
+    public ApiResultVO<String>
+        deployDeleteByProcessDefinitionIdSet(@RequestBody @Valid NotEmptyStringSet notEmptyStringSet) {
+        return ApiResultVO.okMsg(baseService.deployDeleteByProcessDefinitionIdSet(notEmptyStringSet));
+    }
+
     @Operation(summary = "流程定义-分页排序查询")
     @PostMapping("/processDefinition/page")
     @PreAuthorize("hasAuthority('sysActiviti:processDefinitionPage')")
     public ApiResultVO<Page<SysActivitiProcessDefinitionVO>>
         processDefinitionPage(@RequestBody @Valid SysActivitiProcessDefinitionPageDTO dto) {
         return ApiResultVO.okData(baseService.processDefinitionPage(dto));
+    }
+
+    @Operation(summary = "流程定义-通过主键id，查看详情")
+    @PostMapping("/processDefinition/infoById")
+    @PreAuthorize("hasAuthority('sysActiviti:processDefinitionInfoById')")
+    public ApiResultVO<SysActivitiProcessDefinitionVO>
+        processDefinitionInfoById(@RequestBody @Valid NotBlankString notBlankString) {
+        return ApiResultVO.okData(baseService.processDefinitionInfoById(notBlankString));
     }
 
     @Operation(summary = "流程实例-新增/修改")
