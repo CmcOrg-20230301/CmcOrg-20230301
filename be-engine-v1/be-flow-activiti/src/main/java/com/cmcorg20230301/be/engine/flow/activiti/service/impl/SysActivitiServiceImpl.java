@@ -1,9 +1,11 @@
 package com.cmcorg20230301.be.engine.flow.activiti.service.impl;
 
+import java.io.InputStream;
 import java.util.*;
 import java.util.stream.Collectors;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletResponse;
 
 import org.activiti.engine.HistoryService;
 import org.activiti.engine.RepositoryService;
@@ -35,6 +37,7 @@ import com.cmcorg20230301.be.engine.model.model.dto.NotEmptyStringSet;
 import com.cmcorg20230301.be.engine.security.exception.BaseBizCodeEnum;
 import com.cmcorg20230301.be.engine.security.model.enums.SysFileUploadTypeEnum;
 import com.cmcorg20230301.be.engine.security.model.vo.ApiResultVO;
+import com.cmcorg20230301.be.engine.security.util.ResponseUtil;
 import com.cmcorg20230301.be.engine.security.util.UserUtil;
 
 import cn.hutool.core.collection.CollUtil;
@@ -128,6 +131,28 @@ public class SysActivitiServiceImpl implements SysActivitiService {
 
         // 执行：部署-新增/修改
         return doDeployInsertOrUpdate(dto.getFile().getOriginalFilename(), dto.getFile().getBytes());
+
+    }
+
+    /**
+     * 部署-下载文件
+     */
+    @Override
+    public void deployDownloadResourceFile(NotBlankString notBlankString, HttpServletResponse response) {
+
+        String tenantId = UserUtil.getCurrentTenantIdDefault().toString();
+
+        String userId = UserUtil.getCurrentUserId().toString();
+
+        Deployment deployment = repositoryService.createDeploymentQuery().deploymentTenantId(tenantId)
+            .deploymentCategory(userId).deploymentId(notBlankString.getValue()).singleResult();
+
+        InputStream inputStream = repositoryService.getResourceAsStream(deployment.getId(), deployment.getName());
+
+        ResponseUtil.getOutputStream(response, deployment.getName());
+
+        // 推送
+        ResponseUtil.flush(response, inputStream);
 
     }
 

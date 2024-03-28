@@ -1,6 +1,7 @@
 package com.cmcorg20230301.be.engine.flow.activiti.controller;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -42,6 +43,14 @@ public class SysActivitiController {
     public ApiResultVO<String>
         deployInsertOrUpdateByFile(@RequestBody @Valid SysActivitiDeployInsertOrUpdateByFileDTO dto) {
         return ApiResultVO.okData(baseService.deployInsertOrUpdateByFile(dto));
+    }
+
+    @Operation(summary = "部署-下载文件")
+    @PostMapping("/deploy/downloadResourceFile")
+    @PreAuthorize("hasAuthority('sysActiviti:deployDownloadResourceFile')")
+    public void deployDownloadResourceFile(@RequestBody @Valid NotBlankString notBlankString,
+        HttpServletResponse response) {
+        baseService.deployDownloadResourceFile(notBlankString, response);
     }
 
     @Operation(summary = "部署-分页排序查询")

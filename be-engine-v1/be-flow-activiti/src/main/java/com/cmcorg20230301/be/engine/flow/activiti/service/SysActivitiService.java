@@ -1,5 +1,7 @@
 package com.cmcorg20230301.be.engine.flow.activiti.service;
 
+import javax.servlet.http.HttpServletResponse;
+
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.cmcorg20230301.be.engine.flow.activiti.model.dto.*;
 import com.cmcorg20230301.be.engine.flow.activiti.model.vo.*;
@@ -12,6 +14,8 @@ public interface SysActivitiService {
     String deployInsertOrUpdate(SysActivitiDeployInsertOrUpdateDTO dto);
 
     String deployInsertOrUpdateByFile(SysActivitiDeployInsertOrUpdateByFileDTO dto);
+
+    void deployDownloadResourceFile(NotBlankString notBlankString, HttpServletResponse response);
 
     Page<SysActivitiDeploymentVO> deployPage(SysActivitiDeployPageDTO dto);
 
