@@ -347,6 +347,10 @@ public class SysActivitiServiceImpl implements SysActivitiService {
             processDefinitionQuery.processDefinitionNameLike(dto.getName());
         }
 
+        if (StrUtil.isNotBlank(dto.getResourceName())) {
+            processDefinitionQuery.processDefinitionResourceName(dto.getResourceName());
+        }
+
         long count = processDefinitionQuery.count();
 
         if (count == 0 || BooleanUtil.isTrue(dto.getOnlyQueryCount())) {
@@ -826,12 +830,16 @@ public class SysActivitiServiceImpl implements SysActivitiService {
             historicProcessInstanceQuery.processDefinitionKey(dto.getProcessDefinitionKey());
         }
 
-        if (StrUtil.isNotBlank(dto.getProcessInstanceId())) {
-            historicProcessInstanceQuery.processInstanceId(dto.getProcessInstanceId());
+        if (StrUtil.isNotBlank(dto.getProcessDefinitionName())) {
+            historicProcessInstanceQuery.processDefinitionName(dto.getProcessDefinitionName());
         }
 
-        if (StrUtil.isNotBlank(dto.getProcessInstanceBusinessKey())) {
-            historicProcessInstanceQuery.processInstanceBusinessKey(dto.getProcessInstanceBusinessKey());
+        if (StrUtil.isNotBlank(dto.getId())) {
+            historicProcessInstanceQuery.processInstanceId(dto.getId());
+        }
+
+        if (StrUtil.isNotBlank(dto.getBusinessKey())) {
+            historicProcessInstanceQuery.processInstanceBusinessKey(dto.getBusinessKey());
         }
 
         long count = historicProcessInstanceQuery.count();

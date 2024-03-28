@@ -16,10 +16,13 @@ public class SysActivitiHistoryProcessInstancePageDTO extends MyTenantPageDTO {
     @Schema(description = "流程定义：key")
     private String processDefinitionKey;
 
+    @Schema(description = "流程定义：名称")
+    private String processDefinitionName;
+
     @Schema(description = "流程实例：id")
-    private String processInstanceId;
+    private String id;
 
     @Schema(description = "流程实例：业务key")
-    private String processInstanceBusinessKey;
+    private String businessKey;
 
 }

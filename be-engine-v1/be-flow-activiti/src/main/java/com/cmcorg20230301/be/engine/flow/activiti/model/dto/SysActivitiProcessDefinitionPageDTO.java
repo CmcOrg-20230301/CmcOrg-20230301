@@ -22,6 +22,9 @@ public class SysActivitiProcessDefinitionPageDTO extends MyTenantPageDTO {
     @Schema(description = "流程定义：名称")
     private String name;
 
+    @Schema(description = "部署文件：名称")
+    private String resourceName;
+
     @Schema(description = "是否只查询：数量，默认：false")
     private Boolean onlyQueryCount;
 
