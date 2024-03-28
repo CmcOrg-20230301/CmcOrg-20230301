@@ -113,6 +113,8 @@ public class SysActivitiServiceImpl implements SysActivitiService {
 
         repositoryService.setProcessDefinitionCategory(processDefinition.getId(), userId.toString());
 
+        repositoryService.setDeploymentKey(deploymentId, processDefinition.getKey());
+
         return deploymentId;
 
     }
