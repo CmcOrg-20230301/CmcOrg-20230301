@@ -1,9 +1,6 @@
 package com.cmcorg20230301.be.engine.flow.activiti.service.impl;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import javax.annotation.Resource;
@@ -165,33 +162,46 @@ public class SysActivitiServiceImpl implements SysActivitiService {
 
         String userId = UserUtil.getCurrentUserId().toString();
 
+        List<Deployment> deploymentList =
+            repositoryService.createDeploymentQuery().deploymentTenantId(tenantId).deploymentCategory(userId).list();
+
+        if (CollUtil.isEmpty(deploymentList)) {
+            return BaseBizCodeEnum.OK;
+        }
+
+        Set<String> dbDeploymentIdSet = deploymentList.stream().map(Deployment::getId).collect(Collectors.toSet());
+
+        Set<String> deleteDeploymentIdSet = new HashSet<>();
+
         for (String deploymentId : notEmptyStringSet.getIdSet()) {
 
-            // 避免：出现删除不属于自己租户的部署
-            repositoryService.createDeploymentQuery().deploymentId(deploymentId).deploymentTenantId(tenantId)
-                .deploymentCategory(userId).singleResult();
+            if (dbDeploymentIdSet.contains(deploymentId)) {
 
-            repositoryService.deleteDeployment(deploymentId);
+                deleteDeploymentIdSet.add(deploymentId);
+
+            }
 
         }
+
+        if (CollUtil.isEmpty(deleteDeploymentIdSet)) {
+            return BaseBizCodeEnum.OK;
+        }
+
+        // 执行：移除
+        doDeleteDeploymentIdSet(userId, tenantId, deleteDeploymentIdSet);
 
         return BaseBizCodeEnum.OK;
 
     }
 
     /**
-     * 部署-批量删除，通过流程定义主键 id
+     * 执行：移除
      */
-    @Override
-    @DSTransactional
-    public String deployDeleteByProcessDefinitionIdSet(NotEmptyStringSet notEmptyStringSet) {
+    private void doDeleteDeploymentIdSet(String userId, String tenantId, Set<String> deleteDeploymentIdSet) {
 
-        String tenantId = UserUtil.getCurrentTenantIdDefault().toString();
-
-        String userId = UserUtil.getCurrentUserId().toString();
-
+        // 先：移除流程实例
         List<ProcessInstance> processInstanceList = runtimeService.createProcessInstanceQuery().startedBy(userId)
-            .processInstanceTenantId(tenantId).processDefinitionIds(notEmptyStringSet.getIdSet()).list();
+            .processInstanceTenantId(tenantId).deploymentIdIn(new ArrayList<>(deleteDeploymentIdSet)).list();
 
         if (CollUtil.isNotEmpty(processInstanceList)) {
 
@@ -205,6 +215,25 @@ public class SysActivitiServiceImpl implements SysActivitiService {
             }
 
         }
+
+        for (String deploymentId : deleteDeploymentIdSet) {
+
+            repositoryService.deleteDeployment(deploymentId);
+
+        }
+
+    }
+
+    /**
+     * 部署-批量删除，通过流程定义主键 id
+     */
+    @Override
+    @DSTransactional
+    public String deployDeleteByProcessDefinitionIdSet(NotEmptyStringSet notEmptyStringSet) {
+
+        String tenantId = UserUtil.getCurrentTenantIdDefault().toString();
+
+        String userId = UserUtil.getCurrentUserId().toString();
 
         ProcessDefinitionQuery processDefinitionQuery = repositoryService.createProcessDefinitionQuery();
 
@@ -223,11 +252,8 @@ public class SysActivitiServiceImpl implements SysActivitiService {
         Set<String> deploymentIdSet =
             processDefinitionList.stream().map(ProcessDefinition::getDeploymentId).collect(Collectors.toSet());
 
-        for (String deploymentId : deploymentIdSet) {
-
-            repositoryService.deleteDeployment(deploymentId);
-
-        }
+        // 执行：移除
+        doDeleteDeploymentIdSet(userId, tenantId, deploymentIdSet);
 
         return BaseBizCodeEnum.OK;
 
