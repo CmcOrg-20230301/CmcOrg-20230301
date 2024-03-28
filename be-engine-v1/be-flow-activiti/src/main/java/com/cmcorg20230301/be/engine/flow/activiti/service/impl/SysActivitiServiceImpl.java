@@ -18,6 +18,7 @@ import org.activiti.engine.history.HistoricTaskInstance;
 import org.activiti.engine.history.HistoricTaskInstanceQuery;
 import org.activiti.engine.impl.identity.Authentication;
 import org.activiti.engine.repository.*;
+import org.activiti.engine.runtime.Execution;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.runtime.ProcessInstanceQuery;
 import org.activiti.engine.task.Task;
@@ -25,6 +26,7 @@ import org.activiti.engine.task.TaskQuery;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Service;
 
+import com.baomidou.dynamic.datasource.annotation.DSTransactional;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.cmcorg20230301.be.engine.flow.activiti.model.dto.*;
 import com.cmcorg20230301.be.engine.flow.activiti.model.vo.*;
@@ -181,17 +183,34 @@ public class SysActivitiServiceImpl implements SysActivitiService {
      * 部署-批量删除，通过流程定义主键 id
      */
     @Override
+    @DSTransactional
     public String deployDeleteByProcessDefinitionIdSet(NotEmptyStringSet notEmptyStringSet) {
 
-        Long tenantId = UserUtil.getCurrentTenantIdDefault();
+        String tenantId = UserUtil.getCurrentTenantIdDefault().toString();
 
-        Long userId = UserUtil.getCurrentUserId();
+        String userId = UserUtil.getCurrentUserId().toString();
+
+        List<ProcessInstance> processInstanceList = runtimeService.createProcessInstanceQuery().startedBy(userId)
+            .processInstanceTenantId(tenantId).processDefinitionIds(notEmptyStringSet.getIdSet()).list();
+
+        if (CollUtil.isNotEmpty(processInstanceList)) {
+
+            Set<String> processInstanceIdSet =
+                processInstanceList.stream().map(Execution::getProcessInstanceId).collect(Collectors.toSet());
+
+            for (String processInstanceId : processInstanceIdSet) {
+
+                runtimeService.deleteProcessInstance(processInstanceId, null);
+
+            }
+
+        }
 
         ProcessDefinitionQuery processDefinitionQuery = repositoryService.createProcessDefinitionQuery();
 
-        processDefinitionQuery.processDefinitionTenantId(tenantId.toString());
+        processDefinitionQuery.processDefinitionTenantId(tenantId);
 
-        processDefinitionQuery.processDefinitionCategory(userId.toString());
+        processDefinitionQuery.processDefinitionCategory(userId);
 
         processDefinitionQuery.processDefinitionIds(notEmptyStringSet.getIdSet());
 
