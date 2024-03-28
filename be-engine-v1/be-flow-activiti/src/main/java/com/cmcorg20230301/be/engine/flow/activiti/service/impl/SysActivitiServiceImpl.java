@@ -812,13 +812,13 @@ public class SysActivitiServiceImpl implements SysActivitiService {
     public Page<SysActivitiHistoryProcessInstanceVO>
         historyProcessInstancePage(SysActivitiHistoryProcessInstancePageDTO dto) {
 
-        Long tenantId = UserUtil.getCurrentTenantIdDefault();
+        String tenantId = UserUtil.getCurrentTenantIdDefault().toString();
 
         String userId = UserUtil.getCurrentUserId().toString();
 
         HistoricProcessInstanceQuery historicProcessInstanceQuery = historyService.createHistoricProcessInstanceQuery();
 
-        historicProcessInstanceQuery.processInstanceTenantId(tenantId.toString());
+        historicProcessInstanceQuery.processInstanceTenantId(tenantId);
 
         historicProcessInstanceQuery.startedBy(userId);
 
@@ -880,6 +880,43 @@ public class SysActivitiServiceImpl implements SysActivitiService {
         }
 
         return new Page<SysActivitiHistoryProcessInstanceVO>().setTotal(count).setRecords(list);
+
+    }
+
+    /**
+     * 历史流程实例-批量删除
+     */
+    @Override
+    public String historyProcessInstanceDeleteByIdSet(NotEmptyStringSet notEmptyStringSet) {
+
+        String tenantId = UserUtil.getCurrentTenantIdDefault().toString();
+
+        String userId = UserUtil.getCurrentUserId().toString();
+
+        HistoricProcessInstanceQuery historicProcessInstanceQuery = historyService.createHistoricProcessInstanceQuery();
+
+        historicProcessInstanceQuery.processInstanceTenantId(tenantId);
+
+        historicProcessInstanceQuery.startedBy(userId);
+
+        historicProcessInstanceQuery.processInstanceIds(notEmptyStringSet.getIdSet());
+
+        List<HistoricProcessInstance> historicProcessInstanceList = historicProcessInstanceQuery.list();
+
+        if (CollUtil.isEmpty(historicProcessInstanceList)) {
+            return BaseBizCodeEnum.OK;
+        }
+
+        Set<String> processInstanceIdSet =
+            historicProcessInstanceList.stream().map(HistoricProcessInstance::getId).collect(Collectors.toSet());
+
+        for (String processInstanceId : processInstanceIdSet) {
+
+            historyService.deleteHistoricProcessInstance(processInstanceId);
+
+        }
+
+        return BaseBizCodeEnum.OK;
 
     }
 

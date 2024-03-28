@@ -188,4 +188,12 @@ public class SysActivitiController {
         return ApiResultVO.okData(baseService.historyProcessInstancePage(dto));
     }
 
+    @Operation(summary = "历史流程实例-批量删除")
+    @PostMapping("/history/processInstance/deleteByIdSet")
+    @PreAuthorize("hasAuthority('sysActiviti:historyProcessInstanceDeleteByIdSet')")
+    public ApiResultVO<String>
+        historyProcessInstanceDeleteByIdSet(@RequestBody @Valid NotEmptyStringSet notEmptyStringSet) {
+        return ApiResultVO.okMsg(baseService.historyProcessInstanceDeleteByIdSet(notEmptyStringSet));
+    }
+
 }

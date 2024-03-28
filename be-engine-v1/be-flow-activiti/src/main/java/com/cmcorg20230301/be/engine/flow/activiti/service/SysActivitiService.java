@@ -53,4 +53,6 @@ public interface SysActivitiService {
 
     Page<SysActivitiHistoryProcessInstanceVO> historyProcessInstancePage(SysActivitiHistoryProcessInstancePageDTO dto);
 
+    String historyProcessInstanceDeleteByIdSet(NotEmptyStringSet notEmptyStringSet);
+
 }
