@@ -40,8 +40,7 @@ public class SysActivitiController {
     @Operation(summary = "部署-新增/修改，通过文件上传")
     @PostMapping("/deploy/insertOrUpdate/byFile")
     @PreAuthorize("hasAuthority('sysActiviti:deployInsertOrUpdate')")
-    public ApiResultVO<String>
-        deployInsertOrUpdateByFile(@RequestBody @Valid SysActivitiDeployInsertOrUpdateByFileDTO dto) {
+    public ApiResultVO<String> deployInsertOrUpdateByFile(SysActivitiDeployInsertOrUpdateByFileDTO dto) {
         return ApiResultVO.okData(baseService.deployInsertOrUpdateByFile(dto));
     }
 
