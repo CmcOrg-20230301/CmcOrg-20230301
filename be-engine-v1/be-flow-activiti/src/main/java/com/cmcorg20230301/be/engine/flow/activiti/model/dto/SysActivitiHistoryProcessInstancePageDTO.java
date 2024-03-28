@@ -25,4 +25,7 @@ public class SysActivitiHistoryProcessInstancePageDTO extends MyTenantPageDTO {
     @Schema(description = "流程实例：业务key")
     private String businessKey;
 
+    @Schema(description = "流程实例：是否是结束状态")
+    protected Boolean ended;
+
 }

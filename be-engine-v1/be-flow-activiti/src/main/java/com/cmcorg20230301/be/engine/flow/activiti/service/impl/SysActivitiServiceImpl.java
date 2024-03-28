@@ -842,6 +842,20 @@ public class SysActivitiServiceImpl implements SysActivitiService {
             historicProcessInstanceQuery.processInstanceBusinessKey(dto.getBusinessKey());
         }
 
+        if (dto.getEnded() != null) {
+
+            if (BooleanUtil.isTrue(dto.getEnded())) {
+
+                historicProcessInstanceQuery.finished();
+
+            } else {
+
+                historicProcessInstanceQuery.unfinished();
+
+            }
+
+        }
+
         long count = historicProcessInstanceQuery.count();
 
         if (count == 0) {
