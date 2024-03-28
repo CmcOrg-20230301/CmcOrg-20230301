@@ -14,7 +14,6 @@ public class SysActivitiProcessInstanceInsertOrUpdateDTO {
     @Schema(description = "流程定义：id")
     private String processDefinitionId;
 
-    @NotBlank
     @Schema(description = "业务：key")
     private String businessKey;
 
