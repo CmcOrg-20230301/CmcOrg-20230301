@@ -33,7 +33,15 @@ public class SysActivitiController {
     @PostMapping("/deploy/insertOrUpdate")
     @PreAuthorize("hasAuthority('sysActiviti:deployInsertOrUpdate')")
     public ApiResultVO<String> deployInsertOrUpdate(@RequestBody @Valid SysActivitiDeployInsertOrUpdateDTO dto) {
-        return ApiResultVO.okMsg(baseService.deployInsertOrUpdate(dto));
+        return ApiResultVO.okData(baseService.deployInsertOrUpdate(dto));
+    }
+
+    @Operation(summary = "部署-新增/修改，通过文件上传")
+    @PostMapping("/deploy/insertOrUpdate/byFile")
+    @PreAuthorize("hasAuthority('sysActiviti:deployInsertOrUpdate')")
+    public ApiResultVO<String>
+        deployInsertOrUpdateByFile(@RequestBody @Valid SysActivitiDeployInsertOrUpdateByFileDTO dto) {
+        return ApiResultVO.okData(baseService.deployInsertOrUpdateByFile(dto));
     }
 
     @Operation(summary = "部署-分页排序查询")
@@ -79,7 +87,7 @@ public class SysActivitiController {
     @PreAuthorize("hasAuthority('sysActiviti:processInstanceInsertOrUpdate')")
     public ApiResultVO<String>
         processInstanceInsertOrUpdate(@RequestBody @Valid SysActivitiProcessInstanceInsertOrUpdateDTO dto) {
-        return ApiResultVO.okMsg(baseService.processInstanceInsertOrUpdate(dto));
+        return ApiResultVO.okData(baseService.processInstanceInsertOrUpdate(dto));
     }
 
     @Operation(summary = "流程实例-新增/修改，通过key")
@@ -87,7 +95,7 @@ public class SysActivitiController {
     @PreAuthorize("hasAuthority('sysActiviti:processInstanceInsertOrUpdateByKey')")
     public ApiResultVO<String>
         processInstanceInsertOrUpdateByKey(@RequestBody @Valid SysActivitiProcessInstanceInsertOrUpdateByKeyDTO dto) {
-        return ApiResultVO.okMsg(baseService.processInstanceInsertOrUpdateByKey(dto));
+        return ApiResultVO.okData(baseService.processInstanceInsertOrUpdateByKey(dto));
     }
 
     @Operation(summary = "流程实例-通过主键id，查看详情")

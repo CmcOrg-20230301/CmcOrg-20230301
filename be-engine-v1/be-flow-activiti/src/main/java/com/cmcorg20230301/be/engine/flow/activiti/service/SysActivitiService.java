@@ -11,6 +11,8 @@ public interface SysActivitiService {
 
     String deployInsertOrUpdate(SysActivitiDeployInsertOrUpdateDTO dto);
 
+    String deployInsertOrUpdateByFile(SysActivitiDeployInsertOrUpdateByFileDTO dto);
+
     Page<SysActivitiDeploymentVO> deployPage(SysActivitiDeployPageDTO dto);
 
     String deployDeleteByIdSet(NotEmptyStringSet notEmptyStringSet);

@@ -1,21 +1,24 @@
 package com.cmcorg20230301.be.engine.security.model.enums;
 
-import cn.hutool.core.collection.CollUtil;
-import cn.hutool.core.io.unit.DataSizeUtil;
-import cn.hutool.core.lang.Assert;
-import cn.hutool.core.util.StrUtil;
+import java.util.Set;
+
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import org.springframework.web.multipart.MultipartFile;
+
 import com.baomidou.mybatisplus.annotation.EnumValue;
 import com.cmcorg20230301.be.engine.security.model.interfaces.ISysFileUploadType;
 import com.cmcorg20230301.be.engine.security.model.vo.ApiResultVO;
 import com.cmcorg20230301.be.engine.security.util.MyFileTypeUtil;
 import com.fasterxml.jackson.annotation.JsonValue;
-import java.util.Set;
+
+import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.io.unit.DataSizeUtil;
+import cn.hutool.core.lang.Assert;
+import cn.hutool.core.util.StrUtil;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.SneakyThrows;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-import org.springframework.web.multipart.MultipartFile;
 
 /**
  * 文件上传：枚举类
@@ -38,6 +41,9 @@ public enum SysFileUploadTypeEnum implements ISysFileUploadType {
 
     // 临时文件-图片
     TEMP_IMAGE(501, "temp-image", AVATAR.getAcceptFileTypeSet(), 1024 * 1024 * 10, true), //
+
+    // bpmn
+    BPMN(601, "bpmn", CollUtil.newHashSet("xml", "bpmn"), 1024 * 1024 * 10, false), //
 
     ;
 

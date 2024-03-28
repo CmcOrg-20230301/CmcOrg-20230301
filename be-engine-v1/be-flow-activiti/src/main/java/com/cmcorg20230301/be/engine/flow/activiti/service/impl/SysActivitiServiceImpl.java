@@ -33,6 +33,7 @@ import com.cmcorg20230301.be.engine.model.model.dto.NotBlankString;
 import com.cmcorg20230301.be.engine.model.model.dto.NotEmptyStringAndVariableMapSet;
 import com.cmcorg20230301.be.engine.model.model.dto.NotEmptyStringSet;
 import com.cmcorg20230301.be.engine.security.exception.BaseBizCodeEnum;
+import com.cmcorg20230301.be.engine.security.model.enums.SysFileUploadTypeEnum;
 import com.cmcorg20230301.be.engine.security.model.vo.ApiResultVO;
 import com.cmcorg20230301.be.engine.security.util.UserUtil;
 
@@ -42,6 +43,7 @@ import cn.hutool.core.map.MapUtil;
 import cn.hutool.core.util.BooleanUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.http.HttpUtil;
+import lombok.SneakyThrows;
 
 @Service
 public class SysActivitiServiceImpl implements SysActivitiService {
@@ -70,13 +72,23 @@ public class SysActivitiServiceImpl implements SysActivitiService {
             ApiResultVO.error("操作失败：文件名请以：.bpmn 或者 .bpmn20.xml 结尾", url);
         }
 
-        Long tenantId = UserUtil.getCurrentTenantIdDefault();
-
-        Long userId = UserUtil.getCurrentUserId();
-
         String fileName = FileNameUtil.getName(url);
 
         byte[] downloadByteArr = HttpUtil.downloadBytes(url);
+
+        // 执行：部署-新增/修改
+        return doDeployInsertOrUpdate(fileName, downloadByteArr);
+
+    }
+
+    /**
+     * 执行：部署-新增/修改
+     */
+    private String doDeployInsertOrUpdate(String fileName, byte[] downloadByteArr) {
+
+        Long tenantId = UserUtil.getCurrentTenantIdDefault();
+
+        Long userId = UserUtil.getCurrentUserId();
 
         DeploymentBuilder deploymentBuilder = repositoryService.createDeployment().addBytes(fileName, downloadByteArr);
 
@@ -99,6 +111,23 @@ public class SysActivitiServiceImpl implements SysActivitiService {
         repositoryService.setProcessDefinitionCategory(processDefinition.getId(), userId.toString());
 
         return deploymentId;
+
+    }
+
+    /**
+     * 部署-新增/修改，通过文件上传
+     */
+    @SneakyThrows
+    @Override
+    public String deployInsertOrUpdateByFile(SysActivitiDeployInsertOrUpdateByFileDTO dto) {
+
+        SysFileUploadTypeEnum sysFileUploadTypeEnum = SysFileUploadTypeEnum.BPMN;
+
+        // 上传文件检查
+        SysFileUploadTypeEnum.uploadCheckWillError(dto.getFile(), sysFileUploadTypeEnum);
+
+        // 执行：部署-新增/修改
+        return doDeployInsertOrUpdate(dto.getFile().getOriginalFilename(), dto.getFile().getBytes());
 
     }
 
