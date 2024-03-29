@@ -69,4 +69,7 @@ public class SysActivitiHistoryProcessInstanceVO {
     @Schema(description = "超级流程实例：id")
     private String superProcessInstanceId;
 
+    @Schema(description = "流程实例：是否是暂停状态，默认：false")
+    protected Boolean suspended;
+
 }

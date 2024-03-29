@@ -808,6 +808,7 @@ public class SysActivitiServiceImpl implements SysActivitiService {
     /**
      * 历史流程实例-分页排序查询
      */
+    @SneakyThrows
     @Override
     public Page<SysActivitiHistoryProcessInstanceVO>
         historyProcessInstancePage(SysActivitiHistoryProcessInstancePageDTO dto) {
@@ -873,9 +874,40 @@ public class SysActivitiServiceImpl implements SysActivitiService {
 
         List<SysActivitiHistoryProcessInstanceVO> list = new ArrayList<>(historicProcessInstanceList.size());
 
+        Set<String> processInstanceIdSet = new HashSet<>();
+
         for (HistoricProcessInstance item : historicProcessInstanceList) {
 
             list.add(SysActivitiUtil.getSysActivitiHistoryProcessInstanceVO(item));
+
+            if (item.getEndTime() == null) {
+
+                processInstanceIdSet.add(item.getId());
+
+            }
+
+        }
+
+        if (CollUtil.isNotEmpty(processInstanceIdSet)) {
+
+            ProcessInstanceQuery processInstanceQuery = runtimeService.createProcessInstanceQuery();
+
+            processInstanceQuery.processInstanceIds(processInstanceIdSet);
+
+            List<ProcessInstance> processInstanceList = processInstanceQuery.list();
+
+            if (CollUtil.isNotEmpty(processInstanceList)) {
+
+                Map<String, Boolean> isSuspendedMap = processInstanceList.stream()
+                    .collect(Collectors.toMap(Execution::getId, ProcessInstance::isSuspended));
+
+                for (SysActivitiHistoryProcessInstanceVO item : list) {
+
+                    item.setSuspended(isSuspendedMap.get(item.getId())); // 设置：是否是暂停状态
+
+                }
+
+            }
 
         }
 
