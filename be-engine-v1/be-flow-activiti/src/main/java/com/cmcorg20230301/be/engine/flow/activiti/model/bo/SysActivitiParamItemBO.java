@@ -1,0 +1,25 @@
+package com.cmcorg20230301.be.engine.flow.activiti.model.bo;
+
+import com.cmcorg20230301.be.engine.flow.activiti.model.interfaces.ISysActivitiParamItemType;
+
+import lombok.Data;
+
+@Data
+public class SysActivitiParamItemBO {
+
+    /**
+     * 类型 {@link ISysActivitiParamItemType}
+     */
+    private Integer type;
+
+    /**
+     * 值
+     */
+    private String value;
+
+    /**
+     * 函数调用名称
+     */
+    private String functionName;
+
+}

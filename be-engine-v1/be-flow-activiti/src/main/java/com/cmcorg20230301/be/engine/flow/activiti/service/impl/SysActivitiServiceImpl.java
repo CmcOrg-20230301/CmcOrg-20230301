@@ -7,6 +7,9 @@ import java.util.stream.Collectors;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
 
+import org.activiti.bpmn.model.BpmnModel;
+import org.activiti.bpmn.model.FlowElement;
+import org.activiti.bpmn.model.SequenceFlow;
 import org.activiti.engine.HistoryService;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.RuntimeService;
@@ -27,7 +30,11 @@ import org.springframework.stereotype.Service;
 
 import com.baomidou.dynamic.datasource.annotation.DSTransactional;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.cmcorg20230301.be.engine.flow.activiti.model.bo.SysActivitiNodeBO;
+import com.cmcorg20230301.be.engine.flow.activiti.model.bo.SysActivitiTaskBO;
 import com.cmcorg20230301.be.engine.flow.activiti.model.dto.*;
+import com.cmcorg20230301.be.engine.flow.activiti.model.enums.SysActivitiTaskCategoryEnum;
+import com.cmcorg20230301.be.engine.flow.activiti.model.interfaces.ISysActivitiTaskCategory;
 import com.cmcorg20230301.be.engine.flow.activiti.model.vo.*;
 import com.cmcorg20230301.be.engine.flow.activiti.service.SysActivitiService;
 import com.cmcorg20230301.be.engine.flow.activiti.util.SysActivitiUtil;
@@ -37,6 +44,7 @@ import com.cmcorg20230301.be.engine.model.model.dto.NotEmptyStringSet;
 import com.cmcorg20230301.be.engine.security.exception.BaseBizCodeEnum;
 import com.cmcorg20230301.be.engine.security.model.enums.SysFileUploadTypeEnum;
 import com.cmcorg20230301.be.engine.security.model.vo.ApiResultVO;
+import com.cmcorg20230301.be.engine.security.util.MyThreadUtil;
 import com.cmcorg20230301.be.engine.security.util.ResponseUtil;
 import com.cmcorg20230301.be.engine.security.util.UserUtil;
 
@@ -46,6 +54,7 @@ import cn.hutool.core.map.MapUtil;
 import cn.hutool.core.util.BooleanUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.http.HttpUtil;
+import cn.hutool.json.JSONUtil;
 import lombok.SneakyThrows;
 
 @Service
@@ -415,7 +424,149 @@ public class SysActivitiServiceImpl implements SysActivitiService {
             .processDefinitionId(dto.getProcessDefinitionId()).businessKey(dto.getBusinessKey()).variables(variableMap)
             .start();
 
-        return processInstance.getProcessInstanceId();
+        String processInstanceId = processInstance.getProcessInstanceId();
+
+        MyThreadUtil.execute(() -> {
+
+            // 通过：流程实例，执行任务
+            doTaskByProcessInstance(processInstance);
+
+        });
+
+        return processInstanceId;
+
+    }
+
+    /**
+     * 通过：流程实例，执行任务
+     */
+    private void doTaskByProcessInstance(ProcessInstance processInstance) {
+
+        BpmnModel bpmnModel = repositoryService.getBpmnModel(processInstance.getProcessDefinitionId());
+
+        // 获取：nodeBoMap
+        Map<String, SysActivitiNodeBO> nodeBoMap = getNodeBoMap(bpmnModel);
+
+        // 执行任务：通过，流程实例 id
+        execTaskByProcessInstanceId(processInstance.getProcessInstanceId(), nodeBoMap);
+
+    }
+
+    /**
+     * 获取：nodeBoMap
+     */
+    private static Map<String, SysActivitiNodeBO> getNodeBoMap(BpmnModel bpmnModel) {
+
+        Map<String, SysActivitiNodeBO> nodeBoMap = new HashMap<>();
+
+        for (Map.Entry<String, FlowElement> item : bpmnModel.getMainProcess().getFlowElementMap().entrySet()) {
+
+            FlowElement value = item.getValue();
+
+            if (value instanceof SequenceFlow) { // 如果是：线
+
+                SequenceFlow sequenceFlow = (SequenceFlow)value;
+
+                String sourceRef = sequenceFlow.getSourceRef();
+
+                String targetRef = sequenceFlow.getTargetRef();
+
+                SysActivitiNodeBO sourceSysActivitiNodeBO =
+                    nodeBoMap.computeIfAbsent(sourceRef, k -> new SysActivitiNodeBO());
+
+                SysActivitiNodeBO targetSysActivitiNodeBO =
+                    nodeBoMap.computeIfAbsent(targetRef, k -> new SysActivitiNodeBO());
+
+                sourceSysActivitiNodeBO.getSufLineSet().add(sequenceFlow);
+
+                sourceSysActivitiNodeBO.getSufNodeSet().add(sequenceFlow.getTargetFlowElement());
+
+                targetSysActivitiNodeBO.getPreLineSet().add(sequenceFlow);
+
+                targetSysActivitiNodeBO.getPreNodeSet().add(sequenceFlow.getSourceFlowElement());
+
+            }
+
+        }
+
+        return nodeBoMap;
+
+    }
+
+    /**
+     * 执行任务：通过，流程实例 id
+     */
+    private void execTaskByProcessInstanceId(String processInstanceId, Map<String, SysActivitiNodeBO> nodeBoMap) {
+
+        TaskQuery taskQuery = taskService.createTaskQuery();
+
+        taskQuery.processInstanceId(processInstanceId);
+
+        List<Task> list = taskQuery.list();
+
+        if (CollUtil.isEmpty(list)) {
+            return;
+        }
+
+        // 执行：任务
+        for (Task item : list) {
+
+            if (item.isSuspended()) {
+                return; // 如果：任务暂停了，则停止
+            }
+
+            String description = item.getDescription();
+
+            if (StrUtil.isBlank(description)) {
+
+                taskService.complete(item.getId());
+
+                continue;
+
+            }
+
+            SysActivitiTaskBO sysActivitiTaskBO = JSONUtil.toBean(description, SysActivitiTaskBO.class);
+
+            ISysActivitiTaskCategory iSysActivitiTaskCategory =
+                SysActivitiTaskCategoryEnum.MAP.get(sysActivitiTaskBO.getCategory());
+
+            if (iSysActivitiTaskCategory == null) {
+
+                taskService.complete(item.getId());
+
+                continue;
+
+            }
+
+            if (iSysActivitiTaskCategory.getCode() == SysActivitiTaskCategoryEnum.CHAT_GPT.getCode()) {
+
+                // 获取：下一个节点的函数调用
+                SysActivitiNodeBO sysActivitiNodeBO = nodeBoMap.get(item.getTaskDefinitionKey());
+
+                LinkedHashSet<SequenceFlow> sufLineSet = sysActivitiNodeBO.getSufLineSet();
+
+                for (SequenceFlow subItem : sufLineSet) {
+
+                    String documentation = subItem.getDocumentation();
+
+                    if (StrUtil.isBlank(description)) {
+                        continue;
+                    }
+
+                }
+
+            } else if (iSysActivitiTaskCategory.getCode() == SysActivitiTaskCategoryEnum.MIDJOURNEY.getCode()) {
+
+            } else {
+
+                taskService.complete(item.getId());
+
+            }
+
+        }
+
+        // 继续执行下一个任务
+        execTaskByProcessInstanceId(processInstanceId, nodeBoMap);
 
     }
 
@@ -573,10 +724,18 @@ public class SysActivitiServiceImpl implements SysActivitiService {
         for (String processInstanceId : notEmptyStringSet.getIdSet()) {
 
             // 避免：出现激活不属于自己租户的流程实例
-            runtimeService.createProcessInstanceQuery().processInstanceId(processInstanceId)
-                .processInstanceTenantId(tenantId).startedBy(userId).singleResult();
+            ProcessInstance processInstance =
+                runtimeService.createProcessInstanceQuery().processInstanceId(processInstanceId)
+                    .processInstanceTenantId(tenantId).startedBy(userId).singleResult();
 
             runtimeService.activateProcessInstanceById(processInstanceId);
+
+            MyThreadUtil.execute(() -> {
+
+                // 通过：流程实例，执行任务
+                doTaskByProcessInstance(processInstance);
+
+            });
 
         }
 
