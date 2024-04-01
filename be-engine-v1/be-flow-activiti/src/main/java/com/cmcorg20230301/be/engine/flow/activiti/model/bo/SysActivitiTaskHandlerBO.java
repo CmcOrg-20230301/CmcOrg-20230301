@@ -12,12 +12,24 @@ import lombok.Data;
 @AllArgsConstructor
 public class SysActivitiTaskHandlerBO {
 
+    /**
+     * 节点 map
+     */
     private Map<String, SysActivitiNodeBO> nodeBoMap;
 
+    /**
+     * 本次任务
+     */
     private Task task;
 
-    private String description;
+    /**
+     * 本次任务在流程图中配置的参数
+     */
+    private SysActivitiTaskBO sysActivitiTaskBO;
 
+    /**
+     * taskService
+     */
     private TaskService taskService;
 
 }

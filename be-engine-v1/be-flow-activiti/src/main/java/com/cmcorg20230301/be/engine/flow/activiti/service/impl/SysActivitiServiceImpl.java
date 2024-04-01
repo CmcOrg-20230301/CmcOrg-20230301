@@ -583,7 +583,7 @@ public class SysActivitiServiceImpl implements SysActivitiService {
                     Func1<SysActivitiTaskHandlerBO, Boolean> handler = iSysActivitiTaskCategory.getHandler();
 
                     Boolean result =
-                        handler.call(new SysActivitiTaskHandlerBO(nodeBoMap, item, description, taskService));
+                        handler.call(new SysActivitiTaskHandlerBO(nodeBoMap, item, sysActivitiTaskBO, taskService));
 
                     if (BooleanUtil.isTrue(result)) {
 
