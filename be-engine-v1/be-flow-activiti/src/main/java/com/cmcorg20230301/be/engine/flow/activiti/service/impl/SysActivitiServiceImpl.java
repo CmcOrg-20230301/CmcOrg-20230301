@@ -634,9 +634,11 @@ public class SysActivitiServiceImpl implements SysActivitiService {
 
                 for (Map.Entry<String, FlowElement> item : bpmnModel.getMainProcess().getFlowElementMap().entrySet()) {
 
-                    if (item instanceof StartEvent) {
+                    FlowElement value = item.getValue();
 
-                        StartEvent startEvent = (StartEvent)item;
+                    if (value instanceof StartEvent) {
+
+                        StartEvent startEvent = (StartEvent)value;
 
                         List<SequenceFlow> outgoingFlowList = startEvent.getOutgoingFlows();
 
@@ -662,7 +664,7 @@ public class SysActivitiServiceImpl implements SysActivitiService {
                             sysActivitiParamBO.setInMap(inMap);
 
                             variableMap.put(SysActivitiUtil.VARIABLE_NAME_PROCESS_INSTANCE_JSON_STR,
-                                sysActivitiParamBO); // 设置：启动参数
+                                JSONUtil.toJsonStr(sysActivitiParamBO)); // 设置：启动参数
 
                         }
 
