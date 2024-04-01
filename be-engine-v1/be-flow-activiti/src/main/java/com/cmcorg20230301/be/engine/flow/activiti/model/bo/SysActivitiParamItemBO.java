@@ -8,9 +8,9 @@ import lombok.Data;
 public class SysActivitiParamItemBO {
 
     /**
-     * 输出
+     * 参数集合
      */
-    private List<SysActivitiParamSubItemBO> outList;
+    private List<SysActivitiParamSubItemBO> paramList;
 
     /**
      * 是否被执行过，默认：false

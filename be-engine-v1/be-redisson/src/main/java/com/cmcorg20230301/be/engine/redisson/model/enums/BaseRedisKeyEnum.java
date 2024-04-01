@@ -9,6 +9,8 @@ public enum BaseRedisKeyEnum implements IRedisKey {
 
     // 【PRE_】开头 ↓
 
+    PRE_SYS_ACTIVITI_PROCESS_INSTANCE_ID, // 流程实例锁，锁：【流程实例主键 id】
+
     // im 相关 ↓
 
     PRE_SYS_IM_SESSION_APPLY_PRIVATE_CHAT, // 即时通讯会话申请锁，锁：【用户主键 id + 目标用户主键 id】

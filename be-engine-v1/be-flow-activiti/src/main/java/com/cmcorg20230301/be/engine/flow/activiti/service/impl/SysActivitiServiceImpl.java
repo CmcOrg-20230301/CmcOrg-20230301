@@ -30,10 +30,10 @@ import org.springframework.stereotype.Service;
 
 import com.baomidou.dynamic.datasource.annotation.DSTransactional;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.cmcorg20230301.be.engine.flow.activiti.model.bo.*;
+import com.cmcorg20230301.be.engine.flow.activiti.model.bo.SysActivitiNodeBO;
+import com.cmcorg20230301.be.engine.flow.activiti.model.bo.SysActivitiTaskBO;
+import com.cmcorg20230301.be.engine.flow.activiti.model.bo.SysActivitiTaskHandlerBO;
 import com.cmcorg20230301.be.engine.flow.activiti.model.dto.*;
-import com.cmcorg20230301.be.engine.flow.activiti.model.enums.SysActivitiLineTypeEnum;
-import com.cmcorg20230301.be.engine.flow.activiti.model.enums.SysActivitiTaskCategoryEnum;
 import com.cmcorg20230301.be.engine.flow.activiti.model.interfaces.ISysActivitiTaskCategory;
 import com.cmcorg20230301.be.engine.flow.activiti.model.vo.*;
 import com.cmcorg20230301.be.engine.flow.activiti.service.SysActivitiService;
@@ -41,6 +41,8 @@ import com.cmcorg20230301.be.engine.flow.activiti.util.SysActivitiUtil;
 import com.cmcorg20230301.be.engine.model.model.dto.NotBlankString;
 import com.cmcorg20230301.be.engine.model.model.dto.NotEmptyStringAndVariableMapSet;
 import com.cmcorg20230301.be.engine.model.model.dto.NotEmptyStringSet;
+import com.cmcorg20230301.be.engine.redisson.model.enums.BaseRedisKeyEnum;
+import com.cmcorg20230301.be.engine.redisson.util.RedissonUtil;
 import com.cmcorg20230301.be.engine.security.exception.BaseBizCodeEnum;
 import com.cmcorg20230301.be.engine.security.model.enums.SysFileUploadTypeEnum;
 import com.cmcorg20230301.be.engine.security.model.vo.ApiResultVO;
@@ -48,9 +50,9 @@ import com.cmcorg20230301.be.engine.security.util.MyThreadUtil;
 import com.cmcorg20230301.be.engine.security.util.ResponseUtil;
 import com.cmcorg20230301.be.engine.security.util.UserUtil;
 
-import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.io.file.FileNameUtil;
+import cn.hutool.core.lang.func.Func1;
 import cn.hutool.core.map.MapUtil;
 import cn.hutool.core.util.BooleanUtil;
 import cn.hutool.core.util.StrUtil;
@@ -497,6 +499,7 @@ public class SysActivitiServiceImpl implements SysActivitiService {
     /**
      * 执行任务：通过，流程实例 id
      */
+    @SneakyThrows
     private void execTaskByProcessInstanceId(String processInstanceId, Map<String, SysActivitiNodeBO> nodeBoMap) {
 
         TaskQuery taskQuery = taskService.createTaskQuery();
@@ -529,7 +532,7 @@ public class SysActivitiServiceImpl implements SysActivitiService {
             SysActivitiTaskBO sysActivitiTaskBO = JSONUtil.toBean(description, SysActivitiTaskBO.class);
 
             ISysActivitiTaskCategory iSysActivitiTaskCategory =
-                SysActivitiTaskCategoryEnum.MAP.get(sysActivitiTaskBO.getCategory());
+                SysActivitiUtil.MAP.get(sysActivitiTaskBO.getCategory());
 
             if (iSysActivitiTaskCategory == null) {
 
@@ -539,55 +542,21 @@ public class SysActivitiServiceImpl implements SysActivitiService {
 
             }
 
-            if (iSysActivitiTaskCategory.getCode() == SysActivitiTaskCategoryEnum.CHAT_GPT.getCode()) {
+            RedissonUtil.doLock(BaseRedisKeyEnum.PRE_SYS_ACTIVITI_PROCESS_INSTANCE_ID + item.getProcessInstanceId(),
+                () -> {
 
-                // 获取：函数调用
-                SysActivitiNodeBO sysActivitiNodeBO = nodeBoMap.get(item.getTaskDefinitionKey());
+                    Func1<SysActivitiTaskHandlerBO, Boolean> handler = iSysActivitiTaskCategory.getHandler();
 
-                LinkedHashSet<SequenceFlow> sufLineSet = sysActivitiNodeBO.getSufLineSet();
+                    Boolean result =
+                        handler.call(new SysActivitiTaskHandlerBO(nodeBoMap, item, description, taskService));
 
-                List<SysActivitiFunctionCallBO> toolList = new ArrayList<>();
+                    if (BooleanUtil.isTrue(result)) {
 
-                for (SequenceFlow subItem : sufLineSet) {
-
-                    String documentation = subItem.getDocumentation();
-
-                    if (StrUtil.isBlank(description)) {
-                        continue;
-                    }
-
-                    SysActivitiLineBO sysActivitiLineBO = JSONUtil.toBean(documentation, SysActivitiLineBO.class);
-
-                    if (sysActivitiLineBO.getType() == null) {
-                        continue;
-                    }
-
-                    // 如果是：函数调用连线
-                    if (SysActivitiLineTypeEnum.FUNCTION.getCode() == sysActivitiLineBO.getType()) {
-
-                        SysActivitiFunctionCallBO sysActivitiFunctionCallBO = new SysActivitiFunctionCallBO();
-
-                        sysActivitiFunctionCallBO.setType("function");
-
-                        SysActivitiFunctionCallItemBO sysActivitiFunctionCallItemBO = BeanUtil
-                            .toBean(sysActivitiLineBO.getFunctionJsonStr(), SysActivitiFunctionCallItemBO.class);
-
-                        sysActivitiFunctionCallBO.setFunction(sysActivitiFunctionCallItemBO);
-
-                        toolList.add(sysActivitiFunctionCallBO);
+                        taskService.complete(item.getId()); // 完成任务
 
                     }
 
-                }
-
-
-            } else if (iSysActivitiTaskCategory.getCode() == SysActivitiTaskCategoryEnum.MIDJOURNEY.getCode()) {
-
-            } else {
-
-                taskService.complete(item.getId());
-
-            }
+                });
 
         }
 

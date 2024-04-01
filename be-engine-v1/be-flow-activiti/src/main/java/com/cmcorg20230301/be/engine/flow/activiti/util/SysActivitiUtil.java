@@ -1,5 +1,7 @@
 package com.cmcorg20230301.be.engine.flow.activiti.util;
 
+import java.util.concurrent.ConcurrentHashMap;
+
 import org.activiti.engine.history.HistoricProcessInstance;
 import org.activiti.engine.history.HistoricTaskInstance;
 import org.activiti.engine.repository.Deployment;
@@ -7,6 +9,8 @@ import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 
+import com.cmcorg20230301.be.engine.flow.activiti.model.bo.SysActivitiParamBO;
+import com.cmcorg20230301.be.engine.flow.activiti.model.interfaces.ISysActivitiTaskCategory;
 import com.cmcorg20230301.be.engine.flow.activiti.model.vo.*;
 
 public class SysActivitiUtil {
@@ -14,6 +18,13 @@ public class SysActivitiUtil {
     public static final String VARIABLE_NAME_USER_ID = "userId";
 
     public static final String VARIABLE_NAME_TENANT_ID = "tenantId";
+
+    /**
+     * 流程实例中的 json字符串，key：节点的 key，value：{@link SysActivitiParamBO}
+     */
+    public static final String VARIABLE_NAME_PROCESS_INSTANCE_JSON_STR = "processInstanceJsonStr";
+
+    public static final ConcurrentHashMap<Integer, ISysActivitiTaskCategory> MAP = new ConcurrentHashMap<>();
 
     public static SysActivitiDeploymentVO getSysActivitiDeploymentVO(Deployment item) {
 

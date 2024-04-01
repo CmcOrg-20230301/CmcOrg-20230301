@@ -17,9 +17,4 @@ public class SysActivitiParamSubItemBO {
      */
     private String value;
 
-    /**
-     * 函数调用名称
-     */
-    private String functionName;
-
 }
