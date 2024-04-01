@@ -12,4 +12,9 @@ public class SysActivitiTaskBO {
      */
     private Integer category;
 
+    /**
+     * 预设内容
+     */
+    private String preset;
+
 }

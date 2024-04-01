@@ -1,6 +1,5 @@
 package com.cmcorg20230301.be.engine.flow.activiti.model.bo;
 
-import com.cmcorg20230301.be.engine.flow.activiti.model.interfaces.ISysActivitiLineFunctionType;
 import com.cmcorg20230301.be.engine.flow.activiti.model.interfaces.ISysActivitiLineType;
 
 import lombok.Data;
@@ -14,12 +13,7 @@ public class SysActivitiLineBO {
     private Integer type;
 
     /**
-     * 类型 {@link ISysActivitiLineFunctionType}
-     */
-    private Integer functionType;
-
-    /**
-     * 函数描述
+     * 函数 json字符串
      */
     private String functionJsonStr;
 

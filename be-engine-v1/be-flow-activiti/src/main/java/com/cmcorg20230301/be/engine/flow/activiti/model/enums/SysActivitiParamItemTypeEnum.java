@@ -13,6 +13,8 @@ public enum SysActivitiParamItemTypeEnum implements ISysActivitiParamItemType {
 
     IMAGE(201), // 图片：url
 
+    FUNCTION_CALL(301), // 函数调用
+
     ;
 
     private final int code;

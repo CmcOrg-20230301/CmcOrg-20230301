@@ -9,9 +9,9 @@ import lombok.Getter;
 @Getter
 public enum SysActivitiLineTypeEnum implements ISysActivitiLineType {
 
-    NORMAL(101), // 普通：判断：outputType和 outputValue
+    NORMAL(101), // 普通判断（默认）
 
-    FUNCTION(201), // 函数调用：判断：outputName
+    FUNCTION(201), // 函数调用判断
 
     ;
 

@@ -1,6 +1,7 @@
 package com.cmcorg20230301.be.engine.flow.activiti.model.bo;
 
 import java.util.List;
+import java.util.Map;
 
 import lombok.Data;
 
@@ -8,8 +9,8 @@ import lombok.Data;
 public class SysActivitiParamBO {
 
     /**
-     * 输入
+     * 输入，key，流程图里面的 id，value：历史和当前的参数集合
      */
-    private List<SysActivitiParamItemBO> inList;
+    private Map<String, List<SysActivitiParamItemBO>> inMap;
 
 }
