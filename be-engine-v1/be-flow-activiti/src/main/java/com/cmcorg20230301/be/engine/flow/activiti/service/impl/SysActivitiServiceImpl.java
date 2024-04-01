@@ -30,10 +30,10 @@ import org.springframework.stereotype.Service;
 
 import com.baomidou.dynamic.datasource.annotation.DSTransactional;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.cmcorg20230301.be.engine.flow.activiti.model.bo.SysActivitiNodeBO;
-import com.cmcorg20230301.be.engine.flow.activiti.model.bo.SysActivitiTaskBO;
-import com.cmcorg20230301.be.engine.flow.activiti.model.bo.SysActivitiTaskHandlerBO;
+import com.cmcorg20230301.be.engine.flow.activiti.model.bo.*;
 import com.cmcorg20230301.be.engine.flow.activiti.model.dto.*;
+import com.cmcorg20230301.be.engine.flow.activiti.model.enums.SysActivitiParamItemTypeEnum;
+import com.cmcorg20230301.be.engine.flow.activiti.model.interfaces.ISysActivitiParamItemType;
 import com.cmcorg20230301.be.engine.flow.activiti.model.interfaces.ISysActivitiTaskCategory;
 import com.cmcorg20230301.be.engine.flow.activiti.model.vo.*;
 import com.cmcorg20230301.be.engine.flow.activiti.service.SysActivitiService;
@@ -69,8 +69,12 @@ public class SysActivitiServiceImpl implements SysActivitiService {
     @Resource
     RuntimeService runtimeService;
 
+    private static TaskService taskService;
+
     @Resource
-    TaskService taskService;
+    public void setTaskService(TaskService taskService) {
+        SysActivitiServiceImpl.taskService = taskService;
+    }
 
     @Resource
     HistoryService historyService;
@@ -421,13 +425,67 @@ public class SysActivitiServiceImpl implements SysActivitiService {
         Authentication.setAuthenticatedUserId(userId); // 设置：启动流程实例的 userId
 
         // 获取：参数 map
-        Map<String, Object> variableMap = getVariableMap(dto.getVariableMap(), userId, tenantId);
+        Map<String, Object> variableMap = getVariableMap(userId, tenantId);
 
         ProcessInstance processInstance = runtimeService.createProcessInstanceBuilder().tenantId(tenantId)
             .processDefinitionId(dto.getProcessDefinitionId()).businessKey(dto.getBusinessKey()).variables(variableMap)
             .start();
 
         String processInstanceId = processInstance.getProcessInstanceId();
+
+        Map<String, Object> variableMapTemp = dto.getVariableMap();
+
+        if (CollUtil.isNotEmpty(variableMapTemp)) {
+
+            String inputValue = (String)variableMapTemp.get("inputValue");
+
+            if (StrUtil.isNotBlank(inputValue)) {
+
+                Integer inputType = (Integer)variableMapTemp.get("inputType");
+
+                ISysActivitiParamItemType iSysActivitiParamItemType =
+                    SysActivitiUtil.PARAM_ITEM_TYPE_MAP.get(inputType);
+
+                if (iSysActivitiParamItemType == null) {
+                    iSysActivitiParamItemType = SysActivitiParamItemTypeEnum.TEXT;
+                }
+
+                TaskQuery taskQuery = taskService.createTaskQuery();
+
+                taskQuery.processInstanceId(processInstanceId);
+
+                List<Task> taskList = taskQuery.list();
+
+                if (CollUtil.isNotEmpty(taskList)) {
+
+                    SysActivitiParamBO sysActivitiParamBO = new SysActivitiParamBO();
+
+                    Map<String, List<SysActivitiParamItemBO>> inMap = MapUtil.newHashMap();
+
+                    for (Task item : taskList) {
+
+                        SysActivitiParamItemBO sysActivitiParamItemBO = new SysActivitiParamItemBO();
+
+                        SysActivitiParamSubItemBO sysActivitiParamSubItemBO = new SysActivitiParamSubItemBO();
+
+                        sysActivitiParamSubItemBO.setType(iSysActivitiParamItemType.getCode());
+                        sysActivitiParamSubItemBO.setValue(inputValue);
+
+                        sysActivitiParamItemBO.setParamList(CollUtil.newArrayList(sysActivitiParamSubItemBO));
+
+                        inMap.put(item.getTaskDefinitionKey(), CollUtil.newArrayList(sysActivitiParamItemBO));
+
+                    }
+
+                    sysActivitiParamBO.setInMap(inMap);
+
+                    variableMap.put(SysActivitiUtil.VARIABLE_NAME_PROCESS_INSTANCE_JSON_STR, sysActivitiParamBO); // 设置：启动参数
+
+                }
+
+            }
+
+        }
 
         MyThreadUtil.execute(() -> {
 
@@ -540,7 +598,7 @@ public class SysActivitiServiceImpl implements SysActivitiService {
             }
 
             ISysActivitiTaskCategory iSysActivitiTaskCategory =
-                SysActivitiUtil.MAP.get(sysActivitiTaskBO.getCategory());
+                SysActivitiUtil.TASK_CATEGORY_MAP.get(sysActivitiTaskBO.getCategory());
 
             if (iSysActivitiTaskCategory == null) {
 
@@ -577,11 +635,9 @@ public class SysActivitiServiceImpl implements SysActivitiService {
      * 获取：参数 map
      */
     @NotNull
-    private static Map<String, Object> getVariableMap(Map<String, Object> variableMap, String userId, String tenantId) {
+    private static Map<String, Object> getVariableMap(String userId, String tenantId) {
 
-        if (variableMap == null) {
-            variableMap = MapUtil.newHashMap();
-        }
+        Map<String, Object> variableMap = MapUtil.newHashMap();
 
         variableMap.put(SysActivitiUtil.VARIABLE_NAME_USER_ID, userId); // 设置：启动参数
 
