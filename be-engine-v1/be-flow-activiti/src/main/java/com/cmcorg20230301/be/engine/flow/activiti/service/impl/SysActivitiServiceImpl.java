@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.FlowElement;
 import org.activiti.bpmn.model.SequenceFlow;
+import org.activiti.bpmn.model.StartEvent;
 import org.activiti.engine.HistoryService;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.RuntimeService;
@@ -26,6 +27,7 @@ import org.activiti.engine.runtime.ProcessInstanceQuery;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.task.TaskQuery;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.springframework.stereotype.Service;
 
 import com.baomidou.dynamic.datasource.annotation.DSTransactional;
@@ -49,6 +51,7 @@ import com.cmcorg20230301.be.engine.security.model.vo.ApiResultVO;
 import com.cmcorg20230301.be.engine.security.util.MyThreadUtil;
 import com.cmcorg20230301.be.engine.security.util.ResponseUtil;
 import com.cmcorg20230301.be.engine.security.util.UserUtil;
+import com.cmcorg20230301.be.engine.util.util.CallBack;
 
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.io.file.FileNameUtil;
@@ -63,8 +66,12 @@ import lombok.SneakyThrows;
 @Service
 public class SysActivitiServiceImpl implements SysActivitiService {
 
+    private static RepositoryService repositoryService;
+
     @Resource
-    RepositoryService repositoryService;
+    public void setRepositoryService(RepositoryService repositoryService) {
+        SysActivitiServiceImpl.repositoryService = repositoryService;
+    }
 
     @Resource
     RuntimeService runtimeService;
@@ -424,8 +431,11 @@ public class SysActivitiServiceImpl implements SysActivitiService {
 
         Authentication.setAuthenticatedUserId(userId); // 设置：启动流程实例的 userId
 
+        CallBack<BpmnModel> bpmnModelCallBack = new CallBack<>();
+
         // 获取：参数 map
-        Map<String, Object> variableMap = getVariableMap(userId, tenantId);
+        Map<String, Object> variableMap =
+            getVariableMap(userId, tenantId, dto.getVariableMap(), dto.getProcessDefinitionId(), bpmnModelCallBack);
 
         ProcessInstance processInstance = runtimeService.createProcessInstanceBuilder().tenantId(tenantId)
             .processDefinitionId(dto.getProcessDefinitionId()).businessKey(dto.getBusinessKey()).variables(variableMap)
@@ -433,64 +443,10 @@ public class SysActivitiServiceImpl implements SysActivitiService {
 
         String processInstanceId = processInstance.getProcessInstanceId();
 
-        Map<String, Object> variableMapTemp = dto.getVariableMap();
-
-        if (CollUtil.isNotEmpty(variableMapTemp)) {
-
-            String inputValue = (String)variableMapTemp.get("inputValue");
-
-            if (StrUtil.isNotBlank(inputValue)) {
-
-                Integer inputType = (Integer)variableMapTemp.get("inputType");
-
-                ISysActivitiParamItemType iSysActivitiParamItemType =
-                    SysActivitiUtil.PARAM_ITEM_TYPE_MAP.get(inputType);
-
-                if (iSysActivitiParamItemType == null) {
-                    iSysActivitiParamItemType = SysActivitiParamItemTypeEnum.TEXT;
-                }
-
-                TaskQuery taskQuery = taskService.createTaskQuery();
-
-                taskQuery.processInstanceId(processInstanceId);
-
-                List<Task> taskList = taskQuery.list();
-
-                if (CollUtil.isNotEmpty(taskList)) {
-
-                    SysActivitiParamBO sysActivitiParamBO = new SysActivitiParamBO();
-
-                    Map<String, List<SysActivitiParamItemBO>> inMap = MapUtil.newHashMap();
-
-                    for (Task item : taskList) {
-
-                        SysActivitiParamItemBO sysActivitiParamItemBO = new SysActivitiParamItemBO();
-
-                        SysActivitiParamSubItemBO sysActivitiParamSubItemBO = new SysActivitiParamSubItemBO();
-
-                        sysActivitiParamSubItemBO.setType(iSysActivitiParamItemType.getCode());
-                        sysActivitiParamSubItemBO.setValue(inputValue);
-
-                        sysActivitiParamItemBO.setParamList(CollUtil.newArrayList(sysActivitiParamSubItemBO));
-
-                        inMap.put(item.getTaskDefinitionKey(), CollUtil.newArrayList(sysActivitiParamItemBO));
-
-                    }
-
-                    sysActivitiParamBO.setInMap(inMap);
-
-                    variableMap.put(SysActivitiUtil.VARIABLE_NAME_PROCESS_INSTANCE_JSON_STR, sysActivitiParamBO); // 设置：启动参数
-
-                }
-
-            }
-
-        }
-
         MyThreadUtil.execute(() -> {
 
             // 通过：流程实例，执行任务
-            doTaskByProcessInstance(processInstance);
+            doTaskByProcessInstance(processInstance, bpmnModelCallBack);
 
         });
 
@@ -501,9 +457,22 @@ public class SysActivitiServiceImpl implements SysActivitiService {
     /**
      * 通过：流程实例，执行任务
      */
-    private void doTaskByProcessInstance(ProcessInstance processInstance) {
+    private void doTaskByProcessInstance(ProcessInstance processInstance,
+        @Nullable CallBack<BpmnModel> bpmnModelCallBack) {
 
-        BpmnModel bpmnModel = repositoryService.getBpmnModel(processInstance.getProcessDefinitionId());
+        BpmnModel bpmnModel = null;
+
+        if (bpmnModelCallBack != null) {
+
+            bpmnModel = bpmnModelCallBack.getValue();
+
+        }
+
+        if (bpmnModel == null) {
+
+            bpmnModel = repositoryService.getBpmnModel(processInstance.getProcessDefinitionId());
+
+        }
 
         // 获取：nodeBoMap
         Map<String, SysActivitiNodeBO> nodeBoMap = getNodeBoMap(bpmnModel);
@@ -635,13 +604,77 @@ public class SysActivitiServiceImpl implements SysActivitiService {
      * 获取：参数 map
      */
     @NotNull
-    private static Map<String, Object> getVariableMap(String userId, String tenantId) {
+    private static Map<String, Object> getVariableMap(String userId, String tenantId,
+        Map<String, Object> variableMapTemp, String processDefinitionId, CallBack<BpmnModel> bpmnModelCallBack) {
 
         Map<String, Object> variableMap = MapUtil.newHashMap();
 
         variableMap.put(SysActivitiUtil.VARIABLE_NAME_USER_ID, userId); // 设置：启动参数
 
         variableMap.put(SysActivitiUtil.VARIABLE_NAME_TENANT_ID, tenantId); // 设置：启动参数
+
+        if (CollUtil.isNotEmpty(variableMapTemp)) {
+
+            String inputValue = (String)variableMapTemp.get("inputValue");
+
+            if (StrUtil.isNotBlank(inputValue)) {
+
+                Integer inputType = (Integer)variableMapTemp.get("inputType");
+
+                ISysActivitiParamItemType iSysActivitiParamItemType =
+                    SysActivitiUtil.PARAM_ITEM_TYPE_MAP.get(inputType);
+
+                if (iSysActivitiParamItemType == null) {
+                    iSysActivitiParamItemType = SysActivitiParamItemTypeEnum.TEXT;
+                }
+
+                BpmnModel bpmnModel = repositoryService.getBpmnModel(processDefinitionId);
+
+                bpmnModelCallBack.setValue(bpmnModel);
+
+                for (Map.Entry<String, FlowElement> item : bpmnModel.getMainProcess().getFlowElementMap().entrySet()) {
+
+                    if (item instanceof StartEvent) {
+
+                        StartEvent startEvent = (StartEvent)item;
+
+                        List<SequenceFlow> outgoingFlowList = startEvent.getOutgoingFlows();
+
+                        for (SequenceFlow subItem : outgoingFlowList) {
+
+                            String targetRef = subItem.getTargetRef();
+
+                            SysActivitiParamBO sysActivitiParamBO = new SysActivitiParamBO();
+
+                            Map<String, List<SysActivitiParamItemBO>> inMap = MapUtil.newHashMap();
+
+                            SysActivitiParamItemBO sysActivitiParamItemBO = new SysActivitiParamItemBO();
+
+                            SysActivitiParamSubItemBO sysActivitiParamSubItemBO = new SysActivitiParamSubItemBO();
+
+                            sysActivitiParamSubItemBO.setType(iSysActivitiParamItemType.getCode());
+                            sysActivitiParamSubItemBO.setValue(inputValue);
+
+                            sysActivitiParamItemBO.setParamList(CollUtil.newArrayList(sysActivitiParamSubItemBO));
+
+                            inMap.put(targetRef, CollUtil.newArrayList(sysActivitiParamItemBO));
+
+                            sysActivitiParamBO.setInMap(inMap);
+
+                            variableMap.put(SysActivitiUtil.VARIABLE_NAME_PROCESS_INSTANCE_JSON_STR,
+                                sysActivitiParamBO); // 设置：启动参数
+
+                        }
+
+                        break;
+
+                    }
+
+                }
+
+            }
+
+        }
 
         return variableMap;
 
@@ -659,8 +692,15 @@ public class SysActivitiServiceImpl implements SysActivitiService {
 
         Authentication.setAuthenticatedUserId(userId); // 设置：启动流程实例的 userId
 
+        CallBack<BpmnModel> bpmnModelCallBack = new CallBack<>();
+
+        ProcessDefinition processDefinition =
+            repositoryService.createProcessDefinitionQuery().processDefinitionKey(dto.getProcessDefinitionKey())
+                .processDefinitionTenantId(tenantId.toString()).processDefinitionCategory(userId).singleResult();
+
         // 获取：参数 map
-        Map<String, Object> variableMap = getVariableMap(dto.getVariableMap(), userId, tenantId);
+        Map<String, Object> variableMap =
+            getVariableMap(userId, tenantId, dto.getVariableMap(), processDefinition.getId(), bpmnModelCallBack);
 
         ProcessInstance processInstance = runtimeService.startProcessInstanceByKeyAndTenantId(
             dto.getProcessDefinitionKey(), dto.getBusinessKey(), variableMap, tenantId);
@@ -792,7 +832,7 @@ public class SysActivitiServiceImpl implements SysActivitiService {
             MyThreadUtil.execute(() -> {
 
                 // 通过：流程实例，执行任务
-                doTaskByProcessInstance(processInstance);
+                doTaskByProcessInstance(processInstance, null);
 
             });
 
