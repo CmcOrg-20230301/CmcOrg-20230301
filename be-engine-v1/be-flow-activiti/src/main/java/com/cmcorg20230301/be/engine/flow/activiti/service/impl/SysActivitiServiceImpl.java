@@ -531,6 +531,14 @@ public class SysActivitiServiceImpl implements SysActivitiService {
 
             SysActivitiTaskBO sysActivitiTaskBO = JSONUtil.toBean(description, SysActivitiTaskBO.class);
 
+            if (sysActivitiTaskBO.getCategory() == null) {
+
+                taskService.complete(item.getId());
+
+                continue;
+
+            }
+
             ISysActivitiTaskCategory iSysActivitiTaskCategory =
                 SysActivitiUtil.MAP.get(sysActivitiTaskBO.getCategory());
 
