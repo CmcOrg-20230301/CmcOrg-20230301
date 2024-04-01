@@ -1,8 +1,11 @@
 package com.cmcorg20230301.be.engine.flow.activiti.util;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import org.activiti.bpmn.model.SequenceFlow;
 import org.activiti.engine.history.HistoricProcessInstance;
 import org.activiti.engine.history.HistoricTaskInstance;
 import org.activiti.engine.repository.Deployment;
@@ -11,9 +14,14 @@ import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 
 import com.cmcorg20230301.be.engine.flow.activiti.model.bo.SysActivitiParamBO;
+import com.cmcorg20230301.be.engine.flow.activiti.model.bo.SysActivitiParamItemBO;
+import com.cmcorg20230301.be.engine.flow.activiti.model.bo.SysActivitiParamSubItemBO;
+import com.cmcorg20230301.be.engine.flow.activiti.model.enums.SysActivitiParamItemTypeEnum;
 import com.cmcorg20230301.be.engine.flow.activiti.model.interfaces.ISysActivitiParamItemType;
 import com.cmcorg20230301.be.engine.flow.activiti.model.interfaces.ISysActivitiTaskCategory;
 import com.cmcorg20230301.be.engine.flow.activiti.model.vo.*;
+
+import cn.hutool.core.collection.CollUtil;
 
 public class SysActivitiUtil {
 
@@ -185,6 +193,30 @@ public class SysActivitiUtil {
         sysActivitiHistoryProcessInstanceVO.setSuperProcessInstanceId(item.getSuperProcessInstanceId());
 
         return sysActivitiHistoryProcessInstanceVO;
+
+    }
+
+    /**
+     * 设置：下一个节点的入参
+     */
+    public static void setNextNodeInParam(SysActivitiParamBO sysActivitiParamBO, SequenceFlow item, String content) {
+
+        String targetRef = item.getTargetRef();
+
+        List<SysActivitiParamItemBO> sysActivitiParamItemBOList =
+            sysActivitiParamBO.getInMap().computeIfAbsent(targetRef, k -> new ArrayList<>());
+
+        SysActivitiParamItemBO sysActivitiParamItemBO = new SysActivitiParamItemBO();
+
+        SysActivitiParamSubItemBO sysActivitiParamSubItemBO = new SysActivitiParamSubItemBO();
+
+        sysActivitiParamSubItemBO.setType(SysActivitiParamItemTypeEnum.TEXT.getCode());
+
+        sysActivitiParamSubItemBO.setValue(content);
+
+        sysActivitiParamItemBO.setParamList(CollUtil.newArrayList(sysActivitiParamSubItemBO));
+
+        sysActivitiParamItemBOList.add(sysActivitiParamItemBO);
 
     }
 
