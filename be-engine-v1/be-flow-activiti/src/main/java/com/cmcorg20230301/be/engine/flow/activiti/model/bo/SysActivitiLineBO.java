@@ -21,6 +21,6 @@ public class SysActivitiLineBO {
     /**
      * 函数描述
      */
-    private String description;
+    private String functionJsonStr;
 
 }

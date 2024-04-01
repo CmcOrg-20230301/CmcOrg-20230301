@@ -1,6 +1,6 @@
 package com.cmcorg20230301.be.engine.flow.activiti.model.bo;
 
-import com.cmcorg20230301.be.engine.flow.activiti.model.interfaces.ISysActivitiParamItemType;
+import java.util.List;
 
 import lombok.Data;
 
@@ -8,18 +8,18 @@ import lombok.Data;
 public class SysActivitiParamItemBO {
 
     /**
-     * 类型 {@link ISysActivitiParamItemType}
+     * 输出
      */
-    private Integer type;
+    private List<SysActivitiParamSubItemBO> outList;
 
     /**
-     * 值
+     * 是否被执行过，默认：false
      */
-    private String value;
+    private Boolean execFlag;
 
     /**
-     * 函数调用名称
+     * 执行错误的错误信息
      */
-    private String functionName;
+    private String execErrorMessage;
 
 }

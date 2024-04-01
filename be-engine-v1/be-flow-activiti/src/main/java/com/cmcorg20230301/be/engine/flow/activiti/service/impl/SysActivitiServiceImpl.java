@@ -30,9 +30,9 @@ import org.springframework.stereotype.Service;
 
 import com.baomidou.dynamic.datasource.annotation.DSTransactional;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.cmcorg20230301.be.engine.flow.activiti.model.bo.SysActivitiNodeBO;
-import com.cmcorg20230301.be.engine.flow.activiti.model.bo.SysActivitiTaskBO;
+import com.cmcorg20230301.be.engine.flow.activiti.model.bo.*;
 import com.cmcorg20230301.be.engine.flow.activiti.model.dto.*;
+import com.cmcorg20230301.be.engine.flow.activiti.model.enums.SysActivitiLineTypeEnum;
 import com.cmcorg20230301.be.engine.flow.activiti.model.enums.SysActivitiTaskCategoryEnum;
 import com.cmcorg20230301.be.engine.flow.activiti.model.interfaces.ISysActivitiTaskCategory;
 import com.cmcorg20230301.be.engine.flow.activiti.model.vo.*;
@@ -48,6 +48,7 @@ import com.cmcorg20230301.be.engine.security.util.MyThreadUtil;
 import com.cmcorg20230301.be.engine.security.util.ResponseUtil;
 import com.cmcorg20230301.be.engine.security.util.UserUtil;
 
+import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.io.file.FileNameUtil;
 import cn.hutool.core.map.MapUtil;
@@ -540,10 +541,12 @@ public class SysActivitiServiceImpl implements SysActivitiService {
 
             if (iSysActivitiTaskCategory.getCode() == SysActivitiTaskCategoryEnum.CHAT_GPT.getCode()) {
 
-                // 获取：下一个节点的函数调用
+                // 获取：函数调用
                 SysActivitiNodeBO sysActivitiNodeBO = nodeBoMap.get(item.getTaskDefinitionKey());
 
                 LinkedHashSet<SequenceFlow> sufLineSet = sysActivitiNodeBO.getSufLineSet();
+
+                List<SysActivitiFunctionCallBO> toolList = new ArrayList<>();
 
                 for (SequenceFlow subItem : sufLineSet) {
 
@@ -553,7 +556,30 @@ public class SysActivitiServiceImpl implements SysActivitiService {
                         continue;
                     }
 
+                    SysActivitiLineBO sysActivitiLineBO = JSONUtil.toBean(documentation, SysActivitiLineBO.class);
+
+                    if (sysActivitiLineBO.getType() == null) {
+                        continue;
+                    }
+
+                    // 如果是：函数调用连线
+                    if (SysActivitiLineTypeEnum.FUNCTION.getCode() == sysActivitiLineBO.getType()) {
+
+                        SysActivitiFunctionCallBO sysActivitiFunctionCallBO = new SysActivitiFunctionCallBO();
+
+                        sysActivitiFunctionCallBO.setType("function");
+
+                        SysActivitiFunctionCallItemBO sysActivitiFunctionCallItemBO = BeanUtil
+                            .toBean(sysActivitiLineBO.getFunctionJsonStr(), SysActivitiFunctionCallItemBO.class);
+
+                        sysActivitiFunctionCallBO.setFunction(sysActivitiFunctionCallItemBO);
+
+                        toolList.add(sysActivitiFunctionCallBO);
+
+                    }
+
                 }
+
 
             } else if (iSysActivitiTaskCategory.getCode() == SysActivitiTaskCategoryEnum.MIDJOURNEY.getCode()) {
 

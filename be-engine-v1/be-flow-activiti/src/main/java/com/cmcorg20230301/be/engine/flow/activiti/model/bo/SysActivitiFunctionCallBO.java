@@ -6,18 +6,13 @@ import lombok.Data;
 public class SysActivitiFunctionCallBO {
 
     /**
-     * 函数名
+     * 类型：一般为：function
      */
-    private String name;
+    private String type;
 
     /**
      * 函数描述
      */
-    private String description;
-
-    /**
-     * 函数入参
-     */
-    private SysActivitiFunctionCallParametersBO parameters;
+    private SysActivitiFunctionCallItemBO function;
 
 }

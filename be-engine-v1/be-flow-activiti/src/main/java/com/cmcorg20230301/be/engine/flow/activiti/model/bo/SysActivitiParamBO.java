@@ -8,8 +8,8 @@ import lombok.Data;
 public class SysActivitiParamBO {
 
     /**
-     * 输出
+     * 输入
      */
-    private List<List<SysActivitiParamItemBO>> outList;
+    private List<SysActivitiParamItemBO> inList;
 
 }
