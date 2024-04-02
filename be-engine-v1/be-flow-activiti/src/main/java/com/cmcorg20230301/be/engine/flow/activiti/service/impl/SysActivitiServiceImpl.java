@@ -638,35 +638,28 @@ public class SysActivitiServiceImpl implements SysActivitiService {
 
                     if (value instanceof StartEvent) {
 
+                        SysActivitiParamBO sysActivitiParamBO = new SysActivitiParamBO();
+
+                        Map<String, List<SysActivitiParamItemBO>> inMap = MapUtil.newHashMap();
+
+                        sysActivitiParamBO.setInMap(inMap);
+
                         StartEvent startEvent = (StartEvent)value;
+
+                        // 往：inMap里面添加数据
+                        putInMap(iSysActivitiParamItemType, inputValue, inMap, startEvent.getId());
 
                         List<SequenceFlow> outgoingFlowList = startEvent.getOutgoingFlows();
 
                         for (SequenceFlow subItem : outgoingFlowList) {
 
-                            String targetRef = subItem.getTargetRef();
-
-                            SysActivitiParamBO sysActivitiParamBO = new SysActivitiParamBO();
-
-                            Map<String, List<SysActivitiParamItemBO>> inMap = MapUtil.newHashMap();
-
-                            SysActivitiParamItemBO sysActivitiParamItemBO = new SysActivitiParamItemBO();
-
-                            SysActivitiParamSubItemBO sysActivitiParamSubItemBO = new SysActivitiParamSubItemBO();
-
-                            sysActivitiParamSubItemBO.setType(iSysActivitiParamItemType.getCode());
-                            sysActivitiParamSubItemBO.setValue(inputValue);
-
-                            sysActivitiParamItemBO.setParamList(CollUtil.newArrayList(sysActivitiParamSubItemBO));
-
-                            inMap.put(targetRef, CollUtil.newArrayList(sysActivitiParamItemBO));
-
-                            sysActivitiParamBO.setInMap(inMap);
-
-                            variableMap.put(SysActivitiUtil.VARIABLE_NAME_PROCESS_INSTANCE_JSON_STR,
-                                JSONUtil.toJsonStr(sysActivitiParamBO)); // 设置：启动参数
+                            // 往：inMap里面添加数据
+                            putInMap(iSysActivitiParamItemType, inputValue, inMap, subItem.getTargetRef());
 
                         }
+
+                        variableMap.put(SysActivitiUtil.VARIABLE_NAME_PROCESS_INSTANCE_JSON_STR,
+                            JSONUtil.toJsonStr(sysActivitiParamBO)); // 设置：启动参数
 
                         break;
 
@@ -679,6 +672,26 @@ public class SysActivitiServiceImpl implements SysActivitiService {
         }
 
         return variableMap;
+
+    }
+
+    /**
+     * 往：inMap里面添加数据
+     */
+    private static void putInMap(ISysActivitiParamItemType iSysActivitiParamItemType, String inputValue,
+        Map<String, List<SysActivitiParamItemBO>> inMap, String id) {
+
+        SysActivitiParamItemBO sysActivitiParamItemBO = new SysActivitiParamItemBO();
+
+        SysActivitiParamSubItemBO sysActivitiParamSubItemBO = new SysActivitiParamSubItemBO();
+
+        sysActivitiParamSubItemBO.setType(iSysActivitiParamItemType.getCode());
+
+        sysActivitiParamSubItemBO.setValue(inputValue);
+
+        sysActivitiParamItemBO.setParamList(CollUtil.newArrayList(sysActivitiParamSubItemBO));
+
+        inMap.put(id, CollUtil.newArrayList(sysActivitiParamItemBO));
 
     }
 
