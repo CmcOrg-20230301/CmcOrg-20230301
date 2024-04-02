@@ -1038,6 +1038,8 @@ public class SysActivitiServiceImpl implements SysActivitiService {
             historicTaskInstanceQuery.taskId(dto.getTaskId());
         }
 
+        historicTaskInstanceQuery.includeProcessVariables();
+
         long count = historicTaskInstanceQuery.count();
 
         if (count == 0) {
