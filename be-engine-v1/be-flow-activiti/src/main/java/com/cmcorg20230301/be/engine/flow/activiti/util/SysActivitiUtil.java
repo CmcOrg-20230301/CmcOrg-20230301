@@ -13,15 +13,15 @@ import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 
-import com.cmcorg20230301.be.engine.flow.activiti.model.bo.SysActivitiParamBO;
-import com.cmcorg20230301.be.engine.flow.activiti.model.bo.SysActivitiParamItemBO;
-import com.cmcorg20230301.be.engine.flow.activiti.model.bo.SysActivitiParamSubItemBO;
+import com.cmcorg20230301.be.engine.flow.activiti.model.bo.*;
 import com.cmcorg20230301.be.engine.flow.activiti.model.enums.SysActivitiParamItemTypeEnum;
 import com.cmcorg20230301.be.engine.flow.activiti.model.interfaces.ISysActivitiParamItemType;
 import com.cmcorg20230301.be.engine.flow.activiti.model.interfaces.ISysActivitiTaskCategory;
 import com.cmcorg20230301.be.engine.flow.activiti.model.vo.*;
 
 import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.map.MapUtil;
+import cn.hutool.core.util.StrUtil;
 
 public class SysActivitiUtil {
 
@@ -217,6 +217,50 @@ public class SysActivitiUtil {
         sysActivitiParamItemBO.setParamList(CollUtil.newArrayList(sysActivitiParamSubItemBO));
 
         sysActivitiParamItemBOList.add(sysActivitiParamItemBO);
+
+    }
+
+    /**
+     * 获取：默认的 SysActivitiFunctionCallParametersBO对象
+     */
+    public static SysActivitiFunctionCallParametersBO getDefaultSysActivitiFunctionCallParametersBO() {
+
+        SysActivitiFunctionCallParametersBO sysActivitiFunctionCallParametersBO =
+            new SysActivitiFunctionCallParametersBO();
+
+        sysActivitiFunctionCallParametersBO.setType("object");
+
+        sysActivitiFunctionCallParametersBO.setProperties(MapUtil.newHashMap());
+
+        return sysActivitiFunctionCallParametersBO;
+
+    }
+
+    /**
+     * 处理：SysActivitiFunctionCallItemBO
+     */
+    public static void
+        handleSysActivitiFunctionCallItemParameters(SysActivitiFunctionCallItemBO sysActivitiFunctionCallItemBO) {
+
+        if (sysActivitiFunctionCallItemBO.getParameters() == null) {
+
+            sysActivitiFunctionCallItemBO.setParameters(getDefaultSysActivitiFunctionCallParametersBO());
+
+        } else {
+
+            if (StrUtil.isBlank(sysActivitiFunctionCallItemBO.getParameters().getType())) {
+
+                sysActivitiFunctionCallItemBO.getParameters().setType("object");
+
+            }
+
+            if (sysActivitiFunctionCallItemBO.getParameters().getProperties() == null) {
+
+                sysActivitiFunctionCallItemBO.getParameters().setProperties(MapUtil.newHashMap());
+
+            }
+
+        }
 
     }
 

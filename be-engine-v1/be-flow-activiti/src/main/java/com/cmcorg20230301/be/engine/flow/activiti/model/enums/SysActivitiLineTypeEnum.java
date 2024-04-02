@@ -11,7 +11,7 @@ public enum SysActivitiLineTypeEnum implements ISysActivitiLineType {
 
     NORMAL(101), // 普通判断（默认）
 
-    FUNCTION(201), // 函数调用判断
+    FUNCTION_CALL(201), // 函数调用判断
 
     ;
 

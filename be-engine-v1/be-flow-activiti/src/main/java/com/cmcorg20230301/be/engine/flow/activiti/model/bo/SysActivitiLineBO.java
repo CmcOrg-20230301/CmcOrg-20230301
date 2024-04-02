@@ -13,8 +13,8 @@ public class SysActivitiLineBO {
     private Integer type;
 
     /**
-     * 函数 json字符串
+     * 函数调用
      */
-    private String functionJsonStr;
+    private SysActivitiFunctionCallItemBO functionCall;
 
 }
