@@ -14,7 +14,9 @@ import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 
 import com.cmcorg20230301.be.engine.flow.activiti.model.bo.*;
+import com.cmcorg20230301.be.engine.flow.activiti.model.enums.SysActivitiLineTypeEnum;
 import com.cmcorg20230301.be.engine.flow.activiti.model.enums.SysActivitiParamItemTypeEnum;
+import com.cmcorg20230301.be.engine.flow.activiti.model.interfaces.ISysActivitiLineType;
 import com.cmcorg20230301.be.engine.flow.activiti.model.interfaces.ISysActivitiParamItemType;
 import com.cmcorg20230301.be.engine.flow.activiti.model.interfaces.ISysActivitiTaskCategory;
 import com.cmcorg20230301.be.engine.flow.activiti.model.vo.*;
@@ -38,6 +40,18 @@ public class SysActivitiUtil {
         new ConcurrentHashMap<>();
 
     public static final Map<Integer, ISysActivitiParamItemType> PARAM_ITEM_TYPE_MAP = new ConcurrentHashMap<>();
+
+    public static final Map<Integer, ISysActivitiLineType> LINE_TYPE_MAP = new ConcurrentHashMap<>();
+
+    static {
+
+        for (SysActivitiLineTypeEnum item : SysActivitiLineTypeEnum.values()) {
+
+            LINE_TYPE_MAP.put(item.getCode(), item);
+
+        }
+
+    }
 
     public static SysActivitiDeploymentVO getSysActivitiDeploymentVO(Deployment item) {
 

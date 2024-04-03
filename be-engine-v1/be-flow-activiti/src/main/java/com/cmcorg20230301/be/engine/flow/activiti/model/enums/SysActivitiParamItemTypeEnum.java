@@ -14,7 +14,9 @@ public enum SysActivitiParamItemTypeEnum implements ISysActivitiParamItemType {
 
     IMAGE(201), // 图片：url
 
-    FUNCTION_CALL(301), // 函数调用
+    FUNCTION_CALL_SIMPLE(301), // 函数调用
+
+    FUNCTION_CALL_CUSTOM(401), // 函数调用-高级
 
     ;
 
