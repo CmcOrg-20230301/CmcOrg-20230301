@@ -15,7 +15,6 @@ import org.activiti.engine.task.Task;
 
 import com.cmcorg20230301.be.engine.flow.activiti.model.bo.*;
 import com.cmcorg20230301.be.engine.flow.activiti.model.enums.SysActivitiLineTypeEnum;
-import com.cmcorg20230301.be.engine.flow.activiti.model.enums.SysActivitiParamItemTypeEnum;
 import com.cmcorg20230301.be.engine.flow.activiti.model.interfaces.ISysActivitiLineType;
 import com.cmcorg20230301.be.engine.flow.activiti.model.interfaces.ISysActivitiParamItemType;
 import com.cmcorg20230301.be.engine.flow.activiti.model.interfaces.ISysActivitiTaskCategory;
@@ -237,7 +236,8 @@ public class SysActivitiUtil {
     /**
      * 设置：下一个节点的入参
      */
-    public static void setNextNodeInParam(SysActivitiParamBO sysActivitiParamBO, SequenceFlow item, String content) {
+    public static void setNextNodeInParam(SysActivitiParamBO sysActivitiParamBO, SequenceFlow item, String content,
+        Integer paramSubItemType) {
 
         String targetRef = item.getTargetRef();
 
@@ -248,7 +248,7 @@ public class SysActivitiUtil {
 
         SysActivitiParamSubItemBO sysActivitiParamSubItemBO = new SysActivitiParamSubItemBO();
 
-        sysActivitiParamSubItemBO.setType(SysActivitiParamItemTypeEnum.TEXT.getCode());
+        sysActivitiParamSubItemBO.setType(paramSubItemType);
 
         sysActivitiParamSubItemBO.setValue(content);
 

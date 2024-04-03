@@ -457,7 +457,7 @@ public class SysActivitiServiceImpl implements SysActivitiService {
     /**
      * 通过：流程实例，执行任务
      */
-    private void doTaskByProcessInstance(ProcessInstance processInstance,
+    public static void doTaskByProcessInstance(ProcessInstance processInstance,
         @Nullable CallBack<BpmnModel> bpmnModelCallBack) {
 
         BpmnModel bpmnModel = null;
@@ -485,7 +485,7 @@ public class SysActivitiServiceImpl implements SysActivitiService {
     /**
      * 获取：nodeBoMap
      */
-    private static Map<String, SysActivitiNodeBO> getNodeBoMap(BpmnModel bpmnModel) {
+    public static Map<String, SysActivitiNodeBO> getNodeBoMap(BpmnModel bpmnModel) {
 
         Map<String, SysActivitiNodeBO> nodeBoMap = new HashMap<>();
 
@@ -527,7 +527,7 @@ public class SysActivitiServiceImpl implements SysActivitiService {
      * 执行任务：通过，流程实例 id
      */
     @SneakyThrows
-    private void execTaskByProcessInstanceId(String processInstanceId, Map<String, SysActivitiNodeBO> nodeBoMap) {
+    public static void execTaskByProcessInstanceId(String processInstanceId, Map<String, SysActivitiNodeBO> nodeBoMap) {
 
         TaskQuery taskQuery = taskService.createTaskQuery();
 
@@ -611,7 +611,7 @@ public class SysActivitiServiceImpl implements SysActivitiService {
         Func1<SysActivitiTaskHandlerBO, SysActivitiTaskHandlerVO> handler = iSysActivitiTaskCategory.getHandler();
 
         SysActivitiTaskHandlerVO sysActivitiTaskHandlerVO =
-            handler.call(new SysActivitiTaskHandlerBO(nodeBoMap, item, sysActivitiTaskBO, taskService));
+            handler.call(new SysActivitiTaskHandlerBO(nodeBoMap, item, sysActivitiTaskBO));
 
         if (BooleanUtil.isTrue(sysActivitiTaskHandlerVO.getCompleteFlag())) {
 
