@@ -14,7 +14,7 @@ public class SysActivitiFunctionCallParametersBO {
     private String type;
 
     /**
-     * 入参的字段
+     * 入参的字段，备注：content字段为默认的入参字段
      */
     private Map<String, SysActivitiFunctionCallParamPropertiesBO> properties;
 
