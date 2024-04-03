@@ -1,6 +1,7 @@
 package com.cmcorg20230301.be.engine.flow.activiti.model.interfaces;
 
 import com.cmcorg20230301.be.engine.flow.activiti.model.bo.SysActivitiTaskHandlerBO;
+import com.cmcorg20230301.be.engine.flow.activiti.model.vo.SysActivitiTaskHandlerVO;
 
 import cn.hutool.core.lang.func.Func1;
 
@@ -10,6 +11,6 @@ public interface ISysActivitiTaskCategory {
 
     String getName(); // 分类名称
 
-    Func1<SysActivitiTaskHandlerBO, Boolean> getHandler(); // 处理器
+    Func1<SysActivitiTaskHandlerBO, SysActivitiTaskHandlerVO> getHandler(); // 处理器
 
 }

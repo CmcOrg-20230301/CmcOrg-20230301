@@ -577,26 +577,55 @@ public class SysActivitiServiceImpl implements SysActivitiService {
 
             }
 
-            RedissonUtil.doLock(BaseRedisKeyEnum.PRE_SYS_ACTIVITI_PROCESS_INSTANCE_ID + item.getProcessInstanceId(),
-                () -> {
+            boolean endAutoFlag = RedissonUtil
+                .doLock(BaseRedisKeyEnum.PRE_SYS_ACTIVITI_PROCESS_INSTANCE_ID + item.getProcessInstanceId(), () -> {
 
-                    Func1<SysActivitiTaskHandlerBO, Boolean> handler = iSysActivitiTaskCategory.getHandler();
-
-                    Boolean result =
-                        handler.call(new SysActivitiTaskHandlerBO(nodeBoMap, item, sysActivitiTaskBO, taskService));
-
-                    if (BooleanUtil.isTrue(result)) {
-
-                        taskService.complete(item.getId()); // 完成任务
-
-                    }
+                    // 执行任务
+                    return execTaskHandler(nodeBoMap, item, iSysActivitiTaskCategory, sysActivitiTaskBO);
 
                 });
+
+            if (endAutoFlag) {
+
+                return;
+
+            }
 
         }
 
         // 继续执行下一个任务
         execTaskByProcessInstanceId(processInstanceId, nodeBoMap);
+
+    }
+
+    /**
+     * 执行任务
+     * 
+     * @return true 结束自动执行任务 false 继续执行下一个任务
+     */
+    @SneakyThrows
+    @NotNull
+    private static Boolean execTaskHandler(Map<String, SysActivitiNodeBO> nodeBoMap, Task item,
+        ISysActivitiTaskCategory iSysActivitiTaskCategory, SysActivitiTaskBO sysActivitiTaskBO) {
+
+        Func1<SysActivitiTaskHandlerBO, SysActivitiTaskHandlerVO> handler = iSysActivitiTaskCategory.getHandler();
+
+        SysActivitiTaskHandlerVO sysActivitiTaskHandlerVO =
+            handler.call(new SysActivitiTaskHandlerBO(nodeBoMap, item, sysActivitiTaskBO, taskService));
+
+        if (BooleanUtil.isTrue(sysActivitiTaskHandlerVO.getCompleteFlag())) {
+
+            taskService.complete(item.getId()); // 完成任务
+
+        }
+
+        if (BooleanUtil.isTrue(sysActivitiTaskHandlerVO.getEndAutoFlag())) {
+
+            return true;
+
+        }
+
+        return false;
 
     }
 

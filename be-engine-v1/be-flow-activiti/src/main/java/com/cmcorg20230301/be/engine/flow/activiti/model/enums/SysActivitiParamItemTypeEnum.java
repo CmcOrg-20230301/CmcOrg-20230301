@@ -10,7 +10,7 @@ import lombok.Getter;
 @Getter
 public enum SysActivitiParamItemTypeEnum implements ISysActivitiParamItemType {
 
-    TEXT(101), // 文字
+    TEXT(101), // 文字（默认）
 
     IMAGE(201), // 图片：url
 

@@ -53,6 +53,30 @@ public class SysActivitiUtil {
 
     }
 
+    /**
+     * 默认的入参字段
+     */
+    public static final String CONTENT = "content";
+
+    /**
+     * 图片的数据
+     */
+    public static final String IMAGE_DATA = "imageData";
+
+    /**
+     * 获取：只结束不完成的返回值
+     */
+    public static SysActivitiTaskHandlerVO getSysActivitiTaskHandlerVoOnlyEndAuto() {
+        return new SysActivitiTaskHandlerVO(false, true);
+    }
+
+    /**
+     * 获取：只完成不结束的返回值
+     */
+    public static SysActivitiTaskHandlerVO getSysActivitiTaskHandlerVoOnlyComplete() {
+        return new SysActivitiTaskHandlerVO(true, false);
+    }
+
     public static SysActivitiDeploymentVO getSysActivitiDeploymentVO(Deployment item) {
 
         SysActivitiDeploymentVO sysActivitiDeploymentVO = new SysActivitiDeploymentVO();
