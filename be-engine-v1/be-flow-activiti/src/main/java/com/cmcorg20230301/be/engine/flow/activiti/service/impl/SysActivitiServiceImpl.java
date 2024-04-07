@@ -21,6 +21,7 @@ import org.activiti.engine.history.HistoricTaskInstance;
 import org.activiti.engine.history.HistoricTaskInstanceQuery;
 import org.activiti.engine.impl.identity.Authentication;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntityImpl;
+import org.activiti.engine.impl.persistence.entity.TaskEntity;
 import org.activiti.engine.repository.*;
 import org.activiti.engine.runtime.Execution;
 import org.activiti.engine.runtime.ProcessInstance;
@@ -438,13 +439,34 @@ public class SysActivitiServiceImpl implements SysActivitiService {
 
         CallBack<BpmnModel> bpmnModelCallBack = new CallBack<>();
 
+        CallBack<SysActivitiParamBO> sysActivitiParamBoCallBack = new CallBack<>();
+
         // 获取：参数 map
-        Map<String, Object> variableMap =
-            getVariableMap(userId, tenantId, dto.getVariableMap(), dto.getProcessDefinitionId(), bpmnModelCallBack);
+        Map<String, Object> variableMap = getVariableMap(userId, tenantId, dto.getVariableMap(),
+            dto.getProcessDefinitionId(), bpmnModelCallBack, sysActivitiParamBoCallBack);
 
         ExecutionEntityImpl processInstance = (ExecutionEntityImpl)runtimeService.createProcessInstanceBuilder()
             .tenantId(tenantId).processDefinitionId(dto.getProcessDefinitionId()).businessKey(dto.getBusinessKey())
             .variables(variableMap).start();
+
+        ExecutionEntityImpl executionEntity = processInstance.getExecutions().get(0);
+
+        TaskEntity taskEntity = executionEntity.getTasks().get(0);
+
+        String globalTaskId = taskEntity.getId();
+
+        SysActivitiParamBO sysActivitiParamBO = sysActivitiParamBoCallBack.getValue();
+
+        sysActivitiParamBO.setGlobalTaskId(globalTaskId);
+
+        String jsonStr = JSONUtil.toJsonStr(sysActivitiParamBO);
+
+        for (TaskEntity item : executionEntity.getTasks()) {
+
+            // 设置：全局任务 id
+            taskService.setVariable(item.getId(), SysActivitiUtil.VARIABLE_NAME_PROCESS_INSTANCE_JSON_STR, jsonStr);
+
+        }
 
         String processInstanceId = processInstance.getProcessInstanceId();
 
@@ -557,7 +579,7 @@ public class SysActivitiServiceImpl implements SysActivitiService {
 
             if (StrUtil.isBlank(description)) {
 
-                completeWithVariable(item, false);
+                taskService.complete(item.getId());
 
                 continue;
 
@@ -567,7 +589,7 @@ public class SysActivitiServiceImpl implements SysActivitiService {
 
             if (sysActivitiTaskBO.getCategory() == null) {
 
-                completeWithVariable(item, false);
+                taskService.complete(item.getId());
 
                 continue;
 
@@ -578,7 +600,7 @@ public class SysActivitiServiceImpl implements SysActivitiService {
 
             if (iSysActivitiTaskCategory == null) {
 
-                completeWithVariable(item, false);
+                taskService.complete(item.getId());
 
                 continue;
 
@@ -606,47 +628,6 @@ public class SysActivitiServiceImpl implements SysActivitiService {
     }
 
     /**
-     * 把参数传递到最后
-     */
-    public static void completeWithVariable(Task item, boolean onlySetVariableFlag) {
-
-        // String taskId = item.getId();
-        //
-        // // 获取：全局参数
-        // String processInstanceJsonStr =
-        // (String)taskService.getVariable(taskId, SysActivitiUtil.VARIABLE_NAME_PROCESS_INSTANCE_JSON_STR);
-        //
-        // if (StrUtil.isBlank(processInstanceJsonStr)) {
-        //
-        // taskService.complete(taskId);
-        //
-        // return;
-        //
-        // }
-        //
-        // SysActivitiParamBO sysActivitiParamBO = JSONUtil.toBean(processInstanceJsonStr, SysActivitiParamBO.class);
-        //
-        // if (CollUtil.isEmpty(sysActivitiParamBO.getInMap())) {
-        //
-        // taskService.complete(taskId);
-        //
-        // return;
-        //
-        // }
-        //
-        // // 设置完成：该任务
-        // taskService.setVariable(taskId, SysActivitiUtil.VARIABLE_NAME_PROCESS_INSTANCE_JSON_STR,
-        // JSONUtil.toJsonStr(sysActivitiParamBO));
-        //
-        // if (!onlySetVariableFlag) {
-
-        taskService.complete(item.getId());
-
-        // }
-
-    }
-
-    /**
      * 执行任务
      * 
      * @return true 结束自动执行任务 false 继续执行下一个任务
@@ -663,7 +644,7 @@ public class SysActivitiServiceImpl implements SysActivitiService {
 
         if (BooleanUtil.isTrue(sysActivitiTaskHandlerVO.getCompleteFlag())) {
 
-            completeWithVariable(item, false);
+            taskService.complete(item.getId());
 
         }
 
@@ -682,7 +663,8 @@ public class SysActivitiServiceImpl implements SysActivitiService {
      */
     @NotNull
     private static Map<String, Object> getVariableMap(String userId, String tenantId,
-        Map<String, Object> variableMapTemp, String processDefinitionId, CallBack<BpmnModel> bpmnModelCallBack) {
+        Map<String, Object> variableMapTemp, String processDefinitionId, CallBack<BpmnModel> bpmnModelCallBack,
+        CallBack<SysActivitiParamBO> sysActivitiParamBoCallBack) {
 
         Map<String, Object> variableMap = MapUtil.newHashMap();
 
@@ -723,6 +705,9 @@ public class SysActivitiServiceImpl implements SysActivitiService {
             if (value instanceof StartEvent) {
 
                 SysActivitiParamBO sysActivitiParamBO = new SysActivitiParamBO();
+
+                // 设置：回调值
+                sysActivitiParamBoCallBack.setValue(sysActivitiParamBO);
 
                 Map<String, List<SysActivitiParamItemBO>> inMap = MapUtil.newHashMap();
 
@@ -791,13 +776,15 @@ public class SysActivitiServiceImpl implements SysActivitiService {
 
         CallBack<BpmnModel> bpmnModelCallBack = new CallBack<>();
 
+        CallBack<SysActivitiParamBO> sysActivitiParamBoCallBack = new CallBack<>();
+
         ProcessDefinition processDefinition =
             repositoryService.createProcessDefinitionQuery().processDefinitionKey(dto.getProcessDefinitionKey())
                 .processDefinitionTenantId(tenantId).processDefinitionCategory(userId).singleResult();
 
         // 获取：参数 map
-        Map<String, Object> variableMap =
-            getVariableMap(userId, tenantId, dto.getVariableMap(), processDefinition.getId(), bpmnModelCallBack);
+        Map<String, Object> variableMap = getVariableMap(userId, tenantId, dto.getVariableMap(),
+            processDefinition.getId(), bpmnModelCallBack, sysActivitiParamBoCallBack);
 
         ProcessInstance processInstance = runtimeService.startProcessInstanceByKeyAndTenantId(
             dto.getProcessDefinitionKey(), dto.getBusinessKey(), variableMap, tenantId);
