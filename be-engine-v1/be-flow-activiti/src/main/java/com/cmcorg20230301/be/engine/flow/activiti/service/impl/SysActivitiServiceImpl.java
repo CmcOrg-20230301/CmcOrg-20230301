@@ -73,8 +73,12 @@ public class SysActivitiServiceImpl implements SysActivitiService {
         SysActivitiServiceImpl.repositoryService = repositoryService;
     }
 
+    private static RuntimeService runtimeService;
+
     @Resource
-    RuntimeService runtimeService;
+    public void setRuntimeService(RuntimeService runtimeService) {
+        SysActivitiServiceImpl.runtimeService = runtimeService;
+    }
 
     private static TaskService taskService;
 
@@ -443,6 +447,10 @@ public class SysActivitiServiceImpl implements SysActivitiService {
 
         String processInstanceId = processInstance.getProcessInstanceId();
 
+        // 设置：全局 id
+        runtimeService.setVariable(processInstance.getSuperExecutionId(), SysActivitiUtil.VARIABLE_NAME_GLOBAL_ID,
+            processInstance.getSuperExecutionId());
+
         MyThreadUtil.execute(() -> {
 
             // 通过：流程实例，执行任务
@@ -552,7 +560,7 @@ public class SysActivitiServiceImpl implements SysActivitiService {
 
             if (StrUtil.isBlank(description)) {
 
-                completeWithVariable(item);
+                completeWithVariable(item, false);
 
                 continue;
 
@@ -562,7 +570,7 @@ public class SysActivitiServiceImpl implements SysActivitiService {
 
             if (sysActivitiTaskBO.getCategory() == null) {
 
-                completeWithVariable(item);
+                completeWithVariable(item, false);
 
                 continue;
 
@@ -573,7 +581,7 @@ public class SysActivitiServiceImpl implements SysActivitiService {
 
             if (iSysActivitiTaskCategory == null) {
 
-                completeWithVariable(item);
+                completeWithVariable(item, false);
 
                 continue;
 
@@ -603,12 +611,24 @@ public class SysActivitiServiceImpl implements SysActivitiService {
     /**
      * 把参数传递到最后
      */
-    private static void completeWithVariable(Task item) {
+    public static void completeWithVariable(Task item, boolean onlySetVariableFlag) {
 
         String taskId = item.getId();
 
+        // 获取：全局 id
+        String globalId = (String)taskService.getVariable(taskId, SysActivitiUtil.VARIABLE_NAME_GLOBAL_ID);
+
+        if (StrUtil.isBlank(globalId)) {
+
+            taskService.complete(taskId);
+
+            return;
+
+        }
+
+        // 获取：全局参数
         String processInstanceJsonStr =
-            (String)taskService.getVariable(taskId, SysActivitiUtil.VARIABLE_NAME_PROCESS_INSTANCE_JSON_STR);
+            (String)runtimeService.getVariable(globalId, SysActivitiUtil.VARIABLE_NAME_PROCESS_INSTANCE_JSON_STR);
 
         if (StrUtil.isBlank(processInstanceJsonStr)) {
 
@@ -629,10 +649,14 @@ public class SysActivitiServiceImpl implements SysActivitiService {
         }
 
         // 设置完成：该任务
-        taskService.setVariable(taskId, SysActivitiUtil.VARIABLE_NAME_PROCESS_INSTANCE_JSON_STR,
+        runtimeService.setVariable(globalId, SysActivitiUtil.VARIABLE_NAME_PROCESS_INSTANCE_JSON_STR,
             JSONUtil.toJsonStr(sysActivitiParamBO));
 
-        taskService.complete(taskId);
+        if (!onlySetVariableFlag) {
+
+            taskService.complete(taskId);
+
+        }
 
     }
 
@@ -653,7 +677,7 @@ public class SysActivitiServiceImpl implements SysActivitiService {
 
         if (BooleanUtil.isTrue(sysActivitiTaskHandlerVO.getCompleteFlag())) {
 
-            completeWithVariable(item);
+            completeWithVariable(item, false);
 
         }
 
@@ -680,60 +704,62 @@ public class SysActivitiServiceImpl implements SysActivitiService {
 
         variableMap.put(SysActivitiUtil.VARIABLE_NAME_TENANT_ID, tenantId); // 设置：启动参数
 
-        if (CollUtil.isNotEmpty(variableMapTemp)) {
+        if (CollUtil.isEmpty(variableMapTemp)) {
 
-            String inputValue = (String)variableMapTemp.get("inputValue");
+            return variableMap;
 
-            if (StrUtil.isNotBlank(inputValue)) {
+        }
 
-                Integer inputType = (Integer)variableMapTemp.get("inputType");
+        String inputValue = (String)variableMapTemp.get("inputValue");
 
-                ISysActivitiParamItemType iSysActivitiParamItemType =
-                    SysActivitiUtil.PARAM_ITEM_TYPE_MAP.get(inputType);
+        if (StrUtil.isBlank(inputValue)) {
 
-                if (iSysActivitiParamItemType == null) {
-                    iSysActivitiParamItemType = SysActivitiParamItemTypeEnum.TEXT;
-                }
+            return variableMap;
 
-                BpmnModel bpmnModel = repositoryService.getBpmnModel(processDefinitionId);
+        }
 
-                bpmnModelCallBack.setValue(bpmnModel);
+        Integer inputType = (Integer)variableMapTemp.get("inputType");
 
-                for (Map.Entry<String, FlowElement> item : bpmnModel.getMainProcess().getFlowElementMap().entrySet()) {
+        ISysActivitiParamItemType iSysActivitiParamItemType = SysActivitiUtil.PARAM_ITEM_TYPE_MAP.get(inputType);
 
-                    FlowElement value = item.getValue();
+        if (iSysActivitiParamItemType == null) {
+            iSysActivitiParamItemType = SysActivitiParamItemTypeEnum.TEXT;
+        }
 
-                    if (value instanceof StartEvent) {
+        BpmnModel bpmnModel = repositoryService.getBpmnModel(processDefinitionId);
 
-                        SysActivitiParamBO sysActivitiParamBO = new SysActivitiParamBO();
+        bpmnModelCallBack.setValue(bpmnModel);
 
-                        Map<String, List<SysActivitiParamItemBO>> inMap = MapUtil.newHashMap();
+        for (Map.Entry<String, FlowElement> item : bpmnModel.getMainProcess().getFlowElementMap().entrySet()) {
 
-                        sysActivitiParamBO.setInMap(inMap);
+            FlowElement value = item.getValue();
 
-                        StartEvent startEvent = (StartEvent)value;
+            if (value instanceof StartEvent) {
 
-                        // 往：inMap里面添加数据
-                        putInMap(iSysActivitiParamItemType, inputValue, inMap, startEvent.getId(), null);
+                SysActivitiParamBO sysActivitiParamBO = new SysActivitiParamBO();
 
-                        List<SequenceFlow> outgoingFlowList = startEvent.getOutgoingFlows();
+                Map<String, List<SysActivitiParamItemBO>> inMap = MapUtil.newHashMap();
 
-                        for (SequenceFlow subItem : outgoingFlowList) {
+                sysActivitiParamBO.setInMap(inMap);
 
-                            // 往：inMap里面添加数据
-                            putInMap(iSysActivitiParamItemType, inputValue, inMap, subItem.getTargetRef(),
-                                startEvent.getId());
+                StartEvent startEvent = (StartEvent)value;
 
-                        }
+                // 往：inMap里面添加数据
+                putInMap(iSysActivitiParamItemType, inputValue, inMap, startEvent.getId(), null);
 
-                        variableMap.put(SysActivitiUtil.VARIABLE_NAME_PROCESS_INSTANCE_JSON_STR,
-                            JSONUtil.toJsonStr(sysActivitiParamBO)); // 设置：启动参数
+                List<SequenceFlow> outgoingFlowList = startEvent.getOutgoingFlows();
 
-                        break;
+                for (SequenceFlow subItem : outgoingFlowList) {
 
-                    }
+                    // 往：inMap里面添加数据
+                    putInMap(iSysActivitiParamItemType, inputValue, inMap, subItem.getTargetRef(), startEvent.getId());
 
                 }
+
+                variableMap.put(SysActivitiUtil.VARIABLE_NAME_PROCESS_INSTANCE_JSON_STR,
+                    JSONUtil.toJsonStr(sysActivitiParamBO)); // 设置：启动参数
+
+                break;
 
             }
 
@@ -781,7 +807,7 @@ public class SysActivitiServiceImpl implements SysActivitiService {
 
         ProcessDefinition processDefinition =
             repositoryService.createProcessDefinitionQuery().processDefinitionKey(dto.getProcessDefinitionKey())
-                .processDefinitionTenantId(tenantId.toString()).processDefinitionCategory(userId).singleResult();
+                .processDefinitionTenantId(tenantId).processDefinitionCategory(userId).singleResult();
 
         // 获取：参数 map
         Map<String, Object> variableMap =
