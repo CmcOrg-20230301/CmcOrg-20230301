@@ -1,9 +1,12 @@
 package com.cmcorg20230301.be.engine.flow.activiti.util;
 
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+
+import javax.annotation.Resource;
 
 import org.activiti.bpmn.model.SequenceFlow;
 import org.activiti.engine.history.HistoricProcessInstance;
@@ -12,6 +15,9 @@ import org.activiti.engine.repository.Deployment;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
+import org.jetbrains.annotations.Nullable;
+import org.redisson.api.RedissonClient;
+import org.springframework.stereotype.Component;
 
 import com.cmcorg20230301.be.engine.flow.activiti.model.bo.*;
 import com.cmcorg20230301.be.engine.flow.activiti.model.enums.SysActivitiLineTypeEnum;
@@ -19,21 +25,20 @@ import com.cmcorg20230301.be.engine.flow.activiti.model.interfaces.ISysActivitiL
 import com.cmcorg20230301.be.engine.flow.activiti.model.interfaces.ISysActivitiParamItemType;
 import com.cmcorg20230301.be.engine.flow.activiti.model.interfaces.ISysActivitiTaskCategory;
 import com.cmcorg20230301.be.engine.flow.activiti.model.vo.*;
+import com.cmcorg20230301.be.engine.model.model.constant.BaseConstant;
+import com.cmcorg20230301.be.engine.redisson.model.enums.BaseRedisKeyEnum;
 
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.map.MapUtil;
 import cn.hutool.core.util.StrUtil;
+import cn.hutool.json.JSONUtil;
 
+@Component
 public class SysActivitiUtil {
 
     public static final String VARIABLE_NAME_USER_ID = "userId";
 
     public static final String VARIABLE_NAME_TENANT_ID = "tenantId";
-
-    /**
-     * 流程实例中的 json字符串，key：节点的 key，value：{@link SysActivitiParamBO}
-     */
-    public static final String VARIABLE_NAME_PROCESS_INSTANCE_JSON_STR = "processInstanceJsonStr";
 
     public static final ConcurrentHashMap<Integer, ISysActivitiTaskCategory> TASK_CATEGORY_MAP =
         new ConcurrentHashMap<>();
@@ -61,6 +66,36 @@ public class SysActivitiUtil {
      * 图片的数据
      */
     public static final String IMAGE_DATA = "imageData";
+
+    private static RedissonClient redissonClient;
+
+    @Resource
+    public void setRedissonClient(RedissonClient redissonClient) {
+        SysActivitiUtil.redissonClient = redissonClient;
+    }
+
+    @Nullable
+    public static SysActivitiParamBO getSysActivitiParamBO(String processInstanceId) {
+
+        String processInstanceJsonStr = redissonClient
+            .<String>getBucket(BaseRedisKeyEnum.PRE_SYS_ACTIVITI_PROCESS_INSTANCE_JSON_STR + processInstanceId)
+            .getAndExpire(Duration.ofMillis(BaseConstant.HOUR_1_EXPIRE_TIME));
+
+        if (StrUtil.isBlank(processInstanceJsonStr)) {
+            return null;
+        }
+
+        return JSONUtil.toBean(processInstanceJsonStr, SysActivitiParamBO.class);
+
+    }
+
+    public static void setSysActivitiParamBO(String processInstanceId, SysActivitiParamBO sysActivitiParamBO) {
+
+        redissonClient
+            .<String>getBucket(BaseRedisKeyEnum.PRE_SYS_ACTIVITI_PROCESS_INSTANCE_JSON_STR + processInstanceId)
+            .set(JSONUtil.toJsonStr(sysActivitiParamBO), Duration.ofMillis(BaseConstant.HOUR_1_EXPIRE_TIME));
+
+    }
 
     /**
      * 获取：只结束不完成的返回值

@@ -21,7 +21,6 @@ import org.activiti.engine.history.HistoricTaskInstance;
 import org.activiti.engine.history.HistoricTaskInstanceQuery;
 import org.activiti.engine.impl.identity.Authentication;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntityImpl;
-import org.activiti.engine.impl.persistence.entity.TaskEntity;
 import org.activiti.engine.repository.*;
 import org.activiti.engine.runtime.Execution;
 import org.activiti.engine.runtime.ProcessInstance;
@@ -449,26 +448,9 @@ public class SysActivitiServiceImpl implements SysActivitiService {
             .tenantId(tenantId).processDefinitionId(dto.getProcessDefinitionId()).businessKey(dto.getBusinessKey())
             .variables(variableMap).start();
 
-        ExecutionEntityImpl executionEntity = processInstance.getExecutions().get(0);
-
-        TaskEntity taskEntity = executionEntity.getTasks().get(0);
-
-        String globalTaskId = taskEntity.getId();
-
-        SysActivitiParamBO sysActivitiParamBO = sysActivitiParamBoCallBack.getValue();
-
-        sysActivitiParamBO.setGlobalTaskId(globalTaskId);
-
-        String jsonStr = JSONUtil.toJsonStr(sysActivitiParamBO);
-
-        for (TaskEntity item : executionEntity.getTasks()) {
-
-            // 设置：全局任务 id
-            taskService.setVariable(item.getId(), SysActivitiUtil.VARIABLE_NAME_PROCESS_INSTANCE_JSON_STR, jsonStr);
-
-        }
-
         String processInstanceId = processInstance.getProcessInstanceId();
+
+        SysActivitiUtil.setSysActivitiParamBO(processInstanceId, sysActivitiParamBoCallBack.getValue());
 
         MyThreadUtil.execute(() -> {
 
@@ -727,9 +709,6 @@ public class SysActivitiServiceImpl implements SysActivitiService {
 
                 }
 
-                variableMap.put(SysActivitiUtil.VARIABLE_NAME_PROCESS_INSTANCE_JSON_STR,
-                    JSONUtil.toJsonStr(sysActivitiParamBO)); // 设置：启动参数
-
                 break;
 
             }
@@ -789,7 +768,11 @@ public class SysActivitiServiceImpl implements SysActivitiService {
         ProcessInstance processInstance = runtimeService.startProcessInstanceByKeyAndTenantId(
             dto.getProcessDefinitionKey(), dto.getBusinessKey(), variableMap, tenantId);
 
-        return processInstance.getProcessInstanceId();
+        String processInstanceId = processInstance.getProcessInstanceId();
+
+        SysActivitiUtil.setSysActivitiParamBO(processInstanceId, sysActivitiParamBoCallBack.getValue());
+
+        return processInstanceId;
 
     }
 
