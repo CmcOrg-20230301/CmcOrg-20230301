@@ -678,14 +678,15 @@ public class SysActivitiServiceImpl implements SysActivitiService {
                         StartEvent startEvent = (StartEvent)value;
 
                         // 往：inMap里面添加数据
-                        putInMap(iSysActivitiParamItemType, inputValue, inMap, startEvent.getId());
+                        putInMap(iSysActivitiParamItemType, inputValue, inMap, startEvent.getId(), null);
 
                         List<SequenceFlow> outgoingFlowList = startEvent.getOutgoingFlows();
 
                         for (SequenceFlow subItem : outgoingFlowList) {
 
                             // 往：inMap里面添加数据
-                            putInMap(iSysActivitiParamItemType, inputValue, inMap, subItem.getTargetRef());
+                            putInMap(iSysActivitiParamItemType, inputValue, inMap, subItem.getTargetRef(),
+                                startEvent.getId());
 
                         }
 
@@ -710,7 +711,7 @@ public class SysActivitiServiceImpl implements SysActivitiService {
      * 往：inMap里面添加数据
      */
     private static void putInMap(ISysActivitiParamItemType iSysActivitiParamItemType, String inputValue,
-        Map<String, List<SysActivitiParamItemBO>> inMap, String id) {
+        Map<String, List<SysActivitiParamItemBO>> inMap, String id, @Nullable String fromNodeId) {
 
         SysActivitiParamItemBO sysActivitiParamItemBO = new SysActivitiParamItemBO();
 
@@ -721,6 +722,8 @@ public class SysActivitiServiceImpl implements SysActivitiService {
         sysActivitiParamSubItemBO.setValue(inputValue);
 
         sysActivitiParamItemBO.setParamList(CollUtil.newArrayList(sysActivitiParamSubItemBO));
+
+        sysActivitiParamItemBO.setFromNodeId(fromNodeId);
 
         inMap.put(id, CollUtil.newArrayList(sysActivitiParamItemBO));
 

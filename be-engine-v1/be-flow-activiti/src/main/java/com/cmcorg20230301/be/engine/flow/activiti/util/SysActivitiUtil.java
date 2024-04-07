@@ -254,6 +254,8 @@ public class SysActivitiUtil {
 
         sysActivitiParamItemBO.setParamList(CollUtil.newArrayList(sysActivitiParamSubItemBO));
 
+        sysActivitiParamItemBO.setFromNodeId(item.getSourceRef());
+
         sysActivitiParamItemBOList.add(sysActivitiParamItemBO);
 
     }

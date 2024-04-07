@@ -22,4 +22,9 @@ public class SysActivitiParamItemBO {
      */
     private String execErrorMessage;
 
+    /**
+     * 来自：节点 id
+     */
+    private String fromNodeId;
+
 }
