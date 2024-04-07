@@ -100,6 +100,14 @@ public class SysActivitiUtil {
 
     }
 
+    public static void deleteSysActivitiParamBO(String processInstanceId) {
+
+        redissonClient
+            .<String>getBucket(BaseRedisKeyEnum.PRE_SYS_ACTIVITI_PROCESS_INSTANCE_JSON_STR + processInstanceId)
+            .delete();
+
+    }
+
     /**
      * 获取：只结束不完成的返回值
      */

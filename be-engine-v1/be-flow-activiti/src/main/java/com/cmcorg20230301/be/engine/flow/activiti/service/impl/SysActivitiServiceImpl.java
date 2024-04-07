@@ -1298,6 +1298,8 @@ public class SysActivitiServiceImpl implements SysActivitiService {
 
             historyService.deleteHistoricProcessInstance(processInstanceId);
 
+            SysActivitiUtil.deleteSysActivitiParamBO(processInstanceId);
+
         }
 
         return BaseBizCodeEnum.OK;
