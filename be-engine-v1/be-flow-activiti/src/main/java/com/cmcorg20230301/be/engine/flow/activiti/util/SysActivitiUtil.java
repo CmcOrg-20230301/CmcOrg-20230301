@@ -40,6 +40,9 @@ public class SysActivitiUtil {
 
     public static final String VARIABLE_NAME_TENANT_ID = "tenantId";
 
+    // 流程实例，全局参数
+    public static final String VARIABLE_NAME_PROCESS_INSTANCE_VARIABLE = "processInstanceVariable";
+
     public static final ConcurrentHashMap<Integer, ISysActivitiTaskCategory> TASK_CATEGORY_MAP =
         new ConcurrentHashMap<>();
 

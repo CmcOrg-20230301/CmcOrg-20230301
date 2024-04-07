@@ -13,9 +13,4 @@ public class SysActivitiParamBO {
      */
     private Map<String, List<SysActivitiParamItemBO>> inMap;
 
-    /**
-     * 全局任务 id
-     */
-    private String globalTaskId;
-
 }

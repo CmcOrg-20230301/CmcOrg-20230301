@@ -1128,6 +1128,31 @@ public class SysActivitiServiceImpl implements SysActivitiService {
 
         }
 
+        if (CollUtil.isNotEmpty(list)) {
+
+            SysActivitiHistoryTaskVO sysActivitiHistoryTaskVO = list.get(0);
+
+            SysActivitiParamBO sysActivitiParamBO =
+                SysActivitiUtil.getSysActivitiParamBO(sysActivitiHistoryTaskVO.getProcessInstanceId());
+
+            if (sysActivitiParamBO != null) {
+
+                Map<String, Object> processVariableMap = sysActivitiHistoryTaskVO.getProcessVariableMap();
+
+                if (processVariableMap == null) {
+
+                    processVariableMap = MapUtil.newHashMap();
+
+                    sysActivitiHistoryTaskVO.setProcessVariableMap(processVariableMap);
+
+                }
+
+                processVariableMap.put(SysActivitiUtil.VARIABLE_NAME_PROCESS_INSTANCE_VARIABLE, sysActivitiParamBO);
+
+            }
+
+        }
+
         return new Page<SysActivitiHistoryTaskVO>().setTotal(count).setRecords(list);
 
     }
