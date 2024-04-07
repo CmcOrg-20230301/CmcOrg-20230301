@@ -542,8 +542,6 @@ public class SysActivitiServiceImpl implements SysActivitiService {
 
         taskQuery.processInstanceId(processInstanceId);
 
-        taskQuery.includeProcessVariables();
-
         List<Task> list = taskQuery.list();
 
         if (CollUtil.isEmpty(list)) {
@@ -1102,8 +1100,6 @@ public class SysActivitiServiceImpl implements SysActivitiService {
         if (StrUtil.isNotBlank(dto.getTaskId())) {
             historicTaskInstanceQuery.taskId(dto.getTaskId());
         }
-
-        historicTaskInstanceQuery.includeProcessVariables();
 
         long count = historicTaskInstanceQuery.count();
 
