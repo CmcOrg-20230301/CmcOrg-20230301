@@ -552,7 +552,7 @@ public class SysActivitiServiceImpl implements SysActivitiService {
 
             if (StrUtil.isBlank(description)) {
 
-                taskService.complete(item.getId());
+                completeWithVariable(item);
 
                 continue;
 
@@ -562,7 +562,7 @@ public class SysActivitiServiceImpl implements SysActivitiService {
 
             if (sysActivitiTaskBO.getCategory() == null) {
 
-                taskService.complete(item.getId());
+                completeWithVariable(item);
 
                 continue;
 
@@ -573,7 +573,7 @@ public class SysActivitiServiceImpl implements SysActivitiService {
 
             if (iSysActivitiTaskCategory == null) {
 
-                taskService.complete(item.getId());
+                completeWithVariable(item);
 
                 continue;
 
@@ -601,6 +601,42 @@ public class SysActivitiServiceImpl implements SysActivitiService {
     }
 
     /**
+     * 把参数传递到最后
+     */
+    private static void completeWithVariable(Task item) {
+
+        String taskId = item.getId();
+
+        String processInstanceJsonStr =
+            (String)taskService.getVariable(taskId, SysActivitiUtil.VARIABLE_NAME_PROCESS_INSTANCE_JSON_STR);
+
+        if (StrUtil.isBlank(processInstanceJsonStr)) {
+
+            taskService.complete(taskId);
+
+            return;
+
+        }
+
+        SysActivitiParamBO sysActivitiParamBO = JSONUtil.toBean(processInstanceJsonStr, SysActivitiParamBO.class);
+
+        if (CollUtil.isEmpty(sysActivitiParamBO.getInMap())) {
+
+            taskService.complete(taskId);
+
+            return;
+
+        }
+
+        // 设置完成：该任务
+        taskService.setVariable(taskId, SysActivitiUtil.VARIABLE_NAME_PROCESS_INSTANCE_JSON_STR,
+            JSONUtil.toJsonStr(sysActivitiParamBO));
+
+        taskService.complete(taskId);
+
+    }
+
+    /**
      * 执行任务
      * 
      * @return true 结束自动执行任务 false 继续执行下一个任务
@@ -617,7 +653,7 @@ public class SysActivitiServiceImpl implements SysActivitiService {
 
         if (BooleanUtil.isTrue(sysActivitiTaskHandlerVO.getCompleteFlag())) {
 
-            taskService.complete(item.getId()); // 完成任务
+            completeWithVariable(item);
 
         }
 
