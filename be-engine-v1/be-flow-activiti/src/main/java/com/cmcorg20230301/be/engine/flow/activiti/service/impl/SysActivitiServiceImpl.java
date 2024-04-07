@@ -20,6 +20,7 @@ import org.activiti.engine.history.HistoricProcessInstanceQuery;
 import org.activiti.engine.history.HistoricTaskInstance;
 import org.activiti.engine.history.HistoricTaskInstanceQuery;
 import org.activiti.engine.impl.identity.Authentication;
+import org.activiti.engine.impl.persistence.entity.ExecutionEntityImpl;
 import org.activiti.engine.repository.*;
 import org.activiti.engine.runtime.Execution;
 import org.activiti.engine.runtime.ProcessInstance;
@@ -441,15 +442,11 @@ public class SysActivitiServiceImpl implements SysActivitiService {
         Map<String, Object> variableMap =
             getVariableMap(userId, tenantId, dto.getVariableMap(), dto.getProcessDefinitionId(), bpmnModelCallBack);
 
-        ProcessInstance processInstance = runtimeService.createProcessInstanceBuilder().tenantId(tenantId)
-            .processDefinitionId(dto.getProcessDefinitionId()).businessKey(dto.getBusinessKey()).variables(variableMap)
-            .start();
+        ExecutionEntityImpl processInstance = (ExecutionEntityImpl)runtimeService.createProcessInstanceBuilder()
+            .tenantId(tenantId).processDefinitionId(dto.getProcessDefinitionId()).businessKey(dto.getBusinessKey())
+            .variables(variableMap).start();
 
         String processInstanceId = processInstance.getProcessInstanceId();
-
-        // 设置：全局 id
-        runtimeService.setVariable(processInstance.getSuperExecutionId(), SysActivitiUtil.VARIABLE_NAME_GLOBAL_ID,
-            processInstance.getSuperExecutionId());
 
         MyThreadUtil.execute(() -> {
 
@@ -613,50 +610,39 @@ public class SysActivitiServiceImpl implements SysActivitiService {
      */
     public static void completeWithVariable(Task item, boolean onlySetVariableFlag) {
 
-        String taskId = item.getId();
+        // String taskId = item.getId();
+        //
+        // // 获取：全局参数
+        // String processInstanceJsonStr =
+        // (String)taskService.getVariable(taskId, SysActivitiUtil.VARIABLE_NAME_PROCESS_INSTANCE_JSON_STR);
+        //
+        // if (StrUtil.isBlank(processInstanceJsonStr)) {
+        //
+        // taskService.complete(taskId);
+        //
+        // return;
+        //
+        // }
+        //
+        // SysActivitiParamBO sysActivitiParamBO = JSONUtil.toBean(processInstanceJsonStr, SysActivitiParamBO.class);
+        //
+        // if (CollUtil.isEmpty(sysActivitiParamBO.getInMap())) {
+        //
+        // taskService.complete(taskId);
+        //
+        // return;
+        //
+        // }
+        //
+        // // 设置完成：该任务
+        // taskService.setVariable(taskId, SysActivitiUtil.VARIABLE_NAME_PROCESS_INSTANCE_JSON_STR,
+        // JSONUtil.toJsonStr(sysActivitiParamBO));
+        //
+        // if (!onlySetVariableFlag) {
 
-        // 获取：全局 id
-        String globalId = (String)taskService.getVariable(taskId, SysActivitiUtil.VARIABLE_NAME_GLOBAL_ID);
+        taskService.complete(item.getId());
 
-        if (StrUtil.isBlank(globalId)) {
-
-            taskService.complete(taskId);
-
-            return;
-
-        }
-
-        // 获取：全局参数
-        String processInstanceJsonStr =
-            (String)runtimeService.getVariable(globalId, SysActivitiUtil.VARIABLE_NAME_PROCESS_INSTANCE_JSON_STR);
-
-        if (StrUtil.isBlank(processInstanceJsonStr)) {
-
-            taskService.complete(taskId);
-
-            return;
-
-        }
-
-        SysActivitiParamBO sysActivitiParamBO = JSONUtil.toBean(processInstanceJsonStr, SysActivitiParamBO.class);
-
-        if (CollUtil.isEmpty(sysActivitiParamBO.getInMap())) {
-
-            taskService.complete(taskId);
-
-            return;
-
-        }
-
-        // 设置完成：该任务
-        runtimeService.setVariable(globalId, SysActivitiUtil.VARIABLE_NAME_PROCESS_INSTANCE_JSON_STR,
-            JSONUtil.toJsonStr(sysActivitiParamBO));
-
-        if (!onlySetVariableFlag) {
-
-            taskService.complete(taskId);
-
-        }
+        // }
 
     }
 

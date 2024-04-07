@@ -30,8 +30,6 @@ public class SysActivitiUtil {
 
     public static final String VARIABLE_NAME_TENANT_ID = "tenantId";
 
-    public static final String VARIABLE_NAME_GLOBAL_ID = "globalId";
-
     /**
      * 流程实例中的 json字符串，key：节点的 key，value：{@link SysActivitiParamBO}
      */
