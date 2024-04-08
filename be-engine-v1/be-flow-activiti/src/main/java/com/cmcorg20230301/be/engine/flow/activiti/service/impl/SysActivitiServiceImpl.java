@@ -554,6 +554,8 @@ public class SysActivitiServiceImpl implements SysActivitiService {
 
         taskQuery.processInstanceId(processInstanceId);
 
+        taskQuery.includeProcessVariables(); // 这里是为了获取：userId和 tenantId
+
         List<Task> list = taskQuery.list();
 
         if (CollUtil.isEmpty(list)) {
