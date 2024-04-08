@@ -53,6 +53,7 @@ import com.cmcorg20230301.be.engine.security.util.MyThreadUtil;
 import com.cmcorg20230301.be.engine.security.util.ResponseUtil;
 import com.cmcorg20230301.be.engine.security.util.UserUtil;
 import com.cmcorg20230301.be.engine.util.util.CallBack;
+import com.cmcorg20230301.be.engine.util.util.SeparatorUtil;
 
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.io.file.FileNameUtil;
@@ -95,7 +96,7 @@ public class SysActivitiServiceImpl implements SysActivitiService {
      * 部署-新增/修改
      */
     @Override
-    public String deployInsertOrUpdate(SysActivitiDeployInsertOrUpdateDTO dto) {
+    public SysActivitiDeployInsertOrUpdateVO deployInsertOrUpdate(SysActivitiDeployInsertOrUpdateDTO dto) {
 
         String url = dto.getUrl();
 
@@ -115,7 +116,7 @@ public class SysActivitiServiceImpl implements SysActivitiService {
     /**
      * 执行：部署-新增/修改
      */
-    private String doDeployInsertOrUpdate(String fileName, byte[] downloadByteArr) {
+    private SysActivitiDeployInsertOrUpdateVO doDeployInsertOrUpdate(String fileName, byte[] downloadByteArr) {
 
         Long tenantId = UserUtil.getCurrentTenantIdDefault();
 
@@ -139,11 +140,22 @@ public class SysActivitiServiceImpl implements SysActivitiService {
 
         ProcessDefinition processDefinition = processDefinitionQuery.singleResult();
 
-        repositoryService.setProcessDefinitionCategory(processDefinition.getId(), userId.toString());
+        String processDefinitionId = processDefinition.getId();
 
-        repositoryService.setDeploymentKey(deploymentId, processDefinition.getKey());
+        String processDefinitionKey = processDefinition.getKey();
 
-        return deploymentId;
+        repositoryService.setProcessDefinitionCategory(processDefinitionId, userId.toString());
+
+        repositoryService.setDeploymentKey(deploymentId,
+            processDefinitionId + SeparatorUtil.POUND_SIGN_SEPARATOR + processDefinitionKey);
+
+        SysActivitiDeployInsertOrUpdateVO sysActivitiDeployInsertOrUpdateVO = new SysActivitiDeployInsertOrUpdateVO();
+
+        sysActivitiDeployInsertOrUpdateVO.setDeploymentId(deploymentId);
+        sysActivitiDeployInsertOrUpdateVO.setProcessDefinitionKey(processDefinitionKey);
+        sysActivitiDeployInsertOrUpdateVO.setProcessDefinitionId(processDefinitionId);
+
+        return sysActivitiDeployInsertOrUpdateVO;
 
     }
 
@@ -152,7 +164,7 @@ public class SysActivitiServiceImpl implements SysActivitiService {
      */
     @SneakyThrows
     @Override
-    public String deployInsertOrUpdateByFile(SysActivitiDeployInsertOrUpdateByFileDTO dto) {
+    public SysActivitiDeployInsertOrUpdateVO deployInsertOrUpdateByFile(SysActivitiDeployInsertOrUpdateByFileDTO dto) {
 
         SysFileUploadTypeEnum sysFileUploadTypeEnum = SysFileUploadTypeEnum.BPMN;
 

@@ -33,14 +33,16 @@ public class SysActivitiController {
     @Operation(summary = "部署-新增/修改")
     @PostMapping("/deploy/insertOrUpdate")
     @PreAuthorize("hasAuthority('sysActiviti:deployInsertOrUpdate')")
-    public ApiResultVO<String> deployInsertOrUpdate(@RequestBody @Valid SysActivitiDeployInsertOrUpdateDTO dto) {
+    public ApiResultVO<SysActivitiDeployInsertOrUpdateVO>
+        deployInsertOrUpdate(@RequestBody @Valid SysActivitiDeployInsertOrUpdateDTO dto) {
         return ApiResultVO.okData(baseService.deployInsertOrUpdate(dto));
     }
 
     @Operation(summary = "部署-新增/修改，通过文件上传")
     @PostMapping("/deploy/insertOrUpdate/byFile")
     @PreAuthorize("hasAuthority('sysActiviti:deployInsertOrUpdate')")
-    public ApiResultVO<String> deployInsertOrUpdateByFile(SysActivitiDeployInsertOrUpdateByFileDTO dto) {
+    public ApiResultVO<SysActivitiDeployInsertOrUpdateVO>
+        deployInsertOrUpdateByFile(SysActivitiDeployInsertOrUpdateByFileDTO dto) {
         return ApiResultVO.okData(baseService.deployInsertOrUpdateByFile(dto));
     }
 

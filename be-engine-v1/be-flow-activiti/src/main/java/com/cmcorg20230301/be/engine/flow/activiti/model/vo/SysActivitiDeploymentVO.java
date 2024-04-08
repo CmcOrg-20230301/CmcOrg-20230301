@@ -17,7 +17,7 @@ public class SysActivitiDeploymentVO {
     @Schema(description = "部署：分类")
     private String category;
 
-    @Schema(description = "部署：key")
+    @Schema(description = "部署：key，格式：流程定义 id + # + 流程定义 key")
     private String key;
 
     @Schema(description = "部署：租户id")
@@ -28,5 +28,11 @@ public class SysActivitiDeploymentVO {
 
     @Schema(description = "部署：版本号")
     private Integer version;
+
+    @Schema(description = "流程定义：key")
+    private String processDefinitionKey;
+
+    @Schema(description = "流程定义：id")
+    private String processDefinitionId;
 
 }

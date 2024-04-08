@@ -11,9 +11,9 @@ import com.cmcorg20230301.be.engine.model.model.dto.NotEmptyStringSet;
 
 public interface SysActivitiService {
 
-    String deployInsertOrUpdate(SysActivitiDeployInsertOrUpdateDTO dto);
+    SysActivitiDeployInsertOrUpdateVO deployInsertOrUpdate(SysActivitiDeployInsertOrUpdateDTO dto);
 
-    String deployInsertOrUpdateByFile(SysActivitiDeployInsertOrUpdateByFileDTO dto);
+    SysActivitiDeployInsertOrUpdateVO deployInsertOrUpdateByFile(SysActivitiDeployInsertOrUpdateByFileDTO dto);
 
     void deployDownloadResourceFile(NotBlankString notBlankString, HttpServletResponse response);
 

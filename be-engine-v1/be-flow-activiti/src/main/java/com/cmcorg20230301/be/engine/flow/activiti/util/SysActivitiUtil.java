@@ -28,6 +28,7 @@ import com.cmcorg20230301.be.engine.flow.activiti.model.interfaces.ISysActivitiL
 import com.cmcorg20230301.be.engine.flow.activiti.model.interfaces.ISysActivitiParamItemType;
 import com.cmcorg20230301.be.engine.flow.activiti.model.interfaces.ISysActivitiTaskCategory;
 import com.cmcorg20230301.be.engine.flow.activiti.model.vo.*;
+import com.cmcorg20230301.be.engine.util.util.SeparatorUtil;
 
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.map.MapUtil;
@@ -153,15 +154,31 @@ public class SysActivitiUtil {
 
     public static SysActivitiDeploymentVO getSysActivitiDeploymentVO(Deployment item) {
 
+        String key = item.getKey();
+
         SysActivitiDeploymentVO sysActivitiDeploymentVO = new SysActivitiDeploymentVO();
 
         sysActivitiDeploymentVO.setId(item.getId());
         sysActivitiDeploymentVO.setName(item.getName());
         sysActivitiDeploymentVO.setCategory(item.getCategory());
-        sysActivitiDeploymentVO.setKey(item.getKey());
+        sysActivitiDeploymentVO.setKey(key);
         sysActivitiDeploymentVO.setTenantId(item.getTenantId());
         sysActivitiDeploymentVO.setDeploymentTime(item.getDeploymentTime());
         sysActivitiDeploymentVO.setVersion(item.getVersion());
+
+        if (StrUtil.isNotBlank(key)) {
+
+            List<String> splitList = StrUtil.splitTrim(key, SeparatorUtil.POUND_SIGN_SEPARATOR);
+
+            if (splitList.size() == 2) {
+
+                sysActivitiDeploymentVO.setProcessDefinitionId(splitList.get(0));
+
+                sysActivitiDeploymentVO.setProcessDefinitionKey(splitList.get(1));
+
+            }
+
+        }
 
         return sysActivitiDeploymentVO;
 
