@@ -18,6 +18,11 @@ public class SysActivitiParamItemBO {
     private Boolean execFlag;
 
     /**
+     * 执行的开始时间（时间戳）
+     */
+    private Long execTs;
+
+    /**
      * 执行错误的错误信息
      */
     private String execErrorMessage;
