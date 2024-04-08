@@ -1,9 +1,9 @@
 package com.cmcorg20230301.be.engine.flow.activiti.util;
 
-import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 import javax.annotation.Resource;
@@ -19,14 +19,15 @@ import org.jetbrains.annotations.Nullable;
 import org.redisson.api.RedissonClient;
 import org.springframework.stereotype.Component;
 
+import com.baomidou.mybatisplus.extension.toolkit.ChainWrappers;
+import com.cmcorg20230301.be.engine.flow.activiti.mapper.SysActivitiProcessInstanceMapper;
 import com.cmcorg20230301.be.engine.flow.activiti.model.bo.*;
+import com.cmcorg20230301.be.engine.flow.activiti.model.entity.SysActivitiProcessInstanceDO;
 import com.cmcorg20230301.be.engine.flow.activiti.model.enums.SysActivitiLineTypeEnum;
 import com.cmcorg20230301.be.engine.flow.activiti.model.interfaces.ISysActivitiLineType;
 import com.cmcorg20230301.be.engine.flow.activiti.model.interfaces.ISysActivitiParamItemType;
 import com.cmcorg20230301.be.engine.flow.activiti.model.interfaces.ISysActivitiTaskCategory;
 import com.cmcorg20230301.be.engine.flow.activiti.model.vo.*;
-import com.cmcorg20230301.be.engine.model.model.constant.BaseConstant;
-import com.cmcorg20230301.be.engine.redisson.model.enums.BaseRedisKeyEnum;
 
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.map.MapUtil;
@@ -77,12 +78,25 @@ public class SysActivitiUtil {
         SysActivitiUtil.redissonClient = redissonClient;
     }
 
+    private static SysActivitiProcessInstanceMapper sysActivitiProcessInstanceMapper;
+
+    @Resource
+    public void setSysActivitiProcessInstanceMapper(SysActivitiProcessInstanceMapper sysActivitiProcessInstanceMapper) {
+        SysActivitiUtil.sysActivitiProcessInstanceMapper = sysActivitiProcessInstanceMapper;
+    }
+
     @Nullable
     public static SysActivitiParamBO getSysActivitiParamBO(String processInstanceId) {
 
-        String processInstanceJsonStr = redissonClient
-            .<String>getBucket(BaseRedisKeyEnum.PRE_SYS_ACTIVITI_PROCESS_INSTANCE_JSON_STR + processInstanceId)
-            .getAndExpire(Duration.ofMillis(BaseConstant.HOUR_1_EXPIRE_TIME));
+        SysActivitiProcessInstanceDO sysActivitiProcessInstanceDO =
+            ChainWrappers.lambdaQueryChain(sysActivitiProcessInstanceMapper)
+                .eq(SysActivitiProcessInstanceDO::getProcessInstanceId, processInstanceId).one();
+
+        if (sysActivitiProcessInstanceDO == null) {
+            return null;
+        }
+
+        String processInstanceJsonStr = sysActivitiProcessInstanceDO.getProcessInstanceJsonStr();
 
         if (StrUtil.isBlank(processInstanceJsonStr)) {
             return null;
@@ -92,19 +106,34 @@ public class SysActivitiUtil {
 
     }
 
-    public static void setSysActivitiParamBO(String processInstanceId, SysActivitiParamBO sysActivitiParamBO) {
+    public static void setSysActivitiParamBO(String processInstanceId, SysActivitiParamBO sysActivitiParamBO,
+        boolean insertFlag) {
 
-        redissonClient
-            .<String>getBucket(BaseRedisKeyEnum.PRE_SYS_ACTIVITI_PROCESS_INSTANCE_JSON_STR + processInstanceId)
-            .set(JSONUtil.toJsonStr(sysActivitiParamBO), Duration.ofMillis(BaseConstant.HOUR_1_EXPIRE_TIME));
+        String processInstanceJsonStr = JSONUtil.toJsonStr(sysActivitiParamBO);
+
+        if (insertFlag) {
+
+            SysActivitiProcessInstanceDO sysActivitiProcessInstanceDO = new SysActivitiProcessInstanceDO();
+
+            sysActivitiProcessInstanceDO.setProcessInstanceId(processInstanceId);
+            sysActivitiProcessInstanceDO.setProcessInstanceJsonStr(processInstanceJsonStr);
+
+            sysActivitiProcessInstanceMapper.insert(sysActivitiProcessInstanceDO);
+
+        } else {
+
+            ChainWrappers.lambdaUpdateChain(sysActivitiProcessInstanceMapper)
+                .eq(SysActivitiProcessInstanceDO::getProcessInstanceId, processInstanceId)
+                .set(SysActivitiProcessInstanceDO::getProcessInstanceJsonStr, processInstanceJsonStr).update();
+
+        }
 
     }
 
-    public static void deleteSysActivitiParamBO(String processInstanceId) {
+    public static void deleteSysActivitiParamBO(Set<String> processInstanceIdSet) {
 
-        redissonClient
-            .<String>getBucket(BaseRedisKeyEnum.PRE_SYS_ACTIVITI_PROCESS_INSTANCE_JSON_STR + processInstanceId)
-            .delete();
+        ChainWrappers.lambdaUpdateChain(sysActivitiProcessInstanceMapper)
+            .in(SysActivitiProcessInstanceDO::getProcessInstanceId, processInstanceIdSet).remove();
 
     }
 

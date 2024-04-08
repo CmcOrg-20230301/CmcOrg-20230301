@@ -450,7 +450,7 @@ public class SysActivitiServiceImpl implements SysActivitiService {
 
         String processInstanceId = processInstance.getProcessInstanceId();
 
-        SysActivitiUtil.setSysActivitiParamBO(processInstanceId, sysActivitiParamBoCallBack.getValue());
+        SysActivitiUtil.setSysActivitiParamBO(processInstanceId, sysActivitiParamBoCallBack.getValue(), true);
 
         MyThreadUtil.execute(() -> {
 
@@ -768,7 +768,7 @@ public class SysActivitiServiceImpl implements SysActivitiService {
 
         String processInstanceId = processInstance.getProcessInstanceId();
 
-        SysActivitiUtil.setSysActivitiParamBO(processInstanceId, sysActivitiParamBoCallBack.getValue());
+        SysActivitiUtil.setSysActivitiParamBO(processInstanceId, sysActivitiParamBoCallBack.getValue(), true);
 
         return processInstanceId;
 
@@ -1294,9 +1294,9 @@ public class SysActivitiServiceImpl implements SysActivitiService {
 
             historyService.deleteHistoricProcessInstance(processInstanceId);
 
-            SysActivitiUtil.deleteSysActivitiParamBO(processInstanceId);
-
         }
+
+        SysActivitiUtil.deleteSysActivitiParamBO(processInstanceIdSet);
 
         return BaseBizCodeEnum.OK;
 

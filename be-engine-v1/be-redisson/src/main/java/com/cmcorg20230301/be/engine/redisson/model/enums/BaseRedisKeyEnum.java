@@ -8,8 +8,6 @@ import com.cmcorg20230301.be.engine.model.model.interfaces.IRedisKey;
 public enum BaseRedisKeyEnum implements IRedisKey {
 
     // 【PRE_】开头 ↓
-    PRE_SYS_ACTIVITI_PROCESS_INSTANCE_JSON_STR, // 流程实例全局参数，备注，设置值和获取值的时候，请使用流程实例锁来进行操作
-
     PRE_SYS_ACTIVITI_PROCESS_INSTANCE_ID, // 流程实例锁，锁：【流程实例主键 id】
 
     // im 相关 ↓
