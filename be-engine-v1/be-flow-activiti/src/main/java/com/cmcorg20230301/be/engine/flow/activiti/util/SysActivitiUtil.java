@@ -24,10 +24,15 @@ import com.cmcorg20230301.be.engine.flow.activiti.mapper.SysActivitiProcessInsta
 import com.cmcorg20230301.be.engine.flow.activiti.model.bo.*;
 import com.cmcorg20230301.be.engine.flow.activiti.model.entity.SysActivitiProcessInstanceDO;
 import com.cmcorg20230301.be.engine.flow.activiti.model.enums.SysActivitiLineTypeEnum;
+import com.cmcorg20230301.be.engine.flow.activiti.model.enums.SysActivitiParamItemTypeEnum;
 import com.cmcorg20230301.be.engine.flow.activiti.model.interfaces.ISysActivitiLineType;
 import com.cmcorg20230301.be.engine.flow.activiti.model.interfaces.ISysActivitiParamItemType;
 import com.cmcorg20230301.be.engine.flow.activiti.model.interfaces.ISysActivitiTaskCategory;
 import com.cmcorg20230301.be.engine.flow.activiti.model.vo.*;
+import com.cmcorg20230301.be.engine.kafka.util.KafkaUtil;
+import com.cmcorg20230301.be.engine.model.model.enums.BaseWebSocketUriEnum;
+import com.cmcorg20230301.be.engine.security.model.bo.SysWebSocketEventBO;
+import com.cmcorg20230301.be.engine.security.model.dto.WebSocketMessageDTO;
 import com.cmcorg20230301.be.engine.util.util.SeparatorUtil;
 
 import cn.hutool.core.collection.CollUtil;
@@ -86,6 +91,9 @@ public class SysActivitiUtil {
         SysActivitiUtil.sysActivitiProcessInstanceMapper = sysActivitiProcessInstanceMapper;
     }
 
+    /**
+     * 获取：流程实例全局参数
+     */
     @Nullable
     public static SysActivitiParamBO getSysActivitiParamBO(String processInstanceId) {
 
@@ -107,8 +115,11 @@ public class SysActivitiUtil {
 
     }
 
+    /**
+     * 设置：流程实例全局参数
+     */
     public static void setSysActivitiParamBO(String processInstanceId, SysActivitiParamBO sysActivitiParamBO,
-        boolean insertFlag) {
+        boolean insertFlag, boolean notifyFlag, Long userId) {
 
         String processInstanceJsonStr = JSONUtil.toJsonStr(sysActivitiParamBO);
 
@@ -129,8 +140,26 @@ public class SysActivitiUtil {
 
         }
 
+        if (notifyFlag) {
+
+            SysWebSocketEventBO<String> sysWebSocketEventBO = new SysWebSocketEventBO<>();
+
+            sysWebSocketEventBO.setUserIdSet(CollUtil.newHashSet(userId));
+
+            WebSocketMessageDTO<String> webSocketMessageDTO =
+                WebSocketMessageDTO.okData(BaseWebSocketUriEnum.SYS_ACTIVITI_PARAM_CHANGE, processInstanceId);
+
+            sysWebSocketEventBO.setWebSocketMessageDTO(webSocketMessageDTO);
+
+            KafkaUtil.sendSysWebSocketEventTopic(sysWebSocketEventBO);
+
+        }
+
     }
 
+    /**
+     * 删除：流程实例全局参数
+     */
     public static void deleteSysActivitiParamBO(Set<String> processInstanceIdSet) {
 
         ChainWrappers.lambdaUpdateChain(sysActivitiProcessInstanceMapper)
@@ -322,6 +351,50 @@ public class SysActivitiUtil {
         sysActivitiHistoryProcessInstanceVO.setSuperProcessInstanceId(item.getSuperProcessInstanceId());
 
         return sysActivitiHistoryProcessInstanceVO;
+
+    }
+
+    /**
+     * 设置：下一个节点的参数：正常判断的线
+     */
+    public static void setNextNodeInParamForNormal(SysActivitiParamBO sysActivitiParamBO, SequenceFlow item,
+        String content, @Nullable Integer paramSubItemType, @Nullable Long currentTimeMillis) {
+
+        if (paramSubItemType == null) {
+
+            paramSubItemType = SysActivitiParamItemTypeEnum.TEXT.getCode();
+
+        }
+
+        String documentation = item.getDocumentation();
+
+        if (StrUtil.isBlank(documentation)) {
+
+            // 设置：下一个节点的入参
+            SysActivitiUtil.setNextNodeInParam(sysActivitiParamBO, item, content, paramSubItemType, currentTimeMillis);
+
+            return;
+
+        }
+
+        SysActivitiLineBO sysActivitiLineBO = JSONUtil.toBean(documentation, SysActivitiLineBO.class);
+
+        if (sysActivitiLineBO.getType() == null) {
+
+            // 设置：下一个节点的入参
+            SysActivitiUtil.setNextNodeInParam(sysActivitiParamBO, item, content, paramSubItemType, currentTimeMillis);
+
+            return;
+
+        }
+
+        // 如果是：普通判断
+        if (SysActivitiLineTypeEnum.NORMAL.getCode() == sysActivitiLineBO.getType()) {
+
+            // 设置：下一个节点的入参
+            SysActivitiUtil.setNextNodeInParam(sysActivitiParamBO, item, content, paramSubItemType, currentTimeMillis);
+
+        }
 
     }
 

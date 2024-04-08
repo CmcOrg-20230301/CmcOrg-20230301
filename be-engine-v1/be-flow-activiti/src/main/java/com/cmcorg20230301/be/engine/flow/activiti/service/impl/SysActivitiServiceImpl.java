@@ -56,6 +56,7 @@ import com.cmcorg20230301.be.engine.util.util.CallBack;
 import com.cmcorg20230301.be.engine.util.util.SeparatorUtil;
 
 import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.convert.Convert;
 import cn.hutool.core.io.file.FileNameUtil;
 import cn.hutool.core.lang.func.Func1;
 import cn.hutool.core.map.MapUtil;
@@ -442,18 +443,20 @@ public class SysActivitiServiceImpl implements SysActivitiService {
     @Override
     public String processInstanceInsertOrUpdate(SysActivitiProcessInstanceInsertOrUpdateDTO dto) {
 
-        String userId = UserUtil.getCurrentUserId().toString();
+        Long userId = UserUtil.getCurrentUserId();
+
+        String userIdStr = userId.toString();
 
         String tenantId = UserUtil.getCurrentTenantIdDefault().toString();
 
-        Authentication.setAuthenticatedUserId(userId); // 设置：启动流程实例的 userId
+        Authentication.setAuthenticatedUserId(userIdStr); // 设置：启动流程实例的 userId
 
         CallBack<BpmnModel> bpmnModelCallBack = new CallBack<>();
 
         CallBack<SysActivitiParamBO> sysActivitiParamBoCallBack = new CallBack<>();
 
         // 获取：参数 map
-        Map<String, Object> variableMap = getVariableMap(userId, tenantId, dto.getVariableMap(),
+        Map<String, Object> variableMap = getVariableMap(userIdStr, tenantId, dto.getVariableMap(),
             dto.getProcessDefinitionId(), bpmnModelCallBack, sysActivitiParamBoCallBack);
 
         ExecutionEntityImpl processInstance = (ExecutionEntityImpl)runtimeService.createProcessInstanceBuilder()
@@ -462,7 +465,8 @@ public class SysActivitiServiceImpl implements SysActivitiService {
 
         String processInstanceId = processInstance.getProcessInstanceId();
 
-        SysActivitiUtil.setSysActivitiParamBO(processInstanceId, sysActivitiParamBoCallBack.getValue(), true);
+        SysActivitiUtil.setSysActivitiParamBO(processInstanceId, sysActivitiParamBoCallBack.getValue(), true, false,
+            userId);
 
         MyThreadUtil.execute(() -> {
 
@@ -633,8 +637,12 @@ public class SysActivitiServiceImpl implements SysActivitiService {
 
         Func1<SysActivitiTaskHandlerBO, SysActivitiTaskHandlerVO> handler = iSysActivitiTaskCategory.getHandler();
 
+        Long userId = Convert.toLong(item.getProcessVariables().get(SysActivitiUtil.VARIABLE_NAME_USER_ID));
+
+        Long tenantId = Convert.toLong(item.getProcessVariables().get(SysActivitiUtil.VARIABLE_NAME_TENANT_ID));
+
         SysActivitiTaskHandlerVO sysActivitiTaskHandlerVO =
-            handler.call(new SysActivitiTaskHandlerBO(nodeBoMap, item, sysActivitiTaskBO));
+            handler.call(new SysActivitiTaskHandlerBO(nodeBoMap, item, sysActivitiTaskBO, userId, tenantId));
 
         if (BooleanUtil.isTrue(sysActivitiTaskHandlerVO.getCompleteFlag())) {
 
@@ -765,11 +773,13 @@ public class SysActivitiServiceImpl implements SysActivitiService {
     @Override
     public String processInstanceInsertOrUpdateByKey(SysActivitiProcessInstanceInsertOrUpdateByKeyDTO dto) {
 
-        String userId = UserUtil.getCurrentUserId().toString();
+        Long userId = UserUtil.getCurrentUserId();
+
+        String userIdStr = userId.toString();
 
         String tenantId = UserUtil.getCurrentTenantIdDefault().toString();
 
-        Authentication.setAuthenticatedUserId(userId); // 设置：启动流程实例的 userId
+        Authentication.setAuthenticatedUserId(userIdStr); // 设置：启动流程实例的 userId
 
         CallBack<BpmnModel> bpmnModelCallBack = new CallBack<>();
 
@@ -777,10 +787,10 @@ public class SysActivitiServiceImpl implements SysActivitiService {
 
         ProcessDefinition processDefinition =
             repositoryService.createProcessDefinitionQuery().processDefinitionKey(dto.getProcessDefinitionKey())
-                .processDefinitionTenantId(tenantId).processDefinitionCategory(userId).singleResult();
+                .processDefinitionTenantId(tenantId).processDefinitionCategory(userIdStr).singleResult();
 
         // 获取：参数 map
-        Map<String, Object> variableMap = getVariableMap(userId, tenantId, dto.getVariableMap(),
+        Map<String, Object> variableMap = getVariableMap(userIdStr, tenantId, dto.getVariableMap(),
             processDefinition.getId(), bpmnModelCallBack, sysActivitiParamBoCallBack);
 
         ProcessInstance processInstance = runtimeService.startProcessInstanceByKeyAndTenantId(
@@ -788,7 +798,8 @@ public class SysActivitiServiceImpl implements SysActivitiService {
 
         String processInstanceId = processInstance.getProcessInstanceId();
 
-        SysActivitiUtil.setSysActivitiParamBO(processInstanceId, sysActivitiParamBoCallBack.getValue(), true);
+        SysActivitiUtil.setSysActivitiParamBO(processInstanceId, sysActivitiParamBoCallBack.getValue(), true, false,
+            userId);
 
         return processInstanceId;
 

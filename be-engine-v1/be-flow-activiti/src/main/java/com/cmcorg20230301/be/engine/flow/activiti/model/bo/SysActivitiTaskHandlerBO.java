@@ -26,4 +26,14 @@ public class SysActivitiTaskHandlerBO {
      */
     private SysActivitiTaskBO sysActivitiTaskBO;
 
+    /**
+     * 用户主键 id
+     */
+    private Long userId;
+
+    /**
+     * 租户主键 id
+     */
+    private Long tenantId;
+
 }

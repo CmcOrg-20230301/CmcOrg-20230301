@@ -12,8 +12,6 @@ public class SysActivitiConditionExpressionUtil {
      */
     public boolean check(DelegateExecution execution) {
 
-        String currentActivityId = execution.getCurrentActivityId();
-
         return true;
 
     }
