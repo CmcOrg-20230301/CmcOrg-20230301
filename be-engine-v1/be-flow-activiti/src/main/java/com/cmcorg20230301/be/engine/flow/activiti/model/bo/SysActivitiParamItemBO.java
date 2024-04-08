@@ -20,7 +20,7 @@ public class SysActivitiParamItemBO {
     /**
      * 执行的开始时间（时间戳）
      */
-    private Long execTs;
+    private Long startTs;
 
     /**
      * 执行错误的错误信息

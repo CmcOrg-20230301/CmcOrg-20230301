@@ -329,7 +329,7 @@ public class SysActivitiUtil {
      * 设置：下一个节点的入参
      */
     public static void setNextNodeInParam(SysActivitiParamBO sysActivitiParamBO, SequenceFlow item, String content,
-        Integer paramSubItemType) {
+        @Nullable Integer paramSubItemType, @Nullable Long currentTimeMillis) {
 
         String targetRef = item.getTargetRef();
 
@@ -347,6 +347,8 @@ public class SysActivitiUtil {
         sysActivitiParamItemBO.setParamList(CollUtil.newArrayList(sysActivitiParamSubItemBO));
 
         sysActivitiParamItemBO.setFromNodeId(item.getSourceRef());
+
+        sysActivitiParamItemBO.setStartTs(currentTimeMillis);
 
         sysActivitiParamItemBOList.add(sysActivitiParamItemBO);
 

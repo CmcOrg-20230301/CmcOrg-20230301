@@ -692,6 +692,8 @@ public class SysActivitiServiceImpl implements SysActivitiService {
 
         bpmnModelCallBack.setValue(bpmnModel);
 
+        long currentTimeMillis = System.currentTimeMillis();
+
         for (Map.Entry<String, FlowElement> item : bpmnModel.getMainProcess().getFlowElementMap().entrySet()) {
 
             FlowElement value = item.getValue();
@@ -710,14 +712,15 @@ public class SysActivitiServiceImpl implements SysActivitiService {
                 StartEvent startEvent = (StartEvent)value;
 
                 // 往：inMap里面添加数据
-                putInMap(iSysActivitiParamItemType, inputValue, inMap, startEvent.getId(), null);
+                putInMap(iSysActivitiParamItemType, inputValue, inMap, startEvent.getId(), null, null);
 
                 List<SequenceFlow> outgoingFlowList = startEvent.getOutgoingFlows();
 
                 for (SequenceFlow subItem : outgoingFlowList) {
 
                     // 往：inMap里面添加数据
-                    putInMap(iSysActivitiParamItemType, inputValue, inMap, subItem.getTargetRef(), startEvent.getId());
+                    putInMap(iSysActivitiParamItemType, inputValue, inMap, subItem.getTargetRef(), startEvent.getId(),
+                        currentTimeMillis);
 
                 }
 
@@ -735,7 +738,8 @@ public class SysActivitiServiceImpl implements SysActivitiService {
      * 往：inMap里面添加数据
      */
     private static void putInMap(ISysActivitiParamItemType iSysActivitiParamItemType, String inputValue,
-        Map<String, List<SysActivitiParamItemBO>> inMap, String id, @Nullable String fromNodeId) {
+        Map<String, List<SysActivitiParamItemBO>> inMap, String id, @Nullable String fromNodeId,
+        @Nullable Long currentTimeMillis) {
 
         SysActivitiParamItemBO sysActivitiParamItemBO = new SysActivitiParamItemBO();
 
@@ -748,6 +752,8 @@ public class SysActivitiServiceImpl implements SysActivitiService {
         sysActivitiParamItemBO.setParamList(CollUtil.newArrayList(sysActivitiParamSubItemBO));
 
         sysActivitiParamItemBO.setFromNodeId(fromNodeId);
+
+        sysActivitiParamItemBO.setStartTs(currentTimeMillis);
 
         inMap.put(id, CollUtil.newArrayList(sysActivitiParamItemBO));
 
