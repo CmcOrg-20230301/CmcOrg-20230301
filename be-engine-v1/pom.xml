@@ -539,6 +539,20 @@
                 <version>2021.0.5.0</version>
             </dependency>
 
+            <!-- 防止：selenium启动报错 -->
+            <dependency>
+                <groupId>com.google.guava</groupId>
+                <artifactId>guava</artifactId>
+                <version>33.1.0-jre</version>
+            </dependency>
+
+            <!-- selenium -->
+            <dependency>
+                <groupId>org.seleniumhq.selenium</groupId>
+                <artifactId>selenium-java</artifactId>
+                <version>3.141.59</version>
+            </dependency>
+
             <!-- 腾讯ai绘画 -->
             <dependency>
                 <groupId>com.tencentcloudapi</groupId>
