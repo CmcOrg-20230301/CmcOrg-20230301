@@ -18,6 +18,8 @@ public enum SysActivitiParamItemTypeEnum implements ISysActivitiParamItemType {
 
     FUNCTION_CALL_CUSTOM(401), // 函数调用-高级
 
+    URL(501), // 网络链接
+
     ;
 
     private final int code;

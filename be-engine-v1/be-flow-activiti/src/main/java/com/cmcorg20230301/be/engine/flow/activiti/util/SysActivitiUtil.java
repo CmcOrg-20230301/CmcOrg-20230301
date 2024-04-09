@@ -9,6 +9,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import javax.annotation.Resource;
 
 import org.activiti.bpmn.model.SequenceFlow;
+import org.activiti.engine.RuntimeService;
 import org.activiti.engine.history.HistoricProcessInstance;
 import org.activiti.engine.history.HistoricTaskInstance;
 import org.activiti.engine.repository.Deployment;
@@ -16,7 +17,6 @@ import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 import org.jetbrains.annotations.Nullable;
-import org.redisson.api.RedissonClient;
 import org.springframework.stereotype.Component;
 
 import com.baomidou.mybatisplus.extension.toolkit.ChainWrappers;
@@ -77,18 +77,18 @@ public class SysActivitiUtil {
      */
     public static final String IMAGE_DATA = "imageData";
 
-    private static RedissonClient redissonClient;
-
-    @Resource
-    public void setRedissonClient(RedissonClient redissonClient) {
-        SysActivitiUtil.redissonClient = redissonClient;
-    }
-
     private static SysActivitiProcessInstanceMapper sysActivitiProcessInstanceMapper;
 
     @Resource
     public void setSysActivitiProcessInstanceMapper(SysActivitiProcessInstanceMapper sysActivitiProcessInstanceMapper) {
         SysActivitiUtil.sysActivitiProcessInstanceMapper = sysActivitiProcessInstanceMapper;
+    }
+
+    private static RuntimeService runtimeService;
+
+    @Resource
+    public void setRuntimeService(RuntimeService runtimeService) {
+        SysActivitiUtil.runtimeService = runtimeService;
     }
 
     /**
@@ -168,14 +168,26 @@ public class SysActivitiUtil {
     }
 
     /**
-     * 获取：只结束不完成的返回值
+     * 获取：直接结束整个流程实例
+     */
+    public static SysActivitiTaskHandlerVO getSysActivitiTaskHandlerVoOnlyEndAll(String processInstanceId) {
+
+        // 删除：流程实例，即可结束整个流程实例
+        runtimeService.deleteProcessInstance(processInstanceId, null);
+
+        return new SysActivitiTaskHandlerVO(false, true);
+
+    }
+
+    /**
+     * 获取：只结束不完成
      */
     public static SysActivitiTaskHandlerVO getSysActivitiTaskHandlerVoOnlyEndAuto() {
         return new SysActivitiTaskHandlerVO(false, true);
     }
 
     /**
-     * 获取：只完成不结束的返回值
+     * 获取：只完成不结束
      */
     public static SysActivitiTaskHandlerVO getSysActivitiTaskHandlerVoOnlyComplete() {
         return new SysActivitiTaskHandlerVO(true, false);
