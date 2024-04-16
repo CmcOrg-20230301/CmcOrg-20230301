@@ -91,10 +91,18 @@
         <module>be-api-token</module>
         <module>be-flow-activiti</module>
         <module>be-jwt-refresh</module>
+        <module>be-ffmpeg</module>
     </modules>
 
     <dependencyManagement>
         <dependencies>
+
+            <!-- be-ffmpeg -->
+            <dependency>
+                <groupId>${cmcorg.groupId}</groupId>
+                <artifactId>be-ffmpeg</artifactId>
+                <version>${cmcorg.version}</version>
+            </dependency>
 
             <!-- be-jwt-refresh -->
             <dependency>
@@ -538,6 +546,31 @@
                 <artifactId>spring-cloud-starter-alibaba-nacos-config</artifactId>
                 <version>2021.0.5.0</version>
             </dependency>
+
+            <!-- ffmpeg -->
+            <dependency>
+                <groupId>ws.schild</groupId>
+                <artifactId>jave-all-deps</artifactId>
+                <version>3.5.0</version>
+                <exclusions>
+                    <!-- 排除 windows 32位系统 -->
+                    <exclusion>
+                        <groupId>ws.schild</groupId>
+                        <artifactId>jave-nativebin-win32</artifactId>
+                    </exclusion>
+                    <!-- 排除 linux 32位系统 -->
+                    <exclusion>
+                        <groupId>ws.schild</groupId>
+                        <artifactId>jave-nativebin-linux32</artifactId>
+                    </exclusion>
+                    <!-- 排除 mac系统 -->
+                    <exclusion>
+                        <groupId>ws.schild</groupId>
+                        <artifactId>jave-nativebin-osx64</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+
 
             <!-- 防止：selenium启动报错 -->
             <dependency>
