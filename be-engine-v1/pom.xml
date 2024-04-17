@@ -571,7 +571,6 @@
                 </exclusions>
             </dependency>
 
-
             <!-- 防止：selenium启动报错 -->
             <dependency>
                 <groupId>com.squareup.okhttp3</groupId>
@@ -693,7 +692,7 @@
             <dependency>
                 <groupId>io.minio</groupId>
                 <artifactId>minio</artifactId>
-                <version>8.5.7</version>
+                <version>7.1.4</version>
             </dependency>
 
             <!-- 二维码工具类 -->
