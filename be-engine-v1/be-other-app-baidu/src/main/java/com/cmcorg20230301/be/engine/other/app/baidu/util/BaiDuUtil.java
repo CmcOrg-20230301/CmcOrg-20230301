@@ -39,6 +39,56 @@ public class BaiDuUtil {
     }
 
     /**
+     * 创建音频转写任务
+     *
+     * @return 任务 id
+     */
+    public static String aasrCreate(@Nullable Long tenantId, @Nullable String appId, String speechUrl,
+        @Nullable String format, @Nullable Integer pid, @Nullable Integer rate) {
+
+        String accessToken = getAccessToken(tenantId, appId);
+
+        if (StrUtil.isBlank(format)) {
+            format = "mp3";
+        }
+
+        if (pid == null) {
+            pid = 80001;
+        }
+
+        if (rate == null) {
+            rate = 16000;
+        }
+
+        JSONObject formJson = JSONUtil.createObj();
+
+        formJson.set("speech_url", speechUrl);
+        formJson.set("format", format);
+        formJson.set("pid", pid);
+        formJson.set("rate", rate);
+
+        log.info("aasrCreate-formJson：{}", JSONUtil.toJsonStr(formJson));
+
+        String result = HttpRequest.post("https://aip.baidubce.com/rpc/2.0/aasr/v1/create?access_token=" + accessToken)
+            .form(formJson).execute().body();
+
+        log.info("aasrCreate-result：{}", result);
+
+        JSONObject jsonObject = JSONUtil.parseObj(result);
+
+        String errorMsg = jsonObject.getStr("error_msg");
+
+        if (StrUtil.isNotBlank(errorMsg)) {
+
+            ApiResultVO.error(errorMsg, speechUrl);
+
+        }
+
+        return jsonObject.getStr("task_id");
+
+    }
+
+    /**
      * 通用物体和场景识别
      *
      * @return 识别的结果
@@ -58,7 +108,7 @@ public class BaiDuUtil {
             .post("https://aip.baidubce.com/rest/2.0/image-classify/v2/advanced_general?access_token=" + accessToken)
             .form(formJson).execute().body();
 
-        log.info("advancedGeneral-result：{}", JSONUtil.toJsonStr(result));
+        log.info("advancedGeneral-result：{}", result);
 
         return JSONUtil.parseObj(result);
 
