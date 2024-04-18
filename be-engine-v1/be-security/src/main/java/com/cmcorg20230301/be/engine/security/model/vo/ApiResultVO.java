@@ -1,13 +1,15 @@
 package com.cmcorg20230301.be.engine.security.model.vo;
 
-import cn.hutool.core.util.StrUtil;
+import org.jetbrains.annotations.Contract;
+
 import com.cmcorg20230301.be.engine.model.exception.IBizCode;
 import com.cmcorg20230301.be.engine.security.configuration.base.BaseConfiguration;
 import com.cmcorg20230301.be.engine.security.exception.BaseBizCodeEnum;
 import com.cmcorg20230301.be.engine.security.exception.BaseException;
+
+import cn.hutool.core.util.StrUtil;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
-import org.jetbrains.annotations.Contract;
 
 @Data
 @Schema(description = "统一响应实体类")
@@ -76,6 +78,12 @@ public class ApiResultVO<T> {
     @Contract("_,_ -> fail")
     public static <T> ApiResultVO<T> error(String msg, T data) {
         return new ApiResultVO<>(BaseBizCodeEnum.API_RESULT_SYS_ERROR.getCode(), msg, data).error();
+    }
+
+    @Contract("_ -> fail")
+    public static <T> ApiResultVO<T> errorData(T data) {
+        return new ApiResultVO<>(BaseBizCodeEnum.API_RESULT_SYS_ERROR.getCode(),
+            BaseBizCodeEnum.API_RESULT_SYS_ERROR.getMsg(), data).error();
     }
 
     @Contract("_,_ -> fail")
