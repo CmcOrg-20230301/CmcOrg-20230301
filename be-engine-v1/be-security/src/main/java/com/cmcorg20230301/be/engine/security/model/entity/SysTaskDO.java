@@ -13,7 +13,7 @@ import lombok.Data;
 @Schema(description = "主表：任务")
 public class SysTaskDO {
 
-    @TableId(type = IdType.ASSIGN_ID)
+    @TableId(type = IdType.INPUT)
     private Long id;
 
     @Schema(description = "用户 id")
