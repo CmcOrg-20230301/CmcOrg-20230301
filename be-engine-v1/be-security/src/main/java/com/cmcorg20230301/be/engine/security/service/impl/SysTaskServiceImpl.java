@@ -90,40 +90,6 @@ public class SysTaskServiceImpl extends ServiceImpl<SysTaskMapper, SysTaskDO> im
 
     }
 
-    public static CopyOnWriteArrayList<SysTaskDO> SYS_TASK_DO_UPDATE_LIST = new CopyOnWriteArrayList<>();
-
-    /**
-     * 定时任务，更新数据
-     */
-    @PreDestroy
-    @Scheduled(fixedDelay = 5000)
-    public void scheduledUpdate() {
-
-        CopyOnWriteArrayList<SysTaskDO> tempSysTaskDoList;
-
-        synchronized (SYS_TASK_DO_UPDATE_LIST) {
-
-            if (CollUtil.isEmpty(SYS_TASK_DO_UPDATE_LIST)) {
-                return;
-            }
-
-            tempSysTaskDoList = SYS_TASK_DO_UPDATE_LIST;
-            SYS_TASK_DO_UPDATE_LIST = new CopyOnWriteArrayList<>();
-
-        }
-
-        // 目的：防止还有程序往：tempList，里面添加数据，所以这里等待一会
-        MyThreadUtil.schedule(() -> {
-
-            log.info("修改任务数据，长度：{}", tempSysTaskDoList.size());
-
-            // 批量修改数据
-            updateBatchById(tempSysTaskDoList);
-
-        }, DateUtil.offsetSecond(new Date(), 2));
-
-    }
-
     private static CopyOnWriteArrayList<SysTaskDO> SYS_TASK_DO_LIST = new CopyOnWriteArrayList<>();
 
     /**

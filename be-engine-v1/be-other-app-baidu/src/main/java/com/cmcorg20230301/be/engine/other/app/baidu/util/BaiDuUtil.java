@@ -118,7 +118,7 @@ public class BaiDuUtil {
                 strBuilder.append(++i).append("\n");
 
                 // 添加：时间
-                strBuilder.append(++i).append(beginTimeStr).append(" --> ").append(endTimeStr).append("\n");
+                strBuilder.append(beginTimeStr).append(" --> ").append(endTimeStr).append("\n");
 
                 String text = CollUtil.join(resList, "");
 
