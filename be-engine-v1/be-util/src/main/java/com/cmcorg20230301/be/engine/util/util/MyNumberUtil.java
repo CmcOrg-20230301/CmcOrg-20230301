@@ -57,4 +57,25 @@ public class MyNumberUtil {
 
     }
 
+    /**
+     * 将毫秒转换为时间格式，例如：4240 转换为：00:00:4,240
+     */
+    public static String formatMilliseconds(long milliseconds) {
+
+        long hours = milliseconds / 3600000;
+
+        long remainder = milliseconds % 3600000;
+
+        long minutes = remainder / 60000;
+
+        remainder = remainder % 60000;
+
+        long seconds = remainder / 1000;
+
+        long millis = remainder % 1000;
+
+        return String.format("%02d:%02d:%02d,%03d", hours, minutes, seconds, millis);
+
+    }
+
 }

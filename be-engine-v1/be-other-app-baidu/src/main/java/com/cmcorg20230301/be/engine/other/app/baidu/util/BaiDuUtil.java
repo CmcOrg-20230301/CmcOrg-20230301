@@ -18,8 +18,10 @@ import com.cmcorg20230301.be.engine.security.exception.BaseBizCodeEnum;
 import com.cmcorg20230301.be.engine.security.model.entity.BaseEntityNoId;
 import com.cmcorg20230301.be.engine.security.model.entity.BaseEntityNoIdSuper;
 import com.cmcorg20230301.be.engine.security.model.vo.ApiResultVO;
+import com.cmcorg20230301.be.engine.util.util.MyNumberUtil;
 
 import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.text.StrBuilder;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.http.HttpRequest;
 import cn.hutool.json.JSONObject;
@@ -59,6 +61,66 @@ public class BaiDuUtil {
         log.info("aasrQuery-result：{}", result);
 
         return JSONUtil.parseObj(result);
+
+    }
+
+    /**
+     * 获取：srt格式的字符串
+     * 
+     * @return null 表示转写任务未完成
+     */
+    public static String getSrtStr(@Nullable Long tenantId, @Nullable String appId, String taskId) {
+
+        // 查询：任务是否完成
+        JSONObject jsonObject = BaiDuUtil.aasrQuery(tenantId, appId, taskId);
+
+        List<JSONObject> tasksInfoList = jsonObject.getBeanList("tasks_info", JSONObject.class);
+
+        boolean anyMatch = tasksInfoList.stream().anyMatch(it -> "Running".equals(it.getStr("task_status")));
+
+        if (anyMatch) {
+            return null;
+        }
+
+        StrBuilder strBuilder = StrBuilder.create();
+
+        for (int i = 0; i < tasksInfoList.size(); i++) {
+
+            JSONObject item = tasksInfoList.get(i);
+
+            if (!"Success".equals(item.getStr("task_status"))) {
+                continue;
+            }
+
+            JSONObject taskResult = item.getJSONObject("task_result");
+
+            List<JSONObject> detailedResultList = taskResult.getBeanList("detailed_result", JSONObject.class);
+
+            for (JSONObject subItem : detailedResultList) {
+
+                List<String> resList = subItem.getBeanList("res", String.class);
+
+                Integer beginTime = subItem.getInt("begin_time");
+
+                Integer endTime = subItem.getInt("end_time");
+
+                String beginTimeStr = MyNumberUtil.formatMilliseconds(beginTime);
+
+                String endTimeStr = MyNumberUtil.formatMilliseconds(endTime);
+
+                // 添加：序号
+                strBuilder.append(++i).append("\n");
+
+                // 添加：时间
+                strBuilder.append(++i).append(beginTimeStr).append(" --> ").append(endTimeStr).append("\n");
+
+                strBuilder.append(CollUtil.join(resList, "")).append("\n\n");
+
+            }
+
+        }
+
+        return strBuilder.toString();
 
     }
 

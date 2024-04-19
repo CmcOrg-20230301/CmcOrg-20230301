@@ -25,6 +25,8 @@ import com.cmcorg20230301.be.engine.security.util.TryUtil;
 
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.date.DateUtil;
+import cn.hutool.core.lang.func.VoidFunc1;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 
 @Service
@@ -53,7 +55,7 @@ public class SysTaskServiceImpl extends ServiceImpl<SysTaskMapper, SysTaskDO> im
      * 定时任务，处理未完成的任务
      */
     @PreDestroy
-    @Scheduled(fixedDelay = 5000)
+    @Scheduled(fixedDelay = 3000)
     public void scheduledHandleNotCompleteTask() {
 
         if (CollUtil.isEmpty(I_SYS_TASK_CONFIGURATION_MAP)) {
@@ -76,12 +78,46 @@ public class SysTaskServiceImpl extends ServiceImpl<SysTaskMapper, SysTaskDO> im
 
             TryUtil.tryCatch(() -> {
 
-                // 处理：任务
+                // 处理：任务，备注：如果需要更新任务数据，请添加到：SYS_TASK_DO_UPDATE_LIST
                 iSysTaskConfiguration.handle(item);
 
             });
 
         }
+
+    }
+
+    public static CopyOnWriteArrayList<SysTaskDO> SYS_TASK_DO_UPDATE_LIST = new CopyOnWriteArrayList<>();
+
+    /**
+     * 定时任务，更新数据
+     */
+    @PreDestroy
+    @Scheduled(fixedDelay = 5000)
+    public void scheduledUpdate() {
+
+        CopyOnWriteArrayList<SysTaskDO> tempSysTaskDoList;
+
+        synchronized (SYS_TASK_DO_UPDATE_LIST) {
+
+            if (CollUtil.isEmpty(SYS_TASK_DO_UPDATE_LIST)) {
+                return;
+            }
+
+            tempSysTaskDoList = SYS_TASK_DO_UPDATE_LIST;
+            SYS_TASK_DO_UPDATE_LIST = new CopyOnWriteArrayList<>();
+
+        }
+
+        // 目的：防止还有程序往：tempList，里面添加数据，所以这里等待一会
+        MyThreadUtil.schedule(() -> {
+
+            log.info("修改任务数据，长度：{}", tempSysTaskDoList.size());
+
+            // 批量修改数据
+            updateBatchById(tempSysTaskDoList);
+
+        }, DateUtil.offsetSecond(new Date(), 2));
 
     }
 
@@ -110,7 +146,7 @@ public class SysTaskServiceImpl extends ServiceImpl<SysTaskMapper, SysTaskDO> im
         // 目的：防止还有程序往：tempList，里面添加数据，所以这里等待一会
         MyThreadUtil.schedule(() -> {
 
-            log.info("保存算力变化数据，长度：{}", tempSysTaskDoList.size());
+            log.info("新增任务数据，长度：{}", tempSysTaskDoList.size());
 
             // 批量保存数据
             saveBatch(tempSysTaskDoList);
@@ -126,7 +162,9 @@ public class SysTaskServiceImpl extends ServiceImpl<SysTaskMapper, SysTaskDO> im
      * 
      * @param expireTs -1 永不过期
      */
-    public static Long addTask(Long userId, Long tenantId, Integer type, Long mainId, Long businessId, Long expireTs) {
+    @SneakyThrows
+    public static Long addTask(Long userId, Long tenantId, Integer type, String mainId, String businessId,
+        Long expireTs, @Nullable VoidFunc1<SysTaskDO> voidFunc1) {
 
         Long id = IdGeneratorUtil.nextId();
 
@@ -147,6 +185,12 @@ public class SysTaskServiceImpl extends ServiceImpl<SysTaskMapper, SysTaskDO> im
         sysTaskDO.setCompleteFlag(false);
 
         sysTaskDO.setExpireTs(expireTs);
+
+        if (voidFunc1 != null) {
+
+            voidFunc1.call(sysTaskDO);
+
+        }
 
         SYS_TASK_DO_LIST.add(sysTaskDO);
 

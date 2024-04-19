@@ -20,6 +20,8 @@ public enum SysActivitiParamItemTypeEnum implements ISysActivitiParamItemType {
 
     URL(501), // 网络链接
 
+    VIDEO(601), // 视频：url
+
     ;
 
     private final int code;

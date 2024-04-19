@@ -8,6 +8,8 @@ import com.cmcorg20230301.be.engine.model.model.interfaces.IRedisKey;
 public enum BaseRedisKeyEnum implements IRedisKey {
 
     // 【PRE_】开头 ↓
+    PRE_SYS_TASK_ID, // 任务锁，锁：【任务主键 id】
+
     PRE_SYS_ACTIVITI_PROCESS_INSTANCE_ID, // 流程实例锁，锁：【流程实例主键 id】
 
     // im 相关 ↓

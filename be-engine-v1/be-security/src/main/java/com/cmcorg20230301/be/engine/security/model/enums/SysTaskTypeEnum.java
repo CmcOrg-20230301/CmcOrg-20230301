@@ -1,7 +1,7 @@
 package com.cmcorg20230301.be.engine.security.model.enums;
 
 import com.baomidou.mybatisplus.annotation.EnumValue;
-import com.cmcorg20230301.be.engine.security.model.interfaces.ISysFileStorageType;
+import com.cmcorg20230301.be.engine.security.model.interfaces.ISysTaskType;
 import com.fasterxml.jackson.annotation.JsonValue;
 
 import lombok.AllArgsConstructor;
@@ -12,9 +12,9 @@ import lombok.Getter;
  */
 @AllArgsConstructor
 @Getter
-public enum SysTaskTypeEnum implements ISysFileStorageType {
+public enum SysTaskTypeEnum implements ISysTaskType {
 
-    ACTIVITI_AASR(0), // 流程，音频文件转写任务
+    ACTIVITI_AASR(101), // 流程，音频文件转写任务
 
     ;
 

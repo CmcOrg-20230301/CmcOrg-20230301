@@ -1,23 +1,82 @@
 package com.cmcorg20230301.be.ffmpeg.util;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.InputStreamReader;
 
 import org.springframework.stereotype.Component;
 
 import com.cmcorg20230301.be.engine.model.model.constant.SysFileTempPathConstant;
+import com.cmcorg20230301.be.engine.security.util.MyExceptionUtil;
 
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.lang.func.VoidFunc1;
 import cn.hutool.core.util.IdUtil;
 import cn.hutool.http.HttpUtil;
 import lombok.SneakyThrows;
-import ws.schild.jave.Encoder;
-import ws.schild.jave.MultimediaObject;
-import ws.schild.jave.encode.AudioAttributes;
-import ws.schild.jave.encode.EncodingAttributes;
+import ws.schild.jave.process.ProcessWrapper;
+import ws.schild.jave.process.ffmpeg.DefaultFFMPEGLocator;
 
 @Component
 public class FfmpegUtil {
+
+    /**
+     * 视频添加字幕
+     */
+    @SneakyThrows
+    public static void videoAddSrt(String videoUrl, String srt, VoidFunc1<File> voidFunc1) {
+
+        byte[] downloadByteArr = HttpUtil.downloadBytes(videoUrl);
+
+        File videoFile = null;
+
+        File srtFile = null;
+
+        File videoOutFile = null;
+
+        try {
+
+            String uuid = IdUtil.simpleUUID();
+
+            videoFile = FileUtil.touch(SysFileTempPathConstant.FFMPEG_TEMP_PATH + uuid + ".mp4");
+
+            srtFile = FileUtil.touch(SysFileTempPathConstant.FFMPEG_TEMP_PATH + uuid + ".srt");
+
+            videoOutFile = FileUtil.touch(SysFileTempPathConstant.FFMPEG_TEMP_PATH + uuid + "_out.mp4");
+
+            FileUtil.writeBytes(downloadByteArr, videoFile);
+
+            FileUtil.writeUtf8String(srt, srtFile);
+
+            ProcessWrapper ffmpeg = new DefaultFFMPEGLocator().createExecutor();
+
+            ffmpeg.addArgument("-i");
+
+            ffmpeg.addArgument(videoFile.getPath());
+
+            ffmpeg.addArgument("-vf");
+
+            ffmpeg.addArgument("\"subtitles=" + srtFile.getPath() + "\"");
+
+            ffmpeg.addArgument(videoOutFile.getPath());
+
+            // 执行
+            doExecute(ffmpeg);
+
+            // 处理：音频文件
+            voidFunc1.call(videoOutFile);
+
+        } finally {
+
+            FileUtil.del(videoFile);
+
+            FileUtil.del(srtFile);
+
+            FileUtil.del(videoOutFile);
+
+        }
+
+    }
 
     /**
      * 视频提取音频
@@ -41,25 +100,26 @@ public class FfmpegUtil {
 
             FileUtil.writeBytes(downloadByteArr, videoFile);
 
-            AudioAttributes audio = new AudioAttributes();
+            ProcessWrapper ffmpeg = new DefaultFFMPEGLocator().createExecutor();
 
-            audio.setCodec("libmp3lame");
+            ffmpeg.addArgument("-i");
 
-            audio.setBitRate(128000);
+            ffmpeg.addArgument(videoFile.getPath());
 
-            audio.setChannels(2);
+            ffmpeg.addArgument("-vn");
 
-            audio.setSamplingRate(16000);
+            ffmpeg.addArgument("-f");
 
-            EncodingAttributes attrs = new EncodingAttributes();
+            ffmpeg.addArgument("-ar");
 
-            attrs.setOutputFormat("mp3");
+            ffmpeg.addArgument("16000");
 
-            attrs.setAudioAttributes(audio);
+            ffmpeg.addArgument("mp3");
 
-            Encoder encoder = new Encoder();
+            ffmpeg.addArgument(audioFile.getPath());
 
-            encoder.encode(new MultimediaObject(videoFile), audioFile, attrs);
+            // 执行
+            doExecute(ffmpeg);
 
             // 处理：音频文件
             voidFunc1.call(audioFile);
@@ -71,6 +131,53 @@ public class FfmpegUtil {
             FileUtil.del(audioFile);
 
         }
+
+    }
+
+    /**
+     * 执行
+     */
+    public static void doExecute(ProcessWrapper ffmpeg) {
+
+        try {
+
+            ffmpeg.execute();
+
+            try (BufferedReader br = new BufferedReader(new InputStreamReader(ffmpeg.getErrorStream()))) {
+
+                blockFfmpeg(br);
+
+            }
+
+        } catch (Exception e) {
+
+            MyExceptionUtil.printError(e);
+
+        }
+
+    }
+
+    /**
+     * 等待命令执行成功，退出
+     */
+    @SneakyThrows
+    private static void blockFfmpeg(BufferedReader br) {
+
+        String line;
+
+        // 该方法阻塞线程，直至合成成功
+        while ((line = br.readLine()) != null) {
+
+            handleLine(line);
+
+        }
+
+    }
+
+    /**
+     * 处理日志
+     */
+    private static void handleLine(String line) {
 
     }
 

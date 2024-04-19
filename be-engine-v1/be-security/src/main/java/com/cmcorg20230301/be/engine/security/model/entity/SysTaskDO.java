@@ -37,15 +37,18 @@ public class SysTaskDO {
     private Integer type;
 
     @Schema(description = "主要 id")
-    private Long mainId;
+    private String mainId;
 
     @Schema(description = "业务 id")
-    private Long businessId;
+    private String businessId;
 
     @Schema(description = "是否：完成")
     private Boolean completeFlag;
 
     @Schema(description = "任务过期的未来时间戳")
     private Long expireTs;
+
+    @Schema(description = "额外数据：1")
+    private String str1;
 
 }
