@@ -25,6 +25,13 @@ import ws.schild.jave.process.ffmpeg.DefaultFFMPEGLocator;
 @Slf4j(topic = LogTopicConstant.FFMPEG)
 public class FfmpegUtil {
 
+    public static void main(String[] args) {
+
+        videoAddSrt("https://ai.lxjjai.com/be-public-bucket/temp-file/7c9dc8b7d4a32db7e1049e365efdc514.mp4", null,
+            null);
+
+    }
+
     /**
      * 视频添加字幕
      */
@@ -45,13 +52,14 @@ public class FfmpegUtil {
 
             videoFile = FileUtil.touch(SysFileTempPathConstant.FFMPEG_TEMP_PATH + uuid + ".mp4");
 
-            srtFile = FileUtil.touch(SysFileTempPathConstant.FFMPEG_TEMP_PATH + uuid + ".srt");
+            srtFile =
+                FileUtil.touch(SysFileTempPathConstant.FFMPEG_TEMP_PATH + "542d81ecc29a4dc19ff1d9cdcb74d4e7" + ".srt");
 
             videoOutFile = FileUtil.touch(SysFileTempPathConstant.FFMPEG_TEMP_PATH + uuid + "_out.mp4");
 
             FileUtil.writeBytes(downloadByteArr, videoFile);
 
-            FileUtil.writeUtf8String(srt, srtFile);
+            // FileUtil.writeUtf8String(srt, srtFile);
 
             ProcessWrapper ffmpeg = new DefaultFFMPEGLocator().createExecutor();
 
@@ -59,11 +67,33 @@ public class FfmpegUtil {
 
             ffmpeg.addArgument(videoFile.getAbsolutePath());
 
-            ffmpeg.addArgument("-vf");
-
             ffmpeg.addArgument("-y");
 
-            ffmpeg.addArgument("\"subtitles=" + srtFile.getAbsoluteFile() + "\"");
+            ffmpeg.addArgument("-vf");
+
+            // ffmpeg.addArgument("subtitles='" + srtFile.getAbsolutePath() + "':force_style='Alignment=2'");
+
+            ffmpeg.addArgument("subtitles=" + srtFile.getName());
+
+            // ffmpeg.addArgument("-i");
+
+            // ffmpeg.addArgument(srtFile.getAbsolutePath());
+
+            ffmpeg.addArgument("-c:a");
+
+            ffmpeg.addArgument("copy");
+
+            // ffmpeg.addArgument("-c:v");
+            //
+            // ffmpeg.addArgument("copy");
+            //
+            // ffmpeg.addArgument("-c:s");
+            //
+            // ffmpeg.addArgument("mov_text");
+
+            // ffmpeg.addArgument("-f");
+
+            // ffmpeg.addArgument("mp4");
 
             ffmpeg.addArgument(videoOutFile.getAbsolutePath());
 
