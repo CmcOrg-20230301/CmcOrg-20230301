@@ -141,6 +141,8 @@ public class BaiDuUtil {
     /**
      * 创建音频转写任务
      *
+     * @param pid 80001 中文 1737 英文
+     * 
      * @return 任务 id
      */
     public static String aasrCreate(@Nullable Long tenantId, @Nullable String appId, String speechUrl,
