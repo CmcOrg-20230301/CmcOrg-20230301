@@ -39,6 +39,30 @@ public class BaiDuUtil {
     }
 
     /**
+     * 查询音频转写任务
+     *
+     * @return 任务 id
+     */
+    public static JSONObject aasrQuery(@Nullable Long tenantId, @Nullable String appId, String taskId) {
+
+        String accessToken = getAccessToken(tenantId, appId);
+
+        JSONObject formJson = JSONUtil.createObj();
+
+        formJson.set("task_ids", CollUtil.newArrayList(taskId));
+
+        log.info("aasrQuery-formJson：{}", JSONUtil.toJsonStr(formJson));
+
+        String result = HttpRequest.post("https://aip.baidubce.com/rpc/2.0/aasr/v1/query?access_token=" + accessToken)
+            .form(formJson).execute().body();
+
+        log.info("aasrQuery-result：{}", result);
+
+        return JSONUtil.parseObj(result);
+
+    }
+
+    /**
      * 创建音频转写任务
      *
      * @return 任务 id

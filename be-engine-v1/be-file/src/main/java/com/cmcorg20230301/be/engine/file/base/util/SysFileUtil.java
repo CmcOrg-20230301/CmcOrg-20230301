@@ -1,5 +1,6 @@
 package com.cmcorg20230301.be.engine.file.base.util;
 
+import java.io.File;
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.List;
@@ -11,6 +12,7 @@ import java.util.stream.Collectors;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.stereotype.Component;
 
 import com.baomidou.mybatisplus.extension.conditions.query.LambdaQueryChainWrapper;
@@ -27,6 +29,7 @@ import com.cmcorg20230301.be.engine.file.base.model.enums.SysFileTypeEnum;
 import com.cmcorg20230301.be.engine.file.base.service.SysFileAuthService;
 import com.cmcorg20230301.be.engine.file.base.service.SysFileService;
 import com.cmcorg20230301.be.engine.model.model.constant.BaseConstant;
+import com.cmcorg20230301.be.engine.model.model.constant.SysFileTempPathConstant;
 import com.cmcorg20230301.be.engine.security.exception.BaseBizCodeEnum;
 import com.cmcorg20230301.be.engine.security.mapper.SysUserInfoMapper;
 import com.cmcorg20230301.be.engine.security.model.entity.*;
@@ -39,6 +42,7 @@ import com.cmcorg20230301.be.engine.security.util.UserUtil;
 import com.cmcorg20230301.be.engine.util.util.CallBack;
 
 import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.map.MapUtil;
 import cn.hutool.core.util.BooleanUtil;
 import cn.hutool.core.util.IdUtil;
@@ -636,6 +640,83 @@ public class SysFileUtil {
             }
 
         }
+
+    }
+
+    /**
+     * 获取：临时文件的 fileId，byteArr 和 fileTemp 只会处理一个
+     * 
+     * @param fileType 传递 byteArr时，需指定 fileType
+     */
+    @SneakyThrows
+    public static Long getTempFileId(String remark, Long userId, Long tenantId, @Nullable String fileType,
+        byte @Nullable [] byteArr, @Nullable File fileTemp) {
+
+        File file;
+
+        String fileName;
+
+        if (byteArr != null && byteArr.length != 0) {
+
+            fileName = IdUtil.simpleUUID() + "." + fileType;
+
+            file = FileUtil.touch(SysFileTempPathConstant.FILE_TEMP_PATH + fileName);
+
+            FileUtil.writeBytes(byteArr, file);
+
+        } else {
+
+            file = fileTemp;
+
+            fileName = fileTemp.getName();
+
+            fileType = FileUtil.extName(fileName);
+
+        }
+
+        try {
+
+            MockMultipartFile mockMultipartFile =
+                new MockMultipartFile(fileName, fileName, null, FileUtil.getInputStream(file));
+
+            SysFileUploadBO bo = new SysFileUploadBO();
+
+            bo.setFile(mockMultipartFile);
+
+            bo.setUploadType(SysFileUploadTypeEnum.TEMP_FILE);
+
+            bo.setRemark(StrUtil.maxLength(remark, 200));
+
+            bo.setExtraJson("");
+
+            bo.setUserId(userId);
+            bo.setTenantId(tenantId);
+
+            // 通用：上传处理
+            return SysFileUtil.uploadCommonHandle(bo, fileType, null, null, null);
+
+        } finally {
+
+            FileUtil.del(file); // 删除文件
+
+        }
+
+    }
+
+    /**
+     * 获取：临时文件的 fileUrl，byteArr 和 fileTemp 只会处理一个
+     *
+     * @param fileType 传递 byteArr时，需指定 fileType，传递 fileTemp时，不用指定 fileType
+     */
+    public static String getTempFileUrl(String remark, Long userId, Long tenantId, @Nullable String fileType,
+        byte @Nullable [] byteArr, @Nullable File fileTemp) {
+
+        Long fileId = getTempFileId(remark, userId, tenantId, fileType, byteArr, fileTemp);
+
+        // 获取：文件链接
+        Map<Long, String> publicUrlMap = SysFileUtil.getPublicUrl(CollUtil.newHashSet(fileId));
+
+        return publicUrlMap.get(fileId);
 
     }
 

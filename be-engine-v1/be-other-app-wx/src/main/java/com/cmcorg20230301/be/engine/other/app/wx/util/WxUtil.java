@@ -16,8 +16,8 @@ import org.springframework.stereotype.Component;
 import com.cmcorg20230301.be.engine.cache.util.CacheRedisKafkaLocalUtil;
 import com.cmcorg20230301.be.engine.cache.util.MyCacheUtil;
 import com.cmcorg20230301.be.engine.model.model.constant.BaseConstant;
-import com.cmcorg20230301.be.engine.model.model.constant.FileTempPathConstant;
 import com.cmcorg20230301.be.engine.model.model.constant.LogTopicConstant;
+import com.cmcorg20230301.be.engine.model.model.constant.SysFileTempPathConstant;
 import com.cmcorg20230301.be.engine.other.app.model.entity.SysOtherAppDO;
 import com.cmcorg20230301.be.engine.other.app.model.enums.SysOtherAppTypeEnum;
 import com.cmcorg20230301.be.engine.other.app.service.SysOtherAppService;
@@ -567,7 +567,7 @@ public class WxUtil {
             // 获取：流
             InputStream inputStream = RetryUtil.execHttpRequestInputStream(HttpRequest.get(url));
 
-            file = FileUtil.touch(FileTempPathConstant.WX_MEDIA_UPLOAD_TEMP_PATH + IdUtil.simpleUUID() + ".jpg");
+            file = FileUtil.touch(SysFileTempPathConstant.WX_MEDIA_UPLOAD_TEMP_PATH + IdUtil.simpleUUID() + ".jpg");
 
             // 图片格式转换为：jpg格式
             ImgUtil.convert(inputStream, "JPG", FileUtil.getOutputStream(file));
@@ -630,7 +630,7 @@ public class WxUtil {
             // 获取：流
             InputStream inputStream = RetryUtil.execHttpRequestInputStream(HttpRequest.get(url));
 
-            file = FileUtil.touch(FileTempPathConstant.WX_MEDIA_UPLOAD_TEMP_PATH + IdUtil.simpleUUID() + ".jpg");
+            file = FileUtil.touch(SysFileTempPathConstant.WX_MEDIA_UPLOAD_TEMP_PATH + IdUtil.simpleUUID() + ".jpg");
 
             // 图片格式转换为：jpg格式
             ImgUtil.convert(inputStream, "JPG", FileUtil.getOutputStream(file));
@@ -656,7 +656,8 @@ public class WxUtil {
         try {
 
             file =
-                FileUtil.touch(FileTempPathConstant.WX_MEDIA_UPLOAD_TEMP_PATH + IdUtil.simpleUUID() + "." + fileType);
+                FileUtil
+                    .touch(SysFileTempPathConstant.WX_MEDIA_UPLOAD_TEMP_PATH + IdUtil.simpleUUID() + "." + fileType);
 
             // 写入文件
             FileUtil.writeFromStream(inputStream, file);

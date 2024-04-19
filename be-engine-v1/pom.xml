@@ -563,10 +563,25 @@
                         <groupId>ws.schild</groupId>
                         <artifactId>jave-nativebin-linux32</artifactId>
                     </exclusion>
+                    <!-- 排除 linux 32位系统-arm架构 -->
+                    <exclusion>
+                        <groupId>ws.schild</groupId>
+                        <artifactId>jave-nativebin-linux-arm32</artifactId>
+                    </exclusion>
+                    <!-- 排除 linux 64位系统-arm架构 -->
+                    <exclusion>
+                        <groupId>ws.schild</groupId>
+                        <artifactId>jave-nativebin-linux-arm64</artifactId>
+                    </exclusion>
                     <!-- 排除 mac系统 -->
                     <exclusion>
                         <groupId>ws.schild</groupId>
                         <artifactId>jave-nativebin-osx64</artifactId>
+                    </exclusion>
+                    <!-- 排除 mac系统 -->
+                    <exclusion>
+                        <groupId>ws.schild</groupId>
+                        <artifactId>jave-nativebin-osxm1</artifactId>
                     </exclusion>
                 </exclusions>
             </dependency>
@@ -884,6 +899,11 @@
                             <exclude>
                                 <groupId>org.projectlombok</groupId>
                                 <artifactId>lombok</artifactId>
+                            </exclude>
+                            <!-- 排除 windows 64位系统 -->
+                            <exclude>
+                                <groupId>ws.schild</groupId>
+                                <artifactId>jave-nativebin-win64</artifactId>
                             </exclude>
                         </excludes>
                     </configuration>

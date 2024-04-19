@@ -21,6 +21,12 @@
             <artifactId>jave-all-deps</artifactId>
         </dependency>
 
+        <!-- be-security -->
+        <dependency>
+            <groupId>${cmcorg.groupId}</groupId>
+            <artifactId>be-security</artifactId>
+        </dependency>
+
     </dependencies>
 
 </project>
