@@ -8,6 +8,7 @@ import javax.annotation.Nullable;
 
 import org.springframework.stereotype.Component;
 
+import com.cmcorg20230301.be.engine.model.model.constant.LogTopicConstant;
 import com.cmcorg20230301.be.engine.model.model.constant.SysFileTempPathConstant;
 import com.cmcorg20230301.be.engine.security.util.MyExceptionUtil;
 
@@ -21,7 +22,7 @@ import ws.schild.jave.process.ProcessWrapper;
 import ws.schild.jave.process.ffmpeg.DefaultFFMPEGLocator;
 
 @Component
-@Slf4j
+@Slf4j(topic = LogTopicConstant.FFMPEG)
 public class FfmpegUtil {
 
     /**

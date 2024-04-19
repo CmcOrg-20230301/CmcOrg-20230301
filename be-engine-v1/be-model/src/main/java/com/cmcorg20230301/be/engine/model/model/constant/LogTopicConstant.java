@@ -55,4 +55,6 @@ public interface LogTopicConstant {
 
     String LOG_SERVICE = PRE_BE + "log-service"; // 日志服务相关
 
+    String FFMPEG = PRE_BE + "ffmpeg"; // ffmpeg相关
+
 }
