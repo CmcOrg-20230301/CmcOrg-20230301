@@ -4,6 +4,8 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.InputStreamReader;
 
+import javax.annotation.Nullable;
+
 import org.springframework.stereotype.Component;
 
 import com.cmcorg20230301.be.engine.model.model.constant.SysFileTempPathConstant;
@@ -26,7 +28,7 @@ public class FfmpegUtil {
      * 视频添加字幕
      */
     @SneakyThrows
-    public static void videoAddSrt(String videoUrl, String srt, VoidFunc1<File> voidFunc1) {
+    public static void videoAddSrt(String videoUrl, String srt, @Nullable VoidFunc1<File> voidFunc1) {
 
         byte[] downloadByteArr = HttpUtil.downloadBytes(videoUrl);
 
@@ -65,8 +67,12 @@ public class FfmpegUtil {
             // 执行
             doExecute(ffmpeg);
 
-            // 处理：音频文件
-            voidFunc1.call(videoOutFile);
+            if (voidFunc1 != null) {
+
+                // 处理：音频文件
+                voidFunc1.call(videoOutFile);
+
+            }
 
         } finally {
 
@@ -84,7 +90,7 @@ public class FfmpegUtil {
      * 视频提取音频
      */
     @SneakyThrows
-    public static void videoToAudio(String videoUrl, VoidFunc1<File> voidFunc1) {
+    public static void videoToAudio(String videoUrl, @Nullable VoidFunc1<File> voidFunc1) {
 
         byte[] downloadByteArr = HttpUtil.downloadBytes(videoUrl);
 
@@ -112,19 +118,23 @@ public class FfmpegUtil {
 
             ffmpeg.addArgument("-f");
 
+            ffmpeg.addArgument("mp3");
+
             ffmpeg.addArgument("-ar");
 
             ffmpeg.addArgument("16000");
-
-            ffmpeg.addArgument("mp3");
 
             ffmpeg.addArgument(audioFile.getPath());
 
             // 执行
             doExecute(ffmpeg);
 
-            // 处理：音频文件
-            voidFunc1.call(audioFile);
+            if (voidFunc1 != null) {
+
+                // 处理：音频文件
+                voidFunc1.call(audioFile);
+
+            }
 
         } finally {
 
