@@ -3,6 +3,7 @@ package com.cmcorg20230301.be.engine.other.app.model.enums;
 import com.baomidou.mybatisplus.annotation.EnumValue;
 import com.cmcorg20230301.be.engine.other.app.model.interfaces.ISysOtherAppType;
 import com.fasterxml.jackson.annotation.JsonValue;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -22,6 +23,8 @@ public enum SysOtherAppTypeEnum implements ISysOtherAppType {
     ALI_PAY_PROGRAM(201), // 支付宝小程序
 
     BAI_DU(301), // 百度
+
+    VOLC_ENGINE(401), // 火山引擎
 
     ;
 

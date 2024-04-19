@@ -69,6 +69,8 @@ public class SysTaskServiceImpl extends ServiceImpl<SysTaskMapper, SysTaskDO> im
             return;
         }
 
+        log.info("本次未完成的任务数量：{}", sysTaskDOList.size());
+
         for (SysTaskDO item : sysTaskDOList) {
 
             ISysTaskConfiguration iSysTaskConfiguration = I_SYS_TASK_CONFIGURATION_MAP.get(item.getType());

@@ -21,11 +21,13 @@ import com.cmcorg20230301.be.engine.security.model.vo.ApiResultVO;
 import com.cmcorg20230301.be.engine.util.util.MyNumberUtil;
 
 import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.lang.func.Func1;
 import cn.hutool.core.text.StrBuilder;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.http.HttpRequest;
 import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j(topic = LogTopicConstant.BAI_DU)
@@ -71,7 +73,9 @@ public class BaiDuUtil {
      * 
      * @return null 表示转写任务未完成
      */
-    public static String getSrtStr(@Nullable Long tenantId, @Nullable String appId, String taskId) {
+    @SneakyThrows
+    public static String getSrtStr(@Nullable Long tenantId, @Nullable String appId, String taskId,
+        @Nullable Func1<String, String> voidFunc1) {
 
         // 查询：任务是否完成
         JSONObject jsonObject = BaiDuUtil.aasrQuery(tenantId, appId, taskId);
@@ -116,7 +120,15 @@ public class BaiDuUtil {
                 // 添加：时间
                 strBuilder.append(++i).append(beginTimeStr).append(" --> ").append(endTimeStr).append("\n");
 
-                strBuilder.append(CollUtil.join(resList, "")).append("\n\n");
+                String text = CollUtil.join(resList, "");
+
+                if (voidFunc1 != null) {
+
+                    text = voidFunc1.call(text);
+
+                }
+
+                strBuilder.append(text).append("\n\n");
 
             }
 

@@ -87,6 +87,7 @@
         <module>be-other-app-wx</module>
         <module>be-other-app-wx-work</module>
         <module>be-other-app-baidu</module>
+        <module>be-other-app-volcengine</module>
         <module>be-im-session</module>
         <module>be-api-token</module>
         <module>be-flow-activiti</module>
@@ -129,6 +130,13 @@
             <dependency>
                 <groupId>${cmcorg.groupId}</groupId>
                 <artifactId>be-im-session</artifactId>
+                <version>${cmcorg.version}</version>
+            </dependency>
+
+            <!-- be-other-app-volcengine -->
+            <dependency>
+                <groupId>${cmcorg.groupId}</groupId>
+                <artifactId>be-other-app-volcengine</artifactId>
                 <version>${cmcorg.version}</version>
             </dependency>
 

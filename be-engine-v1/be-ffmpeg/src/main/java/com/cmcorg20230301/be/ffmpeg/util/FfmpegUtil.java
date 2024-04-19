@@ -57,13 +57,15 @@ public class FfmpegUtil {
 
             ffmpeg.addArgument("-i");
 
-            ffmpeg.addArgument(videoFile.getPath());
+            ffmpeg.addArgument(videoFile.getAbsolutePath());
 
             ffmpeg.addArgument("-vf");
 
-            ffmpeg.addArgument("\"subtitles=" + srtFile.getPath() + "\"");
+            ffmpeg.addArgument("-y");
 
-            ffmpeg.addArgument(videoOutFile.getPath());
+            ffmpeg.addArgument("\"subtitles=" + srtFile.getAbsoluteFile() + "\"");
+
+            ffmpeg.addArgument(videoOutFile.getAbsolutePath());
 
             // 执行
             doExecute(ffmpeg);
@@ -86,6 +88,12 @@ public class FfmpegUtil {
         }
 
     }
+
+    // public static void main(String[] args) {
+    //
+    // videoToAudio("https://ai.lxjjai.com/be-public-bucket/temp-file/7c9dc8b7d4a32db7e1049e365efdc514.mp4", null);
+    //
+    // }
 
     /**
      * 视频提取音频
@@ -113,7 +121,7 @@ public class FfmpegUtil {
 
             ffmpeg.addArgument("-i");
 
-            ffmpeg.addArgument(videoFile.getPath());
+            ffmpeg.addArgument(videoFile.getAbsolutePath());
 
             ffmpeg.addArgument("-vn");
 
@@ -125,7 +133,9 @@ public class FfmpegUtil {
 
             ffmpeg.addArgument("16000");
 
-            ffmpeg.addArgument(audioFile.getPath());
+            ffmpeg.addArgument("-y");
+
+            ffmpeg.addArgument(audioFile.getAbsolutePath());
 
             // 执行
             doExecute(ffmpeg);

@@ -53,6 +53,8 @@ public interface LogTopicConstant {
 
     String BAI_DU = PRE_BE + "baidu"; // 百度相关
 
+    String VOLC_ENGINE = PRE_BE + "volcengine"; // 火山引擎相关
+
     String LOG_SERVICE = PRE_BE + "log-service"; // 日志服务相关
 
     String FFMPEG = PRE_BE + "ffmpeg"; // ffmpeg相关
