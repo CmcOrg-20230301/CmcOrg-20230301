@@ -53,10 +53,12 @@ public class BaiDuUtil {
 
         formJson.set("task_ids", CollUtil.newArrayList(taskId));
 
-        log.info("aasrQuery-formJson：{}", JSONUtil.toJsonStr(formJson));
+        String body = JSONUtil.toJsonStr(formJson);
+
+        log.info("aasrQuery-formJson：{}", body);
 
         String result = HttpRequest.post("https://aip.baidubce.com/rpc/2.0/aasr/v1/query?access_token=" + accessToken)
-            .form(formJson).execute().body();
+            .body(body).execute().body();
 
         log.info("aasrQuery-result：{}", result);
 
@@ -153,10 +155,12 @@ public class BaiDuUtil {
         formJson.set("pid", pid);
         formJson.set("rate", rate);
 
-        log.info("aasrCreate-formJson：{}", JSONUtil.toJsonStr(formJson));
+        String body = JSONUtil.toJsonStr(formJson);
+
+        log.info("aasrCreate-formJson：{}", body);
 
         String result = HttpRequest.post("https://aip.baidubce.com/rpc/2.0/aasr/v1/create?access_token=" + accessToken)
-            .form(formJson).execute().body();
+            .body(body).execute().body();
 
         log.info("aasrCreate-result：{}", result);
 

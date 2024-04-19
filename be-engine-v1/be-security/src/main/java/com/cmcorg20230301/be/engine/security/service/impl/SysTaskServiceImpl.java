@@ -25,6 +25,7 @@ import com.cmcorg20230301.be.engine.security.util.TryUtil;
 
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.date.DateUtil;
+import cn.hutool.core.lang.Assert;
 import cn.hutool.core.lang.func.VoidFunc1;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -166,6 +167,18 @@ public class SysTaskServiceImpl extends ServiceImpl<SysTaskMapper, SysTaskDO> im
     public static Long addTask(Long userId, Long tenantId, Integer type, String mainId, String businessId,
         Long expireTs, @Nullable VoidFunc1<SysTaskDO> voidFunc1) {
 
+        Assert.notNull(userId);
+
+        Assert.notNull(tenantId);
+
+        Assert.notNull(type);
+
+        Assert.notBlank(mainId);
+
+        Assert.notBlank(businessId);
+
+        Assert.notNull(expireTs);
+
         Long id = IdGeneratorUtil.nextId();
 
         SysTaskDO sysTaskDO = new SysTaskDO();
@@ -185,6 +198,8 @@ public class SysTaskServiceImpl extends ServiceImpl<SysTaskMapper, SysTaskDO> im
         sysTaskDO.setCompleteFlag(false);
 
         sysTaskDO.setExpireTs(expireTs);
+
+        sysTaskDO.setStr1("");
 
         if (voidFunc1 != null) {
 

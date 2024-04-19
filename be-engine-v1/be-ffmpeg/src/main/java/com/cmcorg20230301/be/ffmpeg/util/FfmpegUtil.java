@@ -77,11 +77,11 @@ public class FfmpegUtil {
 
         } finally {
 
-            FileUtil.del(videoFile);
-
-            FileUtil.del(srtFile);
-
-            FileUtil.del(videoOutFile);
+            // FileUtil.del(videoFile);
+            //
+            // FileUtil.del(srtFile);
+            //
+            // FileUtil.del(videoOutFile);
 
         }
 
@@ -139,9 +139,9 @@ public class FfmpegUtil {
 
         } finally {
 
-            FileUtil.del(videoFile);
-
-            FileUtil.del(audioFile);
+            // FileUtil.del(videoFile);
+            //
+            // FileUtil.del(audioFile);
 
         }
 
