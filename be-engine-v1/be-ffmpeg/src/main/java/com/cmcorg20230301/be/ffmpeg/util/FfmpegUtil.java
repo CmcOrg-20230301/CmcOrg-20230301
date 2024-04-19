@@ -14,10 +14,12 @@ import cn.hutool.core.lang.func.VoidFunc1;
 import cn.hutool.core.util.IdUtil;
 import cn.hutool.http.HttpUtil;
 import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
 import ws.schild.jave.process.ProcessWrapper;
 import ws.schild.jave.process.ffmpeg.DefaultFFMPEGLocator;
 
 @Component
+@Slf4j
 public class FfmpegUtil {
 
     /**
@@ -178,6 +180,8 @@ public class FfmpegUtil {
      * 处理日志
      */
     private static void handleLine(String line) {
+
+        log.info("ffmpeg 输出：{}", line);
 
     }
 
