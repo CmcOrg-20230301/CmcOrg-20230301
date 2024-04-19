@@ -455,7 +455,7 @@ public class SysFileUtil {
      * 获取：公开文件的 url
      */
     @NotNull
-    public static Map<Long, String> getPublicUrl(Set<Long> fileIdSet) {
+    public static Map<Long, String> getPublicUrl(Set<Long> fileIdSet, boolean checkIllegalFlag) {
 
         // 先移除：所有 -1的文件 id
         fileIdSet.removeAll(CollUtil.newHashSet(-1L));
@@ -464,9 +464,13 @@ public class SysFileUtil {
             return MapUtil.newHashMap();
         }
 
-        // 检查：是否非法操作
-        SysTenantUtil.checkIllegal(fileIdSet, tenantIdSet -> sysFileService.lambdaQuery()
-            .in(BaseEntity::getId, fileIdSet).in(BaseEntityNoId::getTenantId, tenantIdSet).count());
+        if (checkIllegalFlag) {
+
+            // 检查：是否非法操作
+            SysTenantUtil.checkIllegal(fileIdSet, tenantIdSet -> sysFileService.lambdaQuery()
+                .in(BaseEntity::getId, fileIdSet).in(BaseEntityNoId::getTenantId, tenantIdSet).count());
+
+        }
 
         List<SysFileDO> sysFileDOList =
             getSysFileBaseLambdaQuery().in(BaseEntity::getId, fileIdSet).eq(SysFileDO::getPublicFlag, true).list();
@@ -714,7 +718,7 @@ public class SysFileUtil {
         Long fileId = getTempFileId(remark, userId, tenantId, fileType, byteArr, fileTemp);
 
         // 获取：文件链接
-        Map<Long, String> publicUrlMap = SysFileUtil.getPublicUrl(CollUtil.newHashSet(fileId));
+        Map<Long, String> publicUrlMap = SysFileUtil.getPublicUrl(CollUtil.newHashSet(fileId), false);
 
         return publicUrlMap.get(fileId);
 
