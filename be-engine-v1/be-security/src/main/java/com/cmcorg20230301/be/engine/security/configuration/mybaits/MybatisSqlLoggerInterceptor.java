@@ -70,6 +70,12 @@ public class MybatisSqlLoggerInterceptor implements Interceptor {
 
         }
 
+        if (logFlag) {
+
+            logFlag = !logProperties.getNotLogTopicSet().contains(mappedStatement.getId());
+
+        }
+
         long timeNumber = System.currentTimeMillis();
 
         try {
@@ -146,7 +152,9 @@ public class MybatisSqlLoggerInterceptor implements Interceptor {
 
         // 设置：回调对象
         sqlIdCallBack.setValue(sqlId);
+
         sqlCallBack.setValue(sql);
+
         costMsStrCallBack.setValue(DateUtil.formatBetween(timeNumber));
 
     }
