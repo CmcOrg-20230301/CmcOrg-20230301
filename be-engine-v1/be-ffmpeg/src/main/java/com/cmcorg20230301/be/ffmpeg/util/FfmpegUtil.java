@@ -67,7 +67,7 @@ public class FfmpegUtil {
 
             if (voidFunc1 != null) {
 
-                // 处理：音频文件
+                // 处理：文件
                 voidFunc1.call(videoOutFile);
 
             }
@@ -154,7 +154,7 @@ public class FfmpegUtil {
 
             if (voidFunc1 != null) {
 
-                // 处理：音频文件
+                // 处理：文件
                 voidFunc1.call(audioFile);
 
             }

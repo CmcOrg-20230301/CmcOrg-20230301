@@ -51,4 +51,7 @@ public class SysTaskDO {
     @Schema(description = "额外数据：1")
     private String str1;
 
+    @Schema(description = "额外数据：2")
+    private String str2;
+
 }
