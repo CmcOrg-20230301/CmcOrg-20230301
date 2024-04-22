@@ -7,6 +7,8 @@ export interface ISysOtherAppOfficialAccountMenuButtonTypeEnum {
 
     VIEW: IEnum<number>,
 
+    MINIPROGRAM: IEnum<number>,
+
 }
 
 // 第三方应用，公众号按钮类型，枚举类
@@ -20,6 +22,11 @@ export const SysOtherAppOfficialAccountMenuButtonTypeEnum: ISysOtherAppOfficialA
     VIEW: {
         code: 201,
         name: '链接',
+    },
+
+    MINIPROGRAM: {
+        code: 301,
+        name: '小程序',
     },
 
 }

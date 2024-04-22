@@ -180,7 +180,8 @@ export default function (props: IWalletUser) {
 
                         >
 
-                            <ProFormDigit label={CommonConstant.ADD_VALUE} tooltip={"可以为负数"} name="number"
+                            <ProFormDigit label={CommonConstant.ADD_VALUE} tooltip={"可以为负数"}
+                                          name="number"
                                           min={Number.MIN_SAFE_INTEGER} className={"w100"}
                                           rules={[{required: true}]} fieldProps={{precision: 2}}/>
 

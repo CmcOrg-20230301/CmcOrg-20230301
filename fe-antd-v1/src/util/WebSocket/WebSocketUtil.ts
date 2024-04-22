@@ -36,7 +36,10 @@ async function GetWebSocketUrl(): Promise<string | null> {
             return
         }
 
-        await NettyWebSocketGetWebSocketUrlById({id: res, value: SysSocketOnlineTypeEnum.ONLINE.code!}, {
+        await NettyWebSocketGetWebSocketUrlById({
+            id: res,
+            value: SysSocketOnlineTypeEnum.ONLINE.code!
+        }, {
 
             headers: {
 

@@ -22,14 +22,24 @@ const TableColumnList = (currentForm: React.MutableRefObject<SysOtherAppInsertOr
     },
 
     {
-        title: '租户', dataIndex: 'tenantId', ellipsis: true, width: 90, hideInSearch: true, valueType: 'select',
+        title: '租户',
+        dataIndex: 'tenantId',
+        ellipsis: true,
+        width: 90,
+        hideInSearch: true,
+        valueType: 'select',
         request: () => {
             return GetDictList(SysTenantDictList)
         }
     },
 
     {
-        title: '租户', dataIndex: 'tenantIdSet', ellipsis: true, width: 90, hideInTable: true, valueType: 'treeSelect',
+        title: '租户',
+        dataIndex: 'tenantIdSet',
+        ellipsis: true,
+        width: 90,
+        hideInTable: true,
+        valueType: 'treeSelect',
         fieldProps: {
             placeholder: '请选择',
             allowClear: true,
@@ -87,17 +97,25 @@ const TableColumnList = (currentForm: React.MutableRefObject<SysOtherAppInsertOr
     },
 
     {
-        title: '关注回复', dataIndex: 'subscribeReplyContent', ellipsis: true, width: 200, render: (dom, entity) => {
+        title: '关注回复',
+        dataIndex: 'subscribeReplyContent',
+        ellipsis: true,
+        width: 200,
+        render: (dom, entity) => {
 
             const subText = entity.subscribeReplyContent!.substring(0, CommonConstant.TOOLTIP_STR_LENGTH)
 
-            return <Typography.Text ellipsis={{tooltip: true}} style={{width: 200}}>{subText}</Typography.Text>
+            return <Typography.Text ellipsis={{tooltip: true}}
+                                    style={{width: 200}}>{subText}</Typography.Text>
 
         }
     },
 
     {
-        title: '二维码', dataIndex: 'qrCode', width: CommonConstant.TABLE_QR_CODE_WIDTH, render: (dom, entity) => {
+        title: '二维码',
+        dataIndex: 'qrCode',
+        width: CommonConstant.TABLE_QR_CODE_WIDTH,
+        render: (dom, entity) => {
 
             return entity.qrCode &&
                 <QRCode value={entity.qrCode} size={CommonConstant.TABLE_QR_CODE_WIDTH} bordered={false}/>

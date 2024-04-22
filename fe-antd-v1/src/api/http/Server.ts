@@ -1,4 +1,4 @@
-import {$http, IHttpConfig} from "@/util/HttpUtil.ts";
+import {$http, IHttpConfig} from "@/util/HttpUtil";
 
 export interface ServerWorkInfoVO {
     diskAvailable?: string // 磁盘可以使用总量（字节），format：int64

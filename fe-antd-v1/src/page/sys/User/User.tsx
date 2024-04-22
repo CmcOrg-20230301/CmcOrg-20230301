@@ -294,7 +294,8 @@ export default function () {
 
                         }}>重置头像</a>
 
-                        <SysUserUpdatePasswordModalForm idSet={selectedRowKeys as string[]} actionRef={actionRef}/>
+                        <SysUserUpdatePasswordModalForm idSet={selectedRowKeys as string[]}
+                                                        actionRef={actionRef}/>
 
                         <a onClick={() => {
 

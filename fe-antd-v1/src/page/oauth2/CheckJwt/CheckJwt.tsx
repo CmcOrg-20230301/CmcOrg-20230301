@@ -125,6 +125,22 @@ export default function () {
 
         }
 
+        if (form.mainUri) {
+            MyLocalStorage.setItem(LocalStorageKey.MAIN_URI, form.mainUri)
+        }
+
+        if (form.mainRedirectUri) {
+            MyLocalStorage.setItem(LocalStorageKey.MAIN_REDIRECT_URI, form.mainRedirectUri)
+        }
+
+        if (form.otherAppId) {
+            MyLocalStorage.setItem(LocalStorageKey.OTHER_APP_ID, form.otherAppId)
+        }
+
+        if (hasJwtUrl) {
+            MySessionStorage.setItem(SessionStorageKey.OAUTH2_REDIRECT_URI, hasJwtUrl)
+        }
+
         if (jwt) {
 
             if (hasJwtUrl?.startsWith('http')) {
@@ -132,22 +148,6 @@ export default function () {
                 window.location.href = hasJwtUrl!
 
             } else {
-
-                if (form.mainUri) {
-                    MyLocalStorage.setItem(LocalStorageKey.MAIN_URI, form.mainUri)
-                }
-
-                if (form.mainRedirectUri) {
-                    MyLocalStorage.setItem(LocalStorageKey.MAIN_REDIRECT_URI, form.mainRedirectUri)
-                }
-
-                if (form.otherAppId) {
-                    MyLocalStorage.setItem(LocalStorageKey.OTHER_APP_ID, form.otherAppId)
-                }
-
-                if (hasJwtUrl) {
-                    MySessionStorage.setItem(SessionStorageKey.OAUTH2_REDIRECT_URI, hasJwtUrl)
-                }
 
                 GetAppNav()(form.mainUri || PathConstant.TOP_PATH)
 

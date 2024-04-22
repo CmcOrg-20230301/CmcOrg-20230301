@@ -16,6 +16,9 @@ export const SYS_IM_SESSION_REF_USER_JOIN_USER_ID_SET = "/sys/im/session/refUser
 // 开关控制台
 export const SYS_SOCKET_REF_USER_CHANGE_CONSOLE_FLAG_BY_ID_SET = "/sys/socketRefUser/changeConsoleFlagByIdSet";
 
+// 流程-流程实例全局参数发生改变时
+export const SYS_ACTIVITI_PARAM_CHANGE = "/sys/im/activiti/param/change";
+
 /**
  * 心跳检测，请求
  */

@@ -28,14 +28,24 @@ const TableColumnList = (currentForm: React.MutableRefObject<SysOtherAppOfficial
     },
 
     {
-        title: '租户', dataIndex: 'tenantId', ellipsis: true, width: 90, hideInSearch: true, valueType: 'select',
+        title: '租户',
+        dataIndex: 'tenantId',
+        ellipsis: true,
+        width: 90,
+        hideInSearch: true,
+        valueType: 'select',
         request: () => {
             return GetDictList(SysTenantDictList)
         }
     },
 
     {
-        title: '租户', dataIndex: 'tenantIdSet', ellipsis: true, width: 90, hideInTable: true, valueType: 'treeSelect',
+        title: '租户',
+        dataIndex: 'tenantIdSet',
+        ellipsis: true,
+        width: 90,
+        hideInTable: true,
+        valueType: 'treeSelect',
         fieldProps: {
             placeholder: '请选择',
             allowClear: true,
@@ -68,17 +78,23 @@ const TableColumnList = (currentForm: React.MutableRefObject<SysOtherAppOfficial
 
             const subText = entity.value!.substring(0, CommonConstant.TOOLTIP_STR_LENGTH)
 
-            return <Typography.Text ellipsis={{tooltip: true}} style={{width: 200}}>{subText}</Typography.Text>
+            return <Typography.Text ellipsis={{tooltip: true}}
+                                    style={{width: 200}}>{subText}</Typography.Text>
 
         }
     },
 
     {
-        title: '回复内容', dataIndex: 'replyContent', ellipsis: true, width: 200, render: (dom, entity) => {
+        title: '回复内容',
+        dataIndex: 'replyContent',
+        ellipsis: true,
+        width: 200,
+        render: (dom, entity) => {
 
             const subText = entity.replyContent!.substring(0, CommonConstant.TOOLTIP_STR_LENGTH)
 
-            return <Typography.Text ellipsis={{tooltip: true}} style={{width: 200}}>{subText}</Typography.Text>
+            return <Typography.Text ellipsis={{tooltip: true}}
+                                    style={{width: 200}}>{subText}</Typography.Text>
 
         }
     },

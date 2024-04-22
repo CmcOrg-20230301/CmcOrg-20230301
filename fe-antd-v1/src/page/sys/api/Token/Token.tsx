@@ -47,7 +47,6 @@ export default function () {
 
                 actionRef={actionRef}
                 rowKey={"id"}
-                pagination={false}
                 columnEmptyText={false}
 
                 columnsState={{

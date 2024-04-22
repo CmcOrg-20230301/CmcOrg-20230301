@@ -6,6 +6,8 @@ const LocalStorageKey = {
 
     JWT_EXPIRE_TS: "JWT_EXPIRE_TS", // jwt过期时间戳
 
+    JWT_REFRESH_TOKEN: "JWT_REFRESH_TOKEN", // 刷新 jwt的 token
+
     USER_SELF_INFO: 'USER_SELF_INFO',
 
     USER_SELF_MENU_LIST: 'USER_SELF_MENU_LIST', // 用户菜单
@@ -37,6 +39,14 @@ const LocalStorageKey = {
     SIGN_IN_TYPE: 'SIGN_IN_TYPE', // 登录方式
 
     SIGN_IN_TYPE_SINGLE: 'SIGN_IN_TYPE_SINGLE', // 登录方式：统一登录
+
+    BROWSER_ID: 'BROWSER_ID', // 浏览器唯一标识
+
+    FLOW_DESIGN_DEPLOYMENT_ID: 'FLOW_DESIGN_DEPLOYMENT_ID', // 流程图设计，部署：id
+
+    FLOW_DESIGN_PROCESS_DEFINITION_ID: 'FLOW_DESIGN_PROCESS_DEFINITION_ID', // 流程图设计，流程定义：id
+
+    FLOW_DESIGN_PROCESS_INSTANCE_ID: 'FLOW_DESIGN_PROCESS_INSTANCE_ID', // 流程图设计，流程实例：id
 
 }
 

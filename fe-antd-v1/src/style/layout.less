@@ -37,6 +37,10 @@
   overflow-y: auto;
 }
 
+.overflow-h {
+  overflow: hidden
+}
+
 .scrollbar-h::-webkit-scrollbar {
   display: none;
 }
@@ -110,6 +114,10 @@
 
 .cursor-def {
   cursor: default !important;
+}
+
+.us-no {
+  user-select: none !important;
 }
 
 @thumb-bc: rgba(85, 85, 85, 0.7);
@@ -198,6 +206,7 @@
 
 .pm(0, 30, 1);
 .pm(30, 300, 5);
+.pm(300, 1000, 50);
 
 .font(@i, @max, @step) when (@i <= @max) {
 
@@ -226,8 +235,8 @@
 }
 
 .wh(0, 100, 1);
-.wh(100, 200, 5);
-.wh(200, 800, 50);
+.wh(100, 300, 5);
+.wh(300, 800, 50);
 
 .fw(@i) when (@i <=1000) {
 
@@ -239,7 +248,7 @@
 
 }
 
-.fw(550);
+.fw(500);
 
 .space(@i, @max, @step) when (@i <= @max) {
 

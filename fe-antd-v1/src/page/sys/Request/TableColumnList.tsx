@@ -19,14 +19,24 @@ const TableColumnList = (): ProColumns<SysRequestDO>[] => [
     },
 
     {
-        title: '租户', dataIndex: 'tenantId', ellipsis: true, width: 90, hideInSearch: true, valueType: 'select',
+        title: '租户',
+        dataIndex: 'tenantId',
+        ellipsis: true,
+        width: 90,
+        hideInSearch: true,
+        valueType: 'select',
         request: () => {
             return GetDictList(SysTenantDictList)
         }
     },
 
     {
-        title: '租户', dataIndex: 'tenantIdSet', ellipsis: true, width: 90, hideInTable: true, valueType: 'treeSelect',
+        title: '租户',
+        dataIndex: 'tenantIdSet',
+        ellipsis: true,
+        width: 90,
+        hideInTable: true,
+        valueType: 'treeSelect',
         fieldProps: {
             placeholder: '请选择',
             allowClear: true,
@@ -65,11 +75,16 @@ const TableColumnList = (): ProColumns<SysRequestDO>[] => [
     },
 
     {
-        title: '失败信息', dataIndex: 'errorMsg', hideInSearch: true, width: 100, render: (dom, entity) => {
+        title: '失败信息',
+        dataIndex: 'errorMsg',
+        hideInSearch: true,
+        width: 100,
+        render: (dom, entity) => {
 
             const subText = entity.errorMsg!.substring(0, CommonConstant.TOOLTIP_STR_LENGTH)
 
-            return <Typography.Text ellipsis={{tooltip: true}} style={{width: 100}}>{subText}</Typography.Text>
+            return <Typography.Text ellipsis={{tooltip: true}}
+                                    style={{width: 100}}>{subText}</Typography.Text>
 
         }
     },
@@ -87,7 +102,11 @@ const TableColumnList = (): ProColumns<SysRequestDO>[] => [
     },
 
     {
-        title: '耗时(ms)', dataIndex: 'costMsRange', hideInTable: true, valueType: 'digitRange', search: {
+        title: '耗时(ms)',
+        dataIndex: 'costMsRange',
+        hideInTable: true,
+        valueType: 'digitRange',
+        search: {
 
             transform: (value) => {
 
@@ -114,7 +133,11 @@ const TableColumnList = (): ProColumns<SysRequestDO>[] => [
     },
 
     {
-        title: '创建时间', dataIndex: 'createTimeRange', hideInTable: true, valueType: 'dateTimeRange', search: {
+        title: '创建时间',
+        dataIndex: 'createTimeRange',
+        hideInTable: true,
+        valueType: 'dateTimeRange',
+        search: {
 
             transform: (value) => {
 

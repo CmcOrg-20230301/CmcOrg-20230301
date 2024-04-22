@@ -160,7 +160,8 @@ export default function () {
 
                             location.state?.id ?
 
-                                <PageContainer title={preName + routeContextType.currentMenu!.name + "：" + ownerName}>
+                                <PageContainer
+                                    title={preName + routeContextType.currentMenu!.name + "：" + ownerName}>
 
                                     {getElement()}
 

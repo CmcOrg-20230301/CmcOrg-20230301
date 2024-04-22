@@ -1,6 +1,11 @@
 import {YesNoDict} from "@/util/DictUtil";
 import {ActionType, ProColumns} from "@ant-design/pro-components";
-import {SysSocketDisableByIdSet, SysSocketDO, SysSocketEnableByIdSet} from "@/api/http/SysSocket";
+import {
+    SysSocketDeleteByIdSet,
+    SysSocketDisableByIdSet,
+    SysSocketDO,
+    SysSocketEnableByIdSet
+} from "@/api/http/SysSocket";
 import {ExecConfirm, ToastSuccess} from "@/util/ToastUtil";
 import {SysSocketTypeEnumDict} from "@/model/enum/SysSocketTypeEnum.ts";
 
@@ -91,6 +96,21 @@ const TableColumnList = (actionRef: React.RefObject<ActionType | undefined>): Pr
                     }, undefined, `确定${txt}【${entity.id}】吗？`)
 
                 }}>{txt}</a>,
+
+                <a key="2" className={"red3"} onClick={() => {
+
+                    ExecConfirm(async () => {
+
+                        await SysSocketDeleteByIdSet({idSet: [entity.id!]}).then(res => {
+
+                            ToastSuccess(res.msg)
+                            actionRef.current?.reload()
+
+                        })
+
+                    }, undefined, `确定删除【${entity.id}】吗？`)
+
+                }}>删除</a>,
 
             ]
 

@@ -162,7 +162,11 @@ export default function (props: IUserWalletWithdrawLogModal) {
 
                         if (props.tenantId) {
 
-                            return SysUserWalletWithdrawLogPageTenant({...params, sort, tenantIdSet: [props.tenantId]})
+                            return SysUserWalletWithdrawLogPageTenant({
+                                ...params,
+                                sort,
+                                tenantIdSet: [props.tenantId]
+                            })
 
                         } else if (props.userId) {
 
@@ -210,7 +214,8 @@ export const UserWalletWithdrawLogTableBaseColumnArr = (withdrawStatusDict?: Map
             order: 1000,
             copyable: true,
             render: (dom) => {
-                return <Typography.Text ellipsis={{tooltip: true}} style={{width: 90}}>{dom}</Typography.Text>
+                return <Typography.Text ellipsis={{tooltip: true}}
+                                        style={{width: 90}}>{dom}</Typography.Text>
             }
         },
 
@@ -318,7 +323,8 @@ export const UserWalletWithdrawLogTableBaseColumnArr = (withdrawStatusDict?: Map
 
         {
             title: '拒绝理由', dataIndex: 'rejectReason', ellipsis: true, width: 120, render: (dom) => {
-                return <Typography.Text ellipsis={{tooltip: true}} style={{width: 120}}>{dom}</Typography.Text>
+                return <Typography.Text ellipsis={{tooltip: true}}
+                                        style={{width: 120}}>{dom}</Typography.Text>
             }
         },
 

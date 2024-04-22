@@ -64,7 +64,11 @@ export function RequestInterceptors(config: IHttpConfig | undefined, url: string
 
     config.url = url
 
-    if (!config.url.startsWith('http')) {
+    if (config.url.startsWith('http')) {
+
+        config.fullUrl = config.url
+
+    } else {
 
         // 不以 http开头的，才携带 jwt
         config.headers['Authorization'] =
@@ -81,10 +85,6 @@ export function RequestInterceptors(config: IHttpConfig | undefined, url: string
             config.fullUrl = config.url
 
         }
-
-    } else {
-
-        config.fullUrl = config.url
 
     }
 
@@ -234,16 +234,22 @@ export interface Page<T> {
 
 interface IHttp {
 
+    // 一般用于：本系统的一般请求，如果是特殊请求，请使用：request方法
     myPost<T = string, D = any>(url: string, data?: D, config?: IHttpConfig): Promise<ApiResultVO<T>>
 
+    // 一般用于：查看详情
     myProPost<T = string, D = any>(url: string, data?: D, config?: IHttpConfig): Promise<T>
 
+    // 一般用于：查询树结构
     myTreePost<T = string, D extends MyPageDTO = any>(url: string, data?: D, config?: IHttpConfig): Promise<T[]>
 
+    // 一般用于：procomponents，查询树结构
     myProTreePost<T = string, D extends MyPageDTO = any>(url: string, data?: D, config?: IHttpConfig): Promise<RequestData<T>>
 
+    // 一般用于：分页查询
     myPagePost<T = string, D extends MyPageDTO = any>(url: string, data?: D, config?: IHttpConfig): Promise<Page<T>>
 
+    // 一般用于：procomponents，分页查询
     myProPagePost<T = string, D extends MyPageDTO = any>(url: string, data?: D, config?: IHttpConfig): Promise<RequestData<T>>
 
 }
@@ -284,6 +290,8 @@ export function myProPost<T = string, D = any>(url: string, data?: D, config?: I
  */
 export function myTreePost<T = string, D extends MyPageDTO = any>(url: string, data?: D, config?: IHttpConfig): Promise<T[]> {
 
+    HandleData(data)
+
     return request<T[], D>(url, data, config, true)
 
 }
@@ -294,6 +302,8 @@ export function myTreePost<T = string, D extends MyPageDTO = any>(url: string, d
 export function myProTreePost<T = string, D extends MyPageDTO = any>(url: string, data?: D, config?: IHttpConfig): Promise<RequestData<T>> {
 
     return new Promise<RequestData<T>>((resolve, reject) => {
+
+        HandleData(data)
 
         request<T[], D>(url, data, config, true).then(res => {
 
@@ -320,6 +330,8 @@ export function myProTreePost<T = string, D extends MyPageDTO = any>(url: string
  */
 export function myPagePost<T = string, D extends MyPageDTO = any>(url: string, data?: D, config?: IHttpConfig): Promise<Page<T>> {
 
+    HandleData(data)
+
     return request<Page<T>, D>(url, data, config, true)
 
 }
@@ -330,6 +342,8 @@ export function myPagePost<T = string, D extends MyPageDTO = any>(url: string, d
 export function myProPagePost<T = string, D extends MyPageDTO = any>(url: string, data?: D, config?: IHttpConfig): Promise<RequestData<T>> {
 
     return new Promise<RequestData<T>>((resolve, reject) => {
+
+        HandleData(data)
 
         request<Page<T>, D>(url, data, config, true).then(res => {
 
@@ -351,12 +365,13 @@ export function myProPagePost<T = string, D extends MyPageDTO = any>(url: string
 
 }
 
-export const MyAxios = axios.create()
+// 备注：请采用：request方法，进行调用原生请求
+const MyAxios = axios.create()
 
 /**
  * 执行请求
  */
-export function request<T = string, D = any>(url: string, data?: D, configTemp?: IHttpConfig, resDataFlag?: boolean) {
+export function request<T = string, D = any>(url: string, data?: D, configTemp?: IHttpConfig, resDataFlag?: boolean, resResultFlag: boolean = false) {
 
     return new Promise<T>((resolve, reject) => {
 
@@ -374,7 +389,17 @@ export function request<T = string, D = any>(url: string, data?: D, configTemp?:
 
             data: data as any,
 
+            responseType: config.responseType,
+
         }).then(result => {
+
+            if (resResultFlag) {
+
+                resolve(result as T)
+
+                return
+
+            }
 
             let res = ResponseInterceptorsSuccess<T>(result, config);
 
@@ -409,5 +434,20 @@ export function request<T = string, D = any>(url: string, data?: D, configTemp?:
         })
 
     })
+
+}
+
+// 处理数据
+function HandleData<D extends MyPageDTO>(data?: D) {
+
+    if (data?.sort) {
+
+        const name = Object.keys(data.sort)[0]
+
+        data.order = {name, value: data.sort[name]}
+
+        data.sort = undefined
+
+    }
 
 }

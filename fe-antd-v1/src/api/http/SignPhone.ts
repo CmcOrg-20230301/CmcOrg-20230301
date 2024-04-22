@@ -40,6 +40,7 @@ export interface SignInVO {
     jwtExpireTs?: string // jwt过期时间戳，format：int64
     jwt?: string // jwt
     tenantId?: string // 租户主键 id，format：int64
+    jwtRefreshToken?: string // jwtRefreshToken
 }
 
 // 手机验证码登录

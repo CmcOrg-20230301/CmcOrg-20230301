@@ -8,6 +8,7 @@ import 'dayjs/locale/zh-cn';
 import {App, ConfigProvider, FloatButton} from 'antd';
 import zhCN from 'antd/locale/zh_CN';
 import 'antd/dist/reset.css';
+import Fingerprint2 from 'fingerprintjs2';
 // 引入：自定义样式
 import './style/color.less'
 import './style/layout.less'
@@ -46,7 +47,36 @@ if (consoleOpenFlag === '1') {
 dayjs.extend(relativeTime)
 dayjs.locale('zh-cn');
 
-// 自定义 console.error ↓
+let browserId: string | null
+
+export function GetBrowserId() {
+
+    if (browserId) {
+        return browserId
+    }
+
+    browserId = MyLocalStorage.getItem(LocalStorageKey.BROWSER_ID);
+
+    if (browserId) {
+        return browserId
+    }
+
+    // 浏览器指纹
+    Fingerprint2.get((componentArr) => { // 参数只有回调函数时，默认浏览器指纹依据所有配置信息进行生成
+
+        const values = componentArr.map(item => item.value); // 配置的值的数组
+
+        browserId = Fingerprint2.x64hash128(values.join(''), 31); // 生成浏览器指纹
+
+        MyLocalStorage.setItem(LocalStorageKey.BROWSER_ID, browserId!)
+
+    });
+
+    return browserId
+
+}
+
+// 自定义 console ↓
 const consoleErrorOld = console.error
 
 console.error = (message?: any, ...optionalParams: any[]) => {
@@ -58,7 +88,25 @@ console.error = (message?: any, ...optionalParams: any[]) => {
     consoleErrorOld(message, ...optionalParams)
 
 }
-// 自定义 console.error ↑
+
+// const consoleLogOld = console.log;
+//
+// console.log = (message?: any, ...optionalParams: any[]) => {
+//
+//     consoleLogOld(message, ...optionalParams)
+//
+//     $http.myPost('/sys/log/push', {log: (GetBrowserId() + " ") + (message instanceof Object ? JSON.stringify(message) : message) + (" " + JSON.stringify(optionalParams))}, {
+//
+//         headers: {
+//
+//             hiddenErrorMsg: true
+//
+//         } as any
+//
+//     })
+//
+// }
+// 自定义 console ↑
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
     // <React.StrictMode>

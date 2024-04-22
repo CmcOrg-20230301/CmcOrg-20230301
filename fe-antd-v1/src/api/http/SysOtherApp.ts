@@ -56,7 +56,8 @@ export interface SysOtherAppOfficialAccountMenuInsertOrUpdateDTO {
     remark?: string // 备注
     id?: string // 主键 id，format：int64
     replyContent?: string // 回复的内容，备注：一般是点击按钮之后，回复的内容
-    value?: string // 如果是按钮，则表示按钮的 key，如果是链接，则表示是 url，required：true
+    pagePath?: string // 小程序的页面路径
+    value?: string // 如果是按钮，则表示按钮的 key，如果是链接，则表示是 url，如果是小程序，则表示 appid，required：true
     enableFlag?: boolean // 是否启用
     parentId?: string // 父节点id（顶级则为0），format：int64
 }
@@ -76,6 +77,7 @@ export interface SysOtherAppOfficialAccountMenuDO {
     remark?: string // 备注
     delFlag?: boolean // 是否逻辑删除
     type?: number // 类型，format：int32
+    pagePath?: string // 小程序的页面路径
     version?: number // 乐观锁，format：int32
     parentId?: string // 父节点id（顶级则为0），format：int64
     updateId?: string // 修改人id，format：int64
@@ -89,7 +91,7 @@ export interface SysOtherAppOfficialAccountMenuDO {
     id?: string // 主键 id，format：int64
     replyContent?: string // 回复的内容，备注：一般是点击按钮之后，回复的内容
     enableFlag?: boolean // 是否启用
-    value?: string // 如果是按钮，则表示按钮的 key，如果是链接，则表示是 url
+    value?: string // 如果是按钮，则表示按钮的 key，如果是链接，则表示是 url，如果是小程序，则表示 appid
 }
 
 // 通过主键id，查看详情

@@ -58,6 +58,8 @@ export default {
 
     DOCUMENT_FILE_ACCEPT_TYPE: ".txt,.pdf,.doc,.docx,.java,.python,.sql,.cs,.html", // 文档文件的类型
 
+    BPMN_FILE_ACCEPT_TYPE: ".bpmn20.xml,.bpmn", // bpmn文件的类型
+
     MOBILE_WIDTH: 768, // 小于这个数值，就是移动端
 
     TOOLTIP_STR_LENGTH: 500, // tooltip字符串的长度

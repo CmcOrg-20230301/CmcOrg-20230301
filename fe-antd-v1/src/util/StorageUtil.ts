@@ -23,6 +23,10 @@ export interface IStorageForeverValue {
 
     OTHER_APP_ID: string
 
+    BROWSER_ID: string
+
+    JWT_REFRESH_TOKEN: string
+
 }
 
 const StorageForeverValue: IStorageForeverValue = {
@@ -46,6 +50,10 @@ const StorageForeverValue: IStorageForeverValue = {
     TENANT_MANAGE_NAME: LocalStorageKey.TENANT_MANAGE_NAME,
 
     OTHER_APP_ID: LocalStorageKey.OTHER_APP_ID,
+
+    BROWSER_ID: LocalStorageKey.BROWSER_ID,
+
+    JWT_REFRESH_TOKEN: LocalStorageKey.JWT_REFRESH_TOKEN,
 
 }
 

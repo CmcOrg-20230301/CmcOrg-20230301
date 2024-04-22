@@ -7,7 +7,8 @@ import {GetAppNav} from "@/MyApp";
 import PathConstant from "@/model/constant/PathConstant";
 import {SysRequestCategoryEnum} from "@/model/enum/SysRequestCategoryEnum.ts";
 import {MyLocalStorage, MySessionStorage} from "@/util/StorageUtil.ts";
-import {$http, MyAxios} from "@/util/HttpUtil.ts";
+import {$http, request} from "@/util/HttpUtil.ts";
+import {AxiosResponse} from "axios";
 
 // 获取：文件是否可以预览
 export function GetFileCanPreviewFlag(fileName: string) {
@@ -133,6 +134,19 @@ export function CheckBlobType(blob: Blob) {
 
 }
 
+// 下载文件
+// 使用：download(res.data, res.headers['content-disposition'])
+export function DownloadByString(
+    str: string,
+    fileName: string = new Date().getTime() + '.xlsx'
+) {
+
+    Download(new Blob([str], {
+        type: 'text/plain'
+    }), fileName)
+
+}
+
 // 下载文件：需要这样请求 $http({responseType: 'blob'})
 // 使用：download(res.data, res.headers['content-disposition'])
 export function Download(
@@ -173,14 +187,7 @@ export function Download(
 // 文件下载
 export function FileDownload<T>(url: string, callBack: (blob: Blob, fileName?: string) => void, form?: T) {
 
-    MyAxios.request({
-
-        url: url,
-        responseType: 'blob',
-        method: 'post',
-        data: form
-
-    }).then(res => {
+    request<AxiosResponse>(url, form, {responseType: 'blob'}, false, true).then(res => {
 
         callBack(res.data as any, res.headers['content-disposition'])
 
@@ -221,9 +228,9 @@ export function SysFileUpload(file: string | RcFile | Blob, type: TSysFileUpload
 }
 
 // 文件上传
-export function FileUpload(formData: FormData, url: string) {
+export function FileUpload<T = string>(formData: FormData, url: string) {
 
-    return $http.myPost<string>(url, formData, {headers: {'Content-Type': 'multipart/form-data'}})
+    return $http.myPost<T>(url, formData, {headers: {'Content-Type': 'multipart/form-data'}})
 
 }
 
@@ -253,6 +260,13 @@ export const DocumentFileTypeList = ["text/plain", "application/pdf", "applicati
 // 检查：文档文件类型
 export function CheckDocumentFileType(fileType: string) {
     return DocumentFileTypeList.includes(fileType)
+}
+
+export const BpmnFileTypeList = ["text/xml", ""]
+
+// 检查：bpmn文件类型
+export function CheckBpmnFileType(fileType: string) {
+    return BpmnFileTypeList.includes(fileType)
 }
 
 // 检查：文件的文件类型，2097152（字节）= 2MB

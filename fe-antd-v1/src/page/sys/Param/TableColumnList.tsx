@@ -17,14 +17,24 @@ const TableColumnList = (currentForm: React.MutableRefObject<SysParamInsertOrUpd
     },
 
     {
-        title: '租户', dataIndex: 'tenantId', ellipsis: true, width: 90, hideInSearch: true, valueType: 'select',
+        title: '租户',
+        dataIndex: 'tenantId',
+        ellipsis: true,
+        width: 90,
+        hideInSearch: true,
+        valueType: 'select',
         request: () => {
             return GetDictList(SysTenantDictList)
         }
     },
 
     {
-        title: '租户', dataIndex: 'tenantIdSet', ellipsis: true, width: 90, hideInTable: true, valueType: 'treeSelect',
+        title: '租户',
+        dataIndex: 'tenantIdSet',
+        ellipsis: true,
+        width: 90,
+        hideInTable: true,
+        valueType: 'treeSelect',
         fieldProps: {
             placeholder: '请选择',
             allowClear: true,
@@ -50,7 +60,8 @@ const TableColumnList = (currentForm: React.MutableRefObject<SysParamInsertOrUpd
 
             const subText = entity.value!.substring(0, CommonConstant.TOOLTIP_STR_LENGTH)
 
-            return <Typography.Text ellipsis={{tooltip: true}} style={{width: 300}}>{subText}</Typography.Text>
+            return <Typography.Text ellipsis={{tooltip: true}}
+                                    style={{width: 300}}>{subText}</Typography.Text>
 
         }
     },
@@ -87,7 +98,8 @@ const TableColumnList = (currentForm: React.MutableRefObject<SysParamInsertOrUpd
 
     {
         title: '备注', dataIndex: 'remark', width: 300, render: (dom) => {
-            return <Typography.Text ellipsis={{tooltip: true}} style={{width: 300}}>{dom}</Typography.Text>
+            return <Typography.Text ellipsis={{tooltip: true}}
+                                    style={{width: 300}}>{dom}</Typography.Text>
         }
     },
 

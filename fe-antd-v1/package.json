@@ -12,9 +12,12 @@
   "dependencies": {
     "@ant-design/icons": "^5.3.6",
     "@ant-design/pro-components": "^2.7.1",
+    "@logicflow/core": "^1.2.26",
+    "@logicflow/extension": "^1.2.26",
     "@reduxjs/toolkit": "^2.2.3",
     "antd": "^5.16.4",
     "crypto-js": "^4.2.0",
+    "fingerprintjs2": "^2.1.4",
     "jsencrypt": "^3.3.2",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",

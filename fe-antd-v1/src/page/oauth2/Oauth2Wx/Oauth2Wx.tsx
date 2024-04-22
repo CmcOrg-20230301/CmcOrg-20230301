@@ -1,6 +1,6 @@
 import PathConstant from "@/model/constant/PathConstant";
 import {useEffect} from "react";
-import {SignWxSignInBrowserCode, SignWxSignInBrowserCodeUserInfo} from "@/api/http/SignWx";
+import {SignWxSignInBrowserCodeUnionId, SignWxSignInBrowserCodeUserInfoUnionId} from "@/api/http/SignWx";
 import {GetAppNav} from "@/MyApp";
 import CommonConstant from "@/model/constant/CommonConstant";
 import LocalStorageKey from "@/model/constant/LocalStorageKey";
@@ -125,7 +125,7 @@ export default function () {
         } else if (form.type === '3') { // 获取：用户信息，并注册
 
             // 登录，获取：jwt
-            SignWxSignInBrowserCodeUserInfo(form).then(res => {
+            SignWxSignInBrowserCodeUserInfoUnionId(form).then(res => {
 
                 HandleWxSign(res, form); // 处理登录返回值
 
@@ -143,7 +143,7 @@ export default function () {
         } else {
 
             // 登录，获取：jwt
-            SignWxSignInBrowserCode(form).then(res => {
+            SignWxSignInBrowserCodeUnionId(form).then(res => {
 
                 HandleWxSign(res, form); // 处理登录返回值
 

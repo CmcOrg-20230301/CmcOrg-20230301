@@ -123,6 +123,7 @@ export function SysMenuUserSelfMenuList(config?: IHttpConfig) {
 
 export interface SysMenuInsertOrUpdateDTO {
     redirect?: string // 重定向，优先级最高
+    linkFlag?: boolean // 是否外链，即，打开页面会在一个新的窗口打开
     orderNo?: number // 排序号（值越大越前面，默认为 0），format：int32
     hiddenPageContainerFlag?: boolean // 是否隐藏：PageContainer
     auths?: string // 权限，多个可用逗号拼接，例如：menu:insertOrUpdate,menu:page,menu:deleteByIdSet,menu:infoById

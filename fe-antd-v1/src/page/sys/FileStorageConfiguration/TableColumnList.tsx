@@ -21,14 +21,24 @@ const TableColumnList = (currentForm: React.MutableRefObject<SysFileStorageConfi
     },
 
     {
-        title: '租户', dataIndex: 'tenantId', ellipsis: true, width: 90, hideInSearch: true, valueType: 'select',
+        title: '租户',
+        dataIndex: 'tenantId',
+        ellipsis: true,
+        width: 90,
+        hideInSearch: true,
+        valueType: 'select',
         request: () => {
             return GetDictList(SysTenantDictList)
         }
     },
 
     {
-        title: '租户', dataIndex: 'tenantIdSet', ellipsis: true, width: 90, hideInTable: true, valueType: 'treeSelect',
+        title: '租户',
+        dataIndex: 'tenantIdSet',
+        ellipsis: true,
+        width: 90,
+        hideInTable: true,
+        valueType: 'treeSelect',
         fieldProps: {
             placeholder: '请选择',
             allowClear: true,
@@ -62,11 +72,29 @@ const TableColumnList = (currentForm: React.MutableRefObject<SysFileStorageConfi
 
     {title: '上传端点', dataIndex: 'uploadEndpoint', ellipsis: true, width: 90, hideInTable: true},
 
-    {title: '公开下载端点', dataIndex: 'publicDownloadEndpoint', ellipsis: true, width: 90, hideInTable: true},
+    {
+        title: '公开下载端点',
+        dataIndex: 'publicDownloadEndpoint',
+        ellipsis: true,
+        width: 90,
+        hideInTable: true
+    },
 
-    {title: '公开类型桶', dataIndex: 'bucketPublicName', ellipsis: true, width: 90, hideInTable: true},
+    {
+        title: '公开类型桶',
+        dataIndex: 'bucketPublicName',
+        ellipsis: true,
+        width: 90,
+        hideInTable: true
+    },
 
-    {title: '私有类型桶', dataIndex: 'bucketPrivateName', ellipsis: true, width: 90, hideInTable: true},
+    {
+        title: '私有类型桶',
+        dataIndex: 'bucketPrivateName',
+        ellipsis: true,
+        width: 90,
+        hideInTable: true
+    },
 
     {
         title: '创建时间',

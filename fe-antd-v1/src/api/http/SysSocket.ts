@@ -53,3 +53,8 @@ export interface SysSocketDO {
 export function SysSocketPage(form: SysSocketPageDTO, config?: IHttpConfig) {
     return $http.myProPagePost<SysSocketDO>('/sys/socket/page', form, config)
 }
+
+// 批量：删除socket
+export function SysSocketDeleteByIdSet(form: NotEmptyIdSet, config?: IHttpConfig) {
+    return $http.myPost<string>('/sys/socket/deleteByIdSet', form, config)
+}

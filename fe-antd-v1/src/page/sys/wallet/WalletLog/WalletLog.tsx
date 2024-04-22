@@ -187,7 +187,11 @@ export default function (props: IUserWalletLog) {
                 },
 
                 {
-                    title: '创建人', dataIndex: 'createId', ellipsis: true, width: 90, valueType: 'select',
+                    title: '创建人',
+                    dataIndex: 'createId',
+                    ellipsis: true,
+                    width: 90,
+                    valueType: 'select',
                     hideInSearch: true,
                     request: () => {
                         return DoGetDictList(SysUserDictList({addAdminFlag: true}))

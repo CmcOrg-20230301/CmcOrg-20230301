@@ -335,7 +335,12 @@ export default function () {
 
                 onFinish={async (form) => {
 
-                    await SignInFormHandler({...form, tenantId: tenantIdRef.current, phoneSignInType, signInType})
+                    await SignInFormHandler({
+                        ...form,
+                        tenantId: tenantIdRef.current,
+                        phoneSignInType,
+                        signInType
+                    })
 
                     return true
 
@@ -514,7 +519,8 @@ export default function () {
 
                             {
 
-                                signInType === SysSignTypeEnum.Phone.code && <a className={"m-r-12"} onClick={() => {
+                                signInType === SysSignTypeEnum.Phone.code &&
+                                <a className={"m-r-12"} onClick={() => {
 
                                     if (phoneSignInType === 1) {
 

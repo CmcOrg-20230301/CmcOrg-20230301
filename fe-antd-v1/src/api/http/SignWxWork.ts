@@ -10,6 +10,7 @@ export interface SignInVO {
     jwtExpireTs?: string // jwt过期时间戳，format：int64
     jwt?: string // jwt
     tenantId?: string // 租户主键 id，format：int64
+    jwtRefreshToken?: string // jwtRefreshToken
 }
 
 // 浏览器：企业微信 code登录

@@ -5,6 +5,7 @@ import {
     SysOtherAppOfficialAccountMenuPage
 } from "@/api/http/SysOtherApp";
 import {
+    SysOtherAppOfficialAccountMenuButtonTypeEnum,
     SysOtherAppOfficialAccountMenuButtonTypeEnumDict
 } from "@/model/enum/SysOtherAppOfficialAccountMenuButtonTypeEnum";
 
@@ -72,6 +73,40 @@ const SchemaFormColumnList = (otherAppId: string | undefined): ProFormColumnsTyp
                 allowClear: true,
             },
             tooltip: '如果是按钮，则表示按钮的 key，如果是链接，则表示是 url'
+        },
+
+        {
+
+            valueType: 'dependency',
+
+            name: ['buttonType'],
+
+            columns: ({buttonType}: SysOtherAppOfficialAccountMenuInsertOrUpdateDTO): ProFormColumnsType<SysOtherAppOfficialAccountMenuInsertOrUpdateDTO>[] => {
+
+                if (buttonType !== SysOtherAppOfficialAccountMenuButtonTypeEnum.MINIPROGRAM.code) {
+                    return []
+                }
+
+                return [
+
+                    {
+                        title: '页面路径',
+                        dataIndex: 'pagePath',
+                        formItemProps: {
+                            rules: [
+                                {
+                                    required: true,
+                                    whitespace: true,
+                                },
+                            ],
+                        },
+                        tooltip: '小程序的页面路径'
+                    },
+
+                ]
+
+            }
+
         },
 
         {

@@ -40,7 +40,11 @@ export async function SignInFormHandler(form: ISignInForm) {
 
         if (Validate.email.regex.test(form.account)) { // 如果是：邮箱
 
-            await SignEmailSignInPassword({email: form.account, password, tenantId: form.tenantId}).then(res => {
+            await SignEmailSignInPassword({
+                email: form.account,
+                password,
+                tenantId: form.tenantId
+            }).then(res => {
 
                 SignInSuccess(res.data)
 
@@ -78,7 +82,11 @@ export async function SignInFormHandler(form: ISignInForm) {
 
             } else {
 
-                await SignPhoneSignInCode({code: form.code, tenantId: form.tenantId, phone: form.phone}).then(res => {
+                await SignPhoneSignInCode({
+                    code: form.code,
+                    tenantId: form.tenantId,
+                    phone: form.phone
+                }).then(res => {
 
                     SignInSuccess(res.data)
 
@@ -90,7 +98,11 @@ export async function SignInFormHandler(form: ISignInForm) {
 
             const password = PasswordRSAEncrypt(form.password) // 密码加密
 
-            await SignPhoneSignInPassword({password, tenantId: form.tenantId, phone: form.phone}).then(res => {
+            await SignPhoneSignInPassword({
+                password,
+                tenantId: form.tenantId,
+                phone: form.phone
+            }).then(res => {
 
                 SignInSuccess(res.data)
 

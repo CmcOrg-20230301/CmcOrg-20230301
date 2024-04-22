@@ -166,7 +166,11 @@ export default function () {
                             },
 
                             {
-                                title: '提现用户', dataIndex: 'userId', ellipsis: true, width: 90, valueType: 'select',
+                                title: '提现用户',
+                                dataIndex: 'userId',
+                                ellipsis: true,
+                                width: 90,
+                                valueType: 'select',
                                 request: () => {
                                     return DoGetDictList(SysUserDictList({addAdminFlag: true}))
                                 },
@@ -426,7 +430,8 @@ export default function () {
                             )
 
                             resArr.push(
-                                <RejectModal key={"2"} trigger={<Button type={"primary"} danger={true}>拒绝</Button>}
+                                <RejectModal key={"2"}
+                                             trigger={<Button type={"primary"} danger={true}>拒绝</Button>}
                                              onFinish={async rejectReason => {
 
                                                  await SysUserWalletWithdrawLogReject({

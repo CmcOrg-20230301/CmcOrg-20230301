@@ -245,7 +245,11 @@ export default function () {
 
                                 }}
 
-                                tableAlertOptionRender={({selectedRowKeys, selectedRows, onCleanSelected}) => (
+                                tableAlertOptionRender={({
+                                                             selectedRowKeys,
+                                                             selectedRows,
+                                                             onCleanSelected
+                                                         }) => (
 
                                     <Space size={16}>
 

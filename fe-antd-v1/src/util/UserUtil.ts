@@ -58,6 +58,8 @@ export function SignInSuccess(signInVO: SignInVO, path: string = PathConstant.AD
 
     MyLocalStorage.setItem(LocalStorageKey.JWT_EXPIRE_TS, signInVO.jwtExpireTs!)
 
+    MyLocalStorage.setItem(LocalStorageKey.JWT_REFRESH_TOKEN, signInVO.jwtRefreshToken!)
+
     SetTenantIdToStorage(signInVO.tenantId);
 
     if (redirectFlag) {

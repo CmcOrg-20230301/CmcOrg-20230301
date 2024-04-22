@@ -13,6 +13,8 @@ export interface ISysOtherAppTypeEnum {
 
     BAI_DU: IEnum<number>,
 
+    VOLC_ENGINE: IEnum<number>,
+
 }
 
 // 第三方应用类型，枚举类
@@ -41,6 +43,11 @@ export const SysOtherAppTypeEnum: ISysOtherAppTypeEnum = {
     BAI_DU: {
         code: 301,
         name: '百度',
+    },
+
+    VOLC_ENGINE: {
+        code: 401,
+        name: '火山引擎',
     },
 
 }

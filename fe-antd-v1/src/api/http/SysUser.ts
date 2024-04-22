@@ -19,6 +19,7 @@ export interface SysUserDO {
     createTime?: string // 创建时间，format：date-time
     phone?: string // 手机号，可以为空
     createId?: string // 创建人id，format：int64
+    wxUnionId?: string // 微信 unionId，可以为空，wxUnionId 全租户唯一
     signInName?: string // 登录名，可以为空
     tenantId?: string // 租户 id，format：int64
     id?: string // 主键 id，format：int64
@@ -35,6 +36,7 @@ export interface SysUserInfoByIdVO {
     updateId?: string // 修改人id，format：int64
     password?: string // 密码，可为空，如果为空，则登录时需要提示【进行忘记密码操作】
     children?: SysUserDO[] // 子节点
+    wxUnionId?: string // 微信 unionId，可以为空，wxUnionId 全租户唯一
     nickname?: string // 昵称
     tenantIdSet?: string[] // 租户 idSet，format：int64
     id?: string // 主键 id，format：int64

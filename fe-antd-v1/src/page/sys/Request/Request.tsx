@@ -31,7 +31,10 @@ export default function () {
 
     const [polling, setPolling] = useState<number | undefined>()
 
-    const [sysRequestAllAvgVO, setSysRequestAllAvgVO] = useState<SysRequestAllAvgVO>({avgMs: 0, count: '0'})
+    const [sysRequestAllAvgVO, setSysRequestAllAvgVO] = useState<SysRequestAllAvgVO>({
+        avgMs: 0,
+        count: '0'
+    })
 
     const [fullScreenFlag, setFullScreenFlag] = useState<boolean>(false)
 

@@ -89,3 +89,16 @@ export function SearchTransform(valueArr: { label: string, value: string }[], ke
     return valueArr
 
 }
+
+/**
+ * 深度拷贝
+ */
+export function DeepCopy(source ?: any) {
+
+    if (!source) {
+        return source
+    }
+
+    return JSON.parse(JSON.stringify(source))
+
+}
