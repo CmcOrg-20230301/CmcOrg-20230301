@@ -52,7 +52,8 @@ public class FfmpegUtil {
 
             FileUtil.writeUtf8String(srt, srtFile);
 
-            String cmd = " -i " + videoFile.getName() + " -y -vf subtitles=" + srtFile.getName() + " -c:a copy "
+            String cmd = " -i " + videoFile.getName() + " -y -vf subtitles=" + srtFile.getName()
+                + ":charenc=utf-8 -c:a copy "
                 + videoOutFile.getName();
 
             // 执行
@@ -91,7 +92,7 @@ public class FfmpegUtil {
 
         cmd = executablePath + cmd;
 
-        log.info("执行的命令：{}", cmd);
+        log.info("ffmpeg 本次执行的命令：{}", cmd);
 
         Process process = RuntimeUtil.exec(null, parentFile, cmd);
 
