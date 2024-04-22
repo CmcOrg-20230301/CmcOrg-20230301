@@ -9,11 +9,15 @@ public class MyStrUtil {
 
     /**
      * 根据最大长度，拆分字符串，然后把拆分结果多次执行：consumer
+     * 
+     * @return 截取的次数
      */
-    public static void subWithMaxLengthAndConsumer(String content, int maxLength, Consumer<String> consumer) {
+    public static int subWithMaxLengthAndConsumer(String content, int maxLength, Consumer<String> consumer) {
+
+        int subCount = 0;
 
         if (StrUtil.isBlank(content)) {
-            return;
+            return subCount;
         }
 
         int length = content.length() / maxLength;
@@ -29,8 +33,10 @@ public class MyStrUtil {
                 String subStr = StrUtil.subWithLength(content, i * maxLength, maxLength);
 
                 if (StrUtil.isBlank(subStr)) {
-                    return;
+                    break;
                 }
+
+                subCount = subCount + 1;
 
                 consumer.accept(subStr);
 
@@ -38,15 +44,21 @@ public class MyStrUtil {
 
         }
 
+        return subCount;
+
     }
 
     /**
      * 根据最大字节，拆分字符串，然后把拆分结果多次执行：consumer
+     * 
+     * @return 截取的次数
      */
-    public static void subWithMaxByteLengthAndConsumer(String content, int maxByteLength, Consumer<String> consumer) {
+    public static int subWithMaxByteLengthAndConsumer(String content, int maxByteLength, Consumer<String> consumer) {
+
+        int subCount = 0;
 
         if (StrUtil.isBlank(content)) {
-            return;
+            return subCount;
         }
 
         int byteLength = StrUtil.utf8Bytes(content).length;
@@ -73,6 +85,8 @@ public class MyStrUtil {
 
                     consumer.accept(strBuilder.toStringAndReset());
 
+                    subCount = subCount + 1;
+
                     strBuilder.append(charAt);
 
                     currentByteLength = checkByteLength;
@@ -91,9 +105,13 @@ public class MyStrUtil {
 
                 consumer.accept(str);
 
+                subCount = subCount + 1;
+
             }
 
         }
+
+        return subCount;
 
     }
 

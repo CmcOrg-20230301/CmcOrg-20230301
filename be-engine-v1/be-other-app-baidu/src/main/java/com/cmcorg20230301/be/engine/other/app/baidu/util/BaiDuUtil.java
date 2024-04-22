@@ -90,9 +90,11 @@ public class BaiDuUtil {
 
         StrBuilder strBuilder = StrBuilder.create();
 
-        for (int i = 0; i < tasksInfoList.size(); i++) {
+        int index = 0;
 
-            JSONObject item = tasksInfoList.get(i);
+        int maxLength = 10;
+
+        for (JSONObject item : tasksInfoList) {
 
             if (!"Success".equals(item.getStr("task_status"))) {
                 continue;
@@ -110,16 +112,6 @@ public class BaiDuUtil {
 
                 Integer endTime = subItem.getInt("end_time");
 
-                String beginTimeStr = MyNumberUtil.formatMilliseconds(beginTime);
-
-                String endTimeStr = MyNumberUtil.formatMilliseconds(endTime);
-
-                // 添加：序号
-                strBuilder.append(++i).append("\n");
-
-                // 添加：时间
-                strBuilder.append(beginTimeStr).append(" --> ").append(endTimeStr).append("\n");
-
                 String text = CollUtil.join(resList, "");
 
                 if (voidFunc1 != null) {
@@ -128,13 +120,64 @@ public class BaiDuUtil {
 
                 }
 
-                strBuilder.append(text).append("\n\n");
+                int length = text.length() / maxLength;
+
+                if (text.length() % maxLength != 0) {
+
+                    length = length + 1;
+
+                }
+
+                if (length == 0) {
+
+                    // 添加字幕
+                    index = appendSrt(strBuilder, index, beginTime, endTime, text);
+
+                } else { // 如果字数超了
+
+                    int gap = (endTime - beginTime) / length;
+
+                    for (int i = 0; i < length; i++) {
+
+                        String subStr = StrUtil.subWithLength(text, i * maxLength, maxLength);
+
+                        int newBeginTime = beginTime + (i * gap);
+
+                        int newEndTime = newBeginTime + gap;
+
+                        // 添加字幕
+                        index = appendSrt(strBuilder, index, newBeginTime, newEndTime, subStr);
+
+                    }
+
+                }
 
             }
 
         }
 
         return strBuilder.toString();
+
+    }
+
+    /**
+     * 添加字幕
+     */
+    private static int appendSrt(StrBuilder strBuilder, int index, Integer beginTime, Integer endTime, String text) {
+
+        // 添加：序号
+        strBuilder.append(++index).append("\n");
+
+        String beginTimeStr = MyNumberUtil.formatMilliseconds(beginTime);
+
+        String endTimeStr = MyNumberUtil.formatMilliseconds(endTime);
+
+        // 添加：时间
+        strBuilder.append(beginTimeStr).append(" --> ").append(endTimeStr).append("\n");
+
+        strBuilder.append(text).append("\n\n");
+
+        return index;
 
     }
 
