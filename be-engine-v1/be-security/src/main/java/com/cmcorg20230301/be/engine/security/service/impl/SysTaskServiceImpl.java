@@ -56,7 +56,7 @@ public class SysTaskServiceImpl extends ServiceImpl<SysTaskMapper, SysTaskDO> im
      * 定时任务，处理未完成的任务
      */
     @PreDestroy
-    @Scheduled(fixedDelay = 3000)
+    @Scheduled(fixedDelay = 8000)
     public void scheduledHandleNotCompleteTask() {
 
         if (CollUtil.isEmpty(I_SYS_TASK_CONFIGURATION_MAP)) {

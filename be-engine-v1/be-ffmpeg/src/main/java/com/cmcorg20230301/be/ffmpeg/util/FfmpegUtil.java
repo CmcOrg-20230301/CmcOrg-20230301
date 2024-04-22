@@ -24,13 +24,6 @@ import ws.schild.jave.process.ffmpeg.DefaultFFMPEGLocator;
 @Slf4j(topic = LogTopicConstant.FFMPEG)
 public class FfmpegUtil {
 
-    // public static void main(String[] args) {
-    //
-    // videoAddSrt("https://ai.lxjjai.com/be-public-bucket/temp-file/7c9dc8b7d4a32db7e1049e365efdc514.mp4", null,
-    // null);
-    //
-    // }
-
     /**
      * 视频添加字幕
      */
@@ -118,12 +111,6 @@ public class FfmpegUtil {
         process.waitFor();
 
     }
-
-    // public static void main(String[] args) {
-    //
-    // videoToAudio("https://ai.lxjjai.com/be-public-bucket/temp-file/7c9dc8b7d4a32db7e1049e365efdc514.mp4", null);
-    //
-    // }
 
     /**
      * 视频提取音频
