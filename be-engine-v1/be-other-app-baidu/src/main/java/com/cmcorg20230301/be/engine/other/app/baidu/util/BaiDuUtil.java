@@ -127,8 +127,8 @@ public class BaiDuUtil {
 
             } else {
 
-                // 获取：下一个的起始时间，并减少一定时间
-                endTime = resultList.get(i + 1).getInt("begin_time") - 1500;
+                // 获取：下一个的起始时间
+                endTime = resultList.get(i + 1).getInt("begin_time");
 
             }
 
