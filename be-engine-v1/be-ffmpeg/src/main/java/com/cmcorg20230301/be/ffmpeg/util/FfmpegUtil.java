@@ -10,27 +10,26 @@ import org.springframework.stereotype.Component;
 
 import com.cmcorg20230301.be.engine.model.model.constant.LogTopicConstant;
 import com.cmcorg20230301.be.engine.model.model.constant.SysFileTempPathConstant;
-import com.cmcorg20230301.be.engine.security.util.MyExceptionUtil;
 
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.lang.func.VoidFunc1;
 import cn.hutool.core.util.IdUtil;
+import cn.hutool.core.util.RuntimeUtil;
 import cn.hutool.http.HttpUtil;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-import ws.schild.jave.process.ProcessWrapper;
 import ws.schild.jave.process.ffmpeg.DefaultFFMPEGLocator;
 
 @Component
 @Slf4j(topic = LogTopicConstant.FFMPEG)
 public class FfmpegUtil {
 
-    public static void main(String[] args) {
-
-        videoAddSrt("https://ai.lxjjai.com/be-public-bucket/temp-file/7c9dc8b7d4a32db7e1049e365efdc514.mp4", null,
-            null);
-
-    }
+    // public static void main(String[] args) {
+    //
+    // videoAddSrt("https://ai.lxjjai.com/be-public-bucket/temp-file/7c9dc8b7d4a32db7e1049e365efdc514.mp4", null,
+    // null);
+    //
+    // }
 
     /**
      * 视频添加字幕
@@ -52,53 +51,19 @@ public class FfmpegUtil {
 
             videoFile = FileUtil.touch(SysFileTempPathConstant.FFMPEG_TEMP_PATH + uuid + ".mp4");
 
-            srtFile =
-                FileUtil.touch(SysFileTempPathConstant.FFMPEG_TEMP_PATH + "542d81ecc29a4dc19ff1d9cdcb74d4e7" + ".srt");
+            srtFile = FileUtil.touch(SysFileTempPathConstant.FFMPEG_TEMP_PATH + uuid + ".srt");
 
             videoOutFile = FileUtil.touch(SysFileTempPathConstant.FFMPEG_TEMP_PATH + uuid + "_out.mp4");
 
             FileUtil.writeBytes(downloadByteArr, videoFile);
 
-            // FileUtil.writeUtf8String(srt, srtFile);
+            FileUtil.writeUtf8String(srt, srtFile);
 
-            ProcessWrapper ffmpeg = new DefaultFFMPEGLocator().createExecutor();
-
-            ffmpeg.addArgument("-i");
-
-            ffmpeg.addArgument(videoFile.getAbsolutePath());
-
-            ffmpeg.addArgument("-y");
-
-            ffmpeg.addArgument("-vf");
-
-            // ffmpeg.addArgument("subtitles='" + srtFile.getAbsolutePath() + "':force_style='Alignment=2'");
-
-            ffmpeg.addArgument("subtitles=" + srtFile.getName());
-
-            // ffmpeg.addArgument("-i");
-
-            // ffmpeg.addArgument(srtFile.getAbsolutePath());
-
-            ffmpeg.addArgument("-c:a");
-
-            ffmpeg.addArgument("copy");
-
-            // ffmpeg.addArgument("-c:v");
-            //
-            // ffmpeg.addArgument("copy");
-            //
-            // ffmpeg.addArgument("-c:s");
-            //
-            // ffmpeg.addArgument("mov_text");
-
-            // ffmpeg.addArgument("-f");
-
-            // ffmpeg.addArgument("mp4");
-
-            ffmpeg.addArgument(videoOutFile.getAbsolutePath());
+            String cmd = " -i " + videoFile.getName() + " -y -vf subtitles=" + srtFile.getName() + " -c:a copy "
+                + videoOutFile.getName();
 
             // 执行
-            doExecute(ffmpeg);
+            handleCmd(cmd);
 
             if (voidFunc1 != null) {
 
@@ -109,13 +74,48 @@ public class FfmpegUtil {
 
         } finally {
 
-            // FileUtil.del(videoFile);
-            //
-            // FileUtil.del(srtFile);
-            //
-            // FileUtil.del(videoOutFile);
+            FileUtil.del(videoFile);
+
+            FileUtil.del(srtFile);
+
+            FileUtil.del(videoOutFile);
 
         }
+
+    }
+
+    /**
+     * 执行
+     */
+    @SneakyThrows
+    private static void handleCmd(String cmd) {
+
+        DefaultFFMPEGLocator defaultFfmpegLocator = new DefaultFFMPEGLocator();
+
+        String executablePath = defaultFfmpegLocator.getExecutablePath();
+
+        File parentFile = FileUtil.newFile(SysFileTempPathConstant.FFMPEG_TEMP_PATH);
+
+        cmd = executablePath + cmd;
+
+        log.info("执行的命令：{}", cmd);
+
+        Process process = RuntimeUtil.exec(null, parentFile, cmd);
+
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(process.getErrorStream()))) {
+
+            String line;
+
+            while ((line = reader.readLine()) != null) {
+
+                log.info("ffmpeg 输出：{}", line);
+
+            }
+
+        }
+
+        // 等待 ffmpeg命令执行完毕
+        process.waitFor();
 
     }
 
@@ -147,28 +147,10 @@ public class FfmpegUtil {
 
             FileUtil.writeBytes(downloadByteArr, videoFile);
 
-            ProcessWrapper ffmpeg = new DefaultFFMPEGLocator().createExecutor();
-
-            ffmpeg.addArgument("-i");
-
-            ffmpeg.addArgument(videoFile.getAbsolutePath());
-
-            ffmpeg.addArgument("-vn");
-
-            ffmpeg.addArgument("-f");
-
-            ffmpeg.addArgument("mp3");
-
-            ffmpeg.addArgument("-ar");
-
-            ffmpeg.addArgument("16000");
-
-            ffmpeg.addArgument("-y");
-
-            ffmpeg.addArgument(audioFile.getAbsolutePath());
+            String cmd = " -i " + videoFile.getName() + " -vn -f mp3 -ar 16000 -y " + audioFile.getName();
 
             // 执行
-            doExecute(ffmpeg);
+            handleCmd(cmd);
 
             if (voidFunc1 != null) {
 
@@ -184,55 +166,6 @@ public class FfmpegUtil {
             FileUtil.del(audioFile);
 
         }
-
-    }
-
-    /**
-     * 执行
-     */
-    public static void doExecute(ProcessWrapper ffmpeg) {
-
-        try {
-
-            ffmpeg.execute();
-
-            try (BufferedReader br = new BufferedReader(new InputStreamReader(ffmpeg.getErrorStream()))) {
-
-                blockFfmpeg(br);
-
-            }
-
-        } catch (Exception e) {
-
-            MyExceptionUtil.printError(e);
-
-        }
-
-    }
-
-    /**
-     * 等待命令执行成功，退出
-     */
-    @SneakyThrows
-    private static void blockFfmpeg(BufferedReader br) {
-
-        String line;
-
-        // 该方法阻塞线程，直至合成成功
-        while ((line = br.readLine()) != null) {
-
-            handleLine(line);
-
-        }
-
-    }
-
-    /**
-     * 处理日志
-     */
-    private static void handleLine(String line) {
-
-        log.info("ffmpeg 输出：{}", line);
 
     }
 
