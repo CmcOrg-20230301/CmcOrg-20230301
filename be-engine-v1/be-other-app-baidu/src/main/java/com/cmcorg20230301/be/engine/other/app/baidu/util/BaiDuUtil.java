@@ -1,5 +1,6 @@
 package com.cmcorg20230301.be.engine.other.app.baidu.util;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.jetbrains.annotations.NotNull;
@@ -94,6 +95,8 @@ public class BaiDuUtil {
 
         int maxLength = 10;
 
+        List<JSONObject> resultList = new ArrayList<>();
+
         for (JSONObject item : tasksInfoList) {
 
             if (!"Success".equals(item.getStr("task_status"))) {
@@ -104,51 +107,66 @@ public class BaiDuUtil {
 
             List<JSONObject> detailedResultList = taskResult.getBeanList("detailed_result", JSONObject.class);
 
-            for (JSONObject subItem : detailedResultList) {
+            resultList.addAll(detailedResultList);
 
-                List<String> resList = subItem.getBeanList("res", String.class);
+        }
 
-                Integer beginTime = subItem.getInt("begin_time");
+        for (int i = 0; i < resultList.size(); i++) {
 
-                Integer endTime = subItem.getInt("end_time");
+            JSONObject item = resultList.get(i);
 
-                String text = CollUtil.join(resList, "");
+            List<String> resList = item.getBeanList("res", String.class);
 
-                if (voidFunc1 != null) {
+            Integer beginTime = item.getInt("begin_time");
 
-                    text = voidFunc1.call(text);
+            Integer endTime;
 
-                }
+            if (i == resultList.size() - 1) { // 如果是：最后一个
 
-                int length = text.length() / maxLength;
+                endTime = item.getInt("end_time");
 
-                if (text.length() % maxLength != 0) {
+            } else {
 
-                    length = length + 1;
+                // 获取：下一个的起始时间，并减少一定时间
+                endTime = resultList.get(i + 1).getInt("begin_time") - 1500;
 
-                }
+            }
 
-                if (length == 0) {
+            String text = CollUtil.join(resList, "");
+
+            if (voidFunc1 != null) {
+
+                text = voidFunc1.call(text);
+
+            }
+
+            int length = text.length() / maxLength;
+
+            if (text.length() % maxLength != 0) {
+
+                length = length + 1;
+
+            }
+
+            if (length == 0) {
+
+                // 添加字幕
+                index = appendSrt(strBuilder, index, beginTime, endTime, text);
+
+            } else { // 如果字数超了
+
+                int gap = (endTime - beginTime) / length;
+
+                for (int j = 0; j < length; j++) {
+
+                    String subStr = StrUtil.subWithLength(text, j * maxLength, maxLength);
+
+                    int newBeginTime = beginTime + (j * gap);
+
+                    int newEndTime = newBeginTime + gap;
 
                     // 添加字幕
-                    index = appendSrt(strBuilder, index, beginTime, endTime, text);
-
-                } else { // 如果字数超了
-
-                    int gap = (endTime - beginTime) / length;
-
-                    for (int i = 0; i < length; i++) {
-
-                        String subStr = StrUtil.subWithLength(text, i * maxLength, maxLength);
-
-                        int newBeginTime = beginTime + (i * gap);
-
-                        int newEndTime = newBeginTime + gap;
-
-                        // 添加字幕
-                        index = appendSrt(strBuilder, index, newBeginTime, newEndTime, subStr);
-
-                    }
+                    index = appendSrt(strBuilder, index, newBeginTime, newEndTime, subStr);
 
                 }
 
