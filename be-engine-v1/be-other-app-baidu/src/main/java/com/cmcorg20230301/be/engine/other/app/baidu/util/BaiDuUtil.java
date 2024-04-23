@@ -44,6 +44,50 @@ public class BaiDuUtil {
     }
 
     /**
+     * 文本翻译-通用版
+     *
+     * @return dst 译文 src 原文
+     */
+    public static List<JSONObject> texttrans(@Nullable Long tenantId, @Nullable String appId, String from, String to,
+        String q) {
+
+        String accessToken = getAccessToken(tenantId, appId);
+
+        JSONObject formJson = JSONUtil.createObj();
+
+        formJson.set("from", from);
+
+        formJson.set("to", to);
+
+        formJson.set("q", q);
+
+        String body = JSONUtil.toJsonStr(formJson);
+
+        log.info("texttrans-formJson：{}", body);
+
+        String resultStr =
+            HttpRequest.post("https://aip.baidubce.com/rpc/2.0/mt/texttrans/v1?access_token=" + accessToken).body(body)
+                .execute().body();
+
+        log.info("texttrans-result：{}", resultStr);
+
+        JSONObject jsonObject = JSONUtil.parseObj(resultStr);
+
+        String errorMsg = jsonObject.getStr("error_msg");
+
+        if (StrUtil.isNotBlank(errorMsg)) {
+
+            ApiResultVO.errorMsg(errorMsg);
+
+        }
+
+        JSONObject result = jsonObject.getJSONObject("result");
+
+        return result.getBeanList("trans_result", JSONObject.class);
+
+    }
+
+    /**
      * 查询音频转写任务
      *
      * @return 任务 id

@@ -26,6 +26,8 @@ public enum SysOtherAppTypeEnum implements ISysOtherAppType {
 
     VOLC_ENGINE(401), // 火山引擎
 
+    MICROSOFT(501), // 微软
+
     ;
 
     @EnumValue

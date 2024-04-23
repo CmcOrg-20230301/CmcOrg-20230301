@@ -59,4 +59,6 @@ public interface LogTopicConstant {
 
     String FFMPEG = PRE_BE + "ffmpeg"; // ffmpeg相关
 
+    String MICROSOFT = PRE_BE + "microsoft"; // 微软相关
+
 }

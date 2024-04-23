@@ -122,9 +122,8 @@ public class SysOtherAppServiceImpl extends ServiceImpl<SysOtherAppMapper, SysOt
             .in(BaseEntityNoId::getTenantId, dto.getTenantIdSet()) //
             .select(BaseEntity::getId, BaseEntityNoIdSuper::getTenantId, BaseEntityNoId::getEnableFlag,
                 BaseEntityNoId::getRemark, BaseEntityNoIdSuper::getCreateId, BaseEntityNoIdSuper::getCreateTime,
-                BaseEntityNoIdSuper::getUpdateId, BaseEntityNoIdSuper::getUpdateTime, SysOtherAppDO::getAppId,
-                SysOtherAppDO::getName, SysOtherAppDO::getType, SysOtherAppDO::getSubscribeReplyContent,
-                SysOtherAppDO::getQrCode)
+                BaseEntityNoIdSuper::getUpdateId, BaseEntityNoIdSuper::getUpdateTime, SysOtherAppDO::getName,
+                SysOtherAppDO::getType, SysOtherAppDO::getSubscribeReplyContent, SysOtherAppDO::getQrCode)
             .orderByDesc(BaseEntity::getUpdateTime).page(dto.page(true));
 
     }

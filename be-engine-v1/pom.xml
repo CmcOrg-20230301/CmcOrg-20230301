@@ -88,6 +88,7 @@
         <module>be-other-app-wx-work</module>
         <module>be-other-app-baidu</module>
         <module>be-other-app-volcengine</module>
+        <module>be-other-app-microsoft</module>
         <module>be-im-session</module>
         <module>be-api-token</module>
         <module>be-flow-activiti</module>
@@ -130,6 +131,13 @@
             <dependency>
                 <groupId>${cmcorg.groupId}</groupId>
                 <artifactId>be-im-session</artifactId>
+                <version>${cmcorg.version}</version>
+            </dependency>
+
+            <!-- be-other-app-microsoft -->
+            <dependency>
+                <groupId>${cmcorg.groupId}</groupId>
+                <artifactId>be-other-app-microsoft</artifactId>
                 <version>${cmcorg.version}</version>
             </dependency>
 
@@ -553,6 +561,13 @@
                 <groupId>com.alibaba.cloud</groupId>
                 <artifactId>spring-cloud-starter-alibaba-nacos-config</artifactId>
                 <version>2021.0.5.0</version>
+            </dependency>
+
+            <!-- 微软-语音服务 -->
+            <dependency>
+                <groupId>com.microsoft.cognitiveservices.speech</groupId>
+                <artifactId>client-sdk</artifactId>
+                <version>1.37.0</version>
             </dependency>
 
             <!-- ffmpeg -->

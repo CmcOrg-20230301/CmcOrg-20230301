@@ -131,11 +131,11 @@ public class FfmpegUtil {
 
             videoFile = FileUtil.touch(SysFileTempPathConstant.FFMPEG_TEMP_PATH + uuid + ".mp4");
 
-            audioFile = FileUtil.touch(SysFileTempPathConstant.FFMPEG_TEMP_PATH + uuid + ".mp3");
+            audioFile = FileUtil.touch(SysFileTempPathConstant.FFMPEG_TEMP_PATH + uuid + ".wav");
 
             FileUtil.writeBytes(downloadByteArr, videoFile);
 
-            String cmd = " -i " + videoFile.getName() + " -vn -f mp3 -ar 16000 -y " + audioFile.getName();
+            String cmd = " -i " + videoFile.getName() + " -vn -f wav -ac 2 -ar 16000 -y " + audioFile.getName();
 
             // 执行
             handleCmd(cmd);
