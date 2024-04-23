@@ -45,13 +45,47 @@ public class BaiDuUtil {
 
     /**
      * 文本翻译-通用版
+     */
+    public static String texttransDstZh(@Nullable Long tenantId, @Nullable String appId, String q) {
+
+        return texttransDst(tenantId, appId, null, "zh", q);
+
+    }
+
+    /**
+     * 文本翻译-通用版
+     */
+    public static String texttransDstEn(@Nullable Long tenantId, @Nullable String appId, String q) {
+
+        return texttransDst(tenantId, appId, null, "en", q);
+
+    }
+
+    /**
+     * 文本翻译-通用版
+     */
+    public static String texttransDst(@Nullable Long tenantId, @Nullable String appId, @Nullable String from, String to,
+        String q) {
+
+        List<JSONObject> jsonObjectList = texttrans(tenantId, appId, from, to, q);
+
+        return CollUtil.join(jsonObjectList, "");
+
+    }
+
+    /**
+     * 文本翻译-通用版
      *
      * @return dst 译文 src 原文
      */
-    public static List<JSONObject> texttrans(@Nullable Long tenantId, @Nullable String appId, String from, String to,
-        String q) {
+    public static List<JSONObject> texttrans(@Nullable Long tenantId, @Nullable String appId, @Nullable String from,
+        String to, String q) {
 
         String accessToken = getAccessToken(tenantId, appId);
+
+        if (StrUtil.isBlank(from)) {
+            from = "auto";
+        }
 
         JSONObject formJson = JSONUtil.createObj();
 
