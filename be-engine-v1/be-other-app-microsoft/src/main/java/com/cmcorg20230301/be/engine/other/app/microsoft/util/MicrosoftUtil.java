@@ -93,7 +93,14 @@ public class MicrosoftUtil {
      */
     @SneakyThrows
     public static String conversationTranscriptionFromFile(@Nullable Long tenantId, @Nullable String appId,
-        String inputFilePath, String language, @Nullable VoidFunc1<List<Caption>> voidFunc1) {
+        String inputFilePath, String language, @Nullable VoidFunc1<List<Caption>> voidFunc1,
+        @Nullable Integer maxWidth) {
+
+        if (maxWidth == null) {
+
+            maxWidth = UserConfig.defaultMaxLineLengthMBCS; // 默认宽度
+
+        }
 
         SpeechConfig speechConfig = getSpeechConfig(tenantId, appId);
 
@@ -181,8 +188,7 @@ public class MicrosoftUtil {
 
         speechRecognizer.stopContinuousRecognitionAsync().get();
 
-        List<Caption> captionList =
-            CaptionHelper.GetCaptions(Optional.of(language), UserConfig.defaultMaxLineLengthSBCS, 2, offlineResultList);
+        List<Caption> captionList = CaptionHelper.GetCaptions(Optional.of(language), maxWidth, 2, offlineResultList);
 
         // 处理：Caption集合
         Captioning.handleCaptionList(captionList, 1000);
