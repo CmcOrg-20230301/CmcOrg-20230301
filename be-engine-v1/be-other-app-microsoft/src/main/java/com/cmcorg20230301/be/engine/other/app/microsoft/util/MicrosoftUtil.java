@@ -37,13 +37,13 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j(topic = LogTopicConstant.MICROSOFT)
 public class MicrosoftUtil {
 
-    public static void main(String[] args) {
+    // public static void main(String[] args) {
 
-        // Captioning.main(CollUtil.newArrayList("--key", "key", "--region", "region",
-        // "--input", "/home/myTempFile/ffmpegUpload/wav.wav", "--srt", "--quiet", "--output",
-        // "/home/myTempFile/ffmpegUpload/srt.srt").toArray(new String[0]));
+    // Captioning.main(CollUtil.newArrayList("--key", "key", "--region", "region",
+    // "--input", "/home/myTempFile/ffmpegUpload/wav.wav", "--srt", "--quiet", "--output",
+    // "/home/myTempFile/ffmpegUpload/srt.srt").toArray(new String[0]));
 
-    }
+    // }
 
     private static SysOtherAppService sysOtherAppService;
 
@@ -98,7 +98,7 @@ public class MicrosoftUtil {
 
         if (maxWidth == null) {
 
-            maxWidth = UserConfig.defaultMaxLineLengthMBCS; // 默认宽度
+            maxWidth = UserConfig.defaultMaxLineLengthMBCS; // 默认字幕宽度：中文
 
         }
 

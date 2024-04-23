@@ -10,6 +10,7 @@ import org.springframework.stereotype.Component;
 
 import com.cmcorg20230301.be.engine.model.model.constant.LogTopicConstant;
 import com.cmcorg20230301.be.engine.model.model.constant.SysFileTempPathConstant;
+import com.cmcorg20230301.be.engine.util.util.VoidFunc2;
 
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.lang.func.VoidFunc1;
@@ -28,11 +29,20 @@ public class FfmpegUtil {
      * 视频添加字幕
      */
     @SneakyThrows
-    public static void videoAddSrt(String videoUrl, String srt, @Nullable VoidFunc1<File> voidFunc1) {
+    public static void videoAddSrt(File videoFileTemp, String videoUrl, String srt,
+        @Nullable VoidFunc1<File> voidFunc1) {
 
-        byte[] downloadByteArr = HttpUtil.downloadBytes(videoUrl);
+        boolean videoFileNullFlag = videoFileTemp == null;
 
-        File videoFile = null;
+        byte[] downloadByteArr = null;
+
+        if (videoFileNullFlag) {
+
+            downloadByteArr = HttpUtil.downloadBytes(videoUrl);
+
+        }
+
+        File videoFile = videoFileTemp;
 
         File srtFile = null;
 
@@ -42,19 +52,26 @@ public class FfmpegUtil {
 
             String uuid = IdUtil.simpleUUID();
 
-            videoFile = FileUtil.touch(SysFileTempPathConstant.FFMPEG_TEMP_PATH + uuid + ".mp4");
+            if (videoFileNullFlag) {
+
+                videoFile = FileUtil.touch(SysFileTempPathConstant.FFMPEG_TEMP_PATH + uuid + ".mp4");
+
+            }
 
             srtFile = FileUtil.touch(SysFileTempPathConstant.FFMPEG_TEMP_PATH + uuid + ".srt");
 
             videoOutFile = FileUtil.touch(SysFileTempPathConstant.FFMPEG_TEMP_PATH + uuid + "_out.mp4");
 
-            FileUtil.writeBytes(downloadByteArr, videoFile);
+            if (videoFileNullFlag) {
+
+                FileUtil.writeBytes(downloadByteArr, videoFile);
+
+            }
 
             FileUtil.writeUtf8String(srt, srtFile);
 
             String cmd = " -i " + videoFile.getName() + " -y -vf subtitles=" + srtFile.getName()
-                + ":charenc=utf-8 -c:a copy "
-                + videoOutFile.getName();
+                + ":charenc=utf-8 -c:a copy " + videoOutFile.getName();
 
             // 执行
             handleCmd(cmd);
@@ -117,7 +134,7 @@ public class FfmpegUtil {
      * 视频提取音频
      */
     @SneakyThrows
-    public static void videoToAudio(String videoUrl, @Nullable VoidFunc1<File> voidFunc1) {
+    public static void videoToAudio(String videoUrl, @Nullable VoidFunc2<File, File> voidFunc1) {
 
         byte[] downloadByteArr = HttpUtil.downloadBytes(videoUrl);
 
@@ -143,7 +160,7 @@ public class FfmpegUtil {
             if (voidFunc1 != null) {
 
                 // 处理：文件
-                voidFunc1.call(audioFile);
+                voidFunc1.call(audioFile, videoFile);
 
             }
 
