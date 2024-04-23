@@ -69,7 +69,15 @@ public class BaiDuUtil {
 
         List<JSONObject> jsonObjectList = texttrans(tenantId, appId, from, to, q);
 
-        return CollUtil.join(jsonObjectList, "");
+        StrBuilder strBuilder = StrBuilder.create();
+
+        for (JSONObject jsonObject : jsonObjectList) {
+
+            strBuilder.append(jsonObject.getStr("dst"));
+
+        }
+
+        return strBuilder.toString();
 
     }
 
